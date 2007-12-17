@@ -96,7 +96,7 @@ namespace xqp
     po::options_description lGenericOptions ( "Generic Options" );
     lGenericOptions.add_options()
       ( "version,v", "print version std::string" )
-      ( "help", "produce help message" )
+      ( "help,h", "produce help message" )
       ( "property-file", po::value<std::string>(&thePropFile), "URI to property file")
     ;
 

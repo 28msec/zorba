@@ -91,6 +91,7 @@ namespace xqp
   class DocumentIterator;
   class DocumentContentIterator;
   class DocFilterIterator;
+  class CastIterator;
 
   class OpDurationEqualIterator;
 
@@ -351,6 +352,9 @@ namespace xqp
       
       virtual void beginVisitFlworReturn(const PlanIterator&) = 0;
       virtual void endVisitFlworReturn(const PlanIterator&) = 0;
+      
+      virtual void beginVisit ( const CastIterator& ) = 0;
+      virtual void endVisit ( const CastIterator& ) = 0;
 
       virtual void beginVisit ( const OpDurationEqualIterator&) = 0;
       virtual void endVisit ( const OpDurationEqualIterator&) = 0;

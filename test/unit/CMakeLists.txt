@@ -2,6 +2,7 @@
 CREATE_TEST_SOURCELIST(UnitTests
   UnitTests.cpp
   typesystem_isSubtype.cpp
+  typesystem_atomicStringCast.cpp
 )
 
 # add the executable

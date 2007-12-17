@@ -18,6 +18,7 @@ int typesystem_isSubtype(int argc, char* argv[]) {
   TypeSystem::xqtref_t lIntType = GENV_TYPESYSTEM.create_type(lInt->getType(), TypeSystem::QUANT_ONE);
   TypeSystem::xqtref_t lDecimalType = GENV_TYPESYSTEM.create_type(lDecimal->getType(), TypeSystem::QUANT_ONE);
   
+  assert(GENV_TYPESYSTEM.is_atomic(*lIntType));
   assert(GENV_TYPESYSTEM.is_subtype(*lIntType, *lIntegerType));
   assert(GENV_TYPESYSTEM.is_subtype(*lIntType, *lDecimalType));
   assert(GENV_TYPESYSTEM.is_subtype(*lIntegerType, *lDecimalType));

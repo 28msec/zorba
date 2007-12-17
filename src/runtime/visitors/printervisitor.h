@@ -274,6 +274,10 @@ namespace xqp {
       
       virtual void beginVisitFlworReturn(const PlanIterator&);
       virtual void endVisitFlworReturn(const PlanIterator&);
+      
+      virtual void beginVisit(const CastIterator&);
+      virtual void endVisit(const CastIterator&);
+      
   };
 } /* namespace xqp */
 

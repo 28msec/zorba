@@ -760,4 +760,12 @@ namespace xqp {
     thePrinter.endIter();
   }
   
+  void PrinterVisitor::beginVisit(const CastIterator& a) {
+    thePrinter.startIter("ConstIterator");
+    a.accept(*this);
+  }
+  
+  void PrinterVisitor::endVisit(const CastIterator&) {
+    thePrinter.endIter();
+  }
 } /* namespace xqp */

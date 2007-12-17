@@ -216,6 +216,12 @@ public:
     this->showError();
     return 0;
   }
+  
+  virtual xqp_byte getByteValue() const
+  {
+    showError();
+    return 0;
+  }
 
   /** Accessor for xs:date
    */

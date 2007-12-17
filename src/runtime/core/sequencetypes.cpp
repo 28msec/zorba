@@ -49,35 +49,36 @@ InstanceOfIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
-
-void
-InstanceOfIterator::resetImpl(PlanState& planState)
-{
-  UnaryBaseIterator<InstanceOfIterator>::releaseResourcesImpl(planState);
-  
-  PlanIteratorState* state;
-  GET_STATE(PlanIteratorState, state, planState);
-
-  state->reset();
-}
-
-
-void
-InstanceOfIterator::releaseResourcesImpl(PlanState& planState)
-{
-  UnaryBaseIterator<InstanceOfIterator>::releaseResourcesImpl(planState);
-  
-  PlanIteratorState* state;
-  GET_STATE(PlanIteratorState, state, planState);
-
-  state->reset();
-}
-
   
 
 /*******************************************************************************
 
 ********************************************************************************/
 
+CastIterator::CastIterator(
+    const yy::location& loc,
+    PlanIter_t& aChild,
+    const TypeSystem::xqtref_t& aCastType)
+  : UnaryBaseIterator<CastIterator>(loc, aChild), theCastType(aCastType)
+{}
+
+Item_t CastIterator::nextImpl(PlanState& aPlanState) {
+  Item_t lItem;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+  
+  while (true) {
+    lItem = consumeNext(theChild, aPlanState);
+    if (lItem == 0)
+      break;
+    STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
+  }
+  STACK_END();
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 } /* namespace xqp */
 

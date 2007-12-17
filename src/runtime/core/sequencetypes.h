@@ -9,6 +9,7 @@
 #include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h"
 #include "types/typesystem.h"
+#include "types/casting.h"
 
 #include <assert.h>
 #include <iostream>
@@ -37,13 +38,28 @@ public:
   ~InstanceOfIterator();
   
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  virtual uint32_t getStateSize() const { return sizeof(PlanIterator::PlanIteratorState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
+
+/*******************************************************************************
+  Implement 3.12.3: Cast
+
+  http://www.w3.org/TR/xquery/#id-cast
+********************************************************************************/
+class CastIterator : public UnaryBaseIterator<CastIterator> {
+private:
+  TypeSystem::xqtref_t theCastType;
+  
+public:
+  CastIterator(const yy::location& loc,
+               PlanIter_t& aChild,
+               const TypeSystem::xqtref_t& aCastType);
+  
+  Item_t nextImpl(PlanState& aPlanState);
+  virtual void accept(PlanIterVisitor&) const;
+};
+
 
 } /* namespace xqp */
 #endif  /* XQP_SEQUENCETYPES_H */

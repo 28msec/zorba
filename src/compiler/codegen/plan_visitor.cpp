@@ -329,13 +329,14 @@ bool plan_visitor::begin_visit(castable_expr& v)
 bool plan_visitor::begin_visit(cast_expr& v)
 {
   CODEGEN_TRACE_IN("");
-  Assert (false);
   return true;
 }
 
 void plan_visitor::end_visit(cast_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+  PlanIter_t lChild = pop_itstack();
+  itstack.push(new CastIterator(v.get_loc(), lChild, v.get_type()));
 }
 
 bool plan_visitor::begin_visit(validate_expr& v)
