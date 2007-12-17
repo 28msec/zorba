@@ -495,11 +495,9 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
     TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
     TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
     bool equal;
-    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
-        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
-        equal = aItem0->equals(aItem1);
-    // TODO the rest
-    else
+//     if (false)
+      // TODO, equal implementation for types which do not support compare
+//     else
       return -2;
     
     if (equal)
@@ -528,7 +526,15 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
     TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
     TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
     int8_t ret = -2;
-    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
+    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
+        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)) {
+      if (aItem0->getBooleanValue() == aItem1->getBooleanValue())
+        ret = 0;
+      else if (aItem0->getBooleanValue() < aItem1->getBooleanValue())
+        return -1;
+      else
+        return 1;
+    } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
       if ( aItem0->getFloatValue() < aItem1->getFloatValue())
         ret = -1;
