@@ -38,6 +38,8 @@
   CODEGEN_TRACE (std::string (depth--, ' ') + msg)
 #else
 #define CODEGEN_TRACE(msg)
+#define CODEGEN_TRACE_IN(msg)
+#define CODEGEN_TRACE_OUT(msg)
 #endif
 
 using namespace std;
