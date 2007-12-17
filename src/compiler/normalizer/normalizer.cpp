@@ -34,8 +34,9 @@ static inline expr::expr_t wrap_in_typematch(expr::expr_t e, TypeSystem::xqtref_
 
 static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, TypeSystem::xqtref_t type)
 {
+  expr::expr_t ph = new promote_expr(e->get_loc(), e, type);
   // TODO : Need to add convert_simple_operand
-  return e;
+  return ph;
 }
 
 bool normalizer::begin_visit(expr& node)
@@ -68,6 +69,11 @@ bool normalizer::begin_visit(flwor_expr& node)
 }
 
 bool normalizer::begin_visit(case_clause& node)
+{
+  return true;
+}
+
+bool normalizer::begin_visit(promote_expr& node)
 {
   return true;
 }
@@ -236,6 +242,10 @@ void normalizer::end_visit(flwor_expr& node)
 }
 
 void normalizer::end_visit(case_clause& node)
+{
+}
+
+void normalizer::end_visit(promote_expr& node)
 {
 }
 

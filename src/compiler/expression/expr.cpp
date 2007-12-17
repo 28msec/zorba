@@ -280,6 +280,22 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
   return flwor_copy;
 }
 
+void promote_expr::accept(expr_visitor& v)
+{
+  BEGIN_VISITOR ();
+  ACCEPT (input_expr_h);
+  END_VISITOR ();
+}
+
+std::ostream& promote_expr::put(std::ostream& os) const
+{
+  os << INDENT << "promote_expr[";
+  GENV_TYPESYSTEM.serialize(os, *target_type) << "\n";
+  Assert(input_expr_h!=NULL);
+  input_expr_h->put(os);
+  return os << OUTDENT << "]\n";
+}
+
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]

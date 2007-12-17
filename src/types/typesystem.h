@@ -3,6 +3,7 @@
 
 #include <map>
 #include <assert.h>
+#include <ostream>
 #include "store/api/item.h"
 #include "util/rchandle.h"
 #include "types/typeident.h"
@@ -79,6 +80,11 @@ class TypeSystem {
     ~TypeSystem();
 
     typedef rchandle<XQType> xqtref_t;
+
+    /*
+     * Writes a string representation of the given type to the output stream.
+     */
+    std::ostream& serialize(std::ostream& os, const XQType& type) const;
 
     /*
      * Returns the quantifier of the argument.
@@ -312,10 +318,13 @@ class XQType : virtual public rcobject {
       NONE_KIND,
     } type_kind_t;
 
+    static const char *KIND_STRINGS[NONE_KIND + 1];
+
     XQType(TypeSystem::quantifier_t quantifier)
       : m_quantifier(quantifier) { }
     virtual ~XQType() { }
     virtual type_kind_t type_kind() const = 0;
+    virtual std::ostream& serialize(std::ostream& os) const;
 
     TYPE_FRIENDS
 };
@@ -330,8 +339,11 @@ class AtomicXQType : public XQType {
       return ATOMIC_TYPE_KIND;
     }
 
+    static const char *ATOMIC_TYPE_CODE_STRINGS[TypeSystem::ATOMIC_TYPE_CODE_LIST_SIZE];
+
     AtomicXQType(TypeSystem::atomic_type_code_t type_code, TypeSystem::quantifier_t quantifier)
       : XQType(quantifier), m_type_code(type_code) { }
+    virtual std::ostream& serialize(std::ostream& os) const;
 
     TYPE_FRIENDS
 };

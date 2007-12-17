@@ -346,6 +346,31 @@ public:
 
 };
 
+class promote_expr : public expr {
+  public:
+    promote_expr(yy::location const& loc) : expr(loc) { }
+    promote_expr(yy::location const& loc, expr_t input, TypeSystem::xqtref_t type)
+      : expr(loc),
+      input_expr_h(input),
+      target_type(type) { }
+    virtual ~promote_expr() { }
+
+  protected:
+    expr_t input_expr_h;
+    TypeSystem::xqtref_t target_type;
+
+  public:
+    expr_t get_input() { return input_expr_h; }
+    void set_input(expr_t input) { input_expr_h = input; }
+
+    TypeSystem::xqtref_t get_target_type() { return target_type; }
+    void set_target_type(TypeSystem::xqtref_t target) { target_type = target; }
+
+public:
+	void accept(expr_visitor&);
+	std::ostream& put(std::ostream&) const;
+};
+
 
 class typeswitch_expr : public expr
 /*______________________________________________________________________

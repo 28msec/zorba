@@ -195,6 +195,19 @@ void plan_visitor::end_visit(case_clause& v)
   CODEGEN_TRACE_OUT("");
 }
 
+bool plan_visitor::begin_visit(promote_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void plan_visitor::end_visit(promote_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lChild = pop_itstack();
+  // TODO: Currently we use cast. Promotion may be more efficient.
+  itstack.push(new CastIterator(v.get_loc(), lChild, v.get_target_type()));
+}
 
 bool plan_visitor::begin_visit(typeswitch_expr& v)
 {

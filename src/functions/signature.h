@@ -49,8 +49,8 @@ public:
 	std::vector<TypeSystem::xqtref_t> argv;
 
 public:
-  signature (QNameItem_t name, TypeSystem::xqtref_t return_type,
-             bool variadic, TypeSystem::xqtref_t arg1);
+  signature (QNameItem_t name, TypeSystem::xqtref_t arg1,
+             bool variadic, TypeSystem::xqtref_t return_type);
 	signature(QNameItem_t name,
 						TypeSystem::xqtref_t return_type);
 	signature(QNameItem_t name,
@@ -81,8 +81,8 @@ public:
     return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
   }
 
-  TypeSystem::xqtref_t const& operator[](int i) const { return argv [variadic ? 0 : i]; }
-  TypeSystem::xqtref_t & operator[](int i)            { return argv [variadic ? 0 : i]; }
+  TypeSystem::xqtref_t const& operator[](int i) const { return argv [variadic ? 1 : (i + 1)]; }
+  TypeSystem::xqtref_t & operator[](int i)            { return argv [variadic ? 1 : (i + 1)]; }
   TypeSystem::xqtref_t const& return_type() const     { return argv [0]; }
   TypeSystem::xqtref_t & return_type()                { return argv [0]; }
 

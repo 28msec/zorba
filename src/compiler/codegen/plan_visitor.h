@@ -65,6 +65,7 @@ public:
 	bool begin_visit(order_modifier&);
 	bool begin_visit(flwor_expr&);
 	bool begin_visit(case_clause&);
+	bool begin_visit(promote_expr&);
 	bool begin_visit(typeswitch_expr&);
 	bool begin_visit(if_expr&);
 	bool begin_visit(fo_expr&);
@@ -96,6 +97,7 @@ public:
 	void end_visit(order_modifier&);
 	void end_visit(flwor_expr&);
 	void end_visit(case_clause&);
+	void end_visit(promote_expr&);
 	void end_visit(typeswitch_expr&);
 	void end_visit(if_expr&);
 	void end_visit(fo_expr&);

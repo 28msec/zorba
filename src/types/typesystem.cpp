@@ -220,6 +220,11 @@ TypeSystem::~TypeSystem()
 {
 }
 
+std::ostream& TypeSystem::serialize(std::ostream& os, const XQType& type) const
+{
+  return type.serialize(os);
+}
+
 TypeSystem::quantifier_t TypeSystem::quantifier(const XQType &type) const
 {
   return type.m_quantifier;
@@ -621,6 +626,77 @@ type_ident_ref_t TypeSystem::get_type_identifier(const XQType& type) const
 TypeSystem::xqtref_t TypeSystem::create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeSystem::quantifier_t quantifier) const
 {
   return new NodeXQType(nodetest, content_type, quantifier);
+}
+
+const char *XQType::KIND_STRINGS[XQType::NONE_KIND + 1] =
+{
+  "ATOMIC_TYPE_KIND",
+  "NODE_TYPE_KIND",
+  "ANY_TYPE_KIND",
+  "ITEM_KIND",
+  "ANY_SIMPLE_TYPE_KIND",
+  "UNTYPED_KIND",
+  "EMPTY_KIND",
+  "NONE_KIND"
+};
+
+std::ostream& XQType::serialize(std::ostream& os) const
+{
+  return os << "[XQType " << KIND_STRINGS[type_kind()] << "]";
+}
+
+const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeSystem::ATOMIC_TYPE_CODE_LIST_SIZE] =
+{
+  "XS_ANY_ATOMIC",
+  "XS_STRING",
+  "XS_NORMALIZED_STRING",
+  "XS_TOKEN",
+  "XS_LANGUAGE",
+  "XS_NMTOKEN",
+  "XS_NAME",
+  "XS_NCNAME",
+  "XS_ID",
+  "XS_IDREF",
+  "XS_ENTITY",
+  "XS_UNTYPED_ATOMIC",
+  "XS_DATETIME",
+  "XS_DATE",
+  "XS_TIME",
+  "XS_DURATION",
+  "XS_DT_DURATION",
+  "XS_YM_DURATION",
+  "XS_FLOAT",
+  "XS_DOUBLE",
+  "XS_DECIMAL",
+  "XS_INTEGER",
+  "XS_NON_POSITIVE_INTEGER",
+  "XS_NEGATIVE_INTEGER",
+  "XS_LONG",
+  "XS_INT",
+  "XS_SHORT",
+  "XS_BYTE",
+  "XS_NON_NEGATIVE_INTEGER",
+  "XS_UNSIGNED_LONG",
+  "XS_UNSIGNED_INT",
+  "XS_UNSIGNED_SHORT",
+  "XS_UNSIGNED_BYTE",
+  "XS_POSITIVE_INTEGER",
+  "XS_GYEAR_MONTH",
+  "XS_GYEAR",
+  "XS_GMONTH_DAY",
+  "XS_GDAY",
+  "XS_GMONTH",
+  "XS_BOOLEAN",
+  "XS_BASE64BINARY",
+  "XS_HEXBINARY",
+  "XS_ANY_URI",
+  "XS_QNAME",
+  "XS_NOTATION"
+};
+
+std::ostream& AtomicXQType::serialize(std::ostream& os) const
+{
+  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[m_type_code] << "]";
 }
 
 /* vim:set ts=2 sw=2: */
