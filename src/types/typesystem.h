@@ -441,6 +441,15 @@ inline TypeSystem::xqtref_t TypeSystem::create_type(QNameItem_t qname, TypeSyste
   if (m_atomic_qnametype_map.find(qname) != m_atomic_qnametype_map.end()) {
     return create_atomic_type(qname, quantifier);
   }
+  else if (qname == XS_ANY_TYPE_QNAME) {
+    return create_any_type();
+  }
+  else if (qname == XS_ANY_SIMPLE_TYPE_QNAME) {
+    return create_any_simple_type();
+  }
+  else if (qname == XS_UNTYPED_QNAME) {
+    return create_untyped_type();
+  }
   return TypeSystem::xqtref_t(0);
 }
 
