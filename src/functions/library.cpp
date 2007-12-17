@@ -204,6 +204,21 @@ DECL(fn_subsequence_3,
     GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+DECL(fn_zero_or_one,
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","zero-or-one"),
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+    GENV_TYPESYSTEM.ITEM_TYPE_QUESTION));
+
+DECL(fn_one_or_more,
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","one-or-more"),
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+    GENV_TYPESYSTEM.ITEM_TYPE_PLUS));
+
+DECL(fn_exactly_one,
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","exactly-one"),
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+    GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+
 DECL(op_distinct_nodes,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":distinct-nodes"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,

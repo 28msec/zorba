@@ -503,6 +503,30 @@ namespace xqp {
     thePrinter.endIter();
   }
        
+  void PrinterVisitor::beginVisit ( const FnZeroOrOneIterator& a ) {
+    thePrinter.startIter("FnZeroOrOneIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnZeroOrOneIterator& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnOneOrMoreIterator& a ) {
+    thePrinter.startIter("FnOneOrMoreIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnOneOrMoreIterator& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnExactlyOneIterator& a ) {
+    thePrinter.startIter("FnExactlyOneIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnExactlyOneIterator& a ) {
+    thePrinter.endIter();
+  }
+
   void PrinterVisitor::beginVisit ( const FnDocIterator& a ) {
     thePrinter.startIter("FnDocIterator");
     printCommons( &a );

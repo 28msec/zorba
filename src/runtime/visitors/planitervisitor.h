@@ -65,6 +65,9 @@ namespace xqp
   class FnDistinctValuesIterator;
   class FnInsertBeforeIterator;  
   class FnSubsequenceIterator;
+  class FnZeroOrOneIterator;
+  class FnOneOrMoreIterator;
+  class FnExactlyOneIterator;
   class FnDocIterator;
   class CodepointsToStringIterator;
   class StringToCodepointsIterator;
@@ -266,7 +269,16 @@ namespace xqp
 
       virtual void beginVisit ( const FnSubsequenceIterator& ) = 0;
       virtual void endVisit ( const FnSubsequenceIterator& ) = 0;       
+
+      virtual void beginVisit ( const FnZeroOrOneIterator& ) = 0;
+      virtual void endVisit ( const FnZeroOrOneIterator& ) = 0;       
+
+      virtual void beginVisit ( const FnOneOrMoreIterator& ) = 0;
+      virtual void endVisit ( const FnOneOrMoreIterator& ) = 0;       
        
+      virtual void beginVisit ( const FnExactlyOneIterator& ) = 0;
+      virtual void endVisit ( const FnExactlyOneIterator& ) = 0;       
+
       virtual void beginVisit ( const FnDocIterator& ) = 0;
       virtual void endVisit ( const FnDocIterator& ) = 0;
        

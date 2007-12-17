@@ -284,6 +284,7 @@ protected:
 
 
 //15.1.9 fn:reverse
+// TODO implement
 
 //15.1.10 fn:subsequence
 // Returns the contiguous sequence of items in the value of $sourceSeq beginning at the position indicated by the value 
@@ -330,6 +331,7 @@ protected:
 };
 
 //15.1.11 fn:unordered
+// no need to implement an operator for his
 
 
   /*______________________________________________________________________
@@ -338,10 +340,49 @@ protected:
   |_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
+class FnZeroOrOneIterator : public UnaryBaseIterator<FnZeroOrOneIterator>
+{
+public:
+  FnZeroOrOneIterator(yy::location loc, PlanIter_t& aChild);
+ 
+  ~FnZeroOrOneIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+  
+  virtual void 
+  accept(PlanIterVisitor&) const;
+};
 
 //15.2.2 fn:one-or-more
+class FnOneOrMoreIterator : public UnaryBaseIterator<FnOneOrMoreIterator>
+{
+public:
+  FnOneOrMoreIterator(yy::location loc, PlanIter_t& aChild);
+ 
+  ~FnOneOrMoreIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+  
+  virtual void 
+  accept(PlanIterVisitor&) const;
+};
 
 //15.2.3 fn:exactly-one
+class FnExactlyOneIterator : public UnaryBaseIterator<FnExactlyOneIterator>
+{
+public:
+  FnExactlyOneIterator(yy::location loc, PlanIter_t& aChild);
+ 
+  ~FnExactlyOneIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+  
+  virtual void 
+  accept(PlanIterVisitor&) const;
+};
 
 
   /*______________________________________________________________________

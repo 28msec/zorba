@@ -344,10 +344,74 @@ TypeSystem::xqtref_t fn_subsequence_2::type_check(
 |_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
+fn_zero_or_one::fn_zero_or_one(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_zero_or_one::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  return new FnZeroOrOneIterator(loc, argv[0]);
+}
+
+bool fn_zero_or_one::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t fn_zero_or_one::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
 
 //15.2.2 fn:one-or-more
+fn_one_or_more::fn_one_or_more(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_one_or_more::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  return new FnOneOrMoreIterator(loc, argv[0]);
+}
+
+bool fn_one_or_more::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t fn_one_or_more::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
 
 //15.2.3 fn:exactly-one
+fn_exactly_one::fn_exactly_one(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_exactly_one::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  return new FnExactlyOneIterator(loc, argv[0]);
+}
+
+bool fn_exactly_one::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t fn_exactly_one::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
 
 
 /*______________________________________________________________________

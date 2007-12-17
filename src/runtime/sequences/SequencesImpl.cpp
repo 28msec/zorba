@@ -649,10 +649,96 @@ FnSubsequenceIterator::FnSubsequenceIteratorState::reset()
 |_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
+FnZeroOrOneIterator::FnZeroOrOneIterator(yy::location loc,
+                                         PlanIter_t& aChild)
+ : UnaryBaseIterator<FnZeroOrOneIterator> ( loc, aChild )
+{ }
+
+FnZeroOrOneIterator::~FnZeroOrOneIterator(){}
+
+Item_t 
+FnZeroOrOneIterator::nextImpl(PlanState& planState) {
+  Item_t lFirstSequenceItem;
+  Item_t lNextSequenceItem;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  lFirstSequenceItem = consumeNext(theChild, planState);
+  if (lFirstSequenceItem != NULL)
+  {
+    lNextSequenceItem = consumeNext(theChild, planState);
+    if (lNextSequenceItem != NULL)
+    {
+      ZORBA_ERROR_ALERT(error_messages::FODC0003_Function_stability_not_defined,                                                                          error_messages::RUNTIME_ERROR, 
+                        NULL, false, "fn:zero-or-one called with a sequence containing more than one item"); 
+    }
+    STACK_PUSH(lFirstSequenceItem, state);
+  }
+  STACK_END();
+}
+
+
 
 //15.2.2 fn:one-or-more
+FnOneOrMoreIterator::FnOneOrMoreIterator(yy::location loc,
+                                         PlanIter_t& aChild)
+ : UnaryBaseIterator<FnOneOrMoreIterator> ( loc, aChild )
+{ }
+
+FnOneOrMoreIterator::~FnOneOrMoreIterator(){}
+
+Item_t 
+FnOneOrMoreIterator::nextImpl(PlanState& planState) {
+  Item_t lSequenceItem;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  lSequenceItem = consumeNext(theChild, planState);
+  if (lSequenceItem == NULL)
+  {
+    ZORBA_ERROR_ALERT(error_messages::FODC0004_Invalid_argument_to_fn_collection,
+                      error_messages::RUNTIME_ERROR, 
+                      NULL, false, "fn:one-or-more called with a sequence containing no items.");
+  }
+  do
+  {
+    STACK_PUSH(lSequenceItem, state);
+  } while ( (lSequenceItem = consumeNext(theChild, planState)) != NULL );
+
+  STACK_END();
+}
 
 //15.2.3 fn:exactly-one
+FnExactlyOneIterator::FnExactlyOneIterator(yy::location loc,
+                                           PlanIter_t& aChild)
+ : UnaryBaseIterator<FnExactlyOneIterator> ( loc, aChild )
+{ }
+
+FnExactlyOneIterator::~FnExactlyOneIterator(){}
+
+Item_t 
+FnExactlyOneIterator::nextImpl(PlanState& planState) {
+  Item_t lFirstItem;
+  Item_t lNextItem;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  lFirstItem = consumeNext(theChild, planState);
+  lNextItem = consumeNext(theChild, planState);
+  if ( lFirstItem == NULL || lNextItem != NULL )
+  {
+    ZORBA_ERROR_ALERT(error_messages::FODC0005_Invalid_argument_to_fn_doc_or_fn_doc_available,
+                      error_messages::RUNTIME_ERROR, 
+                      NULL, false, "fn:exactly-one called with a sequence containing zero or more than one item.");
+  }
+
+  STACK_PUSH(lFirstItem, state);
+
+  STACK_END();
+}
 
 
 /*______________________________________________________________________

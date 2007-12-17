@@ -194,10 +194,43 @@ public:
 |_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
+class fn_zero_or_one : public function
+{
+public:
+	fn_zero_or_one(const signature&);
+	~fn_zero_or_one() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
 
 //15.2.2 fn:one-or-more
+class fn_one_or_more : public function
+{
+public:
+	fn_one_or_more(const signature&);
+	~fn_one_or_more() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
 
 //15.2.3 fn:exactly-one
+class fn_exactly_one : public function
+{
+public:
+	fn_exactly_one(const signature&);
+	~fn_exactly_one() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
 
 
 /*______________________________________________________________________
