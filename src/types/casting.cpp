@@ -45,7 +45,6 @@ namespace xqp
   }
   
   Item_t GenericCast::stringSimpleCast(/*const*/ xqpString& aString, TypeSystem::xqtref_t& aTargetType) {
-    // TODO Check if the target type is a simple type, can be done by executing aTargetType->primetype() & is_atomic
     Item_t lItem = 0;
     
     try {

@@ -68,11 +68,17 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
   
-  while (true) {
-    lItem = consumeNext(theChild, aPlanState);
-    if (lItem == 0)
-      break;
+  lItem = consumeNext(theChild, aPlanState);
+  if (lItem != 0) {
     STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
+    if (consumeNext(theChild, aPlanState) != 0) {
+      ZorbaErrorAlerts::error_alert (
+        error_messages::XPTY0004_STATIC_TYPE_ERROR,
+        error_messages::STATIC_ERROR,
+        false,
+        "Cast expression contains a parameter with produces a sequence of more than one atomic value"
+      );
+    }
   }
   STACK_END();
 }
