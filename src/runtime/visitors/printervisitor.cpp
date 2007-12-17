@@ -761,8 +761,7 @@ namespace xqp {
   }
   
   void PrinterVisitor::beginVisit(const CastIterator& a) {
-    thePrinter.startIter("ConstIterator");
-    a.accept(*this);
+    thePrinter.startIter("CastIterator");
   }
   
   void PrinterVisitor::endVisit(const CastIterator&) {
