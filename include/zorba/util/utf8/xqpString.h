@@ -208,54 +208,54 @@ public:
     void clear();
 
     // xqpString::Codepoints()
-    std::vector<uint32_t> getCodepoints();
+    std::vector<uint32_t> getCodepoints () const;
 
     // xqpString::Substring()
     /**Locate in this the first occurrence in the range [0, length) of the characters in pattern using the "Default collation".
     *  @param pattern The text to search for.
     *  @return The offset into this of the start of pattern, or -1 if not found.
     */
-    int32_t indexOf(xqpString pattern);
+    int32_t indexOf(xqpString pattern) const;
 
     /**Locate in this the first occurrence in the range [0, length) of the characters in pattern using the a collation created using the provided locale.
     *  @param pattern The text to search for.
     *  @param collationUri collation URI.
     *  @return The offset into this of the start of pattern, or -1 if not found.
     */
-    int32_t indexOf(xqpString pattern, xqpString collationUri);
+    int32_t indexOf(xqpString pattern, xqpString collationUri) const;
 
     /**Locate in this the last occurrence in the range [0, length) of the characters in pattern using the "Default collation".
     *  @param pattern The text to search for.
     *  @return The offset into this of the start of pattern, or -1 if not found.
     */
-    int32_t lastIndexOf(xqpString pattern);
+    int32_t lastIndexOf(xqpString pattern) const;
 
     /**Locate in this the last occurrence in the range [0, length) of the characters in pattern using the "Default collation".
     *  @param pattern The text to search for.
     *  @param collationUri collation URI.
     *  @return The offset into this of the start of pattern, or -1 if not found.
     */
-    int32_t lastIndexOf(xqpString pattern, xqpString collationUri);
+    int32_t lastIndexOf(xqpString pattern, xqpString collationUri) const;
 
     /**Determine if this ends with the characters in pattern in the range [0, length).
     *  @param pattern The text to search for.
     */
-    bool endsWith(xqpString pattern);
+    bool endsWith(xqpString pattern) const;
 
     /**Determine if this ends with the characters in pattern in the range [0, length).
     *  @param pattern The text to search for.
     *  @param collationUri collation URI.
     */
-    bool endsWith(xqpString pattern, xqpString collationUri);
+    bool endsWith(xqpString pattern, xqpString collationUri) const;
 
     /**Returns a substring of the current string, starting at index, and length characters long.
     */
-    xqpString substr(size_type index, size_type length);
+    xqpString substr(size_type index, size_type length) const;
 
     /**Returns a substring of the currents string starting at index and continues untill the NULL termination.
     *Doesn't use ICU4C
     */
-    xqpString substr(distance_type index);
+    xqpString substr(distance_type index) const;
     const char* c_str() const;
 
     inline  operator std::string() const{
@@ -311,24 +311,24 @@ private:
 
     /**Returns true is cp reprezents "unreserved" as defined by rfc3986
     */
-    bool is_unreservedCP(uint32_t cp);
+    bool is_unreservedCP(uint32_t cp) const;
 
     /**Returns true is cp reprezents "ucschar" as defined by rfc3987
     */
-    bool is_ucscharCP(uint32_t cp);
+    bool is_ucscharCP(uint32_t cp) const;
 
     /**Returns true is cp reprezents "iprivate" as defined by rfc3987
     */
-    bool is_iprivateCP(uint32_t cp);
+    bool is_iprivateCP(uint32_t cp) const;
 
     /**Returns true if cp is a printable characters of the US-ASCII coded
     *character set meaning octets ranging from 32 to 126 (decimal).
     */
-    bool is_printableASCII(uint32_t cp);
+    bool is_printableASCII(uint32_t cp) const;
 
     /**Returns true if cp is sapce 32 (decimal).
     */
-    bool is_space(uint32_t cp);
+    bool is_space(uint32_t cp) const;
 
     /**Create a map with:
     *-the codepoints of the chars from 'mapString' as first dimension
@@ -336,7 +336,7 @@ private:
     *if length(mapString) \< length(transString)
     *Only the first occurence of a character from mapString is inserted into the mapArray
      */
-    std::map<uint32_t,uint32_t> createMapArray(xqpString mapString, xqpString transString);
+    std::map<uint32_t,uint32_t> createMapArray(xqpString mapString, xqpString transString) const;
   };
 
   // xqpString::stream I/O operators

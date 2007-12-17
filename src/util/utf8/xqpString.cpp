@@ -235,7 +235,7 @@ namespace xqp
   }
 
   //xpqString::Codepoint
-  std::vector<uint32_t> xqpString::getCodepoints()
+  std::vector<uint32_t> xqpString::getCodepoints() const
   {
     std::vector<uint32_t> tt;
     uint16_t vLength;
@@ -250,7 +250,7 @@ namespace xqp
   }
 
   //xqpString::Substring matching/ string search
-  int32_t xqpString::indexOf(xqpString pattern)
+  int32_t xqpString::indexOf(xqpString pattern) const
   {
     //create the collator object
     UErrorCode status = U_ZERO_ERROR;
@@ -288,7 +288,7 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::indexOf(xqpString pattern, xqpString collationUri)
+  int32_t xqpString::indexOf(xqpString pattern, xqpString collationUri) const
   {
     UErrorCode status = U_ZERO_ERROR;
 
@@ -326,7 +326,7 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::lastIndexOf(xqpString pattern)
+  int32_t xqpString::lastIndexOf(xqpString pattern) const
   {
     //create the collator object
     UErrorCode status = U_ZERO_ERROR;
@@ -366,7 +366,7 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::lastIndexOf(xqpString pattern, xqpString collationUri)
+  int32_t xqpString::lastIndexOf(xqpString pattern, xqpString collationUri) const
   {
     UErrorCode status = U_ZERO_ERROR;
 
@@ -406,19 +406,19 @@ namespace xqp
     return -1;
   }
 
-  bool xqpString::endsWith(xqpString pattern)
+  bool xqpString::endsWith(xqpString pattern) const
   {
     //TODO check if this condition is enough
     return( lastIndexOf(pattern) + pattern.length() == length() );
   }
 
-  bool xqpString::endsWith(xqpString pattern, xqpString collationUri)
+  bool xqpString::endsWith(xqpString pattern, xqpString collationUri) const
   {
     //TODO check if this condition is enough
     return( lastIndexOf(pattern, collationUri) + pattern.length() == length() );
   }
 
-  xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length)
+  xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length) const
   {
     char* target;
     int32_t size =  length*4 + 1;
@@ -434,7 +434,7 @@ namespace xqp
     return ret;
   }
 
-  xqpString xqpString::substr(distance_type index)
+  xqpString xqpString::substr(distance_type index) const
   {
     if(index >= (int32_t)length())
     {
@@ -549,7 +549,7 @@ namespace xqp
     return getXqpString( result ); 
   }
 
-  bool xqpString::is_unreservedCP(uint32_t cp)
+  bool xqpString::is_unreservedCP(uint32_t cp) const
   {
     bool ret = false;
     if((0x30 <= cp && cp <= 0x39)|| //0-9
@@ -565,7 +565,7 @@ namespace xqp
       return ret;
   }
 
-  bool xqpString::is_ucscharCP(uint32_t cp)
+  bool xqpString::is_ucscharCP(uint32_t cp) const
   {
     bool ret = false;
     if((0xA0 <= cp && cp <=0xD7FF) ||
@@ -591,7 +591,7 @@ namespace xqp
     return ret;
   }
 
-  bool xqpString::is_iprivateCP( uint32_t cp )
+  bool xqpString::is_iprivateCP( uint32_t cp ) const
   {
     bool ret = false;
     if((0xE000 <= cp && cp <=0xF8FF) ||
@@ -604,7 +604,7 @@ namespace xqp
     return ret;
   }
 
-  bool xqpString::is_printableASCII(uint32_t cp)
+  bool xqpString::is_printableASCII(uint32_t cp) const
   {
     bool ret = false;
     if(0x20 <= cp && cp <=0x7E)//32 to 126 (decimal)
@@ -614,12 +614,12 @@ namespace xqp
     return ret;
   }
 
-  bool xqpString::is_space(uint32_t cp)
+  bool xqpString::is_space(uint32_t cp) const
   {
     return  (cp == 0x20) ? true: false;
   }
 
-  std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString)
+  std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString) const
   {
     uint16_t mapLen = mapString.theStrStore->length()+1;
     uint16_t transLen = transString.theStrStore->length()+1;
