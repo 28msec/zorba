@@ -372,6 +372,8 @@ ElementContentIterator::resetImpl(PlanState& planState)
   ElementContentState* state;
   GET_STATE(ElementContentState, state, planState);
   state->theString = "";
+  state->theContextItem = 0;
+  state->theNoAttrAllowed = false;
 }
 
   
