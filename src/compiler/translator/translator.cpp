@@ -222,8 +222,8 @@ void translator::end_visit(const DefaultCollationDecl& v, void *visit_state)
 
 void *translator::begin_visit(DefaultNamespaceDecl const& v)
 {
+  TRACE_VISIT ();
 // TODO adapt to new store
-// TRACE_VISIT ();
 //  switch (v.get_mode()) {
 //  case ns_element_default: {
 //    namespace_node* ns_p = new dom_namespace_node("#elem#",v.get_default_namespace());
@@ -1547,6 +1547,7 @@ void *translator::begin_visit(const CastExpr& v)
 void translator::end_visit(const CastExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  nodestack.push (new cast_expr (v.get_location (), pop_nodestack (), pop_tstack ()));
 }
 
 void *translator::begin_visit(const CastableExpr& v)
