@@ -1,0 +1,20 @@
+#!/bin/bash
+
+URL='http://fifthelement.inf.ethz.ch:8082/zorba/Dashboard/TestCatalog?submissionid='
+SAXON=`dirname $0`/zorbatest/xquery
+echo $SAXON
+
+q=`mktemp /tmp/ctr.XXXXXX`
+cat > $q <<"EOF"
+declare default element namespace "http://www.w3.org/1999/xhtml";
+declare option saxon:output "omit-xml-declaration=yes";
+string-join (fn:data (//td [@class eq "warning"]/a/@href), "
+")
+EOF
+
+f1=`mktemp /tmp/ctr.XXXXXX`
+
+wget "$URL""$1" -O - | sed -e's/\&nbsp;/ /g;s/\&/\&amp;/g' | tidy -q -asxml 2>/dev/null | $SAXON -s - $q | sort | cut -f6- -d'.' | cut -f1 -d'&' >$f1
+wget "$URL""$2" -O - | sed -e's/\&nbsp;/ /g;s/\&/\&amp;/g' | tidy -q -asxml 2>/dev/null | $SAXON -s - $q | sort | cut -f6- -d'.' | cut -f1 -d'&' | diff $f1 -
+
+rm -f $f1 $q
