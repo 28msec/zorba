@@ -161,16 +161,26 @@ public:
 
 //15.1.10 fn:subsequence
 //----------------------
-class fn_subsequence : public function
+// subsequence with 2 arguments
+class fn_subsequence_2 : public function
 {
 public:
-	fn_subsequence(const signature&);
-	~fn_subsequence() {}
+	fn_subsequence_2(const signature&);
+	~fn_subsequence_2() {}
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	TypeSystem::xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+// subsequence with a third length argument
+class fn_subsequence_3 : public fn_subsequence_2
+{
+public:
+	fn_subsequence_3(const signature& sig)
+	  : fn_subsequence_2(sig) { }
+	~fn_subsequence_3() {}
 };
 
 

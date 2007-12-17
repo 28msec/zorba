@@ -131,6 +131,7 @@ namespace xqp {
   NARY_ACCEPT(SubstringAfterIterator);
   NARY_ACCEPT(FnConcatIterator);
   NARY_ACCEPT(FnInsertBeforeIterator);
+  NARY_ACCEPT(FnSubsequenceIterator);
   
   // special iterators
   void ElementIterator::accept(PlanIterVisitor& v) const

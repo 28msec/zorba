@@ -18,6 +18,9 @@
 #include "runtime/visitors/planitervisitor.h"
 #include "util/web/web.h"
 
+#include "system/globalenv.h"
+#include "types/casting.h"
+
 using namespace std;
 namespace xqp {
   
@@ -521,6 +524,126 @@ FnRemoveIterator::FnRemoveIteratorState::reset() {
 //15.1.9 fn:reverse
 
 //15.1.10 fn:subsequence
+FnSubsequenceIterator::FnSubsequenceIterator(yy::location loc,
+                                            vector<PlanIter_t>& args)
+ : NaryBaseIterator<FnSubsequenceIterator> ( loc, args )
+{ }
+
+FnSubsequenceIterator::~FnSubsequenceIterator(){}
+
+Item_t 
+FnSubsequenceIterator::nextImpl(PlanState& planState) {
+  Item_t lSequence;
+  Item_t lStartingLoc;
+  Item_t lLength;
+
+  // FIXME: remove if casting is working
+  TypeSystem::xqtref_t lType = GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_DOUBLE, TypeSystem::QUANT_ONE);
+  
+  FnSubsequenceIteratorState* state;
+  DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
+  
+  // FIXME: remove if casting is working
+  lStartingLoc = GenericCast::instance()->cast(consumeNext(theChildren[1], planState), lType);
+  if ( lStartingLoc == NULL ) 
+  {
+    ZORBA_ERROR_ALERT(
+         error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
+         error_messages::RUNTIME_ERROR,
+         NULL, false,
+         "An empty sequence is not allowed as starting location of fn:subsequence");    
+  }
+  
+  state->theStartingLoc = lStartingLoc->getDoubleValue();
+  if (state->theStartingLoc < 0)
+    state->theStartingLoc = 0;
+    
+  if (theChildren.size() == 3)
+  {
+    // FIXME: remove if casting is working
+    lLength = GenericCast::instance()->cast(consumeNext(theChildren[2], planState), lType);
+    if ( lLength == NULL )
+    {
+      ZORBA_ERROR_ALERT(
+           error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
+           error_messages::RUNTIME_ERROR,
+           NULL, false,
+           "An empty sequence is not allowed as third argument of fn:subsequence");          
+    }
+    state->theLength = lLength->getDoubleValue();
+  }
+  else
+  {
+    state->theLength = -1;
+  }
+  
+  while ( ((lSequence = consumeNext(theChildren[0], planState)) != NULL) 
+          && (( state->theLength == -1 ) || ( state->theCurrentLength <= state->theLength  )))
+  {
+    if (state->theCurrentPos >= state->theStartingLoc)
+    {
+      ++state->theCurrentLength;
+      STACK_PUSH(lSequence, state);
+    }
+    
+    ++state->theCurrentPos; 
+  }
+
+  STACK_END();
+}
+
+
+void 
+FnSubsequenceIterator::releaseResourcesImpl(PlanState& planState)
+{
+  NaryBaseIterator<FnSubsequenceIterator>::releaseResourcesImpl(planState);
+  
+  FnSubsequenceIteratorState* state;
+  GET_STATE(FnSubsequenceIteratorState, state, planState);
+  
+  state->reset(); 
+}
+
+void 
+FnSubsequenceIterator::setOffset(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnSubsequenceIterator>::setOffset(planState, offset);
+
+  FnSubsequenceIteratorState* state = 
+    new (planState.block + stateOffset) FnSubsequenceIteratorState;
+}
+
+void 
+FnSubsequenceIterator::resetImpl(PlanState& planState)
+{
+  NaryBaseIterator<FnSubsequenceIterator>::resetImpl(planState);
+
+  FnSubsequenceIteratorState* state;
+  GET_STATE(FnSubsequenceIteratorState, state, planState);
+  state->reset();
+}
+
+
+void
+FnSubsequenceIterator::FnSubsequenceIteratorState::init() 
+{
+ PlanIterator::PlanIteratorState::init();
+ theStartingLoc = 0;
+ theLength = 0;
+ theCurrentPos = 1; // position starts with 1, not 0
+ theCurrentLength = 1;
+}
+
+void
+FnSubsequenceIterator::FnSubsequenceIteratorState::reset() 
+{
+ PlanIterator::PlanIteratorState::reset();
+ theStartingLoc = 0;
+ theLength = 0;
+ theCurrentPos = 1; // position starts with 1, not 0
+ theCurrentLength = 1;
+}
+
 
 //15.1.11 fn:unordered
 

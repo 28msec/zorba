@@ -178,6 +178,9 @@ namespace xqp {
 
       virtual void beginVisit ( const FnInsertBeforeIterator& ) ;
       virtual void endVisit   ( const FnInsertBeforeIterator& ) ;
+
+      virtual void beginVisit ( const FnSubsequenceIterator& ) ;
+      virtual void endVisit   ( const FnSubsequenceIterator& ) ;
               
       virtual void beginVisit ( const FnDocIterator& ) ;
       virtual void endVisit ( const FnDocIterator& ) ;

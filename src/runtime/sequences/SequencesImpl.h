@@ -286,6 +286,48 @@ protected:
 //15.1.9 fn:reverse
 
 //15.1.10 fn:subsequence
+// Returns the contiguous sequence of items in the value of $sourceSeq beginning at the position indicated by the value 
+// of $startingLoc and continuing for the number of items indicated by the value of $length.
+class FnSubsequenceIterator : public NaryBaseIterator<FnSubsequenceIterator>
+{
+public:
+  FnSubsequenceIterator(yy::location loc, vector<PlanIter_t>& aChildren);
+ 
+  ~FnSubsequenceIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+ 
+  void 
+  resetImpl(PlanState& planState);
+  
+  void 
+  releaseResourcesImpl(PlanState& planState);
+ 
+  virtual void 
+  accept(PlanIterVisitor&) const;
+
+  virtual uint32_t 
+  getStateSize() const { return sizeof ( FnSubsequenceIteratorState ); }
+ 
+  void 
+  setOffset(PlanState& planState, uint32_t& offset);  
+ 
+ 
+protected:
+  class FnSubsequenceIteratorState : public PlanIteratorState {
+  public:
+    xqp_double  theStartingLoc; // second argument (startingLoc)
+    xqp_double  theLength; // third optional argument (length)
+
+    xqp_integer theCurrentPos; // the current position in the sequence
+    xqp_integer theCurrentLength; // used for returning a specific number of items
+  
+    void init();
+    void reset();  
+  };
+  
+};
 
 //15.1.11 fn:unordered
 

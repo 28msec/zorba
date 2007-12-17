@@ -494,6 +494,14 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const FnInsertBeforeIterator& a ) {
     thePrinter.endIter();
   }
+
+  void PrinterVisitor::beginVisit ( const FnSubsequenceIterator& a ) {
+    thePrinter.startIter("FnSubsequenceIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnSubsequenceIterator& a ) {
+    thePrinter.endIter();
+  }
        
   void PrinterVisitor::beginVisit ( const FnDocIterator& a ) {
     thePrinter.startIter("FnDocIterator");

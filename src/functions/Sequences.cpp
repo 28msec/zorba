@@ -311,23 +311,23 @@ TypeSystem::xqtref_t fn_reverse::type_check(
 
 //15.1.10 fn:subsequence
 //----------------------
-fn_subsequence::fn_subsequence(const signature& sig)
+fn_subsequence_2::fn_subsequence_2(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_subsequence::operator()(
+PlanIter_t fn_subsequence_2::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return NULL;
+  return new FnSubsequenceIterator(loc, argv);
 }
 
-bool fn_subsequence::validate_args(
+bool fn_subsequence_2::validate_args(
 	vector<PlanIter_t>& argv) const
 {
-	return true;
+  return (argv.size() == 2 || argv.size() == 3 );
 }
 
-TypeSystem::xqtref_t fn_subsequence::type_check(
+TypeSystem::xqtref_t fn_subsequence_2::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
