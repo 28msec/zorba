@@ -537,14 +537,10 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) {
   Item_t lStartingLoc;
   Item_t lLength;
 
-  // FIXME: remove if casting is working
-  TypeSystem::xqtref_t lType = GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_DOUBLE, TypeSystem::QUANT_ONE);
-  
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
   
-  // FIXME: remove if casting is working
-  lStartingLoc = GenericCast::instance()->cast(consumeNext(theChildren[1], planState), lType);
+  lStartingLoc = consumeNext(theChildren[1], planState);
   if ( lStartingLoc == NULL ) 
   {
     ZORBA_ERROR_ALERT(
@@ -560,8 +556,7 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) {
     
   if (theChildren.size() == 3)
   {
-    // FIXME: remove if casting is working
-    lLength = GenericCast::instance()->cast(consumeNext(theChildren[2], planState), lType);
+    lLength = consumeNext(theChildren[2], planState);
     if ( lLength == NULL )
     {
       ZORBA_ERROR_ALERT(
