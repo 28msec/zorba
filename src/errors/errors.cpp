@@ -53,7 +53,7 @@ string errors_english::err_decode(enum errcode e)
   case XQST0016_STATIC_MODULE_IMPORT_NOT_SUPPORTED:
     return "XQST0016 Module import feature not supported";
   case XPST0017_STATIC_FUNCTION_NOT_FOUND:
-    return "XPST0017 Expanded QName and number of arguments in function call do not match the name and arity of any function signature in the static context";
+    return "XPST0017 Expanded QName and number of arguments in function call do not match the name and arity of any function signature in the static context /s / /s";
   case XPTY0018_TYPE_MIXED_PATHEXPR:
     return "XPTY0018 The result of the last step in a path expression contains both nodes and atomic values";
   case XPTY0019_TYPE_STEP_IS_ATOMIC:
