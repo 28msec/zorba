@@ -268,8 +268,6 @@ Item_t
 ConcatStrIterator::nextImpl(PlanState& planState) {
   Item_t lItem;
   std::stringstream lResStream;
-  bool lIsEmpty;
-  PlanIter_t lCurIter;
 
   std::vector<PlanIter_t>::iterator iter = theChildren.begin();
   std::vector<PlanIter_t>::iterator end  = theChildren.end();
@@ -279,19 +277,23 @@ ConcatStrIterator::nextImpl(PlanState& planState) {
 
   for(; iter != end;  ++iter )
   {
-    lIsEmpty = true;
-    lCurIter = *iter;
-
-    while ( ( lItem = consumeNext(lCurIter, planState) ) != NULL )
+    if ( ( lItem = consumeNext(*iter, planState) ) != NULL )
     {
-      lIsEmpty = false;
-      lItem = lItem->getAtomizationValue();
-      assert (lItem != NULL);
       lResStream << lItem->getStringProperty();
     }
-    if (lIsEmpty)
+    else
     {
       lResStream << "";
+    }
+
+    if  ( ( lItem = consumeNext(*iter, planState) ) != NULL )
+    {
+      ZORBA_ERROR_ALERT(
+        error_messages::XPTY0004_STATIC_TYPE_ERROR,
+        error_messages::RUNTIME_ERROR,
+        NULL, false,
+        "A sequence with more than one item is not allowed as argument to fn:concat");
+        break;
     }
   }
 
