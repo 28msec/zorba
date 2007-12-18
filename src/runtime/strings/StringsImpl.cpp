@@ -266,26 +266,36 @@ CodepointEqualIterator::nextImpl(PlanState& planState){
 /* begin class ConcatStrIterator */
 Item_t
 ConcatStrIterator::nextImpl(PlanState& planState) {
-  Item_t item;
-  Item_t resItem;
-  xqp_string resStr;
-  std::vector<PlanIter_t>::iterator iter = theChildren.begin();
+  Item_t lItem;
+  std::stringstream lResStream;
+  bool lIsEmpty;
+  PlanIter_t lCurIter;
 
-  int argsNo = theChildren.size();
+  std::vector<PlanIter_t>::iterator iter = theChildren.begin();
+  std::vector<PlanIter_t>::iterator end  = theChildren.end();
+
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-  for(; iter !=  theChildren.end(); iter ++ )
+  for(; iter != end;  ++iter )
   {
-    item = consumeNext (*iter, planState );
-    item = item->getAtomizationValue();
-    resStr += item->getStringProperty();
+    lIsEmpty = true;
+    lCurIter = *iter;
+
+    while ( ( lItem = consumeNext(lCurIter, planState) ) != NULL )
+    {
+      lIsEmpty = false;
+      lItem = lItem->getAtomizationValue();
+      assert (lItem != NULL);
+      lResStream << lItem->getStringProperty();
+    }
+    if (lIsEmpty)
+    {
+      lResStream << "";
+    }
   }
 
-  if(theChildren.size()>0){
-    resItem = zorba::getItemFactory()->createString(resStr);
-    STACK_PUSH( resItem, state );
-  }
+  STACK_PUSH( zorba::getItemFactory()->createString( lResStream.str()), state );
 
   STACK_END();
 }
