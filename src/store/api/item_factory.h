@@ -430,12 +430,13 @@ public:
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createDocumentNode (
-			    const xqpStringStore_t& baseURI,
-			    const xqpStringStore_t& docURI,
-			    const Iterator_t& children,
-			    bool createId
-			) = 0;
+			  const xqpStringStore_t& baseURI,
+        const xqpStringStore_t& docURI,
+        const Iterator_t&       children,
+        bool                    createId) = 0;
 
+  virtual Item_t createDocumentNode(
+        const Item_t&  sourceNode) = 0;
   /**
    * @param name QName which contains the name of the element
    * @param type QName which contains the type of the element
@@ -447,16 +448,22 @@ public:
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createElementNode (
-			    const QNameItem_t& name,
-			    const QNameItem_t& type,
-			    Iterator_t& childrenIte,
-			    Iterator_t& attributesIte,
-			    Iterator_t& namespacesIte,
-          const NamespaceBindings& nsBindings,
-			    bool copy,
-			    bool newTypes,
-			    bool createId
-			) = 0;
+			  const QNameItem_t&       name,
+        const QNameItem_t&       type,
+        Iterator_t&              childrenIte,
+        Iterator_t&              attributesIte,
+        Iterator_t&              namespacesIte,
+        const NamespaceBindings& nsBindings,
+        bool                     typePreserve,
+        bool                     nsPreserve,
+        bool                     nsInherit,
+        bool                     createId) = 0;
+
+  virtual Item_t createElementNode(
+        const Item_t&  sourceNode,
+        bool           typePreserve,
+        bool           nsPreserve,
+        bool           nsInherit) = 0;
 
   /**
    * @param name QName which contains the name of the element
@@ -468,40 +475,37 @@ public:
    * Implementations might only store the typed value.
    */
   virtual Item_t createAttributeNode (
-			    const QNameItem_t& name,
-			    const QNameItem_t& type,
-			    const Item_t& lexicalValue,
-			    const Item_t& typedValue,
-			    bool createId
-			) = 0;
+			  const QNameItem_t& name,
+        const QNameItem_t& type,
+        const Item_t& lexicalValue,
+        const Item_t& typedValue,
+        bool createId) = 0;
+
+  virtual Item_t createAttributeNode(
+        const Item_t&  sourceNode,
+        bool           typePreserve) = 0;
 
   /**
    * @param value text
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createTextNode(
-			    const xqpStringStore_t& value,
-			    bool createId
-			) = 0;
+			  const xqp_string& value,
+        bool              createId) = 0;
 
   virtual Item_t createTextNode(
-			    const xqp_string& value,
-			    bool createId
-			) = 0;
+        const Item_t&  sourceNode) = 0;
 
   /**
    * @param comment
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createCommentNode(
-			    const xqpStringStore_t& comment,
-			    bool createId
-			) = 0;
+			  const xqp_string& comment,
+        bool              createId) = 0;
 
   virtual Item_t createCommentNode(
-			    const xqp_string& comment,
-			    bool createId
-			) = 0;
+        const Item_t&  sourceNode) = 0;
 
   /**
    * @param target The QName for the processing instruction.
@@ -509,17 +513,13 @@ public:
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createPiNode(
-			    const xqpStringStore_t& target,
-			    const xqpStringStore_t& data,
-			    bool createId
-			) = 0;
+			  const xqp_string& target,
+        const xqp_string& data,
+        bool createId) = 0;
 
   virtual Item_t createPiNode(
-			    const xqp_string& target,
-			    const xqp_string& data,
-			    bool createId
-			) = 0;
-	};/* class ItemFactory */
+        const Item_t&  sourceNode) = 0;
+};
 
 }/* namespace xqp */
 

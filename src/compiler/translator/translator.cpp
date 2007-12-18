@@ -484,14 +484,10 @@ void translator::end_visit(const DirAttr& v, void *visit_state)
   expr_t attrValue = pop_nodestack();
   if (attrValue != NULL)
   {
-    fo_expr *lDocFilter = new fo_expr(v.get_location());
-    lDocFilter->set_func(LOOKUP_OP1 ("doc-filter"));
-    lDocFilter->add(attrValue);
-    attrValue = lDocFilter;
     // delete boundary
     nodestack.pop();
   }
- 
+
   expr_t lQNameExpr = new const_expr(
                                   v.get_location(),
                                   v.get_atname()->get_uri().c_str(),

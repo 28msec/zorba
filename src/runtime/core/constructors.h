@@ -99,6 +99,15 @@ class ElementIterator : public Batcher<ElementIterator>
 {
   typedef std::vector<std::pair<xqpString, xqpString> > NamespaceBindings;
 
+protected:
+  class ElementIteratorState : public PlanIteratorState
+  {
+  public:
+    bool theTypePreserve;
+    bool theNsPreserve;
+    bool theNsInherit;
+  };
+
 private:
   PlanIter_t        theQNameIter;
   PlanIter_t        theAttributesIter;
@@ -125,7 +134,7 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  virtual uint32_t getStateSize() const { return sizeof(PlanIterator::PlanIteratorState); }
+  virtual uint32_t getStateSize() const { return sizeof(ElementIteratorState); }
   virtual uint32_t getStateSizeOfSubtree() const;
   virtual void setOffset(PlanState& planState, uint32_t& offset);
   

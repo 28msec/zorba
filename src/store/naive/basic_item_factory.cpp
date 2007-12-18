@@ -9,6 +9,7 @@
 
 #include "util/zorba.h"
 #include "store/api/temp_seq.h"
+#include "store/naive/store_defs.h"
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
@@ -229,42 +230,75 @@ Item_t BasicItemFactory::createDateTime ( const xqp_string& value ) { return Ite
 
 	Item_t BasicItemFactory::createLanguage ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createNCName ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createNCName ( const xqp_string& value )
+{
+  return Item_t ( NULL );
+}
 
-	Item_t BasicItemFactory::createNMTOKEN ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createNMTOKEN ( const xqp_string& value )
+{
+  return Item_t ( NULL );
+}
 
-	Item_t BasicItemFactory::createNMTOKENS ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createNMTOKENS ( const xqp_string& value )
+{
+  return Item_t ( NULL );
+}
 
-	Item_t BasicItemFactory::createNOTATION ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createNOTATION ( const xqp_string& value )
+{
+  return Item_t ( NULL );
+}
 
-	Item_t BasicItemFactory::createName ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createName ( const xqp_string& value )
+{
+  return Item_t ( NULL );
+}
 
-	Item_t BasicItemFactory::createNegativeInteger ( xqp_integer value ) { 
-    Assert(value < 0);
-    return new NegativeIntegerItemNaive ( value ); 
-  }
 
-	Item_t BasicItemFactory::createNonNegativeInteger ( xqp_uinteger value ) { 
-    return new NonNegativeIntegerItemNaive ( value ); 
-  }
+Item_t BasicItemFactory::createNegativeInteger ( xqp_integer value ) { 
+  Assert(value < 0);
+  return new NegativeIntegerItemNaive ( value ); 
+}
 
-	Item_t BasicItemFactory::createNonPositiveInteger ( xqp_integer value ) { 
-    Assert(value <= 0);
-    return new NonPositiveIntegerItemNaive( value );
-  }
 
-	Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createNonNegativeInteger ( xqp_uinteger value ) { 
+  return new NonNegativeIntegerItemNaive ( value ); 
+}
 
-	Item_t BasicItemFactory::createPositiveInteger ( xqp_uinteger value ) { 
-    Assert(value > 0);
-    return new PositiveIntegerItemNaive( value ); 
-  }
 
-Item_t BasicItemFactory::createTime ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createNonPositiveInteger ( xqp_integer value ) { 
+  Assert(value <= 0);
+  return new NonPositiveIntegerItemNaive( value );
+}
 
-Item_t BasicItemFactory::createTime ( short hour, short minute, short second ) { return Item_t ( NULL ); }
 
-Item_t BasicItemFactory::createTime ( short hour, short minute, short second, short timeZone ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value )
+{
+  return Item_t ( NULL );
+}
+
+
+Item_t BasicItemFactory::createPositiveInteger ( xqp_uinteger value ) { 
+  Assert(value > 0);
+  return new PositiveIntegerItemNaive( value ); 
+}
+
+
+Item_t BasicItemFactory::createTime(const xqp_string& value)
+{
+  return Item_t ( NULL );
+}
+
+Item_t BasicItemFactory::createTime(short hour, short minute, short second)
+{
+  return Item_t ( NULL );
+}
+
+Item_t BasicItemFactory::createTime(short hour, short minute, short second, short timeZone)
+{
+  return Item_t ( NULL );
+}
 
 Item_t BasicItemFactory::createToken ( const xqp_string& value )
 {
@@ -293,16 +327,8 @@ Item_t BasicItemFactory::createUnsignedShort(xqp_ushort value)
 
 
 /*******************************************************************************
-  This method is used by the xml SAX loader. It is not exposed to the store api.
+
 ********************************************************************************/
-Item_t BasicItemFactory::createDocumentNode(
-    const xqpStringStore_t& baseUri,
-    const xqpStringStore_t& docUri)
-{
-  return new DocumentNodeImpl(baseUri, docUri);
-}
-
-
 Item_t BasicItemFactory::createDocumentNode(
     const xqpStringStore_t& baseUri,
     const xqpStringStore_t& docUri,
@@ -313,15 +339,10 @@ Item_t BasicItemFactory::createDocumentNode(
 }
 
 
-/*******************************************************************************
-  This method is used by the xml SAX loader. It is not exposed to the store api.
-********************************************************************************/
-Item_t BasicItemFactory::createElementNode(
-    const QNameItem_t&       name,
-    const QNameItem_t&       type,
-    const NamespaceBindings& nsBindings)
-{ 
-  return new ElementNodeImpl(name, type, nsBindings);
+Item_t BasicItemFactory::createDocumentNode(
+    const Item_t&  sourceNode)
+{
+  return new DocumentNodeImpl(DOC_NODE(sourceNode));
 }
 
 
@@ -335,8 +356,9 @@ Item_t BasicItemFactory::createElementNode(
     Iterator_t&              attributesIte,
     Iterator_t&              namespacesIte,
     const NamespaceBindings& nsBindings, 
-    bool                     copy,
-    bool                     newTypes,
+    bool                     typePreserve,
+    bool                     nsPreserve,
+    bool                     nsInherit,
     bool                     createId)
 { 
   return new ElementNodeImpl(name,
@@ -345,9 +367,24 @@ Item_t BasicItemFactory::createElementNode(
                              attributesIte,
                              namespacesIte,
                              nsBindings,
-                             copy,
-                             newTypes,
+                             typePreserve,
+                             nsPreserve,
+                             nsInherit,
                              createId); 
+}
+
+
+Item_t BasicItemFactory::createElementNode(
+    const Item_t&  sourceNode,
+    bool           typePreserve,
+    bool           nsPreserve,
+    bool           nsInherit)
+{
+  return new ElementNodeImpl(ELEM_NODE(sourceNode),
+                             typePreserve,
+                             nsPreserve,
+                             nsInherit,
+                             true);
 }
 
 
@@ -371,14 +408,17 @@ Item_t BasicItemFactory::createAttributeNode(
 }
 
 
-Item_t BasicItemFactory::createTextNode(
-    const xqpStringStore_t& value,
-    bool createId ) 
+Item_t BasicItemFactory::createAttributeNode(
+    const Item_t&  sourceNode,
+    bool           typePreserve)
 {
-  return new TextNodeImpl(value, createId);
+  return new AttributeNodeImpl(ATTR_NODE(sourceNode), typePreserve);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 Item_t BasicItemFactory::createTextNode(
     const xqp_string& value,
     bool createId)
@@ -387,29 +427,32 @@ Item_t BasicItemFactory::createTextNode(
 }
 
 
-Item_t BasicItemFactory::createCommentNode(
-    const xqpStringStore_t& comment,
-    bool createId)
+Item_t BasicItemFactory::createTextNode(const Item_t&  sourceNode)
 {
-  return new CommentNodeImpl(comment, createId);
+  return new TextNodeImpl(TEXT_NODE(sourceNode));
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 Item_t BasicItemFactory::createCommentNode(
     const xqp_string& comment,
-    bool createId)
+    bool              createId)
 {
   return new CommentNodeImpl(xqpStringStore_t(&comment.getStore()), createId);
 }
 
 
-Item_t BasicItemFactory::createPiNode(
-    const xqpStringStore_t& target,
-    const xqpStringStore_t& data,
-    bool createId)
+Item_t BasicItemFactory::createCommentNode(const Item_t&  sourceNode)
 {
-  return new PiNodeImpl(target, data, createId);
+  return new CommentNodeImpl(COMMENT_NODE(sourceNode));
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 Item_t BasicItemFactory::createPiNode(
     const xqp_string& target,
     const xqp_string& data,
@@ -418,6 +461,12 @@ Item_t BasicItemFactory::createPiNode(
   return new PiNodeImpl(xqpStringStore_t(&target.getStore()),
                         xqpStringStore_t(&data.getStore()),
                         createId);
+}
+
+
+Item_t BasicItemFactory::createPiNode(const Item_t&  sourceNode)
+{
+  return new PiNodeImpl(PI_NODE(sourceNode));
 }
 
 } /* namespace xqp */

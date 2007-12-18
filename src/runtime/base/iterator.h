@@ -60,11 +60,16 @@
   switch (stateObject->getDuffsLine()) { case DUFFS_RELEASE_RESOURCES: \
   stateObject->init(); \
   case DUFFS_RESET:
+
 #define MANUAL_STACK_INIT(stateObject) switch (stateObject->getDuffsLine()) { case DUFFS_RELEASE_RESOURCES: 
+
 #define STACK_PUSH(x, stateObject) do { stateObject->setDuffsLine(__LINE__); return x; case __LINE__:; } while (0)
+
 #define STACK_END() } return NULL
+
 #define GET_STATE(stateType, stateObject, planState) \
   stateObject = reinterpret_cast<stateType*>(planState.block + this->stateOffset)
+
 #define FINISHED_ALLOCATING_RESOURCES() case DUFFS_RESET:
 
 static const int32_t DUFFS_RELEASE_RESOURCES = 0; //Should always be 0 because of the way, the memory is allocated
@@ -87,27 +92,31 @@ class Zorba_XQueryExecution;
 
 extern int32_t iteratorTreeDepth;
 
-/**
- * Class to represent state that is shared by all plan iterators. The class
- * also contains a pointer to the memory block that stores the local state
- * of each individual plan iterator.
- */
+/*******************************************************************************
+  Class to represent state that is shared by all plan iterators. 
+
+  block     : Pointer to the memory block that stores the local state of each
+              individual plan iterator.
+  blockSize : Size (in bytes) of the block.
+  zorp      : Pointer to the zorba object of the current thread. The zorba obj
+              provides quick access to thread specific storage; one important
+              thing there is the error manager.
+  xqbinary  : contains the static_context
+********************************************************************************/
 class PlanState
 {
 public:
-  int8_t* block;
+  int8_t               * block;
 
-  uint32_t   blockSize;
+  uint32_t               blockSize;
 
-  // TODO what's that for?
-  //daniel: it provides quick access to thread specific storage; one important thing there is the error manager
-  zorba *zorp;
-  Zorba_XQueryBinary    *xqbinary;//contains the static_context
+  zorba                * zorp;
+  Zorba_XQueryBinary   * xqbinary;
 //	Zorba_XQueryExecution	*xqexecution;//contains the dynamic context
 
   PlanState(uint32_t blockSize);
-  ~PlanState();
 
+  ~PlanState();
 };
 
 
@@ -120,14 +129,14 @@ class PlanIterator : public rcobject
 
 protected:
   /** offset of the state of the current iterator */
-  uint32_t stateOffset;
+  uint32_t      stateOffset;
   
 public:
-  yy::location loc;
+  yy::location  loc;
   
 #if ZORBA_BATCHING_TYPE == 1  
-  int32_t cItem;
-  Item_t batch [ZORBA_BATCHING_BATCHSIZE];
+  int32_t       cItem;
+  Item_t        batch [ZORBA_BATCHING_BATCHSIZE];
 #endif
 
 public:

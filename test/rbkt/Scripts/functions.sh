@@ -120,9 +120,9 @@ function run_query
   cd ${queryFile%/*}
 
   if [ $displayFormat == "xml" ]; then
-    ${EXE} -r -o "${queryFile}.res" "${queryFile}" >/dev/null 2> "${queryFile}.res.err"
+    ${EXE} -r -o "${queryFile}.res" "${queryFile}" 2> "${queryFile}.res.err"
   else
-    ${EXE} -o "${queryFile}.res" "${queryFile}" >/dev/null 2> "${queryFile}.res.err"
+    ${EXE} -o "${queryFile}.res" "${queryFile}" 2> "${queryFile}.res.err"
   fi
   error=$?
   if [ ${error} != 0 ]; then

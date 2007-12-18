@@ -10,8 +10,6 @@
 #include "compiler/parsetree/parsenode_print_dot_visitor.h"
 #include "compiler/parser/xquery_driver.h"
 #include "util/zorba.h"
-//#include "store/naive/basic_item_factory.h"
-//#include "store/naive/simple_store.h"
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
@@ -176,12 +174,12 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	}
   
 
-    normalizer n(thread_specific_zorba->get_static_context());
+  normalizer n(thread_specific_zorba->get_static_context());
 
-    e_h->accept(n);
+  e_h->accept(n);
 
-    if (Properties::instance()->printNormalizedExpressions())
-      e_h->put(cout) << endl;
+  if (Properties::instance()->printNormalizedExpressions())
+    e_h->put(cout) << endl;
 
   ///now do code generation (generate iterator tree)
 

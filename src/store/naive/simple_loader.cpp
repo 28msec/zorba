@@ -181,7 +181,6 @@ Item_t XmlLoader::loadXml(std::istream& stream)
 void XmlLoader::startDocument(void * ctx)
 {
   SimpleStore& store = GET_STORE();
-  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
   LOADER_TRACE("");
@@ -189,7 +188,7 @@ void XmlLoader::startDocument(void * ctx)
   xqpStringStore_t baseUri(new xqpStringStore(""));
   xqpStringStore_t docUri(new xqpStringStore("boo"));
 
-  Item_t docNode = factory.createDocumentNode(baseUri, docUri);
+  Item_t docNode = new DocumentNodeImpl(baseUri, docUri);
 
   DOC_NODE(docNode)->setId(loader.theNodeId);
   loader.theNodeId.pushChild();
@@ -271,7 +270,7 @@ void XmlLoader::startElement(
     const xmlChar ** attributes)
 {
   SimpleStore& store = GET_STORE();
-  BasicItemFactory& factory = GET_FACTORY(store);
+  BasicItemFactory& factory = GET_FACTORY();
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
   unsigned long numAttributes = (unsigned long)numAttrs;
@@ -324,13 +323,11 @@ void XmlLoader::startElement(
       QNameItem_t tname = store.theUntypedAtomicType;
 
       xqpStringStore_t value(new xqpStringStore(valueBegin, valueEnd));
-      Item_t lexicalValue = factory.createString(value);
-      Item_t typedValue = factory.createUntypedAtomic(value);
+      Item_t lexVal = factory.createString(value);
+      Item_t typedVal = factory.createUntypedAtomic(value);
 
-      Item_t attrNode = factory.createAttributeNode(qname, tname,
-                                                    lexicalValue,
-                                                    typedValue,
-                                                    false);
+      Item_t attrNode(new AttributeNodeImpl(qname, tname, lexVal, typedVal,
+                                            false, false, false));
 
       (*attrNodes)[i] = attrNode;
 
@@ -341,7 +338,7 @@ void XmlLoader::startElement(
   }
 
   // Create the element node and assign it an id.
-  Item_t elemNode = factory.createElementNode(qname, tname, nsBindings);
+  Item_t elemNode(new ElementNodeImpl(qname, tname, nsBindings));
 
   ELEM_NODE(elemNode)->attributes().move(attrNodes);
   ELEM_NODE(elemNode)->setId(loader.theNodeId);
@@ -453,12 +450,11 @@ void  XmlLoader::endElement(
 void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 {
   SimpleStore& store = GET_STORE();
-  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
 
   xqpStringStore_t content(new xqpStringStore(reinterpret_cast<const char*>(ch), len));
 
-  Item_t textNode = factory.createTextNode(content, false);
+  Item_t textNode(new TextNodeImpl(content, false));
 
   BASE_NODE(textNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();
@@ -480,12 +476,11 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 {
   SimpleStore& store = GET_STORE();
-  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
 
   xqpStringStore_t content(new xqpStringStore(reinterpret_cast<const char*>(ch), len));
 
-  Item_t textNode = factory.createTextNode(content, false);
+  Item_t textNode(new TextNodeImpl(content, false));
 
   BASE_NODE(textNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();
@@ -508,14 +503,13 @@ void XmlLoader::comment(
     const xmlChar * content)
 {
   SimpleStore& store = GET_STORE();
-  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
 
   LOADER_TRACE(content);
 
   xqpStringStore_t contentp(new xqpStringStore(reinterpret_cast<const char*>(content)));
 
-  Item_t commentNode = factory.createCommentNode(contentp, false);
+  Item_t commentNode(new CommentNodeImpl(contentp, false));
 
   BASE_NODE(commentNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();
@@ -539,7 +533,6 @@ void XmlLoader::processingInstruction(
     const xmlChar * data)
 {
   SimpleStore& store = GET_STORE();
-  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
 
   LOADER_TRACE("target : " << target << " data: " << data);
@@ -547,7 +540,7 @@ void XmlLoader::processingInstruction(
   xqpStringStore_t datap(new xqpStringStore(reinterpret_cast<const char*>(data)));
   xqpStringStore_t targetp(new xqpStringStore(reinterpret_cast<const char*>(target)));
 
-  Item_t piNode = factory.createPiNode(targetp, datap, false);
+  Item_t piNode(new PiNodeImpl(targetp, datap, false));
 
   BASE_NODE(piNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();

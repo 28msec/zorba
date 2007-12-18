@@ -50,6 +50,8 @@ public:
 
   ~NodeVector();
 
+  NodeVector& operator=(const NodeVector& v);
+
   unsigned long size() const;
   bool empty() const { return theNodes == 0; }
 
@@ -64,7 +66,6 @@ public:
   Item_t& operator[](unsigned long i)             { return theNodes[i+1]; } 
 
 private:
-  NodeVector& operator=(const NodeVector& v);
   NodeVector(const NodeVector& v);
 };
 
@@ -76,6 +77,17 @@ class NodeImpl : public Item
 {
   friend class DocumentNodeImpl;
   friend class ElementNodeImpl;
+
+public:
+  enum NodeFlags
+  {
+    isConstructed     =  1,
+    isCopy            =  2,
+    typePreserve      =  4,
+    nsPreserve        =  8,
+    nsInherit         = 16,
+    haveLocalBindings = 32
+  };
 
 protected:
   OrdPath    theId;
@@ -130,6 +142,7 @@ class DocumentNodeImpl : public NodeImpl
   xqpStringStore_t   theDocURI;
 
   NodeVector         theChildren;
+  uint32_t           theFlags;
 
  public:
   DocumentNodeImpl(
@@ -141,6 +154,8 @@ class DocumentNodeImpl : public NodeImpl
         const xqpStringStore_t& documentURI,
         const Iterator_t&       children,
         bool                    assignId);
+
+  DocumentNodeImpl(const DocumentNodeImpl* src);
 
   ~DocumentNodeImpl();
 
@@ -176,23 +191,33 @@ class DocumentNodeImpl : public NodeImpl
   evaluation of the attributes and children of each element node. 
 
   One way to implement lazy evaluation is the following: "theChildren" data
-  member becomes a union type between a NodeVector and an Iterator_t. Initially,
-  the active member of this union is the iterator. Every time the iterator is
-  used, it computes a number of child nodes and stores them in some local vector.
+  member becomes a union type between a NodeVector and a TempSeq_t. The temp
+  sequence wraps the plan iterator that actually produces the children. Initially,
+  the active member of this union is the temp seq. Every time getChildren() is
+  called, it computes a number of child nodes and stores them in the temp seq.
   If the iterator ever computes all the children, then the iterator is released
   and its local vector is copied to "theChildren", making the NodeVector be the
   active member of the union from now on.
 ********************************************************************************/
 class ElementNodeImpl : public NodeImpl
 {
- private:
+  friend class ChildrenIterator;
+  friend class XmlLoader;
+
+private:
   QNameItem_t            theName;
   QNameItem_t            theType;
   NodeVector             theChildren;
   NodeVector             theAttributes;
   NsBindingsContext_t    theNsBindings;
+  uint32_t               theFlags;
 
 public:
+  ElementNodeImpl(
+        const QNameItem_t&       name,
+        const QNameItem_t&       type,
+        const NamespaceBindings& nsBindings);
+
   ElementNodeImpl(
 			  const QNameItem_t&       name,
         const QNameItem_t&       type,
@@ -200,14 +225,17 @@ public:
         Iterator_t&              attributesIte,
         Iterator_t&              namespacesIte,
         const NamespaceBindings& nsBindings,
-        bool                     copy,
-        bool                     newTypes,
+        bool                     typePreserve,
+        bool                     nsPreserve,
+        bool                     nsInherit,
         bool                     assignId);
-			
+
   ElementNodeImpl(
-        const QNameItem_t&       name,
-        const QNameItem_t&       type,
-        const NamespaceBindings& nsBindings);
+        const ElementNodeImpl* src,
+        bool                   typePreserve,
+        bool                   nsPreserve,
+        bool                   nsInherit,
+        bool                   isRoot);
 
   ~ElementNodeImpl();
 
@@ -239,9 +267,16 @@ public:
   NodeVector& children()    { return theChildren; }
   NodeVector& attributes()  { return theAttributes; }
 
+protected:
+  bool haveLocalBindings() const { return theFlags & NodeImpl::haveLocalBindings; }
+
   NsBindingsContext_t getNsBindingsContext() const { return theNsBindings; }
 
-  void setNsBindingsContext(const NsBindingsContext_t& parentCtx);
+  void setNsBindingsContext(NsBindingsContext* parentCtx);
+
+private:
+  //disable default copy constructor
+  ElementNodeImpl(const ElementNodeImpl& src);
 };
 
 
@@ -268,21 +303,26 @@ class AttributeNodeImpl : public NodeImpl
         bool isId,
         bool isIdrefs,
         bool assignId);
-			
-  virtual ~AttributeNodeImpl();
 
-  virtual StoreConsts::NodeKind_t getNodeKind() const;
-  QNameItem_t getType() const;
+  AttributeNodeImpl(
+        const AttributeNodeImpl* src,
+        bool                     typePreserve);
 
-  virtual QNameItem_t getNodeName() const;
+  virtual ~AttributeNodeImpl() { }
 
-  virtual Iterator_t getTypedValue() const;
-  virtual Item_t getAtomizationValue() const;
-  virtual xqp_string getStringProperty() const;
-  virtual xqp_string getStringValue() const;
+  StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::attributeNode; }
 
-  virtual bool isId() const;
-  virtual bool isIdrefs() const;
+  QNameItem_t getType() const { return theType; }
+
+  QNameItem_t getNodeName() const { return theName; }
+
+  Iterator_t getTypedValue() const;
+  Item_t getAtomizationValue() const;
+  xqp_string getStringProperty() const;
+  xqp_string getStringValue() const;
+
+  bool isId() const     { return theIsId; }
+  bool isIdrefs() const { return theIsIdrefs; }
 
   virtual xqp_string show() const;
 };
@@ -299,15 +339,18 @@ class TextNodeImpl : public NodeImpl
  public:
   TextNodeImpl(const xqpStringStore_t& content, bool assignId);
 
-  virtual ~TextNodeImpl();
+  TextNodeImpl(const TextNodeImpl* src);
+
+  virtual ~TextNodeImpl() { }
   
-  virtual StoreConsts::NodeKind_t getNodeKind() const;
+  StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::textNode; }
+
   virtual QNameItem_t getType() const;
 
   virtual Iterator_t getTypedValue() const;
   virtual Item_t getAtomizationValue() const;
-  virtual xqp_string getStringProperty() const;
-  virtual xqp_string getStringValue() const;
+  virtual xqp_string getStringProperty() const  { return theContent; }
+  virtual xqp_string getStringValue() const     { return theContent; }
 			
   virtual xqp_string show() const;
 };
@@ -328,19 +371,22 @@ public:
         const xqpStringStore_t& data,
         bool assignId);
 
-  virtual ~PiNodeImpl();
+  PiNodeImpl(const PiNodeImpl* src);
 
-  virtual StoreConsts::NodeKind_t getNodeKind() const;
-  virtual QNameItem_t getType() const;
+  virtual ~PiNodeImpl() { }
 
-  virtual Iterator_t getTypedValue() const;
-  virtual Item_t getAtomizationValue() const;
-  virtual xqp_string getStringProperty() const;
-  virtual xqp_string getStringValue() const;
+  StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::piNode; }
 
-  virtual xqp_string getTarget() const;
+  QNameItem_t getType() const;
 
-  virtual xqp_string show() const;
+  Iterator_t getTypedValue() const;
+  Item_t getAtomizationValue() const;
+  xqp_string getStringProperty() const { return theData; }
+  xqp_string getStringValue() const    { return theData; }
+
+  xqp_string getTarget() const { return theTarget; }
+
+  xqp_string show() const;
 };
 
 
@@ -355,15 +401,18 @@ private:
 public:
   CommentNodeImpl(const xqpStringStore_t& content, bool assignId);
 
-  virtual ~CommentNodeImpl();
+  CommentNodeImpl(const CommentNodeImpl* src);
 
-  virtual StoreConsts::NodeKind_t getNodeKind() const;
-  virtual QNameItem_t getType() const;
+  virtual ~CommentNodeImpl() { }
+
+  StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::commentNode; }
+
+  QNameItem_t getType() const;
 
   virtual Iterator_t getTypedValue() const;
   virtual Item_t getAtomizationValue() const;
-  virtual xqp_string getStringProperty() const;
-  virtual xqp_string getStringValue() const;
+  virtual xqp_string getStringProperty() const { return theContent; }
+  virtual xqp_string getStringValue() const    { return theContent; }
 
   virtual xqp_string show() const;
 };
@@ -514,10 +563,10 @@ public:
   {
   }
 
-  const NamespaceBindings& getBindings() const        { return theBindings; }
+  const NamespaceBindings& getBindings() const    { return theBindings; }
 
-  void setParentContext(const NsBindingsContext_t& p) { theParentContext = p; }
-  NsBindingsContext_t getParentContext() const        { return theParentContext; } 
+  void setParentContext(NsBindingsContext* p)     { theParentContext = p; }
+  NsBindingsContext* getParentContext() const     { return theParentContext.get_ptr(); } 
 };
 
 }

@@ -50,6 +50,21 @@ void NodeVector::clear()
 }
 
 
+NodeVector& NodeVector::operator=(const NodeVector& v)
+{
+  clear();
+
+  unsigned long size = v.size();
+
+  resize(size+1);
+
+  for (unsigned long i = 1; i <= size; i++)
+    theNodes[i] = v.theNodes[i];
+
+  return *this;
+}
+
+
 void NodeVector::move(NodeVector* v)
 {
   clear();
@@ -78,6 +93,9 @@ void NodeVector::resize(unsigned long newSize)
     clear();
     return;
   }
+
+  if (newSize == size())
+    return;
 
   if (theNodes != 0)
   {
@@ -196,7 +214,8 @@ DocumentNodeImpl::DocumentNodeImpl(
   :
   NodeImpl(false),
   theBaseURI(baseURI),
-  theDocURI(docURI)
+  theDocURI(docURI),
+  theFlags(0)
 {
 }
 
@@ -212,31 +231,40 @@ DocumentNodeImpl::DocumentNodeImpl(
   :
   NodeImpl(assignId),
   theBaseURI(baseURI),
-  theDocURI(docURI)
+  theDocURI(docURI),
+  theFlags(isConstructed)
 {
   unsigned long numChildren = 0;
-  unsigned long capacity = 100;
-  theChildren.resize(capacity);
 
   Item_t item = childrenIte->next();
   while (item != NULL)
   {
     Assert(item->isNode() && item->getNodeKind() != StoreConsts::attributeNode);
 
-    theChildren[numChildren++] = item;
-    if (numChildren == capacity)
-    {
-      capacity *= 2;
-      theChildren.resize(capacity);
-    }
+    theChildren.push_back(item, numChildren++);
 
     item = childrenIte->next();
   }
 
-  if (numChildren < capacity)
-    theChildren.resize(numChildren);
+  if (numChildren > 0)
+    theChildren.truncate();
 }
  
+
+/*******************************************************************************
+  Copy constructor used during the evaluation of an enclosed expression inside
+  a node construction expression.
+********************************************************************************/
+DocumentNodeImpl::DocumentNodeImpl(const DocumentNodeImpl* src)
+  :
+  NodeImpl(false),
+  theBaseURI(src->theBaseURI),
+  theDocURI(src->theDocURI),
+  theFlags(isConstructed | isCopy)
+{
+  theChildren = src->theChildren;
+}
+
 
 /*******************************************************************************
 
@@ -338,30 +366,37 @@ ElementNodeImpl::ElementNodeImpl(
   :
   NodeImpl(false),
   theName(name),
-  theType(type)
+  theType(type),
+  theFlags(0)
 {
   if (!nsBindings.empty())
+  {
     theNsBindings = new NsBindingsContext(nsBindings);
+    theFlags |= NodeImpl::haveLocalBindings;
+  }
 }
 
 
 /*******************************************************************************
-  Constructor used by the zorba runtime (during node construction).
+  Constructor used by the zorba runtime to create a new node as specified by
+  a direct or computed element construction expression.
 ********************************************************************************/
 ElementNodeImpl::ElementNodeImpl(
-    const QNameItem_t& name,
-    const QNameItem_t& type,
-    Iterator_t&        childrenIte,
-    Iterator_t&        attributesIte,
-    Iterator_t&        namespacesIte,
+    const QNameItem_t&       name,
+    const QNameItem_t&       type,
+    Iterator_t&              childrenIte,
+    Iterator_t&              attributesIte,
+    Iterator_t&              namespacesIte,
     const NamespaceBindings& nsBindings,
-    bool copy,
-    bool newTypes,
-    bool assignId)
+    bool                     typePreserve,
+    bool                     nsPreserve,
+    bool                     nsInherit,
+    bool                     assignId)
   :
   NodeImpl(assignId),
   theName(name),
-  theType(type)
+  theType(type),
+  theFlags(NodeImpl::isConstructed)
 {
   Assert(namespacesIte == NULL);
 
@@ -410,7 +445,47 @@ ElementNodeImpl::ElementNodeImpl(
   if (!nsBindings.empty())
   {
     theNsBindings = new NsBindingsContext(nsBindings);
+    theFlags |= NodeImpl::haveLocalBindings;
   }
+}
+
+
+/*******************************************************************************
+  Copy constructor used during the evaluation of an enclosed expression inside
+  a node construction expression.
+********************************************************************************/
+ElementNodeImpl::ElementNodeImpl(
+    const ElementNodeImpl* src,
+    bool                   typePreserve,
+    bool                   nsPreserve,
+    bool                   nsInherit,
+    bool                   isRoot)
+  :
+  NodeImpl(false),
+  theName(src->getNodeName()),
+  theFlags(NodeImpl::isConstructed | NodeImpl::isCopy)
+{
+  theType = (typePreserve ? src->getType() : GET_STORE().theUntypedType);
+
+  if (nsPreserve)
+  {
+    if (isRoot)
+    {
+      theNsBindings = new NsBindingsContext(src->getNamespaceBindings());
+    }
+    else if (src->haveLocalBindings())
+    {
+      theNsBindings = new NsBindingsContext(src->getNsBindingsContext()->getBindings());
+      theFlags |= NodeImpl::haveLocalBindings;
+    }
+  }
+  else
+  {
+    Assert(0);
+  }
+
+  theAttributes = src->theAttributes;
+  theChildren = src->theChildren;
 }
 
 
@@ -433,7 +508,8 @@ ElementNodeImpl::~ElementNodeImpl()
       child->initId();
     }
 
-    child->theParent = NULL;
+    if (child->theParent == this)
+      child->theParent = NULL;
   }
 
   numNodes = theAttributes.size();
@@ -447,7 +523,8 @@ ElementNodeImpl::~ElementNodeImpl()
       attr->initId();
     }
 
-    attr->theParent = NULL;
+    if (attr->theParent == this)
+      attr->theParent = NULL;
   }
 }
 
@@ -490,12 +567,18 @@ Iterator_t ElementNodeImpl::getTypedValue() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 Item_t ElementNodeImpl::getAtomizationValue() const
 {
   return zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 xqp_string ElementNodeImpl::getStringProperty() const
 {
   ostringstream oss;
@@ -505,12 +588,14 @@ xqp_string ElementNodeImpl::getStringProperty() const
   {
     oss << item->getStringProperty();
     item = it->next();
-  }
-  return oss.str();
+  }  return oss.str();
 }
 
 
-void ElementNodeImpl::setNsBindingsContext(const NsBindingsContext_t& parentCtx)
+/*******************************************************************************
+
+********************************************************************************/
+void ElementNodeImpl::setNsBindingsContext(NsBindingsContext* parentCtx)
 {
   if (theNsBindings == NULL)
     theNsBindings = parentCtx;
@@ -519,6 +604,9 @@ void ElementNodeImpl::setNsBindingsContext(const NsBindingsContext_t& parentCtx)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
 {
   NamespaceBindings bindings;
@@ -527,7 +615,7 @@ NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
   {
     bindings = theNsBindings->getBindings();
 
-    NsBindingsContext* parentContext = theNsBindings->getParentContext().get_ptr();
+    NsBindingsContext* parentContext = theNsBindings->getParentContext();
 
     while (parentContext != NULL)
     {
@@ -548,7 +636,7 @@ NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
           bindings.push_back(parentBindings[i]);
       }
 
-      parentContext = parentContext->getParentContext().get_ptr();
+      parentContext = parentContext->getParentContext();
     }
   }
 
@@ -556,6 +644,9 @@ NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool ElementNodeImpl::getNilled() const
 {
   Iterator_t iter = getChildren();
@@ -573,6 +664,9 @@ bool ElementNodeImpl::getNilled() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 xqp_string ElementNodeImpl::show() const
 {
   std::stringstream str;
@@ -612,10 +706,16 @@ xqp_string ElementNodeImpl::show() const
 }
 
 
-/*******************************************************************************
-  class AttributeNode
-********************************************************************************/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class AttributeNode                                                        //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
+
+/*******************************************************************************
+
+********************************************************************************/
 AttributeNodeImpl::AttributeNodeImpl(
     const QNameItem_t& name,
     const QNameItem_t& type,
@@ -636,26 +736,22 @@ AttributeNodeImpl::AttributeNodeImpl(
 }
 
 
-AttributeNodeImpl::~AttributeNodeImpl()
+/*******************************************************************************
+  Copy constructor used during the evaluation of an enclosed expression inside
+  a node construction expression.
+********************************************************************************/
+AttributeNodeImpl::AttributeNodeImpl(
+    const AttributeNodeImpl* src,
+    bool                     typePreserve)
+  :
+  NodeImpl(false),
+  theName(src->getNodeName()),
+  theLexicalValue(src->theLexicalValue),
+  theTypedValue(src->theTypedValue),
+  theIsId(src->isId()),
+  theIsIdrefs(src->isIdrefs())
 {
-}
-
-
-StoreConsts::NodeKind_t AttributeNodeImpl::getNodeKind() const
-{
-  return StoreConsts::attributeNode;
-}
-
-
-QNameItem_t AttributeNodeImpl::getType() const
-{
-  return theType;
-}
-
-
-QNameItem_t AttributeNodeImpl::getNodeName() const
-{
-  return theName;
+  theType = (typePreserve ? src->getType() : GET_STORE().theUntypedType);
 }
 
 
@@ -683,29 +779,21 @@ xqp_string AttributeNodeImpl::getStringValue() const
 }
 
 
-bool AttributeNodeImpl::isId() const
-{
-  return theIsId;
-}
-
-
-bool AttributeNodeImpl::isIdrefs() const
-{
-  return theIsIdrefs;
-}
-
-
 xqp_string AttributeNodeImpl::show() const
 {
-  return theName->getStringProperty() + "=\"" + (theLexicalValue != NULL ? theLexicalValue->show() : "") + "\"";
+  return theName->getStringProperty() + "=\"" +
+         (theLexicalValue != NULL ? theLexicalValue->show() : "") + "\"";
 }
 
 
-/*******************************************************************************
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class TextNode                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-********************************************************************************/
 
-  TextNodeImpl::TextNodeImpl(const xqpStringStore_t& content, bool assignId) 
+TextNodeImpl::TextNodeImpl(const xqpStringStore_t& content, bool assignId) 
   :
   NodeImpl(assignId),
   theContent(content)
@@ -713,20 +801,17 @@ xqp_string AttributeNodeImpl::show() const
 }
 
 
-TextNodeImpl::~TextNodeImpl()
+TextNodeImpl::TextNodeImpl(const TextNodeImpl* src) 
+  :
+  NodeImpl(false),
+  theContent(src->theContent)
 {
-}
-
-
-StoreConsts::NodeKind_t TextNodeImpl::getNodeKind() const
-{
-  return StoreConsts::textNode;
 }
 
 
 QNameItem_t TextNodeImpl::getType() const
 {
-  return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
+  return GET_STORE().theUntypedAtomicType;
 }
 
 
@@ -746,27 +831,18 @@ Item_t TextNodeImpl::getAtomizationValue() const
 }
 
 
-xqp_string TextNodeImpl::getStringProperty() const
-{
-  return theContent;
-}
-
-
-xqp_string TextNodeImpl::getStringValue() const
-{
-  return theContent;
-}
-
-  
 xqp_string TextNodeImpl::show() const
 {
   return theContent;
 }
 
 
-/*******************************************************************************
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class PiNode                                                               //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-********************************************************************************/
  
 PiNodeImpl::PiNodeImpl(
     const xqpStringStore_t& target,
@@ -780,26 +856,24 @@ PiNodeImpl::PiNodeImpl(
 }
 
 
-PiNodeImpl::~PiNodeImpl()
+PiNodeImpl::PiNodeImpl(const PiNodeImpl* src) 
+  :
+  NodeImpl(false),
+  theTarget(src->theTarget),
+  theData(src->theData)
 {
-}
-
-
-StoreConsts::NodeKind_t PiNodeImpl::getNodeKind() const
-{
-  return StoreConsts::piNode;
 }
 
 
 QNameItem_t PiNodeImpl::getType() const
 {
-  return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
+  return GET_STORE().theUntypedAtomicType;
 }
 
 
 Iterator_t PiNodeImpl::getTypedValue() const
 {
-  const Item_t& item = zorba::getItemFactory()->createString(theData);
+  const Item_t& item = GET_FACTORY().createString(theData);
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
   return new PlanWrapper(planIter);
 }
@@ -807,24 +881,7 @@ Iterator_t PiNodeImpl::getTypedValue() const
 
 Item_t PiNodeImpl::getAtomizationValue() const
 {
-  return zorba::getItemFactory()->createUntypedAtomic(theData);
-}
-
-xqp_string PiNodeImpl::getStringProperty() const
-{
-  return theData;
-}
-
-
-xqp_string PiNodeImpl::getStringValue() const
-{
-  return theData;
-}
-
-
-xqp_string PiNodeImpl::getTarget() const
-{
-  return theTarget;
+  return GET_FACTORY().createUntypedAtomic(theData);
 }
 
 
@@ -834,9 +891,13 @@ xqp_string PiNodeImpl::show() const
 }
 
 
-/*******************************************************************************
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class CommentNode                                                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-********************************************************************************/
+
 CommentNodeImpl::CommentNodeImpl(
     const xqpStringStore_t& content,
     bool assignId)
@@ -846,14 +907,12 @@ CommentNodeImpl::CommentNodeImpl(
 {
 }
 
-CommentNodeImpl::~CommentNodeImpl()
-{
-}
 
-
-StoreConsts::NodeKind_t CommentNodeImpl::getNodeKind() const
+CommentNodeImpl::CommentNodeImpl(const CommentNodeImpl* src) 
+  :
+  NodeImpl(false),
+  theContent(src->theContent)
 {
-  return StoreConsts::commentNode;
 }
 
 
@@ -874,17 +933,6 @@ Iterator_t CommentNodeImpl::getTypedValue() const
 Item_t CommentNodeImpl::getAtomizationValue() const
 {
   return zorba::getItemFactory()->createUntypedAtomic(theContent);
-}
-
-xqp_string CommentNodeImpl::getStringProperty() const
-{
-  return theContent;
-}
-
-
-xqp_string CommentNodeImpl::getStringValue() const
-{
-  return theContent;
 }
 
 
@@ -1021,9 +1069,12 @@ void AttributesIterator::close()
 }
 
 
-/*******************************************************************************
-  Class NodeDistinctIterator
-********************************************************************************/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class NodeDistinctIterator                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 Item_t StoreNodeDistinctIterator::next()
 {
   while (true)
@@ -1058,9 +1109,12 @@ void StoreNodeDistinctIterator::close()
 }
 
 
-/*******************************************************************************
-  Class NodeSortIterator
-********************************************************************************/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class NodeSortIterator                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 Item_t StoreNodeSortIterator::next()
 {
   if (theCurrentNode < 0)

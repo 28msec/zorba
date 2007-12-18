@@ -877,9 +877,9 @@ protected:
 	match_wild_t  theWildKind;
   xqp_string    theWildName;
 
-	QNameItem_t theQName;
-	QNameItem_t theTypeName;
-  bool                 theNilledAllowed;
+	QNameItem_t   theQName;
+	QNameItem_t   theTypeName;
+  bool          theNilledAllowed;
 
 public:
 	match_expr(yy::location const&);

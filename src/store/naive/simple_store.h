@@ -57,6 +57,7 @@ protected:
 public:
   xqpStringStore_t     theEmptyNs;
   xqpStringStore_t     theXmlSchemaNs;
+  QNameItem_t          theUntypedType;
   QNameItem_t          theAnyType;
   QNameItem_t          theUntypedAtomicType;
   QNameItem_t          theQNameType;

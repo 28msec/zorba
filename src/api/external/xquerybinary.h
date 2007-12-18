@@ -85,27 +85,20 @@ public:
 
 
 private:
-	xqp_string	m_xquery_source_uri;
-	const char* m_query_text;
-	bool		is_compiled;
+	xqp_string            m_xquery_source_uri;
+	const char*           m_query_text;
+	bool                  is_compiled;
 
-//	Zorba_AlertsManager		m_error_manager;
+	PlanIter_t            top_iterator;
 
-	PlanIter_t		top_iterator;
-
-//	zorba			*thread_specific_zorba;
-
-	StaticQueryContext_t		internal_static_context;//set by user
+	StaticQueryContext_t  internal_static_context;//set by user
 
 public:
-//	yy::location		current_loc;
-
-	int32_t			lStateSize;
-	::Collator	*default_collator;
-	static_context		*internal_sctx;///generated at compilation
+	int32_t			          lStateSize;
+	::Collator	        * default_collator;
+	static_context		  * internal_sctx;///generated at compilation
 
 public:
-
 
     // StaticQueryContext is optional
 		//daniel: return true for success

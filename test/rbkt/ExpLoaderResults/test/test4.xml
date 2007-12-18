@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document baseUri = "" docUri = "boo"/>
+<document baseUri = "" docUri = "boo">
 <plan nid="50 1.1">
   <test:Case nid="5a 1.1.3" xmlns:test="http://test.org/schema" name="test1" emptyAttribute="" test:ns_id="auio">
   </test:Case><!-- this is a comment -->
@@ -14,3 +14,4 @@
      </pre:boo4>
   </pre:foo>
 </plan>
+</document>

@@ -99,6 +99,7 @@ Item_t EnclosedIterator::nextImpl ( PlanState& planState )
         {
           lItem = zorba::getItemFactory()->createTextNode ( state->theString, false );
         }
+
         STACK_PUSH ( lItem, state);
         state->theString = "";
       }
@@ -117,9 +118,9 @@ Item_t EnclosedIterator::nextImpl ( PlanState& planState )
 }
   
 
-void EnclosedIterator::resetImpl ( PlanState& planState )
+void EnclosedIterator::resetImpl(PlanState& planState)
 {
-  UnaryBaseIterator<EnclosedIterator>::resetImpl ( planState );
+  UnaryBaseIterator<EnclosedIterator>::resetImpl(planState);
 
   EnclosedState* state;
   GET_STATE ( EnclosedState, state, planState );

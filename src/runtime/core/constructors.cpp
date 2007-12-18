@@ -4,6 +4,7 @@
 #include "errors/Error.h"
 #include "system/globalenv.h"
 #include "types/typesystem.h"
+#include "context/static_context.h"
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
@@ -15,7 +16,6 @@ namespace xqp
 {
 
 /*******************************************************************************
-
 
 ********************************************************************************/
 
@@ -50,9 +50,18 @@ Item_t DocumentIterator::nextImpl(PlanState& planState)
 }
 
 
-DocumentContentIterator::DocumentContentIterator( const yy::location& loc, PlanIter_t& aChild)
-  : UnaryBaseIterator<DocumentContentIterator>(loc, aChild)
-{}
+/*******************************************************************************
+
+********************************************************************************/
+
+DocumentContentIterator::DocumentContentIterator(
+    const yy::location& loc,
+    PlanIter_t& aChild)
+  :
+  UnaryBaseIterator<DocumentContentIterator>(loc, aChild)
+{
+}
+
 
 Item_t DocumentContentIterator::nextImpl(PlanState& planState) {
   Item_t lItem;
@@ -79,6 +88,10 @@ Item_t DocumentContentIterator::nextImpl(PlanState& planState) {
   STACK_END();
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 
 void DocFilterIterator::DocFilterIteratorState::init() 
 {
@@ -183,9 +196,29 @@ ElementIterator::nextImpl(PlanState& planState)
   Item_t lItem;
   QNameItem_t lQName;
   
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  
+  static_context* sctx = NULL;
+
+  ElementIteratorState* state;
+  GET_STATE(ElementIteratorState, state, planState);
+
+  MANUAL_STACK_INIT(state);
+
+  sctx = planState.zorp->get_static_context();
+
+  state->theTypePreserve = (sctx->construction_mode() ==
+                            StaticQueryContext::cons_preserve ?
+                            true : false);
+
+  state->theNsPreserve = (sctx->preserve_mode() ==
+                          StaticQueryContext::preserve_ns ?
+                          true : false);
+
+  state->theNsInherit = (sctx->inherit_mode() ==
+                         StaticQueryContext::inherit_ns ?
+                         true : false);
+
+  FINISHED_ALLOCATING_RESOURCES();
+
   lItem = consumeNext(theQNameIter, planState);
   // parsing of QNameItem does not have to be checked because 
   // the compiler wraps an xs:qname cast around the expression
@@ -204,8 +237,9 @@ ElementIterator::nextImpl(PlanState& planState)
                awrapper,
                nwrapper,
                theNsBindings,
-               false,
-               false,
+               state->theTypePreserve,
+               state->theNsPreserve,
+               state->theNsInherit,
                theAssignId);
 
   STACK_PUSH(item, state);
@@ -229,8 +263,8 @@ ElementIterator::resetImpl(PlanState& planState)
   if (theNamespacesIter != 0)
     resetChild(theNamespacesIter, planState);
 
-  PlanIterator::PlanIteratorState* state;
-  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
+  ElementIteratorState* state;
+  GET_STATE(ElementIteratorState, state, planState);
   state->reset();
 }
 
@@ -249,6 +283,10 @@ ElementIterator::releaseResourcesImpl(PlanState& planState)
 
   if (theNamespacesIter != 0)
     releaseChildResources(theNamespacesIter, planState);
+
+  ElementIteratorState* state;
+  GET_STATE(ElementIteratorState, state, planState);
+  state->releaseResources();
 }
 
   
@@ -269,7 +307,7 @@ ElementIterator::getStateSizeOfSubtree() const
   if (theNamespacesIter != 0)
     size += theNamespacesIter->getStateSizeOfSubtree();
 
-  return this->getStateSize() + size;
+  return getStateSize() + size;
 }
 
   
@@ -277,7 +315,7 @@ void
 ElementIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   this->stateOffset = offset;
-  offset += this->getStateSize();
+  offset += getStateSize();
 
   if (theQNameIter != 0)
     theQNameIter->setOffset(planState, offset);
