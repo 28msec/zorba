@@ -37,13 +37,13 @@ protected:
   int tempvar_counter;
   zorba* zorp;
   static_context *sctx_p;
-  var_expr *bind_var (yy::location loc, string varname);
+  var_expr *bind_var (yy::location loc, string varname, var_expr::var_kind kind = var_expr::unknown_var);
   fo_expr *create_seq (yy::location loc);
 
   std::stack<expr_t> nodestack;
   std::stack<TypeSystem::xqtref_t> tstack;  // types stack
 
-  rchandle<var_expr> tempvar(yy::location loc);
+  rchandle<var_expr> tempvar(yy::location loc, var_expr::var_kind);
   rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar);
   rchandle<forlet_clause> wrap_in_forclause(expr_t expr, rchandle<var_expr> fvh, rchandle<var_expr> pvh);
   rchandle<forlet_clause> wrap_in_letclause(expr_t expr);

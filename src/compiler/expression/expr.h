@@ -135,15 +135,17 @@ public:
 		quant_var,
 		extern_var,
 		assign_var,
-		context_var
+		context_var,
+    unknown_var  // TODO: get rid
 	};
 
-  QNameItem_t varname_h;
   var_kind kind;
+  QNameItem_t varname_h;
   TypeSystem::xqtref_t type;
 
 public:
   var_expr(yy::location const& loc, QNameItem_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
+  var_expr(yy::location const& loc, var_kind k, QNameItem_t name) : expr (loc), kind (k), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
   ~var_expr() {}
 
 public:

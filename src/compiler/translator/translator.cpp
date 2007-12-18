@@ -50,12 +50,12 @@ static void *no_state = (void *) new int;
 #define DOT_VAR "$$dot"
 #define DOT_POS_VAR "$$pos"
 
-var_expr *translator::bind_var (yy::location loc, string varname) {
-  QNameItem_t qname = sctx_p->lookup_qname ("", varname);
-  var_expr *e = new var_expr (loc, qname);
-  sctx_p->bind_var (qname, e);
-  return e;
-}
+  var_expr *translator::bind_var (yy::location loc, string varname, var_expr::var_kind kind) {
+    QNameItem_t qname = sctx_p->lookup_qname ("", varname);
+    var_expr *e = new var_expr (loc, kind, qname);
+    sctx_p->bind_var (qname, e);
+    return e;
+  }
 
 
 fo_expr *translator::create_seq (yy::location loc)
@@ -72,8 +72,7 @@ translator::translator()
   zorp = zorba::getZorbaForCurrentThread();
   sctx_p = zorp->get_static_context();
   yy::location loc;
-  var_expr *ctx_var = bind_var(loc, DOT_VAR);
-  ctx_var->set_kind(var_expr::context_var);
+  var_expr *ctx_var = bind_var(loc, DOT_VAR, var_expr::context_var);
 }
 
 
@@ -918,7 +917,7 @@ void translator::end_visit(const VarGetsDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
-  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
+  nodestack.push (bind_var (v.get_location (), v.get_varname (), var_expr::let_var));
 }
 
 
@@ -954,7 +953,7 @@ void translator::end_visit(const VarInDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
-  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
+  nodestack.push (bind_var (v.get_location (), v.get_varname (), var_expr::for_var));
 }
 
 void *translator::begin_visit(const PositionalVar& v)
@@ -966,7 +965,7 @@ void *translator::begin_visit(const PositionalVar& v)
 void translator::end_visit(const PositionalVar& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
+  nodestack.push (bind_var (v.get_location (), v.get_varname (), var_expr::pos_var));
 }
 
 
@@ -1073,7 +1072,7 @@ void *translator::begin_visit(const VarDecl& v)
 void translator::end_visit(const VarDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  bind_var(v.get_location(), v.get_varname());
+  bind_var (v.get_location(), v.get_varname(), v.is_extern () ? var_expr::extern_var : var_expr::assign_var);
 }
 
 
@@ -1327,9 +1326,9 @@ TRACE_VISIT_OUT ();
 
 void *translator::begin_visit(const QVarInDecl& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   push_scope ();
-  nodestack.push (bind_var (v.get_location (), v.get_name ()));
+  nodestack.push (bind_var (v.get_location (), v.get_name (), var_expr::quant_var));
   return no_state;
 }
 
@@ -2263,22 +2262,19 @@ void translator::end_visit(const SchemaElementTest& v, void *visit_state)
 #define TEMP_VAR_URI "http://www.flworfound.org/zorba/temp-var"
 #define TEMP_VAR_PREFIX "ztv"
 
-rchandle<var_expr> translator::tempvar(yy::location loc)
+rchandle<var_expr> translator::tempvar(yy::location loc, var_expr::var_kind kind)
 {
   ostringstream o;
   o << "v" << tempvar_counter++;
-  return new var_expr(loc, Store::getInstance().getItemFactory().createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, o.str().c_str()));
+  return new var_expr(loc, kind, Store::getInstance().getItemFactory().createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, o.str().c_str()));
 }
 
 rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, bool add_posvar)
 {
-  rchandle<var_expr> fv = tempvar(expr->get_loc());
-  fv->set_kind(var_expr::for_var);
-  rchandle<var_expr> pv = NULL;
-  if (add_posvar) {
-    pv = tempvar(expr->get_loc());
-    pv->set_kind(var_expr::pos_var);
-  }
+  rchandle<var_expr> fv = tempvar(expr->get_loc(), var_expr::for_var);
+  rchandle<var_expr> pv = add_posvar
+    ? tempvar(expr->get_loc(), var_expr::pos_var)
+    : rchandle<var_expr> (NULL);
   return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, expr.get_ptr());
 }
 
@@ -2293,8 +2289,7 @@ rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, rchandle<var_
 
 rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr)
 {
-  rchandle<var_expr> lv = tempvar(expr->get_loc());
-  lv->set_kind(var_expr::let_var);
+  rchandle<var_expr> lv = tempvar(expr->get_loc(), var_expr::let_var);
   return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.get_ptr());
 }
 
