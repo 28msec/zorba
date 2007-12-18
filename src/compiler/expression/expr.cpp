@@ -429,7 +429,7 @@ ostream& fo_expr::put( ostream& os) const
   os << INDENT << "fo_expr[\n";
   //d Assert<null_pointer>(func!=NULL);
   Assert(func!=NULL);
-  os << INDENT << func->get_fname()->getStringProperty() << endl;
+  os << INDENT << func->get_fname()->getStringProperty() << "/" << size () << endl;
 
   vector<rchandle<expr> >::const_iterator it = begin();
   for (; it != end(); ++it)
