@@ -405,14 +405,80 @@ public:
   |_______________________________________________________________________*/
 
 //15.4.1 fn:count
+class FnCountIterator : public UnaryBaseIterator<FnCountIterator>
+{
+public:
+  FnCountIterator(yy::location loc, PlanIter_t& aChild);
+ 
+  ~FnCountIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+  
+  virtual void 
+  accept(PlanIterVisitor&) const;
+};
 
 //15.4.2 fn:avg
+class FnAvgIterator : public UnaryBaseIterator<FnAvgIterator>
+{
+public:
+  FnAvgIterator(yy::location loc, PlanIter_t& aChild);
+ 
+  ~FnAvgIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+  
+  virtual void 
+  accept(PlanIterVisitor&) const;
+};
 
 //15.4.3 fn:max
+class FnMaxIterator : public NaryBaseIterator<FnMaxIterator>
+{
+public:
+  FnMaxIterator(yy::location loc, vector<PlanIter_t>& aChildren);
+ 
+  ~FnMaxIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+  
+  virtual void 
+  accept(PlanIterVisitor&) const;
+};
+
 
 //15.4.4 fn:min
+class FnMinIterator : public NaryBaseIterator<FnMinIterator>
+{
+public:
+  FnMinIterator(yy::location loc, vector<PlanIter_t>& aChildren);
+ 
+  ~FnMinIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+  
+  virtual void 
+  accept(PlanIterVisitor&) const;
+};
 
 //15.4.5 fn:sum
+class FnSumIterator : public NaryBaseIterator<FnSumIterator>
+{
+public:
+  FnSumIterator(yy::location loc, vector<PlanIter_t>& aChildren);
+ 
+  ~FnSumIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+  
+  virtual void 
+  accept(PlanIterVisitor&) const;
+};
 
 
   /*______________________________________________________________________
@@ -421,6 +487,33 @@ public:
   |_______________________________________________________________________*/
 
 //15.5.1 op:to
+class OpToIterator : public BinaryBaseIterator<OpToIterator> {
+public:
+  OpToIterator(
+  yy::location loc,
+  PlanIter_t& arg1, PlanIter_t& arg2);
+  
+  virtual ~OpToIterator();
+
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  
+  virtual uint32_t getStateSize() const { return sizeof(OpToIteratorState); }
+  
+  virtual void accept(PlanIterVisitor&) const;
+  
+protected:
+  class OpToIteratorState : public PlanIteratorState {
+  public:
+    xqp_integer theCurInt;
+    xqp_integer theFirstVal;
+    xqp_integer theLastVal;
+  
+    void init();
+    void reset();
+    
+  };
+};
 
 //15.5.2 fn:id
 

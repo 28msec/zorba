@@ -285,44 +285,56 @@ namespace xqp
       n1 = this->consumeNext ( this->theChild1, planState );
       if ( n1 != NULL )
       {
-        n0 = n0->getAtomizationValue();
-        n1 = n1->getAtomizationValue();
-        
-        type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeSystem::QUANT_ONE );
-        type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeSystem::QUANT_ONE );
-        resultType = GENV_TYPESYSTEM.arithmetic_type ( *type0, *type1 );
-        n0 = GenericCast::instance()->cast ( n0, resultType );
-        n1 = GenericCast::instance()->cast ( n1, resultType );
-        switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *resultType ) )
-        {
-          case TypeSystem::XS_DOUBLE:
-            res = Operations::opDouble ( &this->loc, n0, n1 );
-            break;
-          case TypeSystem::XS_FLOAT:
-            res = Operations::opFloat ( &this->loc,n0, n1 );
-            break;
-          case TypeSystem::XS_DECIMAL:
-            res = Operations::opDecimal ( &this->loc,n0, n1 );
-            break;
-          case TypeSystem::XS_INTEGER:
-            res = Operations::opInteger ( &this->loc,n0, n1 );
-            break;
-          default:
-            break;
-        }
-
-        if ( this->consumeNext ( this->theChild0, planState ) != NULL || this->consumeNext ( this->theChild1, planState ) != NULL )
+        res = ArithmeticIterator<Operations>::compute(this->loc, n0, n1);
+      
+        if ( consumeNext ( this->theChild0, planState ) != NULL 
+             || consumeNext ( this->theChild1, planState ) != NULL )
           ZorbaErrorAlerts::error_alert (
               error_messages::XPTY0004_STATIC_TYPE_ERROR,
               error_messages::STATIC_ERROR,
               NULL,
               false,
               "Arithmetic operation has a sequences greater than one as an operator!"
-          );
+              );
         STACK_PUSH ( res, state );
       }
     }
     STACK_END();
+  }
+
+  template< class Operations>
+  Item_t ArithmeticIterator<Operations>::compute(const yy::location& aLoc, Item_t n0, Item_t n1)
+  {
+    n0 = n0->getAtomizationValue();
+    n1 = n1->getAtomizationValue();
+
+    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeSystem::QUANT_ONE );
+    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeSystem::QUANT_ONE );
+
+    TypeSystem::xqtref_t resultType = GENV_TYPESYSTEM.arithmetic_type ( *type0, *type1 );
+    n0 = GenericCast::instance()->cast ( n0, resultType );
+    n1 = GenericCast::instance()->cast ( n1, resultType );
+    Item_t res;
+
+    switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *resultType ) )
+    {
+      case TypeSystem::XS_DOUBLE:
+        res = Operations::opDouble ( &aLoc, n0, n1 );
+        break;
+      case TypeSystem::XS_FLOAT:
+        res = Operations::opFloat ( &aLoc,n0, n1 );
+        break;
+      case TypeSystem::XS_DECIMAL:
+        res = Operations::opDecimal ( &aLoc,n0, n1 );
+        break;
+      case TypeSystem::XS_INTEGER:
+        res = Operations::opInteger ( &aLoc,n0, n1 );
+        break;
+      default:
+        assert(false);
+    }
+
+    return res;
   }
   
   /**

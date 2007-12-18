@@ -11,6 +11,7 @@
 
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
+#include "runtime/numerics/NumericsImpl.h"
 #include "store/naive/simple_loader.h"
 #include "store/api/collection.h"
 #include "store/naive/store_defs.h"
@@ -761,14 +762,184 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) {
 |_______________________________________________________________________*/
 
 //15.4.1 fn:count
+FnCountIterator::FnCountIterator(yy::location loc,
+                                           PlanIter_t& aChild)
+ : UnaryBaseIterator<FnCountIterator> ( loc, aChild )
+{ }
+
+FnCountIterator::~FnCountIterator(){}
+
+Item_t 
+FnCountIterator::nextImpl(PlanState& planState) {
+  Item_t lSequenceItem;
+  xqp_integer lCount = 0;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  while ( (lSequenceItem = consumeNext(theChild, planState)) != NULL )
+  {
+    ++lCount;
+  }
+
+  STACK_PUSH(zorba::getItemFactory()->createInteger(lCount), state);
+
+  STACK_END();
+}
 
 //15.4.2 fn:avg
+FnAvgIterator::FnAvgIterator(yy::location loc,
+                                           PlanIter_t& aChild)
+ : UnaryBaseIterator<FnAvgIterator> ( loc, aChild )
+{ }
+
+FnAvgIterator::~FnAvgIterator(){}
+
+Item_t 
+FnAvgIterator::nextImpl(PlanState& planState) {
+  Item_t lSumItem;
+  Item_t lRunningItem;
+  xqp_integer lCount = 1;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  lSumItem = consumeNext(theChild, planState);
+  if (lSumItem != NULL) // return empty-sequence if input is empty
+  {
+    while ( (lRunningItem = consumeNext(theChild, planState)) != NULL )
+    {
+      // TODO add datetime
+      lSumItem = ArithmeticIterator<AddOperations>::compute(loc, lSumItem, lRunningItem); 
+      ++lCount;
+    }
+
+    STACK_PUSH(ArithmeticIterator<DivideOperations>::compute(loc, lSumItem, 
+               zorba::getItemFactory()->createInteger(lCount)), state);
+  }
+
+  STACK_END();
+}
 
 //15.4.3 fn:max
+FnMaxIterator::FnMaxIterator(yy::location loc,
+                             vector<PlanIter_t>& aChildren)
+ : NaryBaseIterator<FnMaxIterator> ( loc, aChildren )
+{ }
+
+FnMaxIterator::~FnMaxIterator(){}
+
+Item_t 
+FnMaxIterator::nextImpl(PlanState& planState) {
+  Item_t lMaxItem;
+  Item_t lRunningItem;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (theChildren.size() == 3)
+    assert(false);
+
+  lMaxItem = lRunningItem = consumeNext(theChildren[0], planState);
+  if ( lRunningItem != NULL )
+  {
+    while ( (lRunningItem = consumeNext(theChildren[0], planState)) != NULL )
+    {
+      // FIXME collation support
+      // implementation dependent: return the first occurence)
+      if (CompareIterator::valueComparison(lRunningItem, lMaxItem, 
+                                           CompareIterator::VALUE_GREATER) > 0)
+        lMaxItem = lRunningItem;
+    }
+    STACK_PUSH(lMaxItem, state);
+  }
+
+  STACK_END();
+}
 
 //15.4.4 fn:min
+FnMinIterator::FnMinIterator(yy::location loc,
+                             vector<PlanIter_t>& aChildren)
+ : NaryBaseIterator<FnMinIterator> ( loc, aChildren )
+{ }
+
+FnMinIterator::~FnMinIterator(){}
+
+Item_t 
+FnMinIterator::nextImpl(PlanState& planState) {
+  Item_t lMinItem;
+  Item_t lRunningItem;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (theChildren.size() == 3)
+    assert(false);
+
+  lMinItem = lRunningItem = consumeNext(theChildren[0], planState);
+  if ( lRunningItem != NULL )
+  {
+    while ( (lRunningItem = consumeNext(theChildren[0], planState)) != NULL )
+    {
+      // FIXME collation support
+      // implementation dependent: return the first occurence)
+      if (CompareIterator::valueComparison(lRunningItem, lMinItem, 
+                                           CompareIterator::VALUE_GREATER) < 0)
+        lMinItem = lRunningItem;
+    }
+    STACK_PUSH(lMinItem, state);
+  }
+
+  STACK_END();
+}
 
 //15.4.5 fn:sum
+FnSumIterator::FnSumIterator(yy::location loc,
+                             vector<PlanIter_t>& aChildren)
+ : NaryBaseIterator<FnSumIterator> ( loc, aChildren )
+{ }
+
+FnSumIterator::~FnSumIterator(){}
+
+Item_t 
+FnSumIterator::nextImpl(PlanState& planState) {
+  Item_t lSumItem;
+  Item_t lRunningItem;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  lSumItem = consumeNext(theChildren[0], planState);
+  if (lSumItem != NULL) // return 0 or given value if empty sequence
+  {
+    while ( (lRunningItem = consumeNext(theChildren[0], planState)) != NULL )
+    {
+      // TODO add datetime
+      lSumItem = ArithmeticIterator<AddOperations>::compute(loc, lSumItem, lRunningItem); 
+      // TODO break if one item is NaN
+    }
+
+    STACK_PUSH(lSumItem, state);
+  }
+  else
+  {
+    if (theChildren.size() == 2)
+    {
+      lSumItem = consumeNext(theChildren[1], planState);
+      if (lSumItem != NULL)
+      {
+        STACK_PUSH(lSumItem, state);
+      }
+      // return the empty sequence otherwise
+    }
+    else
+    {
+      STACK_PUSH(zorba::getItemFactory()->createInteger(0), state);
+    }
+  }
+
+  STACK_END();
+}
 
 
 /*______________________________________________________________________
@@ -777,6 +948,87 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) {
 |_______________________________________________________________________*/
 
 //15.5.1 op:to
+OpToIterator::OpToIterator(
+  yy::location loc,
+  PlanIter_t& arg1, PlanIter_t& arg2) 
+:
+  BinaryBaseIterator<OpToIterator>(loc, arg1, arg2)
+{}
+
+OpToIterator::~OpToIterator(){}
+
+Item_t 
+OpToIterator::nextImpl(PlanState& planState) {
+  Item_t lItem;
+  
+  OpToIteratorState* state;
+  DEFAULT_STACK_INIT(OpToIteratorState, state, planState);
+
+  lItem = consumeNext(theChild0, planState);
+  if (lItem == NULL)
+  {
+    ZorbaErrorAlerts::error_alert (
+        error_messages::XPTY0004_STATIC_TYPE_ERROR,
+        error_messages::RUNTIME_ERROR,
+        false,
+        "The empty sequence is not allowed as first argument to op:to"
+        );
+
+  }
+  state->theFirstVal = lItem->getIntegerValue();
+
+  lItem = consumeNext(theChild1, planState);
+  if (lItem == NULL)
+  {
+    ZorbaErrorAlerts::error_alert (
+        error_messages::XPTY0004_STATIC_TYPE_ERROR,
+        error_messages::RUNTIME_ERROR,
+        false,
+        "The empty sequence is not allowed as second argument to op:to"
+        );
+
+  }
+  state->theLastVal = lItem->getIntegerValue();
+
+  // return empty sequence otherwise
+  if ( state->theLastVal >= state->theFirstVal )
+  {
+    state->theCurInt = state->theFirstVal;
+    while ( state->theCurInt <= state->theLastVal )
+    {
+      STACK_PUSH(zorba::getItemFactory()->createInteger(state->theCurInt), state);
+      ++state->theCurInt;
+    }
+
+  }
+
+  STACK_END();
+}
+
+void 
+OpToIterator::resetImpl(PlanState& planState) {
+  BinaryBaseIterator<OpToIterator>::resetImpl(planState);
+
+  OpToIteratorState* state;
+  GET_STATE(OpToIteratorState, state, planState);
+  state->reset();
+}
+
+void
+OpToIterator::OpToIteratorState::init() {
+  PlanIterator::PlanIteratorState::init();
+  theCurInt = 0;
+  theFirstVal = 0;
+  theLastVal = 0;
+}
+
+void
+OpToIterator::OpToIteratorState::reset() {
+  PlanIterator::PlanIteratorState::reset();
+  theCurInt = 0;
+  theFirstVal = 0;
+  theLastVal = 0;
+}
 
 //15.5.2 fn:id
 

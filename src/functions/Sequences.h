@@ -253,52 +253,96 @@ public:
 |_______________________________________________________________________*/
 
 //15.4.1 fn:count
+class fn_count: public function
+{
+public:
+	fn_count(const signature&);
+	~fn_count() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
 
 //15.4.2 fn:avg
+class fn_avg: public function
+{
+public:
+	fn_avg(const signature&);
+	~fn_avg() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
 
 //15.4.3 fn:max
+class fn_max_1 : public function
+{
+public:
+	fn_max_1(const signature&);
+	~fn_max_1() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+class fn_max_2 : public fn_max_1
+{
+public:
+	fn_max_2(const signature& sig)
+	  : fn_max_1(sig) { }
+	~fn_max_2() {}
+};
 
 
 //15.4.4 fn:min
 //-------------
-class fn_min : public function
+class fn_min_1 : public function
 {
 public:
-	fn_min(const signature&);
-	~fn_min() {}
+	fn_min_1(const signature&);
+	~fn_min_1() {}
 
 public:
-	TypeSystem::xqtref_t type_check(signature&) const { return GENV_TYPESYSTEM.UNTYPED_TYPE; }
-	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const { return NULL; } 
-	bool validate_args(std::vector<PlanIter_t>&) const { return true; }
-
-};
-
-
-/*
-class fn_min_int : public function
-{
-public:
-	fn_min_int(const signature&);
-	~fn_min_int() {}
-public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	TypeSystem::xqtref_t type_check(signature&) const;
-	PlanIter_t operator()( vector<PlanIter_t>) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
-class fn_min_float : public function
+class fn_min_2 : public fn_min_1
 {
 public:
-	fn_min_float(const signature&);
-	~fn_min_float() {}
-public:
-	TypeSystem::xqtref_t type_check(signature&) const;
-	PlanIter_t operator()( vector<PlanIter_t>) const;
+	fn_min_2(const signature& sig)
+	  : fn_min_1(sig) { }
+	~fn_min_2() {}
 };
-*/
-
 
 //15.4.5 fn:sum
+class fn_sum_1 : public function
+{
+public:
+	fn_sum_1(const signature&);
+	~fn_sum_1() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+class fn_sum_2 : public fn_sum_1
+{
+public:
+	fn_sum_2(const signature& sig)
+	  : fn_sum_1(sig) { }
+	~fn_sum_2() {}
+	TypeSystem::xqtref_t type_check(signature&) const;
+};
 
 
 /*______________________________________________________________________
@@ -307,6 +351,18 @@ public:
 |_______________________________________________________________________*/
 
 //15.5.1 op:to
+class op_to : public function
+{
+public:
+	op_to(const signature&);
+	~op_to() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
 
 //15.5.2 fn:id
 

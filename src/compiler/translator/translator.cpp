@@ -2741,6 +2741,16 @@ void *translator::begin_visit(const RangeExpr& v)
 void translator::end_visit(const RangeExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  fo_expr *e = new fo_expr (v.get_location());
+  e->set_func (LOOKUP_OP2 ("to"));
+
+  rchandle<expr> e1_h = pop_nodestack ();
+  rchandle<expr> e2_h = pop_nodestack ();
+
+  e->add(e2_h);
+  e->add(e1_h);
+
+  nodestack.push(e);
 }
 
 

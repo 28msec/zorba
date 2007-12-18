@@ -434,14 +434,125 @@ TypeSystem::xqtref_t fn_exactly_one::type_check(
 |_______________________________________________________________________*/
 
 //15.4.1 fn:count
+fn_count::fn_count(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_count::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+ return new FnCountIterator(loc, argv[0]);
+}
+
+bool fn_count::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t fn_count::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
+}
 
 //15.4.2 fn:avg
+fn_avg::fn_avg(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_avg::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  return new FnAvgIterator(loc, argv[0]);
+}
+
+bool fn_avg::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t fn_avg::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
+}
 
 //15.4.3 fn:max
+fn_max_1::fn_max_1(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_max_1::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  return new FnMaxIterator(loc, argv);
+}
+
+bool fn_max_1::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1 || argv.size() == 2);
+}
+
+TypeSystem::xqtref_t fn_max_1::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
+}
 
 //15.4.4 fn:min
+fn_min_1::fn_min_1(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_min_1::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  return new FnMinIterator(loc, argv);
+}
+
+bool fn_min_1::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1 || argv.size() == 2);
+}
+
+TypeSystem::xqtref_t fn_min_1::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
+}
 
 //15.4.5 fn:sum
+fn_sum_1::fn_sum_1(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_sum_1::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  return new FnSumIterator(loc, argv);
+}
+
+bool fn_sum_1::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1 || argv.size() == 2);
+}
+
+TypeSystem::xqtref_t fn_sum_1::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
+}
+
+TypeSystem::xqtref_t fn_sum_2::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
+}
 
 
 /*______________________________________________________________________
@@ -450,6 +561,27 @@ TypeSystem::xqtref_t fn_exactly_one::type_check(
 |_______________________________________________________________________*/
 
 //15.5.1 op:to
+op_to::op_to(const signature& sig)
+: function(sig) { }
+
+PlanIter_t op_to::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  return new OpToIterator(loc, argv[0], argv[1]);
+}
+
+bool op_to::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+
+TypeSystem::xqtref_t op_to::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
 
 //15.5.2 fn:id
 

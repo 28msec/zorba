@@ -14,6 +14,8 @@
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
 
+#include "system/globalenv.h"
+
 namespace xqp {
   void PrinterVisitor::printCommons(const PlanIterator* aIter) {
     {
@@ -479,6 +481,14 @@ namespace xqp {
     thePrinter.endIter();
   }
 
+  void PrinterVisitor::beginVisit ( const OpToIterator& a ) {
+    thePrinter.startIter("OpToIterato");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const OpToIterator& a ) {
+    thePrinter.endIter();
+  }
+
   void PrinterVisitor::beginVisit ( const FnDistinctValuesIterator& a ) {
     thePrinter.startIter("FnDistinctValuesIterator");
     printCommons( &a );
@@ -524,6 +534,55 @@ namespace xqp {
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const FnExactlyOneIterator& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnCountIterator& a){
+    thePrinter.startIter("FnCountIterator");
+    printCommons(&a);
+  }
+
+  void PrinterVisitor::endVisit ( const FnCountIterator& ){
+    thePrinter.endIter();
+  }
+
+
+  void PrinterVisitor::beginVisit ( const FnAvgIterator& a){
+    thePrinter.startIter("FnAvgIterator");
+    printCommons(&a);
+  }
+
+  void PrinterVisitor::endVisit ( const FnAvgIterator& ){
+    thePrinter.endIter();
+  }
+
+
+  void PrinterVisitor::beginVisit ( const FnMaxIterator& a){
+    thePrinter.startIter("FnMaxIterator");
+    printCommons(&a);
+  }
+
+  void PrinterVisitor::endVisit ( const FnMaxIterator& ){
+    thePrinter.endIter();
+  }
+
+
+  void PrinterVisitor::beginVisit ( const FnMinIterator& a){
+    thePrinter.startIter("FnMinIterator");
+    printCommons(&a);
+  }
+
+  void PrinterVisitor::endVisit ( const FnMinIterator& ){
+    thePrinter.endIter();
+  }
+
+
+  void PrinterVisitor::beginVisit ( const FnSumIterator& a){
+    thePrinter.startIter("FnSumIterator");
+    printCommons(&a);
+  }
+
+  void PrinterVisitor::endVisit ( const FnSumIterator& ){
     thePrinter.endIter();
   }
 
@@ -794,9 +853,13 @@ namespace xqp {
   
   void PrinterVisitor::beginVisit(const CastIterator& a) {
     thePrinter.startIter("CastIterator");
+    std::ostringstream lStream;
+    GENV_TYPESYSTEM.serialize(lStream, *a.theCastType);
+    thePrinter.addAttribute("type", lStream.str());
   }
   
   void PrinterVisitor::endVisit(const CastIterator&) {
     thePrinter.endIter();
   }
 } /* namespace xqp */
+/* vim:set ts=2 sw=2: */

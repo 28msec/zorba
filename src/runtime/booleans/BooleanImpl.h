@@ -147,7 +147,7 @@ namespace xqp
        * Value Equal on the passed items
        * @param aItem0 
        * @param aItem1 
-       * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
+       * @param aCollation optional collation parameter (passed as pointer to make it possible to be set to 0)
        * @return 0 (equal), 1 (not equal), -2 (value equal not possible)
        */
       static int8_t valueEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
@@ -168,10 +168,11 @@ namespace xqp
        * @param item0 
        * @param item1 
        * @param aCompType
+       * @param aCollation optional collation parameter
        * @return 
        */
-      static bool valueComparison(const Item_t& aItem0, const Item_t& aItem1, CompareType aCompType);
-      
+      static bool valueComparison(const Item_t& aItem0, const Item_t& aItem1, 
+                                  CompareType aCompType, xqpString* aCollation = 0);
       
       /**
        * General comparison of the passed two items with the operator 
@@ -180,10 +181,12 @@ namespace xqp
        * @param item0 
        * @param item1 
        * @param aCompType
+       * @param aCollation optional collation parameter
        * @return 
        */
-      static bool generalComparison(const Item_t& aItem0, const Item_t& aItem_1, CompareType aCompType);
-      
+      static bool generalComparison(const Item_t& aItem0, const Item_t& aItem_1,
+                                    CompareType aCompType, xqpString* aCollation = 0);
+
       virtual void accept(PlanIterVisitor&) const;
   }; /* class CompareIterator */
 

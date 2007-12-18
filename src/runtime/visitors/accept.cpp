@@ -101,6 +101,8 @@ namespace xqp {
   UNARY_ACCEPT(FnZeroOrOneIterator);
   UNARY_ACCEPT(FnOneOrMoreIterator);
   UNARY_ACCEPT(FnExactlyOneIterator);
+  UNARY_ACCEPT(FnCountIterator);
+  UNARY_ACCEPT(FnAvgIterator);
   UNARY_ACCEPT(FnDocIterator);
   UNARY_ACCEPT(OpNumericUnaryIterator);
   UNARY_ACCEPT(TextIterator);
@@ -117,6 +119,7 @@ namespace xqp {
   BINARY_ACCEPT(CompareIterator);
   BINARY_ACCEPT(FnIndexOfIterator);
   BINARY_ACCEPT(FnRemoveIterator);
+  BINARY_ACCEPT(OpToIterator);
   BINARY_ACCEPT(FnRoundHalfToEvenIterator);
   BINARY_ACCEPT(OpDurationEqualIterator);
   BINARY_ACCEPT(AttributeIterator);
@@ -135,6 +138,9 @@ namespace xqp {
   NARY_ACCEPT(FnConcatIterator);
   NARY_ACCEPT(FnInsertBeforeIterator);
   NARY_ACCEPT(FnSubsequenceIterator);
+  NARY_ACCEPT(FnMaxIterator);
+  NARY_ACCEPT(FnMinIterator);
+  NARY_ACCEPT(FnSumIterator);
   
   // special iterators
   void ElementIterator::accept(PlanIterVisitor& v) const

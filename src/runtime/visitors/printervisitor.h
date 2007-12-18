@@ -173,6 +173,9 @@ namespace xqp {
       virtual void beginVisit ( const FnRemoveIterator& ) ;
       virtual void endVisit ( const FnRemoveIterator& ) ;
 
+      virtual void beginVisit ( const OpToIterator& ) ;
+      virtual void endVisit ( const OpToIterator& ) ;
+
       virtual void beginVisit ( const FnDistinctValuesIterator& ) ;
       virtual void endVisit   ( const FnDistinctValuesIterator& ) ;
 
@@ -190,6 +193,21 @@ namespace xqp {
         
       virtual void beginVisit ( const FnExactlyOneIterator& ) ;
       virtual void endVisit   ( const FnExactlyOneIterator& ) ;
+
+      virtual void beginVisit ( const FnCountIterator& );
+      virtual void endVisit ( const FnCountIterator& );
+
+      virtual void beginVisit ( const FnAvgIterator& );
+      virtual void endVisit ( const FnAvgIterator& );
+
+      virtual void beginVisit ( const FnMaxIterator& );
+      virtual void endVisit ( const FnMaxIterator& );
+
+      virtual void beginVisit ( const FnMinIterator& );
+      virtual void endVisit ( const FnMinIterator& );
+
+      virtual void beginVisit ( const FnSumIterator& );
+      virtual void endVisit ( const FnSumIterator& );
         
       virtual void beginVisit ( const FnDocIterator& ) ;
       virtual void endVisit ( const FnDocIterator& ) ;

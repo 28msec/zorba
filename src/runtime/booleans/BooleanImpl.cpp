@@ -429,7 +429,8 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
   }
   
   bool
-  CompareIterator::generalComparison(const Item_t& aItem0, const Item_t& aItem1, CompareType aCompType)
+  CompareIterator::generalComparison(const Item_t& aItem0, const Item_t& aItem1, 
+                                     CompareType aCompType, xqpString* aCollation)
   {
     int8_t compValue = -2;
     switch(aCompType)
@@ -438,7 +439,10 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
       case GENERAL_EQUAL:
       case VALUE_NOT_EQUAL:
       case GENERAL_NOT_EQUAL:
-        compValue = CompareIterator::generalEqual(aItem0, aItem1);
+        if (aCollation == 0)
+          compValue = CompareIterator::generalEqual(aItem0, aItem1);
+        else
+          compValue = CompareIterator::generalEqual(aItem0, aItem1, aCollation);
         break;
       case VALUE_GREATER:
       case GENERAL_GREATER:
@@ -448,7 +452,10 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
       case GENERAL_LESS:
       case VALUE_LESS_EQUAL:
       case GENERAL_LESS_EQUAL:
-        compValue = CompareIterator::generalCompare(aItem0, aItem1);
+        if (aCollation == 0)
+          compValue = CompareIterator::generalCompare(aItem0, aItem1);
+        else
+          compValue = CompareIterator::generalCompare(aItem0, aItem1, aCollation);
       default:
         break;
     }
@@ -456,7 +463,8 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
     return boolResult(compValue, aCompType);
   } /* end CompareIterator::generalComparison (...) */
   
-  bool CompareIterator::valueComparison(const Item_t& aItem0, const Item_t& aItem1, CompareType aCompType)
+  bool CompareIterator::valueComparison(const Item_t& aItem0, const Item_t& aItem1, 
+                                        CompareType aCompType, xqpString* aCollation)
   {
     int8_t compValue = -2;
     switch(aCompType)
@@ -465,7 +473,10 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
       case GENERAL_EQUAL:
       case VALUE_NOT_EQUAL:
       case GENERAL_NOT_EQUAL:
-        compValue = CompareIterator::valueEqual(aItem0, aItem1);
+        if (aCollation == 0)
+          compValue = CompareIterator::valueEqual(aItem0, aItem1);
+        else
+          compValue = CompareIterator::valueEqual(aItem0, aItem1, aCollation);
         break;
       case VALUE_GREATER:
       case GENERAL_GREATER:
@@ -475,7 +486,10 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
       case GENERAL_LESS:
       case VALUE_LESS_EQUAL:
       case GENERAL_LESS_EQUAL:
-        compValue = CompareIterator::valueCompare(aItem0, aItem1);
+        if (aCollation == 0)
+          compValue = CompareIterator::valueCompare(aItem0, aItem1);
+        else
+          compValue = CompareIterator::valueCompare(aItem0, aItem1, aCollation);
       default:
         break;
     }

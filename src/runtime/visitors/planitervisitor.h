@@ -62,12 +62,18 @@ namespace xqp
   class FnExistsIterator;
   class FnIndexOfIterator;
   class FnRemoveIterator;
+  class OpToIterator;
   class FnDistinctValuesIterator;
   class FnInsertBeforeIterator;  
   class FnSubsequenceIterator;
   class FnZeroOrOneIterator;
   class FnOneOrMoreIterator;
   class FnExactlyOneIterator;
+  class FnCountIterator;
+  class FnAvgIterator;
+  class FnMaxIterator;
+  class FnMinIterator;
+  class FnSumIterator;
   class FnDocIterator;
   class CodepointsToStringIterator;
   class StringToCodepointsIterator;
@@ -261,6 +267,9 @@ namespace xqp
       virtual void beginVisit ( const FnRemoveIterator& ) = 0;
       virtual void endVisit ( const FnRemoveIterator& ) = 0;
 
+      virtual void beginVisit ( const OpToIterator& ) = 0;
+      virtual void endVisit ( const OpToIterator& ) = 0;
+
       virtual void beginVisit ( const FnDistinctValuesIterator& ) = 0;
       virtual void endVisit ( const FnDistinctValuesIterator& ) = 0;       
 
@@ -278,6 +287,21 @@ namespace xqp
        
       virtual void beginVisit ( const FnExactlyOneIterator& ) = 0;
       virtual void endVisit ( const FnExactlyOneIterator& ) = 0;       
+
+      virtual void beginVisit ( const FnCountIterator& ) = 0;
+      virtual void endVisit ( const FnCountIterator& ) = 0;
+
+      virtual void beginVisit ( const FnAvgIterator& ) = 0;
+      virtual void endVisit ( const FnAvgIterator& ) = 0;
+
+      virtual void beginVisit ( const FnMaxIterator& ) = 0;
+      virtual void endVisit ( const FnMaxIterator& ) = 0;
+
+      virtual void beginVisit ( const FnMinIterator& ) = 0;
+      virtual void endVisit ( const FnMinIterator& ) = 0;
+
+      virtual void beginVisit ( const FnSumIterator& ) = 0;
+      virtual void endVisit ( const FnSumIterator& ) = 0;
 
       virtual void beginVisit ( const FnDocIterator& ) = 0;
       virtual void endVisit ( const FnDocIterator& ) = 0;

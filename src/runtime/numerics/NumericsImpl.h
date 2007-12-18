@@ -111,6 +111,10 @@ namespace xqp
       Item_t nextImpl(PlanState&);
       
       virtual void accept(PlanIterVisitor&) const;
+
+      static Item_t
+      compute(const yy::location& loc, Item_t n0, Item_t n1);
+
   }; /* class ArithmeticIterator */
 
   /*______________________________________________________________________

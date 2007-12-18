@@ -48,6 +48,7 @@ public:
   http://www.w3.org/TR/xquery/#id-cast
 ********************************************************************************/
 class CastIterator : public UnaryBaseIterator<CastIterator> {
+  friend class PrinterVisitor;
 private:
   TypeSystem::xqtref_t theCastType;
   TypeSystem::quantifier_t theQuantifier;
