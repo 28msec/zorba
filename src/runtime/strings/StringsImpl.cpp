@@ -279,7 +279,7 @@ ConcatStrIterator::nextImpl(PlanState& planState) {
   {
     item = consumeNext (*iter, planState );
     item = item->getAtomizationValue();
-    resStr += item->getStringValue();
+    resStr += item->getStringProperty();
   }
 
   if(theChildren.size()>0){
