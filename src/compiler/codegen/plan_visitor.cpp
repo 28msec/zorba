@@ -19,6 +19,7 @@
 #include "runtime/core/flwor_iterator.h"
 #include "util/tracer.h"
 #include "functions/function.h"
+#include "util/stl_extra.h"
 
 #ifndef NDEBUG
 #  include "zorba/util/properties.h"
@@ -253,7 +254,6 @@ void plan_visitor::end_visit(if_expr& v)
 bool plan_visitor::begin_visit(fo_expr& v)
 {
   CODEGEN_TRACE_IN ("");
-	itstack.push(NULL);
 
   // If the function is an enclosed expression and we are in the context of
   // a node constructor, push a NULL in the constructors stack to "hide" the
@@ -278,16 +278,8 @@ void plan_visitor::end_visit(fo_expr& v)
   Assert(func_p != NULL);
   const function& func = *func_p;
 
-  vector<PlanIter_t> argv;
-  while (true)
-  {
-    PlanIter_t it_h = pop_itstack();
-    if (it_h == NULL)
-      break;
-
-    vector<PlanIter_t>::iterator begin = argv.begin();
-    argv.insert(begin, 1, it_h );
-  }
+  vector<PlanIter_t> argv (v.size ());
+  generate (argv.rbegin (), argv.rend (), stack_to_generator (itstack));
 
   const yy::location& loc = v.get_loc ();
 
@@ -303,12 +295,10 @@ void plan_visitor::end_visit(fo_expr& v)
       Assert(theConstructorsStack.top() == NULL);
       theConstructorsStack.pop();
     }
-  }
-  else
-  {
-    ZorbaErrorAlerts::error_alert (error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-                                   error_messages::STATIC_ERROR,
-                                   &loc);
+  } else {
+    ZORBA_ERROR_ALERT_OSS (error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+                           error_messages::STATIC_ERROR,
+                           &loc, false, func.get_signature ().get_name ()->getStringProperty (), argv.size ());
   }
 }
 
