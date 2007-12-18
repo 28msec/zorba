@@ -2,7 +2,7 @@
  *
  *  $Id: item.h,v 1.1 2006/10/09 07:07:59 $
  *
- *	Copyright 2006-2007 FLWOR Foundation.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *  Author: David Graf, Donald Kossmann, Tim Kraska
  *
  */
@@ -25,7 +25,7 @@ namespace xqp
 {
 
 template <class Object> class rchandle;
-	
+  
 typedef rchandle<class Item> Item_t;
 typedef rchandle<class QNameItem> QNameItem_t;
 typedef rchandle<class AnyUriItem> AnyUriItem_t;
@@ -51,13 +51,13 @@ public:
   virtual void reset() = 0;
   virtual void close() = 0;
 };
-	
-	
+  
+  
 /**
  *
- *	'item' - top of the XQuery value hierarchy,
+ *  'item' - top of the XQuery value hierarchy,
  *         union of node types and atomic types
- *	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
+ *  [http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
  */
 class Item : public rcobject
 {
@@ -92,7 +92,11 @@ public:
    *
    * @return The hash value
    */
-  virtual uint32_t hash() const = 0;
+  virtual uint32_t hash() const
+  {
+    this->showError();
+    return 0;
+  };
 
   /**
    *  Compares (by value) two items. All comparisons must be done by this
@@ -208,10 +212,18 @@ public:
     this->showError();
     return 0;
   }
+  
+  /** Accessor for xs:nonNegativeInteager, xs:positiveInteger
+   */
+  virtual xqp_uinteger getUnsignedIntegerValue() const
+  {
+    this->showError();
+    return 0;
+  }
 
   /** Accessor for xs:unsignedChar, xs:unsignedByte
    */
-  virtual xqp_unsignedByte getUnsignedByteValue() const
+  virtual xqp_ubyte getUnsignedByteValue() const
   {
     this->showError();
     return 0;
@@ -321,7 +333,7 @@ public:
 
   /** Accessor for xs:nonNegativeIntegerValue, xs:positiveInteger, xs:unsignedInt
    */
-  virtual uint32_t getUnsignedIntValue() const
+  virtual xqp_uint getUnsignedIntValue() const
   {
     this->showError();
     return 0;
@@ -345,7 +357,7 @@ public:
 
   /** Accessor for xs:unsignedShort
    */
-  virtual xqp_unsignedShort getUnsignedShortValue() const
+  virtual xqp_ushort getUnsignedShortValue() const
   {
     this->showError();
     return 0;
@@ -439,7 +451,7 @@ public:
   }
 
   /** Accessor for document node, element node, attribute node, namespace node,
-   *	processing instruction node, comment node, text node
+   *  processing instruction node, comment node, text node
    *  @return  TypeCode of the current node
    */
   virtual NodeKind_t getNodeKind() const
@@ -548,6 +560,7 @@ public:
   bool isNode() const;
   bool isAtomic() const;
   
+  virtual Item_t getAtomizationValue() const;
   virtual Iterator_t getTypedValue() const;
 }; /* class AtomicItem */
   

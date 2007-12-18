@@ -6,6 +6,8 @@
  *  Authors: David Graf, Donald Kossmann, Tim Kraska, Markos zaharioudakis
  */
 
+#include <boost/lexical_cast.hpp>
+
 #include "util/hashfun.h"
 #include "util/Assert.h"
 #include "errors/Error.h"
@@ -17,11 +19,17 @@
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
 
+#define CREATE_XS_TYPE(aType) \
+  GET_STORE().getItemFactory().createQName(SimpleStore::XS_URI, "xs", aType);
+
+#define CREATE_BOOLITEM(aValue) \
+  GET_STORE().getItemFactory().createBoolean(aValue)
+
 namespace xqp
 {
 
 /*******************************************************************************
-  class QNameItem
+  class QNameItemImpl
 ********************************************************************************/
 
 void QNameItemImpl::free()
@@ -34,14 +42,6 @@ QNameItem_t QNameItemImpl::getType() const
 {
   return GET_STORE().theQNameType;
 }
-
-
-Item_t QNameItemImpl::getAtomizationValue( ) const
-{
-  return Store::getInstance().getItemFactory().
-         createQName(theNamespace, thePrefix, theLocal);
-}
-
 
 uint32_t QNameItemImpl::hash() const
 {
@@ -79,38 +79,17 @@ xqp_string QNameItemImpl::getStringProperty( ) const
 
 xqp_string QNameItemImpl::show() const
 {
-  return "xs:qname(" + *theNamespace + "," + *thePrefix + "," + *theLocal + ")";
+  return "xs:QName(" + *theNamespace + "," + *thePrefix + "," + *theLocal + ")";
 }
 
 
 /*******************************************************************************
-  class AnyUriItem
+  class AnyUriItemNaive
 ********************************************************************************/
-
-AnyUriItemImpl::AnyUriItemImpl(const xqpStringStore_t& value) 
-  :
-  theValue(value)
-{
-}
-  
-AnyUriItemImpl::~AnyUriItemImpl()
-{
-}
-  
-xqp_string AnyUriItemImpl::getStringValue() const
-{
-  return theValue;
-}
-
 QNameItem_t AnyUriItemImpl::getType() const
 {
   return Store::getInstance().getItemFactory().
          createQName(SimpleStore::XS_URI, "xs", "anyURI");
-}
-
-Item_t AnyUriItemImpl::getAtomizationValue() const
-{
-  return GET_STORE().getItemFactory().createAnyURI(theValue);
 }
 
 uint32_t AnyUriItemImpl::hash() const
@@ -128,49 +107,22 @@ bool AnyUriItemImpl::equals(Item_t item) const
 Item_t AnyUriItemImpl::getEBV() const
 {
   bool b = ! (*theValue == "");
-  return Store::getInstance().getItemFactory().createBoolean(b);
+  return CREATE_BOOLITEM(b);
 }
-
-
-xqp_string AnyUriItemImpl::getStringProperty() const
-{
-  return theValue;
-} 
 
 
 xqp_string AnyUriItemImpl::show() const
 {
-  return *theValue;
+  return "xs:anyURI(" + *theValue + ")";
 }
 
 
 /*******************************************************************************
-  class UntypedAtomicItem
+  class UntypedAtomicItemNaive
 ********************************************************************************/
-UntypedAtomicItemNaive::UntypedAtomicItemNaive(const xqpStringStore_t& value)
-  :
-  theValue(value)
-{
-}
-
-UntypedAtomicItemNaive::~UntypedAtomicItemNaive()
-{
-}
-
-xqp_string UntypedAtomicItemNaive::getStringValue() const
-{
-  return theValue;
-}
-
 QNameItem_t UntypedAtomicItemNaive::getType() const
 {
   return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
-}
-
-Item_t UntypedAtomicItemNaive::getAtomizationValue() const
-{
-  return Store::getInstance().getItemFactory().
-         createUntypedAtomic(theValue).get_ptr();
 }
 
 uint32_t UntypedAtomicItemNaive::hash() const
@@ -186,47 +138,21 @@ bool UntypedAtomicItemNaive::equals(Item_t item) const
 Item_t UntypedAtomicItemNaive::getEBV() const
 {
   bool b = ! ( *theValue == "" );
-  return Store::getInstance().getItemFactory().createBoolean(b);
-}
-
-xqp_string UntypedAtomicItemNaive::getStringProperty() const
-{
-  return theValue;
+  return CREATE_BOOLITEM(b);
 }
 
 xqp_string UntypedAtomicItemNaive::show() const
 {
-  return *theValue;
+  return "xs:untypedAtomic(" + *theValue + ")";
 }
 
 
 /*******************************************************************************
-  class StingItem
+  class StingItemNaive
 ********************************************************************************/
-StringItemNaive::StringItemNaive(const xqpStringStore_t& value)
-  :
-  theValue(value)
-{
-}
-
-StringItemNaive::~StringItemNaive()
-{
-}
-  
-xqp_string StringItemNaive::getStringValue() const
-{
-  return theValue;
-}
-
 QNameItem_t StringItemNaive::getType() const
 {
-  return Store::getInstance().getItemFactory().
-         createQName(SimpleStore::XS_URI, "xs", "string");
-}
-
-Item_t StringItemNaive::getAtomizationValue() const
-{
-  return Store::getInstance().getItemFactory().createString(theValue);
+  return CREATE_XS_TYPE("string");
 }
 
 uint32_t StringItemNaive::hash() const
@@ -242,320 +168,191 @@ bool StringItemNaive::equals(Item_t item) const
 Item_t StringItemNaive::getEBV() const
 {
   bool b = ! ( *theValue == "" );
-  return Store::getInstance().getItemFactory().createBoolean(b);
-}
-
-xqp_string StringItemNaive::getStringProperty() const
-{
-  return theValue;
+  return CREATE_BOOLITEM(b);
 }
 
 xqp_string StringItemNaive::show() const
 {
-  return *theValue;
+  return "xs:string(" + *theValue + ")";
 }
 
 
 /*******************************************************************************
-  class DecimalItem
+  class DecimalItemNaive
 ********************************************************************************/
-DecimalItemNaive::DecimalItemNaive ( long double value ) :value_ ( value ) {}
-
-DecimalItemNaive::~DecimalItemNaive() {}
-
-long double DecimalItemNaive::getDecimalValue() const
-{
-  return this->value_;
-}
-
 QNameItem_t DecimalItemNaive::getType() const
 {
-  return Store::getInstance().getItemFactory().
-         createQName(SimpleStore::XS_URI, "xs", "decimal");
-}
-
-Item_t DecimalItemNaive::getAtomizationValue() const
-{
-  return Store::getInstance().getItemFactory().
-         createDecimal ( this->value_ );
-}
-
-uint32_t DecimalItemNaive::hash() const
-{
-  Assert(0);
-  return 0;
+  return CREATE_XS_TYPE("decimal");
 }
 
 bool DecimalItemNaive::equals ( Item_t item ) const
 {
-  return item->getDecimalValue() == this->value_;
+  return item->getDecimalValue() == theValue;
 }
 
 Item_t DecimalItemNaive::getEBV() const
 {
-  bool b = ( this->value_ != 0 );
-  return Store::getInstance().getItemFactory().createBoolean ( b );
+  bool b = ( theValue != 0 );
+  return CREATE_BOOLITEM(b);
 }
 
 xqp_string DecimalItemNaive::getStringProperty() const
 {
-  std::ostringstream tmp;
-  tmp << this->value_;
-  return xqp_string ( tmp.str() );
+  return boost::lexical_cast<std::string>(theValue);
 }
 
 xqp_string DecimalItemNaive::show() const
 {
-  return this->getStringProperty();
-}
-/* end class DecimalItem */
-
-/* start class IntItem */
-IntItemNaive::IntItemNaive ( int value ) :value_ ( value ) {}
-
-IntItemNaive::~IntItemNaive() {}
-
-int32_t IntItemNaive::getIntValue() const
-{
-  return this->value_;
+  return "xs:decimal(" + getStringProperty() + ")";
 }
 
-long long IntItemNaive::getIntegerValue() const
+/*******************************************************************************
+  class IntItemNaive
+********************************************************************************/
+xqp_integer IntItemNaive::getIntegerValue() const
 {
-  return static_cast<long long> ( this->value_ );
+  return static_cast<xqp_integer> ( theValue );
 }
 
-long double IntItemNaive::getDecimalValue() const
+xqp_decimal IntItemNaive::getDecimalValue() const
 {
-  return static_cast<long double> ( this->value_ );
+  return static_cast<xqp_decimal> ( theValue );
+}
+
+xqp_long IntItemNaive::getLongValue() const {
+  return static_cast<xqp_long>(theValue);
 }
 
 QNameItem_t IntItemNaive::getType() const
 {
-  return Store::getInstance().getItemFactory().
-         createQName(SimpleStore::XS_URI, "xs", "int");
-}
-
-Item_t IntItemNaive::getAtomizationValue() const
-{
-  return Store::getInstance().getItemFactory().createInt(this->value_ );
-}
-
-uint32_t IntItemNaive::hash() const
-{
-  Assert(0);
-  return 0;
+  return CREATE_XS_TYPE("int");
 }
 
 bool IntItemNaive::equals ( Item_t item ) const
 {
-  return item->getIntValue() == this->value_;
+  return item->getIntValue() == theValue;
 }
   
 Item_t IntItemNaive::getEBV() const
 {
-  bool b = ( this->value_ != 0 );
-  return Store::getInstance().getItemFactory().createBoolean ( b );
+  bool b = ( theValue != 0 );
+  return CREATE_BOOLITEM( b );
 }
 
   xqp_string IntItemNaive::getStringProperty() const
 	{
-		std::ostringstream tmp;
-		tmp << this->value_;
-		return xqp_string ( tmp.str() );
+		return boost::lexical_cast<std::string>(theValue);
 	}
 
   xqp_string IntItemNaive::show() const
 	{
-		return this->getStringProperty();
-	}
-	/* end class IntItem */
-
-	/* start class IntegerItem */
-  IntegerItemNaive::IntegerItemNaive ( long long value ) :value_ ( value ) {}
-  IntegerItemNaive::~IntegerItemNaive() {}
-
-	long long IntegerItemNaive::getIntegerValue() const
-	{
-		return this->value_;
+		return "xs:int(" + getStringProperty() + ")";
 	}
 
+/*******************************************************************************
+  class IntegerItemNaive
+********************************************************************************/
 long double IntegerItemNaive::getDecimalValue() const
 {
-  return static_cast<long double> ( this->value_ );
+  return static_cast<xqp_decimal> ( theValue );
 }
 
 QNameItem_t IntegerItemNaive::getType() const
 {
-  return Store::getInstance().getItemFactory().
-         createQName(SimpleStore::XS_URI, "xs", "integer");
-}
-
-Item_t IntegerItemNaive::getAtomizationValue() const
-{
-  return Store::getInstance().getItemFactory().createInteger(this->value_ );
-}
-
-uint32_t IntegerItemNaive::hash() const
-{
-  Assert(0);
-  return 0;
+  return CREATE_XS_TYPE("integer");
 }
 
 bool IntegerItemNaive::equals ( Item_t item ) const
 {
-  return item->getIntegerValue() == this->value_;
+  return item->getIntegerValue() == theValue;
 }
 
 Item_t IntegerItemNaive::getEBV() const
 {
-  bool b = ( this->value_ != 0 );
-  return Store::getInstance().getItemFactory().createBoolean ( b );
+  bool b = ( theValue != 0 );
+  return CREATE_BOOLITEM( b );
 }
 
   xqp_string IntegerItemNaive::getStringProperty() const
 	{
-		std::ostringstream tmp;
-		tmp << this->value_;
-		return xqp_string ( tmp.str() );
+		return boost::lexical_cast<std::string>(theValue);
 	}
 
   xqp_string IntegerItemNaive::show() const
 	{
-		return this->getStringProperty();
+		return "xs:integer(" + getStringProperty() + ")";
 	}
 	/* end class IntegerItem */
 	
 	/* start class DoubleItem */
-  DoubleItemNaive::DoubleItemNaive ( double value_arg ) :value ( value_arg ) {}
-  DoubleItemNaive::~DoubleItemNaive() {}
-
-  double DoubleItemNaive::getDoubleValue() const
-	{
-		return this->value;
-	}
-
 QNameItem_t DoubleItemNaive::getType() const
 {
-  return Store::getInstance().getItemFactory().
-         createQName(SimpleStore::XS_URI, "xs", "double");
-}
-
-Item_t DoubleItemNaive::getAtomizationValue() const
-{
-  return Store::getInstance().getItemFactory().createDouble(this->value );
-}
-
-uint32_t DoubleItemNaive::hash() const
-{
-  Assert(0);
-  return 0;
+  return CREATE_XS_TYPE("double");
 }
 
 bool DoubleItemNaive::equals ( Item_t item ) const
 {
-  return item->getDoubleValue() == this->value;
+  return item->getDoubleValue() == theValue;
 }
 
 Item_t DoubleItemNaive::getEBV() const
 {
-  bool b = ( this->value != 0 );
-  return Store::getInstance().getItemFactory().createBoolean(b);
+  bool b = ( theValue != 0 );
+  return CREATE_BOOLITEM(b);
 }
 
   xqp_string DoubleItemNaive::getStringProperty() const
 	{
-		std::ostringstream tmp;
-		tmp << this->value;
-		return xqp_string ( tmp.str() );
+		return boost::lexical_cast<std::string>(theValue);
 	}
 
   xqp_string DoubleItemNaive::show() const
 	{
-		return this->getStringProperty();
-	}
-	/* end class DoubleItem */
-	
-	/* start class FloatItem */
-  FloatItemNaive::FloatItemNaive( float value_arg ) :value ( value_arg ) {}
-  FloatItemNaive::~FloatItemNaive() {}
-
-  float FloatItemNaive::getFloatValue() const
-	{
-		return this->value;
+		return "xs:double(" + getStringProperty() + ")";
 	}
 
+  
+/*******************************************************************************
+  class FloatItemNaive
+********************************************************************************/
 QNameItem_t FloatItemNaive::getType() const
 {
-  return Store::getInstance().getItemFactory().
-         createQName(SimpleStore::XS_URI, "xs", "float");
-}
-
-Item_t FloatItemNaive::getAtomizationValue() const
-{
-  return Store::getInstance().getItemFactory().createFloat(this->value);
-}
-
-uint32_t FloatItemNaive::hash() const
-{
-  Assert(0);
-  return 0;
+  return CREATE_XS_TYPE("float");
 }
 
   bool FloatItemNaive::equals ( Item_t item ) const
 	{
-		return item->getFloatValue() == this->value;
+		return item->getFloatValue() == theValue;
 	}
 
   Item_t FloatItemNaive::getEBV() const
 	{
-		bool b = ( this->value != 0 );
-		return Store::getInstance().getItemFactory().createBoolean(b);
+		bool b = ( theValue != 0 );
+    return CREATE_BOOLITEM(b);
 	}
 
   xqp_string FloatItemNaive::getStringProperty() const
 	{
-		std::ostringstream tmp;
-		tmp << this->value;
-		return xqp_string ( tmp.str() );
+		return boost::lexical_cast<std::string>(theValue);
 	}
 
   xqp_string FloatItemNaive::show() const
 	{
-		return this->getStringProperty();
+		return "xs:float(" + getStringProperty() + ")";
 	}
-	/* end class FloatItem */
 
-/* start class BooleanItem */
-BooleanItemNaive::BooleanItemNaive ( bool value ) :value_ ( value ) {}
 
-BooleanItemNaive::~BooleanItemNaive() {}
-
-bool BooleanItemNaive::getBooleanValue() const
-{
-  return this->value_;
-}
-
+/*******************************************************************************
+  class BooleanItemNaive
+********************************************************************************/
 QNameItem_t BooleanItemNaive::getType() const
 {
-  return Store::getInstance().getItemFactory().
-         createQName(SimpleStore::XS_URI, "xs", "boolean");
-}
-
-Item_t BooleanItemNaive::getAtomizationValue() const
-{
-  return Store::getInstance().getItemFactory().createBoolean(this->value_);
-}
-
-uint32_t BooleanItemNaive::hash() const
-{
-  Assert(0);
-  return 0;
+  return CREATE_XS_TYPE("boolean");
 }
 
 bool BooleanItemNaive::equals ( Item_t item ) const
 {
-  return item->getBooleanValue() == this->value_;
+  return item->getBooleanValue() == theValue;
 }
 
 Item_t BooleanItemNaive::getEBV() const
@@ -565,7 +362,7 @@ Item_t BooleanItemNaive::getEBV() const
 
 xqp_string BooleanItemNaive::getStringProperty() const
 {
-  if ( this->value_ )
+  if (theValue)
     return "true";
   else
     return "false";
@@ -573,8 +370,414 @@ xqp_string BooleanItemNaive::getStringProperty() const
 
 xqp_string BooleanItemNaive::show() const
 {
-  return this->getStringProperty();
+  return "xs:boolean(" + getStringProperty() + ")";
 }
-/* end class BooleanItem */
+
+/*******************************************************************************
+  class NonPositiveIntegerItemNaive
+********************************************************************************/
+xqp_decimal NonPositiveIntegerItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal> ( theValue );
+}
+
+QNameItem_t NonPositiveIntegerItemNaive::getType() const {
+  return CREATE_XS_TYPE("nonPositiveInteger");
+}
+
+bool NonPositiveIntegerItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getIntegerValue();
+}
+
+Item_t NonPositiveIntegerItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string NonPositiveIntegerItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string NonPositiveIntegerItemNaive::show() const {
+  return "xs:nonPositiveInteger(" + getStringProperty() + ")";
+}
+
+/*******************************************************************************
+  class NonPositiveIntegerItemNaive
+********************************************************************************/
+xqp_decimal NegativeIntegerItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal> ( theValue );
+}
+
+QNameItem_t NegativeIntegerItemNaive::getType() const {
+  return CREATE_XS_TYPE("negativeInteger");
+}
+
+bool NegativeIntegerItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getIntegerValue();
+}
+
+Item_t NegativeIntegerItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string NegativeIntegerItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string NegativeIntegerItemNaive::show() const {
+  return "xs:negativeInteger(" + getStringProperty() + ")";
+}
+
+/*******************************************************************************
+  class LongItemNaive
+********************************************************************************/
+xqp_integer LongItemNaive::getIntegerValue() const {
+  return static_cast<xqp_integer>(theValue);
+}
+
+xqp_decimal LongItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal>(theValue);
+}
+
+QNameItem_t LongItemNaive::getType() const {
+  return CREATE_XS_TYPE("long");
+}
+
+bool LongItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getLongValue();
+}
+
+Item_t LongItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string LongItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string LongItemNaive::show() const {
+  return "xs:long(" + getStringProperty() + ")";
+}
+
+/*******************************************************************************
+  class ShortItemNaive
+********************************************************************************/
+xqp_integer ShortItemNaive::getIntegerValue() const {
+  return static_cast<xqp_integer>(theValue); 
+}
+
+xqp_decimal ShortItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal>(theValue);
+}
+
+xqp_long ShortItemNaive::getLongValue() const {
+  return static_cast<xqp_long>(theValue);
+}
+
+xqp_int ShortItemNaive::getIntValue() const {
+  return static_cast<xqp_int>(theValue);
+}
+
+QNameItem_t ShortItemNaive::getType() const {
+  return CREATE_XS_TYPE("short");
+}
+
+bool ShortItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getLongValue();
+}
+
+Item_t ShortItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string ShortItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string ShortItemNaive::show() const {
+  return "xs:short(" + getStringProperty() + ")";
+}
+
+/*******************************************************************************
+  class ByteItemNaive
+********************************************************************************/
+xqp_integer ByteItemNaive::getIntegerValue() const {
+  return static_cast<xqp_integer>(theValue); 
+}
+
+xqp_decimal ByteItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal>(theValue);
+}
+
+xqp_long ByteItemNaive::getLongValue() const {
+  return static_cast<xqp_long>(theValue);
+}
+
+xqp_int ByteItemNaive::getIntValue() const {
+  return static_cast<xqp_int>(theValue);
+}
+
+xqp_short ByteItemNaive::getShortValue() const {
+  return static_cast<xqp_short>(theValue);
+}
+
+QNameItem_t ByteItemNaive::getType() const {
+  return CREATE_XS_TYPE("byte");
+}
+
+bool ByteItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getLongValue();
+}
+
+Item_t ByteItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string ByteItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string ByteItemNaive::show() const {
+  return "xs:byte(" + getStringProperty() + ")";
+}
+
+
+/*******************************************************************************
+  class NonNegativeINtegerItemNaive
+********************************************************************************/
+xqp_integer NonNegativeIntegerItemNaive::getIntegerValue() const {
+ return static_cast<xqp_integer>(theValue); 
+}
+
+xqp_decimal NonNegativeIntegerItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal>(theValue);
+}
+
+QNameItem_t NonNegativeIntegerItemNaive::getType() const {
+  return CREATE_XS_TYPE("nonNegativeInteger");
+}
+
+bool NonNegativeIntegerItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getUnsignedIntegerValue();
+}
+
+Item_t NonNegativeIntegerItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string NonNegativeIntegerItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string NonNegativeIntegerItemNaive::show() const {
+  return "xs:nonNegativeInteger(" + getStringProperty() + ")";
+}
+
+
+/*******************************************************************************
+  class UnsignedLongItemNaive
+********************************************************************************/
+xqp_integer UnsignedLongItemNaive::getIntegerValue() const {
+  return static_cast<xqp_integer>(theValue);
+}
+
+xqp_decimal UnsignedLongItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal>(theValue);
+}
+
+xqp_uinteger UnsignedLongItemNaive::getUnsignedIntegerValue() const {
+  return static_cast<xqp_uinteger>(theValue);
+}
+
+QNameItem_t UnsignedLongItemNaive::getType() const {
+  return CREATE_XS_TYPE("unsignedLong");
+}
+
+bool UnsignedLongItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getUnsignedLongValue();
+}
+
+Item_t UnsignedLongItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string UnsignedLongItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string UnsignedLongItemNaive::show() const {
+  return "xs:unsignedLong(" + getStringProperty() + ")";
+}
+
+/*******************************************************************************
+  class UnsignedIntItemNaive
+********************************************************************************/
+xqp_integer UnsignedIntItemNaive::getIntegerValue() const {
+  return static_cast<xqp_integer>(theValue);
+}
+
+xqp_decimal UnsignedIntItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal>(theValue);
+}
+
+xqp_uinteger UnsignedIntItemNaive::getUnsignedIntegerValue() const {
+  return static_cast<xqp_uinteger>(theValue);
+}
+
+xqp_ulong UnsignedIntItemNaive::getUnsignedLongValue() const {
+  return static_cast<xqp_ulong>(theValue);
+}
+
+QNameItem_t UnsignedIntItemNaive::getType() const {
+  return CREATE_XS_TYPE("unsignedInt");
+}
+
+bool UnsignedIntItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getUnsignedIntValue();
+}
+
+Item_t UnsignedIntItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string UnsignedIntItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string UnsignedIntItemNaive::show() const {
+  return "xs:unsignedInt(" + getStringProperty() + ")";
+}
+
+
+/*******************************************************************************
+  class UnsignedShortItemNaive
+********************************************************************************/
+xqp_integer UnsignedShortItemNaive::getIntegerValue() const {
+  return static_cast<xqp_integer>(theValue);
+}
+
+xqp_decimal UnsignedShortItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal>(theValue);
+}
+
+xqp_uinteger UnsignedShortItemNaive::getUnsignedIntegerValue() const {
+  return static_cast<xqp_uinteger>(theValue);
+}
+
+xqp_ulong UnsignedShortItemNaive::getUnsignedLongValue() const {
+  return static_cast<xqp_ulong>(theValue);
+}
+
+xqp_uint UnsignedShortItemNaive::getUnsignedIntValue() const {
+  return static_cast<xqp_uint>(theValue);
+}
+
+QNameItem_t UnsignedShortItemNaive::getType() const {
+  return CREATE_XS_TYPE("unsignedShort");
+}
+
+bool UnsignedShortItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getUnsignedShortValue();
+}
+
+Item_t UnsignedShortItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string UnsignedShortItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string UnsignedShortItemNaive::show() const {
+  return "xs:unsignedShort(" + getStringProperty() + ")";
+}
+
+/*******************************************************************************
+  class UnsignedByteItemNaive
+********************************************************************************/
+xqp_integer UnsignedByteItemNaive::getIntegerValue() const {
+  return static_cast<xqp_integer>(theValue);
+}
+
+xqp_decimal UnsignedByteItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal>(theValue);
+}
+
+xqp_uinteger UnsignedByteItemNaive::getUnsignedIntegerValue() const {
+  return static_cast<xqp_uinteger>(theValue);
+}
+
+xqp_ulong UnsignedByteItemNaive::getUnsignedLongValue() const {
+  return static_cast<xqp_ulong>(theValue);
+}
+
+xqp_uint UnsignedByteItemNaive::getUnsignedIntValue() const {
+  return static_cast<xqp_uint>(theValue);
+}
+
+xqp_ushort UnsignedByteItemNaive::getUnsignedShortValue() const {
+  return static_cast<xqp_ushort>(theValue);
+}
+
+QNameItem_t UnsignedByteItemNaive::getType() const {
+  return CREATE_XS_TYPE("unsignedByte");
+}
+
+bool UnsignedByteItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getUnsignedByteValue();
+}
+
+Item_t UnsignedByteItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string UnsignedByteItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string UnsignedByteItemNaive::show() const {
+  return "xs:unsignedByte(" + getStringProperty() + ")";
+}
+
+/*******************************************************************************
+  class PositiveIntegerItemNaive
+********************************************************************************/
+xqp_integer PositiveIntegerItemNaive::getIntegerValue() const {
+  return static_cast<xqp_integer>(theValue);
+}
+
+xqp_decimal PositiveIntegerItemNaive::getDecimalValue() const {
+  return static_cast<xqp_decimal>(theValue);
+}
+
+QNameItem_t PositiveIntegerItemNaive::getType() const {
+  return CREATE_XS_TYPE("positiveInteger");
+}
+
+bool PositiveIntegerItemNaive::equals(Item_t aItem) const {
+  return theValue == aItem->getUnsignedIntegerValue();
+}
+
+Item_t PositiveIntegerItemNaive::getEBV() const {
+  bool b = (theValue != 0);
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string PositiveIntegerItemNaive::getStringProperty() const {
+  return boost::lexical_cast<std::string>(theValue);
+}
+
+xqp_string PositiveIntegerItemNaive::show() const {
+  return "xs:positiveInteger(" + getStringProperty() + ")";
+}
 
 }/* namespace xqp */

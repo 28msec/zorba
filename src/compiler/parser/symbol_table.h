@@ -9,12 +9,13 @@
 #define XQP_SYMBOL_TABLE_H
 
 #include "util/fx/fxcharheap.h"
-#ifndef _WIN32_WCE
-#   include <sys/types.h>
-#else
-#   include <windows.h>
-#   include <types.h>
-#endif
+// #ifndef _WIN32_WCE
+// #   include <sys/types.h>
+// #else
+// #   include <windows.h>
+// #   include <types.h>
+// #endif
+#include "zorba/types/representations.h"
 
 namespace xqp {
 
@@ -40,9 +41,9 @@ public:			// table interface
 	std::string get(off_t id);
 	uint32_t size() const;
 
-	long double decimalval(char const* text, uint32_t length);
-	double doubleval(char const* text, uint32_t length);
-	int intval(char const* text, uint32_t length);
+	xqp_decimal decimalval(char const* text, uint32_t length);
+	xqp_double doubleval(char const* text, uint32_t length);
+	xqp_int intval(char const* text, uint32_t length);
 
 };
 

@@ -116,31 +116,38 @@ Item_t BasicItemFactory::createBase64Binary(xqp_base64Binary value)
   return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createBoolean(bool value)
+Item_t BasicItemFactory::createBoolean(xqp_boolean value)
 {
   return new BooleanItemNaive(value);
 }
 
-Item_t BasicItemFactory::createDecimal(long double value)
+Item_t BasicItemFactory::createDecimal(xqp_decimal value)
 {
   return new DecimalItemNaive(value);
 }
 
-Item_t BasicItemFactory::createInteger(long long value)
+Item_t BasicItemFactory::createInteger(xqp_integer value)
 {
   return new IntegerItemNaive ( value );
 }
 
-Item_t BasicItemFactory::createLong ( long value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createLong ( xqp_long value ) 
+{ 
+  return new LongItemNaive ( value ); 
+}
 
-Item_t BasicItemFactory::createInt ( int32_t value )
+Item_t BasicItemFactory::createInt ( xqp_int value )
 {
   return new IntItemNaive ( value );
 }
 
-Item_t BasicItemFactory::createShort ( short value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createShort ( xqp_short value ) { 
+  return new ShortItemNaive ( value ); 
+}
 
-Item_t BasicItemFactory::createByte ( char value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createByte ( xqp_byte value ) { 
+  return new ByteItemNaive ( value ); 
+}
 
 Item_t BasicItemFactory::createDate ( short year, short month, short day ) { return Item_t ( NULL ); }
 
@@ -232,15 +239,26 @@ Item_t BasicItemFactory::createDateTime ( const xqp_string& value ) { return Ite
 
 	Item_t BasicItemFactory::createName ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createNegativeInteger ( xqp_negativeInteger value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createNegativeInteger ( xqp_integer value ) { 
+    Assert(value < 0);
+    return new NegativeIntegerItemNaive ( value ); 
+  }
 
-	Item_t BasicItemFactory::createNonNegativeInteger ( xqp_nonNegativeInteger value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createNonNegativeInteger ( xqp_uinteger value ) { 
+    return new NonNegativeIntegerItemNaive ( value ); 
+  }
 
-	Item_t BasicItemFactory::createNonPositiveInteger ( xqp_nonPositiveInteger value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createNonPositiveInteger ( xqp_integer value ) { 
+    Assert(value <= 0);
+    return new NonPositiveIntegerItemNaive( value );
+  }
 
 	Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createPositiveInteger ( xqp_positiveInteger value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createPositiveInteger ( xqp_uinteger value ) { 
+    Assert(value > 0);
+    return new PositiveIntegerItemNaive( value ); 
+  }
 
 Item_t BasicItemFactory::createTime ( const xqp_string& value ) { return Item_t ( NULL ); }
 
@@ -253,24 +271,24 @@ Item_t BasicItemFactory::createToken ( const xqp_string& value )
   return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createUnsignedByte ( xqp_unsignedByte value )
+Item_t BasicItemFactory::createUnsignedByte ( xqp_ubyte value )
 {
-  return Item_t ( NULL );
+  return new UnsignedByteItemNaive ( value );
 }
 
 Item_t BasicItemFactory::createUnsignedInt ( xqp_uint value )
 {
-  return Item_t ( NULL );
+  return new UnsignedIntItemNaive( value );
 }
 
 Item_t BasicItemFactory::createUnsignedLong(xqp_ulong value)
 {
-  return Item_t ( NULL );
+  return new UnsignedLongItemNaive( value );
 }
 
-Item_t BasicItemFactory::createUnsignedShort(xqp_unsignedShort value)
+Item_t BasicItemFactory::createUnsignedShort(xqp_ushort value)
 {
-  return Item_t ( NULL );
+  return new UnsignedShortItemNaive( value );
 }
 
 

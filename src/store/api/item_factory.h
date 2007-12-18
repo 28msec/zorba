@@ -345,19 +345,19 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
    * @param value
    */
-  virtual Item_t createNegativeInteger ( xqp_negativeInteger value ) = 0;
+  virtual Item_t createNegativeInteger ( xqp_integer value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
    * @param value
    */
-  virtual Item_t createNonNegativeInteger ( xqp_nonNegativeInteger value ) = 0;
+  virtual Item_t createNonNegativeInteger ( xqp_uinteger value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
    * @param value
    */
-  virtual Item_t createNonPositiveInteger ( xqp_nonPositiveInteger value ) = 0;
+  virtual Item_t createNonPositiveInteger ( xqp_integer value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]
@@ -369,7 +369,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
    * @param value
    */
-  virtual Item_t createPositiveInteger ( xqp_positiveInteger value ) = 0;
+  virtual Item_t createPositiveInteger ( xqp_uinteger value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#time]
@@ -402,7 +402,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
    * @param value
    */
-  virtual Item_t createUnsignedByte(xqp_unsignedByte value) = 0;
+  virtual Item_t createUnsignedByte(xqp_ubyte value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
@@ -420,7 +420,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
    * @param value
    */
-  virtual Item_t createUnsignedShort(xqp_unsignedShort value) = 0;
+  virtual Item_t createUnsignedShort(xqp_ushort value) = 0;
 
   /**
    * @param baseUri The base URI of the document.

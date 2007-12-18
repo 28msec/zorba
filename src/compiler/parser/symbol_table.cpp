@@ -10,6 +10,7 @@
 
 #include <stdlib.h>
 #include <string>
+#include <boost/lexical_cast.hpp>
 
 using namespace std;
 namespace xqp {
@@ -125,24 +126,19 @@ off_t symbol_table::put_stringlit(char const* text, uint32_t length)
 	return heap.put(text, 1, length-2);
 }
 
-long double symbol_table::decimalval(char const* text, uint32_t length)
+xqp_decimal symbol_table::decimalval(char const* text, uint32_t length)
 {
-	return strtod(text, NULL);
-// #ifndef WIN32
-// 	return strtoll(text, NULL, 10);
-// #else
-// 	return _strtoi64(text, NULL, 10);
-// #endif
+  return boost::lexical_cast<xqp_decimal>(text);
 }
 
-double symbol_table::doubleval(char const* text, uint32_t length)
+xqp_double symbol_table::doubleval(char const* text, uint32_t length)
 {
-	return strtod(text, NULL);
+	return boost::lexical_cast<xqp_double>(text);
 }
 
-int symbol_table::intval(char const* text, uint32_t length)
+xqp_int symbol_table::intval(char const* text, uint32_t length)
 {
-	return strtol(text, NULL, 10);
+	return boost::lexical_cast<xqp_int>(text);
 }
 
 std::string symbol_table::get(off_t id)

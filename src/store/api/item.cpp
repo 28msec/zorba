@@ -55,12 +55,17 @@ namespace xqp
   {
     return true;
   }
+  
+  Item_t AtomicItem::getAtomizationValue() const {
+    Item* lItem = const_cast<AtomicItem *>(this);
+    return lItem;
+  }
 
-Iterator_t AtomicItem::getTypedValue() const
-{
-  PlanIter_t planIter = new SingletonIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue());
-  return new PlanWrapper ( planIter );
-}
+  Iterator_t AtomicItem::getTypedValue() const
+  {
+    PlanIter_t planIter = new SingletonIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue());
+    return new PlanWrapper ( planIter );
+  }
 /* end class AtomicItem */
 
 }

@@ -58,19 +58,19 @@ public:
 
   virtual Item_t createBase64Binary(xqp_base64Binary value);
 
-  virtual Item_t createBoolean(bool value);
+  virtual Item_t createBoolean(xqp_boolean value);
 
-  virtual Item_t createDecimal(long double value);
+  virtual Item_t createDecimal(xqp_decimal value);
 
-  virtual Item_t createInteger(long long value);
+  virtual Item_t createInteger(xqp_integer value);
 
-  virtual Item_t createLong(long value);
+  virtual Item_t createLong(xqp_long value);
 
-  virtual Item_t createInt(int32_t value);
+  virtual Item_t createInt(xqp_int value);
 
-  virtual Item_t createShort(short value);
+  virtual Item_t createShort(xqp_short value);
 
-  virtual Item_t createByte(char value);
+  virtual Item_t createByte(xqp_byte value);
 
   virtual Item_t createDate(short year, short month, short day);
 
@@ -84,7 +84,7 @@ public:
 
   virtual Item_t createDateTime(const Item_t&, const Item_t&);
 
-  virtual Item_t createDouble(double value);
+  virtual Item_t createDouble(xqp_double value);
 
   virtual Item_t createDuration(const xqp_string& value);
 
@@ -94,7 +94,7 @@ public:
 
   virtual Item_t createENTITY ( const xqp_string& value );
 
-  virtual Item_t createFloat ( float value );
+  virtual Item_t createFloat ( xqp_float value );
 
   virtual Item_t createGDay ( const xqp_string& value );
 
@@ -136,15 +136,15 @@ public:
 
   virtual Item_t createName ( const xqp_string& value );
 
-  virtual Item_t createNegativeInteger ( xqp_negativeInteger value );
+  virtual Item_t createNegativeInteger ( xqp_integer value );
 
-  virtual Item_t createNonNegativeInteger(xqp_nonNegativeInteger value );
+  virtual Item_t createNonNegativeInteger(xqp_uinteger value );
 
-  virtual Item_t createNonPositiveInteger(xqp_nonPositiveInteger value );
+  virtual Item_t createNonPositiveInteger(xqp_integer value );
 
   virtual Item_t createNormalizedString(const xqp_string& value );
 
-  virtual Item_t createPositiveInteger( xqp_positiveInteger value );
+  virtual Item_t createPositiveInteger( xqp_uinteger value );
 
   virtual Item_t createTime(const xqp_string& value );
 
@@ -154,13 +154,13 @@ public:
 
   virtual Item_t createToken(const xqp_string& value);
 
-  virtual Item_t createUnsignedByte(xqp_unsignedByte value);
+  virtual Item_t createUnsignedByte(xqp_ubyte value);
 
   virtual Item_t createUnsignedInt(xqp_uint value);
 
   virtual Item_t createUnsignedLong(xqp_ulong value);
 
-  virtual Item_t createUnsignedShort(xqp_unsignedShort value);
+  virtual Item_t createUnsignedShort(xqp_ushort value);
 
 
   virtual Item_t createDocumentNode(

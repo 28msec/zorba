@@ -129,13 +129,13 @@ namespace xqp
           break;
         case TypeSystem::XS_NON_POSITIVE_INTEGER:
         {
-          xqp_nonPositiveInteger n = boost::lexical_cast<xqp_nonPositiveInteger>(aString.c_str());
+          xqp_integer n = boost::lexical_cast<xqp_integer>(aString.c_str());
           lItem = zorba::getItemFactory()->createNonPositiveInteger(n);
         }
           break;
         case TypeSystem::XS_NEGATIVE_INTEGER:
         {
-          xqp_negativeInteger n = boost::lexical_cast<xqp_negativeInteger>(aString.c_str());
+          xqp_integer n = boost::lexical_cast<xqp_integer>(aString.c_str());
           lItem = zorba::getItemFactory()->createNegativeInteger(n);
         }
           break;
@@ -165,7 +165,7 @@ namespace xqp
           break;
         case TypeSystem::XS_NON_NEGATIVE_INTEGER:
         {
-          xqp_nonNegativeInteger n = boost::lexical_cast<xqp_nonNegativeInteger>(aString.c_str());
+          xqp_uinteger n = boost::lexical_cast<xqp_uinteger>(aString.c_str());
           lItem = zorba::getItemFactory()->createNonNegativeInteger(n);
         }
           break;
@@ -183,19 +183,19 @@ namespace xqp
           break;
         case TypeSystem::XS_UNSIGNED_SHORT:
         {
-          xqp_unsignedShort n = boost::lexical_cast<xqp_unsignedShort>(aString.c_str());
+          xqp_ushort n = boost::lexical_cast<xqp_ushort>(aString.c_str());
           lItem = zorba::getItemFactory()->createUnsignedShort(n);
         }
           break;
         case TypeSystem::XS_UNSIGNED_BYTE:
         {
-          xqp_unsignedByte n = boost::lexical_cast<xqp_unsignedByte>(aString.c_str());
+          xqp_ubyte n = boost::lexical_cast<xqp_ubyte>(aString.c_str());
           lItem = zorba::getItemFactory()->createUnsignedByte(n);
         }
           break;
         case TypeSystem::XS_POSITIVE_INTEGER:
         {
-          xqp_positiveInteger n = boost::lexical_cast<xqp_positiveInteger>(aString.c_str());
+          xqp_integer n = boost::lexical_cast<xqp_integer>(aString.c_str());
           lItem = zorba::getItemFactory()->createPositiveInteger(n);
         }
           break;

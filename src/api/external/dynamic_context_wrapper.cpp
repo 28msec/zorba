@@ -82,11 +82,11 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, long long int_value
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_SHORT://derived from XS_UNSIGNED_INT
-			if((int_value < 0) || (int_value >= ((long long)1<<(sizeof(xqp_unsignedShort)*8))))
+			if((int_value < 0) || (int_value >= ((long long)1<<(sizeof(xqp_ushort)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_BYTE://derived from XS_UNSIGNED_SHORT
-			if((int_value < 0) || (int_value >= ((long long)1<<(sizeof(xqp_unsignedByte)*8))))
+			if((int_value < 0) || (int_value >= ((long long)1<<(sizeof(xqp_ubyte)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_POSITIVE_INTEGER://derived from XS_NON_NEGATIVE_INTEGER
@@ -232,10 +232,10 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 				atomic_item = item_factory->createInteger((*it).int_value);
 				break;
 			case XS_NON_POSITIVE_INTEGER://derived from XS_INTEGER
-				atomic_item = item_factory->createNonPositiveInteger((xqp_nonPositiveInteger)(*it).int_value);
+				atomic_item = item_factory->createNonPositiveInteger((xqp_integer)(*it).int_value);
 				break;
 			case XS_NEGATIVE_INTEGER://derived from XS_NON_POSITIVE_INTEGER
-				atomic_item = item_factory->createNegativeInteger((xqp_negativeInteger)(*it).int_value);
+				atomic_item = item_factory->createNegativeInteger((xqp_uinteger)(*it).int_value);
 				break;
 			case XS_LONG://derived from XS_INTEGER
 				atomic_item = item_factory->createLong((xqp_long)(*it).int_value);
@@ -250,7 +250,7 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 				atomic_item = item_factory->createByte((xqp_byte)(*it).int_value);
 				break;
 			case XS_NON_NEGATIVE_INTEGER://derived from XS_INTEGER
-				atomic_item = item_factory->createNonNegativeInteger((xqp_nonNegativeInteger)(*it).int_value);
+				atomic_item = item_factory->createNonNegativeInteger((xqp_uinteger)(*it).int_value);
 				break;
 			case XS_UNSIGNED_LONG://derived from XS_NON_NEGATIVE_INTEGER
 				atomic_item = item_factory->createUnsignedLong((xqp_ulong)(*it).int_value);
@@ -259,13 +259,13 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 				atomic_item = item_factory->createUnsignedInt((xqp_uint)(*it).int_value);
 				break;
 			case XS_UNSIGNED_SHORT://derived from XS_UNSIGNED_INT
-				atomic_item = item_factory->createUnsignedShort((xqp_unsignedShort)(*it).int_value);
+				atomic_item = item_factory->createUnsignedShort((xqp_ushort)(*it).int_value);
 				break;
 			case XS_UNSIGNED_BYTE://derived from XS_UNSIGNED_SHORT
-				atomic_item = item_factory->createUnsignedByte((xqp_unsignedByte)(*it).int_value);
+				atomic_item = item_factory->createUnsignedByte((xqp_ubyte)(*it).int_value);
 				break;
 			case XS_POSITIVE_INTEGER://derived from XS_NON_NEGATIVE_INTEGER
-				atomic_item = item_factory->createPositiveInteger((xqp_positiveInteger)(*it).int_value);
+				atomic_item = item_factory->createPositiveInteger((xqp_uinteger)(*it).int_value);
 				break;
 			}
 			break;
