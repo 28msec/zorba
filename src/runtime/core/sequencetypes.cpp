@@ -60,7 +60,9 @@ CastIterator::CastIterator(
     PlanIter_t& aChild,
     const TypeSystem::xqtref_t& aCastType)
   : UnaryBaseIterator<CastIterator>(loc, aChild), theCastType(aCastType)
-{}
+{
+  theQuantifier = GENV_TYPESYSTEM.quantifier(*theCastType);
+}
 
 Item_t CastIterator::nextImpl(PlanState& aPlanState) {
   Item_t lItem;
@@ -68,16 +70,35 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
   
+
+
   lItem = consumeNext(theChild, aPlanState);
-  if (lItem != 0) {
-    STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
-    if (consumeNext(theChild, aPlanState) != 0) {
+  if (lItem == 0) {
+    if (theQuantifier == TypeSystem::QUANT_PLUS || theQuantifier == TypeSystem::QUANT_ONE) {
       ZorbaErrorAlerts::error_alert (
         error_messages::XPTY0004_STATIC_TYPE_ERROR,
         error_messages::STATIC_ERROR,
         false,
-        "Cast expression contains a parameter with produces a sequence of more than one atomic value"
+        "Empty sequences cannot be casted to a type with quantifier ONE or PLUS!"
       );
+    }
+  } else {
+    STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
+    lItem = consumeNext(theChild, aPlanState);
+    if (lItem != 0) {
+      if (theQuantifier == TypeSystem::QUANT_ONE
+       || theQuantifier == TypeSystem::QUANT_QUESTION) {
+         ZorbaErrorAlerts::error_alert (
+           error_messages::XPTY0004_STATIC_TYPE_ERROR,
+           error_messages::STATIC_ERROR,
+           false,
+           "Sequence wiht more than one item cannot be casted to a type with quantifier ONE or QUESTION!"
+         );
+      }
+      do {
+        STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
+        lItem = consumeNext(theChild, aPlanState);
+      } while (lItem != 0);
     }
   }
   STACK_END();

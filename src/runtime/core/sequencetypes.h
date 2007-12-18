@@ -50,7 +50,8 @@ public:
 class CastIterator : public UnaryBaseIterator<CastIterator> {
 private:
   TypeSystem::xqtref_t theCastType;
-  
+  TypeSystem::quantifier_t theQuantifier;
+
 public:
   CastIterator(const yy::location& loc,
                PlanIter_t& aChild,
