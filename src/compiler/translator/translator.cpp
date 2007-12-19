@@ -1722,8 +1722,15 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
   rchandle<QName> qn_h = v.get_fname();
   string prefix = qn_h->get_prefix();
   string fname = qn_h->get_localname();
+
+  QNameItem_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
+
+  if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "position") {
+    nodestack.push(sctx_p->lookup_var(DOT_POS_VAR));
+    return;
+  }
   TypeSystem::xqtref_t type =
-    GENV_TYPESYSTEM.create_type (sctx_p->lookup_fn_qname (prefix, fname),
+    GENV_TYPESYSTEM.create_type (fn_qname,
                                  TypeSystem::QUANT_QUESTION);
   if (type != NULL) {
     if (arguments.size () != 1)
