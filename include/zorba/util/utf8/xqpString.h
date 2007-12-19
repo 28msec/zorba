@@ -273,34 +273,34 @@ public:
     //escape all characters except for those :
     //Upper and lowercase letters A-Z
     //digits 0-9, HYPHEN-MINUS ("-"), LOW LINE ("_"), FULL STOP ".", and TILDE "~"
-    xqpString encodeForUri();
+    xqpString encodeForUri() const;
 
     //This function converts an xs:string containing an IRI into a URI according to the
     //rules spelled out in Section 3.1 of http://www.ietf.org/rfc/rfc3987.txt
-    xqpString iriToUri();
+    xqpString iriToUri() const;
 
     //This function escapes all characters except printable characters of the US-ASCII
     //coded character set, specifically the octets ranging from 32 to 126 (decimal)
-    xqpString escapeHtmlUri();
+    xqpString escapeHtmlUri() const;
 
     //Returns an xqpString modified so that every character in that occurs at some position N
     //in the value of $mapString has been replaced by the character that occurs at position N
     //in the value of $transString.
     //Every character from 'this' that does not occur in the mapString is left unchanged
-    xqpString translate(xqpString mapString, xqpString transString);
+    xqpString translate(xqpString mapString, xqpString transString) const;
 
     //Returns a new xqpString by stripping leading and trailing whitespace
     //and replacing sequences of one or more than one whitespace character with a single space, #x20.
-    xqpString normalizeSpace();
+    xqpString normalizeSpace() const;
 
     //Removes the leading whitespaces (#x20).
-    xqpString trimL();
+    xqpString trimL() const;
 
     //Removes the trailing whitespaces (#x20).
-    xqpString trimR();
+    xqpString trimR() const;
 
     //Removes the leading and trailing whitespaces (#x20).
-    xqpString trim();
+    xqpString trim() const;
 
 private:
 

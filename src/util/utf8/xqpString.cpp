@@ -649,7 +649,7 @@ namespace xqp
     return mapArray;
   }
   
-  xqpString xqpString::encodeForUri()
+  xqpString xqpString::encodeForUri() const
   {
     uint32_t i =0;
     uint32_t len = length();
@@ -687,11 +687,11 @@ namespace xqp
     }
     tmp += "\0";
 
-    theStrStore = new xqpStringStore(tmp);
-    return *this;
+    xqpString res(tmp);
+    return res;
   }
 
-  xqpString xqpString::iriToUri()
+  xqpString xqpString::iriToUri() const
   {
     uint32_t i =0;
     uint32_t len = length();
@@ -729,11 +729,11 @@ namespace xqp
     }
     tmp += "\0";
 
-    theStrStore = new xqpStringStore(tmp);
-    return *this;
+    xqpString res(tmp);
+    return res;
   }
  
-  xqpString xqpString::escapeHtmlUri()
+  xqpString xqpString::escapeHtmlUri() const
   {
     uint32_t i =0;
     uint32_t len = length();
@@ -771,11 +771,11 @@ namespace xqp
     }
     tmp += "\0";
 
-    theStrStore = new xqpStringStore(tmp);
-    return *this;
+    xqpString res(tmp);
+    return res;
   }
 
-  xqpString xqpString::translate(xqpString mapString, xqpString transString)
+  xqpString xqpString::translate(xqpString mapString, xqpString transString) const
   {
     std::map<uint32_t,uint32_t> myMap;
     std::map<uint32_t,uint32_t>::iterator it;
@@ -810,11 +810,11 @@ namespace xqp
     }
     tmp += "\0";
 
-    theStrStore = new xqpStringStore(tmp);
-    return *this;
+    xqpString res(tmp);
+    return res;
   }
 
-  xqpString xqpString::normalizeSpace()
+  xqpString xqpString::normalizeSpace() const
   {
     //create the new xqpStringStore
     std::string tmp = "";
@@ -840,11 +840,11 @@ namespace xqp
     }
     tmp += "\0";
 
-    theStrStore = new xqpStringStore(tmp);
-    return *this;
+    xqpString res(tmp);
+    return res;
   }
 
-  xqpString xqpString::trimL()
+  xqpString xqpString::trimL() const
   {
     //create the new xqpStringStore
     std::string tmp = "";
@@ -868,11 +868,11 @@ namespace xqp
       --len;
     }
 
-    theStrStore = new xqpStringStore(tmp);
-    return *this;
+    xqpString res(tmp);
+    return res;
   }
 
-  xqpString xqpString::trimR()
+  xqpString xqpString::trimR() const
   {
     //create the new xqpStringStore
     std::string tmp = "";
@@ -908,11 +908,11 @@ namespace xqp
       --pos;
     }
 
-    theStrStore = new xqpStringStore(tmp);
-    return *this;
+    xqpString res(tmp);
+    return res;
   }
 
-  xqpString xqpString::trim()
+  xqpString xqpString::trim() const
   {
     //TODO optimize
     xqpString tmp = trimL();
