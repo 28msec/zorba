@@ -342,7 +342,7 @@ private:
 
     /**Create a map with:
     *-the codepoints of the chars from 'mapString' as first dimension
-    *-the codepoints of the chars from 'transString' as second dimension or ULONG_MAX
+    *-the codepoints of the chars from 'transString' as second dimension or 0xFFFFFFFF
     *if length(mapString) \< length(transString)
     *Only the first occurence of a character from mapString is inserted into the mapArray
      */
