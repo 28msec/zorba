@@ -324,7 +324,7 @@ namespace xqp
 
     return zorba::getItemFactory()->createBoolean(lRetValue);
   }
-#undef ATOMIC_TYPE(type)
+#undef ATOMIC_TYPE
 
   Item_t GenericCast::cast ( Item_t aItem, const TypeSystem::xqtref_t& aTargetType ) const
   {
