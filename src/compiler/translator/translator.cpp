@@ -49,6 +49,7 @@ static void *no_state = (void *) new int;
 
 #define DOT_VAR "$$dot"
 #define DOT_POS_VAR "$$pos"
+#define LAST_IDX_VAR "$$last-idx"
 
   var_expr *translator::bind_var (yy::location loc, string varname, var_expr::var_kind kind) {
     QNameItem_t qname = sctx_p->lookup_qname ("", varname);
@@ -1729,6 +1730,10 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
     nodestack.push(sctx_p->lookup_var(DOT_POS_VAR));
     return;
   }
+  if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "last") {
+    nodestack.push(sctx_p->lookup_var(LAST_IDX_VAR));
+    return;
+  }
   TypeSystem::xqtref_t type =
     GENV_TYPESYSTEM.create_type (fn_qname,
                                  TypeSystem::QUANT_QUESTION);
@@ -2291,10 +2296,14 @@ rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, rchandle<var_
   return new forlet_clause(forlet_clause::for_clause, fvh, pvh, NULL, expr.get_ptr());
 }
 
-rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr)
+rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr, rchandle<var_expr> lvh)
 {
-  rchandle<var_expr> lv = tempvar(expr->get_loc(), var_expr::let_var);
-  return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.get_ptr());
+  if (lvh == NULL) {
+    lvh = tempvar(expr->get_loc(), var_expr::let_var);
+  } else {
+    lvh->set_kind(var_expr::let_var);
+  }
+  return new forlet_clause(forlet_clause::let_clause, lvh, NULL, NULL, expr.get_ptr());
 }
 
 translator::expr_t translator::wrap_in_dos_and_dupelim(expr_t expr)
@@ -2473,12 +2482,18 @@ void translator::pre_predicate_visit(const PredicateList& v, void *visit_state)
 {
   push_scope();
   expr_t seq = pop_nodestack();
-  rchandle<forlet_clause> lc = wrap_in_letclause(seq);
+  rchandle<forlet_clause> lcseq = wrap_in_letclause(seq);
+  rchandle<fo_expr> count_expr = new fo_expr(v.get_location());
+  count_expr->set_func(LOOKUP_FN("fn", "count", 1));
+  count_expr->add(lcseq->get_var().get_ptr());
+  var_expr *last_idx_var = bind_var(v.get_location(), LAST_IDX_VAR);
+  rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr, last_idx_var);
   var_expr *dot_var = bind_var(v.get_location(), DOT_VAR);
   var_expr *pos_var = bind_var(v.get_location(), DOT_POS_VAR);
-  rchandle<forlet_clause> fc = wrap_in_forclause(lc->get_var().get_ptr(), dot_var, pos_var);
+  rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().get_ptr(), dot_var, pos_var);
   rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
-  flwor->add(lc);
+  flwor->add(lcseq);
+  flwor->add(lclast);
   flwor->add(fc);
   nodestack.push(&*flwor);
 }
@@ -2503,7 +2518,7 @@ void translator::post_predicate_visit(const PredicateList& v, void *visit_state)
   Assert(flwor != NULL);
   
   rchandle<if_expr> ite = new if_expr(pred->get_loc());
-  if (is_numeric_literal(&*pred)) {
+  if (is_numeric_literal(&*pred) || &*pred == sctx_p->lookup_var(LAST_IDX_VAR)) {
     rchandle<fo_expr> eq = new fo_expr(pred->get_loc());
     eq->set_func(LOOKUP_OP2("value-equal"));
     eq->add(sctx_p->lookup_var(DOT_POS_VAR));
@@ -2519,6 +2534,7 @@ void translator::post_predicate_visit(const PredicateList& v, void *visit_state)
   
   flwor->set_retval(&*ite);
   nodestack.push(flwor);
+  pop_scope();
 }
 
 void *translator::begin_visit(const ForwardStep& v)

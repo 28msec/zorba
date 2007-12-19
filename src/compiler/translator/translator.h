@@ -46,7 +46,7 @@ protected:
   rchandle<var_expr> tempvar(yy::location loc, var_expr::var_kind);
   rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar);
   rchandle<forlet_clause> wrap_in_forclause(expr_t expr, rchandle<var_expr> fvh, rchandle<var_expr> pvh);
-  rchandle<forlet_clause> wrap_in_letclause(expr_t expr);
+  rchandle<forlet_clause> wrap_in_letclause(expr_t expr, rchandle<var_expr> lvh = NULL);
   expr_t wrap_in_dos_and_dupelim(expr_t expr);
 
 public:
