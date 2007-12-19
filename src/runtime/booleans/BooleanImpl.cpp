@@ -193,7 +193,7 @@ namespace xqp
         if ( this->consumeNext ( theChild0, planState ) != NULL || this->consumeNext ( theChild1, planState ) != NULL )
         {
           ZorbaErrorAlerts::error_alert (
-              error_messages::FOCH0004_Collation_does_not_support_collation_units,
+              error_messages::XPTY0004_STATIC_TYPE_ERROR,
               error_messages::RUNTIME_ERROR,
               &loc,
               false,
