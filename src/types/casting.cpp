@@ -44,9 +44,13 @@ namespace xqp
     return &aGenericCast;
   }
   
-  Item_t GenericCast::stringSimpleCast(const xqpString& aString, const TypeSystem::xqtref_t& aTargetType) const {
+  Item_t GenericCast::stringSimpleCast(const Item_t aSourceItem,
+                                       const TypeSystem::xqtref_t& aSourceType,
+                                       const TypeSystem::xqtref_t& aTargetType) const
+  {
     Item_t lItem = 0;
-    xqpString lString = aString.trim();
+
+    xqpString lString = aSourceItem->getStringProperty().trim();
     
     try {
       switch(GENV_TYPESYSTEM.get_atomic_type_code(*aTargetType)) {
@@ -217,13 +221,9 @@ namespace xqp
           break;
         case TypeSystem::XS_BOOLEAN:
         {
-          bool b;
-          if (lString == "true")
-            lItem = zorba::getItemFactory()->createBoolean(true);
-          else if (lString == "false")
-            lItem = zorba::getItemFactory()->createBoolean(false);
-        }
+          lItem = castToBoolean(aSourceItem, aSourceType);
           break;
+        }
         case TypeSystem::XS_BASE64BINARY:
           break;
         case TypeSystem::XS_HEXBINARY:
@@ -259,18 +259,86 @@ namespace xqp
     return lItem;
   }
 
+#define ATOMIC_TYPE(type) \
+  GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_##type, TypeSystem::QUANT_ONE)
+
+  Item_t
+  GenericCast::castToBoolean(const Item_t aSourceItem,
+                             const TypeSystem::xqtref_t& aSourceType) const
+  {
+    bool lRetValue = true;
+
+#ifndef NDEBUG
+    if (GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(BOOLEAN)))
+    {
+      assert(false); // is already handled by Generic::cast
+    } else
+#endif
+    if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(FLOAT)))
+    {
+      Item_t lFloatItem = zorba::getItemFactory()->createFloat(0);
+      if (lFloatItem->equals(aSourceItem))
+        lRetValue = false;
+
+      // TODO check NaN
+      
+    } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DOUBLE)))
+    {
+      Item_t lDoubleItem = zorba::getItemFactory()->createDouble(0);
+      if (lDoubleItem->equals(aSourceItem))
+        lRetValue = false;
+
+      // TODO check NaN
+    } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DECIMAL)))
+    {
+      Item_t lDecimalItem = zorba::getItemFactory()->createDecimal(0);
+      if (lDecimalItem->equals(aSourceItem))
+        lRetValue = false;
+
+      // TODO check NaN
+
+    } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(INTEGER)))
+    {
+      Item_t lIntegerItem = zorba::getItemFactory()->createInteger(0);
+      if (lIntegerItem->equals(aSourceItem))
+        lRetValue = false;
+
+     // TODO check NAN
+    } else if (GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(STRING))
+               || GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(UNTYPED_ATOMIC)))
+    {
+      xqp_string lString = aSourceItem->getStringProperty().trim();
+
+      if (lString == "false" || lString == "0")
+        lRetValue = false;
+      else if (lString != "true" && lString != "1")
+      {
+        ZorbaErrorAlerts::error_alert(
+            error_messages::FORG0001_Invalid_value_for_cast_constructor,
+            error_messages::RUNTIME_ERROR,
+            false,
+            "String cannot be cast to boolean");
+      }
+      
+    }
+
+    return zorba::getItemFactory()->createBoolean(lRetValue);
+  }
+#undef ATOMIC_TYPE(type)
+
   Item_t GenericCast::cast ( Item_t aItem, const TypeSystem::xqtref_t& aTargetType ) const
   {
     Item_t lResult;
     
-    TypeSystem::xqtref_t lItemType = GENV_TYPESYSTEM.create_type( aItem->getType(), TypeSystem::QUANT_ONE );
+    TypeSystem::xqtref_t lItemType = 
+            GENV_TYPESYSTEM.create_type( aItem->getType(), TypeSystem::QUANT_ONE );
+
     if ( GENV_TYPESYSTEM.is_subtype ( *lItemType, *aTargetType ) ) {
       return aItem;
     }
     
-    xqpString lStr = aItem->getStringProperty();
-    lResult = stringSimpleCast(lStr, aTargetType);
-    if ( lResult == 0) {
+    lResult = stringSimpleCast(aItem, lItemType, aTargetType);
+    if ( lResult == 0 ) {
       ZorbaErrorAlerts::error_alert(
         error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
         error_messages::STATIC_ERROR,
@@ -353,15 +421,16 @@ namespace xqp
   }
 
   bool GenericCast::isCastable(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const {
-    TypeSystem::xqtref_t lItemType = GENV_TYPESYSTEM.create_type( aItem->getType(), TypeSystem::QUANT_ONE );
+    TypeSystem::xqtref_t lItemType = 
+        GENV_TYPESYSTEM.create_type( aItem->getType(), TypeSystem::QUANT_ONE );
+
     if ( GENV_TYPESYSTEM.is_subtype ( *lItemType, *aTargetType ) ) {
       // Item is castable if target type is a supertype
       return true;  
     }
     
     // Most simple implementation: Check if string cast works
-    xqpString lStr = aItem->getStringProperty();
-    Item_t lItem = stringSimpleCast(lStr, aTargetType);
+    Item_t lItem = stringSimpleCast(aItem, lItemType, aTargetType);
     if (lItem == 0) {
       return false;
     } else {

@@ -97,7 +97,6 @@ namespace xqp {
   UNARY_ACCEPT(EnclosedIterator);
   UNARY_ACCEPT(FnExistsIterator);
   UNARY_ACCEPT(FnEmptyIterator);
-  UNARY_ACCEPT(FnDistinctValuesIterator);
   UNARY_ACCEPT(FnZeroOrOneIterator);
   UNARY_ACCEPT(FnOneOrMoreIterator);
   UNARY_ACCEPT(FnExactlyOneIterator);
@@ -136,6 +135,7 @@ namespace xqp {
   NARY_ACCEPT(EndsWithIterator);
   NARY_ACCEPT(SubstringBeforeIterator);
   NARY_ACCEPT(SubstringAfterIterator);
+  NARY_ACCEPT(FnDistinctValuesIterator);
   NARY_ACCEPT(FnConcatIterator);
   NARY_ACCEPT(FnInsertBeforeIterator);
   NARY_ACCEPT(FnSubsequenceIterator);

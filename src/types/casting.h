@@ -45,14 +45,23 @@ namespace xqp
 			
       static GenericCast* instance();
 
+		private:
       /**
        * Tries to cast the passed string to an Item of the passed target type.
        * @param aString 
        * @param aTargateType
        * @return Created Item or 0 if the parsing was not possible
        */
-      Item_t stringSimpleCast(const xqpString& aString, const TypeSystem::xqtref_t& aTargetType) const;
+      Item_t stringSimpleCast(const Item_t aSourceItem,
+                              const TypeSystem::xqtref_t& aSourceType,
+                              const TypeSystem::xqtref_t& aTargetType) const;
       
+      // XQuery 1.0 and XPath 2.0 Functions and Operators
+      // 17.1.6 Casting to xs:boolean
+      Item_t castToBoolean(const Item_t aSourceItem,
+                           const TypeSystem::xqtref_t& aSourceType) const;
+
+    public:
 			/**
 			 * Executes the casting of the passed item. If the passed item has the same type or a subtype
        * of the passed targetType, the passed item is directly returned.

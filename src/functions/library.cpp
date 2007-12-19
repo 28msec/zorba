@@ -178,11 +178,16 @@ DECL(fn_remove,
     GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-// FIXME how to add the second optional string param
-DECL(fn_distinct_values,
+DECL(fn_distinct_values_1,
     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","distinct-values"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
+
+DECL(fn_distinct_values_2,
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","distinct-values"),
+    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+    GENV_TYPESYSTEM.STRING_TYPE_ONE,
+    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
 DECL(fn_insert_before,
     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","insert-before"),

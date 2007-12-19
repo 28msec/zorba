@@ -261,9 +261,8 @@ FnExistsIterator::nextImpl(PlanState& planState) {
  * Here, we return the first item that is not a duplicate and throw away the remaining ones
  */
 FnDistinctValuesIterator::FnDistinctValuesIterator(yy::location loc,
-                                                   PlanIter_t& arg,
-                                                   std::string collation)
- : UnaryBaseIterator<FnDistinctValuesIterator> ( loc, arg )
+                                                   vector<PlanIter_t>& args)
+ : NaryBaseIterator<FnDistinctValuesIterator> ( loc, args )
 { }
 
 FnDistinctValuesIterator::~FnDistinctValuesIterator(){}
@@ -275,8 +274,13 @@ FnDistinctValuesIterator::nextImpl(PlanState& planState) {
   
   FnDistinctValuesIteratorState* state;
   DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
+
+  if (theChildren.size() == 2)
+  {
+    // TODO collation support
+  }
       
-  while ( (lItem = consumeNext(theChild, planState)) != NULL )
+  while ( (lItem = consumeNext(theChildren[0], planState)) != NULL )
   {
     // check if the item is alrady in the map
     lConstIter = state->theAlreadySeenMap.find(lItem);
@@ -292,16 +296,10 @@ FnDistinctValuesIterator::nextImpl(PlanState& planState) {
   STACK_END();
 }
 
-uint32_t
-FnDistinctValuesIterator::getStateSizeOfSubtree() const 
-{
-  return theChild->getStateSizeOfSubtree() + getStateSize();
-}
-
 void 
 FnDistinctValuesIterator::releaseResourcesImpl(PlanState& planState)
 {
-  UnaryBaseIterator<FnDistinctValuesIterator>::releaseResourcesImpl(planState);
+  NaryBaseIterator<FnDistinctValuesIterator>::releaseResourcesImpl(planState);
   
   FnDistinctValuesIteratorState* state;
   GET_STATE(FnDistinctValuesIteratorState, state, planState);
@@ -313,7 +311,7 @@ FnDistinctValuesIterator::releaseResourcesImpl(PlanState& planState)
 void 
 FnDistinctValuesIterator::resetImpl(PlanState& planState)
 {
-  UnaryBaseIterator<FnDistinctValuesIterator>::resetImpl(planState);
+  NaryBaseIterator<FnDistinctValuesIterator>::resetImpl(planState);
 
   FnDistinctValuesIteratorState* state;
   GET_STATE(FnDistinctValuesIteratorState, state, planState);
@@ -323,29 +321,22 @@ FnDistinctValuesIterator::resetImpl(PlanState& planState)
 void 
 FnDistinctValuesIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
-  UnaryBaseIterator<FnDistinctValuesIterator>::setOffset(planState, offset);
+  NaryBaseIterator<FnDistinctValuesIterator>::setOffset(planState, offset);
 
   FnDistinctValuesIteratorState* state = 
     new (planState.block + stateOffset) FnDistinctValuesIteratorState;
 }
 
-bool 
-FnDistinctValuesIterator::ItemCmp::operator() ( 
-  const Item_t& i1, const Item_t& i2) const
-{
-  return CompareIterator::compare(i1, i2)<0?true:false;
-}
-
 void
 FnDistinctValuesIterator::FnDistinctValuesIteratorState::init() 
 {
- PlanIterator::PlanIteratorState::init();
+  PlanIterator::PlanIteratorState::init();
 }
 
 void
 FnDistinctValuesIterator::FnDistinctValuesIteratorState::reset() {
- PlanIterator::PlanIteratorState::reset();
- theAlreadySeenMap.clear();
+  PlanIterator::PlanIteratorState::reset();
+  theAlreadySeenMap.clear();
 }
 
 

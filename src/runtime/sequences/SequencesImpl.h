@@ -16,6 +16,7 @@
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
+#include "runtime/booleans/BooleanImpl.h"
 
 namespace xqp
 {
@@ -150,13 +151,12 @@ public:
 };
 
 //15.1.6 fn:distinct-values
-class FnDistinctValuesIterator : public UnaryBaseIterator<FnDistinctValuesIterator>
+class FnDistinctValuesIterator : public NaryBaseIterator<FnDistinctValuesIterator>
 {
 
 public:
   FnDistinctValuesIterator(yy::location loc,
-                           PlanIter_t& arg1,
-                           std::string collation);
+                           vector<PlanIter_t>& args);
  
   ~FnDistinctValuesIterator();
 
@@ -169,15 +169,11 @@ public:
   void 
   releaseResourcesImpl(PlanState& planState);
  
- 
   virtual void 
   accept(PlanIterVisitor&) const;
 
   virtual uint32_t 
   getStateSize() const { return sizeof ( FnDistinctValuesIteratorState ); }
-
-  virtual uint32_t
-  getStateSizeOfSubtree() const;
 
   void 
   setOffset(PlanState& planState, uint32_t& offset);
@@ -185,7 +181,11 @@ public:
 protected:
   struct ItemCmp 
   {
-      bool operator() ( const Item_t&, const Item_t& ) const;
+      bool operator() ( const Item_t& i1, const Item_t& i2) const
+      {
+        return CompareIterator::compare(i1, i2)<0?true:false;
+      }
+
   };
   
   class FnDistinctValuesIteratorState : public PlanIteratorState {

@@ -101,16 +101,24 @@ public:
 
 //15.1.6 fn:distinct-values
 //-------------------------
-class fn_distinct_values : public function
+class fn_distinct_values_1 : public function
 {
 public:
-	fn_distinct_values(const signature&);
-	~fn_distinct_values() {}
+	fn_distinct_values_1(const signature&);
+	~fn_distinct_values_1() {}
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	TypeSystem::xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+class fn_distinct_values_2 : public fn_distinct_values_1
+{
+public:
+	fn_distinct_values_2(const signature& sig)
+	  : fn_distinct_values_1(sig) { }
+	~fn_distinct_values_2() {}
 };
 
 
