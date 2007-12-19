@@ -232,6 +232,19 @@ namespace xqp {
     return next(it);
   }
 
+    /**
+   * Given the iterator to the beginning of the UTF-8 sequence, it returns the code point.
+   *
+   * @param it a reference to an iterator pointing to the beginning of an UTF-8 encoded code point.
+   * @return the 32 bit representation of the processed UTF-8 code point
+   * @note After the function returns, @param it is decremented to point to the beginning
+   * of the previous code point
+     */
+  template <typename octet_iterator>
+      uint32_t UTF8DecodePrev(octet_iterator& it){
+    return prior(it);
+  }
+
   /**
   *Converts a UTF-16 encoded string to UTF-8.
   *

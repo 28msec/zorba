@@ -820,14 +820,14 @@ namespace xqp
     std::string tmp = "";
     uint32_t len = length();
     const char* c = c_str();
-    uint32_t cp, cpPrev, i;
+    uint32_t cp, cpPrev;
     char seq[4];
 
     cpPrev = 0x20;
     while(len > 0)
     {
       cp = UTF8Decode(c);
-      if( !is_space( cp) ||
+      if( !is_space(cp) ||
             (is_space(cp) && !is_space(cpPrev) && len!=1)
         )
       {
@@ -842,6 +842,81 @@ namespace xqp
 
     theStrStore = new xqpStringStore(tmp);
     return *this;
+  }
+
+  xqpString xqpString::trimL()
+  {
+    //create the new xqpStringStore
+    std::string tmp = "";
+    uint32_t len = length();
+    const char* c = c_str();
+    uint32_t cp;
+    char seq[4];
+    bool found = false;
+
+    while(len > 0 && !found)
+    {
+      cp = UTF8Decode(c);
+      if(!is_space( cp))
+      {
+        memset(seq, 0, sizeof(seq));
+        UTF8Encode(cp, seq);
+        tmp += seq;
+        tmp +=c;
+        found = true;
+      }
+      --len;
+    }
+
+    theStrStore = new xqpStringStore(tmp);
+    return *this;
+  }
+
+  xqpString xqpString::trimR()
+  {
+    //create the new xqpStringStore
+    std::string tmp = "";
+    uint32_t len = length();
+    uint32_t pos, cp;
+    const char* end = c_str();
+    const char* c = c_str();
+    char seq[4];
+
+    xqp::advance(end, len);
+
+    while(len > 0)
+    {
+      cp = UTF8DecodePrev(end);
+      if( !is_space(cp)  )
+      {
+        pos = xqp::UTF8Distance(c, end);
+        break;
+      }
+      --len;
+    }
+    
+    ++pos;
+
+    while(pos > 0)
+    {
+      cp = UTF8Decode(c);
+      
+      memset(seq, 0, sizeof(seq));
+      UTF8Encode(cp, seq);
+      tmp += seq;
+
+      --pos;
+    }
+
+    theStrStore = new xqpStringStore(tmp);
+    return *this;
+  }
+
+  xqpString xqpString::trim()
+  {
+    //TODO optimize
+    xqpString tmp = trimL();
+    return tmp.trimR();
   }
   
   // Private methods

@@ -230,7 +230,7 @@ public:
     */
     int32_t lastIndexOf(xqpString pattern) const;
 
-    /**Locate in this the last occurrence in the range [0, length) of the characters in pattern using the "Default collation".
+    /**Locate in this the last occurrence in the range [0, length) of the characters in pattern using the given collationUri.
     *  @param pattern The text to search for.
     *  @param collationUri collation URI.
     *  @return The offset into this of the start of pattern, or -1 if not found.
@@ -258,7 +258,8 @@ public:
     xqpString substr(distance_type index) const;
     const char* c_str() const;
 
-    inline  operator std::string() const{
+    inline  operator std::string() const
+    {
       return *theStrStore;
     }
 
@@ -291,6 +292,15 @@ public:
     //Returns a new xqpString by stripping leading and trailing whitespace
     //and replacing sequences of one or more than one whitespace character with a single space, #x20.
     xqpString normalizeSpace();
+
+    //Removes the leading whitespaces (#x20).
+    xqpString trimL();
+
+    //Removes the trailing whitespaces (#x20).
+    xqpString trimR();
+
+    //Removes the leading and trailing whitespaces (#x20).
+    xqpString trim();
 
 private:
 
@@ -344,19 +354,22 @@ private:
   std::ostream& operator<<(std::ostream& os, xqp::xqpString utf8_src);
 
   //xqpString::concatenation operator+()
-  inline xqpString operator+(xqpString lsrc, xqpString rsrc){
+  inline xqpString operator+(xqpString lsrc, xqpString rsrc)
+  {
     xqpString tmp (lsrc);
     tmp += rsrc;
     return tmp;
   }
 
-  inline xqpString operator+(xqpString& lsrc, const char* rsrc){
+  inline xqpString operator+(xqpString& lsrc, const char* rsrc)
+  {
     xqpString tmp (lsrc);
     tmp += rsrc;
     return tmp;
   }
 
-  inline xqpString operator+(const char* lsrc, xqpString rsrc){
+  inline xqpString operator+(const char* lsrc, xqpString rsrc)
+  {
     xqpString tmp (lsrc);
     tmp += rsrc;
     return tmp;
