@@ -44,17 +44,32 @@ namespace xqp
 			~GenericCast() {}
 			
       static GenericCast* instance();
-			
-      Item_t stringSimpleCast(/*const*/ xqpString& aString, TypeSystem::xqtref_t& aTargetType);
+
+      /**
+       * Tries to cast the passed string to an Item of the passed target type.
+       * @param aString 
+       * @param aTargateType
+       * @return Created Item or 0 if the parsing was not possible
+       */
+      Item_t stringSimpleCast(const xqpString& aString, const TypeSystem::xqtref_t& aTargetType) const;
       
 			/**
 			 * Executes the casting of the passed item. If the passed item has the same type or a subtype
        * of the passed targetType, the passed item is directly returned.
-			 * @param item 
-       * @param targetType target type
+			 * @param aItem 
+       * @param aTargetType
 			 * @return resutling item
 			 */
-      Item_t cast ( Item_t item, /*const*/ TypeSystem::xqtref_t& targetType );
+      Item_t cast ( Item_t aItem, const TypeSystem::xqtref_t& aTargetType ) const;
+
+      /**
+       * Checks if the passed item would be castable to the passed target type.
+       * @param aItem
+       * @param aTargetType
+       * @return true if castable, else false
+       */
+      bool isCastable( Item_t aItem, const TypeSystem::xqtref_t& aTargetType ) const; 
+
 	}; /* class GenericCast */
 
 } /* namespace xqp */

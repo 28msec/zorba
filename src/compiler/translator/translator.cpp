@@ -1559,6 +1559,7 @@ TRACE_VISIT ();
 void translator::end_visit(const CastableExpr& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
+  nodestack.push(new castable_expr(v.get_location(), pop_nodestack(), pop_tstack()));
 }
 
 

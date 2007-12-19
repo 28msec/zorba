@@ -861,5 +861,16 @@ namespace xqp {
   void PrinterVisitor::endVisit(const CastIterator&) {
     thePrinter.endIter();
   }
+
+  void PrinterVisitor::beginVisit(const CastableIterator& a) {
+    thePrinter.startIter("CastableIterator");
+    std::ostringstream lStream;
+    GENV_TYPESYSTEM.serialize(lStream, *a.theCastType);
+    thePrinter.addAttribute("type", lStream.str());
+  }
+
+  void PrinterVisitor::endVisit(const CastableIterator&) {
+    thePrinter.endIter();
+  }
 } /* namespace xqp */
 /* vim:set ts=2 sw=2: */

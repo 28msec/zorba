@@ -111,6 +111,7 @@ namespace xqp {
   UNARY_ACCEPT(DocumentContentIterator);
   UNARY_ACCEPT(DocFilterIterator);
   UNARY_ACCEPT(CastIterator);
+  UNARY_ACCEPT(CastableIterator);
   
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);

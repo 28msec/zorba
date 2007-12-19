@@ -808,6 +808,8 @@ void plan_visitor::end_visit(treat_expr& v)
 void plan_visitor::end_visit(castable_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+  PlanIter_t lChild = pop_itstack();
+  itstack.push(new CastableIterator(v.get_loc(), lChild, v.get_type()));
 }
 
 void plan_visitor::end_visit(validate_expr& v)

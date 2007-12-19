@@ -307,6 +307,9 @@ namespace xqp {
       
       virtual void beginVisit(const CastIterator&);
       virtual void endVisit(const CastIterator&);
+
+      virtual void beginVisit(const CastableIterator&);
+      virtual void endVisit(const CastableIterator&);
       
   };
 } /* namespace xqp */

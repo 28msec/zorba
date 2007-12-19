@@ -63,5 +63,26 @@ public:
 };
 
 
+/*******************************************************************************
+  Implement 3.12.4: Castable
+
+  http://www.w3.org/TR/xquery/#id-castable
+********************************************************************************/
+class CastableIterator : public UnaryBaseIterator<CastableIterator> {
+  friend class PrinterVisitor;
+private:
+  TypeSystem::xqtref_t theCastType;
+  TypeSystem::quantifier_t theQuantifier;
+
+public:
+  CastableIterator(const yy::location& aLoc,
+                   PlanIter_t& aChild,
+                   const TypeSystem::xqtref_t& aCastType);
+
+  Item_t nextImpl(PlanState& aPlanState);
+  virtual void accept(PlanIterVisitor&) const;
+};
+
+
 } /* namespace xqp */
 #endif  /* XQP_SEQUENCETYPES_H */

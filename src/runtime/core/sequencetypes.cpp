@@ -107,5 +107,55 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState) {
 /*******************************************************************************
 
 ********************************************************************************/
+
+CastableIterator::CastableIterator(
+  const yy::location& aLoc,
+  PlanIter_t& aChild,
+  const TypeSystem::xqtref_t& aCastType)
+:
+  UnaryBaseIterator<CastableIterator>(aLoc, aChild), theCastType(aCastType)
+{
+  theQuantifier = GENV_TYPESYSTEM.quantifier(*theCastType);
+}
+
+Item_t CastableIterator::nextImpl(PlanState& aPlanState) {
+  bool lBool;
+  Item_t lItem;
+
+  PlanIteratorState* lState;
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+  lItem = consumeNext(theChild, aPlanState);
+  if (lItem == 0) {
+    if (theQuantifier == TypeSystem::QUANT_PLUS || theQuantifier == TypeSystem::QUANT_ONE) {
+      lBool = false;
+    } else {
+      lBool = true;
+    }
+  } else {
+    lBool = GenericCast::instance()->isCastable(lItem, theCastType);
+    if (lBool) {
+      lItem = consumeNext(theChild, aPlanState);
+      if (lItem != 0) {
+        if (theQuantifier == TypeSystem::QUANT_ONE || theQuantifier == TypeSystem::QUANT_QUESTION) {
+          lBool = false;
+        } else {
+          do {
+            lBool = GenericCast::instance()->isCastable(lItem, theCastType);
+            if (lBool)
+              lItem = consumeNext(theChild, aPlanState);
+          } while (lBool && (lItem != 0));
+        }
+      }
+    }
+  }
+  STACK_PUSH(zorba::getItemFactory()->createBoolean(lBool), lState);
+  STACK_END();
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+
+
 } /* namespace xqp */
 

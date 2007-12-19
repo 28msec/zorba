@@ -44,7 +44,7 @@ namespace xqp
     return &aGenericCast;
   }
   
-  Item_t GenericCast::stringSimpleCast(/*const*/ xqpString& aString, TypeSystem::xqtref_t& aTargetType) {
+  Item_t GenericCast::stringSimpleCast(const xqpString& aString, const TypeSystem::xqtref_t& aTargetType) const {
     Item_t lItem = 0;
     
     try {
@@ -253,26 +253,12 @@ namespace xqp
           break;
       }
     } catch (boost::bad_lexical_cast& e) {
-      ZorbaErrorAlerts::error_alert (
-        error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
-        error_messages::STATIC_ERROR,
-        false,
-        "System error during atomic string casting (boost bad_lexical_cast exception)!"
-      );
-}
-    
-    if (lItem == 0) {
-      ZorbaErrorAlerts::error_alert (
-        error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
-        error_messages::STATIC_ERROR,
-        false,
-        "String casting for asked type is not possible!"
-      );
+      lItem = 0;
     }
     return lItem;
   }
 
-  Item_t GenericCast::cast ( Item_t aItem, /*const*/ TypeSystem::xqtref_t& aTargetType )
+  Item_t GenericCast::cast ( Item_t aItem, const TypeSystem::xqtref_t& aTargetType ) const
   {
     Item_t lResult;
     
@@ -283,6 +269,14 @@ namespace xqp
     
     xqpString lStr = aItem->getStringProperty();
     lResult = stringSimpleCast(lStr, aTargetType);
+    if ( lResult == 0) {
+      ZorbaErrorAlerts::error_alert(
+        error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
+        error_messages::STATIC_ERROR,
+        false,
+        "Passed item is not castable to passed target type (simple stringcast returned 0)!"
+      );
+    }
     return lResult;
     
 // 
@@ -355,6 +349,23 @@ namespace xqp
 //         break;
 //     }
 //     return result;
+  }
+
+  bool GenericCast::isCastable(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const {
+    TypeSystem::xqtref_t lItemType = GENV_TYPESYSTEM.create_type( aItem->getType(), TypeSystem::QUANT_ONE );
+    if ( GENV_TYPESYSTEM.is_subtype ( *lItemType, *aTargetType ) ) {
+      // Item is castable if target type is a supertype
+      return true;  
+    }
+    
+    // Most simple implementation: Check if string cast works
+    xqpString lStr = aItem->getStringProperty();
+    Item_t lItem = stringSimpleCast(lStr, aTargetType);
+    if (lItem == 0) {
+      return false;
+    } else {
+      return true;
+    }
   }
   /* end class GenericCast */
 } /* namespace xqp */
