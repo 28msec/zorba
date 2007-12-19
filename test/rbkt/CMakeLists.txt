@@ -60,6 +60,8 @@ FOREACH(TESTFILE ${TESTFILES})
                 ${CMAKE_CURRENT_SOURCE_DIR}/Queries/${TESTFILE} 
                 ${CMAKE_CURRENT_SOURCE_DIR}
                 ExpQueryResults/${TESTNAME}.xml.res)
+
+  SET_TESTS_PROPERTIES (${TESTNAME} PROPERTIES TIMEOUT "10")
                 
 #  ADD_TEST(${TESTNAME}_xml_diff diff ${TESTRESULT}_xml.res 
 #                                     ${CMAKE_CURRENT_SOURCE_DIR}/ExpQueryResults/${BUCKETDIR}_xml/${TESTNAME}.res)
