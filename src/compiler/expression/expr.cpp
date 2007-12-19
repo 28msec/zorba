@@ -18,6 +18,7 @@
 #include "compiler/expression/expr_visitor.h"
 #include "util/zorba.h"
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
