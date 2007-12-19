@@ -232,7 +232,7 @@ DocumentNodeImpl::DocumentNodeImpl(
   NodeImpl(assignId),
   theBaseURI(baseURI),
   theDocURI(docURI),
-  theFlags(isConstructed)
+  theFlags(NodeImpl::IsConstructed)
 {
   unsigned long numChildren = 0;
 
@@ -260,7 +260,7 @@ DocumentNodeImpl::DocumentNodeImpl(const DocumentNodeImpl* src)
   NodeImpl(false),
   theBaseURI(src->theBaseURI),
   theDocURI(src->theDocURI),
-  theFlags(isConstructed | isCopy)
+  theFlags(NodeImpl::IsConstructed | NodeImpl::IsCopy)
 {
   theChildren = src->theChildren;
 }
@@ -372,7 +372,7 @@ ElementNodeImpl::ElementNodeImpl(
   if (!nsBindings.empty())
   {
     theNsBindings = new NsBindingsContext(nsBindings);
-    theFlags |= NodeImpl::haveLocalBindings;
+    theFlags |= NodeImpl::HaveLocalBindings;
   }
 }
 
@@ -388,20 +388,21 @@ ElementNodeImpl::ElementNodeImpl(
     Iterator_t&              attributesIte,
     Iterator_t&              namespacesIte,
     const NamespaceBindings& nsBindings,
-    bool                     typePreserve,
-    bool                     nsPreserve,
     bool                     nsInherit,
     bool                     assignId)
   :
   NodeImpl(assignId),
   theName(name),
   theType(type),
-  theFlags(NodeImpl::isConstructed)
+  theFlags(NodeImpl::IsConstructed)
 {
   Assert(namespacesIte == NULL);
 
   unsigned long numAttrs = 0;
   Item_t item;
+
+  if (nsInherit)
+    theFlags |= NodeImpl::NsInherit;
 
   if (attributesIte != 0)
   {
@@ -445,7 +446,7 @@ ElementNodeImpl::ElementNodeImpl(
   if (!nsBindings.empty())
   {
     theNsBindings = new NsBindingsContext(nsBindings);
-    theFlags |= NodeImpl::haveLocalBindings;
+    theFlags |= NodeImpl::HaveLocalBindings;
   }
 }
 
@@ -458,13 +459,18 @@ ElementNodeImpl::ElementNodeImpl(
     const ElementNodeImpl* src,
     bool                   typePreserve,
     bool                   nsPreserve,
-    bool                   nsInherit,
     bool                   isRoot)
   :
   NodeImpl(false),
   theName(src->getNodeName()),
-  theFlags(NodeImpl::isConstructed | NodeImpl::isCopy)
+  theFlags(NodeImpl::IsConstructed | NodeImpl::IsCopy)
 {
+  if (nsPreserve)
+    theFlags |= NodeImpl::NsPreserve;
+
+  if (typePreserve)
+    theFlags |= NodeImpl::TypePreserve;
+
   theType = (typePreserve ? src->getType() : GET_STORE().theUntypedType);
 
   if (nsPreserve)
@@ -476,7 +482,7 @@ ElementNodeImpl::ElementNodeImpl(
     else if (src->haveLocalBindings())
     {
       theNsBindings = new NsBindingsContext(src->getNsBindingsContext()->getBindings());
-      theFlags |= NodeImpl::haveLocalBindings;
+      theFlags |= NodeImpl::HaveLocalBindings;
     }
   }
   else
@@ -967,36 +973,51 @@ Item_t ChildrenIterator::next()
   if (theCurrentPos >= theChildNodes.size())
     return NULL;
 
-  Item_t item = theChildNodes[theCurrentPos];
-  NodeImpl_t childNode = BASE_NODE(item);
+  Item_t childItem = theChildNodes[theCurrentPos];
 
-  if (childNode->getParentPtr() == NULL)
+  if (theParentNode->isConstructed())
   {
-    childNode->setParent(theParentNode.get_ptr());
+    NodeImpl* childNode = BASE_NODE(childItem);
 
-    if (childNode->getNodeKind() == StoreConsts::elementNode &&
-        theParentNode->getNodeKind() != StoreConsts::documentNode)
+    if (childNode->getParentPtr() == NULL && !theParentNode->isCopy())
     {
-      Assert(theParentNode->getNodeKind() == StoreConsts::elementNode);
+      childNode->setParent(theParentNode.get_ptr());
 
-      ELEM_NODE(item)->setNsBindingsContext(theParentNode->getNsBindingsContext());
+      if (childNode->getNodeKind() == StoreConsts::elementNode &&
+          theParentNode->getNodeKind() != StoreConsts::documentNode)
+      {
+        Assert(theParentNode->getNodeKind() == StoreConsts::elementNode);
+
+        ELEM_NODE(childItem)->setNsBindingsContext(theParentNode->getNsBindingsContext());
+      }
     }
-  }
-  else
-  {
-    Assert(childNode->getParent().get_ptr() == theParentNode.get_ptr());
-  }
+    else if (theParentNode->isCopy() &&
+             childNode->getParentPtr() != theParentNode.get_ptr())
+    {
+      childItem = new ElementNodeImpl(ELEM_NODE(childItem),
+                                      childNode->typePreserve(),
+                                      childNode->nsPreserve(),
+                                      false);
+      childNode = BASE_NODE(childItem);
+      theChildNodes[theCurrentPos] = childItem;
+    }
+    else
+    {
+      Assert(childNode->getParentPtr() == theParentNode.get_ptr());
+    }
 
-  if (theParentNode->getId().isValid() &&
-      childNode->getTreeId() != theParentNode->getTreeId())
-  {
-    childNode->setId(theParentNode->getId());
-    childNode->appendIdComponent(theStartingId + theCurrentPos * 2 + 1);
+    if (theParentNode->getId().isValid() &&
+        childNode->getParentPtr() == theParentNode.get_ptr() &&
+        childNode->getTreeId() != theParentNode->getTreeId())
+    {
+      childNode->setId(theParentNode->getId());
+      childNode->appendIdComponent(theStartingId + theCurrentPos * 2 + 1);
+    }
   }
 
   theCurrentPos++;
 
-  return item;
+  return childItem;
 }
 
 

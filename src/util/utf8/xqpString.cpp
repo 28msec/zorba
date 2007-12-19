@@ -874,9 +874,13 @@ namespace xqp
 
   xqpString xqpString::trimR() const
   {
+    uint32_t len = length();
+
+    if (len == 0)
+      return xqpString("");
+
     //create the new xqpStringStore
     std::string tmp = "";
-    uint32_t len = length();
     uint32_t pos, cp;
     const char* end = c_str();
     const char* c = c_str();

@@ -1022,7 +1022,6 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
 
     // Collect the context node and its ancestors
     ancestor = state->theContextNode;
-    state->theAncestorPath.push(ancestor);
 
     while (ancestor != NULL)
     {
@@ -1147,7 +1146,6 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
 
     // Collect the context node and its ancestors
     ancestor = state->theContextNode;
-    state->theAncestorPath.push(ancestor);
 
     while (ancestor != NULL)
     {

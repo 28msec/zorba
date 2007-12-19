@@ -356,8 +356,6 @@ Item_t BasicItemFactory::createElementNode(
     Iterator_t&              attributesIte,
     Iterator_t&              namespacesIte,
     const NamespaceBindings& nsBindings, 
-    bool                     typePreserve,
-    bool                     nsPreserve,
     bool                     nsInherit,
     bool                     createId)
 { 
@@ -367,8 +365,6 @@ Item_t BasicItemFactory::createElementNode(
                              attributesIte,
                              namespacesIte,
                              nsBindings,
-                             typePreserve,
-                             nsPreserve,
                              nsInherit,
                              createId); 
 }
@@ -377,14 +373,9 @@ Item_t BasicItemFactory::createElementNode(
 Item_t BasicItemFactory::createElementNode(
     const Item_t&  sourceNode,
     bool           typePreserve,
-    bool           nsPreserve,
-    bool           nsInherit)
+    bool           nsPreserve)
 {
-  return new ElementNodeImpl(ELEM_NODE(sourceNode),
-                             typePreserve,
-                             nsPreserve,
-                             nsInherit,
-                             true);
+  return new ElementNodeImpl(ELEM_NODE(sourceNode), typePreserve, nsPreserve, true);
 }
 
 

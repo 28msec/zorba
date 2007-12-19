@@ -181,16 +181,13 @@ public:
         Iterator_t&              attributesIte,
         Iterator_t&              namespacesIte,
         const NamespaceBindings& nsBindings,
-        bool                     typePreserve,
-        bool                     nsPreserve,
         bool                     nsInherit,
         bool                     createId);
 
   virtual Item_t createElementNode(
         const Item_t&  sourceNode,
         bool           typePreserve,
-        bool           nsPreserve,
-        bool           nsInherit);
+        bool           nsPreserve);
 
 
   virtual Item_t createAttributeNode(

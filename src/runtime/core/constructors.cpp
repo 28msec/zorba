@@ -237,8 +237,6 @@ ElementIterator::nextImpl(PlanState& planState)
                awrapper,
                nwrapper,
                theNsBindings,
-               state->theTypePreserve,
-               state->theNsPreserve,
                state->theNsInherit,
                theAssignId);
 

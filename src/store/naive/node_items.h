@@ -81,12 +81,12 @@ class NodeImpl : public Item
 public:
   enum NodeFlags
   {
-    isConstructed     =  1,
-    isCopy            =  2,
-    typePreserve      =  4,
-    nsPreserve        =  8,
-    nsInherit         = 16,
-    haveLocalBindings = 32
+    IsConstructed     =  1,
+    IsCopy            =  2,
+    TypePreserve      =  4,
+    NsPreserve        =  8,
+    NsInherit         = 16,
+    HaveLocalBindings = 32
   };
 
 protected:
@@ -129,6 +129,12 @@ public:
   void appendIdComponent(long value)   { theId.appendComp(value); } 
 
   virtual NsBindingsContext_t getNsBindingsContext() const { return NULL; }
+
+  virtual bool haveLocalBindings() const { Assert(0); return false; }
+  virtual bool isConstructed() const     { Assert(0); return false; }
+  virtual bool isCopy() const            { Assert(0); return false; }
+  virtual bool typePreserve() const      { return false; }
+  virtual bool nsPreserve() const        { return false; }
 };
 
 
@@ -183,6 +189,9 @@ class DocumentNodeImpl : public NodeImpl
   // 
 
   NodeVector& children()            { return theChildren; }
+
+  bool isConstructed() const        { return theFlags & NodeImpl::IsConstructed; }
+  bool isCopy() const               { return theFlags & NodeImpl::IsCopy; }
 };
 
 
@@ -226,15 +235,12 @@ public:
         Iterator_t&              namespacesIte,
         const NamespaceBindings& nsBindings,
         bool                     typePreserve,
-        bool                     nsPreserve,
-        bool                     nsInherit,
         bool                     assignId);
 
   ElementNodeImpl(
         const ElementNodeImpl* src,
         bool                   typePreserve,
         bool                   nsPreserve,
-        bool                   nsInherit,
         bool                   isRoot);
 
   ~ElementNodeImpl();
@@ -268,7 +274,13 @@ public:
   NodeVector& attributes()  { return theAttributes; }
 
 protected:
-  bool haveLocalBindings() const { return theFlags & NodeImpl::haveLocalBindings; }
+  bool isConstructed() const     { return theFlags & NodeImpl::IsConstructed; }
+  bool isCopy() const            { return theFlags & NodeImpl::IsCopy; }
+
+  bool typePreserve() const      { return theFlags & NodeImpl::TypePreserve; }
+  bool nsPreserve() const        { return theFlags & NodeImpl::NsPreserve; }
+
+  bool haveLocalBindings() const { return theFlags & NodeImpl::HaveLocalBindings; }
 
   NsBindingsContext_t getNsBindingsContext() const { return theNsBindings; }
 
@@ -429,7 +441,7 @@ protected:
   unsigned long       theStartingId;
   unsigned long       theCurrentPos;
 
-  const NodeVector&   theChildNodes;
+  NodeVector&         theChildNodes;
 
 public:
   ChildrenIterator(NodeImpl* parent, unsigned long startid);
@@ -450,7 +462,7 @@ protected:
   ElementNodeImpl_t   theParentNode;
   unsigned long       theCurrentPos;
 
-  const NodeVector&   theChildNodes;
+  NodeVector&         theChildNodes;
 
 public:
   AttributesIterator(ElementNodeImpl* parent);
