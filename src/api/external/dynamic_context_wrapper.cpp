@@ -51,23 +51,23 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, long long int_value
 				return false;//inappropriate value
 		break;
 	case XS_LONG://derived from XS_INTEGER
-			if((int_value <= -((long long)1<<(sizeof(xqp_long)*8-1))) || 
-				(int_value >= ((long long)1<<(sizeof(xqp_long)*8-1))))
+			if((int_value <= -((long long)1ll<<(sizeof(xqp_long)*8-1))) || 
+				(int_value >= ((long long)1ll<<(sizeof(xqp_long)*8-1))))
 				return false;//inappropriate value
 			break;
 	case XS_INT://derived from XS_LONG
-			if((int_value <= -((long long)1<<(sizeof(xqp_int)*8-1))) || 
-				(int_value >= ((long long)1<<(sizeof(xqp_int)*8-1))))
+			if((int_value <= -((long long)1ll<<(sizeof(xqp_int)*8-1))) || 
+				(int_value >= ((long long)1ll<<(sizeof(xqp_int)*8-1))))
 				return false;//inappropriate value
 			break;
 	case XS_SHORT://derived from XS_INT
-			if((int_value <= -((long long)1<<(sizeof(xqp_short)*8-1))) || 
-				(int_value >= ((long long)1<<(sizeof(xqp_short)*8-1))))
+			if((int_value <= -((long long)1ll<<(sizeof(xqp_short)*8-1))) || 
+				(int_value >= ((long long)1ll<<(sizeof(xqp_short)*8-1))))
 				return false;//inappropriate value
 			break;
 	case XS_BYTE://derived from XS_SHORT
-			if((int_value <= -((long long)1<<(sizeof(xqp_byte)*8-1))) || 
-				(int_value >= ((long long)1<<(sizeof(xqp_byte)*8-1))))
+			if((int_value <= -((long long)1ll<<(sizeof(xqp_byte)*8-1))) || 
+				(int_value >= ((long long)1ll<<(sizeof(xqp_byte)*8-1))))
 				return false;//inappropriate value
 			break;
 	case XS_NON_NEGATIVE_INTEGER://derived from XS_INTEGER
@@ -75,19 +75,19 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, long long int_value
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_LONG://derived from XS_NON_NEGATIVE_INTEGER
-			if((int_value < 0) || (int_value >= ((long long)1<<(sizeof(xqp_ulong)*8))))
+			if((int_value < 0) || (int_value >= ((long long)1ll<<(sizeof(xqp_ulong)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_INT://derived from XS_UNSIGNED_LONG
-			if((int_value < 0) || (int_value >= ((long long)1<<(sizeof(xqp_uint)*8))))
+			if((int_value < 0) || (int_value >= ((long long)1ll<<(sizeof(xqp_uint)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_SHORT://derived from XS_UNSIGNED_INT
-			if((int_value < 0) || (int_value >= ((long long)1<<(sizeof(xqp_ushort)*8))))
+			if((int_value < 0) || (int_value >= ((long long)1ll<<(sizeof(xqp_ushort)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_BYTE://derived from XS_UNSIGNED_SHORT
-			if((int_value < 0) || (int_value >= ((long long)1<<(sizeof(xqp_ubyte)*8))))
+			if((int_value < 0) || (int_value >= ((long long)1ll<<(sizeof(xqp_ubyte)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_POSITIVE_INTEGER://derived from XS_NON_NEGATIVE_INTEGER

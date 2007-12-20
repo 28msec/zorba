@@ -11,12 +11,14 @@ using namespace std;
 using namespace xqp;
 
 string make_absolute_file_name(const char *result_file_name, const char *this_file_name);
+bool verify_expected_result(string result_file_name, string expected_file);
 
 int test_api_dynamic_context(const char *result_file_name)
 {
 	ofstream		result_file(make_absolute_file_name(result_file_name, __FILE__).c_str());
 	unsigned int		i;
 	unsigned int	max;
+	ostringstream		oss2;
 
 	///now start the zorba engine
 	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
@@ -226,33 +228,10 @@ int test_api_dynamic_context(const char *result_file_name)
 	zorba_factory.UninitThread();
 
 	//compare the results with expected result
-	ostringstream		oss2;
 	oss2 << "expected_";
 	oss2 << result_file_name;
-	{
-		ifstream		ithreadfile(make_absolute_file_name(result_file_name, __FILE__).c_str());
-		ifstream		ifexpected(make_absolute_file_name(oss2.str().c_str(), __FILE__).c_str());
-		string			str_test;
-		string			str_expected;
-		string			temp;
-    // warning: this method of reading a file might trim the 
-    // whitespace at the end of lines
-    while (getline(ithreadfile, temp))
-    {
-      if (str_test != "")
-        str_test += "\n";
-      
-      str_test += temp;
-    }      
-    while (getline(ifexpected, temp))
-    {
-      if (str_expected != "")
-        str_expected += "\n";
-      
-      str_expected += temp;
-    }     
-		assert(str_test == str_expected);
-	}
+	assert(verify_expected_result(make_absolute_file_name(result_file_name, __FILE__),
+																make_absolute_file_name(oss2.str().c_str(), __FILE__)));
 	return 0;
 
 DisplayErrorsAndExit:

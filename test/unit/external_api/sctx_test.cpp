@@ -25,6 +25,50 @@ string make_absolute_file_name(const char *result_file_name, const char *this_fi
 	return str_result;
 }
 
+bool verify_expected_result(string result_file_name, string expected_file)
+{
+	FILE			*ftest, *fexpected;
+	char			c1,c2;
+	size_t		nr_read1, nr_read2;
+
+  // warning: this method of reading a file might trim the 
+  // whitespace at the end of lines
+	ftest = fopen(result_file_name.c_str(), "r");
+	if(!ftest)
+		return false;
+	fexpected = fopen(expected_file.c_str(), "r");
+	if(!fexpected)
+	{
+		fclose(ftest);
+		return false;
+	}
+  while (1)
+	{
+		do{
+			nr_read1 = fread(&c1, sizeof(c1), 1, ftest);
+			if((c1 != '\r') && (c1 != '\n'))
+				break;
+		}while(nr_read1 > 0);
+		do{
+			nr_read2 = fread(&c2, sizeof(c2), 1, fexpected);
+			if((c2 != '\r') && (c2 != '\n'))
+				break;
+		}while(nr_read2 > 0);
+		if(nr_read1 < 1)
+		{
+			if(nr_read2 < 1)
+			{ fclose(ftest);fclose(fexpected);return true;}
+			else
+				break;
+		}
+		else if(nr_read2 < 1)
+			break;
+		else if(c1 != c2)
+			break;
+  }     
+	fclose(ftest);fclose(fexpected);return false;
+}
+
 int test_api_static_context(const char *result_file_name)
 {
 	ofstream		result_file(make_absolute_file_name(result_file_name, __FILE__).c_str());
@@ -381,30 +425,8 @@ int test_api_static_context(const char *result_file_name)
 	//compare the results with expected result
 	oss2 << "expected_";
 	oss2 << result_file_name;
-	{
-		ifstream		ithreadfile(make_absolute_file_name(result_file_name, __FILE__).c_str());
-		ifstream		ifexpected(make_absolute_file_name(oss2.str().c_str(), __FILE__).c_str());
-		string			str_test;
-		string			str_expected;
-		string			temp;
-    // warning: this method of reading a file might trim the 
-    // whitespace at the end of lines
-    while (getline(ithreadfile, temp))
-    {
-      if (str_test != "")
-        str_test += "\n";
-      
-      str_test += temp;
-    }      
-    while (getline(ifexpected, temp))
-    {
-      if (str_expected != "")
-        str_expected += "\n";
-      
-      str_expected += temp;
-    }     
-		assert(str_test == str_expected);
-	}
+	assert(verify_expected_result(make_absolute_file_name(result_file_name, __FILE__),
+																make_absolute_file_name(oss2.str().c_str(), __FILE__)));
 	return 0;
 
 DisplayErrorsAndExit:

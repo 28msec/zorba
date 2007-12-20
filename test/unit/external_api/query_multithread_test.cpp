@@ -9,6 +9,7 @@ using namespace std;
 using namespace xqp;
 
 string make_absolute_file_name(const char *result_file_name, const char *this_file_name);
+bool verify_expected_result(string result_file_name, string expected_file);
 
 void* query_thread( void *param );
 
@@ -73,28 +74,8 @@ int test_api_query_multithread(const char *result_file_name)
 		oss << i;
 		oss << ".txt";
 
-		ifstream		ithreadfile(make_absolute_file_name(oss.str().c_str(), __FILE__).c_str());
-		ifstream		ifexpected(make_absolute_file_name(oss2.str().c_str(), __FILE__).c_str());
-		string			str_thread;
-		string			str_expected;
-		string			temp;
-    // warning: this method of reading a file might trim the 
-    // whitespace at the end of lines
-    while (getline(ithreadfile, temp))
-    {
-      if (str_thread != "")
-        str_thread += "\n";
-      
-      str_thread += temp;
-    }      
-    while (getline(ifexpected, temp))
-    {
-      if (str_expected != "")
-        str_expected += "\n";
-      
-      str_expected += temp;
-    }      
-		assert(str_thread == str_expected);
+		assert(verify_expected_result(make_absolute_file_name(oss.str().c_str(), __FILE__),
+																make_absolute_file_name(oss2.str().c_str(), __FILE__)));
 	}
 
 	return thread_result_total;
