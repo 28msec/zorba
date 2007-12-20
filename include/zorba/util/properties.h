@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream>
+#include <vector>
 
 namespace xqp {
   class Properties {
@@ -27,7 +28,7 @@ namespace xqp {
       bool theTraceTranslator;
       bool theTraceCodegen;
 #endif
-            
+      std::vector<std::string> theExternalVars;            
       /**
        * Constructor.
        * The default values of the properties are set here! Boost Program Options
@@ -105,6 +106,8 @@ namespace xqp {
       bool traceCodegen() { return theTraceCodegen; }
       bool traceTranslator() { return theTraceTranslator; }
 #endif
+
+      std::vector<std::pair<std::string,std::string> > getExternalVars();
       
   }; /* class Properties */
 } /* namespace xqp */

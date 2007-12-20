@@ -120,6 +120,7 @@ namespace xqp
       ("trace-translator,l", "trace the translator")
       ("trace-codegen,c", "trace the codegenerator")
 #endif
+      ("external-vars,x", po::value<std::vector<std::string> >(&theExternalVars), "external variables (e.g. -x x=<a/> -x y=<b/>)")
     ;
   
 
@@ -215,6 +216,23 @@ namespace xqp
     Properties::theLoaded = true;
     
     return true;
+  }
+
+  std::vector<std::pair<std::string,std::string> > Properties::getExternalVars() {
+    std::vector<std::pair<std::string,std::string> > lResult;
+    std::vector<std::string>::const_iterator lEnd = theExternalVars.end();
+    for (
+      std::vector<std::string>::const_iterator lIter = theExternalVars.begin();
+      lIter != lEnd;
+      ++lIter
+    ) {
+      std::string lStr = *lIter;
+      std::string::size_type lPos = lStr.find_first_of("=");
+      std::string lVarName = lStr.substr(0, lPos);
+      std::string lValue = lStr.substr(lPos + 1);
+      lResult.push_back(std::pair<std::string,std::string>(lVarName, lValue));
+    }
+    return lResult;
   }
   
   bool Properties::load(int argc, char *argv[]) {
