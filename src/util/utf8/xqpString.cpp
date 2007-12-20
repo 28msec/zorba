@@ -881,7 +881,8 @@ namespace xqp
 
     //create the new xqpStringStore
     std::string tmp = "";
-    uint32_t pos, cp;
+    uint32_t pos = 0;
+    uint32_t cp = 0;
     const char* end = c_str();
     const char* c = c_str();
     char seq[4];

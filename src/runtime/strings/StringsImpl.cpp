@@ -863,7 +863,7 @@ ContainsIterator::nextImpl(PlanState& planState) {
   Item_t item0;
   Item_t item1;
   Item_t itemColl;
-  bool resBool;
+  bool resBool = false;
 
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
@@ -938,7 +938,7 @@ StartsWithIterator::nextImpl(PlanState& planState) {
   Item_t item0;
   Item_t item1;
   Item_t itemColl;
-  bool resBool;
+  bool resBool = false;
 
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
@@ -1015,7 +1015,7 @@ EndsWithIterator::nextImpl(PlanState& planState) {
   Item_t item0;
   Item_t item1;
   Item_t itemColl;
-  bool resBool;
+  bool resBool = false;
 
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
@@ -1094,7 +1094,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) {
   Item_t item1;
   Item_t itemColl;
   xqp_string resStr;
-  int32_t index;
+  int32_t index = -1;
 
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
@@ -1173,7 +1173,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) {
   Item_t item1;
   Item_t itemColl;
   xqp_string resStr;
-  int32_t startPos;
+  int32_t startPos = -1;
 
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
