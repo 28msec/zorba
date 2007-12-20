@@ -14,7 +14,7 @@ int test_api_zorba_engine(const char *result_file_name)
 	unsigned int		i;
 	unsigned int	max;
 	ostringstream	oss2;
-
+	CollationInfo	*colinfo = NULL;
 
 	for(i=0;i<100;i++)
 	{
@@ -70,7 +70,7 @@ int test_api_zorba_engine(const char *result_file_name)
   }
 
 	query_sctx = query->getInternalStaticContext();
-	CollationInfo	*colinfo = query_sctx->GetCollation("http://www.flworfound.org/apitest/coll1");
+	colinfo = query_sctx->GetCollation("http://www.flworfound.org/apitest/coll1");
 	if(!colinfo)
 	{
 		result_file << "query_sctx->GetCollation(\"http://www.flworfound.org/apitest/coll1\") failed" << endl;

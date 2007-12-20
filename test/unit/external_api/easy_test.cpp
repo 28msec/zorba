@@ -20,6 +20,7 @@ int test_easy_api(const char *result_file_name)
 	StaticQueryContext_t		sctx;
 	DynamicQueryContext_t		dctx;
 	XQueryResult_t		query_result;
+	CollationInfo	*colinfo = NULL;
 
 	result_file << "XQuerySimpleFactory::createQuery()" << endl;
 	query = XQuerySimpleFactory::createQuery("1+2", "file://query.txt");
@@ -43,7 +44,7 @@ int test_easy_api(const char *result_file_name)
 	
   sctx->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
 	result_file << "AddCollation" << endl;
-	CollationInfo	*colinfo = sctx->GetCollation("http://www.flworfound.org/apitest/coll1");
+	colinfo = sctx->GetCollation("http://www.flworfound.org/apitest/coll1");
 	if(!colinfo)
 	{
 		result_file << "query_sctx->GetCollation(\"http://www.flworfound.org/apitest/coll1\") failed" << endl;
