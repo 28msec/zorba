@@ -28,6 +28,7 @@ namespace xqp {
 
 string errors_english::err_decode(enum errcode e)
 {
+  #define TRIVIAL_ERR( e ) case e: return #e
   switch (e) {
     case XPDY0002:   return "evaluation of an expression relies on some part of the dynamic context that has not been assigned a value."; 
     case XPDY0021:  return "(Not currently used.)"; 
@@ -36,9 +37,9 @@ string errors_english::err_decode(enum errcode e)
     case XPST0001:  return "Analysis of an expression relies on some component of the static context that has not been assigned a value."; 
     case XPST0003:  return "Expression is not a valid instance of the grammar."; 
     case XPST0005:  return "During the analysis phase, it is a static error if the static type assigned to an expression other than the expression () or data(()) is empty-sequence()."; 
-    case XPST0008:  return "Expression refers to an element name, attribute name, schema type name, namespace prefix, or variable name that is not defined in the static context, except for an ElementName in an ElementTest or an AttributeName in an AttributeTest."; 
+    case XPST0008:  return "Expression refers to an element name, attribute name, schema type name, namespace prefix, or variable name that is not defined in the st atic context: /s /s";
     case XPST0010:  return "An implementation must raise a static error if it encounters a reference to an axis that it does not support."; 
-    case XPST0017:  return "The expanded QName and number of arguments in a function call do not match the name and arity of a function signature in the static context."; 
+    case XPST0017:  return "Expanded QName and number of arguments in function call do not match the name and arity of any function signature in the static context /s / /s";
     case XPST0051:  return "A QName that is used as an AtomicType in a SequenceType is not defined in the in-scope schema types as an atomic type."; 
     case XPST0080:  return "The target type of a cast or castable expression is xs:NOTATION or xs:anyAtomicType."; 
     case XPST0081:  return "A QName used in a query contains a namespace prefix that cannot be expanded into a namespace URI by using the statically known namespaces."; 
@@ -75,7 +76,7 @@ string errors_english::err_decode(enum errcode e)
     case XQST0031:  return "The version number specified in a version declaration is not supported by the implementation."; 
     case XQST0032:  return "Prolog contains more than one base URI declaration."; 
     case XQST0033:  return "A module contains multiple bindings for the same namespace prefix."; 
-    case XQST0034:  return "Multiple functions declared or imported by a module have the number of arguments and their expanded QNames are equal (as defined by the eq operator)."; 
+    case XQST0034:  return "Duplicate function: /s";
     case XQST0035:  return "Error importing two schema components that both define the same name in the same symbol space and in the same scope."; 
     case XQST0036:  return "Error importing a module if the importing module's in-scope schema types do not include definitions for the schema type names that appear in the declarations of variables and functions (whether in an argument type or return type) that are present in the imported module and are referenced in the importing module."; 
     case XQST0037:  return "(Not currently used.)"; 
@@ -84,7 +85,7 @@ string errors_english::err_decode(enum errcode e)
     case XQST0040:  return "The attributes specified by a direct element constructor do not have distinct expanded QNames."; 
     case XQST0042:  return "(Not currently used.)"; 
     case XQST0043:  return "(Not currently used.)"; 
-    case XQST0045:  return "The function name in a function declaration is in one of the following namespaces: http:// www.w3.org/XML/1998/namespace, http:// www.w3.org/2001/XMLSchema, http:// www.w3.org/2001/XMLSchema-instance, http:// www.w3.org/2005/xpath-functions."; 
+    case XQST0045:  return "Function name '/s' cannot be in one of the following namespaces: http://www.w3.org/XML/1998/namespace, http://www.w3.org/2001/XMLSchema, http://www.w3.org/2001/XMLSchema-instance, http://www.w3.org/2005/xpath-functions";
     case XQST0046:  return "Value of a URILiteral is of nonzero length and is not in the lexical space of xs:anyURI."; 
     case XQST0047:  return "Multiple module imports in the same Prolog specify the same target namespace."; 
     case XQST0048:  return "A function or variable declared in a library module is not in the target namespace of the library module."; 
@@ -156,6 +157,19 @@ string errors_english::err_decode(enum errcode e)
     case FORX0003: return "Regular expression matches zero-length string."; 
     case FORX0004: return "Invalid replacement string."; 
     case FOTY0012: return "Argument node does not have a typed value."; 
+    case XQP0001_DYNAMIC_ITERATOR_OVERRUN: return "XQP0001_DYNAMIC_ITERATOR_OVERRUN";
+    case XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD: return "XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD";
+    case XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND: return "XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND";
+    case XQP0005_SYSTEM_ASSERT_FAILED: return "Assertion `/s' failed in /s";
+    TRIVIAL_ERR (XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED);
+    case XQP0004_SYSTEM_NOT_SUPPORTED: return "XQP0004_SYSTEM_NOT_SUPPORTED";    
+    case XQP0016_LOADER_IO_ERROR: return "XQP0016_LOADER_IO_ERROR";
+    case XQP0017_LOADER_NOT_WELL_FORMED_XML: return "XQP0016_LOADER_NOT_WELL_FORMED_XML \n/s";
+    case XQP0018_NODEID_OUT_OF_RANGE: return "A nodeid component is too large to be encoded";
+    case API0005_COLLECTION_ALREADY_EXISTS: return "A collection with URI `/s' exists already";
+    case API0006_COLLECTION_NOT_FOUND: return "A collection with URI `/s' does not exist";
+    case API0007_COLLECTION_ITEM_MUST_BE_A_NODE: return "Cannot insert a non-node item to a collection";
+
     default: return "<Unknown errcode> /s /s";
   }
 } 
