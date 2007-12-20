@@ -6,8 +6,7 @@
  *  Authors: David Graf, Donald Kossmann, Tim Kraska, Markos zaharioudakis
  */
 
-#include <boost/lexical_cast.hpp>
-
+#include "util/numconversions.h"
 #include "util/hashfun.h"
 #include "util/Assert.h"
 #include "errors/Error.h"
@@ -198,7 +197,7 @@ Item_t DecimalItemNaive::getEBV() const
 
 xqp_string DecimalItemNaive::getStringProperty() const
 {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::decimalToStr(theValue);
 }
 
 xqp_string DecimalItemNaive::show() const
@@ -241,7 +240,7 @@ Item_t IntItemNaive::getEBV() const
 
   xqp_string IntItemNaive::getStringProperty() const
 	{
-		return boost::lexical_cast<std::string>(theValue);
+    return NumConversions::intToStr(theValue);
 	}
 
   xqp_string IntItemNaive::show() const
@@ -275,8 +274,8 @@ Item_t IntegerItemNaive::getEBV() const
 
   xqp_string IntegerItemNaive::getStringProperty() const
 	{
-		return boost::lexical_cast<std::string>(theValue);
-	}
+		return NumConversions::integerToStr(theValue);
+  }
 
   xqp_string IntegerItemNaive::show() const
 	{
@@ -303,7 +302,7 @@ Item_t DoubleItemNaive::getEBV() const
 
   xqp_string DoubleItemNaive::getStringProperty() const
 	{
-		return boost::lexical_cast<std::string>(theValue);
+		return NumConversions::doubleToStr(theValue);
 	}
 
   xqp_string DoubleItemNaive::show() const
@@ -333,7 +332,7 @@ QNameItem_t FloatItemNaive::getType() const
 
   xqp_string FloatItemNaive::getStringProperty() const
 	{
-		return boost::lexical_cast<std::string>(theValue);
+		return NumConversions::floatToStr(theValue);
 	}
 
   xqp_string FloatItemNaive::show() const
@@ -394,7 +393,7 @@ Item_t NonPositiveIntegerItemNaive::getEBV() const {
 }
 
 xqp_string NonPositiveIntegerItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::uintegerToStr(theValue);
 }
 
 xqp_string NonPositiveIntegerItemNaive::show() const {
@@ -422,7 +421,7 @@ Item_t NegativeIntegerItemNaive::getEBV() const {
 }
 
 xqp_string NegativeIntegerItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::integerToStr(theValue);
 }
 
 xqp_string NegativeIntegerItemNaive::show() const {
@@ -454,7 +453,7 @@ Item_t LongItemNaive::getEBV() const {
 }
 
 xqp_string LongItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::longToStr(theValue);
 }
 
 xqp_string LongItemNaive::show() const {
@@ -494,7 +493,7 @@ Item_t ShortItemNaive::getEBV() const {
 }
 
 xqp_string ShortItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::shortToStr(theValue);
 }
 
 xqp_string ShortItemNaive::show() const {
@@ -538,7 +537,7 @@ Item_t ByteItemNaive::getEBV() const {
 }
 
 xqp_string ByteItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::byteToStr(theValue);
 }
 
 xqp_string ByteItemNaive::show() const {
@@ -571,7 +570,7 @@ Item_t NonNegativeIntegerItemNaive::getEBV() const {
 }
 
 xqp_string NonNegativeIntegerItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::uintegerToStr(theValue);
 }
 
 xqp_string NonNegativeIntegerItemNaive::show() const {
@@ -608,7 +607,7 @@ Item_t UnsignedLongItemNaive::getEBV() const {
 }
 
 xqp_string UnsignedLongItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::ulongToStr(theValue);
 }
 
 xqp_string UnsignedLongItemNaive::show() const {
@@ -648,7 +647,7 @@ Item_t UnsignedIntItemNaive::getEBV() const {
 }
 
 xqp_string UnsignedIntItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::uintToStr(theValue);
 }
 
 xqp_string UnsignedIntItemNaive::show() const {
@@ -693,7 +692,7 @@ Item_t UnsignedShortItemNaive::getEBV() const {
 }
 
 xqp_string UnsignedShortItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::ushortToStr(theValue);
 }
 
 xqp_string UnsignedShortItemNaive::show() const {
@@ -741,7 +740,7 @@ Item_t UnsignedByteItemNaive::getEBV() const {
 }
 
 xqp_string UnsignedByteItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::ubyteToStr(theValue);
 }
 
 xqp_string UnsignedByteItemNaive::show() const {
@@ -773,7 +772,7 @@ Item_t PositiveIntegerItemNaive::getEBV() const {
 }
 
 xqp_string PositiveIntegerItemNaive::getStringProperty() const {
-  return boost::lexical_cast<std::string>(theValue);
+  return NumConversions::uintegerToStr(theValue);
 }
 
 xqp_string PositiveIntegerItemNaive::show() const {

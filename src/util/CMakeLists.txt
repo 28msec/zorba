@@ -10,7 +10,8 @@ SET(UTIL_SRCS
     zorba.cpp
     rwlock.cpp
     math_helper.cpp
-    properties.cpp)
+    properties.cpp
+    numconversions.cpp)
 
 ADD_SRC_SUBFOLDER(UTIL_SRCS utf8 UTF8_SRCS)
 ADD_SRC_SUBFOLDER(UTIL_SRCS web WEB_SRCS)

@@ -7,10 +7,10 @@
 
 #include "compiler/parser/symbol_table.h"
 #include "util/fx/fxcharheap.h"
+#include "util/numconversions.h"
 
 #include <stdlib.h>
 #include <string>
-#include <boost/lexical_cast.hpp>
 
 using namespace std;
 namespace xqp {
@@ -128,17 +128,23 @@ off_t symbol_table::put_stringlit(char const* text, uint32_t length)
 
 xqp_decimal symbol_table::decimalval(char const* text, uint32_t length)
 {
-  return boost::lexical_cast<xqp_decimal>(text);
+  xqp_decimal lDecimal;
+  NumConversions::starCharToDecimal(text, lDecimal);
+  return lDecimal;
 }
 
 xqp_double symbol_table::doubleval(char const* text, uint32_t length)
 {
-	return boost::lexical_cast<xqp_double>(text);
+  xqp_double lDouble;
+  NumConversions::starCharToDouble(text, lDouble);
+  return lDouble;
 }
 
 xqp_int symbol_table::intval(char const* text, uint32_t length)
 {
-	return boost::lexical_cast<xqp_int>(text);
+  xqp_int lInt;
+  NumConversions::starCharToInt(text, lInt);
+  return lInt;
 }
 
 std::string symbol_table::get(off_t id)

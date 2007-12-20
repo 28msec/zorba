@@ -23,8 +23,7 @@
  *
  */
 
-#include <boost/lexical_cast.hpp>
-
+#include "util/numconversions.h"
 #include "casting.h"
 #include "system/globalenv.h"
 #include "store/api/item.h"
@@ -52,210 +51,222 @@ namespace xqp
     Item_t lItem = 0;
 
     xqpString lString = aSourceItem->getStringProperty().trim();
-    
-    try {
-      switch(GENV_TYPESYSTEM.get_atomic_type_code(*aTargetType)) {
-        case TypeSystem::XS_ANY_ATOMIC:
-          lItem = zorba::getItemFactory()->createUntypedAtomic(lString);
-          break;
-        case TypeSystem::XS_STRING:
-          lItem = zorba::getItemFactory()->createString(lString);
-          break;
-        case TypeSystem::XS_NORMALIZED_STRING:
-          lItem = zorba::getItemFactory()->createNormalizedString(lString);
-          break;
-        case TypeSystem::XS_TOKEN:
-          lItem = zorba::getItemFactory()->createToken(lString);
-          break;
-        case TypeSystem::XS_LANGUAGE:
-          lItem = zorba::getItemFactory()->createLanguage(lString);
-          break;
-        case TypeSystem::XS_NMTOKEN:
-          lItem = zorba::getItemFactory()->createNMTOKEN(lString);
-          break;
-        case TypeSystem::XS_NAME:
-          lItem = zorba::getItemFactory()->createName(lString);
-          break;
-        case TypeSystem::XS_NCNAME:
-          lItem = zorba::getItemFactory()->createNCName(lString);
-          break;
-        case TypeSystem::XS_ID:
-          lItem = zorba::getItemFactory()->createID(lString);
-          break;
-        case TypeSystem::XS_IDREF:
-          lItem = zorba::getItemFactory()->createIDREF(lString);
-          break;
-        case TypeSystem::XS_ENTITY:
-          lItem = zorba::getItemFactory()->createENTITY(lString);
-          break;
-        case TypeSystem::XS_UNTYPED_ATOMIC:
-          lItem = zorba::getItemFactory()->createUntypedAtomic(lString);
-          break;
-        case TypeSystem::XS_DATETIME:
-          // TODO
-          break;
-        case TypeSystem::XS_DATE:
-          // TODO
-          break;
-        case TypeSystem::XS_TIME:
-          // TODO
-          break;
-        case TypeSystem::XS_DURATION:
-          // TODO
-          break;
-        case TypeSystem::XS_DT_DURATION:
-          // TODO
-          break;
-        case TypeSystem::XS_YM_DURATION:
-          // TODO
-          break;
-        case TypeSystem::XS_FLOAT:
-        {
-          xqp_float n = boost::lexical_cast<xqp_float>(lString.c_str());
+  
+    switch(GENV_TYPESYSTEM.get_atomic_type_code(*aTargetType)) {
+      case TypeSystem::XS_ANY_ATOMIC:
+        lItem = zorba::getItemFactory()->createUntypedAtomic(lString);
+        break;
+      case TypeSystem::XS_STRING:
+        lItem = zorba::getItemFactory()->createString(lString);
+        break;
+      case TypeSystem::XS_NORMALIZED_STRING:
+        lItem = zorba::getItemFactory()->createNormalizedString(lString);
+        break;
+      case TypeSystem::XS_TOKEN:
+        lItem = zorba::getItemFactory()->createToken(lString);
+        break;
+      case TypeSystem::XS_LANGUAGE:
+        lItem = zorba::getItemFactory()->createLanguage(lString);
+        break;
+      case TypeSystem::XS_NMTOKEN:
+        lItem = zorba::getItemFactory()->createNMTOKEN(lString);
+        break;
+      case TypeSystem::XS_NAME:
+        lItem = zorba::getItemFactory()->createName(lString);
+        break;
+      case TypeSystem::XS_NCNAME:
+        lItem = zorba::getItemFactory()->createNCName(lString);
+        break;
+      case TypeSystem::XS_ID:
+        lItem = zorba::getItemFactory()->createID(lString);
+        break;
+      case TypeSystem::XS_IDREF:
+        lItem = zorba::getItemFactory()->createIDREF(lString);
+        break;
+      case TypeSystem::XS_ENTITY:
+        lItem = zorba::getItemFactory()->createENTITY(lString);
+        break;
+      case TypeSystem::XS_UNTYPED_ATOMIC:
+        lItem = zorba::getItemFactory()->createUntypedAtomic(lString);
+        break;
+      case TypeSystem::XS_DATETIME:
+        // TODO
+        break;
+      case TypeSystem::XS_DATE:
+        // TODO
+        break;
+      case TypeSystem::XS_TIME:
+        // TODO
+        break;
+      case TypeSystem::XS_DURATION:
+        // TODO
+        break;
+      case TypeSystem::XS_DT_DURATION:
+        // TODO
+        break;
+      case TypeSystem::XS_YM_DURATION:
+        // TODO
+        break;
+      case TypeSystem::XS_FLOAT:
+      {
+        xqp_float n;
+        if (NumConversions::strToFloat(lString, n))
           lItem = zorba::getItemFactory()->createFloat(n);
-        }
-          break;
-        case TypeSystem::XS_DOUBLE:
-        {
-          xqp_double n = boost::lexical_cast<xqp_double>(lString.c_str());
-          lItem = zorba::getItemFactory()->createDouble(n);
-        }
-          break;
-        case TypeSystem::XS_DECIMAL:
-        {
-          xqp_decimal n = boost::lexical_cast<xqp_decimal>(lString.c_str());
-          lItem = zorba::getItemFactory()->createDecimal(n);
-        }
-          break;
-        case TypeSystem::XS_INTEGER:
-        {
-          xqp_integer n = boost::lexical_cast<xqp_integer>(lString.c_str());
-          lItem = zorba::getItemFactory()->createInteger(n);
-        }
-          break;
-        case TypeSystem::XS_NON_POSITIVE_INTEGER:
-        {
-          xqp_integer n = boost::lexical_cast<xqp_integer>(lString.c_str());
-          lItem = zorba::getItemFactory()->createNonPositiveInteger(n);
-        }
-          break;
-        case TypeSystem::XS_NEGATIVE_INTEGER:
-        {
-          xqp_integer n = boost::lexical_cast<xqp_integer>(lString.c_str());
-          lItem = zorba::getItemFactory()->createNegativeInteger(n);
-        }
-          break;
-        case TypeSystem::XS_LONG:
-        {
-          xqp_long n = boost::lexical_cast<xqp_long>(lString.c_str());
-          lItem = zorba::getItemFactory()->createLong(n);
-        }
-          break;
-        case TypeSystem::XS_INT:
-        {
-          xqp_int n = boost::lexical_cast<xqp_int>(lString.c_str());
-          lItem = zorba::getItemFactory()->createInt(n);
-        }
-          break;
-        case TypeSystem::XS_SHORT:
-        {
-          xqp_short n = boost::lexical_cast<xqp_short>(lString.c_str());
-          lItem = zorba::getItemFactory()->createShort(n);
-        }
-          break;
-        case TypeSystem::XS_BYTE:
-        {
-          xqp_byte n = boost::lexical_cast<xqp_byte>(lString.c_str());
-          lItem = zorba::getItemFactory()->createByte(n);
-        }
-          break;
-        case TypeSystem::XS_NON_NEGATIVE_INTEGER:
-        {
-          xqp_uinteger n = boost::lexical_cast<xqp_uinteger>(lString.c_str());
-          lItem = zorba::getItemFactory()->createNonNegativeInteger(n);
-        }
-          break;
-        case TypeSystem::XS_UNSIGNED_LONG:
-        {
-          xqp_ulong n = boost::lexical_cast<xqp_ulong>(lString.c_str());
-          lItem = zorba::getItemFactory()->createUnsignedLong(n);
-        }
-          break;
-        case TypeSystem::XS_UNSIGNED_INT:
-        {
-          xqp_uint n = boost::lexical_cast<xqp_uint>(lString.c_str());
-          lItem = zorba::getItemFactory()->createUnsignedInt(n);
-        }
-          break;
-        case TypeSystem::XS_UNSIGNED_SHORT:
-        {
-          xqp_ushort n = boost::lexical_cast<xqp_ushort>(lString.c_str());
-          lItem = zorba::getItemFactory()->createUnsignedShort(n);
-        }
-          break;
-        case TypeSystem::XS_UNSIGNED_BYTE:
-        {
-          xqp_ubyte n = boost::lexical_cast<xqp_ubyte>(lString.c_str());
-          lItem = zorba::getItemFactory()->createUnsignedByte(n);
-        }
-          break;
-        case TypeSystem::XS_POSITIVE_INTEGER:
-        {
-          xqp_integer n = boost::lexical_cast<xqp_integer>(lString.c_str());
-          lItem = zorba::getItemFactory()->createPositiveInteger(n);
-        }
-          break;
-        case TypeSystem::XS_GYEAR_MONTH:
-          // TODO
-          break;
-        case TypeSystem::XS_GYEAR:
-          // TODO
-          break;
-        case TypeSystem::XS_GMONTH_DAY:
-          // TODO
-          break;
-        case TypeSystem::XS_GDAY:
-          // TODO
-          break;
-        case TypeSystem::XS_GMONTH:
-          // TODO
-          break;
-        case TypeSystem::XS_BOOLEAN:
-        {
-          lItem = castToBoolean(aSourceItem, aSourceType);
-          break;
-        }
-        case TypeSystem::XS_BASE64BINARY:
-          break;
-        case TypeSystem::XS_HEXBINARY:
-          break;
-        case TypeSystem::XS_ANY_URI:
-          lItem = zorba::getItemFactory()->createAnyURI(lString);
-          break;
-        case TypeSystem::XS_QNAME:
-        {
-          // TODO namespace resolution
-          xqpString lNamespace = "";
-          xqpString lPrefix = "";
-          int32_t lIndex = lString.indexOf(":");
-          if (lIndex < 0) {
-            lItem = &*zorba::getItemFactory()->createQName(lNamespace, lPrefix, lString);
-          } else {
-            lPrefix = lString.substr(0, lIndex);
-            xqpString lLocal = lString.substr(lIndex + 1);
-            lItem = &*zorba::getItemFactory()->createQName(lNamespace, lPrefix, lLocal);
-          }
-        }
-          break;
-        case TypeSystem::XS_NOTATION:
-          lItem = zorba::getItemFactory()->createNOTATION(lString);
-          break;
-        default:
-          // TODO parsing of user defined types
-          break;
       }
-    } catch (boost::bad_lexical_cast& e) {
-      lItem = 0;
+        break;
+      case TypeSystem::XS_DOUBLE:
+      {
+        xqp_double n;
+        if (NumConversions::strToDouble(lString, n))
+          lItem = zorba::getItemFactory()->createDouble(n);
+      }
+        break;
+      case TypeSystem::XS_DECIMAL:
+      {
+        xqp_decimal n;
+        if (NumConversions::strToDecimal(lString, n))
+          lItem = zorba::getItemFactory()->createDecimal(n);
+      }
+        break;
+      case TypeSystem::XS_INTEGER:
+      {
+        xqp_integer n;
+        if (NumConversions::strToInteger(lString, n))
+          lItem = zorba::getItemFactory()->createInteger(n);
+      }
+        break;
+      case TypeSystem::XS_NON_POSITIVE_INTEGER:
+      {
+        xqp_integer n;
+        if (NumConversions::strToInteger(lString, n)) 
+          lItem = zorba::getItemFactory()->createNonPositiveInteger(n);
+      }
+        break;
+      case TypeSystem::XS_NEGATIVE_INTEGER:
+      {
+        xqp_integer n;
+        if (NumConversions::strToInteger(lString, n))
+          lItem = zorba::getItemFactory()->createNegativeInteger(n);
+      }
+        break;
+      case TypeSystem::XS_LONG:
+      {
+        xqp_long n;
+        if (NumConversions::strToLong(lString, n))
+          lItem = zorba::getItemFactory()->createLong(n);
+      }
+        break;
+      case TypeSystem::XS_INT:
+      {
+        xqp_int n;
+        if (NumConversions::strToInt(lString, n))
+          lItem = zorba::getItemFactory()->createInt(n);
+      }
+        break;
+      case TypeSystem::XS_SHORT:
+      {
+        xqp_short n;
+        if (NumConversions::strToShort(lString, n))
+          lItem = zorba::getItemFactory()->createShort(n);
+      }
+        break;
+      case TypeSystem::XS_BYTE:
+      {
+        xqp_byte n;
+        if (NumConversions::strToByte(lString, n))
+          lItem = zorba::getItemFactory()->createByte(n);
+      }
+        break;
+      case TypeSystem::XS_NON_NEGATIVE_INTEGER:
+      {
+        xqp_uinteger n;
+        if (NumConversions::strToUInteger(lString, n))
+          lItem = zorba::getItemFactory()->createNonNegativeInteger(n);
+      }
+        break;
+      case TypeSystem::XS_UNSIGNED_LONG:
+      {
+        xqp_ulong n;
+        if (NumConversions::strToULong(lString, n))
+          lItem = zorba::getItemFactory()->createUnsignedLong(n);
+      }
+        break;
+      case TypeSystem::XS_UNSIGNED_INT:
+      {
+        xqp_uint n;
+        if (NumConversions::strToUInt(lString, n))          
+          lItem = zorba::getItemFactory()->createUnsignedInt(n);
+      }
+        break;
+      case TypeSystem::XS_UNSIGNED_SHORT:
+      {
+        xqp_ushort n;
+        if (NumConversions::strToUShort(lString, n))
+          lItem = zorba::getItemFactory()->createUnsignedShort(n);
+      }
+        break;
+      case TypeSystem::XS_UNSIGNED_BYTE:
+      {
+        xqp_ubyte n;
+        if (NumConversions::strToUByte(lString, n))
+          lItem = zorba::getItemFactory()->createUnsignedByte(n);
+      }
+        break;
+      case TypeSystem::XS_POSITIVE_INTEGER:
+      {
+        xqp_integer n;
+        if (NumConversions::strToInteger(lString, n))
+          lItem = zorba::getItemFactory()->createPositiveInteger(n);
+      }
+        break;
+      case TypeSystem::XS_GYEAR_MONTH:
+        // TODO
+        break;
+      case TypeSystem::XS_GYEAR:
+        // TODO
+        break;
+      case TypeSystem::XS_GMONTH_DAY:
+        // TODO
+        break;
+      case TypeSystem::XS_GDAY:
+        // TODO
+        break;
+      case TypeSystem::XS_GMONTH:
+        // TODO
+        break;
+      case TypeSystem::XS_BOOLEAN:
+      {
+        lItem = castToBoolean(aSourceItem, aSourceType);
+        break;
+      }
+      case TypeSystem::XS_BASE64BINARY:
+        break;
+      case TypeSystem::XS_HEXBINARY:
+        break;
+      case TypeSystem::XS_ANY_URI:
+        lItem = zorba::getItemFactory()->createAnyURI(lString);
+        break;
+      case TypeSystem::XS_QNAME:
+      {
+        // TODO namespace resolution
+        xqpString lNamespace = "";
+        xqpString lPrefix = "";
+        int32_t lIndex = lString.indexOf(":");
+        if (lIndex < 0) {
+          lItem = &*zorba::getItemFactory()->createQName(lNamespace, lPrefix, lString);
+        } else {
+          lPrefix = lString.substr(0, lIndex);
+          xqpString lLocal = lString.substr(lIndex + 1);
+          lItem = &*zorba::getItemFactory()->createQName(lNamespace, lPrefix, lLocal);
+        }
+      }
+        break;
+      case TypeSystem::XS_NOTATION:
+        lItem = zorba::getItemFactory()->createNOTATION(lString);
+        break;
+      default:
+        // TODO parsing of user defined types
+        break;
     }
     return lItem;
   }
