@@ -777,6 +777,8 @@ namespace xqp
 
   xqpString xqpString::translate(xqpString mapString, xqpString transString) const
   {
+    mapString.trim();
+    
     std::map<uint32_t,uint32_t> myMap;
     std::map<uint32_t,uint32_t>::iterator it;
     uint32_t first, second;
@@ -846,6 +848,9 @@ namespace xqp
 
   xqpString xqpString::trimL() const
   {
+    if(0 == length() )
+      return *this;
+    
     //create the new xqpStringStore
     std::string tmp = "";
     uint32_t len = length();
@@ -874,6 +879,9 @@ namespace xqp
 
   xqpString xqpString::trimR() const
   {
+    if(0 == length() )
+      return *this;
+    
     uint32_t len = length();
 
     if (len == 0)
@@ -919,6 +927,9 @@ namespace xqp
 
   xqpString xqpString::trim() const
   {
+    if(0 == length() )
+      return *this;
+    
     //TODO optimize
     xqpString tmp = trimL();
     return tmp.trimR();
