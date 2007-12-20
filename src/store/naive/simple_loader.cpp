@@ -359,7 +359,7 @@ void XmlLoader::startElement(
 
   if (!nsBindings.empty())
   {
-    loader.theBindingsStack.push(ELEM_NODE(elemNode)->getNsBindingsContext());
+    loader.theBindingsStack.push(ELEM_NODE(elemNode)->getNsBindingsCtx());
   }
 
   // Push element node to the node stack
@@ -423,13 +423,13 @@ void  XmlLoader::endElement(
     if ((*it)->getNodeKind() == StoreConsts::elementNode)
     {
       if (!loader.theBindingsStack.empty())
-        ELEM_NODE(*it)->setNsBindingsContext(loader.theBindingsStack.top());
+        ELEM_NODE(*it)->setNsBindingsCtx(loader.theBindingsStack.top());
       else
-        ELEM_NODE(*it)->setNsBindingsContext(NULL);
+        ELEM_NODE(*it)->setNsBindingsCtx(NULL);
     }
   }
 
-  if (elemNode->getNsBindingsContext() != NULL)
+  if (elemNode->getNsBindingsCtx() != NULL)
   {
     loader.theBindingsStack.pop();
   }

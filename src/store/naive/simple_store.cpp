@@ -223,6 +223,49 @@ void SimpleStore::deleteCollection(Item_t uri)
   theCollections.remove(uri->getStringValue());
 }
 
+#if 0
+/*******************************************************************************
+  Make a copy of the given node. 
+
+  Initially, the copy is shallow, i.e., the copy node has the same children and
+  attributes as the source node. However, the children/attributes of the copy
+  node will themselves be copied when they are actually accessed (see 
+  ChildrenIterator and AttributesIterator classes in node_items.h).
+********************************************************************************/
+Item_t SimpleStore::copyNode(Item* node)
+{
+  switch (node->getNodeKind())
+  {
+  case StoreConsts::elementNode:
+  {
+    ElementNodeImpl* enode = reinterpret_cast<ElementNodeImpl*>(node);
+
+    return new ElementNodeImpl(enode,
+                               enode->typePreserve(),
+                               enode->nsPreserve(),
+                               false);
+  }
+  case StoreConsts::attributeNode:
+  {
+    AttributeNodeImpl* anode = reinterpret_cast<AttributeNodeImpl*>(node);
+
+    return new AttributeNodeImpl(anode, anode->typePreserve());
+  }
+  case StoreConsts::textNode:
+    return new TextNodeImpl((textNode*)node);
+
+  case StoreConsts::piNode:
+    return PiNodeImpl((piNode*)node);
+
+  case StoreConsts::commentNode:
+    return new CommentNodeImpl((commentNode*)node);
+
+  default:
+    Assert(0);
+    return NULL;
+  }
+}
+#endif
 
 /*******************************************************************************
   Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if

@@ -16,52 +16,63 @@
 
 namespace xqp
 {
-  Item::~Item() {}
+Item::~Item()
+{
+}
 
-  /* begin class Item */
-  void Item::showError() const
-  {
-    ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED, NULL);
-  }
 
-  xqp_string Item::show() const
-  {
-    return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
-  }
+void Item::showError() const
+{
+  ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED, NULL);
+}
+
+
+xqp_string Item::show() const
+{
+  return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
+}
   /* end class Item */
 
-	void Item::serializeXML( ostream& os )
-	{
-		serializer *ser;
-		ser = zorba::getZorbaForCurrentThread()->getItemSerializer();
 
-		ser->serialize(this, os);
-	}
-
-
-  /* begin class AtomicItem */
-  AtomicItem::~AtomicItem() {}
-
-  bool AtomicItem::isNode() const
-  {
-    return false;
-  }
-
-  bool AtomicItem::isAtomic() const
-  {
-    return true;
-  }
+void Item::serializeXML( ostream& os )
+{
+  serializer *ser;
+  ser = zorba::getZorbaForCurrentThread()->getItemSerializer();
   
-  Item_t AtomicItem::getAtomizationValue() const {
-    Item* lItem = const_cast<AtomicItem *>(this);
-    return lItem;
-  }
+  ser->serialize(this, os);
+}
 
-  Iterator_t AtomicItem::getTypedValue() const
-  {
-    PlanIter_t planIter = new SingletonIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue());
-    return new PlanWrapper ( planIter );
-  }
+
+/* begin class AtomicItem */
+AtomicItem::~AtomicItem()
+{
+}
+
+
+bool AtomicItem::isNode() const
+{
+  return false;
+}
+
+
+bool AtomicItem::isAtomic() const
+{
+  return true;
+}
+
+  
+Item_t AtomicItem::getAtomizationValue() const
+{
+  Item* lItem = const_cast<AtomicItem *>(this);
+  return lItem;
+}
+
+
+Iterator_t AtomicItem::getTypedValue() const
+{
+  PlanIter_t planIter = new SingletonIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue());
+  return new PlanWrapper ( planIter );
+}
 /* end class AtomicItem */
 
 }

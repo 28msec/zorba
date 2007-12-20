@@ -128,13 +128,14 @@ public:
   void setId(const OrdPath& id)        { theId = id; }
   void appendIdComponent(long value)   { theId.appendComp(value); } 
 
-  virtual NsBindingsContext_t getNsBindingsContext() const { return NULL; }
+  virtual NsBindingsContext_t getNsBindingsCtx() const { return NULL; }
 
   virtual bool haveLocalBindings() const { Assert(0); return false; }
   virtual bool isConstructed() const     { Assert(0); return false; }
   virtual bool isCopy() const            { Assert(0); return false; }
-  virtual bool typePreserve() const      { return false; }
-  virtual bool nsPreserve() const        { return false; }
+  virtual bool typePreserve() const      { Assert(0); return false; }
+  virtual bool nsPreserve() const        { Assert(0); return false; }
+  virtual bool nsInherit() const         { Assert(0); return false; }
 };
 
 
@@ -210,9 +211,6 @@ class DocumentNodeImpl : public NodeImpl
 ********************************************************************************/
 class ElementNodeImpl : public NodeImpl
 {
-  friend class ChildrenIterator;
-  friend class XmlLoader;
-
 private:
   QNameItem_t            theName;
   QNameItem_t            theType;
@@ -273,18 +271,18 @@ public:
   NodeVector& children()    { return theChildren; }
   NodeVector& attributes()  { return theAttributes; }
 
-protected:
   bool isConstructed() const     { return theFlags & NodeImpl::IsConstructed; }
   bool isCopy() const            { return theFlags & NodeImpl::IsCopy; }
 
   bool typePreserve() const      { return theFlags & NodeImpl::TypePreserve; }
   bool nsPreserve() const        { return theFlags & NodeImpl::NsPreserve; }
+  bool nsInherit() const         { return theFlags & NodeImpl::NsInherit; }
 
   bool haveLocalBindings() const { return theFlags & NodeImpl::HaveLocalBindings; }
 
-  NsBindingsContext_t getNsBindingsContext() const { return theNsBindings; }
+  NsBindingsContext_t getNsBindingsCtx() const { return theNsBindings; }
 
-  void setNsBindingsContext(NsBindingsContext* parentCtx);
+  void setNsBindingsCtx(NsBindingsContext* parentCtx);
 
 private:
   //disable default copy constructor

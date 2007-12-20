@@ -284,37 +284,8 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
   Item_t child;	
   int closed_parent_tag = 0;
 
-  if (item->getNodeKind() == StoreConsts::elementNode) {
-  
-    // emit namespace declarations
-    it = item->getChildren();
-    child = it->next();
-    while (child != NULL )
-    {
-      if (child->getNodeKind() == StoreConsts::attributeNode)
-        emit_node(&*child, depth);
-        
-      //if (child->getNodeKind() == Item::namespaceNode )
-      //	emit_node(child, depth);
-      
-      child = it->next();
-    }
-    
-    /* TODO: uncomment when this will be implemented in the Item store 
-    it = item->getNamespaceNodes();
-    child = it->next();
-    while (child != NULL )
-    {
-      if (child->getNodeKind() == namespaceNode )
-      {
-        emit_node(child, tr, depth);
-        children_count++;			
-      }		
-      
-      child = it->next();
-    }
-    */
-      
+  if (item->getNodeKind() == StoreConsts::elementNode)
+  { 
     // emit attributes 
     it = item->getAttributes();
     child = it->next();
@@ -323,7 +294,9 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
       emit_node(&*child, depth);
       child = it->next();
     }
-  } else if (item->getNodeKind() == StoreConsts::documentNode) {
+  }
+  else if (item->getNodeKind() == StoreConsts::documentNode)
+  {
     closed_parent_tag = 1;
   }
 	

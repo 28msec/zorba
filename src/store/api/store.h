@@ -125,7 +125,7 @@ public:
   virtual Item_t getNodeByReference(Item_t, Requester requester, Timetravel timetravel) = 0;
 		
   /* --------------------------- Node Id Management ---------------------------*/
-		
+
   /** Compares two items, based on their id.
    * @param item1
    * @param item2

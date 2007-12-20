@@ -57,7 +57,10 @@ NodeVector& NodeVector::operator=(const NodeVector& v)
 
   unsigned long size = v.size();
 
-  resize(size+1);
+  if (size == 0)
+    return *this;
+
+  resize(size);
 
   for (unsigned long i = 1; i <= size; i++)
     theNodes[i] = v.theNodes[i];
@@ -478,7 +481,7 @@ ElementNodeImpl::ElementNodeImpl(
     }
     else if (src->haveLocalBindings())
     {
-      theNsBindings = new NsBindingsContext(src->getNsBindingsContext()->getBindings());
+      theNsBindings = new NsBindingsContext(src->getNsBindingsCtx()->getBindings());
       theFlags |= NodeImpl::HaveLocalBindings;
     }
   }
@@ -598,7 +601,7 @@ xqp_string ElementNodeImpl::getStringProperty() const
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNodeImpl::setNsBindingsContext(NsBindingsContext* parentCtx)
+void ElementNodeImpl::setNsBindingsCtx(NsBindingsContext* parentCtx)
 {
   if (theNsBindings == NULL)
     theNsBindings = parentCtx;
@@ -962,6 +965,8 @@ ChildrenIterator::ChildrenIterator(
                 reinterpret_cast<DocumentNodeImpl*>(parent)->children() :
                 reinterpret_cast<ElementNodeImpl*>(parent)->children())
 {
+  Assert(theParentNode->getNodeKind() == StoreConsts::documentNode ||
+         theParentNode->getNodeKind() == StoreConsts::elementNode);
 }
 
 
@@ -974,41 +979,80 @@ Item_t ChildrenIterator::next()
 
   if (theParentNode->isConstructed())
   {
-    NodeImpl* childNode = BASE_NODE(childItem);
+    NodeImpl* pnode = theParentNode.get_ptr();
+    NodeImpl* cnode = BASE_NODE(childItem);
 
-    if (childNode->getParentPtr() == NULL && !theParentNode->isCopy())
+    StoreConsts::NodeKind_t pkind = pnode->getNodeKind();
+    StoreConsts::NodeKind_t ckind = cnode->getNodeKind();
+
+    if (cnode->getParentPtr() == NULL && !pnode->isCopy())
     {
-      childNode->setParent(theParentNode.get_ptr());
+      cnode->setParent(pnode);
 
-      if (childNode->getNodeKind() == StoreConsts::elementNode &&
-          theParentNode->getNodeKind() != StoreConsts::documentNode)
+      if (pkind != StoreConsts::documentNode &&
+          ckind == StoreConsts::elementNode &&
+          (!cnode->isCopy() || pnode->nsInherit()))
       {
-        Assert(theParentNode->getNodeKind() == StoreConsts::elementNode);
-
-        ELEM_NODE(childItem)->setNsBindingsContext(theParentNode->getNsBindingsContext());
+        ELEM_NODE(childItem)->setNsBindingsCtx(pnode->getNsBindingsCtx());
       }
     }
-    else if (theParentNode->isCopy() &&
-             childNode->getParentPtr() != theParentNode.get_ptr())
+    else if (pnode->isCopy() && cnode->getParentPtr() != pnode)
     {
-      childItem = new ElementNodeImpl(ELEM_NODE(childItem),
-                                      childNode->typePreserve(),
-                                      childNode->nsPreserve(),
-                                      false);
-      childNode = BASE_NODE(childItem);
+      switch (ckind)
+      {
+      case StoreConsts::elementNode:
+      {
+        Assert(pkind != StoreConsts::documentNode);
+
+        childItem = new ElementNodeImpl(ELEM_NODE(childItem),
+                                        pnode->typePreserve(),
+                                        pnode->nsPreserve(),
+                                        false);
+        ELEM_NODE(childItem)->setNsBindingsCtx(pnode->getNsBindingsCtx());
+        break;
+      }
+      case StoreConsts::attributeNode:
+      {
+        childItem = new AttributeNodeImpl(ATTR_NODE(childItem), pnode->typePreserve());
+        break;
+      }
+      case StoreConsts::textNode:
+      {
+        childItem = new TextNodeImpl(TEXT_NODE(childItem));
+        break;
+      }
+      case StoreConsts::piNode:
+      {
+        childItem = new PiNodeImpl(PI_NODE(childItem));
+        break;
+      }
+      case StoreConsts::commentNode:
+      {
+        childItem = new CommentNodeImpl(COMMENT_NODE(childItem));
+        break;
+      }
+      default:
+        Assert(0);
+      }
+
+      cnode = BASE_NODE(childItem);
       theChildNodes[theCurrentPos] = childItem;
+
+      cnode->setParent(pnode);
     }
     else
     {
-      Assert(childNode->getParentPtr() == theParentNode.get_ptr());
+      // This assertion is not valid because enclosed expressions do not 
+      // always make copies of the nodes they produce. 
+      //Assert(childNode->getParentPtr() == theParentNode.get_ptr());
     }
 
-    if (theParentNode->getId().isValid() &&
-        childNode->getParentPtr() == theParentNode.get_ptr() &&
-        childNode->getTreeId() != theParentNode->getTreeId())
+    if (pnode->getId().isValid() &&
+        cnode->getParentPtr() == pnode &&
+        cnode->getTreeId() != pnode->getTreeId())
     {
-      childNode->setId(theParentNode->getId());
-      childNode->appendIdComponent(theStartingId + theCurrentPos * 2 + 1);
+      cnode->setId(pnode->getId());
+      cnode->appendIdComponent(theStartingId + theCurrentPos * 2 + 1);
     }
   }
 

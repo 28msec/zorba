@@ -48,9 +48,11 @@ public:
 };
 
 
-/**
- * Filters out all DocumentNodes and returns their children instead of them.
- **/
+/*******************************************************************************
+
+  Filters out all DocumentNodes and returns their children instead of them.
+
+********************************************************************************/
 class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator>
 {
 protected:
@@ -143,10 +145,12 @@ public:
   
 
 /*******************************************************************************
+
   Used to make e.g. the concatenation of adjacent text nodes in the content 
   sequence of an element constructor. Usually, the child of this iterator
   will be a ConcatIterator that computes the content sequence from its various
   components.
+
 ********************************************************************************/
 class ElementContentIterator : public UnaryBaseIterator<ElementContentIterator>
 {
@@ -206,7 +210,6 @@ public:
                       could be a simple text iterator, or a full expression.
 
 ********************************************************************************/
-
 class CommentIterator : public UnaryBaseIterator<CommentIterator>
 {
 protected:
@@ -232,7 +235,6 @@ public:
              could be a simple text iterator, or a full expression.
 
 ********************************************************************************/
-
 class TextIterator : public UnaryBaseIterator<TextIterator>
 {
 protected:
@@ -242,6 +244,50 @@ public:
   TextIterator( const yy::location& loc, PlanIter_t& aChild, bool assignId);
   
   Item_t nextImpl(PlanState& planState);
+  virtual void accept(PlanIterVisitor&) const;
+};
+
+
+/*******************************************************************************
+   Used to make the casting and concatenation of 
+   atomic values in the sequences of an enclosed expression.
+********************************************************************************/
+class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator>
+{
+private:
+  bool theAttrContent;
+  
+protected:
+  class EnclosedState : public PlanIteratorState
+  {
+  public:
+    xqp_string theString;
+    Item_t theContextItem;
+
+    void init();
+  };
+
+public:
+  /**
+   * Constructor of Enclosed Expr
+   * @param loc location
+   * @param childIter child
+   * @param aAttrContent bool which declares if the content must be produced for an attribute or
+   *                     for something else (attr => StringItems, else => TextNodes).
+   */
+  EnclosedIterator(
+        const yy::location& loc,
+        PlanIter_t& childIter,
+        bool aAttrContent = false);
+
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
+
+  uint32_t getStateSize() const { return sizeof(EnclosedState); }
+
+  void setOffset(PlanState& planState, uint32_t& offset);
+  
   virtual void accept(PlanIterVisitor&) const;
 };
 

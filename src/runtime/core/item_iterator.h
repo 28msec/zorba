@@ -149,50 +149,6 @@ public:   // variable binding
   virtual void accept(PlanIterVisitor&) const;
 };
 
-
-/**
-  * Used to make the casting and concatenation of 
-  * atomic values in the sequences of an enclosed expression.
-  */
-class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator>
-{
-private:
-  bool theAttrContent;
-  
-protected:
-  class EnclosedState : public PlanIteratorState
-  {
-  public:
-    xqp_string theString;
-    Item_t theContextItem;
-
-    void init();
-  };
-
-public:
-  /**
-   * Constructor of Enclosed Expr
-   * @param loc location
-   * @param childIter child
-   * @param aAttrContent bool which declares if the content must be produced for an attribute or
-   *                     for something else (attr => StringItems, else => TextNodes).
-   */
-  EnclosedIterator(
-        const yy::location& loc,
-        PlanIter_t& childIter,
-        bool aAttrContent = false);
-
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(EnclosedState); }
-
-  void setOffset(PlanState& planState, uint32_t& offset);
-  
-  virtual void accept(PlanIterVisitor&) const;
-}; /* class EnclosedIterator */
-
   
 class IfThenElseIterator : public Batcher<IfThenElseIterator>
 {

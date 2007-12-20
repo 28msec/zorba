@@ -43,6 +43,7 @@ QNameItem_t BasicItemFactory::createQName(
   return theQNamePool->insert(ns, pre, local);
 }
 
+
 QNameItem_t BasicItemFactory::createQName(
     const xqp_string& ns,
     const xqp_string& pre,
@@ -76,11 +77,13 @@ Item_t BasicItemFactory::createAnyURI(const xqpStringStore_t& value)
   return new AnyUriItemImpl(value);
 }
 
+
 Item_t BasicItemFactory::createAnyURI(const xqp_string& value)
 {
   theUriPool->insert(value.getStore());
   return new AnyUriItemImpl(xqpStringStore_t(&value.getStore()));
 }
+
 
 Item_t BasicItemFactory::createAnyURI(const char* value)
 {
@@ -95,6 +98,7 @@ Item_t BasicItemFactory::createUntypedAtomic(const xqpStringStore_t& value)
   return new UntypedAtomicItemNaive(value);
 }
 
+
 Item_t BasicItemFactory::createUntypedAtomic(const xqp_string& value)
 {
   return new UntypedAtomicItemNaive(xqpStringStore_t(&value.getStore()));
@@ -105,6 +109,7 @@ Item_t BasicItemFactory::createString(const xqpStringStore_t& value)
 {
   return new StringItemNaive(value);
 }
+
 
 Item_t BasicItemFactory::createString(const xqp_string& value)
 {
@@ -117,42 +122,60 @@ Item_t BasicItemFactory::createBase64Binary(xqp_base64Binary value)
   return Item_t ( NULL );
 }
 
+
 Item_t BasicItemFactory::createBoolean(xqp_boolean value)
 {
   return new BooleanItemNaive(value);
 }
+
 
 Item_t BasicItemFactory::createDecimal(xqp_decimal value)
 {
   return new DecimalItemNaive(value);
 }
 
+
 Item_t BasicItemFactory::createInteger(xqp_integer value)
 {
   return new IntegerItemNaive ( value );
 }
+
 
 Item_t BasicItemFactory::createLong ( xqp_long value ) 
 { 
   return new LongItemNaive ( value ); 
 }
 
+
 Item_t BasicItemFactory::createInt ( xqp_int value )
 {
   return new IntItemNaive ( value );
 }
 
-Item_t BasicItemFactory::createShort ( xqp_short value ) { 
+
+Item_t BasicItemFactory::createShort ( xqp_short value )
+{ 
   return new ShortItemNaive ( value ); 
 }
 
-Item_t BasicItemFactory::createByte ( xqp_byte value ) { 
+
+Item_t BasicItemFactory::createByte ( xqp_byte value )
+{ 
   return new ByteItemNaive ( value ); 
 }
 
-Item_t BasicItemFactory::createDate ( short year, short month, short day ) { return Item_t ( NULL ); }
 
-Item_t BasicItemFactory::createDate ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createDate ( short year, short month, short day )
+{
+  return Item_t ( NULL );
+}
+
+
+Item_t BasicItemFactory::createDate ( const xqp_string& value )
+{
+  return Item_t ( NULL );
+}
+
 
 Item_t BasicItemFactory::createDateTime(
     short year,
@@ -164,6 +187,7 @@ Item_t BasicItemFactory::createDateTime(
 {
   return Item_t ( NULL );
 }
+
 
 Item_t BasicItemFactory::createDateTime(
     short year ,
@@ -177,78 +201,128 @@ Item_t BasicItemFactory::createDateTime(
   return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createDateTime ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createDateTime ( const Item_t&, const Item_t& ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createDateTime ( const xqp_string& value )
+{ return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createDouble ( double value ) 
-	{ 
-    return new DoubleItemNaive( value ); 
-	}
 
-	Item_t BasicItemFactory::createDuration ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createDateTime ( const Item_t&, const Item_t& )
+{ return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createDuration (
+
+Item_t BasicItemFactory::createDouble ( double value ) 
+{ 
+  return new DoubleItemNaive( value ); 
+}
+
+
+Item_t BasicItemFactory::createDuration ( const xqp_string& value )
+{ return Item_t ( NULL ); }
+
+
+Item_t BasicItemFactory::createDuration (
 	    short years, short months, short days, short hours, short minutes, short seconds
-	) { return Item_t ( NULL ); }
+	)
+{ return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createENTITIES ( const xqp_string& value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createENTITY ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createFloat ( float value ) 
-	{ 
-    return new FloatItemNaive( value ); 
-	}
+Item_t BasicItemFactory::createENTITIES ( const xqp_string& value )
+{ return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createGDay ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createGDay ( short day ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createENTITY ( const xqp_string& value )
+{ return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createGMonth ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createGMonth ( short month ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createFloat ( float value ) 
+{ 
+  return new FloatItemNaive( value ); 
+}
 
-	Item_t BasicItemFactory::createGMonthDay ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createGMonthDay ( short month, short day ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createGDay ( const xqp_string& value )
+{ return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createGYear ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createGYear ( short year ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createGDay ( short day )
+{ return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createGYearMonth ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createGYearMonth ( short year, short month ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createGMonth ( const xqp_string& value )
+{ return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createHexBinary ( xqp_hexBinary value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createID ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createGMonth ( short month )
+{ return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createIDREF ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createIDREFS ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createGMonthDay ( const xqp_string& value )
+{ return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createLanguage ( const xqp_string& value ) { return Item_t ( NULL ); }
+
+Item_t BasicItemFactory::createGMonthDay ( short month, short day )
+{ return Item_t ( NULL ); }
+
+
+Item_t BasicItemFactory::createGYear ( const xqp_string& value )
+{ return Item_t ( NULL ); }
+
+
+Item_t BasicItemFactory::createGYear ( short year )
+{ return Item_t ( NULL ); }
+
+
+Item_t BasicItemFactory::createGYearMonth ( const xqp_string& value )
+{ return Item_t ( NULL ); }
+
+
+Item_t BasicItemFactory::createGYearMonth ( short year, short month )
+{ return Item_t ( NULL ); }
+
+
+Item_t BasicItemFactory::createHexBinary ( xqp_hexBinary value )
+{ return Item_t ( NULL ); }
+
+
+Item_t BasicItemFactory::createID ( const xqp_string& value )
+{ return Item_t ( NULL ); }
+
+
+Item_t BasicItemFactory::createIDREF ( const xqp_string& value )
+{ return Item_t ( NULL ); }
+
+
+Item_t BasicItemFactory::createIDREFS ( const xqp_string& value )
+{ return Item_t ( NULL ); }
+
+
+Item_t BasicItemFactory::createLanguage ( const xqp_string& value )
+{ return Item_t ( NULL ); }
+
 
 Item_t BasicItemFactory::createNCName ( const xqp_string& value )
 {
   return Item_t ( NULL );
 }
 
+
 Item_t BasicItemFactory::createNMTOKEN ( const xqp_string& value )
 {
   return Item_t ( NULL );
 }
+
 
 Item_t BasicItemFactory::createNMTOKENS ( const xqp_string& value )
 {
   return Item_t ( NULL );
 }
 
+
 Item_t BasicItemFactory::createNOTATION ( const xqp_string& value )
 {
   return Item_t ( NULL );
 }
+
 
 Item_t BasicItemFactory::createName ( const xqp_string& value )
 {
@@ -256,18 +330,21 @@ Item_t BasicItemFactory::createName ( const xqp_string& value )
 }
 
 
-Item_t BasicItemFactory::createNegativeInteger ( xqp_integer value ) { 
+Item_t BasicItemFactory::createNegativeInteger ( xqp_integer value )
+{ 
   Assert(value < 0);
   return new NegativeIntegerItemNaive ( value ); 
 }
 
 
-Item_t BasicItemFactory::createNonNegativeInteger ( xqp_uinteger value ) { 
+Item_t BasicItemFactory::createNonNegativeInteger ( xqp_uinteger value )
+{ 
   return new NonNegativeIntegerItemNaive ( value ); 
 }
 
 
-Item_t BasicItemFactory::createNonPositiveInteger ( xqp_integer value ) { 
+Item_t BasicItemFactory::createNonPositiveInteger ( xqp_integer value )
+{ 
   Assert(value <= 0);
   return new NonPositiveIntegerItemNaive( value );
 }
