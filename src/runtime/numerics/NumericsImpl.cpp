@@ -98,8 +98,8 @@ namespace xqp
 
   Item_t DivideOperations::opDecimal ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    long double ld0 = i0->getDecimalValue();
-    long double ld1 = i1->getDecimalValue();
+    xqp_decimal ld0 = i0->getDecimalValue();
+    xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
       ZORBA_ERROR_ALERT(error_messages::FOAR0001,
@@ -110,71 +110,71 @@ namespace xqp
 
   Item_t DivideOperations::opInteger ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    long long ll0 = i0->getIntegerValue();
-    long long ll1 = i1->getIntegerValue();
+    xqp_decimal ll0 = static_cast<xqp_decimal>(i0->getIntegerValue());
+    xqp_decimal ll1 = static_cast<xqp_decimal>(i1->getIntegerValue());
     if ( ll1 == 0 )
     {
       ZORBA_ERROR_ALERT(error_messages::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
-    return zorba::getItemFactory()->createInteger ( ll0 / ll1 );
+    return zorba::getItemFactory()->createDecimal ( ll0 / ll1 );
   }
   /* end class DivideOperations */
 
   /* start class IntegerDivideOperations */
   Item_t IntegerDivideOperations::opDouble ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    double d0 = i0->getDoubleValue();
-    double d1 = i1->getDoubleValue();
+    xqp_double d0 = i0->getDoubleValue();
+    xqp_double d1 = i1->getDoubleValue();
     if ( d1 == 0 )
     {
       ZORBA_ERROR_ALERT(error_messages::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
     return zorba::getItemFactory()->createInteger (
-               static_cast<long long> ( d0 / d1 )
+               static_cast<xqp_integer> ( d0 / d1 )
            );
   }
 
   Item_t IntegerDivideOperations::opFloat ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    float f0 = i0->getFloatValue();
-    float f1 = i1->getFloatValue();
+    xqp_float f0 = i0->getFloatValue();
+    xqp_float f1 = i1->getFloatValue();
     if ( f1 == 0 )
     {
       ZORBA_ERROR_ALERT(error_messages::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
     return zorba::getItemFactory()->createInteger (
-               static_cast<long long> ( f0 / f1 )
+               static_cast<xqp_integer> ( f0 / f1 )
            );
   }
 
   Item_t IntegerDivideOperations::opDecimal ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    long double ld0 = i0->getDecimalValue();
-    long double ld1 = i1->getDecimalValue();
+    xqp_decimal ld0 = i0->getDecimalValue();
+    xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
       ZORBA_ERROR_ALERT(error_messages::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
     return zorba::getItemFactory()->createInteger (
-               static_cast<long long> ( ld0 / ld1 )
+               static_cast<xqp_integer> ( ld0 / ld1 )
            );
   }
 
   Item_t IntegerDivideOperations::opInteger ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    long long ll0 = i0->getIntegerValue();
-    long long ll1 = i1->getIntegerValue();
+    xqp_integer ll0 = i0->getIntegerValue();
+    xqp_integer ll1 = i1->getIntegerValue();
     if ( ll1 == 0 )
     {
       ZORBA_ERROR_ALERT(error_messages::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
     return zorba::getItemFactory()->createInteger (
-               ll0 / ll0
+               ll0 / ll1
            );
   }
   /* end class IntegerDivideOperations */
@@ -192,8 +192,8 @@ namespace xqp
 
   Item_t ModOperations::opDecimal ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    long double ld0 = i0->getDecimalValue();
-    long double ld1 = i1->getDecimalValue();
+    xqp_decimal ld0 = i0->getDecimalValue();
+    xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
       ZORBA_ERROR_ALERT(error_messages::FOAR0001,
@@ -204,8 +204,8 @@ namespace xqp
 
   Item_t ModOperations::opInteger ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    long long ll0 = i0->getIntegerValue();
-    long long ll1 = i1->getIntegerValue();
+    xqp_integer ll0 = i0->getIntegerValue();
+    xqp_integer ll1 = i1->getIntegerValue();
     if ( ll1 == 0 )
     {
       ZORBA_ERROR_ALERT(error_messages::FOAR0001,
