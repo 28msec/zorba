@@ -264,7 +264,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
           NULL
         );
       return -1;
@@ -280,7 +279,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
           NULL
         );
       return -1;
@@ -302,7 +300,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
           NULL
         );
       return -1;
@@ -318,7 +315,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
           NULL
         );
       return -1;
@@ -340,7 +336,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
           NULL
         );
       return -1;
@@ -351,7 +346,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
           NULL
         );
       return -1;
@@ -380,7 +374,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
           NULL
         );
       return -1;
@@ -391,7 +384,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
           NULL
         );
       return -1;
@@ -531,8 +523,7 @@ namespace xqp
     else
     {
       ZORBA_ERROR_ALERT(
-          error_messages::FOCH0003_Unsupported_normalization_form,
-          error_messages::SYSTEM_ERROR,
+          error_messages::FOCH0003,
           NULL
           );
     }
@@ -541,7 +532,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
           NULL
           );
     }
@@ -951,7 +941,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
             error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-            error_messages::SYSTEM_ERROR,
             NULL
           );
     }
@@ -973,7 +962,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
             error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-            error_messages::SYSTEM_ERROR,
             NULL
           );
 
@@ -990,7 +978,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
             error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-            error_messages::SYSTEM_ERROR,
             NULL
           );
 
@@ -1021,7 +1008,6 @@ namespace xqp
     {
       ZORBA_ERROR_ALERT(
             error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-            error_messages::SYSTEM_ERROR,
             NULL
           );
     }

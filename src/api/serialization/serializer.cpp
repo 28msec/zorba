@@ -89,9 +89,7 @@ serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::oper
 
   if (U_FAILURE(status))
   {
-    ZORBA_ERROR_ALERT(
-                      error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-                      error_messages::SYSTEM_ERROR,
+    ZORBA_ERROR_ALERT( error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
                       NULL
                      );
   }
@@ -131,7 +129,6 @@ serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::oper
     {
       ZORBA_ERROR_ALERT(
                         error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-                        error_messages::SYSTEM_ERROR,
                         NULL
                        );
     }
@@ -435,7 +432,6 @@ void serializer::emitter::emit_item(Item* item)
     {
       ZORBA_ERROR_ALERT(
                         error_messages::SENR0001_Item_is_attribute_or_namespace_node,
-                        error_messages::SYSTEM_ERROR,
                         NULL);
     }
     else        
@@ -726,7 +722,6 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
     {
       ZORBA_ERROR_ALERT(
                         error_messages::SEPM0016_Invalid_parameter_value,
-                        error_messages::SYSTEM_ERROR,
                         NULL);
     }
   }
@@ -742,7 +737,6 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
     {
       ZORBA_ERROR_ALERT(
                         error_messages::SEPM0016_Invalid_parameter_value,
-                        error_messages::SYSTEM_ERROR,
                         NULL);
     }
   }
@@ -756,7 +750,6 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
     {
       ZORBA_ERROR_ALERT(
                         error_messages::SEPM0016_Invalid_parameter_value,
-                        error_messages::SYSTEM_ERROR,
                         NULL);
     }
   }
@@ -770,7 +763,6 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
     {
       ZORBA_ERROR_ALERT(
                         error_messages::SEPM0016_Invalid_parameter_value,
-                        error_messages::SYSTEM_ERROR,
                         NULL);
     }
   }
@@ -784,7 +776,6 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
     {
       ZORBA_ERROR_ALERT(
                         error_messages::SEPM0016_Invalid_parameter_value,
-                        error_messages::SYSTEM_ERROR,
                         NULL);
     }
   }
@@ -798,7 +789,6 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
     {
       ZORBA_ERROR_ALERT(
                         error_messages::SEPM0016_Invalid_parameter_value,
-                        error_messages::SYSTEM_ERROR,
                         NULL);
     }
   }
@@ -812,7 +802,6 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
     {
       ZORBA_ERROR_ALERT(
                         error_messages::SEPM0016_Invalid_parameter_value,
-                        error_messages::SYSTEM_ERROR,
                         NULL);
     }
   }
@@ -826,7 +815,6 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
     {
       ZORBA_ERROR_ALERT(
                         error_messages::SEPM0016_Invalid_parameter_value,
-                        error_messages::SYSTEM_ERROR,
                         NULL);
     }
   }
@@ -838,7 +826,6 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   {
     ZORBA_ERROR_ALERT(
                       error_messages::SEPM0016_Invalid_parameter_value,
-                      error_messages::SYSTEM_ERROR,
                       NULL);
   }
 }
@@ -866,7 +853,6 @@ void serializer::setup(ostream& os)
   {
     ZORBA_ERROR_ALERT(
                       error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-                      error_messages::SYSTEM_ERROR,
                       NULL);
     return;
   }
@@ -879,7 +865,6 @@ void serializer::setup(ostream& os)
   {
     ZORBA_ERROR_ALERT(
                       error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-                      error_messages::SYSTEM_ERROR,
                       NULL);
     return;
   }

@@ -180,10 +180,7 @@ namespace xqp {
     xqp_string ns;
     if(!context_value ("ns:" + prefix, ns))
 		{
-			ZORBA_ERROR_ALERT(
-					error_messages::XQST0048_STATIC_MISSING_TARGET_NAMESPACE,
-					error_messages::STATIC_ERROR
-				);
+			ZORBA_ERROR_ALERT(error_messages::XQST0048);
 		}
     return ns;
   }
@@ -350,11 +347,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 		{
 			if(error_if_not_found)
 			{
-				ZORBA_ERROR_ALERT(
-						error_messages::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-						error_messages::STATIC_ERROR,
-						NULL
-					);
+				ZORBA_ERROR_ALERT( error_messages::XQST0076, NULL);
 			}
 			return NULL;///collation non-existant
 		}
@@ -413,11 +406,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 	else if(!def_coll_uri.empty())
 	{
 		//error, uri not found
-		ZORBA_ERROR_ALERT(
-				error_messages::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-				error_messages::STATIC_ERROR,
-				NULL
-			);
+		ZORBA_ERROR_ALERT( error_messages::XQST0076, NULL);
 		return NULL;///collation non-existant
 	}
 
@@ -469,9 +458,7 @@ void static_context::set_baseuri (xqp_string val, bool from_prolog)
 		bool found = context_value ("int:" "from_prolog_baseuri", str);    
 		if(found)
 		{
-			ZORBA_ERROR_ALERT(error_messages::XQST0032_STATIC_DUPLICATE_BASE_URI,
-												error_messages::STATIC_ERROR
-												);
+			ZORBA_ERROR_ALERT(error_messages::XQST0032);
 			return;
 		}
 		str_keymap.put ("int:" "from_prolog_baseuri", "");
@@ -564,10 +551,7 @@ xqp_string		static_context::resolve_relative_uri( xqp_string uri )
 	if(abs_base_uri.empty())
 	{
 		//then error ! cannot resolve relative uri
-		ZORBA_ERROR_ALERT(
-				error_messages::XPST0001_STATIC_CONTEXT_COMPONENT_MISSING,
-				error_messages::STATIC_ERROR
-			);
+		ZORBA_ERROR_ALERT(error_messages::XPST0001);
 		return "";
 	}
 

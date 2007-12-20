@@ -128,8 +128,7 @@ void translator::end_visit(const AtomicType& v, void *visit_state)
     GENV_TYPESYSTEM.create_type (sctx_p->lookup_qname ("", qname->get_prefix (), qname->get_localname ()),
                                  TypeSystem::QUANT_ONE);
   if (t == NULL)
-    ZORBA_ERROR_ALERT (error_messages::XPST0051_STATIC_MISSING_SCHEMA_TYPE,
-                       error_messages::STATIC_ERROR, NULL);
+    ZORBA_ERROR_ALERT (error_messages::XPST0051, NULL);
   else
     tstack.push (t);
 }
@@ -1739,8 +1738,7 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
                                  TypeSystem::QUANT_QUESTION);
   if (type != NULL) {
     if (arguments.size () != 1)
-      ZORBA_ERROR_ALERT_OSS (error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-                             error_messages::STATIC_ERROR, NULL, false, prefix + ":" + fname, "?");
+      ZORBA_ERROR_ALERT_OSS (error_messages::XPST0017, NULL, false, prefix + ":" + fname, "?");
     nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
   } else {
     rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
@@ -2908,8 +2906,7 @@ void translator::end_visit(const VarRef& v, void *visit_state)
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
   if (e == NULL)
-    ZORBA_ERROR_ALERT (error_messages::XPST0008_STATIC_ILLEGAL_REFERENCE,
-                       error_messages::STATIC_ERROR, NULL);
+    ZORBA_ERROR_ALERT (error_messages::XPST0008, NULL);
   nodestack.push (rchandle<expr> (e));
 }
 

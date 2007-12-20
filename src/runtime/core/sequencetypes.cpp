@@ -76,9 +76,7 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState) {
   lItem = consumeNext(theChild, aPlanState);
   if (lItem == 0) {
     if (theQuantifier == TypeSystem::QUANT_PLUS || theQuantifier == TypeSystem::QUANT_ONE) {
-      ZorbaErrorAlerts::error_alert (
-        error_messages::XPTY0004_STATIC_TYPE_ERROR,
-        error_messages::STATIC_ERROR,
+      ZorbaErrorAlerts::error_alert (error_messages::XPTY0004, &loc,
         false,
         "Empty sequences cannot be casted to a type with quantifier ONE or PLUS!"
       );
@@ -90,8 +88,7 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState) {
       if (theQuantifier == TypeSystem::QUANT_ONE
        || theQuantifier == TypeSystem::QUANT_QUESTION) {
          ZorbaErrorAlerts::error_alert (
-           error_messages::XPTY0004_STATIC_TYPE_ERROR,
-           error_messages::STATIC_ERROR,
+           error_messages::XPTY0004, &loc,
            false,
            "Sequence wiht more than one item cannot be casted to a type with quantifier ONE or QUESTION!"
          );

@@ -8,7 +8,6 @@ int http_get(const char* url, xqp_string& result)
 {
   ZORBA_ERROR_ALERT(
     error_messages::XQP0004_SYSTEM_NOT_SUPPORTED,
-    error_messages::SYSTEM_ERROR,
     NULL
     );
 

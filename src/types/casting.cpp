@@ -325,11 +325,7 @@ namespace xqp
         lRetValue = false;
       else if (lString != "true" && lString != "1")
       {
-        ZorbaErrorAlerts::error_alert(
-            error_messages::FORG0001_Invalid_value_for_cast_constructor,
-            error_messages::RUNTIME_ERROR,
-            false,
-            "String cannot be cast to boolean");
+        ZORBA_ERROR_ALERT(error_messages::FORG0001, false, "String cannot be cast to boolean");
       }
       
     }
@@ -351,11 +347,8 @@ namespace xqp
     
     lResult = stringSimpleCast(aItem, lItemType, aTargetType);
     if ( lResult == 0 ) {
-      ZorbaErrorAlerts::error_alert(
-        error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
-        error_messages::STATIC_ERROR,
-        false,
-        "Passed item is not castable to passed target type (simple stringcast returned 0)!"
+      ZORBA_ERROR_ALERT(error_messages::FORG0001, false, 
+        false, "Passed item is not castable to passed target type."
       );
     }
     return lResult;

@@ -72,11 +72,7 @@ CollationManager::getCollation(std::string  coll_string,
 
 	if(U_FAILURE(status)) 
 	{
-		ZORBA_ERROR_ALERT(
-				error_messages::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-				error_messages::SYSTEM_ERROR,
-				NULL
-			);
+		ZORBA_ERROR_ALERT( error_messages::XQST0076, NULL);
 		delete coll_elem;
 		return NULL;
 	}
@@ -126,3 +122,4 @@ CollationManager::getHardcodedCollator(xqp_string URI)
 
 
 }//end namespace xqp
+

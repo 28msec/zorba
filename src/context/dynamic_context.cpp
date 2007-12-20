@@ -86,9 +86,7 @@ xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qnam
 		if(!sctx)
 		{
 			///actually the whole static context is missing
-			ZORBA_ERROR_ALERT(error_messages::XPST0001_STATIC_CONTEXT_COMPONENT_MISSING,
-												error_messages::STATIC_ERROR
-												);
+			ZORBA_ERROR_ALERT(error_messages::XPST0001);
 			return NULL;
 		}
 		return rqname.second + ":" + sctx->lookup_ns(rqname.first);

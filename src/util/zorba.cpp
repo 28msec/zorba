@@ -125,11 +125,7 @@ void		zorba::getDefaultCollation(std::string  *coll_string, ::Collator::ECollati
 			coll_descr = CollationManager::getHardcodedCollator(collURI);
 			if(!coll_descr)
 			{
-				ZORBA_ERROR_ALERT(
-						error_messages::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
+				ZORBA_ERROR_ALERT(error_messages::XQST0076, NULL);
 				return NULL;
 			}
 			return coll_manager->getCollation(coll_descr->coll_string, coll_descr->coll_strength);
@@ -141,11 +137,7 @@ void		zorba::getDefaultCollation(std::string  *coll_string, ::Collator::ECollati
 			default_coll = coll_manager->getCollation(default_coll_string, default_coll_strength);
 			if(!default_coll)
 			{
-				ZORBA_ERROR_ALERT(
-						error_messages::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
+				ZORBA_ERROR_ALERT( error_messages::XQST0076, NULL);
 				return NULL;
 			}
 			return default_coll;

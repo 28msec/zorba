@@ -288,11 +288,8 @@ ConcatStrIterator::nextImpl(PlanState& planState) {
 
     if  ( ( lItem = consumeNext(*iter, planState) ) != NULL )
     {
-      ZORBA_ERROR_ALERT(
-        error_messages::XPTY0004_STATIC_TYPE_ERROR,
-        error_messages::RUNTIME_ERROR,
-        NULL, false,
-        "A sequence with more than one item is not allowed as argument to fn:concat");
+      ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        &loc, false, "A sequence with more than one item is not allowed as argument to fn:concat");
         break;
     }
   }

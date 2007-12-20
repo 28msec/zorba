@@ -102,13 +102,8 @@ namespace xqp
     long double ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
-      ZorbaErrorAlerts::error_alert (
-          error_messages::FOAR0001_Division_by_zero,
-          error_messages::RUNTIME_ERROR,
-          loc,
-          false,
-          "Division by zero (decimals)!"
-      );
+      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+         loc, false, "Division by zero (decimals)");
     }
     return zorba::getItemFactory()->createDecimal ( ld0 / ld1 );
   }
@@ -119,13 +114,8 @@ namespace xqp
     long long ll1 = i1->getIntegerValue();
     if ( ll1 == 0 )
     {
-      ZorbaErrorAlerts::error_alert (
-          error_messages::FOAR0001_Division_by_zero,
-          error_messages::RUNTIME_ERROR,
-          loc,
-          false,
-          "Division by zero (integers)!"
-      );
+      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+         loc, false, "Division by zero (decimals)");
     }
     return zorba::getItemFactory()->createInteger ( ll0 / ll1 );
   }
@@ -138,13 +128,8 @@ namespace xqp
     double d1 = i1->getDoubleValue();
     if ( d1 == 0 )
     {
-      ZorbaErrorAlerts::error_alert (
-          error_messages::FOAR0001_Division_by_zero,
-          error_messages::RUNTIME_ERROR,
-          loc,
-          false,
-          "Integer Division by zero (integers)!"
-      );
+      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+         loc, false, "Division by zero (decimals)");
     }
     return zorba::getItemFactory()->createInteger (
                static_cast<long long> ( d0 / d1 )
@@ -157,13 +142,8 @@ namespace xqp
     float f1 = i1->getFloatValue();
     if ( f1 == 0 )
     {
-      ZorbaErrorAlerts::error_alert (
-          error_messages::FOAR0001_Division_by_zero,
-          error_messages::RUNTIME_ERROR,
-          loc,
-          false,
-          "Integer Division by zero (integers)!"
-      );
+      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+         loc, false, "Division by zero (decimals)");
     }
     return zorba::getItemFactory()->createInteger (
                static_cast<long long> ( f0 / f1 )
@@ -176,13 +156,8 @@ namespace xqp
     long double ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
-      ZorbaErrorAlerts::error_alert (
-          error_messages::FOAR0001_Division_by_zero,
-          error_messages::RUNTIME_ERROR,
-          loc,
-          false,
-          "Integer Division by zero (integers)!"
-      );
+      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+         loc, false, "Division by zero (decimals)");
     }
     return zorba::getItemFactory()->createInteger (
                static_cast<long long> ( ld0 / ld1 )
@@ -195,13 +170,8 @@ namespace xqp
     long long ll1 = i1->getIntegerValue();
     if ( ll1 == 0 )
     {
-      ZorbaErrorAlerts::error_alert (
-          error_messages::FOAR0001_Division_by_zero,
-          error_messages::RUNTIME_ERROR,
-          loc,
-          false,
-          "Integer Division by zero (integers)!"
-      );
+      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+         loc, false, "Division by zero (decimals)");
     }
     return zorba::getItemFactory()->createInteger (
                ll0 / ll0
@@ -226,13 +196,8 @@ namespace xqp
     long double ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
-      ZorbaErrorAlerts::error_alert (
-          error_messages::FOAR0001_Division_by_zero,
-          error_messages::RUNTIME_ERROR,
-          loc,
-          false,
-          "Modulo by zero (decimals)!"
-      );
+      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+         loc, false, "Modulo by zero (decimals)");
     }
     return zorba::getItemFactory()->createDecimal ( fmod ( ld0, ld1 ) );
   }
@@ -243,13 +208,8 @@ namespace xqp
     long long ll1 = i1->getIntegerValue();
     if ( ll1 == 0 )
     {
-      ZorbaErrorAlerts::error_alert (
-          error_messages::FOAR0001_Division_by_zero,
-          error_messages::RUNTIME_ERROR,
-          loc,
-          false,
-          "Modulo by zero (integers)!"
-      );
+      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+         loc, false, "Modulo by zero (decimals)");
     }
     return zorba::getItemFactory()->createInteger ( ll0 % ll1 );
   }
@@ -289,13 +249,8 @@ namespace xqp
       
         if ( consumeNext ( this->theChild0, planState ) != NULL 
              || consumeNext ( this->theChild1, planState ) != NULL )
-          ZorbaErrorAlerts::error_alert (
-              error_messages::XPTY0004_STATIC_TYPE_ERROR,
-              error_messages::STATIC_ERROR,
-              NULL,
-              false,
-              "Arithmetic operation has a sequences greater than one as an operator!"
-              );
+          ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+              NULL, false, "Arithmetic operation has a sequences greater than one as an operator.");
         STACK_PUSH ( res, state );
       }
     }
@@ -567,23 +522,13 @@ namespace xqp
         res = zorba::getItemFactory()->createInteger ( mul * item->getIntegerValue() );
       else
       {
-        ZorbaErrorAlerts::error_alert (
-            error_messages::XPTY0004_STATIC_TYPE_ERROR,
-            error_messages::STATIC_ERROR,
-            NULL,
-            false,
-            "Wrong operator type for an unary arithmetic operation!"
-        );
+          ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+              &loc, false, "Wrong operator type for an unary arithmetic operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
-        ZorbaErrorAlerts::error_alert (
-            error_messages::XPTY0004_STATIC_TYPE_ERROR,
-            error_messages::STATIC_ERROR,
-            NULL,
-            false,
-            "Arithmetic operation has a sequences greater than one as an operator!"
-        );
+          ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+              &loc, false, "Arithmetic operation has a sequences greater than one as an operator.");
       STACK_PUSH ( res, state );
     }
     STACK_END();
@@ -668,24 +613,14 @@ namespace xqp
           res = zorba::getItemFactory()->createInteger ( -item->getIntegerValue() );
       else
       {
-        ZorbaErrorAlerts::error_alert (
-            error_messages::XPTY0004_STATIC_TYPE_ERROR,
-            error_messages::STATIC_ERROR,
-            NULL,
-            false,
-            "Wrong operator type for an abs operation!"
-        );
+        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+            &loc, false, "Wrong operator type for an abs operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZorbaErrorAlerts::error_alert (
-            error_messages::XPTY0004_STATIC_TYPE_ERROR,
-            error_messages::STATIC_ERROR,
-            NULL,
-            false,
-            "Abs operation has a sequences greater than one as an operator!"
-        );
+        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+            &loc, false, "Abs operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
     }
@@ -743,24 +678,14 @@ namespace xqp
 
       else
       {
-        ZorbaErrorAlerts::error_alert (
-          error_messages::XPTY0004_STATIC_TYPE_ERROR,
-          error_messages::STATIC_ERROR,
-          NULL,
-          false,
-          "Wrong operator type for a ceiling operation!"
-          );
+        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+            &loc, false, "Wrong operator type for a ceiling operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZorbaErrorAlerts::error_alert (
-          error_messages::XPTY0004_STATIC_TYPE_ERROR,
-          error_messages::STATIC_ERROR,
-          NULL,
-          false,
-          "Ceiling operation has a sequences greater than one as an operator!"
-         );
+        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+            &loc, false, "Ceiling operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
     }
@@ -817,24 +742,14 @@ namespace xqp
 
       else
       {
-        ZorbaErrorAlerts::error_alert (
-            error_messages::XPTY0004_STATIC_TYPE_ERROR,
-        error_messages::STATIC_ERROR,
-        NULL,
-        false,
-        "Wrong operator type for a floor operation!"
-        );
+        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+            &loc, false, "Wrong operator type for a floor operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZorbaErrorAlerts::error_alert (
-            error_messages::XPTY0004_STATIC_TYPE_ERROR,
-        error_messages::STATIC_ERROR,
-        NULL,
-        false,
-        "Floor operation has a sequences greater than one as an operator!"
-        );
+        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+            &loc, false, "Floor operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
     }
@@ -891,24 +806,14 @@ namespace xqp
 
       else
       {
-        ZorbaErrorAlerts::error_alert (
-            error_messages::XPTY0004_STATIC_TYPE_ERROR,
-        error_messages::STATIC_ERROR,
-        NULL,
-        false,
-        "Wrong operator type for a round operation!"
-                                      );
+        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+            &loc, false, "Wrong operator type for a round operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZorbaErrorAlerts::error_alert (
-            error_messages::XPTY0004_STATIC_TYPE_ERROR,
-        error_messages::STATIC_ERROR,
-        NULL,
-        false,
-        "Round operation has a sequences greater than one as an operator!"
-                                      );
+        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+            &loc, false, "Round operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
     }
@@ -977,24 +882,14 @@ namespace xqp
 
       else
       {
-        ZorbaErrorAlerts::error_alert (
-            error_messages::XPTY0004_STATIC_TYPE_ERROR,
-        error_messages::STATIC_ERROR,
-        NULL,
-        false,
-        "Wrong operator type for a round-half-to-even operation!"
-                                      );
+        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+            &loc, false, "Wrong operator type for a round-half-to-even operation.");
       }
 
       if ( this->consumeNext ( theChild0, planState ) != NULL )
       {
-        ZorbaErrorAlerts::error_alert (
-            error_messages::XPTY0004_STATIC_TYPE_ERROR,
-        error_messages::STATIC_ERROR,
-        NULL,
-        false,
-        "Round-half-to-even operation has a sequences greater than one as an operator!"
-                                      );
+        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+           &loc, false, "Round-half-to-even operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
     }

@@ -65,7 +65,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
   if(is_compiled)
   {
     ZORBA_ERROR_ALERT(error_messages::API0004_XQUERY_ALREADY_COMPILED,
-                                  error_messages::STATIC_ERROR,
                                   NULL,
                                   true///continue execution
                                   );
@@ -77,7 +76,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	if(!m_query_text[0])
 	{
 		ZORBA_ERROR_ALERT(error_messages::API0001_XQUERY_STRING_IS_EMPTY,
-																	error_messages::STATIC_ERROR,
 																	NULL,
 																	true///continue execution
 																	);
@@ -102,7 +100,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
   ///reset the error list from error manager
 //  m_error_manager.clear();///delete all alerts from list
 
-	
 	///NOW COMPILE
 	xquery_driver driver;
 	driver.filename = m_xquery_source_uri;
@@ -127,34 +124,27 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
 	if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) 
 	{
-		ZORBA_ERROR_ALERT(error_messages::XPST0003_STATIC_GRAMMAR_ERROR,
-                      error_messages::SYSTEM_ERROR,
+		ZORBA_ERROR_ALERT(error_messages::XPST0003,
                       NULL,
-                      /* continue_execution = */ true);
-		cerr << "Parse error: expecting MainModule\n";
-		//UnregisterCurrentXQueryForCurrentThread( this );
+                      /* continue_execution = */ true, "Parse error: expecting MainModule");
 		thread_specific_zorba->current_xquery = NULL;
 		return false;
 	}
 	if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL) 
 	{
-		ZORBA_ERROR_ALERT(error_messages::XPST0003_STATIC_GRAMMAR_ERROR,
-                      error_messages::SYSTEM_ERROR,
+		ZORBA_ERROR_ALERT(error_messages::XPST0003,
                       NULL,
-                      /* continue_execution = */ true);
-		cerr << "Parse error: expecting MainModule->QueryBody\n";
+                      /* continue_execution = */ true, "Parse error: expecting MainModule->QueryBody");
 		//UnregisterCurrentXQueryForCurrentThread( this );
 		thread_specific_zorba->current_xquery = NULL;
 		return false;
 	}
 	if ((ex_p = dynamic_cast<Expr*>(&*qb_p->get_expr()))==NULL) 
 	{
-		ZORBA_ERROR_ALERT(error_messages::XPST0003_STATIC_GRAMMAR_ERROR,
-                      error_messages::SYSTEM_ERROR,
+		ZORBA_ERROR_ALERT(error_messages::XPST0003,
                       NULL,
-                      /* continue_execution = */ true);
-		cerr << "Parse error: expecting MainModule->QueryBody->Expr\n";
-		//UnregisterCurrentXQueryForCurrentThread( this );
+                      /* continue_execution = */ true, 
+                      "Parse error: expecting MainModule->QueryBody->Expr");
 		thread_specific_zorba->current_xquery = NULL;
 		return false;
 	}
@@ -165,11 +155,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	rchandle<expr> e_h = nvs.pop_nodestack();
 
 	if (e_h==NULL) {
-		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED,
-																	error_messages::STATIC_ERROR,
-																	NULL,
-																	true///continue execution
-																	);
+		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED, NULL, true);
 		thread_specific_zorba->current_xquery = NULL;
 		return false;
 	}
@@ -198,12 +184,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	
 	if (top_iterator==NULL) {
 		cout << "it_h==NULL\n";
-		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED,
-																	error_messages::STATIC_ERROR,
-																	NULL,
-																	true///continue execution
-																	);
-		//UnregisterCurrentXQueryForCurrentThread( this );
+		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED, NULL, true);
 		thread_specific_zorba->current_xquery = NULL;
 		return false;
 	}
@@ -245,7 +226,6 @@ XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dct
   {
     cout << "not compiled" << endl;
     ZORBA_ERROR_ALERT(error_messages::API0003_XQUERY_NOT_COMPILED,
-                                  error_messages::RUNTIME_ERROR,
                                   NULL,
                                   true///continue execution
                                   );
@@ -312,7 +292,6 @@ StaticQueryContext_t Zorba_XQueryBinary::getInternalStaticContext()
 bool   Zorba_XQueryBinary::serializeQuery(ostream &os)
 {
   ZORBA_ERROR_ALERT(error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
-                    error_messages::SYSTEM_ERROR,
                     NULL,
                     true,///continue execution
                     "Zorba_XQueryBinary::serializeQuery"
@@ -457,7 +436,6 @@ bool Zorba_XQueryExecution::isError()
 void  Zorba_XQueryExecution::AbortQueryExecution()
 {
   ZORBA_ERROR_ALERT(error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
-                    error_messages::SYSTEM_ERROR,
                     NULL,
                     true,///continue execution
                     "AbortQueryExecution"

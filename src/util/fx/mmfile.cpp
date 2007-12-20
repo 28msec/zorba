@@ -45,7 +45,6 @@ namespace xqp {
 		ostringstream oerr; \
 		oerr << s << " [" << strerror(errno) << ']'; \
 		ZORBA_ERROR_ALERT(error_messages::XQP0013_SYSTEM_MMFILE_IOEXCEPTION,\
-													error_messages::SYSTEM_ERROR,\
 													NULL,false,\
 													oerr.str(), __FUNCTION__);\
 	}
@@ -55,7 +54,6 @@ namespace xqp {
 		ostringstream oerr; \
 		oerr << s << " [" << GetLastError() << ']'; \
 		ZORBA_ERROR_ALERT(error_messages::XQP0013_SYSTEM_MMFILE_IOEXCEPTION,\
-													error_messages::SYSTEM_ERROR,\
 													NULL,false,\
 													oerr.str(), __FUNCTION__);\
 	}

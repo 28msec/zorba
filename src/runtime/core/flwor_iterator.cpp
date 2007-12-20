@@ -383,11 +383,8 @@ namespace xqp
         if ( lItem != 0 )
         {
           ZORBA_ERROR_ALERT (
-              error_messages::XPTY0004_STATIC_TYPE_ERROR,
-              error_messages::STATIC_ERROR,
-              NULL,
-              false,
-              "Expected a singleton" );
+              error_messages::XPTY0004,
+              NULL, false, "Expected a singleton" );
         }
       }
       resetChild ( lSpecIter->orderByIter, planState );

@@ -122,8 +122,7 @@ public:
     else {
       f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) + qname_internal_key (default_function_namespace (), prefix, local));
       if (f == NULL)
-        ZORBA_ERROR_ALERT (error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-                           error_messages::STATIC_ERROR, NULL);
+        ZORBA_ERROR_ALERT (error_messages::XPST0017, NULL);
       return f;
     }
   }

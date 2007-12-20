@@ -108,10 +108,7 @@ FnIndexOfIterator::nextImpl(PlanState& planState) {
   state->theSearchItem = consumeNext(theChild1, planState);
   if ( state->theSearchItem == NULL ) 
   {
-    ZORBA_ERROR_ALERT(
-         error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
-         error_messages::RUNTIME_ERROR,
-         NULL, false,
+    ZORBA_ERROR_ALERT( error_messages::FORG0006, &loc, false,
          "An empty sequence is not allowed as search item of fn:index-of");    
   }
 
@@ -452,10 +449,9 @@ FnRemoveIterator::nextImpl(PlanState& planState) {
   if ( lPositionItem == NULL ) 
   {
     ZORBA_ERROR_ALERT(
-         error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
-         error_messages::RUNTIME_ERROR,
-         NULL, false,
-         "An empty sequence is not allowed as second argument to of fn:remove");    
+         error_messages::FORG0006,
+         &loc, false,
+         "An empty sequence is not allowed as second argument to of fn:remove.");
   }
 
   state->thePosition = lPositionItem->getIntegerValue();
@@ -536,10 +532,8 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) {
   if ( lStartingLoc == NULL ) 
   {
     ZORBA_ERROR_ALERT(
-         error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
-         error_messages::RUNTIME_ERROR,
-         NULL, false,
-         "An empty sequence is not allowed as starting location of fn:subsequence");    
+         error_messages::FORG0006, &loc, false,
+         "An empty sequence is not allowed as starting location of fn:subsequence.");    
   }
   
   state->theStartingLoc = lStartingLoc->getDoubleValue();
@@ -551,11 +545,8 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) {
     lLength = consumeNext(theChildren[2], planState);
     if ( lLength == NULL )
     {
-      ZORBA_ERROR_ALERT(
-           error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
-           error_messages::RUNTIME_ERROR,
-           NULL, false,
-           "An empty sequence is not allowed as third argument of fn:subsequence");          
+      ZORBA_ERROR_ALERT( error_messages::FORG0006, &loc, false,
+           "An empty sequence is not allowed as third argument of fn:subsequence.");
     }
     state->theLength = lLength->getDoubleValue();
   }
@@ -662,8 +653,9 @@ FnZeroOrOneIterator::nextImpl(PlanState& planState) {
     lNextSequenceItem = consumeNext(theChild, planState);
     if (lNextSequenceItem != NULL)
     {
-      ZORBA_ERROR_ALERT(error_messages::FODC0003_Function_stability_not_defined,                                                                          error_messages::RUNTIME_ERROR, 
-                        NULL, false, "fn:zero-or-one called with a sequence containing more than one item"); 
+      ZORBA_ERROR_ALERT(error_messages::FORG0003, 
+        &loc, false, "fn:zero-or-one called with a sequence containing more than one item."); 
+
     }
     STACK_PUSH(lFirstSequenceItem, state);
   }
@@ -690,9 +682,8 @@ FnOneOrMoreIterator::nextImpl(PlanState& planState) {
   lSequenceItem = consumeNext(theChild, planState);
   if (lSequenceItem == NULL)
   {
-    ZORBA_ERROR_ALERT(error_messages::FODC0004_Invalid_argument_to_fn_collection,
-                      error_messages::RUNTIME_ERROR, 
-                      NULL, false, "fn:one-or-more called with a sequence containing no items.");
+    ZORBA_ERROR_ALERT(error_messages::FORG0004,
+        &loc, false, "fn:one-or-more called with a sequence containing no items.");
   }
   do
   {
@@ -722,9 +713,8 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) {
   lNextItem = consumeNext(theChild, planState);
   if ( lFirstItem == NULL || lNextItem != NULL )
   {
-    ZORBA_ERROR_ALERT(error_messages::FODC0005_Invalid_argument_to_fn_doc_or_fn_doc_available,
-                      error_messages::RUNTIME_ERROR, 
-                      NULL, false, "fn:exactly-one called with a sequence containing zero or more than one item.");
+    ZORBA_ERROR_ALERT(error_messages::FORG0005,
+        &loc, false, "fn:exactly-one called with a sequence containing zero or more than one item.");
   }
 
   STACK_PUSH(lFirstItem, state);
@@ -958,12 +948,8 @@ OpToIterator::nextImpl(PlanState& planState) {
   lItem = consumeNext(theChild0, planState);
   if (lItem == NULL)
   {
-    ZorbaErrorAlerts::error_alert (
-        error_messages::XPTY0004_STATIC_TYPE_ERROR,
-        error_messages::RUNTIME_ERROR,
-        false,
-        "The empty sequence is not allowed as first argument to op:to"
-        );
+    ZorbaErrorAlerts::error_alert (error_messages::XPTY0004,
+        false, "The empty sequence is not allowed as first argument to op:to.");
 
   }
   state->theFirstVal = lItem->getIntegerValue();
@@ -971,12 +957,8 @@ OpToIterator::nextImpl(PlanState& planState) {
   lItem = consumeNext(theChild1, planState);
   if (lItem == NULL)
   {
-    ZorbaErrorAlerts::error_alert (
-        error_messages::XPTY0004_STATIC_TYPE_ERROR,
-        error_messages::RUNTIME_ERROR,
-        false,
-        "The empty sequence is not allowed as second argument to op:to"
-        );
+    ZorbaErrorAlerts::error_alert (error_messages::XPTY0004, false,
+        "The empty sequence is not allowed as second argument to op:to.");
 
   }
   state->theLastVal = lItem->getIntegerValue();
@@ -1086,11 +1068,8 @@ FnDocIterator::nextImpl ( PlanState& planState )
       if (result_code != 0)
       {
          // File does not exist
-        ZORBA_ERROR_ALERT(error_messages::FODC0002_Error_retrieving_resource,
-                          error_messages::RUNTIME_ERROR,
-                          NULL,
-                          false,
-                          "Could not retrieve resource");
+        ZORBA_ERROR_ALERT(error_messages::FODC0002,
+                          &loc, false, "Could not retrieve resource");
       }
 
       istringstream iss(result.getStore().c_str());
@@ -1107,11 +1086,8 @@ FnDocIterator::nextImpl ( PlanState& planState )
       if (ifs.is_open() == false)
       {
         // File does not exist
-        ZORBA_ERROR_ALERT(error_messages::FODC0002_Error_retrieving_resource,
-                          error_messages::RUNTIME_ERROR,
-                          NULL,
-                          false,
-                          "The file does not exist");
+        ZORBA_ERROR_ALERT(error_messages::FODC0002,
+                          &loc, false, "The file does not exist");
       }
 
       XmlLoader& loader = store.getXmlLoader();

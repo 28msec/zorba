@@ -21,11 +21,7 @@ namespace xqp
   /* begin class Item */
   void Item::showError() const
   {
-    ZorbaErrorAlerts::error_alert (
-        error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-        error_messages::SYSTEM_ERROR,
-        NULL
-    );
+    ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED, NULL);
   }
 
   xqp_string Item::show() const

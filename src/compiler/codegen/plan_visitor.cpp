@@ -296,8 +296,7 @@ void plan_visitor::end_visit(fo_expr& v)
       theConstructorsStack.pop();
     }
   } else {
-    ZORBA_ERROR_ALERT_OSS (error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-                           error_messages::STATIC_ERROR,
+    ZORBA_ERROR_ALERT_OSS (error_messages::XPST0017,
                            &loc, false, func.get_signature ().get_name ()->getStringProperty (), argv.size ());
   }
 }
@@ -480,7 +479,6 @@ bool plan_visitor::begin_visit(axis_step_expr& v)
   {
     ZORBA_ERROR_ALERT(
        error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-       error_messages::SYSTEM_ERROR,
        NULL,
        false,
        "Unknown axis kind");

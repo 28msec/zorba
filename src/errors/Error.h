@@ -35,7 +35,6 @@ public:
    */
 	static void error_alert(
         const error_messages::errcode ecode,
-        error_messages::error_type etype,
         const yy::location *ploc = NULL,
         bool continue_execution = false,
 				const std::string param1 = "",
@@ -74,12 +73,12 @@ public:
 			ZorbaErrorAlerts::error_alert(__VA_ARGS__); \
 } while(0)
 
-#define ZORBA_ERROR_ALERT_OSS(e, errtype, ploc, ce, msg1, msg2) { \
+#define ZORBA_ERROR_ALERT_OSS(e,  ploc, ce, msg1, msg2) { \
 			g_error_in_file = __FILE__; g_error_at_line = __LINE__; \
 			std::ostringstream os1, os2; \
 			os1 << msg1; \
 			os2 << msg2; \
-			ZorbaErrorAlerts::error_alert(e, errtype, ploc, ce, os1.str(), os2.str()); \
+			ZorbaErrorAlerts::error_alert(e, ploc, ce, os1.str(), os2.str()); \
 }
 
 #define		ZORBA_WARNING_ALERT(...) do { \
@@ -113,11 +112,11 @@ public:
 #define		ZORBA_ERROR_ALERT(...)				\
 				ZorbaErrorAlerts::error_alert(__VA_ARGS__)
 
-#define ZORBA_ERROR_ALERT_OSS(e, errtype, ploc, ce, msg1, msg2) { \
+#define ZORBA_ERROR_ALERT_OSS(e, ploc, ce, msg1, msg2) { \
 			std::ostringstream os1, os2; \
 			os1 << msg1; \
 			os2 << msg2; \
-			ZorbaErrorAlerts::error_alert(e, errtype, ploc, ce, os1.str().c_str(), os2.str().c_str()); \
+			ZorbaErrorAlerts::error_alert(e, ploc, ce, os1.str().c_str(), os2.str().c_str()); \
 }
 
 #define		ZORBA_WARNING_ALERT(...)		\

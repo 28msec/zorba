@@ -192,11 +192,7 @@ namespace xqp {
     if (!is_code_point_valid(cp))
     {
         ZORBA_ERROR_ALERT(
-          error_messages::FOCH0001_Code_point_not_valid,
-          error_messages::RUNTIME_ERROR,
-          NULL,
-          true
-        );
+          error_messages::FOCH0001, NULL, true);
     }
     if (cp < 0x80)                        // one octet
       *(result++) = static_cast<uint8_t>(cp);

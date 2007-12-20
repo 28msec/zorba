@@ -23,8 +23,7 @@ fn_data_func::operator() (
   if ( !validate_args ( argv ) )
 	{
     ZorbaErrorAlerts::error_alert (
-		   error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-       error_messages::STATIC_ERROR,
+		   error_messages::XPST0017,
        &loc
 		);
   }
@@ -64,8 +63,7 @@ PlanIter_t fn_root_func::operator() (
   if (!validate_args(argv))
 	{
     ZORBA_ERROR_ALERT(
-		   error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-       error_messages::STATIC_ERROR,
+		   error_messages::XPST0017,
        &loc
 		);
   }

@@ -89,7 +89,7 @@ YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
   skip_whitespace(ss, position);
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
   
   if (ss[position] == '-')
   {
@@ -98,13 +98,13 @@ YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
   }
 
   if (position == ss.size() || ss[position++] != 'P')
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   if (position == ss.size() || parse_int(ss, position, result))
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   if (ss[position] == 'Y')
   {
@@ -112,12 +112,12 @@ YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
     months = result * 12;
     
     if (position == ss.size())
-      ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+      ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
     if (parse_int(ss, position, result) == 0)
     {
       if (ss[position++] != 'M')
-        ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+        ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
       months += result;
     }
@@ -127,12 +127,12 @@ YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
     months = result;
   }
   else
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   skip_whitespace(ss, position);
 
   if (ss.size() != position)
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   if (negative)
     months = -months;
@@ -154,10 +154,10 @@ static void parse_s_string(std::string ss, unsigned int& position, long& seconds
   long result;
   
   if (position == ss.size() || parse_int(ss, position, result))
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);;
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);;
 
   if (ss[position] == 'S')
   {
@@ -170,10 +170,10 @@ static void parse_s_string(std::string ss, unsigned int& position, long& seconds
     seconds = result;
 
     if (position == ss.size() || parse_int(ss, position, result))
-      ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+      ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
     if (position == ss.size() || ss[position] != 'S')
-      ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+      ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
     position++;
     frac_seconds = result;
@@ -187,10 +187,10 @@ static void parse_ms_string(std::string ss, unsigned int& position, long& minute
   long result;
   
   if (position == ss.size() || parse_int(ss, position, result))
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);;
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);;
 
   if (ss[position] == 'M')
   {
@@ -209,10 +209,10 @@ static void parse_ms_string(std::string ss, unsigned int& position, long& minute
     seconds = result;
 
     if (position == ss.size() || parse_int(ss, position, result))
-      ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+      ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
     if (position == ss.size() || ss[position] != 'S')
-      ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+      ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
     position++;
     frac_seconds = result;
@@ -226,10 +226,10 @@ static void parse_hms_string(std::string ss, unsigned int& position, long& hours
   long result;
   
   if (position == ss.size() || parse_int(ss, position, result))
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);;
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);;
 
   if (ss[position] == 'H')
   {
@@ -254,10 +254,10 @@ static void parse_hms_string(std::string ss, unsigned int& position, long& hours
     seconds = result;
 
     if (position == ss.size() || parse_int(ss, position, result))
-      ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+      ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
     if (position == ss.size() || ss[position] != 'S')
-      ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+      ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
     position++;
     frac_seconds = result;
@@ -276,7 +276,7 @@ DayTimeDuration_t DayTimeDuration::parse_string(xqpString s)
   skip_whitespace(ss, position);
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
   
   if (ss[position] == '-')
   {
@@ -285,21 +285,21 @@ DayTimeDuration_t DayTimeDuration::parse_string(xqpString s)
   }
 
   if (position == ss.size() || ss[position++] != 'P')
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   // It must be either 'T' or 'nD'
   if (ss[position] != 'T')
   {
     if (parse_int(ss, position, result))
-      ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+      ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
     days = result;
 
     if (position == ss.size() || ss[position++] != 'D')
-      ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+      ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
   }
 
   // Either 'T', or whitespace, or end
@@ -313,7 +313,7 @@ DayTimeDuration_t DayTimeDuration::parse_string(xqpString s)
   skip_whitespace(ss, position);
 
   if (ss.size() != position)
-    ZORBA_ERROR_ALERT(error_messages::FORG0001_Invalid_value_for_cast_constructor, error_messages::SYSTEM_ERROR, NULL);
+    ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   dt_t = new DayTimeDuration(negative, days, minutes, hours, seconds, frac_seconds);
   return dt_t;

@@ -998,7 +998,6 @@ StoreConsts::NodeKind_t match_expr::getNodeKind() const
   {
     ZORBA_ERROR_ALERT(
          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-         error_messages::SYSTEM_ERROR,
          NULL,
          false,
          "Unknown node test kind");

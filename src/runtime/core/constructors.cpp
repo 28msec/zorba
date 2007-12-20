@@ -76,10 +76,8 @@ Item_t DocumentContentIterator::nextImpl(PlanState& planState) {
       if (lItem->getNodeKind() == StoreConsts::attributeNode) {
         // throwing an error when child is an attribute node
         ZorbaErrorAlerts::error_alert (
-          error_messages::XQTY0024_TYPE_ATTRIBUTE_NODE_OUT_OF_ORDER,
-          error_messages::RUNTIME_ERROR,
-          false,
-          "A Document Node must not contain attribute nodes!"
+          error_messages::XQTY0024,
+          &loc, false, "A Document Node must not contain attribute nodes!"
         );
       } 
     }
@@ -360,9 +358,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
       if (state->theNoAttrAllowed)
       {
         ZorbaErrorAlerts::error_alert (
-          error_messages::XQTY0024_TYPE_ATTRIBUTE_NODE_OUT_OF_ORDER,
-          error_messages::RUNTIME_ERROR,
-          false,
+          error_messages::XQTY0024, false, &loc,
           "Content sequence of element contains an attribute node following a node that is not an attribute node!"
         );
       }

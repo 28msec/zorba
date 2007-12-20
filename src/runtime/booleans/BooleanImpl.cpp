@@ -76,14 +76,8 @@ namespace xqp
       }
       else
       {
-        // else error => fn:boolean not defined
-        ZorbaErrorAlerts::error_alert (
-            error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
-            error_messages::RUNTIME_ERROR,
-            &loc,
-            false,
-            "Wrong arguments in fn:boolean function!"
-        );
+        ZORBA_ERROR_ALERT( error_messages::FORG0006,
+            &loc, false, "Wrong arguments in fn:boolean function.");
       }
     }
 
@@ -192,25 +186,15 @@ namespace xqp
         STACK_PUSH ( zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( aItem0, aItem1, theCompType ) ), state );
         if ( this->consumeNext ( theChild0, planState ) != NULL || this->consumeNext ( theChild1, planState ) != NULL )
         {
-          ZorbaErrorAlerts::error_alert (
-              error_messages::XPTY0004_STATIC_TYPE_ERROR,
-              error_messages::RUNTIME_ERROR,
-              &loc,
-              false,
-              "Value comparions must not be made with sequences with length greater 1!"
-          );
+          ZORBA_ERROR_ALERT( error_messages::XPTY0004,
+              &loc, false, "Value comparions must not be made with sequences with length greater 1.");
         }
       }
     } /* if value comparison */
     else if ( this->isNodeComparison() )
     {
-      ZorbaErrorAlerts::error_alert (
-          error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
-          error_messages::RUNTIME_ERROR,
-          &loc,
-          false,
-          "Node comparison is not yet implemented!"
-      );
+      ZORBA_ERROR_ALERT( error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+          &loc, false, "Node comparison is not yet implemented.");
     } /* if node comparison */
   
     STACK_END();
@@ -363,13 +347,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
         break;
     }
 
-  ZorbaErrorAlerts::error_alert (
-      error_messages::FOCH0004_Collation_does_not_support_collation_units,
-      error_messages::RUNTIME_ERROR,
-      0,
-      false,
-      "Compare of declared collation operator and operators is not possible!"
-  );
+  ZORBA_ERROR_ALERT( error_messages::FORG0006, NULL, false, "Cannot compare given types.");
   return false;
 }
   
