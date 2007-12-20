@@ -12,6 +12,8 @@
 #include "store/naive/node_items.h"
 #include "store/naive/store_defs.h"
 
+using namespace std;
+
 namespace xqp
 {
 

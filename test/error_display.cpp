@@ -1,6 +1,6 @@
 
-#include "zorba_api.h"
-#include "store/naive/basic_item_factory.h"
+#include "zorba/zorba_api.h"
+//#include "store/naive/basic_item_factory.h"
 #include "error_display.h"
 
 #include <fstream>

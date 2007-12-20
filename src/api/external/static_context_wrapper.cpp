@@ -114,7 +114,7 @@ xqp_string		StaticContextWrapper::GetNamespaceURIByPrefix( xqp_string prefix )
 		}
 	}
 
-	return NULL;
+	return "";
 }
 
 void		StaticContextWrapper::DeleteNamespace( xqp_string prefix )
@@ -191,7 +191,7 @@ xqp_string		StaticContextWrapper::GetDefaultFunctionNamespace( )
 
 	//here some functions for schema ... not impl yet...
 
-void		StaticContextWrapper::AddExternalVariableType( QNameItem_t	var_name, type_ident_ref_t var_type)
+void		StaticContextWrapper::AddExternalVariableType( xqp_string	var_name, type_ident_ref_t var_type)
 {
 	scw_QName_plus_type		var;
 
@@ -201,14 +201,13 @@ void		StaticContextWrapper::AddExternalVariableType( QNameItem_t	var_name, type_
 	ext_var_list.push_back(var);
 }
 
-type_ident_ref_t	StaticContextWrapper::GetExternalVariableType( QNameItem_t	var_name )
+type_ident_ref_t	StaticContextWrapper::GetExternalVariableType( xqp_string	var_name )
 {
 	//blind search
 	std::vector<scw_QName_plus_type>::iterator		it;
 	for(it = ext_var_list.begin(); it != ext_var_list.end(); it++)
 	{
-		if(((*it).qname->getPrefix() == var_name->getPrefix()) &&
-			((*it).qname->getLocalName() == var_name->getLocalName()))
+		if((*it).qname == var_name)
 		{
 			return (*it).type;
 		}
@@ -217,14 +216,13 @@ type_ident_ref_t	StaticContextWrapper::GetExternalVariableType( QNameItem_t	var_
 	return NULL;
 }
 
-void		StaticContextWrapper::DeleteExternalVariableType( QNameItem_t var_name )
+void		StaticContextWrapper::DeleteExternalVariableType( xqp_string var_name )
 {
 	//blind search
 	std::vector<scw_QName_plus_type>::iterator		it;
 	for(it = ext_var_list.begin(); it != ext_var_list.end(); it++)
 	{
-		if(((*it).qname->getPrefix() == var_name->getPrefix()) &&
-			((*it).qname->getLocalName() == var_name->getLocalName()))
+		if((*it).qname == var_name)
 		{
 			ext_var_list.erase(it);
 			return;
@@ -237,7 +235,7 @@ unsigned int			StaticContextWrapper::GetExternalVariableCount()
 	return ext_var_list.size();
 }
 
-bool		StaticContextWrapper::GetExternalVariableByIndex( unsigned int i, QNameItem_t *var_name, type_ident_ref_t *var_type )
+bool		StaticContextWrapper::GetExternalVariableByIndex( unsigned int i, xqp_string *var_name, type_ident_ref_t *var_type )
 {
 	if(i >= ext_var_list.size())
 		return false;
@@ -606,7 +604,7 @@ static_context*		StaticContextWrapper::FillInStaticContext()
 	static_context		*sctx = NULL;
 	unsigned int			i, max;
 	xqp_string				prefix, uri;
-	QNameItem_t				var_name;
+	xqp_string				var_name;
 	type_ident_ref_t	type;
 	TypeSystem::xqtref_t		internal_type;
 
@@ -642,7 +640,7 @@ static_context*		StaticContextWrapper::FillInStaticContext()
 		if(GetExternalVariableByIndex(i, &var_name, &type))
 		{
 			internal_type = GENV_TYPESYSTEM.create_type( *type );
-			sctx->add_variable_type(&*var_name, internal_type);
+			sctx->add_variable_type(var_name, internal_type);
 		}
 		else
 			break;

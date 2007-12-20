@@ -47,6 +47,7 @@ public:
 class Zorba_XQuerySimpleResult	: public XQueryResult
 {
 	XQueryExecution_t		m_xquery_exec;
+	ZorbaEngine_SingleThread_t		keep_engine;
 public:
 	Zorba_XQuerySimpleResult(XQueryExecution_t		xquery_exec);
 	virtual ~Zorba_XQuerySimpleResult();

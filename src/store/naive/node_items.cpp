@@ -11,6 +11,7 @@
 #include "store/api/temp_seq.h"
 #include "util/zorba.h"
 #include <algorithm>
+#include "errors/Error.h"
 
 namespace xqp
 {

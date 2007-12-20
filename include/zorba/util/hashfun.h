@@ -13,7 +13,7 @@
 #include <string>
 
 #ifdef WIN32
-	#include "win32/compatib_defs.h"	
+	#include "win32/stdint.h"	
 #endif
 
 /*_____________________________________________________________

@@ -57,7 +57,7 @@ public:
 		XS_GYEAR,
 		XS_GMONTH_DAY,
 		XS_GDAY,
-		XS_GMONTH,
+		XS_GMONTH
 	}VAR_DATETIME_TYPE;
 public:
 	time_t	current_date_time;
@@ -71,7 +71,7 @@ public:
 	virtual bool SetVariable( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type = XS_STRING) = 0;
 	virtual bool SetVariable( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type = XS_DOUBLE) = 0;
 	virtual bool SetVariable( xqp_string varname, bool bool_value) = 0;
-	virtual bool SetVariable( xqp_string varname, struct tm datetime_value, VAR_DATETIME_TYPE type = XS_DATETIME) = 0;
+	virtual bool SetVariable( xqp_string varname, struct ::tm datetime_value, VAR_DATETIME_TYPE type = XS_DATETIME) = 0;
 
 	virtual bool DeleteVariable( xqp_string varname ) = 0;
 	virtual void DeleteAllVariables( ) = 0;

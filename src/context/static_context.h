@@ -135,7 +135,7 @@ public:
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), fname), f);
   }
 
-	void add_variable_type( const QNameItem *var_name, TypeSystem::xqtref_t var_type);
+	void add_variable_type( const xqp_string var_name, TypeSystem::xqtref_t var_type);
 	TypeSystem::xqtref_t  get_variable_type( QNameItem *var_name );
 
 	void bind_type( xqp_string key, TypeSystem::xqtref_t t);
@@ -208,6 +208,7 @@ public:
 };
 
 pair<xqp_string, xqp_string> parse_qname (xqp_string qname);
+
 
 
 }	/* namespace xqp */

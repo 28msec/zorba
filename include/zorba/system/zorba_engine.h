@@ -12,7 +12,7 @@ private:
 
 public:
 	static ZorbaEngine& getInstance();
-
+	static void startupZorbaEngine();
 	static void shutdownZorbaEngine();
 
 	void InitThread(

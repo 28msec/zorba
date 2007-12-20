@@ -50,7 +50,7 @@ public:
 	virtual void	AbortQueryExecution();
 
 	///extension from dynamic context (specific only for this execution)
-	virtual bool AddVariable( xqp_string varname, XQueryExecution_t item_iter );
+	virtual bool SetVariable( xqp_string varname, XQueryExecution_t item_iter );
 
 	///register documents available through fn:doc() in xquery
 	virtual bool AddAvailableDocument(xqp_string docURI,

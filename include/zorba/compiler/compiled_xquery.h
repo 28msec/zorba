@@ -25,7 +25,7 @@ public:
     // a default static and dynamiccontext is always available
 
     // Matthias: don't call it internal
-    // there is no need to distinguish interal and external
+    // there is no need to distinguish internal and external
 		virtual StaticQueryContext_t getInternalStaticContext() = 0;
  //   DynamicQueryContextPtr getInternalDynamicContext();
 

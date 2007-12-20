@@ -30,6 +30,7 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "util/zorba.h"
+#include "errors/Error.h"
 
 namespace xqp
 {

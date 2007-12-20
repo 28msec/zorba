@@ -73,7 +73,20 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     return false;
   }
 
-  if(sctx)
+	//if(m_query_text.empty())
+	if(!m_query_text[0])
+	{
+		ZORBA_ERROR_ALERT(error_messages::API0001_XQUERY_STRING_IS_EMPTY,
+																	error_messages::STATIC_ERROR,
+																	NULL,
+																	true///continue execution
+																	);
+		//UnregisterCurrentXQueryForCurrentThread( this );
+		thread_specific_zorba->current_xquery = NULL;
+		return false;
+	}
+
+	if(sctx)
   {
     internal_static_context = sctx;
     //now build the static context
@@ -89,18 +102,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
   ///reset the error list from error manager
 //  m_error_manager.clear();///delete all alerts from list
 
-	//if(m_query_text.empty())
-	if(!m_query_text[0])
-	{
-		ZORBA_ERROR_ALERT(error_messages::API0001_XQUERY_STRING_IS_EMPTY,
-																	error_messages::STATIC_ERROR,
-																	NULL,
-																	true///continue execution
-																	);
-		//UnregisterCurrentXQueryForCurrentThread( this );
-		thread_specific_zorba->current_xquery = NULL;
-		return false;
-	}
 	
 	///NOW COMPILE
 	xquery_driver driver;
@@ -302,6 +303,8 @@ XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dct
 
 StaticQueryContext_t Zorba_XQueryBinary::getInternalStaticContext()
 {
+	if(!internal_static_context.get_ptr())
+		internal_static_context = new StaticContextWrapper();
   return internal_static_context;
 }
 
@@ -464,7 +467,7 @@ void  Zorba_XQueryExecution::AbortQueryExecution()
 /*extension from dynamic context (specific only for this execution)
 bind external variable with the result from another xquery
 */
-bool Zorba_XQueryExecution::AddVariable( xqp_string varname, 
+bool Zorba_XQueryExecution::SetVariable( xqp_string varname, 
                                         XQueryExecution_t item_iter )
 {
   ///add to dynamic context

@@ -13,6 +13,7 @@
 
 #ifdef WIN32
 	#include <algorithm>
+	#include "util/win32/compatib_defs.h"
 #endif
 
 using namespace std;

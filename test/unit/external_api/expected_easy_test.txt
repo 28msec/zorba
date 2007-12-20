@@ -1,0 +1,11 @@
+XQuerySimpleFactory::createQuery()
+getInternalStaticContext()
+getInternalDynamicContext()
+AddCollation
+query_sctx->GetCollation("http://www.flworfound.org/apitest/coll1") success http://www.flworfound.org/apitest/coll1 en 0 0
+dctx->SetVariable
+query->execute
+serializeXML
+<?xml version="1.0" encoding="UTF-8"?>
+3
+end easy api test

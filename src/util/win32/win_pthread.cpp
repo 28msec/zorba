@@ -1,6 +1,6 @@
 
 
-#include "util/win32/pthread.h"
+#include "pthread.h"
 #include <windows.h>
 #include <errno.h>
 #include "time.h"

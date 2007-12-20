@@ -21,7 +21,8 @@
 #include <unicode/ustring.h>
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
-#include "functions/library.h"
+//#include "functions/library.h"
+#include "compiler/parser/location.hh"
 
 #include <stack>
 #include <map>

@@ -34,6 +34,7 @@
 #include "context/common.h"
 #include "util/zorba.h"
 #include "context/collation_manager.h"
+#include "functions/library.h"
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER
@@ -53,8 +54,6 @@ namespace xqp {
     "local", "http://www.w3.org/2005/xquery-local-functions",
     NULL, NULL
   };
-
-
 
 
 #define ITEM_FACTORY (Store::getInstance().getItemFactory())
@@ -86,6 +85,10 @@ namespace xqp {
 
 	static_context::~static_context()
 	{
+		//debug
+		//test_obj.use_me();
+		//end debug
+
 		///free the pointers from ctx_value_t from keymap
 		fxvector<fxhashmap<ctx_value_t>::entry>::const_iterator		it;
 		char		keybuff[50];
@@ -208,10 +211,10 @@ namespace xqp {
 	}
 
 	void static_context::add_variable_type(
-		const QNameItem *var_name, 
+		const xqp_string var_name, 
 		TypeSystem::xqtref_t var_type)
 	{
-		bind_type("type:var:" + qname_internal_key("", var_name->getPrefix(), var_name->getLocalName()), var_type);
+		bind_type("type:var:" + qname_internal_key("", var_name), var_type);
 	}
 
 	TypeSystem::xqtref_t	static_context::get_variable_type(

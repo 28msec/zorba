@@ -56,7 +56,7 @@ public:
 	virtual bool SetVariable( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type = XS_STRING);
 	virtual bool SetVariable( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type = XS_DOUBLE);
 	virtual bool SetVariable( xqp_string varname, bool bool_value);
-	virtual bool SetVariable( xqp_string varname, struct tm datetime_value, VAR_DATETIME_TYPE type = XS_DATETIME);
+	virtual bool SetVariable( xqp_string varname, struct ::tm datetime_value, VAR_DATETIME_TYPE type = XS_DATETIME);
 
 	virtual bool DeleteVariable( xqp_string varname );
 	virtual void DeleteAllVariables( );

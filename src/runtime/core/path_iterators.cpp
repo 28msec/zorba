@@ -30,6 +30,7 @@
 #include "util/zorba.h"
 #include "store/api/item.h"
 #include "runtime/visitors/planitervisitor.h"
+#include "errors/Error.h"
 
 #define MYTRACE(msg) \
 {\

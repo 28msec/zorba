@@ -1,22 +1,27 @@
 
 ////using the C++ API
 
-#include "zorba_api.h"
-#include "store/naive/basic_item_factory.h"
-#include "store/naive/simple_store.h"
+#include "zorba/zorba_api.h"
+//#include "store/naive/basic_item_factory.h"
+//#include "store/naive/simple_store.h"
 
 //for debug
-#include "compiler/parser/xquery_driver.h"
-#include "util/logging/loggermanager.hh"
+//#include "../src/compiler/parser/xquery_driver.h"
+#include "../src/util/logging/loggermanager.hh"
 #include "timer.h"
 #include "error_display.h"
 #include "zorba/util/properties.h"
+
+#ifdef WIN32
+	#include "../src/util/win32/compatib_defs.h"
+#endif
 
 #include <fstream>
 #include <iostream>
 #include <iomanip>
 
 using namespace xqp;
+using namespace std;
 
 int apitest_alert_callback(Zorba_AlertMessage *alert_mess, 
                            XQuery*  current_xquery,

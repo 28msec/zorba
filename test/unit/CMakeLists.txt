@@ -5,6 +5,8 @@ CREATE_TEST_SOURCELIST(UnitTests
   typesystem_atomicStringCast.cpp
 )
 
+ADD_SUBDIRECTORY(external_api)
+
 # add the executable
 ADD_EXECUTABLE(UnitTests ${UnitTests})
 TARGET_LINK_LIBRARIES(UnitTests zorba)

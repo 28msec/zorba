@@ -73,18 +73,18 @@ public:
 
 	//here some functions for schema ... not impl yet
 
-	virtual void		AddExternalVariableType( QNameItem_t	var_name, type_ident_ref_t var_type) = 0;
-	virtual type_ident_ref_t	GetExternalVariableType( QNameItem_t	var_name ) = 0;
-	virtual void		DeleteExternalVariableType( QNameItem_t var_name ) = 0;
+	virtual void		AddExternalVariableType( xqp_string	var_name, type_ident_ref_t var_type) = 0;
+	virtual type_ident_ref_t	GetExternalVariableType( xqp_string	var_name ) = 0;
+	virtual void		DeleteExternalVariableType( xqp_string var_name ) = 0;
 	virtual	unsigned int			GetExternalVariableCount() = 0;
-	virtual	bool		GetExternalVariableByIndex( unsigned int i, QNameItem_t *var_name, type_ident_ref_t *var_type ) = 0;
+	virtual	bool		GetExternalVariableByIndex( unsigned int i, xqp_string *var_name, type_ident_ref_t *var_type ) = 0;
 	virtual void		DeleteAllVariables() = 0;
 
 	virtual void		SetContextItemStaticType( type_ident_ref_t		type ) = 0;
 	virtual type_ident_ref_t		GetContextItemStaticType( ) = 0;
 
 	///here some api for external functions
-	// virtual void AddExternalFunction( QNameItem_t func_name, extern_func *cpp_func, TypeIdentifier *type_of_result, ...);//and the types of parameters
+	// virtual void AddExternalFunction( xqp_string func_name, extern_func *cpp_func, TypeIdentifier *type_of_result, ...);//and the types of parameters
 	// virtual void	DeleteAllExternalFunctions();
 
 	virtual void		AddCollation( xqp_string URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength = ::Collator::PRIMARY) = 0;

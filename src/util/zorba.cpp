@@ -36,6 +36,7 @@ Store*				zorba::theStore = NULL;
 ItemFactory	*	zorba::theItemFactory = NULL;
 yy::location	zorba::null_loc;
 
+void library_init();
 
 zorba::zorba()
 {
@@ -76,6 +77,7 @@ void zorba::initializeZorbaEngine_internal()//Store& store)
 {
 	static_context::init();
 	dynamic_context::init();
+	library_init();
 
 	///optimize access to store
 	zorba::theStore = &Store::getInstance();

@@ -12,7 +12,7 @@ public:
 
 	typedef struct
 	{
-		QNameItem_t		qname;
+		xqp_string		qname;
 		type_ident_ref_t		type;
 	}scw_QName_plus_type;
 
@@ -76,18 +76,18 @@ public:
 
 	//here some functions for schema ... not impl yet
 
-	virtual void		AddExternalVariableType( QNameItem_t	var_name, type_ident_ref_t var_type);
-	virtual type_ident_ref_t	GetExternalVariableType( QNameItem_t	var_name );
-	virtual void		DeleteExternalVariableType( QNameItem_t var_name );
+	virtual void		AddExternalVariableType( xqp_string	var_name, type_ident_ref_t var_type);
+	virtual type_ident_ref_t	GetExternalVariableType( xqp_string	var_name );
+	virtual void		DeleteExternalVariableType( xqp_string var_name );
 	virtual	unsigned int			GetExternalVariableCount();
-	virtual	bool		GetExternalVariableByIndex( unsigned int i, QNameItem_t *var_name, type_ident_ref_t *var_type );
+	virtual	bool		GetExternalVariableByIndex( unsigned int i, xqp_string *var_name, type_ident_ref_t *var_type );
 	virtual void		DeleteAllVariables();
 
 	virtual void		SetContextItemStaticType( type_ident_ref_t		type );
 	virtual type_ident_ref_t		GetContextItemStaticType( );
 
 	///here some api for external functions
-	// virtual void AddExternalFunction( QNameItem_t func_name, extern_func *cpp_func, TypeIdentifier *type_of_result, ...);//and the types of parameters
+	// virtual void AddExternalFunction( xqp_string func_name, extern_func *cpp_func, TypeIdentifier *type_of_result, ...);//and the types of parameters
 	// virtual void	DeleteAllExternalFunctions();
 
 	virtual void		AddCollation( xqp_string URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength = ::Collator::PRIMARY);//if URI is empty then it sets the default collation

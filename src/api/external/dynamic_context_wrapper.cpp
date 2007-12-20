@@ -10,6 +10,7 @@
 
 namespace xqp {
 
+
 DynamicContextWrapper::DynamicContextWrapper()
 {
 	current_date_time = 0;
@@ -154,7 +155,7 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, bool bool_value)
 	return true;
 }
 
-bool DynamicContextWrapper::SetVariable( xqp_string varname, struct tm datetime_value, VAR_DATETIME_TYPE type)
+bool DynamicContextWrapper::SetVariable( xqp_string varname, struct ::tm datetime_value, VAR_DATETIME_TYPE type)
 {
 	if(!checkQName(varname))
 		return false;

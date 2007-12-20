@@ -4,6 +4,8 @@
  */
 
 #include "util/datetime/duration.h"
+#include <string>
+#include "errors/Error.h"
 
 namespace xqp
 {
@@ -18,7 +20,7 @@ static const char* whitespace = " \t\r\n\f";
  * advancing the position parameter.
  *
  */
-static void skip_whitespace(string& s, unsigned int& position)
+static void skip_whitespace(std::string& s, unsigned int& position)
 {
   int done = 0;
 
@@ -36,7 +38,7 @@ static void skip_whitespace(string& s, unsigned int& position)
 }
 
 // Returns 1 if there is an error
-static int parse_int(string& s, unsigned int& position, long& result)
+static int parse_int(std::string& s, unsigned int& position, long& result)
 {
   long mult = 1;
   
@@ -147,7 +149,7 @@ DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long 
 }
 
 // parse a 'nS' string, with fractional seconds
-static void parse_s_string(string ss, unsigned int& position, long& seconds, long& frac_seconds)
+static void parse_s_string(std::string ss, unsigned int& position, long& seconds, long& frac_seconds)
 {
   long result;
   
@@ -180,7 +182,7 @@ static void parse_s_string(string ss, unsigned int& position, long& seconds, lon
 }
 
 // parse a 'nMnS' string, with fractional seconds
-static void parse_ms_string(string ss, unsigned int& position, long& minutes, long& seconds, long& frac_seconds)
+static void parse_ms_string(std::string ss, unsigned int& position, long& minutes, long& seconds, long& frac_seconds)
 {
   long result;
   
@@ -219,7 +221,7 @@ static void parse_ms_string(string ss, unsigned int& position, long& minutes, lo
 }
 
 // parse a 'nHnMnS' string, with fractional seconds
-static void parse_hms_string(string ss, unsigned int& position, long& hours, long& minutes, long& seconds, long& frac_seconds)
+static void parse_hms_string(std::string ss, unsigned int& position, long& hours, long& minutes, long& seconds, long& frac_seconds)
 {
   long result;
   

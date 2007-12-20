@@ -30,6 +30,10 @@ ZorbaEngine&	ZorbaEngine::getInstance()
 	return *g_ZorbaFactory;
 }
 
+void ZorbaEngine::startupZorbaEngine()
+{
+	getInstance();
+}
 
 void ZorbaEngine::shutdownZorbaEngine()
 {

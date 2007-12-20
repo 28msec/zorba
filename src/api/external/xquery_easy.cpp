@@ -63,6 +63,7 @@ Zorba_AlertsManager& Zorba_XQuerySimple::getAlertsManager()
 Zorba_XQuerySimpleResult::Zorba_XQuerySimpleResult(XQueryExecution_t		xquery_exec) :
 		m_xquery_exec(xquery_exec)
 {
+	keep_engine = ZorbaEngine_SingleThread::getInstance();
 }
 
 Zorba_XQuerySimpleResult::~Zorba_XQuerySimpleResult()

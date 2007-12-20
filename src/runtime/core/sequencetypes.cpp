@@ -1,6 +1,7 @@
 #include "runtime/core/sequencetypes.h"
 
 #include "system/globalenv.h"
+#include "errors/Error.h"
 
 namespace xqp
 {

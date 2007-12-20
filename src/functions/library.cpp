@@ -36,6 +36,14 @@ namespace xqp {
 
 // clear static initializer state
 
+//dummy function to tell the windows linker to keep the library.obj
+//even though it contains no public objects or functions
+//this is called at initializeZorba
+void library_init()
+{
+}
+
+
 static string get_qname(const function &f)
 {
   QNameItem_t name = f.get_fname();
