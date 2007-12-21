@@ -12,6 +12,7 @@
 #define UNICODE_UTIL_H
 
 #include <iostream>
+#include <sstream>
 
 #ifdef WIN32
 #include "util/win32/compatib_defs.h"
@@ -1076,5 +1077,17 @@ are taken into account. The mappings with status T are ignored.
 */
 uint32_t toLower(uint32_t c);
 
+ template <class T> std::string to_string (T x) {
+   std::ostringstream o;
+   o << x;
+   return o.str ();
+ }
+
 }/* namespace xqp */
 #endif /* UNICODE_UTIL_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
