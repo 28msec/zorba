@@ -191,7 +191,6 @@ void ZorbaErrorAlerts::error_alert(
 
 	err_decoded = err_manager->err_messages->err_decode(e);
 
-	err_decoded += ": ";
 	err_manager->err_messages->ApplyParams(&err_decoded, &param1, &param2);
   cerr << canonical_err_names [e] << ": " << err_decoded <<  "\n";
 

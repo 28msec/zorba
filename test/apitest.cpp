@@ -35,7 +35,7 @@ int apitest_alert_callback(Zorba_AlertMessage *alert_mess,
     cerr << g_error_in_file << " : " << g_error_at_line << endl;
   }
 #endif
-  cerr << "(param " << hex << param << " )" << endl;
+  cerr << endl;
 
   DisplayOneAlert(alert_mess);
 

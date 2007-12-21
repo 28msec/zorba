@@ -73,10 +73,10 @@ void DisplayError(const Zorba_ErrorMessage *err)
 	{
 		if(!err->loc.filename.empty())
 			cerr << err->loc.filename;
-		cerr << "[line: " << err->loc.line << "][col: " << err->loc.column << "]";
+		cerr << "[line: " << err->loc.line << "][col: " << err->loc.column << "]: ";
 	}	
 
-	cerr << " : " << err->alert_description << std::endl;
+	cerr << err->alert_description << std::endl;
 }
 
 
