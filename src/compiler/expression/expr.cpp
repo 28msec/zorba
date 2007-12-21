@@ -80,8 +80,6 @@ string var_expr::decode_var_kind(
   case pos_var: return "POS_VAR"; break;
   case score_var: return "SCORE_VAR"; break;
   case quant_var: return "QUANT_VAR"; break;
-  case extern_var: return "EXTERN_VAR"; break;
-  case assign_var: return "ASSIGN_VAR"; break;
   case context_var: return "$DOT"; break;
   default: return "???";
   }
@@ -180,17 +178,6 @@ rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
   return new forlet_clause(type, var_copy_h, pos_var_copy_h, score_var_copy_h, expr_copy_h);
 }
 
-
-flwor_expr::flwor_expr(
-  yy::location const& loc)
-:
-  expr(loc), order_stable (false)
-{
-}
-
-flwor_expr::~flwor_expr()
-{
-}
 
 ostream& flwor_expr::put( ostream& os) const
 {
@@ -415,16 +402,9 @@ void if_expr::accept(
 // [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
 
 
-fo_expr::fo_expr(
-  yy::location const& loc)
-:
-  expr(loc)
-{
-}
-
-fo_expr::~fo_expr()
-{
-}
+fo_expr::fo_expr(yy::location const& loc, const function *f)
+  : expr(loc), func (f)
+{}
 
 ostream& fo_expr::put( ostream& os) const
 {

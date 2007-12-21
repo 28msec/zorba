@@ -13,7 +13,6 @@
 
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "compiler/expression/expr.h"
-// #include "store/data_manager.h"
 
 #include <stack>
 
@@ -32,16 +31,20 @@ class translator : public parsenode_visitor
 {
 public:
 	typedef rchandle<expr> expr_t;
+	typedef rchandle<var_expr> var_expr_t;
 
 protected:
-  int tempvar_counter;
+  typedef std::pair<var_expr_t, expr_t> global_binding;
+
   zorba* zorp;
   static_context *sctx_p;
-  var_expr *bind_var (yy::location loc, string, var_expr::var_kind);
-  fo_expr *create_seq (yy::location loc);
-
   std::stack<expr_t> nodestack;
   std::stack<TypeSystem::xqtref_t> tstack;  // types stack
+  int tempvar_counter;
+  std::list<global_binding> global_vars;
+
+  var_expr *bind_var (yy::location loc, string, var_expr::var_kind);
+  fo_expr *create_seq (yy::location loc);
 
   rchandle<var_expr> tempvar(yy::location loc, var_expr::var_kind);
   rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar);

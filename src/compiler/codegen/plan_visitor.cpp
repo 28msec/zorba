@@ -105,7 +105,13 @@ void plan_visitor::end_visit(var_expr& v)
     itstack.push(v_p);
   }
     break;
+  case var_expr::context_var:
+    break;
+  case var_expr::unknown_var:
+    assert (false);
+    break;
   default:
+    assert (false);
     break;
   }
 }

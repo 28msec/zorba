@@ -10,19 +10,17 @@ using namespace xqp;
 
 static inline expr::expr_t wrap_in_bev(static_context *sctx, expr::expr_t e)
 {
-  expr::expr_t fh(new fo_expr(e->get_loc()));
+  expr::expr_t fh(new fo_expr(e->get_loc(), LOOKUP_FN("fn", "boolean", 1)));
   fo_expr *fp = static_cast<fo_expr *>(fh.get_ptr());
   fp->add(e);
-  fp->set_func(LOOKUP_FN("fn", "boolean", 1));
   return fh;
 }
 
 static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_t e)
 {
-  expr::expr_t fh(new fo_expr(e->get_loc()));
+  expr::expr_t fh(new fo_expr(e->get_loc(), LOOKUP_FN("fn", "data", 1)));
   fo_expr *fp = static_cast<fo_expr *>(fh.get_ptr());
   fp->add(e);
-  fp->set_func(LOOKUP_FN("fn", "data", 1));
   return fh;
 }
 

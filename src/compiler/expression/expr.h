@@ -133,8 +133,6 @@ public:
 		pos_var,
 		score_var,
 		quant_var,
-		extern_var,
-		assign_var,
 		context_var,
     unknown_var  // TODO: get rid
 	};
@@ -264,9 +262,9 @@ public:	// types
 	typedef rchandle<forlet_clause> forletref_t;
 	typedef rchandle<order_modifier> orderref_t;
 	typedef std::pair<expr_t,orderref_t> orderspec_t;
+  typedef std::vector<forletref_t> clause_list_t;
 
 protected:	// state
-  typedef std::vector<forletref_t> clause_list_t;
 	clause_list_t clause_v;
   typedef std::vector<orderspec_t> orderspec_list_t;
 	orderspec_list_t orderspec_v;
@@ -275,8 +273,12 @@ protected:	// state
 	expr_t retval_h;
 
 public:	// ctor,dtor
-	flwor_expr(yy::location const&);
-	~flwor_expr();
+	flwor_expr(yy::location const& loc)
+    : expr(loc), order_stable (false)
+  {}
+  flwor_expr(const yy::location &loc, clause_list_t clause_v_, expr_t retval_)
+    : expr (loc), clause_v (clause_v_), order_stable (false), retval_h (retval_)
+  {}
 
 public:	// accessors
 	void add(forletref_t v) { clause_v.push_back(v); } 
@@ -493,8 +495,7 @@ protected:
 	const function* func;
 
 public:
-	fo_expr(yy::location const&);
-	~fo_expr();
+	fo_expr(yy::location const&, const function *);
 
 public:
   void add(expr_t e_h) { argv.push_back(e_h); }
@@ -507,7 +508,6 @@ public:
 
 public:
 	const function* get_func() const { return func; }
-	void set_func(function const* _func) { func = _func; }
 
 public:
 	void accept(expr_visitor&);

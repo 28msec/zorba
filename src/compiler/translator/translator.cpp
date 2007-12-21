@@ -15,6 +15,7 @@
 #include "util/tracer.h"
 #include "store/api/item.h"
 #include "util/zorba.h"
+#include "util/utf8/Unicode_util.h"
 #include "functions/signature.h"
 
 #ifndef NDEBUG
@@ -63,8 +64,7 @@ static void *no_state = (void *) new int;
 
 fo_expr *translator::create_seq (yy::location loc)
 {
-  fo_expr *e = new fo_expr (loc);
-  e->set_func (LOOKUP_OPN ("concatenate"));
+  fo_expr *e = new fo_expr (loc, LOOKUP_OPN ("concatenate"));
   return e;
 }
 
@@ -289,8 +289,7 @@ void translator::end_visit(const EnclosedExpr& v, void *visit_state)
   TRACE_VISIT_OUT ();
   
   expr_t lContent = pop_nodestack();
-  fo_expr *fo_h = new fo_expr(v.get_location());
-  fo_h->set_func(LOOKUP_OP1 ("enclosed-expr"));
+  fo_expr *fo_h = new fo_expr(v.get_location(), LOOKUP_OP1 ("enclosed-expr"));
   fo_h->add(lContent);
   nodestack.push(fo_h);
 }
@@ -346,8 +345,7 @@ void translator::end_visit(const DirElemConstructor& v, void *visit_state)
 
   if (v.get_dir_content_list() != NULL) {
     content = pop_nodestack();
-    fo_expr *lDocFilter = new fo_expr(v.get_location());
-    lDocFilter->set_func(LOOKUP_OP1 ("doc-filter"));
+    fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
     lDocFilter->add(content);
     content = lDocFilter;
   }
@@ -664,12 +662,10 @@ void translator::end_visit(const CompDocConstructor& v, void *visit_state)
   
   expr_t lContent = pop_nodestack();
   
-  fo_expr *lDocFilter = new fo_expr(v.get_location());
-  lDocFilter->set_func(LOOKUP_OP1("doc-filter"));
+  fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1("doc-filter"));
   lDocFilter->add(lContent);
   
-  fo_expr *lEnclosed = new fo_expr(v.get_location());
-  lEnclosed->set_func(LOOKUP_OP1("enclosed-expr"));
+  fo_expr *lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
   lEnclosed->add(lDocFilter);
   
   nodestack.push (new doc_expr (v.get_location (), lEnclosed ));
@@ -691,12 +687,10 @@ void translator::end_visit(const CompElemConstructor& v, void *visit_state)
   if (v.get_content_expr() != 0) {
     lContent = pop_nodestack();
     
-    fo_expr *lDocFilter = new fo_expr(v.get_location());
-    lDocFilter->set_func(LOOKUP_OP1 ("doc-filter"));
+    fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
     lDocFilter->add(lContent);
     
-    fo_expr *lEnclosed = new fo_expr(v.get_location());
-    lEnclosed->set_func(LOOKUP_OP1 ("enclosed-expr"));
+    fo_expr *lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1 ("enclosed-expr"));
     lEnclosed->add(lDocFilter);
     lContent = lEnclosed;
   }
@@ -723,8 +717,7 @@ void translator::end_visit(const CompAttrConstructor& v, void *visit_state)
   if (v.get_val_expr() != 0) {
     lValueExpr = pop_nodestack();
     
-    fo_expr *lDocFilter = new fo_expr(v.get_location());
-    lDocFilter->set_func(LOOKUP_OP1 ("doc-filter"));
+    fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
     lDocFilter->add(lValueExpr);
     
     lValueExpr = lDocFilter;
@@ -732,8 +725,7 @@ void translator::end_visit(const CompAttrConstructor& v, void *visit_state)
   
   expr_t lQNameExpr = pop_nodestack();
   
-  rchandle<fo_expr> lEnclosed = new fo_expr(v.get_location());
-  lEnclosed->set_func(LOOKUP_OP1("enclosed-expr"));
+  rchandle<fo_expr> lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
   lEnclosed->add(lValueExpr);
     
   lAttr = new attr_expr(v.get_location(), lQNameExpr, &*lEnclosed);
@@ -1086,13 +1078,14 @@ void *translator::begin_visit(const VarDecl& v)
 void translator::end_visit(const VarDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  bind_var (v.get_location(), v.get_varname(), v.is_extern () ? var_expr::extern_var : var_expr::assign_var);
+  global_vars.push_back (global_binding (bind_var (v.get_location(), v.get_varname(), var_expr::let_var),
+                                         v.is_extern () ? expr_t (NULL) : pop_nodestack ()));
 }
 
 
 void *translator::begin_visit(const FunctionDecl& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
@@ -1140,7 +1133,7 @@ void translator::end_visit(const LibraryModule& v, void *visit_state)
 
 void *translator::begin_visit(const MainModule & v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
@@ -1522,15 +1515,16 @@ void translator::end_visit(const AdditiveExpr& v, void *visit_state)
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
   rchandle<expr> e2_h = pop_nodestack();
-  fo_expr *fo_h = new fo_expr(v.get_location());
+  function *func = NULL;
   switch (v.get_add_op()) {
   case op_plus:
-    fo_h->set_func(LOOKUP_OP2 ("add"));
+    func = LOOKUP_OP2 ("add");
     break;
   case op_minus:
-    fo_h->set_func(LOOKUP_OP2 ("subtract"));
+    func = LOOKUP_OP2 ("subtract");
     break;
   }
+  fo_expr *fo_h = new fo_expr(v.get_location(), func);
   fo_h->add(e2_h);
   fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -1548,8 +1542,7 @@ void translator::end_visit(const AndExpr& v, void *visit_state)
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
   rchandle<expr> e2_h = pop_nodestack();
-  fo_expr *fo_h = new fo_expr(v.get_location());
-  fo_h->set_func(LOOKUP_OPN ("and"));
+  fo_expr *fo_h = new fo_expr(v.get_location(), LOOKUP_OPN ("and"));
   fo_h->add(e2_h);
   fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -1591,63 +1584,64 @@ void translator::end_visit(const ComparisonExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  fo_expr *fo_p = new fo_expr(v.get_location());
-
+  function *f = NULL;
   if (v.get_gencomp()!=NULL) {
     switch (v.get_gencomp()->get_type()) {
     case op_eq:
-      fo_p->set_func(LOOKUP_OP2 ("equal"));
+      f = (LOOKUP_OP2 ("equal"));
       break;
     case op_ne:
-      fo_p->set_func(LOOKUP_OP2 ("not-equal"));
+      f = (LOOKUP_OP2 ("not-equal"));
       break;
     case op_lt:
-      fo_p->set_func(LOOKUP_OP2 ("less"));
+      f = (LOOKUP_OP2 ("less"));
       break;
     case op_le:
-      fo_p->set_func(LOOKUP_OP2 ("less-equal"));
+      f = (LOOKUP_OP2 ("less-equal"));
       break;
     case op_gt:
-      fo_p->set_func(LOOKUP_OP2 ("greater"));
+      f = (LOOKUP_OP2 ("greater"));
       break;
     case op_ge:
-      fo_p->set_func(LOOKUP_OP2 ("greater-equal"));
+      f = (LOOKUP_OP2 ("greater-equal"));
       break;
     }
   } else if (v.get_valcomp () != NULL) {
     switch (v.get_valcomp()->get_type()) {
     case op_val_eq:
-      fo_p->set_func(LOOKUP_OP2 ("value-equal"));
+      f = (LOOKUP_OP2 ("value-equal"));
       break;
     case op_val_ne:
-      fo_p->set_func(LOOKUP_OP2 ("value-not-equal"));
+      f = (LOOKUP_OP2 ("value-not-equal"));
       break;
     case op_val_lt:
-      fo_p->set_func(LOOKUP_OP2 ("value-less"));
+      f = (LOOKUP_OP2 ("value-less"));
       break;
     case op_val_le:
-      fo_p->set_func(LOOKUP_OP2 ("value-less-equal"));
+      f = (LOOKUP_OP2 ("value-less-equal"));
       break;
     case op_val_gt:
-      fo_p->set_func(LOOKUP_OP2 ("value-greater"));
+      f = (LOOKUP_OP2 ("value-greater"));
       break;
     case op_val_ge:
-      fo_p->set_func(LOOKUP_OP2 ("value-greater-equal"));
+      f = (LOOKUP_OP2 ("value-greater-equal"));
       break;
     }
   } else if (v.get_nodecomp()!=NULL) {
     switch (v.get_nodecomp()->get_type()) {
     case op_is:
-      fo_p->set_func(LOOKUP_OP2 ("is"));
+      f = (LOOKUP_OP2 ("is"));
       break;
     case op_precedes:
-      fo_p->set_func(LOOKUP_OP2 ("precedes"));
+      f = (LOOKUP_OP2 ("precedes"));
       break;
     case op_follows:
-      fo_p->set_func(LOOKUP_OP2 ("follows"));
+      f = (LOOKUP_OP2 ("follows"));
       break;
     }
   }
+
+  fo_expr *fo_p = new fo_expr(v.get_location(), f);
 
   rchandle<expr> e1_h = pop_nodestack();
   rchandle<expr> e2_h = pop_nodestack();;
@@ -1759,9 +1753,8 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
       ZORBA_ERROR_ALERT_OSS (error_messages::XPST0017, NULL, false, prefix + ":" + fname, "?");
     nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
   } else {
-    rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
     int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
-    fo_h->set_func (LOOKUP_FN (prefix, fname, sz));
+    rchandle<fo_expr> fo_h = new fo_expr(v.get_location(), LOOKUP_FN (prefix, fname, sz));
     
     // TODO this should be a const iterator
     std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
@@ -1817,16 +1810,17 @@ void translator::end_visit(const IntersectExceptExpr& v, void *visit_state)
 
   rchandle<expr> e1_h = pop_nodestack ();
   rchandle<expr> e2_h = pop_nodestack ();
-  fo_expr *fo_h = new fo_expr(v.get_location());
-
+  function *f = NULL;
   switch (v.get_intex_op()) {
   case op_intersect:
-    fo_h->set_func(LOOKUP_OP2 ("intersect"));
+    f = LOOKUP_OP2 ("intersect");
     break;
   case op_except:
-    fo_h->set_func(LOOKUP_OP2 ("except"));
+    f = LOOKUP_OP2 ("except");
     break;
   }
+  fo_expr *fo_h = new fo_expr(v.get_location(), f);
+
   fo_h->add(e2_h);
   fo_h->add(e1_h);
   nodestack.push(fo_h);
@@ -1843,21 +1837,22 @@ void translator::end_visit(const MultiplicativeExpr& v, void *visit_state)
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack ();
   rchandle<expr> e2_h = pop_nodestack ();
-  fo_expr *fo_h = new fo_expr(v.get_location());
+  function *f = NULL;
   switch (v.get_mult_op()) {
   case op_mul:
-    fo_h->set_func(LOOKUP_OP2 ("multiply"));
+    f = LOOKUP_OP2 ("multiply");
     break;
   case op_div:
-    fo_h->set_func(LOOKUP_OP2 ("divide"));
+    f = LOOKUP_OP2 ("divide");
     break;
   case op_idiv:
-    fo_h->set_func(LOOKUP_OP2 ("integer-divide"));
+    f = LOOKUP_OP2 ("integer-divide");
     break;
   case op_mod:
-    fo_h->set_func(LOOKUP_OP2 ("mod"));
+    f = LOOKUP_OP2 ("mod");
     break;
   }
+  fo_expr *fo_h = new fo_expr(v.get_location(), f);
   fo_h->add(e2_h);
   fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -1899,8 +1894,7 @@ void translator::end_visit(const OrExpr& v, void *visit_state)
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
   rchandle<expr> e2_h = pop_nodestack();
-  fo_expr *fo_p = new fo_expr(v.get_location());
-  fo_p->set_func(LOOKUP_OPN ("or"));
+  fo_expr *fo_p = new fo_expr(v.get_location(), LOOKUP_OPN ("or"));
   fo_p->add(e2_h);
   fo_p->add(e1_h);
   nodestack.push (fo_p);
@@ -2289,9 +2283,7 @@ void translator::end_visit(const SchemaElementTest& v, void *visit_state)
 
 rchandle<var_expr> translator::tempvar(yy::location loc, var_expr::var_kind kind)
 {
-  ostringstream o;
-  o << "v" << tempvar_counter++;
-  return new var_expr(loc, kind, Store::getInstance().getItemFactory().createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, o.str().c_str()));
+  return new var_expr(loc, kind, Store::getInstance().getItemFactory().createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, "v" + to_string (tempvar_counter++)));
 }
 
 rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, rchandle<var_expr> fv, rchandle<var_expr> pv)
@@ -2329,8 +2321,7 @@ rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr) {
 
 translator::expr_t translator::wrap_in_dos_and_dupelim(expr_t expr)
 {
-  rchandle<fo_expr> dos = new fo_expr(expr->get_loc());
-  dos->set_func(LOOKUP_OP1("sort-distinct-nodes-ascending"));
+  rchandle<fo_expr> dos = new fo_expr(expr->get_loc(), LOOKUP_OP1("sort-distinct-nodes-ascending"));
   dos->add(expr);
   return &*dos;
 }
@@ -2379,8 +2370,7 @@ void *translator::begin_visit(const PathExpr& v)
 
     ctx_rpe->add_back(&*ase);
 
-    rchandle<fo_expr> fo = new fo_expr(v.get_location());
-    fo->set_func(LOOKUP_FN("fn", "root", 1));
+    rchandle<fo_expr> fo = new fo_expr(v.get_location(), LOOKUP_FN("fn", "root", 1));
     fo->add(&*ctx_rpe);
     result = &*fo;
     if (rpe != NULL) {
@@ -2504,8 +2494,7 @@ void translator::pre_predicate_visit(const PredicateList& v, void *visit_state)
   push_scope();
   expr_t seq = pop_nodestack();
   rchandle<forlet_clause> lcseq = wrap_in_letclause(seq);
-  rchandle<fo_expr> count_expr = new fo_expr(v.get_location());
-  count_expr->set_func(LOOKUP_FN("fn", "count", 1));
+  rchandle<fo_expr> count_expr = new fo_expr(v.get_location(), LOOKUP_FN("fn", "count", 1));
   count_expr->add(lcseq->get_var().get_ptr());
   rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VAR);
   rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().get_ptr(), v.get_location (), DOT_VAR, DOT_POS_VAR);
@@ -2537,8 +2526,7 @@ void translator::post_predicate_visit(const PredicateList& v, void *visit_state)
   
   rchandle<if_expr> ite = new if_expr(pred->get_loc());
   if (is_numeric_literal(&*pred) || &*pred == sctx_p->lookup_var(LAST_IDX_VAR)) {
-    rchandle<fo_expr> eq = new fo_expr(pred->get_loc());
-    eq->set_func(LOOKUP_OP2("value-equal"));
+    rchandle<fo_expr> eq = new fo_expr(pred->get_loc(), LOOKUP_OP2("value-equal"));
     eq->add(sctx_p->lookup_var(DOT_POS_VAR));
     eq->add(pred);
     ite->set_cond_expr(&*eq);
@@ -2547,7 +2535,6 @@ void translator::post_predicate_visit(const PredicateList& v, void *visit_state)
   }
 
   ite->set_then_expr(sctx_p->lookup_var(DOT_VAR));
-  rchandle<fo_expr> empty = new fo_expr(pred->get_loc());
   ite->set_else_expr(create_seq(pred->get_loc()));
   
   flwor->set_retval(&*ite);
@@ -2735,9 +2722,8 @@ void translator::end_visit(const QuantifiedExpr& v, void *visit_state)
   flwor->set_retval(new const_expr(v.get_location(), true));
   rchandle<expr> sat = pop_nodestack();
   if (v.get_qmode() == quant_every) {
-    rchandle<fo_expr> uw = new fo_expr(v.get_expr()->get_location());
+    rchandle<fo_expr> uw = new fo_expr(v.get_expr()->get_location(), LOOKUP_FN("fn", "not", 1));
     uw->add(sat);
-    uw->set_func(LOOKUP_FN("fn", "not", 1));
     sat = uw.get_ptr();
   }
   flwor->set_where(sat);
@@ -2749,9 +2735,8 @@ void translator::end_visit(const QuantifiedExpr& v, void *visit_state)
     flwor->add(new forlet_clause(forlet_clause::for_clause, ve, NULL, NULL, fe));
     pop_scope();
   }
-  rchandle<fo_expr> quant = new fo_expr(v.get_location());
+  rchandle<fo_expr> quant = new fo_expr(v.get_location(), v.get_qmode() == quant_every ? LOOKUP_FN("fn", "empty", 1) : LOOKUP_FN("fn", "exists", 1));
   quant->add(rchandle<expr> (flwor.get_ptr()));
-  quant->set_func(v.get_qmode() == quant_every ? LOOKUP_FN("fn", "empty", 1) : LOOKUP_FN("fn", "exists", 1));
   nodestack.push (quant.get_ptr());
 }
 
@@ -2761,13 +2746,30 @@ void translator::end_visit(const QuantifiedExpr& v, void *visit_state)
 ********************************************************************************/
 void *translator::begin_visit(const QueryBody& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
 void translator::end_visit(const QueryBody& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  flwor_expr::clause_list_t clauses;
+  for (std::list<global_binding>::iterator i = global_vars.begin ();
+       i != global_vars.end (); i++)
+  {
+    global_binding b = *i;
+    var_expr_t var = b.first;
+    expr_t expr = b.second;
+    // TODO: fix external variables
+    // For now they default to empty sequences
+    if (expr == NULL)
+      expr = create_seq (v.get_location ());
+    rchandle<forlet_clause> clause =
+      wrap_in_letclause (expr, var);
+    clauses.push_back (clause);
+  }
+  if (clauses.size () > 0)
+    nodestack.push (new flwor_expr (v.get_location (), clauses, pop_nodestack ()));
 }
 
 
@@ -2783,8 +2785,7 @@ void *translator::begin_visit(const RangeExpr& v)
 void translator::end_visit(const RangeExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  fo_expr *e = new fo_expr (v.get_location());
-  e->set_func (LOOKUP_OP2 ("to"));
+  fo_expr *e = new fo_expr (v.get_location(), LOOKUP_OP2 ("to"));
 
   rchandle<expr> e1_h = pop_nodestack ();
   rchandle<expr> e2_h = pop_nodestack ();
@@ -2863,11 +2864,11 @@ void translator::end_visit(const UnaryExpr& v, void *visit_state)
   TRACE_VISIT_OUT ();
 
   rchandle<expr> e1_h = pop_nodestack ();
-  fo_expr *fo_p = new fo_expr(v.get_location());
+  fo_expr *fo_p = new fo_expr(v.get_location(),
+                              v.get_signlist()->get_sign()
+                              ? LOOKUP_OP1 ("unary-plus")
+                              : LOOKUP_OP1 ("unary-minus"));
   fo_p->add(e1_h);
-  fo_p->set_func(v.get_signlist()->get_sign()
-                 ? LOOKUP_OP1 ("unary-plus")
-                 : LOOKUP_OP1 ("unary-minus"));
   nodestack.push(fo_p);
 }
 
@@ -2883,8 +2884,7 @@ void translator::end_visit(const UnionExpr& v, void *visit_state)
 
   rchandle<expr> e1_h = pop_nodestack ();
   rchandle<expr> e2_h = pop_nodestack ();
-  fo_expr *fo_h = new fo_expr(v.get_location());
-  fo_h->set_func(LOOKUP_OP2 ("union"));
+  fo_expr *fo_h = new fo_expr(v.get_location(), LOOKUP_OP2 ("union"));
   fo_h->add(e2_h);
   fo_h->add(e1_h);
   nodestack.push(fo_h);
