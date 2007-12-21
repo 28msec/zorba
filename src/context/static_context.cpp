@@ -33,6 +33,7 @@
 #include "context/static_context.h"
 #include "context/common.h"
 #include "util/zorba.h"
+#include "util/utf8/Unicode_util.h"
 #include "context/collation_manager.h"
 #include "functions/library.h"
 
@@ -188,6 +189,17 @@ namespace xqp {
     ostringstream o;
     o << "fn:" << arity << "/";
     return o.str ();
+  }
+
+  function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int arity) const {
+    function *f = lookup_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local));
+    if (f != NULL) return f;
+    else {
+      f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) + qname_internal_key (default_function_namespace (), prefix, local));
+      if (f == NULL)
+        ZORBA_ERROR_ALERT (error_messages::XPST0017, NULL, false, local, to_string (arity));
+      return f;
+    }
   }
 
   xqp_string static_context::lookup_ns (xqp_string prefix) const

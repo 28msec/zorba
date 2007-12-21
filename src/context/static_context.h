@@ -116,16 +116,7 @@ public:
   void bind_var (xqp_string varname, expr *expr) {
     bind_expr ("var:" + qname_internal_key ("", varname), expr);
   }
-  function *lookup_fn (xqp_string prefix, xqp_string local, int arity) const {
-    function *f = lookup_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local));
-    if (f != NULL) return f;
-    else {
-      f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) + qname_internal_key (default_function_namespace (), prefix, local));
-      if (f == NULL)
-        ZORBA_ERROR_ALERT (error_messages::XPST0017, NULL);
-      return f;
-    }
-  }
+  function *lookup_fn (xqp_string prefix, xqp_string local, int arity) const;
   static function *lookup_builtin_fn (xqp_string local, int arity);
   void bind_fn (xqp_string prefix, xqp_string local, function *f, int arity) {
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local), f);
