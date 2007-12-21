@@ -2276,33 +2276,38 @@ rchandle<var_expr> translator::tempvar(yy::location loc, var_expr::var_kind kind
   return new var_expr(loc, kind, Store::getInstance().getItemFactory().createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, o.str().c_str()));
 }
 
+rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, rchandle<var_expr> fv, rchandle<var_expr> pv)
+{
+  assert (fv->get_kind () == var_expr::for_var);
+  if (pv != NULL)
+    assert (pv->get_kind() == var_expr::pos_var);
+  return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, expr.get_ptr());
+}
+
 rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, bool add_posvar)
 {
   rchandle<var_expr> fv = tempvar(expr->get_loc(), var_expr::for_var);
   rchandle<var_expr> pv = add_posvar
     ? tempvar(expr->get_loc(), var_expr::pos_var)
     : rchandle<var_expr> (NULL);
-  return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, expr.get_ptr());
+  return wrap_in_forclause (expr, fv, pv);
 }
 
-rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, rchandle<var_expr> fvh, rchandle<var_expr> pvh)
-{
-  fvh->set_kind(var_expr::for_var);
-  if (pvh != NULL) {
-    pvh->set_kind(var_expr::pos_var);
-  }
-  return new forlet_clause(forlet_clause::for_clause, fvh, pvh, NULL, expr.get_ptr());
+rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, yy::location loc, string fv_name, string pv_name) {
+  return wrap_in_forclause (expr, bind_var (loc, fv_name, var_expr::for_var), bind_var (loc, pv_name, var_expr::pos_var));
 }
 
-rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr, rchandle<var_expr> lvh)
-{
-  if (lvh == NULL) {
-    lvh = tempvar(expr->get_loc(), var_expr::let_var);
-  } else {
-    lvh->set_kind(var_expr::let_var);
-  }
-  return new forlet_clause(forlet_clause::let_clause, lvh, NULL, NULL, expr.get_ptr());
+rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr, rchandle<var_expr> lv) {
+  assert (lv->get_kind () == var_expr::let_var);
+  return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.get_ptr());
 }
+rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr, yy::location loc, string name) {
+  return wrap_in_letclause (expr, bind_var (loc, name, var_expr::let_var));
+}
+rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr) {
+  return wrap_in_letclause (expr, tempvar(expr->get_loc(), var_expr::let_var));
+}
+
 
 translator::expr_t translator::wrap_in_dos_and_dupelim(expr_t expr)
 {
@@ -2484,11 +2489,8 @@ void translator::pre_predicate_visit(const PredicateList& v, void *visit_state)
   rchandle<fo_expr> count_expr = new fo_expr(v.get_location());
   count_expr->set_func(LOOKUP_FN("fn", "count", 1));
   count_expr->add(lcseq->get_var().get_ptr());
-  var_expr *last_idx_var = bind_var(v.get_location(), LAST_IDX_VAR);
-  rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr, last_idx_var);
-  var_expr *dot_var = bind_var(v.get_location(), DOT_VAR);
-  var_expr *pos_var = bind_var(v.get_location(), DOT_POS_VAR);
-  rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().get_ptr(), dot_var, pos_var);
+  rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VAR);
+  rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().get_ptr(), v.get_location (), DOT_VAR, DOT_POS_VAR);
   rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
   flwor->add(lcseq);
   flwor->add(lclast);
@@ -2812,7 +2814,7 @@ void translator::end_visit(const TypeswitchExpr& v, void *visit_state)
   expr_t e_h;
   rchandle<typeswitch_expr> tse_h = new typeswitch_expr(v.get_location());
 
-  rchandle<var_expr> ve_h = bind_var (v.get_location(), v.get_default_varname());
+  rchandle<var_expr> ve_h = bind_var (v.get_location(), v.get_default_varname(), var_expr::unknown_var);
   tse_h->set_default_varname(ve_h);
 
   Assert((e_h = pop_nodestack())!=NULL);

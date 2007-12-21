@@ -37,7 +37,7 @@ protected:
   int tempvar_counter;
   zorba* zorp;
   static_context *sctx_p;
-  var_expr *bind_var (yy::location loc, string varname, var_expr::var_kind kind = var_expr::unknown_var);
+  var_expr *bind_var (yy::location loc, string, var_expr::var_kind);
   fo_expr *create_seq (yy::location loc);
 
   std::stack<expr_t> nodestack;
@@ -46,7 +46,10 @@ protected:
   rchandle<var_expr> tempvar(yy::location loc, var_expr::var_kind);
   rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar);
   rchandle<forlet_clause> wrap_in_forclause(expr_t expr, rchandle<var_expr> fvh, rchandle<var_expr> pvh);
-  rchandle<forlet_clause> wrap_in_letclause(expr_t expr, rchandle<var_expr> lvh = NULL);
+  rchandle<forlet_clause> wrap_in_forclause(expr_t expr, yy::location loc, string fv_name, string pv_name);
+  rchandle<forlet_clause> wrap_in_letclause(expr_t expr, yy::location, string);
+  rchandle<forlet_clause> wrap_in_letclause(expr_t expr);
+  rchandle<forlet_clause> wrap_in_letclause(expr_t expr, rchandle<var_expr>);
   expr_t wrap_in_dos_and_dupelim(expr_t expr);
 
 public:
