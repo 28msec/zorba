@@ -5,6 +5,7 @@ zorba engine default collationen,0,
 CreateQuery
 query_sctx->GetCollation("http://www.flworfound.org/apitest/coll1") success http://www.flworfound.org/apitest/coll1 en 0 0
 CreateExecution
+SetVariable with istream succeeded
 serialize
 <?xml version="1.0" encoding="UTF-8"?>
 3

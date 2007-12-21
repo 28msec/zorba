@@ -121,7 +121,14 @@ void* query_thread( void *param )
 		{
 			goto DisplayErrorsAndExit;
 		}
-		execution->SetVariable("external_var_name", prev_execution);
+		if(!execution->SetVariable("external_var_name", prev_execution))
+		{
+			result_file << "SetVariable with prev_execution FAILED" << endl;
+		}
+		else
+		{
+			result_file << "SetVariable with prev_execution succeeded" << endl;
+		}
 		prev_execution = execution;
 	}
 

@@ -93,6 +93,19 @@ int test_api_zorba_engine(const char *result_file_name)
     goto DisplayErrorsAndExit;
   }
 
+	{
+		ifstream		xml_stream(make_absolute_file_name("test_xml.txt", __FILE__).c_str());
+		if(!xml_stream.is_open() || !result->SetVariable("var2", xml_stream))
+		{
+			result_file << "SetVariable with istream failed" << endl;
+			result_file << "file test_xml.txt exists: " << xml_stream.is_open() << endl;
+		}
+		else
+		{
+			result_file << "SetVariable with istream succeeded" << endl;
+		}
+	}
+
 	result_file << "serialize" << endl;
   result->serialize(result_file);
   if(result->isError())

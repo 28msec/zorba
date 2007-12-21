@@ -23,6 +23,7 @@ public:
 
 	///extension from dynamic context (specific only for this execution)
 	virtual bool SetVariable( xqp_string varname, XQueryExecution_t item_iter ) = 0;
+	virtual bool SetVariable( xqp_string varname, std::istream &is ) = 0;
 
 	///register documents available through fn:doc() in xquery
 	virtual bool AddAvailableDocument(xqp_string docURI,

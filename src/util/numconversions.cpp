@@ -111,7 +111,7 @@ namespace xqp {
   }
   bool NumConversions::starCharToFloat(const char* aCharStar, xqp_float& aFloat) {
     char* lEndPtr;
-     aFloat = strtof(aCharStar, &lEndPtr);
+     aFloat = (xqp_float)strtod(aCharStar, &lEndPtr);//daniel: changed from strtof to compile on Windows
     if (*lEndPtr != '\0')
       return false;
     else

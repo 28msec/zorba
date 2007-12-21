@@ -18,6 +18,13 @@
 
 #include "zorba/util/properties.h"
 
+///to be removed: (when store api is finalized)
+#include "store/naive/simple_store.h"
+#include "store/naive/simple_loader.h"
+//#include "store/naive/simple_temp_seq.h"
+//#include "store/naive/node_items.h"
+#include "store/naive/store_defs.h"
+
 //#include "../../test/timer.h"
 
 #include <iostream>
@@ -371,50 +378,78 @@ Item_t Zorba_XQueryExecution::next()
 void
 Zorba_XQueryExecution::reset()
 {
+	try{
   if (!theClosed)
     it_result->reset(*state_block);
+	}
+  catch(xqp_exception &)
+	{
+	}
 }
 
 void
 Zorba_XQueryExecution::close()
 {
+	try{
   if (!theClosed)
   {
     it_result->releaseResources(*state_block); 
     //delete theStateBlock;
     theClosed = true;
   }
+	}
+  catch(xqp_exception &)
+	{
+	}
 }
 
 ostream& Zorba_XQueryExecution::serialize( ostream& os )
 {
   serializer *ser;
+	try{
   ser = zorba::getZorbaForCurrentThread()->getDocSerializer();
 
   ser->serialize(this, os);
+	}
+  catch(xqp_exception &)
+  {
+	}
   return os;
 }
 
 std::ostream& Zorba_XQueryExecution::serializeXML( std::ostream& os )
 {
   serializer *ser = new serializer;
-  
+
+	try{
   ser->serialize(this, os);
   delete ser;
+	}
+  catch(xqp_exception &)
+  {
+		delete ser;
+	}
   return os;
 }
 
 std::ostream& Zorba_XQueryExecution::serializeHTML( std::ostream& os )
 {
   serializer *ser = new serializer;
+	try{
   ser->set_parameter("method", "html");
   ser->serialize(this, os);
   delete ser;
+	}
+  catch(xqp_exception &)
+  {
+		delete ser;
+	}
   return os;
 }
 
 std::ostream& Zorba_XQueryExecution::serializeTEXT( std::ostream& os )
 {
+	try{
   Item_t    it;
 
   while(1)
@@ -424,6 +459,10 @@ std::ostream& Zorba_XQueryExecution::serializeTEXT( std::ostream& os )
       break;
     os << it->show() << endl;
   }
+	}
+  catch(xqp_exception &)
+  {
+	}
   return os;
 }
 
@@ -448,6 +487,8 @@ bind external variable with the result from another xquery
 bool Zorba_XQueryExecution::SetVariable( xqp_string varname, 
                                         XQueryExecution_t item_iter )
 {
+	try{
+
   ///add to dynamic context
   if(!internal_dyn_context)
     internal_dyn_context = new dynamic_context;
@@ -456,6 +497,49 @@ bool Zorba_XQueryExecution::SetVariable( xqp_string varname,
   internal_dyn_context->add_variable(expanded_name, item_iter.get_ptr());
 
   return true;
+	}
+  catch(xqp_exception &)
+  {
+		return false;
+  }
+  return false;
+}
+
+bool Zorba_XQueryExecution::SetVariable( xqp_string varname, 
+																				std::istream &is )
+{
+	SingletonIterator		*one_item_iterator = NULL;
+	PlanWrapper					*iterator_plus_state = NULL;
+	try{
+
+  if(!internal_dyn_context)
+    internal_dyn_context = new dynamic_context;
+  xqp_string    expanded_name;
+  expanded_name = internal_dyn_context->expand_varname(state_block->xqbinary->internal_sctx, varname);
+
+	///load the whole xml content from stream into store
+  SimpleStore& store = GET_STORE();
+	XmlLoader& loader = store.getXmlLoader();
+  Item_t doc_item;
+  doc_item = loader.loadXml(is);//consume the stream
+	if(doc_item.isNull())
+		return false;
+
+	one_item_iterator = new SingletonIterator(zorba::null_loc, doc_item);
+	PlanIter_t		iter_t(one_item_iterator);
+	iterator_plus_state = new PlanWrapper(iter_t);
+
+	internal_dyn_context->add_variable(expanded_name, iterator_plus_state);
+
+	return true;
+	}
+  catch(xqp_exception &)
+  {
+		delete one_item_iterator;
+		delete iterator_plus_state;
+		return false;
+  }
+  return false;
 }
 
 ///register documents available through fn:doc() in xquery
@@ -463,7 +547,14 @@ bool Zorba_XQueryExecution::AddAvailableDocument(xqp_string docURI,
                                                 Item_t docitem)
 {
   ///add to dynamic context
+	try{
   return false;
+	}
+  catch(xqp_exception &)
+  {
+		return false;
+	}
+	return false;
 }
 
 ///register collections available through fn:collection() in xquery
@@ -472,7 +563,14 @@ bool Zorba_XQueryExecution::AddAvailableCollection(xqp_string collectionURI,
                                                   Collection_t collection)
 {
   ///add to dynamic context
+	try{
   return false;
+	}
+  catch(xqp_exception &)
+  {
+		return false;
+	}
+	return false;
 }
 
 
