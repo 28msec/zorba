@@ -1097,13 +1097,21 @@ FnDocIterator::nextImpl ( PlanState& planState )
     }
   }
 
-  do
+  
+  if (state->got_doc == 1 || state->got_doc == 2) // Collection
   {
-    item = state->childrenIter->next();
-    if (item != NULL)
-      STACK_PUSH(item, state);
+    do
+    {
+      item = state->childrenIter->next();
+      if (item != NULL)
+        STACK_PUSH(item, state);
+    }
+    while (item != NULL);
   }
-  while (item != NULL);
+  else
+  {
+    STACK_PUSH(state->doc, state);
+  }
   
   STACK_END();
 }
@@ -1134,6 +1142,10 @@ FnDocIterator::FnDocIteratorState::reset()
 {
   PlanIterator::PlanIteratorState::reset();
   got_doc = 0;
+  childrenIter = NULL;
+  doc = NULL;
+  collection = NULL;
+  uri = (xqp_string)NULL;
 }
 
 //15.5.5 fn:doc-available

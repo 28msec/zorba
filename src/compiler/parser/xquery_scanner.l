@@ -73,7 +73,7 @@
 	 *______________________________________________________________________*/
 
 %option outfile="xquery_scanner.yy.cpp"
-%option case-insensitive
+/*%option case-insensitive*/
 /*%option nostdinit*/
 %option noyywrap
 %option batch
@@ -971,9 +971,13 @@ typedef yy::xquery_parser::token token;
 }
 
 
-	/* catch all */
+  /* catch all */
 {CatchAll} {
   return token::UNRECOGNIZED;
+}
+
+{S} {
+  /* eat up whitespace */
 }
 
 
@@ -1580,12 +1584,13 @@ typedef yy::xquery_parser::token token;
 	return token::WORDS;
 }
 
-
-
 {CatchAll} {
   /*	maintain state */
 }
 
+{S} {
+  /* eat up whitespace */
+}
 
 }	/* <MODE_OPERATOR> */
 
@@ -1671,6 +1676,10 @@ typedef yy::xquery_parser::token token;
 
 {CatchAll} {
   return token::UNRECOGNIZED;
+}
+
+{S} {
+  /* eat up whitespace */
 }
 
 } /* <MODE_NAMESPACEDECL> */
@@ -1760,6 +1769,10 @@ typedef yy::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
+{S} {
+  /* eat up whitespace */
+}
+
 }	/* <MODE_NAMESPACEKEYWORD> */
 
 
@@ -1798,6 +1811,10 @@ typedef yy::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
+{S} {
+  /* eat up whitespace */
+}
+
 } /* <MODE_XMLSPACE_DECL> */
 
 
@@ -1829,6 +1846,10 @@ typedef yy::xquery_parser::token token;
 
 {CatchAll} {
   return token::UNRECOGNIZED;
+}
+
+{S} {
+  /* eat up whitespace */
 }
 
 } /* <MODE_SINGLETYPE> */
@@ -2205,6 +2226,10 @@ typedef yy::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
+{S} {
+  /* eat up whitespace */
+}
+
 }	/* <MODE_ITEMTYPE> */
 
 
@@ -2273,6 +2298,10 @@ typedef yy::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
+{S} {
+  /* eat up whitespace */
+}
+
 }	/* <MODE_KINDTEST> */
 
 
@@ -2315,6 +2344,10 @@ typedef yy::xquery_parser::token token;
 
 {CatchAll} {
   return token::UNRECOGNIZED;
+}
+
+{S} {
+  /* eat up whitespace */
 }
 
 }	/* <MODE_KINDTESTFORPI> */
@@ -2369,6 +2402,10 @@ typedef yy::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
+{S} {
+  /* eat up whitespace */
+}
+
 }	/* <MODE_CLOSE_KINDTEST> */
 
 
@@ -2421,6 +2458,10 @@ typedef yy::xquery_parser::token token;
 	BEGIN MODE_OPERATOR;
 }
 
+{S} {
+  /* eat up whitespace */
+}
+
 }	/* MODE_OCCURRENCE_INDICATOR> */
 
 
@@ -2449,6 +2490,10 @@ typedef yy::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
+{S} {
+  /* eat up whitespace */
+}
+
 } /* <MODE_OPTION> */
 
 
@@ -2475,6 +2520,10 @@ typedef yy::xquery_parser::token token;
 
 {CatchAll} {
   return token::UNRECOGNIZED;
+}
+
+{S} {
+  /* eat up whitespace */
 }
 
 } /* <MODE_PRAGMA> */
@@ -2548,6 +2597,10 @@ typedef yy::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 
+{S} {
+  /* eat up whitespace */
+}
+
 } /* <MODE_VARNAME> */
 
 
@@ -2614,6 +2667,10 @@ typedef yy::xquery_parser::token token;
 
 {CatchAll} {
   return token::UNRECOGNIZED;
+}
+
+{S} {
+  /* eat up whitespace */
 }
 
 }	/* <MODE_START_TAG> */
@@ -2808,6 +2865,7 @@ typedef yy::xquery_parser::token token;
 
 {CommentContent} {
 	/* do nothing */
+  // TODO: check if, indeed, nothing needs to be done
 }
 
 }	/* <MODE_EXPR_COMMENT> */
@@ -3010,7 +3068,7 @@ typedef yy::xquery_parser::token token;
 	return token::APOS_ATTR_CONTENT;
 }
 
-PredefinedEntityRef {
+{PredefinedEntityRef} {
 	return token::ENTITY_REF;
 }
 
@@ -3042,15 +3100,15 @@ void xquery_driver::parse_string( const char *query_string)
 {  
   yyscan_t scanner;
   yylex_init(&scanner);
-  
-	YY_BUFFER_STATE str_buffer = yy_scan_string(query_string, scanner);
-	
-  yy::xquery_parser parser(*this, scanner);
-  
-	parser.set_debug_level(Properties::instance()->traceParsing());
-	parser.parse();
 
-	yy_delete_buffer(str_buffer, scanner); /* free up memory */
+  YY_BUFFER_STATE str_buffer = yy_scan_string(query_string, scanner);
+
+  yy::xquery_parser parser(*this, scanner);
+
+  parser.set_debug_level(Properties::instance()->traceParsing());
+  parser.parse();
+
+  yy_delete_buffer(str_buffer, scanner); /* free up memory */
   yylex_destroy(scanner);
 }
 

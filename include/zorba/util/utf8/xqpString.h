@@ -302,6 +302,9 @@ public:
     //Removes the leading and trailing whitespaces (#x20).
     xqpString trim() const;
 
+    // Removes the leading and trailing whitespace (one of the " \t\r\n")
+    // TODO: xqpString trim_whitespace() const;
+
 private:
 
     /**  Return an UnicodeString (UTF-16 encoded) given a xqpString (UTF-8 encoded)
@@ -339,6 +342,11 @@ private:
     /**Returns true if cp is sapce 32 (decimal).
     */
     bool is_space(uint32_t cp) const;
+
+    /**
+     * Returns true if cp is a whitespace (one of the " \t\r\n")
+     */
+    bool is_whitespace(uint32_t cp) const;
 
     /**Create a map with:
     *-the codepoints of the chars from 'mapString' as first dimension

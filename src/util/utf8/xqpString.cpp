@@ -609,6 +609,18 @@ namespace xqp
     return  (cp == 0x20) ? true: false;
   }
 
+  // whitespace = " \t\r\n";
+  bool xqpString::is_whitespace(uint32_t cp) const
+  {
+    return (cp == 0x20
+        ||
+        cp == (uint32_t)'\t'
+        ||
+        cp == (uint32_t)'\r'
+        ||
+        cp == (uint32_t)'\n') ? true : false;
+  }
+
   std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString) const
   {
     uint16_t mapLen = mapString.theStrStore->length()+1;

@@ -1,5 +1,6 @@
 /*
  *  Copyright 2006-2007 FLWOR Foundation.
+ *
  *  Authors: Nicolae Brinza
  */
 
@@ -13,7 +14,7 @@ namespace xqp
 /**
  * Whitespace characters used in the functions below
  */
-static const char* whitespace = " \t\r\n\f";
+static const char* whitespace = " \t\r\n";
 
 /**
  * The function skips any whitespace in the given string,
@@ -62,6 +63,12 @@ YearMonthDuration::YearMonthDuration(long the_months)
 {
 }
 
+YearMonthDuration& YearMonthDuration::operator=(const YearMonthDuration_t& ym_t)
+{
+  months = ym_t->months;
+  return *this;
+}
+
 bool YearMonthDuration::operator<(const YearMonthDuration& ym)
 {
   if (months < ym.months)
@@ -70,9 +77,9 @@ bool YearMonthDuration::operator<(const YearMonthDuration& ym)
     return false;
 }
 
-bool YearMonthDuration::operator<(const YearMonthDuration_t& ym_t)
+bool YearMonthDuration::operator==(const YearMonthDuration& ym)
 {
-  if (months < ym_t->months)
+  if (months == ym.months)
     return true;
   else
     return false;
@@ -145,7 +152,37 @@ DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long 
   :
   is_negative(negative), days(the_days), timeDuration(hours, minutes, seconds, frac_seconds)
 {
-  // TODO: normalizatzion
+  // TODO: normalization
+}
+
+DayTimeDuration& DayTimeDuration::operator=(const DayTimeDuration_t& dt_t)
+{
+  is_negative = dt_t->is_negative;
+  days = dt_t->days;
+  timeDuration = dt_t->timeDuration;
+  return *this;
+}
+
+bool DayTimeDuration::operator<(const DayTimeDuration& dt_t)
+{
+  if (is_negative != dt_t.is_negative)
+    return (is_negative == true);
+  else if (days != dt_t.days)
+    return (days < dt_t.days);
+  else
+    return timeDuration < dt_t.timeDuration;
+}
+
+bool DayTimeDuration::operator==(const DayTimeDuration& dt_t)
+{
+  if (is_negative == dt_t.is_negative
+      &&
+      days == dt_t.days
+      &&
+      timeDuration == dt_t.timeDuration)
+    return true;
+  else
+    return false;
 }
 
 // parse a 'nS' string, with fractional seconds
@@ -265,7 +302,7 @@ static void parse_hms_string(std::string ss, unsigned int& position, long& hours
 }
 
 // Parse a 'PnDTnHnMnS' dateTime duration
-DayTimeDuration_t DayTimeDuration::parse_string(xqpString s)
+DayTimeDuration_t DayTimeDuration::parse_string(xqpString s, bool dont_check_letter_p)
 {
   std::string ss = s.getStore();
   bool negative = false;
@@ -284,7 +321,7 @@ DayTimeDuration_t DayTimeDuration::parse_string(xqpString s)
     position++;
   }
 
-  if (position == ss.size() || ss[position++] != 'P')
+  if (!dont_check_letter_p && (position == ss.size() || ss[position++] != 'P'))
     ZORBA_ERROR_ALERT(error_messages::FORG0001, NULL);
 
   if (position == ss.size())
@@ -325,21 +362,41 @@ Duration::Duration()
   
 }
 
+bool Duration::operator==(const Duration& dt)
+{
+  if (yearMonthDuration == dt.yearMonthDuration
+      &&
+      dayTimeDuration == dt.dayTimeDuration)
+    return true;
+  else
+    return false;
+}
+
 // Parse a '(-)PnYnMnDTnHnMnS'
 Duration_t Duration::parse_string(xqpString s)
 {
-  xqpString ym_s, dt_s;
+  Duration_t d_t;
   int pos;
 
   pos = s.indexOf("M");
-  
+  if (pos == -1)
+    pos = s.indexOf("Y");
+
+  // Check month or year
   if (pos != -1)
   {
-    
-    ym_s = s.substr(0, pos+1);
+    d_t->yearMonthDuration = *YearMonthDuration::parse_string(s.substr(0, pos+1));
+
+    if ((unsigned int)pos+1 < s.size())
+      d_t->dayTimeDuration = *DayTimeDuration::parse_string(s.substr(pos+1, s.size() - pos - 1), false);
+  }
+  // No month or year -- parse DayTime
+  else 
+  {
+    d_t->dayTimeDuration = *DayTimeDuration::parse_string(s);
   }
   
-  return NULL;
+  return d_t;
 }
 
 }

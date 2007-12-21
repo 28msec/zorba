@@ -1,5 +1,6 @@
 /*
  *  Copyright 2006-2007 FLWOR Foundation.
+ *
  *  Authors: Nicolae Brinza
  */
 
@@ -7,10 +8,9 @@
 #define XQP_DURATION_H
 
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include "boost/date_time/gregorian/gregorian.hpp"
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include "util/utf8/xqpString.h"
 #include "util/rchandle.h"
-#include "util/zorba.h"
 
 namespace xqp
 {
@@ -30,8 +30,9 @@ public:
 
   static YearMonthDuration_t parse_string(xqpString s);
 
+  YearMonthDuration& operator=(const YearMonthDuration_t& ym_t);
   bool operator<(const YearMonthDuration& ym);
-  bool operator<(const YearMonthDuration_t& ym_t);
+  bool operator==(const YearMonthDuration& ym);
 
 protected:
   long months;
@@ -44,7 +45,11 @@ public:
   DayTimeDuration(bool negative, long the_days, long hours, long minutes, long seconds, long frac_seconds);
   virtual ~DayTimeDuration() { };
 
-  static DayTimeDuration_t parse_string(xqpString s);
+  static DayTimeDuration_t parse_string(xqpString s, bool dont_check_letter_p = false);
+  
+  DayTimeDuration& operator=(const DayTimeDuration_t& dt_t);
+  bool operator<(const DayTimeDuration& dt);
+  bool operator==(const DayTimeDuration& dt);
 
 protected:
   bool is_negative;
@@ -60,13 +65,13 @@ public:
 
   static Duration_t parse_string(xqpString s);
 
+  bool operator==(const Duration& dt);
+
 protected:
   YearMonthDuration yearMonthDuration;
   DayTimeDuration dayTimeDuration;
 };
 
-
-
-}
+} // namespace xqp
 
 #endif

@@ -24,6 +24,8 @@
 #include <iostream>
 #include <string>
 #include <cassert>
+#include <sstream>
+
 
 using namespace std;
 
@@ -599,15 +601,31 @@ void *translator::begin_visit(const CommonContent& v)
 void translator::end_visit(const CommonContent& v, void *visit_state)
 {
   switch (v.get_type())
-   {
-     case cont_entity:
-     {
-       break;
-     }
-     case cont_charref:
-     {
-       break;
-     }
+  {
+    case cont_entity:
+    {
+      break;
+    }
+    case cont_charref:
+    {
+      // &#xFF; or &#255;
+      unsigned int codepoint;
+      xqp_string charref;
+      stringstream ss;
+
+      if (v.get_ref()[2] == 'x')
+        ss << hex << v.get_ref().substr(3, v.get_ref().size()-3);
+      else
+        ss << v.get_ref().substr(2, v.get_ref().size()-2);
+      
+      ss >> codepoint;
+      charref = codepoint;
+      
+      Item_t lItem = Store::getInstance().getItemFactory().createTextNode(charref, false);
+      const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
+      nodestack.push ( lConstExpr );
+      break;
+    }
    	case cont_escape_lbrace:
    	{
    	  // we always create a text node here because if we are in an attribute, we atomice

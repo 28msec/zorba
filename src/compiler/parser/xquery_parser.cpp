@@ -2660,12 +2660,13 @@ namespace yy
 #line 2876 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "RelativePathExpr [step]\n";
-			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);						
+            AxisStep *as = dynamic_cast<AxisStep *>((yysemantic_stack_[(1) - (1)].expr));
+            (yyval.expr) = as != NULL ? new RelativePathExpr((yyloc), st_slash, new ContextItemExpr((yyloc)), (yysemantic_stack_[(1) - (1)].expr)) : (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 237:
-#line 2881 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2882 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "RelativePathExpr [step/relative]\n";
 			(yyval.expr) = new RelativePathExpr((yyloc), st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2673,7 +2674,7 @@ namespace yy
     break;
 
   case 238:
-#line 2886 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2887 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "RelativePathExpr [step//relative]\n";
 			(yyval.expr) = new RelativePathExpr((yyloc), st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2681,7 +2682,7 @@ namespace yy
     break;
 
   case 239:
-#line 2897 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2898 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "StepExpr [axis]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2689,7 +2690,7 @@ namespace yy
     break;
 
   case 240:
-#line 2902 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2903 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "StepExpr [filter]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2697,7 +2698,7 @@ namespace yy
     break;
 
   case 241:
-#line 2913 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2914 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AxisStep [forward]\n";
 			(yyval.expr) = new AxisStep((yyloc),
@@ -2707,7 +2708,7 @@ namespace yy
     break;
 
   case 242:
-#line 2920 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2921 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AxisStep [forward.predlist]\n";
 			(yyval.expr) = new AxisStep((yyloc),
@@ -2717,7 +2718,7 @@ namespace yy
     break;
 
   case 243:
-#line 2927 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2928 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AxisStep [reverse]\n";
 			(yyval.expr) = new AxisStep((yyloc),
@@ -2727,7 +2728,7 @@ namespace yy
     break;
 
   case 244:
-#line 2934 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2935 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AxisStep [reverse.predlist]\n";
 			(yyval.expr) = new AxisStep((yyloc),
@@ -2737,7 +2738,7 @@ namespace yy
     break;
 
   case 245:
-#line 2947 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2948 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardStep [nodetest]\n";
 			(yyval.node) = new ForwardStep((yyloc),
@@ -2747,7 +2748,7 @@ namespace yy
     break;
 
   case 246:
-#line 2954 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2955 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardStep [abbrev]\n";
 			(yyval.node) = new ForwardStep((yyloc),
@@ -2756,7 +2757,7 @@ namespace yy
     break;
 
   case 247:
-#line 2966 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2967 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [child]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_child);
@@ -2764,7 +2765,7 @@ namespace yy
     break;
 
   case 248:
-#line 2971 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2972 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [descendant]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_descendant);
@@ -2772,7 +2773,7 @@ namespace yy
     break;
 
   case 249:
-#line 2976 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2977 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [attribute]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_attribute);
@@ -2780,7 +2781,7 @@ namespace yy
     break;
 
   case 250:
-#line 2981 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2982 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [self]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_self);
@@ -2788,7 +2789,7 @@ namespace yy
     break;
 
   case 251:
-#line 2986 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2987 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [descendant_or_self]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_descendant_or_self);
@@ -2796,7 +2797,7 @@ namespace yy
     break;
 
   case 252:
-#line 2991 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2992 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [following_sibling]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_following_sibling);
@@ -2804,7 +2805,7 @@ namespace yy
     break;
 
   case 253:
-#line 2996 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2997 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [following]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_following);
@@ -2812,7 +2813,7 @@ namespace yy
     break;
 
   case 254:
-#line 3007 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3008 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AbbrevForwardStep [nodetest]\n";
 			(yyval.node) = new AbbrevForwardStep((yyloc), (yysemantic_stack_[(1) - (1)].node));
@@ -2820,7 +2821,7 @@ namespace yy
     break;
 
   case 255:
-#line 3012 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3013 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AbbrevForwardStep [@ nodetest]\n";
 			(yyval.node) = new AbbrevForwardStep((yyloc), (yysemantic_stack_[(2) - (2)].node), true);
@@ -2828,7 +2829,7 @@ namespace yy
     break;
 
   case 256:
-#line 3023 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3024 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseStep [nodetest]\n";
 			(yyval.node) = new ReverseStep((yyloc),
@@ -2838,7 +2839,7 @@ namespace yy
     break;
 
   case 257:
-#line 3030 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3031 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseStep [..]\n";
 			ReverseAxis* rev_p = new ReverseAxis((yyloc), axis_parent);
@@ -2848,7 +2849,7 @@ namespace yy
     break;
 
   case 258:
-#line 3043 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3044 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseAxis [parent]\n";
 			(yyval.node) = new ReverseAxis((yyloc), axis_parent);
@@ -2856,7 +2857,7 @@ namespace yy
     break;
 
   case 259:
-#line 3048 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3049 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseAxis [ancestor]\n";
 			(yyval.node) = new ReverseAxis((yyloc), axis_ancestor);
@@ -2864,7 +2865,7 @@ namespace yy
     break;
 
   case 260:
-#line 3053 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3054 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseAxis [preceding_sibling]\n";
 			(yyval.node) = new ReverseAxis((yyloc), axis_preceding_sibling);
@@ -2872,7 +2873,7 @@ namespace yy
     break;
 
   case 261:
-#line 3058 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3059 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseAxis [preceding]\n";
 			(yyval.node) = new ReverseAxis((yyloc), axis_preceding);
@@ -2880,7 +2881,7 @@ namespace yy
     break;
 
   case 262:
-#line 3063 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3064 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseAxis [ancestor_or_self]\n";
 			(yyval.node) = new ReverseAxis((yyloc), axis_ancestor_or_self);
@@ -2888,7 +2889,7 @@ namespace yy
     break;
 
   case 263:
-#line 3079 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3080 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "NodeTest [kindtest]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -2896,7 +2897,7 @@ namespace yy
     break;
 
   case 264:
-#line 3084 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3085 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "NodeTest [nametest]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -2904,7 +2905,7 @@ namespace yy
     break;
 
   case 265:
-#line 3095 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3096 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "NameTest [qname]\n";
 			(yyval.node) = new NameTest((yyloc), new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
@@ -2912,7 +2913,7 @@ namespace yy
     break;
 
   case 266:
-#line 3100 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3101 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "NameTest [wildcard]\n";
 			(yyval.node) = new NameTest((yyloc), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2920,7 +2921,7 @@ namespace yy
     break;
 
   case 267:
-#line 3111 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3112 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "Wildcard [*]\n";
 			(yyval.node) = new Wildcard((yyloc),
@@ -2931,7 +2932,7 @@ namespace yy
     break;
 
   case 268:
-#line 3119 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3120 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "Wildcard [pref:*]\n";
 			(yyval.node) = new Wildcard((yyloc),
@@ -2942,7 +2943,7 @@ namespace yy
     break;
 
   case 269:
-#line 3127 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3128 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "Wildcard [*:qname]\n";
 			(yyval.node) = new Wildcard((yyloc),
@@ -2953,7 +2954,7 @@ namespace yy
     break;
 
   case 270:
-#line 3141 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3142 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FilterExpr [primary]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2961,7 +2962,7 @@ namespace yy
     break;
 
   case 271:
-#line 3146 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3147 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FilterExpr [primary.predlist]\n";
 			(yyval.expr) = new FilterExpr((yyloc),
@@ -2971,7 +2972,7 @@ namespace yy
     break;
 
   case 272:
-#line 3159 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3160 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PredicateList [single]\n";
 			PredicateList* pred_list_p = new PredicateList((yyloc));
@@ -2981,7 +2982,7 @@ namespace yy
     break;
 
   case 273:
-#line 3166 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3167 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PredicateList [list]\n";
 			PredicateList* pred_list_p = dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (1)].node));
@@ -2993,7 +2994,7 @@ namespace yy
     break;
 
   case 274:
-#line 3181 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3182 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "Predicate [ ]\n";
 			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
@@ -3001,7 +3002,7 @@ namespace yy
     break;
 
   case 275:
-#line 3193 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3194 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [literal]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3009,7 +3010,7 @@ namespace yy
     break;
 
   case 276:
-#line 3198 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3199 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [varref]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3017,7 +3018,7 @@ namespace yy
     break;
 
   case 277:
-#line 3203 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3204 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [paren]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3025,7 +3026,7 @@ namespace yy
     break;
 
   case 278:
-#line 3208 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3209 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [context_item]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3033,7 +3034,7 @@ namespace yy
     break;
 
   case 279:
-#line 3213 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3214 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [funcall]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3041,7 +3042,7 @@ namespace yy
     break;
 
   case 280:
-#line 3218 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3219 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [cons]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3049,7 +3050,7 @@ namespace yy
     break;
 
   case 281:
-#line 3223 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3224 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [ordered]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3057,7 +3058,7 @@ namespace yy
     break;
 
   case 282:
-#line 3228 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3229 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [unordered]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3065,7 +3066,7 @@ namespace yy
     break;
 
   case 283:
-#line 3239 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3240 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "Literal [numeric]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3073,7 +3074,7 @@ namespace yy
     break;
 
   case 284:
-#line 3244 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3245 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "Literal [string]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3081,7 +3082,7 @@ namespace yy
     break;
 
   case 285:
-#line 3255 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3256 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "NumericLiteral [decimal]\n";
 			(yyval.expr) = new NumericLiteral((yyloc), decimal(yylval.decval));
@@ -3089,7 +3090,7 @@ namespace yy
     break;
 
   case 286:
-#line 3260 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3261 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "NumericLiteral [int]\n";
 			(yyval.expr) = new NumericLiteral((yyloc), yylval.ival);
@@ -3097,7 +3098,7 @@ namespace yy
     break;
 
   case 287:
-#line 3265 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3266 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "NumericLiteral [double]\n";
 			(yyval.expr) = new NumericLiteral((yyloc), yylval.dval);
@@ -3105,7 +3106,7 @@ namespace yy
     break;
 
   case 288:
-#line 3276 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3277 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "VarRef [ ]\n";
 			(yyval.expr) = new VarRef((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
@@ -3113,7 +3114,7 @@ namespace yy
     break;
 
   case 289:
-#line 3287 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3288 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ParenthesizedExpr [()]\n";
 			(yyval.expr) = new ParenthesizedExpr((yyloc), NULL);
@@ -3121,7 +3122,7 @@ namespace yy
     break;
 
   case 290:
-#line 3292 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3293 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ParenthesizedExpr [(expr)]\n";
 			(yyval.expr) = new ParenthesizedExpr((yyloc),
@@ -3130,7 +3131,7 @@ namespace yy
     break;
 
   case 291:
-#line 3304 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3305 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ContextItemExpr [.]\n";
 			(yyval.expr) = new ContextItemExpr((yyloc));
@@ -3138,7 +3139,7 @@ namespace yy
     break;
 
   case 292:
-#line 3315 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3316 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderedExpr [expr]\n";
 			(yyval.expr) = new OrderedExpr((yyloc),
@@ -3147,7 +3148,7 @@ namespace yy
     break;
 
   case 293:
-#line 3327 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3328 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "UnorderedExpr [expr]\n";
 			(yyval.expr) = new UnorderedExpr((yyloc),
@@ -3156,7 +3157,7 @@ namespace yy
     break;
 
   case 294:
-#line 3384 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3385 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionCall [ ]\n";
 			(yyval.expr) = new FunctionCall((yyloc),
@@ -3166,7 +3167,7 @@ namespace yy
     break;
 
   case 295:
-#line 3391 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3392 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionCall [arglist]\n";
 			(yyval.expr) = new FunctionCall((yyloc),
@@ -3176,7 +3177,7 @@ namespace yy
     break;
 
   case 296:
-#line 3404 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3405 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ArgList [single]\n";
 			ArgList* a_list_p = new ArgList((yyloc)); 
@@ -3186,7 +3187,7 @@ namespace yy
     break;
 
   case 297:
-#line 3411 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3412 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ArgList [list]\n";
 			ArgList* a_list_p = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node));
@@ -3196,7 +3197,7 @@ namespace yy
     break;
 
   case 298:
-#line 3424 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3425 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "Constructor [direct]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3204,7 +3205,7 @@ namespace yy
     break;
 
   case 299:
-#line 3429 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3430 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "Constructor [computed]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3212,7 +3213,7 @@ namespace yy
     break;
 
   case 300:
-#line 3440 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3441 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirectConstructor [element]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3220,7 +3221,7 @@ namespace yy
     break;
 
   case 301:
-#line 3445 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3446 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirectConstructor [comment]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3228,7 +3229,7 @@ namespace yy
     break;
 
   case 302:
-#line 3450 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3451 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirectConstructor [pi]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3236,7 +3237,7 @@ namespace yy
     break;
 
   case 303:
-#line 3461 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3462 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname/> ]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3248,7 +3249,7 @@ namespace yy
     break;
 
   case 304:
-#line 3470 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3471 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname attrlist/> ]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3260,7 +3261,7 @@ namespace yy
     break;
 
   case 305:
-#line 3479 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3480 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname></qname>]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3272,7 +3273,7 @@ namespace yy
     break;
 
   case 306:
-#line 3488 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3489 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname>content</qname>]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3284,7 +3285,7 @@ namespace yy
     break;
 
   case 307:
-#line 3497 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3498 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname attrlist></qname>]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3296,7 +3297,7 @@ namespace yy
     break;
 
   case 308:
-#line 3506 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3507 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3308,7 +3309,7 @@ namespace yy
     break;
 
   case 309:
-#line 3522 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3523 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContentList [single]\n";
 			DirElemContentList* elem_content_list_p = new DirElemContentList((yyloc));
@@ -3318,7 +3319,7 @@ namespace yy
     break;
 
   case 310:
-#line 3529 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3530 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContentList [list]\n";
 			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3328,7 +3329,7 @@ namespace yy
     break;
 
   case 311:
-#line 3542 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3543 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirAttributeList [single]\n";
 			DirAttributeList* at_list_p = new DirAttributeList((yyloc));
@@ -3338,7 +3339,7 @@ namespace yy
     break;
 
   case 312:
-#line 3549 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3550 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirAttributeList [list]\n";
 			DirAttributeList* at_list_p = dynamic_cast<DirAttributeList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3350,7 +3351,7 @@ namespace yy
     break;
 
   case 313:
-#line 3564 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3565 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirAttr [ ]\n";
 			(yyval.node) = new DirAttr((yyloc),
@@ -3360,7 +3361,7 @@ namespace yy
     break;
 
   case 314:
-#line 3577 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3578 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirAttributeValue [quote]\n";
 			(yyval.node) = new DirAttributeValue((yyloc),
@@ -3369,7 +3370,7 @@ namespace yy
     break;
 
   case 315:
-#line 3583 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3584 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirAttributeValue [apos]\n";
 			(yyval.node) = new DirAttributeValue((yyloc),
@@ -3378,7 +3379,7 @@ namespace yy
     break;
 
   case 316:
-#line 3595 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3596 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrContentList[empty]\n";
 			(yyval.node) = new QuoteAttrContentList((yyloc));
@@ -3386,14 +3387,14 @@ namespace yy
     break;
 
   case 317:
-#line 3600 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3601 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 318:
-#line 3607 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3608 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrContentList [""]\n";
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList((yyloc));
@@ -3403,7 +3404,7 @@ namespace yy
     break;
 
   case 319:
-#line 3614 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3615 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrContentList [single]\n";
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList((yyloc));
@@ -3413,7 +3414,7 @@ namespace yy
     break;
 
   case 320:
-#line 3621 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3622 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrContentList [list ""]\n";
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3425,7 +3426,7 @@ namespace yy
     break;
 
   case 321:
-#line 3630 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3631 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrContentList [list]\n";
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3436,7 +3437,7 @@ namespace yy
     break;
 
   case 322:
-#line 3644 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3645 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrContentList ['']\n";
 			(yyval.node) = new AposAttrContentList((yyloc));
@@ -3444,14 +3445,14 @@ namespace yy
     break;
 
   case 323:
-#line 3649 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3650 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 324:
-#line 3656 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3657 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrContentList ['']\n";
 			AposAttrContentList* at_list_p = new AposAttrContentList((yyloc));
@@ -3461,7 +3462,7 @@ namespace yy
     break;
 
   case 325:
-#line 3663 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3664 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrContentList [single]\n";
 			AposAttrContentList* at_list_p = new AposAttrContentList((yyloc));
@@ -3471,7 +3472,7 @@ namespace yy
     break;
 
   case 326:
-#line 3670 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3671 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrContentList [list.'']\n";
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3483,7 +3484,7 @@ namespace yy
     break;
 
   case 327:
-#line 3679 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3680 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrContentList [list.single]\n";
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3495,7 +3496,7 @@ namespace yy
     break;
 
   case 328:
-#line 3694 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3695 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrValueContent [quote_attr_content]\n";
 			(yyval.node) = new QuoteAttrValueContent((yyloc),
@@ -3504,7 +3505,7 @@ namespace yy
     break;
 
   case 329:
-#line 3700 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3701 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrValueContent [common_content]\n";
 			(yyval.node) = new QuoteAttrValueContent((yyloc),
@@ -3513,7 +3514,7 @@ namespace yy
     break;
 
   case 330:
-#line 3712 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3713 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrValueContent [apos_attr_content]\n";
 			(yyval.node) = new AposAttrValueContent((yyloc),
@@ -3522,7 +3523,7 @@ namespace yy
     break;
 
   case 331:
-#line 3718 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3719 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrValueContent [common_content]\n";
 			(yyval.node) = new AposAttrValueContent((yyloc),
@@ -3531,7 +3532,7 @@ namespace yy
     break;
 
   case 332:
-#line 3730 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3731 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContent [cons]\n";
 			(yyval.expr) = new DirElemContent((yyloc),
@@ -3540,7 +3541,7 @@ namespace yy
     break;
 
   case 333:
-#line 3736 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3737 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContent [elem_content]\n";
 			(yyval.expr) = new DirElemContent((yyloc),
@@ -3549,7 +3550,7 @@ namespace yy
     break;
 
   case 334:
-#line 3742 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3743 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContent [cdata]\n";
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
@@ -3559,7 +3560,7 @@ namespace yy
     break;
 
   case 335:
-#line 3749 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3750 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContent [common_content]\n";
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
@@ -3569,7 +3570,7 @@ namespace yy
     break;
 
   case 336:
-#line 3762 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3763 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CommonContent [entity_ref]\n";
 			(yyval.expr) = new CommonContent((yyloc),
@@ -3579,7 +3580,7 @@ namespace yy
     break;
 
   case 337:
-#line 3769 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3770 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CommonContent [char_ref]\n";
 			(yyval.expr) = new CommonContent((yyloc),
@@ -3589,7 +3590,7 @@ namespace yy
     break;
 
   case 338:
-#line 3776 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3777 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CommonContent [{{]\n";
 			(yyval.expr) = new CommonContent((yyloc),
@@ -3598,7 +3599,7 @@ namespace yy
     break;
 
   case 339:
-#line 3782 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3783 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CommonContent [}}]\n";
 			(yyval.expr) = new CommonContent((yyloc),
@@ -3607,7 +3608,7 @@ namespace yy
     break;
 
   case 340:
-#line 3788 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3789 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CommonContent [expr]\n";
 			(yyval.expr) = new CommonContent((yyloc),
@@ -3616,7 +3617,7 @@ namespace yy
     break;
 
   case 341:
-#line 3800 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3801 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirCommentConstructor [ ]\n";
 			(yyval.expr) = new DirCommentConstructor((yyloc),
@@ -3625,7 +3626,7 @@ namespace yy
     break;
 
   case 342:
-#line 3817 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3818 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirPIConstructor [target]\n";
 			(yyval.expr) = new DirPIConstructor((yyloc),
@@ -3634,7 +3635,7 @@ namespace yy
     break;
 
   case 343:
-#line 3823 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3824 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DirPIConstructor [target.charlit]\n";
 			(yyval.expr) = new DirPIConstructor((yyloc),
@@ -3644,7 +3645,7 @@ namespace yy
     break;
 
   case 344:
-#line 3841 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3842 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CDataSection [ ]\n";
 			(yyval.expr) = new CDataSection((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
@@ -3652,7 +3653,7 @@ namespace yy
     break;
 
   case 345:
-#line 3857 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3858 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [doc]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3660,7 +3661,7 @@ namespace yy
     break;
 
   case 346:
-#line 3862 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3863 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [elem]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3668,7 +3669,7 @@ namespace yy
     break;
 
   case 347:
-#line 3867 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3868 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [attr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3676,7 +3677,7 @@ namespace yy
     break;
 
   case 348:
-#line 3872 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3873 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [text]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3684,7 +3685,7 @@ namespace yy
     break;
 
   case 349:
-#line 3877 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3878 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [comment]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3692,7 +3693,7 @@ namespace yy
     break;
 
   case 350:
-#line 3882 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3883 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [pi]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3700,7 +3701,7 @@ namespace yy
     break;
 
   case 351:
-#line 3893 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3894 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompDocConstructor [ ]\n";
 			(yyval.expr) = new CompDocConstructor((yyloc),
@@ -3709,7 +3710,7 @@ namespace yy
     break;
 
   case 352:
-#line 3905 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3906 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompElemConstructor [ ]\n";
 			(yyval.expr) = new CompElemConstructor((yyloc),
@@ -3719,7 +3720,7 @@ namespace yy
     break;
 
   case 353:
-#line 3912 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3913 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompElemConstructor [content]\n";
 			(yyval.expr) = new CompElemConstructor((yyloc),
@@ -3729,7 +3730,7 @@ namespace yy
     break;
 
   case 354:
-#line 3919 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3920 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompElemConstructor [name]\n";
 			(yyval.expr) = new CompElemConstructor((yyloc),
@@ -3738,7 +3739,7 @@ namespace yy
     break;
 
   case 355:
-#line 3925 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3926 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompElemConstructor [name.content]\n";
 			(yyval.expr) = new CompElemConstructor((yyloc),
@@ -3747,7 +3748,7 @@ namespace yy
     break;
 
   case 356:
-#line 3949 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3950 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompAttrConstructor [ ]\n";
 			(yyval.expr) = new CompAttrConstructor((yyloc),
@@ -3757,7 +3758,7 @@ namespace yy
     break;
 
   case 357:
-#line 3956 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3957 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompAttrConstructor [val]\n";
 			(yyval.expr) = new CompAttrConstructor((yyloc),
@@ -3767,7 +3768,7 @@ namespace yy
     break;
 
   case 358:
-#line 3963 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3964 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompAttrConstructor [name]\n";
 			(yyval.expr) = new CompAttrConstructor((yyloc),
@@ -3776,7 +3777,7 @@ namespace yy
     break;
 
   case 359:
-#line 3969 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3970 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompAttrConstructor [name.val]\n";
 			(yyval.expr) = new CompAttrConstructor((yyloc),
@@ -3785,7 +3786,7 @@ namespace yy
     break;
 
   case 360:
-#line 3981 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3982 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompTextConstructor [content]\n";
 			(yyval.expr) = new CompTextConstructor((yyloc),
@@ -3794,7 +3795,7 @@ namespace yy
     break;
 
   case 361:
-#line 3993 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3994 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompCommentConstructor [content]\n";
 			(yyval.expr) = new CompCommentConstructor((yyloc),
@@ -3803,7 +3804,7 @@ namespace yy
     break;
 
   case 362:
-#line 4005 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4006 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompPIConstructor [ ]\n";
 			(yyval.expr) = new CompPIConstructor((yyloc),
@@ -3813,7 +3814,7 @@ namespace yy
     break;
 
   case 363:
-#line 4012 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4013 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompPIConstructor [content]\n";
 			(yyval.expr) = new CompPIConstructor((yyloc),
@@ -3823,7 +3824,7 @@ namespace yy
     break;
 
   case 364:
-#line 4019 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4020 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompPIConstructor [target]\n";
 			(yyval.expr) = new CompPIConstructor((yyloc),
@@ -3832,7 +3833,7 @@ namespace yy
     break;
 
   case 365:
-#line 4025 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4026 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CompPIConstructor [target.content]\n";
 			(yyval.expr) = new CompPIConstructor((yyloc),
@@ -3841,7 +3842,7 @@ namespace yy
     break;
 
   case 366:
-#line 4037 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4038 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "SingleType [atomic]\n";
 			(yyval.node) = new SingleType((yyloc),
@@ -3851,7 +3852,7 @@ namespace yy
     break;
 
   case 367:
-#line 4044 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4045 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "SingleType [atomic ?]\n";
 			(yyval.node) = new SingleType((yyloc),
@@ -3861,7 +3862,7 @@ namespace yy
     break;
 
   case 368:
-#line 4057 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4058 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "TypeDeclaration [as seqtype]\n";
 			(yyval.node) = new TypeDeclaration((yyloc),
@@ -3870,7 +3871,7 @@ namespace yy
     break;
 
   case 369:
-#line 4069 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4070 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [type]\n";
 			(yyval.node) = new SequenceType((yyloc),
@@ -3880,7 +3881,7 @@ namespace yy
     break;
 
   case 370:
-#line 4076 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4077 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [type.occurs]\n";
 			(yyval.node) = new SequenceType((yyloc),
@@ -3890,7 +3891,7 @@ namespace yy
     break;
 
   case 371:
-#line 4083 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4084 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [void]\n";
 			(yyval.node) = new SequenceType((yyloc), NULL, NULL);
@@ -3898,7 +3899,7 @@ namespace yy
     break;
 
   case 372:
-#line 4121 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4122 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "OccurrenceIndicator [?]\n";
 			(yyval.node) = new OccurrenceIndicator((yyloc),
@@ -3907,7 +3908,7 @@ namespace yy
     break;
 
   case 373:
-#line 4127 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4128 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "OccurrenceIndicator [*]\n";
 			(yyval.node) = new OccurrenceIndicator((yyloc),
@@ -3916,7 +3917,7 @@ namespace yy
     break;
 
   case 374:
-#line 4133 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4134 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "OccurrenceIndicator [+]\n";
 			(yyval.node) = new OccurrenceIndicator((yyloc),
@@ -3925,7 +3926,7 @@ namespace yy
     break;
 
   case 375:
-#line 4145 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4146 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [atomic]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3933,7 +3934,7 @@ namespace yy
     break;
 
   case 376:
-#line 4150 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4151 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [kind]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3941,7 +3942,7 @@ namespace yy
     break;
 
   case 377:
-#line 4155 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4156 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [item]\n";
 			(yyval.node) = new ItemType((yyloc),true);
@@ -3949,7 +3950,7 @@ namespace yy
     break;
 
   case 378:
-#line 4166 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4167 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AtomicType [qname]\n";
 			(yyval.node) = new AtomicType((yyloc),
@@ -3958,7 +3959,7 @@ namespace yy
     break;
 
   case 379:
-#line 4178 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4179 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [doc]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3966,7 +3967,7 @@ namespace yy
     break;
 
   case 380:
-#line 4183 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4184 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [elem]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3974,7 +3975,7 @@ namespace yy
     break;
 
   case 381:
-#line 4188 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4189 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [attr]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3982,7 +3983,7 @@ namespace yy
     break;
 
   case 382:
-#line 4193 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4194 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [schema_elem]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3990,7 +3991,7 @@ namespace yy
     break;
 
   case 383:
-#line 4198 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4199 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [schema_attr]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3998,7 +3999,7 @@ namespace yy
     break;
 
   case 384:
-#line 4203 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4204 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [pi]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4006,7 +4007,7 @@ namespace yy
     break;
 
   case 385:
-#line 4208 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4209 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [comment]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4014,7 +4015,7 @@ namespace yy
     break;
 
   case 386:
-#line 4213 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4214 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [text]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4022,7 +4023,7 @@ namespace yy
     break;
 
   case 387:
-#line 4218 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4219 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [any]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4030,7 +4031,7 @@ namespace yy
     break;
 
   case 388:
-#line 4229 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4230 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AnyKindTest [ ]\n";
 			(yyval.node) = new AnyKindTest((yyloc));
@@ -4038,7 +4039,7 @@ namespace yy
     break;
 
   case 389:
-#line 4240 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4241 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DocumentTest [ ]\n";
 			(yyval.node) = new DocumentTest((yyloc));
@@ -4046,7 +4047,7 @@ namespace yy
     break;
 
   case 390:
-#line 4245 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4246 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DocumentTest [elem]\n";
 			(yyval.node) = new DocumentTest((yyloc),
@@ -4055,7 +4056,7 @@ namespace yy
     break;
 
   case 391:
-#line 4251 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4252 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DocumentTest [schema_elem]\n";
 			(yyval.node) = new DocumentTest((yyloc),
@@ -4064,7 +4065,7 @@ namespace yy
     break;
 
   case 392:
-#line 4263 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4264 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "TextTest [ ]\n";
 			(yyval.node) = new TextTest((yyloc));
@@ -4072,7 +4073,7 @@ namespace yy
     break;
 
   case 393:
-#line 4274 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4275 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "CommentTest [ ]\n";
 			(yyval.node) = new CommentTest((yyloc));
@@ -4080,7 +4081,7 @@ namespace yy
     break;
 
   case 394:
-#line 4285 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4286 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PITest [ ]\n";
 			(yyval.node) = new PITest((yyloc), "", "");
@@ -4088,7 +4089,7 @@ namespace yy
     break;
 
   case 395:
-#line 4290 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4291 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PITest [ncname]\n";
 			(yyval.node) = new PITest((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)), "");
@@ -4096,7 +4097,7 @@ namespace yy
     break;
 
   case 396:
-#line 4295 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4296 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "PITest [stringlit]\n";
 			(yyval.node) = new PITest((yyloc), "", driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
@@ -4104,7 +4105,7 @@ namespace yy
     break;
 
   case 397:
-#line 4306 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4307 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AttributeTest [ ]\n";
 			(yyval.node) = new AttributeTest((yyloc),
@@ -4114,7 +4115,7 @@ namespace yy
     break;
 
   case 398:
-#line 4313 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4314 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AttributeTest [name]\n";
 			(yyval.node) = new AttributeTest((yyloc),
@@ -4124,7 +4125,7 @@ namespace yy
     break;
 
   case 399:
-#line 4320 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4321 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AttributeTest [name.type]\n";
 			(yyval.node) = new AttributeTest((yyloc),
@@ -4134,7 +4135,7 @@ namespace yy
     break;
 
   case 400:
-#line 4327 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4328 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AttributeTest [*]\n";
 			(yyval.node) = new AttributeTest((yyloc),
@@ -4144,7 +4145,7 @@ namespace yy
     break;
 
   case 401:
-#line 4334 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4335 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "AttributeTest [*.type]\n";
 			(yyval.node) = new AttributeTest((yyloc),
@@ -4154,7 +4155,7 @@ namespace yy
     break;
 
   case 402:
-#line 4347 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4348 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "SchemaAttributeTest [ ]\n";
 			(yyval.node) = new SchemaAttributeTest((yyloc),
@@ -4163,7 +4164,7 @@ namespace yy
     break;
 
   case 403:
-#line 4359 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4360 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [ ]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4173,7 +4174,7 @@ namespace yy
     break;
 
   case 404:
-#line 4366 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4367 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [name]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4183,7 +4184,7 @@ namespace yy
     break;
 
   case 405:
-#line 4373 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4374 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [name.type]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4193,7 +4194,7 @@ namespace yy
     break;
 
   case 406:
-#line 4380 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4381 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [name.type]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4203,7 +4204,7 @@ namespace yy
     break;
 
   case 407:
-#line 4387 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4388 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [*]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4214,7 +4215,7 @@ namespace yy
     break;
 
   case 408:
-#line 4395 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4396 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [*.type]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4225,7 +4226,7 @@ namespace yy
     break;
 
   case 409:
-#line 4403 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4404 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [*.type]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4236,7 +4237,7 @@ namespace yy
     break;
 
   case 410:
-#line 4417 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4418 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "SchemaElementTest [ ]\n";
 			(yyval.node) = new SchemaElementTest((yyloc),
@@ -4245,7 +4246,7 @@ namespace yy
     break;
 
   case 411:
-#line 4439 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4440 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "TypeName [name]\n";
 			(yyval.node) = new TypeName((yyloc),
@@ -4254,7 +4255,7 @@ namespace yy
     break;
 
   case 412:
-#line 4447 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4448 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "TypeName [name?]\n";
 			(yyval.node) = new TypeName((yyloc),
@@ -4264,7 +4265,7 @@ namespace yy
     break;
 
   case 413:
-#line 4468 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4469 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "StringLiteral [ ]\n";
 			(yyval.expr) = new StringLiteral((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
@@ -4272,301 +4273,301 @@ namespace yy
     break;
 
   case 414:
-#line 4508 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4509 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "RevalidationDecl [ ]\n";
 		;}
     break;
 
   case 415:
-#line 4518 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4519 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "InsertExpr [expr]\n";
 		;}
     break;
 
   case 416:
-#line 4522 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4523 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "InsertExpr [expr.as_first]\n";
 		;}
     break;
 
   case 417:
-#line 4526 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4527 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "InsertExpr [expr.as_last]\n";
 		;}
     break;
 
   case 418:
-#line 4530 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4531 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "InsertExpr [expr.after]\n";
 		;}
     break;
 
   case 419:
-#line 4534 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4535 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "InsertExpr [expr.before]\n";
 		;}
     break;
 
   case 420:
-#line 4544 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4545 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "DeleteExpr [expr]\n";
 		;}
     break;
 
   case 421:
-#line 4554 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4555 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ReplaceExpr [expr.expr]\n";
 		;}
     break;
 
   case 422:
-#line 4558 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4559 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "ReplaceExpr [value.expr]\n";
 		;}
     break;
 
   case 423:
-#line 4568 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4569 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "RenameExpr [expr.expr]\n";
 		;}
     break;
 
   case 424:
-#line 4593 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4594 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "TransformExpr [ ]\n";
 		;}
     break;
 
   case 425:
-#line 4603 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4604 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "VarNameList [single]\n";
 		;}
     break;
 
   case 426:
-#line 4607 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4608 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "VarNameList [list]\n";
 		;}
     break;
 
   case 427:
-#line 4625 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4626 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTSelection [or]\n";
 		;}
     break;
 
   case 428:
-#line 4629 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4630 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTSelection [or.match_proximity]\n";
 		;}
     break;
 
   case 429:
-#line 4633 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4634 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTSelection [or.weight_range]\n";
 		;}
     break;
 
   case 430:
-#line 4637 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4638 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTSelection [or.match_proximity.weight_range]\n";
 		;}
     break;
 
   case 431:
-#line 4647 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4648 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOptionProximityList [option_single]\n";
 		;}
     break;
 
   case 432:
-#line 4651 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4652 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOptionProximityList [proximity_single]\n";
 		;}
     break;
 
   case 433:
-#line 4655 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4656 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOptionProximityList [option_list]\n";
 		;}
     break;
 
   case 434:
-#line 4659 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4660 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOptionProximityList [proximity_list]\n";
 		;}
     break;
 
   case 435:
-#line 4669 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4670 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTOr [and]\n";
 		;}
     break;
 
   case 436:
-#line 4673 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4674 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTOr [or.and]\n";
 		;}
     break;
 
   case 437:
-#line 4683 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4684 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnd [mild_not]\n";
 		;}
     break;
 
   case 438:
-#line 4687 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4688 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnd [and.mild_not]\n";
 		;}
     break;
 
   case 439:
-#line 4697 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4698 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMildNot [unary_not]\n";
 		;}
     break;
 
   case 440:
-#line 4701 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4702 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMildNot [mild_not.unary_not]\n";
 		;}
     break;
 
   case 441:
-#line 4711 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4712 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTUnaryNot [words]\n";
 		;}
     break;
 
   case 442:
-#line 4715 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4716 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTUnaryNot [not.words]\n";
 		;}
     break;
 
   case 443:
-#line 4725 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4726 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWordsSelection [words]\n";
 		;}
     break;
 
   case 444:
-#line 4729 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4730 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWordsSelection [words.times]\n";
 		;}
     break;
 
   case 445:
-#line 4733 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4734 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWordsSelection [selection]\n";
 		;}
     break;
 
   case 446:
-#line 4743 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4744 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWords [value]\n";
 		;}
     break;
 
   case 447:
-#line 4747 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4748 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWords [value.any_all_option]\n";
 		;}
     break;
 
   case 448:
-#line 4757 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4758 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWordsValue [literal]\n";
 		;}
     break;
 
   case 449:
-#line 4761 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4762 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWordsValue [expr]\n";
 		;}
     break;
 
   case 450:
-#line 4771 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4772 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTProximity [order]\n";
 		;}
     break;
 
   case 451:
-#line 4775 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4776 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTProximity [window]\n";
 		;}
     break;
 
   case 452:
-#line 4779 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4780 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTProximity [distance]\n";
 		;}
     break;
 
   case 453:
-#line 4783 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4784 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTProximity [scope]\n";
 		;}
     break;
 
   case 454:
-#line 4787 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4788 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTProximity [content]\n";
 		;}
     break;
 
   case 455:
-#line 4797 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4798 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTOrderedIndicator [ ]\n";
 		;}
     break;
 
   case 456:
-#line 4807 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4808 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [case]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4574,7 +4575,7 @@ namespace yy
     break;
 
   case 457:
-#line 4812 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4813 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [diacritics]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4582,7 +4583,7 @@ namespace yy
     break;
 
   case 458:
-#line 4817 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4818 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [stem]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4590,7 +4591,7 @@ namespace yy
     break;
 
   case 459:
-#line 4822 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4823 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [thesaurus]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4598,7 +4599,7 @@ namespace yy
     break;
 
   case 460:
-#line 4827 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4828 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [stopword]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4606,7 +4607,7 @@ namespace yy
     break;
 
   case 461:
-#line 4832 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4833 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [language]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4614,7 +4615,7 @@ namespace yy
     break;
 
   case 462:
-#line 4837 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4838 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [wildcard]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4622,434 +4623,434 @@ namespace yy
     break;
 
   case 463:
-#line 4848 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4849 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTCaseOption [lower]\n";
 		;}
     break;
 
   case 464:
-#line 4852 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4853 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTCaseOption [upper]\n";
 		;}
     break;
 
   case 465:
-#line 4856 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4857 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTCaseOption [sensitive]\n";
 		;}
     break;
 
   case 466:
-#line 4860 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4861 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTCaseOption [insensitive]\n";
 		;}
     break;
 
   case 467:
-#line 4870 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4871 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTDiacriticsOption [with]\n";
 		;}
     break;
 
   case 468:
-#line 4874 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4875 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTDiacriticsOption [without]\n";
 		;}
     break;
 
   case 469:
-#line 4878 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4879 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTDiacriticsOption [sensitive]\n";
 		;}
     break;
 
   case 470:
-#line 4882 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4883 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTDiacriticsOption [insensitive]\n";
 		;}
     break;
 
   case 471:
-#line 4892 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4893 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStemOption [with]\n";
 		;}
     break;
 
   case 472:
-#line 4896 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4897 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStemOption [without]\n";
 		;}
     break;
 
   case 473:
-#line 4906 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4907 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [id]\n";
 		;}
     break;
 
   case 474:
-#line 4910 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4911 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [default]\n";
 		;}
     break;
 
   case 475:
-#line 4914 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4915 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [(id)]\n";
 		;}
     break;
 
   case 476:
-#line 4918 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4919 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [(id,id,..)]\n";
 		;}
     break;
 
   case 477:
-#line 4922 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4923 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [(default)]\n";
 		;}
     break;
 
   case 478:
-#line 4926 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4927 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [(default,id,id,..)]\n";
 		;}
     break;
 
   case 479:
-#line 4930 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4931 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [without]\n";
 		;}
     break;
 
   case 480:
-#line 4940 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4941 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusList [single]\n";
 		;}
     break;
 
   case 481:
-#line 4944 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4945 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusList [list]\n";
 		;}
     break;
 
   case 482:
-#line 4954 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4955 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusID [name]\n";
 		;}
     break;
 
   case 483:
-#line 4958 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4959 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusID [name.rel]\n";
 		;}
     break;
 
   case 484:
-#line 4962 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4963 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusID [name.range]\n";
 		;}
     break;
 
   case 485:
-#line 4966 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4967 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusID [name.rel.range]\n";
 		;}
     break;
 
   case 486:
-#line 4976 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4977 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStopwordOption [list]\n";
 		;}
     break;
 
   case 487:
-#line 4980 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4981 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStopwordOption [list.incl_excl]\n";
 		;}
     break;
 
   case 488:
-#line 4984 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4985 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStopwordOption [default]\n";
 		;}
     break;
 
   case 489:
-#line 4988 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4989 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStopwordOption [default.incl_excl]\n";
 		;}
     break;
 
   case 490:
-#line 4992 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4993 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStopwordOption [without]\n";
 		;}
     break;
 
   case 491:
-#line 5002 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5003 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTInclExclStringLiteralList [.]\n";
 		;}
     break;
 
   case 492:
-#line 5006 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5007 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTInclExclStringLiteralList [*]\n";
 		;}
     break;
 
   case 493:
-#line 5016 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5017 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRefOrList [.]\n";
 		;}
     break;
 
   case 494:
-#line 5020 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5021 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRefOrList [(*)]\n";
 		;}
     break;
 
   case 495:
-#line 5030 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5031 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStringLiteralList [.]\n";
 		;}
     break;
 
   case 496:
-#line 5034 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5035 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStringLiteralList [*]\n";
 		;}
     break;
 
   case 497:
-#line 5044 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5045 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTInclExclStringLiteral [union]\n";
 		;}
     break;
 
   case 498:
-#line 5048 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5049 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTInclExclStringLiteral [except]\n";
 		;}
     break;
 
   case 499:
-#line 5058 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5059 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTLanguageOption [ ]\n";
 		;}
     break;
 
   case 500:
-#line 5068 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5069 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWildcardOption [with]\n";
 		;}
     break;
 
   case 501:
-#line 5072 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5073 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWildcardOption [without]\n";
 		;}
     break;
 
   case 502:
-#line 5082 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5083 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTContent [start]\n";
 		;}
     break;
 
   case 503:
-#line 5086 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5087 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTContent [end]\n";
 		;}
     break;
 
   case 504:
-#line 5090 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5091 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTContent [entire]\n";
 		;}
     break;
 
   case 505:
-#line 5100 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5101 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnyallOption [any]\n";
 		;}
     break;
 
   case 506:
-#line 5104 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5105 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnyallOption [any_word]\n";
 		;}
     break;
 
   case 507:
-#line 5108 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5109 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnyallOption [all]\n";
 		;}
     break;
 
   case 508:
-#line 5112 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5113 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnyallOption [all_words]\n";
 		;}
     break;
 
   case 509:
-#line 5116 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5117 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnyallOption [phrase]\n";
 		;}
     break;
 
   case 510:
-#line 5126 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5127 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRange [exactly]\n";
 		;}
     break;
 
   case 511:
-#line 5130 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5131 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRange [at_least]\n";
 		;}
     break;
 
   case 512:
-#line 5134 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5135 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRange [at_most]\n";
 		;}
     break;
 
   case 513:
-#line 5138 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5139 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRange [range]\n";
 		;}
     break;
 
   case 514:
-#line 5148 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5149 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTDistance [ ]\n";
 		;}
     break;
 
   case 515:
-#line 5158 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5159 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWindow [ ]\n";
 		;}
     break;
 
   case 516:
-#line 5168 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5169 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTTimes [ ]\n";
 		;}
     break;
 
   case 517:
-#line 5178 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5179 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTTimes [same]\n";
 		;}
     break;
 
   case 518:
-#line 5182 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5183 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTTimes [different]\n";
 		;}
     break;
 
   case 519:
-#line 5192 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5193 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTUnit [words]\n";
 		;}
     break;
 
   case 520:
-#line 5196 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5197 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTUnit [sentences]\n";
 		;}
     break;
 
   case 521:
-#line 5200 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5201 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTUnit [paragraph]\n";
 		;}
     break;
 
   case 522:
-#line 5210 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5211 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTBigUnit [sentence]\n";
 		;}
     break;
 
   case 523:
-#line 5214 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5215 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTBigUnit [paragraph]\n";
 		;}
     break;
 
   case 524:
-#line 5224 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5225 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
     {
 			if (debug) cout << "FTIgnoreOption [ ]\n";
 		;}
@@ -5057,7 +5058,7 @@ namespace yy
 
 
     /* Line 675 of lalr1.cc.  */
-#line 5061 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.cpp"
+#line 5062 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -6927,36 +6928,36 @@ namespace yy
     2569,  2582,  2587,  2600,  2605,  2610,  2615,  2628,  2633,  2638,
     2650,  2655,  2660,  2665,  2670,  2675,  2686,  2691,  2696,  2701,
     2706,  2711,  2722,  2727,  2732,  2744,  2749,  2762,  2769,  2782,
-    2789,  2804,  2848,  2853,  2858,  2863,  2875,  2880,  2885,  2896,
-    2901,  2912,  2919,  2926,  2933,  2946,  2953,  2965,  2970,  2975,
-    2980,  2985,  2990,  2995,  3006,  3011,  3022,  3029,  3042,  3047,
-    3052,  3057,  3062,  3078,  3083,  3094,  3099,  3110,  3118,  3126,
-    3140,  3145,  3158,  3165,  3180,  3192,  3197,  3202,  3207,  3212,
-    3217,  3222,  3227,  3238,  3243,  3254,  3259,  3264,  3275,  3286,
-    3291,  3303,  3314,  3326,  3383,  3390,  3403,  3410,  3423,  3428,
-    3439,  3444,  3449,  3460,  3469,  3478,  3487,  3496,  3505,  3521,
-    3528,  3541,  3548,  3563,  3576,  3582,  3595,  3599,  3606,  3613,
-    3620,  3629,  3644,  3648,  3655,  3662,  3669,  3678,  3693,  3699,
-    3711,  3717,  3729,  3735,  3741,  3748,  3761,  3768,  3775,  3781,
-    3787,  3799,  3816,  3822,  3840,  3856,  3861,  3866,  3871,  3876,
-    3881,  3892,  3904,  3911,  3918,  3924,  3948,  3955,  3962,  3968,
-    3980,  3992,  4004,  4011,  4018,  4024,  4036,  4043,  4056,  4068,
-    4075,  4082,  4120,  4126,  4132,  4144,  4149,  4154,  4165,  4177,
-    4182,  4187,  4192,  4197,  4202,  4207,  4212,  4217,  4228,  4239,
-    4244,  4250,  4262,  4273,  4284,  4289,  4294,  4305,  4312,  4319,
-    4326,  4333,  4346,  4358,  4365,  4372,  4379,  4386,  4394,  4402,
-    4416,  4438,  4446,  4467,  4507,  4517,  4521,  4525,  4529,  4533,
-    4543,  4553,  4557,  4567,  4592,  4602,  4606,  4624,  4628,  4632,
-    4636,  4646,  4650,  4654,  4658,  4668,  4672,  4682,  4686,  4696,
-    4700,  4710,  4714,  4724,  4728,  4732,  4742,  4746,  4756,  4760,
-    4770,  4774,  4778,  4782,  4786,  4796,  4806,  4811,  4816,  4821,
-    4826,  4831,  4836,  4847,  4851,  4855,  4859,  4869,  4873,  4877,
-    4881,  4891,  4895,  4905,  4909,  4913,  4917,  4921,  4925,  4929,
-    4939,  4943,  4953,  4957,  4961,  4965,  4975,  4979,  4983,  4987,
-    4991,  5001,  5005,  5015,  5019,  5029,  5033,  5043,  5047,  5057,
-    5067,  5071,  5081,  5085,  5089,  5099,  5103,  5107,  5111,  5115,
-    5125,  5129,  5133,  5137,  5147,  5157,  5167,  5177,  5181,  5191,
-    5195,  5199,  5209,  5213,  5223
+    2789,  2804,  2848,  2853,  2858,  2863,  2875,  2881,  2886,  2897,
+    2902,  2913,  2920,  2927,  2934,  2947,  2954,  2966,  2971,  2976,
+    2981,  2986,  2991,  2996,  3007,  3012,  3023,  3030,  3043,  3048,
+    3053,  3058,  3063,  3079,  3084,  3095,  3100,  3111,  3119,  3127,
+    3141,  3146,  3159,  3166,  3181,  3193,  3198,  3203,  3208,  3213,
+    3218,  3223,  3228,  3239,  3244,  3255,  3260,  3265,  3276,  3287,
+    3292,  3304,  3315,  3327,  3384,  3391,  3404,  3411,  3424,  3429,
+    3440,  3445,  3450,  3461,  3470,  3479,  3488,  3497,  3506,  3522,
+    3529,  3542,  3549,  3564,  3577,  3583,  3596,  3600,  3607,  3614,
+    3621,  3630,  3645,  3649,  3656,  3663,  3670,  3679,  3694,  3700,
+    3712,  3718,  3730,  3736,  3742,  3749,  3762,  3769,  3776,  3782,
+    3788,  3800,  3817,  3823,  3841,  3857,  3862,  3867,  3872,  3877,
+    3882,  3893,  3905,  3912,  3919,  3925,  3949,  3956,  3963,  3969,
+    3981,  3993,  4005,  4012,  4019,  4025,  4037,  4044,  4057,  4069,
+    4076,  4083,  4121,  4127,  4133,  4145,  4150,  4155,  4166,  4178,
+    4183,  4188,  4193,  4198,  4203,  4208,  4213,  4218,  4229,  4240,
+    4245,  4251,  4263,  4274,  4285,  4290,  4295,  4306,  4313,  4320,
+    4327,  4334,  4347,  4359,  4366,  4373,  4380,  4387,  4395,  4403,
+    4417,  4439,  4447,  4468,  4508,  4518,  4522,  4526,  4530,  4534,
+    4544,  4554,  4558,  4568,  4593,  4603,  4607,  4625,  4629,  4633,
+    4637,  4647,  4651,  4655,  4659,  4669,  4673,  4683,  4687,  4697,
+    4701,  4711,  4715,  4725,  4729,  4733,  4743,  4747,  4757,  4761,
+    4771,  4775,  4779,  4783,  4787,  4797,  4807,  4812,  4817,  4822,
+    4827,  4832,  4837,  4848,  4852,  4856,  4860,  4870,  4874,  4878,
+    4882,  4892,  4896,  4906,  4910,  4914,  4918,  4922,  4926,  4930,
+    4940,  4944,  4954,  4958,  4962,  4966,  4976,  4980,  4984,  4988,
+    4992,  5002,  5006,  5016,  5020,  5030,  5034,  5044,  5048,  5058,
+    5068,  5072,  5082,  5086,  5090,  5100,  5104,  5108,  5112,  5116,
+    5126,  5130,  5134,  5138,  5148,  5158,  5168,  5178,  5182,  5192,
+    5196,  5200,  5210,  5214,  5224
   };
 
   // Print the state stack on the debug stream.
@@ -7070,7 +7071,7 @@ namespace yy
 
 } // namespace yy
 
-#line 5231 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5232 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
 
 
