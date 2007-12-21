@@ -120,14 +120,16 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
 Item_t XmlLoader::loadXml(std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
-  char buf[4096];
+  char *buf = NULL;//[4096];
   long numChars;
 
   theNodeId.init(GET_STORE().getTreeId());
 
+	buf = new char[4096];
   numChars = readPacket(stream, buf, 4096);
   if (numChars < 0)
   {
+		delete[] buf;
     return NULL;
   }
 
@@ -135,7 +137,10 @@ Item_t XmlLoader::loadXml(std::istream& stream)
   {
     ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, buf, numChars, NULL);
     if (ctxt == NULL)
-      return NULL;
+		{
+			delete[] buf;
+			return NULL;
+		}
 
     while ((numChars = readPacket(stream, buf, 4096)) > 0)
     {
@@ -148,6 +153,7 @@ Item_t XmlLoader::loadXml(std::istream& stream)
   {
     xmlFreeParserCtxt(ctxt);
     reset();
+		delete[] buf;
     throw e;
   }
 
@@ -159,6 +165,7 @@ Item_t XmlLoader::loadXml(std::istream& stream)
 
   if (!ok)
   {
+		delete[] buf;
     ZORBA_ERROR_ALERT(error_messages::XQP0017_LOADER_NOT_WELL_FORMED_XML,
                       NULL,
                       true,
@@ -168,6 +175,7 @@ Item_t XmlLoader::loadXml(std::istream& stream)
   }
 
   reset();
+	delete[] buf;
   return resultNode;
 }
 

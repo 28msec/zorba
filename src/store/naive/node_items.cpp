@@ -30,7 +30,7 @@ namespace xqp
 NodeVector::NodeVector(unsigned long size)
 {
   theNodes = new Item_t[size+1];
-  memset(theNodes, 0, (size+1)*sizeof(Item_t));
+//daniel  memset(theNodes, 0, (size+1)*sizeof(Item_t));
   *(unsigned long*)(theNodes) = size;
 }
 
@@ -76,7 +76,7 @@ void NodeVector::move(NodeVector* v)
   if (v != 0)
   {
     theNodes = v->theNodes;
-    v->theNodes = 0;
+    //daniel v->theNodes = 0;
   }
 }
 
