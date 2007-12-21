@@ -1,5 +1,6 @@
 SET(ERRORS_SRCS
-   Error.cpp 
+   Error.cpp
+   error_manager.cpp 
    errors.cpp 
    xqp_exception.cpp)
 

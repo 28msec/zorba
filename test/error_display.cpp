@@ -15,7 +15,7 @@ void DisplayErrorListForCurrentThread()
 {
 	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 
-	Zorba_AlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+	ZorbaAlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
 
 	///now display the alerts list and then clear the list
 

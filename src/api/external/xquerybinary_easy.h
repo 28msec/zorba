@@ -41,7 +41,7 @@ public:
 	virtual StaticQueryContext_t getInternalStaticContext();
 	virtual DynamicQueryContext_t getInternalDynamicContext();
 
-	virtual Zorba_AlertsManager& getAlertsManager();
+	virtual ZorbaAlertsManager& getAlertsManager();
 };
 
 class Zorba_XQuerySimpleResult	: public XQueryResult

@@ -83,7 +83,7 @@ int test_api_static_context(const char *result_file_name)
 	zorba_factory.InitThread();
 
 	//do the test
-	Zorba_AlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+	ZorbaAlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
 
 	///testing the static context!
 	StaticQueryContext_t		sctx1;

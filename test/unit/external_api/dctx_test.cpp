@@ -27,7 +27,7 @@ int test_api_dynamic_context(const char *result_file_name)
 	zorba_factory.InitThread();
 
 	//do the test
-	Zorba_AlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+	ZorbaAlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
 
 	///testing the dynamic context!
 	DynamicQueryContext_t		dctx1;

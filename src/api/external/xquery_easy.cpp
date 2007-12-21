@@ -53,7 +53,7 @@ DynamicQueryContext_t Zorba_XQuerySimple::getInternalDynamicContext()
 	return dctx;
 }
 
-Zorba_AlertsManager& Zorba_XQuerySimple::getAlertsManager()
+ZorbaAlertsManager& Zorba_XQuerySimple::getAlertsManager()
 {
 	ZorbaEngine		&real_engine = ZorbaEngine::getInstance();
 	return real_engine.getAlertsManagerForCurrentThread();

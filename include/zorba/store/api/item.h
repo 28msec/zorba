@@ -105,7 +105,7 @@ public:
    *
    *  @return  true, if the two items are the "same"
    */
-  virtual xqp_boolean equals(Item_t) const = 0;
+  virtual bool equals(Item_t) const = 0;
 
   /**
    *  Computes the Effective Boolean Value for that item as specified in the
@@ -124,12 +124,12 @@ public:
   /**
    *  @return  "true" if the item is a node; false if the item is an atomic value
    */
-  virtual xqp_boolean isNode() const = 0;
+  virtual bool isNode() const = 0;
     
   /**
    *  @return  "true" if the item is an atomic value; false if the item is a node
    */
-  virtual xqp_boolean isAtomic() const = 0;
+  virtual bool isAtomic() const = 0;
 
 
   /* -------------------  Methods for AtomicValues ------------------------------ */
@@ -165,7 +165,7 @@ public:
 
   /** Accessor for xs:boolean
    */
-  virtual xqp_boolean getBooleanValue() const
+  virtual bool getBooleanValue() const
   {
     this->showError();
     return false;
@@ -416,7 +416,7 @@ public:
   /** Accessor for attribute node
    * @return isId: Used for attribute items (defines the attribute an id?)
    */
-  virtual xqp_boolean isId() const
+  virtual bool isId() const
   {
     this->showError();
     return false;
@@ -425,7 +425,7 @@ public:
   /** Accessor for attribute node
    * @return isIdrefs Used for attribute (defines the attribute an idref?))
    */
-  virtual xqp_boolean isIdrefs() const
+  virtual bool isIdrefs() const
   {
     this->showError();
     return false;
@@ -444,7 +444,7 @@ public:
   /** Accessor for element node
    *  @return  boolean?
    */
-  virtual xqp_boolean getNilled() const
+  virtual bool getNilled() const
   {
     this->showError();
     return false;

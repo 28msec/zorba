@@ -20,7 +20,7 @@ public:
 		virtual StaticQueryContext_t getInternalStaticContext() = 0;
 		virtual DynamicQueryContext_t getInternalDynamicContext() = 0;
 
-		virtual Zorba_AlertsManager& getAlertsManager() = 0;
+		virtual ZorbaAlertsManager& getAlertsManager() = 0;
 };
 
 typedef rchandle<XQuerySimple>	XQuerySimple_t;

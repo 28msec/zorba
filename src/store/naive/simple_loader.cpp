@@ -345,18 +345,19 @@ void XmlLoader::startElement(
   }
 
   // Create the element node and assign it an id.
-  Item_t elemNode(new ElementNodeImpl(qname, tname, nsBindings));
+  Item_t elemItem(new ElementNodeImpl(qname, tname, nsBindings));
 
-  ELEM_NODE(elemNode)->attributes().move(attrNodes);
-  ELEM_NODE(elemNode)->setId(loader.theNodeId);
+  ElementNodeImpl* elemNode = ELEM_NODE(elemItem);
+
+  elemNode->setId(loader.theNodeId);
   loader.theNodeId.pushChild();
 
   LOADER_TRACE("Element name ["
                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
-               << " Element Node = " << elemNode.get_ptr());
+               << " Element Node = " << elemNode);
 
-  // Make the element node be the parent of its attributes
+  // Connect the element node with its attributes and vice-versa
   for (unsigned long i = 0; i < numAttributes; ++i)
   {
     NodeImpl* attrNode = BASE_NODE((*attrNodes)[i]);
@@ -365,16 +366,19 @@ void XmlLoader::startElement(
     loader.theNodeId.nextChild();
   }
 
+  elemNode->attributes().move(attrNodes);
+
+  // Push the ns bindings of the element node to the bindings stack
   if (!nsBindings.empty())
   {
-    loader.theBindingsStack.push(ELEM_NODE(elemNode)->getNsBindingsCtx());
+    loader.theBindingsStack.push(elemNode->getNsBindingsCtx());
   }
 
   // Push element node to the node stack
   if (loader.theNodeStack.empty())
-    loader.theRootNode = elemNode;
+    loader.theRootNode = elemItem;
 
-  loader.theNodeStack.push(elemNode);
+  loader.theNodeStack.push(elemItem);
   loader.theNodeStack.push(NULL);
 }
 

@@ -129,11 +129,11 @@ int _tmain(int argc, _TCHAR* argv[])
   zorba_factory.InitThread();
 
   /// register the alerts callback
-  Zorba_AlertsManager&    errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+  ZorbaAlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
 
   errmanager.RegisterAlertCallback(apitest_alert_callback, (void*)101);
 
-  StaticQueryContext_t    sctx1;
+  StaticQueryContext_t sctx1;
 
   sctx1 = zorba_factory.createStaticContext();
   sctx1->AddCollation("http://www.flworfound.org/apitest/coll1", "en");

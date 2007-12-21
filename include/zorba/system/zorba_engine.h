@@ -26,7 +26,7 @@ public:
 				xqp_string	xquery_source_uri = "",
         bool routing_mode = false);
 
-	Zorba_AlertsManager& getAlertsManagerForCurrentThread();
+	ZorbaAlertsManager& getAlertsManagerForCurrentThread();
 
 	void		setDefaultCollation(std::string  coll_string, ::Collator::ECollationStrength coll_strength = ::Collator::PRIMARY);
 	void		setDefaultCollation(::Collator *default_coll);

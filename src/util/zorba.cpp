@@ -9,7 +9,7 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "api/external/xquerybinary.h"
-#include "errors/Error_impl.h"
+#include "errors/error_manager.h"
 #include "runtime/base/iterator.h"
 #include "api/serialization/serializer.h"
 #include "context/collation_manager.h"
@@ -44,7 +44,7 @@ zorba::zorba()
 	current_xquery = NULL;
 	current_xqueryresult = NULL;
 
-	m_error_manager = new ZorbaErrorAlertsImpl;
+	m_error_manager = new ZorbaAlertsManagerImpl;
 	m_item_serializer = NULL;
 	m_doc_serializer = NULL;
 	coll_manager = new CollationManager;
@@ -173,7 +173,7 @@ static_context* zorba::get_static_context()///of the current xquery
 	return current_xquery->internal_sctx;
 }
 
-ZorbaErrorAlertsImpl* zorba::getErrorManager()
+ZorbaAlertsManagerImpl* zorba::getErrorManager()
 { 
 	return m_error_manager;
 }

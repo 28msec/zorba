@@ -33,7 +33,7 @@ int test_api_zorba_engine(const char *result_file_name)
 	result_file << "InitThread" << endl;
 
 	//do the test
-	Zorba_AlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+	ZorbaAlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
   StaticQueryContext_t    sctx1;
 
   sctx1 = zorba_factory.createStaticContext();

@@ -3,7 +3,7 @@
 #include "Error.h"
 #include "errors/errors.h"
 #include "user_error.h"
-#include "Error_impl.h"
+#include "error_manager.h"
 #include "util/Assert.h"
 #include <iostream>
 #include <iomanip>
@@ -25,9 +25,12 @@ bool					g_abort_when_fatal_error = false;
 #endif
 //end debug
 
-  static const char *canonical_err_names [error_messages::MAX_ZORBA_ERROR_CODE + 1];
-  static struct canonical_err_names_initializer {
-    canonical_err_names_initializer () {
+static const char *canonical_err_names [error_messages::MAX_ZORBA_ERROR_CODE + 1];
+
+static struct canonical_err_names_initializer 
+{
+  canonical_err_names_initializer () 
+  {
 #define DEF_ERR_CODE( code, name ) canonical_err_names [ error_messages::code ] = #name
       DEF_ERR_CODE (XPST0001, XPST0001);
       DEF_ERR_CODE (XPDY0002, XPDY0002);
@@ -163,8 +166,9 @@ bool					g_abort_when_fatal_error = false;
       DEF_ERR_CODE (API0006_COLLECTION_NOT_FOUND, API0006);
 #undef DEF_ERR_CODE
 
-    }
-  } canonical_err_names_initializer_obj;
+  }
+} canonical_err_names_initializer_obj;
+
 
 void ZorbaErrorAlerts::error_alert( 
     const error_messages::errcode e,
@@ -173,8 +177,9 @@ void ZorbaErrorAlerts::error_alert(
     const std::string param1,
     const std::string param2)
 {
-	zorba*	z = zorba::getZorbaForCurrentThread();
-	ZorbaErrorAlertsImpl		*err_manager = z->getErrorManager();
+	zorba* z = zorba::getZorbaForCurrentThread();
+	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
+
 	if(!ploc)
 	{
 		if(z->current_iterator.empty())
@@ -187,17 +192,18 @@ void ZorbaErrorAlerts::error_alert(
 	}
 
 	std::string err_decoded;
-//	std::ostringstream strloc;
+  //	std::ostringstream strloc;
 
 	err_decoded = err_manager->err_messages->err_decode(e);
 
 	err_manager->err_messages->ApplyParams(&err_decoded, &param1, &param2);
+
   cerr << canonical_err_names [e] << ": " << err_decoded <<  "\n";
 
 //	strloc << *ploc;
 
 	///construct the error message for the user
-	Zorba_ErrorMessage	*errmess = new Zorba_ErrorMessage;
+	Zorba_ErrorMessage* errmess = new Zorba_ErrorMessage;
 
 	errmess->alert_type = Zorba_AlertMessage::ERROR_ALERT;
 	errmess->error_code = e;
@@ -242,7 +248,7 @@ void ZorbaErrorAlerts::warning_alert(
     const string param2)
 {
 	zorba	*z = zorba::getZorbaForCurrentThread();
-	ZorbaErrorAlertsImpl		*err_manager = z->getErrorManager();
+	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 	if(!ploc)
 	{
 		if(z->current_iterator.empty())
@@ -289,7 +295,7 @@ void ZorbaErrorAlerts::notify_event(
 {
 	std::string notif_decoded;
 	zorba	*z = zorba::getZorbaForCurrentThread();
-	ZorbaErrorAlertsImpl		*err_manager = z->getErrorManager();
+	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
 	notif_decoded = err_manager->err_messages->notify_event_decode(notif_event);
 	err_manager->err_messages->ApplyParams(&notif_decoded, &param1, &param2);
@@ -320,7 +326,7 @@ int ZorbaErrorAlerts::ask_user(
 {
 	std::string ask_user_decoded;
 	zorba	*z = zorba::getZorbaForCurrentThread();
-	ZorbaErrorAlertsImpl		*err_manager = z->getErrorManager();
+	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
 	ask_user_decoded = err_manager->err_messages->ask_user_decode(ask_string);
 	err_manager->err_messages->ApplyParams(&ask_user_decoded, &param1, &param2);
@@ -392,7 +398,7 @@ void fn_user_error (QNameItem* err_qname,///optional
 {
 	std::string err_decoded;
 	zorba	*z = zorba::getZorbaForCurrentThread();
-	ZorbaErrorAlertsImpl		*err_manager = z->getErrorManager();
+	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
 	if(err_qname)
 	{
@@ -441,7 +447,7 @@ void fn_user_trace (const std::vector<class Item*> *items,
 	///construct the ask user message for the user
 	Zorba_FnTraceMessage		*usertrace_mess = new Zorba_FnTraceMessage;
 	zorba	*z = zorba::getZorbaForCurrentThread();
-	ZorbaErrorAlertsImpl		*err_manager = z->getErrorManager();
+	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
 	usertrace_mess->alert_type = Zorba_AlertMessage::USER_TRACE_ALERT;
 	(std::vector<Item*>)usertrace_mess->items_trace = *items;///copy the vector of poiters to items
@@ -473,95 +479,11 @@ Zorba_FnErrorMessage::~Zorba_FnErrorMessage() {}
 Zorba_FnTraceMessage::~Zorba_FnTraceMessage() {}
 
 
-/*
-	Register the callback for the thread specific error manager
-*/
-void ZorbaErrorAlertsImpl::RegisterAlertCallback(
-    alert_callback* user_alert_callback,
-    void* param)
-{
-	thread_registered_callback = user_alert_callback;
-	thread_registered_param = param;
-
-  #if 0	
-	ZORBA_NOTIFY_EVENT_OSS(error_messages::NOTIF_EXECUTION_STEP,
-		"RegisterAlertCallback with param " << std::hex << param, "");
-  #endif
-}
-
-error_messages&	ZorbaErrorAlertsImpl::getErrMessages()
-{
-	return *err_messages;
-}
-
-//from Error_impl.h
-
-ZorbaErrorAlertsImpl::ZorbaErrorAlertsImpl( )//class error_messages *_err_messages)
-{
-//	err_messages = _err_messages;
-//	errmanager_api = new Zorba_AlertsManager;///ref counted
-	thread_registered_callback = NULL;
-	thread_registered_param = NULL;
-}
-Zorba_AlertsManager::~Zorba_AlertsManager()
-{
-}
-
-ZorbaErrorAlertsImpl::~ZorbaErrorAlertsImpl()
-{
-	clearAlertList();
-}
-
-void ZorbaErrorAlertsImpl::clearAlertList()
-{
-	std::list<Zorba_AlertMessage*>::const_iterator		errit;
-	
-	for(errit = begin(); errit != end(); errit++)
-		delete *errit;
-	clear();
-}
-
-int ZorbaErrorAlertsImpl::sendAlertToUser(zorba *z, Zorba_AlertMessage *alertmess)
-{
-	int		retval;
-//	if(z->current_xquery && z->current_xquery->xquery_registered_callback)
-//	{
-//		if(z->current_xqueryresult && z->current_xqueryresult->alert_callback_param)
-//			retval = z->current_xquery->xquery_registered_callback(alertmess, z->current_xqueryresult->alert_callback_param);
-//		else
-//			retval = z->current_xquery->xquery_registered_callback(alertmess, z->current_xquery->xquery_registered_param);
-//		delete alertmess;
-//		return retval;
-//	}
-//	else 
-	if(thread_registered_callback)
-	{
-		if(z->current_xqueryresult && z->current_xqueryresult->alert_callback_param)
-			retval = thread_registered_callback(alertmess, 
-																			z->current_xquery,
-																			z->current_xqueryresult,
-																			z->current_xqueryresult->alert_callback_param);
-		else
-			retval = thread_registered_callback(alertmess, 
-																			z->current_xquery,
-																			z->current_xqueryresult,
-																			thread_registered_param);
-		delete alertmess;
-		return retval;
-	}
-	else
-	{
-		///if no callback was registered, then put the error in list
-		push_back(alertmess);
-	}
-
-	return -1;
-}
-
 ///from Assert.h
 void ZorbaAssert(bool assertion, const char *where, const char *what)
 {
-	if (!assertion) {
+	if (!assertion)
+  {
     ZorbaErrorAlerts::error_alert
       (error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
        NULL, false,

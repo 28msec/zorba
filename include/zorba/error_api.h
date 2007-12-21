@@ -16,6 +16,7 @@ class Zorba_Items : public std::vector<Item*>
 {
 };
 
+
 class Zorba_ErrorLocation
 {
 public:
@@ -23,13 +24,14 @@ public:
 
 public:
 
-	xqp_string		module_name;///empty if is main module
+	xqp_string   module_name;///empty if is main module
 
-	xqp_string		filename;
+	xqp_string   filename;
 	unsigned int line;
 	unsigned int column;
 
 };
+
 
 struct Zorba_AlertMessage
 {
@@ -46,34 +48,39 @@ struct Zorba_AlertMessage
 		USER_TRACE_ALERT//fn:trace
 	};
 	
-	Zorba_AlertType		alert_type;
+	Zorba_AlertType alert_type;
 
 	///the user readable description; can be in other languages than english
-	std::string		alert_description;
+	std::string     alert_description;
 
-	time_t			time_of_alert;
+	time_t          time_of_alert;
 };
+
+
 //for errors
 struct Zorba_ErrorMessage : public Zorba_AlertMessage
 {
 	virtual ~Zorba_ErrorMessage();
 
-	error_messages::errcode			error_code;
-	error_messages::error_type	error_type;
-	bool is_fatal;
+	error_messages::errcode     error_code;
+	error_messages::error_type  error_type;
+	bool                        is_fatal;
 	//location is valid only for errors and warnings
-	Zorba_ErrorLocation loc;///may contain no location (zero values)
+	Zorba_ErrorLocation         loc;///may contain no location (zero values)
 };
+
 
 ///for warnings
 struct Zorba_WarningMessage: public Zorba_AlertMessage
 {
 	virtual ~Zorba_WarningMessage();
 
-	error_messages::warning_code			warning_code;
+	error_messages::warning_code warning_code;
 	//location is valid only for errors and warnings
-	Zorba_ErrorLocation loc;///may contain no location (zero values)
+	Zorba_ErrorLocation          loc;///may contain no location (zero values)
 };
+
+
 ///for notifications
 struct Zorba_NotifyMessage: public Zorba_AlertMessage
 {
@@ -81,6 +88,8 @@ struct Zorba_NotifyMessage: public Zorba_AlertMessage
 
 	error_messages::NotifyEvent_code	notif_code;
 };
+
+
 //for user interaction
 struct Zorba_AskUserMessage: public Zorba_AlertMessage
 {
@@ -89,15 +98,19 @@ struct Zorba_AskUserMessage: public Zorba_AlertMessage
 	error_messages::AskUserString_code ask_string;
 	error_messages::AskUserStringOptions_code ask_string_options;
 };
+
+
 //for user fn:error()
 struct Zorba_FnErrorMessage: public Zorba_AlertMessage
 {
 	virtual ~Zorba_FnErrorMessage();
 	
-	QNameItem_t		err_qname;
-	std::string		err_qname_decoded;
-	Zorba_Items items_error;
+	QNameItem_t  err_qname;
+	std::string  err_qname_decoded;
+	Zorba_Items  items_error;
 };
+
+
 //for user fn:trace()
 struct Zorba_FnTraceMessage: public Zorba_AlertMessage
 {
@@ -108,33 +121,33 @@ struct Zorba_FnTraceMessage: public Zorba_AlertMessage
 
 
 class XQuery;
-typedef rchandle<XQuery>		XQuery_t;
+typedef rchandle<XQuery> XQuery_t;
+
 class XQueryExecution;
-typedef rchandle<XQueryExecution>		XQueryExecution_t;
+typedef rchandle<XQueryExecution> XQueryExecution_t;
+
 
 ///user might choose to receive the alerts through callback functions
-typedef int alert_callback(Zorba_AlertMessage *alert_mess, 
-													 XQuery*	current_xquery,
-													 XQueryExecution*	current_xqueryresult,
-													 void *param);
+typedef int alert_callback(Zorba_AlertMessage* alert_mess, 
+													 XQuery*             current_xquery,
+													 XQueryExecution*    current_xqueryresult,
+													 void*               param);
 
-class Zorba_AlertsManager : public std::list<Zorba_AlertMessage*>
+
+class ZorbaAlertsManager : public std::list<Zorba_AlertMessage*>
 {
 public:
-	virtual ~Zorba_AlertsManager();
+	virtual ~ZorbaAlertsManager();
+
 	///register function to be called when error/warning/alert happens
 	///if callback function is NULL, then alerts are put in list
 	virtual void RegisterAlertCallback(alert_callback	*user_alert_callback,
 																		void *param) = 0;
+
 	virtual error_messages&	getErrMessages() = 0;
+
 	virtual	void clearAlertList() = 0;
 };
-
-//typedef rchandle<Zorba_AlertsManager>		Zorba_AlertsManager_t;
-
-///alerts manager is a thread-specific global object
-///each thread has its own error manager
-//Zorba_AlertsManager_t		Zorba_getAlertsManagerForCurrentThread();
 
 
 }//end namespace xqp

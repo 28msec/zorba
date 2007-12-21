@@ -80,7 +80,7 @@ int main(int argc, const char * argv[])
 
 	zorba_factory.InitThread();
 
-	Zorba_AlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+	ZorbaAlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
 
   //
   // Create collections

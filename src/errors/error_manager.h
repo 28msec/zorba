@@ -7,26 +7,30 @@ namespace xqp{
 
 class zorba;
 
-class ZorbaErrorAlertsImpl : public Zorba_AlertsManager
+class ZorbaAlertsManagerImpl : public ZorbaAlertsManager
 {
 public:
-	ZorbaErrorAlertsImpl ();
-	virtual ~ZorbaErrorAlertsImpl ();
+	ZorbaAlertsManagerImpl ();
+
+	virtual ~ZorbaAlertsManagerImpl ();
 
 	int sendAlertToUser(zorba *z, Zorba_AlertMessage *alertmess);
-	virtual void RegisterAlertCallback(alert_callback	*user_alert_callback,
-														void *param);
+
+	virtual void RegisterAlertCallback(
+        alert_callback	*user_alert_callback,
+        void *param);
+
 	virtual error_messages&	getErrMessages();
+
 	virtual	void clearAlertList();
 
 public:
-	error_messages*	 err_messages;
-//	Zorba_AlertsManager_t errmanager_api;
+	error_messages  * err_messages;
 
 	//if ZorbaErrorAlertsImpl::xquery_registered_callback is not specified, call this callback
 public:
-	alert_callback	*thread_registered_callback;
-	void						*thread_registered_param;
+	alert_callback	* thread_registered_callback;
+	void						* thread_registered_param;
 
 };
 
