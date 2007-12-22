@@ -872,5 +872,13 @@ namespace xqp {
   void PrinterVisitor::endVisit(const CastableIterator&) {
     thePrinter.endIter();
   }
+
+  void PrinterVisitor::beginVisit(const CtxVariableIterator& a) {
+    thePrinter.startIter("PrinterVisitor");
+  }
+
+  void PrinterVisitor::endVisit(const CtxVariableIterator&) {
+    thePrinter.endIter();
+  }
 } /* namespace xqp */
 /* vim:set ts=2 sw=2: */

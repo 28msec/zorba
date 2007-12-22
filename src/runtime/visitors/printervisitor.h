@@ -311,7 +311,16 @@ namespace xqp {
       virtual void beginVisit(const CastableIterator&);
       virtual void endVisit(const CastableIterator&);
       
+      virtual void beginVisit(const CtxVariableIterator&);
+      virtual void endVisit(const CtxVariableIterator&);
+      
   };
 } /* namespace xqp */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

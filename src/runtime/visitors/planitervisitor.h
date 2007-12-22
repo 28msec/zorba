@@ -103,6 +103,7 @@ namespace xqp
   class DocFilterIterator;
   class CastIterator;
   class CastableIterator;
+  class CtxVariableIterator;
 
   class OpDurationEqualIterator;
 
@@ -306,7 +307,7 @@ namespace xqp
 
       virtual void beginVisit ( const FnDocIterator& ) = 0;
       virtual void endVisit ( const FnDocIterator& ) = 0;
-       
+
       virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
       virtual void endVisit ( const CodepointsToStringIterator& ) = 0;
        
@@ -403,7 +404,16 @@ namespace xqp
       virtual void beginVisit ( const OpDurationEqualIterator&) = 0;
       virtual void endVisit ( const OpDurationEqualIterator&) = 0;
 
+      virtual void beginVisit(const CtxVariableIterator&) = 0;
+      virtual void endVisit(const CtxVariableIterator&) = 0;
+
   }; /* class PlanIterVisitor */
 } /* namespace xqp */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
