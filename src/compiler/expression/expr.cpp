@@ -404,7 +404,7 @@ void if_expr::accept(
 
 fo_expr::fo_expr(yy::location const& loc, const function *f)
   : expr(loc), func (f)
-{}
+{ assert (f != NULL); }
 
 ostream& fo_expr::put( ostream& os) const
 {
