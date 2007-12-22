@@ -16,6 +16,7 @@
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
+#include "runtime/fncontext/FnContextImpl.h"
 
 #define NOARY_ACCEPT(type) \
   void type::accept(PlanIterVisitor& v) const { \
@@ -111,6 +112,7 @@ namespace xqp {
   UNARY_ACCEPT(DocFilterIterator);
   UNARY_ACCEPT(CastIterator);
   UNARY_ACCEPT(CastableIterator);
+  UNARY_ACCEPT(CtxVariableIterator);
   
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);

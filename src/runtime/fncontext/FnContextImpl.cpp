@@ -40,10 +40,6 @@ namespace xqp
     STACK_END();
   }
 
-  void CtxVariableIterator::accept(PlanIterVisitor& v) const {
-
-  }
-
   /* end class CtxVariableIterator */
 
 }

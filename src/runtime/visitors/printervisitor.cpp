@@ -874,7 +874,7 @@ namespace xqp {
   }
 
   void PrinterVisitor::beginVisit(const CtxVariableIterator& a) {
-    thePrinter.startIter("PrinterVisitor");
+    thePrinter.startIter("CtxVariableIterator");
   }
 
   void PrinterVisitor::endVisit(const CtxVariableIterator&) {
