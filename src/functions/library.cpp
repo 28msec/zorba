@@ -36,13 +36,11 @@ namespace xqp {
 
 // clear static initializer state
 
-//dummy function to tell the windows linker to keep the library.obj
-//even though it contains no public objects or functions
-//this is called at initializeZorba
+// dummy function to tell the windows linker to keep the library.obj
+// even though it contains no public objects or functions
+// this is called at initializeZorba
 void library_init()
-{
-}
-
+{}
 
 static string get_qname(const function &f)
 {
@@ -306,6 +304,12 @@ DECL(op_sort_distinct_nodes_descending,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+#if 0  // need node types
+  DECL(op_union,
+  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":union"),
+  GENV_TYPESYSTEM.,
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+#endif
 
 // end Sequences
 
@@ -620,7 +624,7 @@ DECL(zor_numgen,
 
 // begin context functions
 DECL(ctx_variable,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "ctxvariable"),
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":ctxvariable"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 // end context functions
