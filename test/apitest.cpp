@@ -162,6 +162,16 @@ int _tmain(int argc, _TCHAR* argv[])
     goto DisplayErrorsAndExit;
   }
 
+  {
+    vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
+    for (vector<pair <string, string> >::iterator iter = ext_vars.begin ();
+         iter != ext_vars.end (); iter++) {
+      pair<string, string> b = *iter;
+      ifstream is (b.second.c_str ());
+      result->SetVariable (b.first, is);
+    }
+  }
+
   result->setAlertsParam(result.get_ptr());///to be passed to alerts callback when error occurs
 
   if (lProp->useResultFile())
