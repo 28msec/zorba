@@ -120,7 +120,7 @@ namespace xqp
       ("trace-translator,l", "trace the translator")
       ("trace-codegen,c", "trace the codegenerator")
 #endif
-      ("external-vars,x", po::value<std::vector<std::string> >(&theExternalVars), "external variables (e.g. -x x=<a/> -x y=<b/>)")
+      ("external-vars,x", po::value<std::vector<std::string> >(&theExternalVars), "external variables (e.g. -x x=file1.xml -x y=file2.xml)")
     ;
   
 
