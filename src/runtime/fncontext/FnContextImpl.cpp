@@ -11,19 +11,16 @@
 
 namespace xqp
 {
+
   /* start class CtxVariableIterator */
   CtxVariableIterator::CtxVariableIterator ( const yy::location& loc, PlanIter_t& aIter )
       :
       UnaryBaseIterator<CtxVariableIterator> ( loc, aIter ) {}
 
-  CtxVariableIterator::CtxVariableIterator ( const yy::location& loc, xqp_string aVarname )
-      :  // gross hack, but since UnaryBaseIterator "cleverly" wants a PlanIter_t *reference*,
-         // we can't pass a NULL in this initialization list
-      UnaryBaseIterator<CtxVariableIterator> ( loc, theChild ), theVarname (aVarname)
-  {
-    // theChild NULL -> crash, so another hack...
-    theChild = new SingletonIterator (loc, (Store::getInstance().getItemFactory()).createString (theVarname));
-  }
+  CtxVariableIterator::CtxVariableIterator ( const yy::location& loc, PlanIter_t& aIter, xqp_string aVarname )
+    : 
+    UnaryBaseIterator<CtxVariableIterator> ( loc, aIter ), theVarname (aVarname)
+  {}
 
   CtxVariableIterator::~CtxVariableIterator() {}
 

@@ -18,7 +18,12 @@ namespace xqp
 
     public:
       CtxVariableIterator ( const yy::location& loc, PlanIter_t& aIter);
-      CtxVariableIterator ( const yy::location& loc, xqp_string varName);
+      // danm: Since UnaryBaseIterator "cleverly" expects a PlanIter_t *reference*,
+      // we can't pass a temporary object in the initialization list.
+      // Try it, it won't compile...
+      // We also can't pass a static NULL reference since UnaryBaseIterator asserts.
+      // Bottom line -- there's no way we can omit the aIter argument.
+      CtxVariableIterator ( const yy::location& loc, PlanIter_t& aIter, xqp_string varName);
       virtual ~CtxVariableIterator();
 
       Item_t nextImpl(PlanState& planState);

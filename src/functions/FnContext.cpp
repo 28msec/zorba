@@ -20,7 +20,7 @@ namespace xqp
       vector<PlanIter_t>& argv ) const
   {
     // TODO: undo this hack
-    return new CtxVariableIterator ( loc, argv[0].cast<SingletonIterator> ()->getValue ()->getStringProperty () );
+    return new CtxVariableIterator ( loc, argv [0], argv[0].cast<SingletonIterator> ()->getValue ()->getStringProperty () );
   }
 
   TypeSystem::xqtref_t ctx_variable::type_check (
