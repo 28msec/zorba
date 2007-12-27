@@ -14,6 +14,7 @@ namespace xqp
   {
     private:
       bool theNegate;
+      xqp_string theVarname;
 
     public:
       CtxVariableIterator ( const yy::location& loc, PlanIter_t& aIter);

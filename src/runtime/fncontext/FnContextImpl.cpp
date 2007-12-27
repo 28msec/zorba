@@ -7,6 +7,7 @@
 #include "runtime/fncontext/FnContextImpl.h"
 #include "api/external/xquerybinary.h"
 #include "context/dynamic_context.h"
+#include "runtime/core/item_iterator.h"
 
 namespace xqp
 {
@@ -14,6 +15,15 @@ namespace xqp
   CtxVariableIterator::CtxVariableIterator ( const yy::location& loc, PlanIter_t& aIter )
       :
       UnaryBaseIterator<CtxVariableIterator> ( loc, aIter ) {}
+
+  CtxVariableIterator::CtxVariableIterator ( const yy::location& loc, xqp_string aVarname )
+      :  // gross hack, but since UnaryBaseIterator "cleverly" wants a PlanIter_t *reference*,
+         // we can't pass a NULL in this initialization list
+      UnaryBaseIterator<CtxVariableIterator> ( loc, theChild ), theVarname (aVarname)
+  {
+    // theChild NULL -> crash, so another hack...
+    theChild = new SingletonIterator (loc, (Store::getInstance().getItemFactory()).createString (theVarname));
+  }
 
   CtxVariableIterator::~CtxVariableIterator() {}
 
@@ -29,7 +39,10 @@ namespace xqp
 //        varName = item->getStringValue();
 //     }
     FINISHED_ALLOCATING_RESOURCES();
-    iter = zorba::getZorbaForCurrentThread()->current_xqueryresult->internal_dyn_context->get_variable("test"); //TODO place varname instead of "test"
+     // TODO get varname from child iterator
+    iter = zorba::getZorbaForCurrentThread()->current_xqueryresult->internal_dyn_context->get_variable(theVarname);
+    if (iter == NULL)
+       ZORBA_ERROR_ALERT (error_messages::XPDY0002, &loc);
     do{
       item = iter->next();
       STACK_PUSH (item , aState);

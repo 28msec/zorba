@@ -2762,11 +2762,12 @@ void translator::end_visit(const QueryBody& v, void *visit_state)
     expr_t expr = b.second;
     // TODO: fix external variables
     // For now they default to empty sequences
-    if (expr == NULL)
-      expr = create_seq (v.get_location ());
-    rchandle<forlet_clause> clause =
-      wrap_in_letclause (expr, var);
-    clauses.push_back (clause);
+    if (expr == NULL) {
+      fo_expr *fo = new fo_expr (var->get_loc (), LOOKUP_OP1 ("ctxvariable"));
+      fo->add (new const_expr (var->get_loc (), var->get_varname ()->getStringProperty ()));
+      expr = fo;
+    }
+    clauses.push_back (wrap_in_letclause (expr, var));
   }
   if (clauses.size () > 0)
     nodestack.push (new flwor_expr (v.get_location (), clauses, pop_nodestack ()));

@@ -7,6 +7,7 @@
 #include "system/globalenv.h"
 #include "util/zorba.h"
 #include "runtime/fncontext/FnContextImpl.h"
+#include "runtime/core/item_iterator.h"
 
 namespace xqp
 {
@@ -18,7 +19,8 @@ namespace xqp
       const yy::location& loc,
       vector<PlanIter_t>& argv ) const
   {
-    return new CtxVariableIterator ( loc, argv[0] );
+    // TODO: undo this hack
+    return new CtxVariableIterator ( loc, argv[0].cast<SingletonIterator> ()->getValue ()->getStringProperty () );
   }
 
   TypeSystem::xqtref_t ctx_variable::type_check (

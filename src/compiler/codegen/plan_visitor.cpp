@@ -280,19 +280,17 @@ void plan_visitor::end_visit(fo_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  const function* func_p = v.get_func();
-  Assert(func_p != NULL);
-  const function& func = *func_p;
+  const function* func = v.get_func();
+  Assert (func != NULL);
 
   vector<PlanIter_t> argv (v.size ());
   generate (argv.rbegin (), argv.rend (), stack_to_generator (itstack));
 
   const yy::location& loc = v.get_loc ();
 
-  if (func.validate_args (argv)) 
-  {
-    PlanIter_t iter = func(loc, argv);
-    assert (iter != NULL);
+  if (func->validate_args (argv)) {
+    PlanIter_t iter = (*func) (loc, argv);
+    Assert (iter != NULL);
     itstack.push (iter);
 
     if (!theConstructorsStack.empty() &&
@@ -303,7 +301,7 @@ void plan_visitor::end_visit(fo_expr& v)
     }
   } else {
     ZORBA_ERROR_ALERT_OSS (error_messages::XPST0017,
-                           &loc, false, func.get_signature ().get_name ()->getStringProperty (), argv.size ());
+                           &loc, false, func->get_signature ().get_name ()->getStringProperty (), argv.size ());
   }
 }
 
