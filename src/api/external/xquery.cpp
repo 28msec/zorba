@@ -258,6 +258,10 @@ XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dct
     DynamicContextWrapper *dctx_wrapper = static_cast<DynamicContextWrapper*>(dctx.get_ptr());
     zorba_result->internal_dyn_context = dctx_wrapper->create_dynamic_context(internal_sctx);
   }
+	else
+	{
+    zorba_result->internal_dyn_context = new dynamic_context;
+	}
 
   thread_specific_zorba->current_xquery = NULL;
 //  RegisterCurrentXQueryForCurrentThread( NULL );
