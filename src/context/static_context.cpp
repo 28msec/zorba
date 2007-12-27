@@ -29,10 +29,11 @@
 |_______________________________________________________________________*/
 
 #include <assert.h>
+#include "errors/error_factory.h"
 #include "system/globalenv.h"
 #include "context/static_context.h"
 #include "context/common.h"
-#include "util/zorba.h"
+#include "system/zorba.h"
 #include "util/utf8/Unicode_util.h"
 #include "context/collation_manager.h"
 #include "functions/library.h"
@@ -94,7 +95,7 @@ namespace xqp {
 		fxvector<fxhashmap<ctx_value_t>::entry>::const_iterator		it;
 		char		keybuff[50];
 		const ctx_value_t *val;
-		zorba	*z = zorba::getZorbaForCurrentThread();
+		Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
 
 		keybuff[sizeof(keybuff)-1] = 0;
 		for(it = keymap.begin();it!=keymap.end();it++)
@@ -197,7 +198,7 @@ namespace xqp {
     else {
       f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) + qname_internal_key (default_function_namespace (), prefix, local));
       if (f == NULL)
-        ZORBA_ERROR_ALERT (error_messages::XPST0017, NULL, false, local, to_string (arity));
+        ZORBA_ERROR_ALERT (AlertCodes::XPST0017, NULL, false, local, to_string (arity));
       return f;
     }
   }
@@ -207,7 +208,7 @@ namespace xqp {
     xqp_string ns;
     if(!context_value ("ns:" + prefix, ns))
 		{
-			ZORBA_ERROR_ALERT(error_messages::XQST0048);
+			ZORBA_ERROR_ALERT(AlertCodes::XQST0048);
 		}
     return ns;
   }
@@ -377,17 +378,17 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 		{
 			if(error_if_not_found)
 			{
-				ZORBA_ERROR_ALERT( error_messages::XQST0076, NULL);
+				ZORBA_ERROR_ALERT( AlertCodes::XQST0076, NULL);
 			}
 			return NULL;///collation non-existant
 		}
 
-		::Collator *coll = zorba::getZorbaForCurrentThread()->coll_manager->getCollation(def_coll->coll_string, def_coll->coll_strength);
+		::Collator *coll = ZORBA_FOR_CURRENT_THREAD()->coll_manager->getCollation(def_coll->coll_string, def_coll->coll_strength);
 		if(!coll)
 		{
 		//	ZORBA_ERROR_ALERT(
-		//			error_messages::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-		//			error_messages::STATIC_ERROR,
+		//			AlertCodes::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
+		//			AlertCodes::STATIC_ERROR,
 		//			NULL
 		//		);
 			return NULL;///collation non-existant
@@ -402,12 +403,12 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 	}
 	else if(!cinfo->coll)
 	{
-		cinfo->coll = zorba::getZorbaForCurrentThread()->coll_manager->getCollation(cinfo->coll_string, cinfo->coll_strength);
+		cinfo->coll = ZORBA_FOR_CURRENT_THREAD()->coll_manager->getCollation(cinfo->coll_string, cinfo->coll_strength);
 		if(!cinfo->coll)
 		{
 		//	ZORBA_ERROR_ALERT(
-		//			error_messages::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-		//			error_messages::STATIC_ERROR,
+		//			AlertCodes::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
+		//			AlertCodes::STATIC_ERROR,
 		//			NULL
 		//		);
 			return NULL;///collation non-existant
@@ -436,19 +437,19 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 	else if(!def_coll_uri.empty())
 	{
 		//error, uri not found
-		ZORBA_ERROR_ALERT( error_messages::XQST0076, NULL);
+		ZORBA_ERROR_ALERT( AlertCodes::XQST0076, NULL);
 		return NULL;///collation non-existant
 	}
 
 	///else create it with root/::Collator::PRIMARY
 
-	coll = zorba::getZorbaForCurrentThread()->coll_manager->getCollation(
+	coll = ZORBA_FOR_CURRENT_THREAD()->coll_manager->getCollation(
 																													"root", ::Collator::PRIMARY);
 	if(!coll)
 	{
 	//	ZORBA_ERROR_ALERT(
-	//			error_messages::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-	//			error_messages::STATIC_ERROR,
+	//			AlertCodes::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
+	//			AlertCodes::STATIC_ERROR,
 	//			NULL
 	//		);
 		return NULL;///collation non-existant
@@ -488,7 +489,7 @@ void static_context::set_baseuri (xqp_string val, bool from_prolog)
 		bool found = context_value ("int:" "from_prolog_baseuri", str);    
 		if(found)
 		{
-			ZORBA_ERROR_ALERT(error_messages::XQST0032);
+			ZORBA_ERROR_ALERT(AlertCodes::XQST0032);
 			return;
 		}
 		str_keymap.put ("int:" "from_prolog_baseuri", "");
@@ -581,7 +582,7 @@ xqp_string		static_context::resolve_relative_uri( xqp_string uri )
 	if(abs_base_uri.empty())
 	{
 		//then error ! cannot resolve relative uri
-		ZORBA_ERROR_ALERT(error_messages::XPST0001);
+		ZORBA_ERROR_ALERT(AlertCodes::XPST0001);
 		return "";
 	}
 

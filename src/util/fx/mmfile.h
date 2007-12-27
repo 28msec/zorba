@@ -23,16 +23,8 @@
 	#include <types.h>
 #endif
 
-// MS Visual Studio does not fully support throw(), and issues a warning
-#ifndef _MSC_VER
-#define THROW_XQP_EXCEPTION		throw(xqp_exception)
-#else
-#define THROW_XQP_EXCEPTION		
-#endif
-
 #include <string>
 
-#include "errors/Error.h"
 
 namespace xqp {
 /*_____________________________________________________________
@@ -63,10 +55,10 @@ public:			// ctor,dtor
 
 public:			// mm array interface
   void fill(char initval);
-  void expand(bool init = false) THROW_XQP_EXCEPTION;
-  void unmap() THROW_XQP_EXCEPTION;
-  void rename_backing_file(std::string const& new_path) THROW_XQP_EXCEPTION;
-	void destroy() THROW_XQP_EXCEPTION;
+  void expand(bool init = false);
+  void unmap();
+  void rename_backing_file(std::string const& new_path);
+	void destroy();
 
 public:			// manipulators
 	std::string get_path() const { return path; }

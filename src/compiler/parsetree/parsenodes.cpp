@@ -20,7 +20,7 @@
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 #include "store/api/item.h"
 
 using namespace std;

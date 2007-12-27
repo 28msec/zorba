@@ -7,7 +7,6 @@ SET(UTIL_SRCS
     logging/loggermanager.cc
     file.cpp
     tokenbuf.cpp
-    zorba.cpp
     rwlock.cpp
     math_helper.cpp
     properties.cpp

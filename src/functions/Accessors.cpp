@@ -7,6 +7,7 @@
  *
  */
 
+#include "errors/error_factory.h"
 #include "system/globalenv.h"
 #include "functions/Accessors.h"
 #include "runtime/accessors/AccessorsImpl.h"
@@ -22,8 +23,8 @@ fn_data_func::operator() (
 {
   if ( !validate_args ( argv ) )
 	{
-    ZorbaErrorAlerts::error_alert (
-		   error_messages::XPST0017,
+    ZorbaAlertFactory::error_alert (
+		   AlertCodes::XPST0017,
        &loc
 		);
   }
@@ -63,7 +64,7 @@ PlanIter_t fn_root_func::operator() (
   if (!validate_args(argv))
 	{
     ZORBA_ERROR_ALERT(
-		   error_messages::XPST0017,
+		   AlertCodes::XPST0017,
        &loc
 		);
   }

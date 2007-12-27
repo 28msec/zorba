@@ -72,7 +72,7 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
   if (!contextNode->isNode())
   {
     ZORBA_ERROR_ALERT(
-         error_messages::XPTY0004,
+         AlertCodes::XPTY0004,
          &loc, false, "The argument of the fn:root function is not a node");
   }
 

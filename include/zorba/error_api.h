@@ -1,26 +1,23 @@
 #ifndef ERRORS_EXTERNAL_CPP_API_29_OCT_2007
 #define ERRORS_EXTERNAL_CPP_API_29_OCT_2007
 
-#include "errors/errors.h"
+#include "errors/error_codes.h"
 #include "types/representations.h"
 #include "store/api/item.h"
 #include <list>
 
 namespace xqp{
 
-//class Zorba_QName : public Item
-//{
-//};
 
 class Zorba_Items : public std::vector<Item*>
 {
 };
 
 
-class Zorba_ErrorLocation
+class ZorbaAlertLocation
 {
 public:
-	Zorba_ErrorLocation();
+	ZorbaAlertLocation();
 
 public:
 
@@ -33,9 +30,9 @@ public:
 };
 
 
-struct Zorba_AlertMessage
+struct ZorbaAlert
 {
-	virtual ~Zorba_AlertMessage();
+	virtual ~ZorbaAlert();
 
 	typedef enum Zorba_AlertType
 	{
@@ -58,52 +55,52 @@ struct Zorba_AlertMessage
 
 
 //for errors
-struct Zorba_ErrorMessage : public Zorba_AlertMessage
+struct ZorbaErrorAlert : public ZorbaAlert
 {
-	virtual ~Zorba_ErrorMessage();
+	virtual ~ZorbaErrorAlert();
 
-	error_messages::errcode     error_code;
-	error_messages::error_type  error_type;
-	bool                        is_fatal;
+	AlertCodes::error_code  error_code;
+	AlertCodes::error_type  error_type;
+	bool                    is_fatal;
 	//location is valid only for errors and warnings
-	Zorba_ErrorLocation         loc;///may contain no location (zero values)
+	ZorbaAlertLocation      loc;///may contain no location (zero values)
 };
 
 
 ///for warnings
-struct Zorba_WarningMessage: public Zorba_AlertMessage
+struct ZorbaWarningAlert: public ZorbaAlert
 {
-	virtual ~Zorba_WarningMessage();
+	virtual ~ZorbaWarningAlert();
 
-	error_messages::warning_code warning_code;
+	AlertCodes::warning_code warning_code;
 	//location is valid only for errors and warnings
-	Zorba_ErrorLocation          loc;///may contain no location (zero values)
+	ZorbaAlertLocation       loc;///may contain no location (zero values)
 };
 
 
 ///for notifications
-struct Zorba_NotifyMessage: public Zorba_AlertMessage
+struct ZorbaNotifyAlert: public ZorbaAlert
 {
-	virtual ~Zorba_NotifyMessage();
+	virtual ~ZorbaNotifyAlert();
 
-	error_messages::NotifyEvent_code	notif_code;
+	AlertCodes::NotifyEvent_code	notif_code;
 };
 
 
 //for user interaction
-struct Zorba_AskUserMessage: public Zorba_AlertMessage
+struct ZorbaAskUserAlert: public ZorbaAlert
 {
-	virtual ~Zorba_AskUserMessage();
+	virtual ~ZorbaAskUserAlert();
 
-	error_messages::AskUserString_code ask_string;
-	error_messages::AskUserStringOptions_code ask_string_options;
+	AlertCodes::AskUserString_code         ask_string;
+	AlertCodes::AskUserStringOptions_code  ask_string_options;
 };
 
 
 //for user fn:error()
-struct Zorba_FnErrorMessage: public Zorba_AlertMessage
+struct ZorbaFnErrorAlert: public ZorbaAlert
 {
-	virtual ~Zorba_FnErrorMessage();
+	virtual ~ZorbaFnErrorAlert();
 	
 	QNameItem_t  err_qname;
 	std::string  err_qname_decoded;
@@ -112,9 +109,9 @@ struct Zorba_FnErrorMessage: public Zorba_AlertMessage
 
 
 //for user fn:trace()
-struct Zorba_FnTraceMessage: public Zorba_AlertMessage
+struct ZorbaFnTraceAlert: public ZorbaAlert
 {
-	virtual ~Zorba_FnTraceMessage();
+	virtual ~ZorbaFnTraceAlert();
 
 	Zorba_Items items_trace;
 };
@@ -128,13 +125,13 @@ typedef rchandle<XQueryExecution> XQueryExecution_t;
 
 
 ///user might choose to receive the alerts through callback functions
-typedef int alert_callback(Zorba_AlertMessage* alert_mess, 
-													 XQuery*             current_xquery,
-													 XQueryExecution*    current_xqueryresult,
-													 void*               param);
+typedef int alert_callback(ZorbaAlert*       alert, 
+													 XQuery*           current_xquery,
+													 XQueryExecution*  current_xqueryresult,
+													 void*             param);
 
 
-class ZorbaAlertsManager : public std::list<Zorba_AlertMessage*>
+class ZorbaAlertsManager : public std::list<ZorbaAlert*>
 {
 public:
 	virtual ~ZorbaAlertsManager();
@@ -144,9 +141,7 @@ public:
 	virtual void RegisterAlertCallback(alert_callback	*user_alert_callback,
 																		void *param) = 0;
 
-	virtual error_messages&	getErrMessages() = 0;
-
-	virtual	void clearAlertList() = 0;
+  virtual	void clearAlertList() = 0;
 };
 
 

@@ -11,7 +11,6 @@
 #define XQP_ASSERT_H
 
 #include <string>
-//#include "errors/Error.h"
 
 namespace xqp {
 

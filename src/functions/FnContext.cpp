@@ -5,7 +5,7 @@
 
 #include "functions/FnContext.h"
 #include "system/globalenv.h"
-#include "util/zorba.h"
+//#include "system/zorba.h"
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/core/item_iterator.h"
 

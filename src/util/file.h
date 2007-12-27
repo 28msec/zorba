@@ -38,7 +38,7 @@
 #include <time.h>
 #include <string>
 
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 #include "util/rchandle.h"
 
 namespace xqp {

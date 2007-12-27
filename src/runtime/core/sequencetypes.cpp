@@ -1,7 +1,7 @@
 #include "runtime/core/sequencetypes.h"
 
 #include "system/globalenv.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 
 namespace xqp
 {
@@ -40,11 +40,11 @@ InstanceOfIterator::nextImpl(PlanState& planState)
       && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), 
                                     TypeSystem::QUANT_ONE), *theSequenceType))
   {
-    STACK_PUSH (zorba::getItemFactory()->createBoolean ( true ), state);
+    STACK_PUSH (Zorba::getItemFactory()->createBoolean ( true ), state);
   }
   else
   {
-    STACK_PUSH (zorba::getItemFactory()->createBoolean ( false ), state);   
+    STACK_PUSH (Zorba::getItemFactory()->createBoolean ( false ), state);   
   }
     
   STACK_END();
@@ -76,7 +76,7 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState) {
   lItem = consumeNext(theChild, aPlanState);
   if (lItem == 0) {
     if (theQuantifier == TypeSystem::QUANT_PLUS || theQuantifier == TypeSystem::QUANT_ONE) {
-      ZorbaErrorAlerts::error_alert (error_messages::XPTY0004, &loc,
+      ZorbaAlertFactory::error_alert (AlertCodes::XPTY0004, &loc,
         false,
         "Empty sequences cannot be casted to a type with quantifier ONE or PLUS!"
       );
@@ -87,8 +87,8 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState) {
     if (lItem != 0) {
       if (theQuantifier == TypeSystem::QUANT_ONE
        || theQuantifier == TypeSystem::QUANT_QUESTION) {
-         ZorbaErrorAlerts::error_alert (
-           error_messages::XPTY0004, &loc,
+         ZorbaAlertFactory::error_alert (
+           AlertCodes::XPTY0004, &loc,
            false,
            "Sequence wiht more than one item cannot be casted to a type with quantifier ONE or QUESTION!"
          );
@@ -146,7 +146,7 @@ Item_t CastableIterator::nextImpl(PlanState& aPlanState) {
       }
     }
   }
-  STACK_PUSH(zorba::getItemFactory()->createBoolean(lBool), lState);
+  STACK_PUSH(Zorba::getItemFactory()->createBoolean(lBool), lState);
   STACK_END();
 }
 

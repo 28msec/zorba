@@ -24,7 +24,8 @@
 
 #include "runtime/base/iterator.h"
 
-#include "util/zorba.h"
+#include "system/zorba.h"
+#include "system/zorba_engine.h"
 
 namespace xqp
 {
@@ -40,7 +41,7 @@ PlanState::PlanState(uint32_t blockSize)
   this->blockSize = blockSize;
 
   ///this zorp now gets specific for each iterator state object
-  zorp = zorba::getZorbaForCurrentThread();
+  zorp = ZORBA_FOR_CURRENT_THREAD();
 	xqbinary = NULL;
 //	xqexecution = NULL;
 }

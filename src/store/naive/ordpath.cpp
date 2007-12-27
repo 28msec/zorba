@@ -1,5 +1,5 @@
 
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 #include "util/Assert.h"
 #include "store/naive/ordpath.h"
 #include "store/naive/store_defs.h"
@@ -408,7 +408,7 @@ void OrdPath::appendComp(long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+      ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
     }
@@ -470,7 +470,7 @@ void OrdPath::appendComp(long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+      ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
     }
@@ -479,7 +479,7 @@ void OrdPath::appendComp(long value)
   unsigned long bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+    ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                       NULL,
                       false);
   }
@@ -2649,7 +2649,7 @@ void OrdPath::decodeByte(
   }
   case 255:   // 1111 1111   11111111,...           (28/8,20)
   {
-    ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+    ZORBA_ERROR_ALERT(AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
                       NULL,
                       false);
   }
@@ -2805,7 +2805,7 @@ void OrdPathStack::pushChild()
   if (theByteIndex == OrdPath::MAX_BYTE_LEN ||
       (theByteIndex == OrdPath::MAX_BYTE_LEN - 1 && theBitsAvailable < 2))
   {
-    ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+    ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                       NULL,
                       false);
   }
@@ -2948,7 +2948,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+      ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
     }
@@ -3001,7 +3001,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+      ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
     }
@@ -3012,7 +3012,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
 
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+    ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                       NULL,
                       false);
   }

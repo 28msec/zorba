@@ -33,7 +33,7 @@
 
 #include "util/utf8/xqpString.h"
 
-#include "util/zorba.h"
+#include "system/zorba.h"
 
 // Info: Forcing inlining a function in g++: Item_t next() __attribute__((always_inline)) {...}
 
@@ -82,7 +82,7 @@ typedef rchandle<Item> Item_t;
 
 class PlanIterator;
 class node;
-class zorba;
+class Zorba;
 class PlanIterVisitor;
 
 typedef rchandle<PlanIterator> PlanIter_t;
@@ -110,7 +110,7 @@ public:
 
   uint32_t               blockSize;
 
-  zorba                * zorp;
+  Zorba                * zorp;
   Zorba_XQueryBinary   * xqbinary;
 //	Zorba_XQueryExecution	*xqexecution;//contains the dynamic context
 

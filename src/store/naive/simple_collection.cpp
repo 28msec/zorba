@@ -3,7 +3,7 @@
  *
  *  Authors: David Graf, Markos Zaharioudakis
  */
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 #include "util/rchandle.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_loader.h"
@@ -73,7 +73,7 @@ void SimpleCollection::addToCollection(const Item_t& node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR_ALERT(error_messages::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ZORBA_ERROR_ALERT(AlertCodes::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
                       NULL, true);
     return;
   }
@@ -104,7 +104,7 @@ void SimpleCollection::removeFromCollection(const Item_t& node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR_ALERT(error_messages::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ZORBA_ERROR_ALERT(AlertCodes::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
                       NULL, true);
     return;
   }

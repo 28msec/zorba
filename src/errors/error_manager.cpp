@@ -1,18 +1,9 @@
 
-#include "zorba_api.h"
-#include "Error.h"
-#include "errors/errors.h"
-#include "user_error.h"
+#include "errors/error_codes.h"
 #include "error_manager.h"
-#include "util/Assert.h"
-#include <iostream>
-#include <iomanip>
-#include <stdlib.h>
-#include "util/zorba.h"
-#include "store/api/item.h"
-#include "runtime/base/iterator.h"
-#include <time.h>
-#include "api/external/xquerybinary.h"
+#include "system/zorba.h"
+#include "zorba_api.h"
+#include "api/external/xquery.h"
 
 using namespace std;
 namespace xqp {
@@ -33,12 +24,15 @@ ZorbaAlertsManagerImpl::ZorbaAlertsManagerImpl( )
 ZorbaAlertsManagerImpl::~ZorbaAlertsManagerImpl()
 {
 	clearAlertList();
+
+  if (theAlertCodes != NULL)
+    delete theAlertCodes;
 }
 
 
 void ZorbaAlertsManagerImpl::clearAlertList()
 {
-	std::list<Zorba_AlertMessage*>::const_iterator errit;
+	std::list<ZorbaAlert*>::const_iterator errit;
 	
 	for(errit = begin(); errit != end(); errit++)
 		delete *errit;
@@ -58,50 +52,47 @@ void ZorbaAlertsManagerImpl::RegisterAlertCallback(
 	thread_registered_param = param;
 
   #if 0	
-	ZORBA_NOTIFY_EVENT_OSS(error_messages::NOTIF_EXECUTION_STEP,
+	ZORBA_NOTIFY_EVENT_OSS(AlertCodes::NOTIF_EXECUTION_STEP,
 		"RegisterAlertCallback with param " << std::hex << param, "");
   #endif
 }
 
 
-error_messages&	ZorbaAlertsManagerImpl::getErrMessages()
+AlertCodes& ZorbaAlertsManagerImpl::getAlertCodes()
 {
-	return *err_messages;
+	return *theAlertCodes;
 }
 
 
-int ZorbaAlertsManagerImpl::sendAlertToUser(zorba *z, Zorba_AlertMessage *alertmess)
+void ZorbaAlertsManagerImpl::setAlertCodes(AlertCodes* c)
+{
+	theAlertCodes = c;
+}
+
+
+int ZorbaAlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert* alert)
 {
 	int		retval;
-//	if(z->current_xquery && z->current_xquery->xquery_registered_callback)
-//	{
-//		if(z->current_xqueryresult && z->current_xqueryresult->alert_callback_param)
-//			retval = z->current_xquery->xquery_registered_callback(alertmess, z->current_xqueryresult->alert_callback_param);
-//		else
-//			retval = z->current_xquery->xquery_registered_callback(alertmess, z->current_xquery->xquery_registered_param);
-//		delete alertmess;
-//		return retval;
-//	}
-//	else 
+
 	if(thread_registered_callback)
 	{
 		if(z->current_xqueryresult && z->current_xqueryresult->alert_callback_param)
-			retval = thread_registered_callback(alertmess, 
+			retval = thread_registered_callback(alert, 
 																			z->current_xquery,
 																			z->current_xqueryresult,
 																			z->current_xqueryresult->alert_callback_param);
 		else
-			retval = thread_registered_callback(alertmess, 
+			retval = thread_registered_callback(alert, 
 																			z->current_xquery,
 																			z->current_xqueryresult,
 																			thread_registered_param);
-		delete alertmess;
+		delete alert;
 		return retval;
 	}
 	else
 	{
 		///if no callback was registered, then put the error in list
-		push_back(alertmess);
+		push_back(alert);
 	}
 
 	return -1;

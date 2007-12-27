@@ -36,7 +36,7 @@
 #include <iostream>
 
 #include "util/fx/mmfile.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 
 using namespace std;
 namespace xqp {

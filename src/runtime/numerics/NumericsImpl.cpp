@@ -15,8 +15,8 @@
 #include "util/tracer.h"
 #include "util/math_helper.h"
 #include "types/casting.h"
-#include "errors/Error.h"
-#include "util/zorba.h"
+#include "errors/error_factory.h"
+#include "system/zorba.h"
 #include "runtime/visitors/planitervisitor.h"
 
 using namespace std;
@@ -25,75 +25,75 @@ namespace xqp
   /* begin class AddOperations */
   Item_t AddOperations::opDouble ( const yy::location* loc,  Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createDouble ( i0->getDoubleValue() + i1->getDoubleValue() );
+    return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() + i1->getDoubleValue() );
   }
   Item_t AddOperations::opFloat ( const yy::location* loc,  Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createFloat ( i0->getFloatValue() + i1->getFloatValue() );
+    return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() + i1->getFloatValue() );
   }
   Item_t AddOperations::opDecimal ( const yy::location* loc,  Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() + i1->getDecimalValue() );
+    return Zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() + i1->getDecimalValue() );
   }
   Item_t AddOperations::opInteger ( const yy::location* loc,  Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createInteger ( i0->getIntegerValue() + i1->getIntegerValue() );
+    return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() + i1->getIntegerValue() );
   }
   /* end class AddOperations */
 
   /* start class SubtractOperations */
   Item_t SubtractOperations::opDouble ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createDouble ( i0->getDoubleValue() - i1->getDoubleValue() );
+    return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() - i1->getDoubleValue() );
   }
 
   Item_t SubtractOperations::opFloat ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createFloat ( i0->getFloatValue() - i1->getFloatValue() );
+    return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() - i1->getFloatValue() );
   }
 
   Item_t SubtractOperations::opDecimal ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() - i1->getDecimalValue() );
+    return Zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() - i1->getDecimalValue() );
   }
 
   Item_t SubtractOperations::opInteger ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createInteger ( i0->getIntegerValue() - i1->getIntegerValue() );
+    return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() - i1->getIntegerValue() );
   }
   /* end class SubtractOperations */
 
   /* start class MultiplyOperations */
   Item_t MultiplyOperations::opDouble ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createDouble ( i0->getDoubleValue() * i1->getDoubleValue() );
+    return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() * i1->getDoubleValue() );
   }
 
   Item_t MultiplyOperations::opFloat ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createFloat ( i0->getFloatValue() * i1->getFloatValue() );
+    return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() * i1->getFloatValue() );
   }
 
   Item_t MultiplyOperations::opDecimal ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() * i1->getDecimalValue() );
+    return Zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() * i1->getDecimalValue() );
   }
 
   Item_t MultiplyOperations::opInteger ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createInteger ( i0->getIntegerValue() * i1->getIntegerValue() );
+    return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() * i1->getIntegerValue() );
   }
   /* end class MultiplyOperations */
 
   /* start class DivideOperations */
   Item_t DivideOperations::opDouble ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createDouble ( i0->getDoubleValue() / i1->getDoubleValue() );
+    return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() / i1->getDoubleValue() );
   }
 
   Item_t DivideOperations::opFloat ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createFloat ( i0->getFloatValue() / i1->getFloatValue() );
+    return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() / i1->getFloatValue() );
   }
 
   Item_t DivideOperations::opDecimal ( const yy::location* loc, Item_t i0, Item_t i1 )
@@ -102,10 +102,10 @@ namespace xqp
     xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
-      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
-    return zorba::getItemFactory()->createDecimal ( ld0 / ld1 );
+    return Zorba::getItemFactory()->createDecimal ( ld0 / ld1 );
   }
 
   Item_t DivideOperations::opInteger ( const yy::location* loc, Item_t i0, Item_t i1 )
@@ -114,10 +114,10 @@ namespace xqp
     xqp_decimal ll1 = static_cast<xqp_decimal>(i1->getIntegerValue());
     if ( ll1 == 0 )
     {
-      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
-    return zorba::getItemFactory()->createDecimal ( ll0 / ll1 );
+    return Zorba::getItemFactory()->createDecimal ( ll0 / ll1 );
   }
   /* end class DivideOperations */
 
@@ -128,10 +128,10 @@ namespace xqp
     xqp_double d1 = i1->getDoubleValue();
     if ( d1 == 0 )
     {
-      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
-    return zorba::getItemFactory()->createInteger (
+    return Zorba::getItemFactory()->createInteger (
                static_cast<xqp_integer> ( d0 / d1 )
            );
   }
@@ -142,10 +142,10 @@ namespace xqp
     xqp_float f1 = i1->getFloatValue();
     if ( f1 == 0 )
     {
-      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
-    return zorba::getItemFactory()->createInteger (
+    return Zorba::getItemFactory()->createInteger (
                static_cast<xqp_integer> ( f0 / f1 )
            );
   }
@@ -156,10 +156,10 @@ namespace xqp
     xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
-      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
-    return zorba::getItemFactory()->createInteger (
+    return Zorba::getItemFactory()->createInteger (
                static_cast<xqp_integer> ( ld0 / ld1 )
            );
   }
@@ -170,10 +170,10 @@ namespace xqp
     xqp_integer ll1 = i1->getIntegerValue();
     if ( ll1 == 0 )
     {
-      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
-    return zorba::getItemFactory()->createInteger (
+    return Zorba::getItemFactory()->createInteger (
                ll0 / ll1
            );
   }
@@ -182,12 +182,12 @@ namespace xqp
   /* start class ModOperations */
   Item_t ModOperations::opDouble ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createDouble ( fmod ( i0->getDoubleValue(), i1->getDoubleValue() ) );
+    return Zorba::getItemFactory()->createDouble ( fmod ( i0->getDoubleValue(), i1->getDoubleValue() ) );
   }
 
   Item_t ModOperations::opFloat ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return zorba::getItemFactory()->createFloat ( fmod ( i0->getFloatValue(), i1->getFloatValue() ) );
+    return Zorba::getItemFactory()->createFloat ( fmod ( i0->getFloatValue(), i1->getFloatValue() ) );
   }
 
   Item_t ModOperations::opDecimal ( const yy::location* loc, Item_t i0, Item_t i1 )
@@ -196,10 +196,10 @@ namespace xqp
     xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
-      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
          loc, false, "Modulo by zero (decimals)");
     }
-    return zorba::getItemFactory()->createDecimal ( fmod ( ld0, ld1 ) );
+    return Zorba::getItemFactory()->createDecimal ( fmod ( ld0, ld1 ) );
   }
 
   Item_t ModOperations::opInteger ( const yy::location* loc, Item_t i0, Item_t i1 )
@@ -208,10 +208,10 @@ namespace xqp
     xqp_integer ll1 = i1->getIntegerValue();
     if ( ll1 == 0 )
     {
-      ZORBA_ERROR_ALERT(error_messages::FOAR0001,
+      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
          loc, false, "Modulo by zero (decimals)");
     }
-    return zorba::getItemFactory()->createInteger ( ll0 % ll1 );
+    return Zorba::getItemFactory()->createInteger ( ll0 % ll1 );
   }
   /* end class ModOperations */
 
@@ -249,7 +249,7 @@ namespace xqp
       
         if ( consumeNext ( this->theChild0, planState ) != NULL 
              || consumeNext ( this->theChild1, planState ) != NULL )
-          ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+          ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
               NULL, false, "Arithmetic operation has a sequences greater than one as an operator.");
         STACK_PUSH ( res, state );
       }
@@ -513,21 +513,21 @@ namespace xqp
 
       // TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createDouble ( mul * item->getDoubleValue() );
+        res = Zorba::getItemFactory()->createDouble ( mul * item->getDoubleValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createFloat ( mul * item->getFloatValue() );
+        res = Zorba::getItemFactory()->createFloat ( mul * item->getFloatValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createDecimal ( mul * item->getDecimalValue() );
+        res = Zorba::getItemFactory()->createDecimal ( mul * item->getDecimalValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createInteger ( mul * item->getIntegerValue() );
+        res = Zorba::getItemFactory()->createInteger ( mul * item->getIntegerValue() );
       else
       {
-          ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+          ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
               &loc, false, "Wrong operator type for an unary arithmetic operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
-          ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+          ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
               &loc, false, "Arithmetic operation has a sequences greater than one as an operator.");
       STACK_PUSH ( res, state );
     }
@@ -584,42 +584,42 @@ namespace xqp
           if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
             res = item;
           else
-            res = zorba::getItemFactory()->createDouble ( item->getDoubleValue() );
+            res = Zorba::getItemFactory()->createDouble ( item->getDoubleValue() );
         else
-          res = zorba::getItemFactory()->createDouble ( -item->getDoubleValue() );
+          res = Zorba::getItemFactory()->createDouble ( -item->getDoubleValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         if ( item->getFloatValue() >= 0 )
           if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
             res = item;
           else
-            res = zorba::getItemFactory()->createFloat ( item->getFloatValue() );
+            res = Zorba::getItemFactory()->createFloat ( item->getFloatValue() );
         else
-          res = zorba::getItemFactory()->createFloat ( -item->getFloatValue() );
+          res = Zorba::getItemFactory()->createFloat ( -item->getFloatValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
         if ( item->getDecimalValue() >= 0 )
           if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
             res = item;
           else
-            res = zorba::getItemFactory()->createDecimal ( item->getDecimalValue() );
+            res = Zorba::getItemFactory()->createDecimal ( item->getDecimalValue() );
         else
-          res = zorba::getItemFactory()->createDecimal ( -item->getDecimalValue() );
+          res = Zorba::getItemFactory()->createDecimal ( -item->getDecimalValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
         if ( item->getIntegerValue() >= 0 )
           if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
             res = item;
           else
-            res = zorba::getItemFactory()->createInteger ( item->getIntegerValue() );
+            res = Zorba::getItemFactory()->createInteger ( item->getIntegerValue() );
         else
-          res = zorba::getItemFactory()->createInteger ( -item->getIntegerValue() );
+          res = Zorba::getItemFactory()->createInteger ( -item->getIntegerValue() );
       else
       {
-        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
             &loc, false, "Wrong operator type for an abs operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
             &loc, false, "Abs operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -662,15 +662,15 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-          res = zorba::getItemFactory()->createDouble(ceil(item->getDoubleValue()));
+          res = Zorba::getItemFactory()->createDouble(ceil(item->getDoubleValue()));
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createFloat(ceil(item->getFloatValue()));
+        res = Zorba::getItemFactory()->createFloat(ceil(item->getFloatValue()));
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = zorba::getItemFactory()->createDecimal(ceil(item->getDecimalValue()));
+        res = Zorba::getItemFactory()->createDecimal(ceil(item->getDecimalValue()));
 
       //item type is subtype of INTEGER 
       else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
@@ -678,13 +678,13 @@ namespace xqp
 
       else
       {
-        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
             &loc, false, "Wrong operator type for a ceiling operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
             &loc, false, "Ceiling operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -726,15 +726,15 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createDouble(floor(item->getDoubleValue()));
+        res = Zorba::getItemFactory()->createDouble(floor(item->getDoubleValue()));
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createFloat(floor(item->getFloatValue()));
+        res = Zorba::getItemFactory()->createFloat(floor(item->getFloatValue()));
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = zorba::getItemFactory()->createDecimal(floor(item->getDecimalValue()));
+        res = Zorba::getItemFactory()->createDecimal(floor(item->getDecimalValue()));
 
       //item type is subtype of INTEGER 
       else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
@@ -742,13 +742,13 @@ namespace xqp
 
       else
       {
-        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
             &loc, false, "Wrong operator type for a floor operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
             &loc, false, "Floor operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -790,15 +790,15 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createDouble(xqp::round(item->getDoubleValue()));
+        res = Zorba::getItemFactory()->createDouble(xqp::round(item->getDoubleValue()));
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createFloat(xqp::round(item->getFloatValue()));
+        res = Zorba::getItemFactory()->createFloat(xqp::round(item->getFloatValue()));
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = zorba::getItemFactory()->createDecimal(xqp::round(item->getDecimalValue()));
+        res = Zorba::getItemFactory()->createDecimal(xqp::round(item->getDecimalValue()));
 
       //item type is subtype of INTEGER 
       else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
@@ -806,13 +806,13 @@ namespace xqp
 
       else
       {
-        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
             &loc, false, "Wrong operator type for a round operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
             &loc, false, "Round operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -866,15 +866,15 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createDouble(xqp::roundHalfToEven(item->getDoubleValue(), precision));
+        res = Zorba::getItemFactory()->createDouble(xqp::roundHalfToEven(item->getDoubleValue(), precision));
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createFloat(xqp::roundHalfToEven(item->getFloatValue(), precision));
+        res = Zorba::getItemFactory()->createFloat(xqp::roundHalfToEven(item->getFloatValue(), precision));
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = zorba::getItemFactory()->createDecimal(xqp::roundHalfToEven(item->getDecimalValue(), precision));
+        res = Zorba::getItemFactory()->createDecimal(xqp::roundHalfToEven(item->getDecimalValue(), precision));
 
       //item type is subtype of INTEGER 
       else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
@@ -882,13 +882,13 @@ namespace xqp
 
       else
       {
-        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
             &loc, false, "Wrong operator type for a round-half-to-even operation.");
       }
 
       if ( this->consumeNext ( theChild0, planState ) != NULL )
       {
-        ZORBA_ERROR_ALERT(error_messages::XPTY0004,
+        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
            &loc, false, "Round-half-to-even operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -909,7 +909,7 @@ namespace xqp
     while ( state->getCurNumber() < 100 )
     {
       STACK_PUSH (
-          zorba::getItemFactory()->createInteger ( state->getCurNumber() ),
+          Zorba::getItemFactory()->createInteger ( state->getCurNumber() ),
           state );
       state->setCurNumber ( state->getCurNumber() + 1 );
     }

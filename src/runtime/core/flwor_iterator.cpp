@@ -5,8 +5,8 @@
  */
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/item_iterator.h"
-#include "util/zorba.h"
-#include "errors/Error.h"
+#include "system/zorba.h"
+#include "errors/error_factory.h"
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
@@ -383,7 +383,7 @@ namespace xqp
         if ( lItem != 0 )
         {
           ZORBA_ERROR_ALERT (
-              error_messages::XPTY0004,
+              AlertCodes::XPTY0004,
               NULL, false, "Expected a singleton" );
         }
       }
@@ -391,7 +391,7 @@ namespace xqp
       ++lSpecIter;
     }
     Iterator_t iterWrapper = new PlanIteratorWrapper ( returnClause, planState );
-    TempSeq_t result = zorba::getStore()->createTempSeq ( iterWrapper, false );
+    TempSeq_t result = Zorba::getStore()->createTempSeq ( iterWrapper, false );
     flworState->orderMap->insert ( std::pair<std::vector<Item_t> , Iterator_t> ( orderKey, result->getIterator() ) );
     this->resetChild ( returnClause, planState );
   }
@@ -448,7 +448,7 @@ namespace xqp
         }
         if ( !lForLetClause.posVars.empty() )
         {
-          Item_t posItem = zorba::getItemFactory()->createInteger ( flworState->varBindingState[varNb] );
+          Item_t posItem = Zorba::getItemFactory()->createInteger ( flworState->varBindingState[varNb] );
           for ( std::vector<var_iter_t>::iterator posIter = lForLetClause.posVars.begin(); posIter != lForLetClause.posVars.end(); posIter++ )
           {
             var_iter_t variable = ( *posIter );
@@ -470,7 +470,7 @@ namespace xqp
         //Depending on the query, we might need to materialize the LET-Binding
         if ( lForLetClause.needsMaterialization )
         {
-          TempSeq_t tmpSeq = zorba::getStore()->createTempSeq ( iterWrapper, true );
+          TempSeq_t tmpSeq = Zorba::getStore()->createTempSeq ( iterWrapper, true );
           for ( std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin(); letIter
                   != lForLetClause.letVars.end(); letIter++ )
           {

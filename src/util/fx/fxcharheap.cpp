@@ -30,7 +30,7 @@
 #include <iostream>
 
 #include "util/file.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 
 using namespace std;
 namespace xqp {
@@ -49,7 +49,7 @@ void fxcharheap::ioexception(
 #endif
   //throw xqp_exception(location, oss.str());
   ZORBA_ERROR_ALERT(
-             error_messages::XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION,
+             AlertCodes::XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION,
              NULL,false,
              oss.str(), location);
 }

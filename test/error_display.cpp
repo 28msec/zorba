@@ -1,6 +1,5 @@
 
 #include "zorba/zorba_api.h"
-//#include "store/naive/basic_item_factory.h"
 #include "error_display.h"
 
 #include <fstream>
@@ -19,7 +18,7 @@ void DisplayErrorListForCurrentThread()
 
 	///now display the alerts list and then clear the list
 
-	std::list<Zorba_AlertMessage*>::const_iterator errit;
+	std::list<ZorbaAlert*>::const_iterator errit;
 
 	for(errit = errmanager.begin(); errit != errmanager.end(); errit++)
 	{
@@ -30,7 +29,7 @@ void DisplayErrorListForCurrentThread()
 }
 
 
-void DisplayOneAlert(const Zorba_AlertMessage *alert)
+void DisplayOneAlert(const ZorbaAlert *alert)
 {
 	char	*str_talert;
 
@@ -39,30 +38,30 @@ void DisplayOneAlert(const Zorba_AlertMessage *alert)
 
 	switch(alert->alert_type)
 	{
-	case Zorba_AlertMessage::ERROR_ALERT:
-		DisplayError(reinterpret_cast<const Zorba_ErrorMessage*>(alert));
+	case ZorbaAlert::ERROR_ALERT:
+		DisplayError(reinterpret_cast<const ZorbaErrorAlert*>(alert));
 		break;
-	case Zorba_AlertMessage::WARNING_ALERT:
-		DisplayWarning(reinterpret_cast<const Zorba_WarningMessage*>(alert));
+	case ZorbaAlert::WARNING_ALERT:
+		DisplayWarning(reinterpret_cast<const ZorbaWarningAlert*>(alert));
 		break;
-	case Zorba_AlertMessage::NOTIFICATION_ALERT:
-		DisplayNotification(reinterpret_cast<const Zorba_NotifyMessage*>(alert));
+	case ZorbaAlert::NOTIFICATION_ALERT:
+		DisplayNotification(reinterpret_cast<const ZorbaNotifyAlert*>(alert));
 		break;
-	case Zorba_AlertMessage::FEEDBACK_REQUEST_ALERT:
-		DisplayAskUser(reinterpret_cast<const Zorba_AskUserMessage*>(alert));
+	case ZorbaAlert::FEEDBACK_REQUEST_ALERT:
+		DisplayAskUser(reinterpret_cast<const ZorbaAskUserAlert*>(alert));
 		break;
 
-	case Zorba_AlertMessage::USER_ERROR_ALERT://fn:error
-		DisplayFnUserError(reinterpret_cast<const Zorba_FnErrorMessage*>(alert));
+	case ZorbaAlert::USER_ERROR_ALERT://fn:error
+		DisplayFnUserError(reinterpret_cast<const ZorbaFnErrorAlert*>(alert));
 		break;
-	case Zorba_AlertMessage::USER_TRACE_ALERT://fn:trace
-		DisplayFnUserTrace(reinterpret_cast<const Zorba_FnTraceMessage*>(alert));
+	case ZorbaAlert::USER_TRACE_ALERT://fn:trace
+		DisplayFnUserTrace(reinterpret_cast<const ZorbaFnTraceAlert*>(alert));
 		break;
 	}
 }
 
 
-void DisplayError(const Zorba_ErrorMessage *err)
+void DisplayError(const ZorbaErrorAlert *err)
 {
 	if(err->is_fatal)
 		cerr << "Fatal Error: ";
@@ -80,7 +79,7 @@ void DisplayError(const Zorba_ErrorMessage *err)
 }
 
 
-void DisplayWarning(const Zorba_WarningMessage *warn)
+void DisplayWarning(const ZorbaWarningAlert *warn)
 {
 	cerr << "Warning:";
 	if(warn->loc.line)
@@ -94,13 +93,13 @@ void DisplayWarning(const Zorba_WarningMessage *warn)
 }
 
 
-void DisplayNotification(const Zorba_NotifyMessage *notif)
+void DisplayNotification(const ZorbaNotifyAlert *notif)
 {
 	cerr << "Notif: " << notif->alert_description << std::endl;
 }
 
 
-int DisplayAskUser(const Zorba_AskUserMessage *askuser)
+int DisplayAskUser(const ZorbaAskUserAlert *askuser)
 {
 	///not implemented
 	cerr << "Ask user: " << askuser->alert_description << std::endl;
@@ -123,7 +122,7 @@ void DumpItemsAsText( const std::vector<class Item*> *items)
 }
 
 
-void DisplayFnUserError(const Zorba_FnErrorMessage *fn_err)
+void DisplayFnUserError(const ZorbaFnErrorAlert *fn_err)
 {
 	cerr << "User Error: ";
 	cerr << "[QName: " << fn_err->err_qname->getStringProperty() 
@@ -133,7 +132,7 @@ void DisplayFnUserError(const Zorba_FnErrorMessage *fn_err)
 }
 
 
-void DisplayFnUserTrace(const Zorba_FnTraceMessage *fn_trace)
+void DisplayFnUserTrace(const ZorbaFnTraceAlert *fn_trace)
 {
 	cerr << "User Trace: " << fn_trace->alert_description << endl;
 	DumpItemsAsText(&fn_trace->items_trace);

@@ -1,7 +1,7 @@
 
 #include "util/Assert.h"
-#include "util/zorba.h"
-#include "errors/Error.h"
+#include "system/zorba.h"
+#include "errors/error_factory.h"
 #include "system/globalenv.h"
 #include "types/typesystem.h"
 #include "context/static_context.h"
@@ -28,7 +28,7 @@ DocumentIterator::DocumentIterator(const yy::location& loc, PlanIter_t& aChild)
 
 Item_t DocumentIterator::nextImpl(PlanState& planState)
 {
-  Store* lStore = zorba::getStore();
+  Store* lStore = Zorba::getStore();
   Iterator_t lChildWrapper;
   Item_t lItem;
   xqp_string lBaseUri = "";
@@ -39,7 +39,7 @@ Item_t DocumentIterator::nextImpl(PlanState& planState)
   
   lChildWrapper = new PlanIteratorWrapper(theChild, planState); 
   
-  lItem = zorba::getItemFactory()->createDocumentNode(
+  lItem = Zorba::getItemFactory()->createDocumentNode(
                                 lBaseUri.theStrStore,
                                 lDocUri.theStrStore,
                                 lChildWrapper,
@@ -79,8 +79,8 @@ Item_t DocumentContentIterator::nextImpl(PlanState& planState)
     if (lItem->isNode() && lItem->getNodeKind() == StoreConsts::attributeNode)
     {
         // throwing an error when child is an attribute node
-        ZorbaErrorAlerts::error_alert (
-          error_messages::XQTY0024,
+        ZorbaAlertFactory::error_alert (
+          AlertCodes::XQTY0024,
           &loc, false, "A Document Node must not contain attribute nodes!"
         );
     }
@@ -160,7 +160,7 @@ ElementIterator::nextImpl(PlanState& planState)
   if (theAttributesIter != 0)
     awrapper = new PlanIteratorWrapper(theAttributesIter, planState);
 
-  item = zorba::getItemFactory()->createElementNode(
+  item = Zorba::getItemFactory()->createElementNode(
                lQName,
                GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
                cwrapper,
@@ -285,8 +285,8 @@ ElementContentIterator::nextImpl(PlanState& planState)
     {
       if (state->theNoAttrAllowed)
       {
-        ZorbaErrorAlerts::error_alert (
-          error_messages::XQTY0024, false, &loc,
+        ZorbaAlertFactory::error_alert (
+          AlertCodes::XQTY0024, false, &loc,
           "Content sequence of element contains an attribute node following a node that is not an attribute node!"
         );
       }
@@ -300,7 +300,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
     {
       if (state->theString != "")
       {
-        STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString, false), state);
+        STACK_PUSH(Zorba::getItemFactory()->createTextNode(state->theString, false), state);
         state->theString = "";
       }
       break;
@@ -314,7 +314,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
     {
       if (state->theString != "")
       {
-        STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString, false), state);
+        STACK_PUSH(Zorba::getItemFactory()->createTextNode(state->theString, false), state);
         state->theString = "";
       }
       STACK_PUSH(state->theContextItem, state);
@@ -403,7 +403,7 @@ AttributeIterator::nextImpl(PlanState& planState)
       itemCur = consumeNext ( theChild1, planState );
     }
 
-    itemLexical = zorba::getItemFactory()->createUntypedAtomic(lexicalString);
+    itemLexical = Zorba::getItemFactory()->createUntypedAtomic(lexicalString);
     itemTyped = itemLexical;
   }
   else
@@ -412,7 +412,7 @@ AttributeIterator::nextImpl(PlanState& planState)
     itemTyped = 0;
   }
 
-  item = zorba::getItemFactory()->createAttributeNode (
+  item = Zorba::getItemFactory()->createAttributeNode (
                lQName,
                GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME,
                itemLexical,
@@ -444,7 +444,7 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
   Item_t item, child;
   xqp_string content = "";
 
-  Store* store = zorba::getStore();
+  Store* store = Zorba::getStore();
   TempSeq_t seqExpression;  
   Iterator_t ewrapper;
 
@@ -460,7 +460,7 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
   if (child != NULL)
     content = child->getStringValue(); // TODO: maybe getStringProperty()?
   
-  item = zorba::getItemFactory()->createCommentNode(content, theAssignId);
+  item = Zorba::getItemFactory()->createCommentNode(content, theAssignId);
 
   STACK_PUSH(item, state);
     
@@ -488,7 +488,7 @@ Item_t TextIterator::nextImpl(PlanState& planState)
   xqp_string content = "";
   bool lFirst;
 
-  Store* store = zorba::getStore();
+  Store* store = Zorba::getStore();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -506,7 +506,7 @@ Item_t TextIterator::nextImpl(PlanState& planState)
     lFirst = false;
   }
 
-  lItem = zorba::getItemFactory()->createTextNode(content, theAssignId);
+  lItem = Zorba::getItemFactory()->createTextNode(content, theAssignId);
 
   STACK_PUSH(lItem, state);
     
@@ -533,7 +533,7 @@ Item_t EnclosedIterator::nextImpl ( PlanState& planState )
 {
   Item_t lItem;
 
-  ItemFactory* factory = zorba::getItemFactory();
+  ItemFactory* factory = Zorba::getItemFactory();
 
   EnclosedState* state;
   DEFAULT_STACK_INIT ( EnclosedState, state, planState );

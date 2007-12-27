@@ -4,14 +4,14 @@
 #include "types/casting.h"
 #include "types/typesystem.h"
 #include "system/globalenv.h"
-#include "util/zorba.h"
+#include "system/zorba.h"
 #include "zorba_api.h"
 
 using namespace xqp;
 
 int typesystem_atomicStringCast (int argc, char* argv[]) {
   ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
-  zorba_factory.InitThread();
+  zorba_factory.initThread();
   
   GenericCast* lCaster = GenericCast::instance();
   
@@ -79,8 +79,8 @@ int typesystem_atomicStringCast (int argc, char* argv[]) {
   }
 #endif
   
-  zorba_factory.UninitThread();
-  ZorbaEngine::shutdownZorbaEngine();
+  zorba_factory.uninitThread();
+  zorba_factory.shutdown();
   
   return 0;
 }

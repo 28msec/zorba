@@ -33,7 +33,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 
 using namespace std;
 namespace xqp {
@@ -44,7 +44,7 @@ namespace xqp {
 	{ \
 		ostringstream oerr; \
 		oerr << s << " [" << strerror(errno) << ']'; \
-		ZORBA_ERROR_ALERT(error_messages::XQP0013_SYSTEM_MMFILE_IOEXCEPTION,\
+		ZORBA_ERROR_ALERT(AlertCodes::XQP0013_SYSTEM_MMFILE_IOEXCEPTION,\
 													NULL,false,\
 													oerr.str(), __FUNCTION__);\
 	}
@@ -53,7 +53,7 @@ namespace xqp {
 	{ \
 		ostringstream oerr; \
 		oerr << s << " [" << GetLastError() << ']'; \
-		ZORBA_ERROR_ALERT(error_messages::XQP0013_SYSTEM_MMFILE_IOEXCEPTION,\
+		ZORBA_ERROR_ALERT(AlertCodes::XQP0013_SYSTEM_MMFILE_IOEXCEPTION,\
 													NULL,false,\
 													oerr.str(), __FUNCTION__);\
 	}
@@ -219,7 +219,6 @@ mmfile::~mmfile()
 
 
 void mmfile::destroy()
-THROW_XQP_EXCEPTION
 {
 	try {
     unmap();
@@ -256,7 +255,6 @@ void mmfile::fill(char initval)
 
 
 void mmfile::expand(bool init)
-THROW_XQP_EXCEPTION
 {
 	// release current map
   unmap();
@@ -319,7 +317,6 @@ THROW_XQP_EXCEPTION
 
 
 void mmfile::unmap()
-THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
   //if (msync(data, eofoff, 0)==-1) {
@@ -344,7 +341,6 @@ THROW_XQP_EXCEPTION
 }
 
 void mmfile::rename_backing_file(const string& new_path)
-THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
 	int res = rename(path.c_str(), new_path.c_str());

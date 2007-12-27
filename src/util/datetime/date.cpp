@@ -5,7 +5,6 @@
  */
 
 #include "util/datetime/date.h"
-#include "util/zorba.h"
 #include <string>
 
 namespace xqp

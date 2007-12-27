@@ -3,7 +3,7 @@
 
 #include "timer.h"
 
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_collection.h"
@@ -78,7 +78,7 @@ int main(int argc, const char * argv[])
   // 
   ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 
-	zorba_factory.InitThread();
+	zorba_factory.initThread();
 
 	ZorbaAlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
 
@@ -123,6 +123,9 @@ int main(int argc, const char * argv[])
   outXmlFile << doc->show() << std::endl;
 
   DisplayErrorListForCurrentThread();
+
+  zorba_factory.uninitThread();
+  zorba_factory.shutdown();
 
   return 0;
 }

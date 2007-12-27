@@ -9,7 +9,7 @@
 #include "util/numconversions.h"
 #include "util/hashfun.h"
 #include "util/Assert.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 #include "store/naive/atomic_items.h"
 #include "store/api/store.h"
 #include "store/api/item.h"
@@ -60,7 +60,7 @@ bool QNameItemImpl::equals(Item_t item) const
 
 Item_t QNameItemImpl::getEBV( ) const
 {
-  ZORBA_ERROR_ALERT(error_messages::FORG0006,
+  ZORBA_ERROR_ALERT(AlertCodes::FORG0006,
       NULL, false, "Effective Boolean Value is not defined for QName!");
   return NULL;
 }

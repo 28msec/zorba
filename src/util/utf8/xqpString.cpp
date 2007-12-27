@@ -14,7 +14,9 @@
 #include "util/utf8/xqpString.h"
 #include "util/utf8/Unicode_util.h"
 #include "util/utf8/utf8.h"
-#include "util/zorba.h"
+#include "system/zorba.h"
+#include "system/zorba_engine.h"
+
 
 using namespace std;
 
@@ -173,7 +175,7 @@ namespace xqp
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator for the default collation
-    Collator *coll = zorba::getZorbaForCurrentThread()->getCollator();
+    Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
 
     Collator::EComparisonResult result = ::Collator::EQUAL;
 
@@ -188,7 +190,7 @@ namespace xqp
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator object fromthe Static context
-      ::Collator *coll = zorba::getZorbaForCurrentThread()->getCollator(collationUri);
+      ::Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(collationUri);
 
     ::Collator::EComparisonResult result = ::Collator::EQUAL;
 
@@ -256,14 +258,14 @@ namespace xqp
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator for the default collation
-    Collator *coll = zorba::getZorbaForCurrentThread()->getCollator();
+    Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
 
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator *)coll, NULL, status);
 
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           NULL
         );
       return -1;
@@ -278,7 +280,7 @@ namespace xqp
     if (U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           NULL
         );
       return -1;
@@ -291,7 +293,7 @@ namespace xqp
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator object fromthe Static context
-    ::Collator *coll = zorba::getZorbaForCurrentThread()->getCollator(collationUri);
+    ::Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(collationUri);
 
     //user retains the ownership of this collator, it does not get destroyed during this instance's destruction
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator*)coll, NULL, status);
@@ -299,7 +301,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           NULL
         );
       return -1;
@@ -314,7 +316,7 @@ namespace xqp
     if (U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           NULL
         );
       return -1;
@@ -328,14 +330,14 @@ namespace xqp
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator for the default collation
-    Collator *coll = zorba::getZorbaForCurrentThread()->getCollator();
+    Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
 
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator *)coll, NULL, status);
 
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           NULL
         );
       return -1;
@@ -345,7 +347,7 @@ namespace xqp
     if (U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           NULL
         );
       return -1;
@@ -365,7 +367,7 @@ namespace xqp
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator object fromthe Static context
-    ::Collator *coll = zorba::getZorbaForCurrentThread()->getCollator(collationUri);
+    ::Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(collationUri);
 
     //user retains the ownership of this collator, it does not get destroyed during this instance's destruction.
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator*)coll, NULL, status);
@@ -373,7 +375,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           NULL
         );
       return -1;
@@ -383,7 +385,7 @@ namespace xqp
     if (U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           NULL
         );
       return -1;
@@ -523,7 +525,7 @@ namespace xqp
     else
     {
       ZORBA_ERROR_ALERT(
-          error_messages::FOCH0003,
+          AlertCodes::FOCH0003,
           NULL
           );
     }
@@ -531,7 +533,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           NULL
           );
     }
@@ -952,7 +954,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-            error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+            AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
             NULL
           );
     }
@@ -973,7 +975,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-            error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+            AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
             NULL
           );
 
@@ -989,7 +991,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-            error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+            AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
             NULL
           );
 
@@ -1019,7 +1021,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-            error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+            AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
             NULL
           );
     }

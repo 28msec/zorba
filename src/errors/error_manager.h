@@ -1,37 +1,34 @@
-#ifndef ZORBA_INTERNAL_ERROR_PROCESSING_IMPLEMENTATION_30_OCT_2007
-#define ZORBA_INTERNAL_ERROR_PROCESSING_IMPLEMENTATION_30_OCT_2007
+#ifndef ERRORS_ERROR_MANAGER
+#define ERRORS_ERROR_MANAGER
 
 #include "error_api.h"
 
 namespace xqp{
 
-class zorba;
+class Zorba;
 
 class ZorbaAlertsManagerImpl : public ZorbaAlertsManager
 {
 public:
-	ZorbaAlertsManagerImpl ();
+	ZorbaAlertsManagerImpl();
 
-	virtual ~ZorbaAlertsManagerImpl ();
+	virtual ~ZorbaAlertsManagerImpl();
 
-	int sendAlertToUser(zorba *z, Zorba_AlertMessage *alertmess);
+	int sendAlertToUser(Zorba* z, ZorbaAlert* alert);
 
-	virtual void RegisterAlertCallback(
-        alert_callback	*user_alert_callback,
-        void *param);
+	void RegisterAlertCallback(alert_callback* user_alert_callback, void *param);
 
-	virtual error_messages&	getErrMessages();
+	AlertCodes& getAlertCodes();
+  void setAlertCodes(AlertCodes* c);
 
-	virtual	void clearAlertList();
+	void clearAlertList();
 
-public:
-	error_messages  * err_messages;
+protected:
+	AlertCodes      * theAlertCodes;
 
 	//if ZorbaErrorAlertsImpl::xquery_registered_callback is not specified, call this callback
-public:
 	alert_callback	* thread_registered_callback;
 	void						* thread_registered_param;
-
 };
 
 }//end namespace xqp

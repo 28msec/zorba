@@ -24,7 +24,7 @@
 
 #include "context/common.h"
 #include "context/static_context.h"
-#include "util/zorba.h"
+#include "system/zorba.h"
 #include "util/tracer.h"
 #include "util/list.h"
 #include "store/api/item.h"

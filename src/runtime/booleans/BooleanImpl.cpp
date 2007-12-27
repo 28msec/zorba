@@ -6,8 +6,8 @@
 #include "system/globalenv.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "types/casting.h"
-#include "util/zorba.h"
-#include "errors/Error.h"
+#include "system/zorba.h"
+#include "errors/error_factory.h"
 #include "runtime/accessors//AccessorsImpl.h"
 #include "store/api/temp_seq.h"
 #include "runtime/visitors/planitervisitor.h"
@@ -41,12 +41,12 @@ namespace xqp
     if ( item == NULL )
     {
       // empty sequence => false
-      result = zorba::getItemFactory()->createBoolean ( negate ^ false );
+      result = Zorba::getItemFactory()->createBoolean ( negate ^ false );
     }
     else if ( item->isNode() )
     {
       // node => true
-      result = zorba::getItemFactory()->createBoolean ( negate ^ true );
+      result = Zorba::getItemFactory()->createBoolean ( negate ^ true );
     }
     else
     {
@@ -72,11 +72,11 @@ namespace xqp
         // => effective boolean value is defined in the items
         result = item->getEBV();
         if (negate)
-          result = zorba::getItemFactory()->createBoolean ( negate ^ result->getBooleanValue() );
+          result = Zorba::getItemFactory()->createBoolean ( negate ^ result->getBooleanValue() );
       }
       else
       {
-        ZORBA_ERROR_ALERT( error_messages::FORG0006,
+        ZORBA_ERROR_ALERT( AlertCodes::FORG0006,
             &loc, false, "Wrong arguments in fn:boolean function.");
       }
     }
@@ -122,7 +122,7 @@ namespace xqp
               || FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1)->getBooleanValue();;
       break;
     }
-    STACK_PUSH(zorba::getItemFactory()->createBoolean(bRes), state);
+    STACK_PUSH(Zorba::getItemFactory()->createBoolean(bRes), state);
     STACK_END();
   }
   /* end class LogicIterator */
@@ -160,8 +160,8 @@ namespace xqp
       // TODO Optimizations for >, >=, < and <=
       lIter0 = new PlanIteratorWrapper ( theChild0, planState );
       lIter1 = new PlanIteratorWrapper ( theChild1, planState );
-      temp0 = zorba::getStore()->createTempSeq ( lIter0 );
-      temp1 = zorba::getStore()->createTempSeq ( lIter1 );
+      temp0 = Zorba::getStore()->createTempSeq ( lIter0 );
+      temp1 = Zorba::getStore()->createTempSeq ( lIter1 );
       i0 = 1;
       found = false;
       while ( !found && temp0->containsItem ( i0 ) )
@@ -176,24 +176,24 @@ namespace xqp
         i0++;
       }
   
-      STACK_PUSH ( zorba::getItemFactory()->createBoolean ( found ), state );
+      STACK_PUSH ( Zorba::getItemFactory()->createBoolean ( found ), state );
     } /* if general comparison */
     else if ( this->isValueComparison() )
     {
       if ( ( ( aItem0 = this->consumeNext ( theChild0, planState ) ) != NULL )
               && ( ( aItem1 = this->consumeNext ( theChild1, planState ) ) !=NULL ) )
       {
-        STACK_PUSH ( zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( aItem0, aItem1, theCompType ) ), state );
+        STACK_PUSH ( Zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( aItem0, aItem1, theCompType ) ), state );
         if ( this->consumeNext ( theChild0, planState ) != NULL || this->consumeNext ( theChild1, planState ) != NULL )
         {
-          ZORBA_ERROR_ALERT( error_messages::XPTY0004,
+          ZORBA_ERROR_ALERT( AlertCodes::XPTY0004,
               &loc, false, "Value comparions must not be made with sequences with length greater 1.");
         }
       }
     } /* if value comparison */
     else if ( this->isNodeComparison() )
     {
-      ZORBA_ERROR_ALERT( error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+      ZORBA_ERROR_ALERT( AlertCodes::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
           &loc, false, "Node comparison is not yet implemented.");
     } /* if node comparison */
   
@@ -347,7 +347,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
         break;
     }
 
-  ZORBA_ERROR_ALERT( error_messages::FORG0006, NULL, false, "Cannot compare given types.");
+  ZORBA_ERROR_ALERT( AlertCodes::FORG0006, NULL, false, "Cannot compare given types.");
   return false;
 }
   

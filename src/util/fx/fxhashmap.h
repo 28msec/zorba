@@ -39,7 +39,7 @@
 #include "util/fx/fxvector.h"
 #include "util/hashfun.h"
 #include "util/rchandle.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 
 using namespace std;
 namespace xqp {
@@ -408,7 +408,7 @@ THROW_XQP_EXCEPTION
   if (n > MAX_KEYLEN)
   {
     ZORBA_ERROR_ALERT_OSS(
-          error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
+          AlertCodes::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
           NULL, false,///dont continue execution, stop here
           n, MAX_KEYLEN);
   }
@@ -442,7 +442,7 @@ THROW_XQP_EXCEPTION
     ostr1 << n;
     ostr2 << MAX_KEYLEN;
     ZORBA_ERROR_ALERT(
-           error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
+           AlertCodes::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
            NULL, false,///dont continue execution, stop here
            ostr1.str(), ostr2.str());///param1 and param2 for error message
   }
@@ -472,7 +472,7 @@ THROW_XQP_EXCEPTION
   if (n > MAX_KEYLEN)
   {
     ZORBA_ERROR_ALERT(
-           error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
+           AlertCodes::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
            NULL, false,
            n, MAX_KEYLEN);
   }

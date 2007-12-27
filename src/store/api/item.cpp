@@ -9,13 +9,16 @@
 
 #include "store/api/item.h"
 
-#include "errors/errors.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
+
+#include "system/zorba_engine.h"
+
 #include "runtime/core/item_iterator.h"
 #include "api/serialization/serializer.h"
 
 namespace xqp
 {
+
 Item::~Item()
 {
 }
@@ -23,7 +26,7 @@ Item::~Item()
 
 void Item::showError() const
 {
-  ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED, NULL);
+  ZORBA_ERROR_ALERT(AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED, NULL);
 }
 
 
@@ -37,7 +40,7 @@ xqp_string Item::show() const
 void Item::serializeXML( ostream& os )
 {
   serializer *ser;
-  ser = zorba::getZorbaForCurrentThread()->getItemSerializer();
+  ser = ZORBA_FOR_CURRENT_THREAD()->getItemSerializer();
   
   ser->serialize(this, os);
 }
@@ -70,7 +73,7 @@ Item_t AtomicItem::getAtomizationValue() const
 
 Iterator_t AtomicItem::getTypedValue() const
 {
-  PlanIter_t planIter = new SingletonIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue());
+  PlanIter_t planIter = new SingletonIterator(ZORBA_FOR_CURRENT_THREAD()->GetCurrentLocation(), this->getAtomizationValue());
   return new PlanWrapper ( planIter );
 }
 /* end class AtomicItem */

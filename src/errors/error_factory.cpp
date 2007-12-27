@@ -1,18 +1,16 @@
 
-#include "zorba_api.h"
-#include "Error.h"
-#include "errors/errors.h"
-#include "user_error.h"
-#include "error_manager.h"
-#include "util/Assert.h"
+#include <time.h>
 #include <iostream>
 #include <iomanip>
 #include <stdlib.h>
-#include "util/zorba.h"
+#include "zorba_api.h"
+#include "error_factory.h"
+#include "error_manager.h"
+#include "util/Assert.h"
+#include "system/zorba.h"
 #include "store/api/item.h"
 #include "runtime/base/iterator.h"
-#include <time.h>
-#include "api/external/xquerybinary.h"
+//#include "api/external/xquerybinary.h"
 
 using namespace std;
 namespace xqp {
@@ -25,13 +23,13 @@ bool					g_abort_when_fatal_error = false;
 #endif
 //end debug
 
-static const char *canonical_err_names [error_messages::MAX_ZORBA_ERROR_CODE + 1];
+static const char *canonical_err_names [AlertCodes::MAX_ZORBA_ERROR_CODE + 1];
 
 static struct canonical_err_names_initializer 
 {
   canonical_err_names_initializer () 
   {
-#define DEF_ERR_CODE( code, name ) canonical_err_names [ error_messages::code ] = #name
+#define DEF_ERR_CODE( code, name ) canonical_err_names [ AlertCodes::code ] = #name
       DEF_ERR_CODE (XPST0001, XPST0001);
       DEF_ERR_CODE (XPDY0002, XPDY0002);
       DEF_ERR_CODE (XPST0003, XPST0003);
@@ -170,14 +168,14 @@ static struct canonical_err_names_initializer
 } canonical_err_names_initializer_obj;
 
 
-void ZorbaErrorAlerts::error_alert( 
-    const error_messages::errcode e,
+void ZorbaAlertFactory::error_alert( 
+    const AlertCodes::error_code e,
     const yy::location *ploc, 
     bool continue_execution,
     const std::string param1,
     const std::string param2)
 {
-	zorba* z = zorba::getZorbaForCurrentThread();
+	Zorba* z = ZORBA_FOR_CURRENT_THREAD();
 	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
 	if(!ploc)
@@ -194,18 +192,18 @@ void ZorbaErrorAlerts::error_alert(
 	std::string err_decoded;
   //	std::ostringstream strloc;
 
-	err_decoded = err_manager->err_messages->err_decode(e);
+	err_decoded = err_manager->getAlertCodes().err_decode(e);
 
-	err_manager->err_messages->ApplyParams(&err_decoded, &param1, &param2);
+	err_manager->getAlertCodes().ApplyParams(&err_decoded, &param1, &param2);
 
   cerr << canonical_err_names [e] << ": " << err_decoded <<  "\n";
 
 //	strloc << *ploc;
 
 	///construct the error message for the user
-	Zorba_ErrorMessage* errmess = new Zorba_ErrorMessage;
+	ZorbaErrorAlert* errmess = new ZorbaErrorAlert;
 
-	errmess->alert_type = Zorba_AlertMessage::ERROR_ALERT;
+	errmess->alert_type = ZorbaAlert::ERROR_ALERT;
 	errmess->error_code = e;
 	errmess->is_fatal = !continue_execution;
 	if(ploc)
@@ -239,15 +237,13 @@ void ZorbaErrorAlerts::error_alert(
 }
 
 
-void ZorbaErrorAlerts::warning_alert( 
-    // const char *file,
-    // const int line,
-    const error_messages::warning_code warn,
+void ZorbaAlertFactory::warning_alert( 
+    const AlertCodes::warning_code warn,
     const yy::location *ploc, 
     const string param1,
     const string param2)
 {
-	zorba	*z = zorba::getZorbaForCurrentThread();
+	Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
 	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 	if(!ploc)
 	{
@@ -263,13 +259,13 @@ void ZorbaErrorAlerts::warning_alert(
 	std::string warning_decoded;
 //	std::ostringstream strloc;
 
-	warning_decoded = err_manager->err_messages->warning_decode(warn);
-	err_manager->err_messages->ApplyParams(&warning_decoded, &param1, &param2);
+	warning_decoded = err_manager->getAlertCodes().warning_decode(warn);
+	err_manager->getAlertCodes().ApplyParams(&warning_decoded, &param1, &param2);
 
 	///construct the warning message for the user
-	Zorba_WarningMessage	*warnmess = new Zorba_WarningMessage;
+	ZorbaWarningAlert	*warnmess = new ZorbaWarningAlert;
 
-	warnmess->alert_type = Zorba_AlertMessage::WARNING_ALERT;
+	warnmess->alert_type = ZorbaAlert::WARNING_ALERT;
 	warnmess->warning_code = warn;
 	if(ploc)
 	{
@@ -285,56 +281,48 @@ void ZorbaErrorAlerts::warning_alert(
 }
 
 
-void ZorbaErrorAlerts::notify_event( 
-    // const char *file,
-    // const int line,
-    const error_messages::NotifyEvent_code notif_event,
-    //	const yy::location loc, 
+void ZorbaAlertFactory::notify_event( 
+    const AlertCodes::NotifyEvent_code notif_event,
     const string param1,
     const string param2)
 {
 	std::string notif_decoded;
-	zorba	*z = zorba::getZorbaForCurrentThread();
+	Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
 	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
-	notif_decoded = err_manager->err_messages->notify_event_decode(notif_event);
-	err_manager->err_messages->ApplyParams(&notif_decoded, &param1, &param2);
+	notif_decoded = err_manager->getAlertCodes().notify_event_decode(notif_event);
+	err_manager->getAlertCodes().ApplyParams(&notif_decoded, &param1, &param2);
 
 	///construct the notify message for the user
-	Zorba_NotifyMessage		*notifymess = new Zorba_NotifyMessage;
+	ZorbaNotifyAlert		*notifymess = new ZorbaNotifyAlert;
 
-	notifymess->alert_type = Zorba_AlertMessage::NOTIFICATION_ALERT;
+	notifymess->alert_type = ZorbaAlert::NOTIFICATION_ALERT;
 	notifymess->notif_code = notif_event;
 	notifymess->alert_description = notif_decoded;
 	time(&notifymess->time_of_alert);
+
 	err_manager->sendAlertToUser(z, notifymess);
-
-
-	//	cout << file << "[" << line << "]:" << endl;
-
-//	cout << " --> " << notif_decoded << std::endl;
-
 }
 
 
 //return the index of the option chosen by user
-int ZorbaErrorAlerts::ask_user(
-    const error_messages::AskUserString_code ask_string,
-    const error_messages::AskUserStringOptions_code ask_string_options,
+int ZorbaAlertFactory::ask_user(
+    const AlertCodes::AskUserString_code ask_string,
+    const AlertCodes::AskUserStringOptions_code ask_string_options,
     const string param1,
     const string param2)
 {
 	std::string ask_user_decoded;
-	zorba	*z = zorba::getZorbaForCurrentThread();
+	Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
 	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
-	ask_user_decoded = err_manager->err_messages->ask_user_decode(ask_string);
-	err_manager->err_messages->ApplyParams(&ask_user_decoded, &param1, &param2);
+	ask_user_decoded = err_manager->getAlertCodes().ask_user_decode(ask_string);
+	err_manager->getAlertCodes().ApplyParams(&ask_user_decoded, &param1, &param2);
 
 	///construct the ask user message for the user
-	Zorba_AskUserMessage		*askmess = new Zorba_AskUserMessage;
+	ZorbaAskUserAlert		*askmess = new ZorbaAskUserAlert;
 
-	askmess->alert_type = Zorba_AlertMessage::FEEDBACK_REQUEST_ALERT;
+	askmess->alert_type = ZorbaAlert::FEEDBACK_REQUEST_ALERT;
 	askmess->ask_string = ask_string;
 	askmess->ask_string_options = ask_string_options;
 	askmess->alert_description = ask_user_decoded;
@@ -349,119 +337,8 @@ int ZorbaErrorAlerts::ask_user(
 }
 
 
-///from user_error.h
-
-/*
-void DumpItemsAsText( const std::vector<class Item*> *items)
-{
-	std::vector<class Item*>::const_iterator item_it;
-
-	for ( item_it = items->begin( ) ; item_it != items->end( ) ; item_it++ )
-	{
-		cout	<< " =-= " 
-					<< (*item_it)->getStringProperty() 
-					<< "[0x" << hex << (void*)(*item_it) << "]";
-	}
-
-	cout << " =-= " << endl;
-}
-*/
-
-
-/*
-Extract from XQuery spec 2.3 Error Handling:
-
-The errors defined in this specification are identified by QNames that have the form err:XXYYnnnn, where:
-
-err denotes the namespace for XPath and XQuery errors, http://www.w3.org/2005/xqt-errors. This binding of the namespace prefix err is used for convenience in this document, and is not normative.
-
-XX denotes the language in which the error is defined, using the following encoding:
-
-	XP denotes an error defined by XPath. Such an error may also occur XQuery since XQuery includes XPath as a subset.
-
-	XQ denotes an error defined by XQuery.
-
-YY denotes the error category, using the following encoding:
-
-	ST denotes a static error.
-
-	DY denotes a dynamic error.
-
-	TY denotes a type error.
-
-nnnn is a unique numeric code.
-
-*/
-void fn_user_error (QNameItem* err_qname,///optional
-									const std::string description,//optional
-									const std::vector<class Item*> *items)//optional
-{
-	std::string err_decoded;
-	zorba	*z = zorba::getZorbaForCurrentThread();
-	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
-
-	if(err_qname)
-	{
-		std::string	err_uri;
-		std::string	err_localname;
-
-		err_uri = err_qname->getNamespace();
-		err_localname = err_qname->getLocalName();
-
-		if(err_uri == "http://www.w3.org/2005/xqt-errors")///a standard error
-		{
-			///try to identify its description
-			int		err_num;
-
-			err_num = atoi(err_localname.substr(4,4).c_str());
-			
-
-			err_decoded = err_manager->err_messages->err_decode((enum error_messages::errcode)err_num);
-			err_manager->err_messages->ApplyParams(&err_decoded, NULL, NULL);
-
-			///...send err_decoded, description and items to user
-		}
-	}
-
-	///construct the ask user message for the user
-	Zorba_FnErrorMessage		*usererr_mess = new Zorba_FnErrorMessage;
-
-	usererr_mess->alert_type = Zorba_AlertMessage::USER_ERROR_ALERT;
-	usererr_mess->err_qname = err_qname;
-	(std::vector<Item*>)usererr_mess->items_error = *items;///copy the vector of pointers to items
-	usererr_mess->alert_description = description;
-	usererr_mess->err_qname_decoded = err_decoded;
-	time(&usererr_mess->time_of_alert);
-
-	err_manager->sendAlertToUser(z, usererr_mess);
-
-//	cout << "User Error: " << err_decoded << " ( " <<  description << " ) " << endl;
-//	DumpItemsAsText(items);
-
-}
-
-void fn_user_trace (const std::vector<class Item*> *items,
-										const std::string label)
-{
-	///...send notification message label + items to user
-	///construct the ask user message for the user
-	Zorba_FnTraceMessage		*usertrace_mess = new Zorba_FnTraceMessage;
-	zorba	*z = zorba::getZorbaForCurrentThread();
-	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
-
-	usertrace_mess->alert_type = Zorba_AlertMessage::USER_TRACE_ALERT;
-	(std::vector<Item*>)usertrace_mess->items_trace = *items;///copy the vector of poiters to items
-	usertrace_mess->alert_description = label;
-	time(&usertrace_mess->time_of_alert);
-
-	err_manager->sendAlertToUser(z, usertrace_mess);
-
-//	cout << "User Trace: " << label << endl;
-//	DumpItemsAsText(items);
-}
-
 ///from error_api.h
-Zorba_ErrorLocation::Zorba_ErrorLocation()
+ZorbaAlertLocation::ZorbaAlertLocation()
 {
 	filename = "";
 //	module_name = "";
@@ -470,13 +347,13 @@ Zorba_ErrorLocation::Zorba_ErrorLocation()
 }
 
 
-Zorba_AlertMessage::~Zorba_AlertMessage() {}
-Zorba_ErrorMessage::~Zorba_ErrorMessage() {}
-Zorba_WarningMessage::~Zorba_WarningMessage() {}
-Zorba_NotifyMessage::~Zorba_NotifyMessage() {}
-Zorba_AskUserMessage::~Zorba_AskUserMessage() {}
-Zorba_FnErrorMessage::~Zorba_FnErrorMessage() {}
-Zorba_FnTraceMessage::~Zorba_FnTraceMessage() {}
+ZorbaAlert::~ZorbaAlert() {}
+ZorbaErrorAlert::~ZorbaErrorAlert() {}
+ZorbaWarningAlert::~ZorbaWarningAlert() {}
+ZorbaNotifyAlert::~ZorbaNotifyAlert() {}
+ZorbaAskUserAlert::~ZorbaAskUserAlert() {}
+ZorbaFnErrorAlert::~ZorbaFnErrorAlert() {}
+ZorbaFnTraceAlert::~ZorbaFnTraceAlert() {}
 
 
 ///from Assert.h
@@ -484,10 +361,9 @@ void ZorbaAssert(bool assertion, const char *where, const char *what)
 {
 	if (!assertion)
   {
-    ZorbaErrorAlerts::error_alert
-      (error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
-       NULL, false,
-       what, where);
+    ZorbaAlertFactory::error_alert(AlertCodes::XQP0005_SYSTEM_ASSERT_FAILED,
+                                   NULL, false,
+                                   what, where);
 	}
 }
 

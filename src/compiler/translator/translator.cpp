@@ -14,7 +14,7 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "util/tracer.h"
 #include "store/api/item.h"
-#include "util/zorba.h"
+#include "system/zorba.h"
 #include "util/utf8/Unicode_util.h"
 #include "functions/signature.h"
 
@@ -72,7 +72,7 @@ fo_expr *translator::create_seq (yy::location loc)
 translator::translator()
 {
   tempvar_counter = 0;
-  zorp = zorba::getZorbaForCurrentThread();
+  zorp = ZORBA_FOR_CURRENT_THREAD();
   sctx_p = zorp->get_static_context();
   yy::location loc;
   var_expr *ctx_var = bind_var(loc, DOT_VAR, var_expr::context_var);
@@ -130,7 +130,7 @@ void translator::end_visit(const AtomicType& v, void *visit_state)
     GENV_TYPESYSTEM.create_type (sctx_p->lookup_qname ("", qname->get_prefix (), qname->get_localname ()),
                                  TypeSystem::QUANT_ONE);
   if (t == NULL)
-    ZORBA_ERROR_ALERT (error_messages::XPST0051, NULL);
+    ZORBA_ERROR_ALERT (AlertCodes::XPST0051, NULL);
   else
     tstack.push (t);
 }
@@ -1750,7 +1750,7 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
                                  TypeSystem::QUANT_QUESTION);
   if (type != NULL) {
     if (arguments.size () != 1)
-      ZORBA_ERROR_ALERT_OSS (error_messages::XPST0017, NULL, false, prefix + ":" + fname, "?");
+      ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017, NULL, false, prefix + ":" + fname, "?");
     nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
   } else {
     int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
@@ -2927,7 +2927,7 @@ void translator::end_visit(const VarRef& v, void *visit_state)
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
   if (e == NULL)
-    ZORBA_ERROR_ALERT (error_messages::XPST0008, NULL);
+    ZORBA_ERROR_ALERT (AlertCodes::XPST0008, NULL);
   nodestack.push (rchandle<expr> (e));
 }
 

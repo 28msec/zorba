@@ -29,7 +29,6 @@ namespace xqp {
 class ItemFactory;
 class Zorba_XQueryBinary;
 class PlanIterator;
-class error_messages;
 class Store;
 class static_context;
 class ZorbaAlertsManagerImpl;
@@ -39,9 +38,9 @@ class CollationManager;
 
 
 ///Thread Local Storage: this object is global specific to each thread
-class zorba
+class Zorba
 {
-	friend class ZorbaEngine;
+	friend class ZorbaEngineImpl;
 
 public:
 	static Store				* theStore;
@@ -66,30 +65,13 @@ protected:
 	serializer                      * m_doc_serializer;///specific for serializing complete xml
 
 protected:
-
-#ifdef WIN32
-	static DWORD		                  tls_key;
-#elif defined ZORBA_FOR_ONE_THREAD_ONLY
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
-	static pthread_key_t		          tls_key;
-	void static zorba_tls_destructor(void *tls_data);
-#elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
-	static thread_specific_ptr<zorba> tls_key;
-#else
-	static std::map<uint64_t, zorba*>	global_zorbas;
-	static pthread_mutex_t						global_zorbas_mutex;
-#endif
-
-	///functions for accessing global zorba objects for each thread
-protected:
-	zorba();
-	~zorba();
+	Zorba();
+	~Zorba();
 
 public:
   static inline ItemFactory* getItemFactory() { return theItemFactory; }
   static inline Store* getStore() { return theStore; }
 
-public:
 	ZorbaAlertsManagerImpl* getErrorManager();
 
 	::Collator* getCollator(xqp_string collURI = "");
@@ -109,25 +91,8 @@ public:
 
 	static_context* get_static_context();///of the current xquery
 
-	serializer	*getItemSerializer();
-	serializer	*getDocSerializer();
-
-protected:
-	static void initializeZorbaEngine_internal();//Store& store);
-//	static void initializeThread_internal(zorba *new_zorba, 
-//																			error_messages *em,
-//																			char *collator_name,///="root"
-//																			::Collator::ECollationStrength collator_strength);//=Collator::PRIMARY
-	static void uninitializeZorbaEngine_internal();
-public:
-	static void		initializeZorbaEngine();//Store& store);
-	static void		uninitializeZorbaEngine();
-
-	static zorba* getZorbaForCurrentThread();
-	
-	static zorba*	allocateZorbaForCurrentThread();
-	static void		destroyZorbaForCurrentThread();//when ending the thread
-
+	serializer* getItemSerializer();
+	serializer* getDocSerializer();
 };
 
 }	/* namespace xqp */

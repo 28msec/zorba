@@ -34,7 +34,7 @@ OpDurationEqualIterator::nextImpl(PlanState& planState)
       item0 = item0->getAtomizationValue();
       if(item0->getStringValue().length() == 0)
       {
-        STACK_PUSH( zorba::getItemFactory()->createString(resStr), state );
+        STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
       }
       else{
         item1 = consumeNext( theChildren[1], planState );
@@ -54,7 +54,7 @@ OpDurationEqualIterator::nextImpl(PlanState& planState)
                                              (int32_t)round(item2->getDecimalValue()));
             }
           }
-          STACK_PUSH( zorba::getItemFactory()->createString(resStr), state );
+          STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
         }
       }
     }

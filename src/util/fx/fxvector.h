@@ -13,7 +13,7 @@
 #include "util/fx/mmfile.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 
 #ifndef WIN32
 	#include <sys/mman.h>
@@ -258,10 +258,10 @@ protected:
 
 			ostr1 << n;
 			ostr2 << size();
-			ZORBA_ERROR_ALERT(error_messages::XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE,
-															NULL, false,///dont continue execution, stop here
-															ostr1.str(), ostr2.str()///param1 and param2 for error message
-															);
+			ZORBA_ERROR_ALERT(AlertCodes::XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE,
+                        NULL, false,///dont continue execution, stop here
+                        ostr1.str(), ostr2.str()///param1 and param2 for error message
+                        );
 		}
 	}
 

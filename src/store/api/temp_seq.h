@@ -15,6 +15,9 @@
 
 #include <vector>
 
+#include "util/rchandle.h"
+
+
 namespace xqp {
 
 template <class Object> class rchandle;

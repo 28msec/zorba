@@ -24,7 +24,7 @@ int test_api_dynamic_context(const char *result_file_name)
 	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 
 	///thread specific
-	zorba_factory.InitThread();
+	zorba_factory.initThread();
 
 	//do the test
 	ZorbaAlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
@@ -225,7 +225,7 @@ int test_api_dynamic_context(const char *result_file_name)
 	dctx1 = NULL;//free now the dyn context
 
 	result_file << "end of dynamic context test" << endl;
-	zorba_factory.UninitThread();
+	zorba_factory.uninitThread();
 
 	//compare the results with expected result
 	oss2 << "expected_";
@@ -239,7 +239,7 @@ DisplayErrorsAndExit:
 
 	//DisplayErrorListForCurrentThread();
 
-	zorba_factory.UninitThread();
+	zorba_factory.uninitThread();
 
 	assert(false);
 
@@ -249,8 +249,8 @@ DisplayErrorsAndExit:
 //for CTEST
 int dctx_test(int argc, char* argv[])
 {
-	ZorbaEngine::startupZorbaEngine();
+	ZorbaEngine& engine = ZorbaEngine::getInstance();
 	test_api_dynamic_context("dctx_test.txt");
-	ZorbaEngine::shutdownZorbaEngine();
+	engine.shutdown();
 	return 0;
 }

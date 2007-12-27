@@ -300,7 +300,7 @@ void plan_visitor::end_visit(fo_expr& v)
       theConstructorsStack.pop();
     }
   } else {
-    ZORBA_ERROR_ALERT_OSS (error_messages::XPST0017,
+    ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017,
                            &loc, false, func->get_signature ().get_name ()->getStringProperty (), argv.size ());
   }
 }
@@ -482,7 +482,7 @@ bool plan_visitor::begin_visit(axis_step_expr& v)
   default:
   {
     ZORBA_ERROR_ALERT(
-       error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+       AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
        NULL,
        false,
        "Unknown axis kind");

@@ -21,14 +21,14 @@ int test_api_zorba_engine(const char *result_file_name)
 	{
 		ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 		///thread specific
-		zorba_factory.InitThread();
-		zorba_factory.UninitThread();
+		zorba_factory.initThread();
+		zorba_factory.uninitThread();
 	}
 
 	///now start the zorba engine
 	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 
-	zorba_factory.InitThread();
+	zorba_factory.initThread();
 
 	result_file << "InitThread" << endl;
 
@@ -117,7 +117,7 @@ int test_api_zorba_engine(const char *result_file_name)
 
 
 
-	zorba_factory.UninitThread();
+	zorba_factory.uninitThread();
 	result_file << endl;
 	result_file << "UninitThread" << endl;
 
@@ -133,7 +133,7 @@ DisplayErrorsAndExit:
 
 	//DisplayErrorListForCurrentThread();
 
-	zorba_factory.UninitThread();
+	zorba_factory.uninitThread();
 
 	assert(false);
 	return -1; 
@@ -142,8 +142,8 @@ DisplayErrorsAndExit:
 //for CTEST
 int zorba_engine_test(int argc, char* argv[])
 {
-	ZorbaEngine::startupZorbaEngine();
+  ZorbaEngine& engine = ZorbaEngine::getInstance();
 	test_api_zorba_engine("zorba_engine_test.txt");
-	ZorbaEngine::shutdownZorbaEngine();
+	engine.shutdown();
 	return 0;
 }

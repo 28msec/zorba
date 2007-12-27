@@ -7,7 +7,7 @@
 #include "functions/Boolean.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/item_iterator.h"
-#include "util/zorba.h"
+#include "system/zorba.h"
 
 namespace xqp
 {
@@ -201,7 +201,7 @@ namespace xqp
 	    const yy::location& loc,
 	    vector<PlanIter_t>& argv ) const
 	{
-		return new SingletonIterator ( loc, zorba::getItemFactory()->createBoolean(true) );
+		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(true) );
 	}
 
 	TypeSystem::xqtref_t
@@ -226,7 +226,7 @@ namespace xqp
 	    const yy::location& loc,
 	    vector<PlanIter_t>& argv ) const
 	{
-		return new SingletonIterator ( loc, zorba::getItemFactory()->createBoolean(false) );
+		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(false) );
 	}
 
 	TypeSystem::xqtref_t

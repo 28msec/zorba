@@ -13,7 +13,6 @@
 
 #include "util/fx/fxarray.h"
 #include "util/rchandle.h"
-#include "errors/Error.h"
 
 #include <string>
 #ifndef _WIN32_WCE

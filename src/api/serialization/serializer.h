@@ -29,7 +29,6 @@
 #include <ostream>
 #include "util/rchandle.h"
 #include "store/api/item.h"
-#include "util/list.h"
 
 namespace xqp
 {

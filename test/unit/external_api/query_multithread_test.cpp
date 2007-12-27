@@ -29,11 +29,11 @@ int test_api_query_multithread(const char *result_file_name)
   XQuery_t    query;
 	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 
-	zorba_factory.InitThread();
+	zorba_factory.initThread();
 	query = zorba_factory.createQuery("1+2");
   if(query.isNull())
   {
-		zorba_factory.UninitThread();
+		zorba_factory.uninitThread();
 		return 0;
   }
 	//now execute this query in paralel in 20 threads
@@ -60,7 +60,7 @@ int test_api_query_multithread(const char *result_file_name)
 		pthread_join(pt[i], &thread_result);
 		thread_result_total += (int)thread_result;
 	}
-	zorba_factory.UninitThread();
+	zorba_factory.uninitThread();
 
 	//compare the results with expected result
 	ostringstream		oss2;
@@ -81,7 +81,8 @@ int test_api_query_multithread(const char *result_file_name)
 	return thread_result_total;
 }
 
-void* query_thread( void *param )
+
+void* query_thread(void *param)
 {
 	QUERY_THREAD_PARAM	*query_param = (QUERY_THREAD_PARAM*)param;
 	ofstream		result_file(make_absolute_file_name(query_param->result_file_name.c_str(), __FILE__).c_str());
@@ -94,7 +95,7 @@ void* query_thread( void *param )
 	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 
 	result_file << "InitThread" << endl;
-	zorba_factory.InitThread();
+	zorba_factory.initThread();
 
 
 	//do the test
@@ -142,7 +143,7 @@ void* query_thread( void *param )
 
 
 	result_file << "UninitThread" << endl;
-	zorba_factory.UninitThread();
+	zorba_factory.uninitThread();
 
 	delete query_param;
 	return (void*)0;
@@ -153,17 +154,18 @@ DisplayErrorsAndExit:
 	//DisplayErrorListForCurrentThread();
 
 	result_file << "UninitThread" << endl;
-	zorba_factory.UninitThread();
+	zorba_factory.uninitThread();
 
 	delete query_param;
 	return (void*)-1; 
 }
 
+
 //for CTEST
 int query_multithread_test(int argc, char* argv[])
 {
-	ZorbaEngine::startupZorbaEngine();
+	ZorbaEngine& engine = ZorbaEngine::getInstance();
 	test_api_query_multithread("query_mt_test");//0,1,2,3...19.txt
-	ZorbaEngine::shutdownZorbaEngine();
+	engine.shutdown();
 	return 0;
 }

@@ -2,8 +2,6 @@
 ////using the C++ API
 
 #include "zorba/zorba_api.h"
-//#include "store/naive/basic_item_factory.h"
-//#include "store/naive/simple_store.h"
 
 //for debug
 //#include "../src/compiler/parser/xquery_driver.h"
@@ -23,14 +21,14 @@
 using namespace xqp;
 using namespace std;
 
-int apitest_alert_callback(Zorba_AlertMessage *alert_mess, 
+int apitest_alert_callback(ZorbaAlert *alert_mess, 
                            XQuery*  current_xquery,
                            XQueryExecution* current_xqueryresult,
                            void *param)
 {
 #ifndef NDEBUG
-  if((alert_mess->alert_type != Zorba_AlertMessage::USER_ERROR_ALERT) &&
-    (alert_mess->alert_type != Zorba_AlertMessage::USER_TRACE_ALERT))
+  if((alert_mess->alert_type != ZorbaAlert::USER_ERROR_ALERT) &&
+    (alert_mess->alert_type != ZorbaAlert::USER_TRACE_ALERT))
   {
     cerr << g_error_in_file << " : " << g_error_at_line << endl;
   }
@@ -126,7 +124,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   /// thread specific
 
-  zorba_factory.InitThread();
+  zorba_factory.initThread();
 
   /// register the alerts callback
   ZorbaAlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
@@ -215,8 +213,8 @@ int _tmain(int argc, _TCHAR* argv[])
   // delete query;
   // zorba_factory.destroyQuery(query);
 
-  zorba_factory.UninitThread();
-  ZorbaEngine::shutdownZorbaEngine();
+  zorba_factory.uninitThread();
+  zorba_factory.shutdown();
 
   timer.end();
 
@@ -235,8 +233,8 @@ DisplayErrorsAndExit:
 
   DisplayErrorListForCurrentThread();
 
-  zorba_factory.UninitThread();
-  ZorbaEngine::shutdownZorbaEngine();
+  zorba_factory.uninitThread();
+  zorba_factory.shutdown();
 
   timer.end();
   if (lProp->printTime())

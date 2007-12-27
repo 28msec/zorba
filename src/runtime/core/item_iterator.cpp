@@ -6,8 +6,8 @@
 
 #include "runtime/core/item_iterator.h"
 #include "util/Assert.h"
-#include "util/zorba.h"
-#include "errors/Error.h"
+#include "system/zorba.h"
+#include "errors/error_factory.h"
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"

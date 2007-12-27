@@ -1,8 +1,7 @@
 #ifndef XQP_UTF8_H
 #define XQP_UTF8_H
 
-#include "errors/errors.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 
 using namespace std;
 namespace xqp {
@@ -191,8 +190,7 @@ namespace xqp {
       octet_iterator UTF8Encode(uint32_t cp, octet_iterator result){
     if (!is_code_point_valid(cp))
     {
-        ZORBA_ERROR_ALERT(
-          error_messages::FOCH0001, NULL, true);
+        ZORBA_ERROR_ALERT(AlertCodes::FOCH0001, NULL, true);
     }
     if (cp < 0x80)                        // one octet
       *(result++) = static_cast<uint8_t>(cp);

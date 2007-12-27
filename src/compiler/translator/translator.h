@@ -25,7 +25,7 @@
 
 namespace xqp {
 
-class zorba;
+class Zorba;
 
 class translator : public parsenode_visitor
 {
@@ -36,7 +36,7 @@ public:
 protected:
   typedef std::pair<var_expr_t, expr_t> global_binding;
 
-  zorba* zorp;
+  Zorba* zorp;
   static_context *sctx_p;
   std::stack<expr_t> nodestack;
   std::stack<TypeSystem::xqtref_t> tstack;  // types stack

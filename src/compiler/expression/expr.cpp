@@ -14,9 +14,9 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "util/Assert.h"
 #include "util/tracer.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 #include "compiler/expression/expr_visitor.h"
-#include "util/zorba.h"
+#include "system/zorba.h"
 
 #include <algorithm>
 #include <iostream>
@@ -977,7 +977,7 @@ StoreConsts::NodeKind_t match_expr::getNodeKind() const
   default:
   {
     ZORBA_ERROR_ALERT(
-         error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+         AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
          NULL,
          false,
          "Unknown node test kind");

@@ -1,7 +1,7 @@
 
 #include "collation_manager.h"
 #include <sstream>
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 
 namespace xqp
 {
@@ -72,7 +72,7 @@ CollationManager::getCollation(std::string  coll_string,
 
 	if(U_FAILURE(status)) 
 	{
-		ZORBA_ERROR_ALERT( error_messages::XQST0076, NULL);
+		ZORBA_ERROR_ALERT( AlertCodes::XQST0076, NULL);
 		delete coll_elem;
 		return NULL;
 	}

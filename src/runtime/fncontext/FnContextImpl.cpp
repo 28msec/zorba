@@ -5,7 +5,7 @@
 
 
 #include "runtime/fncontext/FnContextImpl.h"
-#include "api/external/xquerybinary.h"
+#include "api/external/xquery.h"
 #include "context/dynamic_context.h"
 #include "runtime/core/item_iterator.h"
 
@@ -39,10 +39,12 @@ namespace xqp
 //        varName = item->getStringValue();
 //     }
     FINISHED_ALLOCATING_RESOURCES();
+
      // TODO get varname from child iterator
-    iter = zorba::getZorbaForCurrentThread()->current_xqueryresult->internal_dyn_context->get_variable(theVarname);
+    iter = ZORBA_FOR_CURRENT_THREAD()->current_xqueryresult->internal_dyn_context->get_variable(theVarname);
     if (iter == NULL)
-       ZORBA_ERROR_ALERT (error_messages::XPDY0002, &loc);
+       ZORBA_ERROR_ALERT (AlertCodes::XPDY0002, &loc);
+
     do{
       item = iter->next();
       STACK_PUSH (item , aState);

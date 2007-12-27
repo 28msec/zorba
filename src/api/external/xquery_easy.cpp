@@ -1,5 +1,5 @@
 
-#include "xquerybinary_easy.h"
+#include "xquery_easy.h"
 #include "api/external/static_context_wrapper.h"
 #include "api/external/dynamic_context_wrapper.h"
 #include <string.h>

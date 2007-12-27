@@ -30,7 +30,6 @@
 #include "util/fx/fxhashmap.h"
 #include "util/rchandle.h"
 #include "util/utf8/xqpString.h"
-#include "errors/Error.h"
 #include "types/representations.h"
 
 namespace xqp {

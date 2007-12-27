@@ -80,7 +80,7 @@ int test_api_static_context(const char *result_file_name)
 	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 
 	///thread specific
-	zorba_factory.InitThread();
+	zorba_factory.initThread();
 
 	//do the test
 	ZorbaAlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
@@ -420,7 +420,7 @@ int test_api_static_context(const char *result_file_name)
 
 	sctx1 = NULL;//free now the static context
 
-	zorba_factory.UninitThread();
+	zorba_factory.uninitThread();
 
 	//compare the results with expected result
 	oss2 << "expected_";
@@ -434,7 +434,7 @@ DisplayErrorsAndExit:
 
 	//DisplayErrorListForCurrentThread();
 
-	zorba_factory.UninitThread();
+	zorba_factory.uninitThread();
 
 	assert(false);
 	return -1; 
@@ -443,8 +443,8 @@ DisplayErrorsAndExit:
 //for CTEST
 int sctx_test(int argc, char* argv[])
 {
-	ZorbaEngine::startupZorbaEngine();
+  ZorbaEngine& engine = ZorbaEngine::getInstance();
 	test_api_static_context("sctx_test.txt");
-	ZorbaEngine::shutdownZorbaEngine();
+	engine.shutdown();
 	return 0;
 }

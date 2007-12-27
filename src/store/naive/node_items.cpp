@@ -4,20 +4,26 @@
  *
  */
 
+#include <algorithm>
+
+#include "system/zorba.h"
+#include "system/zorba_engine.h"
+
+#include "errors/error_factory.h"
+
 #include "runtime/core/item_iterator.h"
+
 #include "store/naive/node_items.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
 #include "store/api/temp_seq.h"
-#include "util/zorba.h"
-#include <algorithm>
-#include "errors/Error.h"
+
 
 namespace xqp
 {
 
 #define GET_CURRENT_LOCATION() \
-        zorba::getZorbaForCurrentThread()->GetCurrentLocation()
+        ZORBA_FOR_CURRENT_THREAD()->GetCurrentLocation()
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -180,7 +186,7 @@ xqp_string NodeImpl::getDocumentURI() const
 
 bool NodeImpl::equals(Item_t item) const
 {
-  ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+  ZORBA_ERROR_ALERT(AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
       NULL, false, "Equal function for node items not implemented!");
   return false;
 }
@@ -188,7 +194,7 @@ bool NodeImpl::equals(Item_t item) const
 
 Item_t NodeImpl::getEBV() const
 {
-  return zorba::getItemFactory()->createBoolean(true);
+  return GET_FACTORY().createBoolean(true);
 }
 
 
@@ -301,7 +307,7 @@ Iterator_t DocumentNodeImpl::getChildren() const
 
 Iterator_t DocumentNodeImpl::getTypedValue() const
 {
-  Item_t item = zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
+  Item_t item = GET_FACTORY().createUntypedAtomic(getStringProperty());
   PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), item));
   return new PlanWrapper(ret);
 }
@@ -309,7 +315,7 @@ Iterator_t DocumentNodeImpl::getTypedValue() const
 
 Item_t DocumentNodeImpl::getAtomizationValue() const
 {
-  return zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
+  return GET_FACTORY().createUntypedAtomic(getStringProperty());
 }
 
 
@@ -567,7 +573,7 @@ Iterator_t ElementNodeImpl::getChildren() const
 ********************************************************************************/
 Iterator_t ElementNodeImpl::getTypedValue() const
 {
-  Item_t item = zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
+  Item_t item = GET_FACTORY().createUntypedAtomic(getStringProperty());
   PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), item));
   return new PlanWrapper(ret);
 }
@@ -578,7 +584,7 @@ Iterator_t ElementNodeImpl::getTypedValue() const
 ********************************************************************************/
 Item_t ElementNodeImpl::getAtomizationValue() const
 {
-  return zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
+  return GET_FACTORY().createUntypedAtomic(getStringProperty());
 }
 
 
@@ -930,7 +936,7 @@ QNameItem_t CommentNodeImpl::getType() const
 
 Iterator_t CommentNodeImpl::getTypedValue() const
 {
-  const Item_t& item = zorba::getItemFactory()->createString(theContent);
+  const Item_t& item = GET_FACTORY().createString(theContent);
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
   return new PlanWrapper(planIter);
 }
@@ -938,7 +944,7 @@ Iterator_t CommentNodeImpl::getTypedValue() const
 
 Item_t CommentNodeImpl::getAtomizationValue() const
 {
-  return zorba::getItemFactory()->createUntypedAtomic(theContent);
+  return GET_FACTORY().createUntypedAtomic(theContent);
 }
 
 

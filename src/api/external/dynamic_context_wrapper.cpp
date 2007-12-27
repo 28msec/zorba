@@ -2,7 +2,7 @@
 #include "dynamic_context_wrapper.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
-#include "util/zorba.h"
+#include "system/zorba.h"
 #include "runtime/core/item_iterator.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -216,7 +216,7 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 	///fill in with values
 	//for variables with atomic values, create singleton iterators with one item
 	Item_t		atomic_item;
-	ItemFactory		*item_factory = zorba::getItemFactory();
+	ItemFactory* item_factory = Zorba::getItemFactory();
 	SingletonIterator		*one_item_iterator;
 	PlanWrapper					*iterator_plus_state;
 
@@ -375,7 +375,7 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 			break;
 		}
 		
-		one_item_iterator = new SingletonIterator(zorba::null_loc, atomic_item);
+		one_item_iterator = new SingletonIterator(Zorba::null_loc, atomic_item);
 		PlanIter_t		iter_t(one_item_iterator);
 		iterator_plus_state = new PlanWrapper(iter_t);
 		xqp_string		expanded_name;

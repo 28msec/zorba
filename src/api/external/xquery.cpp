@@ -1,7 +1,7 @@
 ///Created: Daniel Turcanu @ IPDevel 
 
-#include "errors/Error.h"
-#include "xquerybinary.h"
+#include "errors/error_factory.h"
+#include "xquery.h"
 
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/translator/translator.h"
@@ -9,7 +9,7 @@
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_dot_visitor.h"
 #include "compiler/parser/xquery_driver.h"
-#include "util/zorba.h"
+#include "system/zorba.h"
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
@@ -21,11 +21,7 @@
 ///to be removed: (when store api is finalized)
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_loader.h"
-//#include "store/naive/simple_temp_seq.h"
-//#include "store/naive/node_items.h"
 #include "store/naive/store_defs.h"
-
-//#include "../../test/timer.h"
 
 #include <iostream>
 #include <fstream>
@@ -59,172 +55,173 @@ Zorba_XQueryBinary::~Zorba_XQueryBinary()
   delete internal_sctx;
 }
 
+
 bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, 
                                  bool routing_mode)
 {
-  zorba *thread_specific_zorba;
-
-  thread_specific_zorba = zorba::getZorbaForCurrentThread();
-  thread_specific_zorba->current_xquery = this;
+  Zorba* zorba = ZORBA_FOR_CURRENT_THREAD();
+  zorba->current_xquery = this;
   
-  try{
-
-  if(is_compiled)
+  try
   {
-    ZORBA_ERROR_ALERT(error_messages::API0004_XQUERY_ALREADY_COMPILED,
-                                  NULL,
-                                  true///continue execution
-                                  );
-    thread_specific_zorba->current_xquery = NULL;
-    return false;
-  }
+    if(is_compiled)
+    {
+      ZORBA_ERROR_ALERT(AlertCodes::API0004_XQUERY_ALREADY_COMPILED,
+                        NULL,
+                        true///continue execution
+                        );
+      zorba->current_xquery = NULL;
+      return false;
+    }
 
-	//if(m_query_text.empty())
-	if(!m_query_text[0])
-	{
-		ZORBA_ERROR_ALERT(error_messages::API0001_XQUERY_STRING_IS_EMPTY,
-																	NULL,
-																	true///continue execution
-																	);
-		//UnregisterCurrentXQueryForCurrentThread( this );
-		thread_specific_zorba->current_xquery = NULL;
-		return false;
-	}
+    if(!m_query_text[0])
+	  {
+      ZORBA_ERROR_ALERT(AlertCodes::API0001_XQUERY_STRING_IS_EMPTY,
+                        NULL,
+                        true///continue execution
+                        );
+      zorba->current_xquery = NULL;
+      return false;
+    }
 
-	if(sctx)
-  {
-    internal_static_context = sctx;
-    //now build the static context
-    StaticContextWrapper    *context_wrapper = static_cast<StaticContextWrapper*>(sctx);
-    internal_sctx = context_wrapper->FillInStaticContext();//return a static_context*
-  }
-  else
-  {
-    internal_sctx = new static_context;
-  }
-  internal_sctx->set_entity_file_uri(m_xquery_source_uri);
+    if(sctx)
+    {
+      internal_static_context = sctx;
+      //now build the static context
+      StaticContextWrapper* context_wrapper = static_cast<StaticContextWrapper*>(sctx);
+      internal_sctx = context_wrapper->FillInStaticContext();//return a static_context*
+    }
+    else
+    {
+      internal_sctx = new static_context;
+    }
+    internal_sctx->set_entity_file_uri(m_xquery_source_uri);
 
   ///reset the error list from error manager
 //  m_error_manager.clear();///delete all alerts from list
 
-	///NOW COMPILE
-	xquery_driver driver;
-	driver.filename = m_xquery_source_uri;
+    ///NOW COMPILE
+    xquery_driver driver;
+    driver.filename = m_xquery_source_uri;
 
-  ///build up the expression tree
-  driver.parse_string(m_query_text);
+    ///build up the expression tree
+    driver.parse_string(m_query_text);
 
-	parsenode* n_p = driver.get_expr();
+    parsenode* n_p = driver.get_expr();
 
-  if (Properties::instance()->printAST())
-	{
-    cout << "Parse tree:\n";
-    ParseNodePrintXMLVisitor lPrintXMLVisitor(std::cout);
-    lPrintXMLVisitor.print(n_p);
-  }    
+    if (Properties::instance()->printAST())
+	  {
+      cout << "Parse tree:\n";
+      ParseNodePrintXMLVisitor lPrintXMLVisitor(std::cout);
+      lPrintXMLVisitor.print(n_p);
+    }    
 	
-  // normalize the expression tree
-  translator nvs;
-  MainModule* mm_p;
-  QueryBody* qb_p;
-  Expr* ex_p;
+    // normalize the expression tree
+    translator nvs;
+    MainModule* mm_p;
+    QueryBody* qb_p;
+    Expr* ex_p;
 
-	if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) 
-	{
-		ZORBA_ERROR_ALERT(error_messages::XPST0003,
-                      NULL,
-                      /* continue_execution = */ true, "Parse error: expecting MainModule");
-		thread_specific_zorba->current_xquery = NULL;
-		return false;
-	}
-	if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL) 
-	{
-		ZORBA_ERROR_ALERT(error_messages::XPST0003,
-                      NULL,
-                      /* continue_execution = */ true, "Parse error: expecting MainModule->QueryBody");
-		//UnregisterCurrentXQueryForCurrentThread( this );
-		thread_specific_zorba->current_xquery = NULL;
-		return false;
-	}
-	if ((ex_p = dynamic_cast<Expr*>(&*qb_p->get_expr()))==NULL) 
-	{
-		ZORBA_ERROR_ALERT(error_messages::XPST0003,
-                      NULL,
-                      /* continue_execution = */ true, 
-                      "Parse error: expecting MainModule->QueryBody->Expr");
-		thread_specific_zorba->current_xquery = NULL;
-		return false;
-	}
+    if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) 
+	  {
+      ZORBA_ERROR_ALERT(AlertCodes::XPST0003,
+                        NULL,
+                        true,
+                        "Parse error: expecting MainModule");
+      zorba->current_xquery = NULL;
+      return false;
+    }
 
-  if (Properties::instance ()->printNormalizedExpressions ())
-    cout << "Expression tree:\n";
-	mm_p->accept(nvs);
-	rchandle<expr> e_h = nvs.pop_nodestack();
+    if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL) 
+	  {
+      ZORBA_ERROR_ALERT(AlertCodes::XPST0003,
+                        NULL,
+                        true,
+                        "Parse error: expecting MainModule->QueryBody");
+      //UnregisterCurrentXQueryForCurrentThread( this );
+      zorba->current_xquery = NULL;
+      return false;
+    }
 
-	if (e_h==NULL) {
-		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED, NULL, true);
-		thread_specific_zorba->current_xquery = NULL;
-		return false;
-	}
+    if ((ex_p = dynamic_cast<Expr*>(&*qb_p->get_expr()))==NULL) 
+	  {
+      ZORBA_ERROR_ALERT(AlertCodes::XPST0003,
+                        NULL,
+                        true, 
+                        "Parse error: expecting MainModule->QueryBody->Expr");
+      zorba->current_xquery = NULL;
+      return false;
+    }
+
+    if (Properties::instance ()->printNormalizedExpressions ())
+      cout << "Expression tree:\n";
+    mm_p->accept(nvs);
+
+    rchandle<expr> e_h = nvs.pop_nodestack();
+    if (e_h == NULL)
+    {
+      ZORBA_ERROR_ALERT(AlertCodes::API0002_COMPILE_FAILED, NULL, true);
+      zorba->current_xquery = NULL;
+      return false;
+    }
   
 
-  normalizer n(thread_specific_zorba->get_static_context());
+    normalizer n(zorba->get_static_context());
 
-  e_h->accept(n);
+    e_h->accept(n);
 
-  if (Properties::instance()->printNormalizedExpressions())
-    e_h->put(cout) << endl;
+    if (Properties::instance()->printNormalizedExpressions())
+      e_h->put(cout) << endl;
 
-  ///now do code generation (generate iterator tree)
+    ///now do code generation (generate iterator tree)
 
-	plan_visitor pvs;
-	e_h->accept(pvs);
-	top_iterator = pvs.pop_itstack();
+    plan_visitor pvs;
+    e_h->accept(pvs);
+    top_iterator = pvs.pop_itstack();
 
-  if (Properties::instance()->printIteratorTree())
-  {
-    cout << "Iterator tree:\n";
-    XMLIterPrinter vp(std::cout);
-    PrinterVisitor pv(vp);
-    top_iterator->accept(pv);
-  }
+    if (Properties::instance()->printIteratorTree())
+    {
+      cout << "Iterator tree:\n";
+      XMLIterPrinter vp(std::cout);
+      PrinterVisitor pv(vp);
+      top_iterator->accept(pv);
+    }
 	
-	if (top_iterator==NULL) {
-		cout << "it_h==NULL\n";
-		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED, NULL, true);
-		thread_specific_zorba->current_xquery = NULL;
-		return false;
-	}
+    if (top_iterator == NULL)
+    {
+      cout << "it_h==NULL\n";
+      ZORBA_ERROR_ALERT(AlertCodes::API0002_COMPILE_FAILED, NULL, true);
+      zorba->current_xquery = NULL;
+      return false;
+    }
 
-  is_compiled = true;
+    is_compiled = true;
 
   }
   catch(xqp_exception &)
   {
-    thread_specific_zorba->current_xquery = NULL;
+    zorba->current_xquery = NULL;
     return false;
   }
   catch(...)
   {
-    thread_specific_zorba->current_xquery = NULL;
+    zorba->current_xquery = NULL;
     throw;
   }
 
-  //UnregisterCurrentXQueryForCurrentThread( this );
-  thread_specific_zorba->current_xquery = NULL;
+  zorba->current_xquery = NULL;
 
   return true;
 }
+
 
 XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dctx)
 {
   ///init thread
   //check if thread is inited, if not do automatic init
   ///and register this xquery as the current xquery executed/compiling in this current thread
-  zorba *thread_specific_zorba;
-
-  thread_specific_zorba = zorba::getZorbaForCurrentThread();
-  thread_specific_zorba->current_xquery = this;
+  Zorba* zorba = ZORBA_FOR_CURRENT_THREAD();
+  zorba->current_xquery = this;
 //  RegisterCurrentXQueryForCurrentThread( this );
 
   try{
@@ -232,11 +229,11 @@ XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dct
   if(!is_compiled)
   {
     cout << "not compiled" << endl;
-    ZORBA_ERROR_ALERT(error_messages::API0003_XQUERY_NOT_COMPILED,
+    ZORBA_ERROR_ALERT(AlertCodes::API0003_XQUERY_NOT_COMPILED,
                                   NULL,
                                   true///continue execution
                                   );
-    thread_specific_zorba->current_xquery = NULL;
+    zorba->current_xquery = NULL;
     return NULL;
   }
 
@@ -250,7 +247,7 @@ XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dct
   Zorba_XQueryExecution* zorba_result = new Zorba_XQueryExecution();
   zorba_result->it_result = top_iterator;
   zorba_result->state_block = stateBlock;
-  zorba_result->state_block->zorp = thread_specific_zorba;
+  zorba_result->state_block->zorp = zorba;
   zorba_result->state_block->xqbinary = this;
 //  zorba_result->state_block->xqexecution = zorba_result;
   if(dctx.get_ptr())
@@ -263,19 +260,19 @@ XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dct
     zorba_result->internal_dyn_context = new dynamic_context;
 	}
 
-  thread_specific_zorba->current_xquery = NULL;
+  zorba->current_xquery = NULL;
 //  RegisterCurrentXQueryForCurrentThread( NULL );
 
   return zorba_result;
   }
   catch(xqp_exception &)
   {
-    thread_specific_zorba->current_xquery = NULL;
+    zorba->current_xquery = NULL;
     return NULL;
   }
   catch(...)
   {
-    thread_specific_zorba->current_xquery = NULL;
+    zorba->current_xquery = NULL;
     throw;
   }
   
@@ -302,7 +299,7 @@ StaticQueryContext_t Zorba_XQueryBinary::getInternalStaticContext()
 
 bool   Zorba_XQueryBinary::serializeQuery(ostream &os)
 {
-  ZORBA_ERROR_ALERT(error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+  ZORBA_ERROR_ALERT(AlertCodes::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
                     NULL,
                     true,///continue execution
                     "Zorba_XQueryBinary::serializeQuery"
@@ -411,7 +408,7 @@ ostream& Zorba_XQueryExecution::serialize( ostream& os )
 {
   serializer *ser;
 	try{
-  ser = zorba::getZorbaForCurrentThread()->getDocSerializer();
+    ser = ZORBA_FOR_CURRENT_THREAD()->getDocSerializer();
 
   ser->serialize(this, os);
 	}
@@ -478,7 +475,7 @@ bool Zorba_XQueryExecution::isError()
 
 void  Zorba_XQueryExecution::AbortQueryExecution()
 {
-  ZORBA_ERROR_ALERT(error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+  ZORBA_ERROR_ALERT(AlertCodes::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
                     NULL,
                     true,///continue execution
                     "AbortQueryExecution"
@@ -529,7 +526,7 @@ bool Zorba_XQueryExecution::SetVariable( xqp_string varname,
 	if(doc_item.isNull())
 		return false;
 
-	one_item_iterator = new SingletonIterator(zorba::null_loc, doc_item);
+	one_item_iterator = new SingletonIterator(Zorba::null_loc, doc_item);
 	PlanIter_t		iter_t(one_item_iterator);
 	iterator_plus_state = new PlanWrapper(iter_t);
 

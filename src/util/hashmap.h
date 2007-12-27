@@ -30,7 +30,7 @@
 #include "util/hashfun.h"
 #include "util/rchandle.h"
 #include "util/rwlock.h"
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 
 
 using namespace std;

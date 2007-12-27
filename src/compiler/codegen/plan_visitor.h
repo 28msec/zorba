@@ -12,7 +12,6 @@
 
 #include "compiler/expression/expr_visitor.h"
 #include "runtime/core/item_iterator.h"
-#include "util/zorba.h"
 #include "util/rchandle.h"
 #include "util/fx/fxhashmap.h"
 

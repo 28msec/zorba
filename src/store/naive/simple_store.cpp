@@ -8,7 +8,7 @@
 
 #include "util/rchandle.h"
 
-#include "errors/Error.h"
+#include "errors/error_factory.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_collection.h"
@@ -149,7 +149,7 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
 {
   if (theCollections.find(uri))
   {
-    ZORBA_ERROR_ALERT_OSS(error_messages::API0005_COLLECTION_ALREADY_EXISTS,
+    ZORBA_ERROR_ALERT_OSS(AlertCodes::API0005_COLLECTION_ALREADY_EXISTS,
                           NULL, true, uri, "");
     return NULL;
   }
@@ -175,7 +175,7 @@ Collection_t SimpleStore::createCollection(Item_t uri)
 {
   if (theCollections.find(uri->getStringValue()))
   {
-    ZORBA_ERROR_ALERT_OSS(error_messages::API0005_COLLECTION_ALREADY_EXISTS,
+    ZORBA_ERROR_ALERT_OSS(AlertCodes::API0005_COLLECTION_ALREADY_EXISTS,
                           NULL,
                           true,
                           uri->getStringValue(), "");
@@ -275,7 +275,7 @@ int32_t SimpleStore::compare(Item_t node1, Item_t node2) const
 {
   if (!node1->isNode() || !node2->isNode())
   {
-    ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
+    ZORBA_ERROR_ALERT(AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
                       NULL,
                       false);
   }

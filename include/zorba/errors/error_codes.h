@@ -17,19 +17,18 @@
  *
  */
 
-#ifndef XQP_ERRORS_H
-#define XQP_ERRORS_H
+#ifndef XQP_ALERT_CODES
+#define XQP_ALERT_CODES
 
 #include <string>
 
-#include "util/rchandle.h"
-
 namespace xqp {
 
-class error_messages : public rcobject
+class AlertCodes
 {
 public:
-	enum errcode {
+	enum error_code
+  {
     // XPath dynamic error
     XPDY0002 = 1,  // evaluation of an expression relies on some part of the dynamic context that has not been assigned a value.
     XPDY0021,  // (Not currently used.)
@@ -353,12 +352,13 @@ public:
 //		SYSTEM_INITIATED_ALERT
 //	};
 
-	virtual std::string err_decode(enum errcode) = 0;
+  virtual ~AlertCodes();
+
+	virtual std::string err_decode(enum error_code) = 0;
 	virtual std::string warning_decode(enum warning_code) = 0;
 	virtual std::string notify_event_decode(enum NotifyEvent_code) = 0;
 	virtual std::string ask_user_decode(enum AskUserString_code) = 0;
 	virtual std::string ask_user_options_decode(enum AskUserStringOptions_code) = 0;
-//	static void err(enum errcode);
 
 	virtual std::string errtype_decode(enum error_type errtype) = 0;
 
@@ -377,15 +377,14 @@ public:
 	bool is_dynamic_err(enum errcode);
 	bool is_type_err(enum errcode);
 	*/
-
 };
 
-//typedef rchandle<error_messages>		error_messages_t;
 
-class errors_english : public error_messages
+
+class errors_english : public AlertCodes
 {
 public:
-	virtual std::string err_decode(enum errcode);
+	virtual std::string err_decode(enum error_code);
 	virtual std::string errtype_decode(enum error_type errtype);
 	virtual std::string warning_decode(enum warning_code);
 	virtual std::string notify_event_decode(enum NotifyEvent_code);
@@ -397,7 +396,7 @@ public:
 	This class reads the error messages from a string table file.
 	No need to recompile the code to use international languages.
 */
-class errors_string_table : public error_messages
+class errors_string_table : public AlertCodes
 {
 public:
 	errors_string_table( std::string file_name );

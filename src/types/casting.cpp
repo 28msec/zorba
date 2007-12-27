@@ -28,8 +28,8 @@
 #include "system/globalenv.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
-#include "util/zorba.h"
-#include "errors/Error.h"
+#include "system/zorba.h"
+#include "errors/error_factory.h"
 
 namespace xqp
 {
@@ -54,40 +54,40 @@ namespace xqp
   
     switch(GENV_TYPESYSTEM.get_atomic_type_code(*aTargetType)) {
       case TypeSystem::XS_ANY_ATOMIC:
-        lItem = zorba::getItemFactory()->createUntypedAtomic(lString);
+        lItem = Zorba::getItemFactory()->createUntypedAtomic(lString);
         break;
       case TypeSystem::XS_STRING:
-        lItem = zorba::getItemFactory()->createString(lString);
+        lItem = Zorba::getItemFactory()->createString(lString);
         break;
       case TypeSystem::XS_NORMALIZED_STRING:
-        lItem = zorba::getItemFactory()->createNormalizedString(lString);
+        lItem = Zorba::getItemFactory()->createNormalizedString(lString);
         break;
       case TypeSystem::XS_TOKEN:
-        lItem = zorba::getItemFactory()->createToken(lString);
+        lItem = Zorba::getItemFactory()->createToken(lString);
         break;
       case TypeSystem::XS_LANGUAGE:
-        lItem = zorba::getItemFactory()->createLanguage(lString);
+        lItem = Zorba::getItemFactory()->createLanguage(lString);
         break;
       case TypeSystem::XS_NMTOKEN:
-        lItem = zorba::getItemFactory()->createNMTOKEN(lString);
+        lItem = Zorba::getItemFactory()->createNMTOKEN(lString);
         break;
       case TypeSystem::XS_NAME:
-        lItem = zorba::getItemFactory()->createName(lString);
+        lItem = Zorba::getItemFactory()->createName(lString);
         break;
       case TypeSystem::XS_NCNAME:
-        lItem = zorba::getItemFactory()->createNCName(lString);
+        lItem = Zorba::getItemFactory()->createNCName(lString);
         break;
       case TypeSystem::XS_ID:
-        lItem = zorba::getItemFactory()->createID(lString);
+        lItem = Zorba::getItemFactory()->createID(lString);
         break;
       case TypeSystem::XS_IDREF:
-        lItem = zorba::getItemFactory()->createIDREF(lString);
+        lItem = Zorba::getItemFactory()->createIDREF(lString);
         break;
       case TypeSystem::XS_ENTITY:
-        lItem = zorba::getItemFactory()->createENTITY(lString);
+        lItem = Zorba::getItemFactory()->createENTITY(lString);
         break;
       case TypeSystem::XS_UNTYPED_ATOMIC:
-        lItem = zorba::getItemFactory()->createUntypedAtomic(lString);
+        lItem = Zorba::getItemFactory()->createUntypedAtomic(lString);
         break;
       case TypeSystem::XS_DATETIME:
         // TODO
@@ -111,112 +111,112 @@ namespace xqp
       {
         xqp_float n;
         if (NumConversions::strToFloat(lString, n))
-          lItem = zorba::getItemFactory()->createFloat(n);
+          lItem = Zorba::getItemFactory()->createFloat(n);
       }
         break;
       case TypeSystem::XS_DOUBLE:
       {
         xqp_double n;
         if (NumConversions::strToDouble(lString, n))
-          lItem = zorba::getItemFactory()->createDouble(n);
+          lItem = Zorba::getItemFactory()->createDouble(n);
       }
         break;
       case TypeSystem::XS_DECIMAL:
       {
         xqp_decimal n;
         if (NumConversions::strToDecimal(lString, n))
-          lItem = zorba::getItemFactory()->createDecimal(n);
+          lItem = Zorba::getItemFactory()->createDecimal(n);
       }
         break;
       case TypeSystem::XS_INTEGER:
       {
         xqp_integer n;
         if (NumConversions::strToInteger(lString, n))
-          lItem = zorba::getItemFactory()->createInteger(n);
+          lItem = Zorba::getItemFactory()->createInteger(n);
       }
         break;
       case TypeSystem::XS_NON_POSITIVE_INTEGER:
       {
         xqp_integer n;
         if (NumConversions::strToInteger(lString, n)) 
-          lItem = zorba::getItemFactory()->createNonPositiveInteger(n);
+          lItem = Zorba::getItemFactory()->createNonPositiveInteger(n);
       }
         break;
       case TypeSystem::XS_NEGATIVE_INTEGER:
       {
         xqp_integer n;
         if (NumConversions::strToInteger(lString, n))
-          lItem = zorba::getItemFactory()->createNegativeInteger(n);
+          lItem = Zorba::getItemFactory()->createNegativeInteger(n);
       }
         break;
       case TypeSystem::XS_LONG:
       {
         xqp_long n;
         if (NumConversions::strToLong(lString, n))
-          lItem = zorba::getItemFactory()->createLong(n);
+          lItem = Zorba::getItemFactory()->createLong(n);
       }
         break;
       case TypeSystem::XS_INT:
       {
         xqp_int n;
         if (NumConversions::strToInt(lString, n))
-          lItem = zorba::getItemFactory()->createInt(n);
+          lItem = Zorba::getItemFactory()->createInt(n);
       }
         break;
       case TypeSystem::XS_SHORT:
       {
         xqp_short n;
         if (NumConversions::strToShort(lString, n))
-          lItem = zorba::getItemFactory()->createShort(n);
+          lItem = Zorba::getItemFactory()->createShort(n);
       }
         break;
       case TypeSystem::XS_BYTE:
       {
         xqp_byte n;
         if (NumConversions::strToByte(lString, n))
-          lItem = zorba::getItemFactory()->createByte(n);
+          lItem = Zorba::getItemFactory()->createByte(n);
       }
         break;
       case TypeSystem::XS_NON_NEGATIVE_INTEGER:
       {
         xqp_uinteger n;
         if (NumConversions::strToUInteger(lString, n))
-          lItem = zorba::getItemFactory()->createNonNegativeInteger(n);
+          lItem = Zorba::getItemFactory()->createNonNegativeInteger(n);
       }
         break;
       case TypeSystem::XS_UNSIGNED_LONG:
       {
         xqp_ulong n;
         if (NumConversions::strToULong(lString, n))
-          lItem = zorba::getItemFactory()->createUnsignedLong(n);
+          lItem = Zorba::getItemFactory()->createUnsignedLong(n);
       }
         break;
       case TypeSystem::XS_UNSIGNED_INT:
       {
         xqp_uint n;
         if (NumConversions::strToUInt(lString, n))          
-          lItem = zorba::getItemFactory()->createUnsignedInt(n);
+          lItem = Zorba::getItemFactory()->createUnsignedInt(n);
       }
         break;
       case TypeSystem::XS_UNSIGNED_SHORT:
       {
         xqp_ushort n;
         if (NumConversions::strToUShort(lString, n))
-          lItem = zorba::getItemFactory()->createUnsignedShort(n);
+          lItem = Zorba::getItemFactory()->createUnsignedShort(n);
       }
         break;
       case TypeSystem::XS_UNSIGNED_BYTE:
       {
         xqp_ubyte n;
         if (NumConversions::strToUByte(lString, n))
-          lItem = zorba::getItemFactory()->createUnsignedByte(n);
+          lItem = Zorba::getItemFactory()->createUnsignedByte(n);
       }
         break;
       case TypeSystem::XS_POSITIVE_INTEGER:
       {
         xqp_integer n;
         if (NumConversions::strToInteger(lString, n))
-          lItem = zorba::getItemFactory()->createPositiveInteger(n);
+          lItem = Zorba::getItemFactory()->createPositiveInteger(n);
       }
         break;
       case TypeSystem::XS_GYEAR_MONTH:
@@ -244,7 +244,7 @@ namespace xqp
       case TypeSystem::XS_HEXBINARY:
         break;
       case TypeSystem::XS_ANY_URI:
-        lItem = zorba::getItemFactory()->createAnyURI(lString);
+        lItem = Zorba::getItemFactory()->createAnyURI(lString);
         break;
       case TypeSystem::XS_QNAME:
       {
@@ -253,16 +253,16 @@ namespace xqp
         xqpString lPrefix = "";
         int32_t lIndex = lString.indexOf(":");
         if (lIndex < 0) {
-          lItem = &*zorba::getItemFactory()->createQName(lNamespace, lPrefix, lString);
+          lItem = &*Zorba::getItemFactory()->createQName(lNamespace, lPrefix, lString);
         } else {
           lPrefix = lString.substr(0, lIndex);
           xqpString lLocal = lString.substr(lIndex + 1);
-          lItem = &*zorba::getItemFactory()->createQName(lNamespace, lPrefix, lLocal);
+          lItem = &*Zorba::getItemFactory()->createQName(lNamespace, lPrefix, lLocal);
         }
       }
         break;
       case TypeSystem::XS_NOTATION:
-        lItem = zorba::getItemFactory()->createNOTATION(lString);
+        lItem = Zorba::getItemFactory()->createNOTATION(lString);
         break;
       default:
         // TODO parsing of user defined types
@@ -288,7 +288,7 @@ namespace xqp
 #endif
     if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(FLOAT)))
     {
-      Item_t lFloatItem = zorba::getItemFactory()->createFloat(0);
+      Item_t lFloatItem = Zorba::getItemFactory()->createFloat(0);
       if (lFloatItem->equals(aSourceItem))
         lRetValue = false;
 
@@ -296,14 +296,14 @@ namespace xqp
       
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DOUBLE)))
     {
-      Item_t lDoubleItem = zorba::getItemFactory()->createDouble(0);
+      Item_t lDoubleItem = Zorba::getItemFactory()->createDouble(0);
       if (lDoubleItem->equals(aSourceItem))
         lRetValue = false;
 
       // TODO check NaN
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DECIMAL)))
     {
-      Item_t lDecimalItem = zorba::getItemFactory()->createDecimal(0);
+      Item_t lDecimalItem = Zorba::getItemFactory()->createDecimal(0);
       if (lDecimalItem->equals(aSourceItem))
         lRetValue = false;
 
@@ -311,7 +311,7 @@ namespace xqp
 
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(INTEGER)))
     {
-      Item_t lIntegerItem = zorba::getItemFactory()->createInteger(0);
+      Item_t lIntegerItem = Zorba::getItemFactory()->createInteger(0);
       if (lIntegerItem->equals(aSourceItem))
         lRetValue = false;
 
@@ -325,12 +325,12 @@ namespace xqp
         lRetValue = false;
       else if (lString != "true" && lString != "1")
       {
-        ZORBA_ERROR_ALERT(error_messages::FORG0001, false, "String cannot be cast to boolean");
+        ZORBA_ERROR_ALERT(AlertCodes::FORG0001, false, "String cannot be cast to boolean");
       }
       
     }
 
-    return zorba::getItemFactory()->createBoolean(lRetValue);
+    return Zorba::getItemFactory()->createBoolean(lRetValue);
   }
 #undef ATOMIC_TYPE
 
@@ -347,7 +347,7 @@ namespace xqp
     
     lResult = stringSimpleCast(aItem, lItemType, aTargetType);
     if ( lResult == 0 ) {
-      ZORBA_ERROR_ALERT(error_messages::FORG0001, false, 
+      ZORBA_ERROR_ALERT(AlertCodes::FORG0001, false, 
         false, "Passed item is not castable to passed target type."
       );
     }
@@ -357,8 +357,8 @@ namespace xqp
 //     if ( !GENV_TYPESYSTEM.is_atomic ( *aTargetType ) )
 //     {
 //       ZorbaErrorAlerts::error_alert (
-//           error_messages::FORG0001_Invalid_value_for_cast_constructor,
-//           error_messages::STATIC_ERROR,
+//           AlertCodes::FORG0001_Invalid_value_for_cast_constructor,
+//           AlertCodes::STATIC_ERROR,
 //           false,
 //           "Item cannot be casted to the declared type!"
 //       );
@@ -384,8 +384,8 @@ namespace xqp
 //           if ( *pEnd != '\0' )
 //           {
 //             ZorbaErrorAlerts::error_alert (
-//                 error_messages::FORG0001_Invalid_value_for_cast_constructor,
-//                 error_messages::STATIC_ERROR,
+//                 AlertCodes::FORG0001_Invalid_value_for_cast_constructor,
+//                 AlertCodes::STATIC_ERROR,
 //                 NULL,
 //                 false,
 //                 "Cannot convert \"" + item->getStringValue() + "\" to a double!"
@@ -402,8 +402,8 @@ namespace xqp
 //         else
 //         {
 //           ZorbaErrorAlerts::error_alert (
-//               error_messages::FORG0001_Invalid_value_for_cast_constructor,
-//               error_messages::STATIC_ERROR,
+//               AlertCodes::FORG0001_Invalid_value_for_cast_constructor,
+//               AlertCodes::STATIC_ERROR,
 //               NULL,
 //               false,
 //               "Numeric casting of a non numeric type"
@@ -415,8 +415,8 @@ namespace xqp
 //         break;
 //       default:
 //         ZorbaErrorAlerts::error_alert (
-//             error_messages::FORG0001_Invalid_value_for_cast_constructor,
-//             error_messages::STATIC_ERROR,
+//             AlertCodes::FORG0001_Invalid_value_for_cast_constructor,
+//             AlertCodes::STATIC_ERROR,
 //             false,
 //             "Item cannot be casted to the declared type!"
 //         );

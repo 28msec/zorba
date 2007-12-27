@@ -7,7 +7,6 @@
  *`
  */
 
-#include "util/zorba.h"
 #include "store/api/temp_seq.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/basic_item_factory.h"
