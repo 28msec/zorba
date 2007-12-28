@@ -36,7 +36,7 @@ return string-join ((
 $tc/@name, $tc/@FilePath, $tc/query/@name,
 string-join (for $i in $tc/input-file return concat (data ($i/@variable), "=", $i/text ()), ":"),
 if ($out) then $out else "",
-$tc/expected-error[1]/text()
+string-join ($tc/expected-error/text(), ":")
 ), " ")),
 "
 ")
@@ -60,18 +60,24 @@ if (m/^%src /) {
   next;
 }
 
-my ($name, $path, $query, $inlist, $out, $err) = split (/ /);
+my ($name, $path, $query, $inlist, $out, $errlist) = split (/ /);
+my @inbnd = split (/:/, $inlist);
+my @errs = split (/:/, $errlist);
 my $inpath = "Queries/XQuery/$path";
 my $dstqpath="$repo/test/rbkt/Queries/w3c_testsuite/$path";
-`mkdir -p $dstqpath`;
 my $dstrespath = "$repo/test/rbkt/ExpQueryResults/w3c_testsuite/$path";
 my $fullout = "$dstrespath/$name.xml.res";
-`mkdir -p $dstrespath`;
+my $specfile = "$dstqpath/$name.spec";
+`mkdir -p $dstqpath`; `mkdir -p $dstrespath`;
 
-my @inbnd = split (/:/, $inlist);
+copy ("$inpath/$query.xq", "$dstqpath/$name.xq");
+if ($out) {
+  copy ("ExpectedTestResults/$path/$out", $fullout);
+}
+
 if (@inbnd) {
-  open (SPEC, ">$dstqpath/$name.spec");
-  print SPEC "-x";
+  open (SPEC, ">>$specfile");
+  print SPEC "Args:-x";
   foreach (@inbnd) {
     my ($var, $srcid) = split /=/;
     print SPEC " $var=$repo/test/rbkt/" . $sources {$srcid};
@@ -80,20 +86,20 @@ if (@inbnd) {
   close (SPEC);
 }
 
-copy ("$inpath/$query.xq", "$dstqpath/$name.xq");
-
-if ($err) {
-  open (RES, ">$fullout");
-  print RES "$err\n";
-  close (RES);
-} else {
-  copy ("ExpectedTestResults/$path/$out", $fullout);
+if (@errs) {
+  open (SPEC, ">>$specfile");
+  foreach (@errs) {
+    print SPEC "Error:$_\n";
+  }
+  close (SPEC);
 }
 }
 ' $SRC
 rm -f $q
 
+echo "Importing test sources..."
 mv TestSources $SRC/test/rbkt/
+find $SRC/test/rbkt/TestSources -name '*.xq' -exec rm {} \;
 
 echo "Cleaning up work directory..."
 cd $d0; rm -rf "$d"

@@ -11,44 +11,76 @@
 rm -f "$2" "$2.err"
 
 QNAME=`dirname $3`/`basename $3 .xq`
-if test -f $QNAME.spec; then SPEC=`cat $QNAME.spec`; else SPEC=""; fi
+REFRES=$4/$5
 
-echo "executing command: $1/test/apitest -q -r -o $2 $SPEC $3"
+SPEC=$QNAME.spec
+if test -f $QNAME.spec; then
+    XARGS=`egrep ^Args: $SPEC| cut -f2- -d:`
+    ERRS=`egrep ^Error: $SPEC | cut -f2- -d:`
+else
+    SPEC=""
+    XARGS=""
+    ERRS=""
+fi
 
-$1/test/apitest -q -r -o "$2" $SPEC "$3" 2> "$2.err" # execute the query
+if test \( ! -f $REFRES \) -a \( "x$ERRS" = "x" \); then
+    echo No reference result and no expected errors for $2
+    exit 1
+fi
+
+echo "executing command: $1/test/apitest -q -r -o $2 $XARGS $3"
+
+$1/test/apitest -q -r -o "$2" $XARGS "$3" 2> "$2.err" # execute the query
 RETURNVALUE=$?
 if [ $RETURNVALUE -ne 0 ]
 then
-  echo "ERROR: $1/test/apitest -q -r -o $2 $3 failed with error code ${RETURNVALUE}"
-  exit ${RETURNVALUE}
-else
-  # if there's an error message...
-  test -s "$2.err" && cat "$2.err" | head -1 | cut -f1 -d':' > "$2"
+    echo "ERROR: $1/test/apitest -q -r -o $2 $3 failed with error code ${RETURNVALUE}"
+    exit ${RETURNVALUE}
+fi
 
-  echo
-  echo "Result"
-  cat "$2"
-  echo
-  
-  # tidy the result
-  cat "$2" | "$4/Scripts/tidy_xmlfrag" > "$2.tidy" # tidy the generated result and store it in the build dir
-  
-  if test -f "$4/$5"; then  # ref result exists
-    # tidy the ref result
-    cat "$4/$5" | "$4/Scripts/tidy_xmlfrag" > "$1/test/rbkt/$5.tidy"
-    
-    # diff the result
-    diff "$2.tidy" "$1/test/rbkt/$5.tidy" > "$1/test/rbkt/$5.diff"
-    RETURNVALUE=$?
-    
-    if test $RETURNVALUE -ne 0; then
-      echo "Diff against expected result"
-      cat "$1/test/rbkt/$5.diff"
-      exit $RETURNVALUE
-    fi
-    exit 0
-  else
-    echo "reference result does not exist " "$4/$5"
-    exit 1
-  fi
+# if there's an error message...
+if test -s "$2.err"; then
+    cat "$2.err" | head -1 | cut -f1 -d':' > "$2"
+    ACTUAL_ERR=`cat $2`
+else
+    ACTUAL_ERR=""
+fi
+
+echo
+echo "Result"
+cat "$2"
+echo
+
+# tidy the generated result and store it in the build dir
+cat "$2" | "$4/Scripts/tidy_xmlfrag" > "$2.tidy"
+
+# produce and tidy the ref result
+{
+    if test $ACTUAL_ERR; then
+        if test "$ERRS" && egrep "^Error:$ACTUAL_ERR" $SPEC &> /dev/null; then
+            # proper error was reported
+            echo $ACTUAL_ERR
+        else  # unexpected error was reported
+            if test "$ERRS"; then  # other errors were expected
+                echo $ERRS
+            else  # no errors were expected
+                cat $REFRES
+            fi
+        fi
+    else  # no actual error
+        if test -f $REFRES; then
+            cat $REFRES
+        else  # ... but an error was expected
+            echo $ERRS
+        fi
+    fi;
+    } | "$4/Scripts/tidy_xmlfrag" > "$1/test/rbkt/$5.tidy"
+
+diff "$2.tidy" "$1/test/rbkt/$5.tidy" > "$1/test/rbkt/$5.diff"
+RETURNVALUE=$?
+
+if test $RETURNVALUE -ne 0; then
+    echo "Diff against expected result"
+    cat "$1/test/rbkt/$5.diff"
+    exit $RETURNVALUE
 fi
