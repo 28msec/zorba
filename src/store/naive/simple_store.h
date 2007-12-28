@@ -57,10 +57,10 @@ protected:
 public:
   xqpStringStore_t     theEmptyNs;
   xqpStringStore_t     theXmlSchemaNs;
-  QNameItem_t          theUntypedType;
-  QNameItem_t          theAnyType;
-  QNameItem_t          theUntypedAtomicType;
-  QNameItem_t          theQNameType;
+  Item_t               theUntypedType;
+  Item_t               theAnyType;
+  Item_t               theUntypedAtomicType;
+  Item_t               theQNameType;
 
 protected:
   bool                 theIsInitialized;

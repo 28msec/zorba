@@ -51,7 +51,7 @@ public:
 
 public:
 	// XQuery signature (name+arity)
-	const QNameItem_t& get_fname() const { return sig.get_name(); }
+	const Item_t& get_fname() const { return sig.get_name(); }
 	void set_signature(signature& _sig) { sig = _sig; }
     const signature& get_signature() const { return sig; }
 

@@ -66,18 +66,6 @@ namespace xqp
     return false;
   }
 
-  bool xqpStringStore::hashEqual(const xqpStringStore& src) const
-  {
-    if (this == &src)
-      return true;
-    
-    if(hash() == src.hash() && byteEqual(src))
-      return true;
-
-    return false;
-  }
-
-
   xqpString::xqpString()
   {
     theStrStore = new xqpStringStore("");

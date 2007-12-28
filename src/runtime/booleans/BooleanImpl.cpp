@@ -50,7 +50,7 @@ namespace xqp
     }
     else
     {
-      rchandle<QNameItem> lType = item->getType();
+      rchandle<Item> lType = item->getType();
       std::string str = lType->getLocalName();
       str = lType->getPrefix();
       str = lType->getNamespace();

@@ -10,6 +10,7 @@ SET(STORE_SRCS
     naive/simple_store.cpp
     naive/simple_loader.cpp
     naive/ordpath.cpp
+    naive/nsbindings.cpp
     util/string_pool.cpp)
 
 

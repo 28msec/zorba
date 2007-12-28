@@ -34,7 +34,7 @@ BasicItemFactory::~BasicItemFactory()
 }
 
 
-QNameItem_t BasicItemFactory::createQName(
+Item_t BasicItemFactory::createQName(
     const xqpStringStore_t& ns,
     const xqpStringStore_t& pre,
     const xqpStringStore_t& local)
@@ -43,36 +43,31 @@ QNameItem_t BasicItemFactory::createQName(
 }
 
 
-QNameItem_t BasicItemFactory::createQName(
+Item_t BasicItemFactory::createQName(
     const xqp_string& ns,
     const xqp_string& pre,
     const xqp_string& local)
 {
-  xqpStringStore_t ns_t(&ns.getStore());
-  xqpStringStore_t pre_t(&pre.getStore());
-  xqpStringStore_t local_t(&local.getStore());
+  xqpStringStore_t ns_t(ns.getStore());
+  xqpStringStore_t pre_t(pre.getStore());
+  xqpStringStore_t local_t(local.getStore());
 
   return theQNamePool->insert(ns_t, pre_t, local_t);
 }
 
 
-QNameItem_t BasicItemFactory::createQName(
+Item_t BasicItemFactory::createQName(
     const char* ns,
     const char* pre,
     const char* ln)
 {
-  if (ns == NULL) ns = "";
-  if (pre == NULL) pre = "";
-
-  Assert(ln != NULL && *ln != '\0');
-
   return theQNamePool->insert(ns, pre, ln);
 }
 
 
 Item_t BasicItemFactory::createAnyURI(const xqpStringStore_t& value)
 {
-  theUriPool->insert(*value);
+  theUriPool->insert(value.get_ptr());
   return new AnyUriItemImpl(value);
 }
 
@@ -80,7 +75,7 @@ Item_t BasicItemFactory::createAnyURI(const xqpStringStore_t& value)
 Item_t BasicItemFactory::createAnyURI(const xqp_string& value)
 {
   theUriPool->insert(value.getStore());
-  return new AnyUriItemImpl(xqpStringStore_t(&value.getStore()));
+  return new AnyUriItemImpl(xqpStringStore_t(value.getStore()));
 }
 
 
@@ -100,7 +95,7 @@ Item_t BasicItemFactory::createUntypedAtomic(const xqpStringStore_t& value)
 
 Item_t BasicItemFactory::createUntypedAtomic(const xqp_string& value)
 {
-  return new UntypedAtomicItemNaive(xqpStringStore_t(&value.getStore()));
+  return new UntypedAtomicItemNaive(xqpStringStore_t(value.getStore()));
 }
 
 
@@ -112,7 +107,7 @@ Item_t BasicItemFactory::createString(const xqpStringStore_t& value)
 
 Item_t BasicItemFactory::createString(const xqp_string& value)
 {
-  return new StringItemNaive(xqpStringStore_t(&value.getStore()));
+  return new StringItemNaive(xqpStringStore_t(value.getStore()));
 }
 
 
@@ -426,8 +421,8 @@ Item_t BasicItemFactory::createDocumentNode(
   This method is used by the zorba runtime (during node construction).
 ********************************************************************************/
 Item_t BasicItemFactory::createElementNode(
-    const QNameItem_t&       name,
-    const QNameItem_t&       type,
+    const Item_t&            name,
+    const Item_t&            type,
     Iterator_t&              childrenIte,
     Iterator_t&              attributesIte,
     Iterator_t&              namespacesIte,
@@ -451,7 +446,7 @@ Item_t BasicItemFactory::createElementNode(
     bool           typePreserve,
     bool           nsPreserve)
 {
-  return new ElementNodeImpl(ELEM_NODE(sourceNode), typePreserve, nsPreserve, true);
+  return new ElementNodeImpl(NULL, ELEM_NODE(sourceNode), typePreserve, nsPreserve);
 }
 
 
@@ -459,11 +454,11 @@ Item_t BasicItemFactory::createElementNode(
 
 ********************************************************************************/
 Item_t BasicItemFactory::createAttributeNode(
-    const QNameItem_t& name,
-    const QNameItem_t& type,
-    const Item_t&      lexicalValue,
-    const Item_t&      typedValue,
-    bool               createId)
+    const Item_t& name,
+    const Item_t& type,
+    const Item_t& lexicalValue,
+    const Item_t& typedValue,
+    bool          createId)
 { 
   return new AttributeNodeImpl(name,
                                type,
@@ -479,7 +474,7 @@ Item_t BasicItemFactory::createAttributeNode(
     const Item_t&  sourceNode,
     bool           typePreserve)
 {
-  return new AttributeNodeImpl(ATTR_NODE(sourceNode), typePreserve);
+  return new AttributeNodeImpl(NULL, ATTR_NODE(sourceNode), typePreserve);
 }
 
 
@@ -490,13 +485,13 @@ Item_t BasicItemFactory::createTextNode(
     const xqp_string& value,
     bool createId)
 {
-  return new TextNodeImpl(xqpStringStore_t(&value.getStore()), createId);
+  return new TextNodeImpl(xqpStringStore_t(value.getStore()), createId);
 }
 
 
 Item_t BasicItemFactory::createTextNode(const Item_t&  sourceNode)
 {
-  return new TextNodeImpl(TEXT_NODE(sourceNode));
+  return new TextNodeImpl(NULL, TEXT_NODE(sourceNode));
 }
 
 
@@ -507,13 +502,13 @@ Item_t BasicItemFactory::createCommentNode(
     const xqp_string& comment,
     bool              createId)
 {
-  return new CommentNodeImpl(xqpStringStore_t(&comment.getStore()), createId);
+  return new CommentNodeImpl(xqpStringStore_t(comment.getStore()), createId);
 }
 
 
 Item_t BasicItemFactory::createCommentNode(const Item_t&  sourceNode)
 {
-  return new CommentNodeImpl(COMMENT_NODE(sourceNode));
+  return new CommentNodeImpl(NULL, COMMENT_NODE(sourceNode));
 }
 
 
@@ -525,15 +520,15 @@ Item_t BasicItemFactory::createPiNode(
     const xqp_string& data,
     bool createId)
 {
-  return new PiNodeImpl(xqpStringStore_t(&target.getStore()),
-                        xqpStringStore_t(&data.getStore()),
+  return new PiNodeImpl(xqpStringStore_t(target.getStore()),
+                        xqpStringStore_t(data.getStore()),
                         createId);
 }
 
 
 Item_t BasicItemFactory::createPiNode(const Item_t&  sourceNode)
 {
-  return new PiNodeImpl(PI_NODE(sourceNode));
+  return new PiNodeImpl(NULL, PI_NODE(sourceNode));
 }
 
 } /* namespace xqp */

@@ -48,7 +48,7 @@ typedef rchandle<TypeIdentifier> type_ident_ref_t;
 
 class NamedTypeIdentifier : public TypeIdentifier {
   public:
-    NamedTypeIdentifier(quantifier_t quantifier, QNameItem_t name)
+    NamedTypeIdentifier(quantifier_t quantifier, Item_t name)
       : TypeIdentifier(quantifier), m_name(name) { }
 
     virtual kind_t get_kind() const
@@ -56,13 +56,13 @@ class NamedTypeIdentifier : public TypeIdentifier {
       return NAMED_TYPE;
     }
 
-    const QNameItem_t get_name() const
+    const Item_t get_name() const
     {
       return m_name;
     }
 
   protected:
-    QNameItem_t m_name;
+    Item_t m_name;
 };
 
 class ContentTypeHolder {

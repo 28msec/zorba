@@ -133,7 +133,7 @@ ElementIterator::nextImpl(PlanState& planState)
   Iterator_t awrapper = 0;
   Iterator_t nwrapper = 0;
   Item_t lItem;
-  QNameItem_t lQName;
+  Item_t lQName;
   
   static_context* sctx = NULL;
 
@@ -152,7 +152,7 @@ ElementIterator::nextImpl(PlanState& planState)
   lItem = consumeNext(theQNameIter, planState);
   // parsing of QNameItem does not have to be checked because 
   // the compiler wraps an xs:qname cast around the expression
-  lQName = (QNameItem*)&*lItem;
+  lQName = (Item*)&*lItem;
 
   if (theChildrenIter != 0)
     cwrapper = new PlanIteratorWrapper(theChildrenIter, planState);
@@ -380,7 +380,7 @@ AttributeIterator::nextImpl(PlanState& planState)
   Item_t itemFirst;
   Item_t itemLexical;
   Item_t itemTyped;
-  QNameItem_t lQName;
+  Item_t lQName;
   xqp_string lexicalString;
 
   PlanIteratorState* state;
@@ -389,7 +389,7 @@ AttributeIterator::nextImpl(PlanState& planState)
   itemCur = consumeNext(theChild0, planState);
   // parsing of QNameItem does not have to be checked because 
   // the compiler wraps an xs:qname cast around the expression
-  lQName = (QNameItem*)&*itemCur;
+  lQName = (Item*)&*itemCur;
 
   if ((itemFirst = consumeNext(theChild1, planState)) != 0)
   {

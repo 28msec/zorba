@@ -22,7 +22,7 @@ NodeNameTest::NodeNameTest(rchandle<xqpStringStore> uri, rchandle<xqpStringStore
     }
 }
 
-NodeNameTest::NodeNameTest(rchandle<QNameItem> qname)
+NodeNameTest::NodeNameTest(rchandle<Item> qname)
   : m_kind(CONSTANT),
   m_uri(qname->getNamespace().theStrStore),
   m_local(qname->getLocalName().theStrStore)

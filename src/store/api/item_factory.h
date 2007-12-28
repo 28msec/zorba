@@ -23,7 +23,6 @@ namespace xqp
 template <class Object> class rchandle;
 
 typedef rchandle<class Item> Item_t;
-typedef rchandle<class QNameItem> QNameItem_t;
 typedef rchandle<class AnyUriItem> AnyUriItem_t;
 typedef rchandle<class NodeItem> NodeItem_t;
 
@@ -44,17 +43,17 @@ public:
    * @param prefix prefix of the qname
    * @param localName local name of the qname
    */
-  virtual QNameItem_t createQName(
+  virtual Item_t createQName(
         const xqpStringStore_t& namespace_p,
         const xqpStringStore_t& prefix,
         const xqpStringStore_t& localName) = 0;
 
-  virtual QNameItem_t createQName(
+  virtual Item_t createQName(
         const xqp_string& namespace_p,
         const xqp_string& prefix,
         const xqp_string& localName) = 0;
 
-  virtual QNameItem_t createQName(
+  virtual Item_t createQName(
         const char* ns,
         const char* pre,
         const char* ln) = 0;
@@ -448,8 +447,8 @@ public:
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createElementNode (
-			  const QNameItem_t&       name,
-        const QNameItem_t&       type,
+			  const Item_t&            name,
+        const Item_t&            type,
         Iterator_t&              childrenIte,
         Iterator_t&              attributesIte,
         Iterator_t&              namespacesIte,
@@ -472,8 +471,8 @@ public:
    * Implementations might only store the typed value.
    */
   virtual Item_t createAttributeNode (
-			  const QNameItem_t& name,
-        const QNameItem_t& type,
+			  const Item_t& name,
+        const Item_t& type,
         const Item_t& lexicalValue,
         const Item_t& typedValue,
         bool createId) = 0;

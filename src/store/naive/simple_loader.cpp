@@ -11,6 +11,8 @@
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/node_items.h"
 #include "store/naive/store_defs.h"
+#include "store/naive/qname_pool.h"
+#include "store/naive/nsbindings.h"
 
 using namespace std;
 
@@ -18,6 +20,8 @@ namespace xqp
 {
 
 #ifndef NDEBUG
+
+//#define LOCAL_DEBUG
 
 #ifdef LOCAL_DEBUG
 #define LOADER_TRACE(msg)                                                     \
@@ -200,6 +204,8 @@ void XmlLoader::startDocument(void * ctx)
   DOC_NODE(docNode)->setId(loader.theNodeId);
   loader.theNodeId.pushChild();
 
+  LOADER_TRACE("Doc Node = " << docNode.get_ptr());
+
   loader.theRootNode = docNode;
   loader.theNodeStack.push(docNode);
   loader.theNodeStack.push(NULL);
@@ -279,73 +285,22 @@ void XmlLoader::startElement(
   SimpleStore& store = GET_STORE();
   BasicItemFactory& factory = GET_FACTORY();
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+  QNamePool& qnpool = store.getQNamePool();
 
   unsigned long numAttributes = (unsigned long)numAttrs;
   unsigned long numBindings = (unsigned long)numNamespaces;
-  NamespaceBindings nsBindings;
-
-  LOADER_TRACE("Element name ["
-               << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
-               << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
 
   // Name and type
-  QNameItem_t qname = factory.createQName(reinterpret_cast<const char*>(uri),
-                                          reinterpret_cast<const char*>(prefix),
-                                          reinterpret_cast<const char*>(lname));
-
-  QNameItem_t tname = store.theAnyType;
-
-  // Namespace bindings
-  for (unsigned long i = 0; i < numBindings; ++i)
-  {
-    const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
-    const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
-
-    xqpStringStore_t pooledNs;
-    store.getNamespacePool().insert(nsuri, pooledNs);
-
-    nsBindings.push_back(std::pair<xqp_string, xqp_string>(prefix, pooledNs));
-
-    LOADER_TRACE("namespace decl: [" << (prefix != NULL ? prefix : "")
-                 << ":" << nsuri << "]");
-  }
-
-  // Attributes
-  NodeVector* attrNodes = NULL;
-
-  if (numAttributes > 0)
-  {
-    attrNodes = new NodeVector(numAttributes);
-
-    unsigned long index = 0;
-    for (unsigned long i = 0; i < numAttributes; ++i, index += 5)
-    {
-      const char* lname = reinterpret_cast<const char*>(attributes[index]);
-      const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
-      const char* uri = reinterpret_cast<const char*>(attributes[index+2]);
-      const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
-      const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
-
-      QNameItem_t qname = factory.createQName(uri, prefix, lname);
-      QNameItem_t tname = store.theUntypedAtomicType;
-
-      xqpStringStore_t value(new xqpStringStore(valueBegin, valueEnd));
-      Item_t lexVal = factory.createString(value);
-      Item_t typedVal = factory.createUntypedAtomic(value);
-
-      Item_t attrNode(new AttributeNodeImpl(qname, tname, lexVal, typedVal,
-                                            false, false, false));
-
-      (*attrNodes)[i] = attrNode;
-
-      LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
-                   << ":" << lname << " (" << (uri != NULL ? uri : "NULL")
-                   << ")]" << std::endl << "  Attribute value: " << value);
-    }
-  }
+  Item_t qname = qnpool.insert(reinterpret_cast<const char*>(uri),
+                               reinterpret_cast<const char*>(prefix),
+                               reinterpret_cast<const char*>(lname));
+  Item_t tname = store.theAnyType;
 
   // Create the element node and assign it an id.
-  Item_t elemItem(new ElementNodeImpl(qname, tname, nsBindings));
+  Item_t elemItem(new ElementNodeImpl(qname.get_ptr(),
+                                      tname.get_ptr(),
+                                      numBindings,
+                                      numAttributes));
 
   ElementNodeImpl* elemNode = ELEM_NODE(elemItem);
 
@@ -357,29 +312,72 @@ void XmlLoader::startElement(
                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
                << " Element Node = " << elemNode);
 
-  // Connect the element node with its attributes and vice-versa
-  for (unsigned long i = 0; i < numAttributes; ++i)
-  {
-    NodeImpl* attrNode = BASE_NODE((*attrNodes)[i]);
-    attrNode->setParent(elemNode);
-    attrNode->setId(loader.theNodeId);
-    loader.theNodeId.nextChild();
-  }
-
-  elemNode->attributes().move(attrNodes);
-
-  // Push the ns bindings of the element node to the bindings stack
-  if (!nsBindings.empty())
-  {
-    loader.theBindingsStack.push(elemNode->getNsBindingsCtx());
-  }
-
   // Push element node to the node stack
   if (loader.theNodeStack.empty())
     loader.theRootNode = elemItem;
 
   loader.theNodeStack.push(elemItem);
   loader.theNodeStack.push(NULL);
+
+  // Process namespace bindings
+  if (numBindings > 0)
+  {
+    NamespaceBindings& bindings = elemNode->getNsContext()->getBindings();
+
+    for (unsigned long i = 0; i < numBindings; ++i)
+    {
+      const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
+      const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
+
+      xqpStringStore_t pooledNs;
+      store.getNamespacePool().insert(nsuri, pooledNs);
+
+      bindings[i].first = prefix;
+      bindings[i].second = pooledNs;
+
+      LOADER_TRACE("namespace decl: [" << (prefix != NULL ? prefix : "")
+                   << ":" << nsuri << "]");
+    }
+
+    loader.theBindingsStack.push(elemNode->getNsContext());
+  }
+
+  // Process attributes
+  if (numAttributes > 0)
+  {
+    NodeVector& attrNodes = elemNode->attributes();
+
+    unsigned long index = 0;
+    for (unsigned long i = 0; i < numAttributes; ++i, index += 5)
+    {
+      const char* lname = reinterpret_cast<const char*>(attributes[index]);
+      const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
+      const char* uri = reinterpret_cast<const char*>(attributes[index+2]);
+      const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
+      const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
+
+      Item_t qname = qnpool.insert(uri, prefix, lname);
+      Item_t tname = store.theUntypedAtomicType;
+
+      xqpStringStore_t value(new xqpStringStore(valueBegin, valueEnd));
+      Item_t lexVal = factory.createString(value);
+      Item_t typedVal = factory.createUntypedAtomic(value);
+
+      Item_t attrItem(new AttributeNodeImpl(qname, tname, lexVal, typedVal,
+                                            false, false, false));
+      NodeImpl* attrNode = BASE_NODE(attrItem);
+
+      attrNodes[i] = attrItem;
+
+      attrNode->setParent(elemNode);
+      attrNode->setId(loader.theNodeId);
+      loader.theNodeId.nextChild();
+
+      LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
+                   << ":" << lname << " (" << (uri != NULL ? uri : "NULL")
+                   << ")]" << std::endl << "  Attribute value: " << value->c_str());
+    }
+  }
 }
 
   
@@ -400,10 +398,6 @@ void  XmlLoader::endElement(
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
-  LOADER_TRACE("Element name ["
-               << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
-               << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
-
   // Collect the children of this element node from the node stack
   std::vector<Item_t> revChildNodes;
   Item_t childNode = loader.theNodeStack.top();
@@ -417,6 +411,11 @@ void  XmlLoader::endElement(
 
   // The element node is now at the top of the stack
   ElementNodeImpl* elemNode = ELEM_NODE(loader.theNodeStack.top());
+
+  LOADER_TRACE("Element name ["
+               << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
+               << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
+               << " Element Node = " << elemNode);
 
   // For each child, make this element node its parent and fix its namespace
   // bindings context. Note: the children were popped from the stack in reverse
@@ -435,13 +434,13 @@ void  XmlLoader::endElement(
     if ((*it)->getNodeKind() == StoreConsts::elementNode)
     {
       if (!loader.theBindingsStack.empty())
-        ELEM_NODE(*it)->setNsBindingsCtx(loader.theBindingsStack.top());
+        ELEM_NODE(*it)->setNsContext(loader.theBindingsStack.top());
       else
-        ELEM_NODE(*it)->setNsBindingsCtx(NULL);
+        ELEM_NODE(*it)->setNsContext(NULL);
     }
   }
 
-  if (elemNode->getNsBindingsCtx() != NULL)
+  if (elemNode->getNsContext() != NULL)
   {
     loader.theBindingsStack.pop();
   }
@@ -470,6 +469,9 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   BASE_NODE(textNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();
 
+  LOADER_TRACE("Text Node = " << textNode.get_ptr() 
+               << "content = " << content->c_str());
+
   if (loader.theNodeStack.empty())
     loader.theRootNode = textNode;
 
@@ -495,6 +497,9 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
   BASE_NODE(textNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();
+
+  LOADER_TRACE("Text Node = " << textNode.get_ptr() 
+               << "content = " << content->c_str());
 
   if (loader.theNodeStack.empty())
     loader.theRootNode = textNode;

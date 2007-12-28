@@ -31,17 +31,17 @@ public:
 
   virtual ~BasicItemFactory();
 
-  virtual QNameItem_t createQName(
+  virtual Item_t createQName(
         const xqpStringStore_t& ns,
         const xqpStringStore_t& pre,
         const xqpStringStore_t& local);
 
-  virtual QNameItem_t createQName(
+  virtual Item_t createQName(
         const xqp_string& ns,
         const xqp_string& pre,
         const xqp_string& local);
 
-  virtual QNameItem_t createQName(
+  virtual Item_t createQName(
         const char* ns,
         const char* pre,
         const char* ln);
@@ -175,8 +175,8 @@ public:
 
 
   virtual Item_t createElementNode(
-        const QNameItem_t&       name,
-        const QNameItem_t&       type,
+        const Item_t&            name,
+        const Item_t&            type,
         Iterator_t&              childrenIte,
         Iterator_t&              attributesIte,
         Iterator_t&              namespacesIte,
@@ -191,11 +191,11 @@ public:
 
 
   virtual Item_t createAttributeNode(
-        const QNameItem_t&       name,
-        const QNameItem_t&       type,
-        const Item_t&            lexicalValue,
-        const Item_t&            typedValue,
-        bool                     createId);
+        const Item_t&  name,
+        const Item_t&  type,
+        const Item_t&  lexicalValue,
+        const Item_t&  typedValue,
+        bool           createId);
 
   virtual Item_t createAttributeNode(
         const Item_t&  sourceNode,

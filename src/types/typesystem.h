@@ -16,7 +16,6 @@ class NodeTest;
 class NodeNameTest;
 class NodeTest;
 
-typedef rchandle<class QNameItem> QNameItem_t;
 
 /*
  * Interface used by other parts of zorba to ask questions about types.
@@ -173,7 +172,7 @@ class TypeSystem {
     type_ident_ref_t get_type_identifier(const XQType& type) const;
 
     /* Factory Methods */
-    xqtref_t create_type(QNameItem_t qname, quantifier_t quantifier) const;
+    xqtref_t create_type(Item_t qname, quantifier_t quantifier) const;
 
     xqtref_t create_type(const TypeIdentifier& ident) const;
 
@@ -181,7 +180,7 @@ class TypeSystem {
 
     xqtref_t create_atomic_type(atomic_type_code_t type_code, quantifier_t quantifier) const;
 
-    inline xqtref_t create_atomic_type(QNameItem_t qname, quantifier_t quantifier) const;
+    inline xqtref_t create_atomic_type(Item_t qname, quantifier_t quantifier) const;
 
     xqtref_t create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, quantifier_t quantifier) const;
 
@@ -197,14 +196,14 @@ class TypeSystem {
 
     xqtref_t create_none_type() const;
 
-    QNameItem_t XS_ANY_TYPE_QNAME;
+    Item_t XS_ANY_TYPE_QNAME;
 
-    QNameItem_t XS_ANY_SIMPLE_TYPE_QNAME;
+    Item_t XS_ANY_SIMPLE_TYPE_QNAME;
 
-    QNameItem_t XS_UNTYPED_QNAME;
+    Item_t XS_UNTYPED_QNAME;
 
 #define ATOMIC_DECL(basename) \
-    QNameItem_t XS_##basename##_QNAME; \
+    Item_t XS_##basename##_QNAME; \
     TypeSystem::xqtref_t basename##_TYPE_ONE;\
     TypeSystem::xqtref_t basename##_TYPE_QUESTION; \
     TypeSystem::xqtref_t basename##_TYPE_STAR; \
@@ -284,8 +283,8 @@ class TypeSystem {
   private:
 
     TypeSystem::xqtref_t *m_atomic_typecode_map[ATOMIC_TYPE_CODE_LIST_SIZE][QUANTIFIER_LIST_SIZE];
-    QNameItem_t *m_atomic_typecode_qname_map[ATOMIC_TYPE_CODE_LIST_SIZE];
-    typedef std::map<QNameItem_t, atomic_type_code_t> qnametype_map_t;
+    Item_t *m_atomic_typecode_qname_map[ATOMIC_TYPE_CODE_LIST_SIZE];
+    typedef std::map<Item_t, atomic_type_code_t> qnametype_map_t;
     qnametype_map_t m_atomic_qnametype_map;
 
     static const bool ATOMIC_SUBTYPE_MATRIX[ATOMIC_TYPE_CODE_LIST_SIZE][ATOMIC_TYPE_CODE_LIST_SIZE];
@@ -436,7 +435,7 @@ class NoneXQType : public XQType {
     TYPE_FRIENDS
 };
 
-inline TypeSystem::xqtref_t TypeSystem::create_type(QNameItem_t qname, TypeSystem::quantifier_t quantifier) const
+inline TypeSystem::xqtref_t TypeSystem::create_type(Item_t qname, TypeSystem::quantifier_t quantifier) const
 {
   if (m_atomic_qnametype_map.find(qname) != m_atomic_qnametype_map.end()) {
     return create_atomic_type(qname, quantifier);
@@ -458,7 +457,7 @@ inline TypeSystem::xqtref_t TypeSystem::create_atomic_type(TypeSystem::atomic_ty
   return *m_atomic_typecode_map[type_code][quantifier];
 }
 
-inline TypeSystem::xqtref_t TypeSystem::create_atomic_type(QNameItem_t qname, TypeSystem::quantifier_t quantifier) const
+inline TypeSystem::xqtref_t TypeSystem::create_atomic_type(Item_t qname, TypeSystem::quantifier_t quantifier) const
 {
   qnametype_map_t::const_iterator i = m_atomic_qnametype_map.find(qname);
   assert(i != m_atomic_qnametype_map.end());

@@ -16,6 +16,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
+#include "store/naive/nsbindings.h"
 #include "store/api/temp_seq.h"
 
 
@@ -46,6 +47,7 @@ NodeVector::~NodeVector()
   clear();
 }
 
+
 void NodeVector::clear()
 {
   if (theNodes != 0)
@@ -74,7 +76,7 @@ NodeVector& NodeVector::operator=(const NodeVector& v)
   return *this;
 }
 
-
+/*
 void NodeVector::move(NodeVector* v)
 {
   clear();
@@ -85,7 +87,7 @@ void NodeVector::move(NodeVector* v)
     //daniel v->theNodes = 0;
   }
 }
-
+*/
 
 unsigned long NodeVector::size() const
 {
@@ -293,7 +295,7 @@ DocumentNodeImpl::~DocumentNodeImpl()
 }
 
 
-QNameItem_t DocumentNodeImpl::getType() const
+Item_t DocumentNodeImpl::getType() const
 {
   return GET_STORE().theAnyType;
 }
@@ -366,20 +368,24 @@ xqp_string DocumentNodeImpl::show() const
   Constructor used by the xml SAX loader.
 ********************************************************************************/
 ElementNodeImpl::ElementNodeImpl(
-    const QNameItem_t&       name,
-    const QNameItem_t&       type,
-    const NamespaceBindings& nsBindings)
+    Item*         name,
+    Item*         type,
+    unsigned long numBindings,
+    unsigned long numAttributes)
   :
   NodeImpl(false),
   theName(name),
-  theType(type),
+  theTypeName(type),
   theFlags(0)
 {
-  if (!nsBindings.empty())
+  if (numBindings > 0)
   {
-    theNsBindings = new NsBindingsContext(nsBindings);
+    theNsContext = new NsBindingsContext(numBindings);
     theFlags |= NodeImpl::HaveLocalBindings;
   }
+
+  if (numAttributes > 0)
+    theAttributes.resize(numAttributes);
 }
 
 
@@ -388,8 +394,8 @@ ElementNodeImpl::ElementNodeImpl(
   a direct or computed element construction expression.
 ********************************************************************************/
 ElementNodeImpl::ElementNodeImpl(
-    const QNameItem_t&       name,
-    const QNameItem_t&       type,
+    const Item_t&            name,
+    const Item_t&            type,
     Iterator_t&              childrenIte,
     Iterator_t&              attributesIte,
     Iterator_t&              namespacesIte,
@@ -399,7 +405,7 @@ ElementNodeImpl::ElementNodeImpl(
   :
   NodeImpl(assignId),
   theName(name),
-  theType(type),
+  theTypeName(type),
   theFlags(NodeImpl::IsConstructed)
 {
   Assert(namespacesIte == NULL);
@@ -451,7 +457,7 @@ ElementNodeImpl::ElementNodeImpl(
 
   if (!nsBindings.empty())
   {
-    theNsBindings = new NsBindingsContext(nsBindings);
+    theNsContext = new NsBindingsContext(nsBindings);
     theFlags |= NodeImpl::HaveLocalBindings;
   }
 }
@@ -460,44 +466,102 @@ ElementNodeImpl::ElementNodeImpl(
 /*******************************************************************************
   Copy constructor used during the evaluation of an enclosed expression inside
   a node construction expression.
+
+  Note: "parent" will be NULL iff we are copying a node N that is returned by
+  the enclosed expr. If we are copying a node in the subtree of N, "parent" will
+  be non-NULL. 
 ********************************************************************************/
 ElementNodeImpl::ElementNodeImpl(
+    const NodeImpl*        parent,
     const ElementNodeImpl* src,
     bool                   typePreserve,
-    bool                   nsPreserve,
-    bool                   isRoot)
+    bool                   nsPreserve)
   :
   NodeImpl(false),
   theName(src->getNodeName()),
   theFlags(NodeImpl::IsConstructed | NodeImpl::IsCopy)
 {
-  if (nsPreserve)
-    theFlags |= NodeImpl::NsPreserve;
+  theParent = const_cast<NodeImpl*>(parent);
 
   if (typePreserve)
-    theFlags |= NodeImpl::TypePreserve;
-
-  theType = (typePreserve ? src->getType() : GET_STORE().theUntypedType);
-
-  if (nsPreserve)
   {
-    if (isRoot)
-    {
-      theNsBindings = new NsBindingsContext(src->getNamespaceBindings());
-    }
-    else if (src->haveLocalBindings())
-    {
-      theNsBindings = new NsBindingsContext(src->getNsBindingsCtx()->getBindings());
-      theFlags |= NodeImpl::HaveLocalBindings;
-    }
+    theFlags |= NodeImpl::TypePreserve;
+    theTypeName = src->getType();
   }
   else
   {
-    Assert(0);
+    theTypeName = GET_STORE().theUntypedType;
   }
 
   theAttributes = src->theAttributes;
   theChildren = src->theChildren;
+
+  if (nsPreserve)
+  {
+    theFlags |= NodeImpl::NsPreserve;
+
+    if (parent == NULL)
+    {
+      if (src->haveLocalBindings())
+      {
+        theNsContext = new NsBindingsContext(src->getNamespaceBindings());
+        theFlags |= NodeImpl::HaveLocalBindings;
+      }
+    }
+    else if (src->haveLocalBindings())
+    {
+      theNsContext = new NsBindingsContext(src->getNsContext()->getBindings());
+      theNsContext->setParent(parent->getNsContext());
+      theFlags |= NodeImpl::HaveLocalBindings;
+    }
+    else
+    {
+      theNsContext = parent->getNsContext();
+    }
+  }
+  else
+  {
+    xqpString prefix;
+    xqpStringStore_t ns;
+    std::auto_ptr<NsBindingsContext> nsContext(new NsBindingsContext);
+
+    prefix = theName->getPrefix();
+
+    ns = (parent != NULL ? parent->getNsContext()->findBinding(prefix) : NULL);
+    if (ns == NULL)
+    {
+      ns = src->getNsContext()->findBinding(prefix);
+      Assert(ns != NULL);
+      nsContext->addBinding(prefix, ns);
+      theFlags |= NodeImpl::HaveLocalBindings;
+    }
+
+    unsigned long numAttrs = numAttributes();
+
+    for (unsigned long i = 0; i < numAttrs; i++)
+    {
+      prefix = theAttributes[i]->getNodeName()->getPrefix();
+
+      ns = (parent != NULL ? parent->getNsContext()->findBinding(prefix) : NULL);
+      if (ns == NULL)
+      {
+        ns = src->getNsContext()->findBinding(prefix);
+        Assert(ns != NULL);
+        nsContext->addBinding(prefix, ns);
+        theFlags |= NodeImpl::HaveLocalBindings;
+      }
+    }
+
+    if (haveLocalBindings())
+    {
+      theNsContext = nsContext.release();
+    }
+    else
+    {
+      assert(parent != NULL);
+      theNsContext = parent->getNsContext();
+    }
+  }
 }
 
 
@@ -607,12 +671,12 @@ xqp_string ElementNodeImpl::getStringProperty() const
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNodeImpl::setNsBindingsCtx(NsBindingsContext* parentCtx)
+void ElementNodeImpl::setNsContext(NsBindingsContext* ctx)
 {
-  if (theNsBindings == NULL)
-    theNsBindings = parentCtx;
+  if (theNsContext == NULL)
+    theNsContext = ctx;
   else
-    theNsBindings->setParentContext(parentCtx);
+    theNsContext->setParent(ctx);
 }
 
 
@@ -623,11 +687,11 @@ NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
 {
   NamespaceBindings bindings;
 
-  if (theNsBindings != NULL)
+  if (theNsContext != NULL)
   {
-    bindings = theNsBindings->getBindings();
+    bindings = theNsContext->getBindings();
 
-    NsBindingsContext* parentContext = theNsBindings->getParentContext();
+    NsBindingsContext* parentContext = theNsContext->getParent();
 
     while (parentContext != NULL)
     {
@@ -640,7 +704,7 @@ NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
         unsigned long j;
         for (j = 0; j < currSize; j++)
         {
-          if (bindings[j].first == parentBindings[i].first)
+          if (bindings[j].first.byteEqual(parentBindings[i].first))
             break;
         }
 
@@ -648,7 +712,7 @@ NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
           bindings.push_back(parentBindings[i]);
       }
 
-      parentContext = parentContext->getParentContext();
+      parentContext = parentContext->getParent();
     }
   }
 
@@ -729,8 +793,8 @@ xqp_string ElementNodeImpl::show() const
 
 ********************************************************************************/
 AttributeNodeImpl::AttributeNodeImpl(
-    const QNameItem_t& name,
-    const QNameItem_t& type,
+    const Item_t& name,
+    const Item_t& type,
     const Item_t& lexicalValue,
     const Item_t& typedValue,
     bool isId,
@@ -739,7 +803,7 @@ AttributeNodeImpl::AttributeNodeImpl(
   :
   NodeImpl(assignId),
   theName(name),
-  theType(type),
+  theTypeName(type),
   theLexicalValue(lexicalValue),
   theTypedValue(typedValue),
   theIsId(isId),
@@ -753,6 +817,7 @@ AttributeNodeImpl::AttributeNodeImpl(
   a node construction expression.
 ********************************************************************************/
 AttributeNodeImpl::AttributeNodeImpl(
+    const NodeImpl*          parent,
     const AttributeNodeImpl* src,
     bool                     typePreserve)
   :
@@ -763,7 +828,9 @@ AttributeNodeImpl::AttributeNodeImpl(
   theIsId(src->isId()),
   theIsIdrefs(src->isIdrefs())
 {
-  theType = (typePreserve ? src->getType() : GET_STORE().theUntypedType);
+  theParent = const_cast<NodeImpl*>(parent);
+
+  theTypeName = (typePreserve ? src->getType() : GET_STORE().theUntypedType);
 }
 
 
@@ -813,15 +880,16 @@ TextNodeImpl::TextNodeImpl(const xqpStringStore_t& content, bool assignId)
 }
 
 
-TextNodeImpl::TextNodeImpl(const TextNodeImpl* src) 
+TextNodeImpl::TextNodeImpl(const NodeImpl* parent, const TextNodeImpl* src) 
   :
   NodeImpl(false),
   theContent(src->theContent)
 {
+  theParent = const_cast<NodeImpl*>(parent);;
 }
 
 
-QNameItem_t TextNodeImpl::getType() const
+Item_t TextNodeImpl::getType() const
 {
   return GET_STORE().theUntypedAtomicType;
 }
@@ -868,16 +936,17 @@ PiNodeImpl::PiNodeImpl(
 }
 
 
-PiNodeImpl::PiNodeImpl(const PiNodeImpl* src) 
+PiNodeImpl::PiNodeImpl(const NodeImpl* parent, const PiNodeImpl* src) 
   :
   NodeImpl(false),
   theTarget(src->theTarget),
   theData(src->theData)
 {
+  theParent = const_cast<NodeImpl*>(parent);
 }
 
 
-QNameItem_t PiNodeImpl::getType() const
+Item_t PiNodeImpl::getType() const
 {
   return GET_STORE().theUntypedAtomicType;
 }
@@ -920,15 +989,16 @@ CommentNodeImpl::CommentNodeImpl(
 }
 
 
-CommentNodeImpl::CommentNodeImpl(const CommentNodeImpl* src) 
+CommentNodeImpl::CommentNodeImpl(const NodeImpl* parent, const CommentNodeImpl* src) 
   :
   NodeImpl(false),
   theContent(src->theContent)
 {
+  theParent = const_cast<NodeImpl*>(parent);
 }
 
 
-QNameItem_t CommentNodeImpl::getType() const
+Item_t CommentNodeImpl::getType() const
 {
   return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
 }
@@ -999,7 +1069,7 @@ Item_t ChildrenIterator::next()
           ckind == StoreConsts::elementNode &&
           (!cnode->isCopy() || pnode->nsInherit()))
       {
-        ELEM_NODE(childItem)->setNsBindingsCtx(pnode->getNsBindingsCtx());
+        ELEM_NODE(childItem)->setNsContext(pnode->getNsContext());
       }
     }
     else if (pnode->isCopy() && cnode->getParentPtr() != pnode)
@@ -1007,50 +1077,38 @@ Item_t ChildrenIterator::next()
       switch (ckind)
       {
       case StoreConsts::elementNode:
-      {
         Assert(pkind != StoreConsts::documentNode);
 
-        childItem = new ElementNodeImpl(ELEM_NODE(childItem),
+        childItem = new ElementNodeImpl(pnode,
+                                        ELEM_NODE(childItem),
                                         pnode->typePreserve(),
-                                        pnode->nsPreserve(),
-                                        false);
-        ELEM_NODE(childItem)->setNsBindingsCtx(pnode->getNsBindingsCtx());
+                                        pnode->nsPreserve());
         break;
-      }
-      case StoreConsts::attributeNode:
-      {
-        childItem = new AttributeNodeImpl(ATTR_NODE(childItem), pnode->typePreserve());
-        break;
-      }
+
       case StoreConsts::textNode:
-      {
-        childItem = new TextNodeImpl(TEXT_NODE(childItem));
+        childItem = new TextNodeImpl(pnode, TEXT_NODE(childItem));
         break;
-      }
+
       case StoreConsts::piNode:
-      {
-        childItem = new PiNodeImpl(PI_NODE(childItem));
+        childItem = new PiNodeImpl(pnode, PI_NODE(childItem));
         break;
-      }
+
       case StoreConsts::commentNode:
-      {
-        childItem = new CommentNodeImpl(COMMENT_NODE(childItem));
+        childItem = new CommentNodeImpl(pnode, COMMENT_NODE(childItem));
         break;
-      }
+
       default:
         Assert(0);
       }
 
       cnode = BASE_NODE(childItem);
       theChildNodes[theCurrentPos] = childItem;
-
-      cnode->setParent(pnode);
     }
     else
     {
       // This assertion is not valid because enclosed expressions do not 
       // always make copies of the nodes they produce. 
-      //Assert(childNode->getParentPtr() == theParentNode.get_ptr());
+      // Assert(childNode->getParentPtr() == theParentNode.get_ptr());
     }
 
     if (pnode->getId().isValid() &&

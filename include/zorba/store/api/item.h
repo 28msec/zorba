@@ -16,9 +16,7 @@
 
 #include <iostream>
 #include <sstream>
-#include <string>
 #include <vector>
-#include <set>
 
 
 namespace xqp
@@ -27,7 +25,6 @@ namespace xqp
 template <class Object> class rchandle;
   
 typedef rchandle<class Item> Item_t;
-typedef rchandle<class QNameItem> QNameItem_t;
 typedef rchandle<class AnyUriItem> AnyUriItem_t;
 typedef rchandle<class NodeItem> NodeItem_t;
 
@@ -75,7 +72,7 @@ public:
   /**
    *  @return  (dynamic) XQuery type of the item
    */
-  virtual QNameItem_t getType( ) const = 0;
+  virtual Item_t getType( ) const = 0;
 
   /**
    *  Carries out Atomization on the item. Although atomization can be carried
@@ -463,7 +460,7 @@ public:
   /** Accessor for element node, attribute node
    *  @return qname?
    */
-  virtual QNameItem_t getNodeName() const
+  virtual Item_t getNodeName() const
   {
     this->showError();
     return NULL;
@@ -564,8 +561,6 @@ public:
   virtual Iterator_t getTypedValue() const;
 }; /* class AtomicItem */
   
-
-class QNameItem : public AtomicItem {};
 
 } /* namespace xqp */
 #endif /* XQP_VALUES_H */

@@ -891,7 +891,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
     while (desc != NULL)
     {
       if (desc->getNodeKind() == StoreConsts::elementNode ||
-          state->theContextNode->getNodeKind() == StoreConsts::documentNode)
+          desc->getNodeKind() == StoreConsts::documentNode)
       {
         state->theCurrentPath.push(std::pair<Item_t, Iterator_t>
                                   (desc, desc->getChildren()));

@@ -9,8 +9,6 @@
 #ifndef XQP_DEFAULT_STORE_NODES
 #define XQP_DEFAULT_STORE_NODES
 
-#include <vector>
-#include <string>
 
 #include "util/Assert.h"
 #include "store/api/item.h"
@@ -23,6 +21,7 @@ namespace xqp
 class NodeImpl;
 class ElementNodeImpl;
 class NsBindingsContext;
+class QNameItemImpl;
 
 template <class Object> class rchandle;
 
@@ -58,7 +57,7 @@ public:
   void clear();
   void resize(unsigned long size);
   void truncate();
-  void move(NodeVector* v);
+  //void move(NodeVector* v);
 
   void push_back(const Item_t& item, unsigned long index);
 
@@ -102,13 +101,13 @@ public:
   // Item methods
   //
 
-  bool isNode() const                  { return true; }
-  bool isAtomic() const                { return false; }
+  bool isNode() const                    { return true; }
+  bool isAtomic() const                  { return false; }
 
-  Item_t getParent() const             { return theParent; }
+  Item_t getParent() const               { return theParent; }
 
   virtual bool equals(Item_t) const;
-  virtual uint32_t hash() const        { return 0; }
+  virtual uint32_t hash() const          { Assert(0); return 0; }
 
   virtual xqp_string getBaseURI() const;
   virtual xqp_string getDocumentURI() const;
@@ -118,17 +117,17 @@ public:
   //
   // SimpleStore Methods
   // 
-  Item * getParentPtr() const          { return theParent; }
-  void setParent(const Item_t& p)      { theParent = p.get_ptr(); }
+  Item * getParentPtr() const            { return theParent; }
+  void setParent(const Item_t& p)        { theParent = p.get_ptr(); }
 
   void initId();
-  unsigned long getTreeId() const      { return theId.getTreeId(); }
-  const OrdPath& getId() const         { return theId; }
-  void setId(const OrdPathStack& id)   { theId = id; }
-  void setId(const OrdPath& id)        { theId = id; }
-  void appendIdComponent(long value)   { theId.appendComp(value); } 
+  unsigned long getTreeId() const        { return theId.getTreeId(); }
+  const OrdPath& getId() const           { return theId; }
+  void setId(const OrdPathStack& id)     { theId = id; }
+  void setId(const OrdPath& id)          { theId = id; }
+  void appendIdComponent(long value)     { theId.appendComp(value); } 
 
-  virtual NsBindingsContext_t getNsBindingsCtx() const { return NULL; }
+  virtual NsBindingsContext* getNsContext() const { Assert(0); return NULL; }
 
   virtual bool haveLocalBindings() const { Assert(0); return false; }
   virtual bool isConstructed() const     { Assert(0); return false; }
@@ -172,7 +171,7 @@ class DocumentNodeImpl : public NodeImpl
 
   StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::documentNode; }
 
-  QNameItem_t getType() const; 
+  Item_t getType() const; 
 
   xqp_string getBaseURI() const     { return theBaseURI; }
   xqp_string getDocumentURI() const { return theDocURI; }
@@ -212,22 +211,23 @@ class DocumentNodeImpl : public NodeImpl
 class ElementNodeImpl : public NodeImpl
 {
 private:
-  QNameItem_t            theName;
-  QNameItem_t            theType;
-  NodeVector             theChildren;
-  NodeVector             theAttributes;
-  NsBindingsContext_t    theNsBindings;
-  uint32_t               theFlags;
+  Item_t                theName;
+  Item_t                theTypeName;
+  NodeVector            theChildren;
+  NodeVector            theAttributes;
+  NsBindingsContext_t   theNsContext;
+  uint32_t              theFlags;
 
 public:
   ElementNodeImpl(
-        const QNameItem_t&       name,
-        const QNameItem_t&       type,
-        const NamespaceBindings& nsBindings);
+        Item*         name,
+        Item*         type,
+        unsigned long numBindings,
+        unsigned long numAttributes);
 
   ElementNodeImpl(
-			  const QNameItem_t&       name,
-        const QNameItem_t&       type,
+			  const Item_t&            name,
+        const Item_t&            type,
         Iterator_t&              childrenIte,
         Iterator_t&              attributesIte,
         Iterator_t&              namespacesIte,
@@ -236,10 +236,10 @@ public:
         bool                     assignId);
 
   ElementNodeImpl(
+        const NodeImpl*        parent,
         const ElementNodeImpl* src,
         bool                   typePreserve,
-        bool                   nsPreserve,
-        bool                   isRoot);
+        bool                   nsPreserve);
 
   ~ElementNodeImpl();
 
@@ -247,9 +247,9 @@ public:
   // Item methods
   //
 
-  StoreConsts::NodeKind_t getNodeKind() const  { return StoreConsts::elementNode; }
-  QNameItem_t getType() const                  { return theType; }
-  QNameItem_t getNodeName() const              { return theName; }
+  StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::elementNode; }
+  Item_t getType() const                      { return theTypeName; }
+  Item_t getNodeName() const                  { return theName; }
 
   Iterator_t getAttributes() const;
   Iterator_t getChildren() const;
@@ -280,9 +280,9 @@ public:
 
   bool haveLocalBindings() const { return theFlags & NodeImpl::HaveLocalBindings; }
 
-  NsBindingsContext_t getNsBindingsCtx() const { return theNsBindings; }
+  NsBindingsContext* getNsContext() const { return theNsContext.get_ptr(); }
 
-  void setNsBindingsCtx(NsBindingsContext* parentCtx);
+  void setNsContext(NsBindingsContext* ctx);
 
 private:
   //disable default copy constructor
@@ -296,25 +296,26 @@ private:
 class AttributeNodeImpl : public NodeImpl
 {
  private:
-  QNameItem_t  theName;
-  QNameItem_t  theType;
-  Item_t       theLexicalValue;
-  Item_t       theTypedValue;
+  Item_t   theName;
+  Item_t   theTypeName;
+  Item_t   theLexicalValue;
+  Item_t   theTypedValue;
 
-  bool         theIsId;
-  bool         theIsIdrefs;
+  bool     theIsId;
+  bool     theIsIdrefs;
   
  public:
   AttributeNodeImpl (
-			  const QNameItem_t& name,
-        const QNameItem_t& type,
+			  const Item_t& name,
+        const Item_t& type,
         const Item_t& lexicalValue,
         const Item_t& typedValue,
-        bool isId,
-        bool isIdrefs,
-        bool assignId);
+        bool          isId,
+        bool          isIdrefs,
+        bool          assignId);
 
   AttributeNodeImpl(
+        const NodeImpl*          parent,
         const AttributeNodeImpl* src,
         bool                     typePreserve);
 
@@ -322,9 +323,9 @@ class AttributeNodeImpl : public NodeImpl
 
   StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::attributeNode; }
 
-  QNameItem_t getType() const { return theType; }
+  Item_t getType() const { return theTypeName; }
 
-  QNameItem_t getNodeName() const { return theName; }
+  Item_t getNodeName() const { return theName; }
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
@@ -347,15 +348,19 @@ class TextNodeImpl : public NodeImpl
   xqpStringStore_t theContent;
 
  public:
-  TextNodeImpl(const xqpStringStore_t& content, bool assignId);
+  TextNodeImpl(
+        const xqpStringStore_t& content,
+        bool                    assignId);
 
-  TextNodeImpl(const TextNodeImpl* src);
+  TextNodeImpl(
+        const NodeImpl*     parent,
+        const TextNodeImpl* src);
 
   virtual ~TextNodeImpl() { }
   
   StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::textNode; }
 
-  virtual QNameItem_t getType() const;
+  virtual Item_t getType() const;
 
   virtual Iterator_t getTypedValue() const;
   virtual Item_t getAtomizationValue() const;
@@ -379,15 +384,15 @@ public:
   PiNodeImpl(
         const xqpStringStore_t& target,
         const xqpStringStore_t& data,
-        bool assignId);
+        bool                    assignId);
 
-  PiNodeImpl(const PiNodeImpl* src);
+  PiNodeImpl(const NodeImpl* parent, const PiNodeImpl* src);
 
   virtual ~PiNodeImpl() { }
 
   StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::piNode; }
 
-  QNameItem_t getType() const;
+  Item_t getType() const;
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
@@ -411,13 +416,13 @@ private:
 public:
   CommentNodeImpl(const xqpStringStore_t& content, bool assignId);
 
-  CommentNodeImpl(const CommentNodeImpl* src);
+  CommentNodeImpl(const NodeImpl* parent, const CommentNodeImpl* src);
 
   virtual ~CommentNodeImpl() { }
 
   StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::commentNode; }
 
-  QNameItem_t getType() const;
+  Item_t getType() const;
 
   virtual Iterator_t getTypedValue() const;
   virtual Item_t getAtomizationValue() const;
@@ -555,29 +560,6 @@ public:
 };
 
 
-/*******************************************************************************
-
-********************************************************************************/
-class NsBindingsContext : public rcobject
-{
- private:
-  NamespaceBindings    theBindings;
-  NsBindingsContext_t  theParentContext;
-
-public:
-  NsBindingsContext() {}
-
-  NsBindingsContext(const NamespaceBindings& bindings)
-    :
-    theBindings(bindings)
-  {
-  }
-
-  const NamespaceBindings& getBindings() const    { return theBindings; }
-
-  void setParentContext(NsBindingsContext* p)     { theParentContext = p; }
-  NsBindingsContext* getParentContext() const     { return theParentContext.get_ptr(); } 
-};
 
 }
 

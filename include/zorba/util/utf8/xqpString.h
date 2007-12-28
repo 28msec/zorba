@@ -56,8 +56,6 @@ public:
 
   bool byteEqual(const xqpStringStore& src) const;
   bool byteEqual(const char* src, uint32_t srcLen) const;
-
-  bool hashEqual(const xqpStringStore& src) const;
 };
 
   class xqpString
@@ -95,7 +93,7 @@ public:
 
     ~xqpString(){};
 
-    xqpStringStore& getStore() const { return *(theStrStore.get_ptr()); }
+    xqpStringStore* getStore() const { return theStrStore.get_ptr(); }
 
     //xqpString::operator=()
     xqpString&operator=(xqpString src)
@@ -161,27 +159,12 @@ public:
      */
     bool byteEqual(xqpString src) const
     {
-      if (theStrStore.get_ptr() == src.theStrStore.get_ptr())
-        return true;
-
-      return theStrStore->byteEqual(src.getStore());
+      return theStrStore->byteEqual(*src.getStore());
     }
 
     bool byteEqual(const char* src, uint32_t srcLen) const
     {
       return theStrStore->byteEqual(src, srcLen);
-    }
-
-    /**
-     * Returns true if the hash of the strings are equal and if the strings
-     * are byteEqual. It assumes that both strings are already normalized.
-     */
-    bool hashEqual(xqpString src) const
-    {
-      if (theStrStore.get_ptr() == src.theStrStore.get_ptr())
-        return true;
-
-      return theStrStore->hashEqual(src.getStore());
     }
 
     uint32_t hash() const { return theStrStore->hash(); }

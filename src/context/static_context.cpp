@@ -159,18 +159,18 @@ namespace xqp {
     return local + ":" + ns;
   }
 
-  QNameItem_t static_context::lookup_qname (xqp_string default_ns, xqp_string prefix, xqp_string local) const
+  Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string prefix, xqp_string local) const
   {
     return ITEM_FACTORY.createQName ((prefix.empty () ? default_ns : lookup_ns (prefix)), prefix, local);
   }
 
-  QNameItem_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) const
+  Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) const
   {
     pair<xqp_string, xqp_string> rqname = parse_qname (qname);
     return lookup_qname (default_ns, rqname.first, rqname.second);
   }
 
-  xqp_string static_context::qname_internal_key (const QNameItem *qname) const
+  xqp_string static_context::qname_internal_key (const Item *qname) const
   {
     return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
   }
@@ -248,7 +248,7 @@ namespace xqp {
 	}
 
 	TypeSystem::xqtref_t	static_context::get_variable_type(
-		QNameItem *var_name)
+		Item *var_name)
 	{
 		return lookup_type( "type:var:" + qname_internal_key("", var_name->getPrefix(), var_name->getLocalName()));
 	}
@@ -273,13 +273,13 @@ namespace xqp {
 		return lookup_type("type:defcollection:");
 	}
 
-void static_context::set_function_type(const QNameItem *qname, TypeSystem::xqtref_t t)
+void static_context::set_function_type(const Item *qname, TypeSystem::xqtref_t t)
 {
 	bind_type("type:fun:"+qname_internal_key( default_function_namespace(), qname->getPrefix(), qname->getLocalName()), t);
 }
 
 TypeSystem::xqtref_t static_context::get_function_type(
-	const QNameItem_t qname) 
+	const Item_t qname) 
 {
 	// TODO
 	//return GENV_TYPESYSTEM.ITEM_TYPE_STAR;

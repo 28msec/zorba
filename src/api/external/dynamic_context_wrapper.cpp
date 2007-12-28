@@ -117,7 +117,7 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, xqp_string str_valu
 	var.varname = varname;
 	var.vartype = VAR_STR;
 	var.str_type = type;
-	var.str_value = &str_value.getStore();
+	var.str_value = str_value.getStore();
 	var.str_value->addReference();
 
 	vars.push_back(var);

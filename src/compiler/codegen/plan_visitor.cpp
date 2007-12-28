@@ -522,8 +522,8 @@ bool plan_visitor::begin_visit(match_expr& v)
   Assert(axisItep != NULL);
 
   PlanIter_t matchIte;
-  QNameItem_t qname;
-  QNameItem_t tname;
+  Item_t qname;
+  Item_t tname;
 
   ItemFactory& iFactory = Store::getInstance().getItemFactory();
 

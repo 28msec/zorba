@@ -37,7 +37,7 @@ void QNameItemImpl::free()
 }
 
 
-QNameItem_t QNameItemImpl::getType() const
+Item_t QNameItemImpl::getType() const
 {
   return GET_STORE().theQNameType;
 }
@@ -53,8 +53,8 @@ uint32_t QNameItemImpl::hash() const
 bool QNameItemImpl::equals(Item_t item) const
 {
   return (this == item.get_ptr() ||
-          (theNamespace->byteEqual(item->getNamespace().getStore()) &&
-           theLocal->byteEqual(item->getLocalName().getStore())));
+          (theNamespace->byteEqual(*item->getNamespace().getStore()) &&
+           theLocal->byteEqual(*item->getLocalName().getStore())));
 }
 
 
@@ -81,7 +81,7 @@ xqp_string QNameItemImpl::show() const
 /*******************************************************************************
   class AnyUriItemNaive
 ********************************************************************************/
-QNameItem_t AnyUriItemImpl::getType() const
+Item_t AnyUriItemImpl::getType() const
 {
   return Store::getInstance().getItemFactory().
          createQName(SimpleStore::XS_URI, "xs", "anyURI");
@@ -115,7 +115,7 @@ xqp_string AnyUriItemImpl::show() const
 /*******************************************************************************
   class UntypedAtomicItemNaive
 ********************************************************************************/
-QNameItem_t UntypedAtomicItemNaive::getType() const
+Item_t UntypedAtomicItemNaive::getType() const
 {
   return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
 }
@@ -145,7 +145,7 @@ xqp_string UntypedAtomicItemNaive::show() const
 /*******************************************************************************
   class StingItemNaive
 ********************************************************************************/
-QNameItem_t StringItemNaive::getType() const
+Item_t StringItemNaive::getType() const
 {
   return CREATE_XS_TYPE("string");
 }
@@ -175,7 +175,7 @@ xqp_string StringItemNaive::show() const
 /*******************************************************************************
   class DecimalItemNaive
 ********************************************************************************/
-QNameItem_t DecimalItemNaive::getType() const
+Item_t DecimalItemNaive::getType() const
 {
   return CREATE_XS_TYPE("decimal");
 }
@@ -218,7 +218,7 @@ xqp_long IntItemNaive::getLongValue() const {
   return static_cast<xqp_long>(theValue);
 }
 
-QNameItem_t IntItemNaive::getType() const
+Item_t IntItemNaive::getType() const
 {
   return CREATE_XS_TYPE("int");
 }
@@ -252,7 +252,7 @@ long double IntegerItemNaive::getDecimalValue() const
   return static_cast<xqp_decimal> ( theValue );
 }
 
-QNameItem_t IntegerItemNaive::getType() const
+Item_t IntegerItemNaive::getType() const
 {
   return CREATE_XS_TYPE("integer");
 }
@@ -280,7 +280,7 @@ Item_t IntegerItemNaive::getEBV() const
 	/* end class IntegerItem */
 	
 	/* start class DoubleItem */
-QNameItem_t DoubleItemNaive::getType() const
+Item_t DoubleItemNaive::getType() const
 {
   return CREATE_XS_TYPE("double");
 }
@@ -310,7 +310,7 @@ Item_t DoubleItemNaive::getEBV() const
 /*******************************************************************************
   class FloatItemNaive
 ********************************************************************************/
-QNameItem_t FloatItemNaive::getType() const
+Item_t FloatItemNaive::getType() const
 {
   return CREATE_XS_TYPE("float");
 }
@@ -340,7 +340,7 @@ QNameItem_t FloatItemNaive::getType() const
 /*******************************************************************************
   class BooleanItemNaive
 ********************************************************************************/
-QNameItem_t BooleanItemNaive::getType() const
+Item_t BooleanItemNaive::getType() const
 {
   return CREATE_XS_TYPE("boolean");
 }
@@ -375,7 +375,7 @@ xqp_decimal NonPositiveIntegerItemNaive::getDecimalValue() const {
   return static_cast<xqp_decimal> ( theValue );
 }
 
-QNameItem_t NonPositiveIntegerItemNaive::getType() const {
+Item_t NonPositiveIntegerItemNaive::getType() const {
   return CREATE_XS_TYPE("nonPositiveInteger");
 }
 
@@ -403,7 +403,7 @@ xqp_decimal NegativeIntegerItemNaive::getDecimalValue() const {
   return static_cast<xqp_decimal> ( theValue );
 }
 
-QNameItem_t NegativeIntegerItemNaive::getType() const {
+Item_t NegativeIntegerItemNaive::getType() const {
   return CREATE_XS_TYPE("negativeInteger");
 }
 
@@ -435,7 +435,7 @@ xqp_decimal LongItemNaive::getDecimalValue() const {
   return static_cast<xqp_decimal>(theValue);
 }
 
-QNameItem_t LongItemNaive::getType() const {
+Item_t LongItemNaive::getType() const {
   return CREATE_XS_TYPE("long");
 }
 
@@ -475,7 +475,7 @@ xqp_int ShortItemNaive::getIntValue() const {
   return static_cast<xqp_int>(theValue);
 }
 
-QNameItem_t ShortItemNaive::getType() const {
+Item_t ShortItemNaive::getType() const {
   return CREATE_XS_TYPE("short");
 }
 
@@ -519,7 +519,7 @@ xqp_short ByteItemNaive::getShortValue() const {
   return static_cast<xqp_short>(theValue);
 }
 
-QNameItem_t ByteItemNaive::getType() const {
+Item_t ByteItemNaive::getType() const {
   return CREATE_XS_TYPE("byte");
 }
 
@@ -552,7 +552,7 @@ xqp_decimal NonNegativeIntegerItemNaive::getDecimalValue() const {
   return static_cast<xqp_decimal>(theValue);
 }
 
-QNameItem_t NonNegativeIntegerItemNaive::getType() const {
+Item_t NonNegativeIntegerItemNaive::getType() const {
   return CREATE_XS_TYPE("nonNegativeInteger");
 }
 
@@ -589,7 +589,7 @@ xqp_uinteger UnsignedLongItemNaive::getUnsignedIntegerValue() const {
   return static_cast<xqp_uinteger>(theValue);
 }
 
-QNameItem_t UnsignedLongItemNaive::getType() const {
+Item_t UnsignedLongItemNaive::getType() const {
   return CREATE_XS_TYPE("unsignedLong");
 }
 
@@ -629,7 +629,7 @@ xqp_ulong UnsignedIntItemNaive::getUnsignedLongValue() const {
   return static_cast<xqp_ulong>(theValue);
 }
 
-QNameItem_t UnsignedIntItemNaive::getType() const {
+Item_t UnsignedIntItemNaive::getType() const {
   return CREATE_XS_TYPE("unsignedInt");
 }
 
@@ -674,7 +674,7 @@ xqp_uint UnsignedShortItemNaive::getUnsignedIntValue() const {
   return static_cast<xqp_uint>(theValue);
 }
 
-QNameItem_t UnsignedShortItemNaive::getType() const {
+Item_t UnsignedShortItemNaive::getType() const {
   return CREATE_XS_TYPE("unsignedShort");
 }
 
@@ -722,7 +722,7 @@ xqp_ushort UnsignedByteItemNaive::getUnsignedShortValue() const {
   return static_cast<xqp_ushort>(theValue);
 }
 
-QNameItem_t UnsignedByteItemNaive::getType() const {
+Item_t UnsignedByteItemNaive::getType() const {
   return CREATE_XS_TYPE("unsignedByte");
 }
 
@@ -754,7 +754,7 @@ xqp_decimal PositiveIntegerItemNaive::getDecimalValue() const {
   return static_cast<xqp_decimal>(theValue);
 }
 
-QNameItem_t PositiveIntegerItemNaive::getType() const {
+Item_t PositiveIntegerItemNaive::getType() const {
   return CREATE_XS_TYPE("positiveInteger");
 }
 

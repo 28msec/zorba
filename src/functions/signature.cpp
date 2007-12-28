@@ -15,7 +15,7 @@
 using namespace std;
 namespace xqp {
 
-  signature::signature (QNameItem_t name, TypeSystem::xqtref_t arg1,
+  signature::signature (Item_t name, TypeSystem::xqtref_t arg1,
                         bool variadic, TypeSystem::xqtref_t return_type)
     : signature_base (variadic),
       qname_p(name)
@@ -25,7 +25,7 @@ namespace xqp {
   }
 
 signature::signature(
-	QNameItem_t name,
+	Item_t name,
 	TypeSystem::xqtref_t return_type)
 :
 	qname_p(name)
@@ -34,7 +34,7 @@ signature::signature(
 }
 
 signature::signature(
-  QNameItem_t name,
+  Item_t name,
 	TypeSystem::xqtref_t arg1,
 	TypeSystem::xqtref_t return_type)
 :
@@ -45,7 +45,7 @@ signature::signature(
 }
 
 signature::signature(
-  QNameItem_t name,
+  Item_t name,
 	TypeSystem::xqtref_t arg1,
 	TypeSystem::xqtref_t arg2,
 	TypeSystem::xqtref_t return_type)
@@ -58,7 +58,7 @@ signature::signature(
 }
 
 signature::signature(
-  QNameItem_t name,
+  Item_t name,
 	TypeSystem::xqtref_t arg1,
 	TypeSystem::xqtref_t arg2,
 	TypeSystem::xqtref_t arg3,
@@ -73,7 +73,7 @@ signature::signature(
 }
 
 signature::signature(
-  QNameItem_t name,
+  Item_t name,
 	TypeSystem::xqtref_t arg1,
 	TypeSystem::xqtref_t arg2,
 	TypeSystem::xqtref_t arg3,
@@ -90,7 +90,7 @@ signature::signature(
 }
 
 signature::signature(
-  QNameItem_t name,
+  Item_t name,
 	const vector<TypeSystem::xqtref_t>& _argv)
 :
 	qname_p(name),

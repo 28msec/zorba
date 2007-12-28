@@ -97,7 +97,7 @@ static bool debug = false;
 %locations
 %initial-action
 {
-  @$.begin.filename = @$.end.filename = &driver.filename.getStore();
+  @$.begin.filename = @$.end.filename = driver.filename.getStore();
 };
 
 

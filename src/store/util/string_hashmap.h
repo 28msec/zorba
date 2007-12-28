@@ -107,7 +107,7 @@ bool StringHashMap<V>::insert(const xqp_string& str, const V& value)
   if (entry->theString == NULL)
   {
     theNumEntries++;
-    entry->theString = &str.getStore();
+    entry->theString = str.getStore();
     entry->theValue = value;
     return false;
   }
@@ -115,7 +115,7 @@ bool StringHashMap<V>::insert(const xqp_string& str, const V& value)
   // Search the hash bucket looking for the given uri.
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(str.getStore()))
+    if (entry->theString->byteEqual(*str.getStore()))
     {
       entry->theValue = value;
       return true;
@@ -137,7 +137,7 @@ bool StringHashMap<V>::insert(const xqp_string& str, const V& value)
 
     if (entry->theString == NULL)
     {
-      entry->theString =  &str.getStore();
+      entry->theString = str.getStore();
       entry->theValue = value;
       return false;
     }
@@ -165,7 +165,7 @@ bool StringHashMap<V>::insert(const xqp_string& str, const V& value)
     entry->theNext = NULL;
   }
 
-  entry->theString =  &str.getStore();
+  entry->theString = str.getStore();
   entry->theValue = value;
   return false;
 }
@@ -185,7 +185,7 @@ bool StringHashMap<V>::remove(const xqp_string& str)
   if (entry->theString == NULL)
     return false;
 
-  if (entry->theString->byteEqual(str.getStore()))
+  if (entry->theString->byteEqual(*str.getStore()))
   {
     if (entry->theNext == NULL)
     {
@@ -212,7 +212,7 @@ bool StringHashMap<V>::remove(const xqp_string& str)
 
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(str.getStore()))
+    if (entry->theString->byteEqual(*str.getStore()))
     {
       prevEntry->theNext = entry->theNext;
       entry->theString = NULL;
@@ -246,7 +246,7 @@ bool StringHashMap<V>::find(const xqp_string& str) const
 
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(str.getStore()))
+    if (entry->theString->byteEqual(*str.getStore()))
       return true;
 
     entry = entry->theNext;
@@ -272,7 +272,7 @@ bool StringHashMap<V>::get(const xqp_string& str, V& value) const
 
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(str.getStore()))
+    if (entry->theString->byteEqual(*str.getStore()))
     {
       value = entry->theValue;
       return true;

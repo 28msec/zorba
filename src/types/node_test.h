@@ -7,7 +7,7 @@
 
 namespace xqp {
 
-class QNameItem;
+class Item;
 
 class NodeNameTest : virtual public rcobject
 {
@@ -20,7 +20,7 @@ class NodeNameTest : virtual public rcobject
   } kind_t;
 
   NodeNameTest(rchandle<xqpStringStore> uri, rchandle<xqpStringStore> local);
-  NodeNameTest(rchandle<QNameItem> qname);
+  NodeNameTest(rchandle<Item> qname);
     
   rchandle<xqpStringStore> get_uri() const;
   rchandle<xqpStringStore> get_local() const;

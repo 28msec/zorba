@@ -9,6 +9,8 @@ namespace xqp
 class QNameItemImpl;
 
 typedef rchandle<class xqpStringStore> xqpStringStore_t;
+typedef rchandle<class QNameItemImpl> QNameItemImpl_t;
+
 
 /*******************************************************************************
 
@@ -69,12 +71,12 @@ public:
 
   ~QNamePool();
 
-  QNameItemImpl* insert(
+  Item_t insert(
         const char* ns,
         const char* pre,
         const char* ln);
 
-  QNameItemImpl* insert(
+  Item_t insert(
         const xqpStringStore_t& ns,
         const xqpStringStore_t& pre,
         const xqpStringStore_t& ln);

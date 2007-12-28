@@ -1,4 +1,5 @@
 
+#include "util/Assert.h"
 #include "util/hashfun.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/atomic_items.h"
@@ -73,7 +74,7 @@ QNamePool::~QNamePool()
 /*******************************************************************************
 
 ********************************************************************************/
-QNameItemImpl* QNamePool::insert(
+Item_t QNamePool::insert(
     const char* ns,
     const char* pre,
     const char* ln)
@@ -82,6 +83,10 @@ QNameItemImpl* QNamePool::insert(
   bool found;
 
   SimpleStore& store = GET_STORE();
+
+  if (ns == NULL) ns = "";
+  if (pre == NULL) pre = "";
+  Assert(ln != NULL && *ln != '\0');
 
   xqpStringStore_t pooledNs;
   store.getNamespacePool().insert(ns, pooledNs);
@@ -105,7 +110,7 @@ QNameItemImpl* QNamePool::insert(
 /*******************************************************************************
 
 ********************************************************************************/
-QNameItemImpl* QNamePool::insert(
+Item_t QNamePool::insert(
     const xqpStringStore_t& ns,
     const xqpStringStore_t& pre,
     const xqpStringStore_t& ln)

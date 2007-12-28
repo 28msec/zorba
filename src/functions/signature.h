@@ -45,38 +45,38 @@ class Item;
 class signature : public signature_base
 {
 public:
-	QNameItem_t qname_p;
+	Item_t qname_p;
 	std::vector<TypeSystem::xqtref_t> argv;
 
 public:
-  signature (QNameItem_t name, TypeSystem::xqtref_t arg1,
+  signature (Item_t name, TypeSystem::xqtref_t arg1,
              bool variadic, TypeSystem::xqtref_t return_type);
-	signature(QNameItem_t name,
+	signature(Item_t name,
 						TypeSystem::xqtref_t return_type);
-	signature(QNameItem_t name,
+	signature(Item_t name,
 						TypeSystem::xqtref_t arg1,
 						TypeSystem::xqtref_t return_type);
-	signature(QNameItem_t name,
+	signature(Item_t name,
 						TypeSystem::xqtref_t arg1,
 						TypeSystem::xqtref_t arg2,
 						TypeSystem::xqtref_t return_type);
-	signature(QNameItem_t name,
+	signature(Item_t name,
 						TypeSystem::xqtref_t arg1,
 						TypeSystem::xqtref_t arg2,
 						TypeSystem::xqtref_t arg3,
 						TypeSystem::xqtref_t return_type);
-	signature(QNameItem_t name,
+	signature(Item_t name,
 						TypeSystem::xqtref_t arg1,
 						TypeSystem::xqtref_t arg2,
 						TypeSystem::xqtref_t arg3,
 						TypeSystem::xqtref_t arg4,
 						TypeSystem::xqtref_t return_type);
-	signature(QNameItem_t name,
+	signature(Item_t name,
 						const std::vector<TypeSystem::xqtref_t>& argv);
 	~signature();
 
 public:
-	const QNameItem_t& get_name() const            { return qname_p; }
+	const Item_t& get_name() const            { return qname_p; }
 	uint32_t arg_count() const {
     return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
   }

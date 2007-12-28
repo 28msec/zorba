@@ -1072,7 +1072,7 @@ FnDocIterator::nextImpl ( PlanState& planState )
                           &loc, false, "Could not retrieve resource");
       }
 
-      istringstream iss(result.getStore().c_str());
+      istringstream iss(result.getStore()->c_str());
       XmlLoader& loader = store.getXmlLoader();
       state->doc = loader.loadXml(iss);
       state->childrenIter = state->doc->getChildren();

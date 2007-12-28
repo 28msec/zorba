@@ -44,7 +44,7 @@ void library_init()
 
 static string get_qname(const function &f)
 {
-  QNameItem_t name = f.get_fname();
+  Item_t name = f.get_fname();
   return name->getPrefix() + ":" + name->getLocalName();
 }
 

@@ -138,16 +138,16 @@ public:
 	};
 
   var_kind kind;
-  QNameItem_t varname_h;
+  Item_t varname_h;
   TypeSystem::xqtref_t type;
 
 public:
-  var_expr(yy::location const& loc, QNameItem_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
-  var_expr(yy::location const& loc, var_kind k, QNameItem_t name) : expr (loc), kind (k), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
+  var_expr(yy::location const& loc, Item_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
+  var_expr(yy::location const& loc, var_kind k, Item_t name) : expr (loc), kind (k), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
   ~var_expr() {}
 
 public:
-  QNameItem_t get_varname() const { return varname_h; }
+  Item_t get_varname() const { return varname_h; }
 
 	var_kind get_kind() const { return kind; }
 	void set_kind(var_kind k) { kind = k; }
@@ -712,10 +712,10 @@ public:
 
 struct pragma : public rcobject
 {
-	QNameItem_t name_h;
+	Item_t name_h;
 	std::string content;
 
-	pragma(QNameItem_t _name_h, std::string const& _content)
+	pragma(Item_t _name_h, std::string const& _content)
 	: name_h(_name_h), content(_content) {}
 	~pragma() {}
 };
@@ -877,8 +877,8 @@ protected:
 	match_wild_t  theWildKind;
   xqp_string    theWildName;
 
-	QNameItem_t   theQName;
-	QNameItem_t   theTypeName;
+	Item_t   theQName;
+	Item_t   theTypeName;
   bool          theNilledAllowed;
 
 public:
@@ -895,11 +895,11 @@ public:
 	void setWildKind(enum match_wild_t v)    { theWildKind = v; }
 	void setWildName(const xqp_string& v)    { theWildName = v; } 
 
-	QNameItem_t getQName() const    { return theQName; }
-	QNameItem_t getTypeName() const { return theTypeName; }
+	Item_t getQName() const    { return theQName; }
+	Item_t getTypeName() const { return theTypeName; }
   bool getNilledAllowed() const            { return theNilledAllowed; }
-	void setQName(QNameItem_t v)    { theQName = v; }
-	void setTypeName(QNameItem_t v) { theTypeName = v; }
+	void setQName(Item_t v)    { theQName = v; }
+	void setTypeName(Item_t v) { theTypeName = v; }
   void setNilledAllowed(bool v)            { theNilledAllowed = v; }
 
 	void accept(expr_visitor&);
@@ -1005,7 +1005,6 @@ class elem_expr : public constructor_expr
 {
 	// TODO namespace bindings
 protected:
-// 	QNameItem_t theQName;
   expr_t theQNameExpr;
 	expr_t theAttrs;
 	expr_t theContent;

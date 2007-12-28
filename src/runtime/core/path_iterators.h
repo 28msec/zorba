@@ -43,8 +43,8 @@ namespace xqp
 class KindTestIterator : public UnaryBaseIterator<KindTestIterator>
 {
 private:
-  QNameItem_t  theQName;
-  QNameItem_t  theTypeName;
+  Item_t       theQName;
+  Item_t       theTypeName;
   match_test_t theTestKind;
   match_test_t theDocTestKind;
   bool         theNilledAllowed;
@@ -53,8 +53,8 @@ public:
   KindTestIterator(
         const yy::location& loc,
         PlanIter_t input,
-        QNameItem_t qname,
-        QNameItem_t tname,
+        Item_t qname,
+        Item_t tname,
         match_test_t kind,
         match_test_t docTestKind,
         bool nilled = false)
@@ -70,8 +70,8 @@ public:
 
   ~KindTestIterator() {}
   
-  const QNameItem_t& getQName() const { return theQName; }
-  const QNameItem_t& getTypeName() const { return theTypeName; }
+  const Item_t& getQName() const { return theQName; }
+  const Item_t& getTypeName() const { return theTypeName; }
   const match_test_t& getTestKind() const { return theTestKind; }
   const match_test_t& getDocTestKind() const { return theDocTestKind; }
   bool nilledAllowed() const { return theNilledAllowed; }
@@ -89,14 +89,14 @@ public:
 class NameTestIterator : public UnaryBaseIterator<NameTestIterator>
 {
 private:
-  QNameItem_t  theQName;
+  Item_t       theQName;
   match_wild_t theWildKind;
 
 public:
   NameTestIterator(
         const yy::location& loc,
         PlanIter_t input,
-        QNameItem_t qname,
+        Item_t qname,
         match_wild_t kind)
     :
     UnaryBaseIterator<NameTestIterator>(loc, input),
@@ -107,7 +107,7 @@ public:
 
   ~NameTestIterator() {}
   
-  const QNameItem_t& getQName() const { return theQName; }
+  const Item_t& getQName() const { return theQName; }
 
 public:
   Item_t nextImpl(PlanState& planState);

@@ -102,7 +102,7 @@ struct ZorbaFnErrorAlert: public ZorbaAlert
 {
 	virtual ~ZorbaFnErrorAlert();
 	
-	QNameItem_t  err_qname;
+	Item_t       err_qname;
 	std::string  err_qname_decoded;
 	Zorba_Items  items_error;
 };

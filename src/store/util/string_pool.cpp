@@ -71,14 +71,14 @@ bool StringPool::insert(const char* str, xqpStringStore_t& outStr)
   Check if the given string is already in the pool and if not, insert it in the
   pool. Return true if the string was already in the pool, and false otherwise.
 ********************************************************************************/
-bool StringPool::insert(const xqpStringStore& str)
+bool StringPool::insert(const xqpStringStore* str)
 {
   bool found;
 
-  HashEntry* entry = hashInsert(str.c_str(), str.bytes(), str.hash(), found);
+  HashEntry* entry = hashInsert(str->c_str(), str->bytes(), str->hash(), found);
 
   if (!found)
-    entry->theString = const_cast<xqpStringStore*>(&str);
+    entry->theString = const_cast<xqpStringStore*>(str);
 
   return found;
 }
@@ -189,7 +189,7 @@ bool StringPool::find(const xqp_string& str)
 
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(str.getStore()))
+    if (entry->theString->byteEqual(*str.getStore()))
       return true;
 
     entry = entry->theNext;

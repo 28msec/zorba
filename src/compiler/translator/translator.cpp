@@ -56,7 +56,7 @@ static void *no_state = (void *) new int;
 #define LAST_IDX_VAR "$$last-idx"
 
   var_expr *translator::bind_var (yy::location loc, string varname, var_expr::var_kind kind) {
-    QNameItem_t qname = sctx_p->lookup_qname ("", varname);
+    Item_t qname = sctx_p->lookup_qname ("", varname);
     var_expr *e = new var_expr (loc, kind, qname);
     sctx_p->bind_var (qname, e);
     return e;
@@ -1736,7 +1736,7 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
   string prefix = qn_h->get_prefix();
   string fname = qn_h->get_localname();
 
-  QNameItem_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
+  Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
 
   if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "position") {
     nodestack.push(sctx_p->lookup_var(DOT_POS_VAR));
@@ -1967,7 +1967,7 @@ void translator::end_visit(const NameTest& v, void *visit_state)
   if (v.getQName() != NULL)
   {
     string qname = v.getQName()->get_qname();
-    QNameItem_t qn_h = sctx_p->lookup_elem_qname (qname);
+    Item_t qn_h = sctx_p->lookup_elem_qname (qname);
     matchExpr->setQName(qn_h);
   }
   else

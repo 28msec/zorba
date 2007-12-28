@@ -58,7 +58,7 @@ protected:
 	xqp_string		default_collection_uri;//default URI for fn:collection()
 
 protected:
-  xqp_string qname_internal_key (QNameItem_t qname) const;
+  xqp_string qname_internal_key (Item_t qname) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
 

@@ -87,7 +87,7 @@ bool YearMonthDuration::operator==(const YearMonthDuration& ym)
     
 YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
 {
-  std::string ss = s.getStore();
+  std::string ss = *s.getStore();
   bool negative = false;
   unsigned int position = 0;
   long result, months;
@@ -304,7 +304,7 @@ static void parse_hms_string(std::string ss, unsigned int& position, long& hours
 // Parse a 'PnDTnHnMnS' dateTime duration
 DayTimeDuration_t DayTimeDuration::parse_string(xqpString s, bool dont_check_letter_p)
 {
-  std::string ss = s.getStore();
+  std::string ss = *s.getStore();
   bool negative = false;
   unsigned int position = 0;
   long result, days = 0, hours = 0, minutes = 0, seconds = 0, frac_seconds = 0;
