@@ -625,9 +625,7 @@ std::cout << __FUNCTION__ << std::endl;
 #endif
 
 	if (rwl.readlock()!=0) {
-		//throw xqp_exception(__FUNCTION__,"read lock failed");
-		ZORBA_ERROR_ALERT(error_messages::XQP0008_SYSTEM_READ_LOCK_FAILED,
-														error_messages::SYSTEM_ERROR);
+		ZORBA_ERROR_ALERT(AlertCodes::XQP0008_SYSTEM_READ_LOCK_FAILED);
 	}
 	uint32_t z = v.size();
 	rwl.readunlock();
@@ -698,8 +696,7 @@ std::cout << __FUNCTION__ << std::endl;
 
 	if (rwl.readlock()!=0) {
 		//throw xqp_exception(__FUNCTION__,"read lock failed");
-		ZORBA_ERROR_ALERT(error_messages::XQP0008_SYSTEM_READ_LOCK_FAILED,
-														error_messages::SYSTEM_ERROR);
+		ZORBA_ERROR_ALERT(AlertCodes::XQP0008_SYSTEM_READ_LOCK_FAILED);
 	}
 	bool b = find_unsync(key, index);
 	rwl.readunlock();
@@ -733,8 +730,7 @@ std::cout << __FUNCTION__ << std::endl;
 
 	if (rwl.readlock()!=0) {
 		//throw xqp_exception(__FUNCTION__,"read lock failed");
-		ZORBA_ERROR_ALERT(error_messages::XQP0008_SYSTEM_READ_LOCK_FAILED,
-														error_messages::SYSTEM_ERROR);
+		ZORBA_ERROR_ALERT(AlertCodes::XQP0008_SYSTEM_READ_LOCK_FAILED);
 	}
 	bool b = get_unsync(key, result);
 	rwl.readunlock();
@@ -773,8 +769,7 @@ std::cout << __FUNCTION__ << std::endl;
 
 	if (rwl.writelock()!=0) {
 		//throw xqp_exception(__FUNCTION__,"write lock failed");
-		ZORBA_ERROR_ALERT(error_messages::XQP0009_SYSTEM_WRITE_LOCK_FAILED,
-														error_messages::SYSTEM_ERROR);
+		ZORBA_ERROR_ALERT(AlertCodes::XQP0009_SYSTEM_WRITE_LOCK_FAILED);
 	}
 	bool b = put_unsync(key, val);
 	rwl.writeunlock();
@@ -879,8 +874,7 @@ std::cout << __FUNCTION__ << std::endl;
 
 	if (rwl.readlock()!=0) {
 		//throw xqp_exception(__FUNCTION__,"read lock failed");
-		ZORBA_ERROR_ALERT(error_messages::XQP0008_SYSTEM_READ_LOCK_FAILED,
-														error_messages::SYSTEM_ERROR);
+		ZORBA_ERROR_ALERT(AlertCodes::XQP0008_SYSTEM_READ_LOCK_FAILED);
 	}
 	uint32_t z = v.size();
 	rwl.readunlock();
@@ -952,8 +946,7 @@ std::cout << __FUNCTION__ << std::endl;
 
 	if (rwl.readlock()!=0) {
 		//throw xqp_exception(__FUNCTION__,"read lock failed");
-		ZORBA_ERROR_ALERT(error_messages::XQP0008_SYSTEM_READ_LOCK_FAILED,
-														error_messages::SYSTEM_ERROR);
+		ZORBA_ERROR_ALERT(AlertCodes::XQP0008_SYSTEM_READ_LOCK_FAILED);
 	}
 	bool b = find_unsync(key, index);
 	rwl.readunlock();
@@ -1009,8 +1002,7 @@ std::cout << __FUNCTION__ << std::endl;
 
 	if (rwl.readlock()!=0) {
 		//throw xqp_exception(__FUNCTION__,"read lock failed");
-		ZORBA_ERROR_ALERT(error_messages::XQP0008_SYSTEM_READ_LOCK_FAILED,
-														error_messages::SYSTEM_ERROR);
+		ZORBA_ERROR_ALERT(AlertCodes::XQP0008_SYSTEM_READ_LOCK_FAILED);
 	}
 	bool b = get_unsync(key, result);
 	rwl.readunlock();
@@ -1050,8 +1042,7 @@ std::cout << __FUNCTION__ << std::endl;
 
 	if (rwl.writelock()!=0) {
 		//throw xqp_exception(__FUNCTION__,"write lock failed");
-		ZORBA_ERROR_ALERT(error_messages::XQP0009_SYSTEM_WRITE_LOCK_FAILED,
-														error_messages::SYSTEM_ERROR);
+		ZORBA_ERROR_ALERT(AlertCodes::XQP0009_SYSTEM_WRITE_LOCK_FAILED);
 	}
 	bool b = put_unsync(key, val);
 	rwl.writeunlock();
