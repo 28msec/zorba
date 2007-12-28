@@ -1746,12 +1746,24 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
     nodestack.push(sctx_p->lookup_var(LAST_IDX_VAR));
     return;
   }
+  if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "string") {
+    fn_qname = sctx_p->lookup_fn_qname("xs", "string");
+    switch (arguments.size ()) {
+    case 0:
+      arguments.push_back (sctx_p->lookup_var (DOT_VAR));
+      break;
+    case 1:
+      break;
+    default:
+      ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017, NULL, false, "fn:string", arguments.size ());
+    }
+  }
   TypeSystem::xqtref_t type =
     GENV_TYPESYSTEM.create_type (fn_qname,
                                  TypeSystem::QUANT_QUESTION);
   if (type != NULL) {
     if (arguments.size () != 1)
-      ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017, NULL, false, prefix + ":" + fname, "?");
+      ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017, NULL, false, prefix + ":" + fname, arguments.size ());
     nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
   } else {
     int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
