@@ -1,0 +1,1 @@
+fn:compare('Strassen', 'Straße')
