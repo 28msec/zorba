@@ -1019,7 +1019,7 @@ NamespaceDecl :
 			if (debug) cout << "NamespaceDecl [ ]\n";
 			$$ = new NamespaceDecl(@$,
 								driver.symtab.get((off_t)$2),
-								driver.symtab.get((off_t)44));
+								driver.symtab.get((off_t)$4));
 		}
 	;
 
