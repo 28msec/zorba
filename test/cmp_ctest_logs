@@ -1,8 +1,13 @@
 #!/bin/sh
 
+if test "$#" != "2"; then
+    echo Args: dir1/LastTestsFailed.log dir2/LastTestsFailed.log
+    exit 1
+fi
+
 TMP1=`mktemp /tmp/XXXXXX`
 cat $1 | cut -f2 -d: | sort >$TMP1
 
-cat $2 | cut -f2 -d: | sort | diff $TMP1 -
+cat $2 | cut -f2 -d: | sort | diff -u $TMP1 -
 
 rm -f $TMP1
