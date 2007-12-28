@@ -28,57 +28,74 @@ q=`mktemp /tmp/rwts.XXXXXX`
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
+string-join ((
+for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
 for $tc in //test-case
-return fn:concat (
-$tc/@name, " ",
-$tc/@FilePath, " ",
-$tc/query/@name, " ",
-$tc/output-file[1]/text(), " ",
-$tc/expected-error[1]/text(), " 
+let $out := $tc/output-file[1]/text()
+return string-join ((
+$tc/@name, $tc/@FilePath, $tc/query/@name,
+string-join (for $i in $tc/input-file return concat (data ($i/@variable), "=", $i/text ()), ":"),
+if ($out) then $out else "",
+$tc/expected-error[1]/text()
+), " ")),
+"
 ")
 EOF
 
 echo Cleaning up previous data...
-rm -rf $SRC/test/rbkt/Queries/w3c_testsuite $SRC/test/rbkt/ExpQueryResults/w3c_testsuite
+rm -rf $SRC/test/rbkt/Queries/w3c_testsuite $SRC/test/rbkt/ExpQueryResults/w3c_testsuite $SRC/test/rbkt/TestSources
 
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml $q | perl -e '
+echo Processing catalog...
+$SRC/test/zorbatest/xquery -s XQTSCatalog.xml $q | tee /tmp/xq-res.txt | perl -e '
 use strict;
-my @qdelete=();
+use File::Copy;
+
+my $repo=shift;
+my %sources;
 while (<>) {
-if (m# ?([^ ]+) ([^ ]+) ([^ ]+) ([^ ]*) ([^ ]*)#) {
-my ($name, $path, $query, $out, $err) = ($1, $2, $3, $4, $5);
-if (! ($name eq $query)) {
-  my $inpath = "Queries/XQuery/$path";
-  `cp $inpath/$query.xq $inpath/$name.xq`;
-  push @qdelete, "$inpath/$query.xq";
+chomp;
+if (m/^%src /) {
+  my ($info, $id, $path) = split (/ /);
+  $sources {$id} = $path;
+  next;
 }
-my $fullout = "ExpectedTestResults/$path/$name.xml.res";
+
+my ($name, $path, $query, $inlist, $out, $err) = split (/ /);
+my $inpath = "Queries/XQuery/$path";
+my $dstqpath="$repo/test/rbkt/Queries/w3c_testsuite/$path";
+`mkdir -p $dstqpath`;
+my $dstrespath = "$repo/test/rbkt/ExpQueryResults/w3c_testsuite/$path";
+my $fullout = "$dstrespath/$name.xml.res";
+`mkdir -p $dstrespath`;
+
+my @inbnd = split (/:/, $inlist);
+if (@inbnd) {
+  open (SPEC, ">$dstqpath/$name.spec");
+  print SPEC "-x";
+  foreach (@inbnd) {
+    my ($var, $srcid) = split /=/;
+    print SPEC " $var=$repo/test/rbkt/" . $sources {$srcid};
+  }
+  print SPEC "\n";
+  close (SPEC);
+}
+
+copy ("$inpath/$query.xq", "$dstqpath/$name.xq");
+
 if ($err) {
   open (RES, ">$fullout");
   print RES "$err\n";
+  close (RES);
 } else {
-  rename "ExpectedTestResults/$path/$out", $fullout;
+  copy ("ExpectedTestResults/$path/$out", $fullout);
 }
 }
-}
-foreach (@qdelete) {
-`rm -f $_`
-}
-'
+' $SRC
 rm -f $q
 
-echo Moving queries to Zorba repo...
-mv Queries/XQuery $SRC/test/rbkt/Queries/w3c_testsuite
+mv TestSources $SRC/test/rbkt/
 
-cd ExpectedTestResults
-echo Cleaning up results...
-find . -type f -not -name '*.xml.res' -exec rm {} \;
-
-echo Moving query results to Zorba repo...
-mkdir $SRC/test/rbkt/ExpQueryResults/w3c_testsuite/
-mv * $SRC/test/rbkt/ExpQueryResults/w3c_testsuite/
-
-echo "Cleaning up work directory"
+echo "Cleaning up work directory..."
 cd $d0; rm -rf "$d"
 
-echo Done
+echo Done.
