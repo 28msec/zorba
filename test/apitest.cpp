@@ -42,6 +42,15 @@ int apitest_alert_callback(ZorbaAlert *alert_mess,
   return -1;
 }
 
+void set_var (string name, string val, DynamicQueryContext_t dctx, XQueryExecution_t result) {
+  if (name [name.size () - 1] == ':' && dctx != NULL) {
+    dctx->SetVariable (name.substr (0, name.size () - 1), xqp_string (val));
+  } else if (name [name.size () - 1] != ':' && result != NULL) {
+    ifstream is (val.c_str ());
+    result->SetVariable (name, is);
+  }
+}
+
 #ifndef _WIN32_WCE
 int main(int argc, char* argv[])
 #else
@@ -61,13 +70,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
   ofstream* resultFile = NULL;
   string    query_text = "1+2";  // the default query if no file or query is specified
-
-// pick up all the runtime options
-#ifdef UNICODE
-#define TEST_ARGV_FLAG( str ) (_tcscmp(*argv, _T(str)) == 0)
-#else
-#define TEST_ARGV_FLAG( str ) (*argv == string (str))
-#endif
 
 #ifndef NDEBUG
   g_abort_when_fatal_error = lProp->abortWhenFatalError();
@@ -96,16 +98,14 @@ int _tmain(int argc, _TCHAR* argv[])
     ifstream  qfile(fname);
     
     if(!qfile.is_open())
-    {
       query_text = fname;
-    } else {
+    else {
     string temp;
       query_text = "";
       
       // warning: this method of reading a file might trim the 
       // whitespace at the end of lines
-      while (getline(qfile, temp))
-      {
+      while (getline(qfile, temp)) {
         if (query_text != "")
           query_text += "\n";
         
@@ -141,9 +141,15 @@ int _tmain(int argc, _TCHAR* argv[])
   StaticQueryContext::xpath1_0compatib_mode_t   default_compatib_mode;
   default_compatib_mode = sctx1->GetXPath1_0CompatibMode();
 
-  XQuery_t    query;
-  XQueryExecution_t   result = NULL;
-  Item_t    it;
+  vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
+
+  XQuery_t query;
+  XQueryExecution_t result = NULL;
+
+  DynamicQueryContext_t dctx = zorba_factory.createDynamicContext ();
+  for (vector<pair <string, string> >::iterator iter = ext_vars.begin ();
+       iter != ext_vars.end (); iter++)
+    set_var (iter->first, iter->second, dctx, NULL);
 
   // create a compiled query
   query = zorba_factory.createQuery(query_text.c_str(), sctx1);
@@ -153,48 +159,33 @@ int _tmain(int argc, _TCHAR* argv[])
     goto DisplayErrorsAndExit;
   }
 
-
-  result = query->createExecution();
+  result = query->createExecution(dctx);
   if(result.isNull())
   {
     goto DisplayErrorsAndExit;
   }
 
-  {
-    vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
-    for (vector<pair <string, string> >::iterator iter = ext_vars.begin ();
-         iter != ext_vars.end (); iter++) {
-      pair<string, string> b = *iter;
-      ifstream is (b.second.c_str ());
-      result->SetVariable (b.first, is);
-    }
-  }
+  for (vector<pair <string, string> >::iterator iter = ext_vars.begin ();
+       iter != ext_vars.end (); iter++)
+    set_var (iter->first, iter->second, NULL, result);
 
   result->setAlertsParam(result.get_ptr());///to be passed to alerts callback when error occurs
 
   if (lProp->useResultFile())
-  {
     resultFile = new ofstream(lProp->getResultFile().c_str());
-  }
 
 
-  if (lProp->useSerializer())
-  {
-    if (lProp->useResultFile())
-    {
+  if (lProp->useSerializer()) {
+    if (lProp->useResultFile()) {
       result->serialize(*resultFile);
       // endl should not be sent when serializing!
     }
-    else
-    {
-      result->serialize(std::cout);
-    }
+    else result->serialize(std::cout);
   }
-  else
-  {
+  else {
     while( true )
     {
-      it = result->next();
+      Item_t it = result->next();
       if(it == NULL)
         break;
 
@@ -204,8 +195,7 @@ int _tmain(int argc, _TCHAR* argv[])
         cout << it->show() << endl;
     }
   }
-  if(result->isError())
-  {
+  if(result->isError()) {
     goto DisplayErrorsAndExit;
   }
 
