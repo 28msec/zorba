@@ -363,8 +363,9 @@ void AttributeAxisIterator::resetImpl(PlanState& planState)
   AxisIterator<AttributeAxisIterator>::resetImpl(planState);
 
   AttributeAxisState* state;
-  GET_STATE(AttributeAxisState, state, planState); 
-  state->theAttributes->reset();
+  GET_STATE(AttributeAxisState, state, planState);
+  if (state->theAttributes != NULL)
+    state->theAttributes->reset();
 }
 
 
@@ -694,6 +695,7 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
            state->theContextNode->getNodeKind() != StoreConsts::documentNode);
 
     state->theChildren = state->theContextNode->getChildren();
+    assert (state->theChildren != NULL);
 
     child = state->theChildren->next();
 
@@ -727,8 +729,9 @@ void ChildAxisIterator::resetImpl(PlanState& planState)
   AxisIterator<ChildAxisIterator>::resetImpl(planState);
 
   ChildAxisState* state;
-  GET_STATE(ChildAxisState, state, planState); 
-  state->theChildren->reset();
+  GET_STATE(ChildAxisState, state, planState);
+  if (state->theChildren != NULL)
+    state->theChildren->reset();
 }
 
 
