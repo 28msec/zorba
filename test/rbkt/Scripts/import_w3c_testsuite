@@ -35,6 +35,7 @@ let $out := $tc/output-file[1]/text()
 return string-join ((
 $tc/@name, $tc/@FilePath, $tc/query/@name,
 string-join (for $i in $tc/input-file return concat (data ($i/@variable), "=", $i/text ()), ":"),
+string-join (for $i in $tc/input-URI return concat (data ($i/@variable), "=", $i/text ()), ":"),
 if ($out) then $out else "",
 string-join ($tc/expected-error/text(), ":")
 ), " ")),
@@ -60,8 +61,9 @@ if (m/^%src /) {
   next;
 }
 
-my ($name, $path, $query, $inlist, $out, $errlist) = split (/ /);
+my ($name, $path, $query, $inlist, $urilist, $out, $errlist) = split (/ /);
 my @inbnd = split (/:/, $inlist);
+my @uribnd = split (/:/, $urilist);
 my @errs = split (/:/, $errlist);
 my $inpath = "Queries/XQuery/$path";
 my $dstqpath="$repo/test/rbkt/Queries/w3c_testsuite/$path";
@@ -75,12 +77,16 @@ if ($out) {
   copy ("ExpectedTestResults/$path/$out", $fullout);
 }
 
-if (@inbnd) {
+if (@inbnd || @uribnd) {
   open (SPEC, ">>$specfile");
-  print SPEC "Args:-x";
+  print SPEC "Args:";
   foreach (@inbnd) {
     my ($var, $srcid) = split /=/;
-    print SPEC " $var=$repo/test/rbkt/" . $sources {$srcid};
+    print SPEC " -x $var=$repo/test/rbkt/" . $sources {$srcid};
+  }
+  foreach (@uribnd) {
+    my ($var, $srcid) = split /=/;
+    print SPEC " -x $var:=$repo/test/rbkt/" . $sources {$srcid};
   }
   print SPEC "\n";
   close (SPEC);
