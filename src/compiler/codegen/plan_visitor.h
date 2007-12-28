@@ -13,7 +13,7 @@
 #include "compiler/expression/expr_visitor.h"
 #include "runtime/core/item_iterator.h"
 #include "util/rchandle.h"
-#include "util/fx/fxhashmap.h"
+#include "util/hashmap.h"
 
 #include <stack>
 
@@ -38,9 +38,9 @@ protected:
 
 	std::stack<expr*>      theConstructorsStack;
 
-  fxhash64map<std::vector<var_iter_t> *> fvar_iter_map;
-  fxhash64map<std::vector<var_iter_t> *> pvar_iter_map;
-  fxhash64map<std::vector<ref_iter_t> *> lvar_iter_map;
+  hash64map<std::vector<var_iter_t> *> fvar_iter_map;
+  hash64map<std::vector<var_iter_t> *> pvar_iter_map;
+  hash64map<std::vector<ref_iter_t> *> lvar_iter_map;
 
 public:
 	plan_visitor( ) {}

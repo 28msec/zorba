@@ -141,8 +141,9 @@ bool plan_visitor::begin_visit(flwor_expr& v)
       var_expr *pos_vp = &*(*it)->get_pos_var ();
       if (pos_vp != NULL)
         pvar_iter_map.put ((uint64_t) pos_vp, new vector<var_iter_t>());
-    } else if (vh->kind == var_expr::let_var)
+    } else if (vh->kind == var_expr::let_var) {
       lvar_iter_map.put (k, new vector<ref_iter_t>());
+    } else Assert (false);
   }
   return true;
 }
