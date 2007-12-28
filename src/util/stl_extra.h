@@ -31,6 +31,7 @@ namespace xqp {
   public:
     stack_generator (stack<T> &stk_) : stk (stk_) {}
     T operator () () {
+      assert (! stk.empty ());
       T x = stk.top ();
       stk.pop ();
       return x;

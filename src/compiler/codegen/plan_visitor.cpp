@@ -51,6 +51,13 @@ static uint32_t depth = 0;
 
 #define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
+  template <typename T> T pop_stack (stack<T> &stk) {
+    assert (! stk.empty ());
+    T x = stk.top ();
+    stk.pop ();
+    return x;
+  }
+
 /*..........................................
  :  begin visit                            :
  :.........................................*/
@@ -176,7 +183,7 @@ void plan_visitor::end_visit(flwor_expr& v)
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
        it != v.clause_end();
        ++it) {
-    PlanIter_t input = inputs.top (); inputs.pop ();
+    PlanIter_t input = pop_stack (inputs);
     if ((*it)->type == forlet_clause::for_clause) {
       vector<var_iter_t> *var_iters = NULL, *pvar_iters = NULL;
       Assert (fvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
@@ -297,8 +304,8 @@ void plan_visitor::end_visit(fo_expr& v)
     if (!theConstructorsStack.empty() &&
         dynamic_cast<EnclosedIterator*>(iter.get_ptr()) != NULL)
     {
-      Assert(theConstructorsStack.top() == NULL);
-      theConstructorsStack.pop();
+      expr *e = pop_stack (theConstructorsStack);
+      Assert(e == NULL);
     }
   } else {
     ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017,
