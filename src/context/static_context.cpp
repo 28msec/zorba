@@ -37,6 +37,7 @@
 #include "util/utf8/Unicode_util.h"
 #include "context/collation_manager.h"
 #include "functions/library.h"
+#include "system/zorba_engine.h"
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER
@@ -92,16 +93,17 @@ namespace xqp {
 		//end debug
 
 		///free the pointers from ctx_value_t from keymap
-		fxvector<fxhashmap<ctx_value_t>::entry>::const_iterator		it;
-		char		keybuff[50];
+		checked_vector<hashmap<ctx_value_t>::entry>::const_iterator		it;
+		const char		*keybuff;
 		const ctx_value_t *val;
 		Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
 
-		keybuff[sizeof(keybuff)-1] = 0;
+		//keybuff[sizeof(keybuff)-1] = 0;
 		for(it = keymap.begin();it!=keymap.end();it++)
 		{
 			///it is an entry
-			keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
+			//keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
+			keybuff = (*it).key.c_str();
 			if(!strncmp(keybuff, "type:", 5))
 			{
 				val = &(*it).val;

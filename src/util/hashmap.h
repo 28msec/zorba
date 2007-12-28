@@ -40,9 +40,9 @@ namespace xqp {
   public:
     checked_vector () {}
     checked_vector (int n) : vector<T> (n) {}
-#ifndef NDEBUG
-    T &operator[] (int i) { return vector<T>::at (i); }
-#endif
+//#ifndef NDEBUG
+//    T &operator[] (int i) { return vector<T>::at (i); }
+//#endif
   };
 
 /*___________________________________________________________

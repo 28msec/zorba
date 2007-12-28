@@ -49,7 +49,7 @@ protected:
 	static bool static_init;
 
 	dynamic_context	*parent;
-	fxhashmap<dctx_value_t> keymap;
+	hashmap<dctx_value_t> keymap;
 	time_t	execution_date_time;
 	int			implicit_timezone;
 

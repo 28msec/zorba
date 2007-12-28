@@ -14,6 +14,7 @@
 #include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/base/noarybase.h"
+#include "system/zorba_engine.h"
 
 #include <assert.h>
 #include <iostream>

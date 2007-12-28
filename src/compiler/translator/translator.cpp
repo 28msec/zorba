@@ -17,6 +17,7 @@
 #include "system/zorba.h"
 #include "util/utf8/Unicode_util.h"
 #include "functions/signature.h"
+#include "system/zorba_engine.h"
 
 #ifndef NDEBUG
 # include "zorba/util/properties.h"

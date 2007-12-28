@@ -27,7 +27,7 @@
 #define XQP_CONTEXT_H
 
 #include "context/common.h"
-#include "util/fx/fxhashmap.h"
+#include "util/hashmap.h"
 #include "util/rchandle.h"
 #include "util/utf8/xqpString.h"
 #include "types/representations.h"
@@ -69,8 +69,8 @@ protected:
   
 protected:
 	context *parent;
-	fxhashmap<ctx_value_t> keymap;
-	fxhashmap<xqp_string> str_keymap;
+	hashmap<ctx_value_t> keymap;
+	hashmap<xqp_string> str_keymap;
 
   bool lookup_once (xqp_string key, xqp_string &val) const
   { return str_keymap.get (key, val); }

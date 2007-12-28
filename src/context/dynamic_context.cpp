@@ -59,16 +59,17 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 dynamic_context::~dynamic_context()
 {
 	///free the pointers from ctx_value_t from keymap
-	fxvector<fxhashmap<dctx_value_t>::entry>::const_iterator		it;
-	char		keybuff[50];
+	checked_vector<hashmap<dctx_value_t>::entry>::const_iterator		it;
+	const char		*keybuff;//[50];
 	const dctx_value_t *val;
 //	zorba	*z = zorba::getZorbaForCurrentThread();
 
-	keybuff[sizeof(keybuff)-1] = 0;
+	//keybuff[sizeof(keybuff)-1] = 0;
 	for(it = keymap.begin();it!=keymap.end();it++)
 	{
 		///it is an entry
-		keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
+		//keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
+		keybuff = (*it).key.c_str();
 		if(!strncmp(keybuff, "var:", 4))
 		{
 			val = &(*it).val;

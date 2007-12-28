@@ -10,6 +10,7 @@
 #include "system/zorba.h"
 #include "store/api/item.h"
 #include "runtime/base/iterator.h"
+#include "system/zorba_engine.h"
 //#include "api/external/xquerybinary.h"
 
 using namespace std;

@@ -19,10 +19,10 @@
 
 #include <stack>
 #include <map>
-#ifdef WIN32
-#include <windows.h>
-#include "win32/pthread.h"
-#endif
+//#ifdef WIN32
+//#include <windows.h>
+//#include "win32/pthread.h"
+//#endif
 
 namespace xqp {
 

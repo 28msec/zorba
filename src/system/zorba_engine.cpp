@@ -2,7 +2,7 @@
 
 #ifdef WIN32
 #include <windows.h>
-#include "win32/compatib_defs.h"
+#include "util/win32/compatib_defs.h"
 #endif
 
 #ifdef ZORBA_USE_PTHREAD_LIBRARY

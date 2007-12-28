@@ -3,7 +3,6 @@
  *  Authors: Tim Kraska, David Graf
  */
 
-
 #include "runtime/fncontext/FnContextImpl.h"
 #include "api/external/xquery.h"
 #include "context/dynamic_context.h"
