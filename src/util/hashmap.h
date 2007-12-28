@@ -10,11 +10,11 @@
 #ifndef XQP_HASHMAP_H
 #define XQP_HASHMAP_H
 
-#ifndef WIN32
-#include <pthread.h>
-#else
-#include "util/win32/pthread.h"
-#endif
+//#ifndef WIN32
+//#include <pthread.h>
+//#else
+//#include "util/win32/pthread.h"
+//#endif
 
 #include <stddef.h>
 #include <stdlib.h>
