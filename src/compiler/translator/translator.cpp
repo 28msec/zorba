@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <string>
+#include <stack>
 #include <cassert>
 #include <sstream>
 
@@ -3500,6 +3501,12 @@ void end_visit(const FTWordsValue& v, void *visit_state)
 
 Translator *make_translator (static_context *sctx_p) {
   return new TranslatorImpl (sctx_p);
+}
+
+rchandle<expr> translate (static_context *sctx_p, const parsenode &root) {
+  auto_ptr<Translator> t (make_translator (sctx_p));
+  root.accept (*t);
+  return t->result ();
 }
 
 } /* namespace xqp */

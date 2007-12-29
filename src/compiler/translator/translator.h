@@ -14,8 +14,6 @@
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "compiler/expression/expr.h"
 
-#include <stack>
-
 /*______________________________________________________________________
 |  
 |	 Design note: Visitor pattern.  See, for example:
@@ -31,6 +29,7 @@ namespace xqp {
   };
 
   Translator *make_translator (static_context *);
-
+  rchandle<expr> translate (static_context *, const parsenode &);
+  
 } /* namespace xqp */
 #endif /* XQP_NORMALIZE_VISITOR_H */

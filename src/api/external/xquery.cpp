@@ -30,7 +30,7 @@ using namespace std;
 namespace xqp {
 
 
-Zorba_XQueryBinary::Zorba_XQueryBinary( xqp_string  xquery_source_uri,
+Zorba_XQueryBinary::Zorba_XQueryBinary(xqp_string  xquery_source_uri,
                                        const char* query_text ) :
   m_xquery_source_uri(xquery_source_uri),
   m_query_text (query_text)
@@ -41,14 +41,10 @@ Zorba_XQueryBinary::Zorba_XQueryBinary( xqp_string  xquery_source_uri,
   internal_sctx = NULL;
 
   default_collator = NULL;
-  //addReference();
-//  xquery_registered_callback = NULL;
-//  xquery_registered_param = NULL;
+  // addReference();
+  // xquery_registered_callback = NULL;
+  // xquery_registered_param = NULL;
 }
-
-//Zorba_XQueryBinary::Zorba_XQueryBinary()
-//{
-//}
 
 Zorba_XQueryBinary::~Zorba_XQueryBinary()
 {
@@ -84,8 +80,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       return false;
     }
 
-    if(sctx)
-    {
+    if (sctx) {
       internal_static_context = sctx;
       //now build the static context
       StaticContextWrapper* context_wrapper = static_cast<StaticContextWrapper*>(sctx);
@@ -97,8 +92,8 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     }
     internal_sctx->set_entity_file_uri(m_xquery_source_uri);
 
-  ///reset the error list from error manager
-//  m_error_manager.clear();///delete all alerts from list
+    // reset the error list from error manager
+    // m_error_manager.clear();///delete all alerts from list
 
     ///NOW COMPILE
     xquery_driver driver;
@@ -123,8 +118,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) 
 	  {
       ZORBA_ERROR_ALERT(AlertCodes::XPST0003,
-                        NULL,
-                        true,
+                        NULL, true,
                         "Parse error: expecting MainModule");
       zorba->current_xquery = NULL;
       return false;
@@ -133,8 +127,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL) 
 	  {
       ZORBA_ERROR_ALERT(AlertCodes::XPST0003,
-                        NULL,
-                        true,
+                        NULL, true,
                         "Parse error: expecting MainModule->QueryBody");
       //UnregisterCurrentXQueryForCurrentThread( this );
       zorba->current_xquery = NULL;
@@ -144,8 +137,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     if ((ex_p = dynamic_cast<Expr*>(&*qb_p->get_expr()))==NULL) 
 	  {
       ZORBA_ERROR_ALERT(AlertCodes::XPST0003,
-                        NULL,
-                        true, 
+                        NULL, true, 
                         "Parse error: expecting MainModule->QueryBody->Expr");
       zorba->current_xquery = NULL;
       return false;
@@ -153,10 +145,8 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
     if (Properties::instance ()->printNormalizedExpressions ())
       cout << "Expression tree:\n";
-    auto_ptr<Translator> translator (make_translator (zorba->get_static_context()));
-    mm_p->accept(*translator);
 
-    rchandle<expr> e_h = translator->result();
+    rchandle<expr> e_h = translate (zorba->get_static_context(), *mm_p);
     if (e_h == NULL)
     {
       ZORBA_ERROR_ALERT(AlertCodes::API0002_COMPILE_FAILED, NULL, true);
@@ -164,9 +154,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       return false;
     }
   
-
     normalizer n(zorba->get_static_context());
-
     e_h->accept(n);
 
     if (Properties::instance()->printNormalizedExpressions())
@@ -174,21 +162,17 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
     ///now do code generation (generate iterator tree)
 
-    plan_visitor pvs;
-    e_h->accept(pvs);
-    top_iterator = pvs.pop_itstack();
+    top_iterator = codegen (e_h);
 
-    if (Properties::instance()->printIteratorTree())
-    {
+    if (Properties::instance()->printIteratorTree()) {
       cout << "Iterator tree:\n";
       XMLIterPrinter vp(std::cout);
       PrinterVisitor pv(vp);
       top_iterator->accept(pv);
     }
 	
-    if (top_iterator == NULL)
-    {
-      cout << "it_h==NULL\n";
+    if (top_iterator == NULL) {
+      cout << "Codegen returned null";
       ZORBA_ERROR_ALERT(AlertCodes::API0002_COMPILE_FAILED, NULL, true);
       zorba->current_xquery = NULL;
       return false;
@@ -216,12 +200,12 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
 XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dctx)
 {
-  ///init thread
-  //check if thread is inited, if not do automatic init
-  ///and register this xquery as the current xquery executed/compiling in this current thread
+  // init thread
+  // check if thread is inited, if not do automatic init
+  // and register this xquery as the current xquery executed/compiling in this current thread
   Zorba* zorba = ZORBA_FOR_CURRENT_THREAD();
   zorba->current_xquery = this;
-//  RegisterCurrentXQueryForCurrentThread( this );
+  // RegisterCurrentXQueryForCurrentThread( this );
 
   try{
   
@@ -290,7 +274,7 @@ XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dct
 
 StaticQueryContext_t Zorba_XQueryBinary::getInternalStaticContext()
 {
-	if(!internal_static_context.get_ptr())
+	if(internal_static_context.get_ptr() == NULL)
 		internal_static_context = new StaticContextWrapper();
   return internal_static_context;
 }
