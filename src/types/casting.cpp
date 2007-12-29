@@ -224,6 +224,7 @@ namespace xqp
         break;
       case TypeSystem::XS_GYEAR:
         // TODO
+        lItem = aSourceItem->getEBV();
         break;
       case TypeSystem::XS_GMONTH_DAY:
         // TODO
@@ -288,32 +289,35 @@ namespace xqp
 #endif
     if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(FLOAT)))
     {
-      Item_t lFloatItem = Zorba::getItemFactory()->createFloat(0);
-      if (lFloatItem->equals(aSourceItem))
-        lRetValue = false;
-
+      return aSourceItem->getEBV();
+      //Item_t lFloatItem = Zorba::getItemFactory()->createFloat(0);
+      //if (lFloatItem->equals(aSourceItem))
+      //  lRetValue = false;
       // TODO check NaN
       
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DOUBLE)))
     {
-      Item_t lDoubleItem = Zorba::getItemFactory()->createDouble(0);
-      if (lDoubleItem->equals(aSourceItem))
-        lRetValue = false;
+      return aSourceItem->getEBV();
+      //Item_t lDoubleItem = Zorba::getItemFactory()->createDouble(0);
+      //if (lDoubleItem->equals(aSourceItem))
+      //  lRetValue = false;
 
       // TODO check NaN
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DECIMAL)))
     {
-      Item_t lDecimalItem = Zorba::getItemFactory()->createDecimal(0);
-      if (lDecimalItem->equals(aSourceItem))
-        lRetValue = false;
+      return aSourceItem->getEBV();
+      //Item_t lDecimalItem = Zorba::getItemFactory()->createDecimal(0);
+      //if (lDecimalItem->equals(aSourceItem))
+      //  lRetValue = false;
 
       // TODO check NaN
 
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(INTEGER)))
     {
-      Item_t lIntegerItem = Zorba::getItemFactory()->createInteger(0);
-      if (lIntegerItem->equals(aSourceItem))
-        lRetValue = false;
+      return aSourceItem->getEBV();
+      //Item_t lIntegerItem = Zorba::getItemFactory()->createInteger(0);
+      //if (lIntegerItem->equals(aSourceItem))
+      //  lRetValue = false;
 
      // TODO check NAN
     } else if (GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(STRING))

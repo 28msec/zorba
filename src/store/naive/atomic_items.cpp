@@ -292,7 +292,12 @@ bool DoubleItemNaive::equals ( Item_t item ) const
 
 Item_t DoubleItemNaive::getEBV() const
 {
-  bool b = ( theValue != 0 );
+  bool b;
+  if (theValue != theValue)
+    // NaN case
+    b = false;
+  else
+    b = ( theValue != 0 );
   return CREATE_BOOLITEM(b);
 }
 
@@ -322,7 +327,12 @@ Item_t FloatItemNaive::getType() const
 
   Item_t FloatItemNaive::getEBV() const
 	{
-		bool b = ( theValue != 0 );
+    bool b;
+    if (theValue != theValue)
+      // NaN case
+      b = false;
+    else
+      b = ( theValue != 0 );
     return CREATE_BOOLITEM(b);
 	}
 
