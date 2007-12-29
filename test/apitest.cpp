@@ -47,6 +47,7 @@ void set_var (string name, string val, DynamicQueryContext_t dctx, XQueryExecuti
     dctx->SetVariable (name.substr (0, name.size () - 1), xqp_string (val));
   } else if (name [name.size () - 1] != ':' && result != NULL) {
     ifstream is (val.c_str ());
+    assert (is);
     result->SetVariable (name, is);
   }
 }
