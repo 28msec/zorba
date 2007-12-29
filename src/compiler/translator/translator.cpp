@@ -773,15 +773,15 @@ void end_visit(const CompAttrConstructor& v, void *visit_state)
     fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
     lDocFilter->add(lValueExpr);
     
-    lValueExpr = lDocFilter;
-  }
+    fo_expr *lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
+    lEnclosed->add(lValueExpr);
+
+    lValueExpr = lEnclosed;
+  } 
   
   expr_t lQNameExpr = pop_nodestack();
-  
-  rchandle<fo_expr> lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
-  lEnclosed->add(lValueExpr);
-    
-  lAttr = new attr_expr(v.get_location(), lQNameExpr, &*lEnclosed);
+
+  lAttr = new attr_expr(v.get_location(), lQNameExpr, lValueExpr);
   
   nodestack.push(&*lAttr);
 }

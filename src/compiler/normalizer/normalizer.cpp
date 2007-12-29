@@ -194,22 +194,23 @@ bool normalizer::begin_visit(doc_expr& node)
 bool normalizer::begin_visit(attr_expr& node)
 {
   assert (node.getQNameExpr() != NULL);
-  assert (node.getValueExpr() != NULL);
 
   node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
   
-  rchandle<expr> lExpr = node.getValueExpr();
-  fo_expr* lFoExpr = 0;
-  if ((lFoExpr = dynamic_cast<fo_expr*>(&*lExpr)))
-  {
-    function* lTestFunc = LOOKUP_OP1("enclosed-expr");
-    if (lFoExpr->get_func() == lTestFunc)
+  if (node.getValueExpr() != NULL) {
+    rchandle<expr> lExpr = node.getValueExpr();
+    fo_expr* lFoExpr = 0;
+    if ((lFoExpr = dynamic_cast<fo_expr*>(&*lExpr)))
     {
-      (*lFoExpr)[0] = wrap_in_atomization(m_sctx, (*lFoExpr)[0].get_ptr());
-      return true;
+      function* lTestFunc = LOOKUP_OP1("enclosed-expr");
+      if (lFoExpr->get_func() == lTestFunc)
+      {
+        (*lFoExpr)[0] = wrap_in_atomization(m_sctx, (*lFoExpr)[0].get_ptr());
+        return true;
+      }
     }
+    node.setValueExpr(wrap_in_atomization(m_sctx, node.getValueExpr()));
   }
-  node.setValueExpr(wrap_in_atomization(m_sctx, node.getValueExpr()));
 
   return true;
 }

@@ -848,13 +848,16 @@ Item_t AttributeNodeImpl::getAtomizationValue() const
 
 xqp_string AttributeNodeImpl::getStringProperty() const
 {
-  return theLexicalValue->getStringProperty();
+  if (theLexicalValue != 0)
+    return theLexicalValue->getStringProperty();
+  else
+    return "";
 }
 
 
 xqp_string AttributeNodeImpl::getStringValue() const
 {
-  return theLexicalValue->getStringValue();
+  return getStringProperty();
 }
 
 
