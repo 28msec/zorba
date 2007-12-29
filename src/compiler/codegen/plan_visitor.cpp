@@ -90,7 +90,7 @@ void plan_visitor::end_visit(var_expr& v)
     var_iterator *v_p = new var_iterator(v.get_varname ()->getLocalName (),v.get_loc(), (void *) &v);
     vector<var_iter_t> *map = NULL;
     
-    Assert (fvar_iter_map.get ((uint64_t) &v, map));
+    ZORBA_ASSERT (fvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   }
@@ -98,7 +98,7 @@ void plan_visitor::end_visit(var_expr& v)
   case var_expr::pos_var: {
     var_iterator *v_p = new var_iterator(v.get_varname ()->getLocalName (),v.get_loc(), (void *) &v);
     vector<var_iter_t> *map = NULL;
-    Assert (pvar_iter_map.get ((uint64_t) &v, map));
+    ZORBA_ASSERT (pvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   }
@@ -107,7 +107,7 @@ void plan_visitor::end_visit(var_expr& v)
     RefIterator *v_p = new RefIterator(v.get_varname ()->getLocalName (),v.get_loc(), (void *) &v);
     vector<ref_iter_t> *map = NULL;
     
-    Assert (lvar_iter_map.get ((uint64_t) &v, map));
+    ZORBA_ASSERT (lvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   }
@@ -150,7 +150,7 @@ bool plan_visitor::begin_visit(flwor_expr& v)
         pvar_iter_map.put ((uint64_t) pos_vp, new vector<var_iter_t>());
     } else if (vh->kind == var_expr::let_var) {
       lvar_iter_map.put (k, new vector<ref_iter_t>());
-    } else Assert (false);
+    } else ZORBA_ASSERT (false);
   }
   return true;
 }
@@ -186,17 +186,17 @@ void plan_visitor::end_visit(flwor_expr& v)
     PlanIter_t input = pop_stack (inputs);
     if ((*it)->type == forlet_clause::for_clause) {
       vector<var_iter_t> *var_iters = NULL, *pvar_iters = NULL;
-      Assert (fvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
+      ZORBA_ASSERT (fvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
       var_expr *pos_vp = &* (*it)->get_pos_var ();
       if (pos_vp == NULL)
         clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input));
       else {
-        Assert (pvar_iter_map.get ((uint64_t) pos_vp, pvar_iters));
+        ZORBA_ASSERT (pvar_iter_map.get ((uint64_t) pos_vp, pvar_iters));
         clauses.push_back (FLWORIterator::ForLetClause (*var_iters, *pvar_iters, input));
       }
     } else if ((*it)->type == forlet_clause::let_clause) {
       vector<ref_iter_t> *var_iters = NULL;
-      Assert (lvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
+      ZORBA_ASSERT (lvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
       clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input, true));
     }
   }
@@ -236,7 +236,7 @@ void plan_visitor::end_visit(promote_expr& v)
 bool plan_visitor::begin_visit(typeswitch_expr& v)
 {
   CODEGEN_TRACE_IN("");
-  Assert (false);
+  ZORBA_ASSERT (false);
   return true;
 }
 
@@ -289,7 +289,7 @@ void plan_visitor::end_visit(fo_expr& v)
   CODEGEN_TRACE_OUT("");
 
   const function* func = v.get_func();
-  Assert (func != NULL);
+  ZORBA_ASSERT (func != NULL);
 
   vector<PlanIter_t> argv (v.size ());
   generate (argv.rbegin (), argv.rend (), stack_to_generator (itstack));
@@ -298,14 +298,14 @@ void plan_visitor::end_visit(fo_expr& v)
 
   if (func->validate_args (argv)) {
     PlanIter_t iter = (*func) (loc, argv);
-    Assert (iter != NULL);
+    ZORBA_ASSERT (iter != NULL);
     itstack.push (iter);
 
     if (!theConstructorsStack.empty() &&
         dynamic_cast<EnclosedIterator*>(iter.get_ptr()) != NULL)
     {
       expr *e = pop_stack (theConstructorsStack);
-      Assert(e == NULL);
+      ZORBA_ASSERT(e == NULL);
     }
   } else {
     ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017,
@@ -519,7 +519,7 @@ bool plan_visitor::begin_visit(match_expr& v)
 
   PlanIter_t axisIte = pop_itstack();
   AxisIteratorHelper* axisItep = dynamic_cast<AxisIteratorHelper*>(&*axisIte);
-  Assert(axisItep != NULL);
+  ZORBA_ASSERT(axisItep != NULL);
 
   PlanIter_t matchIte;
   Item_t qname;
@@ -654,7 +654,7 @@ void plan_visitor::end_visit ( elem_expr& v )
   lQNameIter = pop_itstack();
 
   bool assignId = false;
-  Assert(!theConstructorsStack.empty());
+  ZORBA_ASSERT(!theConstructorsStack.empty());
   if (theConstructorsStack.top() == &v)
   {
     theConstructorsStack.pop();
@@ -704,7 +704,7 @@ void plan_visitor::end_visit(attr_expr& v)
   lQNameIter = pop_itstack();
   
   bool assignId = false;
-  Assert(!theConstructorsStack.empty());
+  ZORBA_ASSERT(!theConstructorsStack.empty());
   if (theConstructorsStack.top() == &v)
   {
     theConstructorsStack.pop();
@@ -736,7 +736,7 @@ void plan_visitor::end_visit(text_expr& v)
   PlanIter_t content = pop_itstack ();
 
   bool assignId = false;
-  Assert(!theConstructorsStack.empty());
+  ZORBA_ASSERT(!theConstructorsStack.empty());
   if (theConstructorsStack.top() == &v)
   {
     theConstructorsStack.pop();
@@ -767,7 +767,7 @@ void plan_visitor::end_visit(text_expr& v)
 bool plan_visitor::begin_visit(pi_expr& v)
 {
   CODEGEN_TRACE_IN("");
-  Assert (false);
+  ZORBA_ASSERT (false);
   return true;
 }
 
