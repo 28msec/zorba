@@ -850,7 +850,7 @@ void axis_step_expr::accept(expr_visitor& v)
   for(; it != en; ++it) {
     (*it)->accept(v);
   }
-  theNodeTest->accept(v);
+  ACCEPT (theNodeTest);
 
   v.end_visit(*this);
 }
