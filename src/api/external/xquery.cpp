@@ -116,8 +116,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       lPrintXMLVisitor.print(n_p);
     }    
 	
-    // normalize the expression tree
-    auto_ptr<Translator> translator (make_translator ());
     MainModule* mm_p;
     QueryBody* qb_p;
     Expr* ex_p;
@@ -155,6 +153,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
     if (Properties::instance ()->printNormalizedExpressions ())
       cout << "Expression tree:\n";
+    auto_ptr<Translator> translator (make_translator (zorba->get_static_context()));
     mm_p->accept(*translator);
 
     rchandle<expr> e_h = translator->result();

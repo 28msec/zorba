@@ -30,7 +30,7 @@ namespace xqp {
     virtual rchandle<expr> result () = 0;
   };
 
-  Translator *make_translator ();
+  Translator *make_translator (static_context *);
 
 } /* namespace xqp */
 #endif /* XQP_NORMALIZE_VISITOR_H */

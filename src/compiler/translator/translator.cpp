@@ -60,12 +60,11 @@ public:
   typedef rchandle<var_expr> var_expr_t;
   typedef std::pair<var_expr_t, expr_t> global_binding;
 
-  friend Translator *make_translator ();
+  friend Translator *make_translator (static_context *);
 
 protected:
   uint32_t depth;
 
-  Zorba* zorp;
   static_context *sctx_p;
   std::stack<expr_t> nodestack;
   std::stack<TypeSystem::xqtref_t> tstack;  // types stack
@@ -97,11 +96,9 @@ protected:
     return e;
   }
   
-  TranslatorImpl ()
-    : depth (0), tempvar_counter (0)
+  TranslatorImpl (static_context *sctx_p_)
+    : depth (0), sctx_p (sctx_p_), tempvar_counter (0)
   {
-    zorp = ZORBA_FOR_CURRENT_THREAD();
-    sctx_p = zorp->get_static_context();
     yy::location loc;
     var_expr *ctx_var = bind_var(loc, DOT_VAR, var_expr::context_var);
   }
@@ -1288,8 +1285,7 @@ void end_visit(const OptionDecl& v, void *visit_state)
 
 void *begin_visit(const OrderingModeDecl& v)
 {
-TRACE_VISIT ();
-//daniel  zorp->get_dynamic_context()->set_ordering_mode(v.get_mode());
+  TRACE_VISIT ();
   sctx_p->set_ordering_mode(v.get_mode());
   return NULL;
 }
@@ -3531,8 +3527,8 @@ void end_visit(const FTWordsValue& v, void *visit_state)
 
 };
 
-Translator *make_translator () {
-  return new TranslatorImpl ();
+Translator *make_translator (static_context *sctx_p) {
+  return new TranslatorImpl (sctx_p);
 }
 
 } /* namespace xqp */
