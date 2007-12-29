@@ -113,6 +113,19 @@ protected:
     }
   }
 
+  rchandle<axis_step_expr> expect_axis_step_top () {
+    rchandle<axis_step_expr> axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+    if (axisExpr == NULL) {
+      cout << "Expecting axis step on top of stack; ";
+      if (nodestack.top() != NULL)
+        cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+      else
+        cout << "top is null\n";
+      Assert (false);
+    }
+    return axisExpr;
+  }
+
 public:
 
   expr_t result () {
@@ -2001,12 +2014,7 @@ void end_visit(const NameTest& v, void *visit_state)
   TRACE_VISIT_OUT ();
 
   // Find axis step on top of stack
-  rchandle<axis_step_expr> axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  if (axisExpr == NULL)
-  {
-    TRACE_VISIT_OUT ();
-    cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-  }
+  rchandle<axis_step_expr> axisExpr = expect_axis_step_top ();
 
   // Construct name-test match expr
   rchandle<match_expr> matchExpr = new match_expr(v.get_location());;
@@ -2084,12 +2092,7 @@ void *begin_visit(const AnyKindTest& v)
 void end_visit(const AnyKindTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  if (ase == NULL)
-  {
-    cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
-    cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-  }
+  rchandle<axis_step_expr> ase = expect_axis_step_top ();
 
   rchandle<match_expr> me = new match_expr(v.get_location());
   me->setTestKind(match_anykind_test);
@@ -2146,8 +2149,7 @@ void end_visit(const ElementTest& v, void *visit_state)
   TRACE_VISIT_OUT ();
 
   // find axis step expression on top of stack
-  rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  assert(ase != NULL); // expecting axis_step_expr on top of stack
+  rchandle<axis_step_expr> ase = expect_axis_step_top ();
 
   // construct the element match
   rchandle<match_expr> me = new match_expr(v.get_location());
@@ -2182,12 +2184,7 @@ void end_visit(const AttributeTest& v, void *visit_state)
   TRACE_VISIT_OUT ();
 
   // find axis step expression on top of stack
-  rchandle<axis_step_expr> ase_h = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  if (ase_h == NULL)
-  {
-    TRACE_VISIT_OUT ();
-    cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-  }
+  rchandle<axis_step_expr> ase_h = expect_axis_step_top ();
 
   /*
    * construct the attribute match
@@ -2228,12 +2225,7 @@ void end_visit(const TextTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  rchandle<axis_step_expr> ase_h = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  if (ase_h == NULL)
-  {
-    TRACE_VISIT_OUT ();
-    cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-  }
+  rchandle<axis_step_expr> ase_h = expect_axis_step_top ();
 
   rchandle<match_expr> m_h = new match_expr(v.get_location());
   m_h->setTestKind(match_text_test);
@@ -2253,12 +2245,7 @@ void end_visit(const CommentTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  rchandle<axis_step_expr> ase_h = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  if (ase_h == NULL)
-  {
-    TRACE_VISIT_OUT ();
-    cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-  }
+  rchandle<axis_step_expr> ase_h = expect_axis_step_top ();
 
   rchandle<match_expr> m_h = new match_expr(v.get_location());
   m_h->setTestKind(match_comment_test);
@@ -2615,12 +2602,7 @@ void end_visit(const AbbrevForwardStep& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  if (ase == NULL) 
-  {
-    cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
-    cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-  }
+  rchandle<axis_step_expr> ase = expect_axis_step_top ();
 
   if (v.get_attr_bit())
   {
@@ -2644,12 +2626,7 @@ void end_visit(const ForwardAxis& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  if (ase == NULL)
-  {
-    TRACE_VISIT_OUT ();
-    cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-  }
+  rchandle<axis_step_expr> ase = expect_axis_step_top ();
 
   switch (v.get_axis())
   {
@@ -2716,12 +2693,7 @@ void end_visit(const ReverseAxis& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  if (ase == NULL)
-  {
-    TRACE_VISIT_OUT ();
-    cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-  }
+  rchandle<axis_step_expr> ase = expect_axis_step_top ();
 
   switch (v.get_axis())
   {
@@ -2809,8 +2781,6 @@ void end_visit(const QueryBody& v, void *visit_state)
     global_binding b = *i;
     var_expr_t var = b.first;
     expr_t expr = b.second;
-    // TODO: fix external variables
-    // For now they default to empty sequences
     if (expr == NULL) {
       fo_expr *fo = new fo_expr (var->get_loc (), LOOKUP_OP1 ("ctxvariable"));
       fo->add (new const_expr (var->get_loc (), var->get_varname ()->getStringProperty ()));
@@ -2991,18 +2961,19 @@ void *begin_visit(const DeleteExpr& v)
 
 void end_visit(const DeleteExpr& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 void *begin_visit(const InsertExpr& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
+  Assert (false);
   return no_state;
 }
 
 void end_visit(const InsertExpr& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 void *begin_visit(const RenameExpr& v)
@@ -3014,7 +2985,7 @@ void *begin_visit(const RenameExpr& v)
 
 void end_visit(const RenameExpr& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 void *begin_visit(const ReplaceExpr& v)
