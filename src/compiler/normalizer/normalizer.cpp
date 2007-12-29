@@ -193,6 +193,9 @@ bool normalizer::begin_visit(doc_expr& node)
 
 bool normalizer::begin_visit(attr_expr& node)
 {
+  assert (node.getQNameExpr() != NULL);
+  assert (node.getValueExpr() != NULL);
+
   node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
   
   rchandle<expr> lExpr = node.getValueExpr();
