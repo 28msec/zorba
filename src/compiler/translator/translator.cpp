@@ -33,8 +33,6 @@ using namespace std;
 
 namespace xqp {
 
-static uint32_t depth = 0;
-
 static void *no_state = (void *) new int;
 
 #define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (sctx_p->lookup_fn (pfx, local, arity))
@@ -55,75 +53,118 @@ static void *no_state = (void *) new int;
 #define DOT_POS_VAR "$$pos"
 #define LAST_IDX_VAR "$$last-idx"
 
-  var_expr *translator::bind_var (yy::location loc, string varname, var_expr::var_kind kind) {
+
+class TranslatorImpl : public Translator {
+public:
+  typedef rchandle<expr> expr_t;
+  typedef rchandle<var_expr> var_expr_t;
+  typedef std::pair<var_expr_t, expr_t> global_binding;
+
+  friend Translator *make_translator ();
+
+protected:
+  uint32_t depth;
+
+  Zorba* zorp;
+  static_context *sctx_p;
+  std::stack<expr_t> nodestack;
+  std::stack<TypeSystem::xqtref_t> tstack;  // types stack
+  int tempvar_counter;
+  std::list<global_binding> global_vars;
+
+  expr_t pop_nodestack() {
+    Assert (! nodestack.empty());
+    rchandle<expr> e_h = nodestack.top();
+    nodestack.pop();
+    return e_h;
+  }
+  TypeSystem::xqtref_t pop_tstack() {
+    Assert (! tstack.empty());
+    TypeSystem::xqtref_t e_h = tstack.top();
+    tstack.pop();
+    return e_h;
+  }
+
+  var_expr *bind_var (yy::location loc, string varname, var_expr::var_kind kind) {
     Item_t qname = sctx_p->lookup_qname ("", varname);
     var_expr *e = new var_expr (loc, kind, qname);
     sctx_p->bind_var (qname, e);
     return e;
   }
+  
+  fo_expr *create_seq (yy::location loc) {
+    fo_expr *e = new fo_expr (loc, LOOKUP_OPN ("concatenate"));
+    return e;
+  }
+  
+  TranslatorImpl ()
+    : depth (0), tempvar_counter (0)
+  {
+    zorp = ZORBA_FOR_CURRENT_THREAD();
+    sctx_p = zorp->get_static_context();
+    yy::location loc;
+    var_expr *ctx_var = bind_var(loc, DOT_VAR, var_expr::context_var);
+  }
 
+  void push_scope ()
+  { sctx_p = new static_context (sctx_p); }
+  void pop_scope (int n = 1) { 
+    while (n-- > 0) {
+      static_context *parent = (static_context *) sctx_p->get_parent ();
+      delete sctx_p;
+      sctx_p = parent;
+    }
+  }
 
-fo_expr *translator::create_seq (yy::location loc)
-{
-  fo_expr *e = new fo_expr (loc, LOOKUP_OPN ("concatenate"));
-  return e;
-}
+public:
 
+  expr_t result () {
+    return pop_nodestack ();
+  }
 
-translator::translator()
-{
-  tempvar_counter = 0;
-  zorp = ZORBA_FOR_CURRENT_THREAD();
-  sctx_p = zorp->get_static_context();
-  yy::location loc;
-  var_expr *ctx_var = bind_var(loc, DOT_VAR, var_expr::context_var);
-}
-
-
-
-void *translator::begin_visit(const parsenode& v)
+void *begin_visit(const parsenode& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const parsenode& v, void *visit_state)
+void end_visit(const parsenode& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const exprnode& v)
+void *begin_visit(const exprnode& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const exprnode& v, void *visit_state)
+void end_visit(const exprnode& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const ArgList& v)
+void *begin_visit(const ArgList& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const ArgList& v, void *visit_state)
+void end_visit(const ArgList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const AtomicType& v)
+void *begin_visit(const AtomicType& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const AtomicType& v, void *visit_state)
+void end_visit(const AtomicType& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   rchandle<QName> qname = v.get_qname ();
@@ -137,83 +178,83 @@ void translator::end_visit(const AtomicType& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const BaseURIDecl& v)
+void *begin_visit(const BaseURIDecl& v)
 {
   TRACE_VISIT ();
   sctx_p->set_baseuri(v.get_base_uri());
   return NULL;
 }
 
-void translator::end_visit(const BaseURIDecl& v, void *visit_state)
+void end_visit(const BaseURIDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const BoundarySpaceDecl& v)
+void *begin_visit(const BoundarySpaceDecl& v)
 {
   TRACE_VISIT ();
   sctx_p->set_boundary_space_mode(v.get_boundary_space_mode());
   return NULL;
 }
 
-void translator::end_visit(const BoundarySpaceDecl& v, void *visit_state)
+void end_visit(const BoundarySpaceDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const CaseClause& v)
+void *begin_visit(const CaseClause& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CaseClause& v, void *visit_state)
+void end_visit(const CaseClause& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const CaseClauseList& v)
+void *begin_visit(const CaseClauseList& v)
 {
 TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void translator::end_visit(const CaseClauseList& v, void *visit_state)
+void end_visit(const CaseClauseList& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const ConstructionDecl& v)
+void *begin_visit(const ConstructionDecl& v)
 {
 TRACE_VISIT ();
   sctx_p->set_construction_mode(v.get_mode());
   return NULL;
 }
 
-void translator::end_visit(const ConstructionDecl& v, void *visit_state)
+void end_visit(const ConstructionDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const CopyNamespacesDecl& v)
+void *begin_visit(const CopyNamespacesDecl& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CopyNamespacesDecl& v, void *visit_state)
+void end_visit(const CopyNamespacesDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(DefaultCollationDecl const& v)
+void *begin_visit(DefaultCollationDecl const& v)
 {
 TRACE_VISIT ();
   string uri = v.get_collation();
@@ -221,13 +262,13 @@ TRACE_VISIT ();
   return NULL;
 }
 
-void translator::end_visit(const DefaultCollationDecl& v, void *visit_state)
+void end_visit(const DefaultCollationDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(DefaultNamespaceDecl const& v)
+void *begin_visit(DefaultNamespaceDecl const& v)
 {
   TRACE_VISIT ();
 // TODO adapt to new store
@@ -253,13 +294,13 @@ void *translator::begin_visit(DefaultNamespaceDecl const& v)
   return NULL;
 }
 
-void translator::end_visit(const DefaultNamespaceDecl& v, void *visit_state)
+void end_visit(const DefaultNamespaceDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const EmptyOrderDecl& v)
+void *begin_visit(const EmptyOrderDecl& v)
 {
   TRACE_VISIT ();
 
@@ -267,7 +308,7 @@ void *translator::begin_visit(const EmptyOrderDecl& v)
   return no_state;
 }
 
-void translator::end_visit(const EmptyOrderDecl& v, void *visit_state)
+void end_visit(const EmptyOrderDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
@@ -279,13 +320,13 @@ void translator::end_visit(const EmptyOrderDecl& v, void *visit_state)
    Used in direct element/attribute constructors and in function definition.
 
 ********************************************************************************/
-void *translator::begin_visit(const EnclosedExpr& v)
+void *begin_visit(const EnclosedExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const EnclosedExpr& v, void *visit_state)
+void end_visit(const EnclosedExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
@@ -302,13 +343,13 @@ void translator::end_visit(const EnclosedExpr& v, void *visit_state)
 
 ********************************************************************************/
 
-void *translator::begin_visit(const DirCommentConstructor& v)
+void *begin_visit(const DirCommentConstructor& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const DirCommentConstructor& v, void *visit_state)
+void end_visit(const DirCommentConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
     
@@ -319,25 +360,25 @@ void translator::end_visit(const DirCommentConstructor& v, void *visit_state)
                                 new const_expr (v.get_location (), content)));
 }
 
-void *translator::begin_visit(const DirPIConstructor& v)
+void *begin_visit(const DirPIConstructor& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const DirPIConstructor& v, void *visit_state)
+void end_visit(const DirPIConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const DirElemConstructor& v)
+void *begin_visit(const DirElemConstructor& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const DirElemConstructor& v, void *visit_state)
+void end_visit(const DirElemConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -364,7 +405,7 @@ void translator::end_visit(const DirElemConstructor& v, void *visit_state)
   nodestack.push(elem_t);
 }
 
-void *translator::begin_visit(const DirElemContentList& v)
+void *begin_visit(const DirElemContentList& v)
 {
   TRACE_VISIT ();
 
@@ -372,7 +413,7 @@ void *translator::begin_visit(const DirElemContentList& v)
   return no_state;
 }
 
-void translator::end_visit(const DirElemContentList& v, void *visit_state)
+void end_visit(const DirElemContentList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -396,13 +437,13 @@ void translator::end_visit(const DirElemContentList& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const DirElemContent& v)
+void *begin_visit(const DirElemContent& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const DirElemContent& v, void *visit_state)
+void end_visit(const DirElemContent& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -426,19 +467,19 @@ void translator::end_visit(const DirElemContent& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const CDataSection& v)
+void *begin_visit(const CDataSection& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CDataSection& v, void *visit_state)
+void end_visit(const CDataSection& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const DirAttributeList& v)
+void *begin_visit(const DirAttributeList& v)
 {
   TRACE_VISIT ();
 
@@ -446,7 +487,7 @@ void *translator::begin_visit(const DirAttributeList& v)
   return no_state;
 }
 
-void translator::end_visit(const DirAttributeList& v, void *visit_state)
+void end_visit(const DirAttributeList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -470,7 +511,7 @@ void translator::end_visit(const DirAttributeList& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const DirAttr& v)
+void *begin_visit(const DirAttr& v)
 {
   TRACE_VISIT ();
   // boundary is needed because the value of an attribute might be empty
@@ -478,7 +519,7 @@ void *translator::begin_visit(const DirAttr& v)
   return no_state;
 }
 
-void translator::end_visit(const DirAttr& v, void *visit_state)
+void end_visit(const DirAttr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -503,19 +544,19 @@ void translator::end_visit(const DirAttr& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const DirAttributeValue& v)
+void *begin_visit(const DirAttributeValue& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const DirAttributeValue& v, void *visit_state)
+void end_visit(const DirAttributeValue& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const QuoteAttrContentList& v)
+void *begin_visit(const QuoteAttrContentList& v)
 {
   TRACE_VISIT ();
 
@@ -523,7 +564,7 @@ void *translator::begin_visit(const QuoteAttrContentList& v)
   return no_state;
 }
 
-void translator::end_visit(const QuoteAttrContentList& v, void *visit_state)
+void end_visit(const QuoteAttrContentList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -544,13 +585,13 @@ void translator::end_visit(const QuoteAttrContentList& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const QuoteAttrValueContent& v)
+void *begin_visit(const QuoteAttrValueContent& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const QuoteAttrValueContent& v, void *visit_state)
+void end_visit(const QuoteAttrValueContent& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
@@ -566,38 +607,38 @@ void translator::end_visit(const QuoteAttrValueContent& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const AposAttrContentList& v)
+void *begin_visit(const AposAttrContentList& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const AposAttrContentList& v, void *visit_state)
+void end_visit(const AposAttrContentList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const AposAttrValueContent& v)
+void *begin_visit(const AposAttrValueContent& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const AposAttrValueContent& v, void *visit_state)
+void end_visit(const AposAttrValueContent& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const CommonContent& v)
+void *begin_visit(const CommonContent& v)
 {
   TRACE_VISIT ();
   
   return no_state;
 }
 
-void translator::end_visit(const CommonContent& v, void *visit_state)
+void end_visit(const CommonContent& v, void *visit_state)
 {
   switch (v.get_type())
   {
@@ -625,39 +666,39 @@ void translator::end_visit(const CommonContent& v, void *visit_state)
       nodestack.push ( lConstExpr );
       break;
     }
-   	case cont_escape_lbrace:
-   	{
-   	  // we always create a text node here because if we are in an attribute, we atomice
-   	  // the text node into its string value
+    case cont_escape_lbrace:
+    {
+      // we always create a text node here because if we are in an attribute, we atomice
+      // the text node into its string value
       Item_t lItem = Store::getInstance().getItemFactory().createTextNode("{", false);
       const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
       nodestack.push ( lConstExpr );
       break;
-   	}
-   	case cont_escape_rbrace:
- 	  {
-   	  // we always create a text node here because if we are in an attribute, we atomice
-   	  // the text node into its string value
+    }
+    case cont_escape_rbrace:
+    {
+      // we always create a text node here because if we are in an attribute, we atomice
+      // the text node into its string value
       Item_t lItem = Store::getInstance().getItemFactory().createTextNode("}", false);
       const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
       nodestack.push ( lConstExpr );
       break;
- 	  }
-   	case cont_expr:
-   	{
+    }
+    case cont_expr:
+    {
        break;
-   	}
+    }
   }
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const CompDocConstructor& v)
+void *begin_visit(const CompDocConstructor& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CompDocConstructor& v, void *visit_state)
+void end_visit(const CompDocConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
@@ -672,13 +713,13 @@ void translator::end_visit(const CompDocConstructor& v, void *visit_state)
   nodestack.push (new doc_expr (v.get_location (), lEnclosed ));
 }
 
-void *translator::begin_visit(const CompElemConstructor& v)
+void *begin_visit(const CompElemConstructor& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CompElemConstructor& v, void *visit_state)
+void end_visit(const CompElemConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
@@ -702,13 +743,13 @@ void translator::end_visit(const CompElemConstructor& v, void *visit_state)
   nodestack.push(lElem);
 }
 
-void *translator::begin_visit(const CompAttrConstructor& v)
+void *begin_visit(const CompAttrConstructor& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CompAttrConstructor& v, void *visit_state)
+void end_visit(const CompAttrConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
@@ -734,25 +775,25 @@ void translator::end_visit(const CompAttrConstructor& v, void *visit_state)
   nodestack.push(&*lAttr);
 }
 
-void *translator::begin_visit(const CompCommentConstructor& v)
+void *begin_visit(const CompCommentConstructor& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CompCommentConstructor& v, void *visit_state)
+void end_visit(const CompCommentConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (new text_expr (v.get_location (), text_expr::comment_constructor, pop_nodestack ()));
 }
 
-void *translator::begin_visit(const CompPIConstructor& v)
+void *begin_visit(const CompPIConstructor& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CompPIConstructor& v, void *visit_state)
+void end_visit(const CompPIConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   pi_expr *e;
@@ -766,13 +807,13 @@ void translator::end_visit(const CompPIConstructor& v, void *visit_state)
   nodestack.push (e);
 }
 
-void *translator::begin_visit(const CompTextConstructor& v)
+void *begin_visit(const CompTextConstructor& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CompTextConstructor& v, void *visit_state)
+void end_visit(const CompTextConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (new text_expr (v.get_location (), text_expr::text_constructor, pop_nodestack ()));
@@ -784,13 +825,13 @@ void translator::end_visit(const CompTextConstructor& v, void *visit_state)
   FLWOR Expression
 
 ********************************************************************************/
-void *translator::begin_visit(const FLWORExpr& v)
+void *begin_visit(const FLWORExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const FLWORExpr& v, void *visit_state)
+void end_visit(const FLWORExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -880,47 +921,47 @@ void translator::end_visit(const FLWORExpr& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const ForLetClauseList& v)
+void *begin_visit(const ForLetClauseList& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const ForLetClauseList& v, void *visit_state)
+void end_visit(const ForLetClauseList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const LetClause& v)
+void *begin_visit(const LetClause& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const LetClause& v, void *visit_state)
+void end_visit(const LetClause& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const VarGetsDeclList& v)
+void *begin_visit(const VarGetsDeclList& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const VarGetsDeclList& v, void *visit_state)
+void end_visit(const VarGetsDeclList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const VarGetsDecl& v)
+void *begin_visit(const VarGetsDecl& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const VarGetsDecl& v, void *visit_state)
+void end_visit(const VarGetsDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
@@ -928,139 +969,139 @@ void translator::end_visit(const VarGetsDecl& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const ForClause& v)
+void *begin_visit(const ForClause& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const ForClause& v, void *visit_state)
+void end_visit(const ForClause& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const VarInDeclList& v)
+void *begin_visit(const VarInDeclList& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const VarInDeclList& v, void *visit_state)
+void end_visit(const VarInDeclList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const VarInDecl& v)
+void *begin_visit(const VarInDecl& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const VarInDecl& v, void *visit_state)
+void end_visit(const VarInDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
   nodestack.push (bind_var (v.get_location (), v.get_varname (), var_expr::for_var));
 }
 
-void *translator::begin_visit(const PositionalVar& v)
+void *begin_visit(const PositionalVar& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const PositionalVar& v, void *visit_state)
+void end_visit(const PositionalVar& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (bind_var (v.get_location (), v.get_varname (), var_expr::pos_var));
 }
 
 
-void *translator::begin_visit(const WhereClause& v)
+void *begin_visit(const WhereClause& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const WhereClause& v, void *visit_state)
+void end_visit(const WhereClause& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const OrderByClause& v)
+void *begin_visit(const OrderByClause& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const OrderByClause& v, void *visit_state)
+void end_visit(const OrderByClause& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const OrderSpecList& v)
+void *begin_visit(const OrderSpecList& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const OrderSpecList& v, void *visit_state)
+void end_visit(const OrderSpecList& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const OrderSpec& v)
+void *begin_visit(const OrderSpec& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const OrderSpec& v, void *visit_state)
+void end_visit(const OrderSpec& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const OrderModifier& v)
+void *begin_visit(const OrderModifier& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const OrderModifier& v, void *visit_state)
+void end_visit(const OrderModifier& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const OrderCollationSpec& v)
+void *begin_visit(const OrderCollationSpec& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const OrderCollationSpec& v, void *visit_state)
+void end_visit(const OrderCollationSpec& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const OrderDirSpec& v)
+void *begin_visit(const OrderDirSpec& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const OrderDirSpec& v, void *visit_state)
+void end_visit(const OrderDirSpec& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const OrderEmptySpec& v)
+void *begin_visit(const OrderEmptySpec& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const OrderEmptySpec& v, void *visit_state)
+void end_visit(const OrderEmptySpec& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
@@ -1070,13 +1111,13 @@ void translator::end_visit(const OrderEmptySpec& v, void *visit_state)
 
 ********************************************************************************/
 
-void *translator::begin_visit(const VarDecl& v)
+void *begin_visit(const VarDecl& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const VarDecl& v, void *visit_state)
+void end_visit(const VarDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   global_vars.push_back (global_binding (bind_var (v.get_location(), v.get_varname(), var_expr::let_var),
@@ -1084,127 +1125,127 @@ void translator::end_visit(const VarDecl& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const FunctionDecl& v)
+void *begin_visit(const FunctionDecl& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const FunctionDecl& v, void *visit_state)
+void end_visit(const FunctionDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const GeneralComp& v)
+void *begin_visit(const GeneralComp& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const GeneralComp& v, void *visit_state)
+void end_visit(const GeneralComp& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const ItemType& v)
+void *begin_visit(const ItemType& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const ItemType& v, void *visit_state)
+void end_visit(const ItemType& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const LibraryModule& v)
+void *begin_visit(const LibraryModule& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const LibraryModule& v, void *visit_state)
+void end_visit(const LibraryModule& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const MainModule & v)
+void *begin_visit(const MainModule & v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const MainModule & v, void *visit_state)
+void end_visit(const MainModule & v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const Module& v)
+void *begin_visit(const Module& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const Module& v, void *visit_state)
+void end_visit(const Module& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const ModuleDecl& v)
+void *begin_visit(const ModuleDecl& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const ModuleDecl& v, void *visit_state)
+void end_visit(const ModuleDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const ModuleImport& v)
+void *begin_visit(const ModuleImport& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const ModuleImport& v, void *visit_state)
+void end_visit(const ModuleImport& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const NamespaceDecl& v)
+void *begin_visit(const NamespaceDecl& v)
 {
   TRACE_VISIT ();
   sctx_p->bind_ns (v.get_prefix (), v.get_uri ());
   return NULL;
 }
 
-void translator::end_visit(const NamespaceDecl& v, void *visit_state)
+void end_visit(const NamespaceDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const NodeComp& v)
+void *begin_visit(const NodeComp& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const NodeComp& v, void *visit_state)
+void end_visit(const NodeComp& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const OccurrenceIndicator& v)
+void *begin_visit(const OccurrenceIndicator& v)
 {
   TRACE_VISIT ();
   TypeSystem::quantifier_t q;
@@ -1227,25 +1268,25 @@ void *translator::begin_visit(const OccurrenceIndicator& v)
   return no_state;
 }
 
-void translator::end_visit(const OccurrenceIndicator& v, void *visit_state)
+void end_visit(const OccurrenceIndicator& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const OptionDecl& v)
+void *begin_visit(const OptionDecl& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const OptionDecl& v, void *visit_state)
+void end_visit(const OptionDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const OrderingModeDecl& v)
+void *begin_visit(const OrderingModeDecl& v)
 {
 TRACE_VISIT ();
 //daniel  zorp->get_dynamic_context()->set_ordering_mode(v.get_mode());
@@ -1254,85 +1295,84 @@ TRACE_VISIT ();
 }
 
 
-void translator::end_visit(const OrderingModeDecl& v, void *visit_state)
+void end_visit(const OrderingModeDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
-
-void *translator::begin_visit(const Param& v)
+void *begin_visit(const Param& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const Param& v, void *visit_state)
+void end_visit(const Param& v, void *visit_state)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const ParamList& v)
+void *begin_visit(const ParamList& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void translator::end_visit(const ParamList& v, void *visit_state)
+void end_visit(const ParamList& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const Pragma& v)
+void *begin_visit(const Pragma& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const Pragma& v, void *visit_state)
+void end_visit(const Pragma& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const PragmaList& v)
+void *begin_visit(const PragmaList& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void translator::end_visit(const PragmaList& v, void *visit_state)
+void end_visit(const PragmaList& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const PredicateList& v)
+void *begin_visit(const PredicateList& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const PredicateList& v, void *visit_state)
+void end_visit(const PredicateList& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const Prolog& v)
+void *begin_visit(const Prolog& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const Prolog& v, void *visit_state)
+void end_visit(const Prolog& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const QVarInDecl& v)
+void *begin_visit(const QVarInDecl& v)
 {
   TRACE_VISIT ();
   push_scope ();
@@ -1340,90 +1380,90 @@ void *translator::begin_visit(const QVarInDecl& v)
   return no_state;
 }
 
-void translator::end_visit(const QVarInDecl& v, void *visit_state)
+void end_visit(const QVarInDecl& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const QVarInDeclList& v)
+void *begin_visit(const QVarInDeclList& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const QVarInDeclList& v, void *visit_state)
+void end_visit(const QVarInDeclList& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const SIND_DeclList& v)
+void *begin_visit(const SIND_DeclList& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void translator::end_visit(const SIND_DeclList& v, void *visit_state)
-{
-TRACE_VISIT_OUT ();
-}
-
-
-void *translator::begin_visit(const SchemaImport& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void translator::end_visit(const SchemaImport& v, void *visit_state)
-{
-TRACE_VISIT_OUT ();
-}
-
-void *translator::begin_visit(const SchemaPrefix& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void translator::end_visit(const SchemaPrefix& v, void *visit_state)
-{
-  TRACE_VISIT_OUT ();
-}
-
-void *translator::begin_visit(const SequenceType& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void translator::end_visit(const SequenceType& v, void *visit_state)
+void end_visit(const SIND_DeclList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const SignList& v)
+void *begin_visit(const SchemaImport& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const SignList& v, void *visit_state)
+void end_visit(const SchemaImport& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit(const SchemaPrefix& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const SchemaPrefix& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit(const SequenceType& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const SequenceType& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const SingleType& v)
+void *begin_visit(const SignList& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const SingleType& v, void *visit_state)
+void end_visit(const SignList& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+void *begin_visit(const SingleType& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const SingleType& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   if (v.get_hook_bit ())
@@ -1432,86 +1472,86 @@ void translator::end_visit(const SingleType& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const TypeDeclaration& v)
+void *begin_visit(const TypeDeclaration& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const TypeDeclaration& v, void *visit_state)
+void end_visit(const TypeDeclaration& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const TypeName& v)
+void *begin_visit(const TypeName& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const TypeName& v, void *visit_state)
+void end_visit(const TypeName& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const URILiteralList& v)
+void *begin_visit(const URILiteralList& v)
 {
   TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void translator::end_visit(const URILiteralList& v, void *visit_state)
+void end_visit(const URILiteralList& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const ValueComp& v)
+void *begin_visit(const ValueComp& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const ValueComp& v, void *visit_state)
+void end_visit(const ValueComp& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const VersionDecl& v)
+void *begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const VersionDecl& v, void *visit_state)
+void end_visit(const VersionDecl& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const VFO_DeclList& v)
+void *begin_visit(const VFO_DeclList& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void translator::end_visit(const VFO_DeclList& v, void *visit_state)
+void end_visit(const VFO_DeclList& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const AdditiveExpr& v)
+void *begin_visit(const AdditiveExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const AdditiveExpr& v, void *visit_state)
+void end_visit(const AdditiveExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
@@ -1532,13 +1572,13 @@ void translator::end_visit(const AdditiveExpr& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const AndExpr& v)
+void *begin_visit(const AndExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const AndExpr& v, void *visit_state)
+void end_visit(const AndExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
@@ -1550,38 +1590,38 @@ void translator::end_visit(const AndExpr& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const CastExpr& v)
+void *begin_visit(const CastExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CastExpr& v, void *visit_state)
+void end_visit(const CastExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (new cast_expr (v.get_location (), pop_nodestack (), pop_tstack ()));
 }
 
-void *translator::begin_visit(const CastableExpr& v)
+void *begin_visit(const CastableExpr& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const CastableExpr& v, void *visit_state)
+void end_visit(const CastableExpr& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
   nodestack.push(new castable_expr(v.get_location(), pop_nodestack(), pop_tstack()));
 }
 
 
-void *translator::begin_visit(const ComparisonExpr& v)
+void *begin_visit(const ComparisonExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const ComparisonExpr& v, void *visit_state)
+void end_visit(const ComparisonExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -1653,13 +1693,13 @@ void translator::end_visit(const ComparisonExpr& v, void *visit_state)
 
 
 
-void *translator::begin_visit(const ContextItemExpr& v)
+void *begin_visit(const ContextItemExpr& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const ContextItemExpr& v, void *visit_state)
+void end_visit(const ContextItemExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (DOT_VAR));
@@ -1667,13 +1707,13 @@ void translator::end_visit(const ContextItemExpr& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const Expr& v)
+void *begin_visit(const Expr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const Expr& v, void *visit_state)
+void end_visit(const Expr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
@@ -1687,42 +1727,42 @@ void translator::end_visit(const Expr& v, void *visit_state)
   }
 }
 
-// void *translator::begin_visit(const ExprSingle& v)
+// void *begin_visit(const ExprSingle& v)
 // {
 // TRACE_VISIT ();
 //  return no_state;
 // }
 
-void *translator::begin_visit(const ExtensionExpr& v)
+void *begin_visit(const ExtensionExpr& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const ExtensionExpr& v, void *visit_state)
+void end_visit(const ExtensionExpr& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FilterExpr& v)
+void *begin_visit(const FilterExpr& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const FilterExpr& v, void *visit_state)
+void end_visit(const FilterExpr& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FunctionCall& v)
+void *begin_visit(const FunctionCall& v)
 {
   TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void translator::end_visit(const FunctionCall& v, void *visit_state) {
+void end_visit(const FunctionCall& v, void *visit_state) {
   TRACE_VISIT_OUT ();
   std::vector<expr_t> arguments;
   while (true) {
@@ -1779,14 +1819,14 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
   }
 }
 
-void *translator::begin_visit(const IfExpr& v)
+void *begin_visit(const IfExpr& v)
 {
 TRACE_VISIT ();
   // nothing to do here
   return no_state;
 }
 
-void translator::end_visit(const IfExpr& v, void *visit_state)
+void end_visit(const IfExpr& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
   expr_t e_h = pop_nodestack ();
@@ -1797,27 +1837,27 @@ TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const InstanceofExpr& v)
+void *begin_visit(const InstanceofExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const InstanceofExpr& v, void *visit_state)
+void end_visit(const InstanceofExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (new instanceof_expr (v.get_location (), pop_nodestack (), pop_tstack ()));
 }
 
 
-void *translator::begin_visit(const IntersectExceptExpr& v)
+void *begin_visit(const IntersectExceptExpr& v)
 {
   TRACE_VISIT ();
   nodestack.push (new instanceof_expr (v.get_location (), pop_nodestack (), pop_tstack ()));
   return no_state;
 }
 
-void translator::end_visit(const IntersectExceptExpr& v, void *visit_state)
+void end_visit(const IntersectExceptExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -1839,13 +1879,13 @@ void translator::end_visit(const IntersectExceptExpr& v, void *visit_state)
   nodestack.push(fo_h);
 }
 
-void *translator::begin_visit(const MultiplicativeExpr& v)
+void *begin_visit(const MultiplicativeExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const MultiplicativeExpr& v, void *visit_state)
+void end_visit(const MultiplicativeExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack ();
@@ -1871,13 +1911,13 @@ void translator::end_visit(const MultiplicativeExpr& v, void *visit_state)
   nodestack.push (fo_h);
 }
 
-void *translator::begin_visit(const NumericLiteral& v)
+void *begin_visit(const NumericLiteral& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const NumericLiteral& v, void *visit_state)
+void end_visit(const NumericLiteral& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
   switch (v.get_type()) {
@@ -1896,13 +1936,13 @@ TRACE_VISIT_OUT ();
   }
 }
 
-void *translator::begin_visit(const OrExpr& v)
+void *begin_visit(const OrExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const OrExpr& v, void *visit_state)
+void end_visit(const OrExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
@@ -1913,13 +1953,13 @@ void translator::end_visit(const OrExpr& v, void *visit_state)
   nodestack.push (fo_p);
 }
 
-void *translator::begin_visit(const OrderedExpr& v)
+void *begin_visit(const OrderedExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const OrderedExpr& v, void *visit_state)
+void end_visit(const OrderedExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (new order_expr (v.get_location (), order_expr::ordered, 
@@ -1927,14 +1967,14 @@ void translator::end_visit(const OrderedExpr& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const ParenthesizedExpr& v)
+void *begin_visit(const ParenthesizedExpr& v)
 {
 TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void translator::end_visit(const ParenthesizedExpr& v, void *visit_state)
+void end_visit(const ParenthesizedExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   expr_t expr = pop_nodestack();
@@ -1952,7 +1992,7 @@ void translator::end_visit(const ParenthesizedExpr& v, void *visit_state)
   NodeTest (NameTest | KindTest)
 
 ********************************************************************************/
-void *translator::begin_visit(const NameTest& v)
+void *begin_visit(const NameTest& v)
 {
   TRACE_VISIT ();
   return no_state;
@@ -1960,7 +2000,7 @@ void *translator::begin_visit(const NameTest& v)
 
 
 
-void translator::end_visit(const NameTest& v, void *visit_state)
+void end_visit(const NameTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2008,27 +2048,27 @@ void translator::end_visit(const NameTest& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const Wildcard& v)
+void *begin_visit(const Wildcard& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void translator::end_visit(const Wildcard& v, void *visit_state)
+void end_visit(const Wildcard& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const QName& v)
+void *begin_visit(const QName& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void translator::end_visit(const QName& v, void *visit_state)
+void end_visit(const QName& v, void *visit_state)
 {
   nodestack.push(
     new const_expr(v.get_location(), v.get_uri().c_str(), v.get_prefix().c_str(), v.get_localname().c_str())
@@ -2037,7 +2077,7 @@ void translator::end_visit(const QName& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const AnyKindTest& v)
+void *begin_visit(const AnyKindTest& v)
 {
   TRACE_VISIT ();
   // no action needed here
@@ -2045,7 +2085,7 @@ void *translator::begin_visit(const AnyKindTest& v)
 }
 
 
-void translator::end_visit(const AnyKindTest& v, void *visit_state)
+void end_visit(const AnyKindTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
@@ -2061,7 +2101,7 @@ void translator::end_visit(const AnyKindTest& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const DocumentTest& v)
+void *begin_visit(const DocumentTest& v)
 {
   TRACE_VISIT ();
 
@@ -2092,20 +2132,20 @@ void *translator::begin_visit(const DocumentTest& v)
 }
 
 
-void translator::end_visit(const DocumentTest& v, void *visit_state)
+void end_visit(const DocumentTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const ElementTest& v)
+void *begin_visit(const ElementTest& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void translator::end_visit(const ElementTest& v, void *visit_state)
+void end_visit(const ElementTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2134,14 +2174,14 @@ void translator::end_visit(const ElementTest& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const AttributeTest& v)
+void *begin_visit(const AttributeTest& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void translator::end_visit(const AttributeTest& v, void *visit_state)
+void end_visit(const AttributeTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2180,7 +2220,7 @@ void translator::end_visit(const AttributeTest& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const TextTest& v)
+void *begin_visit(const TextTest& v)
 {
   TRACE_VISIT ();
   // no action needed here
@@ -2188,7 +2228,7 @@ void *translator::begin_visit(const TextTest& v)
 }
 
 
-void translator::end_visit(const TextTest& v, void *visit_state)
+void end_visit(const TextTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2205,7 +2245,7 @@ void translator::end_visit(const TextTest& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const CommentTest& v)
+void *begin_visit(const CommentTest& v)
 {
   TRACE_VISIT ();
   // no action needed here
@@ -2213,7 +2253,7 @@ void *translator::begin_visit(const CommentTest& v)
 }
 
 
-void translator::end_visit(const CommentTest& v, void *visit_state)
+void end_visit(const CommentTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2230,7 +2270,7 @@ void translator::end_visit(const CommentTest& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const PITest& v)
+void *begin_visit(const PITest& v)
 {
   TRACE_VISIT ();
 
@@ -2244,13 +2284,13 @@ void *translator::begin_visit(const PITest& v)
 }
 
 
-void translator::end_visit(const PITest& v, void *visit_state)
+void end_visit(const PITest& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const SchemaAttributeTest& v)
+void *begin_visit(const SchemaAttributeTest& v)
 {
   TRACE_VISIT ();
   rchandle<match_expr> m_h = new match_expr(v.get_location());
@@ -2265,13 +2305,13 @@ void *translator::begin_visit(const SchemaAttributeTest& v)
 }
 
 
-void translator::end_visit(const SchemaAttributeTest& v, void *visit_state)
+void end_visit(const SchemaAttributeTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const SchemaElementTest& v)
+void *begin_visit(const SchemaElementTest& v)
 {
   TRACE_VISIT ();
   rchandle<match_expr> m_h = new match_expr(v.get_location());
@@ -2286,7 +2326,7 @@ void *translator::begin_visit(const SchemaElementTest& v)
 }
 
 
-void translator::end_visit(const SchemaElementTest& v, void *visit_state)
+void end_visit(const SchemaElementTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
@@ -2294,12 +2334,12 @@ void translator::end_visit(const SchemaElementTest& v, void *visit_state)
 #define TEMP_VAR_URI "http://www.flworfound.org/zorba/temp-var"
 #define TEMP_VAR_PREFIX "ztv"
 
-rchandle<var_expr> translator::tempvar(yy::location loc, var_expr::var_kind kind)
+rchandle<var_expr> tempvar(yy::location loc, var_expr::var_kind kind)
 {
   return new var_expr(loc, kind, Store::getInstance().getItemFactory().createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, "v" + to_string (tempvar_counter++)));
 }
 
-rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, rchandle<var_expr> fv, rchandle<var_expr> pv)
+rchandle<forlet_clause> wrap_in_forclause(expr_t expr, rchandle<var_expr> fv, rchandle<var_expr> pv)
 {
   assert (fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
@@ -2307,7 +2347,7 @@ rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, rchandle<var_
   return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, expr.get_ptr());
 }
 
-rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, bool add_posvar)
+rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar)
 {
   rchandle<var_expr> fv = tempvar(expr->get_loc(), var_expr::for_var);
   rchandle<var_expr> pv = add_posvar
@@ -2316,23 +2356,23 @@ rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, bool add_posv
   return wrap_in_forclause (expr, fv, pv);
 }
 
-rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, yy::location loc, string fv_name, string pv_name) {
+rchandle<forlet_clause> wrap_in_forclause(expr_t expr, yy::location loc, string fv_name, string pv_name) {
   return wrap_in_forclause (expr, bind_var (loc, fv_name, var_expr::for_var), bind_var (loc, pv_name, var_expr::pos_var));
 }
 
-rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr, rchandle<var_expr> lv) {
+rchandle<forlet_clause> wrap_in_letclause(expr_t expr, rchandle<var_expr> lv) {
   assert (lv->get_kind () == var_expr::let_var);
   return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.get_ptr());
 }
-rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr, yy::location loc, string name) {
+rchandle<forlet_clause> wrap_in_letclause(expr_t expr, yy::location loc, string name) {
   return wrap_in_letclause (expr, bind_var (loc, name, var_expr::let_var));
 }
-rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr) {
+rchandle<forlet_clause> wrap_in_letclause(expr_t expr) {
   return wrap_in_letclause (expr, tempvar(expr->get_loc(), var_expr::let_var));
 }
 
 
-translator::expr_t translator::wrap_in_dos_and_dupelim(expr_t expr)
+expr_t wrap_in_dos_and_dupelim(expr_t expr)
 {
   rchandle<fo_expr> dos = new fo_expr(expr->get_loc(), LOOKUP_OP1("sort-distinct-nodes-ascending"));
   dos->add(expr);
@@ -2358,7 +2398,7 @@ translator::expr_t translator::wrap_in_dos_and_dupelim(expr_t expr)
   The PathExpr node will be there only if the path expr starts with / or //
 
 ********************************************************************************/
-void *translator::begin_visit(const PathExpr& v)
+void *begin_visit(const PathExpr& v)
 {
   TRACE_VISIT ();
   rchandle<relpath_expr> rpe = NULL;
@@ -2404,7 +2444,7 @@ void *translator::begin_visit(const PathExpr& v)
   return no_state;
 }
 
-void translator::end_visit(const PathExpr& v, void *visit_state)
+void end_visit(const PathExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2424,13 +2464,13 @@ void translator::end_visit(const PathExpr& v, void *visit_state)
   }
 }
 
-void *translator::begin_visit(const RelativePathExpr& v)
+void *begin_visit(const RelativePathExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::intermediate_visit(const RelativePathExpr& v, void *visit_state)
+void intermediate_visit(const RelativePathExpr& v, void *visit_state)
 {
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
@@ -2451,7 +2491,7 @@ void translator::intermediate_visit(const RelativePathExpr& v, void *visit_state
   nodestack.push(rpe);
 }
 
-void translator::end_visit(const RelativePathExpr& v, void *visit_state)
+void end_visit(const RelativePathExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2471,7 +2511,7 @@ void translator::end_visit(const RelativePathExpr& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const AxisStep& v)
+void *begin_visit(const AxisStep& v)
 {
   TRACE_VISIT ();
 
@@ -2480,7 +2520,7 @@ void *translator::begin_visit(const AxisStep& v)
   return no_state;
 }
 
-void translator::post_step_visit(const AxisStep& v, void *visit_state)
+void post_step_visit(const AxisStep& v, void *visit_state)
 {
   PredicateList *pl = v.get_predicate_list().get_ptr();
   if (pl != NULL && pl->size() > 0) {
@@ -2497,12 +2537,12 @@ void translator::post_step_visit(const AxisStep& v, void *visit_state)
   }
 }
 
-void translator::end_visit(const AxisStep& v, void *visit_state)
+void end_visit(const AxisStep& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void translator::pre_predicate_visit(const PredicateList& v, void *visit_state)
+void pre_predicate_visit(const PredicateList& v, void *visit_state)
 {
   push_scope();
   expr_t seq = pop_nodestack();
@@ -2529,7 +2569,7 @@ static inline bool is_numeric_literal(expr *e)
   return GENV_TYPESYSTEM.is_subtype(*itype, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE);
 }
 
-void translator::post_predicate_visit(const PredicateList& v, void *visit_state)
+void post_predicate_visit(const PredicateList& v, void *visit_state)
 {
   expr_t pred = pop_nodestack();
   expr_t f = pop_nodestack();
@@ -2555,27 +2595,27 @@ void translator::post_predicate_visit(const PredicateList& v, void *visit_state)
   pop_scope();
 }
 
-void *translator::begin_visit(const ForwardStep& v)
+void *begin_visit(const ForwardStep& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void translator::end_visit(const ForwardStep& v, void *visit_state)
+void end_visit(const ForwardStep& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const AbbrevForwardStep& v)
+void *begin_visit(const AbbrevForwardStep& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void translator::end_visit(const AbbrevForwardStep& v, void *visit_state)
+void end_visit(const AbbrevForwardStep& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2597,14 +2637,14 @@ void translator::end_visit(const AbbrevForwardStep& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const ForwardAxis& v)
+void *begin_visit(const ForwardAxis& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void translator::end_visit(const ForwardAxis& v, void *visit_state)
+void end_visit(const ForwardAxis& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2656,27 +2696,27 @@ void translator::end_visit(const ForwardAxis& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const ReverseStep& v)
+void *begin_visit(const ReverseStep& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void translator::end_visit(const ReverseStep& v, void *visit_state)
+void end_visit(const ReverseStep& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const ReverseAxis& v)
+void *begin_visit(const ReverseAxis& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void translator::end_visit(const ReverseAxis& v, void *visit_state)
+void end_visit(const ReverseAxis& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2721,14 +2761,14 @@ void translator::end_visit(const ReverseAxis& v, void *visit_state)
 /*******************************************************************************
 
 ********************************************************************************/
-void *translator::begin_visit(const QuantifiedExpr& v)
+void *begin_visit(const QuantifiedExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void translator::end_visit(const QuantifiedExpr& v, void *visit_state)
+void end_visit(const QuantifiedExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   rchandle<flwor_expr> flwor(new flwor_expr(v.get_location()));
@@ -2757,13 +2797,13 @@ void translator::end_visit(const QuantifiedExpr& v, void *visit_state)
 /*******************************************************************************
 
 ********************************************************************************/
-void *translator::begin_visit(const QueryBody& v)
+void *begin_visit(const QueryBody& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const QueryBody& v, void *visit_state)
+void end_visit(const QueryBody& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   flwor_expr::clause_list_t clauses;
@@ -2790,13 +2830,13 @@ void translator::end_visit(const QueryBody& v, void *visit_state)
 /*******************************************************************************
 
 ********************************************************************************/
-void *translator::begin_visit(const RangeExpr& v)
+void *begin_visit(const RangeExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const RangeExpr& v, void *visit_state)
+void end_visit(const RangeExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   fo_expr *e = new fo_expr (v.get_location(), LOOKUP_OP2 ("to"));
@@ -2811,36 +2851,36 @@ void translator::end_visit(const RangeExpr& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const StringLiteral& v)
+void *begin_visit(const StringLiteral& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const StringLiteral& v, void *visit_state)
+void end_visit(const StringLiteral& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   nodestack.push(new const_expr(v.get_location(),v.get_strval()));
 }
 
-void *translator::begin_visit(const TreatExpr& v)
+void *begin_visit(const TreatExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const TreatExpr& v, void *visit_state)
+void end_visit(const TreatExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const TypeswitchExpr& v)
+void *begin_visit(const TypeswitchExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const TypeswitchExpr& v, void *visit_state)
+void end_visit(const TypeswitchExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   case_clause * cc_p;
@@ -2867,13 +2907,13 @@ void translator::end_visit(const TypeswitchExpr& v, void *visit_state)
 }
 
 
-void *translator::begin_visit(const UnaryExpr& v)
+void *begin_visit(const UnaryExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const UnaryExpr& v, void *visit_state)
+void end_visit(const UnaryExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2886,13 +2926,13 @@ void translator::end_visit(const UnaryExpr& v, void *visit_state)
   nodestack.push(fo_p);
 }
 
-void *translator::begin_visit(const UnionExpr& v)
+void *begin_visit(const UnionExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const UnionExpr& v, void *visit_state)
+void end_visit(const UnionExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
@@ -2904,38 +2944,38 @@ void translator::end_visit(const UnionExpr& v, void *visit_state)
   nodestack.push(fo_h);
 }
 
-void *translator::begin_visit(const UnorderedExpr& v)
+void *begin_visit(const UnorderedExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const UnorderedExpr& v, void *visit_state)
+void end_visit(const UnorderedExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (new order_expr (v.get_location (), order_expr::unordered, 
                                   pop_nodestack ()));
 }
 
-void *translator::begin_visit(const ValidateExpr& v)
+void *begin_visit(const ValidateExpr& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const ValidateExpr& v, void *visit_state)
+void end_visit(const ValidateExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const VarRef& v)
+void *begin_visit(const VarRef& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const VarRef& v, void *visit_state)
+void end_visit(const VarRef& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
@@ -2946,549 +2986,554 @@ void translator::end_visit(const VarRef& v, void *visit_state)
 
 
 /* update-related */
-void *translator::begin_visit(const DeleteExpr& v)
+void *begin_visit(const DeleteExpr& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const DeleteExpr& v, void *visit_state)
+void end_visit(const DeleteExpr& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const InsertExpr& v)
+void *begin_visit(const InsertExpr& v)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void translator::end_visit(const InsertExpr& v, void *visit_state)
+void end_visit(const InsertExpr& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const RenameExpr& v)
+void *begin_visit(const RenameExpr& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const RenameExpr& v, void *visit_state)
+void end_visit(const RenameExpr& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const ReplaceExpr& v)
+void *begin_visit(const ReplaceExpr& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const ReplaceExpr& v, void *visit_state)
+void end_visit(const ReplaceExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const RevalidationDecl& v)
+void *begin_visit(const RevalidationDecl& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const RevalidationDecl& v, void *visit_state)
+void end_visit(const RevalidationDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const TransformExpr& v)
+void *begin_visit(const TransformExpr& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const TransformExpr& v, void *visit_state)
+void end_visit(const TransformExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const VarNameList& v)
+void *begin_visit(const VarNameList& v)
 {
   TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void translator::end_visit(const VarNameList& v, void *visit_state)
+void end_visit(const VarNameList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
 /* full-text-related */
-void *translator::begin_visit(const FTAnd& v)
+void *begin_visit(const FTAnd& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTAnd& v, void *visit_state)
+void end_visit(const FTAnd& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTAnyallOption& v)
+void *begin_visit(const FTAnyallOption& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTAnyallOption& v, void *visit_state)
+void end_visit(const FTAnyallOption& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTBigUnit& v)
+void *begin_visit(const FTBigUnit& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTBigUnit& v, void *visit_state)
+void end_visit(const FTBigUnit& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTCaseOption& v)
+void *begin_visit(const FTCaseOption& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTCaseOption& v, void *visit_state)
+void end_visit(const FTCaseOption& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTContainsExpr& v)
+void *begin_visit(const FTContainsExpr& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTContainsExpr& v, void *visit_state)
+void end_visit(const FTContainsExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTContent& v)
+void *begin_visit(const FTContent& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTContent& v, void *visit_state)
+void end_visit(const FTContent& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTDiacriticsOption& v)
+void *begin_visit(const FTDiacriticsOption& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTDiacriticsOption& v, void *visit_state)
+void end_visit(const FTDiacriticsOption& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTDistance& v)
+void *begin_visit(const FTDistance& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTDistance& v, void *visit_state)
+void end_visit(const FTDistance& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTIgnoreOption& v)
+void *begin_visit(const FTIgnoreOption& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTIgnoreOption& v, void *visit_state)
+void end_visit(const FTIgnoreOption& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTInclExclStringLiteral& v)
+void *begin_visit(const FTInclExclStringLiteral& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTInclExclStringLiteral& v, void *visit_state)
+void end_visit(const FTInclExclStringLiteral& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTInclExclStringLiteralList& v)
+void *begin_visit(const FTInclExclStringLiteralList& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTInclExclStringLiteralList& v, void *visit_state)
+void end_visit(const FTInclExclStringLiteralList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTLanguageOption& v)
+void *begin_visit(const FTLanguageOption& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTLanguageOption& v, void *visit_state)
+void end_visit(const FTLanguageOption& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTMatchOption& v)
+void *begin_visit(const FTMatchOption& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTMatchOption& v, void *visit_state)
+void end_visit(const FTMatchOption& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *translator::begin_visit(const FTMatchOptionProximityList& v)
+void *begin_visit(const FTMatchOptionProximityList& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTMatchOptionProximityList& v, void *visit_state)
+void end_visit(const FTMatchOptionProximityList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTMildnot& v)
+void *begin_visit(const FTMildnot& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTMildnot& v, void *visit_state)
+void end_visit(const FTMildnot& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTOptionDecl& v)
+void *begin_visit(const FTOptionDecl& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTOptionDecl& v, void *visit_state)
+void end_visit(const FTOptionDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTOr& v)
+void *begin_visit(const FTOr& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTOr& v, void *visit_state)
+void end_visit(const FTOr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTOrderedIndicator& v)
+void *begin_visit(const FTOrderedIndicator& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTOrderedIndicator& v, void *visit_state)
+void end_visit(const FTOrderedIndicator& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTProximity& v)
+void *begin_visit(const FTProximity& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTProximity& v, void *visit_state)
+void end_visit(const FTProximity& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTRange& v)
+void *begin_visit(const FTRange& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTRange& v, void *visit_state)
+void end_visit(const FTRange& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTRefOrList& v)
+void *begin_visit(const FTRefOrList& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTRefOrList& v, void *visit_state)
+void end_visit(const FTRefOrList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTScope& v)
+void *begin_visit(const FTScope& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTScope& v, void *visit_state)
+void end_visit(const FTScope& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTScoreVar& v)
+void *begin_visit(const FTScoreVar& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTScoreVar& v, void *visit_state)
+void end_visit(const FTScoreVar& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTSelection& v)
+void *begin_visit(const FTSelection& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTSelection& v, void *visit_state)
+void end_visit(const FTSelection& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTStemOption& v)
+void *begin_visit(const FTStemOption& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTStemOption& v, void *visit_state)
+void end_visit(const FTStemOption& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTStopwordOption& v)
+void *begin_visit(const FTStopwordOption& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTStopwordOption& v, void *visit_state)
+void end_visit(const FTStopwordOption& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTStringLiteralList& v)
+void *begin_visit(const FTStringLiteralList& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTStringLiteralList& v, void *visit_state)
+void end_visit(const FTStringLiteralList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTThesaurusID& v)
+void *begin_visit(const FTThesaurusID& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTThesaurusID& v, void *visit_state)
+void end_visit(const FTThesaurusID& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTThesaurusList& v)
+void *begin_visit(const FTThesaurusList& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTThesaurusList& v, void *visit_state)
+void end_visit(const FTThesaurusList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTThesaurusOption& v)
+void *begin_visit(const FTThesaurusOption& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTThesaurusOption& v, void *visit_state)
+void end_visit(const FTThesaurusOption& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTTimes& v)
+void *begin_visit(const FTTimes& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTTimes& v, void *visit_state)
+void end_visit(const FTTimes& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTUnaryNot& v)
+void *begin_visit(const FTUnaryNot& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTUnaryNot& v, void *visit_state)
+void end_visit(const FTUnaryNot& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTUnit& v)
+void *begin_visit(const FTUnit& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTUnit& v, void *visit_state)
+void end_visit(const FTUnit& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTWildcardOption& v)
+void *begin_visit(const FTWildcardOption& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTWildcardOption& v, void *visit_state)
+void end_visit(const FTWildcardOption& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTWindow& v)
+void *begin_visit(const FTWindow& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTWindow& v, void *visit_state)
+void end_visit(const FTWindow& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTWords& v)
+void *begin_visit(const FTWords& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTWords& v, void *visit_state)
+void end_visit(const FTWords& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTWordsSelection& v)
+void *begin_visit(const FTWordsSelection& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTWordsSelection& v, void *visit_state)
+void end_visit(const FTWordsSelection& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *translator::begin_visit(const FTWordsValue& v)
+void *begin_visit(const FTWordsValue& v)
 {
   TRACE_VISIT ();
   Assert (false);
   return no_state;
 }
 
-void translator::end_visit(const FTWordsValue& v, void *visit_state)
+void end_visit(const FTWordsValue& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
 
+};
+
+Translator *make_translator () {
+  return new TranslatorImpl ();
+}
 
 } /* namespace xqp */
 /* vim:set ts=2 sw=2: */
