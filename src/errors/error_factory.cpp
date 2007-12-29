@@ -358,14 +358,10 @@ ZorbaFnTraceAlert::~ZorbaFnTraceAlert() {}
 
 
 ///from Assert.h
-void ZorbaAssert(bool assertion, const char *where, const char *what)
+void ZorbaAssert(const char *where, const char *what)
 {
-	if (!assertion)
-  {
-    ZorbaAlertFactory::error_alert(AlertCodes::XQP0005_SYSTEM_ASSERT_FAILED,
-                                   NULL, false,
-                                   what, where);
-	}
+  ZorbaAlertFactory::error_alert(AlertCodes::XQP0005_SYSTEM_ASSERT_FAILED,
+                                 NULL, false, what, where);
 }
 
 }
