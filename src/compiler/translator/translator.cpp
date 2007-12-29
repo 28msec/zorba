@@ -72,13 +72,13 @@ protected:
   std::list<global_binding> global_vars;
 
   expr_t pop_nodestack() {
-    Assert (! nodestack.empty());
+    ZORBA_ASSERT (! nodestack.empty());
     rchandle<expr> e_h = nodestack.top();
     nodestack.pop();
     return e_h;
   }
   TypeSystem::xqtref_t pop_tstack() {
-    Assert (! tstack.empty());
+    ZORBA_ASSERT (! tstack.empty());
     TypeSystem::xqtref_t e_h = tstack.top();
     tstack.pop();
     return e_h;
@@ -121,7 +121,7 @@ protected:
         cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
       else
         cout << "top is null\n";
-      Assert (false);
+      ZORBA_ASSERT (false);
     }
     return axisExpr;
   }
@@ -140,7 +140,7 @@ void *begin_visit(const parsenode& v)
 
 void end_visit(const parsenode& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -1269,7 +1269,7 @@ void *begin_visit(const OccurrenceIndicator& v)
   case occurs_zero_or_more:
     q = TypeSystem::QUANT_STAR; break;
   case occurs_never:
-    Assert (false);
+    ZORBA_ASSERT (false);
   }
 
   if (q != TypeSystem::QUANT_ONE)
@@ -2029,7 +2029,7 @@ void end_visit(const NameTest& v, void *visit_state)
   else
   {
     rchandle<Wildcard> wildcard = v.getWildcard();
-    Assert(wildcard != NULL);
+    ZORBA_ASSERT(wildcard != NULL);
 
     switch (wildcard->getKind())
     {
@@ -2395,7 +2395,7 @@ void *begin_visit(const PathExpr& v)
     // Create fn:root(self::node()) expr
     rchandle<relpath_expr> ctx_rpe = new relpath_expr(v.get_location());
     var_expr *ctx_var = static_cast<var_expr *> (sctx_p->lookup_var (DOT_VAR));
-    Assert(ctx_var != NULL);
+    ZORBA_ASSERT(ctx_var != NULL);
     ctx_rpe->add_back(ctx_var);
     rchandle<match_expr> me = new match_expr(v.get_location());
     me->setTestKind(match_anykind_test);
@@ -2439,10 +2439,10 @@ void end_visit(const PathExpr& v, void *visit_state)
     nodestack.push(wrap_in_dos_and_dupelim(arg2));
   } else {
     relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
-    Assert(rpe != NULL);
+    ZORBA_ASSERT(rpe != NULL);
     rpe->add_back(arg2);
     expr_t nulle = pop_nodestack();
-    Assert(nulle == NULL);
+    ZORBA_ASSERT(nulle == NULL);
     nodestack.push(wrap_in_dos_and_dupelim(rpe));
   }
 }
@@ -2459,7 +2459,7 @@ void intermediate_visit(const RelativePathExpr& v, void *visit_state)
   expr_t arg1 = pop_nodestack();
   
   relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
-  Assert(rpe != NULL);
+  ZORBA_ASSERT(rpe != NULL);
 
   rpe->add_back(arg2);
   if (v.get_step_type() == st_slashslash)
@@ -2487,7 +2487,7 @@ void end_visit(const RelativePathExpr& v, void *visit_state)
     nodestack.push(arg2);
   } else {
     relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
-    Assert(rpe != NULL);
+    ZORBA_ASSERT(rpe != NULL);
     rpe->add_back(arg2);
     nodestack.push(rpe);
   }
@@ -2511,7 +2511,7 @@ void post_step_visit(const AxisStep& v, void *visit_state)
     expr_t arg1 = pop_nodestack();
 
     relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
-    Assert(rpe != NULL);
+    ZORBA_ASSERT(rpe != NULL);
 
     rpe->add_back(arg2);
 
@@ -2558,7 +2558,7 @@ void post_predicate_visit(const PredicateList& v, void *visit_state)
   expr_t f = pop_nodestack();
 
   flwor_expr *flwor = dynamic_cast<flwor_expr *>(&*f);
-  Assert(flwor != NULL);
+  ZORBA_ASSERT(flwor != NULL);
   
   rchandle<if_expr> ite = new if_expr(pred->get_loc());
   if (is_numeric_literal(&*pred) || &*pred == sctx_p->lookup_var(LAST_IDX_VAR)) {
@@ -2856,10 +2856,10 @@ void end_visit(const TypeswitchExpr& v, void *visit_state)
   rchandle<var_expr> ve_h = bind_var (v.get_location(), v.get_default_varname(), var_expr::unknown_var);
   tse_h->set_default_varname(ve_h);
 
-  Assert((e_h = pop_nodestack())!=NULL);
+  ZORBA_ASSERT((e_h = pop_nodestack())!=NULL);
   tse_h->set_switch_expr(e_h);
 
-  Assert((e_h = pop_nodestack())!=NULL);
+  ZORBA_ASSERT((e_h = pop_nodestack())!=NULL);
   tse_h->set_default_clause(e_h);
 
   while (true) {  // pop clauses
@@ -2926,7 +2926,7 @@ void end_visit(const UnorderedExpr& v, void *visit_state)
 void *begin_visit(const ValidateExpr& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -2955,7 +2955,7 @@ void end_visit(const VarRef& v, void *visit_state)
 void *begin_visit(const DeleteExpr& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -2967,7 +2967,7 @@ void end_visit(const DeleteExpr& v, void *visit_state)
 void *begin_visit(const InsertExpr& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -2979,7 +2979,7 @@ void end_visit(const InsertExpr& v, void *visit_state)
 void *begin_visit(const RenameExpr& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -2991,7 +2991,7 @@ void end_visit(const RenameExpr& v, void *visit_state)
 void *begin_visit(const ReplaceExpr& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3003,7 +3003,7 @@ void end_visit(const ReplaceExpr& v, void *visit_state)
 void *begin_visit(const RevalidationDecl& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3016,7 +3016,7 @@ void end_visit(const RevalidationDecl& v, void *visit_state)
 void *begin_visit(const TransformExpr& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3042,7 +3042,7 @@ void end_visit(const VarNameList& v, void *visit_state)
 void *begin_visit(const FTAnd& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3054,7 +3054,7 @@ void end_visit(const FTAnd& v, void *visit_state)
 void *begin_visit(const FTAnyallOption& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3066,7 +3066,7 @@ void end_visit(const FTAnyallOption& v, void *visit_state)
 void *begin_visit(const FTBigUnit& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3078,7 +3078,7 @@ void end_visit(const FTBigUnit& v, void *visit_state)
 void *begin_visit(const FTCaseOption& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3090,7 +3090,7 @@ void end_visit(const FTCaseOption& v, void *visit_state)
 void *begin_visit(const FTContainsExpr& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3102,7 +3102,7 @@ void end_visit(const FTContainsExpr& v, void *visit_state)
 void *begin_visit(const FTContent& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3114,7 +3114,7 @@ void end_visit(const FTContent& v, void *visit_state)
 void *begin_visit(const FTDiacriticsOption& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3126,7 +3126,7 @@ void end_visit(const FTDiacriticsOption& v, void *visit_state)
 void *begin_visit(const FTDistance& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3138,7 +3138,7 @@ void end_visit(const FTDistance& v, void *visit_state)
 void *begin_visit(const FTIgnoreOption& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3150,7 +3150,7 @@ void end_visit(const FTIgnoreOption& v, void *visit_state)
 void *begin_visit(const FTInclExclStringLiteral& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3162,7 +3162,7 @@ void end_visit(const FTInclExclStringLiteral& v, void *visit_state)
 void *begin_visit(const FTInclExclStringLiteralList& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3174,7 +3174,7 @@ void end_visit(const FTInclExclStringLiteralList& v, void *visit_state)
 void *begin_visit(const FTLanguageOption& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3186,7 +3186,7 @@ void end_visit(const FTLanguageOption& v, void *visit_state)
 void *begin_visit(const FTMatchOption& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3199,7 +3199,7 @@ void end_visit(const FTMatchOption& v, void *visit_state)
 void *begin_visit(const FTMatchOptionProximityList& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3211,7 +3211,7 @@ void end_visit(const FTMatchOptionProximityList& v, void *visit_state)
 void *begin_visit(const FTMildnot& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3223,7 +3223,7 @@ void end_visit(const FTMildnot& v, void *visit_state)
 void *begin_visit(const FTOptionDecl& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3235,7 +3235,7 @@ void end_visit(const FTOptionDecl& v, void *visit_state)
 void *begin_visit(const FTOr& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3247,7 +3247,7 @@ void end_visit(const FTOr& v, void *visit_state)
 void *begin_visit(const FTOrderedIndicator& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3259,7 +3259,7 @@ void end_visit(const FTOrderedIndicator& v, void *visit_state)
 void *begin_visit(const FTProximity& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3271,7 +3271,7 @@ void end_visit(const FTProximity& v, void *visit_state)
 void *begin_visit(const FTRange& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3283,7 +3283,7 @@ void end_visit(const FTRange& v, void *visit_state)
 void *begin_visit(const FTRefOrList& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3295,7 +3295,7 @@ void end_visit(const FTRefOrList& v, void *visit_state)
 void *begin_visit(const FTScope& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3307,7 +3307,7 @@ void end_visit(const FTScope& v, void *visit_state)
 void *begin_visit(const FTScoreVar& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3319,7 +3319,7 @@ void end_visit(const FTScoreVar& v, void *visit_state)
 void *begin_visit(const FTSelection& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3331,7 +3331,7 @@ void end_visit(const FTSelection& v, void *visit_state)
 void *begin_visit(const FTStemOption& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3343,7 +3343,7 @@ void end_visit(const FTStemOption& v, void *visit_state)
 void *begin_visit(const FTStopwordOption& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3355,7 +3355,7 @@ void end_visit(const FTStopwordOption& v, void *visit_state)
 void *begin_visit(const FTStringLiteralList& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3367,7 +3367,7 @@ void end_visit(const FTStringLiteralList& v, void *visit_state)
 void *begin_visit(const FTThesaurusID& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3379,7 +3379,7 @@ void end_visit(const FTThesaurusID& v, void *visit_state)
 void *begin_visit(const FTThesaurusList& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3391,7 +3391,7 @@ void end_visit(const FTThesaurusList& v, void *visit_state)
 void *begin_visit(const FTThesaurusOption& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3403,7 +3403,7 @@ void end_visit(const FTThesaurusOption& v, void *visit_state)
 void *begin_visit(const FTTimes& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3415,7 +3415,7 @@ void end_visit(const FTTimes& v, void *visit_state)
 void *begin_visit(const FTUnaryNot& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3427,7 +3427,7 @@ void end_visit(const FTUnaryNot& v, void *visit_state)
 void *begin_visit(const FTUnit& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3439,7 +3439,7 @@ void end_visit(const FTUnit& v, void *visit_state)
 void *begin_visit(const FTWildcardOption& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3451,7 +3451,7 @@ void end_visit(const FTWildcardOption& v, void *visit_state)
 void *begin_visit(const FTWindow& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3463,7 +3463,7 @@ void end_visit(const FTWindow& v, void *visit_state)
 void *begin_visit(const FTWords& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3475,7 +3475,7 @@ void end_visit(const FTWords& v, void *visit_state)
 void *begin_visit(const FTWordsSelection& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
@@ -3487,7 +3487,7 @@ void end_visit(const FTWordsSelection& v, void *visit_state)
 void *begin_visit(const FTWordsValue& v)
 {
   TRACE_VISIT ();
-  Assert (false);
+  ZORBA_ASSERT (false);
   return no_state;
 }
 
