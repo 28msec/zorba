@@ -6,6 +6,12 @@
 # $4 is the source directory of rbkt
 # $5 is the reference result
 
+# Other variables: VALGRIND={each|onfail}
+
+case $VALGRIND in
+    each) VGEACH="valgrind -q --log-fd=1";;
+    onfail) VGONFAIL="valgrind -q --log-fd=1";;
+esac
 
 # always delete the result file upfront
 rm -f "$2" "$2.err"
@@ -28,14 +34,21 @@ if test \( ! -f $REFRES \) -a \( "x$ERRS" = "x" \); then
     exit 1
 fi
 
-echo "executing command: $1/test/apitest -q -r -o $2 $XARGS $3"
+CMD="$1/test/apitest"
+ARGS="$XARGS -q -r -o"
+echo "Executing command: $VGEACH $CMD $ARGS $2 $3 2> $2.err"
 
-$1/test/apitest -q -r -o "$2" $XARGS "$3" 2> "$2.err" # execute the query
+$VGEACH $CMD $ARGS "$2" "$3" 2> "$2.err" # execute the query
 RETURNVALUE=$?
-if [ $RETURNVALUE -ne 0 ]
-then
-    echo "ERROR: $1/test/apitest -q -r -o $2 $3 failed with error code ${RETURNVALUE}"
-    exit ${RETURNVALUE}
+if test $RETURNVALUE -ne 0; then
+    if test \( $RETURNVALUE -eq 139 \) -a "$VGONFAIL"; then  # segfault
+        echo "Segfault -- running valgrind"
+        rm -f "$2" "$2.err"
+        $VGONFAIL $CMD $ARGS "$2" "$3" 2> "$2.err"
+    else
+        echo "ERROR: $1/test/apitest -q -r -o $2 $3 failed with error code ${RETURNVALUE}"
+        exit ${RETURNVALUE}
+    fi
 fi
 
 # if there's an error message...
@@ -56,7 +69,7 @@ cat "$2" | "$4/Scripts/tidy_xmlfrag" > "$2.tidy"
 
 # produce and tidy the ref result
 {
-    if test $ACTUAL_ERR; then
+    if test "$ACTUAL_ERR"; then
         if test "$ERRS" && egrep "^Error:$ACTUAL_ERR" $SPEC &> /dev/null; then
             # proper error was reported
             echo $ACTUAL_ERR
