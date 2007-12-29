@@ -23,7 +23,6 @@
 #define XQP_EXPR_H
 
 #include <string>
-#include <vector>
 #include <map>
 
 #include "system/globalenv.h"
@@ -31,6 +30,7 @@
 #include "types/typesystem.h"
 #include "util/list.h"
 #include "util/rchandle.h"
+#include "util/checked_vector.h"
 #include "compiler/expression/expr_consts.h"
 #include "store/api/fullText/ft_options.h"
 #include "util/utf8/xqpString.h"
@@ -491,14 +491,14 @@ public:
 class fo_expr : public expr
 {
 protected:
-	std::vector<expr_t> argv;
+	checked_vector<expr_t> argv;
 	const function* func;
 
 public:
 	fo_expr(yy::location const&, const function *);
 
 public:
-  void add(expr_t e_h) { argv.push_back(e_h); }
+  void add(expr_t e_h) { assert (e_h != NULL); argv.push_back(e_h); }
 	uint32_t size() const { return argv.size(); }
 	expr_t& operator[](int i) { return argv[i]; }
 	const expr_t& operator[](int i) const { return argv[i]; }
@@ -830,7 +830,7 @@ class axis_step_expr : public expr
 protected:
   axis_kind_t          theAxis;
 	rchandle<match_expr> theNodeTest;
-	std::vector<expr_t>  thePreds;
+	checked_vector<expr_t>  thePreds;
 
 public:
 	axis_step_expr(yy::location const&);
