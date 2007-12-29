@@ -24,9 +24,9 @@
   #include <string.h>
 #endif
 #include <string>
-#include <vector>
 #include <iostream>
 
+#include "util/checked_vector.h"
 #include "util/hashfun.h"
 #include "util/rchandle.h"
 #include "util/rwlock.h"
@@ -36,15 +36,6 @@
 using namespace std;
 namespace xqp {
 
-  template<class T> class checked_vector : public vector<T> {
-  public:
-    checked_vector () {}
-    checked_vector (int n) : vector<T> (n) {}
-#ifndef NDEBUG
-    T &operator[] (typename vector<T>::size_type i) { return vector<T>::at (i); }
-    const T &operator[] (typename vector<T>::size_type i) const { return vector<T>::at (i); }
-#endif
-  };
 
 /*___________________________________________________________
 |
