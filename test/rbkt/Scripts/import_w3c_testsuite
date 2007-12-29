@@ -65,6 +65,7 @@ my ($name, $path, $query, $inlist, $urilist, $out, $errlist) = split (/ /);
 my @inbnd = split (/:/, $inlist);
 my @uribnd = split (/:/, $urilist);
 my @errs = split (/:/, $errlist);
+my $test_src_path = "$repo/test/rbkt/Queries/w3c_testsuite";
 my $inpath = "Queries/XQuery/$path";
 my $dstqpath="$repo/test/rbkt/Queries/w3c_testsuite/$path";
 my $dstrespath = "$repo/test/rbkt/ExpQueryResults/w3c_testsuite/$path";
@@ -82,11 +83,11 @@ if (@inbnd || @uribnd) {
   print SPEC "Args:";
   foreach (@inbnd) {
     my ($var, $srcid) = split /=/;
-    print SPEC " -x $var=$repo/test/rbkt/" . $sources {$srcid};
+    print SPEC " -x $var=$test_src_path/" . $sources {$srcid};
   }
   foreach (@uribnd) {
     my ($var, $srcid) = split /=/;
-    print SPEC " -x $var:=$repo/test/rbkt/" . $sources {$srcid};
+    print SPEC " -x $var:=$test_src_path/" . $sources {$srcid};
   }
   print SPEC "\n";
   close (SPEC);
@@ -104,8 +105,9 @@ if (@errs) {
 rm -f $q
 
 echo "Importing test sources..."
-mv TestSources $SRC/test/rbkt/
-find $SRC/test/rbkt/TestSources -name '*.xq' -exec rm {} \;
+mv XQTSCatalog.xml $SRC/test/rbkt/Queries/w3c_testsuite/
+find TestSources  -name '*.xq' -exec rm {} \;
+mv TestSources $SRC/test/rbkt/Queries/w3c_testsuite/
 
 echo "Cleaning up work directory..."
 cd $d0; rm -rf "$d"
