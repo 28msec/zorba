@@ -120,6 +120,7 @@ namespace xqp {
        
   void PrinterVisitor::beginVisit ( const RefIterator& a ) {
     thePrinter.startIter("RefIterator");
+    thePrinter.addAttribute("varname", a.getVarName());
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const RefIterator& a ) {
@@ -819,7 +820,6 @@ namespace xqp {
   
   void PrinterVisitor::endVisitFlworLetVariable(const PlanIterator& a){
     thePrinter.endIter();
-    a.accept(*this);
   }
           
     

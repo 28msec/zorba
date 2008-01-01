@@ -575,8 +575,9 @@ void RSiblingAxisIterator::resetImpl(PlanState& planState)
   AxisIterator<RSiblingAxisIterator>::resetImpl(planState);
 
   RSiblingAxisState* state;
-  GET_STATE(RSiblingAxisState, state, planState); 
-  state->theChildren->reset(); 
+  GET_STATE(RSiblingAxisState, state, planState);
+  if (state->theChildren != NULL)
+    state->theChildren->reset(); 
 }
 
 
@@ -652,7 +653,8 @@ void LSiblingAxisIterator::resetImpl(PlanState& planState)
 
   LSiblingAxisState* state;
   GET_STATE(LSiblingAxisState, state, planState); 
-  state->theChildren->reset();
+  if (state->theChildren != NULL)
+    state->theChildren->reset();
 }
 
 

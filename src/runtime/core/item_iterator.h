@@ -117,7 +117,8 @@ public:
   
   virtual void accept(PlanIterVisitor&) const;
   
-public:   // variable binding
+public:
+  // variable binding
   void bind(Item_t aValue) { theValue = aValue; }
 };
 
@@ -129,20 +130,31 @@ public:   // variable binding
 class RefIterator : public Batcher<RefIterator>
 {
 private:
+  xqp_string theVarName;
   Iterator_t it;
   const void *origin;  ///< like origin in var_iterator
   
 public:
-  RefIterator(string s_p, yy::location loc, const void *origin_)
-    : Batcher<RefIterator> (loc), origin (origin_)
-  {}
+  RefIterator(xqpString vn, yy::location loc, const void *origin_)
+    :
+    Batcher<RefIterator>(loc),
+    theVarName(vn),
+    origin(origin_)
+  {
+  }
+
   ~RefIterator() {}  // TODO
   
-public:   // variable binding
+public:
+  xqp_string getVarName() const { return theVarName; }
+
+  // variable binding
   void bind(Iterator_t _it) { it = _it;}
+
   Item_t nextImpl(PlanState& planState) { return it->next(); }  // TODO
   void resetImpl(PlanState& planState) { it->reset(); }  // TODO
   void releaseResourcesImpl(PlanState& planState) {  }  // TODO
+
   virtual uint32_t getStateSize() const { return 0; }  // TODO
   virtual uint32_t getStateSizeOfSubtree() const { return 0; }  // TODO
   virtual void setOffset(PlanState& planState, uint32_t& offset) {}  // TODO

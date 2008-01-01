@@ -1029,17 +1029,19 @@ OpToIterator::OpToIteratorState::reset() {
 | If $uri is the empty sequence, the result is an empty sequence.
 |_______________________________________________________________________*/
 
-FnDocIterator::FnDocIterator (
-    yy::location loc, PlanIter_t& arg)
-    :
-    UnaryBaseIterator<FnDocIterator> ( loc, arg )
+FnDocIterator::FnDocIterator(yy::location loc, PlanIter_t& arg)
+  :
+  UnaryBaseIterator<FnDocIterator> ( loc, arg )
 {
 }
 
-FnDocIterator::~FnDocIterator() {}
 
-Item_t
-FnDocIterator::nextImpl ( PlanState& planState )
+FnDocIterator::~FnDocIterator()
+{
+}
+
+
+Item_t FnDocIterator::nextImpl(PlanState& planState)
 {
   Item_t item, xml;
 
@@ -1059,45 +1061,49 @@ FnDocIterator::nextImpl ( PlanState& planState )
       state->childrenIter = state->collection->getIterator(true);
       state->got_doc = 2;
     }
-    else if(state->uri.lowercase().indexOf("http://") == 0)
+    else
     {
-      // retrieve web file
-      xqp_string result;
-      int result_code = http_get(state->uri.c_str(), result);
+      xqp_string uri = state->uri;
 
-      if (result_code != 0)
+      if (uri.lowercase().indexOf("http://") == 0)
       {
-         // File does not exist
-        ZORBA_ERROR_ALERT(AlertCodes::FODC0002,
-                          &loc, false, "Could not retrieve resource");
-      }
+        // retrieve web file
+        xqp_string result;
+        int result_code = http_get(uri.c_str(), result);
 
-      istringstream iss(result.getStore()->c_str());
-      XmlLoader& loader = store.getXmlLoader();
-      state->doc = loader.loadXml(iss);
-      state->childrenIter = state->doc->getChildren();
-      state->got_doc = 1;
-    }
-    else 
-    {
-      // load file
-      ifstream ifs;
-      ifs.open(((string)state->uri).c_str(), ios::in);
-      if (ifs.is_open() == false)
+        if (result_code != 0)
+        {
+          // File does not exist
+          ZORBA_ERROR_ALERT(AlertCodes::FODC0002,
+                            &loc, false, "Could not retrieve resource");
+        }
+
+        istringstream iss(result.c_str());
+        XmlLoader& loader = store.getXmlLoader();
+        state->doc = loader.loadXml(iss);
+        state->childrenIter = state->doc->getChildren();
+        state->got_doc = 1;
+      }
+      else 
       {
-        // File does not exist
-        ZORBA_ERROR_ALERT(AlertCodes::FODC0002,
-                          &loc, false, "The file does not exist");
-      }
+        // load file
+        ifstream ifs;
+        ifs.open((state->uri).c_str(), ios::in);
+        if (ifs.is_open() == false)
+        {
+          // File does not exist
+          ZORBA_ERROR_ALERT(AlertCodes::FODC0002,
+                            &loc, false, "The file does not exist");
+        }
 
-      XmlLoader& loader = store.getXmlLoader();
-      state->doc = loader.loadXml(ifs);
-      state->childrenIter = state->doc->getChildren();
-      state->got_doc = 1;
+        XmlLoader& loader = store.getXmlLoader();
+        state->doc = loader.loadXml(ifs);
+        state->childrenIter = state->doc->getChildren();
+        state->got_doc = 1;
+      }
     }
   }
 
-  
   if (state->got_doc == 1 || state->got_doc == 2) // Collection
   {
     do
@@ -1116,10 +1122,12 @@ FnDocIterator::nextImpl ( PlanState& planState )
   STACK_END();
 }
 
-uint32_t
-FnDocIterator::getStateSize() const {
+
+uint32_t FnDocIterator::getStateSize() const
+{
   return sizeof(FnDocIteratorState);
 }
+
 
 FnDocIterator::FnDocIteratorState::FnDocIteratorState()
   :
@@ -1127,8 +1135,8 @@ FnDocIterator::FnDocIteratorState::FnDocIteratorState()
 {
 }
 
-void
-FnDocIterator::FnDocIteratorState::init()
+
+void FnDocIterator::FnDocIteratorState::init()
 {
   PlanIterator::PlanIteratorState::init();
   if (got_doc == 1)
@@ -1137,8 +1145,8 @@ FnDocIterator::FnDocIteratorState::init()
     childrenIter = collection->getIterator(true);
 }
 
-void
-FnDocIterator::FnDocIteratorState::reset()
+
+void FnDocIterator::FnDocIteratorState::reset()
 {
   PlanIterator::PlanIteratorState::reset();
   got_doc = 0;
