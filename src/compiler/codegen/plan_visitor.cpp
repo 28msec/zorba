@@ -117,7 +117,7 @@ void end_visit(var_expr& v)
 
   switch (v.kind) {
   case var_expr::for_var: {
-    var_iterator *v_p = new var_iterator(v.get_varname ()->getLocalName (),v.get_loc(), (void *) &v);
+    var_iterator *v_p = new var_iterator(v.get_varname()->getLocalName(), v.get_loc(), (void *) &v);
     vector<var_iter_t> *map = NULL;
     
     ZORBA_ASSERT (fvar_iter_map.get ((uint64_t) &v, map));
@@ -126,7 +126,7 @@ void end_visit(var_expr& v)
   }
     break;
   case var_expr::pos_var: {
-    var_iterator *v_p = new var_iterator(v.get_varname ()->getLocalName (),v.get_loc(), (void *) &v);
+    var_iterator *v_p = new var_iterator(v.get_varname ()->getLocalName(),v.get_loc(), (void *) &v);
     vector<var_iter_t> *map = NULL;
     ZORBA_ASSERT (pvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
@@ -134,7 +134,7 @@ void end_visit(var_expr& v)
   }
     break;
   case var_expr::let_var: {
-    RefIterator *v_p = new RefIterator(v.get_varname ()->getLocalName (),v.get_loc(), (void *) &v);
+    RefIterator *v_p = new RefIterator(v.get_varname()->getLocalName(), v.get_loc(), (void *) &v);
     vector<ref_iter_t> *map = NULL;
     
     ZORBA_ASSERT (lvar_iter_map.get ((uint64_t) &v, map));
@@ -435,11 +435,7 @@ bool begin_visit(axis_step_expr& v)
 
   PlanIter_t input = pop_itstack();
 
-  // TODO ??? In this case the input should be the context node
-  if (input == NULL)
-  {
-    input = new var_iterator("context_node", v.get_loc(), &v);
-  }
+  Assert(input != NULL);
 
   PlanIter_t axisIte;
 

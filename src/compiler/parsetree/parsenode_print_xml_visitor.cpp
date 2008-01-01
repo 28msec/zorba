@@ -28,7 +28,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const parsenode &n)
 {
     INDENT;
     
-    os << "<ParseNode position='" << n.get_location() << "'";
+    os << "<ParseNode position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -43,7 +43,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AbbrevForwardStep &n)
 {
     INDENT;
     
-    os << "<AbbrevForwardStep position='" << n.get_location() << "'";
+    os << "<AbbrevForwardStep position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -58,7 +58,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AnyKindTest &n)
 {
     INDENT;
     
-    os << "<AnyKindTest position='" << n.get_location() << "'";
+    os << "<AnyKindTest position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -73,7 +73,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AposAttrContentList &n)
 {
     INDENT;
     
-    os << "<AposAttrContentList position='" << n.get_location() << "'";
+    os << "<AposAttrContentList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -88,7 +88,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AposAttrValueContent &n)
 {
     INDENT;
     
-    os << "<AposAttrValueContent position='" << n.get_location() << "'";
+    os << "<AposAttrValueContent position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -103,7 +103,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ArgList &n)
 {
     INDENT;
     
-    os << "<ArgList position='" << n.get_location() << "'";
+    os << "<ArgList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -118,7 +118,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AtomicType &n)
 {
     INDENT;
     
-    os << "<AtomicType position='" << n.get_location() << "'";
+    os << "<AtomicType position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -133,7 +133,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AttributeTest &n)
 {
     INDENT;
     
-    os << "<AttributeTest position='" << n.get_location() << "'";
+    os << "<AttributeTest position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -148,7 +148,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const BaseURIDecl &n)
 {
     INDENT;
     
-    os << "<BaseURIDecl position='" << n.get_location() << "'";
+    os << "<BaseURIDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -163,7 +163,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const BoundarySpaceDecl &n)
 {
     INDENT;
     
-    os << "<BoundarySpaceDecl position='" << n.get_location() << "'";
+    os << "<BoundarySpaceDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -178,7 +178,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CaseClause &n)
 {
     INDENT;
     
-    os << "<CaseClause position='" << n.get_location() << "'";
+    os << "<CaseClause position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -193,7 +193,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CaseClauseList &n)
 {
     INDENT;
     
-    os << "<CaseClauseList position='" << n.get_location() << "'";
+    os << "<CaseClauseList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -208,7 +208,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CommentTest &n)
 {
     INDENT;
     
-    os << "<CommentTest position='" << n.get_location() << "'";
+    os << "<CommentTest position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -223,7 +223,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ConstructionDecl &n)
 {
     INDENT;
     
-    os << "<ConstructionDecl position='" << n.get_location() << "'";
+    os << "<ConstructionDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -238,7 +238,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CopyNamespacesDecl &n)
 {
     INDENT;
     
-    os << "<CopyNamespacesDecl position='" << n.get_location() << "'";
+    os << "<CopyNamespacesDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -253,7 +253,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DefaultCollationDecl &n)
 {
     INDENT;
     
-    os << "<DefaultCollationDecl position='" << n.get_location() << "'";
+    os << "<DefaultCollationDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -268,7 +268,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DefaultNamespaceDecl &n)
 {
     INDENT;
     
-    os << "<DefaultNamespaceDecl position='" << n.get_location() << "'";
+    os << "<DefaultNamespaceDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -283,7 +283,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirAttr &n)
 {
     INDENT;
     
-    os << "<DirAttr position='" << n.get_location() << "'";
+    os << "<DirAttr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -298,7 +298,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirAttributeList &n)
 {
     INDENT;
     
-    os << "<DirAttributeList position='" << n.get_location() << "'";
+    os << "<DirAttributeList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -313,7 +313,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirAttributeValue &n)
 {
     INDENT;
     
-    os << "<DirAttributeValue position='" << n.get_location() << "'";
+    os << "<DirAttributeValue position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -328,7 +328,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirElemContentList &n)
 {
     INDENT;
     
-    os << "<DirElemContentList position='" << n.get_location() << "'";
+    os << "<DirElemContentList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -343,7 +343,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DocumentTest &n)
 {
     INDENT;
     
-    os << "<DocumentTest position='" << n.get_location() << "'";
+    os << "<DocumentTest position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -358,7 +358,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ElementTest &n)
 {
     INDENT;
     
-    os << "<ElementTest position='" << n.get_location() << "'";
+    os << "<ElementTest position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -373,7 +373,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const EmptyOrderDecl &n)
 {
     INDENT;
     
-    os << "<EmptyOrderDecl position='" << n.get_location() << "'";
+    os << "<EmptyOrderDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -388,7 +388,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ForClause &n)
 {
     INDENT;
     
-    os << "<ForClause position='" << n.get_location() << "'";
+    os << "<ForClause position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -403,7 +403,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ForClause &n)
 // {
 //     INDENT;
 //     
-//     os << "<MainModule position='" << n.get_location() << "'";
+//     os << "<MainModule position='" << n.get_location() << "'  " << &n;
 // 
 //     os << ">";
 //     
@@ -418,7 +418,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ForLetClauseList &n)
 {
     INDENT;
     
-    os << "<ForLetClauseList position='" << n.get_location() << "'";
+    os << "<ForLetClauseList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -433,7 +433,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ForwardAxis &n)
 {
     INDENT;
     
-    os << "<ForwardAxis position='" << n.get_location() << "'";
+    os << "<ForwardAxis position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -448,7 +448,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ForwardStep &n)
 {
     INDENT;
     
-    os << "<ForwardStep position='" << n.get_location() << "'";
+    os << "<ForwardStep position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -463,7 +463,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FunctionDecl &n)
 {
     INDENT;
     
-    os << "<FunctionDecl position='" << n.get_location() << "'";
+    os << "<FunctionDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -478,7 +478,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const GeneralComp &n)
 {
     INDENT;
     
-    os << "<GeneralComp position='" << n.get_location() << "'";
+    os << "<GeneralComp position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -493,7 +493,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ItemType &n)
 {
     INDENT;
     
-    os << "<ItemType position='" << n.get_location() << "'";
+    os << "<ItemType position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -508,7 +508,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const LetClause &n)
 {
     INDENT;
     
-    os << "<LetClause position='" << n.get_location() << "'";
+    os << "<LetClause position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -523,7 +523,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const LibraryModule &n)
 {
     INDENT;
     
-    os << "<LibraryModule position='" << n.get_location() << "'";
+    os << "<LibraryModule position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -538,7 +538,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const MainModule  &n)
 {
     INDENT;
     
-    os << "<MainModule position='" << n.get_location() << "'";
+    os << "<MainModule position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -554,7 +554,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Module &n)
 {
     INDENT;
     
-    os << "<Module position='" << n.get_location() << "'";
+    os << "<Module position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -569,9 +569,9 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ModuleDecl &n)
 {
     INDENT;
     
-    os << "<ModuleDecl position='" << n.get_location() << "'";
+    os << "<ModuleDecl position='" << n.get_location() << "'  " << &n;
     os << " prefix='" << n.get_prefix() << "' " 
-       << "target_namespace='" << n.get_target_namespace() << "'";
+       << "target_namespace='" << n.get_target_namespace() << "'  " << &n;
     os << ">";
     
     INDENT_INC;
@@ -585,7 +585,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ModuleImport &n)
 {
     INDENT;
     
-    os << "<ModuleImport position='" << n.get_location() << "'";
+    os << "<ModuleImport position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -600,7 +600,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NameTest &n)
 {
     INDENT;
     
-    os << "<NameTest position='" << n.get_location() << "'";
+    os << "<NameTest position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -615,7 +615,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NamespaceDecl &n)
 {
     INDENT;
     
-    os << "<NamespaceDecl position='" << n.get_location() << "'";
+    os << "<NamespaceDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -630,7 +630,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NodeComp &n)
 {
     INDENT;
     
-    os << "<NodeComp position='" << n.get_location() << "'";
+    os << "<NodeComp position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -645,7 +645,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OccurrenceIndicator &n)
 {
     INDENT;
     
-    os << "<OccurrenceIndicator position='" << n.get_location() << "'";
+    os << "<OccurrenceIndicator position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -660,7 +660,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OptionDecl &n)
 {
     INDENT;
     
-    os << "<OptionDecl position='" << n.get_location() << "'";
+    os << "<OptionDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -675,7 +675,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderByClause &n)
 {
     INDENT;
     
-    os << "<OrderByClause position='" << n.get_location() << "'";
+    os << "<OrderByClause position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -690,7 +690,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderCollationSpec &n)
 {
     INDENT;
     
-    os << "<OrderCollationSpec position='" << n.get_location() << "'";
+    os << "<OrderCollationSpec position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -705,7 +705,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderDirSpec &n)
 {
     INDENT;
     
-    os << "<OrderDirSpec position='" << n.get_location() << "'";
+    os << "<OrderDirSpec position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -720,7 +720,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderEmptySpec &n)
 {
     INDENT;
     
-    os << "<OrderEmptySpec position='" << n.get_location() << "'";
+    os << "<OrderEmptySpec position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -735,7 +735,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderModifier &n)
 {
     INDENT;
     
-    os << "<OrderModifier position='" << n.get_location() << "'";
+    os << "<OrderModifier position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -750,7 +750,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderSpec &n)
 {
     INDENT;
     
-    os << "<OrderSpec position='" << n.get_location() << "'";
+    os << "<OrderSpec position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -765,7 +765,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderSpecList &n)
 {
     INDENT;
     
-    os << "<OrderSpecList position='" << n.get_location() << "'";
+    os << "<OrderSpecList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -780,7 +780,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderingModeDecl &n)
 {
     INDENT;
     
-    os << "<OrderingModeDecl position='" << n.get_location() << "'";
+    os << "<OrderingModeDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -795,7 +795,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const PITest &n)
 {
     INDENT;
     
-    os << "<PITest position='" << n.get_location() << "'";
+    os << "<PITest position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -810,7 +810,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Param &n)
 {
     INDENT;
     
-    os << "<Param position='" << n.get_location() << "'";
+    os << "<Param position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -825,7 +825,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ParamList &n)
 {
     INDENT;
     
-    os << "<ParamList position='" << n.get_location() << "'";
+    os << "<ParamList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -840,7 +840,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const PositionalVar &n)
 {
     INDENT;
     
-    os << "<PositionalVar position='" << n.get_location() << "'";
+    os << "<PositionalVar position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -855,7 +855,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Pragma &n)
 {
     INDENT;
     
-    os << "<Pragma position='" << n.get_location() << "'";
+    os << "<Pragma position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -870,7 +870,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const PragmaList &n)
 {
     INDENT;
     
-    os << "<PragmaList position='" << n.get_location() << "'";
+    os << "<PragmaList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -885,7 +885,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const PredicateList &n)
 {
     INDENT;
     
-    os << "<PredicateList position='" << n.get_location() << "'";
+    os << "<PredicateList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -900,7 +900,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Prolog &n)
 {
     INDENT;
     
-    os << "<Prolog position='" << n.get_location() << "'";
+    os << "<Prolog position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -915,7 +915,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QVarInDecl &n)
 {
     INDENT;
     
-    os << "<QVarInDecl position='" << n.get_location() << "'";
+    os << "<QVarInDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -930,7 +930,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QVarInDeclList &n)
 {
     INDENT;
     
-    os << "<QVarInDeclList position='" << n.get_location() << "'";
+    os << "<QVarInDeclList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -945,7 +945,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QuoteAttrValueContent &n)
 {
     INDENT;
     
-    os << "<QuoteAttrValueContent position='" << n.get_location() << "'";
+    os << "<QuoteAttrValueContent position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -960,7 +960,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QuoteAttrContentList &n)
 {
     INDENT;
     
-    os << "<QuoteAttrContentList position='" << n.get_location() << "'";
+    os << "<QuoteAttrContentList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -975,7 +975,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ReverseAxis &n)
 {
     INDENT;
     
-    os << "<ReverseAxis position='" << n.get_location() << "'";
+    os << "<ReverseAxis position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -990,7 +990,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ReverseStep &n)
 {
     INDENT;
     
-    os << "<ReverseStep position='" << n.get_location() << "'";
+    os << "<ReverseStep position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1005,7 +1005,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SIND_DeclList &n)
 {
     INDENT;
     
-    os << "<SIND_DeclList position='" << n.get_location() << "'";
+    os << "<SIND_DeclList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1020,7 +1020,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SchemaAttributeTest &n)
 {
     INDENT;
     
-    os << "<SchemaAttributeTest position='" << n.get_location() << "'";
+    os << "<SchemaAttributeTest position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1035,7 +1035,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SchemaElementTest &n)
 {
     INDENT;
     
-    os << "<SchemaElementTest position='" << n.get_location() << "'";
+    os << "<SchemaElementTest position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1050,7 +1050,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SchemaImport &n)
 {
     INDENT;
     
-    os << "<SchemaImport position='" << n.get_location() << "'";
+    os << "<SchemaImport position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1065,7 +1065,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SchemaPrefix &n)
 {
     INDENT;
     
-    os << "<SchemaPrefix position='" << n.get_location() << "'";
+    os << "<SchemaPrefix position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1080,7 +1080,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SequenceType &n)
 {
     INDENT;
     
-    os << "<SequenceType position='" << n.get_location() << "'";
+    os << "<SequenceType position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1095,7 +1095,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SignList &n)
 {
     INDENT;
     
-    os << "<SignList position='" << n.get_location() << "'";
+    os << "<SignList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1110,7 +1110,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SingleType &n)
 {
     INDENT;
     
-    os << "<SingleType position='" << n.get_location() << "'";
+    os << "<SingleType position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1125,7 +1125,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TextTest &n)
 {
     INDENT;
     
-    os << "<TextTest position='" << n.get_location() << "'";
+    os << "<TextTest position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1140,7 +1140,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TypeDeclaration &n)
 {
     INDENT;
     
-    os << "<TypeDeclaration position='" << n.get_location() << "'";
+    os << "<TypeDeclaration position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1155,7 +1155,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TypeName &n)
 {
     INDENT;
     
-    os << "<TypeName position='" << n.get_location() << "'";
+    os << "<TypeName position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1170,7 +1170,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const URILiteralList &n)
 {
     INDENT;
     
-    os << "<URILiteralList position='" << n.get_location() << "'";
+    os << "<URILiteralList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1185,7 +1185,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ValueComp &n)
 {
     INDENT;
     
-    os << "<ValueComp position='" << n.get_location() << "'";
+    os << "<ValueComp position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1200,7 +1200,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarDecl &n)
 {
     INDENT;
     
-    os << "<VarDecl position='" << n.get_location() << "'";
+    os << "<VarDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1215,7 +1215,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarGetsDecl &n)
 {
     INDENT;
     
-    os << "<VarGetsDecl position='" << n.get_location() << "'";
+    os << "<VarGetsDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1230,7 +1230,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarGetsDeclList &n)
 {
     INDENT;
     
-    os << "<VarGetsDeclList position='" << n.get_location() << "'";
+    os << "<VarGetsDeclList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1245,7 +1245,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarInDecl &n)
 {
     INDENT;
     
-    os << "<VarInDecl position='" << n.get_location() << "'";
+    os << "<VarInDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1260,7 +1260,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarInDeclList &n)
 {
     INDENT;
     
-    os << "<VarInDeclList position='" << n.get_location() << "'";
+    os << "<VarInDeclList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1275,7 +1275,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VersionDecl &n)
 {
     INDENT;
     
-    os << "<VersionDecl position='" << n.get_location() << "'";
+    os << "<VersionDecl position='" << n.get_location() << "'  " << &n;
     os << "version='" << n.get_version() << "' " 
        << "encoding='" << n.get_encoding() << "' ";
 
@@ -1292,7 +1292,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VFO_DeclList &n)
 {
     INDENT;
     
-    os << "<VFO_DeclList position='" << n.get_location() << "'";
+    os << "<VFO_DeclList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1307,7 +1307,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const WhereClause &n)
 {
     INDENT;
     
-    os << "<WhereClause position='" << n.get_location() << "'";
+    os << "<WhereClause position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1321,7 +1321,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QName &n)
 {
   INDENT;
     
-  os << "<QName position='" << n.get_location() << "'";
+  os << "<QName position='" << n.get_location() << "'  " << &n;
 
   os << ">";
     
@@ -1335,7 +1335,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Wildcard &n)
 {
     INDENT;
     
-    os << "<Wildcard position='" << n.get_location() << "'";
+    os << "<Wildcard position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1351,7 +1351,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const exprnode &n)
 {
     INDENT;
     
-    os << "<exprnode position='" << n.get_location() << "'";
+    os << "<exprnode position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1366,7 +1366,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AdditiveExpr &n)
 {
     INDENT;
     
-    os << "<AdditiveExpr position='" << n.get_location() << "'";
+    os << "<AdditiveExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1381,7 +1381,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AndExpr &n)
 {
     INDENT;
     
-    os << "<AndExpr position='" << n.get_location() << "'";
+    os << "<AndExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1396,7 +1396,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AxisStep &n)
 {
     INDENT;
     
-    os << "<AxisStep position='" << n.get_location() << "'";
+    os << "<AxisStep position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1411,7 +1411,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CDataSection &n)
 {
     INDENT;
     
-    os << "<CDataSection position='" << n.get_location() << "'";
+    os << "<CDataSection position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1426,7 +1426,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CastExpr &n)
 {
     INDENT;
     
-    os << "<CastExpr position='" << n.get_location() << "'";
+    os << "<CastExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1441,7 +1441,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CastableExpr &n)
 {
     INDENT;
     
-    os << "<CastableExpr position='" << n.get_location() << "'";
+    os << "<CastableExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1456,7 +1456,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CommonContent &n)
 {
     INDENT;
     
-    os << "<CommonContent position='" << n.get_location() << "'";
+    os << "<CommonContent position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1507,7 +1507,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ComparisonExpr &n)
 {
     INDENT;
     
-    os << "<ComparisonExpr position='" << n.get_location() << "'";
+    os << "<ComparisonExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1522,7 +1522,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompAttrConstructor &n)
 {
     INDENT;
     
-    os << "<CompAttrConstructor position='" << n.get_location() << "'";
+    os << "<CompAttrConstructor position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1537,7 +1537,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompCommentConstructor &n)
 {
     INDENT;
     
-    os << "<CompCommentConstructor position='" << n.get_location() << "'";
+    os << "<CompCommentConstructor position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1552,7 +1552,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompDocConstructor &n)
 {
     INDENT;
     
-    os << "<CompDocConstructor position='" << n.get_location() << "'";
+    os << "<CompDocConstructor position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1567,7 +1567,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompElemConstructor &n)
 {
     INDENT;
     
-    os << "<CompElemConstructor position='" << n.get_location() << "'";
+    os << "<CompElemConstructor position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1582,7 +1582,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompPIConstructor &n)
 {
     INDENT;
     
-    os << "<CompPIConstructor position='" << n.get_location() << "'";
+    os << "<CompPIConstructor position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1597,7 +1597,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompTextConstructor &n)
 {
     INDENT;
     
-    os << "<CompTextConstructor position='" << n.get_location() << "'";
+    os << "<CompTextConstructor position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1612,7 +1612,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ContextItemExpr &n)
 {
     INDENT;
     
-    os << "<ContextItemExpr position='" << n.get_location() << "'";
+    os << "<ContextItemExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1627,7 +1627,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirCommentConstructor &n)
 {
     INDENT;
     
-    os << "<DirCommentConstructor position='" << n.get_location() << "'";
+    os << "<DirCommentConstructor position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1642,7 +1642,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirElemConstructor &n)
 {
     INDENT;
     
-    os << "<DirElemConstructor position='" << n.get_location() << "'";
+    os << "<DirElemConstructor position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1657,7 +1657,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirElemContent &n)
 {
     INDENT;
     
-    os << "<DirElemContent position='" << n.get_location() << "'";
+    os << "<DirElemContent position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1672,7 +1672,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirPIConstructor &n)
 {
     INDENT;
     
-    os << "<DirPIConstructor position='" << n.get_location() << "'";
+    os << "<DirPIConstructor position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1687,7 +1687,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const EnclosedExpr &n)
 {
     INDENT;
     
-    os << "<EnclosedExpr position='" << n.get_location() << "'";
+    os << "<EnclosedExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1702,7 +1702,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Expr &n)
 {
     INDENT;
     
-    os << "<Expr position='" << n.get_location() << "'";
+    os << "<Expr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1717,7 +1717,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Expr &n)
 // {
 //     INDENT;
 //     
-//     os << "<MainModule position='" << n.get_location() << "'";
+//     os << "<MainModule position='" << n.get_location() << "'  " << &n;
 // 
 //     os << ">";
 //     
@@ -1732,7 +1732,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ExtensionExpr &n)
 {
     INDENT;
     
-    os << "<ExtensionExpr position='" << n.get_location() << "'";
+    os << "<ExtensionExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1747,7 +1747,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FLWORExpr &n)
 {
     INDENT;
     
-    os << "<FLWORExpr position='" << n.get_location() << "'";
+    os << "<FLWORExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1762,7 +1762,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FilterExpr &n)
 {
     INDENT;
     
-    os << "<FilterExpr position='" << n.get_location() << "'";
+    os << "<FilterExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1777,7 +1777,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FunctionCall &n)
 {
     INDENT;
     
-    os << "<FunctionCall position='" << n.get_location() << "'";
+    os << "<FunctionCall position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1792,7 +1792,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const IfExpr &n)
 {
     INDENT;
     
-    os << "<IfExpr position='" << n.get_location() << "'";
+    os << "<IfExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1807,7 +1807,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const InstanceofExpr &n)
 {
     INDENT;
     
-    os << "<InstanceofExpr position='" << n.get_location() << "'";
+    os << "<InstanceofExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1822,7 +1822,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const IntersectExceptExpr &n)
 {
     INDENT;
     
-    os << "<IntersectExceptExpr position='" << n.get_location() << "'";
+    os << "<IntersectExceptExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1837,7 +1837,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const MultiplicativeExpr &n)
 {
     INDENT;
     
-    os << "<MultiplicativeExpr position='" << n.get_location() << "'";
+    os << "<MultiplicativeExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1852,7 +1852,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NumericLiteral &n)
 {
     INDENT;
     
-    os << "<NumericLiteral position='" << n.get_location() << "'";
+    os << "<NumericLiteral position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1867,7 +1867,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrExpr &n)
 {
     INDENT;
     
-    os << "<OrExpr position='" << n.get_location() << "'";
+    os << "<OrExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1882,7 +1882,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderedExpr &n)
 {
     INDENT;
     
-    os << "<OrderedExpr position='" << n.get_location() << "'";
+    os << "<OrderedExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1897,7 +1897,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ParenthesizedExpr &n)
 {
     INDENT;
     
-    os << "<ParenthesizedExpr position='" << n.get_location() << "'";
+    os << "<ParenthesizedExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1912,7 +1912,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const PathExpr &n)
 {
     INDENT;
     
-    os << "<PathExpr position='" << n.get_location() << "'";
+    os << "<PathExpr position='" << n.get_location() << "'  "  << &n;
 
     os << ">";
     
@@ -1927,7 +1927,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QuantifiedExpr &n)
 {
     INDENT;
     
-    os << "<QuantifiedExpr position='" << n.get_location() << "'";
+    os << "<QuantifiedExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1942,7 +1942,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QueryBody &n)
 {
     INDENT;
     
-    os << "<QueryBody position='" << n.get_location() << "'";
+    os << "<QueryBody position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1957,7 +1957,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const RangeExpr &n)
 {
     INDENT;
     
-    os << "<RangeExpr position='" << n.get_location() << "'";
+    os << "<RangeExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1972,7 +1972,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const RelativePathExpr &n)
 {
     INDENT;
     
-    os << "<RelativePathExpr position='" << n.get_location() << "'";
+    os << "<RelativePathExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -1987,7 +1987,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const StringLiteral &n)
 {
     INDENT;
     
-    os << "<StringLiteral position='" << n.get_location() << "'";
+    os << "<StringLiteral position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2002,7 +2002,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TreatExpr &n)
 {
     INDENT;
     
-    os << "<TreatExpr position='" << n.get_location() << "'";
+    os << "<TreatExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2017,7 +2017,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TypeswitchExpr &n)
 {
     INDENT;
     
-    os << "<TypeswitchExpr position='" << n.get_location() << "'";
+    os << "<TypeswitchExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2032,7 +2032,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const UnaryExpr &n)
 {
     INDENT;
     
-    os << "<UnaryExpr position='" << n.get_location() << "'";
+    os << "<UnaryExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2047,7 +2047,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const UnionExpr &n)
 {
     INDENT;
     
-    os << "<UnionExpr position='" << n.get_location() << "'";
+    os << "<UnionExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2062,7 +2062,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const UnorderedExpr &n)
 {
     INDENT;
     
-    os << "<UnorderedExpr position='" << n.get_location() << "'";
+    os << "<UnorderedExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2077,7 +2077,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ValidateExpr &n)
 {
     INDENT;
     
-    os << "<ValidateExpr position='" << n.get_location() << "'";
+    os << "<ValidateExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2092,7 +2092,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarRef &n)
 {
     INDENT;
     
-    os << "<VarRef position='" << n.get_location() << "'";
+    os << "<VarRef position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2108,7 +2108,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DeleteExpr &n)
 {
     INDENT;
     
-    os << "<DeleteExpr position='" << n.get_location() << "'";
+    os << "<DeleteExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2123,7 +2123,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const InsertExpr &n)
 {
     INDENT;
     
-    os << "<InsertExpr position='" << n.get_location() << "'";
+    os << "<InsertExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2138,7 +2138,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const RenameExpr &n)
 {
     INDENT;
     
-    os << "<RenameExpr position='" << n.get_location() << "'";
+    os << "<RenameExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2153,7 +2153,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ReplaceExpr &n)
 {
     INDENT;
     
-    os << "<ReplaceExpr position='" << n.get_location() << "'";
+    os << "<ReplaceExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2168,7 +2168,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const RevalidationDecl &n)
 {
     INDENT;
     
-    os << "<RevalidationDecl position='" << n.get_location() << "'";
+    os << "<RevalidationDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2183,7 +2183,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TransformExpr &n)
 {
     INDENT;
     
-    os << "<TransformExpr position='" << n.get_location() << "'";
+    os << "<TransformExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2198,7 +2198,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarNameList &n)
 {
     INDENT;
     
-    os << "<VarNameList position='" << n.get_location() << "'";
+    os << "<VarNameList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2214,7 +2214,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTAnd &n)
 {
     INDENT;
     
-    os << "<FTAnd position='" << n.get_location() << "'";
+    os << "<FTAnd position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2229,7 +2229,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTAnyallOption &n)
 {
     INDENT;
     
-    os << "<FTAnyallOption position='" << n.get_location() << "'";
+    os << "<FTAnyallOption position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2244,7 +2244,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTBigUnit &n)
 {
     INDENT;
     
-    os << "<FTBigUnit position='" << n.get_location() << "'";
+    os << "<FTBigUnit position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2259,7 +2259,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTCaseOption &n)
 {
     INDENT;
     
-    os << "<FTCaseOption position='" << n.get_location() << "'";
+    os << "<FTCaseOption position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2274,7 +2274,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTContainsExpr &n)
 {
     INDENT;
     
-    os << "<FTContainsExpr position='" << n.get_location() << "'";
+    os << "<FTContainsExpr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2289,7 +2289,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTContent &n)
 {
     INDENT;
     
-    os << "<FTContent position='" << n.get_location() << "'";
+    os << "<FTContent position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2304,7 +2304,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTDiacriticsOption &n)
 {
     INDENT;
     
-    os << "<FTDiacriticsOption position='" << n.get_location() << "'";
+    os << "<FTDiacriticsOption position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2319,7 +2319,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTDistance &n)
 {
     INDENT;
     
-    os << "<FTDistance position='" << n.get_location() << "'";
+    os << "<FTDistance position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2334,7 +2334,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTIgnoreOption &n)
 {
     INDENT;
     
-    os << "<FTIgnoreOption position='" << n.get_location() << "'";
+    os << "<FTIgnoreOption position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2349,7 +2349,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTInclExclStringLiteral &n)
 {
     INDENT;
     
-    os << "<FTInclExclStringLiteral position='" << n.get_location() << "'";
+    os << "<FTInclExclStringLiteral position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2364,7 +2364,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTInclExclStringLiteralList &n
 {
     INDENT;
     
-    os << "<FTInclExclStringLiteralList position='" << n.get_location() << "'";
+    os << "<FTInclExclStringLiteralList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2379,7 +2379,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTLanguageOption &n)
 {
     INDENT;
     
-    os << "<FTLanguageOption position='" << n.get_location() << "'";
+    os << "<FTLanguageOption position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2394,7 +2394,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTMatchOption &n)
 {
     INDENT;
     
-    os << "<FTMatchOption position='" << n.get_location() << "'";
+    os << "<FTMatchOption position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2409,7 +2409,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTMatchOptionProximityList &n)
 {
     INDENT;
     
-    os << "<FTMatchOptionProximityList position='" << n.get_location() << "'";
+    os << "<FTMatchOptionProximityList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2424,7 +2424,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTMildnot &n)
 {
     INDENT;
     
-    os << "<FTMildnot position='" << n.get_location() << "'";
+    os << "<FTMildnot position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2439,7 +2439,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTOptionDecl &n)
 {
     INDENT;
     
-    os << "<FTOptionDecl position='" << n.get_location() << "'";
+    os << "<FTOptionDecl position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2454,7 +2454,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTOr &n)
 {
     INDENT;
     
-    os << "<FTOr position='" << n.get_location() << "'";
+    os << "<FTOr position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2469,7 +2469,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTOrderedIndicator &n)
 {
     INDENT;
     
-    os << "<FTOrderedIndicator position='" << n.get_location() << "'";
+    os << "<FTOrderedIndicator position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2484,7 +2484,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTProximity &n)
 {
     INDENT;
     
-    os << "<FTProximity position='" << n.get_location() << "'";
+    os << "<FTProximity position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2499,7 +2499,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTRange &n)
 {
     INDENT;
     
-    os << "<FTRange position='" << n.get_location() << "'";
+    os << "<FTRange position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2514,7 +2514,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTRefOrList &n)
 {
     INDENT;
     
-    os << "<FTRefOrList position='" << n.get_location() << "'";
+    os << "<FTRefOrList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2529,7 +2529,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTScope &n)
 {
     INDENT;
     
-    os << "<FTScope position='" << n.get_location() << "'";
+    os << "<FTScope position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2544,7 +2544,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTScoreVar &n)
 {
     INDENT;
     
-    os << "<FTScoreVar position='" << n.get_location() << "'";
+    os << "<FTScoreVar position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2559,7 +2559,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTSelection &n)
 {
     INDENT;
     
-    os << "<FTSelection position='" << n.get_location() << "'";
+    os << "<FTSelection position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2574,7 +2574,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTStemOption &n)
 {
     INDENT;
     
-    os << "<FTStemOption position='" << n.get_location() << "'";
+    os << "<FTStemOption position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2589,7 +2589,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTStopwordOption &n)
 {
     INDENT;
     
-    os << "<FTStopwordOption position='" << n.get_location() << "'";
+    os << "<FTStopwordOption position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2604,7 +2604,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTStringLiteralList &n)
 {
     INDENT;
     
-    os << "<FTStringLiteralList position='" << n.get_location() << "'";
+    os << "<FTStringLiteralList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2619,7 +2619,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTThesaurusID &n)
 {
     INDENT;
     
-    os << "<FTThesaurusID position='" << n.get_location() << "'";
+    os << "<FTThesaurusID position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2634,7 +2634,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTThesaurusList &n)
 {
     INDENT;
     
-    os << "<FTThesaurusList position='" << n.get_location() << "'";
+    os << "<FTThesaurusList position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2649,7 +2649,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTThesaurusOption &n)
 {
     INDENT;
     
-    os << "<FTThesaurusOption position='" << n.get_location() << "'";
+    os << "<FTThesaurusOption position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2664,7 +2664,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTTimes &n)
 {
     INDENT;
     
-    os << "<FTTimes position='" << n.get_location() << "'";
+    os << "<FTTimes position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2679,7 +2679,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTUnaryNot &n)
 {
     INDENT;
     
-    os << "<FTUnaryNot position='" << n.get_location() << "'";
+    os << "<FTUnaryNot position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2694,7 +2694,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTUnit &n)
 {
     INDENT;
     
-    os << "<FTUnit position='" << n.get_location() << "'";
+    os << "<FTUnit position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2709,7 +2709,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTWildcardOption &n)
 {
     INDENT;
     
-    os << "<FTWildcardOption position='" << n.get_location() << "'";
+    os << "<FTWildcardOption position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2724,7 +2724,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTWindow &n)
 {
     INDENT;
     
-    os << "<FTWindow position='" << n.get_location() << "'";
+    os << "<FTWindow position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2739,7 +2739,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTWords &n)
 {
     INDENT;
     
-    os << "<FTWords position='" << n.get_location() << "'";
+    os << "<FTWords position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2754,7 +2754,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTWordsSelection &n)
 {
     INDENT;
     
-    os << "<FTWordsSelection position='" << n.get_location() << "'";
+    os << "<FTWordsSelection position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     
@@ -2769,7 +2769,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTWordsValue &n)
 {
     INDENT;
     
-    os << "<FTWordsValue position='" << n.get_location() << "'";
+    os << "<FTWordsValue position='" << n.get_location() << "'  " << &n;
 
     os << ">";
     

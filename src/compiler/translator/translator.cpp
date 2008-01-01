@@ -55,7 +55,8 @@ static void *no_state = (void *) new int;
 #define LAST_IDX_VAR "$$last-idx"
 
 
-class TranslatorImpl : public Translator {
+class TranslatorImpl : public Translator 
+{
 public:
   typedef rchandle<expr> expr_t;
   typedef rchandle<var_expr> var_expr_t;
@@ -64,28 +65,42 @@ public:
   friend Translator *make_translator (static_context *);
 
 protected:
-  uint32_t depth;
+  uint32_t                         depth;
 
-  static_context *sctx_p;
-  std::stack<expr_t> nodestack;
+  static_context                 * sctx_p;
+  std::stack<expr_t>               nodestack;
   std::stack<TypeSystem::xqtref_t> tstack;  // types stack
-  int tempvar_counter;
-  std::list<global_binding> global_vars;
+  int                              tempvar_counter;
+  std::list<global_binding>        global_vars;
+  const RelativePathExpr         * theRootRelPathExpr;
 
-  expr_t pop_nodestack() {
+  TranslatorImpl (static_context *sctx_p_)
+    :
+    depth (0), sctx_p (sctx_p_), tempvar_counter (0), theRootRelPathExpr(0)
+  {
+    yy::location loc;
+    var_expr *ctx_var = bind_var(loc, DOT_VAR, var_expr::context_var);
+  }
+
+
+  expr_t pop_nodestack() 
+  {
     ZORBA_ASSERT (! nodestack.empty());
     rchandle<expr> e_h = nodestack.top();
     nodestack.pop();
     return e_h;
   }
-  TypeSystem::xqtref_t pop_tstack() {
+
+  TypeSystem::xqtref_t pop_tstack() 
+  {
     ZORBA_ASSERT (! tstack.empty());
     TypeSystem::xqtref_t e_h = tstack.top();
     tstack.pop();
     return e_h;
   }
 
-  var_expr *bind_var (yy::location loc, string varname, var_expr::var_kind kind) {
+  var_expr *bind_var (yy::location loc, string varname, var_expr::var_kind kind)
+  {
     Item_t qname = sctx_p->lookup_qname ("", varname);
     var_expr *e = new var_expr (loc, kind, qname);
     sctx_p->bind_var (qname, e);
@@ -96,17 +111,14 @@ protected:
     fo_expr *e = new fo_expr (loc, LOOKUP_OPN ("concatenate"));
     return e;
   }
-  
-  TranslatorImpl (static_context *sctx_p_)
-    : depth (0), sctx_p (sctx_p_), tempvar_counter (0)
-  {
-    yy::location loc;
-    var_expr *ctx_var = bind_var(loc, DOT_VAR, var_expr::context_var);
-  }
 
   void push_scope ()
-  { sctx_p = new static_context (sctx_p); }
-  void pop_scope (int n = 1) { 
+  {
+    sctx_p = new static_context (sctx_p);
+  }
+
+  void pop_scope (int n = 1)
+  { 
     while (n-- > 0) {
       static_context *parent = (static_context *) sctx_p->get_parent ();
       delete sctx_p;
@@ -2386,16 +2398,18 @@ void *begin_visit(const PathExpr& v)
 {
   TRACE_VISIT ();
   rchandle<relpath_expr> rpe = NULL;
-  if (v.get_type() != path_leading_lone_slash) {
+  if (v.get_type() != path_leading_lone_slash)
+  {
     rpe = new relpath_expr(v.get_location());
     nodestack.push(NULL);
   }
   expr_t result = &*rpe;
 
-  if (v.get_type() != path_relative) {
+  if (v.get_type() != path_relative) 
+  {
     // Create fn:root(self::node()) expr
     rchandle<relpath_expr> ctx_rpe = new relpath_expr(v.get_location());
-    var_expr *ctx_var = static_cast<var_expr *> (sctx_p->lookup_var (DOT_VAR));
+    var_expr* ctx_var = static_cast<var_expr *> (sctx_p->lookup_var(DOT_VAR));
     ZORBA_ASSERT(ctx_var != NULL);
     ctx_rpe->add_back(ctx_var);
     rchandle<match_expr> me = new match_expr(v.get_location());
@@ -2415,6 +2429,7 @@ void *begin_visit(const PathExpr& v)
       result = &*rpe;
     }
   }
+
   if (v.get_type() == path_leading_slashslash)
   {
     rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
@@ -2424,6 +2439,7 @@ void *begin_visit(const PathExpr& v)
     ase->setTest(me);
     rpe->add_back(&*ase);
   }
+
   nodestack.push(&*result);
   return no_state;
 }
@@ -2436,9 +2452,12 @@ void end_visit(const PathExpr& v, void *visit_state)
   expr_t arg1 = pop_nodestack();
 
   relpath_expr *rpe = NULL;
-  if (arg1 == NULL || dynamic_cast<relpath_expr *>(&*arg2)) {
+  if (arg1 == NULL || dynamic_cast<relpath_expr *>(&*arg2))
+  {
     nodestack.push(wrap_in_dos_and_dupelim(arg2));
-  } else {
+  }
+  else
+  {
     relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
     ZORBA_ASSERT(rpe != NULL);
     rpe->add_back(arg2);
@@ -2448,9 +2467,19 @@ void end_visit(const PathExpr& v, void *visit_state)
   }
 }
 
-void *begin_visit(const RelativePathExpr& v)
+void* begin_visit(const RelativePathExpr& v)
 {
   TRACE_VISIT ();
+
+  if (theRootRelPathExpr == NULL)
+  {
+    theRootRelPathExpr = &v;
+    return (void*)(&v);
+  }
+
+  if (dynamic_cast<RelativePathExpr *>(v.get_relpath_expr().get_ptr()) == NULL)
+    theRootRelPathExpr = NULL;
+
   return no_state;
 }
 
@@ -2478,6 +2507,9 @@ void intermediate_visit(const RelativePathExpr& v, void *visit_state)
 void end_visit(const RelativePathExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+
+  if (theRootRelPathExpr == &v)
+    theRootRelPathExpr = NULL;
 
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
@@ -2526,6 +2558,7 @@ void end_visit(const AxisStep& v, void *visit_state)
   TRACE_VISIT_OUT ();
 }
 
+
 void pre_predicate_visit(const PredicateList& v, void *visit_state)
 {
   push_scope();
@@ -2542,6 +2575,7 @@ void pre_predicate_visit(const PredicateList& v, void *visit_state)
   nodestack.push(&*flwor);
 }
 
+
 static inline bool is_numeric_literal(expr *e)
 {
   const_expr *ce = dynamic_cast<const_expr *>(e);
@@ -2552,6 +2586,7 @@ static inline bool is_numeric_literal(expr *e)
   TypeSystem::xqtref_t itype = GENV_TYPESYSTEM.create_type(it->getType(), TypeSystem::QUANT_ONE);
   return GENV_TYPESYSTEM.is_subtype(*itype, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE);
 }
+
 
 void post_predicate_visit(const PredicateList& v, void *visit_state)
 {
@@ -2578,6 +2613,7 @@ void post_predicate_visit(const PredicateList& v, void *visit_state)
   nodestack.push(flwor);
   pop_scope();
 }
+
 
 void *begin_visit(const ForwardStep& v)
 {

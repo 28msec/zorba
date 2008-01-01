@@ -2772,16 +2772,30 @@ RelativePathExpr::~RelativePathExpr()
 }
 
 
-
-
-
 void RelativePathExpr::accept(parsenode_visitor& v) const 
-{ 
-  BEGIN_VISITOR ();
-  ACCEPT (step_expr_h);
-  v.intermediate_visit(*this, visitor_state);
-  ACCEPT (relpath_expr_h);
-  END_VISITOR ();
+{
+  void* visitor_state = v.begin_visit(*this);
+
+  if (visitor_state == NULL)
+  {
+    return;
+  }
+
+  // Skip this rpe if it is not the root of an rpe subtree and its left child
+  // is a dot expression.
+  else if (visitor_state != this &&
+           dynamic_cast<ContextItemExpr*>(step_expr_h.get_ptr()) != NULL)
+  {
+    ACCEPT (relpath_expr_h);
+  }
+
+  else
+  {
+    ACCEPT (step_expr_h);
+    v.intermediate_visit(*this, visitor_state);
+    ACCEPT (relpath_expr_h);
+    END_VISITOR ();
+  }
 }
 
 
