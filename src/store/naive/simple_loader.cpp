@@ -329,14 +329,16 @@ void XmlLoader::startElement(
       const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
       const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
 
+      if (prefix == NULL)
+        prefix = "";
+
       xqpStringStore_t pooledNs;
       store.getNamespacePool().insert(nsuri, pooledNs);
 
       bindings[i].first = prefix;
       bindings[i].second = pooledNs;
 
-      LOADER_TRACE("namespace decl: [" << (prefix != NULL ? prefix : "")
-                   << ":" << nsuri << "]");
+      LOADER_TRACE("namespace decl: [" << prefix  << ":" << nsuri << "]");
     }
 
     loader.theBindingsStack.push(elemNode->getNsContext());

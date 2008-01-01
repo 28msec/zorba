@@ -35,15 +35,22 @@ StringPool::StringPool(unsigned long size)
 ********************************************************************************/
 StringPool::~StringPool() 
 {
-#ifndef NDEBUG
+  unsigned long count = 0;
   unsigned long n = theHashTab.size();
   for (unsigned long i = 0; i < n; i++)
   {
     if (theHashTab[i].theString != NULL &&
         theHashTab[i].theString->getRefCount() != 1)
-      Assert(0);
+    {
+      std::cerr << "i = " << i << " String " << theHashTab[i].theString->c_str()
+                << " is still in the pool" << std::endl;
+      delete theHashTab[i].theString.get_ptr();
+      count++;
+    }
   }
-#endif
+
+  if (count > 0)
+    assert(0);
 }
 
 
