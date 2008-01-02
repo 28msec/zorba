@@ -28,6 +28,9 @@
 */
 
 %{
+
+#include "zorba/common.h"
+
 #ifdef _WIN32
 #pragma warning(disable: 4786)
 #endif
