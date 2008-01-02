@@ -48,7 +48,7 @@ namespace yy
 }
 
 /* First part of user declarations.  */
-#line 30 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 30 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)
@@ -97,8 +97,8 @@ static bool debug = false;
 
 
 
-/* Line 35 of lalr1.cc.  */
-#line 102 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 102 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -149,7 +149,7 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 125 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 125 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
 {
   xqp::parsenode * node;
   xqp::exprnode * expr;
@@ -158,8 +158,8 @@ namespace yy
 	double dval;
 	long double decval;
 }
-/* Line 35 of lalr1.cc.  */
-#line 163 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 163 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
