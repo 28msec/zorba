@@ -60,7 +60,7 @@ string errors_english::err_decode(enum error_code e)
 
     case XPST0083:  return "(Not currently used.)"; 
 
-    case XPTY0004:  return "During the static analysis phase, an expression is found to have a static type that is not appropriate for the context in which the expression occurs, or during the dynamic evaluation phase, the dynamic type of a value does not match a required type as specified by the matching rules in 2.5.4:   // SequenceType Matching."; 
+    case XPTY0004:  return "During the static analysis phase, an expression is found to have a static type that is not appropriate for the context in which the expression occurs, or during the dynamic evaluation phase, the dynamic type of a value does not match a required type as specified by the matching rules."; 
 
     case XPTY0006:  return "(Not currently used.)"; 
 
