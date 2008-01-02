@@ -83,22 +83,10 @@ namespace xqp {
 }
 
 
-#ifndef NDEBUG
-
-#ifdef PARSER_DEBUG
-static bool debug = true;
-#else
-static bool debug = false;
-#endif
-
-#else
-static bool debug = false;
-#endif
-
 
 
 /* Line 303 of lalr1.cc.  */
-#line 102 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 90 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -149,7 +137,7 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 125 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 113 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
 {
   xqp::parsenode * node;
   xqp::exprnode * expr;
@@ -159,7 +147,7 @@ namespace yy
 	long double decval;
 }
 /* Line 303 of lalr1.cc.  */
-#line 163 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 151 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

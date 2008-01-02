@@ -9,8 +9,11 @@
 
 
 /* zorba runtime configuration parameters */
-#define ZORBA_BATCHING_TYPE    ${ZORBA_BATCHING_TYPE}
+#define ZORBA_BATCHING_TYPE         ${ZORBA_BATCHING_TYPE}
 #define ZORBA_BATCHING_BATCHSIZE    ${ZORBA_BATCHING_BATCHSIZE}
+
+/* parser configuration */
+#define ZORBA_DEBUG_PARSER          ${ZOBA_DEBUG_PARSER}
 
 
 /* Platform checks */

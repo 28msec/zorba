@@ -65,27 +65,11 @@ public:
   virtual ~xquery_driver();
   
 public: // manipulators
-//  void set_trace_scanning() { trace_scanning = true; }
-//  void set_trace_parsing() { trace_parsing = true; }
-//  bool get_trace_scanning() const { return trace_scanning; }
-//  bool get_trace_parsing() const { return trace_parsing; }
-	int get_debug() const { return debug; }
-	void set_debug(int d) { debug = d; }
   xqp_string get_file() const { return filename; }
 	void set_expr(parsenode* e_p) { expr_p = e_p; }
 	parsenode* get_expr() const { return expr_p; }
 
 public:
-	/**
-	**	To encapsulate the coordination with the Flex scanner, it is useful to 
-	**	have two members function to open and close the scanning phase. 
-	**	members. 
-	*/
-  /*
-  void scan_begin();
-  void scan_end();
-  */
-  
 	/**
 	**	Parse the contents of a file
 	*/

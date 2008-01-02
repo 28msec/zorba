@@ -36,7 +36,7 @@
 #include "xquery_parser.hpp"
 
 /* User implementation prologue.  */
-#line 140 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 128 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parser/xquery_driver.h"
 
@@ -274,9 +274,9 @@ namespace yy
 
 
     /* User initialization code.  */
-    #line 99 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+    #line 87 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
 {
-  //@$.begin.filename = @$.end.filename = driver.filename.getStore();
+  yylloc.begin.filename = yylloc.end.filename = driver.filename.getStore();
 }
   /* Line 555 of yacc.c.  */
 #line 283 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.cpp"
@@ -395,53 +395,67 @@ namespace yy
     switch (yyn)
       {
 	  case 2:
-#line 740 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 728 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Module [main]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Module [main]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 			driver.set_expr((yyval.node));
 		;}
     break;
 
   case 3:
-#line 746 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 736 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Module [version.main]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Module [version.main]\n";
+#endif
 		;}
     break;
 
   case 4:
-#line 750 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 742 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Module [library]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Module [library]\n";
+#endif
 		;}
     break;
 
   case 5:
-#line 754 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 748 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Module [version.library]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Module [version.library]\n";
+#endif
 		;}
     break;
 
   case 6:
-#line 764 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 760 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VersionDecl [version]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VersionDecl [version]\n";
+#endif
 		;}
     break;
 
   case 7:
-#line 768 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 766 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VersionDecl [version.encoding]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VersionDecl [version.encoding]\n";
+#endif
 		;}
     break;
 
   case 8:
 #line 778 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "MainModule [prolog.querybody]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "MainModule [prolog.querybody]\n";
+#endif
 			(yyval.node) = new MainModule((yyloc),
 								static_cast<Prolog*>((yysemantic_stack_[(2) - (1)].node)),
 								static_cast<QueryBody*>((yysemantic_stack_[(2) - (2)].expr)));
@@ -449,9 +463,11 @@ namespace yy
     break;
 
   case 9:
-#line 786 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 788 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "MainModule [querybody]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "MainModule [querybody]\n";
+#endif
 			(yyval.node) = new MainModule((yyloc),
 								NULL,
 								static_cast<QueryBody*>((yysemantic_stack_[(1) - (1)].expr)));
@@ -459,9 +475,11 @@ namespace yy
     break;
 
   case 10:
-#line 799 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 803 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "LibraryModule [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "LibraryModule [ ]\n";
+#endif
 			(yyval.node) = new LibraryModule((yyloc),
 								static_cast<ModuleDecl*>((yysemantic_stack_[(2) - (1)].node)),
 								static_cast<Prolog*>((yysemantic_stack_[(2) - (2)].node)));
@@ -469,9 +487,11 @@ namespace yy
     break;
 
   case 11:
-#line 812 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 818 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ModuleDecl [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ModuleDecl [ ]\n";
+#endif
 			(yyval.node) = new ModuleDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval)), 
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (4)].sval)));
@@ -479,9 +499,11 @@ namespace yy
     break;
 
   case 12:
-#line 825 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 833 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Prolog [sind]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Prolog [sind]\n";
+#endif
 			(yyval.node) = new Prolog((yyloc),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(2) - (1)].node)),
 								NULL);
@@ -489,9 +511,11 @@ namespace yy
     break;
 
   case 13:
-#line 832 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 842 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Prolog [vfo]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Prolog [vfo]\n";
+#endif
 			(yyval.node) = new Prolog((yyloc),
 								NULL,
 								static_cast<VFO_DeclList*>((yysemantic_stack_[(2) - (1)].node)));
@@ -499,9 +523,11 @@ namespace yy
     break;
 
   case 14:
-#line 839 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 851 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Prolog [sind.vfo]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Prolog [sind.vfo]\n";
+#endif
 			(yyval.node) = new Prolog((yyloc),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(4) - (1)].node)),
 								static_cast<VFO_DeclList*>((yysemantic_stack_[(4) - (3)].node)));
@@ -509,9 +535,11 @@ namespace yy
     break;
 
   case 15:
-#line 852 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 866 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SIND_DeclList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SIND_DeclList [single]\n";
+#endif
 			SIND_DeclList* sindList_p = new SIND_DeclList((yyloc));
 			sindList_p->push_back((yysemantic_stack_[(1) - (1)].node));
 			(yyval.node) = sindList_p;
@@ -519,9 +547,11 @@ namespace yy
     break;
 
   case 16:
-#line 859 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 875 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SIND_DeclList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SIND_DeclList [list]\n";
+#endif
 			SIND_DeclList* sindList_p = static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (1)].node));
 			if (sindList_p) {
 				sindList_p->push_back((yysemantic_stack_[(3) - (3)].node));
@@ -531,9 +561,11 @@ namespace yy
     break;
 
   case 17:
-#line 874 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 892 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VFO_DeclList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VFO_DeclList [single]\n";
+#endif
 			VFO_DeclList* vfoList_p = new VFO_DeclList((yyloc));
 			vfoList_p->push_back((yysemantic_stack_[(1) - (1)].node));
 			(yyval.node) = vfoList_p;
@@ -541,9 +573,11 @@ namespace yy
     break;
 
   case 18:
-#line 881 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 901 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VFO_DeclList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VFO_DeclList [list]\n";
+#endif
 			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (1)].node));
 			if (vfoList_p) {
 				vfoList_p->push_back((yysemantic_stack_[(3) - (3)].node));
@@ -553,153 +587,191 @@ namespace yy
     break;
 
   case 19:
-#line 896 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 918 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SIND_Decl [setter]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SIND_Decl [setter]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 20:
-#line 901 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 925 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SIND_Decl [import]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SIND_Decl [import]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 21:
-#line 906 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 932 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SIND_Decl [namespace]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SIND_Decl [namespace]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 22:
-#line 911 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 939 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SIND_Decl [default namespace]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SIND_Decl [default namespace]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 23:
-#line 921 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 951 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VFO_Decl [var]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VFO_Decl [var]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 24:
-#line 926 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 958 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VFO_Decl [function]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VFO_Decl [function]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 25:
-#line 931 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 965 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VFO_Decl [option]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VFO_Decl [option]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 26:
-#line 938 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 974 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VFO_Decl [ftoption]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VFO_Decl [ftoption]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 27:
-#line 949 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 987 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Setter [boundary space]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Setter [boundary space]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 28:
-#line 954 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 994 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Setter [default collation]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Setter [default collation]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 29:
-#line 959 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1001 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Setter [base uri]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Setter [base uri]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 30:
-#line 964 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1008 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Setter [construction]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Setter [construction]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 31:
-#line 969 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1015 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Setter [ordering mode]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Setter [ordering mode]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 32:
-#line 974 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1022 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Setter [empty order]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Setter [empty order]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 33:
-#line 979 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1029 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Setter [copy namespaces]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Setter [copy namespaces]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 34:
-#line 986 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1038 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Setter [revalidation]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Setter [revalidation]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 35:
-#line 997 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1051 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Import [schema]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Import [schema]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 36:
-#line 1002 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1058 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Import [module]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Import [module]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 37:
-#line 1018 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1076 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NamespaceDecl [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NamespaceDecl [ ]\n";
+#endif
 			(yyval.node) = new NamespaceDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (4)].sval)));
@@ -707,27 +779,33 @@ namespace yy
     break;
 
   case 38:
-#line 1031 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1091 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "BoundarySpaceDecl [preserve]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "BoundarySpaceDecl [preserve]\n";
+#endif
 			(yyval.node) = new BoundarySpaceDecl((yyloc),
 								StaticQueryContext::preserve_space);
 		;}
     break;
 
   case 39:
-#line 1037 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1099 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "BoundarySpaceDecl [strip]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "BoundarySpaceDecl [strip]\n";
+#endif
 			(yyval.node) = new BoundarySpaceDecl((yyloc),
 								StaticQueryContext::strip_space);
 		;}
     break;
 
   case 40:
-#line 1049 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1113 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DefaultNamespaceDecl [element]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DefaultNamespaceDecl [element]\n";
+#endif
 			(yyval.node) = new DefaultNamespaceDecl((yyloc),
 								ns_element_default,
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
@@ -735,9 +813,11 @@ namespace yy
     break;
 
   case 41:
-#line 1056 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1122 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DefaultNamespaceDecl [function]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DefaultNamespaceDecl [function]\n";
+#endif
 			(yyval.node) = new DefaultNamespaceDecl((yyloc),
 								ns_function_default,
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
@@ -745,9 +825,11 @@ namespace yy
     break;
 
   case 42:
-#line 1069 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1137 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OptionDecl [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OptionDecl [ ]\n";
+#endif
 			(yyval.node) = new OptionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
@@ -755,54 +837,66 @@ namespace yy
     break;
 
   case 43:
-#line 1083 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1153 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTOptionDecl [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTOptionDecl [ ]\n";
+#endif
 			(yyval.node) = new FTOptionDecl((yyloc),
 								(yysemantic_stack_[(2) - (2)].node));
 		;}
     break;
 
   case 44:
-#line 1095 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1167 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderingDecl [ordered]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderingDecl [ordered]\n";
+#endif
 			(yyval.node) = new OrderingModeDecl((yyloc),
 								StaticQueryContext::ordered);
 		;}
     break;
 
   case 45:
-#line 1101 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1175 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderingDecl [unordered]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderingDecl [unordered]\n";
+#endif
 			(yyval.node) = new OrderingModeDecl((yyloc),
 								StaticQueryContext::unordered);
 		;}
     break;
 
   case 46:
-#line 1114 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1190 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "EmptyOrderDecl [empty greatest]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "EmptyOrderDecl [empty greatest]\n";
+#endif
 			(yyval.node) = new EmptyOrderDecl((yyloc),
 								StaticQueryContext::empty_greatest);
 		;}
     break;
 
   case 47:
-#line 1120 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1198 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "EmptyOrderDecl [empty least]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "EmptyOrderDecl [empty least]\n";
+#endif
 			(yyval.node) = new EmptyOrderDecl((yyloc),
 								StaticQueryContext::empty_least);
 		;}
     break;
 
   case 48:
-#line 1132 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1212 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CopyNamespacesDecl [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CopyNamespacesDecl [ ]\n";
+#endif
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
 								StaticQueryContext::preserve_ns,
 								StaticQueryContext::inherit_ns);
@@ -810,9 +904,11 @@ namespace yy
     break;
 
   case 49:
-#line 1139 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1221 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CopyNamespacesDecl [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CopyNamespacesDecl [ ]\n";
+#endif
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
 								StaticQueryContext::preserve_ns,
 								StaticQueryContext::no_inherit_ns);
@@ -820,9 +916,11 @@ namespace yy
     break;
 
   case 50:
-#line 1146 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1230 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CopyNamespacesDecl [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CopyNamespacesDecl [ ]\n";
+#endif
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
 								StaticQueryContext::no_preserve_ns,
 								StaticQueryContext::inherit_ns);
@@ -830,9 +928,11 @@ namespace yy
     break;
 
   case 51:
-#line 1153 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1239 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CopyNamespacesDecl [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CopyNamespacesDecl [ ]\n";
+#endif
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
 								StaticQueryContext::no_preserve_ns,
 								StaticQueryContext::no_inherit_ns);
@@ -840,27 +940,33 @@ namespace yy
     break;
 
   case 52:
-#line 1173 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1261 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DefaultCollationMode [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DefaultCollationMode [ ]\n";
+#endif
 			(yyval.node) = new DefaultCollationDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 53:
-#line 1185 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1275 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "BaseURIDecl [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "BaseURIDecl [ ]\n";
+#endif
 			(yyval.node) = new BaseURIDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 54:
-#line 1197 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1289 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SchemaImport [uri]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SchemaImport [uri]\n";
+#endif
 			(yyval.node) = new SchemaImport((yyloc),
 								NULL,
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
@@ -869,9 +975,11 @@ namespace yy
     break;
 
   case 55:
-#line 1205 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1299 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SchemaImport [prefix.uri]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SchemaImport [prefix.uri]\n";
+#endif
 			(yyval.node) = new SchemaImport((yyloc),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(3) - (2)].node)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)),
@@ -880,9 +988,11 @@ namespace yy
     break;
 
   case 56:
-#line 1213 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1309 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SchemaImport [uri.urilist]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SchemaImport [uri.urilist]\n";
+#endif
 			(yyval.node) = new SchemaImport((yyloc),
 								NULL,
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
@@ -891,9 +1001,11 @@ namespace yy
     break;
 
   case 57:
-#line 1221 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1319 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SchemaImport [prefix.uri.aturi]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SchemaImport [prefix.uri.aturi]\n";
+#endif
 			(yyval.node) = new SchemaImport((yyloc),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(5) - (2)].node)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (3)].sval)),
@@ -902,9 +1014,11 @@ namespace yy
     break;
 
   case 58:
-#line 1235 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1335 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "URILiteralList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "URILiteralList [single]\n";
+#endif
 			URILiteralList* uri_list_p = new URILiteralList((yyloc));
 			uri_list_p->push_back(driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 			(yyval.node) = uri_list_p;
@@ -912,9 +1026,11 @@ namespace yy
     break;
 
   case 59:
-#line 1242 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1344 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "URILiteralList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "URILiteralList [list]\n";
+#endif
 			URILiteralList* uri_list_p = dynamic_cast<URILiteralList*>((yysemantic_stack_[(3) - (1)].node));
 			if (uri_list_p) {
 				uri_list_p->push_back(driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
@@ -924,25 +1040,31 @@ namespace yy
     break;
 
   case 60:
-#line 1258 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1362 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SchemaPrefix [namespace]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SchemaPrefix [namespace]\n";
+#endif
 			(yyval.node) = new SchemaPrefix((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 61:
-#line 1263 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1369 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SchemaPrefix [default element]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SchemaPrefix [default element]\n";
+#endif
 			(yyval.node) = new SchemaPrefix((yyloc), true);
 		;}
     break;
 
   case 62:
-#line 1274 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1382 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ModuleImport [uri]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ModuleImport [uri]\n";
+#endif
 			(yyval.node) = new ModuleImport((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
 								NULL);
@@ -950,9 +1072,11 @@ namespace yy
     break;
 
   case 63:
-#line 1281 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1391 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ModuleImport [namespace.uri]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ModuleImport [namespace.uri]\n";
+#endif
 			(yyval.node) = new ModuleImport((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (3)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (5)].sval)),
@@ -961,9 +1085,11 @@ namespace yy
     break;
 
   case 64:
-#line 1289 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1401 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ModuleImport [uri.at_uri.list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ModuleImport [uri.at_uri.list]\n";
+#endif
 			(yyval.node) = new ModuleImport((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								dynamic_cast<URILiteralList*>((yysemantic_stack_[(4) - (4)].node)));
@@ -971,9 +1097,11 @@ namespace yy
     break;
 
   case 65:
-#line 1296 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1410 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ModuleImport [namespace.uri.at_uri.list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ModuleImport [namespace.uri.at_uri.list]\n";
+#endif
 			(yyval.node) = new ModuleImport((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (3)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (5)].sval)),
@@ -982,9 +1110,11 @@ namespace yy
     break;
 
   case 66:
-#line 1311 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1427 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarDecl [expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarDecl [expr]\n";
+#endif
 			(yyval.node) = new VarDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								NULL,
@@ -993,9 +1123,11 @@ namespace yy
     break;
 
   case 67:
-#line 1319 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1437 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarDecl [external]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarDecl [external]\n";
+#endif
 			(yyval.node) = new VarDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)),
 								NULL,
@@ -1004,9 +1136,11 @@ namespace yy
     break;
 
   case 68:
-#line 1327 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1447 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarDecl [type.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarDecl [type.expr]\n";
+#endif
 			(yyval.node) = new VarDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1015,9 +1149,11 @@ namespace yy
     break;
 
   case 69:
-#line 1335 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1457 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarDecl [type.external]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarDecl [type.external]\n";
+#endif
 			(yyval.node) = new VarDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (3)].node)),
@@ -1026,27 +1162,33 @@ namespace yy
     break;
 
   case 70:
-#line 1349 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1473 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ConstructionDecl [preserve]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ConstructionDecl [preserve]\n";
+#endif
 			(yyval.node) = new ConstructionDecl((yyloc),
 								StaticQueryContext::cons_preserve);
 		;}
     break;
 
   case 71:
-#line 1355 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1481 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ConstructionDecl [strip]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ConstructionDecl [strip]\n";
+#endif
 			(yyval.node) = new ConstructionDecl((yyloc),
 								StaticQueryContext::cons_strip);
 		;}
     break;
 
   case 72:
-#line 1367 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1495 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [external]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [external]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
 								NULL,NULL,NULL,
@@ -1055,9 +1197,11 @@ namespace yy
     break;
 
   case 73:
-#line 1375 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1505 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [expr]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
 								NULL,NULL,
@@ -1067,9 +1211,11 @@ namespace yy
     break;
 
   case 74:
-#line 1384 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1516 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [paramlist.external]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [paramlist.external]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1079,9 +1225,11 @@ namespace yy
     break;
 
   case 75:
-#line 1393 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1527 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [paramlist.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [paramlist.expr]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1092,9 +1240,11 @@ namespace yy
     break;
 
   case 76:
-#line 1403 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1539 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [as_type.external]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [as_type.external]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,
@@ -1105,9 +1255,11 @@ namespace yy
     break;
 
   case 77:
-#line 1413 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1551 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [as_type.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [as_type.expr]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,
@@ -1118,9 +1270,11 @@ namespace yy
     break;
 
   case 78:
-#line 1423 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1563 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [paramlist.as_type.external]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [paramlist.as_type.external]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (3)].node)),
@@ -1131,9 +1285,11 @@ namespace yy
     break;
 
   case 79:
-#line 1433 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1575 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [paramlist.as_type.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [paramlist.as_type.expr]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (3)].node)),
@@ -1144,9 +1300,11 @@ namespace yy
     break;
 
   case 80:
-#line 1443 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1587 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [(update) external]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [(update) external]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
 								NULL,NULL,NULL,
@@ -1155,9 +1313,11 @@ namespace yy
     break;
 
   case 81:
-#line 1451 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1597 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [(update) expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [(update) expr]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
 								NULL,NULL,
@@ -1167,9 +1327,11 @@ namespace yy
     break;
 
   case 82:
-#line 1460 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1608 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [(update) paramlist.external]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [(update) paramlist.external]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1179,9 +1341,11 @@ namespace yy
     break;
 
   case 83:
-#line 1469 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1619 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [(update) paramlist.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [(update) paramlist.expr]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1192,9 +1356,11 @@ namespace yy
     break;
 
   case 84:
-#line 1479 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1631 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [(update) as_type.external]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [(update) as_type.external]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,
@@ -1205,9 +1371,11 @@ namespace yy
     break;
 
   case 85:
-#line 1489 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1643 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [(update) as_type.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [(update) as_type.expr]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,
@@ -1218,9 +1386,11 @@ namespace yy
     break;
 
   case 86:
-#line 1499 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1655 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (3)].node)),
@@ -1231,9 +1401,11 @@ namespace yy
     break;
 
   case 87:
-#line 1509 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1667 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
+#endif
 			(yyval.node) = new FunctionDecl((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (3)].node)),
@@ -1244,9 +1416,11 @@ namespace yy
     break;
 
   case 88:
-#line 1525 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1685 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ParamList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ParamList [single]\n";
+#endif
 			ParamList* plist_p = new ParamList((yyloc));
 			if (plist_p) {
 				plist_p->push_back(dynamic_cast<Param*>((yysemantic_stack_[(1) - (1)].node)));
@@ -1256,9 +1430,11 @@ namespace yy
     break;
 
   case 89:
-#line 1534 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1696 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ParamList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ParamList [list]\n";
+#endif
 			ParamList* plist_p = dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (1)].node));
 			if (plist_p) {
 				plist_p->push_back(dynamic_cast<Param*>((yysemantic_stack_[(3) - (3)].node)));
@@ -1268,9 +1444,11 @@ namespace yy
     break;
 
   case 90:
-#line 1549 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1713 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Param [varname]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Param [varname]\n";
+#endif
 			(yyval.node) = new Param((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
 								NULL);
@@ -1278,9 +1456,11 @@ namespace yy
     break;
 
   case 91:
-#line 1556 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1722 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Param [varname.type]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Param [varname.type]\n";
+#endif
 			(yyval.node) = new Param((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(3) - (3)].node)));
@@ -1288,27 +1468,33 @@ namespace yy
     break;
 
   case 92:
-#line 1569 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1737 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "EnclosedExpr [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "EnclosedExpr [ ]\n";
+#endif
 			(yyval.expr) = new EnclosedExpr((yyloc),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 93:
-#line 1581 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1751 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QueryBody [expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QueryBody [expr]\n";
+#endif
 			(yyval.expr) = new QueryBody((yyloc),
 								(yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 94:
-#line 1593 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1765 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Expr [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Expr [single]\n";
+#endif
 			Expr* expr_p = new Expr((yyloc));
 			expr_p->push_back((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = expr_p;
@@ -1316,9 +1502,11 @@ namespace yy
     break;
 
   case 95:
-#line 1600 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1774 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Expr [expr.single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Expr [expr.single]\n";
+#endif
 			Expr* expr_p = dynamic_cast<Expr*>((yysemantic_stack_[(3) - (1)].expr));
 			if (expr_p) expr_p->push_back((yysemantic_stack_[(3) - (3)].expr));
 			(yyval.expr) = (yysemantic_stack_[(3) - (1)].expr);
@@ -1326,89 +1514,111 @@ namespace yy
     break;
 
   case 96:
-#line 1613 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1789 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExprSingle [FLWORExpr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExprSingle [FLWORExpr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 97:
-#line 1618 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1796 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExprSingle [QuantifiedExpr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExprSingle [QuantifiedExpr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 98:
-#line 1623 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1803 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExprSingle [TypeswitchExpr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExprSingle [TypeswitchExpr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 99:
-#line 1628 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1810 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExprSingle [IfExpr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExprSingle [IfExpr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 100:
-#line 1633 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1817 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExprSingle [OrExpr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExprSingle [OrExpr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 101:
-#line 1640 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1826 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExprSingle [InsertExpr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExprSingle [InsertExpr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 102:
-#line 1645 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1833 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExprSingle [DeleteExpr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExprSingle [DeleteExpr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 103:
-#line 1650 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1840 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExprSingle [RenameExpr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExprSingle [RenameExpr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 104:
-#line 1655 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1847 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExprSingle [ReplaceExpr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExprSingle [ReplaceExpr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 105:
-#line 1660 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1854 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExprSingle [TransformExpr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExprSingle [TransformExpr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 106:
-#line 1671 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1867 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FLWORExpr [return]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FLWORExpr [return]\n";
+#endif
 			(yyval.expr) = new FLWORExpr((yyloc),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(3) - (1)].node)),
 								NULL,NULL,
@@ -1417,9 +1627,11 @@ namespace yy
     break;
 
   case 107:
-#line 1679 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1877 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FLWORExpr [where.return]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FLWORExpr [where.return]\n";
+#endif
 			(yyval.expr) = new FLWORExpr((yyloc),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(4) - (1)].node)),
 								dynamic_cast<WhereClause*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1429,9 +1641,11 @@ namespace yy
     break;
 
   case 108:
-#line 1688 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1888 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FLWORExpr [orderby.return]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FLWORExpr [orderby.return]\n";
+#endif
 			(yyval.expr) = new FLWORExpr((yyloc),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(4) - (1)].node)),
 								NULL,
@@ -1441,9 +1655,11 @@ namespace yy
     break;
 
   case 109:
-#line 1697 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1899 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FLWORExpr [where.orderby.return]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FLWORExpr [where.orderby.return]\n";
+#endif
 			(yyval.expr) = new FLWORExpr((yyloc),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(5) - (1)].node)),
 								dynamic_cast<WhereClause*>((yysemantic_stack_[(5) - (2)].node)),
@@ -1453,9 +1669,11 @@ namespace yy
     break;
 
   case 110:
-#line 1712 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1916 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForLetClauseList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForLetClauseList [single]\n";
+#endif
 			ForLetClauseList* flc_list_p = new ForLetClauseList((yyloc));
 			flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = flc_list_p;
@@ -1463,9 +1681,11 @@ namespace yy
     break;
 
   case 111:
-#line 1719 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1925 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForLetClauseList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForLetClauseList [list]\n";
+#endif
 			ForLetClauseList* flc_list_p = dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(2) - (1)].node));
 			if (flc_list_p) flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ((yysemantic_stack_[(2) - (2)].node)));
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
@@ -1473,34 +1693,42 @@ namespace yy
     break;
 
   case 112:
-#line 1732 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1940 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForLetClause [for]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForLetClause [for]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 113:
-#line 1737 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1947 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForLetClause [let]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForLetClause [let]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 114:
-#line 1748 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1960 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForClause [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForClause [ ]\n";
+#endif
 			(yyval.node) = new ForClause((yyloc),
 								dynamic_cast<VarInDeclList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 115:
-#line 1760 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1974 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarInDeclList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarInDeclList [single]\n";
+#endif
 			VarInDeclList* vardecl_list_p = new VarInDeclList((yyloc));
 			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = vardecl_list_p;
@@ -1508,9 +1736,11 @@ namespace yy
     break;
 
   case 116:
-#line 1767 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1983 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarInDeclList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarInDeclList [list]\n";
+#endif
 			VarInDeclList* vardecl_list_p = dynamic_cast<VarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vardecl_list_p) {
 				vardecl_list_p->push_back(dynamic_cast<VarInDecl*>((yysemantic_stack_[(4) - (4)].node)));
@@ -1520,9 +1750,11 @@ namespace yy
     break;
 
   case 117:
-#line 1782 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2000 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarInDecl [in]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarInDecl [in]\n";
+#endif
 			(yyval.node) = new VarInDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
 								NULL,NULL,NULL,
@@ -1531,9 +1763,11 @@ namespace yy
     break;
 
   case 118:
-#line 1790 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2010 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarInDecl [type.in]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarInDecl [type.in]\n";
+#endif
 			(yyval.node) = new VarInDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1543,9 +1777,11 @@ namespace yy
     break;
 
   case 119:
-#line 1799 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2021 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarInDecl [posvar.in]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarInDecl [posvar.in]\n";
+#endif
 			(yyval.node) = new VarInDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								NULL,
@@ -1556,9 +1792,11 @@ namespace yy
     break;
 
   case 120:
-#line 1809 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2033 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarInDecl [type.posvar.in]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarInDecl [type.posvar.in]\n";
+#endif
 			(yyval.node) = new VarInDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (2)].node)),
@@ -1569,9 +1807,11 @@ namespace yy
     break;
 
   case 121:
-#line 1820 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2046 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarInDecl [scorevar.in]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarInDecl [scorevar.in]\n";
+#endif
 			(yyval.node) = new VarInDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								NULL,NULL,
@@ -1581,9 +1821,11 @@ namespace yy
     break;
 
   case 122:
-#line 1829 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2057 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarInDecl [type.scorevar.in]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarInDecl [type.scorevar.in]\n";
+#endif
 			(yyval.node) = new VarInDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (2)].node)),
@@ -1594,9 +1836,11 @@ namespace yy
     break;
 
   case 123:
-#line 1839 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2069 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarInDecl [posvar.scorevar.in]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarInDecl [posvar.scorevar.in]\n";
+#endif
 			(yyval.node) = new VarInDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								NULL,
@@ -1607,9 +1851,11 @@ namespace yy
     break;
 
   case 124:
-#line 1849 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2081 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarInDecl [type.posvar.scorevar.in]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarInDecl [type.posvar.scorevar.in]\n";
+#endif
 			(yyval.node) = new VarInDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(6) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(6) - (2)].node)),
@@ -1620,27 +1866,33 @@ namespace yy
     break;
 
   case 125:
-#line 1865 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2099 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PositionalVar [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PositionalVar [ ]\n";
+#endif
 			(yyval.node) = new PositionalVar((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 126:
-#line 1878 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2114 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTScoreVar [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTScoreVar [ ]\n";
+#endif
 			(yyval.node) = new FTScoreVar((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 127:
-#line 1890 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2128 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "LetClause [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "LetClause [ ]\n";
+#endif
 			(yyval.node) = new LetClause((yyloc),
 								dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(2) - (2)].node)));
 			
@@ -1648,9 +1900,11 @@ namespace yy
     break;
 
   case 128:
-#line 1903 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2143 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarGetsDeclList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarGetsDeclList [single]\n";
+#endif
 			VarGetsDeclList* vgdl_p = new VarGetsDeclList((yyloc));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = vgdl_p;
@@ -1658,9 +1912,11 @@ namespace yy
     break;
 
   case 129:
-#line 1910 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2152 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarGetsDeclList [list.single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarGetsDeclList [list.single]\n";
+#endif
 			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
 			if (vgdl_p) {
 				vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(4) - (4)].node)));
@@ -1670,9 +1926,11 @@ namespace yy
     break;
 
   case 130:
-#line 1925 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2169 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarGetsDecl [gets]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarGetsDecl [gets]\n";
+#endif
 			(yyval.node) = new VarGetsDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
 								NULL,
@@ -1682,9 +1940,11 @@ namespace yy
     break;
 
   case 131:
-#line 1934 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2180 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarGetsDecl [type.gets]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarGetsDecl [type.gets]\n";
+#endif
 			(yyval.node) = new VarGetsDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1694,9 +1954,11 @@ namespace yy
     break;
 
   case 132:
-#line 1944 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2192 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarGetsDecl [scorevar.gets]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarGetsDecl [scorevar.gets]\n";
+#endif
 			(yyval.node) = new VarGetsDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								NULL,
@@ -1706,9 +1968,11 @@ namespace yy
     break;
 
   case 133:
-#line 1953 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2203 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarGetsDecl [type.scorevar.gets]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarGetsDecl [type.scorevar.gets]\n";
+#endif
 			(yyval.node) = new VarGetsDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (2)].node)),
@@ -1718,27 +1982,33 @@ namespace yy
     break;
 
   case 134:
-#line 1969 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2221 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "WhereClause [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "WhereClause [ ]\n";
+#endif
 			(yyval.node) = new WhereClause((yyloc),
 								(yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 135:
-#line 1981 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2235 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderByClause [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderByClause [ ]\n";
+#endif
 			(yyval.node) = new OrderByClause((yyloc),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 136:
-#line 1987 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2243 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderByClause [stable]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderByClause [stable]\n";
+#endif
 			(yyval.node) = new OrderByClause((yyloc),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(2) - (2)].node)),
 								true);
@@ -1746,9 +2016,11 @@ namespace yy
     break;
 
   case 137:
-#line 2000 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2258 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderSpecList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderSpecList [single]\n";
+#endif
 			OrderSpecList* osl_p = new OrderSpecList((yyloc));
 			osl_p->push_back(dynamic_cast<OrderSpec*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = osl_p;
@@ -1756,9 +2028,11 @@ namespace yy
     break;
 
   case 138:
-#line 2007 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2267 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderSpecList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderSpecList [list]\n";
+#endif
 			OrderSpecList* osl_p = dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (1)].node));
 			if (osl_p) {
 				osl_p->push_back(dynamic_cast<OrderSpec*>((yysemantic_stack_[(3) - (3)].node)));
@@ -1768,9 +2042,11 @@ namespace yy
     break;
 
   case 139:
-#line 2022 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2284 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderSpec [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderSpec [single]\n";
+#endif
 			(yyval.node) = new OrderSpec((yyloc),
 								(yysemantic_stack_[(1) - (1)].expr),
 								NULL);
@@ -1778,9 +2054,11 @@ namespace yy
     break;
 
   case 140:
-#line 2029 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2293 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderSpec [single.modifier]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderSpec [single.modifier]\n";
+#endif
 			(yyval.node) = new OrderSpec((yyloc),
 								(yysemantic_stack_[(2) - (1)].expr),
 								dynamic_cast<OrderModifier*>((yysemantic_stack_[(2) - (2)].node)));
@@ -1788,9 +2066,11 @@ namespace yy
     break;
 
   case 141:
-#line 2042 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2308 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderModifier [dir]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderModifier [dir]\n";
+#endif
 			(yyval.node) = new OrderModifier((yyloc),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL,
@@ -1799,9 +2079,11 @@ namespace yy
     break;
 
   case 142:
-#line 2050 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2318 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderModifier [empty]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderModifier [empty]\n";
+#endif
 			(yyval.node) = new OrderModifier((yyloc),
 								NULL,
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(1) - (1)].node)),
@@ -1810,9 +2092,11 @@ namespace yy
     break;
 
   case 143:
-#line 2058 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2328 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderModifier [collation]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderModifier [collation]\n";
+#endif
 			(yyval.node) = new OrderModifier((yyloc),
 								NULL,
 								NULL,
@@ -1821,9 +2105,11 @@ namespace yy
     break;
 
   case 144:
-#line 2066 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2338 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderModifier [dir.empty]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderModifier [dir.empty]\n";
+#endif
 			(yyval.node) = new OrderModifier((yyloc),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(2) - (2)].node)),
@@ -1832,9 +2118,11 @@ namespace yy
     break;
 
   case 145:
-#line 2074 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2348 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderModifier [dir.collation]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderModifier [dir.collation]\n";
+#endif
 			(yyval.node) = new OrderModifier((yyloc),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
 								NULL,
@@ -1843,9 +2131,11 @@ namespace yy
     break;
 
   case 146:
-#line 2082 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2358 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderModifier [empty.collation]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderModifier [empty.collation]\n";
+#endif
 			(yyval.node) = new OrderModifier((yyloc),
 								NULL,
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(2) - (1)].node)),
@@ -1854,9 +2144,11 @@ namespace yy
     break;
 
   case 147:
-#line 2090 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2368 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderModifier [dir.empty.collation]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderModifier [dir.empty.collation]\n";
+#endif
 			(yyval.node) = new OrderModifier((yyloc),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(3) - (1)].node)),
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(3) - (2)].node)),
@@ -1865,52 +2157,64 @@ namespace yy
     break;
 
   case 148:
-#line 2104 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2384 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderDirSpec [ascending]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderDirSpec [ascending]\n";
+#endif
 			(yyval.node) = new OrderDirSpec((yyloc), dir_ascending);
 		;}
     break;
 
   case 149:
-#line 2109 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2391 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderDirSpec [descending]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderDirSpec [descending]\n";
+#endif
 			(yyval.node) = new OrderDirSpec((yyloc), dir_descending);
 		;}
     break;
 
   case 150:
-#line 2120 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2404 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderEmptySpec [greatest]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderEmptySpec [greatest]\n";
+#endif
 			(yyval.node) = new OrderEmptySpec((yyloc),
 								StaticQueryContext::empty_greatest);
 		;}
     break;
 
   case 151:
-#line 2126 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2412 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderEmptySpec [least]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderEmptySpec [least]\n";
+#endif
 			(yyval.node) = new OrderEmptySpec((yyloc),
 								StaticQueryContext::empty_least);
 		;}
     break;
 
   case 152:
-#line 2138 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2426 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderCollationSpec [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderCollationSpec [ ]\n";
+#endif
 			(yyval.node) = new OrderCollationSpec((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 153:
-#line 2150 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2440 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QuantifiedExpr [some]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QuantifiedExpr [some]\n";
+#endif
 			(yyval.expr) = new QuantifiedExpr((yyloc),
 								quant_some,
 								dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1919,9 +2223,11 @@ namespace yy
     break;
 
   case 154:
-#line 2158 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2450 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QuantifiedExpr [every]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QuantifiedExpr [every]\n";
+#endif
 			(yyval.expr) = new QuantifiedExpr((yyloc),
 								quant_every,
 								dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1930,9 +2236,11 @@ namespace yy
     break;
 
   case 155:
-#line 2172 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2466 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QVarInDeclList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QVarInDeclList [single]\n";
+#endif
 			QVarInDeclList* qvid_list_p = new QVarInDeclList((yyloc));
 			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = qvid_list_p;
@@ -1941,9 +2249,11 @@ namespace yy
     break;
 
   case 156:
-#line 2180 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2476 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QVarInDeclList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QVarInDeclList [list]\n";
+#endif
 			QVarInDeclList* qvid_list_p = dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(3) - (1)].node));
 			if (qvid_list_p) {
 				qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(3) - (3)].node)));
@@ -1953,9 +2263,11 @@ namespace yy
     break;
 
   case 157:
-#line 2195 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2493 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QVarInDecl [in]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QVarInDecl [in]\n";
+#endif
 			(yyval.node) = new QVarInDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -1963,9 +2275,11 @@ namespace yy
     break;
 
   case 158:
-#line 2202 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2502 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QVarInDecl [type.in]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QVarInDecl [type.in]\n";
+#endif
 			(yyval.node) = new QVarInDecl((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1974,9 +2288,11 @@ namespace yy
     break;
 
   case 159:
-#line 2216 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2518 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "TypeswitchExpr [cases.default.return]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "TypeswitchExpr [cases.default.return]\n";
+#endif
 			(yyval.expr) = new TypeswitchExpr((yyloc),
 								(yysemantic_stack_[(7) - (2)].expr),
 								dynamic_cast<CaseClauseList*>((yysemantic_stack_[(7) - (4)].node)),
@@ -1985,9 +2301,11 @@ namespace yy
     break;
 
   case 160:
-#line 2224 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2528 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "TypeswitchExpr [cases.default.varname.return]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "TypeswitchExpr [cases.default.varname.return]\n";
+#endif
 			(yyval.expr) = new TypeswitchExpr((yyloc),
 								(yysemantic_stack_[(9) - (2)].expr),
 								dynamic_cast<CaseClauseList*>((yysemantic_stack_[(9) - (4)].node)),
@@ -1997,9 +2315,11 @@ namespace yy
     break;
 
   case 161:
-#line 2239 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2545 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CaseClauseList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CaseClauseList [single]\n";
+#endif
 			CaseClauseList* cc_list_p = new CaseClauseList((yyloc));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = cc_list_p;
@@ -2007,9 +2327,11 @@ namespace yy
     break;
 
   case 162:
-#line 2246 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2554 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CaseClauseList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CaseClauseList [list]\n";
+#endif
 			CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
@@ -2017,9 +2339,11 @@ namespace yy
     break;
 
   case 163:
-#line 2259 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2569 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CaseClause [case.return]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CaseClause [case.return]\n";
+#endif
 			(yyval.node) = new CaseClause((yyloc),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (2)].node)),
 								(yysemantic_stack_[(4) - (4)].expr));
@@ -2027,9 +2351,11 @@ namespace yy
     break;
 
   case 164:
-#line 2266 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2578 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CaseClause [case.as.return]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CaseClause [case.as.return]\n";
+#endif
 			(yyval.node) = new CaseClause((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (3)].sval)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (5)].node)),
@@ -2038,61 +2364,75 @@ namespace yy
     break;
 
   case 165:
-#line 2280 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2594 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "IfExpr [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "IfExpr [ ]\n";
+#endif
 			(yyval.expr) = new IfExpr((yyloc),
 								(yysemantic_stack_[(7) - (2)].expr), (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr));
 		;}
     break;
 
   case 166:
-#line 2292 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2608 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrExpr [and]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrExpr [and]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 167:
-#line 2297 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2615 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrExpr [or.and]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrExpr [or.and]\n";
+#endif
 			(yyval.expr) = new OrExpr((yyloc),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 168:
-#line 2309 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2629 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AndExpr [comp]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AndExpr [comp]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 169:
-#line 2314 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2636 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AndExpr [and.comp]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AndExpr [and.comp]\n";
+#endif
 			(yyval.expr) = new AndExpr((yyloc),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 170:
-#line 2334 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2658 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ComparisonExpr [ftcontains]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ComparisonExpr [ftcontains]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 171:
-#line 2339 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2665 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
-			if (debug) cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
+#endif
 			(yyval.expr) = new ComparisonExpr((yyloc),
 								dynamic_cast<ValueComp*>((yysemantic_stack_[(3) - (2)].node)),
 								(yysemantic_stack_[(3) - (1)].expr),
@@ -2101,10 +2441,12 @@ namespace yy
     break;
 
   case 172:
-#line 2348 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2676 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
-			if (debug) cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
+#endif
 			(yyval.expr) = new ComparisonExpr((yyloc),
 								dynamic_cast<GeneralComp*>((yysemantic_stack_[(3) - (2)].node)),
 								(yysemantic_stack_[(3) - (1)].expr),
@@ -2113,10 +2455,12 @@ namespace yy
     break;
 
   case 173:
-#line 2357 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2687 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "is" | "<<" | ">>" */
-			if (debug) cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
+#endif
 			(yyval.expr) = new ComparisonExpr((yyloc),
 								dynamic_cast<NodeComp*>((yysemantic_stack_[(3) - (2)].node)),
 								(yysemantic_stack_[(3) - (1)].expr),
@@ -2125,17 +2469,21 @@ namespace yy
     break;
 
   case 174:
-#line 2372 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2704 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTContainsExpr [range]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTContainsExpr [range]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 175:
-#line 2377 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2711 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTContainsExpr [range.ftselect]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTContainsExpr [range.ftselect]\n";
+#endif
 			(yyval.expr) = new FTContainsExpr((yyloc),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<FTSelection*>((yysemantic_stack_[(3) - (3)].node)),
@@ -2144,9 +2492,11 @@ namespace yy
     break;
 
   case 176:
-#line 2385 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2721 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTContainsExpr [range.ftselect.ftignore]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTContainsExpr [range.ftselect.ftignore]\n";
+#endif
 			(yyval.expr) = new FTContainsExpr((yyloc),
 								(yysemantic_stack_[(4) - (1)].expr),
 								dynamic_cast<FTSelection*>((yysemantic_stack_[(4) - (3)].node)),
@@ -2155,147 +2505,183 @@ namespace yy
     break;
 
   case 177:
-#line 2399 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2737 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "RangeExpr [add]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "RangeExpr [add]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 178:
-#line 2404 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2744 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "RangeExpr [add.to.add]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "RangeExpr [add.to.add]\n";
+#endif
 			(yyval.expr) = new RangeExpr((yyloc),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 179:
-#line 2416 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2758 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AdditiveExpr [mult]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AdditiveExpr [mult]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 180:
-#line 2421 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2765 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AdditiveExpr [mult+mult]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AdditiveExpr [mult+mult]\n";
+#endif
 			(yyval.expr) = new AdditiveExpr((yyloc), op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 181:
-#line 2426 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2772 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AdditiveExpr [mult-mult]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AdditiveExpr [mult-mult]\n";
+#endif
 			(yyval.expr) = new AdditiveExpr((yyloc), op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 182:
-#line 2437 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2785 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "MultiplicativeExpr [union]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "MultiplicativeExpr [union]\n";
+#endif
 		;}
     break;
 
   case 183:
-#line 2441 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2791 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "MultiplicativeExpr [mult*union]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "MultiplicativeExpr [mult*union]\n";
+#endif
 			(yyval.expr) = new MultiplicativeExpr((yyloc), op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 184:
-#line 2446 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2798 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "MultiplicativeExpr [mult.div.union]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "MultiplicativeExpr [mult.div.union]\n";
+#endif
 			(yyval.expr) = new MultiplicativeExpr((yyloc), op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 185:
-#line 2451 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2805 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "MultiplicativeExpr [mult.idiv.union]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "MultiplicativeExpr [mult.idiv.union]\n";
+#endif
 			(yyval.expr) = new MultiplicativeExpr((yyloc), op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 186:
-#line 2456 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2812 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "MultiplicativeExpr [mult.mod.union]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "MultiplicativeExpr [mult.mod.union]\n";
+#endif
 			(yyval.expr) = new MultiplicativeExpr((yyloc), op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 187:
-#line 2467 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2825 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "UnionExpr [interexcept]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "UnionExpr [interexcept]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 188:
-#line 2472 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2832 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "UnionExpr [union.union.interexcept]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "UnionExpr [union.union.interexcept]\n";
+#endif
 			(yyval.expr) = new UnionExpr((yyloc),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 189:
-#line 2478 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2840 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "UnionExpr [union|interexcept]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "UnionExpr [union|interexcept]\n";
+#endif
 			(yyval.expr) = new UnionExpr((yyloc),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 190:
-#line 2490 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2854 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "IntersectExceptExpr [instanceof]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "IntersectExceptExpr [instanceof]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 191:
-#line 2495 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2861 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
+#endif
 			(yyval.expr) = new IntersectExceptExpr((yyloc), op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 192:
-#line 2500 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2868 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
+#endif
 			(yyval.expr) = new IntersectExceptExpr((yyloc), op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 193:
-#line 2511 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2881 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "InstanceofExpr [treat]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InstanceofExpr [treat]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 194:
-#line 2516 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2888 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "InstanceofExpr [treat.seqtype]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InstanceofExpr [treat.seqtype]\n";
+#endif
 			(yyval.expr) = new InstanceofExpr((yyloc),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2303,17 +2689,21 @@ namespace yy
     break;
 
   case 195:
-#line 2529 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2903 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "TreatExpr [castable]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "TreatExpr [castable]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 196:
-#line 2534 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2910 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "TreatExpr [castable.seqtype]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "TreatExpr [castable.seqtype]\n";
+#endif
 			(yyval.expr) = new TreatExpr((yyloc),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2321,17 +2711,21 @@ namespace yy
     break;
 
   case 197:
-#line 2547 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2925 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CastableExpr [cast]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CastableExpr [cast]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 198:
-#line 2552 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2932 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CastableExpr [cast.singletype]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CastableExpr [cast.singletype]\n";
+#endif
 			(yyval.expr) = new CastableExpr((yyloc),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SingleType*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2339,17 +2733,21 @@ namespace yy
     break;
 
   case 199:
-#line 2565 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2947 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CastExpr [unary]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CastExpr [unary]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 200:
-#line 2570 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2954 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CastExpr [unary.singletype]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CastExpr [unary.singletype]\n";
+#endif
 			(yyval.expr) = new CastExpr((yyloc),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SingleType*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2357,17 +2755,21 @@ namespace yy
     break;
 
   case 201:
-#line 2583 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2969 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "UnaryExpr [value]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "UnaryExpr [value]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 202:
-#line 2588 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2976 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "UnaryExpr [signlist.value]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "UnaryExpr [signlist.value]\n";
+#endif
 			(yyval.expr) = new UnaryExpr((yyloc),
 								dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)),
 								(yysemantic_stack_[(2) - (2)].expr));
@@ -2375,33 +2777,41 @@ namespace yy
     break;
 
   case 203:
-#line 2601 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2991 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SignList [+]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SignList [+]\n";
+#endif
 			(yyval.node) = new SignList((yyloc), true);
 		;}
     break;
 
   case 204:
-#line 2606 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2998 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SignList [-]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SignList [-]\n";
+#endif
 			(yyval.node) = new SignList((yyloc), false);
 		;}
     break;
 
   case 205:
-#line 2611 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3005 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SignList [signlist.+]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SignList [signlist.+]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		;}
     break;
 
   case 206:
-#line 2616 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3012 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SignList [signlist.-]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SignList [signlist.-]\n";
+#endif
 			SignList* slist_p = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node));
 			if (slist_p) slist_p->negate();
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
@@ -2409,161 +2819,201 @@ namespace yy
     break;
 
   case 207:
-#line 2629 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3027 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValueExpr [validate]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValueExpr [validate]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 208:
-#line 2634 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3034 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValueExpr [path]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValueExpr [path]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 209:
-#line 2639 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3041 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValueExpr [extension]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValueExpr [extension]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 210:
-#line 2651 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3055 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "GeneralComp [=]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GeneralComp [=]\n";
+#endif
 			(yyval.node) = new GeneralComp((yyloc), op_eq);
 		;}
     break;
 
   case 211:
-#line 2656 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3062 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "GeneralComp [!=]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GeneralComp [!=]\n";
+#endif
 			(yyval.node) = new GeneralComp((yyloc), op_ne);
 		;}
     break;
 
   case 212:
-#line 2661 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3069 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "GeneralComp [<]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GeneralComp [<]\n";
+#endif
 			(yyval.node) = new GeneralComp((yyloc), op_lt);
 		;}
     break;
 
   case 213:
-#line 2666 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3076 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "GeneralComp [<=]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GeneralComp [<=]\n";
+#endif
 			(yyval.node) = new GeneralComp((yyloc), op_le);
 		;}
     break;
 
   case 214:
-#line 2671 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3083 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "GeneralComp [>]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GeneralComp [>]\n";
+#endif
 			(yyval.node) = new GeneralComp((yyloc), op_gt);
 		;}
     break;
 
   case 215:
-#line 2676 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3090 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "GeneralComp [>=]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "GeneralComp [>=]\n";
+#endif
 			(yyval.node) = new GeneralComp((yyloc), op_ge);
 		;}
     break;
 
   case 216:
-#line 2687 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3103 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValueComp [eq]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValueComp [eq]\n";
+#endif
 			(yyval.node) = new ValueComp((yyloc), op_val_eq);
 		;}
     break;
 
   case 217:
-#line 2692 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3110 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValueComp [ne]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValueComp [ne]\n";
+#endif
 			(yyval.node) = new ValueComp((yyloc), op_val_ne);
 		;}
     break;
 
   case 218:
-#line 2697 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3117 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValueComp [lt]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValueComp [lt]\n";
+#endif
 			(yyval.node) = new ValueComp((yyloc), op_val_lt);
 		;}
     break;
 
   case 219:
-#line 2702 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3124 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValueComp [le]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValueComp [le]\n";
+#endif
 			(yyval.node) = new ValueComp((yyloc), op_val_le);
 		;}
     break;
 
   case 220:
-#line 2707 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3131 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValueComp [gt]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValueComp [gt]\n";
+#endif
 			(yyval.node) = new ValueComp((yyloc), op_val_gt);
 		;}
     break;
 
   case 221:
-#line 2712 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3138 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValueComp [ge]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValueComp [ge]\n";
+#endif
 			(yyval.node) = new ValueComp((yyloc), op_val_ge);
 		;}
     break;
 
   case 222:
-#line 2723 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3151 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NodeComp [is]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NodeComp [is]\n";
+#endif
 			(yyval.node) = new NodeComp((yyloc), op_is);
 		;}
     break;
 
   case 223:
-#line 2728 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3158 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NodeComp [<<]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NodeComp [<<]\n";
+#endif
 			(yyval.node) = new NodeComp((yyloc), op_precedes);
 		;}
     break;
 
   case 224:
-#line 2733 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3165 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NodeComp [>>]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NodeComp [>>]\n";
+#endif
 			(yyval.node) = new NodeComp((yyloc), op_follows);
 		;}
     break;
 
   case 225:
-#line 2745 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3179 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValidateExpr [expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValidateExpr [expr]\n";
+#endif
 			(yyval.expr) = new ValidateExpr((yyloc), "strict", (yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 226:
-#line 2750 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3186 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ValidateExpr [mode.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ValidateExpr [mode.expr]\n";
+#endif
 			(yyval.expr) = new ValidateExpr((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								(yysemantic_stack_[(4) - (3)].expr));
@@ -2571,9 +3021,11 @@ namespace yy
     break;
 
   case 227:
-#line 2763 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3201 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExtensionExpr [pragmalist]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExtensionExpr [pragmalist]\n";
+#endif
 			(yyval.expr) = new ExtensionExpr((yyloc),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(3) - (1)].node)),
 								NULL);
@@ -2581,9 +3033,11 @@ namespace yy
     break;
 
   case 228:
-#line 2770 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3210 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ExtensionExpr [pragmalist.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ExtensionExpr [pragmalist.expr]\n";
+#endif
 			(yyval.expr) = new ExtensionExpr((yyloc),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(4) - (1)].node)),
 								(yysemantic_stack_[(4) - (3)].expr));
@@ -2591,9 +3045,11 @@ namespace yy
     break;
 
   case 229:
-#line 2783 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3225 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PragmaList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PragmaList [single]\n";
+#endif
 			PragmaList* pragma_list_p = new PragmaList((yyloc));
 			pragma_list_p->push_back(dynamic_cast<Pragma*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = pragma_list_p;
@@ -2601,9 +3057,11 @@ namespace yy
     break;
 
   case 230:
-#line 2790 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3234 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PragmaList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PragmaList [list]\n";
+#endif
 			PragmaList* pragma_list_p = dynamic_cast<PragmaList*>((yysemantic_stack_[(2) - (1)].node));
 			if (pragma_list_p) {
 				pragma_list_p->push_back(dynamic_cast<Pragma*>((yysemantic_stack_[(2) - (2)].node)));
@@ -2613,9 +3071,11 @@ namespace yy
     break;
 
   case 231:
-#line 2805 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3251 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Pragma [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Pragma [ ]\n";
+#endif
 			(yyval.node) = new Pragma((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (3)].sval)));
@@ -2624,83 +3084,103 @@ namespace yy
     break;
 
   case 232:
-#line 2849 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3297 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PathExpr [/]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PathExpr [/]\n";
+#endif
 			(yyval.expr) = new PathExpr((yyloc), path_leading_lone_slash, NULL);
 		;}
     break;
 
   case 233:
-#line 2854 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3304 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PathExpr [/relative]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PathExpr [/relative]\n";
+#endif
 			(yyval.expr) = new PathExpr((yyloc), path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 234:
-#line 2859 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3311 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PathExpr [//relative]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PathExpr [//relative]\n";
+#endif
 			(yyval.expr) = new PathExpr((yyloc), path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 235:
-#line 2864 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3318 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PathExpr [relative]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PathExpr [relative]\n";
+#endif
             RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>((yysemantic_stack_[(1) - (1)].expr));
             (yyval.expr) = rpe == NULL ? (yysemantic_stack_[(1) - (1)].expr) : new PathExpr((yyloc), path_relative, (yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 236:
-#line 2876 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3332 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "RelativePathExpr [step]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "RelativePathExpr [step]\n";
+#endif
             AxisStep *as = dynamic_cast<AxisStep *>((yysemantic_stack_[(1) - (1)].expr));
             (yyval.expr) = as != NULL ? new RelativePathExpr((yyloc), st_slash, new ContextItemExpr((yyloc)), (yysemantic_stack_[(1) - (1)].expr)) : (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 237:
-#line 2882 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3340 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "RelativePathExpr [step/relative]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "RelativePathExpr [step/relative]\n";
+#endif
 			(yyval.expr) = new RelativePathExpr((yyloc), st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 238:
-#line 2887 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3347 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "RelativePathExpr [step//relative]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "RelativePathExpr [step//relative]\n";
+#endif
 			(yyval.expr) = new RelativePathExpr((yyloc), st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 239:
-#line 2898 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3360 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "StepExpr [axis]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "StepExpr [axis]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 240:
-#line 2903 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3367 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "StepExpr [filter]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "StepExpr [filter]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 241:
-#line 2914 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3380 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AxisStep [forward]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AxisStep [forward]\n";
+#endif
 			(yyval.expr) = new AxisStep((yyloc),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL);
@@ -2708,9 +3188,11 @@ namespace yy
     break;
 
   case 242:
-#line 2921 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3389 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AxisStep [forward.predlist]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AxisStep [forward.predlist]\n";
+#endif
 			(yyval.expr) = new AxisStep((yyloc),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
@@ -2718,9 +3200,11 @@ namespace yy
     break;
 
   case 243:
-#line 2928 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3398 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AxisStep [reverse]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AxisStep [reverse]\n";
+#endif
 			(yyval.expr) = new AxisStep((yyloc),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL);
@@ -2728,9 +3212,11 @@ namespace yy
     break;
 
   case 244:
-#line 2935 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3407 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AxisStep [reverse.predlist]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AxisStep [reverse.predlist]\n";
+#endif
 			(yyval.expr) = new AxisStep((yyloc),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
@@ -2738,9 +3224,11 @@ namespace yy
     break;
 
   case 245:
-#line 2948 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3422 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForwardStep [nodetest]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForwardStep [nodetest]\n";
+#endif
 			(yyval.node) = new ForwardStep((yyloc),
 								dynamic_cast<ForwardAxis*>((yysemantic_stack_[(2) - (1)].node)),
 								(yysemantic_stack_[(2) - (2)].node));
@@ -2748,90 +3236,112 @@ namespace yy
     break;
 
   case 246:
-#line 2955 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3431 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForwardStep [abbrev]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForwardStep [abbrev]\n";
+#endif
 			(yyval.node) = new ForwardStep((yyloc),
 								dynamic_cast<AbbrevForwardStep*>((yysemantic_stack_[(1) - (1)].node)));
 		;}
     break;
 
   case 247:
-#line 2967 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3445 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForwardAxis [child]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForwardAxis [child]\n";
+#endif
 			(yyval.node) = new ForwardAxis((yyloc), axis_child);
 		;}
     break;
 
   case 248:
-#line 2972 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3452 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForwardAxis [descendant]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForwardAxis [descendant]\n";
+#endif
 			(yyval.node) = new ForwardAxis((yyloc), axis_descendant);
 		;}
     break;
 
   case 249:
-#line 2977 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3459 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForwardAxis [attribute]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForwardAxis [attribute]\n";
+#endif
 			(yyval.node) = new ForwardAxis((yyloc), axis_attribute);
 		;}
     break;
 
   case 250:
-#line 2982 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3466 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForwardAxis [self]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForwardAxis [self]\n";
+#endif
 			(yyval.node) = new ForwardAxis((yyloc), axis_self);
 		;}
     break;
 
   case 251:
-#line 2987 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3473 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForwardAxis [descendant_or_self]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForwardAxis [descendant_or_self]\n";
+#endif
 			(yyval.node) = new ForwardAxis((yyloc), axis_descendant_or_self);
 		;}
     break;
 
   case 252:
-#line 2992 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3480 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForwardAxis [following_sibling]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForwardAxis [following_sibling]\n";
+#endif
 			(yyval.node) = new ForwardAxis((yyloc), axis_following_sibling);
 		;}
     break;
 
   case 253:
-#line 2997 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3487 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ForwardAxis [following]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ForwardAxis [following]\n";
+#endif
 			(yyval.node) = new ForwardAxis((yyloc), axis_following);
 		;}
     break;
 
   case 254:
-#line 3008 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3500 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AbbrevForwardStep [nodetest]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AbbrevForwardStep [nodetest]\n";
+#endif
 			(yyval.node) = new AbbrevForwardStep((yyloc), (yysemantic_stack_[(1) - (1)].node));
 		;}
     break;
 
   case 255:
-#line 3013 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3507 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AbbrevForwardStep [@ nodetest]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AbbrevForwardStep [@ nodetest]\n";
+#endif
 			(yyval.node) = new AbbrevForwardStep((yyloc), (yysemantic_stack_[(2) - (2)].node), true);
 		;}
     break;
 
   case 256:
-#line 3024 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3520 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ReverseStep [nodetest]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ReverseStep [nodetest]\n";
+#endif
 			(yyval.node) = new ReverseStep((yyloc),
 								dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)),
 								(yysemantic_stack_[(2) - (2)].node));
@@ -2839,9 +3349,11 @@ namespace yy
     break;
 
   case 257:
-#line 3031 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3529 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ReverseStep [..]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ReverseStep [..]\n";
+#endif
 			ReverseAxis* rev_p = new ReverseAxis((yyloc), axis_parent);
 			(yyval.node) = new ReverseStep((yyloc),
 								rev_p);
@@ -2849,81 +3361,101 @@ namespace yy
     break;
 
   case 258:
-#line 3044 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3544 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ReverseAxis [parent]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ReverseAxis [parent]\n";
+#endif
 			(yyval.node) = new ReverseAxis((yyloc), axis_parent);
 		;}
     break;
 
   case 259:
-#line 3049 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3551 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ReverseAxis [ancestor]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ReverseAxis [ancestor]\n";
+#endif
 			(yyval.node) = new ReverseAxis((yyloc), axis_ancestor);
 		;}
     break;
 
   case 260:
-#line 3054 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3558 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ReverseAxis [preceding_sibling]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ReverseAxis [preceding_sibling]\n";
+#endif
 			(yyval.node) = new ReverseAxis((yyloc), axis_preceding_sibling);
 		;}
     break;
 
   case 261:
-#line 3059 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3565 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ReverseAxis [preceding]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ReverseAxis [preceding]\n";
+#endif
 			(yyval.node) = new ReverseAxis((yyloc), axis_preceding);
 		;}
     break;
 
   case 262:
-#line 3064 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3572 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ReverseAxis [ancestor_or_self]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ReverseAxis [ancestor_or_self]\n";
+#endif
 			(yyval.node) = new ReverseAxis((yyloc), axis_ancestor_or_self);
 		;}
     break;
 
   case 263:
-#line 3080 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3590 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NodeTest [kindtest]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NodeTest [kindtest]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 264:
-#line 3085 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3597 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NodeTest [nametest]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NodeTest [nametest]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 265:
-#line 3096 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3610 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NameTest [qname]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NameTest [qname]\n";
+#endif
 			(yyval.node) = new NameTest((yyloc), new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 266:
-#line 3101 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3617 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NameTest [wildcard]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NameTest [wildcard]\n";
+#endif
 			(yyval.node) = new NameTest((yyloc), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
 		;}
     break;
 
   case 267:
-#line 3112 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3630 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Wildcard [*]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Wildcard [*]\n";
+#endif
 			(yyval.node) = new Wildcard((yyloc),
                         "",
                         "",
@@ -2932,9 +3464,11 @@ namespace yy
     break;
 
   case 268:
-#line 3120 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3640 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Wildcard [pref:*]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Wildcard [pref:*]\n";
+#endif
 			(yyval.node) = new Wildcard((yyloc),
                         driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)),
                         "",
@@ -2943,9 +3477,11 @@ namespace yy
     break;
 
   case 269:
-#line 3128 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3650 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Wildcard [*:qname]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Wildcard [*:qname]\n";
+#endif
 			(yyval.node) = new Wildcard((yyloc),
                         "",
                         driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)),
@@ -2954,17 +3490,21 @@ namespace yy
     break;
 
   case 270:
-#line 3142 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3666 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FilterExpr [primary]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FilterExpr [primary]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 271:
-#line 3147 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3673 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FilterExpr [primary.predlist]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FilterExpr [primary.predlist]\n";
+#endif
 			(yyval.expr) = new FilterExpr((yyloc),
 								(yysemantic_stack_[(2) - (1)].expr),
 								dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
@@ -2972,9 +3512,11 @@ namespace yy
     break;
 
   case 272:
-#line 3160 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3688 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PredicateList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PredicateList [single]\n";
+#endif
 			PredicateList* pred_list_p = new PredicateList((yyloc));
 			pred_list_p->push_back(dynamic_cast<exprnode*>((yysemantic_stack_[(1) - (1)].expr)));
 			(yyval.node) = pred_list_p;
@@ -2982,9 +3524,11 @@ namespace yy
     break;
 
   case 273:
-#line 3167 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3697 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PredicateList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PredicateList [list]\n";
+#endif
 			PredicateList* pred_list_p = dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (1)].node));
 			if (pred_list_p) {
 				pred_list_p->push_back(dynamic_cast<exprnode*>((yysemantic_stack_[(2) - (2)].expr)));
@@ -2994,172 +3538,214 @@ namespace yy
     break;
 
   case 274:
-#line 3182 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3714 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Predicate [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Predicate [ ]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
 		;}
     break;
 
   case 275:
-#line 3194 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3728 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PrimaryExpr [literal]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PrimaryExpr [literal]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 276:
-#line 3199 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3735 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PrimaryExpr [varref]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PrimaryExpr [varref]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 277:
-#line 3204 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3742 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PrimaryExpr [paren]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PrimaryExpr [paren]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 278:
-#line 3209 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3749 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PrimaryExpr [context_item]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PrimaryExpr [context_item]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 279:
-#line 3214 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3756 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PrimaryExpr [funcall]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PrimaryExpr [funcall]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 280:
-#line 3219 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3763 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PrimaryExpr [cons]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PrimaryExpr [cons]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 281:
-#line 3224 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3770 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PrimaryExpr [ordered]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PrimaryExpr [ordered]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 282:
-#line 3229 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3777 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PrimaryExpr [unordered]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PrimaryExpr [unordered]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 283:
-#line 3240 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3790 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Literal [numeric]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Literal [numeric]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 284:
-#line 3245 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3797 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Literal [string]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Literal [string]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 285:
-#line 3256 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3810 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NumericLiteral [decimal]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NumericLiteral [decimal]\n";
+#endif
 			(yyval.expr) = new NumericLiteral((yyloc), decimal(yylval.decval));
 		;}
     break;
 
   case 286:
-#line 3261 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3817 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NumericLiteral [int]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NumericLiteral [int]\n";
+#endif
 			(yyval.expr) = new NumericLiteral((yyloc), yylval.ival);
 		;}
     break;
 
   case 287:
-#line 3266 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3824 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "NumericLiteral [double]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NumericLiteral [double]\n";
+#endif
 			(yyval.expr) = new NumericLiteral((yyloc), yylval.dval);
 		;}
     break;
 
   case 288:
-#line 3277 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3837 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarRef [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarRef [ ]\n";
+#endif
 			(yyval.expr) = new VarRef((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 289:
-#line 3288 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3850 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ParenthesizedExpr [()]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ParenthesizedExpr [()]\n";
+#endif
 			(yyval.expr) = new ParenthesizedExpr((yyloc), NULL);
 		;}
     break;
 
   case 290:
-#line 3293 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3857 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ParenthesizedExpr [(expr)]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ParenthesizedExpr [(expr)]\n";
+#endif
 			(yyval.expr) = new ParenthesizedExpr((yyloc),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 291:
-#line 3305 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3871 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ContextItemExpr [.]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ContextItemExpr [.]\n";
+#endif
 			(yyval.expr) = new ContextItemExpr((yyloc));
 		;}
     break;
 
   case 292:
-#line 3316 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3884 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OrderedExpr [expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OrderedExpr [expr]\n";
+#endif
 			(yyval.expr) = new OrderedExpr((yyloc),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 293:
-#line 3328 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3898 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "UnorderedExpr [expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "UnorderedExpr [expr]\n";
+#endif
 			(yyval.expr) = new UnorderedExpr((yyloc),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 294:
-#line 3385 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3957 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionCall [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionCall [ ]\n";
+#endif
 			(yyval.expr) = new FunctionCall((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
 								NULL);
@@ -3167,9 +3753,11 @@ namespace yy
     break;
 
   case 295:
-#line 3392 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3966 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FunctionCall [arglist]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FunctionCall [arglist]\n";
+#endif
 			(yyval.expr) = new FunctionCall((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -3177,9 +3765,11 @@ namespace yy
     break;
 
   case 296:
-#line 3405 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3981 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ArgList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ArgList [single]\n";
+#endif
 			ArgList* a_list_p = new ArgList((yyloc)); 
 			a_list_p->push_back((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.node) = a_list_p;
@@ -3187,9 +3777,11 @@ namespace yy
     break;
 
   case 297:
-#line 3412 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3990 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ArgList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ArgList [list]\n";
+#endif
 			ArgList* a_list_p = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node));
 			if (a_list_p) a_list_p->push_back((yysemantic_stack_[(3) - (3)].expr));
 			(yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -3197,49 +3789,61 @@ namespace yy
     break;
 
   case 298:
-#line 3425 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4005 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Constructor [direct]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Constructor [direct]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 299:
-#line 3430 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4012 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "Constructor [computed]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "Constructor [computed]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 300:
-#line 3441 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4025 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirectConstructor [element]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirectConstructor [element]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 301:
-#line 3446 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4032 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirectConstructor [comment]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirectConstructor [comment]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 302:
-#line 3451 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4039 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirectConstructor [pi]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirectConstructor [pi]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 303:
-#line 3462 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4052 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemConstructor [<qname/> ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemConstructor [<qname/> ]\n";
+#endif
 			(yyval.expr) = new DirElemConstructor((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								NULL,
@@ -3249,9 +3853,11 @@ namespace yy
     break;
 
   case 304:
-#line 3471 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4063 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemConstructor [<qname attrlist/> ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemConstructor [<qname attrlist/> ]\n";
+#endif
 			(yyval.expr) = new DirElemConstructor((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
 								NULL,
@@ -3261,9 +3867,11 @@ namespace yy
     break;
 
   case 305:
-#line 3480 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4074 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemConstructor [<qname></qname>]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemConstructor [<qname></qname>]\n";
+#endif
 			(yyval.expr) = new DirElemConstructor((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (5)].sval))),
@@ -3273,9 +3881,11 @@ namespace yy
     break;
 
   case 306:
-#line 3489 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4085 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemConstructor [<qname>content</qname>]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemConstructor [<qname>content</qname>]\n";
+#endif
 			(yyval.expr) = new DirElemConstructor((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (6)].sval))),
@@ -3285,9 +3895,11 @@ namespace yy
     break;
 
   case 307:
-#line 3498 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4096 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemConstructor [<qname attrlist></qname>]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemConstructor [<qname attrlist></qname>]\n";
+#endif
 			(yyval.expr) = new DirElemConstructor((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (6)].sval))),
@@ -3297,9 +3909,11 @@ namespace yy
     break;
 
   case 308:
-#line 3507 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4107 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
+#endif
 			(yyval.expr) = new DirElemConstructor((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (2)].sval))),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (7)].sval))),
@@ -3309,9 +3923,11 @@ namespace yy
     break;
 
   case 309:
-#line 3523 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4125 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemContentList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemContentList [single]\n";
+#endif
 			DirElemContentList* elem_content_list_p = new DirElemContentList((yyloc));
 			elem_content_list_p->push_back((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.node) = elem_content_list_p;
@@ -3319,9 +3935,11 @@ namespace yy
     break;
 
   case 310:
-#line 3530 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4134 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemContentList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemContentList [list]\n";
+#endif
 			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (elem_content_list_p) elem_content_list_p->push_back((yysemantic_stack_[(2) - (2)].expr));
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
@@ -3329,9 +3947,11 @@ namespace yy
     break;
 
   case 311:
-#line 3543 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4149 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirAttributeList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirAttributeList [single]\n";
+#endif
 			DirAttributeList* at_list_p = new DirAttributeList((yyloc));
 			at_list_p->push_back(dynamic_cast<DirAttr*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = at_list_p;
@@ -3339,9 +3959,11 @@ namespace yy
     break;
 
   case 312:
-#line 3550 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4158 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirAttributeList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirAttributeList [list]\n";
+#endif
 			DirAttributeList* at_list_p = dynamic_cast<DirAttributeList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
 				at_list_p->push_back(dynamic_cast<DirAttr*>((yysemantic_stack_[(2) - (2)].node)));
@@ -3351,9 +3973,11 @@ namespace yy
     break;
 
   case 313:
-#line 3565 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4175 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirAttr [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirAttr [ ]\n";
+#endif
 			(yyval.node) = new DirAttr((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								dynamic_cast<DirAttributeValue*>((yysemantic_stack_[(3) - (3)].node)));
@@ -3361,42 +3985,50 @@ namespace yy
     break;
 
   case 314:
-#line 3578 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4190 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirAttributeValue [quote]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirAttributeValue [quote]\n";
+#endif
 			(yyval.node) = new DirAttributeValue((yyloc),
 								dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 315:
-#line 3584 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4198 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirAttributeValue [apos]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirAttributeValue [apos]\n";
+#endif
 			(yyval.node) = new DirAttributeValue((yyloc),
 								dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 316:
-#line 3596 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4212 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QuoteAttrContentList[empty]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QuoteAttrContentList[empty]\n";
+#endif
 			(yyval.node) = new QuoteAttrContentList((yyloc));
 		;}
     break;
 
   case 317:
-#line 3601 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4219 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 318:
-#line 3608 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4226 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QuoteAttrContentList [""]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QuoteAttrContentList [""]\n";
+#endif
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList((yyloc));
 			qo_list_p->push_back(new QuoteAttrValueContent((yyloc),string("\"")));
 			(yyval.node) = qo_list_p;
@@ -3404,9 +4036,11 @@ namespace yy
     break;
 
   case 319:
-#line 3615 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4235 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QuoteAttrContentList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QuoteAttrContentList [single]\n";
+#endif
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList((yyloc));
 			qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = qo_list_p;
@@ -3414,9 +4048,11 @@ namespace yy
     break;
 
   case 320:
-#line 3622 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4244 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QuoteAttrContentList [list ""]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QuoteAttrContentList [list ""]\n";
+#endif
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
 				qo_list_p->push_back(new QuoteAttrValueContent((yyloc),string("\"")));
@@ -3426,9 +4062,11 @@ namespace yy
     break;
 
   case 321:
-#line 3631 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4255 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QuoteAttrContentList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QuoteAttrContentList [list]\n";
+#endif
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
 				qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(2) - (2)].node)));
@@ -3437,24 +4075,28 @@ namespace yy
     break;
 
   case 322:
-#line 3645 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4271 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AposAttrContentList ['']\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AposAttrContentList ['']\n";
+#endif
 			(yyval.node) = new AposAttrContentList((yyloc));
 		;}
     break;
 
   case 323:
-#line 3650 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4278 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 324:
-#line 3657 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4285 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AposAttrContentList ['']\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AposAttrContentList ['']\n";
+#endif
 			AposAttrContentList* at_list_p = new AposAttrContentList((yyloc));
 			at_list_p->push_back(new AposAttrValueContent((yyloc),"'"));
 			(yyval.node) = at_list_p;
@@ -3462,9 +4104,11 @@ namespace yy
     break;
 
   case 325:
-#line 3664 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4294 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AposAttrContentList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AposAttrContentList [single]\n";
+#endif
 			AposAttrContentList* at_list_p = new AposAttrContentList((yyloc));
 			at_list_p->push_back(dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = at_list_p;
@@ -3472,9 +4116,11 @@ namespace yy
     break;
 
   case 326:
-#line 3671 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4303 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AposAttrContentList [list.'']\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AposAttrContentList [list.'']\n";
+#endif
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
 				at_list_p->push_back(new AposAttrValueContent((yyloc),"'"));
@@ -3484,9 +4130,11 @@ namespace yy
     break;
 
   case 327:
-#line 3680 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4314 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AposAttrContentList [list.single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AposAttrContentList [list.single]\n";
+#endif
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
 				at_list_p->push_back(dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(2) - (2)].node)));
@@ -3496,63 +4144,77 @@ namespace yy
     break;
 
   case 328:
-#line 3695 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4331 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QuoteAttrValueContent [quote_attr_content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QuoteAttrValueContent [quote_attr_content]\n";
+#endif
 			(yyval.node) = new QuoteAttrValueContent((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 329:
-#line 3701 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4339 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "QuoteAttrValueContent [common_content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "QuoteAttrValueContent [common_content]\n";
+#endif
 			(yyval.node) = new QuoteAttrValueContent((yyloc),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 330:
-#line 3713 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4353 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AposAttrValueContent [apos_attr_content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AposAttrValueContent [apos_attr_content]\n";
+#endif
 			(yyval.node) = new AposAttrValueContent((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 331:
-#line 3719 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4361 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AposAttrValueContent [common_content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AposAttrValueContent [common_content]\n";
+#endif
 			(yyval.node) = new AposAttrValueContent((yyloc),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 332:
-#line 3731 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4375 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemContent [cons]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemContent [cons]\n";
+#endif
 			(yyval.expr) = new DirElemContent((yyloc),
 								(yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 333:
-#line 3737 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4383 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemContent [elem_content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemContent [elem_content]\n";
+#endif
 			(yyval.expr) = new DirElemContent((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 334:
-#line 3743 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4391 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemContent [cdata]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemContent [cdata]\n";
+#endif
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = new DirElemContent((yyloc),
 								cdata_h);
@@ -3560,9 +4222,11 @@ namespace yy
     break;
 
   case 335:
-#line 3750 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4400 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirElemContent [common_content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirElemContent [common_content]\n";
+#endif
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = new DirElemContent((yyloc),
 								cont_h);
@@ -3570,9 +4234,11 @@ namespace yy
     break;
 
   case 336:
-#line 3763 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4415 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CommonContent [entity_ref]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CommonContent [entity_ref]\n";
+#endif
 			(yyval.expr) = new CommonContent((yyloc),
 								cont_entity,
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
@@ -3580,9 +4246,11 @@ namespace yy
     break;
 
   case 337:
-#line 3770 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4424 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CommonContent [char_ref]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CommonContent [char_ref]\n";
+#endif
 			(yyval.expr) = new CommonContent((yyloc),
 								cont_charref,
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
@@ -3590,54 +4258,66 @@ namespace yy
     break;
 
   case 338:
-#line 3777 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4433 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CommonContent [{{]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CommonContent [{{]\n";
+#endif
 			(yyval.expr) = new CommonContent((yyloc),
 								cont_escape_lbrace);
 		;}
     break;
 
   case 339:
-#line 3783 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4441 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CommonContent [}}]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CommonContent [}}]\n";
+#endif
 			(yyval.expr) = new CommonContent((yyloc),
 								cont_escape_rbrace);
 		;}
     break;
 
   case 340:
-#line 3789 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4449 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CommonContent [expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CommonContent [expr]\n";
+#endif
 			(yyval.expr) = new CommonContent((yyloc),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 341:
-#line 3801 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4463 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirCommentConstructor [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirCommentConstructor [ ]\n";
+#endif
 			(yyval.expr) = new DirCommentConstructor((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 342:
-#line 3818 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4482 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirPIConstructor [target]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirPIConstructor [target]\n";
+#endif
 			(yyval.expr) = new DirPIConstructor((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 343:
-#line 3824 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4490 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DirPIConstructor [target.charlit]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DirPIConstructor [target.charlit]\n";
+#endif
 			(yyval.expr) = new DirPIConstructor((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (3)].sval)));
@@ -3645,74 +4325,92 @@ namespace yy
     break;
 
   case 344:
-#line 3842 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4510 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CDataSection [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CDataSection [ ]\n";
+#endif
 			(yyval.expr) = new CDataSection((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 345:
-#line 3858 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4528 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ComputedConstructor [doc]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ComputedConstructor [doc]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 346:
-#line 3863 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4535 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ComputedConstructor [elem]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ComputedConstructor [elem]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 347:
-#line 3868 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4542 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ComputedConstructor [attr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ComputedConstructor [attr]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 348:
-#line 3873 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4549 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ComputedConstructor [text]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ComputedConstructor [text]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 349:
-#line 3878 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4556 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ComputedConstructor [comment]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ComputedConstructor [comment]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 350:
-#line 3883 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4563 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ComputedConstructor [pi]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ComputedConstructor [pi]\n";
+#endif
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 351:
-#line 3894 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4576 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompDocConstructor [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompDocConstructor [ ]\n";
+#endif
 			(yyval.expr) = new CompDocConstructor((yyloc),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 352:
-#line 3906 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4590 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompElemConstructor [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompElemConstructor [ ]\n";
+#endif
 			(yyval.expr) = new CompElemConstructor((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
 								NULL);
@@ -3720,9 +4418,11 @@ namespace yy
     break;
 
   case 353:
-#line 3913 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4599 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompElemConstructor [content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompElemConstructor [content]\n";
+#endif
 			(yyval.expr) = new CompElemConstructor((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								(yysemantic_stack_[(3) - (2)].expr));
@@ -3730,27 +4430,33 @@ namespace yy
     break;
 
   case 354:
-#line 3920 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4608 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompElemConstructor [name]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompElemConstructor [name]\n";
+#endif
 			(yyval.expr) = new CompElemConstructor((yyloc),
 								(yysemantic_stack_[(5) - (2)].expr), NULL);
 		;}
     break;
 
   case 355:
-#line 3926 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4616 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompElemConstructor [name.content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompElemConstructor [name.content]\n";
+#endif
 			(yyval.expr) = new CompElemConstructor((yyloc),
 								(yysemantic_stack_[(6) - (2)].expr), (yysemantic_stack_[(6) - (5)].expr));
 		;}
     break;
 
   case 356:
-#line 3950 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4644 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompAttrConstructor [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompAttrConstructor [ ]\n";
+#endif
 			(yyval.expr) = new CompAttrConstructor((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
 								NULL);
@@ -3758,9 +4464,11 @@ namespace yy
     break;
 
   case 357:
-#line 3957 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4653 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompAttrConstructor [val]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompAttrConstructor [val]\n";
+#endif
 			(yyval.expr) = new CompAttrConstructor((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								(yysemantic_stack_[(3) - (2)].expr));
@@ -3768,45 +4476,55 @@ namespace yy
     break;
 
   case 358:
-#line 3964 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4662 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompAttrConstructor [name]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompAttrConstructor [name]\n";
+#endif
 			(yyval.expr) = new CompAttrConstructor((yyloc),
 								(yysemantic_stack_[(5) - (2)].expr), NULL);
 		;}
     break;
 
   case 359:
-#line 3970 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4670 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompAttrConstructor [name.val]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompAttrConstructor [name.val]\n";
+#endif
 			(yyval.expr) = new CompAttrConstructor((yyloc),
 								(yysemantic_stack_[(6) - (2)].expr), (yysemantic_stack_[(6) - (5)].expr));
 		;}
     break;
 
   case 360:
-#line 3982 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4684 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompTextConstructor [content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompTextConstructor [content]\n";
+#endif
 			(yyval.expr) = new CompTextConstructor((yyloc),
 								dynamic_cast<Expr*>((yysemantic_stack_[(3) - (2)].expr)));
 		;}
     break;
 
   case 361:
-#line 3994 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4698 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompCommentConstructor [content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompCommentConstructor [content]\n";
+#endif
 			(yyval.expr) = new CompCommentConstructor((yyloc),
 								dynamic_cast<Expr*>((yysemantic_stack_[(3) - (2)].expr)));
 		;}
     break;
 
   case 362:
-#line 4006 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4712 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompPIConstructor [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompPIConstructor [ ]\n";
+#endif
 			(yyval.expr) = new CompPIConstructor((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								NULL);
@@ -3814,9 +4532,11 @@ namespace yy
     break;
 
   case 363:
-#line 4013 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4721 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompPIConstructor [content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompPIConstructor [content]\n";
+#endif
 			(yyval.expr) = new CompPIConstructor((yyloc),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval)),
 								(yysemantic_stack_[(5) - (4)].expr));
@@ -3824,27 +4544,33 @@ namespace yy
     break;
 
   case 364:
-#line 4020 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4730 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompPIConstructor [target]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompPIConstructor [target]\n";
+#endif
 			(yyval.expr) = new CompPIConstructor((yyloc),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
 		;}
     break;
 
   case 365:
-#line 4026 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4738 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CompPIConstructor [target.content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CompPIConstructor [target.content]\n";
+#endif
 			(yyval.expr) = new CompPIConstructor((yyloc),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
 		;}
     break;
 
   case 366:
-#line 4038 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4752 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SingleType [atomic]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SingleType [atomic]\n";
+#endif
 			(yyval.node) = new SingleType((yyloc),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(1) - (1)].node)),
 								false);
@@ -3852,9 +4578,11 @@ namespace yy
     break;
 
   case 367:
-#line 4045 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4761 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SingleType [atomic ?]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SingleType [atomic ?]\n";
+#endif
 			(yyval.node) = new SingleType((yyloc),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(2) - (1)].node)),
 								true);
@@ -3862,18 +4590,22 @@ namespace yy
     break;
 
   case 368:
-#line 4058 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4776 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "TypeDeclaration [as seqtype]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "TypeDeclaration [as seqtype]\n";
+#endif
 			(yyval.node) = new TypeDeclaration((yyloc),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 369:
-#line 4070 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4790 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ItemType [type]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ItemType [type]\n";
+#endif
 			(yyval.node) = new SequenceType((yyloc),
 								(yysemantic_stack_[(1) - (1)].node),
 								NULL);
@@ -3881,9 +4613,11 @@ namespace yy
     break;
 
   case 370:
-#line 4077 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4799 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ItemType [type.occurs]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ItemType [type.occurs]\n";
+#endif
 			(yyval.node) = new SequenceType((yyloc),
 								(yysemantic_stack_[(2) - (1)].node),
 								dynamic_cast<OccurrenceIndicator*>((yysemantic_stack_[(2) - (2)].node)));
@@ -3891,223 +4625,277 @@ namespace yy
     break;
 
   case 371:
-#line 4084 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4808 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ItemType [void]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ItemType [void]\n";
+#endif
 			(yyval.node) = new SequenceType((yyloc), NULL, NULL);
 		;}
     break;
 
   case 372:
-#line 4122 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4848 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OccurrenceIndicator [?]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OccurrenceIndicator [?]\n";
+#endif
 			(yyval.node) = new OccurrenceIndicator((yyloc),
 								occurs_optionally);
 		;}
     break;
 
   case 373:
-#line 4128 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4856 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OccurrenceIndicator [*]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OccurrenceIndicator [*]\n";
+#endif
 			(yyval.node) = new OccurrenceIndicator((yyloc),
 								occurs_zero_or_more);
 		;}
     break;
 
   case 374:
-#line 4134 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4864 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "OccurrenceIndicator [+]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "OccurrenceIndicator [+]\n";
+#endif
 			(yyval.node) = new OccurrenceIndicator((yyloc),
 								occurs_one_or_more);
 		;}
     break;
 
   case 375:
-#line 4146 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4878 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ItemType [atomic]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ItemType [atomic]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 376:
-#line 4151 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4885 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ItemType [kind]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ItemType [kind]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 377:
-#line 4156 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4892 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ItemType [item]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ItemType [item]\n";
+#endif
 			(yyval.node) = new ItemType((yyloc),true);
 		;}
     break;
 
   case 378:
-#line 4167 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4905 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AtomicType [qname]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AtomicType [qname]\n";
+#endif
 			(yyval.node) = new AtomicType((yyloc),
 								new QName((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 379:
-#line 4179 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4919 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "KindTest [doc]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "KindTest [doc]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 380:
-#line 4184 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4926 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "KindTest [elem]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "KindTest [elem]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 381:
-#line 4189 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4933 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "KindTest [attr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "KindTest [attr]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 382:
-#line 4194 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4940 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "KindTest [schema_elem]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "KindTest [schema_elem]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 383:
-#line 4199 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4947 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "KindTest [schema_attr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "KindTest [schema_attr]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 384:
-#line 4204 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4954 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "KindTest [pi]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "KindTest [pi]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 385:
-#line 4209 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4961 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "KindTest [comment]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "KindTest [comment]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 386:
-#line 4214 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4968 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "KindTest [text]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "KindTest [text]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 387:
-#line 4219 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4975 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "KindTest [any]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "KindTest [any]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 388:
-#line 4230 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4988 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AnyKindTest [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AnyKindTest [ ]\n";
+#endif
 			(yyval.node) = new AnyKindTest((yyloc));
 		;}
     break;
 
   case 389:
-#line 4241 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5001 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DocumentTest [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DocumentTest [ ]\n";
+#endif
 			(yyval.node) = new DocumentTest((yyloc));
 		;}
     break;
 
   case 390:
-#line 4246 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5008 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DocumentTest [elem]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DocumentTest [elem]\n";
+#endif
 			(yyval.node) = new DocumentTest((yyloc),
 								dynamic_cast<ElementTest*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 391:
-#line 4252 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5016 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DocumentTest [schema_elem]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DocumentTest [schema_elem]\n";
+#endif
 			(yyval.node) = new DocumentTest((yyloc),
 								dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 392:
-#line 4264 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5030 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "TextTest [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "TextTest [ ]\n";
+#endif
 			(yyval.node) = new TextTest((yyloc));
 		;}
     break;
 
   case 393:
-#line 4275 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5043 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "CommentTest [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CommentTest [ ]\n";
+#endif
 			(yyval.node) = new CommentTest((yyloc));
 		;}
     break;
 
   case 394:
-#line 4286 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5056 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PITest [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PITest [ ]\n";
+#endif
 			(yyval.node) = new PITest((yyloc), "", "");
 		;}
     break;
 
   case 395:
-#line 4291 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5063 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PITest [ncname]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PITest [ncname]\n";
+#endif
 			(yyval.node) = new PITest((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)), "");
 		;}
     break;
 
   case 396:
-#line 4296 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5070 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "PITest [stringlit]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "PITest [stringlit]\n";
+#endif
 			(yyval.node) = new PITest((yyloc), "", driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 397:
-#line 4307 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5083 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AttributeTest [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AttributeTest [ ]\n";
+#endif
 			(yyval.node) = new AttributeTest((yyloc),
 								NULL,
 								NULL);
@@ -4115,9 +4903,11 @@ namespace yy
     break;
 
   case 398:
-#line 4314 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5092 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AttributeTest [name]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AttributeTest [name]\n";
+#endif
 			(yyval.node) = new AttributeTest((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								NULL);
@@ -4125,9 +4915,11 @@ namespace yy
     break;
 
   case 399:
-#line 4321 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5101 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AttributeTest [name.type]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AttributeTest [name.type]\n";
+#endif
 			(yyval.node) = new AttributeTest((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
@@ -4135,9 +4927,11 @@ namespace yy
     break;
 
   case 400:
-#line 4328 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5110 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AttributeTest [*]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AttributeTest [*]\n";
+#endif
 			(yyval.node) = new AttributeTest((yyloc),
 								NULL,
 								NULL);
@@ -4145,9 +4939,11 @@ namespace yy
     break;
 
   case 401:
-#line 4335 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5119 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "AttributeTest [*.type]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "AttributeTest [*.type]\n";
+#endif
 			(yyval.node) = new AttributeTest((yyloc),
 								NULL,
 								dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
@@ -4155,18 +4951,22 @@ namespace yy
     break;
 
   case 402:
-#line 4348 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5134 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SchemaAttributeTest [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SchemaAttributeTest [ ]\n";
+#endif
 			(yyval.node) = new SchemaAttributeTest((yyloc),
 								new QName((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
 		;}
     break;
 
   case 403:
-#line 4360 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5148 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ElementTest [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ElementTest [ ]\n";
+#endif
 			(yyval.node) = new ElementTest((yyloc),
 									NULL,
 									NULL);
@@ -4174,9 +4974,11 @@ namespace yy
     break;
 
   case 404:
-#line 4367 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5157 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ElementTest [name]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ElementTest [name]\n";
+#endif
 			(yyval.node) = new ElementTest((yyloc),
 									new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 									NULL);
@@ -4184,9 +4986,11 @@ namespace yy
     break;
 
   case 405:
-#line 4374 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5166 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ElementTest [name.type]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ElementTest [name.type]\n";
+#endif
 			(yyval.node) = new ElementTest((yyloc),
 									new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
@@ -4194,9 +4998,11 @@ namespace yy
     break;
 
   case 406:
-#line 4381 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5175 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ElementTest [name.type]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ElementTest [name.type]\n";
+#endif
 			(yyval.node) = new ElementTest((yyloc),
 									new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
@@ -4204,9 +5010,11 @@ namespace yy
     break;
 
   case 407:
-#line 4388 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5184 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ElementTest [*]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ElementTest [*]\n";
+#endif
 			(yyval.node) = new ElementTest((yyloc),
 									NULL,
 									NULL,
@@ -4215,9 +5023,11 @@ namespace yy
     break;
 
   case 408:
-#line 4396 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5194 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ElementTest [*.type]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ElementTest [*.type]\n";
+#endif
 			(yyval.node) = new ElementTest((yyloc),
 									NULL,
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)),
@@ -4226,9 +5036,11 @@ namespace yy
     break;
 
   case 409:
-#line 4404 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5204 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ElementTest [*.type]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ElementTest [*.type]\n";
+#endif
 			(yyval.node) = new ElementTest((yyloc),
 									NULL,
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)),
@@ -4237,27 +5049,33 @@ namespace yy
     break;
 
   case 410:
-#line 4418 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5220 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "SchemaElementTest [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "SchemaElementTest [ ]\n";
+#endif
 			(yyval.node) = new SchemaElementTest((yyloc),
 									new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
 		;}
     break;
 
   case 411:
-#line 4440 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5244 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "TypeName [name]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "TypeName [name]\n";
+#endif
 			(yyval.node) = new TypeName((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 412:
-#line 4448 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5254 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "TypeName [name?]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "TypeName [name?]\n";
+#endif
 			(yyval.node) = new TypeName((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
 								true);
@@ -4265,800 +5083,1024 @@ namespace yy
     break;
 
   case 413:
-#line 4469 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5277 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "StringLiteral [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "StringLiteral [ ]\n";
+#endif
 			(yyval.expr) = new StringLiteral((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 414:
-#line 4509 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5319 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "RevalidationDecl [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "RevalidationDecl [ ]\n";
+#endif
 		;}
     break;
 
   case 415:
-#line 4519 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5331 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "InsertExpr [expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InsertExpr [expr]\n";
+#endif
 		;}
     break;
 
   case 416:
-#line 4523 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5337 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "InsertExpr [expr.as_first]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InsertExpr [expr.as_first]\n";
+#endif
 		;}
     break;
 
   case 417:
-#line 4527 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5343 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "InsertExpr [expr.as_last]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InsertExpr [expr.as_last]\n";
+#endif
 		;}
     break;
 
   case 418:
-#line 4531 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5349 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "InsertExpr [expr.after]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InsertExpr [expr.after]\n";
+#endif
 		;}
     break;
 
   case 419:
-#line 4535 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5355 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "InsertExpr [expr.before]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InsertExpr [expr.before]\n";
+#endif
 		;}
     break;
 
   case 420:
-#line 4545 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5367 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "DeleteExpr [expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DeleteExpr [expr]\n";
+#endif
 		;}
     break;
 
   case 421:
-#line 4555 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5379 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ReplaceExpr [expr.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ReplaceExpr [expr.expr]\n";
+#endif
 		;}
     break;
 
   case 422:
-#line 4559 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5385 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "ReplaceExpr [value.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "ReplaceExpr [value.expr]\n";
+#endif
 		;}
     break;
 
   case 423:
-#line 4569 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5397 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "RenameExpr [expr.expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "RenameExpr [expr.expr]\n";
+#endif
 		;}
     break;
 
   case 424:
-#line 4594 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5424 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "TransformExpr [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "TransformExpr [ ]\n";
+#endif
 		;}
     break;
 
   case 425:
-#line 4604 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5436 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarNameList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarNameList [single]\n";
+#endif
 		;}
     break;
 
   case 426:
-#line 4608 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5442 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "VarNameList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "VarNameList [list]\n";
+#endif
 		;}
     break;
 
   case 427:
-#line 4626 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5462 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTSelection [or]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTSelection [or]\n";
+#endif
 		;}
     break;
 
   case 428:
-#line 4630 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5468 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTSelection [or.match_proximity]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTSelection [or.match_proximity]\n";
+#endif
 		;}
     break;
 
   case 429:
-#line 4634 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5474 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTSelection [or.weight_range]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTSelection [or.weight_range]\n";
+#endif
 		;}
     break;
 
   case 430:
-#line 4638 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5480 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTSelection [or.match_proximity.weight_range]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTSelection [or.match_proximity.weight_range]\n";
+#endif
 		;}
     break;
 
   case 431:
-#line 4648 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5492 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOptionProximityList [option_single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOptionProximityList [option_single]\n";
+#endif
 		;}
     break;
 
   case 432:
-#line 4652 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5498 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOptionProximityList [proximity_single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOptionProximityList [proximity_single]\n";
+#endif
 		;}
     break;
 
   case 433:
-#line 4656 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5504 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOptionProximityList [option_list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOptionProximityList [option_list]\n";
+#endif
 		;}
     break;
 
   case 434:
-#line 4660 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5510 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOptionProximityList [proximity_list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOptionProximityList [proximity_list]\n";
+#endif
 		;}
     break;
 
   case 435:
-#line 4670 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5522 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTOr [and]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTOr [and]\n";
+#endif
 		;}
     break;
 
   case 436:
-#line 4674 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5528 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTOr [or.and]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTOr [or.and]\n";
+#endif
 		;}
     break;
 
   case 437:
-#line 4684 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5540 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTAnd [mild_not]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTAnd [mild_not]\n";
+#endif
 		;}
     break;
 
   case 438:
-#line 4688 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5546 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTAnd [and.mild_not]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTAnd [and.mild_not]\n";
+#endif
 		;}
     break;
 
   case 439:
-#line 4698 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5558 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMildNot [unary_not]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMildNot [unary_not]\n";
+#endif
 		;}
     break;
 
   case 440:
-#line 4702 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5564 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMildNot [mild_not.unary_not]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMildNot [mild_not.unary_not]\n";
+#endif
 		;}
     break;
 
   case 441:
-#line 4712 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5576 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTUnaryNot [words]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTUnaryNot [words]\n";
+#endif
 		;}
     break;
 
   case 442:
-#line 4716 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5582 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTUnaryNot [not.words]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTUnaryNot [not.words]\n";
+#endif
 		;}
     break;
 
   case 443:
-#line 4726 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5594 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTWordsSelection [words]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTWordsSelection [words]\n";
+#endif
 		;}
     break;
 
   case 444:
-#line 4730 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5600 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTWordsSelection [words.times]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTWordsSelection [words.times]\n";
+#endif
 		;}
     break;
 
   case 445:
-#line 4734 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5606 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTWordsSelection [selection]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTWordsSelection [selection]\n";
+#endif
 		;}
     break;
 
   case 446:
-#line 4744 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5618 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTWords [value]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTWords [value]\n";
+#endif
 		;}
     break;
 
   case 447:
-#line 4748 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5624 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTWords [value.any_all_option]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTWords [value.any_all_option]\n";
+#endif
 		;}
     break;
 
   case 448:
-#line 4758 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5636 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTWordsValue [literal]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTWordsValue [literal]\n";
+#endif
 		;}
     break;
 
   case 449:
-#line 4762 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5642 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTWordsValue [expr]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTWordsValue [expr]\n";
+#endif
 		;}
     break;
 
   case 450:
-#line 4772 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5654 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTProximity [order]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTProximity [order]\n";
+#endif
 		;}
     break;
 
   case 451:
-#line 4776 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5660 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTProximity [window]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTProximity [window]\n";
+#endif
 		;}
     break;
 
   case 452:
-#line 4780 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5666 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTProximity [distance]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTProximity [distance]\n";
+#endif
 		;}
     break;
 
   case 453:
-#line 4784 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5672 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTProximity [scope]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTProximity [scope]\n";
+#endif
 		;}
     break;
 
   case 454:
-#line 4788 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5678 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTProximity [content]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTProximity [content]\n";
+#endif
 		;}
     break;
 
   case 455:
-#line 4798 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5690 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTOrderedIndicator [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTOrderedIndicator [ ]\n";
+#endif
 		;}
     break;
 
   case 456:
-#line 4808 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5702 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOption [case]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOption [case]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 457:
-#line 4813 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5709 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOption [diacritics]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOption [diacritics]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 458:
-#line 4818 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5716 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOption [stem]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOption [stem]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 459:
-#line 4823 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5723 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOption [thesaurus]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOption [thesaurus]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 460:
-#line 4828 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5730 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOption [stopword]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOption [stopword]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 461:
-#line 4833 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5737 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOption [language]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOption [language]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 462:
-#line 4838 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5744 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTMatchOption [wildcard]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTMatchOption [wildcard]\n";
+#endif
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 463:
-#line 4849 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5757 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTCaseOption [lower]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTCaseOption [lower]\n";
+#endif
 		;}
     break;
 
   case 464:
-#line 4853 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5763 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTCaseOption [upper]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTCaseOption [upper]\n";
+#endif
 		;}
     break;
 
   case 465:
-#line 4857 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5769 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTCaseOption [sensitive]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTCaseOption [sensitive]\n";
+#endif
 		;}
     break;
 
   case 466:
-#line 4861 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5775 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTCaseOption [insensitive]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTCaseOption [insensitive]\n";
+#endif
 		;}
     break;
 
   case 467:
-#line 4871 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5787 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTDiacriticsOption [with]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTDiacriticsOption [with]\n";
+#endif
 		;}
     break;
 
   case 468:
-#line 4875 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5793 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTDiacriticsOption [without]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTDiacriticsOption [without]\n";
+#endif
 		;}
     break;
 
   case 469:
-#line 4879 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5799 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTDiacriticsOption [sensitive]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTDiacriticsOption [sensitive]\n";
+#endif
 		;}
     break;
 
   case 470:
-#line 4883 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5805 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTDiacriticsOption [insensitive]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTDiacriticsOption [insensitive]\n";
+#endif
 		;}
     break;
 
   case 471:
-#line 4893 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5817 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTStemOption [with]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTStemOption [with]\n";
+#endif
 		;}
     break;
 
   case 472:
-#line 4897 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5823 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTStemOption [without]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTStemOption [without]\n";
+#endif
 		;}
     break;
 
   case 473:
-#line 4907 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5835 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusOption [id]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusOption [id]\n";
+#endif
 		;}
     break;
 
   case 474:
-#line 4911 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5841 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusOption [default]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusOption [default]\n";
+#endif
 		;}
     break;
 
   case 475:
-#line 4915 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5847 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusOption [(id)]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusOption [(id)]\n";
+#endif
 		;}
     break;
 
   case 476:
-#line 4919 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5853 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusOption [(id,id,..)]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusOption [(id,id,..)]\n";
+#endif
 		;}
     break;
 
   case 477:
-#line 4923 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5859 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusOption [(default)]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusOption [(default)]\n";
+#endif
 		;}
     break;
 
   case 478:
-#line 4927 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5865 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusOption [(default,id,id,..)]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusOption [(default,id,id,..)]\n";
+#endif
 		;}
     break;
 
   case 479:
-#line 4931 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5871 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusOption [without]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusOption [without]\n";
+#endif
 		;}
     break;
 
   case 480:
-#line 4941 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5883 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusList [single]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusList [single]\n";
+#endif
 		;}
     break;
 
   case 481:
-#line 4945 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5889 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusList [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusList [list]\n";
+#endif
 		;}
     break;
 
   case 482:
-#line 4955 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5901 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusID [name]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusID [name]\n";
+#endif
 		;}
     break;
 
   case 483:
-#line 4959 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5907 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusID [name.rel]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusID [name.rel]\n";
+#endif
 		;}
     break;
 
   case 484:
-#line 4963 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5913 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusID [name.range]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusID [name.range]\n";
+#endif
 		;}
     break;
 
   case 485:
-#line 4967 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5919 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTThesaurusID [name.rel.range]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTThesaurusID [name.rel.range]\n";
+#endif
 		;}
     break;
 
   case 486:
-#line 4977 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5931 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTStopwordOption [list]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTStopwordOption [list]\n";
+#endif
 		;}
     break;
 
   case 487:
-#line 4981 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5937 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTStopwordOption [list.incl_excl]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTStopwordOption [list.incl_excl]\n";
+#endif
 		;}
     break;
 
   case 488:
-#line 4985 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5943 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTStopwordOption [default]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTStopwordOption [default]\n";
+#endif
 		;}
     break;
 
   case 489:
-#line 4989 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5949 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTStopwordOption [default.incl_excl]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTStopwordOption [default.incl_excl]\n";
+#endif
 		;}
     break;
 
   case 490:
-#line 4993 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5955 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTStopwordOption [without]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTStopwordOption [without]\n";
+#endif
 		;}
     break;
 
   case 491:
-#line 5003 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5967 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTInclExclStringLiteralList [.]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTInclExclStringLiteralList [.]\n";
+#endif
 		;}
     break;
 
   case 492:
-#line 5007 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5973 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTInclExclStringLiteralList [*]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTInclExclStringLiteralList [*]\n";
+#endif
 		;}
     break;
 
   case 493:
-#line 5017 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5985 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTRefOrList [.]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTRefOrList [.]\n";
+#endif
 		;}
     break;
 
   case 494:
-#line 5021 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5991 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTRefOrList [(*)]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTRefOrList [(*)]\n";
+#endif
 		;}
     break;
 
   case 495:
-#line 5031 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6003 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTStringLiteralList [.]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTStringLiteralList [.]\n";
+#endif
 		;}
     break;
 
   case 496:
-#line 5035 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6009 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTStringLiteralList [*]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTStringLiteralList [*]\n";
+#endif
 		;}
     break;
 
   case 497:
-#line 5045 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6021 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTInclExclStringLiteral [union]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTInclExclStringLiteral [union]\n";
+#endif
 		;}
     break;
 
   case 498:
-#line 5049 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6027 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTInclExclStringLiteral [except]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTInclExclStringLiteral [except]\n";
+#endif
 		;}
     break;
 
   case 499:
-#line 5059 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6039 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTLanguageOption [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTLanguageOption [ ]\n";
+#endif
 		;}
     break;
 
   case 500:
-#line 5069 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6051 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTWildcardOption [with]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTWildcardOption [with]\n";
+#endif
 		;}
     break;
 
   case 501:
-#line 5073 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6057 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTWildcardOption [without]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTWildcardOption [without]\n";
+#endif
 		;}
     break;
 
   case 502:
-#line 5083 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6069 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTContent [start]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTContent [start]\n";
+#endif
 		;}
     break;
 
   case 503:
-#line 5087 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6075 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTContent [end]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTContent [end]\n";
+#endif
 		;}
     break;
 
   case 504:
-#line 5091 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6081 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTContent [entire]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTContent [entire]\n";
+#endif
 		;}
     break;
 
   case 505:
-#line 5101 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6093 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTAnyallOption [any]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTAnyallOption [any]\n";
+#endif
 		;}
     break;
 
   case 506:
-#line 5105 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6099 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTAnyallOption [any_word]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTAnyallOption [any_word]\n";
+#endif
 		;}
     break;
 
   case 507:
-#line 5109 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6105 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTAnyallOption [all]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTAnyallOption [all]\n";
+#endif
 		;}
     break;
 
   case 508:
-#line 5113 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6111 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTAnyallOption [all_words]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTAnyallOption [all_words]\n";
+#endif
 		;}
     break;
 
   case 509:
-#line 5117 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6117 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTAnyallOption [phrase]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTAnyallOption [phrase]\n";
+#endif
 		;}
     break;
 
   case 510:
-#line 5127 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6129 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTRange [exactly]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTRange [exactly]\n";
+#endif
 		;}
     break;
 
   case 511:
-#line 5131 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6135 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTRange [at_least]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTRange [at_least]\n";
+#endif
 		;}
     break;
 
   case 512:
-#line 5135 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6141 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTRange [at_most]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTRange [at_most]\n";
+#endif
 		;}
     break;
 
   case 513:
-#line 5139 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6147 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTRange [range]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTRange [range]\n";
+#endif
 		;}
     break;
 
   case 514:
-#line 5149 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6159 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTDistance [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTDistance [ ]\n";
+#endif
 		;}
     break;
 
   case 515:
-#line 5159 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6171 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTWindow [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTWindow [ ]\n";
+#endif
 		;}
     break;
 
   case 516:
-#line 5169 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6183 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTTimes [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTTimes [ ]\n";
+#endif
 		;}
     break;
 
   case 517:
-#line 5179 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6195 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTTimes [same]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTTimes [same]\n";
+#endif
 		;}
     break;
 
   case 518:
-#line 5183 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6201 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTTimes [different]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTTimes [different]\n";
+#endif
 		;}
     break;
 
   case 519:
-#line 5193 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6213 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTUnit [words]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTUnit [words]\n";
+#endif
 		;}
     break;
 
   case 520:
-#line 5197 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6219 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTUnit [sentences]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTUnit [sentences]\n";
+#endif
 		;}
     break;
 
   case 521:
-#line 5201 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6225 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTUnit [paragraph]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTUnit [paragraph]\n";
+#endif
 		;}
     break;
 
   case 522:
-#line 5211 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6237 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTBigUnit [sentence]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTBigUnit [sentence]\n";
+#endif
 		;}
     break;
 
   case 523:
-#line 5215 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6243 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTBigUnit [paragraph]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTBigUnit [paragraph]\n";
+#endif
 		;}
     break;
 
   case 524:
-#line 5225 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6255 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
     {
-			if (debug) cout << "FTIgnoreOption [ ]\n";
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "FTIgnoreOption [ ]\n";
+#endif
 		;}
     break;
 
 
     /* Line 675 of lalr1.cc.  */
-#line 5062 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.cpp"
+#line 6104 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -6905,59 +7947,59 @@ namespace yy
   const unsigned short int
   xquery_parser::yyrline_[] =
   {
-         0,   739,   739,   745,   749,   753,   763,   767,   777,   785,
-     798,   811,   824,   831,   838,   851,   858,   873,   880,   895,
-     900,   905,   910,   920,   925,   930,   937,   948,   953,   958,
-     963,   968,   973,   978,   985,   996,  1001,  1017,  1030,  1036,
-    1048,  1055,  1068,  1082,  1094,  1100,  1113,  1119,  1131,  1138,
-    1145,  1152,  1172,  1184,  1196,  1204,  1212,  1220,  1234,  1241,
-    1257,  1262,  1273,  1280,  1288,  1295,  1310,  1318,  1326,  1334,
-    1348,  1354,  1366,  1374,  1383,  1392,  1402,  1412,  1422,  1432,
-    1442,  1450,  1459,  1468,  1478,  1488,  1498,  1508,  1524,  1533,
-    1548,  1555,  1568,  1580,  1592,  1599,  1612,  1617,  1622,  1627,
-    1632,  1639,  1644,  1649,  1654,  1659,  1670,  1678,  1687,  1696,
-    1711,  1718,  1731,  1736,  1747,  1759,  1766,  1781,  1789,  1798,
-    1808,  1819,  1828,  1838,  1848,  1864,  1877,  1889,  1902,  1909,
-    1924,  1933,  1943,  1952,  1968,  1980,  1986,  1999,  2006,  2021,
-    2028,  2041,  2049,  2057,  2065,  2073,  2081,  2089,  2103,  2108,
-    2119,  2125,  2137,  2149,  2157,  2171,  2179,  2194,  2201,  2215,
-    2223,  2238,  2245,  2258,  2265,  2279,  2291,  2296,  2308,  2313,
-    2333,  2338,  2347,  2356,  2371,  2376,  2384,  2398,  2403,  2415,
-    2420,  2425,  2436,  2440,  2445,  2450,  2455,  2466,  2471,  2477,
-    2489,  2494,  2499,  2510,  2515,  2528,  2533,  2546,  2551,  2564,
-    2569,  2582,  2587,  2600,  2605,  2610,  2615,  2628,  2633,  2638,
-    2650,  2655,  2660,  2665,  2670,  2675,  2686,  2691,  2696,  2701,
-    2706,  2711,  2722,  2727,  2732,  2744,  2749,  2762,  2769,  2782,
-    2789,  2804,  2848,  2853,  2858,  2863,  2875,  2881,  2886,  2897,
-    2902,  2913,  2920,  2927,  2934,  2947,  2954,  2966,  2971,  2976,
-    2981,  2986,  2991,  2996,  3007,  3012,  3023,  3030,  3043,  3048,
-    3053,  3058,  3063,  3079,  3084,  3095,  3100,  3111,  3119,  3127,
-    3141,  3146,  3159,  3166,  3181,  3193,  3198,  3203,  3208,  3213,
-    3218,  3223,  3228,  3239,  3244,  3255,  3260,  3265,  3276,  3287,
-    3292,  3304,  3315,  3327,  3384,  3391,  3404,  3411,  3424,  3429,
-    3440,  3445,  3450,  3461,  3470,  3479,  3488,  3497,  3506,  3522,
-    3529,  3542,  3549,  3564,  3577,  3583,  3596,  3600,  3607,  3614,
-    3621,  3630,  3645,  3649,  3656,  3663,  3670,  3679,  3694,  3700,
-    3712,  3718,  3730,  3736,  3742,  3749,  3762,  3769,  3776,  3782,
-    3788,  3800,  3817,  3823,  3841,  3857,  3862,  3867,  3872,  3877,
-    3882,  3893,  3905,  3912,  3919,  3925,  3949,  3956,  3963,  3969,
-    3981,  3993,  4005,  4012,  4019,  4025,  4037,  4044,  4057,  4069,
-    4076,  4083,  4121,  4127,  4133,  4145,  4150,  4155,  4166,  4178,
-    4183,  4188,  4193,  4198,  4203,  4208,  4213,  4218,  4229,  4240,
-    4245,  4251,  4263,  4274,  4285,  4290,  4295,  4306,  4313,  4320,
-    4327,  4334,  4347,  4359,  4366,  4373,  4380,  4387,  4395,  4403,
-    4417,  4439,  4447,  4468,  4508,  4518,  4522,  4526,  4530,  4534,
-    4544,  4554,  4558,  4568,  4593,  4603,  4607,  4625,  4629,  4633,
-    4637,  4647,  4651,  4655,  4659,  4669,  4673,  4683,  4687,  4697,
-    4701,  4711,  4715,  4725,  4729,  4733,  4743,  4747,  4757,  4761,
-    4771,  4775,  4779,  4783,  4787,  4797,  4807,  4812,  4817,  4822,
-    4827,  4832,  4837,  4848,  4852,  4856,  4860,  4870,  4874,  4878,
-    4882,  4892,  4896,  4906,  4910,  4914,  4918,  4922,  4926,  4930,
-    4940,  4944,  4954,  4958,  4962,  4966,  4976,  4980,  4984,  4988,
-    4992,  5002,  5006,  5016,  5020,  5030,  5034,  5044,  5048,  5058,
-    5068,  5072,  5082,  5086,  5090,  5100,  5104,  5108,  5112,  5116,
-    5126,  5130,  5134,  5138,  5148,  5158,  5168,  5178,  5182,  5192,
-    5196,  5200,  5210,  5214,  5224
+         0,   727,   727,   735,   741,   747,   759,   765,   777,   787,
+     802,   817,   832,   841,   850,   865,   874,   891,   900,   917,
+     924,   931,   938,   950,   957,   964,   973,   986,   993,  1000,
+    1007,  1014,  1021,  1028,  1037,  1050,  1057,  1075,  1090,  1098,
+    1112,  1121,  1136,  1152,  1166,  1174,  1189,  1197,  1211,  1220,
+    1229,  1238,  1260,  1274,  1288,  1298,  1308,  1318,  1334,  1343,
+    1361,  1368,  1381,  1390,  1400,  1409,  1426,  1436,  1446,  1456,
+    1472,  1480,  1494,  1504,  1515,  1526,  1538,  1550,  1562,  1574,
+    1586,  1596,  1607,  1618,  1630,  1642,  1654,  1666,  1684,  1695,
+    1712,  1721,  1736,  1750,  1764,  1773,  1788,  1795,  1802,  1809,
+    1816,  1825,  1832,  1839,  1846,  1853,  1866,  1876,  1887,  1898,
+    1915,  1924,  1939,  1946,  1959,  1973,  1982,  1999,  2009,  2020,
+    2032,  2045,  2056,  2068,  2080,  2098,  2113,  2127,  2142,  2151,
+    2168,  2179,  2191,  2202,  2220,  2234,  2242,  2257,  2266,  2283,
+    2292,  2307,  2317,  2327,  2337,  2347,  2357,  2367,  2383,  2390,
+    2403,  2411,  2425,  2439,  2449,  2465,  2475,  2492,  2501,  2517,
+    2527,  2544,  2553,  2568,  2577,  2593,  2607,  2614,  2628,  2635,
+    2657,  2664,  2675,  2686,  2703,  2710,  2720,  2736,  2743,  2757,
+    2764,  2771,  2784,  2790,  2797,  2804,  2811,  2824,  2831,  2839,
+    2853,  2860,  2867,  2880,  2887,  2902,  2909,  2924,  2931,  2946,
+    2953,  2968,  2975,  2990,  2997,  3004,  3011,  3026,  3033,  3040,
+    3054,  3061,  3068,  3075,  3082,  3089,  3102,  3109,  3116,  3123,
+    3130,  3137,  3150,  3157,  3164,  3178,  3185,  3200,  3209,  3224,
+    3233,  3250,  3296,  3303,  3310,  3317,  3331,  3339,  3346,  3359,
+    3366,  3379,  3388,  3397,  3406,  3421,  3430,  3444,  3451,  3458,
+    3465,  3472,  3479,  3486,  3499,  3506,  3519,  3528,  3543,  3550,
+    3557,  3564,  3571,  3589,  3596,  3609,  3616,  3629,  3639,  3649,
+    3665,  3672,  3687,  3696,  3713,  3727,  3734,  3741,  3748,  3755,
+    3762,  3769,  3776,  3789,  3796,  3809,  3816,  3823,  3836,  3849,
+    3856,  3870,  3883,  3897,  3956,  3965,  3980,  3989,  4004,  4011,
+    4024,  4031,  4038,  4051,  4062,  4073,  4084,  4095,  4106,  4124,
+    4133,  4148,  4157,  4174,  4189,  4197,  4212,  4218,  4225,  4234,
+    4243,  4254,  4271,  4277,  4284,  4293,  4302,  4313,  4330,  4338,
+    4352,  4360,  4374,  4382,  4390,  4399,  4414,  4423,  4432,  4440,
+    4448,  4462,  4481,  4489,  4509,  4527,  4534,  4541,  4548,  4555,
+    4562,  4575,  4589,  4598,  4607,  4615,  4643,  4652,  4661,  4669,
+    4683,  4697,  4711,  4720,  4729,  4737,  4751,  4760,  4775,  4789,
+    4798,  4807,  4847,  4855,  4863,  4877,  4884,  4891,  4904,  4918,
+    4925,  4932,  4939,  4946,  4953,  4960,  4967,  4974,  4987,  5000,
+    5007,  5015,  5029,  5042,  5055,  5062,  5069,  5082,  5091,  5100,
+    5109,  5118,  5133,  5147,  5156,  5165,  5174,  5183,  5193,  5203,
+    5219,  5243,  5253,  5276,  5318,  5330,  5336,  5342,  5348,  5354,
+    5366,  5378,  5384,  5396,  5423,  5435,  5441,  5461,  5467,  5473,
+    5479,  5491,  5497,  5503,  5509,  5521,  5527,  5539,  5545,  5557,
+    5563,  5575,  5581,  5593,  5599,  5605,  5617,  5623,  5635,  5641,
+    5653,  5659,  5665,  5671,  5677,  5689,  5701,  5708,  5715,  5722,
+    5729,  5736,  5743,  5756,  5762,  5768,  5774,  5786,  5792,  5798,
+    5804,  5816,  5822,  5834,  5840,  5846,  5852,  5858,  5864,  5870,
+    5882,  5888,  5900,  5906,  5912,  5918,  5930,  5936,  5942,  5948,
+    5954,  5966,  5972,  5984,  5990,  6002,  6008,  6020,  6026,  6038,
+    6050,  6056,  6068,  6074,  6080,  6092,  6098,  6104,  6110,  6116,
+    6128,  6134,  6140,  6146,  6158,  6170,  6182,  6194,  6200,  6212,
+    6218,  6224,  6236,  6242,  6254
   };
 
   // Print the state stack on the debug stream.
@@ -7071,7 +8113,7 @@ namespace yy
 
 } // namespace yy
 
-#line 5232 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6264 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
 
 
 
