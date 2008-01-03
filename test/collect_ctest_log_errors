@@ -3,10 +3,22 @@ use strict;
 
 my %queries;
 
+my $html = 0;
+
+if (shift eq "--html") { $html = 1; }
+
 sub add_case {
     my ($q, $file, $fun, $assertion) = @_;
-    my $case = "file $file, function $fun, assertion $assertion";
-    push @{ $queries {$case} }, $q;
+    $_ = "$file: $fun: $assertion";
+    if ($html) {
+        s/([&])/$1amp;/g; s/([<])/&lt;/g; s/[>]/&gt;/g;
+    }
+    push @{ $queries {$_} }, $q;
+}
+
+sub by_number_desc_then_string
+{
+    return -(($a <=> $b) || ($a cmp $b));
 }
 
 my $query;
@@ -21,8 +33,17 @@ while (<>) {
     }
 }
 
-foreach (sort (keys %queries)) {
+# change testcase names to include fault count
+my %queries_new;
+foreach (keys %queries) {
+    my @qs = @{ $queries {$_} };
+    $_ = scalar @qs . " queries: " . $_;
+    @{ $queries_new {$_} } = @qs;
+}
+%queries = %queries_new;
+
+foreach (sort (by_number_desc_then_string keys(%queries))) {
     my $case = $_;
     my @qs = @{ $queries {$case} };
-    print scalar @qs . " failures: " . $case . "\n" . join ("\n", @qs) . "\n\n";
+    print $case . "\n" . join ("\n", @qs) . "\n\n";
 }
