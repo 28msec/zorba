@@ -899,7 +899,7 @@ void end_visit(const FLWORExpr& v, void *visit_state)
       ForClause *forclause = static_cast<ForClause *> (clause);
       VarInDeclList *decl_list = &*forclause->get_vardecl_list ();
 
-      for (j = 0; j < size; j++) {
+      for (j = size - 1; j >= 0; j--) {
         rchandle<var_expr> ve;
         ve = pop_nodestack ().cast<var_expr> ();
         ve->set_kind (var_expr::for_var);
