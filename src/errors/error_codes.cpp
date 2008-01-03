@@ -234,7 +234,7 @@ string errors_english::err_decode(enum error_code e)
 
     case FODC0001: return "No context document."; 
 
-    case FODC0002: return "Error retrieving resource."; 
+    case FODC0002: return "Error retrieving the resource with uri `/s'.\nReason: `/s'"; 
 
     case FODC0003: return "Function stability not defined."; 
 
@@ -301,6 +301,8 @@ string errors_english::err_decode(enum error_code e)
     case API0006_COLLECTION_NOT_FOUND: return "A collection with URI `/s' does not exist";
 
     case API0007_COLLECTION_ITEM_MUST_BE_A_NODE: return "Cannot insert a non-node item to a collection";
+
+    case API0008: return "A document with URI `/s' exists already";
 
     default: return "<Unknown errcode> /s /s";
   }
