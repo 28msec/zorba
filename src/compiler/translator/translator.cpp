@@ -903,8 +903,11 @@ void end_visit(const FLWORExpr& v, void *visit_state)
         rchandle<var_expr> ve;
         ve = pop_nodestack ().cast<var_expr> ();
         ve->set_kind (var_expr::for_var);
+        // for var
         vars.push_back (ve);
+        // value expression
         exprs.push_back(pop_nodestack ());
+        // pos var
         if ((*decl_list) [j]->get_posvar () == NULL)
           pos_vars.push_back (NULL);
         else {
@@ -967,17 +970,6 @@ void end_visit(const LetClause& v, void *visit_state)
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const VarGetsDeclList& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const VarGetsDeclList& v, void *visit_state)
-{
-  TRACE_VISIT_OUT ();
-}
-
 void *begin_visit(const VarGetsDecl& v)
 {
   TRACE_VISIT ();
@@ -1003,17 +995,6 @@ void end_visit(const ForClause& v, void *visit_state)
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const VarInDeclList& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const VarInDeclList& v, void *visit_state)
-{
-  TRACE_VISIT_OUT ();
-}
-
 void *begin_visit(const VarInDecl& v)
 {
   TRACE_VISIT ();
@@ -1024,6 +1005,12 @@ void end_visit(const VarInDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
+  const PositionalVar *pv = v.get_posvar ();
+  if (pv != NULL) {
+    expr_t val_expr = pop_nodestack ();
+    nodestack.push (bind_var (pv->get_location (), pv->get_varname (), var_expr::pos_var));
+    nodestack.push (val_expr);
+  }
   nodestack.push (bind_var (v.get_location (), v.get_varname (), var_expr::for_var));
 }
 
@@ -1036,7 +1023,6 @@ void *begin_visit(const PositionalVar& v)
 void end_visit(const PositionalVar& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (bind_var (v.get_location (), v.get_varname (), var_expr::pos_var));
 }
 
 
@@ -3533,7 +3519,35 @@ void end_visit(const FTWordsValue& v, void *visit_state)
   TRACE_VISIT_OUT ();
 }
 
+// Pass-thru
+
+void *begin_visit(const VarInDeclList& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const VarInDeclList& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit(const VarGetsDeclList& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const VarGetsDeclList& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+}
+
+// End pass-thru
+
+
 };
+
 
 Translator *make_translator (static_context *sctx_p) {
   return new TranslatorImpl (sctx_p);
@@ -3544,6 +3558,7 @@ rchandle<expr> translate (static_context *sctx_p, const parsenode &root) {
   root.accept (*t);
   return t->result ();
 }
+
 
 } /* namespace xqp */
 /* vim:set ts=2 sw=2: */
