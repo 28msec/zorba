@@ -40,6 +40,7 @@ echo "Executing command: $VGEACH $CMD $ARGS $2 $3 2> $2.err"
 
 $VGEACH $CMD $ARGS "$2" "$3" 2> "$2.err" # execute the query
 RETURNVALUE=$?
+test -s "$2.err" && cat "$2.err"  # Error shows in log
 if test $RETURNVALUE -ne 0; then
     if test \( $RETURNVALUE -eq 139 \) -a "$VGONFAIL"; then  # segfault
         echo "Segfault -- running valgrind"
@@ -53,7 +54,6 @@ fi
 
 # if there's an error message...
 if test -s "$2.err"; then
-    cat "$2.err"  # Error shows in log
     cat "$2.err" | head -1 | cut -f1 -d':' > "$2"
     ACTUAL_ERR=`cat $2`
 else
