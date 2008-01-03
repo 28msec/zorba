@@ -12,15 +12,15 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
-#include "store/naive/simple_loader.h"
-#include "store/api/collection.h"
-#include "store/naive/store_defs.h"
-#include "errors/error_factory.h"
 #include "runtime/visitors/planitervisitor.h"
-#include "util/web/web.h"
 
-#include "system/globalenv.h"
 #include "types/casting.h"
+
+#include "store/api/store.h"
+
+#include "errors/error_factory.h"
+
+#include "util/web/web.h"
 
 using namespace std;
 namespace xqp {
@@ -1043,122 +1043,70 @@ FnDocIterator::~FnDocIterator()
 
 Item_t FnDocIterator::nextImpl(PlanState& planState)
 {
-  Item_t item, xml;
+  Store& store = Store::getInstance();
 
-  FnDocIteratorState* state;
-  DEFAULT_STACK_INIT ( FnDocIteratorState, state, planState );
+  Item_t doc;
+  Item_t uriItem;
+  xqpStringStore_t uriString;
 
-  item = consumeNext(theChild, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (!state->got_doc || item->getStringValue() != state->uri)
-  {
-    state->uri = item->getStringValue();
-    SimpleStore& store = GET_STORE();
-    state->collection = store.getCollection(item);
+  uriItem = consumeNext(theChild, planState);
+  if (uriItem == NULL)
+    return NULL;
+
+  uriString = uriItem->getStringValue().getStore();
+
+  doc = store.getDocument(uriString);
     
-    if (state->collection != NULL)
-    {
-      state->childrenIter = state->collection->getIterator(true);
-      state->got_doc = 2;
-    }
-    else
-    {
-      xqp_string uri = state->uri;
+  if (doc == NULL)
+  {
+    xqp_string uriCopy = uriString;
 
-      if (uri.lowercase().indexOf("http://") == 0)
+    if (uriCopy.lowercase().indexOf("http://") == 0)
+    {
+      // retrieve web file
+      xqp_string xmlString;
+      int result = http_get(uriCopy.c_str(), xmlString);
+      if (result != 0)
       {
-        // retrieve web file
-        xqp_string result;
-        int result_code = http_get(uri.c_str(), result);
-
-        if (result_code != 0)
-        {
-          // File does not exist
-          ZORBA_ERROR_ALERT(AlertCodes::FODC0002,
-                            &loc, false, "Could not retrieve resource");
-        }
-
-        istringstream iss(result.c_str());
-        XmlLoader& loader = store.getXmlLoader();
-        state->doc = loader.loadXml(iss);
-        state->childrenIter = state->doc->getChildren();
-        state->got_doc = 1;
+        ZORBA_ERROR_ALERT_OSS(AlertCodes::FODC0002, &loc, false, uriString->c_str(),
+                              "HTTP get failure.");
       }
-      else 
-      {
-        // load file
-        ifstream ifs;
-        ifs.open((state->uri).c_str(), ios::in);
-        if (ifs.is_open() == false)
-        {
-          // File does not exist
-          ZORBA_ERROR_ALERT(AlertCodes::FODC0002,
-                            &loc, false, "The file does not exist");
-        }
 
-        XmlLoader& loader = store.getXmlLoader();
-        state->doc = loader.loadXml(ifs);
-        state->childrenIter = state->doc->getChildren();
-        state->got_doc = 1;
+      istringstream iss(xmlString.c_str());
+
+      doc = store.loadDocument(uriString, iss);
+      if (doc == NULL)
+      {
+        ZORBA_ERROR_ALERT_OSS(AlertCodes::FODC0002, &loc, false, uriString->c_str(),
+                              "Failed to parse document.");
+      }
+    }
+    else 
+    {
+      // load file
+      ifstream ifs;
+      ifs.open(uriString->c_str(), ios::in);
+      if (ifs.is_open() == false)
+      {
+        ZORBA_ERROR_ALERT_OSS(AlertCodes::FODC0002, &loc, false, uriString->c_str(),
+                              "File does not exist.");
+      }
+      
+      doc = store.loadDocument(uriString, ifs);
+      if (doc == NULL)
+      {
+        ZORBA_ERROR_ALERT_OSS(AlertCodes::FODC0002, &loc, false, uriString->c_str(),
+                              "Failed to parse document.");
       }
     }
   }
 
-  if (state->got_doc == 1 || state->got_doc == 2) // Collection
-  {
-    do
-    {
-      item = state->childrenIter->next();
-      if (item != NULL)
-        STACK_PUSH(item, state);
-    }
-    while (item != NULL);
-  }
-  else
-  {
-    STACK_PUSH(state->doc, state);
-  }
-  
+  STACK_PUSH(doc, state);
   STACK_END();
 }
-
-
-uint32_t FnDocIterator::getStateSize() const
-{
-  return sizeof(FnDocIteratorState);
-}
-
-
-FnDocIterator::FnDocIteratorState::FnDocIteratorState()
-  :
-  got_doc(0)
-{
-}
-
-
-void FnDocIterator::FnDocIteratorState::init()
-{
-  PlanIterator::PlanIteratorState::init();
-  if (got_doc == 1)
-    childrenIter = doc->getChildren();
-  else if (got_doc == 2)
-    childrenIter = collection->getIterator(true);
-}
-
-
-void FnDocIterator::FnDocIteratorState::reset()
-{
-  PlanIterator::PlanIteratorState::reset();
-  got_doc = 0;
-  childrenIter = NULL;
-  doc = NULL;
-  collection = NULL;
-  uri = (xqp_string)NULL;
-}
-
-//15.5.5 fn:doc-available
-
-//15.5.6 fn:collection
 
 
 } /* namespace xqp */

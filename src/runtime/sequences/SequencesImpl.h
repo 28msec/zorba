@@ -525,34 +525,14 @@ protected:
 class FnDocIterator : public UnaryBaseIterator<FnDocIterator>
 {
 //  DECLARE_LOGGER;
-protected:
-  
+
 public:
   FnDocIterator(yy::location loc, PlanIter_t& arg);
   virtual ~FnDocIterator();
 
   Item_t nextImpl(PlanState& planState);
-  virtual uint32_t getStateSize() const;
   
   virtual void accept(PlanIterVisitor&) const;
-
-protected:
-  class FnDocIteratorState : public PlanIteratorState {
-  public:
-    FnDocIteratorState();
-    
-    int got_doc;              // if got_doc == 0 - no document,
-                              //            == 1 - Item_t doc is used
-                              //            == 2 - Collection_t collection is used
-    Iterator_t childrenIter;
-    Item_t doc;
-    Collection_t collection;
-    xqp_string uri;
-    
-  public:
-    void init();
-    void reset();
-  };
 };
 
 
