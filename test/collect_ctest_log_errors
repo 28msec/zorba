@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+use strict;
+
+my %queries;
+
+sub add_case {
+    my ($q, $file, $fun, $assertion) = @_;
+    my $case = "file $file, function $fun, assertion $assertion";
+    push @{ $queries {$case} }, $q;
+}
+
+my $query;
+
+while (<>) {
+    if (m#^[0-9]+/[0-9]+ Testing: (.*)$#) {
+        $query = $1;
+    } elsif (m#^[^:]+: ([^:]+:[0-9]+): (.*): Assertion (.*) failed.$#) {
+        add_case $query, $1, $2, $3;
+    } elsif (m#.*Assertion (.*) failed in ([^:]+:[0-9]+)$#) {
+        add_case $query, $2, "?", $1;
+    }
+}
+
+foreach (sort (keys %queries)) {
+    my $case = $_;
+    my @qs = @{ $queries {$case} };
+    print scalar @qs . " failures: " . $case . "\n" . join ("\n", @qs) . "\n\n";
+}
