@@ -46,7 +46,7 @@ string errors_english::err_decode(enum error_code e)
 
     case XPST0005:  return "During the analysis phase, it is a static error if the static type assigned to an expression other than the expression () or data(()) is empty-sequence()."; 
 
-    case XPST0008:  return "Expression refers to an element name, attribute name, schema type name, namespace prefix, or variable name that is not defined in the st atic context: /s /s";
+    case XPST0008:  return "Expression refers to an element name, attribute name, schema type name, namespace prefix, or variable name that is not defined in the static context: /s /s";
 
     case XPST0010:  return "An implementation must raise a static error if it encounters a reference to an axis that it does not support."; 
 
@@ -60,7 +60,7 @@ string errors_english::err_decode(enum error_code e)
 
     case XPST0083:  return "(Not currently used.)"; 
 
-    case XPTY0004:  return "During the static analysis phase, an expression is found to have a static type that is not appropriate for the context in which the expression occurs, or during the dynamic evaluation phase, the dynamic type of a value does not match a required type as specified by the matching rules."; 
+    case XPTY0004:  return "During the static analysis phase, an expression is found to have a static type that is not appropriate for the context in which the expression occurs, or during the dynamic evaluation phase, the dynamic type of a value does not match a required type as specified by the matching rules: /s"; 
 
     case XPTY0006:  return "(Not currently used.)"; 
 
