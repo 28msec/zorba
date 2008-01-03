@@ -15,6 +15,7 @@
 #include "system/zorba.h"
 #include "util/utf8/utf8.h"
 #include "util/math_helper.h"
+#include "util/Assert.h"
 
 using namespace std;
 namespace xqp {
@@ -576,6 +577,7 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
   item0 = consumeNext (theChildren[0], planState );
   if(item0 == NULL)
   {
+    ZORBA_ASSERT (false);  // danm: the rest will obviously fail if item0 = 0
     item0 = item0->getAtomizationValue();
     STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
   }
