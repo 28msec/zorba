@@ -495,7 +495,7 @@ protected:
 public:
   StoreNodeDistinctIterator(const Iterator_t& input) : theInput(input) { }
 
-  ~StoreNodeDistinctIterator() { }
+  ~StoreNodeDistinctIterator() { close(); }
 
   Item_t next();
   void reset();
@@ -552,7 +552,7 @@ public:
   {
   }
 
-  ~StoreNodeSortIterator() { }
+  ~StoreNodeSortIterator() { close(); }
 
   Item_t next();
   void reset();

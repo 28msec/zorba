@@ -32,7 +32,8 @@ typedef rchandle<class Collection> Collection_t;
 typedef rchandle<class TempSeq> TempSeq_t;
 typedef rchandle<class PUL> PUL_t;
 
-typedef StringHashMap<Collection_t> Collections;
+typedef StringHashMap<Collection_t> CollectionSet;
+typedef StringHashMap<Item_t> DocumentSet;
 
 
 /*******************************************************************************
@@ -70,8 +71,9 @@ protected:
 
   BasicItemFactory   * theItemFactory;
 
-  Collections          theCollections;
- 
+  CollectionSet        theCollections;
+  DocumentSet          theDocuments;
+
   XmlLoader          * theXmlLoader;
 
 private:
@@ -95,11 +97,14 @@ public:
 
   virtual Item_t createUri();
 
+  Item_t loadDocument(const xqp_string& uri, std::istream& stream);
+  Item_t getDocument(const xqp_string& uri);
+  void deleteDocument(const xqp_string& uri);
+
   virtual Collection_t createCollection(const xqp_string& uri);
-  virtual Collection_t createCollection(Item_t uri);
   virtual Collection_t createCollection();
-  virtual Collection_t getCollection(Item_t uri);
-  virtual void deleteCollection(Item_t uri);
+  virtual Collection_t getCollection(const xqp_string& uri);
+  virtual void deleteCollection(const xqp_string& uri);
 
   virtual int32_t compare(Item_t item1, Item_t item2) const;
 

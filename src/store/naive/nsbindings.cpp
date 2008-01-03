@@ -9,6 +9,10 @@ namespace xqp
 NsBindingsContext::NsBindingsContext(unsigned long numBindings)
 {
   theBindings.resize(numBindings);
+#if 0
+  std::cout << "Create binding context1 " << this << "; num bindings = "
+            << numBindings << std::endl;
+#endif
 }
 
 
@@ -16,6 +20,19 @@ NsBindingsContext::NsBindingsContext(const NamespaceBindings& bindings)
   :
   theBindings(bindings)
 {
+#if 0
+  std::cout << "Create binding context2 " << this << "; num bindings = "
+            << bindings.size() << std::endl;
+#endif
+}
+
+
+NsBindingsContext::~NsBindingsContext()
+{
+#if 1
+  std::cout << "Removing binding context " << this << "; num bindings = "
+            << theBindings.size() << std::endl;
+#endif
 }
 
 

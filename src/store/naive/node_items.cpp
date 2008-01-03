@@ -279,6 +279,9 @@ DocumentNodeImpl::DocumentNodeImpl(const DocumentNodeImpl* src)
 ********************************************************************************/
 DocumentNodeImpl::~DocumentNodeImpl()
 {
+#if 0
+  std::cout << "Deleting doc node " << this << std::endl;
+#endif
   unsigned long numChildren = theChildren.size();
   unsigned long i;
   for (i = 0; i < numChildren; i++)
@@ -570,6 +573,12 @@ ElementNodeImpl::ElementNodeImpl(
 ********************************************************************************/
 ElementNodeImpl::~ElementNodeImpl()
 {
+#if 0
+  std::cout << "Deleting elem node " << this << ", nscontext "
+            << theNsContext.get_ptr() << ", " << theNsContext->getRefCount()
+            << std::endl;
+#endif
+
   Assert(getRefCount() == 0);
 
   unsigned long i;
@@ -1235,6 +1244,7 @@ void StoreNodeDistinctIterator::close()
   // which wraps this store iterator.
 
   theNodeSet.clear();
+  theInput = NULL;
 }
 
 
@@ -1309,6 +1319,7 @@ void StoreNodeSortIterator::close()
 
   theNodes.clear();
   theCurrentNode = -1;
+  theInput = NULL;
 }
 
 

@@ -44,6 +44,7 @@ SimpleStore::SimpleStore()
   theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
   theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
+  theDocuments(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
   theXmlLoader(NULL)
 {
 }
@@ -74,6 +75,8 @@ void SimpleStore::init()
 SimpleStore::~SimpleStore()
 {
   theCollections.clear();
+
+  theDocuments.clear();
 
   if (theItemFactory != NULL)
   {
@@ -139,11 +142,52 @@ Item_t SimpleStore::createUri()
 
 
 /*******************************************************************************
+
+********************************************************************************/
+Item_t SimpleStore::loadDocument(const xqp_string& uri, std::istream& stream)
+{
+  if (theDocuments.find(uri))
+  {
+    ZORBA_ERROR_ALERT_OSS(AlertCodes::API0008, NULL, true, uri, "");
+    return NULL;
+  }
+
+  XmlLoader& loader = getXmlLoader();
+
+  Item_t root = loader.loadXml(stream);
+
+  theDocuments.insert(uri, root);
+
+  return root;
+}
+
+
+/*******************************************************************************
+  Return an rchandle to the root node of the document corresponding to the given
+  URI, or NULL if there is no document with that URI.
+********************************************************************************/
+Item_t SimpleStore::getDocument(const xqp_string& uri)
+{
+  Item_t doc;
+  bool found = theDocuments.get(uri, doc);
+  return doc;
+}
+
+
+/*******************************************************************************
+  Delete the document with the given URI. If there is no document with that
+  URI, this method is a NOOP.
+********************************************************************************/
+void SimpleStore::deleteDocument(const xqp_string& uri)
+{
+  theDocuments.remove(uri);
+}
+
+
+/*******************************************************************************
   Create a collection with a given URI and return an rchandle to the new
   collection object. If a collection with the given URI exists already, return
   NULL and register an error.
-
-  Note: The collection URI is given as an xqp_string.
 ********************************************************************************/
 Collection_t SimpleStore::createCollection(const xqp_string& uri)
 {
@@ -165,32 +209,6 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
 
 
 /*******************************************************************************
-  Create a collection with a given URI and return an rchandle to the new
-  collection object. If a collection with the given URI exists already, return
-  NULL and register an error.
-
-  Note: The collection URI is given as an Item.
-********************************************************************************/
-Collection_t SimpleStore::createCollection(Item_t uri)
-{
-  if (theCollections.find(uri->getStringValue()))
-  {
-    ZORBA_ERROR_ALERT_OSS(AlertCodes::API0005_COLLECTION_ALREADY_EXISTS,
-                          NULL,
-                          true,
-                          uri->getStringValue(), "");
-    return NULL;
-  }
-
-  Collection_t collection(new SimpleCollection(uri));
-
-  theCollections.insert(uri->getStringValue(), collection);
-
-  return collection;
-}
-
-
-/*******************************************************************************
   Create a collection in the store. The collection will be assigned an internal
   URI by the store.
 ********************************************************************************/
@@ -198,7 +216,7 @@ Collection_t SimpleStore::createCollection()
 {
   Item_t uri = createUri();
 
-  return createCollection(uri);
+  return createCollection(uri->getStringProperty());
 }
 
 
@@ -206,66 +224,23 @@ Collection_t SimpleStore::createCollection()
   Return an rchandle to the Collection object corresponding to the given URI,
   or NULL if there is no collection with that URI.
 ********************************************************************************/
-Collection_t SimpleStore::getCollection(Item_t uri)
+Collection_t SimpleStore::getCollection(const xqp_string& uri)
 {
   Collection_t collection;  // initialized to NULL
-  bool found = theCollections.get(uri->getStringValue(), collection);
+  bool found = theCollections.get(uri, collection);
   return collection;
 }
 
 
 /*******************************************************************************
-  Deletes the collection with the given URI. If there is no collection with
+  Delete the collection with the given URI. If there is no collection with
   that URI, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteCollection(Item_t uri)
+void SimpleStore::deleteCollection(const xqp_string& uri)
 {
-  theCollections.remove(uri->getStringValue());
+  theCollections.remove(uri);
 }
 
-#if 0
-/*******************************************************************************
-  Make a copy of the given node. 
-
-  Initially, the copy is shallow, i.e., the copy node has the same children and
-  attributes as the source node. However, the children/attributes of the copy
-  node will themselves be copied when they are actually accessed (see 
-  ChildrenIterator and AttributesIterator classes in node_items.h).
-********************************************************************************/
-Item_t SimpleStore::copyNode(Item* node)
-{
-  switch (node->getNodeKind())
-  {
-  case StoreConsts::elementNode:
-  {
-    ElementNodeImpl* enode = reinterpret_cast<ElementNodeImpl*>(node);
-
-    return new ElementNodeImpl(enode,
-                               enode->typePreserve(),
-                               enode->nsPreserve(),
-                               false);
-  }
-  case StoreConsts::attributeNode:
-  {
-    AttributeNodeImpl* anode = reinterpret_cast<AttributeNodeImpl*>(node);
-
-    return new AttributeNodeImpl(anode, anode->typePreserve());
-  }
-  case StoreConsts::textNode:
-    return new TextNodeImpl((textNode*)node);
-
-  case StoreConsts::piNode:
-    return PiNodeImpl((piNode*)node);
-
-  case StoreConsts::commentNode:
-    return new CommentNodeImpl((commentNode*)node);
-
-  default:
-    Assert(0);
-    return NULL;
-  }
-}
-#endif
 
 /*******************************************************************************
   Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if

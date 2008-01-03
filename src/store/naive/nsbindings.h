@@ -34,6 +34,8 @@ public:
 
   NsBindingsContext(const NamespaceBindings& bindings);
 
+  ~NsBindingsContext();
+
   const NamespaceBindings& getBindings() const { return theBindings; }
   NamespaceBindings& getBindings()             { return theBindings; }
 

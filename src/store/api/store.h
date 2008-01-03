@@ -150,7 +150,32 @@ public:
    * @param iterator
    */
   virtual Iterator_t distinctNodes(Iterator_t) = 0;
-	
+
+
+  /* ------------------------ Document Management ---------------------------*/
+
+  /**
+   * Load a document to the store. The document is loaded from an input stream.
+   *
+   * @param uri The uri of the document to load.
+   * @return rchandle to the newly created document or NULL if a document
+   *         with the given uri exists already.
+   */
+  virtual Item_t loadDocument(const xqp_string& uri, std::istream& stream) = 0;
+
+  /**
+   * Get an rchandle to the root node of the document with the given uri.
+   *
+   * @param uri The uri of the document to access.
+   */
+  virtual Item_t getDocument(const xqp_string& uri) = 0;
+
+  /**
+   * Delete the document with the given uri.
+   *
+   * @param uri The uri of the document to delete.
+   */
+  virtual void deleteDocument(const xqp_string& uri) = 0;
 		
   /* ------------------------ Collection Management ---------------------------*/
 
@@ -161,21 +186,14 @@ public:
    */
   virtual Item_t createUri() = 0;
 	
-  /** Creates a collection in the store.
+  /**
+   * Creates a collection in the store.
    * 
    * @param URI The URI of the collection to create.
-   * @return handle object of the newly created collection
-   * @throws UriInUseException If the passed uri already exists in the store.
+   * @return rchandle to the newly created collection or NULL if a collection
+   *         with the given uri exists already.
    */
   virtual Collection_t createCollection(const xqp_string& uri) = 0;
-
-  /** Creates a collection in the store.
-   * 
-   * @param URI The URI of the collection to create.
-   * @return handle object of the newly created collection
-   * @throws UriInUseException If the passed uri already exists in the store.
-   */
-  virtual Collection_t createCollection(Item_t uri) = 0;
 
   /** Creates a collection in the store (without given URI).
    * 
@@ -189,13 +207,13 @@ public:
    * @param URI of the colleciton
    * @return handle object of the collection. Returns NULL if the collection does not exist
    */
-  virtual Collection_t getCollection(Item_t uri) = 0;
+  virtual Collection_t getCollection(const xqp_string& uri) = 0;
 		
   /** Deletes a collection.
    *
    * @param URI to identify the collection to delete.
    */
-  virtual void deleteCollection(Item_t uri) = 0;
+  virtual void deleteCollection(const xqp_string& uri) = 0;
 		
 }; /* class Store */
 	
