@@ -397,7 +397,7 @@ DECL(fn_codepoints_to_string,
 
 DECL(fn_string_to_codepoints,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","string-to-codepoints"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
 DECL(fn_string_compare_2,
