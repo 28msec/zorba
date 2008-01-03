@@ -5,13 +5,11 @@
 
 #include <iostream>
 #include <cassert>
-#include "util/Assert.h"
+//#include "util/Assert.h"
 
 #ifdef WIN32
 #include "util/win32/stdint.h"
-#define		XQP_DLLEXPORT		__declspec( dllexport )
 #else
-#define		XQP_DLLEXPORT
 #endif
 
 #endif

@@ -21,7 +21,7 @@ public:
 
 public:
 
-	xqp_string   module_name;///empty if is main module
+//	xqp_string   module_name;///empty if is main module
 
 	xqp_string   filename;
 	unsigned int line;
@@ -127,7 +127,7 @@ typedef rchandle<XQueryExecution> XQueryExecution_t;
 ///user might choose to receive the alerts through callback functions
 typedef int alert_callback(ZorbaAlert*       alert, 
 													 XQuery*           current_xquery,
-													 XQueryExecution*  current_xqueryresult,
+													 XQueryExecution*  current_xqueryexecution,
 													 void*             param);
 
 
