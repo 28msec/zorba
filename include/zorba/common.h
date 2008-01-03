@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <cassert>
+#include "util/Assert.h"
 
 #ifdef WIN32
 #include "util/win32/stdint.h"

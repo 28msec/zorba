@@ -10,6 +10,8 @@
 
 #include "compiler/translator/translator.h"
 
+#include "zorba/common.h"
+
 #include "functions/library.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "util/tracer.h"
@@ -23,10 +25,8 @@
 # include "zorba/util/properties.h"
 #endif
 
-#include <iostream>
 #include <string>
 #include <stack>
-#include <cassert>
 #include <sstream>
 
 
