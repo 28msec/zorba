@@ -173,15 +173,20 @@ int _tmain(int argc, _TCHAR* argv[])
   if (lProp->useResultFile())
     resultFile = new ofstream(lProp->getResultFile().c_str());
 
-
-  if (lProp->useSerializer()) {
-    if (lProp->useResultFile()) {
+  if (lProp->useSerializer())
+  {
+    if (lProp->useResultFile())
+    {
       result->serialize(*resultFile);
       // endl should not be sent when serializing!
     }
-    else result->serialize(std::cout);
+    else
+    {
+      result->serialize(std::cout);
+    }
   }
-  else {
+  else 
+  {
     while( true )
     {
       Item_t it = result->next();
@@ -194,10 +199,12 @@ int _tmain(int argc, _TCHAR* argv[])
         cout << it->show() << endl;
     }
   }
+
   if(result->isError()) {
     goto DisplayErrorsAndExit;
   }
 
+  result->close();
   // delete result;
   // delete query;
   // zorba_factory.destroyQuery(query);
@@ -210,7 +217,8 @@ int _tmain(int argc, _TCHAR* argv[])
   if (lProp->printTime())
     timer.print(cout);
   
-  if (resultFile != NULL) {
+  if (resultFile != NULL)
+  {
     resultFile->close();
     delete resultFile;
   }
