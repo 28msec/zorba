@@ -374,13 +374,14 @@ Zorba_XQueryExecution::reset()
 void
 Zorba_XQueryExecution::close()
 {
-	try{
-  if (!theClosed)
+	try
   {
-    it_result->releaseResources(*state_block); 
-    //delete theStateBlock;
-    theClosed = true;
-  }
+    if (!theClosed)
+    {
+      it_result->releaseResources(*state_block); 
+      //delete theStateBlock;
+      theClosed = true;
+    }
 	}
   catch(xqp_exception &)
 	{
