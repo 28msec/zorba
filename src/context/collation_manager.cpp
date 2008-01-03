@@ -109,7 +109,7 @@ CollationManager::removeReference(std::string  coll_string,
 
 
 const CollationManager::COLLATION_DESCR*
-CollationManager::getHardcodedCollator(xqp_string URI)
+CollationManager::getHardcodedCollator(std::string URI)
 {
 	////blind search
 	if(URI.empty())

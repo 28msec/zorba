@@ -19,7 +19,7 @@ class CollationManager
 public:
 	typedef struct
 	{
-		xqp_string		coll_uri;
+		std::string		coll_uri;
 		std::string		coll_string;
 		::Collator::ECollationStrength	coll_strength;
 	}COLLATION_DESCR;
@@ -45,7 +45,7 @@ public:
 														::Collator::ECollationStrength coll_strength);
 	void					removeReference(std::string  coll_string,
 															::Collator::ECollationStrength coll_strength);
-	static const COLLATION_DESCR* getHardcodedCollator(xqp_string URI);
+	static const COLLATION_DESCR* getHardcodedCollator(std::string URI);
 };
 
 
