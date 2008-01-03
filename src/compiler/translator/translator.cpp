@@ -761,8 +761,12 @@ void end_visit(const CompElemConstructor& v, void *visit_state)
   }
   
   expr_t lQNameExpr = pop_nodestack();
+#if 0  // casting to qnames not implemented? fails at runtime
+  lElem = new cast_expr (v.get_location (), new elem_expr(v.get_location(), lQNameExpr, lContent),
+                         GENV_TYPESYSTEM.create_atomic_type (TypeSystem::XS_QNAME, TypeSystem::QUANT_ONE));
+#else
   lElem = new elem_expr(v.get_location(), lQNameExpr, lContent);
-
+#endif
   nodestack.push(lElem);
 }
 
