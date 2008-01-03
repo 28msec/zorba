@@ -140,8 +140,8 @@ namespace xqp
   Item_t
   CompareIterator::nextImpl ( PlanState& planState )
   {
-    Item_t aItem0;
-    Item_t aItem1;
+    Item_t lItem0;
+    Item_t lItem1;
     Iterator_t lIter0;
     Iterator_t lIter1;
     TempSeq_t temp0;
@@ -169,7 +169,9 @@ namespace xqp
         i1 = 1;
         while ( !found && temp1->containsItem ( i1 ) )
         {
-          if ( CompareIterator::generalComparison ( temp0->getItem ( i0 ), temp1->getItem ( i1 ), theCompType ) )
+          lItem0 = temp0->getItem(i0);
+          lItem1 = temp1->getItem(i1);
+          if ( CompareIterator::generalComparison ( lItem0, lItem1, theCompType ) )
             found = true;
           i1++;
         }
@@ -180,10 +182,10 @@ namespace xqp
     } /* if general comparison */
     else if ( this->isValueComparison() )
     {
-      if ( ( ( aItem0 = this->consumeNext ( theChild0, planState ) ) != NULL )
-              && ( ( aItem1 = this->consumeNext ( theChild1, planState ) ) !=NULL ) )
+      if ( ( ( lItem0 = this->consumeNext ( theChild0, planState ) ) != NULL )
+              && ( ( lItem1 = this->consumeNext ( theChild1, planState ) ) !=NULL ) )
       {
-        STACK_PUSH ( Zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( aItem0, aItem1, theCompType ) ), state );
+        STACK_PUSH ( Zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( lItem0, lItem1, theCompType ) ), state );
         if ( this->consumeNext ( theChild0, planState ) != NULL || this->consumeNext ( theChild1, planState ) != NULL )
         {
           ZORBA_ERROR_ALERT( AlertCodes::XPTY0004,
@@ -329,19 +331,19 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
         break;
       case VALUE_GREATER:
       case GENERAL_GREATER:
-        return aCompValue > 0;
+        return aCompValue == 1;
         break;
       case VALUE_GREATER_EQUAL:
       case GENERAL_GREATER_EQUAL:
-        return aCompValue >= 0;
+        return (aCompValue == 0) || (aCompValue == 1);
         break;
       case VALUE_LESS:
       case GENERAL_LESS:
-        return aCompValue < 0;
+        return aCompValue == -1;
         break;
       case VALUE_LESS_EQUAL:
       case GENERAL_LESS_EQUAL:
-        return aCompValue <= 0;
+        return (aCompValue == -1) || (aCompValue == 0);
         break;
       default:
         break;
@@ -482,7 +484,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
     int8_t compareRes = CompareIterator::compare(aItem0, aItem1, aCollation);
     if (compareRes == 0)
       return 0;
-    else if (compareRes == -1 || compareRes == 1)
+    else if (compareRes == -1 || compareRes == 1 || compareRes == 2)
       return 1;
     TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
     TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
@@ -532,16 +534,20 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
         ret = -1;
       else if ( aItem0->getFloatValue() == aItem1->getFloatValue())
         ret = 0;
-      else
+      else if (aItem0->getFloatValue() > aItem1->getFloatValue())
         ret = 1;
+      else
+        ret = 2;
     } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)) {
       if ( aItem0->getDoubleValue() < aItem1->getDoubleValue())
         ret = -1;
       else if ( aItem0->getDoubleValue() == aItem1->getDoubleValue())
         ret = 0;
-      else
+      else if (aItem0->getDoubleValue() > aItem1->getDoubleValue())
         ret = 1;
+      else
+        ret = 2;
     } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
     && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) {
       if ( aItem0->getDecimalValue() < aItem1->getDecimalValue())

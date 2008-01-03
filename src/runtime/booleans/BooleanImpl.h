@@ -109,6 +109,7 @@ namespace xqp
        * @return -1, if item0 &lt; item1
        *          0, if item0 == item1
        *          1, if item0 &gt; item1
+       *          2, if item0 not equal, not bigger, not smaller item1 (special case when an Item has the value NaN)
        *         -2, if it is not possible to compare the values the two passed items
        */
       static int8_t compare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
@@ -118,7 +119,8 @@ namespace xqp
        * @param aItem0 
        * @param aItem1 
        * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
-       * @return -1 (smaller), 0 (equal), 1 (bigger), -2 (value comparison not possible)
+       * @return -1 (smaller), 0 (equal), 1 (bigger), 
+       *          2 (not equal, not bigger, not smaller), -2 (value comparison not possible)
        */
       static int8_t valueCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
       
@@ -127,7 +129,8 @@ namespace xqp
        * @param aItem0 
        * @param aItem1 
        * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
-       * @return -1 (smaller), 0 (equal), 1 (bigger), -2 (general comparison not possible)
+       * @return -1 (smaller), 0 (equal), 1 (bigger), 
+       *          2 (not equal, not bigger, not smaller), -2 (general comparison not possible)
        */
       static int8_t generalCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
       
