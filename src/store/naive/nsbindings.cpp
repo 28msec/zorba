@@ -29,7 +29,7 @@ NsBindingsContext::NsBindingsContext(const NamespaceBindings& bindings)
 
 NsBindingsContext::~NsBindingsContext()
 {
-#if 1
+#if 0
   std::cout << "Removing binding context " << this << "; num bindings = "
             << theBindings.size() << std::endl;
 #endif
