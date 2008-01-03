@@ -177,6 +177,20 @@ void ZorbaAlertFactory::error_alert(
     const std::string param2)
 {
 	Zorba* z = ZORBA_FOR_CURRENT_THREAD();
+	if(!z)
+	{//cannot notify the details of error
+		if(!continue_execution)
+		{
+	#ifndef NDEBUG
+			if(g_abort_when_fatal_error)
+				abort ();
+			else
+	#endif
+				throw xqp_exception(e,"","");
+		}
+		else
+			return;
+	}
 	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
 	if(!ploc)
@@ -245,6 +259,8 @@ void ZorbaAlertFactory::warning_alert(
     const string param2)
 {
 	Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
+	if(!z)
+		return;//cannot notify the details of warning
 	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 	if(!ploc)
 	{
@@ -289,6 +305,8 @@ void ZorbaAlertFactory::notify_event(
 {
 	std::string notif_decoded;
 	Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
+	if(!z)
+		return;//cannot notify the details of notification event
 	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
 	notif_decoded = err_manager->getAlertCodes().notify_event_decode(notif_event);
@@ -315,6 +333,8 @@ int ZorbaAlertFactory::ask_user(
 {
 	std::string ask_user_decoded;
 	Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
+	if(!z)
+		return -1;//cannot notify the details of ask user
 	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
 	ask_user_decoded = err_manager->getAlertCodes().ask_user_decode(ask_string);

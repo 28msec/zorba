@@ -11,10 +11,15 @@ namespace xqp
 
 class Zorba;
 
+/*daniel: getInstance cannot be called by system after user calls shutdown()
+this generates memory leaks
+
 #define ZORBA_FOR_CURRENT_THREAD()                             \
   static_cast<ZorbaEngineImpl*>(&ZorbaEngine::getInstance())-> \
     getZorbaForCurrentThread()
+*/
 
+Zorba* ZORBA_FOR_CURRENT_THREAD();
 
 /*******************************************************************************
 

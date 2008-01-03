@@ -50,6 +50,13 @@ ZorbaEngine& ZorbaEngine::getInstance()
 	return *globalZorbaEngine;
 }
 
+Zorba* ZORBA_FOR_CURRENT_THREAD()
+{
+	if(!globalZorbaEngine)
+		return NULL;
+	return globalZorbaEngine->getZorbaForCurrentThread();
+}
+
 
 ZorbaEngineImpl::ZorbaEngineImpl()
 {
