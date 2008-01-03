@@ -93,15 +93,13 @@ int _tmain(int argc, _TCHAR* argv[])
     fname = testfile;
   }
 #endif
-  if(! lProp->inlineQuery())
-  {          
+  if(! lProp->inlineQuery()) {
     // read the file
     ifstream  qfile(fname);
-    
-    if(!qfile.is_open())
-      query_text = fname;
-    else {
-    string temp;
+    assert (qfile);
+ 
+    {
+      string temp;
       query_text = "";
       
       // warning: this method of reading a file might trim the 
