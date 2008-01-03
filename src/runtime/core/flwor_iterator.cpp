@@ -16,125 +16,155 @@
 namespace xqp
 {
 
-  ///////////////////////////////////////////////////////////////
-  //  ForLetClause
-  ///////////////////////////////////////////////////////////////
-  FLWORIterator::ForLetClause::ForLetClause ( std::vector<var_iter_t> aForVars,
-          PlanIter_t& aInput ) :
-      type ( FOR ), forVars ( aForVars ), input ( aInput )
-  {
-  }
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  ForLetClause                                                               //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-  FLWORIterator::ForLetClause::ForLetClause ( std::vector<var_iter_t> aForVars,
-          std::vector<var_iter_t> aPosVars, PlanIter_t& aInput ) :
-      type ( FOR ), forVars ( aForVars ), posVars ( aPosVars ), input ( aInput )
-  {
-  }
-
-  FLWORIterator::ForLetClause::ForLetClause ( std::vector<ref_iter_t> aLetVars,
-          PlanIter_t& aInput, bool aNeedsMaterialization ) :
-      type ( LET ), letVars ( aLetVars ), input ( aInput ),
-      needsMaterialization ( aNeedsMaterialization )
-  {
-  }
-
-  void FLWORIterator::ForLetClause::accept ( PlanIterVisitor& v ) const
-  {
-    // TODO correct for visitor
-    switch ( type )
-    {
-      case FOR:
-        v.beginVisitFlworForVariable(*input);
-        v.endVisitFlworForVariable(*input);
-        break;
-      case LET:
-        v.beginVisitFlworLetVariable(*input);
-        v.endVisitFlworLetVariable(*input);
-        break;
-      default:
-        assert ( false );
-    }
-  }
-  ///////////////////////////////////////////////////////////////
-  //  ForLetClause
-  ///////////////////////////////////////////////////////////////
+FLWORIterator::ForLetClause::ForLetClause(
+    std::vector<var_iter_t> aForVars,
+    PlanIter_t& aInput)
+  :
+  type ( FOR ), forVars ( aForVars ), input ( aInput )
+{
+}
 
 
-  ///////////////////////////////////////////////////////////////
-  //  OrderSpec
-  ///////////////////////////////////////////////////////////////
-  FLWORIterator::OrderSpec::OrderSpec ( PlanIter_t aOrderByIter, bool aEmpty_least,
-                                        bool aDescending ) : orderByIter ( aOrderByIter ),
-      empty_least ( aEmpty_least ), descending ( aDescending )
-  {
-  }
+FLWORIterator::ForLetClause::ForLetClause (
+    std::vector<var_iter_t> aForVars,
+    std::vector<var_iter_t> aPosVars,
+    PlanIter_t& aInput )
+  :
+  type ( FOR ), forVars ( aForVars ), posVars ( aPosVars ), input ( aInput )
+{
+}
 
-  void FLWORIterator::OrderSpec::accept ( PlanIterVisitor& v ) const
-  {
-    v.beginVisitFlworOrderBy(*orderByIter);
-    v.endVisitFlworOrderBy(*orderByIter);
-  }
-  ///////////////////////////////////////////////////////////////
-  //  OrderSpec
-  ///////////////////////////////////////////////////////////////
 
-  ///////////////////////////////////////////////////////////////
-  //  OrderByClause
-  ///////////////////////////////////////////////////////////////
-  FLWORIterator::OrderByClause::OrderByClause (
-      std::vector<FLWORIterator::OrderSpec> aOrderSpecs, bool aStable ) : orderSpecs ( aOrderSpecs ),
-      stable ( aStable )
-  {
-  }
+FLWORIterator::ForLetClause::ForLetClause (
+    std::vector<ref_iter_t> aLetVars,
+    PlanIter_t& aInput,
+    bool aNeedsMaterialization )
+  :
+  type ( LET ),
+  letVars ( aLetVars ),
+  input ( aInput ),
+  needsMaterialization ( aNeedsMaterialization )
+{
+}
 
-  void FLWORIterator::OrderByClause::accept ( PlanIterVisitor& v ) const
-  {
-    // TODO
-    std::vector<OrderSpec>::const_iterator iter;
-    for ( iter = orderSpecs.begin() ; iter != orderSpecs.end(); iter++ )
-    {
-      iter->accept ( v );
-    }
-  }
-  ///////////////////////////////////////////////////////////////
-  //  OrderByClause
-  ///////////////////////////////////////////////////////////////
 
-  ///////////////////////////////////////////////////////////////
-  //  FlworState
-  ///////////////////////////////////////////////////////////////
-  void FLWORIterator::FlworState::reset()
+void FLWORIterator::ForLetClause::accept ( PlanIterVisitor& v ) const
+{
+  // TODO correct for visitor
+  switch ( type )
   {
-    PlanIteratorState::reset();
-    size_t size = varBindingState.size();
-    varBindingState.clear();
-    varBindingState.insert ( varBindingState.begin(), size, 0 );
-    curOrderResultSeq = 0;
-    if ( orderMap != 0 )
-    {
-      orderMap->clear();
-    }
+  case FOR:
+    v.beginVisitFlworForVariable(*input);
+    v.endVisitFlworForVariable(*input);
+    break;
+  case LET:
+    v.beginVisitFlworLetVariable(*input);
+    v.endVisitFlworLetVariable(*input);
+    break;
+  default:
+    assert ( false );
   }
+}
 
-  void FLWORIterator::FlworState::init ( size_t nb_variables )
-  {
-    PlanIterator::PlanIteratorState::init();
-    varBindingState = std::vector<uint32_t> ( nb_variables, 0 );
-  }
 
-  void FLWORIterator::FlworState::init ( size_t nb_variables, vector<OrderSpec>* orderSpecs )
-  {
-    init ( nb_variables );
-    orderMap = new order_map_t ( orderSpecs );
-  }
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  OrderSpec                                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-  void FLWORIterator::FlworState::releaseResources()
+FLWORIterator::OrderSpec::OrderSpec (
+    PlanIter_t aOrderByIter,
+    bool aEmpty_least,
+    bool aDescending )
+  :
+  orderByIter ( aOrderByIter ),
+  empty_least ( aEmpty_least ),
+  descending ( aDescending )
+{
+}
+
+
+void FLWORIterator::OrderSpec::accept ( PlanIterVisitor& v ) const
+{
+  v.beginVisitFlworOrderBy(*orderByIter);
+  v.endVisitFlworOrderBy(*orderByIter);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  OrderByClause                                                              //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+FLWORIterator::OrderByClause::OrderByClause (
+    std::vector<FLWORIterator::OrderSpec> aOrderSpecs,
+    bool aStable )
+  :
+  orderSpecs ( aOrderSpecs ),
+  stable ( aStable )
+{
+}
+  
+
+void FLWORIterator::OrderByClause::accept ( PlanIterVisitor& v ) const
+{
+  // TODO
+  std::vector<OrderSpec>::const_iterator iter;
+  for ( iter = orderSpecs.begin() ; iter != orderSpecs.end(); iter++ )
   {
-    reset();
+    iter->accept ( v );
   }
-  ///////////////////////////////////////////////////////////////
-  //  FlworState
-  ///////////////////////////////////////////////////////////////
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  FlworState                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+void FLWORIterator::FlworState::reset()
+{
+  PlanIteratorState::reset();
+  size_t size = varBindingState.size();
+  varBindingState.clear();
+  varBindingState.insert ( varBindingState.begin(), size, 0 );
+  curOrderResultSeq = 0;
+  if ( orderMap != 0 )
+  {
+    orderMap->clear();
+  }
+}
+
+
+void FLWORIterator::FlworState::init ( size_t nb_variables )
+{
+  PlanIterator::PlanIteratorState::init();
+  varBindingState = std::vector<uint32_t> ( nb_variables, 0 );
+}
+
+
+void FLWORIterator::FlworState::init ( size_t nb_variables, vector<OrderSpec>* orderSpecs )
+{
+  init ( nb_variables );
+  orderMap = new order_map_t ( orderSpecs );
+}
+
+
+void FLWORIterator::FlworState::releaseResources()
+{
+  reset();
+}
+
 
   ///////////////////////////////////////////////////////////////
   //  OrderKeyCmp
@@ -425,116 +455,142 @@ namespace xqp
   }
 
 
-  bool FLWORIterator::bindVariable ( int varNb, FlworState* flworState, PlanState& planState )
+bool FLWORIterator::bindVariable(
+    int varNb,
+    FlworState* flworState,
+    PlanState& planState )
+{
+  FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
+
+  switch (lForLetClause.type)
   {
-    FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
-    switch ( lForLetClause.type )
+  //In the case of a FOR we try to get the next item of the input and bind
+  // it to all the variable references
+  case ForLetClause::FOR :
+  {
+    Item_t lItem = this->consumeNext ( lForLetClause.input, planState );
+    if ( lItem == NULL )
     {
-        //In the case of a FOR we try to get the next item of the input and bind it to all variables
-      case ForLetClause::FOR :
-      {
-        Item_t lItem = this->consumeNext ( lForLetClause.input, planState );
-        if ( lItem == NULL )
-        {
-          return false;
-        }
-        //We increase the position counter
-        ++ ( flworState->varBindingState[varNb] );
-        for ( std::vector<var_iter_t>::iterator forIter = lForLetClause.forVars.begin(); forIter
-                != lForLetClause.forVars.end(); forIter++ )
-        {
-          var_iter_t variable = ( *forIter );
-          variable->bind ( lItem );
-        }
-        if ( !lForLetClause.posVars.empty() )
-        {
-          Item_t posItem = Zorba::getItemFactory()->createInteger ( flworState->varBindingState[varNb] );
-          for ( std::vector<var_iter_t>::iterator posIter = lForLetClause.posVars.begin(); posIter != lForLetClause.posVars.end(); posIter++ )
-          {
-            var_iter_t variable = ( *posIter );
-            variable->bind ( posItem );
-          }
-        }
-        //TODO Pos Bindings
-        return true;
-      }
-      case ForLetClause::LET :
-      {
-        
-        //return false if the Var-Variable was already bound
-        if ( flworState->varBindingState[varNb] == 1 )
-        {
-          return false;
-        }
-        Iterator_t iterWrapper = new PlanIteratorWrapper ( lForLetClause.input, planState );
-        //Depending on the query, we might need to materialize the LET-Binding
-        if ( lForLetClause.needsMaterialization )
-        {
-          TempSeq_t tmpSeq = Zorba::getStore()->createTempSeq ( iterWrapper, true );
-          for ( std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin(); letIter
-                  != lForLetClause.letVars.end(); letIter++ )
-          {
-            ( *letIter )->bind ( tmpSeq->getIterator() );
-          }
-        }
-        else
-        {
-          for ( std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin(); letIter
-                  != lForLetClause.letVars.end(); letIter++ )
-          {
-            ( *letIter )->bind ( iterWrapper );
-          }
-        }
-        ++ ( flworState->varBindingState[varNb] );
-        return true;
-      }
-      default:
-        //That should never happen
-        assert ( false );
+      return false;
     }
-    return false;
-  }
-
-  void FLWORIterator::resetImpl ( PlanState& planState )
-  {
-    FlworState* flworState;
-    GET_STATE ( FlworState, flworState, planState );
-    flworState->reset();
-  }
-
-  void FLWORIterator::releaseResourcesImpl ( PlanState& planState )
-  {
-    FlworState* flworState;
-    GET_STATE ( FlworState, flworState, planState );
-    flworState->releaseResources();
-  }
-
-  uint32_t FLWORIterator::getStateSizeOfSubtree() const
-  {
-    int32_t size = this->getStateSize();
-    std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
-    for ( iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++ )
+    //We increase the position counter
+    ++ ( flworState->varBindingState[varNb] );
+    for (std::vector<var_iter_t>::iterator forIter = lForLetClause.forVars.begin();
+         forIter != lForLetClause.forVars.end();
+         forIter++ )
     {
-      size += iter->input->getStateSizeOfSubtree();
+      var_iter_t variable = ( *forIter );
+      variable->bind ( lItem );
     }
 
-    size += returnClause->getStateSizeOfSubtree();
-
-    if ( whereClause != NULL )
-      size += whereClause->getStateSizeOfSubtree();
-
-    if ( doOrderBy )
+    if ( !lForLetClause.posVars.empty() )
     {
-      std::vector<OrderSpec>::const_iterator iter;
-      for ( iter = orderByClause->orderSpecs.begin() ; iter != orderByClause->orderSpecs.end(); iter++ )
+      Item_t posItem = Zorba::getItemFactory()->createInteger(flworState->varBindingState[varNb] );
+
+      for (std::vector<var_iter_t>::iterator posIter = lForLetClause.posVars.begin();
+           posIter != lForLetClause.posVars.end();
+           posIter++ )
       {
-        size += iter->orderByIter->getStateSizeOfSubtree();
+        var_iter_t variable = ( *posIter );
+        variable->bind ( posItem );
       }
     }
-
-
-    return size;
+    //TODO Pos Bindings
+    return true;
   }
+  case ForLetClause::LET :
+  {      
+    //return false if the Var-Variable was already bound
+    if ( flworState->varBindingState[varNb] == 1 )
+      {
+        return false;
+      }
+
+    Iterator_t iterWrapper = new PlanIteratorWrapper(lForLetClause.input, planState);
+    //Depending on the query, we might need to materialize the LET-Binding
+    if ( lForLetClause.needsMaterialization )
+    {
+      TempSeq_t tmpSeq = Zorba::getStore()->createTempSeq(iterWrapper, true);
+      for (std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin();
+           letIter != lForLetClause.letVars.end();
+           letIter++ )
+      {
+        ( *letIter )->bind(tmpSeq->getIterator());
+      }
+    }
+    else
+    {
+      for (std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin();
+           letIter != lForLetClause.letVars.end();
+           letIter++ )
+      {
+        ( *letIter )->bind ( iterWrapper );
+      }
+    }
+    ++ ( flworState->varBindingState[varNb] );
+    return true;
+  }
+  default:
+    //That should never happen
+    assert ( false );
+  }
+  return false;
+}
+
+
+void FLWORIterator::resetImpl ( PlanState& planState )
+{
+  FlworState* flworState;
+  GET_STATE ( FlworState, flworState, planState );
+  flworState->reset();
+}
+
+
+void FLWORIterator::releaseResourcesImpl ( PlanState& planState )
+{
+  returnClause->releaseResources(planState);
+
+  if (whereClause != NULL)
+    whereClause->releaseResources(planState);
+
+  std::vector<FLWORIterator::ForLetClause>::iterator iter;
+  for (iter = forLetClauses.begin(); iter != forLetClauses.end(); iter++)
+  {
+    iter->input->releaseResources(planState);
+  }
+
+  FlworState* flworState;
+  GET_STATE ( FlworState, flworState, planState );
+  flworState->releaseResources();
+}
+
+
+uint32_t FLWORIterator::getStateSizeOfSubtree() const
+{
+  int32_t size = this->getStateSize();
+  std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
+  for ( iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++ )
+  {
+    size += iter->input->getStateSizeOfSubtree();
+  }
+
+  size += returnClause->getStateSizeOfSubtree();
+
+  if ( whereClause != NULL )
+    size += whereClause->getStateSizeOfSubtree();
+
+  if ( doOrderBy )
+  {
+    std::vector<OrderSpec>::const_iterator iter;
+    for ( iter = orderByClause->orderSpecs.begin() ; iter != orderByClause->orderSpecs.end(); iter++ )
+    {
+      size += iter->orderByIter->getStateSizeOfSubtree();
+    }
+  }
+
+  return size;
+}
+
 
   void FLWORIterator::setOffset ( PlanState& planState, uint32_t& offset )
   {

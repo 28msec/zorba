@@ -33,7 +33,10 @@ namespace xqp
 int32_t iteratorTreeDepth = -1;
 
 
-/* begin PlanState */
+/*******************************************************************************
+  class PlanState
+********************************************************************************/
+
 PlanState::PlanState(uint32_t blockSize)
 {
   this->block = new int8_t[blockSize];
@@ -50,22 +53,11 @@ PlanState::~PlanState()
 {
   delete[] block;
 }
-/* end PlanState */
 
-/* begin class PlanIterator */
-PlanIterator::PlanIterator(yy::location _loc) :
-  loc(_loc){
-  //zorp = zorba::getZorbaForCurrentThread();
-}
 
-PlanIterator::PlanIterator(const PlanIterator& it) :
-  rcobject(it),
-  loc(it.loc) {
-  //zorp = zorba::getZorbaForCurrentThread();
-}
-
-PlanIterator::~PlanIterator() {
-}
+/*******************************************************************************
+  class PlanIteratorState
+********************************************************************************/
 
 void
 PlanIterator::PlanIteratorState::init() {
@@ -91,11 +83,32 @@ int32_t
 PlanIterator::PlanIteratorState::getDuffsLine() const {
   return this->duffsLine;
 }
-/* end class PlanIterator */
 
 
 /*******************************************************************************
+  class PlanIterator
+********************************************************************************/
 
+PlanIterator::PlanIterator(yy::location _loc) :
+  loc(_loc)
+{
+}
+
+
+PlanIterator::PlanIterator(const PlanIterator& it) :
+  rcobject(it),
+  loc(it.loc)
+{
+}
+
+
+PlanIterator::~PlanIterator()
+{
+}
+
+
+/*******************************************************************************
+  class PlanWraper
 ********************************************************************************/
 PlanWrapper::PlanWrapper(PlanIter_t& aIter)
   :
@@ -111,11 +124,7 @@ PlanWrapper::PlanWrapper(PlanIter_t& aIter)
 
 PlanWrapper::~PlanWrapper()
 {
-  if (!theClosed)
-  {
-    theIterator->releaseResources(*theStateBlock);
-    delete theStateBlock;
-  }
+  close();
 }
 
 
@@ -156,7 +165,7 @@ PlanWrapper::close()
 
 
 /*******************************************************************************
-
+  class PlanIteratorWrapper
 ********************************************************************************/
 PlanIteratorWrapper::PlanIteratorWrapper(PlanIter_t& iter, PlanState& block) 
   :

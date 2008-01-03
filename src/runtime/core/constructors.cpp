@@ -324,8 +324,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
 }
 
 
-void 
-ElementContentIterator::resetImpl(PlanState& planState)
+void ElementContentIterator::resetImpl(PlanState& planState)
 {
   UnaryBaseIterator<ElementContentIterator>::resetImpl(planState);
 
@@ -337,8 +336,7 @@ ElementContentIterator::resetImpl(PlanState& planState)
 }
 
   
-void 
-ElementContentIterator::releaseResourcesImpl(PlanState& planState)
+void ElementContentIterator::releaseResourcesImpl(PlanState& planState)
 {
   UnaryBaseIterator<ElementContentIterator>::releaseResourcesImpl(planState);
 
@@ -347,6 +345,7 @@ ElementContentIterator::releaseResourcesImpl(PlanState& planState)
   state->theContextItem = NULL;
   state->theString.~xqpString();
 }
+
 
 void ElementContentIterator::ElementContentState::init()
 {
@@ -372,8 +371,7 @@ AttributeIterator::AttributeIterator(
 }
 
 
-Item_t
-AttributeIterator::nextImpl(PlanState& planState)
+Item_t AttributeIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
   Item_t itemCur;
@@ -647,7 +645,7 @@ void EnclosedIterator::releaseResourcesImpl ( PlanState& planState )
   EnclosedState* state;
   GET_STATE ( EnclosedState, state, planState );
   state->theContextItem = NULL;
-  state->theString.clear();
+  state->theString.~xqpString();
 }
 
 
@@ -738,8 +736,8 @@ void DocFilterIterator::releaseResourcesImpl(PlanState& planState)
   {
     state->theChildren->close();
     state->theChildren = 0;
-    state->theCurItem = 0;
   }
+  state->theCurItem = 0;
 }
 
 }

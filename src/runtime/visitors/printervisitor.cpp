@@ -814,7 +814,7 @@ namespace xqp {
   
       
   void PrinterVisitor::beginVisitFlworLetVariable(const PlanIterator& a){
-    thePrinter.startIter("LetVariables");
+    thePrinter.startIter("LetVariable");
     a.accept(*this);
   }
   
@@ -824,7 +824,7 @@ namespace xqp {
           
     
   void PrinterVisitor::beginVisitFlworForVariable(const PlanIterator& a){
-    thePrinter.startIter("ForVariables");
+    thePrinter.startIter("ForVariable");
     a.accept(*this);
   }
   

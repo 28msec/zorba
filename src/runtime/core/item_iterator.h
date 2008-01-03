@@ -55,8 +55,11 @@ class SingletonIterator;
 typedef rchandle<SingletonIterator> singleton_t;
 
 
-/** Class represents an empty sequence.
-  */
+/*******************************************************************************
+
+   Class represents an empty sequence.
+
+********************************************************************************/
 class EmptyIterator : public Batcher<EmptyIterator>
 {
 public:
@@ -75,13 +78,14 @@ public:
   virtual void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
-}; /* class EmptyIterator */
+};
 
 
-/*_____________________________________________________________
-|
-| literals and for_var bindings
-|______________________________________________________________*/
+/*******************************************************************************
+
+  Literals and for_var bindings
+
+********************************************************************************/
 class SingletonIterator : public NoaryBaseIterator<SingletonIterator>
 {
 protected:
@@ -100,6 +104,11 @@ public:
 };
 
 
+/*******************************************************************************
+
+  FOR variables
+
+********************************************************************************/
 class var_iterator : public SingletonIterator
 {
 protected:
@@ -107,13 +116,14 @@ protected:
   const void *origin;  ///< origin expr, used as a kind of ID
   
 public:
-  var_iterator(string s_p, yy::location loc, const void *origin_) : 
-              SingletonIterator(loc,NULL), 
-              s_h(s_p), origin (origin_)
-  {}
-  ~var_iterator(){
-    
+  var_iterator(string s_p, yy::location loc, const void *origin_) 
+    : 
+    SingletonIterator(loc, NULL), 
+    s_h(s_p), origin (origin_)
+  {
   }
+
+  ~var_iterator() { }
   
   virtual void accept(PlanIterVisitor&) const;
   
@@ -123,10 +133,11 @@ public:
 };
 
 
-/**
- * If a variable can hold more than one item, use this ref-holder
- * 
- */
+/*******************************************************************************
+
+  If a variable can hold more than one item, use this ref-holder
+  
+********************************************************************************/
 class RefIterator : public Batcher<RefIterator>
 {
 private:
@@ -153,7 +164,7 @@ public:
 
   Item_t nextImpl(PlanState& planState) { return it->next(); }  // TODO
   void resetImpl(PlanState& planState) { it->reset(); }  // TODO
-  void releaseResourcesImpl(PlanState& planState) {  }  // TODO
+  void releaseResourcesImpl(PlanState& planState) { it->close(); it = NULL; } // TODO
 
   virtual uint32_t getStateSize() const { return 0; }  // TODO
   virtual uint32_t getStateSizeOfSubtree() const { return 0; }  // TODO
@@ -162,9 +173,20 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 
+
+/*******************************************************************************
+
   
+********************************************************************************/
 class IfThenElseIterator : public Batcher<IfThenElseIterator>
 {
+protected:
+  class IfThenElseIteratorState : public PlanIteratorState 
+  {
+  public:
+    bool theThenUsed;
+  };
+
 private:
   PlanIter_t theCondIter;
   PlanIter_t theThenIter;
@@ -199,13 +221,7 @@ public:
   virtual void setOffset ( PlanState& planState, uint32_t& offset );
       
   virtual void accept(PlanIterVisitor&) const;
-  
-  protected:
-    class IfThenElseIteratorState : public PlanIteratorState {
-      public:
-        bool theThenUsed;
-    };
-}; /* class IfThenElseIterator */
+};
 
 
 } /* namespace xqp */

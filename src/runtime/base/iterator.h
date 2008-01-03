@@ -128,6 +128,34 @@ class PlanIterator : public rcobject
   friend class PlanIterWrapper;
 
 protected:
+  /**
+   * Root object of all iterator states
+   */
+  class PlanIteratorState
+  {
+  private:
+    int32_t duffsLine;
+  public:
+    /** Initializes State Object for the current iterator.
+      * All sub-states have it invoke the init method of their parent 
+      * to guarantee correct initialization.
+      */
+    void init();
+
+    /** Resets State Object for the current iterator.
+      * All sub-states have it invoke the reset method of their parent 
+      * to guarantee correct reset handling.
+      */
+    void reset();
+    
+    void releaseResources();
+    
+    void setDuffsLine(int32_t);
+    int32_t getDuffsLine() const;
+  };
+
+
+protected:
   /** offset of the state of the current iterator */
   uint32_t      stateOffset;
   
@@ -191,31 +219,6 @@ public:
     * on the state stack.
     */
   virtual void setOffset(PlanState& planState, uint32_t& offset) = 0;
-
-protected:
-  /** Root object of all iterator states */
-  class PlanIteratorState
-  {
-  private:
-    int32_t duffsLine;
-  public:
-    /** Initializes State Object for the current iterator.
-      * All sub-states have it invoke the init method of their parent 
-      * to guarantee correct initialization.
-      */
-    void init();
-
-    /** Resets State Object for the current iterator.
-      * All sub-states have it invoke the reset method of their parent 
-      * to guarantee correct reset handling.
-      */
-    void reset();
-    
-    void releaseResources();
-    
-    void setDuffsLine(int32_t);
-    int32_t getDuffsLine() const;
-  };
 
 protected:
 
