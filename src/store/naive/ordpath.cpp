@@ -411,6 +411,7 @@ void OrdPath::appendComp(long value)
       ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
+      return;
     }
   }
   else if (value < OrdPath::DEFAULT_FAN_OUT)
@@ -473,6 +474,7 @@ void OrdPath::appendComp(long value)
       ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
+      return;
     }
   }
 
@@ -2951,6 +2953,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
       ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
+      return;
     }
   }
   else if (value < OrdPath::DEFAULT_FAN_OUT)
@@ -3004,6 +3007,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
       ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
+      return;
     }
   }
 
@@ -3015,6 +3019,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
                       NULL,
                       false);
+    return;
   }
 
   do
