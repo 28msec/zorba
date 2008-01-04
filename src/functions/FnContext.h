@@ -29,17 +29,19 @@ namespace xqp {
 
   
   
-  class ctx_variable : public function
-  {
-    public:
-       ctx_variable(const signature&);
-       ~ctx_variable() {}
+class ctx_variable : public function
+{
+public:
+  ctx_variable(const signature&);
+  ~ctx_variable() {}
 
-    public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
-      bool validate_args(std::vector<PlanIter_t>&) const;
-  };
+public:
+  PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+
+  TypeSystem::xqtref_t type_check(signature&) const;
+
+  bool validate_args(std::vector<PlanIter_t>&) const;
+};
   
 }
 
