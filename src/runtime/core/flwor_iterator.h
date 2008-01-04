@@ -5,8 +5,8 @@
  */
 
 
-#ifndef XQP_FLWOR_ITERATOR_H
-#define XQP_FLWOR_ITERATOR_H
+#ifndef XQP_RUNTIME_FLWOR_ITERATOR
+#define XQP_RUNTIME_FLWOR_ITERATOR
 
 #include "context/common.h"
 #include "util/rchandle.h"
@@ -22,11 +22,11 @@
 namespace xqp
 {
 
-  class var_iterator;
-  typedef rchandle<var_iterator> var_iter_t;
+class ForVarIterator;
+typedef rchandle<ForVarIterator> var_iter_t;
 
-  class RefIterator;
-  typedef rchandle<RefIterator> ref_iter_t;
+class LetVarIterator;
+typedef rchandle<LetVarIterator> ref_iter_t;
   
   
  
