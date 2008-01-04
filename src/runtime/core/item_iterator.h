@@ -160,11 +160,11 @@ public:
   xqp_string getVarName() const { return theVarName; }
 
   // variable binding
-  void bind(Iterator_t _it) { it = _it;}
+  void bind(Iterator_t _it) { it = _it; }
 
   Item_t nextImpl(PlanState& planState) { return it->next(); }  // TODO
   void resetImpl(PlanState& planState) { it->reset(); }  // TODO
-  void releaseResourcesImpl(PlanState& planState) { it->close(); it = NULL; } // TODO
+  void releaseResourcesImpl(PlanState& planState) { if (it != NULL) it->close(); it = NULL; } // TODO
 
   virtual uint32_t getStateSize() const { return 0; }  // TODO
   virtual uint32_t getStateSizeOfSubtree() const { return 0; }  // TODO
