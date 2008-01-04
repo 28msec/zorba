@@ -206,8 +206,9 @@ ostream& flwor_expr::put( ostream& os) const
 
   if (where_h!=NULL) where_h->put(os);
 
-  vector<orderspec_t>::const_iterator ord_it = orderspec_begin();
-  for (; ord_it!=orderspec_end(); ++ord_it) 
+  
+  for (vector<orderspec_t>::const_iterator ord_it = orderspec_begin();
+       ord_it!=orderspec_end(); ++ord_it) 
   {
     orderspec_t spec = *ord_it;
     expr_t e_h = spec.first;
@@ -243,22 +244,19 @@ ostream& flwor_expr::put( ostream& os) const
   return os;
 }
 
+DECLARE_VISITOR_FUNCTOR (forletref_visitor_functor, flwor_expr::forletref_t, { ACCEPT (e->expr_h); });
+DECLARE_VISITOR_FUNCTOR (orderspec_visitor_functor, flwor_expr::orderspec_t, { ACCEPT (e.first); });
 
 void flwor_expr::accept(expr_visitor& v)
 {
   if (!v.begin_visit(*this)) return;
-  
-  vector<forletref_t>::const_iterator it = clause_v.begin();
-  for (; it != clause_v.end(); ++it) {
-    (*it)->expr_h->accept(v);
-  }
+
+  for_each (clause_v.begin (), clause_v.end (), forletref_visitor_functor (v));
   
   ACCEPT (where_h);
-  for (vector<orderspec_t>::const_reverse_iterator i = orderspec_rbegin ();
-       i != orderspec_rend ();
-       i++)
-    (*i).first->accept (v);
-  
+
+  for_each (orderspec_rbegin (), orderspec_rend (), orderspec_visitor_functor (v));
+
   retval_h->accept(v);
   
   v.end_visit(*this); 
@@ -332,8 +330,8 @@ ostream& typeswitch_expr::put( ostream& os) const
   Assert(switch_expr_h!=NULL);
   switch_expr_h->put(os);
 
-  vector<clauseref_t>::const_iterator it = case_clause_hv.begin();
-  for (; it!=case_clause_hv.end(); ++it) 
+  for (vector<clauseref_t>::const_iterator it = case_clause_hv.begin();
+       it!=case_clause_hv.end(); ++it)
   {
     clauseref_t cc_h = *it;
     os << INDENT << "case: ";
@@ -442,8 +440,9 @@ ostream& fo_expr::put( ostream& os) const
      << "(" << this << ")" << endl;
   os << DENT << "[\n";
 
-  vector<rchandle<expr> >::const_iterator it = begin();
-  for (; it != end(); ++it)
+  
+  for (vector<rchandle<expr> >::const_iterator it = begin();
+       it != end(); ++it)
   {
     rchandle<expr> e_h = *it;
     Assert(e_h!=NULL);
@@ -806,8 +805,7 @@ ostream& relpath_expr::put( ostream& os) const
   os << INDENT << "relpath_expr(" << this << ")\n";
   os << DENT << "[\n";
 
-  list_iterator<expr_t> it = begin();
-  for (; it != end(); ++it)
+  for (list_iterator<expr_t> it = begin(); it != end(); ++it)
   {
     expr_t expr = *it;
     Assert(expr != NULL);
@@ -822,8 +820,7 @@ void relpath_expr::accept(expr_visitor& v)
 {
   if (!v.begin_visit(*this)) return;
 
-  list_iterator<expr_t> it = begin();
-  for (; it != end(); ++it)
+  for (list_iterator<expr_t> it = begin(); it != end(); ++it)
   {
     expr_t expr = *it;
     Assert(expr != NULL);
@@ -884,10 +881,9 @@ ostream& axis_step_expr::put(ostream& os) const
     theNodeTest->put(os);
 
   printdepth0 = saveIndent;
-
-  vector<rchandle<expr> >::const_iterator it = thePreds.begin();
-  vector<rchandle<expr> >::const_iterator en = thePreds.end();
-  for (; it != en; ++it)
+  
+  for (vector<rchandle<expr> >::const_iterator it = thePreds.begin();
+       it != thePreds.end(); ++it)
   {
     rchandle<expr> e = *it;
     //d Assert<null_pointer>(e_h!=NULL);
@@ -904,11 +900,8 @@ void axis_step_expr::accept(expr_visitor& v)
 {
   if (!v.begin_visit(*this)) return;
 
-  vector<expr_t>::const_iterator it = thePreds.begin();
-  vector<expr_t>::const_iterator en = thePreds.end();
-  for(; it != en; ++it) {
-    (*it)->accept(v);
-  }
+  for_each (thePreds.begin (), thePreds.end (), visitor_functor (v));
+
   ACCEPT (theNodeTest);
 
   v.end_visit(*this);
