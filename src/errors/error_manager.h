@@ -19,12 +19,13 @@ public:
 	void RegisterAlertCallback(alert_callback* user_alert_callback, void *param);
 
 	AlertCodes& getAlertCodes();
-  void setAlertCodes(AlertCodes* c);
+  void setAlertCodes(AlertCodes* c, bool is_from_user);
 
 	void clearAlertList();
 
 protected:
 	AlertCodes      * theAlertCodes;
+	bool						is_from_user;
 
 	//if ZorbaErrorAlertsImpl::xquery_registered_callback is not specified, call this callback
 	alert_callback	* thread_registered_callback;

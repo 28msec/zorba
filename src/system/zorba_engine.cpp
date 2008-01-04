@@ -158,11 +158,11 @@ void ZorbaEngineImpl::initThread(AlertCodes* codes)
     if(!codes)
 	  {
       errors_english* codes = new errors_english;
-      zorba->m_error_manager->setAlertCodes(codes);
+      zorba->m_error_manager->setAlertCodes(codes, false);
     }
     else
     {
-      zorba->m_error_manager->setAlertCodes(codes);
+      zorba->m_error_manager->setAlertCodes(codes, true);
     }
   }
 }

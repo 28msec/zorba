@@ -85,4 +85,9 @@ std::ostream& Zorba_XQuerySimpleResult::serializeTEXT( std::ostream& os )
 	return m_xquery_exec->serializeTEXT(os);
 }
 
+bool Zorba_XQuerySimpleResult::isError()
+{
+	return m_xquery_exec->isError();
+}
+
 }//end namespace xqp

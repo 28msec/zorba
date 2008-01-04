@@ -95,7 +95,8 @@ void fn_user_error(
 
 	usererr_mess->alert_type = ZorbaAlert::USER_ERROR_ALERT;
 	usererr_mess->err_qname = err_qname;
-	(std::vector<Item*>)usererr_mess->items_error = *items;///copy the vector of pointers to items
+	if(items)
+		(std::vector<Item*>)usererr_mess->items_error = *items;///copy the vector of pointers to items
 	usererr_mess->alert_description = description;
 	usererr_mess->err_qname_decoded = err_decoded;
 	time(&usererr_mess->time_of_alert);
@@ -118,7 +119,8 @@ void fn_user_trace(
 	ZorbaAlertsManagerImpl* err_manager = z->getErrorManager();
 
 	usertrace_mess->alert_type = ZorbaAlert::USER_TRACE_ALERT;
-	(std::vector<Item*>)usertrace_mess->items_trace = *items;///copy the vector of poiters to items
+	if(items)
+		(std::vector<Item*>)usertrace_mess->items_trace = *items;///copy the vector of pointers to items
 	usertrace_mess->alert_description = label;
 	time(&usertrace_mess->time_of_alert);
 

@@ -54,6 +54,8 @@ public:
   virtual std::ostream& serializeXML( std::ostream& os );
   virtual std::ostream& serializeHTML( std::ostream& os );
   virtual std::ostream& serializeTEXT( std::ostream& os );
+
+	virtual bool isError();
 };
 
 }//end namespace xqp

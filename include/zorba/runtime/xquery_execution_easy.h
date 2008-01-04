@@ -13,6 +13,8 @@ public:
   virtual std::ostream& serializeXML( std::ostream& os ) = 0;
   virtual std::ostream& serializeHTML( std::ostream& os ) = 0;
   virtual std::ostream& serializeTEXT( std::ostream& os ) = 0;
+
+	virtual bool isError() = 0;
 };
 
 typedef rchandle<XQueryResult>		XQueryResult_t;

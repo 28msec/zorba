@@ -18,6 +18,8 @@ ZorbaAlertsManagerImpl::ZorbaAlertsManagerImpl( )
 {
 	thread_registered_callback = NULL;
 	thread_registered_param = NULL;
+	is_from_user = true;
+	theAlertCodes = NULL;
 }
 
 
@@ -25,7 +27,7 @@ ZorbaAlertsManagerImpl::~ZorbaAlertsManagerImpl()
 {
 	clearAlertList();
 
-  if (theAlertCodes != NULL)
+  if (!is_from_user && theAlertCodes != NULL)
     delete theAlertCodes;
 }
 
@@ -64,9 +66,10 @@ AlertCodes& ZorbaAlertsManagerImpl::getAlertCodes()
 }
 
 
-void ZorbaAlertsManagerImpl::setAlertCodes(AlertCodes* c)
+void ZorbaAlertsManagerImpl::setAlertCodes(AlertCodes* c, bool is_from_user)
 {
 	theAlertCodes = c;
+	this->is_from_user = is_from_user;
 }
 
 

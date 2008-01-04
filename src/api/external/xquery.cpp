@@ -369,6 +369,7 @@ Zorba_XQueryExecution::reset()
   catch(xqp_exception &)
 	{
 	}
+  is_error = false;
 }
 
 void
@@ -386,6 +387,7 @@ Zorba_XQueryExecution::close()
   catch(xqp_exception &)
 	{
 	}
+  is_error = false;
 }
 
 ostream& Zorba_XQueryExecution::serialize( ostream& os )
