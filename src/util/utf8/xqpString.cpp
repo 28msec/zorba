@@ -242,6 +242,9 @@ namespace xqp
   //xqpString::Substring matching/ string search
   int32_t xqpString::indexOf(xqpString pattern) const
   {
+    if (size() == 0)
+      return -1;
+
     //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
