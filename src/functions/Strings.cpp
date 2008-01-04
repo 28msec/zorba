@@ -74,7 +74,7 @@ TypeSystem::xqtref_t
 fn_string_to_codepoints::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
