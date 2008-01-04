@@ -41,44 +41,42 @@ class static_context;
 class dynamic_context// : public context
 {
 protected:
+
 	typedef union
 	{
-		Iterator		*var_iterator;
-	}dctx_value_t;
+		Iterator* var_iterator;
+	}
+  dctx_value_t;
+
 protected:
 	static bool static_init;
 
-	dynamic_context	*parent;
-	hashmap<dctx_value_t> keymap;
-	time_t	execution_date_time;
-	int			implicit_timezone;
+	dynamic_context	      * parent;
 
-//	static_context	*sctx;
-
-	xqp_string		default_collection_uri;//default URI for fn:collection()
+	hashmap<dctx_value_t>   keymap;
+	time_t	                execution_date_time;
+	int			                implicit_timezone;
+	xqp_string		          default_collection_uri;//default URI for fn:collection()
 
 protected:
   xqp_string qname_internal_key (Item_t qname) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
 
-  Iterator* lookup_var_iter (xqp_string key ) const;
+  Iterator* lookup_var_iter (xqp_string key) const;
 
-  void bind_var_iter (xqp_string key, Iterator *it);
 public:
 	static void init();
+
 	dynamic_context(dynamic_context *parent=NULL);
 	~dynamic_context();
 
   xqp_string expand_varname(static_context	*sctx, xqp_string qname) const;
 
 public:
-	// XQuery 1.0 dynamic context 
 	Item_t context_item() const;
 
 	TypeSystem::xqtref_t context_item_type() const;
-	uint32_t context_position() const;
-	uint32_t context_size() const;
 
 	void set_context_item(Item_t);
 	void set_context_item_type(TypeSystem::xqtref_t );
@@ -102,7 +100,7 @@ public:
 	void		set_implicit_timezone(int tzone);
 	int			get_implicit_timezone();
 
-	void				add_variable(xqp_string varname, Iterator_t var_iterator);
+	void				add_variable(xqp_string varname, Iterator* var_iterator);
 	Iterator_t	get_variable(xqp_string varname);
 
 	xqp_string get_default_collection();

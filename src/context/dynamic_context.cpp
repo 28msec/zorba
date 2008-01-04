@@ -59,13 +59,11 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 dynamic_context::~dynamic_context()
 {
 	///free the pointers from ctx_value_t from keymap
-	checked_vector<hashmap<dctx_value_t>::entry>::const_iterator		it;
+	checked_vector<hashmap<dctx_value_t>::entry>::const_iterator it;
 	const char		*keybuff;//[50];
-	const dctx_value_t *val;
-//	zorba	*z = zorba::getZorbaForCurrentThread();
+	const dctx_value_t* val;
 
-	//keybuff[sizeof(keybuff)-1] = 0;
-	for(it = keymap.begin();it!=keymap.end();it++)
+	for(it = keymap.begin(); it != keymap.end(); it++)
 	{
 		///it is an entry
 		//keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
@@ -118,25 +116,6 @@ xqp_string dynamic_context::qname_internal_key (xqp_string default_ns, xqp_strin
   return qname_internal_key (default_ns, rqname.first, rqname.second);
 }
 */
-Iterator* dynamic_context::lookup_var_iter (xqp_string key ) const
-{ 
-	dctx_value_t val;
-
-	if(!keymap.get (key, val))
-	{
-		if(parent)
-			return parent->lookup_var_iter(key);
-		else
-			return NULL;///variable not found
-	}
-	return val.var_iterator;
-}
-
-void dynamic_context::bind_var_iter (xqp_string key, Iterator *it) {
-  dctx_value_t v = { it };
-	it->addReference();
-  keymap.put (key, v);
-}
 
 
 TypeSystem::xqtref_t dynamic_context::context_item_type() const
@@ -187,16 +166,34 @@ int	dynamic_context::get_implicit_timezone()
 var_name is expanded name localname:nsURI
 constructed by static_context::qname_internal_key( .. )
 */
-void	dynamic_context::add_variable(xqp_string var_name, Iterator_t var_iterator)
+void	dynamic_context::add_variable(xqp_string var_name, Iterator* var_iterator)
 {
-	var_iterator->addReference();
-	bind_var_iter("var:" + var_name, var_iterator.get_ptr());
+  var_iterator->addReference();
+
+  dctx_value_t v = { var_iterator };
+  keymap.put ("var:" + var_name, v);
 }
 
 Iterator_t	dynamic_context::get_variable(xqp_string var_name)
 {
 	return lookup_var_iter("var:" + var_name);
 }
+
+
+Iterator* dynamic_context::lookup_var_iter(xqp_string key) const
+{ 
+	dctx_value_t val;
+
+	if(!keymap.get (key, val))
+	{
+		if(parent)
+			return parent->lookup_var_iter(key);
+		else
+			return NULL;///variable not found
+	}
+	return val.var_iterator;
+}
+
 
 xqp_string dynamic_context::get_default_collection()
 {
