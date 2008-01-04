@@ -2,37 +2,39 @@
 #define XQP_FN_CONTEXT_IMPL_H
 
 #include "context/common.h"
-#include "runtime/base/unarybase.h"
+#include "runtime/base/noarybase.h"
 
 namespace xqp
 {
   
-  /**
-   * CtxVariable
-   */
-  class CtxVariableIterator : public UnaryBaseIterator<CtxVariableIterator>
-  {
-    private:
-      bool theNegate;
-      xqp_string theVarname;
+/*******************************************************************************
 
-    public:
-      CtxVariableIterator ( const yy::location& loc, PlanIter_t& aIter);
-      // danm: Since UnaryBaseIterator "cleverly" expects a PlanIter_t *reference*,
-      // we can't pass a temporary object in the initialization list.
-      // Try it, it won't compile...
-      // We also can't pass a static NULL reference since UnaryBaseIterator asserts.
-      // Bottom line -- there's no way we can omit the aIter argument.
-      CtxVariableIterator ( const yy::location& loc, PlanIter_t& aIter, xqp_string varName);
-      virtual ~CtxVariableIterator();
+  CtxVariableIterator
 
-      Item_t nextImpl(PlanState& planState);
+  Used in the evaluation of external variables: For each external variable, the
+  dynamic context maps the name of the variable to an iterator that computes the
+  variable's value. CtxVariableIterator extracts this iterator from the dynamic
+  context and just returns the items that it produces.
 
-      virtual void accept(PlanIterVisitor&) const;
-      
-     private:
-       xqp_string varName;
-  };
+********************************************************************************/
+class CtxVariableIterator : public NoaryBaseIterator<CtxVariableIterator>
+{
+private:
+  xqpString theVarName;
+
+public:
+  CtxVariableIterator(const yy::location& loc, xqpString varName);
+
+  virtual ~CtxVariableIterator();
+
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
+
+  virtual void accept(PlanIterVisitor&) const;
+
+  xqp_string getVarName() const { return theVarName; }
+};
   
 }
 
