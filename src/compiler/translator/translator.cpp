@@ -672,7 +672,7 @@ void end_visit(const CommonContent& v, void *visit_state)
     case cont_charref:
     {
       // &#xFF; or &#255;
-      unsigned int codepoint;
+      uint32_t codepoint;
       xqp_string charref;
       stringstream ss;
 

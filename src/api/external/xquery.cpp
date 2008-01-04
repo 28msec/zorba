@@ -362,6 +362,8 @@ Item_t Zorba_XQueryExecution::next()
 void
 Zorba_XQueryExecution::reset()
 {
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
 	try{
   if (!theClosed)
     it_result->reset(*state_block);
@@ -370,11 +372,15 @@ Zorba_XQueryExecution::reset()
 	{
 	}
   is_error = false;
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
 }
 
 void
 Zorba_XQueryExecution::close()
 {
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
 	try
   {
     if (!theClosed)
@@ -388,6 +394,8 @@ Zorba_XQueryExecution::close()
 	{
 	}
   is_error = false;
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
 }
 
 ostream& Zorba_XQueryExecution::serialize( ostream& os )
