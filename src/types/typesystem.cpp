@@ -535,7 +535,12 @@ TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
 
 TypeSystem::xqtref_t TypeSystem::create_type(const XQType& type, quantifier_t quantifier) const
 {
-  assert(false);
+  // TODO: full implem. danm: at least provide atomic types for now
+  if (is_atomic (type))
+    return create_atomic_type (static_cast <const AtomicXQType *> (& type)->m_type_code, quantifier);
+  else
+    assert(false);
+
   return 0;
 }
 
