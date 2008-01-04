@@ -1129,8 +1129,10 @@ void *begin_visit(const VarDecl& v)
 void end_visit(const VarDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  global_vars.push_back (global_binding (bind_var (v.get_location(), v.get_varname(), var_expr::let_var),
-                                         v.is_extern () ? expr_t (NULL) : pop_nodestack ()));
+  global_vars.push_back(global_binding(bind_var(v.get_location(),
+                                                v.get_varname(),
+                                                var_expr::let_var),
+                                       v.is_extern() ? expr_t(NULL) : pop_nodestack()));
 }
 
 
@@ -1770,7 +1772,8 @@ void *begin_visit(const FunctionCall& v)
   return no_state;
 }
 
-void end_visit(const FunctionCall& v, void *visit_state) {
+void end_visit(const FunctionCall& v, void *visit_state)
+{
   TRACE_VISIT_OUT ();
   std::vector<expr_t> arguments;
   while (true) {
@@ -1809,11 +1812,14 @@ void end_visit(const FunctionCall& v, void *visit_state) {
   TypeSystem::xqtref_t type =
     GENV_TYPESYSTEM.create_type (fn_qname,
                                  TypeSystem::QUANT_QUESTION);
-  if (type != NULL) {
+  if (type != NULL)
+  {
     if (arguments.size () != 1)
       ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017, NULL, false, prefix + ":" + fname, arguments.size ());
     nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
-  } else {
+  }
+  else
+  {
     int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
     rchandle<fo_expr> fo_h = new fo_expr(v.get_location(), LOOKUP_FN (prefix, fname, sz));
     
@@ -2797,14 +2803,17 @@ void *begin_visit(const QueryBody& v)
 void end_visit(const QueryBody& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+
   flwor_expr::clause_list_t clauses;
   for (std::list<global_binding>::iterator i = global_vars.begin ();
-       i != global_vars.end (); i++)
+       i != global_vars.end ();
+       i++)
   {
     global_binding b = *i;
     var_expr_t var = b.first;
     expr_t expr = b.second;
-    if (expr == NULL) {
+    if (expr == NULL) 
+    {
       fo_expr *fo = new fo_expr (var->get_loc (), LOOKUP_OP1 ("ctxvariable"));
       fo->add (new const_expr (var->get_loc (), var->get_varname ()->getStringProperty ()));
       expr = fo;
