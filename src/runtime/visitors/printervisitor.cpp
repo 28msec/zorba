@@ -2,6 +2,7 @@
 
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/core/item_iterator.h"
+#include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/sequencetypes.h"
@@ -13,6 +14,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
+#include "runtime/fncontext/FnContextImpl.h"
 
 #include "system/globalenv.h"
 
@@ -118,15 +120,6 @@ namespace xqp {
     thePrinter.endIter();
   }
        
-  void PrinterVisitor::beginVisit ( const RefIterator& a ) {
-    thePrinter.startIter("RefIterator");
-    thePrinter.addAttribute("varname", a.getVarName());
-    printCommons( &a );
-  }
-  void PrinterVisitor::endVisit ( const RefIterator& a ) {
-    thePrinter.endIter();
-  }
-       
   void PrinterVisitor::beginVisit ( const SingletonIterator& a) {
     thePrinter.startIter("SingletonIterator");
     thePrinter.addAttribute("value", a.getValue()->show());
@@ -144,11 +137,21 @@ namespace xqp {
     thePrinter.endIter();
   }
        
-  void PrinterVisitor::beginVisit ( const var_iterator& a ) {
-    thePrinter.startIter("var_iterator");
+  void PrinterVisitor::beginVisit ( const ForVarIterator& a ) {
+    thePrinter.startIter("ForVarIterator");
+    thePrinter.addAttribute("varname", a.getVarName());
     printCommons( &a );
   }
-  void PrinterVisitor::endVisit ( const var_iterator& a ) {
+  void PrinterVisitor::endVisit ( const ForVarIterator& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const LetVarIterator& a ) {
+    thePrinter.startIter("LetVarIterator");
+    thePrinter.addAttribute("varname", a.getVarName());
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const LetVarIterator& a ) {
     thePrinter.endIter();
   }
        
@@ -875,6 +878,8 @@ namespace xqp {
 
   void PrinterVisitor::beginVisit(const CtxVariableIterator& a) {
     thePrinter.startIter("CtxVariableIterator");
+    thePrinter.addAttribute("varname", a.getVarName());
+    printCommons( &a );
   }
 
   void PrinterVisitor::endVisit(const CtxVariableIterator&) {

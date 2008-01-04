@@ -7,6 +7,7 @@
 
 #include "runtime/core/constructors.h"
 #include "runtime/core/item_iterator.h"
+#include "runtime/core/var_iterators.h"
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/sequencetypes.h"
@@ -54,11 +55,12 @@
 namespace xqp {
   
   // noary iterators (iterators without children)
-  NOARY_ACCEPT(RefIterator);
+  NOARY_ACCEPT(LetVarIterator);
   NOARY_ACCEPT(ZorNumGen);
   NOARY_ACCEPT(EmptyIterator);
   NOARY_ACCEPT(SingletonIterator);
-  NOARY_ACCEPT(var_iterator);
+  NOARY_ACCEPT(ForVarIterator);
+  NOARY_ACCEPT(CtxVariableIterator);
   
   // unary iterators
   UNARY_ACCEPT(NodeDistinctIterator);
@@ -112,7 +114,6 @@ namespace xqp {
   UNARY_ACCEPT(DocFilterIterator);
   UNARY_ACCEPT(CastIterator);
   UNARY_ACCEPT(CastableIterator);
-  UNARY_ACCEPT(CtxVariableIterator);
   
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);

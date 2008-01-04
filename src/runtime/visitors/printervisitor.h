@@ -55,18 +55,18 @@ namespace xqp {
       virtual void beginVisit ( const CommentIterator& ) ;
       virtual void endVisit ( const CommentIterator& ) ;
        
-      virtual void beginVisit ( const RefIterator& ) ;
-      virtual void endVisit ( const RefIterator& ) ;
-       
       virtual void beginVisit ( const SingletonIterator& ) ;
       virtual void endVisit ( const SingletonIterator& ) ;
        
       virtual void beginVisit ( const EmptyIterator& ) ;
       virtual void endVisit ( const EmptyIterator& ) ;
        
-      virtual void beginVisit ( const var_iterator& ) ;
-      virtual void endVisit ( const var_iterator& ) ;
+      virtual void beginVisit ( const ForVarIterator& ) ;
+      virtual void endVisit ( const ForVarIterator& ) ;
        
+      virtual void beginVisit ( const LetVarIterator& ) ;
+      virtual void endVisit ( const LetVarIterator& ) ;
+
       virtual void beginVisit ( const EnclosedIterator& ) ;
       virtual void endVisit ( const EnclosedIterator& ) ;
       

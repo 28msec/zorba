@@ -16,8 +16,8 @@ namespace xqp
   class RefIterator;
   class SingletonIterator;
   class EmptyIterator;
-  class var_iterator;
-  class RefIterator;
+  class ForVarIterator;
+  class LetVarIterator;
   class EnclosedIterator;
   class IfThenElseIterator;
   class FLWORIterator;
@@ -148,18 +148,18 @@ namespace xqp
       virtual void beginVisit ( const CommentIterator& ) = 0;
       virtual void endVisit ( const CommentIterator& ) = 0;
        
-      virtual void beginVisit ( const RefIterator& ) = 0;
-      virtual void endVisit ( const RefIterator& ) = 0;
-       
       virtual void beginVisit ( const SingletonIterator& ) = 0;
       virtual void endVisit ( const SingletonIterator& ) = 0;
 
       virtual void beginVisit ( const EmptyIterator& ) = 0;
       virtual void endVisit ( const EmptyIterator& ) = 0;
        
-      virtual void beginVisit ( const var_iterator& ) = 0;
-      virtual void endVisit ( const var_iterator& ) = 0;
+      virtual void beginVisit ( const ForVarIterator& ) = 0;
+      virtual void endVisit ( const ForVarIterator& ) = 0;
        
+      virtual void beginVisit ( const LetVarIterator& ) = 0;
+      virtual void endVisit ( const LetVarIterator& ) = 0;
+
       virtual void beginVisit ( const EnclosedIterator& ) = 0;
       virtual void endVisit ( const EnclosedIterator& ) = 0;
       
