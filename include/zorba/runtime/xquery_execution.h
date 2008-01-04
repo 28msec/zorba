@@ -8,11 +8,13 @@ class XQueryExecution : public Iterator
 {
 public:
 	virtual ~XQueryExecution() {};
-//	virtual Item_t		next() = 0;
+
   virtual Item_t next() = 0;
   virtual void reset() = 0;
   virtual void close() = 0;
+
 	virtual void setAlertsParam(void *alert_callback_param) = 0;
+
   virtual std::ostream& serialize( std::ostream& os ) = 0;
   virtual std::ostream& serializeXML( std::ostream& os ) = 0;
   virtual std::ostream& serializeHTML( std::ostream& os ) = 0;
@@ -23,7 +25,7 @@ public:
 
 	///extension from dynamic context (specific only for this execution)
 	virtual bool SetVariable( xqp_string varname, XQueryExecution_t item_iter ) = 0;
-	virtual bool SetVariable( xqp_string varname, std::istream &is ) = 0;
+	virtual bool SetVariable( xqp_string varname, xqp_string docUri, std::istream &is ) = 0;
 
 	///register documents available through fn:doc() in xquery
 	virtual bool AddAvailableDocument(xqp_string docURI,
