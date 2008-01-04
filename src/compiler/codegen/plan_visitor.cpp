@@ -14,6 +14,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/core/item_iterator.h"
+#include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/nodeid_iterators.h"
@@ -63,8 +64,8 @@ class plan_visitor : public expr_visitor
 {
 public:
 	typedef rchandle<expr> expr_h_t;
-  typedef rchandle<var_iterator> var_iter_t;
-  typedef rchandle<RefIterator> ref_iter_t;
+  typedef rchandle<ForVarIterator> var_iter_t;
+  typedef rchandle<LetVarIterator> ref_iter_t;
 
 protected:
   uint32_t depth;
@@ -115,33 +116,43 @@ void end_visit(var_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  switch (v.kind) {
-  case var_expr::for_var: {
-    var_iterator *v_p = new var_iterator(v.get_varname()->getLocalName(), v.get_loc(), (void *) &v);
+  switch (v.kind) 
+  {
+  case var_expr::for_var:
+  {
+    ForVarIterator *v_p = new ForVarIterator(v.get_varname()->getLocalName(),
+                                             v.get_loc(),
+                                             (void *) &v);
     vector<var_iter_t> *map = NULL;
     
     ZORBA_ASSERT (fvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   }
-    break;
-  case var_expr::pos_var: {
-    var_iterator *v_p = new var_iterator(v.get_varname ()->getLocalName(),v.get_loc(), (void *) &v);
+  break;
+  case var_expr::pos_var:
+  {
+    ForVarIterator *v_p = new ForVarIterator(v.get_varname ()->getLocalName(),
+                                             v.get_loc(),
+                                             (void *) &v);
     vector<var_iter_t> *map = NULL;
     ZORBA_ASSERT (pvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   }
-    break;
-  case var_expr::let_var: {
-    RefIterator *v_p = new RefIterator(v.get_varname()->getLocalName(), v.get_loc(), (void *) &v);
+  break;
+  case var_expr::let_var:
+  {
+    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
+                                             v.get_loc(),
+                                             (void *) &v);
     vector<ref_iter_t> *map = NULL;
     
     ZORBA_ASSERT (lvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   }
-    break;
+  break;
   case var_expr::context_var:
     break;
   case var_expr::unknown_var:
