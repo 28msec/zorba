@@ -188,8 +188,7 @@ xqp_string NodeImpl::getDocumentURI() const
 
 bool NodeImpl::equals(Item_t item) const
 {
-  ZORBA_ERROR_ALERT(AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-      NULL, false, "Equal function for node items not implemented!");
+  ZORBA_ASSERT (false && "Equal function for node items not implemented");
   return false;
 }
 

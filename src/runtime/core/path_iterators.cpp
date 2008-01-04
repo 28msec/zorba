@@ -208,9 +208,7 @@ doctest2:
       break;
     }
     default:
-      ZORBA_ERROR_ALERT(
-         AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-         &loc, false, "Unknown kind test kind");
+      ZORBA_ASSERT (false && "Unknown kind test kind");
     }
   }
   while (skip);
@@ -260,9 +258,7 @@ Item_t NameTestIterator::nextImpl(PlanState& planState)
       break;
     }
     default:
-      ZORBA_ERROR_ALERT(
-         AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-         &loc, false, "Unknown name test kind");
+      ZORBA_ASSERT (false && "Unknown name test kind");
     }
   }
 

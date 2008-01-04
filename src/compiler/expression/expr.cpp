@@ -1027,13 +1027,7 @@ StoreConsts::NodeKind_t match_expr::getNodeKind() const
   case match_anykind_test:
     return StoreConsts::anyNode;
   default:
-  {
-    ZORBA_ERROR_ALERT(
-         AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-         NULL,
-         false,
-         "Unknown node test kind");
-  }
+    ZORBA_ASSERT (false && "Unknown node test kind");
   }
   return StoreConsts::anyNode;
 }

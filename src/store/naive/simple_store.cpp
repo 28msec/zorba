@@ -248,12 +248,8 @@ void SimpleStore::deleteCollection(const xqp_string& uri)
 ********************************************************************************/
 int32_t SimpleStore::compare(Item_t node1, Item_t node2) const
 {
-  if (!node1->isNode() || !node2->isNode())
-  {
-    ZORBA_ERROR_ALERT(AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-                      NULL,
-                      false);
-  }
+  ZORBA_ASSERT (node1->isNode());
+  ZORBA_ASSERT (node2->isNode());
 
   if (node1 == node2)
     return 0;

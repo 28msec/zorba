@@ -16,6 +16,7 @@
 #include "util/utf8/utf8.h"
 #include "system/zorba.h"
 #include "system/zorba_engine.h"
+#include "util/Assert.h"
 
 
 using namespace std;
@@ -255,10 +256,7 @@ namespace xqp
 
     if(U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          NULL
-        );
+      ZORBA_ASSERT (false);
       return -1;
     }
 
@@ -270,10 +268,7 @@ namespace xqp
     }
     if (U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          NULL
-        );
+      ZORBA_ASSERT (false);
       return -1;
     }
     return -1;
@@ -291,10 +286,7 @@ namespace xqp
 
     if(U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          NULL
-        );
+      ZORBA_ASSERT (false);
       return -1;
     }
 
@@ -306,10 +298,7 @@ namespace xqp
     }
     if (U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          NULL
-        );
+      ZORBA_ASSERT (false);
       return -1;
     }
     return -1;
@@ -327,20 +316,14 @@ namespace xqp
 
     if(U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          NULL
-        );
+      ZORBA_ASSERT (false);
       return -1;
     }
 
     int32_t pos = search.last(status);
     if (U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          NULL
-        );
+      ZORBA_ASSERT (false);
       return -1;
     }
 
@@ -365,20 +348,14 @@ namespace xqp
 
     if(U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          NULL
-        );
+      ZORBA_ASSERT (false);
       return -1;
     }
 
     int32_t pos = search.last(status);
     if (U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          NULL
-        );
+      ZORBA_ASSERT (false);
       return -1;
     }
 
@@ -523,10 +500,7 @@ namespace xqp
 
     if(U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-          AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-          NULL
-          );
+      ZORBA_ASSERT (false);
     }
     
     return getXqpString( result ); 
@@ -944,10 +918,7 @@ namespace xqp
 
     if(U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-            AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-            NULL
-          );
+      ZORBA_ASSERT (false);
     }
 
     return ret;
@@ -965,10 +936,7 @@ namespace xqp
 
     if(U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-            AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-            NULL
-          );
+      ZORBA_ASSERT (false);
 
       delete target;
       return "";
@@ -981,10 +949,7 @@ namespace xqp
 
     if(U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-            AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-            NULL
-          );
+      ZORBA_ASSERT (false);
 
       delete target;
       return "";
@@ -1011,10 +976,7 @@ namespace xqp
 
     if(U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-            AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-            NULL
-          );
+      ZORBA_ASSERT (false);
     }
 
     return ret;

@@ -2650,11 +2650,8 @@ void OrdPath::decodeByte(
     break;
   }
   case 255:   // 1111 1111   11111111,...           (28/8,20)
-  {
-    ZORBA_ERROR_ALERT(AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-                      NULL,
-                      false);
-  }
+    ZORBA_ASSERT (false);
+    break;
   default:
   {
     std::cerr << "byte " << std::hex << (unsigned short)byte << " NYI" << std::endl;

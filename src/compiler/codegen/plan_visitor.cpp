@@ -525,14 +525,7 @@ bool begin_visit(axis_step_expr& v)
     break;
   }
   default:
-  {
-    ZORBA_ERROR_ALERT(
-       AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-       NULL,
-       false,
-       "Unknown axis kind");
-    break;
-  }
+    ZORBA_ASSERT (false && "Unknown axis kind");
   }
 
   itstack.push(axisIte);

@@ -10,6 +10,7 @@
 #include "store/api/item.h"
 
 #include "errors/error_factory.h"
+#include "util/Assert.h"
 
 #include "system/zorba_engine.h"
 
@@ -26,7 +27,7 @@ Item::~Item()
 
 void Item::showError() const
 {
-  ZORBA_ERROR_ALERT(AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED, NULL);
+  ZORBA_ASSERT (false);
 }
 
 
