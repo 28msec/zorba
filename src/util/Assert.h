@@ -6,6 +6,8 @@
  *
  */
 
+// ZORBA_ASSERT (and the deprecated Assert) survive in release mode
+// and raise errors via the Zorba error API
 
 #ifndef XQP_ASSERT_H
 #define XQP_ASSERT_H
@@ -14,8 +16,6 @@
 
 namespace xqp {
 
-#ifndef NDEBUG
-
 void ZorbaAssert(const char *where, const char *what);
 
 #define __Assert_aux3( line ) #line
@@ -23,13 +23,6 @@ void ZorbaAssert(const char *where, const char *what);
 #define __Assert_aux1( cond, line ) if (! (cond)) ZorbaAssert (__FILE__ ":" __Assert_aux2 (line), #cond)
 #define ZORBA_ASSERT( cond ) __Assert_aux1 (cond, __LINE__)
 #define Assert( cond ) ZORBA_ASSERT (cond)
-
-#else //#ifndef NDEBUG
-
-#define Assert( cond )			cond
-#define ZORBA_ASSERT( cond ) 
-
-#endif //#ifndef NDEBUG
 
 }	/* namespace xqp */
 #endif	/* XQP_ASSERT_H */
