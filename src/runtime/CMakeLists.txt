@@ -1,6 +1,7 @@
 SET(RUNTIME_SRCS
     accessors/AccessorsImpl.cpp
     core/item_iterator.cpp
+    core/var_iterators.cpp
     core/flwor_iterator.cpp
     core/constructors.cpp
     core/path_iterators.cpp
