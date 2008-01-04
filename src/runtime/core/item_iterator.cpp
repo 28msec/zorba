@@ -18,33 +18,33 @@ using namespace std;
 namespace xqp
 {
 
-  /* begin class EmptyIterator */
-  void EmptyIterator::setOffset ( PlanState& planState, uint32_t& offset )
-  {
-    this->stateOffset = offset;
-    offset += this->getStateSize();
-  }
-  /* end class EmptyIterator */
+void EmptyIterator::setOffset ( PlanState& planState, uint32_t& offset )
+{
+  this->stateOffset = offset;
+  offset += this->getStateSize();
+}
 
-  /* begin class SingletonIterator */
-  SingletonIterator::SingletonIterator ( yy::location loc, Item_t aValue) :
-      NoaryBaseIterator<SingletonIterator> ( loc ), theValue ( aValue )
-  {
-  }
 
-  SingletonIterator::~SingletonIterator()
-  {
-  }
+/* begin class SingletonIterator */
+SingletonIterator::SingletonIterator ( yy::location loc, Item_t aValue)
+  :
+  NoaryBaseIterator<SingletonIterator> ( loc ), theValue ( aValue )
+{
+}
 
-  Item_t SingletonIterator::nextImpl ( PlanState& planState )
-  {
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    STACK_PUSH ( theValue, state );
-    STACK_END();
-  }
-  /* end class SingletonIterator */
 
+SingletonIterator::~SingletonIterator()
+{
+}
+
+
+Item_t SingletonIterator::nextImpl ( PlanState& planState )
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  STACK_PUSH ( theValue, state );
+  STACK_END();
+}
 
 
   /* start class IfThenElseIterator */
