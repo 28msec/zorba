@@ -42,13 +42,22 @@ int apitest_alert_callback(ZorbaAlert *alert_mess,
   return -1;
 }
 
-void set_var (string name, string val, DynamicQueryContext_t dctx, XQueryExecution_t result) {
-  if (name [name.size () - 1] == ':' && dctx != NULL) {
-    dctx->SetVariable (name.substr (0, name.size () - 1), xqp_string (val));
-  } else if (name [name.size () - 1] != ':' && result != NULL) {
+
+void set_var(
+    string name,
+    string val,
+    DynamicQueryContext_t dctx,
+    XQueryExecution_t result)
+{
+  if (name [name.size () - 1] == ':' && dctx != NULL) 
+  {
+    dctx->SetVariable(name.substr (0, name.size () - 1), xqp_string(val));
+  }
+  else if (name[name.size () - 1] != ':' && result != NULL)
+  {
     ifstream is (val.c_str ());
     assert (is);
-    result->SetVariable (name, is);
+    result->SetVariable(name, val.c_str(), is);
   }
 }
 

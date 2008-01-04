@@ -47,7 +47,7 @@ function usage ()
 #
 function buildDirEnv
 {
-  echo; echo "buildDirEnv: Checking/Building Environment Directories"
+  #echo; echo "buildDirEnv: Checking/Building Environment Directories"
 
   if [ ! -d ${zorbaRepos} ]; then
      echo "ERROR 5 buildDirEnv: zorba root directory ${sorbaRepos} does not exist"
@@ -101,12 +101,14 @@ function buildDirEnv
 # params: 
 #
 # $1 queryFile
-# $2 displayFormat
+# $2 querySpecFile
+# $3 displayFormat
 #
 function run_query
 {
   local queryFile="$1"
-  local displayFormat=$2
+  local querySpecFile="$2"
+  local displayFormat=$3
 
   local error=0
 
@@ -116,13 +118,27 @@ function run_query
     echo "ERROR 1 run_query: binary executable ${EXE} not found"
     exit 17
   fi
-  
+
   cd ${queryFile%/*}
 
-  if [ $displayFormat == "xml" ]; then
-    ${EXE} -r -o "${queryFile}.res" "${queryFile}" 2> "${queryFile}.res.err"
+  #echo "queryFile = ${queryFile}"
+  #echo "querySpecFile = ${querySpecFile}"
+
+  if test -f $querySpecFile; then
+      XARGS=`egrep ^Args: ${querySpecFile} | cut -f2- -d:`
+      ERRS=`egrep ^Error: ${querySpecFile} | cut -f2- -d:`
   else
-    ${EXE} -o "${queryFile}.res" "${queryFile}" 2> "${queryFile}.res.err"
+      XARGS=""
+      ERRS=""
+  fi
+
+  #echo "XARGS = ${XARGS}"
+
+  if [ $displayFormat == "xml" ]; then
+    #echo "${EXE} ${XARGS} -r -o ${queryFile}.res ${queryFile} 2> ${queryFile}.err"
+    ${EXE} ${XARGS} -r -o "${queryFile}.res" "${queryFile}" 2> ${queryFile}.err
+  else
+    ${EXE} -o "${queryFile}.res" "${queryFile}" 2> "${queryFile}.err"
   fi
   error=$?
   if [ ${error} != 0 ]; then
@@ -153,6 +169,7 @@ function run_query_in_bucket
 
   local inputDir="${queriesDir}/${bucketName}"
   local queryFile="${inputDir}/${queryName}.xq"
+  local querySpec="${inputDir}/${queryName}.spec"
 
   local expResultsDir="${expQueryResultsDir}/${bucketName}"
   local fmtExt=""
@@ -165,6 +182,7 @@ function run_query_in_bucket
 
   local resultsDir="${queryResultsDir}/${bucketName}"
   local resultFile="${resultsDir}/${queryName}.${fmtExt}.res"
+  local errorsFile="${resultsDir}/${queryName}.${fmtExt}.err"
   local diffFile="${resultsDir}/${queryName}.${fmtExt}.diff"
 
   if [ ! -e "${queryFile}" ]; then
@@ -183,7 +201,7 @@ function run_query_in_bucket
   #
   # Run the query
   #
-  run_query "${queryFile}" ${displayFormat}
+  run_query "${queryFile}" "${querySpec}" ${displayFormat}
   error=$?
   if [ ${error} != 0 ]; then
     echo "ERROR 3 run_query_in_bucket: run_query failed with error code ${error}"
@@ -199,7 +217,7 @@ function run_query_in_bucket
   if [ -s "${inputDir}/${queryName}.xq.res.err" ]; then
       cat "${inputDir}/${queryName}.xq.res.err" | head -1 | cut -f1 -d':' > "${inputDir}/${queryName}.xq.res"
   fi
-  rm "${inputDir}/${queryName}.xq.res.err"
+
   mkdir -p `dirname ${resultFile}`
   if [ -e "${inputDir}/${queryName}.xq.res" ]; then
     cat "${inputDir}/${queryName}.xq.res" | ${scriptsDir}/tidy_xmlfrag >"${resultFile}"
@@ -208,6 +226,10 @@ function run_query_in_bucket
   else
     touch "${resultFile}"
     if [ $? != 0 ]; then echo "ERROR 13 run_query_in_bucket: touch failed"; exit 19; fi
+  fi
+
+  if [ -e "${inputDir}/${queryName}.xq.err" ]; then
+    mv "${inputDir}/${queryName}.xq.err" ${errorsFile}
   fi
 
   #
