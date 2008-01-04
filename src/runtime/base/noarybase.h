@@ -11,65 +11,71 @@
 
 namespace xqp
 {
-  /**
-   * Superclass for all iterators which have no child iterators
-   * and no additional state variables.
-   */
-  template <class IterType>
-  class NoaryBaseIterator : public Batcher<IterType>
-  {
-    public:
-      NoaryBaseIterator ( const yy::location& loc );
-      virtual ~NoaryBaseIterator();
+/**
+ * Superclass for all iterators which have no child iterators
+ * and no additional state variables.
+ */
+template <class IterType>
+class NoaryBaseIterator : public Batcher<IterType>
+{
+public:
+  NoaryBaseIterator ( const yy::location& loc );
+  virtual ~NoaryBaseIterator();
 
-      void resetImpl ( PlanState& planState );
-      void releaseResourcesImpl ( PlanState& planState );
+  void resetImpl ( PlanState& planState );
+  void releaseResourcesImpl ( PlanState& planState );
 
-      virtual uint32_t getStateSize() const { return sizeof ( PlanIterator::PlanIteratorState ); }
-      virtual uint32_t getStateSizeOfSubtree() const { return getStateSize(); }
-      virtual void setOffset ( PlanState& planState, uint32_t& offset );
-  }; /* class NoaryBaseIterator */
+  virtual uint32_t getStateSize() const { return sizeof(PlanIterator::PlanIteratorState); }
+  virtual uint32_t getStateSizeOfSubtree() const { return getStateSize(); }
+  virtual void setOffset(PlanState& planState, uint32_t& offset);
+};
 
-  /* begin class NoaryBaseIterator */
-  template <class IterType>
-  NoaryBaseIterator<IterType>::NoaryBaseIterator ( const yy::location& loc )
+
+template <class IterType>
+NoaryBaseIterator<IterType>::NoaryBaseIterator ( const yy::location& loc )
   :
   Batcher<IterType> ( loc )
-  {}
+{
+}
 
 
-  template <class IterType>
-  NoaryBaseIterator<IterType>::~NoaryBaseIterator()
-  {}
+template <class IterType>
+NoaryBaseIterator<IterType>::~NoaryBaseIterator()
+{
+}
 
 
-  template <class IterType>
-  void
-  NoaryBaseIterator<IterType>::resetImpl ( PlanState& planState )
-  {
-    PlanIterator::PlanIteratorState* state;
-    GET_STATE ( PlanIterator::PlanIteratorState, state, planState );
-    state->reset();
-  }
+template <class IterType>
+void
+NoaryBaseIterator<IterType>::resetImpl ( PlanState& planState )
+{
+  PlanIterator::PlanIteratorState* state;
+  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
+  state->reset();
+}
 
 
-  template <class IterType>
-  void
-  NoaryBaseIterator<IterType>::releaseResourcesImpl ( PlanState& planState )
-  {
-  }
+template <class IterType>
+void
+NoaryBaseIterator<IterType>::releaseResourcesImpl(PlanState& planState)
+{
+  PlanIterator::PlanIteratorState* state;
+  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
+  state->releaseResources();
+}
 
 
-  template <class IterType>
-  void
-  NoaryBaseIterator<IterType>::setOffset (
-  PlanState& planState,
-  uint32_t& offset )
-  {
-    this->stateOffset = offset;
-    offset += getStateSize();
-  }
-  /* end class NoaryBaseIterator */
+template <class IterType>
+void
+NoaryBaseIterator<IterType>::setOffset (
+    PlanState& planState,
+    uint32_t& offset )
+{
+  this->stateOffset = offset;
+  offset += getStateSize();
+}
+
+
 }; /* namespace xqp*/
 
 #endif /* XQP_NOARYBASE_H */
