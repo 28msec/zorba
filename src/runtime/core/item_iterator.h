@@ -28,29 +28,6 @@ class node;
 class zorba;
 
 
-
-
-/*
-public:   // "treat as" operators
-  string_iterator& treat_as_string();
-  node
-  document
-  element
-  attribute
-  namespace
-  pi
-  comment
-  text
-  string
-  numeric 
-  boolean
-  time
-  binary
-  qname
-  sequence
-
-*/
-
 class SingletonIterator;
 typedef rchandle<SingletonIterator> singleton_t;
 
@@ -72,9 +49,7 @@ public:
   void releaseResourcesImpl(PlanState& planState){ }
 
   virtual uint32_t getStateSize() const { return 0; }
-  virtual uint32_t getStateSizeOfSubtree() const { 
-    return 0; 
-}
+  virtual uint32_t getStateSizeOfSubtree() const { return 0; }
   virtual void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
@@ -83,7 +58,7 @@ public:
 
 /*******************************************************************************
 
-  Literals and for_var bindings
+  Literals
 
 ********************************************************************************/
 class SingletonIterator : public NoaryBaseIterator<SingletonIterator>
@@ -92,12 +67,13 @@ protected:
   Item_t theValue;
 
 public:
-  SingletonIterator(yy::location loc, Item_t _i_p);
+  SingletonIterator(yy::location loc, Item_t value);
+
   ~SingletonIterator();
   
 public:
   Item_t nextImpl(PlanState& planState);
-  
+
   const Item_t& getValue() const { return theValue; }
   
   virtual void accept(PlanIterVisitor&) const;
@@ -106,78 +82,9 @@ public:
 
 /*******************************************************************************
 
-  FOR variables
-
-********************************************************************************/
-class var_iterator : public SingletonIterator
-{
-protected:
-  string s_h;
-  const void *origin;  ///< origin expr, used as a kind of ID
-  
-public:
-  var_iterator(string s_p, yy::location loc, const void *origin_) 
-    : 
-    SingletonIterator(loc, NULL), 
-    s_h(s_p), origin (origin_)
-  {
-  }
-
-  ~var_iterator() { }
-  
-  virtual void accept(PlanIterVisitor&) const;
-  
-public:
-  // variable binding
-  void bind(Item_t aValue) { theValue = aValue; }
-};
-
-
-/*******************************************************************************
-
-  If a variable can hold more than one item, use this ref-holder
   
 ********************************************************************************/
-class RefIterator : public Batcher<RefIterator>
-{
-private:
-  xqp_string theVarName;
-  Iterator_t it;
-  const void *origin;  ///< like origin in var_iterator
-  
-public:
-  RefIterator(xqpString vn, yy::location loc, const void *origin_)
-    :
-    Batcher<RefIterator>(loc),
-    theVarName(vn),
-    origin(origin_)
-  {
-  }
 
-  ~RefIterator() {}  // TODO
-  
-public:
-  xqp_string getVarName() const { return theVarName; }
-
-  // variable binding
-  void bind(Iterator_t _it) { it = _it; }
-
-  Item_t nextImpl(PlanState& planState) { return it->next(); }  // TODO
-  void resetImpl(PlanState& planState) { it->reset(); }  // TODO
-  void releaseResourcesImpl(PlanState& planState) { if (it != NULL) it->close(); it = NULL; } // TODO
-
-  virtual uint32_t getStateSize() const { return 0; }  // TODO
-  virtual uint32_t getStateSizeOfSubtree() const { return 0; }  // TODO
-  virtual void setOffset(PlanState& planState, uint32_t& offset) {}  // TODO
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
-
-
-/*******************************************************************************
-
-  
-********************************************************************************/
 class IfThenElseIterator : public Batcher<IfThenElseIterator>
 {
 protected:
