@@ -135,7 +135,7 @@ int _tmain(int argc, _TCHAR* argv[])
   sctx1 = zorba_factory.createStaticContext();
   sctx1->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
   sctx1->AddCollation("http://www.flworfound.org/apitest/coll2", "de");
-  sctx1->AddCollation("http://www.flworfound.org/apitest/coll2", "fr");
+  sctx1->AddCollation("http://www.flworfound.org/apitest/coll3", "fr");
   sctx1->SetOrderingMode(StaticQueryContext::unordered);
   StaticQueryContext::xpath1_0compatib_mode_t   default_compatib_mode;
   default_compatib_mode = sctx1->GetXPath1_0CompatibMode();
