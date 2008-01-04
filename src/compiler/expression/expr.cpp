@@ -248,19 +248,18 @@ void flwor_expr::accept(expr_visitor& v)
 {
   if (!v.begin_visit(*this)) return;
   
-  vector<forletref_t>::const_iterator it = this->clause_v.begin();
-  for (; it!=this->clause_v.end(); ++it) {
+  vector<forletref_t>::const_iterator it = clause_v.begin();
+  for (; it != clause_v.end(); ++it) {
     (*it)->expr_h->accept(v);
   }
   
-  if (where_h != NULL)
-    where_h->accept (v);
+  ACCEPT (where_h);
   for (vector<orderspec_t>::const_reverse_iterator i = orderspec_rbegin ();
        i != orderspec_rend ();
        i++)
     (*i).first->accept (v);
   
-  this->retval_h->accept(v);
+  retval_h->accept(v);
   
   v.end_visit(*this); 
 }
@@ -410,9 +409,9 @@ void if_expr::accept(
   expr_visitor& v)
 {
   if (!v.begin_visit(*this)) return;
-  this->cond_expr_h->accept(v);
-  this->then_expr_h->accept(v);
-  this->else_expr_h->accept(v);
+  cond_expr_h->accept(v);
+  then_expr_h->accept(v);
+  else_expr_h->accept(v);
   v.end_visit(*this);
 }
 
@@ -1218,12 +1217,9 @@ elem_expr::~elem_expr()
 void elem_expr::accept(expr_visitor& v)
 {
   if (!v.begin_visit(*this)) return;
-  if (theQNameExpr != NULL)
-    theQNameExpr->accept(v);
-  if (theAttrs != NULL)
-    theAttrs->accept(v);
-  if (theContent != NULL)
-    theContent->accept(v);
+  ACCEPT (theQNameExpr);
+  ACCEPT (theAttrs);
+  ACCEPT (theContent);
   v.end_visit(*this);
 }
 
@@ -1320,10 +1316,8 @@ void attr_expr::accept(
   expr_visitor& v)
 {
   if (!v.begin_visit(*this)) return;
-  if (theQNameExpr != NULL)
-    theQNameExpr->accept(v);
-  if (theValueExpr != NULL)
-    theValueExpr->accept(v);
+  ACCEPT (theQNameExpr);
+  ACCEPT (theValueExpr);
   v.end_visit(*this);
 }
 

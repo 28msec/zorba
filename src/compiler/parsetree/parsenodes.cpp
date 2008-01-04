@@ -147,8 +147,7 @@ MainModule::~MainModule()
 void MainModule::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  if (prolog_h != NULL)
-      prolog_h->accept(v);
+  ACCEPT (prolog_h);
   ACCEPT (query_body_h);
   END_VISITOR ();
 }
@@ -1159,12 +1158,8 @@ void FLWORExpr::accept(parsenode_visitor& v) const
 { 
   BEGIN_VISITOR ();
   ACCEPT (forlet_list_h);
-  if (where_h != NULL) {
-    where_h->accept(v);
-  }
-  if (orderby_h != NULL) {
-    orderby_h->accept(v);
-  }
+  ACCEPT (where_h);
+  ACCEPT (orderby_h);
   ACCEPT (return_val_h);
   END_VISITOR ();
 }
@@ -1299,18 +1294,10 @@ VarInDecl::~VarInDecl()
 void VarInDecl::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  if (typedecl_h != NULL) {
-    typedecl_h->accept(v);
-  }
-  if (posvar_h != NULL) {
-    posvar_h->accept(v);
-  }
-  if (ftscorevar_h != NULL) {
-    ftscorevar_h->accept(v);
-  }
-  if (valexpr_h != NULL) {
-    valexpr_h->accept(v);
-  }
+  ACCEPT (typedecl_h);
+  ACCEPT (posvar_h);
+  ACCEPT (ftscorevar_h);
+  ACCEPT (valexpr_h);
   END_VISITOR ();
 }
 
@@ -3317,8 +3304,7 @@ ParenthesizedExpr::~ParenthesizedExpr()
 void ParenthesizedExpr::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  if (expr_h != NULL)
-    expr_h->accept(v);
+  ACCEPT (expr_h);
   END_VISITOR ();
 }
 
@@ -3432,8 +3418,7 @@ void FunctionCall::accept(parsenode_visitor& v) const
 { 
   BEGIN_VISITOR ();
   //fname_h->accept(v);
-  if (arg_list_h != NULL)
-    arg_list_h->accept(v);
+  ACCEPT (arg_list_h);
   END_VISITOR ();
 }
 
@@ -3514,8 +3499,7 @@ void DirElemConstructor::accept(parsenode_visitor& v) const
   if( attr_list_h != NULL )
       attr_list_h->accept(v);
 
-  if (dir_content_list_h != NULL)
-    dir_content_list_h->accept(v);
+  ACCEPT (dir_content_list_h);
   END_VISITOR ();
 }
 
@@ -3650,10 +3634,8 @@ DirAttributeValue::~DirAttributeValue()
 void DirAttributeValue::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  if (this->quot_attr_content_h != NULL)
-    this->quot_attr_content_h->accept(v);
-  if (this->apos_attr_content_h != NULL)
-    this-> apos_attr_content_h->accept(v);
+  ACCEPT (quot_attr_content_h);
+  ACCEPT (apos_attr_content_h);
   END_VISITOR ();
 }
 
@@ -3759,8 +3741,7 @@ QuoteAttrValueContent::~QuoteAttrValueContent()
 void QuoteAttrValueContent::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  if (this->common_content_h != NULL)
-    this->common_content_h->accept(v);
+  ACCEPT (common_content_h);
   END_VISITOR ();
 }
 
@@ -3854,14 +3835,11 @@ void DirElemContent::accept(parsenode_visitor& v) const
 { 
   BEGIN_VISITOR ();
 
-  if (direct_cons_h != NULL)
-    direct_cons_h->accept(v);
+  ACCEPT (direct_cons_h);
 
-  if (cdata_h != NULL)
-    cdata_h->accept(v);
+  ACCEPT (cdata_h);
     
-  if (common_content_h != NULL)
-    common_content_h->accept(v);
+  ACCEPT (common_content_h);
   END_VISITOR ();
 }
 
@@ -3914,8 +3892,7 @@ CommonContent::~CommonContent()
 void CommonContent::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  if (this->expr_h != NULL)
-    this->expr_h->accept(v);
+  ACCEPT (expr_h);
   END_VISITOR ();
 }
 
