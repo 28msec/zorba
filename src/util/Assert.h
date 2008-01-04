@@ -27,6 +27,7 @@ void ZorbaAssert(const char *where, const char *what);
 #else //#ifndef NDEBUG
 
 #define Assert( cond )			cond
+#define ZORBA_ASSERT( cond ) 
 
 #endif //#ifndef NDEBUG
 
