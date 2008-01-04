@@ -427,27 +427,40 @@ SubstringIterator::nextImpl(PlanState& planState) {
         if( item1 != NULL )
         {//note: The first character of a string is located at position 1, not position 0.
           item1 = item1->getAtomizationValue();
-          tmpStart = (int32_t)round(item1->getDecimalValue());
-          if( theChildren.size() == 2 )
+          if(isnan(item1->getDoubleValue()) == 0)
           {
-            resStr = item0->getStringValue().substr(tmpStart-1);
-          }
-          else{ //theChildren.size() ==3
-            item2 = consumeNext ( theChildren[2], planState );
-            if ( item2 != NULL )
+            tmpStart = item0->getStringValue().length();
+            if( finite(item1->getDoubleValue()) != 0 )
+              tmpStart = (int32_t)round(item1->getDoubleValue());
+            if( theChildren.size() == 2 )
             {
-              item2 = item2->getAtomizationValue();
-              tmpLen = (int32_t)round(item2->getDecimalValue());
-              if(tmpLen >= 0)
+              resStr = item0->getStringValue().substr(tmpStart);
+            }
+            else{ //theChildren.size() ==3
+              item2 = consumeNext ( theChildren[2], planState );
+              if ( item2 != NULL )
               {
-                if(tmpStart <=0)
-                  resStr = item0->getStringValue().substr(
-                      tmpStart-1,
-                      tmpStart-1+ tmpLen);
-                else
-                  resStr = item0->getStringValue().substr(
-                      tmpStart-1,
-                      tmpLen);
+                item2 = item2->getAtomizationValue();
+                tmpLen = item0->getStringValue().length() - tmpStart + 1;
+                if(isnan(item2->getDoubleValue()) == 0)
+                {
+                  if( finite(item2->getDoubleValue()) != 0 )
+                    tmpLen = (int32_t)round(item2->getDoubleValue());
+                  if( isnan(item1->getDoubleValue() + item2->getDoubleValue()) == 0)
+                  {
+                    if(tmpLen >= 0)
+                    {
+                      if(tmpStart <=0)
+                        resStr = item0->getStringValue().substr(
+                            tmpStart-1,
+                            tmpStart-1+ tmpLen);
+                      else
+                        resStr = item0->getStringValue().substr(
+                            tmpStart-1,
+                            tmpLen);
+                    }
+                  }
+                }
               }
             }
           }
