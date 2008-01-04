@@ -1,0 +1,1 @@
+fn:string-join((), 'separator')
