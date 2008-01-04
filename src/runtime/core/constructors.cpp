@@ -153,6 +153,11 @@ ElementIterator::nextImpl(PlanState& planState)
   // parsing of QNameItem does not have to be checked because 
   // the compiler wraps an xs:qname cast around the expression
   lQName = (Item*)&*lItem;
+  if (lQName->getLocalName().size() == 0) {
+      ZORBA_ERROR_ALERT(AlertCodes::XQDY0074, false, 
+        false, "Element name must not have an empty local part."
+      );
+  }
 
   if (theChildrenIter != 0)
     cwrapper = new PlanIteratorWrapper(theChildrenIter, planState);
@@ -388,6 +393,11 @@ Item_t AttributeIterator::nextImpl(PlanState& planState)
   // parsing of QNameItem does not have to be checked because 
   // the compiler wraps an xs:qname cast around the expression
   lQName = (Item*)&*itemCur;
+  if (lQName->getLocalName().size() == 0) {
+      ZORBA_ERROR_ALERT(AlertCodes::XQDY0074, false, 
+        false, "Attribute name must not have an empty local part."
+      );
+  }
 
   if ((itemFirst = consumeNext(theChild1, planState)) != 0)
   {
