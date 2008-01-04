@@ -5,7 +5,7 @@
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file functions/StringsImpl.cpp
+ * @file runtime/strings/StringsImpl.cpp
  *
  */
 
@@ -74,21 +74,23 @@ StringToCodepointsIterator::nextImpl(PlanState& planState){
   // TODO Optimization for large strings: large strings mean that a large integer vector should be store in the state that is not good.
   Item_t item;
   Item_t resItem;
-  xqp_string inputStr;
+  xqp_string inputStr = "";
 
   StringToCodepointsState* state;
   DEFAULT_STACK_INIT(StringToCodepointsState, state, planState);
 
   item = consumeNext ( theChild, planState );
   if ( item != NULL ){
-    item = item->getAtomizationValue();
-    inputStr = item->getStringValue();
-    state->setVector(inputStr.getCodepoints());
-
-    while (state->getIterator() < state->getVectSize()){
-      resItem = Zorba::getItemFactory()->createInteger( state->getItem( state->getIterator() ) );
-      STACK_PUSH( resItem, state );
-      state->setIterator( state->getIterator() + 1 );
+    inputStr = item->getStringProperty();
+    if(!inputStr.empty())
+    {
+      state->setVector(inputStr.getCodepoints());
+  
+      while (state->getIterator() < state->getVectSize()){
+        resItem = Zorba::getItemFactory()->createInteger( state->getItem( state->getIterator() ) );
+        STACK_PUSH( resItem, state );
+        state->setIterator( state->getIterator() + 1 );
+      }
     }
   }
   STACK_END();
@@ -232,7 +234,7 @@ CodepointEqualIterator::nextImpl(PlanState& planState){
         item0 = item0->getAtomizationValue();
         item1 = item1->getAtomizationValue();
         res = Zorba::getItemFactory()->createBoolean(
-                  item0->getStringValue() == item1->getStringValue());
+            item0->getStringProperty() == item1->getStringProperty());
         STACK_PUSH( res, state );
       }
     }
