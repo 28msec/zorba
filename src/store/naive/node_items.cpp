@@ -575,7 +575,8 @@ ElementNodeImpl::~ElementNodeImpl()
 {
 #if 0
   std::cout << "Deleting elem node " << this << ", nscontext "
-            << theNsContext.get_ptr() << ", " << theNsContext->getRefCount()
+            << theNsContext.get_ptr() << ", "
+            << (theNsContext != NULL ? theNsContext->getRefCount() : -1)
             << std::endl;
 #endif
 
