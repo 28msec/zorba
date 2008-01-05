@@ -2394,30 +2394,46 @@ expr_t wrap_in_dos_and_dupelim(expr_t expr)
                 /    \
               step3  step4
 
-  The PathExpr node will be there only if the path expr starts with / or //
-
+  The possible types of a PathExpr are:
+  1. path_leading_lone_slash
+  2. path_leading_slash
+  3. path_leading_slashslash
+  4. path_relative
+ 
+  In case 1, the PathExpr does not have any child node.
 ********************************************************************************/
 void *begin_visit(const PathExpr& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
+
+  expr_t result;
   rchandle<relpath_expr> rpe = NULL;
+
+  // Put a NULL in the stack to mark the beginning of a PathExp tree.
+  nodestack.push(NULL);
+
   if (v.get_type() != path_leading_lone_slash)
   {
     rpe = new relpath_expr(v.get_location());
-    nodestack.push(NULL);
-  }
-  expr_t result = &*rpe;
 
+    result = rpe.get_ptr();
+  }
+
+  /*
+    If path expr starts with / or // (cases 1, 2, or 3), create an expr E =
+    fn:root(./self::node()).  In case 2 or 3 make E the 1st step of the rpe
+    that was created above.  In case 1, just push E to the nodestack.
+  */
   if (v.get_type() != path_relative) 
   {
-    // Create fn:root(self::node()) expr
     rchandle<relpath_expr> ctx_rpe = new relpath_expr(v.get_location());
+
     var_expr* ctx_var = static_cast<var_expr *> (sctx_p->lookup_var_nofail (DOT_VAR));
     ZORBA_ASSERT(ctx_var != NULL);
     ctx_rpe->add_back(ctx_var);
+
     rchandle<match_expr> me = new match_expr(v.get_location());
     me->setTestKind(match_anykind_test);
-
     rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
     ase->setAxis(axis_kind_self);
     ase->setTest(me);
@@ -2426,8 +2442,11 @@ void *begin_visit(const PathExpr& v)
 
     rchandle<fo_expr> fo = new fo_expr(v.get_location(), LOOKUP_FN("fn", "root", 1));
     fo->add(&*ctx_rpe);
-    result = &*fo;
-    if (rpe != NULL) {
+
+    result = fo.get_ptr();
+
+    if (rpe != NULL) 
+    {
       rpe->add_back(&*fo);
       result = &*rpe;
     }
@@ -2440,12 +2459,14 @@ void *begin_visit(const PathExpr& v)
     me->setTestKind(match_anykind_test);
     ase->setAxis(axis_kind_descendant_or_self);
     ase->setTest(me);
+
     rpe->add_back(&*ase);
   }
 
-  nodestack.push(&*result);
+  nodestack.push(result.get_ptr());
   return no_state;
 }
+
 
 void end_visit(const PathExpr& v, void *visit_state)
 {
@@ -2454,21 +2475,11 @@ void end_visit(const PathExpr& v, void *visit_state)
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
 
-  relpath_expr *rpe = NULL;
-  if (arg1 == NULL || dynamic_cast<relpath_expr *>(&*arg2))
-  {
-    nodestack.push(wrap_in_dos_and_dupelim(arg2));
-  }
-  else
-  {
-    relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
-    ZORBA_ASSERT(rpe != NULL);
-    rpe->add_back(arg2);
-    expr_t nulle = pop_nodestack();
-    ZORBA_ASSERT(nulle == NULL);
-    nodestack.push(wrap_in_dos_and_dupelim(rpe));
-  }
+  ZORBA_ASSERT(arg1 == NULL);
+
+  nodestack.push(wrap_in_dos_and_dupelim(arg2));
 }
+
 
 void* begin_visit(const RelativePathExpr& v)
 {
@@ -2491,20 +2502,34 @@ void intermediate_visit(const RelativePathExpr& v, void *visit_state)
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
   
-  relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
-  ZORBA_ASSERT(rpe != NULL);
-
-  rpe->add_back(arg2);
-  if (v.get_step_type() == st_slashslash)
+  if (arg1 != NULL)
   {
-    rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
-    rchandle<match_expr> me = new match_expr(v.get_location());
-    me->setTestKind(match_anykind_test);
-    ase->setAxis(axis_kind_descendant_or_self);
-    ase->setTest(me);
-    rpe->add_back(&*ase);
+    relpath_expr* rpe = dynamic_cast<relpath_expr *>(&*arg1);
+    ZORBA_ASSERT(rpe != NULL);
+
+    rpe->add_back(arg2);
+    if (v.get_step_type() == st_slashslash)
+    {
+      rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
+      rchandle<match_expr> me = new match_expr(v.get_location());
+      me->setTestKind(match_anykind_test);
+      ase->setAxis(axis_kind_descendant_or_self);
+      ase->setTest(me);
+      rpe->add_back(&*ase);
+    }
+    nodestack.push(rpe);
   }
-  nodestack.push(rpe);
+  else
+  {
+    flwor_expr* flwor = dynamic_cast<flwor_expr *>(&*arg2);
+    ZORBA_ASSERT(flwor != NULL);
+
+    nodestack.push(NULL);
+    
+    relpath_expr* rpe = new relpath_expr(v.get_location());
+    rpe->add_back(flwor);
+    nodestack.push(rpe);
+  }
 }
 
 void end_visit(const RelativePathExpr& v, void *visit_state)

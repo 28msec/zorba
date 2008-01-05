@@ -5,6 +5,7 @@
 #include "runtime/visitors/iterprinter.h"
 
 namespace xqp {
+
   class PlanIterator;
   /**
    * Visitor implementation to print a tree.
@@ -293,8 +294,8 @@ namespace xqp {
       virtual void beginVisitFlworVariables();
       virtual void endVisitFlworVariables();
       
-      virtual void beginVisitFlworLetVariable(const PlanIterator&);
-      virtual void endVisitFlworLetVariable(const PlanIterator&);
+    virtual void beginVisitFlworLetVariable(const PlanIterator&, bool);
+    virtual void endVisitFlworLetVariable(const PlanIterator&);
       
       virtual void beginVisitFlworForVariable(const PlanIterator&);
       virtual void endVisitFlworForVariable(const PlanIterator&);

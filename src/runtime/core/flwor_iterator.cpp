@@ -71,7 +71,7 @@ void FLWORIterator::ForLetClause::accept ( PlanIterVisitor& v ) const
     v.endVisitFlworForVariable(*input);
     break;
   case LET:
-    v.beginVisitFlworLetVariable(*input);
+    v.beginVisitFlworLetVariable(*input, needsMaterialization);
     v.endVisitFlworLetVariable(*input);
     break;
   default:

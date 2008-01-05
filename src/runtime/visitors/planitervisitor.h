@@ -383,8 +383,8 @@ namespace xqp
       virtual void beginVisitFlworVariables() = 0;
       virtual void endVisitFlworVariables() = 0;
       
-      virtual void beginVisitFlworLetVariable(const PlanIterator&) = 0;
-      virtual void endVisitFlworLetVariable(const PlanIterator&) = 0;
+    virtual void beginVisitFlworLetVariable(const PlanIterator&, bool) = 0;
+    virtual void endVisitFlworLetVariable(const PlanIterator&) = 0;
       
       virtual void beginVisitFlworForVariable(const PlanIterator&) = 0;
       virtual void endVisitFlworForVariable(const PlanIterator&) = 0;

@@ -816,8 +816,9 @@ namespace xqp {
   }
   
       
-  void PrinterVisitor::beginVisitFlworLetVariable(const PlanIterator& a){
+  void PrinterVisitor::beginVisitFlworLetVariable(const PlanIterator& a, bool meterialize){
     thePrinter.startIter("LetVariable");
+    thePrinter.addAttribute("materialize", meterialize ? "true" : "false");
     a.accept(*this);
   }
   

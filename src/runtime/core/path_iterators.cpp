@@ -699,15 +699,6 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
 
     while (child != NULL)
     {
-      /*
-      cout << "ite = " << this << " node = " << &*child
-           << " is node child = " << child->isNode();
-      if (child->isNode())
-        cout << " node kind = "
-             << sequence_type::describe(child->getNodeKind()) << endl;
-      else
-        cout << endl;
-      */
       if (theNodeKind == StoreConsts::anyNode ||
           child->getNodeKind() == theNodeKind)
       {

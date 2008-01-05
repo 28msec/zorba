@@ -47,6 +47,7 @@ public:
   class ForLetClause 
   {
     friend class FLWORIterator;
+    friend class PrinterVisitor;
 
   protected:
     enum ForLetType {FOR, LET};
