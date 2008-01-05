@@ -79,7 +79,7 @@ protected:
     depth (0), sctx_p (sctx_p_), tempvar_counter (0), theRootRelPathExpr(0)
   {
     yy::location loc;
-    var_expr *ctx_var = bind_var(loc, DOT_VAR, var_expr::context_var);
+    bind_var(loc, DOT_VAR, var_expr::context_var);
   }
 
 
@@ -1715,7 +1715,7 @@ TRACE_VISIT ();
 void end_visit(const ContextItemExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (DOT_VAR));
+  var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var_nofail (DOT_VAR));
   nodestack.push(e);
 }
 
@@ -1793,7 +1793,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
   Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
 
   if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "position") {
-    nodestack.push(sctx_p->lookup_var(DOT_POS_VAR));
+    nodestack.push(sctx_p->lookup_var_nofail (DOT_POS_VAR));
     return;
   }
   if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "last") {
@@ -1804,7 +1804,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
     fn_qname = sctx_p->lookup_fn_qname("xs", "string");
     switch (arguments.size ()) {
     case 0:
-      arguments.push_back (sctx_p->lookup_var (DOT_VAR));
+      arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
       break;
     case 1:
       break;
@@ -2405,7 +2405,7 @@ void *begin_visit(const PathExpr& v)
   {
     // Create fn:root(self::node()) expr
     rchandle<relpath_expr> ctx_rpe = new relpath_expr(v.get_location());
-    var_expr* ctx_var = static_cast<var_expr *> (sctx_p->lookup_var(DOT_VAR));
+    var_expr* ctx_var = static_cast<var_expr *> (sctx_p->lookup_var_nofail (DOT_VAR));
     ZORBA_ASSERT(ctx_var != NULL);
     ctx_rpe->add_back(ctx_var);
     rchandle<match_expr> me = new match_expr(v.get_location());
@@ -2595,14 +2595,14 @@ void post_predicate_visit(const PredicateList& v, void *visit_state)
   rchandle<if_expr> ite = new if_expr(pred->get_loc());
   if (is_numeric_literal(&*pred) || &*pred == sctx_p->lookup_var(LAST_IDX_VAR)) {
     rchandle<fo_expr> eq = new fo_expr(pred->get_loc(), LOOKUP_OP2("value-equal"));
-    eq->add(sctx_p->lookup_var(DOT_POS_VAR));
+    eq->add(sctx_p->lookup_var_nofail (DOT_POS_VAR));
     eq->add(pred);
     ite->set_cond_expr(&*eq);
   } else {
     ite->set_cond_expr(pred);
   }
 
-  ite->set_then_expr(sctx_p->lookup_var(DOT_VAR));
+  ite->set_then_expr(sctx_p->lookup_var_nofail (DOT_VAR));
   ite->set_else_expr(create_seq(pred->get_loc()));
   
   flwor->set_retval(&*ite);
