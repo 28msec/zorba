@@ -1168,13 +1168,14 @@ void *begin_visit(const ItemType& v)
 
 void end_visit(const ItemType& v, void *visit_state)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
+  tstack.push (GENV_TYPESYSTEM.ITEM_TYPE_ONE);
 }
 
 
 void *begin_visit(const LibraryModule& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
