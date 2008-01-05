@@ -579,19 +579,8 @@ void end_visit(const DirAttributeValue& v, void *visit_state)
 }
 
 
-void *begin_visit(const QuoteAttrContentList& v)
-{
-  TRACE_VISIT ();
-
-  nodestack.push(NULL);
-  return no_state;
-}
-
-void end_visit(const QuoteAttrContentList& v, void *visit_state)
-{
-  TRACE_VISIT_OUT ();
-
-  fo_expr *expr_list_t = create_seq (v.get_location ());
+void attr_content_list (yy::location loc, void *visit_state) {
+  fo_expr *expr_list_t = create_seq (loc);
   expr_t e_h;
   while(true)
   {
@@ -607,6 +596,44 @@ void end_visit(const QuoteAttrContentList& v, void *visit_state)
     nodestack.push(&*expr_list_t);
 }
 
+void *begin_visit(const QuoteAttrContentList& v)
+{
+  TRACE_VISIT ();
+
+  nodestack.push(NULL);
+  return no_state;
+}
+
+void end_visit(const QuoteAttrContentList& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+  attr_content_list (v.get_location (), visit_state);
+}
+
+
+void *begin_visit(const AposAttrContentList& v)
+{
+  TRACE_VISIT ();
+
+  nodestack.push(NULL);
+  return no_state;
+}
+
+void end_visit(const AposAttrContentList& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+  attr_content_list (v.get_location (), visit_state);
+}
+
+
+void attr_val_content (yy::location loc, const CommonContent *cc, xqpString content) {
+  if (cc == NULL)
+    nodestack.push (new text_expr(loc,
+                                  text_expr::text_constructor,
+                                  new const_expr (loc, content)));
+  // nothing to be done because when common content != NULL, 
+  // the corresponding expr is already on the stack
+}
 
 void *begin_visit(const QuoteAttrValueContent& v)
 {
@@ -617,28 +644,7 @@ void *begin_visit(const QuoteAttrValueContent& v)
 void end_visit(const QuoteAttrValueContent& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  
-  if (v.get_common_content() == NULL)
-  {
-    xqpString content = v.get_quot_atcontent();
-    nodestack.push (new text_expr(v.get_location(),
-                                  text_expr::text_constructor,
-                                  new const_expr (v.get_location (), content)));
-  }
-  // nothing to be done because when common content != NULL, 
-  // the corresponding expr is already on the stack
-}
-
-
-void *begin_visit(const AposAttrContentList& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const AposAttrContentList& v, void *visit_state)
-{
-  TRACE_VISIT_OUT ();
+  attr_val_content (v.get_location(), v.get_common_content(), v.get_quot_atcontent());
 }
 
 
@@ -651,6 +657,7 @@ void *begin_visit(const AposAttrValueContent& v)
 void end_visit(const AposAttrValueContent& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  attr_val_content (v.get_location(), v.get_common_content(), v.get_apos_atcontent());
 }
 
 
