@@ -2100,6 +2100,9 @@ ComparisonExpr::~ComparisonExpr()
 void ComparisonExpr::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
+  ACCEPT (gencomp_h);
+  ACCEPT (nodecomp_h);
+  ACCEPT (valcomp_h);
   ACCEPT (left_h);
   ACCEPT (right_h);
   END_VISITOR ();
@@ -4817,7 +4820,7 @@ string QName::get_prefix() const
 //-QName::
 
 void QName::accept(parsenode_visitor& v) const 
-{ 
+{
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
