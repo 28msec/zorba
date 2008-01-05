@@ -162,6 +162,11 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
     // danm: both valueCompare (x, NaN) and valueCompare (NaN, x) return 2.
     // That's why empty_item is needed.
     int8_t result = CompareIterator::valueCompare ( s1 , s2 );
+    if (result > 1 || result < -1) {
+      ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+                        NULL, false, "Non-comparable types found while sorting" );
+      
+    }
     return descAsc (result , desc );
   }
 }
@@ -169,7 +174,7 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
 
 int8_t FLWORIterator::OrderKeyCmp::descAsc ( int8_t result, bool desc ) const
 {
-  ZORBA_ASSERT (result <= 1 && result >= -1);
+  assert (result <= 1 && result >= -1);
   return desc ? -result : result;
 }
 
