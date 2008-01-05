@@ -277,10 +277,9 @@ void end_visit(promote_expr& v)
 bool begin_visit(typeswitch_expr& v)
 {
   CODEGEN_TRACE_IN("");
-  ZORBA_ASSERT (false);
+  ZORBA_NOT_IMPLEMENTED ("typeswitch codegen");
   return true;
 }
-
 
 void end_visit(typeswitch_expr& v)
 {
@@ -797,7 +796,7 @@ void end_visit(text_expr& v)
 bool begin_visit(pi_expr& v)
 {
   CODEGEN_TRACE_IN("");
-  ZORBA_ASSERT (false);
+  ZORBA_NOT_IMPLEMENTED ("PI codegen");
   return true;
 }
 

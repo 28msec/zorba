@@ -31,6 +31,11 @@ void ZorbaAssert(const char *where, const char *fun, const char *what);
   
 #define ZORBA_ASSERT( cond ) __ZORBA_ASSERT_aux1 (cond, __LINE__)
 
+#define ZORBA_NOT_SUPPORTED( what )                                     \
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false, what)
+#define ZORBA_NOT_IMPLEMENTED( what )                                     \
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false, what)
+
 // Deprecated
 #define Assert( cond ) ZORBA_ASSERT (cond)
 
