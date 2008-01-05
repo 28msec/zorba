@@ -23,15 +23,15 @@ public:
 
 	virtual void	AbortQueryExecution() = 0;
 
-	///extension from dynamic context (specific only for this execution)
+	// extension from dynamic context (specific only for this execution)
 	virtual bool SetVariable( xqp_string varname, XQueryExecution_t item_iter ) = 0;
 	virtual bool SetVariable( xqp_string varname, xqp_string docUri, std::istream &is ) = 0;
 
-	///register documents available through fn:doc() in xquery
+	// register documents available through fn:doc() in xquery
 	virtual bool AddAvailableDocument(xqp_string docURI,
 																		Item_t docitem) = 0;
-	///register collections available through fn:collection() in xquery
-	///default collection has empty URI ""
+	// register collections available through fn:collection() in xquery
+	// default collection has empty URI ""
 	virtual bool AddAvailableCollection(xqp_string collectionURI,
 																			Collection_t) = 0;
 
@@ -40,7 +40,14 @@ public:
 typedef rchandle<XQueryExecution>		XQueryExecution_t;
 
 
-}//end namespace xqp
+} //end namespace xqp
 
 
 #endif
+
+/* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

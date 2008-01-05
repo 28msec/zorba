@@ -21,6 +21,10 @@
 using namespace xqp;
 using namespace std;
 
+#ifdef UNICODE
+#error apitest: UNICODE no longer supported
+#endif
+
 int apitest_alert_callback(ZorbaAlert *alert_mess, 
                            XQuery*  current_xquery,
                            XQueryExecution* current_xqueryresult,
@@ -30,7 +34,7 @@ int apitest_alert_callback(ZorbaAlert *alert_mess,
   if((alert_mess->alert_type != ZorbaAlert::USER_ERROR_ALERT) &&
     (alert_mess->alert_type != ZorbaAlert::USER_TRACE_ALERT))
   {
-    cerr << g_error_in_file << " : " << g_error_at_line << endl;
+    cerr << g_error_in_file << ": " << g_error_at_line << endl;
   }
 #endif
   cerr << endl;
@@ -43,11 +47,9 @@ int apitest_alert_callback(ZorbaAlert *alert_mess,
 }
 
 
-void set_var(
-    string name,
-    string val,
-    DynamicQueryContext_t dctx,
-    XQueryExecution_t result)
+void set_var (string name, string val,
+              DynamicQueryContext_t dctx,
+              XQueryExecution_t result)
 {
   if (name [name.size () - 1] == ':' && dctx != NULL) 
   {
@@ -61,6 +63,22 @@ void set_var(
   }
 }
 
+string slurp_file (const char *fname) {
+  ifstream  qfile(fname); assert (qfile);
+  string query_text = "", temp;
+
+  // warning: this method of reading a file might trim the 
+  // whitespace at the end of lines
+  while (getline(qfile, temp)) {
+    if (query_text != "")
+      query_text += "\n";
+    
+    query_text += temp;
+  }
+
+  return query_text;
+}
+
 #ifndef _WIN32_WCE
 int main(int argc, char* argv[])
 #else
@@ -68,63 +86,32 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
   Timer timer;
-  timer.start();
 
-
-  if (!Properties::load(argc,argv))
+  if (! Properties::load(argc,argv))
     return 1;
   
   Properties* lProp = Properties::instance();
   
   xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
-  ofstream* resultFile = NULL;
-  string    query_text = "1+2";  // the default query if no file or query is specified
+  auto_ptr<ostream> outputFile (lProp->useResultFile() ? new ofstream (lProp->getResultFile().c_str()) : NULL);
+  ostream *resultFile = outputFile.get ();
+  if (resultFile == NULL)
+    resultFile = &cout;
+  
+  string   query_text = "1+2";  // the default query if no file or query is specified
 
-#ifndef NDEBUG
   g_abort_when_fatal_error = lProp->abortWhenFatalError();
-#endif
 
   const char* fname = lProp->getQuery().c_str();
-#ifndef UNICODE
+
   if (lProp->inlineQuery())
     query_text = fname; 
-#endif
-
-#ifdef UNICODE
-  if(! lProp->inlineQuery())
-  {
-    char  testfile[1024];
-    WideCharToMultiByte(CP_ACP, 0, // or CP_UTF8
-                        *argv, -1, 
-                        testfile, sizeof(testfile)/sizeof(char),
-                        NULL, NULL);
-    fname = testfile;
-  }
-#endif
-  if(! lProp->inlineQuery()) {
-    // read the file
-    ifstream  qfile(fname);
-    assert (qfile);
- 
-    {
-      string temp;
-      query_text = "";
-      
-      // warning: this method of reading a file might trim the 
-      // whitespace at the end of lines
-      while (getline(qfile, temp)) {
-        if (query_text != "")
-          query_text += "\n";
-        
-        query_text += temp;
-      }      
-    }    
-  }
+  else
+    query_text = slurp_file (fname);
   
   if (lProp->printQuery())
-    std::cout << query_text << std::endl;
-
+    cout << query_text << endl;
 
   /// now start the zorba engine
 
@@ -163,9 +150,7 @@ int _tmain(int argc, _TCHAR* argv[])
   query = zorba_factory.createQuery(query_text.c_str(), sctx1);
 
   if(query.isNull())
-  {
     goto DisplayErrorsAndExit;
-  }
 
   result = query->createExecution(dctx);
   if(result.isNull())
@@ -177,66 +162,25 @@ int _tmain(int argc, _TCHAR* argv[])
        iter != ext_vars.end (); iter++)
     set_var (iter->first, iter->second, NULL, result);
 
-  result->setAlertsParam(result.get_ptr());///to be passed to alerts callback when error occurs
-
-  if (lProp->useResultFile())
-    resultFile = new ofstream(lProp->getResultFile().c_str());
+  result->setAlertsParam(result.get_ptr());  // to be passed to alerts callback when error occurs
 
   if (lProp->useSerializer())
   {
-    if (lProp->useResultFile())
-    {
-      result->serialize(*resultFile);
-      // endl should not be sent when serializing!
-    }
-    else
-    {
-      result->serialize(std::cout);
-    }
-  }
-  else 
-  {
-    while( true )
-    {
-      Item_t it = result->next();
-      if(it == NULL)
-        break;
-
-      if (resultFile != NULL)
-        *resultFile << it->show() <<  endl;
-      else
-        cout << it->show() << endl;
-    }
+    result->serialize(*resultFile);
+    // newline should not be sent when serializing!
+  } else {
+    Item_t it;
+    while (NULL != (it = result->next ()).get_ptr ())
+      *resultFile << it->show() << endl;
   }
 
-  if(result->isError()) {
+  if (result->isError())
     goto DisplayErrorsAndExit;
-  }
 
   result->close();
-  // delete result;
-  // delete query;
-  // zorba_factory.destroyQuery(query);
 
-  zorba_factory.uninitThread();
-  zorba_factory.shutdown();
-
-  timer.end();
-
-  if (lProp->printTime())
-    timer.print(cout);
-  
-  if (resultFile != NULL)
-  {
-    resultFile->close();
-    delete resultFile;
-  }
-
-  return 0;
 
 DisplayErrorsAndExit:
-  cerr << endl << "Error list:" << endl;
-
   DisplayErrorListForCurrentThread();
 
   zorba_factory.uninitThread();

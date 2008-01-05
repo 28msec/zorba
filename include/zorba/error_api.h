@@ -21,7 +21,7 @@ public:
 
 public:
 
-//	xqp_string   module_name;///empty if is main module
+  // xqp_string   module_name; ///empty if is main module
 
 	xqp_string   filename;
 	unsigned int line;
@@ -41,20 +41,20 @@ struct ZorbaAlert
 		NOTIFICATION_ALERT,
 		FEEDBACK_REQUEST_ALERT,
 
-		USER_ERROR_ALERT,//fn:error
-		USER_TRACE_ALERT//fn:trace
+		USER_ERROR_ALERT, // fn:error
+		USER_TRACE_ALERT  // fn:trace
 	};
 	
 	Zorba_AlertType alert_type;
 
-	///the user readable description; can be in other languages than english
+	// the user readable description; can be in other languages than english
 	std::string     alert_description;
 
 	time_t          time_of_alert;
 };
 
 
-//for errors
+// for errors
 struct ZorbaErrorAlert : public ZorbaAlert
 {
 	virtual ~ZorbaErrorAlert();
@@ -62,23 +62,23 @@ struct ZorbaErrorAlert : public ZorbaAlert
 	AlertCodes::error_code  error_code;
 	AlertCodes::error_type  error_type;
 	bool                    is_fatal;
-	//location is valid only for errors and warnings
-	ZorbaAlertLocation      loc;///may contain no location (zero values)
+	// location is valid only for errors and warnings
+	ZorbaAlertLocation      loc; // may contain no location (zero values)
 };
 
 
-///for warnings
+// for warnings
 struct ZorbaWarningAlert: public ZorbaAlert
 {
 	virtual ~ZorbaWarningAlert();
 
 	AlertCodes::warning_code warning_code;
-	//location is valid only for errors and warnings
-	ZorbaAlertLocation       loc;///may contain no location (zero values)
+	// location is valid only for errors and warnings
+	ZorbaAlertLocation       loc;  // may contain no location (zero values)
 };
 
 
-///for notifications
+// for notifications
 struct ZorbaNotifyAlert: public ZorbaAlert
 {
 	virtual ~ZorbaNotifyAlert();
@@ -87,7 +87,7 @@ struct ZorbaNotifyAlert: public ZorbaAlert
 };
 
 
-//for user interaction
+// for user interaction
 struct ZorbaAskUserAlert: public ZorbaAlert
 {
 	virtual ~ZorbaAskUserAlert();
@@ -97,7 +97,7 @@ struct ZorbaAskUserAlert: public ZorbaAlert
 };
 
 
-//for user fn:error()
+// for user fn:error()
 struct ZorbaFnErrorAlert: public ZorbaAlert
 {
 	virtual ~ZorbaFnErrorAlert();
@@ -108,7 +108,7 @@ struct ZorbaFnErrorAlert: public ZorbaAlert
 };
 
 
-//for user fn:trace()
+// for user fn:trace()
 struct ZorbaFnTraceAlert: public ZorbaAlert
 {
 	virtual ~ZorbaFnTraceAlert();
@@ -124,7 +124,7 @@ class XQueryExecution;
 typedef rchandle<XQueryExecution> XQueryExecution_t;
 
 
-///user might choose to receive the alerts through callback functions
+// user might choose to receive the alerts through callback functions
 typedef int alert_callback(ZorbaAlert*       alert, 
 													 XQuery*           current_xquery,
 													 XQueryExecution*  current_xqueryexecution,
@@ -136,8 +136,8 @@ class ZorbaAlertsManager : public std::list<ZorbaAlert*>
 public:
 	virtual ~ZorbaAlertsManager();
 
-	///register function to be called when error/warning/alert happens
-	///if callback function is NULL, then alerts are put in list
+	// register function to be called when error/warning/alert happens
+	// if callback function is NULL, then alerts are put in list
 	virtual void RegisterAlertCallback(alert_callback	*user_alert_callback,
 																		void *param) = 0;
 
@@ -145,6 +145,13 @@ public:
 };
 
 
-}//end namespace xqp
+} // end namespace xqp
 
 #endif
+
+/* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
