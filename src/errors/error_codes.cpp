@@ -288,7 +288,7 @@ string errors_english::err_decode(enum error_code e)
 
     TRIVIAL_ERR (XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED);
 
-    case XQP0004_SYSTEM_NOT_SUPPORTED: return "XQP0004_SYSTEM_NOT_SUPPORTED"; 
+    case XQP0004_SYSTEM_NOT_SUPPORTED: return "/s not supported"; 
    
     case XQP0016_LOADER_IO_ERROR: return "XQP0016_LOADER_IO_ERROR";
 
