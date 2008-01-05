@@ -449,28 +449,33 @@ CommentIterator::CommentIterator (
 
 Item_t CommentIterator::nextImpl(PlanState& planState)
 {
-  Item_t item, child;
+  Item_t lItem;
   xqp_string content = "";
+  bool lFirst;
 
   Store* store = Zorba::getStore();
-  TempSeq_t seqExpression;  
-  Iterator_t ewrapper;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+      
+  lFirst = true;
+  while (true)
+  {
+    lItem = consumeNext(theChild, planState);
+    if (lItem == 0)
+      break;
     
-  /*
-    ewrapper = new PlanIterWrapper(theExpressionIter, planState);
-    seqExpression = store->createTempSeq(ewrapper);
-  */
-  // TODO: put a while() to handle expressions        
-  child = consumeNext(theChild, planState);    
-  if (child != NULL)
-    content = child->getStringValue(); // TODO: maybe getStringProperty()?
-  
-  item = Zorba::getItemFactory()->createCommentNode(content, theAssignId);
+    if (!lFirst)
+      content += " ";
+    content += lItem->getStringProperty();
+    lFirst = false;
+  }
 
-  STACK_PUSH(item, state);
+  if (! content.empty ()) {
+    lItem = Zorba::getItemFactory()->createCommentNode(content, theAssignId);
+    
+    STACK_PUSH(lItem, state);
+  }
     
   STACK_END();
 }
