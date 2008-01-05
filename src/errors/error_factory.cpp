@@ -354,7 +354,7 @@ int ZorbaAlertFactory::ask_user(
 	int		retval;
 	retval = err_manager->sendAlertToUser(z, askmess);
 
-//	cout << "[]Ask User " << ask_user_decoded << "(not implemented)" << endl;
+  // cout << "[]Ask User " << ask_user_decoded << "(not implemented)" << endl;
 
 	return retval;
 }
@@ -364,7 +364,7 @@ int ZorbaAlertFactory::ask_user(
 ZorbaAlertLocation::ZorbaAlertLocation()
 {
 	filename = "";
-//	module_name = "";
+  // module_name = "";
 	line = 0;
 	column = 0;
 }
@@ -379,11 +379,12 @@ ZorbaFnErrorAlert::~ZorbaFnErrorAlert() {}
 ZorbaFnTraceAlert::~ZorbaFnTraceAlert() {}
 
 
-///from Assert.h
-void ZorbaAssert(const char *where, const char *what)
+void ZorbaAssert(const char *where, const char *fun, const char *what)
 {
+  string where_fun (where);
+  where_fun += ": "; where_fun += fun;
   ZorbaAlertFactory::error_alert(AlertCodes::XQP0005_SYSTEM_ASSERT_FAILED,
-                                 NULL, false, what, where);
+                                 NULL, false, what, where_fun);
 }
 
 }
