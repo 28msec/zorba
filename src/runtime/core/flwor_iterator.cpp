@@ -9,9 +9,10 @@
 #include "errors/error_factory.h"
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
-//#include "compiler/expression/expr.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planitervisitor.h"
+#include "util/Assert.h"
+#include "system/globalenv.h"
 
 namespace xqp
 {
@@ -21,6 +22,12 @@ namespace xqp
 //  ForLetClause                                                               //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
+  // Utility function -- is this item null or a NaN?
+  static bool empty_item (Item_t s) {
+    return s == 0 || (GENV_TYPESYSTEM.is_numeric (*GENV_TYPESYSTEM.create_type (s->getType (), TypeSystem::QUANT_ONE)) && s->isNaN ());
+  }
+
 
 FLWORIterator::ForLetClause::ForLetClause(
     std::vector<var_iter_t> aForVars,
@@ -139,60 +146,31 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
     bool desc,
     bool emptyLeast ) const
 {
-  if ( s1 == 0 )
+  if ( empty_item (s1) )
   {
-    if ( s2 == 0 )
-    {
+    if ( empty_item (s2) )
       return descAsc ( 0, desc );
-    }
-    if ( emptyLeast )
-    {
-      return descAsc ( -1, desc );
-    }
     else
-    {
-      return descAsc ( 1, desc );
-    }
+      return descAsc (emptyLeast ? -1 : 1, desc);
   }
-  else if ( s2 == 0 )
+  else if ( empty_item (s2) )
   {
-    if ( emptyLeast )
-    {
-      return descAsc ( 1, desc );
-    }
-    else
-    {
-      return descAsc ( -1, desc );
-    }
+    return descAsc (emptyLeast ? 1 : -1, desc);
   }
   else
   {
-    return descAsc ( CompareIterator::valueCompare ( s1 , s2 ), desc );
+    // danm: both valueCompare (x, NaN) and valueCompare (NaN, x) return 2.
+    // That's why empty_item is needed.
+    int8_t result = CompareIterator::valueCompare ( s1 , s2 );
+    return descAsc (result , desc );
   }
 }
 
 
 int8_t FLWORIterator::OrderKeyCmp::descAsc ( int8_t result, bool desc ) const
 {
-  if ( desc )
-  {
-    switch ( result )
-    {
-    case -1:
-      return 1;
-    case 1:
-      return -1;
-    case 0:
-      return 0;
-    }
-  }
-  else
-  {
-    return result;
-  }
-
-  assert ( false );
-  return 0; //should never happen, just for the compiler
+  ZORBA_ASSERT (result <= 1 && result >= -1);
+  return desc ? -result : result;
 }
 
 
