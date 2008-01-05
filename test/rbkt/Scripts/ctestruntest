@@ -38,6 +38,7 @@ CMD="$1/test/apitest"
 ARGS="$XARGS -q -r -o"
 echo "Executing command: $VGEACH $CMD $ARGS $2 $3 2> $2.err"
 
+SAVE_DIR=`pwd`; cd `dirname $3`
 $VGEACH $CMD $ARGS "$2" "$3" 2> "$2.err" # execute the query
 RETURNVALUE=$?
 test -s "$2.err" && cat "$2.err"  # Error shows in log
@@ -51,6 +52,7 @@ if test $RETURNVALUE -ne 0; then
         exit ${RETURNVALUE}
     fi
 fi
+cd $SAVE_DIR
 
 # if there's an error message...
 if test -s "$2.err"; then
