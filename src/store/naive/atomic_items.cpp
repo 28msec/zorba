@@ -201,6 +201,10 @@ xqp_string DecimalItemNaive::show() const
   return "xs:decimal(" + getStringProperty() + ")";
 }
 
+bool DecimalItemNaive::isNaN() const {
+  return theValue != theValue;
+}
+
 /*******************************************************************************
   class IntItemNaive
 ********************************************************************************/
@@ -301,15 +305,19 @@ Item_t DoubleItemNaive::getEBV() const
   return CREATE_BOOLITEM(b);
 }
 
-  xqp_string DoubleItemNaive::getStringProperty() const
-	{
-		return NumConversions::doubleToStr(theValue);
-	}
+xqp_string DoubleItemNaive::getStringProperty() const
+{
+  return NumConversions::doubleToStr(theValue);
+}
 
-  xqp_string DoubleItemNaive::show() const
-	{
-		return "xs:double(" + getStringProperty() + ")";
-	}
+xqp_string DoubleItemNaive::show() const
+{
+  return "xs:double(" + getStringProperty() + ")";
+}
+
+bool DoubleItemNaive::isNaN() const {
+  return theValue != theValue;
+}
 
   
 /*******************************************************************************
@@ -320,31 +328,35 @@ Item_t FloatItemNaive::getType() const
   return CREATE_XS_TYPE("float");
 }
 
-  bool FloatItemNaive::equals ( Item_t item ) const
-	{
-		return item->getFloatValue() == theValue;
-	}
+bool FloatItemNaive::equals ( Item_t item ) const
+{
+  return item->getFloatValue() == theValue;
+}
 
-  Item_t FloatItemNaive::getEBV() const
-	{
-    bool b;
-    if (theValue != theValue)
-      // NaN case
-      b = false;
-    else
-      b = ( theValue != 0 );
-    return CREATE_BOOLITEM(b);
-	}
+Item_t FloatItemNaive::getEBV() const
+{
+  bool b;
+  if (theValue != theValue)
+    // NaN case
+    b = false;
+  else
+    b = ( theValue != 0 );
+  return CREATE_BOOLITEM(b);
+}
 
-  xqp_string FloatItemNaive::getStringProperty() const
-	{
-		return NumConversions::floatToStr(theValue);
-	}
+xqp_string FloatItemNaive::getStringProperty() const
+{
+  return NumConversions::floatToStr(theValue);
+}
 
-  xqp_string FloatItemNaive::show() const
-	{
-		return "xs:float(" + getStringProperty() + ")";
-	}
+xqp_string FloatItemNaive::show() const
+{
+  return "xs:float(" + getStringProperty() + ")";
+}
+
+bool FloatItemNaive::isNaN() const {
+  return theValue != theValue;
+}
 
 
 /*******************************************************************************

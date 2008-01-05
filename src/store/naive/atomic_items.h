@@ -135,6 +135,7 @@ public:
     virtual Item_t getEBV( ) const;
     virtual xqp_string getStringProperty( ) const;
     virtual xqp_string show() const;
+    virtual bool isNaN() const;
 	};
 
 
@@ -155,6 +156,7 @@ public:
     virtual Item_t getEBV( ) const;
     virtual xqp_string getStringProperty() const;
     virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
 	};
 
 	class IntegerItemNaive : public AtomicItem
@@ -171,6 +173,7 @@ public:
     virtual Item_t getEBV( ) const;
     virtual xqp_string getStringProperty() const;
     virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
 	};
 
   class DoubleItemNaive : public AtomicItem
@@ -186,6 +189,7 @@ public:
 		virtual Item_t getEBV( ) const;
 		virtual xqp_string getStringProperty() const;
     virtual xqp_string show() const;
+    virtual bool isNaN() const;
 	};
 	
 	class FloatItemNaive : public AtomicItem
@@ -200,6 +204,7 @@ public:
 		virtual Item_t getEBV( ) const;
 		virtual xqp_string getStringProperty() const;
     virtual xqp_string show() const;
+    virtual bool isNaN() const;
 	};
 	
 	class BooleanItemNaive : public AtomicItem
@@ -232,6 +237,7 @@ public:
     virtual Item_t getEBV( ) const;
     virtual xqp_string getStringProperty() const;
     virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
   
   class NegativeIntegerItemNaive : public AtomicItem {
@@ -248,175 +254,185 @@ public:
     virtual Item_t getEBV( ) const;
     virtual xqp_string getStringProperty() const;
     virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
   
   class LongItemNaive : public AtomicItem {
-    private:
-      xqp_long theValue;
-    
-    public:
-      LongItemNaive ( xqp_long aValue) : theValue(aValue) {}
-      virtual xqp_long getLongValue() const { return theValue; }
-      virtual xqp_integer getIntegerValue() const;
-      virtual xqp_decimal getDecimalValue() const;
-    
-      virtual Item_t getType() const;
-      virtual bool equals ( Item_t ) const;
-      virtual Item_t getEBV( ) const;
-      virtual xqp_string getStringProperty() const;
-      virtual xqp_string show() const;
+  private:
+    xqp_long theValue;
+  
+  public:
+    LongItemNaive ( xqp_long aValue) : theValue(aValue) {}
+    virtual xqp_long getLongValue() const { return theValue; }
+    virtual xqp_integer getIntegerValue() const;
+    virtual xqp_decimal getDecimalValue() const;
+  
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t ) const;
+    virtual Item_t getEBV( ) const;
+    virtual xqp_string getStringProperty() const;
+    virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
   
   class ShortItemNaive : public AtomicItem {
-    private:
-      xqp_short theValue;
-    
-    public:
-      ShortItemNaive ( xqp_short aValue)  : theValue(aValue) {}
-      virtual xqp_short getShortValue() const { return theValue; }
-      virtual xqp_integer getIntegerValue() const;
-      virtual xqp_decimal getDecimalValue() const;
-      virtual xqp_long getLongValue() const;
-      virtual xqp_int getIntValue() const;
-    
-      virtual Item_t getType() const;
-      virtual bool equals ( Item_t ) const;
-      virtual Item_t getEBV( ) const;
-      virtual xqp_string getStringProperty() const;
-      virtual xqp_string show() const;
+  private:
+    xqp_short theValue;
+  
+  public:
+    ShortItemNaive ( xqp_short aValue)  : theValue(aValue) {}
+    virtual xqp_short getShortValue() const { return theValue; }
+    virtual xqp_integer getIntegerValue() const;
+    virtual xqp_decimal getDecimalValue() const;
+    virtual xqp_long getLongValue() const;
+    virtual xqp_int getIntValue() const;
+  
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t ) const;
+    virtual Item_t getEBV( ) const;
+    virtual xqp_string getStringProperty() const;
+    virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
   
   class ByteItemNaive : public AtomicItem {
-    private:
-      xqp_byte theValue;
-    
-    public:
-      ByteItemNaive ( xqp_byte aValue) : theValue(aValue) {}
-      virtual xqp_byte getByteValue() const { return theValue; }
-      virtual xqp_integer getIntegerValue() const;
-      virtual xqp_decimal getDecimalValue() const;
-      virtual xqp_long getLongValue() const;
-      virtual xqp_int getIntValue() const;
-      virtual xqp_short getShortValue() const;
-    
-      virtual Item_t getType() const;
-      virtual bool equals ( Item_t ) const;
-      virtual Item_t getEBV( ) const;
-      virtual xqp_string getStringProperty() const;
-      virtual xqp_string show() const;
+  private:
+    xqp_byte theValue;
+  
+  public:
+    ByteItemNaive ( xqp_byte aValue) : theValue(aValue) {}
+    virtual xqp_byte getByteValue() const { return theValue; }
+    virtual xqp_integer getIntegerValue() const;
+    virtual xqp_decimal getDecimalValue() const;
+    virtual xqp_long getLongValue() const;
+    virtual xqp_int getIntValue() const;
+    virtual xqp_short getShortValue() const;
+  
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t ) const;
+    virtual Item_t getEBV( ) const;
+    virtual xqp_string getStringProperty() const;
+    virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
   
   class NonNegativeIntegerItemNaive : public AtomicItem {
-    private:
-      xqp_uinteger theValue;
-    
-    public:
-      NonNegativeIntegerItemNaive ( xqp_uinteger aValue) : theValue(aValue) {}
-      virtual xqp_uinteger getUnsingedIntegerValue() const { return theValue; }
-      virtual xqp_integer getIntegerValue() const;
-      virtual xqp_decimal getDecimalValue() const;
-    
-      virtual Item_t getType() const;
-      virtual bool equals ( Item_t ) const;
-      virtual Item_t getEBV( ) const;
-      virtual xqp_string getStringProperty() const;
-      virtual xqp_string show() const;
+  private:
+    xqp_uinteger theValue;
+  
+  public:
+    NonNegativeIntegerItemNaive ( xqp_uinteger aValue) : theValue(aValue) {}
+    virtual xqp_uinteger getUnsingedIntegerValue() const { return theValue; }
+    virtual xqp_integer getIntegerValue() const;
+    virtual xqp_decimal getDecimalValue() const;
+  
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t ) const;
+    virtual Item_t getEBV( ) const;
+    virtual xqp_string getStringProperty() const;
+    virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
   
   class UnsignedLongItemNaive : public AtomicItem {
-    private:
-      xqp_ulong theValue;
-    
-    public:
-      UnsignedLongItemNaive ( xqp_ulong aValue) : theValue(aValue) {}
-      virtual xqp_ulong getUnsignedLongValue() const { return theValue; }
-      virtual xqp_integer getIntegerValue() const;
-      virtual xqp_decimal getDecimalValue() const;
-      virtual xqp_uinteger getUnsignedIntegerValue() const;
-    
-      virtual Item_t getType() const;
-      virtual bool equals ( Item_t ) const;
-      virtual Item_t getEBV( ) const;
-      virtual xqp_string getStringProperty() const;
-      virtual xqp_string show() const;
+  private:
+    xqp_ulong theValue;
+  
+  public:
+    UnsignedLongItemNaive ( xqp_ulong aValue) : theValue(aValue) {}
+    virtual xqp_ulong getUnsignedLongValue() const { return theValue; }
+    virtual xqp_integer getIntegerValue() const;
+    virtual xqp_decimal getDecimalValue() const;
+    virtual xqp_uinteger getUnsignedIntegerValue() const;
+  
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t ) const;
+    virtual Item_t getEBV( ) const;
+    virtual xqp_string getStringProperty() const;
+    virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
   
   class UnsignedIntItemNaive : public AtomicItem {
-    private:
-      xqp_uint theValue;
-    
-    public:
-      UnsignedIntItemNaive ( xqp_uint aValue) : theValue(aValue) {}
-      virtual xqp_uint getUnsignedIntValue() const { return theValue; }
-      virtual xqp_integer getIntegerValue() const;
-      virtual xqp_decimal getDecimalValue() const;
-      virtual xqp_uinteger getUnsignedIntegerValue() const;
-      virtual xqp_ulong getUnsignedLongValue() const;
-    
-      virtual Item_t getType() const;
-      virtual bool equals ( Item_t ) const;
-      virtual Item_t getEBV( ) const;
-      virtual xqp_string getStringProperty() const;
-      virtual xqp_string show() const;
+  private:
+    xqp_uint theValue;
+  
+  public:
+    UnsignedIntItemNaive ( xqp_uint aValue) : theValue(aValue) {}
+    virtual xqp_uint getUnsignedIntValue() const { return theValue; }
+    virtual xqp_integer getIntegerValue() const;
+    virtual xqp_decimal getDecimalValue() const;
+    virtual xqp_uinteger getUnsignedIntegerValue() const;
+    virtual xqp_ulong getUnsignedLongValue() const;
+  
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t ) const;
+    virtual Item_t getEBV( ) const;
+    virtual xqp_string getStringProperty() const;
+    virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
   
   class UnsignedShortItemNaive : public AtomicItem {
-    private:
-      xqp_ushort theValue;
-    
-    public:
-      UnsignedShortItemNaive ( xqp_ushort aValue)
-      : theValue(aValue) {}
-      virtual xqp_ushort getUnsignedShortValue() const { return theValue; }
-      virtual xqp_integer getIntegerValue() const;
-      virtual xqp_decimal getDecimalValue() const;
-      virtual xqp_uinteger getUnsignedIntegerValue() const;
-      virtual xqp_ulong getUnsignedLongValue() const;
-      virtual xqp_uint getUnsignedIntValue() const;
-    
-      virtual Item_t getType() const;
-      virtual bool equals ( Item_t ) const;
-      virtual Item_t getEBV( ) const;
-      virtual xqp_string getStringProperty() const;
-      virtual xqp_string show() const;
+  private:
+    xqp_ushort theValue;
+  
+  public:
+    UnsignedShortItemNaive ( xqp_ushort aValue)
+    : theValue(aValue) {}
+    virtual xqp_ushort getUnsignedShortValue() const { return theValue; }
+    virtual xqp_integer getIntegerValue() const;
+    virtual xqp_decimal getDecimalValue() const;
+    virtual xqp_uinteger getUnsignedIntegerValue() const;
+    virtual xqp_ulong getUnsignedLongValue() const;
+    virtual xqp_uint getUnsignedIntValue() const;
+  
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t ) const;
+    virtual Item_t getEBV( ) const;
+    virtual xqp_string getStringProperty() const;
+    virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
   
   class UnsignedByteItemNaive : public AtomicItem {
-    private:
-      xqp_ubyte theValue;
-    
-    public:
-      UnsignedByteItemNaive ( xqp_ubyte aValue) : theValue(aValue) {}
-      virtual xqp_ubyte getUnsignedByteValue() const { return theValue; }
-      virtual xqp_integer getIntegerValue() const;
-      virtual xqp_decimal getDecimalValue() const;
-      virtual xqp_uinteger getUnsignedIntegerValue() const;
-      virtual xqp_ulong getUnsignedLongValue() const;
-      virtual xqp_uint getUnsignedIntValue() const;
-      virtual xqp_ushort getUnsignedShortValue() const;
-    
-      virtual Item_t getType() const;
-      virtual bool equals ( Item_t ) const;
-      virtual Item_t getEBV( ) const;
-      virtual xqp_string getStringProperty() const;
-      virtual xqp_string show() const;
+  private:
+    xqp_ubyte theValue;
+  
+  public:
+    UnsignedByteItemNaive ( xqp_ubyte aValue) : theValue(aValue) {}
+    virtual xqp_ubyte getUnsignedByteValue() const { return theValue; }
+    virtual xqp_integer getIntegerValue() const;
+    virtual xqp_decimal getDecimalValue() const;
+    virtual xqp_uinteger getUnsignedIntegerValue() const;
+    virtual xqp_ulong getUnsignedLongValue() const;
+    virtual xqp_uint getUnsignedIntValue() const;
+    virtual xqp_ushort getUnsignedShortValue() const;
+  
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t ) const;
+    virtual Item_t getEBV( ) const;
+    virtual xqp_string getStringProperty() const;
+    virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
   
   class PositiveIntegerItemNaive : public AtomicItem {
-    private:
-      xqp_uinteger theValue;
-    
-    public:
-      PositiveIntegerItemNaive ( xqp_uinteger aValue) : theValue(aValue) {}
-      virtual xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
-      virtual xqp_integer getIntegerValue() const;
-      virtual xqp_decimal getDecimalValue() const;
-    
-      virtual Item_t getType() const;
-      virtual bool equals ( Item_t ) const;
-      virtual Item_t getEBV( ) const;
-      virtual xqp_string getStringProperty() const;
-      virtual xqp_string show() const;
+  private:
+    xqp_uinteger theValue;
+  
+  public:
+    PositiveIntegerItemNaive ( xqp_uinteger aValue) : theValue(aValue) {}
+    virtual xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
+    virtual xqp_integer getIntegerValue() const;
+    virtual xqp_decimal getDecimalValue() const;
+  
+    virtual Item_t getType() const;
+    virtual bool equals ( Item_t ) const;
+    virtual Item_t getEBV( ) const;
+    virtual xqp_string getStringProperty() const;
+    virtual xqp_string show() const;
+    virtual bool isNaN() const { return false; }
   };
 
 } /* namespace xqp */

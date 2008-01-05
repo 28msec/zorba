@@ -360,6 +360,16 @@ public:
     return 0;
   }
 
+  /**
+   * Helper method for numeric atomic items
+   * @return true, if containing number is not-a-number (possible for floating-point numbers)
+   */
+  virtual bool isNaN() const
+  {
+    this->showError();
+    return 0;
+  }
+
   /* -------------------  Methods for Nodes ------------------------------------- */
   
   /**
