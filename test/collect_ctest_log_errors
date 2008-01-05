@@ -1,11 +1,15 @@
 #!/usr/bin/perl
 use strict;
+use Getopt::Long;
+use FindBin;
+use File::Temp;
+
+my ($html, $blame);
+GetOptions ("html" => \$html, "blame" => \$blame);
+
+my $test_path = $FindBin::RealBin;
 
 my %queries;
-
-my $html = 0;
-
-if (shift eq "--html") { $html = 1; }
 
 sub add_case {
     my ($q, $file, $fun, $assertion) = @_;
@@ -16,9 +20,30 @@ sub add_case {
     push @{ $queries {$_} }, $q;
 }
 
-sub by_number_desc_then_string
-{
+sub by_number_desc_then_string {
     return -(($a <=> $b) || ($a cmp $b));
+}
+
+sub svn_blame {
+    if (! $blame) { return ""; }
+    
+    my $author;
+
+    my ($qfh, $qf) = File::Temp::tempfile ();
+    print $qfh '
+declare option saxon:output "omit-xml-declaration=yes";
+declare variable $line external;
+//entry [@line-number eq $line]//author/text()
+';
+    close ($qfh);
+    
+    if (m#([^:]+):([^:]+):#) {
+        my ($file, $line) = ($1, $2);
+        $author = `svn blame --xml $file | $test_path/zorbatest/xquery -s - $qf line=$line`
+    }
+
+    # unlink $qf;
+    return "$author: ";
 }
 
 my $query;
@@ -28,8 +53,8 @@ while (<>) {
         $query = $1;
     } elsif (m#^[^:]+: ([^:]+:[0-9]+): (.*): Assertion (.*) failed.$#) {
         add_case $query, $1, $2, $3;
-    } elsif (m#.*Assertion (.*) failed in ([^:]+:[0-9]+)$#) {
-        add_case $query, $2, "?", $1;
+    } elsif (m#XQP0005:.*Assertion (.*) failed in ([^:]+:[0-9]+): (.*)$#) {
+        add_case $query, $2, $3, $1;
     }
 }
 
@@ -37,7 +62,7 @@ while (<>) {
 my %queries_new;
 foreach (keys %queries) {
     my @qs = @{ $queries {$_} };
-    $_ = scalar @qs . " queries: " . $_;
+    $_ = scalar @qs . " queries: " . svn_blame . $_;
     @{ $queries_new {$_} } = @qs;
 }
 %queries = %queries_new;
