@@ -460,8 +460,8 @@ inline TypeSystem::xqtref_t TypeSystem::create_atomic_type(TypeSystem::atomic_ty
 inline TypeSystem::xqtref_t TypeSystem::create_atomic_type(Item_t qname, TypeSystem::quantifier_t quantifier) const
 {
   qnametype_map_t::const_iterator i = m_atomic_qnametype_map.find(qname);
-  assert(i != m_atomic_qnametype_map.end());
-  return create_atomic_type(i->second, quantifier);
+  return (i == m_atomic_qnametype_map.end()) ? 
+    xqtref_t (NULL) : create_atomic_type(i->second, quantifier);
 }
 
 inline TypeSystem::xqtref_t TypeSystem::create_any_type() const
