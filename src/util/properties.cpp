@@ -18,7 +18,7 @@ namespace xqp
   bool Properties::theLoaded = false;
   
   Properties::Properties() 
-  : theQuery("1+1"),
+  : theQuery(""),
     theTraceParsing(false),
     theTraceScanning(false),
     theUseSerializer(false),

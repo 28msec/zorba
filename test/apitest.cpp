@@ -63,20 +63,18 @@ void set_var (string name, string val,
   }
 }
 
-string slurp_file (const char *fname) {
-  ifstream  qfile(fname); assert (qfile);
-  string query_text = "", temp;
+void slurp_file (const char *fname, string &result) {
+  ifstream qfile(fname); assert (qfile);
 
-  // warning: this method of reading a file might trim the 
-  // whitespace at the end of lines
-  while (getline(qfile, temp)) {
-    if (query_text != "")
-      query_text += "\n";
-    
-    query_text += temp;
-  }
-
-  return query_text;
+  qfile.seekg (-1, ios_base::end);
+  size_t len = qfile.tellg ();
+  qfile.seekg (0, ios::beg);
+  char *str = new char [len];
+  qfile.read (str, len);
+  
+  string sstr (str, len);
+  result.swap (sstr);
+  delete [] str;
 }
 
 #ifndef _WIN32_WCE
@@ -107,8 +105,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
   if (lProp->inlineQuery())
     query_text = fname; 
-  else
-    query_text = slurp_file (fname);
+  else if (*fname != '\0')
+    slurp_file (fname, query_text);
   
   if (lProp->printQuery())
     cout << query_text << endl;
