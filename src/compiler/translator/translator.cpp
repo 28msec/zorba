@@ -1679,6 +1679,8 @@ void end_visit(const ComparisonExpr& v, void *visit_state)
       break;
     }
   } else if (v.get_nodecomp()!=NULL) {
+    ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                 "node comparison ops");
     switch (v.get_nodecomp()->get_type()) {
     case op_is:
       f = (LOOKUP_OP2 ("is"));
@@ -1692,6 +1694,7 @@ void end_visit(const ComparisonExpr& v, void *visit_state)
     }
   }
 
+  assert (f != NULL);
   fo_expr *fo_p = new fo_expr(v.get_location(), f);
 
   rchandle<expr> e1_h = pop_nodestack();
@@ -1867,7 +1870,6 @@ void end_visit(const InstanceofExpr& v, void *visit_state)
 void *begin_visit(const IntersectExceptExpr& v)
 {
   TRACE_VISIT ();
-  nodestack.push (new instanceof_expr (v.get_location (), pop_nodestack (), pop_tstack ()));
   return no_state;
 }
 
@@ -1886,6 +1888,8 @@ void end_visit(const IntersectExceptExpr& v, void *visit_state)
     f = LOOKUP_OP2 ("except");
     break;
   }
+
+  assert (f != NULL);
   fo_expr *fo_h = new fo_expr(v.get_location(), f);
 
   fo_h->add(e2_h);
@@ -2958,7 +2962,8 @@ void end_visit(const UnorderedExpr& v, void *visit_state)
 void *begin_visit(const ValidateExpr& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "validation");
   return no_state;
 }
 
@@ -2987,7 +2992,8 @@ void end_visit(const VarRef& v, void *visit_state)
 void *begin_visit(const DeleteExpr& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "delete");
   return no_state;
 }
 
@@ -2999,7 +3005,8 @@ void end_visit(const DeleteExpr& v, void *visit_state)
 void *begin_visit(const InsertExpr& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "insert");
   return no_state;
 }
 
@@ -3011,7 +3018,8 @@ void end_visit(const InsertExpr& v, void *visit_state)
 void *begin_visit(const RenameExpr& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "rename");
   return no_state;
 }
 
@@ -3023,7 +3031,8 @@ void end_visit(const RenameExpr& v, void *visit_state)
 void *begin_visit(const ReplaceExpr& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "replace");
   return no_state;
 }
 
@@ -3035,7 +3044,8 @@ void end_visit(const ReplaceExpr& v, void *visit_state)
 void *begin_visit(const RevalidationDecl& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "revalidation");
   return no_state;
 }
 
@@ -3048,7 +3058,8 @@ void end_visit(const RevalidationDecl& v, void *visit_state)
 void *begin_visit(const TransformExpr& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "transform");
   return no_state;
 }
 
@@ -3074,6 +3085,8 @@ void end_visit(const VarNameList& v, void *visit_state)
 void *begin_visit(const FTAnd& v)
 {
   TRACE_VISIT ();
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   ZORBA_ASSERT (false);
   return no_state;
 }
@@ -3086,7 +3099,8 @@ void end_visit(const FTAnd& v, void *visit_state)
 void *begin_visit(const FTAnyallOption& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3098,7 +3112,8 @@ void end_visit(const FTAnyallOption& v, void *visit_state)
 void *begin_visit(const FTBigUnit& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3110,7 +3125,8 @@ void end_visit(const FTBigUnit& v, void *visit_state)
 void *begin_visit(const FTCaseOption& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3122,7 +3138,8 @@ void end_visit(const FTCaseOption& v, void *visit_state)
 void *begin_visit(const FTContainsExpr& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3134,7 +3151,8 @@ void end_visit(const FTContainsExpr& v, void *visit_state)
 void *begin_visit(const FTContent& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3146,7 +3164,8 @@ void end_visit(const FTContent& v, void *visit_state)
 void *begin_visit(const FTDiacriticsOption& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3158,7 +3177,8 @@ void end_visit(const FTDiacriticsOption& v, void *visit_state)
 void *begin_visit(const FTDistance& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3170,7 +3190,8 @@ void end_visit(const FTDistance& v, void *visit_state)
 void *begin_visit(const FTIgnoreOption& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3182,7 +3203,8 @@ void end_visit(const FTIgnoreOption& v, void *visit_state)
 void *begin_visit(const FTInclExclStringLiteral& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3194,7 +3216,8 @@ void end_visit(const FTInclExclStringLiteral& v, void *visit_state)
 void *begin_visit(const FTInclExclStringLiteralList& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3206,7 +3229,8 @@ void end_visit(const FTInclExclStringLiteralList& v, void *visit_state)
 void *begin_visit(const FTLanguageOption& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3218,7 +3242,8 @@ void end_visit(const FTLanguageOption& v, void *visit_state)
 void *begin_visit(const FTMatchOption& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3231,7 +3256,8 @@ void end_visit(const FTMatchOption& v, void *visit_state)
 void *begin_visit(const FTMatchOptionProximityList& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3243,7 +3269,8 @@ void end_visit(const FTMatchOptionProximityList& v, void *visit_state)
 void *begin_visit(const FTMildnot& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3255,7 +3282,8 @@ void end_visit(const FTMildnot& v, void *visit_state)
 void *begin_visit(const FTOptionDecl& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3267,7 +3295,8 @@ void end_visit(const FTOptionDecl& v, void *visit_state)
 void *begin_visit(const FTOr& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3279,7 +3308,8 @@ void end_visit(const FTOr& v, void *visit_state)
 void *begin_visit(const FTOrderedIndicator& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3291,7 +3321,8 @@ void end_visit(const FTOrderedIndicator& v, void *visit_state)
 void *begin_visit(const FTProximity& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3303,7 +3334,8 @@ void end_visit(const FTProximity& v, void *visit_state)
 void *begin_visit(const FTRange& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3315,7 +3347,8 @@ void end_visit(const FTRange& v, void *visit_state)
 void *begin_visit(const FTRefOrList& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3327,7 +3360,8 @@ void end_visit(const FTRefOrList& v, void *visit_state)
 void *begin_visit(const FTScope& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3339,7 +3373,8 @@ void end_visit(const FTScope& v, void *visit_state)
 void *begin_visit(const FTScoreVar& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3351,7 +3386,8 @@ void end_visit(const FTScoreVar& v, void *visit_state)
 void *begin_visit(const FTSelection& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3363,7 +3399,8 @@ void end_visit(const FTSelection& v, void *visit_state)
 void *begin_visit(const FTStemOption& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3375,7 +3412,8 @@ void end_visit(const FTStemOption& v, void *visit_state)
 void *begin_visit(const FTStopwordOption& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3387,7 +3425,8 @@ void end_visit(const FTStopwordOption& v, void *visit_state)
 void *begin_visit(const FTStringLiteralList& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3399,7 +3438,8 @@ void end_visit(const FTStringLiteralList& v, void *visit_state)
 void *begin_visit(const FTThesaurusID& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3411,7 +3451,8 @@ void end_visit(const FTThesaurusID& v, void *visit_state)
 void *begin_visit(const FTThesaurusList& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3423,7 +3464,8 @@ void end_visit(const FTThesaurusList& v, void *visit_state)
 void *begin_visit(const FTThesaurusOption& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3435,7 +3477,8 @@ void end_visit(const FTThesaurusOption& v, void *visit_state)
 void *begin_visit(const FTTimes& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3447,7 +3490,8 @@ void end_visit(const FTTimes& v, void *visit_state)
 void *begin_visit(const FTUnaryNot& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3459,7 +3503,8 @@ void end_visit(const FTUnaryNot& v, void *visit_state)
 void *begin_visit(const FTUnit& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3471,7 +3516,8 @@ void end_visit(const FTUnit& v, void *visit_state)
 void *begin_visit(const FTWildcardOption& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3483,7 +3529,8 @@ void end_visit(const FTWildcardOption& v, void *visit_state)
 void *begin_visit(const FTWindow& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3495,7 +3542,8 @@ void end_visit(const FTWindow& v, void *visit_state)
 void *begin_visit(const FTWords& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3507,7 +3555,8 @@ void end_visit(const FTWords& v, void *visit_state)
 void *begin_visit(const FTWordsSelection& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
@@ -3519,7 +3568,8 @@ void end_visit(const FTWordsSelection& v, void *visit_state)
 void *begin_visit(const FTWordsValue& v)
 {
   TRACE_VISIT ();
-  ZORBA_ASSERT (false);
+  ZORBA_ERROR_ALERT (AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false,
+                     "full text");
   return no_state;
 }
 
