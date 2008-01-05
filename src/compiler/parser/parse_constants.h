@@ -204,6 +204,15 @@ enum ft_big_unit_t {
 	ft_bigunit_paragraph
 };
 
+  inline char *decode_numeric_type (enum numeric_type_t t) {
+    switch (t) {
+    case num_integer: return "integer";
+    case num_decimal: return "decimal";
+    case num_double:  return "double";
+    }
+  }
+
+
 } /* namespace xqp */
 #endif /* XQP_PARSE_CONSTANTS_H */
 

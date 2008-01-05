@@ -37,12 +37,6 @@ ostringstream __oss;
 #define END_VISITOR() v.end_visit (*this, visitor_state)
 #define ACCEPT( m ) do { if (m != NULL) m->accept (v); } while (0)
 
-/*
-
-
-
-*/
-
 
 
 // [1] Module
