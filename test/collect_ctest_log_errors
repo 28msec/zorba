@@ -4,14 +4,14 @@ use Getopt::Long;
 use FindBin;
 use File::Temp;
 
-my ($html, $blame);
-GetOptions ("html" => \$html, "blame" => \$blame);
+my ($html, $blame, $parse_err);
+GetOptions ("html" => \$html, "blame" => \$blame, "parse-err" => \$parse_err);
 
 my $test_path = $FindBin::RealBin;
 
 my %queries;
 
-sub add_case {
+sub add_assert_fail {
     my ($q, $file, $fun, $assertion) = @_;
     $_ = "$file: $fun: $assertion";
     if ($html) {
@@ -42,7 +42,7 @@ declare variable $line external;
         $author = `svn blame --xml $file | $test_path/zorbatest/xquery -s - $qf line=$line`
     }
 
-    # unlink $qf;
+    unlink $qf;
     return "$author: ";
 }
 
@@ -52,9 +52,13 @@ while (<>) {
     if (m#^[0-9]+/[0-9]+ Testing: (.*)$#) {
         $query = $1;
     } elsif (m#^[^:]+: ([^:]+:[0-9]+): (.*): Assertion (.*) failed.$#) {
-        add_case $query, $1, $2, $3;
+        add_assert_fail $query, $1, $2, $3;
     } elsif (m#XQP0005:.*Assertion (.*) failed in ([^:]+:[0-9]+): (.*)$#) {
-        add_case $query, $2, $3, $1;
+        add_assert_fail $query, $2, $3, $1;
+    } elsif (m#^[<] [<]root[>]XPST0003[<]/root>$# && $parse_err) {
+        add_assert_fail $query, "?", "?", "parser failure XPST0003";
+    } elsif (m#^[>] [<]root[>]XPST0003[<]/root>$# && $parse_err) {
+        add_assert_fail $query, "?", "?", "parse incorrectly succeeded, should have raised XPST0003";
     }
 }
 
