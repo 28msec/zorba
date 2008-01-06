@@ -34,7 +34,7 @@ string errors_english::err_decode(enum error_code e)
 {
   #define TRIVIAL_ERR( e ) case e: return #e
   switch (e) {
-    case XPDY0002:   return "evaluation of an expression relies on some part of the dynamic context that has not been assigned a value.";
+    case XPDY0002:  return "evaluation of an expression relies on some part of the dynamic context that has not been assigned a value: /s.";
 
     case XPDY0021:  return "(Not currently used.)"; 
 

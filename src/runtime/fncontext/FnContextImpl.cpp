@@ -45,7 +45,7 @@ Item_t CtxVariableIterator::nextImpl(PlanState& planState)
          current_xqueryresult->internal_dyn_context->get_variable(theVarName);
 
   if (iter == NULL)
-    ZORBA_ERROR_ALERT (AlertCodes::XPDY0002, &loc);
+    ZORBA_ERROR_ALERT (AlertCodes::XPDY0002, &loc, false, theVarName);
 
   do
   {
