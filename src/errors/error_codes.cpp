@@ -287,8 +287,8 @@ string errors_english::err_decode(enum error_code e)
     case XQP0005_SYSTEM_ASSERT_FAILED: return "Assertion `/s' failed in /s";
 
     TRIVIAL_ERR (XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED);
-
-    case XQP0004_SYSTEM_NOT_SUPPORTED: return "/s not supported"; 
+    
+    case XQP0004_SYSTEM_NOT_SUPPORTED: return "/s not implemented or not supported";
    
     case XQP0016_LOADER_IO_ERROR: return "XQP0016_LOADER_IO_ERROR";
 

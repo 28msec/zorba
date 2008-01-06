@@ -209,6 +209,7 @@ enum ft_big_unit_t {
     case num_integer: return "integer";
     case num_decimal: return "decimal";
     case num_double:  return "double";
+    default: assert (false); return "?";
     }
   }
 

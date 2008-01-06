@@ -222,7 +222,10 @@ namespace xqp {
 
   function *static_context::lookup_builtin_fn (xqp_string local, int arity)
   {
-    return root_static_context ()->lookup_func (fn_internal_key (arity) + qname_internal_key2 (XQUERY_FN_NS, local));
+    function *f = root_static_context ()->lookup_func (fn_internal_key (arity) + qname_internal_key2 (XQUERY_FN_NS, local));
+    if (f == NULL)
+      ZORBA_NOT_IMPLEMENTED ("built-in `" + local + "/" + to_string (arity) + "'");
+    return f;
   }
 
 	TypeSystem::xqtref_t static_context::lookup_type( xqp_string key)
