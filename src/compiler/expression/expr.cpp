@@ -163,8 +163,8 @@ ostream & forlet_clause::put( ostream& os) const
     score_var_h->put(os);
   }
 
-  os << endl;
   Assert(expr_h != NULL);
+  os << INDENT << " IN \n"; UNDENT;
   expr_h->put(os);
 
   os << DENT << "]\n"; UNDENT;
@@ -396,9 +396,11 @@ ostream& if_expr::put( ostream& os) const
   cond_expr_h->put(os);
   //d Assert<null_pointer>(then_expr_h!=NULL);
   Assert(then_expr_h!=NULL);
+  os << INDENT << " THEN \n"; UNDENT;
   then_expr_h->put(os);
   //d Assert<null_pointer>(else_expr_h!=NULL);
   Assert(else_expr_h!=NULL);
+  os << INDENT << " ELSE \n"; UNDENT;
   else_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
