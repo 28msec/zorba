@@ -148,8 +148,7 @@ forlet_clause::~forlet_clause()
 
 ostream & forlet_clause::put( ostream& os) const
 {
-  os << INDENT << "forlet(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "forlet(" << this << ") [\n";
 
   Assert(var_h != NULL);
   var_h->put(os);
@@ -199,8 +198,7 @@ rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
 
 ostream& flwor_expr::put( ostream& os) const
 {
-  os << INDENT << "flwor_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "flwor_expr(" << this << ") [\n";
 
   vector<forletref_t>::const_iterator it = clause_begin();
   for (; it!=clause_end(); ++it)
@@ -303,9 +301,8 @@ void promote_expr::accept(expr_visitor& v)
 
 std::ostream& promote_expr::put(std::ostream& os) const
 {
-  os << INDENT << "promote_expr(" << this << ")\n";
-  os << DENT << "[ ";
-  GENV_TYPESYSTEM.serialize(os, *target_type) << "\n";
+  os << INDENT << "promote_expr(" << this << ") [\n";
+  os << DENT; GENV_TYPESYSTEM.serialize(os, *target_type); os << "\n";
   Assert(input_expr_h!=NULL);
   input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
@@ -329,8 +326,7 @@ typeswitch_expr::~typeswitch_expr()
 
 ostream& typeswitch_expr::put( ostream& os) const
 {
-  os << INDENT << "typeswitch_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "typeswitch_expr(" << this << ") [\n";
 
   //d Assert<null_pointer>(switch_expr_h!=NULL);
   Assert(switch_expr_h!=NULL);
@@ -394,8 +390,7 @@ if_expr::~if_expr()
 
 ostream& if_expr::put( ostream& os) const
 {
-  os << INDENT << "if_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "if_expr(" << this << ") [\n";
   //d Assert<null_pointer>(cond_expr_h!=NULL);
   Assert(cond_expr_h!=NULL);
   cond_expr_h->put(os);
@@ -442,10 +437,7 @@ fo_expr::fo_expr(yy::location const& loc, const function *f)
 ostream& fo_expr::put( ostream& os) const
 {
   Assert(func != NULL);
-  os << INDENT << func->get_fname()->getStringProperty() << "/" << size ()
-     << "(" << this << ")" << endl;
-  os << DENT << "[\n";
-
+  os << INDENT << func->get_fname()->getStringProperty() << "/" << size () << "(" << this << ") [\n";
   
   for (vector<rchandle<expr> >::const_iterator it = begin();
        it != end(); ++it)
@@ -490,8 +482,7 @@ ft_contains_expr::~ft_contains_expr()
 
 ostream& ft_contains_expr::put( ostream& os) const
 {
-  os << INDENT << "ft_contains_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "ft_contains_expr(" << this << ") [\n";
   //d Assert<null_pointer>(range_h!=NULL);
   Assert(range_h!=NULL);
   range_h->put(os) << endl;
@@ -536,8 +527,7 @@ instanceof_expr::~instanceof_expr()
 
 ostream& instanceof_expr::put( ostream& os) const
 {
-  os << INDENT << "instanceof_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "instanceof_expr(" << this << ") [\n";
   //d Assert<null_pointer>(expr_h!=NULL);
   Assert(expr_h!=NULL);
   expr_h->put(os) << endl;
@@ -576,8 +566,7 @@ treat_expr::~treat_expr()
 
 ostream& treat_expr::put( ostream& os) const
 {
-  os << INDENT << "treat_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "treat_expr(" << this << ") [\n";
   //d Assert<null_pointer>(expr_h!=NULL);
   Assert(expr_h!=NULL);
   expr_h->put(os) << endl;
@@ -616,8 +605,7 @@ castable_expr::~castable_expr()
 
 ostream& castable_expr::put( ostream& os) const
 {
-  os << INDENT << "castable_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "castable_expr(" << this << ") [\n";
   //d Assert<null_pointer>(expr_h!=NULL);
   Assert(expr_h!=NULL);
   expr_h->put(os) << endl;
@@ -657,8 +645,7 @@ cast_expr::~cast_expr()
 
 ostream& cast_expr::put( ostream& os) const
 {
-  os << INDENT << "cast_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "cast_expr(" << this << ") [\n";
 
   Assert(expr_h!=NULL);
   expr_h->put(os) << endl;
@@ -697,8 +684,7 @@ validate_expr::~validate_expr()
 
 ostream& validate_expr::put( ostream& os) const
 {
-  os << INDENT << "validate_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "validate_expr(" << this << ") [\n";
 
   switch (valmode) {
   case val_strict: os << "strict\n"; break;
@@ -746,8 +732,7 @@ extension_expr::~extension_expr()
 
 ostream& extension_expr::put( ostream& os) const
 {
-  os << INDENT << "extension_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "extension_expr(" << this << ") [\n";
 
   /*
   vector<rchandle<pragma> >::const_iterator it = begin();
@@ -808,8 +793,7 @@ relpath_expr::~relpath_expr()
 
 ostream& relpath_expr::put( ostream& os) const
 {
-  os << INDENT << "relpath_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "relpath_expr(" << this << ") [\n";
 
   for (list_iterator<expr_t> it = begin(); it != end(); ++it)
   {
@@ -858,8 +842,7 @@ axis_step_expr::~axis_step_expr()
 
 ostream& axis_step_expr::put(ostream& os) const
 {
-  os << INDENT << "axis_step_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "axis_step_expr(" << this << ") [\n";
 
   os << INDENT;
   switch (theAxis)
@@ -1219,8 +1202,7 @@ void elem_expr::accept(expr_visitor& v)
 
 std::ostream& elem_expr::put(std::ostream& os) const
 {
-  os << INDENT << "elem_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "elem_expr(" << this << ") [\n";
 
   if (theQNameExpr != NULL)
     theQNameExpr->put(os);
@@ -1249,8 +1231,7 @@ doc_expr::~doc_expr()
 
 ostream& doc_expr::put( ostream& os) const
 {
-  os << INDENT << "doc_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "doc_expr(" << this << ") [\n";
 
   Assert(theContent != NULL);
   theContent->put(os);
@@ -1291,8 +1272,7 @@ attr_expr::~attr_expr()
 
 ostream& attr_expr::put( ostream& os) const
 {
-  os << INDENT << "attr_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "attr_expr(" << this << ") [\n";
 
   theQNameExpr->put (os);
   
@@ -1335,8 +1315,7 @@ text_expr::~text_expr()
 
 ostream& text_expr::put(ostream& os) const
 {
-  os << INDENT << "text_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "text_expr(" << this << ") [\n";
 
   text->put(os);
 
@@ -1387,8 +1366,7 @@ pi_expr::~pi_expr()
 
 ostream& pi_expr::put( ostream& os) const
 {
-  os << INDENT << "pi_expr(" << this << ")\n";
-  os << DENT << "[\n";
+  os << INDENT << "pi_expr(" << this << ") [\n";
 
   os << INDENT << "target=";
   Assert(target.length() > 0 || target_expr_h != NULL);
