@@ -66,7 +66,7 @@ void set_var (string name, string val,
 void slurp_file (const char *fname, string &result) {
   ifstream qfile(fname); assert (qfile);
 
-  qfile.seekg (-1, ios_base::end);
+  qfile.seekg (0, ios::end);
   size_t len = qfile.tellg ();
   qfile.seekg (0, ios::beg);
   char *str = new char [len];
@@ -77,93 +77,111 @@ void slurp_file (const char *fname, string &result) {
   delete [] str;
 }
 
+class ZorbaEngineWrapper {
+public:
+  ZorbaEngine &factory;
+  StaticQueryContext_t sctx;
+
+  ZorbaEngineWrapper (alert_callback alert_cb = NULL, void *alert_param = NULL)
+    : factory (ZorbaEngine::getInstance())
+  {
+    factory.initThread();
+    /// register the alerts callback
+    ZorbaAlertsManager& errmanager = factory.getAlertsManagerForCurrentThread();
+    
+    if (alert_cb != NULL)
+      errmanager.RegisterAlertCallback(alert_cb, alert_param);
+
+    sctx = factory.createStaticContext();
+    sctx->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
+    sctx->AddCollation("http://www.flworfound.org/apitest/coll2", "de");
+    sctx->AddCollation("http://www.flworfound.org/apitest/coll3", "fr");
+    sctx->SetOrderingMode(StaticQueryContext::unordered);
+  }
+  ~ZorbaEngineWrapper () {
+    DisplayErrorListForCurrentThread();
+
+    factory.uninitThread();
+    factory.shutdown();
+  }
+
+  XQueryExecution_t createExecution (XQuery_t query, const vector< pair <string, string> > &vars) {
+    DynamicQueryContext_t dctx = factory.createDynamicContext ();
+    for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
+         iter != vars.end (); iter++)
+      set_var (iter->first, iter->second, dctx, NULL);
+    
+    XQueryExecution_t result = query->createExecution(dctx);
+
+    if(! result.isNull()) {
+      for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
+           iter != vars.end (); iter++)
+        set_var (iter->first, iter->second, NULL, result);
+    }
+    
+    return result;
+  }
+};
+
+class TimePrinter {
+  Timer timer;
+public:
+  TimePrinter () {}
+  ~TimePrinter () {
+    timer.end();
+    timer.print(cout);    
+  }
+};
+
+// TODO: for now apitest users expect 0 even for error results; this should change
 #ifndef _WIN32_WCE
 int main(int argc, char* argv[])
 #else
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
-  Timer timer;
-
   if (! Properties::load(argc,argv))
-    return 1;
-  
+    return 1;  
   Properties* lProp = Properties::instance();
+
+  // start timer as soon as possible, if enabled
+  auto_ptr<TimePrinter> timer (lProp->printTime() ? new TimePrinter : NULL);
   
+  g_abort_when_fatal_error = lProp->abortWhenFatalError();
+
   xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
+  // output file
   auto_ptr<ostream> outputFile (lProp->useResultFile() ? new ofstream (lProp->getResultFile().c_str()) : NULL);
   ostream *resultFile = outputFile.get ();
   if (resultFile == NULL)
     resultFile = &cout;
   
-  string   query_text = "1+2";  // the default query if no file or query is specified
-
-  g_abort_when_fatal_error = lProp->abortWhenFatalError();
-
+  // query text
   const char* fname = lProp->getQuery().c_str();
-
+  string query_text = "1+2";  // the default query if no file or query is specified
   if (lProp->inlineQuery())
     query_text = fname; 
   else if (*fname != '\0')
     slurp_file (fname, query_text);
-  
   if (lProp->printQuery())
     cout << query_text << endl;
 
-  /// now start the zorba engine
+  // start the zorba engine
+  ZorbaEngineWrapper zengine (apitest_alert_callback, (void*) 101);
 
-  ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
+  // compile query
+  XQuery_t query = zengine.factory.createQuery(query_text.c_str(), zengine.sctx);
+  if (query.isNull ())
+    return 0;
 
-  /// thread specific
-
-  zorba_factory.initThread();
-
-  /// register the alerts callback
-  ZorbaAlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
-
-  errmanager.RegisterAlertCallback(apitest_alert_callback, (void*)101);
-
-  StaticQueryContext_t sctx1;
-
-  sctx1 = zorba_factory.createStaticContext();
-  sctx1->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
-  sctx1->AddCollation("http://www.flworfound.org/apitest/coll2", "de");
-  sctx1->AddCollation("http://www.flworfound.org/apitest/coll3", "fr");
-  sctx1->SetOrderingMode(StaticQueryContext::unordered);
-  StaticQueryContext::xpath1_0compatib_mode_t   default_compatib_mode;
-  default_compatib_mode = sctx1->GetXPath1_0CompatibMode();
-
+  // create dynamic context and execution
   vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
-
-  XQuery_t query;
-  XQueryExecution_t result = NULL;
-
-  DynamicQueryContext_t dctx = zorba_factory.createDynamicContext ();
-  for (vector<pair <string, string> >::iterator iter = ext_vars.begin ();
-       iter != ext_vars.end (); iter++)
-    set_var (iter->first, iter->second, dctx, NULL);
-
-  // create a compiled query
-  query = zorba_factory.createQuery(query_text.c_str(), sctx1);
-
-  if(query.isNull())
-    goto DisplayErrorsAndExit;
-
-  result = query->createExecution(dctx);
-  if(result.isNull())
-  {
-    goto DisplayErrorsAndExit;
-  }
-
-  for (vector<pair <string, string> >::iterator iter = ext_vars.begin ();
-       iter != ext_vars.end (); iter++)
-    set_var (iter->first, iter->second, NULL, result);
+  XQueryExecution_t result = zengine.createExecution (query, ext_vars);
 
   result->setAlertsParam(result.get_ptr());  // to be passed to alerts callback when error occurs
 
-  if (lProp->useSerializer())
-  {
+  if (lProp->useSerializer()) {
     result->serialize(*resultFile);
     // newline should not be sent when serializing!
   } else {
@@ -171,23 +189,11 @@ int _tmain(int argc, _TCHAR* argv[])
     while (NULL != (it = result->next ()).get_ptr ())
       *resultFile << it->show() << endl;
   }
-
-  if (result->isError())
-    goto DisplayErrorsAndExit;
-
-  result->close();
-
-
-DisplayErrorsAndExit:
-  DisplayErrorListForCurrentThread();
-
-  zorba_factory.uninitThread();
-  zorba_factory.shutdown();
-
-  timer.end();
-  if (lProp->printTime())
-    timer.print(cout);
   
+  if (result->isError ())
+    return 0;
+  
+  result->close ();
+
   return 0;
 }
-
