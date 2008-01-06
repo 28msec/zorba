@@ -1,2 +1,2 @@
 SET(EXPRESSION_SRCS
-    expr.cpp  ft_expr.cpp update_expr.cpp)
+    expr.cpp expr_put.cpp ft_expr.cpp update_expr.cpp)
