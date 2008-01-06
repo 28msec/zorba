@@ -34,7 +34,13 @@ int printdepth0 = -2;
 #define OUTDENT   (printdepth0 -= 2, std::string(printdepth0, ' '))
 #define UNDENT    printdepth0 -= 2;
 
-#define PUT_QNAME( qname, os ) (os << qname->getPrefix () << "[=" << qname->getNamespace () << "]:" << qname->getLocalName ())
+  static inline ostream &put_qname (Item_t qname, ostream &os) {
+    xqp_string pfx = qname->getPrefix ();
+    if (! pfx.empty ())
+      os << pfx << "[=" << qname->getNamespace () << "]:";
+    os << qname->getLocalName ();
+    return os;
+  }
 
 #define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
@@ -96,7 +102,7 @@ ostream& var_expr::put(ostream& os) const
   if (varname_h != NULL)
   {
     os << " name=";
-    PUT_QNAME (get_varname(), os);
+    put_qname (get_varname(), os);
   }
   os << ", type= ]\n"; // TODO(VRB) << sequence_type::describe(type);
   UNDENT;
@@ -761,7 +767,7 @@ ostream& extension_expr::put( ostream& os) const
   Assert(pragma_h!=NULL);
   //d Assert<null_pointer>(pragma_h->name_h!=NULL);
   Assert(pragma_h->name_h!=NULL);
-  os << "?"; PUT_QNAME (pragma_h->name_h, os);
+  os << "?"; put_qname (pragma_h->name_h, os);
   os << " " << pragma_h->content << endl;
   UNDENT;
 
@@ -970,7 +976,7 @@ ostream& match_expr::put(ostream& os) const
   {
     case match_no_wild:
       if (theQName != NULL)
-        PUT_QNAME (theQName, os);
+        put_qname (theQName, os);
       break;
     case match_all_wild:
       os << "*";
@@ -987,7 +993,7 @@ ostream& match_expr::put(ostream& os) const
 
   if (theTypeName != NULL)
   {
-    PUT_QNAME (theTypeName, os) << endl;
+    put_qname (theTypeName, os) << endl;
   }
 
   os << ")";
