@@ -411,9 +411,11 @@ Item_t BasicItemFactory::createDocumentNode(
 
 
 Item_t BasicItemFactory::createDocumentNode(
-    const Item_t&  sourceNode)
+    const Item_t&  sourceNode,
+    bool           typePreserve,
+    bool           nsPreserve)
 {
-  return new DocumentNodeImpl(DOC_NODE(sourceNode));
+  return new DocumentNodeImpl(DOC_NODE(sourceNode), typePreserve, nsPreserve);
 }
 
 

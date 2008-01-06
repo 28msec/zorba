@@ -42,7 +42,7 @@ StringPool::~StringPool()
     if (theHashTab[i].theString != NULL &&
         theHashTab[i].theString->getRefCount() != 1)
     {
-      std::cerr << "i = " << i << " String " << theHashTab[i].theString->c_str()
+      std::cout << "i = " << i << " String " << theHashTab[i].theString->c_str()
                 << " is still in the pool" << std::endl;
       delete theHashTab[i].theString.get_ptr();
       count++;

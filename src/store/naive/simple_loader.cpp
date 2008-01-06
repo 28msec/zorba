@@ -375,9 +375,9 @@ void XmlLoader::startElement(
       attrNode->setId(loader.theNodeId);
       loader.theNodeId.nextChild();
 
-      //LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
-      //             << ":" << lname << " (" << (uri != NULL ? uri : "NULL")
-      //             << ")]" << std::endl << "  Attribute value: " << value->c_str());
+      LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
+                   << ":" << lname << " (" << (uri != NULL ? uri : "NULL")
+                   << ")]" << std::endl << "  Attribute value: " << value->c_str());
     }
   }
 }
@@ -414,10 +414,10 @@ void  XmlLoader::endElement(
   // The element node is now at the top of the stack
   ElementNodeImpl* elemNode = ELEM_NODE(loader.theNodeStack.top());
 
-  //LOADER_TRACE("Element name ["
-  //             << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
-  //             << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
-  //             << " Element Node = " << elemNode);
+  LOADER_TRACE("Element name ["
+               << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
+               << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
+               << " Element Node = " << elemNode);
 
   // For each child, make this element node its parent and fix its namespace
   // bindings context. Note: the children were popped from the stack in reverse
@@ -471,8 +471,8 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   BASE_NODE(textNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();
 
-  //LOADER_TRACE("Text Node = " << textNode.get_ptr() 
-  //             << "content = " << content->c_str());
+  LOADER_TRACE("Text Node = " << textNode.get_ptr() 
+               << "content = " << content->c_str());
 
   if (loader.theNodeStack.empty())
     loader.theRootNode = textNode;
@@ -500,8 +500,8 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   BASE_NODE(textNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();
 
-  //LOADER_TRACE("Text Node = " << textNode.get_ptr() 
-  //             << "content = " << content->c_str());
+  LOADER_TRACE("Text Node = " << textNode.get_ptr() 
+               << "content = " << content->c_str());
 
   if (loader.theNodeStack.empty())
     loader.theRootNode = textNode;

@@ -20,6 +20,26 @@
 #include "store/api/temp_seq.h"
 
 
+#ifndef NDEBUG
+
+int traceLevel = 1;
+
+#define NODE_TRACE(level, msg)               \
+{                                            \
+  if (level <= traceLevel)                   \
+    std::cout << msg << std::endl;           \
+}
+
+#define NODE_TRACE1(msg) NODE_TRACE(1, msg);
+
+#else
+
+#define NODE_TRACE(msg)
+#define NODE_TRACE1(msg)
+
+#endif
+
+
 namespace xqp
 {
 
@@ -37,7 +57,6 @@ namespace xqp
 NodeVector::NodeVector(unsigned long size)
 {
   theNodes = new Item_t[size+1];
-//daniel  memset(theNodes, 0, (size+1)*sizeof(Item_t));
   *(unsigned long*)(theNodes) = size;
 }
 
@@ -76,18 +95,6 @@ NodeVector& NodeVector::operator=(const NodeVector& v)
   return *this;
 }
 
-/*
-void NodeVector::move(NodeVector* v)
-{
-  clear();
-
-  if (v != 0)
-  {
-    theNodes = v->theNodes;
-    //daniel v->theNodes = 0;
-  }
-}
-*/
 
 unsigned long NodeVector::size() const
 {
@@ -224,6 +231,7 @@ DocumentNodeImpl::DocumentNodeImpl(
   theDocURI(docURI),
   theFlags(0)
 {
+  NODE_TRACE1("Loaded doc node " << this);
 }
 
 
@@ -255,6 +263,8 @@ DocumentNodeImpl::DocumentNodeImpl(
 
   if (numChildren > 0)
     theChildren.truncate();
+
+  NODE_TRACE1("Constructed doc node " << this << " nid = " << theId.show());
 }
  
 
@@ -262,14 +272,27 @@ DocumentNodeImpl::DocumentNodeImpl(
   Copy constructor used during the evaluation of an enclosed expression inside
   a node construction expression.
 ********************************************************************************/
-DocumentNodeImpl::DocumentNodeImpl(const DocumentNodeImpl* src)
+DocumentNodeImpl::DocumentNodeImpl(
+    const DocumentNodeImpl* src,
+    bool                    typePreserve,
+    bool                    nsPreserve)
   :
   NodeImpl(false),
   theBaseURI(src->theBaseURI),
   theDocURI(src->theDocURI),
   theFlags(NodeImpl::IsConstructed | NodeImpl::IsCopy)
 {
+  if (typePreserve)
+    theFlags |= NodeImpl::TypePreserve;
+
+  if (nsPreserve)
+    theFlags |= NodeImpl::NsPreserve;
+
   theChildren = src->theChildren;
+
+  NODE_TRACE1("Copied doc node " << src << " to doc node " << this
+             << " typePreserve = " << typePreserve
+             << " nsPreserve = " << nsPreserve);
 }
 
 
@@ -278,9 +301,6 @@ DocumentNodeImpl::DocumentNodeImpl(const DocumentNodeImpl* src)
 ********************************************************************************/
 DocumentNodeImpl::~DocumentNodeImpl()
 {
-#if 0
-  std::cout << "Deleting doc node " << this << std::endl;
-#endif
   unsigned long numChildren = theChildren.size();
   unsigned long i;
   for (i = 0; i < numChildren; i++)
@@ -294,6 +314,8 @@ DocumentNodeImpl::~DocumentNodeImpl()
 
     child->theParent = NULL;
   }
+
+  NODE_TRACE1("Deleted doc node " << this);
 }
 
 
@@ -388,6 +410,8 @@ ElementNodeImpl::ElementNodeImpl(
 
   if (numAttributes > 0)
     theAttributes.resize(numAttributes);
+
+  NODE_TRACE1("Loaded elem node " << this << " num bindings = " << numBindings);
 }
 
 
@@ -462,6 +486,9 @@ ElementNodeImpl::ElementNodeImpl(
     theNsContext = new NsBindingsContext(nsBindings);
     theFlags |= NodeImpl::HaveLocalBindings;
   }
+
+  NODE_TRACE1("Constructed elem node " << this << " nid = " << theId.show()
+              << " nsInherit = " << nsInherit);
 }
 
 
@@ -564,6 +591,11 @@ ElementNodeImpl::ElementNodeImpl(
       theNsContext = parent->getNsContext();
     }
   }
+
+  NODE_TRACE1("Copied elem node " << src << " to elem node " << this
+              << " parent = " << parent
+              << " typePreserve = " << typePreserve
+              << " nsPreserve = " << nsPreserve);
 }
 
 
@@ -572,13 +604,6 @@ ElementNodeImpl::ElementNodeImpl(
 ********************************************************************************/
 ElementNodeImpl::~ElementNodeImpl()
 {
-#if 0
-  std::cout << "Deleting elem node " << this << ", nscontext "
-            << theNsContext.get_ptr() << ", "
-            << (theNsContext != NULL ? theNsContext->getRefCount() : -1)
-            << std::endl;
-#endif
-
   Assert(getRefCount() == 0);
 
   unsigned long i;
@@ -611,6 +636,10 @@ ElementNodeImpl::~ElementNodeImpl()
     if (attr->theParent == this)
       attr->theParent = NULL;
   }
+
+  NODE_TRACE1("Deleted elem node " << this << ", nscontext "
+              << theNsContext.get_ptr() << ", "
+              << (theNsContext != NULL ? theNsContext->getRefCount() : -1));
 }
 
 
@@ -1089,8 +1118,6 @@ Item_t ChildrenIterator::next()
       switch (ckind)
       {
       case StoreConsts::elementNode:
-        Assert(pkind != StoreConsts::documentNode);
-
         childItem = new ElementNodeImpl(pnode,
                                         ELEM_NODE(childItem),
                                         pnode->typePreserve(),

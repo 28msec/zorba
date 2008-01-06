@@ -161,7 +161,10 @@ class DocumentNodeImpl : public NodeImpl
         const Iterator_t&       children,
         bool                    assignId);
 
-  DocumentNodeImpl(const DocumentNodeImpl* src);
+  DocumentNodeImpl(
+        const DocumentNodeImpl* src,
+        bool           typePreserve,
+        bool           nsPreserve);
 
   ~DocumentNodeImpl();
 
@@ -188,10 +191,14 @@ class DocumentNodeImpl : public NodeImpl
   // SimpleStore Methods
   // 
 
-  NodeVector& children()            { return theChildren; }
+  NodeVector& children()         { return theChildren; }
 
-  bool isConstructed() const        { return theFlags & NodeImpl::IsConstructed; }
-  bool isCopy() const               { return theFlags & NodeImpl::IsCopy; }
+  bool isConstructed() const     { return theFlags & NodeImpl::IsConstructed; }
+  bool isCopy() const            { return theFlags & NodeImpl::IsCopy; }
+  bool typePreserve() const      { return theFlags & NodeImpl::TypePreserve; }
+  bool nsPreserve() const        { return theFlags & NodeImpl::NsPreserve; }
+
+  NsBindingsContext* getNsContext() const { return NULL; }
 };
 
 

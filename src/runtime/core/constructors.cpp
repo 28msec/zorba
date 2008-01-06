@@ -597,6 +597,10 @@ Item_t EnclosedIterator::nextImpl ( PlanState& planState )
       {
         switch (state->theContextItem->getNodeKind())
         {
+        case StoreConsts::documentNode:
+          lItem = factory->createDocumentNode(state->theContextItem, true, true);
+          break;
+
         case StoreConsts::elementNode:
           lItem = factory->createElementNode(state->theContextItem, true, true);
           break;

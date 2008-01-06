@@ -435,7 +435,9 @@ public:
         bool                    createId) = 0;
 
   virtual Item_t createDocumentNode(
-        const Item_t&  sourceNode) = 0;
+        const Item_t&  sourceNode,
+        bool           typePreserve,
+        bool           nsPreserve) = 0;
   /**
    * @param name QName which contains the name of the element
    * @param type QName which contains the type of the element
