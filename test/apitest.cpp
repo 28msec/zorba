@@ -152,7 +152,9 @@ int _tmain(int argc, _TCHAR* argv[])
   xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
   // output file
-  auto_ptr<ostream> outputFile (lProp->useResultFile() ? new ofstream (lProp->getResultFile().c_str()) : NULL);
+  auto_ptr<ostream> outputFile (lProp->useResultFile() ?
+                                new ofstream (lProp->getResultFile().c_str()) :
+                                NULL);
   ostream *resultFile = outputFile.get ();
   if (resultFile == NULL)
     resultFile = &cout;
@@ -190,10 +192,10 @@ int _tmain(int argc, _TCHAR* argv[])
       *resultFile << it->show() << endl;
   }
   
+  result->close ();
+
   if (result->isError ())
     return 0;
-  
-  result->close ();
 
   return 0;
 }
