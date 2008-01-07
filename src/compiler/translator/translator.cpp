@@ -254,7 +254,7 @@ void end_visit(const CaseClauseList& v, void *visit_state)
 
 void *begin_visit(const ConstructionDecl& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   sctx_p->set_construction_mode(v.get_mode());
   return NULL;
 }
@@ -267,13 +267,15 @@ void end_visit(const ConstructionDecl& v, void *visit_state)
 
 void *begin_visit(const CopyNamespacesDecl& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
 void end_visit(const CopyNamespacesDecl& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
+ sctx_p->set_inherit_mode  (v.get_inherit_mode ());
+ sctx_p->set_preserve_mode (v.get_preserve_mode ());
 }
 
 
