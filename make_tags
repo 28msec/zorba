@@ -1,0 +1,8 @@
+#!/bin/sh
+set -o noglob
+
+files=`for dir in src include; do find $dir -name '*.cpp'; find $dir -name '*.h'; done`
+
+for prog in ctags etags; do
+  $prog $files
+done
