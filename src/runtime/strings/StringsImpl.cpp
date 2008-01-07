@@ -584,33 +584,37 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
   Item_t item0;
   Item_t item1;
   xqp_string tempStr = "NFC";
-  xqp_string res;
+  xqp_string res = "";
   
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item0 = consumeNext (theChildren[0], planState );
-  if(item0 == NULL)
+  if(item0 != NULL)
   {
-    ZORBA_ASSERT (false);  // danm: the rest will obviously fail if item0 = 0
-    item0 = item0->getAtomizationValue();
-    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
-  }
-  else
-  {//item0 != NULL
     if(theChildren.size() == 2)
     {
       item1 = consumeNext(theChildren[1], planState );
       if(item1 != NULL)
       {
         item1 = item1->getAtomizationValue();
-        tempStr = item1->getStringValue().uppercase();
+        if( ! item1->getStringValue().empty() )
+          tempStr = item1->getStringValue().uppercase().trim();
       }
     }
-    res = item0->getStringValue().normalize(tempStr);
+    if(tempStr == "NFC" || tempStr =="NFKC" || tempStr =="NFD" || tempStr == "NFKD")
+    {
+      res = item0->getStringValue().normalize(tempStr);
+      STACK_PUSH( Zorba::getItemFactory()->createString(res), state );
+    }
+    else
+    {
+      ZORBA_ERROR_ALERT(AlertCodes::FOCH0003,
+                        &loc, false, "Unsupported normalization form.");
+    break;
+    }
   }
-
-  STACK_PUSH( Zorba::getItemFactory()->createString(res), state );
+  
   STACK_END();
 }
 /* end class NormalizeUnicodeIterator */
