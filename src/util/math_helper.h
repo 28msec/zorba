@@ -18,5 +18,9 @@ namespace xqp {
 double round(double d);
 double roundHalfToEven(double arg, int precision);
 
+#if WIN32 & !UNIX
+#define		isnan			_isnan
+#define		finite		_finite
+#endif
 }/* namespace xqp */
 #endif

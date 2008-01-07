@@ -57,7 +57,7 @@ public:
   virtual void    SetXPath1_0CompatibMode( xpath1_0compatib_mode_t mode ) = 0;///true for XPath1.0 only, false for XPath2.0 (default false)
   virtual xpath1_0compatib_mode_t   GetXPath1_0CompatibMode( ) = 0;///true for XPath1.0 only, false for XPath2.0
 
-  virtual void    AddNamespace( xqp_string prefix, xqp_string URI ) = 0;//override the previous set prefix
+  virtual bool    AddNamespace( xqp_string prefix, xqp_string URI ) = 0;//override the previous set prefix
   virtual xqp_string    GetNamespaceURIByPrefix( xqp_string prefix ) = 0;
   // virtual xqp_string    GetNamespacePrefixByURI( xqp_string URI ) = 0;
   virtual void    DeleteNamespace( xqp_string prefix ) = 0;

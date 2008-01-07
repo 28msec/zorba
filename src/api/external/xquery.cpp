@@ -230,6 +230,7 @@ XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dct
   zorba_result->state_block = stateBlock;
   zorba_result->state_block->zorp = zorba;
   zorba_result->state_block->xqbinary = this;
+	this->addReference();
 //  zorba_result->state_block->xqexecution = zorba_result;
   if(dctx.get_ptr())
   {
@@ -309,8 +310,11 @@ Zorba_XQueryExecution::Zorba_XQueryExecution()
 
 Zorba_XQueryExecution::~Zorba_XQueryExecution()
 {
+	state_block->xqbinary->removeReference();
+
   delete state_block;
   delete internal_dyn_context;
+
 }
 
 void Zorba_XQueryExecution::setAlertsParam(void *alert_callback_param)
@@ -328,30 +332,32 @@ Item_t Zorba_XQueryExecution::next()
     return NULL;
   }
 
+	Zorba_XQueryBinary        *prev_current_xquery = state_block->zorp->current_xquery;
+	Zorba_XQueryExecution     *prev_current_xqueryresult = state_block->zorp->current_xqueryresult;
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
   try
   {
-    state_block->zorp->current_xquery = state_block->xqbinary;
-    state_block->zorp->current_xqueryresult = this;
 
     Item_t it = it_result->produceNext( *state_block );
 
-    state_block->zorp->current_xquery = NULL;
-    state_block->zorp->current_xqueryresult = NULL;
+    state_block->zorp->current_xquery = prev_current_xquery;
+    state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
 
     return it;
   }
   catch(xqp_exception &)
   {
     is_error = true;
-    state_block->zorp->current_xquery = NULL;
-    state_block->zorp->current_xqueryresult = NULL;
+    state_block->zorp->current_xquery = prev_current_xquery;
+    state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
     return NULL;
   }
   catch(...)
   {
     is_error = true;
-    state_block->zorp->current_xquery = NULL;
-    state_block->zorp->current_xqueryresult = NULL;
+    state_block->zorp->current_xquery = prev_current_xquery;
+    state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
     throw;
   }
 
@@ -361,30 +367,32 @@ Item_t Zorba_XQueryExecution::next()
 void
 Zorba_XQueryExecution::reset()
 {
+	Zorba_XQueryBinary        *prev_current_xquery = state_block->zorp->current_xquery;
+	Zorba_XQueryExecution     *prev_current_xqueryresult = state_block->zorp->current_xqueryresult;
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
 	try
   {
     if (!theClosed)
     {
-      state_block->zorp->current_xquery = state_block->xqbinary;
-      state_block->zorp->current_xqueryresult = this;
 
       it_result->reset(*state_block);
 
-      state_block->zorp->current_xquery = NULL;
-      state_block->zorp->current_xqueryresult = NULL;
+      state_block->zorp->current_xquery = prev_current_xquery;
+      state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
     }
 	}
   catch(xqp_exception &)
 	{
     is_error = true;
-    state_block->zorp->current_xquery = NULL;
-    state_block->zorp->current_xqueryresult = NULL;
+    state_block->zorp->current_xquery = prev_current_xquery;
+    state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
 	}
   catch(...)
   {
     is_error = true;
-    state_block->zorp->current_xquery = NULL;
-    state_block->zorp->current_xqueryresult = NULL;
+    state_block->zorp->current_xquery = prev_current_xquery;
+    state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
     throw;
   }
 
@@ -395,17 +403,19 @@ Zorba_XQueryExecution::reset()
 void
 Zorba_XQueryExecution::close()
 {
+	Zorba_XQueryBinary        *prev_current_xquery = state_block->zorp->current_xquery;
+	Zorba_XQueryExecution     *prev_current_xqueryresult = state_block->zorp->current_xqueryresult;
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
 	try
   {
     if (!theClosed)
     {
-      state_block->zorp->current_xquery = state_block->xqbinary;
-      state_block->zorp->current_xqueryresult = this;
 
       it_result->releaseResources(*state_block); 
 
-      state_block->zorp->current_xquery = NULL;
-      state_block->zorp->current_xqueryresult = NULL;
+      state_block->zorp->current_xquery = prev_current_xquery;
+      state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
 
       theClosed = true;
     }
@@ -413,14 +423,14 @@ Zorba_XQueryExecution::close()
   catch(xqp_exception &)
 	{
     is_error = true;
-    state_block->zorp->current_xquery = NULL;
-    state_block->zorp->current_xqueryresult = NULL;
+    state_block->zorp->current_xquery = prev_current_xquery;
+    state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
 	}
   catch(...)
   {
     is_error = true;
-    state_block->zorp->current_xquery = NULL;
-    state_block->zorp->current_xqueryresult = NULL;
+    state_block->zorp->current_xquery = prev_current_xquery;
+    state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
     throw;
   }
 
@@ -430,21 +440,29 @@ Zorba_XQueryExecution::close()
 
 ostream& Zorba_XQueryExecution::serialize( ostream& os )
 {
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
+
   serializer *ser;
 	try
   {
-    ser = ZORBA_FOR_CURRENT_THREAD()->getDocSerializer();
+		ser = ZORBA_FOR_CURRENT_THREAD()->getDocSerializer();
 
     ser->serialize(this, os);
 	}
   catch(xqp_exception &)
   {
 	}
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
   return os;
 }
 
 std::ostream& Zorba_XQueryExecution::serializeXML( std::ostream& os )
 {
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
+
   serializer *ser = new serializer;
 
 	try
@@ -456,11 +474,16 @@ std::ostream& Zorba_XQueryExecution::serializeXML( std::ostream& os )
   {
 		delete ser;
 	}
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
   return os;
 }
 
 std::ostream& Zorba_XQueryExecution::serializeHTML( std::ostream& os )
 {
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
+
   serializer *ser = new serializer;
 	try{
   ser->set_parameter("method", "html");
@@ -471,11 +494,16 @@ std::ostream& Zorba_XQueryExecution::serializeHTML( std::ostream& os )
   {
 		delete ser;
 	}
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
   return os;
 }
 
 std::ostream& Zorba_XQueryExecution::serializeTEXT( std::ostream& os )
 {
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
+
 	try{
   Item_t    it;
 
@@ -490,6 +518,8 @@ std::ostream& Zorba_XQueryExecution::serializeTEXT( std::ostream& os )
   catch(xqp_exception &)
   {
 	}
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
   return os;
 }
 
@@ -514,6 +544,9 @@ bind external variable with the result from another xquery
 bool Zorba_XQueryExecution::SetVariable( xqp_string varname, 
                                         XQueryExecution_t item_iter )
 {
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
+
 	try{
 
   ///add to dynamic context
@@ -523,12 +556,18 @@ bool Zorba_XQueryExecution::SetVariable( xqp_string varname,
   expanded_name = internal_dyn_context->expand_varname(state_block->xqbinary->internal_sctx, varname);
   internal_dyn_context->add_variable(expanded_name, item_iter.get_ptr());
 
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
   return true;
 	}
   catch(xqp_exception &)
   {
+		state_block->zorp->current_xquery = NULL;
+		state_block->zorp->current_xqueryresult = NULL;
 		return false;
   }
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
   return false;
 }
 
@@ -538,6 +577,9 @@ bool Zorba_XQueryExecution::SetVariable(
     xqp_string    docUri,
     std::istream& is)
 {
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
+
   PlanIter_t iter;
   PlanWrapper* planWrapper = NULL;
 
@@ -560,6 +602,8 @@ bool Zorba_XQueryExecution::SetVariable(
 
     internal_dyn_context->add_variable(expanded_name, planWrapper);
 
+		state_block->zorp->current_xquery = NULL;
+		state_block->zorp->current_xqueryresult = NULL;
     return true;
 	}
   catch(xqp_exception &)
@@ -567,8 +611,12 @@ bool Zorba_XQueryExecution::SetVariable(
     if (planWrapper != NULL)
       delete planWrapper;
 
+		state_block->zorp->current_xquery = NULL;
+		state_block->zorp->current_xqueryresult = NULL;
 		return false;
   }
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
   return false;
 }
 
@@ -577,14 +625,23 @@ bool Zorba_XQueryExecution::SetVariable(
 bool Zorba_XQueryExecution::AddAvailableDocument(xqp_string docURI,
                                                 Item_t docitem)
 {
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
+
   ///add to dynamic context
 	try{
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
   return false;
 	}
   catch(xqp_exception &)
   {
+		state_block->zorp->current_xquery = NULL;
+		state_block->zorp->current_xqueryresult = NULL;
 		return false;
 	}
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
 	return false;
 }
 
@@ -593,14 +650,23 @@ bool Zorba_XQueryExecution::AddAvailableDocument(xqp_string docURI,
 bool Zorba_XQueryExecution::AddAvailableCollection(xqp_string collectionURI,
                                                   Collection_t collection)
 {
+  state_block->zorp->current_xquery = state_block->xqbinary;
+  state_block->zorp->current_xqueryresult = this;
+
   ///add to dynamic context
 	try{
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
   return false;
 	}
   catch(xqp_exception &)
   {
+		state_block->zorp->current_xquery = NULL;
+		state_block->zorp->current_xqueryresult = NULL;
 		return false;
 	}
+  state_block->zorp->current_xquery = NULL;
+  state_block->zorp->current_xqueryresult = NULL;
 	return false;
 }
 

@@ -89,15 +89,19 @@ StaticQueryContext::xpath1_0compatib_mode_t		StaticContextWrapper::GetXPath1_0Co
 	return static_context::root_static_context()->xpath1_0compatib_mode();
 }
 
-void		StaticContextWrapper::AddNamespace( xqp_string prefix, xqp_string URI )//override the previous set prefix
+bool		StaticContextWrapper::AddNamespace( xqp_string prefix, xqp_string URI )//override the previous set prefix
 {
 //	internal_stcx.bind_ns( prefix, URI );
 	scw_namespace_t		ns;
+
+	if((prefix == "xml") || (prefix == "xmlns"))
+		return false;//ignore that
 
 	ns.prefix = prefix;
 	ns.URI = URI;
 
 	ext_ns_list.push_back(ns);
+	return true;
 }
 
 xqp_string		StaticContextWrapper::GetNamespaceURIByPrefix( xqp_string prefix )
