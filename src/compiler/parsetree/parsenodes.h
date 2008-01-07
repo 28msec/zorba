@@ -765,8 +765,10 @@ public:
 	~CopyNamespacesDecl();
 
 public: 
-	StaticQueryContext::preserve_mode_t get_preserve_mode() const;
-	StaticQueryContext::inherit_mode_t  get_inherit_mode() const;
+	StaticQueryContext::preserve_mode_t get_preserve_mode() const
+  { return preserve_mode; }
+	StaticQueryContext::inherit_mode_t  get_inherit_mode() const
+  { return inherit_mode; }
 
 public:
 	void accept(parsenode_visitor&) const;
