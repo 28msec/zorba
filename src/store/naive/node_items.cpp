@@ -513,6 +513,10 @@ ElementNodeImpl::ElementNodeImpl(
 {
   theParent = const_cast<NodeImpl*>(parent);
 
+  assert(parent == NULL ||
+         parent->getNodeKind() == StoreConsts::elementNode ||
+         parent->getNodeKind() == StoreConsts::documentNode);
+
   if (typePreserve)
   {
     theFlags |= NodeImpl::TypePreserve;
@@ -557,11 +561,19 @@ ElementNodeImpl::ElementNodeImpl(
 
     prefix = theName->getPrefix();
 
-    ns = (parent != NULL ? parent->getNsContext()->findBinding(prefix) : NULL);
+    ns = (parent != NULL && parent->getNodeKind() == StoreConsts::elementNode ?
+          parent->getNsContext()->findBinding(prefix) :
+          NULL);
+
     if (ns == NULL)
-    {
       ns = src->getNsContext()->findBinding(prefix);
-      Assert(ns != NULL);
+
+    // ns may be null only if the prefix was empty and there was no default
+    // namespace declaration in scope.
+    ZORBA_ASSERT(prefix == "" || ns != NULL);
+
+    if (ns != NULL)
+    {
       nsContext->addBinding(prefix, ns);
       theFlags |= NodeImpl::HaveLocalBindings;
     }
@@ -572,11 +584,18 @@ ElementNodeImpl::ElementNodeImpl(
     {
       prefix = theAttributes[i]->getNodeName()->getPrefix();
 
-      ns = (parent != NULL ? parent->getNsContext()->findBinding(prefix) : NULL);
+      ns = (parent != NULL && parent->getNodeKind() == StoreConsts::elementNode ?
+            parent->getNsContext()->findBinding(prefix) :
+            NULL);
+
       if (ns == NULL)
-      {
         ns = src->getNsContext()->findBinding(prefix);
-        Assert(ns != NULL);
+
+
+      ZORBA_ASSERT(prefix == "" || ns != NULL);
+
+      if (ns != NULL)
+      {
         nsContext->addBinding(prefix, ns);
         theFlags |= NodeImpl::HaveLocalBindings;
       }
@@ -586,9 +605,8 @@ ElementNodeImpl::ElementNodeImpl(
     {
       theNsContext = nsContext.release();
     }
-    else
+    else if (parent != NULL)
     {
-      assert(parent != NULL);
       theNsContext = parent->getNsContext();
     }
   }
