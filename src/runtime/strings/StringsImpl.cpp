@@ -640,8 +640,7 @@ Item_t
 UpperCaseIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
-  xqp_string emptyStr("");
-  
+
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
@@ -654,7 +653,7 @@ UpperCaseIterator::nextImpl(PlanState& planState)
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createString(emptyStr), state);
+    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
   }
   STACK_END();
 }
@@ -681,8 +680,7 @@ UpperCaseIterator::nextImpl(PlanState& planState)
 Item_t
 LowerCaseIterator::nextImpl(PlanState& planState) {
   Item_t item;
-  xqp_string emptyStr("");
-  
+
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
@@ -696,7 +694,7 @@ LowerCaseIterator::nextImpl(PlanState& planState) {
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createString(emptyStr), state);
+    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
   }
   STACK_END();
 }
