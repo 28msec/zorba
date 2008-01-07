@@ -284,8 +284,18 @@ DECL(op_distinct_nodes,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+DECL(op_distinct_nodes_or_atomics,
+  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":distinct-nodes-or-atomics"),
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
 DECL(op_sort_nodes_ascending,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-ascending"),
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+DECL(op_sort_nodes_asc_or_atomics,
+  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-asc-or-atomics"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 

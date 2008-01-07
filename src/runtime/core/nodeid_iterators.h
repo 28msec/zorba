@@ -16,6 +16,9 @@ namespace xqp
 ********************************************************************************/
 class NodeDistinctIterator : public UnaryBaseIterator<NodeDistinctIterator>
 {
+private:
+  bool theAcceptAtomics;
+
 protected:
   class NodeDistinctState : public PlanIterator::PlanIteratorState
   {
@@ -26,9 +29,10 @@ protected:
 public:
   NodeDistinctIterator(
         const yy::location& loc,
-        PlanIter_t input)
+        PlanIter_t input,
+        bool aAcceptAtomics = false)
     :
-    UnaryBaseIterator<NodeDistinctIterator>(loc, input)
+    UnaryBaseIterator<NodeDistinctIterator>(loc, input), theAcceptAtomics(aAcceptAtomics)
   {
   }
 
@@ -45,8 +49,8 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 
-
 /*******************************************************************************
+
 
 ********************************************************************************/
 class NodeSortIterator : public UnaryBaseIterator<NodeSortIterator>
@@ -61,17 +65,20 @@ protected:
 protected:
   bool  theAscendant;
   bool  theDistinct;
+  bool  theAcceptAtomics;
 
 public:
   NodeSortIterator(
         const yy::location& loc,
         PlanIter_t input,
         bool ascendant,
-        bool distinct)
+        bool distinct,
+        bool aAcceptAtomics = false)
     :
     UnaryBaseIterator<NodeSortIterator>(loc, input),
     theAscendant(ascendant),
-    theDistinct(distinct)
+    theDistinct(distinct),
+    theAcceptAtomics(aAcceptAtomics)
   {
   }
 

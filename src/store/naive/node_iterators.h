@@ -88,11 +88,33 @@ protected:
 public:
   StoreNodeDistinctIterator(const Iterator_t& input) : theInput(input) { }
 
-  ~StoreNodeDistinctIterator() { close(); }
+  virtual ~StoreNodeDistinctIterator() { close(); }
 
   Item_t next();
   void reset();
   void close();
+};
+
+/*******************************************************************************
+  This is an extension to StoreNodeDistinctIterator which allows atomic items 
+  in the received sequences. The received sequences must contain nodes are atomic
+  items, but not a mixture. In case of atomic items, the output sequences
+  is equivalent to the input sequence, else, the same operations as in
+  StoreNodeDistinctIterator are applied.
+********************************************************************************/
+class StoreNodeDistinctOrAtomicIterator : public StoreNodeDistinctIterator
+{
+protected:
+  bool theAtomic;
+  bool theUsed;
+
+public:
+  StoreNodeDistinctOrAtomicIterator(const Iterator_t& aInput)
+    : StoreNodeDistinctIterator(aInput), theAtomic(false), theUsed(false){}
+
+  Item_t next(); 
+  void reset() { theUsed = false; StoreNodeDistinctIterator::reset(); }
+  void close() { StoreNodeDistinctIterator::close(); }
 };
 
 
@@ -144,11 +166,33 @@ public:
   {
   }
 
-  ~StoreNodeSortIterator() { close(); }
+  virtual ~StoreNodeSortIterator() { close(); }
 
   Item_t next();
   void reset();
   void close();
+};
+
+
+/*******************************************************************************
+  This is an extension to StoreNodeSortIterator which allows atomic items 
+  in the received sequences. The received sequences must contain nodes are atomic
+  items, but not a mixture. In case of atomic items, the output sequences
+  is equivalent to the input sequence, else, the same operations as in
+  StoreNodeSortIterator are applied.
+********************************************************************************/
+class StoreNodeSortOrAtomicIterator : public StoreNodeSortIterator {
+protected:
+  bool theAtomic;
+  bool theUsed;
+
+public:
+  StoreNodeSortOrAtomicIterator(const Iterator_t& aInput, bool aAsc, bool aDistinct)
+    : StoreNodeSortIterator(aInput, aAsc, aDistinct), theAtomic(false), theUsed(false) {}
+
+  Item_t next();
+  void reset() { theUsed = false; StoreNodeSortIterator::reset(); }
+  void close() { StoreNodeSortIterator::close(); }
 };
 
 

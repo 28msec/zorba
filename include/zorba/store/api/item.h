@@ -74,6 +74,9 @@ public:
    */
   virtual Item_t getType( ) const = 0;
 
+  /**
+   * @return true if items contains a numeric value
+   */
   virtual bool isNumeric() const;
 
   /**

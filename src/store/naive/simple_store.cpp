@@ -272,9 +272,13 @@ int32_t SimpleStore::compare(Item_t node1, Item_t node2) const
 Iterator_t SimpleStore::sortNodes(
     Iterator_t input,
     bool ascendent,
-    bool duplicateElemination)
+    bool duplicateElemination,
+    bool aAllowAtomics)
 {
-  return  new StoreNodeSortIterator(input, ascendent, duplicateElemination);
+  if (aAllowAtomics)
+    return new StoreNodeSortOrAtomicIterator(input, ascendent, duplicateElemination);
+  else
+    return  new StoreNodeSortIterator(input, ascendent, duplicateElemination);
 }
 
 
@@ -282,9 +286,12 @@ Iterator_t SimpleStore::sortNodes(
   Create an iterator that eliminates the duplicate nodes in the set of items
   which is produced by the passed iterator
 ********************************************************************************/
-Iterator_t SimpleStore::distinctNodes(Iterator_t input)
+Iterator_t SimpleStore::distinctNodes(Iterator_t input, bool aAllowAtomics)
 {
-  return new StoreNodeDistinctIterator(input);
+  if (aAllowAtomics)
+    return new StoreNodeDistinctOrAtomicIterator(input);
+  else
+    return new StoreNodeDistinctIterator(input);
 }
 
 

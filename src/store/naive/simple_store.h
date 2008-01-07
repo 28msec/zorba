@@ -111,9 +111,10 @@ public:
   virtual Iterator_t sortNodes(
         Iterator_t iterator,
         bool ascendent,
-        bool duplicateElemination);
+        bool duplicateElemination,
+        bool aAllowAtomics = false);
 
-  virtual Iterator_t distinctNodes(Iterator_t);
+  virtual Iterator_t distinctNodes(Iterator_t, bool aAllowAtomics = false);
 
   virtual TempSeq_t createTempSeq();
   virtual TempSeq_t createTempSeq(Iterator_t iterator, bool lazy = true);

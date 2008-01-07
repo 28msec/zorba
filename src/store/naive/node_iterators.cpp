@@ -232,10 +232,37 @@ void StoreNodeDistinctIterator::close()
   theInput = NULL;
 }
 
+Item_t StoreNodeDistinctOrAtomicIterator::next()
+{
+  if (theUsed && theAtomic) {
+    Item_t lContextNode = theInput->next();
+    if (lContextNode != 0)
+      Assert(lContextNode->isAtomic());
+    return lContextNode;
+  }
+
+  if (!theUsed) {
+    Item_t lContextNode = theInput->next();
+    if (lContextNode == 0)
+      return lContextNode;
+    theUsed = true;
+    if (lContextNode->isAtomic()) {
+      theAtomic = true;
+      return lContextNode;
+    } else {
+      theAtomic = false;
+      theNodeSet.insert(lContextNode);
+    }
+    return lContextNode;
+  }
+  
+  return StoreNodeDistinctIterator::next();
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  class NodeSortIterator                                                     //
+//  class StoreNodeSortIterator                                                //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -305,6 +332,76 @@ void StoreNodeSortIterator::close()
   theNodes.clear();
   theCurrentNode = -1;
   theInput = NULL;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class StoreNodeSortOrAtomicIterator                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+Item_t StoreNodeSortOrAtomicIterator::next() {
+  if (theUsed && theAtomic) {
+    Item_t lContextNode = theInput->next();
+    if (lContextNode != 0)
+      Assert(lContextNode->isAtomic());
+    return lContextNode;
+  }
+
+  if (theCurrentNode < 0)
+  {
+    theCurrentNode = 0;
+
+    while (true)
+    {
+      Item_t contextNode = theInput->next();
+      if (contextNode == NULL)
+        break;
+
+      if (!theUsed) {
+        theUsed = true;
+        if (contextNode->isAtomic()) {
+          theAtomic = true;
+          return contextNode;
+        } else {
+          theAtomic = false;
+        }
+      }
+
+      Assert(contextNode->isNode());
+
+      theNodes.push_back(BASE_NODE(contextNode));
+    }
+
+    ComparisonFunction cmp;
+
+    std::sort(theNodes.begin(), theNodes.end(), cmp);
+  }
+
+  if (theCurrentNode < (long)theNodes.size())
+  {
+    if (theDistinct)
+    {
+      NodeImpl_t result = theNodes[theCurrentNode++];
+
+      while (theCurrentNode < (long)theNodes.size() &&
+             theNodes[theCurrentNode] == result)
+      {
+        theCurrentNode++;
+      }
+
+      return result.get_ptr();
+    }
+    else
+    {
+      return theNodes[theCurrentNode++].get_ptr();
+    }
+  }
+  else
+  {
+    return NULL;
+  }
+ 
 }
 
 }

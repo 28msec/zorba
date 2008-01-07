@@ -144,12 +144,13 @@ public:
   virtual Iterator_t sortNodes(
         Iterator_t iterator,
         bool ascendent,
-        bool duplicateElemination) = 0;
+        bool duplicateElemination,
+        bool aAcceptAtomics = false) = 0;
 		
   /** Eliminates the duplicates in collection of items which is produced by the passed iterator
    * @param iterator
    */
-  virtual Iterator_t distinctNodes(Iterator_t) = 0;
+  virtual Iterator_t distinctNodes(Iterator_t, bool aAllowAtomics = false) = 0;
 
 
   /* ------------------------ Document Management ---------------------------*/

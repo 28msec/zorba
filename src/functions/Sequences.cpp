@@ -637,6 +637,30 @@ TypeSystem::xqtref_t op_distinct_nodes::type_check(
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
+// distinct-nodes-or-atomics function
+op_distinct_nodes_or_atomics::op_distinct_nodes_or_atomics(const signature& sig)
+  :	function(sig)
+{
+}
+
+PlanIter_t op_distinct_nodes_or_atomics::operator()
+  (const yy::location& loc, 
+	 vector<PlanIter_t>& argv) const
+{
+  return new NodeDistinctIterator(loc, argv[0], true);
+}
+  
+bool op_distinct_nodes_or_atomics::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t op_distinct_nodes_or_atomics::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
 
 // sort-nodes function which is sorting in document order
 op_sort_nodes_ascending::op_sort_nodes_ascending(const signature& sig)
@@ -661,6 +685,27 @@ TypeSystem::xqtref_t op_sort_nodes_ascending::type_check(signature& sig) const
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
+// sort-nodes-asc-or-atomics
+op_sort_nodes_asc_or_atomics::op_sort_nodes_asc_or_atomics(const signature& sig)
+  :	function(sig)
+{}
+
+PlanIter_t op_sort_nodes_asc_or_atomics::operator()
+  (const yy::location& loc, 
+	 vector<PlanIter_t>& argv) const
+{
+  return new NodeSortIterator(loc, argv[0], true, false, true);
+}
+  
+bool op_sort_nodes_asc_or_atomics::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t op_sort_nodes_asc_or_atomics::type_check(signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
 // sort-nodes function which is sorting in reverse document order
 op_sort_nodes_descending::op_sort_nodes_descending(const signature& sig)
   :	function(sig)
