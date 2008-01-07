@@ -446,7 +446,7 @@ public:
 
 // internal sort-nodes-asc-or-atomics function
 /**
- * Similar to op-distinct, but it allows a sequences of atomic items as input 
+ * Similar to op-sort-ascending, but it allows a sequences of atomic items as input 
  * (but no mixture of atomic and node items). In this case, the result is
  * equal to the input
  */
@@ -472,6 +472,24 @@ public:
 	TypeSystem::xqtref_t type_check(signature&) const;
 	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+// insernal sort-nodes-desc-or-atomics function
+/**
+ * Similar to op-sort-descending, but it allows a sequences of atomic items as input 
+ * (but no mixture of atomic and node items). In this case, the result is
+ * equal to the input
+ */
+class op_sort_nodes_desc_or_atomics : public function
+{
+public:
+  op_sort_nodes_desc_or_atomics(const signature&);
+  ~op_sort_nodes_desc_or_atomics() {}
+
+public:
+  TypeSystem::xqtref_t type_check(signature&) const;
+  PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+  bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 

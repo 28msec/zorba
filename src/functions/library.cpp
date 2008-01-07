@@ -304,6 +304,11 @@ DECL(op_sort_nodes_descending,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+DECL(op_sort_nodes_desc_or_atomics,
+  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes-desc-or-atomics"),
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
 DECL(op_sort_distinct_nodes_ascending,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-ascending"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
