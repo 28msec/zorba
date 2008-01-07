@@ -66,7 +66,7 @@ ostream & forlet_clause::put( ostream& os) const
   }
 
   Assert(expr_h != NULL);
-  os << DENT << "IN \n";
+  os << DENT << (var_h->get_kind() == var_expr::for_var ? "IN" : ":=") << " \n";
   expr_h->put(os);
 
   os << DENT << "]\n"; UNDENT;
@@ -117,9 +117,12 @@ ostream& flwor_expr::put( ostream& os) const
     UNDENT;
   }
 
-  Assert(retval_h!=NULL);
-  os << INDENT << "RETURN\n"; UNDENT; 
-  retval_h->put(os);
+  os << INDENT << "RETURN\n"; UNDENT;
+  if (retval_h == NULL) {
+    os << "$NULL$";
+  } else {
+    retval_h->put(os);
+  }
 
   os << DENT << "]\n"; UNDENT;
   return os;

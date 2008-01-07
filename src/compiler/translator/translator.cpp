@@ -73,6 +73,7 @@ protected:
   int                              tempvar_counter;
   std::list<global_binding>        global_vars;
   const RelativePathExpr         * theRootRelPathExpr;
+  std::stack<const RelativePathExpr *> relpathstack;
 
   TranslatorImpl (static_context *sctx_p_)
     :
@@ -2408,6 +2409,10 @@ void *begin_visit(const PathExpr& v)
   expr_t result;
   rchandle<relpath_expr> rpe = NULL;
 
+  // Save theRootRelPathExpr state.
+  relpathstack.push(theRootRelPathExpr);
+  theRootRelPathExpr = NULL;
+
   // Put a NULL in the stack to mark the beginning of a PathExp tree.
   nodestack.push(NULL);
 
@@ -2477,6 +2482,10 @@ void end_visit(const PathExpr& v, void *visit_state)
   ZORBA_ASSERT(arg1 == NULL);
 
   nodestack.push(wrap_in_dos_and_dupelim(arg2));
+
+  // Restore theRootRelPathExpr state.
+  theRootRelPathExpr = relpathstack.top();
+  relpathstack.pop();
 }
 
 
@@ -2501,9 +2510,11 @@ void intermediate_visit(const RelativePathExpr& v, void *visit_state)
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
   
+  rchandle<relpath_expr> rpe = NULL;
+
   if (arg1 != NULL)
   {
-    relpath_expr* rpe = dynamic_cast<relpath_expr *>(&*arg1);
+    rpe = dynamic_cast<relpath_expr *>(&*arg1);
     ZORBA_ASSERT(rpe != NULL);
 
     rpe->add_back(arg2);
@@ -2516,7 +2527,6 @@ void intermediate_visit(const RelativePathExpr& v, void *visit_state)
       ase->setTest(me);
       rpe->add_back(&*ase);
     }
-    nodestack.push(rpe);
   }
   else
   {
@@ -2525,9 +2535,24 @@ void intermediate_visit(const RelativePathExpr& v, void *visit_state)
 
     nodestack.push(NULL);
     
-    relpath_expr* rpe = new relpath_expr(v.get_location());
+    rpe = new relpath_expr(v.get_location());
     rpe->add_back(flwor);
-    nodestack.push(rpe);
+  }
+  rchandle<exprnode> vrel = v.get_relpath_expr();
+  if (vrel != NULL && dynamic_cast<FunctionCall *>(&*vrel)) {
+    push_scope();
+    rchandle<forlet_clause> lcseq = wrap_in_letclause(&*rpe);
+    rchandle<fo_expr> count_expr = new fo_expr(v.get_location(), LOOKUP_FN("fn", "count", 1));
+    count_expr->add(lcseq->get_var().get_ptr());
+    rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VAR);
+    rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().get_ptr(), v.get_location (), DOT_VAR, DOT_POS_VAR);
+    rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
+    flwor->add(lcseq);
+    flwor->add(lclast);
+    flwor->add(fc);
+    nodestack.push(&*flwor);
+  } else {
+    nodestack.push(&*rpe);
   }
 }
 
@@ -2541,15 +2566,23 @@ void end_visit(const RelativePathExpr& v, void *visit_state)
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
 
-  relpath_expr *rpe = NULL;
-  if (arg1 == NULL || dynamic_cast<relpath_expr *>(&*arg2)) {
-    nodestack.push(arg1);
-    nodestack.push(arg2);
+  rchandle<exprnode> vrel = v.get_relpath_expr();
+  if (vrel != NULL && dynamic_cast<FunctionCall *>(&*vrel)) {
+    flwor_expr *f = dynamic_cast<flwor_expr *>(&*arg1);
+    f->set_retval(arg2);
+    nodestack.push(f);
+    pop_scope();
   } else {
-    relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
-    ZORBA_ASSERT(rpe != NULL);
-    rpe->add_back(arg2);
-    nodestack.push(rpe);
+    relpath_expr *rpe = NULL;
+    if (arg1 == NULL || dynamic_cast<relpath_expr *>(&*arg2)) {
+      nodestack.push(arg1);
+      nodestack.push(arg2);
+    } else {
+      relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
+      ZORBA_ASSERT(rpe != NULL);
+      rpe->add_back(arg2);
+      nodestack.push(rpe);
+    }
   }
 }
 
