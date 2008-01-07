@@ -1107,6 +1107,8 @@ public:
 public:
 	void push_back(rchandle<Param> param_h) { param_hv.push_back(param_h); }
 	rchandle<Param> operator[](int i) const { return param_hv[i]; }
+  std::vector<rchandle<Param> >::const_iterator begin () const { return param_hv.begin (); }
+  std::vector<rchandle<Param> >::const_iterator end () const { return param_hv.end (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1366,7 +1368,7 @@ public:
 public:
 	void push_back(rchandle<VarInDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
 	rchandle<VarInDecl> operator[](int i) const { return vardecl_hv[i]; }
-	int size() { return vardecl_hv.size();}
+	int size() const { return vardecl_hv.size();}
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1965,19 +1967,19 @@ public:
 
 public:
 	void push_back(rchandle<CaseClause> clause_h)
-		{ clause_hv.push_back(clause_h); }
+  { clause_hv.push_back(clause_h); }
 	rchandle<CaseClause> operator[](int i) const
-		{ return clause_hv[i]; }
-	std::vector<rchandle<CaseClause> >::const_iterator begin()
-		{ return clause_hv.begin(); }
-	std::vector<rchandle<CaseClause> >::const_iterator end()
-		{ return clause_hv.end(); }
-	std::vector<rchandle<CaseClause> >::const_reverse_iterator rbegin()
-		{ return clause_hv.rbegin(); }
-	std::vector<rchandle<CaseClause> >::const_reverse_iterator rend()
-		{ return clause_hv.rend(); }
+  { return clause_hv[i]; }
+	std::vector<rchandle<CaseClause> >::const_iterator begin() const
+  { return clause_hv.begin(); }
+	std::vector<rchandle<CaseClause> >::const_iterator end() const
+  { return clause_hv.end(); }
+	std::vector<rchandle<CaseClause> >::const_reverse_iterator rbegin() const
+  { return clause_hv.rbegin(); }
+	std::vector<rchandle<CaseClause> >::const_reverse_iterator rend() const
+  { return clause_hv.rend(); }
 	uint32_t size() const 
-		{ return clause_hv.size(); }
+  { return clause_hv.size(); }
 
 public:
 	void accept(parsenode_visitor&) const;

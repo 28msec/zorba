@@ -36,6 +36,7 @@ ostringstream __oss;
 #define BEGIN_VISITOR() void *visitor_state; if (NULL == (visitor_state = v.begin_visit (*this))) return
 #define END_VISITOR() v.end_visit (*this, visitor_state)
 #define ACCEPT( m ) do { if (m != NULL) m->accept (v); } while (0)
+#define ACCEPT_CHK( m ) do { ZORBA_ASSERT (m != NULL);  m->accept (v); } while (0)
 
 
 
@@ -284,11 +285,11 @@ SIND_DeclList::~SIND_DeclList()
 void SIND_DeclList::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  vector<rchandle<parsenode> >::const_reverse_iterator it = sind_hv.rbegin();
-  for (; it!=sind_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+  
+  for (vector<rchandle<parsenode> >::const_reverse_iterator it = sind_hv.rbegin();
+       it!=sind_hv.rend(); ++it)
+  {
+    ACCEPT_CHK ((*it));
   }
   END_VISITOR ();
 }
@@ -317,9 +318,8 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
   for (vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
        it!=vfo_hv.end(); ++it)
   {
-    parsenode* e_p = &**it;
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -980,10 +980,8 @@ void ParamList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<Param> >::const_reverse_iterator it = param_hv.rbegin();
   for (; it!=param_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -1098,10 +1096,8 @@ void Expr::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<exprnode> >::const_reverse_iterator it = expr_hv.rbegin();
   for (; it!=expr_hv.rend(); ++it) {
-    exprnode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const exprnode* e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -1175,10 +1171,8 @@ void ForLetClauseList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<ForOrLetClause> >::const_iterator it = forlet_hv.begin();
   for (; it!=forlet_hv.end(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -1241,10 +1235,8 @@ void VarInDeclList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<VarInDecl> >::const_iterator it = vardecl_hv.begin();
   for (; it!=vardecl_hv.end(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -1368,10 +1360,8 @@ void VarGetsDeclList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
   for (; it!=vardecl_hv.end(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -1524,9 +1514,8 @@ void OrderSpecList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<OrderSpec> >::const_reverse_iterator it = spec_hv.rbegin();
   for (; it!=spec_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -1734,10 +1723,8 @@ void QVarInDeclList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<QVarInDecl> >::const_reverse_iterator it = qvar_decl_hv.rbegin();
   for (; it!=qvar_decl_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -1834,22 +1821,16 @@ void TypeswitchExpr::accept(parsenode_visitor& v) const
   ACCEPT (clause_list_h);
   ACCEPT (default_clause_h);
 
-  //d Assert<null_pointer>(switch_expr_h!=NULL);
-  Assert(switch_expr_h!=NULL);
-  ACCEPT (switch_expr_h);
+  ACCEPT_CHK (switch_expr_h);
 
-  //d Assert<null_pointer>(default_clause_h!=NULL);
-  Assert(default_clause_h!=NULL);
-  ACCEPT (default_clause_h);
+  ACCEPT_CHK (default_clause_h);
 
-  //d Assert<null_pointer>(clause_list_h!=NULL);
   Assert(clause_list_h!=NULL);
-  vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_list_h->rbegin();
-  for (; it!=clause_list_h->rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+  
+  for (vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_list_h->rbegin();
+       it!=clause_list_h->rend(); ++it) {
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -1878,10 +1859,8 @@ void CaseClauseList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
   for (; it!=clause_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -2642,10 +2621,8 @@ void PragmaList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<Pragma> >::const_reverse_iterator it = pragma_hv.rbegin();
   for (; it!=pragma_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -2758,7 +2735,7 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
   // Skip this rpe if it is not the root of an rpe subtree and its left child
   // is a dot expression.
   else if (visitor_state != this &&
-           dynamic_cast<ContextItemExpr*>(step_expr_h.get_ptr()) != NULL)
+           dynamic_cast<const ContextItemExpr*>(step_expr_h.get_ptr()) != NULL)
   {
     ACCEPT (relpath_expr_h);
   }
@@ -3168,8 +3145,7 @@ void PredicateList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<exprnode> >::const_reverse_iterator it = pred_hv.rbegin();
   for (; it!=pred_hv.rend(); ++it) {
-    exprnode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
+    const exprnode* e_p = &**it;
     Assert(e_p!=NULL);
     v.pre_predicate_visit(*this, visitor_state);
     e_p->accept(v);
@@ -3433,10 +3409,8 @@ void ArgList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
   for (; it!=arg_hv.end(); ++it) {
-    exprnode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const exprnode* e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -3513,11 +3487,10 @@ void DirElemContentList::accept(parsenode_visitor& v) const
 { 
   BEGIN_VISITOR ();
   vector<rchandle<exprnode> >::const_reverse_iterator it = dir_content_hv.rbegin();
-  for (; it!=dir_content_hv.rend(); ++it) {
-    exprnode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+  for (; it!=dir_content_hv.rend(); ++it)
+  {
+    const exprnode* e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -3546,10 +3519,8 @@ void DirAttributeList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<DirAttr> >::const_reverse_iterator it = dir_attr_hv.rbegin();
   for (; it!=dir_attr_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -3652,10 +3623,8 @@ void QuoteAttrContentList::accept(parsenode_visitor& v) const
   vector<rchandle<QuoteAttrValueContent> >::const_reverse_iterator it =
     quot_atval_content_hv.rbegin();
   for (; it!=quot_atval_content_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -3685,10 +3654,8 @@ void AposAttrContentList::accept(parsenode_visitor& v) const
   vector<rchandle<AposAttrValueContent> >::const_reverse_iterator it =
     apos_atval_content_hv.rbegin();
   for (; it!=apos_atval_content_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -5037,10 +5004,8 @@ void VarNameList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<VarBinding> >::const_reverse_iterator it = varbinding_hv.rbegin();
   for (; it!=varbinding_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -5144,10 +5109,8 @@ void FTMatchOptionProximityList::accept(parsenode_visitor& v) const
   vector<rchandle<FTMatchOptionProximity> >::const_reverse_iterator it =
     opt_prox_hv.rbegin();
   for (; it!=opt_prox_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -5635,10 +5598,8 @@ void FTThesaurusList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   vector<rchandle<FTThesaurusID> >::const_reverse_iterator it = thesaurus_hv.rbegin();
   for (; it!=thesaurus_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
@@ -5733,10 +5694,8 @@ void FTInclExclStringLiteralList::accept(parsenode_visitor& v) const
   vector<rchandle<FTInclExclStringLiteral> >::const_reverse_iterator it =
     incl_excl_lit_hv.rbegin();
   for (; it!=incl_excl_lit_hv.rend(); ++it) {
-    parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
-    Assert(e_p!=NULL);
-    e_p->accept(v);
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
   }
   END_VISITOR ();
 }
