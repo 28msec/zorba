@@ -32,8 +32,10 @@ Item_t ForVarIterator::nextImpl(PlanState& planState)
  
 void ForVarIterator::resetImpl(PlanState& planState)
 {
+  // Do not reset the current value of this var. Only reset the duffs line so
+  // that when nextImpl() is called again, the same value will be returned to
+  // the caller.
   NoaryBaseIterator<ForVarIterator>::resetImpl(planState);
-  // Do not reset the current value of this var.
 }
 
 
