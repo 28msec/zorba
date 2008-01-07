@@ -147,7 +147,9 @@ int _tmain(int argc, _TCHAR* argv[])
   // start timer as soon as possible, if enabled
   auto_ptr<TimePrinter> timer (lProp->printTime() ? new TimePrinter : NULL);
   
+#ifndef NDEBUG
   g_abort_when_fatal_error = lProp->abortWhenFatalError();
+#endif
 
   xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
