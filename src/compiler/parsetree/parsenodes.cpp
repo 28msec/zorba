@@ -308,23 +308,16 @@ VFO_DeclList::~VFO_DeclList()
 {
 }
 
-// ostream& VFO_DeclList::put(ostream& s) const
-// {
-//   s << INDENT << "VFO_DeclList[" << endl;
-//   vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
-//   for (; it!=vfo_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-//   return s << OUTDENT << "]\n";
-// }
-
 //-VFO_DeclList::
 
 void VFO_DeclList::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  vector<rchandle<parsenode> >::const_reverse_iterator it = vfo_hv.rbegin();
-  for (; it!=vfo_hv.rend(); ++it) {
+  
+  for (vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
+       it!=vfo_hv.end(); ++it)
+  {
     parsenode* e_p = &**it;
-    //d Assert<null_pointer>(e_p!=NULL);
     Assert(e_p!=NULL);
     e_p->accept(v);
   }
