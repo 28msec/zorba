@@ -769,7 +769,6 @@ TranslateIterator::nextImpl(PlanState& planState) {
 Item_t
 EncodeForUriIterator::nextImpl(PlanState& planState) {
   Item_t item;
-  xqp_string emptyStr("");
 
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
@@ -784,7 +783,7 @@ EncodeForUriIterator::nextImpl(PlanState& planState) {
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createString(emptyStr), state);
+    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
   }
   STACK_END();
 }
@@ -799,7 +798,6 @@ EncodeForUriIterator::nextImpl(PlanState& planState) {
 Item_t
 IriToUriIterator::nextImpl(PlanState& planState) {
   Item_t item;
-  xqp_string emptyStr("");
 
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
@@ -814,7 +812,7 @@ IriToUriIterator::nextImpl(PlanState& planState) {
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createString(emptyStr), state);
+    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
   }
   STACK_END();
 }
