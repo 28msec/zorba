@@ -642,15 +642,12 @@ namespace xqp
       }
       else{//codepoint has to be escaped
         length = sequence_length(prev);
-        if(length != 1)
+        for(int j=0; j<length;++j)
         {
-          for(int j=0; j<length;++j)
-          {
-            cp = mask8(*prev);
-            sprintf(seq, "%%%X", cp);
-            tmp += seq;
-            prev++;
-          }
+          cp = mask8(*prev);
+          sprintf(seq, "%%%X", cp);
+          tmp += seq;
+          prev++;
         }
       }
     }
