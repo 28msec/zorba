@@ -17,7 +17,7 @@
 
 #include <assert.h>
 #include <iostream>
-#include <vector>
+#include "util/checked_vector.h"
 
 namespace xqp
 {
@@ -172,7 +172,7 @@ protected:
   public:
     //varBindingState holds if a LET is already bound or not and futhermore for FORs it holds
     //as wenn the positional integer value
-    std::vector<uint32_t> varBindingState;
+    checked_vector<uint32_t> varBindingState;
           
     //orderMap, curOrderPos and curOrderResultSeq are just needed if we have a Orderclause
     //The MultiMap does the actual ordering

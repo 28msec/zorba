@@ -221,7 +221,8 @@ bool FLWORIterator::OrderKeyCmp::operator() (
 void FLWORIterator::FlworState::init(size_t nb_variables)
 {
   PlanIterator::PlanIteratorState::init();
-  varBindingState = std::vector<uint32_t> ( nb_variables, 0 );
+  std::vector<uint32_t> v( nb_variables, 0 );
+  varBindingState.swap (v);
 }
 
 
