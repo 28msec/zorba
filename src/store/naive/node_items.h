@@ -13,7 +13,7 @@
 #include "util/Assert.h"
 #include "store/api/item.h"
 #include "store/naive/ordpath.h"
-#include "store/util/handle_set.h"
+//#include "store/util/handle_set.h"
 
 namespace xqp
 {
@@ -438,134 +438,6 @@ public:
 
   virtual xqp_string show() const;
 };
-
-
-/*******************************************************************************
-  This iterator is used during the getChildren() method to set the parent
-  pointer and the nodeid in each child node of "this" node.
-********************************************************************************/
-class ChildrenIterator : public Iterator
-{
-protected:
-  NodeImpl_t          theParentNode;
-  unsigned long       theStartingId;
-  unsigned long       theCurrentPos;
-
-  NodeVector&         theChildNodes;
-
-public:
-  ChildrenIterator(NodeImpl* parent, unsigned long startid);
-
-  Item_t next();
-  void reset();
-  void close();
-};
-
-
-/*******************************************************************************
-  This iterator is used during the getAttributes() method to set the parent
-  pointer and the nodeid in each attribute node of "this" node.
-********************************************************************************/
-class AttributesIterator : public Iterator
-{
-protected:
-  ElementNodeImpl_t   theParentNode;
-  unsigned long       theCurrentPos;
-
-  NodeVector&         theChildNodes;
-
-public:
-  AttributesIterator(ElementNodeImpl* parent);
-
-  Item_t next();
-  void reset();
-  void close();
-};
-
-
-/*******************************************************************************
-  This iterator is used to eliminated duplicate nodes in the multiset of nodes
-  produced by another iterator.
-
-  theInput     : This is actually a PlanIterWrapper object that wraps the actual
-                 runtime iterator that produces the node multiset.
-  theHandleSet : A hash-based set used to do the duplicate elimination. The
-                 elimination is done based on the values of the pointers that
-                 point to the input nodes.
-********************************************************************************/
-class StoreNodeDistinctIterator : public Iterator
-{
-protected:
-  Iterator_t       theInput;
-  HandleSet<Item>  theNodeSet;
-
-public:
-  StoreNodeDistinctIterator(const Iterator_t& input) : theInput(input) { }
-
-  ~StoreNodeDistinctIterator() { close(); }
-
-  Item_t next();
-  void reset();
-  void close();
-};
-
-
-/*******************************************************************************
-  This iterator is used to sort by document order the nodes produced by another
-  iterator.
-
-  theInput  : This is actually a PlanIterWrapper object that wraps the actual
-              runtime iterator that produces the input nodes.
-  theNodes  : A vector that stores rchandles to the nodes.
-                 elimination is done based on the values of the pointers that
-                 point to the input nodes.
-********************************************************************************/
-class StoreNodeSortIterator : public Iterator
-{
-protected:
-  class ComparisonFunction
-  {
-  protected:
-    bool theAscending;
-
-  public:
-    ComparisonFunction(bool asc = true) : theAscending(asc) { }
-
-    bool operator()(const NodeImpl_t& n1, const NodeImpl_t& n2) const
-    {
-      return (theAscending ?
-              n1->getId() < n2->getId() : 
-              n1->getId() > n2->getId());
-    }
-  };
-
-protected:
-  Iterator_t               theInput;
-  bool                     theAscendant;
-  bool                     theDistinct;
-
-  std::vector<NodeImpl_t>  theNodes;
-  long                     theCurrentNode;
-
-public:
-  StoreNodeSortIterator(const Iterator_t& input,
-                        bool ascendant,
-                        bool distinct)
-    :
-    theInput(input),
-    theAscendant(ascendant),
-    theDistinct(distinct),
-    theCurrentNode(-1)
-  {
-  }
-
-  ~StoreNodeSortIterator() { close(); }
-
-  Item_t next();
-  void reset();
-  void close();
-};
-
 
 
 }

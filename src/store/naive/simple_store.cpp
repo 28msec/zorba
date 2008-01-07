@@ -16,6 +16,7 @@
 #include "store/naive/simple_loader.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"
+#include "store/naive/node_iterators.h"
 #include "store/naive/basic_item_factory.h"
 
 namespace xqp
