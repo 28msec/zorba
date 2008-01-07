@@ -74,6 +74,8 @@ public:
    */
   virtual Item_t getType( ) const = 0;
 
+  virtual bool isNumeric() const;
+
   /**
    *  Carries out Atomization on the item. Although atomization can be carried
    *  out in a generic way, atomization is pushed down to the item level for
