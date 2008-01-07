@@ -93,8 +93,11 @@ public:
 
     ~xqpString(){};
 
+#if 0  // people rely on broken getStore() const method that returns a non-const pointer
     const xqpStringStore* getStore() const { return theStrStore.get_ptr(); }
     xqpStringStore* getStore() { return theStrStore.get_ptr(); }
+#endif
+    xqpStringStore* getStore() const { return theStrStore.get_ptr(); }
 
     //xqpString::operator=()
     xqpString&operator=(xqpString src)
