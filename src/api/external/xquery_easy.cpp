@@ -30,7 +30,7 @@ XQueryResult_t Zorba_XQuerySimple::execute( )
 		return NULL;
 	}
 
-	XQueryExecution_t	result = query->createExecution();
+	XQueryExecution_t	result = query->createExecution(dctx);
 	if(result.isNull())
 	{
 		return NULL;
