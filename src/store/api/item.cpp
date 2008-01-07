@@ -16,6 +16,8 @@
 
 #include "runtime/core/item_iterator.h"
 #include "api/serialization/serializer.h"
+#include "system/globalenv.h"
+#include "types/typesystem.h"
 
 namespace xqp
 {
@@ -28,6 +30,11 @@ Item::~Item()
 void Item::showError() const
 {
   ZORBA_ASSERT (false);
+}
+
+bool Item::isNumeric() const {
+  TypeSystem::xqtref_t type = GENV_TYPESYSTEM.create_type(getType(), TypeSystem::QUANT_ONE);
+  return GENV_TYPESYSTEM.is_numeric(*type);
 }
 
 

@@ -791,6 +791,10 @@ FnAvgIterator::nextImpl(PlanState& planState) {
     while ( (lRunningItem = consumeNext(theChild, planState)) != NULL )
     {
       // TODO add datetime
+      if (lRunningItem->isNumeric() && lRunningItem->isNaN()) {
+        lSumItem = lRunningItem;
+        break;
+      }
       lSumItem = ArithmeticIterator<AddOperations>::compute(loc, lSumItem, lRunningItem); 
       ++lCount;
     }
@@ -828,6 +832,10 @@ FnMaxIterator::nextImpl(PlanState& planState) {
     {
       // FIXME collation support
       // implementation dependent: return the first occurence)
+      if (lRunningItem->isNumeric() && lRunningItem->isNaN()) {
+        lMaxItem = lRunningItem;
+        break;
+      }
       if (CompareIterator::valueComparison(lRunningItem, lMaxItem, 
                                            CompareIterator::VALUE_GREATER) > 0)
         lMaxItem = lRunningItem;
@@ -864,6 +872,10 @@ FnMinIterator::nextImpl(PlanState& planState) {
     {
       // FIXME collation support
       // implementation dependent: return the first occurence)
+      if (lRunningItem->isNumeric() && lRunningItem->isNaN()) {
+        lMinItem = lRunningItem;
+        break;
+      }
       if (CompareIterator::valueComparison(lRunningItem, lMinItem, 
                                            CompareIterator::VALUE_GREATER) < 0)
         lMinItem = lRunningItem;
