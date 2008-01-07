@@ -611,7 +611,6 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
     {
       ZORBA_ERROR_ALERT(AlertCodes::FOCH0003,
                         &loc, false, "Unsupported normalization form.");
-    break;
     }
   }
   
