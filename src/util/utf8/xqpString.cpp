@@ -490,13 +490,13 @@ namespace xqp
     {
       Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFKD , 0, result, status);
     }
-    else
-    {
-      ZORBA_ERROR_ALERT(
-          AlertCodes::FOCH0003,
-          NULL
-          );
-    }
+//     else
+//     {
+//       ZORBA_ERROR_ALERT(
+//           AlertCodes::FOCH0003,
+//           NULL
+//           );
+//     }
 
     if(U_FAILURE(status))
     {
