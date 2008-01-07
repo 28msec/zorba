@@ -752,8 +752,9 @@ TranslateIterator::nextImpl(PlanState& planState) {
             itemArg->getStringValue().translate(item0->getStringValue(), item1->getStringValue()));
       }
     }
-    STACK_PUSH( res, state );
   }
+  
+  STACK_PUSH( res, state );
   STACK_END();
 }
 /* end class TranslateIterator */
