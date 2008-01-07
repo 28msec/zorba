@@ -1160,7 +1160,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarGetsDecl &n)
 {
     INDENT;
 
-    os << "<VarGetsDecl position='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<VarGetsDecl position='" << n.get_location() << "' var='" << n.get_varname () << "' ptr='" << &n << "'";
 
     os << ">";
 
@@ -1188,7 +1188,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarInDecl &n)
 {
     INDENT;
 
-    os << "<VarInDecl position='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<VarInDecl position='" << n.get_location() << "' var='" << n.get_varname () << "' ptr='" << &n << "'";
 
     os << ">";
 
@@ -1993,7 +1993,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarRef &n)
 {
     INDENT;
 
-    os << "<VarRef position='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<VarRef position='" << n.get_location() << "' var='" << n.get_varname () << "' ptr='" << &n << "'";
 
     os << ">";
 
