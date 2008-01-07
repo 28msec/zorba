@@ -153,10 +153,10 @@ ElementIterator::nextImpl(PlanState& planState)
   // parsing of QNameItem does not have to be checked because 
   // the compiler wraps an xs:qname cast around the expression
   lQName = (Item*)&*lItem;
-  if (lQName->getLocalName().size() == 0) {
+  if (lQName->getLocalName().size() == 0)
+  {
       ZORBA_ERROR_ALERT(AlertCodes::XQDY0074, false, 
-        false, "Element name must not have an empty local part."
-      );
+                        false, "Element name must not have an empty local part.");
   }
 
   if (theChildrenIter != 0)
@@ -548,12 +548,28 @@ Item_t EnclosedIterator::nextImpl ( PlanState& planState )
 
   ItemFactory* factory = Zorba::getItemFactory();
 
+  static_context* sctx = NULL;
+
   EnclosedState* state;
-  DEFAULT_STACK_INIT ( EnclosedState, state, planState );
+  GET_STATE(EnclosedState, state, planState);
+
+  MANUAL_STACK_INIT(state);
+
+  sctx = planState.zorp->get_static_context();
+
+  state->theTypePreserve = (sctx->construction_mode() == StaticQueryContext::cons_preserve ?
+                            true : false);
+
+  state->theNsPreserve = (sctx->preserve_mode() == StaticQueryContext::preserve_ns ?
+                          true : false);
+
+  FINISHED_ALLOCATING_RESOURCES();
+
+  state->init();
 
   while ( true )
   {
-    state->theContextItem = consumeNext ( theChild, planState );
+    state->theContextItem = consumeNext(theChild, planState);
 
     if ( state->theContextItem == NULL )
     {
@@ -598,15 +614,20 @@ Item_t EnclosedIterator::nextImpl ( PlanState& planState )
         switch (state->theContextItem->getNodeKind())
         {
         case StoreConsts::documentNode:
-          lItem = factory->createDocumentNode(state->theContextItem, true, true);
+          lItem = factory->createDocumentNode(state->theContextItem,
+                                              state->theTypePreserve,
+                                              state->theNsPreserve);
           break;
 
         case StoreConsts::elementNode:
-          lItem = factory->createElementNode(state->theContextItem, true, true);
+          lItem = factory->createElementNode(state->theContextItem,
+                                             state->theTypePreserve,
+                                             state->theNsPreserve);
           break;
 
         case StoreConsts::attributeNode:
-          lItem = factory->createAttributeNode(state->theContextItem, true);
+          lItem = factory->createAttributeNode(state->theContextItem,
+                                               state->theTypePreserve);
           break;
 
         case StoreConsts::textNode:

@@ -94,7 +94,7 @@ public:
                       only the root node of a constructed xml tree is assigned
                       a node id. Node ids to the children are assigned when the
                       children are actually accessed via the getChildren() method
-                      (see ChildrenIterator and AttributesIterator in node_items.h)
+                      (see classes ChildrenIterator and AttributesIterator)
 
 ********************************************************************************/
 class ElementIterator : public Batcher<ElementIterator>
@@ -261,8 +261,11 @@ protected:
   class EnclosedState : public PlanIteratorState
   {
   public:
+    bool       theTypePreserve;
+    bool       theNsPreserve;
+
     xqp_string theString;
-    Item_t theContextItem;
+    Item_t     theContextItem;
 
     void init();
   };
