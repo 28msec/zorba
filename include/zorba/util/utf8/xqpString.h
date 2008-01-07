@@ -79,7 +79,7 @@ public:
    /**Construct a xqpString as a wrapper of an existing xqpStringStore
     * @param src A source UTF-8 encoded string
     */
-    xqpString(const xqpStringStore_t& other) : theStrStore(other.get_ptr()) {}
+    xqpString(const xqpStringStore_t &other) : theStrStore(other) {}
 
     /**Construct a xqpString given a std::string
      * @param src A source std::string containin ASCII characters
@@ -93,7 +93,8 @@ public:
 
     ~xqpString(){};
 
-    xqpStringStore* getStore() const { return theStrStore.get_ptr(); }
+    const xqpStringStore* getStore() const { return theStrStore.get_ptr(); }
+    xqpStringStore* getStore() { return theStrStore.get_ptr(); }
 
     //xqpString::operator=()
     xqpString&operator=(xqpString src)
@@ -370,3 +371,8 @@ private:
 
 #endif
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
