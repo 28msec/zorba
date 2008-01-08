@@ -448,24 +448,23 @@ void FLWORIterator::matResultAndOrder(
 bool FLWORIterator::evalWhereClause ( PlanState& planState )
 {
   if ( whereClause == NULL )
-  {
     return true;
-  }
+
   if ( whereClauseReturnsBooleanPlus )
   {
     Item_t boolValue = this->consumeNext ( whereClause, planState );
     if ( boolValue == NULL )
-    {
       return false;
-    }
+
     bool value = boolValue->getBooleanValue();
+    resetChild(whereClause, planState);
     return value;
   }
 
   Item_t item = FnBooleanIterator::effectiveBooleanValue(loc,
                                                          planState,
                                                          whereClause);
-  this->resetChild ( whereClause, planState );
+  resetChild(whereClause, planState);
   return item->getBooleanValue();
 }
 

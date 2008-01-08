@@ -1026,15 +1026,13 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
 
         while (desc == NULL)
         {
-          checked_pop (state->theCurrentPath);
-          ZORBA_ASSERT(!state->theCurrentPath.empty());
-          desc = state->theCurrentPath.top().second->next();
+          checked_pop(state->theCurrentPath);
+          if (!state->theCurrentPath.empty())
+            desc = state->theCurrentPath.top().second->next();
+          else
+            break;
         }
       }
-
-      checked_pop (state->theCurrentPath);
-      checked_pop (state->theCurrentPath);
-      ZORBA_ASSERT(state->theCurrentPath.empty());
     }
   }
 
@@ -1154,13 +1152,12 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
         while (following == NULL)
         {
           checked_pop (state->theCurrentPath);
-          ZORBA_ASSERT(!state->theCurrentPath.empty());
-          following = state->theCurrentPath.top().second->next();
+          if (!state->theCurrentPath.empty())
+            following = state->theCurrentPath.top().second->next();
+          else
+            break;
         }
       }
-
-      checked_pop (state->theCurrentPath);
-      ZORBA_ASSERT(state->theCurrentPath.empty());
     }
   }
 
