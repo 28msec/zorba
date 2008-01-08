@@ -85,7 +85,8 @@ void CtxVariableIterator::releaseResourcesImpl(PlanState& planState)
 
   iter = zorba->current_xqueryresult->internal_dyn_context->get_variable(theVarName);
 
-  iter->close();
+  if (iter != NULL)
+    iter->close();
 }
 
 }
