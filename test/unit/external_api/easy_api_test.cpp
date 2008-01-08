@@ -52,38 +52,6 @@ test_3()
 	return true;
 }
 
-// print all errors that were raised
-void
-printErrors(ZorbaAlertsManager* aManager)
-{
-  if (aManager->size() == 0) return;
-
-  std::cout<< "Errors:" << std::endl;
-
-  errors_english lCodes;
-  for (ZorbaAlertsManager::const_iterator lIter = aManager->begin();
-       lIter != aManager->end(); ++lIter)
-  {
-    ZorbaAlert* lAlert = *lIter;
-    switch (lAlert->alert_type)
-    {
-      case ZorbaAlert::ERROR_ALERT:
-        {
-          ZorbaErrorAlert* lErrorAlert = dynamic_cast<ZorbaErrorAlert*>(lAlert);
-          assert(lErrorAlert);
-          std::string lErrorCode = lCodes.toString(lErrorAlert->error_code);
-          std::cout << lErrorCode << " " << lCodes.err_decode(lErrorAlert->error_code) << std::endl;
-          break;
-        }
-      default:
-        { 
-        }
-    }
-  }
-  return;
-}
-
-
 
 #if 0
 // test setting external variables in the dynamic context and use them in the query
@@ -99,8 +67,6 @@ test_4()
   lDynCtxt->SetVariable("x", 2);
 
 	XQueryResult_t lQueryResult = lQuery->execute();
-
-  printErrors(&lQuery->getAlertsManager());
 
   lQueryResult->serializeXML(std::cout);
 
