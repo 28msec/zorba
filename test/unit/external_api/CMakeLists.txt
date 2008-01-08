@@ -3,6 +3,7 @@ CREATE_TEST_SOURCELIST(UnitTests
 	UnitTests.cpp
 	dctx_test.cpp
 	easy_test.cpp
+  easy_api_test.cpp
 	query_multithread_test.cpp
 	sctx_test.cpp
 	zorba_engine_test.cpp
