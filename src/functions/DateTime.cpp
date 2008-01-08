@@ -10,31 +10,30 @@
 namespace xqp
 {
 
-// 10.4.5 op:duration-equal
-op_duration_equal::op_duration_equal (
+fn_datetime_ctor::fn_datetime_ctor (
     const signature& sig )
     :
     function ( sig )
 {
 }
 
-PlanIter_t op_duration_equal::operator() (
+PlanIter_t fn_datetime_ctor::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new OpDurationEqualIterator(loc, argv[0], argv[1]);
+  return new FnDateTimeConstructorIterator(loc, argv[0], argv[1]);
 }
 
-bool op_duration_equal::validate_args (
+bool fn_datetime_ctor::validate_args (
     vector<PlanIter_t>& argv ) const
 {
   return true;
 }
 
-TypeSystem::xqtref_t op_duration_equal::type_check (
+TypeSystem::xqtref_t fn_datetime_ctor::type_check (
     signature& sig ) const
 {
-  return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+  return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
 
 

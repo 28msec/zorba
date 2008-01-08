@@ -31,8 +31,10 @@ public:
   static YearMonthDuration_t parse_string(xqpString s);
 
   YearMonthDuration& operator=(const YearMonthDuration_t& ym_t);
-  bool operator<(const YearMonthDuration& ym);
-  bool operator==(const YearMonthDuration& ym);
+  bool operator<(const YearMonthDuration& ym) const;
+  bool operator==(const YearMonthDuration& ym) const;
+  int compare(const YearMonthDuration& ym) const;
+  xqpString toString() const;
 
 protected:
   long months;
@@ -48,8 +50,10 @@ public:
   static DayTimeDuration_t parse_string(xqpString s, bool dont_check_letter_p = false);
   
   DayTimeDuration& operator=(const DayTimeDuration_t& dt_t);
-  bool operator<(const DayTimeDuration& dt);
-  bool operator==(const DayTimeDuration& dt);
+  bool operator<(const DayTimeDuration& dt) const;
+  bool operator==(const DayTimeDuration& dt) const;
+  int compare(const DayTimeDuration& dt) const;
+  xqpString toString() const;
 
 protected:
   bool is_negative;
@@ -65,7 +69,10 @@ public:
 
   static Duration_t parse_string(xqpString s);
 
-  bool operator==(const Duration& dt);
+  bool operator<(const Duration& d) const;
+  bool operator==(const Duration& d) const;
+  int compare(const Duration& d) const;
+  xqpString toString() const;
 
 protected:
   YearMonthDuration yearMonthDuration;

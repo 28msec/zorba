@@ -90,22 +90,22 @@ namespace xqp
         lItem = Zorba::getItemFactory()->createUntypedAtomic(lString);
         break;
       case TypeSystem::XS_DATETIME:
-        // TODO
+        lItem = Zorba::getItemFactory()->createDateTime(lString);
         break;
       case TypeSystem::XS_DATE:
-        // TODO
+        lItem = Zorba::getItemFactory()->createDate(lString);
         break;
       case TypeSystem::XS_TIME:
-        // TODO
+        lItem = Zorba::getItemFactory()->createTime(lString);
         break;
       case TypeSystem::XS_DURATION:
-        // TODO
+        lItem = Zorba::getItemFactory()->createDuration(lString);
         break;
       case TypeSystem::XS_DT_DURATION:
-        // TODO
+        lItem = Zorba::getItemFactory()->createDuration(lString);
         break;
       case TypeSystem::XS_YM_DURATION:
-        // TODO
+        lItem = Zorba::getItemFactory()->createDuration(lString);
         break;
       case TypeSystem::XS_FLOAT:
       {

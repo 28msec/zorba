@@ -6,8 +6,31 @@
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/base/iterator.h"
 
+#include <iostream>
+using namespace std;
+
 namespace xqp
 {
+
+Item_t FnDateTimeConstructorIterator::nextImpl(PlanState& planState)
+{
+  Item_t item0;
+  Item_t item1;
+
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  item0 = consumeNext(theChild0, planState);
+  item1 = consumeNext(theChild1, planState);
+
+  if (item0 == NULL || item1 == NULL)
+    STACK_PUSH(NULL, state);
+  else
+    STACK_PUSH(Zorba::getItemFactory()->createDateTime(item0, item1), state);
+     
+  STACK_END();
+}
+
 
 Item_t 
 OpDurationEqualIterator::nextImpl(PlanState& planState)

@@ -9,7 +9,9 @@
 
 #include "util/utf8/xqpString.h"
 #include "util/datetime/duration.h"
-//#include "util/datetime/date.h"
+#include "util/datetime/date.h"
+#include "util/datetime/datetime.h"
+#include "util/datetime/time.h"
 
 namespace xqp
 {
@@ -43,10 +45,9 @@ namespace xqp
   typedef bool                      xqp_boolean;
   typedef xqpString                 xqp_QName;
   typedef xqpString                 xqp_NOTATION;
-  typedef struct tm                 xqp_dateTime;
-  //typedef Date_t                    xqp_date;
-  typedef struct tm                 xqp_date;
-  typedef struct tm                 xqp_time;
+  typedef DateTime_t                xqp_dateTime;
+  typedef Date_t                    xqp_date;
+  typedef Time_t                    xqp_time;
   typedef struct tm                 xqp_gYearMonth;
   typedef struct tm                 xqp_gYear;
   typedef struct tm                 xqp_gMonthDay;

@@ -104,8 +104,7 @@ namespace xqp
   class CastIterator;
   class CastableIterator;
   class CtxVariableIterator;
-
-  class OpDurationEqualIterator;
+  class FnDateTimeConstructorIterator;
 
   /**
    * Visitor to visit a PlanIterator tree.
@@ -114,7 +113,7 @@ namespace xqp
   {
     public:
       virtual ~PlanIterVisitor() {}
-      
+
       virtual void beginVisit ( const FnDataIterator& ) = 0;
       virtual void endVisit ( const FnDataIterator& ) = 0;
        
@@ -401,8 +400,8 @@ namespace xqp
       virtual void beginVisit ( const CastableIterator& ) = 0;
       virtual void endVisit ( const CastableIterator& ) = 0;
 
-      virtual void beginVisit ( const OpDurationEqualIterator&) = 0;
-      virtual void endVisit ( const OpDurationEqualIterator&) = 0;
+      virtual void beginVisit ( const FnDateTimeConstructorIterator&) = 0;
+      virtual void endVisit ( const FnDateTimeConstructorIterator&) = 0;
 
       virtual void beginVisit(const CtxVariableIterator&) = 0;
       virtual void endVisit(const CtxVariableIterator&) = 0;

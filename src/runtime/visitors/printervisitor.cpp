@@ -782,11 +782,11 @@ namespace xqp {
     thePrinter.endIter();
   }
 
-  void PrinterVisitor::beginVisit ( const OpDurationEqualIterator& a )  {
-    thePrinter.startIter("OpDurationEqualIterator");
+  void PrinterVisitor::beginVisit ( const FnDateTimeConstructorIterator& a )  {
+    thePrinter.startIter("FnDateTimeConstructorIterator");
     printCommons( &a );
   }
-  void PrinterVisitor::endVisit ( const OpDurationEqualIterator& ) {
+  void PrinterVisitor::endVisit ( const FnDateTimeConstructorIterator& ) {
     thePrinter.endIter();
   }
   

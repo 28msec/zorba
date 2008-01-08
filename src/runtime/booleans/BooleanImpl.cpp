@@ -563,6 +563,32 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
       else
         ret = aItem0->getStringValue().compare(aItem1->getStringValue(), *aCollation);
     }
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE)
+               &&
+              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
+    {
+      ret = aItem0->getDateValue()->compare(*aItem1->getDateValue());
+    }
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE)
+             &&
+             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
+    {
+      ret = aItem0->getTimeValue()->compare(*aItem1->getTimeValue());
+    }
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)
+             &&
+             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
+    {
+      ret = aItem0->getDateTimeValue()->compare(*aItem1->getDateTimeValue());
+    }
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
+             &&
+             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+    {
+      ret = aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
+    }
+
+    
     // TODO comparisons for all types
 
     return ret;

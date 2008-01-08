@@ -700,7 +700,7 @@ void end_visit(const CommonContent& v, void *visit_state)
         ss << v.get_ref().substr(2, v.get_ref().size()-2);
       
       ss >> codepoint;
-      charref = codepoint;
+      charref = (uint32_t)codepoint;
       
       Item_t lItem = Store::getInstance().getItemFactory().createTextNode(charref, false);
       const_expr *lConstExpr = new const_expr(v.get_location(), lItem);

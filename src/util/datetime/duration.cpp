@@ -4,58 +4,14 @@
  *  Authors: Nicolae Brinza
  */
 
-#include "util/datetime/duration.h"
 #include <string>
+#include "util/datetime/duration.h"
+#include "util/datetime/parse.h"
 #include "errors/error_factory.h"
 
 namespace xqp
 {
     
-/**
- * Whitespace characters used in the functions below
- */
-static const char* whitespace = " \t\r\n";
-
-/**
- * The function skips any whitespace in the given string,
- * advancing the position parameter.
- *
- */
-static void skip_whitespace(std::string& s, unsigned int& position)
-{
-  int done = 0;
-
-  while (!done && position < s.size())
-  {
-    done = 1;
-    for (unsigned int i=0; i<strlen(whitespace); i++)
-      if (s[position] == whitespace[i])
-    {
-      position++;
-      done = 0;
-      break;
-    }
-  }
-}
-
-// Returns 1 if there is an error
-static int parse_int(std::string& s, unsigned int& position, long& result)
-{
-  long mult = 1;
-  
-  if (s[position] < '0' || s[position] > '9')
-    return 1;
-
-  result = 0;
-  while (s[position] >= '0' && s[position] <= '9' && position < s.size())
-  {
-    mult++;
-    result += mult*result + s[position] - '0';
-    position++;
-  }
-
-  return 0;
-}
 
 YearMonthDuration::YearMonthDuration(long the_months)
   :
@@ -69,7 +25,7 @@ YearMonthDuration& YearMonthDuration::operator=(const YearMonthDuration_t& ym_t)
   return *this;
 }
 
-bool YearMonthDuration::operator<(const YearMonthDuration& ym)
+bool YearMonthDuration::operator<(const YearMonthDuration& ym) const
 {
   if (months < ym.months)
     return true;
@@ -77,12 +33,28 @@ bool YearMonthDuration::operator<(const YearMonthDuration& ym)
     return false;
 }
 
-bool YearMonthDuration::operator==(const YearMonthDuration& ym)
+bool YearMonthDuration::operator==(const YearMonthDuration& ym) const
 {
   if (months == ym.months)
     return true;
   else
     return false;
+}
+
+int YearMonthDuration::compare(const YearMonthDuration& ym) const
+{
+  if (operator<(ym))
+    return -1;
+  else if (operator==(ym))
+    return 0;
+  else
+    return 1;
+}
+
+xqpString YearMonthDuration::toString() const
+{
+  // TODO:
+  return NULL;
 }
     
 YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
@@ -163,26 +135,42 @@ DayTimeDuration& DayTimeDuration::operator=(const DayTimeDuration_t& dt_t)
   return *this;
 }
 
-bool DayTimeDuration::operator<(const DayTimeDuration& dt_t)
+bool DayTimeDuration::operator<(const DayTimeDuration& dt) const
 {
-  if (is_negative != dt_t.is_negative)
+  if (is_negative != dt.is_negative)
     return (is_negative == true);
-  else if (days != dt_t.days)
-    return (days < dt_t.days);
+  else if (days != dt.days)
+    return (days < dt.days);
   else
-    return timeDuration < dt_t.timeDuration;
+    return timeDuration < dt.timeDuration;
 }
 
-bool DayTimeDuration::operator==(const DayTimeDuration& dt_t)
+bool DayTimeDuration::operator==(const DayTimeDuration& dt) const
 {
-  if (is_negative == dt_t.is_negative
+  if (is_negative == dt.is_negative
       &&
-      days == dt_t.days
+      days == dt.days
       &&
-      timeDuration == dt_t.timeDuration)
+      timeDuration == dt.timeDuration)
     return true;
   else
     return false;
+}
+
+int DayTimeDuration::compare(const DayTimeDuration& dt) const
+{
+  if (operator<(dt))
+    return -1;
+  else if (operator==(dt))
+    return 0;
+  else
+    return 1;
+}
+
+xqpString DayTimeDuration::toString() const
+{
+  // TODO:
+  return NULL;
 }
 
 // parse a 'nS' string, with fractional seconds
@@ -362,20 +350,47 @@ Duration::Duration()
   
 }
 
-bool Duration::operator==(const Duration& dt)
+bool Duration::operator<(const Duration& d) const
 {
-  if (yearMonthDuration == dt.yearMonthDuration
+  if (yearMonthDuration == d.yearMonthDuration)
+    return dayTimeDuration < d.dayTimeDuration;
+  else if (dayTimeDuration == d.dayTimeDuration)
+    return yearMonthDuration < d.yearMonthDuration;
+  else
+    // TODO: treat other cases ?
+    return false;
+}
+
+bool Duration::operator==(const Duration& d) const
+{
+  if (yearMonthDuration == d.yearMonthDuration
       &&
-      dayTimeDuration == dt.dayTimeDuration)
+      dayTimeDuration == d.dayTimeDuration)
     return true;
   else
     return false;
 }
 
+int Duration::compare(const Duration& d) const
+{
+  if (operator<(d))
+    return -1;
+  if (operator==(d))
+    return 0;
+  else
+    return 1;
+}
+
+xqpString Duration::toString() const
+{
+  // TODO:
+  return NULL;
+}
+
 // Parse a '(-)PnYnMnDTnHnMnS'
 Duration_t Duration::parse_string(xqpString s)
 {
-  Duration_t d_t;
+  Duration_t d_t = new Duration();
   int pos;
 
   pos = s.indexOf("M");
@@ -385,7 +400,7 @@ Duration_t Duration::parse_string(xqpString s)
   // Check month or year
   if (pos != -1)
   {
-    d_t->yearMonthDuration = *YearMonthDuration::parse_string(s.substr(0, pos+1));
+    d_t->yearMonthDuration = YearMonthDuration::parse_string(s.substr(0, pos+1));
 
     if ((unsigned int)pos+1 < s.size())
       d_t->dayTimeDuration = *DayTimeDuration::parse_string(s.substr(pos+1, s.size() - pos - 1), false);

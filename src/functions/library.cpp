@@ -622,11 +622,11 @@ DECL(op_docfilter_expr,
 // end constructors
 
 // begin date time
-DECL(op_duration_equal,
-     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", "duration-equal"),
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+DECL(fn_datetime_ctor,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", "dateTime"),
+      GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
 
 
 // end date time

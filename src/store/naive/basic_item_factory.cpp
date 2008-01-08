@@ -167,7 +167,7 @@ Item_t BasicItemFactory::createDate ( short year, short month, short day )
 
 Item_t BasicItemFactory::createDate ( const xqp_string& value )
 {
-  return Item_t ( NULL );
+  return new DateItemNaive(value);
 }
 
 
@@ -195,24 +195,28 @@ Item_t BasicItemFactory::createDateTime(
   return Item_t ( NULL );
 }
 
-
 Item_t BasicItemFactory::createDateTime ( const xqp_string& value )
-{ return Item_t ( NULL ); }
+{
+  return new DateTimeItemNaive(value);
+}
 
-
-Item_t BasicItemFactory::createDateTime ( const Item_t&, const Item_t& )
-{ return Item_t ( NULL ); }
-
+Item_t BasicItemFactory::createDateTime (const Item_t& date, const Item_t& time)
+{
+  if (date == NULL || time == NULL)
+    return Item_t(NULL);
+  else
+    return new DateTimeItemNaive(date->getDateValue(), time->getTimeValue());
+}
 
 Item_t BasicItemFactory::createDouble ( double value ) 
 { 
   return new DoubleItemNaive( value ); 
 }
 
-
 Item_t BasicItemFactory::createDuration ( const xqp_string& value )
-{ return Item_t ( NULL ); }
-
+{
+  return new DurationItemNaive(value);
+}
 
 Item_t BasicItemFactory::createDuration (
 	    short years, short months, short days, short hours, short minutes, short seconds
@@ -358,7 +362,7 @@ Item_t BasicItemFactory::createPositiveInteger ( xqp_uinteger value ) {
 
 Item_t BasicItemFactory::createTime(const xqp_string& value)
 {
-  return Item_t ( NULL );
+  return new TimeItemNaive(value);
 }
 
 Item_t BasicItemFactory::createTime(short hour, short minute, short second)
@@ -395,7 +399,6 @@ Item_t BasicItemFactory::createUnsignedShort(xqp_ushort value)
 {
   return new UnsignedShortItemNaive( value );
 }
-
 
 /*******************************************************************************
 

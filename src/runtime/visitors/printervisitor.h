@@ -282,8 +282,8 @@ namespace xqp {
       virtual void beginVisit ( const TextIterator& ) ;
       virtual void endVisit ( const TextIterator& ) ;
 
-      virtual void beginVisit(const OpDurationEqualIterator&) ;
-      virtual void endVisit(const OpDurationEqualIterator&);
+      virtual void beginVisit(const FnDateTimeConstructorIterator&) ;
+      virtual void endVisit(const FnDateTimeConstructorIterator&);
       
       virtual void beginVisit ( const FLWORIterator& ) ;
       virtual void endVisit ( const FLWORIterator& ) ;

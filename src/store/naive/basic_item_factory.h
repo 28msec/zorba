@@ -80,8 +80,8 @@ public:
 
   virtual Item_t createDateTime(short year , short month, short day, short hour, short minute, short second, short timeZone);
 
-  virtual Item_t createDateTime ( const xqp_string& value );
-
+  virtual Item_t createDateTime(const xqp_string& value);
+  
   virtual Item_t createDateTime(const Item_t&, const Item_t&);
 
   virtual Item_t createDouble(xqp_double value);

@@ -120,6 +120,87 @@ public:
 };
 
 
+/*******************************************************************************
+ * class DateItem
+ *******************************************************************************/
+class DateItemNaive : public AtomicItem
+{
+protected:
+  xqp_date theValue;
+
+public:
+  DateItemNaive(const xqp_string& aValue);
+  virtual xqp_string getStringValue() const; 
+  virtual xqp_date getDateValue() const;  
+  virtual Item_t getType() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty() const;
+  virtual xqp_string show() const;
+};
+
+/*******************************************************************************
+ * class TimeItem
+ *******************************************************************************/
+class TimeItemNaive : public AtomicItem
+{
+protected:
+  xqp_time theValue;
+
+public:
+  TimeItemNaive(const xqp_string& aValue);
+  virtual xqp_string getStringValue() const;
+  virtual xqp_time getTimeValue() const;
+  virtual Item_t getType() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty() const;
+  virtual xqp_string show() const;
+};
+
+/*******************************************************************************
+ * class DateTimeItem
+ *******************************************************************************/
+class DateTimeItemNaive : public AtomicItem
+{
+  protected:
+    xqp_dateTime theValue;
+
+  public:
+    DateTimeItemNaive(const xqp_string& aValue);
+    DateTimeItemNaive(const xqp_date& date, const xqp_time& time);
+    virtual xqp_string getStringValue() const;
+    virtual xqp_dateTime getDateTimeValue() const;
+    virtual Item_t getType() const;
+    virtual bool equals(Item_t) const;
+    virtual Item_t getEBV( ) const;
+    virtual xqp_string getStringProperty() const;
+    virtual xqp_string show() const;
+};
+
+/*******************************************************************************
+ * class DurationItem
+ *******************************************************************************/
+class DurationItemNaive : public AtomicItem
+{
+protected:
+  xqp_duration theValue;
+
+public:
+  DurationItemNaive(const xqp_string& aValue);
+  virtual xqp_string getStringValue() const;
+  virtual xqp_duration getDurationValue() const;
+  virtual Item_t getType() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty() const;
+  virtual xqp_string show() const;
+};
+
+
+/*******************************************************************************
+ * 
+ *******************************************************************************/
 
   class DecimalItemNaive : public AtomicItem
 	{

@@ -9,6 +9,7 @@
 #include "util/numconversions.h"
 #include "util/hashfun.h"
 #include "util/Assert.h"
+#include "util/datetime/date.h"
 #include "errors/error_factory.h"
 #include "store/naive/atomic_items.h"
 #include "store/api/store.h"
@@ -796,5 +797,187 @@ xqp_string PositiveIntegerItemNaive::getStringProperty() const {
 xqp_string PositiveIntegerItemNaive::show() const {
   return "xs:positiveInteger(" + getStringProperty() + ")";
 }
+
+/*******************************************************************************
+ * class DateItem
+ *******************************************************************************/
+DateItemNaive::DateItemNaive(const xqp_string& aValue)
+{
+  theValue = Date::parse_string(aValue);
+}
+
+xqp_date DateItemNaive::getDateValue() const
+{
+  return theValue;
+}
+
+xqp_string DateItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t DateItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("date");
+}
+
+bool DateItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getDateValue();
+}
+
+Item_t DateItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string DateItemNaive::getStringProperty() const
+{
+  return theValue->toString();
+}
+
+xqp_string DateItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+/*******************************************************************************
+ * class TimeItem
+ *******************************************************************************/
+TimeItemNaive::TimeItemNaive(const xqp_string& aValue)
+{
+  theValue = Time::parse_string(aValue);
+}
+
+xqp_time TimeItemNaive::getTimeValue() const
+{
+  return theValue;
+}
+
+xqp_string TimeItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t TimeItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("time");
+}
+
+bool TimeItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getTimeValue();
+}
+
+Item_t TimeItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string TimeItemNaive::getStringProperty() const
+{
+  return theValue->toString();
+}
+
+xqp_string TimeItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+/*******************************************************************************
+ * class DateTimeItem
+ *******************************************************************************/
+DateTimeItemNaive::DateTimeItemNaive(const xqp_string& aValue)
+{
+  theValue = DateTime::parse_string(aValue);
+}
+
+DateTimeItemNaive::DateTimeItemNaive(const xqp_date& date, const xqp_time& time)
+{
+  theValue = new DateTime(date, time);
+}
+
+xqp_dateTime DateTimeItemNaive::getDateTimeValue() const
+{
+  return theValue;
+}
+
+xqp_string DateTimeItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t DateTimeItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("dateTime");
+}
+
+bool DateTimeItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getDateTimeValue();
+}
+
+Item_t DateTimeItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string DateTimeItemNaive::getStringProperty() const
+{
+  return theValue->toString();
+}
+
+xqp_string DateTimeItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+/*******************************************************************************
+ * class Duration
+ *******************************************************************************/
+DurationItemNaive::DurationItemNaive(const xqp_string& aValue)
+{
+  theValue = Duration::parse_string(aValue);
+}
+
+xqp_duration DurationItemNaive::getDurationValue() const
+{
+  return theValue;
+}
+
+xqp_string DurationItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t DurationItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("duration");
+}
+
+bool DurationItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getDurationValue();
+}
+
+Item_t DurationItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string DurationItemNaive::getStringProperty() const
+{
+  return theValue->toString();
+}
+
+xqp_string DurationItemNaive::show() const
+{
+  return theValue->toString();
+}
+
 
 }/* namespace xqp */

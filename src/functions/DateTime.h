@@ -11,11 +11,11 @@
 namespace xqp
 {
 
-class op_duration_equal : public function
+class fn_datetime_ctor : public function
 {
   public:
-    op_duration_equal(const signature&);
-    virtual ~op_duration_equal() {};
+    fn_datetime_ctor(const signature&);
+    virtual ~fn_datetime_ctor() {};
 
   public:
     PlanIter_t operator()(const yy::location& loc,std::vector<PlanIter_t>&) const;

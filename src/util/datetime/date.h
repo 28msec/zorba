@@ -25,8 +25,12 @@ public:
   static Date_t parse_string(xqpString s);
 
   Date& operator=(const Date_t& d_t);
-  bool operator<(const Date& d);
-  bool operator==(const Date& d);
+  bool operator<(const Date& d) const;
+  bool operator==(const Date& d) const;
+  int compare(const Date& d) const;
+
+  xqpString toString() const;
+  const boost::gregorian::date& get_date() const;
 
 protected:
   boost::gregorian::date the_date;

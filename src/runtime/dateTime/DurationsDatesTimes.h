@@ -12,6 +12,19 @@
 namespace xqp
 {
 
+class FnDateTimeConstructorIterator : public BinaryBaseIterator<FnDateTimeConstructorIterator>
+{
+public:
+  FnDateTimeConstructorIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+    :
+    BinaryBaseIterator<FnDateTimeConstructorIterator>(loc, arg0, arg1){}
+
+  virtual ~FnDateTimeConstructorIterator() {};
+
+public:
+  Item_t nextImpl(PlanState& planState);
+  virtual void accept(PlanIterVisitor&) const;
+};
 /*
 10.1 Duration, Date and Time Types
 10.1.1 Limits and Precision

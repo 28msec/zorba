@@ -124,7 +124,7 @@ namespace xqp {
   BINARY_ACCEPT(FnRemoveIterator);
   BINARY_ACCEPT(OpToIterator);
   BINARY_ACCEPT(FnRoundHalfToEvenIterator);
-  BINARY_ACCEPT(OpDurationEqualIterator);
+  BINARY_ACCEPT(FnDateTimeConstructorIterator);
   BINARY_ACCEPT(AttributeIterator);
   
   // nary iterators
