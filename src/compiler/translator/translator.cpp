@@ -142,9 +142,17 @@ protected:
 
 public:
 
-  expr_t result () {
-    return pop_nodestack ();
-  }
+bool is_root_rpe(const RelativePathExpr* rpe)
+{
+  return rpe == theRootRelPathExpr;
+}
+
+
+expr_t result ()
+{
+  return pop_nodestack ();
+}
+
 
 void *begin_visit(const parsenode& v)
 {
@@ -2164,9 +2172,6 @@ void end_visit(const ElementTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  // find axis step expression on top of stack
-  rchandle<axis_step_expr> ase = expect_axis_step_top ();
-
   // construct the element match
   rchandle<match_expr> me = new match_expr(v.get_location());
   me->setTestKind(match_elem_test);
@@ -2183,8 +2188,16 @@ void end_visit(const ElementTest& v, void *visit_state)
   if (nilled)
     me->setNilledAllowed(true);
 
-  // add the match expression
-  ase->setTest(me);
+  // if the top of the stack is an axis step expression, add the match expression
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  if (axisExpr != NULL)
+  {
+    axisExpr->setTest(me);
+  }
+  else
+  {
+    nodestack.push(me.get_ptr());
+  }
 }
 
 
@@ -2494,13 +2507,7 @@ void* begin_visit(const RelativePathExpr& v)
   TRACE_VISIT ();
 
   if (theRootRelPathExpr == NULL)
-  {
     theRootRelPathExpr = &v;
-    return (void*)(&v);
-  }
-
-  if (dynamic_cast<RelativePathExpr *>(v.get_relpath_expr().get_ptr()) == NULL)
-    theRootRelPathExpr = NULL;
 
   return no_state;
 }

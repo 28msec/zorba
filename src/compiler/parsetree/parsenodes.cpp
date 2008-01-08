@@ -2734,7 +2734,7 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
 
   // Skip this rpe if it is not the root of an rpe subtree and its left child
   // is a dot expression.
-  else if (visitor_state != this &&
+  else if (!v.is_root_rpe(this) &&
            dynamic_cast<const ContextItemExpr*>(step_expr_h.get_ptr()) != NULL)
   {
     ACCEPT (relpath_expr_h);
