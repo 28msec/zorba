@@ -250,6 +250,7 @@ void XmlLoader::endDocument(void * ctx)
        it++, i++)
   {
     children[i] = *it;
+    BASE_NODE(*it)->setParent(docNode);
   }
 }
 

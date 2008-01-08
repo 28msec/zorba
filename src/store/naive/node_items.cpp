@@ -412,7 +412,8 @@ ElementNodeImpl::ElementNodeImpl(
   if (numAttributes > 0)
     theAttributes.resize(numAttributes);
 
-  NODE_TRACE1("Loaded elem node " << this << " num bindings = " << numBindings);
+  NODE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
+              <<" num bindings = " << numBindings);
 }
 
 
