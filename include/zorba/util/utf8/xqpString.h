@@ -289,6 +289,15 @@ public:
     //Removes the leading and trailing whitespaces (#x20).
     xqpString trim() const;
 
+    //removes leading characters defined by start and len
+    xqpString trimL(const char* start, uint16_t len) const;
+
+    //removes trailing characters defined by start and len
+    xqpString trimR(const char* start, uint16_t len) const;
+
+    //removes leading and trailing characters defined by start and len
+    xqpString trim(const char* start, uint16_t len) const;
+    
     // Removes the leading and trailing whitespace (one of the " \t\r\n")
     // TODO: xqpString trim_whitespace() const;
 

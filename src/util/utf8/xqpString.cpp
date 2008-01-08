@@ -812,23 +812,38 @@ namespace xqp
     return res;
   }
 
-  xqpString xqpString::trimL() const
+  xqpString xqpString::trimL(const char* start, uint16_t len) const
   {
-    if(0 == length() )
+    if(0 == length() || 0 == len)
       return *this;
-    
+
     //create the new xqpStringStore
     std::string tmp = "";
-    uint32_t len = length();
+    uint32_t StrLen = length();
     const char* c = c_str();
     uint32_t cp;
     char seq[4];
     bool found = false;
-
-    while(len > 0 && !found)
+    
+    bool firstCp = true;
+    uint32_t trimCP[len];
+    for(uint16_t i=0; i<len; i++)
+      trimCP[i]=UTF8Decode(start);
+  
+    while(StrLen > 0 && !found)
     {
       cp = UTF8Decode(c);
-      if(!is_space( cp))
+
+      for(uint16_t i=0; i<len; i++)
+      {
+        if(trimCP[i] == cp)
+        {
+          firstCp = false;
+          break;
+        }
+      }
+
+      if(firstCp)
       {
         memset(seq, 0, sizeof(seq));
         UTF8Encode(cp, seq);
@@ -836,22 +851,31 @@ namespace xqp
         tmp +=c;
         found = true;
       }
-      --len;
+      --StrLen;
+      firstCp = true;
     }
 
     xqpString res(tmp);
     return res;
   }
-
-  xqpString xqpString::trimR() const
+  
+  xqpString xqpString::trimL() const
   {
-    if(0 == length() )
+    char seq = ' ';
+    return trimL( &seq, 1 );
+  }
+
+  xqpString xqpString::trimR(const char* start, uint16_t len) const
+  {
+    if(0 == length() || 0 == len )
       return *this;
     
-    uint32_t len = length();
+    uint32_t StrLen = length();
 
-    if (len == 0)
-      return xqpString("");
+    bool firstCp = true;
+    uint32_t trimCP[len];
+    for(uint16_t i=0; i<len; i++)
+      trimCP[i]=UTF8Decode(start);
 
     //create the new xqpStringStore
     std::string tmp = "";
@@ -861,17 +885,28 @@ namespace xqp
     const char* c = c_str();
     char seq[4];
 
-    xqp::advance(end, len);
+    xqp::advance(end, StrLen);
 
-    while(len > 0)
+    while(StrLen > 0)
     {
       cp = UTF8DecodePrev(end);
-      if( !is_space(cp)  )
+
+      for(uint16_t i=0; i<len; i++)
+      {
+        if(trimCP[i] == cp)
+        {
+          firstCp = false;
+          break;
+        }
+      }
+      
+      if( firstCp )
       {
         pos = xqp::UTF8Distance(c, end);
         break;
       }
-      --len;
+      --StrLen;
+      firstCp = true;
     }
     
     ++pos;
@@ -887,18 +922,33 @@ namespace xqp
       --pos;
     }
 
-    xqpString res(tmp);
+    xqp_string res(tmp);
     return res;
   }
+  
+  xqpString xqpString::trimR() const
+  {
+    char seq = ' ';
+    return trimR( &seq, 1 );
+  }
 
+  xqpString xqpString::trim(const char* start, uint16_t len) const
+  {
+    if(0 == length() || 0 == len)
+      return *this;
+
+    xqpString tmp = trimL(start, len);
+    return tmp.trimR(start, len);
+  }
+  
   xqpString xqpString::trim() const
   {
-    if(0 == length() )
+    if(0 == length())
       return *this;
-    
-    //TODO optimize
-    xqpString tmp = trimL();
-    return tmp.trimR();
+
+    char seq = ' ';
+    xqpString tmp = trimL(&seq, 1);
+    return tmp.trimR(&seq,1);
   }
   
   // Private methods
