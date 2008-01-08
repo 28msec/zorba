@@ -1,4 +1,4 @@
-
+#include "util/Assert.h"
 #include "runtime/base/noarybase.h"
 #include "runtime/core/var_iterators.h"
 
@@ -77,6 +77,7 @@ Item_t LetVarIterator::nextImpl(PlanState& planState)
 {
   LetVarState* state;
   GET_STATE(LetVarState, state, planState);
+  ZORBA_ASSERT (state->theSourceIter != NULL);
   return state->theSourceIter->next();
 }
 
