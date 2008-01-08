@@ -694,8 +694,8 @@ Iterator_t ElementNodeImpl::getChildren() const
 ********************************************************************************/
 Iterator_t ElementNodeImpl::getTypedValue() const
 {
-  Item_t item = GET_FACTORY().createUntypedAtomic(getStringProperty());
-  PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), item));
+  Item_t retItem = getAtomizationValue();
+  PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), retItem));
   return new PlanWrapper(ret);
 }
 
@@ -705,7 +705,19 @@ Iterator_t ElementNodeImpl::getTypedValue() const
 ********************************************************************************/
 Item_t ElementNodeImpl::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(getStringProperty());
+  ostringstream oss;
+  Iterator_t it = getChildren();
+  Item_t lItem = it->next();
+  while ( lItem != 0) {
+    if (!(lItem->isNode() && lItem->getNodeKind() == StoreConsts::commentNode)) {
+      Item_t lAtomicItem = lItem->getAtomizationValue(); 
+      oss << lAtomicItem->getStringProperty();
+    }
+    lItem = it->next();
+  }
+  Item_t retItem = GET_FACTORY().createUntypedAtomic(oss.str());
+  return retItem;
+  //return GET_FACTORY().createUntypedAtomic(getStringProperty());
 }
 
 

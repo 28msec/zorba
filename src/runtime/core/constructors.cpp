@@ -497,7 +497,7 @@ TextIterator::TextIterator(
 
 Item_t TextIterator::nextImpl(PlanState& planState)
 {
-  Item_t lItem;
+  Item_t lItem, lAtomicItem;
   xqp_string content = "";
   bool lFirst;
 
@@ -513,9 +513,10 @@ Item_t TextIterator::nextImpl(PlanState& planState)
     if (lItem == 0)
       break;
     
+    lAtomicItem = lItem->getAtomizationValue();
     if (!lFirst)
       content += " ";
-    content += lItem->getStringProperty();
+    content += lAtomicItem->getStringProperty();
     lFirst = false;
   }
 
