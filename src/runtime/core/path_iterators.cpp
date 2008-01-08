@@ -42,6 +42,16 @@
 namespace xqp
 {
 
+  template <typename T> void checked_pop (std::stack<T> &stk) {
+    ZORBA_ASSERT (! stk.empty ());
+    stk.pop ();
+  }
+
+  template <typename T> const T& checked_top (std::stack<T> &stk) {
+    ZORBA_ASSERT (! stk.empty ());
+    return stk.top ();
+  }
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -794,11 +804,11 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      desc = state->theCurrentPath.top().second->next();
+      desc = checked_top (state->theCurrentPath).second->next();
 
       while (desc == NULL)
       {
-        state->theCurrentPath.pop();
+        checked_pop (state->theCurrentPath);
         if (!state->theCurrentPath.empty())
           desc = state->theCurrentPath.top().second->next();
         else
@@ -896,11 +906,11 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      desc = state->theCurrentPath.top().second->next();
+      desc = checked_top (state->theCurrentPath).second->next();
 
       while (desc == NULL)
       {
-        state->theCurrentPath.pop();
+        checked_pop (state->theCurrentPath);
         if (!state->theCurrentPath.empty())
           desc = state->theCurrentPath.top().second->next();
         else
@@ -1012,19 +1022,19 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
           STACK_PUSH(desc, state);
         }
 
-        desc = state->theCurrentPath.top().second->next();
+        desc = checked_top (state->theCurrentPath).second->next();
 
         while (desc == NULL)
         {
-          state->theCurrentPath.pop();
-          Assert(!state->theCurrentPath.empty());
+          checked_pop (state->theCurrentPath);
+          ZORBA_ASSERT(!state->theCurrentPath.empty());
           desc = state->theCurrentPath.top().second->next();
         }
       }
 
-      state->theCurrentPath.pop();
-      state->theCurrentPath.pop();
-      Assert(state->theCurrentPath.empty());
+      checked_pop (state->theCurrentPath);
+      checked_pop (state->theCurrentPath);
+      ZORBA_ASSERT(state->theCurrentPath.empty());
     }
   }
 
@@ -1139,18 +1149,18 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
           STACK_PUSH(following, state);
         }
 
-        following = state->theCurrentPath.top().second->next();
+        following = checked_top (state->theCurrentPath).second->next();
 
         while (following == NULL)
         {
-          state->theCurrentPath.pop();
-          Assert(!state->theCurrentPath.empty());
+          checked_pop (state->theCurrentPath);
+          ZORBA_ASSERT(!state->theCurrentPath.empty());
           following = state->theCurrentPath.top().second->next();
         }
       }
 
-      state->theCurrentPath.pop();
-      Assert(state->theCurrentPath.empty());
+      checked_pop (state->theCurrentPath);
+      ZORBA_ASSERT(state->theCurrentPath.empty());
     }
   }
 
