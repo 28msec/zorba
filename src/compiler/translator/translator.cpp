@@ -494,9 +494,19 @@ void end_visit(const DirElemContent& v, void *visit_state)
   else
   {
     xqpString content = v.get_elem_content();
-    nodestack.push (new text_expr(v.get_location(),
-                                  text_expr::text_constructor,
-                                      new const_expr (v.get_location (), content)));
+    // Filtering out of whitespaces
+    bool bInsert = true;
+    if (
+      sctx_p->boundary_space_mode() != StaticQueryContext::preserve_space
+      && content.trim(" \n\r\t", 4).empty()
+    ) {
+      bInsert = false;
+    }
+    if (bInsert) {
+      nodestack.push (new text_expr(v.get_location(),
+                      text_expr::text_constructor,
+                      new const_expr (v.get_location (), content)));
+    }
   }
 }
 

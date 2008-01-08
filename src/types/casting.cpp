@@ -50,7 +50,7 @@ namespace xqp
   {
     Item_t lItem = 0;
 
-    xqpString lString = aSourceItem->getStringProperty().trim();
+    xqpString lString = aSourceItem->getStringProperty().trim(" \n\r\t",4);
   
     switch(GENV_TYPESYSTEM.get_atomic_type_code(*aTargetType)) {
       case TypeSystem::XS_ANY_ATOMIC:
