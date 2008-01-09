@@ -58,7 +58,7 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 
 		execution_date_time = gmtm;
 		tzset();
-    execution_timezone_seconds = _timezone;//global var set by _tzset in C runtime
+    //execution_timezone_seconds = _timezone;//global var set by _tzset in C runtime
     
 		implicit_timezone = 0;
 	}
