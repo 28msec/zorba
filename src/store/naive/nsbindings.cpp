@@ -68,7 +68,7 @@ void NsBindingsContext::addBinding(
   {
     if (theBindings[i].first.byteEqual(prefix))
     {
-      if (theBindings[i].second.byteEqual(ns))
+      if (!theBindings[i].second.byteEqual(ns))
         Assert(0);
 
       return;
@@ -77,6 +77,16 @@ void NsBindingsContext::addBinding(
 
   theBindings.push_back(std::pair<xqpString, xqpString>(prefix, ns));
 }
+
+
+class C 
+{
+  NsBindingsContext * x;
+
+public:
+  NsBindingsContext* get_x () const { return x; }
+}; 
+
 
 }
 
