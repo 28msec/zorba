@@ -3486,11 +3486,23 @@ DirElemContentList::~DirElemContentList()
 void DirElemContentList::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  vector<rchandle<exprnode> >::const_reverse_iterator it = dir_content_hv.rbegin();
+  vector<rchandle<DirElemContent> >::const_reverse_iterator it = dir_content_hv.rbegin();
+  const DirElemContent* lPrev = 0;
+  // To find out if a DirElemContent is boundary whitespace, the current item cannot be accepted till
+  // the next item (relative to the current item) is passed to check_boundary_whitespace.
+  v.begin_check_boundary_whitespace();
   for (; it!=dir_content_hv.rend(); ++it)
   {
-    const exprnode* e_p = &**it;
-    ACCEPT_CHK (e_p);
+    const DirElemContent* e_p = &**it;
+    v.check_boundary_whitespace (*e_p);
+    if (lPrev != 0) {
+      ACCEPT_CHK(lPrev);
+    }
+    lPrev = e_p;
+  }
+  v.end_check_boundary_whitespace();
+  if (lPrev != 0) {
+    ACCEPT_CHK(lPrev);
   }
   END_VISITOR ();
 }

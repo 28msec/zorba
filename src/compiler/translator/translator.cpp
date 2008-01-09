@@ -75,6 +75,17 @@ protected:
   const RelativePathExpr         * theRootRelPathExpr;
   std::stack<const RelativePathExpr *> relpathstack;
 
+  // FOR WHITESPACE CHECKING OF DirElemContent (stack is need because of nested elements)
+  /**
+   * Saves true if the previous DirElemContent is a boundary (DirElemConstructor or EnclosedExpr).
+   */
+  std::stack<bool>                theIsWSBoundaryStack;
+  /**
+   * Saves the previous DirElemContent if it might be boundary whitespace (its previous item is a boundary
+   * and it contains whitespace). It must be checked if the next item (the current item) is a boundary.
+   */
+  std::stack<const DirElemContent*>     thePossibleWSContentStack;
+
   TranslatorImpl (static_context *sctx_p_)
     :
     depth (0), sctx_p (sctx_p_), tempvar_counter (0), theRootRelPathExpr(0)
@@ -439,10 +450,76 @@ void end_visit(const DirElemConstructor& v, void *visit_state)
   nodestack.push(elem_t);
 }
 
+/**
+ * Inserts an entry in theIsWSBoundaryStack and thePossibleWSContentStack to save
+ * information during boundary whitespace checking.
+ */
+void begin_check_boundary_whitespace() {
+  if (sctx_p->boundary_space_mode() == StaticQueryContext::strip_space) {
+    theIsWSBoundaryStack.push(true);
+    thePossibleWSContentStack.push(0);
+  }
+}
+
+/**
+ * Whitespace checking. Checks if v might be a whitespace (check of the following boundary can
+ * only be checked during the next invocation), and if the items saved in thePossibleWSContentStack
+ * is really boundary whitespace.
+ */
+void check_boundary_whitespace(const DirElemContent& v) {
+  v.setIsStripped(false);
+  if (sctx_p->boundary_space_mode() == StaticQueryContext::strip_space) {
+    bool lPrevIsBoundary = theIsWSBoundaryStack.top();
+    theIsWSBoundaryStack.pop();
+    const DirElemContent* lPrev = thePossibleWSContentStack.top();
+    thePossibleWSContentStack.pop();
+
+    if (v.get_direct_cons() != 0 || (v.get_common_content() != 0 && v.get_common_content()->get_expr() != 0)) {
+      thePossibleWSContentStack.push(0);
+      theIsWSBoundaryStack.push(true);
+      if (lPrev != 0) {
+        lPrev->setIsStripped(true);
+      }
+    } else if (v.get_common_content() != 0 || v.get_cdata() != 0) {
+      thePossibleWSContentStack.push(0);
+      theIsWSBoundaryStack.push(false);
+    } else {
+      bool lCouldBe = false;
+      if (lPrevIsBoundary) {
+        xqpString content = v.get_elem_content();  
+        // Filtering out of whitespaces
+        if (content.trim(" \n\r\t", 4).empty()) {
+          lCouldBe = true;
+        }
+      }
+      if (lCouldBe) {
+        thePossibleWSContentStack.push(&v);
+      } else {
+        thePossibleWSContentStack.push(0);
+      }
+      theIsWSBoundaryStack.push(false);
+    }
+  }
+}
+
+/**
+ * Deletes the entries in theIsWSBoundaryStack and thePossibleWSContentStack. If thePossibleWSContentStack
+ * contains an item, this item is boundary whitespace because end of content is a boundary.
+ */
+void end_check_boundary_whitespace() {
+  if (sctx_p->boundary_space_mode() == StaticQueryContext::strip_space) {
+    const DirElemContent* lPrev = thePossibleWSContentStack.top();
+    if (lPrev != 0) {
+      lPrev->setIsStripped(true);
+    }
+    theIsWSBoundaryStack.pop();
+    thePossibleWSContentStack.pop();
+  }
+}
+
 void *begin_visit(const DirElemContentList& v)
 {
   TRACE_VISIT ();
-
   nodestack.push(NULL);
   return no_state;
 }
@@ -474,6 +551,7 @@ void end_visit(const DirElemContentList& v, void *visit_state)
 void *begin_visit(const DirElemContent& v)
 {
   TRACE_VISIT ();
+  
   return no_state;
 }
 
@@ -493,19 +571,10 @@ void end_visit(const DirElemContent& v, void *visit_state)
   }
   else
   {
-    xqpString content = v.get_elem_content();
-    // Filtering out of whitespaces
-    bool bInsert = true;
-    if (
-      sctx_p->boundary_space_mode() != StaticQueryContext::preserve_space
-      && content.trim(" \n\r\t", 4).empty()
-    ) {
-      bInsert = false;
-    }
-    if (bInsert) {
+    if (!v.isStripped()) {
       nodestack.push (new text_expr(v.get_location(),
                       text_expr::text_constructor,
-                      new const_expr (v.get_location (), content)));
+                      new const_expr (v.get_location (), v.get_elem_content())));
     }
   }
 }
@@ -2396,7 +2465,7 @@ rchandle<forlet_clause> wrap_in_letclause(expr_t expr) {
 
 expr_t wrap_in_dos_and_dupelim(expr_t expr)
 {
-  rchandle<fo_expr> dos = new fo_expr(expr->get_loc(), LOOKUP_OP1("sort-distinct-nodes-ascending"));
+  rchandle<fo_expr> dos = new fo_expr(expr->get_loc(), LOOKUP_OP1("sort-distinct-nodes-asc-or-atomics"));
   dos->add(expr);
   return &*dos;
 }

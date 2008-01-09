@@ -3548,16 +3548,16 @@ public:
 class DirElemContentList : public parsenode
 {
 protected:
-	std::vector<rchandle<exprnode> > dir_content_hv;
+	std::vector<rchandle<DirElemContent> > dir_content_hv;
 
 public:
 	DirElemContentList(const yy::location&);
 	~DirElemContentList();
 
 public:
-	void push_back(rchandle<exprnode> dir_content_h)
+	void push_back(rchandle<DirElemContent> dir_content_h)
 		{ dir_content_hv.push_back(dir_content_h); }
-	rchandle<exprnode> operator[](int i) const
+	rchandle<DirElemContent> operator[](int i) const
 		{ return dir_content_hv[i]; }
 
 public:
@@ -3581,6 +3581,7 @@ protected:
 	std::string elem_content;
 	rchandle<CDataSection> cdata_h;
 	rchandle<CommonContent> common_content_h;
+  mutable bool theIsStripped;
 
 public:
 	DirElemContent(
@@ -3610,6 +3611,8 @@ public:
 		{ return cdata_h; }
 	rchandle<CommonContent> get_common_content() const
 		{ return common_content_h; }
+  bool isStripped() const { return theIsStripped; }
+  void setIsStripped(bool aIsStripped) const { theIsStripped = aIsStripped; }
 
 public:
 	void accept(parsenode_visitor&) const;

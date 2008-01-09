@@ -489,6 +489,13 @@ public:
   virtual void pre_predicate_visit(PredicateList const&, void *visit_state) { }
   virtual void post_predicate_visit(PredicateList const&, void *visit_state) { }
 
+  /**
+   * Methods are used in the translator to check if a DirElemContent is boundary whitespace.
+   */
+  virtual void begin_check_boundary_whitespace() {}
+  virtual void check_boundary_whitespace(const DirElemContent&) {}
+  virtual void end_check_boundary_whitespace() {}
+
   virtual bool is_root_rpe(const RelativePathExpr*) { return true; }
 };
 

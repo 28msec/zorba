@@ -4130,7 +4130,7 @@ DirElemContentList :
 			 cout << "DirElemContentList [single]\n";
 #endif
 			DirElemContentList* elem_content_list_p = new DirElemContentList(@$);
-			elem_content_list_p->push_back($1);
+			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($1));
 			$$ = elem_content_list_p;
 		}
 	|	DirElemContentList  DirElemContent
@@ -4139,7 +4139,7 @@ DirElemContentList :
 			 cout << "DirElemContentList [list]\n";
 #endif
 			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>($1);
-			if (elem_content_list_p) elem_content_list_p->push_back($2);
+			if (elem_content_list_p) elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($2));
 			$$ = $1;
 		}
 	;

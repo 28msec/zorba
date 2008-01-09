@@ -774,6 +774,29 @@ TypeSystem::xqtref_t op_sort_distinct_nodes_ascending::type_check(signature& sig
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
+// op:sort-distinct-nodes-asc-or-atomics
+op_sort_distinct_nodes_asc_or_atomics::op_sort_distinct_nodes_asc_or_atomics(const signature& sig)
+  :	function(sig)
+{}
+
+PlanIter_t op_sort_distinct_nodes_asc_or_atomics::operator()
+  (const yy::location& loc, 
+	 vector<PlanIter_t>& argv) const
+{
+  // sorting in document order and doing dup elim
+  return new NodeSortIterator(loc, argv[0], true, true, true);
+}
+  
+bool op_sort_distinct_nodes_asc_or_atomics::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t op_sort_distinct_nodes_asc_or_atomics::type_check(signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
 // function for sorting nodes in document order and doing distinct-nodes in one run
 op_sort_distinct_nodes_descending::op_sort_distinct_nodes_descending(const signature& sig)
   :	function(sig)
