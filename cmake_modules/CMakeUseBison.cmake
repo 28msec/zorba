@@ -68,7 +68,7 @@ IF(BISON_EXECUTABLE)
         ARGS "--name-prefix=${PREFIX}"
         "--defines"
 		"-t"
-		"-r all"
+		"-rall"
 		"--locations"
         "--output-file=${OUTFILE}"
         "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
