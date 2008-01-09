@@ -67,6 +67,9 @@ IF(BISON_EXECUTABLE)
         COMMAND "${BISON_EXECUTABLE}"
         ARGS "--name-prefix=${PREFIX}"
         "--defines"
+		"-t"
+		"-r all"
+		"--locations"
         "--output-file=${OUTFILE}"
         "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
         DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}")
