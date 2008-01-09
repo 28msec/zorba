@@ -212,8 +212,10 @@ void end_visit(const AtomicType& v, void *visit_state)
   TRACE_VISIT_OUT ();
   rchandle<QName> qname = v.get_qname ();
   TypeSystem::xqtref_t t =
-    GENV_TYPESYSTEM.create_type (sctx_p->lookup_qname ("", qname->get_prefix (), qname->get_localname ()),
-                                 TypeSystem::QUANT_ONE);
+    GENV_TYPESYSTEM.create_type(sctx_p->lookup_qname("",
+                                                     qname->get_prefix (),
+                                                     qname->get_localname ()),
+                                TypeSystem::QUANT_ONE);
   if (t == NULL)
     ZORBA_ERROR_ALERT (AlertCodes::XPST0051, NULL);
   else
@@ -1958,7 +1960,7 @@ void *begin_visit(const InstanceofExpr& v)
 void end_visit(const InstanceofExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (new instanceof_expr (v.get_location (), pop_nodestack (), pop_tstack ()));
+  nodestack.push(new instanceof_expr(v.get_location(), pop_nodestack(), pop_tstack()));
 }
 
 
@@ -2624,21 +2626,37 @@ void intermediate_visit(const RelativePathExpr& v, void *visit_state)
     rpe = new relpath_expr(v.get_location());
     rpe->add_back(flwor);
   }
-  rchandle<exprnode> vrel = v.get_relpath_expr();
-  if (vrel != NULL && dynamic_cast<FunctionCall *>(&*vrel)) {
+
+  rchandle<exprnode> rstep = v.get_relpath_expr();
+  ZORBA_ASSERT(rstep != NULL);
+
+  if (dynamic_cast<RelativePathExpr*>(&*rstep) || dynamic_cast<AxisStep*>(&*rstep))
+  {
+     nodestack.push(&*rpe);
+  }
+  else
+  {
     push_scope();
     rchandle<forlet_clause> lcseq = wrap_in_letclause(&*rpe);
-    rchandle<fo_expr> count_expr = new fo_expr(v.get_location(), LOOKUP_FN("fn", "count", 1));
+
+    rchandle<fo_expr> count_expr = new
+      fo_expr(v.get_location(), LOOKUP_FN("fn", "count", 1));
+
     count_expr->add(lcseq->get_var().get_ptr());
-    rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VAR);
-    rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().get_ptr(), v.get_location (), DOT_VAR, DOT_POS_VAR);
+
+    rchandle<forlet_clause> lclast =
+      wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VAR);
+
+    rchandle<forlet_clause> fc =
+      wrap_in_forclause(lcseq->get_var().get_ptr(), v.get_location(),
+                        DOT_VAR, DOT_POS_VAR);
+
     rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
     flwor->add(lcseq);
     flwor->add(lclast);
     flwor->add(fc);
+
     nodestack.push(&*flwor);
-  } else {
-    nodestack.push(&*rpe);
   }
 }
 
@@ -2652,23 +2670,35 @@ void end_visit(const RelativePathExpr& v, void *visit_state)
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
 
-  rchandle<exprnode> vrel = v.get_relpath_expr();
-  if (vrel != NULL && dynamic_cast<FunctionCall *>(&*vrel)) {
-    flwor_expr *f = dynamic_cast<flwor_expr *>(&*arg1);
-    f->set_retval(arg2);
-    nodestack.push(f);
-    pop_scope();
-  } else {
-    relpath_expr *rpe = NULL;
-    if (arg1 == NULL || dynamic_cast<relpath_expr *>(&*arg2)) {
+  rchandle<exprnode> rstep = v.get_relpath_expr();
+
+  if (dynamic_cast<RelativePathExpr*>(&*rstep) || dynamic_cast<AxisStep*>(&*rstep))
+  {
+    if (arg1 == NULL)
+    {
+      // In this case, all the steps in the rpe tree have been processed.
       nodestack.push(arg1);
       nodestack.push(arg2);
-    } else {
-      relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
+    }
+    else
+    {
+      // In this case, v is the bottom RelativePathExpr node in the tree (rpe3
+      // in the example). At the top of the node stack is the expr corresponding
+      // to the right child of v (step4 in the example), followed by the
+      // relpath_expr 
+      relpath_expr* rpe = dynamic_cast<relpath_expr *>(&*arg1);
       ZORBA_ASSERT(rpe != NULL);
       rpe->add_back(arg2);
       nodestack.push(rpe);
     }
+  }
+  else
+  {
+    flwor_expr *f = dynamic_cast<flwor_expr *>(&*arg1);
+    ZORBA_ASSERT(f != NULL);
+    f->set_retval(arg2);
+    nodestack.push(f);
+    pop_scope();
   }
 }
 

@@ -2808,8 +2808,6 @@ public:
                     SLASH_SLASH  RelativePathExpr |
                     RelativePathExpr	 								 gn:leading-lone-slashXQ
 
-  Note: no PathExpr node is generated for the 4th alternative production.
-
   Constraint: leading-lone-slash
 
   A single slash may appear either as a complete path expression or as the first
@@ -2860,7 +2858,8 @@ public:
                             StepExpr  SLASH  RelativePathExpr |
                             StepExpr  SLASH_SLASH  RelativePathExpr 
 
-  Note: no RelativePathExpr node is generated for the 1st alternative production.
+  Note: for the 1st alternative production, a RelativePathExpr node is generated
+  whose left child is a ContextItemExpr and its right child is the StepExpr.
 
 ********************************************************************************/
 class RelativePathExpr : public exprnode
