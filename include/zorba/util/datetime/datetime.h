@@ -32,8 +32,7 @@ public:
   virtual ~DateTime() { };
 
   static DateTime_t parse_string(xqpString s);
-
-  DateTime& operator=(const DateTime_t& t_t);
+  
   bool operator<(const DateTime& t) const;
   bool operator==(const DateTime& t) const;
   int compare(const DateTime& t) const;
@@ -41,6 +40,7 @@ public:
   xqpString toString() const;
 
 protected:
+  DateTime& operator=(const DateTime_t& t_t);
   boost::posix_time::ptime the_date_time;
 };
 

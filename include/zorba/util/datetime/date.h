@@ -23,8 +23,7 @@ public:
   virtual ~Date() { };
 
   static Date_t parse_string(xqpString s);
-
-  Date& operator=(const Date_t& d_t);
+  
   bool operator<(const Date& d) const;
   bool operator==(const Date& d) const;
   int compare(const Date& d) const;
@@ -33,6 +32,7 @@ public:
   const boost::gregorian::date& get_date() const;
 
 protected:
+  Date& operator=(const Date_t& d_t);
   boost::gregorian::date the_date;
 };
 

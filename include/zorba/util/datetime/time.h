@@ -23,8 +23,7 @@ public:
   virtual ~Time() { };
 
   static Time_t parse_string(xqpString s);
-
-  Time& operator=(const Time_t& t_t);
+  
   bool operator<(const Time& t) const;
   bool operator==(const Time& t) const;
   int compare(const Time& t) const;
@@ -33,7 +32,9 @@ public:
   const boost::posix_time::time_duration& get_time_duration() const;
 
 protected:
+  Time& operator=(const Time_t& t_t);
   boost::posix_time::time_duration the_time;
+
 };
 
 } // namespace xqp
