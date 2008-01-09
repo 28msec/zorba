@@ -24,6 +24,11 @@ class DynamicContextWrapper : public DynamicQueryContext
 	}var_type_t;
 	typedef struct
 	{
+		struct ::tm		datetime_value;
+		long					timezone_seconds;
+	}datetime_timezone_t;
+	typedef struct
+	{
 		xqp_string		varname;
 		var_type_t		vartype;
 		union
@@ -39,16 +44,23 @@ class DynamicContextWrapper : public DynamicQueryContext
 			xqpStringStore		*str_value;
 			double	double_value;
 			bool		bool_value;
-			struct tm		datetime_value;
+			datetime_timezone_t		dtt;
 		};
 	}dctx_extern_var_t;
 
 	std::vector<dctx_extern_var_t>		vars;
 	xqp_string			default_collection_uri;
+
+	struct ::tm			current_date_time;
+	long						current_timezone_seconds;
+	bool						is_datetime_initialized;
 public:
 	DynamicContextWrapper();
 
 	virtual ~DynamicContextWrapper( );
+
+	virtual void		SetCurrentDateTime( struct ::tm datetime, long timezone_seconds );
+	virtual struct ::tm	GetCurrentDateTime( long *timezone_seconds );
 
 	///following is the input data; this is not duplicable between executions
 //	virtual bool SetVariable( QNameItem_t varname, XQueryExecution_t item_iter ) = 0;
@@ -56,7 +68,7 @@ public:
 	virtual bool SetVariable( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type = XS_STRING);
 	virtual bool SetVariable( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type = XS_DOUBLE);
 	virtual bool SetVariable( xqp_string varname, bool bool_value);
-	virtual bool SetVariable( xqp_string varname, struct ::tm datetime_value, VAR_DATETIME_TYPE type = XS_DATETIME);
+	virtual bool SetVariable( xqp_string varname, struct ::tm datetime_value, long timezone_seconds = 0, VAR_DATETIME_TYPE type = XS_DATETIME);
 
 	virtual bool DeleteVariable( xqp_string varname );
 	virtual void DeleteAllVariables( );

@@ -826,7 +826,8 @@ namespace xqp
     bool found = false;
     
     bool firstCp = true;
-    uint32_t trimCP[len];
+    uint32_t *trimCP;//[len];
+		trimCP = new uint32_t[len];
     for(uint16_t i=0; i<len; i++)
       trimCP[i]=UTF8Decode(start);
   
@@ -855,6 +856,7 @@ namespace xqp
       firstCp = true;
     }
 
+		delete[] trimCP;
     xqpString res(tmp);
     return res;
   }
@@ -873,7 +875,8 @@ namespace xqp
     uint32_t StrLen = length();
 
     bool firstCp = true;
-    uint32_t trimCP[len];
+    uint32_t *trimCP;//[len];
+		trimCP = new uint32_t[len];
     for(uint16_t i=0; i<len; i++)
       trimCP[i]=UTF8Decode(start);
 
@@ -922,6 +925,7 @@ namespace xqp
       --pos;
     }
 
+		delete[] trimCP;
     xqp_string res(tmp);
     return res;
   }

@@ -8,6 +8,7 @@ using namespace xqp;
 
 string make_absolute_file_name(const char *result_file_name, const char *this_file_name);
 bool verify_expected_result(string result_file_name, string expected_file);
+void DisplayErrorListForCurrentThread(std::ostream &result_file);
 
 int test_easy_api(const char *result_file_name)
 {
@@ -56,7 +57,7 @@ int test_easy_api(const char *result_file_name)
 	}
 
 	result_file << "dctx->SetVariable" << endl;
-	dctx->SetVariable("easy:varx", (long long)-134);
+	dctx->SetVariable("varx", (long long)-134);
 
 	result_file << "query->execute" << endl;
 	query_result = query->execute();
@@ -65,7 +66,8 @@ int test_easy_api(const char *result_file_name)
 		goto DisplayErrorsAndExit;
 	}
 	result_file << "serializeXML" << endl;
-	query_result->serializeXML(result_file);
+	if(!query_result->serializeXML(result_file))
+		result_file << endl << "error serializing the result ! " << endl;
 
 	result_file << endl;
 	result_file << "end easy api test" << endl;
@@ -78,9 +80,9 @@ int test_easy_api(const char *result_file_name)
 	return 0;
 
 DisplayErrorsAndExit:
-	cerr << endl << "Display all error list now:" << endl;
+	result_file << endl << "Display all error list now:" << endl;
 
-	//DisplayErrorListForCurrentThread();
+	DisplayErrorListForCurrentThread(result_file);
 
 	result_file << "end easy api test" << endl;
 

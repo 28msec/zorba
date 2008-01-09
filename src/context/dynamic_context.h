@@ -54,7 +54,8 @@ protected:
 	dynamic_context	      * parent;
 
 	hashmap<dctx_value_t>   keymap;
-	time_t	                execution_date_time;
+	struct ::tm	            execution_date_time;
+	long										execution_timezone_seconds;
 	int			                implicit_timezone;
 	xqp_string		          default_collection_uri;//default URI for fn:collection()
 
@@ -95,10 +96,10 @@ public:
 //daniel: get the function directly from library object
 //	const function* get_function(qnamekey_t key) { return lib->get(key); }
 
-	void		set_execution_date_time(time_t t);
-	time_t	get_execution_date_time();
-	void		set_implicit_timezone(int tzone);
-	int			get_implicit_timezone();
+	void		set_execution_date_time(struct ::tm t, long tz_seconds);
+	struct ::tm	get_execution_date_time(long *tz_seconds);
+	void		set_implicit_timezone(long tzone_seconds);
+	long		get_implicit_timezone();
 
 	void				add_variable(xqp_string varname, Iterator* var_iterator);
 	Iterator_t	get_variable(xqp_string varname);

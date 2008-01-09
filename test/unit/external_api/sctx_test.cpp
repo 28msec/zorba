@@ -3,6 +3,13 @@
 #include <fstream>
 #include <assert.h>
 
+#include <iostream>
+#include <iomanip>
+#include <time.h>
+
+using namespace std;
+using namespace xqp;
+
 //#include "../error_display.h"
 
 using namespace std;
@@ -68,6 +75,146 @@ bool verify_expected_result(string result_file_name, string expected_file)
   }     
 	fclose(ftest);fclose(fexpected);return false;
 }
+
+extern void DisplayOneAlert(const xqp::ZorbaAlert *alert, std::ostream &result_file);
+extern void DisplayError(const xqp::ZorbaErrorAlert *err, std::ostream &result_file);
+extern void DisplayWarning(const xqp::ZorbaWarningAlert *warn, std::ostream &result_file);
+extern void DisplayNotification(const xqp::ZorbaNotifyAlert *notif, std::ostream &result_file);
+extern int DisplayAskUser(const xqp::ZorbaAskUserAlert *askuser, std::ostream &result_file);
+extern void DisplayFnUserError(const xqp::ZorbaFnErrorAlert *fn_err, std::ostream &result_file);
+extern void DisplayFnUserTrace(const xqp::ZorbaFnTraceAlert *fn_trace, std::ostream &result_file);
+
+void DisplayErrorListForCurrentThread(std::ostream &result_file)
+{
+  ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
+
+  ZorbaAlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+
+  ///now display the alerts list and then clear the list
+
+  std::list<ZorbaAlert*>::const_iterator errit;
+
+  for(errit = errmanager.begin(); errit != errmanager.end(); errit++)
+  {
+    if (errit == errmanager.begin())
+      result_file << endl << "Error list:" << endl;
+    
+    DisplayOneAlert(*errit, result_file);
+  }
+
+  errmanager.clearAlertList();
+}
+
+
+void DisplayOneAlert(const ZorbaAlert *alert, std::ostream &result_file)
+{
+  char  *str_talert;
+
+  str_talert = asctime(localtime(&alert->time_of_alert));
+  result_file << str_talert << " ";
+
+  switch(alert->alert_type)
+  {
+  case ZorbaAlert::ERROR_ALERT:
+    DisplayError(reinterpret_cast<const ZorbaErrorAlert*>(alert), result_file);
+    break;
+  case ZorbaAlert::WARNING_ALERT:
+    DisplayWarning(reinterpret_cast<const ZorbaWarningAlert*>(alert), result_file);
+    break;
+  case ZorbaAlert::NOTIFICATION_ALERT:
+    DisplayNotification(reinterpret_cast<const ZorbaNotifyAlert*>(alert), result_file);
+    break;
+  case ZorbaAlert::FEEDBACK_REQUEST_ALERT:
+    DisplayAskUser(reinterpret_cast<const ZorbaAskUserAlert*>(alert), result_file);
+    break;
+
+  case ZorbaAlert::USER_ERROR_ALERT://fn:error
+    DisplayFnUserError(reinterpret_cast<const ZorbaFnErrorAlert*>(alert), result_file);
+    break;
+  case ZorbaAlert::USER_TRACE_ALERT://fn:trace
+    DisplayFnUserTrace(reinterpret_cast<const ZorbaFnTraceAlert*>(alert), result_file);
+    break;
+  }
+}
+
+
+void DisplayError(const ZorbaErrorAlert *err, std::ostream &result_file)
+{
+  if(err->is_fatal)
+    result_file << "Fatal Error: ";
+  else
+    result_file << "Error: ";
+
+  if(err->loc.line)
+  {
+    if(!err->loc.filename.empty())
+      result_file << err->loc.filename;
+    result_file << "[line: " << err->loc.line << "][col: " << err->loc.column << "]: ";
+  } 
+
+  result_file << err->alert_description << std::endl;
+}
+
+
+void DisplayWarning(const ZorbaWarningAlert *warn, std::ostream &result_file)
+{
+  result_file << "Warning:";
+  if(warn->loc.line)
+  {
+    if(!warn->loc.filename.empty())
+      result_file << warn->loc.filename;
+    result_file << "[line: " << warn->loc.line << "][col: " << warn->loc.column << "]";
+  } 
+
+  result_file << " : " << warn->alert_description << std::endl;
+}
+
+
+void DisplayNotification(const ZorbaNotifyAlert *notif, std::ostream &result_file)
+{
+  result_file << "Notif: " << notif->alert_description << std::endl;
+}
+
+
+int DisplayAskUser(const ZorbaAskUserAlert *askuser, std::ostream &result_file)
+{
+  ///not implemented
+  result_file << "Ask user: " << askuser->alert_description << std::endl;
+  return -1;///normaly return the user choice: 0, 1, 2, ...
+}
+
+
+void DumpItemsAsText( const std::vector<class Item*> *items, std::ostream &result_file)
+{
+  std::vector<class Item*>::const_iterator item_it;
+
+  for ( item_it = items->begin( ) ; item_it != items->end( ) ; item_it++ )
+  {
+    result_file  << " =-= " 
+          << (*item_it)->getStringProperty() 
+          << "  [0x" << std::hex << (void*)(*item_it) << "]" << endl;
+  }
+
+//  result_file << " =-= " << std::endl;
+}
+
+
+void DisplayFnUserError(const ZorbaFnErrorAlert *fn_err, std::ostream &result_file)
+{
+  result_file << "User Error: ";
+  result_file << "[QName: " << fn_err->err_qname->getStringProperty() 
+    << "<decoded: " << fn_err->err_qname_decoded << " > ]";
+  result_file << " : " <<  fn_err->alert_description << endl;
+  DumpItemsAsText(&fn_err->items_error, result_file);
+}
+
+
+void DisplayFnUserTrace(const ZorbaFnTraceAlert *fn_trace, std::ostream &result_file)
+{
+  result_file << "User Trace: " << fn_trace->alert_description << endl;
+  DumpItemsAsText(&fn_trace->items_trace, result_file);
+}
+
 
 int test_api_static_context(const char *result_file_name)
 {
@@ -311,21 +458,21 @@ int test_api_static_context(const char *result_file_name)
 	for(i=0;i<100;i++)
 	{
 		ostringstream		oss1;
-		oss1 << "ulu1:doc" << i;
+		oss1 << "http://www.flworfound.org/apitest/doc" << i;
 		sctx1->AddDocumentType(oss1.str(), new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
 	}
 	for(i=0;i<100;i++)
 	{
 		type_ident_ref_t		doctype;
 		ostringstream		oss1;
-		oss1 << "ulu1:doc" << i;
+		oss1 << "http://www.flworfound.org/apitest/doc" << i;
 		doctype = sctx1->GetDocumentType(oss1.str());
 		result_file << "doc " << i << " has type (" << doctype->get_kind() << "," << doctype->get_quantifier() << ")" << endl;
 	}
 	for(i=0;i<100;i+=2)
 	{
 		ostringstream		oss1;
-		oss1 << "ulu1:doc" << i;
+		oss1 << "http://www.flworfound.org/apitest/doc" << i;
 		sctx1->DeleteDocumentType(oss1.str());
 	}
 	max = sctx1->GetDocumentTypeCount();
@@ -334,7 +481,7 @@ int test_api_static_context(const char *result_file_name)
 	{
 		type_ident_ref_t		doctype;
 		ostringstream		oss1;
-		oss1 << "ulu1:doc" << i;
+		oss1 << "http://www.flworfound.org/apitest/doc" << i;
 		doctype = sctx1->GetDocumentType(oss1.str());
 		if(!doctype.isNull())
 			result_file << "doc " << i << " has type (" << doctype->get_kind() << "," << doctype->get_quantifier() << ")" << endl;
@@ -355,7 +502,7 @@ int test_api_static_context(const char *result_file_name)
 		}
 	}
 	sctx1->DeleteAllDocumentTypes();
-	sctx1->AddDocumentType("ulu1:doc1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
+	sctx1->AddDocumentType("http://www.flworfound.org/apitest/doc1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
 	result_file << "docs remaining " << sctx1->GetDocumentTypeCount() << endl;
 
 
@@ -363,21 +510,21 @@ int test_api_static_context(const char *result_file_name)
 	for(i=0;i<100;i++)
 	{
 		ostringstream		oss1;
-		oss1 << "ulu1:colec" << i;
+		oss1 << "http://www.flworfound.org/apitest/collection" << i;
 		sctx1->AddCollectionType(oss1.str(), new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
 	}
 	for(i=0;i<100;i++)
 	{
 		type_ident_ref_t		colectype;
 		ostringstream		oss1;
-		oss1 << "ulu1:colec" << i;
+		oss1 << "http://www.flworfound.org/apitest/collection" << i;
 		colectype = sctx1->GetCollectionType(oss1.str());
 		result_file << "colec " << i << " has type (" << colectype->get_kind() << "," << colectype->get_quantifier() << ")" << endl;
 	}
 	for(i=0;i<100;i+=2)
 	{
 		ostringstream		oss1;
-		oss1 << "ulu1:colec" << i;
+		oss1 << "http://www.flworfound.org/apitest/collection" << i;
 		sctx1->DeleteCollectionType(oss1.str());
 	}
 	max = sctx1->GetCollectionTypeCount();
@@ -386,7 +533,7 @@ int test_api_static_context(const char *result_file_name)
 	{
 		type_ident_ref_t		colectype;
 		ostringstream		oss1;
-		oss1 << "ulu1:colec" << i;
+		oss1 << "http://www.flworfound.org/apitest/collection" << i;
 		colectype = sctx1->GetCollectionType(oss1.str());
 		if(!colectype.isNull())
 			result_file << "colec " << i << " has type (" << colectype->get_kind() << "," << colectype->get_quantifier() << ")" << endl;
@@ -407,7 +554,7 @@ int test_api_static_context(const char *result_file_name)
 		}
 	}
 	sctx1->DeleteAllCollectionTypes();
-	sctx1->AddCollectionType("ulu1:colec1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
+	sctx1->AddCollectionType("http://www.flworfound.org/apitest/collection1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
 	result_file << "colecs remaining " << sctx1->GetCollectionTypeCount() << endl;
 
 	type_ident_ref_t		def_colectype;
@@ -430,9 +577,9 @@ int test_api_static_context(const char *result_file_name)
 	return 0;
 
 DisplayErrorsAndExit:
-	cerr << endl << "Display all error list now:" << endl;
+	result_file << endl << "Display all error list now:" << endl;
 
-	//DisplayErrorListForCurrentThread();
+	DisplayErrorListForCurrentThread(result_file);
 
 	zorba_factory.uninitThread();
 

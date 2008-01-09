@@ -6,20 +6,36 @@
 #include "runtime/core/item_iterator.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-
+#include <time.h>
 
 namespace xqp {
 
 
 DynamicContextWrapper::DynamicContextWrapper()
 {
-	current_date_time = 0;
-	implicit_timezone = 0;
+	memset((void*)&current_date_time, 0, sizeof(current_date_time));
+	current_timezone_seconds = 0;
+	is_datetime_initialized = false;
+	implicit_timezone_seconds = 0;
 }
 
 DynamicContextWrapper::~DynamicContextWrapper( )
 {
 	DeleteAllVariables();
+}
+
+void		DynamicContextWrapper::SetCurrentDateTime( struct ::tm datetime, long timezone_seconds )
+{
+	this->current_date_time = datetime;
+	this->current_timezone_seconds = timezone_seconds;
+	is_datetime_initialized = true;
+}
+
+struct ::tm	DynamicContextWrapper::GetCurrentDateTime( long *ptimezone_seconds )
+{
+	if(ptimezone_seconds)
+		*ptimezone_seconds = this->current_timezone_seconds;
+	return current_date_time;
 }
 
 //check if var name is well formed
@@ -155,17 +171,85 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, bool bool_value)
 	return true;
 }
 
-bool DynamicContextWrapper::SetVariable( xqp_string varname, struct ::tm datetime_value, VAR_DATETIME_TYPE type)
+bool DynamicContextWrapper::SetVariable( xqp_string varname, struct ::tm datetime_value, long timezone_seconds, VAR_DATETIME_TYPE type)
 {
 	if(!checkQName(varname))
 		return false;
+
+	//validate the time
+	switch(type)
+	{
+	case XS_DATETIME:
+//				atomic_item = item_factory->createDateTime(
+//					(*it).dtt.datetime_value.tm_year+1900, (*it).dtt.datetime_value.tm_mon, (*it).dtt.datetime_value.tm_mday,
+//					(*it).dtt.datetime_value.tm_hour + (*it).dtt.datetime_value.tm_isdst ? 1 : 0, (*it).dtt.datetime_value.tm_min, (*it).dtt.datetime_value.tm_sec,
+//					(*it).dtt.timezone_seconds);
+		if((datetime_value.tm_sec < 0) || (datetime_value.tm_sec > 59) ||
+			(datetime_value.tm_min < 0) || (datetime_value.tm_min > 59) ||
+			(datetime_value.tm_hour < 0) || (datetime_value.tm_hour > 23) ||
+			(datetime_value.tm_mday < 1) || (datetime_value.tm_mday > 31) ||
+			(datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11) ||
+			(datetime_value.tm_year < 0))
+			return false;
+		break;
+	case XS_DATE:
+//		atomic_item = item_factory->createDate(
+//			(*it).datetime_value.tm_year+1900, (*it).datetime_value.tm_mon, (*it).datetime_value.tm_mday);
+		if((datetime_value.tm_mday < 1) || (datetime_value.tm_mday > 31) ||
+			(datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11) ||
+			(datetime_value.tm_year < 0))
+			return false;
+		break;
+	case XS_TIME:
+//		atomic_item = item_factory->createTime(
+//			(*it).datetime_value.tm_hour + (*it).datetime_value.tm_isdst ? 1 : 0, (*it).datetime_value.tm_min, (*it).datetime_value.tm_sec);
+		if((datetime_value.tm_sec < 0) || (datetime_value.tm_sec > 59) ||
+			(datetime_value.tm_min < 0) || (datetime_value.tm_min > 59) ||
+			(datetime_value.tm_hour < 0) || (datetime_value.tm_hour > 23))
+			return false;
+		break;
+	case XS_GYEAR_MONTH:
+//		atomic_item = item_factory->createGYearMonth(
+//			(*it).datetime_value.tm_year+1900, (*it).datetime_value.tm_mon);
+		if((datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11) ||
+			(datetime_value.tm_year < 0))
+			return false;
+		break;
+	case XS_GYEAR:
+//		atomic_item = item_factory->createGYear(
+//			(*it).datetime_value.tm_year+1900);
+		if((datetime_value.tm_year < 0))
+			return false;
+		break;
+	case XS_GMONTH_DAY:
+//		atomic_item = item_factory->createGMonthDay(
+//			(*it).datetime_value.tm_mon, (*it).datetime_value.tm_mday);
+		if((datetime_value.tm_mday < 1) || (datetime_value.tm_mday > 31) ||
+			(datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11))
+			return false;
+		break;
+	case XS_GDAY:
+//		atomic_item = item_factory->createGDay(
+//			(*it).datetime_value.tm_mday);
+		if((datetime_value.tm_mday < 1) || (datetime_value.tm_mday > 31))
+			return false;
+		break;
+	case XS_GMONTH:
+//		atomic_item = item_factory->createGMonth(
+//			(*it).datetime_value.tm_mon);
+		if((datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11))
+			return false;
+		break;
+	}
+
 	DeleteVariable(varname);
 
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.vartype = VAR_DATETIME;
 	var.datetime_type = type;
-	var.datetime_value = datetime_value;
+	var.dtt.datetime_value = datetime_value;
+	var.dtt.timezone_seconds = timezone_seconds;
 
 	vars.push_back(var);
 	return true;
@@ -339,37 +423,37 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 			{
 			case XS_DATETIME:
 				atomic_item = item_factory->createDateTime(
-					(*it).datetime_value.tm_year+1900, (*it).datetime_value.tm_mon, (*it).datetime_value.tm_mday,
-					(*it).datetime_value.tm_hour + (*it).datetime_value.tm_isdst ? 1 : 0, (*it).datetime_value.tm_min, (*it).datetime_value.tm_sec,
-					implicit_timezone);
+					(*it).dtt.datetime_value.tm_year+1900, (*it).dtt.datetime_value.tm_mon, (*it).dtt.datetime_value.tm_mday,
+					(*it).dtt.datetime_value.tm_hour + (*it).dtt.datetime_value.tm_isdst ? 1 : 0, (*it).dtt.datetime_value.tm_min, (*it).dtt.datetime_value.tm_sec,
+					(*it).dtt.timezone_seconds/60/60);
 				break;
 			case XS_DATE:
 				atomic_item = item_factory->createDate(
-					(*it).datetime_value.tm_year+1900, (*it).datetime_value.tm_mon, (*it).datetime_value.tm_mday);
+					(*it).dtt.datetime_value.tm_year+1900, (*it).dtt.datetime_value.tm_mon, (*it).dtt.datetime_value.tm_mday);
 				break;
 			case XS_TIME:
 				atomic_item = item_factory->createTime(
-					(*it).datetime_value.tm_hour + (*it).datetime_value.tm_isdst ? 1 : 0, (*it).datetime_value.tm_min, (*it).datetime_value.tm_sec);
+					(*it).dtt.datetime_value.tm_hour + (*it).dtt.datetime_value.tm_isdst ? 1 : 0, (*it).dtt.datetime_value.tm_min, (*it).dtt.datetime_value.tm_sec);
 				break;
 			case XS_GYEAR_MONTH:
 				atomic_item = item_factory->createGYearMonth(
-					(*it).datetime_value.tm_year+1900, (*it).datetime_value.tm_mon);
+					(*it).dtt.datetime_value.tm_year+1900, (*it).dtt.datetime_value.tm_mon);
 				break;
 			case XS_GYEAR:
 				atomic_item = item_factory->createGYear(
-					(*it).datetime_value.tm_year+1900);
+					(*it).dtt.datetime_value.tm_year+1900);
 				break;
 			case XS_GMONTH_DAY:
 				atomic_item = item_factory->createGMonthDay(
-					(*it).datetime_value.tm_mon, (*it).datetime_value.tm_mday);
+					(*it).dtt.datetime_value.tm_mon, (*it).dtt.datetime_value.tm_mday);
 				break;
 			case XS_GDAY:
 				atomic_item = item_factory->createGDay(
-					(*it).datetime_value.tm_mday);
+					(*it).dtt.datetime_value.tm_mday);
 				break;
 			case XS_GMONTH:
 				atomic_item = item_factory->createGMonth(
-					(*it).datetime_value.tm_mon);
+					(*it).dtt.datetime_value.tm_mon);
 				break;
 			}
 			break;
@@ -383,8 +467,9 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 		new_dctx->add_variable(expanded_name, iterator_plus_state);
 	}
 
-	new_dctx->set_implicit_timezone(implicit_timezone);
-	new_dctx->set_execution_date_time(current_date_time);
+	new_dctx->set_implicit_timezone(implicit_timezone_seconds);
+	if(is_datetime_initialized)
+		new_dctx->set_execution_date_time(current_date_time, current_timezone_seconds);
 	new_dctx->set_default_collection(default_collection_uri);
 
 	return new_dctx;

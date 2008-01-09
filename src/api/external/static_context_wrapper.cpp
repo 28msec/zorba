@@ -146,8 +146,10 @@ bool		StaticContextWrapper::GetNamespaceByIndex( unsigned int i, xqp_string *pre
 		return false;
 
 	scw_namespace_t		&ns = ext_ns_list[i];
-	*prefix = ns.prefix;
-	*URI = ns.URI;
+	if(prefix)
+		*prefix = ns.prefix;
+	if(URI)
+		*URI = ns.URI;
 	return true;
 }
 
@@ -199,6 +201,8 @@ void		StaticContextWrapper::AddExternalVariableType( xqp_string	var_name, type_i
 {
 	scw_QName_plus_type		var;
 
+	DeleteExternalVariableType(var_name);
+
 	var.qname = var_name;
 	var.type = var_type;
 
@@ -245,8 +249,10 @@ bool		StaticContextWrapper::GetExternalVariableByIndex( unsigned int i, xqp_stri
 		return false;
 
 	scw_QName_plus_type		&var = ext_var_list[i];
-	*var_name = var.qname;
-	*var_type = var.type;
+	if(var_name)
+		*var_name = var.qname;
+	if(var_type)
+		*var_type = var.type;
 	return true;
 }
 
@@ -295,6 +301,8 @@ void		StaticContextWrapper::AddCollation( xqp_string URI, ::Collator	*coll)
 {
 	CollationInfo		cinfo;
 
+	if(!coll)
+		return;
 	cinfo.URI = URI;
 	cinfo.coll = coll;
 	collation_list.push_back(cinfo);
@@ -514,8 +522,10 @@ bool		StaticContextWrapper::GetDocumentByIndex( unsigned int i, xqp_string *URI,
 		return false;
 
 	scw_URI_plus_type	&doc = doc_type_list[i];
-	*URI = doc.URI;
-	*doc_type = doc.type;
+	if(URI)
+		*URI = doc.URI;
+	if(doc_type)
+		*doc_type = doc.type;
 	return true;
 }
 
@@ -575,8 +585,10 @@ bool		StaticContextWrapper::GetCollectionTypeByIndex( unsigned int i, xqp_string
 		return false;
 
 	scw_URI_plus_type	&collection = collection_type_list[i];
-	*URI = collection.URI;
-	*collection_type = collection.type;
+	if(URI)
+		*URI = collection.URI;
+	if(collection_type)
+		*collection_type = collection.type;
 	return true;
 }
 

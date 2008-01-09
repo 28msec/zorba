@@ -51,9 +51,9 @@ class Zorba_XQuerySimpleResult	: public XQueryResult
 public:
 	Zorba_XQuerySimpleResult(XQueryExecution_t		xquery_exec);
 	virtual ~Zorba_XQuerySimpleResult();
-  virtual std::ostream& serializeXML( std::ostream& os );
-  virtual std::ostream& serializeHTML( std::ostream& os );
-  virtual std::ostream& serializeTEXT( std::ostream& os );
+  virtual bool serializeXML( std::ostream& os );
+  virtual bool serializeHTML( std::ostream& os );
+  virtual bool serializeTEXT( std::ostream& os );
 
 	virtual bool isError();
 };

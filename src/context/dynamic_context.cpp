@@ -26,6 +26,7 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include <assert.h>
+#include <time.h>
 
 using namespace std;
 namespace xqp {
@@ -45,12 +46,25 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 	this->parent = parent;
 	if(!parent)
 	{
-		execution_date_time = 0;
+		time_t		t0 = time(NULL);
+#if WIN32 & !UNIX
+		struct	tm	gmtm;
+		gmtime_s(&gmtm, &t0);//thread safe gmtime on Windows
+#elif UNIX
+		struct	tm	gmtm;
+		_gmtime_r(&t0, *gmtm);//thread safe gmtime on Linux
+#endif
+
+		execution_date_time = gmtm;
+		_tzset();
+		execution_timezone_seconds = _timezone;//global var set by _tzset in C runtime
+		
 		implicit_timezone = 0;
 	}
 	else
 	{
 		execution_date_time = parent->execution_date_time;
+		execution_timezone_seconds = parent->execution_timezone_seconds;
 		implicit_timezone = parent->implicit_timezone;
 		default_collection_uri = parent->default_collection_uri;
 	}
@@ -130,36 +144,27 @@ void dynamic_context::set_context_item_type(
 {
 }
 
-void	dynamic_context::set_execution_date_time(time_t t)
+void	dynamic_context::set_execution_date_time(struct ::tm t, long tz_seconds)
 {
 	this->execution_date_time = t;
+	this->execution_timezone_seconds = tz_seconds;
 }
 
-time_t	dynamic_context::get_execution_date_time()
+struct ::tm	dynamic_context::get_execution_date_time(long *ptz_seconds)
 {
-	if(execution_date_time == 0)
-		if(parent)
-			return parent->get_execution_date_time();
-		else
-			return 0;
-	else
-		return execution_date_time;
+	if(ptz_seconds)
+		*ptz_seconds = execution_timezone_seconds;
+	return execution_date_time;
 }
 
-void	dynamic_context::set_implicit_timezone(int tzone)
+void	dynamic_context::set_implicit_timezone(long tzone_seconds)
 {
-	this->implicit_timezone = tzone;
+	this->implicit_timezone = tzone_seconds;
 }
 
-int	dynamic_context::get_implicit_timezone()
+long	dynamic_context::get_implicit_timezone()
 {
-	if(implicit_timezone == 0)
-		if(parent)
-			return parent->get_implicit_timezone();
-		else
-			return 0;
-	else
-		return implicit_timezone;
+	return implicit_timezone;
 }
 
 /*

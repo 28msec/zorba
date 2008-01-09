@@ -60,10 +60,13 @@ public:
     XS_GMONTH
   } VAR_DATETIME_TYPE;
 public:
-  time_t  current_date_time;
-  int     implicit_timezone;
+//	struct ::tm  current_date_time;//includes the explicit timezone
+  long     implicit_timezone_seconds;
 
   virtual ~DynamicQueryContext( ) {};
+
+	virtual void		SetCurrentDateTime( struct ::tm datetime, long timezone_seconds ) = 0;
+	virtual struct ::tm	GetCurrentDateTime( long *timezone_seconds ) = 0;
 
   // following is the input data; this is not duplicable between executions
   // virtual bool SetVariable( QNameItem_t varname, XQueryExecution_t item_iter ) = 0;
@@ -71,7 +74,7 @@ public:
   virtual bool SetVariable( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type = XS_STRING) = 0;
   virtual bool SetVariable( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type = XS_DOUBLE) = 0;
   virtual bool SetVariable( xqp_string varname, bool bool_value) = 0;
-  virtual bool SetVariable( xqp_string varname, struct ::tm datetime_value, VAR_DATETIME_TYPE type = XS_DATETIME) = 0;
+  virtual bool SetVariable( xqp_string varname, struct ::tm datetime_value, long timezone_seconds, VAR_DATETIME_TYPE type = XS_DATETIME) = 0;
 
   virtual bool DeleteVariable( xqp_string varname ) = 0;
   virtual void DeleteAllVariables( ) = 0;
