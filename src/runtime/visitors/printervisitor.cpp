@@ -816,25 +816,40 @@ namespace xqp {
   }
   
       
-  void PrinterVisitor::beginVisitFlworLetVariable(const PlanIterator& a, bool meterialize){
-    thePrinter.startIter("LetVariable");
-    thePrinter.addAttribute("materialize", meterialize ? "true" : "false");
-    a.accept(*this);
-  }
+void PrinterVisitor::beginVisitFlworLetVariable(
+    const PlanIterator& a,
+    bool meterialize,
+    const xqpStringStore& varName)
+{
+  thePrinter.startIter("LetVariable");
+#ifndef NDEBUG
+  thePrinter.addAttribute("name", varName.c_str());
+#endif
+  thePrinter.addAttribute("materialize", meterialize ? "true" : "false");
+  a.accept(*this);
+}
   
-  void PrinterVisitor::endVisitFlworLetVariable(const PlanIterator& a){
-    thePrinter.endIter();
-  }
+void PrinterVisitor::endVisitFlworLetVariable(const PlanIterator& a)
+{
+  thePrinter.endIter();
+}
           
     
-  void PrinterVisitor::beginVisitFlworForVariable(const PlanIterator& a){
-    thePrinter.startIter("ForVariable");
-    a.accept(*this);
-  }
-  
-  void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& a){
-    thePrinter.endIter();
-  }
+void PrinterVisitor::beginVisitFlworForVariable(
+    const PlanIterator& a,
+    const xqpStringStore& varName)
+{
+  thePrinter.startIter("ForVariable");
+#ifndef NDEBUG
+  thePrinter.addAttribute("name", varName.c_str());
+#endif
+  a.accept(*this);
+}
+
+void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& a)
+{
+  thePrinter.endIter();
+}
       
       
   void PrinterVisitor::beginVisitFlworOrderBy(const PlanIterator& a){

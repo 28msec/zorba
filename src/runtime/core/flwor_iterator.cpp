@@ -3,6 +3,7 @@
  *  Author: Tim Kraska
  *
  */
+#include "compiler/expression/expr.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "system/zorba.h"
@@ -17,46 +18,67 @@
 namespace xqp
 {
 
+  // Utility function -- is this item null or a NaN?
+static bool empty_item (Item_t s)
+{
+  return (s == 0) ||
+         (GENV_TYPESYSTEM.is_numeric(*GENV_TYPESYSTEM.create_type(s->getType(), TypeSystem::QUANT_ONE)) &&
+          s->isNaN());
+  }
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  ForLetClause                                                               //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-  // Utility function -- is this item null or a NaN?
-  static bool empty_item (Item_t s) {
-    return s == 0 || (GENV_TYPESYSTEM.is_numeric (*GENV_TYPESYSTEM.create_type (s->getType (), TypeSystem::QUANT_ONE)) && s->isNaN ());
-  }
-
 
 FLWORIterator::ForLetClause::ForLetClause(
+    const var_expr* var,
     std::vector<var_iter_t> aForVars,
     PlanIter_t& aInput)
   :
-  type ( FOR ), forVars ( aForVars ), input ( aInput )
+#ifndef NDEBUG
+  theVarName(var->get_varname()->getStringProperty().c_str()),
+#endif
+  type ( FOR ),
+  forVars ( aForVars ),
+  input ( aInput )
 {
 }
 
 
 FLWORIterator::ForLetClause::ForLetClause (
+    const var_expr* var,
     std::vector<var_iter_t> aForVars,
     std::vector<var_iter_t> aPosVars,
     PlanIter_t& aInput )
   :
-  type ( FOR ), forVars ( aForVars ), posVars ( aPosVars ), input ( aInput )
+#ifndef NDEBUG
+  theVarName(var->get_varname()->getStringProperty().c_str()),
+#endif
+  type ( FOR ),
+  forVars ( aForVars ),
+  posVars ( aPosVars ),
+  input ( aInput )
 {
 }
 
 
 FLWORIterator::ForLetClause::ForLetClause (
+    const var_expr* var,
     std::vector<ref_iter_t> aLetVars,
     PlanIter_t& aInput,
     bool aNeedsMaterialization )
   :
-  type ( LET ),
-  letVars ( aLetVars ),
-  input ( aInput ),
-  needsMaterialization ( aNeedsMaterialization )
+#ifndef NDEBUG
+  theVarName(var->get_varname()->getStringProperty().c_str()),
+#endif
+  type(LET),
+  letVars(aLetVars),
+  input(aInput),
+  needsMaterialization(aNeedsMaterialization)
 {
 }
 
@@ -67,16 +89,26 @@ void FLWORIterator::ForLetClause::accept ( PlanIterVisitor& v ) const
   switch ( type )
   {
   case FOR:
-    v.beginVisitFlworForVariable(*input);
+    v.beginVisitFlworForVariable(*input, getVarName());
     v.endVisitFlworForVariable(*input);
     break;
   case LET:
-    v.beginVisitFlworLetVariable(*input, needsMaterialization);
+    v.beginVisitFlworLetVariable(*input, needsMaterialization, getVarName());
     v.endVisitFlworLetVariable(*input);
     break;
   default:
     assert ( false );
   }
+}
+
+
+xqpStringStore FLWORIterator::ForLetClause::getVarName() const
+{
+#ifndef NDEBUG
+  return theVarName;
+#else
+  return "";
+#endif
 }
 
 
@@ -573,6 +605,11 @@ bool FLWORIterator::bindVariable(
 
 void FLWORIterator::resetImpl ( PlanState& planState )
 {
+  resetChild(returnClause, planState);
+
+  if (whereClause != NULL)
+    resetChild(whereClause, planState);
+
   FlworState* flworState;
   GET_STATE ( FlworState, flworState, planState );
   flworState->reset();

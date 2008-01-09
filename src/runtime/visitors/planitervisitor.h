@@ -3,6 +3,8 @@
 
 namespace xqp
 {
+  class xqpStringStore;
+
   class PlanIterator;
   class FnDataIterator;
   class FnRootIterator;
@@ -376,23 +378,23 @@ namespace xqp
       virtual void beginVisit ( const TextIterator& ) = 0;
       virtual void endVisit ( const TextIterator& ) = 0;
             
-      virtual void beginVisitFlworWhereClause(const  PlanIterator&) = 0;
-      virtual void endVisitFlworWhereClause(const PlanIterator&) = 0;
+    virtual void beginVisitFlworWhereClause(const  PlanIterator&) = 0;
+    virtual void endVisitFlworWhereClause(const PlanIterator&) = 0;
       
-      virtual void beginVisitFlworVariables() = 0;
-      virtual void endVisitFlworVariables() = 0;
+    virtual void beginVisitFlworVariables() = 0;
+    virtual void endVisitFlworVariables() = 0;
       
-    virtual void beginVisitFlworLetVariable(const PlanIterator&, bool) = 0;
+    virtual void beginVisitFlworLetVariable(const PlanIterator&, bool, const xqpStringStore&) = 0;
     virtual void endVisitFlworLetVariable(const PlanIterator&) = 0;
       
-      virtual void beginVisitFlworForVariable(const PlanIterator&) = 0;
-      virtual void endVisitFlworForVariable(const PlanIterator&) = 0;
+    virtual void beginVisitFlworForVariable(const PlanIterator&, const xqpStringStore&) = 0;
+    virtual void endVisitFlworForVariable(const PlanIterator&) = 0;
       
-      virtual void beginVisitFlworOrderBy(const PlanIterator&) = 0;
-      virtual void endVisitFlworOrderBy(const PlanIterator&) = 0;
+    virtual void beginVisitFlworOrderBy(const PlanIterator&) = 0;
+    virtual void endVisitFlworOrderBy(const PlanIterator&) = 0;
       
-      virtual void beginVisitFlworReturn(const PlanIterator&) = 0;
-      virtual void endVisitFlworReturn(const PlanIterator&) = 0;
+    virtual void beginVisitFlworReturn(const PlanIterator&) = 0;
+    virtual void endVisitFlworReturn(const PlanIterator&) = 0;
       
       virtual void beginVisit ( const CastIterator& ) = 0;
       virtual void endVisit ( const CastIterator& ) = 0;

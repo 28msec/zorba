@@ -22,6 +22,8 @@
 namespace xqp
 {
 
+class var_expr;
+
 class ForVarIterator;
 typedef rchandle<ForVarIterator> var_iter_t;
 
@@ -52,6 +54,9 @@ public:
   protected:
     enum ForLetType {FOR, LET};
 
+#ifndef NDEBUG
+    xqpStringStore           theVarName;
+#endif
     ForLetType               type;
     std::vector<var_iter_t>  forVars;
     std::vector<var_iter_t>  posVars;
@@ -64,6 +69,7 @@ public:
      * Creates a new ForClause
      */
     ForLetClause(
+        const var_expr* var,
         std::vector<var_iter_t> forVars,
         PlanIter_t& input);
           
@@ -71,6 +77,7 @@ public:
      * Creates a new ForClause including positional variable bindings 
      */
     ForLetClause(
+        const var_expr* var,
         std::vector<var_iter_t> forVars,
         std::vector<var_iter_t> posVars,
         PlanIter_t& input);
@@ -82,11 +89,14 @@ public:
      * but "let $x := (1,2,3) return if(test()) then $x else $x" doesn't
      */
     ForLetClause(
+        const var_expr* var,
         std::vector<ref_iter_t> letVars,
         PlanIter_t& input,
         bool needsMaterialization);
           
     void accept (PlanIterVisitor&) const;
+
+    xqpStringStore getVarName() const;
   };
 
   /**
