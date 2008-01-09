@@ -50,15 +50,20 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 #if WIN32 & !UNIX
 		struct	tm	gmtm;
 		gmtime_s(&gmtm, &t0);//thread safe gmtime on Windows
-#elif UNIX
+#else
 		struct	tm	gmtm;
-		_gmtime_r(&t0, *gmtm);//thread safe gmtime on Linux
+		gmtime_r(&t0, &gmtm);//thread safe gmtime on Linux
 #endif
 
 		execution_date_time = gmtm;
+#if WIN32 & !UNIX
 		_tzset();
-		execution_timezone_seconds = _timezone;//global var set by _tzset in C runtime
-		
+    execution_timezone_seconds = _timezone;//global var set by _tzset in C runtime
+#else
+    tzset();
+    execution_timezone_seconds = timezone;//global var set by _tzset in C runtime
+#endif
+    
 		implicit_timezone = 0;
 	}
 	else
