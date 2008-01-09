@@ -20,7 +20,8 @@ class DynamicContextWrapper : public DynamicQueryContext
 		VAR_STR,
 		VAR_DOUBLE,
 		VAR_BOOL,
-		VAR_DATETIME
+		VAR_DATETIME,
+		VAR_DOCUMENT_URI
 	}var_type_t;
 	typedef struct
 	{
@@ -44,7 +45,8 @@ class DynamicContextWrapper : public DynamicQueryContext
 			xqpStringStore		*str_value;
 			double	double_value;
 			bool		bool_value;
-			datetime_timezone_t		dtt;
+			datetime_timezone_t		dtt_value;
+			xqpStringStore	*document_uri_value;
 		};
 	}dctx_extern_var_t;
 
@@ -69,6 +71,7 @@ public:
 	virtual bool SetVariable( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type = XS_DOUBLE);
 	virtual bool SetVariable( xqp_string varname, bool bool_value);
 	virtual bool SetVariable( xqp_string varname, struct ::tm datetime_value, long timezone_seconds = 0, VAR_DATETIME_TYPE type = XS_DATETIME);
+	virtual bool SetVariableAsDocument( xqp_string varname, xqp_anyURI documentURI);
 
 	virtual bool DeleteVariable( xqp_string varname );
 	virtual void DeleteAllVariables( );

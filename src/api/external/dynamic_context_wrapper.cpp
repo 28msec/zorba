@@ -181,9 +181,9 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, struct ::tm datetim
 	{
 	case XS_DATETIME:
 //				atomic_item = item_factory->createDateTime(
-//					(*it).dtt.datetime_value.tm_year+1900, (*it).dtt.datetime_value.tm_mon, (*it).dtt.datetime_value.tm_mday,
-//					(*it).dtt.datetime_value.tm_hour + (*it).dtt.datetime_value.tm_isdst ? 1 : 0, (*it).dtt.datetime_value.tm_min, (*it).dtt.datetime_value.tm_sec,
-//					(*it).dtt.timezone_seconds);
+//					(*it).dtt_value.datetime_value.tm_year+1900, (*it).dtt_value.datetime_value.tm_mon, (*it).dtt_value.datetime_value.tm_mday,
+//					(*it).dtt_value.datetime_value.tm_hour + (*it).dtt_value.datetime_value.tm_isdst ? 1 : 0, (*it).dtt_value.datetime_value.tm_min, (*it).dtt_value.datetime_value.tm_sec,
+//					(*it).dtt_value.timezone_seconds);
 		if((datetime_value.tm_sec < 0) || (datetime_value.tm_sec > 59) ||
 			(datetime_value.tm_min < 0) || (datetime_value.tm_min > 59) ||
 			(datetime_value.tm_hour < 0) || (datetime_value.tm_hour > 23) ||
@@ -248,8 +248,24 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, struct ::tm datetim
 	var.varname = varname;
 	var.vartype = VAR_DATETIME;
 	var.datetime_type = type;
-	var.dtt.datetime_value = datetime_value;
-	var.dtt.timezone_seconds = timezone_seconds;
+	var.dtt_value.datetime_value = datetime_value;
+	var.dtt_value.timezone_seconds = timezone_seconds;
+
+	vars.push_back(var);
+	return true;
+}
+
+bool DynamicContextWrapper::SetVariableAsDocument( xqp_string varname, xqp_anyURI documentURI)
+{
+	if(!checkQName(varname))
+		return false;
+	DeleteVariable(varname);
+
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.vartype = VAR_DOCUMENT_URI;
+	var.document_uri_value = documentURI.getStore();
+	var.document_uri_value->addReference();
 
 	vars.push_back(var);
 	return true;
@@ -263,6 +279,14 @@ bool DynamicContextWrapper::DeleteVariable( xqp_string varname )
 	{
 		if((*it).varname == varname)
 		{
+			if((*it).vartype == VAR_STR)
+			{
+				(*it).str_value->removeReference();
+			}
+			else if((*it).vartype == VAR_DOCUMENT_URI)
+			{
+				(*it).document_uri_value->removeReference();
+			}
 			vars.erase(it);
 			return true;
 		}
@@ -279,6 +303,10 @@ void DynamicContextWrapper::DeleteAllVariables( )
 		if((*it).vartype == VAR_STR)
 		{
 			(*it).str_value->removeReference();
+		}
+		else if((*it).vartype == VAR_DOCUMENT_URI)
+		{
+			(*it).document_uri_value->removeReference();
 		}
 	}
 	vars.clear();
@@ -423,39 +451,45 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 			{
 			case XS_DATETIME:
 				atomic_item = item_factory->createDateTime(
-					(*it).dtt.datetime_value.tm_year+1900, (*it).dtt.datetime_value.tm_mon, (*it).dtt.datetime_value.tm_mday,
-					(*it).dtt.datetime_value.tm_hour + (*it).dtt.datetime_value.tm_isdst ? 1 : 0, (*it).dtt.datetime_value.tm_min, (*it).dtt.datetime_value.tm_sec,
-					(*it).dtt.timezone_seconds/60/60);
+					(*it).dtt_value.datetime_value.tm_year+1900, (*it).dtt_value.datetime_value.tm_mon, (*it).dtt_value.datetime_value.tm_mday,
+					(*it).dtt_value.datetime_value.tm_hour + (*it).dtt_value.datetime_value.tm_isdst ? 1 : 0, (*it).dtt_value.datetime_value.tm_min, (*it).dtt_value.datetime_value.tm_sec,
+					(*it).dtt_value.timezone_seconds/60/60);
 				break;
 			case XS_DATE:
 				atomic_item = item_factory->createDate(
-					(*it).dtt.datetime_value.tm_year+1900, (*it).dtt.datetime_value.tm_mon, (*it).dtt.datetime_value.tm_mday);
+					(*it).dtt_value.datetime_value.tm_year+1900, (*it).dtt_value.datetime_value.tm_mon, (*it).dtt_value.datetime_value.tm_mday);
 				break;
 			case XS_TIME:
 				atomic_item = item_factory->createTime(
-					(*it).dtt.datetime_value.tm_hour + (*it).dtt.datetime_value.tm_isdst ? 1 : 0, (*it).dtt.datetime_value.tm_min, (*it).dtt.datetime_value.tm_sec);
+					(*it).dtt_value.datetime_value.tm_hour + (*it).dtt_value.datetime_value.tm_isdst ? 1 : 0, (*it).dtt_value.datetime_value.tm_min, (*it).dtt_value.datetime_value.tm_sec);
 				break;
 			case XS_GYEAR_MONTH:
 				atomic_item = item_factory->createGYearMonth(
-					(*it).dtt.datetime_value.tm_year+1900, (*it).dtt.datetime_value.tm_mon);
+					(*it).dtt_value.datetime_value.tm_year+1900, (*it).dtt_value.datetime_value.tm_mon);
 				break;
 			case XS_GYEAR:
 				atomic_item = item_factory->createGYear(
-					(*it).dtt.datetime_value.tm_year+1900);
+					(*it).dtt_value.datetime_value.tm_year+1900);
 				break;
 			case XS_GMONTH_DAY:
 				atomic_item = item_factory->createGMonthDay(
-					(*it).dtt.datetime_value.tm_mon, (*it).dtt.datetime_value.tm_mday);
+					(*it).dtt_value.datetime_value.tm_mon, (*it).dtt_value.datetime_value.tm_mday);
 				break;
 			case XS_GDAY:
 				atomic_item = item_factory->createGDay(
-					(*it).dtt.datetime_value.tm_mday);
+					(*it).dtt_value.datetime_value.tm_mday);
 				break;
 			case XS_GMONTH:
 				atomic_item = item_factory->createGMonth(
-					(*it).dtt.datetime_value.tm_mon);
+					(*it).dtt_value.datetime_value.tm_mon);
 				break;
 			}
+			break;
+		case VAR_DOCUMENT_URI:
+			Store		*pStore = Zorba::getStore();
+			xqpStringStore_t	sst((*it).document_uri_value);
+			xqp_string				xqpstr(sst);
+			atomic_item = pStore->getDocument(xqpstr);
 			break;
 		}
 		
