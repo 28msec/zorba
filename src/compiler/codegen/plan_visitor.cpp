@@ -180,17 +180,24 @@ bool begin_visit(flwor_expr& v)
   CODEGEN_TRACE_IN("");
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
        it != v.clause_end();
-       ++it) {
-    rchandle<var_expr> vh = (*it)->var_h;
-    uint64_t k = (uint64_t) &*vh;
-    if (vh->kind == var_expr::for_var) {
-      fvar_iter_map.put (k, new vector<var_iter_t>());
-      var_expr *pos_vp = &*(*it)->get_pos_var ();
-      if (pos_vp != NULL)
-        pvar_iter_map.put ((uint64_t) pos_vp, new vector<var_iter_t>());
-    } else if (vh->kind == var_expr::let_var) {
-      lvar_iter_map.put (k, new vector<ref_iter_t>());
-    } else ZORBA_ASSERT (false);
+       ++it) 
+  {
+    rchandle<var_expr> var = (*it)->var_h;
+    uint64_t k = (uint64_t) &*var;
+
+    if (var->kind == var_expr::for_var)
+    {
+      fvar_iter_map.put(k, new vector<var_iter_t>());
+      var_expr* pos_var = (*it)->get_pos_var().get_ptr();
+      if (pos_var != NULL)
+        pvar_iter_map.put((uint64_t)pos_var, new vector<var_iter_t>());
+    }
+    else if (var->kind == var_expr::let_var)
+    {
+      lvar_iter_map.put(k, new vector<ref_iter_t>());
+    }
+    else
+      ZORBA_ASSERT (false);
   }
   return true;
 }
@@ -199,16 +206,21 @@ bool begin_visit(flwor_expr& v)
 void end_visit(flwor_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+
   PlanIter_t ret = pop_itstack ();
 
   vector<FLWORIterator::OrderSpec> orderSpecs;
   for (vector<flwor_expr::orderspec_t>::const_iterator i = v.orderspec_begin ();
        i != v.orderspec_end ();
-       i++) {
+       i++) 
+  {
     flwor_expr::orderspec_t spec = *i;
-    orderSpecs.push_back (FLWORIterator::OrderSpec (pop_itstack (), spec.second->empty_mode, spec.second->dir == dir_descending));
+    orderSpecs.push_back(FLWORIterator::OrderSpec(pop_itstack (),
+                                                  spec.second->empty_mode,
+                                                  spec.second->dir == dir_descending));
   }
-  FLWORIterator::OrderByClause *orderby = new FLWORIterator::OrderByClause (orderSpecs, v.get_order_stable ());
+
+  FLWORIterator::OrderByClause *orderby = new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ());
 
   PlanIter_t where = NULL;
   if (v.get_where () != NULL)
@@ -219,30 +231,43 @@ void end_visit(flwor_expr& v)
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
        it != v.clause_end();
        ++it)
-    inputs.push (pop_itstack ());
+  {
+    inputs.push(pop_itstack());
+  }
+
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
        it != v.clause_end();
-       ++it) {
-    PlanIter_t input = pop_stack (inputs);
-    if ((*it)->type == forlet_clause::for_clause) {
+       ++it) 
+  {
+    PlanIter_t input = pop_stack(inputs);
+
+    if ((*it)->type == forlet_clause::for_clause)
+    {
       vector<var_iter_t> *var_iters = NULL, *pvar_iters = NULL;
-      ZORBA_ASSERT (fvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
-      var_expr *pos_vp = &* (*it)->get_pos_var ();
-      if (pos_vp == NULL)
-        clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input));
-      else {
-        ZORBA_ASSERT (pvar_iter_map.get ((uint64_t) pos_vp, pvar_iters));
-        clauses.push_back (FLWORIterator::ForLetClause (*var_iters, *pvar_iters, input));
+      var_expr* var = (*it)->var_h.get_ptr();
+      var_expr* pos_var = (*it)->get_pos_var().get_ptr();
+      ZORBA_ASSERT( fvar_iter_map.get((uint64_t)var, var_iters) );
+      if (pos_var == NULL)
+      {
+        clauses.push_back(FLWORIterator::ForLetClause(var, *var_iters, input));
       }
-    } else if ((*it)->type == forlet_clause::let_clause) {
+      else 
+      {
+        ZORBA_ASSERT( pvar_iter_map.get((uint64_t) pos_var, pvar_iters) );
+        clauses.push_back(FLWORIterator::ForLetClause(var, *var_iters, *pvar_iters, input));
+      }
+    }
+    else if ((*it)->type == forlet_clause::let_clause)
+    {
       vector<ref_iter_t> *var_iters = NULL;
-      ZORBA_ASSERT (lvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
-      clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input, true));
+      var_expr* var = (*it)->var_h;
+      ZORBA_ASSERT( lvar_iter_map.get((uint64_t)var, var_iters) );
+      clauses.push_back(FLWORIterator::ForLetClause(var, *var_iters, input, true));
     }
   }
-  FLWORIterator *iter =
-    new FLWORIterator (v.get_loc (), clauses, where, orderby, ret, false);
-  itstack.push (iter);
+
+  FLWORIterator *iter = new FLWORIterator(v.get_loc(), clauses, where, orderby, ret, false);
+  itstack.push(iter);
 }
 
 
