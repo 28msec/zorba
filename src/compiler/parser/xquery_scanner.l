@@ -1585,7 +1585,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {CatchAll} {
-  /*	maintain state */
+  return token::UNRECOGNIZED;
 }
 
 {S} {
