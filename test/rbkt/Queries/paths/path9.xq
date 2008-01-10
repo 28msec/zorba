@@ -1,1 +1,3 @@
-doc("test9.xml")//child
+declare variable $input-context external;
+
+doc($input-context)//child

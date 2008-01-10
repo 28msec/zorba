@@ -1,1 +1,2 @@
-<missing-variable></missing-variable>
+<?xml version="1.0" encoding="UTF-8"?>
+<missing-variable />

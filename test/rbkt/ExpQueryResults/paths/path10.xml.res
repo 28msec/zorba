@@ -1,8 +1,2 @@
-  <c id="1">
-    <b>
-      <c id="3"></c>
-    </b>
-  </c>
-  <c id="3"></c>
-  <c id="2"></c>
-  <c id="4"></c>
+<?xml version="1.0" encoding="UTF-8"?>
+<c id="1"><b><c id="3" /></b></c><c id="3" /><c id="2" /><c id="4" />

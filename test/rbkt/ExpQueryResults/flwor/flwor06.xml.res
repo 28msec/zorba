@@ -1,24 +1,2 @@
-  <r>1 a b c 1</r>
-  <r>1 a b c 2</r>
-  <r>1 a b c 3</r>
-  <r>1 a b c 4</r>
-  <r>1 a b c 1</r>
-  <r>1 a b c 2</r>
-  <r>1 a b c 3</r>
-  <r>1 a b c 4</r>
-  <r>1 a b c 1</r>
-  <r>1 a b c 2</r>
-  <r>1 a b c 3</r>
-  <r>1 a b c 4</r>
-  <r>2 a b c 1</r>
-  <r>2 a b c 2</r>
-  <r>2 a b c 3</r>
-  <r>2 a b c 4</r>
-  <r>2 a b c 1</r>
-  <r>2 a b c 2</r>
-  <r>2 a b c 3</r>
-  <r>2 a b c 4</r>
-  <r>2 a b c 1</r>
-  <r>2 a b c 2</r>
-  <r>2 a b c 3</r>
-  <r>2 a b c 4</r>
+<?xml version="1.0" encoding="UTF-8"?>
+<r>1 a b c 1</r><r>1 a b c 2</r><r>1 a b c 3</r><r>1 a b c 4</r><r>1 a b c 1</r><r>1 a b c 2</r><r>1 a b c 3</r><r>1 a b c 4</r><r>1 a b c 1</r><r>1 a b c 2</r><r>1 a b c 3</r><r>1 a b c 4</r><r>2 a b c 1</r><r>2 a b c 2</r><r>2 a b c 3</r><r>2 a b c 4</r><r>2 a b c 1</r><r>2 a b c 2</r><r>2 a b c 3</r><r>2 a b c 4</r><r>2 a b c 1</r><r>2 a b c 2</r><r>2 a b c 3</r><r>2 a b c 4</r>
