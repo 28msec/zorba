@@ -374,6 +374,211 @@ string::size_type AlertCodes::ApplyParam(
   return off + param1->length ();
 }
 
+std::string
+AlertCodes::toString(enum error_code aErrorCode)
+{
+  switch (aErrorCode)
+  {
+    case XPDY0002: return std::string("XPDY0002");
+    case XPDY0021: return std::string("XPDY0021");
+    case XPDY0050: return std::string("XPDY0050");
+
+    case XPST0001: return std::string("XPST0001");
+    case XPST0003: return std::string("XPST0003");
+    case XPST0005: return std::string("XPST0005");
+    case XPST0008: return std::string("XPST0008");
+    case XPST0010: return std::string("XPST0010");
+    case XPST0017: return std::string("XPST0017");
+    case XPST0051: return std::string("XPST0051");
+    case XPST0080: return std::string("XPST0080");
+    case XPST0081: return std::string("XPST0081");
+    case XPST0083: return std::string("XPST0083");
+
+    case XPTY0004: return std::string("XPTY0004");
+    case XPTY0006: return std::string("XPTY0006");
+    case XPTY0007: return std::string("XPTY0007");
+    case XPTY0018: return std::string("XPTY0018");
+    case XPTY0019: return std::string("XPTY0019");
+    case XPTY0020: return std::string("XPTY0020");
+
+    case XQDY0025: return std::string("XQDY0025");
+    case XQDY0026: return std::string("XQDY0026");
+    case XQDY0027: return std::string("XQDY0027");
+    case XQDY0029: return std::string("XQDY0029");
+    case XQDY0041: return std::string("XQDY0041");
+    case XQDY0044: return std::string("XQDY0044");
+    case XQDY0052: return std::string("XQDY0052");
+    case XQDY0061: return std::string("XQDY0061");
+    case XQDY0062: return std::string("XQDY0062");
+    case XQDY0064: return std::string("XQDY0064");
+    case XQDY0072: return std::string("XQDY0072");
+    case XQDY0074: return std::string("XQDY0074");
+    case XQDY0084: return std::string("XQDY0084");
+    case XQDY0091: return std::string("XQDY0091");
+    case XQDY0092: return std::string("XQDY0092");
+
+    case XQST0009: return std::string("XQST0009");
+    case XQST0012: return std::string("XQST0012");
+    case XQST0013: return std::string("XQST0013");
+    case XQST0014: return std::string("XQST0014");
+    case XQST0015: return std::string("XQST0015");
+    case XQST0016: return std::string("XQST0016");
+    case XQST0022: return std::string("XQST0022");
+    case XQST0031: return std::string("XQST0031");
+    case XQST0032: return std::string("XQST0032");
+    case XQST0033: return std::string("XQST0033");
+    case XQST0034: return std::string("XQST0034");
+    case XQST0035: return std::string("XQST0035");
+    case XQST0036: return std::string("XQST0036");
+    case XQST0037: return std::string("XQST0037");
+    case XQST0038: return std::string("XQST0038");
+    case XQST0039: return std::string("XQST0039");
+    case XQST0040: return std::string("XQST0040");
+    case XQST0042: return std::string("XQST0042");
+    case XQST0043: return std::string("XQST0043");
+    case XQST0045: return std::string("XQST0045");
+    case XQST0046: return std::string("XQST0046");
+    case XQST0047: return std::string("XQST0047");
+    case XQST0048: return std::string("XQST0048");
+    case XQST0049: return std::string("XQST0049");
+    case XQST0053: return std::string("XQST0053");
+    case XQST0054: return std::string("XQST0054");
+    case XQST0055: return std::string("XQST0055");
+    case XQST0056: return std::string("XQST0056");
+    case XQST0057: return std::string("XQST0057");
+    case XQST0058: return std::string("XQST0058");
+    case XQST0059: return std::string("XQST0059");
+    case XQST0060: return std::string("XQST0060");
+    case XQST0063: return std::string("XQST0063");
+    case XQST0065: return std::string("XQST0065");
+    case XQST0066: return std::string("XQST0066");
+    case XQST0067: return std::string("XQST0067");
+    case XQST0068: return std::string("XQST0068");
+    case XQST0069: return std::string("XQST0069");
+    case XQST0070: return std::string("XQST0070");
+    case XQST0071: return std::string("XQST0071");
+    case XQST0073: return std::string("XQST0073");
+    case XQST0075: return std::string("XQST0075");
+    case XQST0076: return std::string("XQST0076");
+    case XQST0077: return std::string("XQST0077");
+    case XQST0078: return std::string("XQST0078");
+    case XQST0079: return std::string("XQST0079");
+    case XQST0082: return std::string("XQST0082");
+    case XQST0085: return std::string("XQST0085");
+    case XQST0087: return std::string("XQST0087");
+    case XQST0088: return std::string("XQST0088");
+    case XQST0089: return std::string("XQST0089");
+    case XQST0090: return std::string("XQST0090");
+    case XQST0093: return std::string("XQST0093");
+
+    case XQTY0023: return std::string("XQTY0023");
+    case XQTY0024: return std::string("XQTY0024");
+    case XQTY0028: return std::string("XQTY0028");
+    case XQTY0030: return std::string("XQTY0030");
+    case XQTY0086: return std::string("XQTY0086");
+
+    case FOER0000: return std::string("FOER0000");
+    case FOAR0001: return std::string("FOAR0001");
+    case FOAR0002: return std::string("FOAR0002");
+    case FOCA0001: return std::string("FOCA0001");
+    case FOCA0002: return std::string("FOCA0002");
+    case FOCA0003: return std::string("FOCA0003");
+    case FOCA0005: return std::string("FOCA0005");
+    case FOCA0006: return std::string("FOCA0006");
+    case FOCH0001: return std::string("FOCH0001");
+    case FOCH0002: return std::string("FOCH0002");
+    case FOCH0003: return std::string("FOCH0003");
+    case FOCH0004: return std::string("FOCH0004");
+    case FODC0001: return std::string("FODC0001");
+    case FODC0002: return std::string("FODC0002");
+    case FODC0003: return std::string("FODC0003");
+    case FODC0004: return std::string("FODC0004");
+    case FODC0005: return std::string("FODC0005");
+    case FODT0001: return std::string("FODT0001");
+    case FODT0002: return std::string("FODT0002");
+    case FODT0003: return std::string("FODT0003");
+    case FONS0004: return std::string("FONS0004");
+    case FONS0005: return std::string("FONS0005");
+    case FORG0001: return std::string("FORG0001");
+    case FORG0002: return std::string("FORG0002");
+    case FORG0003: return std::string("FORG0003");
+    case FORG0004: return std::string("FORG0004");
+    case FORG0005: return std::string("FORG0005");
+    case FORG0006: return std::string("FORG0006");
+    case FORG0008: return std::string("FORG0008");
+    case FORG0009: return std::string("FORG0009");
+    case FORX0001: return std::string("FORX0001");
+    case FORX0002: return std::string("FORX0002");
+    case FORX0003: return std::string("FORX0003");
+    case FORX0004: return std::string("FORX0004");
+    case FOTY0012: return std::string("FOTY0012");
+
+    case SENR0001_Item_is_attribute_or_namespace_node: 
+      return std::string("SENR0001_Item_is_attribute_or_namespace_node");
+
+  	caseSEPM0016_Invalid_parameter_value: 
+      return std::string("SEPM0016_Invalid_parameter_value");
+
+    case XQP0000_DYNAMIC_RUNTIME_ERROR: 
+      return std::string("XQP0000_DYNAMIC_RUNTIME_ERROR");
+    case XQP0001_DYNAMIC_ITERATOR_OVERRUN: 
+      return std::string("XQP0001_DYNAMIC_ITERATOR_OVERRUN");
+    case XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD: 
+      return std::string("XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD");
+    case XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND: 
+      return std::string("XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND");
+    case XQP0004_SYSTEM_NOT_SUPPORTED: 
+      return std::string("XQP0004_SYSTEM_NOT_SUPPORTED");
+    case XQP0005_SYSTEM_ASSERT_FAILED: 
+      return std::string("XQP0005_SYSTEM_ASSERT_FAILED");
+    case XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN: 
+      return std::string("XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN");
+    case XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE: 
+      return std::string("XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE");
+    case XQP0008_SYSTEM_READ_LOCK_FAILED: 
+      return std::string("XQP0008_SYSTEM_READ_LOCK_FAILED");
+    case XQP0009_SYSTEM_WRITE_LOCK_FAILED: 
+      return std::string("XQP0009_SYSTEM_WRITE_LOCK_FAILED");
+    case XQP0010_SYSTEM_POP_FROM_EMPTY_LIST: 
+      return std::string("XQP0010_SYSTEM_POP_FROM_EMPTY_LIST");
+    case XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION: 
+      return std::string("XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION");
+    case XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION:
+      return std::string("XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION");
+    case XQP0013_SYSTEM_MMFILE_IOEXCEPTION: 
+      return std::string("XQP0013_SYSTEM_MMFILE_IOEXCEPTION");
+    case XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED: 
+      return std::string("XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED");
+    case XQP0015_SYSTEM_NOT_YET_IMPLEMENTED: 
+      return std::string("XQP0015_SYSTEM_NOT_YET_IMPLEMENTED");
+    case XQP0016_LOADER_IO_ERROR: 
+      return std::string("XQP0016_LOADER_IO_ERROR");
+    case XQP0017_LOADER_NOT_WELL_FORMED_XML:
+      return std::string("XQP0017_LOADER_NOT_WELL_FORMED_XML");
+    case XQP0018_NODEID_OUT_OF_RANGE: 
+      return std::string("XQP0018_NODEID_OUT_OF_RANGE");
+
+    case API0001_XQUERY_STRING_IS_EMPTY: 
+      return std::string("API0001_XQUERY_STRING_IS_EMPTY");
+    case API0002_COMPILE_FAILED: 
+      return std::string("API0002_COMPILE_FAILED");
+    case API0003_XQUERY_NOT_COMPILED: 
+      return std::string("API0003_XQUERY_NOT_COMPILED");
+    case API0004_XQUERY_ALREADY_COMPILED: 
+      return std::string("API0004_XQUERY_ALREADY_COMPILED");
+    case API0005_COLLECTION_ALREADY_EXISTS: 
+      return std::string("API0005_COLLECTION_ALREADY_EXISTS");
+    case API0006_COLLECTION_NOT_FOUND: 
+      return std::string("API0006_COLLECTION_NOT_FOUND");
+    case API0007_COLLECTION_ITEM_MUST_BE_A_NODE: 
+      return std::string("API0007_COLLECTION_ITEM_MUST_BE_A_NODE");
+    case API0008: 
+      return std::string("API0008");
+    default:
+      return std::string("Unknown error code");
+  }
+
+}
 
 void AlertCodes::ApplyParams(
     string *err_decoded,
