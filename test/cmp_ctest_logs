@@ -6,8 +6,8 @@ if test "$#" != "2"; then
 fi
 
 TMP1=`mktemp /tmp/XXXXXX`
-cat $1 | cut -f2 -d: | sort >$TMP1
+cat $2 | cut -f2 -d: | sort >$TMP1
 
-cat $2 | cut -f2 -d: | sort | diff -u $TMP1 -
+cat $1 | cut -f2 -d: | sort | diff -U0 $TMP1 - | tail -n +3 | egrep -v '^@'
 
 rm -f $TMP1
