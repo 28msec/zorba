@@ -213,7 +213,7 @@ void ZorbaAlertFactory::error_alert(
 
 	err_manager->getAlertCodes().ApplyParams(&err_decoded, &param1, &param2);
 
-  cerr << canonical_err_names [e] << ": " << err_decoded <<  "\n";
+  //cerr << canonical_err_names [e] << ": " << err_decoded <<  "\n";
 
 //	strloc << *ploc;
 
