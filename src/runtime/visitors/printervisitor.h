@@ -214,6 +214,24 @@ public:
   
   virtual void beginVisit ( const FnDocIterator& ) ;
   virtual void endVisit ( const FnDocIterator& ) ;
+
+  virtual void beginVisit( const QNameEqualIterator& );
+  virtual void endVisit( const QNameEqualIterator& );
+
+  virtual void beginVisit( const PrefixFromQNameIterator& );
+  virtual void endVisit( const PrefixFromQNameIterator& );
+
+  virtual void beginVisit( const LocalNameFromQNameIterator& );
+  virtual void endVisit( const LocalNameFromQNameIterator& );
+
+  virtual void beginVisit( const NamespaceUriFromQNameIterator& );
+  virtual void endVisit( const NamespaceUriFromQNameIterator& );
+
+  virtual void beginVisit( const NamespaceUriForPrefixlIterator& );
+  virtual void endVisit( const NamespaceUriForPrefixlIterator& );
+
+  virtual void beginVisit( const InScopePrefixesIterator& );
+  virtual void endVisit( const InScopePrefixesIterator& );
   
   virtual void beginVisit ( const CodepointsToStringIterator& ) ;
   virtual void endVisit ( const CodepointsToStringIterator& ) ;

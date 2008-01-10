@@ -77,6 +77,12 @@ namespace xqp
   class FnMinIterator;
   class FnSumIterator;
   class FnDocIterator;
+  class QNameEqualIterator;
+  class PrefixFromQNameIterator;
+  class LocalNameFromQNameIterator;
+  class NamespaceUriFromQNameIterator;
+  class NamespaceUriForPrefixlIterator;
+  class InScopePrefixesIterator;
   class CodepointsToStringIterator;
   class StringToCodepointsIterator;
   class CompareStrIterator;
@@ -308,6 +314,24 @@ namespace xqp
 
       virtual void beginVisit ( const FnDocIterator& ) = 0;
       virtual void endVisit ( const FnDocIterator& ) = 0;
+
+      virtual void beginVisit( const QNameEqualIterator& ) = 0;
+      virtual void endVisit( const QNameEqualIterator& ) = 0;
+
+      virtual void beginVisit( const PrefixFromQNameIterator& ) = 0;
+      virtual void endVisit( const PrefixFromQNameIterator& ) = 0;
+
+      virtual void beginVisit( const LocalNameFromQNameIterator& ) = 0;
+      virtual void endVisit( const LocalNameFromQNameIterator& ) = 0;
+
+      virtual void beginVisit( const NamespaceUriFromQNameIterator& ) = 0;
+      virtual void endVisit( const NamespaceUriFromQNameIterator& ) = 0;
+
+      virtual void beginVisit( const InScopePrefixesIterator& ) = 0;
+      virtual void endVisit( const InScopePrefixesIterator& ) = 0;
+
+      virtual void beginVisit( const NamespaceUriForPrefixlIterator& ) = 0;
+      virtual void endVisit( const NamespaceUriForPrefixlIterator& ) = 0;
 
       virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
       virtual void endVisit ( const CodepointsToStringIterator& ) = 0;

@@ -12,6 +12,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/booleans/BooleanImpl.h"
+#include "runtime/qnames/QNamesImpl.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/accessors/AccessorsImpl.h"
@@ -114,6 +115,10 @@ namespace xqp {
   UNARY_ACCEPT(DocFilterIterator);
   UNARY_ACCEPT(CastIterator);
   UNARY_ACCEPT(CastableIterator);
+  UNARY_ACCEPT(PrefixFromQNameIterator);
+  UNARY_ACCEPT(LocalNameFromQNameIterator);
+  UNARY_ACCEPT(NamespaceUriFromQNameIterator);
+  UNARY_ACCEPT(InScopePrefixesIterator);
   
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);
@@ -126,6 +131,8 @@ namespace xqp {
   BINARY_ACCEPT(FnRoundHalfToEvenIterator);
   BINARY_ACCEPT(FnDateTimeConstructorIterator);
   BINARY_ACCEPT(AttributeIterator);
+  BINARY_ACCEPT(QNameEqualIterator);
+  BINARY_ACCEPT(NamespaceUriForPrefixlIterator);
   
   // nary iterators
   NARY_ACCEPT(NormalizeUnicodeIterator);

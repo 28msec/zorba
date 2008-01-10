@@ -5,6 +5,7 @@
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
+#include "runtime/qnames/QNamesImpl.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
@@ -597,7 +598,61 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const FnDocIterator& ) {
     thePrinter.endIter();
   }
-       
+
+  void PrinterVisitor::beginVisit ( const QNameEqualIterator& a ) {
+    thePrinter.startIter("QNameEqualIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const QNameEqualIterator& ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const PrefixFromQNameIterator& a ) {
+    thePrinter.startIter("PrefixFromQNameIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const PrefixFromQNameIterator& ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const LocalNameFromQNameIterator& a ) {
+    thePrinter.startIter("LocalNameFromQNameIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const LocalNameFromQNameIterator& ) {
+    thePrinter.endIter();
+  }
+  
+  void PrinterVisitor::beginVisit ( const NamespaceUriFromQNameIterator& a ) {
+    thePrinter.startIter("NamespaceUriFromQNameIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const NamespaceUriFromQNameIterator& ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const NamespaceUriForPrefixlIterator& a ) {
+    thePrinter.startIter("NamespaceUriForPrefixlIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const NamespaceUriForPrefixlIterator& ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const InScopePrefixesIterator& a ) {
+    thePrinter.startIter("InScopePrefixesIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const InScopePrefixesIterator& ) {
+    thePrinter.endIter();
+  }
+  
   void PrinterVisitor::beginVisit ( const CodepointsToStringIterator& a ) {
     thePrinter.startIter("CodepointsToStringIterator");
     printCommons( &a );

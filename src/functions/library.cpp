@@ -15,6 +15,7 @@
 
 #include "functions/Accessors.h"
 #include "functions/Numerics.h"
+#include "functions/QNames.h"
 #include "functions/Sequences.h"
 #include "functions/Strings.h"
 #include "functions/Boolean.h"
@@ -149,6 +150,45 @@ DECL(fn_round_half_to_even,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 // end Numerics
+
+//QNames
+DECL(op_qname_equal,
+//      (ITEM_FACTORY.createQName(XQUERY_OP_NS,"op","QName-equal"),
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","QName-equal"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+DECL(fn_prefix_from_qname,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","prefix-from-QName"),
+      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION));
+
+DECL(fn_local_name_from_qname,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","local-name-from-QName"),
+      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION));
+
+DECL(fn_namespace_uri_from_qname,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","namespace-uri-from-QName"),
+      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+DECL(fn_namespace_uri_for_prefix,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","namespace-uri-for-prefix"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      //TODO fix the declaration
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+//       GENV_TYPESYSTEM.ELEMENT_TYPE,
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+DECL(fn_in_scope_prefixes,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","in-scope-prefixes"),
+     //TODO fix the declaration
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+//       GENV_TYPESYSTEM.ELEMENT_TYPE,
+      GENV_TYPESYSTEM.STRING_TYPE_STAR));
+// end QNames
 
 // Sequences
 DECL(fn_doc_func,
