@@ -1653,7 +1653,7 @@ typedef yy::xquery_parser::token token;
 	/* maintain NAMESPACEDECL */
 	/* ---------------------- */
 {URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext, yyleng);
+	yylval->sval = driver.symtab.put_uri(yytext+1, yyleng-2);
 	return token::URI_LITERAL;
 }
 
