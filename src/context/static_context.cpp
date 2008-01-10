@@ -79,7 +79,7 @@ namespace xqp {
 		set_construction_mode(StaticQueryContext::cons_strip);
 		set_ordering_mode(StaticQueryContext::ordered);
 		set_order_empty_mode(StaticQueryContext::empty_greatest);
-		set_boundary_space_mode(StaticQueryContext::preserve_space);
+		set_boundary_space_mode(StaticQueryContext::strip_space);
 		set_inherit_mode(StaticQueryContext::no_inherit_ns);
 		set_preserve_mode(StaticQueryContext::no_preserve_ns);
 		set_order_empty_mode (StaticQueryContext::empty_least);
