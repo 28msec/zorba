@@ -5,7 +5,8 @@
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file functions/QNames.cpp
+ * @file runtime/qnames/QNamesImpl.cpp
  *
  */
+ 
  

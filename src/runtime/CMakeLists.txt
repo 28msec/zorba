@@ -8,6 +8,7 @@ SET(RUNTIME_SRCS
     core/nodeid_iterators.cpp
     core/sequencetypes.cpp
     numerics/NumericsImpl.cpp
+    qnames/QNamesImpl.cpp
     strings/StringsImpl.cpp
     booleans/BooleanImpl.cpp
     dateTime/DurationsDatesTimes.cpp

@@ -1,3 +1,15 @@
+/**
+ * @copyright
+ * ========================================================================
+ *  Copyright FLWOR Foundation
+ * ========================================================================
+ *
+ * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
+ * @file functions/QNames.h
+ *
+ */
+ 
+/*
 11.1 Additional Constructor Functions for QNames
 11.1.1 fn:resolve-QName
 11.1.2 fn:QName
@@ -8,3 +20,4 @@
 11.2.4 fn:namespace-uri-from-QName
 11.2.5 fn:namespace-uri-for-prefix
 11.2.6 fn:in-scope-prefixes
+*/
