@@ -438,7 +438,7 @@ Zorba_XQueryExecution::close()
 }
 
 
-ostream& Zorba_XQueryExecution::serialize( ostream& os )
+bool Zorba_XQueryExecution::serialize( ostream& os )
 {
   state_block->zorp->current_xquery = state_block->xqbinary;
   state_block->zorp->current_xqueryresult = this;
@@ -455,10 +455,10 @@ ostream& Zorba_XQueryExecution::serialize( ostream& os )
 	}
   state_block->zorp->current_xquery = NULL;
   state_block->zorp->current_xqueryresult = NULL;
-  return os;
+  return !isError();
 }
 
-std::ostream& Zorba_XQueryExecution::serializeXML( std::ostream& os )
+bool Zorba_XQueryExecution::serializeXML( std::ostream& os )
 {
   state_block->zorp->current_xquery = state_block->xqbinary;
   state_block->zorp->current_xqueryresult = this;
@@ -476,10 +476,10 @@ std::ostream& Zorba_XQueryExecution::serializeXML( std::ostream& os )
 	}
   state_block->zorp->current_xquery = NULL;
   state_block->zorp->current_xqueryresult = NULL;
-  return os;
+  return !isError();
 }
 
-std::ostream& Zorba_XQueryExecution::serializeHTML( std::ostream& os )
+bool Zorba_XQueryExecution::serializeHTML( std::ostream& os )
 {
   state_block->zorp->current_xquery = state_block->xqbinary;
   state_block->zorp->current_xqueryresult = this;
@@ -496,10 +496,10 @@ std::ostream& Zorba_XQueryExecution::serializeHTML( std::ostream& os )
 	}
   state_block->zorp->current_xquery = NULL;
   state_block->zorp->current_xqueryresult = NULL;
-  return os;
+  return !isError();
 }
 
-std::ostream& Zorba_XQueryExecution::serializeTEXT( std::ostream& os )
+bool Zorba_XQueryExecution::serializeTEXT( std::ostream& os )
 {
   state_block->zorp->current_xquery = state_block->xqbinary;
   state_block->zorp->current_xqueryresult = this;
@@ -520,7 +520,7 @@ std::ostream& Zorba_XQueryExecution::serializeTEXT( std::ostream& os )
 	}
   state_block->zorp->current_xquery = NULL;
   state_block->zorp->current_xqueryresult = NULL;
-  return os;
+  return !isError();
 }
 
 
@@ -591,9 +591,25 @@ bool Zorba_XQueryExecution::SetVariable(
     xqp_string expanded_name = internal_dyn_context->
                                expand_varname(state_block->xqbinary->internal_sctx, varname);
 
-    ItemFactory* factory = state_block->zorp->getItemFactory();
+		Store		&store = Store::getInstance();
+		ItemFactory* factory = Zorba::getItemFactory();
 
     Item_t uriItem = factory->createAnyURI(docUri);
+		if(uriItem.isNull())
+		{//not a valid uri
+			state_block->zorp->current_xquery = NULL;
+			state_block->zorp->current_xqueryresult = NULL;
+			return false;
+		}
+		//?store.deleteDocument(docUri);
+		Item_t	docItem = store.loadDocument(docUri, is);
+		if(docItem.isNull())
+		{//cannot upload document into store
+			//or maybe is not valid xml
+			state_block->zorp->current_xquery = NULL;
+			state_block->zorp->current_xqueryresult = NULL;
+			return false;
+		}
 
     iter = new SingletonIterator(Zorba::null_loc, uriItem);
     iter = new FnDocIterator(Zorba::null_loc, iter);

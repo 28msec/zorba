@@ -75,7 +75,7 @@ namespace xqp {
     set_default_elem_type_ns ("");		
     set_default_function_namespace (lookup_ns ("fn"));
 		set_context_item_static_type(GENV_TYPESYSTEM.create_any_type());
-    set_default_collation_uri ("");
+    set_default_collation_uri ("http://www.w3.org/2005/xpath-functions/collation/codepoint");
 		set_construction_mode(StaticQueryContext::cons_strip);
 		set_ordering_mode(StaticQueryContext::ordered);
 		set_order_empty_mode(StaticQueryContext::empty_greatest);
@@ -558,6 +558,8 @@ void static_context::compute_current_absolute_baseuri()
 xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri)
 {
 	xqp_string		abs_uri;
+
+	assert(false);//not implemented
 
 	abs_uri = base_uri;
 //	"./../relativ/rel.exe"

@@ -60,6 +60,9 @@ void set_var (string name, string val,
     ifstream is (val.c_str ());
     assert (is);
     result->SetVariable(name, val.c_str(), is);
+	//	XmlDataManager_t		store = ZorbaEngine::getInstance().getXmlDataManager();
+	//	store->loadDocument(val.c_str (), is);
+	//	dctx->SetVariableAsDocument(name, val.c_str());
   }
 }
 

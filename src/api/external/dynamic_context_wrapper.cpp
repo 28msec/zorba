@@ -6,6 +6,7 @@
 #include "runtime/core/item_iterator.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
+#include "runtime/sequences/SequencesImpl.h"
 #include <time.h>
 
 namespace xqp {
@@ -486,19 +487,39 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 			}
 			break;
 		case VAR_DOCUMENT_URI:
-			Store		*pStore = Zorba::getStore();
-			xqpStringStore_t	sst((*it).document_uri_value);
-			xqp_string				xqpstr(sst);
-			atomic_item = pStore->getDocument(xqpstr);
+		//	Store		*pStore = Zorba::getStore();
+		//	xqpStringStore_t	sst((*it).document_uri_value);
+		//	xqp_string				xqpstr(sst);
+		//	atomic_item = pStore->getDocument(xqpstr);
 			break;
 		}
 		
-		one_item_iterator = new SingletonIterator(Zorba::null_loc, atomic_item);
-		PlanIter_t		iter_t(one_item_iterator);
-		iterator_plus_state = new PlanWrapper(iter_t);
-		xqp_string		expanded_name;
-		expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
-		new_dctx->add_variable(expanded_name, iterator_plus_state);
+		if((*it).vartype == VAR_DOCUMENT_URI)
+		{
+			xqpStringStore_t	sst((*it).document_uri_value);
+			xqp_string				xqpstr(sst);
+			Item_t uriItem = item_factory->createAnyURI(xqpstr);
+			PlanIter_t iter;
+			PlanWrapper* planWrapper = NULL;
+
+			iter = new SingletonIterator(Zorba::null_loc, uriItem);
+			iter = new FnDocIterator(Zorba::null_loc, iter);
+
+			planWrapper = new PlanWrapper(iter);
+
+			xqp_string		expanded_name;
+			expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
+			new_dctx->add_variable(expanded_name, planWrapper);
+		}
+		else
+		{
+			one_item_iterator = new SingletonIterator(Zorba::null_loc, atomic_item);
+			PlanIter_t		iter_t(one_item_iterator);
+			iterator_plus_state = new PlanWrapper(iter_t);
+			xqp_string		expanded_name;
+			expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
+			new_dctx->add_variable(expanded_name, iterator_plus_state);
+		}
 	}
 
 	new_dctx->set_implicit_timezone(implicit_timezone_seconds);

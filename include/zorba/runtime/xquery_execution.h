@@ -15,10 +15,10 @@ public:
 
 	virtual void setAlertsParam(void *alert_callback_param) = 0;
 
-  virtual std::ostream& serialize( std::ostream& os ) = 0;
-  virtual std::ostream& serializeXML( std::ostream& os ) = 0;
-  virtual std::ostream& serializeHTML( std::ostream& os ) = 0;
-  virtual std::ostream& serializeTEXT( std::ostream& os ) = 0;
+  virtual bool serialize( std::ostream& os ) = 0;
+  virtual bool serializeXML( std::ostream& os ) = 0;
+  virtual bool serializeHTML( std::ostream& os ) = 0;
+  virtual bool serializeTEXT( std::ostream& os ) = 0;
 	virtual bool isError() = 0;
 
 	virtual void	AbortQueryExecution() = 0;

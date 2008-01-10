@@ -72,20 +72,20 @@ Zorba_XQuerySimpleResult::~Zorba_XQuerySimpleResult()
 
 bool Zorba_XQuerySimpleResult::serializeXML( std::ostream& os )
 {
-	m_xquery_exec->serializeXML(os);
-	return !m_xquery_exec->isError();
+	return m_xquery_exec->serializeXML(os);
+	//return !m_xquery_exec->isError();
 }
 
 bool Zorba_XQuerySimpleResult::serializeHTML( std::ostream& os )
 {
-	m_xquery_exec->serializeHTML(os);
-	return !m_xquery_exec->isError();
+	return m_xquery_exec->serializeHTML(os);
+	//return !m_xquery_exec->isError();
 }
 
 bool Zorba_XQuerySimpleResult::serializeTEXT( std::ostream& os )
 {
-	m_xquery_exec->serializeTEXT(os);
-	return !m_xquery_exec->isError();
+	return m_xquery_exec->serializeTEXT(os);
+	//return !m_xquery_exec->isError();
 }
 
 bool Zorba_XQuerySimpleResult::isError()

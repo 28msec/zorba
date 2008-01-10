@@ -2,6 +2,7 @@
 #ifndef INCLUDE_ZORBA_ENGINE_API
 #define INCLUDE_ZORBA_ENGINE_API
 
+#include "store/api/store_api.h"
 
 namespace xqp
 {
@@ -59,6 +60,8 @@ public:
 
 	virtual StaticQueryContext_t createStaticContext() = 0;
 	virtual DynamicQueryContext_t createDynamicContext() = 0;
+
+	virtual	XmlDataManager_t		getXmlDataManager() = 0;
 };
 
 

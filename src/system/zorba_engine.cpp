@@ -30,6 +30,7 @@
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+#include "api/external/xmldatamanager_impl.h"
 
 namespace xqp{
 
@@ -60,11 +61,14 @@ Zorba* ZORBA_FOR_CURRENT_THREAD()
 
 ZorbaEngineImpl::ZorbaEngineImpl()
 {
+	xml_data_manager = new XmlDataManager_Impl;
+	xml_data_manager->addReference();
 }
 
 
 ZorbaEngineImpl::~ZorbaEngineImpl()
 {
+	xml_data_manager->removeReference();
   assert(globalZorbaEngine == NULL);
 }
 
@@ -307,5 +311,11 @@ DynamicQueryContext_t ZorbaEngineImpl::createDynamicContext()
 {
 	return new DynamicContextWrapper;
 }
+
+XmlDataManager_t		ZorbaEngineImpl::getXmlDataManager()
+{
+	return xml_data_manager;
+}
+
 
 }//end namespace xqp

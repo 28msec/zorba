@@ -10,6 +10,7 @@ namespace xqp
 {
 
 class Zorba;
+class XmlDataManager_Impl;
 
 /*daniel: getInstance cannot be called by system after user calls shutdown()
 this generates memory leaks
@@ -56,6 +57,9 @@ private:
   pthread_mutex_t						 theThreadDataMutex;
 #endif
 
+	//the store wrapper
+	XmlDataManager_Impl		*xml_data_manager;
+
 public:
 	ZorbaEngineImpl();
 
@@ -95,6 +99,8 @@ public:
 
 	StaticQueryContext_t createStaticContext();
 	DynamicQueryContext_t createDynamicContext();
+
+	virtual	XmlDataManager_t		getXmlDataManager();
 
 protected:
 #if defined ZORBA_USE_PTHREAD_LIBRARY

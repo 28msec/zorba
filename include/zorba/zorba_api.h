@@ -8,6 +8,7 @@
 
 #include "store/api/item.h"
 #include "store/api/collection.h"
+#include "store/api/store_api.h"
 #include "util/rchandle.h"
 #include "error_api.h"
 #include "context/static_context_api.h"

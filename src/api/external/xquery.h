@@ -42,10 +42,10 @@ public:
   virtual void reset();
   virtual void close();
 	virtual void setAlertsParam(void *alert_callback_param);
-	virtual ostream& serialize( ostream& os );
-  virtual std::ostream& serializeXML( std::ostream& os );
-  virtual std::ostream& serializeHTML( std::ostream& os );
-  virtual std::ostream& serializeTEXT( std::ostream& os );
+	virtual bool serialize( std::ostream& os );
+  virtual bool serializeXML( std::ostream& os );
+  virtual bool serializeHTML( std::ostream& os );
+  virtual bool serializeTEXT( std::ostream& os );
 	virtual bool isError();
 
 	virtual void	AbortQueryExecution();
