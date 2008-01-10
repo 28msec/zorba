@@ -18,14 +18,8 @@ namespace xqp {
   }
   bool NumConversions::strToUInteger(const xqpString& aStr, xqp_uinteger& aUInteger){
     try {
-      xqp_integer lInt;
-      lInt = boost::lexical_cast<xqp_integer>(aStr.c_str());
-      if (lInt >= 0) {
-        aUInteger = lInt;
-        return true;
-      } else {
-        return false;
-      }
+      aUInteger = boost::lexical_cast<xqp_uinteger>(aStr.c_str());
+      return true;
     } catch (boost::bad_lexical_cast &) {
       return false;
     }
@@ -49,13 +43,8 @@ namespace xqp {
   }
   bool NumConversions::strToUInt(const xqpString& aStr, xqp_uint& aUInt){
     try {
-      xqp_int lInt =  boost::lexical_cast<xqp_int>(aStr.c_str());
-      if (lInt >= 0) {
-        aUInt = lInt;
-        return true;
-      } else {
-        return false;
-      }
+      aUInt =  boost::lexical_cast<xqp_uint>(aStr.c_str());
+      return true;
     } catch (boost::bad_lexical_cast &) {
       return false;
     }
@@ -76,13 +65,8 @@ namespace xqp {
   }
   bool NumConversions::strToULong(const xqpString& aStr, xqp_ulong& aULong){
     try {
-      xqp_long lLong = boost::lexical_cast<xqp_long>(aStr.c_str());
-      if (lLong >= 0) {
-        aULong = lLong;
-        return true;
-      } else {
-        return false;
-      }
+      aULong = boost::lexical_cast<xqp_long>(aStr.c_str());
+      return true;
     } catch (boost::bad_lexical_cast &) {
       return false;
     }
@@ -103,13 +87,8 @@ namespace xqp {
   }
   bool NumConversions::strToUShort(const xqpString& aStr, xqp_ushort& aUShort){
     try {
-      xqp_short lShort = boost::lexical_cast<xqp_short>(aStr.c_str());
-      if (lShort >= 0) {
-        aUShort = lShort;
-        return true;
-      } else {
-        return false;
-      }
+      aUShort = boost::lexical_cast<xqp_short>(aStr.c_str());
+      return true;
     } catch (boost::bad_lexical_cast &) {
       return false;
     }
