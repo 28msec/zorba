@@ -161,24 +161,36 @@ namespace xqp {
   }
   bool NumConversions::strToByte(const xqpString& aStr, xqp_byte& aByte){
     try {
-      aByte = boost::lexical_cast<xqp_byte>(aStr.c_str());
-      return true;
+      xqp_int lInt = boost::lexical_cast<xqp_int>(aStr.c_str());
+      if (lInt >= -128 && lInt <= 127) {
+        aByte = lInt;
+        return true;
+      } else {
+        return false;
+      }
     } catch (boost::bad_lexical_cast &) {
       return false;
     }
   }
   xqpString NumConversions::byteToStr(xqp_byte aByte){
-    return boost::lexical_cast<std::string>(aByte);
+    xqp_int lInt = aByte;
+    return boost::lexical_cast<std::string>(lInt);
   }
   bool NumConversions::strToUByte(const xqpString& aStr, xqp_ubyte& aUByte){
     try {
-      aUByte = boost::lexical_cast<xqp_ubyte>(aStr.c_str());
-      return true;
+      xqp_uint lUInt = boost::lexical_cast<xqp_uint>(aStr.c_str());
+      if (lUInt >= 0 && lUInt <= 255) {
+        aUByte = lUInt;
+        return true;
+      } else {
+        return false;
+      }
     } catch (boost::bad_lexical_cast &) {
       return false;
     }
   }
   xqpString NumConversions::ubyteToStr(xqp_ubyte aUByte){
-    return boost::lexical_cast<std::string>(aUByte);
+    xqp_uint lUInt = aUByte;
+    return boost::lexical_cast<std::string>(lUInt);
   }
 } /* namespace xqp */
