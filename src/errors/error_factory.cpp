@@ -11,7 +11,7 @@
 #include "store/api/item.h"
 #include "runtime/base/iterator.h"
 #include "system/zorba_engine.h"
-//#include "api/external/xquerybinary.h"
+#include "api/external/xquery.h"
 
 using namespace std;
 namespace xqp {
@@ -232,6 +232,9 @@ void ZorbaAlertFactory::error_alert(
 	}
 	errmess->alert_description = err_decoded;
 	time(&errmess->time_of_alert);
+
+	if(z->current_xqueryresult)
+		z->current_xqueryresult->is_error = true;
 
 	err_manager->sendAlertToUser(z, errmess);
 
