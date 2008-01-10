@@ -2,6 +2,7 @@
 #include <sstream>
 #include <climits>
 #include "util/numconversions.h"
+#include <iostream> 
 
 namespace xqp {
   bool NumConversions::strToInteger(const xqpString& aStr, xqp_integer& aInteger){
@@ -17,8 +18,14 @@ namespace xqp {
   }
   bool NumConversions::strToUInteger(const xqpString& aStr, xqp_uinteger& aUInteger){
     try {
-      aUInteger = boost::lexical_cast<xqp_uinteger>(aStr.c_str());
-      return true;
+      xqp_integer lInt;
+      lInt = boost::lexical_cast<xqp_integer>(aStr.c_str());
+      if (lInt >= 0) {
+        aUInteger = lInt;
+        return true;
+      } else {
+        return false;
+      }
     } catch (boost::bad_lexical_cast &) {
       return false;
     }
@@ -42,8 +49,13 @@ namespace xqp {
   }
   bool NumConversions::strToUInt(const xqpString& aStr, xqp_uint& aUInt){
     try {
-      aUInt =  boost::lexical_cast<xqp_uint>(aStr.c_str());
-      return true;
+      xqp_int lInt =  boost::lexical_cast<xqp_int>(aStr.c_str());
+      if (lInt >= 0) {
+        aUInt = lInt;
+        return true;
+      } else {
+        return false;
+      }
     } catch (boost::bad_lexical_cast &) {
       return false;
     }
@@ -64,8 +76,13 @@ namespace xqp {
   }
   bool NumConversions::strToULong(const xqpString& aStr, xqp_ulong& aULong){
     try {
-      aULong = boost::lexical_cast<xqp_ulong>(aStr.c_str());
-      return true;
+      xqp_long lLong = boost::lexical_cast<xqp_long>(aStr.c_str());
+      if (lLong >= 0) {
+        aULong = lLong;
+        return true;
+      } else {
+        return false;
+      }
     } catch (boost::bad_lexical_cast &) {
       return false;
     }
@@ -86,8 +103,13 @@ namespace xqp {
   }
   bool NumConversions::strToUShort(const xqpString& aStr, xqp_ushort& aUShort){
     try {
-      aUShort = boost::lexical_cast<xqp_ushort>(aStr.c_str());
-      return true;
+      xqp_short lShort = boost::lexical_cast<xqp_short>(aStr.c_str());
+      if (lShort >= 0) {
+        aUShort = lShort;
+        return true;
+      } else {
+        return false;
+      }
     } catch (boost::bad_lexical_cast &) {
       return false;
     }

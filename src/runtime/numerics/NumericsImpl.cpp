@@ -516,10 +516,10 @@ namespace xqp
         res = Zorba::getItemFactory()->createDouble ( mul * item->getDoubleValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         res = Zorba::getItemFactory()->createFloat ( mul * item->getFloatValue() );
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createDecimal ( mul * item->getDecimalValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
         res = Zorba::getItemFactory()->createInteger ( mul * item->getIntegerValue() );
+      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
+        res = Zorba::getItemFactory()->createDecimal ( mul * item->getDecimalValue() );
       else
       {
           ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
