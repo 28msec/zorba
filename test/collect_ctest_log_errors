@@ -13,6 +13,7 @@ my %queries;
 
 sub add_assert_fail {
     my ($q, $file, $fun, $assertion) = @_;
+    $file =~ s#^$test_path/?##g;
     $_ = "$file: $fun: $assertion";
     if ($html) {
         s/([&])/$1amp;/g; s/([<])/&lt;/g; s/[>]/&gt;/g;
@@ -39,6 +40,7 @@ declare variable $line external;
     
     if (m#([^:]+):([^:]+):#) {
         my ($file, $line) = ($1, $2);
+        if (($file eq "?") || ($line eq "?")) { return ""; }
         $author = `svn blame --xml $file | $test_path/zorbatest/xquery -s - $qf line=$line`
     }
 
@@ -46,11 +48,13 @@ declare variable $line external;
     return "$author: ";
 }
 
-my $query;
+my ($query, $in_valgrind, $vg_err);
 
 while (<>) {
     if (m#^[0-9]+/[0-9]+ Testing: (.*)$#) {
         $query = $1;
+        $in_valgrind = 0;
+        $vg_err = "";
     } elsif (m#^[^:]+: ([^:]+:[0-9]+): (.*): Assertion (.*) failed.$#) {
         add_assert_fail $query, $1, $2, $3;
     } elsif (m#XQP0005:.*Assertion (.*) failed in ([^:]+:[0-9]+): (.*)$#) {
@@ -59,6 +63,14 @@ while (<>) {
         add_assert_fail $query, "?", "?", "parser failure XPST0003";
     } elsif (m#^[>] [<]root[>]XPST0003[<]/root>$# && $parse_err) {
         add_assert_fail $query, "?", "?", "parse incorrectly succeeded, should have raised XPST0003";
+    } elsif (m#running valgrind#) {
+        $in_valgrind = 1;
+    } elsif ($in_valgrind == 1 && m#^==[0-9]+== ([^ ].*)#) {
+        $in_valgrind++;
+        $vg_err = "Valgrind: $1";
+    } elsif ($in_valgrind == 2 && m#^==[0-9]+== *at 0x[0-9A-Z]+: (.*) [(](.*:[0-9]+)[)]$#) {
+        add_assert_fail ($query, $2, $1, $vg_err);
+        $in_valgrind = 3;
     }
 }
 
