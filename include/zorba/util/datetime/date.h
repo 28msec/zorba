@@ -10,6 +10,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "util/utf8/xqpString.h"
 #include "util/rchandle.h"
+#include "util/datetime/timezone.h"
 
 namespace xqp
 {
@@ -33,7 +34,9 @@ public:
 
 protected:
   Date& operator=(const Date_t& d_t);
+  
   boost::gregorian::date the_date;
+  TimeZone the_time_zone;
 };
 
 } // namespace xqp

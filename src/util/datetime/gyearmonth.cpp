@@ -5,7 +5,7 @@
  */
 
 #include <string>
-#include "util/datetime/date.h"
+#include "util/datetime/gyearmonth.h"
 #include "util/datetime/timezone.h"
 #include "util/datetime/parse.h"
 #include "errors/error_factory.h"
@@ -16,9 +16,9 @@ using namespace std;
 namespace xqp
 {
     
-Date_t Date::parse_string(xqpString s)
+gYearMonth_t gYearMonth::parse_string(xqpString s)
 {
-  Date_t d_t;
+  gYearMonth_t d_t;
   unsigned int position = 0;
   bool is_negative = false;
   std::string ss = *s.getStore();
@@ -37,52 +37,54 @@ Date_t Date::parse_string(xqpString s)
 
   if (ss.size()-position > 10) // we might have a timezone
   {
-    d_t = new Date(boost::gregorian::from_simple_string(ss.substr(position, 10)));
+    d_t = new gYearMonth(boost::gregorian::from_simple_string(ss.substr(position, 10)));
     d_t->the_time_zone = *TimeZone::parse_string(ss.substr(position+10, ss.size() - position - 10));
   }
   else
-    d_t = new Date(boost::gregorian::from_simple_string(ss));
+    d_t = new gYearMonth(boost::gregorian::from_simple_string(ss));
 
   // TODO: date can be negative
 
   return d_t;
 }
 
-Date& Date::operator=(const Date_t& d_t)
+gYearMonth& gYearMonth::operator=(const gYearMonth_t& gym_t)
 {
-  the_date = d_t->the_date;
+  the_gyear_month = gym_t->the_gyear_month;
   return *this;
 }
 
-bool Date::operator<(const Date& d) const
+bool gYearMonth::operator<(const gYearMonth& gym) const
 {
-  return (the_date < d.the_date);
+  return (the_gyear_month < gym.the_gyear_month);
 }
 
-bool Date::operator==(const Date& d) const
+bool gYearMonth::operator==(const gYearMonth& gym) const
 {
-  return (the_date == d.the_date);
+  return (the_gyear_month == gym.the_gyear_month);
 }
 
-xqpString Date::toString() const
+xqpString gYearMonth::toString() const
 {
-  xqpString result = boost::gregorian::to_iso_extended_string(the_date);
+  xqpString result = boost::gregorian::to_iso_extended_string(the_gyear_month);
   result += the_time_zone.toString();
   // TODO:
   return result;
 }
 
-const boost::gregorian::date& Date::get_date() const
+/*
+const boost::gregorian::date& gYearMonth::get_gYearMonth() const
 {
-  return the_date;
+  return the_gyear_month;
 }
+*/
 
-int Date::compare(const Date& d) const
+int gYearMonth::compare(const gYearMonth& gym) const
 {
   // TODO: handle timezone
-  if (operator<(d))
+  if (operator<(gym))
     return -1;
-  else if (operator==(d))
+  else if (operator==(gym))
     return 0;
   else
     return 1;

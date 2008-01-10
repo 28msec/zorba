@@ -10,6 +10,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "util/utf8/xqpString.h"
 #include "util/rchandle.h"
+#include "util/datetime/timezone.h"
 
 namespace xqp
 {
@@ -41,7 +42,9 @@ public:
 
 protected:
   DateTime& operator=(const DateTime_t& t_t);
+  
   boost::posix_time::ptime the_date_time;
+  TimeZone the_time_zone;  
 };
 
 } // namespace xqp

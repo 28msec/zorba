@@ -3,4 +3,6 @@ SET(DATETIME_SRCS
     duration.cpp
 	datetime.cpp
 	time.cpp
+	timezone.cpp
+	gyearmonth.cpp
 	parse.cpp)
