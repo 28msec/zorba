@@ -65,7 +65,7 @@ namespace xqp {
   }
   bool NumConversions::strToULong(const xqpString& aStr, xqp_ulong& aULong){
     try {
-      aULong = boost::lexical_cast<xqp_long>(aStr.c_str());
+      aULong = boost::lexical_cast<xqp_ulong>(aStr.c_str());
       return true;
     } catch (boost::bad_lexical_cast &) {
       return false;
@@ -87,7 +87,7 @@ namespace xqp {
   }
   bool NumConversions::strToUShort(const xqpString& aStr, xqp_ushort& aUShort){
     try {
-      aUShort = boost::lexical_cast<xqp_short>(aStr.c_str());
+      aUShort = boost::lexical_cast<xqp_ushort>(aStr.c_str());
       return true;
     } catch (boost::bad_lexical_cast &) {
       return false;
