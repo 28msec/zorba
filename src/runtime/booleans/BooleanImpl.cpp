@@ -562,8 +562,13 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
         ret = aItem0->getStringValue().compare(aItem1->getStringValue());
       else
         ret = aItem0->getStringValue().compare(aItem1->getStringValue(), *aCollation);
-    }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE)
+    } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
+        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
+      if (aCollation == 0)
+        ret = aItem0->getStringValue().compare(aItem1->getStringValue());
+      else
+        ret = aItem0->getStringValue().compare(aItem1->getStringValue(), *aCollation);
+    } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE)
                &&
               GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
     {
