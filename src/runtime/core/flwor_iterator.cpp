@@ -107,7 +107,7 @@ xqpStringStore FLWORIterator::ForLetClause::getVarName() const
 #ifndef NDEBUG
   return theVarName;
 #else
-  return "";
+  return std::string("");
 #endif
 }
 
