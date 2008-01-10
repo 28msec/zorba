@@ -312,6 +312,8 @@ Zorba_XQueryExecution::~Zorba_XQueryExecution()
 {
 	state_block->xqbinary->removeReference();
 
+  close();
+
   delete state_block;
   delete internal_dyn_context;
 
