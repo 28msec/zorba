@@ -339,7 +339,7 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
 		if (closed_parent_tag)		
 			tr << "</" << item->getNodeName()->getStringProperty() << ">";
 		else
-			tr << "/>";
+			tr << " />";
 
     if (ser.indent)
 			tr << ser.END_OF_LINE;
