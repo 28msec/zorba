@@ -13,7 +13,6 @@ my %queries;
 
 sub add_assert_fail {
     my ($q, $file, $fun, $assertion) = @_;
-    $file =~ s#^$test_path/?##g;
     $_ = "$file: $fun: $assertion";
     if ($html) {
         s/([&])/$1amp;/g; s/([<])/&lt;/g; s/[>]/&gt;/g;
