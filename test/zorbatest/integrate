@@ -11,16 +11,23 @@ export NOW=`date +%F-%T | tr ':' '_'`
 export CLEAN_BUILD=1
 export TEST_MODE="local"
 export REV=""
+export SRC=""
+export REGRESS_TEST=""
+export ACCEPT_TEST=1
+export SEND_MAIL=""
 while test $# -gt 0; do
 case $1 in
 --no-clean) export CLEAN_BUILD="" ;;
+--src) SRC=$2; shift ;;
 --rev) REV=$2; shift ;;
+--regress) export REGRESS_TEST=1 ;;
+--no-accept) export ACCEPT_TEST="" ;;
+--mail) export SEND_MAIL=1 ;;
 local) TEST_MODE=local ;;
 server) TEST_MODE=server ;;
 esac
 shift
 done
-
 
 #
 # Prepare
@@ -34,6 +41,8 @@ mkdir -p snapshots
 export LASTDATE=`latest_snapshot`
 if test $LASTDATE; then
     LASTREV=`cat snapshots/$LASTDATE/rev`
+    BLREV=`cat snapshots/regress_baseline/rev 2>/dev/null`
+    BLDATE=`cat snapshots/regress_baseline/timestamp 2>/dev/null`
     echo Last date $LASTDATE, revision $LASTREV
 fi
 export TESTS=$ROOT/testing
@@ -48,12 +57,17 @@ local NEWREV;
 
 if test "x$TEST_MODE" = "xlocal"; then
   export REV="local"
-  export SRC=$ROOT/../..
+  test $SRC || export SRC=$ROOT/../..
 else
-  export SRC=$ROOT/src
+  test $SRC || export SRC=$ROOT/src
+
+  # test $LASTREV && svn update -r $LASTREV $SRC >/dev/null 2>&1
+  echo 'Updating sources...'
   NEWREV=`svn update -r $1 $SRC | perl -ne 'if (/ revision ([0-9]+)\./) { print $1; }'`
   REV=$NEWREV
-  if test -z $REV; then echo Could not update sources; exit 1; fi
+  svn update -rHEAD $SRC/test/cmp_ctest_logs $SRC/test/collect_ctest_log_errors >/dev/null 2>&1
+
+  if test -z $REV; then echo 'Could not update sources'; exit 1; fi
   if test "x$REV" = "x$LASTREV"; then echo No changes, exiting; exit; fi
 fi
 }
@@ -63,7 +77,7 @@ echo Building for snapshot $NOW, revision $REV
 
 rm -f svn_log.xml
 if test "x$LASTREV" != "x" -a "x$REV" != "xlocal"; then
-    svn log --xml $SRC -r$LASTREV:$REV >svn_log.xml
+    svn log --xml $SRC -r`expr $LASTREV + 1`:$REV >svn_log.xml
 fi
 test -f svn_log.xml -a -s svn_log.xml || echo '<?xml version="1.0" encoding="UTF-8"?><log />' >svn_log.xml
 
@@ -87,12 +101,20 @@ echo $REV >rev; echo $NOW >timestamp
 touch BUILD_OK
 mv -f $ROOT/build_log.txt $ROOT/svn_log.xml .
 
+# Compile succeeded.
+# From this point on, the default current directory is $SNAPSHOT
+
 
 #
 # Test
 #
 
-do_tests () {
+echo '<root></root>' >acceptance_failures.xml
+echo '<root></root>' >regressions.xml
+echo '<root></root>' >bl_regressions.xml
+echo '<pre></pre>' >errors.xml
+
+do_acceptance () {
 
 . $ROOT/load_test_env
 
@@ -112,30 +134,69 @@ $ROOT/process_test_results
 cd test_results
 diff -qr acceptance $TESTS/test_results/acceptance | $ROOT/report_acceptance_failure $TESTS >../acceptance_failures.xmlfrag
 cd ..
-test -s acceptance_failures.xmlfrag && export ACCEPTANCE_FAILURES=y
-echo '<failures>' >acceptance_failures.xml
+test -s acceptance_failures.xmlfrag && export ACCEPTANCE_FAILURES=1
+echo '<root>' >acceptance_failures.xml
 cat acceptance_failures.xmlfrag >>acceptance_failures.xml
-echo '</failures>' >>acceptance_failures.xml
+echo '</root>' >>acceptance_failures.xml
 rm acceptance_failures.xmlfrag
 
 }
 
-if test -d $TESTS; then do_tests; fi
+do_regression () {
+
+local ref=$1
+local out=$2
+
+(
+echo '<root>'
+$SRC/test/cmp_ctest_logs $ref/ctest/LastTestsFailed.log ctest/LastTestsFailed.log |
+perl -pe 's#^[-](.*)$#<regress>$1</regress>#g;s#^[+](.*)$#<progress>$1</progress>#g'
+echo '</root>'
+) >$out
+
+}
+
+if test -d $TESTS/acceptance -a "x$ACCEPT_TEST" != "x"; then do_acceptance; fi
+
+if test "x$TEST_MODE" = "xserver" -a "x$REGRESS_TEST" != "x" -a "x$LASTDATE" != "x"; then
+    cd $ROOT/build
+    export VALGRIND=onfail
+    ctest
+    cp -a Testing/Temporary $SNAPSHOT/ctest
+    cd $SNAPSHOT
+
+    do_regression $ROOT/snapshots/$LASTDATE regressions.xml;
+    if test -e $ROOT/snapshots/regress_baseline; then
+        do_regression $ROOT/snapshots/regress_baseline bl_regressions.xml
+        BL_REGRESS_CNT=`egrep '^[<]regress[>]' bl_regressions.xml | wc -l`
+        echo $BL_REGRESS_CNT baseline regressions
+    fi
+    (echo '<pre>'; $SRC/test/collect_ctest_log_errors --html --blame --parse-err <ctest/LastTest.log; echo '</pre>') | perl -pe "s#$SRC/?##g" >errors.xml
+fi
+
 cp $ROOT/report.xqy .
-$ROOT/xquery report.xqy now=$NOW rev=$REV lastdate=$LASTDATE lastrev=$LASTREV >index.html
+$ROOT/xquery report.xqy now=$NOW rev=$REV lastdate=$LASTDATE lastrev=$LASTREV blrev=$BLREV bldate=$BLDATE >index.html
 
 if test $ACCEPTANCE_FAILURES; then
   echo Some acceptance tests failed, see $PWD/index.html
   export COMMITTERS=`echo '//span [@id="committers"]' | $ROOT/xquery -s index.html - | cut -f 2- -d'>' | cut -f1 -d'<'`
   test "x$TEST_MODE" != "xlocal" && echo Committers: $COMMITTERS
 else
-  echo All acceptance tests passed
+  echo 'All acceptance tests passed'
 fi
 
+if test "$BL_REGRESS_CNT" = "0"; then
+    rm -f $ROOT/snapshots/regress_baseline
+    (cd $ROOT/snapshots; ln -s $NOW regress_baseline)
+    echo Snapshot $NOW becomes new regression baseline
+fi
+
+# Rewrite "latest" link
 rm -f $ROOT/snapshots/latest
+(cd $ROOT/snapshots; ln -s `latest_snapshot` latest)
 ln -s $ROOT/snapshots/`latest_snapshot` $ROOT/snapshots/latest
 
-if test "x$TEST_MODE" != "xlocal" -a "x$ACCEPTANCE_FAILURES" != "x"; then
-  echo Sending e-mail to committers.
-  echo $COMMITTERS | mutt -i $ROOT/acceptance_failure_email_body.txt -s "Zorba testing: acceptance failures" -a index.html `cat $ROOT/error_email.txt` 
+if test "x$TEST_MODE" != "xlocal" -a "x$ACCEPTANCE_FAILURES" != "x" -a "x$SEND_MAIL" != "x"; then
+  echo 'Sending e-mail to committers.'
+  # echo $COMMITTERS | mutt -i $ROOT/acceptance_failure_email_body.txt -s "Zorba testing: acceptance failures" -a index.html `cat $ROOT/error_email.txt` 
 fi
