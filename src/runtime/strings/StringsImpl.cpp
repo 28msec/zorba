@@ -473,6 +473,9 @@ SubstringIterator::nextImpl(PlanState& planState) {
           STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
         }
       }
+    } else {
+      // fn:substring returns empty string in this case
+      STACK_PUSH( Zorba::getItemFactory()->createString(""), state );
     }
   }
   STACK_END();
