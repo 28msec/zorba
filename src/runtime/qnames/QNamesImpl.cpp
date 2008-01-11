@@ -30,14 +30,39 @@ namespace xqp {
 
  /* begin class QNameEqualIterator */
 Item_t
-QNameEqualIterator::nextImpl(PlanState& planState){
-    Item_t res;
+QNameEqualIterator::nextImpl(PlanState& planState)
+{
+  Item_t arg1;
+  Item_t arg2;
+  Item_t res;
 
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-    res = Zorba::getItemFactory()->createBoolean(false);
-    STACK_PUSH( res, state );
-    STACK_END();
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  arg1 = consumeNext ( theChild0, planState );
+  if ( arg1 != NULL )
+  {
+    arg2 = consumeNext ( theChild1, planState );
+    if ( arg2 != NULL )
+    {
+      arg1 = arg1->getAtomizationValue();
+      arg2 = arg2->getAtomizationValue();
+    
+      if(arg1->getLocalName() == arg2->getLocalName())
+      {
+        if((arg1->getNamespace().empty() && arg2->getNamespace().empty()) ||
+            (arg1->getNamespace() == arg2->getNamespace()))
+          res = Zorba::getItemFactory()->createBoolean(true);
+        else
+          res = Zorba::getItemFactory()->createBoolean(false);
+      }
+      else
+        res = Zorba::getItemFactory()->createBoolean(false);
+
+      STACK_PUSH( res, state );
+    }
+  }
+  STACK_END();
 }
 /* end class QNameEqualIterator */
 
