@@ -14,7 +14,6 @@
 #include "zorba/zorba_api.h"
 
 namespace fs = boost::filesystem;
-using namespace xqp;
 
 void
 printFile(std::ostream& os, std::string aInFile)
@@ -51,18 +50,18 @@ printPart(std::ostream& os, std::string aInFile,
 // check of an error that was repored was expected 
 // by the given specification object
 bool
-isErrorExpected(ZorbaAlertsManager* aManager, Specification* aSpec)
+isErrorExpected(xqp::ZorbaAlertsManager* aManager, Specification* aSpec)
 {
-  errors_english lCodes;
-  for (ZorbaAlertsManager::const_iterator lIter = aManager->begin();
+  xqp::errors_english lCodes;
+  for (xqp::ZorbaAlertsManager::const_iterator lIter = aManager->begin();
        lIter != aManager->end(); ++lIter)
   {
-    ZorbaAlert* lAlert = *lIter;
+    xqp::ZorbaAlert* lAlert = *lIter;
     switch (lAlert->alert_type)
     {
-      case ZorbaAlert::ERROR_ALERT:
+      case xqp::ZorbaAlert::ERROR_ALERT:
         {
-          ZorbaErrorAlert* lErrorAlert = dynamic_cast<ZorbaErrorAlert*>(lAlert);
+          xqp::ZorbaErrorAlert* lErrorAlert = dynamic_cast<xqp::ZorbaErrorAlert*>(lAlert);
           std::string lErrorCode = lCodes.toString(lErrorAlert->error_code);
           for (std::vector<std::string>::const_iterator lErrorIter = aSpec->errorsBegin();
                lErrorIter != aSpec->errorsEnd(); ++lErrorIter)
@@ -82,22 +81,22 @@ isErrorExpected(ZorbaAlertsManager* aManager, Specification* aSpec)
 
 // print all errors that were raised
 void
-printErrors(ZorbaAlertsManager* aManager)
+printErrors(xqp::ZorbaAlertsManager* aManager)
 {
   if (aManager->size() == 0) return;
 
   std::cout<< "Errors:" << std::endl;
 
-  errors_english lCodes;
-  for (ZorbaAlertsManager::const_iterator lIter = aManager->begin();
+  xqp::errors_english lCodes;
+  for (xqp::ZorbaAlertsManager::const_iterator lIter = aManager->begin();
        lIter != aManager->end(); ++lIter)
   {
-    ZorbaAlert* lAlert = *lIter;
+    xqp::ZorbaAlert* lAlert = *lIter;
     switch (lAlert->alert_type)
     {
-      case ZorbaAlert::ERROR_ALERT:
+      case xqp::ZorbaAlert::ERROR_ALERT:
         {
-          ZorbaErrorAlert* lErrorAlert = dynamic_cast<ZorbaErrorAlert*>(lAlert);
+          xqp::ZorbaErrorAlert* lErrorAlert = dynamic_cast<xqp::ZorbaErrorAlert*>(lAlert);
           assert(lErrorAlert);
           std::string lErrorCode = lCodes.toString(lErrorAlert->error_code);
           std::cout << lErrorCode << " " << lCodes.err_decode(lErrorAlert->error_code) << std::endl;
@@ -116,11 +115,11 @@ printErrors(ZorbaAlertsManager* aManager)
 // be inlined or not
 void
 set_var (bool inlineFile, std::string name, std::string val, 
-         DynamicQueryContext_t dctx, XQueryExecution_t exec)
+         xqp::DynamicQueryContext_t dctx, xqp::XQueryExecution_t exec)
 {
-  boost::replace_all(val, "$RBKT_SRC_DIR", RBKT_SRC_DIR);
+  boost::replace_all(val, "$RBKT_SRC_DIR", xqp::RBKT_SRC_DIR);
   if (!inlineFile && dctx != NULL) {
-    dctx->SetVariable (name, xqp_string (val));
+    dctx->SetVariable (name, xqp::xqp_string (val));
   } else if (inlineFile && exec != NULL) {
     std::ifstream is (val.c_str ());
     assert (is);
@@ -129,7 +128,7 @@ set_var (bool inlineFile, std::string name, std::string val,
 }
 
 void 
-set_vars (Specification* aSpec, DynamicQueryContext_t dctx, XQueryExecution_t exec) 
+set_vars (Specification* aSpec, xqp::DynamicQueryContext_t dctx, xqp::XQueryExecution_t exec) 
 {
   for (std::vector<Specification::Variable>::const_iterator lIter = aSpec->variablesBegin();
        lIter != aSpec->variablesEnd(); ++lIter)
@@ -211,10 +210,10 @@ isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
 
 class ZorbaEngineWrapper {
 public:
-  ZorbaEngine &factory;
+  xqp::ZorbaEngine &factory;
 
   ZorbaEngineWrapper ()
-    : factory (ZorbaEngine::getInstance())
+    : factory (xqp::ZorbaEngine::getInstance())
   {
     factory.initThread();
   }
@@ -253,19 +252,19 @@ main(int argc, char** argv)
   // do initial stuff
   if ( argc == 2 )
   {
-    std::string lQueryFileString  = RBKT_SRC_DIR +"/Queries/" + argv[1];
+    std::string lQueryFileString  = xqp::RBKT_SRC_DIR +"/Queries/" + argv[1];
     lQueryFile = fs::system_complete( fs::path( lQueryFileString, fs::native ) );
 
     std::string lQueryWithoutSuffix = std::string(argv[1]).substr( 0, std::string(argv[1]).size()-3 );
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
 
-    lResultFile = fs::system_complete(fs::path( RBKT_BINARY_DIR +"/QueryResults/" 
+    lResultFile = fs::system_complete(fs::path( xqp::RBKT_BINARY_DIR +"/QueryResults/" 
                                       +lQueryWithoutSuffix + ".res", fs::native) );
-    lErrorFile = fs::system_complete(fs::path(RBKT_BINARY_DIR +"/" 
+    lErrorFile = fs::system_complete(fs::path(xqp::RBKT_BINARY_DIR +"/" 
                                      +lQueryWithoutSuffix + ".err", fs::native) );
-    lRefFile   = fs::system_complete(fs::path( RBKT_SRC_DIR +"/ExpQueryResults/" 
+    lRefFile   = fs::system_complete(fs::path( xqp::RBKT_SRC_DIR +"/ExpQueryResults/" 
                                      +lQueryWithoutSuffix +".xml.res", fs::native) );
-    lSpecFile  = fs::system_complete(fs::path(RBKT_SRC_DIR+ "/Queries/" 
+    lSpecFile  = fs::system_complete(fs::path(xqp::RBKT_SRC_DIR+ "/Queries/" 
                                      +lQueryWithoutSuffix +".spec", fs::native) );
   }
   else
@@ -315,9 +314,9 @@ main(int argc, char** argv)
   // create and compile the query
   std::string lQueryString;
   slurp_file(lQueryFile.native_file_string().c_str(), lQueryString);
-  XQuery_t lQuery = lEngine.factory.createQuery(lQueryString.c_str());
+  xqp::XQuery_t lQuery = lEngine.factory.createQuery(lQueryString.c_str());
 
-  ZorbaAlertsManager& lAlertsManager = lEngine.factory.getAlertsManagerForCurrentThread();
+  xqp::ZorbaAlertsManager& lAlertsManager = lEngine.factory.getAlertsManagerForCurrentThread();
 
   if (lQuery.isNull())
   {
@@ -335,11 +334,11 @@ main(int argc, char** argv)
 
 
   // set the variables in the dynamic context
-	DynamicQueryContext_t lDynCtxt = lEngine.factory.createDynamicContext();
+	xqp::DynamicQueryContext_t lDynCtxt = lEngine.factory.createDynamicContext();
   set_vars(&lSpec, lDynCtxt, NULL);
 
   // execute the query
-  XQueryExecution_t lQueryResult = lQuery->createExecution(lDynCtxt); 
+  xqp::XQueryExecution_t lQueryResult = lQuery->createExecution(lDynCtxt); 
   set_vars(&lSpec, NULL, lQueryResult);
 
   if (lQueryResult.isNull()) // how can this happen?
