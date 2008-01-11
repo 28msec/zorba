@@ -141,12 +141,17 @@ LocalNameFromQNameIterator::nextImpl(PlanState& planState){
  /* begin class NamespaceUriFromQNameIterator */
 Item_t
 NamespaceUriFromQNameIterator::nextImpl(PlanState& planState){
-    Item_t res;
+    Item_t item;
 
     PlanIterator::PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-    res = Zorba::getItemFactory()->createAnyURI("Not Implemented yet");
-    STACK_PUSH( res, state );
+    
+    item = consumeNext (theChild, planState);
+    if ( item != NULL )
+    {
+      item = item->getAtomizationValue();
+      STACK_PUSH( Zorba::getItemFactory()->createString(item->getNamespace()), state );
+    }
     STACK_END();
 }
 /* end class NamespaceUriFromQNameIterator */
