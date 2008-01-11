@@ -327,6 +327,7 @@ StringJoinIterator::nextImpl(PlanState& planState) {
   Item_t resItem;
   xqp_string resStr;
   xqp_string separator;
+  bool lFirst;
 
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
@@ -352,14 +353,19 @@ StringJoinIterator::nextImpl(PlanState& planState) {
     }
   }
   else{
+      lFirst = true;
       while(true)
       {
         item = consumeNext ( theChild0, planState );
         if ( item != NULL )
         {
           item = item->getAtomizationValue();
+          if (!lFirst){
+            resStr += separator;
+          } else {
+            lFirst = false;
+          }
           resStr += item->getStringValue();
-          resStr += separator;
         }
         else
         {
