@@ -7,16 +7,12 @@
 #include <boost/spirit.hpp>
 #include <boost/bind.hpp>
 
-using namespace boost::spirit;
-using namespace phoenix;
-using namespace boost;
-
 class Specification
 {
   typedef char char_t;
-  typedef file_iterator <char_t> iterator_t;
-  typedef scanner<iterator_t> scanner_t;
-  typedef rule<scanner_t> rule_t;
+  typedef boost::spirit::file_iterator <char_t> iterator_t;
+  typedef boost::spirit::scanner<iterator_t> scanner_t;
+  typedef boost::spirit::rule<scanner_t> rule_t;
 
 public:
   struct Variable {
@@ -75,30 +71,30 @@ public:
   parseFile(std::string str)
   {
     rule_t props
-      = (+(graph_p & ~ch_p(':') & ~ch_p('=')))[bind(&Specification::setVarName, this, _1, _2)]
-      >> str_p("=")[bind(&Specification::setInline, this, _1, _2)]
-      >> (+graph_p)[bind(&Specification::setVarValue, this, _1, _2)];
+      = (+(boost::spirit::graph_p & ~boost::spirit::ch_p(':') & ~boost::spirit::ch_p('=')))[bind(&Specification::setVarName, this, _1, _2)]
+      >> boost::spirit::str_p("=")[bind(&Specification::setInline, this, _1, _2)]
+      >> (+boost::spirit::graph_p)[bind(&Specification::setVarValue, this, _1, _2)];
 
     rule_t propsInline
-      = (+(graph_p & ~ch_p(':') & ~ch_p('=')))[bind(&Specification::setVarName, this, _1, _2)]
-      >> str_p(":=") 
-      >> (+graph_p)[bind(&Specification::setVarValue, this, _1, _2)];
+      = (+(boost::spirit::graph_p & ~boost::spirit::ch_p(':') & ~boost::spirit::ch_p('=')))[bind(&Specification::setVarName, this, _1, _2)]
+      >> boost::spirit::str_p(":=") 
+      >> (+boost::spirit::graph_p)[bind(&Specification::setVarValue, this, _1, _2)];
     
     rule_t argument 
-      =  str_p("Args:") 
+      =  boost::spirit::str_p("Args:") 
       >> +(
-            blank_p
-         && str_p("-x")
-         && blank_p
+            boost::spirit::blank_p
+         && boost::spirit::str_p("-x")
+         && boost::spirit::blank_p
          && (props | propsInline)[bind(&Specification::addVariable, this, _1, _2)]
          )
-      >> !eol_p;
+      >> !boost::spirit::eol_p;
 
     rule_t error  
-      =  str_p("Error:") 
-      >> !blank_p
-      >> (*print_p)[bind(&Specification::addError, this, _1, _2)] 
-      >> !eol_p;
+      =  boost::spirit::str_p("Error:") 
+      >> !boost::spirit::blank_p
+      >> (*boost::spirit::print_p)[bind(&Specification::addError, this, _1, _2)] 
+      >> !boost::spirit::eol_p;
 
     rule_t defs = *( argument | error );
 
