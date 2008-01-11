@@ -42,6 +42,7 @@ static void *no_state = (void *) new int;
 #define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
 #define LOOKUP_OPN( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
 
+#define CHK_ONE_DECL( state, err ) do { if (state) ZORBA_ERROR_ALERT (AlertCodes::err, NULL); state = true; } while (0)
 #ifndef NDEBUG
 # define TRACE_VISIT() if (Properties::instance()->traceTranslator()) cerr << std::string(++depth, ' ') << TRACE << endl;
 # define TRACE_VISIT_OUT() if (Properties::instance()->traceTranslator()) cerr << std::string(depth--, ' ') << TRACE << endl
@@ -86,9 +87,12 @@ protected:
    */
   std::stack<const DirElemContent*>     thePossibleWSContentStack;
 
+  bool hadBSpaceDecl, hadDefCollationDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
+
   TranslatorImpl (static_context *sctx_p_)
     :
-    depth (0), sctx_p (sctx_p_), tempvar_counter (0), theRootRelPathExpr(0)
+    depth (0), sctx_p (sctx_p_), tempvar_counter (0), theRootRelPathExpr(0),
+    hadBSpaceDecl (false), hadDefCollationDecl (false), hadBUriDecl (false), hadConstrDecl (false), hadCopyNSDecl (false), hadDefNSDecl (false), hadEmptyOrdDecl (false), hadOrdModeDecl (false)
   {
     yy::location loc;
     bind_var(loc, DOT_VAR, var_expr::context_var);
@@ -226,6 +230,7 @@ void end_visit(const AtomicType& v, void *visit_state)
 void *begin_visit(const BaseURIDecl& v)
 {
   TRACE_VISIT ();
+  CHK_ONE_DECL (hadBUriDecl, XQST0032);
   sctx_p->set_baseuri(v.get_base_uri());
   return NULL;
 }
@@ -239,6 +244,7 @@ void end_visit(const BaseURIDecl& v, void *visit_state)
 void *begin_visit(const BoundarySpaceDecl& v)
 {
   TRACE_VISIT ();
+  CHK_ONE_DECL (hadBSpaceDecl, XQST0068);
   sctx_p->set_boundary_space_mode(v.get_boundary_space_mode());
   return NULL;
 }
@@ -263,7 +269,7 @@ void end_visit(const CaseClause& v, void *visit_state)
 
 void *begin_visit(const CaseClauseList& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
@@ -277,6 +283,7 @@ void end_visit(const CaseClauseList& v, void *visit_state)
 void *begin_visit(const ConstructionDecl& v)
 {
   TRACE_VISIT ();
+  CHK_ONE_DECL (hadConstrDecl, XQST0067);
   sctx_p->set_construction_mode(v.get_mode());
   return NULL;
 }
@@ -290,6 +297,7 @@ void end_visit(const ConstructionDecl& v, void *visit_state)
 void *begin_visit(const CopyNamespacesDecl& v)
 {
   TRACE_VISIT ();
+  CHK_ONE_DECL (hadCopyNSDecl, XQST0032);
   return no_state;
 }
 
@@ -303,7 +311,8 @@ void end_visit(const CopyNamespacesDecl& v, void *visit_state)
 
 void *begin_visit(DefaultCollationDecl const& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
+  CHK_ONE_DECL (hadDefCollationDecl, XQST0038);
   string uri = v.get_collation();
   sctx_p->set_default_collation_uri(uri);
   return NULL;
@@ -318,6 +327,7 @@ void end_visit(const DefaultCollationDecl& v, void *visit_state)
 void *begin_visit(DefaultNamespaceDecl const& v)
 {
   TRACE_VISIT ();
+  CHK_ONE_DECL (hadDefNSDecl, XQST0066);
 // TODO adapt to new store
 //  switch (v.get_mode()) {
 //  case ns_element_default: {
@@ -350,7 +360,7 @@ void end_visit(const DefaultNamespaceDecl& v, void *visit_state)
 void *begin_visit(const EmptyOrderDecl& v)
 {
   TRACE_VISIT ();
-
+  CHK_ONE_DECL (hadEmptyOrdDecl, XQST0069);
   sctx_p->set_order_empty_mode(v.get_mode());
   return no_state;
 }
@@ -1238,24 +1248,26 @@ void end_visit(const VarDecl& v, void *visit_state)
 void *begin_visit(const FunctionDecl& v)
 {
   TRACE_VISIT ();
+  push_scope ();
   return no_state;
 }
 
 void end_visit(const FunctionDecl& v, void *visit_state)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
+  pop_scope ();
 }
 
 
 void *begin_visit(const GeneralComp& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
 void end_visit(const GeneralComp& v, void *visit_state)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 
@@ -1400,6 +1412,7 @@ void end_visit(const OptionDecl& v, void *visit_state)
 void *begin_visit(const OrderingModeDecl& v)
 {
   TRACE_VISIT ();
+  CHK_ONE_DECL (hadOrdModeDecl, XQST0065);
   sctx_p->set_ordering_mode(v.get_mode());
   return NULL;
 }
@@ -1425,7 +1438,6 @@ void end_visit(const Param& v, void *visit_state)
 void *begin_visit(const ParamList& v)
 {
   TRACE_VISIT ();
-  nodestack.push(NULL);
   return no_state;
 }
 
