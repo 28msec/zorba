@@ -56,12 +56,19 @@ QNameEqualIterator::nextImpl(PlanState& planState){
  /* begin class PrefixFromQNameIterator */
 Item_t
 PrefixFromQNameIterator::nextImpl(PlanState& planState){
-    Item_t res;
+    Item_t item;
+    xqp_string tmp="";
 
     PlanIterator::PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-    res = Zorba::getItemFactory()->createNCName("Not Implemented yet");
-    STACK_PUSH( res, state );
+    item = consumeNext (theChild, planState);
+    if ( item != NULL )
+    {
+      item = item->getAtomizationValue();
+      tmp = item->getPrefix();
+      if(!tmp.empty())
+        STACK_PUSH( Zorba::getItemFactory()->createNCName(tmp), state );
+    }
     STACK_END();
 }
 /* end class PrefixFromQNameIterator */
@@ -80,13 +87,17 @@ PrefixFromQNameIterator::nextImpl(PlanState& planState){
  /* begin class LocalNameFromQNameIterator */
 Item_t
 LocalNameFromQNameIterator::nextImpl(PlanState& planState){
-    Item_t res;
+  Item_t item;
 
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-    res = Zorba::getItemFactory()->createNCName("Not Implemented yet");
-    STACK_PUSH( res, state );
-    STACK_END();
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  item = consumeNext (theChild, planState);
+  if ( item != NULL )
+  {
+    item = item->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createNCName(item->getLocalName()), state );
+  }
+  STACK_END();
 }
 /* end class LocalNameFromQNameIterator */
 
