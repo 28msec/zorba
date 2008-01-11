@@ -440,7 +440,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
               tmpStart = (int32_t)round(item1->getDoubleValue());
             if( theChildren.size() == 2 )
             {
-              resStr = item0->getStringValue().substr(tmpStart);
+              resStr = item0->getStringValue().substr(tmpStart-1);
             }
             else{ //theChildren.size() ==3
               item2 = consumeNext ( theChildren[2], planState );
