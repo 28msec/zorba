@@ -47,6 +47,10 @@ public:
   static xqpString byteToStr(xqp_byte aByte);
   static bool strToUByte(const xqpString& aStr, xqp_ubyte& aUByte);
   static xqpString ubyteToStr(xqp_ubyte aUByte);
+  static bool isNaN(xqp_double);
+  static bool isNaN(xqp_float);
+  static bool isPosOrNegInf(xqp_double);
+  static bool isPosOrNegInf(xqp_float);
 
   /********************************************************************************
    * Numeric to Numeric Conversions

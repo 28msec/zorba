@@ -193,4 +193,22 @@ namespace xqp {
     xqp_uint lUInt = aUByte;
     return boost::lexical_cast<std::string>(lUInt);
   }
+
+  bool NumConversions::isNaN(xqp_double aDouble) {
+    return aDouble != aDouble;
+  }
+
+  bool NumConversions::isNaN(xqp_float aFloat) {
+    return aFloat != aFloat;
+  }
+
+  bool NumConversions::isPosOrNegInf(xqp_double aDouble) {
+    return (aDouble == std::numeric_limits<double>::infinity() 
+      || aDouble == -std::numeric_limits<double>::infinity());
+  }
+
+  bool NumConversions::isPosOrNegInf(xqp_float aFloat) {
+    return (aFloat == std::numeric_limits<float>::infinity()
+      || aFloat == -std::numeric_limits<float>::infinity());
+  }
 } /* namespace xqp */

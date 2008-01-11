@@ -372,7 +372,17 @@ public:
   virtual bool isNaN() const
   {
     this->showError();
-    return 0;
+    return false;
+  }
+
+  /**
+   * Helper method for numeric atomic items
+   * @return true, if containing numbers represents -INF or +INF
+   */
+  virtual bool isPosOrNegInf() const
+  {
+    this->showError();
+    return false;
   }
 
   /* -------------------  Methods for Nodes ------------------------------------- */

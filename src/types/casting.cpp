@@ -15,7 +15,6 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- * ========================================================================
  *
  * @author David Graf (david.graf@28msec.com)
  * @author Vinayak R. Borkar (vborky@yahoo.com)
@@ -145,7 +144,7 @@ namespace xqp
       case TypeSystem::XS_NEGATIVE_INTEGER:
       {
         xqp_integer n;
-        if (NumConversions::strToInteger(lString, n))
+        if (NumConversions::strToInteger(lString, n) && n < 0)
           lItem = Zorba::getItemFactory()->createNegativeInteger(n);
       }
         break;
@@ -215,7 +214,7 @@ namespace xqp
       case TypeSystem::XS_POSITIVE_INTEGER:
       {
         xqp_integer n;
-        if (NumConversions::strToInteger(lString, n))
+        if (NumConversions::strToInteger(lString, n) && n > 0)
           lItem = Zorba::getItemFactory()->createPositiveInteger(n);
       }
         break;

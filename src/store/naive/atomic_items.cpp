@@ -317,7 +317,11 @@ xqp_string DoubleItemNaive::show() const
 }
 
 bool DoubleItemNaive::isNaN() const {
-  return theValue != theValue;
+  return NumConversions::isNaN(theValue);
+}
+
+bool DoubleItemNaive::isPosOrNegInf() const {
+  return NumConversions::isPosOrNegInf(theValue);
 }
 
   
@@ -356,7 +360,11 @@ xqp_string FloatItemNaive::show() const
 }
 
 bool FloatItemNaive::isNaN() const {
-  return theValue != theValue;
+  return NumConversions::isNaN(theValue);
+}
+
+bool FloatItemNaive::isPosOrNegInf() const {
+  return NumConversions::isPosOrNegInf(theValue);;
 }
 
 

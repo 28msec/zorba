@@ -271,6 +271,7 @@ public:
 		virtual xqp_string getStringProperty() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const;
+    virtual bool isPosOrNegInf() const;
 	};
 	
 	class FloatItemNaive : public AtomicItem
@@ -286,6 +287,7 @@ public:
 		virtual xqp_string getStringProperty() const;
     virtual xqp_string show() const;
     virtual bool isNaN() const;
+    virtual bool isPosOrNegInf() const;
 	};
 	
 	class BooleanItemNaive : public AtomicItem
