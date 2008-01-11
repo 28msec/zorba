@@ -450,9 +450,16 @@ rchandle<NodeNameTest> TypeSystem::get_nametest(const XQType& type) const
   return rchandle<NodeNameTest>(0);
 }
 
-NodeXQType::NodeXQType(rchandle<NodeTest> nodetest, TypeSystem::xqtref_t content_type, TypeSystem::quantifier_t quantifier) : XQType(quantifier), m_nodetest(nodetest), m_content_type(content_type)
+
+NodeXQType::NodeXQType(
+    rchandle<NodeTest> nodetest,
+    TypeSystem::xqtref_t content_type,
+    TypeSystem::quantifier_t quantifier)
+  :
+  XQType(quantifier), m_nodetest(nodetest), m_content_type(content_type)
 {
 }
+
 
 TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
 {
@@ -533,7 +540,10 @@ TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
   return TypeSystem::xqtref_t(0);
 }
 
-TypeSystem::xqtref_t TypeSystem::create_type(const XQType& type, quantifier_t quantifier) const
+
+TypeSystem::xqtref_t TypeSystem::create_type(
+    const XQType& type,
+    quantifier_t quantifier) const
 {
   // TODO: full implem. danm: at least provide atomic types for now
   if (is_atomic (type))
@@ -543,6 +553,16 @@ TypeSystem::xqtref_t TypeSystem::create_type(const XQType& type, quantifier_t qu
 
   return 0;
 }
+
+
+TypeSystem::xqtref_t TypeSystem::create_node_type(
+    rchandle<NodeTest> nodetest,
+    xqtref_t content_type,
+    TypeSystem::quantifier_t quantifier) const
+{
+  return new NodeXQType(nodetest, content_type, quantifier);
+}
+
 
 static inline TypeIdentifier::quantifier_t get_typeident_quant(TypeSystem::quantifier_t quant)
 {
@@ -628,10 +648,7 @@ type_ident_ref_t TypeSystem::get_type_identifier(const XQType& type) const
   return type_ident_ref_t(0);
 }
 
-TypeSystem::xqtref_t TypeSystem::create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeSystem::quantifier_t quantifier) const
-{
-  return new NodeXQType(nodetest, content_type, quantifier);
-}
+
 
 const char *XQType::KIND_STRINGS[XQType::NONE_KIND + 1] =
 {

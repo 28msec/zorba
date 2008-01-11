@@ -8,36 +8,44 @@ const rchandle<NodeTest> NodeTest::PI_TEST(new NodeTest(StoreConsts::piNode));
 const rchandle<NodeTest> NodeTest::TEXT_TEST(new NodeTest(StoreConsts::textNode));
 const rchandle<NodeTest> NodeTest::COMMENT_TEST(new NodeTest(StoreConsts::commentNode));
 
-NodeNameTest::NodeNameTest(rchandle<xqpStringStore> uri, rchandle<xqpStringStore> local)
-    : m_uri(uri),
-    m_local(local)
+NodeNameTest::NodeNameTest(
+    rchandle<xqpStringStore> uri,
+    rchandle<xqpStringStore> local)
+  :
+  m_uri(uri),
+  m_local(local)
 {
-    const xqpStringStore *urip = uri.get_ptr();
-    const xqpStringStore *localp = local.get_ptr();
+  const xqpStringStore *urip = uri.get_ptr();
+  const xqpStringStore *localp = local.get_ptr();
 
-    if (urip) {
-        m_kind = localp ? CONSTANT : CONSTANT_WILDCARD;
-    } else {
-        m_kind = localp ? WILDCARD_CONSTANT : WILDCARD;
-    }
+  if (urip) {
+    m_kind = localp ? CONSTANT : CONSTANT_WILDCARD;
+  } else {
+    m_kind = localp ? WILDCARD_CONSTANT : WILDCARD;
+  }
 }
 
+
 NodeNameTest::NodeNameTest(rchandle<Item> qname)
-  : m_kind(CONSTANT),
+  :
+  m_kind(CONSTANT),
   m_uri(qname->getNamespace().theStrStore),
   m_local(qname->getLocalName().theStrStore)
 {
 }
+
 
 rchandle<xqpStringStore> NodeNameTest::get_uri() const
 {
   return m_uri;
 }
 
+
 rchandle<xqpStringStore> NodeNameTest::get_local() const
 {
   return m_local;
 }
+
 
 bool NodeNameTest::is_subname_of(const NodeNameTest& other) const
 {
@@ -45,30 +53,39 @@ bool NodeNameTest::is_subname_of(const NodeNameTest& other) const
     && ((*other.m_local) == "*" || (*other.m_local) == (*m_local)));
 }
 
+
 bool NodeNameTest::operator ==(const NodeNameTest& other) const
 {
   return *other.m_uri == *m_uri && *other.m_local == *m_local;
 }
 
+
 NodeTest::NodeTest(StoreConsts::NodeKind_t kind) : m_kind(kind)
 {
 }
 
-NodeTest::NodeTest(StoreConsts::NodeKind_t kind, rchandle<NodeNameTest> name_test)
-  : m_kind(kind),
+
+NodeTest::NodeTest(
+    StoreConsts::NodeKind_t kind,
+    rchandle<NodeNameTest> name_test)
+  :
+  m_kind(kind),
   m_name_test(name_test)
 {
 }
+
 
 StoreConsts::NodeKind_t NodeTest::get_kind() const
 {
   return m_kind;
 }
 
+
 rchandle<NodeNameTest> NodeTest::get_nametest() const
 {
   return m_name_test;
 }
+
 
 bool NodeTest::is_sub_nodetest_of(const NodeTest& other) const
 {
@@ -77,6 +94,7 @@ bool NodeTest::is_sub_nodetest_of(const NodeTest& other) const
       && (other.m_name_test.get_ptr() == 0
         || (m_name_test.get_ptr() != 0 && m_name_test->is_subname_of(*other.m_name_test))));
 }
+
 
 bool NodeTest::operator ==(const NodeTest& other) const
 {
