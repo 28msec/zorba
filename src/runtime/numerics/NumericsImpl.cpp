@@ -124,6 +124,10 @@ namespace xqp
   /* start class IntegerDivideOperations */
   Item_t IntegerDivideOperations::opDouble ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
+    if (i0->isNaN() || i1->isNaN()) {
+      ZORBA_ERROR_ALERT(AlertCodes::FOAR0002,
+        loc, false, "Integer Devision with doubles must not be done with NaNs");
+    }
     xqp_double d0 = i0->getDoubleValue();
     xqp_double d1 = i1->getDoubleValue();
     if ( d1 == 0 )
@@ -138,6 +142,10 @@ namespace xqp
 
   Item_t IntegerDivideOperations::opFloat ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
+    if (i0->isNaN() || i1->isNaN()) {
+      ZORBA_ERROR_ALERT(AlertCodes::FOAR0002,
+        loc, false, "Integer Devision with floats must not be done with NaNs");
+    }
     xqp_float f0 = i0->getFloatValue();
     xqp_float f1 = i1->getFloatValue();
     if ( f1 == 0 )
