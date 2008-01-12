@@ -637,8 +637,10 @@ void end_visit(const DirAttributeList& v, void *visit_state)
   {
     fo_expr* expr_list = create_seq(v.get_location());
 
-    std::vector<expr_t>::const_reverse_iterator it = attributes.rbegin();
-    for (; it != attributes.rend(); ++it)
+    std::vector<expr_t>::const_reverse_iterator it;
+    for (it = attributes.rbegin();
+         it != (std::vector<expr_t>::const_reverse_iterator)attributes.rend();
+         ++it)
     {
       expr_list->add(*it);
     }
