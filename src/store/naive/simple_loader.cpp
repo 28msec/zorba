@@ -98,7 +98,7 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
 
     if (stream.bad())
     {
-      ZORBA_ERROR_ALERT(AlertCodes::XQP0016_LOADER_IO_ERROR,
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
                         NULL,
                         true,
                         "Input stream in bad state");
@@ -109,7 +109,7 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
   }
   catch (iostream::failure e)
   {
-    ZORBA_ERROR_ALERT(AlertCodes::XQP0016_LOADER_IO_ERROR,
+    ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
                       NULL,
                       true,
                       e.what());
@@ -170,7 +170,7 @@ Item_t XmlLoader::loadXml(std::istream& stream)
   if (!ok)
   {
 		delete[] buf;
-    ZORBA_ERROR_ALERT(AlertCodes::XQP0017_LOADER_NOT_WELL_FORMED_XML,
+    ZORBA_ERROR_ALERT(ZorbaError::XQP0017_LOADER_NOT_WELL_FORMED_XML,
                       NULL,
                       true,
                       theErrors.c_str());

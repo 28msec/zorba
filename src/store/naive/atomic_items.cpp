@@ -61,7 +61,7 @@ bool QNameItemImpl::equals(Item_t item) const
 
 Item_t QNameItemImpl::getEBV( ) const
 {
-  ZORBA_ERROR_ALERT(AlertCodes::FORG0006,
+  ZORBA_ERROR_ALERT(ZorbaError::FORG0006,
       NULL, false, "Effective Boolean Value is not defined for QName!");
   return NULL;
 }

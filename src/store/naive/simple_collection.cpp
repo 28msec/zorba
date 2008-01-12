@@ -73,7 +73,7 @@ void SimpleCollection::addToCollection(const Item_t& node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR_ALERT(AlertCodes::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
                       NULL, true);
     return;
   }
@@ -104,7 +104,7 @@ void SimpleCollection::removeFromCollection(const Item_t& node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR_ALERT(AlertCodes::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
                       NULL, true);
     return;
   }

@@ -408,7 +408,7 @@ void OrdPath::appendComp(long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
       return;
@@ -471,7 +471,7 @@ void OrdPath::appendComp(long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
       return;
@@ -481,7 +481,7 @@ void OrdPath::appendComp(long value)
   unsigned long bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
+    ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
                       NULL,
                       false);
   }
@@ -2804,7 +2804,7 @@ void OrdPathStack::pushChild()
   if (theByteIndex == OrdPath::MAX_BYTE_LEN ||
       (theByteIndex == OrdPath::MAX_BYTE_LEN - 1 && theBitsAvailable < 2))
   {
-    ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
+    ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
                       NULL,
                       false);
   }
@@ -2947,7 +2947,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
       return;
@@ -3001,7 +3001,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
                         NULL,
                         false);
       return;
@@ -3013,7 +3013,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
 
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_ALERT(AlertCodes::XQP0018_NODEID_OUT_OF_RANGE,
+    ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
                       NULL,
                       false);
     return;

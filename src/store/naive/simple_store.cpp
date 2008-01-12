@@ -149,7 +149,7 @@ Item_t SimpleStore::loadDocument(const xqp_string& uri, std::istream& stream)
 {
   if (theDocuments.find(uri))
   {
-    ZORBA_ERROR_ALERT_OSS(AlertCodes::API0008, NULL, true, uri, "");
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::API0008, NULL, true, uri, "");
     return NULL;
   }
 
@@ -194,7 +194,7 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
 {
   if (theCollections.find(uri))
   {
-    ZORBA_ERROR_ALERT_OSS(AlertCodes::API0005_COLLECTION_ALREADY_EXISTS,
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::API0005_COLLECTION_ALREADY_EXISTS,
                           NULL, true, uri, "");
     return NULL;
   }
