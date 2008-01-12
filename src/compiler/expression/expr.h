@@ -499,20 +499,20 @@ public:
 
 public:
   void add(expr_t e_h) { assert (e_h != NULL); argv.push_back(e_h); }
+
 	uint32_t size() const { return argv.size(); }
+
 	expr_t& operator[](int i) { return argv[i]; }
 	const expr_t& operator[](int i) const { return argv[i]; }
+
 	std::vector<expr_t>::const_iterator begin() const { return argv.begin(); }
 	std::vector<expr_t>::const_iterator end() const { return argv.end(); }
-// 	std::vector<expr_t>& get_argv() { return argv; }
 
 public:
 	const function* get_func() const { return func; }
 
-public:
 	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-
 };
 
 
@@ -867,6 +867,10 @@ public:
 								     SchemaElementTest | SchemaAttributeTest |
 								     PITest | CommentTest | TextTest | AnyKindTest
 
+  If a match_expr represents a KindTest, then theWildKind and theWildName data
+  members are not used. If a match_expr represents a NameTest, then theTypeName
+  and theNilledAllowed data members are not used.
+
 ********************************************************************************/
 class match_expr : public expr
 {
@@ -877,8 +881,8 @@ protected:
 	match_wild_t  theWildKind;
   xqp_string    theWildName;
 
-	Item_t   theQName;
-	Item_t   theTypeName;
+	Item_t        theQName;
+	Item_t        theTypeName;
   bool          theNilledAllowed;
 
 public:
@@ -895,11 +899,11 @@ public:
 	void setWildKind(enum match_wild_t v)    { theWildKind = v; }
 	void setWildName(const xqp_string& v)    { theWildName = v; } 
 
-	Item_t getQName() const    { return theQName; }
-	Item_t getTypeName() const { return theTypeName; }
+	Item_t getQName() const                  { return theQName; }
+	Item_t getTypeName() const               { return theTypeName; }
   bool getNilledAllowed() const            { return theNilledAllowed; }
-	void setQName(Item_t v)    { theQName = v; }
-	void setTypeName(Item_t v) { theTypeName = v; }
+	void setQName(Item_t v)                  { theQName = v; }
+	void setTypeName(Item_t v)               { theTypeName = v; }
   void setNilledAllowed(bool v)            { theNilledAllowed = v; }
 
 	void accept(expr_visitor&);

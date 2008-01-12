@@ -29,7 +29,7 @@ Zorba::Zorba()
 	current_xquery = NULL;
 	current_xqueryresult = NULL;
 
-	m_error_manager = new ZorbaAlertsManagerImpl;
+	m_error_manager = new AlertsManagerImpl;
 	m_item_serializer = NULL;
 	m_doc_serializer = NULL;
 	coll_manager = new CollationManager;
@@ -100,7 +100,7 @@ void Zorba::getDefaultCollation(
 			coll_descr = CollationManager::getHardcodedCollator(collURI);
 			if(!coll_descr)
 			{
-				ZORBA_ERROR_ALERT(AlertCodes::XQST0076, NULL);
+				ZORBA_ERROR_ALERT(ZorbaError::XQST0076, NULL);
 				return NULL;
 			}
 			return coll_manager->getCollation(coll_descr->coll_string, coll_descr->coll_strength);
@@ -112,7 +112,7 @@ void Zorba::getDefaultCollation(
 			default_coll = coll_manager->getCollation(default_coll_string, default_coll_strength);
 			if(!default_coll)
 			{
-				ZORBA_ERROR_ALERT( AlertCodes::XQST0076, NULL);
+				ZORBA_ERROR_ALERT( ZorbaError::XQST0076, NULL);
 				return NULL;
 			}
 			return default_coll;
@@ -150,7 +150,7 @@ static_context* Zorba::get_static_context()///of the current xquery
 }
 
 
-ZorbaAlertsManagerImpl* Zorba::getErrorManager()
+AlertsManagerImpl* Zorba::getErrorManager()
 { 
 	return m_error_manager;
 }

@@ -31,7 +31,7 @@ class Zorba_XQueryBinary;
 class PlanIterator;
 class Store;
 class static_context;
-class ZorbaAlertsManagerImpl;
+class AlertsManagerImpl;
 class Zorba_XQueryExecution;
 class serializer;
 class CollationManager;
@@ -59,7 +59,7 @@ public:///things specific for each thread
 	::Collator		                  * default_coll;
 
 protected:
-	ZorbaAlertsManagerImpl          * m_error_manager;
+	AlertsManagerImpl               * m_error_manager;
 
 	serializer                      * m_item_serializer;///specific for serializing items
 	serializer                      * m_doc_serializer;///specific for serializing complete xml
@@ -72,7 +72,7 @@ public:
   static inline ItemFactory* getItemFactory() { return theItemFactory; }
   static inline Store* getStore() { return theStore; }
 
-	ZorbaAlertsManagerImpl* getErrorManager();
+	AlertsManagerImpl* getErrorManager();
 
 	::Collator* getCollator(xqp_string collURI = "");
 

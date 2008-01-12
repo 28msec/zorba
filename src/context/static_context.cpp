@@ -29,10 +29,10 @@
 |_______________________________________________________________________*/
 
 #include <assert.h>
+#include "context/common.h"
 #include "errors/error_factory.h"
 #include "system/globalenv.h"
 #include "context/static_context.h"
-#include "context/common.h"
 #include "system/zorba.h"
 #include "util/utf8/Unicode_util.h"
 #include "context/collation_manager.h"
@@ -154,21 +154,29 @@ namespace xqp {
       : pair<xqp_string, xqp_string> (qname.substr (0, n), qname.substr (n+1));
   }
 
-  xqp_string qname_internal_key2 (xqp_string ns, xqp_string local)
-  {
-    return local + ":" + ns;
-  }
+xqp_string qname_internal_key2 (xqp_string ns, xqp_string local)
+{
+  return local + ":" + ns;
+}
 
-  Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string prefix, xqp_string local) const
-  {
-    return ITEM_FACTORY.createQName ((prefix.empty () ? default_ns : lookup_ns (prefix)), prefix, local);
-  }
 
-  Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) const
-  {
-    pair<xqp_string, xqp_string> rqname = parse_qname (qname);
-    return lookup_qname (default_ns, rqname.first, rqname.second);
-  }
+Item_t static_context::lookup_qname(
+    xqp_string default_ns,
+    xqp_string prefix,
+    xqp_string local) const
+{
+  // Note: lookup_ns throws exception if there is no binding for the prefix.
+  return ITEM_FACTORY.createQName((prefix.empty() ? default_ns : lookup_ns(prefix)),
+                                  prefix,
+                                  local);
+}
+
+
+Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) const
+{
+  pair<xqp_string, xqp_string> rqname = parse_qname (qname);
+  return lookup_qname (default_ns, rqname.first, rqname.second);
+}
 
   xqp_string static_context::qname_internal_key (const Item *qname) const
   {
@@ -200,7 +208,7 @@ namespace xqp {
     else {
       f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) + qname_internal_key (default_function_namespace (), prefix, local));
       if (f == NULL)
-        ZORBA_ERROR_ALERT (AlertCodes::XPST0017, NULL, false, local, to_string (arity));
+        ZORBA_ERROR_ALERT (ZorbaError::XPST0017, NULL, false, local, to_string (arity));
       return f;
     }
   }
@@ -210,7 +218,7 @@ namespace xqp {
     xqp_string ns;
     if(!context_value ("ns:" + prefix, ns))
 		{
-			ZORBA_ERROR_ALERT(AlertCodes::XQST0048);
+			ZORBA_ERROR_ALERT(ZorbaError::XQST0048);
 		}
     return ns;
   }
@@ -383,7 +391,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 		{
 			if(error_if_not_found)
 			{
-				ZORBA_ERROR_ALERT( AlertCodes::XQST0076, NULL);
+				ZORBA_ERROR_ALERT( ZorbaError::XQST0076, NULL);
 			}
 			return NULL;///collation non-existant
 		}
@@ -392,8 +400,8 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 		if(!coll)
 		{
 		//	ZORBA_ERROR_ALERT(
-		//			AlertCodes::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-		//			AlertCodes::STATIC_ERROR,
+		//			ZorbaError::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
+		//			ZorbaError::STATIC_ERROR,
 		//			NULL
 		//		);
 			return NULL;///collation non-existant
@@ -412,8 +420,8 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 		if(!cinfo->coll)
 		{
 		//	ZORBA_ERROR_ALERT(
-		//			AlertCodes::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-		//			AlertCodes::STATIC_ERROR,
+		//			ZorbaError::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
+		//			ZorbaError::STATIC_ERROR,
 		//			NULL
 		//		);
 			return NULL;///collation non-existant
@@ -442,7 +450,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 	else if(!def_coll_uri.empty())
 	{
 		//error, uri not found
-		ZORBA_ERROR_ALERT( AlertCodes::XQST0076, NULL);
+		ZORBA_ERROR_ALERT( ZorbaError::XQST0076, NULL);
 		return NULL;///collation non-existant
 	}
 
@@ -453,8 +461,8 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 	if(!coll)
 	{
 	//	ZORBA_ERROR_ALERT(
-	//			AlertCodes::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-	//			AlertCodes::STATIC_ERROR,
+	//			ZorbaError::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
+	//			ZorbaError::STATIC_ERROR,
 	//			NULL
 	//		);
 		return NULL;///collation non-existant
@@ -494,7 +502,7 @@ void static_context::set_baseuri (xqp_string val, bool from_prolog)
 		bool found = context_value ("int:" "from_prolog_baseuri", str);    
 		if(found)
 		{
-			ZORBA_ERROR_ALERT(AlertCodes::XQST0032);
+			ZORBA_ERROR_ALERT(ZorbaError::XQST0032);
 			return;
 		}
 		str_keymap.put ("int:" "from_prolog_baseuri", "");
@@ -589,7 +597,7 @@ xqp_string		static_context::resolve_relative_uri( xqp_string uri )
 	if(abs_base_uri.empty())
 	{
 		//then error ! cannot resolve relative uri
-		ZORBA_ERROR_ALERT(AlertCodes::XPST0001);
+		ZORBA_ERROR_ALERT(ZorbaError::XPST0001);
 		return "";
 	}
 

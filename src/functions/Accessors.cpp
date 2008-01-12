@@ -24,7 +24,7 @@ fn_data_func::operator() (
   if ( !validate_args ( argv ) )
 	{
     ZorbaAlertFactory::error_alert (
-		   AlertCodes::XPST0017,
+		   ZorbaError::XPST0017,
        &loc
 		);
   }
@@ -64,7 +64,7 @@ PlanIter_t fn_root_func::operator() (
   if (!validate_args(argv))
 	{
     ZORBA_ERROR_ALERT(
-		   AlertCodes::XPST0017,
+		   ZorbaError::XPST0017,
        &loc
 		);
   }

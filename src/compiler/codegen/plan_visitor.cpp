@@ -372,7 +372,7 @@ void end_visit(fo_expr& v)
       ZORBA_ASSERT(e == NULL);
     }
   } else {
-    ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017,
+    ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017,
                            &loc, false, func->get_signature ().get_name ()->getStringProperty (), argv.size ());
   }
 }
@@ -591,11 +591,7 @@ bool begin_visit(match_expr& v)
 
     if (wildKind == match_no_wild)
     {
-      qname = iFactory.createQName("",
-                                   v.getQName()->getPrefix ().c_str(),
-                                   v.getQName()->getLocalName ().c_str());
-
-      matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
+      matchIte = new NameTestIterator(v.get_loc(), axisIte, v.getQName(), wildKind);
     }
     else if (wildKind == match_prefix_wild)
     {
@@ -618,21 +614,8 @@ bool begin_visit(match_expr& v)
   {
     axisItep->setNodeKind(v.getNodeKind());
 
-    if (v.getQName() != NULL)
-    {
-      qname = iFactory.createQName("",
-                                   v.getQName()->getPrefix ().c_str(),
-                                   v.getQName()->getLocalName ().c_str());
-    }
-
-    if (v.getTypeName() != NULL)
-    {
-      tname = iFactory.createQName("",
-                                   v.getTypeName()->getPrefix ().c_str(),
-                                   v.getTypeName()->getLocalName ().c_str());
-    }
-
-    matchIte = new KindTestIterator(v.get_loc(), axisIte, qname, tname,
+    matchIte = new KindTestIterator(v.get_loc(), axisIte,
+                                    v.getQName(), v.getTypeName(),
                                     v.getTestKind(), v.getDocTestKind(),
                                     v.getNilledAllowed());
   }

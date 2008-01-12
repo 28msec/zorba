@@ -27,7 +27,7 @@ Date_t Date::parse_string(xqpString s)
 
   skip_whitespace(ss, position);
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(AlertCodes::FORG0001, NULL);
+    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
 
   if (ss[position] == '-')
   {

@@ -328,7 +328,7 @@ namespace xqp
         lRetValue = false;
       else if (lString != "true" && lString != "1")
       {
-        ZORBA_ERROR_ALERT(AlertCodes::FORG0001, false, "String cannot be cast to boolean");
+        ZORBA_ERROR_ALERT(ZorbaError::FORG0001, false, "String cannot be cast to boolean");
       }
       
     }
@@ -350,7 +350,7 @@ namespace xqp
     
     lResult = stringSimpleCast(aItem, lItemType, aTargetType);
     if ( lResult == 0 ) {
-      ZORBA_ERROR_ALERT(AlertCodes::FORG0001, false, 
+      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, false, 
         false, "Passed item is not castable to passed target type."
       );
     }
@@ -360,8 +360,8 @@ namespace xqp
 //     if ( !GENV_TYPESYSTEM.is_atomic ( *aTargetType ) )
 //     {
 //       ZorbaErrorAlerts::error_alert (
-//           AlertCodes::FORG0001_Invalid_value_for_cast_constructor,
-//           AlertCodes::STATIC_ERROR,
+//           ZorbaError::FORG0001_Invalid_value_for_cast_constructor,
+//           ZorbaError::STATIC_ERROR,
 //           false,
 //           "Item cannot be casted to the declared type!"
 //       );
@@ -387,8 +387,8 @@ namespace xqp
 //           if ( *pEnd != '\0' )
 //           {
 //             ZorbaErrorAlerts::error_alert (
-//                 AlertCodes::FORG0001_Invalid_value_for_cast_constructor,
-//                 AlertCodes::STATIC_ERROR,
+//                 ZorbaError::FORG0001_Invalid_value_for_cast_constructor,
+//                 ZorbaError::STATIC_ERROR,
 //                 NULL,
 //                 false,
 //                 "Cannot convert \"" + item->getStringValue() + "\" to a double!"
@@ -405,8 +405,8 @@ namespace xqp
 //         else
 //         {
 //           ZorbaErrorAlerts::error_alert (
-//               AlertCodes::FORG0001_Invalid_value_for_cast_constructor,
-//               AlertCodes::STATIC_ERROR,
+//               ZorbaError::FORG0001_Invalid_value_for_cast_constructor,
+//               ZorbaError::STATIC_ERROR,
 //               NULL,
 //               false,
 //               "Numeric casting of a non numeric type"
@@ -418,8 +418,8 @@ namespace xqp
 //         break;
 //       default:
 //         ZorbaErrorAlerts::error_alert (
-//             AlertCodes::FORG0001_Invalid_value_for_cast_constructor,
-//             AlertCodes::STATIC_ERROR,
+//             ZorbaError::FORG0001_Invalid_value_for_cast_constructor,
+//             ZorbaError::STATIC_ERROR,
 //             false,
 //             "Item cannot be casted to the declared type!"
 //         );

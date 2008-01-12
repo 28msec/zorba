@@ -7,7 +7,7 @@ namespace xqp
 int http_get(const char* url, xqp_string& result)
 {
   ZORBA_ERROR_ALERT(
-    AlertCodes::XQP0004_SYSTEM_NOT_SUPPORTED,
+    ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
     NULL
     );
 

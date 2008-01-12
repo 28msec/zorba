@@ -69,7 +69,7 @@ public:
 
   void shutdown();
 
-	void initThread(AlertCodes* codes = NULL);
+	void initThread();
 
 	void uninitThread();
 

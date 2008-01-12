@@ -17,6 +17,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 
+#include "errors/error_messages.h"
 #include "errors/error_manager.h"
 
 #include "system/globalenv.h"
@@ -38,6 +39,14 @@ namespace xqp{
 ZorbaEngineImpl* globalZorbaEngine = NULL;
 
 
+Zorba* ZORBA_FOR_CURRENT_THREAD()
+{
+	if(!globalZorbaEngine)
+		return NULL;
+	return globalZorbaEngine->getZorbaForCurrentThread();
+}
+
+
 void library_init();
 
 
@@ -49,13 +58,6 @@ ZorbaEngine& ZorbaEngine::getInstance()
 		globalZorbaEngine->initialize();
 	}
 	return *globalZorbaEngine;
-}
-
-Zorba* ZORBA_FOR_CURRENT_THREAD()
-{
-	if(!globalZorbaEngine)
-		return NULL;
-	return globalZorbaEngine->getZorbaForCurrentThread();
 }
 
 
@@ -133,7 +135,7 @@ void ZorbaEngineImpl::shutdown()
 }
 
 
-void ZorbaEngineImpl::initThread(AlertCodes* codes)
+void ZorbaEngineImpl::initThread()
 {
 	Zorba* zorba = this->getZorbaForCurrentThread();
 
@@ -159,15 +161,8 @@ void ZorbaEngineImpl::initThread(AlertCodes* codes)
     pthread_mutex_unlock(&theThreadDataMutex);
 #endif
 
-    if(!codes)
-	  {
-      errors_english* codes = new errors_english;
-      zorba->m_error_manager->setAlertCodes(codes, false);
-    }
-    else
-    {
-      zorba->m_error_manager->setAlertCodes(codes, true);
-    }
+    AlertMessagesEnglish* codes = new AlertMessagesEnglish;
+    zorba->m_error_manager->setAlertMessages(codes, false);
   }
 }
 
