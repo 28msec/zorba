@@ -10,7 +10,7 @@
 #include "store/api/collection.h"
 #include "store/api/store_api.h"
 #include "util/rchandle.h"
-#include "error_api.h"
+#include "errors/errors.h"
 #include "context/static_context_api.h"
 #include "context/dynamic_context_api.h"
 #include "compiler/compiled_xquery.h"

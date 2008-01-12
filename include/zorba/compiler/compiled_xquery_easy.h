@@ -2,12 +2,17 @@
 #ifndef COMPILED_XQUERY_EASY_API_12_DEC_2007
 #define COMPILED_XQUERY_EASY_API_12_DEC_2007
 
-#include "runtime/xquery_execution_easy.h"
-#include "error_api.h"
-#include "context/static_context_api.h"
-#include "context/dynamic_context_api.h"
+#include "util/rchandle.h"
+
 
 namespace xqp {
+
+class ZorbaAlertsManager;
+
+typedef rchandle<class XQueryResult> XQueryResult_t;
+typedef rchandle<class StaticQueryContext> StaticQueryContext_t;
+typedef rchandle<class DynamicQueryContext> DynamicQueryContext_t;
+
 
 class XQuerySimple : public rcobject
 {
@@ -22,6 +27,7 @@ public:
 
 		virtual ZorbaAlertsManager& getAlertsManager() = 0;
 };
+
 
 typedef rchandle<XQuerySimple>	XQuerySimple_t;
 

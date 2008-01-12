@@ -27,7 +27,7 @@ public:
 
   virtual void shutdown() = 0;
 
-	virtual void initThread(AlertCodes* codes = NULL) = 0;
+	virtual void initThread() = 0;
 
 	virtual void uninitThread() = 0;
 
