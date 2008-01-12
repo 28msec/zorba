@@ -5,13 +5,21 @@
 #include "context/static_context_api.h"
 #include "context/dynamic_context_api.h"
 #include "compiler/compiled_xquery_easy.h"
+#include "runtime/xquery_execution_easy.h"
 #include "util/rchandle.h"
 #include "util/utf8/xqpString.h"
 
 namespace xqp{
 
+class ZorbaAlertsManager;
+
+class XQueryExecution;
 class ZorbaEngine_SingleThread;
-typedef rchandle<ZorbaEngine_SingleThread>		ZorbaEngine_SingleThread_t;
+
+typedef rchandle<ZorbaEngine_SingleThread> ZorbaEngine_SingleThread_t;
+
+typedef rchandle<XQueryExecution> XQueryExecution_t;
+
 
 class ZorbaEngine_SingleThread : public rcobject
 {
@@ -21,6 +29,7 @@ public:
 
 	static ZorbaEngine_SingleThread_t getInstance();
 };
+
 
 class Zorba_XQuerySimple : public XQuerySimple
 {
@@ -43,6 +52,7 @@ public:
 
 	virtual ZorbaAlertsManager& getAlertsManager();
 };
+
 
 class Zorba_XQuerySimpleResult	: public XQueryResult
 {

@@ -90,9 +90,7 @@ serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::oper
 
   if (U_FAILURE(status))
   {
-    ZORBA_ERROR_ALERT(AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-                      NULL
-                     );
+    ZORBA_ASSERT(0);
   }
   
   
@@ -128,10 +126,7 @@ serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::oper
     
     if (U_FAILURE(status))
     {
-      ZORBA_ERROR_ALERT(
-                        AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-                        NULL
-                       );
+      ZORBA_ASSERT(0);
     }
   
     for (unsigned int i=0; i<target_size*sizeof(UChar); i++)
@@ -404,8 +399,7 @@ void serializer::emitter::emit_item(Item* item)
       //||
       //  item->getNodeKind() == namespaceNode)
     {
-      ZORBA_ERROR_ALERT(
-                        AlertCodes::SENR0001_Item_is_attribute_or_namespace_node,
+      ZORBA_ERROR_ALERT(ZorbaError::SENR0001_Item_is_attribute_or_namespace_node,
                         NULL);
     }
     else        
@@ -694,9 +688,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       indent = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR_ALERT(
-                        AlertCodes::SEPM0016_Invalid_parameter_value,
-                        NULL);
+      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value, NULL);
     }
   }
   else if (parameter_name == "standalone")
@@ -709,8 +701,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       standalone = PARAMETER_VALUE_OMIT;
     else
     {
-      ZORBA_ERROR_ALERT(
-                        AlertCodes::SEPM0016_Invalid_parameter_value,
+      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value,
                         NULL);
     }
   }
@@ -722,8 +713,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       omit_xml_declaration = PARAMETER_VALUE_NO;    
     else
     {
-      ZORBA_ERROR_ALERT(
-                        AlertCodes::SEPM0016_Invalid_parameter_value,
+      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value,
                         NULL);
     }
   }
@@ -735,8 +725,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       byte_order_mark = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR_ALERT(
-                        AlertCodes::SEPM0016_Invalid_parameter_value,
+      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value,
                         NULL);
     }
   }
@@ -748,8 +737,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       undeclare_prefixes = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR_ALERT(
-                        AlertCodes::SEPM0016_Invalid_parameter_value,
+      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value,
                         NULL);
     }
   }
@@ -761,8 +749,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       method = PARAMETER_VALUE_HTML;
     else
     {
-      ZORBA_ERROR_ALERT(
-                        AlertCodes::SEPM0016_Invalid_parameter_value,
+      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value,
                         NULL);
     }
   }
@@ -774,8 +761,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       include_content_type = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR_ALERT(
-                        AlertCodes::SEPM0016_Invalid_parameter_value,
+      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value,
                         NULL);
     }
   }
@@ -787,8 +773,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       encoding = PARAMETER_VALUE_UTF_16;
     else
     {
-      ZORBA_ERROR_ALERT(
-                        AlertCodes::SEPM0016_Invalid_parameter_value,
+      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value,
                         NULL);
     }
   }
@@ -798,8 +783,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   }
   else
   {
-    ZORBA_ERROR_ALERT(
-                      AlertCodes::SEPM0016_Invalid_parameter_value,
+    ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value,
                       NULL);
   }
 }
@@ -825,9 +809,7 @@ void serializer::setup(ostream& os)
     tr = new utf8_to_utf16_transcoder(os);
   else
   {
-    ZORBA_ERROR_ALERT(
-                      AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-                      NULL);
+    ZORBA_ASSERT(0);
     return;
   }
     
@@ -837,9 +819,7 @@ void serializer::setup(ostream& os)
     e = new html_emitter(*this, *tr);
   else
   {
-    ZORBA_ERROR_ALERT(
-                      AlertCodes::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-                      NULL);
+    ZORBA_ASSERT(0);
     return;
   }
 }
