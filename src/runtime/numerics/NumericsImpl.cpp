@@ -102,7 +102,7 @@ namespace xqp
     xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
-      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
     return Zorba::getItemFactory()->createDecimal ( ld0 / ld1 );
@@ -114,7 +114,7 @@ namespace xqp
     xqp_decimal ll1 = static_cast<xqp_decimal>(i1->getIntegerValue());
     if ( ll1 == 0 )
     {
-      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
     return Zorba::getItemFactory()->createDecimal ( ll0 / ll1 );
@@ -125,14 +125,14 @@ namespace xqp
   Item_t IntegerDivideOperations::opDouble ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     if (i0->isNaN() || i0->isPosOrNegInf() || i1->isNaN() || i1->isPosOrNegInf()) {
-      ZORBA_ERROR_ALERT(AlertCodes::FOAR0002,
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
         loc, false, "Integer Devision with doubles must not be done with NaNs");
     }
     xqp_double d0 = i0->getDoubleValue();
     xqp_double d1 = i1->getDoubleValue();
     if ( d1 == 0 )
     {
-      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
     return Zorba::getItemFactory()->createInteger (
@@ -143,14 +143,14 @@ namespace xqp
   Item_t IntegerDivideOperations::opFloat ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     if (i0->isNaN() || i0->isPosOrNegInf() || i1->isNaN() || i1->isPosOrNegInf()) {
-      ZORBA_ERROR_ALERT(AlertCodes::FOAR0002,
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
         loc, false, "Integer Devision with floats must not be done with NaNs");
     }
     xqp_float f0 = i0->getFloatValue();
     xqp_float f1 = i1->getFloatValue();
     if ( f1 == 0 )
     {
-      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
     return Zorba::getItemFactory()->createInteger (
@@ -164,7 +164,7 @@ namespace xqp
     xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
-      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
     return Zorba::getItemFactory()->createInteger (
@@ -178,7 +178,7 @@ namespace xqp
     xqp_integer ll1 = i1->getIntegerValue();
     if ( ll1 == 0 )
     {
-      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
     return Zorba::getItemFactory()->createInteger (
@@ -204,7 +204,7 @@ namespace xqp
     xqp_decimal ld1 = i1->getDecimalValue();
     if ( ld1 == 0 )
     {
-      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Modulo by zero (decimals)");
     }
     return Zorba::getItemFactory()->createDecimal ( fmod ( ld0, ld1 ) );
@@ -216,7 +216,7 @@ namespace xqp
     xqp_integer ll1 = i1->getIntegerValue();
     if ( ll1 == 0 )
     {
-      ZORBA_ERROR_ALERT(AlertCodes::FOAR0001,
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Modulo by zero (decimals)");
     }
     return Zorba::getItemFactory()->createInteger ( ll0 % ll1 );
@@ -257,7 +257,7 @@ namespace xqp
       
         if ( consumeNext ( this->theChild0, planState ) != NULL 
              || consumeNext ( this->theChild1, planState ) != NULL )
-          ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+          ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
               NULL, false, "Arithmetic operation has a sequences greater than one as an operator.");
         STACK_PUSH ( res, state );
       }
@@ -530,12 +530,12 @@ namespace xqp
         res = Zorba::getItemFactory()->createDecimal ( mul * item->getDecimalValue() );
       else
       {
-          ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+          ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
               &loc, false, "Wrong operator type for an unary arithmetic operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
-          ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+          ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
               &loc, false, "Arithmetic operation has a sequences greater than one as an operator.");
       STACK_PUSH ( res, state );
     }
@@ -621,13 +621,13 @@ namespace xqp
           res = Zorba::getItemFactory()->createInteger ( -item->getIntegerValue() );
       else
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Wrong operator type for an abs operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Abs operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -686,13 +686,13 @@ namespace xqp
 
       else
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Wrong operator type for a ceiling operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Ceiling operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -750,13 +750,13 @@ namespace xqp
 
       else
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Wrong operator type for a floor operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Floor operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -814,13 +814,13 @@ namespace xqp
 
       else
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Wrong operator type for a round operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Round operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
@@ -890,13 +890,13 @@ namespace xqp
 
       else
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Wrong operator type for a round-half-to-even operation.");
       }
 
       if ( this->consumeNext ( theChild0, planState ) != NULL )
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
            &loc, false, "Round-half-to-even operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );

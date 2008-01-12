@@ -76,7 +76,7 @@ namespace xqp
       }
       else
       {
-        ZORBA_ERROR_ALERT( AlertCodes::FORG0006,
+        ZORBA_ERROR_ALERT( ZorbaError::FORG0006,
             &loc, false, "Wrong arguments in fn:boolean function.");
       }
     }
@@ -188,14 +188,14 @@ namespace xqp
         STACK_PUSH ( Zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( lItem0, lItem1, theCompType ) ), state );
         if ( this->consumeNext ( theChild0, planState ) != NULL || this->consumeNext ( theChild1, planState ) != NULL )
         {
-          ZORBA_ERROR_ALERT( AlertCodes::XPTY0004,
+          ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
               &loc, false, "Value comparions must not be made with sequences with length greater 1.");
         }
       }
     } /* if value comparison */
     else if ( this->isNodeComparison() )
     {
-      ZORBA_ERROR_ALERT( AlertCodes::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+      ZORBA_ERROR_ALERT( ZorbaError::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
           &loc, false, "Node comparison is not yet implemented.");
     } /* if node comparison */
   
@@ -349,7 +349,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
         break;
     }
 
-  ZORBA_ERROR_ALERT( AlertCodes::FORG0006, NULL, false, "Dynamic type of a value does not match a required type.");
+  ZORBA_ERROR_ALERT( ZorbaError::FORG0006, NULL, false, "Dynamic type of a value does not match a required type.");
   return false;
 }
   

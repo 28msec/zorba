@@ -195,7 +195,7 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
     // That's why empty_item is needed.
     int8_t result = CompareIterator::valueCompare ( s1 , s2 );
     if (result > 1 || result < -1) {
-      ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
                         NULL, false, "Non-comparable types found while sorting" );
       
     }
@@ -462,7 +462,7 @@ void FLWORIterator::matResultAndOrder(
       lItem = consumeNext ( lSpecIter->orderByIter, planState );
       if ( lItem != 0 )
       {
-        ZORBA_ERROR_ALERT(AlertCodes::XPTY0004,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
                           NULL, false, "Expected a singleton" );
       }
     }

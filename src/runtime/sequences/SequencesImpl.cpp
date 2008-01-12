@@ -108,7 +108,7 @@ FnIndexOfIterator::nextImpl(PlanState& planState) {
   state->theSearchItem = consumeNext(theChild1, planState);
   if ( state->theSearchItem == NULL ) 
   {
-    ZORBA_ERROR_ALERT( AlertCodes::FORG0006, &loc, false,
+    ZORBA_ERROR_ALERT( ZorbaError::FORG0006, &loc, false,
          "An empty sequence is not allowed as search item of fn:index-of");    
   }
 
@@ -449,7 +449,7 @@ FnRemoveIterator::nextImpl(PlanState& planState) {
   if ( lPositionItem == NULL ) 
   {
     ZORBA_ERROR_ALERT(
-         AlertCodes::FORG0006,
+         ZorbaError::FORG0006,
          &loc, false,
          "An empty sequence is not allowed as second argument to of fn:remove.");
   }
@@ -532,7 +532,7 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) {
   if ( lStartingLoc == NULL ) 
   {
     ZORBA_ERROR_ALERT(
-         AlertCodes::FORG0006, &loc, false,
+         ZorbaError::FORG0006, &loc, false,
          "An empty sequence is not allowed as starting location of fn:subsequence.");    
   }
   
@@ -545,7 +545,7 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) {
     lLength = consumeNext(theChildren[2], planState);
     if ( lLength == NULL )
     {
-      ZORBA_ERROR_ALERT( AlertCodes::FORG0006, &loc, false,
+      ZORBA_ERROR_ALERT( ZorbaError::FORG0006, &loc, false,
            "An empty sequence is not allowed as third argument of fn:subsequence.");
     }
     state->theLength = lLength->getDoubleValue();
@@ -653,7 +653,7 @@ FnZeroOrOneIterator::nextImpl(PlanState& planState) {
     lNextSequenceItem = consumeNext(theChild, planState);
     if (lNextSequenceItem != NULL)
     {
-      ZORBA_ERROR_ALERT(AlertCodes::FORG0003, 
+      ZORBA_ERROR_ALERT(ZorbaError::FORG0003, 
         &loc, false, "fn:zero-or-one called with a sequence containing more than one item."); 
 
     }
@@ -682,7 +682,7 @@ FnOneOrMoreIterator::nextImpl(PlanState& planState) {
   lSequenceItem = consumeNext(theChild, planState);
   if (lSequenceItem == NULL)
   {
-    ZORBA_ERROR_ALERT(AlertCodes::FORG0004,
+    ZORBA_ERROR_ALERT(ZorbaError::FORG0004,
         &loc, false, "fn:one-or-more called with a sequence containing no items.");
   }
   do
@@ -713,7 +713,7 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) {
   lNextItem = consumeNext(theChild, planState);
   if ( lFirstItem == NULL || lNextItem != NULL )
   {
-    ZORBA_ERROR_ALERT(AlertCodes::FORG0005,
+    ZORBA_ERROR_ALERT(ZorbaError::FORG0005,
         &loc, false, "fn:exactly-one called with a sequence containing zero or more than one item.");
   }
 
@@ -960,7 +960,7 @@ OpToIterator::nextImpl(PlanState& planState) {
   lItem = consumeNext(theChild0, planState);
   if (lItem == NULL)
   {
-    ZorbaAlertFactory::error_alert (AlertCodes::XPTY0004,
+    ZorbaAlertFactory::error_alert (ZorbaError::XPTY0004,
         false, "The empty sequence is not allowed as first argument to op:to.");
 
   }
@@ -969,7 +969,7 @@ OpToIterator::nextImpl(PlanState& planState) {
   lItem = consumeNext(theChild1, planState);
   if (lItem == NULL)
   {
-    ZorbaAlertFactory::error_alert (AlertCodes::XPTY0004, false,
+    ZorbaAlertFactory::error_alert (ZorbaError::XPTY0004, false,
         "The empty sequence is not allowed as second argument to op:to.");
 
   }
@@ -1083,7 +1083,7 @@ Item_t FnDocIterator::nextImpl(PlanState& planState)
       int result = http_get(uriCopy.c_str(), xmlString);
       if (result != 0)
       {
-        ZORBA_ERROR_ALERT_OSS(AlertCodes::FODC0002, &loc, false, uriString->c_str(),
+        ZORBA_ERROR_ALERT_OSS(ZorbaError::FODC0002, &loc, false, uriString->c_str(),
                               "HTTP get failure.");
       }
 
@@ -1092,7 +1092,7 @@ Item_t FnDocIterator::nextImpl(PlanState& planState)
       doc = store.loadDocument(uriString, iss);
       if (doc == NULL)
       {
-        ZORBA_ERROR_ALERT_OSS(AlertCodes::FODC0002, &loc, false, uriString->c_str(),
+        ZORBA_ERROR_ALERT_OSS(ZorbaError::FODC0002, &loc, false, uriString->c_str(),
                               "Failed to parse document.");
       }
     }
@@ -1103,14 +1103,14 @@ Item_t FnDocIterator::nextImpl(PlanState& planState)
       ifs.open(uriString->c_str(), ios::in);
       if (ifs.is_open() == false)
       {
-        ZORBA_ERROR_ALERT_OSS(AlertCodes::FODC0002, &loc, false, uriString->c_str(),
+        ZORBA_ERROR_ALERT_OSS(ZorbaError::FODC0002, &loc, false, uriString->c_str(),
                               "File does not exist.");
       }
       
       doc = store.loadDocument(uriString, ifs);
       if (doc == NULL)
       {
-        ZORBA_ERROR_ALERT_OSS(AlertCodes::FODC0002, &loc, false, uriString->c_str(),
+        ZORBA_ERROR_ALERT_OSS(ZorbaError::FODC0002, &loc, false, uriString->c_str(),
                               "Failed to parse document.");
       }
     }

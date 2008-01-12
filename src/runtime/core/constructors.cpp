@@ -80,7 +80,7 @@ Item_t DocumentContentIterator::nextImpl(PlanState& planState)
     {
         // throwing an error when child is an attribute node
         ZorbaAlertFactory::error_alert (
-          AlertCodes::XQTY0024,
+          ZorbaError::XQTY0024,
           &loc, false, "A Document Node must not contain attribute nodes!"
         );
     }
@@ -155,7 +155,7 @@ ElementIterator::nextImpl(PlanState& planState)
   lQName = (Item*)&*lItem;
   if (lQName->getLocalName().size() == 0)
   {
-      ZORBA_ERROR_ALERT(AlertCodes::XQDY0074, false, 
+      ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, false, 
                         false, "Element name must not have an empty local part.");
   }
 
@@ -291,7 +291,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
       if (state->theNoAttrAllowed)
       {
         ZorbaAlertFactory::error_alert (
-          AlertCodes::XQTY0024, false, &loc,
+          ZorbaError::XQTY0024, false, &loc,
           "Content sequence of element contains an attribute node following a node that is not an attribute node!"
         );
       }
@@ -394,7 +394,7 @@ Item_t AttributeIterator::nextImpl(PlanState& planState)
   // the compiler wraps an xs:qname cast around the expression
   lQName = (Item*)&*itemCur;
   if (lQName->getLocalName().size() == 0) {
-      ZORBA_ERROR_ALERT(AlertCodes::XQDY0074, false, 
+      ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, false, 
         false, "Attribute name must not have an empty local part."
       );
   }
