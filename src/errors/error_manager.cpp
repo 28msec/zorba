@@ -1,5 +1,5 @@
 
-#include "errors/error_codes.h"
+#include "errors/error_messages.h"
 #include "error_manager.h"
 #include "system/zorba.h"
 #include "zorba_api.h"
@@ -14,25 +14,25 @@ ZorbaAlertsManager::~ZorbaAlertsManager()
 }
 
 
-ZorbaAlertsManagerImpl::ZorbaAlertsManagerImpl( )
+AlertsManagerImpl::AlertsManagerImpl( )
 {
 	thread_registered_callback = NULL;
 	thread_registered_param = NULL;
-	is_from_user = true;
-	theAlertCodes = NULL;
+	theIsFromUser = true;
+	theAlertMessages = NULL;
 }
 
 
-ZorbaAlertsManagerImpl::~ZorbaAlertsManagerImpl()
+AlertsManagerImpl::~AlertsManagerImpl()
 {
 	clearAlertList();
 
-  if (!is_from_user && theAlertCodes != NULL)
-    delete theAlertCodes;
+  if (!theIsFromUser && theAlertMessages != NULL)
+    delete theAlertMessages;
 }
 
 
-void ZorbaAlertsManagerImpl::clearAlertList()
+void AlertsManagerImpl::clearAlertList()
 {
 	std::list<ZorbaAlert*>::const_iterator errit;
 	
@@ -46,49 +46,48 @@ void ZorbaAlertsManagerImpl::clearAlertList()
 /*
 	Register the callback for the thread specific error manager
 */
-void ZorbaAlertsManagerImpl::RegisterAlertCallback(
+void AlertsManagerImpl::RegisterAlertCallback(
     alert_callback* user_alert_callback,
     void* param)
 {
 	thread_registered_callback = user_alert_callback;
 	thread_registered_param = param;
-
-  #if 0	
-	ZORBA_NOTIFY_EVENT_OSS(AlertCodes::NOTIF_EXECUTION_STEP,
-		"RegisterAlertCallback with param " << std::hex << param, "");
-  #endif
 }
 
 
-AlertCodes& ZorbaAlertsManagerImpl::getAlertCodes()
+AlertMessages& AlertsManagerImpl::getAlertMessages()
 {
-	return *theAlertCodes;
+	return *theAlertMessages;
 }
 
 
-void ZorbaAlertsManagerImpl::setAlertCodes(AlertCodes* c, bool is_from_user)
+void AlertsManagerImpl::setAlertMessages(AlertMessages* c, bool is_from_user)
 {
-	theAlertCodes = c;
-	this->is_from_user = is_from_user;
+	theAlertMessages = c;
+	theIsFromUser = is_from_user;
 }
 
 
-int ZorbaAlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert* alert)
+int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert* alert)
 {
 	int		retval;
 
 	if(thread_registered_callback)
 	{
 		if(z->current_xqueryresult && z->current_xqueryresult->alert_callback_param)
+    {
 			retval = thread_registered_callback(alert, 
 																			z->current_xquery,
 																			z->current_xqueryresult,
 																			z->current_xqueryresult->alert_callback_param);
+    }
 		else
+    {
 			retval = thread_registered_callback(alert, 
 																			z->current_xquery,
 																			z->current_xqueryresult,
 																			thread_registered_param);
+    }
 		delete alert;
 		return retval;
 	}

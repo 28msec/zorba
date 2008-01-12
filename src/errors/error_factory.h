@@ -1,6 +1,6 @@
 
-#ifndef ZORBA_ERROR_ALERTS_11_JULY_2007
-#define ZORBA_ERROR_ALERTS_11_JULY_2007
+#ifndef ALERTS_ALERT_FACTORY
+#define ALERTS_ALERT_FACTORY
 
 
 ///Daniel T @ IPDEVEL
@@ -13,58 +13,68 @@
 
 #include <string>
 
-#include "errors/error_codes.h"
+#include "errors/errors.h"
 #include "xqp_exception.h"
 #include "compiler/parser/location.hh"
 
-//using namespace std;
 
-
-namespace xqp {
+namespace xqp
+{
 
 class ZorbaAlertFactory 
 {
-
 public:
   /**
-   *  @param ecode One of predefined error codes in errors.h
-   *  @param etype One of predefined error types in errors.h
+   *  @param code  One of predefined error codes in errors.h
    *  @param loc   If NULL location will be taken from current iterator from zorba object
    *  @param continue_execution If true, the error is recoverable and execution can continue; otherwise the error is fatal and an exception is thrown.
    *
    */
 	static void error_alert(
-        const AlertCodes::error_code ecode,
-        const yy::location *ploc = NULL,
+        const ZorbaError::ErrorCodes code,
+        const yy::location* ploc = NULL,
         bool continue_execution = false,
 				const std::string param1 = "",
         const std::string param2 = "");
 
 
 	static void warning_alert(
-        const AlertCodes::warning_code,
-        const yy::location *ploc = NULL,
+        const ZorbaWarning::WarningCodes code,
+        const yy::location* ploc = NULL,
         const std::string param1 = "",
         const std::string param2 = "");
 
 
 	static void notify_event(
-        const AlertCodes::NotifyEvent_code notif_event,
+        const ZorbaNotify::NotifyCodes code,
         const std::string param1 = "",
         const std::string param2 = "");
 
 
-	///return the index of the option chosen by user
 	static int ask_user(
-        const AlertCodes::AskUserString_code ask_string,
-        const AlertCodes::AskUserStringOptions_code ask_string_options,
+        const ZorbaAskUser::UserQuestionCodes questionCode,
+        const ZorbaAskUser::UserReplyOptionsCodes replyCode,
         const std::string param1 = "",
         const std::string param2 = "");
+
+  static void fn_user_error(
+        Item* err_qname,///optional
+        const std::string description,//optional
+        const std::vector<class Item*> *items);//optional
+
+  static void fn_user_trace(
+        const std::vector<class Item*> *items,
+        const std::string label);
 };
 
 
-////define some macros to catch the __FILE__ and __LINE__ where the error is fired
+/// define some macros to catch the __FILE__ and __LINE__ where the error is fired
 #ifndef NDEBUG
+
+extern const char*		g_error_in_file;
+extern int						g_error_at_line;
+extern bool						g_abort_when_fatal_error;
+
 
 #define ZORBA_ERROR_ALERT(...) do {                            \
     g_error_in_file = __FILE__; g_error_at_line = __LINE__;    \
@@ -81,7 +91,7 @@ public:
 }
 
 
-#define		ZORBA_WARNING_ALERT(...) do {                         \
+#define ZORBA_WARNING_ALERT(...) do {                           \
     g_error_in_file = __FILE__;  g_error_at_line = __LINE__;    \
     ZorbaAlertFactory::warning_alert(__VA_ARGS__);              \
   } while(0)
@@ -96,7 +106,7 @@ public:
 }
 
 
-#define		ZORBA_NOTIFY_EVENT(...) do {                          \
+#define ZORBA_NOTIFY_EVENT(...) do {                            \
     g_error_in_file = __FILE__;  g_error_at_line = __LINE__;    \
     ZorbaAlertFactory::notify_event(__VA_ARGS__);               \
   } while(0)
@@ -150,6 +160,11 @@ public:
 
 #endif //#ifndef NDEBUG
 
+#define ZORBA_NOT_SUPPORTED( what )                                     \
+  ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false, what)
+
+#define ZORBA_NOT_IMPLEMENTED( what )                                     \
+  ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false, what)
 
 }
 

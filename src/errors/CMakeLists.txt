@@ -1,7 +1,7 @@
 SET(ERRORS_SRCS
+   errors.cpp
    error_factory.cpp
    error_manager.cpp 
-   error_codes.cpp 
-   user_error.cpp
+   error_messages.cpp 
    xqp_exception.cpp)
 
