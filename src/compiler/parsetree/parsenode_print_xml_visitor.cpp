@@ -264,7 +264,8 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirAttr &n)
 {
     INDENT;
 
-    os << "<DirAttr position='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<DirAttr position='" << n.get_location() << "' name='" 
+       << n.get_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
 

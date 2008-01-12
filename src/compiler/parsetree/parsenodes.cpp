@@ -341,30 +341,24 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
 
 
 // [10] NamespaceDecl
-// ------------------
+
 NamespaceDecl::NamespaceDecl(
-  const yy::location& _loc,
-  std::string const& _prefix,
-  std::string const& _uri)
+  const yy::location& loc,
+  std::string const& prefix,
+  std::string const& uri)
 :
-  parsenode(_loc),
-  prefix(_prefix),
-  uri(_uri)
+  parsenode(loc),
+  thePrefix(prefix),
+  theUri(uri)
+  //  theUri(uri, 1, uri.size()-2)
 {
 }
+
 
 NamespaceDecl::~NamespaceDecl()
 {
 }
 
-// ostream& NamespaceDecl::put(ostream& s) const
-// {
-//   s << INDENT << "NamespaceDecl[";
-//   s << prefix << " = " << uri;
-//   return s << OUTDENT << "]\n";
-// }
-
-//-NamespaceDecl::
 
 void NamespaceDecl::accept(parsenode_visitor& v) const 
 { 
@@ -3510,11 +3504,11 @@ void DirElemContentList::accept(parsenode_visitor& v) const
 
 
 // [97] DirAttributeList
-// ---------------------
+
 DirAttributeList::DirAttributeList(
-  const yy::location& _loc)
+  const yy::location& loc)
 :
-  parsenode(_loc)
+  parsenode(loc)
 {
 }
 
@@ -3523,14 +3517,12 @@ DirAttributeList::~DirAttributeList()
 }
 
 
-
-//-DirAttributeList::
-
 void DirAttributeList::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  vector<rchandle<DirAttr> >::const_reverse_iterator it = dir_attr_hv.rbegin();
-  for (; it!=dir_attr_hv.rend(); ++it) {
+  vector<rchandle<DirAttr> >::const_iterator it = theAttributes.begin();
+  for (; it != theAttributes.end(); ++it)
+  {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
@@ -3540,16 +3532,15 @@ void DirAttributeList::accept(parsenode_visitor& v) const
 
 
 // [97a] DirAttr
-// -------------
   
 DirAttr::DirAttr(
-  const yy::location& _loc,
-  rchandle<QName> _atname_h,
-  rchandle<DirAttributeValue> _dir_atval_h)
+  const yy::location& loc,
+  rchandle<QName> name,
+  rchandle<DirAttributeValue> value)
 :
-  parsenode(_loc),
-  atname_h(_atname_h),
-  dir_atval_h(_dir_atval_h)
+  parsenode(loc),
+  theName(name),
+  theValue(value)
 {
 }
 
@@ -3557,22 +3548,17 @@ DirAttr::~DirAttr()
 {
 }
 
-
-
-//-DirAttr::
-
 void DirAttr::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  //atname_h->accept(v);
-  ACCEPT (dir_atval_h);
+  ACCEPT(theValue);
   END_VISITOR ();
 }
 
 
 
 // [98] DirAttributeValue
-// ----------------------
+
 DirAttributeValue::DirAttributeValue(
   const yy::location& _loc,
   rchandle<QuoteAttrContentList> _quot_attr_content_h)
@@ -3996,9 +3982,6 @@ CompDocConstructor::~CompDocConstructor()
 }
 
 
-
-//-CompDocConstructor::
-
 void CompDocConstructor::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
@@ -4009,74 +3992,66 @@ void CompDocConstructor::accept(parsenode_visitor& v) const
 
 
 // [111] CompElemConstructor
-// -------------------------
+
 CompElemConstructor::CompElemConstructor(
-  const yy::location& _loc,
-  rchandle<exprnode> _qname_expr_h,
-  rchandle<exprnode> _content_expr_h)
-:
+    const yy::location& _loc,
+    rchandle<exprnode> _qname_expr_h,
+    rchandle<exprnode> _content_expr_h)
+  :
   exprnode(_loc),
   qname_expr_h(_qname_expr_h),
   content_expr_h(_content_expr_h)
 {
 }
 
+
 CompElemConstructor::~CompElemConstructor()
 {
 }
 
 
-
-//-CompElemConstructor::
-
 void CompElemConstructor::accept(parsenode_visitor& v) const 
 { 
-  BEGIN_VISITOR ();
-  ACCEPT (qname_expr_h);
-  ACCEPT (content_expr_h);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  if (dynamic_cast<QName*>(qname_expr_h.get_ptr()) == NULL)
+    ACCEPT(qname_expr_h);
+  ACCEPT(content_expr_h);
+  END_VISITOR();
 }
 
 
-
-// [112] ContentExpr
-// -----------------
-
-
-
 // [113] CompAttrConstructor
-// -------------------------
+
 CompAttrConstructor::CompAttrConstructor(
-  const yy::location& _loc,
-  rchandle<exprnode> _qname_expr_h,
-  rchandle<exprnode> _val_expr_h)
-:
+    const yy::location& _loc,
+    rchandle<exprnode> _qname_expr_h,
+    rchandle<exprnode> _val_expr_h)
+  :
   exprnode(_loc),
   qname_expr_h(_qname_expr_h),
   val_expr_h(_val_expr_h)
 {
 }
 
+
 CompAttrConstructor::~CompAttrConstructor()
 {
 }
 
 
-
-//-CompAttrConstructor::
-
 void CompAttrConstructor::accept(parsenode_visitor& v) const 
 { 
-  BEGIN_VISITOR ();
-  ACCEPT (qname_expr_h);
-  ACCEPT (val_expr_h);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  if (dynamic_cast<QName*>(qname_expr_h.get_ptr()) == NULL)
+    ACCEPT(qname_expr_h);
+  ACCEPT(val_expr_h);
+  END_VISITOR();
 }
 
 
 
 // [114] CompTextConstructor
-// -------------------------
+
 CompTextConstructor::CompTextConstructor(
   const yy::location& _loc,
   rchandle<exprnode> _text_expr_h)
@@ -4091,9 +4066,6 @@ CompTextConstructor::~CompTextConstructor()
 }
 
 
-
-//-CompTextConstructor::
-
 void CompTextConstructor::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
@@ -4104,7 +4076,7 @@ void CompTextConstructor::accept(parsenode_visitor& v) const
 
 
 // [115] CompCommentConstructor
-// ----------------------------
+
 CompCommentConstructor::CompCommentConstructor(
   const yy::location& _loc,
   rchandle<exprnode> _comment_expr_h)
@@ -4482,7 +4454,7 @@ void CommentTest::accept(parsenode_visitor& v) const
  
 
 // [128] PITest
-// ------------
+
 PITest::PITest(
   const yy::location& _loc,
   std::string _target,
@@ -4498,10 +4470,6 @@ PITest::~PITest()
 {
 }
 
-
-
-//-PITest::
-
 void PITest::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
@@ -4511,15 +4479,15 @@ void PITest::accept(parsenode_visitor& v) const
 
 
 // [129] AttributeTest
-// -------------------
+
 AttributeTest::AttributeTest(
-  const yy::location& _loc,
-  rchandle<QName> _attr_h,
-  rchandle<TypeName> _type_h)
-:
-  parsenode(_loc),
-  attr_h(_attr_h),
-  type_h(_type_h)
+  const yy::location& loc,
+  rchandle<QName> attrName,
+  rchandle<TypeName> typeName)
+  :
+  parsenode(loc),
+  theAttrName(attrName),
+  theTypeName(typeName)
 {
 }
 
@@ -4528,18 +4496,15 @@ AttributeTest::~AttributeTest()
 }
 
 
-
-//-AttributeTest::
-
 void AttributeTest::accept(parsenode_visitor& v) const 
 { 
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
 // [130] AttribNameOrWildcard
-// --------------------------
+
 
 
 // [131] SchemaAttributeTest
@@ -4746,19 +4711,7 @@ QName::QName(
   const string& _qname)
 :
   exprnode(_loc),
-  qname(_qname),
-  theURI("")
-{
-}
-
-QName::QName(
-  const yy::location& _loc,
-  const string& _qname,
-  const string& _uri)
-:
-  exprnode(_loc),
-  qname(_qname),
-  theURI(_uri)
+  qname(_qname)
 {
 }
 

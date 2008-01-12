@@ -46,7 +46,7 @@ public:
   virtual ~parsenode() {}
 
 public:
-	yy::location get_location() const { return loc; }
+	const yy::location& get_location() const { return loc; }
   
   virtual void accept(parsenode_visitor&) const = 0;
 
@@ -550,8 +550,8 @@ class NamespaceDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::string prefix;
-	std::string uri;
+	std::string thePrefix;
+	std::string theUri;
 
 public:
 	NamespaceDecl(
@@ -562,8 +562,8 @@ public:
 	~NamespaceDecl();
 
 public:
-	std::string get_prefix() const { return prefix; }
-	std::string get_uri() const { return uri; }
+	std::string get_prefix() const { return thePrefix; }
+	std::string get_uri() const { return theUri; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -3683,7 +3683,6 @@ public:
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -3696,65 +3695,59 @@ public:
 
 /*******************************************************************************
 
+   [97] DirAttributeList ::= DirAttr | DirAttributeList  DirAttr
+
 ********************************************************************************/
-// [95] DirAttributeList
-// ---------------------
 class DirAttributeList : public parsenode
-/*______________________________________________________________________
-|
-|	::= DirAttr
-|			|	DirAttributeList  DirAttr
-|_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<DirAttr> > dir_attr_hv;
+	std::vector<rchandle<DirAttr> > theAttributes;
 
 public:
 	DirAttributeList(const yy::location&);
 	~DirAttributeList();
 
 public:
-	void push_back(rchandle<DirAttr> dir_attr_h)
-		{ dir_attr_hv.push_back(dir_attr_h); }
+	void push_back(rchandle<DirAttr> attr)
+  {
+    theAttributes.push_back(attr);
+  }
+
 	rchandle<DirAttr> operator[](int i)
-		{ return dir_attr_hv[i]; }
+  {
+    return theAttributes[i];
+  }
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
 
+  [97a] DirAttr ::= QNAME  EQUALS  DirAttributeValue 	 ws:explicitXQ
+
 ********************************************************************************/
-// [95a] DirAttr
-// -------------
 class DirAttr : public parsenode
-/*______________________________________________________________________
-|
-|	::= QNAME  EQUALS  DirAttributeValue 	 ws:explicitXQ
-|_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> atname_h;
-	rchandle<DirAttributeValue> dir_atval_h;
+	rchandle<QName>             theName;
+	rchandle<DirAttributeValue> theValue;
 	
 public:
 	DirAttr(
-		const yy::location&,
-		rchandle<QName>,
-		rchandle<DirAttributeValue>);
-
+        const yy::location&,
+        rchandle<QName>,
+        rchandle<DirAttributeValue>);
+  
 	~DirAttr();
 
 public:
-	rchandle<QName> get_atname() const { return atname_h; }
-	rchandle<DirAttributeValue> get_dir_atval() const { return dir_atval_h; }
+	rchandle<QName> get_name() const { return theName; }
+	rchandle<DirAttributeValue> get_value() const { return theValue; }
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -3783,13 +3776,17 @@ public:
 
 public:
 	rchandle<QuoteAttrContentList> get_quot_attr_content() const
-		{ return quot_attr_content_h; }
+  { 
+    return quot_attr_content_h;
+  }
+
 	rchandle<AposAttrContentList> get_apos_attr_content() const
-		{ return apos_attr_content_h; }
+  {
+    return apos_attr_content_h;
+  }
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -3812,9 +3809,14 @@ public:
 
 public:
 	void push_back(rchandle<QuoteAttrValueContent> quot_atval_content_h)
-		{ quot_atval_content_hv.push_back(quot_atval_content_h); }
+  {
+    quot_atval_content_hv.push_back(quot_atval_content_h);
+  }
+
 	rchandle<QuoteAttrValueContent> operator[](int i) const
-		{ return quot_atval_content_hv[i]; }
+  {
+    return quot_atval_content_hv[i];
+  }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4013,7 +4015,7 @@ public:
 
 
 
-// [108] CompDocConstructor
+// [110] CompDocConstructor
 // ------------------------
 class CompDocConstructor : public exprnode
 /*______________________________________________________________________
@@ -4036,21 +4038,21 @@ public:
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/*******************************************************************************
 
-// [109] CompElemConstructor
-// -------------------------
+  [111] CompElemConstructor ::= 
+                          ELEMENT_QNAME_LBRACE RBRACE |
+                          ELEMENT_QNAME_LBRACE ContentExp  RBRACE |
+                          ELEMENT_LBRACE Expr RBRACE LBRACE RBRACE |
+                          ELEMENT_LBRACE Expr RBRACE LBRACE ContentExpr RBRACE
+
+  [112] ContentExpr := Expr
+
+********************************************************************************/
 class CompElemConstructor : public exprnode
-/*______________________________________________________________________
-|
-|	::= ELEMENT_QNAME_LBRACE  RBRACE
-|			|	ELEMENT_QNAME_LBRACE  ContentExpr  RBRACE
-|			|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
-|			|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  ContentExpr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> qname_expr_h;
@@ -4070,51 +4072,18 @@ public:
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/*******************************************************************************
 
-// [110] ContentExpr
-// -----------------
-//class ContentExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= Expr
-|_______________________________________________________________________*/
-/*
-{
-protected:
-	rchandle<exprnode> expr_h;
+ [113] CompAttrConstructor ::= ATTRIBUTE QNAME LBRACE RBRACE |
+                               ATTRIBUTE QNAME LBRACE Expr RBRACE |
+                               ATTRIBUTE LBRACE Expr RBRACE LBRACE RBRACE |
+                               ATTRIBUTE LBRACE Expr RBRACE LBRACE Expr RBRACE
 
-public:
-	ContentExpr(
-		const yy::location&,
-		rchandle<exprnode>);
-
-	~ContentExpr();
-
-public:
-	rchandle<exprnode> get_expr() const { return expr_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-*/
-
-
-
-// [111] CompAttrConstructor
-// -------------------------
+********************************************************************************/
 class CompAttrConstructor : public exprnode
-/*______________________________________________________________________
-|
-|	::= ATTRIBUTE  QNAME  LBRACE  RBRACE
-|			|	ATTRIBUTE  QNAME  LBRACE  Expr  RBRACE
-|			|	ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  RBRACE
-|			|	ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> qname_expr_h;
@@ -4528,23 +4497,21 @@ public:
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [129] AttributeTest
-// -------------------
+/******************************************************************************
+
+  [129] AttributeTest ::= ATTRIBUTE_LPAR RPAR |
+                          ATTRIBUTE_LPAR AttribNameOrWildcard RPAR |
+                          ATTRIBUTE_LPAR AttribNameOrWildcard COMMA TypeName RPAR
+
+********************************************************************************/
 class AttributeTest : public parsenode
-/*______________________________________________________________________
-|
-|	::= ATTRIBUTE_LPAR  RPAR
-|			|	ATTRIBUTE_LPAR  AttribNameOrWildcard  RPAR
-|			|	ATTRIBUTE_LPAR  AttribNameOrWildcard  COMMA  TypeName  RPAR
-|_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> attr_h;
-	rchandle<TypeName> type_h;
+	rchandle<QName> theAttrName;
+	rchandle<TypeName> theTypeName;
 
 public:
 	AttributeTest(
@@ -4555,13 +4522,12 @@ public:
 	~AttributeTest();
 
 public:
-	rchandle<QName> get_attr() const { return attr_h; }
-	rchandle<TypeName> get_type() const { return type_h; }
-	bool is_wild() const { return attr_h==NULL; }
+	rchandle<QName> get_attr_name() const    { return theAttrName; }
+	rchandle<TypeName> get_type_name() const { return theTypeName; }
+	bool is_wild() const                     { return theAttrName == NULL; }
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -4595,11 +4561,16 @@ public:
 
 /*******************************************************************************
 
-  [133] ElementTest ::= ELEMENT_LPAR  RPAR |
-                        ELEMENT_LPAR  ElementNameOrWildcard  RPAR |
-                        ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  RPAR |
-                        ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  HOOK  RPAR
+  [132] ElementNameOrWildcard ::= ElementName | STAR (inlined production)
 
+  [133] ElementTest ::= ELEMENT_LPAR RPAR |
+                        ELEMENT_LPAR ElemNameOrWildcard RPAR |
+                        ELEMENT_LPAR ElemNameOrWildcard COMMA TypeName RPAR |
+                        ELEMENT_LPAR ElemNameOrWildcard COMMA TypeName HOOK RPAR
+
+  Note: theElementName will be NULL in the case of the 1st production or in
+  case of wildcard (*) in the other productions. 
+ 
 ********************************************************************************/
 class ElementTest : public parsenode
 {
@@ -4660,7 +4631,6 @@ public:
 /* ------------------- */
 // [128] AttribNameOrWildcard ::= AttributeName | STAR
 // [130] AttributeDeclaration ::= AttributeName
-// [132] ElementNameOrWildcard ::= ElementName | STAR
 // [134] ElementDeclaration ::= ElementName
 // [135] AttributeName ::= QNAME
 // [136] ElementName ::= QNAME
@@ -4757,10 +4727,7 @@ public:
   [154] Comment
   [155] CommentContents
 
-  [156] QName
-
-
-  ::=  QNAME
+  [156] QName ::= QNAME
 
   The "qname" data member is either (a) the empty string, or (b) a single NCName,
   or (c) NCName1:NCName2. In cases (a) and (b), get_prefix() returns the empty
@@ -4771,30 +4738,20 @@ class QName : public exprnode
 {
 protected:
 	std::string qname;
-	std::string theURI;
 
 public:
-	QName(
-		const yy::location&,
-		const std::string& qname);
-
-	QName(
-		const yy::location&,
-		const std::string& qname,
-		const std::string& uri);
+	QName(const yy::location&, const std::string& qname);
 
 	~QName();
 
 public:
 	std::string get_qname() const { return qname; }
-	std::string get_uri() const { return theURI; }
 	std::string get_localname() const;
 	std::string get_prefix() const;
 
 public:
 	void accept(parsenode_visitor&) const;
 };
-
 
 
 
