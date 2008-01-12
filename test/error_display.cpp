@@ -36,76 +36,80 @@ void DisplayOneAlert(const ZorbaAlert *alert)
 {
   char  *str_talert;
 
-  str_talert = asctime(localtime(&alert->time_of_alert));
+  str_talert = asctime(localtime(&alert->theTime));
   cerr << str_talert << " ";
 
-  switch(alert->alert_type)
+  switch(alert->theKind)
   {
   case ZorbaAlert::ERROR_ALERT:
-    DisplayError(reinterpret_cast<const ZorbaErrorAlert*>(alert));
+    DisplayError(reinterpret_cast<const ZorbaError*>(alert));
     break;
   case ZorbaAlert::WARNING_ALERT:
-    DisplayWarning(reinterpret_cast<const ZorbaWarningAlert*>(alert));
+    DisplayWarning(reinterpret_cast<const ZorbaWarning*>(alert));
     break;
   case ZorbaAlert::NOTIFICATION_ALERT:
-    DisplayNotification(reinterpret_cast<const ZorbaNotifyAlert*>(alert));
+    DisplayNotification(reinterpret_cast<const ZorbaNotify*>(alert));
     break;
   case ZorbaAlert::FEEDBACK_REQUEST_ALERT:
-    DisplayAskUser(reinterpret_cast<const ZorbaAskUserAlert*>(alert));
+    DisplayAskUser(reinterpret_cast<const ZorbaAskUser*>(alert));
     break;
 
   case ZorbaAlert::USER_ERROR_ALERT://fn:error
-    DisplayFnUserError(reinterpret_cast<const ZorbaFnErrorAlert*>(alert));
+    DisplayFnUserError(reinterpret_cast<const ZorbaFnError*>(alert));
     break;
   case ZorbaAlert::USER_TRACE_ALERT://fn:trace
-    DisplayFnUserTrace(reinterpret_cast<const ZorbaFnTraceAlert*>(alert));
+    DisplayFnUserTrace(reinterpret_cast<const ZorbaFnTrace*>(alert));
     break;
   }
 }
 
 
-void DisplayError(const ZorbaErrorAlert *err)
+void DisplayError(const ZorbaError *err)
 {
-  if(err->is_fatal)
+  if(err->theIsFatal)
     cerr << "Fatal Error: ";
   else
     cerr << "Error: ";
 
-  if(err->loc.line)
+  if(err->theLocation.line)
   {
-    if(!err->loc.filename.empty())
-      cerr << err->loc.filename;
-    cerr << "[line: " << err->loc.line << "][col: " << err->loc.column << "]: ";
+    if(!err->theLocation.filename.empty())
+      cerr << err->theLocation.filename;
+
+    cerr << "[line: " << err->theLocation.line << "][col: "
+         << err->theLocation.column << "]: ";
   } 
 
-  cerr << err->alert_description << std::endl;
+  cerr << err->theDescription << std::endl;
 }
 
 
-void DisplayWarning(const ZorbaWarningAlert *warn)
+void DisplayWarning(const ZorbaWarning *warn)
 {
   cerr << "Warning:";
-  if(warn->loc.line)
+  if(warn->theLocation.line)
   {
-    if(!warn->loc.filename.empty())
-      cerr << warn->loc.filename;
-    cerr << "[line: " << warn->loc.line << "][col: " << warn->loc.column << "]";
+    if(!warn->theLocation.filename.empty())
+      cerr << warn->theLocation.filename;
+
+    cerr << "[line: " << warn->theLocation.line << "][col: "
+         << warn->theLocation.column << "]";
   } 
 
-  cerr << " : " << warn->alert_description << std::endl;
+  cerr << " : " << warn->theDescription << std::endl;
 }
 
 
-void DisplayNotification(const ZorbaNotifyAlert *notif)
+void DisplayNotification(const ZorbaNotify *notif)
 {
-  cerr << "Notif: " << notif->alert_description << std::endl;
+  cerr << "Notif: " << notif->theDescription << std::endl;
 }
 
 
-int DisplayAskUser(const ZorbaAskUserAlert *askuser)
+int DisplayAskUser(const ZorbaAskUser *askuser)
 {
   ///not implemented
-  cerr << "Ask user: " << askuser->alert_description << std::endl;
+  cerr << "Ask user: " << askuser->theDescription << std::endl;
   return -1;///normaly return the user choice: 0, 1, 2, ...
 }
 
@@ -125,19 +129,19 @@ void DumpItemsAsText( const std::vector<class Item*> *items)
 }
 
 
-void DisplayFnUserError(const ZorbaFnErrorAlert *fn_err)
+void DisplayFnUserError(const ZorbaFnError *fn_err)
 {
   cerr << "User Error: ";
-  cerr << "[QName: " << fn_err->err_qname->getStringProperty() 
-    << "<decoded: " << fn_err->err_qname_decoded << " > ]";
-  cerr << " : " <<  fn_err->alert_description << endl;
-  DumpItemsAsText(&fn_err->items_error);
+  cerr << "[QName: " << fn_err->theErrorQName->getStringProperty() 
+    << "<decoded: " << fn_err->theDescription << " > ]";
+  cerr << " : " <<  fn_err->theUserDescription << endl;
+  DumpItemsAsText(&fn_err->theItems);
 }
 
 
-void DisplayFnUserTrace(const ZorbaFnTraceAlert *fn_trace)
+void DisplayFnUserTrace(const ZorbaFnTrace *fn_trace)
 {
-  cerr << "User Trace: " << fn_trace->alert_description << endl;
+  cerr << "User Trace: " << fn_trace->theDescription << endl;
   DumpItemsAsText(&fn_trace->items_trace);
 }
 

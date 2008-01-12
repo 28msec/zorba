@@ -8,6 +8,7 @@
 #include "../src/util/logging/loggermanager.hh"
 #include "timer.h"
 #include "error_display.h"
+#include "errors/error_factory.h"
 #include "zorba/util/properties.h"
 
 #ifdef WIN32
@@ -31,8 +32,8 @@ int apitest_alert_callback(ZorbaAlert *alert_mess,
                            void *param)
 {
 #ifndef NDEBUG
-  if((alert_mess->alert_type != ZorbaAlert::USER_ERROR_ALERT) &&
-    (alert_mess->alert_type != ZorbaAlert::USER_TRACE_ALERT))
+  if((alert_mess->theKind != ZorbaAlert::USER_ERROR_ALERT) &&
+    (alert_mess->theKind != ZorbaAlert::USER_TRACE_ALERT))
   {
     cerr << g_error_in_file << ": " << g_error_at_line << endl;
   }

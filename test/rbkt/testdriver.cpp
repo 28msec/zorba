@@ -52,17 +52,16 @@ printPart(std::ostream& os, std::string aInFile,
 bool
 isErrorExpected(xqp::ZorbaAlertsManager* aManager, Specification* aSpec)
 {
-  xqp::errors_english lCodes;
   for (xqp::ZorbaAlertsManager::const_iterator lIter = aManager->begin();
        lIter != aManager->end(); ++lIter)
   {
     xqp::ZorbaAlert* lAlert = *lIter;
-    switch (lAlert->alert_type)
+    switch (lAlert->theKind)
     {
       case xqp::ZorbaAlert::ERROR_ALERT:
         {
-          xqp::ZorbaErrorAlert* lErrorAlert = dynamic_cast<xqp::ZorbaErrorAlert*>(lAlert);
-          std::string lErrorCode = lCodes.toString(lErrorAlert->error_code);
+          xqp::ZorbaError* lErrorAlert = dynamic_cast<xqp::ZorbaError*>(lAlert);
+          std::string lErrorCode = lErrorAlert->toString(lErrorAlert->theCode);
           for (std::vector<std::string>::const_iterator lErrorIter = aSpec->errorsBegin();
                lErrorIter != aSpec->errorsEnd(); ++lErrorIter)
           {
@@ -87,24 +86,23 @@ printErrors(xqp::ZorbaAlertsManager* aManager)
 
   std::cout<< "Errors:" << std::endl;
 
-  xqp::errors_english lCodes;
   for (xqp::ZorbaAlertsManager::const_iterator lIter = aManager->begin();
        lIter != aManager->end(); ++lIter)
   {
     xqp::ZorbaAlert* lAlert = *lIter;
-    switch (lAlert->alert_type)
+    switch (lAlert->theKind)
     {
-      case xqp::ZorbaAlert::ERROR_ALERT:
-        {
-          xqp::ZorbaErrorAlert* lErrorAlert = dynamic_cast<xqp::ZorbaErrorAlert*>(lAlert);
-          assert(lErrorAlert);
-          std::string lErrorCode = lCodes.toString(lErrorAlert->error_code);
-          std::cout << lErrorCode << " " << lCodes.err_decode(lErrorAlert->error_code) << std::endl;
-          break;
-        }
-      default:
-        { 
-        }
+    case xqp::ZorbaAlert::ERROR_ALERT:
+    {
+      xqp::ZorbaError* lErrorAlert = dynamic_cast<xqp::ZorbaError*>(lAlert);
+      assert(lErrorAlert);
+      std::string lErrorCode = lErrorAlert->toString(lErrorAlert->theCode);
+      std::cout << lErrorCode << " " << lErrorAlert->theDescription << std::endl;
+      break;
+    }
+    default:
+    { 
+    }
     }
   }
   return;
