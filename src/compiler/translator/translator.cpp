@@ -12,6 +12,7 @@
 
 #include "zorba/common.h"
 
+#include "types/node_test.h"
 #include "functions/library.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "util/tracer.h"
@@ -42,7 +43,7 @@ static void *no_state = (void *) new int;
 #define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
 #define LOOKUP_OPN( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
 
-#define CHK_ONE_DECL( state, err ) do { if (state) ZORBA_ERROR_ALERT (AlertCodes::err, NULL); state = true; } while (0)
+#define CHK_ONE_DECL( state, err ) do { if (state) ZORBA_ERROR_ALERT (ZorbaError::err, NULL); state = true; } while (0)
 #ifndef NDEBUG
 # define TRACE_VISIT() if (Properties::instance()->traceTranslator()) cerr << std::string(++depth, ' ') << TRACE << endl;
 # define TRACE_VISIT_OUT() if (Properties::instance()->traceTranslator()) cerr << std::string(depth--, ' ') << TRACE << endl
@@ -221,7 +222,7 @@ void end_visit(const AtomicType& v, void *visit_state)
                                                      qname->get_localname ()),
                                 TypeSystem::QUANT_ONE);
   if (t == NULL)
-    ZORBA_ERROR_ALERT (AlertCodes::XPST0051, NULL);
+    ZORBA_ERROR_ALERT (ZorbaError::XPST0051, NULL);
   else
     tstack.push (t);
 }
@@ -431,7 +432,8 @@ void end_visit(const DirPIConstructor& v, void *visit_state)
 
 void *begin_visit(const DirElemConstructor& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
+  push_scope();
   return no_state;
 }
 
@@ -439,27 +441,28 @@ void end_visit(const DirElemConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  expr_t attributes = NULL;
-  expr_t content = NULL;
+  expr_t nameExpr;
+  expr_t attrExpr;
+  expr_t contentExpr;
 
-  if (v.get_dir_content_list() != NULL) {
-    content = pop_nodestack();
+  if (v.get_dir_content_list() != NULL)
+  {
+    contentExpr = pop_nodestack();
     fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
-    lDocFilter->add(content);
-    content = lDocFilter;
+    lDocFilter->add(contentExpr);
+    contentExpr = lDocFilter;
   }
   
   if (v.get_attr_list() != NULL)
-    attributes = pop_nodestack();
+    attrExpr = pop_nodestack();
 
-  expr_t lQNameExpr =  new const_expr (
-                                        v.get_location (), 
-                                        v.get_elem_name()->get_uri().c_str(), 
-                                        v.get_elem_name()->get_prefix().c_str(), 
-                                        v.get_elem_name()->get_localname().c_str()
-                                      );
-  elem_expr *elem_t = new elem_expr(v.get_location(), lQNameExpr, attributes, content);
-  nodestack.push(elem_t);
+  nameExpr = new const_expr(v.get_location(),
+                            sctx_p->lookup_elem_qname(v.get_elem_name()->get_qname())); 
+
+  elem_expr* elem = new elem_expr(v.get_location(), nameExpr, attrExpr, contentExpr);
+  nodestack.push(elem);
+
+  pop_scope();
 }
 
 /**
@@ -616,21 +619,30 @@ void end_visit(const DirAttributeList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  fo_expr *expr_list = create_seq (v.get_location ());
+  std::vector<expr_t> attributes;
   while(true)
   {
     expr_t e_h = pop_nodestack();
     if (e_h == NULL)
       break;
-    expr_list->add(e_h);
+
+    attributes.push_back(e_h);
   }
-  if (expr_list->size() == 1)
+
+  if (attributes.size() == 1)
   {
-    nodestack.push(*expr_list->begin());
-    delete expr_list;
+    nodestack.push(attributes[0]);
   }
   else
   {
+    fo_expr* expr_list = create_seq(v.get_location());
+
+    std::vector<expr_t>::const_reverse_iterator it = attributes.rbegin();
+    for (; it != attributes.rend(); ++it)
+    {
+      expr_list->add(*it);
+    }
+
     nodestack.push(expr_list);
   }
 }
@@ -648,24 +660,53 @@ void end_visit(const DirAttr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  expr_t attrValue = pop_nodestack();
-  if (attrValue != NULL)
+  expr_t nameExpr;
+  expr_t valueExpr = pop_nodestack();
+
+  if (valueExpr != NULL)
   {
     // delete boundary
     nodestack.pop();
   }
 
-  expr_t lQNameExpr = new const_expr(
-                                  v.get_location(),
-                                  v.get_atname()->get_uri().c_str(),
-                                  v.get_atname()->get_prefix().c_str(),
-                                  v.get_atname()->get_localname().c_str()
-                                );
-  
-  rchandle<attr_expr> attr_expr_t = new attr_expr(v.get_location(),
-                                                  lQNameExpr,
-                                                  attrValue);
-  nodestack.push(&*attr_expr_t);
+  QName* qname = v.get_name().get_ptr();
+
+  if (qname->get_prefix() == "xmlns")
+  {
+    const_expr* constValueExpr = dynamic_cast<const_expr*>(valueExpr.get_ptr());
+    if (constValueExpr != NULL)
+    {
+      xqpString prefix = qname->get_localname();
+      xqpString uri = constValueExpr->get_val()->getStringProperty();
+
+      sctx_p->bind_ns(prefix, uri);
+    }
+    else if (valueExpr == NULL)
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
+                        &v.get_location(),
+                        false, "Undeclaring of namespace binding");
+    }
+    else
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
+                        &v.get_location(),
+                        false, "Non-constant namespace URIs");
+    }
+
+    nameExpr = new const_expr(v.get_location(),
+                              "",
+                              "xmlns",
+                              qname->get_localname().c_str());
+  }
+  else
+  {
+    nameExpr = new const_expr(v.get_location(),
+                              sctx_p->lookup_qname("", qname->get_qname()));
+  }
+
+  expr_t attrExpr = new attr_expr(v.get_location(), nameExpr, valueExpr);
+  nodestack.push(attrExpr);
 }
 
 
@@ -681,7 +722,8 @@ void end_visit(const DirAttributeValue& v, void *visit_state)
 }
 
 
-void attr_content_list (yy::location loc, void *visit_state) {
+void attr_content_list(yy::location loc, void *visit_state)
+{
   fo_expr *expr_list_t = create_seq (loc);
   expr_t e_h;
   while(true)
@@ -709,7 +751,7 @@ void *begin_visit(const QuoteAttrContentList& v)
 void end_visit(const QuoteAttrContentList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  attr_content_list (v.get_location (), visit_state);
+  attr_content_list(v.get_location (), visit_state);
 }
 
 
@@ -728,13 +770,21 @@ void end_visit(const AposAttrContentList& v, void *visit_state)
 }
 
 
-void attr_val_content (yy::location loc, const CommonContent *cc, xqpString content) {
+void attr_val_content (yy::location loc, const CommonContent *cc, xqpString content)
+{
   if (cc == NULL)
-    nodestack.push (new text_expr(loc,
-                                  text_expr::text_constructor,
-                                  new const_expr (loc, content)));
-  // nothing to be done because when common content != NULL, 
-  // the corresponding expr is already on the stack
+  {
+    nodestack.push(new const_expr (loc, content));
+
+    //    nodestack.push(new text_expr(loc,
+    //                            text_expr::text_constructor,
+    //                            new const_expr (loc, content)));
+  }
+  else
+  {
+    // nothing to be done because when common content != NULL, 
+    // the corresponding expr is already on the stack
+  }
 }
 
 void *begin_visit(const QuoteAttrValueContent& v)
@@ -824,6 +874,7 @@ void end_visit(const CommonContent& v, void *visit_state)
   TRACE_VISIT_OUT ();
 }
 
+
 void *begin_visit(const CompDocConstructor& v)
 {
   TRACE_VISIT ();
@@ -845,6 +896,7 @@ void end_visit(const CompDocConstructor& v, void *visit_state)
   nodestack.push (new doc_expr (v.get_location (), lEnclosed ));
 }
 
+
 void *begin_visit(const CompElemConstructor& v)
 {
   TRACE_VISIT ();
@@ -855,25 +907,42 @@ void end_visit(const CompElemConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
-  expr_t lContent = 0;
-  expr_t lElem = 0;
+  expr_t qnameExpr;
+  expr_t contentExpr = 0;
+  expr_t elemExpr = 0;
 
-  if (v.get_content_expr() != 0) {
-    lContent = pop_nodestack();
+  if (v.get_content_expr() != 0) 
+  {
+    contentExpr = pop_nodestack();
     
     fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
-    lDocFilter->add(lContent);
+    lDocFilter->add(contentExpr);
     
     fo_expr *lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1 ("enclosed-expr"));
     lEnclosed->add(lDocFilter);
-    lContent = lEnclosed;
+    contentExpr = lEnclosed;
   }
+
+  QName* constQName = dynamic_cast<QName*>(v.get_qname_expr().get_ptr());
   
-  expr_t lQNameExpr = pop_nodestack();
-  lQNameExpr = new cast_expr(v.get_location(), lQNameExpr, GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_QNAME, TypeSystem::QUANT_ONE));
-  lElem = new elem_expr(v.get_location(), lQNameExpr, lContent);
-  nodestack.push(lElem);
+  if (constQName != NULL)
+  {
+    qnameExpr = new const_expr(v.get_location(),
+                               sctx_p->lookup_elem_qname(constQName->get_qname()));
+  }
+  else
+  {
+    qnameExpr = pop_nodestack();
+    qnameExpr = new cast_expr(v.get_location(),
+                              qnameExpr,
+                              GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_QNAME,
+                                                                 TypeSystem::QUANT_ONE));
+  }
+
+  elemExpr = new elem_expr(v.get_location(), qnameExpr, contentExpr);
+  nodestack.push(elemExpr);
 }
+
 
 void *begin_visit(const CompAttrConstructor& v)
 {
@@ -885,27 +954,44 @@ void end_visit(const CompAttrConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
-  expr_t lValueExpr = 0;
-  expr_t lAttr = 0;
+  expr_t qnameExpr;
+  expr_t valueExpr;
+  expr_t attrExpr;
   
-  if (v.get_val_expr() != 0) {
-    lValueExpr = pop_nodestack();
+  if (v.get_val_expr() != 0) 
+  {
+    valueExpr = pop_nodestack();
     
-    fo_expr *lDocFilter = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
-    lDocFilter->add(lValueExpr);
+    fo_expr* docFilterExpr = new fo_expr(v.get_location(), LOOKUP_OP1 ("doc-filter"));
+    docFilterExpr->add(valueExpr);
     
-    fo_expr *lEnclosed = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
-    lEnclosed->add(lValueExpr);
+    fo_expr* enclosedExpr = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
+    enclosedExpr->add(docFilterExpr);
 
-    lValueExpr = lEnclosed;
+    valueExpr = enclosedExpr;
   } 
+
+  QName* constQName = dynamic_cast<QName*>(v.get_qname_expr().get_ptr());
+
+  if (constQName != NULL)
+  {
+    qnameExpr = new const_expr(v.get_location(),
+                               sctx_p->lookup_qname("", constQName->get_qname()));
+  }
+  else
+  {
+    qnameExpr = pop_nodestack();
+    qnameExpr = new cast_expr(v.get_location(),
+                              qnameExpr,
+                              GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_QNAME,
+                                                                 TypeSystem::QUANT_ONE));
+  }
+
+  attrExpr = new attr_expr(v.get_location(), qnameExpr, valueExpr);
   
-  expr_t lQNameExpr = pop_nodestack();
-  lQNameExpr = new cast_expr(v.get_location(), lQNameExpr, GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_QNAME, TypeSystem::QUANT_ONE));
-  lAttr = new attr_expr(v.get_location(), lQNameExpr, lValueExpr);
-  
-  nodestack.push(&*lAttr);
+  nodestack.push(attrExpr);
 }
+
 
 void *begin_visit(const CompCommentConstructor& v)
 {
@@ -1918,7 +2004,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
     case 1:
       break;
     default:
-      ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017, NULL, false, "fn:string", arguments.size ());
+      ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, false, "fn:string", arguments.size ());
     }
   }
   TypeSystem::xqtref_t type =
@@ -1927,7 +2013,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
   if (type != NULL)
   {
     if (arguments.size () != 1)
-      ZORBA_ERROR_ALERT_OSS (AlertCodes::XPST0017, NULL, false, prefix + ":" + fname, arguments.size ());
+      ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, false, prefix + ":" + fname, arguments.size ());
     nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
   }
   else
@@ -2184,16 +2270,15 @@ void end_visit(const Wildcard& v, void *visit_state)
 
 void *begin_visit(const QName& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
+  ZORBA_ASSERT(0);
   return no_state;
 }
 
 
 void end_visit(const QName& v, void *visit_state)
 {
-  nodestack.push(
-    new const_expr(v.get_location(), v.get_uri().c_str(), v.get_prefix().c_str(), v.get_localname().c_str())
-  );
+  ZORBA_ASSERT(0);
   TRACE_VISIT_OUT ();
 }
 
@@ -2221,8 +2306,8 @@ void *begin_visit(const DocumentTest& v)
 {
   TRACE_VISIT ();
 
-  rchandle<match_expr> m_h = new match_expr(v.get_location());
-  m_h->setTestKind(match_doc_test);
+  rchandle<match_expr> match = new match_expr(v.get_location());
+  match->setTestKind(match_doc_test);
 
   rchandle<ElementTest> e_h = v.get_elem_test();
   if (e_h != NULL)
@@ -2230,12 +2315,13 @@ void *begin_visit(const DocumentTest& v)
     rchandle<QName> elem_h = e_h->getElementName();
     if (elem_h != NULL)
     {
-      m_h->setQName (sctx_p->lookup_elem_qname (elem_h->get_prefix(), elem_h->get_localname()));
+      match->setQName(sctx_p->lookup_elem_qname(elem_h->get_prefix(),
+                                                elem_h->get_localname()));
     }
     rchandle<TypeName> type_h = e_h->getTypeName();
     if (type_h != NULL)
     {
-      m_h->setTypeName (sctx_p->lookup_qname ("", type_h->get_name()->get_qname()));
+      match->setTypeName(sctx_p->lookup_qname("", type_h->get_name()->get_qname()));
     }
     bool optional_b =  e_h->isNilledAllowed();
     if (optional_b)
@@ -2243,7 +2329,7 @@ void *begin_visit(const DocumentTest& v)
       // XXX missing member variable for this
     }
   }
-  nodestack.push(&*m_h);
+  nodestack.push(&*match);
   return no_state;
 }
 
@@ -2265,31 +2351,58 @@ void end_visit(const ElementTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  // construct the element match
-  rchandle<match_expr> me = new match_expr(v.get_location());
-  me->setTestKind(match_elem_test);
-
-  rchandle<QName> ename = v.getElementName();
-  if (ename != NULL)
-    me->setQName(sctx_p->lookup_elem_qname (ename->get_qname()));
-
-  rchandle<TypeName> tname = v.getTypeName();
-  if (tname != NULL)
-    me->setTypeName(sctx_p->lookup_elem_qname (tname->get_name()->get_qname()));
-
+  rchandle<QName> elemName = v.getElementName();
+  rchandle<TypeName> typeName = v.getTypeName();
   bool nilled =  v.isNilledAllowed();
-  if (nilled)
-    me->setNilledAllowed(true);
 
-  // if the top of the stack is an axis step expression, add the match expression
+  // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
   if (axisExpr != NULL)
   {
+    rchandle<match_expr> me = new match_expr(v.get_location());
+    me->setTestKind(match_elem_test);
+
+    if (elemName != NULL)
+      me->setQName(sctx_p->lookup_elem_qname(elemName->get_qname()));
+
+    if (typeName != NULL)
+      me->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname()));
+
+    if (nilled)
+      me->setNilledAllowed(true);
+
     axisExpr->setTest(me);
   }
+
+  // Else, create a sequence-match
   else
   {
-    nodestack.push(me.get_ptr());
+    if (typeName != NULL || nilled)
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
+                        &v.get_location(),
+                        false, "schema types");
+    }
+
+    rchandle<NodeTest> nodeTest;
+    if (elemName != NULL)
+    {
+      Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname());
+
+      NodeNameTest* nodeNameTest = new NodeNameTest(qnameItem->getNamespace().getStore(),
+                                                    qnameItem->getLocalName().getStore());
+
+      nodeTest = new NodeTest(StoreConsts::elementNode, nodeNameTest);
+    }
+    else
+    {
+      nodeTest = new NodeTest(StoreConsts::elementNode);
+    }
+
+    TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
+      create_node_type(nodeTest, NULL, TypeSystem::QUANT_ONE);
+
+    tstack.push(seqmatch);
   }
 }
 
@@ -2303,35 +2416,60 @@ void *begin_visit(const AttributeTest& v)
 
 void end_visit(const AttributeTest& v, void *visit_state)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
-  // find axis step expression on top of stack
-  rchandle<axis_step_expr> ase_h = expect_axis_step_top ();
+  rchandle<QName> attrName = v.get_attr_name();
+  rchandle<TypeName> typeName = v.get_type_name();
 
-  /*
-   * construct the attribute match
-   */
-  rchandle<match_expr> m_h = new match_expr(v.get_location());
-  m_h->setTestKind(match_attr_test);
-  rchandle<QName> elem_h = v.get_attr();
-  if (elem_h != NULL)
+  // if the top of the stack is an axis step expr, add a node test expr to it.
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  if (axisExpr != NULL)
   {
-    m_h->setQName(sctx_p->lookup_elem_qname (elem_h->get_qname()));
-  }
-  rchandle<TypeName> type_h = v.get_type();
-  if (type_h!=NULL)
-  {
-    m_h->setTypeName(sctx_p->lookup_qname ("", type_h->get_name()->get_qname()));
-  }
-  if (v.is_wild())
-  {
-    // XXX missing member variable for this
-  }
+    rchandle<match_expr> match = new match_expr(v.get_location());
+    match->setTestKind(match_attr_test);
 
-  /*
-   * add the match expression
-   */
-  ase_h->setTest(m_h);
+    if (attrName != NULL)
+      match->setQName(sctx_p->lookup_qname("", attrName->get_qname()));
+
+    if (typeName != NULL)
+      match->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname()));
+
+    if (v.is_wild())
+    {
+      // XXX missing member variable for this
+    }
+
+    axisExpr->setTest(match);
+  }
+  else
+  {
+    if (typeName != NULL)
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
+                        &v.get_location(),
+                        false, "schema types");
+    }
+
+    rchandle<NodeTest> nodeTest;
+    if (attrName != NULL)
+    {
+      Item_t qnameItem = sctx_p->lookup_qname("", attrName->get_qname());
+
+      NodeNameTest* nodeNameTest = new NodeNameTest(qnameItem->getNamespace().getStore(),
+                                                    qnameItem->getLocalName().getStore());
+
+      nodeTest = new NodeTest(StoreConsts::attributeNode, nodeNameTest);
+    }
+    else
+    {
+      nodeTest = new NodeTest(StoreConsts::attributeNode);
+    }
+
+    TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
+      create_node_type(nodeTest, NULL, TypeSystem::QUANT_ONE);
+
+    tstack.push(seqmatch);
+  }
 }
 
 
@@ -2349,9 +2487,9 @@ void end_visit(const TextTest& v, void *visit_state)
 
   rchandle<axis_step_expr> ase_h = expect_axis_step_top ();
 
-  rchandle<match_expr> m_h = new match_expr(v.get_location());
-  m_h->setTestKind(match_text_test);
-  ase_h->setTest(m_h);
+  rchandle<match_expr> match = new match_expr(v.get_location());
+  match->setTestKind(match_text_test);
+  ase_h->setTest(match);
 }
 
 
@@ -2369,9 +2507,9 @@ void end_visit(const CommentTest& v, void *visit_state)
 
   rchandle<axis_step_expr> ase_h = expect_axis_step_top ();
 
-  rchandle<match_expr> m_h = new match_expr(v.get_location());
-  m_h->setTestKind(match_comment_test);
-  ase_h->setTest(m_h);
+  rchandle<match_expr> match = new match_expr(v.get_location());
+  match->setTestKind(match_comment_test);
+  ase_h->setTest(match);
 }
 
 
@@ -2379,12 +2517,12 @@ void *begin_visit(const PITest& v)
 {
   TRACE_VISIT ();
 
-  rchandle<match_expr> m_h = new match_expr(v.get_location());
-  m_h->setTestKind(match_pi_test);
+  rchandle<match_expr> match = new match_expr(v.get_location());
+  match->setTestKind(match_pi_test);
 
   string target = v.get_target();
-  m_h->setQName(sctx_p->lookup_elem_qname (target));
-  nodestack.push(&*m_h);
+  match->setQName(sctx_p->lookup_elem_qname (target));
+  nodestack.push(&*match);
   return no_state;
 }
 
@@ -2398,14 +2536,14 @@ void end_visit(const PITest& v, void *visit_state)
 void *begin_visit(const SchemaAttributeTest& v)
 {
   TRACE_VISIT ();
-  rchandle<match_expr> m_h = new match_expr(v.get_location());
-  m_h->setTestKind(match_xs_attr_test);
+  rchandle<match_expr> match = new match_expr(v.get_location());
+  match->setTestKind(match_xs_attr_test);
 
   rchandle<QName> attr_h = v.get_attr();
   if (attr_h!=NULL) {
-    m_h->setQName(sctx_p->lookup_elem_qname (attr_h->get_qname()));
+    match->setQName(sctx_p->lookup_elem_qname (attr_h->get_qname()));
   }
-  nodestack.push(&*m_h);
+  nodestack.push(&*match);
   return no_state;
 }
 
@@ -2419,14 +2557,14 @@ void end_visit(const SchemaAttributeTest& v, void *visit_state)
 void *begin_visit(const SchemaElementTest& v)
 {
   TRACE_VISIT ();
-  rchandle<match_expr> m_h = new match_expr(v.get_location());
-  m_h->setTestKind(match_xs_elem_test);
+  rchandle<match_expr> match = new match_expr(v.get_location());
+  match->setTestKind(match_xs_elem_test);
 
   rchandle<QName> elem_h = v.get_elem();
   if (elem_h!=NULL) {
-    m_h->setQName (sctx_p->lookup_qname ("", elem_h->get_qname()));
+    match->setQName (sctx_p->lookup_qname ("", elem_h->get_qname()));
   }
-  nodestack.push(&*m_h);
+  nodestack.push(&*match);
   return no_state;
 }
 
@@ -3174,7 +3312,7 @@ void end_visit(const VarRef& v, void *visit_state)
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
   if (e == NULL)
-    ZORBA_ERROR_ALERT (AlertCodes::XPST0008, NULL, false, v.get_varname ());
+    ZORBA_ERROR_ALERT (ZorbaError::XPST0008, NULL, false, v.get_varname ());
   nodestack.push (rchandle<expr> (e));
 }
 
