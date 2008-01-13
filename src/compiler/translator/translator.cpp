@@ -1585,14 +1585,14 @@ void end_visit(const Prolog& v, void *visit_state)
 void *begin_visit(const QVarInDecl& v)
 {
   TRACE_VISIT ();
-  push_scope ();
-  nodestack.push (bind_var (v.get_location (), v.get_name (), var_expr::quant_var));
   return no_state;
 }
 
 void end_visit(const QVarInDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  push_scope ();
+  nodestack.push (bind_var (v.get_location (), v.get_name (), var_expr::quant_var));
 }
 
 
@@ -3115,8 +3115,8 @@ void end_visit(const QuantifiedExpr& v, void *visit_state)
   flwor->set_where(sat);
   int i;
   for(i = 0; i < v.get_decl_list()->size(); ++i) {
-    rchandle<expr> fe = pop_nodestack();
     rchandle<var_expr> ve = pop_nodestack().cast<var_expr>();
+    rchandle<expr> fe = pop_nodestack();
     ve->set_kind(var_expr::for_var);
     flwor->add(new forlet_clause(forlet_clause::for_clause, ve, NULL, NULL, fe));
     pop_scope();
