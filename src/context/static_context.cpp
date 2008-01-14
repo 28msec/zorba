@@ -216,9 +216,9 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
   xqp_string static_context::lookup_ns (xqp_string prefix) const
   {
     xqp_string ns;
-    if(!context_value ("ns:" + prefix, ns))
+    if(!context_value ("ns:" + prefix, ns) || ns.empty())
 		{
-			ZORBA_ERROR_ALERT(ZorbaError::XQST0048);
+			ZORBA_ERROR_ALERT(ZorbaError::XPST0081);
 		}
     return ns;
   }
