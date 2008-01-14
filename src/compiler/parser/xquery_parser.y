@@ -2475,15 +2475,13 @@ QVarInDeclList :
 			$$ = qvid_list_p;
 				
 		}
-	|	QVarInDecl  COMMA_DOLLAR  QVarInDeclList
+	|	QVarInDeclList  COMMA DOLLAR  QVarInDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [list]\n";
 #endif
 			QVarInDeclList* qvid_list_p = dynamic_cast<QVarInDeclList*>($1);
-			if (qvid_list_p) {
-				qvid_list_p->push_back(dynamic_cast<QVarInDecl*>($3));
-			}
+            qvid_list_p->push_back(dynamic_cast<QVarInDecl*>($4));
 			$$ = $1;
 		}
 	;
