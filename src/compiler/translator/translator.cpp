@@ -2959,21 +2959,36 @@ void post_predicate_visit(const PredicateList& v, void *visit_state)
 
   flwor_expr *flwor = dynamic_cast<flwor_expr *>(&*f);
   ZORBA_ASSERT(flwor != NULL);
-  
-  rchandle<if_expr> ite = new if_expr(pred->get_loc());
-  if (is_numeric_literal(&*pred) || &*pred == sctx_p->lookup_var(LAST_IDX_VAR)) {
-    rchandle<fo_expr> eq = new fo_expr(pred->get_loc(), LOOKUP_OP2("value-equal"));
-    eq->add(sctx_p->lookup_var_nofail (DOT_POS_VAR));
-    eq->add(pred);
-    ite->set_cond_expr(&*eq);
-  } else {
-    ite->set_cond_expr(pred);
-  }
 
-  ite->set_then_expr(sctx_p->lookup_var_nofail (DOT_VAR));
-  ite->set_else_expr(create_seq(pred->get_loc()));
+  rchandle<forlet_clause> predlet = wrap_in_letclause(pred);
+  var_expr *predvar = predlet->get_var().get_ptr();
+
+  flwor->add(predlet);
+
+  rchandle<if_expr> type_ite = new if_expr(pred->get_loc());
+
+  rchandle<fo_expr> cond = new fo_expr(pred->get_loc(), LOOKUP_OPN("or"));
+  cond->add(new instanceof_expr(pred->get_loc(), predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+  cond->add(new instanceof_expr(pred->get_loc(), predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  type_ite->set_cond_expr(&*cond);
   
-  flwor->set_retval(&*ite);
+  rchandle<if_expr> then_ite = new if_expr(pred->get_loc());
+  rchandle<fo_expr> eq = new fo_expr(pred->get_loc(), LOOKUP_OP2("value-equal"));
+  eq->add(sctx_p->lookup_var_nofail (DOT_POS_VAR));
+  eq->add(predvar);
+  then_ite->set_cond_expr(&*eq);
+  then_ite->set_then_expr(sctx_p->lookup_var_nofail (DOT_VAR));
+  then_ite->set_else_expr(create_seq(pred->get_loc()));
+
+  rchandle<if_expr> else_ite = new if_expr(pred->get_loc());
+  else_ite->set_cond_expr(predvar);
+  else_ite->set_then_expr(sctx_p->lookup_var_nofail (DOT_VAR));
+  else_ite->set_else_expr(create_seq(pred->get_loc()));
+
+  type_ite->set_then_expr(&*then_ite);
+  type_ite->set_else_expr(&*else_ite);
+  
+  flwor->set_retval(&*type_ite);
   nodestack.push(flwor);
   pop_scope();
 }
