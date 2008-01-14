@@ -673,21 +673,36 @@ void end_visit(const DirAttr& v, void *visit_state)
 
   QName* qname = v.get_name().get_ptr();
 
-  if (qname->get_prefix() == "xmlns")
+  if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
   {
+    xqpString prefix;
+
+    if (qname->get_qname() == "xmlns")
+    {
+      // we have a defult-namespace declaration
+      prefix = "";
+
+      nameExpr = new const_expr(v.get_location(), "", "", "xmlns");
+    }
+    else
+    {
+      prefix = qname->get_localname();
+
+      nameExpr = new const_expr(v.get_location(), "", "xmlns",
+                                qname->get_localname().c_str());
+    }
+
     const_expr* constValueExpr = dynamic_cast<const_expr*>(valueExpr.get_ptr());
     if (constValueExpr != NULL)
     {
-      xqpString prefix = qname->get_localname();
       xqpString uri = constValueExpr->get_val()->getStringProperty();
-
       sctx_p->bind_ns(prefix, uri);
     }
     else if (valueExpr == NULL)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
-                        &v.get_location(),
-                        false, "Undeclaring of namespace binding");
+      // unbind the prefix
+      if (prefix != "")
+        sctx_p->bind_ns(prefix, "");
     }
     else
     {
@@ -695,11 +710,6 @@ void end_visit(const DirAttr& v, void *visit_state)
                         &v.get_location(),
                         false, "Non-constant namespace URIs");
     }
-
-    nameExpr = new const_expr(v.get_location(),
-                              "",
-                              "xmlns",
-                              qname->get_localname().c_str());
   }
   else
   {
@@ -726,7 +736,7 @@ void end_visit(const DirAttributeValue& v, void *visit_state)
 
 void attr_content_list(yy::location loc, void *visit_state)
 {
-  fo_expr *expr_list_t = create_seq (loc);
+  rchandle<fo_expr> expr_list_t = create_seq(loc);
   expr_t e_h;
   while(true)
   {
@@ -738,8 +748,8 @@ void attr_content_list(yy::location loc, void *visit_state)
 
   if (expr_list_t->size() == 1)
     nodestack.push(*expr_list_t->begin());
-  else
-    nodestack.push(&*expr_list_t);
+  else if (expr_list_t->size() > 1)
+    nodestack.push(expr_list_t.get_ptr());
 }
 
 void *begin_visit(const QuoteAttrContentList& v)
@@ -2379,7 +2389,7 @@ void end_visit(const ElementTest& v, void *visit_state)
   // Else, create a sequence-match
   else
   {
-    if (typeName != NULL || nilled)
+    if (nilled)
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
                         &v.get_location(),
@@ -2401,8 +2411,20 @@ void end_visit(const ElementTest& v, void *visit_state)
       nodeTest = new NodeTest(StoreConsts::elementNode);
     }
 
+    TypeSystem::xqtref_t contentType;
+    if (typeName != NULL)
+    {
+      Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
+
+      contentType = GENV_TYPESYSTEM.create_type(qnameItem, TypeSystem::QUANT_ONE);
+
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
+                        &v.get_location(),
+                        false, "schema types");
+    }
+
     TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
-      create_node_type(nodeTest, NULL, TypeSystem::QUANT_ONE);
+      create_node_type(nodeTest, contentType, TypeSystem::QUANT_ONE);
 
     tstack.push(seqmatch);
   }
@@ -2435,11 +2457,6 @@ void end_visit(const AttributeTest& v, void *visit_state)
 
     if (typeName != NULL)
       match->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname()));
-
-    if (v.is_wild())
-    {
-      // XXX missing member variable for this
-    }
 
     axisExpr->setTest(match);
   }
