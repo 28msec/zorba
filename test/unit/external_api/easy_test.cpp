@@ -1,7 +1,10 @@
-#include "zorba/zorba_easyapi.h"
+#include "zorba/zorba_singlethread.h"
 #include <fstream>
 #include <assert.h>
 //#include "../error_display.h"
+
+//needed to call shutdown on single thread engine
+#include "zorba/zorba_api.h"
 
 using namespace std;
 using namespace xqp;
@@ -17,34 +20,28 @@ int test_easy_api(const char *result_file_name)
 	unsigned int	max;
 	ostringstream		oss2;
 
+	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
 
-	XQuerySimple_t		query;
+	XQuery_t		query;
 	StaticQueryContext_t		sctx;
 	DynamicQueryContext_t		dctx;
-	XQueryResult_t		query_result;
+//	XQueryExecution_t		query_result;
 	CollationInfo	*colinfo = NULL;
 
-	result_file << "XQuerySimpleFactory::createQuery()" << endl;
-	query = XQuerySimpleFactory::createQuery("1+2", "file://query.txt");
-	if(query.isNull())
-	{
-		goto DisplayErrorsAndExit;
-	}
-
-	result_file << "getInternalStaticContext()" << endl;
-	sctx = query->getInternalStaticContext();
+	result_file << "zorba_factory.createStaticContext()" << endl;
+	sctx = zorba_factory.createStaticContext();
 	if(sctx.isNull())
 	{
 		goto DisplayErrorsAndExit;
 	}
-	result_file << "getInternalDynamicContext()" << endl;
-	dctx = query->getInternalDynamicContext();
+	result_file << "zorba_factory.createDynamicContext()" << endl;
+	dctx = zorba_factory.createDynamicContext();
 	if(dctx.isNull())
 	{
 		goto DisplayErrorsAndExit;
 	}
-	
-  sctx->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
+
+	sctx->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
 	result_file << "AddCollation" << endl;
 	colinfo = sctx->GetCollation("http://www.flworfound.org/apitest/coll1");
 	if(!colinfo)
@@ -56,21 +53,29 @@ int test_easy_api(const char *result_file_name)
 		result_file << "query_sctx->GetCollation(\"http://www.flworfound.org/apitest/coll1\") success " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (unsigned int)colinfo->coll << endl;
 	}
 
-	result_file << "dctx->SetVariable" << endl;
-	dctx->SetVariable("varx", (long long)-134);
-
-	result_file << "query->execute" << endl;
-	query_result = query->execute();
-	if(query_result.isNull())
+	result_file << "zorba_factory.createQuery()" << endl;
+  query = zorba_factory.createQuery("1+2", sctx, "file://query.txt");
+	if(query.isNull())
 	{
 		goto DisplayErrorsAndExit;
 	}
-	result_file << "serializeXML" << endl;
-	if(!query_result->serializeXML(result_file))
+
+	
+
+	result_file << "dctx->SetVariable" << endl;
+	dctx->SetVariable("varx", (long long)-134);
+
+	result_file << "query->executeSerializeXML" << endl;
+	if(!query->executeSerializeXML(result_file, dctx))
+	{
 		result_file << endl << "error serializing the result ! " << endl;
+		goto DisplayErrorsAndExit;
+	}
 
 	result_file << endl;
 	result_file << "end easy api test" << endl;
+
+	zorba_factory.shutdown();
 
 	//compare the results with expected result
 	oss2 << "expected_";

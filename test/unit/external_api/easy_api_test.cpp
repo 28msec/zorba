@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "zorba/zorba_easyapi.h"
+#include "zorba/zorba_singlethread.h"
 
 using namespace xqp;
 
@@ -15,11 +15,10 @@ using namespace xqp;
 bool
 test_1()
 {
-	XQuerySimple_t lQuery = XQuerySimpleFactory::createQuery("1+2"); 
+	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
+	XQuery_t lQuery = zorba_factory.createQuery("1+2"); 
 
-	XQueryResult_t lQueryResult = lQuery->execute();
-
-  lQueryResult->serializeXML(std::cout);
+  lQuery->executeSerializeXML(std::cout);
 
 	return true;
 }
@@ -29,11 +28,10 @@ test_1()
 bool
 test_2()
 {
-	XQuerySimple_t lQuery = XQuerySimpleFactory::createQuery("1+2"); 
+	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
+	XQuery_t lQuery = zorba_factory.createQuery("1+2"); 
 
-	XQueryResult_t lQueryResult = lQuery->execute();
-
-  lQueryResult->serializeHTML(std::cout);
+  lQuery->executeSerializeHTML(std::cout);
 
 	return true;
 }
@@ -43,11 +41,10 @@ test_2()
 bool
 test_3()
 {
-	XQuerySimple_t lQuery = XQuerySimpleFactory::createQuery("1+2"); 
+	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
+	XQuery_t lQuery = zorba_factory.createQuery("1+2"); 
 
-	XQueryResult_t lQueryResult = lQuery->execute();
-
-  lQueryResult->serializeTEXT(std::cout);
+  lQuery->executeSerializeTEXT(std::cout);
 
 	return true;
 }
@@ -61,14 +58,13 @@ test_4()
 {
   std::string lQueryString("declare variable $x external; for $i in 1 to $x return $i");
 
-	XQuerySimple_t lQuery = XQuerySimpleFactory::createQuery(lQueryString.c_str()); 
+	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
+	XQuery_t lQuery = zorba_factory.createQuery(lQueryString.c_str()); 
 
-  DynamicQueryContext_t lDynCtxt = lQuery->getInternalDynamicContext();
+  DynamicQueryContext_t lDynCtxt = zorba_factory.createDynamicContext();
   lDynCtxt->SetVariable("x", 2);
 
-	XQueryResult_t lQueryResult = lQuery->execute();
-
-  lQueryResult->serializeXML(std::cout);
+  lQuery->executeSerializeXML(std::cout, lDynCtxt);
 
 	return true;
 }

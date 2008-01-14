@@ -36,15 +36,7 @@
 namespace xqp{
 
 
-ZorbaEngineImpl* globalZorbaEngine = NULL;
-
-
-Zorba* ZORBA_FOR_CURRENT_THREAD()
-{
-	if(!globalZorbaEngine)
-		return NULL;
-	return globalZorbaEngine->getZorbaForCurrentThread();
-}
+rchandle<ZorbaEngineImpl>	 globalZorbaEngine = NULL;
 
 
 void library_init();
@@ -52,17 +44,36 @@ void library_init();
 
 ZorbaEngine& ZorbaEngine::getInstance()
 {
-	if(!globalZorbaEngine)
+	if(globalZorbaEngine.isNull())
 	{
-		globalZorbaEngine = new ZorbaEngineImpl;
+		globalZorbaEngine = new ZorbaEngineImpl(false);
 		globalZorbaEngine->initialize();
 	}
 	return *globalZorbaEngine;
 }
 
-
-ZorbaEngineImpl::ZorbaEngineImpl()
+ZorbaSingleThread& ZorbaSingleThread::getInstance()
 {
+	if(globalZorbaEngine.isNull())
+	{
+		globalZorbaEngine = new ZorbaEngineImpl(true);//single thread
+		globalZorbaEngine->initialize();
+		globalZorbaEngine->initThread();
+	}
+	return *globalZorbaEngine;
+}
+
+Zorba* ZORBA_FOR_CURRENT_THREAD()
+{
+	if(globalZorbaEngine.isNull())
+		return NULL;
+	return globalZorbaEngine->getZorbaForCurrentThread();
+}
+
+ZorbaEngineImpl::ZorbaEngineImpl(bool single_thread)
+{
+	for_single_thread_api = single_thread;
+	theSingleThreadZorba = NULL;
 	xml_data_manager = new XmlDataManager_Impl;
 	xml_data_manager->addReference();
 }
@@ -71,12 +82,15 @@ ZorbaEngineImpl::ZorbaEngineImpl()
 ZorbaEngineImpl::~ZorbaEngineImpl()
 {
 	xml_data_manager->removeReference();
-  assert(globalZorbaEngine == NULL);
+//  assert(globalZorbaEngine.isNull());
+	delete theSingleThreadZorba;
 }
 
 
 void ZorbaEngineImpl::initialize()
 {
+	if(!for_single_thread_api)
+	{
 #ifdef WIN32
   theThreadData = TlsAlloc();
 
@@ -86,12 +100,13 @@ void ZorbaEngineImpl::initialize()
 #elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
 
 #elif defined ZORBA_FOR_ONE_THREAD_ONLY
-  theThreadData = new Zorba();
+  theThreadData = NULL;//new Zorba();
 
 #else
   pthread_mutex_init(&theThreadDataMutex, NULL);
 
 #endif
+	}//end if(for_single_thread_api)
 
 	static_context::init();
 	dynamic_context::init();
@@ -105,8 +120,10 @@ void ZorbaEngineImpl::initialize()
 
 void ZorbaEngineImpl::shutdown()
 {
-  if (globalZorbaEngine != NULL)
+  if (!globalZorbaEngine.isNull())
   {
+		if(!for_single_thread_api)
+		{
 #ifdef WIN32
     TlsFree(theThreadData);
     theThreadData = 0;
@@ -124,13 +141,15 @@ void ZorbaEngineImpl::shutdown()
     pthread_mutex_destroy(&theThreadDataMutex);
 
 #endif
+		}//end if (for_single_thread_api)
 
-    Zorba::theStore = NULL;
+		Zorba::theStore = NULL;
     Zorba::theItemFactory = NULL;
 
-    ZorbaEngineImpl* temp = globalZorbaEngine;
-    globalZorbaEngine = NULL;
-    delete temp;
+  //  ZorbaEngineImpl* temp = globalZorbaEngine;
+  //  globalZorbaEngine = NULL;
+  //  delete temp;
+		globalZorbaEngine = NULL;//also deletes globalZorbaEngine
   }
 }
 
@@ -141,8 +160,10 @@ void ZorbaEngineImpl::initThread()
 
 	if(zorba == 0)
   {
-    zorba = new Zorba();
+		zorba = new Zorba();
 
+		if(!for_single_thread_api)
+		{
 #ifdef WIN32
     TlsSetValue(theThreadData, zorba);
 
@@ -153,22 +174,28 @@ void ZorbaEngineImpl::initThread()
     theThreadData = zorba;
 
 #elif defined ZORBA_FOR_ONE_THREAD_ONLY
-    Assert(0);
+    //Assert(0);
+		theThreadData = zorba;
 
 #else
     pthread_mutex_lock(&theThreadDataMutex);
     theThreadData[(uint64_t)(uintptr_t)pthread_self()] = zorba;
     pthread_mutex_unlock(&theThreadDataMutex);
 #endif
-
-    AlertMessagesEnglish* codes = new AlertMessagesEnglish;
-    zorba->m_error_manager->setAlertMessages(codes, false);
+		}
+		else//if (!for_single_thread_api)
+		{
+			theSingleThreadZorba = zorba;
+		}
   }
 }
 
 
 void ZorbaEngineImpl::uninitThread()
 {
+	if(for_single_thread_api)
+		return;//ignore for single threaded
+
 	Zorba* zorba = getZorbaForCurrentThread();
 
 	if(zorba)
@@ -184,7 +211,7 @@ void ZorbaEngineImpl::uninitThread()
   theThreadData.release();
 
 #elif defined ZORBA_FOR_ONE_THREAD_ONLY
-
+	theThdreadData = NULL;
 #else
 	pthread_mutex_lock(&theThreadDataMutex);
 	theThreadData.erase((uint64_t)(uintptr_t)pthread_self());
@@ -195,6 +222,9 @@ void ZorbaEngineImpl::uninitThread()
 
 Zorba* ZorbaEngineImpl::getZorbaForCurrentThread()
 {
+	if(for_single_thread_api)
+		return theSingleThreadZorba;
+
 #ifdef WIN32
   return (Zorba*)TlsGetValue(theThreadData);
 
@@ -245,6 +275,47 @@ XQuery_t ZorbaEngineImpl::createQuery(
 	return xq.release();
 }
 
+XQuery_t ZorbaEngineImpl::createQueryFromFile(
+      xqp_string xquery_file,
+      StaticQueryContext_t sctx,
+      bool routing_mode)
+{
+	FILE	*fquery;
+	long		fsize;
+	char	*xquerydata;
+	XQuery_t	result_query;
+
+	fquery = fopen(xquery_file.c_str(), "r");
+	if(!fquery)
+	{
+		return NULL;
+	}
+	if(fseek(fquery, 0, SEEK_END))
+	{
+		fclose(fquery);
+		return NULL;
+	}
+	fsize = ftell(fquery);
+	if(fsize <= 0)
+	{
+		fclose(fquery);
+		return NULL;
+	}
+	fseek(fquery, 0, SEEK_SET);
+	xquerydata = (char*)malloc(fsize);
+	if(fread(xquerydata, 1, fsize, fquery) < fsize)
+	{
+		::free(xquerydata);
+		fclose(fquery);
+		return NULL;
+	}
+	fclose(fquery);
+
+	result_query = createQuery(xquerydata, sctx, xquery_file, routing_mode);
+	::free(xquerydata);
+	
+	return result_query;
+}
 
 ZorbaAlertsManager& ZorbaEngineImpl::getAlertsManagerForCurrentThread()
 {

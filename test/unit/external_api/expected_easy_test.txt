@@ -1,11 +1,10 @@
-XQuerySimpleFactory::createQuery()
-getInternalStaticContext()
-getInternalDynamicContext()
+zorba_factory.createStaticContext()
+zorba_factory.createDynamicContext()
 AddCollation
 query_sctx->GetCollation("http://www.flworfound.org/apitest/coll1") success http://www.flworfound.org/apitest/coll1 en 0 0
+zorba_factory.createQuery()
 dctx->SetVariable
-query->execute
-serializeXML
+query->executeSerializeXML
 <?xml version="1.0" encoding="UTF-8"?>
 3
 end easy api test

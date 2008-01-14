@@ -4,6 +4,7 @@
 
 #define ZORBA_USE_PTHREAD_LIBRARY
 
+#include "store/api/store_api.h"
 #include "system/zorba_engine_api.h"
 
 namespace xqp
@@ -34,7 +35,7 @@ Zorba* ZORBA_FOR_CURRENT_THREAD();
                        done automatically by the underlying thread library.
 
 ********************************************************************************/
-class ZorbaEngineImpl : public ZorbaEngine
+class ZorbaEngineImpl : public ZorbaSingleThread, public ZorbaEngine
 {
 private:
 
@@ -59,9 +60,11 @@ private:
 
 	//the store wrapper
 	XmlDataManager_Impl		*xml_data_manager;
+	bool									for_single_thread_api;
+	Zorba									*theSingleThreadZorba;
 
 public:
-	ZorbaEngineImpl();
+	ZorbaEngineImpl(bool single_thread);
 
   ~ZorbaEngineImpl();
 
@@ -79,6 +82,11 @@ public:
         const char* aQueryString,
         StaticQueryContext_t = 0, 
 				xqp_string	xquery_source_uri = "",
+        bool routing_mode = false);
+
+  virtual XQuery_t createQueryFromFile(
+        xqp_string xquery_file,
+        StaticQueryContext_t = 0, 
         bool routing_mode = false);
 
 	ZorbaAlertsManager& getAlertsManagerForCurrentThread();

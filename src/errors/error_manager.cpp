@@ -19,7 +19,9 @@ AlertsManagerImpl::AlertsManagerImpl( )
 	thread_registered_callback = NULL;
 	thread_registered_param = NULL;
 	theIsFromUser = true;
-	theAlertMessages = NULL;
+//	theAlertMessages = NULL;
+  AlertMessagesEnglish* codes = new AlertMessagesEnglish;
+	setAlertMessages(codes, false);
 }
 
 
@@ -63,6 +65,8 @@ AlertMessages& AlertsManagerImpl::getAlertMessages()
 
 void AlertsManagerImpl::setAlertMessages(AlertMessages* c, bool is_from_user)
 {
+	if(!theIsFromUser)
+		delete theAlertMessages;
 	theAlertMessages = c;
 	theIsFromUser = is_from_user;
 }

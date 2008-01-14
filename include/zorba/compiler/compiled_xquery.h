@@ -11,7 +11,12 @@ public:
 
 public:
 
-    // execute the query 
+		virtual bool executeSerialize( std::ostream& os, DynamicQueryContext_t = 0 ) = 0;
+		virtual bool executeSerializeXML( std::ostream& os, DynamicQueryContext_t = 0 ) = 0;
+		virtual bool executeSerializeHTML( std::ostream& os, DynamicQueryContext_t = 0 ) = 0;
+		virtual bool executeSerializeTEXT( std::ostream& os, DynamicQueryContext_t = 0 ) = 0;
+
+		// execute the query 
 		//daniel: return NULL for error
 		// Matthias: again, how tu return errors? daniel: using the error manager
     // the DynamicQueryContext does not need to be passed, a default one can always be used

@@ -6,17 +6,17 @@
 #define ZORBA_XQUERY_CPP_API_HEADER
 
 
-#include "store/api/item.h"
-#include "store/api/collection.h"
-#include "store/api/store_api.h"
-#include "util/rchandle.h"
-#include "errors/errors.h"
-#include "context/static_context_api.h"
-#include "context/dynamic_context_api.h"
-#include "compiler/compiled_xquery.h"
-#include "runtime/xquery_execution.h"
-#include "system/zorba_engine_api.h"
-#include "types/typeident.h"
+#include "zorba/store/api/item.h"
+#include "zorba/store/api/collection.h"
+#include "zorba/store/api/store_api.h"
+#include "zorba/util/rchandle.h"
+#include "zorba/errors/errors.h"
+#include "zorba/context/static_context_api.h"
+#include "zorba/context/dynamic_context_api.h"
+#include "zorba/compiler/compiled_xquery.h"
+#include "zorba/runtime/xquery_execution.h"
+#include "zorba/system/zorba_engine_api.h"
+#include "zorba/types/typeident.h"
 
 
 #endif

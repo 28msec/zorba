@@ -102,7 +102,12 @@ public:
 
 public:
 
-    // StaticQueryContext is optional
+		virtual bool executeSerialize( std::ostream& os, DynamicQueryContext_t = 0 );
+		virtual bool executeSerializeXML( std::ostream& os, DynamicQueryContext_t = 0 );
+		virtual bool executeSerializeHTML( std::ostream& os, DynamicQueryContext_t = 0 );
+		virtual bool executeSerializeTEXT( std::ostream& os, DynamicQueryContext_t = 0 );
+
+		// StaticQueryContext is optional
 		//daniel: return true for success
 		// Matthias: how to return errors? daniel: using the error manager
     // routing_mode: should documents in a collection be filtered or queried completely

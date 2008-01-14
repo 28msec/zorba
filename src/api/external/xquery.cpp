@@ -262,6 +262,50 @@ XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dct
 
 }
 
+bool Zorba_XQueryBinary::executeSerialize( std::ostream& os, DynamicQueryContext_t dctx )
+{
+	XQueryExecution_t		xqueryexecution;
+
+	xqueryexecution = createExecution(dctx);
+	if(xqueryexecution.isNull())
+		return false;
+
+	return xqueryexecution->serialize(os);
+}
+
+bool Zorba_XQueryBinary::executeSerializeXML( std::ostream& os, DynamicQueryContext_t dctx )
+{
+	XQueryExecution_t		xqueryexecution;
+
+	xqueryexecution = createExecution(dctx);
+	if(xqueryexecution.isNull())
+		return false;
+
+	return xqueryexecution->serializeXML(os);
+}
+
+bool Zorba_XQueryBinary::executeSerializeHTML( std::ostream& os, DynamicQueryContext_t dctx )
+{
+	XQueryExecution_t		xqueryexecution;
+
+	xqueryexecution = createExecution(dctx);
+	if(xqueryexecution.isNull())
+		return false;
+
+	return xqueryexecution->serializeHTML(os);
+}
+
+bool Zorba_XQueryBinary::executeSerializeTEXT( std::ostream& os, DynamicQueryContext_t dctx )
+{
+	XQueryExecution_t		xqueryexecution;
+
+	xqueryexecution = createExecution(dctx);
+	if(xqueryexecution.isNull())
+		return false;
+
+	return xqueryexecution->serializeTEXT(os);
+}
+
 //bool Zorba_XQueryBinary::isCompiled()
 //{
 //  return is_compiled;
@@ -310,9 +354,9 @@ Zorba_XQueryExecution::Zorba_XQueryExecution()
 
 Zorba_XQueryExecution::~Zorba_XQueryExecution()
 {
-	state_block->xqbinary->removeReference();
-
   close();
+
+	state_block->xqbinary->removeReference();
 
   delete state_block;
   delete internal_dyn_context;

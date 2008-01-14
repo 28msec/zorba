@@ -120,6 +120,7 @@ int test_api_zorba_engine(const char *result_file_name)
 
 
 	zorba_factory.uninitThread();
+	zorba_factory.shutdown();
 	result_file << endl;
 	result_file << "UninitThread" << endl;
 
@@ -136,6 +137,7 @@ DisplayErrorsAndExit:
 	DisplayErrorListForCurrentThread(result_file);
 
 	zorba_factory.uninitThread();
+	zorba_factory.shutdown();
 
 	assert(false);
 	return -1; 
@@ -144,8 +146,8 @@ DisplayErrorsAndExit:
 //for CTEST
 int zorba_engine_test(int argc, char* argv[])
 {
-  ZorbaEngine& engine = ZorbaEngine::getInstance();
+//  ZorbaEngine& engine = ZorbaEngine::getInstance();
 	test_api_zorba_engine("zorba_engine_test.txt");
-	engine.shutdown();
+//	engine.shutdown();
 	return 0;
 }

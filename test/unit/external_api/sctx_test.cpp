@@ -572,6 +572,7 @@ int test_api_static_context(const char *result_file_name)
 	sctx1 = NULL;//free now the static context
 
 	zorba_factory.uninitThread();
+	zorba_factory.shutdown();
 
 	//compare the results with expected result
 	oss2 << "expected_";
@@ -586,6 +587,7 @@ DisplayErrorsAndExit:
 	DisplayErrorListForCurrentThread(result_file);
 
 	zorba_factory.uninitThread();
+	zorba_factory.shutdown();
 
 	assert(false);
 	return -1; 
@@ -594,8 +596,8 @@ DisplayErrorsAndExit:
 //for CTEST
 int sctx_test(int argc, char* argv[])
 {
-  ZorbaEngine& engine = ZorbaEngine::getInstance();
+//  ZorbaEngine& engine = ZorbaEngine::getInstance();
 	test_api_static_context("sctx_test.txt");
-	engine.shutdown();
+//	engine.shutdown();
 	return 0;
 }

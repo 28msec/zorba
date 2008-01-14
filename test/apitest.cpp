@@ -8,7 +8,7 @@
 #include "../src/util/logging/loggermanager.hh"
 #include "timer.h"
 #include "error_display.h"
-#include "errors/error_factory.h"
+//#include "errors/error_factory.h"
 #include "zorba/util/properties.h"
 
 #ifdef WIN32
@@ -19,8 +19,17 @@
 #include <iostream>
 #include <iomanip>
 
+namespace xqp{
+#ifndef NDEBUG
+extern const char*		g_error_in_file;
+extern int						g_error_at_line;
+extern bool						g_abort_when_fatal_error;
+#endif
+}
+
 using namespace xqp;
 using namespace std;
+
 
 #ifdef UNICODE
 #error apitest: UNICODE no longer supported

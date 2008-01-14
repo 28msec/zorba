@@ -62,6 +62,7 @@ int test_api_query_multithread(const char *result_file_name)
 		thread_result_total += (int)thread_result;
 	}
 	zorba_factory.uninitThread();
+	zorba_factory.shutdown();
 
 	//compare the results with expected result
 	ostringstream		oss2;
@@ -165,8 +166,8 @@ DisplayErrorsAndExit:
 //for CTEST
 int query_multithread_test(int argc, char* argv[])
 {
-	ZorbaEngine& engine = ZorbaEngine::getInstance();
+//	ZorbaEngine& engine = ZorbaEngine::getInstance();
 	test_api_query_multithread("query_mt_test");//0,1,2,3...19.txt
-	engine.shutdown();
+//	engine.shutdown();
 	return 0;
 }
