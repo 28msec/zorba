@@ -706,9 +706,7 @@ void end_visit(const DirAttr& v, void *visit_state)
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
-                        &v.get_location(),
-                        false, "Non-constant namespace URIs");
+      ZORBA_ERROR_ALERT(ZorbaError::XQST0022, &v.get_location(), false, "", "");
     }
   }
   else
@@ -2386,7 +2384,7 @@ void end_visit(const ElementTest& v, void *visit_state)
     axisExpr->setTest(me);
   }
 
-  // Else, create a sequence-match
+  // Else, create a sequence-type match
   else
   {
     if (nilled)
@@ -2401,8 +2399,9 @@ void end_visit(const ElementTest& v, void *visit_state)
     {
       Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname());
 
-      NodeNameTest* nodeNameTest = new NodeNameTest(qnameItem->getNamespace().getStore(),
-                                                    qnameItem->getLocalName().getStore());
+      NodeNameTest* nodeNameTest =
+        new NodeNameTest(qnameItem->getNamespace().getStore(),
+                         qnameItem->getLocalName().getStore());
 
       nodeTest = new NodeTest(StoreConsts::elementNode, nodeNameTest);
     }
@@ -2417,10 +2416,6 @@ void end_visit(const ElementTest& v, void *visit_state)
       Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
       contentType = GENV_TYPESYSTEM.create_type(qnameItem, TypeSystem::QUANT_ONE);
-
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
-                        &v.get_location(),
-                        false, "schema types");
     }
 
     TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
@@ -2462,20 +2457,14 @@ void end_visit(const AttributeTest& v, void *visit_state)
   }
   else
   {
-    if (typeName != NULL)
-    {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
-                        &v.get_location(),
-                        false, "schema types");
-    }
-
     rchandle<NodeTest> nodeTest;
     if (attrName != NULL)
     {
       Item_t qnameItem = sctx_p->lookup_qname("", attrName->get_qname());
 
-      NodeNameTest* nodeNameTest = new NodeNameTest(qnameItem->getNamespace().getStore(),
-                                                    qnameItem->getLocalName().getStore());
+      rchandle<NodeNameTest> nodeNameTest =
+        new NodeNameTest(qnameItem->getNamespace().getStore(),
+                         qnameItem->getLocalName().getStore());
 
       nodeTest = new NodeTest(StoreConsts::attributeNode, nodeNameTest);
     }
@@ -2484,8 +2473,16 @@ void end_visit(const AttributeTest& v, void *visit_state)
       nodeTest = new NodeTest(StoreConsts::attributeNode);
     }
 
+    TypeSystem::xqtref_t contentType;
+    if (typeName != NULL)
+    {
+      Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
+
+      contentType = GENV_TYPESYSTEM.create_type(qnameItem, TypeSystem::QUANT_ONE);
+    }
+
     TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
-      create_node_type(nodeTest, NULL, TypeSystem::QUANT_ONE);
+      create_node_type(nodeTest, contentType, TypeSystem::QUANT_ONE);
 
     tstack.push(seqmatch);
   }
@@ -2504,11 +2501,22 @@ void end_visit(const TextTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  rchandle<axis_step_expr> ase_h = expect_axis_step_top ();
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  if (axisExpr != NULL)
+  {
+    rchandle<match_expr> match = new match_expr(v.get_location());
+    match->setTestKind(match_text_test);
+    axisExpr->setTest(match);
+  }
+  else
+  {
+    rchandle<NodeTest> nodeTest = new NodeTest(StoreConsts::textNode);
 
-  rchandle<match_expr> match = new match_expr(v.get_location());
-  match->setTestKind(match_text_test);
-  ase_h->setTest(match);
+    TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
+      create_node_type(nodeTest, NULL, TypeSystem::QUANT_ONE);
+
+    tstack.push(seqmatch);
+  }
 }
 
 
@@ -2524,11 +2532,22 @@ void end_visit(const CommentTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  rchandle<axis_step_expr> ase_h = expect_axis_step_top ();
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  if (axisExpr != NULL)
+  {
+    rchandle<match_expr> match = new match_expr(v.get_location());
+    match->setTestKind(match_comment_test);
+    axisExpr->setTest(match);
+  }
+  else
+  {
+    rchandle<NodeTest> nodeTest = new NodeTest(StoreConsts::commentNode);
 
-  rchandle<match_expr> match = new match_expr(v.get_location());
-  match->setTestKind(match_comment_test);
-  ase_h->setTest(match);
+    TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
+      create_node_type(nodeTest, NULL, TypeSystem::QUANT_ONE);
+
+    tstack.push(seqmatch);
+  }
 }
 
 
