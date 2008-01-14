@@ -215,6 +215,12 @@ public:
   virtual void beginVisit ( const FnDocIterator& ) ;
   virtual void endVisit ( const FnDocIterator& ) ;
 
+  virtual void beginVisit( const ResolveQNameIterator& );
+  virtual void endVisit( const ResolveQNameIterator& );
+
+  virtual void beginVisit( const QNameIterator& );
+  virtual void endVisit( const QNameIterator& );
+  
   virtual void beginVisit( const QNameEqualIterator& );
   virtual void endVisit( const QNameEqualIterator& );
 

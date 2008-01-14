@@ -152,6 +152,20 @@ DECL(fn_round_half_to_even,
 // end Numerics
 
 //QNames
+DECL(fn_resolve_qname,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn",  "resolve-qname"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      //TODO fix the declaration
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      //GENV_TYPESYSTEM.ELEMENT_TYPE,
+      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
+      
+DECL(fn_qname,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "qname"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE));
+
 DECL(op_qname_equal,
 //      (ITEM_FACTORY.createQName(XQUERY_OP_NS,"op","QName-equal"),
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","QName-equal"),

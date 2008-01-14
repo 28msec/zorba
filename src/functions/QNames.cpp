@@ -14,6 +14,74 @@
 #include "runtime/qnames/QNamesImpl.h"
 
  namespace xqp {
+/*
+ * 11.1.1 fn:resolve-QName
+ * --------------------*/
+/*begin class fn_resolve_qname*/
+fn_resolve_qname::fn_resolve_qname(
+  const signature& sig)
+  :
+  function(sig)
+{
+}
+
+PlanIter_t
+    fn_resolve_qname::operator()(
+    const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new ResolveQNameIterator(loc, argv[0], argv[1]);
+}
+
+TypeSystem::xqtref_t
+    fn_resolve_qname::type_check(
+    signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool
+    fn_resolve_qname::validate_args(
+    vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+/*end class fn_resolve_qname*/
+
+ /*
+ * 11.1.2 fn:QName
+ * --------------------*/
+/*begin class fn_qname*/
+fn_qname::fn_qname(
+    const signature& sig)
+     :
+    function(sig)
+{
+}
+
+PlanIter_t
+    fn_qname::operator()(
+    const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new QNameIterator(loc, argv[0], argv[1]);
+}
+
+TypeSystem::xqtref_t
+    fn_qname::type_check(
+    signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool
+    fn_qname::validate_args(
+    vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+/*end class fn_qname*/
+
  /*
  * 11.2.1 op:QName-equal
  * --------------------*/

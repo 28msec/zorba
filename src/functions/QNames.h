@@ -22,6 +22,36 @@ namespace xqp
   * 11 Functions Related to QNames
   *_______________________________________________________________________*/
 
+ /*
+  * 11.1.1 fn:resolve-QName
+  *-----------------------*/
+  class fn_resolve_qname : public function
+  {
+    public:
+      fn_resolve_qname(const signature&);
+      ~fn_resolve_qname() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+  
+ /*
+  * 11.1.2 fn:QName
+  *-----------------------*/
+  class fn_qname : public function
+  {
+    public:
+      fn_qname(const signature&);
+      ~fn_qname() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+  
 /*
  * 11.2.1 op:QName-equal
  *-----------------------*/

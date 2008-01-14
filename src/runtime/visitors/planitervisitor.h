@@ -77,6 +77,8 @@ namespace xqp
   class FnMinIterator;
   class FnSumIterator;
   class FnDocIterator;
+  class ResolveQNameIterator;
+  class QNameIterator;
   class QNameEqualIterator;
   class PrefixFromQNameIterator;
   class LocalNameFromQNameIterator;
@@ -315,6 +317,12 @@ namespace xqp
       virtual void beginVisit ( const FnDocIterator& ) = 0;
       virtual void endVisit ( const FnDocIterator& ) = 0;
 
+      virtual void beginVisit( const ResolveQNameIterator& ) = 0;
+      virtual void endVisit( const ResolveQNameIterator& ) = 0;
+
+      virtual void beginVisit( const QNameIterator& ) = 0;
+      virtual void endVisit( const QNameIterator& ) = 0;
+      
       virtual void beginVisit( const QNameEqualIterator& ) = 0;
       virtual void endVisit( const QNameEqualIterator& ) = 0;
 

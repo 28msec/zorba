@@ -133,6 +133,8 @@ namespace xqp {
   BINARY_ACCEPT(AttributeIterator);
   BINARY_ACCEPT(QNameEqualIterator);
   BINARY_ACCEPT(NamespaceUriForPrefixlIterator);
+  BINARY_ACCEPT(ResolveQNameIterator);
+  BINARY_ACCEPT(QNameIterator);
   
   // nary iterators
   NARY_ACCEPT(NormalizeUnicodeIterator);

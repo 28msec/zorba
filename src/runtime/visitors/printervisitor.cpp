@@ -599,6 +599,24 @@ namespace xqp {
     thePrinter.endIter();
   }
 
+  void PrinterVisitor::beginVisit ( const ResolveQNameIterator& a ) {
+    thePrinter.startIter("ResolveQNameIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const ResolveQNameIterator& ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const QNameIterator& a ) {
+    thePrinter.startIter("QNameIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const QNameIterator& ) {
+    thePrinter.endIter();
+  }
+  
   void PrinterVisitor::beginVisit ( const QNameEqualIterator& a ) {
     thePrinter.startIter("QNameEqualIterator");
     printCommons( &a );

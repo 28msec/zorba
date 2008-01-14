@@ -15,6 +15,77 @@ namespace xqp {
 /**
  *______________________________________________________________________
  *
+ * 11.1.1 fn:resolve-QName
+ *
+ * fn:resolve-QName($qname as xs:string?, $element as element()) as xs:QName?
+ *
+ *Summary: Returns an xs:QName value (that is, an expanded-QName) by taking an
+ *xs:string that has the lexical form of an xs:QName (a string in the form
+ *"prefix:local-name" or "local-name") and resolving it using the in-scope
+ *namespaces for a given element.
+ *If $qname does not have the correct lexical form for xs:QName
+ *an error is raised [err:FOCA0002].
+ *If $qname is the empty sequence, returns the empty sequence.
+ *If the $qname has a prefix and if there is no namespace binding for $element
+ *that matches this prefix, then an error is raised [err:FONS0004].
+ *If the $qname has no prefix, and there is no namespace binding for $element
+ *corresponding to the default (unnamed) namespace, then the resulting
+ *expanded-QName has no namespace part.
+ *The prefix (or absence of a prefix) in the supplied $qname argument is retained
+ *in the returned expanded-QName
+ *_______________________________________________________________________*/
+
+ /* begin class ResolveQNameIterator */
+Item_t
+ResolveQNameIterator::nextImpl(PlanState& planState){
+    Item_t res;
+
+    PlanIterator::PlanIteratorState* state;
+    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    res = Zorba::getItemFactory()->createQName("Not Implemented yet",
+                                                                         "Not Implemented yet",
+                                                                         "Not Implemented yet");
+    STACK_PUSH( res, state );
+    STACK_END();
+}
+/* end class ResolveQNameIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 11.1.2 fn:QName
+ *
+ * fn:QName($paramURI as xs:string?, $paramQName as xs:string) as xs:QName
+ *
+ *Summary: Returns an xs:QName with the namespace URI given in $paramURI.
+ *If $paramURI is the zero-length string or the empty sequence, it represents
+ *"no namespace"; in this case, if the value of $paramQName contains a colon (:),
+ *an error is raised [err:FOCA0002]. The prefix (or absence of a prefix)
+ *in $paramQName is retained in the returned xs:QName value.
+ *The local name in the result is taken from the local part of $paramQName.
+ *If $paramQName does not have the correct lexical form for xs:QName
+ *an error is raised [err:FOCA0002].
+ *Note that unlike xs:QName this function does not require a xs:string literal as
+ *the argument.
+ *_______________________________________________________________________*/
+
+ /* begin class QNameIterator */
+Item_t
+QNameIterator::nextImpl(PlanState& planState){
+    Item_t res;
+
+    PlanIterator::PlanIteratorState* state;
+    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    res = Zorba::getItemFactory()->createQName("Not Implemented yet",
+                                                                        "Not Implemented yet",
+                                                                        "Not Implemented yet");
+    STACK_PUSH( res, state );
+    STACK_END();
+}
+/* end class QNameIterator */
+/**
+ *______________________________________________________________________
+ *
  * 11.2.1 op:QName-equal
  *
  *  op:QName-equal($arg1 as xs:QName,

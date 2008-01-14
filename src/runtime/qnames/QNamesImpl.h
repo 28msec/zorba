@@ -16,6 +16,45 @@
 #include "runtime/base/binarybase.h"
 
 namespace xqp {
+/*
+ * 11.1.1 fn:resolve-QName
+ * --------------------*/
+ 
+/*begin class ResolveQNameIterator */
+class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator>
+{
+  public:
+    ResolveQNameIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+  :
+    BinaryBaseIterator<ResolveQNameIterator>(loc, arg0, arg1){}
+
+    ~ResolveQNameIterator() {};
+  public:
+    Item_t nextImpl(PlanState& planState);
+  
+    virtual void accept(PlanIterVisitor&) const;
+};
+/*end class ResolveQNameIterator */
+
+/*
+ * 11.1.2 fn:QName
+ * --------------------*/
+ 
+/*begin class QNameIterator */
+class QNameIterator : public BinaryBaseIterator<QNameIterator>
+{
+  public:
+    QNameIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+  :
+    BinaryBaseIterator<QNameIterator>(loc, arg0, arg1){}
+
+    ~QNameIterator() {};
+  public:
+    Item_t nextImpl(PlanState& planState);
+  
+    virtual void accept(PlanIterVisitor&) const;
+};
+/*end class QNameIterator */
 
 /*
  * 11.2.1 op:QName-equal
@@ -37,7 +76,7 @@ class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator>
 };
 /*end class QNameEqualIterator */
 
- /*
+/*
  * 11.2.2 fn:prefix-from-QName
  * -------------------- */
 /* begin class PrefixFromQNameIterator */
@@ -56,7 +95,7 @@ class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator
 };
 /* end class PrefixFromQNameIterator */
 
- /*
+/*
  * 11.2.3 fn:local-name-from-QName
  * -------------------- */
 /* begin class LocalNameFromQNameIterator */
@@ -75,7 +114,7 @@ class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIt
 };
 /* end class LocalNameFromQNameIterator */
 
- /*
+/*
  * 11.2.4 fn:namespace-uri-from-QName
  * -------------------- */
 /* begin class NamespaceUriFromQNameIterator */
@@ -114,7 +153,7 @@ class NamespaceUriForPrefixlIterator : public BinaryBaseIterator<NamespaceUriFor
 };
 /*end class NamespaceUriForPrefixlIterator */
 
- /*
+/*
  * 11.2.6 fn:in-scope-prefixes
  * -------------------- */
 /* begin class InScopePrefixesIterator */
