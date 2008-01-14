@@ -190,7 +190,7 @@ namespace xqp {
       octet_iterator UTF8Encode(uint32_t cp, octet_iterator result){
     if (!is_code_point_valid(cp))
     {
-        ZORBA_ERROR_ALERT(ZorbaError::FOCH0001, NULL, true);
+        ZORBA_ERROR_ALERT(ZorbaError::FOCH0001);
     }
     if (cp < 0x80)                        // one octet
       *(result++) = static_cast<uint8_t>(cp);
