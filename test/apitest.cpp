@@ -41,8 +41,9 @@ int apitest_alert_callback(ZorbaAlert *alert_mess,
                            void *param)
 {
 #ifndef NDEBUG
-  if((alert_mess->theKind != ZorbaAlert::USER_ERROR_ALERT) &&
-    (alert_mess->theKind != ZorbaAlert::USER_TRACE_ALERT))
+  if ((alert_mess->theKind != ZorbaAlert::USER_ERROR_ALERT) &&
+      (alert_mess->theKind != ZorbaAlert::USER_TRACE_ALERT) &&
+      g_error_in_file != NULL)
   {
     cerr << g_error_in_file << ": " << g_error_at_line << endl;
   }
