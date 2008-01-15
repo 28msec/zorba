@@ -87,14 +87,14 @@ QNameIterator::nextImpl(PlanState& planState)
     if ( itemURI != NULL )
     {
       itemURI = itemURI->getAtomizationValue();
-      resNs = itemURI->getStringProperty();
+      resNs = itemURI->getStringProperty().trim();
     }
 
     itemQName = consumeNext ( theChild1, planState );
     if ( itemQName != NULL )
     {
       itemQName = itemQName->getAtomizationValue();
-      resQName = itemQName->getStringProperty();
+      resQName = itemQName->getStringProperty().trim();
       
       //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
 
