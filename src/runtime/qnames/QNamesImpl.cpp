@@ -71,14 +71,54 @@ ResolveQNameIterator::nextImpl(PlanState& planState){
 
  /* begin class QNameIterator */
 Item_t
-QNameIterator::nextImpl(PlanState& planState){
+QNameIterator::nextImpl(PlanState& planState)
+{
+    Item_t itemURI;
+    Item_t itemQName;
     Item_t res;
+    xqp_string resNs = "";
+    xqp_string resQName = "";
+    int32_t index = -1;
 
     PlanIterator::PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-    res = Zorba::getItemFactory()->createQName("Not Implemented yet",
-                                                                        "Not Implemented yet",
-                                                                        "Not Implemented yet");
+
+    itemURI = consumeNext ( theChild0, planState );
+    if ( itemURI != NULL )
+    {
+      itemURI = itemURI->getAtomizationValue();
+      resNs = itemURI->getStringProperty();
+    }
+
+    itemQName = consumeNext ( theChild1, planState );
+    if ( itemQName != NULL )
+    {
+      itemQName = itemQName->getAtomizationValue();
+      resQName = itemQName->getStringProperty();
+      
+      //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
+
+      index = resQName.indexOf(":");
+      
+      if( resNs.empty() && (-1 != index) )
+        ZORBA_ERROR_ALERT(ZorbaError::FOCA0002);
+    }
+
+    if( -1 != index )
+    {
+    res = Zorba::getItemFactory()->createQName(
+        resNs,
+        resQName.substr( 0, index ),
+        resQName.substr( index+1, resQName.length() - index ));
+    }
+    else
+    {
+      res = Zorba::getItemFactory()->createQName(
+        resNs,
+        "",
+        resQName);
+    }
+
     STACK_PUSH( res, state );
     STACK_END();
 }

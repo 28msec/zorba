@@ -14,6 +14,7 @@
 
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
+#include "errors/error_factory.h"
 
 namespace xqp {
 /*
