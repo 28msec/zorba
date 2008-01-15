@@ -510,6 +510,65 @@ FnRemoveIterator::FnRemoveIteratorState::reset() {
 
 
 //15.1.9 fn:reverse
+FnReverseIterator::FnReverseIterator(const yy::location& loc, PlanIter_t aChild)
+  : UnaryBaseIterator<FnReverseIterator>(loc, aChild) { }
+
+FnReverseIterator::~FnReverseIterator() { }
+
+Item_t FnReverseIterator::nextImpl(PlanState& planState)
+{
+  Item_t iVal;
+
+  FnReverseIteratorState *state;
+  DEFAULT_STACK_INIT(FnReverseIteratorState, state, planState);
+
+  while((iVal = consumeNext(theChild, planState)) != NULL) {
+    state->theStack.push(iVal);
+  }
+
+  while(!state->theStack.empty()) {
+    iVal = state->theStack.top();
+    state->theStack.pop();
+    STACK_PUSH(iVal, state);
+  }
+
+  STACK_END();
+}
+
+void FnReverseIterator::resetImpl(PlanState& planState)
+{
+  UnaryBaseIterator<FnReverseIterator>::resetImpl(planState);
+  FnReverseIteratorState *state;
+  GET_STATE(FnReverseIteratorState, state, planState);
+  state->reset();
+}
+
+void FnReverseIterator::releaseResourcesImpl(PlanState& planState)
+{
+  UnaryBaseIterator<FnReverseIterator>::releaseResourcesImpl(planState);
+  FnReverseIteratorState *state;
+  GET_STATE(FnReverseIteratorState, state, planState);
+  state->reset();
+}
+
+void FnReverseIterator::setOffset(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<FnReverseIterator>::setOffset(planState, offset);
+  FnReverseIteratorState* state = 
+    new (planState.block + stateOffset) FnReverseIteratorState;
+}
+
+void FnReverseIterator::FnReverseIteratorState::init()
+{
+  reset();
+}
+
+void FnReverseIterator::FnReverseIteratorState::reset()
+{
+  while(!theStack.empty()) {
+    theStack.pop();
+  }
+}
 
 //15.1.10 fn:subsequence
 FnSubsequenceIterator::FnSubsequenceIterator(yy::location loc,
@@ -1122,4 +1181,4 @@ Item_t FnDocIterator::nextImpl(PlanState& planState)
 
 
 } /* namespace xqp */
-
+/* vim:set ts=2 sw=2: */

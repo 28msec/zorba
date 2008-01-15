@@ -182,6 +182,9 @@ public:
   virtual void beginVisit ( const FnRemoveIterator& ) ;
   virtual void endVisit ( const FnRemoveIterator& ) ;
   
+  virtual void beginVisit ( const FnReverseIterator& ) ;
+  virtual void endVisit ( const FnReverseIterator& ) ;
+  
   virtual void beginVisit ( const OpToIterator& ) ;
   virtual void endVisit ( const OpToIterator& ) ;
   

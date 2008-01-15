@@ -247,6 +247,11 @@ DECL(fn_remove,
     GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+DECL(fn_reverse,
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","reverse"),
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
 DECL(fn_distinct_values_1,
     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","distinct-values"),
     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 

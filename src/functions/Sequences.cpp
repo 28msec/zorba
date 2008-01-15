@@ -279,13 +279,13 @@ PlanIter_t fn_reverse::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return NULL;
+	return new FnReverseIterator(loc, argv[0]);
 }
 
 bool fn_reverse::validate_args(
 	vector<PlanIter_t>& argv) const
 {
-	return true;
+	return argv.size() == 1;
 }
 
 TypeSystem::xqtref_t fn_reverse::type_check(

@@ -496,10 +496,18 @@ namespace xqp {
   }
 
   void PrinterVisitor::beginVisit ( const FnRemoveIterator& a ) {
-    thePrinter.startIter("FnIndexOfIterator");
+    thePrinter.startIter("FnRemoveIterator");
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const FnRemoveIterator& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnReverseIterator& a ) {
+    thePrinter.startIter("FnReverseIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnReverseIterator& a ) {
     thePrinter.endIter();
   }
 

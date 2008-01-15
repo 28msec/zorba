@@ -9,6 +9,7 @@
 
 #include <string>
 #include <vector>
+#include <stack>
 
 #include "context/common.h"
 #include "runtime/base/iterator.h"
@@ -284,7 +285,33 @@ protected:
 
 
 //15.1.9 fn:reverse
-// TODO implement
+class FnReverseIterator : public UnaryBaseIterator<FnReverseIterator> {
+  public:
+    FnReverseIterator(const yy::location& loc, PlanIter_t aChild);
+
+    virtual ~FnReverseIterator();
+
+    Item_t nextImpl(PlanState& planState);
+
+    void resetImpl(PlanState& planState);
+
+    void releaseResourcesImpl(PlanState& planState);
+
+    virtual uint32_t getStateSize() const { return sizeof(FnReverseIteratorState); }
+
+    void setOffset(PlanState& planState, uint32_t& offset);
+
+    virtual void accept(PlanIterVisitor& v) const;
+
+  protected:
+    class FnReverseIteratorState : public PlanIteratorState {
+      public:
+        std::stack<Item_t> theStack;
+
+        void init();
+        void reset();
+    };
+};
 
 //15.1.10 fn:subsequence
 // Returns the contiguous sequence of items in the value of $sourceSeq beginning at the position indicated by the value 
@@ -549,3 +576,4 @@ public:
 
 } /* namespace xqp */
 #endif /* XQP_SEQUENCES_H */
+/* vim:set ts=2 sw=2: */

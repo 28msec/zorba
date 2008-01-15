@@ -66,6 +66,7 @@ namespace xqp
   class FnExistsIterator;
   class FnIndexOfIterator;
   class FnRemoveIterator;
+  class FnReverseIterator;
   class OpToIterator;
   class FnDistinctValuesIterator;
   class FnInsertBeforeIterator;  
@@ -286,6 +287,9 @@ namespace xqp
 
       virtual void beginVisit ( const FnRemoveIterator& ) = 0;
       virtual void endVisit ( const FnRemoveIterator& ) = 0;
+
+      virtual void beginVisit ( const FnReverseIterator& ) = 0;
+      virtual void endVisit ( const FnReverseIterator& ) = 0;
 
       virtual void beginVisit ( const OpToIterator& ) = 0;
       virtual void endVisit ( const OpToIterator& ) = 0;
