@@ -1,4 +1,3 @@
-
 #include <time.h>
 #include <iostream>
 #include <iomanip>
@@ -23,9 +22,9 @@ namespace xqp {
 
 
 #ifndef NDEBUG
-const char*		g_error_in_file = NULL;
-int						g_error_at_line = 0;
-bool					g_abort_when_fatal_error = false;
+const char* g_error_in_file = NULL;
+int         g_error_at_line = 0;
+bool        g_abort_when_fatal_error = false;
 #endif
 
 
@@ -68,6 +67,7 @@ void ZorbaAlertFactory::error_alert(
 	std::string description;
 	description = err_manager->getAlertMessages().error_decode(code);
 	err_manager->getAlertMessages().applyParams(&description, &param1, &param2);
+	description = ZorbaError::toString (code) + ": " + description;
 
 	ZorbaError* error = new ZorbaError;
 	error->theKind = ZorbaAlert::ERROR_ALERT;

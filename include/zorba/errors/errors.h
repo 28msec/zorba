@@ -583,7 +583,7 @@ public:
 
 	virtual ~ZorbaError();
 
-  std::string toString(enum ErrorCodes);
+  static std::string toString(enum ErrorCodes);
 };
 
 
