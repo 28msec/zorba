@@ -62,7 +62,7 @@ YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
   std::string ss = *s.getStore();
   bool negative = false;
   unsigned int position = 0;
-  long result, months;
+  long result, months = 0;
   YearMonthDuration_t ym_t;
 
   skip_whitespace(ss, position);

@@ -281,7 +281,7 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
       bool routing_mode)
 {
 	FILE	*fquery;
-	long		fsize;
+	size_t	fsize;
 	char	*xquerydata;
 	XQuery_t	result_query;
 

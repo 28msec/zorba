@@ -509,16 +509,21 @@ bool Zorba_XQueryExecution::serializeXML( std::ostream& os )
   state_block->zorp->current_xquery = state_block->xqbinary;
   state_block->zorp->current_xqueryresult = this;
 
-  serializer *ser = new serializer;
+  auto_ptr<serializer> ser(new serializer);
 
 	try
   {
     ser->serialize(this, os);
-    delete ser;
+//    delete ser;
 	}
   catch(xqp_exception &)
   {
-		delete ser;
+//		delete ser;
+	}
+	catch(...)
+	{
+//		delete ser;
+		throw;
 	}
   state_block->zorp->current_xquery = NULL;
   state_block->zorp->current_xqueryresult = NULL;
@@ -530,15 +535,16 @@ bool Zorba_XQueryExecution::serializeHTML( std::ostream& os )
   state_block->zorp->current_xquery = state_block->xqbinary;
   state_block->zorp->current_xqueryresult = this;
 
-  serializer *ser = new serializer;
+  auto_ptr<serializer> ser(new serializer);
+	
 	try{
   ser->set_parameter("method", "html");
   ser->serialize(this, os);
-  delete ser;
+  //delete ser;
 	}
   catch(xqp_exception &)
   {
-		delete ser;
+		//delete ser;
 	}
   state_block->zorp->current_xquery = NULL;
   state_block->zorp->current_xqueryresult = NULL;

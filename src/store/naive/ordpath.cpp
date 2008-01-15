@@ -2906,7 +2906,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
 
     if (value < OrdPath::DEFAULT_FAN_OUT)
     {
-      bitsNeeded += OrdPath::theNegV2LMap[value];
+      bitsNeeded = OrdPath::theNegV2LMap[value];
       eval = OrdPath::theNegV2EVMap[value] << 16;
     }
     else if (value < 277)

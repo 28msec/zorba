@@ -623,7 +623,7 @@ namespace xqp
     uint32_t i =0;
     uint32_t len = length();
     const char* c = c_str();
-    uint32_t cp;
+    unsigned int cp;
     char seq[4];
     const char* prev = c_str();
     distance_type length;
@@ -662,7 +662,7 @@ namespace xqp
     uint32_t i =0;
     uint32_t len = length();
     const char* c = c_str();
-    uint32_t cp;
+    unsigned int cp;
     char seq[4];
     const char* prev = c_str();
     distance_type length;
@@ -704,7 +704,7 @@ namespace xqp
     uint32_t i =0;
     uint32_t len = length();
     const char* c = c_str();
-    uint32_t cp;
+    unsigned int cp;
     char seq[4];
     const char* prev = c_str();
     distance_type length;

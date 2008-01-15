@@ -1467,7 +1467,7 @@ void end_visit(const NodeComp& v, void *visit_state)
 void *begin_visit(const OccurrenceIndicator& v)
 {
   TRACE_VISIT ();
-  TypeSystem::quantifier_t q;
+  TypeSystem::quantifier_t q = TypeSystem::QUANT_STAR;
   switch (v.get_type ()) {
   case occurs_exactly_one:
     q = TypeSystem::QUANT_ONE; break;
