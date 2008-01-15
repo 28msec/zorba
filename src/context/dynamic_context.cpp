@@ -61,6 +61,8 @@ dynamic_context::dynamic_context(dynamic_context *parent)
     //execution_timezone_seconds = _timezone;//global var set by _tzset in C runtime
     
 		implicit_timezone = 0;
+
+		ctxt_position = 0;
 	}
 	else
 	{
@@ -68,6 +70,9 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 		execution_timezone_seconds = parent->execution_timezone_seconds;
 		implicit_timezone = parent->implicit_timezone;
 		default_collection_uri = parent->default_collection_uri;
+
+		ctxt_item = parent->ctxt_item;
+		ctxt_position = parent->ctxt_position;
 	}
 }
 
@@ -132,6 +137,21 @@ xqp_string dynamic_context::qname_internal_key (xqp_string default_ns, xqp_strin
 }
 */
 
+void dynamic_context::set_context_item(Item_t context_item, unsigned long position)
+{
+	this->ctxt_item = context_item;
+	this->ctxt_position = position;
+}
+
+Item_t dynamic_context::context_item() const 
+{
+	return ctxt_item;
+}
+
+unsigned long dynamic_context::context_position()
+{
+	return ctxt_position;
+}
 
 TypeSystem::xqtref_t dynamic_context::context_item_type() const
 {

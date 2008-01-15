@@ -75,6 +75,7 @@ public:
   virtual bool SetVariable( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type = XS_DOUBLE) = 0;
   virtual bool SetVariable( xqp_string varname, bool bool_value) = 0;
   virtual bool SetVariable( xqp_string varname, struct ::tm datetime_value, long timezone_seconds, VAR_DATETIME_TYPE type = XS_DATETIME) = 0;
+  virtual bool SetVariable( xqp_string varname, Item_t item) = 0;
 	virtual bool SetVariableAsDocument( xqp_string varname, xqp_anyURI documentURI) = 0;
 
   virtual bool DeleteVariable( xqp_string varname ) = 0;

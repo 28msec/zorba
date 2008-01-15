@@ -66,6 +66,10 @@ protected:
 
   Iterator* lookup_var_iter (xqp_string key) const;
 
+	Item_t		ctxt_item;
+	unsigned long		ctxt_position;
+	//+context size is determined by fn:last() at runtime
+
 public:
 	static void init();
 
@@ -76,10 +80,11 @@ public:
 
 public:
 	Item_t context_item() const;
+	unsigned long	context_position();
 
 	TypeSystem::xqtref_t context_item_type() const;
 
-	void set_context_item(Item_t);
+	void set_context_item(Item_t, unsigned long position);
 	void set_context_item_type(TypeSystem::xqtref_t );
 
   #if 0

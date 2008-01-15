@@ -256,10 +256,33 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, struct ::tm datetim
 	return true;
 }
 
+bool DynamicContextWrapper::SetVariable( xqp_string varname, Item_t item)
+{
+	if(!checkQName(varname))
+		return false;
+	DeleteVariable(varname);
+
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.vartype = VAR_ITEM;
+	var.item_value = item.get_ptr();
+	var.item_value->addReference();
+
+	vars.push_back(var);
+	return true;
+}
+
 bool DynamicContextWrapper::SetVariableAsDocument( xqp_string varname, xqp_anyURI documentURI)
 {
 	if(!checkQName(varname))
 		return false;
+	if(varname == ".")//context item
+	{
+		Store		&store = Store::getInstance();
+		if(store.getDocument(documentURI).isNull())
+			return false;
+	}
+
 	DeleteVariable(varname);
 
 	dctx_extern_var_t		var;
@@ -284,6 +307,10 @@ bool DynamicContextWrapper::DeleteVariable( xqp_string varname )
 			{
 				(*it).str_value->removeReference();
 			}
+			else if((*it).vartype == VAR_ITEM)
+			{
+				(*it).item_value->removeReference();
+			}
 			else if((*it).vartype == VAR_DOCUMENT_URI)
 			{
 				(*it).document_uri_value->removeReference();
@@ -304,6 +331,10 @@ void DynamicContextWrapper::DeleteAllVariables( )
 		if((*it).vartype == VAR_STR)
 		{
 			(*it).str_value->removeReference();
+		}
+		else if((*it).vartype == VAR_ITEM)
+		{
+			(*it).item_value->removeReference();
 		}
 		else if((*it).vartype == VAR_DOCUMENT_URI)
 		{
@@ -486,6 +517,9 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 				break;
 			}
 			break;
+		case VAR_ITEM:
+			atomic_item = (*it).item_value;
+			break;
 		case VAR_DOCUMENT_URI:
 		//	Store		*pStore = Zorba::getStore();
 		//	xqpStringStore_t	sst((*it).document_uri_value);
@@ -494,31 +528,45 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 			break;
 		}
 		
-		if((*it).vartype == VAR_DOCUMENT_URI)
+		if((*it).varname != ".")
 		{
-			xqpStringStore_t	sst((*it).document_uri_value);
-			xqp_string				xqpstr(sst);
-			Item_t uriItem = item_factory->createAnyURI(xqpstr);
-			PlanIter_t iter;
-			PlanWrapper* planWrapper = NULL;
+			if((*it).vartype == VAR_DOCUMENT_URI)
+			{
+				xqpStringStore_t	sst((*it).document_uri_value);
+				xqp_string				xqpstr(sst);
+				Item_t uriItem = item_factory->createAnyURI(xqpstr);
+				PlanIter_t iter;
+				PlanWrapper* planWrapper = NULL;
 
-			iter = new SingletonIterator(Zorba::null_loc, uriItem);
-			iter = new FnDocIterator(Zorba::null_loc, iter);
+				iter = new SingletonIterator(Zorba::null_loc, uriItem);
+				iter = new FnDocIterator(Zorba::null_loc, iter);
 
-			planWrapper = new PlanWrapper(iter);
+				planWrapper = new PlanWrapper(iter);
 
-			xqp_string		expanded_name;
-			expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
-			new_dctx->add_variable(expanded_name, planWrapper);
+				xqp_string		expanded_name;
+				expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
+				new_dctx->add_variable(expanded_name, planWrapper);
+			}
+			else
+			{
+				one_item_iterator = new SingletonIterator(Zorba::null_loc, atomic_item);
+				PlanIter_t		iter_t(one_item_iterator);
+				iterator_plus_state = new PlanWrapper(iter_t);
+				xqp_string		expanded_name;
+				expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
+				new_dctx->add_variable(expanded_name, iterator_plus_state);
+			}
 		}
-		else
+		else//if((*it).varname == ".") //for context item
 		{
-			one_item_iterator = new SingletonIterator(Zorba::null_loc, atomic_item);
-			PlanIter_t		iter_t(one_item_iterator);
-			iterator_plus_state = new PlanWrapper(iter_t);
-			xqp_string		expanded_name;
-			expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
-			new_dctx->add_variable(expanded_name, iterator_plus_state);
+			if((*it).vartype == VAR_DOCUMENT_URI)
+			{
+				xqpStringStore_t	sst((*it).document_uri_value);
+				xqp_string				uri(sst);
+				Store		&store = Store::getInstance();
+				atomic_item = store.getDocument(uri);
+			}
+			new_dctx->set_context_item(atomic_item, 1);
 		}
 	}
 
