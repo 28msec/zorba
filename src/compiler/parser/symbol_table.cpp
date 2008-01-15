@@ -101,8 +101,24 @@ off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_st
 	return heap.put(text, 0, length);
 }
 
-off_t symbol_table::put_uri(char const* text, uint32_t length)
+off_t symbol_table::put_uri(char const* text, uint32_t length, bool do_trim_start_and_quotes)
 {
+  if (do_trim_start_and_quotes)
+  {
+    trim_start(&text, length);
+
+    if (text[0] == '\"')
+    {
+      text++;
+      length--;
+    }
+
+    if (text[length-1] == '\"')
+    {
+      length--;
+    }
+  }
+  
 	return heap.put(text, 0, length);
 }
 

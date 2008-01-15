@@ -355,7 +355,7 @@ typedef yy::xquery_parser::token token;
 	return token::COMMA;
 }
 "(" {
-	return token::LPAR;
+  return token::LPAR;
 }
 "if"{S}"(" {
 	return token::IF_LPAR;
@@ -750,7 +750,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to NAMESPACEDECL */
 	/* --------------------------- */
 "at"{SP}{URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3);
+	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3, true);
 	BEGIN MODE_NAMESPACEDECL;
 	return token::AT_URI_LITERAL;
 }
@@ -1696,7 +1696,7 @@ typedef yy::xquery_parser::token token;
 	 |______________________________________________________________________*/
 
 <MODE_URITOOPERATOR>{URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext, yyleng);
+	yylval->sval = driver.symtab.put_uri(yytext+1, yyleng-2);
 	BEGIN MODE_OPERATOR;
 	return token::URI_LITERAL;
 }
@@ -1718,7 +1718,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to NAMESPACEDECL */
 	/* --------------------------- */
 {URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext, yyleng);
+	yylval->sval = driver.symtab.put_uri(yytext+1, yyleng-2);
 	BEGIN MODE_NAMESPACEDECL;
 	return token::URI_LITERAL;
 }
@@ -1833,7 +1833,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to OPERATOR */
 	/* ---------------------- */
 {QName} {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
 	return token::QNAME;
 }
@@ -1882,7 +1882,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QName} {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	/* BEGIN MODE_OPERATOR; */
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	return token::QNAME;
@@ -1955,7 +1955,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to OCCURENCE_INDICATOR */
 	/* -------------------------------- */
 {QName} {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	return token::QNAME;
 }
 
@@ -1991,7 +1991,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to NAMESPACEDECL */
 	/* --------------------------- */
 "at"{SP}{URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3);
+	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3, true);
 	BEGIN MODE_NAMESPACEDECL;
 	return token::AT_URI_LITERAL;
 }
@@ -2260,7 +2260,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QName} {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_CLOSE_KINDTEST;
 	return token::QNAME;
 }
@@ -2454,7 +2454,7 @@ typedef yy::xquery_parser::token token;
 	/* anything else: push back, goto OPERATOR */
 	/* --------------------------------------- */
 {CatchAll} {
-	yyless(1);
+	yyless(0);
 	BEGIN MODE_OPERATOR;
 }
 
@@ -2481,7 +2481,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to INITIAL */
 	/* --------------------- */
 {QName}	 {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN INITIAL;
 	return token::QNAME;
 }
@@ -2513,7 +2513,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to PRAGMACONTENTS */
 	/* ---------------------------- */
 {QName} {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_PRAGMACONTENTS;
 	return token::QNAME;
 }
@@ -2661,7 +2661,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QName} {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	return token::QNAME;
 }
 
@@ -2796,7 +2796,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QName} {
-	yylval->sval = driver.symtab.put(yytext, yyleng);
+  yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::QNAME;
 }
 
@@ -3100,11 +3100,12 @@ void xquery_driver::parse_string( const char *query_string)
 {  
   yyscan_t scanner;
   yylex_init(&scanner);
+  struct yyguts_t * yyg = (struct yyguts_t*)scanner;
 
   YY_BUFFER_STATE str_buffer = yy_scan_string(query_string, scanner);
 
+  yy_flex_debug = Properties::instance()->traceScanning();
   yy::xquery_parser parser(*this, scanner);
-
   parser.set_debug_level(Properties::instance()->traceParsing());
   parser.parse();
 
@@ -3116,16 +3117,15 @@ void xquery_driver::parse(xqp_string const fname)
 {    
   yyscan_t scanner;
   yylex_init(&scanner);
-  
   struct yyguts_t * yyg = (struct yyguts_t*)scanner;
   
-  yy_flex_debug = Properties::instance()->traceScanning();
   filename = fname;
   
   if (!(yyin = fopen(((std::string)fname).c_str (), "r"))) {
     error (std::string("cannot open ") + (std::string)fname);
   }
-  
+
+  yy_flex_debug = Properties::instance()->traceScanning();
   yy::xquery_parser parser(*this, scanner);
   parser.set_debug_level(Properties::instance()->traceParsing());
   parser.parse();

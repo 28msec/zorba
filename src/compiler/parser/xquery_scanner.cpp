@@ -4530,7 +4530,7 @@ case 22:
 YY_RULE_SETUP
 #line 357 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	return token::LPAR;
+  return token::LPAR;
 }
 	YY_BREAK
 case 23:
@@ -5170,7 +5170,7 @@ case 93:
 YY_RULE_SETUP
 #line 752 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3);
+	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3, true);
 	BEGIN MODE_NAMESPACEDECL;
 	return token::AT_URI_LITERAL;
 }
@@ -6931,7 +6931,7 @@ case 306:
 YY_RULE_SETUP
 #line 1655 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_uri(yytext, yyleng);
+	yylval->sval = driver.symtab.put_uri(yytext+1, yyleng-2);
 	return token::URI_LITERAL;
 }
 	YY_BREAK
@@ -6992,7 +6992,7 @@ case 313:
 YY_RULE_SETUP
 #line 1698 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_uri(yytext, yyleng);
+	yylval->sval = driver.symtab.put_uri(yytext+1, yyleng-2);
 	BEGIN MODE_OPERATOR;
 	return token::URI_LITERAL;
 }
@@ -7013,7 +7013,7 @@ case 314:
 YY_RULE_SETUP
 #line 1720 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_uri(yytext, yyleng);
+	yylval->sval = driver.symtab.put_uri(yytext+1, yyleng-2);
 	BEGIN MODE_NAMESPACEDECL;
 	return token::URI_LITERAL;
 }
@@ -7166,7 +7166,7 @@ case 330:
 YY_RULE_SETUP
 #line 1835 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
 	return token::QNAME;
 }
@@ -7229,7 +7229,7 @@ case 336:
 YY_RULE_SETUP
 #line 1884 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	/* BEGIN MODE_OPERATOR; */
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	return token::QNAME;
@@ -7344,7 +7344,7 @@ case 347:
 YY_RULE_SETUP
 #line 1957 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	return token::QNAME;
 }
 	YY_BREAK
@@ -7400,7 +7400,7 @@ case 353:
 YY_RULE_SETUP
 #line 1993 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3);
+	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3, true);
 	BEGIN MODE_NAMESPACEDECL;
 	return token::AT_URI_LITERAL;
 }
@@ -7821,7 +7821,7 @@ case 403:
 YY_RULE_SETUP
 #line 2262 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_CLOSE_KINDTEST;
 	return token::QNAME;
 }
@@ -8075,7 +8075,7 @@ case 427:
 YY_RULE_SETUP
 #line 2456 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yyless(1);
+	yyless(0);
 	BEGIN MODE_OPERATOR;
 }
 	YY_BREAK
@@ -8103,7 +8103,7 @@ case 429:
 YY_RULE_SETUP
 #line 2483 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN INITIAL;
 	return token::QNAME;
 }
@@ -8139,7 +8139,7 @@ case 432:
 YY_RULE_SETUP
 #line 2515 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_PRAGMACONTENTS;
 	return token::QNAME;
 }
@@ -8325,7 +8325,7 @@ case 449:
 YY_RULE_SETUP
 #line 2663 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	return token::QNAME;
 }
 	YY_BREAK
@@ -8502,7 +8502,7 @@ case 466:
 YY_RULE_SETUP
 #line 2798 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-	yylval->sval = driver.symtab.put(yytext, yyleng);
+  yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::QNAME;
 }
 	YY_BREAK
@@ -10213,11 +10213,12 @@ void xquery_driver::parse_string( const char *query_string)
 {  
   yyscan_t scanner;
   yylex_init(&scanner);
+  struct yyguts_t * yyg = (struct yyguts_t*)scanner;
 
   YY_BUFFER_STATE str_buffer = yy_scan_string(query_string,scanner);
 
+  yy_flex_debug = Properties::instance()->traceScanning();
   yy::xquery_parser parser(*this, scanner);
-
   parser.set_debug_level(Properties::instance()->traceParsing());
   parser.parse();
 
@@ -10229,16 +10230,15 @@ void xquery_driver::parse(xqp_string const fname)
 {    
   yyscan_t scanner;
   yylex_init(&scanner);
-  
   struct yyguts_t * yyg = (struct yyguts_t*)scanner;
   
-  yy_flex_debug = Properties::instance()->traceScanning();
   filename = fname;
   
   if (!(yyin = fopen(((std::string)fname).c_str (), "r"))) {
     error (std::string("cannot open ") + (std::string)fname);
   }
-  
+
+  yy_flex_debug = Properties::instance()->traceScanning();
   yy::xquery_parser parser(*this, scanner);
   parser.set_debug_level(Properties::instance()->traceParsing());
   parser.parse();
