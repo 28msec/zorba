@@ -328,7 +328,7 @@ namespace xqp
         lRetValue = false;
       else if (lString != "true" && lString != "1")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, false, "String cannot be cast to boolean");
+        ZORBA_ERROR_ALERT(ZorbaError::FORG0001, false, "String cannot be cast to boolean");
       }
       
     }
@@ -350,7 +350,7 @@ namespace xqp
     
     lResult = stringSimpleCast(aItem, lItemType, aTargetType);
     if ( lResult == 0 ) {
-      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, false, 
+      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, false, 
         false, "Passed item is not castable to passed target type."
       );
     }
