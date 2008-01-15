@@ -22,6 +22,7 @@
 #include "functions/Constructor.h"
 #include "functions/DateTime.h"
 #include "functions/FnContext.h"
+#include "functions/Misc.h"
 
 #include "context/common.h"
 #include "context/static_context.h"
@@ -689,6 +690,15 @@ DECL(fn_datetime_ctor,
 
 
 // end date time
+
+// begin debug functions
+DECL(fn_trace_func,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","trace"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+// end debug functions
+
 
 // begin zorba functions
 DECL(zor_numgen,

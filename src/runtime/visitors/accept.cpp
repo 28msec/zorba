@@ -19,6 +19,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/fncontext/FnContextImpl.h"
+#include "runtime/debug/debug_iterators.h"
 
 #define NOARY_ACCEPT(type) \
   void type::accept(PlanIterVisitor& v) const { \
@@ -135,6 +136,7 @@ namespace xqp {
   BINARY_ACCEPT(NamespaceUriForPrefixlIterator);
   BINARY_ACCEPT(ResolveQNameIterator);
   BINARY_ACCEPT(QNameIterator);
+  BINARY_ACCEPT(FnTraceIterator);
   
   // nary iterators
   NARY_ACCEPT(NormalizeUnicodeIterator);

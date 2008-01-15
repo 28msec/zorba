@@ -215,6 +215,9 @@ public:
   virtual void beginVisit ( const FnDocIterator& ) ;
   virtual void endVisit ( const FnDocIterator& ) ;
 
+  virtual void beginVisit ( const FnTraceIterator& ) ;
+  virtual void endVisit ( const FnTraceIterator& ) ;
+
   virtual void beginVisit( const ResolveQNameIterator& );
   virtual void endVisit( const ResolveQNameIterator& );
 

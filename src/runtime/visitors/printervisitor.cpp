@@ -16,6 +16,7 @@
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/fncontext/FnContextImpl.h"
+#include "runtime/debug/debug_iterators.h"
 
 #include "system/globalenv.h"
 
@@ -596,6 +597,14 @@ namespace xqp {
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const FnDocIterator& ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnTraceIterator& a ) {
+    thePrinter.startIter("FnTraceIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnTraceIterator& ) {
     thePrinter.endIter();
   }
 
