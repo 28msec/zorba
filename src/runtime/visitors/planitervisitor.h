@@ -8,6 +8,8 @@ namespace xqp
   class PlanIterator;
   class FnDataIterator;
   class FnRootIterator;
+  class FnNodeNameIterator;
+  class FnStringIterator;
   class FnBooleanIterator;
   class LogicIterator;
   class CompareIterator;
@@ -130,6 +132,12 @@ namespace xqp
        
       virtual void beginVisit ( const FnRootIterator& ) = 0;
       virtual void endVisit ( const FnRootIterator& ) = 0;
+       
+      virtual void beginVisit ( const FnNodeNameIterator& ) = 0;
+      virtual void endVisit ( const FnNodeNameIterator& ) = 0;
+       
+      virtual void beginVisit ( const FnStringIterator& ) = 0;
+      virtual void endVisit ( const FnStringIterator& ) = 0;
        
       virtual void beginVisit ( const FnBooleanIterator& ) = 0;
       virtual void endVisit ( const FnBooleanIterator& ) = 0;

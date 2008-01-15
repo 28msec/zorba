@@ -73,6 +73,14 @@ DECL(fn_data_func,
 DECL(fn_root_func,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "root"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+DECL(fn_nodename_func,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "node-name"),
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
+
+DECL(fn_name_func,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "name"),
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
 // end Accessors
 
 // Numerics

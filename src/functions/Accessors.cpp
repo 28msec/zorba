@@ -84,7 +84,76 @@ bool fn_root_func::validate_args(vector<PlanIter_t>& argv) const
   return (argv.size() == 1);
 }
 
+/*******************************************************************************
+  
+********************************************************************************/
+fn_nodename_func::fn_nodename_func(const signature& sig) : function (sig)
+{
+}
 
 
-	
+PlanIter_t fn_nodename_func::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv) const
+{
+  if (!validate_args(argv))
+	{
+    ZORBA_ERROR_ALERT(
+		   ZorbaError::XPST0017,
+       &loc
+		);
+  }
+
+  return new FnNodeNameIterator(loc, argv[0]);
+}
+
+
+TypeSystem::xqtref_t fn_nodename_func::type_check(signature& sig) const
+{
+  return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
+}
+
+
+bool fn_nodename_func::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+/*******************************************************************************
+  
+********************************************************************************/
+fn_name_func::fn_name_func(const signature& sig) : function (sig)
+{
+}
+
+
+PlanIter_t fn_name_func::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv) const
+{
+  if (!validate_args(argv))
+	{
+    ZORBA_ERROR_ALERT(
+		   ZorbaError::XPST0017,
+       &loc
+		);
+  }
+
+  PlanIter_t nnIter = new FnNodeNameIterator(loc, argv[0]);
+
+  return new FnStringIterator(loc, nnIter, true);
+}
+
+
+TypeSystem::xqtref_t fn_name_func::type_check(signature& sig) const
+{
+  return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
+}
+
+
+bool fn_name_func::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
 } /* namespace xqp */

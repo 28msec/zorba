@@ -60,7 +60,50 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 
+class FnNodeNameIterator : public UnaryBaseIterator<FnNodeNameIterator> {
+  public:
+    FnNodeNameIterator(const yy::location& loc, PlanIter_t& in)
+      : UnaryBaseIterator<FnNodeNameIterator>(loc, in) { }
+    virtual ~FnNodeNameIterator() { }
 
+    Item_t nextImpl(PlanState& planState);
+
+    virtual void accept(PlanIterVisitor& v) const;
+};
+
+class FnStringIterator : public UnaryBaseIterator<FnStringIterator> {
+  public:
+    FnStringIterator(const yy::location& loc, PlanIter_t& in)
+      : UnaryBaseIterator<FnStringIterator>(loc, in), theEmptyStringOnNULL(false) { }
+
+    FnStringIterator(const yy::location& loc, PlanIter_t& in, bool emptyStringOnNULL)
+      : UnaryBaseIterator<FnStringIterator>(loc, in), theEmptyStringOnNULL(emptyStringOnNULL) { }
+
+    virtual ~FnStringIterator() { }
+
+    Item_t nextImpl(PlanState& planState);
+
+    void resetImpl(PlanState& planState);
+
+    void releaseResourcesImpl(PlanState& planState);
+
+    virtual uint32_t getStateSize() const { return sizeof(FnStringIteratorState); }
+
+    void setOffset(PlanState& planState, uint32_t& offset);
+
+    virtual void accept(PlanIterVisitor& v) const;
+
+  protected:
+    class FnStringIteratorState : public PlanIteratorState {
+      public:
+        bool hasOutput;
+        void init();
+        void reset();
+    };
+
+    bool theEmptyStringOnNULL;
+};
 
 } /* namespace xqp */
 #endif /* XQP_ACCESSORS_IMPL_H */
+/* vim:set ts=2 sw=2: */

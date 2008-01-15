@@ -50,6 +50,22 @@ namespace xqp {
     thePrinter.endIter();
   }
        
+  void PrinterVisitor::beginVisit ( const FnNodeNameIterator& a ) {
+    thePrinter.startIter("FnNodeNameIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnNodeNameIterator& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnStringIterator& a ) {
+    thePrinter.startIter("FnStringIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnStringIterator& a ) {
+    thePrinter.endIter();
+  }
+
   void PrinterVisitor::beginVisit ( const FnBooleanIterator& a ) {
     thePrinter.startIter("FnBooleanIterator");
     printCommons( &a );

@@ -88,5 +88,88 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
+Item_t FnNodeNameIterator::nextImpl(PlanState& planState)
+{
+  Item_t inNode;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  inNode = consumeNext(theChild, planState);
+
+  if (inNode == NULL) {
+    return NULL;
+  }
+
+  if (!inNode->isNode()) {
+    ZORBA_ERROR_ALERT(
+         ZorbaError::XPTY0004,
+         &loc, false, "The argument of the fn:node-name function is not a node");
+  }
+  
+  STACK_PUSH(inNode->getNodeName(), state);
+  STACK_END();
+}
+
+Item_t FnStringIterator::nextImpl(PlanState& planState)
+{
+  Item_t inVal;
+
+  FnStringIteratorState *state;
+  DEFAULT_STACK_INIT(FnStringIteratorState, state, planState);
+
+  while((inVal = consumeNext(theChild, planState)) != NULL) {
+    state->hasOutput = true;
+    STACK_PUSH(Zorba::getItemFactory()->createString(inVal->getStringProperty()), state);
+  }
+
+  if (!state->hasOutput && theEmptyStringOnNULL) {
+    state->hasOutput = true;
+    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
+  }
+
+  STACK_END();
+}
+
+void FnStringIterator::resetImpl(PlanState& planState)
+{
+  UnaryBaseIterator<FnStringIterator>::resetImpl(planState);
+
+  FnStringIteratorState* state;
+  GET_STATE(FnStringIteratorState, state, planState);
+  state->reset();
+}
+
+void FnStringIterator::releaseResourcesImpl(PlanState& planState)
+{
+  UnaryBaseIterator<FnStringIterator>::releaseResourcesImpl(planState);
+  
+  FnStringIteratorState* state;
+  GET_STATE(FnStringIteratorState, state, planState);
+  
+  // do we need a releaseResouces function in the state or is it always the same as reset?
+  state->reset(); 
+}
+
+void FnStringIterator::setOffset(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<FnStringIterator>::setOffset(planState, offset);
+  FnStringIteratorState* state = 
+    new (planState.block + stateOffset) FnStringIteratorState;
+}
+
+void FnStringIterator::FnStringIteratorState::init()
+{
+  PlanIterator::PlanIteratorState::init();
+  hasOutput = false;
+}
+
+void FnStringIterator::FnStringIteratorState::reset()
+{
+  PlanIterator::PlanIteratorState::reset();
+  hasOutput = false;
+}
+
 
 } /* namespace xqp */
+/* vim:set ts=2 sw=2: */

@@ -31,6 +31,12 @@ public:
   virtual void beginVisit ( const FnRootIterator& ) ;
   virtual void endVisit ( const FnRootIterator& ) ;
        
+  virtual void beginVisit ( const FnNodeNameIterator& ) ;
+  virtual void endVisit ( const FnNodeNameIterator& ) ;
+       
+  virtual void beginVisit ( const FnStringIterator& ) ;
+  virtual void endVisit ( const FnStringIterator& ) ;
+       
   virtual void beginVisit ( const FnBooleanIterator& ) ;
   virtual void endVisit ( const FnBooleanIterator& ) ;
        
