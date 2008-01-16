@@ -2339,30 +2339,6 @@ void *begin_visit(const DocumentTest& v)
 {
   TRACE_VISIT ();
 
-  rchandle<match_expr> match = new match_expr(v.get_location());
-  match->setTestKind(match_doc_test);
-
-  rchandle<ElementTest> e_h = v.get_elem_test();
-  if (e_h != NULL)
-  {
-    rchandle<QName> elem_h = e_h->getElementName();
-    if (elem_h != NULL)
-    {
-      match->setQName(sctx_p->lookup_elem_qname(elem_h->get_prefix(),
-                                                elem_h->get_localname()));
-    }
-    rchandle<TypeName> type_h = e_h->getTypeName();
-    if (type_h != NULL)
-    {
-      match->setTypeName(sctx_p->lookup_qname("", type_h->get_name()->get_qname()));
-    }
-    bool optional_b =  e_h->isNilledAllowed();
-    if (optional_b)
-    {
-      // XXX missing member variable for this
-    }
-  }
-  nodestack.push(&*match);
   return no_state;
 }
 
@@ -2421,6 +2397,7 @@ void end_visit(const DocumentTest& v, void *visit_state)
       ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
                         &v.get_location(),
                         false, "Document kind test");
+    }
   }
 }
 
