@@ -15,7 +15,7 @@
 
 #include "functions/signature.h"
 #include "context/common.h"
- 
+
 namespace xqp {
 
 template <class Object> class rchandle;

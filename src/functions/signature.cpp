@@ -10,7 +10,6 @@
 #include "signature.h"
 
 #include "context/common.h"
-#include "util/fx/fxhashmap.h"
 
 using namespace std;
 namespace xqp {

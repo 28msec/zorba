@@ -9,8 +9,6 @@
 #include "error_factory.h"
 #include "error_manager.h"
 
-#include "util/Assert.h"
-
 #include "system/zorba.h"
 #include "store/api/item.h"
 #include "runtime/base/iterator.h"

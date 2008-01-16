@@ -32,6 +32,7 @@
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "types/typesystem.h"
+#include "util/Assert.h"
 
 #include "zorba_api.h"
 

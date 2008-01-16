@@ -12,6 +12,8 @@
 #include "functions/Accessors.h"
 #include "runtime/accessors/AccessorsImpl.h"
 
+using namespace std;
+
 namespace xqp {
 
 fn_data_func::fn_data_func ( const signature& sig ) : function ( sig ) {}

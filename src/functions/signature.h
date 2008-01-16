@@ -15,7 +15,6 @@
 
 #include "context/common.h"
 #include "types/typesystem.h"
-#include "util/fx/fxhashmap.h"
 #include "store/api/item.h"
 
 namespace xqp {

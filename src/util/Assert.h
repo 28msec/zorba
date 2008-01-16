@@ -13,10 +13,9 @@
 #define XQP_ASSERT_H
 
 #include <string>
+#include "errors/error_factory.h"
 
 namespace xqp {
-
-void ZorbaAssert(const char *where, const char *fun, const char *what);
 
 #ifdef __GNUC__
 #define __ZORBA_ASSERT_aux4( ) __PRETTY_FUNCTION__

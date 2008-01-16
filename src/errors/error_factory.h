@@ -67,6 +67,7 @@ public:
         const std::string label);
 };
 
+void ZorbaAssert (const char *where, const char *fun, const char *what);
 
 /// define some macros to catch the __FILE__ and __LINE__ where the error is fired
 #ifndef NDEBUG
