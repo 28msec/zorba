@@ -2,7 +2,7 @@
  *
  *  $Id: signature.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
- *	Copyright 2006-2007 FLWOR Foundation.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *  Authors: John Cowan,Paul Pedersen
  *
  */
@@ -12,6 +12,7 @@
 #include "context/common.h"
 
 using namespace std;
+
 namespace xqp {
 
   signature::signature (Item_t name, TypeSystem::xqtref_t arg1,
@@ -24,77 +25,77 @@ namespace xqp {
   }
 
 signature::signature(
-	Item_t name,
-	TypeSystem::xqtref_t return_type)
+  Item_t name,
+  TypeSystem::xqtref_t return_type)
 :
-	qname_p(name)
+  qname_p(name)
 {
-	argv.push_back(return_type);
+  argv.push_back(return_type);
 }
 
 signature::signature(
   Item_t name,
-	TypeSystem::xqtref_t arg1,
-	TypeSystem::xqtref_t return_type)
+  TypeSystem::xqtref_t arg1,
+  TypeSystem::xqtref_t return_type)
 :
-	qname_p(name)
+  qname_p(name)
 {
-	argv.push_back(return_type);
-	argv.push_back(arg1);
+  argv.push_back(return_type);
+  argv.push_back(arg1);
 }
 
 signature::signature(
   Item_t name,
-	TypeSystem::xqtref_t arg1,
-	TypeSystem::xqtref_t arg2,
-	TypeSystem::xqtref_t return_type)
+  TypeSystem::xqtref_t arg1,
+  TypeSystem::xqtref_t arg2,
+  TypeSystem::xqtref_t return_type)
 :
-	qname_p(name)
+  qname_p(name)
 {
-	argv.push_back(return_type);
-	argv.push_back(arg1);
-	argv.push_back(arg2);
+  argv.push_back(return_type);
+  argv.push_back(arg1);
+  argv.push_back(arg2);
 }
 
 signature::signature(
   Item_t name,
-	TypeSystem::xqtref_t arg1,
-	TypeSystem::xqtref_t arg2,
-	TypeSystem::xqtref_t arg3,
-	TypeSystem::xqtref_t return_type)
+  TypeSystem::xqtref_t arg1,
+  TypeSystem::xqtref_t arg2,
+  TypeSystem::xqtref_t arg3,
+  TypeSystem::xqtref_t return_type)
 :
-	qname_p(name)
+  qname_p(name)
 {
-	argv.push_back(return_type);
-	argv.push_back(arg1);
-	argv.push_back(arg2);
-	argv.push_back(arg3);
+  argv.push_back(return_type);
+  argv.push_back(arg1);
+  argv.push_back(arg2);
+  argv.push_back(arg3);
 }
 
 signature::signature(
   Item_t name,
-	TypeSystem::xqtref_t arg1,
-	TypeSystem::xqtref_t arg2,
-	TypeSystem::xqtref_t arg3,
-	TypeSystem::xqtref_t arg4,
-	TypeSystem::xqtref_t return_type)
+  TypeSystem::xqtref_t arg1,
+  TypeSystem::xqtref_t arg2,
+  TypeSystem::xqtref_t arg3,
+  TypeSystem::xqtref_t arg4,
+  TypeSystem::xqtref_t return_type)
 :
-	qname_p(name)
+  qname_p(name)
 {
-	argv.push_back(return_type);
-	argv.push_back(arg1);
-	argv.push_back(arg2);
-	argv.push_back(arg3);
-	argv.push_back(arg4);
+  argv.push_back(return_type);
+  argv.push_back(arg1);
+  argv.push_back(arg2);
+  argv.push_back(arg3);
+  argv.push_back(arg4);
 }
 
-signature::signature(
-  Item_t name,
-	const vector<TypeSystem::xqtref_t>& _argv)
-:
-	qname_p(name),
-	argv(_argv)
+signature::signature(Item_t name,
+                     const vector<TypeSystem::xqtref_t>& _argv,
+                     TypeSystem::xqtref_t return_type)
+  : qname_p(name)
 {
+  argv.push_back (return_type);
+  copy (_argv.begin (), _argv.end (), back_inserter (argv));
 }
 
 signature::~signature()

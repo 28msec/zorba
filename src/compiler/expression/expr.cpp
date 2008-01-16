@@ -893,14 +893,15 @@ void pi_expr::accept(
 void function_def_expr::accept (expr_visitor& v) {
 }
 
-function_def_expr::function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_)
+function_def_expr::function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, TypeSystem::xqtref_t return_type)
   : expr (loc), name (name_)
 {
+  assert (return_type != NULL);
   params.swap (params_);
   vector<TypeSystem::xqtref_t> args;
-  for (unsigned i = 0; i < param_size () + 1; i++)
+  for (unsigned i = 0; i < param_size (); i++)
     args.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-  sig = auto_ptr<signature> (new signature (get_name (), args));
+  sig = auto_ptr<signature> (new signature (get_name (), args, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
 
 

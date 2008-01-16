@@ -487,7 +487,7 @@ protected:
   auto_ptr<signature> sig;
 
 public:
-  function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_);
+  function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, TypeSystem::xqtref_t return_type);
 
   Item_t get_name () const { return name; }
   expr_t get_body () { return body; }

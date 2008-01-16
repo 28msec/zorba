@@ -2,7 +2,7 @@
  *
  *  $Id: signature.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
- *	Copyright 2006-2007 FLWOR Foundation.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *  Authors: John Cowan,Paul Pedersen
  *
  */
@@ -27,9 +27,9 @@ class Item;
 /*******************************************************************************
   
   By convention, argv[0]    = return type
-	               argv[1]    = first input argument type
+                 argv[1]    = first input argument type
                  argv[2]    = second input argument type
-	                ...       =  ...  
+                  ...       =  ...  
 
 ********************************************************************************/
   class signature_base: public rcobject {
@@ -44,39 +44,40 @@ class Item;
 class signature : public signature_base
 {
 public:
-	Item_t qname_p;
-	checked_vector<TypeSystem::xqtref_t> argv;
+  Item_t qname_p;
+  checked_vector<TypeSystem::xqtref_t> argv;
 
 public:
   signature (Item_t name, TypeSystem::xqtref_t arg1,
              bool variadic, TypeSystem::xqtref_t return_type);
-	signature(Item_t name,
-						TypeSystem::xqtref_t return_type);
-	signature(Item_t name,
-						TypeSystem::xqtref_t arg1,
-						TypeSystem::xqtref_t return_type);
-	signature(Item_t name,
-						TypeSystem::xqtref_t arg1,
-						TypeSystem::xqtref_t arg2,
-						TypeSystem::xqtref_t return_type);
-	signature(Item_t name,
-						TypeSystem::xqtref_t arg1,
-						TypeSystem::xqtref_t arg2,
-						TypeSystem::xqtref_t arg3,
-						TypeSystem::xqtref_t return_type);
-	signature(Item_t name,
-						TypeSystem::xqtref_t arg1,
-						TypeSystem::xqtref_t arg2,
-						TypeSystem::xqtref_t arg3,
-						TypeSystem::xqtref_t arg4,
-						TypeSystem::xqtref_t return_type);
-	signature(Item_t name,
-						const std::vector<TypeSystem::xqtref_t>& argv);
-	~signature();
+  signature(Item_t name,
+            TypeSystem::xqtref_t return_type);
+  signature(Item_t name,
+            TypeSystem::xqtref_t arg1,
+            TypeSystem::xqtref_t return_type);
+  signature(Item_t name,
+            TypeSystem::xqtref_t arg1,
+            TypeSystem::xqtref_t arg2,
+            TypeSystem::xqtref_t return_type);
+  signature(Item_t name,
+            TypeSystem::xqtref_t arg1,
+            TypeSystem::xqtref_t arg2,
+            TypeSystem::xqtref_t arg3,
+            TypeSystem::xqtref_t return_type);
+  signature(Item_t name,
+            TypeSystem::xqtref_t arg1,
+            TypeSystem::xqtref_t arg2,
+            TypeSystem::xqtref_t arg3,
+            TypeSystem::xqtref_t arg4,
+            TypeSystem::xqtref_t return_type);
+  signature(Item_t name,
+            const std::vector<TypeSystem::xqtref_t>& argv,
+            TypeSystem::xqtref_t return_type);
+  ~signature();
 
 public:
-	const Item_t& get_name() const            { return qname_p; }
-	uint32_t arg_count() const {
+  const Item_t& get_name() const            { return qname_p; }
+  uint32_t arg_count() const {
     return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
   }
 
