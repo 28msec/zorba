@@ -130,7 +130,8 @@ Item_t XmlLoader::loadXml(const xqpStringStore* uri, std::istream& stream)
   theBaseUri = new xqpStringStore("");
   theDocUri = const_cast<xqpStringStore*>(uri);
 
-  theNodeId.init(GET_STORE().getTreeId());
+  theTreeId = GET_STORE().getTreeId();
+  theOrdPath.init();
 
 	buf = new char[4096];
   numChars = readPacket(stream, buf, 4096);
@@ -203,15 +204,15 @@ void XmlLoader::startDocument(void * ctx)
   {
     std::ostringstream uristream;
     uristream << "zorba://internalDocumentURI-"
-              << loader.theNodeId.getTreeId();
+              << loader.theTreeId;
 
     loader.theDocUri = new xqpStringStore(uristream.str().c_str());
   }
 
   Item_t docNode = new DocumentNodeImpl(loader.theBaseUri, loader.theDocUri);
 
-  DOC_NODE(docNode)->setId(loader.theNodeId);
-  loader.theNodeId.pushChild();
+  DOC_NODE(docNode)->setId(loader.theTreeId, loader.theOrdPath);
+  loader.theOrdPath.pushChild();
 
   LOADER_TRACE("Doc Node = " << docNode.get_ptr());
 
@@ -314,8 +315,8 @@ void XmlLoader::startElement(
 
   ElementNodeImpl* elemNode = ELEM_NODE(elemItem);
 
-  elemNode->setId(loader.theNodeId);
-  loader.theNodeId.pushChild();
+  elemNode->setId(loader.theTreeId, loader.theOrdPath);
+  loader.theOrdPath.pushChild();
 
   LOADER_TRACE("Element name ["
                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
@@ -382,8 +383,8 @@ void XmlLoader::startElement(
       attrNodes[i] = attrItem;
 
       attrNode->setParent(elemNode);
-      attrNode->setId(loader.theNodeId);
-      loader.theNodeId.nextChild();
+      attrNode->setId(loader.theTreeId, loader.theOrdPath);
+      loader.theOrdPath.nextChild();
 
       LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
                    << ":" << lname << " (" << (uri != NULL ? uri : "NULL")
@@ -458,7 +459,7 @@ void  XmlLoader::endElement(
   }
 
   // Adjust the dewey id
-  loader.theNodeId.popChild();
+  loader.theOrdPath.popChild();
 }
 
 
@@ -478,8 +479,8 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
   Item_t textNode(new TextNodeImpl(content, false));
 
-  BASE_NODE(textNode)->setId(loader.theNodeId);
-  loader.theNodeId.nextChild();
+  BASE_NODE(textNode)->setId(loader.theTreeId, loader.theOrdPath);
+  loader.theOrdPath.nextChild();
 
   LOADER_TRACE("Text Node = " << textNode.get_ptr() 
                << "content = " << content->c_str());
@@ -507,8 +508,8 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
   Item_t textNode(new TextNodeImpl(content, false));
 
-  BASE_NODE(textNode)->setId(loader.theNodeId);
-  loader.theNodeId.nextChild();
+  BASE_NODE(textNode)->setId(loader.theTreeId, loader.theOrdPath);
+  loader.theOrdPath.nextChild();
 
   LOADER_TRACE("Text Node = " << textNode.get_ptr() 
                << "content = " << content->c_str());
@@ -539,8 +540,8 @@ void XmlLoader::comment(
 
   Item_t commentNode(new CommentNodeImpl(contentp, false));
 
-  BASE_NODE(commentNode)->setId(loader.theNodeId);
-  loader.theNodeId.nextChild();
+  BASE_NODE(commentNode)->setId(loader.theTreeId, loader.theOrdPath);
+  loader.theOrdPath.nextChild();
 
   if (loader.theNodeStack.empty())
     loader.theRootNode = commentNode;
@@ -570,8 +571,8 @@ void XmlLoader::processingInstruction(
 
   Item_t piNode(new PiNodeImpl(targetp, datap, false));
 
-  BASE_NODE(piNode)->setId(loader.theNodeId);
-  loader.theNodeId.nextChild();
+  BASE_NODE(piNode)->setId(loader.theTreeId, loader.theOrdPath);
+  loader.theOrdPath.nextChild();
 
   if (loader.theNodeStack.empty())
     loader.theRootNode = piNode;

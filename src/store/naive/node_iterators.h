@@ -140,8 +140,13 @@ protected:
     bool operator()(const NodeImpl_t& n1, const NodeImpl_t& n2) const
     {
       return (theAscending ?
-              n1->getId() < n2->getId() : 
-              n1->getId() > n2->getId());
+              n1->getTreeId() < n2->getTreeId() ||
+              n1->getTreeId() == n2->getTreeId() &&
+              n1->getOrdPath() < n2->getOrdPath()
+              : 
+              n1->getTreeId() > n2->getTreeId() ||
+              n1->getTreeId() == n2->getTreeId() &&
+              n1->getOrdPath() > n2->getOrdPath());
     }
   };
 
@@ -181,7 +186,8 @@ public:
   is equivalent to the input sequence, else, the same operations as in
   StoreNodeSortIterator are applied.
 ********************************************************************************/
-class StoreNodeSortOrAtomicIterator : public StoreNodeSortIterator {
+class StoreNodeSortOrAtomicIterator : public StoreNodeSortIterator
+{
 protected:
   bool theAtomic;
   bool theUsed;

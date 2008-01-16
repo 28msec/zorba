@@ -39,7 +39,8 @@ protected:
   std::stack<Item_t>              theNodeStack;
   std::stack<NsBindingsContext_t> theBindingsStack;
 
-  OrdPathStack                    theNodeId;
+  unsigned long                   theTreeId;
+  OrdPathStack                    theOrdPath;
 
   xqpStringStore                  theErrors;
 

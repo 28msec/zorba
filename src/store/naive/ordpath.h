@@ -35,14 +35,12 @@ protected:
   static const uint16_t      theNegV2EVMap[DEFAULT_FAN_OUT];
 
 protected:
-  unsigned long       theTreeId;
-
   unsigned char     * theBuffer;
 
 public:
-  OrdPath() : theTreeId(0), theBuffer(NULL) { }
+  OrdPath() : theBuffer(NULL) { }
 
-  void init(unsigned long treeid);
+  void init();
 
   OrdPath& operator=(const OrdPath& other);
   OrdPath& operator=(const OrdPathStack& ops);
@@ -56,12 +54,7 @@ public:
     }
   }
 
-  bool isValid() const              { return theTreeId != 0; }
-
   unsigned long getByteLength() const;
-
-  unsigned long getTreeId() const   { return theTreeId; }
-  void setTreeId(unsigned long tid) { theTreeId = tid; }
 
   bool operator==(const OrdPath& other) const;
   int operator<(const OrdPath& other) const;
@@ -101,9 +94,7 @@ class OrdPathStack
 {
   friend class OrdPath;
 
- protected:
-  unsigned long       theTreeId;
-
+protected:
   unsigned long       theNumComps;
 
   long                theDeweyId[OrdPath::MAX_NUM_COMPS];
@@ -119,11 +110,8 @@ public:
 
   ~OrdPathStack() { }
 
-  void init(unsigned long treeid);
+  void init();
 
-  bool isValid() const                { return theTreeId != 0; }
-
-  unsigned long getTreeId() const     { return theTreeId; }
   unsigned long getNumComps() const   { return theNumComps; }
   
   unsigned long getByteLength() const;

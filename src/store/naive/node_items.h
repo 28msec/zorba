@@ -89,8 +89,9 @@ public:
   };
 
 protected:
-  OrdPath    theId;
-  Item     * theParent;   // Pointer to avoid cyclic smart pointers
+  unsigned long    theTreeId;
+  OrdPath          theOrdPath;
+  Item           * theParent;   // Pointer to avoid cyclic smart pointers
 
 public:
   NodeImpl(bool assignId);
@@ -117,15 +118,8 @@ public:
   //
   // SimpleStore Methods
   // 
-  Item * getParentPtr() const            { return theParent; }
+  Item* getParentPtr() const             { return theParent; }
   void setParent(const Item_t& p)        { theParent = p.get_ptr(); }
-
-  void initId();
-  unsigned long getTreeId() const        { return theId.getTreeId(); }
-  const OrdPath& getId() const           { return theId; }
-  void setId(const OrdPathStack& id)     { theId = id; }
-  void setId(const OrdPath& id)          { theId = id; }
-  void appendIdComponent(long value)     { theId.appendComp(value); } 
 
   virtual NsBindingsContext* getNsContext() const { Assert(0); return NULL; }
 
@@ -135,6 +129,28 @@ public:
   virtual bool typePreserve() const      { Assert(0); return false; }
   virtual bool nsPreserve() const        { Assert(0); return false; }
   virtual bool nsInherit() const         { Assert(0); return false; }
+
+  unsigned long getTreeId() const        { return theTreeId; }
+  const OrdPath& getOrdPath() const      { return theOrdPath; }
+  bool hasId() const                     { return theTreeId != 0; }
+  void initId();
+
+  void setId(unsigned long tid, const OrdPathStack& op)
+  {
+    theTreeId = tid;
+    theOrdPath = op;
+  }
+
+  void setId(unsigned long tid, const OrdPath& op)
+  {
+    theTreeId = tid;
+    theOrdPath = op;
+  }
+
+  void appendIdComponent(long value)
+  {
+    theOrdPath.appendComp(value);
+  } 
 };
 
 

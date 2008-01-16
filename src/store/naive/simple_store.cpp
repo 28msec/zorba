@@ -261,10 +261,16 @@ int32_t SimpleStore::compare(Item_t node1, Item_t node2) const
 
   if (node1 == node2)
     return 0;
-  else if (BASE_NODE(node1)->getId() < BASE_NODE(node2)->getId())
+
+  NodeImpl* n1 = BASE_NODE(node1);
+  NodeImpl* n2 = BASE_NODE(node2);
+
+  
+  if (n1->getTreeId() < n2->getTreeId() ||
+      n1->getTreeId() == n2->getTreeId() && n1->getOrdPath() < n2->getOrdPath())
     return -1;
-  else
-    return 1;
+
+  return 1;
 }
 
 

@@ -91,11 +91,11 @@ Item_t ChildrenIterator::next()
       // Assert(cnode->getParentPtr() == pnode);
     }
 
-    if (pnode->getId().isValid() &&
+    if (pnode->hasId() &&
         cnode->getParentPtr() == pnode &&
         cnode->getTreeId() != pnode->getTreeId())
     {
-      cnode->setId(pnode->getId());
+      cnode->setId(pnode->getTreeId(), pnode->getOrdPath());
       cnode->appendIdComponent(theStartingId + theCurrentPos * 2 + 1);
     }
   }
@@ -165,11 +165,11 @@ Item_t AttributesIterator::next()
       Assert(cnode->getParentPtr() == pnode);
     }
 
-    if (pnode->getId().isValid() &&
+    if (pnode->hasId() &&
         cnode->getParentPtr() == pnode &&
         cnode->getTreeId() != pnode->getTreeId())
     {
-      cnode->setId(pnode->getId());
+      cnode->setId(pnode->getTreeId(), pnode->getOrdPath());
       cnode->appendIdComponent(theCurrentPos * 2 + 1);
     }
   }
@@ -336,12 +336,14 @@ void StoreNodeSortIterator::close()
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  class StoreNodeSortOrAtomicIterator                                                     //
+//  class StoreNodeSortOrAtomicIterator                                        //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-Item_t StoreNodeSortOrAtomicIterator::next() {
-  if (theUsed && theAtomic) {
+Item_t StoreNodeSortOrAtomicIterator::next()
+{
+  if (theUsed && theAtomic)
+  {
     Item_t lContextNode = theInput->next();
     if (lContextNode != 0)
       Assert(lContextNode->isAtomic());
@@ -358,9 +360,11 @@ Item_t StoreNodeSortOrAtomicIterator::next() {
       if (contextNode == NULL)
         break;
 
-      if (!theUsed) {
+      if (!theUsed)
+      {
         theUsed = true;
-        if (contextNode->isAtomic()) {
+        if (contextNode->isAtomic())
+        {
           theAtomic = true;
           return contextNode;
         } else {

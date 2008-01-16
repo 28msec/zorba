@@ -175,10 +175,11 @@ void NodeVector::push_back(const Item_t& item, unsigned long index)
 
 NodeImpl::NodeImpl(bool assignId)
   :
+  theTreeId(0),
   theParent(NULL)
 {
   if (assignId)
-    theId.init(GET_STORE().getTreeId());
+    initId();
 }
 
 
@@ -209,7 +210,8 @@ Item_t NodeImpl::getEBV() const
 
 void NodeImpl::initId()
 {
-  theId.init(GET_STORE().getTreeId());
+  theTreeId = GET_STORE().getTreeId();
+  theOrdPath.init();
 }
 
 
@@ -265,7 +267,7 @@ DocumentNodeImpl::DocumentNodeImpl(
   if (numChildren > 0)
     theChildren.truncate();
 
-  NODE_TRACE1("Constructed doc node " << this << " nid = " << theId.show());
+  NODE_TRACE1("Constructed doc node " << this << " nid = " << theOrdPath.show());
 }
  
 
@@ -308,7 +310,7 @@ DocumentNodeImpl::~DocumentNodeImpl()
   {
     NodeImpl* child = BASE_NODE(theChildren[i]);
 
-    if (!child->getId().isValid())
+    if (!child->hasId())
     {
       child->initId();
     }
@@ -489,7 +491,7 @@ ElementNodeImpl::ElementNodeImpl(
     theFlags |= NodeImpl::HaveLocalBindings;
   }
 
-  NODE_TRACE1("Constructed elem node " << this << " nid = " << theId.show()
+  NODE_TRACE1("Constructed elem node " << this << " nid = " << theOrdPath.show()
               << " nsInherit = " << nsInherit);
 }
 
@@ -633,7 +635,7 @@ ElementNodeImpl::~ElementNodeImpl()
   {
     NodeImpl* child = BASE_NODE(theChildren[i]);
 
-    if (!child->getId().isValid())
+    if (!child->hasId())
     {
       child->initId();
     }
@@ -648,7 +650,7 @@ ElementNodeImpl::~ElementNodeImpl()
   {
     NodeImpl* attr = BASE_NODE(theAttributes[i]);
 
-    if (!attr->getId().isValid())
+    if (!attr->hasId())
     {
       attr->initId();
     }
@@ -819,7 +821,7 @@ xqp_string ElementNodeImpl::show() const
 
   str <<  "<" << theName->getStringProperty();
 
-  str << " nid=\"" << theId.show() << "\"";
+  str << " nid=\"" << theOrdPath.show() << "\"";
 
   NamespaceBindings nsBindings = getNamespaceBindings();
 

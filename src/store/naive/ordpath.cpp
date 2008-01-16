@@ -169,10 +169,8 @@ const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] =
 /*******************************************************************************
 
 ********************************************************************************/
-void OrdPath::init(unsigned long treeid)
+void OrdPath::init()
 {
-  theTreeId = treeid;
-
   if (theBuffer != NULL)
     delete [] theBuffer;
 
@@ -187,8 +185,6 @@ void OrdPath::init(unsigned long treeid)
 ********************************************************************************/
 OrdPath& OrdPath::operator=(const OrdPath& other)
 {
-  theTreeId = other.getTreeId();
-
   if (theBuffer != NULL)
     delete [] theBuffer;
 
@@ -205,8 +201,6 @@ OrdPath& OrdPath::operator=(const OrdPath& other)
 ********************************************************************************/
 OrdPath& OrdPath::operator=(const OrdPathStack& ops)
 {
-  theTreeId = ops.getTreeId();
-
   if (theBuffer != NULL)
     delete [] theBuffer;
 
@@ -2760,7 +2754,6 @@ xqp_string OrdPath::show() const
 ********************************************************************************/
 OrdPathStack::OrdPathStack()
   :
-  theTreeId(0),
   theNumComps(0),
   theByteIndex(0),
   theBitsAvailable(0)
@@ -2772,10 +2765,8 @@ OrdPathStack::OrdPathStack()
 /*******************************************************************************
 
 ********************************************************************************/
-void OrdPathStack::init(unsigned long treeid)
+void OrdPathStack::init()
 {
-  theTreeId = treeid;
-
   theDeweyId[0] = 1;
   theNumComps = 1;
 
