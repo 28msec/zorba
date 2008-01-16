@@ -117,7 +117,7 @@ set_var (bool inlineFile, std::string name, std::string val,
 {
   boost::replace_all(val, "$RBKT_SRC_DIR", xqp::RBKT_SRC_DIR);
   if (!inlineFile && dctx != NULL) {
-    dctx->SetVariable (name, xqp::xqp_string (val));
+    dctx->SetVariableAsString (name, xqp::xqp_string (val));
   } else if (inlineFile && exec != NULL) {
     std::ifstream is (val.c_str ());
     assert (is);

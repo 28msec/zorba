@@ -63,7 +63,7 @@ int test_easy_api(const char *result_file_name)
 	
 
 	result_file << "dctx->SetVariable" << endl;
-	dctx->SetVariable("varx", (long long)-134);
+	dctx->SetVariableAsInteger("varx", (long long)-134);
 
 	result_file << "query->executeSerializeXML" << endl;
 	if(!query->executeSerializeXML(result_file, dctx))

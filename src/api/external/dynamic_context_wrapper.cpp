@@ -51,7 +51,7 @@ bool	DynamicContextWrapper::checkQName(xqp_string varname)
 	return false;//two prefixes!
 }
 
-bool DynamicContextWrapper::SetVariable( xqp_string varname, long long int_value, VAR_INT_TYPE type)
+bool DynamicContextWrapper::SetVariableAsInteger( xqp_string varname, long long int_value, VAR_INT_TYPE type)
 {
 	if(!checkQName(varname))
 		return false;
@@ -124,7 +124,7 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, long long int_value
 	return true;
 }
 
-bool DynamicContextWrapper::SetVariable( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type)
+bool DynamicContextWrapper::SetVariableAsString( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type)
 {
 	if(!checkQName(varname))
 		return false;
@@ -141,7 +141,7 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, xqp_string str_valu
 	return true;
 }
 
-bool DynamicContextWrapper::SetVariable( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type)
+bool DynamicContextWrapper::SetVariableAsDouble( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type)
 {
 	if(!checkQName(varname))
 		return false;
@@ -157,7 +157,7 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, long double double_
 	return true;
 }
 
-bool DynamicContextWrapper::SetVariable( xqp_string varname, bool bool_value)
+bool DynamicContextWrapper::SetVariableAsBool( xqp_string varname, bool bool_value)
 {
 	if(!checkQName(varname))
 		return false;
@@ -172,7 +172,7 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, bool bool_value)
 	return true;
 }
 
-bool DynamicContextWrapper::SetVariable( xqp_string varname, struct ::tm datetime_value, long timezone_seconds, VAR_DATETIME_TYPE type)
+bool DynamicContextWrapper::SetVariableAsDateTime( xqp_string varname, struct ::tm datetime_value, long timezone_seconds, VAR_DATETIME_TYPE type)
 {
 	if(!checkQName(varname))
 		return false;
@@ -256,7 +256,7 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, struct ::tm datetim
 	return true;
 }
 
-bool DynamicContextWrapper::SetVariable( xqp_string varname, Item_t item)
+bool DynamicContextWrapper::SetVariableAsItem( xqp_string varname, Item_t item)
 {
 	if(!checkQName(varname))
 		return false;

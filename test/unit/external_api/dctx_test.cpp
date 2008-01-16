@@ -108,7 +108,7 @@ int test_api_dynamic_context(const char *result_file_name)
 		unsigned int		j;
 		for(j=0;j<sizeof(values)/sizeof(long long);j++)
 		{
-			if(dctx1->SetVariable("external_vars:ix", values[j], int_types[i].type))
+			if(dctx1->SetVariableAsInteger("external_vars:ix", values[j], int_types[i].type))
 			{
 				result_file << "SetVariables succeeded for "; 
 			}
@@ -127,7 +127,7 @@ int test_api_dynamic_context(const char *result_file_name)
 		unsigned int		j;
 		for(j=0;j<sizeof(values)/sizeof(xqp_string);j++)
 		{
-			if(dctx1->SetVariable("external_vars:sx", values[j], str_types[i].type))
+			if(dctx1->SetVariableAsString("external_vars:sx", values[j], str_types[i].type))
 			{
 				result_file << "SetVariables succeeded for ";
 			}
@@ -146,7 +146,7 @@ int test_api_dynamic_context(const char *result_file_name)
 		unsigned int		j;
 		for(j=0;j<sizeof(values)/sizeof(long double);j++)
 		{
-			if(dctx1->SetVariable("external_vars:dx", values[j], double_types[i].type))
+			if(dctx1->SetVariableAsDouble("external_vars:dx", values[j], double_types[i].type))
 			{
 				result_file << "SetVariables succeeded for ";
 			}
@@ -159,7 +159,7 @@ int test_api_dynamic_context(const char *result_file_name)
 	}
 
 	result_file << endl << "set variables with BOOL values" << endl;
-	if(dctx1->SetVariable("external_vars:bx", true))
+	if(dctx1->SetVariableAsBool("external_vars:bx", true))
 	{
 		result_file << "SetVariables succeeded for bool true" << endl;
 	}
@@ -167,7 +167,7 @@ int test_api_dynamic_context(const char *result_file_name)
 	{
 		result_file << "SetVariables FAILED for bool true" << endl;
 	}
-	if(dctx1->SetVariable("external_vars:bx", false))
+	if(dctx1->SetVariableAsBool("external_vars:bx", false))
 	{
 		result_file << "SetVariables succeeded for bool false" << endl;
 	}
@@ -189,7 +189,7 @@ int test_api_dynamic_context(const char *result_file_name)
 		tmvalue.tm_min = 27;
 		tmvalue.tm_sec = 03;
 		tmvalue.tm_isdst = 0;
-		if(dctx1->SetVariable("external_vars:tmx", tmvalue, datetime_types[i].type))
+		if(dctx1->SetVariableAsDateTime("external_vars:tmx", tmvalue, datetime_types[i].type))
 		{
 			result_file << "SetVariables succeeded for ";
 		}

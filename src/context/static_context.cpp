@@ -391,7 +391,8 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 		{
 			if(error_if_not_found)
 			{
-				ZORBA_ERROR_ALERT( ZorbaError::XQST0076, NULL);
+				//static context component missing
+				ZORBA_ERROR_ALERT( ZorbaError::XPST0001, NULL, true);//continue execution
 			}
 			return NULL;///collation non-existant
 		}

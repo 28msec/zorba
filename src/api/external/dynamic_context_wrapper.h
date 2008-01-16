@@ -68,12 +68,12 @@ public:
 
 	///following is the input data; this is not duplicable between executions
 //	virtual bool SetVariable( QNameItem_t varname, XQueryExecution_t item_iter ) = 0;
-	virtual bool SetVariable( xqp_string varname, long long int_value, VAR_INT_TYPE type = XS_INTEGER);
-	virtual bool SetVariable( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type = XS_STRING);
-	virtual bool SetVariable( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type = XS_DOUBLE);
-	virtual bool SetVariable( xqp_string varname, bool bool_value);
-	virtual bool SetVariable( xqp_string varname, struct ::tm datetime_value, long timezone_seconds = 0, VAR_DATETIME_TYPE type = XS_DATETIME);
-  virtual bool SetVariable( xqp_string varname, Item_t item);
+	virtual bool SetVariableAsInteger( xqp_string varname, long long int_value, VAR_INT_TYPE type = XS_INTEGER);
+	virtual bool SetVariableAsString( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type = XS_STRING);
+	virtual bool SetVariableAsDouble( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type = XS_DOUBLE);
+	virtual bool SetVariableAsBool( xqp_string varname, bool bool_value);
+	virtual bool SetVariableAsDateTime( xqp_string varname, struct ::tm datetime_value, long timezone_seconds = 0, VAR_DATETIME_TYPE type = XS_DATETIME);
+  virtual bool SetVariableAsItem( xqp_string varname, Item_t item);
 	virtual bool SetVariableAsDocument( xqp_string varname, xqp_anyURI documentURI);
 
 	virtual bool DeleteVariable( xqp_string varname );
