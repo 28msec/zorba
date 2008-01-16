@@ -38,6 +38,7 @@ class normalizer : public expr_visitor {
     bool begin_visit(attr_expr&);
     bool begin_visit(text_expr&);
     bool begin_visit(pi_expr&);
+    bool begin_visit(function_def_expr&);
 
     void end_visit(expr&);
     void end_visit(var_expr&);
@@ -66,6 +67,7 @@ class normalizer : public expr_visitor {
     void end_visit(attr_expr&);
     void end_visit(text_expr&);
     void end_visit(pi_expr&);
+    void end_visit(function_def_expr&);
 
   private:
     static_context *m_sctx;

@@ -814,10 +814,15 @@ void end_visit(pi_expr& v)
 }
 
 
-/*******************************************************************************
+bool begin_visit (function_def_expr &v) {
+  CODEGEN_TRACE_IN("");
+  return true;
+}
 
+void end_visit (function_def_expr &v) {
+  CODEGEN_TRACE_OUT("");
+}
 
-********************************************************************************/
 
 bool begin_visit(const_expr& v)
 {
@@ -825,12 +830,30 @@ bool begin_visit(const_expr& v)
   return true;
 }
 
+void end_visit(const_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t it = new SingletonIterator (v.get_loc (), v.get_val ());
+  itstack.push (it);
+}
+
+
 bool begin_visit(order_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
+void end_visit(order_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+}
+
+
+/*******************************************************************************
+
+
+********************************************************************************/
 
 /*..........................................
  :  end visit                              :
@@ -868,18 +891,6 @@ void end_visit(extension_expr& v)
   CODEGEN_TRACE_OUT("");
 }
 
-
-void end_visit(const_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-  PlanIter_t it = new SingletonIterator (v.get_loc (), v.get_val ());
-  itstack.push (it);
-}
-
-void end_visit(order_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-}
 
 };
 

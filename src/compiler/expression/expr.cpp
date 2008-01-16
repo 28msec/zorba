@@ -899,6 +899,7 @@ function_def_expr::function_def_expr (yy::location const& loc, Item_t name_, std
   assert (return_type != NULL);
   params.swap (params_);
   vector<TypeSystem::xqtref_t> args;
+  // TODO: copy param types into sig
   for (unsigned i = 0; i < param_size (); i++)
     args.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
   sig = auto_ptr<signature> (new signature (get_name (), args, GENV_TYPESYSTEM.ITEM_TYPE_STAR));

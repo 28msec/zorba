@@ -334,5 +334,13 @@ void normalizer::end_visit(pi_expr& node)
 {
 }
 
+bool normalizer::begin_visit (function_def_expr &v) {
+  return true;
+}
+
+void normalizer::end_visit (function_def_expr &v) {
+}
+
+
 
 /* vim:set ts=2 sw=2: */
