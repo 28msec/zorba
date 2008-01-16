@@ -31,7 +31,10 @@ class XmlLoader
 {
 protected:
   xmlSAXHandler                   theSaxHandler;
- 
+
+  xqpStringStore_t                theBaseUri;
+  xqpStringStore_t                theDocUri;
+
   Item_t                          theRootNode;
   std::stack<Item_t>              theNodeStack;
   std::stack<NsBindingsContext_t> theBindingsStack;
@@ -92,7 +95,7 @@ public:
 
   Item_t getRootNode() const { return theRootNode; }
   
-  Item_t loadXml(std::istream& xmlStream);
+  Item_t loadXml(const xqpStringStore* uri, std::istream& xmlStream);
 
 protected:
   void reset();

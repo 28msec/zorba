@@ -121,11 +121,14 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t XmlLoader::loadXml(std::istream& stream)
+Item_t XmlLoader::loadXml(const xqpStringStore* uri, std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
   char *buf = NULL;//[4096];
   long numChars;
+
+  theBaseUri = new xqpStringStore("");
+  theDocUri = const_cast<xqpStringStore*>(uri);
 
   theNodeId.init(GET_STORE().getTreeId());
 
@@ -196,10 +199,16 @@ void XmlLoader::startDocument(void * ctx)
 
   LOADER_TRACE("");
 
-  xqpStringStore_t baseUri(new xqpStringStore(""));
-  xqpStringStore_t docUri(new xqpStringStore("boo"));
+  if (loader.theDocUri == NULL)
+  {
+    std::ostringstream uristream;
+    uristream << "zorba://internalDocumentURI-"
+              << loader.theNodeId.getTreeId();
 
-  Item_t docNode = new DocumentNodeImpl(baseUri, docUri);
+    loader.theDocUri = new xqpStringStore(uristream.str().c_str());
+  }
+
+  Item_t docNode = new DocumentNodeImpl(loader.theBaseUri, loader.theDocUri);
 
   DOC_NODE(docNode)->setId(loader.theNodeId);
   loader.theNodeId.pushChild();

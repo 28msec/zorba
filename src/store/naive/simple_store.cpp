@@ -79,6 +79,12 @@ SimpleStore::~SimpleStore()
 
   theDocuments.clear();
 
+  if (theXmlLoader != NULL)
+  {
+    delete theXmlLoader;
+    theXmlLoader = NULL;
+  }
+
   if (theItemFactory != NULL)
   {
     delete theItemFactory;
@@ -147,19 +153,20 @@ Item_t SimpleStore::createUri()
 ********************************************************************************/
 Item_t SimpleStore::loadDocument(const xqp_string& uri, std::istream& stream)
 {
-  if (theDocuments.find(uri))
-  {
-    ZORBA_ERROR_ALERT_OSS(ZorbaError::API0008, NULL, true, uri, "");
-    return NULL;
-  }
+  Item_t rootNode;
+
+  rootNode = getDocument(uri);
+
+  if (rootNode != NULL)
+    return rootNode;
 
   XmlLoader& loader = getXmlLoader();
 
-  Item_t root = loader.loadXml(stream);
+  rootNode = loader.loadXml(uri.getStore(), stream);
 
-  theDocuments.insert(uri, root);
+  theDocuments.insert(uri, rootNode);
 
-  return root;
+  return rootNode;
 }
 
 

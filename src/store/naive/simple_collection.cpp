@@ -59,7 +59,7 @@ Item_t SimpleCollection::addToCollection(std::iostream& stream)
 {
   XmlLoader& loader = GET_STORE().getXmlLoader();
 
-  Item_t root = loader.loadXml(stream);
+  Item_t root = loader.loadXml(NULL, stream);
   theNodes.insert(root);
   return root;
 }
