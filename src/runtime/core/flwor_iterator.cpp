@@ -610,6 +610,23 @@ void FLWORIterator::resetImpl ( PlanState& planState )
   if (whereClause != NULL)
     resetChild(whereClause, planState);
 
+  if (orderByClause != NULL)
+  {
+    std::vector<FLWORIterator::OrderSpec>::iterator iter;
+    for (iter = orderByClause->orderSpecs.begin();
+         iter != orderByClause->orderSpecs.end();
+         iter++)
+    {
+      resetChild(iter->orderByIter, planState);
+    }
+  }
+
+  std::vector<FLWORIterator::ForLetClause>::iterator iter;
+  for (iter = forLetClauses.begin(); iter != forLetClauses.end(); iter++)
+  {
+    resetChild(iter->input, planState);
+  }
+
   FlworState* flworState;
   GET_STATE ( FlworState, flworState, planState );
   flworState->reset();
@@ -622,6 +639,17 @@ void FLWORIterator::releaseResourcesImpl ( PlanState& planState )
 
   if (whereClause != NULL)
     whereClause->releaseResources(planState);
+
+  if (orderByClause != NULL)
+  {
+    std::vector<FLWORIterator::OrderSpec>::iterator iter;
+    for (iter = orderByClause->orderSpecs.begin();
+         iter != orderByClause->orderSpecs.end();
+         iter++)
+    {
+      iter->orderByIter->releaseResources(planState);
+    }
+  }
 
   std::vector<FLWORIterator::ForLetClause>::iterator iter;
   for (iter = forLetClauses.begin(); iter != forLetClauses.end(); iter++)
