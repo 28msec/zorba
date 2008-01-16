@@ -434,7 +434,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FunctionDecl &n)
 {
     INDENT;
 
-    os << "<FunctionDecl position='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<FunctionDecl name='" << n.get_name ()->get_qname () << "' position='" << n.get_location() << "' ptr='" << &n << "'";
 
     os << ">";
 
@@ -780,13 +780,17 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Param &n)
 {
     INDENT;
 
-    os << "<Param position='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<Param name='" << n.get_name () << "' position='" << n.get_location() << "' ptr='" << &n << "'";
 
-    os << ">";
+    os << "/>";
 
-    INDENT_INC;
     NL;
     return no_state;
+}
+
+
+void ParseNodePrintXMLVisitor::end_visit(const Param &n, void *visit_state)
+{
 }
 
 
@@ -3125,16 +3129,6 @@ void ParseNodePrintXMLVisitor::end_visit(const PITest &n, void *visit_state)
 
     INDENT;
     os << "</PITest>";
-    NL;
-}
-
-
-void ParseNodePrintXMLVisitor::end_visit(const Param &n, void *visit_state)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</Param>";
     NL;
 }
 
