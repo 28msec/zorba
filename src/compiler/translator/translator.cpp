@@ -206,28 +206,6 @@ void end_visit(const ArgList& v, void *visit_state)
 }
 
 
-void *begin_visit(const AtomicType& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const AtomicType& v, void *visit_state)
-{
-  TRACE_VISIT_OUT ();
-  rchandle<QName> qname = v.get_qname ();
-  TypeSystem::xqtref_t t =
-    GENV_TYPESYSTEM.create_type(sctx_p->lookup_qname("",
-                                                     qname->get_prefix (),
-                                                     qname->get_localname ()),
-                                TypeSystem::QUANT_ONE);
-  if (t == NULL)
-    ZORBA_ERROR_ALERT (ZorbaError::XPST0051, NULL);
-  else
-    tstack.push (t);
-}
-
-
 void *begin_visit(const BaseURIDecl& v)
 {
   TRACE_VISIT ();
@@ -1367,19 +1345,6 @@ void end_visit(const GeneralComp& v, void *visit_state)
 }
 
 
-void *begin_visit(const ItemType& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const ItemType& v, void *visit_state)
-{
-  TRACE_VISIT_OUT ();
-  tstack.push (GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-}
-
-
 void *begin_visit(const LibraryModule& v)
 {
   TRACE_VISIT ();
@@ -1459,35 +1424,6 @@ TRACE_VISIT ();
 }
 
 void end_visit(const NodeComp& v, void *visit_state)
-{
- TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit(const OccurrenceIndicator& v)
-{
-  TRACE_VISIT ();
-  TypeSystem::quantifier_t q = TypeSystem::QUANT_STAR;
-  switch (v.get_type ()) {
-  case occurs_exactly_one:
-    q = TypeSystem::QUANT_ONE; break;
-  case occurs_one_or_more:
-    q = TypeSystem::QUANT_PLUS; break;
-  case occurs_optionally:
-    q = TypeSystem::QUANT_QUESTION; break;
-  case occurs_zero_or_more:
-    q = TypeSystem::QUANT_STAR; break;
-  case occurs_never:
-    ZORBA_ASSERT (false);
-  }
-
-  if (q != TypeSystem::QUANT_ONE)
-    tstack.push (GENV_TYPESYSTEM.create_type (*pop_tstack (), q));
-    
-  return no_state;
-}
-
-void end_visit(const OccurrenceIndicator& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
 }
@@ -1647,17 +1583,6 @@ void *begin_visit(const SchemaPrefix& v)
 }
 
 void end_visit(const SchemaPrefix& v, void *visit_state)
-{
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit(const SequenceType& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const SequenceType& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 }
@@ -2211,6 +2136,93 @@ void end_visit(const ParenthesizedExpr& v, void *visit_state)
 
 /*******************************************************************************
 
+  Sequence Type Matching
+
+  A SequenceType parsenode has 2 children: The right child is always an
+  OccurrenceIndicator node. The left child may be either an AtomicType node,
+  or one of the 9 kind-test nodes (elementTest, documentTest, ... etc), or
+  an ItemType node. ItemType respesents the expression item().
+ 
+********************************************************************************/
+
+void *begin_visit(const SequenceType& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const SequenceType& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+void *begin_visit(const OccurrenceIndicator& v)
+{
+  TRACE_VISIT ();
+  TypeSystem::quantifier_t q = TypeSystem::QUANT_STAR;
+  switch (v.get_type ()) {
+  case occurs_exactly_one:
+    q = TypeSystem::QUANT_ONE; break;
+  case occurs_one_or_more:
+    q = TypeSystem::QUANT_PLUS; break;
+  case occurs_optionally:
+    q = TypeSystem::QUANT_QUESTION; break;
+  case occurs_zero_or_more:
+    q = TypeSystem::QUANT_STAR; break;
+  case occurs_never:
+    ZORBA_ASSERT (false);
+  }
+
+  if (q != TypeSystem::QUANT_ONE)
+    tstack.push (GENV_TYPESYSTEM.create_type (*pop_tstack (), q));
+    
+  return no_state;
+}
+
+void end_visit(const OccurrenceIndicator& v, void *visit_state)
+{
+ TRACE_VISIT_OUT ();
+}
+
+
+void *begin_visit(const AtomicType& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const AtomicType& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+  rchandle<QName> qname = v.get_qname ();
+  TypeSystem::xqtref_t t =
+    GENV_TYPESYSTEM.create_type(sctx_p->lookup_qname("",
+                                                     qname->get_prefix (),
+                                                     qname->get_localname ()),
+                                TypeSystem::QUANT_ONE);
+  if (t == NULL)
+    ZORBA_ERROR_ALERT (ZorbaError::XPST0051, NULL);
+  else
+    tstack.push (t);
+}
+
+
+void *begin_visit(const ItemType& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const ItemType& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+  tstack.push (GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+}
+
+
+/*******************************************************************************
+
   NodeTest (NameTest | KindTest)
 
 ********************************************************************************/
@@ -2304,11 +2316,22 @@ void *begin_visit(const AnyKindTest& v)
 void end_visit(const AnyKindTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  rchandle<axis_step_expr> ase = expect_axis_step_top ();
 
-  rchandle<match_expr> me = new match_expr(v.get_location());
-  me->setTestKind(match_anykind_test);
-  ase->setTest(me);
+  // if the top of the stack is an axis step expr, add a node test expr to it.
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  if (axisExpr != NULL)
+  {
+    rchandle<match_expr> me = new match_expr(v.get_location());
+    me->setTestKind(match_anykind_test);
+    axisExpr->setTest(me);
+  }
+  else
+  {
+    TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
+      create_node_type(NodeTest::ANY_NODE_TEST, NULL, TypeSystem::QUANT_ONE);
+
+    tstack.push(seqmatch);
+  }
 }
 
 
@@ -2347,6 +2370,58 @@ void *begin_visit(const DocumentTest& v)
 void end_visit(const DocumentTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+
+  rchandle<ElementTest> elemTest = v.get_elem_test();
+
+  if (elemTest == NULL)
+  {
+    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+    if (axisExpr != NULL)
+    {
+      rchandle<match_expr> match = new match_expr(v.get_location());
+      match->setTestKind(match_doc_test);
+
+      axisExpr->setTest(match);
+    }
+    else
+    {
+      rchandle<NodeTest> nodeTest = new NodeTest(StoreConsts::documentNode);
+
+      TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
+        create_node_type(nodeTest, NULL, TypeSystem::QUANT_ONE);
+
+      tstack.push(seqmatch);
+    }
+  }
+  else
+  {
+    rchandle<QName> elemName = elemTest->getElementName();
+    rchandle<TypeName> typeName = elemTest->getTypeName();
+    bool nilled =  elemTest->isNilledAllowed();
+
+    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+    if (axisExpr != NULL)
+    {
+      rchandle<match_expr> match = new match_expr(v.get_location());
+      match->setTestKind(match_doc_test);
+
+      if (elemName != NULL)
+        match->setQName(sctx_p->lookup_elem_qname(elemName->get_qname()));
+
+      if (typeName != NULL)
+        match->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname()));
+      
+      if (nilled)
+        match->setNilledAllowed(true);
+
+      axisExpr->setTest(match);
+    }
+    else
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
+                        &v.get_location(),
+                        false, "Document kind test");
+  }
 }
 
 
@@ -2510,10 +2585,8 @@ void end_visit(const TextTest& v, void *visit_state)
   }
   else
   {
-    rchandle<NodeTest> nodeTest = new NodeTest(StoreConsts::textNode);
-
     TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
-      create_node_type(nodeTest, NULL, TypeSystem::QUANT_ONE);
+      create_node_type(NodeTest::TEXT_TEST, NULL, TypeSystem::QUANT_ONE);
 
     tstack.push(seqmatch);
   }
@@ -2541,10 +2614,8 @@ void end_visit(const CommentTest& v, void *visit_state)
   }
   else
   {
-    rchandle<NodeTest> nodeTest = new NodeTest(StoreConsts::commentNode);
-
     TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
-      create_node_type(nodeTest, NULL, TypeSystem::QUANT_ONE);
+      create_node_type(NodeTest::COMMENT_TEST, NULL, TypeSystem::QUANT_ONE);
 
     tstack.push(seqmatch);
   }
@@ -2554,13 +2625,6 @@ void end_visit(const CommentTest& v, void *visit_state)
 void *begin_visit(const PITest& v)
 {
   TRACE_VISIT ();
-
-  rchandle<match_expr> match = new match_expr(v.get_location());
-  match->setTestKind(match_pi_test);
-
-  string target = v.get_target();
-  match->setQName(sctx_p->lookup_elem_qname (target));
-  nodestack.push(&*match);
   return no_state;
 }
 
@@ -2568,6 +2632,22 @@ void *begin_visit(const PITest& v)
 void end_visit(const PITest& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  if (axisExpr != NULL)
+  {
+    string target = v.get_target();
+    rchandle<match_expr> match = new match_expr(v.get_location());
+    match->setTestKind(match_pi_test);
+    match->setQName(sctx_p->lookup_elem_qname(target));
+    axisExpr->setTest(match);
+  }
+  else
+  {
+    TypeSystem::xqtref_t seqmatch = GENV_TYPESYSTEM.
+      create_node_type(NodeTest::PI_TEST, NULL, TypeSystem::QUANT_ONE);
+
+    tstack.push(seqmatch);
+  }
 }
 
 
@@ -2620,7 +2700,10 @@ rchandle<var_expr> tempvar(yy::location loc, var_expr::var_kind kind)
   return new var_expr(loc, kind, Store::getInstance().getItemFactory().createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, "v" + to_string (tempvar_counter++)));
 }
 
-rchandle<forlet_clause> wrap_in_forclause(expr_t expr, rchandle<var_expr> fv, rchandle<var_expr> pv)
+rchandle<forlet_clause> wrap_in_forclause(
+    expr_t expr,
+    rchandle<var_expr> fv,
+    rchandle<var_expr> pv)
 {
   assert (fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
@@ -2637,18 +2720,31 @@ rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar)
   return wrap_in_forclause (expr, fv, pv);
 }
 
-rchandle<forlet_clause> wrap_in_forclause(expr_t expr, yy::location loc, string fv_name, string pv_name) {
+rchandle<forlet_clause> wrap_in_forclause(
+    expr_t expr,
+    yy::location loc,
+    string fv_name,
+    string pv_name)
+{
   return wrap_in_forclause (expr, bind_var (loc, fv_name, var_expr::for_var), bind_var (loc, pv_name, var_expr::pos_var));
 }
 
-rchandle<forlet_clause> wrap_in_letclause(expr_t expr, rchandle<var_expr> lv) {
+rchandle<forlet_clause> wrap_in_letclause(expr_t expr, rchandle<var_expr> lv)
+{
   assert (lv->get_kind () == var_expr::let_var);
   return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.get_ptr());
 }
-rchandle<forlet_clause> wrap_in_letclause(expr_t expr, yy::location loc, string name) {
+
+rchandle<forlet_clause> wrap_in_letclause(
+    expr_t expr,
+    yy::location loc,
+    string name)
+{
   return wrap_in_letclause (expr, bind_var (loc, name, var_expr::let_var));
 }
-rchandle<forlet_clause> wrap_in_letclause(expr_t expr) {
+
+rchandle<forlet_clause> wrap_in_letclause(expr_t expr)
+{
   return wrap_in_letclause (expr, tempvar(expr->get_loc(), var_expr::let_var));
 }
 
@@ -2659,6 +2755,7 @@ expr_t wrap_in_dos_and_dupelim(expr_t expr)
   dos->add(expr);
   return &*dos;
 }
+
 
 /*******************************************************************************
 
