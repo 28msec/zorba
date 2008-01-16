@@ -134,6 +134,7 @@ public:
 		score_var,
 		quant_var,
 		context_var,
+    param_var,
     unknown_var  // TODO: get rid
 	};
 
@@ -478,6 +479,29 @@ public:
 };
 
 
+class function_def_expr : public expr {
+protected:
+  Item_t name;
+  std::vector<rchandle<var_expr> > params;
+  expr_t body;
+  auto_ptr<signature> sig;
+
+public:
+  function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_);
+
+  Item_t get_name () const { return name; }
+  expr_t get_body () { return body; }
+  void set_body (expr_t body_) { body = body_; }
+  std::vector<rchandle<var_expr> >::iterator param_begin () { return params.begin (); }
+  std::vector<rchandle<var_expr> >::iterator param_end () { return params.end (); }
+  std::vector<rchandle<var_expr> >::size_type param_size () const { return params.size (); }
+  const signature &get_signature () const { return *sig; }
+
+  void accept (expr_visitor& v);
+  ostream &put (ostream &) const;
+};
+
+
 ////////////////////////////////
 //	first-order expressions
 ////////////////////////////////
@@ -493,9 +517,13 @@ class fo_expr : public expr
 protected:
 	checked_vector<expr_t> argv;
 	const function* func;
+  const function_def_expr *udf;
 
 public:
-	fo_expr(yy::location const&, const function *);
+	fo_expr(yy::location const& loc, const function *f)
+    : expr(loc), func (f), udf (NULL) { assert (f != NULL); }
+	fo_expr(yy::location const& loc, const function_def_expr *udf_)
+    : expr(loc), func (NULL), udf (udf_) { assert (udf != NULL); }
 
 public:
   void add(expr_t e_h) { assert (e_h != NULL); argv.push_back(e_h); }
@@ -510,6 +538,7 @@ public:
 
 public:
 	const function* get_func() const { return func; }
+  const signature &get_signature () const;
 
 	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
@@ -1177,7 +1206,6 @@ public:
   void accept(expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };
-
 
 }	/* namespace xqp */
 #endif	/*  XQP_EXPR_H */

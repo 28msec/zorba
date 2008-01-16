@@ -183,8 +183,8 @@ ostream& if_expr::put( ostream& os) const
 
 ostream& fo_expr::put( ostream& os) const
 {
-  Assert(func != NULL);
-  os << INDENT << func->get_fname()->getStringProperty() << "/" << size () << "(" << this << ") [\n";
+  Item_t qname = func == NULL ? udf->get_name () : func->get_fname ();
+  os << INDENT << qname->getStringProperty() << "/" << size () << "(" << this << ") [\n";
   
   for (vector<rchandle<expr> >::const_iterator it = begin();
        it != end(); ++it)
@@ -523,4 +523,9 @@ ostream& pi_expr::put( ostream& os) const
   return os;
 }
 
+  ostream& function_def_expr::put (ostream &os) const {
+    os << INDENT << "fn_def_expr(" << this << ") [\n";
+    os << DENT << "]\n"; UNDENT;
+    return os;
+  }
 }

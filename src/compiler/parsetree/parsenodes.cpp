@@ -35,8 +35,8 @@ ostringstream __oss;
 
 #define BEGIN_VISITOR() void *visitor_state; if (NULL == (visitor_state = v.begin_visit (*this))) return
 #define END_VISITOR() v.end_visit (*this, visitor_state)
-#define ACCEPT( m ) do { if (m != NULL) m->accept (v); } while (0)
-#define ACCEPT_CHK( m ) do { ZORBA_ASSERT (m != NULL);  m->accept (v); } while (0)
+#define ACCEPT( m ) do { if ((m) != NULL) (m)->accept (v); } while (0)
+#define ACCEPT_CHK( m ) do { ZORBA_ASSERT ((m) != NULL);  (m)->accept (v); } while (0)
 
 
 
@@ -318,8 +318,7 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
   for (vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
        it!=vfo_hv.end(); ++it)
   {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
+    ACCEPT_CHK (*it);
   }
   END_VISITOR ();
 }
@@ -943,10 +942,11 @@ FunctionDecl::~FunctionDecl()
 void FunctionDecl::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  //name_h->accept(v);
   ACCEPT (paramlist_h);
   ACCEPT (return_type_h);
-  ACCEPT (body_h);
+  // Avoid EnclosedExpr
+  if (body_h != NULL)
+    ACCEPT (body_h->get_expr ());
   END_VISITOR ();
 }
 

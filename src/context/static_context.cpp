@@ -197,9 +197,7 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
 
   xqp_string static_context::fn_internal_key (int arity) 
   {
-    ostringstream o;
-    o << "fn:" << arity << "/";
-    return o.str ();
+    return "fn:" + to_string (arity) + "/";
   }
 
   function *static_context::lookup_fn (xqp_string prefix, xqp_string local, int arity) const {
@@ -211,6 +209,10 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
         ZORBA_ERROR_ALERT (ZorbaError::XPST0017, NULL, false, local, to_string (arity));
       return f;
     }
+  }
+
+  expr *static_context::lookup_udf (xqp_string prefix, xqp_string local, int arity) const {
+    return lookup_expr ("udf:" + fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local));
   }
 
   xqp_string static_context::lookup_ns (xqp_string prefix) const

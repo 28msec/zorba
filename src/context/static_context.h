@@ -115,6 +115,9 @@ public:
   void bind_var (const Item *qname, expr *expr) {
     bind_expr ("var:" + qname_internal_key (qname), expr);
   }
+  void bind_udf (const Item *qname, expr *expr, int arity) {
+    bind_expr ("udf:" + fn_internal_key (arity) + qname_internal_key (qname), expr);
+  }
   void bind_var (xqp_string prefix, xqp_string local, expr *expr) {
     bind_expr ("var:" + qname_internal_key ("", prefix, local), expr);
   }
@@ -122,6 +125,7 @@ public:
     bind_expr ("var:" + qname_internal_key ("", varname), expr);
   }
   function *lookup_fn (xqp_string prefix, xqp_string local, int arity) const;
+  expr *lookup_udf (xqp_string prefix, xqp_string local, int arity) const;
   static function *lookup_builtin_fn (xqp_string local, int arity);
   void bind_fn (xqp_string prefix, xqp_string local, function *f, int arity) {
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local), f);

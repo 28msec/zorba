@@ -11,7 +11,7 @@
 #define XQP_SIGNATURE_H
 
 #include <string>
-#include <vector>
+#include "util/checked_vector.h"
 
 #include "context/common.h"
 #include "types/typesystem.h"
@@ -45,7 +45,7 @@ class signature : public signature_base
 {
 public:
 	Item_t qname_p;
-	std::vector<TypeSystem::xqtref_t> argv;
+	checked_vector<TypeSystem::xqtref_t> argv;
 
 public:
   signature (Item_t name, TypeSystem::xqtref_t arg1,

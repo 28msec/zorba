@@ -493,6 +493,10 @@ public:
 public:
 	void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
 	rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }
+  std::vector<rchandle<parsenode> >::iterator begin () { return vfo_hv.begin (); }
+  std::vector<rchandle<parsenode> >::iterator end   () { return vfo_hv.end   (); }
+  std::vector<rchandle<parsenode> >::const_iterator begin () const { return vfo_hv.begin (); }
+  std::vector<rchandle<parsenode> >::const_iterator end   () const { return vfo_hv.end   (); }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1109,6 +1113,7 @@ public:
 	rchandle<Param> operator[](int i) const { return param_hv[i]; }
   std::vector<rchandle<Param> >::const_iterator begin () const { return param_hv.begin (); }
   std::vector<rchandle<Param> >::const_iterator end () const { return param_hv.end (); }
+  std::vector<rchandle<Param> >::size_type size () { return param_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;

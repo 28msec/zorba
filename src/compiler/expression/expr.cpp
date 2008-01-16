@@ -17,6 +17,7 @@
 #include "errors/error_factory.h"
 #include "compiler/expression/expr_visitor.h"
 #include "system/zorba.h"
+#include "types/typesystem.h"
 
 #include <algorithm>
 #include <iostream>
@@ -28,7 +29,7 @@ namespace xqp {
   
 #define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
-#define ACCEPT( m ) do { if (m != NULL) m->accept (v); } while (0)
+#define ACCEPT( m ) do { if ((m) != NULL) (m)->accept (v); } while (0)
 #define BEGIN_VISITOR() do { if (!v.begin_visit(*this)) return; } while (0)
 #define END_VISITOR() v.end_visit(*this);
 
@@ -271,12 +272,6 @@ void if_expr::accept(
 // [52] [http://www.w3.org/TR/xquery/#prod-xquery-UnionExpr]
 // [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
 
-
-fo_expr::fo_expr(yy::location const& loc, const function *f)
-  : expr(loc), func (f)
-{ assert (f != NULL); }
-
-
 void fo_expr::accept(
   expr_visitor& v)
 {
@@ -286,6 +281,12 @@ void fo_expr::accept(
   END_VISITOR ();
 }
 
+const signature &fo_expr::get_signature () const {
+  if (func)
+    return func->get_signature ();
+  ZORBA_ASSERT (udf);
+  return udf->get_signature ();
+}
 
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
 
@@ -888,6 +889,20 @@ void pi_expr::accept(
 {
   ACCEPT (target_expr_h);
 }
+
+void function_def_expr::accept (expr_visitor& v) {
+}
+
+function_def_expr::function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_)
+  : expr (loc), name (name_)
+{
+  params.swap (params_);
+  vector<TypeSystem::xqtref_t> args;
+  for (unsigned i = 0; i < param_size () + 1; i++)
+    args.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+  sig = auto_ptr<signature> (new signature (get_name (), args));
+}
+
 
 
 } /* namespace xqp */

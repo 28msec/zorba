@@ -89,8 +89,7 @@ bool normalizer::begin_visit(if_expr& node)
 
 bool normalizer::begin_visit(fo_expr& node)
 {
-  const function *func = node.get_func();
-  const signature& sign = func->get_signature();
+  const signature& sign = node.get_signature();
 
   int n = node.size();
   for(int i = 0; i < n; ++i) {
