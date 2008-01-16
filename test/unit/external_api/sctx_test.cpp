@@ -386,7 +386,7 @@ int test_api_static_context(const char *result_file_name)
 		colinfo = sctx1->GetCollation(oss1.str());
 		if(colinfo)
 		{
-			result_file << "collation " << i << " " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (unsigned int)colinfo->coll << endl;
+			result_file << "collation " << i << " " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (uint32_t)colinfo->coll << endl;
 		}
 	}
 	for(i=0;i<100;i+=2)
@@ -405,7 +405,7 @@ int test_api_static_context(const char *result_file_name)
 		colinfo = sctx1->GetCollation(oss1.str());
 		if(colinfo)
 		{
-			result_file << "collation " << i << " " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (unsigned int)colinfo->coll << endl;
+			result_file << "collation " << i << " " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (uint32_t)colinfo->coll << endl;
 		}
 	}
 	for(i=0;i<max;i++)
@@ -414,7 +414,7 @@ int test_api_static_context(const char *result_file_name)
 		colinfo = sctx1->GetCollationInfoByIndex(i);
 		if(colinfo)
 		{
-			result_file << "collation " << i << " " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (unsigned int)colinfo->coll << endl;
+			result_file << "collation " << i << " " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (uint32_t)colinfo->coll << endl;
 		}
 	}
 	sctx1->DeleteAllCollations();

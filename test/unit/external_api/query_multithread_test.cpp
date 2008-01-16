@@ -54,12 +54,12 @@ int test_api_query_multithread(const char *result_file_name)
 	}
 
 	void	*thread_result;
-	int			thread_result_total = 0;
+	int32_t			thread_result_total = 0;
 
 	for(i=0;i<NR_THREADS;i++)
 	{
 		pthread_join(pt[i], &thread_result);
-		thread_result_total += (int)thread_result;
+		thread_result_total += (int32_t)thread_result;
 	}
 	zorba_factory.uninitThread();
 	zorba_factory.shutdown();
@@ -80,7 +80,7 @@ int test_api_query_multithread(const char *result_file_name)
 																make_absolute_file_name(oss2.str().c_str(), __FILE__)));
 	}
 
-	return thread_result_total;
+	return (int)thread_result_total;
 }
 
 

@@ -68,8 +68,8 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, long long int_value
 				return false;//inappropriate value
 		break;
 	case XS_LONG://derived from XS_INTEGER
-			if((int_value <= -((long long)1ll<<(sizeof(xqp_long)*8-1))) || 
-				(int_value >= ((long long)1ll<<(sizeof(xqp_long)*8-1))))
+			if((int_value < -((long long)((1ull<<(sizeof(xqp_long)*8-1))-1))) || 
+				(int_value > ((long long)((1ull<<(sizeof(xqp_long)*8-1))-1))))
 				return false;//inappropriate value
 			break;
 	case XS_INT://derived from XS_LONG
@@ -92,7 +92,7 @@ bool DynamicContextWrapper::SetVariable( xqp_string varname, long long int_value
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_LONG://derived from XS_NON_NEGATIVE_INTEGER
-			if((int_value < 0) || (int_value >= ((long long)1ll<<(sizeof(xqp_ulong)*8))))
+			if((int_value < 0) || ((unsigned long long)int_value > ((1ull<<(sizeof(xqp_ulong)*8))-1)))
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_INT://derived from XS_UNSIGNED_LONG
