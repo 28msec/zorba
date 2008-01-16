@@ -4479,7 +4479,7 @@ DirCommentConstructor :
 // [103] DirPIConstructor
 // ----------------------
 DirPIConstructor :
-		PI_BEGIN  PI_TARGET_LITERAL  PI_END 								/* ws: explicitXQ */
+		PI_BEGIN  PI_TARGET_LITERAL PI_END 								/* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target]\n";
@@ -4487,7 +4487,7 @@ DirPIConstructor :
 			$$ = new DirPIConstructor(@$,
 								driver.symtab.get((off_t)$2));
 		}
-	|	PI_BEGIN  PI_TARGET_LITERAL  CHAR_LITERAL  PI_END 	/* ws: explicitXQ */
+    |	PI_BEGIN  PI_TARGET_LITERAL CHAR_LITERAL  PI_END 	/* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target.charlit]\n";

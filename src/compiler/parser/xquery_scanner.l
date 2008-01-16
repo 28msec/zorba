@@ -168,13 +168,25 @@ ElementContentChar		[\x09\x0A\x0D\x20-\x25\x27-\x3B\x3D-\x7A\x7C\x7E-\xFD]
 QuotAttrContentChar 	[\x09\x0A\x0D\x20-\x21\x23-\x25\x27-\x3B\x3D-\x7A\x7C\x7E-\xFD]
 AposAttrContentChar 	[\x09\x0A\x0D\x20-\x25\x28-\x3B\x3D-\x7A\x7C\x7E-\xFD]
 
-NonXChar	[\x09\x0A\x0D\x20A-WY-Za-wy-z\x7B-\xFD]
-NonMChar	[\x09\x0A\x0D\x20A-LN-Za-ln-z\x7B-\xFD]
-NonLChar	[\x09\x0A\x0D\x20A-KM-Za-km-z\x7B-\xFD]
-PITarget	(({NonXChar}{Char}*)|((X|x){NonMChar}{Char}*)|((X|x)(M|m){NonLChar}*)|({Char}{Char}{Char}{Char}+)) 
+  /*
+  NonXChar	[\x09\x0A\x0D\x20A-WY-Za-wy-z\x7B-\xFD]
+  NonMChar	[\x09\x0A\x0D\x20A-LN-Za-ln-z\x7B-\xFD]
+  NonLChar	[\x09\x0A\x0D\x20A-KM-Za-km-z\x7B-\xFD]
+  
+  PITarget	(({NonXChar}{Char}*)|((X|x){NonMChar}{Char}*)|((X|x)(M|m){NonLChar}*)|({Char}{Char}{Char}{Char}+)) 
+  */
+  
+PITargetStart     [_:A-\xFF]
+PITargetName      [.-_:0-9A-\xFF]
+PITarget          {PITargetStart}{PITargetName}*
+
+NonQuestionMarkChar                 [\x09\x0A\x0D\x20-\x3E\x40-\xFD]
+NonGreaterThanNonQuestionMarkChar   [\x09\x0A\x0D\x20-\x3D\x40-\xFD]
+
+PIChars           ({NonQuestionMarkChar}*|"?"+{NonGreaterThanNonQuestionMarkChar})*"?"*
+
 
 ValidationMode				("strict"|"lax"|"skip")
-
 
 
 	/*______________________________________________________________________
@@ -418,7 +430,7 @@ typedef yy::xquery_parser::token token;
 "processing-instruction"{S}"(" {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI, yyscanner);
-	return token::PROCESSING_INSTRUCTION;
+	return token::PI_LPAR;
 }
 
 
@@ -2902,7 +2914,7 @@ typedef yy::xquery_parser::token token;
 {PITarget} {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	BEGIN MODE_PROCESSING_INSTRUCTION;
-	return token::PI_TARGET;
+	return token::PI_TARGET_LITERAL;
 }
 
 }	/* <MODE_PROCESSING_INSTRUCTION> */
@@ -2924,13 +2936,14 @@ typedef yy::xquery_parser::token token;
 	/* -------------------------- */
 "?>" {
 	yy_pop_state(yyscanner);
-	return token::PI_BEGIN;
+	return token::PI_END;
 }
 
 	/* maintain PROCESSING_INSTRUCTION_CONTENT */
 	/* --------------------------------------- */
-{Char}+ {
-	yylval->sval = driver.symtab.put(yytext, yyleng);
+{PIChars} {
+	yylval->sval = driver.symtab.put(yytext, yyleng-1);
+  yyless(yyleng-1);
 	return token::CHAR_LITERAL;
 }
 
