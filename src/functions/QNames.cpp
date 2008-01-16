@@ -12,6 +12,7 @@
 #include "system/globalenv.h"
 #include "functions/QNames.h"
 #include "runtime/qnames/QNamesImpl.h"
+#include "types/node_test.h"
 
  namespace xqp {
 /*
@@ -241,7 +242,6 @@ TypeSystem::xqtref_t
     fn_namespace_uri_for_prefix::type_check(
     signature& sig) const
 {
- //TODO fix the type 
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
@@ -276,8 +276,7 @@ TypeSystem::xqtref_t
     fn_in_scope_prefixes::type_check(
     signature& sig) const
 {
-  //TODO fix the type
-  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+  return GENV_TYPESYSTEM.create_node_type(new NodeTest(StoreConsts::elementNode), NULL, TypeSystem::QUANT_ONE);
 }
 
 bool

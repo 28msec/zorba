@@ -12,6 +12,7 @@
 #include "functions/library.h"
 #include "functions/function.h"
 #include "functions/signature.h"
+#include "types/node_test.h"
 
 #include "functions/Accessors.h"
 #include "functions/Numerics.h"
@@ -161,12 +162,13 @@ DECL(fn_round_half_to_even,
 // end Numerics
 
 //QNames
+// rchandle<NodeTest> nodeTest;
+// nodeTest = new NodeTest(StoreConsts::elementNode);
+
 DECL(fn_resolve_qname,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn",  "resolve-qname"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      //TODO fix the declaration
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      //GENV_TYPESYSTEM.ELEMENT_TYPE,
+      GENV_TYPESYSTEM.create_node_type(new NodeTest(StoreConsts::elementNode), NULL, TypeSystem::QUANT_ONE),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
       
 DECL(fn_qname,
@@ -200,16 +202,12 @@ DECL(fn_namespace_uri_from_qname,
 DECL(fn_namespace_uri_for_prefix,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","namespace-uri-for-prefix"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      //TODO fix the declaration
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-//       GENV_TYPESYSTEM.ELEMENT_TYPE,
+      GENV_TYPESYSTEM.create_node_type(new NodeTest(StoreConsts::elementNode), NULL, TypeSystem::QUANT_ONE),
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 DECL(fn_in_scope_prefixes,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","in-scope-prefixes"),
-     //TODO fix the declaration
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-//       GENV_TYPESYSTEM.ELEMENT_TYPE,
+      GENV_TYPESYSTEM.create_node_type(new NodeTest(StoreConsts::elementNode), NULL, TypeSystem::QUANT_ONE),
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 // end QNames
 

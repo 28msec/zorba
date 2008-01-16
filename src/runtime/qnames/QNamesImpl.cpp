@@ -11,6 +11,8 @@
 
 #include "runtime/qnames/QNamesImpl.h"
 
+
+
 namespace xqp {
 /**
  *______________________________________________________________________
@@ -39,13 +41,60 @@ namespace xqp {
 Item_t
 ResolveQNameIterator::nextImpl(PlanState& planState){
     Item_t res;
+    Item_t itemQName;
+    Item_t itemElem;
+    xqp_string resNs = "";
+    xqp_string resPre = "";
+    xqp_string resQName = "";
+    int32_t index = -1;
+    std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
+    std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
 
     PlanIterator::PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-    res = Zorba::getItemFactory()->createQName("Not Implemented yet",
-                                                                         "Not Implemented yet",
-                                                                         "Not Implemented yet");
-    STACK_PUSH( res, state );
+
+    itemQName = consumeNext( theChild0, planState );
+    if( itemQName != NULL)
+    {
+      itemQName = itemQName->getAtomizationValue();
+
+      //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
+
+      index = itemQName->getStringProperty().trim().indexOf(":");
+      if(-1 != index)
+      {
+        resPre = itemQName->getStringProperty().trim().substr( 0, index );
+        resQName = itemQName->getStringProperty().trim().substr( index+1, resQName.length() - index );
+
+        itemElem = consumeNext( theChild1, planState );
+        if( itemElem != NULL )
+        {
+          NamespaceBindings = itemElem->getNamespaceBindings();
+          for (
+               iter = NamespaceBindings.begin();
+               iter != NamespaceBindings.end();
+               ++iter
+              )
+          {
+            if( (*iter).first == resPre )
+            {
+              resNs = (*iter).second;
+              break;
+            }
+          }
+        }
+      }
+      else
+      {
+        resQName = itemQName->getStringProperty().trim();
+      }
+
+      res = Zorba::getItemFactory()->createQName(
+        resNs,
+        resPre,
+        resQName);
+      STACK_PUSH( res, state );
+    }
     STACK_END();
 }
 /* end class ResolveQNameIterator */
