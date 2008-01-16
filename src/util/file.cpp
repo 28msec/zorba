@@ -33,12 +33,8 @@
 #include <unistd.h>
 #endif
 
-#ifndef WIN32
-#ifndef __APPLE_CC__
-#include <sys/vfs.h>
-#else
+#ifdef __APPLE_CC__  // TODO: possibly no longer necessary
 #include <sys/mount.h>
-#endif
 #endif
 
 #ifndef _WIN32_WCE
@@ -486,7 +482,7 @@ THROW_XQP_EXCEPTION
 #endif
 }
 
-#ifndef WIN32
+#if 0  // not portable, not used
 void file::do_statfs(
 	std::string const& path)
 THROW_XQP_EXCEPTION

@@ -215,7 +215,7 @@ public:	// volume methods
   
 	bool is_empty() const { return (size == (int64_t)0); }
 
-#ifndef WIN32
+#if 0  // not portable, not used
   void do_statfs(std::string const& path) THROW_XQP_EXCEPTION;
 #endif
 };
