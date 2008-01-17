@@ -92,6 +92,7 @@ void Zorba::getDefaultCollation(
 
 ::Collator* Zorba::getCollator(xqp_string collURI)
 {
+	::Collator	*coll;
 	if(!current_xquery)
 	{//get the zorba default collation, or a hardcoded one
 		if(!collURI.empty())
@@ -100,10 +101,16 @@ void Zorba::getDefaultCollation(
 			coll_descr = CollationManager::getHardcodedCollator(collURI);
 			if(!coll_descr)
 			{
-				ZORBA_ERROR_ALERT(ZorbaError::XQST0076, NULL);
+				ZORBA_ERROR_ALERT(ZorbaError::FOCH0002);//unsupported collation
 				return NULL;
 			}
-			return coll_manager->getCollation(coll_descr->coll_string, coll_descr->coll_strength);
+			coll = coll_manager->getCollation(coll_descr->coll_string, coll_descr->coll_strength);
+			if(!coll)
+			{
+				ZORBA_ERROR_ALERT(ZorbaError::FOCH0002);//unsupported collation
+				return NULL;
+			}
+			return coll;
 		}
 		else
 		{
@@ -112,7 +119,7 @@ void Zorba::getDefaultCollation(
 			default_coll = coll_manager->getCollation(default_coll_string, default_coll_strength);
 			if(!default_coll)
 			{
-				ZORBA_ERROR_ALERT( ZorbaError::XQST0076, NULL);
+				ZORBA_ERROR_ALERT(ZorbaError::FOCH0002);//unsupported collation
 				return NULL;
 			}
 			return default_coll;
@@ -125,10 +132,23 @@ void Zorba::getDefaultCollation(
 		if(current_xquery->default_collator)
 			return current_xquery->default_collator;
 		current_xquery->default_collator = get_static_context()->getDefaultCollation();
+		if(!current_xquery->default_collator)
+		{
+			ZORBA_ERROR_ALERT(ZorbaError::FOCH0002);//unsupported collation
+			return NULL;
+		}
 		return current_xquery->default_collator;
 	}
 	else
-		return get_static_context()->get_collation(collURI);
+	{
+		coll = get_static_context()->get_collation(collURI);
+		if(!coll)
+		{
+			ZORBA_ERROR_ALERT(ZorbaError::FOCH0002);//unsupported collation
+			return NULL;
+		}
+		return coll;
+	}
 
 }
 

@@ -453,7 +453,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 	else if(!def_coll_uri.empty())
 	{
 		//error, uri not found
-		ZORBA_ERROR_ALERT( ZorbaError::XQST0076, NULL);
+		//ZORBA_ERROR_ALERT( ZorbaError::XQST0076, NULL);//only for FLWOR
 		return NULL;///collation non-existant
 	}
 
