@@ -5,8 +5,8 @@
 #include "node_test.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
-#include "typesystem.h"
-#include <assert.h>
+#include "types/typesystem.h"
+#include "util/Assert.h"
 
 using namespace xqp;
 
@@ -410,8 +410,13 @@ TypeSystem::xqtref_t TypeSystem::prime_type(const XQType& type) const
     return ANY_ATOMIC_TYPE_ONE;
   } else if (is_equal(type, *UNTYPED_TYPE)) {
     return ITEM_TYPE_ONE;
+  } else if (type.type_kind() == XQType::NODE_TYPE_KIND) {
+    const NodeXQType& ntype = static_cast<const NodeXQType&>(type);
+    return create_node_type(ntype.m_nodetest, ntype.m_content_type, TypeSystem::QUANT_ONE);
   }
-  return TypeSystem::xqtref_t(0);
+  Assert(false);
+
+  return NULL;
 }
 
 TypeSystem::xqtref_t TypeSystem::arithmetic_type(const XQType& type1, const XQType& type2) const
