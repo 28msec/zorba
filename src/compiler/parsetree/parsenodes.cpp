@@ -953,6 +953,9 @@ void FunctionDecl::accept(parsenode_visitor& v) const
 }
 
 
+int FunctionDecl::get_param_count() const {
+  return paramlist_h == NULL ? 0 : paramlist_h->size ();
+}
 
 // [27] ParamList
 // --------------

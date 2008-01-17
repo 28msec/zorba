@@ -105,7 +105,7 @@ protected:
   expr_t pop_nodestack (int n = 1)
   {
     ZORBA_ASSERT (n >= 0);
-    rchandle<expr> e_h = nodestack.top();
+    rchandle<expr> e_h;
     for (; n > 0; --n) {
       ZORBA_ASSERT (! nodestack.empty());
       e_h = nodestack.top();
@@ -1338,7 +1338,7 @@ void end_visit(const FunctionDecl& v, void *visit_state)
   if (v.get_return_type () != NULL)
     pop_tstack ();
   
-  int nargs = v.get_paramlist ()->size ();
+  int nargs = v.get_param_count ();
   pop_nodestack (nargs);
   function_def_expr *udf = static_cast<function_def_expr *> (sctx_p->lookup_udf (v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs));
   ZORBA_ASSERT (udf != NULL);
@@ -1704,9 +1704,10 @@ void *begin_visit(const VFO_DeclList& v)
   {
     const FunctionDecl *n = dynamic_cast<const FunctionDecl *> (it->get_ptr ());
     if (n) {
-      ZORBA_ASSERT (n->get_paramlist () != NULL);
-      n->get_paramlist ()->accept (*this);
-      int nargs = n->get_paramlist ()->size();
+      rchandle<ParamList> params = n->get_paramlist ();
+      if (params == NULL) params = new ParamList (n->get_location ());
+      params->accept (*this);
+      int nargs = params->size();
       vector<var_expr_t> args (nargs);
       generate (args.begin (), args.end (), stack_to_generator (nodestack));
 

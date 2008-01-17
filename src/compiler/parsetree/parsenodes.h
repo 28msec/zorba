@@ -1082,6 +1082,7 @@ public:
 public:
 	rchandle<QName> get_name() const { return name_h; }
 	rchandle<ParamList> get_paramlist() const { return paramlist_h; }
+	int get_param_count() const;
 	rchandle<EnclosedExpr> get_body() const { return body_h; }
 	rchandle<SequenceType> get_return_type() const { return return_type_h; }
 	function_type_t get_type() const { return type; }
