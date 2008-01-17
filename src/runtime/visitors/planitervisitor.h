@@ -13,6 +13,7 @@ namespace xqp
   class FnBooleanIterator;
   class LogicIterator;
   class CompareIterator;
+  class UDFunctionCallIterator;
   class ElementIterator;
   class ElementContentIterator;
   class AttributeIterator;
@@ -163,6 +164,9 @@ namespace xqp
       
       virtual void beginVisit ( const DocumentContentIterator& ) = 0;
       virtual void endVisit ( const DocumentContentIterator& ) = 0;
+       
+      virtual void beginVisit ( const UDFunctionCallIterator& ) = 0;
+      virtual void endVisit ( const UDFunctionCallIterator& ) = 0;
        
       virtual void beginVisit ( const CommentIterator& ) = 0;
       virtual void endVisit ( const CommentIterator& ) = 0;

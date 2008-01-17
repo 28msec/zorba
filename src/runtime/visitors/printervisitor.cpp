@@ -5,6 +5,7 @@
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
+#include "runtime/core/fncall_iterator.h"
 #include "runtime/qnames/QNamesImpl.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/accessors/AccessorsImpl.h"
@@ -55,6 +56,14 @@ namespace xqp {
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const FnNodeNameIterator& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const UDFunctionCallIterator& a ) {
+    thePrinter.startIter("UDFunctionCallIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const UDFunctionCallIterator& a ) {
     thePrinter.endIter();
   }
 

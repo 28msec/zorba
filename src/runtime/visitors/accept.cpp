@@ -11,6 +11,7 @@
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/sequencetypes.h"
+#include "runtime/core/fncall_iterator.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/qnames/QNamesImpl.h"
 #include "runtime/strings/StringsImpl.h"
@@ -159,6 +160,7 @@ namespace xqp {
   NARY_ACCEPT(FnMaxIterator);
   NARY_ACCEPT(FnMinIterator);
   NARY_ACCEPT(FnSumIterator);
+  NARY_ACCEPT(UDFunctionCallIterator);
   
   // special iterators
   void ElementIterator::accept(PlanIterVisitor& v) const

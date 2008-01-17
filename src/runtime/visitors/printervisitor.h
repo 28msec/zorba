@@ -52,6 +52,9 @@ public:
   virtual void beginVisit ( const ElementContentIterator& ) ;
   virtual void endVisit ( const ElementContentIterator& ) ;
        
+  virtual void beginVisit ( const UDFunctionCallIterator& ) ;
+  virtual void endVisit ( const UDFunctionCallIterator& ) ;
+       
   virtual void beginVisit ( const AttributeIterator & ) ;
   virtual void endVisit ( const AttributeIterator& ) ;
       
