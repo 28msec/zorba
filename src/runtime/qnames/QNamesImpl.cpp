@@ -10,7 +10,9 @@
  */
 
 #include "runtime/qnames/QNamesImpl.h"
-
+#include "system/zorba.h"
+#include "system/zorba_engine.h"
+#include "context/static_context.h"
 
 
 namespace xqp {
@@ -335,14 +337,48 @@ NamespaceUriFromQNameIterator::nextImpl(PlanState& planState){
 
  /* begin class NamespaceUriForPrefixlIterator */
 Item_t
-NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState){
-    Item_t res;
+NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemPrefix;
+  Item_t itemElem;
+  xqp_string resNs = "";
+  std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
+  std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
 
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-    res = Zorba::getItemFactory()->createAnyURI("Not Implemented yet");
-    STACK_PUSH( res, state );
-    STACK_END();
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  itemPrefix = consumeNext( theChild0, planState );
+  if( itemPrefix != NULL)
+  {
+    itemPrefix = itemPrefix->getAtomizationValue();
+
+    itemElem = consumeNext( theChild1, planState );
+    if( itemElem != NULL && !itemElem->getStringProperty().empty())
+    {
+      NamespaceBindings = itemElem->getNamespaceBindings();
+      for (
+            iter = NamespaceBindings.begin();
+            iter != NamespaceBindings.end();
+            ++iter
+          )
+      {
+        if( (*iter).first == itemPrefix->getStringProperty().trim() )
+        {
+          resNs = (*iter).second;
+          break;
+        }
+      }
+    }
+    else
+    {
+      resNs = ZORBA_FOR_CURRENT_THREAD()->get_static_context()->default_elem_type_ns();
+    }
+
+    if( !resNs.empty() )
+      STACK_PUSH( Zorba::getItemFactory()->createString(resNs), state );
+  }
+  STACK_END();
 }
 /* end class NamespaceUriForPrefixlIterator */
 
