@@ -21,6 +21,7 @@
 #include "util/utf8/Unicode_util.h"
 #include "functions/signature.h"
 #include "system/zorba_engine.h"
+#include "util/stl_extra.h"
 
 #ifndef NDEBUG
 # include "zorba/util/properties.h"
@@ -1334,6 +1335,15 @@ void *begin_visit(const FunctionDecl& v)
 void end_visit(const FunctionDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  expr_t body = pop_nodestack ();
+  if (v.get_return_type () != NULL)
+    pop_tstack ();
+  
+  int nargs = v.get_paramlist ()->size ();
+  pop_nodestack (nargs);
+  function_def_expr *udf = static_cast<function_def_expr *> (sctx_p->lookup_udf (v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs));
+  ZORBA_ASSERT (udf != NULL);
+  udf->set_body (body);
   pop_scope ();
 }
 
@@ -1469,6 +1479,10 @@ void *begin_visit(const Param& v)
 void end_visit(const Param& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  var_expr *ve = bind_var (v.get_location (), v.get_name (), var_expr::param_var);
+  nodestack.push (ve);
+  if (v.get_typedecl () != NULL)
+    ve->set_type (pop_tstack ());
 }
 
 
@@ -1683,7 +1697,29 @@ void end_visit(const VersionDecl& v, void *visit_state)
 void *begin_visit(const VFO_DeclList& v)
 {
   TRACE_VISIT ();
-  nodestack.push(NULL);
+
+  // Function declaration translation must be done in two passes
+  // because of mutually recursive functions. So, here's the 1st pass.
+  for (vector<rchandle<parsenode> >::const_iterator it = v.begin();
+       it != v.end(); ++it)
+  {
+    const FunctionDecl *n = dynamic_cast<const FunctionDecl *> (it->get_ptr ());
+    if (n) {
+      ZORBA_ASSERT (n->get_paramlist () != NULL);
+      n->get_paramlist ()->accept (*this);
+      int nargs = n->get_paramlist ()->size();
+      vector<var_expr_t> args (nargs);
+      generate (args.begin (), args.end (), stack_to_generator (nodestack));
+
+      TypeSystem::xqtref_t return_type = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+      if (n->get_return_type () != NULL) {
+        n->get_return_type ()->accept (*this);
+        return_type = pop_tstack ();
+      }
+      Item_t qname = sctx_p->lookup_fn_qname (n->get_name ()->get_prefix (), n->get_name ()->get_localname ());
+      sctx_p->bind_udf (qname, new function_def_expr (n->get_location(), qname, args, return_type), nargs);
+    }
+  }
   return no_state;
 }
 
@@ -1959,7 +1995,10 @@ void end_visit(const FunctionCall& v, void *visit_state)
   else
   {
     int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
-    rchandle<fo_expr> fo_h = new fo_expr(v.get_location(), LOOKUP_FN (prefix, fname, sz));
+    const function_def_expr *udf = static_cast<const function_def_expr *> (sctx_p->lookup_udf (prefix, fname, sz));
+    rchandle<fo_expr> fo_h = (udf == NULL) ?
+      new fo_expr (v.get_location(), LOOKUP_FN (prefix, fname, sz)) :
+      new fo_expr (v.get_location(), udf);
     
     // TODO this should be a const iterator
     std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
