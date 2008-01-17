@@ -141,9 +141,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       return false;
     }
 
-    if (Properties::instance ()->printNormalizedExpressions ())
-      cout << "Expression tree:\n";
-
     rchandle<expr> e_h = translate (zorba->get_static_context(), *mm_p);
     if (e_h == NULL)
     {
@@ -152,11 +149,18 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       return false;
     }
   
+    if (Properties::instance ()->printTranslatedExpressions ()) {
+      cout << "Expression tree after translation:\n";
+      e_h->put(cout) << endl;
+    }
+
     normalizer n(zorba->get_static_context());
     e_h->accept(n);
 
-    if (Properties::instance()->printNormalizedExpressions())
+    if (Properties::instance ()->printNormalizedExpressions ()) {
+      cout << "Expression tree after normalization:\n";
       e_h->put(cout) << endl;
+    }
 
     ///now do code generation (generate iterator tree)
 

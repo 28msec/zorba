@@ -114,7 +114,8 @@ namespace xqp
       ("print-query,q", "print the query query")
       ("print-time,t", "print the execution time")
       ("print-ast,a", "print the parse tree")
-      ("print-normalized-expr,n", "print the normalized expression tree")
+      ("print-translated", "print the normalized expression tree")
+      ("print-normalized,n", "print the translated expression tree")
       ("print-iterator-tree,i", "print the iterator tree")
 #ifndef NDEBUG
       ("trace-translator,l", "trace the translator")
@@ -206,7 +207,8 @@ namespace xqp
     thePrintQuery = lVarMap.count("print-query");
     thePrintTime = lVarMap.count("print-time");
     thePrintAST = lVarMap.count("print-ast");
-    thePrintNormalizedExpressions = lVarMap.count("print-normalized-expr");
+    thePrintNormalizedExpressions = lVarMap.count("print-normalized");
+    thePrintTranslatedExpressions = lVarMap.count("print-translated");
     thePrintIteratorTree = lVarMap.count("print-iterator-tree");
 #ifndef NDEBUG
     theTraceTranslator = lVarMap.count("trace-translator");

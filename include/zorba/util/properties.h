@@ -23,6 +23,7 @@ namespace xqp {
       bool thePrintTime;
       bool thePrintAST;
       bool thePrintNormalizedExpressions;
+      bool thePrintTranslatedExpressions;
       bool thePrintIteratorTree;
 #ifndef NDEBUG
       bool theTraceTranslator;
@@ -101,6 +102,7 @@ namespace xqp {
       bool printTime()  { return thePrintTime; }
       bool printAST()   { return thePrintAST; }
       bool printNormalizedExpressions() { return thePrintNormalizedExpressions; }
+      bool printTranslatedExpressions() { return thePrintTranslatedExpressions; }
       bool printIteratorTree() { return thePrintIteratorTree; }
 #ifndef NDEBUG
       bool traceCodegen() { return theTraceCodegen; }
@@ -113,3 +115,10 @@ namespace xqp {
 } /* namespace xqp */
 
 #endif
+
+/* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
