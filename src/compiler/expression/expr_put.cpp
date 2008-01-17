@@ -37,13 +37,19 @@ ostream& expr::put( ostream& os) const
 
 ostream& var_expr::put(ostream& os) const
 {
-  os << INDENT << "var_expr (" << this << ")[" << decode_var_kind(get_kind());
+  os << INDENT << "var_expr " << decode_var_kind(get_kind()) << " (" << this << ") [\n";
   if (varname_h != NULL)
   {
-    os << " name=";
+    os << DENT << " name=";
     put_qname (get_varname(), os);
   }
-  os << ", type= ]\n"; // TODO(VRB) << sequence_type::describe(type);
+  os << endl;
+  if (type != NULL) {
+    os << DENT << " type=";
+    GENV_TYPESYSTEM.serialize (os, *type);
+    os << endl;
+  }
+  os << DENT << "]\n";
   UNDENT;
   return os;
 }
@@ -217,44 +223,39 @@ ostream& instanceof_expr::put( ostream& os) const
   os << INDENT << "instanceof_expr "; GENV_TYPESYSTEM.serialize (os, *type);
   os << " (" << this << ") [\n";
   Assert(expr_h!=NULL);
-  expr_h->put(os) << endl;
+  expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
 }
 
 ostream& treat_expr::put( ostream& os) const
 {
-  os << INDENT << "treat_expr (" << this << ") [\n";
-  //d Assert<null_pointer>(expr_h!=NULL);
+  os << INDENT << "treat_expr "; GENV_TYPESYSTEM.serialize (os, *type);
+  os << " (" << this << ") [\n";
   Assert(expr_h!=NULL);
-  expr_h->put(os) << endl;
-  os << "treat as\n";
-  // TODO(VRB) os << sequence_type::describe(type);
+  expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
 }
 
 ostream& castable_expr::put( ostream& os) const
 {
-  os << INDENT << "castable_expr (" << this << ") [\n";
-  //d Assert<null_pointer>(expr_h!=NULL);
+  os << INDENT << "castable_expr ";
+  GENV_TYPESYSTEM.serialize (os, *type);
+  os << " (" << this << ") [\n";
   Assert(expr_h!=NULL);
-  expr_h->put(os) << endl;
-  os << "castable as\n";
-  // TODO(VRB) os << sequence_type::describe(get_type());
-  if (is_optional()) os << "?";
+  expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
 }
 
 ostream& cast_expr::put( ostream& os) const
 {
-  os << INDENT << "cast_expr (" << this << ") [\n";
-
+  os << INDENT << "cast_expr ";
+  GENV_TYPESYSTEM.serialize (os, *type);
+  os << " (" << this << ") [\n";
   Assert(expr_h!=NULL);
-  expr_h->put(os) << endl;
-  os << DENT << "CAST AS "; GENV_TYPESYSTEM.serialize (os, *type); os << endl;
-  if (is_optional()) os << "?";
+  expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
 }
