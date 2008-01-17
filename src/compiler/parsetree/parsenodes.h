@@ -3295,6 +3295,7 @@ public:
 
 public:
 	enum numeric_type_t get_type() const { return type; }
+  std::string toString () const;
 	int get_int() const { return ival; }
 	decimal get_decimal() const { return decval; }
 	double get_double() const { return dval; }

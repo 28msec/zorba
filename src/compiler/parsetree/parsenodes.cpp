@@ -23,6 +23,8 @@
 #include "errors/error_factory.h"
 #include "store/api/item.h"
 
+#include "util/utf8/Unicode_util.h"
+
 using namespace std;
 namespace xqp {
 
@@ -3191,6 +3193,15 @@ NumericLiteral::NumericLiteral(
   type(num_decimal),
   decval(_decval)
 {
+}
+
+string NumericLiteral::toString () const {
+  switch (type) {
+  case num_integer: return to_string (ival);
+  case num_decimal: return to_string (decval);
+  case num_double:  return to_string (dval);
+  default: return "??";
+  }
 }
 
 NumericLiteral::~NumericLiteral()

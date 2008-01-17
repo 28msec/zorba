@@ -1771,7 +1771,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NumericLiteral &n)
 {
     INDENT;
 
-    os << "<NumericLiteral position='" << n.get_location() << " type='" << decode_numeric_type (n.get_type ()) << "' ptr='" << &n << "'";
+    os << "<NumericLiteral position='" << n.get_location() << " type='" << decode_numeric_type (n.get_type ()) << "' val='" << n.toString () << "' ptr='" << &n << "'";
 
     os << "/>";
 
