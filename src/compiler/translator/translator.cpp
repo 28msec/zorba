@@ -59,6 +59,18 @@ static void *no_state = (void *) new int;
 
 #define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
+  template<class T> T &peek_stack (stack<T> &stk) {
+    ZORBA_ASSERT (! stk.empty ());
+    return stk.top ();
+  }
+
+  template <typename T> T pop_stack (stack<T> &stk) {
+    T x = peek_stack (stk);
+    stk.pop ();
+    return x;
+  }
+
+
 class TranslatorImpl : public Translator 
 {
 public:
@@ -101,7 +113,6 @@ protected:
     bind_var(loc, DOT_VAR, var_expr::context_var);
   }
 
-
   expr_t pop_nodestack (int n = 1)
   {
     ZORBA_ASSERT (n >= 0);
@@ -115,12 +126,7 @@ protected:
   }
 
   TypeSystem::xqtref_t pop_tstack() 
-  {
-    ZORBA_ASSERT (! tstack.empty());
-    TypeSystem::xqtref_t e_h = tstack.top();
-    tstack.pop();
-    return e_h;
-  }
+  { return pop_stack (tstack); }
 
   var_expr *bind_var (yy::location loc, string varname, var_expr::var_kind kind)
   {
@@ -150,7 +156,7 @@ protected:
   }
 
   rchandle<axis_step_expr> expect_axis_step_top () {
-    rchandle<axis_step_expr> axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+    rchandle<axis_step_expr> axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
     if (axisExpr == NULL) {
       cout << "Expecting axis step on top of stack; ";
       if (nodestack.top() != NULL)
@@ -467,9 +473,8 @@ void begin_check_boundary_whitespace() {
 void check_boundary_whitespace(const DirElemContent& v) {
   v.setIsStripped(false);
   if (sctx_p->boundary_space_mode() == StaticQueryContext::strip_space) {
-    bool lPrevIsBoundary = theIsWSBoundaryStack.top();
-    theIsWSBoundaryStack.pop();
-    const DirElemContent* lPrev = thePossibleWSContentStack.top();
+    bool lPrevIsBoundary = pop_stack (theIsWSBoundaryStack);
+    const DirElemContent* lPrev = peek_stack (thePossibleWSContentStack);
     thePossibleWSContentStack.pop();
 
     if (v.get_direct_cons() != 0 || (v.get_common_content() != 0 && v.get_common_content()->get_expr() != 0)) {
@@ -506,12 +511,11 @@ void check_boundary_whitespace(const DirElemContent& v) {
  */
 void end_check_boundary_whitespace() {
   if (sctx_p->boundary_space_mode() == StaticQueryContext::strip_space) {
-    const DirElemContent* lPrev = thePossibleWSContentStack.top();
+    const DirElemContent* lPrev = pop_stack (thePossibleWSContentStack);
     if (lPrev != 0) {
       lPrev->setIsStripped(true);
     }
     theIsWSBoundaryStack.pop();
-    thePossibleWSContentStack.pop();
   }
 }
 
@@ -2362,7 +2366,7 @@ void end_visit(const AnyKindTest& v, void *visit_state)
   TRACE_VISIT_OUT ();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
   if (axisExpr != NULL)
   {
     rchandle<match_expr> me = new match_expr(v.get_location());
@@ -2395,7 +2399,7 @@ void end_visit(const DocumentTest& v, void *visit_state)
 
   if (elemTest == NULL)
   {
-    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
     if (axisExpr != NULL)
     {
       rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2419,7 +2423,7 @@ void end_visit(const DocumentTest& v, void *visit_state)
     rchandle<TypeName> typeName = elemTest->getTypeName();
     bool nilled =  elemTest->isNilledAllowed();
 
-    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
     if (axisExpr != NULL)
     {
       rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2462,7 +2466,7 @@ void end_visit(const ElementTest& v, void *visit_state)
   bool nilled =  v.isNilledAllowed();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
   if (axisExpr != NULL)
   {
     rchandle<match_expr> me = new match_expr(v.get_location());
@@ -2537,7 +2541,7 @@ void end_visit(const AttributeTest& v, void *visit_state)
   rchandle<TypeName> typeName = v.get_type_name();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
   if (axisExpr != NULL)
   {
     rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2597,7 +2601,7 @@ void end_visit(const TextTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
   if (axisExpr != NULL)
   {
     rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2626,7 +2630,7 @@ void end_visit(const CommentTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
   if (axisExpr != NULL)
   {
     rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2653,7 +2657,7 @@ void *begin_visit(const PITest& v)
 void end_visit(const PITest& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
   if (axisExpr != NULL)
   {
     string target = v.get_target();
@@ -2890,8 +2894,7 @@ void end_visit(const PathExpr& v, void *visit_state)
   nodestack.push(wrap_in_dos_and_dupelim(arg2));
 
   // Restore theRootRelPathExpr state.
-  theRootRelPathExpr = relpathstack.top();
-  relpathstack.pop();
+  theRootRelPathExpr = pop_stack (relpathstack);
 }
 
 
