@@ -8,6 +8,8 @@
 #include "types/typesystem.h"
 #include "util/Assert.h"
 
+#include "system/globalenv.h"
+
 using namespace xqp;
 
 #define T true
@@ -218,6 +220,21 @@ TypeSystem::TypeSystem()
 
 TypeSystem::~TypeSystem()
 {
+}
+
+static char *decode_quantifier (TypeSystem::quantifier_t quant) {
+  switch (quant) {
+  case TypeSystem::QUANT_ONE:
+    return "";
+  case TypeSystem::QUANT_QUESTION:
+    return "?";
+  case TypeSystem::QUANT_STAR:
+    return "*";
+  case TypeSystem::QUANT_PLUS:
+    return "+";
+  default:
+    return "<unknown-quant>";
+  }
 }
 
 std::ostream& TypeSystem::serialize(std::ostream& os, const XQType& type) const
@@ -669,7 +686,7 @@ const char *XQType::KIND_STRINGS[XQType::NONE_KIND + 1] =
 
 std::ostream& XQType::serialize(std::ostream& os) const
 {
-  return os << "[XQType " << KIND_STRINGS[type_kind()] << "]";
+  return os << "[XQType " << KIND_STRINGS[type_kind()] << decode_quantifier (GENV_TYPESYSTEM.quantifier (*this)) << "]";
 }
 
 const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeSystem::ATOMIC_TYPE_CODE_LIST_SIZE] =
@@ -723,7 +740,7 @@ const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeSystem::ATOMIC_TYPE_CODE_
 
 std::ostream& AtomicXQType::serialize(std::ostream& os) const
 {
-  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[m_type_code] << "]";
+  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[m_type_code] << decode_quantifier (GENV_TYPESYSTEM.quantifier (*this)) << "]";
 }
 
 /* vim:set ts=2 sw=2: */
