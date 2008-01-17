@@ -1787,13 +1787,13 @@ void end_visit(const CastExpr& v, void *visit_state)
 
 void *begin_visit(const CastableExpr& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
 void end_visit(const CastableExpr& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
   nodestack.push(new castable_expr(v.get_location(), pop_nodestack(), pop_tstack()));
 }
 
@@ -3380,6 +3380,7 @@ void *begin_visit(const TreatExpr& v)
 void end_visit(const TreatExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  nodestack.push(new treat_expr(v.get_location(), pop_nodestack(), pop_tstack()));
 }
 
 void *begin_visit(const TypeswitchExpr& v)
