@@ -393,9 +393,9 @@ Item_t ParentAxisIterator::nextImpl(PlanState& planState)
   Item_t parent;
 
   ParentAxisState* state;
-  GET_STATE(ParentAxisState, state, planState); 
+  DEFAULT_STACK_INIT(ParentAxisState, state, planState); 
 
-  do
+  while (true)
   {
     state->theContextNode = consumeNext(theChild, planState);
     if (state->theContextNode == NULL)
@@ -403,19 +403,25 @@ Item_t ParentAxisIterator::nextImpl(PlanState& planState)
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_ALERT(
-           ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+      ZORBA_ERROR_ALERT(ZorbaError::XPTY0020,
+                        &loc, false,
+                        "The context item of an axis step is not a node");
     }
 
     parent = state->theContextNode->getParent();
-  }
-  while (parent != NULL &&
-         theNodeKind != StoreConsts::anyNode &&
-         parent->getNodeKind() != theNodeKind);
 
-  return parent;
+
+    if (parent != NULL &&
+        (theNodeKind == StoreConsts::anyNode ||
+         parent->getNodeKind() == theNodeKind))
+    {
+      STACK_PUSH(parent, state);
+    }
+  }
+
+  STACK_END();
 }
+
 
 void ParentAxisIterator::releaseResourcesImpl(PlanState& planState)
 {
