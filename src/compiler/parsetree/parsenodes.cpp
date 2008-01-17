@@ -1814,20 +1814,9 @@ void TypeswitchExpr::accept(parsenode_visitor& v) const
 { 
   BEGIN_VISITOR ();
   ACCEPT (switch_expr_h);
-  ACCEPT (clause_list_h);
-  ACCEPT (default_clause_h);
-
-  ACCEPT_CHK (switch_expr_h);
-
+  ACCEPT_CHK (clause_list_h);
   ACCEPT_CHK (default_clause_h);
 
-  Assert(clause_list_h!=NULL);
-  
-  for (vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_list_h->rbegin();
-       it!=clause_list_h->rend(); ++it) {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
-  }
   END_VISITOR ();
 }
 
