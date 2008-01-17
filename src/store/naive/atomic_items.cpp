@@ -987,5 +987,226 @@ xqp_string DurationItemNaive::show() const
   return theValue->toString();
 }
 
+/*******************************************************************************
+ * class GYearMonthItemNaive
+ *******************************************************************************/
+GYearMonthItemNaive::GYearMonthItemNaive(const xqp_string& aValue)
+{
+  theValue = GYearMonth::parse_string(aValue);
+}
+
+xqp_gYearMonth GYearMonthItemNaive::getGYearMonthValue() const
+{
+  return theValue;
+}
+
+xqp_string GYearMonthItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t GYearMonthItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("gYearMonth");
+}
+
+bool GYearMonthItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getGYearMonthValue();
+}
+
+Item_t GYearMonthItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string GYearMonthItemNaive::getStringProperty() const
+{
+  return theValue->toString();
+}
+
+xqp_string GYearMonthItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+/*******************************************************************************
+ * class GYearItemNaive
+ *******************************************************************************/
+GYearItemNaive::GYearItemNaive(const xqp_string& aValue)
+{
+  theValue = GYear::parse_string(aValue);
+}
+
+xqp_gYear GYearItemNaive::getGYearValue() const
+{
+  return theValue;
+}
+
+xqp_string GYearItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t GYearItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("gYear");
+}
+
+bool GYearItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getGYearValue();
+}
+
+Item_t GYearItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string GYearItemNaive::getStringProperty() const
+{
+  return theValue->toString();
+}
+
+xqp_string GYearItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+/*******************************************************************************
+ * class GMonthDayItemNaive
+ *******************************************************************************/
+GMonthDayItemNaive::GMonthDayItemNaive(const xqp_string& aValue)
+{
+  theValue = GMonthDay::parse_string(aValue);
+}
+
+xqp_gMonthDay GMonthDayItemNaive::getGMonthDayValue() const
+{
+  return theValue;
+}
+
+xqp_string GMonthDayItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t GMonthDayItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("gMonthDay");
+}
+
+bool GMonthDayItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getGMonthDayValue();
+}
+
+Item_t GMonthDayItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string GMonthDayItemNaive::getStringProperty() const
+{
+  return theValue->toString();
+}
+
+xqp_string GMonthDayItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+/*******************************************************************************
+ * class GMonthItemNaive
+ *******************************************************************************/
+GMonthItemNaive::GMonthItemNaive(const xqp_string& aValue)
+{
+  theValue = GMonth::parse_string(aValue);
+}
+
+xqp_gMonth GMonthItemNaive::getGMonthValue() const
+{
+  return theValue;
+}
+
+xqp_string GMonthItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t GMonthItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("gMonth");
+}
+
+bool GMonthItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getGMonthValue();
+}
+
+Item_t GMonthItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string GMonthItemNaive::getStringProperty() const
+{
+  return theValue->toString();
+}
+
+xqp_string GMonthItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+/*******************************************************************************
+ * class GDayItemNaive
+ *******************************************************************************/
+GDayItemNaive::GDayItemNaive(const xqp_string& aValue)
+{
+  theValue = GDay::parse_string(aValue);
+}
+
+xqp_gDay GDayItemNaive::getGDayValue() const
+{
+  return theValue;
+}
+
+xqp_string GDayItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t GDayItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("gDay");
+}
+
+bool GDayItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getGDayValue();
+}
+
+Item_t GDayItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string GDayItemNaive::getStringProperty() const
+{
+  return theValue->toString();
+}
+
+xqp_string GDayItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+
 
 }/* namespace xqp */

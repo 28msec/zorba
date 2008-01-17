@@ -4,5 +4,5 @@ SET(DATETIME_SRCS
 	datetime.cpp
 	time.cpp
 	timezone.cpp
-	gyearmonth.cpp
+	gregorian.cpp
 	parse.cpp)

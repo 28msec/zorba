@@ -56,4 +56,27 @@ int parse_int(std::string& s, unsigned int& position, long& result)
   return 0;
 }
 
+static bool is_leap_year(int year)
+{
+  if (((year%4 == 0) && (year%100 != 0))
+        ||
+        (year%400 == 0))
+    return true;
+  else
+    return false;
+}
+
+int get_last_day(int year, int month)
+{
+  static const int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+  if (month<1 || month>12)
+    return 0;
+
+  if (is_leap_year(year) && month == 2)
+    return 29;
+  else
+    return days[month-1];
+}
+
 } // namespace xqp

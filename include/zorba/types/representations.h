@@ -12,6 +12,7 @@
 #include "util/datetime/date.h"
 #include "util/datetime/datetime.h"
 #include "util/datetime/time.h"
+#include "util/datetime/gregorian.h"
 
 namespace xqp
 {
@@ -48,11 +49,11 @@ namespace xqp
   typedef DateTime_t                xqp_dateTime;
   typedef Date_t                    xqp_date;
   typedef Time_t                    xqp_time;
-  typedef struct tm                 xqp_gYearMonth;
-  typedef struct tm                 xqp_gYear;
-  typedef struct tm                 xqp_gMonthDay;
-  typedef struct tm                 xqp_gDay;
-  typedef struct tm                 xqp_gMonth;
+  typedef GYearMonth_t              xqp_gYearMonth;
+  typedef GYear_t                   xqp_gYear;
+  typedef GMonthDay_t               xqp_gMonthDay;
+  typedef GDay_t                    xqp_gDay;
+  typedef GMonth_t                  xqp_gMonth;
   typedef Duration_t                xqp_duration;
   typedef unsigned char             xqp_ubyte;
   typedef uint32_t                  xqp_uint;

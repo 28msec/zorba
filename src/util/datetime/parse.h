@@ -15,6 +15,10 @@ namespace xqp
 void skip_whitespace(std::string& s, unsigned int& position);
 int parse_int(std::string& s, unsigned int& position, long& result);
 
+// Returns the last day of the given year and month. E.g. for 1980 and 2 it
+// will return 29. Returns 0 on an error
+int get_last_day(int year, int month);
+
 } // namespace xqp
 
 #endif

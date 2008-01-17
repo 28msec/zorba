@@ -106,6 +106,21 @@ namespace xqp
       case TypeSystem::XS_YM_DURATION:
         lItem = Zorba::getItemFactory()->createDuration(lString);
         break;
+      case TypeSystem::XS_GYEAR_MONTH:
+        lItem = Zorba::getItemFactory()->createGYearMonth(lString);
+        break;
+      case TypeSystem::XS_GYEAR:
+        lItem = Zorba::getItemFactory()->createGYear(lString);
+        break;
+      case TypeSystem::XS_GMONTH_DAY:
+        lItem = Zorba::getItemFactory()->createGMonthDay(lString);
+        break;
+      case TypeSystem::XS_GDAY:
+        lItem = Zorba::getItemFactory()->createGDay(lString);
+        break;
+      case TypeSystem::XS_GMONTH:
+        lItem = Zorba::getItemFactory()->createGMonth(lString);
+        break;
       case TypeSystem::XS_FLOAT:
       {
         xqp_float n;
@@ -217,22 +232,6 @@ namespace xqp
         if (NumConversions::strToInteger(lString, n) && n > 0)
           lItem = Zorba::getItemFactory()->createPositiveInteger(n);
       }
-        break;
-      case TypeSystem::XS_GYEAR_MONTH:
-        // TODO
-        break;
-      case TypeSystem::XS_GYEAR:
-        // TODO
-        lItem = aSourceItem->getEBV();
-        break;
-      case TypeSystem::XS_GMONTH_DAY:
-        // TODO
-        break;
-      case TypeSystem::XS_GDAY:
-        // TODO
-        break;
-      case TypeSystem::XS_GMONTH:
-        // TODO
         break;
       case TypeSystem::XS_BOOLEAN:
       {

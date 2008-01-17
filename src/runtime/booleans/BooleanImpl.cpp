@@ -592,6 +592,36 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
     {
       ret = aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
     }
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE)
+             &&
+             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE))
+    {
+      ret = aItem0->getGYearMonthValue()->compare(*aItem1->getGYearMonthValue());
+    }
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE)
+             &&
+             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE))
+    {
+      ret = aItem0->getGYearValue()->compare(*aItem1->getGYearValue());
+    }
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE)
+             &&
+             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE))
+    {
+      ret = aItem0->getGMonthDayValue()->compare(*aItem1->getGMonthDayValue());
+    }
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE)
+             &&
+             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE))
+    {
+      ret = aItem0->getGMonthValue()->compare(*aItem1->getGMonthValue());
+    }
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GDAY_TYPE_ONE)
+             &&
+             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GDAY_TYPE_ONE))
+    {
+      ret = aItem0->getGDayValue()->compare(*aItem1->getGDayValue());
+    }
 
     
     // TODO comparisons for all types

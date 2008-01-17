@@ -239,7 +239,9 @@ Item_t BasicItemFactory::createFloat ( float value )
 
 
 Item_t BasicItemFactory::createGDay ( const xqp_string& value )
-{ return Item_t ( NULL ); }
+{
+  return new GDayItemNaive(value);
+}
 
 
 Item_t BasicItemFactory::createGDay ( short day )
@@ -247,7 +249,9 @@ Item_t BasicItemFactory::createGDay ( short day )
 
 
 Item_t BasicItemFactory::createGMonth ( const xqp_string& value )
-{ return Item_t ( NULL ); }
+{
+  return new GMonthItemNaive(value);
+}
 
 
 Item_t BasicItemFactory::createGMonth ( short month )
@@ -255,7 +259,9 @@ Item_t BasicItemFactory::createGMonth ( short month )
 
 
 Item_t BasicItemFactory::createGMonthDay ( const xqp_string& value )
-{ return Item_t ( NULL ); }
+{
+  return new GMonthDayItemNaive(value);
+}
 
 
 Item_t BasicItemFactory::createGMonthDay ( short month, short day )
@@ -263,7 +269,9 @@ Item_t BasicItemFactory::createGMonthDay ( short month, short day )
 
 
 Item_t BasicItemFactory::createGYear ( const xqp_string& value )
-{ return Item_t ( NULL ); }
+{
+  return new GYearItemNaive(value);
+}
 
 
 Item_t BasicItemFactory::createGYear ( short year )
@@ -271,8 +279,10 @@ Item_t BasicItemFactory::createGYear ( short year )
 
 
 Item_t BasicItemFactory::createGYearMonth ( const xqp_string& value )
-{ return Item_t ( NULL ); }
-
+{
+  return new GYearMonthItemNaive(value);
+}
+ 
 
 Item_t BasicItemFactory::createGYearMonth ( short year, short month )
 { return Item_t ( NULL ); }
