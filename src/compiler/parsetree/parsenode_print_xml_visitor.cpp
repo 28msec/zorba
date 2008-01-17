@@ -166,7 +166,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CaseClause &n)
 {
     INDENT;
 
-    os << "<CaseClause pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<CaseClause pos='" << n.get_location() << "' ptr='" << &n << "' var='" << n.get_varname () << "'";
 
     os << ">";
 

@@ -3386,25 +3386,19 @@ void *begin_visit(const TypeswitchExpr& v)
 void end_visit(const TypeswitchExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  case_clause * cc_p;
   expr_t e_h;
   rchandle<typeswitch_expr> tse_h = new typeswitch_expr(v.get_location());
 
   var_expr_t ve_h = bind_var (v.get_location(), v.get_default_varname(), var_expr::unknown_var);
   tse_h->set_default_varname(ve_h);
 
+  while (pop_nodestack () != NULL);  // pop clauses
+
   ZORBA_ASSERT((e_h = pop_nodestack())!=NULL);
   tse_h->set_switch_expr(e_h);
 
   ZORBA_ASSERT((e_h = pop_nodestack())!=NULL);
   tse_h->set_default_clause(e_h);
-
-  while (true) {  // pop clauses
-    e_h = nodestack.top();
-    if ((cc_p = dynamic_cast<case_clause*>(&*e_h))==NULL) break;
-    nodestack.pop();
-    tse_h->add_clause(cc_p);
-  }
 
   nodestack.push(&*tse_h);
 }
@@ -3565,7 +3559,6 @@ void end_visit(const TransformExpr& v, void *visit_state)
 void *begin_visit(const VarNameList& v)
 {
   TRACE_VISIT ();
-  nodestack.push(NULL);
   return no_state;
 }
 
