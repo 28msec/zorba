@@ -4,6 +4,10 @@ CREATE_TEST_SOURCELIST(UnitTests
 	usecase1.cpp
 	usecase2.cpp
 	usecase3.cpp
+	usecase4.cpp
+	usecase5.cpp
+	usecase6.cpp
+	usecase7.cpp
 )
  
 # add the executable
