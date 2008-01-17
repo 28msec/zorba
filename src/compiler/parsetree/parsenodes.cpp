@@ -1813,7 +1813,7 @@ TypeswitchExpr::~TypeswitchExpr()
 void TypeswitchExpr::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  ACCEPT (switch_expr_h);
+  ACCEPT_CHK (switch_expr_h);
   ACCEPT_CHK (default_clause_h);
   ACCEPT_CHK (clause_list_h);
 

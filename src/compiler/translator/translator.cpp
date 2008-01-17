@@ -255,7 +255,6 @@ void end_visit(const CaseClause& v, void *visit_state)
 void *begin_visit(const CaseClauseList& v)
 {
   TRACE_VISIT ();
-  nodestack.push(NULL);
   return no_state;
 }
 
@@ -2769,6 +2768,12 @@ rchandle<forlet_clause> wrap_in_letclause(expr_t expr)
   return wrap_in_letclause (expr, tempvar(expr->get_loc(), var_expr::let_var));
 }
 
+rchandle<flwor_expr> wrap_in_let_flwor (expr_t expr, var_expr_t lv, expr_t ret) {
+  rchandle<flwor_expr> fe = new flwor_expr (lv->get_loc ());
+  fe->add (wrap_in_letclause (expr, lv));
+  fe->set_retval (ret);
+  return fe;
+}
 
 expr_t wrap_in_dos_and_dupelim(expr_t expr)
 {
@@ -3380,7 +3385,55 @@ void end_visit(const TreatExpr& v, void *visit_state)
 void *begin_visit(const TypeswitchExpr& v)
 {
   TRACE_VISIT ();
-  return no_state;
+
+  var_expr_t sv = tempvar (v.get_switch_expr ()->get_location (), var_expr::let_var);
+
+  expr_t defret;
+  {
+    string defvar_name = v.get_default_varname ();
+    var_expr_t defvar;
+    if (! defvar_name.empty ()) {
+      push_scope ();
+      defvar = bind_var (v.get_default_clause ()->get_location (), defvar_name, var_expr::let_var);
+    }
+    v.get_default_clause ()->accept (*this);
+    defret = pop_nodestack ();
+    if (! defvar_name.empty ()) {
+      pop_scope ();
+      defret = wrap_in_let_flwor (sv, defvar, defret);
+    }
+  }
+  
+  const CaseClauseList *clauses = v.get_clause_list ();
+  for (vector<rchandle<CaseClause> >::const_reverse_iterator it = clauses->rbegin();
+       it!=clauses->rend(); ++it)
+  {
+    const CaseClause *e_p = &**it;
+    yy::location loc = e_p->get_location ();
+    string name = e_p->get_varname ();
+    var_expr_t var;
+    if (! name.empty ()) {
+      push_scope ();
+      var = bind_var (loc, name, var_expr::let_var);
+    }
+    e_p->accept (*this);
+    TypeSystem::xqtref_t type = pop_tstack ();
+    defret = new if_expr (e_p->get_location (),
+                          new instanceof_expr (loc, sv, type),
+                          pop_nodestack (), defret);
+    if (! name.empty ()) {
+      pop_scope ();
+      defret = wrap_in_let_flwor (new cast_expr (loc, sv, type), var, defret);
+    }
+  }
+
+  {
+    v.get_switch_expr ()->accept (*this);
+    expr_t se = pop_nodestack ();
+    nodestack.push (wrap_in_let_flwor (se, sv, defret));
+  }
+
+  return NULL;
 }
 
 void end_visit(const TypeswitchExpr& v, void *visit_state)
