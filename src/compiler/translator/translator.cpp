@@ -56,6 +56,7 @@ static void *no_state = (void *) new int;
 #define DOT_POS_VAR "$$pos"
 #define LAST_IDX_VAR "$$last-idx"
 
+#define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
 class TranslatorImpl : public Translator 
 {
@@ -100,11 +101,15 @@ protected:
   }
 
 
-  expr_t pop_nodestack() 
+  expr_t pop_nodestack (int n = 1)
   {
-    ZORBA_ASSERT (! nodestack.empty());
+    ZORBA_ASSERT (n >= 0);
     rchandle<expr> e_h = nodestack.top();
-    nodestack.pop();
+    for (; n > 0; --n) {
+      ZORBA_ASSERT (! nodestack.empty());
+      e_h = nodestack.top();
+      nodestack.pop();
+    }
     return e_h;
   }
 
@@ -831,7 +836,7 @@ void end_visit(const CommonContent& v, void *visit_state)
       ss >> codepoint;
       charref = (uint32_t)codepoint;
       
-      Item_t lItem = Store::getInstance().getItemFactory().createTextNode(charref, false);
+      Item_t lItem = ITEM_FACTORY.createTextNode(charref, false);
       const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
       nodestack.push ( lConstExpr );
       break;
@@ -840,7 +845,7 @@ void end_visit(const CommonContent& v, void *visit_state)
     {
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
-      Item_t lItem = Store::getInstance().getItemFactory().createTextNode("{", false);
+      Item_t lItem = ITEM_FACTORY.createTextNode("{", false);
       const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
       nodestack.push ( lConstExpr );
       break;
@@ -849,7 +854,7 @@ void end_visit(const CommonContent& v, void *visit_state)
     {
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
-      Item_t lItem = Store::getInstance().getItemFactory().createTextNode("}", false);
+      Item_t lItem = ITEM_FACTORY.createTextNode("}", false);
       const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
       nodestack.push ( lConstExpr );
       break;
@@ -1083,7 +1088,7 @@ void end_visit(const FLWORExpr& v, void *visit_state)
       VarInDeclList *decl_list = &*forclause->get_vardecl_list ();
 
       for (j = size - 1; j >= 0; j--) {
-        rchandle<var_expr> ve;
+        var_expr_t ve;
         ve = pop_nodestack ().cast<var_expr> ();
         ve->set_kind (var_expr::for_var);
         // for var
@@ -1094,7 +1099,7 @@ void end_visit(const FLWORExpr& v, void *visit_state)
         if ((*decl_list) [j]->get_posvar () == NULL)
           pos_vars.push_back (NULL);
         else {
-          rchandle<var_expr> pve = pop_nodestack ().cast<var_expr> ();
+          var_expr_t pve = pop_nodestack ().cast<var_expr> ();
           pve->set_kind (var_expr::pos_var);
           pos_vars.push_back (pve);
         }
@@ -1109,7 +1114,7 @@ void end_visit(const FLWORExpr& v, void *visit_state)
       LetClause *letclause = static_cast<LetClause *> (clause);
       
       for (j = 0; j < size; j++) {
-        rchandle<var_expr> ve = pop_nodestack ().cast<var_expr> ();
+        var_expr_t ve = pop_nodestack ().cast<var_expr> ();
         exprs.push_back(pop_nodestack ());
         ve->set_kind (var_expr::let_var);
         vars.push_back (ve);
@@ -2116,7 +2121,7 @@ void end_visit(const OrderedExpr& v, void *visit_state)
 
 void *begin_visit(const ParenthesizedExpr& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
@@ -2672,15 +2677,15 @@ void end_visit(const SchemaElementTest& v, void *visit_state)
 #define TEMP_VAR_URI "http://www.flworfound.org/zorba/temp-var"
 #define TEMP_VAR_PREFIX "ztv"
 
-rchandle<var_expr> tempvar(yy::location loc, var_expr::var_kind kind)
+var_expr_t tempvar(yy::location loc, var_expr::var_kind kind)
 {
-  return new var_expr(loc, kind, Store::getInstance().getItemFactory().createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, "v" + to_string (tempvar_counter++)));
+  return new var_expr(loc, kind, ITEM_FACTORY.createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, "v" + to_string (tempvar_counter++)));
 }
 
 rchandle<forlet_clause> wrap_in_forclause(
     expr_t expr,
-    rchandle<var_expr> fv,
-    rchandle<var_expr> pv)
+    var_expr_t fv,
+    var_expr_t pv)
 {
   assert (fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
@@ -2690,10 +2695,10 @@ rchandle<forlet_clause> wrap_in_forclause(
 
 rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar)
 {
-  rchandle<var_expr> fv = tempvar(expr->get_loc(), var_expr::for_var);
-  rchandle<var_expr> pv = add_posvar
+  var_expr_t fv = tempvar(expr->get_loc(), var_expr::for_var);
+  var_expr_t pv = add_posvar
     ? tempvar(expr->get_loc(), var_expr::pos_var)
-    : rchandle<var_expr> (NULL);
+    : var_expr_t (NULL);
   return wrap_in_forclause (expr, fv, pv);
 }
 
@@ -2706,7 +2711,7 @@ rchandle<forlet_clause> wrap_in_forclause(
   return wrap_in_forclause (expr, bind_var (loc, fv_name, var_expr::for_var), bind_var (loc, pv_name, var_expr::pos_var));
 }
 
-rchandle<forlet_clause> wrap_in_letclause(expr_t expr, rchandle<var_expr> lv)
+rchandle<forlet_clause> wrap_in_letclause(expr_t expr, var_expr_t lv)
 {
   assert (lv->get_kind () == var_expr::let_var);
   return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.get_ptr());
@@ -3240,7 +3245,7 @@ void end_visit(const QuantifiedExpr& v, void *visit_state)
   flwor->set_where(sat);
   int i;
   for(i = 0; i < v.get_decl_list()->size(); ++i) {
-    rchandle<var_expr> ve = pop_nodestack().cast<var_expr>();
+    var_expr_t ve = pop_nodestack().cast<var_expr>();
     rchandle<expr> fe = pop_nodestack();
     ve->set_kind(var_expr::for_var);
     flwor->add(new forlet_clause(forlet_clause::for_clause, ve, NULL, NULL, fe));
@@ -3346,7 +3351,7 @@ void end_visit(const TypeswitchExpr& v, void *visit_state)
   expr_t e_h;
   rchandle<typeswitch_expr> tse_h = new typeswitch_expr(v.get_location());
 
-  rchandle<var_expr> ve_h = bind_var (v.get_location(), v.get_default_varname(), var_expr::unknown_var);
+  var_expr_t ve_h = bind_var (v.get_location(), v.get_default_varname(), var_expr::unknown_var);
   tse_h->set_default_varname(ve_h);
 
   ZORBA_ASSERT((e_h = pop_nodestack())!=NULL);
