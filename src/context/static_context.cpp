@@ -394,7 +394,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 			if(error_if_not_found)
 			{
 				//static context component missing
-				ZORBA_ERROR_ALERT( ZorbaError::XPST0001, NULL, true);//continue execution
+				ZORBA_ERROR_ALERT( ZorbaError::XPST0001, NULL, true, "collation " + collURI);  //continue execution
 			}
 			return NULL;///collation non-existant
 		}
@@ -600,7 +600,7 @@ xqp_string		static_context::resolve_relative_uri( xqp_string uri )
 	if(abs_base_uri.empty())
 	{
 		//then error ! cannot resolve relative uri
-		ZORBA_ERROR_ALERT(ZorbaError::XPST0001);
+		ZORBA_ERROR_ALERT(ZorbaError::XPST0001, NULL, false, "empty base URI");
 		return "";
 	}
 

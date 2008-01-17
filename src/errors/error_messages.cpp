@@ -59,7 +59,7 @@ string AlertMessagesEnglish::error_decode(ZorbaError::ErrorCodes e)
 
   case ZorbaError::XPDY0050:  return "The dynamic type of the operand of a treat expression does not match the sequence type specified by the treat expression."; 
 
-  case ZorbaError::XPST0001:  return "Analysis of an expression relies on some component of the static context that has not been assigned a value."; 
+  case ZorbaError::XPST0001:  return "Analysis of an expression relies on some component of the static context that has not been assigned a value /s"; 
 
   case ZorbaError::XPST0003:  return "Expression is not a valid instance of the grammar."; 
 
