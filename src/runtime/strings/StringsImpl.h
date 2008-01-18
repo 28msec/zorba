@@ -83,6 +83,7 @@ protected:
 
     void setIterator(uint32_t);
     void setVector(std::vector<uint32_t> vect);
+    
     uint32_t getItem(uint32_t iter);
     uint32_t getVectSize();
     uint32_t getIterator();

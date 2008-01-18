@@ -169,8 +169,28 @@ class InScopePrefixesIterator : public UnaryBaseIterator<InScopePrefixesIterator
     ~InScopePrefixesIterator(){};
   public:
     Item_t nextImpl(PlanState& planState);
-    
+    void resetImpl(PlanState& planState);
+
+    virtual uint32_t getStateSize() const {return sizeof(InScopePrefixesState); }
     virtual void accept(PlanIterVisitor&) const;
+
+  protected:
+    class InScopePrefixesState : public PlanIteratorState
+    {
+      private:
+        std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
+        std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
+      public:
+        void init();
+        void reset();
+
+        void setIterator(std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator newIter);
+        void setVector(std::vector<std::pair<xqp_string, xqp_string> > newVect);
+        
+        std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getVectBegin();
+        std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getVectEnd();
+        std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getIterator();
+    };
 };
 /* end class InScopePrefixesIterator */
 }/*namespace xqp*/

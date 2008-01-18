@@ -396,14 +396,84 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState)
 
  /* begin class InScopePrefixesIterator */
 Item_t
-InScopePrefixesIterator::nextImpl(PlanState& planState){
-    Item_t res;
+InScopePrefixesIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemElem;
 
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-    res = Zorba::getItemFactory()->createString("Not Implemented yet");
-    STACK_PUSH( res, state );
-    STACK_END();
+  InScopePrefixesState* state;
+  DEFAULT_STACK_INIT(InScopePrefixesState, state, planState);
+
+  itemElem = consumeNext( theChild, planState );
+  if( itemElem != NULL)
+  {
+    state->setVector(itemElem->getNamespaceBindings());
+    while (state->getIterator() != state->getVectEnd())
+    {
+      STACK_PUSH( Zorba::getItemFactory()->createNCName(  (*state->getIterator()).first  ), state );
+      state->setIterator( state->getIterator() + 1 );
+    }
+  }
+
+  if( !ZORBA_FOR_CURRENT_THREAD()->get_static_context()->default_elem_type_ns().empty() )
+    STACK_PUSH( Zorba::getItemFactory()->createNCName( "" ), state );
+  
+  STACK_END();
+}
+
+void
+InScopePrefixesIterator::resetImpl(PlanState& planState)
+{
+  InScopePrefixesState* state;
+  GET_STATE(InScopePrefixesState, state, planState);
+  state->reset();
+  
+  resetChild(theChild, planState);
+}
+
+void
+InScopePrefixesIterator::InScopePrefixesState::init()
+{
+  PlanIterator::PlanIteratorState::init();
+  NamespaceBindings.clear();
+  iter = NamespaceBindings.begin();
+}
+
+void
+InScopePrefixesIterator::InScopePrefixesState::reset()
+{
+  PlanIterator::PlanIteratorState::reset();
+  NamespaceBindings.clear();
+  iter = NamespaceBindings.begin();
+}
+
+void
+InScopePrefixesIterator::InScopePrefixesState::setIterator(std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator  newIter)
+{
+  iter = newIter;
+}
+
+void
+InScopePrefixesIterator::InScopePrefixesState::setVector(std::vector<std::pair<xqp_string, xqp_string> > newVect)
+{
+  NamespaceBindings = newVect;
+}
+
+std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator
+InScopePrefixesIterator::InScopePrefixesState::getVectBegin()
+{
+  return NamespaceBindings.begin();
+}
+
+std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator
+InScopePrefixesIterator::InScopePrefixesState::getVectEnd()
+{
+  return NamespaceBindings.end();
+}
+
+std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator
+InScopePrefixesIterator::InScopePrefixesState::getIterator()
+{
+  return iter;
 }
 /* end class InScopePrefixesIterator */
 } /* namespace xqp */

@@ -86,7 +86,8 @@ StringToCodepointsIterator::nextImpl(PlanState& planState){
     {
       state->setVector(inputStr.getCodepoints());
   
-      while (state->getIterator() < state->getVectSize()){
+      while (state->getIterator() < state->getVectSize())
+      {
         resItem = Zorba::getItemFactory()->createInteger( state->getItem( state->getIterator() ) );
         STACK_PUSH( resItem, state );
         state->setIterator( state->getIterator() + 1 );
@@ -97,7 +98,8 @@ StringToCodepointsIterator::nextImpl(PlanState& planState){
 }
 
 void
-StringToCodepointsIterator::resetImpl(PlanState& planState) {
+StringToCodepointsIterator::resetImpl(PlanState& planState)
+{
   StringToCodepointsState* state;
   GET_STATE(StringToCodepointsState, state, planState);
   state->reset();
@@ -106,21 +108,24 @@ StringToCodepointsIterator::resetImpl(PlanState& planState) {
 }
 
 void
-StringToCodepointsIterator::StringToCodepointsState::init() {
+StringToCodepointsIterator::StringToCodepointsState::init()
+{
   PlanIterator::PlanIteratorState::init();
   iter= 0;
   resVector.clear();
 }
 
 void
-StringToCodepointsIterator::StringToCodepointsState::reset() {
+StringToCodepointsIterator::StringToCodepointsState::reset()
+{
   PlanIterator::PlanIteratorState::reset();
   iter = 0;
   resVector.clear();
 }
 
 void
-StringToCodepointsIterator::StringToCodepointsState::setIterator(uint32_t value) {
+StringToCodepointsIterator::StringToCodepointsState::setIterator(uint32_t value)
+{
   iter = value;
 }
 
@@ -130,17 +135,20 @@ StringToCodepointsIterator::StringToCodepointsState::getIterator() {
 }
 
 void
-StringToCodepointsIterator::StringToCodepointsState::setVector(std::vector<uint32_t> vect) {
+StringToCodepointsIterator::StringToCodepointsState::setVector(std::vector<uint32_t> vect)
+{
   resVector = vect;
 }
 
 uint32_t
-StringToCodepointsIterator::StringToCodepointsState::getItem(uint32_t iter) {
+StringToCodepointsIterator::StringToCodepointsState::getItem(uint32_t iter)
+{
   return resVector[iter];
 }
 
 uint32_t
-StringToCodepointsIterator::StringToCodepointsState::getVectSize(){
+StringToCodepointsIterator::StringToCodepointsState::getVectSize()
+{
   return resVector.size();
 }
 /* end class StringToCodepointsIterator */
