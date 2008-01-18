@@ -167,6 +167,29 @@ extern bool						g_abort_when_fatal_error;
 #define ZORBA_NOT_IMPLEMENTED( what )                                     \
   ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false, what)
 
+#define	CATCH_ALL_RETURN_NULL	catch(...) \
+		{ \
+		    ZORBA_ERROR_ALERT(ZorbaError::XQP0019_INTERNAL_ERROR, NULL, true); \
+				return NULL; \
+		}
+
+#define	CATCH_ALL_RETURN_false	catch(...) \
+		{ \
+		    ZORBA_ERROR_ALERT(ZorbaError::XQP0019_INTERNAL_ERROR, NULL, true); \
+				return false; \
+		}
+
+#define	CATCH_ALL_RETURN_VOID	catch(...) \
+		{ \
+		    ZORBA_ERROR_ALERT(ZorbaError::XQP0019_INTERNAL_ERROR, NULL, true); \
+				return NULL; \
+		}
+
+#define	CATCH_ALL_NO_RETURN	catch(...) \
+		{ \
+		    ZORBA_ERROR_ALERT(ZorbaError::XQP0019_INTERNAL_ERROR, NULL, true); \
+		}
+
 }
 
 #endif

@@ -14,22 +14,36 @@ namespace xqp {
 
 DynamicContextWrapper::DynamicContextWrapper()
 {
+	try{
+
 	memset((void*)&current_date_time, 0, sizeof(current_date_time));
 	current_timezone_seconds = 0;
 	is_datetime_initialized = false;
 	implicit_timezone_seconds = 0;
+
+	}CATCH_ALL_NO_RETURN;
 }
 
 DynamicContextWrapper::~DynamicContextWrapper( )
 {
+	try{
+
 	DeleteAllVariables();
+
+	}	CATCH_ALL_NO_RETURN;
+
 }
 
 void		DynamicContextWrapper::SetCurrentDateTime( struct ::tm datetime, long timezone_seconds )
 {
+	try{
+
 	this->current_date_time = datetime;
 	this->current_timezone_seconds = timezone_seconds;
 	is_datetime_initialized = true;
+
+	}	CATCH_ALL_NO_RETURN;
+
 }
 
 struct ::tm	DynamicContextWrapper::GetCurrentDateTime( long *ptimezone_seconds )
@@ -53,6 +67,8 @@ bool	DynamicContextWrapper::checkQName(xqp_string varname)
 
 bool DynamicContextWrapper::SetVariableAsInteger( xqp_string varname, long long int_value, VAR_INT_TYPE type)
 {
+	try{
+
 	if(!checkQName(varname))
 		return false;
 	switch(type)
@@ -122,10 +138,14 @@ bool DynamicContextWrapper::SetVariableAsInteger( xqp_string varname, long long 
 
 	vars.push_back(var);
 	return true;
+
+	}CATCH_ALL_RETURN_false;
 }
 
 bool DynamicContextWrapper::SetVariableAsString( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type)
 {
+	try{
+
 	if(!checkQName(varname))
 		return false;
 	DeleteVariable(varname);
@@ -139,10 +159,14 @@ bool DynamicContextWrapper::SetVariableAsString( xqp_string varname, xqp_string 
 
 	vars.push_back(var);
 	return true;
+
+	}CATCH_ALL_RETURN_false;
 }
 
 bool DynamicContextWrapper::SetVariableAsDouble( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type)
 {
+	try{
+
 	if(!checkQName(varname))
 		return false;
 	DeleteVariable(varname);
@@ -155,10 +179,13 @@ bool DynamicContextWrapper::SetVariableAsDouble( xqp_string varname, long double
 
 	vars.push_back(var);
 	return true;
+
+	}CATCH_ALL_RETURN_false;
 }
 
 bool DynamicContextWrapper::SetVariableAsBool( xqp_string varname, bool bool_value)
 {
+	try{
 	if(!checkQName(varname))
 		return false;
 	DeleteVariable(varname);
@@ -170,10 +197,13 @@ bool DynamicContextWrapper::SetVariableAsBool( xqp_string varname, bool bool_val
 
 	vars.push_back(var);
 	return true;
+
+	}CATCH_ALL_RETURN_false;
 }
 
 bool DynamicContextWrapper::SetVariableAsDateTime( xqp_string varname, struct ::tm datetime_value, long timezone_seconds, VAR_DATETIME_TYPE type)
 {
+	try{
 	if(!checkQName(varname))
 		return false;
 
@@ -254,10 +284,13 @@ bool DynamicContextWrapper::SetVariableAsDateTime( xqp_string varname, struct ::
 
 	vars.push_back(var);
 	return true;
+
+	}CATCH_ALL_RETURN_false;
 }
 
 bool DynamicContextWrapper::SetVariableAsItem( xqp_string varname, Item_t item)
 {
+	try{
 	if(!checkQName(varname))
 		return false;
 	DeleteVariable(varname);
@@ -270,10 +303,12 @@ bool DynamicContextWrapper::SetVariableAsItem( xqp_string varname, Item_t item)
 
 	vars.push_back(var);
 	return true;
+	}CATCH_ALL_RETURN_false;
 }
 
 bool DynamicContextWrapper::SetVariableAsDocument( xqp_string varname, xqp_anyURI documentURI)
 {
+	try{
 	if(!checkQName(varname))
 		return false;
 	if(varname == ".")//context item
@@ -293,11 +328,14 @@ bool DynamicContextWrapper::SetVariableAsDocument( xqp_string varname, xqp_anyUR
 
 	vars.push_back(var);
 	return true;
+
+	}CATCH_ALL_RETURN_false;
 }
 
 
 bool DynamicContextWrapper::DeleteVariable( xqp_string varname )
 {
+	try{
 	std::vector<dctx_extern_var_t>::iterator		it;
 	for(it = vars.begin(); it != vars.end(); it++)
 	{
@@ -321,10 +359,12 @@ bool DynamicContextWrapper::DeleteVariable( xqp_string varname )
 	}
 
 	return false;
+	}CATCH_ALL_RETURN_false;
 }
 
 void DynamicContextWrapper::DeleteAllVariables( )
 {
+	try{
 	std::vector<dctx_extern_var_t>::iterator		it;
 	for(it = vars.begin(); it != vars.end(); it++)
 	{
@@ -342,6 +382,8 @@ void DynamicContextWrapper::DeleteAllVariables( )
 		}
 	}
 	vars.clear();
+	
+	}CATCH_ALL_NO_RETURN;
 }
 
 
@@ -352,6 +394,7 @@ void DynamicContextWrapper::SetDefaultCollection( xqp_string collectionURI )
 
 dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *sctx)//and fill in with the values
 {
+	try{
 	///call for store to give iterators for accessing docs and collections...
 	dynamic_context*	new_dctx;
 
@@ -576,6 +619,7 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 	new_dctx->set_default_collection(default_collection_uri);
 
 	return new_dctx;
+	}CATCH_ALL_RETURN_NULL;
 }
 
 }//end namespace xqp

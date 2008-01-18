@@ -46,6 +46,8 @@ std::string	CollationInfo::getLocaleString()
 
 StaticContextWrapper::StaticContextWrapper()
 {
+	try{
+
 	xpath1_0compatib_mode = (xpath1_0compatib_mode_t)-1;//not initialized
 	
 //	std::vector<scw_namespace_t>				ext_ns_list;
@@ -69,6 +71,7 @@ StaticContextWrapper::StaticContextWrapper()
 //	std::vector<scw_URI_plus_type>		doc_type_list;
 //	std::vector<scw_URI_plus_type>		collection_type_list;
 //	type_ident_ref_t							default_collection_type;
+	}CATCH_ALL_NO_RETURN;
 }
 
 StaticContextWrapper::~StaticContextWrapper()
@@ -91,6 +94,7 @@ StaticQueryContext::xpath1_0compatib_mode_t		StaticContextWrapper::GetXPath1_0Co
 
 bool		StaticContextWrapper::AddNamespace( xqp_string prefix, xqp_string URI )//override the previous set prefix
 {
+	try{
 //	internal_stcx.bind_ns( prefix, URI );
 	scw_namespace_t		ns;
 
@@ -102,6 +106,7 @@ bool		StaticContextWrapper::AddNamespace( xqp_string prefix, xqp_string URI )//o
 
 	ext_ns_list.push_back(ns);
 	return true;
+	}CATCH_ALL_RETURN_false;
 }
 
 xqp_string		StaticContextWrapper::GetNamespaceURIByPrefix( xqp_string prefix )
@@ -123,6 +128,7 @@ xqp_string		StaticContextWrapper::GetNamespaceURIByPrefix( xqp_string prefix )
 
 void		StaticContextWrapper::DeleteNamespace( xqp_string prefix )
 {
+	try{
 	//blind search
 	std::vector<scw_namespace_t>::iterator		it;
 	for(it = ext_ns_list.begin(); it != ext_ns_list.end(); it++)
@@ -133,6 +139,7 @@ void		StaticContextWrapper::DeleteNamespace( xqp_string prefix )
 			return;
 		}
 	}
+	}CATCH_ALL_NO_RETURN;
 }
 
 unsigned int	StaticContextWrapper::GetNamespaceCount()
@@ -142,6 +149,8 @@ unsigned int	StaticContextWrapper::GetNamespaceCount()
 
 bool		StaticContextWrapper::GetNamespaceByIndex( unsigned int i, xqp_string *prefix, xqp_string *URI )
 {
+	try{
+
 	if(i >= ext_ns_list.size())
 		return false;
 
@@ -151,6 +160,8 @@ bool		StaticContextWrapper::GetNamespaceByIndex( unsigned int i, xqp_string *pre
 	if(URI)
 		*URI = ns.URI;
 	return true;
+	}CATCH_ALL_RETURN_false;
+
 }
 
 void		StaticContextWrapper::DeleteAllNamespaces()
@@ -199,6 +210,8 @@ xqp_string		StaticContextWrapper::GetDefaultFunctionNamespace( )
 
 void		StaticContextWrapper::AddExternalVariableType( xqp_string	var_name, type_ident_ref_t var_type)
 {
+	try{
+
 	scw_QName_plus_type		var;
 
 	DeleteExternalVariableType(var_name);
@@ -207,10 +220,14 @@ void		StaticContextWrapper::AddExternalVariableType( xqp_string	var_name, type_i
 	var.type = var_type;
 
 	ext_var_list.push_back(var);
+
+	}CATCH_ALL_NO_RETURN;
 }
 
 type_ident_ref_t	StaticContextWrapper::GetExternalVariableType( xqp_string	var_name )
 {
+	try{
+
 	//blind search
 	std::vector<scw_QName_plus_type>::iterator		it;
 	for(it = ext_var_list.begin(); it != ext_var_list.end(); it++)
@@ -222,10 +239,14 @@ type_ident_ref_t	StaticContextWrapper::GetExternalVariableType( xqp_string	var_n
 	}
 
 	return NULL;
+
+	}CATCH_ALL_RETURN_NULL;
 }
 
 void		StaticContextWrapper::DeleteExternalVariableType( xqp_string var_name )
 {
+	try{
+
 	//blind search
 	std::vector<scw_QName_plus_type>::iterator		it;
 	for(it = ext_var_list.begin(); it != ext_var_list.end(); it++)
@@ -236,6 +257,8 @@ void		StaticContextWrapper::DeleteExternalVariableType( xqp_string var_name )
 			return;
 		}
 	}
+
+	}CATCH_ALL_NO_RETURN;
 }
 
 unsigned int			StaticContextWrapper::GetExternalVariableCount()
@@ -245,6 +268,8 @@ unsigned int			StaticContextWrapper::GetExternalVariableCount()
 
 bool		StaticContextWrapper::GetExternalVariableByIndex( unsigned int i, xqp_string *var_name, type_ident_ref_t *var_type )
 {
+	try{
+
 	if(i >= ext_var_list.size())
 		return false;
 
@@ -254,6 +279,8 @@ bool		StaticContextWrapper::GetExternalVariableByIndex( unsigned int i, xqp_stri
 	if(var_type)
 		*var_type = var.type;
 	return true;
+
+	}CATCH_ALL_RETURN_false;
 }
 
 void		StaticContextWrapper::DeleteAllVariables()
@@ -288,6 +315,8 @@ type_ident_ref_t		StaticContextWrapper::GetContextItemStaticType( )
 
 void		StaticContextWrapper::AddCollation( xqp_string URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength )
 {
+	try{
+
 	CollationInfo		cinfo;
 
 	cinfo.URI = URI;
@@ -295,10 +324,14 @@ void		StaticContextWrapper::AddCollation( xqp_string URI, std::string  coll_stri
 	cinfo.coll_strength = coll_strength;
 	cinfo.coll = NULL;
 	collation_list.push_back(cinfo);
+
+	}CATCH_ALL_NO_RETURN;
 }
 
 void		StaticContextWrapper::AddCollation( xqp_string URI, ::Collator	*coll)
 {
+	try{
+
 	CollationInfo		cinfo;
 
 	if(!coll)
@@ -306,10 +339,14 @@ void		StaticContextWrapper::AddCollation( xqp_string URI, ::Collator	*coll)
 	cinfo.URI = URI;
 	cinfo.coll = coll;
 	collation_list.push_back(cinfo);
+
+	}CATCH_ALL_NO_RETURN;
 }
 
 CollationInfo*		StaticContextWrapper::GetCollation( xqp_string URI)
 {
+	try{
+
 	//blind search
 	std::vector<CollationInfo>::iterator		it;
 	for(it = collation_list.begin(); it != collation_list.end(); it++)
@@ -321,10 +358,14 @@ CollationInfo*		StaticContextWrapper::GetCollation( xqp_string URI)
 	}
 
 	return NULL;
+
+	}CATCH_ALL_RETURN_NULL;
 }
 
 void		StaticContextWrapper::DeleteCollation( xqp_string URI)
 {
+	try{
+
 	//blind search
 	std::vector<CollationInfo>::iterator		it;
 	for(it = collation_list.begin(); it != collation_list.end(); it++)
@@ -335,6 +376,7 @@ void		StaticContextWrapper::DeleteCollation( xqp_string URI)
 			return;
 		}
 	}
+	}CATCH_ALL_NO_RETURN;
 }
 
 unsigned int			StaticContextWrapper::GetCollationCount()
@@ -344,10 +386,14 @@ unsigned int			StaticContextWrapper::GetCollationCount()
 
 CollationInfo*		StaticContextWrapper::GetCollationInfoByIndex( unsigned int i )
 {
+	try{
+
 	if(i >= collation_list.size())
 		return NULL;
 
 	return &collation_list[i];
+
+	}CATCH_ALL_RETURN_NULL;
 }
 
 void		StaticContextWrapper::DeleteAllCollations()
@@ -474,16 +520,22 @@ xqp_string		StaticContextWrapper::GetBaseURI( )
 	//statically known documents (types)
 void		StaticContextWrapper::AddDocumentType( xqp_string URI, type_ident_ref_t doc_type )
 {
+	try{
+
 	scw_URI_plus_type		doc;
 
 	doc.URI = URI;
 	doc.type = doc_type;
 
 	doc_type_list.push_back(doc);
+
+	}CATCH_ALL_NO_RETURN;
 }
 
 type_ident_ref_t		StaticContextWrapper::GetDocumentType( xqp_string URI)
 {
+	try{
+
 	//blind search
 	std::vector<scw_URI_plus_type>::iterator		it;
 	for(it = doc_type_list.begin(); it != doc_type_list.end(); it++)
@@ -495,10 +547,14 @@ type_ident_ref_t		StaticContextWrapper::GetDocumentType( xqp_string URI)
 	}
 
 	return NULL;
+
+	}CATCH_ALL_RETURN_NULL;
 }
 
 void		StaticContextWrapper::DeleteDocumentType( xqp_string URI)
 {
+	try{
+
 	//blind search
 	std::vector<scw_URI_plus_type>::iterator		it;
 	for(it = doc_type_list.begin(); it != doc_type_list.end(); it++)
@@ -509,6 +565,8 @@ void		StaticContextWrapper::DeleteDocumentType( xqp_string URI)
 			return;
 		}
 	}
+
+	}CATCH_ALL_NO_RETURN;
 }
 
 unsigned int			StaticContextWrapper::GetDocumentTypeCount()
@@ -518,6 +576,8 @@ unsigned int			StaticContextWrapper::GetDocumentTypeCount()
 
 bool		StaticContextWrapper::GetDocumentByIndex( unsigned int i, xqp_string *URI, type_ident_ref_t *doc_type )
 {
+	try{
+
 	if(i >= doc_type_list.size())
 		return false;
 
@@ -527,6 +587,8 @@ bool		StaticContextWrapper::GetDocumentByIndex( unsigned int i, xqp_string *URI,
 	if(doc_type)
 		*doc_type = doc.type;
 	return true;
+
+	}CATCH_ALL_RETURN_false;
 }
 
 void		StaticContextWrapper::DeleteAllDocumentTypes()
@@ -537,16 +599,23 @@ void		StaticContextWrapper::DeleteAllDocumentTypes()
 
 void		StaticContextWrapper::AddCollectionType( xqp_string URI, type_ident_ref_t		collection_type )///if URI is empty then it refers to default collection type
 {
+	try{
+
 	scw_URI_plus_type		collection;
 
 	collection.URI = URI;
 	collection.type = collection_type;
 
 	collection_type_list.push_back(collection);
+
+	}CATCH_ALL_NO_RETURN;
+
 }
 
 type_ident_ref_t		StaticContextWrapper::GetCollectionType( xqp_string URI )///if URI is empty then it refers to default collection type
 {
+	try{
+
 	//blind search
 	std::vector<scw_URI_plus_type>::iterator		it;
 	for(it = collection_type_list.begin(); it != collection_type_list.end(); it++)
@@ -558,10 +627,14 @@ type_ident_ref_t		StaticContextWrapper::GetCollectionType( xqp_string URI )///if
 	}
 
 	return NULL;
+
+	}CATCH_ALL_RETURN_NULL;
 }
 
 void		StaticContextWrapper::DeleteCollectionType( xqp_string URI )///if URI is empty then it refers to default collection type
 {
+	try{
+
 	//blind search
 	std::vector<scw_URI_plus_type>::iterator		it;
 	for(it = collection_type_list.begin(); it != collection_type_list.end(); it++)
@@ -572,6 +645,7 @@ void		StaticContextWrapper::DeleteCollectionType( xqp_string URI )///if URI is e
 			return;
 		}
 	}
+	}CATCH_ALL_NO_RETURN;
 }
 
 unsigned int			StaticContextWrapper::GetCollectionTypeCount()
@@ -581,6 +655,8 @@ unsigned int			StaticContextWrapper::GetCollectionTypeCount()
 
 bool		StaticContextWrapper::GetCollectionTypeByIndex( unsigned int i, xqp_string *URI, type_ident_ref_t *collection_type )
 {
+	try{
+
 	if(i >= collection_type_list.size())
 		return false;
 
@@ -590,6 +666,8 @@ bool		StaticContextWrapper::GetCollectionTypeByIndex( unsigned int i, xqp_string
 	if(collection_type)
 		*collection_type = collection.type;
 	return true;
+
+	}CATCH_ALL_RETURN_false;
 }
 
 void		StaticContextWrapper::DeleteAllCollectionTypes()
@@ -605,6 +683,8 @@ void		StaticContextWrapper::SetDefaultCollectionType( type_ident_ref_t def_colle
 
 type_ident_ref_t	StaticContextWrapper::GetDefaultCollectionType( )
 {
+	try{
+
 	if(default_collection_type.get_ptr())
 		return default_collection_type;
 
@@ -612,11 +692,14 @@ type_ident_ref_t	StaticContextWrapper::GetDefaultCollectionType( )
 	TypeSystem::xqtref_t t = static_context::root_static_context()->default_collection_type();
 
 	return GENV_TYPESYSTEM.get_type_identifier(*t);
+	}CATCH_ALL_RETURN_NULL;
 }
 
 
 static_context*		StaticContextWrapper::FillInStaticContext()
 {
+	try{
+
 	static_context		*sctx = NULL;
 	unsigned int			i, max;
 	xqp_string				prefix, uri;
@@ -747,6 +830,7 @@ static_context*		StaticContextWrapper::FillInStaticContext()
 	}
 
 	return sctx;
+	}CATCH_ALL_RETURN_NULL;
 }
 
 

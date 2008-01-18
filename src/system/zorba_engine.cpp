@@ -81,14 +81,18 @@ ZorbaEngineImpl::ZorbaEngineImpl(bool single_thread)
 
 ZorbaEngineImpl::~ZorbaEngineImpl()
 {
+	try{
 	xml_data_manager->removeReference();
 //  assert(globalZorbaEngine.isNull());
 	delete theSingleThreadZorba;
+
+	}CATCH_ALL_NO_RETURN;
 }
 
 
 void ZorbaEngineImpl::initialize()
 {
+	try{
 	if(!for_single_thread_api)
 	{
 #ifdef WIN32
@@ -115,11 +119,14 @@ void ZorbaEngineImpl::initialize()
 	///optimize access to store
   Zorba::theStore = &Store::getInstance();
   Zorba::theItemFactory = &Zorba::theStore->getItemFactory();
+
+	}CATCH_ALL_NO_RETURN;
 }
 
 
 void ZorbaEngineImpl::shutdown()
 {
+	try{
   if (!globalZorbaEngine.isNull())
   {
 		if(!for_single_thread_api)
@@ -151,11 +158,13 @@ void ZorbaEngineImpl::shutdown()
   //  delete temp;
 		globalZorbaEngine = NULL;//also deletes globalZorbaEngine
   }
+	}CATCH_ALL_NO_RETURN;
 }
 
 
 void ZorbaEngineImpl::initThread()
 {
+	try{
 	Zorba* zorba = this->getZorbaForCurrentThread();
 
 	if(zorba == 0)
@@ -188,11 +197,13 @@ void ZorbaEngineImpl::initThread()
 			theSingleThreadZorba = zorba;
 		}
   }
+	}CATCH_ALL_NO_RETURN;
 }
 
 
 void ZorbaEngineImpl::uninitThread()
 {
+	try{
 	if(for_single_thread_api)
 		return;//ignore for single threaded
 
@@ -217,6 +228,7 @@ void ZorbaEngineImpl::uninitThread()
 	theThreadData.erase((uint64_t)(uintptr_t)pthread_self());
 	pthread_mutex_unlock(&theThreadDataMutex);
 #endif
+	}CATCH_ALL_NO_RETURN;
 }
 
 
@@ -265,6 +277,7 @@ XQuery_t ZorbaEngineImpl::createQuery(
     xqp_string	xquery_source_uri,
     bool routing_mode)
 {
+	try{
   std::auto_ptr<Zorba_XQueryBinary> xq(new Zorba_XQueryBinary(xquery_source_uri,
                                                               aQueryString));
 	if (!xq->compile(sctx.get_ptr(), routing_mode))
@@ -273,6 +286,7 @@ XQuery_t ZorbaEngineImpl::createQuery(
 	}
 
 	return xq.release();
+	}CATCH_ALL_RETURN_NULL;
 }
 
 XQuery_t ZorbaEngineImpl::createQueryFromFile(
@@ -280,6 +294,7 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
       StaticQueryContext_t sctx,
       bool routing_mode)
 {
+	try{
 	FILE	*fquery;
 	size_t	fsize;
 	char	*xquerydata;
@@ -315,6 +330,8 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
 	::free(xquerydata);
 	
 	return result_query;
+
+	}CATCH_ALL_RETURN_NULL;
 }
 
 ZorbaAlertsManager& ZorbaEngineImpl::getAlertsManagerForCurrentThread()
@@ -329,13 +346,18 @@ void ZorbaEngineImpl::setDefaultCollation(
     std::string  coll_string,
     ::Collator::ECollationStrength coll_strength)
 {
+	try{
+
 	getZorbaForCurrentThread()->setDefaultCollation(coll_string, coll_strength);
+	}CATCH_ALL_NO_RETURN;
 }
 
 
 void ZorbaEngineImpl::setDefaultCollation(::Collator *default_coll)
 {
+	try{
 	getZorbaForCurrentThread()->setDefaultCollation(default_coll);
+	}CATCH_ALL_NO_RETURN;
 }
 
 
@@ -344,8 +366,10 @@ void ZorbaEngineImpl::getDefaultCollation(
     ::Collator::ECollationStrength *coll_strength,
     ::Collator **default_coll)
 {
+	try{
 	getZorbaForCurrentThread()->
     getDefaultCollation(coll_string, coll_strength, default_coll);
+	}CATCH_ALL_NO_RETURN;
 }
 
 
@@ -353,8 +377,10 @@ void	ZorbaEngineImpl::setItemSerializerParameter(
     xqp_string parameter_name,
     xqp_string value)
 {
+	try{
 	getZorbaForCurrentThread()->
     getItemSerializer()->set_parameter(parameter_name, value);
+	}CATCH_ALL_NO_RETURN;
 }
 
 
@@ -362,8 +388,10 @@ void	ZorbaEngineImpl::setDocSerializerParameter(
     xqp_string parameter_name,
     xqp_string value)
 {
+	try{
 	getZorbaForCurrentThread()->
     getDocSerializer()->set_parameter(parameter_name, value);
+	}CATCH_ALL_NO_RETURN;
 }
 
 
