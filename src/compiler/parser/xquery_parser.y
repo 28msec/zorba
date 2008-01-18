@@ -295,7 +295,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token PRECEDING_AXIS							"'preceding::'"
 %token PRECEDING_SIBLING_AXIS			"'preceding-sibling::'"
 %token PRESERVE										"'preserve'"
-%token PROCESSING_INSTRUCTION			"'<processing instruction>'"
+%token PROCESSING_INSTRUCTION			"'processing instruction'"
 %token QUOTE											"'\"'"
 %token RBRACE											"'}'"
 %token RBRACK											"']'"
@@ -4727,21 +4727,21 @@ CompPIConstructor :
 								driver.symtab.get((off_t)$2),
 								$4);
 		}
-	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  RBRACE
+	|	PI_LBRACE  Expr  RBRACE LBRACE  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target]\n";
 #endif
 			$$ = new CompPIConstructor(@$,
-								$3, NULL);
+								$2, NULL);
 		}
-	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
+	|	PI_LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target.content]\n";
 #endif
 			$$ = new CompPIConstructor(@$,
-								$3, $6);
+								$2, $5);
 		}
 	;
 

@@ -211,6 +211,7 @@ ValidationMode				("strict"|"lax"|"skip")
 %x MODE_OPTION
 %x MODE_PRAGMA
 %x MODE_PRAGMACONTENTS
+%x MODE_PROCESSING_INSTRUCTION_CTOR
 %x MODE_PROCESSING_INSTRUCTION
 %x MODE_PROCESSING_INSTRUCTION_CONTENT 
 %x MODE_QUOTE_ATTRIBUTE_CONTENT 
@@ -316,17 +317,13 @@ typedef yy::xquery_parser::token token;
 	return token::TEXT_LBRACE;
 }
 
-"processing-instruction"{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL, yyscanner);
-	return token::PI_LBRACE;
+    /* transition to MODE_PROCESSING_INSTRUCTION_CTOR */
+    /* ---------------------- */
+"processing-instruction"  {
+  BEGIN MODE_PROCESSING_INSTRUCTION_CTOR;
+  return token::PROCESSING_INSTRUCTION;
 }
 
-"processing-instruction"{SP}NCName{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL, yyscanner);
-	return token::PI_NCNAME_LBRACE;
-}
 
 "comment"{S}"{" {
 	BEGIN MODE_OPERATOR;
@@ -992,8 +989,34 @@ typedef yy::xquery_parser::token token;
   /* eat up whitespace */
 }
 
+  /* END MODE INITIAL */
 
+  
+  /*______________________________________________________________________  
+    |
+    |  The PROCESSING_INSTRUCTION_CTOR State
+    |
+    |  transition to MODE_OPERATOR
+    |______________________________________________________________________*/
 
+<MODE_PROCESSING_INSTRUCTION_CTOR>{
+
+"{" {
+  BEGIN MODE_OPERATOR;
+  yy_push_state( /*and goto*/ INITIAL, yyscanner);
+  return token::LBRACE;
+}
+
+{NCName}  {
+  yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
+  return token::NCNAME;
+}
+
+{S} {
+  /* eat up whitespace */
+}
+
+}
 
 	/*______________________________________________________________________  
 	 |

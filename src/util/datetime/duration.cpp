@@ -53,8 +53,9 @@ int YearMonthDuration::compare(const YearMonthDuration& ym) const
 
 xqpString YearMonthDuration::toString() const
 {
+  xqpString result = "";
   // TODO:
-  return NULL;
+  return result;
 }
     
 YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
@@ -89,16 +90,18 @@ YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
   {
     position++;
     months = result * 12;
-    
-    if (position == ss.size())
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
 
-    if (parse_int(ss, position, result) == 0)
+    if (position < ss.size())
     {
-      if (ss[position++] != 'M')
-        ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      if (parse_int(ss, position, result) == 0)
+      {
+        if (ss[position++] != 'M')
+          ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
 
-      months += result;
+        months += result;
+      }
+      else
+        ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
     }
   }
   else if (ss[position++] == 'M')
@@ -107,8 +110,6 @@ YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
   }
   else
     ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
-
-  skip_whitespace(ss, position);
 
   if (ss.size() != position)
     ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
