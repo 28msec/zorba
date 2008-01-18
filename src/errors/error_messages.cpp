@@ -60,11 +60,11 @@ static struct err_msg_initializer
 {
   err_msg_initializer () 
   {
-#define DEF_ERR_CODE( code, name, msg ) canonical_err_names [ ZorbaError::code ] = #name; free (err_msg [ZorbaError::code]); err_msg [ZorbaError::code] = msg;
+#define DEF_ERR_CODE( code, name, msg ) canonical_err_names [ ZorbaError::code ] = #name; err_msg [ZorbaError::code] = msg;
 
     for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
-      canonical_err_names [i] = "?";
-      err_msg [i] = strdup (string ("<Unknown errcode " + to_string (i) + "> /s /s").c_str ());
+      canonical_err_names [i] = NULL;
+      err_msg [i] = NULL;
     }
 
 DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI `/s' exists already")
@@ -187,6 +187,14 @@ DEF_ERR_CODE (XQTY0024, XQTY0024, "It is a type error if the content sequence in
 DEF_ERR_CODE (XQP0019_INTERNAL_ERROR, XQP0019, "Zorba internal error /s")
 
 #undef DEF_ERR_CODE
+
+  for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
+    if (canonical_err_names [i] == NULL)
+      canonical_err_names [i] = "?";
+    if (err_msg [i] == NULL)
+      err_msg [i] = strdup (string ("<Unknown errcode " + to_string (i) + "> /s /s").c_str ());
+  }
+
 
   }
 } err_msg_initializer_obj;
