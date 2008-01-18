@@ -2,7 +2,12 @@
 #ifndef XQUERY_EXECUTION_API_12_DEC_2007
 #define XQUERY_EXECUTION_API_12_DEC_2007
 
+#include "zorba/store/api/collection.h"
+
 namespace xqp {
+
+class XQueryExecution;
+typedef rchandle<XQueryExecution>		XQueryExecution_t;
 
 class XQueryExecution : public Iterator
 {
@@ -37,7 +42,6 @@ public:
 
 };
 
-typedef rchandle<XQueryExecution>		XQueryExecution_t;
 
 
 } //end namespace xqp

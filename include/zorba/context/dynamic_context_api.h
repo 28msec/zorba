@@ -3,6 +3,9 @@
 #define DYNAMIC_CONTEXT_API_12_DEC_2007
 
 #include <time.h>
+#include "zorba/util/rchandle.h"
+#include "zorba/types/representations.h"
+#include "zorba/store/api/item.h"
 
 namespace xqp {
 

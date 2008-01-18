@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <stdlib.h>
 
-#include "zorba_api.h"
+#include "errors/errors.h"
 
 #include "error_messages.h"
 #include "error_factory.h"

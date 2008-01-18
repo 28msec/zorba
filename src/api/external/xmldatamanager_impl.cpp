@@ -1,5 +1,6 @@
 
 #include "xmldatamanager_impl.h"
+#include <fstream>
 
 namespace xqp
 {
@@ -18,6 +19,16 @@ Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, std::istream& st
 {
 	return internal_store->loadDocument(uri, stream);
 }
+
+Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& local_file_uri)
+{
+	std::ifstream			ifuri(local_file_uri.c_str());
+
+	if(!ifuri.is_open())
+		return NULL;
+	return loadDocument(local_file_uri, ifuri);
+}
+
 
 Item_t XmlDataManager_Impl::getDocument(const xqp_anyURI& uri)
 {

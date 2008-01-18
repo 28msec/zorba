@@ -16,6 +16,7 @@ public:
 	virtual ~XmlDataManager_Impl();
 
   virtual Item_t loadDocument(const xqp_anyURI& uri, std::istream& stream);
+  virtual Item_t loadDocument(const xqp_anyURI& local_file_uri);
   virtual Item_t getDocument(const xqp_anyURI& uri);
   virtual void deleteDocument(const xqp_anyURI& uri);
 

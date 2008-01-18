@@ -2,7 +2,8 @@
 
 #include <map>
 
-#include "zorba_api.h"
+#include "compiler/compiled_xquery.h"
+#include "runtime/xquery_execution.h"
 #include "zorba.h"
 
 #include "context/common.h"

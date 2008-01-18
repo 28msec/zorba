@@ -2,7 +2,7 @@
 #include "errors/error_messages.h"
 #include "error_manager.h"
 #include "system/zorba.h"
-#include "zorba_api.h"
+#include "errors/errors.h"
 #include "api/external/xquery.h"
 
 using namespace std;

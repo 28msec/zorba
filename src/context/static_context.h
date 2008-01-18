@@ -34,7 +34,7 @@
 #include "types/typesystem.h"
 #include "util/Assert.h"
 
-#include "zorba_api.h"
+#include "context/static_context_api.h"
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER

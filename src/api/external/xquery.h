@@ -4,7 +4,8 @@
 #ifndef ZORBA_XQUERY_BINARY_FOR_EXTERNAL_API_24_SEP_2007
 #define ZORBA_XQUERY_BINARY_FOR_EXTERNAL_API_24_SEP_2007
 
-#include "zorba_api.h"
+#include "compiler/compiled_xquery.h"
+#include "runtime/xquery_execution.h"
 #include "api/external/static_context_wrapper.h"
 
 ///Implement the objects for the Zorba external C++ API

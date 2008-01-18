@@ -2,6 +2,10 @@
 #ifndef COMPILED_XQUERY_API_12_DEC_2007
 #define COMPILED_XQUERY_API_12_DEC_2007
 
+#include "zorba/context/static_context_api.h"
+#include "zorba/context/dynamic_context_api.h"
+#include "zorba/runtime/xquery_execution.h"
+
 namespace xqp {
 
 class XQuery : public rcobject

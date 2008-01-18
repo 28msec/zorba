@@ -27,7 +27,7 @@
 #include "system/zorba.h"
 #include "util/Assert.h"
 #include "store/naive/basic_item_factory.h"
-#include "zorba_api.h"
+#include "runtime/xquery_execution.h"
 #include "string.h"
 
 using namespace std;

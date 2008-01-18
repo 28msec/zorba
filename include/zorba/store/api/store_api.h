@@ -22,7 +22,9 @@ public:
    */
   virtual Item_t loadDocument(const xqp_anyURI& uri, std::istream& stream) = 0;
 
-  /**
+  virtual Item_t loadDocument(const xqp_anyURI& local_file_uri) = 0;
+
+	/**
    * Get an rchandle to the root node of the document with the given uri.
    *
    * @param uri The uri of the document to access.

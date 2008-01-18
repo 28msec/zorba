@@ -1,6 +1,6 @@
 
 #include <assert.h>
-#include "zorba_api.h"
+#include "types/typeident.h"
 #include "store/naive/atomic_items.h"
 #include "node_test.h"
 #include "store/api/item_factory.h"

@@ -2,7 +2,7 @@
 #ifndef EXTERNA_API_DYNAMIC_CONTEXT_WRAPPER_04_DEC_2007
 #define EXTERNA_API_DYNAMIC_CONTEXT_WRAPPER_04_DEC_2007
 
-#include "zorba_api.h"
+#include "context/dynamic_context_api.h"
 #include "types/representations.h"
 //#include "context/dynamic_context.h"
 
