@@ -1,6 +1,7 @@
 
 #include "errors/error_messages.h"
 #include "util/Assert.h"
+#include "util/utf8/Unicode_util.h"
 
 #include <string>
 
@@ -59,11 +60,11 @@ static struct err_msg_initializer
 {
   err_msg_initializer () 
   {
-#define DEF_ERR_CODE( code, name, msg ) canonical_err_names [ ZorbaError::code ] = #name; err_msg [ZorbaError::code] = msg;
+#define DEF_ERR_CODE( code, name, msg ) canonical_err_names [ ZorbaError::code ] = #name; free (err_msg [ZorbaError::code]); err_msg [ZorbaError::code] = msg;
 
     for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
       canonical_err_names [i] = "?";
-      err_msg [i] = "<Unknown errcode> /s /s";
+      err_msg [i] = strdup (string ("<Unknown errcode " + to_string (i) + "> /s /s").c_str ());
     }
 
 DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI `/s' exists already")
@@ -182,7 +183,8 @@ DEF_ERR_CODE (XQST0089, XQST0089, "A variable bound in a for clause of a FLWOR e
 DEF_ERR_CODE (XQST0090, XQST0090, "Xa character reference does not identify a valid character in the version of XML that is in use.")
 DEF_ERR_CODE (XQTY0030, XQTY0030, "The argument of a validate expression does not evaluate to exactly one document or element node.")
 DEF_ERR_CODE (XQTY0086, XQTY0086, "The typed value of a copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve.")
-
+DEF_ERR_CODE (XQTY0024, XQTY0024, "It is a type error if the content sequence in an element constructor contains an attribute node following a node that is not an attribute node.")
+DEF_ERR_CODE (XQP0019_INTERNAL_ERROR, XQP0019, "Zorba internal error /s")
 
 #undef DEF_ERR_CODE
 
