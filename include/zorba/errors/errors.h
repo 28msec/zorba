@@ -27,14 +27,14 @@ typedef rchandle<class Item> Item_t;
 class ZorbaAlertLocation
 {
 public:
-	ZorbaAlertLocation();
+  ZorbaAlertLocation();
 
 public:
   // xqp_string   module_name; ///empty if is main module
 
-	xqpString    filename;
-	unsigned int line;
-	unsigned int column;
+  xqpString    filename;
+  unsigned int line;
+  unsigned int column;
 };
 
 
@@ -52,22 +52,22 @@ class ZorbaAlert
 {
 public:
 
-	typedef enum AlertKind
-	{
-		ERROR_ALERT,
-		WARNING_ALERT,
-		NOTIFICATION_ALERT,
-		FEEDBACK_REQUEST_ALERT,
+  typedef enum AlertKind
+  {
+    ERROR_ALERT,
+    WARNING_ALERT,
+    NOTIFICATION_ALERT,
+    FEEDBACK_REQUEST_ALERT,
 
-		USER_ERROR_ALERT, // fn:error
-		USER_TRACE_ALERT  // fn:trace
-	};
-	
-	AlertKind    theKind;
-	std::string  theDescription;
-	time_t       theTime;
+    USER_ERROR_ALERT, // fn:error
+    USER_TRACE_ALERT  // fn:trace
+  };
+  
+  AlertKind    theKind;
+  std::string  theDescription;
+  time_t       theTime;
 
-	virtual ~ZorbaAlert();
+  virtual ~ZorbaAlert();
 };
 
 
@@ -77,7 +77,7 @@ public:
 class ZorbaError : public ZorbaAlert
 {
 public:
-	enum ErrorCodes
+  enum ErrorCodes
   {
     //
     // XPath dynamic errors
@@ -535,54 +535,54 @@ public:
     FOTY0012, //Argument node does not have a typed value.
 
     //
-		// Serialization errors
+    // Serialization errors
     //
-		SENR0001_Item_is_attribute_or_namespace_node,
+    SENR0001_Item_is_attribute_or_namespace_node,
     SEPM0016_Invalid_parameter_value,
  
     //
-		// ZORBA errors
+    // ZORBA errors
     //
-		XQP0000_DYNAMIC_RUNTIME_ERROR,
-		XQP0001_DYNAMIC_ITERATOR_OVERRUN,
-		XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD,
-		XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND,
-		XQP0004_SYSTEM_NOT_SUPPORTED,
-		XQP0005_SYSTEM_ASSERT_FAILED,
-		XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
-		XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE,
-		XQP0008_SYSTEM_READ_LOCK_FAILED,
-		XQP0009_SYSTEM_WRITE_LOCK_FAILED,
-		XQP0010_SYSTEM_POP_FROM_EMPTY_LIST,
-		XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
-		XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION,
-		XQP0013_SYSTEM_MMFILE_IOEXCEPTION,
-		XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
-		XQP0016_LOADER_IO_ERROR,
+    XQP0000_DYNAMIC_RUNTIME_ERROR,
+    XQP0001_DYNAMIC_ITERATOR_OVERRUN,
+    XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD,
+    XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND,
+    XQP0004_SYSTEM_NOT_SUPPORTED,
+    XQP0005_SYSTEM_ASSERT_FAILED,
+    XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
+    XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE,
+    XQP0008_SYSTEM_READ_LOCK_FAILED,
+    XQP0009_SYSTEM_WRITE_LOCK_FAILED,
+    XQP0010_SYSTEM_POP_FROM_EMPTY_LIST,
+    XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
+    XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION,
+    XQP0013_SYSTEM_MMFILE_IOEXCEPTION,
+    XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+    XQP0016_LOADER_IO_ERROR,
     XQP0017_LOADER_NOT_WELL_FORMED_XML,
     XQP0018_NODEID_OUT_OF_RANGE,
-		XQP0019_INTERNAL_ERROR,
+    XQP0019_INTERNAL_ERROR,
 
     //
-		// Zorba API errors
+    // Zorba API errors
     //
-		API0001_XQUERY_STRING_IS_EMPTY,
-		API0002_COMPILE_FAILED,
-		API0003_XQUERY_NOT_COMPILED,
-		API0004_XQUERY_ALREADY_COMPILED,
+    API0001_XQUERY_STRING_IS_EMPTY,
+    API0002_COMPILE_FAILED,
+    API0003_XQUERY_NOT_COMPILED,
+    API0004_XQUERY_ALREADY_COMPILED,
     API0005_COLLECTION_ALREADY_EXISTS,
     API0006_COLLECTION_NOT_FOUND,
     API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
-    API0008,
+    API0008,  // Document already exists
 
     MAX_ZORBA_ERROR_CODE
-	};
+  };
 
-	ErrorCodes          theCode;
-	bool                theIsFatal;
-	ZorbaAlertLocation  theLocation;
+  ErrorCodes          theCode;
+  bool                theIsFatal;
+  ZorbaAlertLocation  theLocation;
 
-	virtual ~ZorbaError();
+  virtual ~ZorbaError();
 
   static std::string toString(enum ErrorCodes);
 };
@@ -598,10 +598,10 @@ public:
   {
   };
 
-	WarningCodes        theCode;
-	ZorbaAlertLocation  theLocation;
+  WarningCodes        theCode;
+  ZorbaAlertLocation  theLocation;
 
-	virtual ~ZorbaWarning();
+  virtual ~ZorbaWarning();
 };
 
 
@@ -616,9 +616,9 @@ public:
     NOTIF_EXECUTION_STEP
   };
 
-	NotifyCodes  theCode;
+  NotifyCodes  theCode;
 
-	virtual ~ZorbaNotify();
+  virtual ~ZorbaNotify();
 };
 
 
@@ -641,10 +641,10 @@ public:
     OK_CANCEL, //"OK/Cancel"
   };
 
-	UserQuestionCodes      theQuestionCode;
-	UserReplyOptionsCodes  theReplyOptionsCode;
+  UserQuestionCodes      theQuestionCode;
+  UserReplyOptionsCodes  theReplyOptionsCode;
 
-	virtual ~ZorbaAskUser();
+  virtual ~ZorbaAskUser();
 };
 
 
@@ -654,11 +654,11 @@ public:
 class ZorbaFnError: public ZorbaAlert
 {
 public:
-	Item_t              theErrorQName;
-	std::string         theUserDescription;
+  Item_t              theErrorQName;
+  std::string         theUserDescription;
   std::vector<Item*>  theItems;
 
-	virtual ~ZorbaFnError();
+  virtual ~ZorbaFnError();
 };
 
 
@@ -668,9 +668,9 @@ public:
 class ZorbaFnTrace: public ZorbaAlert
 {
 public:
-	std::vector<Item*> items_trace;
+  std::vector<Item*> items_trace;
 
-	virtual ~ZorbaFnTrace();
+  virtual ~ZorbaFnTrace();
 };
 
 
@@ -683,9 +683,9 @@ typedef rchandle<XQueryExecution> XQueryExecution_t;
 
 // user might choose to receive the alerts through callback functions
 typedef int alert_callback(ZorbaAlert*       alert, 
-													 XQuery*           current_xquery,
-													 XQueryExecution*  current_xqueryexecution,
-													 void*             param);
+                           XQuery*           current_xquery,
+                           XQueryExecution*  current_xqueryexecution,
+                           void*             param);
 
 
 /*******************************************************************************
@@ -694,14 +694,14 @@ typedef int alert_callback(ZorbaAlert*       alert,
 class ZorbaAlertsManager : public std::list<ZorbaAlert*>
 {
 public:
-	virtual ~ZorbaAlertsManager();
+  virtual ~ZorbaAlertsManager();
 
-	// register function to be called when error/warning/alert happens
-	// if callback function is NULL, then alerts are put in list
-	virtual void RegisterAlertCallback(alert_callback	*user_alert_callback,
-																		void *param) = 0;
+  // register function to be called when error/warning/alert happens
+  // if callback function is NULL, then alerts are put in list
+  virtual void RegisterAlertCallback(alert_callback *user_alert_callback,
+                                    void *param) = 0;
 
-  virtual	void clearAlertList() = 0;
+  virtual void clearAlertList() = 0;
 };
 
 
