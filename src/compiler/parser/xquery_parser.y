@@ -4727,21 +4727,21 @@ CompPIConstructor :
 								driver.symtab.get((off_t)$2),
 								$4);
 		}
-	|	PI_LBRACE  Expr  RBRACE LBRACE  RBRACE
+	|	PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target]\n";
 #endif
 			$$ = new CompPIConstructor(@$,
-								$2, NULL);
+								$3, NULL);
 		}
-	|	PI_LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
+	|	PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target.content]\n";
 #endif
 			$$ = new CompPIConstructor(@$,
-								$2, $5);
+								$3, $6);
 		}
 	;
 
