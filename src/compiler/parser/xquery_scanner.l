@@ -1916,6 +1916,11 @@ typedef yy::xquery_parser::token token;
 	return token::VOID_TEST;
 }
 
+"empty-sequence"{S}"("{S}")" {
+	BEGIN MODE_OPERATOR;
+	return token::VOID_TEST;
+}
+
 {QName} {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	/* BEGIN MODE_OPERATOR; */
