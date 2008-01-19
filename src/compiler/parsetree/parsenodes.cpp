@@ -41,6 +41,17 @@ ostringstream __oss;
 #define ACCEPT_CHK( m ) do { ZORBA_ASSERT ((m) != NULL);  (m)->accept (v); } while (0)
 
 
+#define DECLARE_VISITOR_FUNCTOR( name, type, body)                      \
+  class name : public unary_function<rchandle<parsenode>, void> {       \
+    parsenode_visitor &v;                                               \
+  public:                                                               \
+  name (parsenode_visitor &v_) : v (v_) {}                              \
+  void operator () (type e) body                                        \
+    }
+
+
+DECLARE_VISITOR_FUNCTOR(visitor_functor, rchandle<parsenode>, { ACCEPT(e); });
+
 
 // [1] Module
 // ----------
@@ -1720,11 +1731,7 @@ QVarInDeclList::~QVarInDeclList()
 void QVarInDeclList::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  vector<rchandle<QVarInDecl> >::const_reverse_iterator it = qvar_decl_hv.rbegin();
-  for (; it!=qvar_decl_hv.rend(); ++it) {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
-  }
+  for_each (qvar_decl_hv.begin (), qvar_decl_hv.end (), visitor_functor (v));
   END_VISITOR ();
 }
 

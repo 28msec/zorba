@@ -126,7 +126,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       return false;
     }
 
-    if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL) 
+    if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL)
 	  {
       ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
                         NULL, true,

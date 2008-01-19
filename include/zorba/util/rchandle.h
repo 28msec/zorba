@@ -84,10 +84,16 @@ public:
 public:	// operator overloading
   rchandle& operator=(rchandle const& rhs);
   T* operator->() const; 
-  T& operator*() const;  
+  T& operator*() const;
+
+  // rchandle const-ness is unclear.
+  // The implicit operators are more restrictive than the explicit
+  // cast() and get_ptr() methods.
   operator T* () { return get_ptr (); }
-  operator const T * () { return get_ptr (); }
+  operator const T * () const { return get_ptr (); }
   template <class otherT> operator rchandle<otherT> () { return cast<otherT> (); }
+  template <class otherT> operator const rchandle<otherT> () const { return cast<otherT> (); }
+
 	bool operator==(rchandle const& h) const;
 	bool operator!=(rchandle const& h) const;
 	bool operator==(T const* pp) const;

@@ -59,6 +59,10 @@ static void *no_state = (void *) new int;
 
 #define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
+  typedef rchandle<expr> expr_t;
+  typedef rchandle<var_expr> var_expr_t;
+  typedef std::pair<var_expr_t, expr_t> global_binding;
+
   template<class T> T &peek_stack (stack<T> &stk) {
     ZORBA_ASSERT (! stk.empty ());
     return stk.top ();
@@ -70,14 +74,9 @@ static void *no_state = (void *) new int;
     return x;
   }
 
-
 class TranslatorImpl : public Translator 
 {
 public:
-  typedef rchandle<expr> expr_t;
-  typedef rchandle<var_expr> var_expr_t;
-  typedef std::pair<var_expr_t, expr_t> global_binding;
-
   friend Translator *make_translator (static_context *);
 
 protected:
@@ -1562,7 +1561,7 @@ void end_visit(const QVarInDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
-  nodestack.push (bind_var (v.get_location (), v.get_name (), var_expr::quant_var));
+  nodestack.push (bind_var (v.get_location (), v.get_name (), var_expr::for_var));
 }
 
 
@@ -2729,6 +2728,7 @@ var_expr_t tempvar(yy::location loc, var_expr::var_kind kind)
   return new var_expr(loc, kind, ITEM_FACTORY.createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, "v" + to_string (tempvar_counter++)));
 }
 
+
 rchandle<forlet_clause> wrap_in_forclause(
     expr_t expr,
     var_expr_t fv,
@@ -2758,16 +2758,14 @@ rchandle<forlet_clause> wrap_in_forclause(
   return wrap_in_forclause (expr, bind_var (loc, fv_name, var_expr::for_var), bind_var (loc, pv_name, var_expr::pos_var));
 }
 
+
 rchandle<forlet_clause> wrap_in_letclause(expr_t expr, var_expr_t lv)
 {
   assert (lv->get_kind () == var_expr::let_var);
   return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.get_ptr());
 }
 
-rchandle<forlet_clause> wrap_in_letclause(
-    expr_t expr,
-    yy::location loc,
-    string name)
+rchandle<forlet_clause> wrap_in_letclause(expr_t expr, yy::location loc, string name)
 {
   return wrap_in_letclause (expr, bind_var (loc, name, var_expr::let_var));
 }
@@ -3295,17 +3293,16 @@ void end_visit(const QuantifiedExpr& v, void *visit_state)
     sat = uw.get_ptr();
   }
   flwor->set_where(sat);
-  int i;
-  for(i = 0; i < v.get_decl_list()->size(); ++i) {
-    var_expr_t ve = pop_nodestack().cast<var_expr>();
-    rchandle<expr> fe = pop_nodestack();
-    ve->set_kind(var_expr::for_var);
-    flwor->add(new forlet_clause(forlet_clause::for_clause, ve, NULL, NULL, fe));
-    pop_scope();
+  vector<var_expr_t> vars_vals (2 * v.get_decl_list()->size());
+  generate (vars_vals.rbegin (), vars_vals.rend (), stack_to_generator (nodestack));
+  for (int i = 0; i < v.get_decl_list()->size(); ++i) {
+    pop_scope ();
+    var_expr_t ve = vars_vals [2 * i + 1].cast<var_expr> ();
+    flwor->add(wrap_in_forclause (vars_vals [2 * i], ve, NULL));
   }
   rchandle<fo_expr> quant = new fo_expr(v.get_location(), v.get_qmode() == quant_every ? LOOKUP_FN("fn", "empty", 1) : LOOKUP_FN("fn", "exists", 1));
-  quant->add(rchandle<expr> (flwor.get_ptr()));
-  nodestack.push (quant.get_ptr());
+  quant->add (flwor);
+  nodestack.push (quant);
 }
 
 
