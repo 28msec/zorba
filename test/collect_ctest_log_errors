@@ -58,10 +58,12 @@ while (<>) {
         add_assert_fail $query, $1, $2, $3;
     } elsif (m#XQP0005:.*Assertion (.*) failed in ([^:]+:[0-9]+): (.*)$#) {
         add_assert_fail $query, $2, $3, $1;
+    } elsif (m#XQP0019: ?Zorba internal error (.*)#) {
+        add_assert_fail $query, "?", "?:?", "XQP0019: exception $1 suppressed";
     } elsif (m#^[<] [<]root[>]XPST0003[<]/root>$# && $parse_err) {
-        add_assert_fail $query, "?", "?", "parser failure XPST0003";
+        add_assert_fail $query, "?", "?:?", "parser failure XPST0003";
     } elsif (m#^[>] [<]root[>]XPST0003[<]/root>$# && $parse_err) {
-        add_assert_fail $query, "?", "?", "parse incorrectly succeeded, should have raised XPST0003";
+        add_assert_fail $query, "?", "?:?", "parse incorrectly succeeded, should have raised XPST0003";
     } elsif (m#running valgrind#) {
         $in_valgrind = 1;
     } elsif ($in_valgrind == 1 && m#^==[0-9]+== ([^ ].*)#) {
