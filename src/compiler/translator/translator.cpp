@@ -63,7 +63,7 @@ static void *no_state = (void *) new int;
     ZORBA_ASSERT (! stk.empty ());
     return stk.top ();
   }
-
+  
   template <typename T> T pop_stack (stack<T> &stk) {
     T x = peek_stack (stk);
     stk.pop ();
@@ -128,6 +128,10 @@ protected:
   TypeSystem::xqtref_t pop_tstack() 
   { return pop_stack (tstack); }
 
+  expr_t peek_nodestk_or_null () {
+    return (nodestack.empty ()) ? expr_t (NULL) : peek_stack (nodestack);
+  }
+
   var_expr *bind_var (yy::location loc, string varname, var_expr::var_kind kind)
   {
     Item_t qname = sctx_p->lookup_qname ("", varname);
@@ -156,7 +160,7 @@ protected:
   }
 
   rchandle<axis_step_expr> expect_axis_step_top () {
-    rchandle<axis_step_expr> axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
+    rchandle<axis_step_expr> axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
     if (axisExpr == NULL) {
       cout << "Expecting axis step on top of stack; ";
       if (nodestack.top() != NULL)
@@ -2366,7 +2370,7 @@ void end_visit(const AnyKindTest& v, void *visit_state)
   TRACE_VISIT_OUT ();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
   if (axisExpr != NULL)
   {
     rchandle<match_expr> me = new match_expr(v.get_location());
@@ -2399,7 +2403,7 @@ void end_visit(const DocumentTest& v, void *visit_state)
 
   if (elemTest == NULL)
   {
-    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
+    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
     if (axisExpr != NULL)
     {
       rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2423,7 +2427,7 @@ void end_visit(const DocumentTest& v, void *visit_state)
     rchandle<TypeName> typeName = elemTest->getTypeName();
     bool nilled =  elemTest->isNilledAllowed();
 
-    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
+    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
     if (axisExpr != NULL)
     {
       rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2466,7 +2470,7 @@ void end_visit(const ElementTest& v, void *visit_state)
   bool nilled =  v.isNilledAllowed();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
   if (axisExpr != NULL)
   {
     rchandle<match_expr> me = new match_expr(v.get_location());
@@ -2541,7 +2545,7 @@ void end_visit(const AttributeTest& v, void *visit_state)
   rchandle<TypeName> typeName = v.get_type_name();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
   if (axisExpr != NULL)
   {
     rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2601,7 +2605,7 @@ void end_visit(const TextTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
   if (axisExpr != NULL)
   {
     rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2630,7 +2634,7 @@ void end_visit(const CommentTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
   if (axisExpr != NULL)
   {
     rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2657,7 +2661,7 @@ void *begin_visit(const PITest& v)
 void end_visit(const PITest& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_stack (nodestack));
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
   if (axisExpr != NULL)
   {
     string target = v.get_target();
