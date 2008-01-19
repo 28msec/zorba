@@ -170,13 +170,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
     top_iterator = codegen (e_h);
 
-    if (Properties::instance()->printIteratorTree()) {
-      cout << "Iterator tree:\n";
-      XMLIterPrinter vp(std::cout);
-      PrinterVisitor pv(vp);
-      top_iterator->accept(pv);
-    }
-	
     if (top_iterator == NULL) {
       cout << "Codegen returned null";
       ZORBA_ERROR_ALERT(ZorbaError::API0002_COMPILE_FAILED, NULL, true);
@@ -184,6 +177,13 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       return false;
     }
 
+    if (Properties::instance()->printIteratorTree()) {
+      cout << "Iterator tree:\n";
+      XMLIterPrinter vp(std::cout);
+      PrinterVisitor pv(vp);
+      top_iterator->accept(pv);
+    }
+	
     is_compiled = true;
 
 		zorba->current_xquery = NULL;
