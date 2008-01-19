@@ -408,6 +408,8 @@ namespace yy
   case 3:
 #line 739 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
+			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
+			driver.set_expr((yyval.node));
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [version.main]\n";
 #endif
@@ -415,7 +417,7 @@ namespace yy
     break;
 
   case 4:
-#line 745 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 747 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [library]\n";
@@ -424,7 +426,7 @@ namespace yy
     break;
 
   case 5:
-#line 751 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 753 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [version.library]\n";
@@ -433,7 +435,7 @@ namespace yy
     break;
 
   case 6:
-#line 763 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 765 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version]\n";
@@ -442,7 +444,7 @@ namespace yy
     break;
 
   case 7:
-#line 769 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 771 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version.encoding]\n";
@@ -451,7 +453,7 @@ namespace yy
     break;
 
   case 8:
-#line 781 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 783 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [prolog.querybody]\n";
@@ -463,7 +465,7 @@ namespace yy
     break;
 
   case 9:
-#line 791 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 793 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [querybody]\n";
@@ -475,7 +477,7 @@ namespace yy
     break;
 
   case 10:
-#line 806 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 808 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LibraryModule [ ]\n";
@@ -487,7 +489,7 @@ namespace yy
     break;
 
   case 11:
-#line 821 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 823 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleDecl [ ]\n";
@@ -499,7 +501,7 @@ namespace yy
     break;
 
   case 12:
-#line 836 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 838 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind]\n";
@@ -511,7 +513,7 @@ namespace yy
     break;
 
   case 13:
-#line 845 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 847 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [vfo]\n";
@@ -523,7 +525,7 @@ namespace yy
     break;
 
   case 14:
-#line 854 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 856 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind.vfo]\n";
@@ -535,7 +537,7 @@ namespace yy
     break;
 
   case 15:
-#line 869 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 871 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [single]\n";
@@ -547,7 +549,7 @@ namespace yy
     break;
 
   case 16:
-#line 878 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 880 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [list]\n";
@@ -561,7 +563,7 @@ namespace yy
     break;
 
   case 17:
-#line 895 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 897 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [single]\n";
@@ -573,7 +575,7 @@ namespace yy
     break;
 
   case 18:
-#line 904 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 906 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [list]\n";
@@ -587,7 +589,7 @@ namespace yy
     break;
 
   case 19:
-#line 921 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 923 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [setter]\n";
@@ -597,7 +599,7 @@ namespace yy
     break;
 
   case 20:
-#line 928 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 930 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [import]\n";
@@ -607,7 +609,7 @@ namespace yy
     break;
 
   case 21:
-#line 935 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 937 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [namespace]\n";
@@ -617,7 +619,7 @@ namespace yy
     break;
 
   case 22:
-#line 942 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 944 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [default namespace]\n";
@@ -627,7 +629,7 @@ namespace yy
     break;
 
   case 23:
-#line 954 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 956 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [var]\n";
@@ -637,7 +639,7 @@ namespace yy
     break;
 
   case 24:
-#line 961 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 963 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [function]\n";
@@ -647,7 +649,7 @@ namespace yy
     break;
 
   case 25:
-#line 968 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 970 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [option]\n";
@@ -657,7 +659,7 @@ namespace yy
     break;
 
   case 26:
-#line 977 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 979 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [ftoption]\n";
@@ -667,7 +669,7 @@ namespace yy
     break;
 
   case 27:
-#line 990 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 992 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [boundary space]\n";
@@ -677,7 +679,7 @@ namespace yy
     break;
 
   case 28:
-#line 997 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 999 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [default collation]\n";
@@ -687,7 +689,7 @@ namespace yy
     break;
 
   case 29:
-#line 1004 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1006 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [base uri]\n";
@@ -697,7 +699,7 @@ namespace yy
     break;
 
   case 30:
-#line 1011 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1013 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [construction]\n";
@@ -707,7 +709,7 @@ namespace yy
     break;
 
   case 31:
-#line 1018 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1020 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [ordering mode]\n";
@@ -717,7 +719,7 @@ namespace yy
     break;
 
   case 32:
-#line 1025 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1027 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [empty order]\n";
@@ -727,7 +729,7 @@ namespace yy
     break;
 
   case 33:
-#line 1032 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1034 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [copy namespaces]\n";
@@ -737,7 +739,7 @@ namespace yy
     break;
 
   case 34:
-#line 1041 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1043 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [revalidation]\n";
@@ -747,7 +749,7 @@ namespace yy
     break;
 
   case 35:
-#line 1054 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1056 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [schema]\n";
@@ -757,7 +759,7 @@ namespace yy
     break;
 
   case 36:
-#line 1061 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1063 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [module]\n";
@@ -767,7 +769,7 @@ namespace yy
     break;
 
   case 37:
-#line 1079 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1081 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NamespaceDecl [ ]\n";
@@ -779,7 +781,7 @@ namespace yy
     break;
 
   case 38:
-#line 1094 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1096 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [preserve]\n";
@@ -790,7 +792,7 @@ namespace yy
     break;
 
   case 39:
-#line 1102 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1104 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [strip]\n";
@@ -801,7 +803,7 @@ namespace yy
     break;
 
   case 40:
-#line 1116 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1118 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [element]\n";
@@ -813,7 +815,7 @@ namespace yy
     break;
 
   case 41:
-#line 1125 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1127 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [function]\n";
@@ -825,7 +827,7 @@ namespace yy
     break;
 
   case 42:
-#line 1140 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1142 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OptionDecl [ ]\n";
@@ -837,7 +839,7 @@ namespace yy
     break;
 
   case 43:
-#line 1156 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1158 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOptionDecl [ ]\n";
@@ -848,7 +850,7 @@ namespace yy
     break;
 
   case 44:
-#line 1170 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1172 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [ordered]\n";
@@ -859,7 +861,7 @@ namespace yy
     break;
 
   case 45:
-#line 1178 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1180 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [unordered]\n";
@@ -870,7 +872,7 @@ namespace yy
     break;
 
   case 46:
-#line 1193 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1195 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty greatest]\n";
@@ -881,7 +883,7 @@ namespace yy
     break;
 
   case 47:
-#line 1201 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1203 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty least]\n";
@@ -892,7 +894,7 @@ namespace yy
     break;
 
   case 48:
-#line 1215 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1217 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
@@ -904,7 +906,7 @@ namespace yy
     break;
 
   case 49:
-#line 1224 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1226 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
@@ -916,7 +918,7 @@ namespace yy
     break;
 
   case 50:
-#line 1233 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1235 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
@@ -928,7 +930,7 @@ namespace yy
     break;
 
   case 51:
-#line 1242 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1244 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
@@ -940,7 +942,7 @@ namespace yy
     break;
 
   case 52:
-#line 1264 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1266 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultCollationMode [ ]\n";
@@ -951,7 +953,7 @@ namespace yy
     break;
 
   case 53:
-#line 1278 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1280 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BaseURIDecl [ ]\n";
@@ -962,7 +964,7 @@ namespace yy
     break;
 
   case 54:
-#line 1292 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1294 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri]\n";
@@ -975,7 +977,7 @@ namespace yy
     break;
 
   case 55:
-#line 1302 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1304 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri]\n";
@@ -988,7 +990,7 @@ namespace yy
     break;
 
   case 56:
-#line 1312 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1314 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri.urilist]\n";
@@ -1001,7 +1003,7 @@ namespace yy
     break;
 
   case 57:
-#line 1322 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1324 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri.aturi]\n";
@@ -1014,7 +1016,7 @@ namespace yy
     break;
 
   case 58:
-#line 1338 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1340 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [single]\n";
@@ -1026,7 +1028,7 @@ namespace yy
     break;
 
   case 59:
-#line 1347 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1349 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [list]\n";
@@ -1040,7 +1042,7 @@ namespace yy
     break;
 
   case 60:
-#line 1365 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1367 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [namespace]\n";
@@ -1050,7 +1052,7 @@ namespace yy
     break;
 
   case 61:
-#line 1372 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1374 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [default element]\n";
@@ -1060,7 +1062,7 @@ namespace yy
     break;
 
   case 62:
-#line 1385 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1387 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri]\n";
@@ -1072,7 +1074,7 @@ namespace yy
     break;
 
   case 63:
-#line 1394 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1396 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri]\n";
@@ -1085,7 +1087,7 @@ namespace yy
     break;
 
   case 64:
-#line 1404 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1406 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri.at_uri.list]\n";
@@ -1097,7 +1099,7 @@ namespace yy
     break;
 
   case 65:
-#line 1413 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1415 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri.at_uri.list]\n";
@@ -1110,7 +1112,7 @@ namespace yy
     break;
 
   case 66:
-#line 1430 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1432 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [expr]\n";
@@ -1123,7 +1125,7 @@ namespace yy
     break;
 
   case 67:
-#line 1440 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1442 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [external]\n";
@@ -1136,7 +1138,7 @@ namespace yy
     break;
 
   case 68:
-#line 1450 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1452 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.expr]\n";
@@ -1149,7 +1151,7 @@ namespace yy
     break;
 
   case 69:
-#line 1460 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1462 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.external]\n";
@@ -1162,7 +1164,7 @@ namespace yy
     break;
 
   case 70:
-#line 1476 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1478 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [preserve]\n";
@@ -1173,7 +1175,7 @@ namespace yy
     break;
 
   case 71:
-#line 1484 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1486 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [strip]\n";
@@ -1184,7 +1186,7 @@ namespace yy
     break;
 
   case 72:
-#line 1498 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1500 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [external]\n";
@@ -1197,7 +1199,7 @@ namespace yy
     break;
 
   case 73:
-#line 1508 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1510 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [expr]\n";
@@ -1211,7 +1213,7 @@ namespace yy
     break;
 
   case 74:
-#line 1519 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1521 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.external]\n";
@@ -1225,7 +1227,7 @@ namespace yy
     break;
 
   case 75:
-#line 1530 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1532 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.expr]\n";
@@ -1240,7 +1242,7 @@ namespace yy
     break;
 
   case 76:
-#line 1542 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1544 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.external]\n";
@@ -1255,7 +1257,7 @@ namespace yy
     break;
 
   case 77:
-#line 1554 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1556 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.expr]\n";
@@ -1270,7 +1272,7 @@ namespace yy
     break;
 
   case 78:
-#line 1566 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1568 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.external]\n";
@@ -1285,7 +1287,7 @@ namespace yy
     break;
 
   case 79:
-#line 1578 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1580 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.expr]\n";
@@ -1300,7 +1302,7 @@ namespace yy
     break;
 
   case 80:
-#line 1590 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1592 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) external]\n";
@@ -1313,7 +1315,7 @@ namespace yy
     break;
 
   case 81:
-#line 1600 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1602 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) expr]\n";
@@ -1327,7 +1329,7 @@ namespace yy
     break;
 
   case 82:
-#line 1611 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1613 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.external]\n";
@@ -1341,7 +1343,7 @@ namespace yy
     break;
 
   case 83:
-#line 1622 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1624 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.expr]\n";
@@ -1356,7 +1358,7 @@ namespace yy
     break;
 
   case 84:
-#line 1634 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1636 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.external]\n";
@@ -1371,7 +1373,7 @@ namespace yy
     break;
 
   case 85:
-#line 1646 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1648 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.expr]\n";
@@ -1386,7 +1388,7 @@ namespace yy
     break;
 
   case 86:
-#line 1658 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1660 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
@@ -1401,7 +1403,7 @@ namespace yy
     break;
 
   case 87:
-#line 1670 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1672 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
@@ -1416,7 +1418,7 @@ namespace yy
     break;
 
   case 88:
-#line 1688 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1690 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [single]\n";
@@ -1430,7 +1432,7 @@ namespace yy
     break;
 
   case 89:
-#line 1699 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1701 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [list]\n";
@@ -1444,7 +1446,7 @@ namespace yy
     break;
 
   case 90:
-#line 1716 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1718 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname]\n";
@@ -1456,7 +1458,7 @@ namespace yy
     break;
 
   case 91:
-#line 1725 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1727 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname.type]\n";
@@ -1468,7 +1470,7 @@ namespace yy
     break;
 
   case 92:
-#line 1740 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1742 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EnclosedExpr [ ]\n";
@@ -1479,7 +1481,7 @@ namespace yy
     break;
 
   case 93:
-#line 1754 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1756 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QueryBody [expr]\n";
@@ -1490,7 +1492,7 @@ namespace yy
     break;
 
   case 94:
-#line 1768 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1770 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [single]\n";
@@ -1502,7 +1504,7 @@ namespace yy
     break;
 
   case 95:
-#line 1777 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1779 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [expr.single]\n";
@@ -1514,7 +1516,7 @@ namespace yy
     break;
 
   case 96:
-#line 1792 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1794 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [FLWORExpr]\n";
@@ -1524,7 +1526,7 @@ namespace yy
     break;
 
   case 97:
-#line 1799 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1801 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [QuantifiedExpr]\n";
@@ -1534,7 +1536,7 @@ namespace yy
     break;
 
   case 98:
-#line 1806 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1808 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TypeswitchExpr]\n";
@@ -1544,7 +1546,7 @@ namespace yy
     break;
 
   case 99:
-#line 1813 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1815 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [IfExpr]\n";
@@ -1554,7 +1556,7 @@ namespace yy
     break;
 
   case 100:
-#line 1820 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1822 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [OrExpr]\n";
@@ -1564,7 +1566,7 @@ namespace yy
     break;
 
   case 101:
-#line 1829 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1831 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [InsertExpr]\n";
@@ -1574,7 +1576,7 @@ namespace yy
     break;
 
   case 102:
-#line 1836 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1838 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [DeleteExpr]\n";
@@ -1584,7 +1586,7 @@ namespace yy
     break;
 
   case 103:
-#line 1843 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1845 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [RenameExpr]\n";
@@ -1594,7 +1596,7 @@ namespace yy
     break;
 
   case 104:
-#line 1850 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1852 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [ReplaceExpr]\n";
@@ -1604,7 +1606,7 @@ namespace yy
     break;
 
   case 105:
-#line 1857 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1859 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TransformExpr]\n";
@@ -1614,7 +1616,7 @@ namespace yy
     break;
 
   case 106:
-#line 1870 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1872 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [return]\n";
@@ -1627,7 +1629,7 @@ namespace yy
     break;
 
   case 107:
-#line 1880 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1882 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.return]\n";
@@ -1641,7 +1643,7 @@ namespace yy
     break;
 
   case 108:
-#line 1891 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1893 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [orderby.return]\n";
@@ -1655,7 +1657,7 @@ namespace yy
     break;
 
   case 109:
-#line 1902 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1904 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.orderby.return]\n";
@@ -1669,7 +1671,7 @@ namespace yy
     break;
 
   case 110:
-#line 1919 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1921 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [single]\n";
@@ -1681,7 +1683,7 @@ namespace yy
     break;
 
   case 111:
-#line 1928 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1930 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [list]\n";
@@ -1693,7 +1695,7 @@ namespace yy
     break;
 
   case 112:
-#line 1943 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1945 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [for]\n";
@@ -1703,7 +1705,7 @@ namespace yy
     break;
 
   case 113:
-#line 1950 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1952 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [let]\n";
@@ -1713,7 +1715,7 @@ namespace yy
     break;
 
   case 114:
-#line 1963 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1965 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForClause [ ]\n";
@@ -1724,7 +1726,7 @@ namespace yy
     break;
 
   case 115:
-#line 1977 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1979 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [single]\n";
@@ -1736,7 +1738,7 @@ namespace yy
     break;
 
   case 116:
-#line 1986 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1988 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [list]\n";
@@ -1750,7 +1752,7 @@ namespace yy
     break;
 
   case 117:
-#line 2003 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2005 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [in]\n";
@@ -1763,7 +1765,7 @@ namespace yy
     break;
 
   case 118:
-#line 2013 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2015 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.in]\n";
@@ -1777,7 +1779,7 @@ namespace yy
     break;
 
   case 119:
-#line 2024 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2026 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.in]\n";
@@ -1792,7 +1794,7 @@ namespace yy
     break;
 
   case 120:
-#line 2036 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2038 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.in]\n";
@@ -1807,7 +1809,7 @@ namespace yy
     break;
 
   case 121:
-#line 2049 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2051 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [scorevar.in]\n";
@@ -1821,7 +1823,7 @@ namespace yy
     break;
 
   case 122:
-#line 2060 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2062 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.scorevar.in]\n";
@@ -1836,7 +1838,7 @@ namespace yy
     break;
 
   case 123:
-#line 2072 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2074 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.scorevar.in]\n";
@@ -1851,7 +1853,7 @@ namespace yy
     break;
 
   case 124:
-#line 2084 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2086 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.scorevar.in]\n";
@@ -1866,7 +1868,7 @@ namespace yy
     break;
 
   case 125:
-#line 2102 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2104 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PositionalVar [ ]\n";
@@ -1877,7 +1879,7 @@ namespace yy
     break;
 
   case 126:
-#line 2117 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2119 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTScoreVar [ ]\n";
@@ -1888,7 +1890,7 @@ namespace yy
     break;
 
   case 127:
-#line 2131 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2133 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClause [ ]\n";
@@ -1900,7 +1902,7 @@ namespace yy
     break;
 
   case 128:
-#line 2146 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2148 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [single]\n";
@@ -1912,7 +1914,7 @@ namespace yy
     break;
 
   case 129:
-#line 2155 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2157 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [list.single]\n";
@@ -1926,7 +1928,7 @@ namespace yy
     break;
 
   case 130:
-#line 2172 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2174 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [gets]\n";
@@ -1940,7 +1942,7 @@ namespace yy
     break;
 
   case 131:
-#line 2183 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2185 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.gets]\n";
@@ -1954,7 +1956,7 @@ namespace yy
     break;
 
   case 132:
-#line 2195 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2197 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [scorevar.gets]\n";
@@ -1968,7 +1970,7 @@ namespace yy
     break;
 
   case 133:
-#line 2206 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2208 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.scorevar.gets]\n";
@@ -1982,7 +1984,7 @@ namespace yy
     break;
 
   case 134:
-#line 2224 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2226 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "WhereClause [ ]\n";
@@ -1993,7 +1995,7 @@ namespace yy
     break;
 
   case 135:
-#line 2238 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2240 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [ ]\n";
@@ -2004,7 +2006,7 @@ namespace yy
     break;
 
   case 136:
-#line 2246 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2248 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [stable]\n";
@@ -2016,7 +2018,7 @@ namespace yy
     break;
 
   case 137:
-#line 2261 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2263 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [single]\n";
@@ -2028,7 +2030,7 @@ namespace yy
     break;
 
   case 138:
-#line 2270 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2272 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [list]\n";
@@ -2042,7 +2044,7 @@ namespace yy
     break;
 
   case 139:
-#line 2287 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2289 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single]\n";
@@ -2054,7 +2056,7 @@ namespace yy
     break;
 
   case 140:
-#line 2296 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2298 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single.modifier]\n";
@@ -2066,7 +2068,7 @@ namespace yy
     break;
 
   case 141:
-#line 2311 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2313 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir]\n";
@@ -2079,7 +2081,7 @@ namespace yy
     break;
 
   case 142:
-#line 2321 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2323 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty]\n";
@@ -2092,7 +2094,7 @@ namespace yy
     break;
 
   case 143:
-#line 2331 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2333 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [collation]\n";
@@ -2105,7 +2107,7 @@ namespace yy
     break;
 
   case 144:
-#line 2341 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2343 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty]\n";
@@ -2118,7 +2120,7 @@ namespace yy
     break;
 
   case 145:
-#line 2351 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2353 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.collation]\n";
@@ -2131,7 +2133,7 @@ namespace yy
     break;
 
   case 146:
-#line 2361 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2363 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty.collation]\n";
@@ -2144,7 +2146,7 @@ namespace yy
     break;
 
   case 147:
-#line 2371 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2373 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty.collation]\n";
@@ -2157,7 +2159,7 @@ namespace yy
     break;
 
   case 148:
-#line 2387 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2389 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [ascending]\n";
@@ -2167,7 +2169,7 @@ namespace yy
     break;
 
   case 149:
-#line 2394 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2396 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [descending]\n";
@@ -2177,7 +2179,7 @@ namespace yy
     break;
 
   case 150:
-#line 2407 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2409 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [greatest]\n";
@@ -2188,7 +2190,7 @@ namespace yy
     break;
 
   case 151:
-#line 2415 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2417 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [least]\n";
@@ -2199,7 +2201,7 @@ namespace yy
     break;
 
   case 152:
-#line 2429 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2431 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderCollationSpec [ ]\n";
@@ -2210,7 +2212,7 @@ namespace yy
     break;
 
   case 153:
-#line 2443 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2445 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [some]\n";
@@ -2223,7 +2225,7 @@ namespace yy
     break;
 
   case 154:
-#line 2453 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2455 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [every]\n";
@@ -2236,7 +2238,7 @@ namespace yy
     break;
 
   case 155:
-#line 2469 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2471 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [single]\n";
@@ -2249,7 +2251,7 @@ namespace yy
     break;
 
   case 156:
-#line 2479 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2481 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [list]\n";
@@ -2261,7 +2263,7 @@ namespace yy
     break;
 
   case 157:
-#line 2494 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2496 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [in]\n";
@@ -2273,7 +2275,7 @@ namespace yy
     break;
 
   case 158:
-#line 2503 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2505 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [type.in]\n";
@@ -2286,7 +2288,7 @@ namespace yy
     break;
 
   case 159:
-#line 2519 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2521 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.return]\n";
@@ -2299,7 +2301,7 @@ namespace yy
     break;
 
   case 160:
-#line 2529 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2531 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.varname.return]\n";
@@ -2313,7 +2315,7 @@ namespace yy
     break;
 
   case 161:
-#line 2546 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2548 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [single]\n";
@@ -2325,7 +2327,7 @@ namespace yy
     break;
 
   case 162:
-#line 2555 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2557 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [list]\n";
@@ -2337,7 +2339,7 @@ namespace yy
     break;
 
   case 163:
-#line 2570 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2572 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.return]\n";
@@ -2349,7 +2351,7 @@ namespace yy
     break;
 
   case 164:
-#line 2579 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2581 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.as.return]\n";
@@ -2362,7 +2364,7 @@ namespace yy
     break;
 
   case 165:
-#line 2595 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2597 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IfExpr [ ]\n";
@@ -2373,7 +2375,7 @@ namespace yy
     break;
 
   case 166:
-#line 2609 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2611 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [and]\n";
@@ -2383,7 +2385,7 @@ namespace yy
     break;
 
   case 167:
-#line 2616 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2618 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [or.and]\n";
@@ -2394,7 +2396,7 @@ namespace yy
     break;
 
   case 168:
-#line 2630 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2632 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [comp]\n";
@@ -2404,7 +2406,7 @@ namespace yy
     break;
 
   case 169:
-#line 2637 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2639 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [and.comp]\n";
@@ -2415,7 +2417,7 @@ namespace yy
     break;
 
   case 170:
-#line 2659 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2661 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains]\n";
@@ -2425,7 +2427,7 @@ namespace yy
     break;
 
   case 171:
-#line 2666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2668 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -2439,7 +2441,7 @@ namespace yy
     break;
 
   case 172:
-#line 2677 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2679 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -2453,7 +2455,7 @@ namespace yy
     break;
 
   case 173:
-#line 2688 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2690 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "is" | "<<" | ">>" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -2467,7 +2469,7 @@ namespace yy
     break;
 
   case 174:
-#line 2705 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2707 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range]\n";
@@ -2477,7 +2479,7 @@ namespace yy
     break;
 
   case 175:
-#line 2712 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2714 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect]\n";
@@ -2490,7 +2492,7 @@ namespace yy
     break;
 
   case 176:
-#line 2722 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2724 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect.ftignore]\n";
@@ -2503,7 +2505,7 @@ namespace yy
     break;
 
   case 177:
-#line 2738 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2740 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add]\n";
@@ -2513,7 +2515,7 @@ namespace yy
     break;
 
   case 178:
-#line 2745 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2747 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add.to.add]\n";
@@ -2524,7 +2526,7 @@ namespace yy
     break;
 
   case 179:
-#line 2759 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2761 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult]\n";
@@ -2534,7 +2536,7 @@ namespace yy
     break;
 
   case 180:
-#line 2766 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2768 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult+mult]\n";
@@ -2544,7 +2546,7 @@ namespace yy
     break;
 
   case 181:
-#line 2773 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2775 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult-mult]\n";
@@ -2554,7 +2556,7 @@ namespace yy
     break;
 
   case 182:
-#line 2786 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2788 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [union]\n";
@@ -2563,7 +2565,7 @@ namespace yy
     break;
 
   case 183:
-#line 2792 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2794 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult*union]\n";
@@ -2573,7 +2575,7 @@ namespace yy
     break;
 
   case 184:
-#line 2799 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2801 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.div.union]\n";
@@ -2583,7 +2585,7 @@ namespace yy
     break;
 
   case 185:
-#line 2806 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2808 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.idiv.union]\n";
@@ -2593,7 +2595,7 @@ namespace yy
     break;
 
   case 186:
-#line 2813 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2815 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.mod.union]\n";
@@ -2603,7 +2605,7 @@ namespace yy
     break;
 
   case 187:
-#line 2826 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2828 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [interexcept]\n";
@@ -2613,7 +2615,7 @@ namespace yy
     break;
 
   case 188:
-#line 2833 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2835 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union.union.interexcept]\n";
@@ -2624,7 +2626,7 @@ namespace yy
     break;
 
   case 189:
-#line 2841 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2843 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union|interexcept]\n";
@@ -2635,7 +2637,7 @@ namespace yy
     break;
 
   case 190:
-#line 2855 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2857 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [instanceof]\n";
@@ -2645,7 +2647,7 @@ namespace yy
     break;
 
   case 191:
-#line 2862 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2864 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
@@ -2655,7 +2657,7 @@ namespace yy
     break;
 
   case 192:
-#line 2869 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2871 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
@@ -2665,7 +2667,7 @@ namespace yy
     break;
 
   case 193:
-#line 2882 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2884 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat]\n";
@@ -2675,7 +2677,7 @@ namespace yy
     break;
 
   case 194:
-#line 2889 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2891 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat.seqtype]\n";
@@ -2687,7 +2689,7 @@ namespace yy
     break;
 
   case 195:
-#line 2904 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2906 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable]\n";
@@ -2697,7 +2699,7 @@ namespace yy
     break;
 
   case 196:
-#line 2911 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2913 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable.seqtype]\n";
@@ -2709,7 +2711,7 @@ namespace yy
     break;
 
   case 197:
-#line 2926 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2928 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast]\n";
@@ -2719,7 +2721,7 @@ namespace yy
     break;
 
   case 198:
-#line 2933 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2935 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast.singletype]\n";
@@ -2731,7 +2733,7 @@ namespace yy
     break;
 
   case 199:
-#line 2948 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2950 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary]\n";
@@ -2741,7 +2743,7 @@ namespace yy
     break;
 
   case 200:
-#line 2955 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2957 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary.singletype]\n";
@@ -2753,7 +2755,7 @@ namespace yy
     break;
 
   case 201:
-#line 2970 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2972 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [value]\n";
@@ -2763,7 +2765,7 @@ namespace yy
     break;
 
   case 202:
-#line 2977 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2979 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [signlist.value]\n";
@@ -2775,7 +2777,7 @@ namespace yy
     break;
 
   case 203:
-#line 2992 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2994 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [+]\n";
@@ -2785,7 +2787,7 @@ namespace yy
     break;
 
   case 204:
-#line 2999 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3001 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [-]\n";
@@ -2795,7 +2797,7 @@ namespace yy
     break;
 
   case 205:
-#line 3006 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3008 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.+]\n";
@@ -2805,7 +2807,7 @@ namespace yy
     break;
 
   case 206:
-#line 3013 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3015 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.-]\n";
@@ -2817,7 +2819,7 @@ namespace yy
     break;
 
   case 207:
-#line 3028 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3030 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [validate]\n";
@@ -2827,7 +2829,7 @@ namespace yy
     break;
 
   case 208:
-#line 3035 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3037 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [path]\n";
@@ -2837,7 +2839,7 @@ namespace yy
     break;
 
   case 209:
-#line 3042 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3044 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [extension]\n";
@@ -2847,7 +2849,7 @@ namespace yy
     break;
 
   case 210:
-#line 3056 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3058 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [=]\n";
@@ -2857,7 +2859,7 @@ namespace yy
     break;
 
   case 211:
-#line 3063 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3065 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [!=]\n";
@@ -2867,7 +2869,7 @@ namespace yy
     break;
 
   case 212:
-#line 3070 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3072 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<]\n";
@@ -2877,7 +2879,7 @@ namespace yy
     break;
 
   case 213:
-#line 3077 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3079 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<=]\n";
@@ -2887,7 +2889,7 @@ namespace yy
     break;
 
   case 214:
-#line 3084 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3086 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>]\n";
@@ -2897,7 +2899,7 @@ namespace yy
     break;
 
   case 215:
-#line 3091 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3093 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>=]\n";
@@ -2907,7 +2909,7 @@ namespace yy
     break;
 
   case 216:
-#line 3104 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3106 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [eq]\n";
@@ -2917,7 +2919,7 @@ namespace yy
     break;
 
   case 217:
-#line 3111 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3113 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ne]\n";
@@ -2927,7 +2929,7 @@ namespace yy
     break;
 
   case 218:
-#line 3118 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3120 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [lt]\n";
@@ -2937,7 +2939,7 @@ namespace yy
     break;
 
   case 219:
-#line 3125 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3127 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [le]\n";
@@ -2947,7 +2949,7 @@ namespace yy
     break;
 
   case 220:
-#line 3132 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3134 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [gt]\n";
@@ -2957,7 +2959,7 @@ namespace yy
     break;
 
   case 221:
-#line 3139 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3141 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ge]\n";
@@ -2967,7 +2969,7 @@ namespace yy
     break;
 
   case 222:
-#line 3152 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3154 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [is]\n";
@@ -2977,7 +2979,7 @@ namespace yy
     break;
 
   case 223:
-#line 3159 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3161 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [<<]\n";
@@ -2987,7 +2989,7 @@ namespace yy
     break;
 
   case 224:
-#line 3166 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3168 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [>>]\n";
@@ -2997,7 +2999,7 @@ namespace yy
     break;
 
   case 225:
-#line 3180 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3182 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [expr]\n";
@@ -3007,7 +3009,7 @@ namespace yy
     break;
 
   case 226:
-#line 3187 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3189 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [mode.expr]\n";
@@ -3019,7 +3021,7 @@ namespace yy
     break;
 
   case 227:
-#line 3202 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3204 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist]\n";
@@ -3031,7 +3033,7 @@ namespace yy
     break;
 
   case 228:
-#line 3211 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3213 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist.expr]\n";
@@ -3043,7 +3045,7 @@ namespace yy
     break;
 
   case 229:
-#line 3226 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3228 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [single]\n";
@@ -3055,7 +3057,7 @@ namespace yy
     break;
 
   case 230:
-#line 3235 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3237 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [list]\n";
@@ -3069,7 +3071,7 @@ namespace yy
     break;
 
   case 231:
-#line 3252 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3254 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Pragma [ ]\n";
@@ -3082,7 +3084,7 @@ namespace yy
     break;
 
   case 232:
-#line 3298 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3300 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/]\n";
@@ -3092,7 +3094,7 @@ namespace yy
     break;
 
   case 233:
-#line 3305 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3307 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/relative]\n";
@@ -3102,7 +3104,7 @@ namespace yy
     break;
 
   case 234:
-#line 3312 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3314 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [//relative]\n";
@@ -3112,7 +3114,7 @@ namespace yy
     break;
 
   case 235:
-#line 3319 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3321 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [relative]\n";
@@ -3123,7 +3125,7 @@ namespace yy
     break;
 
   case 236:
-#line 3333 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3335 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step]\n";
@@ -3134,7 +3136,7 @@ namespace yy
     break;
 
   case 237:
-#line 3341 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3343 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step/relative]\n";
@@ -3144,7 +3146,7 @@ namespace yy
     break;
 
   case 238:
-#line 3348 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3350 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step//relative]\n";
@@ -3154,7 +3156,7 @@ namespace yy
     break;
 
   case 239:
-#line 3361 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3363 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [axis]\n";
@@ -3164,7 +3166,7 @@ namespace yy
     break;
 
   case 240:
-#line 3368 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3370 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [filter]\n";
@@ -3174,7 +3176,7 @@ namespace yy
     break;
 
   case 241:
-#line 3381 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3383 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward]\n";
@@ -3186,7 +3188,7 @@ namespace yy
     break;
 
   case 242:
-#line 3390 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3392 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward.predlist]\n";
@@ -3198,7 +3200,7 @@ namespace yy
     break;
 
   case 243:
-#line 3399 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3401 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse]\n";
@@ -3210,7 +3212,7 @@ namespace yy
     break;
 
   case 244:
-#line 3408 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3410 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse.predlist]\n";
@@ -3222,7 +3224,7 @@ namespace yy
     break;
 
   case 245:
-#line 3423 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3425 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [nodetest]\n";
@@ -3234,7 +3236,7 @@ namespace yy
     break;
 
   case 246:
-#line 3432 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3434 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [abbrev]\n";
@@ -3245,7 +3247,7 @@ namespace yy
     break;
 
   case 247:
-#line 3446 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3448 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [child]\n";
@@ -3255,7 +3257,7 @@ namespace yy
     break;
 
   case 248:
-#line 3453 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3455 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant]\n";
@@ -3265,7 +3267,7 @@ namespace yy
     break;
 
   case 249:
-#line 3460 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3462 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [attribute]\n";
@@ -3275,7 +3277,7 @@ namespace yy
     break;
 
   case 250:
-#line 3467 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3469 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [self]\n";
@@ -3285,7 +3287,7 @@ namespace yy
     break;
 
   case 251:
-#line 3474 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3476 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant_or_self]\n";
@@ -3295,7 +3297,7 @@ namespace yy
     break;
 
   case 252:
-#line 3481 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3483 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following_sibling]\n";
@@ -3305,7 +3307,7 @@ namespace yy
     break;
 
   case 253:
-#line 3488 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3490 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following]\n";
@@ -3315,7 +3317,7 @@ namespace yy
     break;
 
   case 254:
-#line 3501 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3503 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [nodetest]\n";
@@ -3325,7 +3327,7 @@ namespace yy
     break;
 
   case 255:
-#line 3508 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3510 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [@ nodetest]\n";
@@ -3335,7 +3337,7 @@ namespace yy
     break;
 
   case 256:
-#line 3521 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3523 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [nodetest]\n";
@@ -3347,7 +3349,7 @@ namespace yy
     break;
 
   case 257:
-#line 3530 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3532 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [..]\n";
@@ -3359,7 +3361,7 @@ namespace yy
     break;
 
   case 258:
-#line 3545 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3547 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [parent]\n";
@@ -3369,7 +3371,7 @@ namespace yy
     break;
 
   case 259:
-#line 3552 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3554 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor]\n";
@@ -3379,7 +3381,7 @@ namespace yy
     break;
 
   case 260:
-#line 3559 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3561 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding_sibling]\n";
@@ -3389,7 +3391,7 @@ namespace yy
     break;
 
   case 261:
-#line 3566 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3568 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding]\n";
@@ -3399,7 +3401,7 @@ namespace yy
     break;
 
   case 262:
-#line 3573 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3575 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor_or_self]\n";
@@ -3409,7 +3411,7 @@ namespace yy
     break;
 
   case 263:
-#line 3591 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3593 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [kindtest]\n";
@@ -3419,7 +3421,7 @@ namespace yy
     break;
 
   case 264:
-#line 3598 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3600 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [nametest]\n";
@@ -3429,7 +3431,7 @@ namespace yy
     break;
 
   case 265:
-#line 3611 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3613 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [qname]\n";
@@ -3439,7 +3441,7 @@ namespace yy
     break;
 
   case 266:
-#line 3618 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3620 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [wildcard]\n";
@@ -3449,7 +3451,7 @@ namespace yy
     break;
 
   case 267:
-#line 3631 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3633 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*]\n";
@@ -3462,7 +3464,7 @@ namespace yy
     break;
 
   case 268:
-#line 3641 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3643 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [pref:*]\n";
@@ -3475,7 +3477,7 @@ namespace yy
     break;
 
   case 269:
-#line 3651 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3653 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*:qname]\n";
@@ -3488,7 +3490,7 @@ namespace yy
     break;
 
   case 270:
-#line 3667 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3669 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary]\n";
@@ -3498,7 +3500,7 @@ namespace yy
     break;
 
   case 271:
-#line 3674 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3676 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary.predlist]\n";
@@ -3510,7 +3512,7 @@ namespace yy
     break;
 
   case 272:
-#line 3689 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3691 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [single]\n";
@@ -3522,7 +3524,7 @@ namespace yy
     break;
 
   case 273:
-#line 3698 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3700 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [list]\n";
@@ -3536,7 +3538,7 @@ namespace yy
     break;
 
   case 274:
-#line 3715 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3717 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Predicate [ ]\n";
@@ -3546,7 +3548,7 @@ namespace yy
     break;
 
   case 275:
-#line 3729 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3731 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [literal]\n";
@@ -3556,7 +3558,7 @@ namespace yy
     break;
 
   case 276:
-#line 3736 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3738 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [varref]\n";
@@ -3566,7 +3568,7 @@ namespace yy
     break;
 
   case 277:
-#line 3743 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3745 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [paren]\n";
@@ -3576,7 +3578,7 @@ namespace yy
     break;
 
   case 278:
-#line 3750 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3752 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [context_item]\n";
@@ -3586,7 +3588,7 @@ namespace yy
     break;
 
   case 279:
-#line 3757 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3759 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [funcall]\n";
@@ -3596,7 +3598,7 @@ namespace yy
     break;
 
   case 280:
-#line 3764 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3766 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [cons]\n";
@@ -3606,7 +3608,7 @@ namespace yy
     break;
 
   case 281:
-#line 3771 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3773 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [ordered]\n";
@@ -3616,7 +3618,7 @@ namespace yy
     break;
 
   case 282:
-#line 3778 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3780 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [unordered]\n";
@@ -3626,7 +3628,7 @@ namespace yy
     break;
 
   case 283:
-#line 3791 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3793 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [numeric]\n";
@@ -3636,7 +3638,7 @@ namespace yy
     break;
 
   case 284:
-#line 3798 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3800 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [string]\n";
@@ -3646,7 +3648,7 @@ namespace yy
     break;
 
   case 285:
-#line 3811 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3813 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [decimal]\n";
@@ -3656,7 +3658,7 @@ namespace yy
     break;
 
   case 286:
-#line 3818 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3820 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [int]\n";
@@ -3666,7 +3668,7 @@ namespace yy
     break;
 
   case 287:
-#line 3825 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3827 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [double]\n";
@@ -3676,7 +3678,7 @@ namespace yy
     break;
 
   case 288:
-#line 3838 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3840 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarRef [ ]\n";
@@ -3686,7 +3688,7 @@ namespace yy
     break;
 
   case 289:
-#line 3851 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3853 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [()]\n";
@@ -3696,7 +3698,7 @@ namespace yy
     break;
 
   case 290:
-#line 3858 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3860 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [(expr)]\n";
@@ -3707,7 +3709,7 @@ namespace yy
     break;
 
   case 291:
-#line 3872 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3874 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ContextItemExpr [.]\n";
@@ -3717,7 +3719,7 @@ namespace yy
     break;
 
   case 292:
-#line 3885 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3887 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderedExpr [expr]\n";
@@ -3728,7 +3730,7 @@ namespace yy
     break;
 
   case 293:
-#line 3899 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3901 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnorderedExpr [expr]\n";
@@ -3739,7 +3741,7 @@ namespace yy
     break;
 
   case 294:
-#line 3958 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3960 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [ ]\n";
@@ -3751,7 +3753,7 @@ namespace yy
     break;
 
   case 295:
-#line 3967 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3969 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [arglist]\n";
@@ -3763,7 +3765,7 @@ namespace yy
     break;
 
   case 296:
-#line 3982 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3984 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [single]\n";
@@ -3775,7 +3777,7 @@ namespace yy
     break;
 
   case 297:
-#line 3991 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3993 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [list]\n";
@@ -3787,7 +3789,7 @@ namespace yy
     break;
 
   case 298:
-#line 4006 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4008 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [direct]\n";
@@ -3797,7 +3799,7 @@ namespace yy
     break;
 
   case 299:
-#line 4013 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4015 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [computed]\n";
@@ -3807,7 +3809,7 @@ namespace yy
     break;
 
   case 300:
-#line 4026 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4028 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [element]\n";
@@ -3817,7 +3819,7 @@ namespace yy
     break;
 
   case 301:
-#line 4033 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4035 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [comment]\n";
@@ -3827,7 +3829,7 @@ namespace yy
     break;
 
   case 302:
-#line 4040 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4042 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [pi]\n";
@@ -3837,7 +3839,7 @@ namespace yy
     break;
 
   case 303:
-#line 4053 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4055 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname/> ]\n";
@@ -3851,7 +3853,7 @@ namespace yy
     break;
 
   case 304:
-#line 4064 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4066 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist/> ]\n";
@@ -3865,7 +3867,7 @@ namespace yy
     break;
 
   case 305:
-#line 4075 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4077 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname></qname>]\n";
@@ -3879,7 +3881,7 @@ namespace yy
     break;
 
   case 306:
-#line 4086 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4088 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname>content</qname>]\n";
@@ -3893,7 +3895,7 @@ namespace yy
     break;
 
   case 307:
-#line 4097 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4099 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist></qname>]\n";
@@ -3907,7 +3909,7 @@ namespace yy
     break;
 
   case 308:
-#line 4108 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4110 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
@@ -3921,7 +3923,7 @@ namespace yy
     break;
 
   case 309:
-#line 4126 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4128 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [single]\n";
@@ -3933,7 +3935,7 @@ namespace yy
     break;
 
   case 310:
-#line 4135 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4137 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [list]\n";
@@ -3945,7 +3947,7 @@ namespace yy
     break;
 
   case 311:
-#line 4150 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4152 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [single]\n";
@@ -3957,7 +3959,7 @@ namespace yy
     break;
 
   case 312:
-#line 4159 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4161 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [list]\n";
@@ -3971,7 +3973,7 @@ namespace yy
     break;
 
   case 313:
-#line 4176 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4178 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttr [ ]\n";
@@ -3983,7 +3985,7 @@ namespace yy
     break;
 
   case 314:
-#line 4191 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4193 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [quote]\n";
@@ -3994,7 +3996,7 @@ namespace yy
     break;
 
   case 315:
-#line 4199 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4201 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [apos]\n";
@@ -4005,7 +4007,7 @@ namespace yy
     break;
 
   case 316:
-#line 4213 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4215 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList[empty]\n";
@@ -4015,14 +4017,14 @@ namespace yy
     break;
 
   case 317:
-#line 4220 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4222 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 318:
-#line 4227 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4229 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [""]\n";
@@ -4034,7 +4036,7 @@ namespace yy
     break;
 
   case 319:
-#line 4236 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4238 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [single]\n";
@@ -4046,7 +4048,7 @@ namespace yy
     break;
 
   case 320:
-#line 4245 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4247 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list ""]\n";
@@ -4060,7 +4062,7 @@ namespace yy
     break;
 
   case 321:
-#line 4256 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4258 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list]\n";
@@ -4073,7 +4075,7 @@ namespace yy
     break;
 
   case 322:
-#line 4272 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4274 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']\n";
@@ -4083,14 +4085,14 @@ namespace yy
     break;
 
   case 323:
-#line 4279 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4281 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 324:
-#line 4286 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4288 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']\n";
@@ -4102,7 +4104,7 @@ namespace yy
     break;
 
   case 325:
-#line 4295 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4297 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [single]\n";
@@ -4114,7 +4116,7 @@ namespace yy
     break;
 
   case 326:
-#line 4304 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4306 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.'']\n";
@@ -4128,7 +4130,7 @@ namespace yy
     break;
 
   case 327:
-#line 4315 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4317 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.single]\n";
@@ -4142,7 +4144,7 @@ namespace yy
     break;
 
   case 328:
-#line 4332 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4334 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [quote_attr_content]\n";
@@ -4153,7 +4155,7 @@ namespace yy
     break;
 
   case 329:
-#line 4340 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4342 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [common_content]\n";
@@ -4164,7 +4166,7 @@ namespace yy
     break;
 
   case 330:
-#line 4354 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4356 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [apos_attr_content]\n";
@@ -4175,7 +4177,7 @@ namespace yy
     break;
 
   case 331:
-#line 4362 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4364 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [common_content]\n";
@@ -4186,7 +4188,7 @@ namespace yy
     break;
 
   case 332:
-#line 4376 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4378 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cons]\n";
@@ -4197,7 +4199,7 @@ namespace yy
     break;
 
   case 333:
-#line 4384 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4386 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [elem_content]\n";
@@ -4208,7 +4210,7 @@ namespace yy
     break;
 
   case 334:
-#line 4392 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4394 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cdata]\n";
@@ -4220,7 +4222,7 @@ namespace yy
     break;
 
   case 335:
-#line 4401 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4403 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [common_content]\n";
@@ -4232,7 +4234,7 @@ namespace yy
     break;
 
   case 336:
-#line 4416 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4418 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [entity_ref]\n";
@@ -4244,7 +4246,7 @@ namespace yy
     break;
 
   case 337:
-#line 4425 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4427 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [char_ref]\n";
@@ -4256,7 +4258,7 @@ namespace yy
     break;
 
   case 338:
-#line 4434 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4436 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [{{]\n";
@@ -4267,7 +4269,7 @@ namespace yy
     break;
 
   case 339:
-#line 4442 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4444 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [}}]\n";
@@ -4278,7 +4280,7 @@ namespace yy
     break;
 
   case 340:
-#line 4450 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4452 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [expr]\n";
@@ -4289,7 +4291,7 @@ namespace yy
     break;
 
   case 341:
-#line 4464 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4466 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirCommentConstructor [ ]\n";
@@ -4300,7 +4302,7 @@ namespace yy
     break;
 
   case 342:
-#line 4483 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4485 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target]\n";
@@ -4311,7 +4313,7 @@ namespace yy
     break;
 
   case 343:
-#line 4491 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4493 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target.charlit]\n";
@@ -4323,7 +4325,7 @@ namespace yy
     break;
 
   case 344:
-#line 4511 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4513 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CDataSection [ ]\n";
@@ -4333,7 +4335,7 @@ namespace yy
     break;
 
   case 345:
-#line 4529 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4531 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [doc]\n";
@@ -4343,7 +4345,7 @@ namespace yy
     break;
 
   case 346:
-#line 4536 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4538 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [elem]\n";
@@ -4353,7 +4355,7 @@ namespace yy
     break;
 
   case 347:
-#line 4543 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4545 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [attr]\n";
@@ -4363,7 +4365,7 @@ namespace yy
     break;
 
   case 348:
-#line 4550 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4552 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [text]\n";
@@ -4373,7 +4375,7 @@ namespace yy
     break;
 
   case 349:
-#line 4557 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4559 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [comment]\n";
@@ -4383,7 +4385,7 @@ namespace yy
     break;
 
   case 350:
-#line 4564 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4566 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [pi]\n";
@@ -4393,7 +4395,7 @@ namespace yy
     break;
 
   case 351:
-#line 4577 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4579 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompDocConstructor [ ]\n";
@@ -4404,7 +4406,7 @@ namespace yy
     break;
 
   case 352:
-#line 4591 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4593 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [ ]\n";
@@ -4416,7 +4418,7 @@ namespace yy
     break;
 
   case 353:
-#line 4600 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4602 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [content]\n";
@@ -4428,7 +4430,7 @@ namespace yy
     break;
 
   case 354:
-#line 4609 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4611 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name]\n";
@@ -4439,7 +4441,7 @@ namespace yy
     break;
 
   case 355:
-#line 4617 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4619 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name.content]\n";
@@ -4450,7 +4452,7 @@ namespace yy
     break;
 
   case 356:
-#line 4645 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4647 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [ ]\n";
@@ -4462,7 +4464,7 @@ namespace yy
     break;
 
   case 357:
-#line 4654 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4656 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [val]\n";
@@ -4474,7 +4476,7 @@ namespace yy
     break;
 
   case 358:
-#line 4663 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name]\n";
@@ -4485,7 +4487,7 @@ namespace yy
     break;
 
   case 359:
-#line 4671 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4673 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name.val]\n";
@@ -4496,7 +4498,7 @@ namespace yy
     break;
 
   case 360:
-#line 4685 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4687 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompTextConstructor [content]\n";
@@ -4507,7 +4509,7 @@ namespace yy
     break;
 
   case 361:
-#line 4699 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4701 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompCommentConstructor [content]\n";
@@ -4518,7 +4520,7 @@ namespace yy
     break;
 
   case 362:
-#line 4713 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4715 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [ ]\n";
@@ -4530,7 +4532,7 @@ namespace yy
     break;
 
   case 363:
-#line 4722 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4724 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [content]\n";
@@ -4542,7 +4544,7 @@ namespace yy
     break;
 
   case 364:
-#line 4731 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4733 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target]\n";
@@ -4553,7 +4555,7 @@ namespace yy
     break;
 
   case 365:
-#line 4739 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4741 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target.content]\n";
@@ -4564,7 +4566,7 @@ namespace yy
     break;
 
   case 366:
-#line 4753 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4755 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic]\n";
@@ -4576,7 +4578,7 @@ namespace yy
     break;
 
   case 367:
-#line 4762 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4764 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic ?]\n";
@@ -4588,7 +4590,7 @@ namespace yy
     break;
 
   case 368:
-#line 4777 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4779 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeDeclaration [as seqtype]\n";
@@ -4599,7 +4601,7 @@ namespace yy
     break;
 
   case 369:
-#line 4791 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4793 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type]\n";
@@ -4611,7 +4613,7 @@ namespace yy
     break;
 
   case 370:
-#line 4800 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4802 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type.occurs]\n";
@@ -4623,7 +4625,7 @@ namespace yy
     break;
 
   case 371:
-#line 4809 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4811 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [void]\n";
@@ -4633,7 +4635,7 @@ namespace yy
     break;
 
   case 372:
-#line 4849 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4851 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [?]\n";
@@ -4644,7 +4646,7 @@ namespace yy
     break;
 
   case 373:
-#line 4857 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4859 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [*]\n";
@@ -4655,7 +4657,7 @@ namespace yy
     break;
 
   case 374:
-#line 4865 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4867 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [+]\n";
@@ -4666,7 +4668,7 @@ namespace yy
     break;
 
   case 375:
-#line 4879 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4881 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [atomic]\n";
@@ -4676,7 +4678,7 @@ namespace yy
     break;
 
   case 376:
-#line 4886 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4888 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [kind]\n";
@@ -4686,7 +4688,7 @@ namespace yy
     break;
 
   case 377:
-#line 4893 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4895 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [item]\n";
@@ -4696,7 +4698,7 @@ namespace yy
     break;
 
   case 378:
-#line 4906 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4908 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AtomicType [qname]\n";
@@ -4707,7 +4709,7 @@ namespace yy
     break;
 
   case 379:
-#line 4920 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4922 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [doc]\n";
@@ -4717,7 +4719,7 @@ namespace yy
     break;
 
   case 380:
-#line 4927 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4929 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [elem]\n";
@@ -4727,7 +4729,7 @@ namespace yy
     break;
 
   case 381:
-#line 4934 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4936 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [attr]\n";
@@ -4737,7 +4739,7 @@ namespace yy
     break;
 
   case 382:
-#line 4941 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4943 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_elem]\n";
@@ -4747,7 +4749,7 @@ namespace yy
     break;
 
   case 383:
-#line 4948 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4950 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_attr]\n";
@@ -4757,7 +4759,7 @@ namespace yy
     break;
 
   case 384:
-#line 4955 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4957 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [pi]\n";
@@ -4767,7 +4769,7 @@ namespace yy
     break;
 
   case 385:
-#line 4962 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4964 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [comment]\n";
@@ -4777,7 +4779,7 @@ namespace yy
     break;
 
   case 386:
-#line 4969 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4971 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [text]\n";
@@ -4787,7 +4789,7 @@ namespace yy
     break;
 
   case 387:
-#line 4976 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4978 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [any]\n";
@@ -4797,7 +4799,7 @@ namespace yy
     break;
 
   case 388:
-#line 4989 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4991 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AnyKindTest [ ]\n";
@@ -4807,7 +4809,7 @@ namespace yy
     break;
 
   case 389:
-#line 5002 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5004 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [ ]\n";
@@ -4817,7 +4819,7 @@ namespace yy
     break;
 
   case 390:
-#line 5009 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5011 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [elem]\n";
@@ -4828,7 +4830,7 @@ namespace yy
     break;
 
   case 391:
-#line 5017 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5019 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [schema_elem]\n";
@@ -4839,7 +4841,7 @@ namespace yy
     break;
 
   case 392:
-#line 5031 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5033 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TextTest [ ]\n";
@@ -4849,7 +4851,7 @@ namespace yy
     break;
 
   case 393:
-#line 5044 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5046 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommentTest [ ]\n";
@@ -4859,7 +4861,7 @@ namespace yy
     break;
 
   case 394:
-#line 5057 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5059 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ ]\n";
@@ -4869,7 +4871,7 @@ namespace yy
     break;
 
   case 395:
-#line 5064 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5066 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ncname]\n";
@@ -4879,7 +4881,7 @@ namespace yy
     break;
 
   case 396:
-#line 5071 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5073 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [stringlit]\n";
@@ -4889,7 +4891,7 @@ namespace yy
     break;
 
   case 397:
-#line 5084 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5086 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [ ]\n";
@@ -4901,7 +4903,7 @@ namespace yy
     break;
 
   case 398:
-#line 5093 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5095 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name]\n";
@@ -4913,7 +4915,7 @@ namespace yy
     break;
 
   case 399:
-#line 5102 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5104 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name.type]\n";
@@ -4925,7 +4927,7 @@ namespace yy
     break;
 
   case 400:
-#line 5111 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5113 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*]\n";
@@ -4937,7 +4939,7 @@ namespace yy
     break;
 
   case 401:
-#line 5120 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5122 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*.type]\n";
@@ -4949,7 +4951,7 @@ namespace yy
     break;
 
   case 402:
-#line 5135 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5137 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaAttributeTest [ ]\n";
@@ -4960,7 +4962,7 @@ namespace yy
     break;
 
   case 403:
-#line 5149 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5151 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [ ]\n";
@@ -4972,7 +4974,7 @@ namespace yy
     break;
 
   case 404:
-#line 5158 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5160 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name]\n";
@@ -4984,7 +4986,7 @@ namespace yy
     break;
 
   case 405:
-#line 5167 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5169 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]\n";
@@ -4996,7 +4998,7 @@ namespace yy
     break;
 
   case 406:
-#line 5176 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5178 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]\n";
@@ -5008,7 +5010,7 @@ namespace yy
     break;
 
   case 407:
-#line 5185 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5187 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*]\n";
@@ -5021,7 +5023,7 @@ namespace yy
     break;
 
   case 408:
-#line 5195 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5197 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]\n";
@@ -5034,7 +5036,7 @@ namespace yy
     break;
 
   case 409:
-#line 5205 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5207 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]\n";
@@ -5047,7 +5049,7 @@ namespace yy
     break;
 
   case 410:
-#line 5221 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5223 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaElementTest [ ]\n";
@@ -5058,7 +5060,7 @@ namespace yy
     break;
 
   case 411:
-#line 5245 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5247 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name]\n";
@@ -5069,7 +5071,7 @@ namespace yy
     break;
 
   case 412:
-#line 5255 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5257 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name?]\n";
@@ -5081,7 +5083,7 @@ namespace yy
     break;
 
   case 413:
-#line 5278 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5280 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StringLiteral [ ]\n";
@@ -5091,7 +5093,7 @@ namespace yy
     break;
 
   case 414:
-#line 5320 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5322 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [ ]\n";
@@ -5100,7 +5102,7 @@ namespace yy
     break;
 
   case 415:
-#line 5332 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5334 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr]\n";
@@ -5109,7 +5111,7 @@ namespace yy
     break;
 
   case 416:
-#line 5338 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5340 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.as_first]\n";
@@ -5118,7 +5120,7 @@ namespace yy
     break;
 
   case 417:
-#line 5344 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5346 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.as_last]\n";
@@ -5127,7 +5129,7 @@ namespace yy
     break;
 
   case 418:
-#line 5350 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5352 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.after]\n";
@@ -5136,7 +5138,7 @@ namespace yy
     break;
 
   case 419:
-#line 5356 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5358 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.before]\n";
@@ -5145,7 +5147,7 @@ namespace yy
     break;
 
   case 420:
-#line 5368 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5370 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteExpr [expr]\n";
@@ -5154,7 +5156,7 @@ namespace yy
     break;
 
   case 421:
-#line 5380 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5382 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceExpr [expr.expr]\n";
@@ -5163,7 +5165,7 @@ namespace yy
     break;
 
   case 422:
-#line 5386 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5388 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceExpr [value.expr]\n";
@@ -5172,7 +5174,7 @@ namespace yy
     break;
 
   case 423:
-#line 5398 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5400 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RenameExpr [expr.expr]\n";
@@ -5181,7 +5183,7 @@ namespace yy
     break;
 
   case 424:
-#line 5425 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5427 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TransformExpr [ ]\n";
@@ -5190,7 +5192,7 @@ namespace yy
     break;
 
   case 425:
-#line 5437 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5439 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [single]\n";
@@ -5199,7 +5201,7 @@ namespace yy
     break;
 
   case 426:
-#line 5443 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5445 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [list]\n";
@@ -5208,7 +5210,7 @@ namespace yy
     break;
 
   case 427:
-#line 5463 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5465 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or]\n";
@@ -5217,7 +5219,7 @@ namespace yy
     break;
 
   case 428:
-#line 5469 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5471 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity]\n";
@@ -5226,7 +5228,7 @@ namespace yy
     break;
 
   case 429:
-#line 5475 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5477 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.weight_range]\n";
@@ -5235,7 +5237,7 @@ namespace yy
     break;
 
   case 430:
-#line 5481 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5483 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity.weight_range]\n";
@@ -5244,7 +5246,7 @@ namespace yy
     break;
 
   case 431:
-#line 5493 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5495 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_single]\n";
@@ -5253,7 +5255,7 @@ namespace yy
     break;
 
   case 432:
-#line 5499 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5501 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_single]\n";
@@ -5262,7 +5264,7 @@ namespace yy
     break;
 
   case 433:
-#line 5505 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5507 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_list]\n";
@@ -5271,7 +5273,7 @@ namespace yy
     break;
 
   case 434:
-#line 5511 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5513 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_list]\n";
@@ -5280,7 +5282,7 @@ namespace yy
     break;
 
   case 435:
-#line 5523 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5525 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [and]\n";
@@ -5289,7 +5291,7 @@ namespace yy
     break;
 
   case 436:
-#line 5529 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5531 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [or.and]\n";
@@ -5298,7 +5300,7 @@ namespace yy
     break;
 
   case 437:
-#line 5541 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5543 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [mild_not]\n";
@@ -5307,7 +5309,7 @@ namespace yy
     break;
 
   case 438:
-#line 5547 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5549 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [and.mild_not]\n";
@@ -5316,7 +5318,7 @@ namespace yy
     break;
 
   case 439:
-#line 5559 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5561 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [unary_not]\n";
@@ -5325,7 +5327,7 @@ namespace yy
     break;
 
   case 440:
-#line 5565 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5567 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [mild_not.unary_not]\n";
@@ -5334,7 +5336,7 @@ namespace yy
     break;
 
   case 441:
-#line 5577 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5579 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [words]\n";
@@ -5343,7 +5345,7 @@ namespace yy
     break;
 
   case 442:
-#line 5583 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5585 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [not.words]\n";
@@ -5352,7 +5354,7 @@ namespace yy
     break;
 
   case 443:
-#line 5595 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5597 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words]\n";
@@ -5361,7 +5363,7 @@ namespace yy
     break;
 
   case 444:
-#line 5601 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5603 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words.times]\n";
@@ -5370,7 +5372,7 @@ namespace yy
     break;
 
   case 445:
-#line 5607 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5609 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [selection]\n";
@@ -5379,7 +5381,7 @@ namespace yy
     break;
 
   case 446:
-#line 5619 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5621 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value]\n";
@@ -5388,7 +5390,7 @@ namespace yy
     break;
 
   case 447:
-#line 5625 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value.any_all_option]\n";
@@ -5397,7 +5399,7 @@ namespace yy
     break;
 
   case 448:
-#line 5637 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5639 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [literal]\n";
@@ -5406,7 +5408,7 @@ namespace yy
     break;
 
   case 449:
-#line 5643 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5645 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [expr]\n";
@@ -5415,7 +5417,7 @@ namespace yy
     break;
 
   case 450:
-#line 5655 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5657 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [order]\n";
@@ -5424,7 +5426,7 @@ namespace yy
     break;
 
   case 451:
-#line 5661 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5663 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [window]\n";
@@ -5433,7 +5435,7 @@ namespace yy
     break;
 
   case 452:
-#line 5667 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5669 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [distance]\n";
@@ -5442,7 +5444,7 @@ namespace yy
     break;
 
   case 453:
-#line 5673 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5675 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [scope]\n";
@@ -5451,7 +5453,7 @@ namespace yy
     break;
 
   case 454:
-#line 5679 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5681 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [content]\n";
@@ -5460,7 +5462,7 @@ namespace yy
     break;
 
   case 455:
-#line 5691 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5693 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOrderedIndicator [ ]\n";
@@ -5469,7 +5471,7 @@ namespace yy
     break;
 
   case 456:
-#line 5703 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5705 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [case]\n";
@@ -5479,7 +5481,7 @@ namespace yy
     break;
 
   case 457:
-#line 5710 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5712 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [diacritics]\n";
@@ -5489,7 +5491,7 @@ namespace yy
     break;
 
   case 458:
-#line 5717 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5719 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stem]\n";
@@ -5499,7 +5501,7 @@ namespace yy
     break;
 
   case 459:
-#line 5724 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5726 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [thesaurus]\n";
@@ -5509,7 +5511,7 @@ namespace yy
     break;
 
   case 460:
-#line 5731 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5733 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stopword]\n";
@@ -5519,7 +5521,7 @@ namespace yy
     break;
 
   case 461:
-#line 5738 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5740 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [language]\n";
@@ -5529,7 +5531,7 @@ namespace yy
     break;
 
   case 462:
-#line 5745 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5747 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [wildcard]\n";
@@ -5539,7 +5541,7 @@ namespace yy
     break;
 
   case 463:
-#line 5758 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5760 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [lower]\n";
@@ -5548,7 +5550,7 @@ namespace yy
     break;
 
   case 464:
-#line 5764 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5766 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [upper]\n";
@@ -5557,7 +5559,7 @@ namespace yy
     break;
 
   case 465:
-#line 5770 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5772 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [sensitive]\n";
@@ -5566,7 +5568,7 @@ namespace yy
     break;
 
   case 466:
-#line 5776 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5778 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [insensitive]\n";
@@ -5575,7 +5577,7 @@ namespace yy
     break;
 
   case 467:
-#line 5788 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5790 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [with]\n";
@@ -5584,7 +5586,7 @@ namespace yy
     break;
 
   case 468:
-#line 5794 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5796 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [without]\n";
@@ -5593,7 +5595,7 @@ namespace yy
     break;
 
   case 469:
-#line 5800 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5802 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [sensitive]\n";
@@ -5602,7 +5604,7 @@ namespace yy
     break;
 
   case 470:
-#line 5806 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5808 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [insensitive]\n";
@@ -5611,7 +5613,7 @@ namespace yy
     break;
 
   case 471:
-#line 5818 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5820 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [with]\n";
@@ -5620,7 +5622,7 @@ namespace yy
     break;
 
   case 472:
-#line 5824 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5826 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [without]\n";
@@ -5629,7 +5631,7 @@ namespace yy
     break;
 
   case 473:
-#line 5836 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5838 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [id]\n";
@@ -5638,7 +5640,7 @@ namespace yy
     break;
 
   case 474:
-#line 5842 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5844 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [default]\n";
@@ -5647,7 +5649,7 @@ namespace yy
     break;
 
   case 475:
-#line 5848 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5850 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id)]\n";
@@ -5656,7 +5658,7 @@ namespace yy
     break;
 
   case 476:
-#line 5854 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5856 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id,id,..)]\n";
@@ -5665,7 +5667,7 @@ namespace yy
     break;
 
   case 477:
-#line 5860 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5862 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default)]\n";
@@ -5674,7 +5676,7 @@ namespace yy
     break;
 
   case 478:
-#line 5866 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5868 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default,id,id,..)]\n";
@@ -5683,7 +5685,7 @@ namespace yy
     break;
 
   case 479:
-#line 5872 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5874 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [without]\n";
@@ -5692,7 +5694,7 @@ namespace yy
     break;
 
   case 480:
-#line 5884 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5886 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [single]\n";
@@ -5701,7 +5703,7 @@ namespace yy
     break;
 
   case 481:
-#line 5890 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5892 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [list]\n";
@@ -5710,7 +5712,7 @@ namespace yy
     break;
 
   case 482:
-#line 5902 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5904 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name]\n";
@@ -5719,7 +5721,7 @@ namespace yy
     break;
 
   case 483:
-#line 5908 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5910 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel]\n";
@@ -5728,7 +5730,7 @@ namespace yy
     break;
 
   case 484:
-#line 5914 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5916 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.range]\n";
@@ -5737,7 +5739,7 @@ namespace yy
     break;
 
   case 485:
-#line 5920 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5922 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel.range]\n";
@@ -5746,7 +5748,7 @@ namespace yy
     break;
 
   case 486:
-#line 5932 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5934 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list]\n";
@@ -5755,7 +5757,7 @@ namespace yy
     break;
 
   case 487:
-#line 5938 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5940 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list.incl_excl]\n";
@@ -5764,7 +5766,7 @@ namespace yy
     break;
 
   case 488:
-#line 5944 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5946 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default]\n";
@@ -5773,7 +5775,7 @@ namespace yy
     break;
 
   case 489:
-#line 5950 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5952 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default.incl_excl]\n";
@@ -5782,7 +5784,7 @@ namespace yy
     break;
 
   case 490:
-#line 5956 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5958 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [without]\n";
@@ -5791,7 +5793,7 @@ namespace yy
     break;
 
   case 491:
-#line 5968 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5970 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [.]\n";
@@ -5800,7 +5802,7 @@ namespace yy
     break;
 
   case 492:
-#line 5974 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5976 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [*]\n";
@@ -5809,7 +5811,7 @@ namespace yy
     break;
 
   case 493:
-#line 5986 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5988 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [.]\n";
@@ -5818,7 +5820,7 @@ namespace yy
     break;
 
   case 494:
-#line 5992 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5994 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [(*)]\n";
@@ -5827,7 +5829,7 @@ namespace yy
     break;
 
   case 495:
-#line 6004 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6006 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [.]\n";
@@ -5836,7 +5838,7 @@ namespace yy
     break;
 
   case 496:
-#line 6010 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6012 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [*]\n";
@@ -5845,7 +5847,7 @@ namespace yy
     break;
 
   case 497:
-#line 6022 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6024 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [union]\n";
@@ -5854,7 +5856,7 @@ namespace yy
     break;
 
   case 498:
-#line 6028 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6030 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [except]\n";
@@ -5863,7 +5865,7 @@ namespace yy
     break;
 
   case 499:
-#line 6040 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6042 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTLanguageOption [ ]\n";
@@ -5872,7 +5874,7 @@ namespace yy
     break;
 
   case 500:
-#line 6052 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6054 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [with]\n";
@@ -5881,7 +5883,7 @@ namespace yy
     break;
 
   case 501:
-#line 6058 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6060 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [without]\n";
@@ -5890,7 +5892,7 @@ namespace yy
     break;
 
   case 502:
-#line 6070 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6072 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [start]\n";
@@ -5899,7 +5901,7 @@ namespace yy
     break;
 
   case 503:
-#line 6076 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6078 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [end]\n";
@@ -5908,7 +5910,7 @@ namespace yy
     break;
 
   case 504:
-#line 6082 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6084 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [entire]\n";
@@ -5917,7 +5919,7 @@ namespace yy
     break;
 
   case 505:
-#line 6094 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6096 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any]\n";
@@ -5926,7 +5928,7 @@ namespace yy
     break;
 
   case 506:
-#line 6100 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6102 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any_word]\n";
@@ -5935,7 +5937,7 @@ namespace yy
     break;
 
   case 507:
-#line 6106 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6108 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all]\n";
@@ -5944,7 +5946,7 @@ namespace yy
     break;
 
   case 508:
-#line 6112 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6114 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all_words]\n";
@@ -5953,7 +5955,7 @@ namespace yy
     break;
 
   case 509:
-#line 6118 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6120 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [phrase]\n";
@@ -5962,7 +5964,7 @@ namespace yy
     break;
 
   case 510:
-#line 6130 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6132 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [exactly]\n";
@@ -5971,7 +5973,7 @@ namespace yy
     break;
 
   case 511:
-#line 6136 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6138 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_least]\n";
@@ -5980,7 +5982,7 @@ namespace yy
     break;
 
   case 512:
-#line 6142 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6144 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_most]\n";
@@ -5989,7 +5991,7 @@ namespace yy
     break;
 
   case 513:
-#line 6148 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6150 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [range]\n";
@@ -5998,7 +6000,7 @@ namespace yy
     break;
 
   case 514:
-#line 6160 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6162 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDistance [ ]\n";
@@ -6007,7 +6009,7 @@ namespace yy
     break;
 
   case 515:
-#line 6172 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6174 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWindow [ ]\n";
@@ -6016,7 +6018,7 @@ namespace yy
     break;
 
   case 516:
-#line 6184 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6186 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [ ]\n";
@@ -6025,7 +6027,7 @@ namespace yy
     break;
 
   case 517:
-#line 6196 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6198 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [same]\n";
@@ -6034,7 +6036,7 @@ namespace yy
     break;
 
   case 518:
-#line 6202 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6204 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [different]\n";
@@ -6043,7 +6045,7 @@ namespace yy
     break;
 
   case 519:
-#line 6214 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6216 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [words]\n";
@@ -6052,7 +6054,7 @@ namespace yy
     break;
 
   case 520:
-#line 6220 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6222 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [sentences]\n";
@@ -6061,7 +6063,7 @@ namespace yy
     break;
 
   case 521:
-#line 6226 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6228 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [paragraph]\n";
@@ -6070,7 +6072,7 @@ namespace yy
     break;
 
   case 522:
-#line 6238 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6240 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [sentence]\n";
@@ -6079,7 +6081,7 @@ namespace yy
     break;
 
   case 523:
-#line 6244 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6246 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [paragraph]\n";
@@ -6088,7 +6090,7 @@ namespace yy
     break;
 
   case 524:
-#line 6256 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6258 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTIgnoreOption [ ]\n";
@@ -6098,7 +6100,7 @@ namespace yy
 
 
     /* Line 675 of lalr1.cc.  */
-#line 6102 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 6104 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -7945,59 +7947,59 @@ namespace yy
   const unsigned short int
   xquery_parser::yyrline_[] =
   {
-         0,   730,   730,   738,   744,   750,   762,   768,   780,   790,
-     805,   820,   835,   844,   853,   868,   877,   894,   903,   920,
-     927,   934,   941,   953,   960,   967,   976,   989,   996,  1003,
-    1010,  1017,  1024,  1031,  1040,  1053,  1060,  1078,  1093,  1101,
-    1115,  1124,  1139,  1155,  1169,  1177,  1192,  1200,  1214,  1223,
-    1232,  1241,  1263,  1277,  1291,  1301,  1311,  1321,  1337,  1346,
-    1364,  1371,  1384,  1393,  1403,  1412,  1429,  1439,  1449,  1459,
-    1475,  1483,  1497,  1507,  1518,  1529,  1541,  1553,  1565,  1577,
-    1589,  1599,  1610,  1621,  1633,  1645,  1657,  1669,  1687,  1698,
-    1715,  1724,  1739,  1753,  1767,  1776,  1791,  1798,  1805,  1812,
-    1819,  1828,  1835,  1842,  1849,  1856,  1869,  1879,  1890,  1901,
-    1918,  1927,  1942,  1949,  1962,  1976,  1985,  2002,  2012,  2023,
-    2035,  2048,  2059,  2071,  2083,  2101,  2116,  2130,  2145,  2154,
-    2171,  2182,  2194,  2205,  2223,  2237,  2245,  2260,  2269,  2286,
-    2295,  2310,  2320,  2330,  2340,  2350,  2360,  2370,  2386,  2393,
-    2406,  2414,  2428,  2442,  2452,  2468,  2478,  2493,  2502,  2518,
-    2528,  2545,  2554,  2569,  2578,  2594,  2608,  2615,  2629,  2636,
-    2658,  2665,  2676,  2687,  2704,  2711,  2721,  2737,  2744,  2758,
-    2765,  2772,  2785,  2791,  2798,  2805,  2812,  2825,  2832,  2840,
-    2854,  2861,  2868,  2881,  2888,  2903,  2910,  2925,  2932,  2947,
-    2954,  2969,  2976,  2991,  2998,  3005,  3012,  3027,  3034,  3041,
-    3055,  3062,  3069,  3076,  3083,  3090,  3103,  3110,  3117,  3124,
-    3131,  3138,  3151,  3158,  3165,  3179,  3186,  3201,  3210,  3225,
-    3234,  3251,  3297,  3304,  3311,  3318,  3332,  3340,  3347,  3360,
-    3367,  3380,  3389,  3398,  3407,  3422,  3431,  3445,  3452,  3459,
-    3466,  3473,  3480,  3487,  3500,  3507,  3520,  3529,  3544,  3551,
-    3558,  3565,  3572,  3590,  3597,  3610,  3617,  3630,  3640,  3650,
-    3666,  3673,  3688,  3697,  3714,  3728,  3735,  3742,  3749,  3756,
-    3763,  3770,  3777,  3790,  3797,  3810,  3817,  3824,  3837,  3850,
-    3857,  3871,  3884,  3898,  3957,  3966,  3981,  3990,  4005,  4012,
-    4025,  4032,  4039,  4052,  4063,  4074,  4085,  4096,  4107,  4125,
-    4134,  4149,  4158,  4175,  4190,  4198,  4213,  4219,  4226,  4235,
-    4244,  4255,  4272,  4278,  4285,  4294,  4303,  4314,  4331,  4339,
-    4353,  4361,  4375,  4383,  4391,  4400,  4415,  4424,  4433,  4441,
-    4449,  4463,  4482,  4490,  4510,  4528,  4535,  4542,  4549,  4556,
-    4563,  4576,  4590,  4599,  4608,  4616,  4644,  4653,  4662,  4670,
-    4684,  4698,  4712,  4721,  4730,  4738,  4752,  4761,  4776,  4790,
-    4799,  4808,  4848,  4856,  4864,  4878,  4885,  4892,  4905,  4919,
-    4926,  4933,  4940,  4947,  4954,  4961,  4968,  4975,  4988,  5001,
-    5008,  5016,  5030,  5043,  5056,  5063,  5070,  5083,  5092,  5101,
-    5110,  5119,  5134,  5148,  5157,  5166,  5175,  5184,  5194,  5204,
-    5220,  5244,  5254,  5277,  5319,  5331,  5337,  5343,  5349,  5355,
-    5367,  5379,  5385,  5397,  5424,  5436,  5442,  5462,  5468,  5474,
-    5480,  5492,  5498,  5504,  5510,  5522,  5528,  5540,  5546,  5558,
-    5564,  5576,  5582,  5594,  5600,  5606,  5618,  5624,  5636,  5642,
-    5654,  5660,  5666,  5672,  5678,  5690,  5702,  5709,  5716,  5723,
-    5730,  5737,  5744,  5757,  5763,  5769,  5775,  5787,  5793,  5799,
-    5805,  5817,  5823,  5835,  5841,  5847,  5853,  5859,  5865,  5871,
-    5883,  5889,  5901,  5907,  5913,  5919,  5931,  5937,  5943,  5949,
-    5955,  5967,  5973,  5985,  5991,  6003,  6009,  6021,  6027,  6039,
-    6051,  6057,  6069,  6075,  6081,  6093,  6099,  6105,  6111,  6117,
-    6129,  6135,  6141,  6147,  6159,  6171,  6183,  6195,  6201,  6213,
-    6219,  6225,  6237,  6243,  6255
+         0,   730,   730,   738,   746,   752,   764,   770,   782,   792,
+     807,   822,   837,   846,   855,   870,   879,   896,   905,   922,
+     929,   936,   943,   955,   962,   969,   978,   991,   998,  1005,
+    1012,  1019,  1026,  1033,  1042,  1055,  1062,  1080,  1095,  1103,
+    1117,  1126,  1141,  1157,  1171,  1179,  1194,  1202,  1216,  1225,
+    1234,  1243,  1265,  1279,  1293,  1303,  1313,  1323,  1339,  1348,
+    1366,  1373,  1386,  1395,  1405,  1414,  1431,  1441,  1451,  1461,
+    1477,  1485,  1499,  1509,  1520,  1531,  1543,  1555,  1567,  1579,
+    1591,  1601,  1612,  1623,  1635,  1647,  1659,  1671,  1689,  1700,
+    1717,  1726,  1741,  1755,  1769,  1778,  1793,  1800,  1807,  1814,
+    1821,  1830,  1837,  1844,  1851,  1858,  1871,  1881,  1892,  1903,
+    1920,  1929,  1944,  1951,  1964,  1978,  1987,  2004,  2014,  2025,
+    2037,  2050,  2061,  2073,  2085,  2103,  2118,  2132,  2147,  2156,
+    2173,  2184,  2196,  2207,  2225,  2239,  2247,  2262,  2271,  2288,
+    2297,  2312,  2322,  2332,  2342,  2352,  2362,  2372,  2388,  2395,
+    2408,  2416,  2430,  2444,  2454,  2470,  2480,  2495,  2504,  2520,
+    2530,  2547,  2556,  2571,  2580,  2596,  2610,  2617,  2631,  2638,
+    2660,  2667,  2678,  2689,  2706,  2713,  2723,  2739,  2746,  2760,
+    2767,  2774,  2787,  2793,  2800,  2807,  2814,  2827,  2834,  2842,
+    2856,  2863,  2870,  2883,  2890,  2905,  2912,  2927,  2934,  2949,
+    2956,  2971,  2978,  2993,  3000,  3007,  3014,  3029,  3036,  3043,
+    3057,  3064,  3071,  3078,  3085,  3092,  3105,  3112,  3119,  3126,
+    3133,  3140,  3153,  3160,  3167,  3181,  3188,  3203,  3212,  3227,
+    3236,  3253,  3299,  3306,  3313,  3320,  3334,  3342,  3349,  3362,
+    3369,  3382,  3391,  3400,  3409,  3424,  3433,  3447,  3454,  3461,
+    3468,  3475,  3482,  3489,  3502,  3509,  3522,  3531,  3546,  3553,
+    3560,  3567,  3574,  3592,  3599,  3612,  3619,  3632,  3642,  3652,
+    3668,  3675,  3690,  3699,  3716,  3730,  3737,  3744,  3751,  3758,
+    3765,  3772,  3779,  3792,  3799,  3812,  3819,  3826,  3839,  3852,
+    3859,  3873,  3886,  3900,  3959,  3968,  3983,  3992,  4007,  4014,
+    4027,  4034,  4041,  4054,  4065,  4076,  4087,  4098,  4109,  4127,
+    4136,  4151,  4160,  4177,  4192,  4200,  4215,  4221,  4228,  4237,
+    4246,  4257,  4274,  4280,  4287,  4296,  4305,  4316,  4333,  4341,
+    4355,  4363,  4377,  4385,  4393,  4402,  4417,  4426,  4435,  4443,
+    4451,  4465,  4484,  4492,  4512,  4530,  4537,  4544,  4551,  4558,
+    4565,  4578,  4592,  4601,  4610,  4618,  4646,  4655,  4664,  4672,
+    4686,  4700,  4714,  4723,  4732,  4740,  4754,  4763,  4778,  4792,
+    4801,  4810,  4850,  4858,  4866,  4880,  4887,  4894,  4907,  4921,
+    4928,  4935,  4942,  4949,  4956,  4963,  4970,  4977,  4990,  5003,
+    5010,  5018,  5032,  5045,  5058,  5065,  5072,  5085,  5094,  5103,
+    5112,  5121,  5136,  5150,  5159,  5168,  5177,  5186,  5196,  5206,
+    5222,  5246,  5256,  5279,  5321,  5333,  5339,  5345,  5351,  5357,
+    5369,  5381,  5387,  5399,  5426,  5438,  5444,  5464,  5470,  5476,
+    5482,  5494,  5500,  5506,  5512,  5524,  5530,  5542,  5548,  5560,
+    5566,  5578,  5584,  5596,  5602,  5608,  5620,  5626,  5638,  5644,
+    5656,  5662,  5668,  5674,  5680,  5692,  5704,  5711,  5718,  5725,
+    5732,  5739,  5746,  5759,  5765,  5771,  5777,  5789,  5795,  5801,
+    5807,  5819,  5825,  5837,  5843,  5849,  5855,  5861,  5867,  5873,
+    5885,  5891,  5903,  5909,  5915,  5921,  5933,  5939,  5945,  5951,
+    5957,  5969,  5975,  5987,  5993,  6005,  6011,  6023,  6029,  6041,
+    6053,  6059,  6071,  6077,  6083,  6095,  6101,  6107,  6113,  6119,
+    6131,  6137,  6143,  6149,  6161,  6173,  6185,  6197,  6203,  6215,
+    6221,  6227,  6239,  6245,  6257
   };
 
   // Print the state stack on the debug stream.
@@ -8111,7 +8113,7 @@ namespace yy
 
 } // namespace yy
 
-#line 6265 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6267 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
 
 
 

@@ -737,6 +737,8 @@ Module :
 		}
   | VersionDecl MainModule
 		{
+			$$ = $2;
+			driver.set_expr($$);
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [version.main]\n";
 #endif
