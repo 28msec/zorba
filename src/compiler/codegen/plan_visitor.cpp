@@ -337,9 +337,8 @@ bool begin_visit(fo_expr& v)
   // a node constructor, push a NULL in the constructors stack to "hide" the
   // current constructor context (so that a new constructor context can be
   // started if a node constructor exists inside the enclosed expr).
-  //xqp_string fname = v.get_func()->get_fname()->getLocalName();
   if (!theConstructorsStack.empty() &&
-      v.get_func()->get_fname()->getLocalName() == ":enclosed-expr")
+      v.get_fname()->getLocalName() == ":enclosed-expr")
   {
     theConstructorsStack.push(NULL);
   }

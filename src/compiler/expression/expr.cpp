@@ -288,6 +288,10 @@ const signature &fo_expr::get_signature () const {
   return udf->get_signature ();
 }
 
+Item_t fo_expr::get_fname () const
+{ return func == NULL ? udf->get_name () : func->get_fname (); }
+
+
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
 
 ft_contains_expr::ft_contains_expr(

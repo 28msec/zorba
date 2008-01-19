@@ -539,6 +539,7 @@ public:
 public:
 	const function* get_func() const { return func; }
   const signature &get_signature () const;
+  Item_t get_fname () const;
 
 	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
