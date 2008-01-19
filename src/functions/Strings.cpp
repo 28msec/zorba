@@ -81,8 +81,9 @@ bool
 fn_string_to_codepoints::validate_args(
     vector<PlanIter_t>& argv) const
 {
-  return true;
+  return argv.size () >= 1;
 }
+
 /*end class fn_string_to_codepoints*/
 
 /*
