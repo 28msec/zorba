@@ -809,11 +809,6 @@ xqp_string PositiveIntegerItemNaive::show() const {
 /*******************************************************************************
  * class DateItem
  *******************************************************************************/
-DateItemNaive::DateItemNaive(const xqp_string& aValue)
-{
-  theValue = Date::parse_string(aValue);
-}
-
 xqp_date DateItemNaive::getDateValue() const
 {
   return theValue;
@@ -853,11 +848,6 @@ xqp_string DateItemNaive::show() const
 /*******************************************************************************
  * class TimeItem
  *******************************************************************************/
-TimeItemNaive::TimeItemNaive(const xqp_string& aValue)
-{
-  theValue = Time::parse_string(aValue);
-}
-
 xqp_time TimeItemNaive::getTimeValue() const
 {
   return theValue;
@@ -897,11 +887,6 @@ xqp_string TimeItemNaive::show() const
 /*******************************************************************************
  * class DateTimeItem
  *******************************************************************************/
-DateTimeItemNaive::DateTimeItemNaive(const xqp_string& aValue)
-{
-  theValue = DateTime::parse_string(aValue);
-}
-
 DateTimeItemNaive::DateTimeItemNaive(const xqp_date& date, const xqp_time& time)
 {
   theValue = new DateTime(date, time);
@@ -946,11 +931,6 @@ xqp_string DateTimeItemNaive::show() const
 /*******************************************************************************
  * class Duration
  *******************************************************************************/
-DurationItemNaive::DurationItemNaive(const xqp_string& aValue)
-{
-  theValue = Duration::parse_string(aValue);
-}
-
 xqp_duration DurationItemNaive::getDurationValue() const
 {
   return theValue;
@@ -990,11 +970,6 @@ xqp_string DurationItemNaive::show() const
 /*******************************************************************************
  * class GYearMonthItemNaive
  *******************************************************************************/
-GYearMonthItemNaive::GYearMonthItemNaive(const xqp_string& aValue)
-{
-  theValue = GYearMonth::parse_string(aValue);
-}
-
 xqp_gYearMonth GYearMonthItemNaive::getGYearMonthValue() const
 {
   return theValue;
@@ -1034,10 +1009,10 @@ xqp_string GYearMonthItemNaive::show() const
 /*******************************************************************************
  * class GYearItemNaive
  *******************************************************************************/
-GYearItemNaive::GYearItemNaive(const xqp_string& aValue)
-{
-  theValue = GYear::parse_string(aValue);
-}
+// GYearItemNaive::GYearItemNaive(const xqp_string& aValue)
+// {
+//   GYear::parse_string(aValue, theValue);
+// }
 
 xqp_gYear GYearItemNaive::getGYearValue() const
 {
@@ -1078,10 +1053,10 @@ xqp_string GYearItemNaive::show() const
 /*******************************************************************************
  * class GMonthDayItemNaive
  *******************************************************************************/
-GMonthDayItemNaive::GMonthDayItemNaive(const xqp_string& aValue)
-{
-  theValue = GMonthDay::parse_string(aValue);
-}
+// GMonthDayItemNaive::GMonthDayItemNaive(const xqp_string& aValue)
+// {
+//   GMonthDay::parse_string(aValue, theValue);
+// }
 
 xqp_gMonthDay GMonthDayItemNaive::getGMonthDayValue() const
 {
@@ -1122,10 +1097,10 @@ xqp_string GMonthDayItemNaive::show() const
 /*******************************************************************************
  * class GMonthItemNaive
  *******************************************************************************/
-GMonthItemNaive::GMonthItemNaive(const xqp_string& aValue)
-{
-  theValue = GMonth::parse_string(aValue);
-}
+// GMonthItemNaive::GMonthItemNaive(const xqp_string& aValue)
+// {
+//   GMonth::parse_string(aValue, theValue);
+// }
 
 xqp_gMonth GMonthItemNaive::getGMonthValue() const
 {
@@ -1166,10 +1141,10 @@ xqp_string GMonthItemNaive::show() const
 /*******************************************************************************
  * class GDayItemNaive
  *******************************************************************************/
-GDayItemNaive::GDayItemNaive(const xqp_string& aValue)
-{
-  theValue = GDay::parse_string(aValue);
-}
+// GDayItemNaive::GDayItemNaive(const xqp_string& aValue)
+// {
+//   GDay::parse_string(aValue, theValue);
+// }
 
 xqp_gDay GDayItemNaive::getGDayValue() const
 {

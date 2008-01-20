@@ -5,29 +5,38 @@
  */
 
 #include <string>
+#include <exception>
 #include "util/datetime/date.h"
 #include "util/datetime/timezone.h"
 #include "util/datetime/parse.h"
-#include "errors/error_factory.h"
 
-#include <iostream>
-using namespace std;
+#define RETURN_FALSE_ON_EXCEPTION(sequence)     \
+  try                                           \
+  {                                             \
+    sequence;                                   \
+  }                                             \
+  catch (std::exception& ex)                    \
+  {                                             \
+    return false;                               \
+  }
+
 
 namespace xqp
 {
     
-Date_t Date::parse_string(xqpString s)
+bool Date::parse_string(const xqpString& s, Date_t& d_t)
 {
-  Date_t d_t;
+  // Date_t d_t;
   unsigned int position = 0;
   bool is_negative = false;
   std::string ss = *s.getStore();
+  TimeZone_t tz_t;
 
   // date of form: '-'? yyyy '-' mm '-' dd zzzzzz?
 
   skip_whitespace(ss, position);
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (ss[position] == '-')
   {
@@ -37,15 +46,20 @@ Date_t Date::parse_string(xqpString s)
 
   if (ss.size()-position > 10) // we might have a timezone
   {
-    d_t = new Date(boost::gregorian::from_simple_string(ss.substr(position, 10)));
-    d_t->the_time_zone = *TimeZone::parse_string(ss.substr(position+10, ss.size() - position - 10));
+    RETURN_FALSE_ON_EXCEPTION( d_t = new Date(boost::gregorian::from_simple_string(ss.substr(position, 10))); );
+    if( TimeZone::parse_string(ss.substr(position+10, ss.size() - position - 10), tz_t))
+      d_t->the_time_zone = *tz_t;
+    else
+      return false;
   }
   else
-    d_t = new Date(boost::gregorian::from_simple_string(ss));
+  {
+    RETURN_FALSE_ON_EXCEPTION( d_t = new Date(boost::gregorian::from_simple_string(ss)); );
+  }
 
   // TODO: date can be negative
 
-  return d_t;
+  return true;
 }
 
 Date& Date::operator=(const Date_t& d_t)

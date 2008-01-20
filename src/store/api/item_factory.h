@@ -127,6 +127,9 @@ public:
    */
   virtual Item_t createByte ( xqp_byte value ) = 0;
 
+
+  virtual Item_t createDate ( xqp_date& value ) = 0;
+  
   /**
    * @param year
    * @param month
@@ -140,6 +143,8 @@ public:
    */
   virtual Item_t createDate ( const xqp_string& value ) = 0;
 
+  virtual Item_t createDateTime(xqp_dateTime& value) = 0;
+            
   /**
    * @param year
    * @param month
@@ -187,6 +192,8 @@ public:
    * @param value double value
    */
   virtual Item_t createDouble ( xqp_double value ) = 0;
+
+  virtual Item_t createDuration(xqp_duration& value ) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#duration]
@@ -223,6 +230,8 @@ public:
    */
   virtual Item_t createFloat ( xqp_float value ) = 0;
 
+  virtual Item_t createGDay ( xqp_gDay& value ) = 0;
+
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gDay]
    * @param value string representation of the value
@@ -234,6 +243,8 @@ public:
    */
   virtual Item_t createGDay ( short day ) = 0;
 
+  virtual Item_t createGMonth ( xqp_gMonth& value ) = 0;
+
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gMonth]
    * @param value string representation of the value
@@ -244,6 +255,8 @@ public:
    * @param month
    */
   virtual Item_t createGMonth ( short month ) = 0;
+
+  virtual Item_t createGMonthDay ( xqp_gMonthDay& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gMonthDay]
@@ -257,6 +270,8 @@ public:
    */
   virtual Item_t createGMonthDay ( short month, short day ) = 0;
 
+  virtual Item_t createGYear ( xqp_gYear& value ) = 0;
+  
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gYear]
    * @param value string representation of the value
@@ -267,6 +282,8 @@ public:
    * @param year
    */
   virtual Item_t createGYear ( short year ) = 0;
+
+  virtual Item_t createGYearMonth ( xqp_gYearMonth& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gYearMonth]
@@ -370,6 +387,8 @@ public:
    */
   virtual Item_t createPositiveInteger ( xqp_uinteger value ) = 0;
 
+  virtual Item_t createTime (xqp_time& value) = 0;
+  
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#time]
    * @param value string representation of the value

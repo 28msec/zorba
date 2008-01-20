@@ -23,7 +23,7 @@ public:
   Date(boost::gregorian::date d) : the_date(d) { };
   virtual ~Date() { };
 
-  static Date_t parse_string(xqpString s);
+  static bool parse_string(const xqpString& s, Date_t& d_t);
   
   bool operator<(const Date& d) const;
   bool operator==(const Date& d) const;

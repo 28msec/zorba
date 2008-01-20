@@ -5,35 +5,42 @@
  */
 
 #include <string>
+#include <exception>
 #include "util/datetime/gregorian.h"
 #include "util/datetime/timezone.h"
 #include "util/datetime/parse.h"
-#include "errors/error_factory.h"
 
-#include <iostream>
-using namespace std;
+#define RETURN_FALSE_ON_EXCEPTION(sequence)     \
+  try                                           \
+  {                                             \
+    sequence;                                   \
+  }                                             \
+  catch (std::exception& ex)                    \
+  {                                             \
+    return false;                               \
+  }
+
 
 namespace xqp
 {
 
-  
 /**
  * GYearMonth
  *
  */
-GYearMonth_t GYearMonth::parse_string(xqpString s)
+bool GYearMonth::parse_string(const xqpString& s, GYearMonth_t& gym_t)
 {
-  GYearMonth_t gym_t;
   unsigned int position = 0;
   bool is_negative = false;
   std::string ss = *s.getStore();
+  TimeZone_t tz_t;
 
   // GYearMonth of form: '-'? yyyy '-' mm zzzzzz?
 
   skip_whitespace(ss, position);
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
-
+    return false;
+    
   if (ss[position] == '-')
   {
     is_negative = 1;
@@ -42,16 +49,21 @@ GYearMonth_t GYearMonth::parse_string(xqpString s)
 
   if (ss.size()-position > 7) // we might have a timezone
   {
-    gym_t = new GYearMonth(boost::gregorian::from_simple_string(ss.substr(position, 7) + "-01"));
-    gym_t->the_time_zone = *TimeZone::parse_string(ss.substr(position+7, ss.size() - position - 7));
+    RETURN_FALSE_ON_EXCEPTION( gym_t = new GYearMonth(boost::gregorian::from_simple_string(ss.substr(position, 7) + "-01")); );
+    if (TimeZone::parse_string(ss.substr(position+7, ss.size() - position - 7), tz_t))
+      gym_t->the_time_zone = *tz_t;
+    else
+      return false;
   }
   else
-    gym_t = new GYearMonth(boost::gregorian::from_simple_string(ss + "-01"));
+  {
+    RETURN_FALSE_ON_EXCEPTION( gym_t = new GYearMonth(boost::gregorian::from_simple_string(ss + "-01")); );
+  }
 
   // TODO: they day should not be "01" but the last day of the given month
   // TODO: can be negative
 
-  return gym_t;
+  return true;
 }
 
 GYearMonth& GYearMonth::operator=(const GYearMonth_t& gym_t)
@@ -78,13 +90,6 @@ xqpString GYearMonth::toString() const
   return result;
 }
 
-/*
-const boost::gregorian::date& gYearMonth::get_gYearMonth() const
-{
-  return the_gyear_month;
-}
-*/
-
 int GYearMonth::compare(const GYearMonth& gym) const
 {
   // TODO: handle timezone
@@ -101,18 +106,18 @@ int GYearMonth::compare(const GYearMonth& gym) const
  * GYear
  *
  */
-GYear_t GYear::parse_string(xqpString s)
+bool GYear::parse_string(const xqpString& s, GYear_t& gy_t)
 {
-  GYear_t gy_t;
   unsigned int position = 0;
   bool is_negative = false;
   std::string ss = *s.getStore();
+  TimeZone_t tz_t;
 
   // GYear of form: '-'? yyyy zzzzzz?
 
   skip_whitespace(ss, position);
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (ss[position] == '-')
   {
@@ -122,16 +127,21 @@ GYear_t GYear::parse_string(xqpString s)
 
   if (ss.size()-position > 4) // we might have a timezone
   {
-    gy_t = new GYear(boost::gregorian::from_simple_string(ss.substr(position, 4) + "-01-01"));
-    gy_t->the_time_zone = *TimeZone::parse_string(ss.substr(position+4, ss.size() - position - 4));
+    RETURN_FALSE_ON_EXCEPTION( gy_t = new GYear(boost::gregorian::from_simple_string(ss.substr(position, 4) + "-01-01")); );
+    if (TimeZone::parse_string(ss.substr(position+4, ss.size() - position - 4), tz_t))
+      gy_t->the_time_zone = *tz_t;
+    else
+      return false;
   }
   else
-    gy_t = new GYear(boost::gregorian::from_simple_string(ss + "-01-01"));
+  {
+    RETURN_FALSE_ON_EXCEPTION( gy_t = new GYear(boost::gregorian::from_simple_string(ss + "-01-01")); );
+  }
 
   // TODO: check what month/day should be filled in
   // TODO: can be negative
 
-  return gy_t;
+  return true;
 }
 
 GYear& GYear::operator=(const GYear_t& gy_t)
@@ -174,35 +184,41 @@ int GYear::compare(const GYear& gy) const
  * GMonthDay
  *
  */
-GMonthDay_t GMonthDay::parse_string(xqpString s)
+bool GMonthDay::parse_string(const xqpString& s, GMonthDay_t& gmd_t)
 {
-  GMonthDay_t gmd_t;
   unsigned int position = 0;
   std::string ss = *s.getStore();
+  TimeZone_t tz_t;
 
   // GMonthDay of form: --MM-DD zzzzzz?
   // preceding - is not allowed.
 
   skip_whitespace(ss, position);
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (ss[position++] != '-')
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
-  if (ss.size()-position > 4) // we might have a timezone
+  if (ss.size()-position > 7) // we might have a timezone
   {
-    gmd_t = new GMonthDay(boost::gregorian::from_simple_string("1972" + ss.substr(position, 4)));
-    gmd_t->the_time_zone = *TimeZone::parse_string(ss.substr(position+4, ss.size() - position - 4));
+    RETURN_FALSE_ON_EXCEPTION( gmd_t = new GMonthDay(boost::gregorian::from_simple_string("1972" + ss.substr(position, 7))); );
+    if (TimeZone::parse_string(ss.substr(position+7, ss.size() - position - 7), tz_t))
+      gmd_t->the_time_zone = *tz_t;
+    else
+      return false;
   }
   else
-    gmd_t = new GMonthDay(boost::gregorian::from_simple_string("1972" + ss));
+  {
+    RETURN_FALSE_ON_EXCEPTION(
+      gmd_t = new GMonthDay(boost::gregorian::from_simple_string("1972" + ss.substr(position, ss.size() - position))); );
+  }
 
   // TODO: they day and month should not be "01-01" but the last day of the given month
-  
-  return gmd_t;
+
+  return true;
 }
 
 GMonthDay& GMonthDay::operator=(const GMonthDay_t& gmd_t)
@@ -245,40 +261,45 @@ int GMonthDay::compare(const GMonthDay& gmd) const
  * GDay
  *
  */
-GDay_t GDay::parse_string(xqpString s)
+bool GDay::parse_string(const xqpString& s, GDay_t& gd_t)
 {
-  GDay_t gd_t;
   unsigned int position = 0;
   std::string ss = *s.getStore();
+  TimeZone_t tz_t;
 
   // GDay of form: ---DD zzzzzz?
   // preceding - is not allowed.
 
   skip_whitespace(ss, position);
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (ss[position++] != '-')
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
   
   if (ss[position++] != '-')
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (ss.size()-position > 4) // we might have a timezone
   {
-    gd_t = new GDay(boost::gregorian::from_simple_string("1972-12" + ss.substr(position, 4)));
-    gd_t->the_time_zone = *TimeZone::parse_string(ss.substr(position+4, ss.size() - position - 4));
+    RETURN_FALSE_ON_EXCEPTION( gd_t = new GDay(boost::gregorian::from_simple_string("1972-12" + ss.substr(position, 4))); );
+    if (TimeZone::parse_string(ss.substr(position+4, ss.size() - position - 4), tz_t))
+      gd_t->the_time_zone = *tz_t;
+    else
+      return false;
   }
   else
-    gd_t = new GDay(boost::gregorian::from_simple_string("1972-12" + ss));
+  {
+    RETURN_FALSE_ON_EXCEPTION( gd_t = new GDay(boost::gregorian::from_simple_string("1972-12" + ss)); );
+  }
 
   // TODO: they day and month should not be "01-01" but the last day of the given month
   
-  return gd_t;
+  return true;
 }
 
 GDay& GDay::operator=(const GDay_t& gd_t)
@@ -321,35 +342,40 @@ int GDay::compare(const GDay& gd) const
  * GMonth
  *
  */
-GMonth_t GMonth::parse_string(xqpString s)
+bool GMonth::parse_string(const xqpString& s, GMonth_t& gm_t )
 {
-  GMonth_t gm_t;
   unsigned int position = 0;
   std::string ss = *s.getStore();
+  TimeZone_t tz_t;
 
   // GMonth of form: --MM zzzzzz?
   // preceding - is not allowed.
 
   skip_whitespace(ss, position);
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (ss[position++] != '-')
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (ss.size()-position > 4) // we might have a timezone
   {
-    gm_t = new GMonth(boost::gregorian::from_simple_string("1972" + ss.substr(position, 4) + "-01"));
-    gm_t->the_time_zone = *TimeZone::parse_string(ss.substr(position+4, ss.size() - position - 4));
+    RETURN_FALSE_ON_EXCEPTION( gm_t = new GMonth(boost::gregorian::from_simple_string("1972" + ss.substr(position, 4) + "-01")); );
+    if (TimeZone::parse_string(ss.substr(position+4, ss.size() - position - 4), tz_t))
+      gm_t->the_time_zone = *tz_t;
+    else
+      return false;
   }
   else
-    gm_t = new GMonth(boost::gregorian::from_simple_string("1972" + ss + "-01"));
+  {
+    RETURN_FALSE_ON_EXCEPTION( gm_t = new GMonth(boost::gregorian::from_simple_string("1972" + ss + "-01")); );
+  }
 
   // TODO: they day and month should not be "01-01" but the last day of the given month
   
-  return gm_t;
+  return true;
 }
 
 GMonth& GMonth::operator=(const GMonth_t& gm_t)

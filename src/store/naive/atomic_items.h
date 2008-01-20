@@ -129,7 +129,7 @@ protected:
   xqp_date theValue;
 
 public:
-  DateItemNaive(const xqp_string& aValue);
+  DateItemNaive(xqp_date& date) : theValue(date) { };
   virtual xqp_string getStringValue() const; 
   virtual xqp_date getDateValue() const;  
   virtual Item_t getType() const;
@@ -148,7 +148,7 @@ protected:
   xqp_time theValue;
 
 public:
-  TimeItemNaive(const xqp_string& aValue);
+  TimeItemNaive(xqp_time& aValue) : theValue(aValue) { };
   virtual xqp_string getStringValue() const;
   virtual xqp_time getTimeValue() const;
   virtual Item_t getType() const;
@@ -163,19 +163,19 @@ public:
  *******************************************************************************/
 class DateTimeItemNaive : public AtomicItem
 {
-  protected:
-    xqp_dateTime theValue;
+protected:
+  xqp_dateTime theValue;
 
-  public:
-    DateTimeItemNaive(const xqp_string& aValue);
-    DateTimeItemNaive(const xqp_date& date, const xqp_time& time);
-    virtual xqp_string getStringValue() const;
-    virtual xqp_dateTime getDateTimeValue() const;
-    virtual Item_t getType() const;
-    virtual bool equals(Item_t) const;
-    virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringProperty() const;
-    virtual xqp_string show() const;
+public:
+  DateTimeItemNaive(xqp_dateTime& aValue) : theValue(aValue) { };
+  DateTimeItemNaive(const xqp_date& date, const xqp_time& time);
+  virtual xqp_string getStringValue() const;
+  virtual xqp_dateTime getDateTimeValue() const;
+  virtual Item_t getType() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty() const;
+  virtual xqp_string show() const;
 };
 
 /*******************************************************************************
@@ -187,7 +187,7 @@ protected:
   xqp_duration theValue;
 
 public:
-  DurationItemNaive(const xqp_string& aValue);
+  DurationItemNaive(xqp_duration& aValue) : theValue(aValue) { };
   virtual xqp_string getStringValue() const;
   virtual xqp_duration getDurationValue() const;
   virtual Item_t getType() const;
@@ -202,18 +202,18 @@ public:
  *******************************************************************************/
 class GYearMonthItemNaive : public AtomicItem
 {
-  protected:
-    xqp_gYearMonth theValue;
+protected:
+  xqp_gYearMonth theValue;
 
-  public:
-    GYearMonthItemNaive(const xqp_string& aValue);
-    virtual xqp_string getStringValue() const;
-    virtual xqp_gYearMonth getGYearMonthValue() const;
-    virtual Item_t getType() const;
-    virtual bool equals(Item_t) const;
-    virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringProperty() const;
-    virtual xqp_string show() const;
+public:
+  GYearMonthItemNaive(xqp_gYearMonth& aValue) : theValue(aValue) { };
+  virtual xqp_string getStringValue() const;
+  virtual xqp_gYearMonth getGYearMonthValue() const;
+  virtual Item_t getType() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty() const;
+  virtual xqp_string show() const;
 };
 
 /*******************************************************************************
@@ -225,7 +225,7 @@ class GYearItemNaive : public AtomicItem
     xqp_gYear theValue;
 
   public:
-    GYearItemNaive(const xqp_string& aValue);
+    GYearItemNaive(xqp_gYear& aValue) : theValue(aValue) { };
     virtual xqp_string getStringValue() const;
     virtual xqp_gYear getGYearValue() const;
     virtual Item_t getType() const;
@@ -240,18 +240,18 @@ class GYearItemNaive : public AtomicItem
  *******************************************************************************/
 class GMonthDayItemNaive : public AtomicItem
 {
-  protected:
-    xqp_gMonthDay theValue;
+protected:
+  xqp_gMonthDay theValue;
 
-  public:
-    GMonthDayItemNaive(const xqp_string& aValue);
-    virtual xqp_string getStringValue() const;
-    virtual xqp_gMonthDay getGMonthDayValue() const;
-    virtual Item_t getType() const;
-    virtual bool equals(Item_t) const;
-    virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringProperty() const;
-    virtual xqp_string show() const;
+public:
+  GMonthDayItemNaive(xqp_gMonthDay& aValue) : theValue(aValue) { };
+  virtual xqp_string getStringValue() const;
+  virtual xqp_gMonthDay getGMonthDayValue() const;
+  virtual Item_t getType() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty() const;
+  virtual xqp_string show() const;
 };
 
 /*******************************************************************************
@@ -259,18 +259,18 @@ class GMonthDayItemNaive : public AtomicItem
  *******************************************************************************/
 class GMonthItemNaive : public AtomicItem
 {
-  protected:
-    xqp_gMonth theValue;
+protected:
+  xqp_gMonth theValue;
 
-  public:
-    GMonthItemNaive(const xqp_string& aValue);
-    virtual xqp_string getStringValue() const;
-    virtual xqp_gMonth getGMonthValue() const;
-    virtual Item_t getType() const;
-    virtual bool equals(Item_t) const;
-    virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringProperty() const;
-    virtual xqp_string show() const;
+public:
+  GMonthItemNaive(xqp_gMonth& aValue) : theValue(aValue) { };
+  virtual xqp_string getStringValue() const;
+  virtual xqp_gMonth getGMonthValue() const;
+  virtual Item_t getType() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty() const;
+  virtual xqp_string show() const;
 };
 
 /*******************************************************************************
@@ -278,18 +278,18 @@ class GMonthItemNaive : public AtomicItem
  *******************************************************************************/
 class GDayItemNaive : public AtomicItem
 {
-  protected:
-    xqp_gDay theValue;
+protected:
+  xqp_gDay theValue;
 
-  public:
-    GDayItemNaive(const xqp_string& aValue);
-    virtual xqp_string getStringValue() const;
-    virtual xqp_gDay getGDayValue() const;
-    virtual Item_t getType() const;
-    virtual bool equals(Item_t) const;
-    virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringProperty() const;
-    virtual xqp_string show() const;
+public:
+  GDayItemNaive(xqp_gDay& aValue) : theValue(aValue) { };
+  virtual xqp_string getStringValue() const;
+  virtual xqp_gDay getGDayValue() const;
+  virtual Item_t getType() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty() const;
+  virtual xqp_string show() const;
 };
 
 

@@ -5,10 +5,21 @@
  */
 
 #include <string>
+#include <exception>
 #include "util/datetime/datetime.h"
 #include "util/datetime/parse.h"
 #include "util/datetime/time.h"
 #include "util/datetime/date.h"
+
+#define RETURN_FALSE_ON_EXCEPTION(sequence)     \
+  try                                           \
+  {                                             \
+    sequence;                                   \
+  }                                             \
+  catch (std::exception& ex)                    \
+  {                                             \
+    return false;                               \
+  }
 
 namespace xqp
 {
@@ -18,13 +29,13 @@ DateTime::DateTime(const Date_t& d_t, const Time_t& t_t)
   the_date_time = boost::posix_time::ptime(d_t->get_date(), t_t->get_time_duration());
 }
 
-DateTime_t DateTime::parse_string(xqpString s)
+bool DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)
 {
-  DateTime_t dt_t;
   int frac_start;
   unsigned int position;
   long unused;
   std::string temp;
+  TimeZone_t tz_t;
 
   // DateTime is of form: '-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
 
@@ -41,11 +52,16 @@ DateTime_t DateTime::parse_string(xqpString s)
   else
     position = 19;
 
-  dt_t = new DateTime(boost::posix_time::time_from_string(temp.substr(0, position)));
+  RETURN_FALSE_ON_EXCEPTION( dt_t = new DateTime(boost::posix_time::time_from_string(temp.substr(0, position))); );
   if (temp.size() > position)
-    dt_t->the_time_zone = TimeZone::parse_string(temp.substr(position, temp.size()-position));
+  {
+    if (TimeZone::parse_string(temp.substr(position, temp.size()-position), tz_t))
+      dt_t->the_time_zone = *tz_t;
+    else
+      return false;
+  }
 
-  return dt_t;
+  return true;
 }
 
 DateTime& DateTime::operator=(const DateTime_t& dt_t)

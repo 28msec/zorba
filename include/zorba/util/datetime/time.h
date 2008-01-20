@@ -23,7 +23,7 @@ public:
   Time(boost::posix_time::time_duration t) : the_time(t) { };
   virtual ~Time() { };
 
-  static Time_t parse_string(xqpString s);
+  static bool parse_string(const xqpString& s, Time_t& t_t);
   
   bool operator<(const Time& t) const;
   bool operator==(const Time& t) const;

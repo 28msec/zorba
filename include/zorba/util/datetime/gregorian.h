@@ -40,7 +40,7 @@ public:
   GYearMonth(boost::gregorian::date d) : the_gyear_month(d) { };
   virtual ~GYearMonth() { };
 
-  static GYearMonth_t parse_string(xqpString s);
+  static bool parse_string(const xqpString& s, GYearMonth_t& gym_t);
 
   GYearMonth& operator=(const GYearMonth_t& gym_t);
   bool operator<(const GYearMonth& gym) const;
@@ -60,22 +60,24 @@ protected:
  */
 class GYear : public rcobject
 {
-  public:
-    GYear(boost::gregorian::date d) : the_gyear(d) { };
-    virtual ~GYear() { };
+public:
+  GYear(boost::gregorian::date d) : the_gyear(d) { };
+  virtual ~GYear() { };
 
-    static GYear_t parse_string(xqpString s);
+  static bool parse_string(const xqpString& s, GYear_t& gy_t);
 
-    GYear& operator=(const GYear_t& gy_t);
-    bool operator<(const GYear& gy) const;
-    bool operator==(const GYear& gy) const;
-    int compare(const GYear& gy) const;
 
-    xqpString toString() const;
-  
-  protected:
-    boost::gregorian::date the_gyear;
-    TimeZone the_time_zone;
+  bool operator<(const GYear& gy) const;
+  bool operator==(const GYear& gy) const;
+  int compare(const GYear& gy) const;
+
+  xqpString toString() const;
+
+protected:
+  GYear& operator=(const GYear_t& gy_t);
+
+  boost::gregorian::date the_gyear;
+  TimeZone the_time_zone;
 };
 
 /**
@@ -84,22 +86,23 @@ class GYear : public rcobject
  */
 class GMonthDay : public rcobject
 {
-  public:
-    GMonthDay(boost::gregorian::date d) : the_gmonth_day(d) { };
-    virtual ~GMonthDay() { };
+public:
+  GMonthDay(boost::gregorian::date d) : the_gmonth_day(d) { };
+  virtual ~GMonthDay() { };
 
-    static GMonthDay_t parse_string(xqpString s);
+  static bool parse_string(const xqpString& s, GMonthDay_t& gmd_t);
 
-    GMonthDay& operator=(const GMonthDay_t& gmd_t);
-    bool operator<(const GMonthDay& gmd) const;
-    bool operator==(const GMonthDay& gmd) const;
-    int compare(const GMonthDay& gmd) const;
+  bool operator<(const GMonthDay& gmd) const;
+  bool operator==(const GMonthDay& gmd) const;
+  int compare(const GMonthDay& gmd) const;
 
-    xqpString toString() const;
+  xqpString toString() const;
+
+protected:
+  GMonthDay& operator=(const GMonthDay_t& gmd_t);
   
-  protected:
-    boost::gregorian::date the_gmonth_day;
-    TimeZone the_time_zone;
+  boost::gregorian::date the_gmonth_day;
+  TimeZone the_time_zone;
 };
 
 /**
@@ -108,22 +111,23 @@ class GMonthDay : public rcobject
  */
 class GDay: public rcobject
 {
-  public:
-    GDay(boost::gregorian::date d) : the_gday(d) { };
-    virtual ~GDay() { };
+public:
+  GDay(boost::gregorian::date d) : the_gday(d) { };
+  virtual ~GDay() { };
 
-    static GDay_t parse_string(xqpString s);
+  static bool parse_string(const xqpString& s, GDay_t& gd_t);
 
-    GDay& operator=(const GDay_t& gd_t);
-    bool operator<(const GDay& gd) const;
-    bool operator==(const GDay& gd) const;
-    int compare(const GDay& gd) const;
+  bool operator<(const GDay& gd) const;
+  bool operator==(const GDay& gd) const;
+  int compare(const GDay& gd) const;
 
-    xqpString toString() const;
+  xqpString toString() const;
+
+protected:
+  GDay& operator=(const GDay_t& gd_t);
   
-  protected:
-    boost::gregorian::date the_gday;
-    TimeZone the_time_zone;
+  boost::gregorian::date the_gday;
+  TimeZone the_time_zone;
 };
 
 /**
@@ -132,22 +136,23 @@ class GDay: public rcobject
  */
 class GMonth: public rcobject
 {
-  public:
-    GMonth(boost::gregorian::date d) : the_gmonth(d) { };
-    virtual ~GMonth() { };
+public:
+  GMonth(boost::gregorian::date d) : the_gmonth(d) { };
+  virtual ~GMonth() { };
 
-    static GMonth_t parse_string(xqpString s);
+  static bool parse_string(const xqpString& s, GMonth_t& gm_t);
 
-    GMonth& operator=(const GMonth_t& gm_t);
-    bool operator<(const GMonth& gm) const;
-    bool operator==(const GMonth& gm) const;
-    int compare(const GMonth& gm) const;
+  bool operator<(const GMonth& gm) const;
+  bool operator==(const GMonth& gm) const;
+  int compare(const GMonth& gm) const;
 
-    xqpString toString() const;
+  xqpString toString() const;
+
+protected:
+  GMonth& operator=(const GMonth_t& gm_t);
   
-  protected:
-    boost::gregorian::date the_gmonth;
-    TimeZone the_time_zone;
+  boost::gregorian::date the_gmonth;
+  TimeZone the_time_zone;
 };
 
 

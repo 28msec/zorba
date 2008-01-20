@@ -89,37 +89,80 @@ namespace xqp
         lItem = Zorba::getItemFactory()->createUntypedAtomic(lString);
         break;
       case TypeSystem::XS_DATETIME:
-        lItem = Zorba::getItemFactory()->createDateTime(lString);
+        {
+          xqp_dateTime dt;
+          if (DateTime::parse_string(lString, dt))
+            lItem = Zorba::getItemFactory()->createDateTime(dt);
+        }
         break;
       case TypeSystem::XS_DATE:
-        lItem = Zorba::getItemFactory()->createDate(lString);
+        {
+          xqp_date d;
+          if (Date::parse_string(lString, d))
+            lItem = Zorba::getItemFactory()->createDate(d);
+        }
         break;
       case TypeSystem::XS_TIME:
-        lItem = Zorba::getItemFactory()->createTime(lString);
+        {
+          xqp_time t;
+          if (Time::parse_string(lString, t))
+            lItem = Zorba::getItemFactory()->createTime(t);
+        }
         break;
       case TypeSystem::XS_DURATION:
-        lItem = Zorba::getItemFactory()->createDuration(lString);
+        {
+          xqp_duration d;
+          if (Duration::parse_string(lString, d))
+            lItem = Zorba::getItemFactory()->createDuration(d);
+        }
         break;
       case TypeSystem::XS_DT_DURATION:
-        lItem = Zorba::getItemFactory()->createDuration(lString);
+        {
+          // TODO
+          // xqp_dayTimeDuration dtd;
+          lItem = Zorba::getItemFactory()->createDuration(lString);
+        }
         break;
       case TypeSystem::XS_YM_DURATION:
-        lItem = Zorba::getItemFactory()->createDuration(lString);
+        {
+          // TODO
+          lItem = Zorba::getItemFactory()->createDuration(lString);
+        }
         break;
       case TypeSystem::XS_GYEAR_MONTH:
-        lItem = Zorba::getItemFactory()->createGYearMonth(lString);
+        {
+          xqp_gYearMonth ym;
+          if (GYearMonth::parse_string(lString, ym))
+            lItem = Zorba::getItemFactory()->createGYearMonth(ym);
+        }
         break;
       case TypeSystem::XS_GYEAR:
-        lItem = Zorba::getItemFactory()->createGYear(lString);
+        {
+          xqp_gYear y;
+          if (GYear::parse_string(lString, y))
+            lItem = Zorba::getItemFactory()->createGYear(y);
+        }
         break;
       case TypeSystem::XS_GMONTH_DAY:
-        lItem = Zorba::getItemFactory()->createGMonthDay(lString);
+        {
+          xqp_gMonthDay md;
+          if (GMonthDay::parse_string(lString, md))
+            lItem = Zorba::getItemFactory()->createGMonthDay(md);
+        }
         break;
       case TypeSystem::XS_GDAY:
-        lItem = Zorba::getItemFactory()->createGDay(lString);
+        {
+          xqp_gDay d;
+          if (GDay::parse_string(lString, d))
+            lItem = Zorba::getItemFactory()->createGDay(d);
+        }
         break;
       case TypeSystem::XS_GMONTH:
-        lItem = Zorba::getItemFactory()->createGMonth(lString);
+        {
+          xqp_gMonth m;
+          if (GMonth::parse_string(lString, m))
+            lItem = Zorba::getItemFactory()->createGMonth(m);
+        }
         break;
       case TypeSystem::XS_FLOAT:
       {
@@ -428,6 +471,7 @@ namespace xqp
   }
 
   bool GenericCast::isCastable(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const {
+    Item_t lItem;
     TypeSystem::xqtref_t lItemType = 
         GENV_TYPESYSTEM.create_type( aItem->getType(), TypeSystem::QUANT_ONE );
 
@@ -437,7 +481,8 @@ namespace xqp
     }
     
     // Most simple implementation: Check if string cast works
-    Item_t lItem = stringSimpleCast(aItem, lItemType, aTargetType);
+    lItem = stringSimpleCast(aItem, lItemType, aTargetType);
+
     if (lItem == 0) {
       return false;
     } else {

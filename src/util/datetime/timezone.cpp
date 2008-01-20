@@ -5,17 +5,26 @@
  */
 
 #include <string>
+#include <exception>
 #include "util/datetime/timezone.h"
 #include "util/datetime/parse.h"
-#include "errors/error_factory.h"
+
+#define RETURN_FALSE_ON_EXCEPTION(sequence)     \
+  try                                           \
+  {                                             \
+    sequence;                                   \
+  }                                             \
+  catch (std::exception& ex)                    \
+  {                                             \
+    return false;                               \
+  }
 
 namespace xqp
 {
     
-TimeZone_t TimeZone::parse_string(xqpString s)
+bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
 {
   std::string ss = *s.getStore();
-  TimeZone_t tz_t;
   unsigned int position = 0;
   bool is_negative = false;
 
@@ -23,17 +32,18 @@ TimeZone_t TimeZone::parse_string(xqpString s)
 
   skip_whitespace(ss, position);
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
-
+    return false;
+    
   if (ss[position] == 'Z')
   {
     // '+00:00', '-00:00', and 'Z' all represent the same zero-length duration timezone, UTC; 'Z' is its canonical representation.
-    tz_t = new TimeZone(boost::posix_time::duration_from_string("00:00:00"));
 
+    RETURN_FALSE_ON_EXCEPTION( tz_t = new TimeZone(boost::posix_time::duration_from_string("00:00:00")) );
+    
     position++;
     
     if (ss.size() != position)
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      return false;
   }
   else
   {
@@ -42,7 +52,7 @@ TimeZone_t TimeZone::parse_string(xqpString s)
     else if (ss[position] == '+')
       /* do nothing */ ;
     else
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      return false;
 
     position++;
 
@@ -51,10 +61,10 @@ TimeZone_t TimeZone::parse_string(xqpString s)
     if (is_negative)
       temp = "-" + temp;
   
-    tz_t = new TimeZone(boost::posix_time::duration_from_string(temp));
+    RETURN_FALSE_ON_EXCEPTION( tz_t = new TimeZone(boost::posix_time::duration_from_string(temp)); );
   }
   
-  return tz_t;
+  return true;
 }
 
 TimeZone& TimeZone::operator=(const TimeZone_t& tz_t)

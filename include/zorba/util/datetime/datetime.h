@@ -32,7 +32,7 @@ public:
   
   virtual ~DateTime() { };
 
-  static DateTime_t parse_string(xqpString s);
+  static bool parse_string(const xqpString& s, DateTime_t& dt_t);
   
   bool operator<(const DateTime& t) const;
   bool operator==(const DateTime& t) const;

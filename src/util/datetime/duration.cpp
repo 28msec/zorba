@@ -7,7 +7,6 @@
 #include <string>
 #include "util/datetime/duration.h"
 #include "util/datetime/parse.h"
-#include "errors/error_factory.h"
 
 namespace xqp
 {
@@ -58,19 +57,18 @@ xqpString YearMonthDuration::toString() const
   return result;
 }
     
-YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
+bool YearMonthDuration::parse_string(const xqpString& s, YearMonthDuration_t& ym_t)
 {
   std::string ss = *s.getStore();
   bool negative = false;
   unsigned int position = 0;
   long result, months = 0;
-  YearMonthDuration_t ym_t;
-
+  
   skip_whitespace(ss, position);
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
-  
+    return false;
+    
   if (ss[position] == '-')
   {
     negative = 1;
@@ -78,13 +76,13 @@ YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
   }
 
   if (position == ss.size() || ss[position++] != 'P')
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
-
+    return false;
+    
   if (position == ss.size() || parse_int(ss, position, result))
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
-
+    return false;
+    
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (ss[position] == 'Y')
   {
@@ -96,12 +94,12 @@ YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
       if (parse_int(ss, position, result) == 0)
       {
         if (ss[position++] != 'M')
-          ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+          return false;
 
         months += result;
       }
       else
-        ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+        return false;
     }
   }
   else if (ss[position++] == 'M')
@@ -109,16 +107,16 @@ YearMonthDuration_t YearMonthDuration::parse_string(xqpString s)
     months = result;
   }
   else
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (ss.size() != position)
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (negative)
     months = -months;
   
   ym_t = new YearMonthDuration(months);
-  return ym_t;
+  return true;
 }
 
 DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long minutes, long seconds, long frac_seconds)
@@ -174,16 +172,16 @@ xqpString DayTimeDuration::toString() const
   return NULL;
 }
 
-// parse a 'nS' string, with fractional seconds
-static void parse_s_string(std::string ss, unsigned int& position, long& seconds, long& frac_seconds)
+// parse a 'nS' string, with fractional seconds, returns 0 on success and 1 on failure
+static bool parse_s_string(std::string ss, unsigned int& position, long& seconds, long& frac_seconds)
 {
   long result;
   
   if (position == ss.size() || parse_int(ss, position, result))
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);;
+    return false;
 
   if (ss[position] == 'S')
   {
@@ -196,33 +194,35 @@ static void parse_s_string(std::string ss, unsigned int& position, long& seconds
     seconds = result;
 
     if (position == ss.size() || parse_int(ss, position, result))
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      return false;
 
     if (position == ss.size() || ss[position] != 'S')
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      return false;
 
     position++;
     frac_seconds = result;
   }
 
+  return true;
 }
 
 // parse a 'nMnS' string, with fractional seconds
-static void parse_ms_string(std::string ss, unsigned int& position, long& minutes, long& seconds, long& frac_seconds)
+static bool parse_ms_string(std::string ss, unsigned int& position, long& minutes, long& seconds, long& frac_seconds)
 {
   long result;
   
   if (position == ss.size() || parse_int(ss, position, result))
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);;
+    return false;
 
   if (ss[position] == 'M')
   {
     position++;
     minutes = result;
-    parse_s_string(ss, position, seconds, frac_seconds);
+    if( !parse_s_string(ss, position, seconds, frac_seconds))
+      return false;
   }
   else if (ss[position] == 'S')
   {
@@ -235,39 +235,42 @@ static void parse_ms_string(std::string ss, unsigned int& position, long& minute
     seconds = result;
 
     if (position == ss.size() || parse_int(ss, position, result))
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      return false;
 
     if (position == ss.size() || ss[position] != 'S')
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      return false;
 
     position++;
     frac_seconds = result;
   }
 
+  return true;
 }
 
 // parse a 'nHnMnS' string, with fractional seconds
-static void parse_hms_string(std::string ss, unsigned int& position, long& hours, long& minutes, long& seconds, long& frac_seconds)
+static bool parse_hms_string(std::string ss, unsigned int& position, long& hours, long& minutes, long& seconds, long& frac_seconds)
 {
   long result;
   
   if (position == ss.size() || parse_int(ss, position, result))
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);;
+    return false;
 
   if (ss[position] == 'H')
   {
     position++;
     hours = result;
-    parse_ms_string(ss, position, minutes, seconds, frac_seconds);
+    if (!parse_ms_string(ss, position, minutes, seconds, frac_seconds))
+      return false;
   }
   else if (ss[position] == 'M')
   {
     position++;
     minutes = result;
-    parse_s_string(ss, position, seconds, frac_seconds);
+    if (!parse_s_string(ss, position, seconds, frac_seconds))
+      return false;
   }
   else if (ss[position] == 'S')
   {
@@ -280,29 +283,30 @@ static void parse_hms_string(std::string ss, unsigned int& position, long& hours
     seconds = result;
 
     if (position == ss.size() || parse_int(ss, position, result))
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      return false;
 
     if (position == ss.size() || ss[position] != 'S')
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      return false;
 
     position++;
     frac_seconds = result;
   }
+
+  return true;
 }
 
 // Parse a 'PnDTnHnMnS' dateTime duration
-DayTimeDuration_t DayTimeDuration::parse_string(xqpString s, bool dont_check_letter_p)
+bool DayTimeDuration::parse_string(const xqpString& s, DayTimeDuration_t& dt_t, bool dont_check_letter_p)
 {
   std::string ss = *s.getStore();
   bool negative = false;
   unsigned int position = 0;
   long result, days = 0, hours = 0, minutes = 0, seconds = 0, frac_seconds = 0;
-  DayTimeDuration_t dt_t;
 
   skip_whitespace(ss, position);
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
   
   if (ss[position] == '-')
   {
@@ -311,21 +315,21 @@ DayTimeDuration_t DayTimeDuration::parse_string(xqpString s, bool dont_check_let
   }
 
   if (!dont_check_letter_p && (position == ss.size() || ss[position++] != 'P'))
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   if (position == ss.size())
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   // It must be either 'T' or 'nD'
   if (ss[position] != 'T')
   {
     if (parse_int(ss, position, result))
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      return false;
 
     days = result;
 
     if (position == ss.size() || ss[position++] != 'D')
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+      return false;
   }
 
   // Either 'T', or whitespace, or end
@@ -333,16 +337,17 @@ DayTimeDuration_t DayTimeDuration::parse_string(xqpString s, bool dont_check_let
   if (position<ss.size() && ss[position] == 'T')
   {
     position++;
-    parse_hms_string(ss, position, hours, minutes, seconds, frac_seconds);
+    if (!parse_hms_string(ss, position, hours, minutes, seconds, frac_seconds))
+      return false;
   }
 
   skip_whitespace(ss, position);
 
   if (ss.size() != position)
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL);
+    return false;
 
   dt_t = new DayTimeDuration(negative, days, minutes, hours, seconds, frac_seconds);
-  return dt_t;
+  return true;
 }
 
 
@@ -389,10 +394,11 @@ xqpString Duration::toString() const
 }
 
 // Parse a '(-)PnYnMnDTnHnMnS'
-Duration_t Duration::parse_string(xqpString s)
+bool Duration::parse_string(const xqpString& s, Duration_t& d_t)
 {
-  Duration_t d_t = new Duration();
   int pos;
+  YearMonthDuration_t ymd_t;
+  DayTimeDuration_t dtd_t;
 
   pos = s.indexOf("M");
   if (pos == -1)
@@ -401,18 +407,31 @@ Duration_t Duration::parse_string(xqpString s)
   // Check month or year
   if (pos != -1)
   {
-    d_t->yearMonthDuration = YearMonthDuration::parse_string(s.substr(0, pos+1));
+    d_t = new Duration();
+    if (YearMonthDuration::parse_string(s.substr(0, pos+1), ymd_t))
+      d_t->yearMonthDuration = *ymd_t;
+    else
+      return false;
 
     if ((unsigned int)pos+1 < s.size())
-      d_t->dayTimeDuration = *DayTimeDuration::parse_string(s.substr(pos+1, s.size() - pos - 1), false);
+    {
+      if (DayTimeDuration::parse_string(s.substr(pos+1, s.size() - pos - 1), dtd_t, false))
+        d_t->dayTimeDuration = *dtd_t;
+      else
+        return false;
+    }
   }
   // No month or year -- parse DayTime
   else 
   {
-    d_t->dayTimeDuration = *DayTimeDuration::parse_string(s);
+    d_t = new Duration();
+    if (DayTimeDuration::parse_string(s, dtd_t))
+      d_t->dayTimeDuration = *dtd_t;
+    else
+      return false;
   }
   
-  return d_t;
+  return true;
 }
 
 }

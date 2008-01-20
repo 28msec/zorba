@@ -222,7 +222,7 @@ TypeSystem::~TypeSystem()
 {
 }
 
-static char *decode_quantifier (TypeSystem::quantifier_t quant) {
+static const char *decode_quantifier (TypeSystem::quantifier_t quant) {
   switch (quant) {
   case TypeSystem::QUANT_ONE:
     return "";

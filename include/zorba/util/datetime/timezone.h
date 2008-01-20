@@ -23,9 +23,8 @@ public:
   TimeZone(boost::posix_time::time_duration t) : the_time_zone(t) { };
   virtual ~TimeZone() { };
 
-  static TimeZone_t parse_string(xqpString s);
+  static bool parse_string(const xqpString& s, TimeZone_t& tz_t);
 
-  TimeZone& operator=(const TimeZone_t& t_t);
   bool operator<(const TimeZone& t) const;
   bool operator==(const TimeZone& t) const;
   int compare(const TimeZone& t) const;
@@ -33,6 +32,8 @@ public:
   xqpString toString() const;
   
 protected:
+  TimeZone& operator=(const TimeZone_t& t_t);
+  
   boost::posix_time::time_duration the_time_zone;
 };
 

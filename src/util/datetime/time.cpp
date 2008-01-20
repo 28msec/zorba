@@ -5,16 +5,27 @@
  */
 
 #include <string>
+#include <exception>
 #include "util/datetime/time.h"
 #include "util/datetime/parse.h"
 
+#define RETURN_FALSE_ON_EXCEPTION(sequence)     \
+  try                                           \
+  {                                             \
+    sequence;                                   \
+  }                                             \
+  catch (std::exception& ex)                    \
+  {                                             \
+    return false;                               \
+  }
+
 namespace xqp
 {
-    
-Time_t Time::parse_string(xqpString s)
+
+bool Time::parse_string(const xqpString& s, Time_t& t_t)
 {
-  Time_t t_t;
   int time_zone_start;
+  TimeZone_t tz_t;
 
   // Time is of form:  hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   // Time cannot be negative
@@ -27,19 +38,26 @@ Time_t Time::parse_string(xqpString s)
 
   // TODO: boost's time_duration allows a "-" at the start of the string, but we shouldn't, as its time, not duration
   if (time_zone_start == -1)
-    t_t = new Time(boost::posix_time::duration_from_string(s));
+  {
+    RETURN_FALSE_ON_EXCEPTION( t_t = new Time(boost::posix_time::duration_from_string(s)); );
+  }
   else
   {
-    t_t = new Time(boost::posix_time::duration_from_string(s.substr(0, time_zone_start)));
-    t_t->the_time_zone = TimeZone::parse_string(s.substr(time_zone_start, s.size()-time_zone_start));
+    RETURN_FALSE_ON_EXCEPTION( t_t = new Time(boost::posix_time::duration_from_string(s.substr(0, time_zone_start))); );
+    if (TimeZone::parse_string(s.substr(time_zone_start, s.size()-time_zone_start), tz_t))
+      t_t->the_time_zone = *tz_t;
+    else
+      return false;
   }
 
   if (t_t->the_time.hours() == 24 && t_t->the_time.minutes() == 0
       &&
       t_t->the_time.seconds() == 0 && t_t->the_time.fractional_seconds() == 0)
-    t_t->the_time = boost::posix_time::time_duration(0, 0, 0, 0);
+  {
+    RETURN_FALSE_ON_EXCEPTION( t_t->the_time = boost::posix_time::time_duration(0, 0, 0, 0); )
+  }
   
-  return t_t;
+  return true;
 }
 
 const boost::posix_time::time_duration& Time::get_time_duration() const
