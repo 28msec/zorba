@@ -1,6 +1,10 @@
 
 #include "zorba/zorba_api.h"
-#include <pthread.h>
+#ifdef HAVE_PTHREAD_H
+# include <pthread.h>
+#else
+# include "util/win32/pthread.h"
+#endif
 
 #include <iostream>
 
