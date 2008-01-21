@@ -599,18 +599,20 @@ class instanceof_expr : public expr
 protected:
 	expr_t expr_h;
 	TypeSystem::xqtref_t type;
+  bool forced;  // error if not instance?
 
 public:
-	instanceof_expr(
-		yy::location const&,
-		expr_t,
-		TypeSystem::xqtref_t);
+	instanceof_expr (yy::location const&,
+                   expr_t,
+                   TypeSystem::xqtref_t,
+                   bool forced_ = false);
 
 	~instanceof_expr();
 
 public:
 	expr_t get_expr() const { return expr_h; }
 	TypeSystem::xqtref_t get_type() const { return type; }
+  bool isForced () { return forced; }
 
 public:
 	void accept(expr_visitor&);

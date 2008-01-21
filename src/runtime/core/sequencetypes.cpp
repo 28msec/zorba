@@ -11,9 +11,11 @@ namespace xqp
 ********************************************************************************/
 InstanceOfIterator::InstanceOfIterator(yy::location loc,
                                        PlanIter_t& aTreatExpr,
-                                       TypeSystem::xqtref_t aSequenceType)
+                                       TypeSystem::xqtref_t aSequenceType,
+                                       bool aMustBeInstance)
   : UnaryBaseIterator<InstanceOfIterator> ( loc, aTreatExpr ),
-    theSequenceType (aSequenceType)
+    theSequenceType (aSequenceType),
+    mustBeInstance (aMustBeInstance)
 { }
 
 InstanceOfIterator::~InstanceOfIterator() 
@@ -68,6 +70,8 @@ InstanceOfIterator::nextImpl(PlanState& planState)
     }
   }
     
+  if (mustBeInstance && ! lResult)
+    ZORBA_ERROR_ALERT (ZorbaError::XPDY0050, NULL, false);
   STACK_PUSH(Zorba::getItemFactory()->createBoolean(lResult), state);
   STACK_END();
 }

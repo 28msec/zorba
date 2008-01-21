@@ -29,11 +29,13 @@ class InstanceOfIterator : public UnaryBaseIterator<InstanceOfIterator>
 
 private:
   TypeSystem::xqtref_t theSequenceType;
+  bool mustBeInstance;  // raise XDPY0050 if not castable
 
 public:
   InstanceOfIterator(yy::location loc, 
                      PlanIter_t& aTreatExpr, 
-                     TypeSystem::xqtref_t aSequenceType);
+                     TypeSystem::xqtref_t aSequenceType,
+                     bool aMustBeInstance = false);
  
   ~InstanceOfIterator();
   
@@ -86,3 +88,9 @@ public:
 
 } /* namespace xqp */
 #endif  /* XQP_SEQUENCETYPES_H */
+  
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

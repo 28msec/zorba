@@ -399,7 +399,7 @@ void end_visit(instanceof_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t p = pop_itstack ();
-  itstack.push (new InstanceOfIterator (v.get_loc (), p, v.get_type ()));
+  itstack.push (new InstanceOfIterator (v.get_loc (), p, v.get_type (), v.isForced ()));
 }
 
 bool begin_visit(treat_expr& v)
@@ -408,10 +408,23 @@ bool begin_visit(treat_expr& v)
   return true;
 }
 
+void end_visit(treat_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  ZORBA_ASSERT (false);
+}
+
 bool begin_visit(castable_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
+}
+
+void end_visit(castable_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lChild = pop_itstack();
+  itstack.push(new CastableIterator(v.get_loc(), lChild, v.get_type()));
 }
 
 bool begin_visit(cast_expr& v)
@@ -866,18 +879,6 @@ void end_visit(ft_select_expr& v)
 void end_visit(ft_contains_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-}
-
-void end_visit(treat_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-}
-
-void end_visit(castable_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-  PlanIter_t lChild = pop_itstack();
-  itstack.push(new CastableIterator(v.get_loc(), lChild, v.get_type()));
 }
 
 void end_visit(validate_expr& v)

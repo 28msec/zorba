@@ -325,14 +325,12 @@ void ft_contains_expr::accept(
 
 // [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
 
-instanceof_expr::instanceof_expr(
-  yy::location const& loc,
-  rchandle<expr> _expr_h,
-  TypeSystem::xqtref_t _type)
+instanceof_expr::instanceof_expr(yy::location const& loc,
+                                 rchandle<expr> _expr_h,
+                                 TypeSystem::xqtref_t _type,
+                                 bool forced_)
 :
-  expr(loc),
-  expr_h(_expr_h),
-  type(_type)
+  expr(loc), expr_h(_expr_h), type (_type), forced (forced_)
 {
 }
 
