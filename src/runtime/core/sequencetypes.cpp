@@ -20,33 +20,55 @@ InstanceOfIterator::~InstanceOfIterator()
 { }
 
 
-// the implementation of this operator assumes the following
-// - if the SequenceType is * or +, the query is normalized using 
-//   every $x in TreatExpr satisfies $x.type == lTreatType
-// - if the Sequencetype is empty-sequence the query is normalized
-//   using the empty function
 Item_t
 InstanceOfIterator::nextImpl(PlanState& planState)
 {
   Item_t lTreatItem;
   TypeSystem::xqtref_t lTreatType;
+  TypeSystem::quantifier_t lQuantifier;
+  bool lResult;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   
   lTreatItem = consumeNext(theChild, planState);
 
-  if (lTreatItem != NULL 
-      && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), 
-                                    TypeSystem::QUANT_ONE), *theSequenceType))
+  lQuantifier = GENV_TYPESYSTEM.quantifier(*theSequenceType);
+
+  if (lTreatItem != 0)
   {
-    STACK_PUSH (Zorba::getItemFactory()->createBoolean ( true ), state);
+    if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), 
+                                    TypeSystem::QUANT_ONE), *theSequenceType)) {
+      lTreatItem = consumeNext(theChild, planState);
+      if (lTreatItem != 0) {
+        if (lQuantifier == TypeSystem::QUANT_ONE || lQuantifier == TypeSystem::QUANT_QUESTION) {
+          lResult = false;
+        } else {
+          lResult = true;
+          do {
+            if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), TypeSystem::QUANT_ONE), *theSequenceType)) {
+              lResult = false;
+            }
+            lTreatItem = consumeNext(theChild, planState);
+          } while (lTreatItem != 0);
+        }
+      } else {
+        lResult = true;
+      }
+    } else {
+      lResult = false;
+    }
   }
   else
   {
-    STACK_PUSH (Zorba::getItemFactory()->createBoolean ( false ), state);   
+    if (lQuantifier == TypeSystem::QUANT_ONE || lQuantifier == TypeSystem::QUANT_PLUS) {
+      lResult = false;
+    } else {
+      lResult = true;
+    }
   }
     
+  STACK_PUSH(Zorba::getItemFactory()->createBoolean(lResult), state);
   STACK_END();
 }
 
