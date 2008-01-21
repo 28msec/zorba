@@ -15,8 +15,10 @@ namespace xqp {
           return false;
         }
       }
+      return true;
+    } else {
+      return false;
     }
-    return true;
   }
 
   bool NumConversions::strToInteger(const xqpString& aStr, xqp_integer& aInteger){
