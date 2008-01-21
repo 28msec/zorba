@@ -1921,13 +1921,6 @@ typedef yy::xquery_parser::token token;
 	return token::VOID_TEST;
 }
 
-{QName} {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
-	/* BEGIN MODE_OPERATOR; */
-	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	return token::QNAME;
-}
-
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
@@ -1990,13 +1983,6 @@ typedef yy::xquery_parser::token token;
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI, yyscanner);
 	return token::PI_LPAR;
-}
-
-	/* transition to OCCURENCE_INDICATOR */
-	/* -------------------------------- */
-{QName} {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
-	return token::QNAME;
 }
 
 "item"{S}"("{S}")" {	
@@ -2260,6 +2246,12 @@ typedef yy::xquery_parser::token token;
 
 ")"{S}"as" {
 	return token::RPAR_AS;
+}
+
+{QName} {
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+	BEGIN MODE_OCCURRENCE_INDICATOR; 
+	return token::QNAME;
 }
 
 {CatchAll} {
@@ -2707,10 +2699,6 @@ typedef yy::xquery_parser::token token;
 
 {CatchAll} {
   return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
 }
 
 }	/* <MODE_START_TAG> */

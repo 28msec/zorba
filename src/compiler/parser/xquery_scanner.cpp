@@ -444,8 +444,8 @@ static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 	yyg->yy_c_buf_p = yy_cp;
 
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 499
-#define YY_END_OF_BUFFER 500
+#define YY_NUM_RULES 497
+#define YY_END_OF_BUFFER 498
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -455,76 +455,76 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[2495] =
     {   0,
-      159,  159,    0,    0,    0,    0,  425,  425,    0,    0,
-        0,    0,  468,  468,  475,  475,  403,  403,  412,  412,
-      418,  418,  314,  314,  326,  326,  431,  431,  302,  302,
-      434,  434,  437,  437,  439,  439,  162,  162,    0,    0,
-      480,  480,    0,    0,  335,  335,  451,  451,    0,    0,
-      445,  445,  331,  331,  472,  472,    0,    0,  500,  158,
+      159,  159,    0,    0,    0,    0,  424,  424,    0,    0,
+        0,    0,  466,  466,  473,  473,  402,  402,  411,  411,
+      417,  417,  314,  314,  326,  326,  430,  430,  302,  302,
+      433,  433,  436,  436,  438,  438,  162,  162,    0,    0,
+      478,  478,    0,    0,  335,  335,  450,  450,    0,    0,
+      444,  444,  331,  331,  470,  470,    0,    0,  498,  158,
         1,    2,  158,  159,  109,  158,   74,  158,  158,   21,
        57,   59,   34,   20,   33,   64,   35,   51,   19,   85,
        50,   56,   56,   56,   56,   56,   56,   56,   56,   56,
        56,   56,   56,   56,   56,   56,   56,   56,   56,   56,
 
-       56,   56,   16,  158,   93,  499,  494,  499,  491,  492,
-      499,  482,  482,  424,  425,  424,  424,  419,  420,  423,
-      421,  499,  499,  466,  461,  461,  466,  460,  456,  466,
-      470,  468,  468,  467,  469,  475,  475,  499,  402,  403,
-      402,  402,  336,  379,  402,  361,  383,  402,  353,  382,
-      363,  373,  339,  378,  339,  339,  339,  339,  339,  339,
-      339,  339,  339,  339,  339,  339,  339,  339,  339,  339,
-      339,  393,  411,  412,  411,  411,  408,  405,  406,  406,
-      406,  404,  417,  418,  417,  417,  417,  417,  413,  415,
+       56,   56,   16,  158,   93,  497,  492,  497,  489,  490,
+      497,  480,  480,  423,  424,  423,  423,  418,  419,  422,
+      420,  497,  497,  464,  459,  459,  464,  458,  454,  464,
+      468,  466,  466,  465,  467,  473,  473,  497,  401,  402,
+      401,  401,  336,  377,  401,  359,  381,  401,  351,  380,
+      361,  371,  400,  376,  400,  400,  400,  400,  400,  400,
+      400,  400,  400,  400,  400,  400,  400,  400,  400,  400,
+      400,  391,  410,  411,  410,  410,  407,  404,  405,  405,
+      405,  403,  416,  417,  416,  416,  416,  416,  412,  414,
       313,  314,  313,  313,  313,  313,  309,  307,  311,  312,
 
       312,  325,  326,  325,  325,  325,  325,  324,  325,  325,
-      325,  325,  430,  431,  430,  430,  427,  428,  426,  301,
+      325,  325,  429,  430,  429,  429,  426,  427,  425,  301,
       302,  301,  252,  301,  234,  301,  301,  301,  241,  210,
       215,  174,  208,  218,  301,  166,  207,  176,  186,  242,
       204,  248,  301,  301,  301,  301,  301,  301,  301,  301,
       301,  301,  301,  301,  301,  301,  301,  301,  301,  301,
-      301,  165,  223,  240,  433,  434,  433,  432,  436,  437,
-      436,  435,  441,  439,  439,  440,  440,  162,  161,  160,
-      476,  478,  499,  480,  480,  486,  483,  499,  484,  499,
-      334,  335,  334,  334,  332,  453,  451,  451,  447,  448,
+      301,  165,  223,  240,  432,  433,  432,  431,  435,  436,
+      435,  434,  440,  438,  438,  439,  439,  162,  161,  160,
+      474,  476,  497,  478,  478,  484,  481,  497,  482,  497,
+      334,  335,  334,  334,  332,  452,  450,  450,  446,  447,
 
-      453,  449,  446,  452,  499,  499,  444,  445,  444,  444,
-      442,  330,  331,  330,  330,  330,  330,  472,  499,  499,
-      499,  303,  499,    1,  159,    2,    0,   60,  108,    0,
+      452,  448,  445,  451,  497,  497,  443,  444,  443,  443,
+      441,  330,  331,  330,  330,  330,  330,  470,  497,  497,
+      497,  303,  497,    1,  159,    2,    0,   60,  108,    0,
        60,   90,   87,    0,    0,   63,   52,   36,   37,    0,
        51,    0,    0,   83,    0,   32,   56,    0,   56,   56,
        56,   56,   56,   56,   56,   56,   56,   56,   56,   56,
        56,   56,   56,   56,   56,   56,   56,   56,   56,   56,
        56,   56,   56,   56,   56,   56,   56,   56,   56,   56,
        56,   56,   56,   56,   56,   56,   56,   56,   56,   56,
-       56,   56,   56,   56,   56,   56,   56,  110,  494,    0,
+       56,   56,   56,   56,   56,   56,   56,  110,  492,    0,
 
-        0,    0,    0,    0,    0,  493,  497,  498,  482,  482,
-      425,  422,    0,    0,  461,    0,    0,    0,    0,    0,
-        0,    0,  455,  458,  464,  465,  468,  469,    0,  475,
-      474,  475,  473,  403,  385,  352,  340,    0,    0,  360,
-      381,  380,  371,  372,  339,    0,  339,  339,  339,  339,
-      339,  339,  339,  339,  339,  339,  339,  339,  339,  339,
-      339,  339,  339,  339,  339,  339,  339,  339,  339,  339,
-      339,  339,  339,  339,  339,  339,  339,  339,  339,  339,
-      339,  412,  407,  406,    0,  406,  406,  418,    0,  416,
-        0,  416,  414,  415,  314,    0,  308,    0,  308,  306,
+        0,    0,    0,    0,    0,  491,  495,  496,  480,  480,
+      424,  421,    0,    0,  459,    0,    0,    0,    0,    0,
+        0,    0,  453,  456,  462,  463,  466,  467,    0,  473,
+      472,  473,  471,  402,  383,  350,  339,    0,    0,  358,
+      379,  378,  369,  370,  400,    0,  400,  398,  357,  400,
+      400,  400,  400,  400,  400,  363,  400,  364,  365,  400,
+      374,  375,  400,  366,  367,  400,  368,  400,  386,  400,
+      400,  400,  400,  400,  400,  400,  389,  400,  400,  400,
+      400,  411,  406,  405,    0,  405,  405,  417,    0,  415,
+        0,  415,  413,  414,  314,    0,  308,    0,  308,  306,
 
       312,  310,  326,    0,  316,    0,  316,  320,    0,    0,
-        0,    0,    0,  431,  429,  302,  211,    0,  249,  251,
+        0,    0,    0,  430,  428,  302,  211,    0,  249,  251,
         0,  249,  238,    0,    0,  219,  220,  173,  206,  205,
       184,  185,    0,    0,    0,  232,  171,    0,    0,    0,
         0,    0,    0,    0,    0,    0,  178,    0,    0,    0,
         0,    0,  179,  180,    0,  202,  203,    0,  181,    0,
       182,    0,  183,    0,    0,  214,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,  221,    0,    0,    0,
-        0,    0,    0,    0,    0,  253,  434,  432,    0,  437,
-      435,    0,  439,  439,  440,  438,  162,  161,  476,  478,
+        0,    0,    0,    0,    0,  253,  433,  431,    0,  436,
+      434,    0,  438,  438,  439,  437,  162,  161,  474,  476,
 
-      477,  480,  480,  480,  479,  486,  485,    0,    0,    0,
-        0,    0,    0,  489,  490,  335,  333,  332,    0,  451,
-      450,  452,    0,    0,  315,    0,  315,  445,  443,  442,
-        0,  331,  329,    0,    0,  472,    0,  472,    0,    0,
+      475,  478,  478,  478,  477,  484,  483,    0,    0,    0,
+        0,    0,    0,  487,  488,  335,  333,  332,    0,  450,
+      449,  451,    0,    0,  315,    0,  315,  444,  442,  441,
+        0,  331,  329,    0,    0,  470,    0,  470,    0,    0,
       304,    0,  304,    0,    0,   58,   52,    0,   53,    0,
         0,   55,   56,   54,   56,   56,   56,   56,    0,   56,
        56,   56,   56,   56,   56,   56,   56,   56,   56,    0,
@@ -534,21 +534,21 @@ static yyconst flex_int16_t yy_accept[2495] =
 
        56,   56,   56,   56,   56,   56,   56,   56,   56,   56,
        56,   56,   56,   56,   56,   56,    0,    0,    0,    0,
-        0,    0,    0,  481,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,  469,  475,  401,  339,  339,
-        0,  339,  339,  339,  339,  339,  339,  339,  339,  339,
-      339,  339,  339,  339,  339,  339,  339,  339,  339,  339,
-      339,  339,  339,  339,  339,  339,  339,  339,  339,  406,
-      406,  406,    0,    0,    0,    0,    0,  233,    0,  262,
+        0,    0,    0,  479,    0,    0,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,  467,  473,  399,  400,  356,
+        0,  400,  400,  400,  360,  400,  400,  400,  400,  400,
+      400,  400,  400,  400,  400,  382,  400,  400,  400,  400,
+      400,  400,  400,  400,  400,  400,  400,  400,  400,  405,
+      405,  405,    0,    0,    0,    0,    0,  233,    0,  262,
       170,  264,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,  175,    0,    0,    0,    0,    0,    0,
 
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,  209,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,  432,
-      435,    0,    0,    0,    0,    0,    0,    0,  332,  452,
-      442,    0,    0,  472,  471,    0,   81,   58,   82,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,    0,  431,
+      434,    0,    0,    0,    0,    0,    0,    0,  332,  451,
+      441,    0,    0,  470,  469,    0,   81,   58,   82,    0,
        56,   56,    0,   56,    0,    0,    0,    0,    0,    0,
         0,   56,   56,   56,   56,   56,   56,   56,   56,   56,
        56,    0,    0,    0,   56,   56,   56,   56,   56,   56,
@@ -557,12 +557,12 @@ static yyconst flex_int16_t yy_accept[2495] =
        56,   56,   56,    0,   56,   56,   56,   56,   56,   56,
        56,   56,   56,   56,   56,   56,   56,   56,   56,   56,
        56,   56,   56,   56,   56,   56,   56,   56,   56,   56,
-       56,  496,    0,    0,  495,    0,    0,    0,    0,  463,
-        0,    0,  462,    0,    0,  457,    0,  469,  339,    0,
-        0,  339,  339,  339,  339,  339,  339,  339,  339,  339,
-      339,  339,  339,  339,  339,  339,  339,  339,  339,  339,
-      339,  339,  339,  339,  339,  339,  339,  339,  406,  406,
-      406,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+       56,  494,    0,    0,  493,    0,    0,    0,    0,  461,
+        0,    0,  460,    0,    0,  455,    0,  467,  400,    0,
+        0,  400,  397,  400,  400,  400,  400,  353,  400,  400,
+      400,  372,  400,  400,  400,  400,  400,  400,  400,  400,
+      400,  400,  400,  352,  400,  400,  400,  400,  405,  405,
+      405,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,  231,    0,    0,    0,
 
         0,    0,    0,    0,    0,    0,    0,    0,  168,    0,
@@ -570,8 +570,8 @@ static yyconst flex_int16_t yy_accept[2495] =
         0,  189,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,  281,    0,    0,    0,
         0,    0,  167,    0,    0,    0,    0,    0,    0,    0,
-        0,  190,    0,  432,  435,  488,    0,    0,  487,    0,
-        0,  332,  452,  442,    0,    0,    0,    0,   56,    0,
+        0,  190,    0,  431,  434,  486,    0,    0,  485,    0,
+        0,  332,  451,  441,    0,    0,    0,    0,   56,    0,
        56,    0,    0,   92,    0,   92,    0,    0,    0,    0,
        56,   56,    0,   56,   56,   56,   56,   56,   56,   56,
         0,    0,    0,   56,   56,   56,   56,   56,   56,   56,
@@ -580,10 +580,10 @@ static yyconst flex_int16_t yy_accept[2495] =
        29,    0,   56,   56,   56,   56,   56,   56,   56,   56,
        56,   56,    0,   56,    0,    0,   28,   11,   56,   56,
        56,   56,   56,   56,   56,   56,   56,    0,   56,   56,
-       56,    0,    0,    0,    0,    0,    0,  356,    0,  356,
-      339,    0,  339,  339,  339,  339,  339,  339,  339,  339,
-      339,    0,    0,    0,  347,  339,  339,  339,  339,  339,
-      339,    0,  346,  339,  339,    0,    0,  339,  406,  406,
+       56,    0,    0,    0,    0,    0,    0,  354,    0,  354,
+      400,    0,  400,  400,  400,  400,  400,  400,  400,  400,
+      400,    0,    0,    0,  346,  400,  400,  400,  400,  400,
+      400,    0,  345,  400,  390,    0,    0,  392,  405,  405,
         0,    0,    0,    0,    0,    0,  198,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
 
@@ -600,9 +600,9 @@ static yyconst flex_int16_t yy_accept[2495] =
 
        49,   56,   77,   56,   56,   56,   56,   56,    0,   56,
        56,    0,    0,    0,    0,   56,   56,    0,    0,    0,
-      339,    0,  339,  339,  339,  339,  339,  339,  339,  339,
-      339,    0,  351,    0,  339,  339,  339,  339,  339,    0,
-        0,  337,  406,  406,    0,    0,    0,    0,    0,    0,
+      400,    0,  400,  400,  400,  400,  400,  362,  400,  400,
+      400,    0,  349,    0,  400,  387,  400,  400,  400,    0,
+        0,  337,  405,  405,    0,    0,    0,    0,    0,    0,
         0,    0,    0,  266,    0,    0,    0,  199,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,  177,    0,    0,    0,
@@ -615,9 +615,9 @@ static yyconst flex_int16_t yy_accept[2495] =
         0,    0,   56,   56,    0,   78,   56,    0,   56,    0,
        56,    0,   56,    0,    0,   56,   56,    0,   56,   56,
        56,   56,   56,   56,   56,   56,   56,   56,    0,    0,
-        0,    0,    0,    0,   56,    0,  163,    0,    0,  339,
-      396,  339,  339,  339,  339,  339,  339,  339,  339,    0,
-      339,  339,  339,    0,    0,  406,  406,    0,  318,    0,
+        0,    0,    0,    0,   56,    0,  163,    0,    0,  400,
+      394,  400,  400,  400,  400,  400,  400,  400,  400,    0,
+      400,  400,  400,    0,    0,  405,  405,    0,  318,    0,
         0,    0,    0,    0,    0,    0,    0,  256,    0,    0,
 
         0,  228,    0,    0,    0,  247,    0,    0,    0,    0,
@@ -631,9 +631,9 @@ static yyconst flex_int16_t yy_accept[2495] =
         0,    0,    0,   17,   56,   46,   56,   56,   56,   56,
        56,   56,   56,   56,   56,   56,   56,  104,    0,    0,
 
-        0,    0,    0,    0,    0,    0,    0,    0,  339,  339,
-        0,  345,  339,    0,  341,  339,  339,  339,  339,  386,
-      339,  339,  339,  339,    0,  398,    0,  409,  406,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,  400,  400,
+        0,  344,  400,    0,  340,  400,  355,  400,  400,  384,
+      400,  400,  400,  400,    0,  396,    0,  408,  405,    0,
         0,    0,    0,  322,    0,  265,    0,  255,  267,    0,
         0,    0,    0,    0,    0,    0,    0,  257,    0,    0,
         0,    0,    0,    0,    0,  169,    0,    0,    0,    0,
@@ -646,8 +646,8 @@ static yyconst flex_int16_t yy_accept[2495] =
        10,    0,    0,    0,   56,    0,    0,  101,   56,    0,
       111,   56,   56,   56,   56,   56,   56,   56,   56,   56,
        56,   56,    0,    3,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,  164,  459,  339,    0,
-      339,  339,    0,  339,  339,  339,  339,  339,    0,  406,
+        0,    0,    0,    0,    0,    0,  164,  457,  400,    0,
+      400,  400,    0,  373,  400,  388,  400,  400,    0,  405,
         0,  317,    0,    0,  263,  245,    0,    0,    0,  239,
         0,    0,    0,  273,  192,  191,  194,    0,    0,    0,
         0,    0,    0,    0,  188,  197,    0,  277,  254,  278,
@@ -659,8 +659,8 @@ static yyconst flex_int16_t yy_accept[2495] =
        97,   56,    0,    0,    0,    9,    0,  100,   56,    0,
         0,    0,    0,   56,    0,   56,   56,   56,   56,    0,
        56,    0,   18,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,  342,    0,
-      339,  339,    0,  339,  339,  339,    0,  406,    0,  319,
+        0,    0,    0,    0,    0,    0,    0,    0,  341,    0,
+      400,  400,    0,  400,  400,  400,    0,  405,    0,  319,
         0,    0,    0,    0,    0,  246,    0,  193,    0,    0,
         0,  196,  250,    0,    0,    0,    0,    0,    0,    0,
 
@@ -670,8 +670,8 @@ static yyconst flex_int16_t yy_accept[2495] =
         0,   56,    0,    0,   56,   45,    0,    0,    0,   56,
        48,   56,   56,   56,   56,    0,    0,    5,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,  395,  339,  339,  397,  339,  339,
-      339,    0,  406,    0,  323,    0,    0,  227,    0,    0,
+        0,    0,    0,    0,  393,  400,  400,  395,  400,  400,
+      400,    0,  405,    0,  323,    0,    0,  227,    0,    0,
         0,  244,    0,  229,  237,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,   56,
 
@@ -680,7 +680,7 @@ static yyconst flex_int16_t yy_accept[2495] =
        56,   43,    0,    0,   56,    0,    0,   56,    0,    0,
         0,   56,   56,   56,   56,   56,    0,    4,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,  339,  339,  339,  339,  339,    0,  406,
+        0,    0,    0,  400,  400,  400,  400,  400,    0,  405,
         0,    0,    0,    0,    0,    0,    0,    0,  280,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,   56,    0,    0,    0,    0,    0,    0,    0,
@@ -688,8 +688,8 @@ static yyconst flex_int16_t yy_accept[2495] =
 
        56,    0,    0,   56,    0,   56,   72,   71,    0,   56,
        56,   56,   56,    0,    0,    0,    0,  153,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,  339,  339,
-      339,  339,  339,    0,  406,    0,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,  400,  400,
+      400,  400,  400,    0,  405,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,  296,    0,    0,    0,
         0,    0,    0,    0,    0,    0,   56,    0,    0,  121,
         0,    0,    0,    0,    0,    0,    0,    0,   91,    0,
@@ -697,37 +697,37 @@ static yyconst flex_int16_t yy_accept[2495] =
        56,    0,   56,   56,   56,   56,    0,    0,    0,    0,
         0,  155,  156,    0,    0,    0,    0,    0,    0,   89,
 
-        0,  348,  339,  339,  339,  339,    0,  406,    0,    0,
+        0,  347,  400,  400,  400,  400,    0,  405,    0,    0,
       269,    0,    0,    0,  243,  274,    0,    0,    0,    0,
       298,  299,    0,    0,    0,    0,    0,    0,   56,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,   56,   56,    0,    0,   56,    0,   56,   56,
        56,    0,   25,    0,    0,  152,  154,  145,    0,    0,
-        0,    0,    0,    0,    0,  339,  339,    0,  343,  387,
-        0,  410,  321,    0,    0,    0,    0,  213,    0,  295,
+        0,    0,    0,    0,    0,  400,  400,    0,  342,  385,
+        0,  409,  321,    0,    0,    0,    0,  213,    0,  295,
       297,  288,    0,    0,    0,    0,    0,   56,  120,   68,
         0,    0,    0,    0,  122,   14,    0,   88,    0,    0,
 
         0,   56,   56,    0,    0,   56,   67,   56,   56,   56,
-       80,    0,    0,  147,    0,    0,    0,    0,  338,  339,
-      339,  268,  270,    0,    0,    0,    0,  290,    0,    0,
+       80,    0,    0,  147,    0,    0,    0,    0,  338,  400,
+      400,  268,  270,    0,    0,    0,    0,  290,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,   66,
         0,    0,    0,   56,   56,    0,    0,   56,   56,   56,
-        0,   26,    0,    0,    0,  149,  150,  339,    0,  344,
+        0,   26,    0,    0,    0,  149,  150,  400,    0,  343,
         0,    0,    0,    0,    0,  292,  293,   38,    0,    0,
         0,    0,    0,    0,    0,    0,    0,   79,   56,   56,
-        0,    0,    0,    0,   56,    0,  146,  148,  339,    0,
+        0,    0,    0,    0,   56,    0,  146,  148,  400,    0,
         0,    0,  289,  291,    0,    0,    0,    0,    0,    0,
 
         0,    0,    0,   56,    0,  124,    0,   44,   47,   56,
-        0,  339,    0,    0,    0,    0,   61,    0,    0,    0,
+        0,  400,    0,    0,    0,    0,   61,    0,    0,    0,
         0,    0,    0,    0,   56,   56,   42,    0,   56,    0,
-      339,    0,  272,    0,    0,    0,    0,    0,    0,   62,
-        0,    0,    0,   56,   56,   56,    0,   56,    0,  339,
+      400,    0,  272,    0,    0,    0,    0,    0,    0,   62,
+        0,    0,    0,   56,   56,   56,    0,   56,    0,  400,
         0,    0,   86,    0,    0,    0,    0,    0,    0,    0,
-        0,   56,   56,   56,  123,   12,    0,  339,  271,    0,
+        0,   56,   56,   56,  123,   12,    0,  400,  271,    0,
        73,    0,   69,    0,   94,    0,    0,    0,   56,    0,
-       31,  151,    0,  349,  294,    0,   70,    0,    0,   56,
+       31,  151,    0,  348,  294,    0,   70,    0,    0,   56,
        65,    0,   15,    0
 
     } ;
@@ -3065,7 +3065,7 @@ static yyconst flex_int16_t yy_chk[7692] =
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static yyconst flex_int32_t yy_rule_can_match_eol[500] =
+static yyconst flex_int32_t yy_rule_can_match_eol[498] =
     {   0,
 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 
     0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 
@@ -3084,17 +3084,16 @@ static yyconst flex_int32_t yy_rule_can_match_eol[500] =
     0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
     0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 
     0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 
-    0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 
-    0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 
-    1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 
-    0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 
-    1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 
-        };
+    0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 
+    0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 
+    0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 
+    0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 
+    0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 
+    1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,     };
 
-static yyconst flex_int16_t yy_rule_linenum[499] =
+static yyconst flex_int16_t yy_rule_linenum[497] =
     {   0,
       245,  246,  265,  271,  278,  282,  288,  294,  301,  308,
       314,  322,  328,  334,  338,  342,  348,  354,  360,  363,
@@ -3132,24 +3131,24 @@ static yyconst flex_int16_t yy_rule_linenum[499] =
      1622, 1626, 1646, 1653, 1658, 1679, 1683, 1690, 1695, 1699,
      1703, 1707, 1712, 1716, 1733, 1755, 1761, 1768, 1773, 1780,
      1787, 1791, 1795, 1799, 1803, 1807, 1829, 1834, 1841, 1845,
-     1849, 1870, 1878, 1882, 1886, 1907, 1914, 1919, 1924, 1933,
-     1939, 1945, 1951, 1957, 1963, 1969, 1975, 1981, 1989, 1997,
-     2002, 2009, 2016, 2021, 2026, 2033, 2041, 2046, 2051, 2056,
-     2061, 2066, 2071, 2076, 2081, 2086, 2091, 2096, 2101, 2106,
-     2111, 2116, 2121, 2126, 2131, 2136, 2141, 2146, 2151, 2156,
-     2161, 2166, 2171, 2176, 2181, 2186, 2191, 2196, 2201, 2206,
-     2211, 2216, 2221, 2226, 2233, 2238, 2245, 2249, 2253, 2257,
+     1849, 1870, 1878, 1882, 1886, 1907, 1914, 1919, 1926, 1932,
+     1938, 1944, 1950, 1956, 1962, 1968, 1974, 1982, 1988, 1995,
+     2002, 2007, 2012, 2019, 2027, 2032, 2037, 2042, 2047, 2052,
+     2057, 2062, 2067, 2072, 2077, 2082, 2087, 2092, 2097, 2102,
+     2107, 2112, 2117, 2122, 2127, 2132, 2137, 2142, 2147, 2152,
+     2157, 2162, 2167, 2172, 2177, 2182, 2187, 2192, 2197, 2202,
+     2207, 2212, 2219, 2224, 2231, 2235, 2239, 2243, 2247, 2251,
 
-     2261, 2265, 2269, 2289, 2297, 2302, 2310, 2316, 2323, 2329,
-     2337, 2341, 2361, 2369, 2375, 2380, 2385, 2389, 2409, 2416,
-     2423, 2431, 2437, 2441, 2445, 2473, 2478, 2483, 2490, 2496,
-     2501, 2523, 2529, 2533, 2555, 2561, 2565, 2586, 2593, 2597,
-     2602, 2624, 2632, 2636, 2640, 2664, 2671, 2678, 2685, 2692,
-     2699, 2703, 2708, 2712, 2739, 2746, 2753, 2760, 2767, 2774,
-     2781, 2786, 2791, 2796, 2800, 2806, 2827, 2834, 2838, 2845,
-     2866, 2873, 2896, 2902, 2906, 2928, 2935, 2942, 2965, 2972,
-     2995, 3002, 3030, 3037, 3044, 3048, 3053, 3057, 3062, 3066,
-     3088, 3095, 3103, 3107, 3112, 3116, 3121, 3125
+     2257, 2261, 2281, 2289, 2294, 2302, 2308, 2315, 2321, 2329,
+     2333, 2353, 2361, 2367, 2372, 2377, 2381, 2401, 2408, 2415,
+     2423, 2429, 2433, 2437, 2465, 2470, 2475, 2482, 2488, 2493,
+     2515, 2521, 2525, 2547, 2553, 2557, 2578, 2585, 2589, 2594,
+     2616, 2624, 2628, 2632, 2656, 2663, 2670, 2677, 2684, 2691,
+     2695, 2700, 2727, 2734, 2741, 2748, 2755, 2762, 2769, 2774,
+     2779, 2784, 2788, 2794, 2815, 2822, 2826, 2833, 2854, 2861,
+     2884, 2890, 2894, 2916, 2923, 2930, 2953, 2960, 2983, 2990,
+     3018, 3025, 3032, 3036, 3041, 3045, 3050, 3054, 3076, 3083,
+     3091, 3095, 3100, 3104, 3109, 3113
 
     } ;
 
@@ -3322,7 +3321,7 @@ PITarget	(({NonXChar}{Char}*)|((X|x){NonMChar}{Char}*)|((X|x)(M|m){NonLChar}*)|(
 	onto the end cursor to effectively ignore the blanks preceding tokens. 
 	Comments would be treated equally. 
 */
-#line 3326 "xquery_scanner.yy.cpp"
+#line 3325 "xquery_scanner.yy.cpp"
 
 #define INITIAL 0
 #define MODE_APOS_ATTRIBUTE_CONTENT 1
@@ -3642,7 +3641,7 @@ YY_DECL
  yylloc->step ();
 
 
-#line 3646 "xquery_scanner.yy.cpp"
+#line 3645 "xquery_scanner.yy.cpp"
 
 	if ( !yyg->yy_init )
 		{
@@ -3742,13 +3741,13 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				fprintf( stderr, "--scanner backing up\n" );
-			else if ( yy_act < 499 )
+			else if ( yy_act < 497 )
 				fprintf( stderr, "--accepting rule at line %ld (\"%s\")\n",
 				         (long)yy_rule_linenum[yy_act], yytext );
-			else if ( yy_act == 499 )
+			else if ( yy_act == 497 )
 				fprintf( stderr, "--accepting default rule (\"%s\")\n",
 				         yytext );
-			else if ( yy_act == 500 )
+			else if ( yy_act == 498 )
 				fprintf( stderr, "--(end of buffer or a NUL)\n" );
 			else
 				fprintf( stderr, "--EOF (start condition %d)\n", YY_START );
@@ -6699,101 +6698,91 @@ YY_RULE_SETUP
 	return token::VOID_TEST;
 }
 	YY_BREAK
-case 339:
-YY_RULE_SETUP
-#line 1924 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
-{
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
-	/* BEGIN MODE_OPERATOR; */
-	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	return token::QNAME;
-}
-	YY_BREAK
 /* transition to EXPR_COMMENT */
 /* -------------------------- */
-case 340:
+case 339:
 YY_RULE_SETUP
-#line 1933 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1926 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 /* transition to KINDTEST */
 /* ---------------------- */
-case 341:
-/* rule 341 can match eol */
+case 340:
+/* rule 340 can match eol */
 YY_RULE_SETUP
-#line 1939 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1932 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::ELEMENT_LPAR;
 }
 	YY_BREAK
-case 342:
-/* rule 342 can match eol */
+case 341:
+/* rule 341 can match eol */
 YY_RULE_SETUP
-#line 1945 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1938 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::ATTRIBUTE_LPAR;
 }
 	YY_BREAK
-case 343:
-/* rule 343 can match eol */
+case 342:
+/* rule 342 can match eol */
 YY_RULE_SETUP
-#line 1951 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1944 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::SCHEMA_ELEMENT_LPAR;
 }
 	YY_BREAK
-case 344:
-/* rule 344 can match eol */
+case 343:
+/* rule 343 can match eol */
 YY_RULE_SETUP
-#line 1957 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1950 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::SCHEMA_ATTRIBUTE_LPAR;
 }
 	YY_BREAK
-case 345:
-/* rule 345 can match eol */
+case 344:
+/* rule 344 can match eol */
 YY_RULE_SETUP
-#line 1963 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1956 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::COMMENT_LPAR;
 }
 	YY_BREAK
-case 346:
-/* rule 346 can match eol */
+case 345:
+/* rule 345 can match eol */
 YY_RULE_SETUP
-#line 1969 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1962 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::TEXT_LPAR;
 }
 	YY_BREAK
-case 347:
-/* rule 347 can match eol */
+case 346:
+/* rule 346 can match eol */
 YY_RULE_SETUP
-#line 1975 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1968 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::NODE_LPAR;
 }
 	YY_BREAK
-case 348:
-/* rule 348 can match eol */
+case 347:
+/* rule 347 can match eol */
 YY_RULE_SETUP
-#line 1981 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1974 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6802,30 +6791,20 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to KINDTESTFORPI */
 /* --------------------------- */
-case 349:
-/* rule 349 can match eol */
+case 348:
+/* rule 348 can match eol */
 YY_RULE_SETUP
-#line 1989 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1982 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI, yyscanner);
 	return token::PI_LPAR;
 }
 	YY_BREAK
-/* transition to OCCURENCE_INDICATOR */
-/* -------------------------------- */
-case 350:
+case 349:
+/* rule 349 can match eol */
 YY_RULE_SETUP
-#line 1997 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
-{
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
-	return token::QNAME;
-}
-	YY_BREAK
-case 351:
-/* rule 351 can match eol */
-YY_RULE_SETUP
-#line 2002 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1988 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {	
 	BEGIN MODE_OCCURRENCE_INDICATOR;
 	return token::ITEM_TEST;
@@ -6833,9 +6812,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to PRAGMA */
 /* -------------------- */
-case 352:
+case 350:
 YY_RULE_SETUP
-#line 2009 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 1995 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_PRAGMA;
 	return token::PRAGMA_BEGIN;
@@ -6843,25 +6822,25 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to INITIAL */
 /* --------------------- */
-case 353:
+case 351:
 YY_RULE_SETUP
-#line 2016 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2002 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SEMI;
 }
 	YY_BREAK
-case 354:
+case 352:
 YY_RULE_SETUP
-#line 2021 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2007 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::THEN;
 }
 	YY_BREAK
-case 355:
+case 353:
 YY_RULE_SETUP
-#line 2026 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2012 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::ELSE;
@@ -6869,10 +6848,10 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to NAMESPACEDECL */
 /* --------------------------- */
-case 356:
-/* rule 356 can match eol */
+case 354:
+/* rule 354 can match eol */
 YY_RULE_SETUP
-#line 2033 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2019 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3, true);
 	BEGIN MODE_NAMESPACEDECL;
@@ -6881,307 +6860,307 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to INITIAL */
 /* --------------------- */
-case 357:
+case 355:
 YY_RULE_SETUP
-#line 2041 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2027 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::EXTERNAL;
 }
 	YY_BREAK
-case 358:
+case 356:
 YY_RULE_SETUP
-#line 2046 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2032 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::AND;
 }
 	YY_BREAK
-case 359:
+case 357:
 YY_RULE_SETUP
-#line 2051 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2037 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::AT;
 }
 	YY_BREAK
-case 360:
+case 358:
 YY_RULE_SETUP
-#line 2056 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2042 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::GETS;
 }
 	YY_BREAK
-case 361:
+case 359:
 YY_RULE_SETUP
-#line 2061 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2047 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::COMMA;
 }
 	YY_BREAK
-case 362:
+case 360:
 YY_RULE_SETUP
-#line 2066 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2052 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::DIV;
 }
 	YY_BREAK
-case 363:
+case 361:
 YY_RULE_SETUP
-#line 2071 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2057 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::EQUALS;
 }
 	YY_BREAK
-case 364:
+case 362:
 YY_RULE_SETUP
-#line 2076 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2062 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::EXCEPT;
 }
 	YY_BREAK
-case 365:
+case 363:
 YY_RULE_SETUP
-#line 2081 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2067 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_EQ;
 }
 	YY_BREAK
-case 366:
+case 364:
 YY_RULE_SETUP
-#line 2086 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2072 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_GE;
 }
 	YY_BREAK
-case 367:
+case 365:
 YY_RULE_SETUP
-#line 2091 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2077 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_GT;
 }
 	YY_BREAK
-case 368:
+case 366:
 YY_RULE_SETUP
-#line 2096 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2082 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_LE;
 }
 	YY_BREAK
-case 369:
+case 367:
 YY_RULE_SETUP
-#line 2101 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2087 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_LT;
 }
 	YY_BREAK
-case 370:
+case 368:
 YY_RULE_SETUP
-#line 2106 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2092 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_NE;
 }
 	YY_BREAK
-case 371:
+case 369:
 YY_RULE_SETUP
-#line 2111 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2097 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::GE;
 }
 	YY_BREAK
-case 372:
+case 370:
 YY_RULE_SETUP
-#line 2116 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2102 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::FOLLOWS;
 }
 	YY_BREAK
-case 373:
+case 371:
 YY_RULE_SETUP
-#line 2121 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2107 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::GT;
 }
 	YY_BREAK
-case 374:
+case 372:
 YY_RULE_SETUP
-#line 2126 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2112 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::IDIV;
 }
 	YY_BREAK
-case 375:
+case 373:
 YY_RULE_SETUP
-#line 2131 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2117 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::INTERSECT;
 }
 	YY_BREAK
-case 376:
+case 374:
 YY_RULE_SETUP
-#line 2136 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2122 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::_IN_;
 }
 	YY_BREAK
-case 377:
+case 375:
 YY_RULE_SETUP
-#line 2141 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2127 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::IS;
 }
 	YY_BREAK
-case 378:
+case 376:
 YY_RULE_SETUP
-#line 2146 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2132 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LBRACK;
 }
 	YY_BREAK
-case 379:
+case 377:
 YY_RULE_SETUP
-#line 2151 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2137 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LPAR;
 }
 	YY_BREAK
-case 380:
+case 378:
 YY_RULE_SETUP
-#line 2156 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2142 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LE;
 }
 	YY_BREAK
-case 381:
+case 379:
 YY_RULE_SETUP
-#line 2161 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2147 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::PRECEDES;
 }
 	YY_BREAK
-case 382:
+case 380:
 YY_RULE_SETUP
-#line 2166 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2152 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LT;
 }
 	YY_BREAK
-case 383:
+case 381:
 YY_RULE_SETUP
-#line 2171 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2157 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::MINUS;
 }
 	YY_BREAK
-case 384:
+case 382:
 YY_RULE_SETUP
-#line 2176 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2162 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::MOD;
 }
 	YY_BREAK
-case 385:
+case 383:
 YY_RULE_SETUP
-#line 2181 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2167 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::NE;
 }
 	YY_BREAK
-case 386:
-/* rule 386 can match eol */
+case 384:
+/* rule 384 can match eol */
 YY_RULE_SETUP
-#line 2186 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2172 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::ORDER_BY;
 }
 	YY_BREAK
-case 387:
-/* rule 387 can match eol */
+case 385:
+/* rule 385 can match eol */
 YY_RULE_SETUP
-#line 2191 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2177 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::STABLE_ORDER_BY;
 }
 	YY_BREAK
-case 388:
+case 386:
 YY_RULE_SETUP
-#line 2196 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2182 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::OR;
 }
 	YY_BREAK
-case 389:
+case 387:
 YY_RULE_SETUP
-#line 2201 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2187 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::RETURN;
 }
 	YY_BREAK
-case 390:
+case 388:
 YY_RULE_SETUP
-#line 2206 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2192 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SATISFIES;
 }
 	YY_BREAK
-case 391:
+case 389:
 YY_RULE_SETUP
-#line 2211 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2197 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::TO;
 }
 	YY_BREAK
-case 392:
+case 390:
 YY_RULE_SETUP
-#line 2216 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2202 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::UNION;
 }
 	YY_BREAK
-case 393:
+case 391:
 YY_RULE_SETUP
-#line 2221 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2207 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VBAR;
 }
 	YY_BREAK
-case 394:
+case 392:
 YY_RULE_SETUP
-#line 2226 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2212 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::WHERE;
@@ -7189,19 +7168,19 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to SINGLETYPE */
 /* ------------------------ */
-case 395:
-/* rule 395 can match eol */
+case 393:
+/* rule 393 can match eol */
 YY_RULE_SETUP
-#line 2233 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2219 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_SINGLETYPE;
 	return token::CASTABLE_AS;
 }
 	YY_BREAK
-case 396:
-/* rule 396 can match eol */
+case 394:
+/* rule 394 can match eol */
 YY_RULE_SETUP
-#line 2238 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2224 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_SINGLETYPE;
 	return token::CAST_AS;
@@ -7209,55 +7188,64 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain ITEMTYPE */
 /* ----------------- */
-case 397:
-/* rule 397 can match eol */
+case 395:
+/* rule 395 can match eol */
 YY_RULE_SETUP
-#line 2245 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2231 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::INSTANCE_OF;
 }
 	YY_BREAK
-case 398:
-/* rule 398 can match eol */
+case 396:
+/* rule 396 can match eol */
 YY_RULE_SETUP
-#line 2249 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2235 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::TREAT_AS;
 }
 	YY_BREAK
-case 399:
+case 397:
 YY_RULE_SETUP
-#line 2253 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2239 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::CASE;
 }
 	YY_BREAK
-case 400:
+case 398:
 YY_RULE_SETUP
-#line 2257 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2243 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AS;
 }
 	YY_BREAK
-case 401:
-/* rule 401 can match eol */
+case 399:
+/* rule 399 can match eol */
 YY_RULE_SETUP
-#line 2261 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2247 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::RPAR_AS;
 }
 	YY_BREAK
-case 402:
+case 400:
 YY_RULE_SETUP
-#line 2265 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2251 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+{
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+	BEGIN MODE_OCCURRENCE_INDICATOR; 
+	return token::QNAME;
+}
+	YY_BREAK
+case 401:
+YY_RULE_SETUP
+#line 2257 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
-case 403:
-/* rule 403 can match eol */
+case 402:
+/* rule 402 can match eol */
 YY_RULE_SETUP
-#line 2269 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2261 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -7272,9 +7260,9 @@ YY_RULE_SETUP
 
 /* transition to INITIAL */
 /* --------------------- */
-case 404:
+case 403:
 YY_RULE_SETUP
-#line 2289 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2281 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -7283,17 +7271,17 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to CLOSE_KINDTEST */
 /* --------------------------- */
-case 405:
+case 404:
 YY_RULE_SETUP
-#line 2297 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2289 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_CLOSE_KINDTEST;
 	return token::STAR;
 }
 	YY_BREAK
-case 406:
+case 405:
 YY_RULE_SETUP
-#line 2302 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2294 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_CLOSE_KINDTEST;
@@ -7302,18 +7290,18 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to EXPR_COMMENT */
 /* -------------------------- */
-case 407:
+case 406:
 YY_RULE_SETUP
-#line 2310 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2302 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 /* pop previous state on close paren */
 /* --------------------------------- */
-case 408:
+case 407:
 YY_RULE_SETUP
-#line 2316 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2308 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::RPAR;
@@ -7321,20 +7309,20 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain KINDTEST */
 /* ----------------- */
-case 409:
-/* rule 409 can match eol */
+case 408:
+/* rule 408 can match eol */
 YY_RULE_SETUP
-#line 2323 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2315 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_KINDTEST;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::ELEMENT_LPAR;
 }
 	YY_BREAK
-case 410:
-/* rule 410 can match eol */
+case 409:
+/* rule 409 can match eol */
 YY_RULE_SETUP
-#line 2329 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2321 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_KINDTEST;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -7343,17 +7331,17 @@ YY_RULE_SETUP
 	YY_BREAK
 /* catch-all */
 /* --------- */
-case 411:
+case 410:
 YY_RULE_SETUP
-#line 2337 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2329 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
-case 412:
-/* rule 412 can match eol */
+case 411:
+/* rule 411 can match eol */
 YY_RULE_SETUP
-#line 2341 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2333 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -7369,9 +7357,9 @@ YY_RULE_SETUP
 
 /* pop previous state on close paren */
 /* --------------------------------- */
-case 413:
+case 412:
 YY_RULE_SETUP
-#line 2361 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2353 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::RPAR;
@@ -7379,43 +7367,43 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to EXPR_COMMENT */
 /* -------------------------- */
-case 414:
+case 413:
 YY_RULE_SETUP
-#line 2369 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2361 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 /* maintain KINDTESTFORPI */
 /* ---------------------- */
-case 415:
+case 414:
 YY_RULE_SETUP
-#line 2375 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2367 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
 	return token::NCNAME;
 }
 	YY_BREAK
-case 416:
-/* rule 416 can match eol */
+case 415:
+/* rule 415 can match eol */
 YY_RULE_SETUP
-#line 2380 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2372 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
 	return token::STRING_LITERAL;
 }
 	YY_BREAK
-case 417:
+case 416:
 YY_RULE_SETUP
-#line 2385 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2377 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
-case 418:
-/* rule 418 can match eol */
+case 417:
+/* rule 417 can match eol */
 YY_RULE_SETUP
-#line 2389 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2381 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -7430,9 +7418,9 @@ YY_RULE_SETUP
 
 /* pop previous state */
 /* ------------------ */
-case 419:
+case 418:
 YY_RULE_SETUP
-#line 2409 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2401 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::RPAR;
@@ -7440,9 +7428,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to KINDTEST */
 /* ---------------------- */
-case 420:
+case 419:
 YY_RULE_SETUP
-#line 2416 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2408 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_KINDTEST;
 	return token::COMMA;
@@ -7450,9 +7438,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to INITIAL */
 /* --------------------- */
-case 421:
+case 420:
 YY_RULE_SETUP
-#line 2423 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2415 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -7461,33 +7449,33 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to EXPR_COMMENT */
 /* -------------------------- */
-case 422:
+case 421:
 YY_RULE_SETUP
-#line 2431 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2423 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 /* maintain CLOSE_KINDTEST */
 /* ---------------------- */
-case 423:
+case 422:
 YY_RULE_SETUP
-#line 2437 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2429 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::HOOK;
 }
 	YY_BREAK
-case 424:
+case 423:
 YY_RULE_SETUP
-#line 2441 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2433 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
-case 425:
-/* rule 425 can match eol */
+case 424:
+/* rule 424 can match eol */
 YY_RULE_SETUP
-#line 2445 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2437 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -7510,25 +7498,25 @@ YY_RULE_SETUP
 
 /* transition to OPERATOR */
 /* ---------------------- */
-case 426:
+case 425:
 YY_RULE_SETUP
-#line 2473 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2465 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::OCCURS_HOOK;
 }
 	YY_BREAK
-case 427:
+case 426:
 YY_RULE_SETUP
-#line 2478 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2470 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::OCCURS_STAR;
 }
 	YY_BREAK
-case 428:
+case 427:
 YY_RULE_SETUP
-#line 2483 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2475 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::OCCURS_PLUS;
@@ -7536,27 +7524,27 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to EXPR_COMMENT */
 /* -------------------------- */
-case 429:
+case 428:
 YY_RULE_SETUP
-#line 2490 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2482 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 /* anything else: push back, goto OPERATOR */
 /* --------------------------------------- */
-case 430:
+case 429:
 YY_RULE_SETUP
-#line 2496 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2488 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yyless(0);
 	BEGIN MODE_OPERATOR;
 }
 	YY_BREAK
-case 431:
-/* rule 431 can match eol */
+case 430:
+/* rule 430 can match eol */
 YY_RULE_SETUP
-#line 2501 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2493 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -7573,26 +7561,26 @@ YY_RULE_SETUP
 
 /* transition to INITIAL */
 /* --------------------- */
-case 432:
+case 431:
 YY_RULE_SETUP
-#line 2523 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2515 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN INITIAL;
 	return token::QNAME;
 }
 	YY_BREAK
-case 433:
+case 432:
 YY_RULE_SETUP
-#line 2529 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2521 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
-case 434:
-/* rule 434 can match eol */
+case 433:
+/* rule 433 can match eol */
 YY_RULE_SETUP
-#line 2533 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2525 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -7609,26 +7597,26 @@ YY_RULE_SETUP
 
 /* transition to PRAGMACONTENTS */
 /* ---------------------------- */
-case 435:
+case 434:
 YY_RULE_SETUP
-#line 2555 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2547 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_PRAGMACONTENTS;
 	return token::QNAME;
 }
 	YY_BREAK
-case 436:
+case 435:
 YY_RULE_SETUP
-#line 2561 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2553 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
-case 437:
-/* rule 437 can match eol */
+case 436:
+/* rule 436 can match eol */
 YY_RULE_SETUP
-#line 2565 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2557 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -7644,9 +7632,9 @@ YY_RULE_SETUP
 
 /* transition to OPERATOR */
 /* ---------------------- */
-case 438:
+case 437:
 YY_RULE_SETUP
-#line 2586 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2578 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::PRAGMA_END;
@@ -7654,26 +7642,26 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain PRAGMACONTENTS */
 /* ----------------------- */
-case 439:
-/* rule 439 can match eol */
+case 438:
+/* rule 438 can match eol */
 YY_RULE_SETUP
-#line 2593 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2585 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	/* continue lexing */
 }
 	YY_BREAK
-case 440:
-/* rule 440 can match eol */
+case 439:
+/* rule 439 can match eol */
 YY_RULE_SETUP
-#line 2597 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2589 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::PRAGMA_LITERAL;
 }
 	YY_BREAK
-case 441:
+case 440:
 YY_RULE_SETUP
-#line 2602 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2594 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7690,9 +7678,9 @@ YY_RULE_SETUP
 
 /* transition to OPERATOR */
 /* ---------------------- */
-case 442:
+case 441:
 YY_RULE_SETUP
-#line 2624 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2616 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_varname(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
@@ -7701,24 +7689,24 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to EXPR_COMMENT */
 /* -------------------------- */
-case 443:
+case 442:
 YY_RULE_SETUP
-#line 2632 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2624 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
-case 444:
+case 443:
 YY_RULE_SETUP
-#line 2636 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2628 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
-case 445:
-/* rule 445 can match eol */
+case 444:
+/* rule 444 can match eol */
 YY_RULE_SETUP
-#line 2640 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2632 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -7737,9 +7725,9 @@ YY_RULE_SETUP
 
 /* transition to ELEMENT_CONTENT */
 /* ----------------------------- */
-case 446:
+case 445:
 YY_RULE_SETUP
-#line 2664 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2656 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_ELEMENT_CONTENT;
 	return token::TAG_END;
@@ -7747,9 +7735,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to QUOT_ATTRIBUTE_CONTENT */
 /* ------------------------------------ */
-case 447:
+case 446:
 YY_RULE_SETUP
-#line 2671 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2663 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT;
 	return token::QUOTE;
@@ -7757,9 +7745,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to APOS_ATTRIBUTE_CONTENT */
 /* ------------------------------------ */
-case 448:
+case 447:
 YY_RULE_SETUP
-#line 2678 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2670 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
 	return token::APOS;
@@ -7767,9 +7755,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to START_TAG */
 /* ----------------------- */
-case 449:
+case 448:
 YY_RULE_SETUP
-#line 2685 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2677 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_START_TAG;
 	return token::EQUALS;
@@ -7777,9 +7765,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* pop previous state on exit */
 /* -------------------------- */
-case 450:
+case 449:
 YY_RULE_SETUP
-#line 2692 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2684 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::EMPTY_TAG_END;
@@ -7787,35 +7775,27 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain START_TAG */
 /* ------------------ */
-case 451:
-/* rule 451 can match eol */
+case 450:
+/* rule 450 can match eol */
 YY_RULE_SETUP
-#line 2699 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2691 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	/* continue lexing */
 }
 	YY_BREAK
-case 452:
+case 451:
 YY_RULE_SETUP
-#line 2703 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2695 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	return token::QNAME;
 }
 	YY_BREAK
-case 453:
+case 452:
 YY_RULE_SETUP
-#line 2708 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2700 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
-}
-	YY_BREAK
-case 454:
-/* rule 454 can match eol */
-YY_RULE_SETUP
-#line 2712 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
-{
-  /* eat up whitespace */
 }
 	YY_BREAK
 /* <MODE_START_TAG> */
@@ -7835,9 +7815,9 @@ YY_RULE_SETUP
 
 /* transition to END_TAG */
 /* --------------------- */
-case 455:
+case 453:
 YY_RULE_SETUP
-#line 2739 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2727 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_END_TAG;
 	return token::START_TAG_END;
@@ -7845,9 +7825,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to INITIAL */
 /* --------------------- */
-case 456:
+case 454:
 YY_RULE_SETUP
-#line 2746 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2734 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
@@ -7855,9 +7835,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to EXPR_COMMENT */
 /* -------------------------- */
-case 457:
+case 455:
 YY_RULE_SETUP
-#line 2753 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2741 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_XML_COMMENT, yyscanner);
 	return token::XML_COMMENT_BEGIN;
@@ -7865,9 +7845,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to PROCESSING_INSTRUCTION */
 /* ------------------------------------ */
-case 458:
+case 456:
 YY_RULE_SETUP
-#line 2760 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2748 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_PROCESSING_INSTRUCTION, yyscanner);
 	return token::PI_BEGIN;
@@ -7875,9 +7855,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to CDATA_SECTION */
 /* --------------------------- */
-case 459:
+case 457:
 YY_RULE_SETUP
-#line 2767 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2755 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_CDATA_SECTION, yyscanner);
 	return token::CDATA_BEGIN;
@@ -7885,9 +7865,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to START_TAG */
 /* ----------------------- */
-case 460:
+case 458:
 YY_RULE_SETUP
-#line 2774 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2762 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_START_TAG, yyscanner);
 	return token::START_TAG;
@@ -7895,50 +7875,50 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain ELEMENT_CONTENT */
 /* ------------------------ */
-case 461:
-/* rule 461 can match eol */
+case 459:
+/* rule 459 can match eol */
 YY_RULE_SETUP
-#line 2781 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2769 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::ELEMENT_CONTENT;
 }
 	YY_BREAK
-case 462:
+case 460:
 YY_RULE_SETUP
-#line 2786 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2774 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_entityref(yytext, yyleng);
 	return token::ENTITY_REF;
 }
 	YY_BREAK
-case 463:
+case 461:
 YY_RULE_SETUP
-#line 2791 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2779 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_charref(yytext, yyleng);
 	return token::CHAR_REF_LITERAL;
 }
 	YY_BREAK
-case 464:
+case 462:
 YY_RULE_SETUP
-#line 2796 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2784 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
-case 465:
+case 463:
 YY_RULE_SETUP
-#line 2800 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2788 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_RBRACE;
 }
 	YY_BREAK
 /* catch all else */
 /* -------------- */
-case 466:
+case 464:
 YY_RULE_SETUP
-#line 2806 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2794 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7954,9 +7934,9 @@ YY_RULE_SETUP
 
 /* pop previous state on exit */
 /* -------------------------- */
-case 467:
+case 465:
 YY_RULE_SETUP
-#line 2827 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2815 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::TAG_END;
@@ -7964,17 +7944,17 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain END_TAG */
 /* ---------------- */
-case 468:
-/* rule 468 can match eol */
+case 466:
+/* rule 466 can match eol */
 YY_RULE_SETUP
-#line 2834 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2822 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	/* continue lexing */
 }
 	YY_BREAK
-case 469:
+case 467:
 YY_RULE_SETUP
-#line 2838 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2826 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::QNAME;
@@ -7982,9 +7962,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* catch all else */
 /* -------------- */
-case 470:
+case 468:
 YY_RULE_SETUP
-#line 2845 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2833 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -8000,9 +7980,9 @@ YY_RULE_SETUP
 
 /* pop previous state on exit */
 /* -------------------------- */
-case 471:
+case 469:
 YY_RULE_SETUP
-#line 2866 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2854 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::XML_COMMENT_END;
@@ -8010,10 +7990,10 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain XML_COMMENT */
 /* -------------------- */
-case 472:
-/* rule 472 can match eol */
+case 470:
+/* rule 470 can match eol */
 YY_RULE_SETUP
-#line 2873 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2861 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::XML_COMMENT_LITERAL;
@@ -8031,26 +8011,26 @@ YY_RULE_SETUP
 
 /* pop previous state */
 /* ------------------ */
-case 473:
+case 471:
 YY_RULE_SETUP
-#line 2896 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2884 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 }
 	YY_BREAK
 /* maintain EXPR_COMMENT */
 /* --------------------- */
-case 474:
+case 472:
 YY_RULE_SETUP
-#line 2902 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2890 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
-case 475:
-/* rule 475 can match eol */
+case 473:
+/* rule 473 can match eol */
 YY_RULE_SETUP
-#line 2906 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2894 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	/* do nothing */
   // TODO: check if, indeed, nothing needs to be done
@@ -8067,10 +8047,10 @@ YY_RULE_SETUP
 
 /* transition to PROCESSING_INSTRUCTION_CONTENT */
 /* -------------------------------------------- */
-case 476:
-/* rule 476 can match eol */
+case 474:
+/* rule 474 can match eol */
 YY_RULE_SETUP
-#line 2928 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2916 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; 
 	/* continue lexing */
@@ -8078,9 +8058,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* pop previous state on exit */
 /* -------------------------- */
-case 477:
+case 475:
 YY_RULE_SETUP
-#line 2935 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2923 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::PI_END;
@@ -8088,9 +8068,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain PROCESSING_INSTRUCTION */
 /* ------------------------------- */
-case 478:
+case 476:
 YY_RULE_SETUP
-#line 2942 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2930 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	BEGIN MODE_PROCESSING_INSTRUCTION;
@@ -8108,9 +8088,9 @@ YY_RULE_SETUP
 
 /* pop previous state on exit */
 /* -------------------------- */
-case 479:
+case 477:
 YY_RULE_SETUP
-#line 2965 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2953 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::PI_END;
@@ -8118,10 +8098,10 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain PROCESSING_INSTRUCTION_CONTENT */
 /* --------------------------------------- */
-case 480:
-/* rule 480 can match eol */
+case 478:
+/* rule 478 can match eol */
 YY_RULE_SETUP
-#line 2972 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2960 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng-1);
   yyless(yyleng-1);
@@ -8139,9 +8119,9 @@ YY_RULE_SETUP
 
 /* pop previous state on exit */
 /* -------------------------- */
-case 481:
+case 479:
 YY_RULE_SETUP
-#line 2995 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2983 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::CDATA_END;
@@ -8149,10 +8129,10 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain CDATA_SECTION */
 /* ---------------------- */
-case 482:
-/* rule 482 can match eol */
+case 480:
+/* rule 480 can match eol */
 YY_RULE_SETUP
-#line 3002 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 2990 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::CHAR_LITERAL;
@@ -8175,9 +8155,9 @@ YY_RULE_SETUP
 
 /* transition to START_TAG */
 /* ----------------------- */
-case 483:
+case 481:
 YY_RULE_SETUP
-#line 3030 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3018 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_START_TAG;
 	return token::QUOTE;
@@ -8185,9 +8165,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to INITIAL */
 /* --------------------- */
-case 484:
+case 482:
 YY_RULE_SETUP
-#line 3037 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3025 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
@@ -8195,47 +8175,47 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain QUOTE_ATTRIBUTE_CONTENT */
 /* -------------------------------- */
-case 485:
+case 483:
 YY_RULE_SETUP
-#line 3044 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3032 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ESCAPE_QUOTE;
 }
 	YY_BREAK
-case 486:
-/* rule 486 can match eol */
+case 484:
+/* rule 484 can match eol */
 YY_RULE_SETUP
-#line 3048 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3036 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::QUOTE_ATTR_CONTENT;
 }
 	YY_BREAK
-case 487:
+case 485:
 YY_RULE_SETUP
-#line 3053 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3041 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ENTITY_REF;
 }
 	YY_BREAK
-case 488:
+case 486:
 YY_RULE_SETUP
-#line 3057 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3045 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_charref(yytext, yyleng);
 	return token::CHAR_REF_LITERAL;
 }
 	YY_BREAK
-case 489:
+case 487:
 YY_RULE_SETUP
-#line 3062 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3050 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
-case 490:
+case 488:
 YY_RULE_SETUP
-#line 3066 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3054 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_RBRACE;
 }
@@ -8252,9 +8232,9 @@ YY_RULE_SETUP
 
 /* transition to START_TAG */
 /* ----------------------- */
-case 491:
+case 489:
 YY_RULE_SETUP
-#line 3088 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3076 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_START_TAG;
 	return token::APOS;
@@ -8262,9 +8242,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to INITIAL */
 /* --------------------- */
-case 492:
+case 490:
 YY_RULE_SETUP
-#line 3095 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3083 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -8273,58 +8253,58 @@ YY_RULE_SETUP
 	YY_BREAK
 /* maintain APOS_ATTRIBUTE_CONTENT */
 /* ------------------------------- */
-case 493:
+case 491:
 YY_RULE_SETUP
-#line 3103 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3091 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ESCAPE_APOS;
 }
 	YY_BREAK
-case 494:
-/* rule 494 can match eol */
+case 492:
+/* rule 492 can match eol */
 YY_RULE_SETUP
-#line 3107 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3095 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::APOS_ATTR_CONTENT;
 }
 	YY_BREAK
-case 495:
+case 493:
 YY_RULE_SETUP
-#line 3112 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3100 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ENTITY_REF;
 }
 	YY_BREAK
-case 496:
+case 494:
 YY_RULE_SETUP
-#line 3116 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3104 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_charref(yytext, yyleng);
 	return token::CHAR_REF_LITERAL;
 }
 	YY_BREAK
-case 497:
+case 495:
 YY_RULE_SETUP
-#line 3121 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3109 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
-case 498:
+case 496:
 YY_RULE_SETUP
-#line 3125 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3113 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_RBRACE;
 }
 	YY_BREAK
 /* <MODE_APOS_ATTRIBUTE_CONTENT> */
-case 499:
+case 497:
 YY_RULE_SETUP
-#line 3131 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3119 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 ECHO;
 	YY_BREAK
-#line 8328 "xquery_scanner.yy.cpp"
+#line 8308 "xquery_scanner.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(MODE_APOS_ATTRIBUTE_CONTENT):
 case YY_STATE_EOF(MODE_CDATA_SECTION):
@@ -9673,7 +9653,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 3131 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+#line 3119 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 
 
 
