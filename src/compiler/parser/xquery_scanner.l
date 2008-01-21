@@ -143,7 +143,7 @@ PredefinedEntityRef		"&"(lt|gt|amp|quot|apos|nbsp);
 	|  Numeric literal definitions
 	|______________________________________________________________________*/
 DecimalLiteral				(\.[0-9]+)|([0-9]+(\.[0-9]+)?)
-DoubleLiteral					((\.[0-9]+)|([0-9]+(\.[0-9]+)?))([eE][+-]?[0-9]+)?
+DoubleLiteral					((\.[0-9]+)|([0-9]+(\.[0-9]*)?))([eE][+-]?[0-9]+)?
 IntegerLiteral				[0-9]+
 NumericLiteral				((\.[0-9]+)|([0-9]+(\.[0-9]+)?))([eE][+-]?[0-9]+)?
 
