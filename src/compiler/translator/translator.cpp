@@ -3298,11 +3298,11 @@ void end_visit(const QuantifiedExpr& v, void *visit_state)
   for (int i = 0; i < v.get_decl_list()->size(); ++i) {
     pop_scope ();
     var_expr_t ve = vars_vals [2 * i + 1].cast<var_expr> ();
-    flwor->add(wrap_in_forclause (vars_vals [2 * i], ve, NULL));
+    flwor->add(wrap_in_forclause (&*vars_vals [2 * i], ve, NULL));
   }
   rchandle<fo_expr> quant = new fo_expr(v.get_location(), v.get_qmode() == quant_every ? LOOKUP_FN("fn", "empty", 1) : LOOKUP_FN("fn", "exists", 1));
-  quant->add (flwor);
-  nodestack.push (quant);
+  quant->add (&*flwor);
+  nodestack.push (&*quant);
 }
 
 
@@ -3406,7 +3406,7 @@ void *begin_visit(const TypeswitchExpr& v)
     defret = pop_nodestack ();
     if (! defvar_name.empty ()) {
       pop_scope ();
-      defret = wrap_in_let_flwor (sv, defvar, defret);
+      defret = &*wrap_in_let_flwor (&*sv, defvar, defret);
     }
   }
   
@@ -3425,18 +3425,18 @@ void *begin_visit(const TypeswitchExpr& v)
     e_p->accept (*this);
     TypeSystem::xqtref_t type = pop_tstack ();
     defret = new if_expr (e_p->get_location (),
-                          new instanceof_expr (loc, sv, type),
+                          new instanceof_expr (loc, &*sv, type),
                           pop_nodestack (), defret);
     if (! name.empty ()) {
       pop_scope ();
-      defret = wrap_in_let_flwor (new cast_expr (loc, sv, type), var, defret);
+      defret = &*wrap_in_let_flwor (new cast_expr (loc, &*sv, type), var, defret);
     }
   }
 
   {
     v.get_switch_expr ()->accept (*this);
     expr_t se = pop_nodestack ();
-    nodestack.push (wrap_in_let_flwor (se, sv, defret));
+    nodestack.push (&*wrap_in_let_flwor (se, sv, defret));
   }
 
   return NULL;

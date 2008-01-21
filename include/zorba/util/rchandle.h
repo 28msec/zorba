@@ -83,6 +83,15 @@ public:
 
 public:	// operator overloading
   rchandle& operator=(rchandle const& rhs);
+	template <class otherT> rchandle& operator=(rchandle<otherT> const& rhs)
+	{
+		if (p != rhs.get_ptr()) {
+			if (p) p->removeReference();
+			p = static_cast<T*>(rhs.get_ptr());
+			init();
+		}
+		return *this;
+	}
   T* operator->() const; 
   T& operator*() const;
 
