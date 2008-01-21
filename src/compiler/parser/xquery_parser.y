@@ -3250,7 +3250,7 @@ PragmaList :
 // [65] Pragma
 // -----------
 Pragma :
-		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL  PRAGMA_END
+		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Pragma [ ]\n";

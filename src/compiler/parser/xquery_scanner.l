@@ -2577,18 +2577,12 @@ typedef yy::xquery_parser::token token;
 	/* ---------------------- */
 "#)" {
 	BEGIN MODE_OPERATOR;
-	return token::PRAGMA_END;
-}
-
-	/* maintain PRAGMACONTENTS */
-	/* ----------------------- */
-{S} {
-	/* continue lexing */
-}
-
-{Char}+ {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::PRAGMA_LITERAL;
+}
+
+{Char} {
+  yymore ();
 }
 
 {CatchAll} {
