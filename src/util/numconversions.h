@@ -13,6 +13,9 @@ namespace xqp {
  * conversions. Functions which aways work return the value directly.
  */
 class NumConversions {
+private:
+  static bool isNegZero(const xqpString& aStr);
+
 public:
   /**********************************************************************************
    * String to Numeric and Numeric to String Conversions

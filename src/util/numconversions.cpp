@@ -5,6 +5,20 @@
 #include <iostream> 
 
 namespace xqp {
+  bool NumConversions::isNegZero(const xqpString& aStr) {
+    xqpString lStr = aStr.trim(" \n\r\t", 4);
+    size_t lLength = aStr.length();
+    const char* lChars = aStr.c_str();
+    if (lChars[0] == '-') {
+      for(size_t i = 1; i < lLength; ++i) {
+        if (lChars[i] != '0') {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   bool NumConversions::strToInteger(const xqpString& aStr, xqp_integer& aInteger){
     try {
       aInteger = boost::lexical_cast<xqp_integer>(aStr.c_str());
@@ -42,6 +56,10 @@ namespace xqp {
     return boost::lexical_cast<std::string>(aInt);
   }
   bool NumConversions::strToUInt(const xqpString& aStr, xqp_uint& aUInt){
+    if ( isNegZero(aStr)) {
+      aUInt = 0;
+      return true;
+    }
     try {
       aUInt =  boost::lexical_cast<xqp_uint>(aStr.c_str());
       return true;
@@ -64,6 +82,10 @@ namespace xqp {
     return boost::lexical_cast<std::string>(aLong);
   }
   bool NumConversions::strToULong(const xqpString& aStr, xqp_ulong& aULong){
+    if ( isNegZero(aStr)) {
+      aULong = 0;
+      return true;
+    }
     try {
       aULong = boost::lexical_cast<xqp_ulong>(aStr.c_str());
       return true;
@@ -86,6 +108,10 @@ namespace xqp {
     return boost::lexical_cast<std::string>(aShort);
   }
   bool NumConversions::strToUShort(const xqpString& aStr, xqp_ushort& aUShort){
+    if ( isNegZero(aStr )) {
+      aUShort = 0;
+      return true;
+    }
     try {
       aUShort = boost::lexical_cast<xqp_ushort>(aStr.c_str());
       return true;
@@ -177,6 +203,10 @@ namespace xqp {
     return boost::lexical_cast<std::string>(lInt);
   }
   bool NumConversions::strToUByte(const xqpString& aStr, xqp_ubyte& aUByte){
+    if ( isNegZero(aStr)) {
+      aUByte = 0;
+      return true;
+    }
     try {
       xqp_uint lUInt = boost::lexical_cast<xqp_uint>(aStr.c_str());
       if (lUInt >= 0 && lUInt <= 255) {
