@@ -124,10 +124,19 @@ namespace xqp
   /* start class IntegerDivideOperations */
   Item_t IntegerDivideOperations::opDouble ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    if (i0->isNaN() || i0->isPosOrNegInf() || i1->isNaN() || i1->isPosOrNegInf()) {
+    if (i0->isNaN() || i1->isNaN()) {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
         loc, false, "Integer Devision with doubles must not be done with NaNs");
     }
+    if (i0->isPosOrNegInf()) {
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
+        loc, false, "Integer Devision must not be done with a +-INF dividend");
+    }
+    if (i0->isPosOrNegInf()) {
+      // idiv with +-INF divisor has 0 as result
+      return Zorba::getItemFactory()->createInteger(0);
+    }
+
     xqp_double d0 = i0->getDoubleValue();
     xqp_double d1 = i1->getDoubleValue();
     if ( d1 == 0 )
@@ -142,10 +151,19 @@ namespace xqp
 
   Item_t IntegerDivideOperations::opFloat ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    if (i0->isNaN() || i0->isPosOrNegInf() || i1->isNaN() || i1->isPosOrNegInf()) {
+    if (i0->isNaN() || i1->isNaN() ) {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
         loc, false, "Integer Devision with floats must not be done with NaNs");
     }
+    if (i0->isPosOrNegInf()) {
+      ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
+        loc, false, "Integer Devision must not be done with a +-INF dividend");
+    }
+    if (i0->isPosOrNegInf()) {
+      // idiv with +-INF divisor has 0 as result
+      return Zorba::getItemFactory()->createInteger(0);
+    }
+
     xqp_float f0 = i0->getFloatValue();
     xqp_float f1 = i1->getFloatValue();
     if ( f1 == 0 )
