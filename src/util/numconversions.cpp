@@ -140,6 +140,7 @@ namespace xqp {
   xqpString NumConversions::decimalToStr(xqp_decimal aDecimal){
     return boost::lexical_cast<std::string>(aDecimal);
   }
+
   bool NumConversions::starCharToFloat(const char* aCharStar, xqp_float& aFloat) {
     char* lEndPtr;
 #ifdef HAVE_STRTOF_FUNCTION
@@ -157,10 +158,11 @@ namespace xqp {
       {
         aFloat = std::numeric_limits<float>::infinity();
         return true;
+      }
 #ifdef HAVE_STRCASECMP_FUNCTION
-      } else if (strcasecmp(aCharStar, "-inf") == 0 )
+      else if (strcasecmp(aCharStar, "-inf") == 0 )
 #else
-      } else if (_stricmp(aCharStar, "-inf") == 0 )
+      else if (_stricmp(aCharStar, "-inf") == 0 )
 #endif
       {
         aFloat = -std::numeric_limits<float>::infinity();
@@ -183,8 +185,10 @@ namespace xqp {
         aFloat = static_cast<xqp_float>(lTmpDouble);
 
       return true;
-#endif
     }
+#endif
+  }
+
   bool NumConversions::strToFloat(const xqpString& aStr, xqp_float& aFloat){
     return NumConversions::starCharToFloat(aStr.c_str(), aFloat);
   }
