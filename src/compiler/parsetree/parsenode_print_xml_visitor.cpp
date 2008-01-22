@@ -250,13 +250,21 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DefaultNamespaceDecl &n)
 {
     INDENT;
 
-    os << "<DefaultNamespaceDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<DefaultNamespaceDecl mode='" << n.get_mode () << "' uri='" << n.get_default_namespace () << "' pos='" << n.get_location() << "' ptr='" << &n << "'";
 
-    os << ">";
+    os << "/>";
 
-    INDENT_INC;
     NL;
     return no_state;
+}
+
+void ParseNodePrintXMLVisitor::end_visit(const NamespaceDecl &n, void *visit_state)
+{
+}
+
+
+void ParseNodePrintXMLVisitor::end_visit(const DefaultNamespaceDecl &n, void *visit_state)
+{
 }
 
 
@@ -595,9 +603,9 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NamespaceDecl &n)
 {
     INDENT;
 
-    os << "<NamespaceDecl pos='" << n.get_location() << "' ptr='" << &n << "'";
+    os << "<NamespaceDecl prefix='" << n.get_prefix () << "' uri='" << n.get_uri () << "' pos='" << n.get_location() << "' ptr='" << &n << "'";
 
-    os << ">";
+    os << "/>";
 
     INDENT_INC;
     NL;
@@ -2802,16 +2810,6 @@ void ParseNodePrintXMLVisitor::end_visit(const DefaultCollationDecl &n, void *vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DefaultNamespaceDecl &n, void *visit_state)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</DefaultNamespaceDecl>";
-    NL;
-}
-
-
 void ParseNodePrintXMLVisitor::end_visit(const DirAttr &n, void *visit_state)
 {
     INDENT_DEC;
@@ -3009,16 +3007,6 @@ void ParseNodePrintXMLVisitor::end_visit(const ModuleImport &n, void *visit_stat
 
     INDENT;
     os << "</ModuleImport>";
-    NL;
-}
-
-
-void ParseNodePrintXMLVisitor::end_visit(const NamespaceDecl &n, void *visit_state)
-{
-    INDENT_DEC;
-
-    INDENT;
-    os << "</NamespaceDecl>";
     NL;
 }
 
