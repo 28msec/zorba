@@ -12,6 +12,7 @@
 
 #include "zorba/common.h"
 
+#include "context/namespace_context.h"
 #include "types/node_test.h"
 #include "functions/library.h"
 #include "compiler/parsetree/parsenodes.h"
@@ -89,6 +90,7 @@ protected:
   std::list<global_binding>        global_vars;
   const RelativePathExpr         * theRootRelPathExpr;
   std::stack<const RelativePathExpr *> relpathstack;
+  rchandle<namespace_context>      ns_ctx;
 
   // FOR WHITESPACE CHECKING OF DirElemContent (stack is need because of nested elements)
   /**
@@ -104,9 +106,19 @@ protected:
   bool hadBSpaceDecl, hadDefCollationDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
 
   TranslatorImpl (static_context *sctx_p_)
-    :
-    depth (0), sctx_p (sctx_p_), tempvar_counter (0), theRootRelPathExpr(0),
-    hadBSpaceDecl (false), hadDefCollationDecl (false), hadBUriDecl (false), hadConstrDecl (false), hadCopyNSDecl (false), hadDefNSDecl (false), hadEmptyOrdDecl (false), hadOrdModeDecl (false)
+    : depth (0),
+    sctx_p (sctx_p_),
+    tempvar_counter (0),
+    theRootRelPathExpr(0),
+    ns_ctx(new namespace_context(sctx_p)),
+    hadBSpaceDecl (false),
+    hadDefCollationDecl (false),
+    hadBUriDecl (false),
+    hadConstrDecl (false),
+    hadCopyNSDecl (false),
+    hadDefNSDecl (false),
+    hadEmptyOrdDecl (false),
+    hadOrdModeDecl (false)
   {
     yy::location loc;
     bind_var(loc, DOT_VAR, var_expr::context_var);
@@ -169,6 +181,16 @@ protected:
       ZORBA_ASSERT (false);
     }
     return axisExpr;
+  }
+
+  void push_elem_scope()
+  {
+    ns_ctx = new namespace_context(&*ns_ctx);
+  }
+
+  void pop_elem_scope()
+  {
+    ns_ctx = ns_ctx->get_parent();
   }
 
 public:
@@ -425,7 +447,7 @@ void end_visit(const DirPIConstructor& v, void *visit_state)
 void *begin_visit(const DirElemConstructor& v)
 {
   TRACE_VISIT();
-  push_scope();
+  push_elem_scope();
   return no_state;
 }
 
@@ -451,10 +473,9 @@ void end_visit(const DirElemConstructor& v, void *visit_state)
   nameExpr = new const_expr(v.get_location(),
                             sctx_p->lookup_elem_qname(v.get_elem_name()->get_qname())); 
 
-  elem_expr* elem = new elem_expr(v.get_location(), nameExpr, attrExpr, contentExpr);
+  elem_expr* elem = new elem_expr(v.get_location(), nameExpr, attrExpr, contentExpr, ns_ctx);
   nodestack.push(elem);
-
-  pop_scope();
+  pop_elem_scope();
 }
 
 /**
@@ -687,12 +708,15 @@ void end_visit(const DirAttr& v, void *visit_state)
     {
       xqpString uri = constValueExpr->get_val()->getStringProperty();
       sctx_p->bind_ns(prefix, uri);
+      ns_ctx->bind_ns(prefix, uri);
     }
     else if (valueExpr == NULL)
     {
       // unbind the prefix
-      if (prefix != "")
+      if (prefix != "") {
         sctx_p->bind_ns(prefix, "");
+        ns_ctx->bind_ns(prefix, "");
+      }
     }
     else
     {
@@ -939,7 +963,7 @@ void end_visit(const CompElemConstructor& v, void *visit_state)
                                                                  TypeSystem::QUANT_ONE));
   }
 
-  elemExpr = new elem_expr(v.get_location(), qnameExpr, contentExpr);
+  elemExpr = new elem_expr(v.get_location(), qnameExpr, contentExpr, ns_ctx);
   nodestack.push(elemExpr);
 }
 

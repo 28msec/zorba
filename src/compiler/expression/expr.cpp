@@ -734,24 +734,28 @@ elem_expr::elem_expr (
     yy::location const& aLoc,
     expr_t aQNameExpr,
     expr_t aAttrs,
-    expr_t aContent )
+    expr_t aContent,
+    rchandle<namespace_context> aNSCtx)
     :
     constructor_expr ( aLoc ),
     theQNameExpr ( aQNameExpr ),
     theAttrs ( aAttrs ),
-    theContent ( aContent )
+    theContent ( aContent ),
+    theNSCtx(aNSCtx)
 {
 }
 
 elem_expr::elem_expr (
     yy::location const& aLoc,
     expr_t aQNameExpr,
-    expr_t aContent )
+    expr_t aContent,
+    rchandle<namespace_context> aNSCtx)
     :
     constructor_expr ( aLoc ),
     theQNameExpr ( aQNameExpr ),
     theAttrs ( 0 ),
-    theContent ( aContent )
+    theContent ( aContent ),
+    theNSCtx(aNSCtx)
 {
 }
   

@@ -34,6 +34,7 @@
 #include "compiler/expression/expr_consts.h"
 #include "store/api/fullText/ft_options.h"
 #include "util/utf8/xqpString.h"
+#include "context/namespace_context.h"
 
 namespace xqp {
 
@@ -1044,18 +1045,21 @@ protected:
   expr_t theQNameExpr;
 	expr_t theAttrs;
 	expr_t theContent;
+  rchandle<namespace_context> theNSCtx;
 	
 public:
 	elem_expr(
 		yy::location const&,
 		expr_t aQNameExpr,
 		expr_t aAttrs,
-		expr_t aContent);
+		expr_t aContent,
+    rchandle<namespace_context> aNSCtx);
   
   elem_expr(
     yy::location const&,
     expr_t aQNameExpr,
-    expr_t aContent);
+    expr_t aContent,
+    rchandle<namespace_context> aNSCtx);
   
 	~elem_expr();
 	
@@ -1063,6 +1067,7 @@ public:
   void setQNameExpr(expr_t aQNameExpr) { theQNameExpr = aQNameExpr; }
 	expr_t getContent() const { return theContent; }
 	expr_t getAttrs() const { return theAttrs; }
+  rchandle<namespace_context> getNSCtx() { return theNSCtx; }
 	
 	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
