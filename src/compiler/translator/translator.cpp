@@ -3412,8 +3412,8 @@ void end_visit(const TreatExpr& v, void *visit_state)
   
   yy::location loc = v.get_location();
   var_expr_t x = tempvar (v.get_location (), var_expr::let_var);
-  expr_t cond = new instanceof_expr(loc, x, pop_tstack(), true);
-  nodestack.push (wrap_in_let_flwor (pop_nodestack (), x, new if_expr (loc, cond, x, x)));
+  expr_t cond = new instanceof_expr(loc, &*x, pop_tstack(), true);
+  nodestack.push (&*wrap_in_let_flwor (pop_nodestack (), x, new if_expr (loc, cond, &*x, &*x)));
 }
 
 void *begin_visit(const TypeswitchExpr& v)
