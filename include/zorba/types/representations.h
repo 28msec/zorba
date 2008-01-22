@@ -37,7 +37,7 @@ namespace xqp
   typedef xqpString                 xqp_NMTOKENS;
   typedef long long                 xqp_integer;
   typedef int32_t                   xqp_int;
-  typedef long                      xqp_long;
+  typedef long long                 xqp_long;
   typedef short                     xqp_short;
   typedef long double               xqp_decimal;
   typedef float                     xqp_float;
@@ -57,7 +57,7 @@ namespace xqp
   typedef Duration_t                xqp_duration;
   typedef unsigned char             xqp_ubyte;
   typedef uint32_t                  xqp_uint;
-  typedef unsigned long             xqp_ulong;
+  typedef unsigned long long        xqp_ulong;
   typedef unsigned short            xqp_ushort;
   typedef unsigned long long        xqp_uinteger;
   typedef void*                     xqp_base64Binary;

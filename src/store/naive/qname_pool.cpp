@@ -15,7 +15,7 @@ const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6;
 /*******************************************************************************
 
 ********************************************************************************/
-QNamePool::QNamePool(unsigned long size) 
+QNamePool::QNamePool(xqp_ulong size) 
   :
   theCache(new QNameItemImpl[size]),
   theCacheSize(size),

@@ -50,7 +50,7 @@ public:
 
 protected:
   static const float DEFAULT_HASH_LOAD_FACTOR;
-  static const unsigned long DEFAULT_COLLECTION_MAP_SIZE;
+  static const xqp_ulong DEFAULT_COLLECTION_MAP_SIZE;
 
   static unsigned long theUriCounter;
   static unsigned long theTreeCounter;
