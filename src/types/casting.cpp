@@ -111,22 +111,32 @@ namespace xqp
         break;
       case TypeSystem::XS_DURATION:
         {
-          xqp_duration d;
-          if (Duration::parse_string(lString, d))
+          Duration_t d_t;
+          if (Duration::parse_string(lString, d_t))
+          {
+            xqp_duration d = d_t;
             lItem = Zorba::getItemFactory()->createDuration(d);
+          }
         }
         break;
       case TypeSystem::XS_DT_DURATION:
         {
-          // TODO
-          // xqp_dayTimeDuration dtd;
-          lItem = Zorba::getItemFactory()->createDuration(lString);
+          DayTimeDuration_t dtd_t;
+          if (DayTimeDuration::parse_string(lString, dtd_t))
+          {
+            xqp_duration d = dtd_t;
+            lItem = Zorba::getItemFactory()->createDuration(d);
+          }
         }
         break;
       case TypeSystem::XS_YM_DURATION:
         {
-          // TODO
-          lItem = Zorba::getItemFactory()->createDuration(lString);
+          YearMonthDuration_t ymd_t;
+          if (YearMonthDuration::parse_string(lString, ymd_t))
+          {
+            xqp_duration d = ymd_t;
+            lItem = Zorba::getItemFactory()->createDuration(d);
+          }
         }
         break;
       case TypeSystem::XS_GYEAR_MONTH:

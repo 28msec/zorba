@@ -7,6 +7,10 @@
 #include <string>
 #include "util/datetime/duration.h"
 #include "util/datetime/parse.h"
+#include "util/numconversions.h"
+
+#include <iostream>
+using namespace std;
 
 namespace xqp
 {
@@ -24,27 +28,32 @@ YearMonthDuration& YearMonthDuration::operator=(const YearMonthDuration_t& ym_t)
   return *this;
 }
 
-bool YearMonthDuration::operator<(const YearMonthDuration& ym) const
+bool YearMonthDuration::operator<(const DurationBase& db) const
 {
-  if (months < ym.months)
+  const YearMonthDuration& ymd = dynamic_cast<const YearMonthDuration&>(db); // TODO: catch bad_cast and throw Zorba exception?
+  if (months < ymd.months)
     return true;
   else
     return false;
 }
 
-bool YearMonthDuration::operator==(const YearMonthDuration& ym) const
+bool YearMonthDuration::operator==(const DurationBase& db) const
 {
-  if (months == ym.months)
+  const YearMonthDuration& ymd = dynamic_cast<const YearMonthDuration&>(db);
+  
+  if (months == ymd.months)
     return true;
   else
     return false;
 }
 
-int YearMonthDuration::compare(const YearMonthDuration& ym) const
+int YearMonthDuration::compare(const DurationBase& db) const
 {
-  if (operator<(ym))
+  const YearMonthDuration& ymd = dynamic_cast<const YearMonthDuration&>(db);
+
+  if (operator<(ymd))
     return -1;
-  else if (operator==(ym))
+  else if (operator==(ymd))
     return 0;
   else
     return 1;
@@ -53,6 +62,22 @@ int YearMonthDuration::compare(const YearMonthDuration& ym) const
 xqpString YearMonthDuration::toString() const
 {
   xqpString result = "";
+  long abs_months = months;
+
+  if (months < 0)
+  {
+    result += "-";
+    abs_months = -months;
+  }
+
+  result += "P";
+
+  if (abs_months > 12 )
+    result = result + NumConversions::integerToStr(abs_months / 12) + "Y";
+
+  if (abs_months%12 != 0)
+    result = result + NumConversions::integerToStr(abs_months % 12) + "M";
+    
   // TODO:
   return result;
 }
@@ -114,7 +139,7 @@ bool YearMonthDuration::parse_string(const xqpString& s, YearMonthDuration_t& ym
 
   if (negative)
     months = -months;
-  
+
   ym_t = new YearMonthDuration(months);
   return true;
 }
@@ -134,33 +159,39 @@ DayTimeDuration& DayTimeDuration::operator=(const DayTimeDuration_t& dt_t)
   return *this;
 }
 
-bool DayTimeDuration::operator<(const DayTimeDuration& dt) const
+bool DayTimeDuration::operator<(const DurationBase& db) const
 {
-  if (is_negative != dt.is_negative)
+  const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
+  
+  if (is_negative != dtd.is_negative)
     return (is_negative == true);
-  else if (days != dt.days)
-    return (days < dt.days);
+  else if (days != dtd.days)
+    return (days < dtd.days);
   else
-    return timeDuration < dt.timeDuration;
+    return timeDuration < dtd.timeDuration;
 }
 
-bool DayTimeDuration::operator==(const DayTimeDuration& dt) const
+bool DayTimeDuration::operator==(const DurationBase& db) const
 {
-  if (is_negative == dt.is_negative
+  const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
+  
+  if (is_negative == dtd.is_negative
       &&
-      days == dt.days
+      days == dtd.days
       &&
-      timeDuration == dt.timeDuration)
+      timeDuration == dtd.timeDuration)
     return true;
   else
     return false;
 }
 
-int DayTimeDuration::compare(const DayTimeDuration& dt) const
+int DayTimeDuration::compare(const DurationBase& db) const
 {
-  if (operator<(dt))
+  const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
+  
+  if (operator<(dtd))
     return -1;
-  else if (operator==(dt))
+  else if (operator==(dtd))
     return 0;
   else
     return 1;
@@ -168,6 +199,39 @@ int DayTimeDuration::compare(const DayTimeDuration& dt) const
 
 xqpString DayTimeDuration::toString() const
 {
+  xqpString result = "";
+
+  if (is_negative)
+    result += "-";
+
+  result += "P";
+
+  /*
+  if (days == 0)
+
+
+
+  
+  long abs_months = months;
+
+  if (months < 0)
+  {
+    result += "-";
+    abs_months = -months;
+  }
+
+  result += "P";
+
+  if (abs_months > 12 )
+    result = result + NumConversions::integerToStr(abs_months / 12) + "Y";
+
+  if (abs_months%12 != 0)
+    result = result + NumConversions::integerToStr(abs_months % 12) + "M";
+    
+  // TODO:
+  return result;
+  */
+
   // TODO:
   return NULL;
 }
@@ -356,8 +420,10 @@ Duration::Duration()
   
 }
 
-bool Duration::operator<(const Duration& d) const
+bool Duration::operator<(const DurationBase& db) const
 {
+  const Duration& d = dynamic_cast<const Duration&>(db);
+  
   if (yearMonthDuration == d.yearMonthDuration)
     return dayTimeDuration < d.dayTimeDuration;
   else if (dayTimeDuration == d.dayTimeDuration)
@@ -367,8 +433,10 @@ bool Duration::operator<(const Duration& d) const
     return false;
 }
 
-bool Duration::operator==(const Duration& d) const
+bool Duration::operator==(const DurationBase& db) const
 {
+  const Duration& d = dynamic_cast<const Duration&>(db);
+  
   if (yearMonthDuration == d.yearMonthDuration
       &&
       dayTimeDuration == d.dayTimeDuration)
@@ -377,8 +445,10 @@ bool Duration::operator==(const Duration& d) const
     return false;
 }
 
-int Duration::compare(const Duration& d) const
+int Duration::compare(const DurationBase& db) const
 {
+  const Duration& d = dynamic_cast<const Duration&>(db);
+  
   if (operator<(d))
     return -1;
   if (operator==(d))

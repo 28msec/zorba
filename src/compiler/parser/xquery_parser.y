@@ -147,6 +147,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> ATTRIBUTE_QNAME_LBRACE	"'<attribute QName {>'"
 %token <sval> AT_URI_LITERAL					"'<at URI>'"
 %token <sval> CHAR_LITERAL						"'char literal'"
+%token <sval> CHAR_LITERAL_AND_PI_END "'char literal and pi end'"
 %token <sval> CHAR_REF_LITERAL				"'#charref;'"
 %token <sval> ELEMENT_CONTENT					"'element content'"
 %token <sval> ELEMENT_QNAME_LBRACE		"'<QName {>'"
@@ -156,7 +157,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> NCNAME									"'NCName'"
 %token <sval> PI_NCNAME_LBRACE				"'pi <NCName {>'"
 %token <sval> PI_TARGET_LITERAL				"'pi target'"
-%token <sval> PRAGMA_LITERAL					"'pragma literal'"
+%token <sval> PRAGMA_LITERAL_AND_END  "'pragma literal and end'"
 %token <sval> PREFIX_WILDCARD					"'*:QName'"
 %token <sval> QNAME										"'QName'"
 %token <sval> QNAME_LPAR							"'<QName (>'"
@@ -3250,7 +3251,7 @@ PragmaList :
 // [65] Pragma
 // -----------
 Pragma :
-		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL
+		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL_AND_END
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Pragma [ ]\n";
@@ -4489,7 +4490,7 @@ DirPIConstructor :
 			$$ = new DirPIConstructor(@$,
 								driver.symtab.get((off_t)$2));
 		}
-    |	PI_BEGIN  PI_TARGET_LITERAL CHAR_LITERAL  PI_END 	/* ws: explicitXQ */
+    |	PI_BEGIN  PI_TARGET_LITERAL CHAR_LITERAL_AND_PI_END 	/* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target.charlit]\n";

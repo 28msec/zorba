@@ -193,15 +193,17 @@ AposAttrContentChar 	[\x09\x0A\x0D\x20-\x25\x28-\x3B\x3D-\x7A\x7C\x7E-\xFD]
   PITarget	(({NonXChar}{Char}*)|((X|x){NonMChar}{Char}*)|((X|x)(M|m){NonLChar}*)|({Char}{Char}{Char}{Char}+)) 
   */
   
-PITargetStart     [_:A-\xFF]
-PITargetName      [.-_:0-9A-\xFF]
-PITarget          {PITargetStart}{PITargetName}*
+PITargetStart         [_:A-\xFF]
+PITargetName          [.-_:0-9A-\xFF]
+PITarget              {PITargetStart}{PITargetName}*
 
 NonQuestionMarkChar                 [\x09\x0A\x0D\x20-\x3E\x40-\xFD]
 NonGreaterThanNonQuestionMarkChar   [\x09\x0A\x0D\x20-\x3D\x40-\xFD]
+PIChars                             ({NonQuestionMarkChar}*|"?"+{NonGreaterThanNonQuestionMarkChar})*"?"*
 
-PIChars           ({NonQuestionMarkChar}*|"?"+{NonGreaterThanNonQuestionMarkChar})*"?"*
-
+NonSharpPragmaChar                  [\x09\x0A\x0D\x20-\x22\x24-\xFD]
+NonSharpNonParPragmaChar            [\x09\x0A\x0D\x20-\x28\x2A-\xFD]
+PragmaChars                         ({NonSharpPragmaChar}*|"#"+{NonSharpNonParPragmaChar})*"#"*
 
 ValidationMode				("strict"|"lax"|"skip")
 
@@ -2556,18 +2558,18 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to PRAGMACONTENTS */
 	/* ---------------------------- */
-{QName} {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+{QName}{S}* {
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng,true,true);
 	BEGIN MODE_PRAGMACONTENTS;
 	return token::QNAME;
 }
 
-{CatchAll} {
-  return token::UNRECOGNIZED;
-}
-
 {S} {
   /* eat up whitespace */
+}
+
+{CatchAll} {
+  return token::UNRECOGNIZED;
 }
 
 } /* <MODE_PRAGMA> */
@@ -2587,14 +2589,10 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to OPERATOR */
 	/* ---------------------- */
-"#)" {
+{PragmaChars}")" {
 	BEGIN MODE_OPERATOR;
-	yylval->sval = driver.symtab.put(yytext, yyleng);
-	return token::PRAGMA_LITERAL;
-}
-
-{Char} {
-  yymore ();
+	yylval->sval = driver.symtab.put(yytext, yyleng-2);
+	return token::PRAGMA_LITERAL_AND_END;
 }
 
 {CatchAll} {
@@ -2956,17 +2954,10 @@ typedef yy::xquery_parser::token token;
 
 	/* pop previous state on exit */
 	/* -------------------------- */
-"?>" {
+{PIChars}">" {
 	yy_pop_state(yyscanner);
-	return token::PI_END;
-}
-
-	/* maintain PROCESSING_INSTRUCTION_CONTENT */
-	/* --------------------------------------- */
-{PIChars} {
-	yylval->sval = driver.symtab.put(yytext, yyleng-1);
-  yyless(yyleng-1);
-	return token::CHAR_LITERAL;
+  yylval->sval = driver.symtab.put(yytext, yyleng-1);
+  return token::CHAR_LITERAL_AND_PI_END;
 }
 
 } /* <MODE_PROCESSING_INSTRUCTION_CONTENT> */

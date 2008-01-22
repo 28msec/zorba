@@ -14,14 +14,27 @@
 
 namespace xqp
 {
+class DurationBase;
 class YearMonthDuration;
 class DayTimeDuration;
 class Duration;
+typedef rchandle<DurationBase> DurationBase_t;
 typedef rchandle<DayTimeDuration> DayTimeDuration_t;
 typedef rchandle<YearMonthDuration> YearMonthDuration_t;
 typedef rchandle<Duration> Duration_t;
 
-class YearMonthDuration : public rcobject
+
+class DurationBase : public rcobject
+{
+public:
+  virtual bool operator<(const DurationBase& dt) const = 0;
+  virtual bool operator==(const DurationBase& dt) const = 0;;
+  virtual int compare(const DurationBase& dt) const = 0;;
+  virtual xqpString toString() const = 0;;
+};
+
+
+class YearMonthDuration : public DurationBase
 {
 friend class Duration;
 
@@ -32,18 +45,18 @@ public:
 
   static bool parse_string(const xqpString& s, YearMonthDuration_t& ymd_t);
 
-  bool operator<(const YearMonthDuration& ym) const;
-  bool operator==(const YearMonthDuration& ym) const;
-  int compare(const YearMonthDuration& ym) const;
-  xqpString toString() const;
+  virtual bool operator<(const DurationBase& dt) const;
+  virtual bool operator==(const DurationBase& dt) const;
+  virtual int compare(const DurationBase& dt) const;
+  virtual xqpString toString() const;
 
 protected:
   YearMonthDuration& operator=(const YearMonthDuration_t& ym_t);
-  
+
   long months;
 };
 
-class DayTimeDuration : public rcobject
+class DayTimeDuration : public DurationBase
 {
 friend class Duration;
 
@@ -54,10 +67,10 @@ public:
 
   static bool parse_string(const xqpString& s, DayTimeDuration_t& dtd_t, bool dont_check_letter_p = false);
   
-  bool operator<(const DayTimeDuration& dt) const;
-  bool operator==(const DayTimeDuration& dt) const;
-  int compare(const DayTimeDuration& dt) const;
-  xqpString toString() const;
+  virtual bool operator<(const DurationBase& dt) const;
+  virtual bool operator==(const DurationBase& dt) const;
+  virtual int compare(const DurationBase& dt) const;
+  virtual xqpString toString() const;
 
 protected:
   DayTimeDuration& operator=(const DayTimeDuration_t& dt_t);
@@ -67,7 +80,7 @@ protected:
   boost::posix_time::time_duration timeDuration;
 };
 
-class Duration : public rcobject
+class Duration : public DurationBase
 {
 public:
   Duration();
@@ -75,10 +88,10 @@ public:
 
   static bool parse_string(const xqpString& s, Duration_t& d_t);
 
-  bool operator<(const Duration& d) const;
-  bool operator==(const Duration& d) const;
-  int compare(const Duration& d) const;
-  xqpString toString() const;
+  virtual bool operator<(const DurationBase& d) const;
+  virtual bool operator==(const DurationBase& d) const;
+  virtual int compare(const DurationBase& d) const;
+  virtual xqpString toString() const;
 
 protected:
   YearMonthDuration yearMonthDuration;
