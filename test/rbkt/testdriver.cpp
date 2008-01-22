@@ -38,10 +38,10 @@ printPart(std::ostream& os, std::string aInFile,
     int lCharsRead = lIn.readsome (buffer, aLen);
     os.write (buffer, lCharsRead);
     os.flush();
-    delete buffer;
+    delete[] buffer;
   } catch (...)
   {
-    delete buffer;
+    delete[] buffer;
   }
   return;
 }
