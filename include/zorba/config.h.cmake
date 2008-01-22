@@ -29,5 +29,10 @@
 #cmakedefine HAVE_SYS_TYPES_H       1
 #cmakedefine HAVE_ICONV_H           1
 
+/* function checks */
+#cmakedefine HAVE_STRTOF_FUNCTION   1
+#cmakedefine HAVE_STRICMP_FUNCTION  1
+#cmakedefine HAVE_STRCASECMP_FUNCTION  1
+
 
 #endif

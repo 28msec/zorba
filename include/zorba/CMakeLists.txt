@@ -11,4 +11,9 @@ CHECK_INCLUDE_FILES ("limits.h"                     HAVE_LIMITS_H)
 CHECK_INCLUDE_FILES ("sys/types.h"                  HAVE_SYS_TYPES_H)
 CHECK_INCLUDE_FILES ("iconv.h"                      HAVE_ICONV_H)
 
+INCLUDE(CheckFunctionExists)
+CHECK_FUNCTION_EXISTS ("strtof"                     HAVE_STRTOF_FUNCTION)
+CHECK_FUNCTION_EXISTS ("_stricmp"                   HAVE_STRICMP_FUNCTION)
+CHECK_FUNCTION_EXISTS ("strcasecmp"                 HAVE_STRCASECMP_FUNCTION)
+
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)

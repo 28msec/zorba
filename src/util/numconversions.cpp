@@ -1,8 +1,10 @@
 #include <boost/lexical_cast.hpp>
 #include <sstream>
-#include <climits>
+#include <limits>
+#include <string>
 #include "util/numconversions.h"
 #include <iostream> 
+#include "zorba/common.h"
 
 namespace xqp {
   bool NumConversions::isNegZero(const xqpString& aStr) {
@@ -140,13 +142,49 @@ namespace xqp {
   }
   bool NumConversions::starCharToFloat(const char* aCharStar, xqp_float& aFloat) {
     char* lEndPtr;
-     aFloat = (xqp_float)strtod(aCharStar, &lEndPtr);//daniel: changed from strtof to compile on Windows
+#ifdef HAVE_STRTOF_FUNCTION
+    aFloat = strtof(aCharStar, &lEndPtr);
+    return (*lEndPtr == '\0');
+#else
+    double lTmpDouble = strtod(aCharStar, &lEndPtr);
     if (*lEndPtr != '\0')
-      return false;
+    {
+#ifdef HAVE_STRCASECMP_FUNCTION
+      if (strcasecmp(aCharStar, "inf") == 0 || strcasecmp(aCharStar, "+inf") == 0 )
+#else
+      if (_stricmp(aCharStar, "inf") == 0 || _stricmp(aCharStar, "+inf") == 0 )
+#endif
+      {
+        aFloat = std::numeric_limits<float>::infinity();
+        return true;
+#ifdef HAVE_STRCASECMP_FUNCTION
+      } else if (strcasecmp(aCharStar, "-inf") == 0 )
+#else
+      } else if (_stricmp(aCharStar, "-inf") == 0 )
+#endif
+      {
+        aFloat = -std::numeric_limits<float>::infinity();
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
     else
-      return true;
+    {
+#undef max
+#undef min
+      if ( lTmpDouble > std::numeric_limits<float>::max() )
+        aFloat = std::numeric_limits<float>::infinity();
+      else if ( lTmpDouble < std::numeric_limits<float>::min() )
+        aFloat = -std::numeric_limits<float>::infinity();
+      else
+        aFloat = static_cast<xqp_float>(lTmpDouble);
 
-  }
+      return true;
+#endif
+    }
   bool NumConversions::strToFloat(const xqpString& aStr, xqp_float& aFloat){
     return NumConversions::starCharToFloat(aStr.c_str(), aFloat);
   }
