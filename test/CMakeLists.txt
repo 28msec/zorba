@@ -8,8 +8,9 @@ SET(API_TEST_SRCS
     apitest.cpp)
 
 ADD_EXECUTABLE(apitest ${API_TEST_SRCS})
-
 TARGET_LINK_LIBRARIES(apitest zorba)
+ADD_EXECUTABLE(apitest_static ${API_TEST_SRCS})
+TARGET_LINK_LIBRARIES(apitest_static zorba_static)
 
 
 SET(TEST_STORE_SRCS
@@ -18,5 +19,4 @@ SET(TEST_STORE_SRCS
     test_store.cpp)
 
 ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
-
 TARGET_LINK_LIBRARIES(test_store zorba)
