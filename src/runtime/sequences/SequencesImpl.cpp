@@ -896,7 +896,7 @@ FnMaxIterator::nextImpl(PlanState& planState) {
         break;
       }
       if (CompareIterator::valueComparison(lRunningItem, lMaxItem, 
-                                           CompareIterator::VALUE_GREATER) > 0)
+                                           CompareIterator::VALUE_GREATER) )
         lMaxItem = lRunningItem;
     }
     STACK_PUSH(lMaxItem, state);
@@ -936,7 +936,7 @@ FnMinIterator::nextImpl(PlanState& planState) {
         break;
       }
       if (CompareIterator::valueComparison(lRunningItem, lMinItem, 
-                                           CompareIterator::VALUE_GREATER) < 0)
+                                           CompareIterator::VALUE_LESS ))
         lMinItem = lRunningItem;
     }
     STACK_PUSH(lMinItem, state);
