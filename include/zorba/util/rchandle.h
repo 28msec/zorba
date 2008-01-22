@@ -71,9 +71,17 @@ private:
   void init(); // common initialization
 
 public:	// ctor, dtor
-  rchandle(T* realPtr = 0);
-  rchandle(rchandle const& rhs);
-  ~rchandle();
+  rchandle(T* realPtr = 0)
+    : p(realPtr)
+  { init(); }
+  template<class otherT> rchandle(rchandle<otherT> const& rhs)
+    : p (static_cast<T *> (rhs.get_ptr ()))
+  { init (); }
+  ~rchandle() {
+    if (p)
+      p->removeReference(); 
+    p = 0;
+  }
 
 public:
   T *get_ptr () const { return p; }
@@ -100,34 +108,18 @@ public:	// operator overloading
   // cast() and get_ptr() methods.
   operator T* () { return get_ptr (); }
   operator const T * () const { return get_ptr (); }
-  template <class otherT> operator rchandle<otherT> () { return cast<otherT> (); }
-  template <class otherT> operator const rchandle<otherT> () const { return cast<otherT> (); }
 
 	bool operator==(rchandle const& h) const;
 	bool operator!=(rchandle const& h) const;
 	bool operator==(T const* pp) const;
 	bool operator!=(T const* pp) const;
-  int  operator<(const rchandle& h) const;
+  bool operator<(const rchandle& h) const;
   unsigned long hash() const;
 
 public:
 	std::string debug() const;
 }; 
 
-
-template<class T>
-inline rchandle<T>::rchandle(T* realPtr) : p(realPtr) { init(); }
-
-template<class T>
-inline rchandle<T>::rchandle(rchandle const& rhs) : p(rhs.p) { init(); }
-
-template<class T>
-inline rchandle<T>::~rchandle() 
-{
-  if (p)
-    p->removeReference(); 
-  p = 0;
-} 
 
 template<class T>
 inline T* rchandle<T>::operator->() const { return p; } 
@@ -148,7 +140,7 @@ template<class T>
 inline bool rchandle<T>::operator!=(T const* pp) const { return p!=pp; }
 
 template<class T>
-int rchandle<T>::operator<(const rchandle& h) const { return p < h.p; }
+bool rchandle<T>::operator<(const rchandle& h) const { return p < h.p; }
 
 template<class T>
 unsigned long rchandle<T>::hash() const
