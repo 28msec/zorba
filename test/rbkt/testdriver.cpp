@@ -84,7 +84,7 @@ printErrors(xqp::ZorbaAlertsManager* aManager)
 {
   if (aManager->size() == 0) return;
 
-  std::cout<< "Errors:" << std::endl;
+  std::cerr << "Errors:" << std::endl;
 
   for (xqp::ZorbaAlertsManager::const_iterator lIter = aManager->begin();
        lIter != aManager->end(); ++lIter)
@@ -97,7 +97,7 @@ printErrors(xqp::ZorbaAlertsManager* aManager)
       xqp::ZorbaError* lErrorAlert = dynamic_cast<xqp::ZorbaError*>(lAlert);
       assert(lErrorAlert);
       std::string lErrorCode = lErrorAlert->toString(lErrorAlert->theCode);
-      std::cout << lErrorCode << " " << lErrorAlert->theDescription << std::endl;
+      std::cerr << lErrorCode << " " << lErrorAlert->theDescription << std::endl;
       break;
     }
     default:
