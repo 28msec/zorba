@@ -48,6 +48,20 @@
 #include "compiler/parser/xquery_parser.hpp"
 #include "zorba/util/properties.h"
 
+#define TRY_STR_LIT( ttype, put, yytext, yyleng )                       \
+  do {                                                                  \
+    off_t res = driver.symtab.put (yytext, yyleng);                     \
+    if (res < 0) return token::UNRECOGNIZED;                            \
+    else {                                                              \
+      yylval->sval = res;                                               \
+      return token::ttype;                                              \
+    }                                                                   \
+ } while (0)
+
+#define TRY_STRINGLIT( ttype, yytext, yyleng ) TRY_STR_LIT (ttype, put_stringlit, yytext, yyleng)
+
+#define TRY_URILIT( ttype, yytext, yyleng ) TRY_STR_LIT (ttype, put_uri, yytext, yyleng)
+
 /*
 	Work around an incompatibility in flex (at least versions
 	2.5.31 through 2.5.33): it generates code that does
@@ -101,14 +115,17 @@ SP					[ \t\r\n\f]+
 	|______________________________________________________________________*/
 Letter			[A-Za-z]
 Digit				[0-9]
+Apos        \'
+Quote       \"
+Dot         [.]
 CatchAll		[^ \t\r\n]
 
 	/*_____________________________________________________________________
 	|
 	|  XQuery allows '' to escape ', and "" to escape ".
 	|______________________________________________________________________*/
-EscapeApos	\'\'
-EscapeQuot	\"\" 
+EscapeApos	{Apos}{Apos}
+EscapeQuot	{Quote}{Quote}
 
 	/*_____________________________________________________________________
 	|
@@ -137,21 +154,21 @@ VarName			{QName}
 	|______________________________________________________________________*/
 CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+);
 PredefinedEntityRef		"&"(lt|gt|amp|quot|apos|nbsp);
+Ref                   {CharRef}|{PredefinedEntityRef}
 
 	/*_____________________________________________________________________
 	|
 	|  Numeric literal definitions
 	|______________________________________________________________________*/
-DecimalLiteral				(\.[0-9]+)|([0-9]+(\.[0-9]+)?)
-DoubleLiteral					((\.[0-9]+)|([0-9]+(\.[0-9]*)?))([eE][+-]?[0-9]+)?
+DecimalLiteral				({Dot}[0-9]+)|([0-9]+({Dot}[0-9]*)?)
+DoubleLiteral					(({Dot}[0-9]+)|([0-9]+({Dot}[0-9]*)?))([eE][+-]?[0-9]+)?
 IntegerLiteral				[0-9]+
-NumericLiteral				((\.[0-9]+)|([0-9]+(\.[0-9]+)?))([eE][+-]?[0-9]+)?
 
 	/*_____________________________________________________________________
 	|
 	|  String literal definitions
 	|______________________________________________________________________*/
-StringLiteral					(\"((\"\")|[^"])*\")|(\'((\'\')|[^'])*\')
+StringLiteral					({Quote}({EscapeQuot}|{Ref}|[^"&])*{Quote})|({Apos}({EscapeApos}|{Ref}|[^'&])*{Apos})
 URILiteral						{StringLiteral}
 
 	/*_____________________________________________________________________
@@ -549,9 +566,8 @@ typedef yy::xquery_parser::token token;
 }
 
 {StringLiteral} {
-	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
-	return token::STRING_LITERAL;
+  TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
 "declare"{SP}"construction" {
@@ -759,9 +775,10 @@ typedef yy::xquery_parser::token token;
 	/* transition to NAMESPACEDECL */
 	/* --------------------------- */
 "at"{SP}{URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3, true);
+  const char *p = yytext + 2;
+  for (; *p != '\'' && *p != '"'; p++);
 	BEGIN MODE_NAMESPACEDECL;
-	return token::AT_URI_LITERAL;
+	TRY_URILIT (AT_URI_LITERAL, p, yyleng + (p - yytext));
 }
 
 
@@ -1435,8 +1452,7 @@ typedef yy::xquery_parser::token token;
 	return token::RBRACK;
 }
 {StringLiteral} {
-	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
-	return token::STRING_LITERAL;
+  TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
 
@@ -1651,8 +1667,7 @@ typedef yy::xquery_parser::token token;
 	/* maintain XQUERYVERSION */
 	/* ---------------------- */
 {StringLiteral} {
-	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
-	return token::STRING_LITERAL;
+  TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
 "encoding" {
@@ -1688,8 +1703,7 @@ typedef yy::xquery_parser::token token;
 	/* maintain NAMESPACEDECL */
 	/* ---------------------- */
 {URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext+1, yyleng-2);
-	return token::URI_LITERAL;
+	TRY_URILIT (URI_LITERAL, yytext, yyleng);
 }
 
 "," {
@@ -1731,9 +1745,8 @@ typedef yy::xquery_parser::token token;
 	 |______________________________________________________________________*/
 
 <MODE_URITOOPERATOR>{URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext+1, yyleng-2);
 	BEGIN MODE_OPERATOR;
-	return token::URI_LITERAL;
+	TRY_URILIT (URI_LITERAL, yytext, yyleng);
 }
 
 
@@ -1753,9 +1766,8 @@ typedef yy::xquery_parser::token token;
 	/* transition to NAMESPACEDECL */
 	/* --------------------------- */
 {URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext+1, yyleng-2);
 	BEGIN MODE_NAMESPACEDECL;
-	return token::URI_LITERAL;
+	TRY_URILIT (URI_LITERAL, yytext, yyleng);
 }
 
 "namespace" {
@@ -2017,9 +2029,10 @@ typedef yy::xquery_parser::token token;
 	/* transition to NAMESPACEDECL */
 	/* --------------------------- */
 "at"{SP}{URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3, true);
+  const char *p = yytext + 2;
+  for (; *p != '\'' && *p != '"'; p++);
 	BEGIN MODE_NAMESPACEDECL;
-	return token::AT_URI_LITERAL;
+	TRY_URILIT (AT_URI_LITERAL, p, yyleng + (p - yytext));
 }
 
 	/* transition to INITIAL */
@@ -2370,8 +2383,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {StringLiteral} {
-	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
-	return token::STRING_LITERAL;
+  TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
 {CatchAll} {
@@ -3196,6 +3208,7 @@ std::string start_state(yyscan_t* yyscanner)
 	default: return "Something's drastically wrong here, unrecognized start state!\n";
 	}  
 }
+
 /*
 #define YY_USER_ACTION \
 	{ \
@@ -3203,8 +3216,3 @@ std::string start_state(yyscan_t* yyscanner)
 		yylloc->columns(yyleng); \
 	}
 */
-
-
-
-
-
