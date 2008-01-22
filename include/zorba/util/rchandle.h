@@ -74,8 +74,8 @@ public:	// ctor, dtor
   rchandle(T* realPtr = 0)
     : p(realPtr)
   { init(); }
-  template<class otherT> rchandle(rchandle<otherT> const& rhs)
-    : p (static_cast<T *> (rhs.get_ptr ()))
+  rchandle(rchandle const& rhs)
+    : p (rhs.get_ptr ())
   { init (); }
   ~rchandle() {
     if (p)
@@ -108,6 +108,8 @@ public:	// operator overloading
   // cast() and get_ptr() methods.
   operator T* () { return get_ptr (); }
   operator const T * () const { return get_ptr (); }
+  template <class otherT> operator rchandle<otherT> () { return cast<otherT> (); }
+  template <class otherT> operator const rchandle<otherT> () const { return cast<otherT> (); }
 
 	bool operator==(rchandle const& h) const;
 	bool operator!=(rchandle const& h) const;
