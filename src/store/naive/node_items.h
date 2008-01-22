@@ -209,10 +209,10 @@ class DocumentNodeImpl : public NodeImpl
 
   NodeVector& children()         { return theChildren; }
 
-  bool isConstructed() const     { return theFlags & NodeImpl::IsConstructed; }
-  bool isCopy() const            { return theFlags & NodeImpl::IsCopy; }
-  bool typePreserve() const      { return theFlags & NodeImpl::TypePreserve; }
-  bool nsPreserve() const        { return theFlags & NodeImpl::NsPreserve; }
+  bool isConstructed() const     { return (theFlags & NodeImpl::IsConstructed) != 0; }
+  bool isCopy() const            { return (theFlags & NodeImpl::IsCopy) != 0; }
+  bool typePreserve() const      { return (theFlags & NodeImpl::TypePreserve) != 0; }
+  bool nsPreserve() const        { return (theFlags & NodeImpl::NsPreserve) != 0; }
 
   NsBindingsContext* getNsContext() const { return NULL; }
 };
@@ -294,14 +294,14 @@ public:
   NodeVector& children()    { return theChildren; }
   NodeVector& attributes()  { return theAttributes; }
 
-  bool isConstructed() const     { return theFlags & NodeImpl::IsConstructed; }
-  bool isCopy() const            { return theFlags & NodeImpl::IsCopy; }
+  bool isConstructed() const     { return (theFlags & NodeImpl::IsConstructed) != 0; }
+  bool isCopy() const            { return (theFlags & NodeImpl::IsCopy) != 0; }
 
-  bool typePreserve() const      { return theFlags & NodeImpl::TypePreserve; }
-  bool nsPreserve() const        { return theFlags & NodeImpl::NsPreserve; }
-  bool nsInherit() const         { return theFlags & NodeImpl::NsInherit; }
+  bool typePreserve() const      { return (theFlags & NodeImpl::TypePreserve) != 0; }
+  bool nsPreserve() const        { return (theFlags & NodeImpl::NsPreserve) != 0; }
+  bool nsInherit() const         { return (theFlags & NodeImpl::NsInherit) != 0; }
 
-  bool haveLocalBindings() const { return theFlags & NodeImpl::HaveLocalBindings; }
+  bool haveLocalBindings() const { return (theFlags & NodeImpl::HaveLocalBindings) != 0; }
 
   NsBindingsContext* getNsContext() const { return theNsContext.get_ptr(); }
 
