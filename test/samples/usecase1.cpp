@@ -19,7 +19,7 @@ int usecase1(int argc, char* argv[])
 
 	//create and compile a query
 	xquery = zorba_engine.createQuery("1+2");
-	if(xquery.isNull())
+	if(xquery == NULL)
 	{
 		cout << "Error creating and compiling \"1+2\"" << endl;
 		assert(false);

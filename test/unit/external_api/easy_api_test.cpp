@@ -50,7 +50,6 @@ test_3()
 }
 
 
-#if 0
 // test setting external variables in the dynamic context and use them in the query
 // and print the XML serialization of the result
 bool
@@ -62,13 +61,12 @@ test_4()
 	XQuery_t lQuery = zorba_factory.createQuery(lQueryString.c_str()); 
 
   DynamicQueryContext_t lDynCtxt = zorba_factory.createDynamicContext();
-  lDynCtxt->SetVariable("x", 2);
+  lDynCtxt->SetVariableAsInteger("x", 2);
 
   lQuery->executeSerializeXML(std::cout, lDynCtxt);
 
 	return true;
 }
-#endif
 
 int easy_api_test(int argc, char* argv[])
 {
@@ -84,12 +82,9 @@ int easy_api_test(int argc, char* argv[])
 	assert(test_3()); 
   std::cout << std::endl;
 
-  // this does currently not work
-#if 0
   std::cout << std::endl << "executing easy api test 4" << std::endl;;
 	assert(test_4()); 
   std::cout << std::endl;
-#endif
 
   return 0;
 }
