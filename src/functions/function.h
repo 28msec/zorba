@@ -18,9 +18,9 @@
 
 namespace xqp {
 
-template <class Object> class rchandle;
-
 typedef rchandle<class PlanIterator> PlanIter_t;
+
+typedef rchandle<class expr> expr_t;
 
 class fo_expr;
 
@@ -66,18 +66,36 @@ public:
 
 };
 
+class PlanState;
 
-/*
-class user_function : public function
-{
-private:
-	parsenode* body_node;
-	expr* body_expr;
+class user_function : public function {
+  public:
+    user_function(const yy::location& loc, const signature& _sig, expr_t expr_body);
+    virtual ~user_function();
 
+    const yy::location& get_location() const;
+
+    void set_body(expr_t body);
+    expr_t get_body() const;
+
+    virtual PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const;
+
+    virtual TypeSystem::xqtref_t type_check(signature&) const;
+
+    virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
+
+    virtual PlanIter_t get_plan() const;
+
+    virtual PlanState *create_plan_state() const;
+
+  private:
+    yy::location m_loc;
+    expr_t m_expr_body;
+    mutable PlanIter_t m_plan;
+    mutable int32_t m_state_size;
 };
-*/
 
 
 } /* namespace xqp */
 #endif  /* XQP_FUNCTION_H */
-
+/* vim:set ts=2 sw=2: */

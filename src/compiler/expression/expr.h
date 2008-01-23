@@ -518,13 +518,10 @@ class fo_expr : public expr
 protected:
 	checked_vector<expr_t> argv;
 	const function* func;
-  const function_def_expr *udf;
 
 public:
 	fo_expr(yy::location const& loc, const function *f)
-    : expr(loc), func (f), udf (NULL) { assert (f != NULL); }
-	fo_expr(yy::location const& loc, const function_def_expr *udf_)
-    : expr(loc), func (NULL), udf (udf_) { assert (udf != NULL); }
+    : expr(loc), func (f) { assert (f != NULL); }
 
 public:
   void add(expr_t e_h) { assert (e_h != NULL); argv.push_back(e_h); }

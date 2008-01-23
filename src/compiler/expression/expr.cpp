@@ -282,14 +282,11 @@ void fo_expr::accept(
 }
 
 const signature &fo_expr::get_signature () const {
-  if (func)
-    return func->get_signature ();
-  ZORBA_ASSERT (udf);
-  return udf->get_signature ();
+  return func->get_signature ();
 }
 
 Item_t fo_expr::get_fname () const
-{ return func == NULL ? udf->get_name () : func->get_fname (); }
+{ return func->get_fname (); }
 
 
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]

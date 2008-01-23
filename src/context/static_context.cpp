@@ -211,8 +211,8 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
     }
   }
 
-  expr *static_context::lookup_udf (xqp_string prefix, xqp_string local, int arity) const {
-    return lookup_expr ("udf:" + fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local));
+  user_function *static_context::lookup_udf (xqp_string prefix, xqp_string local, int arity) const {
+    return dynamic_cast<user_function *>(lookup_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local)));
   }
 
   xqp_string static_context::lookup_ns (xqp_string prefix) const

@@ -189,7 +189,7 @@ ostream& if_expr::put( ostream& os) const
 
 ostream& fo_expr::put( ostream& os) const
 {
-  Item_t qname = func == NULL ? udf->get_name () : func->get_fname ();
+  Item_t qname = func->get_fname ();
   os << INDENT << qname->getStringProperty() << "/" << size () << " (" << this << ") [\n";
   
   for (vector<rchandle<expr> >::const_iterator it = begin();

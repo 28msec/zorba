@@ -5,8 +5,24 @@ namespace xqp {
 
 Item_t UDFunctionCallIterator::nextImpl(PlanState& planState)
 {
-  return NULL;
+  Item_t lSequenceItem;
+  UDFunctionCallIteratorState *state;
+  DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
+
+  state->thePlan = theUDF->get_plan().get_ptr();
+  state->theFnBodyStateBlock = theUDF->create_plan_state();
+  state->thePlan->reset(*state->theFnBodyStateBlock);
+
+  while((lSequenceItem = state->thePlan->produceNext(*state->theFnBodyStateBlock)) != NULL) {
+    STACK_PUSH(lSequenceItem, state);
+  }
+
+  STACK_END();
 }
+
+UDFunctionCallIterator::UDFunctionCallIteratorState::UDFunctionCallIteratorState()
+  : theFnBodyStateBlock(NULL),
+  thePlan(NULL) { }
 
 void UDFunctionCallIterator::resetImpl(PlanState& planState)
 {
@@ -24,7 +40,6 @@ void UDFunctionCallIterator::releaseResourcesImpl(PlanState& planState)
   UDFunctionCallIteratorState* state;
   GET_STATE(UDFunctionCallIteratorState, state, planState);
   
-  // do we need a releaseResouces function in the state or is it always the same as reset?
   state->reset(); 
 }
 
@@ -37,10 +52,16 @@ void UDFunctionCallIterator::setOffset(PlanState& planState, uint32_t& offset)
 
 void UDFunctionCallIterator::UDFunctionCallIteratorState::init()
 {
+  reset();
 }
 
 void UDFunctionCallIterator::UDFunctionCallIteratorState::reset()
 {
+  if (theFnBodyStateBlock != NULL) {
+    delete theFnBodyStateBlock;
+  }
+  theFnBodyStateBlock = NULL;
+  thePlan = NULL;
 }
 
 }

@@ -16,6 +16,7 @@
 #include "types/node_test.h"
 #include "functions/library.h"
 #include "compiler/parsetree/parsenodes.h"
+#include "compiler/normalizer/normalizer.h"
 #include "util/tracer.h"
 #include "store/api/item.h"
 #include "system/zorba.h"
@@ -1366,8 +1367,10 @@ void end_visit(const FunctionDecl& v, void *visit_state)
   
   int nargs = v.get_param_count ();
   pop_nodestack (nargs);
-  function_def_expr *udf = static_cast<function_def_expr *> (sctx_p->lookup_udf (v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs));
+  user_function *udf = sctx_p->lookup_udf (v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs);
   ZORBA_ASSERT (udf != NULL);
+  normalizer norm(sctx_p);
+  body->accept(norm);
   udf->set_body (body);
   pop_scope ();
 }
@@ -1743,7 +1746,10 @@ void *begin_visit(const VFO_DeclList& v)
         return_type = pop_tstack ();
       }
       Item_t qname = sctx_p->lookup_fn_qname (n->get_name ()->get_prefix (), n->get_name ()->get_localname ());
-      sctx_p->bind_udf (qname, new function_def_expr (n->get_location(), qname, args, return_type), nargs);
+      std::vector<TypeSystem::xqtref_t> arg_types;
+      arg_types.insert(arg_types.end(), nargs, GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+      signature sig(qname, arg_types, return_type);
+      sctx_p->bind_udf (qname, new user_function (n->get_location(), sig, NULL), nargs);
     }
   }
   return no_state;
@@ -2021,7 +2027,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
   else
   {
     int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
-    const function_def_expr *udf = static_cast<const function_def_expr *> (sctx_p->lookup_udf (prefix, fname, sz));
+    const user_function *udf = sctx_p->lookup_udf (prefix, fname, sz);
     rchandle<fo_expr> fo_h = (udf == NULL) ?
       new fo_expr (v.get_location(), LOOKUP_FN (prefix, fname, sz)) :
       new fo_expr (v.get_location(), udf);

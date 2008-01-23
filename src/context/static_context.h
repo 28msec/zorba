@@ -29,6 +29,7 @@
 #include "context/context.h"
 #include "context/context_impl.h"
 #include "functions/signature.h"
+#include "functions/function.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "types/typesystem.h"
@@ -47,6 +48,7 @@
 namespace xqp {
 
 class namespace_node;
+class user_function;
 
 /*______________________________________________________________________
 |  
@@ -115,8 +117,8 @@ public:
   void bind_var (const Item *qname, expr *expr) {
     bind_expr ("var:" + qname_internal_key (qname), expr);
   }
-  void bind_udf (const Item *qname, expr *expr, int arity) {
-    bind_expr ("udf:" + fn_internal_key (arity) + qname_internal_key (qname), expr);
+  void bind_udf (const Item *qname, user_function *func, int arity) {
+    bind_func (fn_internal_key (arity) + qname_internal_key (qname), func);
   }
   void bind_var (xqp_string prefix, xqp_string local, expr *expr) {
     bind_expr ("var:" + qname_internal_key ("", prefix, local), expr);
@@ -125,7 +127,7 @@ public:
     bind_expr ("var:" + qname_internal_key ("", varname), expr);
   }
   function *lookup_fn (xqp_string prefix, xqp_string local, int arity) const;
-  expr *lookup_udf (xqp_string prefix, xqp_string local, int arity) const;
+  user_function *lookup_udf (xqp_string prefix, xqp_string local, int arity) const;
   static function *lookup_builtin_fn (xqp_string local, int arity);
   void bind_fn (xqp_string prefix, xqp_string local, function *f, int arity) {
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local), f);

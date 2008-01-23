@@ -3,14 +3,14 @@
 
 #include "context/common.h"
 #include "runtime/base/narybase.h"
+#include "functions/function.h"
 
 namespace xqp {
 
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator> {
   public:
-    // TODO: add pointer to ud_function object as the the third arg.
-    UDFunctionCallIterator(const yy::location& loc, std::vector<PlanIter_t>& args)
-      : NaryBaseIterator<UDFunctionCallIterator>(loc, args) { }
+    UDFunctionCallIterator(const yy::location& loc, std::vector<PlanIter_t>& args, const user_function *aUDF)
+      : NaryBaseIterator<UDFunctionCallIterator>(loc, args), theUDF(aUDF) { }
     virtual ~UDFunctionCallIterator() { }
 
     Item_t nextImpl(PlanState& planState);
@@ -29,10 +29,15 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator> {
     class UDFunctionCallIteratorState : public PlanIteratorState {
       public:
         PlanState *theFnBodyStateBlock;
+        PlanIterator *thePlan;
+
+        UDFunctionCallIteratorState();
 
         void init();
         void reset();
     };
+
+    const user_function *theUDF;
 };
 
 }
