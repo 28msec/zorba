@@ -14,6 +14,7 @@ namespace xqp
 
 void skip_whitespace(std::string& s, unsigned int& position);
 int parse_int(std::string& s, unsigned int& position, long& result);
+bool is_digit(char ch);
 
 // Returns the last day of the given year and month. E.g. for 1980 and 2 it
 // will return 29. Returns 0 on an error

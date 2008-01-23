@@ -19,6 +19,9 @@
     return false;                               \
   }
 
+#include <iostream>
+using namespace std;
+
 namespace xqp
 {
     
@@ -30,10 +33,9 @@ bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
 
   // A time zone is of form: (('+' | '-') hh ':' mm) | 'Z'
 
-  skip_whitespace(ss, position);
-  if (position == ss.size())
+  if (ss.size() != 1 && ss.size() != 6)
     return false;
-    
+
   if (ss[position] == 'Z')
   {
     // '+00:00', '-00:00', and 'Z' all represent the same zero-length duration timezone, UTC; 'Z' is its canonical representation.
@@ -56,12 +58,18 @@ bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
 
     position++;
 
+    // Validate the timezone
+    if (!is_digit(ss[position]) || !is_digit(ss[position+1]) || ss[position+2] != ':' ||
+         !is_digit(ss[position+3]) || !is_digit(ss[position+4]))
+      return false;
+
     // Parse hh:mm . Add ":00" and pass it off to boost
-    std::string temp = ss.substr(position,ss.size()-position) + ":00";
+    std::string temp = ss.substr(position) + ":00";
     if (is_negative)
       temp = "-" + temp;
-  
-    RETURN_FALSE_ON_EXCEPTION( tz_t = new TimeZone(boost::posix_time::duration_from_string(temp)); );
+
+    //RETURN_FALSE_ON_EXCEPTION( tz_t = new TimeZone(boost::posix_time::duration_from_string(temp)); );
+    tz_t = new TimeZone(boost::posix_time::duration_from_string(temp)); 
   }
   
   return true;

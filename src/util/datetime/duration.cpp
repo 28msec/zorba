@@ -211,34 +211,31 @@ xqpString DayTimeDuration::toString() const
 
   result += "P";
 
-  /*
-  if (days == 0)
+  // TODO: check
+
+  //if (days != 0)
+    result += NumConversions::integerToStr(days) + "D";
 
 
-
+  result += "T";
   
-  long abs_months = months;
+  //if (time_duration.hours() != 0)
+    result += NumConversions::integerToStr(timeDuration.hours()) + "H";
 
-  if (months < 0)
+  //if (time_duration.minutes() != 0)
+    result += NumConversions::integerToStr(timeDuration.minutes()) + "M";
+
+  //if (time_duration.seconds() != 0 || fractional_seconds() != 0)
   {
-    result += "-";
-    abs_months = -months;
-  }
-
-  result += "P";
-
-  if (abs_months > 12 )
-    result = result + NumConversions::integerToStr(abs_months / 12) + "Y";
-
-  if (abs_months%12 != 0)
-    result = result + NumConversions::integerToStr(abs_months % 12) + "M";
+    result += NumConversions::integerToStr(timeDuration.seconds());
     
-  // TODO:
-  return result;
-  */
+    if (timeDuration.fractional_seconds() != 0 )
+      result += "." + NumConversions::integerToStr(timeDuration.fractional_seconds());
 
-  // TODO:
-  return NULL;
+    result += "S";
+  }
+  
+  return result;
 }
 
 int32_t DayTimeDuration::getYears() const
@@ -469,8 +466,15 @@ int Duration::compare(const DurationBase& db) const
 
 xqpString Duration::toString() const
 {
+  xqpString result;
+  xqpString temp = dayTimeDuration.toString();
+
+  // TODO: check "-" signs
+  result = yearMonthDuration.toString() + temp.substr(1, temp.size() - 1);
+
+  
   // TODO:
-  return NULL;
+  return result;
 }
 
 int32_t Duration::getYears() const
