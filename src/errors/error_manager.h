@@ -26,6 +26,7 @@ public:
 	AlertMessages& getAlertMessages();
   void setAlertMessages(AlertMessages* c, bool is_from_user);
 
+	virtual void DumpAlerts(std::ostream &os);
 	void clearAlertList();
 
 	virtual bool isError();

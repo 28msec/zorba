@@ -12,7 +12,7 @@
 
 #include "zorba_api.h"
 #include "store/naive/basic_item_factory.h"
-#include "error_display.h"
+//#include "error_display.h"
 
 using namespace xqp;
 
@@ -91,7 +91,7 @@ int main(int argc, const char * argv[])
 
   xqp::Collection_t coll2 = store->createCollection("http://MyCollection1");
 
-  DisplayErrorListForCurrentThread();
+	errmanager.DumpAlerts(std::cerr);
 
   //
   // Load an xml doc from a file to a collection
@@ -122,7 +122,7 @@ int main(int argc, const char * argv[])
 
   outXmlFile << doc->show() << std::endl;
 
-  DisplayErrorListForCurrentThread();
+  errmanager.DumpAlerts(std::cerr);
 
   zorba_factory.uninitThread();
   zorba_factory.shutdown();

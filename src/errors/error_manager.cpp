@@ -130,5 +130,105 @@ bool AlertsManagerImpl::getThrowExceptionsMode()
 	return throw_exceptions;
 }
 
+void AlertsManagerImpl::DumpAlerts(std::ostream &os)
+{
+
+  std::list<ZorbaAlert*>::const_iterator errit;
+
+  for(errit = this->begin(); errit != this->end(); errit++)
+  {
+    if (errit == this->begin())
+      os << endl << "Error list:" << endl;
+    
+    (*errit)->DumpAlert(os);
+  }
+
+  clearAlertList();
+}
+
+
+
+void ZorbaError::DumpAlert(std::ostream &os)
+{
+//  if(err->theIsFatal)
+//    cerr << "Fatal Error: ";
+//  else
+    os << "Error: ";
+
+  if(theLocation.line)
+  {
+    if(!theLocation.filename.empty())
+      os << theLocation.filename;
+
+    os << "[line: " << theLocation.line << "][col: "
+         << theLocation.column << "]: ";
+  } 
+
+  os << theDescription << std::endl;
+}
+
+
+void ZorbaWarning::DumpAlert(std::ostream &os)
+{
+  os << "Warning:";
+  if(theLocation.line)
+  {
+    if(!theLocation.filename.empty())
+      os << theLocation.filename;
+
+    os << "[line: " << theLocation.line << "][col: "
+         << theLocation.column << "]";
+  } 
+
+  os << " : " << theDescription << std::endl;
+}
+
+
+void ZorbaNotify::DumpAlert(std::ostream &os)
+{
+  os << "Notif: " << theDescription << std::endl;
+}
+
+
+void ZorbaAskUser::DumpAlert(std::ostream &os)
+{
+  ///not implemented
+  os << "Ask user: " << theDescription << std::endl;
+}
+
+
+void ZorbaFnError::DumpAlert(std::ostream &os)
+{
+  os << "User Error: ";
+  os << "[QName: " << theErrorQName->getStringProperty() 
+    << "<decoded: " << theDescription << " > ]";
+  os << " : " <<  theUserDescription << endl;
+
+	std::vector<class Item*>::const_iterator item_it;
+
+  for ( item_it = theItems.begin( ) ; item_it != theItems.end( ) ; item_it++ )
+  {
+    os  << " =-= " 
+          << (*item_it)->getStringProperty() 
+          << "  [0x" << std::hex << (void*)(*item_it) << "]" << endl;
+  }
+}
+
+
+void ZorbaFnTrace::DumpAlert(std::ostream &os)
+{
+  os << "User Trace: " << theDescription << endl;
+
+  std::vector<class Item*>::const_iterator item_it;
+
+  for ( item_it = items_trace.begin( ) ; item_it != items_trace.end( ) ; item_it++ )
+  {
+    os  << " =-= " 
+          << (*item_it)->getStringProperty() 
+          << "  [0x" << std::hex << (void*)(*item_it) << "]" << endl;
+  }
+
+}
+
 
 }

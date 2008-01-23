@@ -114,17 +114,17 @@ bool DynamicContextWrapper::SetVariableAsInteger( xqp_string varname, long long 
 		break;
 	case XS_UNSIGNED_INT://derived from XS_UNSIGNED_LONG
 			if((int_value < 0) || 
-				(sizeof(xqp_uint) < sizeof(unsigned long long)) && (int_value >= ((unsigned long long)1ull<<(sizeof(xqp_uint)*8))))
+				(sizeof(xqp_uint) < sizeof(unsigned long long)) && ((unsigned long long)int_value >= ((unsigned long long)1ull<<(sizeof(xqp_uint)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_SHORT://derived from XS_UNSIGNED_INT
 			if((int_value < 0) || 
-				(sizeof(xqp_ushort) < sizeof(unsigned long long)) && (int_value >= ((unsigned long long)1ull<<(sizeof(xqp_ushort)*8))))
+				(sizeof(xqp_ushort) < sizeof(unsigned long long)) && ((unsigned long long)int_value >= ((unsigned long long)1ull<<(sizeof(xqp_ushort)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_BYTE://derived from XS_UNSIGNED_SHORT
 			if((int_value < 0) || 
-				(sizeof(xqp_ubyte) < sizeof(unsigned long long)) && (int_value >= ((unsigned long long)1ull<<(sizeof(xqp_ubyte)*8))))
+				(sizeof(xqp_ubyte) < sizeof(unsigned long long)) && ((unsigned long long)int_value >= ((unsigned long long)1ull<<(sizeof(xqp_ubyte)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_POSITIVE_INTEGER://derived from XS_NON_NEGATIVE_INTEGER

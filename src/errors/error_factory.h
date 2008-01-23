@@ -14,7 +14,7 @@
 #include <string>
 
 #include "errors/errors.h"
-#include "xqp_exception.h"
+#include "errors/xqp_exception.h"
 #include "compiler/parser/location.hh"
 
 

@@ -159,7 +159,7 @@ void* query_thread(void *param)
 DisplayErrorsAndExit:
 	result_file << endl << "Display all error list now:" << endl;
 
-	DisplayErrorListForCurrentThread(result_file);
+	zorba_factory.getAlertsManagerForCurrentThread().DumpAlerts(result_file);
 
 	result_file << "UninitThread" << endl;
 	zorba_factory.uninitThread();

@@ -68,6 +68,8 @@ public:
   time_t       theTime;
 
   virtual ~ZorbaAlert();
+
+	virtual void DumpAlert(std::ostream &os) = 0;
 };
 
 
@@ -585,6 +587,7 @@ public:
   virtual ~ZorbaError();
 
   static std::string toString(enum ErrorCodes);
+	virtual void DumpAlert(std::ostream &os);
 };
 
 
@@ -602,6 +605,7 @@ public:
   ZorbaAlertLocation  theLocation;
 
   virtual ~ZorbaWarning();
+	virtual void DumpAlert(std::ostream &os);
 };
 
 
@@ -619,6 +623,7 @@ public:
   NotifyCodes  theCode;
 
   virtual ~ZorbaNotify();
+	virtual void DumpAlert(std::ostream &os);
 };
 
 
@@ -645,6 +650,7 @@ public:
   UserReplyOptionsCodes  theReplyOptionsCode;
 
   virtual ~ZorbaAskUser();
+	virtual void DumpAlert(std::ostream &os);
 };
 
 
@@ -659,6 +665,7 @@ public:
   std::vector<Item*>  theItems;
 
   virtual ~ZorbaFnError();
+	virtual void DumpAlert(std::ostream &os);
 };
 
 
@@ -671,6 +678,7 @@ public:
   std::vector<Item*> items_trace;
 
   virtual ~ZorbaFnTrace();
+	virtual void DumpAlert(std::ostream &os);
 };
 
 
@@ -701,6 +709,7 @@ public:
   virtual void RegisterAlertCallback(alert_callback *user_alert_callback,
                                     void *param) = 0;
 
+	virtual void DumpAlerts(std::ostream &os) = 0;
   virtual void clearAlertList() = 0;
 
 	virtual bool isError() = 0;

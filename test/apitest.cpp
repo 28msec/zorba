@@ -7,7 +7,7 @@
 //#include "../src/compiler/parser/xquery_driver.h"
 #include "../src/util/logging/loggermanager.hh"
 #include "timer.h"
-#include "error_display.h"
+//#include "error_display.h"
 //#include "errors/error_factory.h"
 #include "zorba/util/properties.h"
 
@@ -50,7 +50,8 @@ int apitest_alert_callback(ZorbaAlert *alert_mess,
 #endif
   cerr << endl;
 
-  DisplayOneAlert(alert_mess);
+//  DisplayOneAlert(alert_mess);
+	alert_mess->DumpAlert(cerr);
 
   cerr.flush();
 
@@ -113,7 +114,8 @@ public:
     sctx->SetOrderingMode(StaticQueryContext::unordered);
   }
   ~ZorbaEngineWrapper () {
-    DisplayErrorListForCurrentThread();
+    //DisplayErrorListForCurrentThread();
+		factory.getAlertsManagerForCurrentThread().DumpAlerts(cerr);
 
     factory.uninitThread();
     factory.shutdown();

@@ -4,7 +4,6 @@ ADD_SUBDIRECTORY(samples)
 
 SET(API_TEST_SRCS
     timer.cpp
-    error_display.cpp 
     apitest.cpp)
 
 ADD_EXECUTABLE(apitest ${API_TEST_SRCS})
@@ -18,7 +17,6 @@ ENDIF (BUILD_STATIC_LIBRARY)
 
 SET(TEST_STORE_SRCS
     timer.cpp 
-    error_display.cpp
     test_store.cpp)
 
 ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})

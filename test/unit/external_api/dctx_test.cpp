@@ -12,7 +12,6 @@ using namespace xqp;
 
 string make_absolute_file_name(const char *result_file_name, const char *this_file_name);
 bool verify_expected_result(string result_file_name, string expected_file);
-void DisplayErrorListForCurrentThread(std::ostream &result_file);
 
 int test_api_dynamic_context(const char *result_file_name)
 {
@@ -239,7 +238,7 @@ int test_api_dynamic_context(const char *result_file_name)
 DisplayErrorsAndExit:
 	result_file << endl << "Display all error list now:" << endl;
 
-	DisplayErrorListForCurrentThread(result_file);
+	errmanager.DumpAlerts(result_file);
 
 	zorba_factory.uninitThread();
 	zorba_factory.shutdown();
