@@ -120,7 +120,7 @@ Item_t FnStringIterator::nextImpl(PlanState& planState)
 
   while((inVal = consumeNext(theChild, planState)) != NULL) {
     state->hasOutput = true;
-    STACK_PUSH(Zorba::getItemFactory()->createString(inVal->getStringProperty()), state);
+    STACK_PUSH(Zorba::getItemFactory()->createString(inVal->getStringValue()), state);
   }
 
   if (!state->hasOutput && theEmptyStringOnNULL) {

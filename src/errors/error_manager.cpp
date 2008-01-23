@@ -200,7 +200,7 @@ void ZorbaAskUser::DumpAlert(std::ostream &os)
 void ZorbaFnError::DumpAlert(std::ostream &os)
 {
   os << "User Error: ";
-  os << "[QName: " << theErrorQName->getStringProperty() 
+  os << "[QName: " << theErrorQName->getStringValue() 
     << "<decoded: " << theDescription << " > ]";
   os << " : " <<  theUserDescription << endl;
 
@@ -209,7 +209,7 @@ void ZorbaFnError::DumpAlert(std::ostream &os)
   for ( item_it = theItems.begin( ) ; item_it != theItems.end( ) ; item_it++ )
   {
     os  << " =-= " 
-          << (*item_it)->getStringProperty() 
+          << (*item_it)->getStringValue() 
           << "  [0x" << std::hex << (void*)(*item_it) << "]" << endl;
   }
 }
@@ -224,7 +224,7 @@ void ZorbaFnTrace::DumpAlert(std::ostream &os)
   for ( item_it = items_trace.begin( ) ; item_it != items_trace.end( ) ; item_it++ )
   {
     os  << " =-= " 
-          << (*item_it)->getStringProperty() 
+          << (*item_it)->getStringValue() 
           << "  [0x" << std::hex << (void*)(*item_it) << "]" << endl;
   }
 

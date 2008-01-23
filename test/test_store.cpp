@@ -110,7 +110,7 @@ int main(int argc, const char * argv[])
 
   xmlFile.close();
 
-  store->deleteCollection(coll1->getUri()->getStringProperty());
+  store->deleteCollection(coll1->getUri()->getStringValue());
 
   fileName += ".res";
   std::ofstream outXmlFile(fileName.c_str());

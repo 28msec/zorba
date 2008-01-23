@@ -121,7 +121,7 @@ public:
    *  @return  string value of the item as defined in XQuery data model
    *           specification (Section 2.6.5).
    */
-  virtual xqp_string getStringProperty( ) const = 0;
+  virtual xqp_string getStringValue( ) const = 0;
 
   /**
    *  @return  "true" if the item is a node; false if the item is an atomic value
@@ -146,17 +146,6 @@ public:
    *  methods.
    */
     
-  /** Accessor for xs:anyUri, xs:ENTITY, xs:ID, xs:IDREF, xs:language, xs:NCName, xs:NMTOKEN,
-   * xs:NOTATION, xs:Name, xs:nonPositiveInteger, xs:normalizedString, xs:string, xs:token,
-   * doucment node, element node, attribute node, namespace node, processing instruction node,
-   * comment node, text node
-   */
-  virtual xqp_string getStringValue() const
-  {
-    this->showError();
-    return "";
-  }
-
   /** Accessor for xs:base64Binary
    */
   virtual xqp_base64Binary getBase64Binary() const
@@ -578,6 +567,15 @@ public:
   virtual xqp_string show() const;
 
   virtual void serializeXML( std::ostream& os );
+
+  /**
+   * Helper method with is used to return a StringValue of an Item
+   * by pointer instead of rchandle
+   */
+  virtual xqpStringStore* getStringValueP() {
+    this->showError();
+    return 0;
+  }
 };   /* Item */
 
   

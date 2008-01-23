@@ -199,7 +199,7 @@ class DocumentNodeImpl : public NodeImpl
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringProperty() const;
+  xqp_string getStringValue() const;
 
   xqp_string show() const;
 
@@ -280,7 +280,7 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringProperty() const;
+  xqp_string getStringValue() const;
   bool getNilled() const;
 
   xqp_string show() const;
@@ -352,7 +352,6 @@ class AttributeNodeImpl : public NodeImpl
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringProperty() const;
   xqp_string getStringValue() const;
 
   bool isId() const     { return theIsId; }
@@ -387,8 +386,8 @@ class TextNodeImpl : public NodeImpl
 
   virtual Iterator_t getTypedValue() const;
   virtual Item_t getAtomizationValue() const;
-  virtual xqp_string getStringProperty() const  { return theContent; }
-  virtual xqp_string getStringValue() const     { return theContent; }
+  virtual xqp_string getStringValue() const  { return theContent; }
+  virtual xqpStringStore* getStringValueP() { return theContent.get_ptr(); }
 			
   virtual xqp_string show() const;
 };
@@ -419,8 +418,7 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringProperty() const { return theData; }
-  xqp_string getStringValue() const    { return theData; }
+  xqp_string getStringValue() const { return theData; }
 
   xqp_string getTarget() const { return theTarget; }
 
@@ -449,8 +447,8 @@ public:
 
   virtual Iterator_t getTypedValue() const;
   virtual Item_t getAtomizationValue() const;
-  virtual xqp_string getStringProperty() const { return theContent; }
-  virtual xqp_string getStringValue() const    { return theContent; }
+  virtual xqp_string getStringValue() const { return theContent; }
+  virtual xqpStringStore* getStringValueP() { return theContent.get_ptr(); }
 
   virtual xqp_string show() const;
 };

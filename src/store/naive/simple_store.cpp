@@ -224,7 +224,7 @@ Collection_t SimpleStore::createCollection()
 {
   Item_t uri = createUri();
 
-  return createCollection(uri->getStringProperty());
+  return createCollection(uri->getStringValue());
 }
 
 

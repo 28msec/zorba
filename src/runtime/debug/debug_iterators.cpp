@@ -25,7 +25,7 @@ Item_t FnTraceIterator::nextImpl(PlanState& planState)
   }
 
   while((lSequenceItem = consumeNext(theChild0, planState)) != NULL) {
-    cerr << state->theTagItem->getStringProperty() << lSequenceItem->getStringProperty() << endl;
+    cerr << state->theTagItem->getStringValue() << lSequenceItem->getStringValue() << endl;
     STACK_PUSH(lSequenceItem, state);
   }
 

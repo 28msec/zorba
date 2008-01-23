@@ -315,7 +315,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
     else if (state->theContextItem->isNode() &&
              state->theContextItem->getNodeKind() == StoreConsts::textNode) 
     {
-      state->theString += state->theContextItem->getStringProperty();
+      state->theString += state->theContextItem->getStringValue();
     }
     else 
     {
@@ -403,13 +403,13 @@ Item_t AttributeIterator::nextImpl(PlanState& planState)
 
   if ((itemFirst = consumeNext(theChild1, planState)) != 0)
   {
-    lexicalString = itemFirst->getStringProperty();
+    lexicalString = itemFirst->getStringValue();
 
     // handle concatenation
     itemCur = consumeNext ( theChild1, planState );
     while ( itemCur != NULL )
     {
-      lexicalString += itemCur->getStringProperty();
+      lexicalString += itemCur->getStringValue();
       itemCur = consumeNext ( theChild1, planState );
     }
 
@@ -469,7 +469,7 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
     
     if (!lFirst)
       content += " ";
-    content += lItem->getStringProperty();
+    content += lItem->getStringValue();
     lFirst = false;
   }
 
@@ -518,7 +518,7 @@ Item_t TextIterator::nextImpl(PlanState& planState)
     lAtomicItem = lItem->getAtomizationValue();
     if (!lFirst)
       content += " ";
-    content += lAtomicItem->getStringProperty();
+    content += lAtomicItem->getStringValue();
     lFirst = false;
   }
 
@@ -660,11 +660,11 @@ Item_t EnclosedIterator::nextImpl ( PlanState& planState )
 
     else if ( state->theString == "" )
     {
-      state->theString = state->theContextItem->getStringProperty();
+      state->theString = state->theContextItem->getStringValue();
     }
     else
     {
-      state->theString += " " + state->theContextItem->getStringProperty();
+      state->theString += " " + state->theContextItem->getStringValue();
     }
   }
   STACK_END();

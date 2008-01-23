@@ -703,7 +703,7 @@ void end_visit(const DirAttr& v, void *visit_state)
     const_expr* constValueExpr = dynamic_cast<const_expr*>(valueExpr.get_ptr());
     if (constValueExpr != NULL)
     {
-      xqpString uri = constValueExpr->get_val()->getStringProperty();
+      xqpString uri = constValueExpr->get_val()->getStringValue();
       sctx_p->bind_ns(prefix, uri);
       ns_ctx->bind_ns(prefix, uri);
     }
@@ -3355,7 +3355,7 @@ void end_visit(const QueryBody& v, void *visit_state)
     if (expr == NULL) 
     {
       fo_expr *fo = new fo_expr (var->get_loc (), LOOKUP_OP1 ("ctxvariable"));
-      fo->add (new const_expr (var->get_loc (), var->get_varname ()->getStringProperty ()));
+      fo->add (new const_expr (var->get_loc (), var->get_varname ()->getStringValue ()));
       expr = fo;
     }
     clauses.push_back (wrap_in_letclause (expr, var));

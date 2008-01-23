@@ -326,13 +326,13 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
 	{
     if (ser.indent)
 			emit_indentation(depth);
-		tr << "<" << item->getNodeName()->getStringProperty();
+		tr << "<" << item->getNodeName()->getStringValue();
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 
 		int closed_parent_tag = emit_node_children(item, depth);
 
 		if (closed_parent_tag)		
-			tr << "</" << item->getNodeName()->getStringProperty() << ">";
+			tr << "</" << item->getNodeName()->getStringValue() << ">";
 		else
 			tr << " />";
 
@@ -342,7 +342,7 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
 	}
 	else if (item->getNodeKind() == StoreConsts::attributeNode )
 	{
-		tr << " " << item->getNodeName()->getStringProperty() << "=\"";
+		tr << " " << item->getNodeName()->getStringValue() << "=\"";
 		emit_expanded_string(item->getStringValue(), true);
 		tr << "\"";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
@@ -350,7 +350,7 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
   /*
 	else if (item->getNodeKind() == namespaceNode)
 	{
-		tr << " " << item->getNodeName()->getStringProperty() << "=\"";
+		tr << " " << item->getNodeName()->getStringValue() << "=\"";
 		emit_expanded_string(item->getStringValue());
 		tr << "\"";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
@@ -360,14 +360,14 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
 	{		
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";    
-		emit_expanded_string(item->getStringProperty());
+		emit_expanded_string(item->getStringValue());
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
 	else if (item->getNodeKind() == StoreConsts::commentNode)
 	{
     if (ser.indent)
       emit_indentation(depth);
-    tr << "<!--" << item->getStringProperty() << "-->";
+    tr << "<!--" << item->getStringValue() << "-->";
     if (ser.indent)
       tr << ser.END_OF_LINE;		
     previous_item = PREVIOUS_ITEM_WAS_NODE;
@@ -390,7 +390,7 @@ void serializer::emitter::emit_item(Item* item)
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT )
       tr << " ";
-    emit_expanded_string(item->getStringProperty());
+    emit_expanded_string(item->getStringValue());
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
   else
@@ -476,20 +476,20 @@ int is_content_type_meta(Item_t item, Item_t element_parent)
     return 0;
   
   // TODO: should find a function to compare strings ignore case
-  if ((element_parent->getNodeName()->getStringProperty() == "HEAD"
+  if ((element_parent->getNodeName()->getStringValue() == "HEAD"
       ||
-      element_parent->getNodeName()->getStringProperty() == "head")
+      element_parent->getNodeName()->getStringValue() == "head")
       &&
-      (item->getNodeName()->getStringProperty() == "META"
+      (item->getNodeName()->getStringValue() == "META"
       ||
-      item->getNodeName()->getStringProperty() == "meta"))
+      item->getNodeName()->getStringValue() == "meta"))
   {    
     // iterate through attributes
     Iterator_t it = item->getAttributes();
     Item_t child = it->next();
     while (child!= NULL)
     { 
-      if (child->getNodeName()->getStringProperty() == "http-equiv"
+      if (child->getNodeName()->getStringValue() == "http-equiv"
           &&
           child->getStringValue() == "content-type")
         return 1;        
@@ -504,31 +504,31 @@ int is_content_type_meta(Item_t item, Item_t element_parent)
 int is_html_empty_element(Item_t item)
 {
   // TODO: case should be ignored
-  if (item->getNodeName()->getStringProperty() == "area"
+  if (item->getNodeName()->getStringValue() == "area"
       ||
-      item->getNodeName()->getStringProperty() == "base"
+      item->getNodeName()->getStringValue() == "base"
       ||
-      item->getNodeName()->getStringProperty() == "basefont"
+      item->getNodeName()->getStringValue() == "basefont"
       ||
-      item->getNodeName()->getStringProperty() == "br"
+      item->getNodeName()->getStringValue() == "br"
       ||
-      item->getNodeName()->getStringProperty() == "col"
+      item->getNodeName()->getStringValue() == "col"
       ||
-      item->getNodeName()->getStringProperty() == "frame"
+      item->getNodeName()->getStringValue() == "frame"
       ||
-      item->getNodeName()->getStringProperty() == "hr"
+      item->getNodeName()->getStringValue() == "hr"
       ||
-      item->getNodeName()->getStringProperty() == "img"
+      item->getNodeName()->getStringValue() == "img"
       ||
-      item->getNodeName()->getStringProperty() == "input"
+      item->getNodeName()->getStringValue() == "input"
       ||
-      item->getNodeName()->getStringProperty() == "isindex"
+      item->getNodeName()->getStringValue() == "isindex"
       ||
-      item->getNodeName()->getStringProperty() == "link"
+      item->getNodeName()->getStringValue() == "link"
       ||
-      item->getNodeName()->getStringProperty() == "meta"
+      item->getNodeName()->getStringValue() == "meta"
       ||
-      item->getNodeName()->getStringProperty() == "param")
+      item->getNodeName()->getStringValue() == "param")
     return 1;
   else
     return 0;
@@ -557,7 +557,7 @@ void serializer::html_emitter::emit_node(Item* item, int depth, Item* element_pa
     
     if (ser.indent)
       emit_indentation(depth);
-    tr << "<" << item->getNodeName()->getStringProperty();
+    tr << "<" << item->getNodeName()->getStringValue();
     
     /*
       If there is a head element, and the include-content-type parameter has the value yes, the 
@@ -567,9 +567,9 @@ void serializer::html_emitter::emit_node(Item* item, int depth, Item* element_pa
     // TODO: ignore case
     if (ser.include_content_type == PARAMETER_VALUE_YES
         &&
-        (item->getNodeName()->getStringProperty() == "HEAD"
+        (item->getNodeName()->getStringValue() == "HEAD"
          ||
-         item->getNodeName()->getStringProperty() == "head"))
+         item->getNodeName()->getStringValue() == "head"))
     {
       tr << "/>";
       if (ser.indent)
@@ -592,7 +592,7 @@ void serializer::html_emitter::emit_node(Item* item, int depth, Item* element_pa
     closed_parent_tag |= emit_node_children(item, depth);
         
     if (closed_parent_tag)   
-      tr << "</" << item->getNodeName()->getStringProperty() << ">";
+      tr << "</" << item->getNodeName()->getStringValue() << ">";
     else
     {
       /* 
@@ -617,13 +617,13 @@ void serializer::html_emitter::emit_node(Item* item, int depth, Item* element_pa
       The HTML output method MUST NOT perform escaping for the content of the script and style elements.
     */
     // TODO: ignore case
-    if (item->getNodeName()->getStringProperty() == "script"
+    if (item->getNodeName()->getStringValue() == "script"
        ||
-        item->getNodeName()->getStringProperty() == "style")
+        item->getNodeName()->getStringValue() == "style")
     {
       if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
         tr << " ";    
-      tr << item->getStringProperty();  // no character expansion
+      tr << item->getStringValue();  // no character expansion
       previous_item = PREVIOUS_ITEM_WAS_TEXT;
     }
     else

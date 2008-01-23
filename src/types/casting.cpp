@@ -49,7 +49,7 @@ namespace xqp
   {
     Item_t lItem = 0;
 
-    xqpString lString = aSourceItem->getStringProperty().trim(" \n\r\t",4);
+    xqpString lString = aSourceItem->getStringValue().trim(" \n\r\t",4);
   
     switch(GENV_TYPESYSTEM.get_atomic_type_code(*aTargetType)) {
       case TypeSystem::XS_ANY_ATOMIC:
@@ -374,7 +374,7 @@ namespace xqp
     } else if (GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(STRING))
                || GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(UNTYPED_ATOMIC)))
     {
-      xqp_string lString = aSourceItem->getStringProperty().trim();
+      xqp_string lString = aSourceItem->getStringValue().trim();
 
       if (lString == "false" || lString == "0")
         lRetValue = false;
@@ -466,7 +466,7 @@ namespace xqp
 //         }
 //         break;
 //       case TypeSystem::XS_STRING:
-//         result = lItemFactory->createString ( item->getStringProperty() );
+//         result = lItemFactory->createString ( item->getStringValue() );
 //         break;
 //       default:
 //         ZorbaErrorAlerts::error_alert (

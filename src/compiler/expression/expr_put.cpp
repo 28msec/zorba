@@ -190,7 +190,7 @@ ostream& if_expr::put( ostream& os) const
 ostream& fo_expr::put( ostream& os) const
 {
   Item_t qname = func->get_fname ();
-  os << INDENT << qname->getStringProperty() << "/" << size () << " (" << this << ") [\n";
+  os << INDENT << qname->getStringValue() << "/" << size () << " (" << this << ") [\n";
   
   for (vector<rchandle<expr> >::const_iterator it = begin();
        it != end(); ++it)
@@ -429,7 +429,7 @@ ostream& match_expr::put(ostream& os) const
 
 ostream& const_expr::put( ostream& os) const
 {
-  os << INDENT << "const_expr (" << this << ")[ " << val->getStringProperty()
+  os << INDENT << "const_expr (" << this << ")[ " << val->getStringValue()
      << " ]\n"; UNDENT;
   return os;
 }

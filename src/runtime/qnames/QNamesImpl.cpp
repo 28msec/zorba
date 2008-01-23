@@ -62,11 +62,11 @@ ResolveQNameIterator::nextImpl(PlanState& planState){
 
       //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
 
-      index = itemQName->getStringProperty().trim().indexOf(":");
+      index = itemQName->getStringValue().trim().indexOf(":");
       if(-1 != index)
       {
-        resPre = itemQName->getStringProperty().trim().substr( 0, index );
-        resQName = itemQName->getStringProperty().trim().substr( index+1, resQName.length() - index );
+        resPre = itemQName->getStringValue().trim().substr( 0, index );
+        resQName = itemQName->getStringValue().trim().substr( index+1, resQName.length() - index );
 
         itemElem = consumeNext( theChild1, planState );
         if( itemElem != NULL )
@@ -88,7 +88,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState){
       }
       else
       {
-        resQName = itemQName->getStringProperty().trim();
+        resQName = itemQName->getStringValue().trim();
       }
 
       res = Zorba::getItemFactory()->createQName(
@@ -138,14 +138,14 @@ QNameIterator::nextImpl(PlanState& planState)
     if ( itemURI != NULL )
     {
       itemURI = itemURI->getAtomizationValue();
-      resNs = itemURI->getStringProperty().trim();
+      resNs = itemURI->getStringValue().trim();
     }
 
     itemQName = consumeNext ( theChild1, planState );
     if ( itemQName != NULL )
     {
       itemQName = itemQName->getAtomizationValue();
-      resQName = itemQName->getStringProperty().trim();
+      resQName = itemQName->getStringValue().trim();
       
       //TODO check if $paramQName does not have the correct lexical form for xs:QName and raise an error [err:FOCA0002].
 
@@ -354,7 +354,7 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState)
     itemPrefix = itemPrefix->getAtomizationValue();
 
     itemElem = consumeNext( theChild1, planState );
-    if( itemElem != NULL && !itemElem->getStringProperty().empty())
+    if( itemElem != NULL && !itemElem->getStringValue().empty())
     {
       NamespaceBindings = itemElem->getNamespaceBindings();
       for (
@@ -363,7 +363,7 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState)
             ++iter
           )
       {
-        if( (*iter).first == itemPrefix->getStringProperty().trim() )
+        if( (*iter).first == itemPrefix->getStringValue().trim() )
         {
           resNs = (*iter).second;
           break;

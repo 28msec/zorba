@@ -22,7 +22,7 @@ PlanIter_t ctx_variable::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  xqpString varName = argv[0].cast<SingletonIterator>()->getValue()->getStringProperty();
+  xqpString varName = argv[0].cast<SingletonIterator>()->getValue()->getStringValue();
   return new CtxVariableIterator(loc, varName);
 }
 

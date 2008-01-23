@@ -375,7 +375,7 @@ void end_visit(fo_expr& v)
     }
   } else {
     ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017,
-                           &loc, false, func->get_signature ().get_name ()->getStringProperty (), argv.size ());
+                           &loc, false, func->get_signature ().get_name ()->getStringValue (), argv.size ());
   }
 }
 

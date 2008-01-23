@@ -336,7 +336,7 @@ Iterator_t DocumentNodeImpl::getChildren() const
 
 Iterator_t DocumentNodeImpl::getTypedValue() const
 {
-  Item_t item = GET_FACTORY().createUntypedAtomic(getStringProperty());
+  Item_t item = GET_FACTORY().createUntypedAtomic(getStringValue());
   PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), item));
   return new PlanWrapper(ret);
 }
@@ -344,18 +344,18 @@ Iterator_t DocumentNodeImpl::getTypedValue() const
 
 Item_t DocumentNodeImpl::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(getStringProperty());
+  return GET_FACTORY().createUntypedAtomic(getStringValue());
 }
 
 
-xqp_string DocumentNodeImpl::getStringProperty() const
+xqp_string DocumentNodeImpl::getStringValue() const
 {
   ostringstream oss;
   Iterator_t it = getChildren();
   Item_t item = it->next();
   while (item != NULL)
   {
-    oss << item->getStringProperty();
+    oss << item->getStringValue();
     item = it->next();
   }
   return oss.str();
@@ -714,27 +714,27 @@ Item_t ElementNodeImpl::getAtomizationValue() const
   while ( lItem != 0) {
     if (!(lItem->isNode() && lItem->getNodeKind() == StoreConsts::commentNode)) {
       Item_t lAtomicItem = lItem->getAtomizationValue(); 
-      oss << lAtomicItem->getStringProperty();
+      oss << lAtomicItem->getStringValue();
     }
     lItem = it->next();
   }
   Item_t retItem = GET_FACTORY().createUntypedAtomic(oss.str());
   return retItem;
-  //return GET_FACTORY().createUntypedAtomic(getStringProperty());
+  //return GET_FACTORY().createUntypedAtomic(getStringValue());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string ElementNodeImpl::getStringProperty() const
+xqp_string ElementNodeImpl::getStringValue() const
 {
   ostringstream oss;
   Iterator_t it = getChildren();
   Item_t item = it->next();
   while ( item != NULL )
   {
-    oss << item->getStringProperty();
+    oss << item->getStringValue();
     item = it->next();
   }  return oss.str();
 }
@@ -819,7 +819,7 @@ xqp_string ElementNodeImpl::show() const
 {
   std::stringstream str;
 
-  str <<  "<" << theName->getStringProperty();
+  str <<  "<" << theName->getStringValue();
 
   str << " nid=\"" << theOrdPath.show() << "\"";
 
@@ -849,7 +849,7 @@ xqp_string ElementNodeImpl::show() const
     item = iter->next();
   }
 
-  str << "</" << theName->getStringProperty() << ">";
+  str << "</" << theName->getStringValue() << ">";
   return str.str().c_str();
 }
 
@@ -918,24 +918,19 @@ Item_t AttributeNodeImpl::getAtomizationValue() const
   return theLexicalValue;
 }
 
-xqp_string AttributeNodeImpl::getStringProperty() const
+xqp_string AttributeNodeImpl::getStringValue() const
 {
   if (theLexicalValue != 0)
-    return theLexicalValue->getStringProperty();
+    return theLexicalValue->getStringValue();
   else
     return "";
 }
 
 
-xqp_string AttributeNodeImpl::getStringValue() const
-{
-  return getStringProperty();
-}
-
 
 xqp_string AttributeNodeImpl::show() const
 {
-  return theName->getStringProperty() + "=\"" +
+  return theName->getStringValue() + "=\"" +
          (theLexicalValue != NULL ? theLexicalValue->show() : "") + "\"";
 }
 

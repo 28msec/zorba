@@ -81,7 +81,7 @@ StringToCodepointsIterator::nextImpl(PlanState& planState){
 
   item = consumeNext ( theChild, planState );
   if ( item != NULL ){
-    inputStr = item->getStringProperty();
+    inputStr = item->getStringValue();
     if(!inputStr.empty())
     {
       state->setVector(inputStr.getCodepoints());
@@ -242,7 +242,7 @@ CodepointEqualIterator::nextImpl(PlanState& planState){
         item0 = item0->getAtomizationValue();
         item1 = item1->getAtomizationValue();
         res = Zorba::getItemFactory()->createBoolean(
-            item0->getStringProperty() == item1->getStringProperty());
+            item0->getStringValue() == item1->getStringValue());
         STACK_PUSH( res, state );
       }
     }
@@ -290,7 +290,7 @@ ConcatStrIterator::nextImpl(PlanState& planState) {
   {
     if ( ( lItem = consumeNext(*iter, planState) ) != NULL )
     {
-      lResStream << lItem->getStringProperty();
+      lResStream << lItem->getStringValue();
     }
     else
     {

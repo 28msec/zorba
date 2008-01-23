@@ -67,7 +67,7 @@ Item_t QNameItemImpl::getEBV( ) const
 }
 
 
-xqp_string QNameItemImpl::getStringProperty( ) const
+xqp_string QNameItemImpl::getStringValue( ) const
 {
   return *thePrefix != "" ? *thePrefix + ":" + *theLocal : *theLocal;
 }
@@ -192,14 +192,14 @@ Item_t DecimalItemNaive::getEBV() const
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string DecimalItemNaive::getStringProperty() const
+xqp_string DecimalItemNaive::getStringValue() const
 {
   return NumConversions::decimalToStr(theValue);
 }
 
 xqp_string DecimalItemNaive::show() const
 {
-  return "xs:decimal(" + getStringProperty() + ")";
+  return "xs:decimal(" + getStringValue() + ")";
 }
 
 bool DecimalItemNaive::isNaN() const {
@@ -239,14 +239,14 @@ Item_t IntItemNaive::getEBV() const
   return CREATE_BOOLITEM( b );
 }
 
-  xqp_string IntItemNaive::getStringProperty() const
+  xqp_string IntItemNaive::getStringValue() const
 	{
     return NumConversions::intToStr(theValue);
 	}
 
   xqp_string IntItemNaive::show() const
 	{
-		return "xs:int(" + getStringProperty() + ")";
+		return "xs:int(" + getStringValue() + ")";
 	}
 
 /*******************************************************************************
@@ -273,14 +273,14 @@ Item_t IntegerItemNaive::getEBV() const
   return CREATE_BOOLITEM( b );
 }
 
-  xqp_string IntegerItemNaive::getStringProperty() const
+  xqp_string IntegerItemNaive::getStringValue() const
 	{
 		return NumConversions::integerToStr(theValue);
   }
 
   xqp_string IntegerItemNaive::show() const
 	{
-		return "xs:integer(" + getStringProperty() + ")";
+		return "xs:integer(" + getStringValue() + ")";
 	}
 	/* end class IntegerItem */
 	
@@ -306,14 +306,14 @@ Item_t DoubleItemNaive::getEBV() const
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string DoubleItemNaive::getStringProperty() const
+xqp_string DoubleItemNaive::getStringValue() const
 {
   return NumConversions::doubleToStr(theValue);
 }
 
 xqp_string DoubleItemNaive::show() const
 {
-  return "xs:double(" + getStringProperty() + ")";
+  return "xs:double(" + getStringValue() + ")";
 }
 
 bool DoubleItemNaive::isNaN() const {
@@ -349,14 +349,14 @@ Item_t FloatItemNaive::getEBV() const
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string FloatItemNaive::getStringProperty() const
+xqp_string FloatItemNaive::getStringValue() const
 {
   return NumConversions::floatToStr(theValue);
 }
 
 xqp_string FloatItemNaive::show() const
 {
-  return "xs:float(" + getStringProperty() + ")";
+  return "xs:float(" + getStringValue() + ")";
 }
 
 bool FloatItemNaive::isNaN() const {
@@ -386,7 +386,7 @@ Item_t BooleanItemNaive::getEBV() const
   return this->getAtomizationValue();
 }
 
-xqp_string BooleanItemNaive::getStringProperty() const
+xqp_string BooleanItemNaive::getStringValue() const
 {
   if (theValue)
     return "true";
@@ -396,7 +396,7 @@ xqp_string BooleanItemNaive::getStringProperty() const
 
 xqp_string BooleanItemNaive::show() const
 {
-  return "xs:boolean(" + getStringProperty() + ")";
+  return "xs:boolean(" + getStringValue() + ")";
 }
 
 /*******************************************************************************
@@ -419,12 +419,12 @@ Item_t NonPositiveIntegerItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string NonPositiveIntegerItemNaive::getStringProperty() const {
+xqp_string NonPositiveIntegerItemNaive::getStringValue() const {
   return NumConversions::uintegerToStr(theValue);
 }
 
 xqp_string NonPositiveIntegerItemNaive::show() const {
-  return "xs:nonPositiveInteger(" + getStringProperty() + ")";
+  return "xs:nonPositiveInteger(" + getStringValue() + ")";
 }
 
 /*******************************************************************************
@@ -447,12 +447,12 @@ Item_t NegativeIntegerItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string NegativeIntegerItemNaive::getStringProperty() const {
+xqp_string NegativeIntegerItemNaive::getStringValue() const {
   return NumConversions::integerToStr(theValue);
 }
 
 xqp_string NegativeIntegerItemNaive::show() const {
-  return "xs:negativeInteger(" + getStringProperty() + ")";
+  return "xs:negativeInteger(" + getStringValue() + ")";
 }
 
 /*******************************************************************************
@@ -479,12 +479,12 @@ Item_t LongItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string LongItemNaive::getStringProperty() const {
+xqp_string LongItemNaive::getStringValue() const {
   return NumConversions::longToStr(theValue);
 }
 
 xqp_string LongItemNaive::show() const {
-  return "xs:long(" + getStringProperty() + ")";
+  return "xs:long(" + getStringValue() + ")";
 }
 
 /*******************************************************************************
@@ -519,12 +519,12 @@ Item_t ShortItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string ShortItemNaive::getStringProperty() const {
+xqp_string ShortItemNaive::getStringValue() const {
   return NumConversions::shortToStr(theValue);
 }
 
 xqp_string ShortItemNaive::show() const {
-  return "xs:short(" + getStringProperty() + ")";
+  return "xs:short(" + getStringValue() + ")";
 }
 
 /*******************************************************************************
@@ -563,12 +563,12 @@ Item_t ByteItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string ByteItemNaive::getStringProperty() const {
+xqp_string ByteItemNaive::getStringValue() const {
   return NumConversions::byteToStr(theValue);
 }
 
 xqp_string ByteItemNaive::show() const {
-  return "xs:byte(" + getStringProperty() + ")";
+  return "xs:byte(" + getStringValue() + ")";
 }
 
 
@@ -596,12 +596,12 @@ Item_t NonNegativeIntegerItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string NonNegativeIntegerItemNaive::getStringProperty() const {
+xqp_string NonNegativeIntegerItemNaive::getStringValue() const {
   return NumConversions::uintegerToStr(theValue);
 }
 
 xqp_string NonNegativeIntegerItemNaive::show() const {
-  return "xs:nonNegativeInteger(" + getStringProperty() + ")";
+  return "xs:nonNegativeInteger(" + getStringValue() + ")";
 }
 
 
@@ -633,12 +633,12 @@ Item_t UnsignedLongItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string UnsignedLongItemNaive::getStringProperty() const {
+xqp_string UnsignedLongItemNaive::getStringValue() const {
   return NumConversions::ulongToStr(theValue);
 }
 
 xqp_string UnsignedLongItemNaive::show() const {
-  return "xs:unsignedLong(" + getStringProperty() + ")";
+  return "xs:unsignedLong(" + getStringValue() + ")";
 }
 
 /*******************************************************************************
@@ -673,12 +673,12 @@ Item_t UnsignedIntItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string UnsignedIntItemNaive::getStringProperty() const {
+xqp_string UnsignedIntItemNaive::getStringValue() const {
   return NumConversions::uintToStr(theValue);
 }
 
 xqp_string UnsignedIntItemNaive::show() const {
-  return "xs:unsignedInt(" + getStringProperty() + ")";
+  return "xs:unsignedInt(" + getStringValue() + ")";
 }
 
 
@@ -718,12 +718,12 @@ Item_t UnsignedShortItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string UnsignedShortItemNaive::getStringProperty() const {
+xqp_string UnsignedShortItemNaive::getStringValue() const {
   return NumConversions::ushortToStr(theValue);
 }
 
 xqp_string UnsignedShortItemNaive::show() const {
-  return "xs:unsignedShort(" + getStringProperty() + ")";
+  return "xs:unsignedShort(" + getStringValue() + ")";
 }
 
 /*******************************************************************************
@@ -766,12 +766,12 @@ Item_t UnsignedByteItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string UnsignedByteItemNaive::getStringProperty() const {
+xqp_string UnsignedByteItemNaive::getStringValue() const {
   return NumConversions::ubyteToStr(theValue);
 }
 
 xqp_string UnsignedByteItemNaive::show() const {
-  return "xs:unsignedByte(" + getStringProperty() + ")";
+  return "xs:unsignedByte(" + getStringValue() + ")";
 }
 
 /*******************************************************************************
@@ -798,12 +798,12 @@ Item_t PositiveIntegerItemNaive::getEBV() const {
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string PositiveIntegerItemNaive::getStringProperty() const {
+xqp_string PositiveIntegerItemNaive::getStringValue() const {
   return NumConversions::uintegerToStr(theValue);
 }
 
 xqp_string PositiveIntegerItemNaive::show() const {
-  return "xs:positiveInteger(" + getStringProperty() + ")";
+  return "xs:positiveInteger(" + getStringValue() + ")";
 }
 
 /*******************************************************************************
@@ -833,11 +833,6 @@ Item_t DateItemNaive::getEBV() const
 {
   // TODO:
   return NULL;
-}
-
-xqp_string DateItemNaive::getStringProperty() const
-{
-  return theValue->toString();
 }
 
 xqp_string DateItemNaive::show() const
@@ -872,11 +867,6 @@ Item_t TimeItemNaive::getEBV() const
 {
   // TODO:
   return NULL;
-}
-
-xqp_string TimeItemNaive::getStringProperty() const
-{
-  return theValue->toString();
 }
 
 xqp_string TimeItemNaive::show() const
@@ -918,11 +908,6 @@ Item_t DateTimeItemNaive::getEBV() const
   return NULL;
 }
 
-xqp_string DateTimeItemNaive::getStringProperty() const
-{
-  return theValue->toString();
-}
-
 xqp_string DateTimeItemNaive::show() const
 {
   return theValue->toString();
@@ -955,11 +940,6 @@ Item_t DurationItemNaive::getEBV() const
 {
   // TODO:
   return NULL;
-}
-
-xqp_string DurationItemNaive::getStringProperty() const
-{
-  return theValue->toString();
 }
 
 xqp_string DurationItemNaive::show() const
@@ -1001,11 +981,6 @@ Item_t GYearMonthItemNaive::getEBV() const
   return NULL;
 }
 
-xqp_string GYearMonthItemNaive::getStringProperty() const
-{
-  return theValue->toString();
-}
-
 xqp_string GYearMonthItemNaive::show() const
 {
   return theValue->toString();
@@ -1043,11 +1018,6 @@ Item_t GYearItemNaive::getEBV() const
 {
   // TODO:
   return NULL;
-}
-
-xqp_string GYearItemNaive::getStringProperty() const
-{
-  return theValue->toString();
 }
 
 xqp_string GYearItemNaive::show() const
@@ -1089,11 +1059,6 @@ Item_t GMonthDayItemNaive::getEBV() const
   return NULL;
 }
 
-xqp_string GMonthDayItemNaive::getStringProperty() const
-{
-  return theValue->toString();
-}
-
 xqp_string GMonthDayItemNaive::show() const
 {
   return theValue->toString();
@@ -1133,11 +1098,6 @@ Item_t GMonthItemNaive::getEBV() const
   return NULL;
 }
 
-xqp_string GMonthItemNaive::getStringProperty() const
-{
-  return theValue->toString();
-}
-
 xqp_string GMonthItemNaive::show() const
 {
   return theValue->toString();
@@ -1175,11 +1135,6 @@ Item_t GDayItemNaive::getEBV() const
 {
   // TODO:
   return NULL;
-}
-
-xqp_string GDayItemNaive::getStringProperty() const
-{
-  return theValue->toString();
 }
 
 xqp_string GDayItemNaive::show() const
