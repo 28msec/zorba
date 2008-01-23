@@ -26,6 +26,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 # Variables
 SET(requiredlibs)
 SET(DEFINITIONS)
+SET(BUILD_STATIC_LIBRARY 0)
 
 
 ##############################################################################################################
@@ -102,6 +103,11 @@ ENDIF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
 IF (NOT MSVC)
     SET(requiredlibs ${requiredlibs} pthread)
 ENDIF (NOT MSVC)
+
+##############################################################################################################
+# Custom user-defined settings
+
+INCLUDE ("CMakeUser.txt" OPTIONAL)
 
 
 ##############################################################################################################
