@@ -285,7 +285,7 @@ static bool parse_ms_string(std::string ss, unsigned int& position, long& minute
   {
     position++;
     minutes = result;
-    if( !parse_s_string(ss, position, seconds, frac_seconds))
+    if (position < ss.size() && !parse_s_string(ss, position, seconds, frac_seconds))
       return false;
   }
   else if (ss[position] == 'S')
@@ -326,14 +326,14 @@ static bool parse_hms_string(std::string ss, unsigned int& position, long& hours
   {
     position++;
     hours = result;
-    if (!parse_ms_string(ss, position, minutes, seconds, frac_seconds))
+    if (position < ss.size() && !parse_ms_string(ss, position, minutes, seconds, frac_seconds))
       return false;
   }
   else if (ss[position] == 'M')
   {
     position++;
     minutes = result;
-    if (!parse_s_string(ss, position, seconds, frac_seconds))
+    if (position < ss.size() && !parse_s_string(ss, position, seconds, frac_seconds))
       return false;
   }
   else if (ss[position] == 'S')
