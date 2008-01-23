@@ -23,7 +23,7 @@ namespace xqp {
     }
   }
 
-  short NumConversions::isInf(const char* aCharStar) {
+  short NumConversions::isInfOrNan(const char* aCharStar) {
 #ifdef HAVE_STRCASECMP_FUNCTION
       if (strcasecmp(aCharStar, "inf") == 0 || strcasecmp(aCharStar, "+inf") == 0 )
 #else
@@ -40,9 +40,17 @@ namespace xqp {
       {
         return -1;
       }
-      else
+#ifdef HAVE_STRCASECMP_FUNCTION
+      else if (strcasecmp(aCharStar, "nan") == 0 )
+#else
+      else if (_stricmp(aCharStar, "nan") == 0 )
+#endif
       {
         return 0;
+      }
+      else
+      {
+        return -2;
       }
   }
 
@@ -194,20 +202,22 @@ namespace xqp {
 #else
       // Only for unix systems, we are sure that they can parse 'inf' and '-inf' correclty
       // => we try to do it by hand for all other systems in case of a parsing error
-      short lInf = NumConversions::isInf(aCharStar);
-      if (lInf < 0) {
+      short lInf = NumConversions::isInfOrNan(aCharStar);
+      if (lInf == -1) {
         aFloat = -std::numeric_limits<xqp_float>::infinity();
         return true;
-      } else if (lInf > 0) {
+      } else if (lInf == 1) {
         aFloat = std::numeric_limits<xqp_float>::infinity();
         return true;
+      } else if (lInf == 0) {
+        Assert(std::numeric_limits<xqp_double>::has_quiet_NaN());
+        aFloat = std::numeric_limits<xqp_float>::quiet_NaN(); 
       } else {
         return false;
       }
 #endif
-    } else {
-      return true;
-    }
+    } 
+    return true;
   }
 
   bool NumConversions::strToFloat(const xqpString& aStr, xqp_float& aFloat){
@@ -235,20 +245,22 @@ namespace xqp {
 #else
       // Only for unix systems, we are sure that they can parse 'inf' and '-inf' correclty
       // => we try to do it by hand for all other systems in case of a parsing error
-      short lInf = NumConversions::isInf(aCharStar);
-      if (lInf < 0) {
+      short lInf = NumConversions::isInfOrNan(aCharStar);
+      if (lInf == -1) {
         aDouble = -std::numeric_limits<xqp_double>::infinity();
         return true;
-      } else if (lInf > 0) {
+      } else if (lInf == 1) {
         aDouble = std::numeric_limits<xqp_double>::infinity();
         return true;
+      } else if (lInf == 0) {
+        Assert(std::numeric_limits<xqp_double>::has_quiet_NaN());
+        aDouble = std::numeric_limits<xqp_double>::quiet_NaN(); 
       } else {
         return false;
       }
 #endif
-    } else {
-      return true;
-    }
+    } 
+    return true;
   }
   bool NumConversions::strToDouble(const xqpString& aStr, xqp_double& aDouble) {
     return starCharToDouble(aStr.c_str(), aDouble);

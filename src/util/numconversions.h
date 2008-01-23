@@ -16,11 +16,14 @@ class NumConversions {
 private:
   static bool isNegZero(const xqpString& aStr);
   /**
+   * Checks if the passed string can be parsed to infinity or NaN for float and double
+   *
    * @return -1 if aCharStar can be parsed to '-inf'
+   *          0 if aCharStar can be parsed to 'nan'
    *          1 if aCharStar can be parsed to 'inf'
-   *          0 else
+   *         -2 else
    */
-  static short isInf(const char* aCharStar);
+  static short isInfOrNan(const char* aCharStar);
 
 public:
   /**********************************************************************************
