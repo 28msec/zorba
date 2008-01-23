@@ -48,6 +48,7 @@ ZorbaEngine& ZorbaEngine::getInstance()
 	{
 		globalZorbaEngine = new ZorbaEngineImpl(false);
 		globalZorbaEngine->initialize();
+        GlobalEnvironment::getInstance();
 	}
 	return *globalZorbaEngine;
 }
@@ -59,6 +60,7 @@ ZorbaSingleThread& ZorbaSingleThread::getInstance()
 		globalZorbaEngine = new ZorbaEngineImpl(true);//single thread
 		globalZorbaEngine->initialize();
 		globalZorbaEngine->initThread();
+        GlobalEnvironment::getInstance();
 	}
 	return *globalZorbaEngine;
 }
@@ -85,6 +87,7 @@ ZorbaEngineImpl::~ZorbaEngineImpl()
 	xml_data_manager->removeReference();
 //  assert(globalZorbaEngine == NULL);
 	delete theSingleThreadZorba;
+    GlobalEnvironment::destroy();
 
 	}CATCH_ALL_NO_RETURN(;);
 }

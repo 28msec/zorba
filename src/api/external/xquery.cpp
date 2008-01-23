@@ -104,20 +104,20 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     ///build up the expression tree
     driver.parse_string(m_query_text);
 
-    parsenode* n_p = driver.get_expr();
+    rchandle<parsenode> n_p = driver.get_expr();
 
     if (Properties::instance()->printAST())
 	  {
       cout << "Parse tree:\n";
       ParseNodePrintXMLVisitor lPrintXMLVisitor(std::cout);
-      lPrintXMLVisitor.print(n_p);
+      lPrintXMLVisitor.print(&*n_p);
     }    
 	
     MainModule* mm_p;
     QueryBody* qb_p;
     Expr* ex_p;
 
-    if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) 
+    if ((mm_p = dynamic_cast<MainModule*>(&*n_p))==NULL) 
 	  {
       ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
                         NULL, true,
