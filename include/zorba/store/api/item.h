@@ -269,7 +269,7 @@ public:
     return xqp_duration();
   }
 
-  virtual uint32_t getYears() const
+  virtual int32_t getYears() const
   {
     this->showError();
     return 0;

@@ -82,7 +82,7 @@ xqpString YearMonthDuration::toString() const
   return result;
 }
 
-uint32_t YearMonthDuration::getYears() const
+int32_t YearMonthDuration::getYears() const
 {
   return months/12;
 }
@@ -241,7 +241,7 @@ xqpString DayTimeDuration::toString() const
   return NULL;
 }
 
-uint32_t DayTimeDuration::getYears() const
+int32_t DayTimeDuration::getYears() const
 {
   return 0;
 }
@@ -473,7 +473,7 @@ xqpString Duration::toString() const
   return NULL;
 }
 
-uint32_t Duration::getYears() const
+int32_t Duration::getYears() const
 {
   // TODO:
   return 0;

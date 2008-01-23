@@ -195,7 +195,7 @@ public:
   virtual Item_t getEBV( ) const;
   virtual xqp_string getStringProperty() const;
   virtual xqp_string show() const;
-  virtual uint32_t getYears() const;
+  virtual int32_t getYears() const;
 };
 
 /*******************************************************************************

@@ -31,7 +31,7 @@ public:
   virtual bool operator==(const DurationBase& dt) const = 0;;
   virtual int compare(const DurationBase& dt) const = 0;;
   virtual xqpString toString() const = 0;;
-  virtual uint32_t getYears() const = 0;
+  virtual int32_t getYears() const = 0;
 };
 
 
@@ -51,7 +51,7 @@ public:
   virtual int compare(const DurationBase& dt) const;
   virtual xqpString toString() const;
 
-  virtual uint32_t getYears() const;
+  virtual int32_t getYears() const;
 
 protected:
   YearMonthDuration& operator=(const YearMonthDuration_t& ym_t);
@@ -75,7 +75,7 @@ public:
   virtual int compare(const DurationBase& dt) const;
   virtual xqpString toString() const;
 
-  virtual uint32_t getYears() const;
+  virtual int32_t getYears() const;
 
 protected:
   DayTimeDuration& operator=(const DayTimeDuration_t& dt_t);
@@ -98,7 +98,7 @@ public:
   virtual int compare(const DurationBase& d) const;
   virtual xqpString toString() const;
 
-  virtual uint32_t getYears() const;
+  virtual int32_t getYears() const;
 
 protected:
   YearMonthDuration yearMonthDuration;

@@ -40,7 +40,7 @@ void skip_whitespace(std::string& s, unsigned int& position)
 // Returns 1 if there is an error
 int parse_int(std::string& s, unsigned int& position, long& result)
 {
-  long mult = 1;
+//   long mult = 1;
   
   if (s[position] < '0' || s[position] > '9')
     return 1;
@@ -48,8 +48,8 @@ int parse_int(std::string& s, unsigned int& position, long& result)
   result = 0;
   while (s[position] >= '0' && s[position] <= '9' && position < s.size())
   {
-    mult++;
-    result += mult*result + s[position] - '0';
+//     mult *=10;
+    result = 10*result + s[position] - '0';
     position++;
   }
 

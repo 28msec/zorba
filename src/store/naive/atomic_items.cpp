@@ -967,7 +967,7 @@ xqp_string DurationItemNaive::show() const
   return theValue->toString();
 }
 
-uint32_t DurationItemNaive::getYears() const
+int32_t DurationItemNaive::getYears() const
 {
   return theValue->getYears();
 }
