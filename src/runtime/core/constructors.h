@@ -124,6 +124,7 @@ public:
       PlanIter_t& aQNameIter,
       PlanIter_t& aAttrs,
       PlanIter_t& aChildren,
+      NamespaceBindings& aNsBindings,
       bool assignId);
   
   ElementIterator (

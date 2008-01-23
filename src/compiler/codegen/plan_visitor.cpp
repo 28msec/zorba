@@ -9,6 +9,7 @@
 
 #include "plan_visitor.h"
   
+#include "context/namespace_context.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
 #include "runtime/sequences/SequencesImpl.h"
@@ -70,16 +71,18 @@ public:
 protected:
   uint32_t depth;
   
-	std::stack<PlanIter_t> itstack;
+  std::stack<PlanIter_t> itstack;
 
-	std::stack<expr*>      theConstructorsStack;
+  std::stack<expr*>      theConstructorsStack;
+  namespace_context *theLastNSCtx;
+  std::stack<namespace_context *>      theNSCtxStack;
 
   hash64map<std::vector<var_iter_t> *> fvar_iter_map;
   hash64map<std::vector<var_iter_t> *> pvar_iter_map;
   hash64map<std::vector<ref_iter_t> *> lvar_iter_map;
 
 public:
-	plan_visitor() : depth (0) {}
+	plan_visitor() : depth (0), theLastNSCtx(NULL) {}
 	~plan_visitor() {}
 
 public:
@@ -676,9 +679,21 @@ bool begin_visit(elem_expr& v)
   if (theConstructorsStack.empty() || theConstructorsStack.top() == NULL)
     theConstructorsStack.push(&v);
 
-	return true;
+  theNSCtxStack.push(theLastNSCtx);
+  theLastNSCtx = v.getNSCtx().get_ptr();
+
+  return true;
 }
 
+static inline void create_ns_bindings(namespace_context::bindings_t& flat_bindings, namespace_context *lctx, namespace_context *stop_ctx)
+{
+    namespace_context *p = lctx;
+    while(p != NULL && p != stop_ctx) {
+        const namespace_context::bindings_t *bp = &p->get_bindings();
+        flat_bindings.insert(flat_bindings.end(), bp->begin(), bp->end());
+        p = p->get_parent().get_ptr();
+    }
+}
 
 void end_visit ( elem_expr& v )
 {
@@ -709,12 +724,18 @@ void end_visit ( elem_expr& v )
     assignId = true;
   }
 
+  namespace_context::bindings_t bindings;
+  create_ns_bindings(bindings, v.getNSCtx().get_ptr(), theNSCtxStack.top());
+
 	PlanIter_t iter = new ElementIterator(v.get_loc(),
                                         lQNameIter,
                                         lAttrsIter,
                                         lContentIter,
+                                        bindings,
                                         assignId);
   itstack.push ( iter );
+  theLastNSCtx = theNSCtxStack.top();
+  theNSCtxStack.pop();
 }
 
 

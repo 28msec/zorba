@@ -2,8 +2,8 @@
 #define XQP_NAMESPACE_CONTEXT_H
 
 #include <string>
+#include <vector>
 #include "util/rchandle.h"
-#include "util/hashmap.h"
 #include "types/representations.h"
 
 namespace xqp {
@@ -12,20 +12,23 @@ class static_context;
 
 class namespace_context : public rcobject {
   public:
+    typedef std::vector<std::pair<xqp_string, xqp_string> > bindings_t;
+
     namespace_context(static_context *sctx)
       : m_sctx(sctx) { }
     namespace_context(rchandle<namespace_context> parent)
       : m_parent(parent) { }
 
-    rchandle<namespace_context> get_parent() { return m_parent; }
+    rchandle<namespace_context> get_parent() const { return m_parent; }
+    static_context *get_context() const { return m_sctx; }
 
-    xqp_string lookup_ns(const std::string& prefix) const;
-    void bind_ns(const std::string& prefix, xqp_string ns);
+    void bind_ns(xqp_string prefix, xqp_string ns);
+    const bindings_t& get_bindings() const { return m_bindings; }
 
   private:
     static_context *m_sctx;
     rchandle<namespace_context> m_parent;
-    hashmap<xqp_string> m_namespace_map;
+    bindings_t m_bindings;
 };
 
 }

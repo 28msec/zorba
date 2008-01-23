@@ -675,7 +675,6 @@ void end_visit(const DirAttr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  expr_t nameExpr;
   expr_t valueExpr = pop_nodestack();
 
   if (valueExpr != NULL)
@@ -694,15 +693,10 @@ void end_visit(const DirAttr& v, void *visit_state)
     {
       // we have a defult-namespace declaration
       prefix = "";
-
-      nameExpr = new const_expr(v.get_location(), "", "", "xmlns");
     }
     else
     {
       prefix = qname->get_localname();
-
-      nameExpr = new const_expr(v.get_location(), "", "xmlns",
-                                qname->get_localname().c_str());
     }
 
     const_expr* constValueExpr = dynamic_cast<const_expr*>(valueExpr.get_ptr());
@@ -727,12 +721,11 @@ void end_visit(const DirAttr& v, void *visit_state)
   }
   else
   {
-    nameExpr = new const_expr(v.get_location(),
+    expr_t nameExpr = new const_expr(v.get_location(),
                               sctx_p->lookup_qname("", qname->get_qname()));
+    expr_t attrExpr = new attr_expr(v.get_location(), nameExpr, valueExpr);
+    nodestack.push(attrExpr);
   }
-
-  expr_t attrExpr = new attr_expr(v.get_location(), nameExpr, valueExpr);
-  nodestack.push(attrExpr);
 }
 
 

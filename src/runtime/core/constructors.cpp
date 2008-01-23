@@ -100,12 +100,14 @@ ElementIterator::ElementIterator (
     PlanIter_t& aQNameIter,
     PlanIter_t& aAttrs,
     PlanIter_t& aChildren,
+    NamespaceBindings& aNsBindings,
     bool assignId)
     :
     Batcher<ElementIterator> ( loc ),
     theQNameIter ( aQNameIter ),
     theAttributesIter ( aAttrs ),
     theChildrenIter ( aChildren ),
+    theNsBindings(aNsBindings),
     theAssignId(assignId)
 {
 }
