@@ -447,6 +447,7 @@ void end_visit(const DirPIConstructor& v, void *visit_state)
 void *begin_visit(const DirElemConstructor& v)
 {
   TRACE_VISIT();
+  push_scope();
   push_elem_scope();
   return no_state;
 }
@@ -476,6 +477,7 @@ void end_visit(const DirElemConstructor& v, void *visit_state)
   elem_expr* elem = new elem_expr(v.get_location(), nameExpr, attrExpr, contentExpr, ns_ctx);
   nodestack.push(elem);
   pop_elem_scope();
+  pop_scope();
 }
 
 /**
