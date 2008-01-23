@@ -27,7 +27,7 @@ SetVariables FAILED for a and type [2] XS_NEGATIVE_INTEGER
 SetVariables FAILED for 100 and type [2] XS_NEGATIVE_INTEGER
 SetVariables FAILED for 10000000 and type [2] XS_NEGATIVE_INTEGER
 SetVariables FAILED for 8000000000 and type [2] XS_NEGATIVE_INTEGER
-SetVariables FAILED for ffffff8000000000 and type [3] XS_LONG
+SetVariables succeeded for ffffff8000000000 and type [3] XS_LONG
 SetVariables succeeded for fffffffff0000000 and type [3] XS_LONG
 SetVariables succeeded for ffffffffffffff00 and type [3] XS_LONG
 SetVariables succeeded for fffffffffffffff6 and type [3] XS_LONG
@@ -35,7 +35,7 @@ SetVariables succeeded for 0 and type [3] XS_LONG
 SetVariables succeeded for a and type [3] XS_LONG
 SetVariables succeeded for 100 and type [3] XS_LONG
 SetVariables succeeded for 10000000 and type [3] XS_LONG
-SetVariables FAILED for 8000000000 and type [3] XS_LONG
+SetVariables succeeded for 8000000000 and type [3] XS_LONG
 SetVariables FAILED for ffffff8000000000 and type [4] XS_INT
 SetVariables succeeded for fffffffff0000000 and type [4] XS_INT
 SetVariables succeeded for ffffffffffffff00 and type [4] XS_INT
@@ -80,7 +80,7 @@ SetVariables succeeded for 0 and type [8] XS_UNSIGNED_LONG
 SetVariables succeeded for a and type [8] XS_UNSIGNED_LONG
 SetVariables succeeded for 100 and type [8] XS_UNSIGNED_LONG
 SetVariables succeeded for 10000000 and type [8] XS_UNSIGNED_LONG
-SetVariables FAILED for 8000000000 and type [8] XS_UNSIGNED_LONG
+SetVariables succeeded for 8000000000 and type [8] XS_UNSIGNED_LONG
 SetVariables FAILED for ffffff8000000000 and type [9] XS_UNSIGNED_INT
 SetVariables FAILED for fffffffff0000000 and type [9] XS_UNSIGNED_INT
 SetVariables FAILED for ffffffffffffff00 and type [9] XS_UNSIGNED_INT

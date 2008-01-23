@@ -140,9 +140,9 @@ void DisplayOneAlert(const ZorbaAlert *alert, std::ostream &result_file)
 
 void DisplayError(const ZorbaError *err, std::ostream &result_file)
 {
-  if(err->theIsFatal)
-    result_file << "Fatal Error: ";
-  else
+//  if(err->theIsFatal)
+//    result_file << "Fatal Error: ";
+//  else
     result_file << "Error: ";
 
   if(err->theLocation.line)
@@ -338,7 +338,7 @@ int test_api_static_context(const char *result_file_name)
 		ostringstream		oss1;
 		oss1 << "ulu1:var" << i;
 		vartype = sctx1->GetExternalVariableType(oss1.str());
-		if(!vartype.isNull())
+		if(vartype != NULL)
 			result_file << "variable " << i << " has type (" << vartype->get_kind() << "," << vartype->get_quantifier() << ")" << endl;
 		else
 			result_file << "variable " << i << "does not exist" << endl;
@@ -487,7 +487,7 @@ int test_api_static_context(const char *result_file_name)
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/doc" << i;
 		doctype = sctx1->GetDocumentType(oss1.str());
-		if(!doctype.isNull())
+		if(doctype != NULL)
 			result_file << "doc " << i << " has type (" << doctype->get_kind() << "," << doctype->get_quantifier() << ")" << endl;
 	}
 
@@ -539,7 +539,7 @@ int test_api_static_context(const char *result_file_name)
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/collection" << i;
 		colectype = sctx1->GetCollectionType(oss1.str());
-		if(!colectype.isNull())
+		if(colectype != NULL)
 			result_file << "colec " << i << " has type (" << colectype->get_kind() << "," << colectype->get_quantifier() << ")" << endl;
 	}
 

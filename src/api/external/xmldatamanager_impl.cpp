@@ -2,6 +2,8 @@
 #include "xmldatamanager_impl.h"
 #include <fstream>
 #include "errors/error_factory.h"
+#include "system/zorba_engine.h"
+#include "errors/error_manager.h"
 
 namespace xqp
 {
@@ -11,7 +13,7 @@ XmlDataManager_Impl::XmlDataManager_Impl()
 {
 	try{
 	internal_store = &Store::getInstance();
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 
 }
 
@@ -19,7 +21,7 @@ XmlDataManager_Impl::~XmlDataManager_Impl()
 {
 	try{
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, std::istream& stream)
@@ -60,7 +62,7 @@ void XmlDataManager_Impl::deleteDocument(const xqp_anyURI& uri)
 
 	internal_store->deleteDocument(uri);
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 /* ------------------------ Collection Management ---------------------------*/
@@ -93,7 +95,7 @@ void XmlDataManager_Impl::deleteCollection(const xqp_anyURI& uri)
 {
 	try{
 	internal_store->deleteCollection(uri);
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 }//end namespace xqp

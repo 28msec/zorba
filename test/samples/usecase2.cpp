@@ -28,7 +28,7 @@ int usecase2(int argc, char* argv[])
 
 	//create and compile a query with the static context
 	xquery = zorba_engine.createQuery("1+2", sctx);
-	if(xquery.isNull())
+	if(xquery == NULL)
 	{
 		cout << "Error creating and compiling \"1+2\"" << endl;
 		assert(false);

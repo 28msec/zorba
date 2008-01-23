@@ -21,7 +21,7 @@ int usecase3(int argc, char* argv[])
 
 	//create and compile a query with the static context
 	xquery = zorba_engine.createQuery("declare variable $var1 external; $var1+2");
-	if(xquery.isNull())
+	if(xquery == NULL)
 	{
 		cout << "Error creating and compiling query" << endl;
 		assert(false);

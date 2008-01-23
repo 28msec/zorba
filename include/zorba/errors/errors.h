@@ -579,7 +579,7 @@ public:
   };
 
   ErrorCodes          theCode;
-  bool                theIsFatal;
+//  bool                theIsFatal;
   ZorbaAlertLocation  theLocation;
 
   virtual ~ZorbaError();
@@ -702,6 +702,11 @@ public:
                                     void *param) = 0;
 
   virtual void clearAlertList() = 0;
+
+	virtual bool isError() = 0;
+
+	virtual void setThrowExceptionsMode(bool throw_exceptions) = 0;
+	virtual bool getThrowExceptionsMode() = 0;
 };
 
 

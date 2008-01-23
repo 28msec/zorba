@@ -44,7 +44,7 @@ void library_init();
 
 ZorbaEngine& ZorbaEngine::getInstance()
 {
-	if(globalZorbaEngine.isNull())
+	if(globalZorbaEngine == NULL)
 	{
 		globalZorbaEngine = new ZorbaEngineImpl(false);
 		globalZorbaEngine->initialize();
@@ -54,7 +54,7 @@ ZorbaEngine& ZorbaEngine::getInstance()
 
 ZorbaSingleThread& ZorbaSingleThread::getInstance()
 {
-	if(globalZorbaEngine.isNull())
+	if(globalZorbaEngine == NULL)
 	{
 		globalZorbaEngine = new ZorbaEngineImpl(true);//single thread
 		globalZorbaEngine->initialize();
@@ -65,7 +65,7 @@ ZorbaSingleThread& ZorbaSingleThread::getInstance()
 
 Zorba* ZORBA_FOR_CURRENT_THREAD()
 {
-	if(globalZorbaEngine.isNull())
+	if(globalZorbaEngine == NULL)
 		return NULL;
 	return globalZorbaEngine->getZorbaForCurrentThread();
 }
@@ -83,10 +83,10 @@ ZorbaEngineImpl::~ZorbaEngineImpl()
 {
 	try{
 	xml_data_manager->removeReference();
-//  assert(globalZorbaEngine.isNull());
+//  assert(globalZorbaEngine == NULL);
 	delete theSingleThreadZorba;
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 
@@ -120,14 +120,14 @@ void ZorbaEngineImpl::initialize()
   Zorba::theStore = &Store::getInstance();
   Zorba::theItemFactory = &Zorba::theStore->getItemFactory();
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 
 void ZorbaEngineImpl::shutdown()
 {
 	try{
-  if (!globalZorbaEngine.isNull())
+  if (globalZorbaEngine != NULL)
   {
 		if(!for_single_thread_api)
 		{
@@ -158,7 +158,7 @@ void ZorbaEngineImpl::shutdown()
   //  delete temp;
 		globalZorbaEngine = NULL;//also deletes globalZorbaEngine
   }
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 
@@ -197,7 +197,7 @@ void ZorbaEngineImpl::initThread()
 			theSingleThreadZorba = zorba;
 		}
   }
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 
@@ -228,7 +228,7 @@ void ZorbaEngineImpl::uninitThread()
 	theThreadData.erase((uint64_t)(uintptr_t)pthread_self());
 	pthread_mutex_unlock(&theThreadDataMutex);
 #endif
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 
@@ -349,7 +349,7 @@ void ZorbaEngineImpl::setDefaultCollation(
 	try{
 
 	getZorbaForCurrentThread()->setDefaultCollation(coll_string, coll_strength);
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 
@@ -357,7 +357,7 @@ void ZorbaEngineImpl::setDefaultCollation(::Collator *default_coll)
 {
 	try{
 	getZorbaForCurrentThread()->setDefaultCollation(default_coll);
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 
@@ -369,7 +369,7 @@ void ZorbaEngineImpl::getDefaultCollation(
 	try{
 	getZorbaForCurrentThread()->
     getDefaultCollation(coll_string, coll_strength, default_coll);
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 
@@ -380,7 +380,7 @@ void	ZorbaEngineImpl::setItemSerializerParameter(
 	try{
 	getZorbaForCurrentThread()->
     getItemSerializer()->set_parameter(parameter_name, value);
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 
@@ -391,7 +391,7 @@ void	ZorbaEngineImpl::setDocSerializerParameter(
 	try{
 	getZorbaForCurrentThread()->
     getDocSerializer()->set_parameter(parameter_name, value);
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 

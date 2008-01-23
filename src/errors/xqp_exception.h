@@ -13,6 +13,7 @@
 
 #include <stdexcept>
 #include <string>
+#include "errors/errors.h"
 
 namespace xqp
 {
@@ -42,48 +43,20 @@ namespace xqp
 		throw bad_dynamic_cast(os_loc_.str(),os_err_.str());
 */
 
-class xqp_exception : public std::runtime_error 
+class xqp_exception //: public std::runtime_error 
 { 
 public:
-  long        theErrorCode;
-  std::string loc;
-  std::string msg;
+	ZorbaError		error_descr;
 
 public: 
-  xqp_exception(long ecode);
-  xqp_exception(
-    long ecode,
-		const xqp_exception&);
-  xqp_exception(
-    long ecode,
-		const std::string& loc);
-  xqp_exception(
-    long ecode,
-		const std::string& loc,
-		const std::string& msg);
-	xqp_exception(
-    long ecode,
-		const char* err_code,
-		const std::string& loc,
-		const std::string msg);
-	xqp_exception(
-    long ecode,
-		const char* err_code,
-		const char* op_name,
-		const std::string msg);
-	xqp_exception(
-    long ecode,
-		const char* err_code,
-		const char* op_name,
-		const std::string& loc,
-		const std::string msg);
+	xqp_exception(ZorbaError::ErrorCodes ecode);
+	xqp_exception(ZorbaError *err);
 
-  ~xqp_exception() throw();
+  ~xqp_exception();
 
 public:
-  long get_code() const { return theErrorCode; }
-	std::string get_loc() const { return loc; }
-	std::string get_msg() const { return msg; }
+  long getCode() const;
+	ZorbaError	getError();
 };
 
 

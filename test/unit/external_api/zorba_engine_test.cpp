@@ -66,7 +66,7 @@ int test_api_zorba_engine(const char *result_file_name)
   query = zorba_factory.createQuery(query_text.c_str(), sctx1);
 	result_file << "CreateQuery" << endl;
 
-  if(query.isNull())
+  if(query == NULL)
   {
     goto DisplayErrorsAndExit;
   }
@@ -89,7 +89,7 @@ int test_api_zorba_engine(const char *result_file_name)
   result = query->createExecution(dctx1);
   result = query->createExecution(dctx1);
 	result_file << "CreateExecution" << endl;
-  if(result.isNull())
+  if(result == NULL)
   {
     goto DisplayErrorsAndExit;
   }

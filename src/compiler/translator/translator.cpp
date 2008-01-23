@@ -1939,7 +1939,7 @@ void end_visit(const Expr& v, void *visit_state)
       expr_t e_h = pop_nodestack();
       elist_h->add(e_h);
     }
-    nodestack.push(&*elist_h);
+    nodestack.push(elist_h);
   }
 }
 

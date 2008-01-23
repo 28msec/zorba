@@ -21,91 +21,28 @@ namespace xqp
 
 // xqp_exception implementations
 // -------------------------
-xqp_exception::xqp_exception(
-    long ecode)
-  :
-  runtime_error(string()),
-  theErrorCode(ecode)
+xqp_exception::xqp_exception(ZorbaError::ErrorCodes ecode)
+{
+	error_descr.theCode = ecode;
+}
+
+xqp_exception::xqp_exception(ZorbaError* err)
+{
+	error_descr = *err;
+}
+
+xqp_exception::~xqp_exception()
 {
 }
 
-xqp_exception::xqp_exception(
-    long ecode,
-    const xqp_exception& e)
-  :
-  runtime_error(e),
-  theErrorCode(ecode),
-	loc(e.loc),
-  msg(e.msg)
-{
+long xqp_exception::getCode() const 
+{ 
+	return error_descr.theCode; 
 }
-
-xqp_exception::xqp_exception(
-    long ecode,
-	  const string& _loc)
-  :
-	runtime_error("APPLICATION_EXCEPTION"),
-  theErrorCode(ecode),
-	loc(_loc)
+ZorbaError	xqp_exception::getError()
 {
+	return error_descr;
 }
-
-xqp_exception::xqp_exception(
-    long ecode,
-    const string& _loc,
-    const string& _msg)
-:
-	runtime_error("APPLICATION_EXCEPTION"),
-  theErrorCode(ecode),
-	loc(_loc),
-	msg(_msg)
-{
-}
-
-
-xqp_exception::xqp_exception(
-    long ecode,
-    const char*   _err,
-    const string& _loc,
-    const string  _msg)
-  :
-	runtime_error(_err),
-  theErrorCode(ecode),
-	loc(_loc),
-	msg(_msg)
-{
-}
-
-xqp_exception::xqp_exception(
-    long ecode,
-    const char*   _err,
-    const char*   _op,
-    const string  _msg)
-:
-	runtime_error(_err),
-  theErrorCode(ecode),
-	loc(_op),
-	msg(_msg)
-{
-}
-
-
-xqp_exception::xqp_exception(
-    long ecode,
-    const char*   _err,
-    const char*   _op,
-    const string& _loc,
-    const string  _msg)
-  :
-	runtime_error(_err),
-  theErrorCode(ecode),
-	loc(_op+':'+_loc),
-	msg(_msg)
-{
-}
-
-
-xqp_exception::~xqp_exception() throw() { }
 
 /*daniel
 // bad_arg implementations

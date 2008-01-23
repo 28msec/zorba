@@ -71,7 +71,7 @@ public:
 	PlanState		*state_block;
 
 	void			*alert_callback_param;
-	bool			is_error;
+//	bool			is_error;
 
 	dynamic_context		*internal_dyn_context;
 };

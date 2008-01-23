@@ -19,6 +19,7 @@ using namespace xqp;
 
 void DisplayErrorListForCurrentThread(std::ostream &result_file);
 void* query_thread(void *param);
+string make_absolute_file_name(const char *target_file_name, const char *this_file_name);
 
 #define				NR_THREADS		20
 
@@ -36,7 +37,7 @@ int usecase7(int argc, char* argv[])
 
 	//create and compile a query with the static context
 	xquery = zorba_engine.createQuery(".//chapter[@id=$var1]");
-	if(xquery.isNull())
+	if(xquery == NULL)
 	{
 		cout << "Error creating and compiling query1" << endl;
 		assert(false);
@@ -73,18 +74,27 @@ void* query_thread(void *param)
 
 	//must call initThread before using any of Zorba features (other than getInstance())
 	zorba_engine.initThread();
+
+	XmlDataManager_t		zorba_store = zorba_engine.getXmlDataManager();
+
+	//load a document into xml data manager
+	//and then load it into a variable
+	zorba_store->loadDocument(make_absolute_file_name("books.xml", __FILE__));
+
 	dctx = zorba_engine.createDynamicContext();
 	//context item is set as variable with reserved name "."
-	if(!dctx->SetVariableAsDocument(".", "books.xml"))
+	if(!dctx->SetVariableAsDocument(".", make_absolute_file_name("books.xml", __FILE__)))
 	{
 		cout << "cannot load document into context item" << endl;
 		assert(false);
+		zorba_engine.uninitThread();
 		return (void*)1;
 	}
 	if(!dctx->SetVariableAsInteger("var1", iparam))
 	{
 		cout << "cannot set var1 to iparam " << iparam << endl;
 		assert(false);
+		zorba_engine.uninitThread();
 		return (void*)1;
 	}
 
@@ -93,6 +103,7 @@ void* query_thread(void *param)
 	{
 		cout << "Error executing and serializing query" << endl;
 		assert(false);
+		zorba_engine.uninitThread();
 		return (void*)1;
 	}
 

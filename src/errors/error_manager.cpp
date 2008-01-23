@@ -22,6 +22,8 @@ AlertsManagerImpl::AlertsManagerImpl( )
 //	theAlertMessages = NULL;
   AlertMessagesEnglish* codes = new AlertMessagesEnglish;
 	setAlertMessages(codes, false);
+	is_error = false;
+	throw_exceptions = false;
 }
 
 
@@ -42,6 +44,7 @@ void AlertsManagerImpl::clearAlertList()
 		delete *errit;
 
 	clear();
+	is_error = false;
 }
 
 
@@ -76,6 +79,9 @@ int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert* alert)
 {
 	int		retval;
 
+	if(alert->theKind == ZorbaAlert::ERROR_ALERT)
+		setIsError();
+
 	if(thread_registered_callback)
 	{
 		if(z->current_xqueryresult && z->current_xqueryresult->alert_callback_param)
@@ -103,5 +109,26 @@ int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert* alert)
 
 	return -1;
 }
+
+bool AlertsManagerImpl::isError()
+{
+	return is_error;
+}
+
+void AlertsManagerImpl::setIsError()
+{
+	is_error = true;
+}
+
+void AlertsManagerImpl::setThrowExceptionsMode(bool throw_exceptions)
+{
+	this->throw_exceptions = throw_exceptions;
+}
+
+bool AlertsManagerImpl::getThrowExceptionsMode()
+{
+	return throw_exceptions;
+}
+
 
 }

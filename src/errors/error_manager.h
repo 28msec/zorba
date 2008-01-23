@@ -28,6 +28,11 @@ public:
 
 	void clearAlertList();
 
+	virtual bool isError();
+	void				setIsError();
+
+	virtual void setThrowExceptionsMode(bool throw_exceptions);
+	virtual bool	getThrowExceptionsMode();
 protected:
 	AlertMessages   * theAlertMessages;
 	bool			        theIsFromUser;
@@ -35,6 +40,9 @@ protected:
 	//if ZorbaErrorAlertsImpl::xquery_registered_callback is not specified, call this callback
 	alert_callback	* thread_registered_callback;
 	void						* thread_registered_param;
+
+	bool						is_error;
+	bool						throw_exceptions;
 };
 
 }//end namespace xqp

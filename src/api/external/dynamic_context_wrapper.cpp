@@ -21,7 +21,7 @@ DynamicContextWrapper::DynamicContextWrapper()
 	is_datetime_initialized = false;
 	implicit_timezone_seconds = 0;
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 DynamicContextWrapper::~DynamicContextWrapper( )
@@ -30,7 +30,7 @@ DynamicContextWrapper::~DynamicContextWrapper( )
 
 	DeleteAllVariables();
 
-	}	CATCH_ALL_NO_RETURN;
+	}	CATCH_ALL_NO_RETURN(;);
 
 }
 
@@ -42,7 +42,7 @@ void		DynamicContextWrapper::SetCurrentDateTime( struct ::tm datetime, long time
 	this->current_timezone_seconds = timezone_seconds;
 	is_datetime_initialized = true;
 
-	}	CATCH_ALL_NO_RETURN;
+	}	CATCH_ALL_NO_RETURN(;);
 
 }
 
@@ -108,19 +108,23 @@ bool DynamicContextWrapper::SetVariableAsInteger( xqp_string varname, long long 
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_LONG://derived from XS_NON_NEGATIVE_INTEGER
-			if((int_value < 0) || ((unsigned long long)int_value > ((1ull<<(sizeof(xqp_ulong)*8))-1)))
+			if((int_value < 0) || 
+				(sizeof(xqp_ulong) < sizeof(unsigned long long)) && ((unsigned long long)int_value > ((1ull<<(sizeof(xqp_ulong)*8))-1)))
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_INT://derived from XS_UNSIGNED_LONG
-			if((int_value < 0) || (int_value >= ((long long)1ll<<(sizeof(xqp_uint)*8))))
+			if((int_value < 0) || 
+				(sizeof(xqp_uint) < sizeof(unsigned long long)) && (int_value >= ((unsigned long long)1ull<<(sizeof(xqp_uint)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_SHORT://derived from XS_UNSIGNED_INT
-			if((int_value < 0) || (int_value >= ((long long)1ll<<(sizeof(xqp_ushort)*8))))
+			if((int_value < 0) || 
+				(sizeof(xqp_ushort) < sizeof(unsigned long long)) && (int_value >= ((unsigned long long)1ull<<(sizeof(xqp_ushort)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_UNSIGNED_BYTE://derived from XS_UNSIGNED_SHORT
-			if((int_value < 0) || (int_value >= ((long long)1ll<<(sizeof(xqp_ubyte)*8))))
+			if((int_value < 0) || 
+				(sizeof(xqp_ubyte) < sizeof(unsigned long long)) && (int_value >= ((unsigned long long)1ull<<(sizeof(xqp_ubyte)*8))))
 				return false;//inappropriate value
 		break;
 	case XS_POSITIVE_INTEGER://derived from XS_NON_NEGATIVE_INTEGER
@@ -314,7 +318,7 @@ bool DynamicContextWrapper::SetVariableAsDocument( xqp_string varname, xqp_anyUR
 	if(varname == ".")//context item
 	{
 		Store		&store = Store::getInstance();
-		if(store.getDocument(documentURI).isNull())
+		if(store.getDocument(documentURI) == NULL)
 			return false;
 	}
 
@@ -383,7 +387,7 @@ void DynamicContextWrapper::DeleteAllVariables( )
 	}
 	vars.clear();
 	
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 

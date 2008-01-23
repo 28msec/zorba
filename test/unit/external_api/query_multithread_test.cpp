@@ -36,7 +36,7 @@ int test_api_query_multithread(const char *result_file_name)
 
 	zorba_factory.initThread();
 	query = zorba_factory.createQuery("1+2");
-  if(query.isNull())
+  if(query == NULL)
   {
 		zorba_factory.uninitThread();
 		return 0;
@@ -67,6 +67,8 @@ int test_api_query_multithread(const char *result_file_name)
 	}
 	zorba_factory.uninitThread();
 	zorba_factory.shutdown();
+
+	cout << "compare expected results" << endl;
 
 	//compare the results with expected result
 	ostringstream		oss2;
@@ -115,7 +117,7 @@ void* query_thread(void *param)
 		// create a compiled query
 		result_file << "CreateQuery" << endl;
 		query = zorba_factory.createQuery("2+3");
-		if(query.isNull())
+		if(query == NULL)
 		{
 			goto DisplayErrorsAndExit;
 		}
@@ -124,7 +126,7 @@ void* query_thread(void *param)
 
 		result_file << "CreateExecution" << endl;
 		execution = query->createExecution(dctx1);
-		if(execution.isNull())
+		if(execution == NULL)
 		{
 			goto DisplayErrorsAndExit;
 		}

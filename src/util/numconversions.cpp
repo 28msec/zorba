@@ -25,7 +25,7 @@ namespace xqp {
   }
 
   short NumConversions::isInfOrNan(const char* aCharStar) {
-#ifdef HAVE_STRCASECMP_FUNCTION
+#if HAVE_STRCASECMP_FUNCTION && !WIN32
       if (strcasecmp(aCharStar, "inf") == 0 || strcasecmp(aCharStar, "+inf") == 0 )
 #else
       if (_stricmp(aCharStar, "inf") == 0 || _stricmp(aCharStar, "+inf") == 0 )
@@ -33,7 +33,7 @@ namespace xqp {
       {
         return 1;
       }
-#ifdef HAVE_STRCASECMP_FUNCTION
+#if HAVE_STRCASECMP_FUNCTION && !WIN32
       else if (strcasecmp(aCharStar, "-inf") == 0 )
 #else
       else if (_stricmp(aCharStar, "-inf") == 0 )
@@ -41,7 +41,7 @@ namespace xqp {
       {
         return -1;
       }
-#ifdef HAVE_STRCASECMP_FUNCTION
+#if HAVE_STRCASECMP_FUNCTION && !WIN32
       else if (strcasecmp(aCharStar, "nan") == 0 )
 #else
       else if (_stricmp(aCharStar, "nan") == 0 )
@@ -177,7 +177,7 @@ namespace xqp {
     char* lEndPtr;
 
     // Not all systems support strtof
-#ifdef HAVE_STRTOF_FUNCTION
+#if HAVE_STRTOF_FUNCTION && !WIN32
     aFloat = strtof(aCharStar, &lEndPtr);
 #else
     // If strtof is not supported, zorba uses strtod 

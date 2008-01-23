@@ -1,6 +1,8 @@
 
 #include "static_context_wrapper.h"
 #include "system/globalenv.h"
+#include "errors/error_manager.h"
+#include "system/zorba_engine.h"
 
 namespace xqp{
 
@@ -71,7 +73,7 @@ StaticContextWrapper::StaticContextWrapper()
 //	std::vector<scw_URI_plus_type>		doc_type_list;
 //	std::vector<scw_URI_plus_type>		collection_type_list;
 //	type_ident_ref_t							default_collection_type;
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 StaticContextWrapper::~StaticContextWrapper()
@@ -139,7 +141,7 @@ void		StaticContextWrapper::DeleteNamespace( xqp_string prefix )
 			return;
 		}
 	}
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 unsigned int	StaticContextWrapper::GetNamespaceCount()
@@ -221,7 +223,7 @@ void		StaticContextWrapper::AddExternalVariableType( xqp_string	var_name, type_i
 
 	ext_var_list.push_back(var);
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 type_ident_ref_t	StaticContextWrapper::GetExternalVariableType( xqp_string	var_name )
@@ -258,7 +260,7 @@ void		StaticContextWrapper::DeleteExternalVariableType( xqp_string var_name )
 		}
 	}
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 unsigned int			StaticContextWrapper::GetExternalVariableCount()
@@ -325,7 +327,7 @@ void		StaticContextWrapper::AddCollation( xqp_string URI, std::string  coll_stri
 	cinfo.coll = NULL;
 	collation_list.push_back(cinfo);
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 void		StaticContextWrapper::AddCollation( xqp_string URI, ::Collator	*coll)
@@ -340,7 +342,7 @@ void		StaticContextWrapper::AddCollation( xqp_string URI, ::Collator	*coll)
 	cinfo.coll = coll;
 	collation_list.push_back(cinfo);
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 CollationInfo*		StaticContextWrapper::GetCollation( xqp_string URI)
@@ -376,7 +378,7 @@ void		StaticContextWrapper::DeleteCollation( xqp_string URI)
 			return;
 		}
 	}
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 unsigned int			StaticContextWrapper::GetCollationCount()
@@ -529,7 +531,7 @@ void		StaticContextWrapper::AddDocumentType( xqp_string URI, type_ident_ref_t do
 
 	doc_type_list.push_back(doc);
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 type_ident_ref_t		StaticContextWrapper::GetDocumentType( xqp_string URI)
@@ -566,7 +568,7 @@ void		StaticContextWrapper::DeleteDocumentType( xqp_string URI)
 		}
 	}
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 unsigned int			StaticContextWrapper::GetDocumentTypeCount()
@@ -608,7 +610,7 @@ void		StaticContextWrapper::AddCollectionType( xqp_string URI, type_ident_ref_t	
 
 	collection_type_list.push_back(collection);
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 
 }
 
@@ -645,7 +647,7 @@ void		StaticContextWrapper::DeleteCollectionType( xqp_string URI )///if URI is e
 			return;
 		}
 	}
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 unsigned int			StaticContextWrapper::GetCollectionTypeCount()

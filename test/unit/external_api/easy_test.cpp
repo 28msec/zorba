@@ -30,13 +30,13 @@ int test_easy_api(const char *result_file_name)
 
 	result_file << "zorba_factory.createStaticContext()" << endl;
 	sctx = zorba_factory.createStaticContext();
-	if(sctx.isNull())
+	if(sctx == NULL)
 	{
 		goto DisplayErrorsAndExit;
 	}
 	result_file << "zorba_factory.createDynamicContext()" << endl;
 	dctx = zorba_factory.createDynamicContext();
-	if(dctx.isNull())
+	if(dctx == NULL)
 	{
 		goto DisplayErrorsAndExit;
 	}
@@ -55,7 +55,7 @@ int test_easy_api(const char *result_file_name)
 
 	result_file << "zorba_factory.createQuery()" << endl;
   query = zorba_factory.createQuery("1+2", sctx, "file://query.txt");
-	if(query.isNull())
+	if(query == NULL)
 	{
 		goto DisplayErrorsAndExit;
 	}

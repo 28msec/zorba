@@ -127,7 +127,7 @@ public:
     
     XQueryExecution_t result = query->createExecution(dctx);
 
-    if(! result.isNull()) {
+    if( result != NULL) {
       for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
            iter != vars.end (); iter++)
         set_var (iter->first, iter->second, NULL, result);
@@ -190,7 +190,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // compile query
   XQuery_t query = zengine.factory.createQuery(query_text.c_str(), zengine.sctx);
-  if (query.isNull ())
+  if (query == NULL)
     return 0;
 
   // create dynamic context and execution

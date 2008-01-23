@@ -49,7 +49,7 @@ Zorba_XQueryBinary::~Zorba_XQueryBinary()
 	try{
 
   delete internal_sctx;
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 
 }
 
@@ -190,12 +190,12 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
 		return true;
   }
-  catch(xqp_exception &)
-  {
-  }
-	CATCH_ALL_NO_RETURN;
+//  catch(xqp_exception &)
+//  {
+//  }
+	CATCH_ALL_NO_RETURN(zorba->current_xquery = NULL;);
 
-  zorba->current_xquery = NULL;
+//  zorba->current_xquery = NULL;
   return false;
 }
 
@@ -251,12 +251,12 @@ XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dct
 
   return zorba_result;
   }
-  catch(xqp_exception &)
-  {
-  }
-	CATCH_ALL_NO_RETURN;
+//  catch(xqp_exception &)
+//  {
+//  }
+	CATCH_ALL_NO_RETURN(zorba->current_xquery = NULL;);
 
-  zorba->current_xquery = NULL;
+//  zorba->current_xquery = NULL;
   return NULL;
 
 }
@@ -266,7 +266,7 @@ bool Zorba_XQueryBinary::executeSerialize( std::ostream& os, DynamicQueryContext
 	XQueryExecution_t		xqueryexecution;
 
 	xqueryexecution = createExecution(dctx);
-	if(xqueryexecution.isNull())
+	if(xqueryexecution == NULL)
 		return false;
 
 	return xqueryexecution->serialize(os);
@@ -277,7 +277,7 @@ bool Zorba_XQueryBinary::executeSerializeXML( std::ostream& os, DynamicQueryCont
 	XQueryExecution_t		xqueryexecution;
 
 	xqueryexecution = createExecution(dctx);
-	if(xqueryexecution.isNull())
+	if(xqueryexecution == NULL)
 		return false;
 
 	return xqueryexecution->serializeXML(os);
@@ -288,7 +288,7 @@ bool Zorba_XQueryBinary::executeSerializeHTML( std::ostream& os, DynamicQueryCon
 	XQueryExecution_t		xqueryexecution;
 
 	xqueryexecution = createExecution(dctx);
-	if(xqueryexecution.isNull())
+	if(xqueryexecution == NULL)
 		return false;
 
 	return xqueryexecution->serializeHTML(os);
@@ -299,7 +299,7 @@ bool Zorba_XQueryBinary::executeSerializeTEXT( std::ostream& os, DynamicQueryCon
 	XQueryExecution_t		xqueryexecution;
 
 	xqueryexecution = createExecution(dctx);
-	if(xqueryexecution.isNull())
+	if(xqueryexecution == NULL)
 		return false;
 
 	return xqueryexecution->serializeTEXT(os);
@@ -351,7 +351,7 @@ void Zorba_XQueryBinary::RegisterAlertCallback(alert_callback *user_alert_callba
 Zorba_XQueryExecution::Zorba_XQueryExecution()
 {
   theClosed = false;
-  is_error = false;
+//  is_error = false;
   internal_dyn_context = NULL;
 }
 
@@ -367,7 +367,7 @@ Zorba_XQueryExecution::~Zorba_XQueryExecution()
   delete internal_dyn_context;
 
 	}
-	CATCH_ALL_NO_RETURN;
+	CATCH_ALL_NO_RETURN(;);
 }
 
 void Zorba_XQueryExecution::setAlertsParam(void *alert_callback_param)
@@ -376,7 +376,7 @@ void Zorba_XQueryExecution::setAlertsParam(void *alert_callback_param)
 
   this->alert_callback_param = alert_callback_param;
 
-	}CATCH_ALL_NO_RETURN;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 /*
@@ -403,14 +403,13 @@ Item_t Zorba_XQueryExecution::next()
 
     return it;
   }
-  catch(xqp_exception &)
-  {
-  }
-	CATCH_ALL_NO_RETURN;
+//  catch(xqp_exception &)
+//  {
+//  }
+	CATCH_ALL_NO_RETURN(  \
+  state_block->zorp->current_xquery = prev_current_xquery;\
+  state_block->zorp->current_xqueryresult = prev_current_xqueryresult;)
 
-  is_error = true;
-  state_block->zorp->current_xquery = prev_current_xquery;
-  state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
   return NULL;
 }
 
@@ -430,17 +429,15 @@ Zorba_XQueryExecution::reset()
 
     state_block->zorp->current_xquery = prev_current_xquery;
     state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
-		is_error = false;
+//		is_error = false;
 		return;
 	}
-  catch(xqp_exception &)
-	{
-	}
-	CATCH_ALL_NO_RETURN;
-
-	is_error = true;
-  state_block->zorp->current_xquery = prev_current_xquery;
-  state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
+//  catch(xqp_exception &)
+//	{
+//	}
+	CATCH_ALL_NO_RETURN(\
+  state_block->zorp->current_xquery = prev_current_xquery;\
+  state_block->zorp->current_xqueryresult = prev_current_xqueryresult;);
 }
 
 
@@ -460,17 +457,15 @@ Zorba_XQueryExecution::close()
     }
     state_block->zorp->current_xquery = prev_current_xquery;
     state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
-		is_error = false;
+//		is_error = false;
 		return;
 	}
-  catch(xqp_exception &)
-	{
-	}
-	CATCH_ALL_NO_RETURN;
-
-  is_error = true;
-  state_block->zorp->current_xquery = prev_current_xquery;
-  state_block->zorp->current_xqueryresult = prev_current_xqueryresult;
+//  catch(xqp_exception &)
+//	{
+//	}
+	CATCH_ALL_NO_RETURN(\
+  state_block->zorp->current_xquery = prev_current_xquery;\
+  state_block->zorp->current_xqueryresult = prev_current_xqueryresult;);
 
 }
 
@@ -487,12 +482,12 @@ bool Zorba_XQueryExecution::serialize( ostream& os )
 
     ser->serialize(this, os);
 	}
-  catch(xqp_exception &)
-  {
-	}
-	CATCH_ALL_NO_RETURN;
-  state_block->zorp->current_xquery = NULL;
-  state_block->zorp->current_xqueryresult = NULL;
+//  catch(xqp_exception &)
+//  {
+//	}
+	CATCH_ALL_NO_RETURN(\
+  state_block->zorp->current_xquery = NULL;\
+  state_block->zorp->current_xqueryresult = NULL;);
   return !isError();
 }
 
@@ -507,13 +502,12 @@ bool Zorba_XQueryExecution::serializeXML( std::ostream& os )
   {
     ser->serialize(this, os);
 	}
-  catch(xqp_exception &)
-  {
-	}
-	CATCH_ALL_NO_RETURN;
-
-	state_block->zorp->current_xquery = NULL;
-  state_block->zorp->current_xqueryresult = NULL;
+//  catch(xqp_exception &)
+//  {
+//	}
+	CATCH_ALL_NO_RETURN(\
+	state_block->zorp->current_xquery = NULL;\
+  state_block->zorp->current_xqueryresult = NULL;);
   return !isError();
 }
 
@@ -528,13 +522,12 @@ bool Zorba_XQueryExecution::serializeHTML( std::ostream& os )
 		ser->set_parameter("method", "html");
 		ser->serialize(this, os);
 	}
-  catch(xqp_exception &)
-  {
-	}
-	CATCH_ALL_NO_RETURN;
-
-  state_block->zorp->current_xquery = NULL;
-  state_block->zorp->current_xqueryresult = NULL;
+//  catch(xqp_exception &)
+//  {
+//	}
+	CATCH_ALL_NO_RETURN(\
+  state_block->zorp->current_xquery = NULL;\
+  state_block->zorp->current_xqueryresult = NULL;);
   return !isError();
 }
 
@@ -554,19 +547,20 @@ bool Zorba_XQueryExecution::serializeTEXT( std::ostream& os )
     os << it->show() << endl;
   }
 	}
-  catch(xqp_exception &)
-  {
-	}
-	CATCH_ALL_NO_RETURN;
-  state_block->zorp->current_xquery = NULL;
-  state_block->zorp->current_xqueryresult = NULL;
+//  catch(xqp_exception &)
+//  {
+//	}
+	CATCH_ALL_NO_RETURN(\
+  state_block->zorp->current_xquery = NULL;\
+  state_block->zorp->current_xqueryresult = NULL;);
   return !isError();
 }
 
 
 bool Zorba_XQueryExecution::isError()
 {
-  return is_error;
+  //return is_error;
+	return ZorbaEngine::getInstance().getAlertsManagerForCurrentThread().isError();
 }
 
 void  Zorba_XQueryExecution::AbortQueryExecution()
@@ -600,13 +594,12 @@ bool Zorba_XQueryExecution::SetVariable( xqp_string varname,
   state_block->zorp->current_xqueryresult = NULL;
   return true;
 	}
-  catch(xqp_exception &)
-  {
-  }
-	CATCH_ALL_NO_RETURN;
-
-  state_block->zorp->current_xquery = NULL;
-  state_block->zorp->current_xqueryresult = NULL;
+//  catch(xqp_exception &)
+//  {
+//  }
+	CATCH_ALL_NO_RETURN(\
+  state_block->zorp->current_xquery = NULL;\
+  state_block->zorp->current_xqueryresult = NULL;);
   return false;
 }
 
@@ -634,7 +627,7 @@ bool Zorba_XQueryExecution::SetVariable(
 		ItemFactory* factory = Zorba::getItemFactory();
 
     Item_t uriItem = factory->createAnyURI(docUri);
-		if(uriItem.isNull())
+		if(uriItem == NULL)
 		{//not a valid uri
 			state_block->zorp->current_xquery = NULL;
 			state_block->zorp->current_xqueryresult = NULL;
@@ -642,7 +635,7 @@ bool Zorba_XQueryExecution::SetVariable(
 		}
 		//?store.deleteDocument(docUri);
 		Item_t	docItem = store.loadDocument(docUri, is);
-		if(docItem.isNull())
+		if(docItem == NULL)
 		{//cannot upload document into store
 			//or maybe is not valid xml
 			state_block->zorp->current_xquery = NULL;
@@ -661,15 +654,14 @@ bool Zorba_XQueryExecution::SetVariable(
 		state_block->zorp->current_xqueryresult = NULL;
     return true;
 	}
-  catch(xqp_exception &)
-  {
-  }
-	CATCH_ALL_NO_RETURN;
-
-  if (planWrapper != NULL)
-    delete planWrapper;
-  state_block->zorp->current_xquery = NULL;
-  state_block->zorp->current_xqueryresult = NULL;
+//  catch(xqp_exception &)
+//  {
+//  }
+	CATCH_ALL_NO_RETURN(\
+  if (planWrapper != NULL)\
+    delete planWrapper;\
+  state_block->zorp->current_xquery = NULL;\
+  state_block->zorp->current_xqueryresult = NULL;);
   return false;
 }
 
@@ -687,13 +679,12 @@ bool Zorba_XQueryExecution::AddAvailableDocument(xqp_string docURI,
   state_block->zorp->current_xqueryresult = NULL;
   return false;
 	}
-  catch(xqp_exception &)
-  {
-	}
-	CATCH_ALL_NO_RETURN;
-
-	state_block->zorp->current_xquery = NULL;
-  state_block->zorp->current_xqueryresult = NULL;
+//  catch(xqp_exception &)
+//  {
+//	}
+	CATCH_ALL_NO_RETURN(\
+	state_block->zorp->current_xquery = NULL;\
+  state_block->zorp->current_xqueryresult = NULL;);
 	return false;
 }
 
@@ -711,13 +702,12 @@ bool Zorba_XQueryExecution::AddAvailableCollection(xqp_string collectionURI,
   state_block->zorp->current_xqueryresult = NULL;
   return false;
 	}
-  catch(xqp_exception &)
-  {
-	}
-	CATCH_ALL_NO_RETURN;
-
-	state_block->zorp->current_xquery = NULL;
-  state_block->zorp->current_xqueryresult = NULL;
+//  catch(xqp_exception &)
+//  {
+//	}
+	CATCH_ALL_NO_RETURN(\
+	state_block->zorp->current_xquery = NULL;\
+  state_block->zorp->current_xqueryresult = NULL;);
 	return false;
 }
 

@@ -316,7 +316,7 @@ main(int argc, char** argv)
 
   xqp::ZorbaAlertsManager& lAlertsManager = lEngine.factory.getAlertsManagerForCurrentThread();
 
-  if (lQuery.isNull())
+  if (lQuery == NULL)
   {
     if (isErrorExpected(&lAlertsManager, &lSpec)) 
     { 
@@ -339,7 +339,7 @@ main(int argc, char** argv)
   xqp::XQueryExecution_t lQueryResult = lQuery->createExecution(lDynCtxt); 
   set_vars(&lSpec, NULL, lQueryResult);
 
-  if (lQueryResult.isNull()) // how can this happen?
+  if (lQueryResult == NULL) // how can this happen?
   {
     if (isErrorExpected(&lAlertsManager, &lSpec)) { return 0; } // done, we expected this error
     else 

@@ -11,6 +11,7 @@ using namespace xqp;
 	Init the engine, create a query and execute it.
 	Chain the result from one xquery to another xquery.
 */
+string make_absolute_file_name(const char *target_file_name, const char *this_file_name);
 
 int usecase6(int argc, char* argv[])
 {
@@ -22,9 +23,16 @@ int usecase6(int argc, char* argv[])
 	XQueryExecution_t		xqe1;
 	XQueryExecution_t		xqe2;
 
+	XmlDataManager_t		zorba_store = zorba_engine.getXmlDataManager();
+
+	//load a document into xml data manager
+	//and then load it into a variable
+	zorba_store->loadDocument(make_absolute_file_name("books.xml", __FILE__));
+
+
 	//create and compile a query with the static context
 	xquery1 = zorba_engine.createQuery(".//book");
-	if(xquery1.isNull())
+	if(xquery1 == NULL)
 	{
 		cout << "Error creating and compiling query1" << endl;
 		assert(false);
@@ -33,7 +41,7 @@ int usecase6(int argc, char* argv[])
 
 	dctx = zorba_engine.createDynamicContext();
 	//context item is set as variable with reserved name "."
-	if(!dctx->SetVariableAsDocument(".", "books.xml"))
+	if(!dctx->SetVariableAsDocument(".", make_absolute_file_name("books.xml", __FILE__)))
 	{
 		cout << "cannot load document into context item" << endl;
 		assert(false);
@@ -42,7 +50,7 @@ int usecase6(int argc, char* argv[])
 
 	//create the first query execution (but do not execute yet)
 	xqe1 = xquery1->createExecution(dctx);
-	if(xqe1.isNull())
+	if(xqe1 == NULL)
 	{
 		cout << "cannot create execution object of first query" << endl;
 		assert(false);
@@ -50,8 +58,8 @@ int usecase6(int argc, char* argv[])
 	}
 	
 	//create the second query
-	xquery2 = zorba_engine.createQuery("declare variable $var1 external; $var1//chapter");
-	if(xquery2.isNull())
+	xquery2 = zorba_engine.createQuery("declare variable $var1 as document-node() external; $var1//chapter");
+	if(xquery2 == NULL)
 	{
 		cout << "Error creating and compiling query2" << endl;
 		assert(false);
@@ -60,7 +68,7 @@ int usecase6(int argc, char* argv[])
 
 	//no need for dynamic context here
 	xqe2 = xquery2->createExecution();
-	if(xqe2.isNull())
+	if(xqe2 == NULL)
 	{
 		cout << "cannot create execution object of second query" << endl;
 		assert(false);

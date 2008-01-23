@@ -12,6 +12,24 @@ using namespace xqp;
 	Set the context item in dynamic context
 */
 
+string make_absolute_file_name(const char *target_file_name, const char *this_file_name)
+{
+	string		str_result;
+	string::size_type		pos;
+
+	str_result = this_file_name;
+	pos = str_result.rfind('/');
+	if(pos == string::npos)
+		pos = str_result.rfind('\\');
+	if(pos == string::npos)
+		return target_file_name;
+	str_result.erase(pos+1);
+	str_result += target_file_name;
+//	cout << "make_absolute_file_name -> " << str_result << endl;
+	return str_result;
+}
+
+
 int usecase4(int argc, char* argv[])
 {
 	//init the engine
@@ -19,9 +37,15 @@ int usecase4(int argc, char* argv[])
 	XQuery_t				xquery;
 	DynamicQueryContext_t		dctx;
 
+	XmlDataManager_t		zorba_store = zorba_engine.getXmlDataManager();
+
+	//load a document into xml data manager
+	//and then load it into a variable
+	zorba_store->loadDocument(make_absolute_file_name("books.xml", __FILE__));
+
 	//create and compile a query with the static context
 	xquery = zorba_engine.createQuery(".//book");
-	if(xquery.isNull())
+	if(xquery == NULL)
 	{
 		cout << "Error creating and compiling query" << endl;
 		assert(false);
@@ -30,7 +54,7 @@ int usecase4(int argc, char* argv[])
 
 	dctx = zorba_engine.createDynamicContext();
 	//context item is set as variable with reserved name "."
-	if(!dctx->SetVariableAsDocument(".", "books.xml"))
+	if(!dctx->SetVariableAsDocument(".", make_absolute_file_name("books.xml", __FILE__)))
 	{
 		cout << "cannot load document into context item" << endl;
 		assert(false);

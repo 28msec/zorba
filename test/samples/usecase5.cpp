@@ -81,9 +81,9 @@ void DisplayOneAlert(const ZorbaAlert *alert, std::ostream &result_file)
 
 void DisplayError(const ZorbaError *err, std::ostream &result_file)
 {
-  if(err->theIsFatal)
-    result_file << "Fatal Error: ";
-  else
+//  if(err->theIsFatal)
+//    result_file << "Fatal Error: ";
+//  else
     result_file << "Error: ";
 
   if(err->theLocation.line)
@@ -161,6 +161,7 @@ void DisplayFnUserTrace(const ZorbaFnTrace *fn_trace, std::ostream &result_file)
 }
 
 
+string make_absolute_file_name(const char *target_file_name, const char *this_file_name);
 
 
 int usecase5(int argc, char* argv[])
@@ -172,7 +173,7 @@ int usecase5(int argc, char* argv[])
 
 	//create and compile a query with the static context
 	xquery = zorba_engine.createQuery(".//book");
-	if(xquery.isNull())
+	if(xquery == NULL)
 	{
 		cout << "Error creating and compiling query" << endl;
 		goto DisplayErrorsAndExit;
@@ -181,7 +182,7 @@ int usecase5(int argc, char* argv[])
 	dctx = zorba_engine.createDynamicContext();
 /*forget to set the context item
 	//context item is set as variable with reserved name "."
-	if(!dctx->SetVariableAsDocument(".", "books.xml"))
+	if(!dctx->SetVariableAsDocument(".", make_absolute_file_name("books.xml", __FILE__)))
 	{
 		assert(false);
 		return 1;

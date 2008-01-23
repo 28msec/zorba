@@ -48,7 +48,7 @@ void ZorbaAlertFactory::error_alert(
 				abort ();
 			else
 	#endif
-				throw xqp_exception(code, "", "");
+				throw xqp_exception(code);
 		}
 		else
 			return;
@@ -70,7 +70,7 @@ void ZorbaAlertFactory::error_alert(
 	ZorbaError* error = new ZorbaError;
 	error->theKind = ZorbaAlert::ERROR_ALERT;
 	error->theCode = code;
-	error->theIsFatal = !continue_execution;
+//	error->theIsFatal = !continue_execution;
 	if(ploc)
 	{
 		if(ploc->begin.filename)
@@ -81,8 +81,8 @@ void ZorbaAlertFactory::error_alert(
 	error->theDescription = description;
 	time(&error->theTime);
 
-	if(z->current_xqueryresult)
-		z->current_xqueryresult->is_error = true;
+//	if(z->current_xqueryresult)
+//		z->current_xqueryresult->is_error = true;
 
 	err_manager->sendAlertToUser(z, error);
 
@@ -93,9 +93,7 @@ void ZorbaAlertFactory::error_alert(
 			abort ();
 		else
 #endif
-      throw xqp_exception(code,
-                          "", // location string, 
-                          description);
+      throw xqp_exception(error);
 	}
 }
 

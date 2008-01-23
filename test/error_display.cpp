@@ -66,9 +66,9 @@ void DisplayOneAlert(const ZorbaAlert *alert)
 
 void DisplayError(const ZorbaError *err)
 {
-  if(err->theIsFatal)
-    cerr << "Fatal Error: ";
-  else
+//  if(err->theIsFatal)
+//    cerr << "Fatal Error: ";
+//  else
     cerr << "Error: ";
 
   if(err->theLocation.line)
