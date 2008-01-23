@@ -1,11 +1,12 @@
 /*
  *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: Nicolae Brinza
+ *  Authors: Nicolae Brinza, Sorin Nasoi
  */
 
 #ifndef XQP_DURATIONSDATESTIMES_H
 #define XQP_DURATIONSDATESTIMES_H
 
+#include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/iterator.h"
 
@@ -70,8 +71,33 @@ public:
 10.4.17 op:gMonthDay-equal
 10.4.18 op:gMonth-equal
 10.4.19 op:gDay-equal
-10.5 Component Extraction Functions on Durations, Dates and Times
-10.5.1 fn:years-from-duration
+*/
+
+/*  
+ * 10.5 Component Extraction Functions on Durations, Dates and Times
+ * --------------------*/
+/*
+ * 10.5.1 fn:years-from-duration
+ * --------------------*/
+ 
+/*begin class YearsFromDurationIterator */
+class FnYearsFromDurationIterator : public UnaryBaseIterator<FnYearsFromDurationIterator>
+{
+  public:
+    FnYearsFromDurationIterator ( const yy::location& loc, PlanIter_t& arg )
+  :
+    UnaryBaseIterator<FnYearsFromDurationIterator>( loc, arg ){};
+  
+    ~FnYearsFromDurationIterator(){};
+  public:
+    Item_t nextImpl(PlanState& planState);
+    
+    virtual void accept(PlanIterVisitor&) const;
+};
+
+/*end class YearsFromDurationIterator */
+
+    /*
 10.5.2 fn:months-from-duration
 10.5.3 fn:days-from-duration
 10.5.4 fn:hours-from-duration

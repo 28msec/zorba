@@ -1,6 +1,6 @@
 /*
  *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: Nicolae Brinza
+ *  Authors: Nicolae Brinza, Sorin Nasoi
  */
 
 #include "runtime/dateTime/DurationsDatesTimes.h"
@@ -86,4 +86,32 @@ OpDurationEqualIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.1 fn:years-from-duration
+ *
+ * fn:years-from-duration($arg as xs:duration?) as xs:integer?
+ *_______________________________________________________________________*/
+
+/*begin class FnYearsFromDurationIterator */
+Item_t 
+FnYearsFromDurationIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  // TODO: arguments should be of type xs:duration
+
+  itemArg = consumeNext(theChild, planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getYears()), state );
+  }
+  STACK_END();
+}
+/*end class FnYearsFromDurationIterator */
 }

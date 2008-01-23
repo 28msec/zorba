@@ -1,7 +1,7 @@
 /*
  *  Copyright 2006-2007 FLWOR Foundation.
  *
- *  Authors: Nicolae Brinza
+ *  Authors: Nicolae Brinza, Sorin Nasoi
  */
 
 #include <string>
@@ -81,7 +81,12 @@ xqpString YearMonthDuration::toString() const
   // TODO:
   return result;
 }
-    
+
+uint32_t YearMonthDuration::getYears() const
+{
+  return months/12;
+}
+
 bool YearMonthDuration::parse_string(const xqpString& s, YearMonthDuration_t& ym_t)
 {
   std::string ss = *s.getStore();
@@ -234,6 +239,11 @@ xqpString DayTimeDuration::toString() const
 
   // TODO:
   return NULL;
+}
+
+uint32_t DayTimeDuration::getYears() const
+{
+  return 0;
 }
 
 // parse a 'nS' string, with fractional seconds, returns 0 on success and 1 on failure
@@ -461,6 +471,12 @@ xqpString Duration::toString() const
 {
   // TODO:
   return NULL;
+}
+
+uint32_t Duration::getYears() const
+{
+  // TODO:
+  return 0;
 }
 
 // Parse a '(-)PnYnMnDTnHnMnS'

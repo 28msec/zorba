@@ -699,6 +699,10 @@ DECL(fn_datetime_ctor,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
 
+DECL(fn_years_from_duration,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "years-from-duration"),
+      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 // end date time
 

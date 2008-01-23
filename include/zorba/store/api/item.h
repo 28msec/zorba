@@ -269,6 +269,12 @@ public:
     return xqp_duration();
   }
 
+  virtual uint32_t getYears() const
+  {
+    this->showError();
+    return 0;
+  }
+
   /** Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
    */
   virtual std::vector<xqp_string> getStringVectorValue() const

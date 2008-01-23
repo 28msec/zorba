@@ -325,6 +325,9 @@ public:
   
   virtual void beginVisit(const FnDateTimeConstructorIterator&) ;
   virtual void endVisit(const FnDateTimeConstructorIterator&);
+
+  virtual void beginVisit(const FnYearsFromDurationIterator&) ;
+  virtual void endVisit(const FnYearsFromDurationIterator&);
   
   virtual void beginVisit ( const FLWORIterator& ) ;
   virtual void endVisit ( const FLWORIterator& ) ;
