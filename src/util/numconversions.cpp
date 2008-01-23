@@ -210,6 +210,7 @@ namespace xqp {
         aFloat = std::numeric_limits<xqp_float>::infinity();
         return true;
       } else if (lInf == 0) {
+        // TODO Handling when compiler does not support quiet_NaN
         Assert(std::numeric_limits<xqp_double>::has_quiet_NaN());
         aFloat = std::numeric_limits<xqp_float>::quiet_NaN(); 
       } else {
@@ -253,6 +254,7 @@ namespace xqp {
         aDouble = std::numeric_limits<xqp_double>::infinity();
         return true;
       } else if (lInf == 0) {
+        // TODO Handling when compiler does not suppoert quiet_NaN
         Assert(std::numeric_limits<xqp_double>::has_quiet_NaN());
         aDouble = std::numeric_limits<xqp_double>::quiet_NaN(); 
       } else {
