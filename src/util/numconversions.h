@@ -15,6 +15,12 @@ namespace xqp {
 class NumConversions {
 private:
   static bool isNegZero(const xqpString& aStr);
+  /**
+   * @return -1 if aCharStar can be parsed to '-inf'
+   *          1 if aCharStar can be parsed to 'inf'
+   *          0 else
+   */
+  static short isInf(const char* aCharStar);
 
 public:
   /**********************************************************************************

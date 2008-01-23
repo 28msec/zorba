@@ -23,6 +23,29 @@ namespace xqp {
     }
   }
 
+  short NumConversions::isInf(const char* aCharStar) {
+#ifdef HAVE_STRCASECMP_FUNCTION
+      if (strcasecmp(aCharStar, "inf") == 0 || strcasecmp(aCharStar, "+inf") == 0 )
+#else
+      if (_stricmp(aCharStar, "inf") == 0 || _stricmp(aCharStar, "+inf") == 0 )
+#endif
+      {
+        return 1;
+      }
+#ifdef HAVE_STRCASECMP_FUNCTION
+      else if (strcasecmp(aCharStar, "-inf") == 0 )
+#else
+      else if (_stricmp(aCharStar, "-inf") == 0 )
+#endif
+      {
+        return -1;
+      }
+      else
+      {
+        return 0;
+      }
+  }
+
   bool NumConversions::strToInteger(const xqpString& aStr, xqp_integer& aInteger){
     try {
       aInteger = boost::lexical_cast<xqp_integer>(aStr.c_str());
@@ -143,59 +166,57 @@ namespace xqp {
 
   bool NumConversions::starCharToFloat(const char* aCharStar, xqp_float& aFloat) {
     char* lEndPtr;
+
+    // Not all systems support strtof
 #ifdef HAVE_STRTOF_FUNCTION
     aFloat = strtof(aCharStar, &lEndPtr);
-    return (*lEndPtr == '\0');
 #else
-    double lTmpDouble = strtod(aCharStar, &lEndPtr);
-    if (*lEndPtr != '\0')
-    {
-#ifdef HAVE_STRCASECMP_FUNCTION
-      if (strcasecmp(aCharStar, "inf") == 0 || strcasecmp(aCharStar, "+inf") == 0 )
-#else
-      if (_stricmp(aCharStar, "inf") == 0 || _stricmp(aCharStar, "+inf") == 0 )
-#endif
-      {
-        aFloat = std::numeric_limits<float>::infinity();
-        return true;
-      }
-#ifdef HAVE_STRCASECMP_FUNCTION
-      else if (strcasecmp(aCharStar, "-inf") == 0 )
-#else
-      else if (_stricmp(aCharStar, "-inf") == 0 )
-#endif
-      {
-        aFloat = -std::numeric_limits<float>::infinity();
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else
-    {
-#undef max
-#undef min
-      if ( lTmpDouble > std::numeric_limits<float>::max() )
-        aFloat = std::numeric_limits<float>::infinity();
-      else if ( lTmpDouble < std::numeric_limits<float>::min() )
-        aFloat = -std::numeric_limits<float>::infinity();
+    // If strtof is not supported, zorba uses strtod 
+    // and makes a max, min check before casting to float
+    xqp_double lTmpDouble = strtod(aCharStar, &lEndPtr);
+    if (*lEndPtr == '\0') {
+// undef's are used because Windows has some makro definitions on min and max
+// => without undef, 'min()' and 'max()' would be replace by something
+#  undef max
+#  undef min
+      if ( lTmpDouble > std::numeric_limits<xqp_float>::max() )
+        aFloat = std::numeric_limits<xqp_float>::infinity();
+      else if ( lTmpDouble < std::numeric_limits<xqp_float>::min() )
+        aFloat = -std::numeric_limits<xqp_float>::infinity();
       else
         aFloat = static_cast<xqp_float>(lTmpDouble);
-
-      return true;
     }
 #endif
+     
+    if (*lEndPtr != '\0') {
+#ifdef UNIX
+      return false;
+#else
+      // Only for unix systems, we are sure that they can parse 'inf' and '-inf' correclty
+      // => we try to do it by hand for all other systems in case of a parsing error
+      short lInf = NumConversions::isInf(aCharStar);
+      if (lInf < 0) {
+        aFloat = -std::numeric_limits<xqp_float>::infinity();
+        return true;
+      } else if (lInf > 0) {
+        aFloat = std::numeric_limits<xqp_float>::infinity();
+        return true;
+      } else {
+        return false;
+      }
+#endif
+    } else {
+      return true;
+    }
   }
 
   bool NumConversions::strToFloat(const xqpString& aStr, xqp_float& aFloat){
     return NumConversions::starCharToFloat(aStr.c_str(), aFloat);
   }
   xqpString NumConversions::floatToStr(xqp_float aFloat){
-    if (aFloat == std::numeric_limits<float>::infinity())
+    if (aFloat == std::numeric_limits<xqp_float>::infinity())
       return "INF";
-    else if (aFloat == -std::numeric_limits<float>::infinity())
+    else if (aFloat == -std::numeric_limits<xqp_float>::infinity())
       return "-INF";
     else if (aFloat != aFloat)
       return "NaN";
@@ -205,21 +226,37 @@ namespace xqp {
       return lStream.str();
     }
   }
-  bool NumConversions::starCharToDouble(const char* aStarChar, xqp_double& aDouble){
+  bool NumConversions::starCharToDouble(const char* aCharStar, xqp_double& aDouble){
     char* lEndPtr;
-    aDouble = strtod(aStarChar, &lEndPtr);
-    if (*lEndPtr != '\0')
+    aDouble = strtod(aCharStar, &lEndPtr);
+    if (*lEndPtr != '\0') {
+#ifdef UNIX
       return false;
-    else
+#else
+      // Only for unix systems, we are sure that they can parse 'inf' and '-inf' correclty
+      // => we try to do it by hand for all other systems in case of a parsing error
+      short lInf = NumConversions::isInf(aCharStar);
+      if (lInf < 0) {
+        aDouble = -std::numeric_limits<xqp_double>::infinity();
+        return true;
+      } else if (lInf > 0) {
+        aDouble = std::numeric_limits<xqp_double>::infinity();
+        return true;
+      } else {
+        return false;
+      }
+#endif
+    } else {
       return true;
+    }
   }
   bool NumConversions::strToDouble(const xqpString& aStr, xqp_double& aDouble) {
     return starCharToDouble(aStr.c_str(), aDouble);
   }
   xqpString NumConversions::doubleToStr(xqp_double aDouble){
-    if (aDouble == std::numeric_limits<double>::infinity())
+    if (aDouble == std::numeric_limits<xqp_double>::infinity())
       return "INF";
-    else if (aDouble == -std::numeric_limits<double>::infinity())
+    else if (aDouble == -std::numeric_limits<xqp_double>::infinity())
       return "-INF";
     else if (aDouble != aDouble)
       return "NaN";
@@ -277,12 +314,12 @@ namespace xqp {
   }
 
   bool NumConversions::isPosOrNegInf(xqp_double aDouble) {
-    return (aDouble == std::numeric_limits<double>::infinity() 
-      || aDouble == -std::numeric_limits<double>::infinity());
+    return (aDouble == std::numeric_limits<xqp_double>::infinity() 
+      || aDouble == -std::numeric_limits<xqp_double>::infinity());
   }
 
   bool NumConversions::isPosOrNegInf(xqp_float aFloat) {
-    return (aFloat == std::numeric_limits<float>::infinity()
-      || aFloat == -std::numeric_limits<float>::infinity());
+    return (aFloat == std::numeric_limits<xqp_float>::infinity()
+      || aFloat == -std::numeric_limits<xqp_float>::infinity());
   }
 } /* namespace xqp */
