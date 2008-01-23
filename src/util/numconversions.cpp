@@ -5,6 +5,7 @@
 #include "util/numconversions.h"
 #include <iostream> 
 #include "zorba/common.h"
+#include "util/Assert.h"
 
 namespace xqp {
   bool NumConversions::isNegZero(const xqpString& aStr) {
@@ -211,7 +212,7 @@ namespace xqp {
         return true;
       } else if (lInf == 0) {
         // TODO Handling when compiler does not support quiet_NaN
-        Assert(std::numeric_limits<xqp_double>::has_quiet_NaN());
+        Assert(std::numeric_limits<xqp_double>::has_quiet_NaN);
         aFloat = std::numeric_limits<xqp_float>::quiet_NaN(); 
       } else {
         return false;
@@ -255,7 +256,7 @@ namespace xqp {
         return true;
       } else if (lInf == 0) {
         // TODO Handling when compiler does not suppoert quiet_NaN
-        Assert(std::numeric_limits<xqp_double>::has_quiet_NaN());
+        Assert(std::numeric_limits<xqp_double>::has_quiet_NaN);
         aDouble = std::numeric_limits<xqp_double>::quiet_NaN(); 
       } else {
         return false;
