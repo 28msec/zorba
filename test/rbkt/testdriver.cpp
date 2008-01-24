@@ -197,6 +197,7 @@ isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
   {
     lc = lString.at(aLPos);
     rc = rString.at(aRPos);
+
     ++aPos; ++aCol;
     if (lc == '\n') { ++aLine; aCol = 0; }
     if ( lc != rc ) return false;
@@ -344,9 +345,12 @@ main(int argc, char** argv)
     if (isErrorExpected(&lAlertsManager, &lSpec)) { return 0; } // done, we expected this error
     else 
     { 
-      std::cerr << "Error executing query" << std::endl;
-      printErrors(&lAlertsManager);
-      return 5;
+      if ( ! fs::exists(lRefFile) )
+      {
+        std::cerr << "Error executing query" << std::endl;
+        printErrors(&lAlertsManager);
+        return 5;
+      }
     }
   }
   
@@ -369,21 +373,24 @@ main(int argc, char** argv)
     }
     else if ( lSpec.errorsSize() > 0 )
     {
-      std::cerr << "Expected error(s)";
-      for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
-           lIter != lSpec.errorsEnd(); ++lIter)
+      if ( ! fs::exists(lRefFile) )
       {
-        std::cerr << " " << *lIter;
+        std::cerr << "Expected error(s)";
+        for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
+            lIter != lSpec.errorsEnd(); ++lIter)
+        {
+          std::cerr << " " << *lIter;
+        }
+        if ( fs::exists(lResultFile) && fs::file_size(lResultFile) == 0)
+          std::cerr << " but got empty result" << std::endl;
+        else
+        {
+          std::cerr << " but got result:" << std::endl;
+          printFile(std::cerr, lResultFile.native_file_string());
+          std::cerr<< std::endl;
+        } 
+        return 7;
       }
-      if ( fs::exists(lResultFile) && fs::file_size(lResultFile) == 0)
-        std::cerr << " but got empty result" << std::endl;
-      else
-      {
-        std::cerr << " but got result:" << std::endl;
-        printFile(std::cerr, lResultFile.native_file_string());
-        std::cerr<< std::endl;
-      } 
-      return 7;
     }
   }
   std::cout << "Result:" << std::endl;
