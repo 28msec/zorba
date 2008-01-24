@@ -956,6 +956,11 @@ int32_t DurationItemNaive::getMonths() const
 {
   return theValue->getMonths();
 }
+
+int32_t DurationItemNaive::getDays() const
+{
+  return theValue->getDays();
+}
 /*******************************************************************************
  * class GYearMonthItemNaive
  *******************************************************************************/

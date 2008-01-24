@@ -909,7 +909,7 @@ namespace xqp {
     thePrinter.startIter("FnYearsFromDurationIterator");
     printCommons( &a );
   }
-  void PrinterVisitor::endVisit ( const FnMonthsFromDurationIterator& ) {
+  void PrinterVisitor::endVisit ( const FnYearsFromDurationIterator& ) {
     thePrinter.endIter();
   }
 
@@ -917,7 +917,17 @@ namespace xqp {
     thePrinter.startIter("FnMonthsFromDurationIterator");
     printCommons( &a );
   }
-  void PrinterVisitor::endVisit ( const FnYearsFromDurationIterator& ) {
+
+  void PrinterVisitor::endVisit ( const FnMonthsFromDurationIterator& ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnDaysFromDurationIterator& a )  {
+    thePrinter.startIter("FnDaysFromDurationIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const FnDaysFromDurationIterator& ) {
     thePrinter.endIter();
   }
   

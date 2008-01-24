@@ -103,5 +103,39 @@ fn_months_from_duration::type_check (
   return GENV_TYPESYSTEM.DURATION_TYPE_QUESTION;
 }
 /*end class fn_months_from_duration*/
+
+/*
+ * 10.5.3 fn:days-from-duration
+ * --------------------*/
+/*begin class fn_days_from_duration*/
+fn_days_from_duration::fn_days_from_duration (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+fn_days_from_duration::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnDaysFromDurationIterator(loc, argv[0]);
+}
+
+bool
+fn_days_from_duration::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_days_from_duration::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_QUESTION;
+}
+/*end class fn_days_from_duration*/
 } // namespace xqp
 

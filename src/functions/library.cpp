@@ -709,6 +709,11 @@ DECL(fn_months_from_duration,
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
+DECL(fn_days_from_duration,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "days-from-duration"),
+      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
+
 
 // end date time
 

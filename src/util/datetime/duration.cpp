@@ -14,7 +14,12 @@ using namespace std;
 
 namespace xqp
 {
-    
+  const uint16_t NO_MONTHS_IN_YEAR = 12;
+  const uint16_t NO_HOURS_IN_DAY = 24;
+  const uint16_t NO_MINUTES_IN_HOUR = 60;
+  const uint16_t NO_SECONDS_IN_MINUTE = 60;
+  
+  
 
 YearMonthDuration::YearMonthDuration(long the_months)
   :
@@ -84,12 +89,17 @@ xqpString YearMonthDuration::toString() const
 
 int32_t YearMonthDuration::getYears() const
 {
-  return months/12;
+  return months/NO_MONTHS_IN_YEAR;
 }
 
 int32_t YearMonthDuration::getMonths() const
 {
-  return (months % 12);
+  return (months % NO_MONTHS_IN_YEAR);
+}
+
+int32_t YearMonthDuration::getDays() const
+{
+  return 0;
 }
 
 bool YearMonthDuration::parse_string(const xqpString& s, YearMonthDuration_t& ym_t)
@@ -122,7 +132,7 @@ bool YearMonthDuration::parse_string(const xqpString& s, YearMonthDuration_t& ym
   if (ss[position] == 'Y')
   {
     position++;
-    months = result * 12;
+    months = result * NO_MONTHS_IN_YEAR;
 
     if (position < ss.size())
     {
@@ -251,6 +261,23 @@ int32_t DayTimeDuration::getYears() const
 int32_t DayTimeDuration::getMonths() const
 {
   return 0;
+}
+
+int32_t DayTimeDuration::getDays() const
+{
+  return normalize().days;
+}
+
+DayTimeDuration DayTimeDuration::normalize() const
+{
+  int32_t tmp = timeDuration.hours() / NO_HOURS_IN_DAY;
+  DayTimeDuration_t dt = new DayTimeDuration(is_negative,
+                                             days + tmp,
+                                             timeDuration.hours(),
+                                             timeDuration.minutes(),
+                                             timeDuration.seconds(),
+                                             timeDuration.fractional_seconds());
+  return *dt;
 }
 
 // parse a 'nS' string, with fractional seconds, returns 0 on success and 1 on failure
@@ -427,7 +454,7 @@ bool DayTimeDuration::parse_string(const xqpString& s, DayTimeDuration_t& dt_t, 
   if (ss.size() != position)
     return false;
 
-  dt_t = new DayTimeDuration(negative, days, minutes, hours, seconds, frac_seconds);
+  dt_t = new DayTimeDuration(negative, days, hours, minutes, seconds, frac_seconds);
   return true;
 }
 
@@ -493,6 +520,11 @@ int32_t Duration::getYears() const
 }
 
 int32_t Duration::getMonths() const
+{
+  return 0;
+}
+
+int32_t Duration::getDays() const
 {
   return 0;
 }
