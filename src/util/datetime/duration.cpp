@@ -102,6 +102,11 @@ int32_t YearMonthDuration::getDays() const
   return 0;
 }
 
+int32_t YearMonthDuration::getHours() const
+{
+  return 0;
+}
+
 bool YearMonthDuration::parse_string(const xqpString& s, YearMonthDuration_t& ym_t)
 {
   std::string ss = *s.getStore();
@@ -265,7 +270,16 @@ int32_t DayTimeDuration::getMonths() const
 
 int32_t DayTimeDuration::getDays() const
 {
-  return normalize().days;
+    return is_negative?
+        -normalize().days:
+        normalize().days;
+}
+
+int32_t DayTimeDuration::getHours() const
+{
+  return is_negative?
+      -timeDuration.hours() % NO_HOURS_IN_DAY:
+      timeDuration.hours() % NO_HOURS_IN_DAY;
 }
 
 DayTimeDuration DayTimeDuration::normalize() const
@@ -525,6 +539,11 @@ int32_t Duration::getMonths() const
 }
 
 int32_t Duration::getDays() const
+{
+  return 0;
+}
+
+int32_t Duration::getHours() const
 {
   return 0;
 }

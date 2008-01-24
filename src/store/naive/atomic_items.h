@@ -194,6 +194,7 @@ public:
   virtual int32_t getYears() const;
   virtual int32_t getMonths() const;
   virtual int32_t getDays() const;
+  virtual int32_t getHours() const;
 };
 
 /*******************************************************************************

@@ -35,6 +35,7 @@ public:
   virtual int32_t getYears() const = 0;
   virtual int32_t getMonths() const = 0;
   virtual int32_t getDays() const = 0;
+  virtual int32_t getHours() const = 0;
 };
 
 
@@ -57,7 +58,8 @@ public:
   virtual int32_t getYears() const;
   virtual int32_t getMonths() const;
   virtual int32_t getDays() const;
-
+  virtual int32_t getHours() const;
+  
 protected:
   YearMonthDuration& operator=(const YearMonthDuration_t& ym_t);
 
@@ -83,6 +85,7 @@ public:
   virtual int32_t getYears() const;
   virtual int32_t getMonths() const;
   virtual int32_t getDays() const;
+  virtual int32_t getHours() const;
 
   virtual DayTimeDuration normalize() const;
 
@@ -110,6 +113,7 @@ public:
   virtual int32_t getYears() const;
   virtual int32_t getMonths() const;
   virtual int32_t getDays() const;
+  virtual int32_t getHours() const;
 
 protected:
   YearMonthDuration yearMonthDuration;
