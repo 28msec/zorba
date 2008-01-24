@@ -989,7 +989,7 @@ namespace xqp
     {
       ZORBA_ASSERT (false);
 
-      delete target;
+      delete[] target;
       return "";
     }
 
@@ -1002,12 +1002,12 @@ namespace xqp
     {
       ZORBA_ASSERT (false);
 
-      delete target;
+      delete[] target;
       return "";
     }
 
     xqpString ret(&target[0]);
-    delete target;
+    delete[] target;
     return ret;
 }
 
