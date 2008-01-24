@@ -195,16 +195,16 @@ AposAttrContentChar 	[\x09\x0A\x0D\x20-\x25\x28-\x3B\x3D-\x7A\x7C\x7E-\xFD]
   */
   
 PITargetStart         [_:A-\xFF]
-PITargetName          [.-_:0-9A-\xFF]
+PITargetName          [.\-_:0-9A-\xFF]
 PITarget              {PITargetStart}{PITargetName}*
 
 NonQuestionMarkChar                 [\x09\x0A\x0D\x20-\x3E\x40-\xFD]
 NonGreaterThanNonQuestionMarkChar   [\x09\x0A\x0D\x20-\x3D\x40-\xFD]
-PIChars                             ({NonQuestionMarkChar}*|"?"+{NonGreaterThanNonQuestionMarkChar})*"?"*
+PIChars                             ({NonQuestionMarkChar}|"?"+{NonGreaterThanNonQuestionMarkChar})*"?"*
 
 NonSharpPragmaChar                  [\x09\x0A\x0D\x20-\x22\x24-\xFD]
 NonSharpNonParPragmaChar            [\x09\x0A\x0D\x20-\x28\x2A-\xFD]
-PragmaChars                         ({NonSharpPragmaChar}*|"#"+{NonSharpNonParPragmaChar})*"#"*
+PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPragmaChar})*"#"*
 
 ValidationMode				("strict"|"lax"|"skip")
 
@@ -686,7 +686,7 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to ITEMTYPE */
 	/* ---------------------- */
-")"{SP}"as"  {
+")"{S}"as" {
 	BEGIN MODE_ITEMTYPE;
 	return token::RPAR_AS;
 }	
@@ -1379,7 +1379,7 @@ typedef yy::xquery_parser::token token;
 	}
 	return token::AS;
 }
-")"{S}"as" {
+")"{S}"as"{SP} {
 	BEGIN MODE_ITEMTYPE;
 	return token::RPAR_AS;
 }
@@ -1636,6 +1636,10 @@ typedef yy::xquery_parser::token token;
 }
 "words" {
 	return token::WORDS;
+}
+"(#" {
+  BEGIN MODE_PRAGMA;
+  return token::PRAGMA_BEGIN;
 }
 
 {CatchAll} {
@@ -2980,14 +2984,14 @@ typedef yy::xquery_parser::token token;
 	/* -------------------------- */
 "]]>" {
 	yy_pop_state(yyscanner);
-	return token::CDATA_END;
+  yylval->sval = driver.symtab.put(yytext, yyleng-3);
+  return token::CHAR_LITERAL_AND_CDATA_END;
 }
 
 	/* maintain CDATA_SECTION */
 	/* ---------------------- */
-{Char}+ {
-	yylval->sval = driver.symtab.put(yytext, yyleng);
-	return token::CHAR_LITERAL;
+{Char} {
+  yymore();
 }
 
 } /* <MODE_CDATA_SECTION> */

@@ -58,6 +58,16 @@ bool is_digit(char ch)
   return (ch >= '0' && ch <= '9');
 }
 
+// checks if a number of count chars, starting with position, are digits
+bool are_digits(std::string& s, unsigned int& position, int count)
+{
+  for(int i=position; i<position+count; i++)
+    if (s[i] < '0' || s[i] > '9')
+      return false;
+
+  return true;
+}
+
 static bool is_leap_year(int year)
 {
   if (((year%4 == 0) && (year%100 != 0))

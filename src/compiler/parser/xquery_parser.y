@@ -147,6 +147,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> ATTRIBUTE_QNAME_LBRACE	"'<attribute QName {>'"
 %token <sval> AT_URI_LITERAL					"'<at URI>'"
 %token <sval> CHAR_LITERAL						"'char literal'"
+%token <sval> CHAR_LITERAL_AND_CDATA_END  "'char literal]]>'"
 %token <sval> CHAR_LITERAL_AND_PI_END "'char literal and pi end'"
 %token <sval> CHAR_REF_LITERAL				"'#charref;'"
 %token <sval> ELEMENT_CONTENT					"'element content'"
@@ -2286,7 +2287,7 @@ OrderSpecList :
 // [40] OrderSpec
 // --------------
 OrderSpec :
-		ExprSingle
+    ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single]\n";
@@ -4471,6 +4472,13 @@ DirCommentConstructor :
 			$$ = new DirCommentConstructor(@$,
 								driver.symtab.get((off_t)$2));
 		}
+  | XML_COMMENT_BEGIN  XML_COMMENT_END                        /* ws: explicitXQ */
+    {
+#ifdef ZORBA_DEBUG_PARSER
+       cout << "DirCommentConstructor [ ]\n";
+#endif
+      $$ = new DirCommentConstructor(@$, "");
+    }
 	;
 
 
@@ -4510,7 +4518,7 @@ DirPIConstructor :
 // [105] CDataSection
 // ------------------
 CDataSection :
-		CDATA_BEGIN  CHAR_LITERAL  CDATA_END 				/* ws: explicitXQ */
+		CDATA_BEGIN  CHAR_LITERAL_AND_CDATA_END 				/* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CDataSection [ ]\n";
