@@ -125,6 +125,7 @@ namespace xqp {
   UNARY_ACCEPT(InScopePrefixesIterator);
   UNARY_ACCEPT(FnReverseIterator);
   UNARY_ACCEPT(FnYearsFromDurationIterator);
+  UNARY_ACCEPT(FnMonthsFromDurationIterator);
   
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);

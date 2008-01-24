@@ -328,6 +328,9 @@ public:
 
   virtual void beginVisit(const FnYearsFromDurationIterator&) ;
   virtual void endVisit(const FnYearsFromDurationIterator&);
+
+  virtual void beginVisit(const FnMonthsFromDurationIterator&) ;
+  virtual void endVisit(const FnMonthsFromDurationIterator&);
   
   virtual void beginVisit ( const FLWORIterator& ) ;
   virtual void endVisit ( const FLWORIterator& ) ;

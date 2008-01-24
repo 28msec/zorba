@@ -264,6 +264,13 @@ public:
     return 0;
   }
 
+  virtual int32_t getMonths() const
+  {
+    this->showError();
+    return 0;
+  }
+  
+
   /** Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
    */
   virtual std::vector<xqp_string> getStringVectorValue() const

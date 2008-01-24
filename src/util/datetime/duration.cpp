@@ -87,6 +87,11 @@ int32_t YearMonthDuration::getYears() const
   return months/12;
 }
 
+int32_t YearMonthDuration::getMonths() const
+{
+  return (months % 12);
+}
+
 bool YearMonthDuration::parse_string(const xqpString& s, YearMonthDuration_t& ym_t)
 {
   std::string ss = *s.getStore();
@@ -239,6 +244,11 @@ xqpString DayTimeDuration::toString() const
 }
 
 int32_t DayTimeDuration::getYears() const
+{
+  return 0;
+}
+
+int32_t DayTimeDuration::getMonths() const
 {
   return 0;
 }
@@ -479,7 +489,11 @@ xqpString Duration::toString() const
 
 int32_t Duration::getYears() const
 {
-  // TODO:
+  return 0;
+}
+
+int32_t Duration::getMonths() const
+{
   return 0;
 }
 

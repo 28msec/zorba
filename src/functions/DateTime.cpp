@@ -70,6 +70,38 @@ fn_years_from_duration::type_check (
 }
 /*end class fn_years_from_duration*/
 
+/*
+ * 10.5.2 fn:months-from-duration
+ * --------------------*/
+/*begin class fn_months_from_duration*/
+fn_months_from_duration::fn_months_from_duration (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
 
+PlanIter_t
+fn_months_from_duration::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnMonthsFromDurationIterator(loc, argv[0]);
+}
+
+bool
+fn_months_from_duration::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_months_from_duration::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_QUESTION;
+}
+/*end class fn_months_from_duration*/
 } // namespace xqp
 

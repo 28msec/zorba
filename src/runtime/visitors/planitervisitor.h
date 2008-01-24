@@ -121,6 +121,7 @@ namespace xqp
   class CtxVariableIterator;
   class FnDateTimeConstructorIterator;
   class FnYearsFromDurationIterator;
+  class FnMonthsFromDurationIterator;
 
   /**
    * Visitor to visit a PlanIterator tree.
@@ -461,6 +462,9 @@ namespace xqp
       virtual void beginVisit ( const FnYearsFromDurationIterator&) = 0;
       virtual void endVisit ( const FnYearsFromDurationIterator&) = 0;
 
+      virtual void beginVisit ( const FnMonthsFromDurationIterator&) = 0;
+      virtual void endVisit ( const FnMonthsFromDurationIterator&) = 0;
+      
       virtual void beginVisit(const CtxVariableIterator&) = 0;
       virtual void endVisit(const CtxVariableIterator&) = 0;
 

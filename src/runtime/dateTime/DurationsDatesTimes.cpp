@@ -103,8 +103,6 @@ FnYearsFromDurationIterator::nextImpl(PlanState& planState)
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-  // TODO: arguments should be of type xs:duration
-
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
   {
@@ -114,4 +112,31 @@ FnYearsFromDurationIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnYearsFromDurationIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.2 fn:months-from-duration
+ *
+ * fn:months-from-duration($arg as xs:duration?) as xs:integer?
+ *_______________________________________________________________________*/
+
+/*begin class FnMonthsFromDurationIterator */
+Item_t 
+FnMonthsFromDurationIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChild, planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getMonths()), state );
+  }
+  STACK_END();
+}
+/*end class FnMonthsFromDurationIterator */
 }

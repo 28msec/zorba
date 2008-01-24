@@ -31,11 +31,26 @@ class fn_datetime_ctor : public function
 /*
   * 10.5.1 fn:years-from-duration
  *-----------------------*/
-   class fn_years_from_duration : public function
+  class fn_years_from_duration : public function
   {
     public:
       fn_years_from_duration(const signature&);
       ~fn_years_from_duration() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+  /*
+  * 10.5.2 fn:months-from-duration
+ *-----------------------*/
+  class fn_months_from_duration : public function
+  {
+    public:
+      fn_months_from_duration(const signature&);
+      ~fn_months_from_duration() {}
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
