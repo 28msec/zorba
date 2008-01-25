@@ -1716,7 +1716,6 @@ void end_visit(const TypeName& v, void *visit_state)
 void *begin_visit(const URILiteralList& v)
 {
   TRACE_VISIT ();
-  nodestack.push(NULL);
   return no_state;
 }
 
