@@ -26,6 +26,8 @@
 
 #include "zorba/common.h"
 
+#include <vector>
+
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "compiler/parser/location.hh"
@@ -442,7 +444,7 @@ public:
 #define NARY_ITER_STATE(iterName, stateName) class iterName \
   : public NaryIterator<iterName, StateTraitsImpl<stateName> > {\
 public:\
-  iterName(yy::location loc, vector<PlanIter_t>& aChildren) :\
+  iterName(yy::location loc, std::vector<PlanIter_t>& aChildren) :\
     NaryIterator<iterName, StateTraitsImpl<stateName> >(loc, aChildren) \
   { } \
   virtual ~iterName() { } \

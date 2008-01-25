@@ -118,22 +118,14 @@ FnIndexOfIteratorState::reset() {
  * If the value of $arg is the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-FnEmptyIterator::FnEmptyIterator(yy::location loc,
-                               PlanIter_t& arg)
-  : UnaryBaseIterator<FnEmptyIterator> ( loc, arg )
-{ }
-
-FnEmptyIterator::~FnEmptyIterator(){}
-
 Item_t 
 FnEmptyIterator::nextImpl(PlanState& planState) {
-  Item_t item;
+  Item_t lSequenceItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild, planState);
-  if (item == NULL) 
+  if ( ( lSequenceItem = consumeNext(theChildren[0], planState) ) == NULL ) 
   {
     STACK_PUSH (Zorba::getItemFactory()->createBoolean ( true ), state);
   }
@@ -150,22 +142,14 @@ FnEmptyIterator::nextImpl(PlanState& planState) {
  * If the value of $arg is not the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-FnExistsIterator::FnExistsIterator(yy::location loc,
-                                   PlanIter_t& arg)
-  : UnaryBaseIterator<FnExistsIterator> ( loc, arg )
-{ }
-
-FnExistsIterator::~FnExistsIterator(){}
-
 Item_t 
 FnExistsIterator::nextImpl(PlanState& planState) {
-  Item_t item;
+  Item_t lSequenceItem;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   
-  item = consumeNext(theChild, planState);
-  if (item != NULL) 
+  if ( (lSequenceItem = consumeNext(theChildren[0], planState) ) != NULL) 
   {
     STACK_PUSH (Zorba::getItemFactory()->createBoolean ( true ), state);
   }
@@ -438,11 +422,6 @@ FnRemoveIterator::FnRemoveIteratorState::reset() {
 
 
 //15.1.9 fn:reverse
-FnReverseIterator::FnReverseIterator(const yy::location& loc, PlanIter_t aChild)
-  : UnaryBaseIterator<FnReverseIterator>(loc, aChild) { }
-
-FnReverseIterator::~FnReverseIterator() { }
-
 Item_t FnReverseIterator::nextImpl(PlanState& planState)
 {
   Item_t iVal;
@@ -450,7 +429,7 @@ Item_t FnReverseIterator::nextImpl(PlanState& planState)
   FnReverseIteratorState *state;
   DEFAULT_STACK_INIT(FnReverseIteratorState, state, planState);
 
-  while((iVal = consumeNext(theChild, planState)) != NULL) {
+  while((iVal = consumeNext(theChildren[0], planState)) != NULL) {
     state->theStack.push(iVal);
   }
 
@@ -463,39 +442,15 @@ Item_t FnReverseIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
-void FnReverseIterator::resetImpl(PlanState& planState)
-{
-  UnaryBaseIterator<FnReverseIterator>::resetImpl(planState);
-  FnReverseIteratorState *state;
-  GET_STATE(FnReverseIteratorState, state, planState);
-  state->reset();
-}
-
-void FnReverseIterator::releaseResourcesImpl(PlanState& planState)
-{
-  UnaryBaseIterator<FnReverseIterator>::releaseResourcesImpl(planState);
-  FnReverseIteratorState *state;
-  GET_STATE(FnReverseIteratorState, state, planState);
-  state->reset();
-}
-
-void FnReverseIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<FnReverseIterator>::setOffset(planState, offset);
-  FnReverseIteratorState* state = 
-    new (planState.block + stateOffset) FnReverseIteratorState;
-}
-
-void FnReverseIterator::FnReverseIteratorState::init()
+void FnReverseIteratorState::init()
 {
   reset();
 }
 
-void FnReverseIterator::FnReverseIteratorState::reset()
+void FnReverseIteratorState::reset()
 {
-  while(!theStack.empty()) {
+  while (!theStack.empty())
     theStack.pop();
-  }
 }
 
 //15.1.10 fn:subsequence
@@ -619,13 +574,6 @@ FnSubsequenceIterator::FnSubsequenceIteratorState::reset()
 |_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
-FnZeroOrOneIterator::FnZeroOrOneIterator(yy::location loc,
-                                         PlanIter_t& aChild)
- : UnaryBaseIterator<FnZeroOrOneIterator> ( loc, aChild )
-{ }
-
-FnZeroOrOneIterator::~FnZeroOrOneIterator(){}
-
 Item_t 
 FnZeroOrOneIterator::nextImpl(PlanState& planState) {
   Item_t lFirstSequenceItem;
@@ -634,10 +582,10 @@ FnZeroOrOneIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lFirstSequenceItem = consumeNext(theChild, planState);
+  lFirstSequenceItem = consumeNext(theChildren[0], planState);
   if (lFirstSequenceItem != NULL)
   {
-    lNextSequenceItem = consumeNext(theChild, planState);
+    lNextSequenceItem = consumeNext(theChildren[0], planState);
     if (lNextSequenceItem != NULL)
     {
       ZORBA_ERROR_ALERT(ZorbaError::FORG0003, 
@@ -652,13 +600,6 @@ FnZeroOrOneIterator::nextImpl(PlanState& planState) {
 
 
 //15.2.2 fn:one-or-more
-FnOneOrMoreIterator::FnOneOrMoreIterator(yy::location loc,
-                                         PlanIter_t& aChild)
- : UnaryBaseIterator<FnOneOrMoreIterator> ( loc, aChild )
-{ }
-
-FnOneOrMoreIterator::~FnOneOrMoreIterator(){}
-
 Item_t 
 FnOneOrMoreIterator::nextImpl(PlanState& planState) {
   Item_t lSequenceItem;
@@ -666,7 +607,7 @@ FnOneOrMoreIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lSequenceItem = consumeNext(theChild, planState);
+  lSequenceItem = consumeNext(theChildren[0], planState);
   if (lSequenceItem == NULL)
   {
     ZORBA_ERROR_ALERT(ZorbaError::FORG0004,
@@ -675,19 +616,12 @@ FnOneOrMoreIterator::nextImpl(PlanState& planState) {
   do
   {
     STACK_PUSH(lSequenceItem, state);
-  } while ( (lSequenceItem = consumeNext(theChild, planState)) != NULL );
+  } while ( (lSequenceItem = consumeNext(theChildren[0], planState)) != NULL );
 
   STACK_END();
 }
 
 //15.2.3 fn:exactly-one
-FnExactlyOneIterator::FnExactlyOneIterator(yy::location loc,
-                                           PlanIter_t& aChild)
- : UnaryBaseIterator<FnExactlyOneIterator> ( loc, aChild )
-{ }
-
-FnExactlyOneIterator::~FnExactlyOneIterator(){}
-
 Item_t 
 FnExactlyOneIterator::nextImpl(PlanState& planState) {
   Item_t lFirstItem;
@@ -696,8 +630,8 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lFirstItem = consumeNext(theChild, planState);
-  lNextItem = consumeNext(theChild, planState);
+  lFirstItem = consumeNext(theChildren[0], planState);
+  lNextItem = consumeNext(theChildren[0], planState);
   if ( lFirstItem == NULL || lNextItem != NULL )
   {
     ZORBA_ERROR_ALERT(ZorbaError::FORG0005,
@@ -730,13 +664,6 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) {
 |_______________________________________________________________________*/
 
 //15.4.1 fn:count
-FnCountIterator::FnCountIterator(yy::location loc,
-                                           PlanIter_t& aChild)
- : UnaryBaseIterator<FnCountIterator> ( loc, aChild )
-{ }
-
-FnCountIterator::~FnCountIterator(){}
-
 Item_t 
 FnCountIterator::nextImpl(PlanState& planState) {
   Item_t lSequenceItem;
@@ -745,7 +672,7 @@ FnCountIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while ( (lSequenceItem = consumeNext(theChild, planState)) != NULL )
+  while ( (lSequenceItem = consumeNext(theChildren[0], planState)) != NULL )
   {
     ++lCount;
   }
@@ -756,13 +683,6 @@ FnCountIterator::nextImpl(PlanState& planState) {
 }
 
 //15.4.2 fn:avg
-FnAvgIterator::FnAvgIterator(yy::location loc,
-                                           PlanIter_t& aChild)
- : UnaryBaseIterator<FnAvgIterator> ( loc, aChild )
-{ }
-
-FnAvgIterator::~FnAvgIterator(){}
-
 Item_t 
 FnAvgIterator::nextImpl(PlanState& planState) {
   Item_t lSumItem;
@@ -772,10 +692,10 @@ FnAvgIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lSumItem = consumeNext(theChild, planState);
+  lSumItem = consumeNext(theChildren[0], planState);
   if (lSumItem != NULL) // return empty-sequence if input is empty
   {
-    while ( (lRunningItem = consumeNext(theChild, planState)) != NULL )
+    while ( (lRunningItem = consumeNext(theChildren[0], planState)) != NULL )
     {
       // TODO add datetime
       if (lRunningItem->isNumeric() && lRunningItem->isNaN()) {
@@ -794,13 +714,6 @@ FnAvgIterator::nextImpl(PlanState& planState) {
 }
 
 //15.4.3 fn:max
-FnMaxIterator::FnMaxIterator(yy::location loc,
-                             vector<PlanIter_t>& aChildren)
- : NaryBaseIterator<FnMaxIterator> ( loc, aChildren )
-{ }
-
-FnMaxIterator::~FnMaxIterator(){}
-
 Item_t 
 FnMaxIterator::nextImpl(PlanState& planState) {
   Item_t lMaxItem;
@@ -834,13 +747,6 @@ FnMaxIterator::nextImpl(PlanState& planState) {
 }
 
 //15.4.4 fn:min
-FnMinIterator::FnMinIterator(yy::location loc,
-                             vector<PlanIter_t>& aChildren)
- : NaryBaseIterator<FnMinIterator> ( loc, aChildren )
-{ }
-
-FnMinIterator::~FnMinIterator(){}
-
 Item_t 
 FnMinIterator::nextImpl(PlanState& planState) {
   Item_t lMinItem;
@@ -874,13 +780,6 @@ FnMinIterator::nextImpl(PlanState& planState) {
 }
 
 //15.4.5 fn:sum
-FnSumIterator::FnSumIterator(yy::location loc,
-                             vector<PlanIter_t>& aChildren)
- : NaryBaseIterator<FnSumIterator> ( loc, aChildren )
-{ }
-
-FnSumIterator::~FnSumIterator(){}
-
 Item_t 
 FnSumIterator::nextImpl(PlanState& planState) {
   Item_t lSumItem;

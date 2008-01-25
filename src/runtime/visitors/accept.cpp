@@ -102,13 +102,6 @@ namespace xqp {
   UNARY_ACCEPT(FnRootIterator);
   UNARY_ACCEPT(FnNodeNameIterator);
   UNARY_ACCEPT(EnclosedIterator);
-  UNARY_ACCEPT(FnExistsIterator);
-  UNARY_ACCEPT(FnEmptyIterator);
-  UNARY_ACCEPT(FnZeroOrOneIterator);
-  UNARY_ACCEPT(FnOneOrMoreIterator);
-  UNARY_ACCEPT(FnExactlyOneIterator);
-  UNARY_ACCEPT(FnCountIterator);
-  UNARY_ACCEPT(FnAvgIterator);
   UNARY_ACCEPT(FnDocIterator);
   UNARY_ACCEPT(FnStringIterator);
   UNARY_ACCEPT(OpNumericUnaryIterator);
@@ -123,7 +116,6 @@ namespace xqp {
   UNARY_ACCEPT(LocalNameFromQNameIterator);
   UNARY_ACCEPT(NamespaceUriFromQNameIterator);
   UNARY_ACCEPT(InScopePrefixesIterator);
-  UNARY_ACCEPT(FnReverseIterator);
   UNARY_ACCEPT(FnYearsFromDurationIterator);
   UNARY_ACCEPT(FnMonthsFromDurationIterator);
   UNARY_ACCEPT(FnDaysFromDurationIterator);
@@ -151,7 +143,6 @@ namespace xqp {
   BINARY_ACCEPT(NamespaceUriForPrefixlIterator);
   BINARY_ACCEPT(ResolveQNameIterator);
   BINARY_ACCEPT(QNameIterator);
-  BINARY_ACCEPT(FnTraceIterator);
   
   // nary iterators
   NARY_ACCEPT(NormalizeUnicodeIterator);
@@ -167,9 +158,6 @@ namespace xqp {
   NARY_ACCEPT(FnDistinctValuesIterator);
   NARY_ACCEPT(FnInsertBeforeIterator);
   NARY_ACCEPT(FnSubsequenceIterator);
-  NARY_ACCEPT(FnMaxIterator);
-  NARY_ACCEPT(FnMinIterator);
-  NARY_ACCEPT(FnSumIterator);
   NARY_ACCEPT(UDFunctionCallIterator);
   
   // special iterators

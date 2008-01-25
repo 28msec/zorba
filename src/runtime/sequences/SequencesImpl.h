@@ -2,6 +2,7 @@
  * Copyright FLWOR Foundation
  *
  * Author: David Graf (david.graf@28msec.com)
+ *         Matthias Brantner (matthias.brantner@28msec.com)
  */
 
 #ifndef XQP_SEQUENCES_IMPL_H
@@ -63,21 +64,7 @@ NARY_ITER_STATE(FnIndexOfIterator, FnIndexOfIteratorState);
  * If the value of $arg is the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-class FnEmptyIterator : public UnaryBaseIterator<FnEmptyIterator>
-{
-
-public:
-	FnEmptyIterator(yy::location loc,
-	               PlanIter_t& arg);
-	
-	~FnEmptyIterator();
-
-	Item_t 
-	nextImpl(PlanState& planState);
-	
-	virtual void 
-	accept(PlanIterVisitor&) const;
-};
+NARY_ITER(FnEmptyIterator);
 
 
 //15.1.5 fn:exists
@@ -85,21 +72,7 @@ public:
  * If the value of $arg is not the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-class FnExistsIterator : public UnaryBaseIterator<FnExistsIterator>
-{
-
-public:
-	FnExistsIterator(yy::location loc,
-	               PlanIter_t& arg);
-	
-	~FnExistsIterator();
-
-	Item_t 
-	nextImpl(PlanState& planState);
-	
-	virtual void 
-	accept(PlanIterVisitor&) const;
-};
+NARY_ITER(FnExistsIterator);
 
 //15.1.6 fn:distinct-values
 class FnDistinctValuesIterator : public NaryBaseIterator<FnDistinctValuesIterator>
@@ -235,33 +208,15 @@ protected:
 
 
 //15.1.9 fn:reverse
-class FnReverseIterator : public UnaryBaseIterator<FnReverseIterator> {
+class FnReverseIteratorState : public PlanIteratorState {
   public:
-    FnReverseIterator(const yy::location& loc, PlanIter_t aChild);
+    std::stack<Item_t> theStack;
 
-    virtual ~FnReverseIterator();
-
-    Item_t nextImpl(PlanState& planState);
-
-    void resetImpl(PlanState& planState);
-
-    void releaseResourcesImpl(PlanState& planState);
-
-    virtual uint32_t getStateSize() const { return sizeof(FnReverseIteratorState); }
-
-    void setOffset(PlanState& planState, uint32_t& offset);
-
-    virtual void accept(PlanIterVisitor& v) const;
-
-  protected:
-    class FnReverseIteratorState : public PlanIteratorState {
-      public:
-        std::stack<Item_t> theStack;
-
-        void init();
-        void reset();
-    };
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnReverseIterator, FnReverseIteratorState);
 
 //15.1.10 fn:subsequence
 // Returns the contiguous sequence of items in the value of $sourceSeq beginning at the position indicated by the value 
@@ -317,50 +272,13 @@ protected:
   |_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
-class FnZeroOrOneIterator : public UnaryBaseIterator<FnZeroOrOneIterator>
-{
-public:
-  FnZeroOrOneIterator(yy::location loc, PlanIter_t& aChild);
- 
-  ~FnZeroOrOneIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
-  
-  virtual void 
-  accept(PlanIterVisitor&) const;
-};
+NARY_ITER(FnZeroOrOneIterator);
 
 //15.2.2 fn:one-or-more
-class FnOneOrMoreIterator : public UnaryBaseIterator<FnOneOrMoreIterator>
-{
-public:
-  FnOneOrMoreIterator(yy::location loc, PlanIter_t& aChild);
- 
-  ~FnOneOrMoreIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
-  
-  virtual void 
-  accept(PlanIterVisitor&) const;
-};
+NARY_ITER(FnOneOrMoreIterator);
 
 //15.2.3 fn:exactly-one
-class FnExactlyOneIterator : public UnaryBaseIterator<FnExactlyOneIterator>
-{
-public:
-  FnExactlyOneIterator(yy::location loc, PlanIter_t& aChild);
- 
-  ~FnExactlyOneIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
-  
-  virtual void 
-  accept(PlanIterVisitor&) const;
-};
-
+NARY_ITER(FnExactlyOneIterator);
 
   /*______________________________________________________________________
   |
@@ -382,81 +300,19 @@ public:
   |_______________________________________________________________________*/
 
 //15.4.1 fn:count
-class FnCountIterator : public UnaryBaseIterator<FnCountIterator>
-{
-public:
-  FnCountIterator(yy::location loc, PlanIter_t& aChild);
- 
-  ~FnCountIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
-  
-  virtual void 
-  accept(PlanIterVisitor&) const;
-};
+NARY_ITER(FnCountIterator);
 
 //15.4.2 fn:avg
-class FnAvgIterator : public UnaryBaseIterator<FnAvgIterator>
-{
-public:
-  FnAvgIterator(yy::location loc, PlanIter_t& aChild);
- 
-  ~FnAvgIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
-  
-  virtual void 
-  accept(PlanIterVisitor&) const;
-};
+NARY_ITER(FnAvgIterator);
 
 //15.4.3 fn:max
-class FnMaxIterator : public NaryBaseIterator<FnMaxIterator>
-{
-public:
-  FnMaxIterator(yy::location loc, vector<PlanIter_t>& aChildren);
- 
-  ~FnMaxIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
-  
-  virtual void 
-  accept(PlanIterVisitor&) const;
-};
-
+NARY_ITER(FnMaxIterator);
 
 //15.4.4 fn:min
-class FnMinIterator : public NaryBaseIterator<FnMinIterator>
-{
-public:
-  FnMinIterator(yy::location loc, vector<PlanIter_t>& aChildren);
- 
-  ~FnMinIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
-  
-  virtual void 
-  accept(PlanIterVisitor&) const;
-};
+NARY_ITER(FnMinIterator);
 
 //15.4.5 fn:sum
-class FnSumIterator : public NaryBaseIterator<FnSumIterator>
-{
-public:
-  FnSumIterator(yy::location loc, vector<PlanIter_t>& aChildren);
- 
-  ~FnSumIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
-  
-  virtual void 
-  accept(PlanIterVisitor&) const;
-};
-
+NARY_ITER(FnSumIterator);
 
   /*______________________________________________________________________
   |

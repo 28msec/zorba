@@ -142,7 +142,7 @@ PlanIter_t fn_empty::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new FnEmptyIterator(loc, argv[0]);
+  return new FnEmptyIterator(loc, argv);
 }
 
 bool fn_empty::validate_args(
@@ -167,13 +167,13 @@ PlanIter_t fn_exists::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new FnExistsIterator(loc,argv[0]);
+  return new FnExistsIterator(loc,argv);
 }
 
 bool fn_exists::validate_args(
 	vector<PlanIter_t>& argv) const
 {
-  return (argv.size() == 1); // unary function
+  return (argv.size() == 1);
 }
 
 TypeSystem::xqtref_t fn_exists::type_check(
@@ -268,7 +268,7 @@ PlanIter_t fn_reverse::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return new FnReverseIterator(loc, argv[0]);
+	return new FnReverseIterator(loc, argv);
 }
 
 bool fn_reverse::validate_args(
@@ -326,7 +326,7 @@ PlanIter_t fn_zero_or_one::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new FnZeroOrOneIterator(loc, argv[0]);
+  return new FnZeroOrOneIterator(loc, argv);
 }
 
 bool fn_zero_or_one::validate_args(
@@ -349,7 +349,7 @@ PlanIter_t fn_one_or_more::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new FnOneOrMoreIterator(loc, argv[0]);
+  return new FnOneOrMoreIterator(loc, argv);
 }
 
 bool fn_one_or_more::validate_args(
@@ -372,7 +372,7 @@ PlanIter_t fn_exactly_one::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new FnExactlyOneIterator(loc, argv[0]);
+  return new FnExactlyOneIterator(loc, argv);
 }
 
 bool fn_exactly_one::validate_args(
@@ -416,7 +416,7 @@ PlanIter_t fn_count::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
- return new FnCountIterator(loc, argv[0]);
+ return new FnCountIterator(loc, argv);
 }
 
 bool fn_count::validate_args(
@@ -439,7 +439,7 @@ PlanIter_t fn_avg::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new FnAvgIterator(loc, argv[0]);
+  return new FnAvgIterator(loc, argv);
 }
 
 bool fn_avg::validate_args(
