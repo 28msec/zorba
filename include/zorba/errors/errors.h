@@ -1,5 +1,5 @@
-#ifndef API_ERRORS_ERRORS
-#define API_ERRORS_ERRORS
+#ifndef ZORBA_API_ERRORS_ERRORS
+#define ZORBA_API_ERRORS_ERRORS
 
 #include <vector>
 #include <list>
@@ -186,7 +186,11 @@ public:
     // the result of the content expression of a computed processing instruction
     // constructor contains the string "?>".
 
-    XQDY0027,  // In a validate expression, it is a dynamic error if the root element information item in the PSVI resulting from validation does not have the expected validity property: valid if validation mode is strict, or either valid or notKnown if validation mode is lax.
+    XQDY0027,
+    // In a validate expression, it is a dynamic error if the root element
+    // information item in the PSVI resulting from validation does not have
+    // the expected validity property: valid if validation mode is strict,
+    // or either valid or notKnown if validation mode is lax.
 
     XQDY0029,
     // (Not currently used.)
@@ -364,24 +368,41 @@ public:
     // multiple schema imports specify the same target namespace.
 
     XQST0059,
-    // an implementation is unable to process a schema or module import by finding a schema or module with the specified target namespace.
+    // an implementation is unable to process a schema or module import by
+    // finding a schema or module with the specified target namespace.
+
     XQST0060,
-    // the name of a function in a function declaration is not in a namespace (expanded QName has a null namespace URI).
+    // the name of a function in a function declaration is not in a namespace
+    // (expanded QName has a null namespace URI).
+
     XQST0063,
     // (Not currently used.)
+
     XQST0065,
-    // A static error is raised if a Prolog contains more than one ordering mode declaration.
+    // A static error is raised if a Prolog contains more than one ordering
+    // mode declaration.
+
     XQST0066,
-    // A static error is raised if a Prolog contains more than one default element/type namespace declaration, or more than one default function namespace declaration.
+    // A static error is raised if a Prolog contains more than one default
+    // element/type namespace declaration, or more than one default function
+    // namespace declaration.
+
     XQST0067,
     // A static error is raised if a Prolog contains more than one construction declaration.
+
     XQST0068,
-    // A static error is raised if a Prolog contains more than one boundary-space declaration.
+    // A static error is raised if a Prolog contains more than one boundary-space
+    // declaration.
+
     XQST0069,
     // A static error is raised if a Prolog contains more than one empty order declaration.
 
     XQST0070,
-    // A static error is raised if a namespace URI is bound to the predefined prefix xmlns, or if a namespace URI other than http:// www.w3.org/XML/1998/namespace is bound to the prefix xml, or if the prefix xml is bound to a namespace URI other than http:// www.w3.org/XML/1998/namespace.
+    // A static error is raised if a namespace URI is bound to the predefined
+    // prefix xmlns, or if a namespace URI other than
+    // http:// www.w3.org/XML/1998/namespace is bound to the prefix xml, or if
+    // the prefix xml is bound to a namespace URI other
+    // than http:// www.w3.org/XML/1998/namespace.
 
     XQST0071,
     // A static error is raised if the namespace declaration attributes of a
@@ -561,8 +582,8 @@ public:
     XQP0013_SYSTEM_MMFILE_IOEXCEPTION,
     XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
     XQP0016_LOADER_IO_ERROR,
-    XQP0017_LOADER_NOT_WELL_FORMED_XML,
-    XQP0018_NODEID_OUT_OF_RANGE,
+    XQP0017_LOADER_PARSING_ERROR,
+    XQP0018_NODEID_ERROR,
     XQP0019_INTERNAL_ERROR,
 
     //
@@ -575,7 +596,6 @@ public:
     API0005_COLLECTION_ALREADY_EXISTS,
     API0006_COLLECTION_NOT_FOUND,
     API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
-    API0008,  // Document already exists
 		API0009_THREAD_NOT_INITIALIZED,
 		API0010_XQUERY_EXECUTION_NOT_STARTED,
 
@@ -583,13 +603,13 @@ public:
   };
 
   ErrorCodes          theCode;
-//  bool                theIsFatal;
   ZorbaAlertLocation  theLocation;
 
   virtual ~ZorbaError();
 
-  static std::string toString(enum ErrorCodes);
 	virtual void DumpAlert(std::ostream &os);
+
+  static std::string toString(enum ErrorCodes);
 };
 
 

@@ -79,7 +79,7 @@ public:
    /**Construct a xqpString as a wrapper of an existing xqpStringStore
     * @param src A source UTF-8 encoded string
     */
-    xqpString(const xqpStringStore_t &other) : theStrStore(other) {}
+    xqpString(xqpStringStore* other) : theStrStore(other) {}
 
     /**Construct a xqpString given a std::string
      * @param src A source std::string containin ASCII characters

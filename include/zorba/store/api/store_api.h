@@ -9,6 +9,9 @@
 namespace xqp
 {
 
+typedef rchandle<class Collection> Collection_t;
+
+
 class XmlDataManager : public rcobject
 {
 public:

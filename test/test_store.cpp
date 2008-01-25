@@ -12,7 +12,6 @@
 
 #include "zorba_api.h"
 #include "store/naive/basic_item_factory.h"
-//#include "error_display.h"
 
 using namespace xqp;
 
@@ -48,11 +47,6 @@ void readXmlFile(const char* fileName, std::string& xmlString)
 
 int main(int argc, const char * argv[])
 {
-#ifndef WIN32
-	Timer timer;
-	timer.start();
-#endif
-
 	// xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
   if (argc < 2)
@@ -67,12 +61,6 @@ int main(int argc, const char * argv[])
   //
   xqp::SimpleStore* store = static_cast<xqp::SimpleStore*>(&xqp::Store::getInstance());
 
-#ifndef WIN32
-  timer.suspend();
-  std::cout << "construction time : " << timer.getTime() << std::endl;
-  timer.resume();
-#endif
-
   //
   // Zorba initialization
   // 
@@ -85,11 +73,22 @@ int main(int argc, const char * argv[])
   //
   // Create collections
   //
-  xqp::Collection_t coll1 = store->createCollection("http://MyCollection1");
+  xqp::Collection_t coll1;
+  xqp::Collection_t coll2;
 
-  std::cout << coll1->getUri()->show() << std::endl;
+  try
+  {
+    coll1 = store->createCollection("http://MyCollection1");
 
-  xqp::Collection_t coll2 = store->createCollection("http://MyCollection1");
+    std::cout << coll1->getUri()->show() << std::endl;
+
+    coll2 = store->createCollection("http://MyCollection1");
+  }
+  catch (xqp_exception& e)
+  {
+    e.getError().DumpAlert(std::cerr);
+    abort();
+  }
 
 	errmanager.DumpAlerts(std::cerr);
 
@@ -105,8 +104,28 @@ int main(int argc, const char * argv[])
   }
 
   std::iostream xmlStream(xmlFile.rdbuf());
+  Item_t doc;
 
-  Item_t doc = coll1->addToCollection(xmlStream);
+#ifndef WIN32
+	Timer timer;
+	timer.start();
+#endif
+
+  try
+  {
+    doc = coll1->addToCollection(xmlStream);
+  }
+  catch (xqp_exception& e)
+  {
+    e.getError().DumpAlert(std::cerr);
+    abort();
+  }
+
+#ifndef WIN32
+  timer.suspend();
+  std::cout << "Loading time : " << timer.getTime() << std::endl;
+  timer.resume();
+#endif
 
   xmlFile.close();
 
@@ -120,7 +139,10 @@ int main(int argc, const char * argv[])
     abort();
   }
 
-  outXmlFile << doc->show() << std::endl;
+  if (doc != NULL)
+    outXmlFile << doc->show() << std::endl;
+  else
+    errmanager.DumpAlerts(outXmlFile);
 
   errmanager.DumpAlerts(std::cerr);
 

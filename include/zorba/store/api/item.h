@@ -30,7 +30,7 @@ typedef rchandle<class NodeItem> NodeItem_t;
 
 typedef rchandle<class Iterator> Iterator_t;
 
-typedef std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
+typedef std::vector<std::pair<xqp_string, xqp_string> > NsBindings;
 
 typedef StoreConsts::NodeKind_t NodeKind_t;
 
@@ -489,11 +489,9 @@ public:
   /** Accessor for element node
    *  @return  returns prefix namespace pairs
    */
-  virtual NamespaceBindings getNamespaceBindings() const
+  virtual void getNamespaceBindings(NsBindings& bindings) const
   {
     this->showError();
-    std::vector<std::pair<xqp_string, xqp_string> > vec;
-    return vec;
   }
   
   /** Accessor for element node

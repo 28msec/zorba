@@ -11,6 +11,8 @@ namespace xqp {
 class XQuery;
 typedef rchandle<XQuery>	XQuery_t;
 
+typedef rchandle<Collection> Collection_t;
+
 class XQuery : public Iterator
 {
 public:

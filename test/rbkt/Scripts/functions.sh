@@ -134,6 +134,14 @@ function run_query
 
   #echo "XARGS = ${XARGS}"
 
+  SEDARG=`echo ${testRootDir} | sed -r 's/\//\\\\\//g'`
+
+  echo "s/\$RBKT_SRC_DIR/$SEDARG/g" > sedargs
+
+  XARGS=`echo ${XARGS} | sed -f sedargs`
+
+  rm sedargs
+
   if [ $displayFormat == "xml" ]; then
     #echo "${EXE} ${XARGS} -r -o ${queryFile}.res ${queryFile} 2> ${queryFile}.err"
     ${EXE} ${XARGS} -r -o "${queryFile}.res" "${queryFile}" 2> ${queryFile}.err

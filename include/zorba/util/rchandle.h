@@ -32,23 +32,23 @@ namespace xqp {
 ********************************************************************************/
 class rcobject
 {
-private:
-  int refCount;
+protected:
+  long theRefCount;
 
 public:
-  rcobject() :	refCount(0) { }
+  rcobject() : theRefCount(0) { }
 
-  rcobject(const rcobject& rhs) : 	refCount(0) { }
+  rcobject(const rcobject& rhs) : theRefCount(0) { }
 
   virtual ~rcobject() { }
 
-  virtual void free()      { delete this; }
+  virtual void free()              { delete this; }
 
-	int getRefCount() const  { return refCount; }
+	long getRefCount() const         { return theRefCount; }
 
-  void addReference()      { ++(this->refCount); }
+  virtual void addReference()      { ++(theRefCount); }
 
-  void removeReference()   { if (--refCount == 0) this->free(); }
+  virtual void removeReference()   { if (--theRefCount == 0) this->free(); }
 
 	rcobject& operator=(const rcobject&) { return *this; }
 };

@@ -17,9 +17,8 @@ namespace xqp
 {
 template <class Object> class rchandle;
 	
-typedef rchandle<class Item> Item_t;
 typedef rchandle<class Iterator> Iterator_t;
-typedef rchandle<class Collection> Collection_t;
+
 
 class Collection : public rcobject
 {
@@ -59,21 +58,21 @@ public:
    *
    * @param node The node to insert
    */
-  virtual void addToCollection(const Item_t& node) = 0;
+  virtual void addToCollection(const Item* node) = 0;
 
   /**
    * Inserts to the collection the set of nodes returned by the given iterator.
    *
    * @param nodeIter The iterator which produces the nodes to insert
    */
-  virtual void addToCollection(Iterator_t& nodeIter) = 0;
+  virtual void addToCollection(Iterator* nodeIter) = 0;
 		
   /**
    * Removes a node from the collection.
    *
    * @param node to be removed
    */
-  virtual void removeFromCollection(const Item_t& node) = 0;
+  virtual void removeFromCollection(const Item* node) = 0;
 };
 
 } /* namespace xqp */
