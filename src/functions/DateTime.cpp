@@ -410,5 +410,38 @@ fn_minutes_from_datetime::type_check (
 }
 /*end class fn_minutes_from_datetime*/
 
+/*
+ * 10.5.12 fn:seconds-from-dateTime
+ * --------------------*/
+/*begin class fn_seconds_from_datetime*/
+fn_seconds_from_datetime::fn_seconds_from_datetime (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+fn_seconds_from_datetime::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnSecondsFromDatetimeIterator(loc, argv[0]);
+}
+
+bool
+fn_seconds_from_datetime::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_seconds_from_datetime::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
+}
+/*end class fn_seconds_from_datetime*/
 } // namespace xqp
 

@@ -45,6 +45,8 @@ public:
   int32_t getDay() const;
   int32_t getHours() const;
   int32_t getMinutes() const;
+  double getSeconds() const;
+      
 
 protected:
   DateTime& operator=(const DateTime_t& t_t);

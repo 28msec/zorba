@@ -294,8 +294,27 @@ class FnMinutesFromDatetimeIterator : public UnaryBaseIterator<FnMinutesFromDate
     virtual void accept(PlanIterVisitor&) const;
 };
 /*end class FnMinutesFromDatetimeIterator */
+
 /*
-10.5.12 fn:seconds-from-dateTime
+ * 10.5.12 fn:seconds-from-dateTime
+ * --------------------*/
+ 
+/*begin class FnSecondsFromDatetimeIterator */
+class FnSecondsFromDatetimeIterator : public UnaryBaseIterator<FnSecondsFromDatetimeIterator>
+{
+  public:
+    FnSecondsFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
+  :
+    UnaryBaseIterator<FnSecondsFromDatetimeIterator>( loc, arg ){};
+  
+    ~FnSecondsFromDatetimeIterator(){};
+  public:
+    Item_t nextImpl(PlanState& planState);
+    
+    virtual void accept(PlanIterVisitor&) const;
+};
+/*end class FnSecondsFromDatetimeIterator */
+/*
 10.5.13 fn:timezone-from-dateTime
 10.5.14 fn:year-from-date
 10.5.15 fn:month-from-date

@@ -382,4 +382,33 @@ FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnMinutesFromDatetimeIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.11 fn:seconds-from-dateTime
+ *
+ * fn:seconds-from-dateTime($arg as xs:dateTime?) as xs:decimal?
+ *_______________________________________________________________________*/
+
+/*begin class FnSecondsFromDatetimeIterator */
+Item_t 
+FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChild, planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createDecimal(itemArg->getSeconds()), state );
+  }
+  STACK_END();
+}
+/*end class FnSecondsFromDatetimeIterator */
+
+
 }

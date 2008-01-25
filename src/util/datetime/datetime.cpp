@@ -123,4 +123,15 @@ int32_t DateTime::getMinutes() const
 {
   return the_date_time.time_of_day().minutes();
 }
+
+double DateTime::getSeconds() const
+{
+  double frac_sec = the_date_time.time_of_day().fractional_seconds();
+  while(frac_sec > 1)
+  {
+    frac_sec = frac_sec /10;
+  }
+  
+  return the_date_time.time_of_day().seconds() + frac_sec;
+}
 } // namespace xqp

@@ -135,6 +135,7 @@ namespace xqp {
   UNARY_ACCEPT(FnDayFromDatetimeIterator);
   UNARY_ACCEPT(FnHoursFromDatetimeIterator);
   UNARY_ACCEPT(FnMinutesFromDatetimeIterator);
+  UNARY_ACCEPT(FnSecondsFromDatetimeIterator);
   
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);
