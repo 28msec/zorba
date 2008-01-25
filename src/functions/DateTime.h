@@ -131,6 +131,36 @@ class fn_datetime_ctor : public function
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
       TypeSystem::xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.5.8 fn:month-from-dateTime
+ *-----------------------*/
+  class fn_month_from_datetime : public function
+  {
+    public:
+      fn_month_from_datetime(const signature&);
+      ~fn_month_from_datetime() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.5.9 fn:day-from-dateTime
+ *-----------------------*/
+  class fn_day_from_datetime : public function
+  {
+    public:
+      fn_day_from_datetime(const signature&);
+      ~fn_day_from_datetime() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
   };  
 } // namespace xqp
 

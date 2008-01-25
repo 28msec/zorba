@@ -215,10 +215,48 @@ class FnYearFromDatetimeIterator : public UnaryBaseIterator<FnYearFromDatetimeIt
 };
 /*end class FnYearFromDatetimeIterator */
 
+/*
+ * 10.5.8 fn:month-from-dateTime
+ * --------------------*/
+ 
+/*begin class FnMonthFromDatetimeIterator */
+class FnMonthFromDatetimeIterator : public UnaryBaseIterator<FnMonthFromDatetimeIterator>
+{
+  public:
+    FnMonthFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
+  :
+    UnaryBaseIterator<FnMonthFromDatetimeIterator>( loc, arg ){};
+  
+    ~FnMonthFromDatetimeIterator(){};
+  public:
+    Item_t nextImpl(PlanState& planState);
+    
+    virtual void accept(PlanIterVisitor&) const;
+};
+/*end class FnMonthFromDatetimeIterator */
 
 /*
-10.5.8 fn:month-from-dateTime
-10.5.9 fn:day-from-dateTime
+ * 10.5.9 fn:day-from-dateTime
+ * --------------------*/
+ 
+/*begin class FnDayFromDatetimeIterator */
+class FnDayFromDatetimeIterator : public UnaryBaseIterator<FnDayFromDatetimeIterator>
+{
+  public:
+    FnDayFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
+  :
+    UnaryBaseIterator<FnDayFromDatetimeIterator>( loc, arg ){};
+  
+    ~FnDayFromDatetimeIterator(){};
+  public:
+    Item_t nextImpl(PlanState& planState);
+    
+    virtual void accept(PlanIterVisitor&) const;
+};
+/*end class FnDayFromDatetimeIterator */
+
+
+/*
 10.5.10 fn:hours-from-dateTime
 10.5.11 fn:minutes-from-dateTime
 10.5.12 fn:seconds-from-dateTime

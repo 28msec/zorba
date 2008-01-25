@@ -346,8 +346,15 @@ public:
 
   virtual void beginVisit(const FnYearFromDatetimeIterator&) ;
   virtual void endVisit(const FnYearFromDatetimeIterator&);
+
+  virtual void beginVisit(const FnMonthFromDatetimeIterator&) ;
+  virtual void endVisit(const FnMonthFromDatetimeIterator&);
+
+  virtual void beginVisit(const FnDayFromDatetimeIterator&) ;
+  virtual void endVisit(const FnDayFromDatetimeIterator&);
+
   
-  
+      
   virtual void beginVisit ( const FLWORIterator& ) ;
   virtual void endVisit ( const FLWORIterator& ) ;
   

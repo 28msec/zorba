@@ -101,8 +101,17 @@ int DateTime::compare(const DateTime& t) const
 
 int32_t DateTime::getYear() const
 {
-  boost::gregorian::date the_date = the_date_time.date();
-  return the_date.year();
+  return the_date_time.date().year();
+}
+
+int32_t DateTime::getMonth() const
+{
+  return the_date_time.date().month();
+}
+
+int32_t DateTime::getDay() const
+{
+  return the_date_time.date().day();
 }
 
 } // namespace xqp

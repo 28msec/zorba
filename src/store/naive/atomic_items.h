@@ -175,6 +175,8 @@ public:
   virtual xqp_string show() const;
 
   virtual int32_t getYear() const;
+  virtual int32_t getMonth() const;
+  virtual int32_t getDay() const;
 };
 
 /*******************************************************************************

@@ -274,6 +274,74 @@ fn_year_from_datetime::type_check (
 }
 /*end class fn_seconds_from_duration*/
 
+/*
+ * 10.5.8 fn:month-from-dateTime
+ * --------------------*/
+/*begin class fn_month_from_datetime*/
+fn_month_from_datetime::fn_month_from_datetime (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+fn_month_from_datetime::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnMonthFromDatetimeIterator(loc, argv[0]);
+}
+
+bool
+fn_month_from_datetime::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_month_from_datetime::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
+}
+/*end class fn_month_from_datetime*/
+
+/*
+ * 10.5.9 fn:day-from-dateTime
+ * --------------------*/
+/*begin class fn_day_from_datetime*/
+fn_day_from_datetime::fn_day_from_datetime (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+fn_day_from_datetime::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnDayFromDatetimeIterator(loc, argv[0]);
+}
+
+bool
+fn_day_from_datetime::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_day_from_datetime::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
+}
+/*end class fn_day_from_datetime*/
+
 
 } // namespace xqp
 

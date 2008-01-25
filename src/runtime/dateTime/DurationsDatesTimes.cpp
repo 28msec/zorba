@@ -274,4 +274,58 @@ FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnYearFromDatetimeIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.8 fn:month-from-dateTime
+ *
+ * fn:month-from-dateTime($arg as xs:dateTime?) as xs:integer?
+ *_______________________________________________________________________*/
+
+/*begin class FnMonthFromDatetimeIterator */
+Item_t 
+FnMonthFromDatetimeIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChild, planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getMonth()), state );
+  }
+  STACK_END();
+}
+/*end class FnMonthFromDatetimeIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.9 fn:day-from-dateTime
+ *
+ * fn:day-from-dateTime($arg as xs:dateTime?) as xs:integer?
+ *_______________________________________________________________________*/
+
+/*begin class FnDayFromDatetimeIterator */
+Item_t 
+FnDayFromDatetimeIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChild, planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDay()), state );
+  }
+  STACK_END();
+}
+/*end class FnDayFromDatetimeIterator */
 }

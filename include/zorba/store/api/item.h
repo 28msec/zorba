@@ -247,6 +247,19 @@ public:
     this->showError();
     return 0;
   }
+
+  virtual int32_t getMonth() const
+  {
+    this->showError();
+    return 0;
+  }
+
+  virtual int32_t getDay() const
+  {
+    this->showError();
+    return 0;
+  }
+  
   
   /** Accessor for xs:double
    */

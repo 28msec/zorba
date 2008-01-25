@@ -41,6 +41,8 @@ public:
   xqpString toString() const;
 
   int32_t getYear() const;
+  int32_t getMonth() const;
+  int32_t getDay() const;
 
 protected:
   DateTime& operator=(const DateTime_t& t_t);

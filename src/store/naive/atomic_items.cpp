@@ -918,6 +918,16 @@ int32_t DateTimeItemNaive::getYear() const
   return theValue->getYear();
 }
 
+int32_t DateTimeItemNaive::getMonth() const
+{
+  return theValue->getMonth();
+}
+
+int32_t DateTimeItemNaive::getDay() const
+{
+  return theValue->getDay();
+}
+
 /*******************************************************************************
  * class Duration
  *******************************************************************************/

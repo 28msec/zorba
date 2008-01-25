@@ -734,6 +734,16 @@ DECL(fn_year_from_datetime,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
+DECL(fn_month_from_datetime,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "month-from-dateTime"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
+
+DECL(fn_day_from_datetime,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "day-from-dateTime"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
+
 // end date time
 
 // begin debug functions
