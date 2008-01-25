@@ -7,7 +7,7 @@ namespace xqp
 {
 
 const unsigned long StringPool::DEFAULT_POOL_SIZE = 1024;
-const float StringPool::DEFAULT_LOAD_FACTOR = 0.6;
+const float StringPool::DEFAULT_LOAD_FACTOR = 0.6f;
 
 
 /*******************************************************************************

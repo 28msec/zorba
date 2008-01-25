@@ -75,7 +75,7 @@ const unsigned long HandleSet<T>::DEFAULT_SET_SIZE = 1024;
 
 
 template <class T>
-const float HandleSet<T>::DEFAULT_LOAD_FACTOR = 0.6;
+const float HandleSet<T>::DEFAULT_LOAD_FACTOR = 0.6f;
 
 /*******************************************************************************
   Constructor: Allocates the hash table. Its initial size is the given size,

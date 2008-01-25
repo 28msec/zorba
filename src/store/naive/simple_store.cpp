@@ -24,7 +24,7 @@ namespace xqp
 
 typedef rchandle<TempSeq> TempSeq_t;
 
-const float SimpleStore::DEFAULT_HASH_LOAD_FACTOR = 0.6;
+const float SimpleStore::DEFAULT_HASH_LOAD_FACTOR = 0.6f;
 
 const xqp_ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 

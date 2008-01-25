@@ -8,7 +8,7 @@
 using namespace std;
 namespace xqp {
 
-bool g_throw_exceptions = false;
+static bool g_throw_exceptions = false;
 
 ZorbaAlertsManager::~ZorbaAlertsManager()
 {
@@ -120,7 +120,7 @@ void AlertsManagerImpl::setIsError()
 
 void ZorbaAlertsManager::setThrowExceptionsMode(bool throw_exceptions)
 {
-	throw_exceptions = g_throw_exceptions;
+	g_throw_exceptions = throw_exceptions;
 }
 
 bool ZorbaAlertsManager::getThrowExceptionsMode()

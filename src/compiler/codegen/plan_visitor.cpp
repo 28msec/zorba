@@ -233,7 +233,7 @@ void end_visit(flwor_expr& v)
   {
     flwor_expr::orderspec_t spec = *i;
     orderSpecs.push_back(FLWORIterator::OrderSpec(pop_itstack (),
-                                                  spec.second->empty_mode,
+																									spec.second->empty_mode == StaticQueryContext::empty_least,
                                                   spec.second->dir == dir_descending));
   }
 

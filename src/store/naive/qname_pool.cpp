@@ -9,7 +9,7 @@
 namespace xqp
 {
 
-const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6;
+const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6f;
 
 
 /*******************************************************************************

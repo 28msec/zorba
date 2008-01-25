@@ -33,7 +33,10 @@ string make_absolute_file_name(const char *target_file_name, const char *this_fi
 int usecase4(int argc, char* argv[])
 {
 	//init the engine
+	ZorbaAlertsManager::setThrowExceptionsMode(true);
 	ZorbaSingleThread		&zorba_engine = ZorbaSingleThread::getInstance();
+	try{
+
 	XQuery_t				xquery;
 	DynamicQueryContext_t		dctx;
 
@@ -71,8 +74,14 @@ int usecase4(int argc, char* argv[])
 		return 1;
 	}
 
+	}catch(xqp_exception &x)
+	{
+		int	i=0;
+		zorba_engine.getAlertsManagerForCurrentThread().DumpAlerts(cerr);
+	}
 	//shutdown the engine, just for exercise
 	zorba_engine.shutdown();
+	ZorbaAlertsManager::setThrowExceptionsMode(false);
 	//using zorba objects after this moment is prohibited
 
 	return 0;
