@@ -355,4 +355,31 @@ FnHoursFromDatetimeIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnHoursFromDatetimeIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.11 fn:minutes-from-dateTime
+ *
+ * fn:minutes-from-dateTime($arg as xs:dateTime?) as xs:integer?
+ *_______________________________________________________________________*/
+
+/*begin class FnMinutesFromDatetimeIterator */
+Item_t 
+FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChild, planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getMinutes()), state );
+  }
+  STACK_END();
+}
+/*end class FnMinutesFromDatetimeIterator */
 }

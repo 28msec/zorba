@@ -276,7 +276,25 @@ class FnHoursFromDatetimeIterator : public UnaryBaseIterator<FnHoursFromDatetime
 /*end class FnHoursFromDatetimeIterator */
 
 /*
-10.5.11 fn:minutes-from-dateTime
+ * 10.5.11 fn:minutes-from-dateTime
+ * --------------------*/
+ 
+/*begin class FnMinutesFromDatetimeIterator */
+class FnMinutesFromDatetimeIterator : public UnaryBaseIterator<FnMinutesFromDatetimeIterator>
+{
+  public:
+    FnMinutesFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
+  :
+    UnaryBaseIterator<FnMinutesFromDatetimeIterator>( loc, arg ){};
+  
+    ~FnMinutesFromDatetimeIterator(){};
+  public:
+    Item_t nextImpl(PlanState& planState);
+    
+    virtual void accept(PlanIterVisitor&) const;
+};
+/*end class FnMinutesFromDatetimeIterator */
+/*
 10.5.12 fn:seconds-from-dateTime
 10.5.13 fn:timezone-from-dateTime
 10.5.14 fn:year-from-date

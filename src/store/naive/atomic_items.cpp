@@ -933,6 +933,11 @@ int32_t DateTimeItemNaive::getHours() const
   return theValue->getHours();
 }
 
+int32_t DateTimeItemNaive::getMinutes() const
+{
+  return theValue->getMinutes();
+}
+
 /*******************************************************************************
  * class Duration
  *******************************************************************************/
