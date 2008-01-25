@@ -30,20 +30,16 @@
 #include "util/tracer.h"
 #include "compiler/parser/location.hh"
 #include "store/api/item.h"
-
 #include "util/utf8/xqpString.h"
-
 #include "system/zorba.h"
+#include "util/Assert.h"
+#include "runtime/visitors/planitervisitor.h"
 
 // Info: Forcing inlining a function in g++:
 // Item_t next() __attribute__((always_inline)) {...}
 
 //0 = NO_BATCHING, 1 = SIMPLE_BATCHING, 2 = SUPER_BATCHING
 //#define BATCHING_TYPE 0
-
-#define IT_INDENT     std::string(++iteratorTreeDepth, ' ')
-#define IT_DEPTH      std::string(iteratorTreeDepth, ' ')
-#define IT_OUTDENT        std::string(iteratorTreeDepth--, ' ')
 
 /*******************************************************************************
 
@@ -106,16 +102,11 @@ class Item;
 typedef rchandle<Item> Item_t;
 
 class PlanIterator;
-class node;
 class Zorba;
-class PlanIterVisitor;
 
 typedef rchandle<PlanIterator> PlanIter_t;
 
 class Zorba_XQueryBinary;
-class Zorba_XQueryExecution;
-
-extern int32_t iteratorTreeDepth;
 
 /*******************************************************************************
   Class to represent state that is shared by all plan iterators. 
@@ -143,15 +134,36 @@ public:
   ~PlanState();
 };
 
+template <class T>
+class StateTraitsImpl
+{
+private:
+  StateTraitsImpl() {}
+public:
+ static uint32_t getStateSize()
+ {
+   return sizeof(T);
+ }
 
-/*******************************************************************************
-  Base class of all plan iterators.
-********************************************************************************/
+ static void createState(void *ptr)
+ {
+   new (ptr)T();
+ }
+ 
+ static void destroyState(void *ptr)
+ {
+  (reinterpret_cast<T*>(ptr))->~T();
+ }
+};
+
+/**
+ * Base class of all plan iterators.
+ */
 class PlanIterator : public rcobject
 {
   friend class PlanIterWrapper;
 
-protected:
+public:
   /**
    * Root object of all iterator states
    */
@@ -333,16 +345,147 @@ public:
   inline void releaseResourcesImpl(PlanState& planState);
 };
 
+template <class Iter, class StateTraits>
+class NaryIterator : public Batcher<Iter>
+{
+protected:
+  std::vector<PlanIter_t> theChildren;
 
-/*******************************************************************************
-  Wrapper used to drive the evaluation of an iterator (sub)tree.
-  
-  The wrapper wraps the root iterator of the (sub)tree. It is responsible
-  for allocating and deallocating the plan state that is shared by all
-  iterators in the (sub)tree. In general, it hides internal functionality
-  like separation of code and execution, or garabage collection, and it
-  provides a simple interface that the application can use.
-********************************************************************************/
+public:
+  NaryIterator(const yy::location& aLoc, std::vector<PlanIter_t>& aChildren)
+    : Batcher<Iter>(aLoc), theChildren(aChildren) {
+#ifndef NDEBUG
+    std::vector<PlanIter_t>::const_iterator lEnd = aChildren.end();
+    for(
+        std::vector<PlanIter_t>::const_iterator lIter = aChildren.begin();
+        lIter != lEnd;
+        ++lIter)
+    {
+      Assert(*lIter);
+    }
+#endif
+  }
+  virtual ~NaryIterator() {}
+
+  virtual void accept(PlanIterVisitor&) const = 0;
+
+	void
+  resetImpl ( PlanState& aPlanState )
+	{
+		PlanIterator::PlanIteratorState* state;
+		GET_STATE ( PlanIterator::PlanIteratorState, state, aPlanState );
+		state->reset();
+
+		std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
+		for ( 
+         std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+         lIter!= theChildren.end(); 
+         ++lIter )
+		{
+			Batcher<Iter>::resetChild ( *lIter, aPlanState );
+		}
+	}
+
+	void
+	releaseResourcesImpl ( PlanState& aPlanState )
+	{
+    std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
+    for ( 
+         std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+          lIter!= theChildren.end(); 
+          ++lIter )
+    {
+			Batcher<Iter>::releaseChildResources ( *lIter, aPlanState );
+		}
+
+    StateTraits::destroyState(aPlanState.block + Batcher<Iter>::stateOffset);
+	}
+
+  virtual uint32_t
+  getStateSize() const {
+    return StateTraits::getStateSize();
+  }
+
+	virtual uint32_t
+	getStateSizeOfSubtree() const
+	{
+		uint32_t lSize = 0;
+
+    std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+    for ( 
+         std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
+          lIter!= theChildren.end(); 
+          ++lIter )
+    {
+			lSize += ( *lIter )->getStateSizeOfSubtree();
+		}
+
+		return getStateSize() + lSize;
+	}
+
+	virtual void
+  setOffset ( PlanState& aPlanState, uint32_t& aOffset )
+	{
+		Batcher<Iter>::stateOffset = aOffset;
+		aOffset += getStateSize();
+    StateTraits::createState(aPlanState.block + Batcher<Iter>::stateOffset);
+
+    std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
+    for ( 
+        std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+        lIter!= theChildren.end(); 
+        ++lIter )
+    {
+      ( *lIter )->setOffset ( aPlanState, aOffset );
+    }
+	}
+};
+
+#define NARY_ITER_STATE(iterName, stateName) class iterName \
+  : public NaryIterator<iterName, StateTraitsImpl<stateName> > {\
+public:\
+  iterName(yy::location loc, vector<PlanIter_t>& aChildren) :\
+    NaryIterator<iterName, StateTraitsImpl<stateName> >(loc, aChildren) \
+  { } \
+  virtual ~iterName() { } \
+  \
+  Item_t nextImpl(PlanState& aPlanState); \
+  void resetImpl(PlanState& aPlanState) \
+  { \
+    stateName* lState; \
+    GET_STATE(stateName, lState, aPlanState);\
+    lState->reset();\
+    \
+    std::vector<PlanIter_t>::iterator lIter = theChildren.begin();\
+    std::vector<PlanIter_t>::iterator lIterEnd = theChildren.end();\
+    for(; lIter != lIterEnd; ++lIter)\
+    {\
+      Batcher<iterName>::resetChild(*lIter, aPlanState);\
+    }\
+  }\
+  \
+  virtual void accept(PlanIterVisitor& v) const \
+  { \
+    v.beginVisit(*this); \
+    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin(); \
+    for ( ; iter != theChildren.end(); ++iter ) { \
+      ( *iter )->accept ( v ); \
+    } \
+    v.endVisit(*this); \
+  } \
+};
+
+#define NARY_ITER(name) NARY_ITER_STATE(name, PlanIterator::PlanIteratorState) 
+
+/**
+ * Wrapper used to drive the evaluation of an iterator (sub)tree.
+ * 
+ * The wrapper wraps the root iterator of the (sub)tree. It is responsible
+ * for allocating and deallocating the plan state that is shared by all
+ * iterators in the (sub)tree. In general, it hides internal functionality
+ * like separation of code and execution, or garabage collection, and it
+ * provides a simple interface that the application can use.
+ */
 class PlanWrapper : public Iterator
 {
 private:

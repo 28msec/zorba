@@ -12,7 +12,6 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
-#include "runtime/visitors/planitervisitor.h"
 
 #include "types/casting.h"
 
@@ -34,17 +33,19 @@ namespace xqp {
 
 //15.1.2 op:concatenate 
 //---------------------
+void
+FnConcatIteratorState::init() {
+  PlanIterator::PlanIteratorState::init();
+  theCurIter = 0;
+}
 
-FnConcatIterator::FnConcatIterator(
-  yy::location loc,
-  vector<PlanIter_t>& aChildren)
-:
-  NaryBaseIterator<FnConcatIterator>(loc, aChildren)
-{}
+void
+FnConcatIteratorState::reset() {
+  PlanIterator::PlanIteratorState::reset();
+  theCurIter = 0;
+}
 
-FnConcatIterator::~FnConcatIterator(){}
-
-Item_t 
+Item_t
 FnConcatIterator::nextImpl(PlanState& planState) {
   Item_t item;
   
@@ -62,41 +63,8 @@ FnConcatIterator::nextImpl(PlanState& planState) {
   STACK_END();
 }
 
-void 
-FnConcatIterator::resetImpl(PlanState& planState) {
-  FnConcatIteratorState* state;
-  GET_STATE(FnConcatIteratorState, state, planState);
-  state->reset();
-  
-  std::vector<PlanIter_t>::iterator iter = theChildren.begin();
-  for(; iter != theChildren.end(); ++iter) {
-    this->resetChild(*iter, planState);
-  }
-}
-
-void
-FnConcatIterator::FnConcatIteratorState::init() {
-  PlanIterator::PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnConcatIterator::FnConcatIteratorState::reset() {
-  PlanIterator::PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
 //15.1.3 fn:index-of
 // FIXME this iterator has three arguments (i.e. the collaction as #3)
-FnIndexOfIterator::FnIndexOfIterator(yy::location loc,
-                                    PlanIter_t& arg1,
-                                    PlanIter_t& arg2,
-                                    std::string collation)
- : BinaryBaseIterator<FnIndexOfIterator> ( loc, arg1, arg2 )
-{ }
-
-FnIndexOfIterator::~FnIndexOfIterator(){}
-
 Item_t 
 FnIndexOfIterator::nextImpl(PlanState& planState) {
   Item_t lSequenceItem;
@@ -105,14 +73,14 @@ FnIndexOfIterator::nextImpl(PlanState& planState) {
   FnIndexOfIteratorState* state;
   DEFAULT_STACK_INIT(FnIndexOfIteratorState, state, planState);
   
-  state->theSearchItem = consumeNext(theChild1, planState);
+  state->theSearchItem = consumeNext(theChildren[1], planState);
   if ( state->theSearchItem == NULL ) 
   {
     ZORBA_ERROR_ALERT( ZorbaError::FORG0006, &loc, false,
          "An empty sequence is not allowed as search item of fn:index-of");    
   }
 
-  while ( (lSequenceItem = consumeNext(theChild0, planState)) != NULL )
+  while ( (lSequenceItem = consumeNext(theChildren[0], planState)) != NULL )
   {
     // inc the position in the sequence; do it at the beginning of the loop because index-of starts with one
     ++state->theCurrentPos; 
@@ -129,48 +97,8 @@ FnIndexOfIterator::nextImpl(PlanState& planState) {
   STACK_END();
 }
 
-
-uint32_t
-FnIndexOfIterator::getStateSizeOfSubtree() const 
-{
- return theChild0->getStateSizeOfSubtree() 
-        + theChild1->getStateSizeOfSubtree() + getStateSize();
-}
-
-void 
-FnIndexOfIterator::releaseResourcesImpl(PlanState& planState)
-{
-  BinaryBaseIterator<FnIndexOfIterator>::releaseResourcesImpl(planState);
-  
-  FnIndexOfIteratorState* state;
-  GET_STATE(FnIndexOfIteratorState, state, planState);
-  
-  // do we need a releaseResouces function in the state or is it always the same as reset?
-  state->reset(); 
-}
-
-void 
-FnIndexOfIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  BinaryBaseIterator<FnIndexOfIterator>::setOffset(planState, offset);
-
-  FnIndexOfIteratorState* state = 
-    new (planState.block + stateOffset) FnIndexOfIteratorState;
-}
-
-void 
-FnIndexOfIterator::resetImpl(PlanState& planState)
-{
-  BinaryBaseIterator<FnIndexOfIterator>::resetImpl(planState);
-
-  FnIndexOfIteratorState* state;
-  GET_STATE(FnIndexOfIteratorState, state, planState);
-  state->reset();
-}
-
-
 void
-FnIndexOfIterator::FnIndexOfIteratorState::init() 
+FnIndexOfIteratorState::init() 
 {
  PlanIterator::PlanIteratorState::init();
  theCurrentPos = 0;
@@ -178,7 +106,7 @@ FnIndexOfIterator::FnIndexOfIteratorState::init()
 }
 
 void
-FnIndexOfIterator::FnIndexOfIteratorState::reset() {
+FnIndexOfIteratorState::reset() {
  PlanIterator::PlanIteratorState::reset();
  theCurrentPos = 0;
  theSearchItem = NULL;

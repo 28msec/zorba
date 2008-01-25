@@ -31,82 +31,32 @@ namespace xqp
 // see BooleanImpl.h
 
 //15.1.2 op:concatenate
-class FnConcatIterator : public NaryBaseIterator<FnConcatIterator>
-{
+class FnConcatIteratorState : public  PlanIterator::PlanIteratorState {
 public:
-  FnConcatIterator(
-  yy::location loc, vector<PlanIter_t>& aChildren);
-  
-  virtual ~FnConcatIterator();
+  uint32_t theCurIter;
 
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  
-  virtual uint32_t getStateSize() const { return sizeof(FnConcatIteratorState); }
-  
-  virtual void accept(PlanIterVisitor&) const;
-  
-protected:
-  class FnConcatIteratorState : public PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-  
-    void init();
-    void reset();
-    
-  };
+  void init();
+  void reset();
 };
 
+NARY_ITER_STATE(FnConcatIterator, FnConcatIteratorState);
 
 //15.1.3 fn:index-of
 /*
  * If the value of $arg is the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-class FnIndexOfIterator : public BinaryBaseIterator<FnIndexOfIterator>
-{
+class FnIndexOfIteratorState : public PlanIterator::PlanIteratorState {
+public:  
+  uint32_t theCurrentPos; // the current position in the sequence
+  Item_t   theSearchItem; // the item to search for
 
-public:
-  FnIndexOfIterator(yy::location loc,
-                    PlanIter_t& arg1, PlanIter_t& arg2, 
-                    std::string collation);
- 
-  ~FnIndexOfIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
- 
-  void 
-  resetImpl(PlanState& planState);
-  
-  void 
-  releaseResourcesImpl(PlanState& planState);
- 
- 
-  virtual void 
-  accept(PlanIterVisitor&) const;
-
-  virtual uint32_t 
-  getStateSize() const { return sizeof ( FnIndexOfIteratorState ); }
-
-  virtual uint32_t
-  getStateSizeOfSubtree() const;
-  
-  void 
-  setOffset(PlanState& planState, uint32_t& offset);  
-
-protected:
-  class FnIndexOfIteratorState : public PlanIteratorState {
-  public:  
-    uint32_t theCurrentPos; // the current position in the sequence
-    Item_t   theSearchItem; // the item to search for
-  
-    void init();
-    void reset();
-    
-  };
+  void init();
+  void reset();
   
 };
+
+NARY_ITER_STATE(FnIndexOfIterator, FnIndexOfIteratorState);
 
 //15.1.4 fn:empty
 /*

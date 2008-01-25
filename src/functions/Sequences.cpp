@@ -117,24 +117,13 @@ PlanIter_t fn_index_of::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	string collation;
-	if (argv.size()==3) {
-		//xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[2],xs_string);
-		collation = "default_collation"; //v_p->string_value();
-	}
-	else {
-		//static_context* sctx_p = zorba::getZorbaForCurrentThread()->get_static_context();
-		//qname_value* qn_p = (qname_value*)(sctx_p->get_default_collation());
-		collation = "default_collation"; //qn_p->string_value();
-	}
-  return new FnIndexOfIterator(loc, argv[0], argv[1], collation);
+  return new FnIndexOfIterator(loc, argv);
 }
 
 bool fn_index_of::validate_args(
 	vector<PlanIter_t>& argv) const
 {
-	if (argv.size()==2 || argv.size()==3) return true;
-	return false;
+	return (argv.size()==2 || argv.size()==3);
 }
 
 TypeSystem::xqtref_t fn_index_of::type_check(

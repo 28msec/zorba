@@ -139,7 +139,6 @@ namespace xqp {
   BINARY_ACCEPT(StringJoinIterator);
   BINARY_ACCEPT(LogicIterator);
   BINARY_ACCEPT(CompareIterator);
-  BINARY_ACCEPT(FnIndexOfIterator);
   BINARY_ACCEPT(FnRemoveIterator);
   BINARY_ACCEPT(OpToIterator);
   BINARY_ACCEPT(FnRoundHalfToEvenIterator);
@@ -163,7 +162,6 @@ namespace xqp {
   NARY_ACCEPT(SubstringBeforeIterator);
   NARY_ACCEPT(SubstringAfterIterator);
   NARY_ACCEPT(FnDistinctValuesIterator);
-  NARY_ACCEPT(FnConcatIterator);
   NARY_ACCEPT(FnInsertBeforeIterator);
   NARY_ACCEPT(FnSubsequenceIterator);
   NARY_ACCEPT(FnMaxIterator);
