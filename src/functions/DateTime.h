@@ -161,6 +161,21 @@ class fn_datetime_ctor : public function
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
       TypeSystem::xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.5.10 fn:hours-from-dateTime
+ *-----------------------*/
+  class fn_hours_from_datetime : public function
+  {
+    public:
+      fn_hours_from_datetime(const signature&);
+      ~fn_hours_from_datetime() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
   };  
 } // namespace xqp
 

@@ -342,6 +342,40 @@ fn_day_from_datetime::type_check (
 }
 /*end class fn_day_from_datetime*/
 
+/*
+ * 10.5.10 fn:hours-from-dateTime
+ * --------------------*/
+/*begin class fn_hours_from_datetime*/
+fn_hours_from_datetime::fn_hours_from_datetime (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+fn_hours_from_datetime::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnHoursFromDatetimeIterator(loc, argv[0]);
+}
+
+bool
+fn_hours_from_datetime::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_hours_from_datetime::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
+}
+/*end class fn_day_from_datetime*/
+
 
 } // namespace xqp
 

@@ -129,6 +129,7 @@ namespace xqp
   class FnYearFromDatetimeIterator;
   class FnMonthFromDatetimeIterator;
   class FnDayFromDatetimeIterator;
+  class FnHoursFromDatetimeIterator;
   
   /**
    * Visitor to visit a PlanIterator tree.
@@ -489,9 +490,13 @@ namespace xqp
 
       virtual void beginVisit ( const FnMonthFromDatetimeIterator&) = 0;
       virtual void endVisit ( const FnMonthFromDatetimeIterator&) = 0;
-      
+
       virtual void beginVisit ( const FnDayFromDatetimeIterator&) = 0;
       virtual void endVisit ( const FnDayFromDatetimeIterator&) = 0;
+
+      virtual void beginVisit ( const FnHoursFromDatetimeIterator&) = 0;
+      virtual void endVisit ( const FnHoursFromDatetimeIterator&) = 0;
+      
       
       virtual void beginVisit(const CtxVariableIterator&) = 0;
       virtual void endVisit(const CtxVariableIterator&) = 0;

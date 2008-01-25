@@ -255,9 +255,27 @@ class FnDayFromDatetimeIterator : public UnaryBaseIterator<FnDayFromDatetimeIter
 };
 /*end class FnDayFromDatetimeIterator */
 
+/*
+ * 10.5.10 fn:hours-from-dateTime
+ * --------------------*/
+ 
+/*begin class FnHoursFromDatetimeIterator */
+class FnHoursFromDatetimeIterator : public UnaryBaseIterator<FnHoursFromDatetimeIterator>
+{
+  public:
+    FnHoursFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
+  :
+    UnaryBaseIterator<FnHoursFromDatetimeIterator>( loc, arg ){};
+  
+    ~FnHoursFromDatetimeIterator(){};
+  public:
+    Item_t nextImpl(PlanState& planState);
+    
+    virtual void accept(PlanIterVisitor&) const;
+};
+/*end class FnHoursFromDatetimeIterator */
 
 /*
-10.5.10 fn:hours-from-dateTime
 10.5.11 fn:minutes-from-dateTime
 10.5.12 fn:seconds-from-dateTime
 10.5.13 fn:timezone-from-dateTime

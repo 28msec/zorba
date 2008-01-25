@@ -114,4 +114,8 @@ int32_t DateTime::getDay() const
   return the_date_time.date().day();
 }
 
+int32_t DateTime::getHours() const
+{
+  return the_date_time.time_of_day().hours();
+}
 } // namespace xqp

@@ -984,6 +984,15 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const FnDayFromDatetimeIterator& ) {
     thePrinter.endIter();
   }
+
+  void PrinterVisitor::beginVisit ( const FnHoursFromDatetimeIterator& a )  {
+    thePrinter.startIter("FnHoursFromDatetimeIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const FnHoursFromDatetimeIterator& ) {
+    thePrinter.endIter();
+  }
   
   
   void PrinterVisitor::beginVisit ( const FLWORIterator& a ) {

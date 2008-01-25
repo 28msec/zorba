@@ -744,6 +744,10 @@ DECL(fn_day_from_datetime,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
+DECL(fn_hours_from_datetime,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "hours-from-dateTime"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 // end date time
 
 // begin debug functions

@@ -353,6 +353,8 @@ public:
   virtual void beginVisit(const FnDayFromDatetimeIterator&) ;
   virtual void endVisit(const FnDayFromDatetimeIterator&);
 
+  virtual void beginVisit(const FnHoursFromDatetimeIterator&) ;
+  virtual void endVisit(const FnHoursFromDatetimeIterator&);
   
       
   virtual void beginVisit ( const FLWORIterator& ) ;

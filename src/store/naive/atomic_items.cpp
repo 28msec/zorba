@@ -928,6 +928,11 @@ int32_t DateTimeItemNaive::getDay() const
   return theValue->getDay();
 }
 
+int32_t DateTimeItemNaive::getHours() const
+{
+  return theValue->getHours();
+}
+
 /*******************************************************************************
  * class Duration
  *******************************************************************************/
