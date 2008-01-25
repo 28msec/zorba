@@ -173,6 +173,8 @@ public:
   virtual bool equals(Item_t) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
+
+  virtual int32_t getYear() const;
 };
 
 /*******************************************************************************

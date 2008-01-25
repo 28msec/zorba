@@ -99,4 +99,10 @@ int DateTime::compare(const DateTime& t) const
     return 1;
 }
 
+int32_t DateTime::getYear() const
+{
+  boost::gregorian::date the_date = the_date_time.date();
+  return the_date.year();
+}
+
 } // namespace xqp

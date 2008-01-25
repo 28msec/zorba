@@ -195,9 +195,28 @@ class FnSecondsFromDurationIterator : public UnaryBaseIterator<FnSecondsFromDura
 };
 /*end class FnSecondsFromDurationIterator */
 
+/*
+ * 10.5.7 fn:year-from-dateTime
+ * --------------------*/
+ 
+/*begin class FnYearFromDatetimeIterator */
+class FnYearFromDatetimeIterator : public UnaryBaseIterator<FnYearFromDatetimeIterator>
+{
+  public:
+    FnYearFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
+  :
+    UnaryBaseIterator<FnYearFromDatetimeIterator>( loc, arg ){};
+  
+    ~FnYearFromDatetimeIterator(){};
+  public:
+    Item_t nextImpl(PlanState& planState);
+    
+    virtual void accept(PlanIterVisitor&) const;
+};
+/*end class FnYearFromDatetimeIterator */
+
 
 /*
-10.5.7 fn:year-from-dateTime
 10.5.8 fn:month-from-dateTime
 10.5.9 fn:day-from-dateTime
 10.5.10 fn:hours-from-dateTime

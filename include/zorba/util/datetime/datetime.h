@@ -40,6 +40,8 @@ public:
 
   xqpString toString() const;
 
+  int32_t getYear() const;
+
 protected:
   DateTime& operator=(const DateTime_t& t_t);
   

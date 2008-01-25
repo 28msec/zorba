@@ -343,9 +343,11 @@ public:
 
   virtual void beginVisit(const FnSecondsFromDurationIterator&) ;
   virtual void endVisit(const FnSecondsFromDurationIterator&);
+
+  virtual void beginVisit(const FnYearFromDatetimeIterator&) ;
+  virtual void endVisit(const FnYearFromDatetimeIterator&);
   
   
-      
   virtual void beginVisit ( const FLWORIterator& ) ;
   virtual void endVisit ( const FLWORIterator& ) ;
   

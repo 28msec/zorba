@@ -248,5 +248,30 @@ FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
 }
 /*end class FnSecondsFromDurationIterator */
 
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.7 fn:year-from-dateTime
+ *
+ * fn:year-from-dateTime($arg as xs:dateTime?) as xs:integer?
+ *_______________________________________________________________________*/
 
+/*begin class FnYearFromDatetimeIterator */
+Item_t 
+FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChild, planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getYear()), state );
+  }
+  STACK_END();
+}
+/*end class FnYearFromDatetimeIterator */
 }

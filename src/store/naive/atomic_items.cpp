@@ -913,6 +913,11 @@ xqp_string DateTimeItemNaive::show() const
   return theValue->toString();
 }
 
+int32_t DateTimeItemNaive::getYear() const
+{
+  return theValue->getYear();
+}
+
 /*******************************************************************************
  * class Duration
  *******************************************************************************/

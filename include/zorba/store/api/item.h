@@ -241,6 +241,12 @@ public:
     this->showError();
     return xqp_dateTime();
   }
+
+  virtual int32_t getYear() const
+  {
+    this->showError();
+    return 0;
+  }
   
   /** Accessor for xs:double
    */
