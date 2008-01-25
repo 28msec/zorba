@@ -52,58 +52,6 @@ PlanState::~PlanState()
 
 
 /*******************************************************************************
-  class PlanIteratorState
-********************************************************************************/
-
-void
-PlanIterator::PlanIteratorState::init() {
-  this->duffsLine = DUFFS_RELEASE_RESOURCES;
-}
-
-void
-PlanIterator::PlanIteratorState::reset() {
-  this->duffsLine = DUFFS_RESET;
-}
-
-void
-PlanIterator::PlanIteratorState::releaseResources() {
-  this->duffsLine = DUFFS_RELEASE_RESOURCES;
-}
-
-void
-PlanIterator::PlanIteratorState::setDuffsLine(int32_t value) {
-  this->duffsLine = value;
-}
-
-int32_t
-PlanIterator::PlanIteratorState::getDuffsLine() const {
-  return this->duffsLine;
-}
-
-
-/*******************************************************************************
-  class PlanIterator
-********************************************************************************/
-
-PlanIterator::PlanIterator(yy::location _loc) :
-  loc(_loc)
-{
-}
-
-
-PlanIterator::PlanIterator(const PlanIterator& it) :
-  rcobject(it),
-  loc(it.loc)
-{
-}
-
-
-PlanIterator::~PlanIterator()
-{
-}
-
-
-/*******************************************************************************
   class PlanWraper
 ********************************************************************************/
 PlanWrapper::PlanWrapper(PlanIter_t& aIter)

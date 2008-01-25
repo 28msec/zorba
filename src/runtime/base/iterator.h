@@ -177,18 +177,18 @@ public:
       * All sub-states have it invoke the init method of their parent 
       * to guarantee correct initialization.
       */
-    void init();
+    void init() { duffsLine = DUFFS_RELEASE_RESOURCES; }
 
     /** Resets State Object for the current iterator.
       * All sub-states have it invoke the reset method of their parent 
       * to guarantee correct reset handling.
       */
-    void reset();
+    void reset() { duffsLine = DUFFS_RESET; }
     
-    void releaseResources();
+    void releaseResources() { duffsLine = DUFFS_RELEASE_RESOURCES; }
     
-    void setDuffsLine(int32_t);
-    int32_t getDuffsLine() const;
+    void setDuffsLine(int32_t aVal) { duffsLine = aVal; }
+    int32_t getDuffsLine() const { return duffsLine; }
   };
 
 
@@ -205,9 +205,9 @@ public:
 #endif
 
 public:
-  PlanIterator(yy::location _loc);
-  PlanIterator(const PlanIterator& it);
-  virtual ~PlanIterator();
+  PlanIterator(yy::location aLoc) : loc(aLoc) {}
+  PlanIterator(const PlanIterator& it) : rcobject(it), loc(it.loc) {}
+  virtual ~PlanIterator() {}
 
 public:
 
