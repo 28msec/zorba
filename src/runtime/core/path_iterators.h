@@ -141,7 +141,7 @@ class AxisIterator : public UnaryBaseIterator<AxisIter>,
                      public AxisIteratorHelper
 {
 protected:
-  class AxisState : public PlanIterator::PlanIteratorState
+  class AxisState : public PlanIteratorState
   {
   public:
     Item_t     theContextNode;   

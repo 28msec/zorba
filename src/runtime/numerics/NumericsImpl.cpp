@@ -263,8 +263,8 @@ namespace xqp
     TypeSystem::xqtref_t type1;
     TypeSystem::xqtref_t resultType;
 
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     n0 = this->consumeNext ( this->theChild0, planState );
     if ( n0 != NULL )
     {
@@ -519,8 +519,8 @@ namespace xqp
     int32_t mul;
     TypeSystem::xqtref_t type;
 
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     item = this->consumeNext ( theChild, planState );
     if ( item != NULL )
     {
@@ -592,8 +592,8 @@ namespace xqp
     TypeSystem::xqtref_t type;
 
     
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     item = this->consumeNext ( theChild, planState );
     if ( item != NULL )
     {
@@ -669,8 +669,8 @@ namespace xqp
     Item_t res;
     TypeSystem::xqtref_t type;
     
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     item = this->consumeNext ( theChild, planState );
 
     if ( item != NULL )
@@ -733,8 +733,8 @@ namespace xqp
     Item_t res;
     TypeSystem::xqtref_t type;
     
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     item = this->consumeNext ( theChild, planState );
 
     if ( item != NULL )
@@ -797,8 +797,8 @@ namespace xqp
     Item_t res;
     TypeSystem::xqtref_t type;
     
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     item = this->consumeNext ( theChild, planState );
 
     if ( item != NULL )
@@ -866,8 +866,8 @@ namespace xqp
     TypeSystem::xqtref_t type;
     int32_t precision = 0;
     
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     
     item = this->consumeNext ( theChild0, planState );
     if ( item != NULL )

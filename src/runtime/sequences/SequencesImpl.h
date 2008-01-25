@@ -31,7 +31,7 @@ namespace xqp
 // see BooleanImpl.h
 
 //15.1.2 op:concatenate
-class FnConcatIteratorState : public  PlanIterator::PlanIteratorState {
+class FnConcatIteratorState : public  PlanIteratorState {
 public:
   uint32_t theCurIter;
 
@@ -46,7 +46,7 @@ NARY_ITER_STATE(FnConcatIterator, FnConcatIteratorState);
  * If the value of $arg is the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-class FnIndexOfIteratorState : public PlanIterator::PlanIteratorState {
+class FnIndexOfIteratorState : public PlanIteratorState {
 public:  
   uint32_t theCurrentPos; // the current position in the sequence
   Item_t   theSearchItem; // the item to search for

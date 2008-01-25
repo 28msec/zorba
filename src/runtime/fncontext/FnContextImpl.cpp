@@ -34,7 +34,7 @@ Item_t CtxVariableIterator::nextImpl(PlanState& planState)
   Item_t item;
   Iterator_t iter;
 
-  PlanIterator::PlanIteratorState* aState;
+  PlanIteratorState* aState;
   GET_STATE(PlanIteratorState, aState, planState);
 
   MANUAL_STACK_INIT(aState);

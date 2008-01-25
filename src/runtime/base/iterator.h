@@ -157,40 +157,38 @@ public:
 };
 
 /**
+ * Root object of all iterator states
+ */
+class PlanIteratorState
+{
+private:
+  int32_t duffsLine;
+
+public:
+  /** Initializes State Object for the current iterator.
+    * All sub-states have it invoke the init method of their parent 
+    * to guarantee correct initialization.
+    */
+  void init() { duffsLine = DUFFS_RELEASE_RESOURCES; }
+
+  /** Resets State Object for the current iterator.
+    * All sub-states have it invoke the reset method of their parent 
+    * to guarantee correct reset handling.
+    */
+  void reset() { duffsLine = DUFFS_RESET; }
+  
+  void releaseResources() { duffsLine = DUFFS_RELEASE_RESOURCES; }
+  
+  void setDuffsLine(int32_t aVal) { duffsLine = aVal; }
+  int32_t getDuffsLine() const { return duffsLine; }
+};
+
+/**
  * Base class of all plan iterators.
  */
 class PlanIterator : public rcobject
 {
   friend class PlanIterWrapper;
-
-public:
-  /**
-   * Root object of all iterator states
-   */
-  class PlanIteratorState
-  {
-  private:
-    int32_t duffsLine;
-
-  public:
-    /** Initializes State Object for the current iterator.
-      * All sub-states have it invoke the init method of their parent 
-      * to guarantee correct initialization.
-      */
-    void init() { duffsLine = DUFFS_RELEASE_RESOURCES; }
-
-    /** Resets State Object for the current iterator.
-      * All sub-states have it invoke the reset method of their parent 
-      * to guarantee correct reset handling.
-      */
-    void reset() { duffsLine = DUFFS_RESET; }
-    
-    void releaseResources() { duffsLine = DUFFS_RELEASE_RESOURCES; }
-    
-    void setDuffsLine(int32_t aVal) { duffsLine = aVal; }
-    int32_t getDuffsLine() const { return duffsLine; }
-  };
-
 
 protected:
   /** offset of the state of the current iterator */
@@ -372,8 +370,8 @@ public:
 	void
   resetImpl ( PlanState& aPlanState )
 	{
-		PlanIterator::PlanIteratorState* state;
-		GET_STATE ( PlanIterator::PlanIteratorState, state, aPlanState );
+		PlanIteratorState* state;
+		GET_STATE ( PlanIteratorState, state, aPlanState );
 		state->reset();
 
 		std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
@@ -475,7 +473,7 @@ public:\
   } \
 };
 
-#define NARY_ITER(name) NARY_ITER_STATE(name, PlanIterator::PlanIteratorState) 
+#define NARY_ITER(name) NARY_ITER_STATE(name, PlanIteratorState) 
 
 /**
  * Wrapper used to drive the evaluation of an iterator (sub)tree.

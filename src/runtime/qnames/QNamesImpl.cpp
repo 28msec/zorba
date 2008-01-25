@@ -52,8 +52,8 @@ ResolveQNameIterator::nextImpl(PlanState& planState){
     std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
     std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
 
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
     itemQName = consumeNext( theChild0, planState );
     if( itemQName != NULL)
@@ -131,8 +131,8 @@ QNameIterator::nextImpl(PlanState& planState)
     xqp_string resQName = "";
     int32_t index = -1;
 
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
     itemURI = consumeNext ( theChild0, planState );
     if ( itemURI != NULL )
@@ -198,8 +198,8 @@ QNameEqualIterator::nextImpl(PlanState& planState)
   Item_t arg2;
   Item_t res;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   arg1 = consumeNext ( theChild0, planState );
   if ( arg1 != NULL )
@@ -246,8 +246,8 @@ PrefixFromQNameIterator::nextImpl(PlanState& planState){
     Item_t item;
     xqp_string tmp="";
 
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     item = consumeNext (theChild, planState);
     if ( item != NULL )
     {
@@ -276,8 +276,8 @@ Item_t
 LocalNameFromQNameIterator::nextImpl(PlanState& planState){
   Item_t item;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   item = consumeNext (theChild, planState);
   if ( item != NULL )
   {
@@ -305,8 +305,8 @@ Item_t
 NamespaceUriFromQNameIterator::nextImpl(PlanState& planState){
     Item_t item;
 
-    PlanIterator::PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
     item = consumeNext (theChild, planState);
     if ( item != NULL )
@@ -345,8 +345,8 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState)
   std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
   std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemPrefix = consumeNext( theChild0, planState );
   if( itemPrefix != NULL)
@@ -433,7 +433,7 @@ InScopePrefixesIterator::resetImpl(PlanState& planState)
 void
 InScopePrefixesIterator::InScopePrefixesState::init()
 {
-  PlanIterator::PlanIteratorState::init();
+  PlanIteratorState::init();
   NamespaceBindings.clear();
   iter = NamespaceBindings.begin();
 }
@@ -441,7 +441,7 @@ InScopePrefixesIterator::InScopePrefixesState::init()
 void
 InScopePrefixesIterator::InScopePrefixesState::reset()
 {
-  PlanIterator::PlanIteratorState::reset();
+  PlanIteratorState::reset();
   NamespaceBindings.clear();
   iter = NamespaceBindings.begin();
 }

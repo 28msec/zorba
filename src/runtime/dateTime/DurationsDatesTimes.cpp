@@ -17,8 +17,8 @@ Item_t FnDateTimeConstructorIterator::nextImpl(PlanState& planState)
   Item_t item0;
   Item_t item1;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   item0 = consumeNext(theChild0, planState);
   item1 = consumeNext(theChild1, planState);
@@ -38,8 +38,8 @@ OpDurationEqualIterator::nextImpl(PlanState& planState)
   Item_t item0;
   Item_t item1;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   // TODO: arguments should be of type xs:duration
 
@@ -100,8 +100,8 @@ FnYearsFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -127,8 +127,8 @@ FnMonthsFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -154,8 +154,8 @@ FnDaysFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -181,8 +181,8 @@ FnHoursFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -208,8 +208,8 @@ FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -235,8 +235,8 @@ FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -262,8 +262,8 @@ FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -289,8 +289,8 @@ FnMonthFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -316,8 +316,8 @@ FnDayFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -343,8 +343,8 @@ FnHoursFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -370,8 +370,8 @@ FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )
@@ -397,8 +397,8 @@ FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   itemArg = consumeNext(theChild, planState);
   if ( itemArg != NULL )

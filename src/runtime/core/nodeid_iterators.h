@@ -20,7 +20,7 @@ private:
   bool theAcceptAtomics;
 
 protected:
-  class NodeDistinctState : public PlanIterator::PlanIteratorState
+  class NodeDistinctState : public PlanIteratorState
   {
   public:
     Iterator_t  theStoreIterator;
@@ -56,7 +56,7 @@ public:
 class NodeSortIterator : public UnaryBaseIterator<NodeSortIterator>
 {
 protected:
-  class NodeSortState : public PlanIterator::PlanIteratorState
+  class NodeSortState : public PlanIteratorState
   {
   public:
     Iterator_t  theStoreIterator;

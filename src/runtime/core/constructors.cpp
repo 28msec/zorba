@@ -414,7 +414,7 @@ void ElementContentIterator::releaseResourcesImpl(PlanState& planState)
 
 void ElementContentIterator::ElementContentState::init()
 {
-  PlanIterator::PlanIteratorState::init();
+  PlanIteratorState::init();
   theContextItem = 0;
   theString = NULL;
   theNoAttrAllowed = false;
@@ -703,7 +703,7 @@ void EnclosedIterator::setOffset ( PlanState& planState, uint32_t& offset )
 
 void EnclosedIterator::EnclosedState::init()
 {
-  PlanIterator::PlanIteratorState::init();
+  PlanIteratorState::init();
   theString = "";
 }
 

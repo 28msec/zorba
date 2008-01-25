@@ -160,13 +160,13 @@ void FnStringIterator::setOffset(PlanState& planState, uint32_t& offset)
 
 void FnStringIterator::FnStringIteratorState::init()
 {
-  PlanIterator::PlanIteratorState::init();
+  PlanIteratorState::init();
   hasOutput = false;
 }
 
 void FnStringIterator::FnStringIteratorState::reset()
 {
-  PlanIterator::PlanIteratorState::reset();
+  PlanIteratorState::reset();
   hasOutput = false;
 }
 

@@ -32,7 +32,7 @@ namespace xqp
 			void resetImpl ( PlanState& planState );
 			void releaseResourcesImpl ( PlanState& planState );
 
-      virtual uint32_t getStateSize() const { return sizeof ( PlanIterator::PlanIteratorState ); }
+      virtual uint32_t getStateSize() const { return sizeof ( PlanIteratorState ); }
 			virtual uint32_t getStateSizeOfSubtree() const;
 			virtual void setOffset ( PlanState& planState, uint32_t& offset );
 	}; /* class BinaryBaseIterator */
@@ -63,8 +63,8 @@ namespace xqp
 	void
 	BinaryBaseIterator<IterType>::resetImpl ( PlanState& planState )
 	{
-		PlanIterator::PlanIteratorState* state;
-		GET_STATE ( PlanIterator::PlanIteratorState, state, planState );
+		PlanIteratorState* state;
+		GET_STATE ( PlanIteratorState, state, planState );
 		state->reset();
 
 		this->resetChild ( theChild0, planState );

@@ -61,13 +61,13 @@ void FnTraceIterator::setOffset(PlanState& planState, uint32_t& offset)
 
 void FnTraceIterator::FnTraceIteratorState::init()
 {
-  PlanIterator::PlanIteratorState::init();
+  PlanIteratorState::init();
   theTagItem = NULL;
 }
 
 void FnTraceIterator::FnTraceIteratorState::reset()
 {
-  PlanIterator::PlanIteratorState::reset();
+  PlanIteratorState::reset();
   theTagItem = NULL;
 }
 

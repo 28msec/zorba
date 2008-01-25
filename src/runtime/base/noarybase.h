@@ -25,7 +25,7 @@ public:
   void resetImpl ( PlanState& planState );
   void releaseResourcesImpl ( PlanState& planState );
 
-  virtual uint32_t getStateSize() const { return sizeof(PlanIterator::PlanIteratorState); }
+  virtual uint32_t getStateSize() const { return sizeof(PlanIteratorState); }
   virtual uint32_t getStateSizeOfSubtree() const { return getStateSize(); }
   virtual void setOffset(PlanState& planState, uint32_t& offset);
 };
@@ -49,8 +49,8 @@ template <class IterType>
 void
 NoaryBaseIterator<IterType>::resetImpl ( PlanState& planState )
 {
-  PlanIterator::PlanIteratorState* state;
-  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  GET_STATE(PlanIteratorState, state, planState);
   state->reset();
 }
 
@@ -59,8 +59,8 @@ template <class IterType>
 void
 NoaryBaseIterator<IterType>::releaseResourcesImpl(PlanState& planState)
 {
-  PlanIterator::PlanIteratorState* state;
-  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  GET_STATE(PlanIteratorState, state, planState);
   state->releaseResources();
 }
 

@@ -35,13 +35,13 @@ namespace xqp {
 //---------------------
 void
 FnConcatIteratorState::init() {
-  PlanIterator::PlanIteratorState::init();
+  PlanIteratorState::init();
   theCurIter = 0;
 }
 
 void
 FnConcatIteratorState::reset() {
-  PlanIterator::PlanIteratorState::reset();
+  PlanIteratorState::reset();
   theCurIter = 0;
 }
 
@@ -100,14 +100,14 @@ FnIndexOfIterator::nextImpl(PlanState& planState) {
 void
 FnIndexOfIteratorState::init() 
 {
- PlanIterator::PlanIteratorState::init();
+ PlanIteratorState::init();
  theCurrentPos = 0;
  theSearchItem = NULL;
 }
 
 void
 FnIndexOfIteratorState::reset() {
- PlanIterator::PlanIteratorState::reset();
+ PlanIteratorState::reset();
  theCurrentPos = 0;
  theSearchItem = NULL;
 }
@@ -129,8 +129,8 @@ Item_t
 FnEmptyIterator::nextImpl(PlanState& planState) {
   Item_t item;
 
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   item = consumeNext(theChild, planState);
   if (item == NULL) 
@@ -161,8 +161,8 @@ Item_t
 FnExistsIterator::nextImpl(PlanState& planState) {
   Item_t item;
   
-  PlanIterator::PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   
   item = consumeNext(theChild, planState);
   if (item != NULL) 
@@ -255,12 +255,12 @@ FnDistinctValuesIterator::setOffset(PlanState& planState, uint32_t& offset)
 void
 FnDistinctValuesIterator::FnDistinctValuesIteratorState::init() 
 {
-  PlanIterator::PlanIteratorState::init();
+  PlanIteratorState::init();
 }
 
 void
 FnDistinctValuesIterator::FnDistinctValuesIteratorState::reset() {
-  PlanIterator::PlanIteratorState::reset();
+  PlanIteratorState::reset();
   theAlreadySeenMap.clear();
 }
 
@@ -340,7 +340,7 @@ FnInsertBeforeIterator::releaseResourcesImpl(PlanState& planState)
 
 void
 FnInsertBeforeIterator::FnInsertBeforeIteratorState::init() {
- PlanIterator::PlanIteratorState::init();
+ PlanIteratorState::init();
  theCurrentPos = 0;
  thePosition = 0;
  theTargetItem = NULL;
@@ -348,7 +348,7 @@ FnInsertBeforeIterator::FnInsertBeforeIteratorState::init() {
 
 void
 FnInsertBeforeIterator::FnInsertBeforeIteratorState::reset() {
- PlanIterator::PlanIteratorState::reset();
+ PlanIteratorState::reset();
  theCurrentPos = 0;
  thePosition = 0; 
  theTargetItem = NULL;
@@ -424,14 +424,14 @@ FnRemoveIterator::resetImpl(PlanState& planState)
 void
 FnRemoveIterator::FnRemoveIteratorState::init() 
 {
- PlanIterator::PlanIteratorState::init();
+ PlanIteratorState::init();
  theCurrentPos = 0;
  thePosition   = 0;
 }
 
 void
 FnRemoveIterator::FnRemoveIteratorState::reset() {
- PlanIterator::PlanIteratorState::reset();
+ PlanIteratorState::reset();
  theCurrentPos = 0;
  thePosition   = 0;
 }
@@ -592,7 +592,7 @@ FnSubsequenceIterator::resetImpl(PlanState& planState)
 void
 FnSubsequenceIterator::FnSubsequenceIteratorState::init() 
 {
- PlanIterator::PlanIteratorState::init();
+ PlanIteratorState::init();
  theStartingLoc = 0;
  theLength = 0;
  theCurrentPos = 1; // position starts with 1, not 0
@@ -602,7 +602,7 @@ FnSubsequenceIterator::FnSubsequenceIteratorState::init()
 void
 FnSubsequenceIterator::FnSubsequenceIteratorState::reset() 
 {
- PlanIterator::PlanIteratorState::reset();
+ PlanIteratorState::reset();
  theStartingLoc = 0;
  theLength = 0;
  theCurrentPos = 1; // position starts with 1, not 0
@@ -988,7 +988,7 @@ OpToIterator::resetImpl(PlanState& planState) {
 
 void
 OpToIterator::OpToIteratorState::init() {
-  PlanIterator::PlanIteratorState::init();
+  PlanIteratorState::init();
   theCurInt = 0;
   theFirstVal = 0;
   theLastVal = 0;
@@ -996,7 +996,7 @@ OpToIterator::OpToIteratorState::init() {
 
 void
 OpToIterator::OpToIteratorState::reset() {
-  PlanIterator::PlanIteratorState::reset();
+  PlanIteratorState::reset();
   theCurInt = 0;
   theFirstVal = 0;
   theLastVal = 0;
