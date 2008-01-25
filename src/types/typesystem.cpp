@@ -568,11 +568,36 @@ TypeSystem::xqtref_t TypeSystem::create_type(
     quantifier_t quantifier) const
 {
   // TODO: full implem. danm: at least provide atomic types for now
-  if (is_atomic (type))
-    return create_atomic_type (static_cast <const AtomicXQType *> (& type)->m_type_code, quantifier);
-  else
-    assert(false);
+  switch(type.type_kind()) {
+    case XQType::ATOMIC_TYPE_KIND:
+      return create_atomic_type(static_cast <const AtomicXQType *> (& type)->m_type_code, quantifier);
 
+    case XQType::NODE_TYPE_KIND:
+      {
+        const NodeXQType& nt = static_cast<const NodeXQType&>(type);
+        return create_node_type(nt.m_nodetest, nt.m_content_type, quantifier);
+      }
+
+    case XQType::ANY_TYPE_KIND:
+      return ANY_TYPE;
+
+    case XQType::ITEM_KIND:
+      return create_item_type(quantifier);
+
+    case XQType::ANY_SIMPLE_TYPE_KIND:
+      return ANY_SIMPLE_TYPE;
+
+    case XQType::UNTYPED_KIND:
+      return UNTYPED_TYPE;
+
+    case XQType::EMPTY_KIND:
+      return EMPTY_TYPE;
+
+    case XQType::NONE_KIND:
+      return NONE_TYPE;
+  }
+
+  assert(false);
   return 0;
 }
 
