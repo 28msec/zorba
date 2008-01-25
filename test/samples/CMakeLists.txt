@@ -1,6 +1,6 @@
 # create the testing file and list of tests
-CREATE_TEST_SOURCELIST(UnitTests
-	UnitTests.cpp
+CREATE_TEST_SOURCELIST(APISamples
+	APISamples.cpp
 	usecase1.cpp
 	usecase2.cpp
 	usecase3.cpp
@@ -11,15 +11,16 @@ CREATE_TEST_SOURCELIST(UnitTests
 )
  
 # add the executable
-ADD_EXECUTABLE(UnitTests ${UnitTests})
-TARGET_LINK_LIBRARIES(UnitTests zorba)
+ADD_EXECUTABLE(APISamples ${APISamples})
+TARGET_LINK_LIBRARIES(APISamples zorba)
+
 # remove the test driver source file
-SET (TestsToRun ${UnitTests})
-REMOVE (TestsToRun UnitTests.cpp)
+SET (TestsToRun ${APISamples})
+REMOVE (TestsToRun APISamples.cpp)
 
 # add all the ADD_TEST for each testing
 FOREACH (test ${TestsToRun})
 	GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
 	MESSAGE(STATUS ${TName})
-	ADD_TEST(${TName} UnitTests ${TName})
+	ADD_TEST(${TName} APISamples ${TName})
 ENDFOREACH(test)
