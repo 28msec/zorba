@@ -20,8 +20,8 @@ int usecase6(int argc, char* argv[])
 	DynamicQueryContext_t		dctx;
 	XQuery_t				xquery1;
 	XQuery_t				xquery2;
-	XQueryExecution_t		xqe1;
-	XQueryExecution_t		xqe2;
+//	XQueryExecution_t		xqe1;
+//	XQueryExecution_t		xqe2;
 
 	XmlDataManager_t		zorba_store = zorba_engine.getXmlDataManager();
 
@@ -49,8 +49,7 @@ int usecase6(int argc, char* argv[])
 	}
 
 	//create the first query execution (but do not execute yet)
-	xqe1 = xquery1->createExecution(dctx);
-	if(xqe1 == NULL)
+	if(!xquery1->initExecution(dctx))
 	{
 		cout << "cannot create execution object of first query" << endl;
 		assert(false);
@@ -67,8 +66,7 @@ int usecase6(int argc, char* argv[])
 	}
 
 	//no need for dynamic context here
-	xqe2 = xquery2->createExecution();
-	if(xqe2 == NULL)
+	if(!xquery2->initExecution())
 	{
 		cout << "cannot create execution object of second query" << endl;
 		assert(false);
@@ -76,10 +74,10 @@ int usecase6(int argc, char* argv[])
 	}
 
 	//chain the result from first query
-	xqe2->SetVariable("var1", xqe1);
+	xquery2->SetVariable("var1", xquery1);
 
 	//execute the query2 and serialize its result
-	if(!xqe2->serializeXML(std::cout))
+	if(!xquery2->serializeXML(std::cout))
 	{
 		cout << "Error executing and serializing query2" << endl;
 		assert(false);

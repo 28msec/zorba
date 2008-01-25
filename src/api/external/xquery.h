@@ -5,7 +5,6 @@
 #define ZORBA_XQUERY_BINARY_FOR_EXTERNAL_API_24_SEP_2007
 
 #include "compiler/compiled_xquery.h"
-#include "runtime/xquery_execution.h"
 #include "api/external/static_context_wrapper.h"
 
 ///Implement the objects for the Zorba external C++ API
@@ -32,7 +31,7 @@ typedef rchandle<class PlanIterator> PlanIter_t;
 
 class dynamic_context;
 
-
+/*
 class Zorba_XQueryExecution : public XQueryExecution
 {
 	bool		theClosed;
@@ -75,62 +74,91 @@ public:
 
 	dynamic_context		*internal_dyn_context;
 };
-
+*/
 
 class Zorba_XQueryBinary : public XQuery
 {
     friend class ZorbaEngine;
-		friend class XQueryPtr;
+//		friend class XQueryPtr;
 		friend class zorba;
 public:
-    Zorba_XQueryBinary(xqp_string	xquery_source_uri, const char* query_text);
+    Zorba_XQueryBinary(xqp_string	xquery_source_uri, xqp_string query_text);
+		Zorba_XQueryBinary(Zorba_XQueryBinary *original_xquery);
     virtual ~Zorba_XQueryBinary();
 
+private:
+	bool		theClosed;
 
 private:
 	xqp_string            m_xquery_source_uri;
-	const char*           m_query_text;
+	xqp_string            m_query_text;
 	bool                  is_compiled;
 
 	PlanIter_t            top_iterator;
 
-	StaticQueryContext_t  internal_static_context;//set by user
+//	StaticQueryContext_t  internal_static_context;//set by user
 
 public:
-	int32_t			          lStateSize;
+//	int32_t			          lStateSize;
 	::Collator	        * default_collator;
-	static_context		  * internal_sctx;///generated at compilation
+	rchandle<static_context>		  internal_sctx;///generated at compilation
+
+	//execution specific
+public:
+	///state objects for the iterator tree
+	PlanState		*state_block;
+
+	void			*alert_callback_param;
+//	bool			is_error;
+
+	dynamic_context		*internal_dyn_context;
 
 public:
-
-		virtual bool executeSerialize( std::ostream& os, DynamicQueryContext_t = 0 );
-		virtual bool executeSerializeXML( std::ostream& os, DynamicQueryContext_t = 0 );
-		virtual bool executeSerializeHTML( std::ostream& os, DynamicQueryContext_t = 0 );
-		virtual bool executeSerializeTEXT( std::ostream& os, DynamicQueryContext_t = 0 );
 
 		// StaticQueryContext is optional
 		//daniel: return true for success
-		// Matthias: how to return errors? daniel: using the error manager
     // routing_mode: should documents in a collection be filtered or queried completely
     //         if filtered, the result will be a sequences of URI, one for each qualifying documents
     bool compile(StaticQueryContext* = 0, bool routing_mode = false);
 
-    // execute the query 
-		//daniel: return NULL for error
-		// Matthias: again, how tu return errors? daniel: using the error manager
-    // the DynamicQueryContext does not need to be passed, a default one can always be used
-    virtual XQueryExecution_t createExecution( DynamicQueryContext_t = 0);
+		// start/restart the query execution
+    virtual bool initExecution( DynamicQueryContext_t = 0);
+
+		virtual bool serialize( std::ostream& os );
+		virtual bool serializeXML( std::ostream& os );
+		virtual bool serializeHTML( std::ostream& os );
+		virtual bool serializeTEXT( std::ostream& os );
+
+		//get one item from result; check isError() for errors
+		virtual Item_t next();
+		virtual void reset();
+		virtual void close();
 
 		virtual bool   serializeQuery(ostream &os);
 
-public:
-    // getters/setters for Static- and DynamicQueryContext
-    // a default static and dynamiccontext is always available
+		virtual void	AbortQueryExecution();
 
-    // Matthias: don't call it internal
-    // there is no need to distinguish internal and external
-		virtual StaticQueryContext_t getInternalStaticContext();
-//    DynamicQueryContextPtr getInternalDynamicContext();
+		virtual bool isError();
+
+		//set param to be received by alert callback
+		virtual void setAlertsParam(void *alert_callback_param);
+
+		//create a duplicate of this compiled xquery
+		virtual XQuery_t		clone();
+public:
+
+		// extension from dynamic context (specific only for this execution)
+		virtual bool SetVariable( xqp_string varname, XQuery_t item_iter );
+		virtual bool SetVariable( xqp_string varname, xqp_string docUri, std::istream &is );
+
+		// register documents available through fn:doc() in xquery
+		virtual bool AddAvailableDocument(xqp_string docURI,
+																			Item_t docitem);
+		// register collections available through fn:collection() in xquery
+		// default collection has empty URI ""
+		virtual bool AddAvailableCollection(xqp_string collectionURI,
+																				Collection_t);
+
 };
 
 }//end namespace xqp

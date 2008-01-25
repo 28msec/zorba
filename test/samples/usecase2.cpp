@@ -36,7 +36,8 @@ int usecase2(int argc, char* argv[])
 	}
 
 	//execute the query and serialize its result
-	if(!xquery->executeSerializeXML(std::cout))
+	if(!xquery->initExecution() ||
+		!xquery->serializeXML(std::cout))
 	{
 		cout << "Error executing and serializing \"1+2\"" << endl;
 		assert(false);

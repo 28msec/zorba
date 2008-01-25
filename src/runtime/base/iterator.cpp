@@ -45,7 +45,7 @@ PlanState::PlanState(uint32_t blockSize)
 
   ///this zorp now gets specific for each iterator state object
   zorp = ZORBA_FOR_CURRENT_THREAD();
-	xqbinary = NULL;
+//	xqbinary = NULL;
 //	xqexecution = NULL;
 }
 

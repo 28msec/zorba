@@ -576,6 +576,8 @@ public:
     API0006_COLLECTION_NOT_FOUND,
     API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
     API0008,  // Document already exists
+		API0009_THREAD_NOT_INITIALIZED,
+		API0010_XQUERY_EXECUTION_NOT_STARTED,
 
     MAX_ZORBA_ERROR_CODE
   };
@@ -692,7 +694,6 @@ typedef rchandle<XQueryExecution> XQueryExecution_t;
 // user might choose to receive the alerts through callback functions
 typedef int alert_callback(ZorbaAlert*       alert, 
                            XQuery*           current_xquery,
-                           XQueryExecution*  current_xqueryexecution,
                            void*             param);
 
 

@@ -111,7 +111,7 @@ public:
   uint32_t               blockSize;
 
   Zorba                * zorp;
-  Zorba_XQueryBinary   * xqbinary;
+//  Zorba_XQueryBinary   * xqbinary;
 //	Zorba_XQueryExecution	*xqexecution;//contains the dynamic context
 
   PlanState(uint32_t blockSize);

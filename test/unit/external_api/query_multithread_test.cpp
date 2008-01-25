@@ -96,7 +96,7 @@ void* query_thread(void *param)
 	ofstream		result_file(make_absolute_file_name(query_param->result_file_name.c_str(), __FILE__).c_str());
 	unsigned int		i;
 	unsigned int	max;
-  XQueryExecution_t    prev_execution;
+  XQuery_t    prev_query;
 
 
 	///now start the zorba engine
@@ -107,11 +107,12 @@ void* query_thread(void *param)
 
 
 	//do the test
-	prev_execution = query_param->query->createExecution();
+	prev_query = query_param->query->clone();
+	prev_query->initExecution();
 	for(i=0;i<100;i++)
 	{
 		XQuery_t    query;
-		XQueryExecution_t   execution;
+	//	XQueryExecution_t   execution;
 		DynamicQueryContext_t    dctx1;
 
 		// create a compiled query
@@ -125,12 +126,11 @@ void* query_thread(void *param)
 		dctx1 = zorba_factory.createDynamicContext();
 
 		result_file << "CreateExecution" << endl;
-		execution = query->createExecution(dctx1);
-		if(execution == NULL)
+		if(!query->initExecution(dctx1))
 		{
 			goto DisplayErrorsAndExit;
 		}
-		if(!execution->SetVariable("external_var_name", prev_execution))
+		if(!query->SetVariable("external_var_name", prev_query))
 		{
 			result_file << "SetVariable with prev_execution FAILED" << endl;
 		}
@@ -138,13 +138,13 @@ void* query_thread(void *param)
 		{
 			result_file << "SetVariable with prev_execution succeeded" << endl;
 		}
-		prev_execution = execution;
+		prev_query = query;
 	}
 
 	result_file << "serialize" << endl;
-  prev_execution->serializeXML(result_file);
+  prev_query->serializeXML(result_file);
 	result_file << endl;
-	if(prev_execution->isError())
+	if(prev_query->isError())
   {
     goto DisplayErrorsAndExit;
   }

@@ -37,7 +37,6 @@ using namespace std;
 
 int apitest_alert_callback(ZorbaAlert *alert_mess, 
                            XQuery*  current_xquery,
-                           XQueryExecution* current_xqueryresult,
                            void *param)
 {
 #ifndef NDEBUG
@@ -61,17 +60,17 @@ int apitest_alert_callback(ZorbaAlert *alert_mess,
 
 void set_var (string name, string val,
               DynamicQueryContext_t dctx,
-              XQueryExecution_t result)
+              XQuery_t query)
 {
   if (name [name.size () - 1] == ':' && dctx != NULL) 
   {
     dctx->SetVariableAsString(name.substr (0, name.size () - 1), xqp_string(val));
   }
-  else if (name[name.size () - 1] != ':' && result != NULL)
+  else if (name[name.size () - 1] != ':' && query != NULL)
   {
     ifstream is (val.c_str ());
     assert (is);
-    result->SetVariable(name, val.c_str(), is);
+    query->SetVariable(name, val.c_str(), is);
 	//	XmlDataManager_t		store = ZorbaEngine::getInstance().getXmlDataManager();
 	//	store->loadDocument(val.c_str (), is);
 	//	dctx->SetVariableAsDocument(name, val.c_str());
@@ -121,18 +120,18 @@ public:
     factory.shutdown();
   }
 
-  XQueryExecution_t createExecution (XQuery_t query, const vector< pair <string, string> > &vars) {
+  bool initExecution (XQuery_t query, const vector< pair <string, string> > &vars) {
     DynamicQueryContext_t dctx = factory.createDynamicContext ();
     for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
          iter != vars.end (); iter++)
       set_var (iter->first, iter->second, dctx, NULL);
     
-    XQueryExecution_t result = query->createExecution(dctx);
+    bool result = query->initExecution(dctx);
 
-    if( result != NULL) {
+    if( result != false) {
       for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
            iter != vars.end (); iter++)
-        set_var (iter->first, iter->second, NULL, result);
+        set_var (iter->first, iter->second, NULL, query);
     }
     
     return result;
@@ -197,22 +196,22 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // create dynamic context and execution
   vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
-  XQueryExecution_t result = zengine.createExecution (query, ext_vars);
+  bool result = zengine.initExecution (query, ext_vars);
 
-  result->setAlertsParam(result.get_ptr());  // to be passed to alerts callback when error occurs
+	query->setAlertsParam(query.get_ptr());  // to be passed to alerts callback when error occurs
 
   if (lProp->useSerializer()) {
-    result->serialize(*resultFile);
+    query->serialize(*resultFile);
     // newline should not be sent when serializing!
   } else {
     Item_t it;
-    while (NULL != (it = result->next ()).get_ptr ())
+    while (NULL != (it = query->next ()).get_ptr ())
       *resultFile << it->show() << endl;
   }
   
-  result->close ();
+  query->close ();
 
-  if (result->isError ())
+  if (query->isError ())
     return 0;
 
   return 0;

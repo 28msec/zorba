@@ -84,18 +84,16 @@ int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert* alert)
 
 	if(thread_registered_callback)
 	{
-		if(z->current_xqueryresult && z->current_xqueryresult->alert_callback_param)
+		if(z->current_xquery && z->current_xquery->alert_callback_param)
     {
 			retval = thread_registered_callback(alert, 
 																			z->current_xquery,
-																			z->current_xqueryresult,
-																			z->current_xqueryresult->alert_callback_param);
+																			z->current_xquery->alert_callback_param);
     }
 		else
     {
 			retval = thread_registered_callback(alert, 
 																			z->current_xquery,
-																			z->current_xqueryresult,
 																			thread_registered_param);
     }
 		delete alert;

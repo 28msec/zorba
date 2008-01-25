@@ -396,13 +396,19 @@ void DynamicContextWrapper::SetDefaultCollection( xqp_string collectionURI )
 	this->default_collection_uri = collectionURI;
 }
 
-dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *sctx)//and fill in with the values
+void	DynamicContextWrapper::create_dynamic_context(static_context *sctx, dynamic_context** pdctx)//and fill in with the values
 {
 	try{
 	///call for store to give iterators for accessing docs and collections...
 	dynamic_context*	new_dctx;
 
-	new_dctx = new dynamic_context;
+	if(!*pdctx)
+	{
+		new_dctx = new dynamic_context;
+		*pdctx = new_dctx;
+	}
+	else
+		new_dctx = *pdctx;
 	
 	///fill in with values
 	//for variables with atomic values, create singleton iterators with one item
@@ -622,8 +628,7 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 		new_dctx->set_execution_date_time(current_date_time, current_timezone_seconds);
 	new_dctx->set_default_collection(default_collection_uri);
 
-	return new_dctx;
-	}CATCH_ALL_RETURN_NULL;
+	}CATCH_ALL_NO_RETURN(;);
 }
 
 }//end namespace xqp

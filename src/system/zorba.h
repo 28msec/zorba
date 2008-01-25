@@ -32,7 +32,7 @@ class PlanIterator;
 class Store;
 class static_context;
 class AlertsManagerImpl;
-class Zorba_XQueryExecution;
+//class Zorba_XQueryExecution;
 class serializer;
 class CollationManager;
 
@@ -49,7 +49,7 @@ public:
 	
 public:///things specific for each thread
 	Zorba_XQueryBinary              * current_xquery;//current xquery executed for this thread
-	Zorba_XQueryExecution           * current_xqueryresult;
+//	Zorba_XQueryExecution           * current_xqueryresult;
 	std::stack<const PlanIterator*>	  current_iterator;
 	CollationManager                * coll_manager;
 

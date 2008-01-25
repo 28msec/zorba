@@ -14,7 +14,6 @@
 #include "zorba/context/static_context_api.h"
 #include "zorba/context/dynamic_context_api.h"
 #include "zorba/compiler/compiled_xquery.h"
-#include "zorba/runtime/xquery_execution.h"
 #include "zorba/system/zorba_engine_api.h"
 #include "zorba/types/typeident.h"
 #include "errors/xqp_exception.h"

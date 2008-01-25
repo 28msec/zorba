@@ -53,16 +53,16 @@ int test_api_zorba_engine(const char *result_file_name)
 
 
   XQuery_t    query;
-  XQueryExecution_t   result;
+//  XQueryExecution_t   result;
   Item_t    it;
 	std::string		query_text = "1+2";
   DynamicQueryContext_t    dctx1;
 	StaticQueryContext_t		query_sctx;
 
   // create a compiled query
-  query = zorba_factory.createQuery(query_text.c_str(), sctx1);
-  query = zorba_factory.createQuery(query_text.c_str(), sctx1);
-  query = zorba_factory.createQuery(query_text.c_str(), sctx1);
+  query = zorba_factory.createQuery(query_text, sctx1);
+  query = zorba_factory.createQuery(query_text, sctx1);
+  query = zorba_factory.createQuery(query_text, sctx1);
 	result_file << "CreateQuery" << endl;
 
   if(query == NULL)
@@ -70,7 +70,7 @@ int test_api_zorba_engine(const char *result_file_name)
     goto DisplayErrorsAndExit;
   }
 
-	query_sctx = query->getInternalStaticContext();
+	query_sctx = sctx1;//query->getInternalStaticContext();
 	colinfo = query_sctx->GetCollation("http://www.flworfound.org/apitest/coll1");
 	if(!colinfo)
 	{
@@ -85,10 +85,9 @@ int test_api_zorba_engine(const char *result_file_name)
 
   dctx1 = zorba_factory.createDynamicContext();
 
-  result = query->createExecution(dctx1);
-  result = query->createExecution(dctx1);
 	result_file << "CreateExecution" << endl;
-  if(result == NULL)
+  query->initExecution(dctx1);
+  if(!query->initExecution(dctx1))
   {
     goto DisplayErrorsAndExit;
   }
@@ -96,7 +95,7 @@ int test_api_zorba_engine(const char *result_file_name)
 	{
     string filename = make_absolute_file_name("test_xml.txt", __FILE__);
 		ifstream xml_stream(filename.c_str());
-		if(!xml_stream.is_open() || !result->SetVariable("var2", filename, xml_stream))
+		if(!xml_stream.is_open() || !query->SetVariable("var2", filename, xml_stream))
 		{
 			result_file << "SetVariable with istream failed" << endl;
 			result_file << "file test_xml.txt exists: " << xml_stream.is_open() << endl;
@@ -108,8 +107,7 @@ int test_api_zorba_engine(const char *result_file_name)
 	}
 
 	result_file << "serialize" << endl;
-  result->serialize(result_file);
-  if(result->isError())
+  if(!query->serialize(result_file))
   {
     goto DisplayErrorsAndExit;
   }

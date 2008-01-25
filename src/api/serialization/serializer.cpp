@@ -27,7 +27,7 @@
 #include "system/zorba.h"
 #include "util/Assert.h"
 #include "store/naive/basic_item_factory.h"
-#include "runtime/xquery_execution.h"
+#include "compiler/compiled_xquery.h"
 #include "string.h"
 
 using namespace std;
@@ -824,7 +824,7 @@ void serializer::setup(ostream& os)
   }
 }
 
-void serializer::serialize(XQueryExecution *result, ostream& os)
+void serializer::serialize(XQuery *result, ostream& os)
 {
   validate_parameters();
   setup(os);

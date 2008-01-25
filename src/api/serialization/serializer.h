@@ -33,7 +33,7 @@
 namespace xqp
 {
 
-class XQueryExecution;
+class XQuery;
 class serializer;
 
 class serializer : public rcobject
@@ -49,7 +49,7 @@ public:
    * @param result The query result to be serialized.
    * @param os The stream to serialize to.
    */
-  void serialize(XQueryExecution *result, std::ostream& os);
+  void serialize(XQuery *result, std::ostream& os);
   
   /**
    * Serializes the given item to the output stream.

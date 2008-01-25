@@ -48,7 +48,6 @@ ZorbaEngine& ZorbaEngine::getInstance()
 	{
 		globalZorbaEngine = new ZorbaEngineImpl(false);
 		globalZorbaEngine->initialize();
-        GlobalEnvironment::getInstance();
 	}
 	return *globalZorbaEngine;
 }
@@ -275,7 +274,7 @@ Zorba* ZorbaEngineImpl::getZorbaForCurrentThread()
 
 
 XQuery_t ZorbaEngineImpl::createQuery(
-    const char* aQueryString,
+    xqp_string aQueryString,
     StaticQueryContext_t sctx, 
     xqp_string	xquery_source_uri,
     bool routing_mode)

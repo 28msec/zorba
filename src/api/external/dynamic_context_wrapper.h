@@ -81,7 +81,7 @@ public:
 
 	virtual void SetDefaultCollection( xqp_string collectionURI );
 
-	dynamic_context*	create_dynamic_context(static_context *sctx);//and fill in with the values
+	void	create_dynamic_context(static_context *sctx, dynamic_context** pdctx);//and fill in with the values
 
 private:
 	bool	checkQName(xqp_string varname);//check if var name is well formed

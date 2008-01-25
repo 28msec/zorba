@@ -3,7 +3,6 @@
 #include <map>
 
 #include "compiler/compiled_xquery.h"
-#include "runtime/xquery_execution.h"
 #include "zorba.h"
 
 #include "context/common.h"
@@ -28,7 +27,7 @@ Zorba::Zorba()
 {
 //	coll = NULL;
 	current_xquery = NULL;
-	current_xqueryresult = NULL;
+	//current_xqueryresult = NULL;
 
 	m_error_manager = new AlertsManagerImpl;
 	m_item_serializer = NULL;

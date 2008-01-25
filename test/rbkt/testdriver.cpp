@@ -113,7 +113,7 @@ printErrors(xqp::ZorbaAlertsManager* aManager)
 // be inlined or not
 void
 set_var (bool inlineFile, std::string name, std::string val, 
-         xqp::DynamicQueryContext_t dctx, xqp::XQueryExecution_t exec)
+         xqp::DynamicQueryContext_t dctx, xqp::XQuery_t exec)
 {
   boost::replace_all(val, "$RBKT_SRC_DIR", xqp::RBKT_SRC_DIR);
   if (!inlineFile && dctx != NULL) {
@@ -126,7 +126,7 @@ set_var (bool inlineFile, std::string name, std::string val,
 }
 
 void 
-set_vars (Specification* aSpec, xqp::DynamicQueryContext_t dctx, xqp::XQueryExecution_t exec) 
+set_vars (Specification* aSpec, xqp::DynamicQueryContext_t dctx, xqp::XQuery_t exec) 
 {
   for (std::vector<Specification::Variable>::const_iterator lIter = aSpec->variablesBegin();
        lIter != aSpec->variablesEnd(); ++lIter)
@@ -337,10 +337,7 @@ main(int argc, char** argv)
   set_vars(&lSpec, lDynCtxt, NULL);
 
   // execute the query
-  xqp::XQueryExecution_t lQueryResult = lQuery->createExecution(lDynCtxt); 
-  set_vars(&lSpec, NULL, lQueryResult);
-
-  if (lQueryResult == NULL) // how can this happen?
+  if(!lQuery->initExecution(lDynCtxt))
   {
     if (isErrorExpected(&lAlertsManager, &lSpec)) { return 0; } // done, we expected this error
     else 
@@ -353,15 +350,16 @@ main(int argc, char** argv)
       }
     }
   }
+  set_vars(&lSpec, NULL, lQuery);
   
   {
     // serialize xml
     std::ofstream lResFileStream(lResultFile.native_file_string().c_str());
     assert (lResFileStream.good());
 
-    lQueryResult->serializeXML(lResFileStream);
+    lQuery->serializeXML(lResFileStream);
 
-    if (lQueryResult->isError())
+    if (lQuery->isError())
     {
       if (isErrorExpected(&lAlertsManager, &lSpec)) { return 0; } // again done, we expected this error
       else 

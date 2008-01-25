@@ -293,7 +293,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
       if (state->theNoAttrAllowed)
       {
         ZorbaAlertFactory::error_alert (
-          ZorbaError::XQTY0024, false, &loc,
+          ZorbaError::XQTY0024, &loc, false,
           "Content sequence of element contains an attribute node following a node that is not an attribute node!"
         );
       }

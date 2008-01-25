@@ -22,6 +22,7 @@ void GlobalEnvironment::init()
 void GlobalEnvironment::destroy()
 {
   delete m_globalEnv;
+	m_globalEnv = NULL;
 }
 
 GlobalEnvironment::GlobalEnvironment()

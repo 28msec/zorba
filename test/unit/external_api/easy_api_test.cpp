@@ -18,7 +18,8 @@ test_1()
 	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
 	XQuery_t lQuery = zorba_factory.createQuery("1+2"); 
 
-  lQuery->executeSerializeXML(std::cout);
+	lQuery->initExecution();
+  lQuery->serializeXML(std::cout);
 
 	return true;
 }
@@ -31,7 +32,8 @@ test_2()
 	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
 	XQuery_t lQuery = zorba_factory.createQuery("1+2"); 
 
-  lQuery->executeSerializeHTML(std::cout);
+	lQuery->initExecution();
+  lQuery->serializeHTML(std::cout);
 
 	return true;
 }
@@ -44,7 +46,8 @@ test_3()
 	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
 	XQuery_t lQuery = zorba_factory.createQuery("1+2"); 
 
-  lQuery->executeSerializeTEXT(std::cout);
+	lQuery->initExecution();
+  lQuery->serializeTEXT(std::cout);
 
 	return true;
 }
@@ -58,12 +61,13 @@ test_4()
   std::string lQueryString("declare variable $x external; for $i in 1 to $x return $i");
 
 	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
-	XQuery_t lQuery = zorba_factory.createQuery(lQueryString.c_str()); 
+	XQuery_t lQuery = zorba_factory.createQuery(lQueryString); 
 
   DynamicQueryContext_t lDynCtxt = zorba_factory.createDynamicContext();
   lDynCtxt->SetVariableAsInteger("x", 2);
 
-  lQuery->executeSerializeXML(std::cout, lDynCtxt);
+	lQuery->initExecution(lDynCtxt);
+  lQuery->serializeXML(std::cout);
 
 	return true;
 }

@@ -65,7 +65,8 @@ int test_easy_api(const char *result_file_name)
 	dctx->SetVariableAsInteger("varx", (long long)-134);
 
 	result_file << "query->executeSerializeXML" << endl;
-	if(!query->executeSerializeXML(result_file, dctx))
+	if(!query->initExecution(dctx) ||
+		!query->serializeXML(result_file))
 	{
 		result_file << endl << "error serializing the result ! " << endl;
 		goto DisplayErrorsAndExit;

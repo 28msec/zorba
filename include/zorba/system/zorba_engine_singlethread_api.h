@@ -26,7 +26,7 @@ public:
   virtual ~ZorbaBaseEngine() {}
 
   virtual XQuery_t createQuery(
-        const char* aQueryString,
+        xqp_string aQueryString,
         StaticQueryContext_t = 0, 
 				xqp_string	xquery_source_uri = "",
         bool routing_mode = false) = 0;

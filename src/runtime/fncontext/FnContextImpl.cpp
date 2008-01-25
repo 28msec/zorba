@@ -42,7 +42,7 @@ Item_t CtxVariableIterator::nextImpl(PlanState& planState)
   FINISHED_ALLOCATING_RESOURCES();
 
   iter = ZORBA_FOR_CURRENT_THREAD()->
-         current_xqueryresult->internal_dyn_context->get_variable(theVarName);
+         current_xquery->internal_dyn_context->get_variable(theVarName);
 
   if (iter == NULL)
     ZORBA_ERROR_ALERT (ZorbaError::XPDY0002, &loc, false, theVarName);
@@ -69,7 +69,7 @@ void CtxVariableIterator::resetImpl(PlanState& planState)
   Iterator_t iter;
 
   iter = ZORBA_FOR_CURRENT_THREAD()->
-         current_xqueryresult->internal_dyn_context->get_variable(theVarName);
+         current_xquery->internal_dyn_context->get_variable(theVarName);
 
   iter->reset();
 }
@@ -83,7 +83,7 @@ void CtxVariableIterator::releaseResourcesImpl(PlanState& planState)
 
   Zorba* zorba = ZORBA_FOR_CURRENT_THREAD();
 
-  iter = zorba->current_xqueryresult->internal_dyn_context->get_variable(theVarName);
+  iter = zorba->current_xquery->internal_dyn_context->get_variable(theVarName);
 
   if (iter != NULL)
     iter->close();

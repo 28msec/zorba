@@ -42,7 +42,8 @@ int usecase5(int argc, char* argv[])
 */
 
 	//execute the query and serialize its result
-	if(!xquery->executeSerializeXML(std::cout, dctx))
+	if(!xquery->initExecution(dctx) ||
+		!xquery->serializeXML(std::cout))
 	{
 		cout << "Error executing and serializing query" << endl;
 		goto DisplayErrorsAndExit;

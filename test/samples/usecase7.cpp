@@ -99,7 +99,8 @@ void* query_thread(void *param)
 	}
 
 	//execute the query and serialize its result
-	if(!xquery->executeSerializeXML(std::cout, dctx))//output will be a little scrammbled
+	if(!xquery->initExecution(dctx) ||
+		!xquery->serializeXML(std::cout))//output will be a little scrammbled
 	{
 		cout << "Error executing and serializing query" << endl;
 		assert(false);
