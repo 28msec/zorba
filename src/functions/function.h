@@ -19,8 +19,9 @@
 namespace xqp {
 
 typedef rchandle<class PlanIterator> PlanIter_t;
-
 typedef rchandle<class expr> expr_t;
+typedef rchandle<class var_expr> var_expr_t;
+typedef rchandle<class LetVarIterator> ref_iter_t;
 
 class fo_expr;
 
@@ -78,6 +79,9 @@ class user_function : public function {
     void set_body(expr_t body);
     expr_t get_body() const;
 
+    void set_params(std::vector<var_expr_t>& params);
+    const std::vector<var_expr_t>& get_params() const;
+
     virtual PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const;
 
     virtual TypeSystem::xqtref_t type_check(signature&) const;
@@ -86,12 +90,16 @@ class user_function : public function {
 
     virtual PlanIter_t get_plan() const;
 
+    virtual std::vector<ref_iter_t>& get_param_iters() const;
+
     virtual PlanState *create_plan_state() const;
 
   private:
     yy::location m_loc;
     expr_t m_expr_body;
+    std::vector<var_expr_t> m_params;
     mutable PlanIter_t m_plan;
+    mutable std::vector<ref_iter_t> m_param_iters;
     mutable int32_t m_state_size;
 };
 

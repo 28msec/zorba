@@ -1,4 +1,5 @@
 #include "errors/error_factory.h"
+#include "runtime/core/var_iterators.h"
 #include "runtime/core/fncall_iterator.h"
 
 namespace xqp {
@@ -7,11 +8,25 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState)
 {
   Item_t lSequenceItem;
   UDFunctionCallIteratorState *state;
-  DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
+  GET_STATE(UDFunctionCallIteratorState, state, planState);
+  MANUAL_STACK_INIT(state);
+  state->init();
+  FINISHED_ALLOCATING_RESOURCES();
 
   state->thePlan = theUDF->get_plan().get_ptr();
   state->theFnBodyStateBlock = theUDF->create_plan_state();
-  state->thePlan->reset(*state->theFnBodyStateBlock);
+
+  // Bind the args.
+  {
+    uint32_t nargs = theUDF->get_params().size();
+    std::vector<ref_iter_t>& iters = theUDF->get_param_iters();
+    for(uint32_t i = 0; i < nargs; ++i) {
+      ref_iter_t& ref = iters[i];
+      if (ref != NULL) {
+        ref->bind(new PlanIteratorWrapper(theChildren[i], planState), *state->theFnBodyStateBlock);
+      }
+    }
+  }
 
   while((lSequenceItem = state->thePlan->produceNext(*state->theFnBodyStateBlock)) != NULL) {
     STACK_PUSH(lSequenceItem, state);

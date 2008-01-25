@@ -1114,7 +1114,7 @@ public:
 	rchandle<Param> operator[](int i) const { return param_hv[i]; }
   std::vector<rchandle<Param> >::const_iterator begin () const { return param_hv.begin (); }
   std::vector<rchandle<Param> >::const_iterator end () const { return param_hv.end (); }
-  std::vector<rchandle<Param> >::size_type size () { return param_hv.size (); }
+  std::vector<rchandle<Param> >::size_type size () const { return param_hv.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;

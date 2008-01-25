@@ -80,9 +80,11 @@ protected:
   hash64map<std::vector<var_iter_t> *> fvar_iter_map;
   hash64map<std::vector<var_iter_t> *> pvar_iter_map;
   hash64map<std::vector<ref_iter_t> *> lvar_iter_map;
+  hash64map<std::vector<ref_iter_t> *> *param_var_iter_map;
 
 public:
-	plan_visitor() : depth (0), theLastNSCtx(NULL) {}
+	plan_visitor(hash64map<std::vector<ref_iter_t> *> *param_var_map = NULL)
+        : depth (0), theLastNSCtx(NULL), param_var_iter_map(param_var_map) {}
 	~plan_visitor() {}
 
 public:
@@ -153,6 +155,18 @@ void end_visit(var_expr& v)
     vector<ref_iter_t> *map = NULL;
     
     ZORBA_ASSERT (lvar_iter_map.get ((uint64_t) &v, map));
+    map->push_back (v_p);
+    itstack.push(v_p);
+  }
+    break;
+  case var_expr::param_var:
+  {
+    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
+                                             v.get_loc(),
+                                             (void *) &v);
+    vector<ref_iter_t> *map = NULL;
+    
+    ZORBA_ASSERT (param_var_iter_map->get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   }
@@ -921,8 +935,8 @@ void end_visit(extension_expr& v)
 
 };
 
-PlanIter_t codegen (expr *root) {
-  plan_visitor c;
+PlanIter_t codegen (expr *root, hash64map<std::vector<ref_iter_t> *> *param_var_map) {
+  plan_visitor c(param_var_map);
   root->accept (c);
   return c.pop_itstack ();
 }

@@ -1368,12 +1368,27 @@ void end_visit(const FunctionDecl& v, void *visit_state)
     pop_tstack ();
   
   int nargs = v.get_param_count ();
-  pop_nodestack (nargs);
+  vector<var_expr_t> params;
+  if (nargs > 0) {
+    rchandle<flwor_expr> flwor = dynamic_cast<flwor_expr *>(&*pop_nodestack());
+    Assert(flwor != NULL);
+
+    for(int i = 0; i < nargs; ++i) {
+      rchandle<forlet_clause>& flc = (*flwor)[i];
+      var_expr *param_var = dynamic_cast<var_expr *>(&*flc->get_expr());
+      Assert(param_var != NULL);
+      params.push_back(param_var);
+    }
+    flwor->set_retval(body);
+    body = &*flwor;
+  }
+
   user_function *udf = sctx_p->lookup_udf (v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs);
   ZORBA_ASSERT (udf != NULL);
   normalizer norm(sctx_p);
   body->accept(norm);
   udf->set_body (body);
+  udf->set_params(params);
   pop_scope ();
 }
 
@@ -1509,22 +1524,33 @@ void *begin_visit(const Param& v)
 void end_visit(const Param& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  var_expr *ve = bind_var (v.get_location (), v.get_name (), var_expr::param_var);
-  nodestack.push (ve);
-  if (v.get_typedecl () != NULL)
-    ve->set_type (pop_tstack ());
+
+  rchandle<flwor_expr> flwor = dynamic_cast<flwor_expr *>(&*nodestack.top());
+  Assert(flwor != NULL);
+  Item_t qname = sctx_p->lookup_qname ("", v.get_name());
+  var_expr_t param_var = new var_expr (v.get_location(), var_expr::param_var, qname);
+  var_expr_t subst_var = new var_expr(v.get_location(), var_expr::let_var, qname);
+  flwor->add(wrap_in_letclause(&*param_var, subst_var));
+  sctx_p->bind_var(qname, subst_var);
+  if (v.get_typedecl () != NULL) {
+    param_var->set_type (pop_tstack ());
+    subst_var->set_type(param_var->get_type());
+  }
 }
 
 
 void *begin_visit(const ParamList& v)
 {
   TRACE_VISIT ();
+  if (v.size() > 0) {
+    nodestack.push(new flwor_expr(v.get_location()));
+  }
   return no_state;
 }
 
 void end_visit(const ParamList& v, void *visit_state)
 {
- TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
 
 

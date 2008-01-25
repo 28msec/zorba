@@ -10,6 +10,7 @@
 #ifndef XQP_PLAN_VISITOR_H
 #define XQP_PLAN_VISITOR_H
 
+#include <vector>
 #include "compiler/expression/expr.h"
 #include "runtime/core/item_iterator.h"
 
@@ -22,8 +23,10 @@
 |_______________________________________________________________________*/
 
 namespace xqp {
+  typedef rchandle<class LetVarIterator> ref_iter_t;
+  template <class T> class hash64map;
 
-  PlanIter_t codegen (expr *root);
+  PlanIter_t codegen (expr *root, hash64map<std::vector<ref_iter_t> *> *param_var_map = NULL);
 
 } /* namespace xqp */
 #endif /* XQP_PLAN_VISITOR_H */
