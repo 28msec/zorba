@@ -98,7 +98,7 @@ template <class V>
 bool StringHashMap<V>::insert(const xqp_string& str, const V& value)
 {
   HashEntry* entry;
-  HashEntry* lastentry;
+  HashEntry* lastentry = NULL;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given uri
   entry = &theHashTab[str.hash() % theHashTabSize];
