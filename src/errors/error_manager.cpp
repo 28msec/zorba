@@ -8,6 +8,7 @@
 using namespace std;
 namespace xqp {
 
+bool g_throw_exceptions = false;
 
 ZorbaAlertsManager::~ZorbaAlertsManager()
 {
@@ -23,7 +24,6 @@ AlertsManagerImpl::AlertsManagerImpl( )
   AlertMessagesEnglish* codes = new AlertMessagesEnglish;
 	setAlertMessages(codes, false);
 	is_error = false;
-	throw_exceptions = false;
 }
 
 
@@ -118,14 +118,14 @@ void AlertsManagerImpl::setIsError()
 	is_error = true;
 }
 
-void AlertsManagerImpl::setThrowExceptionsMode(bool throw_exceptions)
+void ZorbaAlertsManager::setThrowExceptionsMode(bool throw_exceptions)
 {
-	this->throw_exceptions = throw_exceptions;
+	throw_exceptions = g_throw_exceptions;
 }
 
-bool AlertsManagerImpl::getThrowExceptionsMode()
+bool ZorbaAlertsManager::getThrowExceptionsMode()
 {
-	return throw_exceptions;
+	return g_throw_exceptions;
 }
 
 void AlertsManagerImpl::DumpAlerts(std::ostream &os)

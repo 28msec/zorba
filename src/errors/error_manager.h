@@ -32,8 +32,8 @@ public:
 	virtual bool isError();
 	void				setIsError();
 
-	virtual void setThrowExceptionsMode(bool throw_exceptions);
-	virtual bool	getThrowExceptionsMode();
+//	virtual void setThrowExceptionsMode(bool throw_exceptions);
+//	virtual bool	getThrowExceptionsMode();
 protected:
 	AlertMessages   * theAlertMessages;
 	bool			        theIsFromUser;
@@ -43,7 +43,6 @@ protected:
 	void						* thread_registered_param;
 
 	bool						is_error;
-	bool						throw_exceptions;
 };
 
 }//end namespace xqp

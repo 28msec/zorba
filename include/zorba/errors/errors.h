@@ -735,8 +735,8 @@ public:
 
 	virtual bool isError() = 0;
 
-	virtual void setThrowExceptionsMode(bool throw_exceptions) = 0;
-	virtual bool getThrowExceptionsMode() = 0;
+	static void setThrowExceptionsMode(bool throw_exceptions);
+	static bool getThrowExceptionsMode();
 };
 
 
