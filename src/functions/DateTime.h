@@ -87,6 +87,21 @@ class fn_datetime_ctor : public function
       TypeSystem::xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
+
+/*
+  * 10.5.5 fn:minutes-from-duration
+ *-----------------------*/
+  class fn_minutes_from_duration : public function
+  {
+    public:
+      fn_minutes_from_duration(const signature&);
+      ~fn_minutes_from_duration() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
 } // namespace xqp
 
 #endif

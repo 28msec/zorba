@@ -337,7 +337,11 @@ public:
 
   virtual void beginVisit(const FnHoursFromDurationIterator&) ;
   virtual void endVisit(const FnHoursFromDurationIterator&);
+
+  virtual void beginVisit(const FnMinutesFromDurationIterator&) ;
+  virtual void endVisit(const FnMinutesFromDurationIterator&);
   
+      
   virtual void beginVisit ( const FLWORIterator& ) ;
   virtual void endVisit ( const FLWORIterator& ) ;
   

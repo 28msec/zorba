@@ -281,6 +281,12 @@ public:
     this->showError();
     return 0;
   }
+
+  virtual int32_t getMinutes() const
+  {
+    this->showError();
+    return 0;
+  }
   
   /** Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
    */

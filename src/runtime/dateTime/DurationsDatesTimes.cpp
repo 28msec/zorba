@@ -194,5 +194,30 @@ FnHoursFromDurationIterator::nextImpl(PlanState& planState)
 }
 /*end class FnHoursFromDurationIterator */
 
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.5 fn:minutes-from-duration
+ *
+ * fn:minutes-from-duration($arg as xs:duration?) as xs:integer?
+ *_______________________________________________________________________*/
 
+/*begin class FnMinutesFromDurationIterator */
+Item_t 
+FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChild, planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getMinutes()), state );
+  }
+  STACK_END();
+}
+/*end class FnMinutesFromDurationIterator */
 }

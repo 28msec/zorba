@@ -156,7 +156,26 @@ class FnHoursFromDurationIterator : public UnaryBaseIterator<FnHoursFromDuration
 /*end class FnHoursFromDurationIterator */
 
 /*
- 10.5.5 fn:minutes-from-duration
+ * 10.5.5 fn:minutes-from-duration
+ * --------------------*/
+ 
+/*begin class FnMinutesFromDurationIterator */
+class FnMinutesFromDurationIterator : public UnaryBaseIterator<FnMinutesFromDurationIterator>
+{
+  public:
+    FnMinutesFromDurationIterator ( const yy::location& loc, PlanIter_t& arg )
+  :
+    UnaryBaseIterator<FnMinutesFromDurationIterator>( loc, arg ){};
+  
+    ~FnMinutesFromDurationIterator(){};
+  public:
+    Item_t nextImpl(PlanState& planState);
+    
+    virtual void accept(PlanIterVisitor&) const;
+};
+/*end class FnMinutesFromDurationIterator */
+
+/*
 10.5.6 fn:seconds-from-duration
 10.5.7 fn:year-from-dateTime
 10.5.8 fn:month-from-dateTime
