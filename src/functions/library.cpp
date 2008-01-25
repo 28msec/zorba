@@ -724,6 +724,10 @@ DECL(fn_minutes_from_duration,
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
+DECL(fn_seconds_from_duration,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "seconds-from-duration"),
+      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
 
 // end date time
 

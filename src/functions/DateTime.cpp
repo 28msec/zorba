@@ -206,5 +206,39 @@ fn_minutes_from_duration::type_check (
 }
 /*end class fn_minutes_from_duration*/
 
+/*
+ * 10.5.6 fn:seconds-from-duration
+ * --------------------*/
+/*begin class fn_seconds_from_duration*/
+fn_seconds_from_duration::fn_seconds_from_duration (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+fn_seconds_from_duration::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnSecondsFromDurationIterator(loc, argv[0]);
+}
+
+bool
+fn_seconds_from_duration::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_seconds_from_duration::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_QUESTION;
+}
+/*end class fn_seconds_from_duration*/
+
 } // namespace xqp
 

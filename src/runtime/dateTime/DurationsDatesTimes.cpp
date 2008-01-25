@@ -220,4 +220,33 @@ FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnMinutesFromDurationIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.6 fn:seconds-from-duration
+ *
+ * fn:seconds-from-duration($arg as xs:duration?) as xs:decimal?
+ *_______________________________________________________________________*/
+
+/*begin class FnSecondsFromDurationIterator */
+Item_t 
+FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIterator::PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChild, planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createDecimal(itemArg->getSeconds()), state );
+  }
+  STACK_END();
+}
+/*end class FnSecondsFromDurationIterator */
+
+
 }

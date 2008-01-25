@@ -972,6 +972,11 @@ int32_t DurationItemNaive::getMinutes() const
   return theValue->getMinutes();
 }
 
+double DurationItemNaive::getSeconds() const
+{
+  return theValue->getSeconds();
+}
+
 /*******************************************************************************
  * class GYearMonthItemNaive
  *******************************************************************************/

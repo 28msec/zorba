@@ -176,7 +176,27 @@ class FnMinutesFromDurationIterator : public UnaryBaseIterator<FnMinutesFromDura
 /*end class FnMinutesFromDurationIterator */
 
 /*
-10.5.6 fn:seconds-from-duration
+ * 10.5.6 fn:seconds-from-duration
+ * --------------------*/
+ 
+/*begin class FnSecondsFromDurationIterator */
+class FnSecondsFromDurationIterator : public UnaryBaseIterator<FnSecondsFromDurationIterator>
+{
+  public:
+    FnSecondsFromDurationIterator ( const yy::location& loc, PlanIter_t& arg )
+  :
+    UnaryBaseIterator<FnSecondsFromDurationIterator>( loc, arg ){};
+  
+    ~FnSecondsFromDurationIterator(){};
+  public:
+    Item_t nextImpl(PlanState& planState);
+    
+    virtual void accept(PlanIterVisitor&) const;
+};
+/*end class FnSecondsFromDurationIterator */
+
+
+/*
 10.5.7 fn:year-from-dateTime
 10.5.8 fn:month-from-dateTime
 10.5.9 fn:day-from-dateTime
@@ -192,6 +212,7 @@ class FnMinutesFromDurationIterator : public UnaryBaseIterator<FnMinutesFromDura
 10.5.19 fn:minutes-from-time
 10.5.20 fn:seconds-from-time
 10.5.21 fn:timezone-from-time
+
 10.6 Arithmetic Operators on Durations
 10.6.1 op:add-yearMonthDurations
 10.6.2 op:subtract-yearMonthDurations

@@ -196,6 +196,7 @@ public:
   virtual int32_t getDays() const;
   virtual int32_t getHours() const;
   virtual int32_t getMinutes() const;
+  virtual double getSeconds() const;
 };
 
 /*******************************************************************************
