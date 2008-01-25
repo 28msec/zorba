@@ -16,7 +16,7 @@ NsBindingsContext::NsBindingsContext(unsigned long numBindings)
 }
 
 
-NsBindingsContext::NsBindingsContext(const NamespaceBindings& bindings)
+NsBindingsContext::NsBindingsContext(const NsBindings& bindings)
   :
   theBindings(bindings)
 {
@@ -36,18 +36,18 @@ NsBindingsContext::~NsBindingsContext()
 }
 
 
-xqpStringStore* NsBindingsContext::findBinding(xqpString prefix)
+xqpStringStore* NsBindingsContext::findBinding(xqpStringStore* prefix) const
 {
-  NsBindingsContext* currentContext = this;
+  const NsBindingsContext* currentContext = this;
 
   while (currentContext != NULL)
   {
-    NamespaceBindings& bindings = currentContext->theBindings;
+    const NsBindings& bindings = currentContext->theBindings;
     unsigned long numBindings = bindings.size();
 
     for (unsigned long i = 0; i < numBindings; i++)
     {
-      if (bindings[i].first.byteEqual(prefix))
+      if (bindings[i].first.getStore()->byteEqual(*prefix))
         return bindings[i].second.getStore();
     }
 
@@ -59,17 +59,17 @@ xqpStringStore* NsBindingsContext::findBinding(xqpString prefix)
 
 
 void NsBindingsContext::addBinding(
-    xqpString prefix,
-    xqpString ns)
+    xqpStringStore* prefix,
+    xqpStringStore* ns)
 {
   unsigned long numBindings = theBindings.size();
 
   for (unsigned long i = 0; i < numBindings; i++)
   {
-    if (theBindings[i].first.byteEqual(prefix))
+    if (theBindings[i].first.getStore()->byteEqual(*prefix))
     {
-      if (!theBindings[i].second.byteEqual(ns))
-        Assert(0);
+      if (!theBindings[i].second.getStore()->byteEqual(*ns))
+        ZORBA_ASSERT(0);
 
       return;
     }
@@ -77,15 +77,6 @@ void NsBindingsContext::addBinding(
 
   theBindings.push_back(std::pair<xqpString, xqpString>(prefix, ns));
 }
-
-
-class C 
-{
-  NsBindingsContext * x;
-
-public:
-  NsBindingsContext* get_x () const { return x; }
-}; 
 
 
 }

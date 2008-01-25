@@ -183,66 +183,46 @@ public:
 
 
   Item_t createDocumentNode(
-        const xqpStringStore_t&  baseURI,
-        const xqpStringStore_t&  docURI,
-        const Iterator_t&        children,
-        bool                     createId);
-
-  Item_t createDocumentNode(
-        const Item_t&  sourceNode,
-        bool           typePreserve,
-        bool           nsPreserve);
-
+        xqpStringStore* baseURI,
+        xqpStringStore* docURI,
+        Iterator*       children,
+        bool            isRoot,
+        bool            copy,
+        bool            typePreserve,
+        bool            nsPreserve,
+        bool            nsInherit);
 
   Item_t createElementNode(
-        const Item_t&            name,
-        const Item_t&            type,
-        Iterator_t&              childrenIte,
-        Iterator_t&              attributesIte,
-        Iterator_t&              namespacesIte,
-        const NamespaceBindings& nsBindings,
-        bool                     nsInherit,
-        bool                     createId);
-
-  Item_t createElementNode(
-        const Item_t&  sourceNode,
-        bool           typePreserve,
-        bool           nsPreserve);
-
+        Item*             name,
+        Item*             type,
+        Iterator*         childrenIte,
+        Iterator*         attributesIte,
+        Iterator*         namespacesIte,
+        const NsBindings& nsBindings,
+        bool              isRoot,
+        bool              copy,
+        bool              typePreserve,
+        bool              nsPreserve,
+        bool              nsInherit);
 
   Item_t createAttributeNode(
-        const Item_t&  name,
-        const Item_t&  type,
-        const Item_t&  lexicalValue,
-        const Item_t&  typedValue,
-        bool           createId);
-
-  Item_t createAttributeNode(
-        const Item_t&  sourceNode,
-        bool           typePreserve);
+        Item*  name,
+        Item*  type,
+        Item*  typedValue,
+        bool   isRoot);
 
   Item_t createTextNode(
-			    const xqp_string& value,
-			    bool              createId);
-
-  Item_t createTextNode(
-        const Item_t&  sourceNode);
+			    xqpStringStore* value,
+			    bool            createId);
 
   Item_t createCommentNode (
-        const xqp_string&   comment,
-        bool                createId);
-
-  Item_t createCommentNode(
-        const Item_t&  sourceNode);
-
+        xqpStringStore* comment,
+        bool            isRoot);
 
   Item_t createPiNode (
-        const xqp_string&   target,
-        const xqp_string&   data,
-        bool                createId);
-
-  Item_t createPiNode(
-        const Item_t&  sourceNode);
+        xqpStringStore* target,
+        xqpStringStore* data,
+        bool            isRoot);
 };
 
 }/* namespace xqp */

@@ -71,7 +71,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState){
         itemElem = consumeNext( theChild1, planState );
         if( itemElem != NULL )
         {
-          NamespaceBindings = itemElem->getNamespaceBindings();
+          itemElem->getNamespaceBindings(NamespaceBindings);
           for (
                iter = NamespaceBindings.begin();
                iter != NamespaceBindings.end();
@@ -356,7 +356,7 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState)
     itemElem = consumeNext( theChild1, planState );
     if( itemElem != NULL && !itemElem->getStringValue().empty())
     {
-      NamespaceBindings = itemElem->getNamespaceBindings();
+      itemElem->getNamespaceBindings(NamespaceBindings);
       for (
             iter = NamespaceBindings.begin();
             iter != NamespaceBindings.end();
@@ -406,7 +406,7 @@ InScopePrefixesIterator::nextImpl(PlanState& planState)
   itemElem = consumeNext( theChild, planState );
   if( itemElem != NULL)
   {
-    state->setVector(itemElem->getNamespaceBindings());
+    itemElem->getNamespaceBindings(state->getVector());
     while (state->getIterator() != state->getVectEnd())
     {
       STACK_PUSH( Zorba::getItemFactory()->createNCName(  (*state->getIterator()).first  ), state );
@@ -452,11 +452,6 @@ InScopePrefixesIterator::InScopePrefixesState::setIterator(std::vector<std::pair
   iter = newIter;
 }
 
-void
-InScopePrefixesIterator::InScopePrefixesState::setVector(std::vector<std::pair<xqp_string, xqp_string> > newVect)
-{
-  NamespaceBindings = newVect;
-}
 
 std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator
 InScopePrefixesIterator::InScopePrefixesState::getVectBegin()

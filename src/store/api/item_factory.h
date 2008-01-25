@@ -29,7 +29,7 @@ typedef rchandle<class NodeItem> NodeItem_t;
 typedef rchandle<class Iterator> Iterator_t;
 typedef rchandle<class TempSeq> TempSeq_t;
 
-typedef std::vector<std::pair<xqpString, xqpString> > NamespaceBindings;
+typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
 class ItemFactory
 {
@@ -69,7 +69,6 @@ public:
   /**
    * @param value string value of the untyped atomic
    */
-  virtual Item_t createUntypedAtomic(const xqpStringStore_t& value) = 0;
   virtual Item_t createUntypedAtomic(const xqp_string& value) = 0;
 
   /**
@@ -445,18 +444,18 @@ public:
    * @param docUri The document URI of the document.
    * @param children Content of the Document(root element + comment nodes + PI nodes). 
    * 								The item factory does not check if the parameter contains exactly one root element!
-   * @param createId Does the created item need an ID (default == false)?
+   * @param createId Does the created item need an ID?
    */
-  virtual Item_t createDocumentNode (
-			  const xqpStringStore_t& baseURI,
-        const xqpStringStore_t& docURI,
-        const Iterator_t&       children,
-        bool                    createId) = 0;
-
   virtual Item_t createDocumentNode(
-        const Item_t&  sourceNode,
-        bool           typePreserve,
-        bool           nsPreserve) = 0;
+        xqpStringStore* baseURI,
+        xqpStringStore* docURI,
+        Iterator*       children,
+        bool            createId,
+        bool            copy,
+        bool            typePreserve,
+        bool            nsPreserve,
+        bool            nsInherit) = 0;
+
   /**
    * @param name QName which contains the name of the element
    * @param type QName which contains the type of the element
@@ -465,77 +464,61 @@ public:
    * @param namespaces Namespace definitions of this element
    * @param copy Should the children of the element be copied? (for element construction)
    * @param newTypes Have the children to be checked agains the type of the parent?
-   * @param createId Does the created item need an ID (default == false)?
+   * @param createId Does the created item need an ID?
    */
   virtual Item_t createElementNode (
-			  const Item_t&            name,
-        const Item_t&            type,
-        Iterator_t&              childrenIte,
-        Iterator_t&              attributesIte,
-        Iterator_t&              namespacesIte,
-        const NamespaceBindings& nsBindings,
-        bool                     nsInherit,
-        bool                     createId) = 0;
-
-  virtual Item_t createElementNode(
-        const Item_t&  sourceNode,
-        bool           typePreserve,
-        bool           nsPreserve) = 0;
+        Item*             name,
+        Item*             type,
+        Iterator*         childrenIte,
+        Iterator*         attributesIte,
+        Iterator*         namespacesIte,
+        const NsBindings& nsBindings,
+        bool              createId,
+        bool              copy,
+        bool              typePreserve,
+        bool              nsPreserve,
+        bool              nsInherit) = 0;
 
   /**
    * @param name QName which contains the name of the element
    * @param type QName which contains the type of the element
    * @param lexicalValue lexical value (atomic) of the attribute element
    * @param typedValue typed value (atomic) of the attribute element
-   * @param createId Does the created item need an ID (default == false)?
+   * @param createId Does the created item need an ID?
    *
    * Implementations might only store the typed value.
    */
-  virtual Item_t createAttributeNode (
-			  const Item_t& name,
-        const Item_t& type,
-        const Item_t& lexicalValue,
-        const Item_t& typedValue,
-        bool createId) = 0;
-
   virtual Item_t createAttributeNode(
-        const Item_t&  sourceNode,
-        bool           typePreserve) = 0;
+        Item*  name,
+        Item*  type,
+        Item*  typedValue,
+        bool   createId) = 0;
 
   /**
    * @param value text
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createTextNode(
-			  const xqp_string& value,
-        bool              createId) = 0;
-
-  virtual Item_t createTextNode(
-        const Item_t&  sourceNode) = 0;
+			    xqpStringStore* value,
+			    bool            createId) = 0;
 
   /**
    * @param comment
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createCommentNode(
-			  const xqp_string& comment,
-        bool              createId) = 0;
-
-  virtual Item_t createCommentNode(
-        const Item_t&  sourceNode) = 0;
+        xqpStringStore* comment,
+        bool            createId) = 0;
 
   /**
    * @param target The QName for the processing instruction.
    * @param data The content of the processing instruction.
-   * @param createId Does the created item need an ID (default == false)?
+   * @param createId Does the created item need an ID?
    */
   virtual Item_t createPiNode(
-			  const xqp_string& target,
-        const xqp_string& data,
-        bool createId) = 0;
-
-  virtual Item_t createPiNode(
-        const Item_t&  sourceNode) = 0;
+        xqpStringStore* target,
+        xqpStringStore* data,
+        bool            createId) = 0;
 };
 
 }/* namespace xqp */

@@ -12,97 +12,42 @@ namespace xqp
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-ChildrenIterator::ChildrenIterator(
-    NodeImpl*     parent,
-    unsigned long startId)
+ChildrenIterator::ChildrenIterator(XmlNode* parent)
   :
   theParentNode(parent),
-  theChildNodes(parent->getNodeKind() == StoreConsts::documentNode ?
-                reinterpret_cast<DocumentNodeImpl*>(parent)->children() :
-                reinterpret_cast<ElementNodeImpl*>(parent)->children()),
-  theStartingId(startId),
   theCurrentPos(0)
 {
   Assert(theParentNode->getNodeKind() == StoreConsts::documentNode ||
          theParentNode->getNodeKind() == StoreConsts::elementNode);
+
+  theNumChildren = parent->numChildren();
 }
 
 
 Item_t ChildrenIterator::next()
 {
-  if (theCurrentPos >= theChildNodes.size())
+  if (theCurrentPos >= theNumChildren)
     return NULL;
 
-  Item_t childItem = theChildNodes[theCurrentPos];
+  XmlNode* cnode = theParentNode->getChild(theCurrentPos);
 
   if (theParentNode->isConstructed())
   {
-    NodeImpl* pnode = theParentNode.get_ptr();
-    NodeImpl* cnode = BASE_NODE(childItem);
+    XmlNode* pnode = theParentNode.get_ptr();
 
-    StoreConsts::NodeKind_t pkind = pnode->getNodeKind();
-    StoreConsts::NodeKind_t ckind = cnode->getNodeKind();
+    ZORBA_ASSERT(cnode->getParentPtr() != NULL);
 
-    if (cnode->getParentPtr() == NULL && !pnode->isCopy())
+    if (pnode->isCopy() && cnode->getParentPtr() != pnode)
     {
-      cnode->setParent(pnode);
+      cnode = cnode->copy(pnode, theCurrentPos);
 
-      if (pkind != StoreConsts::documentNode &&
-          ckind == StoreConsts::elementNode &&
-          (!cnode->isCopy() || pnode->nsInherit()))
-      {
-        ELEM_NODE(childItem)->setNsContext(pnode->getNsContext());
-      }
-    }
-    else if (pnode->isCopy() && cnode->getParentPtr() != pnode)
-    {
-      switch (ckind)
-      {
-      case StoreConsts::elementNode:
-        childItem = new ElementNodeImpl(pnode,
-                                        ELEM_NODE(childItem),
-                                        pnode->typePreserve(),
-                                        pnode->nsPreserve());
-        break;
-
-      case StoreConsts::textNode:
-        childItem = new TextNodeImpl(pnode, TEXT_NODE(childItem));
-        break;
-
-      case StoreConsts::piNode:
-        childItem = new PiNodeImpl(pnode, PI_NODE(childItem));
-        break;
-
-      case StoreConsts::commentNode:
-        childItem = new CommentNodeImpl(pnode, COMMENT_NODE(childItem));
-        break;
-
-      default:
-        Assert(0);
-      }
-
-      cnode = BASE_NODE(childItem);
-      theChildNodes[theCurrentPos] = childItem;
-    }
-    else
-    {
-      // This assertion is not valid because enclosed expressions do not 
-      // always make copies of the nodes they produce. 
-      // Assert(cnode->getParentPtr() == pnode);
-    }
-
-    if (pnode->hasId() &&
-        cnode->getParentPtr() == pnode &&
-        cnode->getTreeId() != pnode->getTreeId())
-    {
-      cnode->setId(pnode->getTreeId(), pnode->getOrdPath());
-      cnode->appendIdComponent(theStartingId + theCurrentPos * 2 + 1);
+      pnode->setChild(theCurrentPos, cnode, false);
     }
   }
 
   theCurrentPos++;
 
-  return childItem;
+  return cnode;
 }
 
 
@@ -115,6 +60,7 @@ void ChildrenIterator::reset()
 void ChildrenIterator::close()
 {
   theCurrentPos = 0;
+  theParentNode = NULL;
 }
 
 
@@ -124,59 +70,39 @@ void ChildrenIterator::close()
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-AttributesIterator::AttributesIterator(ElementNodeImpl* parent)
+AttributesIterator::AttributesIterator(ElementNode* parent)
   :
   theParentNode(parent),
-  theAttrNodes(parent->attributes()),
   theCurrentPos(0)
 {
+  theNumAttributes = parent->numAttributes();
 }
 
 
 Item_t AttributesIterator::next()
 {
-  if (theCurrentPos >= theAttrNodes.size())
+  if (theCurrentPos >= theNumAttributes)
     return NULL;
 
-  Item_t attrItem = theAttrNodes[theCurrentPos];
-
-  assert(attrItem->getNodeKind() == StoreConsts::attributeNode);
+  XmlNode* cnode = theParentNode->getAttr(theCurrentPos);
 
   if (theParentNode->isConstructed())
   {
-    NodeImpl* pnode = theParentNode.get_ptr();
-    NodeImpl* cnode = BASE_NODE(attrItem);
+    XmlNode* pnode = theParentNode.get_ptr();
 
-    if (cnode->getParentPtr() == NULL && !pnode->isCopy())
-    {
-      cnode->setParent(pnode);
-    }
-    else if (pnode->isCopy() && cnode->getParentPtr() != pnode)
-    {
-      attrItem = new AttributeNodeImpl(pnode,
-                                       ATTR_NODE(attrItem),
-                                       pnode->typePreserve());
+    ZORBA_ASSERT(cnode->getParentPtr() != NULL);
 
-      cnode = BASE_NODE(attrItem);
-      theAttrNodes[theCurrentPos] = attrItem;
-    }
-    else
+    if (pnode->isCopy() && cnode->getParentPtr() != pnode)
     {
-      Assert(cnode->getParentPtr() == pnode);
-    }
+      cnode = cnode->copy(pnode, theCurrentPos);
 
-    if (pnode->hasId() &&
-        cnode->getParentPtr() == pnode &&
-        cnode->getTreeId() != pnode->getTreeId())
-    {
-      cnode->setId(pnode->getTreeId(), pnode->getOrdPath());
-      cnode->appendIdComponent(theCurrentPos * 2 + 1);
+      theParentNode->setAttr(theCurrentPos, cnode, false);
     }
   }
 
   theCurrentPos++;
 
-  return attrItem;
+  return cnode;
 }
 
 
@@ -189,6 +115,7 @@ void AttributesIterator::reset()
 void AttributesIterator::close()
 {
   theCurrentPos = 0;
+  theParentNode = NULL;
 }
 
 
@@ -232,24 +159,32 @@ void StoreNodeDistinctIterator::close()
   theInput = NULL;
 }
 
+
 Item_t StoreNodeDistinctOrAtomicIterator::next()
 {
-  if (theUsed && theAtomic) {
+  if (theUsed && theAtomic) 
+  {
     Item_t lContextNode = theInput->next();
     if (lContextNode != 0)
       Assert(lContextNode->isAtomic());
     return lContextNode;
   }
 
-  if (!theUsed) {
+  if (!theUsed)
+  {
     Item_t lContextNode = theInput->next();
     if (lContextNode == 0)
       return lContextNode;
+
     theUsed = true;
-    if (lContextNode->isAtomic()) {
+
+    if (lContextNode->isAtomic())
+    {
       theAtomic = true;
       return lContextNode;
-    } else {
+    }
+    else
+    {
       theAtomic = false;
       theNodeSet.insert(lContextNode);
     }
@@ -292,7 +227,7 @@ Item_t StoreNodeSortIterator::next()
   {
     if (theDistinct)
     {
-      NodeImpl_t result = theNodes[theCurrentNode++];
+      XmlNode_t result = theNodes[theCurrentNode++];
 
       while (theCurrentNode < (long)theNodes.size() &&
              theNodes[theCurrentNode] == result)
@@ -386,7 +321,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
   {
     if (theDistinct)
     {
-      NodeImpl_t result = theNodes[theCurrentNode++];
+      XmlNode_t result = theNodes[theCurrentNode++];
 
       while (theCurrentNode < (long)theNodes.size() &&
              theNodes[theCurrentNode] == result)

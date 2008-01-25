@@ -863,7 +863,7 @@ void end_visit(const CommonContent& v, void *visit_state)
       ss >> codepoint;
       charref = (uint32_t)codepoint;
       
-      Item_t lItem = ITEM_FACTORY.createTextNode(charref, false);
+      Item_t lItem = ITEM_FACTORY.createTextNode(charref.getStore(), false);
       const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
       nodestack.push ( lConstExpr );
       break;
@@ -872,7 +872,8 @@ void end_visit(const CommonContent& v, void *visit_state)
     {
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
-      Item_t lItem = ITEM_FACTORY.createTextNode("{", false);
+      xqpStringStore* content = new xqpStringStore("{");
+      Item_t lItem = ITEM_FACTORY.createTextNode(content, false);
       const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
       nodestack.push ( lConstExpr );
       break;
@@ -881,7 +882,8 @@ void end_visit(const CommonContent& v, void *visit_state)
     {
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
-      Item_t lItem = ITEM_FACTORY.createTextNode("}", false);
+      xqpStringStore* content = new xqpStringStore("}");
+      Item_t lItem = ITEM_FACTORY.createTextNode(content, false);
       const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
       nodestack.push ( lConstExpr );
       break;

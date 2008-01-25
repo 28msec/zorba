@@ -685,15 +685,21 @@ bool begin_visit(elem_expr& v)
   return true;
 }
 
-static inline void create_ns_bindings(namespace_context::bindings_t& flat_bindings, namespace_context *lctx, namespace_context *stop_ctx)
+
+static inline void create_ns_bindings(
+    namespace_context::bindings_t& flat_bindings,
+    namespace_context *lctx,
+    namespace_context *stop_ctx)
 {
-    namespace_context *p = lctx;
-    while(p != NULL && p != stop_ctx) {
-        const namespace_context::bindings_t *bp = &p->get_bindings();
-        flat_bindings.insert(flat_bindings.end(), bp->begin(), bp->end());
-        p = p->get_parent().get_ptr();
-    }
+  namespace_context *p = lctx;
+  while(p != NULL && p != stop_ctx)
+  {
+    const namespace_context::bindings_t *bp = &p->get_bindings();
+    flat_bindings.insert(flat_bindings.end(), bp->begin(), bp->end());
+    p = p->get_parent().get_ptr();
+  }
 }
+
 
 void end_visit ( elem_expr& v )
 {

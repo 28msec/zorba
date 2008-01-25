@@ -59,7 +59,7 @@ public:
    *                  evaluated lazily. For XQueryP it might be necassary to set
    *                  this to false.
    */
-  virtual TempSeq_t createTempSeq(Iterator_t iterator, bool lazy = true) = 0;
+  virtual TempSeq_t createTempSeq(Iterator* iterator, bool lazy = true) = 0;
 
   /**
    * Possibility to change the Garbage Collection strategy of the store.
@@ -133,7 +133,7 @@ public:
    *						 0, if item1.id == item2.id
    *						+1, if item1.id &gt; item2.id
    */
-  virtual int32_t compare(Item_t item1, Item_t item2) const = 0;
+  virtual int32_t compare(Item* item1, Item* item2) const = 0;
 		
   /** Sorts the items of the passed iterator
    * @param iterator to sort
@@ -142,7 +142,7 @@ public:
    * @return iterator which produces the sorted items
    */
   virtual Iterator_t sortNodes(
-        Iterator_t iterator,
+        Iterator* iterator,
         bool ascendent,
         bool duplicateElemination,
         bool aAcceptAtomics = false) = 0;
@@ -150,7 +150,7 @@ public:
   /** Eliminates the duplicates in collection of items which is produced by the passed iterator
    * @param iterator
    */
-  virtual Iterator_t distinctNodes(Iterator_t, bool aAllowAtomics = false) = 0;
+  virtual Iterator_t distinctNodes(Iterator*, bool aAllowAtomics = false) = 0;
 
 
   /* ------------------------ Document Management ---------------------------*/

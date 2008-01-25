@@ -15,7 +15,7 @@ typedef rchandle<class xqpStringStore> xqpStringStore_t;
 
 typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
-typedef std::vector<std::pair<xqpString, xqpString> > NamespaceBindings;
+typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
 
 /*******************************************************************************
@@ -24,7 +24,7 @@ typedef std::vector<std::pair<xqpString, xqpString> > NamespaceBindings;
 class NsBindingsContext : public rcobject
 {
 private:
-  NamespaceBindings    theBindings;
+  NsBindings           theBindings;
   NsBindingsContext_t  theParent;
 
 public:
@@ -32,19 +32,21 @@ public:
 
   NsBindingsContext(unsigned long numBindings);
 
-  NsBindingsContext(const NamespaceBindings& bindings);
+  NsBindingsContext(const NsBindings& bindings);
 
   ~NsBindingsContext();
 
-  const NamespaceBindings& getBindings() const { return theBindings; }
-  NamespaceBindings& getBindings()             { return theBindings; }
+  bool empty() const                          { return theBindings.empty(); }
 
-  void setParent(NsBindingsContext* p)         { theParent = p; }
-  NsBindingsContext* getParent() const         { return theParent.get_ptr(); }
+  const NsBindings& getBindings() const       { return theBindings; }
+  NsBindings& getBindings()                   { return theBindings; }
 
-  xqpStringStore* findBinding(xqpString prefix);
+  void setParent(NsBindingsContext* p)        { theParent = p; }
+  const NsBindingsContext* getParent() const  { return theParent.get_ptr(); }
 
-  void addBinding(xqpString prefix, xqpString ns);
+  xqpStringStore* findBinding(xqpStringStore* prefix) const;
+
+  void addBinding(xqpStringStore* prefix, xqpStringStore* ns);
 };
 
 

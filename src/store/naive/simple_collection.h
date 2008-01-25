@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef DEFAULT_STORE_COLLECTION
-#define DEFAULT_STORE_COLLECTION
+#ifndef XQO_DEFAULT_STORE_COLLECTION
+#define XQP_DEFAULT_STORE_COLLECTION
 
 #include <set>
 #include "store/api/collection.h"
@@ -14,6 +14,8 @@
 namespace xqp
 {
 typedef rchandle<class SimpleCollection> SimpleCollection_t;
+
+typedef rchandle<class XmlTree> XmlTree_t;
 
 
 /*******************************************************************************
@@ -27,11 +29,11 @@ public:
   class CollectionIter : public Iterator
 	{
   private:
-    SimpleCollection_t         theCollection;
-    std::set<Item_t>::iterator theIterator;
+    SimpleCollection_t            theCollection;
+    std::set<XmlTree_t>::iterator theIterator;
     
   public:
-    CollectionIter(const SimpleCollection_t& collection);
+    CollectionIter(SimpleCollection* collection);
 
     virtual ~CollectionIter() { }
 
@@ -42,24 +44,24 @@ public:
 
 
 protected:
-  Item_t            theUri;
-  std::set<Item_t>  theNodes;
+  Item_t               theUri;
+  std::set<XmlTree_t>  theXmlTrees;
 
 public:
-  SimpleCollection(const Item_t& uri);
+  SimpleCollection(Item* uri);
   virtual ~SimpleCollection();
 
   Item_t getUri() { return theUri; }
 
-  unsigned long size() const { return theNodes.size(); }
+  unsigned long size() const { return theXmlTrees.size(); }
 
-  virtual Iterator_t getIterator(bool idsNeeded);
+  Iterator_t getIterator(bool idsNeeded);
 
-  virtual void addToCollection(const Item_t& node);
-  virtual void addToCollection(Iterator_t& nodes);
-  virtual Item_t addToCollection(std::iostream& stream);
+  Item_t addToCollection(std::iostream& stream);
+  void addToCollection(const Item* node);
+  void addToCollection(Iterator* nodes);
 
-  virtual void removeFromCollection(const Item_t& node);  
+  void removeFromCollection(const Item* node);  
 };
 
 } /* namespace xqp */

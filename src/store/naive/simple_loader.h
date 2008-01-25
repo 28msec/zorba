@@ -1,48 +1,70 @@
 
-#ifndef XQP_SIMPLE_LOADER_H
-#define XQP_SIMPLE_LOADER_H
+#ifndef XQP_DEFAULT_STORE_LOADER
+#define XQP_DEFAULT_STORE_LOADER
 
 #include <stack>
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
 
-#include "store/api/item.h"
 #include "store/naive/ordpath.h"
 
 namespace xqp
 {
 
-template <class Object> class rchandle;
-
-class Item;
-class NodeItem;
+class XmlTree;
+class XmlNode;
 class NsBindingsContext;
-
-typedef rchandle<Item> Item_t;
-typedef rchandle<class NodeItem> NodeItem_t;
-
-typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
 
 /*******************************************************************************
+
+  theBaseUri   : The loader does not not own the string memory
+  theDocUri    : The loader does not not own the string memory
+
+  theNodeStack : The startElement and startDocument methods create an element
+                 or document XmlNode (say N) and push it in theNodeStack. If N 
+                 has k children, then when the closing tag of N is reached,
+                 the children of N will be at the k top positions of theNodeStack
+                 and the endElement and endDocument methods will remove these
+                 children from the stack and link them with N.
+
+  theBuffer    : A buffer to read chunks of the source stream in.
 
 ********************************************************************************/
 class XmlLoader
 {
 protected:
-  xmlSAXHandler                   theSaxHandler;
+  xmlSAXHandler                    theSaxHandler;
 
-  xqpStringStore_t                theBaseUri;
-  xqpStringStore_t                theDocUri;
+  xqpStringStore                 * theBaseUri;
+  xqpStringStore                 * theDocUri;
 
-  Item_t                          theRootNode;
-  std::stack<Item_t>              theNodeStack;
-  std::stack<NsBindingsContext_t> theBindingsStack;
+  XmlTree                        * theTree;
+  OrdPathStack                     theOrdPath;
 
-  unsigned long                   theTreeId;
-  OrdPathStack                    theOrdPath;
+  XmlNode                        * theRootNode;
+  std::stack<XmlNode*>             theNodeStack;
+  std::stack<NsBindingsContext*>   theBindingsStack;
 
-  xqpStringStore                  theErrors;
+  xqpStringStore                   theWarnings;
+
+  char                             theBuffer[4096];
+
+public:
+  XmlLoader();
+
+  ~XmlLoader();
+
+  XmlNode* getRootNode() const { return theRootNode; }
+  
+  XmlNode* loadXml(xqpStringStore* uri, std::istream& xmlStream);
+
+protected:
+  void abort();
+  void reset();
+  long readPacket(std::istream& stream, char* buf, long size);
+
+  void setRoot(XmlNode* root);
 
 public:
   static void	startDocument(void * ctx);
@@ -88,19 +110,6 @@ public:
   static void error(void * ctx, const char * msg, ... );
 
   static void warning(void * ctx, const char * msg, ... );
-
-public:
-  XmlLoader();
-
-  ~XmlLoader();
-
-  Item_t getRootNode() const { return theRootNode; }
-  
-  Item_t loadXml(const xqpStringStore* uri, std::istream& xmlStream);
-
-protected:
-  void reset();
-  long readPacket(std::istream& stream, char* buf, long size);
 };
 
 } /* namespace xqp */

@@ -13,8 +13,8 @@ namespace xqp
 template <class Object> class rchandle;
 
 typedef rchandle<class Item> Item_t;
-typedef rchandle<class NodeImpl> NodeImpl_t;
-typedef rchandle<class ElementNodeImpl> ElementNodeImpl_t;
+typedef rchandle<class XmlNode> XmlNode_t;
+typedef rchandle<class ElementNode> ElementNode_t;
 
 
 /*******************************************************************************
@@ -27,15 +27,13 @@ typedef rchandle<class ElementNodeImpl> ElementNodeImpl_t;
 class ChildrenIterator : public Iterator
 {
 protected:
-  NodeImpl_t          theParentNode;
-  NodeVector&         theChildNodes;
+  XmlNode_t           theParentNode;
 
-  unsigned long       theStartingId;
-
+  unsigned long       theNumChildren;
   unsigned long       theCurrentPos;
 
 public:
-  ChildrenIterator(NodeImpl* parent, unsigned long startid);
+  ChildrenIterator(XmlNode* parent);
 
   Item_t next();
   void reset();
@@ -48,20 +46,19 @@ public:
   pointer and the nodeid in each attribute node of an element node.
 
   theParentNode : The element node whose attributes are being retrieved.
-  theAttrNodes  : The attributes of theParentNode.
   theCurrentPos : The next attribute to be retrieved.
 
 ********************************************************************************/
 class AttributesIterator : public Iterator
 {
 protected:
-  ElementNodeImpl_t   theParentNode;
-  NodeVector&         theAttrNodes;
+  ElementNode_t       theParentNode;
 
+  unsigned long       theNumAttributes;
   unsigned long       theCurrentPos;
 
 public:
-  AttributesIterator(ElementNodeImpl* parent);
+  AttributesIterator(ElementNode* parent);
 
   Item_t next();
   void reset();
@@ -86,7 +83,7 @@ protected:
   HandleSet<Item>  theNodeSet;
 
 public:
-  StoreNodeDistinctIterator(const Iterator_t& input) : theInput(input) { }
+  StoreNodeDistinctIterator(Iterator* input) : theInput(input) { }
 
   virtual ~StoreNodeDistinctIterator() { close(); }
 
@@ -95,9 +92,10 @@ public:
   void close();
 };
 
+
 /*******************************************************************************
   This is an extension to StoreNodeDistinctIterator which allows atomic items 
-  in the received sequences. The received sequences must contain nodes are atomic
+  in the received sequences. The received sequences must contain nodes or atomic
   items, but not a mixture. In case of atomic items, the output sequences
   is equivalent to the input sequence, else, the same operations as in
   StoreNodeDistinctIterator are applied.
@@ -109,8 +107,13 @@ protected:
   bool theUsed;
 
 public:
-  StoreNodeDistinctOrAtomicIterator(const Iterator_t& aInput)
-    : StoreNodeDistinctIterator(aInput), theAtomic(false), theUsed(false){}
+  StoreNodeDistinctOrAtomicIterator(Iterator* aInput)
+    :
+    StoreNodeDistinctIterator(aInput),
+    theAtomic(false),
+    theUsed(false)
+  {
+  }
 
   Item_t next(); 
   void reset() { theUsed = false; StoreNodeDistinctIterator::reset(); }
@@ -137,7 +140,7 @@ protected:
   public:
     ComparisonFunction(bool asc = true) : theAscending(asc) { }
 
-    bool operator()(const NodeImpl_t& n1, const NodeImpl_t& n2) const
+    bool operator()(const XmlNode_t& n1, const XmlNode_t& n2) const
     {
       return (theAscending ?
               n1->getTreeId() < n2->getTreeId() ||
@@ -155,7 +158,7 @@ protected:
   bool                     theAscendant;
   bool                     theDistinct;
 
-  std::vector<NodeImpl_t>  theNodes;
+  std::vector<XmlNode_t>  theNodes;
   long                     theCurrentNode;
 
 public:
@@ -194,7 +197,12 @@ protected:
 
 public:
   StoreNodeSortOrAtomicIterator(const Iterator_t& aInput, bool aAsc, bool aDistinct)
-    : StoreNodeSortIterator(aInput, aAsc, aDistinct), theAtomic(false), theUsed(false) {}
+    :
+    StoreNodeSortIterator(aInput, aAsc, aDistinct),
+    theAtomic(false),
+    theUsed(false)
+  {
+  }
 
   Item_t next();
   void reset() { theUsed = false; StoreNodeSortIterator::reset(); }

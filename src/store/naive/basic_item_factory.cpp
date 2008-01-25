@@ -9,6 +9,7 @@
 
 #include "store/api/temp_seq.h"
 #include "store/naive/store_defs.h"
+#include "store/naive/simple_store.h"
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
@@ -89,13 +90,12 @@ Item_t BasicItemFactory::createAnyURI(const char* value)
 
 Item_t BasicItemFactory::createUntypedAtomic(const xqpStringStore_t& value)
 {
-  return new UntypedAtomicItemNaive(value);
+  return new UntypedAtomicItemImpl(value.get_ptr());
 }
-
 
 Item_t BasicItemFactory::createUntypedAtomic(const xqp_string& value)
 {
-  return new UntypedAtomicItemNaive(xqpStringStore_t(value.getStore()));
+  return new UntypedAtomicItemImpl(value.getStore());
 }
 
 
@@ -448,21 +448,34 @@ Item_t BasicItemFactory::createUnsignedShort(xqp_ushort value)
 
 ********************************************************************************/
 Item_t BasicItemFactory::createDocumentNode(
-    const xqpStringStore_t& baseUri,
-    const xqpStringStore_t& docUri,
-    const Iterator_t&       children,
-    bool                    createId)
+    xqpStringStore* baseUri,
+    xqpStringStore* docUri,
+    Iterator*       children,
+    bool            isRoot,
+    bool            copy,
+    bool            typePreserve,
+    bool            nsPreserve,
+    bool            nsInherit)
 {
-  return new DocumentNodeImpl(baseUri, docUri, children, createId);
-}
+  if (isRoot)
+  {
+    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
 
+    XmlNode* n = new ConstrDocumentNode(baseUri, docUri, children,
+                                        true, copy,
+                                        typePreserve, nsPreserve, nsInherit);
+    xmlTree->setRoot(n);
 
-Item_t BasicItemFactory::createDocumentNode(
-    const Item_t&  sourceNode,
-    bool           typePreserve,
-    bool           nsPreserve)
-{
-  return new DocumentNodeImpl(DOC_NODE(sourceNode), typePreserve, nsPreserve);
+    n->constructTree(xmlTree.get_ptr(), 0);
+
+    return n;
+  }
+  else
+  {
+    return new ConstrDocumentNode(baseUri, docUri, children,
+                                  false, copy,
+                                  typePreserve, nsPreserve, nsInherit);
+  }
 }
 
 
@@ -470,32 +483,40 @@ Item_t BasicItemFactory::createDocumentNode(
   This method is used by the zorba runtime (during node construction).
 ********************************************************************************/
 Item_t BasicItemFactory::createElementNode(
-    const Item_t&            name,
-    const Item_t&            type,
-    Iterator_t&              childrenIte,
-    Iterator_t&              attributesIte,
-    Iterator_t&              namespacesIte,
-    const NamespaceBindings& nsBindings, 
-    bool                     nsInherit,
-    bool                     createId)
-{ 
-  return new ElementNodeImpl(name,
-                             type,
-                             childrenIte,
-                             attributesIte,
-                             namespacesIte,
-                             nsBindings,
-                             nsInherit,
-                             createId); 
-}
-
-
-Item_t BasicItemFactory::createElementNode(
-    const Item_t&  sourceNode,
-    bool           typePreserve,
-    bool           nsPreserve)
+    Item*             name,
+    Item*             type,
+    Iterator*         childrenIte,
+    Iterator*         attrsIte,
+    Iterator*         nsIte,
+    const NsBindings& nsBindings,
+    bool              isRoot,
+    bool              copy,
+    bool              typePreserve,
+    bool              nsPreserve,
+    bool              nsInherit) 
 {
-  return new ElementNodeImpl(NULL, ELEM_NODE(sourceNode), typePreserve, nsPreserve);
+  if (isRoot)
+  {
+    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
+
+    XmlNode* n = new ConstrElementNode(name, type,
+                                       childrenIte, attrsIte, nsIte, nsBindings,
+                                       true, copy,
+                                       typePreserve, nsPreserve, nsInherit);
+
+    xmlTree->setRoot(n);
+
+    n->constructTree(xmlTree.get_ptr(), 0);
+
+    return n;
+  }
+  else
+  {
+    return new ConstrElementNode(name, type,
+                                 childrenIte, attrsIte, nsIte, nsBindings,
+                                 false, copy,
+                                 typePreserve, nsPreserve, nsInherit); 
+  }
 }
 
 
@@ -503,44 +524,54 @@ Item_t BasicItemFactory::createElementNode(
 
 ********************************************************************************/
 Item_t BasicItemFactory::createAttributeNode(
-    const Item_t& name,
-    const Item_t& type,
-    const Item_t& lexicalValue,
-    const Item_t& typedValue,
-    bool          createId)
-{ 
-  return new AttributeNodeImpl(name,
-                               type,
-                               lexicalValue,
-                               typedValue,
-                               false,
-                               false,
-                               createId);
-}
-
-
-Item_t BasicItemFactory::createAttributeNode(
-    const Item_t&  sourceNode,
-    bool           typePreserve)
+    Item* name,
+    Item* type,
+    Item* typedValue,
+    bool  isRoot)
 {
-  return new AttributeNodeImpl(NULL, ATTR_NODE(sourceNode), typePreserve);
+  if (isRoot)
+  {
+    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
+
+    XmlNode* n = new AttributeNode(name, type, typedValue, false, false, true);
+
+    xmlTree->setRoot(n);
+
+    n->constructTree(xmlTree.get_ptr(), 0);
+
+    return n;
+  }
+  else
+  {
+    return new AttributeNode(name, type, typedValue, false, false, false);
+  }
 }
+
 
 
 /*******************************************************************************
 
 ********************************************************************************/
 Item_t BasicItemFactory::createTextNode(
-    const xqp_string& value,
-    bool createId)
+    xqpStringStore* value,
+    bool            isRoot)
 {
-  return new TextNodeImpl(xqpStringStore_t(value.getStore()), createId);
-}
+  if (isRoot)
+  {
+    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
 
+    XmlNode* n = new TextNode(value, true);
 
-Item_t BasicItemFactory::createTextNode(const Item_t&  sourceNode)
-{
-  return new TextNodeImpl(NULL, TEXT_NODE(sourceNode));
+    xmlTree->setRoot(n);
+
+    n->constructTree(xmlTree.get_ptr(), 0);
+
+    return n;
+  }
+  else
+  {
+    return new TextNode(value, false);
+  }
 }
 
 
@@ -548,16 +579,25 @@ Item_t BasicItemFactory::createTextNode(const Item_t&  sourceNode)
 
 ********************************************************************************/
 Item_t BasicItemFactory::createCommentNode(
-    const xqp_string& comment,
-    bool              createId)
+    xqpStringStore* comment,
+    bool            isRoot)
 {
-  return new CommentNodeImpl(xqpStringStore_t(comment.getStore()), createId);
-}
+  if (isRoot)
+  {
+    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
 
+    XmlNode* n = new CommentNode(comment, true);
 
-Item_t BasicItemFactory::createCommentNode(const Item_t&  sourceNode)
-{
-  return new CommentNodeImpl(NULL, COMMENT_NODE(sourceNode));
+    xmlTree->setRoot(n);
+
+    n->constructTree(xmlTree.get_ptr(), 0);
+
+    return n;
+  }
+  else
+  {
+    return new CommentNode(comment, false);
+  }
 }
 
 
@@ -565,19 +605,27 @@ Item_t BasicItemFactory::createCommentNode(const Item_t&  sourceNode)
 
 ********************************************************************************/
 Item_t BasicItemFactory::createPiNode(
-    const xqp_string& target,
-    const xqp_string& data,
-    bool createId)
+    xqpStringStore* target,
+    xqpStringStore* data,
+    bool            isRoot)
 {
-  return new PiNodeImpl(xqpStringStore_t(target.getStore()),
-                        xqpStringStore_t(data.getStore()),
-                        createId);
+  if (isRoot)
+  {
+    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
+
+    XmlNode* n = new PiNode(target, data, true);
+
+    xmlTree->setRoot(n);
+
+    n->constructTree(xmlTree.get_ptr(), 0);
+
+    return n;
+  }
+  else
+  {
+    return new PiNode(target, data, isRoot);
+  }
 }
 
-
-Item_t BasicItemFactory::createPiNode(const Item_t&  sourceNode)
-{
-  return new PiNodeImpl(NULL, PI_NODE(sourceNode));
-}
 
 } /* namespace xqp */

@@ -23,62 +23,56 @@ class zorba;
 
 /*********************************************************************************
 
-  DocumentIterator constructs a document element
+  DocumentIterator constructs a document node and its subtree.
   
   theChild:      Iter that produces the content of the document element
 
 *********************************************************************************/
 class DocumentIterator : public UnaryBaseIterator<DocumentIterator>
 {
+protected:
+  class DocumentIteratorState : public PlanIteratorState
+  {
+  public:
+    bool theTypePreserve;
+    bool theNsPreserve;
+    bool theNsInherit;
+  };
+
 public:
-  DocumentIterator( const yy::location& loc, PlanIter_t& aChild);
+  DocumentIterator(const yy::location& loc, PlanIter_t& aChild);
   
   Item_t nextImpl(PlanState& planState);
-  virtual void accept(PlanIterVisitor&) const;
+
+  uint32_t getStateSize() const { return sizeof(DocumentIteratorState); }
+  void setOffset(PlanState& planState, uint32_t& offset);
+
+  void accept(PlanIterVisitor&) const;
 };
 
 
+/*********************************************************************************
+
+  DocumentContentIterator checks that the children of a doc node do not include
+  any attribute nodes.
+  
+  theChild:      Iter that produces the content of the document element
+
+*********************************************************************************/
 class DocumentContentIterator : public UnaryBaseIterator<DocumentContentIterator> 
 {
 public:
-  DocumentContentIterator( const yy::location& loc, PlanIter_t& aContent);
+  DocumentContentIterator(const yy::location& loc, PlanIter_t& aContent);
   
   Item_t nextImpl(PlanState& planState);
-  virtual void accept(PlanIterVisitor&) const;
+
+  void accept(PlanIterVisitor&) const;
 };
 
 
 /*******************************************************************************
 
-  Filters out all DocumentNodes and returns their children instead of them.
-
-********************************************************************************/
-class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator>
-{
-protected:
-  class DocFilterIteratorState : public PlanIteratorState
-  {
-    public:
-      Iterator_t theChildren;
-      Item_t     theCurItem;
-      
-      void init();
-  };
-public:
-  DocFilterIterator( const yy::location& loc, PlanIter_t& aChild);
-
-  Item_t nextImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(DocFilterIteratorState); }
-
-  virtual void accept(PlanIterVisitor&) const;
-};
-
-
-/*******************************************************************************
-
-  ElementIterator constructs an element node.
+  ElementIterator constructs an element node and its subtree.
 
   theQNameIter      : Iter that produces the qname of the element
   theChildrenIter   : The iterator that produces the child nodes of the new node.
@@ -90,16 +84,12 @@ public:
   theNsBindings     : The (prefix, nsURI) pairs corrsponding to namespace
                       declarations that appear in the opening tag of the
                       element, and whose URI part is a contant. 
-  theAssignId       : Whether to assign an id to the new node or not. Initially,
-                      only the root node of a constructed xml tree is assigned
-                      a node id. Node ids to the children are assigned when the
-                      children are actually accessed via the getChildren() method
-                      (see classes ChildrenIterator and AttributesIterator)
+  theAssignId       : Whether to assign an id to the new node and its subtree.
 
 ********************************************************************************/
 class ElementIterator : public Batcher<ElementIterator>
 {
-  typedef std::vector<std::pair<xqpString, xqpString> > NamespaceBindings;
+  typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
 protected:
   class ElementIteratorState : public PlanIteratorState
@@ -111,46 +101,48 @@ protected:
   };
 
 private:
-  PlanIter_t        theQNameIter;
-  PlanIter_t        theAttributesIter;
-  PlanIter_t        theChildrenIter;
-  PlanIter_t        theNamespacesIter;
-  NamespaceBindings theNsBindings;
-  bool              theAssignId;
+  PlanIter_t  theQNameIter;
+  PlanIter_t  theAttributesIter;
+  PlanIter_t  theChildrenIter;
+  PlanIter_t  theNamespacesIter;
+  NsBindings  theNsBindings;
+  bool        theAssignId;
 
 public:
   ElementIterator (
       const yy::location& loc,
-      PlanIter_t& aQNameIter,
-      PlanIter_t& aAttrs,
-      PlanIter_t& aChildren,
-      NamespaceBindings& aNsBindings,
-      bool assignId);
+      PlanIter_t&  aQNameIter,
+      PlanIter_t&  aAttrs,
+      PlanIter_t&  aChildren,
+      NsBindings&  nsBindings,
+      bool         assignId);
   
   ElementIterator (
       const yy::location& loc,
-      PlanIter_t& aQNameIter,
-      PlanIter_t& aChildren,
-      bool assignId);
+      PlanIter_t&  aQNameIter,
+      PlanIter_t&  aChildren,
+      bool         assignId);
 
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  virtual uint32_t getStateSize() const { return sizeof(ElementIteratorState); }
-  virtual uint32_t getStateSizeOfSubtree() const;
-  virtual void setOffset(PlanState& planState, uint32_t& offset);
+  uint32_t getStateSize() const { return sizeof(ElementIteratorState); }
+  uint32_t getStateSizeOfSubtree() const;
+  void setOffset(PlanState& planState, uint32_t& offset);
   
-  virtual void accept(PlanIterVisitor&) const;
+  void accept(PlanIterVisitor&) const;
 };
   
 
 /*******************************************************************************
 
-  Used to make e.g. the concatenation of adjacent text nodes in the content 
-  sequence of an element constructor. Usually, the child of this iterator
-  will be a ConcatIterator that computes the content sequence from its various
-  components.
+  Used to (a) concatenate adjacent text nodes in the content sequence of an
+  element constructor, and (b) to check that all attribute nodes in the content
+  sequence appear before any other item in the sequence.
+
+  Usually, the child of this iterator will be a ConcatIterator that computes
+  the content sequence from its various components.
 
 ********************************************************************************/
 class ElementContentIterator : public UnaryBaseIterator<ElementContentIterator>
@@ -159,9 +151,9 @@ protected:
   class ElementContentState : public PlanIteratorState
   {
   public:
-    xqp_string theString;
-    Item_t     theContextItem;
-    bool       theNoAttrAllowed;
+    xqpStringStore* theString;
+    Item_t          theContextItem;
+    bool            theNoAttrAllowed;
 
     void init();
   };
@@ -262,9 +254,6 @@ protected:
   class EnclosedState : public PlanIteratorState
   {
   public:
-    bool       theTypePreserve;
-    bool       theNsPreserve;
-
     xqp_string theString;
     Item_t     theContextItem;
 
@@ -294,6 +283,35 @@ public:
   
   virtual void accept(PlanIterVisitor&) const;
 };
+
+
+/*******************************************************************************
+
+  Filters out all DocumentNodes and returns their children instead of them.
+
+********************************************************************************/
+class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator>
+{
+protected:
+  class DocFilterIteratorState : public PlanIteratorState
+  {
+    public:
+      Iterator_t theChildren;
+      Item_t     theCurItem;
+      
+      void init();
+  };
+public:
+  DocFilterIterator( const yy::location& loc, PlanIter_t& aChild);
+
+  Item_t nextImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
+
+  uint32_t getStateSize() const { return sizeof(DocFilterIteratorState); }
+
+  virtual void accept(PlanIterVisitor&) const;
+};
+
 
 } /* namespace xqp */
 #endif  /* XQP_CONSTRUCTORS_H */

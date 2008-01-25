@@ -1118,7 +1118,7 @@ Item_t FnDocIterator::nextImpl(PlanState& planState)
 
   Item_t doc;
   Item_t uriItem;
-  xqpStringStore_t uriString;
+  xqpStringStore* uriString;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

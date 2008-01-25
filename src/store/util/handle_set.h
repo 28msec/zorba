@@ -1,5 +1,5 @@
-#ifndef XQP_HANDLE_SET
-#define XQP_HANDLE_SET
+#ifndef XQP_DEFAULT_STORE_HANDLE_SET
+#define XQP_DEFAULT_STORE_HANDLE_SET
 
 namespace xqp
 {
@@ -10,20 +10,20 @@ namespace xqp
 
   theNumEntries  : The total number of items stored in the set.
 
-  theHashTab     : The hash table. The table is devided in 2 areas: Each
-                   entry between 0 and theHashTabSize - 1 is the head of a
-                   hash bucket. Each entry between theHashTabSize+1 and 
-                   theHashTab.size()-1 is either a "collision" entry (i.e.,
-                   it belongs to a hash bucket with more than one entries)
-                   or a free entry (i.e. it does not currently belong to any
-                   bucket, but is available for allocation as a collision
-                   entry when needed). Free entries in the collision area
-                   are linked in a free list. Entry theHashTab[theHashTabSize]
-                   is reserved as the head of this free list.
+  theHashTab     : The hash table. The table is devided in 2 areas: Each entry
+                   between 0 and theHashTabSize - 1 is the head of a hash bucket.
+                   Each entry between theHashTabSize+1 and theHashTab.size()-1
+                   is either a "collision" entry (i.e., it belongs to a hash
+                   bucket with more than one entries) or a "free" entry (i.e.
+                   it does not currently belong to any bucket, but is available
+                   for allocation as a collision entry when needed). Free entries
+                   in the collision area are linked in a free list. Entry
+                   theHashTab[theHashTabSize] is reserved as the head of this
+                   free list.
   theHashTabSize : The current number of hash buckets in theHashTab. 
   theInitialSize : The initial number of hash buckets.
-  theLoadFactor  : The max fraction of non-empty hash buckets after which
-                   the hash table is doubled in size.
+  theLoadFactor  : The max fraction of non-empty hash buckets after which the
+                   hash table is doubled in size.
 ********************************************************************************/
 template <class T>
 class HandleSet
@@ -126,7 +126,7 @@ bool HandleSet<T>::insert(const rchandle<T>& item)
 {
   HashEntry* lastentry = NULL;
 
-  // Get ptr to the 1st entry of the hash bucket for the given item.
+  // Get ptr to the 1st entry of the hash bucket corresponding to the given item.
   HashEntry* entry = &theHashTab[item.hash() % theHashTabSize];
 
   // If the hash bucket is empty, its 1st entry is used to store the new string.

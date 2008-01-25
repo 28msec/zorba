@@ -96,7 +96,7 @@ uint32_t AnyUriItemImpl::hash() const
 
 bool AnyUriItemImpl::equals(Item_t item) const
 {
-  return item->getStringValue() == xqp_string(theValue);
+  return item->getStringValue() == xqp_string(theValue.get_ptr());
 }
 
 
@@ -114,30 +114,30 @@ xqp_string AnyUriItemImpl::show() const
 
 
 /*******************************************************************************
-  class UntypedAtomicItemNaive
+  class UntypedAtomicItem
 ********************************************************************************/
-Item_t UntypedAtomicItemNaive::getType() const
+Item_t UntypedAtomicItemImpl::getType() const
 {
   return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
 }
 
-uint32_t UntypedAtomicItemNaive::hash() const
+uint32_t UntypedAtomicItemImpl::hash() const
 {
   return theValue->hash();
 }
 
-bool UntypedAtomicItemNaive::equals(Item_t item) const
+bool UntypedAtomicItemImpl::equals(Item_t item) const
 {
-  return item->getStringValue() == xqp_string(theValue);
+  return item->getStringValue() == xqp_string(theValue.get_ptr());
 }
 
-Item_t UntypedAtomicItemNaive::getEBV() const
+Item_t UntypedAtomicItemImpl::getEBV() const
 {
   bool b = ! ( *theValue == "" );
   return CREATE_BOOLITEM(b);
 }
 
-xqp_string UntypedAtomicItemNaive::show() const
+xqp_string UntypedAtomicItemImpl::show() const
 {
   return "xs:untypedAtomic(" + *theValue + ")";
 }
@@ -158,7 +158,7 @@ uint32_t StringItemNaive::hash() const
 
 bool StringItemNaive::equals(Item_t item) const
 {
-  return item->getStringValue() == xqp_string(theValue);
+  return item->getStringValue() == xqp_string(theValue.get_ptr());
 }
   
 Item_t StringItemNaive::getEBV() const

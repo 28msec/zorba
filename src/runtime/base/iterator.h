@@ -35,7 +35,8 @@
 
 #include "system/zorba.h"
 
-// Info: Forcing inlining a function in g++: Item_t next() __attribute__((always_inline)) {...}
+// Info: Forcing inlining a function in g++:
+// Item_t next() __attribute__((always_inline)) {...}
 
 //0 = NO_BATCHING, 1 = SIMPLE_BATCHING, 2 = SUPER_BATCHING
 //#define BATCHING_TYPE 0
@@ -44,38 +45,62 @@
 #define IT_DEPTH      std::string(iteratorTreeDepth, ' ')
 #define IT_OUTDENT        std::string(iteratorTreeDepth--, ' ')
 
-/** Macros to automate Duff's Device and separation of code and execution 
-  * DEFUALT_STACK_INIT: - initializes Duff's Device and gets the state of the
-  *                       current iterator from the state block
-  * MANUAL_STACK_INIT:  - If you want to do Resource allocation, you have to use this STACK_INIT, 
-                          to have the full control.
-  * STACK_PUSH:         - returns the passed item and saves the current position
-  *                       of the next functions
-  * STACK_END:          - ends the execution of the next function
-  * GET_STATE:          - specific function to load the state of the current iterator
-  *                       from the state block
-  */
-#define DEFAULT_STACK_INIT(stateType, stateObject, planState ) \
-  GET_STATE(stateType, stateObject, planState); \
-  switch (stateObject->getDuffsLine()) { case DUFFS_RELEASE_RESOURCES: \
-  stateObject->init(); \
-  case DUFFS_RESET:
+/*******************************************************************************
 
-#define MANUAL_STACK_INIT(stateObject) switch (stateObject->getDuffsLine()) { case DUFFS_RELEASE_RESOURCES: 
+  Macros to automate Duff's Device and separation of code and execution 
 
-#define STACK_PUSH(x, stateObject) do { stateObject->setDuffsLine(__LINE__); return x; case __LINE__:; } while (0)
+   DEFUALT_STACK_INIT : Initializes Duff's Device and gets the state of the
+                        current iterator from the state block
+   MANUAL_STACK_INIT  : If you want to do Resource allocation, you have to use
+                        this STACK_INIT, to have the full control.
+   STACK_PUSH         : Returns the passed item and saves the current position
+                        of the next functions
+   STACK_END          : Ends the execution of the next function
+   GET_STATE          : Specific function to load the state of the current
+                        iterator from the state block.
 
-#define STACK_END() } return NULL
+********************************************************************************/
+
+#define DEFAULT_STACK_INIT(stateType, stateObject, planState )  \
+  GET_STATE(stateType, stateObject, planState);                 \
+  switch (stateObject->getDuffsLine())                          \
+  {                                                             \
+    case DUFFS_RELEASE_RESOURCES:                               \
+      stateObject->init();                                      \
+    case DUFFS_RESET:
+
+
+#define MANUAL_STACK_INIT(stateObject)                          \
+  switch (stateObject->getDuffsLine())                          \
+  {                                                             \
+    case DUFFS_RELEASE_RESOURCES:
+
+
+#define STACK_PUSH(x, stateObject)                             \
+   do                                                          \
+   {                                                           \
+     stateObject->setDuffsLine(__LINE__);                      \
+     return x;                                                 \
+ case __LINE__: ;                                              \
+   } while (0)
+
+
+#define STACK_END()  } return NULL
+
 
 #define GET_STATE(stateType, stateObject, planState) \
   stateObject = reinterpret_cast<stateType*>(planState.block + this->stateOffset)
 
+
 #define FINISHED_ALLOCATING_RESOURCES() case DUFFS_RESET:
+
 
 static const int32_t DUFFS_RELEASE_RESOURCES = 0; //Should always be 0 because of the way, the memory is allocated
 static const int32_t DUFFS_RESET =-1;
 
-namespace xqp {
+
+namespace xqp
+{
 
 class Item;
 typedef rchandle<Item> Item_t;
@@ -112,7 +137,6 @@ public:
 
   Zorba                * zorp;
 //  Zorba_XQueryBinary   * xqbinary;
-//	Zorba_XQueryExecution	*xqexecution;//contains the dynamic context
 
   PlanState(uint32_t blockSize);
 
@@ -120,9 +144,9 @@ public:
 };
 
 
-/**
-  * Base class of all plan iterators.
-  */
+/*******************************************************************************
+  Base class of all plan iterators.
+********************************************************************************/
 class PlanIterator : public rcobject
 {
   friend class PlanIterWrapper;
@@ -135,6 +159,7 @@ protected:
   {
   private:
     int32_t duffsLine;
+
   public:
     /** Initializes State Object for the current iterator.
       * All sub-states have it invoke the init method of their parent 
@@ -163,8 +188,8 @@ public:
   yy::location  loc;
   
 #if ZORBA_BATCHING_TYPE == 1  
-  int32_t       cItem;
-  Item_t        batch [ZORBA_BATCHING_BATCHSIZE];
+  int32_t       theCurrItem;
+  Item_t        theBatch[ZORBA_BATCHING_BATCHSIZE];
 #endif
 
 public:
@@ -223,13 +248,14 @@ public:
 protected:
 
 #if ZORBA_BATCHING_TYPE == 1  
-  inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+  Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
   {
-    if (subIter->cItem == ZORBA_BATCHING_BATCHSIZE) {
+    if (subIter->theCurrItem == ZORBA_BATCHING_BATCHSIZE)
+    {
       subIter->produceNext(planState);
-      subIter->cItem = 0;
+      subIter->theCurrItem = 0;
     }
-    return subIter->batch[subIter->cItem++];
+    return subIter->theBatch[subIter->theCurrItem++];
   }
 #else
   inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState) const
@@ -250,15 +276,16 @@ protected:
 };
 
 
-/**
- * Class to implement batching
- */
+/*******************************************************************************
+  Class to implement batching
+********************************************************************************/
 template <class IterType>
 class Batcher: public PlanIterator
 {
 public:
   Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
-  Batcher(yy::location _loc) : PlanIterator(_loc) {}
+  Batcher(yy::location loc) : PlanIterator(loc) {}
+
   ~Batcher() {}
 
 protected:
@@ -268,10 +295,11 @@ protected:
     planState.zorp->current_iterator.push(this);
 
     int32_t i = 0;
-    batch[0] = static_cast<IterType*>(this)->nextImpl();
-    while (i < ZORBA_BATCHING_BATCHSIZE && batch[i] != NULL) {
+    theBatch[0] = static_cast<IterType*>(this)->nextImpl();
+    while (i < ZORBA_BATCHING_BATCHSIZE && batch[i] != NULL) 
+    {
       i++;
-      batch[i] = static_cast<IterType*>(this)->nextImpl();
+      theBatch[i] = static_cast<IterType*>(this)->nextImpl();
     }
 
     planState.zorp->current_iterator.pop();
@@ -279,7 +307,6 @@ protected:
 #else
   Item_t produceNext(PlanState& planState)
   {
-    ///daniel: save the current iterator executed
     Item_t  it;
     planState.zorp->current_iterator.push(this);
 
@@ -307,15 +334,15 @@ public:
 };
 
 
-/**
- * Wrapper used to drive the evaluation of an iterator (sub)tree.
- * 
- * The wrapper wraps the root iterator of the (sub)tree. It is responsible
- * for allocating and deallocating the plan state that is shared by all
- * iterators in the (sub)tree. In general, it hides internal functionality
- * like separation of code and execution, or garabage collection, and it
- * provides a simple interface that the application can use.
- */
+/*******************************************************************************
+  Wrapper used to drive the evaluation of an iterator (sub)tree.
+  
+  The wrapper wraps the root iterator of the (sub)tree. It is responsible
+  for allocating and deallocating the plan state that is shared by all
+  iterators in the (sub)tree. In general, it hides internal functionality
+  like separation of code and execution, or garabage collection, and it
+  provides a simple interface that the application can use.
+********************************************************************************/
 class PlanWrapper : public Iterator
 {
 private:
@@ -324,44 +351,24 @@ private:
   bool         theClosed;
   
 public:
-  /** 
-   * Constructor.
-   * 
-   * @param iter root of evaluated iterator tree
-   */
   PlanWrapper(PlanIter_t& iter);
   
-  /**
-   * Destructor.
-   */
   virtual ~PlanWrapper();
   
-  /**
-   * Returns the next item of the wrapped plan
-   * @return item
-   */
   Item_t next();
-  
-  /**
-   * Resets the wrapped plan
-   */
   void reset();
-  
-  /**
-   * Closes the wrapped plan
-   */
   void close();
 };
 
 
-/**
- * This is a "helper" wrapper that is used when we need to pass a plan iterator
- * to the store. The wrapper wraps the plan iterator in order to provide a
- * simpler interface that the store can use.
- *
- * The wrapper does not allocate a new state block, but it points to the same 
- * block that contains the state of the wrapped plan iterator.
- */
+/*******************************************************************************
+  This is a "helper" wrapper that is used when we need to pass a plan iterator
+  to the store. The wrapper wraps the plan iterator in order to provide a
+  simpler interface that the store can use.
+ 
+  The wrapper does not allocate a new state block, but it points to the same 
+  block that contains the state of the wrapped plan iterator.
+********************************************************************************/
 class PlanIteratorWrapper : public Iterator
 {
 private:
@@ -370,33 +377,12 @@ private:
   bool         theClosed;
   
 public:
-  /**
-   * Constructor.
-   * 
-   * @param iter 
-   * @param planState 
-   */
   PlanIteratorWrapper(PlanIter_t& iter, PlanState& planState);
   
-  /**
-   * Destructor.
-   */
   virtual ~PlanIteratorWrapper();
   
-  /**
-   * Returns the next item of the wrapped plan iterator
-   * @return item
-   */
   Item_t next();
-  
-  /**
-   * Resets the wrapped plan iterator
-   */
   void reset();
-  
-  /**
-   * Closes the wrapped plan iterator
-   */
   void close();
 };
 

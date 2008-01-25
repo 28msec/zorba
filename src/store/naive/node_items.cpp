@@ -13,6 +13,7 @@
 
 #include "runtime/core/item_iterator.h"
 
+#include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
 #include "store/naive/node_iterators.h"
 #include "store/naive/simple_store.h"
@@ -23,7 +24,7 @@
 
 #ifndef NDEBUG
 
-int traceLevel = 0;
+int traceLevel = 1;
 
 #define NODE_TRACE(level, msg)               \
 {                                            \
@@ -50,54 +51,46 @@ namespace xqp
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  class NodeVector                                                           //
+//  XmlTree                                                                    //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
-NodeVector::NodeVector(unsigned long size)
+XmlTree::XmlTree(XmlNode* root, unsigned long id)
+  :
+  theId(id),
+  theRootNode(root)
 {
-  theNodes = new Item_t[size+1];
+}
+
+
+void XmlTree::free()
+{
+  if (theRootNode != 0)
+  {
+    theRootNode->deleteTree();
+    theRootNode = NULL;
+  }
+  delete this;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class XmlNodeVector                                                       //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+XmlNodeVector::XmlNodeVector(unsigned long size)
+{
+  theNodes = new XmlNode*[size+1];
+  memset(theNodes, 0, (size+1) * sizeof(XmlNode*));
   *(unsigned long*)(theNodes) = size;
 }
 
 
-NodeVector::~NodeVector()
-{
-  clear();
-}
-
-
-void NodeVector::clear()
-{
-  if (theNodes != 0)
-  {
-    *((void**)theNodes) = 0;
-    delete [] theNodes;
-    theNodes = 0;
-  }
-}
-
-
-NodeVector& NodeVector::operator=(const NodeVector& v)
-{
-  clear();
-
-  unsigned long size = v.size();
-
-  if (size == 0)
-    return *this;
-
-  resize(size);
-
-  for (unsigned long i = 1; i <= size; i++)
-    theNodes[i] = v.theNodes[i];
-
-  return *this;
-}
-
-
-unsigned long NodeVector::size() const
+unsigned long XmlNodeVector::size() const
 {
   if (theNodes == 0)
     return 0;
@@ -106,7 +99,47 @@ unsigned long NodeVector::size() const
 }
 
 
-void NodeVector::resize(unsigned long newSize)
+void XmlNodeVector::truncate()
+{
+  if (theNodes == 0)
+    return;
+
+  unsigned long i;
+  for (i = size(); i > 0 && theNodes[i] == 0; i--) ;
+
+  resize(i);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class LoadedXmlNodeVector                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+void LoadedXmlNodeVector::push_back(unsigned long pos, XmlNode* node, bool shared)
+{
+  Assert(pos <= size());
+
+  if (pos == size())
+    resize(size() + 100);
+
+  theNodes[pos+1] = node;
+}
+
+
+void LoadedXmlNodeVector::clear()
+{
+  if (theNodes != 0)
+  {
+    delete [] theNodes;
+    theNodes = 0;
+  }
+}
+
+
+void LoadedXmlNodeVector::resize(unsigned long newSize)
 {
   if (newSize == 0)
   {
@@ -119,8 +152,8 @@ void NodeVector::resize(unsigned long newSize)
 
   if (theNodes != 0)
   {
-    Item_t* nodes = new Item_t[newSize + 1];
-    memset(nodes, 0, (newSize + 1) * sizeof(Item_t));
+    XmlNode** nodes = new XmlNode*[newSize + 1];
+    memset(nodes, 0, (newSize + 1) * sizeof(XmlNode*));
  
     unsigned long copySize = (newSize > size() ? size() : newSize) + 1;
 
@@ -134,84 +167,289 @@ void NodeVector::resize(unsigned long newSize)
   }
   else
   {
-    theNodes = new Item_t[newSize + 1];
-    memset(theNodes, 0, (newSize + 1) * sizeof(Item_t));
+    theNodes = new XmlNode*[newSize + 1];
+    memset(theNodes, 0, (newSize + 1) * sizeof(XmlNode*));
     *(unsigned long*)(theNodes) = newSize;
   }
 }
 
 
-void NodeVector::truncate()
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class ConstrXmlNodeVector                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+ConstrXmlNodeVector::ConstrXmlNodeVector(unsigned long size) : XmlNodeVector(size)
 {
-  if (theNodes == 0)
-    return;
-
-  unsigned long i;
-
-  for (i = size(); i > 0 && theNodes[i] == 0; i--) ;
-
-  resize(i);
+  theBitmap.resize(size);
 }
 
 
-void NodeVector::push_back(const Item_t& item, unsigned long index)
+void ConstrXmlNodeVector::set(unsigned long pos, XmlNode* node, bool shared)
 {
-  Assert(index <= size());
+  ZORBA_ASSERT(pos < size());
+  
+  if (shared)
+  {
+    if (!theBitmap[pos+1])
+      theNodes[pos+1] = NULL;
 
-  if (index == size())
+    *(reinterpret_cast<XmlNode_t*>(&theNodes[pos+1])) = node;
+    theBitmap[pos+1] = true;
+  }
+  else
+  {
+    if (theBitmap[pos+1])
+      *(reinterpret_cast<XmlNode_t*>(&theNodes[pos+1])) = NULL;
+
+    theNodes[pos+1] = node;
+    theBitmap[pos+1] = false;
+  }
+}
+
+
+void ConstrXmlNodeVector::push_back(unsigned long pos, XmlNode* node, bool shared)
+{
+  ZORBA_ASSERT(pos <= size());
+
+  if (pos == size())
     resize(size() + 100);
 
-  theNodes[index+1] = item;
+  ZORBA_ASSERT(theNodes[pos+1] == NULL);
+
+  if (shared)
+  {
+    *(reinterpret_cast<XmlNode_t*>(&theNodes[pos+1])) = node;
+    theBitmap[pos+1] = true;
+  }
+  else
+  {
+    theNodes[pos+1] = node;
+    theBitmap[pos+1] = false;
+  }
 }
 
 
+void ConstrXmlNodeVector::clear()
+{
+  if (theNodes != 0)
+  {
+    unsigned long size = this->size();
+    for (unsigned long i = 1; i <= size; i++)
+    {
+      if (theBitmap[i])
+        *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = NULL; 
+    }
+
+    delete [] theNodes;
+    theNodes = 0;
+  }
+}
+
+
+void ConstrXmlNodeVector::resize(unsigned long newSize)
+{
+  if (newSize == 0)
+  {
+    clear();
+    return;
+  }
+
+  if (newSize == size())
+    return;
+
+  if (theNodes != 0)
+  {
+    XmlNode** nodes = new XmlNode*[newSize + 1];
+    memset(nodes, 0, (newSize + 1) * sizeof(XmlNode*));
+
+    unsigned long copySize = (newSize > size() ? size() : newSize) + 1;
+
+    for (unsigned long i = 1; i < copySize; i++)
+    {
+      if (theBitmap[i])
+        *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = theNodes[i];
+      else
+        nodes[i] = theNodes[i];
+    }
+
+    *(unsigned long*)(nodes) = newSize;
+   
+    clear();
+    theBitmap.resize(newSize + 1);
+    theNodes = nodes;
+  }
+  else
+  {
+    theNodes = new XmlNode*[newSize + 1];
+    memset(theNodes, 0, (newSize + 1) * sizeof(XmlNode*));
+    *(unsigned long*)(theNodes) = newSize;
+
+    theBitmap.resize(newSize+1);
+  }
+}
+
+
+void ConstrXmlNodeVector::copy(const XmlNodeVector& src)
+{
+  clear();
+
+  unsigned long size = src.size();
+
+  if (size == 0)
+    return;
+
+  resize(size);
+
+  for (unsigned long i = 1; i <= size; i++)
+  {
+    *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = src.theNodes[i];
+    theBitmap[i] = true;
+  }
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  class Node                                                                 //
+//  class XmlNode                                                              //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
-NodeImpl::NodeImpl(bool assignId)
+XmlNode::XmlNode(bool isRoot)
   :
-  theTreeId(0),
+  theTree(NULL),
   theParent(NULL)
 {
-  if (assignId)
-    initId();
+  if (isRoot)
+    theOrdPath.init();
 }
 
 
-xqp_string NodeImpl::getBaseURI() const
+xqp_string XmlNode::getBaseURI() const
 {
   return theParent ? theParent->getBaseURI() : "";
 }
 
 
-xqp_string NodeImpl::getDocumentURI() const
+xqp_string XmlNode::getDocumentURI() const
 {
   return theParent ? theParent->getDocumentURI() : "";
 }
 
 
-bool NodeImpl::equals(Item_t item) const
+bool XmlNode::equals(Item_t item) const
 {
   ZORBA_ASSERT (false && "Equal function for node items not implemented");
   return false;
 }
 
 
-Item_t NodeImpl::getEBV() const
+Item_t XmlNode::getEBV() const
 {
   return GET_FACTORY().createBoolean(true);
 }
 
 
-void NodeImpl::initId()
+void XmlNode::addReference()
 {
-  theTreeId = GET_STORE().getTreeId();
-  theOrdPath.init();
+  if (theTree != NULL)
+  {
+    theTree->addReference();
+  }
+}
+
+
+void XmlNode::removeReference()
+{
+  if (theTree != NULL)
+  {
+    theTree->removeReference();
+  }
+}
+
+
+void XmlNode::createId(unsigned long tid, const OrdPathStack& op)
+{
+  ZORBA_ASSERT(theTree == NULL);
+
+  theTree = new XmlTree(this, tid);
+  theOrdPath = op;
+}
+
+
+void XmlNode::setId(XmlTree* tree, const OrdPathStack& op)
+{
+  ZORBA_ASSERT(theTree == NULL);
+
+  theTree = tree;
+  theOrdPath = op;
+}
+
+
+void XmlNode::constructTree(XmlTree* tree, unsigned long childPos)
+{
+  if (theTree == NULL)
+  {
+    theTree = tree;
+
+    if (theParent != NULL)
+    {
+      theOrdPath = theParent->theOrdPath;
+      theOrdPath.appendComp(2 * childPos + 1);
+    }
+
+    if (getNodeKind() == StoreConsts::elementNode ||
+        getNodeKind() == StoreConsts::documentNode)
+    {
+      if (theParent != NULL && (!isCopy() || nsInherit()))
+        setNsContext(theParent->getNsContext());
+
+      if (isCopy())
+        return;
+
+      unsigned long numAttrs = this->numAttributes();
+      unsigned long numChildren = this->numChildren();
+
+      for (unsigned long i = 0; i < numAttrs; i++)
+        getAttr(i)->constructTree(tree, i);
+
+      for (unsigned long i = 0; i < numChildren; i++)
+        getChild(i)->constructTree(tree, numAttrs + i);
+    }
+  }
+  else
+  {
+    ZORBA_ASSERT(theTree != tree);
+  }
+}
+
+
+void XmlNode::deleteTree()
+{
+  if (getNodeKind() == StoreConsts::documentNode ||
+      getNodeKind() == StoreConsts::elementNode)
+  {
+    unsigned long numChildren = this->numChildren();
+    unsigned long numAttrs = this->numAttributes();
+
+    for (unsigned long i = 0; i < numChildren; i++)
+    {
+      if (getChild(i)->getTree() == getTree())
+        getChild(i)->deleteTree();
+    }
+
+    for (unsigned long i = 0; i < numAttrs; i++)
+    {
+      if (getAttr(i)->getTree() == getTree())
+        getAttr(i)->deleteTree();
+    } 
+  }
+
+  delete this;
 }
 
 
@@ -223,118 +461,52 @@ void NodeImpl::initId()
 
 
 /*******************************************************************************
-  Constructor used by the xml SAX loader.
+
 ********************************************************************************/
-DocumentNodeImpl::DocumentNodeImpl(
-    const xqpStringStore_t& baseURI,
-    const xqpStringStore_t& docURI)
+DocumentNode::DocumentNode(
+    xqpStringStore* baseURI,
+    xqpStringStore* docURI,
+    bool            isRoot)
   :
-  NodeImpl(false),
+  XmlNode(isRoot),
   theBaseURI(baseURI),
   theDocURI(docURI),
   theFlags(0)
 {
-  NODE_TRACE1("Loaded doc node " << this);
-}
-
-
-/*******************************************************************************
-  Constructor used by the zorba runtime (during node construction).
-********************************************************************************/
-DocumentNodeImpl::DocumentNodeImpl(
-    const xqpStringStore_t& baseURI,
-    const xqpStringStore_t& docURI,
-    const Iterator_t&       childrenIte,
-    bool                    assignId)
-  :
-  NodeImpl(assignId),
-  theBaseURI(baseURI),
-  theDocURI(docURI),
-  theFlags(NodeImpl::IsConstructed)
-{
-  unsigned long numChildren = 0;
-
-  Item_t item = childrenIte->next();
-  while (item != NULL)
-  {
-    Assert(item->isNode() && item->getNodeKind() != StoreConsts::attributeNode);
-
-    theChildren.push_back(item, numChildren++);
-
-    item = childrenIte->next();
-  }
-
-  if (numChildren > 0)
-    theChildren.truncate();
-
-  NODE_TRACE1("Constructed doc node " << this << " nid = " << theOrdPath.show());
-}
- 
-
-/*******************************************************************************
-  Copy constructor used during the evaluation of an enclosed expression inside
-  a node construction expression.
-********************************************************************************/
-DocumentNodeImpl::DocumentNodeImpl(
-    const DocumentNodeImpl* src,
-    bool                    typePreserve,
-    bool                    nsPreserve)
-  :
-  NodeImpl(false),
-  theBaseURI(src->theBaseURI),
-  theDocURI(src->theDocURI),
-  theFlags(NodeImpl::IsConstructed | NodeImpl::IsCopy)
-{
-  if (typePreserve)
-    theFlags |= NodeImpl::TypePreserve;
-
-  if (nsPreserve)
-    theFlags |= NodeImpl::NsPreserve;
-
-  theChildren = src->theChildren;
-
-  NODE_TRACE1("Copied doc node " << src << " to doc node " << this
-             << " typePreserve = " << typePreserve
-             << " nsPreserve = " << nsPreserve);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-DocumentNodeImpl::~DocumentNodeImpl()
+DocumentNode::~DocumentNode()
 {
-  unsigned long numChildren = theChildren.size();
-  unsigned long i;
-  for (i = 0; i < numChildren; i++)
-  {
-    NodeImpl* child = BASE_NODE(theChildren[i]);
-
-    if (!child->hasId())
-    {
-      child->initId();
-    }
-
-    child->theParent = NULL;
-  }
-
-  NODE_TRACE1("Deleted doc node " << this);
+  ZORBA_ASSERT(theRefCount == 0);
 }
 
 
-Item_t DocumentNodeImpl::getType() const
+/*******************************************************************************
+
+********************************************************************************/
+Item_t DocumentNode::getType() const
 {
   return GET_STORE().theAnyType;
 }
 
 
-Iterator_t DocumentNodeImpl::getChildren() const
+/*******************************************************************************
+
+********************************************************************************/
+Iterator_t DocumentNode::getChildren() const
 {
-  return (new ChildrenIterator((NodeImpl*)this, 0));
+  return (new ChildrenIterator((XmlNode*)this));
 }
 
 
-Iterator_t DocumentNodeImpl::getTypedValue() const
+/*******************************************************************************
+
+********************************************************************************/
+Iterator_t DocumentNode::getTypedValue() const
 {
   Item_t item = GET_FACTORY().createUntypedAtomic(getStringValue());
   PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), item));
@@ -342,27 +514,30 @@ Iterator_t DocumentNodeImpl::getTypedValue() const
 }
 
 
-Item_t DocumentNodeImpl::getAtomizationValue() const
+Item_t DocumentNode::getAtomizationValue() const
 {
   return GET_FACTORY().createUntypedAtomic(getStringValue());
 }
 
 
-xqp_string DocumentNodeImpl::getStringValue() const
+xqp_string DocumentNode::getStringValue() const
 {
   ostringstream oss;
-  Iterator_t it = getChildren();
-  Item_t item = it->next();
-  while (item != NULL)
+
+  unsigned long numChildren = this->numChildren();
+  for (unsigned long i = 0; i < numChildren; i++)
   {
-    oss << item->getStringValue();
-    item = it->next();
+    oss << getChild(i)->getStringValue();
   }
+
   return oss.str();
 }
 
 
-xqp_string DocumentNodeImpl::show() const
+/*******************************************************************************
+
+********************************************************************************/
+xqp_string DocumentNode::show() const
 {
   std::stringstream strStream;
 
@@ -386,278 +561,133 @@ xqp_string DocumentNodeImpl::show() const
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
+//  class LoadedDocumentNode                                                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+LoadedDocumentNode::LoadedDocumentNode(
+    xqpStringStore* baseUri,
+    xqpStringStore* docUri)
+  :
+  DocumentNode(baseUri, docUri, false)
+{
+  NODE_TRACE1("Loaded doc node " << this);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class ConstrDocumentNode                                                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ConstrDocumentNode::ConstrDocumentNode(
+    xqpStringStore* baseUri,
+    xqpStringStore* docUri,
+    Iterator*       childrenIte,
+    bool            isRoot,
+    bool            copy,
+    bool            typePreserve,
+    bool            nsPreserve,
+    bool            nsInherit)
+  :
+  DocumentNode(baseUri, docUri, isRoot)
+{
+  theFlags |= XmlNode::IsConstructed;
+
+  if (typePreserve)
+    theFlags |= XmlNode::TypePreserve;
+
+  if (nsPreserve)
+    theFlags |= XmlNode::NsPreserve;
+
+  if (nsInherit)
+    theFlags |= XmlNode::NsInherit;
+
+  unsigned long numChildren = 0;
+  Item_t item;
+
+  if (childrenIte != 0)
+  {
+    item = childrenIte->next();
+    while (item != NULL)
+    {
+      ZORBA_ASSERT(item->isNode() &&
+                   item->getNodeKind() != StoreConsts::attributeNode);
+
+      addChild(BASE_NODE(item), numChildren++, isRoot, copy);
+
+      item = childrenIte->next();
+    }
+  }
+
+  if (numChildren > 0)
+    theChildren.truncate();
+
+  NODE_TRACE1("Constructed doc node " << this << " nid = " << theOrdPath.show());
+}
+ 
+
+/*******************************************************************************
+
+********************************************************************************/
+void ConstrDocumentNode::addChild(
+    XmlNode*      childNode,
+    unsigned long pos,
+    bool          isRoot,
+    bool          copy)
+{
+  if (childNode->getTree() != NULL)
+  {
+    ZORBA_ASSERT(childNode->getTree() != this->getTree());
+    ZORBA_ASSERT(childNode->getParentPtr() != this);
+
+    if (copy)
+      childNode = childNode->copy(this, pos);
+
+    theChildren.push_back(pos, childNode, !copy);
+  }
+  else
+  {
+    theChildren.push_back(pos, childNode, false);
+    childNode->setParent(this);
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
 //  class ElementNode                                                          //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
-  Constructor used by the xml SAX loader.
+
 ********************************************************************************/
-ElementNodeImpl::ElementNodeImpl(
-    Item*         name,
-    Item*         type,
-    unsigned long numBindings,
-    unsigned long numAttributes)
+ElementNode::ElementNode(const Item* nodeName, bool  isRoot)
   :
-  NodeImpl(false),
-  theName(name),
-  theTypeName(type),
+  XmlNode(isRoot),
+  theName(const_cast<Item*>(nodeName)),
   theFlags(0)
 {
-  if (numBindings > 0)
-  {
-    theNsContext = new NsBindingsContext(numBindings);
-    theFlags |= NodeImpl::HaveLocalBindings;
-  }
-
-  if (numAttributes > 0)
-    theAttributes.resize(numAttributes);
-
-  NODE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
-              <<" num bindings = " << numBindings);
-}
-
-
-/*******************************************************************************
-  Constructor used by the zorba runtime to create a new node as specified by
-  a direct or computed element construction expression.
-********************************************************************************/
-ElementNodeImpl::ElementNodeImpl(
-    const Item_t&            name,
-    const Item_t&            type,
-    Iterator_t&              childrenIte,
-    Iterator_t&              attributesIte,
-    Iterator_t&              namespacesIte,
-    const NamespaceBindings& nsBindings,
-    bool                     nsInherit,
-    bool                     assignId)
-  :
-  NodeImpl(assignId),
-  theName(name),
-  theTypeName(type),
-  theFlags(NodeImpl::IsConstructed)
-{
-  Assert(namespacesIte == NULL);
-
-  unsigned long numAttrs = 0;
-  Item_t item;
-
-  if (nsInherit)
-    theFlags |= NodeImpl::NsInherit;
-
-  if (attributesIte != 0)
-  {
-    item = attributesIte->next();
-    while (item != 0)
-    {
-      Assert(item->isNode() && item->getNodeKind() == StoreConsts::attributeNode);
-      theAttributes.push_back(item, numAttrs++);
-      item = attributesIte->next();
-    }
-  }
-  
-  if (childrenIte != 0)
-  {
-    unsigned long numChildren = 0;
-
-    item = childrenIte->next();
-    while (item != 0)
-    {
-      Assert(item->isNode());
-
-      if (item->getNodeKind() == StoreConsts::attributeNode)
-      {
-        theAttributes.push_back(item, numAttrs++);
-      }
-      else
-      {
-        theChildren.push_back(item, numChildren++);
-      }
-
-      item = childrenIte->next();
-    }
-
-    if (numChildren > 0)
-      theChildren.truncate();
-  }
-
-  if (numAttrs > 0)
-    theAttributes.truncate();
-
-  if (!nsBindings.empty())
-  {
-    theNsContext = new NsBindingsContext(nsBindings);
-    theFlags |= NodeImpl::HaveLocalBindings;
-  }
-
-  NODE_TRACE1("Constructed elem node " << this << " nid = " << theOrdPath.show()
-              << " nsInherit = " << nsInherit);
-}
-
-
-/*******************************************************************************
-  Copy constructor used during the evaluation of an enclosed expression inside
-  a node construction expression.
-
-  Note: "parent" will be NULL iff we are copying a node N that is returned by
-  the enclosed expr. If we are copying a node in the subtree of N, "parent" will
-  be non-NULL. 
-********************************************************************************/
-ElementNodeImpl::ElementNodeImpl(
-    const NodeImpl*        parent,
-    const ElementNodeImpl* src,
-    bool                   typePreserve,
-    bool                   nsPreserve)
-  :
-  NodeImpl(false),
-  theName(src->getNodeName()),
-  theFlags(NodeImpl::IsConstructed | NodeImpl::IsCopy)
-{
-  theParent = const_cast<NodeImpl*>(parent);
-
-  assert(parent == NULL ||
-         parent->getNodeKind() == StoreConsts::elementNode ||
-         parent->getNodeKind() == StoreConsts::documentNode);
-
-  if (typePreserve)
-  {
-    theFlags |= NodeImpl::TypePreserve;
-    theTypeName = src->getType();
-  }
-  else
-  {
-    theTypeName = GET_STORE().theUntypedType;
-  }
-
-  theAttributes = src->theAttributes;
-  theChildren = src->theChildren;
-
-  if (nsPreserve)
-  {
-    theFlags |= NodeImpl::NsPreserve;
-
-    if (parent == NULL)
-    {
-      if (src->haveLocalBindings())
-      {
-        theNsContext = new NsBindingsContext(src->getNamespaceBindings());
-        theFlags |= NodeImpl::HaveLocalBindings;
-      }
-    }
-    else if (src->haveLocalBindings())
-    {
-      theNsContext = new NsBindingsContext(src->getNsContext()->getBindings());
-      theNsContext->setParent(parent->getNsContext());
-      theFlags |= NodeImpl::HaveLocalBindings;
-    }
-    else
-    {
-      theNsContext = parent->getNsContext();
-    }
-  }
-  else
-  {
-    xqpString prefix;
-    xqpStringStore_t ns;
-    std::auto_ptr<NsBindingsContext> nsContext(new NsBindingsContext);
-
-    prefix = theName->getPrefix();
-
-    ns = (parent != NULL && parent->getNodeKind() == StoreConsts::elementNode ?
-          parent->getNsContext()->findBinding(prefix) :
-          NULL);
-
-    if (ns == NULL)
-      ns = src->getNsContext()->findBinding(prefix);
-
-    // ns may be null only if the prefix was empty and there was no default
-    // namespace declaration in scope.
-    ZORBA_ASSERT(prefix == "" || ns != NULL);
-
-    if (ns != NULL)
-    {
-      nsContext->addBinding(prefix, ns);
-      theFlags |= NodeImpl::HaveLocalBindings;
-    }
-
-    unsigned long numAttrs = numAttributes();
-
-    for (unsigned long i = 0; i < numAttrs; i++)
-    {
-      prefix = theAttributes[i]->getNodeName()->getPrefix();
-
-      ns = (parent != NULL && parent->getNodeKind() == StoreConsts::elementNode ?
-            parent->getNsContext()->findBinding(prefix) :
-            NULL);
-
-      if (ns == NULL)
-        ns = src->getNsContext()->findBinding(prefix);
-
-
-      ZORBA_ASSERT(prefix == "" || ns != NULL);
-
-      if (ns != NULL)
-      {
-        nsContext->addBinding(prefix, ns);
-        theFlags |= NodeImpl::HaveLocalBindings;
-      }
-    }
-
-    if (haveLocalBindings())
-    {
-      theNsContext = nsContext.release();
-    }
-    else if (parent != NULL)
-    {
-      theNsContext = parent->getNsContext();
-    }
-  }
-
-  NODE_TRACE1("Copied elem node " << src << " to elem node " << this
-              << " parent = " << parent
-              << " typePreserve = " << typePreserve
-              << " nsPreserve = " << nsPreserve);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-ElementNodeImpl::~ElementNodeImpl()
+ElementNode::~ElementNode()
 {
-  Assert(getRefCount() == 0);
-
-  unsigned long i;
-  unsigned long numNodes = theChildren.size();
-
-  for (i = 0; i < numNodes; i++)
-  {
-    NodeImpl* child = BASE_NODE(theChildren[i]);
-
-    if (!child->hasId())
-    {
-      child->initId();
-    }
-
-    if (child->theParent == this)
-      child->theParent = NULL;
-  }
-
-  numNodes = theAttributes.size();
-
-  for (i = 0; i < numNodes; i++)
-  {
-    NodeImpl* attr = BASE_NODE(theAttributes[i]);
-
-    if (!attr->hasId())
-    {
-      attr->initId();
-    }
-
-    if (attr->theParent == this)
-      attr->theParent = NULL;
-  }
+  ZORBA_ASSERT(getRefCount() == 0);
 
   NODE_TRACE1("Deleted elem node " << this << ", nscontext "
               << theNsContext.get_ptr() << ", "
@@ -668,106 +698,173 @@ ElementNodeImpl::~ElementNodeImpl()
 /*******************************************************************************
 
 ********************************************************************************/
-unsigned long ElementNodeImpl::numAttributes() const
+XmlNode* ElementNode::copy(const XmlNode* parent, unsigned long pos) const
 {
-  return theAttributes.size();
-}
+  std::auto_ptr<ElementNode> copy(new ConstrElementNode(theName.get_ptr(), false));
 
+  copy->theParent = const_cast<XmlNode*>(parent);
 
-/*******************************************************************************
-
-********************************************************************************/
-Iterator_t ElementNodeImpl::getAttributes() const
-{
-  return (new AttributesIterator((ElementNodeImpl*)this));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-Iterator_t ElementNodeImpl::getChildren() const
-{
-  return (new ChildrenIterator((NodeImpl*)this, numAttributes() * 2));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-Iterator_t ElementNodeImpl::getTypedValue() const
-{
-  Item_t retItem = getAtomizationValue();
-  PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), retItem));
-  return new PlanWrapper(ret);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-Item_t ElementNodeImpl::getAtomizationValue() const
-{
-  ostringstream oss;
-  Iterator_t it = getChildren();
-  Item_t lItem = it->next();
-  while ( lItem != 0) {
-    if (!(lItem->isNode() && lItem->getNodeKind() == StoreConsts::commentNode)) {
-      Item_t lAtomicItem = lItem->getAtomizationValue(); 
-      oss << lAtomicItem->getStringValue();
-    }
-    lItem = it->next();
-  }
-  Item_t retItem = GET_FACTORY().createUntypedAtomic(oss.str());
-  return retItem;
-  //return GET_FACTORY().createUntypedAtomic(getStringValue());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-xqp_string ElementNodeImpl::getStringValue() const
-{
-  ostringstream oss;
-  Iterator_t it = getChildren();
-  Item_t item = it->next();
-  while ( item != NULL )
+  if (parent->hasId())
   {
-    oss << item->getStringValue();
-    item = it->next();
-  }  return oss.str();
+    copy->theTree = parent->getTree();
+    copy->theOrdPath = parent->getOrdPath();
+    copy->theOrdPath.appendComp(2 * (pos + parent->numAttributes()) + 1);
+  }
+
+  if (parent->typePreserve())
+  {
+    copy->theFlags |= XmlNode::TypePreserve;
+    copy->theTypeName = theTypeName;
+  }
+  else
+  {
+    copy->theTypeName = GET_STORE().theUntypedType;
+  }
+
+  copy->attributes().copy(attributes());
+  copy->children().copy(children());
+
+  if (parent->nsPreserve())
+  {
+    copy->theFlags |= XmlNode::NsPreserve;
+
+    if (!parent->isCopy())
+    {
+      auto_ptr<NsBindingsContext> ctx(new NsBindingsContext());
+      getNamespaceBindings(ctx->getBindings());
+
+      if (!ctx->getBindings().empty())
+      {
+        copy->theNsContext = ctx.release();
+        copy->theFlags |= XmlNode::HaveLocalBindings;
+      }
+    }
+    else if (haveLocalBindings())
+    {
+      copy->theNsContext = new NsBindingsContext(getLocalBindings());
+      copy->theNsContext->setParent(parent->getNsContext());
+      copy->theFlags |= XmlNode::HaveLocalBindings;
+    }
+    else
+    {
+      copy->theNsContext = parent->getNsContext();
+    }
+
+    if (parent->nsInherit())
+    {
+      copy->theFlags |= XmlNode::NsInherit;
+      if (!parent->isCopy())
+        copy->setNsContext(parent->getNsContext());
+    }
+  }
+  else
+  {
+    xqpStringStore* prefix;
+    xqpStringStore* ns;
+    std::auto_ptr<NsBindingsContext> ctx(new NsBindingsContext);
+
+    prefix = theName->getPrefix().getStore();
+    ns = getNsContext()->findBinding(prefix);
+
+    // ns may be null only if the prefix was empty and there was no default
+    // namespace declaration in scope.
+    ZORBA_ASSERT(*prefix == "" || ns != NULL);
+
+    if (ns != NULL)
+    {
+      xqpStringStore* ns2 = NULL;
+
+      if (parent->getNodeKind() == StoreConsts::elementNode)
+        ns2 = parent->getNsContext()->findBinding(prefix);
+
+      if (ns2 == NULL || !ns->byteEqual(*ns2))
+        ctx->addBinding(prefix, ns);
+    }
+
+    unsigned long numAttrs = numAttributes();
+
+    for (unsigned long i = 0; i < numAttrs; i++)
+    {
+      prefix = getAttr(i)->getNodeName()->getPrefix().getStore();
+      ns = getNsContext()->findBinding(prefix);
+
+      ZORBA_ASSERT(*prefix == "" || ns != NULL);
+
+      if (ns != NULL)
+      {
+        xqpStringStore* ns2 = NULL;
+
+        if (parent->getNodeKind() == StoreConsts::elementNode)
+          ns2 = parent->getNsContext()->findBinding(prefix);
+
+        if (ns2 == NULL || !ns->byteEqual(*ns2))
+          ctx->addBinding(prefix, ns);
+      }
+    }
+
+    if (!ctx->empty())
+    {
+      copy->theNsContext = ctx.release();
+      copy->theFlags |= XmlNode::HaveLocalBindings;
+    }
+
+    if (parent->nsInherit())
+    {
+      copy->theFlags |= XmlNode::NsInherit;
+
+      const XmlNode* ancestor = parent;
+
+      while (ancestor->isCopy())
+        ancestor = ancestor->getParentPtr();
+
+      copy->setNsContext(ancestor->getNsContext());
+    }
+  }
+
+  NODE_TRACE1("Copied elem node " << this << " to elem node " << copy.get()
+              << " parent = " << parent
+              << " typePreserve = " << parent->typePreserve()
+              << " nsPreserve = " << parent->nsPreserve());
+
+  return copy.release();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void ElementNodeImpl::setNsContext(NsBindingsContext* ctx)
+const NsBindings& ElementNode::getLocalBindings() const
+{
+  return theNsContext->getBindings();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore* ElementNode::findBinding(xqpStringStore* prefix) const
 {
   if (theNsContext == NULL)
-    theNsContext = ctx;
-  else
-    theNsContext->setParent(ctx);
+    return NULL;
+
+  return theNsContext->findBinding(prefix);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
+void ElementNode::getNamespaceBindings(NsBindings& bindings) const
 {
-  NamespaceBindings bindings;
-
   if (theNsContext != NULL)
   {
     bindings = theNsContext->getBindings();
 
-    NsBindingsContext* parentContext = theNsContext->getParent();
+    const NsBindingsContext* parentContext = theNsContext->getParent();
 
     while (parentContext != NULL)
     {
-      const NamespaceBindings& parentBindings = parentContext->getBindings();
+      const NsBindings& parentBindings = parentContext->getBindings();
       unsigned long parentSize = parentBindings.size();
       unsigned long currSize = bindings.size();
 
@@ -787,27 +884,101 @@ NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
       parentContext = parentContext->getParent();
     }
   }
-
-  return bindings;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool ElementNodeImpl::getNilled() const
+void ElementNode::setNsContext(NsBindingsContext* parentCtx)
 {
-  Iterator_t iter = getChildren();
-  Item_t item = iter->next();
-  while (item != NULL)
-  {
-    if (item->isNode() && 
-        (item->getNodeKind() == StoreConsts::elementNode ||
-         item->getNodeKind() == StoreConsts::textNode))
-      return false;
+  if (theNsContext == NULL)
+    theNsContext = parentCtx;
+  else if (theNsContext.get_ptr() != parentCtx)
+    theNsContext->setParent(parentCtx);
+}
 
-    item = iter->next();
+
+/*******************************************************************************
+
+********************************************************************************/
+Iterator_t ElementNode::getAttributes() const
+{
+  return (new AttributesIterator((ElementNode*)this));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+Iterator_t ElementNode::getChildren() const
+{
+  return (new ChildrenIterator((XmlNode*)this));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+Iterator_t ElementNode::getTypedValue() const
+{
+  Item_t retItem = getAtomizationValue();
+  PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), retItem));
+  return new PlanWrapper(ret);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+Item_t ElementNode::getAtomizationValue() const
+{
+  ostringstream oss;
+
+  unsigned long numChildren = this->numChildren();
+  for (unsigned long i = 0; i < numChildren; i++)
+  {
+    if (getChild(i)->getNodeKind() != StoreConsts::commentNode)
+    {
+      Item_t lAtomicItem = getChild(i)->getAtomizationValue(); 
+      oss << lAtomicItem->getStringValue();
+    }
   }
+
+  return GET_FACTORY().createUntypedAtomic(oss.str());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqp_string ElementNode::getStringValue() const
+{
+  ostringstream oss;
+
+  unsigned long numChildren = this->numChildren();
+  for (unsigned long i = 0; i < numChildren; i++)
+  {
+      oss << getChild(i)->getStringValue();
+  }
+
+  return oss.str();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool ElementNode::getNilled() const
+{
+  unsigned long numChildren = this->numChildren();
+  for (unsigned long i = 0; i < numChildren; i++)
+  {
+    if (getChild(i)->getNodeKind() == StoreConsts::elementNode ||
+        getChild(i)->getNodeKind() == StoreConsts::textNode)
+      return false;
+  }
+
   return true;
 }
 
@@ -815,7 +986,7 @@ bool ElementNodeImpl::getNilled() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string ElementNodeImpl::show() const
+xqp_string ElementNode::show() const
 {
   std::stringstream str;
 
@@ -823,7 +994,8 @@ xqp_string ElementNodeImpl::show() const
 
   str << " nid=\"" << theOrdPath.show() << "\"";
 
-  NamespaceBindings nsBindings = getNamespaceBindings();
+  NsBindings nsBindings;
+  getNamespaceBindings(nsBindings);
 
   for (unsigned long i = 0; i < nsBindings.size(); i++)
   {
@@ -856,6 +1028,198 @@ xqp_string ElementNodeImpl::show() const
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
+//  class LoadedElementNode                                                    //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  Constructor used by the xml SAX loader.
+********************************************************************************/
+LoadedElementNode::LoadedElementNode(
+    const Item*   nodeName,
+    const Item*   typeName,
+    unsigned long numBindings,
+    unsigned long numAttributes)
+  :
+  ElementNode(nodeName, false)
+{
+  theTypeName = const_cast<Item*>(typeName);
+
+  if (numBindings > 0)
+  {
+    theNsContext = new NsBindingsContext(numBindings);
+    theFlags |= XmlNode::HaveLocalBindings;
+  }
+
+  if (numAttributes > 0)
+    theAttributes.resize(numAttributes);
+
+  NODE_TRACE1("Loaded elem node " << this << " name = " << theName->show()
+              <<" num bindings = " << numBindings);
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class ConstrElementNode                                                    //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ConstrElementNode::ConstrElementNode(Item* nodeName, bool isRoot)
+  :
+  ElementNode(nodeName, isRoot)
+{
+  theFlags |= (XmlNode::IsConstructed | XmlNode::IsCopy);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ConstrElementNode::ConstrElementNode(
+    Item*             nodeName,
+    Item*             typeName,
+    Iterator*         childrenIte,
+    Iterator*         attributesIte,
+    Iterator*         namespacesIte,
+    const NsBindings& nsBindings,
+    bool              isRoot,
+    bool              copy,
+    bool              typePreserve,
+    bool              nsPreserve,
+    bool              nsInherit)
+  :
+  ElementNode(nodeName, isRoot)
+{
+  Assert(namespacesIte == NULL);
+
+  unsigned long numAttrs = 0;
+  unsigned long numChildren = 0;
+  Item_t item;
+
+  theTypeName = typeName;
+
+  theFlags |= XmlNode::IsConstructed;
+
+  if (typePreserve)
+    theFlags |= XmlNode::TypePreserve;
+
+  if (nsPreserve)
+    theFlags |= XmlNode::NsPreserve;
+
+  if (nsInherit)
+    theFlags |= XmlNode::NsInherit;
+
+  if (!nsBindings.empty())
+  {
+    theNsContext = new NsBindingsContext(nsBindings);
+    theFlags |= XmlNode::HaveLocalBindings;
+  }
+
+  if (attributesIte != 0)
+  {
+    item = attributesIte->next();
+    while (item != 0)
+    {
+      ZORBA_ASSERT(item->isNode());
+      ZORBA_ASSERT(item->getNodeKind() == StoreConsts::attributeNode);
+
+      addAttribute(ATTR_NODE(item), numAttrs++, copy, typePreserve);
+
+      item = attributesIte->next();
+    }
+  }
+  
+  if (childrenIte != 0)
+  {
+    item = childrenIte->next();
+    while (item != 0)
+    {
+      ZORBA_ASSERT(item->isNode());
+      ZORBA_ASSERT(item->getNodeKind() != StoreConsts::documentNode);
+
+      if (item->getNodeKind() == StoreConsts::attributeNode)
+        addAttribute(ATTR_NODE(item), numAttrs++, isRoot, copy);
+      else
+        addChild(BASE_NODE(item), numChildren++, isRoot, copy);
+
+      item = childrenIte->next();
+    }
+  }
+
+  if (numChildren > 0)
+    theChildren.truncate();
+
+  if (numAttrs > 0)
+    theAttributes.truncate();
+
+  NODE_TRACE1("Constructed elem node " << this << " nid = " << theOrdPath.show()
+              << " nsInherit = " << nsInherit);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ConstrElementNode::addChild(
+    XmlNode*      childNode,
+    unsigned long pos,
+    bool          isRoot,
+    bool          copy)
+{
+  if (childNode->getTree() != NULL)
+  {
+    ZORBA_ASSERT(childNode->getTree() != this->getTree());
+    ZORBA_ASSERT(childNode->getParentPtr() != this);
+
+    if (copy)
+      childNode = childNode->copy(this, pos);
+
+    theChildren.push_back(pos, childNode, !copy);
+  }
+  else
+  {
+    theChildren.push_back(pos, childNode, false);
+    childNode->setParent(this);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ConstrElementNode::addAttribute(
+    XmlNode* attrNode,
+    unsigned long pos,
+    bool isRoot,
+    bool copy)
+{
+  if (attrNode->getTree() != NULL)
+  {
+    ZORBA_ASSERT(attrNode->getTree() != this->getTree());
+    ZORBA_ASSERT(attrNode->getParentPtr() != this);
+
+    if (copy)
+      attrNode = attrNode->copy(this, pos);
+
+    theAttributes.push_back(pos, attrNode, !copy);
+  }
+  else
+  {
+    theAttributes.push_back(pos, attrNode, false);
+    attrNode->setParent(this);
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
 //  class AttributeNode                                                        //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
@@ -864,20 +1228,18 @@ xqp_string ElementNodeImpl::show() const
 /*******************************************************************************
 
 ********************************************************************************/
-AttributeNodeImpl::AttributeNodeImpl(
-    const Item_t& name,
-    const Item_t& type,
-    const Item_t& lexicalValue,
-    const Item_t& typedValue,
-    bool isId,
-    bool isIdrefs,
-    bool assignId)
+AttributeNode::AttributeNode(
+    const Item*  name,
+    const Item*  type,
+    const Item*  typedValue,
+    bool         isId,
+    bool         isIdrefs,
+    bool         isRoot)
   :
-  NodeImpl(assignId),
-  theName(name),
-  theTypeName(type),
-  theLexicalValue(lexicalValue),
-  theTypedValue(typedValue),
+  XmlNode(isRoot),
+  theName(const_cast<Item*>(name)),
+  theTypeName(const_cast<Item*>(type)),
+  theTypedValue(const_cast<Item*>(typedValue)),
   theIsId(isId),
   theIsIdrefs(isIdrefs)
 {
@@ -885,53 +1247,85 @@ AttributeNodeImpl::AttributeNodeImpl(
 
 
 /*******************************************************************************
-  Copy constructor used during the evaluation of an enclosed expression inside
-  a node construction expression.
-********************************************************************************/
-AttributeNodeImpl::AttributeNodeImpl(
-    const NodeImpl*          parent,
-    const AttributeNodeImpl* src,
-    bool                     typePreserve)
-  :
-  NodeImpl(false),
-  theName(src->getNodeName()),
-  theLexicalValue(src->theLexicalValue),
-  theTypedValue(src->theTypedValue),
-  theIsId(src->isId()),
-  theIsIdrefs(src->isIdrefs())
-{
-  theParent = const_cast<NodeImpl*>(parent);
 
-  theTypeName = (typePreserve ? src->getType() : GET_STORE().theUntypedType);
+********************************************************************************/
+AttributeNode::AttributeNode(const Item* name, bool isRoot)
+  :
+  XmlNode(isRoot),
+  theName(const_cast<Item*>(name))
+{
 }
 
 
-Iterator_t AttributeNodeImpl::getTypedValue() const
+/*******************************************************************************
+
+********************************************************************************/
+XmlNode* AttributeNode::copy(const XmlNode* parent, unsigned long pos) const
+{
+  std::auto_ptr<AttributeNode> copy(new AttributeNode(theName, false));
+
+  copy->theParent = const_cast<XmlNode*>(parent);
+
+  if (parent->hasId())
+  {
+    copy->theTree = parent->getTree();
+    copy->theOrdPath = parent->getOrdPath();
+    copy->theOrdPath.appendComp(2 * pos + 1);
+  }
+
+  if (parent->typePreserve())
+  {
+    copy->theTypeName = theTypeName;
+    copy->theTypedValue = theTypedValue;
+    copy->theIsId = isId();
+    copy->theIsIdrefs = isIdrefs();
+  }
+  else
+  {
+    copy->theTypeName = GET_STORE().theUntypedAtomicType;
+
+    if (theTypedValue->getType() == GET_STORE().theUntypedAtomicType)
+      copy->theTypedValue = theTypedValue;
+    else
+      copy->theTypedValue = new UntypedAtomicItemImpl(getStringValue().getStore());
+
+    if (theName->getLocalName() == "id" && theName->getPrefix() == "xml")
+      copy->theIsId = true;
+    else
+      copy->theIsId = false;
+
+    copy->theIsIdrefs = false;
+  }
+
+  return copy.release();
+}
+
+
+Iterator_t AttributeNode::getTypedValue() const
 {
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), theTypedValue);
   return new PlanWrapper(planIter);
 }
 
 
-Item_t AttributeNodeImpl::getAtomizationValue() const
+Item_t AttributeNode::getAtomizationValue() const
 {
-  return theLexicalValue;
+  return theTypedValue;
 }
 
-xqp_string AttributeNodeImpl::getStringValue() const
+xqp_string AttributeNode::getStringValue() const
 {
-  if (theLexicalValue != 0)
-    return theLexicalValue->getStringValue();
+  if (theTypedValue != 0)
+    return theTypedValue->getStringValue();
   else
     return "";
 }
 
 
-
-xqp_string AttributeNodeImpl::show() const
+xqp_string AttributeNode::show() const
 {
   return theName->getStringValue() + "=\"" +
-         (theLexicalValue != NULL ? theLexicalValue->show() : "") + "\"";
+         (theTypedValue != NULL ? theTypedValue->show() : "") + "\"";
 }
 
 
@@ -942,48 +1336,55 @@ xqp_string AttributeNodeImpl::show() const
 /////////////////////////////////////////////////////////////////////////////////
 
 
-TextNodeImpl::TextNodeImpl(const xqpStringStore_t& content, bool assignId) 
+TextNode::TextNode(const xqpStringStore* content, bool isRoot) 
   :
-  NodeImpl(assignId),
-  theContent(content)
+  XmlNode(isRoot),
+  theContent(const_cast<xqpStringStore*>(content))
 {
 }
 
 
-TextNodeImpl::TextNodeImpl(const NodeImpl* parent, const TextNodeImpl* src) 
-  :
-  NodeImpl(false),
-  theContent(src->theContent)
+XmlNode* TextNode::copy(const XmlNode* parent, unsigned long pos) const
 {
-  theParent = const_cast<NodeImpl*>(parent);;
+  std::auto_ptr<TextNode> copy(new TextNode(theContent, false));
+
+  copy->theParent = const_cast<XmlNode*>(parent);
+
+  if (parent->hasId())
+  {
+    copy->theTree = parent->getTree();
+    copy->theOrdPath = parent->getOrdPath();
+    copy->theOrdPath.appendComp(2 * (pos + parent->numAttributes()) + 1);
+  }
+
+  return copy.release();
 }
 
 
-Item_t TextNodeImpl::getType() const
+Item_t TextNode::getType() const
 {
   return GET_STORE().theUntypedAtomicType;
 }
 
 
-Iterator_t TextNodeImpl::getTypedValue() const
+Iterator_t TextNode::getTypedValue() const
 {
-  const Item_t& item = Store::getInstance().getItemFactory().
-                              createUntypedAtomic(theContent);
+  const Item_t& item = GET_FACTORY().createUntypedAtomic(theContent);
 
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
   return new PlanWrapper(planIter);
 }
 
 
-Item_t TextNodeImpl::getAtomizationValue() const
+Item_t TextNode::getAtomizationValue() const
 {
-  return Store::getInstance().getItemFactory().createUntypedAtomic(theContent);
+  return GET_FACTORY().createUntypedAtomic(theContent);
 }
 
 
-xqp_string TextNodeImpl::show() const
+xqp_string TextNode::show() const
 {
-  return theContent;
+  return theContent.get_ptr();
 }
 
 
@@ -994,35 +1395,42 @@ xqp_string TextNodeImpl::show() const
 /////////////////////////////////////////////////////////////////////////////////
 
  
-PiNodeImpl::PiNodeImpl(
-    const xqpStringStore_t& target,
-    const xqpStringStore_t& data,
-    bool assignId)
+PiNode::PiNode(
+    const xqpStringStore* target,
+    const xqpStringStore* data,
+    bool                  isRoot)
   :
-  NodeImpl(assignId),
-  theTarget(target),
-  theData(data)
+  XmlNode(isRoot),
+  theTarget(const_cast<xqpStringStore*>(target)),
+  theData(const_cast<xqpStringStore*>(data))
 {
 }
 
 
-PiNodeImpl::PiNodeImpl(const NodeImpl* parent, const PiNodeImpl* src) 
-  :
-  NodeImpl(false),
-  theTarget(src->theTarget),
-  theData(src->theData)
+XmlNode* PiNode::copy(const XmlNode* parent, unsigned long  pos) const
 {
-  theParent = const_cast<NodeImpl*>(parent);
+  std::auto_ptr<PiNode> copy(new PiNode(theTarget, theData, false));
+
+  copy->theParent = const_cast<XmlNode*>(parent);
+
+  if (parent->hasId())
+  {
+    copy->theTree = parent->getTree();
+    copy->theOrdPath = parent->getOrdPath();
+    copy->theOrdPath.appendComp(2 * (pos + parent->numAttributes()) + 1);
+  }
+
+  return copy.release();
 }
 
 
-Item_t PiNodeImpl::getType() const
+Item_t PiNode::getType() const
 {
   return GET_STORE().theUntypedAtomicType;
 }
 
 
-Iterator_t PiNodeImpl::getTypedValue() const
+Iterator_t PiNode::getTypedValue() const
 {
   const Item_t& item = GET_FACTORY().createString(theData);
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
@@ -1030,13 +1438,13 @@ Iterator_t PiNodeImpl::getTypedValue() const
 }
 
 
-Item_t PiNodeImpl::getAtomizationValue() const
+Item_t PiNode::getAtomizationValue() const
 {
   return GET_FACTORY().createUntypedAtomic(theData);
 }
 
 
-xqp_string PiNodeImpl::show() const
+xqp_string PiNode::show() const
 {
   return "<?" + *theTarget + " " + *theData + "?>";
 }
@@ -1049,32 +1457,40 @@ xqp_string PiNodeImpl::show() const
 /////////////////////////////////////////////////////////////////////////////////
 
 
-CommentNodeImpl::CommentNodeImpl(
-    const xqpStringStore_t& content,
-    bool assignId)
+CommentNode::CommentNode(
+    const xqpStringStore* content,
+    bool                  isRoot)
   :
-  NodeImpl(assignId),
-  theContent(content)
+  XmlNode(isRoot),
+  theContent(const_cast<xqpStringStore*>(content))
 {
 }
 
 
-CommentNodeImpl::CommentNodeImpl(const NodeImpl* parent, const CommentNodeImpl* src) 
-  :
-  NodeImpl(false),
-  theContent(src->theContent)
+XmlNode* CommentNode::copy(const XmlNode* parent, unsigned long pos) const
 {
-  theParent = const_cast<NodeImpl*>(parent);
+  std::auto_ptr<CommentNode> copy(new CommentNode(theContent, false));
+
+  copy->theParent = const_cast<XmlNode*>(parent);
+
+  if (parent->hasId())
+  {
+    copy->theTree = parent->getTree();
+    copy->theOrdPath = parent->getOrdPath();
+    copy->theOrdPath.appendComp(2 * (pos + parent->numAttributes()) + 1);
+  }
+
+  return copy.release();
 }
 
 
-Item_t CommentNodeImpl::getType() const
+Item_t CommentNode::getType() const
 {
-  return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
+  return GET_STORE().theUntypedAtomicType;
 }
 
 
-Iterator_t CommentNodeImpl::getTypedValue() const
+Iterator_t CommentNode::getTypedValue() const
 {
   const Item_t& item = GET_FACTORY().createString(theContent);
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
@@ -1082,13 +1498,13 @@ Iterator_t CommentNodeImpl::getTypedValue() const
 }
 
 
-Item_t CommentNodeImpl::getAtomizationValue() const
+Item_t CommentNode::getAtomizationValue() const
 {
   return GET_FACTORY().createUntypedAtomic(theContent);
 }
 
 
-xqp_string CommentNodeImpl::show() const
+xqp_string CommentNode::show() const
 {
   return "<!--" + *theContent + "-->";
 }

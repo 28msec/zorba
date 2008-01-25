@@ -35,7 +35,7 @@ protected:
   static const uint16_t      theNegV2EVMap[DEFAULT_FAN_OUT];
 
 protected:
-  unsigned char     * theBuffer;
+  unsigned char  * theBuffer;
 
 public:
   OrdPath() : theBuffer(NULL) { }
@@ -56,7 +56,7 @@ public:
 
   unsigned long getByteLength() const;
 
-  bool operator==(const OrdPath& other) const;
+  //bool operator==(const OrdPath& other) const;
   int operator<(const OrdPath& other) const;
   int operator>(const OrdPath& other) const;
 

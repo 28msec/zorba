@@ -189,9 +189,12 @@ OrdPath& OrdPath::operator=(const OrdPath& other)
     delete [] theBuffer;
 
   unsigned long len = other.getByteLength();
-  theBuffer = new unsigned char[len];
-  memcpy(theBuffer, other.theBuffer, len);
-  theBuffer[0] = (unsigned char)len;
+  if (len > 0)
+  {
+    theBuffer = new unsigned char[len];
+    memcpy(theBuffer, other.theBuffer, len);
+    theBuffer[0] = (unsigned char)len;
+  }
   return *this;
 }
 
@@ -223,7 +226,7 @@ unsigned long OrdPath::getByteLength() const
   return theBuffer[0];
 }
 
-
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -234,9 +237,9 @@ bool OrdPath::operator==(const OrdPath& other) const
   if (len != other.getByteLength())
     return false;
 
-  return memcmp(theBuffer, other.theBuffer, len);
+  return !memcmp(theBuffer, other.theBuffer, len);
 }
-
+#endif
 
 /*******************************************************************************
 
@@ -402,9 +405,9 @@ void OrdPath::appendComp(long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
-                        NULL,
-                        false);
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_ERROR,
+                        NULL, false,
+                        "A nodeid component is too large to be encoded");
       return;
     }
   }
@@ -465,9 +468,9 @@ void OrdPath::appendComp(long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
-                        NULL,
-                        false);
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_ERROR,
+                        NULL, false,
+                        "A nodeid component is too large to be encoded");
       return;
     }
   }
@@ -475,9 +478,10 @@ void OrdPath::appendComp(long value)
   unsigned long bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
-                      NULL,
-                      false);
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0018_NODEID_ERROR,
+                          NULL, false,
+                          "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
+                          << " bytes", "");
   }
 
   if (bytesNeeded > byteIndex + 1)
@@ -2795,9 +2799,10 @@ void OrdPathStack::pushChild()
   if (theByteIndex == OrdPath::MAX_BYTE_LEN ||
       (theByteIndex == OrdPath::MAX_BYTE_LEN - 1 && theBitsAvailable < 2))
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
-                      NULL,
-                      false);
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0018_NODEID_ERROR,
+                          NULL, false,
+                          "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
+                          << " bytes", "");
   }
 
   theDeweyId[theNumComps] = 1;
@@ -2938,9 +2943,9 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
-                        NULL,
-                        false);
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_ERROR,
+                        NULL, false,
+                        "A nodeid component is too large to be encoded");
       return;
     }
   }
@@ -2992,9 +2997,9 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
-                        NULL,
-                        false);
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_ERROR,
+                        NULL, false,
+                        "A nodeid component is too large to be encoded");
       return;
     }
   }
@@ -3004,9 +3009,10 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
 
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_OUT_OF_RANGE,
-                      NULL,
-                      false);
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0018_NODEID_ERROR,
+                          NULL, false,
+                          "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
+                          << " bytes", "");
     return;
   }
 

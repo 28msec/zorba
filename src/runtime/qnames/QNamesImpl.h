@@ -184,8 +184,8 @@ class InScopePrefixesIterator : public UnaryBaseIterator<InScopePrefixesIterator
         void init();
         void reset();
 
-        void setIterator(std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator newIter);
-        void setVector(std::vector<std::pair<xqp_string, xqp_string> > newVect);
+        void setIterator(std::vector<std::pair<xqp_string, xqp_string> >::const_iterator newIter);
+        std::vector<std::pair<xqp_string, xqp_string> >& getVector() { return NamespaceBindings; }
         
         std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getVectBegin();
         std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getVectEnd();

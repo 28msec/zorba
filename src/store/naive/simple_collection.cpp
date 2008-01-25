@@ -13,13 +13,11 @@
 
 namespace xqp
 {
-typedef rchandle<Iterator> Iterator_t;
-
 
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleCollection::SimpleCollection(const Item_t& uri)
+SimpleCollection::SimpleCollection(Item* uri)
   :
   theUri(uri)
 {
@@ -59,8 +57,11 @@ Item_t SimpleCollection::addToCollection(std::iostream& stream)
 {
   XmlLoader& loader = GET_STORE().getXmlLoader();
 
-  Item_t root = loader.loadXml(NULL, stream);
-  theNodes.insert(root);
+  XmlNode* root = loader.loadXml(NULL, stream);
+
+  if (root != NULL)
+    theXmlTrees.insert(root->getTree());
+
   return root;
 }
 
@@ -69,23 +70,22 @@ Item_t SimpleCollection::addToCollection(std::iostream& stream)
   Insert the given node to the collection. If the node is in the collection
   already, this method is a noop.
 ********************************************************************************/
-void SimpleCollection::addToCollection(const Item_t& node)
+void SimpleCollection::addToCollection(const Item* node)
 {
   if (!node->isNode())
   {
     ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
-                      NULL, true);
-    return;
+                      NULL, false);
   }
 
-  theNodes.insert(node);
+  theXmlTrees.insert(static_cast<const XmlNode*>(node)->getTree());
 }
 
 
 /*******************************************************************************
   Insert into the collection the set of nodes returned by the given iterator.
 ********************************************************************************/
-void SimpleCollection::addToCollection(Iterator_t& nodeIter)
+void SimpleCollection::addToCollection(Iterator* nodeIter)
 {
   Item_t node = nodeIter->next();
 
@@ -100,16 +100,15 @@ void SimpleCollection::addToCollection(Iterator_t& nodeIter)
 /*******************************************************************************
   Delete the given node from the collection.
 ********************************************************************************/
-void SimpleCollection::removeFromCollection(const Item_t& node)
+void SimpleCollection::removeFromCollection(const Item* node)
 {
   if (!node->isNode())
   {
     ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
-                      NULL, true);
-    return;
+                      NULL, false);
   }
 
-  theNodes.erase(node);
+  theXmlTrees.erase(static_cast<const XmlNode*>(node)->getTree());
 }
 
 
@@ -117,10 +116,10 @@ void SimpleCollection::removeFromCollection(const Item_t& node)
 
 ********************************************************************************/
 SimpleCollection::CollectionIter::CollectionIter(
-    const SimpleCollection_t& collection)
+    SimpleCollection* collection)
   :
   theCollection(collection),
-  theIterator(collection->theNodes.begin())
+  theIterator(collection->theXmlTrees.begin())
 {
 }
 
@@ -131,10 +130,10 @@ SimpleCollection::CollectionIter::CollectionIter(
 Item_t SimpleCollection::CollectionIter::next()
 {
 
-  if (theIterator == theCollection->theNodes.end())
+  if (theIterator == theCollection->theXmlTrees.end())
     return NULL;
 
-  Item_t node = *theIterator;
+  Item* node = (*theIterator)->getRoot();
   theIterator++;
 
   return node;
@@ -146,10 +145,16 @@ Item_t SimpleCollection::CollectionIter::next()
 ********************************************************************************/
 void SimpleCollection::CollectionIter::reset()
 {
-  theIterator = theCollection->theNodes.begin();
+  theIterator = theCollection->theXmlTrees.begin();
 }
 
-void SimpleCollection::CollectionIter::close() { 
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleCollection::CollectionIter::close() 
+{
+  theCollection = NULL;
 }
 
 } /* namespace xqp */

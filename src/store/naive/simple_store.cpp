@@ -153,19 +153,24 @@ Item_t SimpleStore::createUri()
 ********************************************************************************/
 Item_t SimpleStore::loadDocument(const xqp_string& uri, std::istream& stream)
 {
-  Item_t rootNode;
+  XmlTree_t tree;
+  bool found = theDocuments.get(uri, tree);
 
-  rootNode = getDocument(uri);
-
-  if (rootNode != NULL)
-    return rootNode;
+  if (found)
+    return tree->getRoot();
 
   XmlLoader& loader = getXmlLoader();
 
-  rootNode = loader.loadXml(uri.getStore(), stream);
+  XmlNode* rootNode = loader.loadXml(uri.getStore(), stream);
 
-  theDocuments.insert(uri, rootNode);
+  found = theDocuments.insert(uri, rootNode->getTree());
 
+  if (found)
+  {
+    // TODO : multi-threading not supported yet.
+    ZORBA_ASSERT(0);
+  }
+  
   return rootNode;
 }
 
@@ -176,9 +181,12 @@ Item_t SimpleStore::loadDocument(const xqp_string& uri, std::istream& stream)
 ********************************************************************************/
 Item_t SimpleStore::getDocument(const xqp_string& uri)
 {
-  Item_t doc;
-  bool found = theDocuments.get(uri, doc);
-  return doc;
+  XmlTree_t tree;
+  bool found = theDocuments.get(uri, tree);
+  if (found)
+    return tree->getRoot();
+
+  return NULL;
 }
 
 
@@ -254,16 +262,16 @@ void SimpleStore::deleteCollection(const xqp_string& uri)
   Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if
   node1 == node2, or 1 if node1 > node2.
 ********************************************************************************/
-int32_t SimpleStore::compare(Item_t node1, Item_t node2) const
+int32_t SimpleStore::compare(Item* node1, Item* node2) const
 {
-  ZORBA_ASSERT (node1->isNode());
-  ZORBA_ASSERT (node2->isNode());
+  ZORBA_ASSERT(node1->isNode());
+  ZORBA_ASSERT(node2->isNode());
 
   if (node1 == node2)
     return 0;
 
-  NodeImpl* n1 = BASE_NODE(node1);
-  NodeImpl* n2 = BASE_NODE(node2);
+  XmlNode* n1 = static_cast<XmlNode*>(node1);
+  XmlNode* n2 = static_cast<XmlNode*>(node2);
 
   
   if (n1->getTreeId() < n2->getTreeId() ||
@@ -283,7 +291,7 @@ int32_t SimpleStore::compare(Item_t node1, Item_t node2) const
   @return iterator which produces the sorted items
 ********************************************************************************/
 Iterator_t SimpleStore::sortNodes(
-    Iterator_t input,
+    Iterator* input,
     bool ascendent,
     bool duplicateElemination,
     bool aAllowAtomics)
@@ -299,7 +307,7 @@ Iterator_t SimpleStore::sortNodes(
   Create an iterator that eliminates the duplicate nodes in the set of items
   which is produced by the passed iterator
 ********************************************************************************/
-Iterator_t SimpleStore::distinctNodes(Iterator_t input, bool aAllowAtomics)
+Iterator_t SimpleStore::distinctNodes(Iterator* input, bool aAllowAtomics)
 {
   if (aAllowAtomics)
     return new StoreNodeDistinctOrAtomicIterator(input);
@@ -403,7 +411,7 @@ void SimpleStore::apply(PUL_t pendingUpdateList, Requester requester)
                   evaluated lazily. For XQueryP it might be necassary to set
                   this to false.
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq(Iterator_t iterator, bool lazy)
+TempSeq_t SimpleStore::createTempSeq(Iterator* iterator, bool lazy)
 {
   TempSeq_t tempSeq = new SimpleTempSeq(iterator, lazy);
   return tempSeq;

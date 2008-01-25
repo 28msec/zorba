@@ -67,17 +67,16 @@ static struct err_msg_initializer
       err_msg [i] = NULL;
     }
 
-DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI `/s' exists already")
-DEF_ERR_CODE (API0006_COLLECTION_NOT_FOUND, API0006, "A collection with URI `/s' does not exist")
-DEF_ERR_CODE (API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert a non-node item to a collection")
 DEF_ERR_CODE (API0001_XQUERY_STRING_IS_EMPTY, API0001, "Empty query")
 DEF_ERR_CODE (API0002_COMPILE_FAILED, API0002, "Query compilation failed")
 DEF_ERR_CODE (API0003_XQUERY_NOT_COMPILED, API0003, "Query not compiled")
 DEF_ERR_CODE (API0004_XQUERY_ALREADY_COMPILED, API0004, "Query already compiled")
-DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "COLLECTION_ALREADY_EXISTS")
-DEF_ERR_CODE (API0006_COLLECTION_NOT_FOUND, API0006, "COLLECTION_NOT_FOUND")
-DEF_ERR_CODE (API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "COLLECTION_ITEM_MUST_BE_A_NODE")
-DEF_ERR_CODE (API0008, API0008, "A document with URI `/s' exists already")
+
+DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI `/s' exists already.")
+DEF_ERR_CODE (API0006_COLLECTION_NOT_FOUND, API0006, "A collection with URI `/s' does not exist.")
+DEF_ERR_CODE (API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert to a collectionan item that is not a node.")
+
+
 DEF_ERR_CODE (FOAR0001, FOAR0001, "Division by zero.")
 DEF_ERR_CODE (FOAR0002, FOAR0002, "Numeric operation overflow/underflow.")
 DEF_ERR_CODE (FOCA0001, FOCA0001, "Input value too large for decimal.")
@@ -137,17 +136,26 @@ DEF_ERR_CODE (XQDY0041, XQDY0041, "The value of the name expression in a compute
 DEF_ERR_CODE (XQDY0044, XQDY0044, "The node-name property of the node constructed by a computed attribute constructor is in the namespace http:// www.w3.org/2000/xmlns/ (corresponding to namespace prefix xmlns), or is in no namespace and has local name xmlns.")
 DEF_ERR_CODE (XQDY0061, XQDY0061, "The operand of a validate expression is a document node whose children do not consist of exactly one element node and zero or more comment and processing instruction nodes, in any order.")
 DEF_ERR_CODE (XQDY0064, XQDY0064, "The value of the name expression in a computed processing instruction constructor is equal to return \"XML\"(in any combination of upper and lower case).")
+
 DEF_ERR_CODE (XQDY0072, XQDY0072, "the result of the content expression of a computed comment constructor contains two adjacent hyphens or ends with a hyphen.")
+
 DEF_ERR_CODE (XQDY0074, XQDY0074, "The value of the name expression in a computed element or attribute constructor cannot be converted to an expanded QName (for example, because it contains a namespace prefix not found in statically known namespaces.) return ")
+
 DEF_ERR_CODE (XQDY0084, XQDY0084, "The element validated by a validate statement does not have a top-level element declaration in the in-scope element declarations, if validation mode is strict.")
 DEF_ERR_CODE (XQP0001_DYNAMIC_ITERATOR_OVERRUN, XQP0001, "XQP0001_DYNAMIC_ITERATOR_OVERRUN")
 DEF_ERR_CODE (XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD, XQP0002, "XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD")
 DEF_ERR_CODE (XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND, XQP0003, "XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND")
+
 DEF_ERR_CODE (XQP0004_SYSTEM_NOT_SUPPORTED, XQP0004, "/s not implemented or not supported")
+
 DEF_ERR_CODE (XQP0005_SYSTEM_ASSERT_FAILED, XQP0005, "Assertion `/s' failed in /s")
-DEF_ERR_CODE (XQP0016_LOADER_IO_ERROR, XQP0016, "XQP0016_LOADER_IO_ERROR")
-DEF_ERR_CODE (XQP0017_LOADER_NOT_WELL_FORMED_XML, XQP0017, "XQP0016_LOADER_NOT_WELL_FORMED_XML \n/s")
-DEF_ERR_CODE (XQP0018_NODEID_OUT_OF_RANGE, XQP0018, "A nodeid component is too large to be encoded")
+
+DEF_ERR_CODE (XQP0016_LOADER_IO_ERROR, XQP0016, "Loader I/O error: /s")
+
+DEF_ERR_CODE (XQP0017_LOADER_PARSING_ERROR, XQP0017, "Loader parsing error: /s")
+
+DEF_ERR_CODE (XQP0018_NODEID_ERROR, XQP0018, "Nodeid error: /s")
+
 DEF_ERR_CODE (XQST0009, XQST0009, "Schema Import Feature not supported.")
 DEF_ERR_CODE (XQST0012, XQST0012, "Error in schema validity.")
 DEF_ERR_CODE (XQST0013, XQST0013, "Recognized a pragma but determines that its content is invalid.")

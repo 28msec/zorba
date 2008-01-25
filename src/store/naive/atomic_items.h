@@ -44,9 +44,9 @@ private:
   bool isOverflow() const                 { return thePosition == 0; }
 
  public:
-  virtual xqp_string getNamespace() const { return theNamespace; }
-  virtual xqp_string getPrefix() const    { return thePrefix; }
-  virtual xqp_string getLocalName() const { return theLocal; }
+  virtual xqp_string getNamespace() const { return theNamespace.get_ptr(); }
+  virtual xqp_string getPrefix() const    { return thePrefix.get_ptr(); }
+  virtual xqp_string getLocalName() const { return theLocal.get_ptr(); }
 
   virtual Item_t getType() const;
   virtual uint32_t hash() const;
@@ -73,7 +73,7 @@ public:
   virtual uint32_t hash() const;
   virtual bool equals (Item_t) const;
   virtual Item_t getEBV( ) const;
-  virtual xqp_string getStringValue( ) const { return theValue; }
+  virtual xqp_string getStringValue( ) const { return theValue.get_ptr(); }
   virtual xqpStringStore* getStringValueP() { return theValue.get_ptr(); }
   virtual xqp_string show() const;
 };
@@ -82,21 +82,21 @@ public:
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
-class UntypedAtomicItemNaive : public AtomicItem
+class UntypedAtomicItemImpl : public AtomicItem
 {
 private:
   xqpStringStore_t theValue;
 
 public:
-  UntypedAtomicItemNaive(const xqpStringStore_t& aValue) : theValue ( aValue ) {}
+  UntypedAtomicItemImpl(xqpStringStore* aValue) : theValue ( aValue ) {}
 
-  virtual Item_t getType( ) const;
-  virtual uint32_t hash() const;
-  virtual bool equals ( Item_t ) const;
-  virtual Item_t getEBV( ) const;
-  virtual xqp_string getStringValue() const { return theValue; }
-  virtual xqpStringStore* getStringValueP() { return theValue.get_ptr(); }
-  virtual xqp_string show() const;
+  Item_t getType( ) const;
+  uint32_t hash() const;
+  bool equals ( Item_t ) const;
+  Item_t getEBV( ) const;
+  xqp_string getStringValue() const { return theValue.get_ptr(); }
+  xqpStringStore* getStringValueP() { return theValue.get_ptr(); }
+  xqp_string show() const;
 };
 
 
@@ -114,7 +114,7 @@ public:
   virtual uint32_t hash() const;
   virtual bool equals(Item_t) const;
   virtual Item_t getEBV( ) const;
-  virtual xqp_string getStringValue() const { return theValue; }
+  virtual xqp_string getStringValue() const { return theValue.get_ptr(); }
   virtual xqpStringStore* getStringValueP() { return theValue.get_ptr(); }
   virtual xqp_string show() const;
 };
@@ -296,22 +296,23 @@ public:
  * 
  *******************************************************************************/
 
-  class DecimalItemNaive : public AtomicItem
-	{
-  private:
-    xqp_decimal theValue;
+class DecimalItemNaive : public AtomicItem
+{
+private:
+  xqp_decimal theValue;
 
-  public:
-    DecimalItemNaive ( xqp_decimal aValue ) : theValue( aValue ) {}
-    virtual xqp_decimal getDecimalValue() const { return theValue; }
+public:
+  DecimalItemNaive ( xqp_decimal aValue ) : theValue( aValue ) {}
 
-    virtual Item_t getType( ) const;
-    virtual bool equals ( Item_t ) const;
-    virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringValue( ) const;
-    virtual xqp_string show() const;
-    virtual bool isNaN() const;
-	};
+  virtual xqp_decimal getDecimalValue() const { return theValue; }
+
+  virtual Item_t getType( ) const;
+  virtual bool equals ( Item_t ) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringValue( ) const;
+  virtual xqp_string show() const;
+  virtual bool isNaN() const;
+};
 
 
   class IntItemNaive : public AtomicItem
@@ -321,6 +322,7 @@ public:
 
   public:
     IntItemNaive ( xqp_int aValue ) : theValue ( aValue ) {}
+
     virtual int32_t getIntValue() const { return theValue; }
     virtual xqp_integer getIntegerValue() const;
     virtual xqp_decimal getDecimalValue() const;
