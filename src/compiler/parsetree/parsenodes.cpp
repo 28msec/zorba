@@ -4150,8 +4150,8 @@ CompPIConstructor::~CompPIConstructor()
 void CompPIConstructor::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  ACCEPT (content_expr_h);
   ACCEPT (target_expr_h);
+  ACCEPT (content_expr_h);
   END_VISITOR ();
 }
 
