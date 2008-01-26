@@ -2872,6 +2872,9 @@ typedef yy::xquery_parser::token token;
 	return token::XML_COMMENT_LITERAL;
 }
 
+ {CatchAll} {
+   return token::UNRECOGNIZED;
+ }
 }	/* <MODE_XML_COMMENT> */
 
 
