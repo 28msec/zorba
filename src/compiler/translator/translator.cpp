@@ -443,7 +443,10 @@ void end_visit(const DirPIConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   yy::location loc = v.get_location ();
-  nodestack.push (new pi_expr (loc, new const_expr (loc, v.get_pi_target ()), new const_expr (loc, v.get_pi_content ())));
+  xqp_string target = v.get_pi_target ();
+  if (target.uppercase () == "XML")
+    ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
+  nodestack.push (new pi_expr (loc, new const_expr (loc, target), new const_expr (loc, v.get_pi_content ())));
 }
 
 
