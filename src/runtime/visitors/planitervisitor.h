@@ -18,6 +18,7 @@ namespace xqp
   class ElementContentIterator;
   class AttributeIterator;
   class CommentIterator;
+  class PiIterator;
   class RefIterator;
   class SingletonIterator;
   class EmptyIterator;
@@ -182,6 +183,9 @@ namespace xqp
        
       virtual void beginVisit ( const CommentIterator& ) = 0;
       virtual void endVisit ( const CommentIterator& ) = 0;
+       
+      virtual void beginVisit ( const PiIterator& ) = 0;
+      virtual void endVisit ( const PiIterator& ) = 0;
        
       virtual void beginVisit ( const SingletonIterator& ) = 0;
       virtual void endVisit ( const SingletonIterator& ) = 0;

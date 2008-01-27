@@ -147,6 +147,14 @@ namespace xqp {
     thePrinter.endIter();
   }
        
+  void PrinterVisitor::beginVisit ( const PiIterator& a ) {
+    thePrinter.startIter("PiIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const PiIterator& a ) {
+    thePrinter.endIter();
+  }
+       
   void PrinterVisitor::beginVisit ( const SingletonIterator& a) {
     thePrinter.startIter("SingletonIterator");
     thePrinter.addAttribute("value", a.getValue()->show());

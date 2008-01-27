@@ -1189,22 +1189,15 @@ class pi_expr : public text_expr
  |_______________________________________________________________________*/
 {
 protected:
-  std::string target;
   expr_t target_expr_h;
   
 public:
-  pi_expr(
-          yy::location const&,
-          std::string target,
-          expr_t);
-  pi_expr(
-          yy::location const&,
-          expr_t,
-          expr_t);
+  pi_expr (yy::location const&,
+           expr_t,
+           expr_t);
   ~pi_expr();
   
 public:
-  std::string get_target() const { return target; }
   expr_t get_target_expr() const { return target_expr_h; }
   
 public:

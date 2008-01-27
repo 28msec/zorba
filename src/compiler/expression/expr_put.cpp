@@ -505,16 +505,12 @@ ostream& pi_expr::put( ostream& os) const
 {
   os << INDENT << "pi_expr (" << this << ") [\n";
 
-  os << INDENT << "target=";
-  Assert(target.length() > 0 || target_expr_h != NULL);
-  if (target.length() > 0) {
-    os << target;
-  }
-  else {
-    target_expr_h->put(os);
-  }
+  os << DENT << "TARGET\n";
+  Assert(target_expr_h != NULL);
+  target_expr_h->put(os);
+
+  os << DENT << "CONTENT\n";
   Assert(get_text () != NULL);
-  os << ", content=";
   get_text ()->put(os);
 
   os << DENT << "]\n"; UNDENT;

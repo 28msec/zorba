@@ -139,6 +139,7 @@ namespace xqp {
   BINARY_ACCEPT(FnRoundHalfToEvenIterator);
   BINARY_ACCEPT(FnDateTimeConstructorIterator);
   BINARY_ACCEPT(AttributeIterator);
+  BINARY_ACCEPT(PiIterator);
   BINARY_ACCEPT(QNameEqualIterator);
   BINARY_ACCEPT(NamespaceUriForPrefixlIterator);
   BINARY_ACCEPT(ResolveQNameIterator);

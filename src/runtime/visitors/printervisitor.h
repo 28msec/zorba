@@ -67,6 +67,9 @@ public:
   virtual void beginVisit ( const CommentIterator& ) ;
   virtual void endVisit ( const CommentIterator& ) ;
        
+  virtual void beginVisit ( const PiIterator& ) ;
+  virtual void endVisit ( const PiIterator& ) ;
+       
   virtual void beginVisit ( const SingletonIterator& ) ;
   virtual void endVisit ( const SingletonIterator& ) ;
        

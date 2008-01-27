@@ -542,6 +542,57 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
+PiIterator::PiIterator (
+    const yy::location& loc,
+    PlanIter_t& aTarget,
+    PlanIter_t& aContent,
+    bool assignId)
+  :
+  BinaryBaseIterator<PiIterator>(loc, aTarget, aContent),
+  theAssignId(assignId)
+{
+}
+
+
+Item_t PiIterator::nextImpl(PlanState& planState)
+{
+  Item_t lItem;
+  xqp_string target, content;
+  bool lFirst;
+
+  Store* store = Zorba::getStore();
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+      
+  lItem = consumeNext(theChild0, planState);
+  if (lItem == 0)
+    ZORBA_ERROR_ALERT (ZorbaError::XPTY0004);
+  if (consumeNext(theChild0, planState) != 0)
+    ZORBA_ERROR_ALERT (ZorbaError::XPTY0004);
+  // TODO: check if lItem is string, raise XPTY0004 if not
+  target = lItem->getStringValue();
+  if (target.empty ())
+    ZORBA_ERROR_ALERT (ZorbaError::XQDY0041);
+  else if (target.substr (0).uppercase () == "XML") 
+    ZORBA_ERROR_ALERT (ZorbaError::XQDY0064);
+  
+  for (lFirst = true; 0 != (lItem = consumeNext (theChild1, planState)); lFirst = false) {
+    if (! lFirst) content += " ";
+    content += lItem->getStringValue();
+  }
+
+  lItem = Zorba::getItemFactory()->createPiNode(target.getStore(), content.getStore (), theAssignId);
+  
+  STACK_PUSH(lItem, state);
+  
+  STACK_END();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 TextIterator::TextIterator(
     const yy::location& loc,
     PlanIter_t& aChild,

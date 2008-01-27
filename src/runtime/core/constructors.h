@@ -222,6 +222,29 @@ public:
 
 /*******************************************************************************
 
+  PiIterator constructs a PI element.
+
+********************************************************************************/
+class PiIterator : public BinaryBaseIterator<PiIterator>
+{
+protected:
+  bool       theAssignId;
+
+public:
+  PiIterator(
+        const yy::location& loc, 
+        PlanIter_t& aTarget,
+        PlanIter_t& aContent,
+        bool assignId);
+  
+  Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
+};
+
+
+/*******************************************************************************
+
   TextIterator constructs a comment element.
 
   theChild : The iterator that produces the text. It
@@ -315,3 +338,9 @@ public:
 
 } /* namespace xqp */
 #endif  /* XQP_CONSTRUCTORS_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

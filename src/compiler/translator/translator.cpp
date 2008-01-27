@@ -444,7 +444,7 @@ void end_visit(const DirPIConstructor& v, void *visit_state)
   TRACE_VISIT_OUT ();
   yy::location loc = v.get_location ();
   xqp_string target = v.get_pi_target ();
-  if (target.uppercase () == "XML")
+  if (target.substr (0).uppercase () == "XML")
     ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
   nodestack.push (new pi_expr (loc, new const_expr (loc, target), new const_expr (loc, v.get_pi_content ())));
 }
@@ -1041,14 +1041,15 @@ void *begin_visit(const CompPIConstructor& v)
 void end_visit(const CompPIConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  expr_t target, content;
-  if (v.get_content_expr () != NULL)
-    content = pop_nodestack ();
+
+  yy::location loc = v.get_location ();
+  expr_t target,
+    content = v.get_content_expr () == NULL ? create_seq (loc) : pop_nodestack ();
   if (v.get_target_expr () != NULL)
     target = pop_nodestack ();
   expr_t e = (v.get_target_expr () != NULL) ?
-    new pi_expr (v.get_location (), target, content) :
-    new pi_expr (v.get_location (), v.get_target (), content);
+    new pi_expr (loc, target, content) :
+    new pi_expr (loc, new const_expr (loc, v.get_target ()), content);
   nodestack.push (e);
 }
 

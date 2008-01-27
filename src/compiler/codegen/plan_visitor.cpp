@@ -61,6 +61,11 @@ namespace xqp
     return x;
   }
 
+  template<class T> T &peek_stack (stack<T> &stk) {
+    ZORBA_ASSERT (! stk.empty ());
+    return stk.top ();
+  }
+  
 class plan_visitor : public expr_visitor
 {
 public:
@@ -737,8 +742,7 @@ void end_visit ( elem_expr& v )
   lQNameIter = pop_itstack();
 
   bool assignId = false;
-  ZORBA_ASSERT(!theConstructorsStack.empty());
-  if (theConstructorsStack.top() == &v)
+  if (peek_stack (theConstructorsStack) == &v)
   {
     theConstructorsStack.pop();
     assignId = true;
@@ -793,8 +797,7 @@ void end_visit(attr_expr& v)
   lQNameIter = pop_itstack();
   
   bool assignId = false;
-  ZORBA_ASSERT(!theConstructorsStack.empty());
-  if (theConstructorsStack.top() == &v)
+  if (peek_stack (theConstructorsStack) == &v)
   {
     theConstructorsStack.pop();
     assignId = true;
@@ -805,15 +808,18 @@ void end_visit(attr_expr& v)
   itstack.push(lAttrIter);
 }
 
+void text_expr_begin_visit (text_expr& v)
+{
+  // Start a new construction context, if we are not in such a context already.
+  if (theConstructorsStack.empty() || theConstructorsStack.top() == NULL)
+    theConstructorsStack.push(&v);
+}
 
 bool begin_visit(text_expr& v)
 {
   CODEGEN_TRACE_IN ("");
 
-  // Start a new construction context, if we are not in such a context already.
-  if (theConstructorsStack.empty() || theConstructorsStack.top() == NULL)
-    theConstructorsStack.push(&v);
-
+  text_expr_begin_visit (v);
 	return true;
 }
 
@@ -825,8 +831,7 @@ void end_visit(text_expr& v)
   PlanIter_t content = pop_itstack ();
 
   bool assignId = false;
-  ZORBA_ASSERT(!theConstructorsStack.empty());
-  if (theConstructorsStack.top() == &v)
+  if (peek_stack (theConstructorsStack) == &v)
   {
     theConstructorsStack.pop();
     assignId = true;
@@ -834,12 +839,6 @@ void end_visit(text_expr& v)
 
   switch (v.get_type ()) {
   case text_expr::text_constructor:
-//     // assume this comes from a direct text constructor for now
-//     // we can't afford to break direct text construction
-//     {
-//       xqpString text = v.get_text ().cast<const_expr> ()->get_val ()->getStringValue ();
-//       itstack.push (new SingletonIterator (v.get_loc (), ITEM_FACTORY.createTextNode (text)));
-//     }
     itstack.push (new TextIterator(v.get_loc(), content, assignId));
     break;
 
@@ -856,7 +855,7 @@ void end_visit(text_expr& v)
 bool begin_visit(pi_expr& v)
 {
   CODEGEN_TRACE_IN("");
-  ZORBA_NOT_IMPLEMENTED ("PI codegen");
+  text_expr_begin_visit (v);
   return true;
 }
 
@@ -864,6 +863,17 @@ bool begin_visit(pi_expr& v)
 void end_visit(pi_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+
+  bool assignId = false;
+  if (peek_stack (theConstructorsStack) == &v)
+  {
+    theConstructorsStack.pop();
+    assignId = true;
+  }
+
+  PlanIter_t content = pop_itstack ();
+  PlanIter_t target = pop_itstack ();
+  itstack.push (new PiIterator (v.get_loc (), target, content, assignId));
 }
 
 

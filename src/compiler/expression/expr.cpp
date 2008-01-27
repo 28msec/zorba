@@ -862,22 +862,10 @@ void text_expr::accept(
 
 pi_expr::pi_expr(
   yy::location const& loc,
-  string _target,
-  rchandle<expr> _content_expr_h)
-:
-  text_expr(loc, text_expr::pi_constructor, _content_expr_h),
-  target(_target),
-  target_expr_h(NULL)
-{
-}
-
-pi_expr::pi_expr(
-  yy::location const& loc,
   rchandle<expr> _target_expr_h,
   rchandle<expr> _content_expr_h)
 :
   text_expr(loc, text_expr::pi_constructor, _content_expr_h),
-  target(""),
   target_expr_h(_target_expr_h)
 {
 }
@@ -890,7 +878,10 @@ pi_expr::~pi_expr()
 void pi_expr::accept(
   expr_visitor& v)
 {
+  BEGIN_VISITOR ();
   ACCEPT (target_expr_h);
+  ACCEPT (text);
+  END_VISITOR ();
 }
 
 void function_def_expr::accept (expr_visitor& v) {
