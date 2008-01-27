@@ -988,8 +988,10 @@ ParamList::~ParamList()
 void ParamList::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  vector<rchandle<Param> >::const_reverse_iterator it = param_hv.rbegin();
-  for (; it!=param_hv.rend(); ++it) {
+  
+  for (vector<rchandle<Param> >::const_iterator it = param_hv.begin();
+       it!=param_hv.end(); ++it)
+  {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }

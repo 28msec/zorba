@@ -1765,13 +1765,23 @@ void *begin_visit(const VFO_DeclList& v)
        it != v.end(); ++it)
   {
     const FunctionDecl *n = dynamic_cast<const FunctionDecl *> (it->get_ptr ());
-    if (n) {
+    if (n != NULL) {
       rchandle<ParamList> params = n->get_paramlist ();
       if (params == NULL) params = new ParamList (n->get_location ());
-      params->accept (*this);
+      std::vector<TypeSystem::xqtref_t> arg_types;
+      for (std::vector<rchandle<Param> >::const_iterator it = params->begin ();
+           it != params->end (); ++it)
+      {
+        const Param *p = (*it).get_ptr ();
+        const TypeDeclaration *td = p->get_typedecl ().get_ptr ();
+        if (td == NULL) 
+          arg_types.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+        else {
+          td->accept (*this);
+          arg_types.push_back (pop_tstack ());
+        }
+      }
       int nargs = params->size();
-      vector<var_expr_t> args (nargs);
-      generate (args.begin (), args.end (), stack_to_generator (nodestack));
 
       TypeSystem::xqtref_t return_type = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
       if (n->get_return_type () != NULL) {
@@ -1779,8 +1789,6 @@ void *begin_visit(const VFO_DeclList& v)
         return_type = pop_tstack ();
       }
       Item_t qname = sctx_p->lookup_fn_qname (n->get_name ()->get_prefix (), n->get_name ()->get_localname ());
-      std::vector<TypeSystem::xqtref_t> arg_types;
-      arg_types.insert(arg_types.end(), nargs, GENV_TYPESYSTEM.ITEM_TYPE_STAR);
       signature sig(qname, arg_types, return_type);
       sctx_p->bind_udf (qname, new user_function (n->get_location(), sig, NULL), nargs);
     }
