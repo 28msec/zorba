@@ -2962,9 +2962,9 @@ typedef yy::xquery_parser::token token;
 
 	/* pop previous state on exit */
 	/* -------------------------- */
-{PIChars}">" {
+{PIChars}"?>" {
 	yy_pop_state(yyscanner);
-  yylval->sval = driver.symtab.put(yytext, yyleng-1);
+  yylval->sval = driver.symtab.put(yytext, yyleng-2);
   return token::CHAR_LITERAL_AND_PI_END;
 }
 
