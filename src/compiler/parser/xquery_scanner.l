@@ -109,6 +109,7 @@ CommentChars      ([^:]|":"+[^:)])*":)"
 blank 			[ \t]
 S						[ \t\r\n\f]*
 SP					([ \t\r\n\f]|("(:"{CommentChars}))+
+SPNoComment	[ \t\r\n\f]+
 
 	/*_____________________________________________________________________
 	|
@@ -2563,10 +2564,16 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to PRAGMACONTENTS */
 	/* ---------------------------- */
-{QName}{S}* {
+{QName}{SPNoComment} {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng,true,true);
 	BEGIN MODE_PRAGMACONTENTS;
 	return token::QNAME;
+}
+
+{QName}"#)" {
+  BEGIN MODE_OPERATOR;
+	yylval->sval = driver.symtab.put(yytext, yyleng-2);
+	return token::PRAGMA_LITERAL_AND_END;
 }
 
 {S} {
