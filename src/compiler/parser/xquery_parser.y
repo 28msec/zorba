@@ -161,6 +161,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> PRAGMA_LITERAL_AND_END  "'pragma literal and end'"
 %token <sval> PREFIX_WILDCARD					"'*:QName'"
 %token <sval> QNAME										"'QName'"
+%token <sval> QNAME_AND_END_PRAGMA    "'QName #)'"
 %token <sval> QNAME_LPAR							"'<QName (>'"
 %token <sval> QUOTE_ATTR_CONTENT			"'quote attribute content'"
 %token <sval> STRING_LITERAL					"'STRING'"
@@ -3261,7 +3262,11 @@ Pragma :
 								new QName(@$,driver.symtab.get((off_t)$2)),
 								driver.symtab.get((off_t)$3));
 
-		}
+		} | PRAGMA_BEGIN QNAME_AND_END_PRAGMA {
+			$$ = new Pragma(@$,
+								new QName(@$,driver.symtab.get((off_t)$2)),
+								"");      
+    }
 	;	/* ws: explicit */
 
 

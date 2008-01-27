@@ -110,6 +110,7 @@ blank 			[ \t]
 S						[ \t\r\n\f]*
 SP					([ \t\r\n\f]|("(:"{CommentChars}))+
 SPNoComment	[ \t\r\n\f]+
+WordBreak   [^a-zA-Z0-9_:/-]
 
 	/*_____________________________________________________________________
 	|
@@ -352,11 +353,11 @@ typedef yy::xquery_parser::token token;
 	return token::COMMENT_LBRACE;
 }
 
-"declare"{SP}"function" {
+"declare"{SP}"function"{SP} {
 	return token::DECLARE_FUNCTION;
 }
 
-"declare"{SP}"updating"{SP}"function" {
+"declare"{SP}"updating"{SP}"function"{SP} {
 	return token::DECLARE_UPDATING_FUNCTION;
 }
 
@@ -536,7 +537,7 @@ typedef yy::xquery_parser::token token;
 	return token::DOUBLE_LITERAL;
 }
 
-"NaN" {
+"NaN"/{WordBreak} {
 	BEGIN MODE_OPERATOR;
 	return token::_NAN;
 }
@@ -574,12 +575,12 @@ typedef yy::xquery_parser::token token;
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
-"declare"{SP}"construction" {
+"declare"{SP}"construction"/{WordBreak} {
 	BEGIN MODE_OPERATOR;
 	return token::DECLARE_CONSTRUCTION;
 }
 
-"declare"{SP}"default"{SP}"order" {
+"declare"{SP}"default"{SP}"order"/{WordBreak} {
 	BEGIN MODE_OPERATOR;
 	return token::DECLARE_DEFAULT_ORDER;
 }
@@ -597,22 +598,22 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to NAMESPACEDECL */
 	/* --------------------------- */
-"declare"{SP}"default"{SP}"collation" {
+"declare"{SP}"default"{SP}"collation"/{WordBreak} {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::DECLARE_DEFAULT_COLLATION;
 }
 
-"declare"{SP}"namespace" {
+"declare"{SP}"namespace"/{WordBreak} {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::DECLARE_NAMESPACE;
 }
 
-"module"{SP}"namespace" {
+"module"{SP}"namespace"/{WordBreak} {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::MODULE_NAMESPACE;
 }
 
-"declare"{SP}"base-uri" {
+"declare"{SP}"base-uri"/{WordBreak} {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::DECLARE_BASE_URI;
 }
@@ -620,27 +621,27 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to NAMESPACEKEYWORD */
 	/* ------------------------------ */
-"declare"{SP}"default"{SP}"element" {
+"declare"{SP}"default"{SP}"element"/{WordBreak} {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::DECLARE_DEFAULT_ELEMENT;
 }
 
-"declare"{SP}"default"{SP}"function" {
+"declare"{SP}"default"{SP}"function"/{WordBreak} {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::DECLARE_DEFAULT_FUNCTION;
 }
 
-"import"{SP}"schema" {
+"import"{SP}"schema"/{WordBreak} {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::IMPORT_SCHEMA;
 }
 
-"import"{SP}"module" {
+"import"{SP}"module"/{WordBreak} {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::IMPORT_MODULE;
 }
 
-"declare"{SP}"copy-namespaces" {
+"declare"{SP}"copy-namespaces"/{WordBreak} {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::DECLARE_COPY_NAMESPACES;
 }
@@ -687,7 +688,7 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to ITEMTYPE */
 	/* ---------------------- */
-")"{S}"as" {
+")"{S}"as"/{WordBreak} {
 	BEGIN MODE_ITEMTYPE;
 	return token::RPAR_AS;
 }	
@@ -731,7 +732,7 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to XMLSPACE_DECL */
 	/* --------------------------- */
-"declare"{SP}"boundary-space" {
+"declare"{SP}"boundary-space"/{WordBreak} {
 	BEGIN MODE_XMLSPACE_DECL;
 	return token::DECLARE_BOUNDARY_SPACE;
 }
@@ -746,7 +747,7 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to DECLAREORDERING */
 	/* ----------------------------- */
-"declare"{SP}"ordering" {
+"declare"{SP}"ordering"/{WordBreak} {
 	BEGIN MODE_DECLAREORDERING;
 	return token::DECLARE_ORDERING;
 }
@@ -754,7 +755,7 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to XQUERY_VERSION */
 	/* ---------------------------- */
-"xquery"{SP}"version" {
+"xquery"{SP}"version"/{WordBreak} {
 	BEGIN MODE_XQUERY_VERSION;
 	return token::XQUERY_VERSION;
 }
@@ -770,7 +771,7 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to OPTION */
 	/* -------------------- */
-"declare"{SP}"option" {
+"declare"{SP}"option"/{WordBreak} {
 	BEGIN MODE_OPTION;
 	return token::DECLARE_OPTION;
 }
@@ -802,44 +803,44 @@ typedef yy::xquery_parser::token token;
 "declare"{S}"revalidation"{ValidationMode} {
 	return token::DECLARE_REVALIDATION_MODE;
 }
-"do"{SP}"insert" {
+"do"{SP}"insert"/{WordBreak} {
 	return token::DO_INSERT;
 }
 "do"{SP}"delete"  {
 	return token::DO_DELETE;
 }
-"do"{SP}"replace" {
+"do"{SP}"replace"/{WordBreak} {
 	return token::DO_REPLACE;
 }
-"do"{SP}"rename" {
+"do"{SP}"rename"/{WordBreak} {
 	driver.set_rename(true);
 	return token::DO_RENAME;
 }
-"into" {
+"into"/{WordBreak} {
 	return token::INTO;
 }
-"first"{SP}"into" {
+"first"{SP}"into"/{WordBreak} {
 	return token::FIRST_INTO;
 }
-"last"{SP}"into" {
+"last"{SP}"into"/{WordBreak} {
 	return token::LAST_INTO;
 }
-"after" {
+"after"/{WordBreak} {
 	return token::AFTER;
 }
-"before" {
+"before"/{WordBreak} {
 	return token::BEFORE;
 }
-"value"{SP}"of" {
+"value"{SP}"of"/{WordBreak} {
 	return token::VALUE_OF;
 }
 "with"  {
 	return token::WITH;
 }
-"as" {
+"as"/{WordBreak} {
 	return token::AS;
 }
-"modify" {
+"modify"/{WordBreak} {
 	return token::MODIFY;
 }
 
@@ -858,145 +859,145 @@ typedef yy::xquery_parser::token token;
 "||" {
 	return token::FTOR;
 }
-"not"<SP>"in" {
+"not"<SP>"in"/{WordBreak} {
 	return token::FTNOT_IN;
 }
-"all" {
+"all"/{WordBreak} {
 	return token::ALL;
 }
-"all"{SP}"words" {
+"all"{SP}"words"/{WordBreak} {
 	return token::ALL_WORDS;
 }
-"any" {
+"any"/{WordBreak} {
 	return token::ANY;
 }
-"any"{SP}"word" {
+"any"{SP}"word"/{WordBreak} {
 	return token::ANY_WORD;
 }
-"at"{SP}"end" {
+"at"{SP}"end"/{WordBreak} {
 	return token::AT_END;
 }
-"at"{SP}"least" {
+"at"{SP}"least"/{WordBreak} {
 	return token::AT_LEAST;
 }
-"at"{SP}"most" {
+"at"{SP}"most"/{WordBreak} {
 	return token::AT_MOST;
 }
-"at"{SP}"start" {
+"at"{SP}"start"/{WordBreak} {
 	return token::AT_START;
 }
-"case"{SP}"insensitive" {
+"case"{SP}"insensitive"/{WordBreak} {
 	return token::CASE_INSENSITIVE;
 }
-"case"{SP}"sensitive" {
+"case"{SP}"sensitive"/{WordBreak} {
 	return token::CASE_SENSITIVE;
 }
-"declare"{SP}"ftoption" {
+"declare"{SP}"ftoption"/{WordBreak} {
 	return token::DECLARE_FTOPTION;
 }
-"diacritics"{SP}"insensitive" {
+"diacritics"{SP}"insensitive"/{WordBreak} {
 	return token::DIACRITICS_INSENSITIVE;
 }
-"diacritic"{SP}"sensitive" {
+"diacritic"{SP}"sensitive"/{WordBreak} {
 	return token::DIACRITICS_SENSITIVE;
 }
-"different" {
+"different"/{WordBreak} {
 	return token::DIFFERENT;
 }
-"distance" {
+"distance"/{WordBreak} {
 	return token::DISTANCE;
 }
-"entire"{SP}"content" {
+"entire"{SP}"content"/{WordBreak} {
 	return token::ENTIRE_CONTENT;
 }
-"exactly" {
+"exactly"/{WordBreak} {
 	return token::EXACTLY;
 }
-"from" {
+"from"/{WordBreak} {
 	return token::FROM;
 }
-"language" {
+"language"/{WordBreak} {
 	return token::LANGUAGE;
 }
-"levels" {
+"levels"/{WordBreak} {
 	return token::LEVELS;
 }
-"lowercase" {
+"lowercase"/{WordBreak} {
 	return token::LOWERCASE;
 }
-"occurs" {
+"occurs"/{WordBreak} {
 	return token::OCCURS;
 }
-"paragraph" {
+"paragraph"/{WordBreak} {
 	return token::PARAGRAPH;
 }
-"phrase" {
+"phrase"/{WordBreak} {
 	return token::PHRASE;
 }
-"relationship" {
+"relationship"/{WordBreak} {
 	return token::RELATIONSHIP;
 }
-"same" {
+"same"/{WordBreak} {
 	return token::SAME;
 }
-"score" {
+"score"/{WordBreak} {
 	return token::SCORE;
 }
-"sentence" {
+"sentence"/{WordBreak} {
 	return token::SENTENCE;
 }
-"sentences" {
+"sentences"/{WordBreak} {
 	return token::SENTENCES;
 }
-"times" {
+"times"/{WordBreak} {
 	return token::TIMES;
 }
-"uppercase" {
+"uppercase"/{WordBreak} {
 	return token::UPPERCASE;
 }
-"weight" {
+"weight"/{WordBreak} {
 	return token::WEIGHT;
 }
-"window" {
+"window"/{WordBreak} {
 	return token::WINDOW;
 }
-"without"{SP}"content" {
+"without"{SP}"content"/{WordBreak} {
 	return token::WITHOUT_CONTENT;
 }
-"without"{SP}"diacritics" {
+"without"{SP}"diacritics"/{WordBreak} {
 	return token::WITHOUT_DIACRITICS;
 }
-"without"{SP}"stemming" {
+"without"{SP}"stemming"/{WordBreak} {
 	return token::WITHOUT_STEMMING;
 }
-"without"{SP}"stop"{SP}"words" {
+"without"{SP}"stop"{SP}"words"/{WordBreak} {
 	return token::WITHOUT_STOP_WORDS;
 }
-"without"{SP}"thesaurus" {
+"without"{SP}"thesaurus"/{WordBreak} {
 	return token::WITHOUT_THESAURUS;
 }
-"without"{SP}"wildcards" {
+"without"{SP}"wildcards"/{WordBreak} {
 	return token::WITHOUT_WILDCARDS;
 }
-"with"{SP}"default"{SP}"stop"{SP}"words" {
+"with"{SP}"default"{SP}"stop"{SP}"words"/{WordBreak} {
 	return token::WITH_DEFAULT_STOP_WORDS;
 }
-"with"{SP}"diacritics" {
+"with"{SP}"diacritics"/{WordBreak} {
 	return token::WITH_DIACRITICS;
 }
-"with"{SP}"stemming" {
+"with"{SP}"stemming"/{WordBreak} {
 	return token::WITH_STEMMING;
 }
-"with"{SP}"stop"{SP}"words" {
+"with"{SP}"stop"{SP}"words"/{WordBreak} {
 	return token::WITH_STOP_WORDS;
 }
-"with"{SP}"thesaurus" {
+"with"{SP}"thesaurus"/{WordBreak} {
 	return token::WITH_THESAURUS;
 }
-"with"{SP}"wildcards" {
+"with"{SP}"wildcards"/{WordBreak} {
 	return token::WITH_WILDCARDS;
 }
-"words" {
+"words"/{WordBreak} {
 	return token::WORDS;
 }
 
@@ -1051,12 +1052,12 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to INITIAL */
 	/* --------------------- */
-"ordered" {
+"ordered"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::ORDERED;
 }
 
-"unordered" {
+"unordered"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::UNORDERED;
 }
@@ -1085,23 +1086,23 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::SEMI;
 }
-"then" {
+"then"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::THEN;
 }
-"else" {
+"else"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::ELSE;
 }
-"external" {
+"external"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::EXTERNAL;
 }
-"and" {
+"and"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::AND;
 }
-"at" {
+"at"/{WordBreak} {
 	if (!driver.ftcontains()) {
 		BEGIN INITIAL;
 	}
@@ -1110,7 +1111,7 @@ typedef yy::xquery_parser::token token;
 
 
 	/* full-text rule */
-"score" {
+"score"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::SCORE;
 }
@@ -1124,7 +1125,7 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::COMMA;
 }
-"div" {
+"div"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::DIV;
 }
@@ -1132,31 +1133,31 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::EQUALS;
 }
-"except" {
+"except"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::EXCEPT;
 }
-"eq" {
+"eq"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_EQ;
 }
-"ge" {
+"ge"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_GE;
 }
-"gt" {
+"gt"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_GT;
 }
-"le" {
+"le"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_LE;
 }
-"lt" {
+"lt"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_LT;
 }
-"ne" {
+"ne"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_NE;
 }
@@ -1172,11 +1173,11 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::GT;
 }
-"idiv" {
+"idiv"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::IDIV;
 }
-"intersect" {
+"intersect"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::INTERSECT;
 }
@@ -1184,15 +1185,15 @@ typedef yy::xquery_parser::token token;
 
 
 	/* Update rules */
-"into" {
+"into"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::INTO;
 }
-"with" {
+"with"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::WITH;
 }
-"do"{SP}"insert" {
+"do"{SP}"insert"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::DO_INSERT;
 }
@@ -1200,48 +1201,48 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::DO_DELETE;
 }
-"do"{SP}"replace" {
+"do"{SP}"replace"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::DO_REPLACE;
 }
-"do"{SP}"rename" {
+"do"{SP}"rename"/{WordBreak} {
 	BEGIN INITIAL;
 	driver.set_rename(true);
 	return token::DO_RENAME;
 }
-"into" {
+"into"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::INTO;
 }
-"first"{SP}"into" {
+"first"{SP}"into"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::FIRST_INTO;
 }
-"last"{SP}"into" {
+"last"{SP}"into"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::LAST_INTO;
 }
-"after" {
+"after"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::AFTER;
 }
-"before" {
+"before"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::BEFORE;
 }
-"value"{SP}"of" {
+"value"{SP}"of"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VALUE_OF;
 }
-"modify" {
+"modify"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::MODIFY;
 }
-"in" {
+"in"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::_IN_;
 }
-"is" {
+"is"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::IS;
 }
@@ -1265,7 +1266,7 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::MINUS;
 }
-"mod" {
+"mod"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::MOD;
 }
@@ -1277,15 +1278,15 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::NE;
 }
-"order"{SP}"by" {
+"order"{SP}"by"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::ORDER_BY;
 }
-"stable"{SP}"order"{SP}"by" {
+"stable"{SP}"order"{SP}"by"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::STABLE_ORDER_BY;
 }
-"or" {
+"or"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::OR;
 }
@@ -1293,11 +1294,11 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::PLUS;
 }
-"return" {
+"return"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::RETURN;
 }
-"satisfies" {
+"satisfies"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::SATISFIES;
 }
@@ -1313,11 +1314,11 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::SLASH_SLASH;
 }
-"to" {
+"to"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::TO;
 }
-"union" {
+"union"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::UNION;
 }
@@ -1325,15 +1326,15 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::VBAR;
 }
-"where" {
+"where"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::WHERE;
 }
-"preserve" {
+"preserve"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::PRESERVE;
 }
-"strip" {
+"strip"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::STRIP;
 }
@@ -1343,11 +1344,11 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to SINGLETYPE */
 	/* ------------------------ */
-"castable"{SP}"as" {
+"castable"{SP}"as"/{WordBreak} {
 	BEGIN MODE_SINGLETYPE;
 	return token::CASTABLE_AS;
 }
-"cast"{SP}"as" {
+"cast"{SP}"as"/{WordBreak} {
 	BEGIN MODE_SINGLETYPE;
 	return token::CAST_AS;
 }
@@ -1355,19 +1356,19 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to ITEMTYPE */
 	/* ---------------------- */
-"instance"{SP}"of" {
+"instance"{SP}"of"/{WordBreak} {
 	BEGIN MODE_ITEMTYPE;
 	return token::INSTANCE_OF;
 }
-"treat"{SP}"as" {
+"treat"{SP}"as"/{WordBreak} {
 	BEGIN MODE_ITEMTYPE;
 	return token::TREAT_AS;
 }
-"case" {
+"case"/{WordBreak} {
 	BEGIN MODE_ITEMTYPE;
 	return token::CASE;
 }
-"as" {
+"as"/{WordBreak} {
 	if (driver.rename()) {
 		driver.set_rename(false);
 		BEGIN INITIAL;
@@ -1415,7 +1416,7 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to URITOOPERATOR */
 	/* --------------------------- */
-"collation" {
+"collation"/{WordBreak} {
 	BEGIN MODE_URITOOPERATOR;
 	return token::COLLATION;
 }
@@ -1437,19 +1438,19 @@ typedef yy::xquery_parser::token token;
 "?" {
 	return token::HOOK;
 }
-"empty"{SP}"greatest" {
+"empty"{SP}"greatest"/{WordBreak} {
 	return token::EMPTY_GREATEST;
 }
-"empty"{SP}"least" {
+"empty"{SP}"least"/{WordBreak} {
 	return token::EMPTY_LEAST;
 }
-"ascending" {
+"ascending"/{WordBreak} {
 	return token::ASCENDING;
 }
-"descending" {
+"descending"/{WordBreak} {
 	return token::DESCENDING;
 }
-"default" {
+"default"/{WordBreak} {
 	return token::DEFAULT;
 }
 "]" {
@@ -1468,7 +1469,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to INITIAL state */
   /* --------------------------- */
 	
-"ftcontains" {
+"ftcontains"/{WordBreak} {
 	BEGIN INITIAL;
 	driver.set_ftcontains(true);
 	return token::FTCONTAINS;
@@ -1485,35 +1486,35 @@ typedef yy::xquery_parser::token token;
 	BEGIN INITIAL;
 	return token::FTOR;
 }
-"not"<SP>"in" {
+"not"<SP>"in"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::FTNOT_IN;
 }
-"at"{SP}"least" {
+"at"{SP}"least"/{WordBreak} {
   BEGIN INITIAL;
 	return token::AT_LEAST;
 }
-"at"{SP}"most" {
+"at"{SP}"most"/{WordBreak} {
   BEGIN INITIAL;
 	return token::AT_MOST;
 }
-"distance" {
+"distance"/{WordBreak} {
   BEGIN INITIAL;
 	return token::DISTANCE;
 }
-"exactly" {
+"exactly"/{WordBreak} {
   BEGIN INITIAL;
 	return token::EXACTLY;
 }
-"from" {
+"from"/{WordBreak} {
   BEGIN INITIAL;
 	return token::FROM;
 }
-"occurs" {
+"occurs"/{WordBreak} {
   BEGIN INITIAL;
 	return token::OCCURS;
 }
-"window" {
+"window"/{WordBreak} {
   BEGIN INITIAL;
 	return token::WINDOW;
 }
@@ -1521,121 +1522,121 @@ typedef yy::xquery_parser::token token;
 
   /* maintain OPERATOR state */
   /* ----------------------- */
-"all" {
+"all"/{WordBreak} {
 	return token::ALL;
 }
-"all"{SP}"words" {
+"all"{SP}"words"/{WordBreak} {
 	return token::ALL_WORDS;
 }
-"any" {
+"any"/{WordBreak} {
 	return token::ANY;
 }
-"any"{SP}"word" {
+"any"{SP}"word"/{WordBreak} {
 	return token::ANY_WORD;
 }
-"at"{SP}"end" {
+"at"{SP}"end"/{WordBreak} {
 	return token::AT_END;
 }
-"at"{SP}"start" {
+"at"{SP}"start"/{WordBreak} {
 	return token::AT_START;
 }
-"case"{SP}"insensitive" {
+"case"{SP}"insensitive"/{WordBreak} {
 	return token::CASE_INSENSITIVE;
 }
-"case"{SP}"sensitive" {
+"case"{SP}"sensitive"/{WordBreak} {
 	return token::CASE_SENSITIVE;
 }
-"declare"{SP}"ftoption" {
+"declare"{SP}"ftoption"/{WordBreak} {
 	return token::DECLARE_FTOPTION;
 }
-"diacritics"{SP}"insensitive" {
+"diacritics"{SP}"insensitive"/{WordBreak} {
 	return token::DIACRITICS_INSENSITIVE;
 }
-"diacritics"{SP}"sensitive" {
+"diacritics"{SP}"sensitive"/{WordBreak} {
 	return token::DIACRITICS_SENSITIVE;
 }
-"different" {
+"different"/{WordBreak} {
 	return token::DIFFERENT;
 }
-"entire"{SP}"content" {
+"entire"{SP}"content"/{WordBreak} {
 	return token::ENTIRE_CONTENT;
 }
-"language" {
+"language"/{WordBreak} {
 	return token::LANGUAGE;
 }
-"levels" {
+"levels"/{WordBreak} {
 	return token::LEVELS;
 }
-"lowercase" {
+"lowercase"/{WordBreak} {
 	return token::LOWERCASE;
 }
-"paragraph" {
+"paragraph"/{WordBreak} {
 	return token::PARAGRAPH;
 }
-"phrase" {
+"phrase"/{WordBreak} {
 	return token::PHRASE;
 }
-"relationship" {
+"relationship"/{WordBreak} {
 	return token::RELATIONSHIP;
 }
-"same" {
+"same"/{WordBreak} {
 	return token::SAME;
 }
-"score" {
+"score"/{WordBreak} {
 	return token::SCORE;
 }
-"sentence" {
+"sentence"/{WordBreak} {
 	return token::SENTENCE;
 }
-"sentences" {
+"sentences"/{WordBreak} {
 	return token::SENTENCES;
 }
-"times" {
+"times"/{WordBreak} {
 	return token::TIMES;
 }
-"uppercase" {
+"uppercase"/{WordBreak} {
 	return token::UPPERCASE;
 }
-"weight" {
+"weight"/{WordBreak} {
 	return token::WEIGHT;
 }
-"without"{SP}"content" {
+"without"{SP}"content"/{WordBreak} {
 	return token::WITHOUT_CONTENT;
 }
-"without"{SP}"diacritics" {
+"without"{SP}"diacritics"/{WordBreak} {
 	return token::WITHOUT_DIACRITICS;
 }
-"without"{SP}"stemming" {
+"without"{SP}"stemming"/{WordBreak} {
 	return token::WITHOUT_STEMMING;
 }
-"without"{SP}"stop"{SP}"words" {
+"without"{SP}"stop"{SP}"words"/{WordBreak} {
 	return token::WITHOUT_STOP_WORDS;
 }
-"without"{SP}"thesaurus" {
+"without"{SP}"thesaurus"/{WordBreak} {
 	return token::WITHOUT_THESAURUS;
 }
-"without"{SP}"wildcards" {
+"without"{SP}"wildcards"/{WordBreak} {
 	return token::WITHOUT_WILDCARDS;
 }
-"with"{SP}"default"{SP}"stop"{SP}"words" {
+"with"{SP}"default"{SP}"stop"{SP}"words"/{WordBreak} {
 	return token::WITH_DEFAULT_STOP_WORDS;
 }
-"with"{SP}"diacritics" {
+"with"{SP}"diacritics"/{WordBreak} {
 	return token::WITH_DIACRITICS;
 }
-"with"{SP}"stemming" {
+"with"{SP}"stemming"/{WordBreak} {
 	return token::WITH_STEMMING;
 }
-"with"{SP}"stop"{SP}"words" {
+"with"{SP}"stop"{SP}"words"/{WordBreak} {
 	return token::WITH_STOP_WORDS;
 }
-"with"{SP}"thesaurus" {
+"with"{SP}"thesaurus"/{WordBreak} {
 	return token::WITH_THESAURUS;
 }
-"with"{SP}"wildcards" {
+"with"{SP}"wildcards"/{WordBreak} {
 	return token::WITH_WILDCARDS;
 }
-"words" {
+"words"/{WordBreak} {
 	return token::WORDS;
 }
 "(#" {
@@ -1652,7 +1653,6 @@ typedef yy::xquery_parser::token token;
 }
 
 }	/* <MODE_OPERATOR> */
-
 
 
 
@@ -1678,7 +1678,7 @@ typedef yy::xquery_parser::token token;
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
-"encoding" {
+"encoding"/{WordBreak} {
 	return token::ENCODING;
 }
 
@@ -1718,7 +1718,7 @@ typedef yy::xquery_parser::token token;
 	return token::COMMA;
 }
 
-"at" {
+"at"/{WordBreak} {
 	return token::AT;
 }
 
@@ -1778,19 +1778,19 @@ typedef yy::xquery_parser::token token;
 	TRY_URILIT (URI_LITERAL, yytext, yyleng);
 }
 
-"namespace" {
+"namespace"/{WordBreak} {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::NAMESPACE;
 }
 
 	/* transition to INITIAL */
 	/* --------------------- */
-"inherit" {
+"inherit"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::INHERIT;
 }
 
-"no-inherit" {
+"no-inherit"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::NO_INHERIT;
 }
@@ -1804,15 +1804,15 @@ typedef yy::xquery_parser::token token;
 
 	/* maintain NAMESPACEKEYWORD */
 	/* ------------------------- */
-"default"{SP}"element" {
+"default"{SP}"element"/{WordBreak} {
 	return token::DEFAULT_ELEMENT;
 }
 
-"preserve" {
+"preserve"/{WordBreak} {
 	return token::PRESERVE;
 }
 
-"no-preserve" {
+"no-preserve"/{WordBreak} {
 	return token::NO_PRESERVE;
 }
 
@@ -1846,12 +1846,12 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to INITIAL */
 	/* --------------------- */
-"preserve" {
+"preserve"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::PRESERVE;
 }
 
-"strip" {
+"strip"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::STRIP;
 }
@@ -2024,12 +2024,12 @@ typedef yy::xquery_parser::token token;
 	return token::SEMI;
 }
 
-"then" {
+"then"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::THEN;
 }
 
-"else" {
+"else"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::ELSE;
 }
@@ -2045,17 +2045,17 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to INITIAL */
 	/* --------------------- */
-"external" {
+"external"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::EXTERNAL;
 }
 
-"and" {
+"and"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::AND;
 }
 
-"at" {
+"at"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::AT;
 }
@@ -2070,7 +2070,7 @@ typedef yy::xquery_parser::token token;
 	return token::COMMA;
 }
 
-"div" {
+"div"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::DIV;
 }
@@ -2080,37 +2080,37 @@ typedef yy::xquery_parser::token token;
 	return token::EQUALS;
 }
 
-"except" {
+"except"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::EXCEPT;
 }
 
-"eq" {
+"eq"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_EQ;
 }
 
-"ge" {
+"ge"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_GE;
 }
 
-"gt" {
+"gt"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_GT;
 }
 
-"le" {
+"le"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_LE;
 }
 
-"lt" {
+"lt"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_LT;
 }
 
-"ne" {
+"ne"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::VAL_NE;
 }
@@ -2130,22 +2130,22 @@ typedef yy::xquery_parser::token token;
 	return token::GT;
 }
 
-"idiv" {
+"idiv"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::IDIV;
 }
 
-"intersect" {
+"intersect"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::INTERSECT;
 }
 
-"in" {
+"in"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::_IN_;
 }
 
-"is" {
+"is"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::IS;
 }
@@ -2180,7 +2180,7 @@ typedef yy::xquery_parser::token token;
 	return token::MINUS;
 }
 
-"mod" {
+"mod"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::MOD;
 }
@@ -2190,37 +2190,37 @@ typedef yy::xquery_parser::token token;
 	return token::NE;
 }
 
-"order"{SP}"by" {
+"order"{SP}"by"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::ORDER_BY;
 }
 
-"stable"{SP}"order"{SP}"by" {
+"stable"{SP}"order"{SP}"by"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::STABLE_ORDER_BY;
 }
 
-"or" {
+"or"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::OR;
 }
 
-"return" {
+"return"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::RETURN;
 }
 
-"satisfies" {
+"satisfies"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::SATISFIES;
 }
 
-"to" {
+"to"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::TO;
 }
 
-"union" {
+"union"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::UNION;
 }
@@ -2230,42 +2230,42 @@ typedef yy::xquery_parser::token token;
 	return token::VBAR;
 }
 
-"where" {
+"where"/{WordBreak} {
 	BEGIN INITIAL;
 	return token::WHERE;
 }
 
 	/* transition to SINGLETYPE */
 	/* ------------------------ */
-"castable"{SP}"as" {
+"castable"{SP}"as"/{WordBreak} {
 	BEGIN MODE_SINGLETYPE;
 	return token::CASTABLE_AS;
 }
 
-"cast"{SP}"as" {
+"cast"{SP}"as"/{WordBreak} {
 	BEGIN MODE_SINGLETYPE;
 	return token::CAST_AS;
 }
 
 	/* maintain ITEMTYPE */
 	/* ----------------- */
-"instance"{SP}"of" {
+"instance"{SP}"of"/{WordBreak} {
 	return token::INSTANCE_OF;
 }
 
-"treat"{SP}"as" {
+"treat"{SP}"as"/{WordBreak} {
 	return token::TREAT_AS;
 }
 
-"case" {
+"case"/{WordBreak} {
 	return token::CASE;
 }
 
-"as" {
+"as"/{WordBreak} {
 	return token::AS;
 }
 
-")"{S}"as" {
+")"{S}"as"/{WordBreak} {
 	return token::RPAR_AS;
 }
 
@@ -2573,7 +2573,7 @@ typedef yy::xquery_parser::token token;
 {QName}"#)" {
   BEGIN MODE_OPERATOR;
 	yylval->sval = driver.symtab.put(yytext, yyleng-2);
-	return token::PRAGMA_LITERAL_AND_END;
+	return token::QNAME_AND_END_PRAGMA;
 }
 
 {S} {
