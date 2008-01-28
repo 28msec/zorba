@@ -370,6 +370,10 @@ public:
 
   virtual void beginVisit(const FnYearFromDateIterator&) ;
   virtual void endVisit(const FnYearFromDateIterator&);
+
+  virtual void beginVisit(const FnMonthFromDateIterator&) ;
+  virtual void endVisit(const FnMonthFromDateIterator&);
+  
   
       
   virtual void beginVisit ( const FLWORIterator& ) ;

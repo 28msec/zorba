@@ -33,6 +33,7 @@ public:
   const boost::gregorian::date& get_date() const;
 
   int32_t getYear() const;
+  int32_t getMonth() const;
 
 protected:
   Date& operator=(const Date_t& d_t);

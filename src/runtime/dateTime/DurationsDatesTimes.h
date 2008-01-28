@@ -302,6 +302,21 @@ NARY_ITER_STATE(FnYearFromDateIterator, FnYearFromDateIteratorState);
 /*end class FnYearFromDateIterator */
 
 /*
+ * 10.5.15 fn:month-from-date
+ * --------------------*/
+ 
+/*begin class fn_month_from_date */
+class FnMonthFromDateIteratorState : public  PlanIteratorState {
+  public:
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
+};
+
+NARY_ITER_STATE(FnMonthFromDateIterator, FnMonthFromDateIteratorState);
+/*end class fn_month_from_date */
+/*
 
 10.5.15 fn:month-from-date
 10.5.16 fn:day-from-date
