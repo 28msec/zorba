@@ -99,6 +99,7 @@ public:
   Item_t createUri();
 
   Item_t loadDocument(const xqp_string& uri, std::istream& stream);
+  Item_t loadDocument(const xqp_string& uri, Item_t	 doc_item);
   Item_t getDocument(const xqp_string& uri);
   void deleteDocument(const xqp_string& uri);
 

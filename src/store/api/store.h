@@ -164,6 +164,8 @@ public:
    */
   virtual Item_t loadDocument(const xqp_string& uri, std::istream& stream) = 0;
 
+  virtual Item_t loadDocument(const xqp_string& uri, Item_t	 doc_item) = 0;
+
   /**
    * Get an rchandle to the root node of the document with the given uri.
    *

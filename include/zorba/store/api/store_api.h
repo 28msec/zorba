@@ -4,12 +4,9 @@
 #include "util/rchandle.h"
 #include "types/representations.h"
 #include "store/api/item.h"
-#include "store/api/collection.h"
 
 namespace xqp
 {
-
-typedef rchandle<class Collection> Collection_t;
 
 
 class XmlDataManager : public rcobject
@@ -26,6 +23,8 @@ public:
   virtual Item_t loadDocument(const xqp_anyURI& uri, std::istream& stream) = 0;
 
   virtual Item_t loadDocument(const xqp_anyURI& local_file_uri) = 0;
+
+	virtual Item_t loadDocument(const xqp_anyURI& uri, Item_t item) = 0;  // error if uri exists or item is not a document
 
 	/**
    * Get an rchandle to the root node of the document with the given uri.
@@ -48,34 +47,21 @@ public:
 
 
 
-  /**
-   * Creates a collection in the store.
-   * 
-   * @param URI The URI of the collection to create.
-   * @return rchandle to the newly created collection or NULL if a collection
-   *         with the given uri exists already.
-   */
-  virtual Collection_t createCollection(const xqp_anyURI& uri) = 0;
+	virtual bool createCollection(const xqp_anyURI& uri) = 0;  
 
-  /** Creates a collection in the store (without given URI).
-   * 
-   * @return handle object of the newly created collection
-   */
-  virtual Collection_t createCollection() = 0;
-	
-  /** Returns an XDM instance which is saved in the store 
-   * (corresponds to the opening of a connection to a database)
-   *
-   * @param URI of the colleciton
-   * @return handle object of the collection. Returns NULL if the collection does not exist
-   */
-  virtual Collection_t getCollection(const xqp_anyURI& uri) = 0;
-		
-  /** Deletes a collection.
-   *
-   * @param URI to identify the collection to delete.
-   */
-  virtual void deleteCollection(const xqp_anyURI& uri) = 0;
+	virtual bool deleteCollection(const xqp_anyURI& uri) = 0; 
+
+
+	// some "depricated" methods which we will support until we have a  
+	// better way to do collection management
+	// with Zorba-specific functions in XQuery
+	// all these "addToCollection" functions throw an error if the  
+	// specified collection does not exist in the store
+	// loading from SAX, DOM and other XML APIs/source done later
+
+
+	virtual bool addToCollection(const xqp_anyURI& uri, Iterator_t iterator) = 0;
+	virtual bool addToCollection(const xqp_anyURI& uri, std::istream& stream) = 0;
 
 };
 

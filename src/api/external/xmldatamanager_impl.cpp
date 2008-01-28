@@ -4,6 +4,7 @@
 #include "errors/error_factory.h"
 #include "system/zorba_engine.h"
 #include "errors/error_manager.h"
+#include "store/api/collection.h"
 
 namespace xqp
 {
@@ -46,6 +47,15 @@ Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& local_file_uri)
 	}CATCH_ALL_RETURN_NULL;
 }
 
+Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, Item_t item)  // error if uri exists or item is not a document
+{
+	try{
+
+	return internal_store->loadDocument(uri, item);
+
+	}CATCH_ALL_RETURN_NULL;
+}
+
 
 Item_t XmlDataManager_Impl::getDocument(const xqp_anyURI& uri)
 {
@@ -67,35 +77,50 @@ void XmlDataManager_Impl::deleteDocument(const xqp_anyURI& uri)
 
 /* ------------------------ Collection Management ---------------------------*/
 
-Collection_t XmlDataManager_Impl::createCollection(const xqp_anyURI& uri)
+bool XmlDataManager_Impl::createCollection(const xqp_anyURI& uri)
 {
 	try{
 
-		return internal_store->createCollection( uri );
-	}CATCH_ALL_RETURN_NULL;
+		return (internal_store->createCollection( uri )) != NULL;
+	}CATCH_ALL_RETURN_false;
 }
 
-Collection_t XmlDataManager_Impl::createCollection()
-{
-	try{
-
-		return internal_store->createCollection();
-	}CATCH_ALL_RETURN_NULL;
-}
-
-Collection_t XmlDataManager_Impl::getCollection(const xqp_anyURI& uri)
-{
-	try{
-		return internal_store->getCollection(uri);
-	}CATCH_ALL_RETURN_NULL;
-
-}
-
-void XmlDataManager_Impl::deleteCollection(const xqp_anyURI& uri)
+bool XmlDataManager_Impl::deleteCollection(const xqp_anyURI& uri)
 {
 	try{
 	internal_store->deleteCollection(uri);
-	}CATCH_ALL_NO_RETURN(;);
+	}CATCH_ALL_RETURN_false;
+	
+	return true;
 }
+
+bool XmlDataManager_Impl::addToCollection(const xqp_anyURI& uri, Iterator_t iterator)
+{
+	try{
+		Collection_t		colec;
+		colec = internal_store->getCollection(uri);
+		if(colec == NULL)
+			return false;
+		colec->addToCollection(&*iterator);
+
+	}CATCH_ALL_RETURN_false;
+	
+	return true;
+}
+
+bool XmlDataManager_Impl::addToCollection(const xqp_anyURI& uri, std::istream& stream)
+{
+	try{
+		Collection_t		colec;
+		colec = internal_store->getCollection(uri);
+		if(colec == NULL)
+			return false;
+		colec->addToCollection(stream);
+
+	}CATCH_ALL_RETURN_false;
+	
+	return true;
+}
+
 
 }//end namespace xqp

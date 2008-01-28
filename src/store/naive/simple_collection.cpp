@@ -53,7 +53,7 @@ Iterator_t SimpleCollection::getIterator(bool idsNeeded)
   Insert into the collection an xml document or fragment given as text via an
   input stream. Return the root node of the new xml document or fragment.
 ********************************************************************************/
-Item_t SimpleCollection::addToCollection(std::iostream& stream)
+Item_t SimpleCollection::addToCollection(std::istream& stream)
 {
   XmlLoader& loader = GET_STORE().getXmlLoader();
 

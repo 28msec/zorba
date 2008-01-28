@@ -57,7 +57,7 @@ public:
 
   Iterator_t getIterator(bool idsNeeded);
 
-  Item_t addToCollection(std::iostream& stream);
+  Item_t addToCollection(std::istream& stream);
   void addToCollection(const Item* node);
   void addToCollection(Iterator* nodes);
 

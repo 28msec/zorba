@@ -4,14 +4,11 @@
 
 #include "zorba/context/static_context_api.h"
 #include "zorba/context/dynamic_context_api.h"
-#include "zorba/store/api/collection.h"
 
 namespace xqp {
 
 class XQuery;
 typedef rchandle<XQuery>	XQuery_t;
-
-typedef rchandle<Collection> Collection_t;
 
 class XQuery : public Iterator
 {
@@ -52,12 +49,12 @@ public:
 		virtual bool SetVariable( xqp_string varname, xqp_string docUri, std::istream &is ) = 0;
 
 		// register documents available through fn:doc() in xquery
-		virtual bool AddAvailableDocument(xqp_string docURI,
-																			Item_t docitem) = 0;
+	//	virtual bool AddAvailableDocument(xqp_string docURI,
+	//																		Item_t docitem) = 0;
 		// register collections available through fn:collection() in xquery
 		// default collection has empty URI ""
-		virtual bool AddAvailableCollection(xqp_string collectionURI,
-																				Collection_t) = 0;
+	//	virtual bool AddAvailableCollection(xqp_string collectionURI,
+	//																			Collection_t) = 0;
 
 };    
 

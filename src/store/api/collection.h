@@ -51,7 +51,7 @@ public:
    * @param stream The stream providing the data to insert (e.g. from a file).
    * @return The root node of the xml document or fragment.
    */
-  virtual Item_t addToCollection(std::iostream& stream) = 0;
+  virtual Item_t addToCollection(std::istream& stream) = 0;
 
   /**
    * Inserts a node to the collection.

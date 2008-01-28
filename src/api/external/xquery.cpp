@@ -620,6 +620,7 @@ bool Zorba_XQueryBinary::SetVariable(
 
 
 ///register documents available through fn:doc() in xquery
+/*
 bool Zorba_XQueryBinary::AddAvailableDocument(xqp_string docURI,
                                                 Item_t docitem)
 {
@@ -637,9 +638,11 @@ bool Zorba_XQueryBinary::AddAvailableDocument(xqp_string docURI,
 	state_block->zorp->current_xquery = NULL;);
 	return false;
 }
+*/
 
 ///register collections available through fn:collection() in xquery
 ///default collection has empty URI ""
+/*
 bool Zorba_XQueryBinary::AddAvailableCollection(xqp_string collectionURI,
                                                   Collection_t collection)
 {
@@ -657,7 +660,7 @@ bool Zorba_XQueryBinary::AddAvailableCollection(xqp_string collectionURI,
 	state_block->zorp->current_xquery = NULL;);
 	return false;
 }
-
+*/
 
 XQuery_t Zorba_XQueryBinary::clone()
 {

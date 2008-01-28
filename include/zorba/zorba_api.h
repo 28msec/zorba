@@ -7,7 +7,6 @@
 
 
 #include "zorba/store/api/item.h"
-#include "zorba/store/api/collection.h"
 #include "zorba/store/api/store_api.h"
 #include "zorba/util/rchandle.h"
 #include "zorba/errors/errors.h"

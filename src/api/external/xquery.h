@@ -152,12 +152,12 @@ public:
 		virtual bool SetVariable( xqp_string varname, xqp_string docUri, std::istream &is );
 
 		// register documents available through fn:doc() in xquery
-		virtual bool AddAvailableDocument(xqp_string docURI,
-																			Item_t docitem);
+	//	virtual bool AddAvailableDocument(xqp_string docURI,
+	//																		Item_t docitem);
 		// register collections available through fn:collection() in xquery
 		// default collection has empty URI ""
-		virtual bool AddAvailableCollection(xqp_string collectionURI,
-																				Collection_t);
+	//	virtual bool AddAvailableCollection(xqp_string collectionURI,
+	//																			Collection_t);
 
 };
 

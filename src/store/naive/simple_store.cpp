@@ -174,6 +174,24 @@ Item_t SimpleStore::loadDocument(const xqp_string& uri, std::istream& stream)
   return rootNode;
 }
 
+Item_t SimpleStore::loadDocument(const xqp_string& uri, Item_t	 doc_item)
+{
+	if((doc_item == NULL) || (!doc_item->isNode()))
+		return NULL;
+
+  XmlTree_t tree;
+  bool found = theDocuments.get(uri, tree);
+
+  if (found)
+    return NULL;//error, already exists
+
+	//to be implemented
+
+  ZORBA_ASSERT(0);
+
+	return doc_item;
+}
+
 
 /*******************************************************************************
   Return an rchandle to the root node of the document corresponding to the given

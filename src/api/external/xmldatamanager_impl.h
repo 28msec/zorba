@@ -17,6 +17,7 @@ public:
 
   virtual Item_t loadDocument(const xqp_anyURI& uri, std::istream& stream);
   virtual Item_t loadDocument(const xqp_anyURI& local_file_uri);
+	virtual Item_t loadDocument(const xqp_anyURI& uri, Item_t item);  // error if uri exists or item is not a document
   virtual Item_t getDocument(const xqp_anyURI& uri);
   virtual void deleteDocument(const xqp_anyURI& uri);
 
@@ -25,10 +26,14 @@ public:
 
   /* ------------------------ Collection Management ---------------------------*/
 
-  virtual Collection_t createCollection(const xqp_anyURI& uri);
-  virtual Collection_t createCollection();
-  virtual Collection_t getCollection(const xqp_anyURI& uri);
-  virtual void deleteCollection(const xqp_anyURI& uri);
+
+	virtual bool createCollection(const xqp_anyURI& uri);  
+
+	virtual bool deleteCollection(const xqp_anyURI& uri); 
+
+	virtual bool addToCollection(const xqp_anyURI& uri, Iterator_t iterator);
+	virtual bool addToCollection(const xqp_anyURI& uri, std::istream& stream);
+
 
 };
 
