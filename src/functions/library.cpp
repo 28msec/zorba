@@ -793,6 +793,11 @@ DECL(fn_minutes_from_time,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "minutes-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
+
+DECL(fn_seconds_from_time,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "seconds-from-time"),
+      GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
 // end date time
 
 // begin debug functions

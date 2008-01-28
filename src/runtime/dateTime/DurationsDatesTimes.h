@@ -380,8 +380,25 @@ class FnMinutesFromTimeIteratorState : public  PlanIteratorState {
 
 NARY_ITER_STATE(FnMinutesFromTimeIterator, FnMinutesFromTimeIteratorState);
 /*end class FnMinutesFromTimeIterator */
+
+
 /*
-10.5.20 fn:seconds-from-time
+ * 10.5.20 fn:seconds-from-time
+ * --------------------*/
+ 
+/*begin class FnSecondsFromTimeIterator */
+class FnSecondsFromTimeIteratorState : public  PlanIteratorState {
+  public:
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
+};
+
+NARY_ITER_STATE(FnSecondsFromTimeIterator, FnSecondsFromTimeIteratorState);
+/*end class FnSecondsFromTimeIterator */
+/*
+
 10.5.21 fn:timezone-from-time
 
 10.6 Arithmetic Operators on Durations

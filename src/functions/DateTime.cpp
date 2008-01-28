@@ -684,5 +684,38 @@ fn_minutes_from_time::type_check (
 }
 /*end class fn_minutes_from_time*/
 
+/*
+ * 10.5.20 fn:seconds-from-time
+ * --------------------*/
+/*begin class fn_seconds_from_time*/
+fn_seconds_from_time::fn_seconds_from_time (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+fn_seconds_from_time::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnSecondsFromTimeIterator(loc, argv);
+}
+
+bool
+fn_seconds_from_time::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_seconds_from_time::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.TIME_TYPE_QUESTION;
+}
+/*end class fn_seconds_from_time*/
 } // namespace xqp
 

@@ -21,6 +21,7 @@
 
 namespace xqp
 {
+  const uint16_t NO_SECONDS_IN_MINUTE = 60;
 
 bool Time::parse_string(const xqpString& s, Time_t& t_t)
 {
@@ -73,6 +74,17 @@ int32_t Time::getHours() const
 int32_t Time::getMinutes() const
 {
   return the_time.minutes();
+}
+
+double Time::getSeconds() const
+{
+  double frac_sec = the_time.fractional_seconds();
+  while(frac_sec > 1)
+  {
+    frac_sec = frac_sec /10;
+  }
+  
+  return (the_time.seconds() % NO_SECONDS_IN_MINUTE) + frac_sec;
 }
 
 Time& Time::operator=(const Time_t& t_t)

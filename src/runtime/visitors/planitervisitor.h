@@ -140,8 +140,9 @@ namespace xqp
   class FnTimezoneFromDateIterator;
   class FnHoursFromTimeIterator;
   class FnMinutesFromTimeIterator;
+  class FnSecondsFromTimeIterator;
 
-      
+  
   /**
    * Visitor to visit a PlanIterator tree.
    */
@@ -537,6 +538,10 @@ namespace xqp
       
       virtual void beginVisit ( const FnMinutesFromTimeIterator&) = 0;
       virtual void endVisit ( const FnMinutesFromTimeIterator&) = 0;
+
+      virtual void beginVisit ( const FnSecondsFromTimeIterator&) = 0;
+      virtual void endVisit ( const FnSecondsFromTimeIterator&) = 0;
+
       
 
       virtual void beginVisit(const CtxVariableIterator&) = 0;
