@@ -33,6 +33,7 @@ public:
   const boost::posix_time::time_duration& get_time_duration() const;
 
   int32_t getHours() const;
+  int32_t getMinutes() const;
 
 protected:
   Time& operator=(const Time_t& t_t);

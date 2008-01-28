@@ -824,4 +824,45 @@ FnHoursFromTimeIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnHoursFromTimeIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.19 fn:minutes-from-time
+ *
+ * fn:minutes-from-time($arg as xs:time?) as xs:integer?
+ *_______________________________________________________________________*/
+
+/*begin class FnMinutesFromTimeIterator */
+void
+FnMinutesFromTimeIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnMinutesFromTimeIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
+Item_t 
+FnMinutesFromTimeIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChildren[0], planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getTimeValue()->getMinutes()), state );
+  }
+  STACK_END();
+}
+/*end class FnMinutesFromTimeIterator */
 }

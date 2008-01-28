@@ -364,9 +364,23 @@ class FnHoursFromTimeIteratorState : public  PlanIteratorState {
 
 NARY_ITER_STATE(FnHoursFromTimeIterator, FnHoursFromTimeIteratorState);
 /*end class FnHoursFromTimeIterator */
+
 /*
-10.5.18 fn:hours-from-time
-10.5.19 fn:minutes-from-time
+ * 10.5.19 fn:minutes-from-time
+ * --------------------*/
+ 
+/*begin class FnMinutesFromTimeIterator */
+class FnMinutesFromTimeIteratorState : public  PlanIteratorState {
+  public:
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
+};
+
+NARY_ITER_STATE(FnMinutesFromTimeIterator, FnMinutesFromTimeIteratorState);
+/*end class FnMinutesFromTimeIterator */
+/*
 10.5.20 fn:seconds-from-time
 10.5.21 fn:timezone-from-time
 

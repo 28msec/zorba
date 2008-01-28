@@ -70,6 +70,11 @@ int32_t Time::getHours() const
   return the_time.hours();
 }
 
+int32_t Time::getMinutes() const
+{
+  return the_time.minutes();
+}
+
 Time& Time::operator=(const Time_t& t_t)
 {
   the_time = t_t->the_time;

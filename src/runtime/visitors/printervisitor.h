@@ -383,8 +383,8 @@ public:
   virtual void beginVisit(const FnHoursFromTimeIterator&) ;
   virtual void endVisit(const FnHoursFromTimeIterator&);
 
-  
-  
+  virtual void beginVisit(const FnMinutesFromTimeIterator&) ;
+  virtual void endVisit(const FnMinutesFromTimeIterator&);
       
   virtual void beginVisit ( const FLWORIterator& ) ;
   virtual void endVisit ( const FLWORIterator& ) ;
