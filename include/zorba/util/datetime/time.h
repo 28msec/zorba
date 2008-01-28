@@ -14,8 +14,10 @@
 
 namespace xqp
 {
-class Time;
-typedef rchandle<Time> Time_t;
+  class xqpString;
+  
+  class Time;
+  typedef rchandle<Time> Time_t;
 
 class Time : public rcobject
 {
@@ -35,6 +37,7 @@ public:
   int32_t getHours() const;
   int32_t getMinutes() const;
   double getSeconds() const;
+  xqpString getTimezone() const;
 
 protected:
   Time& operator=(const Time_t& t_t);

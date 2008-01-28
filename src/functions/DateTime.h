@@ -298,7 +298,6 @@ class fn_datetime_ctor : public function
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
-
 /*
  * 10.5.19 fn:minutes-from-time
  *-----------------------*/
@@ -314,7 +313,6 @@ class fn_datetime_ctor : public function
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
-
 /*
  * 10.5.20 fn:seconds-from-time
  *-----------------------*/
@@ -323,6 +321,21 @@ class fn_datetime_ctor : public function
     public:
       fn_seconds_from_time(const signature&);
       ~fn_seconds_from_time() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.5.21 fn:timezone-from-time
+ *-----------------------*/
+  class fn_timezone_from_time : public function
+  {
+    public:
+      fn_timezone_from_time(const signature&);
+      ~fn_timezone_from_time() {}
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;

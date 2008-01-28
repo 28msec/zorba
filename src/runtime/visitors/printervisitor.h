@@ -388,8 +388,10 @@ public:
 
   virtual void beginVisit(const FnSecondsFromTimeIterator&) ;
   virtual void endVisit(const FnSecondsFromTimeIterator&);
+
+  virtual void beginVisit(const FnTimezoneFromTimeIterator&) ;
+  virtual void endVisit(const FnTimezoneFromTimeIterator&);
   
-      
   virtual void beginVisit ( const FLWORIterator& ) ;
   virtual void endVisit ( const FLWORIterator& ) ;
   

@@ -397,10 +397,24 @@ class FnSecondsFromTimeIteratorState : public  PlanIteratorState {
 
 NARY_ITER_STATE(FnSecondsFromTimeIterator, FnSecondsFromTimeIteratorState);
 /*end class FnSecondsFromTimeIterator */
+
 /*
+ * 10.5.21 fn:timezone-from-time
+ * --------------------*/
+ 
+/*begin class FnTimezoneFromTimeIterator */
+class FnTimezoneFromTimeIteratorState : public  PlanIteratorState {
+  public:
+    uint32_t theCurIter;
 
-10.5.21 fn:timezone-from-time
+    void init();
+    void reset();
+};
 
+NARY_ITER_STATE(FnTimezoneFromTimeIterator, FnTimezoneFromTimeIteratorState);
+/*end class FnTimezoneFromTimeIterator */
+
+/*
 10.6 Arithmetic Operators on Durations
 10.6.1 op:add-yearMonthDurations
 10.6.2 op:subtract-yearMonthDurations

@@ -907,4 +907,47 @@ FnSecondsFromTimeIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnSecondsFromTimeIterator */
+
+
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.21 fn:timezone-from-time
+ *
+ * fn:timezone-from-time($arg as xs:time?) as xs:dayTimeDuration?
+ *_______________________________________________________________________*/
+
+/*begin class FnTimezoneFromTimeIterator */
+void
+FnTimezoneFromTimeIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnTimezoneFromTimeIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
+Item_t 
+FnTimezoneFromTimeIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChildren[0], planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createDuration(itemArg->getTimeValue()->getTimezone()), state );
+  }
+  STACK_END();
+}
+/*end class FnTimezoneFromTimeIterator */
 }

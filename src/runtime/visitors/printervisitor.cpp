@@ -1091,7 +1091,15 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const FnSecondsFromTimeIterator& ) {
     thePrinter.endIter();
   }
-  
+
+  void PrinterVisitor::beginVisit ( const FnTimezoneFromTimeIterator& a )  {
+    thePrinter.startIter("FnTimezoneFromTimeIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const FnTimezoneFromTimeIterator& ) {
+    thePrinter.endIter();
+  }
   
   void PrinterVisitor::beginVisit ( const FLWORIterator& a ) {
     thePrinter.startIter("FLWORIterator");
