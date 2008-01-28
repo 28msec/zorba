@@ -376,7 +376,9 @@ public:
 
   virtual void beginVisit(const FnDayFromDateIterator&) ;
   virtual void endVisit(const FnDayFromDateIterator&);
-  
+
+  virtual void beginVisit(const FnTimezoneFromDateIterator&) ;
+  virtual void endVisit(const FnTimezoneFromDateIterator&);
   
       
   virtual void beginVisit ( const FLWORIterator& ) ;

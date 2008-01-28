@@ -106,6 +106,11 @@ int32_t Date::getDay() const
   return the_date.day();
 }
 
+xqpString Date::getTimezone() const
+{
+  return the_time_zone.toString();
+}
+
 int Date::compare(const Date& d) const
 {
   // TODO: handle timezone

@@ -778,6 +778,11 @@ DECL(fn_day_from_date,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "day-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
+
+DECL(fn_timezone_from_date,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "timezone-from-date"),
+      GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
 // end date time
 
 // begin debug functions

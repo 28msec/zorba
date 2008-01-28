@@ -17,6 +17,8 @@ namespace xqp
 class Date;
 typedef rchandle<Date> Date_t;
 
+class xqpString;
+
 class Date : public rcobject
 {
 public:
@@ -35,6 +37,7 @@ public:
   int32_t getYear() const;
   int32_t getMonth() const;
   int32_t getDay() const;
+  xqpString getTimezone() const;
 
 protected:
   Date& operator=(const Date_t& d_t);

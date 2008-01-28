@@ -334,7 +334,21 @@ NARY_ITER_STATE(FnDayFromDateIterator, FnDayFromDateIteratorState);
 /*end class FnDayFromDateIterator */
 
 /*
-10.5.17 fn:timezone-from-date
+ * 10.5.17 fn:timezone-from-date
+ * --------------------*/
+ 
+/*begin class FnTimezoneFromDateIterator */
+class FnTimezoneFromDateIteratorState : public  PlanIteratorState {
+  public:
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
+};
+
+NARY_ITER_STATE(FnTimezoneFromDateIterator, FnTimezoneFromDateIteratorState);
+/*end class FnTimezoneFromDateIterator */
+/*
 10.5.18 fn:hours-from-time
 10.5.19 fn:minutes-from-time
 10.5.20 fn:seconds-from-time

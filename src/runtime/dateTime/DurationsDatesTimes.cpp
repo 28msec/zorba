@@ -742,4 +742,45 @@ FnDayFromDateIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnDayFromDateIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.17 fn:timezone-from-date
+ *
+ * fn:timezone-from-date($arg as xs:date?) as xs:dayTimeDuration?
+ *_______________________________________________________________________*/
+
+/*begin class FnTimezoneFromDateIterator */
+void
+FnTimezoneFromDateIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnTimezoneFromDateIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
+Item_t 
+FnTimezoneFromDateIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChildren[0], planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createDuration(itemArg->getDateValue()->getTimezone()), state );
+  }
+  STACK_END();
+}
+/*end class FnTimezoneFromDateIterator */
 }

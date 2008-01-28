@@ -239,7 +239,7 @@ class fn_datetime_ctor : public function
   };
 
 /*
-  * 10.5.15 fn:month-from-date
+ * 10.5.15 fn:month-from-date
  *-----------------------*/
   class fn_month_from_date : public function
   {
@@ -254,13 +254,28 @@ class fn_datetime_ctor : public function
   };
 
 /*
-  * 10.5.16 fn:day-from-date
+ * 10.5.16 fn:day-from-date
  *-----------------------*/
   class fn_day_from_date : public function
   {
     public:
       fn_day_from_date(const signature&);
       ~fn_day_from_date() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.5.17 fn:timezone-from-date
+ *-----------------------*/
+  class fn_timezone_from_date : public function
+  {
+    public:
+      fn_timezone_from_date(const signature&);
+      ~fn_timezone_from_date() {}
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
