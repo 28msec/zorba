@@ -63,7 +63,9 @@ InstanceOfIterator::nextImpl(PlanState& planState)
   }
   else
   {
-    if (lQuantifier == TypeSystem::QUANT_ONE || lQuantifier == TypeSystem::QUANT_PLUS) {
+    if ((lQuantifier == TypeSystem::QUANT_ONE
+        || lQuantifier == TypeSystem::QUANT_PLUS)
+        && !GENV_TYPESYSTEM.is_equal(*GENV_TYPESYSTEM.EMPTY_TYPE, *theSequenceType)) {
       lResult = false;
     } else {
       lResult = true;
