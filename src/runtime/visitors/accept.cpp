@@ -116,20 +116,7 @@ namespace xqp {
   UNARY_ACCEPT(LocalNameFromQNameIterator);
   UNARY_ACCEPT(NamespaceUriFromQNameIterator);
   UNARY_ACCEPT(InScopePrefixesIterator);
-  UNARY_ACCEPT(FnYearsFromDurationIterator);
-  UNARY_ACCEPT(FnMonthsFromDurationIterator);
-  UNARY_ACCEPT(FnDaysFromDurationIterator);
-  UNARY_ACCEPT(FnHoursFromDurationIterator);
-  UNARY_ACCEPT(FnMinutesFromDurationIterator);
-  UNARY_ACCEPT(FnSecondsFromDurationIterator);
-  UNARY_ACCEPT(FnYearFromDatetimeIterator);
-  UNARY_ACCEPT(FnMonthFromDatetimeIterator);
-  UNARY_ACCEPT(FnDayFromDatetimeIterator);
-  UNARY_ACCEPT(FnHoursFromDatetimeIterator);
-  UNARY_ACCEPT(FnMinutesFromDatetimeIterator);
-  UNARY_ACCEPT(FnSecondsFromDatetimeIterator);
-  UNARY_ACCEPT(FnTimezoneFromDatetimeIterator);
-  
+
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);
   BINARY_ACCEPT(StringJoinIterator);

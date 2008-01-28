@@ -52,7 +52,7 @@ fn_years_from_duration::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnYearsFromDurationIterator(loc, argv[0]);
+  return new FnYearsFromDurationIterator(loc, argv);
 }
 
 bool
@@ -86,7 +86,7 @@ fn_months_from_duration::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnMonthsFromDurationIterator(loc, argv[0]);
+  return new FnMonthsFromDurationIterator(loc, argv);
 }
 
 bool
@@ -120,7 +120,7 @@ fn_days_from_duration::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnDaysFromDurationIterator(loc, argv[0]);
+  return new FnDaysFromDurationIterator(loc, argv);
 }
 
 bool
@@ -154,7 +154,7 @@ fn_hours_from_duration::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnHoursFromDurationIterator(loc, argv[0]);
+  return new FnHoursFromDurationIterator(loc, argv);
 }
 
 bool
@@ -188,7 +188,7 @@ fn_minutes_from_duration::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnMinutesFromDurationIterator(loc, argv[0]);
+  return new FnMinutesFromDurationIterator(loc, argv);
 }
 
 bool
@@ -222,7 +222,7 @@ fn_seconds_from_duration::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnSecondsFromDurationIterator(loc, argv[0]);
+  return new FnSecondsFromDurationIterator(loc, argv);
 }
 
 bool
@@ -256,7 +256,7 @@ fn_year_from_datetime::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnYearFromDatetimeIterator(loc, argv[0]);
+  return new FnYearFromDatetimeIterator(loc, argv);
 }
 
 bool
@@ -290,7 +290,7 @@ fn_month_from_datetime::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnMonthFromDatetimeIterator(loc, argv[0]);
+  return new FnMonthFromDatetimeIterator(loc, argv);
 }
 
 bool
@@ -324,7 +324,7 @@ fn_day_from_datetime::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnDayFromDatetimeIterator(loc, argv[0]);
+  return new FnDayFromDatetimeIterator(loc, argv);
 }
 
 bool
@@ -358,7 +358,7 @@ fn_hours_from_datetime::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnHoursFromDatetimeIterator(loc, argv[0]);
+  return new FnHoursFromDatetimeIterator(loc, argv);
 }
 
 bool
@@ -392,7 +392,7 @@ fn_minutes_from_datetime::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnMinutesFromDatetimeIterator(loc, argv[0]);
+  return new FnMinutesFromDatetimeIterator(loc, argv);
 }
 
 bool
@@ -426,7 +426,7 @@ fn_seconds_from_datetime::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnSecondsFromDatetimeIterator(loc, argv[0]);
+  return new FnSecondsFromDatetimeIterator(loc, argv);
 }
 
 bool
@@ -461,7 +461,7 @@ fn_timezone_from_datetime::operator() (
     const yy::location& loc,
     vector<PlanIter_t>& argv ) const
 {
-  return new FnTimezoneFromDatetimeIterator(loc, argv[0]);
+  return new FnTimezoneFromDatetimeIterator(loc, argv);
 }
 
 bool

@@ -95,6 +95,20 @@ OpDurationEqualIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnYearsFromDurationIterator */
+void
+FnYearsFromDurationIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnYearsFromDurationIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnYearsFromDurationIterator::nextImpl(PlanState& planState)
 {
@@ -103,7 +117,7 @@ FnYearsFromDurationIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -122,6 +136,20 @@ FnYearsFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnMonthsFromDurationIterator */
+void
+FnMonthsFromDurationIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnMonthsFromDurationIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnMonthsFromDurationIterator::nextImpl(PlanState& planState)
 {
@@ -130,7 +158,7 @@ FnMonthsFromDurationIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -149,6 +177,20 @@ FnMonthsFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnDaysFromDurationIterator */
+void
+FnDaysFromDurationIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnDaysFromDurationIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnDaysFromDurationIterator::nextImpl(PlanState& planState)
 {
@@ -157,7 +199,7 @@ FnDaysFromDurationIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -176,6 +218,20 @@ FnDaysFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnHoursFromDurationIterator */
+void
+FnHoursFromDurationIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnHoursFromDurationIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnHoursFromDurationIterator::nextImpl(PlanState& planState)
 {
@@ -184,7 +240,7 @@ FnHoursFromDurationIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -203,6 +259,20 @@ FnHoursFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnMinutesFromDurationIterator */
+void
+FnMinutesFromDurationIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnMinutesFromDurationIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
 {
@@ -211,7 +281,7 @@ FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -230,6 +300,20 @@ FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnSecondsFromDurationIterator */
+void
+FnSecondsFromDurationIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnSecondsFromDurationIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
 {
@@ -238,7 +322,7 @@ FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -257,6 +341,20 @@ FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnYearFromDatetimeIterator */
+void
+FnYearFromDatetimeIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnYearFromDatetimeIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
 {
@@ -265,7 +363,7 @@ FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -285,6 +383,20 @@ FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnMonthFromDatetimeIterator */
+void
+FnMonthFromDatetimeIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnMonthFromDatetimeIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnMonthFromDatetimeIterator::nextImpl(PlanState& planState)
 {
@@ -293,7 +405,7 @@ FnMonthFromDatetimeIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -312,6 +424,20 @@ FnMonthFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnDayFromDatetimeIterator */
+void
+FnDayFromDatetimeIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnDayFromDatetimeIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnDayFromDatetimeIterator::nextImpl(PlanState& planState)
 {
@@ -320,7 +446,7 @@ FnDayFromDatetimeIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -339,6 +465,20 @@ FnDayFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnHoursFromDatetimeIterator */
+void
+FnHoursFromDatetimeIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnHoursFromDatetimeIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnHoursFromDatetimeIterator::nextImpl(PlanState& planState)
 {
@@ -347,7 +487,7 @@ FnHoursFromDatetimeIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -366,6 +506,20 @@ FnHoursFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnMinutesFromDatetimeIterator */
+void
+FnMinutesFromDatetimeIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnMinutesFromDatetimeIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
 {
@@ -374,7 +528,7 @@ FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -393,15 +547,29 @@ FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnSecondsFromDatetimeIterator */
+void
+FnSecondsFromDatetimeIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnSecondsFromDatetimeIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
-    FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
+FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
@@ -420,6 +588,20 @@ Item_t
  *_______________________________________________________________________*/
 
 /*begin class FnTimezoneFromDatetimeIterator */
+void
+FnTimezoneFromDatetimeIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnTimezoneFromDatetimeIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
 Item_t 
 FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState)
 {
@@ -428,7 +610,7 @@ FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext(theChild, planState);
+  itemArg = consumeNext(theChildren[0], planState);
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();

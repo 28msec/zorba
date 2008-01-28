@@ -81,19 +81,15 @@ public:
  * --------------------*/
  
 /*begin class YearsFromDurationIterator */
-class FnYearsFromDurationIterator : public UnaryBaseIterator<FnYearsFromDurationIterator>
-{
+class FnYearsFromDurationIteratorState : public  PlanIteratorState {
   public:
-    FnYearsFromDurationIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnYearsFromDurationIterator>( loc, arg ){};
-  
-    ~FnYearsFromDurationIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnYearsFromDurationIterator, FnYearsFromDurationIteratorState);
 /*end class YearsFromDurationIterator */
 
 /*
@@ -101,19 +97,15 @@ class FnYearsFromDurationIterator : public UnaryBaseIterator<FnYearsFromDuration
  * --------------------*/
  
 /*begin class FnMonthsFromDurationIterator */
-class FnMonthsFromDurationIterator : public UnaryBaseIterator<FnMonthsFromDurationIterator>
-{
+class FnMonthsFromDurationIteratorState : public  PlanIteratorState {
   public:
-    FnMonthsFromDurationIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnMonthsFromDurationIterator>( loc, arg ){};
-  
-    ~FnMonthsFromDurationIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnMonthsFromDurationIterator, FnMonthsFromDurationIteratorState);
 /*end class FnMonthsFromDurationIterator */
 
 /*
@@ -121,38 +113,32 @@ class FnMonthsFromDurationIterator : public UnaryBaseIterator<FnMonthsFromDurati
  * --------------------*/
  
 /*begin class FnDaysFromDurationIterator */
-class FnDaysFromDurationIterator : public UnaryBaseIterator<FnDaysFromDurationIterator>
-{
+class FnDaysFromDurationIteratorState : public  PlanIteratorState {
   public:
-    FnDaysFromDurationIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnDaysFromDurationIterator>( loc, arg ){};
-  
-    ~FnDaysFromDurationIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnDaysFromDurationIterator, FnDaysFromDurationIteratorState);
+/*end class FnDaysFromDurationIterator */
+
 
 /*
  * 10.5.4 fn:hours-from-duration
  * --------------------*/
  
 /*begin class FnHoursFromDurationIterator */
-class FnHoursFromDurationIterator : public UnaryBaseIterator<FnHoursFromDurationIterator>
-{
+class FnHoursFromDurationIteratorState : public  PlanIteratorState {
   public:
-    FnHoursFromDurationIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnHoursFromDurationIterator>( loc, arg ){};
-  
-    ~FnHoursFromDurationIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnHoursFromDurationIterator, FnHoursFromDurationIteratorState);
 /*end class FnHoursFromDurationIterator */
 
 /*
@@ -160,19 +146,15 @@ class FnHoursFromDurationIterator : public UnaryBaseIterator<FnHoursFromDuration
  * --------------------*/
  
 /*begin class FnMinutesFromDurationIterator */
-class FnMinutesFromDurationIterator : public UnaryBaseIterator<FnMinutesFromDurationIterator>
-{
+class FnMinutesFromDurationIteratorState : public  PlanIteratorState {
   public:
-    FnMinutesFromDurationIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnMinutesFromDurationIterator>( loc, arg ){};
-  
-    ~FnMinutesFromDurationIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnMinutesFromDurationIterator, FnMinutesFromDurationIteratorState);
 /*end class FnMinutesFromDurationIterator */
 
 /*
@@ -180,19 +162,15 @@ class FnMinutesFromDurationIterator : public UnaryBaseIterator<FnMinutesFromDura
  * --------------------*/
  
 /*begin class FnSecondsFromDurationIterator */
-class FnSecondsFromDurationIterator : public UnaryBaseIterator<FnSecondsFromDurationIterator>
-{
+class FnSecondsFromDurationIteratorState : public  PlanIteratorState {
   public:
-    FnSecondsFromDurationIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnSecondsFromDurationIterator>( loc, arg ){};
-  
-    ~FnSecondsFromDurationIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnSecondsFromDurationIterator, FnSecondsFromDurationIteratorState);
 /*end class FnSecondsFromDurationIterator */
 
 /*
@@ -200,19 +178,15 @@ class FnSecondsFromDurationIterator : public UnaryBaseIterator<FnSecondsFromDura
  * --------------------*/
  
 /*begin class FnYearFromDatetimeIterator */
-class FnYearFromDatetimeIterator : public UnaryBaseIterator<FnYearFromDatetimeIterator>
-{
+class FnYearFromDatetimeIteratorState : public  PlanIteratorState {
   public:
-    FnYearFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnYearFromDatetimeIterator>( loc, arg ){};
-  
-    ~FnYearFromDatetimeIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnYearFromDatetimeIterator, FnYearFromDatetimeIteratorState);
 /*end class FnYearFromDatetimeIterator */
 
 /*
@@ -220,19 +194,15 @@ class FnYearFromDatetimeIterator : public UnaryBaseIterator<FnYearFromDatetimeIt
  * --------------------*/
  
 /*begin class FnMonthFromDatetimeIterator */
-class FnMonthFromDatetimeIterator : public UnaryBaseIterator<FnMonthFromDatetimeIterator>
-{
+class FnMonthFromDatetimeIteratorState : public  PlanIteratorState {
   public:
-    FnMonthFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnMonthFromDatetimeIterator>( loc, arg ){};
-  
-    ~FnMonthFromDatetimeIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnMonthFromDatetimeIterator, FnMonthFromDatetimeIteratorState);
 /*end class FnMonthFromDatetimeIterator */
 
 /*
@@ -240,19 +210,15 @@ class FnMonthFromDatetimeIterator : public UnaryBaseIterator<FnMonthFromDatetime
  * --------------------*/
  
 /*begin class FnDayFromDatetimeIterator */
-class FnDayFromDatetimeIterator : public UnaryBaseIterator<FnDayFromDatetimeIterator>
-{
+class FnDayFromDatetimeIteratorState : public  PlanIteratorState {
   public:
-    FnDayFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnDayFromDatetimeIterator>( loc, arg ){};
-  
-    ~FnDayFromDatetimeIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnDayFromDatetimeIterator, FnDayFromDatetimeIteratorState);
 /*end class FnDayFromDatetimeIterator */
 
 /*
@@ -260,19 +226,15 @@ class FnDayFromDatetimeIterator : public UnaryBaseIterator<FnDayFromDatetimeIter
  * --------------------*/
  
 /*begin class FnHoursFromDatetimeIterator */
-class FnHoursFromDatetimeIterator : public UnaryBaseIterator<FnHoursFromDatetimeIterator>
-{
+class FnHoursFromDatetimeIteratorState : public  PlanIteratorState {
   public:
-    FnHoursFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnHoursFromDatetimeIterator>( loc, arg ){};
-  
-    ~FnHoursFromDatetimeIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnHoursFromDatetimeIterator, FnHoursFromDatetimeIteratorState);
 /*end class FnHoursFromDatetimeIterator */
 
 /*
@@ -280,19 +242,15 @@ class FnHoursFromDatetimeIterator : public UnaryBaseIterator<FnHoursFromDatetime
  * --------------------*/
  
 /*begin class FnMinutesFromDatetimeIterator */
-class FnMinutesFromDatetimeIterator : public UnaryBaseIterator<FnMinutesFromDatetimeIterator>
-{
+class FnMinutesFromDatetimeIteratorState : public  PlanIteratorState {
   public:
-    FnMinutesFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnMinutesFromDatetimeIterator>( loc, arg ){};
-  
-    ~FnMinutesFromDatetimeIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnMinutesFromDatetimeIterator, FnMinutesFromDatetimeIteratorState);
 /*end class FnMinutesFromDatetimeIterator */
 
 /*
@@ -300,19 +258,15 @@ class FnMinutesFromDatetimeIterator : public UnaryBaseIterator<FnMinutesFromDate
  * --------------------*/
  
 /*begin class FnSecondsFromDatetimeIterator */
-class FnSecondsFromDatetimeIterator : public UnaryBaseIterator<FnSecondsFromDatetimeIterator>
-{
+class FnSecondsFromDatetimeIteratorState : public  PlanIteratorState {
   public:
-    FnSecondsFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnSecondsFromDatetimeIterator>( loc, arg ){};
-  
-    ~FnSecondsFromDatetimeIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnSecondsFromDatetimeIterator, FnSecondsFromDatetimeIteratorState);
 /*end class FnSecondsFromDatetimeIterator */
 
 /*
@@ -320,19 +274,15 @@ class FnSecondsFromDatetimeIterator : public UnaryBaseIterator<FnSecondsFromDate
  * --------------------*/
  
 /*begin class FnTimezoneFromDatetimeIterator */
-class FnTimezoneFromDatetimeIterator : public UnaryBaseIterator<FnTimezoneFromDatetimeIterator>
-{
+class FnTimezoneFromDatetimeIteratorState : public  PlanIteratorState {
   public:
-    FnTimezoneFromDatetimeIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<FnTimezoneFromDatetimeIterator>( loc, arg ){};
-  
-    ~FnTimezoneFromDatetimeIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
-    
-    virtual void accept(PlanIterVisitor&) const;
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
 };
+
+NARY_ITER_STATE(FnTimezoneFromDatetimeIterator, FnTimezoneFromDatetimeIteratorState);
 /*end class FnTimezoneFromDatetimeIterator */
 
 
