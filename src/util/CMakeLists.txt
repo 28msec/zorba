@@ -8,13 +8,13 @@ SET(UTIL_SRCS
     file.cpp
     tokenbuf.cpp
     rwlock.cpp
-    math_helper.cpp
     properties.cpp
     numconversions.cpp)
 
 ADD_SRC_SUBFOLDER(UTIL_SRCS utf8 UTF8_SRCS)
 ADD_SRC_SUBFOLDER(UTIL_SRCS web WEB_SRCS)
 ADD_SRC_SUBFOLDER(UTIL_SRCS datetime DATETIME_SRCS)
+ADD_SRC_SUBFOLDER(UTIL_SRCS bignum BIGNUM_SRCS)
 
 IF (MSVC)
 	LIST(APPEND UTIL_SRCS win32/win_pthread.cpp)

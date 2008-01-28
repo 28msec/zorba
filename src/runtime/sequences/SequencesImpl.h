@@ -130,81 +130,31 @@ protected:
 //15.1.7 fn:insert-before
 // Returns a new sequence constructed from the value of the first parameter with the value of third parameter inserted 
 // at the position specified by the value of the second parameter. 
-class FnInsertBeforeIterator : public NaryBaseIterator<FnInsertBeforeIterator>
-{
+class FnInsertBeforeIteratorState : public PlanIteratorState { 
+public:  
+  xqp_integer theCurrentPos; // the current position in the sequence
+  xqp_integer thePosition;
+  Item_t      theTargetItem;
 
-public:
-  FnInsertBeforeIterator(yy::location loc, vector<PlanIter_t>& aChildren);
- 
-  ~FnInsertBeforeIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
- 
-  void 
-  resetImpl(PlanState& planState);
-  
-  void 
-  releaseResourcesImpl(PlanState& planState);
- 
-  virtual void 
-  accept(PlanIterVisitor&) const;
-
-  virtual uint32_t 
-  getStateSize() const { return sizeof ( FnInsertBeforeIteratorState ); }
- 
-protected:
-  class FnInsertBeforeIteratorState : public PlanIteratorState {
-  public:  
-    xqp_integer theCurrentPos; // the current position in the sequence
-    xqp_integer thePosition;
-    Item_t      theTargetItem;
-  
-    void init();
-    void reset();
-    
-  };
-  
+  void init();
+  void reset();
 };
-// 
+
+NARY_ITER_STATE(FnInsertBeforeIterator, FnInsertBeforeIteratorState);
 
 //15.1.8 fn:remove
 // Returns a new sequence constructed from the value of aTarget with the item at the position specified by the 
 // value of aPosition removed.
-class FnRemoveIterator : public BinaryBaseIterator<FnRemoveIterator>
-{
+class FnRemoveIteratorState : public PlanIteratorState {
+public:  
+  xqp_integer theCurrentPos; // the current position in the sequence
+  xqp_integer thePosition; // the position to delete
 
-public:
-  FnRemoveIterator(yy::location loc, PlanIter_t& aTarget, PlanIter_t& aPosition);
- 
-  ~FnRemoveIterator();
-
-  Item_t 
-  nextImpl(PlanState& planState);
- 
-  void 
-  resetImpl(PlanState& planState);
-  
-  void 
-  releaseResourcesImpl(PlanState& planState);
- 
-  virtual void 
-  accept(PlanIterVisitor&) const;
-
-  virtual uint32_t 
-  getStateSize() const { return sizeof ( FnRemoveIteratorState ); }
- 
-protected:
-  class FnRemoveIteratorState : public PlanIteratorState {
-  public:  
-    xqp_integer theCurrentPos; // the current position in the sequence
-    xqp_integer thePosition; // the position to delete
-  
-    void init();
-    void reset();
-  };
-  
+  void init();
+  void reset();
 };
+
+NARY_ITER_STATE(FnRemoveIterator, FnRemoveIteratorState);
 
 
 //15.1.9 fn:reverse
@@ -221,46 +171,18 @@ NARY_ITER_STATE(FnReverseIterator, FnReverseIteratorState);
 //15.1.10 fn:subsequence
 // Returns the contiguous sequence of items in the value of $sourceSeq beginning at the position indicated by the value 
 // of $startingLoc and continuing for the number of items indicated by the value of $length.
-class FnSubsequenceIterator : public NaryBaseIterator<FnSubsequenceIterator>
-{
+class FnSubsequenceIteratorState : public PlanIteratorState {
 public:
-  FnSubsequenceIterator(yy::location loc, vector<PlanIter_t>& aChildren);
- 
-  ~FnSubsequenceIterator();
+  xqp_double  theStartingLoc; // second argument (startingLoc)
+  xqp_double  theLength; // third optional argument (length)
 
-  Item_t 
-  nextImpl(PlanState& planState);
- 
-  void 
-  resetImpl(PlanState& planState);
-  
-  void 
-  releaseResourcesImpl(PlanState& planState);
- 
-  virtual void 
-  accept(PlanIterVisitor&) const;
+  xqp_integer theCurrentPos; // the current position in the sequence
+  xqp_integer theCurrentLength; // used for returning a specific number of items
 
-  virtual uint32_t 
-  getStateSize() const { return sizeof ( FnSubsequenceIteratorState ); }
- 
-  void 
-  setOffset(PlanState& planState, uint32_t& offset);  
- 
- 
-protected:
-  class FnSubsequenceIteratorState : public PlanIteratorState {
-  public:
-    xqp_double  theStartingLoc; // second argument (startingLoc)
-    xqp_double  theLength; // third optional argument (length)
-
-    xqp_integer theCurrentPos; // the current position in the sequence
-    xqp_integer theCurrentLength; // used for returning a specific number of items
-  
-    void init();
-    void reset();  
-  };
-  
+  void init();
+  void reset();  
 };
+NARY_ITER_STATE(FnSubsequenceIterator, FnSubsequenceIteratorState);
 
 //15.1.11 fn:unordered
 // no need to implement an operator for his
@@ -320,33 +242,18 @@ NARY_ITER(FnSumIterator);
   |_______________________________________________________________________*/
 
 //15.5.1 op:to
-class OpToIterator : public BinaryBaseIterator<OpToIterator> {
+class OpToIteratorState : public PlanIteratorState {
 public:
-  OpToIterator(
-  yy::location loc,
-  PlanIter_t& arg1, PlanIter_t& arg2);
-  
-  virtual ~OpToIterator();
+  xqp_integer theCurInt;
+  xqp_integer theFirstVal;
+  xqp_integer theLastVal;
 
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
+  void init();
+  void reset();
   
-  virtual uint32_t getStateSize() const { return sizeof(OpToIteratorState); }
-  
-  virtual void accept(PlanIterVisitor&) const;
-  
-protected:
-  class OpToIteratorState : public PlanIteratorState {
-  public:
-    xqp_integer theCurInt;
-    xqp_integer theFirstVal;
-    xqp_integer theLastVal;
-  
-    void init();
-    void reset();
-    
-  };
 };
+
+NARY_ITER_STATE(OpToIterator, OpToIteratorState);
 
 //15.5.2 fn:id
 

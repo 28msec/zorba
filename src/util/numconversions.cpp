@@ -1,9 +1,7 @@
 #include <boost/lexical_cast.hpp>
 #include <sstream>
 #include <limits>
-#include <string>
 #include "util/numconversions.h"
-#include <iostream> 
 #include "zorba/common.h"
 #include "util/Assert.h"
 
@@ -55,31 +53,98 @@ namespace xqp {
       }
   }
 
-  bool NumConversions::strToInteger(const xqpString& aStr, xqp_integer& aInteger){
-    try {
-      aInteger = boost::lexical_cast<xqp_integer>(aStr.c_str());
-      return true;
-    } catch (boost::bad_lexical_cast &) {
+  bool NumConversions::starCharToInteger(const char* aCharStar, xqp_integer& aInteger) {
+    // correctness check
+    const char* lCur = aCharStar;
+    bool lGotSign = false;
+    bool lStop = false;
+    bool lGotDigit = false;
+    while (*lCur != '\0' && !lStop) {
+      char lTmp = *lCur++;
+      switch(lTmp) {
+        case '+': 
+          if (lGotSign || lGotDigit) {
+            lStop = true;
+          } else {
+            lGotSign = true;
+          }
+          break;
+        case '-':
+          if(lGotSign || lGotDigit) {
+            lStop = true;
+          } else {
+            lGotSign = true;
+          }
+          break;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9': 
+          lGotDigit = true;
+          break;
+        default:
+          lStop = true;
+          break;
+      }
+    }
+    if (lStop) {
       return false;
+    } else {
+      aInteger = aCharStar;
+      return true;
     }
   }
+
+  bool NumConversions::strToInteger(const xqpString& aStr, xqp_integer& aInteger){
+    return starCharToInteger(aStr.c_str(), aInteger);
+  }
   xqpString NumConversions::integerToStr(xqp_integer aInteger){
-    return boost::lexical_cast<std::string>(aInteger);
+    return aInteger.toString();
   }
   bool NumConversions::strToUInteger(const xqpString& aStr, xqp_uinteger& aUInteger){
-    try {
-      aUInteger = boost::lexical_cast<xqp_uinteger>(aStr.c_str());
-      return true;
-    } catch (boost::bad_lexical_cast &) {
+    const char* lStarChar = aStr.c_str();
+
+    // correctness check
+    const char* lCur = lStarChar;
+    bool lStop = false;
+    while (*lCur != '\0' && !lStop) {
+      char lTmp = *lCur++;
+      switch(lTmp) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9': 
+          break;
+        default:
+          lStop = true;
+          break;
+      }
+    }
+    if (lStop) {
       return false;
+    } else {
+      aUInteger = lStarChar;
+      return true;
     }
   }
   xqpString NumConversions::uintegerToStr(xqp_uinteger aUInteger){
-    return boost::lexical_cast<std::string>(aUInteger);
+    return aUInteger.toString();
   }
-  bool NumConversions::starCharToInt(const char* aStarChar, xqp_int& aInt){
+  bool NumConversions::starCharToInt(const char* aCharStar, xqp_int& aInt){
     try {
-      aInt =  boost::lexical_cast<xqp_int>(aStarChar);
+      aInt =  boost::lexical_cast<xqp_int>(aCharStar);
       return true;
     } catch (boost::bad_lexical_cast &) {
       return false;
@@ -158,19 +223,66 @@ namespace xqp {
   xqpString NumConversions::ushortToStr(xqp_ushort aUShort){
     return boost::lexical_cast<std::string>(aUShort);
   }
-  bool NumConversions::starCharToDecimal(const char* aStarChar, xqp_decimal& aDecimal){
-    try {
-      aDecimal = boost::lexical_cast<xqp_decimal>(aStarChar);
-      return true;
-    } catch (boost::bad_lexical_cast &) {
+  bool NumConversions::starCharToDecimal(const char* aCharStar, xqp_decimal& aDecimal){
+    // correctness check
+    const char* lCur = aCharStar;
+    bool lGotPoint = false;
+    bool lGotSign = false;
+    bool lStop = false;
+    bool lGotDigit = false;
+    while (*lCur != '\0' && !lStop) {
+      char lTmp = *lCur++;
+      switch(lTmp) {
+        case '+': 
+          if (lGotSign || lGotDigit || lGotPoint) {
+            lStop = true;
+          } else {
+            lGotSign = true;
+          }
+          break;
+        case '-':
+          if(lGotSign || lGotDigit || lGotPoint) {
+            lStop = true;
+          } else {
+            lGotSign = true;
+          }
+          break;
+        case '.': 
+          if (lGotPoint) {
+            lStop = true;
+          } else {
+            lGotPoint = true;
+          }
+          break;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9': 
+          lGotDigit = true;
+          break;
+        default:
+          lStop = true;
+          break;
+      }
+    }
+    if (lStop) {
       return false;
+    } else {
+      aDecimal = aCharStar;
+      return true;
     }
   }
   bool NumConversions::strToDecimal(const xqpString& aStr, xqp_decimal& aDecimal) {
     return starCharToDecimal(aStr.c_str(), aDecimal);
   }
   xqpString NumConversions::decimalToStr(xqp_decimal aDecimal){
-    return boost::lexical_cast<std::string>(aDecimal);
+    return aDecimal.toString();
   }
 
   bool NumConversions::starCharToFloat(const char* aCharStar, xqp_float& aFloat) {

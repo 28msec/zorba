@@ -252,7 +252,7 @@ Item_t IntItemNaive::getEBV() const
 /*******************************************************************************
   class IntegerItemNaive
 ********************************************************************************/
-long double IntegerItemNaive::getDecimalValue() const
+xqp_decimal IntegerItemNaive::getDecimalValue() const
 {
   return static_cast<xqp_decimal> ( theValue );
 }

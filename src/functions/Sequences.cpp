@@ -243,7 +243,7 @@ PlanIter_t fn_remove::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new FnRemoveIterator(loc, argv[0], argv[1]);
+  return new FnRemoveIterator(loc, argv);
 }
 
 bool fn_remove::validate_args(
@@ -543,7 +543,7 @@ PlanIter_t op_to::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new OpToIterator(loc, argv[0], argv[1]);
+  return new OpToIterator(loc, argv);
 }
 
 bool op_to::validate_args(

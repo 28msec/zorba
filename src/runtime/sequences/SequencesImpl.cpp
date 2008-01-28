@@ -250,13 +250,6 @@ FnDistinctValuesIterator::FnDistinctValuesIteratorState::reset() {
 
 
 //15.1.7 fn:insert-before
-FnInsertBeforeIterator::FnInsertBeforeIterator(yy::location loc,
-                                              vector<PlanIter_t>& aChildren)
-  : NaryBaseIterator<FnInsertBeforeIterator>(loc, aChildren)
-{}
-
-FnInsertBeforeIterator::~FnInsertBeforeIterator(){}
-
 Item_t 
 FnInsertBeforeIterator::nextImpl(PlanState& planState) {
  Item_t lInsertItem;
@@ -300,30 +293,8 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) {
   STACK_END();
 }
 
-void 
-FnInsertBeforeIterator::resetImpl(PlanState& planState) {
- NaryBaseIterator<FnInsertBeforeIterator>::resetImpl(planState);
-
- FnInsertBeforeIteratorState* state;
- GET_STATE(FnInsertBeforeIteratorState, state, planState);
- state->reset();
-}
-
-void 
-FnInsertBeforeIterator::releaseResourcesImpl(PlanState& planState)
-{
-  NaryBaseIterator<FnInsertBeforeIterator>::releaseResourcesImpl(planState);
-  
-  FnInsertBeforeIteratorState* state;
-  GET_STATE(FnInsertBeforeIteratorState, state, planState);
-  
-  // do we need a releaseResouces function in the state or is it always the same as reset?
-  state->reset(); 
-}
-
-
 void
-FnInsertBeforeIterator::FnInsertBeforeIteratorState::init() {
+FnInsertBeforeIteratorState::init() {
  PlanIteratorState::init();
  theCurrentPos = 0;
  thePosition = 0;
@@ -331,7 +302,7 @@ FnInsertBeforeIterator::FnInsertBeforeIteratorState::init() {
 }
 
 void
-FnInsertBeforeIterator::FnInsertBeforeIteratorState::reset() {
+FnInsertBeforeIteratorState::reset() {
  PlanIteratorState::reset();
  theCurrentPos = 0;
  thePosition = 0; 
@@ -341,14 +312,6 @@ FnInsertBeforeIterator::FnInsertBeforeIteratorState::reset() {
 
 //15.1.8 fn:remove
 // FIXME this iterator has three arguments (i.e. the collaction as #3)
-FnRemoveIterator::FnRemoveIterator(yy::location loc,
-                                    PlanIter_t& arg1,
-                                    PlanIter_t& arg2)
- : BinaryBaseIterator<FnRemoveIterator> ( loc, arg1, arg2 )
-{ }
-
-FnRemoveIterator::~FnRemoveIterator(){}
-
 Item_t 
 FnRemoveIterator::nextImpl(PlanState& planState) {
   Item_t lSequenceItem;
@@ -357,7 +320,7 @@ FnRemoveIterator::nextImpl(PlanState& planState) {
   FnRemoveIteratorState* state;
   DEFAULT_STACK_INIT(FnRemoveIteratorState, state, planState);
   
-  lPositionItem = consumeNext(theChild1, planState);
+  lPositionItem = consumeNext(theChildren[1], planState);
   if ( lPositionItem == NULL ) 
   {
     ZORBA_ERROR_ALERT(
@@ -368,7 +331,7 @@ FnRemoveIterator::nextImpl(PlanState& planState) {
 
   state->thePosition = lPositionItem->getIntegerValue();
 
-  while ( (lSequenceItem = consumeNext(theChild0, planState)) != NULL )
+  while ( (lSequenceItem = consumeNext(theChildren[0], planState)) != NULL )
   {
     // inc the position in the sequence; do it at the beginning of the loop because fn:remove starts with one
     ++state->theCurrentPos; 
@@ -382,42 +345,19 @@ FnRemoveIterator::nextImpl(PlanState& planState) {
   STACK_END();
 }
 
-
-void 
-FnRemoveIterator::releaseResourcesImpl(PlanState& planState)
-{
-  BinaryBaseIterator<FnRemoveIterator>::releaseResourcesImpl(planState);
-  
-  FnRemoveIteratorState* state;
-  GET_STATE(FnRemoveIteratorState, state, planState);
-
-  state->reset(); 
-}
-
-void 
-FnRemoveIterator::resetImpl(PlanState& planState)
-{
-  BinaryBaseIterator<FnRemoveIterator>::resetImpl(planState);
-
-  FnRemoveIteratorState* state;
-  GET_STATE(FnRemoveIteratorState, state, planState);
-  state->reset();
-}
-
-
 void
-FnRemoveIterator::FnRemoveIteratorState::init() 
+FnRemoveIteratorState::init() 
 {
- PlanIteratorState::init();
- theCurrentPos = 0;
- thePosition   = 0;
+  PlanIteratorState::init();
+  theCurrentPos = 0;
+  thePosition   = 0;
 }
 
 void
-FnRemoveIterator::FnRemoveIteratorState::reset() {
- PlanIteratorState::reset();
- theCurrentPos = 0;
- thePosition   = 0;
+FnRemoveIteratorState::reset() {
+  PlanIteratorState::reset();
+  theCurrentPos = 0;
+  thePosition = 0;
 }
 
 
@@ -454,13 +394,6 @@ void FnReverseIteratorState::reset()
 }
 
 //15.1.10 fn:subsequence
-FnSubsequenceIterator::FnSubsequenceIterator(yy::location loc,
-                                            vector<PlanIter_t>& args)
- : NaryBaseIterator<FnSubsequenceIterator> ( loc, args )
-{ }
-
-FnSubsequenceIterator::~FnSubsequenceIterator(){}
-
 Item_t 
 FnSubsequenceIterator::nextImpl(PlanState& planState) {
   Item_t lSequence;
@@ -512,40 +445,8 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) {
   STACK_END();
 }
 
-
-void 
-FnSubsequenceIterator::releaseResourcesImpl(PlanState& planState)
-{
-  NaryBaseIterator<FnSubsequenceIterator>::releaseResourcesImpl(planState);
-  
-  FnSubsequenceIteratorState* state;
-  GET_STATE(FnSubsequenceIteratorState, state, planState);
-  
-  state->reset(); 
-}
-
-void 
-FnSubsequenceIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnSubsequenceIterator>::setOffset(planState, offset);
-
-  FnSubsequenceIteratorState* state = 
-    new (planState.block + stateOffset) FnSubsequenceIteratorState;
-}
-
-void 
-FnSubsequenceIterator::resetImpl(PlanState& planState)
-{
-  NaryBaseIterator<FnSubsequenceIterator>::resetImpl(planState);
-
-  FnSubsequenceIteratorState* state;
-  GET_STATE(FnSubsequenceIteratorState, state, planState);
-  state->reset();
-}
-
-
 void
-FnSubsequenceIterator::FnSubsequenceIteratorState::init() 
+FnSubsequenceIteratorState::init() 
 {
  PlanIteratorState::init();
  theStartingLoc = 0;
@@ -555,7 +456,7 @@ FnSubsequenceIterator::FnSubsequenceIteratorState::init()
 }
 
 void
-FnSubsequenceIterator::FnSubsequenceIteratorState::reset() 
+FnSubsequenceIteratorState::reset() 
 {
  PlanIteratorState::reset();
  theStartingLoc = 0;
@@ -827,15 +728,6 @@ FnSumIterator::nextImpl(PlanState& planState) {
 |_______________________________________________________________________*/
 
 //15.5.1 op:to
-OpToIterator::OpToIterator(
-  yy::location loc,
-  PlanIter_t& arg1, PlanIter_t& arg2) 
-:
-  BinaryBaseIterator<OpToIterator>(loc, arg1, arg2)
-{}
-
-OpToIterator::~OpToIterator(){}
-
 Item_t 
 OpToIterator::nextImpl(PlanState& planState) {
   Item_t lItem;
@@ -843,7 +735,7 @@ OpToIterator::nextImpl(PlanState& planState) {
   OpToIteratorState* state;
   DEFAULT_STACK_INIT(OpToIteratorState, state, planState);
 
-  lItem = consumeNext(theChild0, planState);
+  lItem = consumeNext(theChildren[0], planState);
   if (lItem == NULL)
   {
     ZorbaAlertFactory::error_alert (ZorbaError::XPTY0004,
@@ -852,7 +744,7 @@ OpToIterator::nextImpl(PlanState& planState) {
   }
   state->theFirstVal = lItem->getIntegerValue();
 
-  lItem = consumeNext(theChild1, planState);
+  lItem = consumeNext(theChildren[1], planState);
   if (lItem == NULL)
   {
     ZorbaAlertFactory::error_alert (ZorbaError::XPTY0004, false,
@@ -876,17 +768,8 @@ OpToIterator::nextImpl(PlanState& planState) {
   STACK_END();
 }
 
-void 
-OpToIterator::resetImpl(PlanState& planState) {
-  BinaryBaseIterator<OpToIterator>::resetImpl(planState);
-
-  OpToIteratorState* state;
-  GET_STATE(OpToIteratorState, state, planState);
-  state->reset();
-}
-
 void
-OpToIterator::OpToIteratorState::init() {
+OpToIteratorState::init() {
   PlanIteratorState::init();
   theCurInt = 0;
   theFirstVal = 0;
@@ -894,7 +777,7 @@ OpToIterator::OpToIteratorState::init() {
 }
 
 void
-OpToIterator::OpToIteratorState::reset() {
+OpToIteratorState::reset() {
   PlanIteratorState::reset();
   theCurInt = 0;
   theFirstVal = 0;

@@ -104,6 +104,9 @@ IF (NOT MSVC)
     SET(requiredlibs ${requiredlibs} pthread)
 ENDIF (NOT MSVC)
 
+# is located in external/mapm
+SET(requiredlibs ${requiredlibs} mapm)  
+
 ##############################################################################################################
 # Custom user-defined settings
 
@@ -122,20 +125,7 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include/zorba)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
-
-# some compiler flags that should always be used in order to force a good programming style
-IF (MSVC)
-	ADD_DEFINITIONS(${DEFINITIONS})
-ELSE (MSVC)
-    GET_FILENAME_COMPONENT(CXX_EXE ${CMAKE_CXX_COMPILER} NAME)
-    IF ("icpc" STREQUAL ${CXX_EXE}) # intel cxx compiler
-            MESSAGE(STATUS "it seems we are using the intel cxx compiler")
-            ADD_DEFINITIONS(-D_DEBUG -DORBA_USE_PTHREAD_LIBRARY -wd981 -Wall)
-    ELSE ("icpc" STREQUAL ${CXX_EXE}) # g++ compiler
-            ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual ${DEFINITIONS})
-    ENDIF ("icpc" STREQUAL ${CXX_EXE})
-ENDIF (MSVC)
-
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external)
 
 INCLUDE(CMakeConfiguration.txt)
 
@@ -145,6 +135,7 @@ INCLUDE(CMakeConfiguration.txt)
 INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
 
 # Tell CMake to process the sub-directories
+ADD_SUBDIRECTORY(external)
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)

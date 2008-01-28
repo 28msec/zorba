@@ -47,6 +47,7 @@
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_parser.hpp"
 #include "zorba/util/properties.h"
+#include "types/representations.h"
 
 #define TRY_STR_LIT( ttype, put, yytext, yyleng )                       \
   do {                                                                  \
@@ -520,7 +521,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to OPERATOR */
 	/* ---------------------- */
 {IntegerLiteral}	{
-	yylval->ival = driver.symtab.intval(yytext, yyleng);
+	yylval->ival = driver.symtab.integerval(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
 	return token::INTEGER_LITERAL;
 }

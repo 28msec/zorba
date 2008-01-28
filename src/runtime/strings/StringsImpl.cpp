@@ -14,8 +14,14 @@
 #include "runtime/strings/StringsImpl.h"
 #include "system/zorba.h"
 #include "util/utf8/utf8.h"
-#include "util/math_helper.h"
 #include "util/Assert.h"
+#include "util/numconversions.h"
+
+// FIXME THIS IS A HACK! THIS MUST BE FIXED!!
+#if WIN32 && !UNIX
+# define isnan _isnan
+# define finite _finite
+#endif
 
 using namespace std;
 namespace xqp {
@@ -45,7 +51,15 @@ CodepointsToStringIterator::nextImpl(PlanState& planState){
     item = consumeNext ( theChild, planState );
     if ( item != NULL ){
       item = item->getAtomizationValue();
-      resStr += (uint32_t)item->getIntegerValue();
+      {
+        xqp_string lUtf8Code = item->getIntegerValue().toString();
+        uint32_t lCode;
+        if (NumConversions::strToUInt(lUtf8Code, lCode)) {
+          resStr += lCode;
+        } else {
+          // TODO errorhandling
+        }
+      }
     }
     else{
       resItem = Zorba::getItemFactory()->createString(resStr);
@@ -445,7 +459,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
           {
             tmpStart = item0->getStringValue().length();
             if( finite(item1->getDoubleValue()) != 0 )
-              tmpStart = (int32_t)round(item1->getDoubleValue());
+              tmpStart = (int32_t)Decimal::round(item1->getDoubleValue());
             if( theChildren.size() == 2 )
             {
               resStr = item0->getStringValue().substr(tmpStart-1);
@@ -459,7 +473,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
                 if(isnan(item2->getDoubleValue()) == 0)
                 {
                   if( finite(item2->getDoubleValue()) != 0 )
-                    tmpLen = (int32_t)round(item2->getDoubleValue());
+                    tmpLen = (int32_t)Decimal::round(item2->getDoubleValue());
                   if( isnan(item1->getDoubleValue() + item2->getDoubleValue()) == 0)
                   {
                     if(tmpLen >= 0)
@@ -1282,3 +1296,9 @@ SubstringAfterIterator::nextImpl(PlanState& planState) {
 }
 /*end class SubstringAfterIterator*/
 } /* namespace xqp */
+
+// FIXME THIS IS A HACK! THIS MUST BE FIXED!!
+#if WIN32 && !UNIX
+# undef isnan
+# undef finite
+#endif

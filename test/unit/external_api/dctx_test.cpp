@@ -107,15 +107,15 @@ int test_api_dynamic_context(const char *result_file_name)
 		unsigned int		j;
 		for(j=0;j<sizeof(values)/sizeof(long long);j++)
 		{
-			if(dctx1->SetVariableAsInteger("external_vars:ix", values[j], int_types[i].type))
-			{
-				result_file << "SetVariables succeeded for "; 
-			}
-			else
-			{
-				result_file << "SetVariables FAILED for ";
-			}
-			result_file << hex << values[j] << " and type [" << dec << i << "] " << int_types[i].descr << endl;
+//			if(dctx1->SetVariableAsInteger("external_vars:ix", values[j], int_types[i].type))
+//			{
+//				result_file << "SetVariables succeeded for "; 
+//			}
+//		else
+//		{
+//			result_file << "SetVariables FAILED for ";
+//		}
+//		result_file << hex << values[j] << " and type [" << dec << i << "] " << int_types[i].descr << endl;
 		}
 	}
 

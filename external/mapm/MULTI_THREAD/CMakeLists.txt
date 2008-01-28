@@ -1,0 +1,2 @@
+SET(MULTI_THREAD_SRCS
+  mapm_mt.c)

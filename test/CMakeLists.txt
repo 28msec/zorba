@@ -21,3 +21,6 @@ SET(TEST_STORE_SRCS
 
 ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
 TARGET_LINK_LIBRARIES(test_store zorba)
+
+ADD_EXECUTABLE(davidtest davidtest.cpp)
+TARGET_LINK_LIBRARIES(davidtest zorba)

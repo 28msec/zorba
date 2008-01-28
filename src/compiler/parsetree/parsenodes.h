@@ -23,6 +23,7 @@
 #include "store/api/item.h"
 #include "util/rchandle.h"
 #include "compiler/parser/location.hh"
+#include <boost/variant.hpp>
 
 namespace xqp {
 
@@ -3273,33 +3274,32 @@ public:
 
 protected:
 	enum numeric_type_t type;
-	union {
-		int ival;
-		decimal decval;
-		double dval;
-	};
+  boost::variant< xqp_integer, xqp_decimal, xqp_double > theValue;
+//  xqp_integer ival;
+//	xqp_decimal decval;
+//	xqp_double dval;
 
 public:
 	NumericLiteral(
 		const yy::location&,
-		int);
+		xqp_integer);
 
 	NumericLiteral(
 		const yy::location&,
-		decimal);
+		xqp_decimal);
 
 	NumericLiteral(
 		const yy::location&,
-		double);
+		xqp_double);
 
 	~NumericLiteral();
 
 public:
 	enum numeric_type_t get_type() const { return type; }
   std::string toString () const;
-	int get_int() const { return ival; }
-	decimal get_decimal() const { return decval; }
-	double get_double() const { return dval; }
+	xqp_integer get_int() const { return boost::get<xqp_integer>(theValue); }
+	xqp_decimal get_decimal() const { return boost::get<xqp_decimal>(theValue); }
+	xqp_double get_double() const { return boost::get<xqp_double>(theValue); }
 
 public:
 	void accept(parsenode_visitor&) const;

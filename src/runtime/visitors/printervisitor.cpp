@@ -529,7 +529,7 @@ namespace xqp {
   }
 
   void PrinterVisitor::beginVisit ( const OpToIterator& a ) {
-    thePrinter.startIter("OpToIterato");
+    thePrinter.startIter("OpToIterator");
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const OpToIterator& a ) {

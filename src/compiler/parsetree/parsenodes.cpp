@@ -3168,39 +3168,41 @@ void PredicateList::accept(parsenode_visitor& v) const
 // -------------------
 NumericLiteral::NumericLiteral(
   const yy::location& _loc,
-  int _ival)
+  xqp_integer _ival)
 :
   exprnode(_loc),
   type(num_integer),
-  ival(_ival)
+  theValue(_ival)
 {
 }
 
 NumericLiteral::NumericLiteral(
   const yy::location& _loc,
-  double _dval)
+  xqp_double _dval)
 :
   exprnode(_loc),
   type(num_double),
-  dval(_dval)
+  theValue(_dval)
 {
 }
 
 NumericLiteral::NumericLiteral(
   const yy::location& _loc,
-  decimal _decval)
+  xqp_decimal _decval)
 :
   exprnode(_loc),
   type(num_decimal),
-  decval(_decval)
+  theValue(_decval)
 {
 }
 
 string NumericLiteral::toString () const {
   switch (type) {
-  case num_integer: return to_string (ival);
-  case num_decimal: return to_string (decval);
-  case num_double:  return to_string (dval);
+  case num_integer: 
+  case num_decimal:
+  case num_double:
+    return to_string(theValue);
+    break;
   default: return "??";
   }
 }

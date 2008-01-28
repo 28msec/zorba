@@ -13,6 +13,8 @@
 #include "util/datetime/datetime.h"
 #include "util/datetime/time.h"
 #include "util/datetime/gregorian.h"
+#include "util/bignum/integer.h"
+#include "util/bignum/decimal.h"
 
 namespace xqp
 {
@@ -35,11 +37,11 @@ namespace xqp
   typedef xqpString                 xqp_ENTITIES;
   typedef xqpString                 xqp_NMTOKEN;
   typedef xqpString                 xqp_NMTOKENS;
-  typedef long long                 xqp_integer;
+  typedef Integer                   xqp_integer;
   typedef int32_t                   xqp_int;
   typedef long long                 xqp_long;
   typedef short                     xqp_short;
-  typedef long double               xqp_decimal;
+  typedef Decimal                   xqp_decimal;
   typedef float                     xqp_float;
   typedef double                    xqp_double;
   typedef char                      xqp_byte;
@@ -59,7 +61,7 @@ namespace xqp
   typedef uint32_t                  xqp_uint;
   typedef unsigned long long        xqp_ulong;
   typedef unsigned short            xqp_ushort;
-  typedef unsigned long long        xqp_uinteger;
+  typedef Integer                   xqp_uinteger;
   typedef void*                     xqp_base64Binary;
   typedef void*                     xqp_base64Binary;
   typedef void*                     xqp_hexBinary;

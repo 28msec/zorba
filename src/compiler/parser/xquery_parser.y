@@ -117,9 +117,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
   xqp::parsenode * node;
   xqp::exprnode * expr;
   off_t sval;
-	int ival;
-	double dval;
-	long double decval;
+	xqp_integer* ival;
+	xqp_double* dval;
+	xqp_decimal* decval;
 };
 
 
@@ -3821,21 +3821,24 @@ NumericLiteral :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [decimal]\n";
 #endif
-			$$ = new NumericLiteral(@$, decimal(yylval.decval));
+			$$ = new NumericLiteral(@$, *yylval.decval);
+      delete yylval.decval;
 		}
 	| INTEGER_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [int]\n";
 #endif
-			$$ = new NumericLiteral(@$, yylval.ival);
+			$$ = new NumericLiteral(@$, *yylval.ival);
+      delete yylval.ival;
 		}
 	|	DOUBLE_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [double]\n";
 #endif
-			$$ = new NumericLiteral(@$, yylval.dval);
+			$$ = new NumericLiteral(@$, *yylval.dval);
+      delete yylval.dval;
 		}
 	;
 

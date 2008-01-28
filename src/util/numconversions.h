@@ -29,6 +29,7 @@ public:
   /**********************************************************************************
    * String to Numeric and Numeric to String Conversions
    *********************************************************************************/
+  static bool starCharToInteger(const char* aCharStar, xqp_integer& aInteger);
   static bool strToInteger(const xqpString& aStr, xqp_integer& aInteger);
   static xqpString integerToStr(xqp_integer aInteger);
   static bool strToUInteger(const xqpString& aStr, xqp_uinteger& aUInteger);

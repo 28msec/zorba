@@ -1,5 +1,18 @@
 INCLUDE(../cmake_modules/AddSrcSubfolder.cmake)
 
+# some compiler flags that should always be used in order to force a good programming style
+IF (MSVC)
+	ADD_DEFINITIONS(${DEFINITIONS})
+ELSE (MSVC)
+    GET_FILENAME_COMPONENT(CXX_EXE ${CMAKE_CXX_COMPILER} NAME)
+    IF ("icpc" STREQUAL ${CXX_EXE}) # intel cxx compiler
+            MESSAGE(STATUS "it seems we are using the intel cxx compiler")
+            ADD_DEFINITIONS(-D_DEBUG -DORBA_USE_PTHREAD_LIBRARY -wd981 -Wall)
+    ELSE ("icpc" STREQUAL ${CXX_EXE}) # g++ compiler
+            ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual ${DEFINITIONS})
+    ENDIF ("icpc" STREQUAL ${CXX_EXE})
+ENDIF (MSVC)
+
 SET(ZORBA_SRCS)
 
 ADD_SRC_SUBFOLDER(ZORBA_SRCS api API_SRCS )
