@@ -466,7 +466,8 @@ void end_visit(const DirElemConstructor& v, void *visit_state)
   expr_t attrExpr;
   expr_t contentExpr;
 
-  if (! sctx_p->lookup_elem_qname (v.get_elem_name ()->get_qname ())->equals (sctx_p->lookup_elem_qname (v.get_end_name  ()->get_qname ())))
+  rchandle<QName> end_tag = v.get_end_name  ();
+  if (end_tag != NULL && ! sctx_p->lookup_elem_qname (v.get_elem_name ()->get_qname ())->equals (sctx_p->lookup_elem_qname (end_tag->get_qname ())))
     ZORBA_ERROR_ALERT (ZorbaError::XPST0003);
   if (v.get_dir_content_list() != NULL)
   {
