@@ -1394,8 +1394,13 @@ void end_visit(const FunctionDecl& v, void *visit_state)
 
   user_function *udf = sctx_p->lookup_udf (v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs);
   ZORBA_ASSERT (udf != NULL);
-  normalizer norm(sctx_p);
-  body->accept(norm);
+
+  {
+    assert (body != NULL);
+    normalizer norm(sctx_p);
+    body->accept(norm);
+  }
+
   udf->set_body (body);
   udf->set_params(params);
   pop_scope ();
@@ -2044,7 +2049,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
     return;
   }
   if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "last") {
-    nodestack.push(sctx_p->lookup_var(LAST_IDX_VAR));
+    nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VAR));
     return;
   }
   if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "string") {
