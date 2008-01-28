@@ -370,23 +370,6 @@ public:
   virtual void accept(PlanIterVisitor&) const = 0;
 
 	void
-  resetImpl ( PlanState& aPlanState )
-	{
-		PlanIteratorState* state;
-		GET_STATE ( PlanIteratorState, state, aPlanState );
-		state->reset();
-
-		std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
-		for ( 
-         std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
-         lIter!= theChildren.end(); 
-         ++lIter )
-		{
-			Batcher<Iter>::resetChild ( *lIter, aPlanState );
-		}
-	}
-
-	void
 	releaseResourcesImpl ( PlanState& aPlanState )
 	{
     std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
