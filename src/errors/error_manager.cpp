@@ -96,7 +96,6 @@ int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert* alert)
 																			z->current_xquery,
 																			thread_registered_param);
     }
-		delete alert;
 		return retval;
 	}
 	else
