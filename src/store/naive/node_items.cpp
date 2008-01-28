@@ -1284,7 +1284,7 @@ XmlNode* AttributeNode::copy(const XmlNode* parent, unsigned long pos) const
   {
     copy->theTypeName = GET_STORE().theUntypedAtomicType;
 
-    if (theTypedValue->getType() == GET_STORE().theUntypedAtomicType)
+    if (theTypedValue == NULL || theTypedValue->getType() == GET_STORE().theUntypedAtomicType)
       copy->theTypedValue = theTypedValue;
     else
       copy->theTypedValue = new UntypedAtomicItemImpl(getStringValue().getStore());
