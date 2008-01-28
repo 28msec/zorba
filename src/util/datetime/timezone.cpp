@@ -62,6 +62,9 @@ bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
     if (!is_digit(ss[position]) || !is_digit(ss[position+1]) || ss[position+2] != ':' ||
          !is_digit(ss[position+3]) || !is_digit(ss[position+4]))
       return false;
+    // minutes must be between 00..59
+    if (ss.substr (position + 3, 2) >= "60")
+      return false;
 
     // Parse hh:mm . Add ":00" and pass it off to boost
     std::string temp = ss.substr(position) + ":00";
@@ -69,7 +72,11 @@ bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
       temp = "-" + temp;
 
     //RETURN_FALSE_ON_EXCEPTION( tz_t = new TimeZone(boost::posix_time::duration_from_string(temp)); );
-    tz_t = new TimeZone(boost::posix_time::duration_from_string(temp)); 
+    boost::posix_time::time_duration t = boost::posix_time::duration_from_string (temp);
+    // hours must be between -14 .. 14
+    if (t.hours () > 14 || t.hours () < -14)
+      return false;
+    tz_t = new TimeZone(t);
   }
   
   return true;
