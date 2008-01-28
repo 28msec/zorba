@@ -783,4 +783,45 @@ FnTimezoneFromDateIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnTimezoneFromDateIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.18 fn:hours-from-time
+ *
+ * fn:hours-from-time($arg as xs:time?) as xs:integer?
+ *_______________________________________________________________________*/
+
+/*begin class FnHoursFromTimeIterator */
+void
+FnHoursFromTimeIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnHoursFromTimeIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
+Item_t 
+FnHoursFromTimeIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChildren[0], planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getTimeValue()->getHours()), state );
+  }
+  STACK_END();
+}
+/*end class FnHoursFromTimeIterator */
 }

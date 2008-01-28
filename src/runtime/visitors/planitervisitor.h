@@ -138,6 +138,7 @@ namespace xqp
   class FnMonthFromDateIterator;
   class FnDayFromDateIterator;
   class FnTimezoneFromDateIterator;
+  class FnHoursFromTimeIterator;
 
       
   /**
@@ -529,7 +530,11 @@ namespace xqp
 
       virtual void beginVisit ( const FnTimezoneFromDateIterator&) = 0;
       virtual void endVisit ( const FnTimezoneFromDateIterator&) = 0;
-  
+
+      virtual void beginVisit ( const FnHoursFromTimeIterator&) = 0;
+      virtual void endVisit ( const FnHoursFromTimeIterator&) = 0;
+
+      
 
       virtual void beginVisit(const CtxVariableIterator&) = 0;
       virtual void endVisit(const CtxVariableIterator&) = 0;

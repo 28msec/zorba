@@ -32,6 +32,8 @@ public:
   xqpString toString() const;
   const boost::posix_time::time_duration& get_time_duration() const;
 
+  int32_t getHours() const;
+
 protected:
   Time& operator=(const Time_t& t_t);
 

@@ -65,6 +65,11 @@ const boost::posix_time::time_duration& Time::get_time_duration() const
   return the_time;
 }
 
+int32_t Time::getHours() const
+{
+  return the_time.hours();
+}
+
 Time& Time::operator=(const Time_t& t_t)
 {
   the_time = t_t->the_time;

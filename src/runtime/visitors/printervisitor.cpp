@@ -1064,6 +1064,16 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const FnTimezoneFromDateIterator& ) {
     thePrinter.endIter();
   }
+
+  void PrinterVisitor::beginVisit ( const FnHoursFromTimeIterator& a )  {
+    thePrinter.startIter("FnHoursFromTimeIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit ( const FnHoursFromTimeIterator& ) {
+    thePrinter.endIter();
+  }
+  
   
   
   void PrinterVisitor::beginVisit ( const FLWORIterator& a ) {
