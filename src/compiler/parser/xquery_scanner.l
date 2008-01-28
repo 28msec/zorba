@@ -2840,12 +2840,8 @@ typedef yy::xquery_parser::token token;
 
 	/* maintain END_TAG */
 	/* ---------------- */
-{S} {
-	/* continue lexing */
-}
-
-{QName} {
-  yylval->sval = driver.symtab.put(yytext, yyleng);
+ {QName}{S} {
+   yylval->sval = driver.symtab.put_qname(yytext, yyleng, false, true);
 	return token::QNAME;
 }
 
@@ -3131,6 +3127,9 @@ typedef yy::xquery_parser::token token;
 }
 
 } /* <MODE_APOS_ATTRIBUTE_CONTENT> */
+
+
+<*>. return token::UNRECOGNIZED;
 
 %%
 
