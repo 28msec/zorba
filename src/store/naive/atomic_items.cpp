@@ -913,36 +913,6 @@ xqp_string DateTimeItemNaive::show() const
   return theValue->toString();
 }
 
-int32_t DateTimeItemNaive::getYear() const
-{
-  return theValue->getYear();
-}
-
-int32_t DateTimeItemNaive::getMonth() const
-{
-  return theValue->getMonth();
-}
-
-int32_t DateTimeItemNaive::getDay() const
-{
-  return theValue->getDay();
-}
-
-int32_t DateTimeItemNaive::getHours() const
-{
-  return theValue->getHours();
-}
-
-int32_t DateTimeItemNaive::getMinutes() const
-{
-  return theValue->getMinutes();
-}
-
-double DateTimeItemNaive::getSeconds() const
-{
-  return theValue->getSeconds();
-}
-
 /*******************************************************************************
  * class Duration
  *******************************************************************************/
@@ -975,36 +945,6 @@ Item_t DurationItemNaive::getEBV() const
 xqp_string DurationItemNaive::show() const
 {
   return theValue->toString();
-}
-
-int32_t DurationItemNaive::getYears() const
-{
-  return theValue->getYears();
-}
-
-int32_t DurationItemNaive::getMonths() const
-{
-  return theValue->getMonths();
-}
-
-int32_t DurationItemNaive::getDays() const
-{
-  return theValue->getDays();
-}
-
-int32_t DurationItemNaive::getHours() const
-{
-  return theValue->getHours();
-}
-
-int32_t DurationItemNaive::getMinutes() const
-{
-  return theValue->getMinutes();
-}
-
-double DurationItemNaive::getSeconds() const
-{
-  return theValue->getSeconds();
 }
 
 /*******************************************************************************

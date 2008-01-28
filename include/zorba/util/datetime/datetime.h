@@ -24,6 +24,7 @@ typedef rchandle<Time> Time_t;
 class DateTime;
 typedef rchandle<DateTime> DateTime_t;
 
+class xqpString;
 class DateTime : public rcobject
 {
 public:
@@ -46,7 +47,7 @@ public:
   int32_t getHours() const;
   int32_t getMinutes() const;
   double getSeconds() const;
-      
+  xqpString getTimezone() const;
 
 protected:
   DateTime& operator=(const DateTime_t& t_t);

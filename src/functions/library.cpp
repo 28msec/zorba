@@ -758,6 +758,11 @@ DECL(fn_seconds_from_datetime,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "seconds-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
+      
+DECL(fn_timezone_from_datetime,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "timezone-from-dateTime"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
 // end date time
 
 // begin debug functions

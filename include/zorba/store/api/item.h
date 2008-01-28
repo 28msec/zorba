@@ -242,25 +242,6 @@ public:
     return xqp_dateTime();
   }
 
-  virtual int32_t getYear() const
-  {
-    this->showError();
-    return 0;
-  }
-
-  virtual int32_t getMonth() const
-  {
-    this->showError();
-    return 0;
-  }
-
-  virtual int32_t getDay() const
-  {
-    this->showError();
-    return 0;
-  }
-  
-  
   /** Accessor for xs:double
    */
   virtual xqp_double getDoubleValue() const
@@ -277,44 +258,6 @@ public:
     return xqp_duration();
   }
 
-  virtual int32_t getYears() const
-  {
-    this->showError();
-    return 0;
-  }
-
-  virtual int32_t getMonths() const
-  {
-    this->showError();
-    return 0;
-  }
-
-  virtual int32_t getDays() const
-  {
-    this->showError();
-    return 0;
-  }
-
-  virtual int32_t getHours() const
-  {
-    this->showError();
-    return 0;
-  }
-
-  virtual int32_t getMinutes() const
-  {
-    this->showError();
-    return 0;
-  }
-
-  virtual double getSeconds() const
-  {
-    this->showError();
-    return 0;
-  }
-
-  
-  
   /** Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
    */
   virtual std::vector<xqp_string> getStringVectorValue() const

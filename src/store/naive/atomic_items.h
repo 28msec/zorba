@@ -173,13 +173,6 @@ public:
   virtual bool equals(Item_t) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
-
-  virtual int32_t getYear() const;
-  virtual int32_t getMonth() const;
-  virtual int32_t getDay() const;
-  virtual int32_t getHours() const;
-  virtual int32_t getMinutes() const;
-  virtual double getSeconds() const;
 };
 
 /*******************************************************************************
@@ -198,12 +191,6 @@ public:
   virtual bool equals(Item_t) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
-  virtual int32_t getYears() const;
-  virtual int32_t getMonths() const;
-  virtual int32_t getDays() const;
-  virtual int32_t getHours() const;
-  virtual int32_t getMinutes() const;
-  virtual double getSeconds() const;
 };
 
 /*******************************************************************************

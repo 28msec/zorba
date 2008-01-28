@@ -443,5 +443,40 @@ fn_seconds_from_datetime::type_check (
   return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
 /*end class fn_seconds_from_datetime*/
+
+
+/*
+ * 10.5.13 fn:timezone-from-dateTime
+ * --------------------*/
+/*begin class fn_timezone_from_datetime*/
+fn_timezone_from_datetime::fn_timezone_from_datetime (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+fn_timezone_from_datetime::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnTimezoneFromDatetimeIterator(loc, argv[0]);
+}
+
+bool
+fn_timezone_from_datetime::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_timezone_from_datetime::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
+}
+/*end class fn_timezone_from_datetime*/
 } // namespace xqp
 
