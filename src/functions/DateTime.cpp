@@ -545,8 +545,42 @@ fn_month_from_date::type_check (
 {
   return GENV_TYPESYSTEM.DATE_TYPE_QUESTION;
 }
+/*end class fn_month_from_date*/
 
 
-/*end class fn_year_from_date*/
+/*
+ * 10.5.16 fn:day-from-date
+ * --------------------*/
+/*begin class fn_day_from_date*/
+fn_day_from_date::fn_day_from_date (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+fn_day_from_date::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnDayFromDateIterator(loc, argv);
+}
+
+bool
+fn_day_from_date::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_day_from_date::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DATE_TYPE_QUESTION;
+}
+/*end class fn_day_from_date*/
+
 } // namespace xqp
 

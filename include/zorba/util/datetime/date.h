@@ -34,6 +34,7 @@ public:
 
   int32_t getYear() const;
   int32_t getMonth() const;
+  int32_t getDay() const;
 
 protected:
   Date& operator=(const Date_t& d_t);

@@ -305,7 +305,7 @@ NARY_ITER_STATE(FnYearFromDateIterator, FnYearFromDateIteratorState);
  * 10.5.15 fn:month-from-date
  * --------------------*/
  
-/*begin class fn_month_from_date */
+/*begin class FnMonthFromDateIterator */
 class FnMonthFromDateIteratorState : public  PlanIteratorState {
   public:
     uint32_t theCurIter;
@@ -315,11 +315,25 @@ class FnMonthFromDateIteratorState : public  PlanIteratorState {
 };
 
 NARY_ITER_STATE(FnMonthFromDateIterator, FnMonthFromDateIteratorState);
-/*end class fn_month_from_date */
-/*
+/*end class FnMonthFromDateIterator */
 
-10.5.15 fn:month-from-date
-10.5.16 fn:day-from-date
+/*
+ * 10.5.16 fn:day-from-date
+ * --------------------*/
+ 
+/*begin class FnDayFromDateIterator */
+class FnDayFromDateIteratorState : public  PlanIteratorState {
+  public:
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
+};
+
+NARY_ITER_STATE(FnDayFromDateIterator, FnDayFromDateIteratorState);
+/*end class FnDayFromDateIterator */
+
+/*
 10.5.17 fn:timezone-from-date
 10.5.18 fn:hours-from-time
 10.5.19 fn:minutes-from-time

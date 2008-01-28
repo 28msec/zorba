@@ -373,6 +373,9 @@ public:
 
   virtual void beginVisit(const FnMonthFromDateIterator&) ;
   virtual void endVisit(const FnMonthFromDateIterator&);
+
+  virtual void beginVisit(const FnDayFromDateIterator&) ;
+  virtual void endVisit(const FnDayFromDateIterator&);
   
   
       

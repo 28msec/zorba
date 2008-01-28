@@ -701,4 +701,45 @@ FnMonthFromDateIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnMonthFromDateIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.16 fn:day-from-date
+ *
+ * fn:day-from-date($arg as xs:date?) as xs:integer?
+ *_______________________________________________________________________*/
+
+/*begin class FnDayFromDateIterator */
+void
+FnDayFromDateIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnDayFromDateIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
+Item_t 
+FnDayFromDateIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChildren[0], planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDateValue()->getDay()), state );
+  }
+  STACK_END();
+}
+/*end class FnDayFromDateIterator */
 }

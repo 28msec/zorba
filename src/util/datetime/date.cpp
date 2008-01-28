@@ -101,6 +101,11 @@ int32_t Date::getMonth() const
   return the_date.month();
 }
 
+int32_t Date::getDay() const
+{
+  return the_date.day();
+}
+
 int Date::compare(const Date& d) const
 {
   // TODO: handle timezone
