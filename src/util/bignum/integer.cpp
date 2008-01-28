@@ -11,8 +11,7 @@
 namespace xqp {
 
 Integer::Integer(const Decimal& aDecimal) {
-  theInteger = aDecimal.theDecimal;
-  theInteger.floor();
+  theInteger = floatingToInteger(aDecimal.theDecimal);
 }
 
 Integer::Integer(unsigned long aULong) {
@@ -193,19 +192,19 @@ Integer& Integer::operator*=(int32_t aInt) {
 
 Integer Integer::operator/(const Integer& aInteger) const {
   MAPM lRes = theInteger / aInteger.theInteger;
-  lRes = lRes.floor();
+  lRes = floatingToInteger(lRes);
   return Integer(lRes);
 }
 
 Integer Integer::operator/(long long aLong) const {
   MAPM lRes = theInteger / Integer::longlongToMAPM(aLong);
-  lRes = lRes.floor();
+  lRes = floatingToInteger(lRes);
   return Integer(lRes);
 }
 
 Integer Integer::operator/(int32_t aInt) const {
   MAPM lRes = theInteger / aInt;
-  lRes = lRes.floor();
+  lRes = floatingToInteger(lRes);
   return Integer(lRes);
 }
 
@@ -221,19 +220,19 @@ Decimal Integer::operator/(double aDouble) const {
 
 Integer& Integer::operator/=(const Integer& aInteger) {
   theInteger /= aInteger.theInteger;
-  theInteger.floor();
+  theInteger = floatingToInteger(theInteger);
   return *this;
 }
 
 Integer& Integer::operator/=(long long aLong) {
   theInteger /= Integer::longlongToMAPM(aLong);
-  theInteger.floor();
+  theInteger = floatingToInteger(theInteger);
   return *this;
 }
 
 Integer& Integer::operator/=(int32_t aInt) {
   theInteger /= aInt;
-  theInteger.floor();
+  theInteger = floatingToInteger(theInteger);
   return *this;
 }
 

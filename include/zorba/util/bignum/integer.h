@@ -35,6 +35,12 @@ public:
   
 private:
   static MAPM longlongToMAPM(long long);
+  static MAPM floatingToInteger(MAPM theFloating) {
+    if (theFloating >= 0)
+      return theFloating.floor();
+    else
+      return theFloating.ceil();
+  }
 
 public:
   Integer& operator=(const xqpString&);
