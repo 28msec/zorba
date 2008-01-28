@@ -111,7 +111,7 @@ blank 			[ \t]
 S						[ \t\r\n\f]*
 SP					([ \t\r\n\f]|("(:"{CommentChars}))+
 SPNoComment	[ \t\r\n\f]+
-WordBreak   [^a-zA-Z0-9_:/-]
+WordBreak   [^a-zA-Z0-9_-]
 
 	/*_____________________________________________________________________
 	|
@@ -184,7 +184,6 @@ NonHyphenChar					[\x09\x0D\x0A\x20-\x2C\x2E-\xFD]
 XMLCommentChar				({NonHyphenChar}*)|(-{NonHyphenChar}+)
 NonRParChar						[\x09\x0D\x0A\x20-\x28\x2A-\xFD]
 NonColonChar					[\x09\x0D\x0A\x20-\x39\x3B-\xFD]
-CommentContent				({NonColonChar}*)|(:{NonRParChar}{NonColonChar}*)
 ElementContentChar		[\x09\x0A\x0D\x20-\x25\x27-\x3B\x3D-\x7A\x7C\x7E-\xFD]
 QuotAttrContentChar 	[\x09\x0A\x0D\x20-\x21\x23-\x25\x27-\x3B\x3D-\x7A\x7C\x7E-\xFD]
 AposAttrContentChar 	[\x09\x0A\x0D\x20-\x25\x28-\x3B\x3D-\x7A\x7C\x7E-\xFD]
@@ -520,27 +519,32 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to OPERATOR */
 	/* ---------------------- */
+
+{IntegerLiteral}/[a-zA-Z_]	{
+  return token::UNRECOGNIZED;
+}
 {IntegerLiteral}	{
 	yylval->ival = driver.symtab.integerval(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
 	return token::INTEGER_LITERAL;
 }
 
+{DecimalLiteral}/[a-zA-Z_]	{
+  return token::UNRECOGNIZED;
+}
 {DecimalLiteral}	{
 	yylval->decval = driver.symtab.decimalval(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
 	return token::DECIMAL_LITERAL;
 }
 
+{DoubleLiteral}/[a-zA-Z_]	{
+  return token::UNRECOGNIZED;
+}
 {DoubleLiteral}		{
 	yylval->dval = driver.symtab.doubleval(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
 	return token::DOUBLE_LITERAL;
-}
-
-"NaN"/{WordBreak} {
-	BEGIN MODE_OPERATOR;
-	return token::_NAN;
 }
 
 {NCName}":*" {
@@ -2911,9 +2915,8 @@ typedef yy::xquery_parser::token token;
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
-{CommentContent} {
+. {
 	/* do nothing */
-  // TODO: check if, indeed, nothing needs to be done
 }
 
 }	/* <MODE_EXPR_COMMENT> */
