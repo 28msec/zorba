@@ -3445,10 +3445,10 @@ DirElemConstructor::DirElemConstructor(
 :
   exprnode(_loc),
   elem_name_h(_open_name_h),
+  end_name_h(_close_name_h),
   attr_list_h(_attr_list_h),
   dir_content_list_h(_dir_content_list_h)
 {
-	// assert: open_name == close_name
 }
 
 DirElemConstructor::~DirElemConstructor()

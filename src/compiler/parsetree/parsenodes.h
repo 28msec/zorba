@@ -3520,15 +3520,15 @@ public:
 class DirElemConstructor : public exprnode
 {
 protected:
-	rchandle<QName> elem_name_h;
+	rchandle<QName> elem_name_h, end_name_h;
 	rchandle<DirAttributeList> attr_list_h;
 	rchandle<DirElemContentList> dir_content_list_h;
 
 public:
 	DirElemConstructor(
 		const yy::location&,
-		rchandle<QName> start_name_h,
-		rchandle<QName> end_name_h,
+		rchandle<QName>,
+		rchandle<QName>,
 		rchandle<DirAttributeList>,
 		rchandle<DirElemContentList>);
 
@@ -3536,6 +3536,7 @@ public:
 
 public:
 	rchandle<QName> get_elem_name() const { return elem_name_h; }
+	rchandle<QName> get_end_name() const { return end_name_h; }
 	rchandle<DirAttributeList> get_attr_list() const { return attr_list_h; }
 	rchandle<DirElemContentList> get_dir_content_list() const { return dir_content_list_h; }
 
