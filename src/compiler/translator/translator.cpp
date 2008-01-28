@@ -1582,7 +1582,6 @@ void end_visit(const Pragma& v, void *visit_state)
 void *begin_visit(const PragmaList& v)
 {
   TRACE_VISIT ();
-  nodestack.push(NULL);
   return no_state;
 }
 
@@ -2000,13 +1999,15 @@ void end_visit(const Expr& v, void *visit_state)
 
 void *begin_visit(const ExtensionExpr& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
 void end_visit(const ExtensionExpr& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
+  if (v.get_expr () == NULL)
+    ZORBA_ERROR_ALERT (ZorbaError::XQST0079);
 }
 
 void *begin_visit(const FilterExpr& v)
