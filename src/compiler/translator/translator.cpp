@@ -2265,6 +2265,10 @@ void end_visit(const ParenthesizedExpr& v, void *visit_state)
 void *begin_visit(const SequenceType& v)
 {
   TRACE_VISIT ();
+  if (v.get_itemtype () == NULL && v.get_occur () == NULL) {
+    tstack.push (GENV_TYPESYSTEM.create_empty_type ());
+    return NULL;
+  }
   return no_state;
 }
 
