@@ -620,4 +620,45 @@ FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState)
 }
 /*end class FnTimezoneFromDatetimeIterator */
 
+/**
+ *______________________________________________________________________
+ *
+ * 10.5.14 fn:year-from-date
+ *
+ * fn:year-from-date($arg as xs:date?) as xs:integer?
+ *_______________________________________________________________________*/
+
+/*begin class FnYearFromDateIterator */
+void
+FnYearFromDateIteratorState::init()
+{
+  PlanIteratorState::init();
+  theCurIter = 0;
+}
+
+void
+FnYearFromDateIteratorState::reset()
+{
+  PlanIteratorState::reset();
+  theCurIter = 0;
+}
+
+Item_t 
+FnYearFromDateIterator::nextImpl(PlanState& planState)
+{
+  Item_t itemArg;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  itemArg = consumeNext(theChildren[0], planState);
+  if ( itemArg != NULL )
+  {
+    itemArg = itemArg->getAtomizationValue();
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDateValue()->getYear()), state );
+  }
+  STACK_END();
+}
+/*end class FnYearFromDateIterator */
+
 }

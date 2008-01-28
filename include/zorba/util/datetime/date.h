@@ -32,6 +32,8 @@ public:
   xqpString toString() const;
   const boost::gregorian::date& get_date() const;
 
+  int32_t getYear() const;
+
 protected:
   Date& operator=(const Date_t& d_t);
   

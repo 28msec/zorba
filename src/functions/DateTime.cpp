@@ -478,5 +478,40 @@ fn_timezone_from_datetime::type_check (
   return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
 /*end class fn_timezone_from_datetime*/
+
+/*
+ * 10.5.14 fn:year-from-date
+ * --------------------*/
+/*begin class fn_year_from_date*/
+fn_year_from_date::fn_year_from_date (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+fn_year_from_date::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new FnYearFromDateIterator(loc, argv);
+}
+
+bool
+fn_year_from_date::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t
+fn_year_from_date::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DATE_TYPE_QUESTION;
+}
+/*end class fn_year_from_date*/
+
 } // namespace xqp
 

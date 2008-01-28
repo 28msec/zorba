@@ -285,9 +285,24 @@ class FnTimezoneFromDatetimeIteratorState : public  PlanIteratorState {
 NARY_ITER_STATE(FnTimezoneFromDatetimeIterator, FnTimezoneFromDatetimeIteratorState);
 /*end class FnTimezoneFromDatetimeIterator */
 
+/*
+ * 10.5.14 fn:year-from-date
+ * --------------------*/
+ 
+/*begin class FnYearFromDateIterator */
+class FnYearFromDateIteratorState : public  PlanIteratorState {
+  public:
+    uint32_t theCurIter;
+
+    void init();
+    void reset();
+};
+
+NARY_ITER_STATE(FnYearFromDateIterator, FnYearFromDateIteratorState);
+/*end class FnYearFromDateIterator */
 
 /*
-10.5.14 fn:year-from-date
+
 10.5.15 fn:month-from-date
 10.5.16 fn:day-from-date
 10.5.17 fn:timezone-from-date

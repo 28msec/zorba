@@ -91,6 +91,11 @@ const boost::gregorian::date& Date::get_date() const
   return the_date;
 }
 
+int32_t Date::getYear() const
+{
+  return the_date.year();
+}
+
 int Date::compare(const Date& d) const
 {
   // TODO: handle timezone
