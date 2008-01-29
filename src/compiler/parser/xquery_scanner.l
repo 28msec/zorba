@@ -726,6 +726,9 @@ typedef yy::xquery_parser::token token;
 }
 
 
+"<"{SP} {
+  return token::UNRECOGNIZED;
+}
 	/* transition to START_TAG */
 	/* ----------------------- */
 "<" { 	
