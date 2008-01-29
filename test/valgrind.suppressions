@@ -443,6 +443,18 @@
 }
 
 {
+   mapm globally initialized memory that we cannot destroy
+   Memcheck:Leak
+   fun:malloc
+   fun:m_apm_init
+   fun:_ZN4MAPM7makeNewEv
+   fun:_ZN4MAPM6createEv
+   fun:_ZN4MAPMC1Ev
+}
+
+
+
+{
    std::string leak during init of root context for libstdc++ 6.0.8
    Memcheck:Leak
    fun:_Znwj
