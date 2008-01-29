@@ -305,3 +305,20 @@
    fun:_GLOBAL__I__ZN3xqp12library_initEv
 }
 
+{
+   mapm globally initialized memory that we cannot destroy
+   Memcheck:Leak
+   fun:malloc
+   fun:*
+   fun:M_init_trig_globals
+   fun:m_apm_init
+}
+
+{
+   mapm globally initialized memory that we cannot destroy
+   Memcheck:Leak
+   fun:malloc
+   fun:M_init_util_data
+   fun:m_apm_init
+}
+
