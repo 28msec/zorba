@@ -8,7 +8,8 @@
  */
 
 #include "plan_visitor.h"
-  
+
+#include <memory>
 #include "context/namespace_context.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
@@ -65,6 +66,14 @@ namespace xqp
     ZORBA_ASSERT (! stk.empty ());
     return stk.top ();
   }
+
+template <typename V>
+struct vector_destroyer {
+    void operator()(const struct hash64map<std::vector<V> *>::entry& entry)
+    {
+        delete (const_cast<struct hash64map<std::vector<V> *>::entry&>(entry)).val;
+    }
+};
   
 class plan_visitor : public expr_visitor
 {
@@ -90,7 +99,12 @@ protected:
 public:
 	plan_visitor(hash64map<std::vector<ref_iter_t> *> *param_var_map = NULL)
         : depth (0), theLastNSCtx(NULL), param_var_iter_map(param_var_map) {}
-	~plan_visitor() {}
+	~plan_visitor()
+    {
+        std::for_each(fvar_iter_map.begin(), fvar_iter_map.end(), vector_destroyer<var_iter_t>());
+        std::for_each(pvar_iter_map.begin(), pvar_iter_map.end(), vector_destroyer<var_iter_t>());
+        std::for_each(lvar_iter_map.begin(), lvar_iter_map.end(), vector_destroyer<ref_iter_t>());
+    }
 
 public:
 	PlanIter_t pop_itstack()
@@ -242,7 +256,7 @@ void end_visit(flwor_expr& v)
                                                   spec.second->dir == dir_descending));
   }
 
-  FLWORIterator::OrderByClause *orderby = new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ());
+  std::auto_ptr<FLWORIterator::OrderByClause> orderby(orderSpecs.empty() ? NULL : new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ()));
 
   PlanIter_t where = NULL;
   if (v.get_where () != NULL)
@@ -288,7 +302,7 @@ void end_visit(flwor_expr& v)
     }
   }
 
-  FLWORIterator *iter = new FLWORIterator(v.get_loc(), clauses, where, orderby, ret, false);
+  FLWORIterator *iter = new FLWORIterator(v.get_loc(), clauses, where, orderby.release(), ret, false);
   itstack.push(iter);
 }
 
