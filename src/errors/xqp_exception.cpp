@@ -26,9 +26,9 @@ xqp_exception::xqp_exception(ZorbaError::ErrorCodes ecode)
 	error_descr.theCode = ecode;
 }
 
-xqp_exception::xqp_exception(ZorbaError* err)
+xqp_exception::xqp_exception(ZorbaError& err)
 {
-	error_descr = *err;
+	error_descr = err;
 }
 
 xqp_exception::~xqp_exception()
@@ -184,6 +184,12 @@ throw()
 }
 
 daniel */
+
+std::ostream& operator<<(std::ostream& os, xqp_exception &x)
+{
+	return (os << x.error_descr);
+}
+
 
 } /* namespace xqp */
 

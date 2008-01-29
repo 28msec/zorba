@@ -50,7 +50,7 @@ public:
 
 public: 
 	xqp_exception(ZorbaError::ErrorCodes ecode);
-	xqp_exception(ZorbaError *err);
+	xqp_exception(ZorbaError &err);
 
   ~xqp_exception();
 
@@ -132,6 +132,7 @@ public:
 
 */
 
+std::ostream& operator<<(std::ostream& os, xqp_exception &x);
 
 } /* namespace xqp */
 #endif /* XQP_XQP_EXCEPTION_H */

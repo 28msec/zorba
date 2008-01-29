@@ -84,6 +84,8 @@ void ZorbaAlertFactory::error_alert(
 //	if(z->current_xqueryresult)
 //		z->current_xqueryresult->is_error = true;
 
+	xqp_exception		x(*error);
+
 	err_manager->sendAlertToUser(z, error);
 
 	if(!continue_execution)
@@ -93,7 +95,7 @@ void ZorbaAlertFactory::error_alert(
 			abort ();
 		else
 #endif
-      throw xqp_exception(error);
+      throw x;
 	}
 }
 
