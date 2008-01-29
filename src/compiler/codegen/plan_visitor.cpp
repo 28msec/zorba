@@ -733,7 +733,9 @@ void end_visit ( elem_expr& v )
   if ( v.getContent() != 0 )
   {
     lContentIter = pop_itstack();
-    lContentIter = new ElementContentIterator ( v.get_loc(), lContentIter );
+    std::vector<PlanIter_t> lArgs;
+    lArgs.push_back(lContentIter);
+    lContentIter = new ElementContentIterator ( v.get_loc(), lArgs);
   }
 
   if ( v.getAttrs() != 0 )

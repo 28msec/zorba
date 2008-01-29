@@ -145,31 +145,18 @@ public:
   the content sequence from its various components.
 
 ********************************************************************************/
-class ElementContentIterator : public UnaryBaseIterator<ElementContentIterator>
+class ElementContentState : public PlanIteratorState
 {
-protected:
-  class ElementContentState : public PlanIteratorState
-  {
-  public:
-    xqpStringStore* theString;
-    Item_t          theContextItem;
-    bool            theNoAttrAllowed;
-
-    void init();
-  };
-
 public:
-  ElementContentIterator(const yy::location& loc, PlanIter_t& childIter);
+  xqpStringStore* theString;
+  Item_t          theContextItem;
+  bool            theNoAttrAllowed;
 
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(ElementContentState); }
-  
-  virtual void accept(PlanIterVisitor&) const;
+  void init();
+  void reset();
 };
-  
+
+NARY_ITER_STATE(ElementContentIterator, ElementContentState);
 
 /*******************************************************************************
   AttributeIterator constructs an attribute element

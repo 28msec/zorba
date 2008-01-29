@@ -93,7 +93,6 @@ namespace xqp {
   UNARY_ACCEPT(EncodeForUriIterator);
   UNARY_ACCEPT(IriToUriIterator);
   UNARY_ACCEPT(EscapeHtmlUriIterator);
-  UNARY_ACCEPT(ElementContentIterator);
   UNARY_ACCEPT(FnDataIterator);
   UNARY_ACCEPT(FnRootIterator);
   UNARY_ACCEPT(FnNodeNameIterator);

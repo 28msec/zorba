@@ -299,15 +299,6 @@ void ElementIterator::setOffset(PlanState& planState, uint32_t& offset)
 /*******************************************************************************
 
 ********************************************************************************/
-ElementContentIterator::ElementContentIterator(
-    const yy::location& loc,
-    PlanIter_t& childIter)
-  :
-  UnaryBaseIterator<ElementContentIterator>(loc, childIter)
-{
-}
-
-    
 Item_t ElementContentIterator::nextImpl(PlanState& planState)
 {
   xqpStringStore* tmp;
@@ -317,7 +308,7 @@ Item_t ElementContentIterator::nextImpl(PlanState& planState)
   
   while (true)
   {
-    state->theContextItem = this->consumeNext(theChild, planState );
+    state->theContextItem = this->consumeNext(theChildren[0], planState );
 
     // Check to find out if the content contains an attribute child which is
     // located after a non attribute child.
@@ -369,42 +360,7 @@ Item_t ElementContentIterator::nextImpl(PlanState& planState)
 }
 
 
-void ElementContentIterator::resetImpl(PlanState& planState)
-{
-  UnaryBaseIterator<ElementContentIterator>::resetImpl(planState);
-
-  ElementContentState* state;
-  GET_STATE(ElementContentState, state, planState);
-
-  if (state->theString != NULL)
-  {
-    delete state->theString;
-    state->theString = NULL;
-  }
-
-  state->theContextItem = 0;
-  state->theNoAttrAllowed = false;
-}
-
-  
-void ElementContentIterator::releaseResourcesImpl(PlanState& planState)
-{
-  UnaryBaseIterator<ElementContentIterator>::releaseResourcesImpl(planState);
-
-  ElementContentState* state;
-  GET_STATE(ElementContentState, state, planState);
-
-  if (state->theString != NULL)
-  {
-    delete state->theString;
-    state->theString = NULL;
-  }
-
-  state->theContextItem = NULL;
-}
-
-
-void ElementContentIterator::ElementContentState::init()
+void ElementContentState::init()
 {
   PlanIteratorState::init();
   theContextItem = 0;
@@ -412,6 +368,14 @@ void ElementContentIterator::ElementContentState::init()
   theNoAttrAllowed = false;
 }
 
+
+void ElementContentState::reset()
+{
+  PlanIteratorState::reset();
+  theContextItem = 0;
+  theString = NULL;
+  theNoAttrAllowed = false;
+}
 
 /*******************************************************************************
 
