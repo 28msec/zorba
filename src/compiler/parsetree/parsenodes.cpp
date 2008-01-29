@@ -4471,12 +4471,10 @@ void CommentTest::accept(parsenode_visitor& v) const
 
 PITest::PITest(
   const yy::location& _loc,
-  std::string _target,
-  std::string _content)
+  std::string _target)
 :
   parsenode(_loc),
-  target(_target),
-  content(_content)
+  target(_target)
 {
 }
 

@@ -4489,19 +4489,16 @@ class PITest : public parsenode
 {
 protected:
 	std::string target;
-	std::string content;
 
 public:
 	PITest(
 		const yy::location&,
-		std::string target,
-		std::string content);
+		std::string target);
 
 	~PITest();
 
 public:
 	std::string get_target() const { return target; }
-	std::string get_content() const { return content; }
 
 public:
 	void accept(parsenode_visitor&) const;
