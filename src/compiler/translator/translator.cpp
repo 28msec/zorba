@@ -106,6 +106,8 @@ protected:
 
   bool hadBSpaceDecl, hadDefCollationDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
 
+  var_expr_t theDotVar;
+
   TranslatorImpl (static_context *sctx_p_)
     : depth (0),
     sctx_p (sctx_p_),
@@ -122,7 +124,7 @@ protected:
     hadOrdModeDecl (false)
   {
     yy::location loc;
-    bind_var(loc, DOT_VAR, var_expr::context_var);
+    theDotVar = bind_var(loc, DOT_VAR, var_expr::context_var);
   }
 
   expr_t pop_nodestack (int n = 1)
