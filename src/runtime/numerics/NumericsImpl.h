@@ -190,50 +190,16 @@ namespace xqp
   |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-  class FnAbsIterator : public UnaryBaseIterator<FnAbsIterator>
-  {
-    public:
-      FnAbsIterator ( const yy::location& loc, PlanIter_t& theChild );
-      virtual ~FnAbsIterator();
-
-    public:
-      Item_t nextImpl(PlanState& planState);
-      
-      virtual void accept(PlanIterVisitor&) const;
-  };
+  NARY_ITER(FnAbsIterator);
 
 // 6.4.2 fn:ceiling
-  class FnCeilingIterator : public UnaryBaseIterator<FnCeilingIterator>
-  {
-    public:
-      FnCeilingIterator(const yy::location& loc, PlanIter_t& theChild);
-      virtual ~FnCeilingIterator();
-
-      Item_t nextImpl(PlanState& planState);
-      virtual void accept(PlanIterVisitor&) const;
-  };
+  NARY_ITER(FnCeilingIterator);
 
 // 6.4.3 fn:floor
-  class FnFloorIterator : public UnaryBaseIterator<FnFloorIterator>
-  {
-    public:
-      FnFloorIterator(const yy::location& loc, PlanIter_t& theChild);
-      virtual ~FnFloorIterator();
-
-      Item_t nextImpl(PlanState& planState);
-      virtual void accept(PlanIterVisitor&) const;
-  };
+  NARY_ITER(FnFloorIterator);
   
-// 6.4.4 fn:round
-  class FnRoundIterator : public UnaryBaseIterator<FnRoundIterator>
-  {
-    public:
-      FnRoundIterator(const yy::location& loc, PlanIter_t& theChild);
-      virtual ~FnRoundIterator();
-
-      Item_t nextImpl(PlanState& planState);
-      virtual void accept(PlanIterVisitor&) const;
-  };
+// 6.4.4 fn:round   
+  NARY_ITER(FnRoundIterator);
   
 // 6.4.5 fn:round-half-to-even
   class FnRoundHalfToEvenIterator : public BinaryBaseIterator<FnRoundHalfToEvenIterator>

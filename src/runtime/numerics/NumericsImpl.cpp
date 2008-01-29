@@ -576,13 +576,6 @@ namespace xqp
   |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-  FnAbsIterator::FnAbsIterator ( const yy::location& loc, PlanIter_t& aChild )
-      :
-      UnaryBaseIterator<FnAbsIterator> ( loc, aChild )
-  { }
-
-  FnAbsIterator::~FnAbsIterator()
-  { }
 
   Item_t FnAbsIterator::nextImpl ( PlanState& planState )
   {
@@ -593,7 +586,7 @@ namespace xqp
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    item = this->consumeNext ( theChild, planState );
+    item = this->consumeNext ( theChildren[0], planState );
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
@@ -642,7 +635,7 @@ namespace xqp
             &loc, false, "Wrong operator type for an abs operation.");
       }
 
-      if ( this->consumeNext ( theChild, planState ) != NULL )
+      if ( this->consumeNext ( theChildren[0], planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Abs operation has a sequences greater than one as an operator.");
@@ -654,13 +647,6 @@ namespace xqp
 
 
 // 6.4.2 fn:ceiling
-  FnCeilingIterator::FnCeilingIterator(const yy::location& loc, PlanIter_t& theChild)
-  :
-  UnaryBaseIterator<FnCeilingIterator>(loc, theChild)
-  {}
-
-  FnCeilingIterator::~FnCeilingIterator()
-  {}
 
   Item_t FnCeilingIterator::nextImpl(PlanState& planState)
   {
@@ -670,7 +656,7 @@ namespace xqp
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    item = this->consumeNext ( theChild, planState );
+    item = this->consumeNext ( theChildren[0], planState );
 
     if ( item != NULL )
     {
@@ -707,7 +693,7 @@ namespace xqp
             &loc, false, "Wrong operator type for a ceiling operation.");
       }
 
-      if ( this->consumeNext ( theChild, planState ) != NULL )
+      if ( this->consumeNext ( theChildren[0], planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Ceiling operation has a sequences greater than one as an operator.");
@@ -718,13 +704,6 @@ namespace xqp
   }
   
 // 6.4.3 fn:floor
-  FnFloorIterator::FnFloorIterator(const yy::location& loc, PlanIter_t& theChild)
-  :
-  UnaryBaseIterator<FnFloorIterator>(loc, theChild)
-  {}
-
-  FnFloorIterator::~ FnFloorIterator()
-  {}
 
   Item_t FnFloorIterator::nextImpl(PlanState& planState)
   {
@@ -734,7 +713,7 @@ namespace xqp
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    item = this->consumeNext ( theChild, planState );
+    item = this->consumeNext ( theChildren[0], planState );
 
     if ( item != NULL )
     {
@@ -771,7 +750,7 @@ namespace xqp
             &loc, false, "Wrong operator type for a floor operation.");
       }
 
-      if ( this->consumeNext ( theChild, planState ) != NULL )
+      if ( this->consumeNext ( theChildren[0], planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Floor operation has a sequences greater than one as an operator.");
@@ -782,13 +761,6 @@ namespace xqp
   }
   
 // 6.4.4 fn:round
-  FnRoundIterator::FnRoundIterator(const yy::location& loc, PlanIter_t& theChild)
-  :
-  UnaryBaseIterator<FnRoundIterator>(loc, theChild)
-  {}
-
-  FnRoundIterator::~FnRoundIterator()
-  {}
 
   Item_t FnRoundIterator::nextImpl(PlanState& planState)
   {
@@ -798,7 +770,7 @@ namespace xqp
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    item = this->consumeNext ( theChild, planState );
+    item = this->consumeNext ( theChildren[0], planState );
 
     if ( item != NULL )
     {
@@ -835,7 +807,7 @@ namespace xqp
             &loc, false, "Wrong operator type for a round operation.");
       }
 
-      if ( this->consumeNext ( theChild, planState ) != NULL )
+      if ( this->consumeNext ( theChildren[0], planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, false, "Round operation has a sequences greater than one as an operator.");
@@ -852,7 +824,8 @@ namespace xqp
                                             PlanIter_t& iter1)
   :
   BinaryBaseIterator<FnRoundHalfToEvenIterator>( loc, iter0, iter1 )
-  {}
+  {
+  }
 
   FnRoundHalfToEvenIterator::~ FnRoundHalfToEvenIterator()
   {}

@@ -456,7 +456,7 @@ fn_abs::fn_abs(const signature& sig)
 
 PlanIter_t fn_abs::operator()( const yy::location& loc, vector<PlanIter_t>& argv) const
 {
-	return new FnAbsIterator(loc, argv[0]);
+	return new FnAbsIterator(loc, argv);
 }
 
 TypeSystem::xqtref_t fn_abs::type_check(signature& sig) const
@@ -477,7 +477,7 @@ function(sig)
 
 PlanIter_t fn_ceiling::operator ( )(const yy::location& loc, vector<PlanIter_t>& argv) const
 {
-  return new FnCeilingIterator(loc, argv[0]);
+  return new FnCeilingIterator(loc, argv);
 }
 
 TypeSystem::xqtref_t fn_ceiling::type_check(signature& sig) const
@@ -498,7 +498,7 @@ function(sig)
 
 PlanIter_t fn_floor::operator ( )(const yy::location& loc, vector<PlanIter_t>& argv) const
 {
-  return new FnFloorIterator(loc, argv[0]);
+  return new FnFloorIterator(loc, argv);
 }
 
 TypeSystem::xqtref_t fn_floor::type_check(signature& sig) const
@@ -519,7 +519,7 @@ function(sig)
 
 PlanIter_t fn_round::operator ( )( const yy::location& loc, vector<PlanIter_t>& argv) const
 {
-  return new FnRoundIterator(loc, argv[0]);
+  return new FnRoundIterator(loc, argv);
 }
 
 TypeSystem::xqtref_t fn_round::type_check(signature& sig) const
