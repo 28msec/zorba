@@ -81,15 +81,7 @@ public:
  * --------------------*/
  
 /*begin class YearsFromDurationIterator */
-class FnYearsFromDurationIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnYearsFromDurationIterator, FnYearsFromDurationIteratorState);
+NARY_ITER(FnYearsFromDurationIterator);
 /*end class YearsFromDurationIterator */
 
 /*
@@ -97,15 +89,7 @@ NARY_ITER_STATE(FnYearsFromDurationIterator, FnYearsFromDurationIteratorState);
  * --------------------*/
  
 /*begin class FnMonthsFromDurationIterator */
-class FnMonthsFromDurationIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnMonthsFromDurationIterator, FnMonthsFromDurationIteratorState);
+NARY_ITER(FnMonthsFromDurationIterator);
 /*end class FnMonthsFromDurationIterator */
 
 /*
@@ -113,15 +97,7 @@ NARY_ITER_STATE(FnMonthsFromDurationIterator, FnMonthsFromDurationIteratorState)
  * --------------------*/
  
 /*begin class FnDaysFromDurationIterator */
-class FnDaysFromDurationIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnDaysFromDurationIterator, FnDaysFromDurationIteratorState);
+NARY_ITER(FnDaysFromDurationIterator);
 /*end class FnDaysFromDurationIterator */
 
 
@@ -130,15 +106,7 @@ NARY_ITER_STATE(FnDaysFromDurationIterator, FnDaysFromDurationIteratorState);
  * --------------------*/
  
 /*begin class FnHoursFromDurationIterator */
-class FnHoursFromDurationIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnHoursFromDurationIterator, FnHoursFromDurationIteratorState);
+NARY_ITER(FnHoursFromDurationIterator);
 /*end class FnHoursFromDurationIterator */
 
 /*
@@ -146,15 +114,7 @@ NARY_ITER_STATE(FnHoursFromDurationIterator, FnHoursFromDurationIteratorState);
  * --------------------*/
  
 /*begin class FnMinutesFromDurationIterator */
-class FnMinutesFromDurationIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnMinutesFromDurationIterator, FnMinutesFromDurationIteratorState);
+NARY_ITER(FnMinutesFromDurationIterator);
 /*end class FnMinutesFromDurationIterator */
 
 /*
@@ -162,15 +122,7 @@ NARY_ITER_STATE(FnMinutesFromDurationIterator, FnMinutesFromDurationIteratorStat
  * --------------------*/
  
 /*begin class FnSecondsFromDurationIterator */
-class FnSecondsFromDurationIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnSecondsFromDurationIterator, FnSecondsFromDurationIteratorState);
+NARY_ITER(FnSecondsFromDurationIterator);
 /*end class FnSecondsFromDurationIterator */
 
 /*
@@ -178,15 +130,7 @@ NARY_ITER_STATE(FnSecondsFromDurationIterator, FnSecondsFromDurationIteratorStat
  * --------------------*/
  
 /*begin class FnYearFromDatetimeIterator */
-class FnYearFromDatetimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnYearFromDatetimeIterator, FnYearFromDatetimeIteratorState);
+NARY_ITER(FnYearFromDatetimeIterator);
 /*end class FnYearFromDatetimeIterator */
 
 /*
@@ -194,15 +138,7 @@ NARY_ITER_STATE(FnYearFromDatetimeIterator, FnYearFromDatetimeIteratorState);
  * --------------------*/
  
 /*begin class FnMonthFromDatetimeIterator */
-class FnMonthFromDatetimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnMonthFromDatetimeIterator, FnMonthFromDatetimeIteratorState);
+NARY_ITER(FnMonthFromDatetimeIterator);
 /*end class FnMonthFromDatetimeIterator */
 
 /*
@@ -210,15 +146,7 @@ NARY_ITER_STATE(FnMonthFromDatetimeIterator, FnMonthFromDatetimeIteratorState);
  * --------------------*/
  
 /*begin class FnDayFromDatetimeIterator */
-class FnDayFromDatetimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnDayFromDatetimeIterator, FnDayFromDatetimeIteratorState);
+NARY_ITER(FnDayFromDatetimeIterator);
 /*end class FnDayFromDatetimeIterator */
 
 /*
@@ -226,15 +154,7 @@ NARY_ITER_STATE(FnDayFromDatetimeIterator, FnDayFromDatetimeIteratorState);
  * --------------------*/
  
 /*begin class FnHoursFromDatetimeIterator */
-class FnHoursFromDatetimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnHoursFromDatetimeIterator, FnHoursFromDatetimeIteratorState);
+NARY_ITER(FnHoursFromDatetimeIterator);
 /*end class FnHoursFromDatetimeIterator */
 
 /*
@@ -242,15 +162,7 @@ NARY_ITER_STATE(FnHoursFromDatetimeIterator, FnHoursFromDatetimeIteratorState);
  * --------------------*/
  
 /*begin class FnMinutesFromDatetimeIterator */
-class FnMinutesFromDatetimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnMinutesFromDatetimeIterator, FnMinutesFromDatetimeIteratorState);
+NARY_ITER(FnMinutesFromDatetimeIterator);
 /*end class FnMinutesFromDatetimeIterator */
 
 /*
@@ -258,15 +170,7 @@ NARY_ITER_STATE(FnMinutesFromDatetimeIterator, FnMinutesFromDatetimeIteratorStat
  * --------------------*/
  
 /*begin class FnSecondsFromDatetimeIterator */
-class FnSecondsFromDatetimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnSecondsFromDatetimeIterator, FnSecondsFromDatetimeIteratorState);
+NARY_ITER(FnSecondsFromDatetimeIterator);
 /*end class FnSecondsFromDatetimeIterator */
 
 /*
@@ -274,15 +178,7 @@ NARY_ITER_STATE(FnSecondsFromDatetimeIterator, FnSecondsFromDatetimeIteratorStat
  * --------------------*/
  
 /*begin class FnTimezoneFromDatetimeIterator */
-class FnTimezoneFromDatetimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnTimezoneFromDatetimeIterator, FnTimezoneFromDatetimeIteratorState);
+NARY_ITER(FnTimezoneFromDatetimeIterator);
 /*end class FnTimezoneFromDatetimeIterator */
 
 /*
@@ -290,15 +186,7 @@ NARY_ITER_STATE(FnTimezoneFromDatetimeIterator, FnTimezoneFromDatetimeIteratorSt
  * --------------------*/
  
 /*begin class FnYearFromDateIterator */
-class FnYearFromDateIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnYearFromDateIterator, FnYearFromDateIteratorState);
+NARY_ITER(FnYearFromDateIterator);
 /*end class FnYearFromDateIterator */
 
 /*
@@ -306,15 +194,7 @@ NARY_ITER_STATE(FnYearFromDateIterator, FnYearFromDateIteratorState);
  * --------------------*/
  
 /*begin class FnMonthFromDateIterator */
-class FnMonthFromDateIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnMonthFromDateIterator, FnMonthFromDateIteratorState);
+NARY_ITER(FnMonthFromDateIterator);
 /*end class FnMonthFromDateIterator */
 
 /*
@@ -322,15 +202,7 @@ NARY_ITER_STATE(FnMonthFromDateIterator, FnMonthFromDateIteratorState);
  * --------------------*/
  
 /*begin class FnDayFromDateIterator */
-class FnDayFromDateIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnDayFromDateIterator, FnDayFromDateIteratorState);
+NARY_ITER(FnDayFromDateIterator);
 /*end class FnDayFromDateIterator */
 
 /*
@@ -338,15 +210,7 @@ NARY_ITER_STATE(FnDayFromDateIterator, FnDayFromDateIteratorState);
  * --------------------*/
  
 /*begin class FnTimezoneFromDateIterator */
-class FnTimezoneFromDateIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnTimezoneFromDateIterator, FnTimezoneFromDateIteratorState);
+NARY_ITER(FnTimezoneFromDateIterator);
 /*end class FnTimezoneFromDateIterator */
 
 /*
@@ -354,15 +218,7 @@ NARY_ITER_STATE(FnTimezoneFromDateIterator, FnTimezoneFromDateIteratorState);
  * --------------------*/
  
 /*begin class FnHoursFromTimeIterator */
-class FnHoursFromTimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnHoursFromTimeIterator, FnHoursFromTimeIteratorState);
+NARY_ITER(FnHoursFromTimeIterator);
 /*end class FnHoursFromTimeIterator */
 
 /*
@@ -370,15 +226,7 @@ NARY_ITER_STATE(FnHoursFromTimeIterator, FnHoursFromTimeIteratorState);
  * --------------------*/
  
 /*begin class FnMinutesFromTimeIterator */
-class FnMinutesFromTimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnMinutesFromTimeIterator, FnMinutesFromTimeIteratorState);
+NARY_ITER(FnMinutesFromTimeIterator);
 /*end class FnMinutesFromTimeIterator */
 
 
@@ -387,15 +235,7 @@ NARY_ITER_STATE(FnMinutesFromTimeIterator, FnMinutesFromTimeIteratorState);
  * --------------------*/
  
 /*begin class FnSecondsFromTimeIterator */
-class FnSecondsFromTimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnSecondsFromTimeIterator, FnSecondsFromTimeIteratorState);
+NARY_ITER(FnSecondsFromTimeIterator);
 /*end class FnSecondsFromTimeIterator */
 
 /*
@@ -403,15 +243,7 @@ NARY_ITER_STATE(FnSecondsFromTimeIterator, FnSecondsFromTimeIteratorState);
  * --------------------*/
  
 /*begin class FnTimezoneFromTimeIterator */
-class FnTimezoneFromTimeIteratorState : public  PlanIteratorState {
-  public:
-    uint32_t theCurIter;
-
-    void init();
-    void reset();
-};
-
-NARY_ITER_STATE(FnTimezoneFromTimeIterator, FnTimezoneFromTimeIteratorState);
+NARY_ITER(FnTimezoneFromTimeIterator);
 /*end class FnTimezoneFromTimeIterator */
 
 /*

@@ -95,21 +95,7 @@ OpDurationEqualIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnYearsFromDurationIterator */
-void
-FnYearsFromDurationIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnYearsFromDurationIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnYearsFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -136,21 +122,7 @@ FnYearsFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnMonthsFromDurationIterator */
-void
-FnMonthsFromDurationIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnMonthsFromDurationIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnMonthsFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -177,21 +149,7 @@ FnMonthsFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnDaysFromDurationIterator */
-void
-FnDaysFromDurationIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnDaysFromDurationIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnDaysFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -218,21 +176,7 @@ FnDaysFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnHoursFromDurationIterator */
-void
-FnHoursFromDurationIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnHoursFromDurationIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnHoursFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -259,21 +203,7 @@ FnHoursFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnMinutesFromDurationIterator */
-void
-FnMinutesFromDurationIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnMinutesFromDurationIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -300,21 +230,7 @@ FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnSecondsFromDurationIterator */
-void
-FnSecondsFromDurationIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnSecondsFromDurationIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -341,21 +257,7 @@ FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnYearFromDatetimeIterator */
-void
-FnYearFromDatetimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnYearFromDatetimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -383,21 +285,7 @@ FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnMonthFromDatetimeIterator */
-void
-FnMonthFromDatetimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnMonthFromDatetimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnMonthFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -424,21 +312,7 @@ FnMonthFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnDayFromDatetimeIterator */
-void
-FnDayFromDatetimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnDayFromDatetimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnDayFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -465,21 +339,7 @@ FnDayFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnHoursFromDatetimeIterator */
-void
-FnHoursFromDatetimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnHoursFromDatetimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnHoursFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -506,21 +366,7 @@ FnHoursFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnMinutesFromDatetimeIterator */
-void
-FnMinutesFromDatetimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnMinutesFromDatetimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -547,21 +393,7 @@ FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnSecondsFromDatetimeIterator */
-void
-FnSecondsFromDatetimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnSecondsFromDatetimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -588,21 +420,7 @@ FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnTimezoneFromDatetimeIterator */
-void
-FnTimezoneFromDatetimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnTimezoneFromDatetimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -629,21 +447,7 @@ FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnYearFromDateIterator */
-void
-FnYearFromDateIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnYearFromDateIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnYearFromDateIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -670,21 +474,7 @@ FnYearFromDateIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnMonthFromDateIterator */
-void
-FnMonthFromDateIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnMonthFromDateIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnMonthFromDateIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -711,21 +501,7 @@ FnMonthFromDateIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnDayFromDateIterator */
-void
-FnDayFromDateIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnDayFromDateIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnDayFromDateIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -752,21 +528,7 @@ FnDayFromDateIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnTimezoneFromDateIterator */
-void
-FnTimezoneFromDateIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnTimezoneFromDateIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnTimezoneFromDateIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -793,21 +555,7 @@ FnTimezoneFromDateIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnHoursFromTimeIterator */
-void
-FnHoursFromTimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnHoursFromTimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnHoursFromTimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -834,21 +582,7 @@ FnHoursFromTimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnMinutesFromTimeIterator */
-void
-FnMinutesFromTimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnMinutesFromTimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnMinutesFromTimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -876,21 +610,7 @@ FnMinutesFromTimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnSecondsFromTimeIterator */
-void
-FnSecondsFromTimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnSecondsFromTimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnSecondsFromTimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
@@ -919,21 +639,7 @@ FnSecondsFromTimeIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 /*begin class FnTimezoneFromTimeIterator */
-void
-FnTimezoneFromTimeIteratorState::init()
-{
-  PlanIteratorState::init();
-  theCurIter = 0;
-}
-
-void
-FnTimezoneFromTimeIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  theCurIter = 0;
-}
-
-Item_t 
+Item_t
 FnTimezoneFromTimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
