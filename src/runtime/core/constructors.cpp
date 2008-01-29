@@ -1,4 +1,4 @@
-
+#include <memory>
 #include "util/Assert.h"
 #include "system/zorba.h"
 #include "errors/error_factory.h"
@@ -161,8 +161,8 @@ ElementIterator::ElementIterator (
 
 Item_t ElementIterator::nextImpl(PlanState& planState)
 {
-  Iterator* cwrapper = 0;
-  Iterator* awrapper = 0;
+  std::auto_ptr<Iterator> cwrapper;
+  std::auto_ptr<Iterator> awrapper;
   Item_t qnameItem;
   Item_t node;
 
@@ -180,31 +180,23 @@ Item_t ElementIterator::nextImpl(PlanState& planState)
   }
 
   if (theChildrenIter != 0)
-    cwrapper = new PlanIteratorWrapper(theChildrenIter, planState);
+    cwrapper.reset(new PlanIteratorWrapper(theChildrenIter, planState));
 
   if (theAttributesIter != 0)
-    awrapper = new PlanIteratorWrapper(theAttributesIter, planState);
+    awrapper.reset(new PlanIteratorWrapper(theAttributesIter, planState));
 
-  try
-  {
-    node = Zorba::getItemFactory()->
-           createElementNode(qnameItem.get_ptr(),
-                             GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
-                             cwrapper,
-                             awrapper,
-                             NULL,
-                             theNsBindings,
-                             theAssignId,
-                             true,
-                             state->theTypePreserve,
-                             state->theNsPreserve,
-                             state->theNsInherit);
-  }
-  catch(...)
-  {
-    if (cwrapper != 0) delete cwrapper;
-    if (awrapper != 0) delete awrapper;
-  }
+  node = Zorba::getItemFactory()->
+      createElementNode(qnameItem.get_ptr(),
+              GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
+              cwrapper.get(),
+              awrapper.get(),
+              NULL,
+              theNsBindings,
+              theAssignId,
+              true,
+              state->theTypePreserve,
+              state->theNsPreserve,
+              state->theNsInherit);
 
   STACK_PUSH(node, state);
   STACK_END();
