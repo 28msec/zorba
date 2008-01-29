@@ -580,12 +580,12 @@ typedef yy::xquery_parser::token token;
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
-"declare"{SP}"construction"/{WordBreak} {
+"declare"{SP}"construction"{SP} {
 	BEGIN MODE_OPERATOR;
 	return token::DECLARE_CONSTRUCTION;
 }
 
-"declare"{SP}"default"{SP}"order"/{WordBreak} {
+"declare"{SP}"default"{SP}"order"{SP} {
 	BEGIN MODE_OPERATOR;
 	return token::DECLARE_DEFAULT_ORDER;
 }
@@ -603,12 +603,12 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to NAMESPACEDECL */
 	/* --------------------------- */
-"declare"{SP}"default"{SP}"collation"/{WordBreak} {
+"declare"{SP}"default"{SP}"collation"{SP} {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::DECLARE_DEFAULT_COLLATION;
 }
 
-"declare"{SP}"namespace"/{WordBreak} {
+"declare"{SP}"namespace"{SP} {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::DECLARE_NAMESPACE;
 }
@@ -626,12 +626,12 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to NAMESPACEKEYWORD */
 	/* ------------------------------ */
-"declare"{SP}"default"{SP}"element"/{WordBreak} {
+"declare"{SP}"default"{SP}"element"{SP} {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::DECLARE_DEFAULT_ELEMENT;
 }
 
-"declare"{SP}"default"{SP}"function"/{WordBreak} {
+"declare"{SP}"default"{SP}"function"{SP} {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::DECLARE_DEFAULT_FUNCTION;
 }
@@ -646,7 +646,7 @@ typedef yy::xquery_parser::token token;
 	return token::IMPORT_MODULE;
 }
 
-"declare"{SP}"copy-namespaces"/{WordBreak} {
+"declare"{SP}"copy-namespaces"{SP} {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::DECLARE_COPY_NAMESPACES;
 }
@@ -740,7 +740,7 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to XMLSPACE_DECL */
 	/* --------------------------- */
-"declare"{SP}"boundary-space"/{WordBreak} {
+"declare"{SP}"boundary-space"{SP} {
 	BEGIN MODE_XMLSPACE_DECL;
 	return token::DECLARE_BOUNDARY_SPACE;
 }
@@ -755,7 +755,7 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to DECLAREORDERING */
 	/* ----------------------------- */
-"declare"{SP}"ordering"/{WordBreak} {
+"declare"{SP}"ordering"{SP} {
 	BEGIN MODE_DECLAREORDERING;
 	return token::DECLARE_ORDERING;
 }
@@ -779,7 +779,7 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to OPTION */
 	/* -------------------- */
-"declare"{SP}"option"/{WordBreak} {
+"declare"{SP}"option"{SP} {
 	BEGIN MODE_OPTION;
 	return token::DECLARE_OPTION;
 }
@@ -1688,6 +1688,10 @@ typedef yy::xquery_parser::token token;
 
 "encoding"/{WordBreak} {
 	return token::ENCODING;
+}
+
+{SP} {
+  /* eat up whitespace */
 }
 
 } /* <MODE_XQUERY_VERSION> */
