@@ -3146,22 +3146,41 @@ typedef yy::xquery_parser::token token;
 	on the scanner's data, it is simpler to implement them in this file. 
 */
 namespace xqp {
+
+class safe_scanner {
+  public:
+    safe_scanner()
+      : str_buffer(0)
+    {
+      yylex_init(&scanner);
+    }
+
+    ~safe_scanner()
+    {
+      if (str_buffer) {
+          yy_delete_buffer(str_buffer, scanner); /* free up memory */
+      }
+      yylex_destroy(scanner);
+    }
+
+    yyscan_t scanner;
+    YY_BUFFER_STATE str_buffer;
+};
   
 void xquery_driver::parse_string( const char *query_string)
-{  
-  yyscan_t scanner;
-  yylex_init(&scanner);
+{
+  safe_scanner safe_scanner;
+  yyscan_t scanner = safe_scanner.scanner;
+
   struct yyguts_t * yyg = (struct yyguts_t*)scanner;
 
-  YY_BUFFER_STATE str_buffer = yy_scan_string(query_string, scanner);
+  safe_scanner.str_buffer = yy_scan_string(query_string, scanner);
 
   yy_flex_debug = Properties::instance()->traceScanning();
   yy::xquery_parser parser(*this, scanner);
   parser.set_debug_level(Properties::instance()->traceParsing());
   parser.parse();
 
-  yy_delete_buffer(str_buffer, scanner); /* free up memory */
-  yylex_destroy(scanner);
 }
 
 void xquery_driver::parse(xqp_string const fname)
