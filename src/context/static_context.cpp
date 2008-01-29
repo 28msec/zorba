@@ -340,8 +340,6 @@ void static_context::add_collation(xqp_string collation_uri,
 	cobj->is_user_created = is_user_created;
 	cobj->coll = coll;
 
-    std::cerr << cobj << std::endl;
-
 	bind_collation(collation_uri, cobj);
 }
 

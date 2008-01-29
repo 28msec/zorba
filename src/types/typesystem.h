@@ -372,6 +372,16 @@ class AnyXQType : public XQType {
 
     AnyXQType() : XQType(TypeSystem::QUANT_STAR) { }
 
+    void addReference() {
+        XQType::addReference();
+        std::cerr << "Here - add" << std::endl;
+    }
+
+    void removeReference() {
+        XQType::removeReference();
+        std::cerr << "Here - remove" << std::endl;
+    }
+
     TYPE_FRIENDS
 };
 
