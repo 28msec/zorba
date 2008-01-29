@@ -11,15 +11,15 @@
     keymap.put ("int:" #name, val);                                     \
   }
 
-#define DECL_STR_PARAM( class, name )                  \
-  xqp_string class::name () const {                        \
-    xqp_string val;                                        \
-    bool found = context_value ("int:" #name, val);    \
-    assert (found);                                    \
-    return val;                                        \
-  }                                                    \
-  void class::set_##name (xqp_string val) {                \
-    str_keymap.put ("int:" #name, val);                \
+#define DECL_STR_PARAM( class, name, err )                     \
+  xqp_string class::name () const {                            \
+    xqp_string val;                                            \
+    bool found = context_value ("int:" #name, val);            \
+    assert (found);                                            \
+    return val;                                                \
+  }                                                            \
+  void class::set_##name (xqp_string val) {                    \
+    bind_str ("int:" #name, val, ZorbaError::err);             \
   }
 
 /*

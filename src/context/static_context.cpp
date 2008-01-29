@@ -137,11 +137,11 @@ namespace xqp {
 
 //  DECL_STR_PARAM (static_context, baseuri)
 //  DECL_STR_PARAM (static_context, default_collation)
-  DECL_STR_PARAM (static_context, default_function_namespace)
-  DECL_STR_PARAM (static_context, default_elem_type_ns)
-  DECL_STR_PARAM (static_context, current_absolute_baseuri)
-  DECL_STR_PARAM (static_context, encapsulating_entity_baseuri)
-  DECL_STR_PARAM (static_context, entity_file_uri)
+  DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
+  DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
+  DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
+  DECL_STR_PARAM (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE)
+  DECL_STR_PARAM (static_context, entity_file_uri, MAX_ZORBA_ERROR_CODE)
 
 
 
@@ -226,7 +226,7 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
 
   void static_context::bind_ns (xqp_string prefix, xqp_string ns)
   {
-    bind_str ("ns:" + prefix, ns);
+    bind_str ("ns:" + prefix, ns, ZorbaError::XQST0033);
   }
 
   function *static_context::lookup_builtin_fn (xqp_string local, int arity)
@@ -352,7 +352,7 @@ xqp_string static_context::default_collation_uri() const
 
 void static_context::set_default_collation_uri(xqp_string def_uri)
 {
-	bind_str("def_collation_uri:", def_uri);
+	bind_str("def_collation_uri:", def_uri, ZorbaError::XQST0038);
 }
 
 context::COLLATION_OBJ	*static_context::lookup_collation(xqp_string coll_uri)
@@ -489,27 +489,16 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 xqp_string static_context::baseuri () const 
 {
   xqp_string val;                                        
-  bool found = context_value ("int:" "baseuri", val);    
-//  assert (found);                                    
+  context_value ("int:" "baseuri", val);  // if not found val remains ""
   return val;
 }
 
 void static_context::set_baseuri (xqp_string val, bool from_prolog) 
 {
-	if(from_prolog)
-	{
-		///check if base uri already has been added from prolog
-		///only one baseuri definition is allowed in prolog
-		xqp_string str;                                        
-		bool found = context_value ("int:" "from_prolog_baseuri", str);    
-		if(found)
-		{
-			ZORBA_ERROR_ALERT(ZorbaError::XQST0032);
-			return;
-		}
-		str_keymap.put ("int:" "from_prolog_baseuri", "");
-	}
-  str_keymap.put ("int:" "baseuri", val);                
+	if (from_prolog)
+    bind_str ("int:" "from_prolog_baseuri", val, ZorbaError::XQST0032);
+  else
+    str_keymap.put ("int:" "baseuri", val);                
 }
 
 void static_context::compute_current_absolute_baseuri()

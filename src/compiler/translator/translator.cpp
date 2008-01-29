@@ -104,7 +104,7 @@ protected:
    */
   std::stack<const DirElemContent*>     thePossibleWSContentStack;
 
-  bool hadBSpaceDecl, hadDefCollationDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
+  bool hadBSpaceDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
 
   var_expr_t theDotVar;
 
@@ -115,11 +115,9 @@ protected:
     theRootRelPathExpr(0),
     ns_ctx(new namespace_context(sctx_p)),
     hadBSpaceDecl (false),
-    hadDefCollationDecl (false),
     hadBUriDecl (false),
     hadConstrDecl (false),
     hadCopyNSDecl (false),
-    hadDefNSDecl (false),
     hadEmptyOrdDecl (false),
     hadOrdModeDecl (false)
   {
@@ -330,7 +328,6 @@ void end_visit(const CopyNamespacesDecl& v, void *visit_state)
 void *begin_visit(DefaultCollationDecl const& v)
 {
   TRACE_VISIT ();
-  CHK_ONE_DECL (hadDefCollationDecl, XQST0038);
   string uri = v.get_collation();
   sctx_p->set_default_collation_uri(uri);
   return NULL;
@@ -345,7 +342,6 @@ void end_visit(const DefaultCollationDecl& v, void *visit_state)
 void *begin_visit(DefaultNamespaceDecl const& v)
 {
   TRACE_VISIT ();
-  CHK_ONE_DECL (hadDefNSDecl, XQST0066);
 // TODO adapt to new store
 //  switch (v.get_mode()) {
 //  case ns_element_default: {

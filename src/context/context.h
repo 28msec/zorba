@@ -103,7 +103,10 @@ protected:
     v.functionValue = f;
     keymap.put (key, v);
   }
-  void bind_str  (xqp_string key, xqp_string v) {
+  void bind_str (xqp_string key, xqp_string v, enum ZorbaError::ErrorCodes err = ZorbaError::XQP0019_INTERNAL_ERROR) {
+    xqp_string old;
+    if (err != ZorbaError::MAX_ZORBA_ERROR_CODE && lookup_once (key, old))
+      ZORBA_ERROR_ALERT (err);
     str_keymap.put (key, v);
   }
 
