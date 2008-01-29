@@ -5077,21 +5077,21 @@ PITest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ ]\n";
 #endif
-			$$ = new PITest(@$, "", "");
+			$$ = new PITest(@$, "");
 		}
 	|	PI_LPAR  NCNAME  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ncname]\n";
 #endif
-			$$ = new PITest(@$, driver.symtab.get((off_t)$2), "");
+			$$ = new PITest(@$, driver.symtab.get((off_t)$2));
 		}
 	|	PI_LPAR  STRING_LITERAL  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [stringlit]\n";
 #endif
-			$$ = new PITest(@$, "", driver.symtab.get((off_t)$2));
+			$$ = new PITest(@$, driver.symtab.get((off_t)$2));
 		}
 	;
 
