@@ -735,9 +735,11 @@ public:
 
 	virtual bool isError() = 0;
 
-	static void setThrowExceptionsMode(bool throw_exceptions);
+	static bool setThrowExceptionsMode(bool throw_exceptions);
 	static bool getThrowExceptionsMode();
 };
+
+std::ostream& operator<<(std::ostream& os, ZorbaAlert &x);
 
 
 } // end namespace xqp

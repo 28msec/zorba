@@ -118,9 +118,11 @@ void AlertsManagerImpl::setIsError()
 	is_error = true;
 }
 
-void ZorbaAlertsManager::setThrowExceptionsMode(bool throw_exceptions)
+bool ZorbaAlertsManager::setThrowExceptionsMode(bool throw_exceptions)
 {
+	bool original_throw_mode = g_throw_exceptions;
 	g_throw_exceptions = throw_exceptions;
+	return original_throw_mode;
 }
 
 bool ZorbaAlertsManager::getThrowExceptionsMode()
@@ -228,5 +230,10 @@ void ZorbaFnTrace::DumpAlert(std::ostream &os)
 
 }
 
+std::ostream& operator<<(std::ostream& os, ZorbaAlert &x)
+{
+	x.DumpAlert(os);
+	return os;
+}
 
 }
