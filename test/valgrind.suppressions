@@ -280,3 +280,28 @@
    fun:_ZN3xqp23fn_data_func_init_classC1Ev
    fun:_Z41__static_initialization_and_destruction_0ii
 }
+
+{
+   static initialization
+   Memcheck:Leak
+   fun:_Znwj
+   fun:_ZN9__gnu_cxx13new_allocatorIN3xqp7hashmapINS1_7context11ctx_value_tEE5entryEE8allocateEjPKv
+   fun:_ZNSt12_Vector_baseIN3xqp7hashmapINS0_7context11ctx_value_tEE5entryESaIS5_EE11_M_allocateEj
+   fun:_ZNSt6vectorIN3xqp7hashmapINS0_7context11ctx_value_tEE5entryESaIS5_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS5_S7_EERKS5_
+   fun:_ZNSt6vectorIN3xqp7hashmapINS0_7context11ctx_value_tEE5entryESaIS5_EE9push_backERKS5_
+   fun:_ZN3xqp7hashmapINS_7context11ctx_value_tEE3putERKSsS2_
+   fun:_ZN3xqp7context9bind_funcENS_9xqpStringEPNS_8functionE
+   fun:_ZN3xqp14static_context7bind_fnENS_9xqpStringEPNS_8functionEi
+}
+
+{
+   XS_ANY type is not deleted because the root static context is still held at the end
+   Memcheck:Leak
+   fun:_Znwj
+   fun:_ZN3xqp10TypeSystemC1Ev
+   fun:_ZN3xqp17GlobalEnvironment4initEv
+   fun:_ZN3xqp17GlobalEnvironment11getInstanceEv
+   fun:_Z41__static_initialization_and_destruction_0ii
+   fun:_GLOBAL__I__ZN3xqp12library_initEv
+}
+
