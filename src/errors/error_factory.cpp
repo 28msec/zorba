@@ -67,7 +67,7 @@ void ZorbaAlertFactory::error_alert(
 	err_manager->getAlertMessages().applyParams(&description, &param1, &param2);
 	description = ZorbaError::toString (code) + ": " + description;
 
-	auto_ptr<ZorbaError> error (new ZorbaError);
+	ZorbaError* error = new ZorbaError;
 	error->theKind = ZorbaAlert::ERROR_ALERT;
 	error->theCode = code;
 //	error->theIsFatal = !continue_execution;
@@ -84,7 +84,7 @@ void ZorbaAlertFactory::error_alert(
 //	if(z->current_xqueryresult)
 //		z->current_xqueryresult->is_error = true;
 
-	err_manager->sendAlertToUser(z, error.get ());
+	err_manager->sendAlertToUser(z, error);
 
 	if(!continue_execution)
 	{
@@ -93,7 +93,7 @@ void ZorbaAlertFactory::error_alert(
 			abort ();
 		else
 #endif
-      throw xqp_exception(error.get ());
+      throw xqp_exception(error);
 	}
 }
 
@@ -124,7 +124,7 @@ void ZorbaAlertFactory::warning_alert(
 	description = err_manager->getAlertMessages().warning_decode(code);
 	err_manager->getAlertMessages().applyParams(&description, &param1, &param2);
 
-	auto_ptr<ZorbaWarning> warning (new ZorbaWarning);
+	ZorbaWarning* warning = new ZorbaWarning;
 	warning->theKind = ZorbaAlert::WARNING_ALERT;
 	warning->theCode = code;
 	if(ploc)
@@ -137,7 +137,7 @@ void ZorbaAlertFactory::warning_alert(
 	warning->theDescription = description;
 	time(&warning->theTime);
 
-	err_manager->sendAlertToUser(z, warning.get ());
+	err_manager->sendAlertToUser(z, warning);
 }
 
 
@@ -159,13 +159,13 @@ void ZorbaAlertFactory::notify_event(
 	description = err_manager->getAlertMessages().notify_event_decode(code);
 	err_manager->getAlertMessages().applyParams(&description, &param1, &param2);
 
-	auto_ptr<ZorbaNotify> notification (new ZorbaNotify);
+	ZorbaNotify* notification = new ZorbaNotify;
 	notification->theKind = ZorbaAlert::NOTIFICATION_ALERT;
 	notification->theCode = code;
 	notification->theDescription = description;
 	time(&notification->theTime);
 
-	err_manager->sendAlertToUser(z, notification.get ());
+	err_manager->sendAlertToUser(z, notification);
 }
 
 
@@ -188,14 +188,14 @@ int ZorbaAlertFactory::ask_user(
   description = err_manager->getAlertMessages().ask_user_decode(questionCode);
 	err_manager->getAlertMessages().applyParams(&description, &param1, &param2);
 
-	auto_ptr<ZorbaAskUser> askuser (new ZorbaAskUser);
+	ZorbaAskUser* askuser = new ZorbaAskUser;
 	askuser->theKind = ZorbaAlert::FEEDBACK_REQUEST_ALERT;
 	askuser->theQuestionCode = questionCode;
 	askuser->theReplyOptionsCode = replyCode;
 	askuser->theDescription = description;
 	time(&askuser->theTime);
 
-	int retval = err_manager->sendAlertToUser(z, askuser.get ());
+	int retval = err_manager->sendAlertToUser(z, askuser);
 
 	return retval;
 }
@@ -259,7 +259,7 @@ void fn_user_error(
 		}
 	}
 
-	auto_ptr<ZorbaFnError> usererror (new ZorbaFnError);
+	ZorbaFnError* usererror = new ZorbaFnError;
 	usererror->theKind = ZorbaAlert::USER_ERROR_ALERT;
 	usererror->theErrorQName = err_qname;
 	if(items)
@@ -268,7 +268,7 @@ void fn_user_error(
 	usererror->theDescription = err_decoded;
 	time(&usererror->theTime);
 
-	err_manager->sendAlertToUser(z, usererror.get ());
+	err_manager->sendAlertToUser(z, usererror);
 }
 
 
@@ -284,14 +284,14 @@ void fn_user_trace(
 
 	///...send notification message label + items to user
 
-	auto_ptr<ZorbaFnTrace> usertrace (new ZorbaFnTrace);
+	ZorbaFnTrace* usertrace = new ZorbaFnTrace;
 	usertrace->theKind = ZorbaAlert::USER_TRACE_ALERT;
 	if(items)
 		(std::vector<Item*>)usertrace->items_trace = *items;
 	usertrace->theDescription = label;
 	time(&usertrace->theTime);
 
-	err_manager->sendAlertToUser(z, usertrace.get ());
+	err_manager->sendAlertToUser(z, usertrace);
 }
 
 
