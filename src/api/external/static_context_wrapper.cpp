@@ -766,7 +766,7 @@ static_context*		StaticContextWrapper::FillInStaticContext()
 													cinfo->coll_string, 
 													cinfo->coll_strength, 
 													cinfo->coll,
-													true);///is user created
+													false);///is user created
 		}
 		else
 			break;

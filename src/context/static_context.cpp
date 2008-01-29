@@ -116,10 +116,9 @@ namespace xqp {
 				{
 					if(z)
 					{
-						z->coll_manager->removeReference(
-																					val->collationValue->coll_string,
-																					val->collationValue->coll_strength);
+						z->coll_manager->removeReference(val->collationValue->coll_string, val->collationValue->coll_strength);
 					}
+                    delete val->collationValue;
 				}
 			}
 		}
@@ -340,6 +339,8 @@ void static_context::add_collation(xqp_string collation_uri,
 	cobj->coll_strength = coll_strength;
 	cobj->is_user_created = is_user_created;
 	cobj->coll = coll;
+
+    std::cerr << cobj << std::endl;
 
 	bind_collation(collation_uri, cobj);
 }
