@@ -1,0 +1,1 @@
+fn:seconds-from-time(())

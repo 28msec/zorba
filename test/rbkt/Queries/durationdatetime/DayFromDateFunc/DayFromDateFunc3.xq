@@ -1,0 +1,1 @@
+fn:day-from-date(())

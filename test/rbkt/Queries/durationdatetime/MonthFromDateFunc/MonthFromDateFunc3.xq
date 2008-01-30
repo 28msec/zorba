@@ -1,0 +1,1 @@
+fn:month-from-date(())
