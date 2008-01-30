@@ -7,6 +7,7 @@
 #ifndef XQP_DEFAULT_STORE_H
 #define XQP_DEFAULT_STORE_H
 
+
 #include "store/api/store.h"
 #include "store/util/string_pool.h"
 #include "store/util/string_hashmap.h"
@@ -20,6 +21,9 @@ class StringPool;
 class XmlLoader;
 class Timetravel;
 class Requester;
+class XmlNode;
+class QueryContextContainer;
+class QueryContext;
 
 template <class V> class StringHashMap;
 
@@ -51,31 +55,33 @@ public:
 
 protected:
   static const float DEFAULT_HASH_LOAD_FACTOR;
-  static const xqp_ulong DEFAULT_COLLECTION_MAP_SIZE;
+  static const unsigned long long DEFAULT_COLLECTION_MAP_SIZE;
 
-  static unsigned long theUriCounter;
-  static unsigned long theTreeCounter;
+  static unsigned long     theUriCounter;
+  static unsigned long     theTreeCounter;
 
 public:
-  xqpStringStore_t     theEmptyNs;
-  xqpStringStore_t     theXmlSchemaNs;
-  Item_t               theUntypedType;
-  Item_t               theAnyType;
-  Item_t               theUntypedAtomicType;
-  Item_t               theQNameType;
+  xqpStringStore_t         theEmptyNs;
+  xqpStringStore_t         theXmlSchemaNs;
+  Item_t                   theUntypedType;
+  Item_t                   theAnyType;
+  Item_t                   theUntypedAtomicType;
+  Item_t                   theQNameType;
 
 protected:
-  bool                 theIsInitialized;
+  bool                     theIsInitialized;
 
-  NamespacePool      * theNamespacePool;
-  QNamePool          * theQNamePool;
+  NamespacePool          * theNamespacePool;
+  QNamePool              * theQNamePool;
 
-  BasicItemFactory   * theItemFactory;
+  BasicItemFactory       * theItemFactory;
 
-  CollectionSet        theCollections;
-  DocumentSet          theDocuments;
+  CollectionSet            theCollections;
+  DocumentSet              theDocuments;
 
-  XmlLoader          * theXmlLoader;
+  XmlLoader              * theXmlLoader;
+
+  QueryContextContainer  * theQueryContextContainer; 
 
 private:
   SimpleStore();
@@ -93,6 +99,8 @@ public:
   XmlLoader& getXmlLoader();
 
   unsigned long getTreeId()               { return theTreeCounter++; }
+
+  QueryContext& getQueryContext(unsigned long queryId);
 
   void setGarbageCollectionStrategy(const xqp_string& strategy);
 
@@ -138,6 +146,8 @@ public:
   void apply(PUL_t pendingUpdateList);
   void apply(PUL_t pendingUpdateList, Requester requester);
 };
+
+
 
 } /* namespace xqp */
 

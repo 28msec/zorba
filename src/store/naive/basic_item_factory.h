@@ -53,7 +53,7 @@ public:
   virtual Item_t createUntypedAtomic(const xqpStringStore_t& value);
   virtual Item_t createUntypedAtomic(const xqp_string& value);
 
-  virtual Item_t createString(const xqpStringStore_t& value);
+  virtual Item_t createString(xqpStringStore* value);
   virtual Item_t createString(const xqp_string& value);
 
   virtual Item_t createBase64Binary(xqp_base64Binary value);
@@ -183,6 +183,7 @@ public:
 
 
   Item_t createDocumentNode(
+        unsigned long   qid,
         xqpStringStore* baseURI,
         xqpStringStore* docURI,
         Iterator*       children,
@@ -193,6 +194,7 @@ public:
         bool            nsInherit);
 
   Item_t createElementNode(
+        unsigned long     qid,
         Item*             name,
         Item*             type,
         Iterator*         childrenIte,
@@ -206,22 +208,31 @@ public:
         bool              nsInherit);
 
   Item_t createAttributeNode(
-        Item*  name,
-        Item*  type,
-        Item*  typedValue,
-        bool   isRoot);
+        ulong     qid,
+        Iterator* nameIter,
+        Item*     typeName,
+        Iterator* valueIter,
+        bool      isRoot);
 
   Item_t createTextNode(
-			    xqpStringStore* value,
-			    bool            createId);
+        unsigned long   qid,
+        Iterator*       valueIter,
+        bool            isRoot);
 
-  Item_t createCommentNode (
-        xqpStringStore* comment,
+  Item_t createTextNode(
+        unsigned long   qid,
+        xqpStringStore* value,
         bool            isRoot);
 
   Item_t createPiNode (
+        unsigned long   qid,
         xqpStringStore* target,
         xqpStringStore* data,
+        bool            isRoot);
+
+  Item_t createCommentNode (
+        unsigned long   qid,
+        xqpStringStore* comment,
         bool            isRoot);
 };
 

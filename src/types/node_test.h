@@ -44,11 +44,11 @@ class NodeTest : virtual public rcobject
   static const rchandle<NodeTest> COMMENT_TEST;
   static const rchandle<NodeTest> ITEM_TEST;
 
-  NodeTest(StoreConsts::NodeKind_t kind);
+  NodeTest(StoreConsts::NodeKind kind);
 
-  NodeTest(StoreConsts::NodeKind_t kind, rchandle<NodeNameTest> name_test);
+  NodeTest(StoreConsts::NodeKind kind, rchandle<NodeNameTest> name_test);
 
-  StoreConsts::NodeKind_t get_kind() const;
+  StoreConsts::NodeKind get_kind() const;
   rchandle<NodeNameTest> get_nametest() const;
   Item_t get_type_name() const;
 
@@ -56,7 +56,7 @@ class NodeTest : virtual public rcobject
   bool operator ==(const NodeTest& other) const;
 
  private:
-  StoreConsts::NodeKind_t  m_kind;
+  StoreConsts::NodeKind    m_kind;
   rchandle<NodeNameTest>   m_name_test;
 };
 

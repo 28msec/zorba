@@ -939,7 +939,7 @@ public:
 	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
-  StoreConsts::NodeKind_t getNodeKind() const;
+  StoreConsts::NodeKind getNodeKind() const;
 };
 
 

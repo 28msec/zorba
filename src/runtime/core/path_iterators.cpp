@@ -859,7 +859,7 @@ void DescendantAxisIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   AxisIterator<DescendantAxisIterator>::setOffset(planState, offset);
 
-  DescendantAxisState* state = new (planState.block + stateOffset) DescendantAxisState;
+  DescendantAxisState* state = new (planState.theBlock + stateOffset) DescendantAxisState;
 }
 
 
@@ -961,7 +961,7 @@ void DescendantSelfAxisIterator::setOffset(PlanState& planState, uint32_t& offse
 {
   AxisIterator<DescendantSelfAxisIterator>::setOffset(planState, offset);
 
-  DescendantSelfAxisState* state = new (planState.block + stateOffset) DescendantSelfAxisState;
+  DescendantSelfAxisState* state = new (planState.theBlock + stateOffset) DescendantSelfAxisState;
 }
 
 
@@ -1080,7 +1080,7 @@ void PrecedingAxisIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   AxisIterator<PrecedingAxisIterator>::setOffset(planState, offset);
 
-  PrecedingAxisState* state = new (planState.block + stateOffset) PrecedingAxisState;
+  PrecedingAxisState* state = new (planState.theBlock + stateOffset) PrecedingAxisState;
 }
 
 
@@ -1209,7 +1209,7 @@ void FollowingAxisIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   AxisIterator<FollowingAxisIterator>::setOffset(planState, offset);
 
-  FollowingAxisState* state = new (planState.block + stateOffset) FollowingAxisState;
+  FollowingAxisState* state = new (planState.theBlock + stateOffset) FollowingAxisState;
 }
 
 };

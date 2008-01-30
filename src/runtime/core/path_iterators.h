@@ -122,14 +122,14 @@ public:
 class AxisIteratorHelper
 {
 protected:
-  StoreConsts::NodeKind_t theNodeKind;
+  StoreConsts::NodeKind theNodeKind;
 
 public:
   AxisIteratorHelper() : theNodeKind(StoreConsts::anyNode) { }
 
   virtual ~AxisIteratorHelper() {}
 
-  void setNodeKind(StoreConsts::NodeKind_t k) { theNodeKind = k; }
+  void setNodeKind(StoreConsts::NodeKind k) { theNodeKind = k; }
 };
 
 

@@ -869,8 +869,7 @@ void end_visit(const CommonContent& v, void *visit_state)
       ss >> codepoint;
       charref = (uint32_t)codepoint;
       
-      Item_t lItem = ITEM_FACTORY.createTextNode(charref.getStore(), false);
-      const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
+      const_expr *lConstExpr = new const_expr(v.get_location(), charref);
       nodestack.push ( lConstExpr );
       break;
     }
@@ -878,9 +877,8 @@ void end_visit(const CommonContent& v, void *visit_state)
     {
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
-      xqpStringStore* content = new xqpStringStore("{");
-      Item_t lItem = ITEM_FACTORY.createTextNode(content, false);
-      const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
+      xqpString content("{");
+      const_expr *lConstExpr = new const_expr(v.get_location(), content);
       nodestack.push ( lConstExpr );
       break;
     }
@@ -888,9 +886,8 @@ void end_visit(const CommonContent& v, void *visit_state)
     {
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
-      xqpStringStore* content = new xqpStringStore("}");
-      Item_t lItem = ITEM_FACTORY.createTextNode(content, false);
-      const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
+      xqpString content("}");
+      const_expr *lConstExpr = new const_expr(v.get_location(), content);
       nodestack.push ( lConstExpr );
       break;
     }
@@ -982,7 +979,7 @@ void end_visit(const CompAttrConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
-  expr_t qnameExpr;
+  expr_t nameExpr;
   expr_t valueExpr;
   expr_t attrExpr;
   
@@ -1003,19 +1000,29 @@ void end_visit(const CompAttrConstructor& v, void *visit_state)
 
   if (constQName != NULL)
   {
-    qnameExpr = new const_expr(v.get_location(),
-                               sctx_p->lookup_qname("", constQName->get_qname()));
+    nameExpr = new const_expr(v.get_location(),
+                              sctx_p->lookup_qname("", constQName->get_qname()));
   }
   else
   {
-    qnameExpr = pop_nodestack();
-    qnameExpr = new cast_expr(v.get_location(),
-                              qnameExpr,
-                              GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_QNAME,
-                                                                 TypeSystem::QUANT_ONE));
+    nameExpr = pop_nodestack();
+
+    rchandle<fo_expr> atomExpr = new fo_expr(v.get_location(), LOOKUP_FN("fn", "data", 1));
+    atomExpr->add(nameExpr);
+
+    expr_t castExpr =
+      new cast_expr(v.get_location(),
+                    atomExpr,
+                    GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_QNAME,
+                                                       TypeSystem::QUANT_ONE));
+
+    //fo_expr* enclosedExpr = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
+    //enclosedExpr->add(castExpr);
+
+    nameExpr = castExpr;
   }
 
-  attrExpr = new attr_expr(v.get_location(), qnameExpr, valueExpr);
+  attrExpr = new attr_expr(v.get_location(), nameExpr, valueExpr);
   
   nodestack.push(attrExpr);
 }
@@ -1030,8 +1037,20 @@ void *begin_visit(const CompCommentConstructor& v)
 void end_visit(const CompCommentConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (new text_expr (v.get_location (), text_expr::comment_constructor, pop_nodestack ()));
+
+  expr_t inputExpr = pop_nodestack();
+
+  rchandle<fo_expr> enclosedExpr = new fo_expr(v.get_location(),
+                                               LOOKUP_OP1("enclosed-expr"));
+  enclosedExpr->add(inputExpr);
+
+  expr* textExpr = new text_expr(v.get_location(),
+                                 text_expr::comment_constructor,
+                                 enclosedExpr);
+
+  nodestack.push(textExpr);
 }
+
 
 void *begin_visit(const CompPIConstructor& v)
 {
@@ -1043,16 +1062,43 @@ void end_visit(const CompPIConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  yy::location loc = v.get_location ();
-  expr_t target,
-    content = v.get_content_expr () == NULL ? create_seq (loc) : pop_nodestack ();
-  if (v.get_target_expr () != NULL)
-    target = pop_nodestack ();
-  expr_t e = (v.get_target_expr () != NULL) ?
-    new pi_expr (loc, target, content) :
-    new pi_expr (loc, new const_expr (loc, v.get_target ()), content);
+  yy::location loc = v.get_location();
+  expr_t target;
+  expr_t content;
+
+  if (v.get_content_expr() == NULL)
+  {
+    content = create_seq(loc);
+  }
+  else
+  {
+    content = pop_nodestack();
+
+    rchandle<fo_expr> enclosedExpr = new fo_expr(v.get_location(),
+                                                 LOOKUP_OP1("enclosed-expr"));
+    enclosedExpr->add(content);
+
+    content = enclosedExpr;
+  }
+
+  if (v.get_target_expr() != NULL)
+  {
+    target = pop_nodestack();
+
+    rchandle<fo_expr> enclosedExpr = new fo_expr(v.get_location(),
+                                                 LOOKUP_OP1("enclosed-expr"));
+    enclosedExpr->add(target);
+
+    target = enclosedExpr;
+  }
+
+  expr_t e = (v.get_target_expr () != NULL ?
+              new pi_expr (loc, target, content) :
+              new pi_expr (loc, new const_expr (loc, v.get_target()), content));
+
   nodestack.push (e);
 }
+
 
 void *begin_visit(const CompTextConstructor& v)
 {
@@ -1063,7 +1109,18 @@ void *begin_visit(const CompTextConstructor& v)
 void end_visit(const CompTextConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (new text_expr (v.get_location (), text_expr::text_constructor, pop_nodestack ()));
+
+  expr_t inputExpr = pop_nodestack();
+
+  rchandle<fo_expr> enclosedExpr = new fo_expr(v.get_location(),
+                                               LOOKUP_OP1("enclosed-expr"));
+  enclosedExpr->add(inputExpr);
+
+  expr* textExpr = new text_expr(v.get_location(),
+                                 text_expr::text_constructor,
+                                 enclosedExpr);
+
+  nodestack.push(textExpr);
 }
 
 
@@ -2743,7 +2800,8 @@ void end_visit(const PITest& v, void *visit_state)
     string target = v.get_target();
     rchandle<match_expr> match = new match_expr(v.get_location());
     match->setTestKind(match_pi_test);
-    match->setQName(sctx_p->lookup_elem_qname(target));
+    if (target != "")
+      match->setQName(sctx_p->lookup_elem_qname(target));
     axisExpr->setTest(match);
   }
   else

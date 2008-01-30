@@ -585,7 +585,7 @@ void match_expr::accept(expr_visitor& v)
 }
 
 
-StoreConsts::NodeKind_t match_expr::getNodeKind() const
+StoreConsts::NodeKind match_expr::getNodeKind() const
 {
   switch (theTestKind)
   {

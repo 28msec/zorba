@@ -227,7 +227,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
 
     xmlParseChunk(ctxt, theBuffer, 0, 1);
   }
-  catch(xqp_exception& e)
+  catch(...)
   {
     xmlFreeParserCtxt(ctxt);
     abort();
@@ -295,7 +295,7 @@ void XmlLoader::startDocument(void * ctx)
   loader.theNodeStack.push(docNode);
   loader.theNodeStack.push(NULL);
 
-  docNode->setId(loader.theTree, loader.theOrdPath);
+  docNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.pushChild();
 
   LOADER_TRACE("Doc Node = " << docNode);
@@ -333,7 +333,7 @@ void XmlLoader::endDocument(void * ctx)
   LoadedDocumentNode* docNode = dynamic_cast<LoadedDocumentNode*>(loader.theNodeStack.top());
   ZORBA_ASSERT(docNode != NULL);
 
-  XmlNodeVector& children = docNode->children();
+  NodeVector& children = docNode->children();
   children.resize(revChildNodes.size());
 
   std::vector<XmlNode*>::const_reverse_iterator it;
@@ -401,7 +401,7 @@ void XmlLoader::startElement(
   loader.theNodeStack.push(NULL);
 
   // Assign the current node id to this node, and compute the next node id.
-  elemNode->setId(loader.theTree, loader.theOrdPath);
+  elemNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.pushChild();
 
   LOADER_TRACE("Element name ["
@@ -437,7 +437,7 @@ void XmlLoader::startElement(
   // Process attributes
   if (numAttributes > 0)
   {
-    XmlNodeVector& attrNodes = elemNode->attributes();
+    NodeVector& attrNodes = elemNode->attributes();
 
     unsigned long index = 0;
     for (unsigned long i = 0; i < numAttributes; ++i, index += 5)
@@ -454,10 +454,11 @@ void XmlLoader::startElement(
       xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
       Item* typedVal = new UntypedAtomicItemImpl(value);
 
-      XmlNode* attrNode = new AttributeNode(qname, tname, typedVal,
-                                            false, false, false);
-      attrNode->setParent(elemNode);
-      attrNode->setId(loader.theTree, loader.theOrdPath);
+      AttributeNode* attrNode = new AttributeNode(NULL, NULL, 0, tname, false, false);
+      attrNode->theParent = elemNode;
+      attrNode->setId(loader.theTree, &loader.theOrdPath);
+      attrNode->theName = qname;
+      attrNode->theTypedValue = typedVal;
 
       attrNodes.set(i, attrNode, false);
 
@@ -512,7 +513,7 @@ void  XmlLoader::endElement(
   // For each child, make this element node its parent and fix its namespace
   // bindings context. Note: the children were popped from the stack in reverse
   // order, so we copy them into the element node in the correct order.
-  XmlNodeVector& children = elemNode->children();
+  NodeVector& children = elemNode->children();
   children.resize(revChildNodes.size());
 
   std::vector<XmlNode*>::const_reverse_iterator it;
@@ -556,14 +557,14 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
   xqpStringStore* content = new xqpStringStore(reinterpret_cast<const char*>(ch), len);
 
-  XmlNode* textNode = new TextNode(content, false);
+  XmlNode* textNode = new TextNode(NULL, NULL, 0, content);
 
   if (loader.theNodeStack.empty())
     loader.setRoot(textNode);
 
   loader.theNodeStack.push(textNode);
 
-  textNode->setId(loader.theTree, loader.theOrdPath);
+  textNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 
   LOADER_TRACE("Text Node = " << textNode.get_ptr() 
@@ -584,14 +585,14 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
   xqpStringStore* content = new xqpStringStore(reinterpret_cast<const char*>(ch), len);
 
-  XmlNode* textNode = new TextNode(content, false);
+  XmlNode* textNode = new TextNode(NULL, NULL, 0, content);
 
   if (loader.theNodeStack.empty())
     loader.setRoot(textNode);
 
   loader.theNodeStack.push(textNode);
 
-  textNode->setId(loader.theTree, loader.theOrdPath);
+  textNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 
   LOADER_TRACE("Text Node = " << textNode.get_ptr() 
@@ -615,14 +616,14 @@ void XmlLoader::comment(
 
   xqpStringStore* contentp = new xqpStringStore(reinterpret_cast<const char*>(content));
 
-  XmlNode* commentNode = new CommentNode(contentp, false);
+  XmlNode* commentNode = new CommentNode(NULL, NULL, 0, contentp);
 
   if (loader.theNodeStack.empty())
     loader.setRoot(commentNode);
 
   loader.theNodeStack.push(commentNode);
 
-  commentNode->setId(loader.theTree, loader.theOrdPath);
+  commentNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 }
 
@@ -645,14 +646,14 @@ void XmlLoader::processingInstruction(
   xqpStringStore* datap = new xqpStringStore(reinterpret_cast<const char*>(data));
   xqpStringStore* targetp = new xqpStringStore(reinterpret_cast<const char*>(target));
 
-  XmlNode* piNode = new PiNode(targetp, datap, false);
+  XmlNode* piNode = new PiNode(NULL, NULL, 0, targetp, datap);
 
   if (loader.theNodeStack.empty())
     loader.setRoot(piNode);
 
   loader.theNodeStack.push(piNode);
 
-  piNode->setId(loader.theTree, loader.theOrdPath);
+  piNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 }
 

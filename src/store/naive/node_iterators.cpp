@@ -35,13 +35,11 @@ Item_t ChildrenIterator::next()
   {
     XmlNode* pnode = theParentNode.get_ptr();
 
-    ZORBA_ASSERT(cnode->getParentPtr() != NULL);
+    ZORBA_ASSERT(cnode->getParentP() != NULL);
 
-    if (pnode->isCopy() && cnode->getParentPtr() != pnode)
+    if (pnode->isCopy() && cnode->getParentP() != pnode)
     {
       cnode = cnode->copy(pnode, theCurrentPos);
-
-      pnode->setChild(theCurrentPos, cnode, false);
     }
   }
 
@@ -90,13 +88,11 @@ Item_t AttributesIterator::next()
   {
     XmlNode* pnode = theParentNode.get_ptr();
 
-    ZORBA_ASSERT(cnode->getParentPtr() != NULL);
+    ZORBA_ASSERT(cnode->getParentP() != NULL);
 
-    if (pnode->isCopy() && cnode->getParentPtr() != pnode)
+    if (pnode->isCopy() && cnode->getParentP() != pnode)
     {
       cnode = cnode->copy(pnode, theCurrentPos);
-
-      theParentNode->setAttr(theCurrentPos, cnode, false);
     }
   }
 
@@ -302,7 +298,9 @@ Item_t StoreNodeSortOrAtomicIterator::next()
         {
           theAtomic = true;
           return contextNode;
-        } else {
+        }
+        else
+        {
           theAtomic = false;
         }
       }

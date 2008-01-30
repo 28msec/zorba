@@ -347,15 +347,6 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
 		tr << "\"";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
-  /*
-	else if (item->getNodeKind() == namespaceNode)
-	{
-		tr << " " << item->getNodeName()->getStringValue() << "=\"";
-		emit_expanded_string(item->getStringValue());
-		tr << "\"";
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
-	}
-  */
 	else if (item->getNodeKind() == StoreConsts::textNode)
 	{		
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
@@ -372,12 +363,11 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
       tr << ser.END_OF_LINE;		
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
-  /*
-	else if (item->getNodeKind() == piNode )
+	else if (item->getNodeKind() == StoreConsts::piNode )
 	{
-    state = PREVIOUS_ITEM_WAS_NODE;
+    tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
-	*/
 	else 
 	{
 		tr << "node of type: " << item->getNodeKind();		

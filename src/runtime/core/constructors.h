@@ -137,7 +137,9 @@ public:
 
 /*******************************************************************************
 
-  Used to (a) concatenate adjacent text nodes in the content sequence of an
+  ElementContentIterator
+
+  Used to (a) create text nodes in the content sequence of an
   element constructor, and (b) to check that all attribute nodes in the content
   sequence appear before any other item in the sequence.
 
@@ -148,15 +150,14 @@ public:
 class ElementContentState : public PlanIteratorState
 {
 public:
-  xqpStringStore* theString;
-  Item_t          theContextItem;
-  bool            theNoAttrAllowed;
+  bool  theNoAttrAllowed;
 
   void init();
   void reset();
 };
 
 NARY_ITER_STATE(ElementContentIterator, ElementContentState);
+
 
 /*******************************************************************************
   AttributeIterator constructs an attribute element
@@ -264,24 +265,16 @@ protected:
   class EnclosedState : public PlanIteratorState
   {
   public:
-    xqp_string theString;
-    Item_t     theContextItem;
+    xqpStringStore* theString;
+    Item_t          theContextItem;
 
     void init();
   };
 
 public:
-  /**
-   * Constructor of Enclosed Expr
-   * @param loc location
-   * @param childIter child
-   * @param aAttrContent bool which declares if the content must be produced for an attribute or
-   *                     for something else (attr => StringItems, else => TextNodes).
-   */
   EnclosedIterator(
         const yy::location& loc,
-        PlanIter_t& childIter,
-        bool aAttrContent = false);
+        PlanIter_t& childIter);
 
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
@@ -292,6 +285,9 @@ public:
   void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
+
+  bool getAttrContent() const { return theAttrContent; }
+  void setAttrContent()       { theAttrContent = true; }
 };
 
 

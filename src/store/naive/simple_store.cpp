@@ -18,6 +18,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/node_iterators.h"
 #include "store/naive/basic_item_factory.h"
+#include "store/naive/query_context.h"
 
 namespace xqp
 {
@@ -46,7 +47,8 @@ SimpleStore::SimpleStore()
   theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
-  theXmlLoader(NULL)
+  theXmlLoader(NULL),
+  theQueryContextContainer(new QueryContextContainer)
 {
 }
 
@@ -78,6 +80,12 @@ SimpleStore::~SimpleStore()
   theCollections.clear();
 
   theDocuments.clear();
+
+  if (theQueryContextContainer != NULL)
+  {
+    delete theQueryContextContainer;
+    theQueryContextContainer = NULL;
+  }
 
   if (theXmlLoader != NULL)
   {
@@ -122,6 +130,12 @@ XmlLoader& SimpleStore::getXmlLoader()
     theXmlLoader = new XmlLoader();
 
   return *theXmlLoader;
+}
+
+
+QueryContext& SimpleStore::getQueryContext(unsigned long queryId)
+{
+  return theQueryContextContainer->getContext(queryId);
 }
 
 

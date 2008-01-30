@@ -87,7 +87,7 @@
 
 
 #define GET_STATE(stateType, stateObject, planState) \
-  stateObject = reinterpret_cast<stateType*>(planState.block + this->stateOffset)
+  stateObject = reinterpret_cast<stateType*>(planState.theBlock + this->stateOffset)
 
 
 #define FINISHED_ALLOCATING_RESOURCES() case DUFFS_RESET:
@@ -113,28 +113,28 @@ class Zorba_XQueryBinary;
 /*******************************************************************************
   Class to represent state that is shared by all plan iterators. 
 
-  block     : Pointer to the memory block that stores the local state of each
-              individual plan iterator.
-  blockSize : Size (in bytes) of the block.
-  zorp      : Pointer to the zorba object of the current thread. The zorba obj
-              provides quick access to thread specific storage; one important
-              thing there is the error manager.
-  xqbinary  : contains the static_context
+  theBlock        : Pointer to the memory block that stores the local state of
+                    each individual plan iterator.
+  theBlockSize    : Size (in bytes) of the block.
+  theZorba        : Pointer to the zorba object of the current thread. The zorba
+                    obj provides quick access to thread specific storage (for
+                    example, the error manager).
 ********************************************************************************/
 class PlanState
 {
 public:
-  int8_t               * block;
+  int8_t     * theBlock;
 
-  uint32_t               blockSize;
+  uint32_t     theBlockSize;
 
-  Zorba                * zorp;
-//  Zorba_XQueryBinary   * xqbinary;
+  Zorba      * theZorba;
 
+public:
   PlanState(uint32_t blockSize);
 
   ~PlanState();
 };
+
 
 template <class T>
 class StateTraitsImpl
@@ -158,8 +158,9 @@ public:
  }
 };
 
+
 /**
- * Root object of all iterator states
+ * Root object of all iterator state o bjects
  */
 class PlanIteratorState
 {
@@ -193,7 +194,6 @@ class PlanIterator : public rcobject
   friend class PlanIterWrapper;
 
 protected:
-  /** offset of the state of the current iterator */
   uint32_t      stateOffset;
   
 public:
@@ -304,7 +304,7 @@ protected:
 #if ZORBA_BATCHING_TYPE == 1  
   void produceNext(PlanState& planState) 
   {
-    planState.zorp->current_iterator.push(this);
+    planState.theZorba->current_iterator.push(this);
 
     int32_t i = 0;
     theBatch[0] = static_cast<IterType*>(this)->nextImpl();
@@ -314,17 +314,17 @@ protected:
       theBatch[i] = static_cast<IterType*>(this)->nextImpl();
     }
 
-    planState.zorp->current_iterator.pop();
+    planState.theZorba->current_iterator.pop();
   }
 #else
   Item_t produceNext(PlanState& planState)
   {
     Item_t  it;
-    planState.zorp->current_iterator.push(this);
+    planState.theZorba->current_iterator.push(this);
 
     it = static_cast<IterType*>(this)->nextImpl(planState);
   
-    planState.zorp->current_iterator.pop();
+    planState.theZorba->current_iterator.pop();
     return it;
   }
 #endif
@@ -345,6 +345,7 @@ public:
   inline void releaseResourcesImpl(PlanState& planState);
 };
 
+
 template <class Iter, class StateTraits>
 class NaryIterator : public Batcher<Iter>
 {
@@ -353,7 +354,9 @@ protected:
 
 public:
   NaryIterator(const yy::location& aLoc, std::vector<PlanIter_t>& aChildren)
-    : Batcher<Iter>(aLoc), theChildren(aChildren) {
+    :
+    Batcher<Iter>(aLoc), theChildren(aChildren)
+  {
 #ifndef NDEBUG
     std::vector<PlanIter_t>::const_iterator lEnd = aChildren.end();
     for(
@@ -365,6 +368,7 @@ public:
     }
 #endif
   }
+
   virtual ~NaryIterator() {}
 
   virtual void accept(PlanIterVisitor&) const = 0;
@@ -381,7 +385,7 @@ public:
 			Batcher<Iter>::releaseChildResources ( *lIter, aPlanState );
 		}
 
-    StateTraits::destroyState(aPlanState.block + Batcher<Iter>::stateOffset);
+    StateTraits::destroyState(aPlanState.theBlock + Batcher<Iter>::stateOffset);
 	}
 
   virtual uint32_t
@@ -411,7 +415,7 @@ public:
 	{
 		Batcher<Iter>::stateOffset = aOffset;
 		aOffset += getStateSize();
-    StateTraits::createState(aPlanState.block + Batcher<Iter>::stateOffset);
+    StateTraits::createState(aPlanState.theBlock + Batcher<Iter>::stateOffset);
 
     std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
     for ( 
@@ -423,6 +427,7 @@ public:
     }
 	}
 };
+
 
 #define NARY_ITER_STATE(iterName, stateName) class iterName \
   : public NaryIterator<iterName, StateTraitsImpl<stateName> > {\
@@ -473,7 +478,7 @@ class PlanWrapper : public Iterator
 {
 private:
   PlanIter_t   theIterator;
-  PlanState  * theStateBlock;
+  PlanState  * thePlanState;
   bool         theClosed;
   
 public:
@@ -499,9 +504,9 @@ class PlanIteratorWrapper : public Iterator
 {
 private:
   PlanIter_t   theIterator;
-  PlanState  * theStateBlock;
+  PlanState  * thePlanState;
   bool         theClosed;
-  
+
 public:
   PlanIteratorWrapper(PlanIter_t& iter, PlanState& planState);
   

@@ -18,6 +18,7 @@ namespace xqp {
       virtual ~IterPrinter(){}
       virtual void startIter(const std::string& aName) = 0;
       virtual void addAttribute(const std::string& aName, const std::string& aValue) = 0;
+      virtual void addAttribute(const std::string& aName, bool aValue) = 0;
       virtual void endIter() = 0;
   }; /* class VisitorPrinter */
   
@@ -35,6 +36,7 @@ namespace xqp {
       virtual ~XMLIterPrinter(){}
       virtual void startIter(const std::string& aName);
       virtual void addAttribute(const std::string& aName, const std::string& aValue);
+      virtual void addAttribute(const std::string& aName, bool aValue);
       virtual void endIter();
       
     private:

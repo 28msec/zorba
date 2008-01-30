@@ -29,13 +29,16 @@ DocumentIterator::DocumentIterator(const yy::location& loc, PlanIter_t& input)
 Item_t DocumentIterator::nextImpl(PlanState& planState)
 {
   Iterator* childWrapper = 0;
-  xqpStringStore* baseUri = 0;
-  xqpStringStore* docUri = 0;
+  xqpStringStore_t baseUri = 0;
+  xqpStringStore_t docUri = 0;
   Item_t node;
 
   DocumentIteratorState* state;
   DEFAULT_STACK_INIT(DocumentIteratorState, state, planState);
   
+  // Note: baseUri and docUri have to be rchandles because if createDocumentNode
+  // throws and exception, we don't know if the exception was thrown before or
+  // after the ownership of the uris was transfered to the doc node.
   baseUri = new xqpStringStore("");
   docUri = new xqpStringStore("");
   childWrapper = new PlanIteratorWrapper(theChild, planState); 
@@ -43,7 +46,8 @@ Item_t DocumentIterator::nextImpl(PlanState& planState)
   try
   {
     node = Zorba::getItemFactory()->
-           createDocumentNode(baseUri,
+           createDocumentNode((unsigned long)&planState,
+                              baseUri,
                               docUri,
                               childWrapper,
                               true, // is root
@@ -54,9 +58,8 @@ Item_t DocumentIterator::nextImpl(PlanState& planState)
   }
   catch(...)
   {
-    delete baseUri;
-    delete docUri;
     delete childWrapper;
+    throw;
   }
 
   STACK_PUSH(node, state);
@@ -71,7 +74,7 @@ void DocumentIterator::setOffset(PlanState& planState, uint32_t& offset)
   DocumentIteratorState* state;
   GET_STATE(DocumentIteratorState, state, planState);
 
-  static_context* sctx = planState.zorp->get_static_context();
+  static_context* sctx = planState.theZorba->get_static_context();
 
   state->theTypePreserve =
     (sctx->construction_mode() == StaticQueryContext::cons_preserve ? true : false);
@@ -112,7 +115,7 @@ Item_t DocumentContentIterator::nextImpl(PlanState& planState)
 
     if (lItem->isNode() && lItem->getNodeKind() == StoreConsts::attributeNode)
     {
-        ZORBA_ERROR_ALERT(ZorbaError::XQTY0024, &loc, false,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, false,
                           "A Document Node must not contain attribute nodes!");
     }
 
@@ -163,6 +166,7 @@ Item_t ElementIterator::nextImpl(PlanState& planState)
 {
   std::auto_ptr<Iterator> cwrapper;
   std::auto_ptr<Iterator> awrapper;
+
   Item_t qnameItem;
   Item_t node;
 
@@ -186,18 +190,18 @@ Item_t ElementIterator::nextImpl(PlanState& planState)
     awrapper.reset(new PlanIteratorWrapper(theAttributesIter, planState));
 
   node = Zorba::getItemFactory()->
-      createElementNode(qnameItem.get_ptr(),
-              GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
-              cwrapper.get(),
-              awrapper.get(),
-              NULL,
-              theNsBindings,
-              theAssignId,
-              true,
-              state->theTypePreserve,
-              state->theNsPreserve,
-              state->theNsInherit);
-
+         createElementNode((unsigned long)&planState,
+                           qnameItem.get_ptr(),
+                           GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
+                           cwrapper.get(),
+                           awrapper.get(),
+                           NULL,
+                           theNsBindings,
+                           theAssignId,
+                           true,
+                           state->theTypePreserve,
+                           state->theNsPreserve,
+                           state->theNsInherit);
   STACK_PUSH(node, state);
   STACK_END();
 }
@@ -283,7 +287,7 @@ void ElementIterator::setOffset(PlanState& planState, uint32_t& offset)
   ElementIteratorState* state;
   GET_STATE(ElementIteratorState, state, planState);
 
-  static_context* sctx = planState.zorp->get_static_context();
+  static_context* sctx = planState.theZorba->get_static_context();
 
   state->theTypePreserve =
     (sctx->construction_mode() == StaticQueryContext::cons_preserve ? true : false);
@@ -301,20 +305,22 @@ void ElementIterator::setOffset(PlanState& planState, uint32_t& offset)
 ********************************************************************************/
 Item_t ElementContentIterator::nextImpl(PlanState& planState)
 {
-  xqpStringStore* tmp;
+  ItemFactory* factory = Zorba::getItemFactory();
+  Item_t item;
+  Item_t textNode;
 
   ElementContentState* state;
   DEFAULT_STACK_INIT(ElementContentState, state, planState);
   
   while (true)
   {
-    state->theContextItem = this->consumeNext(theChildren[0], planState );
+    item = this->consumeNext(theChildren[0], planState );
+    if (item == NULL)
+      break;
 
     // Check to find out if the content contains an attribute child which is
     // located after a non attribute child.
-    if (state->theContextItem != 0 &&
-        state->theContextItem->isNode() &&
-        state->theContextItem->getNodeKind() == StoreConsts::attributeNode) 
+    if (item->isNode() && item->getNodeKind() == StoreConsts::attributeNode) 
     {
       if (state->theNoAttrAllowed)
         ZORBA_ERROR_ALERT(ZorbaError::XQTY0024, &loc, false);
@@ -324,35 +330,16 @@ Item_t ElementContentIterator::nextImpl(PlanState& planState)
       state->theNoAttrAllowed = true;
     }
     
-    if (state->theContextItem == 0)
+    if (item->isNode())
     {
-      if (state->theString != NULL && *(state->theString) != "")
-      {
-        // Release ownership of theString *before* passing it to the text node.
-        tmp = state->theString;
-        state->theString = NULL;
-        STACK_PUSH(Zorba::getItemFactory()->createTextNode(tmp, false), state);
-      }
-      break;
-    }
-    else if (state->theContextItem->isNode() &&
-             state->theContextItem->getNodeKind() == StoreConsts::textNode) 
-    {
-      if (state->theString == NULL)
-        state->theString = new xqpStringStore(state->theContextItem->getStringValue().c_str());
-      else
-        *(state->theString) += state->theContextItem->getStringValue().c_str();
+      STACK_PUSH(item, state);
     }
     else 
     {
-      if (state->theString != NULL && *(state->theString) != "")
-      {
-        tmp = state->theString;
-        state->theString = NULL;
-        STACK_PUSH(Zorba::getItemFactory()->createTextNode(tmp, false), state);
-      }
-
-      STACK_PUSH(state->theContextItem, state);
+      textNode = factory->createTextNode((ulong)&planState,
+                                         item->getStringValue().getStore(),
+                                         false);
+      STACK_PUSH(textNode, state);
     }
   }
 
@@ -363,8 +350,6 @@ Item_t ElementContentIterator::nextImpl(PlanState& planState)
 void ElementContentState::init()
 {
   PlanIteratorState::init();
-  theContextItem = 0;
-  theString = NULL;
   theNoAttrAllowed = false;
 }
 
@@ -372,10 +357,9 @@ void ElementContentState::init()
 void ElementContentState::reset()
 {
   PlanIteratorState::reset();
-  theContextItem = 0;
-  theString = NULL;
   theNoAttrAllowed = false;
 }
+
 
 /*******************************************************************************
 
@@ -394,62 +378,122 @@ AttributeIterator::AttributeIterator(
 
 Item_t AttributeIterator::nextImpl(PlanState& planState)
 {
-  Item_t item;
-  Item_t itemCur;
-  Item_t itemFirst;
-  Item_t itemLexical;
-  Item_t itemTyped;
-  Item_t itemQName;
-  xqp_string lexicalString;
+  Item_t node;
+  Iterator_t nameWrapper;
+  Iterator_t valueWrapper;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  nameWrapper = new PlanIteratorWrapper(theChild0, planState);
+  valueWrapper = new PlanIteratorWrapper(theChild1, planState);
   
-  // Compute the attribute name. Note: we don't have to check that itemQName 
-  // is indeed a valid qname, because the compiler wraps an xs:qname cast
-  // around the expression.
-  itemQName = consumeNext(theChild0, planState);
-  if (itemQName->getLocalName().size() == 0)
-  {
-    ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, false, false,
-                      "Attribute name must not have an empty local part.");
-  }
-
-  if ((itemFirst = consumeNext(theChild1, planState)) != 0)
-  {
-    lexicalString = itemFirst->getStringValue();
-
-    // handle concatenation
-    itemCur = consumeNext ( theChild1, planState );
-    while ( itemCur != NULL )
-    {
-      lexicalString += itemCur->getStringValue();
-      itemCur = consumeNext ( theChild1, planState );
-    }
-
-    itemTyped = Zorba::getItemFactory()->createUntypedAtomic(lexicalString);
-  }
-  else
-  {
-    itemTyped = 0;
-  }
-
-  item = Zorba::getItemFactory()->
-         createAttributeNode(itemQName,
+  node = Zorba::getItemFactory()->
+         createAttributeNode((unsigned long)&planState,
+                             nameWrapper,
                              GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME,
-                             itemTyped,
+                             valueWrapper,
                              theAssignId);
 
-  STACK_PUSH(item, state);
+  STACK_PUSH(node, state);
+  STACK_END();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+TextIterator::TextIterator(
+    const yy::location& loc,
+    PlanIter_t& aChild,
+    bool assignId) 
+  :
+  UnaryBaseIterator<TextIterator>(loc, aChild),
+  theAssignId(assignId)
+{
+}
+
+
+Item_t TextIterator::nextImpl(PlanState& planState)
+{
+  Item_t node;
+  Iterator_t valueWrapper;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  valueWrapper = new PlanIteratorWrapper(theChild, planState);
+      
+  node = Zorba::getItemFactory()->createTextNode((ulong)&planState,
+                                                 valueWrapper,
+                                                 theAssignId);
+
+  STACK_PUSH(node, state);
+    
+  STACK_END();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PiIterator::PiIterator (
+    const yy::location& loc,
+    PlanIter_t& aTarget,
+    PlanIter_t& aContent,
+    bool assignId)
+  :
+  BinaryBaseIterator<PiIterator>(loc, aTarget, aContent),
+  theAssignId(assignId)
+{
+}
+
+
+Item_t PiIterator::nextImpl(PlanState& planState)
+{
+  Item_t lItem;
+  xqp_string target, content;
+  bool lFirst;
+
+  Store* store = Zorba::getStore();
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+      
+  lItem = consumeNext(theChild0, planState);
+  if (lItem == 0)
+    ZORBA_ERROR_ALERT (ZorbaError::XPTY0004);
+
+  if (consumeNext(theChild0, planState) != 0)
+    ZORBA_ERROR_ALERT (ZorbaError::XPTY0004);
+
+  // TODO: check if lItem is string, raise XPTY0004 if not
+  target = lItem->getStringValue();
+  if (target.empty ())
+    ZORBA_ERROR_ALERT (ZorbaError::XQDY0041);
+  else if (target.substr (0).uppercase () == "XML") 
+    ZORBA_ERROR_ALERT (ZorbaError::XQDY0064);
+  
+  for (lFirst = true; 0 != (lItem = consumeNext (theChild1, planState)); lFirst = false)
+  {
+    if (! lFirst) content += " ";
+    content += lItem->getStringValue();
+  }
+
+  lItem = Zorba::getItemFactory()->createPiNode((ulong)&planState,
+                                                target.getStore(),
+                                                content.getStore (),
+                                                theAssignId);
+  STACK_PUSH(lItem, state);
+  
   STACK_END();
 }
 
 
 /********************************************************************************
 
-
 ********************************************************************************/
-CommentIterator::CommentIterator (
+CommentIterator::CommentIterator(
     const yy::location& loc,
     PlanIter_t& aComment,
     bool assignId)
@@ -486,7 +530,9 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
 
   if (! content.empty ()) 
   {
-    lItem = Zorba::getItemFactory()->createCommentNode(content.getStore(), theAssignId);
+    lItem = Zorba::getItemFactory()->createCommentNode((ulong)&planState,
+                                                       content.getStore(),
+                                                       theAssignId);
     
     STACK_PUSH(lItem, state);
   }
@@ -498,183 +544,100 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-PiIterator::PiIterator (
-    const yy::location& loc,
-    PlanIter_t& aTarget,
-    PlanIter_t& aContent,
-    bool assignId)
-  :
-  BinaryBaseIterator<PiIterator>(loc, aTarget, aContent),
-  theAssignId(assignId)
-{
-}
-
-
-Item_t PiIterator::nextImpl(PlanState& planState)
-{
-  Item_t lItem;
-  xqp_string target, content;
-  bool lFirst;
-
-  Store* store = Zorba::getStore();
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-      
-  lItem = consumeNext(theChild0, planState);
-  if (lItem == 0)
-    ZORBA_ERROR_ALERT (ZorbaError::XPTY0004);
-  if (consumeNext(theChild0, planState) != 0)
-    ZORBA_ERROR_ALERT (ZorbaError::XPTY0004);
-  // TODO: check if lItem is string, raise XPTY0004 if not
-  target = lItem->getStringValue();
-  if (target.empty ())
-    ZORBA_ERROR_ALERT (ZorbaError::XQDY0041);
-  else if (target.substr (0).uppercase () == "XML") 
-    ZORBA_ERROR_ALERT (ZorbaError::XQDY0064);
-  
-  for (lFirst = true; 0 != (lItem = consumeNext (theChild1, planState)); lFirst = false) {
-    if (! lFirst) content += " ";
-    content += lItem->getStringValue();
-  }
-
-  lItem = Zorba::getItemFactory()->createPiNode(target.getStore(), content.getStore (), theAssignId);
-  
-  STACK_PUSH(lItem, state);
-  
-  STACK_END();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-TextIterator::TextIterator(
-    const yy::location& loc,
-    PlanIter_t& aChild,
-    bool assignId) 
-  :
-  UnaryBaseIterator<TextIterator>(loc, aChild),
-  theAssignId(assignId)
-{
-}
-
-
-Item_t TextIterator::nextImpl(PlanState& planState)
-{
-  Item_t lItem, lAtomicItem;
-  xqp_string content = "";
-  bool lFirst;
-
-  Store* store = Zorba::getStore();
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-      
-  lFirst = true;
-  while (true)
-  {
-    lItem = consumeNext(theChild, planState);
-    if (lItem == 0)
-      break;
-    
-    lAtomicItem = lItem->getAtomizationValue();
-    if (!lFirst)
-      content += " ";
-    content += lAtomicItem->getStringValue();
-    lFirst = false;
-  }
-
-  lItem = Zorba::getItemFactory()->createTextNode(content.getStore(), theAssignId);
-
-  STACK_PUSH(lItem, state);
-    
-  STACK_END();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 
 EnclosedIterator::EnclosedIterator (
     const yy::location& loc,
-    PlanIter_t& childIter,
-    bool aAttrContent )
+    PlanIter_t& childIter)
   :
   UnaryBaseIterator<EnclosedIterator> ( loc, childIter ),
-  theAttrContent(aAttrContent)
+  theAttrContent(false)
 {
 }
 
 
-Item_t EnclosedIterator::nextImpl ( PlanState& planState )
+Item_t EnclosedIterator::nextImpl(PlanState& planState)
 {
   Item_t lItem;
-
   ItemFactory* factory = Zorba::getItemFactory();
-
-  static_context* sctx = NULL;
+  xqpString str;
 
   EnclosedState* state;
   DEFAULT_STACK_INIT(EnclosedState, state, planState);
 
-  state->init();
-
-  while ( true )
+  if (theAttrContent)
   {
-    state->theContextItem = consumeNext(theChild, planState);
-
-    if ( state->theContextItem == NULL )
+    while ( true )
     {
-      if ( state->theString != "" )
+      state->theContextItem = consumeNext(theChild, planState);
+
+      if (state->theContextItem == NULL)
       {
-        if (theAttrContent)
+        if (state->theString != NULL)
         {
           lItem = factory->createString(state->theString);
-        }
-        else
-        {
-          lItem = factory->createTextNode(state->theString.getStore(), false);
+          state->theString = NULL;
+          STACK_PUSH(lItem, state);
         }
 
-        STACK_PUSH(lItem, state);
-
-        state->theString = "";
+        break;
       }
-      break;
-    }
 
-    else if (state->theContextItem->isNode())
-    {
-      if ( state->theString != "" )
+      else if (state->theContextItem->isNode())
       {
-        if (theAttrContent)
+        if ( state->theString != NULL)
         {
           lItem = factory->createString(state->theString);
-        }
-        else
-        {
-          lItem = factory->createTextNode(state->theString.getStore(), false);
+          state->theString = NULL;
+          STACK_PUSH(lItem, state);
         }
 
-        STACK_PUSH(lItem, state);
-
-        state->theString = "";
+        STACK_PUSH(state->theContextItem, state);
       }
 
-      STACK_PUSH(state->theContextItem, state);
-    }
-
-    else if ( state->theString == "" )
-    {
-      state->theString = state->theContextItem->getStringValue();
-    }
-    else
-    {
-      state->theString += " " + state->theContextItem->getStringValue();
+      else if (state->theString == NULL)
+      {
+        state->theString = new xqpStringStore(state->theContextItem->getStringValue().c_str());
+      }
+      else
+      {
+        state->theString->append(" ");
+        state->theString->append(state->theContextItem->getStringValue().c_str());
+      }
     }
   }
+  else
+  {
+    while ( true )
+    {
+      state->theContextItem = consumeNext(theChild, planState);
+
+      if (state->theContextItem == NULL)
+        break;
+
+      else if (state->theContextItem->isNode())
+      {
+        state->theString = NULL;
+
+        STACK_PUSH(state->theContextItem, state);
+      }
+
+      else
+      {
+        str = state->theContextItem->getStringValue();
+
+        if (state->theString != NULL)
+          str = " " + str;
+        else
+          state->theString = str.getStore();
+
+        state->theContextItem = factory->createTextNode((ulong)&planState,
+                                                        str.getStore(),
+                                                        false);
+        STACK_PUSH(state->theContextItem, state);
+      }
+    }
+  }
+
   STACK_END();
 }
   
@@ -685,33 +648,41 @@ void EnclosedIterator::resetImpl(PlanState& planState)
 
   EnclosedState* state;
   GET_STATE ( EnclosedState, state, planState );
-  state->theString = "";
+
+  if (state->theString != NULL && theAttrContent)
+    delete state->theString;
+
+  state->theString != NULL;
 }
 
 
-void EnclosedIterator::releaseResourcesImpl ( PlanState& planState )
+void EnclosedIterator::releaseResourcesImpl(PlanState& planState)
 {
   UnaryBaseIterator<EnclosedIterator>::releaseResourcesImpl ( planState );
 
   EnclosedState* state;
   GET_STATE ( EnclosedState, state, planState );
   state->theContextItem = NULL;
-  state->theString.~xqpString();
+
+  if (state->theString != NULL && theAttrContent)
+    delete state->theString;
+
+  state->theString != NULL;
 }
 
 
-void EnclosedIterator::setOffset ( PlanState& planState, uint32_t& offset )
+void EnclosedIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   UnaryBaseIterator<EnclosedIterator>::setOffset ( planState, offset );
   
-  EnclosedState* state = new ( planState.block + stateOffset ) EnclosedState;
+  EnclosedState* state = new ( planState.theBlock + stateOffset ) EnclosedState;
 }
 
 
 void EnclosedIterator::EnclosedState::init()
 {
   PlanIteratorState::init();
-  theString = "";
+  theString = NULL;
 }
 
 

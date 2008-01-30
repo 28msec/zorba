@@ -40,7 +40,7 @@ void NodeDistinctIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   UnaryBaseIterator<NodeDistinctIterator>::setOffset(planState, offset);
 
-  NodeDistinctState* state = new (planState.block + stateOffset) NodeDistinctState;
+  NodeDistinctState* state = new (planState.theBlock + stateOffset) NodeDistinctState;
 
   Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 
@@ -89,7 +89,7 @@ void NodeSortIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   UnaryBaseIterator<NodeSortIterator>::setOffset(planState, offset);
 
-  NodeSortState* state = new (planState.block + stateOffset) NodeSortState;
+  NodeSortState* state = new (planState.theBlock + stateOffset) NodeSortState;
 
   Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 

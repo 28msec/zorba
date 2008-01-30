@@ -75,7 +75,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#string]
    * @param value string representation of the value
    */
-  virtual Item_t createString(const xqpStringStore_t& value) = 0;
+  virtual Item_t createString(xqpStringStore* value) = 0;
   virtual Item_t createString(const xqp_string& value) = 0;
 
   /**
@@ -447,10 +447,11 @@ public:
    * @param createId Does the created item need an ID?
    */
   virtual Item_t createDocumentNode(
+        unsigned long   qid,
         xqpStringStore* baseURI,
         xqpStringStore* docURI,
         Iterator*       children,
-        bool            createId,
+        bool            isRoot,
         bool            copy,
         bool            typePreserve,
         bool            nsPreserve,
@@ -467,13 +468,14 @@ public:
    * @param createId Does the created item need an ID?
    */
   virtual Item_t createElementNode (
+        unsigned long     qid,
         Item*             name,
         Item*             type,
         Iterator*         childrenIte,
         Iterator*         attributesIte,
         Iterator*         namespacesIte,
         const NsBindings& nsBindings,
-        bool              createId,
+        bool              isRoot,
         bool              copy,
         bool              typePreserve,
         bool              nsPreserve,
@@ -489,26 +491,25 @@ public:
    * Implementations might only store the typed value.
    */
   virtual Item_t createAttributeNode(
-        Item*  name,
-        Item*  type,
-        Item*  typedValue,
-        bool   createId) = 0;
+        unsigned long qid,
+        Iterator*     nameIter,
+        Item*         type,
+        Iterator*     valueIter,
+        bool          isRoot) = 0;
 
   /**
    * @param value text
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createTextNode(
-			    xqpStringStore* value,
-			    bool            createId) = 0;
+        unsigned long   qid,
+        Iterator*       valueIter,
+        bool            isRoot) = 0;
 
-  /**
-   * @param comment
-   * @param createId Does the created item need an ID (default == false)?
-   */
-  virtual Item_t createCommentNode(
-        xqpStringStore* comment,
-        bool            createId) = 0;
+  virtual Item_t createTextNode(
+        unsigned long   qid,
+        xqpStringStore* value,
+        bool            isRoot) = 0;
 
   /**
    * @param target The QName for the processing instruction.
@@ -516,9 +517,19 @@ public:
    * @param createId Does the created item need an ID?
    */
   virtual Item_t createPiNode(
+        unsigned long   qid,
         xqpStringStore* target,
         xqpStringStore* data,
-        bool            createId) = 0;
+        bool            isRoot) = 0;
+
+  /**
+   * @param comment
+   * @param createId Does the created item need an ID (default == false)?
+   */
+  virtual Item_t createCommentNode(
+        unsigned long   qid,
+        xqpStringStore* comment,
+        bool            isRoot) = 0;
 };
 
 }/* namespace xqp */

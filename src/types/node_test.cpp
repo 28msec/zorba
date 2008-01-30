@@ -60,13 +60,13 @@ bool NodeNameTest::operator ==(const NodeNameTest& other) const
 }
 
 
-NodeTest::NodeTest(StoreConsts::NodeKind_t kind) : m_kind(kind)
+NodeTest::NodeTest(StoreConsts::NodeKind kind) : m_kind(kind)
 {
 }
 
 
 NodeTest::NodeTest(
-    StoreConsts::NodeKind_t kind,
+    StoreConsts::NodeKind kind,
     rchandle<NodeNameTest> name_test)
   :
   m_kind(kind),
@@ -75,7 +75,7 @@ NodeTest::NodeTest(
 }
 
 
-StoreConsts::NodeKind_t NodeTest::get_kind() const
+StoreConsts::NodeKind NodeTest::get_kind() const
 {
   return m_kind;
 }

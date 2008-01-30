@@ -11,6 +11,7 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/basic_item_factory.h"
+#include "store/naive/query_context.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
 #include "store/naive/simple_temp_seq.h"
@@ -99,7 +100,7 @@ Item_t BasicItemFactory::createUntypedAtomic(const xqp_string& value)
 }
 
 
-Item_t BasicItemFactory::createString(const xqpStringStore_t& value)
+Item_t BasicItemFactory::createString(xqpStringStore* value)
 {
   return new StringItemNaive(value);
 }
@@ -444,50 +445,66 @@ Item_t BasicItemFactory::createUnsignedShort(xqp_ushort value)
   return new UnsignedShortItemNaive( value );
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
 Item_t BasicItemFactory::createDocumentNode(
+    unsigned long   qid,
     xqpStringStore* baseUri,
     xqpStringStore* docUri,
-    Iterator*       children,
+    Iterator*       childrenIter,
     bool            isRoot,
     bool            copy,
     bool            typePreserve,
     bool            nsPreserve,
     bool            nsInherit)
 {
+  rchandle<XmlTree> xmlTree;
+  QueryContext& ctx = GET_STORE().getQueryContext(qid);
+
   if (isRoot)
   {
-    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
-
-    XmlNode* n = new ConstrDocumentNode(baseUri, docUri, children,
-                                        true, copy,
-                                        typePreserve, nsPreserve, nsInherit);
-    xmlTree->setRoot(n);
-
-    n->constructTree(xmlTree.get_ptr(), 0);
-
-    return n;
+    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
   }
-  else
+
+  ConstrDocumentNode* n = new ConstrDocumentNode(xmlTree,
+                                                 baseUri,
+                                                 docUri,
+                                                 typePreserve,
+                                                 nsPreserve,
+                                                 nsInherit);
+  if (childrenIter != NULL)
   {
-    return new ConstrDocumentNode(baseUri, docUri, children,
-                                  false, copy,
-                                  typePreserve, nsPreserve, nsInherit);
+    ctx.push(n);
+
+    try
+    {
+      n->constructSubtree(childrenIter, copy);
+    }
+    catch (...)
+    {
+      ctx.clear();
+      throw;
+    }
+
+    ctx.pop();
   }
+
+  return n;
 }
 
 
 /*******************************************************************************
-  This method is used by the zorba runtime (during node construction).
+
 ********************************************************************************/
 Item_t BasicItemFactory::createElementNode(
+    unsigned long     qid,
     Item*             name,
     Item*             type,
-    Iterator*         childrenIte,
-    Iterator*         attrsIte,
-    Iterator*         nsIte,
+    Iterator*         childrenIter,
+    Iterator*         attrsIter,
+    Iterator*         nsIter,
     const NsBindings& nsBindings,
     bool              isRoot,
     bool              copy,
@@ -495,28 +512,46 @@ Item_t BasicItemFactory::createElementNode(
     bool              nsPreserve,
     bool              nsInherit) 
 {
+  rchandle<XmlTree> xmlTree;
+  XmlNode* parent = NULL;
+  QueryContext& ctx = GET_STORE().getQueryContext(qid);
+  ulong pos = 0;
+
   if (isRoot)
   {
-    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
-
-    XmlNode* n = new ConstrElementNode(name, type,
-                                       childrenIte, attrsIte, nsIte, nsBindings,
-                                       true, copy,
-                                       typePreserve, nsPreserve, nsInherit);
-
-    xmlTree->setRoot(n);
-
-    n->constructTree(xmlTree.get_ptr(), 0);
-
-    return n;
+    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
   }
   else
   {
-    return new ConstrElementNode(name, type,
-                                 childrenIte, attrsIte, nsIte, nsBindings,
-                                 false, copy,
-                                 typePreserve, nsPreserve, nsInherit); 
+    parent = ctx.top();
+    pos = parent->numChildren();
   }
+
+  ConstrElementNode* n = new ConstrElementNode(xmlTree,
+                                               parent,
+                                               pos,
+                                               name,
+                                               type,
+                                               nsBindings,
+                                               typePreserve,
+                                               nsPreserve,
+                                               nsInherit);
+
+  ctx.push(n);
+
+  try
+  {
+    n->constructSubtree(attrsIter, childrenIter, copy);
+  }
+  catch (...)
+  {
+    ctx.clear();
+    throw;
+  }
+
+  ctx.pop();
+
+  return n;
 }
 
 
@@ -524,80 +559,114 @@ Item_t BasicItemFactory::createElementNode(
 
 ********************************************************************************/
 Item_t BasicItemFactory::createAttributeNode(
-    Item* name,
-    Item* type,
-    Item* typedValue,
-    bool  isRoot)
+    ulong      qid,
+    Iterator*  nameIter,
+    Item*      typeName,
+    Iterator*  valueIter,
+    bool       isRoot)
 {
+  rchandle<XmlTree> xmlTree;
+  XmlNode* parent = NULL;
+  QueryContext& ctx = GET_STORE().getQueryContext(qid);
+  ulong pos = 0;
+
   if (isRoot)
   {
-    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
-
-    XmlNode* n = new AttributeNode(name, type, typedValue, false, false, true);
-
-    xmlTree->setRoot(n);
-
-    n->constructTree(xmlTree.get_ptr(), 0);
-
-    return n;
+    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
   }
   else
   {
-    return new AttributeNode(name, type, typedValue, false, false, false);
+    parent = ctx.top();
+    pos = parent->numAttributes();
   }
-}
 
+  AttributeNode* n = new AttributeNode(xmlTree, parent, pos, typeName, false, false);
+
+  if (nameIter != NULL || valueIter != NULL)
+  {
+    ctx.push(n);
+
+    try
+    {
+      n->constructValue(nameIter, valueIter);
+    }
+    catch (...)
+    {
+      ctx.clear();
+      throw;
+    }
+
+    ctx.pop();
+  }
+
+  return n;
+}
 
 
 /*******************************************************************************
 
 ********************************************************************************/
 Item_t BasicItemFactory::createTextNode(
+    unsigned long   qid,
     xqpStringStore* value,
     bool            isRoot)
 {
+  rchandle<XmlTree> xmlTree;
+  XmlNode* parent = NULL;
+  QueryContext& ctx = GET_STORE().getQueryContext(qid);
+  ulong pos = 0;
+
   if (isRoot)
   {
-    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
-
-    XmlNode* n = new TextNode(value, true);
-
-    xmlTree->setRoot(n);
-
-    n->constructTree(xmlTree.get_ptr(), 0);
-
-    return n;
+    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
   }
   else
   {
-    return new TextNode(value, false);
+    parent = ctx.top();
+    pos = parent->numChildren();
+
+    XmlNode* lsib = (pos > 0 ? parent->getChild(pos-1) : NULL);
+
+    if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
+    {
+      *(lsib->getStringValueP()) = *(lsib->getStringValueP()) + *value;
+      return lsib;
+    }
   }
+
+  XmlNode* n = new TextNode(xmlTree, parent, pos, value);
+
+  return n;
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-Item_t BasicItemFactory::createCommentNode(
-    xqpStringStore* comment,
+Item_t BasicItemFactory::createTextNode(
+    unsigned long   qid,
+    Iterator*       valueIter,
     bool            isRoot)
 {
-  if (isRoot)
+  // We must compute the value of the node before the node itself because
+  // if the value is the empty sequence, no text node should be constructed.
+  xqpString value;
+  Item_t valueItem = valueIter->next();
+  if (valueItem != 0)
   {
-    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
+    value = valueItem->getAtomizationValue()->getStringValue();
 
-    XmlNode* n = new CommentNode(comment, true);
-
-    xmlTree->setRoot(n);
-
-    n->constructTree(xmlTree.get_ptr(), 0);
-
-    return n;
+    valueItem = valueIter->next();
+    while (valueItem != NULL)
+    {
+      value += " ";
+      value += valueItem->getAtomizationValue()->getStringValue();
+      valueItem = valueIter->next();
+    }
   }
   else
   {
-    return new CommentNode(comment, false);
+    return NULL;
   }
+
+  return createTextNode(qid, value.getStore(), isRoot);
 }
 
 
@@ -605,26 +674,58 @@ Item_t BasicItemFactory::createCommentNode(
 
 ********************************************************************************/
 Item_t BasicItemFactory::createPiNode(
+    unsigned long   qid,
     xqpStringStore* target,
     xqpStringStore* data,
     bool            isRoot)
 {
+  rchandle<XmlTree> xmlTree;
+  XmlNode* parent = NULL;
+  QueryContext& ctx = GET_STORE().getQueryContext(qid);
+  ulong pos = 0;
+
   if (isRoot)
   {
-    rchandle<XmlTree> xmlTree(new XmlTree(NULL, GET_STORE().getTreeId()));
-
-    XmlNode* n = new PiNode(target, data, true);
-
-    xmlTree->setRoot(n);
-
-    n->constructTree(xmlTree.get_ptr(), 0);
-
-    return n;
+    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
   }
   else
   {
-    return new PiNode(target, data, isRoot);
+    parent = ctx.top();
+    pos = parent->numChildren();
   }
+
+  XmlNode* n = new PiNode(xmlTree, parent, pos, target, data);
+
+  return n;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+Item_t BasicItemFactory::createCommentNode(
+    unsigned long   qid,
+    xqpStringStore* comment,
+    bool            isRoot)
+{
+  rchandle<XmlTree> xmlTree;
+  XmlNode* parent = NULL;
+  QueryContext& ctx = GET_STORE().getQueryContext(qid);
+  ulong pos = 0;
+
+  if (isRoot)
+  {
+    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+  }
+  else
+  {
+    parent = ctx.top();
+    pos = parent->numChildren();
+  }
+
+  XmlNode* n = new CommentNode(xmlTree, parent, pos, comment);
+
+  return n;
 }
 
 

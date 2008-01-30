@@ -155,7 +155,7 @@ void FnStringIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   UnaryBaseIterator<FnStringIterator>::setOffset(planState, offset);
   FnStringIteratorState* state = 
-    new (planState.block + stateOffset) FnStringIteratorState;
+    new (planState.theBlock + stateOffset) FnStringIteratorState;
 }
 
 void FnStringIterator::FnStringIteratorState::init()

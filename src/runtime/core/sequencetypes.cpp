@@ -93,42 +93,62 @@ CastIterator::CastIterator(
   theQuantifier = GENV_TYPESYSTEM.quantifier(*theCastType);
 }
 
-Item_t CastIterator::nextImpl(PlanState& aPlanState) {
+
+Item_t CastIterator::nextImpl(PlanState& aPlanState) 
+{
   Item_t lItem;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-  
-
 
   lItem = consumeNext(theChild, aPlanState);
-  if (lItem == 0) {
-    if (theQuantifier == TypeSystem::QUANT_PLUS || theQuantifier == TypeSystem::QUANT_ONE) {
-      ZorbaAlertFactory::error_alert (ZorbaError::XPTY0004, &loc,
-        false,
+  if (lItem == 0)
+  {
+    if (theQuantifier == TypeSystem::QUANT_PLUS ||
+        theQuantifier == TypeSystem::QUANT_ONE)
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, false,
         "Empty sequences cannot be casted to a type with quantifier ONE or PLUS!"
       );
     }
-  } else {
+  }
+  else if (theQuantifier == TypeSystem::QUANT_ONE ||
+          theQuantifier == TypeSystem::QUANT_QUESTION)
+  {
+    if (consumeNext(theChild, aPlanState) != NULL)
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, false,
+                        "Sequence wiht more than one item cannot be casted to a type with quantifier ONE or QUESTION!");
+    }
+
     STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
+  }
+  else
+  {
+    STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
+
     lItem = consumeNext(theChild, aPlanState);
-    if (lItem != 0) {
-      if (theQuantifier == TypeSystem::QUANT_ONE
-       || theQuantifier == TypeSystem::QUANT_QUESTION) {
-         ZorbaAlertFactory::error_alert (
-           ZorbaError::XPTY0004, &loc,
-           false,
-           "Sequence wiht more than one item cannot be casted to a type with quantifier ONE or QUESTION!"
+    if (lItem != 0)
+    {
+      if (theQuantifier == TypeSystem::QUANT_ONE ||
+          theQuantifier == TypeSystem::QUANT_QUESTION)
+      {
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, false,
+                          "Sequence wiht more than one item cannot be casted to a type with quantifier ONE or QUESTION!"
          );
       }
-      do {
+
+      do
+      {
         STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
         lItem = consumeNext(theChild, aPlanState);
       } while (lItem != 0);
     }
   }
+
   STACK_END();
 }
+
 
 /*******************************************************************************
 

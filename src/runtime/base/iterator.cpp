@@ -35,19 +35,18 @@ namespace xqp
 
 PlanState::PlanState(uint32_t blockSize)
 {
-  this->block = new int8_t[blockSize];
-  memset(this->block, 0, blockSize);
-  this->blockSize = blockSize;
+  theBlockSize = blockSize;
+  theBlock = new int8_t[theBlockSize];
+  memset(theBlock, 0, theBlockSize);
 
-  ///this zorp now gets specific for each iterator state object
-  zorp = ZORBA_FOR_CURRENT_THREAD();
-//	xqbinary = NULL;
-//	xqexecution = NULL;
+  theZorba = ZORBA_FOR_CURRENT_THREAD();
 }
+
 
 PlanState::~PlanState()
 {
-  delete[] block;
+  if (theBlock != NULL)
+    delete[] theBlock;
 }
 
 
@@ -60,9 +59,9 @@ PlanWrapper::PlanWrapper(PlanIter_t& aIter)
   theClosed(false)
 {
   uint32_t stackSize = theIterator->getStateSizeOfSubtree();
-  theStateBlock = new PlanState(stackSize);
+  thePlanState = new PlanState(stackSize);
   uint32_t offset = 0;
-  theIterator->setOffset(*theStateBlock, offset);
+  theIterator->setOffset(*thePlanState, offset);
 }
 
 
@@ -78,9 +77,9 @@ PlanWrapper::next()
   if (!theClosed)
   {
 #if ZORBA_BATCHING_TYPE == 1
-    return theIterator->consumeNext(theIterator, *theStateBlock);
+    return theIterator->consumeNext(theIterator, *thePlanState);
 #else
-    return theIterator->produceNext(*theStateBlock);
+    return theIterator->produceNext(*thePlanState);
 #endif
   }
   else
@@ -93,7 +92,7 @@ void
 PlanWrapper::reset()
 {
   if (!theClosed)
-    theIterator->reset(*theStateBlock);
+    theIterator->reset(*thePlanState);
 }
 
 void
@@ -101,8 +100,8 @@ PlanWrapper::close()
 {
   if (!theClosed)
   {
-    theIterator->releaseResources(*theStateBlock); 
-    delete theStateBlock;
+    theIterator->releaseResources(*thePlanState); 
+    delete thePlanState;
     theClosed = true;
   }
 }
@@ -111,10 +110,10 @@ PlanWrapper::close()
 /*******************************************************************************
   class PlanIteratorWrapper
 ********************************************************************************/
-PlanIteratorWrapper::PlanIteratorWrapper(PlanIter_t& iter, PlanState& block) 
+PlanIteratorWrapper::PlanIteratorWrapper(PlanIter_t& iter, PlanState& state) 
   :
   theIterator(iter),
-  theStateBlock(&block),
+  thePlanState(&state),
   theClosed(false)
 {
 }
@@ -131,9 +130,9 @@ PlanIteratorWrapper::next()
   if (!theClosed)
   {
 #if ZORBA_BATCHING_TYPE == 1
-    return theIterator->consumeNext(theIterator, *theStateBlock);
+    return theIterator->consumeNext(theIterator, *thePlanState);
 #else
-    return theIterator->produceNext(*theStateBlock);
+    return theIterator->produceNext(*thePlanState);
 #endif
   }
   else
@@ -146,7 +145,7 @@ void
 PlanIteratorWrapper::reset()
 {
   if (!theClosed)
-    theIterator->reset(*theStateBlock);
+    theIterator->reset(*thePlanState);
 }
 
 
@@ -155,7 +154,7 @@ PlanIteratorWrapper::close()
 {
   if (!theClosed)
   {
-    theIterator->releaseResources(*theStateBlock); 
+    theIterator->releaseResources(*thePlanState); 
     theClosed = true;
   }
 }

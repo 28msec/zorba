@@ -192,6 +192,7 @@ namespace xqp {
        
   void PrinterVisitor::beginVisit ( const EnclosedIterator& a ) {
     thePrinter.startIter("EnclosedIterator");
+    thePrinter.addAttribute("attr_cont", a.getAttrContent());
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const EnclosedIterator& a ) {

@@ -85,16 +85,18 @@ public:
 protected:
   uint32_t depth;
   
-  std::stack<PlanIter_t> itstack;
+  std::stack<PlanIter_t>                  itstack;
 
-  std::stack<expr*>      theConstructorsStack;
-  namespace_context *theLastNSCtx;
-  std::stack<namespace_context *>      theNSCtxStack;
+  std::stack<expr*>                       theConstructorsStack;
+  std::stack<bool>                        theAttrContentStack;
 
-  hash64map<std::vector<var_iter_t> *> fvar_iter_map;
-  hash64map<std::vector<var_iter_t> *> pvar_iter_map;
-  hash64map<std::vector<ref_iter_t> *> lvar_iter_map;
-  hash64map<std::vector<ref_iter_t> *> *param_var_iter_map;
+  namespace_context                     * theLastNSCtx;
+  std::stack<namespace_context *>         theNSCtxStack;
+
+  hash64map<std::vector<var_iter_t> *>    fvar_iter_map;
+  hash64map<std::vector<var_iter_t> *>    pvar_iter_map;
+  hash64map<std::vector<ref_iter_t> *>    lvar_iter_map;
+  hash64map<std::vector<ref_iter_t> *>  * param_var_iter_map;
 
 public:
 	plan_visitor(hash64map<std::vector<ref_iter_t> *> *param_var_map = NULL)
@@ -112,6 +114,14 @@ public:
     return pop_stack (itstack);
 	}
 
+  bool is_enclosed_expr(expr* e)
+  {
+    fo_expr* foe = dynamic_cast<fo_expr*>(e);
+    if (foe != NULL && foe->get_fname()->getLocalName() == ":enclosed-expr")
+      return true;
+
+    return false;
+  }
 
 /*..........................................
  :  begin visit                            :
@@ -369,15 +379,12 @@ bool begin_visit(fo_expr& v)
 {
   CODEGEN_TRACE_IN ("");
 
-  // If the function is an enclosed expression and we are in the context of
-  // a node constructor, push a NULL in the constructors stack to "hide" the
-  // current constructor context (so that a new constructor context can be
-  // started if a node constructor exists inside the enclosed expr).
-  if (!theConstructorsStack.empty() &&
-      v.get_fname()->getLocalName() == ":enclosed-expr")
-  {
-    theConstructorsStack.push(NULL);
-  }
+  // If the function is an enclosed expression, push it in the constructors
+  // stack to "hide" the current constructor context, if any. This way, a new
+  // constructor context can be started if a node constructor exists inside
+  // the enclosed expr.
+  if (is_enclosed_expr(&v))
+    theConstructorsStack.push(&v);
 
 	return true;
 }
@@ -395,20 +402,26 @@ void end_visit(fo_expr& v)
 
   const yy::location& loc = v.get_loc ();
 
-  if (func->validate_args (argv)) {
+  if (func->validate_args (argv))
+  {
     PlanIter_t iter = (*func) (loc, argv);
-    ZORBA_ASSERT (iter != NULL);
-    itstack.push (iter);
+    ZORBA_ASSERT(iter != NULL);
+    itstack.push(iter);
 
-    if (!theConstructorsStack.empty() &&
-        dynamic_cast<EnclosedIterator*>(iter.get_ptr()) != NULL)
+    if (is_enclosed_expr(&v))
     {
-      expr *e = pop_stack (theConstructorsStack);
-      ZORBA_ASSERT(e == NULL);
+      expr *e = pop_stack(theConstructorsStack);
+      ZORBA_ASSERT(e == &v);
+
+      if (!theAttrContentStack.empty() && theAttrContentStack.top() == true)
+        dynamic_cast<EnclosedIterator*>(iter.get_ptr())->setAttrContent();
     }
-  } else {
-    ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017,
-                           &loc, false, func->get_signature ().get_name ()->getStringValue (), argv.size ());
+  }
+  else 
+  {
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::XPST0017, &loc, false,
+                          func->get_signature().get_name()->getStringValue(),
+                          argv.size());
   }
 }
 
@@ -689,6 +702,10 @@ void end_visit(match_expr& v)
 bool begin_visit(doc_expr& v)
 {
   CODEGEN_TRACE_IN("");
+
+  theConstructorsStack.push(&v);
+  theAttrContentStack.push(false);
+
   return true;
 }
 
@@ -701,6 +718,10 @@ void end_visit(doc_expr& v)
   PlanIter_t lContIter = new DocumentContentIterator(v.get_loc(), lContent);
   PlanIter_t lDocIter = new DocumentIterator(v.get_loc(), lContIter);
   itstack.push(lDocIter);
+
+  theAttrContentStack.pop();
+  expr* e = pop_stack(theConstructorsStack);
+  ZORBA_ASSERT(e == &v);
 }
 
 
@@ -708,9 +729,8 @@ bool begin_visit(elem_expr& v)
 {
   CODEGEN_TRACE_IN ("");
 
-  // Start a new construction context, if we are not in such a context already.
-  if (theConstructorsStack.empty() || theConstructorsStack.top() == NULL)
-    theConstructorsStack.push(&v);
+  theConstructorsStack.push(&v);
+  theAttrContentStack.push(false);
 
   theNSCtxStack.push(theLastNSCtx);
   theLastNSCtx = v.getNSCtx().get_ptr();
@@ -734,7 +754,7 @@ static inline void create_ns_bindings(
 }
 
 
-void end_visit ( elem_expr& v )
+void end_visit(elem_expr& v)
 {
   CODEGEN_TRACE_OUT ("");
 
@@ -758,9 +778,11 @@ void end_visit ( elem_expr& v )
   lQNameIter = pop_itstack();
 
   bool assignId = false;
-  if (peek_stack (theConstructorsStack) == &v)
+  theAttrContentStack.pop();
+  expr* e = pop_stack(theConstructorsStack);
+  ZORBA_ASSERT(e == &v);
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
-    theConstructorsStack.pop();
     assignId = true;
   }
 
@@ -783,9 +805,8 @@ bool begin_visit(attr_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
-  // Start a new construction context, if we are not in such a context already.
-  if (theConstructorsStack.empty() || theConstructorsStack.top() == NULL)
-    theConstructorsStack.push(&v);
+  theConstructorsStack.push(&v);
+  theAttrContentStack.push(true);
 
 	return true;
 }
@@ -813,9 +834,11 @@ void end_visit(attr_expr& v)
   lQNameIter = pop_itstack();
   
   bool assignId = false;
-  if (peek_stack (theConstructorsStack) == &v)
+  theAttrContentStack.pop();
+  expr* e = pop_stack(theConstructorsStack);
+  ZORBA_ASSERT(e = &v);
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
-    theConstructorsStack.pop();
     assignId = true;
   }
 
@@ -824,18 +847,14 @@ void end_visit(attr_expr& v)
   itstack.push(lAttrIter);
 }
 
-void text_expr_begin_visit (text_expr& v)
-{
-  // Start a new construction context, if we are not in such a context already.
-  if (theConstructorsStack.empty() || theConstructorsStack.top() == NULL)
-    theConstructorsStack.push(&v);
-}
 
 bool begin_visit(text_expr& v)
 {
   CODEGEN_TRACE_IN ("");
 
-  text_expr_begin_visit (v);
+  theConstructorsStack.push(&v);
+  theAttrContentStack.push(true);
+
 	return true;
 }
 
@@ -847,9 +866,11 @@ void end_visit(text_expr& v)
   PlanIter_t content = pop_itstack ();
 
   bool assignId = false;
-  if (peek_stack (theConstructorsStack) == &v)
+  theAttrContentStack.pop();
+  expr* e = pop_stack(theConstructorsStack);
+  ZORBA_ASSERT(e = &v);
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
-    theConstructorsStack.pop();
     assignId = true;
   }
 
@@ -871,7 +892,10 @@ void end_visit(text_expr& v)
 bool begin_visit(pi_expr& v)
 {
   CODEGEN_TRACE_IN("");
-  text_expr_begin_visit (v);
+
+  theConstructorsStack.push(&v);
+  theAttrContentStack.push(true);
+
   return true;
 }
 
@@ -881,9 +905,11 @@ void end_visit(pi_expr& v)
   CODEGEN_TRACE_OUT("");
 
   bool assignId = false;
-  if (peek_stack (theConstructorsStack) == &v)
+  theAttrContentStack.pop();
+  expr* e = pop_stack(theConstructorsStack);
+  ZORBA_ASSERT(e = &v);
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
-    theConstructorsStack.pop();
     assignId = true;
   }
 

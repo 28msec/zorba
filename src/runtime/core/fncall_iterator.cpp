@@ -62,7 +62,7 @@ void UDFunctionCallIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   NaryBaseIterator<UDFunctionCallIterator>::setOffset(planState, offset);
   UDFunctionCallIteratorState* state = 
-    new (planState.block + stateOffset) UDFunctionCallIteratorState;
+    new (planState.theBlock + stateOffset) UDFunctionCallIteratorState;
 }
 
 void UDFunctionCallIterator::UDFunctionCallIteratorState::init()

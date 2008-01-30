@@ -265,7 +265,7 @@ bool Zorba_XQueryBinary::initExecution( DynamicQueryContext_t dctx)
   top_iterator->setOffset(*state_block, lOffset);
 
   ///and construct the state block of state objects...
-  state_block->zorp = zorba;
+  state_block->theZorba = zorba;
 
 	if(dctx != NULL)
   {
@@ -343,13 +343,13 @@ Item_t Zorba_XQueryBinary::next()
     return NULL;
   }
 
-	Zorba_XQueryBinary        *prev_current_xquery = state_block->zorp->current_xquery;
-  state_block->zorp->current_xquery = this;
+	Zorba_XQueryBinary        *prev_current_xquery = state_block->theZorba->current_xquery;
+  state_block->theZorba->current_xquery = this;
   try
   {
     Item_t it = top_iterator->produceNext( *state_block );
 
-    state_block->zorp->current_xquery = prev_current_xquery;
+    state_block->theZorba->current_xquery = prev_current_xquery;
 
     return it;
   }
@@ -357,7 +357,7 @@ Item_t Zorba_XQueryBinary::next()
 //  {
 //  }
 	CATCH_ALL_NO_RETURN(  \
-  state_block->zorp->current_xquery = prev_current_xquery;)
+  state_block->theZorba->current_xquery = prev_current_xquery;)
 
   return NULL;
 }
@@ -372,8 +372,8 @@ Zorba_XQueryBinary::reset()
                     true);///continue execution
 		return;
 	}
-	Zorba_XQueryBinary        *prev_current_xquery = state_block->zorp->current_xquery;
-  state_block->zorp->current_xquery = this;
+	Zorba_XQueryBinary        *prev_current_xquery = state_block->theZorba->current_xquery;
+  state_block->theZorba->current_xquery = this;
 	try
   {
     if (!theClosed)
@@ -381,14 +381,14 @@ Zorba_XQueryBinary::reset()
       top_iterator->reset(*state_block);
     }
 
-    state_block->zorp->current_xquery = prev_current_xquery;
+    state_block->theZorba->current_xquery = prev_current_xquery;
 		return;
 	}
 //  catch(xqp_exception &)
 //	{
 //	}
 	CATCH_ALL_NO_RETURN(\
-  state_block->zorp->current_xquery = prev_current_xquery;);
+  state_block->theZorba->current_xquery = prev_current_xquery;);
 }
 
 
@@ -428,7 +428,7 @@ Zorba_XQueryBinary::close()
 
 bool Zorba_XQueryBinary::serialize( ostream& os )
 {
-  state_block->zorp->current_xquery = this;
+  state_block->theZorba->current_xquery = this;
 
   serializer *ser;
 	try
@@ -441,13 +441,13 @@ bool Zorba_XQueryBinary::serialize( ostream& os )
 //  {
 //	}
 	CATCH_ALL_NO_RETURN(;);
-  state_block->zorp->current_xquery = NULL;
+  state_block->theZorba->current_xquery = NULL;
   return !isError();
 }
 
 bool Zorba_XQueryBinary::serializeXML( std::ostream& os )
 {
-  state_block->zorp->current_xquery = this;
+  state_block->theZorba->current_xquery = this;
 
   auto_ptr<serializer> ser(new serializer);
 
@@ -459,13 +459,13 @@ bool Zorba_XQueryBinary::serializeXML( std::ostream& os )
 //  {
 //	}
 	CATCH_ALL_NO_RETURN(;);
-	state_block->zorp->current_xquery = NULL;
+	state_block->theZorba->current_xquery = NULL;
   return !isError();
 }
 
 bool Zorba_XQueryBinary::serializeHTML( std::ostream& os )
 {
-  state_block->zorp->current_xquery = this;
+  state_block->theZorba->current_xquery = this;
 
   auto_ptr<serializer> ser(new serializer);
 	
@@ -477,13 +477,13 @@ bool Zorba_XQueryBinary::serializeHTML( std::ostream& os )
 //  {
 //	}
 	CATCH_ALL_NO_RETURN(;);
-  state_block->zorp->current_xquery = NULL;
+  state_block->theZorba->current_xquery = NULL;
   return !isError();
 }
 
 bool Zorba_XQueryBinary::serializeTEXT( std::ostream& os )
 {
-  state_block->zorp->current_xquery = this;
+  state_block->theZorba->current_xquery = this;
 
 	try{
   Item_t    it;
@@ -500,7 +500,7 @@ bool Zorba_XQueryBinary::serializeTEXT( std::ostream& os )
 //  {
 //	}
 	CATCH_ALL_NO_RETURN(;);
-  state_block->zorp->current_xquery = NULL;
+  state_block->theZorba->current_xquery = NULL;
   return !isError();
 }
 
@@ -533,7 +533,7 @@ bool Zorba_XQueryBinary::SetVariable( xqp_string varname,
                     true);///continue execution
 		return false;
 	}
-  state_block->zorp->current_xquery = this;
+  state_block->theZorba->current_xquery = this;
 
 	try{
 
@@ -544,14 +544,14 @@ bool Zorba_XQueryBinary::SetVariable( xqp_string varname,
   expanded_name = internal_dyn_context->expand_varname(internal_sctx, varname);
   internal_dyn_context->add_variable(expanded_name, item_iter.get_ptr());
 
-  state_block->zorp->current_xquery = NULL;
+  state_block->theZorba->current_xquery = NULL;
   return true;
 	}
 //  catch(xqp_exception &)
 //  {
 //  }
 	CATCH_ALL_NO_RETURN(\
-  state_block->zorp->current_xquery = NULL;);
+  state_block->theZorba->current_xquery = NULL;);
   return false;
 }
 
@@ -568,7 +568,7 @@ bool Zorba_XQueryBinary::SetVariable(
                     true);///continue execution
 		return false;
 	}
-  state_block->zorp->current_xquery = this;
+  state_block->theZorba->current_xquery = this;
 
   PlanIter_t iter;
   PlanWrapper* planWrapper = NULL;
@@ -586,7 +586,7 @@ bool Zorba_XQueryBinary::SetVariable(
     Item_t uriItem = factory->createAnyURI(docUri);
 		if(uriItem == NULL)
 		{//not a valid uri
-			state_block->zorp->current_xquery = NULL;
+			state_block->theZorba->current_xquery = NULL;
 			return false;
 		}
 		//?store.deleteDocument(docUri);
@@ -594,7 +594,7 @@ bool Zorba_XQueryBinary::SetVariable(
 		if(docItem == NULL)
 		{//cannot upload document into store
 			//or maybe is not valid xml
-			state_block->zorp->current_xquery = NULL;
+			state_block->theZorba->current_xquery = NULL;
 			return false;
 		}
 
@@ -605,7 +605,7 @@ bool Zorba_XQueryBinary::SetVariable(
 
     internal_dyn_context->add_variable(expanded_name, planWrapper);
 
-		state_block->zorp->current_xquery = NULL;
+		state_block->theZorba->current_xquery = NULL;
     return true;
 	}
 //  catch(xqp_exception &)
@@ -614,7 +614,7 @@ bool Zorba_XQueryBinary::SetVariable(
 	CATCH_ALL_NO_RETURN(\
   if (planWrapper != NULL)\
     delete planWrapper;\
-  state_block->zorp->current_xquery = NULL;);
+  state_block->theZorba->current_xquery = NULL;);
   return false;
 }
 
@@ -624,18 +624,18 @@ bool Zorba_XQueryBinary::SetVariable(
 bool Zorba_XQueryBinary::AddAvailableDocument(xqp_string docURI,
                                                 Item_t docitem)
 {
-  state_block->zorp->current_xquery = this;
+  state_block->theZorba->current_xquery = this;
 
   ///add to dynamic context
 	try{
-  state_block->zorp->current_xquery = NULL;
+  state_block->theZorba->current_xquery = NULL;
   return false;
 	}
 //  catch(xqp_exception &)
 //  {
 //	}
 	CATCH_ALL_NO_RETURN(\
-	state_block->zorp->current_xquery = NULL;);
+	state_block->theZorba->current_xquery = NULL;);
 	return false;
 }
 */
@@ -646,18 +646,18 @@ bool Zorba_XQueryBinary::AddAvailableDocument(xqp_string docURI,
 bool Zorba_XQueryBinary::AddAvailableCollection(xqp_string collectionURI,
                                                   Collection_t collection)
 {
-  state_block->zorp->current_xquery = this;
+  state_block->theZorba->current_xquery = this;
 
   ///add to dynamic context
 	try{
-  state_block->zorp->current_xquery = NULL;
+  state_block->theZorba->current_xquery = NULL;
   return false;
 	}
 //  catch(xqp_exception &)
 //  {
 //	}
 	CATCH_ALL_NO_RETURN(\
-	state_block->zorp->current_xquery = NULL;);
+	state_block->theZorba->current_xquery = NULL;);
 	return false;
 }
 */

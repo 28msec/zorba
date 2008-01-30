@@ -233,7 +233,7 @@ FnDistinctValuesIterator::setOffset(PlanState& planState, uint32_t& offset)
   NaryBaseIterator<FnDistinctValuesIterator>::setOffset(planState, offset);
 
   FnDistinctValuesIteratorState* state = 
-    new (planState.block + stateOffset) FnDistinctValuesIteratorState;
+    new (planState.theBlock + stateOffset) FnDistinctValuesIteratorState;
 }
 
 void

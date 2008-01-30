@@ -42,16 +42,19 @@ namespace xqp
     static GenericCast aGenericCast;
     return &aGenericCast;
   }
-  
-  Item_t GenericCast::stringSimpleCast(const Item_t aSourceItem,
-                                       const TypeSystem::xqtref_t& aSourceType,
-                                       const TypeSystem::xqtref_t& aTargetType) const
-  {
-    Item_t lItem = 0;
 
-    xqpString lString = aSourceItem->getStringValue().trim(" \n\r\t",4);
   
-    switch(GENV_TYPESYSTEM.get_atomic_type_code(*aTargetType)) {
+Item_t GenericCast::stringSimpleCast(
+    const Item_t aSourceItem,
+    const TypeSystem::xqtref_t& aSourceType,
+    const TypeSystem::xqtref_t& aTargetType) const
+{
+  Item_t lItem = 0;
+
+  xqpString lString = aSourceItem->getStringValue().trim(" \n\r\t",4);
+  
+  switch(GENV_TYPESYSTEM.get_atomic_type_code(*aTargetType))
+  {
       case TypeSystem::XS_ANY_ATOMIC:
         lItem = Zorba::getItemFactory()->createUntypedAtomic(lString);
         break;
@@ -298,21 +301,38 @@ namespace xqp
       case TypeSystem::XS_ANY_URI:
         lItem = Zorba::getItemFactory()->createAnyURI(lString);
         break;
+
       case TypeSystem::XS_QNAME:
       {
+        // It seem that casting untyped atomic to qnameis not allowed in
+        // general, but it is allowed in the case of name expressions in
+        // computed element/attribute constructors. ????
+        if (!GENV_TYPESYSTEM.is_subtype(*aSourceType,
+                                        *GENV_TYPESYSTEM.STRING_TYPE_ONE) &&
+            !GENV_TYPESYSTEM.is_subtype(*aSourceType,
+                                        *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+        {
+          ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, false, false,
+                            "Cannot a non-string type to a qname");
+        }
+
         // TODO namespace resolution
         xqpString lNamespace = "";
         xqpString lPrefix = "";
         int32_t lIndex = lString.indexOf(":");
-        if (lIndex < 0) {
+        if (lIndex < 0) 
+        {
           lItem = &*Zorba::getItemFactory()->createQName(lNamespace, lPrefix, lString);
-        } else {
+        }
+        else
+        {
           lPrefix = lString.substr(0, lIndex);
           xqpString lLocal = lString.substr(lIndex + 1);
           lItem = &*Zorba::getItemFactory()->createQName(lNamespace, lPrefix, lLocal);
         }
       }
-        break;
+      break;
+
       case TypeSystem::XS_NOTATION:
         lItem = Zorba::getItemFactory()->createNOTATION(lString);
         break;
@@ -326,17 +346,19 @@ namespace xqp
 #define ATOMIC_TYPE(type) \
   GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_##type, TypeSystem::QUANT_ONE)
 
-  Item_t
-  GenericCast::castToBoolean(const Item_t aSourceItem,
-                             const TypeSystem::xqtref_t& aSourceType) const
-  {
-    bool lRetValue = true;
+Item_t
+GenericCast::castToBoolean(
+    const Item_t aSourceItem,
+    const TypeSystem::xqtref_t& aSourceType) const
+{
+  bool lRetValue = true;
 
 #ifndef NDEBUG
-    if (GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(BOOLEAN)))
-    {
-      assert(false); // is already handled by Generic::cast
-    } else
+  if (GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(BOOLEAN)))
+  {
+    assert(false); // is already handled by Generic::cast
+  }
+  else
 #endif
     if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(FLOAT)))
     {
@@ -389,24 +411,27 @@ namespace xqp
   }
 #undef ATOMIC_TYPE
 
-  Item_t GenericCast::cast ( Item_t aItem, const TypeSystem::xqtref_t& aTargetType ) const
-  {
-    Item_t lResult;
-    
-    TypeSystem::xqtref_t lItemType = 
-            GENV_TYPESYSTEM.create_type( aItem->getType(), TypeSystem::QUANT_ONE );
 
-    if ( GENV_TYPESYSTEM.is_subtype ( *lItemType, *aTargetType ) ) {
-      return aItem;
-    }
+Item_t GenericCast::cast(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const
+{
+  Item_t lResult;
     
-    lResult = stringSimpleCast(aItem, lItemType, aTargetType);
-    if ( lResult == 0 ) {
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0001, false, 
-        false, "Passed item is not castable to passed target type."
-      );
-    }
-    return lResult;
+  TypeSystem::xqtref_t lItemType = 
+            GENV_TYPESYSTEM.create_type(aItem->getType(), TypeSystem::QUANT_ONE);
+
+  if (GENV_TYPESYSTEM.is_subtype(*lItemType, *aTargetType)) 
+  {
+    return aItem;
+  }
+    
+  lResult = stringSimpleCast(aItem, lItemType, aTargetType);
+  if ( lResult == 0 ) 
+  {
+    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, false, false,
+                      "Passed item is not castable to passed target type.");
+  }
+
+  return lResult;
     
 // 
 //     if ( !GENV_TYPESYSTEM.is_atomic ( *aTargetType ) )
@@ -478,9 +503,11 @@ namespace xqp
 //         break;
 //     }
 //     return result;
-  }
+}
 
-  bool GenericCast::isCastable(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const {
+
+bool GenericCast::isCastable(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const
+{
     Item_t lItem;
     TypeSystem::xqtref_t lItemType = 
         GENV_TYPESYSTEM.create_type( aItem->getType(), TypeSystem::QUANT_ONE );
