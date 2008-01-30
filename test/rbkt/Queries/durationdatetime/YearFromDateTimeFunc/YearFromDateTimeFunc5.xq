@@ -1,0 +1,1 @@
+fn:year-from-dateTime(())
