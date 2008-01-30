@@ -1088,12 +1088,12 @@ void end_visit(const CompPIConstructor& v, void *visit_state)
     atomExpr->add(target);
 
     rchandle<cast_expr> castExpr =
-      new cast_expr(loc, atomExpr,
+      new cast_expr(loc, atomExpr.get_ptr(),
                     GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_NCNAME,
                                                        TypeSystem::QUANT_ONE));
 
     rchandle<fo_expr> enclosedExpr = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"));
-    enclosedExpr->add(castExpr);
+    enclosedExpr->add(castExpr.get_ptr());
 
     target = enclosedExpr;
   }
