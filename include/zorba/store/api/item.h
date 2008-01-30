@@ -32,7 +32,7 @@ typedef rchandle<class Iterator> Iterator_t;
 
 typedef std::vector<std::pair<xqp_string, xqp_string> > NsBindings;
 
-typedef StoreConsts::NodeKind_t NodeKind_t;
+typedef StoreConsts::NodeKind NodeKind;
 
 
 /**
@@ -463,7 +463,7 @@ public:
    *  processing instruction node, comment node, text node
    *  @return  TypeCode of the current node
    */
-  virtual NodeKind_t getNodeKind() const
+  virtual NodeKind getNodeKind() const
   {
     this->showError();
     return StoreConsts::elementNode;

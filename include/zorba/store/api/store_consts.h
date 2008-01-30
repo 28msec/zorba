@@ -1,6 +1,8 @@
 #ifndef XQP_STORE_CONSTS_H
 #define XQP_STORE_CONSTS_H
 
+#include <string>
+
 namespace xqp
 {
 
@@ -18,8 +20,9 @@ class StoreConsts
     piNode,
     commentNode
   }
-  NodeKind_t;
+  NodeKind;
 
+  static std::string toString(NodeKind k);
 };
 
 }
