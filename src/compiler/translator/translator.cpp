@@ -1046,7 +1046,7 @@ void end_visit(const CompCommentConstructor& v, void *visit_state)
 
   expr* textExpr = new text_expr(v.get_location(),
                                  text_expr::comment_constructor,
-                                 enclosedExpr);
+                                 enclosedExpr.get_ptr());
 
   nodestack.push(textExpr);
 }
@@ -1118,7 +1118,7 @@ void end_visit(const CompTextConstructor& v, void *visit_state)
 
   expr* textExpr = new text_expr(v.get_location(),
                                  text_expr::text_constructor,
-                                 enclosedExpr);
+                                 enclosedExpr.get_ptr());
 
   nodestack.push(textExpr);
 }
