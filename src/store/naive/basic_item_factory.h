@@ -46,6 +46,9 @@ public:
         const char* pre,
         const char* ln);
 
+  Item_t createNCName(xqpStringStore* value);
+  Item_t createNCName(const xqp_string& value);
+
   virtual Item_t createAnyURI(const xqpStringStore_t& value);
   virtual Item_t createAnyURI(const xqp_string& value);
   virtual Item_t createAnyURI(const char* value);
@@ -141,8 +144,6 @@ public:
   virtual Item_t createIDREFS ( const xqp_string& value );
 
   virtual Item_t createLanguage ( const xqp_string& value );
-
-  virtual Item_t createNCName ( const xqp_string& value );
 
   virtual Item_t createNMTOKEN ( const xqp_string& value );
 

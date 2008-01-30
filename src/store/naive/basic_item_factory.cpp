@@ -67,6 +67,18 @@ Item_t BasicItemFactory::createQName(
 }
 
 
+Item_t BasicItemFactory::createNCName(xqpStringStore* value)
+{
+  return new NCNameItemImpl(value);
+}
+
+
+Item_t BasicItemFactory::createNCName(const xqp_string& value)
+{
+  return new NCNameItemImpl(value.getStore());
+}
+
+
 Item_t BasicItemFactory::createAnyURI(const xqpStringStore_t& value)
 {
   theUriPool->insert(value.get_ptr());
@@ -337,12 +349,6 @@ Item_t BasicItemFactory::createIDREFS ( const xqp_string& value )
 
 Item_t BasicItemFactory::createLanguage ( const xqp_string& value )
 { return Item_t ( NULL ); }
-
-
-Item_t BasicItemFactory::createNCName ( const xqp_string& value )
-{
-  return Item_t ( NULL );
-}
 
 
 Item_t BasicItemFactory::createNMTOKEN ( const xqp_string& value )

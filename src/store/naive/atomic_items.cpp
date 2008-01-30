@@ -80,6 +80,36 @@ xqp_string QNameItemImpl::show() const
 
 
 /*******************************************************************************
+  class UntypedAtomicItem
+********************************************************************************/
+Item_t NCNameItemImpl::getType() const
+{
+  return GET_FACTORY().createQName(SimpleStore::XS_URI, "xs", "NCName");
+}
+
+uint32_t NCNameItemImpl::hash() const
+{
+  return theValue->hash();
+}
+
+bool NCNameItemImpl::equals(Item_t item) const
+{
+  return item->getStringValue() == xqp_string(theValue.get_ptr());
+}
+
+Item_t NCNameItemImpl::getEBV() const
+{
+  bool b = ! ( *theValue == "" );
+  return CREATE_BOOLITEM(b);
+}
+
+xqp_string NCNameItemImpl::show() const
+{
+  return "xs:NCName(" + *theValue + ")";
+}
+
+
+/*******************************************************************************
   class AnyUriItemNaive
 ********************************************************************************/
 Item_t AnyUriItemImpl::getType() const

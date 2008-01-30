@@ -59,6 +59,28 @@ private:
 
 
 /*******************************************************************************
+  class QNameItem
+********************************************************************************/
+class NCNameItemImpl : public AtomicItem
+{
+private:
+  xqpStringStore_t  theValue;
+
+public:
+  NCNameItemImpl(xqpStringStore* aValue) : theValue ( aValue ) {}
+
+  Item_t getType() const;
+  uint32_t hash() const;
+  bool equals(Item_t) const;
+  Item_t getEBV() const;
+  xqp_string getStringValue() const { return theValue.get_ptr(); }
+  xqpStringStore* getStringValueP() { return theValue.get_ptr(); }
+
+  virtual xqp_string show() const;
+};
+
+
+/*******************************************************************************
   class AnyUriItem
 ********************************************************************************/
 class AnyUriItemImpl : public AtomicItem

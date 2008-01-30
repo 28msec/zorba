@@ -57,6 +57,13 @@ public:
         const char* ns,
         const char* pre,
         const char* ln) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#NCName]
+   * @param value string representation of the value
+   */
+  virtual Item_t createNCName(xqpStringStore* value) = 0;
+  virtual Item_t createNCName(const xqp_string& value) = 0;
     
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
@@ -325,12 +332,6 @@ public:
    * @param value string representation of the value
    */
   virtual Item_t createLanguage ( const xqp_string& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#NCName]
-   * @param value string representation of the value
-   */
-  virtual Item_t createNCName ( const xqp_string& value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#NMTOKEN]

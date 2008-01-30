@@ -495,9 +495,9 @@ public:
   bool isConstructed() const   { return true; }
   bool isCopy() const          { return theFlags & XmlNode::IsCopy; }
 
-  bool typePreserve() const    { return theFlags & XmlNode::TypePreserve; }
-  bool nsPreserve() const      { return theFlags & XmlNode::NsPreserve; }
-  bool nsInherit() const       { return theFlags & XmlNode::NsInherit; }
+  bool typePreserve() const    { return (theFlags & XmlNode::TypePreserve) != 0; }
+  bool nsPreserve() const      { return (theFlags & XmlNode::NsPreserve) != 0; }
+  bool nsInherit() const       { return (theFlags & XmlNode::NsInherit) != 0; }
 
 private:
   //disable default copy constructor
