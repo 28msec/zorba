@@ -462,99 +462,38 @@ Item_t GenericCast::cast(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) 
   }
 
   return lResult;
-    
-// 
-//     if ( !GENV_TYPESYSTEM.is_atomic ( *aTargetType ) )
-//     {
-//       ZorbaErrorAlerts::error_alert (
-//           ZorbaError::FORG0001_Invalid_value_for_cast_constructor,
-//           ZorbaError::STATIC_ERROR,
-//           false,
-//           "Item cannot be casted to the declared type!"
-//       );
-//     }
-// 
-//     switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *aTargetType ) )
-//     {
-//       case TypeSystem::XS_DOUBLE:
-//         double doubleVal;
-//         if ( GENV_TYPESYSTEM.is_subtype ( *itemType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-//         {
-//           doubleVal = static_cast<double> ( item->getFloatValue() );
-//         }
-//         else if ( GENV_TYPESYSTEM.is_subtype ( *itemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-//         {
-//           doubleVal = static_cast<double> ( item->getDecimalValue() );
-//         }
-//         else
-//         {
-//           const char* pStart = item->getStringValue().c_str();
-//           char* pEnd;
-//           doubleVal = strtod ( pStart, &pEnd );
-//           if ( *pEnd != '\0' )
-//           {
-//             ZorbaErrorAlerts::error_alert (
-//                 ZorbaError::FORG0001_Invalid_value_for_cast_constructor,
-//                 ZorbaError::STATIC_ERROR,
-//                 NULL,
-//                 false,
-//                 "Cannot convert \"" + item->getStringValue() + "\" to a double!"
-//             );
-//           }
-//         }
-//         result = lItemFactory->createDouble ( doubleVal );
-//         break;
-//       case TypeSystem::XS_FLOAT:
-//         if ( GENV_TYPESYSTEM.is_subtype ( *itemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-//         {
-//           result = lItemFactory->createFloat ( static_cast<float> ( item->getDecimalValue() ) );
-//         }
-//         else
-//         {
-//           ZorbaErrorAlerts::error_alert (
-//               ZorbaError::FORG0001_Invalid_value_for_cast_constructor,
-//               ZorbaError::STATIC_ERROR,
-//               NULL,
-//               false,
-//               "Numeric casting of a non numeric type"
-//           );
-//         }
-//         break;
-//       case TypeSystem::XS_STRING:
-//         result = lItemFactory->createString ( item->getStringValue() );
-//         break;
-//       default:
-//         ZorbaErrorAlerts::error_alert (
-//             ZorbaError::FORG0001_Invalid_value_for_cast_constructor,
-//             ZorbaError::STATIC_ERROR,
-//             false,
-//             "Item cannot be casted to the declared type!"
-//         );
-//         break;
-//     }
-//     return result;
+}
+
+Item_t GenericCast::cast(const xqpString& aStr, const TypeSystem::xqtref_t& aTargetType) const
+{
+  Item_t lItem = Zorba::getItemFactory()->createString(aStr);
+  Item_t lResult = cast(lItem, aTargetType);
+  return lResult;
 }
 
 
 bool GenericCast::isCastable(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const
 {
-    Item_t lItem;
-    TypeSystem::xqtref_t lItemType = 
-        GENV_TYPESYSTEM.create_type( aItem->getType(), TypeSystem::QUANT_ONE );
+  Item_t lItem;
+  TypeSystem::xqtref_t lItemType = 
+      GENV_TYPESYSTEM.create_type( aItem->getType(), TypeSystem::QUANT_ONE );
 
-    if ( GENV_TYPESYSTEM.is_subtype ( *lItemType, *aTargetType ) ) {
-      // Item is castable if target type is a supertype
-      return true;  
-    }
-    
-    // Most simple implementation: Check if string cast works
-    lItem = stringSimpleCast(aItem, lItemType, aTargetType);
-
-    if (lItem == 0) {
-      return false;
-    } else {
-      return true;
-    }
+  if ( GENV_TYPESYSTEM.is_subtype ( *lItemType, *aTargetType ) ) {
+    // Item is castable if target type is a supertype
+    return true;  
   }
-  /* end class GenericCast */
+  
+  // Most simple implementation: Check if string cast works
+  lItem = stringSimpleCast(aItem, lItemType, aTargetType);
+
+  return lItem != 0;
+}
+
+bool GenericCast::isCastable(const xqpString& aStr, const TypeSystem::xqtref_t& aTargetType) const
+{
+  Item_t lItem = Zorba::getItemFactory()->createString(aStr);
+  return isCastable(lItem, aTargetType);
+}
+
+/* end class GenericCast */
 } /* namespace xqp */

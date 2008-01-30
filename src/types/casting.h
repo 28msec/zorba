@@ -73,6 +73,14 @@ namespace xqp
 			 */
       Item_t cast ( Item_t aItem, const TypeSystem::xqtref_t& aTargetType ) const;
 
+			/**
+			 * Executes the string casting of the passed string to an item of the passed target type.
+			 * @param aStr 
+       * @param aTargetType
+			 * @return resutling item
+			 */
+      Item_t cast ( const xqpString& aStr, const TypeSystem::xqtref_t& aTargetType ) const;
+
       /**
        * Checks if the passed item would be castable to the passed target type.
        * @param aItem
@@ -80,6 +88,14 @@ namespace xqp
        * @return true if castable, else false
        */
       bool isCastable( Item_t aItem, const TypeSystem::xqtref_t& aTargetType ) const; 
+
+      /**
+       * Checks if the passed string is castable to the passed target type.
+       * @param aStr
+       * @param aTargetType
+       * @return true if castable, else false
+       */
+      bool isCastable( const xqpString& aStr, const TypeSystem::xqtref_t& aTargetType) const;
 
 	}; /* class GenericCast */
 
