@@ -1012,7 +1012,7 @@ void end_visit(const CompAttrConstructor& v, void *visit_state)
 
     expr_t castExpr =
       new cast_expr(v.get_location(),
-                    atomExpr,
+                    atomExpr.get_ptr(),
                     GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_QNAME,
                                                        TypeSystem::QUANT_ONE));
 
