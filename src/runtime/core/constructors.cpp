@@ -477,8 +477,16 @@ Item_t PiIterator::nextImpl(PlanState& planState)
   for (lFirst = true; 0 != (lItem = consumeNext (theChild1, planState)); lFirst = false)
   {
     if (! lFirst) content += " ";
-    content += lItem->getStringValue();
+
+    xqpString strvalue = lItem->getStringValue();
+    if (strvalue.indexOf("?>") >= 0)
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XQDY0026);
+    }
+    content += strvalue;
   }
+
+  content = content.trimL(" \n\r\t", 4);
 
   lItem = Zorba::getItemFactory()->createPiNode((ulong)&planState,
                                                 target.getStore(),
@@ -652,7 +660,7 @@ void EnclosedIterator::resetImpl(PlanState& planState)
   if (state->theString != NULL && theAttrContent)
     delete state->theString;
 
-  state->theString != NULL;
+  state->theString = NULL;
 }
 
 
@@ -667,7 +675,7 @@ void EnclosedIterator::releaseResourcesImpl(PlanState& planState)
   if (state->theString != NULL && theAttrContent)
     delete state->theString;
 
-  state->theString != NULL;
+  state->theString = NULL;
 }
 
 
