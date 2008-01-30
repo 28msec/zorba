@@ -55,58 +55,55 @@ Item_t GenericCast::stringSimpleCast(
   
   switch(GENV_TYPESYSTEM.get_atomic_type_code(*aTargetType))
   {
-      case TypeSystem::XS_ANY_ATOMIC:
-        lItem = Zorba::getItemFactory()->createUntypedAtomic(lString);
-        break;
-      case TypeSystem::XS_STRING:
-        lItem = Zorba::getItemFactory()->createString(lString);
-        break;
-      case TypeSystem::XS_NORMALIZED_STRING:
-        lItem = Zorba::getItemFactory()->createNormalizedString(lString);
-        break;
-      case TypeSystem::XS_TOKEN:
-        lItem = Zorba::getItemFactory()->createToken(lString);
-        break;
-      case TypeSystem::XS_LANGUAGE:
-        lItem = Zorba::getItemFactory()->createLanguage(lString);
-        break;
-      case TypeSystem::XS_NMTOKEN:
-        lItem = Zorba::getItemFactory()->createNMTOKEN(lString);
-        break;
-      case TypeSystem::XS_NAME:
-        lItem = Zorba::getItemFactory()->createName(lString);
-        break;
-      case TypeSystem::XS_NCNAME:
-        lItem = Zorba::getItemFactory()->createNCName(lString);
-        break;
-      case TypeSystem::XS_ID:
-        lItem = Zorba::getItemFactory()->createID(lString);
-        break;
-      case TypeSystem::XS_IDREF:
-        lItem = Zorba::getItemFactory()->createIDREF(lString);
-        break;
-      case TypeSystem::XS_ENTITY:
-        lItem = Zorba::getItemFactory()->createENTITY(lString);
-        break;
-      case TypeSystem::XS_UNTYPED_ATOMIC:
-        lItem = Zorba::getItemFactory()->createUntypedAtomic(lString);
-        break;
-      case TypeSystem::XS_DATETIME:
-        {
-          xqp_dateTime dt;
-          if (DateTime::parse_string(lString, dt))
-            lItem = Zorba::getItemFactory()->createDateTime(dt);
-        }
-        break;
-      case TypeSystem::XS_DATE:
-        {
-          xqp_date d;
-          if (Date::parse_string(lString, d))
-            lItem = Zorba::getItemFactory()->createDate(d);
-        }
-        break;
-      case TypeSystem::XS_TIME:
-        {
+  case TypeSystem::XS_ANY_ATOMIC:
+    lItem = Zorba::getItemFactory()->createUntypedAtomic(lString);
+    break;
+  case TypeSystem::XS_STRING:
+    lItem = Zorba::getItemFactory()->createString(lString);
+    break;
+  case TypeSystem::XS_NORMALIZED_STRING:
+    lItem = Zorba::getItemFactory()->createNormalizedString(lString);
+    break;
+  case TypeSystem::XS_TOKEN:
+    lItem = Zorba::getItemFactory()->createToken(lString);
+    break;
+  case TypeSystem::XS_LANGUAGE:
+    lItem = Zorba::getItemFactory()->createLanguage(lString);
+    break;
+  case TypeSystem::XS_NMTOKEN:
+    lItem = Zorba::getItemFactory()->createNMTOKEN(lString);
+    break;
+  case TypeSystem::XS_NAME:
+    lItem = Zorba::getItemFactory()->createName(lString);
+    break;
+  case TypeSystem::XS_ID:
+    lItem = Zorba::getItemFactory()->createID(lString);
+    break;
+  case TypeSystem::XS_IDREF:
+    lItem = Zorba::getItemFactory()->createIDREF(lString);
+    break;
+  case TypeSystem::XS_ENTITY:
+    lItem = Zorba::getItemFactory()->createENTITY(lString);
+    break;
+  case TypeSystem::XS_UNTYPED_ATOMIC:
+    lItem = Zorba::getItemFactory()->createUntypedAtomic(lString);
+    break;
+  case TypeSystem::XS_DATETIME:
+  {
+    xqp_dateTime dt;
+    if (DateTime::parse_string(lString, dt))
+      lItem = Zorba::getItemFactory()->createDateTime(dt);
+  }
+  break;
+  case TypeSystem::XS_DATE:
+  {
+    xqp_date d;
+    if (Date::parse_string(lString, d))
+      lItem = Zorba::getItemFactory()->createDate(d);
+  }
+  break;
+  case TypeSystem::XS_TIME:
+  {
           xqp_time t;
           if (Time::parse_string(lString, t))
             lItem = Zorba::getItemFactory()->createTime(t);
@@ -302,52 +299,85 @@ Item_t GenericCast::stringSimpleCast(
         lItem = Zorba::getItemFactory()->createAnyURI(lString);
         break;
 
-      case TypeSystem::XS_QNAME:
-      {
-        // It seem that casting untyped atomic to qnameis not allowed in
-        // general, but it is allowed in the case of name expressions in
-        // computed element/attribute constructors. ????
-        if (!GENV_TYPESYSTEM.is_subtype(*aSourceType,
-                                        *GENV_TYPESYSTEM.STRING_TYPE_ONE) &&
-            !GENV_TYPESYSTEM.is_subtype(*aSourceType,
-                                        *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
-        {
-          ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, false, false,
-                            "Cannot a non-string type to a qname");
-        }
-
-        // TODO namespace resolution
-        xqpString lNamespace = "";
-        xqpString lPrefix = "";
-        int32_t lIndex = lString.indexOf(":");
-        if (lIndex < 0) 
-        {
-          lItem = &*Zorba::getItemFactory()->createQName(lNamespace, lPrefix, lString);
-        }
-        else
-        {
-          lPrefix = lString.substr(0, lIndex);
-          xqpString lLocal = lString.substr(lIndex + 1);
-          lItem = &*Zorba::getItemFactory()->createQName(lNamespace, lPrefix, lLocal);
-        }
-      }
-      break;
-
-      case TypeSystem::XS_NOTATION:
-        lItem = Zorba::getItemFactory()->createNOTATION(lString);
-        break;
-      default:
-        // TODO parsing of user defined types
-        break;
+  case TypeSystem::XS_NCNAME:
+  {
+    if (!GENV_TYPESYSTEM.is_subtype(*aSourceType,
+                                    *GENV_TYPESYSTEM.STRING_TYPE_ONE) &&
+        !GENV_TYPESYSTEM.is_subtype(*aSourceType,
+                                    *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+    {
+      ZORBA_ERROR_ALERT_OSS(ZorbaError::XPTY0004, false, false,
+                            "Cannot cast " << lString
+                            << " to an NCName because its type is "
+                            << aSourceType->toString(), "");
     }
-    return lItem;
+    lItem = castToNCName(lString);
+    break;
   }
+  case TypeSystem::XS_QNAME:
+  {
+    // It seem that casting untyped atomic to qname is not allowed in
+    // general, but it is allowed in the case of name expressions in
+    // computed element/attribute constructors. ????
+    if (!GENV_TYPESYSTEM.is_subtype(*aSourceType,
+                                    *GENV_TYPESYSTEM.STRING_TYPE_ONE) &&
+        !GENV_TYPESYSTEM.is_subtype(*aSourceType,
+                                    *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, false, false,
+                        "Cannot a non-string type to a qname");
+    }
+    
+    // TODO namespace resolution
+    xqpString lNamespace = "";
+    xqpString lPrefix = "";
+    int32_t lIndex = lString.indexOf(":");
+    if (lIndex < 0) 
+    {
+      lItem = &*Zorba::getItemFactory()->createQName(lNamespace, lPrefix, lString);
+    }
+    else
+    {
+      lPrefix = lString.substr(0, lIndex);
+      xqpString lLocal = lString.substr(lIndex + 1);
+      lItem = &*Zorba::getItemFactory()->createQName(lNamespace, lPrefix, lLocal);
+    }
+  }
+  break;
+
+  case TypeSystem::XS_NOTATION:
+    lItem = Zorba::getItemFactory()->createNOTATION(lString);
+    break;
+  default:
+    // TODO parsing of user defined types
+    break;
+  }
+  return lItem;
+}
 
 #define ATOMIC_TYPE(type) \
   GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_##type, TypeSystem::QUANT_ONE)
 
-Item_t
-GenericCast::castToBoolean(
+
+Item_t GenericCast::castToNCName(const xqpString& str) const
+{
+  // TODO: replace this with the real stuff
+  if (str.indexOf(":") >= 0)
+  {
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0041, false, false,
+                          "Cannot cast " << str << " to an NCName", ""); 
+  }
+  if (str.indexOf(" ") >= 0)
+  {
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0041, false, false,
+                          "Cannot cast " << str << " to an NCName", ""); 
+  }
+
+  return Zorba::getItemFactory()->createNCName(str);
+}
+
+
+Item_t GenericCast::castToBoolean(
     const Item_t aSourceItem,
     const TypeSystem::xqtref_t& aSourceType) const
 {

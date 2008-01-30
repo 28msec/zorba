@@ -55,6 +55,8 @@ namespace xqp
       Item_t stringSimpleCast(const Item_t aSourceItem,
                               const TypeSystem::xqtref_t& aSourceType,
                               const TypeSystem::xqtref_t& aTargetType) const;
+
+      Item_t castToNCName(const xqpString& str) const;
       
       // XQuery 1.0 and XPath 2.0 Functions and Operators
       // 17.1.6 Casting to xs:boolean

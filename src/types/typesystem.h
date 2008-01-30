@@ -324,6 +324,8 @@ class XQType : virtual public rcobject {
     virtual ~XQType() { }
     virtual type_kind_t type_kind() const = 0;
     virtual std::ostream& serialize(std::ostream& os) const;
+public:
+    virtual std::string toString() const;
 
     TYPE_FRIENDS
 };
@@ -342,6 +344,7 @@ class AtomicXQType : public XQType {
 
     AtomicXQType(TypeSystem::atomic_type_code_t type_code, TypeSystem::quantifier_t quantifier)
       : XQType(quantifier), m_type_code(type_code) { }
+
     virtual std::ostream& serialize(std::ostream& os) const;
 
     TYPE_FRIENDS

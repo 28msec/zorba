@@ -714,6 +714,15 @@ std::ostream& XQType::serialize(std::ostream& os) const
   return os << "[XQType " << KIND_STRINGS[type_kind()] << decode_quantifier (GENV_TYPESYSTEM.quantifier (*this)) << "]";
 }
 
+
+std::string XQType::toString() const
+{
+  std::ostringstream os;
+  serialize(os);
+  return os.str();
+}
+
+
 const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeSystem::ATOMIC_TYPE_CODE_LIST_SIZE] =
 {
   "XS_ANY_ATOMIC",
@@ -767,5 +776,6 @@ std::ostream& AtomicXQType::serialize(std::ostream& os) const
 {
   return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[m_type_code] << decode_quantifier (GENV_TYPESYSTEM.quantifier (*this)) << "]";
 }
+
 
 /* vim:set ts=2 sw=2: */
