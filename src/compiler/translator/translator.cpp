@@ -1074,8 +1074,7 @@ void end_visit(const CompPIConstructor& v, void *visit_state)
   {
     content = pop_nodestack();
 
-    rchandle<fo_expr> enclosedExpr = new fo_expr(v.get_location(),
-                                                 LOOKUP_OP1("enclosed-expr"));
+    rchandle<fo_expr> enclosedExpr = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"));
     enclosedExpr->add(content);
 
     content = enclosedExpr;
@@ -1085,9 +1084,16 @@ void end_visit(const CompPIConstructor& v, void *visit_state)
   {
     target = pop_nodestack();
 
-    rchandle<fo_expr> enclosedExpr = new fo_expr(v.get_location(),
-                                                 LOOKUP_OP1("enclosed-expr"));
-    enclosedExpr->add(target);
+    rchandle<fo_expr> atomExpr = new fo_expr(loc, LOOKUP_FN("fn", "data", 1));
+    atomExpr->add(target);
+
+    rchandle<cast_expr> castExpr =
+      new cast_expr(loc, atomExpr,
+                    GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_NCNAME,
+                                                       TypeSystem::QUANT_ONE));
+
+    rchandle<fo_expr> enclosedExpr = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"));
+    enclosedExpr->add(castExpr);
 
     target = enclosedExpr;
   }
