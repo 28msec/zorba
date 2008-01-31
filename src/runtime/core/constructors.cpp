@@ -179,7 +179,7 @@ Item_t ElementIterator::nextImpl(PlanState& planState)
 
   node = Zorba::getItemFactory()->
          createElementNode((unsigned long)&planState,
-                           qnameItem.get_ptr(),
+                           qnameItem.getp(),
                            GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
                            cwrapper.get(),
                            awrapper.get(),

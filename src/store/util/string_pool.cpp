@@ -44,7 +44,7 @@ StringPool::~StringPool()
     {
       std::cout << "i = " << i << " String " << theHashTab[i].theString->c_str()
                 << " is still in the pool" << std::endl;
-      delete theHashTab[i].theString.get_ptr();
+      delete theHashTab[i].theString.getp();
       count++;
     }
   }

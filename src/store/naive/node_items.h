@@ -283,8 +283,8 @@ public:
 
   Item_t getType() const; 
 
-  xqp_string getBaseURI() const     { return theBaseUri.get_ptr(); }
-  xqp_string getDocumentURI() const { return theDocUri.get_ptr(); }
+  xqp_string getBaseURI() const     { return theBaseUri.getp(); }
+  xqp_string getDocumentURI() const { return theDocUri.getp(); }
 
   Iterator_t getChildren() const;
 
@@ -415,7 +415,7 @@ public:
 
   bool haveLocalBindings() const{ return (theFlags & XmlNode::HaveLocalBindings) != 0; }
 
-  NsBindingsContext* getNsContext() const { return theNsContext.get_ptr(); }
+  NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
 
   void setNsContext(NsBindingsContext* ctx);
   xqpStringStore* findBinding(xqpStringStore* prefix) const;
@@ -584,8 +584,8 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringValue() const   { return theContent.get_ptr(); }
-  xqpStringStore* getStringValueP()   { return theContent.get_ptr(); }
+  xqp_string getStringValue() const   { return theContent.getp(); }
+  xqpStringStore* getStringValueP()   { return theContent.getp(); }
 			
   xqp_string show() const;
 };
@@ -618,9 +618,9 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringValue() const    { return theData.get_ptr(); }
+  xqp_string getStringValue() const    { return theData.getp(); }
 
-  xqp_string getTarget() const { return theTarget.get_ptr(); }
+  xqp_string getTarget() const { return theTarget.getp(); }
 
   xqp_string show() const;
 };
@@ -651,8 +651,8 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringValue() const   { return theContent.get_ptr(); }
-  xqpStringStore* getStringValueP()   { return theContent.get_ptr(); }
+  xqp_string getStringValue() const   { return theContent.getp(); }
+  xqpStringStore* getStringValueP()   { return theContent.getp(); }
 
   xqp_string show() const;
 };

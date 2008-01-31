@@ -235,7 +235,7 @@ bool begin_visit(flwor_expr& v)
     if (var->kind == var_expr::for_var)
     {
       fvar_iter_map.put(k, new vector<var_iter_t>());
-      var_expr* pos_var = (*it)->get_pos_var().get_ptr();
+      var_expr* pos_var = (*it)->get_pos_var().getp();
       if (pos_var != NULL)
         pvar_iter_map.put((uint64_t)pos_var, new vector<var_iter_t>());
     }
@@ -291,8 +291,8 @@ void end_visit(flwor_expr& v)
     if ((*it)->type == forlet_clause::for_clause)
     {
       vector<var_iter_t> *var_iters = NULL, *pvar_iters = NULL;
-      var_expr* var = (*it)->var_h.get_ptr();
-      var_expr* pos_var = (*it)->get_pos_var().get_ptr();
+      var_expr* var = (*it)->var_h.getp();
+      var_expr* pos_var = (*it)->get_pos_var().getp();
       ZORBA_ASSERT( fvar_iter_map.get((uint64_t)var, var_iters) );
       if (pos_var == NULL)
       {
@@ -415,7 +415,7 @@ void end_visit(fo_expr& v)
       ZORBA_ASSERT(e == &v);
 
       if (!theAttrContentStack.empty() && theAttrContentStack.top() == true)
-        dynamic_cast<EnclosedIterator*>(iter.get_ptr())->setAttrContent();
+        dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
     }
   }
   else 
@@ -733,10 +733,10 @@ bool begin_visit(elem_expr& v)
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
     if (theConstructorsStack.empty())
-      theLastNSCtx = v.getNSCtx()->get_parent().get_ptr();
+      theLastNSCtx = v.getNSCtx()->get_parent().getp();
 
     theNSCtxStack.push(theLastNSCtx);
-    theLastNSCtx = v.getNSCtx().get_ptr();
+    theLastNSCtx = v.getNSCtx().getp();
   }
 
   theConstructorsStack.push(&v);
@@ -785,7 +785,7 @@ void end_visit(elem_expr& v)
                                         lAttrsIter,
                                         lContentIter,
                                         theLastNSCtx,
-                                        v.getNSCtx().get_ptr(),
+                                        v.getNSCtx().getp(),
                                         isRoot);
   itstack.push(iter);
 }

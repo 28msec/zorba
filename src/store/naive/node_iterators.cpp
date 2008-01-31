@@ -33,7 +33,7 @@ Item_t ChildrenIterator::next()
 
   if (theParentNode->isConstructed())
   {
-    XmlNode* pnode = theParentNode.get_ptr();
+    XmlNode* pnode = theParentNode.getp();
 
     ZORBA_ASSERT(cnode->getParentP() != NULL);
 
@@ -86,7 +86,7 @@ Item_t AttributesIterator::next()
 
   if (theParentNode->isConstructed())
   {
-    XmlNode* pnode = theParentNode.get_ptr();
+    XmlNode* pnode = theParentNode.getp();
 
     ZORBA_ASSERT(cnode->getParentP() != NULL);
 
@@ -231,11 +231,11 @@ Item_t StoreNodeSortIterator::next()
         theCurrentNode++;
       }
 
-      return result.get_ptr();
+      return result.getp();
     }
     else
     {
-      return theNodes[theCurrentNode++].get_ptr();
+      return theNodes[theCurrentNode++].getp();
     }
   }
   else
@@ -327,11 +327,11 @@ Item_t StoreNodeSortOrAtomicIterator::next()
         theCurrentNode++;
       }
 
-      return result.get_ptr();
+      return result.getp();
     }
     else
     {
-      return theNodes[theCurrentNode++].get_ptr();
+      return theNodes[theCurrentNode++].getp();
     }
   }
   else

@@ -282,7 +282,7 @@ XQuery_t ZorbaEngineImpl::createQuery(
 	try{
   std::auto_ptr<Zorba_XQueryBinary> xq(new Zorba_XQueryBinary(xquery_source_uri,
                                                               aQueryString));
-	if (!xq->compile(sctx.get_ptr(), routing_mode))
+	if (!xq->compile(sctx.getp(), routing_mode))
 	{
 		return NULL;
 	}

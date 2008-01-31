@@ -15,8 +15,8 @@ NodeNameTest::NodeNameTest(
   m_uri(uri),
   m_local(local)
 {
-  const xqpStringStore *urip = uri.get_ptr();
-  const xqpStringStore *localp = local.get_ptr();
+  const xqpStringStore *urip = uri.getp();
+  const xqpStringStore *localp = local.getp();
 
   if (urip) {
     m_kind = localp ? CONSTANT : CONSTANT_WILDCARD;
@@ -91,8 +91,8 @@ bool NodeTest::is_sub_nodetest_of(const NodeTest& other) const
 {
   return other.m_kind == StoreConsts::anyNode
     || (other.m_kind == m_kind
-      && (other.m_name_test.get_ptr() == 0
-        || (m_name_test.get_ptr() != 0 && m_name_test->is_subname_of(*other.m_name_test))));
+      && (other.m_name_test.getp() == 0
+        || (m_name_test.getp() != 0 && m_name_test->is_subname_of(*other.m_name_test))));
 }
 
 
@@ -100,8 +100,8 @@ bool NodeTest::operator ==(const NodeTest& other) const
 {
   return other.m_kind == m_kind
     && (
-      (other.m_name_test.get_ptr() == 0 && m_name_test.get_ptr() == 0)
-        || (other.m_name_test.get_ptr() != 0 && m_name_test.get_ptr() != 0
+      (other.m_name_test.getp() == 0 && m_name_test.getp() == 0)
+        || (other.m_name_test.getp() != 0 && m_name_test.getp() != 0
           && *other.m_name_test == *m_name_test));
 }
 

@@ -81,7 +81,7 @@ Item_t BasicItemFactory::createNCName(const xqp_string& value)
 
 Item_t BasicItemFactory::createAnyURI(const xqpStringStore_t& value)
 {
-  theUriPool->insert(value.get_ptr());
+  theUriPool->insert(value.getp());
   return new AnyUriItemImpl(value);
 }
 
@@ -103,7 +103,7 @@ Item_t BasicItemFactory::createAnyURI(const char* value)
 
 Item_t BasicItemFactory::createUntypedAtomic(const xqpStringStore_t& value)
 {
-  return new UntypedAtomicItemImpl(value.get_ptr());
+  return new UntypedAtomicItemImpl(value.getp());
 }
 
 Item_t BasicItemFactory::createUntypedAtomic(const xqp_string& value)
@@ -607,7 +607,7 @@ Item_t BasicItemFactory::createAttributeNode(
 
   if (parent != NULL)
   {
-    parent->checkUniqueAttr(attrName.get_ptr());
+    parent->checkUniqueAttr(attrName.getp());
   }
 
   AttributeNode* n = new AttributeNode(xmlTree, parent, pos,

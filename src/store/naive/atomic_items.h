@@ -44,9 +44,9 @@ private:
   bool isOverflow() const                 { return thePosition == 0; }
 
  public:
-  virtual xqp_string getNamespace() const { return theNamespace.get_ptr(); }
-  virtual xqp_string getPrefix() const    { return thePrefix.get_ptr(); }
-  virtual xqp_string getLocalName() const { return theLocal.get_ptr(); }
+  virtual xqp_string getNamespace() const { return theNamespace.getp(); }
+  virtual xqp_string getPrefix() const    { return thePrefix.getp(); }
+  virtual xqp_string getLocalName() const { return theLocal.getp(); }
 
   virtual Item_t getType() const;
   virtual uint32_t hash() const;
@@ -73,8 +73,8 @@ public:
   uint32_t hash() const;
   bool equals(Item_t) const;
   Item_t getEBV() const;
-  xqp_string getStringValue() const { return theValue.get_ptr(); }
-  xqpStringStore* getStringValueP() { return theValue.get_ptr(); }
+  xqp_string getStringValue() const { return theValue.getp(); }
+  xqpStringStore* getStringValueP() { return theValue.getp(); }
 
   virtual xqp_string show() const;
 };
@@ -95,8 +95,8 @@ public:
   virtual uint32_t hash() const;
   virtual bool equals (Item_t) const;
   virtual Item_t getEBV( ) const;
-  virtual xqp_string getStringValue( ) const { return theValue.get_ptr(); }
-  virtual xqpStringStore* getStringValueP() { return theValue.get_ptr(); }
+  virtual xqp_string getStringValue( ) const { return theValue.getp(); }
+  virtual xqpStringStore* getStringValueP() { return theValue.getp(); }
   virtual xqp_string show() const;
 };
 
@@ -116,8 +116,8 @@ public:
   uint32_t hash() const;
   bool equals ( Item_t ) const;
   Item_t getEBV( ) const;
-  xqp_string getStringValue() const { return theValue.get_ptr(); }
-  xqpStringStore* getStringValueP() { return theValue.get_ptr(); }
+  xqp_string getStringValue() const { return theValue.getp(); }
+  xqpStringStore* getStringValueP() { return theValue.getp(); }
   xqp_string show() const;
 };
 
@@ -136,8 +136,8 @@ public:
   virtual uint32_t hash() const;
   virtual bool equals(Item_t) const;
   virtual Item_t getEBV( ) const;
-  virtual xqp_string getStringValue() const { return theValue.get_ptr(); }
-  virtual xqpStringStore* getStringValueP() { return theValue.get_ptr(); }
+  virtual xqp_string getStringValue() const { return theValue.getp(); }
+  virtual xqpStringStore* getStringValueP() { return theValue.getp(); }
   virtual xqp_string show() const;
 };
 

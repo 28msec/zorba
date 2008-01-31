@@ -690,7 +690,7 @@ void end_visit(const DirAttr& v, void *visit_state)
     nodestack.pop();
   }
 
-  QName* qname = v.get_name().get_ptr();
+  QName* qname = v.get_name().getp();
 
   if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
   {
@@ -711,7 +711,7 @@ void end_visit(const DirAttr& v, void *visit_state)
       }
     }
 
-    const_expr* constValueExpr = dynamic_cast<const_expr*>(valueExpr.get_ptr());
+    const_expr* constValueExpr = dynamic_cast<const_expr*>(valueExpr.getp());
     if (constValueExpr != NULL)
     {
       xqpString uri = constValueExpr->get_val()->getStringValue();
@@ -786,7 +786,7 @@ void attr_content_list(yy::location loc, void *visit_state)
   if (expr_list_t->size() == 1)
     nodestack.push(*expr_list_t->begin());
   else if (expr_list_t->size() > 1)
-    nodestack.push(expr_list_t.get_ptr());
+    nodestack.push(expr_list_t.getp());
 }
 
 void *begin_visit(const QuoteAttrContentList& v)
@@ -973,7 +973,7 @@ void end_visit(const CompElemConstructor& v, void *visit_state)
     contentExpr = lEnclosed;
   }
 
-  QName* constQName = dynamic_cast<QName*>(v.get_qname_expr().get_ptr());
+  QName* constQName = dynamic_cast<QName*>(v.get_qname_expr().getp());
   
   if (constQName != NULL)
   {
@@ -989,7 +989,7 @@ void end_visit(const CompElemConstructor& v, void *visit_state)
     atomExpr->add(nameExpr);
 
     nameExpr = new cast_expr(v.get_location(),
-                             atomExpr.get_ptr(),
+                             atomExpr.getp(),
                              ts.create_atomic_type(TypeSystem::XS_QNAME,
                                                    TypeSystem::QUANT_ONE));
   }
@@ -1028,7 +1028,7 @@ void end_visit(const CompAttrConstructor& v, void *visit_state)
     valueExpr = enclosedExpr;
   } 
 
-  QName* constQName = dynamic_cast<QName*>(v.get_qname_expr().get_ptr());
+  QName* constQName = dynamic_cast<QName*>(v.get_qname_expr().getp());
 
   if (constQName != NULL)
   {
@@ -1044,7 +1044,7 @@ void end_visit(const CompAttrConstructor& v, void *visit_state)
     atomExpr->add(nameExpr);
 
     expr_t castExpr = new cast_expr(v.get_location(),
-                                    atomExpr.get_ptr(),
+                                    atomExpr.getp(),
                                     ts.create_atomic_type(TypeSystem::XS_QNAME,
                                                           TypeSystem::QUANT_ONE));
 
@@ -1078,7 +1078,7 @@ void end_visit(const CompCommentConstructor& v, void *visit_state)
 
   expr* textExpr = new text_expr(v.get_location(),
                                  text_expr::comment_constructor,
-                                 enclosedExpr.get_ptr());
+                                 enclosedExpr.getp());
 
   nodestack.push(textExpr);
 }
@@ -1120,12 +1120,12 @@ void end_visit(const CompPIConstructor& v, void *visit_state)
     atomExpr->add(target);
 
     rchandle<cast_expr> castExpr =
-      new cast_expr(loc, atomExpr.get_ptr(),
+      new cast_expr(loc, atomExpr.getp(),
                     GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_NCNAME,
                                                        TypeSystem::QUANT_ONE));
 
     rchandle<fo_expr> enclosedExpr = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"));
-    enclosedExpr->add(castExpr.get_ptr());
+    enclosedExpr->add(castExpr.getp());
 
     target = enclosedExpr;
   }
@@ -1156,7 +1156,7 @@ void end_visit(const CompTextConstructor& v, void *visit_state)
 
   expr* textExpr = new text_expr(v.get_location(),
                                  text_expr::text_constructor,
-                                 enclosedExpr.get_ptr());
+                                 enclosedExpr.getp());
 
   nodestack.push(textExpr);
 }
@@ -1204,11 +1204,11 @@ void end_visit(const FLWORExpr& v, void *visit_state)
   }
   if (v.get_where () != NULL)
     flwor->set_where (pop_nodestack ());
-  ForLetClauseList *clauses = v.get_forlet_list ().get_ptr ();
+  ForLetClauseList *clauses = v.get_forlet_list ().getp ();
   vector <forlet_clause *> eclauses;
 
   for (i = clauses->size () - 1; i >= 0; i--) {
-    ForOrLetClause *clause = (*clauses) [i].get_ptr ();
+    ForOrLetClause *clause = (*clauses) [i].getp ();
     vector<rchandle <var_expr> > vars;
     vector<rchandle <var_expr> > pos_vars;
     vector<rchandle <expr> > exprs;
@@ -1864,7 +1864,7 @@ void *begin_visit(const VFO_DeclList& v)
   for (vector<rchandle<parsenode> >::const_iterator it = v.begin();
        it != v.end(); ++it)
   {
-    const FunctionDecl *n = dynamic_cast<const FunctionDecl *> (it->get_ptr ());
+    const FunctionDecl *n = dynamic_cast<const FunctionDecl *> (it->getp ());
     if (n != NULL) {
       rchandle<ParamList> params = n->get_paramlist ();
       if (params == NULL) params = new ParamList (n->get_location ());
@@ -1872,8 +1872,8 @@ void *begin_visit(const VFO_DeclList& v)
       for (std::vector<rchandle<Param> >::const_iterator it = params->begin ();
            it != params->end (); ++it)
       {
-        const Param *p = (*it).get_ptr ();
-        const TypeDeclaration *td = p->get_typedecl ().get_ptr ();
+        const Param *p = (*it).getp ();
+        const TypeDeclaration *td = p->get_typedecl ().getp ();
         if (td == NULL) 
           arg_types.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
         else {
@@ -2910,7 +2910,7 @@ rchandle<forlet_clause> wrap_in_forclause(
   assert (fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
     assert (pv->get_kind() == var_expr::pos_var);
-  return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, expr.get_ptr());
+  return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, expr.getp());
 }
 
 rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar)
@@ -2935,7 +2935,7 @@ rchandle<forlet_clause> wrap_in_forclause(
 rchandle<forlet_clause> wrap_in_letclause(expr_t expr, var_expr_t lv)
 {
   assert (lv->get_kind () == var_expr::let_var);
-  return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.get_ptr());
+  return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.getp());
 }
 
 rchandle<forlet_clause> wrap_in_letclause(expr_t expr, yy::location loc, string name)
@@ -3005,7 +3005,7 @@ void *begin_visit(const PathExpr& v)
   {
     rpe = new relpath_expr(v.get_location());
 
-    result = rpe.get_ptr();
+    result = rpe.getp();
   }
 
   /*
@@ -3032,7 +3032,7 @@ void *begin_visit(const PathExpr& v)
     rchandle<fo_expr> fo = new fo_expr(v.get_location(), LOOKUP_FN("fn", "root", 1));
     fo->add(&*ctx_rpe);
 
-    result = fo.get_ptr();
+    result = fo.getp();
 
     if (rpe != NULL) 
     {
@@ -3052,7 +3052,7 @@ void *begin_visit(const PathExpr& v)
     rpe->add_back(&*ase);
   }
 
-  nodestack.push(result.get_ptr());
+  nodestack.push(result.getp());
   return no_state;
 }
 
@@ -3132,13 +3132,13 @@ void intermediate_visit(const RelativePathExpr& v, void *visit_state)
     rchandle<fo_expr> count_expr = new
       fo_expr(v.get_location(), LOOKUP_FN("fn", "count", 1));
 
-    count_expr->add(lcseq->get_var().get_ptr());
+    count_expr->add(lcseq->get_var().getp());
 
     rchandle<forlet_clause> lclast =
       wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VAR);
 
     rchandle<forlet_clause> fc =
-      wrap_in_forclause(lcseq->get_var().get_ptr(), v.get_location(),
+      wrap_in_forclause(lcseq->get_var().getp(), v.get_location(),
                         DOT_VAR, DOT_POS_VAR);
 
     rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
@@ -3204,7 +3204,7 @@ void *begin_visit(const AxisStep& v)
 
 void post_step_visit(const AxisStep& v, void *visit_state)
 {
-  PredicateList *pl = v.get_predicate_list().get_ptr();
+  PredicateList *pl = v.get_predicate_list().getp();
   if (pl != NULL && pl->size() > 0) {
     expr_t arg2 = pop_nodestack();
     expr_t arg1 = pop_nodestack();
@@ -3231,9 +3231,9 @@ void pre_predicate_visit(const PredicateList& v, void *visit_state)
   expr_t seq = pop_nodestack();
   rchandle<forlet_clause> lcseq = wrap_in_letclause(seq);
   rchandle<fo_expr> count_expr = new fo_expr(v.get_location(), LOOKUP_FN("fn", "count", 1));
-  count_expr->add(lcseq->get_var().get_ptr());
+  count_expr->add(lcseq->get_var().getp());
   rchandle<forlet_clause> lclast = wrap_in_letclause(&*count_expr, v.get_location(), LAST_IDX_VAR);
-  rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().get_ptr(), v.get_location (), DOT_VAR, DOT_POS_VAR);
+  rchandle<forlet_clause> fc = wrap_in_forclause(lcseq->get_var().getp(), v.get_location (), DOT_VAR, DOT_POS_VAR);
   rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
   flwor->add(lcseq);
   flwor->add(lclast);
@@ -3263,7 +3263,7 @@ void post_predicate_visit(const PredicateList& v, void *visit_state)
   ZORBA_ASSERT(flwor != NULL);
 
   rchandle<forlet_clause> predlet = wrap_in_letclause(pred);
-  var_expr *predvar = predlet->get_var().get_ptr();
+  var_expr *predvar = predlet->get_var().getp();
 
   flwor->add(predlet);
 
@@ -3463,7 +3463,7 @@ void end_visit(const QuantifiedExpr& v, void *visit_state)
   if (v.get_qmode() == quant_every) {
     rchandle<fo_expr> uw = new fo_expr(v.get_expr()->get_location(), LOOKUP_FN("fn", "not", 1));
     uw->add(sat);
-    sat = uw.get_ptr();
+    sat = uw.getp();
   }
   flwor->set_where(sat);
   vector<var_expr_t> vars_vals (2 * v.get_decl_list()->size());

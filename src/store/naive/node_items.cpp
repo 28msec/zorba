@@ -561,7 +561,7 @@ ElementNode::ElementNode(
 ElementNode::~ElementNode()
 {
   NODE_TRACE1("Deleted elem node " << this);
-  NODE_TRACE3("nscontext " << theNsContext.get_ptr() << ", "
+  NODE_TRACE3("nscontext " << theNsContext.getp() << ", "
               << (theNsContext != NULL ? theNsContext->getRefCount() : -1));
 }
 
@@ -630,7 +630,7 @@ void ElementNode::setNsContext(NsBindingsContext* parentCtx)
 {
   if (theNsContext == NULL)
     theNsContext = parentCtx;
-  else if (theNsContext.get_ptr() != parentCtx)
+  else if (theNsContext.getp() != parentCtx)
     theNsContext->setParent(parentCtx);
 }
 
@@ -862,6 +862,8 @@ void ConstrElementNode::constructSubtree(
   Item_t item;
   Item_t prevItem;
 
+  xqpStringStore* prefix = theName->getPrefix().getStore();
+  
   if (attributesIte != 0)
   {
     item = attributesIte->next();
@@ -875,6 +877,8 @@ void ConstrElementNode::constructSubtree(
       if (cnode->getTree() != getTree())
       {
         ZORBA_ASSERT(cnode->getParentP() != this);
+
+        checkUniqueAttr(cnode->getNodeName().getp());
 
         if (copy)
           cnode = cnode->copy(this, numAttributes());
@@ -901,6 +905,8 @@ void ConstrElementNode::constructSubtree(
         if (cnode->getTree() != getTree())
         {
           ZORBA_ASSERT(cnode->getParentP() != this);
+
+          checkUniqueAttr(cnode->getNodeName().getp());
 
           if (copy)
             cnode = cnode->copy(this, numAttributes());
@@ -954,13 +960,13 @@ XmlNode* ElementNode::copy(XmlNode* parent, ulong pos)
   Item_t tmp = this;
 
   Item* typeName = (parent->typePreserve() ?
-                    theTypeName.get_ptr() :
-                    GET_STORE().theUntypedType.get_ptr());
+                    theTypeName.getp() :
+                    GET_STORE().theUntypedType.getp());
 
   NsBindings bindings;
 
   ElementNode* copy = new ConstrElementNode(NULL, parent, pos,
-                                            theName.get_ptr(),
+                                            theName.getp(),
                                             typeName,
                                             bindings,
                                             parent->typePreserve(),
@@ -1149,17 +1155,15 @@ XmlNode* AttributeNode::copy(XmlNode* parent, ulong pos)
 
   AttributeNode* copy;
 
-  parent->checkUniqueAttr(theName.get_ptr());
-
   if (parent->typePreserve())
   {
     copy = new AttributeNode(NULL, parent, pos,
-                             theName.get_ptr(),
-                             theTypeName.get_ptr(),
+                             theName.getp(),
+                             theTypeName.getp(),
                              isId(),
                              isIdrefs());
 
-    copy->theTypedValue = theTypedValue.get_ptr();
+    copy->theTypedValue = theTypedValue.getp();
   }
   else
   {
@@ -1177,12 +1181,12 @@ XmlNode* AttributeNode::copy(XmlNode* parent, ulong pos)
       typedValue = new UntypedAtomicItemImpl(getStringValue().getStore());
 
     copy = new AttributeNode(NULL, parent, pos,
-                             theName.get_ptr(),
-                             GET_STORE().theUntypedAtomicType.get_ptr(),
+                             theName.getp(),
+                             GET_STORE().theUntypedAtomicType.getp(),
                              isId,
                              isIdrefs);
 
-    copy->theTypedValue = typedValue.get_ptr();
+    copy->theTypedValue = typedValue.getp();
   }
 
   NODE_TRACE1("Copied attr node " << this << " to attr node " << copy
@@ -1268,7 +1272,7 @@ XmlNode* TextNode::copy(XmlNode* parent, unsigned long pos)
 
   Item_t tmp = this;
 
-  TextNode* copy = new TextNode(NULL, parent, pos, theContent.get_ptr());
+  TextNode* copy = new TextNode(NULL, parent, pos, theContent.getp());
 
   NODE_TRACE1("Copied text node " << this << " to node " << copy
               << " parent = " << parent << " pos = " << pos);
@@ -1300,7 +1304,7 @@ Item_t TextNode::getAtomizationValue() const
 
 xqp_string TextNode::show() const
 {
-  return theContent.get_ptr();
+  return theContent.getp();
 }
 
 
@@ -1340,8 +1344,8 @@ XmlNode* PiNode::copy(XmlNode* parent, unsigned long  pos)
   Item_t tmp = this;
 
   PiNode* copy = new PiNode(NULL, parent, pos,
-                            theTarget.get_ptr(),
-                            theData.get_ptr());
+                            theTarget.getp(),
+                            theData.getp());
 
   NODE_TRACE1("Copied pi node " << this << " to node " << copy
               << " parent = " << parent << " pos = " << pos);
@@ -1359,7 +1363,7 @@ Item_t PiNode::getType() const
 
 Iterator_t PiNode::getTypedValue() const
 {
-  const Item_t& item = GET_FACTORY().createString(theData.get_ptr());
+  const Item_t& item = GET_FACTORY().createString(theData.getp());
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
   return new PlanWrapper(planIter);
 }
@@ -1411,7 +1415,7 @@ XmlNode* CommentNode::copy(XmlNode* parent, ulong pos)
 {
   Item_t tmp = this;
 
-  CommentNode* copy = new CommentNode(NULL, parent, pos, theContent.get_ptr());
+  CommentNode* copy = new CommentNode(NULL, parent, pos, theContent.getp());
 
   NODE_TRACE1("Copied comment node " << this << " to comment node " << copy
               << " parent = " << parent << " pos = " << pos);
@@ -1429,7 +1433,7 @@ Item_t CommentNode::getType() const
 
 Iterator_t CommentNode::getTypedValue() const
 {
-  const Item_t& item = GET_FACTORY().createString(theContent.get_ptr());
+  const Item_t& item = GET_FACTORY().createString(theContent.getp());
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
   return new PlanWrapper(planIter);
 }

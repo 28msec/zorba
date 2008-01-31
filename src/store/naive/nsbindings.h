@@ -45,7 +45,7 @@ public:
   NsBindings& getBindings()                   { return theBindings; }
 
   void setParent(NsBindingsContext* p)        { theParent = p; }
-  const NsBindingsContext* getParent() const  { return theParent.get_ptr(); }
+  const NsBindingsContext* getParent() const  { return theParent.getp(); }
 
   xqpStringStore* findBinding(xqpStringStore* prefix) const;
 

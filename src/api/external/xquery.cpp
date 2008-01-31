@@ -269,7 +269,7 @@ bool Zorba_XQueryBinary::initExecution( DynamicQueryContext_t dctx)
 
 	if(dctx != NULL)
   {
-    DynamicContextWrapper *dctx_wrapper = static_cast<DynamicContextWrapper*>(dctx.get_ptr());
+    DynamicContextWrapper *dctx_wrapper = static_cast<DynamicContextWrapper*>(dctx.getp());
     dctx_wrapper->create_dynamic_context(internal_sctx, &internal_dyn_context);
   }
 	else
@@ -296,7 +296,7 @@ StaticQueryContext_t Zorba_XQueryBinary::getInternalStaticContext()
 {
 	try{
 	
-	if(internal_static_context.get_ptr() == NULL)
+	if(internal_static_context.getp() == NULL)
 		internal_static_context = new StaticContextWrapper();
   return internal_static_context;
 	
@@ -491,7 +491,7 @@ bool Zorba_XQueryBinary::serializeTEXT( std::ostream& os )
   while(1)
   {
     it = next();
-    if(!it.get_ptr())
+    if(!it.getp())
       break;
     os << it->show() << endl;
   }
@@ -542,7 +542,7 @@ bool Zorba_XQueryBinary::SetVariable( xqp_string varname,
     internal_dyn_context = new dynamic_context;
   xqp_string    expanded_name;
   expanded_name = internal_dyn_context->expand_varname(internal_sctx, varname);
-  internal_dyn_context->add_variable(expanded_name, item_iter.get_ptr());
+  internal_dyn_context->add_variable(expanded_name, item_iter.getp());
 
   state_block->theZorba->current_xquery = NULL;
   return true;

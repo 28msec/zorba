@@ -302,7 +302,7 @@ bool DynamicContextWrapper::SetVariableAsItem( xqp_string varname, Item_t item)
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.vartype = VAR_ITEM;
-	var.item_value = item.get_ptr();
+	var.item_value = item.getp();
 	var.item_value->addReference();
 
 	vars.push_back(var);

@@ -9,18 +9,18 @@
         (*(static_cast<BasicItemFactory*>(& GET_STORE().getItemFactory())))
 
 
-#define BASE_NODE(item) (static_cast<XmlNode*>((item).get_ptr()))
+#define BASE_NODE(item) (static_cast<XmlNode*>((item).getp()))
 
-#define DOC_NODE(item) (static_cast<DocumentNode*>((item).get_ptr()))
+#define DOC_NODE(item) (static_cast<DocumentNode*>((item).getp()))
 
-#define ELEM_NODE(item) (static_cast<ElementNode*>((item).get_ptr()))
+#define ELEM_NODE(item) (static_cast<ElementNode*>((item).getp()))
 
-#define ATTR_NODE(item) (static_cast<AttributeNode*>((item).get_ptr()))
+#define ATTR_NODE(item) (static_cast<AttributeNode*>((item).getp()))
 
-#define TEXT_NODE(item) (static_cast<TextNode*>((item).get_ptr()))
+#define TEXT_NODE(item) (static_cast<TextNode*>((item).getp()))
 
-#define PI_NODE(item) (static_cast<PiNode*>((item).get_ptr()))
+#define PI_NODE(item) (static_cast<PiNode*>((item).getp()))
 
-#define COMMENT_NODE(item) (static_cast<CommentNode*>((item).get_ptr()))
+#define COMMENT_NODE(item) (static_cast<CommentNode*>((item).getp()))
 
 #endif

@@ -121,20 +121,20 @@ rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
   expr_t expr_copy_h = expr_h->clone(substitution);
 
   varref_t var_copy_h(new var_expr(*var_h));
-  substitution[var_h.get_ptr()] = var_copy_h.get_ptr();
+  substitution[var_h.getp()] = var_copy_h.getp();
 
   varref_t pos_var_copy_h;
-  var_expr *pos_var_ptr = pos_var_h.get_ptr();
+  var_expr *pos_var_ptr = pos_var_h.getp();
   if (pos_var_ptr) {
     pos_var_copy_h = new var_expr(*pos_var_ptr);
-    substitution[pos_var_ptr] = pos_var_copy_h.get_ptr();
+    substitution[pos_var_ptr] = pos_var_copy_h.getp();
   }
 
   varref_t score_var_copy_h;
-  var_expr *score_var_ptr = score_var_h.get_ptr();
+  var_expr *score_var_ptr = score_var_h.getp();
   if (score_var_ptr) {
     score_var_copy_h = new var_expr(*score_var_ptr);
-    substitution[score_var_ptr] = score_var_copy_h.get_ptr();
+    substitution[score_var_ptr] = score_var_copy_h.getp();
   }
 
   return new forlet_clause(type, var_copy_h, pos_var_copy_h, score_var_copy_h, expr_copy_h);
@@ -162,7 +162,7 @@ void flwor_expr::accept(expr_visitor& v)
 expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
 {
   expr_t flwor_copy = new flwor_expr(get_loc());
-  flwor_expr *flwor_copy_ptr = static_cast<flwor_expr *>(flwor_copy.get_ptr());
+  flwor_expr *flwor_copy_ptr = static_cast<flwor_expr *>(flwor_copy.getp());
 
   for(clause_list_t::iterator i = clause_v.begin(); i != clause_v.end(); ++i) {
     flwor_copy_ptr->add((*i)->clone(substitution));
@@ -175,7 +175,7 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
 
   flwor_copy_ptr->set_order_stable(order_stable);
 
-  if (where_h.get_ptr()) {
+  if (where_h.getp()) {
     flwor_copy_ptr->set_where(where_h->clone(substitution));
   }
 

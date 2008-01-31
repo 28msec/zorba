@@ -13,7 +13,7 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState)
   state->init();
   FINISHED_ALLOCATING_RESOURCES();
 
-  state->thePlan = theUDF->get_plan().get_ptr();
+  state->thePlan = theUDF->get_plan().getp();
   state->theFnBodyStateBlock = theUDF->create_plan_state();
 
   // Bind the args.

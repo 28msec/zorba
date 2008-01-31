@@ -2732,7 +2732,7 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
   // Skip this rpe if it is not the root of an rpe subtree and its left child
   // is a dot expression.
   else if (!v.is_root_rpe(this) &&
-           dynamic_cast<const ContextItemExpr*>(step_expr_h.get_ptr()) != NULL)
+           dynamic_cast<const ContextItemExpr*>(step_expr_h.getp()) != NULL)
   {
     ACCEPT (relpath_expr_h);
   }
@@ -4027,7 +4027,7 @@ CompElemConstructor::~CompElemConstructor()
 void CompElemConstructor::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR();
-  if (dynamic_cast<QName*>(qname_expr_h.get_ptr()) == NULL)
+  if (dynamic_cast<QName*>(qname_expr_h.getp()) == NULL)
     ACCEPT(qname_expr_h);
   ACCEPT(content_expr_h);
   END_VISITOR();
@@ -4056,7 +4056,7 @@ CompAttrConstructor::~CompAttrConstructor()
 void CompAttrConstructor::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR();
-  if (dynamic_cast<QName*>(qname_expr_h.get_ptr()) == NULL)
+  if (dynamic_cast<QName*>(qname_expr_h.getp()) == NULL)
     ACCEPT(qname_expr_h);
   ACCEPT(val_expr_h);
   END_VISITOR();

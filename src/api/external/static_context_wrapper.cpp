@@ -302,7 +302,7 @@ void		StaticContextWrapper::SetContextItemStaticType( type_ident_ref_t		type )
 
 type_ident_ref_t		StaticContextWrapper::GetContextItemStaticType( )
 {
-	if(context_item_type.get_ptr())
+	if(context_item_type.getp())
 		return context_item_type;
 
 	///else get the default value from root_static_context
@@ -687,7 +687,7 @@ type_ident_ref_t	StaticContextWrapper::GetDefaultCollectionType( )
 {
 	try{
 
-	if(default_collection_type.get_ptr())
+	if(default_collection_type.getp())
 		return default_collection_type;
 
 	//else return the default value set in root_static_context
@@ -748,7 +748,7 @@ static_context*		StaticContextWrapper::FillInStaticContext()
 	}
 
 	
-	if(context_item_type.get_ptr())
+	if(context_item_type.getp())
 	{
 		internal_type = GENV_TYPESYSTEM.create_type( *context_item_type );
 		sctx->set_context_item_static_type(internal_type);
@@ -825,7 +825,7 @@ static_context*		StaticContextWrapper::FillInStaticContext()
 			break;
 	}
 
-	if(default_collection_type.get_ptr())
+	if(default_collection_type.getp())
 	{
 		internal_type = GENV_TYPESYSTEM.create_type( *default_collection_type );
 		sctx->set_default_collection_type(internal_type);

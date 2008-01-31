@@ -53,7 +53,7 @@ uint32_t QNameItemImpl::hash() const
 
 bool QNameItemImpl::equals(Item_t item) const
 {
-  return (this == item.get_ptr() ||
+  return (this == item.getp() ||
           (theNamespace->byteEqual(*item->getNamespace().getStore()) &&
            theLocal->byteEqual(*item->getLocalName().getStore())));
 }
@@ -94,7 +94,7 @@ uint32_t NCNameItemImpl::hash() const
 
 bool NCNameItemImpl::equals(Item_t item) const
 {
-  return item->getStringValue() == xqp_string(theValue.get_ptr());
+  return item->getStringValue() == xqp_string(theValue.getp());
 }
 
 Item_t NCNameItemImpl::getEBV() const
@@ -126,7 +126,7 @@ uint32_t AnyUriItemImpl::hash() const
 
 bool AnyUriItemImpl::equals(Item_t item) const
 {
-  return item->getStringValue() == xqp_string(theValue.get_ptr());
+  return item->getStringValue() == xqp_string(theValue.getp());
 }
 
 
@@ -158,7 +158,7 @@ uint32_t UntypedAtomicItemImpl::hash() const
 
 bool UntypedAtomicItemImpl::equals(Item_t item) const
 {
-  return item->getStringValue() == xqp_string(theValue.get_ptr());
+  return item->getStringValue() == xqp_string(theValue.getp());
 }
 
 Item_t UntypedAtomicItemImpl::getEBV() const
@@ -188,7 +188,7 @@ uint32_t StringItemNaive::hash() const
 
 bool StringItemNaive::equals(Item_t item) const
 {
-  return item->getStringValue() == xqp_string(theValue.get_ptr());
+  return item->getStringValue() == xqp_string(theValue.getp());
 }
   
 Item_t StringItemNaive::getEBV() const

@@ -464,7 +464,7 @@ rchandle<NodeNameTest> TypeSystem::get_nametest(const XQType& type) const
 {
   if (type.type_kind() == XQType::NODE_TYPE_KIND) {
     const NodeXQType& n = static_cast<const NodeXQType&>(type);
-    const NodeTest *nt = n.m_nodetest.get_ptr();
+    const NodeTest *nt = n.m_nodetest.getp();
     if (nt) {
       return rchandle<NodeNameTest>(nt->get_nametest());
     }
@@ -516,7 +516,7 @@ TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
         const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
         rchandle<NodeNameTest> ennt(new NodeNameTest(eai.get_uri(), eai.get_local()));
         rchandle<NodeTest> ent(new NodeTest(StoreConsts::elementNode, ennt));
-        TypeIdentifier *ci = eai.get_content_type().get_ptr();
+        TypeIdentifier *ci = eai.get_content_type().getp();
         xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
         return create_node_type(ent, content_type, q);
       }
@@ -526,7 +526,7 @@ TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
         const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
         rchandle<NodeNameTest> annt(new NodeNameTest(eai.get_uri(), eai.get_local()));
         rchandle<NodeTest> ant(new NodeTest(StoreConsts::attributeNode, annt));
-        TypeIdentifier *ci = eai.get_content_type().get_ptr();
+        TypeIdentifier *ci = eai.get_content_type().getp();
         xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
         return create_node_type(ant, content_type, q);
       }
@@ -534,7 +534,7 @@ TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
     case TypeIdentifier::DOCUMENT_TYPE:
       {
         const DocumentTypeIdentifier& di = static_cast<const DocumentTypeIdentifier&>(ident);
-        TypeIdentifier *ci = di.get_content_type().get_ptr();
+        TypeIdentifier *ci = di.get_content_type().getp();
         xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
         rchandle<NodeTest> nt(new NodeTest(StoreConsts::documentNode));
         return create_node_type(nt, content_type, q);
@@ -646,8 +646,8 @@ type_ident_ref_t TypeSystem::get_type_identifier(const XQType& type) const
       {
         const NodeXQType& nt = static_cast<const NodeXQType&>(type);
         const type_ident_ref_t& content_type = get_type_identifier(*nt.m_content_type);
-        const NodeTest *test = nt.m_nodetest.get_ptr();
-        const NodeNameTest *nametest = test->get_nametest().get_ptr();
+        const NodeTest *test = nt.m_nodetest.getp();
+        const NodeNameTest *nametest = test->get_nametest().getp();
         switch(test->get_kind()) {
           case StoreConsts::anyNode:
             return type_ident_ref_t(new AnyNodeTypeIdentifier(q));

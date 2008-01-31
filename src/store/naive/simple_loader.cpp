@@ -387,11 +387,11 @@ void XmlLoader::startElement(
   Item_t qname = qnpool.insert(reinterpret_cast<const char*>(uri),
                                reinterpret_cast<const char*>(prefix),
                                reinterpret_cast<const char*>(lname));
-  Item_t tname = store.theAnyType.get_ptr();
+  Item_t tname = store.theAnyType.getp();
 
   // Create the element node and push it to the node stack
-  LoadedElementNode* elemNode = new LoadedElementNode(qname.get_ptr(),
-                                                      tname.get_ptr(),
+  LoadedElementNode* elemNode = new LoadedElementNode(qname.getp(),
+                                                      tname.getp(),
                                                       numBindings,
                                                       numAttributes);
   if (loader.theNodeStack.empty())
@@ -426,7 +426,7 @@ void XmlLoader::startElement(
       store.getNamespacePool().insert(nsuri, pooledNs);
 
       bindings[i].first = prefix;
-      bindings[i].second = pooledNs.get_ptr();
+      bindings[i].second = pooledNs.getp();
 
       LOADER_TRACE("namespace decl: [" << prefix  << ":" << nsuri << "]");
     }
@@ -568,7 +568,7 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   textNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 
-  LOADER_TRACE("Text Node = " << textNode.get_ptr() 
+  LOADER_TRACE("Text Node = " << textNode.getp() 
                << "content = " << content->c_str());
 }
 
@@ -596,7 +596,7 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   textNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 
-  LOADER_TRACE("Text Node = " << textNode.get_ptr() 
+  LOADER_TRACE("Text Node = " << textNode.getp() 
                << "content = " << content->c_str());
 }
 

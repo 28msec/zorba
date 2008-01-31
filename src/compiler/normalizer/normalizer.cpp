@@ -11,7 +11,7 @@ using namespace xqp;
 static inline expr::expr_t wrap_in_bev(static_context *sctx, expr::expr_t e)
 {
   expr::expr_t fh(new fo_expr(e->get_loc(), LOOKUP_FN("fn", "boolean", 1)));
-  fo_expr *fp = static_cast<fo_expr *>(fh.get_ptr());
+  fo_expr *fp = static_cast<fo_expr *>(fh.getp());
   fp->add(e);
   return fh;
 }
@@ -19,7 +19,7 @@ static inline expr::expr_t wrap_in_bev(static_context *sctx, expr::expr_t e)
 static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_t e)
 {
   expr::expr_t fh(new fo_expr(e->get_loc(), LOOKUP_FN("fn", "data", 1)));
-  fo_expr *fp = static_cast<fo_expr *>(fh.get_ptr());
+  fo_expr *fp = static_cast<fo_expr *>(fh.getp());
   fp->add(e);
   return fh;
 }
@@ -55,7 +55,7 @@ bool normalizer::begin_visit(order_modifier& node)
 bool normalizer::begin_visit(flwor_expr& node)
 {
   expr::expr_t where_h = node.get_where();
-  if (where_h.get_ptr()) {
+  if (where_h.getp()) {
     node.set_where(wrap_in_bev(m_sctx, where_h));
   }
   uint32_t on = node.orderspec_count();
@@ -204,7 +204,7 @@ bool normalizer::begin_visit(attr_expr& node)
       function* lTestFunc = LOOKUP_OP1("enclosed-expr");
       if (lFoExpr->get_func() == lTestFunc)
       {
-        (*lFoExpr)[0] = wrap_in_atomization(m_sctx, (*lFoExpr)[0].get_ptr());
+        (*lFoExpr)[0] = wrap_in_atomization(m_sctx, (*lFoExpr)[0].getp());
         return true;
       }
     }

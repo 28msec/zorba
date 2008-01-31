@@ -120,7 +120,7 @@ Item_t KindTestIterator::nextImpl(PlanState& planState)
       }
 
 doctest1:
-      if (theQName != NULL && !theQName->equals(contextNode->getNodeName().get_ptr()))
+      if (theQName != NULL && !theQName->equals(contextNode->getNodeName().getp()))
       {
         skip = true;
         break;
@@ -147,7 +147,7 @@ doctest1:
         break;
       }
 
-      if (theQName != NULL && !theQName->equals(contextNode->getNodeName().get_ptr()))
+      if (theQName != NULL && !theQName->equals(contextNode->getNodeName().getp()))
       {
         skip = true;
         break;
@@ -244,7 +244,7 @@ Item_t NameTestIterator::nextImpl(PlanState& planState)
     {
     case match_no_wild:
     {
-      if (theQName->equals(contextNode->getNodeName().get_ptr()))
+      if (theQName->equals(contextNode->getNodeName().getp()))
         return contextNode;
 
       break;
