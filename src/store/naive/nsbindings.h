@@ -5,6 +5,9 @@
 
 #include "util/rchandle.h"
 
+#ifdef WIN32
+#include "util/win32/compatib_defs.h"
+#endif
 
 namespace xqp
 {
