@@ -198,14 +198,14 @@ int _tmain(int argc, _TCHAR* argv[])
   vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
   bool result = zengine.initExecution (query, ext_vars);
 
-	query->setAlertsParam(query.get_ptr());  // to be passed to alerts callback when error occurs
+	query->setAlertsParam(query.getp());  // to be passed to alerts callback when error occurs
 
   if (lProp->useSerializer()) {
     query->serialize(*resultFile);
     // newline should not be sent when serializing!
   } else {
     Item_t it;
-    while (NULL != (it = query->next ()).get_ptr ())
+    while (NULL != (it = query->next ()).getp ())
       *resultFile << it->show() << endl;
   }
   
