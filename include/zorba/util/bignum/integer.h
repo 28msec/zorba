@@ -25,10 +25,8 @@ public:
   Integer(const Decimal& aDecimal);
   Integer(const xqpString& aStr) { theInteger = aStr.c_str(); }
   Integer(const char* aStr) { theInteger = aStr; }
-  Integer(long aLong) { theInteger = aLong; }
-  Integer(unsigned long);
-  Integer(long long aLong);
-  Integer(unsigned long long aULong);
+  Integer(long long);
+  Integer(unsigned long long);
   Integer(int32_t aInt) { theInteger = aInt; }
   Integer(uint32_t aUInt);
   Integer(double aDouble);
@@ -43,6 +41,9 @@ private:
   }
 
 public:
+  static Integer parseLong(long aLong);
+  static Integer parseULong(unsigned long);
+
   Integer& operator=(const xqpString&);
   Integer& operator=(const char*);
   Integer& operator=(const Integer&);

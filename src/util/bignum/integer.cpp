@@ -14,11 +14,6 @@ Integer::Integer(const Decimal& aDecimal) {
   theInteger = floatingToInteger(aDecimal.theDecimal);
 }
 
-Integer::Integer(unsigned long aULong) {
-  xqpString lStrRep = NumConversions::ulongToStr(aULong);
-  theInteger = lStrRep.c_str();
-}
-
 Integer::Integer(long long aLong) {
   xqpString lStrRep = NumConversions::longToStr(aLong);
   theInteger = lStrRep.c_str();
@@ -37,6 +32,16 @@ Integer::Integer(uint32_t aUInt) {
 Integer::Integer(double aDouble) {
   theInteger = aDouble;
   theInteger.floor();
+}
+
+Integer Integer::parseLong(long aLong) { 
+  MAPM lNumber = aLong;
+  return Integer(lNumber);
+}
+Integer Integer::parseULong(unsigned long aULong) {
+  xqpString lStrRep = NumConversions::ulongToStr(aULong);
+  MAPM lNumber = lStrRep.c_str();
+  return Integer(lNumber);
 }
 
 Integer& Integer::operator=(const xqpString& aStr) {

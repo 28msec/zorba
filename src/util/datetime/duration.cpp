@@ -78,10 +78,10 @@ xqpString YearMonthDuration::toString() const
   result += "P";
 
   if (abs_months > 12 )
-    result = result + NumConversions::integerToStr(abs_months / 12) + "Y";
+    result = result + NumConversions::longToStr(abs_months / 12) + "Y";
 
   if (abs_months%12 != 0)
-    result = result + NumConversions::integerToStr(abs_months % 12) + "M";
+    result = result + NumConversions::longToStr(abs_months % 12) + "M";
     
   // TODO:
   return result;
@@ -244,7 +244,7 @@ xqpString DayTimeDuration::toString() const
   // TODO: check
 
   //if (days != 0)
-    result += NumConversions::integerToStr(days) + "D";
+    result += NumConversions::longToStr(days) + "D";
 
 
   result += "T";
@@ -260,7 +260,7 @@ xqpString DayTimeDuration::toString() const
     result += NumConversions::integerToStr(timeDuration.seconds());
     
     if (timeDuration.fractional_seconds() != 0 )
-      result += "." + NumConversions::integerToStr(timeDuration.fractional_seconds());
+      result += "." + NumConversions::longToStr(timeDuration.fractional_seconds());
 
     result += "S";
   }
