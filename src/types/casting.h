@@ -97,6 +97,9 @@ namespace xqp
        */
       bool isCastable( const xqpString& aStr, const TypeSystem::xqtref_t& aTargetType) const;
 
+  protected:
+      bool castableToNCName(const xqpString& str) const;
+
 	}; /* class GenericCast */
 
 } /* namespace xqp */

@@ -5,6 +5,7 @@
 #include "system/globalenv.h"
 #include "types/typesystem.h"
 #include "context/static_context.h"
+#include "context/namespace_context.h"
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
@@ -131,33 +132,20 @@ Item_t DocumentContentIterator::nextImpl(PlanState& planState)
 ********************************************************************************/
 ElementIterator::ElementIterator (
     const yy::location& loc,
-    PlanIter_t&  qnameIter,
-    PlanIter_t&  attrsIter,
-    PlanIter_t&  childrenIter,
-    NsBindings&  nsBindings,
-    bool         assignId)
-    :
-    Batcher<ElementIterator>(loc),
-    theQNameIter(qnameIter),
-    theAttributesIter(attrsIter),
-    theChildrenIter(childrenIter),
-    theNsBindings(nsBindings),
-    theAssignId(assignId)
-{
-}
-
-
-ElementIterator::ElementIterator (
-    const yy::location& loc,
-    PlanIter_t&  qnameIter,
-    PlanIter_t&  childrenIter,
-    bool         assignId)
-    :
-    Batcher<ElementIterator>(loc),
-    theQNameIter(qnameIter),
-    theAttributesIter(0),
-    theChildrenIter(childrenIter),
-    theAssignId(assignId)
+    PlanIter_t&         qnameIter,
+    PlanIter_t&         attrsIter,
+    PlanIter_t&         childrenIter,
+    namespace_context*  ctxBindings,
+    namespace_context*  localBindings,
+    bool                isRoot)
+  :
+  Batcher<ElementIterator>(loc),
+  theQNameIter(qnameIter),
+  theAttributesIter(attrsIter),
+  theChildrenIter(childrenIter),
+  theContextBindigns(ctxBindings),
+  theLocalBindings(localBindings),
+  theIsRoot(isRoot)
 {
 }
 
@@ -196,8 +184,8 @@ Item_t ElementIterator::nextImpl(PlanState& planState)
                            cwrapper.get(),
                            awrapper.get(),
                            NULL,
-                           theNsBindings,
-                           theAssignId,
+                           theLocalBindings->get_bindings(),
+                           theIsRoot,
                            true,
                            state->theTypePreserve,
                            state->theNsPreserve,
@@ -368,10 +356,10 @@ AttributeIterator::AttributeIterator(
     const yy::location& loc,
     PlanIter_t&  aQNameIter,
     PlanIter_t&  aValueIter,
-    bool         assignId)
+    bool         isRoot)
   :
     BinaryBaseIterator<AttributeIterator>( loc, aQNameIter, aValueIter ),
-    theAssignId(assignId)
+    theIsRoot(isRoot)
 {
 }
 
@@ -393,7 +381,7 @@ Item_t AttributeIterator::nextImpl(PlanState& planState)
                              nameWrapper,
                              GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME,
                              valueWrapper,
-                             theAssignId);
+                             theIsRoot);
 
   STACK_PUSH(node, state);
   STACK_END();
@@ -406,10 +394,10 @@ Item_t AttributeIterator::nextImpl(PlanState& planState)
 TextIterator::TextIterator(
     const yy::location& loc,
     PlanIter_t& aChild,
-    bool assignId) 
+    bool isRoot) 
   :
   UnaryBaseIterator<TextIterator>(loc, aChild),
-  theAssignId(assignId)
+  theIsRoot(isRoot)
 {
 }
 
@@ -426,7 +414,7 @@ Item_t TextIterator::nextImpl(PlanState& planState)
       
   node = Zorba::getItemFactory()->createTextNode((ulong)&planState,
                                                  valueWrapper,
-                                                 theAssignId);
+                                                 theIsRoot);
 
   STACK_PUSH(node, state);
     
@@ -441,10 +429,10 @@ PiIterator::PiIterator (
     const yy::location& loc,
     PlanIter_t& aTarget,
     PlanIter_t& aContent,
-    bool assignId)
+    bool isRoot)
   :
   BinaryBaseIterator<PiIterator>(loc, aTarget, aContent),
-  theAssignId(assignId)
+  theIsRoot(isRoot)
 {
 }
 
@@ -491,7 +479,7 @@ Item_t PiIterator::nextImpl(PlanState& planState)
   lItem = Zorba::getItemFactory()->createPiNode((ulong)&planState,
                                                 target.getStore(),
                                                 content.getStore (),
-                                                theAssignId);
+                                                theIsRoot);
   STACK_PUSH(lItem, state);
   
   STACK_END();
@@ -504,10 +492,10 @@ Item_t PiIterator::nextImpl(PlanState& planState)
 CommentIterator::CommentIterator(
     const yy::location& loc,
     PlanIter_t& aComment,
-    bool assignId)
+    bool isRoot)
   :
   UnaryBaseIterator<CommentIterator>(loc, aComment),
-  theAssignId(assignId)
+  theIsRoot(isRoot)
 {
 }
 
@@ -536,14 +524,22 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
     lFirst = false;
   }
 
-  if (! content.empty ()) 
+  
+  if (content.indexOf("-") == (long)(content.size()-1))
   {
-    lItem = Zorba::getItemFactory()->createCommentNode((ulong)&planState,
-                                                       content.getStore(),
-                                                       theAssignId);
-    
-    STACK_PUSH(lItem, state);
+    ZORBA_ERROR_ALERT(ZorbaError::XQDY0072);
   }
+
+  if (content.indexOf("--") >= 0)
+  {
+    ZORBA_ERROR_ALERT(ZorbaError::XQDY0072);
+  }
+
+  lItem = Zorba::getItemFactory()->createCommentNode((ulong)&planState,
+                                                     content.getStore(),
+                                                     theIsRoot);
+    
+  STACK_PUSH(lItem, state);
     
   STACK_END();
 }

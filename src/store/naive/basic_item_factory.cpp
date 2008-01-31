@@ -582,27 +582,49 @@ Item_t BasicItemFactory::createAttributeNode(
   }
   else
   {
+    ZORBA_ASSERT(!ctx.empty());
+
     parent = ctx.top();
     pos = parent->numAttributes();
   }
 
-  AttributeNode* n = new AttributeNode(xmlTree, parent, pos, typeName, false, false);
+  // Compute the attribute name. Note: we don't have to check that itemQName 
+  // is indeed a valid qname, because the compiler wraps an xs:qname cast
+  // around thIteme expression.
+  Item_t attrName = nameIter->next();
 
-  if (nameIter != NULL || valueIter != NULL)
+  if (attrName->getLocalName().size() == 0)
   {
-    ctx.push(n);
+    ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, false, false,
+                      "Attribute name must not have an empty local part.");
+  }
 
+  if (attrName->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
+      (attrName->getNamespace() == "" && attrName->getLocalName() == "xmlns"))
+  {
+    ZORBA_ERROR_ALERT(ZorbaError::XQDY0044);
+  }
+
+  if (parent != NULL)
+  {
+    parent->checkUniqueAttr(attrName.get_ptr());
+  }
+
+  AttributeNode* n = new AttributeNode(xmlTree, parent, pos,
+                                       attrName, typeName,
+                                       false, false);
+
+  if (valueIter != NULL)
+  {
     try
     {
-      n->constructValue(nameIter, valueIter);
+      n->constructValue(valueIter);
     }
     catch (...)
     {
       ctx.clear();
       throw;
     }
-
-    ctx.pop();
   }
 
   return n;

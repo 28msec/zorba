@@ -85,18 +85,19 @@ public:
 protected:
   uint32_t depth;
   
-  std::stack<PlanIter_t>                  itstack;
+  std::stack<PlanIter_t>                    itstack;
 
-  std::stack<expr*>                       theConstructorsStack;
-  std::stack<bool>                        theAttrContentStack;
+  std::stack<expr*>                         theConstructorsStack;
+  std::stack<bool>                          theAttrContentStack;
 
-  namespace_context                     * theLastNSCtx;
-  std::stack<namespace_context *>         theNSCtxStack;
+  namespace_context                       * theLastNSCtx;
+  std::stack<namespace_context *>           theNSCtxStack;
+  std::stack<namespace_context::bindings_t> theFlatBindingsStack;
 
-  hash64map<std::vector<var_iter_t> *>    fvar_iter_map;
-  hash64map<std::vector<var_iter_t> *>    pvar_iter_map;
-  hash64map<std::vector<ref_iter_t> *>    lvar_iter_map;
-  hash64map<std::vector<ref_iter_t> *>  * param_var_iter_map;
+  hash64map<std::vector<var_iter_t> *>      fvar_iter_map;
+  hash64map<std::vector<var_iter_t> *>      pvar_iter_map;
+  hash64map<std::vector<ref_iter_t> *>      lvar_iter_map;
+  hash64map<std::vector<ref_iter_t> *>    * param_var_iter_map;
 
 public:
 	plan_visitor(hash64map<std::vector<ref_iter_t> *> *param_var_map = NULL)
@@ -729,28 +730,19 @@ bool begin_visit(elem_expr& v)
 {
   CODEGEN_TRACE_IN ("");
 
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
+  {
+    if (theConstructorsStack.empty())
+      theLastNSCtx = v.getNSCtx()->get_parent().get_ptr();
+
+    theNSCtxStack.push(theLastNSCtx);
+    theLastNSCtx = v.getNSCtx().get_ptr();
+  }
+
   theConstructorsStack.push(&v);
   theAttrContentStack.push(false);
 
-  theNSCtxStack.push(theLastNSCtx);
-  theLastNSCtx = v.getNSCtx().get_ptr();
-
   return true;
-}
-
-
-static inline void create_ns_bindings(
-    namespace_context::bindings_t& flat_bindings,
-    namespace_context *lctx,
-    namespace_context *stop_ctx)
-{
-  namespace_context *p = lctx;
-  while(p != NULL && p != stop_ctx)
-  {
-    const namespace_context::bindings_t *bp = &p->get_bindings();
-    flat_bindings.insert(flat_bindings.end(), bp->begin(), bp->end());
-    p = p->get_parent().get_ptr();
-  }
 }
 
 
@@ -769,7 +761,7 @@ void end_visit(elem_expr& v)
     lContentIter = pop_itstack();
     std::vector<PlanIter_t> lArgs;
     lArgs.push_back(lContentIter);
-    lContentIter = new ElementContentIterator ( v.get_loc(), lArgs);
+    lContentIter = new ElementContentIterator(v.get_loc(), lArgs);
   }
 
   if ( v.getAttrs() != 0 )
@@ -777,27 +769,25 @@ void end_visit(elem_expr& v)
 
   lQNameIter = pop_itstack();
 
-  bool assignId = false;
+  bool isRoot = false;
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
-    assignId = true;
+    isRoot = true;
+    theLastNSCtx = theNSCtxStack.top();
+    theNSCtxStack.pop();
   }
-
-  namespace_context::bindings_t bindings;
-  create_ns_bindings(bindings, v.getNSCtx().get_ptr(), theNSCtxStack.top());
 
 	PlanIter_t iter = new ElementIterator(v.get_loc(),
                                         lQNameIter,
                                         lAttrsIter,
                                         lContentIter,
-                                        bindings,
-                                        assignId);
-  itstack.push ( iter );
-  theLastNSCtx = theNSCtxStack.top();
-  theNSCtxStack.pop();
+                                        theLastNSCtx,
+                                        v.getNSCtx().get_ptr(),
+                                        isRoot);
+  itstack.push(iter);
 }
 
 
@@ -833,16 +823,16 @@ void end_visit(attr_expr& v)
   PlanIter_t lAttrIter = 0;
   lQNameIter = pop_itstack();
   
-  bool assignId = false;
+  bool isRoot = false;
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
-    assignId = true;
+    isRoot = true;
   }
 
-  lAttrIter = new AttributeIterator(v.get_loc(), lQNameIter, lVarIter, assignId);
+  lAttrIter = new AttributeIterator(v.get_loc(), lQNameIter, lVarIter, isRoot);
   
   itstack.push(lAttrIter);
 }
@@ -865,22 +855,22 @@ void end_visit(text_expr& v)
 
   PlanIter_t content = pop_itstack ();
 
-  bool assignId = false;
+  bool isRoot = false;
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
-    assignId = true;
+    isRoot = true;
   }
 
   switch (v.get_type ()) {
   case text_expr::text_constructor:
-    itstack.push (new TextIterator(v.get_loc(), content, assignId));
+    itstack.push (new TextIterator(v.get_loc(), content, isRoot));
     break;
 
   case text_expr::comment_constructor:
-    itstack.push (new CommentIterator (v.get_loc(), content, assignId));
+    itstack.push (new CommentIterator (v.get_loc(), content, isRoot));
     break;
 
   default:
@@ -904,18 +894,18 @@ void end_visit(pi_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  bool assignId = false;
+  bool isRoot = false;
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
-    assignId = true;
+    isRoot = true;
   }
 
   PlanIter_t content = pop_itstack ();
   PlanIter_t target = pop_itstack ();
-  itstack.push (new PiIterator (v.get_loc (), target, content, assignId));
+  itstack.push (new PiIterator (v.get_loc (), target, content, isRoot));
 }
 
 

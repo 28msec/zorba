@@ -454,10 +454,11 @@ void XmlLoader::startElement(
       xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
       Item* typedVal = new UntypedAtomicItemImpl(value);
 
-      AttributeNode* attrNode = new AttributeNode(NULL, NULL, 0, tname, false, false);
+      AttributeNode* attrNode = new AttributeNode(NULL, NULL, 0,
+                                                  qname, tname, 
+                                                  false, false);
       attrNode->theParent = elemNode;
       attrNode->setId(loader.theTree, &loader.theOrdPath);
-      attrNode->theName = qname;
       attrNode->theTypedValue = typedVal;
 
       attrNodes.set(i, attrNode, false);

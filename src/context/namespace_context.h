@@ -9,6 +9,9 @@
 namespace xqp {
 
 class static_context;
+class namespace_context;
+
+typedef rchandle<namespace_context> NamespaceContext_t;
 
 class namespace_context : public rcobject {
   public:

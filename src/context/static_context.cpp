@@ -224,9 +224,9 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
     return ns;
   }
 
-  void static_context::bind_ns (xqp_string prefix, xqp_string ns)
+  void static_context::bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCodes err)
   {
-    bind_str ("ns:" + prefix, ns, ZorbaError::XQST0033);
+    bind_str ("ns:" + prefix, ns, err);
   }
 
   function *static_context::lookup_builtin_fn (xqp_string local, int arity)

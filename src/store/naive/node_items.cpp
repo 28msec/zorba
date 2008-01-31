@@ -647,6 +647,24 @@ Iterator_t ElementNode::getAttributes() const
 /*******************************************************************************
 
 ********************************************************************************/
+void ElementNode::checkUniqueAttr(Item* attrName) const
+{
+  ulong numAttrs = numAttributes();
+  for (ulong i = 0; i < numAttrs; i++)
+  {
+    if (getAttr(i)->getNodeName()->equals(attrName))
+    {
+      ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0025, false, false, 
+                            "Attribute name " << attrName->getStringValue() 
+                            << " is not unique", "");
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 Iterator_t ElementNode::getChildren() const
 {
   return (new ChildrenIterator((XmlNode*)this));
@@ -1069,11 +1087,13 @@ AttributeNode::AttributeNode(
     XmlTree*  tree,
     XmlNode*  parent,
     ulong     pos,
+    Item*     attrName,
     Item*     typeName,
     bool      isId,
     bool      isIdrefs)
   :
   XmlNode(tree, parent, pos, StoreConsts::attributeNode),
+  theName(attrName),
   theTypeName(typeName),
   theIsId(isId),
   theIsIdrefs(isIdrefs)
@@ -1091,25 +1111,8 @@ AttributeNode::~AttributeNode()
 }
 
 
-void AttributeNode::constructValue(Iterator* nameIter, Iterator* valueIter)
+void AttributeNode::constructValue(Iterator* valueIter)
 {
-  // Compute the attribute name. Note: we don't have to check that itemQName 
-  // is indeed a valid qname, because the compiler wraps an xs:qname cast
-  // around thIteme expression.
-  Item_t qnameItem = nameIter->next();
-
-  if (qnameItem->getLocalName().size() == 0)
-  {
-    ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, false, false,
-                      "Attribute name must not have an empty local part.");
-  }
-
-  if (qnameItem->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
-      (qnameItem->getNamespace() == "" && qnameItem->getLocalName() == "xmlns"))
-  {
-    ZORBA_ERROR_ALERT(ZorbaError::XQDY0044);
-  }
-
   Item_t typedValue;
   xqpStringStore_t lexicalValue;
 
@@ -1132,29 +1135,30 @@ void AttributeNode::constructValue(Iterator* nameIter, Iterator* valueIter)
     typedValue = GET_FACTORY().createUntypedAtomic("");
   }
 
-  theName = qnameItem.get_ptr();
   theTypedValue = typedValue;
 
-  NODE_TRACE2("Constructed attr node " << this << ":" << qnameItem->show()
-              << " with value " << typedValue->show());
+  NODE_TRACE2("Constructed attr node " << this << ":" << theName->getStringValue()
+              << " value = " << typedValue->show());
   NODE_TRACE1("}");
 }
 
 
-XmlNode* AttributeNode::copy(XmlNode* parent, unsigned long pos)
+XmlNode* AttributeNode::copy(XmlNode* parent, ulong pos)
 {
   Item_t tmp = this;
 
   AttributeNode* copy;
 
+  parent->checkUniqueAttr(theName.get_ptr());
+
   if (parent->typePreserve())
   {
     copy = new AttributeNode(NULL, parent, pos,
+                             theName.get_ptr(),
                              theTypeName.get_ptr(),
                              isId(),
                              isIdrefs());
 
-    copy->theName = theName.get_ptr();
     copy->theTypedValue = theTypedValue.get_ptr();
   }
   else
@@ -1173,11 +1177,11 @@ XmlNode* AttributeNode::copy(XmlNode* parent, unsigned long pos)
       typedValue = new UntypedAtomicItemImpl(getStringValue().getStore());
 
     copy = new AttributeNode(NULL, parent, pos,
+                             theName.get_ptr(),
                              GET_STORE().theUntypedAtomicType.get_ptr(),
                              isId,
                              isIdrefs);
 
-    copy->theName = theName.get_ptr();
     copy->theTypedValue = typedValue.get_ptr();
   }
 

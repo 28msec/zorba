@@ -19,6 +19,9 @@ namespace xqp {
 class Item;
 class node;
 class zorba;
+class namespace_context;
+
+typedef rchandle<namespace_context> NamespaceContext_t;
 
 
 /*********************************************************************************
@@ -81,10 +84,11 @@ public:
   theAttributesIter : The iterator that produces the attributes of the new node.
   theNamespacesIter : This is to be used in the future, when it will be possible
                       to have namespace declarations whose URI is not constant.
-  theNsBindings     : The (prefix, nsURI) pairs corrsponding to namespace
+  theLocalBindings  : The (prefix, nsURI) pairs corresponding to namespace
                       declarations that appear in the opening tag of the
                       element, and whose URI part is a contant. 
-  theAssignId       : Whether to assign an id to the new node and its subtree.
+  theIsRoot         : Whether this is the root in a tree of constructor iterators.
+                      
 
 ********************************************************************************/
 class ElementIterator : public Batcher<ElementIterator>
@@ -101,28 +105,26 @@ protected:
   };
 
 private:
-  PlanIter_t  theQNameIter;
-  PlanIter_t  theAttributesIter;
-  PlanIter_t  theChildrenIter;
-  PlanIter_t  theNamespacesIter;
-  NsBindings  theNsBindings;
-  bool        theAssignId;
+  PlanIter_t          theQNameIter;
+  PlanIter_t          theAttributesIter;
+  PlanIter_t          theChildrenIter;
+  PlanIter_t          theNamespacesIter;
+
+  NamespaceContext_t  theContextBindigns;
+  NamespaceContext_t  theLocalBindings;
+
+  bool                theIsRoot;
 
 public:
   ElementIterator (
       const yy::location& loc,
-      PlanIter_t&  aQNameIter,
-      PlanIter_t&  aAttrs,
-      PlanIter_t&  aChildren,
-      NsBindings&  nsBindings,
-      bool         assignId);
+      PlanIter_t&         aQNameIter,
+      PlanIter_t&         aAttrs,
+      PlanIter_t&         aChildren,
+      namespace_context*  ctxBindings,
+      namespace_context*  localBindings,
+      bool                isRoot);
   
-  ElementIterator (
-      const yy::location& loc,
-      PlanIter_t&  aQNameIter,
-      PlanIter_t&  aChildren,
-      bool         assignId);
-
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
@@ -168,14 +170,14 @@ NARY_ITER_STATE(ElementContentIterator, ElementContentState);
 class AttributeIterator : public BinaryBaseIterator<AttributeIterator>
 {
 private:
-  bool       theAssignId;
+  bool       theIsRoot;
 
 public:
   AttributeIterator(
         const yy::location& loc,
         PlanIter_t& aQNameIter,
         PlanIter_t& aValueIter,
-        bool assignId);
+        bool isRoot);
     
   Item_t nextImpl(PlanState& planState);
   
@@ -194,13 +196,13 @@ public:
 class CommentIterator : public UnaryBaseIterator<CommentIterator>
 {
 protected:
-  bool       theAssignId;
+  bool       theIsRoot;
 
 public:
   CommentIterator(
         const yy::location& loc, 
         PlanIter_t& aComment,
-        bool assignId);
+        bool isRoot);
   
   Item_t nextImpl(PlanState& planState);
   
@@ -216,14 +218,14 @@ public:
 class PiIterator : public BinaryBaseIterator<PiIterator>
 {
 protected:
-  bool       theAssignId;
+  bool       theIsRoot;
 
 public:
   PiIterator(
         const yy::location& loc, 
         PlanIter_t& aTarget,
         PlanIter_t& aContent,
-        bool assignId);
+        bool isRoot);
   
   Item_t nextImpl(PlanState& planState);
   
@@ -242,10 +244,10 @@ public:
 class TextIterator : public UnaryBaseIterator<TextIterator>
 {
 protected:
-  bool       theAssignId;
+  bool       theIsRoot;
 
 public:
-  TextIterator( const yy::location& loc, PlanIter_t& aChild, bool assignId);
+  TextIterator( const yy::location& loc, PlanIter_t& aChild, bool isRoot);
   
   Item_t nextImpl(PlanState& planState);
   virtual void accept(PlanIterVisitor&) const;

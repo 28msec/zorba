@@ -30,7 +30,7 @@ private:
 public:
   NsBindingsContext() { }
 
-  NsBindingsContext(unsigned long numBindings);
+  NsBindingsContext(ulong numBindings);
 
   NsBindingsContext(const NsBindings& bindings);
 

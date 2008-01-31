@@ -231,15 +231,17 @@ public:
 
   virtual XmlNode* copy(XmlNode* parent, ulong pos) = 0;
 
-  virtual ulong numAttributes() const         { Assert(0); return 0; }
-  virtual XmlNode* getAttr(ulong i) const     { Assert(0); return NULL; }
-  virtual NodeVector& attributes()            { Assert(0); return dummyVector; }
-  virtual const NodeVector& attributes() const{ Assert(0); return dummyVector; }
+  virtual void checkUniqueAttr(Item* qn) const { Assert(0); }
 
-  virtual ulong numChildren() const           { Assert(0); return 0; }
-  virtual XmlNode* getChild(ulong i) const    { Assert(0); return NULL; }
-  virtual NodeVector& children()              { Assert(0); return dummyVector; }
-  virtual const NodeVector& children() const  { Assert(0); return dummyVector; }
+  virtual ulong numAttributes() const          { Assert(0); return 0; }
+  virtual XmlNode* getAttr(ulong i) const      { Assert(0); return NULL; }
+  virtual NodeVector& attributes()             { Assert(0); return dummyVector; }
+  virtual const NodeVector& attributes() const { Assert(0); return dummyVector; }
+
+  virtual ulong numChildren() const            { Assert(0); return 0; }
+  virtual XmlNode* getChild(ulong i) const     { Assert(0); return NULL; }
+  virtual NodeVector& children()               { Assert(0); return dummyVector; }
+  virtual const NodeVector& children() const   { Assert(0); return dummyVector; }
 
   virtual NsBindingsContext* getNsContext() const   { Assert(0); return NULL; }
   virtual void setNsContext(NsBindingsContext* ctx) { Assert(0); }
@@ -403,6 +405,8 @@ public:
 
   XmlNode* copy(XmlNode* parent, ulong pos);
 
+  void checkUniqueAttr(Item* attrName) const;
+
   bool isConstructed() const    { return (theFlags & XmlNode::IsConstructed) != 0; }
   bool isCopy() const           { return (theFlags & XmlNode::IsCopy) != 0; }
   bool typePreserve() const     { return (theFlags & XmlNode::TypePreserve) != 0; }
@@ -414,9 +418,7 @@ public:
   NsBindingsContext* getNsContext() const { return theNsContext.get_ptr(); }
 
   void setNsContext(NsBindingsContext* ctx);
-
   xqpStringStore* findBinding(xqpStringStore* prefix) const;
-
   const NsBindings& getLocalBindings() const;
 };
 
@@ -524,13 +526,14 @@ class AttributeNode : public XmlNode
         XmlTree* tree,
         XmlNode* parent,
         ulong    pos,
+        Item*    attrName,
         Item*    typeName,
         bool     isId,
         bool     isIdrefs);
 
   virtual ~AttributeNode();
 
-  void constructValue(Iterator* nameIter, Iterator* valueIter);
+  void constructValue(Iterator* valueIter);
 
   XmlNode* copy(XmlNode* parent, ulong pos);
 

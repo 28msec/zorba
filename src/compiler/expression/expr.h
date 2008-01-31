@@ -1037,7 +1037,6 @@ public:
 // [96] [http://www.w3.org/TR/xquery/#doc-xquery-DirElemConstructor]
 class elem_expr : public constructor_expr
 {
-	// TODO namespace bindings
 protected:
   expr_t theQNameExpr;
 	expr_t theAttrs;

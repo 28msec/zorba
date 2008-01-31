@@ -704,20 +704,43 @@ void end_visit(const DirAttr& v, void *visit_state)
     else
     {
       prefix = qname->get_localname();
+      if (prefix == "xmlns")
+      {
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), false, 
+                          "Cannot bind predefined prefix \"xmlns\"");
+      }
     }
 
     const_expr* constValueExpr = dynamic_cast<const_expr*>(valueExpr.get_ptr());
     if (constValueExpr != NULL)
     {
       xqpString uri = constValueExpr->get_val()->getStringValue();
-      sctx_p->bind_ns(prefix, uri);
+
+      if (prefix == "xml" && uri != "http://www.w3.org/XML/1998/namespace")
+      {
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), false, 
+                          "Predefined prefix \"xml\" is not bound to uri \"http://www.w3.org/XML/1998/namespace\"");
+      }
+      if (prefix != "xml" && uri == "http://www.w3.org/XML/1998/namespace")
+      {
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), false, 
+                          "Uri \"http://www.w3.org/XML/1998/namespace\" can only be bound to prefix \"xml\"");
+      }
+      sctx_p->bind_ns(prefix, uri, ZorbaError::XQST0071);
       ns_ctx->bind_ns(prefix, uri);
     }
     else if (valueExpr == NULL)
     {
+      if (prefix == "xml")
+      {
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), false, 
+                          "Cannot unbind predefined prefix \"xml\"");
+      }
+
       // unbind the prefix
-      if (prefix != "") {
-        sctx_p->bind_ns(prefix, "");
+      if (prefix != "") 
+      {
+        sctx_p->bind_ns(prefix, "", ZorbaError::XQST0071);
         ns_ctx->bind_ns(prefix, "");
       }
     }
@@ -932,7 +955,9 @@ void end_visit(const CompElemConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
-  expr_t qnameExpr;
+  TypeSystem& ts = GENV_TYPESYSTEM;
+
+  expr_t nameExpr;
   expr_t contentExpr = 0;
   expr_t elemExpr = 0;
 
@@ -952,19 +977,24 @@ void end_visit(const CompElemConstructor& v, void *visit_state)
   
   if (constQName != NULL)
   {
-    qnameExpr = new const_expr(v.get_location(),
-                               sctx_p->lookup_elem_qname(constQName->get_qname()));
+    nameExpr = new const_expr(v.get_location(),
+                              sctx_p->lookup_elem_qname(constQName->get_qname()));
   }
   else
   {
-    qnameExpr = pop_nodestack();
-    qnameExpr = new cast_expr(v.get_location(),
-                              qnameExpr,
-                              GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_QNAME,
-                                                                 TypeSystem::QUANT_ONE));
+    nameExpr = pop_nodestack();
+
+    rchandle<fo_expr> atomExpr = new fo_expr(v.get_location(),
+                                             LOOKUP_FN("fn", "data", 1));
+    atomExpr->add(nameExpr);
+
+    nameExpr = new cast_expr(v.get_location(),
+                             atomExpr.get_ptr(),
+                             ts.create_atomic_type(TypeSystem::XS_QNAME,
+                                                   TypeSystem::QUANT_ONE));
   }
 
-  elemExpr = new elem_expr(v.get_location(), qnameExpr, contentExpr, ns_ctx);
+  elemExpr = new elem_expr(v.get_location(), nameExpr, contentExpr, ns_ctx);
   nodestack.push(elemExpr);
 }
 
@@ -979,6 +1009,8 @@ void end_visit(const CompAttrConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
+  TypeSystem& ts = GENV_TYPESYSTEM;
+
   expr_t nameExpr;
   expr_t valueExpr;
   expr_t attrExpr;
@@ -1007,14 +1039,14 @@ void end_visit(const CompAttrConstructor& v, void *visit_state)
   {
     nameExpr = pop_nodestack();
 
-    rchandle<fo_expr> atomExpr = new fo_expr(v.get_location(), LOOKUP_FN("fn", "data", 1));
+    rchandle<fo_expr> atomExpr = new fo_expr(v.get_location(),
+                                             LOOKUP_FN("fn", "data", 1));
     atomExpr->add(nameExpr);
 
-    expr_t castExpr =
-      new cast_expr(v.get_location(),
-                    atomExpr.get_ptr(),
-                    GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_QNAME,
-                                                       TypeSystem::QUANT_ONE));
+    expr_t castExpr = new cast_expr(v.get_location(),
+                                    atomExpr.get_ptr(),
+                                    ts.create_atomic_type(TypeSystem::XS_QNAME,
+                                                          TypeSystem::QUANT_ONE));
 
     //fo_expr* enclosedExpr = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
     //enclosedExpr->add(castExpr);

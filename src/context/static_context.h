@@ -89,7 +89,7 @@ public:
   void set_default_elem_type_ns (xqp_string);
 
   xqp_string lookup_ns (xqp_string prefix) const;
-  void bind_ns (xqp_string prefix, xqp_string ns);
+  void bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCodes err = ZorbaError::XQST0033);
 
   Item_t lookup_qname (xqp_string default_ns, xqp_string name) const;
   Item_t lookup_qname (xqp_string default_ns, xqp_string pfx, xqp_string local) const;

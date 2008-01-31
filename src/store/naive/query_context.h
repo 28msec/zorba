@@ -21,6 +21,8 @@ protected:
 public:
   ~QueryContext() { clear(); }
 
+  bool empty() const { return theNodePath.empty(); }
+
   void push(XmlNode* n)
   {
     theNodePath.push(n);
@@ -52,15 +54,32 @@ public:
 class QueryContextContainer : public std::map<ulong, QueryContext>
 {
 public:
-  QueryContext& getContext(unsigned long queryId)
+  QueryContext& getContext(ulong queryId)
   {
-    std::map<unsigned long, QueryContext>::iterator ctxi;
+    std::map<ulong, QueryContext>::iterator ctxi;
+
+    ctxi = find(queryId);
+
+    if (ctxi != end())
+      return ctxi->second;
 
     std::pair<std::map<ulong, QueryContext>::iterator, bool> res =
       insert(std::pair<ulong, QueryContext>(queryId, QueryContext()));
 
     ctxi = res.first;
     return ctxi->second;
+  }
+
+  void removeContext(ulong queryId)
+  {
+    std::map<ulong, QueryContext>::iterator ctxi;
+
+    ctxi = find(queryId);
+
+    if (ctxi == end())
+      return;
+
+    erase(queryId);
   }
 };
 
