@@ -31,7 +31,7 @@ namespace xqp
   class NodeSortIterator;
   class KindTestIterator;
   class NameTestIterator;
-  template <class Object> class AxisIterator;
+  template <class Object, class State> class AxisIterator;
   class SelfAxisIterator;
   class AttributeAxisIterator;
   class ParentAxisIterator;

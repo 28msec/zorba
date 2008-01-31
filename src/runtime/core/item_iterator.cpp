@@ -18,26 +18,8 @@ using namespace std;
 namespace xqp
 {
 
-void EmptyIterator::setOffset ( PlanState& planState, uint32_t& offset )
-{
-  this->stateOffset = offset;
-  offset += this->getStateSize();
-}
 
-
-/* begin class SingletonIterator */
-SingletonIterator::SingletonIterator ( yy::location loc, Item_t aValue)
-  :
-  NoaryBaseIterator<SingletonIterator> ( loc ), theValue ( aValue )
-{
-}
-
-
-SingletonIterator::~SingletonIterator()
-{
-}
-
-
+/* start class SingletonIterator */
 Item_t SingletonIterator::nextImpl ( PlanState& planState )
 {
   PlanIteratorState* state;
@@ -47,77 +29,85 @@ Item_t SingletonIterator::nextImpl ( PlanState& planState )
 }
 
 
-  /* start class IfThenElseIterator */
-  IfThenElseIterator::IfThenElseIterator ( const yy::location& loc,
-          PlanIter_t& aCondIter, PlanIter_t& aThenIter,
-          PlanIter_t& aElseIter, bool aIsBooleanIter ) :
-      Batcher<IfThenElseIterator> ( loc ), theCondIter ( aCondIter ),
-      theThenIter ( aThenIter ), theElseIter ( aElseIter ),
-      theIsBooleanIter ( aIsBooleanIter )
+/* start class IfThenElseIterator */
+IfThenElseIterator::IfThenElseIterator ( const yy::location& loc,
+        PlanIter_t& aCondIter, PlanIter_t& aThenIter,
+        PlanIter_t& aElseIter, bool aIsBooleanIter ) :
+    Batcher<IfThenElseIterator> ( loc ), theCondIter ( aCondIter ),
+    theThenIter ( aThenIter ), theElseIter ( aElseIter ),
+    theIsBooleanIter ( aIsBooleanIter )
+{
+}
+
+Item_t IfThenElseIterator::nextImpl ( PlanState& planState )
+{
+  Item_t condResult;
+
+  IfThenElseIteratorState* state;
+  DEFAULT_STACK_INIT ( IfThenElseIteratorState, state, planState );
+
+  if ( theIsBooleanIter )
+    condResult = this->consumeNext ( theCondIter, planState );
+  else
+    condResult = FnBooleanIterator::effectiveBooleanValue ( this->loc,
+                 planState, theCondIter );
+
+  if ( condResult->getBooleanValue() )
+    state->theThenUsed = true;
+  else
+    state->theThenUsed = false;
+
+  while ( true )
   {
+    STACK_PUSH (
+      this->consumeNext ( 
+        (state->theThenUsed ? theThenIter : theElseIter), planState 
+      ), 
+      state 
+    );
   }
 
-  Item_t IfThenElseIterator::nextImpl ( PlanState& planState )
-  {
-    Item_t condResult;
+  STACK_END();
+}
 
-    IfThenElseIteratorState* state;
-    DEFAULT_STACK_INIT ( IfThenElseIteratorState, state, planState );
+void IfThenElseIterator::openImpl ( PlanState& planState, uint32_t& offset ) {
+  this->stateOffset = offset;
+  offset += getStateSize();
 
-    if ( theIsBooleanIter )
-      condResult = this->consumeNext ( theCondIter, planState );
-    else
-      condResult = FnBooleanIterator::effectiveBooleanValue ( this->loc,
-                   planState, theCondIter );
+  IfThenElseIteratorState* state = new (planState.theBlock + this->stateOffset) IfThenElseIteratorState;
 
-    if ( condResult->getBooleanValue() )
-      state->theThenUsed = true;
-    else
-      state->theThenUsed = false;
+  theCondIter->open( planState, offset );
+  theThenIter->open( planState , offset);
+  theElseIter->open( planState , offset);
+}
 
-    while ( true )
-    {
-      STACK_PUSH (
-        this->consumeNext ( 
-          (state->theThenUsed ? theThenIter : theElseIter), planState 
-        ), 
-        state 
-      );
-    }
-
-    STACK_END();
-  }
-
-  void IfThenElseIterator::resetImpl ( PlanState& planState )
-  {
-    IfThenElseIteratorState* state;
-    GET_STATE ( IfThenElseIteratorState, state, planState );
-    state->reset();
-    
-    this->resetChild ( theCondIter, planState );
-    this->resetChild ( theThenIter, planState );
-    this->resetChild ( theElseIter, planState );
-  }
-
-  void IfThenElseIterator::releaseResourcesImpl ( PlanState& planState )
-  {
-    this->releaseChildResources ( theCondIter, planState );
-    this->releaseChildResources ( theThenIter, planState );
-    this->releaseChildResources ( theElseIter, planState );
-  }
+void IfThenElseIterator::resetImpl ( PlanState& planState )
+{
+  IfThenElseIteratorState* state;
+  GET_STATE ( IfThenElseIteratorState, state, planState );
+  state->reset(planState);
   
-  uint32_t IfThenElseIterator::getStateSizeOfSubtree() const {
-    return getStateSize() 
-        + theCondIter->getStateSizeOfSubtree()
-        + theThenIter->getStateSizeOfSubtree()
-        + theElseIter->getStateSizeOfSubtree();
-  }
-  void IfThenElseIterator::setOffset ( PlanState& planState, uint32_t& offset ) {
-    this->stateOffset = offset;
-    offset += getStateSize();
-    theCondIter->setOffset(planState, offset);
-    theThenIter->setOffset(planState, offset);
-    theElseIter->setOffset(planState, offset);
-  }
+  theCondIter->reset( planState );
+  theThenIter->reset( planState );
+  theElseIter->reset( planState );
+}
+
+void IfThenElseIterator::closeImpl ( PlanState& planState )
+{
+  theCondIter->close( planState );
+  theThenIter->close( planState );
+  theElseIter->close( planState );
+
+  IfThenElseIteratorState* state;
+  GET_STATE ( IfThenElseIteratorState, state, planState );
+  state->~IfThenElseIteratorState();
+}
+
+uint32_t IfThenElseIterator::getStateSizeOfSubtree() const {
+  return getStateSize() 
+      + theCondIter->getStateSizeOfSubtree()
+      + theThenIter->getStateSizeOfSubtree()
+      + theElseIter->getStateSizeOfSubtree();
+}
 } /* namespace xqp */
 

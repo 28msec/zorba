@@ -7,16 +7,16 @@ using namespace std;
 namespace xqp {
 
 void 
-FnTraceIteratorState::init()
+FnTraceIteratorState::init(PlanState& planState)
 {
-  PlanIteratorState::init();
+  PlanIteratorState::init(planState);
   theTagItem = NULL;
 }
 
 void 
-FnTraceIteratorState::reset()
+FnTraceIteratorState::reset(PlanState& planState)
 {
-  PlanIteratorState::reset();
+  PlanIteratorState::reset(planState);
   theTagItem = NULL;
 }
 

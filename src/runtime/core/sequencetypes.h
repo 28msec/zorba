@@ -24,7 +24,7 @@ namespace xqp {
   operand matches the SequenceType in its second operand, according to the rules
   for SequenceType matching; otherwise it returns false.
 ********************************************************************************/
-class InstanceOfIterator : public UnaryBaseIterator<InstanceOfIterator>
+class InstanceOfIterator : public UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>
 {
 
 private:
@@ -49,7 +49,7 @@ public:
 
   http://www.w3.org/TR/xquery/#id-cast
 ********************************************************************************/
-class CastIterator : public UnaryBaseIterator<CastIterator> {
+class CastIterator : public UnaryBaseIterator<CastIterator, PlanIteratorState> {
   friend class PrinterVisitor;
 private:
   TypeSystem::xqtref_t theCastType;
@@ -70,7 +70,7 @@ public:
 
   http://www.w3.org/TR/xquery/#id-castable
 ********************************************************************************/
-class CastableIterator : public UnaryBaseIterator<CastableIterator> {
+class CastableIterator : public UnaryBaseIterator<CastableIterator, PlanIteratorState> {
   friend class PrinterVisitor;
 private:
   TypeSystem::xqtref_t theCastType;

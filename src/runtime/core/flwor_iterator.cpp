@@ -250,26 +250,27 @@ bool FLWORIterator::OrderKeyCmp::operator() (
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-void FLWORIterator::FlworState::init(size_t nb_variables)
+void FLWORIterator::FlworState::init(PlanState& planState, size_t nb_variables)
 {
-  PlanIteratorState::init();
+  PlanIteratorState::init(planState);
   std::vector<uint32_t> v( nb_variables, 0 );
   varBindingState.swap (v);
 }
 
 
 void FLWORIterator::FlworState::init(
+    PlanState& planState,
     size_t nb_variables,
     vector<OrderSpec>* orderSpecs)
 {
-  init (nb_variables);
+  init (planState, nb_variables);
   orderMap = new order_map_t(orderSpecs);
 }
 
 
-void FLWORIterator::FlworState::reset()
+void FLWORIterator::FlworState::reset(PlanState& planState)
 {
-  PlanIteratorState::reset();
+  PlanIteratorState::reset(planState);
   size_t size = varBindingState.size();
   varBindingState.clear();
   varBindingState.insert(varBindingState.begin(), size, 0);
@@ -280,11 +281,6 @@ void FLWORIterator::FlworState::reset()
   }
 }
 
-
-void FLWORIterator::FlworState::releaseResources()
-{
-  reset();
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -344,11 +340,11 @@ Item_t FLWORIterator::nextImpl ( PlanState& planState )
   //we allocate resources
   if ( doOrderBy )
   {
-    flworState->init(bindingsNb, &orderByClause->orderSpecs);
+    flworState->init(planState, bindingsNb, &orderByClause->orderSpecs);
   }
   else
   {
-    flworState->init ( bindingsNb );
+    flworState->init ( planState, bindingsNb );
   }
   FINISHED_ALLOCATING_RESOURCES();
 
@@ -413,7 +409,7 @@ Item_t FLWORIterator::nextImpl ( PlanState& planState )
           if ( curItem == NULL )
           {
             curVar = bindingsNb - 1;
-            this->resetChild ( returnClause, planState );
+            returnClause->reset(planState);
             break;
           }
           else
@@ -466,14 +462,15 @@ void FLWORIterator::matResultAndOrder(
                           NULL, false, "Expected a singleton" );
       }
     }
-    resetChild ( lSpecIter->orderByIter, planState );
+    lSpecIter->orderByIter->reset(planState);
     ++lSpecIter;
   }
 
   Iterator_t iterWrapper = new PlanIteratorWrapper(returnClause, planState);
   TempSeq_t result = Zorba::getStore()->createTempSeq(iterWrapper, false);
   flworState->orderMap->insert(std::pair<std::vector<Item_t>, Iterator_t>(orderKey, result->getIterator()));
-  this->resetChild(returnClause, planState);
+  returnClause->reset(planState);
+
 }
 
 
@@ -489,14 +486,14 @@ bool FLWORIterator::evalWhereClause ( PlanState& planState )
       return false;
 
     bool value = boolValue->getBooleanValue();
-    resetChild(whereClause, planState);
+    whereClause->reset(planState);
     return value;
   }
 
   Item_t item = FnBooleanIterator::effectiveBooleanValue(loc,
                                                          planState,
                                                          whereClause);
-  resetChild(whereClause, planState);
+  whereClause->reset(planState);
   return item->getBooleanValue();
 }
 
@@ -507,7 +504,7 @@ void FLWORIterator::resetInput(
     PlanState& planState)
 {
   FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
-  this->resetChild(lForLetClause.input, planState);
+  lForLetClause.input->reset( planState );
   flworState->varBindingState[varNb] = 0;
 }
 
@@ -602,13 +599,42 @@ bool FLWORIterator::bindVariable(
   return false;
 }
 
+void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  this->stateOffset = offset;
+  offset += this->getStateSize();
+
+  FlworState* state = new (planState.theBlock + this->stateOffset) FlworState;
+
+  std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
+  for (iter = forLetClauses.begin(); iter != forLetClauses.end(); iter++)
+  {
+    iter->input->open ( planState, offset );
+  }
+
+  returnClause->open ( planState, offset );
+
+  if ( whereClause != NULL )
+    whereClause->open ( planState, offset );
+
+  if ( doOrderBy )
+  {
+    std::vector<OrderSpec>::const_iterator iter;
+    for (iter = orderByClause->orderSpecs.begin();
+         iter != orderByClause->orderSpecs.end();
+         iter++ )
+    {
+      iter->orderByIter->open ( planState, offset );
+    }
+  }
+}
 
 void FLWORIterator::resetImpl ( PlanState& planState )
 {
-  resetChild(returnClause, planState);
+  returnClause->reset(planState);
 
   if (whereClause != NULL)
-    resetChild(whereClause, planState);
+    whereClause->reset(planState);
 
   if (orderByClause != NULL)
   {
@@ -617,28 +643,28 @@ void FLWORIterator::resetImpl ( PlanState& planState )
          iter != orderByClause->orderSpecs.end();
          iter++)
     {
-      resetChild(iter->orderByIter, planState);
+      iter->orderByIter->reset(planState);
     }
   }
 
   std::vector<FLWORIterator::ForLetClause>::iterator iter;
   for (iter = forLetClauses.begin(); iter != forLetClauses.end(); iter++)
   {
-    resetChild(iter->input, planState);
+    iter->input->reset(planState);
   }
 
   FlworState* flworState;
   GET_STATE ( FlworState, flworState, planState );
-  flworState->reset();
+  flworState->reset(planState);
 }
 
 
-void FLWORIterator::releaseResourcesImpl ( PlanState& planState )
+void FLWORIterator::closeImpl ( PlanState& planState )
 {
-  returnClause->releaseResources(planState);
+  returnClause->close(planState);
 
   if (whereClause != NULL)
-    whereClause->releaseResources(planState);
+    whereClause->close(planState);
 
   if (orderByClause != NULL)
   {
@@ -647,19 +673,20 @@ void FLWORIterator::releaseResourcesImpl ( PlanState& planState )
          iter != orderByClause->orderSpecs.end();
          iter++)
     {
-      iter->orderByIter->releaseResources(planState);
+      iter->orderByIter->close(planState);
     }
   }
 
   std::vector<FLWORIterator::ForLetClause>::iterator iter;
   for (iter = forLetClauses.begin(); iter != forLetClauses.end(); iter++)
   {
-    iter->input->releaseResources(planState);
+    iter->input->close(planState);
   }
 
   FlworState* flworState;
   GET_STATE ( FlworState, flworState, planState );
-  flworState->releaseResources();
+  flworState->reset(planState); // for releasing resources TODO should be in the destructor or deinit
+  flworState->~FlworState();
 }
 
 
@@ -692,33 +719,6 @@ uint32_t FLWORIterator::getStateSizeOfSubtree() const
 }
 
 
-void FLWORIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  this->stateOffset = offset;
-  offset += this->getStateSize();
-
-  std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
-  for (iter = forLetClauses.begin(); iter != forLetClauses.end(); iter++)
-  {
-    iter->input->setOffset ( planState, offset );
-  }
-
-  returnClause->setOffset ( planState, offset );
-
-  if ( whereClause != NULL )
-    whereClause->setOffset ( planState, offset );
-
-  if ( doOrderBy )
-  {
-    std::vector<OrderSpec>::const_iterator iter;
-    for (iter = orderByClause->orderSpecs.begin();
-         iter != orderByClause->orderSpecs.end();
-         iter++ )
-    {
-      iter->orderByIter->setOffset ( planState, offset );
-    }
-  }
-}
 
 
 void FLWORIterator::accept ( PlanIterVisitor& v ) const

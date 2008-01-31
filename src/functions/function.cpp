@@ -93,7 +93,7 @@ PlanState *user_function::create_plan_state() const
 {
   PlanState *state = new PlanState(m_state_size);
   uint32_t offset = 0;
-  m_plan->setOffset(*state, offset);
+  m_plan->open(*state, offset);
 
   return state;
 }

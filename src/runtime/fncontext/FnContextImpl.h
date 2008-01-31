@@ -17,7 +17,7 @@ namespace xqp
   context and just returns the items that it produces.
 
 ********************************************************************************/
-class CtxVariableIterator : public NoaryBaseIterator<CtxVariableIterator>
+class CtxVariableIterator : public NoaryBaseIterator<CtxVariableIterator, PlanIteratorState>
 {
 private:
   xqpString theVarName;
@@ -27,9 +27,10 @@ public:
 
   virtual ~CtxVariableIterator();
 
+  // inherit openImpl from NoaryBaseIterator
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
+  void closeImpl(PlanState& planState);
 
   virtual void accept(PlanIterVisitor&) const;
 

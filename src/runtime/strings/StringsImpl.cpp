@@ -83,7 +83,7 @@ CodepointsToStringIterator::nextImpl(PlanState& planState){
  *the empty sequence is returned.
  *_______________________________________________________________________*/
 /* begin class StringToCodepointsIterator */
-  Item_t
+Item_t
 StringToCodepointsIterator::nextImpl(PlanState& planState){
   // TODO Optimization for large strings: large strings mean that a large integer vector should be store in the state that is not good.
   Item_t item;
@@ -112,56 +112,46 @@ StringToCodepointsIterator::nextImpl(PlanState& planState){
 }
 
 void
-StringToCodepointsIterator::resetImpl(PlanState& planState)
+StringToCodepointsState::init(PlanState& planState)
 {
-  StringToCodepointsState* state;
-  GET_STATE(StringToCodepointsState, state, planState);
-  state->reset();
-  
-  resetChild(theChild, planState);
-}
-
-void
-StringToCodepointsIterator::StringToCodepointsState::init()
-{
-  PlanIteratorState::init();
+  PlanIteratorState::init(planState);
   iter= 0;
   resVector.clear();
 }
 
 void
-StringToCodepointsIterator::StringToCodepointsState::reset()
+StringToCodepointsState::reset(PlanState& planState)
 {
-  PlanIteratorState::reset();
+  PlanIteratorState::reset(planState);
   iter = 0;
   resVector.clear();
 }
 
 void
-StringToCodepointsIterator::StringToCodepointsState::setIterator(uint32_t value)
+StringToCodepointsState::setIterator(uint32_t value)
 {
   iter = value;
 }
 
 uint32_t
-StringToCodepointsIterator::StringToCodepointsState::getIterator() {
+StringToCodepointsState::getIterator() {
   return iter;
 }
 
 void
-StringToCodepointsIterator::StringToCodepointsState::setVector(std::vector<uint32_t> vect)
+StringToCodepointsState::setVector(std::vector<uint32_t> vect)
 {
   resVector = vect;
 }
 
 uint32_t
-StringToCodepointsIterator::StringToCodepointsState::getItem(uint32_t iter)
+StringToCodepointsState::getItem(uint32_t iter)
 {
   return resVector[iter];
 }
 
 uint32_t
-StringToCodepointsIterator::StringToCodepointsState::getVectSize()
+StringToCodepointsState::getVectSize()
 {
   return resVector.size();
 }

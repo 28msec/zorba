@@ -40,9 +40,6 @@
 // Info: Forcing inlining a function in g++:
 // Item_t next() __attribute__((always_inline)) {...}
 
-//0 = NO_BATCHING, 1 = SIMPLE_BATCHING, 2 = SUPER_BATCHING
-//#define BATCHING_TYPE 0
-
 /*******************************************************************************
 
   Macros to automate Duff's Device and separation of code and execution 
@@ -64,7 +61,7 @@
   switch (stateObject->getDuffsLine())                          \
   {                                                             \
     case DUFFS_RELEASE_RESOURCES:                               \
-      stateObject->init();                                      \
+      stateObject->init(planState);                                      \
     case DUFFS_RESET:
 
 
@@ -156,6 +153,11 @@ public:
  {
   (reinterpret_cast<T*>(ptr))->~T();
  }
+
+ static void reset(PlanState& planState, int8_t *block,  uint32_t stateOffset)
+ {
+  (reinterpret_cast<T*>(block + stateOffset))->reset(planState);
+ }
 };
 
 
@@ -165,25 +167,37 @@ public:
 class PlanIteratorState
 {
 private:
-  int32_t duffsLine;
+  int32_t theDuffsLine;
 
 public:
-  /** Initializes State Object for the current iterator.
-    * All sub-states have it invoke the init method of their parent 
-    * to guarantee correct initialization.
-    */
-  void init() { duffsLine = DUFFS_RELEASE_RESOURCES; }
+  PlanIteratorState() {}
+  ~PlanIteratorState() {}
 
-  /** Resets State Object for the current iterator.
-    * All sub-states have it invoke the reset method of their parent 
-    * to guarantee correct reset handling.
+  /** 
+   * Initialize the current state object.
+   * The base class initializes information used for the duffs device.
+   * To store information for new iterators, it might be necessary to derive from
+   * this class. All initialization of such information should be done in this function.
+   * If resources are requested during initializatioan, those must be released
+   * in the destructor.
+   * Classes that inherit from PlanIteratorState must call the init function 
+   * of the base class explicitly in order to guarantee proper initialization.
     */
-  void reset() { duffsLine = DUFFS_RESET; }
+  void init(PlanState&) { theDuffsLine = DUFFS_RELEASE_RESOURCES; }
+
+  /** 
+   * Reset the current state object.
+   * Reset is used in order to restart a run of the according iterator.
+   * Therefore, this function prepares the duffs device such that
+   * it restarts the iterator without initializing/requesting resources
+   * (e.g. without calling init()) again.
+   * Classes that inherit from PlanIteratorState must call the reset function 
+   * of the base class explicitly in order to guarantee a proper reset.
+    */
+  void reset(PlanState&) { theDuffsLine = DUFFS_RESET; }
   
-  void releaseResources() { duffsLine = DUFFS_RELEASE_RESOURCES; }
-  
-  void setDuffsLine(int32_t aVal) { duffsLine = aVal; }
-  int32_t getDuffsLine() const { return duffsLine; }
+  void setDuffsLine(int32_t aVal) { theDuffsLine = aVal; }
+  int32_t getDuffsLine() const    { return theDuffsLine; }
 };
 
 /**
@@ -217,6 +231,13 @@ public:
    * @param PlanIterVisitor
    */
   virtual void accept(PlanIterVisitor&) const = 0;
+
+  /**
+   * Begin the execution of the iterator
+   * Initializes information required for the plan state
+   * and constructs the state object.
+   */
+  virtual void open(PlanState& planState, uint32_t& offset) = 0;
   
   /** 
    * Produces an output item of the iterator. Implicitly, the first call 
@@ -236,11 +257,13 @@ public:
   virtual void reset(PlanState& planState) = 0;
 
   /** 
-   * Releases all resources of the iterator  
+   * Finish the execution of the iterator.
+   * Releases all resources and destroy the according plan state
+   * objects
    *
    * @param stateBLock
    */
-  virtual void releaseResources(PlanState& planState) = 0;
+  virtual void close(PlanState& planState) = 0;
 
   /** Returns the size of the state which must be saved for the current iterator
     * on the state block
@@ -252,11 +275,6 @@ public:
     */
   virtual uint32_t getStateSizeOfSubtree() const = 0;
   
-  /** Sets the offset where the state of the iterator will be saved
-    * on the state stack.
-    */
-  virtual void setOffset(PlanState& planState, uint32_t& offset) = 0;
-
 protected:
 
 #if ZORBA_BATCHING_TYPE == 1  
@@ -276,15 +294,6 @@ protected:
   }
 #endif
 
-  inline void resetChild(PlanIter_t& subIterator, PlanState& planState) const
-  {
-    subIterator->reset(planState);
-  }
-
-  inline void releaseChildResources(PlanIter_t& subIterator, PlanState& planState) const
-  {
-    subIterator->releaseResources(planState);
-  }
 };
 
 
@@ -328,21 +337,27 @@ protected:
     return it;
   }
 #endif
+  void open(PlanState& planState, uint32_t& offset)
+  {
+    static_cast<IterType*>(this)->openImpl(planState, offset);
+  }
 
   void reset(PlanState& planState)
   {
     static_cast<IterType*>(this)->resetImpl(planState);
   }
 
-  void releaseResources(PlanState& planState)
+  void close(PlanState& planState)
   {
-    static_cast<IterType*>(this)->releaseResourcesImpl(planState);
+    static_cast<IterType*>(this)->closeImpl(planState);
   }
 
 public:
   inline Item_t nextImpl(PlanState& planState);
+
+  inline void openImpl(PlanState& planState, uint32_t& offset);
   inline void resetImpl(PlanState& planState);
-  inline void releaseResourcesImpl(PlanState& planState);
+  inline void closeImpl(PlanState& planState);
 };
 
 
@@ -358,35 +373,61 @@ public:
     Batcher<Iter>(aLoc), theChildren(aChildren)
   {
 #ifndef NDEBUG
+    std::vector<PlanIter_t>::const_iterator lIter = aChildren.begin();
     std::vector<PlanIter_t>::const_iterator lEnd = aChildren.end();
-    for(
-        std::vector<PlanIter_t>::const_iterator lIter = aChildren.begin();
-        lIter != lEnd;
-        ++lIter)
+    for( ; lIter != lEnd; ++lIter)
     {
-      Assert(*lIter);
+      Assert( *lIter ); // make sure alll children are set properly
     }
 #endif
   }
 
   virtual ~NaryIterator() {}
 
-  virtual void accept(PlanIterVisitor&) const = 0;
+  virtual void 
+  accept(PlanIterVisitor&) const = 0;
 
-	void
-	releaseResourcesImpl ( PlanState& aPlanState )
-	{
-    std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
-    for ( 
-         std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
-          lIter!= theChildren.end(); 
-          ++lIter )
+  void
+  openImpl(PlanState& aPlanState, uint32_t& aOffset)
+  {
+    // compute the position of the state in the state block
+    // and create the state object
+		Batcher<Iter>::stateOffset = aOffset;
+		aOffset += getStateSize();
+    StateTraits::createState(aPlanState.theBlock + Batcher<Iter>::stateOffset);
+
+    std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+    std::vector<PlanIter_t>::iterator lEnd  = theChildren.end();
+    for ( ; lIter!= lEnd; ++lIter )
     {
-			Batcher<Iter>::releaseChildResources ( *lIter, aPlanState );
+      ( *lIter )->open( aPlanState, aOffset );
+    }
+  }
+
+  void
+	closeImpl( PlanState& aPlanState )
+	{
+    std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+    std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
+    for ( ; lIter!= theChildren.end(); ++lIter )
+    {
+      ( *lIter )->close( aPlanState );
 		}
 
     StateTraits::destroyState(aPlanState.theBlock + Batcher<Iter>::stateOffset);
 	}
+
+  void resetImpl(PlanState& aPlanState) 
+  { 
+    StateTraits::reset(aPlanState, aPlanState.theBlock, this->stateOffset);
+    
+    std::vector<PlanIter_t>::iterator lIter = theChildren.begin();
+    std::vector<PlanIter_t>::iterator lIterEnd = theChildren.end();
+    for(; lIter != lIterEnd; ++lIter)
+    {
+      ( *lIter )->reset( aPlanState );
+    }
+  }
 
   virtual uint32_t
   getStateSize() const {
@@ -398,11 +439,9 @@ public:
 	{
 		uint32_t lSize = 0;
 
+    std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
     std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-    for ( 
-         std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
-          lIter!= theChildren.end(); 
-          ++lIter )
+    for ( ; lIter!= theChildren.end(); ++lIter )
     {
 			lSize += ( *lIter )->getStateSizeOfSubtree();
 		}
@@ -410,22 +449,6 @@ public:
 		return getStateSize() + lSize;
 	}
 
-	virtual void
-  setOffset ( PlanState& aPlanState, uint32_t& aOffset )
-	{
-		Batcher<Iter>::stateOffset = aOffset;
-		aOffset += getStateSize();
-    StateTraits::createState(aPlanState.theBlock + Batcher<Iter>::stateOffset);
-
-    std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
-    for ( 
-        std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
-        lIter!= theChildren.end(); 
-        ++lIter )
-    {
-      ( *lIter )->setOffset ( aPlanState, aOffset );
-    }
-	}
 };
 
 
@@ -438,22 +461,9 @@ public:\
   virtual ~iterName() { } \
   \
   Item_t nextImpl(PlanState& aPlanState); \
-  void resetImpl(PlanState& aPlanState) \
-  { \
-    stateName* lState; \
-    GET_STATE(stateName, lState, aPlanState);\
-    lState->reset();\
-    \
-    std::vector<PlanIter_t>::iterator lIter = theChildren.begin();\
-    std::vector<PlanIter_t>::iterator lIterEnd = theChildren.end();\
-    for(; lIter != lIterEnd; ++lIter)\
-    {\
-      Batcher<iterName>::resetChild(*lIter, aPlanState);\
-    }\
-  }\
   \
   virtual void accept(PlanIterVisitor& v) const \
-  { \
+  {  \
     v.beginVisit(*this); \
     std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin(); \
     for ( ; iter != theChildren.end(); ++iter ) { \
@@ -478,7 +488,7 @@ class PlanWrapper : public Iterator
 {
 private:
   PlanIter_t   theIterator;
-  PlanState  * thePlanState;
+  PlanState*   theStateBlock;
   bool         theClosed;
   
 public:
@@ -486,6 +496,7 @@ public:
   
   virtual ~PlanWrapper();
   
+  void open();
   Item_t next();
   void reset();
   void close();
@@ -504,14 +515,15 @@ class PlanIteratorWrapper : public Iterator
 {
 private:
   PlanIter_t   theIterator;
-  PlanState  * thePlanState;
+  PlanState*   theStateBlock;
   bool         theClosed;
 
 public:
   PlanIteratorWrapper(PlanIter_t& iter, PlanState& planState);
   
   virtual ~PlanIteratorWrapper();
-  
+ 
+  void open();
   Item_t next();
   void reset();
   void close();

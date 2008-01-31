@@ -30,7 +30,7 @@ fn_data_func::operator() (
        &loc
 		);
   }
-  return new FnDataIterator ( loc, argv[0] );
+  return new FnDataIterator ( loc, argv );
 }
 
 
@@ -71,7 +71,7 @@ PlanIter_t fn_root_func::operator() (
 		);
   }
 
-  return new FnRootIterator(loc, argv[0]);
+  return new FnRootIterator(loc, argv);
 }
 
 
@@ -106,7 +106,7 @@ PlanIter_t fn_nodename_func::operator() (
 		);
   }
 
-  return new FnNodeNameIterator(loc, argv[0]);
+  return new FnNodeNameIterator(loc, argv);
 }
 
 
@@ -141,7 +141,7 @@ PlanIter_t fn_name_func::operator() (
 		);
   }
 
-  PlanIter_t nnIter = new FnNodeNameIterator(loc, argv[0]);
+  PlanIter_t nnIter = new FnNodeNameIterator(loc, argv);
 
   return new FnStringIterator(loc, nnIter, true);
 }

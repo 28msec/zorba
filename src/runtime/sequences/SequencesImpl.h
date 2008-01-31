@@ -36,8 +36,8 @@ class FnConcatIteratorState : public  PlanIteratorState {
 public:
   uint32_t theCurIter;
 
-  void init();
-  void reset();
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
 NARY_ITER_STATE(FnConcatIterator, FnConcatIteratorState);
@@ -52,8 +52,8 @@ public:
   uint32_t theCurrentPos; // the current position in the sequence
   Item_t   theSearchItem; // the item to search for
 
-  void init();
-  void reset();
+  void init(PlanState&);
+  void reset(PlanState&);
   
 };
 
@@ -75,7 +75,28 @@ NARY_ITER(FnEmptyIterator);
 NARY_ITER(FnExistsIterator);
 
 //15.1.6 fn:distinct-values
-class FnDistinctValuesIterator : public NaryBaseIterator<FnDistinctValuesIterator>
+struct ItemCmp 
+{
+    bool operator() ( const Item_t& i1, const Item_t& i2) const
+    {
+      return CompareIterator::compare(i1, i2)<0?true:false;
+    }
+
+};
+
+class FnDistinctValuesIteratorState : public PlanIteratorState {
+public:  
+  typedef std::map<Item_t, uint8_t, ItemCmp> AlreadySeenMap_t;
+  typedef AlreadySeenMap_t::const_iterator   AlreadySeenConstIter_t;
+
+  AlreadySeenMap_t theAlreadySeenMap;  
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+  
+class FnDistinctValuesIterator : public NaryBaseIterator<FnDistinctValuesIterator, 
+                                                         FnDistinctValuesIteratorState>
 {
 
 public:
@@ -87,42 +108,9 @@ public:
   Item_t 
   nextImpl(PlanState& planState);
  
-  void 
-  resetImpl(PlanState& planState);
-  
-  void 
-  releaseResourcesImpl(PlanState& planState);
- 
   virtual void 
   accept(PlanIterVisitor&) const;
 
-  virtual uint32_t 
-  getStateSize() const { return sizeof ( FnDistinctValuesIteratorState ); }
-
-  void 
-  setOffset(PlanState& planState, uint32_t& offset);
-
-protected:
-  struct ItemCmp 
-  {
-      bool operator() ( const Item_t& i1, const Item_t& i2) const
-      {
-        return CompareIterator::compare(i1, i2)<0?true:false;
-      }
-
-  };
-  
-  class FnDistinctValuesIteratorState : public PlanIteratorState {
-  public:  
-    typedef std::map<Item_t, uint8_t, ItemCmp> AlreadySeenMap_t;
-    typedef AlreadySeenMap_t::const_iterator   AlreadySeenConstIter_t;
-
-    AlreadySeenMap_t theAlreadySeenMap;  
-  
-    void init();
-    void reset();
-  };
-  
 };
 
 
@@ -136,8 +124,8 @@ public:
   xqp_integer thePosition;
   Item_t      theTargetItem;
 
-  void init();
-  void reset();
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
 NARY_ITER_STATE(FnInsertBeforeIterator, FnInsertBeforeIteratorState);
@@ -150,8 +138,8 @@ public:
   xqp_integer theCurrentPos; // the current position in the sequence
   xqp_integer thePosition; // the position to delete
 
-  void init();
-  void reset();
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
 NARY_ITER_STATE(FnRemoveIterator, FnRemoveIteratorState);
@@ -162,8 +150,8 @@ class FnReverseIteratorState : public PlanIteratorState {
   public:
     std::stack<Item_t> theStack;
 
-    void init();
-    void reset();
+    void init(PlanState&);
+    void reset(PlanState&);
 };
 
 NARY_ITER_STATE(FnReverseIterator, FnReverseIteratorState);
@@ -179,8 +167,8 @@ public:
   xqp_integer theCurrentPos; // the current position in the sequence
   xqp_integer theCurrentLength; // used for returning a specific number of items
 
-  void init();
-  void reset();  
+  void init(PlanState&);
+  void reset(PlanState&);  
 };
 NARY_ITER_STATE(FnSubsequenceIterator, FnSubsequenceIteratorState);
 
@@ -248,8 +236,8 @@ public:
   xqp_integer theFirstVal;
   xqp_integer theLastVal;
 
-  void init();
-  void reset();
+  void init(PlanState&);
+  void reset(PlanState&);
   
 };
 
@@ -262,10 +250,8 @@ NARY_ITER_STATE(OpToIterator, OpToIteratorState);
 
 //15.5.4 fn:doc
 
-class FnDocIterator : public UnaryBaseIterator<FnDocIterator>
+class FnDocIterator : public UnaryBaseIterator<FnDocIterator, PlanIteratorState>
 {
-//  DECLARE_LOGGER;
-
 public:
   FnDocIterator(yy::location loc, PlanIter_t& arg);
   virtual ~FnDocIterator();

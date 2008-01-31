@@ -10,6 +10,7 @@
 #define XQP_BASIC_ITEM_FACTORY_H
 
 #include "store/api/item_factory.h"
+#include "store/naive/node_items.h"
 
 
 namespace xqp

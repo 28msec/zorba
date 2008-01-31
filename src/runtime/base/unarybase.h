@@ -19,7 +19,7 @@ namespace xqp
  * Superclass for all iterators which have one child iterator
  * and no additional state variables.
  */
-template <class IterType>
+template <class IterType, class StateType>
 class UnaryBaseIterator : public Batcher<IterType>
 {
 protected:
@@ -29,17 +29,17 @@ public:
   UnaryBaseIterator ( const yy::location& loc, PlanIter_t& arg );
   virtual ~UnaryBaseIterator();
 
+  void openImpl ( PlanState& planState, uint32_t& offset );
   void resetImpl ( PlanState& planState );
-  void releaseResourcesImpl ( PlanState& planState );
+  void closeImpl ( PlanState& planState );
 
-  virtual uint32_t getStateSize() const { return sizeof(PlanIteratorState); }
+  virtual uint32_t getStateSize() const { return sizeof(StateType); }
   virtual uint32_t getStateSizeOfSubtree() const;
-  virtual void setOffset ( PlanState& planState, uint32_t& offset );
 };
 
 
-template <class IterType>
-UnaryBaseIterator<IterType>::UnaryBaseIterator(
+template <class IterType, class StateType>
+UnaryBaseIterator<IterType, StateType>::UnaryBaseIterator(
     const yy::location& loc,
     PlanIter_t& aChild)
   :
@@ -51,55 +51,55 @@ UnaryBaseIterator<IterType>::UnaryBaseIterator(
 }
 
 
-template <class IterType>
-UnaryBaseIterator<IterType>::~UnaryBaseIterator()
+template <class IterType, class StateType>
+UnaryBaseIterator<IterType, StateType>::~UnaryBaseIterator()
 {
 }
 
-
-template <class IterType>
+template <class IterType, class StateType>
 void
-UnaryBaseIterator<IterType>::resetImpl ( PlanState& planState )
+UnaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset )
 {
-  PlanIteratorState* state;
-  GET_STATE ( PlanIteratorState, state, planState );
-  state->reset();
+  this->stateOffset = offset;
+  offset += getStateSize();
     
-  this->resetChild ( theChild, planState );
+  // construct the state
+  StateType* state = new (planState.theBlock + this->stateOffset) StateType;
+
+  theChild->open(planState, offset);
 }
 
-
-template <class IterType>
+template <class IterType, class StateType>
 void
-UnaryBaseIterator<IterType>::releaseResourcesImpl ( PlanState& planState )
+UnaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState )
 {
-  this->releaseChildResources ( theChild, planState );
-
-  PlanIteratorState* state;
-  GET_STATE ( PlanIteratorState, state, planState );
-  state->releaseResources();
+  StateType* state;
+  GET_STATE ( StateType, state, planState );
+  state->reset(planState);
+    
+  theChild->reset( planState ); 
 }
 
 
-template <class IterType>
+template <class IterType, class StateType>
+void
+UnaryBaseIterator<IterType, StateType>::closeImpl( PlanState& planState )
+{
+  theChild->close( planState );
+
+  StateType* state;
+  GET_STATE ( StateType, state, planState );
+  state->~StateType();
+}
+
+template <class IterType, class StateType>
 uint32_t
-UnaryBaseIterator<IterType>::getStateSizeOfSubtree() const
+UnaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
 {
   return theChild->getStateSizeOfSubtree() + getStateSize();
 }
 
 
-template <class IterType>
-void
-UnaryBaseIterator<IterType>::setOffset (
-    PlanState& planState,
-    uint32_t& offset )
-{
-  this->stateOffset = offset;
-  offset += getStateSize();
-
-  theChild->setOffset ( planState, offset );
-}
 
 }; /* namespace xqp*/
 

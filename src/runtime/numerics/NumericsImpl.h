@@ -24,6 +24,7 @@
 #include "runtime/base/iterator.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/unarybase.h"
+#include "runtime/base/noarybase.h"
 #include <math.h>
 
 namespace xqp
@@ -102,7 +103,8 @@ namespace xqp
     * Generic Iterator for Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
     */
   template < typename Operations >
-  class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator<Operations> >
+  class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator<Operations>, 
+                                                      PlanIteratorState>
   {
     public:
       ArithmeticIterator ( const yy::location&, PlanIter_t&, PlanIter_t& );
@@ -154,7 +156,7 @@ namespace xqp
 
 // 6.2.8 op:numeric-unary-minus
 // ----------------------------
-  class OpNumericUnaryIterator : public UnaryBaseIterator<OpNumericUnaryIterator>
+  class OpNumericUnaryIterator : public UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>
   {
     private:
       bool thePlus;
@@ -202,7 +204,7 @@ namespace xqp
   NARY_ITER(FnRoundIterator);
   
 // 6.4.5 fn:round-half-to-even
-  class FnRoundHalfToEvenIterator : public BinaryBaseIterator<FnRoundHalfToEvenIterator>
+  class FnRoundHalfToEvenIterator : public BinaryBaseIterator<FnRoundHalfToEvenIterator, PlanIteratorState>
   {
     public:
       FnRoundHalfToEvenIterator(const yy::location&, PlanIter_t&, PlanIter_t&);
@@ -212,37 +214,30 @@ namespace xqp
       virtual void accept(PlanIterVisitor&) const;
   };
 
+  class ZorNumGenState : public PlanIteratorState
+  {
+  private:
+    int32_t curNumber;
+  public:
+    void init(PlanState&);
+    void reset(PlanState&);
+    
+    int32_t getCurNumber();
+    void setCurNumber(int32_t);
+  };
   
   /**
    * Helper Iterator to produce a defined amount of integer items
    */
-  class ZorNumGen : public Batcher<ZorNumGen>
+  class ZorNumGen : public NoaryBaseIterator<ZorNumGen, ZorNumGenState> 
   {
   public:
     ZorNumGen ( const yy::location& loc);
     ~ZorNumGen();
+
     Item_t nextImpl(PlanState& planState);
-    void resetImpl(PlanState& planState);
-    void releaseResourcesImpl(PlanState& planState);
-    
-    virtual uint32_t getStateSize() const;
-    virtual uint32_t getStateSizeOfSubtree() const;
-    virtual void setOffset(PlanState& planState, uint32_t& offset);
-    
+
     virtual void accept(PlanIterVisitor&) const;
-    
-  protected:
-    class ZorNumGenState : public PlanIteratorState
-    {
-    private:
-      int32_t curNumber;
-    public:
-      void init();
-      void reset();
-      
-      int32_t getCurNumber();
-      void setCurNumber(int32_t);
-    };
   };
 
 } /* namespace xqp */

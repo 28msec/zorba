@@ -1,6 +1,7 @@
 #ifndef XQP_RUNTIME_VAR_ITERATORS
 #define XQP_RUNTIME_VAR_ITERATORS
 
+// FIXME so many includes needed?
 #include "context/common.h"
 #include "util/tracer.h"
 #include "compiler/parser/location.hh"
@@ -19,15 +20,17 @@ class Item;
   FOR variables. A ForVarIterator represents a reference to a for variable.
 
 ********************************************************************************/
-class ForVarIterator : public NoaryBaseIterator<ForVarIterator>
+class ForVarState : public PlanIteratorState 
 {
-protected:
-  class ForVarState : public PlanIteratorState 
-  {
-  public:
-    Item_t theValue;
-  };
+public:
+  Item_t theValue;
 
+  void init(PlanState& planState) { PlanIteratorState::init(planState); }
+  void reset(PlanState& planState) { PlanIteratorState::reset(planState); }
+};
+
+class ForVarIterator : public NoaryBaseIterator<ForVarIterator, ForVarState>
+{
 protected:
   xqpString     theVarName;
   const void  * theOrigin;  ///< origin expr, used as a kind of ID
@@ -38,10 +41,6 @@ public:
   ~ForVarIterator() { }
   
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(ForVarState); }
 
   void accept(PlanIterVisitor&) const;
   
@@ -60,15 +59,28 @@ public:
   expression that defines the var, or an iterator over a temp sequence, if
   the result of the defining expression has been materialized.
 ********************************************************************************/
-class LetVarIterator : public NoaryBaseIterator<LetVarIterator>
+class LetVarState : public PlanIteratorState 
 {
-protected:
-  class LetVarState : public PlanIteratorState 
-  {
-  public:
-    Iterator_t theSourceIter;
-  };
+public:
+  Iterator_t theSourceIter;
+  void init(PlanState& planState) { PlanIteratorState::init(planState); }
+  void reset(PlanState& planState) 
+  { 
+    PlanIteratorState::reset(planState); 
+    if (theSourceIter != NULL) {
+      theSourceIter->reset();
+    }
+  }
 
+  ~LetVarState()
+  {
+    if (theSourceIter != NULL)
+      theSourceIter->close();
+  }
+};
+
+class LetVarIterator : public NoaryBaseIterator<LetVarIterator, LetVarState>
+{
 private:
   xqpString    theVarName;
   const void  * theOrigin;  ///< like origin in var_iterator
@@ -79,11 +91,7 @@ public:
   ~LetVarIterator() {}
   
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
 
-  uint32_t getStateSize() const { return sizeof(LetVarState); }
-  
   void accept(PlanIterVisitor&) const;
 
 public:

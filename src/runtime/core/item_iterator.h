@@ -37,39 +37,36 @@ typedef rchandle<SingletonIterator> singleton_t;
    Class represents an empty sequence.
 
 ********************************************************************************/
-class EmptyIterator : public Batcher<EmptyIterator>
+class EmptyIterator : public NoaryBaseIterator<EmptyIterator, PlanIteratorState>
 {
 public:
-  EmptyIterator(yy::location loc) : Batcher<EmptyIterator>(loc) {}
-  EmptyIterator(const EmptyIterator& it) : Batcher<EmptyIterator>(it) {}
-  ~EmptyIterator() {}
-  
-  Item_t nextImpl(PlanState& planState) { return NULL; }
-  void resetImpl(PlanState& planState)  { }
-  void releaseResourcesImpl(PlanState& planState){ }
+  EmptyIterator(yy::location loc)
+     : NoaryBaseIterator<EmptyIterator, PlanIteratorState>(loc) {}
 
-  virtual uint32_t getStateSize() const { return 0; }
-  virtual uint32_t getStateSizeOfSubtree() const { return 0; }
-  virtual void setOffset(PlanState& planState, uint32_t& offset);
+  virtual ~EmptyIterator() {}
   
+public:
+  Item_t nextImpl(PlanState& planState) { return NULL; }
+
   virtual void accept(PlanIterVisitor&) const;
 };
-
 
 /*******************************************************************************
 
   Literals
 
 ********************************************************************************/
-class SingletonIterator : public NoaryBaseIterator<SingletonIterator>
+class SingletonIterator : public NoaryBaseIterator<SingletonIterator, PlanIteratorState>
 {
 protected:
   Item_t theValue;
 
 public:
-  SingletonIterator(yy::location loc, Item_t value);
+  SingletonIterator(yy::location loc, Item_t value)
+    : NoaryBaseIterator<SingletonIterator, PlanIteratorState>(loc),
+    theValue(value) {}
 
-  ~SingletonIterator();
+  virtual ~SingletonIterator() {}
   
 public:
   Item_t nextImpl(PlanState& planState);
@@ -84,16 +81,14 @@ public:
 
   
 ********************************************************************************/
+class IfThenElseIteratorState : public PlanIteratorState 
+{
+public:
+  bool theThenUsed;
+};
 
 class IfThenElseIterator : public Batcher<IfThenElseIterator>
 {
-protected:
-  class IfThenElseIteratorState : public PlanIteratorState 
-  {
-  public:
-    bool theThenUsed;
-  };
-
 private:
   PlanIter_t theCondIter;
   PlanIter_t theThenIter;
@@ -119,13 +114,13 @@ public:
         PlanIter_t& aElseIter,
         bool aIsBooleanIter = false);
     
+  void openImpl(PlanState& planState, uint32_t& offset);
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
+  void closeImpl(PlanState& planState);
   
   virtual uint32_t getStateSize() const { return sizeof(IfThenElseIteratorState); }
   virtual uint32_t getStateSizeOfSubtree() const;
-  virtual void setOffset ( PlanState& planState, uint32_t& offset );
       
   virtual void accept(PlanIterVisitor&) const;
 };

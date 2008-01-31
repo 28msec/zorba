@@ -40,7 +40,7 @@ namespace xqp
 /*******************************************************************************
 
 ********************************************************************************/
-class KindTestIterator : public UnaryBaseIterator<KindTestIterator>
+class KindTestIterator : public UnaryBaseIterator<KindTestIterator, PlanIteratorState>
 {
 private:
   Item_t       theQName;
@@ -59,7 +59,7 @@ public:
         match_test_t docTestKind,
         bool nilled = false)
     :
-    UnaryBaseIterator<KindTestIterator>(loc, input),
+    UnaryBaseIterator<KindTestIterator, PlanIteratorState>(loc, input),
     theQName(qname),
     theTypeName(tname),
     theTestKind(kind),
@@ -86,7 +86,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class NameTestIterator : public UnaryBaseIterator<NameTestIterator>
+class NameTestIterator : public UnaryBaseIterator<NameTestIterator, PlanIteratorState>
 {
 private:
   Item_t       theQName;
@@ -99,7 +99,7 @@ public:
         Item_t qname,
         match_wild_t kind)
     :
-    UnaryBaseIterator<NameTestIterator>(loc, input),
+    UnaryBaseIterator<NameTestIterator, PlanIteratorState>(loc, input),
     theQName(qname),
     theWildKind(kind)
   {
@@ -136,46 +136,46 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-template <class AxisIter>
-class AxisIterator : public UnaryBaseIterator<AxisIter>,
+class AxisState : public PlanIteratorState
+{
+public:
+  Item_t     theContextNode;   
+
+  void init(PlanState& planState) { PlanIteratorState::init( planState ); }
+  void reset(PlanState& planState) { PlanIteratorState::reset( planState ); }
+};
+
+template <class AxisIter, class State>
+class AxisIterator : public UnaryBaseIterator<AxisIter, State>,
                      public AxisIteratorHelper
 {
 protected:
-  class AxisState : public PlanIteratorState
-  {
-  public:
-    Item_t     theContextNode;   
-  };
 
 public:
   AxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    UnaryBaseIterator<AxisIter>(loc, input)
+    UnaryBaseIterator<AxisIter, State>(loc, input)
   {
   }
 
   virtual ~AxisIterator() {}
-
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(AxisState); }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class SelfAxisIterator : public AxisIterator<SelfAxisIterator>
+class SelfAxisState : public AxisState
+{
+};
+
+class SelfAxisIterator : public AxisIterator<SelfAxisIterator, SelfAxisState>
 {
 protected:
-  class SelfAxisState : public AxisState
-  {
-  };
-
 public:
   SelfAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<SelfAxisIterator>(loc, input)
+    AxisIterator<SelfAxisIterator, SelfAxisState>(loc, input)
   {
   }
 
@@ -184,36 +184,38 @@ public:
   Item_t nextImpl(PlanState& planState);
 
   // Manually instantiated here, as MSVC does not do it
-  void releaseResourcesImpl(PlanState& planState); 
+  // void closeImpl(PlanState& planState); 
 
   virtual void accept(PlanIterVisitor&) const;
+
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class AttributeAxisIterator : public AxisIterator<AttributeAxisIterator>
+class AttributeAxisState : public AxisState
+{
+public:
+  Iterator_t  theAttributes;
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class AttributeAxisIterator : public AxisIterator<AttributeAxisIterator, AttributeAxisState>
 {
 protected:
-  class AttributeAxisState : public AxisState
-  {
-  public:
-    Iterator_t  theAttributes;
-  };
 
 public:
   AttributeAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<AttributeAxisIterator>(loc, input)
+    AxisIterator<AttributeAxisIterator, AttributeAxisState>(loc, input)
   {
   }
 
   ~AttributeAxisIterator() {}
 
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
 
   uint32_t getStateSize() const { return sizeof(AttributeAxisState); }
 
@@ -224,17 +226,17 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ParentAxisIterator : public AxisIterator<ParentAxisIterator>
+class ParentAxisState : public AxisState
 {
-protected:
-  class ParentAxisState : public AxisState
-  {
-  };
 
+};
+
+class ParentAxisIterator : public AxisIterator<ParentAxisIterator, ParentAxisState>
+{
 public:
   ParentAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<ParentAxisIterator>(loc, input)
+    AxisIterator<ParentAxisIterator, ParentAxisState>(loc, input)
   {
   }
 
@@ -243,7 +245,7 @@ public:
   Item_t nextImpl(PlanState& planState);
  
   // Manually instantiated here, as MSVC does not do it
-  void releaseResourcesImpl(PlanState& planState); 
+  // void closeImpl(PlanState& planState); 
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -252,28 +254,26 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AncestorAxisIterator : public AxisIterator<AncestorAxisIterator>
+class AncestorAxisState : public AxisState
 {
-protected:
-  class AncestorAxisState : public AxisState
-  {
-  public:
-    Item_t  theCurrentAnc;
-  };
+public:
+  Item_t  theCurrentAnc;
+};
 
+class AncestorAxisIterator : public AxisIterator<AncestorAxisIterator, AncestorAxisState>
+{
 public:
   AncestorAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<AncestorAxisIterator>(loc, input)
+    AxisIterator<AncestorAxisIterator, AncestorAxisState>(loc, input)
   {
   }
 
   ~AncestorAxisIterator() {}
 
+  //void openImpl(PlanState& planState, uint32_t& offset);
   Item_t nextImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(AncestorAxisState); }
+  //void closeImpl(PlanState& planState);
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -282,28 +282,26 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AncestorSelfAxisIterator : public AxisIterator<AncestorSelfAxisIterator>
+class AncestorSelfAxisState : public AxisState
+{
+public:
+  Item_t  theCurrentAnc;
+};
+
+class AncestorSelfAxisIterator : public AxisIterator<AncestorSelfAxisIterator, AncestorSelfAxisState>
 {
 protected:
-  class AncestorSelfAxisState : public AxisState
-  {
-  public:
-    Item_t  theCurrentAnc;
-  };
 
 public:
   AncestorSelfAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<AncestorSelfAxisIterator>(loc, input)
+    AxisIterator<AncestorSelfAxisIterator, AncestorSelfAxisState>(loc, input)
   {
   }
 
   ~AncestorSelfAxisIterator() {}
 
   Item_t nextImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(AncestorSelfAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -312,29 +310,25 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class RSiblingAxisIterator : public AxisIterator<RSiblingAxisIterator>
+class RSiblingAxisState : public AxisState
 {
-protected:
-  class RSiblingAxisState : public AxisState
-  {
-  public:
-    Iterator_t  theChildren;
-  };
-
+public:
+  Iterator_t  theChildren;
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+class RSiblingAxisIterator : public AxisIterator<RSiblingAxisIterator, RSiblingAxisState>
+{
 public:
   RSiblingAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<RSiblingAxisIterator>(loc, input)
+    AxisIterator<RSiblingAxisIterator, RSiblingAxisState>(loc, input)
   {
   }
 
   ~RSiblingAxisIterator() {}
 
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(RSiblingAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -343,29 +337,28 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class LSiblingAxisIterator : public AxisIterator<LSiblingAxisIterator>
+class LSiblingAxisState : public AxisState
+{
+public:
+  Iterator_t  theChildren;
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class LSiblingAxisIterator : public AxisIterator<LSiblingAxisIterator, LSiblingAxisState>
 {
 protected:
-  class LSiblingAxisState : public AxisState
-  {
-  public:
-    Iterator_t  theChildren;
-  };
 
 public:
   LSiblingAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<LSiblingAxisIterator>(loc, input)
+    AxisIterator<LSiblingAxisIterator, LSiblingAxisState>(loc, input)
   {
   }
 
   ~LSiblingAxisIterator() {}
 
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(LSiblingAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -374,29 +367,28 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ChildAxisIterator : public AxisIterator<ChildAxisIterator>
+class ChildAxisState : public AxisState
+{
+public:
+  Iterator_t  theChildren;
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ChildAxisIterator : public AxisIterator<ChildAxisIterator, ChildAxisState>
 {
 protected:
-  class ChildAxisState : public AxisState
-  {
-  public:
-    Iterator_t  theChildren;
-  };
 
 public:
   ChildAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<ChildAxisIterator>(loc, input)
+    AxisIterator<ChildAxisIterator, ChildAxisState>(loc, input)
   {
   }
 
   ~ChildAxisIterator() {}
 
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(ChildAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -405,31 +397,29 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class DescendantAxisIterator : public AxisIterator<DescendantAxisIterator>
+class DescendantAxisState : public AxisState
+{
+public:
+  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  void init(PlanState&);
+  void reset(PlanState&);
+  ~DescendantAxisState();
+};
+
+class DescendantAxisIterator : public AxisIterator<DescendantAxisIterator, DescendantAxisState>
 {
 protected:
-  class DescendantAxisState : public AxisState
-  {
-  public:
-    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-  };
 
 public:
   DescendantAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<DescendantAxisIterator>(loc, input)
+    AxisIterator<DescendantAxisIterator, DescendantAxisState>(loc, input)
   {
   }
 
   ~DescendantAxisIterator() {}
 
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(DescendantAxisState); }
-
-  void setOffset(PlanState& planState, uint32_t& offset);
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -438,31 +428,28 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class DescendantSelfAxisIterator : public AxisIterator<DescendantSelfAxisIterator>
+class DescendantSelfAxisState : public AxisState
+{
+public:
+  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  void init(PlanState&);
+  void reset(PlanState&);
+  ~DescendantSelfAxisState();
+};
+class DescendantSelfAxisIterator : public AxisIterator<DescendantSelfAxisIterator, DescendantSelfAxisState>
 {
 protected:
-  class DescendantSelfAxisState : public AxisState
-  {
-  public:
-    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-  };
 
 public:
   DescendantSelfAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<DescendantSelfAxisIterator>(loc, input)
+    AxisIterator<DescendantSelfAxisIterator, DescendantSelfAxisState>(loc, input)
   {
   }
 
   ~DescendantSelfAxisIterator() {}
 
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(DescendantSelfAxisState); }
-
-  void setOffset(PlanState& planState, uint32_t& offset);
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -471,32 +458,28 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class PrecedingAxisIterator : public AxisIterator<PrecedingAxisIterator>
+class PrecedingAxisState : public AxisState
 {
-protected:
-  class PrecedingAxisState : public AxisState
-  {
-  public:
-    std::stack<Item_t>                         theAncestorPath;
-    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-  };
+public:
+  std::stack<Item_t>                         theAncestorPath;
+  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  void init(PlanState&);
+  void reset(PlanState&);
+  ~PrecedingAxisState();
+};
 
+class PrecedingAxisIterator : public AxisIterator<PrecedingAxisIterator, PrecedingAxisState>
+{
 public:
   PrecedingAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<PrecedingAxisIterator>(loc, input)
+    AxisIterator<PrecedingAxisIterator, PrecedingAxisState>(loc, input)
   {
   }
 
   ~PrecedingAxisIterator() {}
 
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(PrecedingAxisState); }
-
-  void setOffset(PlanState& planState, uint32_t& offset);
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -505,31 +488,28 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class FollowingAxisIterator : public AxisIterator<FollowingAxisIterator>
+class FollowingAxisState : public AxisState
 {
-  class FollowingAxisState : public AxisState
-  {
-  public:
-    std::stack<Item_t>                         theAncestorPath;
-    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-  };
+public:
+  std::stack<Item_t>                         theAncestorPath;
+  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  void init(PlanState&);
+  void reset(PlanState&);
+  ~FollowingAxisState();
+};
+class FollowingAxisIterator : public AxisIterator<FollowingAxisIterator, FollowingAxisState>
+{
 
 public:
   FollowingAxisIterator(const yy::location& loc, PlanIter_t input)
     :
-    AxisIterator<FollowingAxisIterator>(loc, input)
+    AxisIterator<FollowingAxisIterator, FollowingAxisState>(loc, input)
   {
   }
 
   ~FollowingAxisIterator() {}
 
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(FollowingAxisState); }
-
-  void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 };

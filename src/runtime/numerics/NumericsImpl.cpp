@@ -245,7 +245,7 @@ namespace xqp
   ArithmeticIterator<Operations>::ArithmeticIterator
   ( const yy::location& loc, PlanIter_t& iter0, PlanIter_t& iter1 )
       :
-      BinaryBaseIterator<ArithmeticIterator<Operations> > ( loc, iter0, iter1 )
+      BinaryBaseIterator<ArithmeticIterator<Operations>, PlanIteratorState > ( loc, iter0, iter1 )
   { }
 
   template< class Operations>
@@ -505,7 +505,7 @@ namespace xqp
   |_______________________________________________________________________*/
   OpNumericUnaryIterator::OpNumericUnaryIterator ( const yy::location& loc, PlanIter_t& theChild, bool aPlus )
       :
-      UnaryBaseIterator<OpNumericUnaryIterator> ( loc, theChild ), thePlus ( aPlus )
+      UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState> ( loc, theChild ), thePlus ( aPlus )
   { }
 
   OpNumericUnaryIterator::~OpNumericUnaryIterator()
@@ -823,7 +823,7 @@ namespace xqp
                                             PlanIter_t& iter0,
                                             PlanIter_t& iter1)
   :
-  BinaryBaseIterator<FnRoundHalfToEvenIterator>( loc, iter0, iter1 )
+  BinaryBaseIterator<FnRoundHalfToEvenIterator, PlanIteratorState>( loc, iter0, iter1 )
   {
   }
 
@@ -894,7 +894,9 @@ namespace xqp
     STACK_END();
   }
   
-  ZorNumGen::ZorNumGen ( const yy::location& loc ) : Batcher<ZorNumGen> ( loc ) {}
+  ZorNumGen::ZorNumGen ( const yy::location& loc ) 
+    : NoaryBaseIterator<ZorNumGen, ZorNumGenState>(loc) {}
+
   ZorNumGen::~ZorNumGen() {}
 
   Item_t
@@ -914,58 +916,29 @@ namespace xqp
     STACK_END();
   }
 
-  void
-  ZorNumGen::resetImpl ( PlanState& planState )
-  {
-    ZorNumGenState* state;
-    GET_STATE ( ZorNumGenState, state, planState );
-    state->reset();
-  }
 
   void
-  ZorNumGen::releaseResourcesImpl ( PlanState& planState )
+  ZorNumGenState::init(PlanState& planState)
   {
-  }
-
-  uint32_t
-  ZorNumGen::getStateSize() const
-  {
-    return sizeof ( ZorNumGenState );
-  }
-
-  uint32_t
-  ZorNumGen::getStateSizeOfSubtree() const
-  {
-    return getStateSize();
-  }
-
-  void
-  ZorNumGen::setOffset ( PlanState& planState, uint32_t& offset )
-  {
-    this->stateOffset = offset;
-    offset += getStateSize();
-  }
-
-  void
-  ZorNumGen::ZorNumGenState::init()
-  {
+    PlanIteratorState::init(planState);
     this->curNumber = 0;
   }
 
   void
-  ZorNumGen::ZorNumGenState::reset()
+  ZorNumGenState::reset(PlanState& planState)
   {
+    PlanIteratorState::reset(planState);
     this->curNumber = 0;
   }
 
   int32_t
-  ZorNumGen::ZorNumGenState::getCurNumber()
+  ZorNumGenState::getCurNumber()
   {
     return this->curNumber;
   }
 
   void
-  ZorNumGen::ZorNumGenState::setCurNumber ( int32_t value )
+  ZorNumGenState::setCurNumber ( int32_t value )
   {
     this->curNumber = value;
   }

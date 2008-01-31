@@ -24,7 +24,7 @@ namespace xqp
   |
   | Computes the effective boolean value of the sequence $arg.
   |_______________________________________________________________________*/
-  class FnBooleanIterator : public UnaryBaseIterator<FnBooleanIterator>
+  class FnBooleanIterator : public UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>
   {
     private:
       bool theNegate;
@@ -49,7 +49,7 @@ namespace xqp
       virtual void accept(PlanIterVisitor&) const;
   };
   
-  class LogicIterator : public BinaryBaseIterator<LogicIterator>
+  class LogicIterator : public BinaryBaseIterator<LogicIterator, PlanIteratorState>
   {
   public:
     enum LogicType {
@@ -68,7 +68,7 @@ namespace xqp
       virtual void accept(PlanIterVisitor&) const;
   }; /* class LogicIterator */
   
-  class CompareIterator : public BinaryBaseIterator<CompareIterator>
+  class CompareIterator : public BinaryBaseIterator<CompareIterator, PlanIteratorState>
   {
     public:
       enum CompareType{

@@ -23,12 +23,12 @@ namespace xqp {
  * --------------------*/
  
 /*begin class ResolveQNameIterator */
-class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator>
+class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>
 {
   public:
     ResolveQNameIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
-    BinaryBaseIterator<ResolveQNameIterator>(loc, arg0, arg1){}
+    BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>(loc, arg0, arg1){}
 
     ~ResolveQNameIterator() {};
   public:
@@ -43,12 +43,12 @@ class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator>
  * --------------------*/
  
 /*begin class QNameIterator */
-class QNameIterator : public BinaryBaseIterator<QNameIterator>
+class QNameIterator : public BinaryBaseIterator<QNameIterator, PlanIteratorState>
 {
   public:
     QNameIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
-    BinaryBaseIterator<QNameIterator>(loc, arg0, arg1){}
+    BinaryBaseIterator<QNameIterator, PlanIteratorState>(loc, arg0, arg1){}
 
     ~QNameIterator() {};
   public:
@@ -63,12 +63,12 @@ class QNameIterator : public BinaryBaseIterator<QNameIterator>
  * --------------------*/
  
 /*begin class QNameEqualIterator */
-class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator>
+class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>
 {
   public:
     QNameEqualIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
-    BinaryBaseIterator<QNameEqualIterator>(loc, arg0, arg1){}
+    BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>(loc, arg0, arg1){}
 
     ~QNameEqualIterator() {};
   public:
@@ -82,12 +82,12 @@ class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator>
  * 11.2.2 fn:prefix-from-QName
  * -------------------- */
 /* begin class PrefixFromQNameIterator */
-class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator>
+class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>
 {
   public:
     PrefixFromQNameIterator ( const yy::location& loc, PlanIter_t& arg )
   :
-    UnaryBaseIterator<PrefixFromQNameIterator>( loc, arg ){};
+    UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>( loc, arg ){};
   
     ~PrefixFromQNameIterator(){};
   public:
@@ -101,12 +101,12 @@ class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator
  * 11.2.3 fn:local-name-from-QName
  * -------------------- */
 /* begin class LocalNameFromQNameIterator */
-class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIterator>
+class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>
 {
   public:
     LocalNameFromQNameIterator ( const yy::location& loc, PlanIter_t& arg )
   :
-    UnaryBaseIterator<LocalNameFromQNameIterator>( loc, arg ){};
+    UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>( loc, arg ){};
   
     ~LocalNameFromQNameIterator(){};
   public:
@@ -120,12 +120,12 @@ class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIt
  * 11.2.4 fn:namespace-uri-from-QName
  * -------------------- */
 /* begin class NamespaceUriFromQNameIterator */
-class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQNameIterator>
+class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>
 {
   public:
     NamespaceUriFromQNameIterator ( const yy::location& loc, PlanIter_t& arg )
   :
-    UnaryBaseIterator<NamespaceUriFromQNameIterator>( loc, arg ){};
+    UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>( loc, arg ){};
   
     ~NamespaceUriFromQNameIterator(){};
   public:
@@ -140,12 +140,12 @@ class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQ
  * --------------------*/
  
 /*begin class NamespaceUriForPrefixlIterator */
-class NamespaceUriForPrefixlIterator : public BinaryBaseIterator<NamespaceUriForPrefixlIterator>
+class NamespaceUriForPrefixlIterator : public BinaryBaseIterator<NamespaceUriForPrefixlIterator, PlanIteratorState>
 {
   public:
     NamespaceUriForPrefixlIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
-    BinaryBaseIterator<NamespaceUriForPrefixlIterator>(loc, arg0, arg1){}
+    BinaryBaseIterator<NamespaceUriForPrefixlIterator, PlanIteratorState>(loc, arg0, arg1){}
 
     ~NamespaceUriForPrefixlIterator() {};
   public:
@@ -159,38 +159,36 @@ class NamespaceUriForPrefixlIterator : public BinaryBaseIterator<NamespaceUriFor
  * 11.2.6 fn:in-scope-prefixes
  * -------------------- */
 /* begin class InScopePrefixesIterator */
-class InScopePrefixesIterator : public UnaryBaseIterator<InScopePrefixesIterator>
+class InScopePrefixesState : public PlanIteratorState
+{
+  private:
+    std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
+    std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
+  public:
+    void init(PlanState&);
+    void reset(PlanState&);
+
+    void setIterator(std::vector<std::pair<xqp_string, xqp_string> >::const_iterator newIter);
+    std::vector<std::pair<xqp_string, xqp_string> >& getVector() { return NamespaceBindings; }
+    
+    std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getVectBegin();
+    std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getVectEnd();
+    std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getIterator();
+};
+
+class InScopePrefixesIterator : public UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesState>
 {
   public:
     InScopePrefixesIterator ( const yy::location& loc, PlanIter_t& arg )
   :
-    UnaryBaseIterator<InScopePrefixesIterator>( loc, arg ){};
+    UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesState>( loc, arg ){};
   
     ~InScopePrefixesIterator(){};
   public:
     Item_t nextImpl(PlanState& planState);
-    void resetImpl(PlanState& planState);
 
-    virtual uint32_t getStateSize() const {return sizeof(InScopePrefixesState); }
     virtual void accept(PlanIterVisitor&) const;
 
-  protected:
-    class InScopePrefixesState : public PlanIteratorState
-    {
-      private:
-        std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
-        std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
-      public:
-        void init();
-        void reset();
-
-        void setIterator(std::vector<std::pair<xqp_string, xqp_string> >::const_iterator newIter);
-        std::vector<std::pair<xqp_string, xqp_string> >& getVector() { return NamespaceBindings; }
-        
-        std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getVectBegin();
-        std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getVectEnd();
-        std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getIterator();
-    };
 };
 /* end class InScopePrefixesIterator */
 }/*namespace xqp*/

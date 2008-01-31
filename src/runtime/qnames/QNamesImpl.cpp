@@ -421,52 +421,42 @@ InScopePrefixesIterator::nextImpl(PlanState& planState)
 }
 
 void
-InScopePrefixesIterator::resetImpl(PlanState& planState)
+InScopePrefixesState::init(PlanState& planState)
 {
-  InScopePrefixesState* state;
-  GET_STATE(InScopePrefixesState, state, planState);
-  state->reset();
-  
-  resetChild(theChild, planState);
-}
-
-void
-InScopePrefixesIterator::InScopePrefixesState::init()
-{
-  PlanIteratorState::init();
+  PlanIteratorState::init(planState);
   NamespaceBindings.clear();
   iter = NamespaceBindings.begin();
 }
 
 void
-InScopePrefixesIterator::InScopePrefixesState::reset()
+InScopePrefixesState::reset(PlanState& planState)
 {
-  PlanIteratorState::reset();
+  PlanIteratorState::reset(planState);
   NamespaceBindings.clear();
   iter = NamespaceBindings.begin();
 }
 
 void
-InScopePrefixesIterator::InScopePrefixesState::setIterator(std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator  newIter)
+InScopePrefixesState::setIterator(std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator  newIter)
 {
   iter = newIter;
 }
 
 
 std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator
-InScopePrefixesIterator::InScopePrefixesState::getVectBegin()
+InScopePrefixesState::getVectBegin()
 {
   return NamespaceBindings.begin();
 }
 
 std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator
-InScopePrefixesIterator::InScopePrefixesState::getVectEnd()
+InScopePrefixesState::getVectEnd()
 {
   return NamespaceBindings.end();
 }
 
 std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator
-InScopePrefixesIterator::InScopePrefixesState::getIterator()
+InScopePrefixesState::getIterator()
 {
   return iter;
 }

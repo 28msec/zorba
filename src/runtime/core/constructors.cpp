@@ -19,14 +19,6 @@ namespace xqp
 /*******************************************************************************
 
 ********************************************************************************/
-
-DocumentIterator::DocumentIterator(const yy::location& loc, PlanIter_t& input)
-  :
-  UnaryBaseIterator<DocumentIterator>(loc, input)
-{
-}
-
-
 Item_t DocumentIterator::nextImpl(PlanState& planState)
 {
   Iterator* childWrapper = 0;
@@ -67,40 +59,32 @@ Item_t DocumentIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
-
-void DocumentIterator::setOffset(PlanState& planState, uint32_t& offset)
+void
+DocumentIteratorState::init(PlanState& planState)
 {
-  UnaryBaseIterator<DocumentIterator>::setOffset(planState, offset);
-
-  DocumentIteratorState* state;
-  GET_STATE(DocumentIteratorState, state, planState);
+  PlanIteratorState::init(planState);
 
   static_context* sctx = planState.theZorba->get_static_context();
 
-  state->theTypePreserve =
+  theTypePreserve =
     (sctx->construction_mode() == StaticQueryContext::cons_preserve ? true : false);
 
-  state->theNsPreserve =
+  theNsPreserve =
     (sctx->preserve_mode() == StaticQueryContext::preserve_ns ? true : false);
 
-  state->theNsInherit = 
+  theNsInherit = 
     (sctx->inherit_mode() == StaticQueryContext::inherit_ns ? true : false);
 }
 
+void
+DocumentIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+}
 
 /*******************************************************************************
 
 ********************************************************************************/
-
-DocumentContentIterator::DocumentContentIterator(
-    const yy::location& loc,
-    PlanIter_t& aChild)
-  :
-  UnaryBaseIterator<DocumentContentIterator>(loc, aChild)
-{
-}
-
-
 Item_t DocumentContentIterator::nextImpl(PlanState& planState)
 {
   Item_t lItem;
@@ -130,6 +114,28 @@ Item_t DocumentContentIterator::nextImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
+void
+ElementIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  static_context* sctx = planState.theZorba->get_static_context();
+
+  theTypePreserve =
+    (sctx->construction_mode() == StaticQueryContext::cons_preserve ? true : false);
+
+  theNsPreserve =
+    (sctx->preserve_mode() == StaticQueryContext::preserve_ns ? true : false);
+
+  theNsInherit = 
+    (sctx->inherit_mode() == StaticQueryContext::inherit_ns ? true : false);
+}
+
+void
+ElementIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+}
+
 ElementIterator::ElementIterator (
     const yy::location& loc,
     PlanIter_t&         qnameIter,
@@ -195,43 +201,65 @@ Item_t ElementIterator::nextImpl(PlanState& planState)
 }
 
 
-void ElementIterator::resetImpl(PlanState& planState)
+void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
+  this->stateOffset = offset;
+  offset += getStateSize();
+
+  ElementIteratorState* state = new (planState.theBlock + this->stateOffset) ElementIteratorState;
+
   if (theQNameIter != 0)
-    resetChild(theQNameIter, planState);
+    theQNameIter->open(planState, offset);
   
   if ( theChildrenIter != 0 )
-    resetChild(theChildrenIter, planState);
+    theChildrenIter->open(planState, offset);
 
   if (theAttributesIter != 0)
-    resetChild(theAttributesIter, planState);
+    theAttributesIter->open(planState, offset);
 
   if (theNamespacesIter != 0)
-    resetChild(theNamespacesIter, planState);
+    theNamespacesIter->open(planState, offset);
+  
+}
 
+void ElementIterator::resetImpl(PlanState& planState)
+{
   ElementIteratorState* state;
-  GET_STATE(ElementIteratorState, state, planState);
-  state->reset();
+  GET_STATE (ElementIteratorState, state, planState);
+  state->reset(planState);
+
+  if (theQNameIter != 0)
+    theQNameIter->reset(planState);
+  
+  if ( theChildrenIter != 0 )
+    theChildrenIter->reset(planState);
+
+  if (theAttributesIter != 0)
+    theAttributesIter->reset(planState);
+
+  if (theNamespacesIter != 0)
+    theNamespacesIter->reset(planState);
+
 }
 
 
-void ElementIterator::releaseResourcesImpl(PlanState& planState)
+void ElementIterator::closeImpl(PlanState& planState)
 {
   if (theQNameIter != 0)
-    releaseChildResources(theQNameIter, planState);
+    theQNameIter->close(planState);
   
   if (theChildrenIter != 0)
-    releaseChildResources(theChildrenIter, planState);
+    theChildrenIter->close(planState);
 
   if (theAttributesIter != 0)
-    releaseChildResources(theAttributesIter, planState);
+    theAttributesIter->close(planState);
 
   if (theNamespacesIter != 0)
-    releaseChildResources(theNamespacesIter, planState);
+    theNamespacesIter->close(planState);
 
   ElementIteratorState* state;
   GET_STATE(ElementIteratorState, state, planState);
-  state->releaseResources();
+  state->~ElementIteratorState();
 }
 
   
@@ -253,40 +281,6 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
 
   return getStateSize() + size;
 }
-
-  
-void ElementIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  this->stateOffset = offset;
-  offset += getStateSize();
-
-  if (theQNameIter != 0)
-    theQNameIter->setOffset(planState, offset);
-  
-  if (theChildrenIter != 0)
-    theChildrenIter->setOffset(planState, offset);
-
-  if (theAttributesIter != 0)
-    theAttributesIter->setOffset(planState, offset);
-
-  if (theNamespacesIter != 0)
-    theNamespacesIter->setOffset(planState, offset);
-
-  ElementIteratorState* state;
-  GET_STATE(ElementIteratorState, state, planState);
-
-  static_context* sctx = planState.theZorba->get_static_context();
-
-  state->theTypePreserve =
-    (sctx->construction_mode() == StaticQueryContext::cons_preserve ? true : false);
-
-  state->theNsPreserve =
-    (sctx->preserve_mode() == StaticQueryContext::preserve_ns ? true : false);
-
-  state->theNsInherit = 
-    (sctx->inherit_mode() == StaticQueryContext::inherit_ns ? true : false);
-}
-
 
 /*******************************************************************************
 
@@ -335,16 +329,16 @@ Item_t ElementContentIterator::nextImpl(PlanState& planState)
 }
 
 
-void ElementContentState::init()
+void ElementContentState::init(PlanState& planState)
 {
-  PlanIteratorState::init();
+  PlanIteratorState::init(planState);
   theNoAttrAllowed = false;
 }
 
 
-void ElementContentState::reset()
+void ElementContentState::reset(PlanState& planState)
 {
-  PlanIteratorState::reset();
+  PlanIteratorState::reset(planState);
   theNoAttrAllowed = false;
 }
 
@@ -358,7 +352,7 @@ AttributeIterator::AttributeIterator(
     PlanIter_t&  aValueIter,
     bool         isRoot)
   :
-    BinaryBaseIterator<AttributeIterator>( loc, aQNameIter, aValueIter ),
+    BinaryBaseIterator<AttributeIterator, PlanIteratorState>( loc, aQNameIter, aValueIter ),
     theIsRoot(isRoot)
 {
 }
@@ -395,8 +389,7 @@ TextIterator::TextIterator(
     const yy::location& loc,
     PlanIter_t& aChild,
     bool isRoot) 
-  :
-  UnaryBaseIterator<TextIterator>(loc, aChild),
+  : UnaryBaseIterator<TextIterator, PlanIteratorState>(loc, aChild),
   theIsRoot(isRoot)
 {
 }
@@ -431,7 +424,7 @@ PiIterator::PiIterator (
     PlanIter_t& aContent,
     bool isRoot)
   :
-  BinaryBaseIterator<PiIterator>(loc, aTarget, aContent),
+  BinaryBaseIterator<PiIterator, PlanIteratorState>(loc, aTarget, aContent),
   theIsRoot(isRoot)
 {
 }
@@ -493,8 +486,7 @@ CommentIterator::CommentIterator(
     const yy::location& loc,
     PlanIter_t& aComment,
     bool isRoot)
-  :
-  UnaryBaseIterator<CommentIterator>(loc, aComment),
+  : UnaryBaseIterator<CommentIterator, PlanIteratorState>(loc, aComment),
   theIsRoot(isRoot)
 {
 }
@@ -548,12 +540,31 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
+void EnclosedIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  theString = NULL;
+}
+
+void EnclosedIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theString = NULL;
+  theContextItem = NULL;
+}
+
+EnclosedIteratorState::~EnclosedIteratorState()
+{
+  // TODO fix this (theAttrContent is not available)
+  //if (theString != NULL && theAttrContent)
+  //    delete state->theString;
+}
 
 EnclosedIterator::EnclosedIterator (
     const yy::location& loc,
     PlanIter_t& childIter)
   :
-  UnaryBaseIterator<EnclosedIterator> ( loc, childIter ),
+  UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState> ( loc, childIter ),
   theAttrContent(false)
 {
 }
@@ -565,8 +576,8 @@ Item_t EnclosedIterator::nextImpl(PlanState& planState)
   ItemFactory* factory = Zorba::getItemFactory();
   xqpString str;
 
-  EnclosedState* state;
-  DEFAULT_STACK_INIT(EnclosedState, state, planState);
+  EnclosedIteratorState* state;
+  DEFAULT_STACK_INIT(EnclosedIteratorState, state, planState);
 
   if (theAttrContent)
   {
@@ -646,68 +657,23 @@ Item_t EnclosedIterator::nextImpl(PlanState& planState)
 }
   
 
-void EnclosedIterator::resetImpl(PlanState& planState)
-{
-  UnaryBaseIterator<EnclosedIterator>::resetImpl(planState);
-
-  EnclosedState* state;
-  GET_STATE ( EnclosedState, state, planState );
-
-  if (state->theString != NULL && theAttrContent)
-    delete state->theString;
-
-  state->theString = NULL;
-}
-
-
-void EnclosedIterator::releaseResourcesImpl(PlanState& planState)
-{
-  UnaryBaseIterator<EnclosedIterator>::releaseResourcesImpl ( planState );
-
-  EnclosedState* state;
-  GET_STATE ( EnclosedState, state, planState );
-  state->theContextItem = NULL;
-
-  if (state->theString != NULL && theAttrContent)
-    delete state->theString;
-
-  state->theString = NULL;
-}
-
-
-void EnclosedIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<EnclosedIterator>::setOffset ( planState, offset );
-  
-  EnclosedState* state = new ( planState.theBlock + stateOffset ) EnclosedState;
-}
-
-
-void EnclosedIterator::EnclosedState::init()
-{
-  PlanIteratorState::init();
-  theString = NULL;
-}
-
-
-
 /*******************************************************************************
 
 ********************************************************************************/
 
-void DocFilterIterator::DocFilterIteratorState::init() 
+void DocFilterIteratorState::init(PlanState& planState) 
 {
+  PlanIteratorState::init(planState);
   theChildren = 0;
   theCurItem = 0;
 }
 
-
-DocFilterIterator::DocFilterIterator(const yy::location& loc, PlanIter_t& aChild)
-  :
-  UnaryBaseIterator<DocFilterIterator>(loc, aChild)
+void DocFilterIteratorState::reset(PlanState& planState ) 
 {
+  PlanIteratorState::reset(planState);
+  theChildren = 0;
+  theCurItem = 0;
 }
-
 
 Item_t DocFilterIterator::nextImpl(PlanState& planState)
 {
@@ -749,21 +715,6 @@ Item_t DocFilterIterator::nextImpl(PlanState& planState)
     }
   }
   STACK_END();
-}
-
-
-void DocFilterIterator::releaseResourcesImpl(PlanState& planState)
-{
-  UnaryBaseIterator<DocFilterIterator>::releaseResourcesImpl(planState);
-
-  DocFilterIteratorState* state;
-  GET_STATE(DocFilterIteratorState, state, planState);
-  if (state->theChildren != 0)
-  {
-    state->theChildren->close();
-    state->theChildren = 0;
-  }
-  state->theCurItem = 0;
 }
 
 }

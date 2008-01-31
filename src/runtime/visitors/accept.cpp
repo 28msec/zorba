@@ -93,17 +93,12 @@ namespace xqp {
   UNARY_ACCEPT(EncodeForUriIterator);
   UNARY_ACCEPT(IriToUriIterator);
   UNARY_ACCEPT(EscapeHtmlUriIterator);
-  UNARY_ACCEPT(FnDataIterator);
-  UNARY_ACCEPT(FnRootIterator);
-  UNARY_ACCEPT(FnNodeNameIterator);
   UNARY_ACCEPT(EnclosedIterator);
   UNARY_ACCEPT(FnDocIterator);
   UNARY_ACCEPT(FnStringIterator);
   UNARY_ACCEPT(OpNumericUnaryIterator);
   UNARY_ACCEPT(TextIterator);
   UNARY_ACCEPT(CommentIterator);
-  UNARY_ACCEPT(DocumentIterator);
-  UNARY_ACCEPT(DocumentContentIterator);
   UNARY_ACCEPT(DocFilterIterator);
   UNARY_ACCEPT(CastIterator);
   UNARY_ACCEPT(CastableIterator);
@@ -111,6 +106,8 @@ namespace xqp {
   UNARY_ACCEPT(LocalNameFromQNameIterator);
   UNARY_ACCEPT(NamespaceUriFromQNameIterator);
   UNARY_ACCEPT(InScopePrefixesIterator);
+  UNARY_ACCEPT(DocumentIterator);
+  UNARY_ACCEPT(DocumentContentIterator);
 
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);

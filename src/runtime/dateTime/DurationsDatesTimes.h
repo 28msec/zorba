@@ -13,12 +13,13 @@
 namespace xqp
 {
 
-class FnDateTimeConstructorIterator : public BinaryBaseIterator<FnDateTimeConstructorIterator>
+class FnDateTimeConstructorIterator : public BinaryBaseIterator<FnDateTimeConstructorIterator,
+                                                                PlanIteratorState>
 {
 public:
   FnDateTimeConstructorIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
     :
-    BinaryBaseIterator<FnDateTimeConstructorIterator>(loc, arg0, arg1){}
+    BinaryBaseIterator<FnDateTimeConstructorIterator, PlanIteratorState>(loc, arg0, arg1){}
 
   virtual ~FnDateTimeConstructorIterator() {};
 
@@ -42,11 +43,11 @@ public:
 */
 
 // 10.4.5 op:duration-equal
-class OpDurationEqualIterator : public BinaryBaseIterator<OpDurationEqualIterator>{
+class OpDurationEqualIterator : public BinaryBaseIterator<OpDurationEqualIterator, PlanIteratorState>{
 public:
   OpDurationEqualIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
-  BinaryBaseIterator<OpDurationEqualIterator>(loc, arg0, arg1){}
+  BinaryBaseIterator<OpDurationEqualIterator, PlanIteratorState>(loc, arg0, arg1){}
 
   virtual ~OpDurationEqualIterator() {};
   

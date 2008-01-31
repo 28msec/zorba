@@ -13,7 +13,7 @@ InstanceOfIterator::InstanceOfIterator(yy::location loc,
                                        PlanIter_t& aTreatExpr,
                                        TypeSystem::xqtref_t aSequenceType,
                                        bool aMustBeInstance)
-  : UnaryBaseIterator<InstanceOfIterator> ( loc, aTreatExpr ),
+  : UnaryBaseIterator<InstanceOfIterator, PlanIteratorState> ( loc, aTreatExpr ),
     theSequenceType (aSequenceType),
     mustBeInstance (aMustBeInstance)
 { }
@@ -88,7 +88,7 @@ CastIterator::CastIterator(
     const yy::location& loc,
     PlanIter_t& aChild,
     const TypeSystem::xqtref_t& aCastType)
-  : UnaryBaseIterator<CastIterator>(loc, aChild), theCastType(aCastType)
+  : UnaryBaseIterator<CastIterator, PlanIteratorState>(loc, aChild), theCastType(aCastType)
 {
   theQuantifier = GENV_TYPESYSTEM.quantifier(*theCastType);
 }
@@ -159,7 +159,7 @@ CastableIterator::CastableIterator(
   PlanIter_t& aChild,
   const TypeSystem::xqtref_t& aCastType)
 :
-  UnaryBaseIterator<CastableIterator>(aLoc, aChild), theCastType(aCastType)
+  UnaryBaseIterator<CastableIterator, PlanIteratorState>(aLoc, aChild), theCastType(aCastType)
 {
   theQuantifier = GENV_TYPESYSTEM.quantifier(*theCastType);
 }

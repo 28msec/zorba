@@ -10,97 +10,77 @@
 #ifndef XQP_ACCESSORS_IMPL_H
 #define XQP_ACCESSORS_IMPL_H
 
-#include "context/common.h"
-#include "functions/function.h"
+#include "context/common.h" // TODO remove?
+#include "functions/function.h" // TODO remove?
+
 #include "runtime/base/iterator.h"
-#include "runtime/base/unarybase.h"
+#include "runtime/base/unarybase.h" // TODO remove after changing the FnStringIterator
 
 namespace xqp {
 
-class FnDataIterator : public UnaryBaseIterator<FnDataIterator>
-{
-    
-  // used to save the current typed value in the nextImpl method
-//   Iterator_t curTypedValue;
-  
+// 2.4 fn:data
+class FnDataIteratorState : public PlanIteratorState {
 public:
-  FnDataIterator ( const yy::location& loc, PlanIter_t& aChild )
-  :
-    UnaryBaseIterator<FnDataIterator> ( loc, aChild ) {}
-  
-  virtual ~FnDataIterator() {}
-    
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-  
-  virtual uint32_t getStateSize() const { return sizeof(FnDataIteratorState); }
-  
-  virtual void accept(PlanIterVisitor&) const;
-  
-  protected:
-    class FnDataIteratorState : public PlanIteratorState {
-      public:
-        Iterator_t theTypedValue;
-    };
-}; /* class FnDateIterator */
+  Iterator_t theTypedValue;
 
+  void init(PlanState& planState) 
+  { 
+    PlanIteratorState::init( planState );
+    theTypedValue = NULL;
+  }
 
-
-class FnRootIterator : public UnaryBaseIterator<FnRootIterator>
-{
-public:
-  FnRootIterator(const yy::location& loc, PlanIter_t& theIter)
-    :
-    UnaryBaseIterator<FnRootIterator>(loc, theIter) {}
-    virtual ~FnRootIterator() {}
-    
-  Item_t nextImpl(PlanState& planState);
-  
-  virtual void accept(PlanIterVisitor&) const;
+  void reset(PlanState& planState) 
+  {
+    PlanIteratorState::reset( planState );
+    theTypedValue = NULL;
+  }
 };
 
-class FnNodeNameIterator : public UnaryBaseIterator<FnNodeNameIterator> {
+NARY_ITER_STATE(FnDataIterator, FnDataIteratorState);
+
+// 14.9 fn:root
+NARY_ITER(FnRootIterator);
+
+// 2.1 fn:node-name
+NARY_ITER(FnNodeNameIterator);
+
+// 2.3 fn:string
+class FnStringIteratorState : public PlanIteratorState {
   public:
-    FnNodeNameIterator(const yy::location& loc, PlanIter_t& in)
-      : UnaryBaseIterator<FnNodeNameIterator>(loc, in) { }
-    virtual ~FnNodeNameIterator() { }
+    bool hasOutput;
+    void init(PlanState& planState)
+    {
+      PlanIteratorState::init(planState);
+      hasOutput = false;
+    }
 
-    Item_t nextImpl(PlanState& planState);
-
-    virtual void accept(PlanIterVisitor& v) const;
+    void reset(PlanState& planState)
+    {
+      PlanIteratorState::reset(planState);
+      hasOutput = false;
+    }
 };
 
-class FnStringIterator : public UnaryBaseIterator<FnStringIterator> {
+
+class FnStringIterator : public UnaryBaseIterator<FnStringIterator, FnStringIteratorState> {
   public:
+    // TODO is the parameter theEmptyStringOnNULL needed?
+    // otherwise we could replace this declaration with the macro
     FnStringIterator(const yy::location& loc, PlanIter_t& in)
-      : UnaryBaseIterator<FnStringIterator>(loc, in), theEmptyStringOnNULL(false) { }
+      : UnaryBaseIterator<FnStringIterator, FnStringIteratorState>(loc, in), 
+        theEmptyStringOnNULL(false) { }
 
     FnStringIterator(const yy::location& loc, PlanIter_t& in, bool emptyStringOnNULL)
-      : UnaryBaseIterator<FnStringIterator>(loc, in), theEmptyStringOnNULL(emptyStringOnNULL) { }
+      : UnaryBaseIterator<FnStringIterator, FnStringIteratorState>(loc, in), 
+        theEmptyStringOnNULL(emptyStringOnNULL) { }
 
     virtual ~FnStringIterator() { }
 
     Item_t nextImpl(PlanState& planState);
 
-    void resetImpl(PlanState& planState);
-
-    void releaseResourcesImpl(PlanState& planState);
-
-    virtual uint32_t getStateSize() const { return sizeof(FnStringIteratorState); }
-
-    void setOffset(PlanState& planState, uint32_t& offset);
-
     virtual void accept(PlanIterVisitor& v) const;
 
   protected:
-    class FnStringIteratorState : public PlanIteratorState {
-      public:
-        bool hasOutput;
-        void init();
-        void reset();
-    };
-
     bool theEmptyStringOnNULL;
 };
 

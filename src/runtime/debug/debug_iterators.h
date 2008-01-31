@@ -11,8 +11,8 @@ class FnTraceIteratorState : public PlanIteratorState {
     Item_t theTagItem;
     xqp_string theTag;
 
-    void init();
-    void reset();
+    void init(PlanState&);
+    void reset(PlanState&);
 };
 
 NARY_ITER_STATE(FnTraceIterator, FnTraceIteratorState);

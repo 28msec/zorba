@@ -262,7 +262,7 @@ bool Zorba_XQueryBinary::initExecution( DynamicQueryContext_t dctx)
   lStateSize = top_iterator->getStateSizeOfSubtree();
   state_block = new PlanState(lStateSize);
   uint32_t lOffset = 0;
-  top_iterator->setOffset(*state_block, lOffset);
+  top_iterator->open(*state_block, lOffset);
 
   ///and construct the state block of state objects...
   state_block->theZorba = zorba;
@@ -408,7 +408,7 @@ Zorba_XQueryBinary::close()
   {
     if (!theClosed)
     {
-      top_iterator->releaseResources(*state_block); 
+      top_iterator->close(*state_block); 
 	    delete state_block;
 			state_block = NULL;
       theClosed = true;

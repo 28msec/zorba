@@ -24,7 +24,7 @@ namespace xqp
   |_______________________________________________________________________*/
   FnBooleanIterator::FnBooleanIterator ( const yy::location& loc, PlanIter_t& aIter, bool aNegate )
   :
-    UnaryBaseIterator<FnBooleanIterator> ( loc, aIter ), theNegate ( aNegate ) {}
+    UnaryBaseIterator<FnBooleanIterator, PlanIteratorState> ( loc, aIter ), theNegate ( aNegate ) {}
     
   FnBooleanIterator::~FnBooleanIterator() {}
 
@@ -100,7 +100,7 @@ namespace xqp
   /* begin class LogicIterator */
   LogicIterator::LogicIterator ( const yy::location& loc, PlanIter_t theChild0, PlanIter_t theChild1, LogicType aLogicType)
   :
-    BinaryBaseIterator<LogicIterator> ( loc, theChild0, theChild1), theLogicType(aLogicType) {}
+    BinaryBaseIterator<LogicIterator, PlanIteratorState> ( loc, theChild0, theChild1), theLogicType(aLogicType) {}
   
   LogicIterator::~LogicIterator(){}
       
@@ -130,7 +130,7 @@ namespace xqp
   /* begin class ComparisonIterator */
   CompareIterator::CompareIterator ( const yy::location& loc, PlanIter_t aChild0, PlanIter_t aChild1, CompareType aCompType )
   :
-    BinaryBaseIterator<CompareIterator> ( loc, aChild0, aChild1 ), 
+    BinaryBaseIterator<CompareIterator, PlanIteratorState> ( loc, aChild0, aChild1 ), 
     theCompType(aCompType) 
   { }
   

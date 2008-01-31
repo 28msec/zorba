@@ -279,20 +279,6 @@ Item_t NameTestIterator::nextImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-template <class AxisIter>
-void AxisIterator<AxisIter>::releaseResourcesImpl(PlanState& planState)
-{
-  UnaryBaseIterator<AxisIter>::releaseResourcesImpl(planState);
-
-  AxisState* state;
-  GET_STATE(AxisState, state, planState);
-  state->theContextNode = NULL;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 Item_t SelfAxisIterator::nextImpl(PlanState& planState)
 {
   SelfAxisState* state;
@@ -317,14 +303,24 @@ Item_t SelfAxisIterator::nextImpl(PlanState& planState)
   return state->theContextNode;
 }
 
-void SelfAxisIterator::releaseResourcesImpl(PlanState& planState)
-{
-  AxisIterator<SelfAxisIterator>::releaseResourcesImpl(planState);
-}                                   
 
 /*******************************************************************************
 
 ********************************************************************************/
+void
+AttributeAxisState::init(PlanState& planState)
+{
+  AxisState::init(planState);
+}
+
+void
+AttributeAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
+  if (theAttributes != NULL)
+    theAttributes->reset();
+}
+
 Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t attr;
@@ -361,27 +357,6 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
   }
 
   STACK_END();
-}
-
-
-void AttributeAxisIterator::resetImpl(PlanState& planState)
-{
-  AxisIterator<AttributeAxisIterator>::resetImpl(planState);
-
-  AttributeAxisState* state;
-  GET_STATE(AttributeAxisState, state, planState);
-  if (state->theAttributes != NULL)
-    state->theAttributes->reset();
-}
-
-
-void AttributeAxisIterator::releaseResourcesImpl(PlanState& planState)
-{
-  AxisIterator<AttributeAxisIterator>::releaseResourcesImpl(planState);
-
-  AttributeAxisState* state;
-  GET_STATE(AttributeAxisState, state, planState); 
-  state->theAttributes = NULL;
 }
 
 
@@ -423,12 +398,6 @@ Item_t ParentAxisIterator::nextImpl(PlanState& planState)
 }
 
 
-void ParentAxisIterator::releaseResourcesImpl(PlanState& planState)
-{
-  AxisIterator<ParentAxisIterator>::releaseResourcesImpl(planState);
-}
-   
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -466,17 +435,6 @@ Item_t AncestorAxisIterator::nextImpl(PlanState& planState)
 
   STACK_END();
 }
-
-
-void AncestorAxisIterator::releaseResourcesImpl(PlanState& planState)
-{
-  AxisIterator<AncestorAxisIterator>::releaseResourcesImpl(planState);
-
-  AncestorAxisState* state;
-  GET_STATE(AncestorAxisState, state, planState); 
-  state->theCurrentAnc = NULL;
-}
-
 
 /*******************************************************************************
 
@@ -517,19 +475,23 @@ Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState)
 }
 
 
-void AncestorSelfAxisIterator::releaseResourcesImpl(PlanState& planState)
-{
-  AxisIterator<AncestorSelfAxisIterator>::releaseResourcesImpl(planState);
-
-  AncestorSelfAxisState* state;
-  GET_STATE(AncestorSelfAxisState, state, planState); 
-  state->theCurrentAnc = NULL;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
+void
+RSiblingAxisState::init(PlanState& planState)
+{
+  AxisState::init(planState);
+}
+
+void
+RSiblingAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
+  if (theChildren != NULL)
+    theChildren->reset(); 
+}
+
 Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t parent;
@@ -582,30 +544,23 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
 }
 
 
-void RSiblingAxisIterator::resetImpl(PlanState& planState)
-{
-  AxisIterator<RSiblingAxisIterator>::resetImpl(planState);
-
-  RSiblingAxisState* state;
-  GET_STATE(RSiblingAxisState, state, planState);
-  if (state->theChildren != NULL)
-    state->theChildren->reset(); 
-}
-
-
-void RSiblingAxisIterator::releaseResourcesImpl(PlanState& planState)
-{
-  AxisIterator<RSiblingAxisIterator>::releaseResourcesImpl(planState);
-
-  RSiblingAxisState* state;
-  GET_STATE(RSiblingAxisState, state, planState); 
-  state->theChildren = NULL; 
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
+void
+LSiblingAxisState::init(PlanState& planState)
+{
+  AxisState::init(planState);
+}
+
+void
+LSiblingAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
+  if (theChildren != NULL)
+    theChildren->reset(); 
+}
+
 Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t parent;
@@ -658,31 +613,23 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
-
-void LSiblingAxisIterator::resetImpl(PlanState& planState)
-{
-  AxisIterator<LSiblingAxisIterator>::resetImpl(planState);
-
-  LSiblingAxisState* state;
-  GET_STATE(LSiblingAxisState, state, planState); 
-  if (state->theChildren != NULL)
-    state->theChildren->reset();
-}
-
-
-void LSiblingAxisIterator::releaseResourcesImpl(PlanState& planState)
-{
-  AxisIterator<LSiblingAxisIterator>::releaseResourcesImpl(planState);
-
-  LSiblingAxisState* state;
-  GET_STATE(LSiblingAxisState, state, planState); 
-  state->theChildren = NULL; 
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
+void
+ChildAxisState::init(PlanState& planState)
+{
+  AxisState::init(planState);
+}
+
+void
+ChildAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
+  if (theChildren != NULL)
+    theChildren->reset(); 
+}
+
 Item_t ChildAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t child;
@@ -729,30 +676,33 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
 }
 
 
-void ChildAxisIterator::resetImpl(PlanState& planState)
-{
-  AxisIterator<ChildAxisIterator>::resetImpl(planState);
-
-  ChildAxisState* state;
-  GET_STATE(ChildAxisState, state, planState);
-  if (state->theChildren != NULL)
-    state->theChildren->reset();
-}
-
-
-void ChildAxisIterator::releaseResourcesImpl(PlanState& planState)
-{
-  AxisIterator<ChildAxisIterator>::releaseResourcesImpl(planState);
-
-  ChildAxisState* state;
-  GET_STATE(ChildAxisState, state, planState); 
-  state->theChildren = NULL;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
+void
+DescendantAxisState::init(PlanState& planState)
+{
+  AxisState::init(planState);
+}
+
+void
+DescendantAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
+  while (!theCurrentPath.empty())
+  {
+    theCurrentPath.pop();
+  }
+}
+
+DescendantAxisState::~DescendantAxisState()
+{
+  while (!theCurrentPath.empty())
+  {
+    theCurrentPath.pop();
+  }
+}
+
 Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t desc;
@@ -827,39 +777,31 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
 }
 
 
-void DescendantAxisIterator::resetImpl(PlanState& planState)
+/*******************************************************************************
+
+********************************************************************************/
+void
+DescendantSelfAxisState::init(PlanState& planState)
 {
-  AxisIterator<DescendantAxisIterator>::resetImpl(planState);
+  AxisState::init(planState);
+}
 
-  DescendantAxisState* state;
-  GET_STATE(DescendantAxisState, state, planState); 
-
-  while (!state->theCurrentPath.empty())
+void
+DescendantSelfAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
+  while (!theCurrentPath.empty())
   {
-    state->theCurrentPath.pop();
+    theCurrentPath.pop();
   }
 }
 
-
-void DescendantAxisIterator::releaseResourcesImpl(PlanState& planState)
+DescendantSelfAxisState::~DescendantSelfAxisState()
 {
-  AxisIterator<DescendantAxisIterator>::releaseResourcesImpl(planState);
-
-  DescendantAxisState* state;
-  GET_STATE(DescendantAxisState, state, planState); 
-
-  while (!state->theCurrentPath.empty())
+  while (!theCurrentPath.empty())
   {
-    state->theCurrentPath.pop();
+    theCurrentPath.pop();
   }
-}
-
-
-void DescendantAxisIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  AxisIterator<DescendantAxisIterator>::setOffset(planState, offset);
-
-  DescendantAxisState* state = new (planState.theBlock + stateOffset) DescendantAxisState;
 }
 
 
@@ -928,40 +870,39 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
+/*******************************************************************************
 
-void DescendantSelfAxisIterator::resetImpl(PlanState& planState)
+********************************************************************************/
+void
+PrecedingAxisState::init(PlanState& planState)
 {
-  AxisIterator<DescendantSelfAxisIterator>::resetImpl(planState);
+  AxisState::init(planState);
+}
 
-  DescendantSelfAxisState* state;
-  GET_STATE(DescendantSelfAxisState, state, planState); 
-
-  while (!state->theCurrentPath.empty())
+void
+PrecedingAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
+  while (!theCurrentPath.empty())
   {
-    state->theCurrentPath.pop();
+    theCurrentPath.pop();
+  }
+  while (!theAncestorPath.empty())
+  {
+    theAncestorPath.pop();
   }
 }
 
-
-void DescendantSelfAxisIterator::releaseResourcesImpl(PlanState& planState)
+PrecedingAxisState::~PrecedingAxisState()
 {
-  AxisIterator<DescendantSelfAxisIterator>::releaseResourcesImpl(planState);
-
-  DescendantSelfAxisState* state;
-  GET_STATE(DescendantSelfAxisState, state, planState);
-
-  while (!state->theCurrentPath.empty())
+  while (!theCurrentPath.empty())
   {
-    state->theCurrentPath.pop();
+    theCurrentPath.pop();
   }
-}
-
-
-void DescendantSelfAxisIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  AxisIterator<DescendantSelfAxisIterator>::setOffset(planState, offset);
-
-  DescendantSelfAxisState* state = new (planState.theBlock + stateOffset) DescendantSelfAxisState;
+  while (!theAncestorPath.empty())
+  {
+    theAncestorPath.pop();
+  }
 }
 
 
@@ -1046,47 +987,42 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
 }
 
 
-void PrecedingAxisIterator::resetImpl(PlanState& planState)
-{
-  AxisIterator<PrecedingAxisIterator>::resetImpl(planState);
-
-  PrecedingAxisState* state;
-  GET_STATE(PrecedingAxisState, state, planState); 
-
-  while (!state->theCurrentPath.empty())
-    state->theCurrentPath.pop();
-
-  while (!state->theAncestorPath.empty())
-    state->theAncestorPath.pop();
-}
-
-
-void PrecedingAxisIterator::releaseResourcesImpl(PlanState& planState)
-{
-  AxisIterator<PrecedingAxisIterator>::releaseResourcesImpl(planState);
-
-  PrecedingAxisState* state;
-  GET_STATE(PrecedingAxisState, state, planState); 
-
-  while (!state->theCurrentPath.empty())
-    state->theCurrentPath.pop();
-
-  while (!state->theAncestorPath.empty())
-    state->theAncestorPath.pop();
-}
-
-
-void PrecedingAxisIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  AxisIterator<PrecedingAxisIterator>::setOffset(planState, offset);
-
-  PrecedingAxisState* state = new (planState.theBlock + stateOffset) PrecedingAxisState;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
+void
+FollowingAxisState::init(PlanState& planState)
+{
+  AxisState::init(planState);
+}
+
+void
+FollowingAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
+  while (!theCurrentPath.empty())
+  {
+    theCurrentPath.pop();
+  }
+  while (!theAncestorPath.empty())
+  {
+    theAncestorPath.pop();
+  }
+  theContextNode = NULL;
+}
+
+FollowingAxisState::~FollowingAxisState()
+{
+  while (!theCurrentPath.empty())
+  {
+    theCurrentPath.pop();
+  }
+  while (!theAncestorPath.empty())
+  {
+    theAncestorPath.pop();
+  }
+}
+
 Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t ancestor;
@@ -1170,46 +1106,5 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
-
-void FollowingAxisIterator::resetImpl(PlanState& planState)
-{
-  AxisIterator<FollowingAxisIterator>::resetImpl(planState);
-
-  FollowingAxisState* state;
-  GET_STATE(FollowingAxisState, state, planState);
-
-  while (!state->theCurrentPath.empty())
-    state->theCurrentPath.pop();
-
-  while (!state->theAncestorPath.empty())
-    state->theAncestorPath.pop();
-
-  state->theContextNode = NULL;
-}
-
-
-void FollowingAxisIterator::releaseResourcesImpl(PlanState& planState)
-{
-  AxisIterator<FollowingAxisIterator>::releaseResourcesImpl(planState);
-
-  FollowingAxisState* state;
-  GET_STATE(FollowingAxisState, state, planState);
-
-  while (!state->theCurrentPath.empty())
-    state->theCurrentPath.pop();
-
-  while (!state->theAncestorPath.empty())
-    state->theAncestorPath.pop();
-
-  state->theContextNode = NULL;
-}
-
-
-void FollowingAxisIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  AxisIterator<FollowingAxisIterator>::setOffset(planState, offset);
-
-  FollowingAxisState* state = new (planState.theBlock + stateOffset) FollowingAxisState;
-}
 
 };

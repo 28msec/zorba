@@ -15,65 +15,65 @@ namespace xqp
  * Superclass for all iterators which have no child iterators
  * and no additional state variables.
  */
-template <class IterType>
+template <class IterType, class StateType>
 class NoaryBaseIterator : public Batcher<IterType>
 {
 public:
   NoaryBaseIterator ( const yy::location& loc );
   virtual ~NoaryBaseIterator();
 
+  void openImpl (PlanState&, uint32_t& offset);
   void resetImpl ( PlanState& planState );
-  void releaseResourcesImpl ( PlanState& planState );
+  void closeImpl ( PlanState& planState );
 
-  virtual uint32_t getStateSize() const { return sizeof(PlanIteratorState); }
+  virtual uint32_t getStateSize() const { return sizeof(StateType); }
   virtual uint32_t getStateSizeOfSubtree() const { return getStateSize(); }
-  virtual void setOffset(PlanState& planState, uint32_t& offset);
 };
 
 
-template <class IterType>
-NoaryBaseIterator<IterType>::NoaryBaseIterator ( const yy::location& loc )
+template <class IterType, class StateType>
+NoaryBaseIterator<IterType, StateType>::NoaryBaseIterator ( const yy::location& loc )
   :
   Batcher<IterType> ( loc )
 {
 }
 
 
-template <class IterType>
-NoaryBaseIterator<IterType>::~NoaryBaseIterator()
+template <class IterType, class StateType>
+NoaryBaseIterator<IterType, StateType>::~NoaryBaseIterator()
 {
 }
 
-
-template <class IterType>
+template <class IterType, class StateType>
 void
-NoaryBaseIterator<IterType>::resetImpl ( PlanState& planState )
-{
-  PlanIteratorState* state;
-  GET_STATE(PlanIteratorState, state, planState);
-  state->reset();
-}
-
-
-template <class IterType>
-void
-NoaryBaseIterator<IterType>::releaseResourcesImpl(PlanState& planState)
-{
-  PlanIteratorState* state;
-  GET_STATE(PlanIteratorState, state, planState);
-  state->releaseResources();
-}
-
-
-template <class IterType>
-void
-NoaryBaseIterator<IterType>::setOffset (
-    PlanState& planState,
-    uint32_t& offset )
+NoaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset )
 {
   this->stateOffset = offset;
   offset += getStateSize();
+
+  StateType* state = new (planState.theBlock + this->stateOffset) StateType;
 }
+
+
+template <class IterType, class StateType>
+void
+NoaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState )
+{
+  StateType* state;
+  GET_STATE(StateType, state, planState);
+  state->reset(planState);
+}
+
+
+template <class IterType, class StateType>
+void
+NoaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
+{
+  StateType* state;
+  GET_STATE(StateType, state, planState);
+  state->~StateType();
+}
+
 
 
 }; /* namespace xqp*/

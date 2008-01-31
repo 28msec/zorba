@@ -177,9 +177,6 @@ protected:
   class FlworState : public PlanIteratorState
   {
   public:
-    FlworState() ;
-          
-  public:
     //varBindingState holds if a LET is already bound or not and futhermore for FORs it holds
     //as wenn the positional integer value
     checked_vector<uint32_t> varBindingState;
@@ -196,23 +193,23 @@ protected:
      * Init the state for a certain nb of variables but not the ordering
      * @nb_variables  Number of FOR and LET clauses
      */
-    void init(size_t nb_variables);
+    void init(PlanState&, size_t nb_variables);
           
     /**
      * Init the state for a certain nb of variables and ordering
      * @nb_variables  Number of FOR and LET clauses
      * @orderSpecs    The OrderSpec which defines how to compare during ordering
      */
-    void init(size_t nb_variables, std::vector<OrderSpec>* orderSpecs);
+    void init(PlanState&, size_t nb_variables, std::vector<OrderSpec>* orderSpecs);
     /**
      * Resets the state
      */
-    void reset();
+    void reset(PlanState&);
           
     /**
      * Release the resources (especially those we used for Ordering)
      */
-    void releaseResources();
+    void releaseResources(PlanState&);
   };
   
   /* ####################################################
@@ -241,13 +238,13 @@ protected:
     
   ~FLWORIterator();
 
+  void openImpl ( PlanState& planState, uint32_t& offset );
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
+  void closeImpl(PlanState& planState);
 
   virtual uint32_t getStateSize() const  { return sizeof ( FlworState); }
   virtual uint32_t getStateSizeOfSubtree() const;
-  virtual void setOffset ( PlanState& planState, uint32_t& offset );
   
   void accept ( PlanIterVisitor& ) const;
 

@@ -10,7 +10,7 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState)
   UDFunctionCallIteratorState *state;
   GET_STATE(UDFunctionCallIteratorState, state, planState);
   MANUAL_STACK_INIT(state);
-  state->init();
+  state->init(planState);
   FINISHED_ALLOCATING_RESOURCES();
 
   state->thePlan = theUDF->get_plan().getp();
@@ -35,49 +35,35 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
-UDFunctionCallIterator::UDFunctionCallIteratorState::UDFunctionCallIteratorState()
+UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   : theFnBodyStateBlock(NULL),
-  thePlan(NULL) { }
+    thePlan(NULL) { }
 
-void UDFunctionCallIterator::resetImpl(PlanState& planState)
-{
-  NaryBaseIterator<UDFunctionCallIterator>::resetImpl(planState);
-
-  UDFunctionCallIteratorState* state;
-  GET_STATE(UDFunctionCallIteratorState, state, planState);
-  state->reset();
-}
-
-void UDFunctionCallIterator::releaseResourcesImpl(PlanState& planState)
-{
-  NaryBaseIterator<UDFunctionCallIterator>::releaseResourcesImpl(planState);
-  
-  UDFunctionCallIteratorState* state;
-  GET_STATE(UDFunctionCallIteratorState, state, planState);
-  
-  state->reset(); 
-}
-
-void UDFunctionCallIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<UDFunctionCallIterator>::setOffset(planState, offset);
-  UDFunctionCallIteratorState* state = 
-    new (planState.theBlock + stateOffset) UDFunctionCallIteratorState;
-}
-
-void UDFunctionCallIterator::UDFunctionCallIteratorState::init()
-{
-  reset();
-}
-
-void UDFunctionCallIterator::UDFunctionCallIteratorState::reset()
+UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
   if (theFnBodyStateBlock != NULL) {
     delete theFnBodyStateBlock;
   }
+}
+
+void UDFunctionCallIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  reset(planState);
+}
+
+void UDFunctionCallIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+
+  if (theFnBodyStateBlock != NULL) {
+    delete theFnBodyStateBlock;
+  }
+
   theFnBodyStateBlock = NULL;
   thePlan = NULL;
 }
+
 
 }
 

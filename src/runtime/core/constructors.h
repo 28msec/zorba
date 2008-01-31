@@ -31,26 +31,26 @@ typedef rchandle<namespace_context> NamespaceContext_t;
   theChild:      Iter that produces the content of the document element
 
 *********************************************************************************/
-class DocumentIterator : public UnaryBaseIterator<DocumentIterator>
+class DocumentIteratorState : public PlanIteratorState
 {
-protected:
-  class DocumentIteratorState : public PlanIteratorState
-  {
-  public:
-    bool theTypePreserve;
-    bool theNsPreserve;
-    bool theNsInherit;
-  };
-
 public:
-  DocumentIterator(const yy::location& loc, PlanIter_t& aChild);
-  
-  Item_t nextImpl(PlanState& planState);
+  bool theTypePreserve;
+  bool theNsPreserve;
+  bool theNsInherit;
 
-  uint32_t getStateSize() const { return sizeof(DocumentIteratorState); }
-  void setOffset(PlanState& planState, uint32_t& offset);
+  void init(PlanState&);
+  void reset(PlanState&);
+};
 
-  void accept(PlanIterVisitor&) const;
+class DocumentIterator : public UnaryBaseIterator<DocumentIterator, DocumentIteratorState>
+{
+  public:
+    DocumentIterator(const yy::location& loc, PlanIter_t& aChild)
+      : UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
+
+    Item_t nextImpl(PlanState& planState);
+
+    void accept(PlanIterVisitor&) const;
 };
 
 
@@ -62,15 +62,17 @@ public:
   theChild:      Iter that produces the content of the document element
 
 *********************************************************************************/
-class DocumentContentIterator : public UnaryBaseIterator<DocumentContentIterator> 
+class DocumentContentIterator : public UnaryBaseIterator<DocumentContentIterator, PlanIteratorState> 
 {
-public:
-  DocumentContentIterator(const yy::location& loc, PlanIter_t& aContent);
-  
-  Item_t nextImpl(PlanState& planState);
+  public:
+    DocumentContentIterator(const yy::location& loc, PlanIter_t& aContent)
+      : UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(loc, aContent) {}
 
-  void accept(PlanIterVisitor&) const;
+    Item_t nextImpl(PlanState& planState);
+
+    void accept(PlanIterVisitor&) const;
 };
+
 
 
 /*******************************************************************************
@@ -91,18 +93,20 @@ public:
                       
 
 ********************************************************************************/
+class ElementIteratorState : public PlanIteratorState
+{
+public:
+  bool theTypePreserve;
+  bool theNsPreserve;
+  bool theNsInherit;
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
 class ElementIterator : public Batcher<ElementIterator>
 {
   typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
-
-protected:
-  class ElementIteratorState : public PlanIteratorState
-  {
-  public:
-    bool theTypePreserve;
-    bool theNsPreserve;
-    bool theNsInherit;
-  };
 
 private:
   PlanIter_t          theQNameIter;
@@ -125,13 +129,13 @@ public:
       namespace_context*  localBindings,
       bool                isRoot);
   
+  void openImpl(PlanState& planState, uint32_t& offset);
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
+  void closeImpl(PlanState& planState);
 
   uint32_t getStateSize() const { return sizeof(ElementIteratorState); }
   uint32_t getStateSizeOfSubtree() const;
-  void setOffset(PlanState& planState, uint32_t& offset);
   
   void accept(PlanIterVisitor&) const;
 };
@@ -154,8 +158,8 @@ class ElementContentState : public PlanIteratorState
 public:
   bool  theNoAttrAllowed;
 
-  void init();
-  void reset();
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
 NARY_ITER_STATE(ElementContentIterator, ElementContentState);
@@ -167,7 +171,7 @@ NARY_ITER_STATE(ElementContentIterator, ElementContentState);
   theQNameIter:     Iter that produces the name (qname) of the element
   theChild:         Iter that produces the value of the attribute element
 ********************************************************************************/
-class AttributeIterator : public BinaryBaseIterator<AttributeIterator>
+class AttributeIterator : public BinaryBaseIterator<AttributeIterator, PlanIteratorState>
 {
 private:
   bool       theIsRoot;
@@ -193,7 +197,7 @@ public:
                       could be a simple text iterator, or a full expression.
 
 ********************************************************************************/
-class CommentIterator : public UnaryBaseIterator<CommentIterator>
+class CommentIterator : public UnaryBaseIterator<CommentIterator, PlanIteratorState>
 {
 protected:
   bool       theIsRoot;
@@ -215,7 +219,7 @@ public:
   PiIterator constructs a PI element.
 
 ********************************************************************************/
-class PiIterator : public BinaryBaseIterator<PiIterator>
+class PiIterator : public BinaryBaseIterator<PiIterator, PlanIteratorState>
 {
 protected:
   bool       theIsRoot;
@@ -241,7 +245,7 @@ public:
              could be a simple text iterator, or a full expression.
 
 ********************************************************************************/
-class TextIterator : public UnaryBaseIterator<TextIterator>
+class TextIterator : public UnaryBaseIterator<TextIterator, PlanIteratorState>
 {
 protected:
   bool       theIsRoot;
@@ -258,33 +262,28 @@ public:
    Used to make the casting and concatenation of 
    atomic values in the sequences of an enclosed expression.
 ********************************************************************************/
-class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator>
+class EnclosedIteratorState : public PlanIteratorState
+{
+public:
+  xqpStringStore* theString;
+  Item_t     theContextItem;
+
+  void init(PlanState&);
+  void reset(PlanState&);
+  ~EnclosedIteratorState();
+};
+
+class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState>
 {
 private:
   bool theAttrContent;
   
-protected:
-  class EnclosedState : public PlanIteratorState
-  {
-  public:
-    xqpStringStore* theString;
-    Item_t          theContextItem;
-
-    void init();
-  };
-
 public:
   EnclosedIterator(
         const yy::location& loc,
         PlanIter_t& childIter);
 
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(EnclosedState); }
-
-  void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 
@@ -298,24 +297,30 @@ public:
   Filters out all DocumentNodes and returns their children instead of them.
 
 ********************************************************************************/
-class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator>
+class DocFilterIteratorState : public PlanIteratorState
 {
-protected:
-  class DocFilterIteratorState : public PlanIteratorState
-  {
-    public:
-      Iterator_t theChildren;
-      Item_t     theCurItem;
-      
-      void init();
-  };
 public:
-  DocFilterIterator( const yy::location& loc, PlanIter_t& aChild);
+  Iterator_t theChildren;
+  Item_t     theCurItem;
+    
+  void init(PlanState&);
+  void reset(PlanState&);
+
+  ~DocFilterIteratorState()
+  {
+    if (theChildren != NULL) {
+      theChildren->close();
+    }
+  }
+};
+
+class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator, DocFilterIteratorState>
+{
+public:
+  DocFilterIterator( const yy::location& loc, PlanIter_t& aChild)
+    : UnaryBaseIterator<DocFilterIterator, DocFilterIteratorState>(loc, aChild) {}
 
   Item_t nextImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  uint32_t getStateSize() const { return sizeof(DocFilterIteratorState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };

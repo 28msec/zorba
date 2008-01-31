@@ -14,17 +14,21 @@ namespace xqp
 /*******************************************************************************
 
 ********************************************************************************/
-class NodeDistinctIterator : public UnaryBaseIterator<NodeDistinctIterator>
+class NodeDistinctState : public PlanIteratorState
+{
+public:
+  Iterator_t  theStoreIterator;
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class NodeDistinctIterator : public UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>
 {
 private:
   bool theAcceptAtomics;
 
 protected:
-  class NodeDistinctState : public PlanIteratorState
-  {
-  public:
-    Iterator_t  theStoreIterator;
-  };
 
 public:
   NodeDistinctIterator(
@@ -32,19 +36,16 @@ public:
         PlanIter_t input,
         bool aAcceptAtomics = false)
     :
-    UnaryBaseIterator<NodeDistinctIterator>(loc, input), theAcceptAtomics(aAcceptAtomics)
+    UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>(loc, input), theAcceptAtomics(aAcceptAtomics)
   {
   }
 
   ~NodeDistinctIterator() { }
 
+  void openImpl(PlanState& planState, uint32_t& offset);
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  virtual uint32_t getStateSize() const { return sizeof(NodeDistinctState); }
-
-  virtual void setOffset(PlanState& planState, uint32_t& offset);
+  void closeImpl(PlanState& planState);
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -53,14 +54,17 @@ public:
 
 
 ********************************************************************************/
-class NodeSortIterator : public UnaryBaseIterator<NodeSortIterator>
+class NodeSortState : public PlanIteratorState
+{
+public:
+  Iterator_t  theStoreIterator;
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class NodeSortIterator : public UnaryBaseIterator<NodeSortIterator, NodeSortState>
 {
 protected:
-  class NodeSortState : public PlanIteratorState
-  {
-  public:
-    Iterator_t  theStoreIterator;
-  };
 
 protected:
   bool  theAscendant;
@@ -75,7 +79,7 @@ public:
         bool distinct,
         bool aAcceptAtomics = false)
     :
-    UnaryBaseIterator<NodeSortIterator>(loc, input),
+    UnaryBaseIterator<NodeSortIterator, NodeSortState>(loc, input),
     theAscendant(ascendant),
     theDistinct(distinct),
     theAcceptAtomics(aAcceptAtomics)
@@ -84,13 +88,11 @@ public:
 
   ~NodeSortIterator() { }
 
+  void openImpl(PlanState& planState, uint32_t& offset);
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
+  void closeImpl(PlanState& planState);
 
-  virtual uint32_t getStateSize() const { return sizeof(NodeSortState); }
-
-  virtual void setOffset(PlanState& planState, uint32_t& offset);
 
   virtual void accept(PlanIterVisitor&) const;
 };

@@ -11,6 +11,8 @@
 
 namespace xqp {
 
+// 2.4 fn:data
+//---------------------
 Item_t
 FnDataIterator::nextImpl(PlanState& planState)
 {
@@ -21,7 +23,7 @@ FnDataIterator::nextImpl(PlanState& planState)
   DEFAULT_STACK_INIT(FnDataIteratorState, lState, planState);
   
   while (true) {
-    item = this->consumeNext( theChild, planState );
+    item = this->consumeNext( theChildren[0], planState );
     if (item == NULL)
       break;
     lState->theTypedValue = item->getTypedValue();
@@ -34,28 +36,13 @@ FnDataIterator::nextImpl(PlanState& planState)
       STACK_PUSH( item, lState );
     }
   }
-  lState->theTypedValue = 0;
+  lState->theTypedValue = 0; // TODO remove???
   STACK_END();
 }
   
-void
-FnDataIterator::resetImpl(PlanState& aPlanState)
-{
-  FnDataIteratorState* lState;
-  GET_STATE(FnDataIteratorState, lState, aPlanState);
-  lState->reset();
-  this->resetChild( theChild, aPlanState );
-}
-  
-void
-FnDataIterator::releaseResourcesImpl(PlanState& planState)
-{
-  FnDataIteratorState* lState;
-  GET_STATE(FnDataIteratorState, lState, planState);
-  lState->theTypedValue = 0;
-  this->releaseChildResources( theChild, planState );
-}
 
+// 14.9 fn:root
+//---------------------
 Item_t FnRootIterator::nextImpl(PlanState& planState)
 {
   Item_t contextNode;
@@ -64,7 +51,7 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
 
-  contextNode = consumeNext(theChild, planState);
+  contextNode = consumeNext(theChildren[0], planState);
 
   if (contextNode == NULL)
     return NULL;
@@ -88,6 +75,8 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
+// 14.9 fn:node-name
+//---------------------
 Item_t FnNodeNameIterator::nextImpl(PlanState& planState)
 {
   Item_t inNode;
@@ -95,7 +84,7 @@ Item_t FnNodeNameIterator::nextImpl(PlanState& planState)
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inNode = consumeNext(theChild, planState);
+  inNode = consumeNext(theChildren[0], planState);
 
   if (inNode == NULL) {
     return NULL;
@@ -111,6 +100,9 @@ Item_t FnNodeNameIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
+
+// 2.3 fn:string
+//---------------------
 Item_t FnStringIterator::nextImpl(PlanState& planState)
 {
   Item_t inVal;
@@ -130,46 +122,6 @@ Item_t FnStringIterator::nextImpl(PlanState& planState)
 
   STACK_END();
 }
-
-void FnStringIterator::resetImpl(PlanState& planState)
-{
-  UnaryBaseIterator<FnStringIterator>::resetImpl(planState);
-
-  FnStringIteratorState* state;
-  GET_STATE(FnStringIteratorState, state, planState);
-  state->reset();
-}
-
-void FnStringIterator::releaseResourcesImpl(PlanState& planState)
-{
-  UnaryBaseIterator<FnStringIterator>::releaseResourcesImpl(planState);
-  
-  FnStringIteratorState* state;
-  GET_STATE(FnStringIteratorState, state, planState);
-  
-  // do we need a releaseResouces function in the state or is it always the same as reset?
-  state->reset(); 
-}
-
-void FnStringIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<FnStringIterator>::setOffset(planState, offset);
-  FnStringIteratorState* state = 
-    new (planState.theBlock + stateOffset) FnStringIteratorState;
-}
-
-void FnStringIterator::FnStringIteratorState::init()
-{
-  PlanIteratorState::init();
-  hasOutput = false;
-}
-
-void FnStringIterator::FnStringIteratorState::reset()
-{
-  PlanIteratorState::reset();
-  hasOutput = false;
-}
-
 
 } /* namespace xqp */
 /* vim:set ts=2 sw=2: */

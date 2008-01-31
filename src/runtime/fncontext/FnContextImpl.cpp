@@ -18,7 +18,7 @@ CtxVariableIterator::CtxVariableIterator(
     const yy::location& loc,
     xqp_string aVarname)
   : 
-  NoaryBaseIterator<CtxVariableIterator>(loc),
+  NoaryBaseIterator<CtxVariableIterator, PlanIteratorState>(loc),
   theVarName(aVarname)
 {
 }
@@ -61,10 +61,11 @@ Item_t CtxVariableIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
-
 void CtxVariableIterator::resetImpl(PlanState& planState)
 {
-  NoaryBaseIterator<CtxVariableIterator>::resetImpl(planState);
+  PlanIteratorState* state;
+  GET_STATE ( PlanIteratorState, state, planState );
+  state->reset(planState);
 
   Iterator_t iter;
 
@@ -75,10 +76,8 @@ void CtxVariableIterator::resetImpl(PlanState& planState)
 }
 
 
-void CtxVariableIterator::releaseResourcesImpl(PlanState& planState)
+void CtxVariableIterator::closeImpl(PlanState& planState)
 {
-  NoaryBaseIterator<CtxVariableIterator>::releaseResourcesImpl(planState);
-
   Iterator_t iter;
 
   Zorba* zorba = ZORBA_FOR_CURRENT_THREAD();
@@ -87,6 +86,10 @@ void CtxVariableIterator::releaseResourcesImpl(PlanState& planState)
 
   if (iter != NULL)
     iter->close();
+
+  PlanIteratorState* state;
+  GET_STATE ( PlanIteratorState, state, planState );
+  state->~PlanIteratorState();
 }
 
 }

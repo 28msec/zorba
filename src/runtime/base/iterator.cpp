@@ -32,7 +32,6 @@ namespace xqp
 /*******************************************************************************
   class PlanState
 ********************************************************************************/
-
 PlanState::PlanState(uint32_t blockSize)
 {
   theBlockSize = blockSize;
@@ -45,8 +44,7 @@ PlanState::PlanState(uint32_t blockSize)
 
 PlanState::~PlanState()
 {
-  if (theBlock != NULL)
-    delete[] theBlock;
+  delete[] theBlock; theBlock = 0;
 }
 
 
@@ -59,17 +57,24 @@ PlanWrapper::PlanWrapper(PlanIter_t& aIter)
   theClosed(false)
 {
   uint32_t stackSize = theIterator->getStateSizeOfSubtree();
-  thePlanState = new PlanState(stackSize);
+  theStateBlock = new PlanState(stackSize);
   uint32_t offset = 0;
-  theIterator->setOffset(*thePlanState, offset);
+  theIterator->open(*theStateBlock, offset);
 }
 
 
 PlanWrapper::~PlanWrapper()
 {
-  close();
+  delete theStateBlock; theStateBlock = 0;
 }
 
+void
+PlanWrapper::open()
+{
+  theClosed = false;
+  uint32_t offset = 0;
+  theIterator->open(*theStateBlock, offset);
+}
 
 Item_t
 PlanWrapper::next()
@@ -77,9 +82,9 @@ PlanWrapper::next()
   if (!theClosed)
   {
 #if ZORBA_BATCHING_TYPE == 1
-    return theIterator->consumeNext(theIterator, *thePlanState);
+    return theIterator->consumeNext(theIterator, *theStateBlock);
 #else
-    return theIterator->produceNext(*thePlanState);
+    return theIterator->produceNext(*theStateBlock);
 #endif
   }
   else
@@ -91,29 +96,33 @@ PlanWrapper::next()
 void
 PlanWrapper::reset()
 {
+  // TODO make this an assertion
   if (!theClosed)
-    theIterator->reset(*thePlanState);
+    theIterator->reset(*theStateBlock);
 }
 
 void
 PlanWrapper::close()
 {
-  if (!theClosed)
-  {
-    theIterator->releaseResources(*thePlanState); 
-    delete thePlanState;
-    theClosed = true;
-  }
+#ifndef NDEBUG
+  Assert(!theClosed);
+#endif
+
+  theIterator->close(*theStateBlock); 
+  theClosed = true;
 }
 
 
 /*******************************************************************************
   class PlanIteratorWrapper
 ********************************************************************************/
+// TODO why do PlanIteratorWrapper and PlanWrapper do exactly the same
+// except allocating the state
+// couldn't this be factorized by deriving the one from the other?
 PlanIteratorWrapper::PlanIteratorWrapper(PlanIter_t& iter, PlanState& state) 
   :
   theIterator(iter),
-  thePlanState(&state),
+  theStateBlock(&state),
   theClosed(false)
 {
 }
@@ -127,12 +136,13 @@ PlanIteratorWrapper::~PlanIteratorWrapper()
 Item_t
 PlanIteratorWrapper::next()
 {
+  // TODO make this an assertion?
   if (!theClosed)
   {
 #if ZORBA_BATCHING_TYPE == 1
-    return theIterator->consumeNext(theIterator, *thePlanState);
+    return theIterator->consumeNext(theIterator, *theStateBlock);
 #else
-    return theIterator->produceNext(*thePlanState);
+    return theIterator->produceNext(*theStateBlock);
 #endif
   }
   else
@@ -144,19 +154,21 @@ PlanIteratorWrapper::next()
 void
 PlanIteratorWrapper::reset()
 {
+  // TODO make this an assertion
   if (!theClosed)
-    theIterator->reset(*thePlanState);
+    theIterator->reset(*theStateBlock);
 }
 
 
 void
 PlanIteratorWrapper::close()
 {
-  if (!theClosed)
-  {
-    theIterator->releaseResources(*thePlanState); 
-    theClosed = true;
-  }
+#ifndef NDEBUG
+  Assert(!theClosed);
+#endif
+
+  theIterator->close(*theStateBlock); 
+  theClosed = true;
 }
 
 
