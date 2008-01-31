@@ -70,44 +70,54 @@ private:
 
   void init(); // common initialization
 
-public:	// ctor, dtor
-  rchandle(T* realPtr = 0)
-    : p(realPtr)
-  { init(); }
-  rchandle(rchandle const& rhs)
-    : p (rhs.get_ptr ())
-  { init (); }
-  ~rchandle() {
+public:
+  rchandle(T* realPtr = 0) : p(realPtr)
+  {
+    init(); 
+  }
+
+  rchandle(rchandle const& rhs) : p(rhs.getp())
+  {
+    init();
+  }
+
+  ~rchandle()
+  {
     if (p)
       p->removeReference(); 
     p = 0;
   }
 
 public:
-  T *get_ptr () const { return p; }
+  T* getp() const { return p; }
   bool isNull () const { return p==NULL; }
-  template <class otherT> rchandle<otherT> cast () const
-  { return rchandle<otherT> (static_cast<otherT *> (p)); }
 
-public:	// operator overloading
+  template <class otherT> rchandle<otherT> cast () const
+  {
+    return rchandle<otherT> (static_cast<otherT *> (p));
+  }
+
+public:
   rchandle& operator=(rchandle const& rhs);
+
 	template <class otherT> rchandle& operator=(rchandle<otherT> const& rhs)
 	{
-		if (p != rhs.get_ptr()) {
+		if (p != rhs.getp()) {
 			if (p) p->removeReference();
-			p = static_cast<T*>(rhs.get_ptr());
+			p = static_cast<T*>(rhs.getp());
 			init();
 		}
 		return *this;
 	}
+
   T* operator->() const; 
   T& operator*() const;
 
   // rchandle const-ness is unclear.
   // The implicit operators are more restrictive than the explicit
-  // cast() and get_ptr() methods.
-  operator T* () { return get_ptr (); }
-  operator const T * () const { return get_ptr (); }
+  // cast() and getp() methods.
+  operator T* () { return getp(); }
+  operator const T * () const { return getp(); }
   template <class otherT> operator rchandle<otherT> () { return cast<otherT> (); }
   template <class otherT> operator const rchandle<otherT> () const { return cast<otherT> (); }
 
