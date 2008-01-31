@@ -142,6 +142,9 @@ namespace xqp
   class FnMinutesFromTimeIterator;
   class FnSecondsFromTimeIterator;
   class FnTimezoneFromTimeIterator;
+  class OpIsSameNodeIterator;
+  class OpNodeBeforeIterator;
+  class OpNodeAfterIterator;
 
   
   /**
@@ -548,6 +551,15 @@ namespace xqp
 
       virtual void beginVisit(const CtxVariableIterator&) = 0;
       virtual void endVisit(const CtxVariableIterator&) = 0;
+
+      virtual void beginVisit(const OpIsSameNodeIterator&) = 0;
+      virtual void endVisit(const OpIsSameNodeIterator&) = 0;
+
+      virtual void beginVisit(const OpNodeBeforeIterator&) = 0;
+      virtual void endVisit(const OpNodeBeforeIterator&) = 0;
+
+      virtual void beginVisit(const OpNodeAfterIterator&) = 0;
+      virtual void endVisit(const OpNodeAfterIterator&) = 0;
 
   }; /* class PlanIterVisitor */
 } /* namespace xqp */

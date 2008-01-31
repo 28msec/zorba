@@ -1213,5 +1213,33 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& a)
   void PrinterVisitor::endVisit(const CtxVariableIterator&) {
     thePrinter.endIter();
   }
+
+  void PrinterVisitor::beginVisit(const OpIsSameNodeIterator& a) {
+    thePrinter.startIter("OpIsSameNodeIterator");
+    printCommons(&a);
+  }
+
+  void PrinterVisitor::endVisit(const OpIsSameNodeIterator&) {
+    thePrinter.endIter();
+  }
+  
+  void PrinterVisitor::beginVisit(const OpNodeBeforeIterator& a) {
+    thePrinter.startIter("OpNodeBeforeIterator");
+    printCommons(&a);
+  }
+
+  void PrinterVisitor::endVisit(const OpNodeBeforeIterator&) {
+    thePrinter.endIter();
+  }
+  
+  void PrinterVisitor::beginVisit(const OpNodeAfterIterator& a) {
+    thePrinter.startIter("OpNodeAfterIterator");
+    printCommons(&a);
+  }
+
+  void PrinterVisitor::endVisit(const OpNodeAfterIterator&) {
+    thePrinter.endIter();
+  }
+  
 } /* namespace xqp */
 /* vim:set ts=2 sw=2: */

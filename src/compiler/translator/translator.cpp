@@ -2028,13 +2028,13 @@ void end_visit(const ComparisonExpr& v, void *visit_state)
   } else if (v.get_nodecomp()!=NULL) {
     switch (v.get_nodecomp()->get_type()) {
     case op_is:
-      f = (LOOKUP_OP2 ("is"));
+      f = (LOOKUP_OP2 ("is-same-node"));
       break;
     case op_precedes:
-      f = (LOOKUP_OP2 ("precedes"));
+      f = (LOOKUP_OP2 ("node-before"));
       break;
     case op_follows:
-      f = (LOOKUP_OP2 ("follows"));
+      f = (LOOKUP_OP2 ("node-after"));
       break;
     }
   }

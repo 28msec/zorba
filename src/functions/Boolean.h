@@ -137,6 +137,39 @@ namespace xqp
 		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
+	class op_is_same_node : public function
+	{
+	public:
+		op_is_same_node( const signature& aSig) : function(aSig) {}
+		virtual ~op_is_same_node() {}
+  public:
+    PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+    TypeSystem::xqtref_t type_check ( signature&) const;
+    bool validate_args ( std::vector<PlanIter_t>& ) const;
+	};
+	
+	class op_node_before : public function
+	{
+	public:
+		op_node_before( const signature& aSig) : function(aSig) {}
+		virtual ~op_node_before() {}
+  public:
+    PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+    TypeSystem::xqtref_t type_check ( signature&) const;
+    bool validate_args ( std::vector<PlanIter_t>& ) const;
+	};
+	
+	class op_node_after : public function
+	{
+	public:
+		op_node_after( const signature& aSig) : function(aSig) {}
+		virtual ~op_node_after() {}
+  public:
+    PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+    TypeSystem::xqtref_t type_check ( signature&) const;
+    bool validate_args ( std::vector<PlanIter_t>& ) const;
+	};
+	
 	/*-------------------------- Logical Expressions ---------------------------------------*/
 	class op_and : public function
 	{

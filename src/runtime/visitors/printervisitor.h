@@ -422,6 +422,15 @@ public:
   virtual void beginVisit(const CtxVariableIterator&);
   virtual void endVisit(const CtxVariableIterator&);
   
+  virtual void beginVisit(const OpIsSameNodeIterator&);
+  virtual void endVisit(const OpIsSameNodeIterator&);
+  
+  virtual void beginVisit(const OpNodeBeforeIterator&);
+  virtual void endVisit(const OpNodeBeforeIterator&);
+  
+  virtual void beginVisit(const OpNodeAfterIterator&);
+  virtual void endVisit(const OpNodeAfterIterator&);
+  
 };
 
 } /* namespace xqp */

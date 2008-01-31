@@ -142,6 +142,75 @@ namespace xqp
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_LESS_EQUAL );
 	}
 	/* end class op_value_less_equal */
+
+  /* begin class op_is_same_node */
+	PlanIter_t
+	op_is_same_node::operator() (
+	    const yy::location& loc,
+	    vector<PlanIter_t>& argv ) const
+	{
+		return new OpIsSameNodeIterator ( loc, argv );
+	}
+
+	TypeSystem::xqtref_t
+	op_is_same_node::type_check (
+	    signature& sig ) const
+	{
+		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+	}
+
+	bool
+	op_is_same_node::validate_args ( vector<PlanIter_t>& argv ) const
+	{
+		return ( argv.size() == 2 );
+	}
+  /* end class op_is_same_node */
+
+  /* begin class op_node_before */
+	PlanIter_t
+	op_node_before::operator() (
+	    const yy::location& loc,
+	    vector<PlanIter_t>& argv ) const
+	{
+		return new OpNodeBeforeIterator ( loc, argv );
+	}
+
+	TypeSystem::xqtref_t
+	op_node_before::type_check (
+	    signature& sig ) const
+	{
+		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+	}
+
+	bool
+	op_node_before::validate_args ( vector<PlanIter_t>& argv ) const
+	{
+		return ( argv.size() == 2 );
+	}
+  /* end class op_node_before */
+
+  /* begin class op_node_after */
+	PlanIter_t
+	op_node_after::operator() (
+	    const yy::location& loc,
+	    vector<PlanIter_t>& argv ) const
+	{
+		return new OpNodeAfterIterator ( loc, argv );
+	}
+
+	TypeSystem::xqtref_t
+	op_node_after::type_check (
+	    signature& sig ) const
+	{
+		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+	}
+
+	bool
+	op_node_after::validate_args ( vector<PlanIter_t>& argv ) const
+	{
+		return ( argv.size() == 2 );
+	}
+  /* end class op_node_after */
 	
 	/* start class op_and */
 	op_and::op_and ( const signature& sig ) : function ( sig ) {}

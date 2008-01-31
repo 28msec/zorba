@@ -644,4 +644,85 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
   }
   /* end class ComparisonIterator */
 
+  Item_t
+  OpIsSameNodeIterator::nextImpl(PlanState& aPlanState)
+  { 
+    bool lBool;
+    Item_t lItem0, lItem1;
+
+    PlanIteratorState* aState;
+    DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
+
+    lItem0 = consumeNext(theChildren[0], aPlanState);
+    if (lItem0 != 0) {
+      lItem1 = consumeNext(theChildren[1], aPlanState);
+      if (lItem1 != 0) {
+        if (!lItem0->isNode() || !lItem0->isNode()) {
+           ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
+             &loc, false, "The IsSameNode function must have nodes as parameters.");
+        }
+        lBool = (Zorba::getStore()->compare(lItem0, lItem1) == 0); 
+        STACK_PUSH ( 
+          Zorba::getItemFactory()->createBoolean(lBool),
+          aState
+        );
+      }
+    }
+    STACK_END();
+  }
+
+  Item_t
+  OpNodeBeforeIterator::nextImpl(PlanState& aPlanState)
+  { 
+    bool lBool;
+    Item_t lItem0, lItem1;
+
+    PlanIteratorState* aState;
+    DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
+
+    lItem0 = consumeNext(theChildren[0], aPlanState);
+    if (lItem0 != 0) {
+      lItem1 = consumeNext(theChildren[1], aPlanState);
+      if (lItem1 != 0) {
+        if (!lItem0->isNode() || !lItem0->isNode()) {
+           ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
+             &loc, false, "The IsSameNode function must have nodes as parameters.");
+        }
+        lBool = (Zorba::getStore()->compare(lItem0, lItem1) == -1); 
+        STACK_PUSH ( 
+          Zorba::getItemFactory()->createBoolean(lBool),
+          aState
+        );
+      }
+    }
+    STACK_END();
+  }
+
+  Item_t
+  OpNodeAfterIterator::nextImpl(PlanState& aPlanState)
+  { 
+    bool lBool;
+    Item_t lItem0, lItem1;
+
+    PlanIteratorState* aState;
+    DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
+
+    lItem0 = consumeNext(theChildren[0], aPlanState);
+    if (lItem0 != 0) {
+      lItem1 = consumeNext(theChildren[1], aPlanState);
+      if (lItem1 != 0) {
+        if (!lItem0->isNode() || !lItem0->isNode()) {
+           ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
+             &loc, false, "The IsSameNode function must have nodes as parameters.");
+        }
+        lBool = (Zorba::getStore()->compare(lItem0, lItem1) == 1); 
+        STACK_PUSH ( 
+          Zorba::getItemFactory()->createBoolean(lBool),
+          aState
+        );
+      }
+    }
+    STACK_END();
+  }
+
 }

@@ -193,6 +193,10 @@ namespace xqp
       virtual void accept(PlanIterVisitor&) const;
   }; /* class CompareIterator */
 
+  NARY_ITER(OpIsSameNodeIterator); 
+  NARY_ITER(OpNodeBeforeIterator);
+  NARY_ITER(OpNodeAfterIterator);
+
 }
 
 #endif

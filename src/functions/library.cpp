@@ -473,6 +473,26 @@ DECL(op_value_less_equal,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 // end Value Comparison
 
+// Node Comparison
+DECL(op_is_same_node,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":is-same-node"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+
+DECL(op_node_before,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":node-before"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+
+DECL(op_node_after,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":node-after"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+// end Node Comparson
+
 // Strings
 DECL(fn_codepoints_to_string,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","codepoints-to-string"),
