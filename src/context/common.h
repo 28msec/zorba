@@ -31,6 +31,11 @@
 	#include "util/win32/compatib_defs.h"
 #endif
 
+#if defined (__FreeBSD__)
+typedef unsigned long ulong;
+#endif
+
+
 #include <utility>
 
 #ifndef _WIN32_WCE
