@@ -59,7 +59,17 @@ Item_t GenericCast::stringSimpleCast(
   TypeSystem& ts = GENV_TYPESYSTEM;
   ItemFactory* factory = Zorba::getItemFactory();
 
-  xqpString lString = aSourceItem->getStringValue().trim(" \n\r\t",4);
+  xqpString lString = aSourceItem->getStringValue();
+  switch(ts.get_atomic_type_code(*aTargetType)) {
+  case TypeSystem::XS_ANY_ATOMIC:
+  case TypeSystem::XS_STRING:
+  case TypeSystem::XS_NORMALIZED_STRING:
+  case TypeSystem::XS_UNTYPED_ATOMIC:
+    break;
+  default:
+    lString = lString.trim(" \n\r\t",4);
+    break;
+  }
   
   switch(ts.get_atomic_type_code(*aTargetType))
   {
