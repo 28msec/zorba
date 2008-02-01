@@ -3622,21 +3622,8 @@ void *begin_visit(const TypeswitchExpr& v)
 void end_visit(const TypeswitchExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  expr_t e_h;
-  rchandle<typeswitch_expr> tse_h = new typeswitch_expr(v.get_location());
-
-  var_expr_t ve_h = bind_var (v.get_location(), v.get_default_varname(), var_expr::unknown_var);
-  tse_h->set_default_varname(ve_h);
-
-  while (pop_nodestack () != NULL);  // pop clauses
-
-  ZORBA_ASSERT((e_h = pop_nodestack())!=NULL);
-  tse_h->set_switch_expr(e_h);
-
-  ZORBA_ASSERT((e_h = pop_nodestack())!=NULL);
-  tse_h->set_default_clause(e_h);
-
-  nodestack.push(&*tse_h);
+  // shouldn't get here, begin_visit() rejects visitor
+  assert (false);
 }
 
 
