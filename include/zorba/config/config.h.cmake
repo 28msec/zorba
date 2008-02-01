@@ -34,5 +34,6 @@
 #cmakedefine HAVE_STRICMP_FUNCTION  1
 #cmakedefine HAVE_STRCASECMP_FUNCTION  1
 
+#include "config/platform.h"
 
 #endif

@@ -17,6 +17,7 @@ void
 NodeDistinctState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
+  theStoreIterator->reset();
 }
 
 Item_t NodeDistinctIterator::nextImpl(PlanState& planState)
@@ -43,11 +44,8 @@ void NodeDistinctIterator::openImpl(PlanState& planState, uint32_t& offset)
 
 void NodeDistinctIterator::resetImpl(PlanState& planState)
 {
-  NodeDistinctState* state;
-  GET_STATE(NodeDistinctState, state, planState);
-  state->reset(planState);
+  StateTraitsImpl<NodeDistinctState>::reset(planState, this->stateOffset);
 
-  state->theStoreIterator->reset();
   theChild->reset(planState);
 }
 
@@ -56,9 +54,7 @@ void NodeDistinctIterator::closeImpl(PlanState& planState)
 {
   theChild->close(planState);
 
-  NodeDistinctState* state;
-  GET_STATE(NodeDistinctState, state, planState);
-  state->~NodeDistinctState();
+  StateTraitsImpl<NodeDistinctState>::destroyState(planState, this->stateOffset);
 }
 
 /*******************************************************************************
@@ -74,17 +70,17 @@ void
 NodeSortState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
+  theStoreIterator->reset();
 }
 
 void NodeSortIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  this->stateOffset = offset;
-  offset += getStateSize();
-
-  NodeSortState* state = new (planState.theBlock + stateOffset) NodeSortState;
+  StateTraitsImpl<NodeSortState>::createState(planState, this->stateOffset, offset);
 
   Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 
+  NodeSortState* state;
+  GET_STATE(NodeSortState, state, planState);
   state->theStoreIterator = Store::getInstance().sortNodes(input,
                                                            theAscendant,
                                                            theDistinct,
@@ -103,11 +99,8 @@ Item_t NodeSortIterator::nextImpl(PlanState& planState)
 
 void NodeSortIterator::resetImpl(PlanState& planState)
 {
-  NodeSortState* state;
-  GET_STATE(NodeSortState, state, planState);
-  state->reset(planState);
+  StateTraitsImpl<NodeSortState>::reset(planState, this->stateOffset);
 
-  state->theStoreIterator->reset();
 
   theChild->reset(planState);
 }
@@ -116,10 +109,8 @@ void NodeSortIterator::resetImpl(PlanState& planState)
 void NodeSortIterator::closeImpl(PlanState& planState)
 {
   theChild->close(planState);
-
-  NodeSortState* state;
-  GET_STATE(NodeSortState, state, planState);
-  state->~NodeSortState();
+  
+  StateTraitsImpl<NodeSortState>::destroyState(planState, this->stateOffset);
 }
 
 }

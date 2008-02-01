@@ -8,9 +8,7 @@
 #define XQP_UNARYBASE_H
 
 #include "runtime/base/iterator.h"
-#ifndef NDEBUG
-# include <cassert>
-#endif
+#include "runtime/base/statetraits.h"
 
 namespace xqp
 {
@@ -33,7 +31,7 @@ public:
   void resetImpl ( PlanState& planState );
   void closeImpl ( PlanState& planState );
 
-  virtual uint32_t getStateSize() const { return sizeof(StateType); }
+  virtual uint32_t getStateSize() const { return StateTraitsImpl<StateType>::getStateSize(); }
   virtual uint32_t getStateSizeOfSubtree() const;
 };
 
@@ -46,7 +44,7 @@ UnaryBaseIterator<IterType, StateType>::UnaryBaseIterator(
   Batcher<IterType> ( loc ), theChild ( aChild )
 {
 #ifndef NDEBUG
-  assert(aChild != 0);
+  assert(theChild != 0);
 #endif
 }
 
@@ -60,11 +58,7 @@ template <class IterType, class StateType>
 void
 UnaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset )
 {
-  this->stateOffset = offset;
-  offset += getStateSize();
-    
-  // construct the state
-  StateType* state = new (planState.theBlock + this->stateOffset) StateType;
+  StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
 
   theChild->open(planState, offset);
 }
@@ -73,9 +67,7 @@ template <class IterType, class StateType>
 void
 UnaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState )
 {
-  StateType* state;
-  GET_STATE ( StateType, state, planState );
-  state->reset(planState);
+  StateTraitsImpl<StateType>::reset(planState, this->stateOffset);
     
   theChild->reset( planState ); 
 }
@@ -87,9 +79,7 @@ UnaryBaseIterator<IterType, StateType>::closeImpl( PlanState& planState )
 {
   theChild->close( planState );
 
-  StateType* state;
-  GET_STATE ( StateType, state, planState );
-  state->~StateType();
+  StateTraitsImpl<StateType>::destroyState(planState, this->stateOffset);
 }
 
 template <class IterType, class StateType>

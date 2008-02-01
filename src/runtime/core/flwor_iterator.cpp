@@ -601,10 +601,7 @@ bool FLWORIterator::bindVariable(
 
 void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  this->stateOffset = offset;
-  offset += this->getStateSize();
-
-  FlworState* state = new (planState.theBlock + this->stateOffset) FlworState;
+  StateTraitsImpl<FlworState>::createState(planState, this->stateOffset, offset);
 
   std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
   for (iter = forLetClauses.begin(); iter != forLetClauses.end(); iter++)
@@ -653,9 +650,7 @@ void FLWORIterator::resetImpl ( PlanState& planState )
     iter->input->reset(planState);
   }
 
-  FlworState* flworState;
-  GET_STATE ( FlworState, flworState, planState );
-  flworState->reset(planState);
+  StateTraitsImpl<FlworState>::reset(planState, this->stateOffset);
 }
 
 
@@ -682,11 +677,13 @@ void FLWORIterator::closeImpl ( PlanState& planState )
   {
     iter->input->close(planState);
   }
-
+  
+  // TODO for releasing resources reset should be in the destructor or deinit
+  // after that replace it with the following line:
+  // StateTraitsImpl<FlworState>::destroyState(planState, this->stateOffset);
   FlworState* flworState;
   GET_STATE ( FlworState, flworState, planState );
-  flworState->reset(planState); // for releasing resources TODO should be in the destructor or deinit
-  flworState->~FlworState();
+  flworState->reset(planState);   flworState->~FlworState();
 }
 
 

@@ -10,7 +10,7 @@
 
 #include "compiler/translator/translator.h"
 
-#include "zorba/common.h"
+#include "common.h"
 
 #include "context/namespace_context.h"
 #include "types/node_test.h"
@@ -26,7 +26,7 @@
 #include "util/stl_extra.h"
 
 #ifndef NDEBUG
-# include "zorba/util/properties.h"
+# include "util/properties.h"
 #endif
 
 #include <string>

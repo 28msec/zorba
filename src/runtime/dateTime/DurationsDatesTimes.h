@@ -8,6 +8,7 @@
 
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
+#include "runtime/base/narybase.h"
 #include "runtime/base/iterator.h"
 
 namespace xqp

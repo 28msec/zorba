@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "common.h"
 #include "util/rchandle.h"
 
 #if defined (WIN32)

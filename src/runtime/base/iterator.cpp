@@ -154,9 +154,7 @@ PlanIteratorWrapper::next()
 void
 PlanIteratorWrapper::reset()
 {
-  // TODO make this an assertion
-  if (!theClosed)
-    theIterator->reset(*theStateBlock);
+  theIterator->reset(*theStateBlock);
 }
 
 

@@ -2,6 +2,7 @@
 #define XQP_DEBUG_ITERATORS_H
 
 #include "runtime/base/iterator.h"
+#include "runtime/base/narybase.h"
 
 namespace xqp {
 

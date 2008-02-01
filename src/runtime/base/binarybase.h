@@ -8,9 +8,7 @@
 #define XQP_BINARYBASE_H
 
 #include "runtime/base/iterator.h"
-#ifndef DEBUG
-# include <cassert>
-#endif
+#include "runtime/base/statetraits.h"
 
 namespace xqp
 {
@@ -33,7 +31,7 @@ namespace xqp
 			void resetImpl ( PlanState& planState );
 			void closeImpl ( PlanState& planState );
 
-      virtual uint32_t getStateSize() const { return sizeof ( StateType ); }
+      virtual uint32_t getStateSize() const { return StateTraitsImpl<StateType>::getStateSize(); }
 			virtual uint32_t getStateSizeOfSubtree() const;
 	}; /* class BinaryBaseIterator */
 
@@ -63,11 +61,7 @@ namespace xqp
   void
   BinaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset )
   {
-    this->stateOffset = offset;
-    offset += getStateSize();
-
-    // construct the state
-    StateType* state = new (planState.theBlock + this->stateOffset) StateType;
+    StateTraitsImpl <StateType>::createState(planState, this->stateOffset, offset);
 
     theChild0->open(planState, offset);
     theChild1->open(planState, offset);
@@ -78,9 +72,7 @@ namespace xqp
 	void
 	BinaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState )
 	{
-		StateType* state;
-		GET_STATE ( StateType, state, planState );
-		state->reset(planState);
+    StateTraitsImpl<StateType>::reset(planState, this->stateOffset);
 
     theChild0->reset( planState );
     theChild1->reset( planState );
@@ -94,9 +86,7 @@ namespace xqp
     theChild0->close( planState );
     theChild1->close( planState );
 
-    StateType* state;
-    GET_STATE ( StateType, state, planState );
-    state->~StateType();
+    StateTraitsImpl<StateType>::destroyState(planState, this->stateOffset);
 	}
 
 	template <class IterType, class StateType>

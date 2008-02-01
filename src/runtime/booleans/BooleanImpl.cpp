@@ -10,7 +10,6 @@
 #include "errors/error_factory.h"
 #include "runtime/accessors//AccessorsImpl.h"
 #include "store/api/temp_seq.h"
-#include "runtime/visitors/planitervisitor.h"
 
 namespace xqp
 {

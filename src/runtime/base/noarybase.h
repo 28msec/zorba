@@ -8,6 +8,7 @@
 #define XQP_NOARYBASE_H
 
 #include "runtime/base/iterator.h"
+#include "runtime/base/statetraits.h"
 
 namespace xqp
 {
@@ -26,7 +27,7 @@ public:
   void resetImpl ( PlanState& planState );
   void closeImpl ( PlanState& planState );
 
-  virtual uint32_t getStateSize() const { return sizeof(StateType); }
+  virtual uint32_t getStateSize() const { return StateTraitsImpl<StateType>::getStateSize(); }
   virtual uint32_t getStateSizeOfSubtree() const { return getStateSize(); }
 };
 
@@ -48,10 +49,7 @@ template <class IterType, class StateType>
 void
 NoaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset )
 {
-  this->stateOffset = offset;
-  offset += getStateSize();
-
-  StateType* state = new (planState.theBlock + this->stateOffset) StateType;
+  StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
 }
 
 
@@ -59,9 +57,7 @@ template <class IterType, class StateType>
 void
 NoaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState )
 {
-  StateType* state;
-  GET_STATE(StateType, state, planState);
-  state->reset(planState);
+  StateTraitsImpl<StateType>::reset(planState, this->stateOffset);
 }
 
 
@@ -69,9 +65,7 @@ template <class IterType, class StateType>
 void
 NoaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 {
-  StateType* state;
-  GET_STATE(StateType, state, planState);
-  state->~StateType();
+  StateTraitsImpl<StateType>::destroyState(planState, this->stateOffset);
 }
 
 

@@ -1,7 +1,7 @@
 
 #ifndef XQP_CONSTRUCTORS_H
 #define XQP_CONSTRUCTORS_H
-
+#include "zorba/common.h"
 #include "context/common.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
@@ -9,6 +9,8 @@
 #include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
+#include "runtime/base/narybase.h"
+#include "context/namespace_context.h"
 
 #include <assert.h>
 #include <iostream>
@@ -19,9 +21,6 @@ namespace xqp {
 class Item;
 class node;
 class zorba;
-class namespace_context;
-
-typedef rchandle<namespace_context> NamespaceContext_t;
 
 
 /*********************************************************************************

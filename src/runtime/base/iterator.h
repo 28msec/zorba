@@ -139,35 +139,6 @@ public:
   ~PlanState();
 };
 
-
-template <class T>
-class StateTraitsImpl
-{
-private:
-  StateTraitsImpl() {}
-public:
-  static uint32_t getStateSize()
-  {
-    return sizeof(T);
-  }
-
-  static void createState(void *ptr)
-  {
-    new (ptr)T();
-  }
- 
-  static void destroyState(void *ptr)
-  {
-    (reinterpret_cast<T*>(ptr))->~T();
-  }
-
-  static void reset(PlanState& planState, int8_t *block,  uint32_t stateOffset)
-  {
-    (reinterpret_cast<T*>(block + stateOffset))->reset(planState);
-  }
-};
-
-
 /**
  * Root object of all iterator state o bjects
  */
@@ -265,7 +236,7 @@ public:
    * Restarts the iterator so that the next 'produceNext' call will start 
    * again from the beginning (should not release any resources).  
    *
-   * @param stateBLock
+   * @param planState
    */
   virtual void reset(PlanState& planState) = 0;
 
@@ -273,8 +244,10 @@ public:
    * Finish the execution of the iterator.
    * Releases all resources and destroy the according plan state
    * objects
+   * Make sure that no exception is throw when destroying the states.
+   * Otherwise we will have a lot of memory leaks.
    *
-   * @param stateBLock
+   * @param planState
    */
   virtual void close(PlanState& planState) throw() = 0;
 
@@ -373,124 +346,6 @@ public:
   inline void resetImpl(PlanState& planState);
   inline void closeImpl(PlanState& planState);
 };
-
-
-/*******************************************************************************
-  Generic N-ary iterator.
-********************************************************************************/
-template <class Iter, class StateTraits>
-class NaryIterator : public Batcher<Iter>
-{
-protected:
-  std::vector<PlanIter_t> theChildren;
-
-public:
-  NaryIterator(const yy::location& aLoc, std::vector<PlanIter_t>& aChildren)
-    :
-    Batcher<Iter>(aLoc), theChildren(aChildren)
-  {
-#ifndef NDEBUG
-    std::vector<PlanIter_t>::const_iterator lIter = aChildren.begin();
-    std::vector<PlanIter_t>::const_iterator lEnd = aChildren.end();
-    for( ; lIter != lEnd; ++lIter)
-    {
-      Assert( *lIter ); // make sure alll children are set properly
-    }
-#endif
-  }
-
-  virtual ~NaryIterator() {}
-
-  virtual void 
-  accept(PlanIterVisitor&) const = 0;
-
-  void
-  openImpl(PlanState& aPlanState, uint32_t& aOffset)
-  {
-    // compute the position of the state in the state block
-    // and create the state object
-		Batcher<Iter>::stateOffset = aOffset;
-		aOffset += getStateSize();
-    StateTraits::createState(aPlanState.theBlock + Batcher<Iter>::stateOffset);
-
-    std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
-    std::vector<PlanIter_t>::iterator lEnd  = theChildren.end();
-    for ( ; lIter!= lEnd; ++lIter )
-    {
-      ( *lIter )->open( aPlanState, aOffset );
-    }
-  }
-
-  void
-	closeImpl( PlanState& aPlanState )
-	{
-    std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
-    std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
-    for ( ; lIter!= theChildren.end(); ++lIter )
-    {
-      ( *lIter )->close( aPlanState );
-		}
-
-    StateTraits::destroyState(aPlanState.theBlock + Batcher<Iter>::stateOffset);
-	}
-
-  void resetImpl(PlanState& aPlanState) 
-  { 
-    StateTraits::reset(aPlanState, aPlanState.theBlock, this->stateOffset);
-    
-    std::vector<PlanIter_t>::iterator lIter = theChildren.begin();
-    std::vector<PlanIter_t>::iterator lIterEnd = theChildren.end();
-    for(; lIter != lIterEnd; ++lIter)
-    {
-      ( *lIter )->reset( aPlanState );
-    }
-  }
-
-  virtual uint32_t
-  getStateSize() const {
-    return StateTraits::getStateSize();
-  }
-
-	virtual uint32_t
-	getStateSizeOfSubtree() const
-	{
-		uint32_t lSize = 0;
-
-    std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
-    std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-    for ( ; lIter!= theChildren.end(); ++lIter )
-    {
-			lSize += ( *lIter )->getStateSizeOfSubtree();
-		}
-
-		return getStateSize() + lSize;
-	}
-
-};
-
-
-#define NARY_ITER_STATE(iterName, stateName) class iterName \
-  : public NaryIterator<iterName, StateTraitsImpl<stateName> > {\
-public:\
-  iterName(yy::location loc, std::vector<PlanIter_t>& aChildren) :\
-    NaryIterator<iterName, StateTraitsImpl<stateName> >(loc, aChildren) \
-  { } \
-  virtual ~iterName() { } \
-  \
-  Item_t nextImpl(PlanState& aPlanState); \
-  \
-  virtual void accept(PlanIterVisitor& v) const \
-  {  \
-    v.beginVisit(*this); \
-    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin(); \
-    for ( ; iter != theChildren.end(); ++iter ) { \
-      ( *iter )->accept ( v ); \
-    } \
-    v.endVisit(*this); \
-  } \
-};
-
-#define NARY_ITER(name) NARY_ITER_STATE(name, PlanIteratorState) 
 
 
 /*******************************************************************************

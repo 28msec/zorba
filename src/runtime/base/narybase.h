@@ -8,9 +8,7 @@
 #define XQP_NARYBASE_H
 
 #include "runtime/base/iterator.h"
-#ifndef NDEBUG
-# include <cassert>
-#endif
+#include "runtime/base/statetraits.h"
 
 namespace xqp
 {
@@ -32,7 +30,7 @@ namespace xqp
 			void resetImpl ( PlanState& planState );
 			void closeImpl ( PlanState& planState );
 
-      virtual uint32_t getStateSize() const { return sizeof ( StateType ); }
+      virtual uint32_t getStateSize() const { return StateTraitsImpl<StateType>::getStateSize(); } 
       virtual uint32_t getStateSizeOfSubtree() const;
 	}; /* class BinaryBaseIterator */
 
@@ -56,26 +54,20 @@ namespace xqp
 #endif
 	}
 
-
 	template <class IterType, class StateType>
 	NaryBaseIterator<IterType, StateType>::~NaryBaseIterator()
 	{
 	}
 
-
   template <class IterType, class StateType>
   void
   NaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset )
   {
-    this->stateOffset = offset;
-    offset += getStateSize();
-
-    // construct the state
-    StateType* state = new (planState.theBlock + this->stateOffset) StateType;
+    StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
 
     std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
 		std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
-		for ( ; lIter!= theChildren.end(); ++lIter )
+		for ( ; lIter!= lEnd; ++lIter )
 		{
       ( *lIter )->open( planState, offset );
 		}
@@ -86,13 +78,11 @@ namespace xqp
 	void
 	NaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState )
 	{
-		StateType* state;
-		GET_STATE ( StateType, state, planState );
-		state->reset(planState);
+    StateTraitsImpl<StateType>::reset(planState, this->stateOffset);
 
     std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
 		std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
-		for ( ; lIter!= theChildren.end(); ++lIter )
+		for ( ; lIter!= lEnd; ++lIter )
 		{
       ( *lIter )->reset( planState );
 		}
@@ -105,14 +95,12 @@ namespace xqp
 	{
     std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
     std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
-    for ( ; lIter!= theChildren.end(); ++lIter )
+    for ( ; lIter!= lEnd; ++lIter )
     {
       ( *lIter )->close( planState );
 		}
 
-    StateType* state;
-    GET_STATE ( StateType, state, planState );
-    state->~StateType();
+    StateTraitsImpl<StateType>::destroyState(planState, this->stateOffset);
 	}
 
 
@@ -124,16 +112,39 @@ namespace xqp
 
     std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
     std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-    for (; lIter!= theChildren.end(); ++lIter )
+    for (; lIter!= lEnd; ++lIter )
     {
 			size += ( *lIter )->getStateSizeOfSubtree();
 		}
 
 		return this->getStateSize() + size;
 	}
-
-
 	/* end class NaryBaseIterator */
+
+#define NARY_ITER_STATE(iterName, stateName) class iterName \
+  : public NaryBaseIterator<iterName, stateName > {\
+public:\
+  iterName(yy::location loc, std::vector<PlanIter_t>& aChildren) :\
+    NaryBaseIterator<iterName, stateName >(loc, aChildren) \
+  { } \
+  virtual ~iterName() { } \
+  \
+  Item_t nextImpl(PlanState& aPlanState); \
+  \
+  virtual void accept(PlanIterVisitor& v) const \
+  {  \
+    v.beginVisit(*this); \
+    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin(); \
+    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end(); \
+    for ( ; iter != lEnd; ++iter ) { \
+      ( *iter )->accept ( v ); \
+    } \
+    v.endVisit(*this); \
+  } \
+};
+
+#define NARY_ITER(name) NARY_ITER_STATE(name, PlanIteratorState) 
+
 } /* namespace xqp */
 
 #endif /* XQP_NARYBASE_H */

@@ -22,9 +22,10 @@
 
 #include "context/common.h"
 #include "runtime/base/iterator.h"
-#include "runtime/base/binarybase.h"
-#include "runtime/base/unarybase.h"
 #include "runtime/base/noarybase.h"
+#include "runtime/base/unarybase.h"
+#include "runtime/base/binarybase.h"
+#include "runtime/base/narybase.h"
 #include <math.h>
 
 namespace xqp

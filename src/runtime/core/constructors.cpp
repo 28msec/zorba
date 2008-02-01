@@ -1,4 +1,6 @@
+#include "runtime/core/constructors.h"
 #include <memory>
+#include <sys/types.h>
 #include "util/Assert.h"
 #include "system/zorba.h"
 #include "errors/error_factory.h"
@@ -9,12 +11,14 @@
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
-#include "runtime/core/constructors.h"
 #include "runtime/visitors/planitervisitor.h"
+#include "runtime/base/statetraits.h"
+
 
 using namespace std;
 namespace xqp
 {
+
 
 /*******************************************************************************
 
@@ -206,10 +210,7 @@ Item_t ElementIterator::nextImpl(PlanState& planState)
 
 void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  this->stateOffset = offset;
-  offset += getStateSize();
-
-  ElementIteratorState* state = new (planState.theBlock + this->stateOffset) ElementIteratorState;
+  StateTraitsImpl<ElementIteratorState>::createState(planState, this->stateOffset, offset);
 
   if (theQNameIter != 0)
     theQNameIter->open(planState, offset);
@@ -227,9 +228,7 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 
 void ElementIterator::resetImpl(PlanState& planState)
 {
-  ElementIteratorState* state;
-  GET_STATE (ElementIteratorState, state, planState);
-  state->reset(planState);
+  StateTraitsImpl<ElementIteratorState>::reset(planState, this->stateOffset);
 
   if (theQNameIter != 0)
     theQNameIter->reset(planState);
@@ -260,9 +259,7 @@ void ElementIterator::closeImpl(PlanState& planState)
   if (theNamespacesIter != 0)
     theNamespacesIter->close(planState);
 
-  ElementIteratorState* state;
-  GET_STATE(ElementIteratorState, state, planState);
-  state->~ElementIteratorState();
+  StateTraitsImpl<ElementIteratorState>::destroyState(planState, this->stateOffset);
 }
 
   

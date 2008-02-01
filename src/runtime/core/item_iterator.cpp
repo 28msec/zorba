@@ -71,10 +71,7 @@ Item_t IfThenElseIterator::nextImpl ( PlanState& planState )
 }
 
 void IfThenElseIterator::openImpl ( PlanState& planState, uint32_t& offset ) {
-  this->stateOffset = offset;
-  offset += getStateSize();
-
-  IfThenElseIteratorState* state = new (planState.theBlock + this->stateOffset) IfThenElseIteratorState;
+  StateTraitsImpl<IfThenElseIteratorState>::createState(planState, this->stateOffset, offset);
 
   theCondIter->open( planState, offset );
   theThenIter->open( planState , offset);
@@ -83,9 +80,7 @@ void IfThenElseIterator::openImpl ( PlanState& planState, uint32_t& offset ) {
 
 void IfThenElseIterator::resetImpl ( PlanState& planState )
 {
-  IfThenElseIteratorState* state;
-  GET_STATE ( IfThenElseIteratorState, state, planState );
-  state->reset(planState);
+  StateTraitsImpl<IfThenElseIteratorState>::reset(planState, this->stateOffset);
   
   theCondIter->reset( planState );
   theThenIter->reset( planState );
@@ -98,9 +93,7 @@ void IfThenElseIterator::closeImpl ( PlanState& planState )
   theThenIter->close( planState );
   theElseIter->close( planState );
 
-  IfThenElseIteratorState* state;
-  GET_STATE ( IfThenElseIteratorState, state, planState );
-  state->~IfThenElseIteratorState();
+  StateTraitsImpl<IfThenElseIteratorState>::destroyState(planState, this->stateOffset);
 }
 
 uint32_t IfThenElseIterator::getStateSizeOfSubtree() const {

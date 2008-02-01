@@ -63,9 +63,7 @@ Item_t CtxVariableIterator::nextImpl(PlanState& planState)
 
 void CtxVariableIterator::resetImpl(PlanState& planState)
 {
-  PlanIteratorState* state;
-  GET_STATE ( PlanIteratorState, state, planState );
-  state->reset(planState);
+  StateTraitsImpl<PlanIteratorState>::reset(planState, this->stateOffset);
 
   Iterator_t iter;
 
@@ -87,9 +85,7 @@ void CtxVariableIterator::closeImpl(PlanState& planState)
   if (iter != NULL)
     iter->close();
 
-  PlanIteratorState* state;
-  GET_STATE ( PlanIteratorState, state, planState );
-  state->~PlanIteratorState();
+  StateTraitsImpl<PlanIteratorState>::destroyState(planState, this->stateOffset);
 }
 
 }
