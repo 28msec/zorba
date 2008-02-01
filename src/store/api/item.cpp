@@ -10,7 +10,6 @@
 #include "store/api/item.h"
 
 #include "errors/error_factory.h"
-#include "util/Assert.h"
 
 #include "system/zorba_engine.h"
 
@@ -21,16 +20,6 @@
 
 namespace xqp
 {
-
-Item::~Item()
-{
-}
-
-
-void Item::showError() const
-{
-  ZORBA_ASSERT (false);
-}
 
 bool Item::isNumeric() const {
   TypeSystem::xqtref_t type = GENV_TYPESYSTEM.create_type(getType(), TypeSystem::QUANT_ONE);
@@ -55,23 +44,6 @@ void Item::serializeXML( ostream& os )
 
 
 /* begin class AtomicItem */
-AtomicItem::~AtomicItem()
-{
-}
-
-
-bool AtomicItem::isNode() const
-{
-  return false;
-}
-
-
-bool AtomicItem::isAtomic() const
-{
-  return true;
-}
-
-  
 Item_t AtomicItem::getAtomizationValue() const
 {
   Item* lItem = const_cast<AtomicItem *>(this);

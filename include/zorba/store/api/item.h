@@ -13,6 +13,7 @@
 #include "util/utf8/xqpString.h"
 #include "types/representations.h"
 #include "store/api/store_consts.h"
+#include "util/Assert.h"
 
 #include <iostream>
 #include <sstream>
@@ -58,15 +59,8 @@ public:
  */
 class Item : public rcobject
 {
-private:
-  /**
-   * Method is used by methods in this class which are not allowed to be invoked.
-   * They must be overwritten in specific item implementation.
-   */
-  void showError() const;
-
 public:
-  ~Item();
+  virtual ~Item() {}
 
   /* -------------------   General Methods for Items ------------------------------ */
   /**
@@ -96,7 +90,7 @@ public:
    */
   virtual uint32_t hash() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   };
 
@@ -150,7 +144,7 @@ public:
    */
   virtual xqp_base64Binary getBase64Binary() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return NULL;
   }
 
@@ -158,7 +152,7 @@ public:
    */
   virtual bool getBooleanValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return false;
   }
 
@@ -167,7 +161,7 @@ public:
    */
   virtual xqp_decimal getDecimalValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 
@@ -175,7 +169,7 @@ public:
    */
   virtual xqp_int getIntValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 
@@ -184,7 +178,7 @@ public:
    */
   virtual xqp_integer getIntegerValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
   
@@ -192,7 +186,7 @@ public:
    */
   virtual xqp_long getLongValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 
@@ -200,7 +194,7 @@ public:
    */
   virtual xqp_short getShortValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
   
@@ -208,7 +202,7 @@ public:
    */
   virtual xqp_uinteger getUnsignedIntegerValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 
@@ -216,13 +210,13 @@ public:
    */
   virtual xqp_ubyte getUnsignedByteValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
   
   virtual xqp_byte getByteValue() const
   {
-    showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 
@@ -230,7 +224,7 @@ public:
    */
   virtual xqp_date getDateValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return xqp_date();
   }
   
@@ -238,7 +232,7 @@ public:
    */
   virtual xqp_dateTime getDateTimeValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return xqp_dateTime();
   }
 
@@ -246,7 +240,7 @@ public:
    */
   virtual xqp_double getDoubleValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 
@@ -254,7 +248,7 @@ public:
    */
   virtual xqp_duration getDurationValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return xqp_duration();
   }
 
@@ -262,7 +256,7 @@ public:
    */
   virtual std::vector<xqp_string> getStringVectorValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return std::vector<xqp_string>();
   }
 
@@ -270,7 +264,7 @@ public:
    */
   virtual xqp_float getFloatValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 
@@ -278,7 +272,7 @@ public:
    */
   virtual xqp_gDay getGDayValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return xqp_gDay();
   }
   
@@ -286,7 +280,7 @@ public:
    */
   virtual xqp_gMonth getGMonthValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return xqp_gMonth();
   }
 
@@ -294,7 +288,7 @@ public:
    */
   virtual xqp_gMonthDay getGMonthDayValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return xqp_gMonthDay();
   }
 
@@ -302,7 +296,7 @@ public:
    */
   virtual xqp_gYear getGYearValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return xqp_gYear();
   }
 
@@ -310,7 +304,7 @@ public:
    */
   virtual xqp_gYearMonth getGYearMonthValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return xqp_gYearMonth();
   }
 
@@ -318,7 +312,7 @@ public:
    */
   virtual xqp_hexBinary getHexBinaryValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return xqp_hexBinary();
   }
 
@@ -326,7 +320,7 @@ public:
    */
   virtual xqp_uint getUnsignedIntValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 
@@ -334,7 +328,7 @@ public:
    */
   virtual xqp_time getTimeValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return xqp_time();
   }
   
@@ -342,7 +336,7 @@ public:
    */
   virtual xqp_ulong getUnsignedLongValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 
@@ -350,7 +344,7 @@ public:
    */
   virtual xqp_ushort getUnsignedShortValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 
@@ -360,7 +354,7 @@ public:
    */
   virtual bool isNaN() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return false;
   }
 
@@ -370,7 +364,7 @@ public:
    */
   virtual bool isPosOrNegInf() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return false;
   }
 
@@ -392,7 +386,7 @@ public:
    */
   virtual Iterator_t getAttributes() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return NULL;
   }
 
@@ -402,7 +396,7 @@ public:
    */
   virtual xqp_string getBaseURI() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return "";
   }
 
@@ -411,7 +405,7 @@ public:
    */
   virtual Iterator_t getChildren() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return NULL;
   }
   
@@ -420,7 +414,7 @@ public:
    */
   virtual xqp_string getDocumentURI() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return "";
   }
 
@@ -429,7 +423,7 @@ public:
    */
   virtual bool isId() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return false;
   }
 
@@ -438,7 +432,7 @@ public:
    */
   virtual bool isIdrefs() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return false;
   }
 
@@ -447,7 +441,7 @@ public:
    */
   virtual void getNamespaceBindings(NsBindings& bindings) const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
   }
   
   /** Accessor for element node
@@ -455,7 +449,7 @@ public:
    */
   virtual bool getNilled() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return false;
   }
 
@@ -465,7 +459,7 @@ public:
    */
   virtual NodeKind getNodeKind() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return StoreConsts::elementNode;
   }
   
@@ -474,7 +468,7 @@ public:
    */
   virtual Item_t getNodeName() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return NULL;
   }
 
@@ -484,7 +478,7 @@ public:
    */
   virtual Item_t getParent() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return NULL;
   }
 
@@ -495,7 +489,7 @@ public:
    */
   virtual Iterator_t getTypedValue() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return NULL;
   }
   
@@ -504,7 +498,7 @@ public:
    */
   virtual xqp_string getNamespace() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return "";
   }
 
@@ -513,7 +507,7 @@ public:
    */
   virtual xqp_string getPrefix() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return "";
   }
 
@@ -522,7 +516,7 @@ public:
    */
   virtual xqp_string getLocalName() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return "";
   }
 
@@ -531,7 +525,7 @@ public:
    */
   virtual xqp_string getUnparsedEntityPublicId() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return "";
   }
 
@@ -540,7 +534,7 @@ public:
    */
   virtual xqp_string getUnparsedEntitySystemId() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return "";
   }
 
@@ -550,7 +544,7 @@ public:
    */
   virtual xqp_string getTarget() const
   {
-    this->showError();
+    ZORBA_ASSERT(false);
     return "";
   }
 
@@ -565,7 +559,7 @@ public:
    * by pointer instead of rchandle
    */
   virtual xqpStringStore* getStringValueP() {
-    this->showError();
+    ZORBA_ASSERT(false);
     return 0;
   }
 };   /* Item */
@@ -574,9 +568,9 @@ public:
 class AtomicItem : public Item
 {
 public:
-  virtual ~AtomicItem();
-  bool isNode() const;
-  bool isAtomic() const;
+  virtual ~AtomicItem() {}
+  bool isNode() const { return false; }
+  bool isAtomic() const { return true; }
   
   virtual Item_t getAtomizationValue() const;
   virtual Iterator_t getTypedValue() const;

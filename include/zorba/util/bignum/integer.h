@@ -41,6 +41,7 @@ private:
   }
 
 public:
+  
   static Integer parseLong(long aLong);
   static Integer parseULong(unsigned long);
   static Integer parseSizeT(size_t);
