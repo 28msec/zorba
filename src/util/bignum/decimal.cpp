@@ -30,6 +30,11 @@ Decimal::Decimal(unsigned long long aULong) {
   theDecimal = lStrRep.c_str();
 }
 
+Decimal Decimal::parseLong(long aLong) {
+  MAPM lNumber = aLong;
+  return Decimal(lNumber);
+}
+
 MAPM Decimal::round(MAPM aValue, MAPM aPrecision) {
   MAPM aExp = MAPM(10).pow(aPrecision);
   MAPM aCur = aValue * aExp;

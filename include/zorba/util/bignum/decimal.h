@@ -31,7 +31,6 @@ public:
   Decimal(unsigned long long);
   Decimal(int32_t aInt) { theDecimal = aInt; }
   Decimal(uint32_t aUInt);
-  Decimal(long aUInt) { theDecimal = aUInt; }
 
 private:
   static MAPM round(MAPM aValue, MAPM aPrecision);
@@ -40,6 +39,8 @@ private:
   static float mapmToFloat(MAPM);
 
 public:
+  static Decimal parseLong(long aLong);
+
   static double round(double, Integer aPrecision = 0);
   static float round(float, Integer aPrecision = 0);
   static double roundHalfToEven(double, Integer aPrecision);
