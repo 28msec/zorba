@@ -142,11 +142,11 @@ protected:
     return (nodestack.empty ()) ? expr_t (NULL) : peek_stack (nodestack);
   }
 
-  var_expr *bind_var (yy::location loc, string varname, var_expr::var_kind kind)
+  var_expr_t bind_var (yy::location loc, string varname, var_expr::var_kind kind)
   {
     Item_t qname = sctx_p->lookup_qname ("", varname);
-    expr_t e = new var_expr (loc, kind, qname);
-    sctx_p->bind_var (qname, e);
+    var_expr_t e = new var_expr (loc, kind, qname);
+    sctx_p->bind_var (qname, e.getp ());
     return e;
   }
   
@@ -423,7 +423,7 @@ void end_visit(const DirCommentConstructor& v, void *visit_state)
 
   yy::location loc = v.get_location();
   xqpString str = v.get_comment();
-  expr_t content = new const_expr (loc, content);
+  expr_t content = new const_expr (loc, str);
   nodestack.push (new text_expr(loc,
                                 text_expr::comment_constructor,
                                 content));
@@ -440,7 +440,7 @@ void end_visit(const DirPIConstructor& v, void *visit_state)
   TRACE_VISIT_OUT ();
   yy::location loc = v.get_location ();
   xqp_string target_str = v.get_pi_target ();
-  if (target.substr (0).uppercase () == "XML")
+  if (target_str.substr (0).uppercase () == "XML")
     ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
   expr_t
     target = new const_expr (loc, target_str),
