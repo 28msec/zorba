@@ -420,6 +420,7 @@ public:
   void setNsContext(NsBindingsContext* ctx);
   xqpStringStore* findBinding(xqpStringStore* prefix) const;
   const NsBindings& getLocalBindings() const;
+  void addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
 };
 
 
@@ -469,20 +470,20 @@ private:
 
 public:
   ConstrElementNode(
-        XmlTree*          tree,
-        XmlNode*          parent,
-        ulong             pos,
-			  Item*             nodeName,
-        Item*             typeName,
-        const NsBindings& nsBindings,
-        bool              typePreserve,
-        bool              nsPreserve,
-        bool              nsInherit);
+        XmlTree*  tree,
+        XmlNode*  parent,
+        ulong     pos,
+			  Item*     nodeName,
+        Item*     typeName,
+        bool      typePreserve,
+        bool      nsPreserve,
+        bool      nsInherit);
 
   void constructSubtree(
-        Iterator* attributesIte,
-        Iterator* childrenIte,
-        bool      copy);
+        Iterator*         attributesIte,
+        Iterator*         childrenIte,
+        const NsBindings& nsBindings,
+        bool              copy);
 
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }

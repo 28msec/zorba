@@ -511,7 +511,8 @@ Item_t BasicItemFactory::createElementNode(
     Iterator*         childrenIter,
     Iterator*         attrsIter,
     Iterator*         nsIter,
-    const NsBindings& nsBindings,
+    const NsBindings& contextBindings,
+    const NsBindings& localBindings,
     bool              isRoot,
     bool              copy,
     bool              typePreserve,
@@ -533,12 +534,9 @@ Item_t BasicItemFactory::createElementNode(
     pos = parent->numChildren();
   }
 
-  ConstrElementNode* n = new ConstrElementNode(xmlTree,
-                                               parent,
-                                               pos,
+  ConstrElementNode* n = new ConstrElementNode(xmlTree, parent, pos,
                                                name,
                                                type,
-                                               nsBindings,
                                                typePreserve,
                                                nsPreserve,
                                                nsInherit);
@@ -547,7 +545,7 @@ Item_t BasicItemFactory::createElementNode(
 
   try
   {
-    n->constructSubtree(attrsIter, childrenIter, copy);
+    n->constructSubtree(attrsIter, childrenIter, localBindings, copy);
   }
   catch (...)
   {

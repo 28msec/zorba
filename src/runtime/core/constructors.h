@@ -42,15 +42,18 @@ public:
   void reset(PlanState&);
 };
 
-class DocumentIterator : public UnaryBaseIterator<DocumentIterator, DocumentIteratorState>
+
+class DocumentIterator : public UnaryBaseIterator<DocumentIterator,
+                                                  DocumentIteratorState>
 {
-  public:
-    DocumentIterator(const yy::location& loc, PlanIter_t& aChild)
-      : UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
+public:
+  DocumentIterator(const yy::location& loc, PlanIter_t& aChild)
+    :
+    UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
 
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 
-    void accept(PlanIterVisitor&) const;
+  void accept(PlanIterVisitor&) const;
 };
 
 
@@ -62,15 +65,17 @@ class DocumentIterator : public UnaryBaseIterator<DocumentIterator, DocumentIter
   theChild:      Iter that produces the content of the document element
 
 *********************************************************************************/
-class DocumentContentIterator : public UnaryBaseIterator<DocumentContentIterator, PlanIteratorState> 
+class DocumentContentIterator : public UnaryBaseIterator<DocumentContentIterator,
+                                                         PlanIteratorState> 
 {
-  public:
-    DocumentContentIterator(const yy::location& loc, PlanIter_t& aContent)
-      : UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(loc, aContent) {}
+public:
+  DocumentContentIterator(const yy::location& loc, PlanIter_t& aContent)
+    : UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(loc, aContent)
+  {}
 
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 
-    void accept(PlanIterVisitor&) const;
+  void accept(PlanIterVisitor&) const;
 };
 
 
@@ -114,7 +119,7 @@ private:
   PlanIter_t          theChildrenIter;
   PlanIter_t          theNamespacesIter;
 
-  NamespaceContext_t  theContextBindigns;
+  NamespaceContext_t  theContextBindings;
   NamespaceContext_t  theLocalBindings;
 
   bool                theIsRoot;
@@ -273,7 +278,8 @@ public:
   ~EnclosedIteratorState();
 };
 
-class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState>
+class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator,
+                                                  EnclosedIteratorState>
 {
 private:
   bool theAttrContent;
@@ -314,7 +320,8 @@ public:
   }
 };
 
-class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator, DocFilterIteratorState>
+class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator,
+                                                   DocFilterIteratorState>
 {
 public:
   DocFilterIterator( const yy::location& loc, PlanIter_t& aChild)

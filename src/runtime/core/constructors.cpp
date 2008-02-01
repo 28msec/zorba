@@ -130,11 +130,13 @@ ElementIteratorState::init(PlanState& planState)
     (sctx->inherit_mode() == StaticQueryContext::inherit_ns ? true : false);
 }
 
+
 void
 ElementIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
 }
+
 
 ElementIterator::ElementIterator (
     const yy::location& loc,
@@ -149,7 +151,7 @@ ElementIterator::ElementIterator (
   theQNameIter(qnameIter),
   theAttributesIter(attrsIter),
   theChildrenIter(childrenIter),
-  theContextBindigns(ctxBindings),
+  theContextBindings(ctxBindings),
   theLocalBindings(localBindings),
   theIsRoot(isRoot)
 {
@@ -190,6 +192,7 @@ Item_t ElementIterator::nextImpl(PlanState& planState)
                            cwrapper.get(),
                            awrapper.get(),
                            NULL,
+                           theContextBindings->get_bindings(),
                            theLocalBindings->get_bindings(),
                            theIsRoot,
                            true,
@@ -644,6 +647,9 @@ Item_t EnclosedIterator::nextImpl(PlanState& planState)
           str = " " + str;
         else
           state->theString = str.getStore();
+
+        if (str == "")
+          continue;
 
         state->theContextItem = factory->createTextNode((ulong)&planState,
                                                         str.getStore(),

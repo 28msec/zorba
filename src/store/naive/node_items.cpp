@@ -571,7 +571,24 @@ ElementNode::~ElementNode()
 ********************************************************************************/
 const NsBindings& ElementNode::getLocalBindings() const
 {
+  ZORBA_ASSERT(haveLocalBindings());
   return theNsContext->getBindings();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
+{
+  if (!haveLocalBindings())
+  {
+    NsBindingsContext* parent = theNsContext;
+    theNsContext = new NsBindingsContext(0);
+    theNsContext->setParent(parent);
+  }
+
+  theNsContext->addBinding(prefix, ns);
 }
 
 
@@ -816,15 +833,14 @@ LoadedElementNode::LoadedElementNode(
 
 ********************************************************************************/
 ConstrElementNode::ConstrElementNode(
-    XmlTree*          tree,
-    XmlNode*          parent,
-    ulong             pos,
-    Item*             nodeName,
-    Item*             typeName,
-    const NsBindings& nsBindings,
-    bool              typePreserve,
-    bool              nsPreserve,
-    bool              nsInherit)
+    XmlTree*  tree,
+    XmlNode*  parent,
+    ulong     pos,
+    Item*     nodeName,
+    Item*     typeName,
+    bool      typePreserve,
+    bool      nsPreserve,
+    bool      nsInherit)
   :
   ElementNode(tree, parent, pos, nodeName)
 {
@@ -841,12 +857,6 @@ ConstrElementNode::ConstrElementNode(
   if (nsInherit)
     theFlags |= XmlNode::NsInherit;
 
-  if (!nsBindings.empty())
-  {
-    theNsContext = new NsBindingsContext(nsBindings);
-    theFlags |= XmlNode::HaveLocalBindings;
-  }
-
   //ZORBA_ASSERT(0);
 }
 
@@ -855,15 +865,33 @@ ConstrElementNode::ConstrElementNode(
 
 ********************************************************************************/
 void ConstrElementNode::constructSubtree(
-    Iterator* attributesIte,
-    Iterator* childrenIte,
-    bool      copy)
+    Iterator*         attributesIte,
+    Iterator*         childrenIte,
+    const NsBindings& localBindings,
+    bool              copy)
 {
   Item_t item;
   Item_t prevItem;
 
+  if (!localBindings.empty())
+  {
+    theNsContext = new NsBindingsContext(localBindings);
+    theFlags |= XmlNode::HaveLocalBindings;
+  }
+
+  if (theParent != NULL)
+    setNsContext(theParent->getNsContext());
+
   xqpStringStore* prefix = theName->getPrefix().getStore();
-  
+  xqpStringStore* ns = theName->getNamespace().getStore();
+
+  xqpStringStore* ns2 = findBinding(prefix);
+
+  if (ns2 == NULL && *prefix != "")
+  {
+    addLocalBinding(prefix, ns);
+  }
+
   if (attributesIte != 0)
   {
     item = attributesIte->next();
@@ -963,12 +991,9 @@ XmlNode* ElementNode::copy(XmlNode* parent, ulong pos)
                     theTypeName.getp() :
                     GET_STORE().theUntypedType.getp());
 
-  NsBindings bindings;
-
   ElementNode* copy = new ConstrElementNode(NULL, parent, pos,
                                             theName.getp(),
                                             typeName,
-                                            bindings,
                                             parent->typePreserve(),
                                             parent->nsPreserve(),
                                             parent->nsInherit());
