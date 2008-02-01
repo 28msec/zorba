@@ -24,7 +24,6 @@ using namespace std;
 
 namespace xqp
 {
-    
 bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
 {
   std::string ss = *s.getStore();
@@ -127,4 +126,40 @@ int TimeZone::compare(const TimeZone& t) const
     return 1;
 }
 
+bool TimeZone::is_negative() const
+{
+  return the_time_zone.is_negative();
+}
+
+bool TimeZone::is_not_a_date_time() const
+{
+  return the_time_zone.is_not_a_date_time();
+}
+long TimeZone::getHours() const
+{
+  return the_time_zone.is_negative()?
+      -the_time_zone.hours():
+      the_time_zone.hours();
+}
+
+long TimeZone::getMinutes() const
+{
+  return the_time_zone.is_negative()?
+      -the_time_zone.minutes():
+      the_time_zone.minutes();
+}
+
+long TimeZone::getSeconds() const
+{
+  return the_time_zone.is_negative()?
+      -(the_time_zone.seconds()):
+      (the_time_zone.seconds());
+}
+
+long TimeZone::getFractionalSeconds() const
+{
+  return the_time_zone.is_negative()?
+      -the_time_zone.fractional_seconds():
+      the_time_zone.fractional_seconds();
+}
 } // namespace xqp

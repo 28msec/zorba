@@ -424,6 +424,8 @@ Item_t
 FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
+  xqp_duration tmpDuration;
+  bool res = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -432,7 +434,9 @@ FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createDuration(itemArg->getDateTimeValue()->getTimezone()), state );
+    res = DayTimeDuration::from_Timezone(itemArg->getDateTimeValue()->getTimezone(), tmpDuration);
+    if(res)
+      STACK_PUSH( Zorba::getItemFactory()->createDuration(tmpDuration), state );
   }
   STACK_END();
 }
@@ -532,6 +536,8 @@ Item_t
 FnTimezoneFromDateIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
+  xqp_duration tmpDuration;
+  bool res = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -540,7 +546,9 @@ FnTimezoneFromDateIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createDuration(itemArg->getDateValue()->getTimezone()), state );
+    res = DayTimeDuration::from_Timezone(itemArg->getDateValue()->getTimezone(), tmpDuration);
+    if(res)
+      STACK_PUSH( Zorba::getItemFactory()->createDuration(tmpDuration), state );
   }
   STACK_END();
 }
@@ -643,6 +651,8 @@ Item_t
 FnTimezoneFromTimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
+  xqp_duration tmpDuration;
+  bool res = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -651,7 +661,9 @@ FnTimezoneFromTimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createDuration(itemArg->getTimeValue()->getTimezone()), state );
+    res = DayTimeDuration::from_Timezone(itemArg->getTimeValue()->getTimezone(), tmpDuration);
+    if(res)
+      STACK_PUSH( Zorba::getItemFactory()->createDuration(tmpDuration), state );
   }
   STACK_END();
 }

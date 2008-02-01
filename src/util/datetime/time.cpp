@@ -87,9 +87,9 @@ double Time::getSeconds() const
   return (the_time.seconds() % NO_SECONDS_IN_MINUTE) + frac_sec;
 }
 
-xqpString Time::getTimezone() const
+TimeZone Time::getTimezone() const
 {
-  return the_time_zone.toString();
+  return the_time_zone;
 }
 
 Time& Time::operator=(const Time_t& t_t)

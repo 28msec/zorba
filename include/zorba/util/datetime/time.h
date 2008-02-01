@@ -37,7 +37,7 @@ public:
   int32_t getHours() const;
   int32_t getMinutes() const;
   double getSeconds() const;
-  xqpString getTimezone() const;
+  TimeZone getTimezone() const;
 
 protected:
   Time& operator=(const Time_t& t_t);

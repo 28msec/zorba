@@ -14,6 +14,7 @@
 
 namespace xqp
 {
+  class TimeZone;
 class DurationBase;
 class YearMonthDuration;
 class DayTimeDuration;
@@ -80,6 +81,7 @@ public:
   virtual ~DayTimeDuration() { };
 
   static bool parse_string(const xqpString& s, DayTimeDuration_t& dtd_t, bool dont_check_letter_p = false);
+  static bool from_Timezone(const TimeZone& t, DurationBase_t& dt);
   
   virtual bool operator<(const DurationBase& dt) const;
   virtual bool operator==(const DurationBase& dt) const;

@@ -236,35 +236,36 @@ xqpString DayTimeDuration::toString() const
 {
   xqpString result = "";
 
-  if (is_negative)
+  if ( is_negative )
     result += "-";
 
   result += "P";
 
-  // TODO: check
+    // TODO: check
 
-  //if (days != 0)
-    result += NumConversions::longToStr(days) + "D";
+  if ( days != 0 )
+    result += NumConversions::longToStr ( days ) + "D";
 
 
   result += "T";
-  
-  //if (time_duration.hours() != 0)
-    result += NumConversions::integerToStr(timeDuration.hours()) + "H";
 
-  //if (time_duration.minutes() != 0)
-    result += NumConversions::integerToStr(timeDuration.minutes()) + "M";
+  if ( timeDuration.hours() != 0 ||
+       ( timeDuration.hours() == 0 && timeDuration.minutes() == 0 && timeDuration.seconds() == 0 && timeDuration.fractional_seconds() == 0 ) )
+    result += NumConversions::integerToStr ( timeDuration.hours() ) + "H";
 
-  //if (time_duration.seconds() != 0 || fractional_seconds() != 0)
+  if ( timeDuration.minutes() != 0 )
+    result += NumConversions::integerToStr ( timeDuration.minutes() ) + "M";
+
+  if ( timeDuration.seconds() != 0 || timeDuration.fractional_seconds() != 0 )
   {
-    result += NumConversions::integerToStr(timeDuration.seconds());
-    
-    if (timeDuration.fractional_seconds() != 0 )
-      result += "." + NumConversions::longToStr(timeDuration.fractional_seconds());
+    result += NumConversions::integerToStr ( timeDuration.seconds() );
+
+    if ( timeDuration.fractional_seconds() != 0 )
+      result += "." + NumConversions::longToStr ( timeDuration.fractional_seconds() );
 
     result += "S";
   }
-  
+
   return result;
 }
 
@@ -502,6 +503,16 @@ bool DayTimeDuration::parse_string(const xqpString& s, DayTimeDuration_t& dt_t, 
   return true;
 }
 
+bool DayTimeDuration::from_Timezone ( const TimeZone& t, DurationBase_t& dt )
+{
+  if(!t.is_not_a_date_time())
+  {
+    dt = new DayTimeDuration ( t.is_negative(), 0, t.getHours(), t.getMinutes(), t.getSeconds(), t.getFractionalSeconds() );
+    return true;
+  }
+  else
+    return false;
+}
 
 Duration::Duration()
 {

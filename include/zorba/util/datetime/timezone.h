@@ -30,6 +30,12 @@ public:
   int compare(const TimeZone& t) const;
 
   xqpString toString() const;
+  virtual bool is_negative() const;
+  virtual bool is_not_a_date_time() const;
+  virtual long getHours() const;
+  virtual long getMinutes() const;
+  virtual long getSeconds() const;
+  virtual long getFractionalSeconds() const;
   
 protected:
   TimeZone& operator=(const TimeZone_t& t_t);

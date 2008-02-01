@@ -246,7 +246,6 @@ namespace xqp
     if (size() == 0)
       return -1;
 
-    //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator for the default collation
@@ -260,9 +259,9 @@ namespace xqp
       return -1;
     }
 
-    for(int16_t pos = search.first(status);
-    U_SUCCESS(status) && pos != USEARCH_DONE;
-    pos = search.next(status))
+    for(  int16_t pos = search.first(status);
+          U_SUCCESS(status) && pos != USEARCH_DONE;
+          pos = search.next(status))
     {
       return pos;
     }
@@ -278,7 +277,7 @@ namespace xqp
   {
     UErrorCode status = U_ZERO_ERROR;
 
-    //get the collator object fromthe Static context
+    //get the collator object from the Static context
     ::Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(collationUri);
 
     //user retains the ownership of this collator, it does not get destroyed during this instance's destruction
@@ -306,7 +305,6 @@ namespace xqp
 
   int32_t xqpString::lastIndexOf(xqpString pattern) const
   {
-    //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator for the default collation

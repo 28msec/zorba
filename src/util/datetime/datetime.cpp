@@ -135,9 +135,9 @@ double DateTime::getSeconds() const
   return the_date_time.time_of_day().seconds() + frac_sec;
 }
 
-xqpString DateTime::getTimezone() const
+TimeZone DateTime::getTimezone() const
 {
-  return the_time_zone.toString();
+  return the_time_zone;
 }
 
 } // namespace xqp
