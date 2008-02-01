@@ -79,6 +79,18 @@
 */
 #define yyterminate() return token::END
 
+std::string start_state(int);
+std::string start_state(yyscan_t* yyscanner);
+
+#define YY_USER_ACTION \
+{ \
+  if (yy_flex_debug) { \
+    std::cout<<'<'<<start_state(YY_START)<<">" /* << " [["<<yytext<<"]]" */ << std::endl; \
+    yylloc->columns(yyleng); \
+  } \
+}
+
+
 %}
 
 
@@ -393,7 +405,7 @@ typedef yy::xquery_parser::token token;
 "(" {
   return token::LPAR;
 }
-"if"{S}"(" {
+"if"{SOrComment}"(" {
   return token::IF_LPAR;
 }
 
@@ -457,14 +469,11 @@ typedef yy::xquery_parser::token token;
   return token::PI_LPAR;
 }
 
-
-
   /* order dependence: this must follow the rules: xxx{S}"(" */
-{QName}{S}"(" {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng-1, false, true);
-  return token::QNAME_LPAR;
-}
-
+  /* {QName}{S}"(" {
+   yylval->sval = driver.symtab.put_qname(yytext, yyleng-1, false, true);
+   return token::QNAME_LPAR;
+  }*/
 
 "-" {
   return token::MINUS;
@@ -1014,14 +1023,13 @@ typedef yy::xquery_parser::token token;
   return token::WORDS;
 }
 
+{S} {
+  /* eat up whitespace */
+}
 
   /* catch all */
 {CatchAll} {
   return token::UNRECOGNIZED;
-}
-
-{S} {
-  /* eat up whitespace */
 }
 
   /* END MODE INITIAL */
@@ -1094,6 +1102,11 @@ typedef yy::xquery_parser::token token;
 "{" {
   yy_push_state(INITIAL, yyscanner);
   return token::LBRACE;
+}
+"(" {
+  BEGIN INITIAL;
+  /* yy_push_state(INITIAL, yyscanner); */
+  return token::LPAR;
 }
 ";" {
   BEGIN INITIAL;
@@ -3204,48 +3217,44 @@ void xquery_driver::parse(xqp_string const fname)
 
 }
 
-
-std::string start_state(yyscan_t* yyscanner)
-{  
-  struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-  
-  switch (YY_START) {
-  case INITIAL: return "INITIAL";
-  case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
-  case MODE_CDATA_SECTION: return "MODE_CDATA_SECTION";
-  case MODE_CLOSE_KINDTEST: return "MODE_CLOSE_KINDTEST";
-  case MODE_DECLAREORDERING: return "MODE_DECLAREORDERING";
-  case MODE_ELEMENT_CONTENT: return "MODE_ELEMENT_CONTENT";
-  case MODE_END_TAG: return "MODE_END_TAG";
-  case MODE_EXPR_COMMENT: return "MODE_EXPR_COMMENT";
-  case MODE_ITEMTYPE: return "MODE_ITEMTYPE";
-  case MODE_KINDTEST: return "MODE_KINDTEST";
-  case MODE_KINDTESTFORPI: return "MODE_KINDTESTFORPI";
-  case MODE_NAMESPACEDECL: return "MODE_NAMESPACEDECL";
-  case MODE_NAMESPACEKEYWORD: return "MODE_NAMESPACEKEYWORD";
-  case MODE_OCCURRENCE_INDICATOR: return "MODE_OCCURRENCE_INDICATOR";
-  case MODE_OPERATOR: return "MODE_OPERATOR";
-  case MODE_OPTION: return "MODE_OPTION";
-  case MODE_PRAGMA: return "MODE_PRAGMA";
-  case MODE_PRAGMACONTENTS: return "MODE_PRAGMACONTENTS";
-  case MODE_PROCESSING_INSTRUCTION: return "MODE_PROCESSING_INSTRUCTION";
-  case MODE_PROCESSING_INSTRUCTION_CONTENT: return "MODE_PROCESSING_INSTRUCTION_CONTENT";
-  case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
-  case MODE_SINGLETYPE: return "MODE_SINGLETYPE";
-  case MODE_START_TAG: return "MODE_START_TAG";
-  case MODE_URITOOPERATOR: return "MODE_URITOOPERATOR";
-  case MODE_VARNAME: return "MODE_VARNAME";
-  case MODE_XMLSPACE_DECL: return "MODE_XMLSPACE_DECL";
-  case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
-  case MODE_XQUERY_VERSION: return "MODE_XQUERY_VERSION";
-  default: return "Something's drastically wrong here, unrecognized start state!\n";
-  }  
+std::string start_state(int state)
+{
+  switch (state) {
+    case INITIAL: return "INITIAL";
+    case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
+    case MODE_CDATA_SECTION: return "MODE_CDATA_SECTION";
+    case MODE_CLOSE_KINDTEST: return "MODE_CLOSE_KINDTEST";
+    case MODE_DECLAREORDERING: return "MODE_DECLAREORDERING";
+    case MODE_ELEMENT_CONTENT: return "MODE_ELEMENT_CONTENT";
+    case MODE_END_TAG: return "MODE_END_TAG";
+    case MODE_EXPR_COMMENT: return "MODE_EXPR_COMMENT";
+    case MODE_ITEMTYPE: return "MODE_ITEMTYPE";
+    case MODE_KINDTEST: return "MODE_KINDTEST";
+    case MODE_KINDTESTFORPI: return "MODE_KINDTESTFORPI";
+    case MODE_NAMESPACEDECL: return "MODE_NAMESPACEDECL";
+    case MODE_NAMESPACEKEYWORD: return "MODE_NAMESPACEKEYWORD";
+    case MODE_OCCURRENCE_INDICATOR: return "MODE_OCCURRENCE_INDICATOR";
+    case MODE_OPERATOR: return "MODE_OPERATOR";
+    case MODE_OPTION: return "MODE_OPTION";
+    case MODE_PRAGMA: return "MODE_PRAGMA";
+    case MODE_PRAGMACONTENTS: return "MODE_PRAGMACONTENTS";
+    case MODE_PROCESSING_INSTRUCTION: return "MODE_PROCESSING_INSTRUCTION";
+    case MODE_PROCESSING_INSTRUCTION_CONTENT: return "MODE_PROCESSING_INSTRUCTION_CONTENT";
+    case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
+    case MODE_SINGLETYPE: return "MODE_SINGLETYPE";
+    case MODE_START_TAG: return "MODE_START_TAG";
+    case MODE_URITOOPERATOR: return "MODE_URITOOPERATOR";
+    case MODE_VARNAME: return "MODE_VARNAME";
+    case MODE_XMLSPACE_DECL: return "MODE_XMLSPACE_DECL";
+    case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
+    case MODE_XQUERY_VERSION: return "MODE_XQUERY_VERSION";
+    default: return "Something's drastically wrong here, unrecognized start state!\n";
+  }
 }
 
-/*
-#define YY_USER_ACTION \
-  { \
-    std::cout<<'<'<<start_state()<<"> [["<<yytext<<"]]"<<std::endl; \
-    yylloc->columns(yyleng); \
-  }
-*/
+
+std::string start_state(yyscan_t* yyscanner)
+{
+  struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+  return start_state(YY_START);
+}

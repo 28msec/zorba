@@ -1499,7 +1499,7 @@ ConstructionDecl :
 // [26] FunctionDecl
 // -----------------
 FunctionDecl :
-		DECLARE_FUNCTION  QNAME_LPAR  RPAR  EXTERNAL
+		DECLARE_FUNCTION  QNAME LPAR  RPAR  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [external]\n";
@@ -1509,7 +1509,7 @@ FunctionDecl :
 								NULL,NULL,NULL,
 								fn_extern);
 		}
-	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME LPAR  RPAR  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [expr]\n";
@@ -1517,33 +1517,33 @@ FunctionDecl :
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,NULL,
-								dynamic_cast<EnclosedExpr*>($4),
+								dynamic_cast<EnclosedExpr*>($5),
 								fn_read);
 		}
-	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR  EXTERNAL
+	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.external]\n";
 #endif
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
-								dynamic_cast<ParamList*>($3),
+								dynamic_cast<ParamList*>($4),
 								NULL,NULL,
 								fn_extern);
 		}
-	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.expr]\n";
 #endif
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
-								dynamic_cast<ParamList*>($3),
+								dynamic_cast<ParamList*>($4),
 								NULL,
-								dynamic_cast<EnclosedExpr*>($5),
+								dynamic_cast<EnclosedExpr*>($6),
 								fn_read);
 		}
-	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EXTERNAL
+	|	DECLARE_FUNCTION  QNAME LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.external]\n";
@@ -1551,11 +1551,11 @@ FunctionDecl :
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,
-								dynamic_cast<SequenceType*>($4),
+								dynamic_cast<SequenceType*>($5),
 								NULL,
 								fn_extern);
 		}
-	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.expr]\n";
@@ -1563,35 +1563,35 @@ FunctionDecl :
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,
-								dynamic_cast<SequenceType*>($4),
-								dynamic_cast<EnclosedExpr*>($5),
+								dynamic_cast<SequenceType*>($5),
+								dynamic_cast<EnclosedExpr*>($6),
 								fn_read);
 		}
-	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
+	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.external]\n";
 #endif
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
-								dynamic_cast<ParamList*>($3),
-								dynamic_cast<SequenceType*>($5),
+								dynamic_cast<ParamList*>($4),
+								dynamic_cast<SequenceType*>($6),
 								NULL,
 								fn_extern);
 		}
-	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.expr]\n";
 #endif
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
-								dynamic_cast<ParamList*>($3),
-								dynamic_cast<SequenceType*>($5),
-								dynamic_cast<EnclosedExpr*>($6),
+								dynamic_cast<ParamList*>($4),
+								dynamic_cast<SequenceType*>($6),
+								dynamic_cast<EnclosedExpr*>($7),
 								fn_read);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR  EXTERNAL
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) external]\n";
@@ -1601,7 +1601,7 @@ FunctionDecl :
 								NULL,NULL,NULL,
 								fn_extern_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR  EnclosedExpr
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) expr]\n";
@@ -1609,33 +1609,33 @@ FunctionDecl :
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,NULL,
-								dynamic_cast<EnclosedExpr*>($4),
+								dynamic_cast<EnclosedExpr*>($5),
 								fn_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR  EXTERNAL
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.external]\n";
 #endif
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
-								dynamic_cast<ParamList*>($3),
+								dynamic_cast<ParamList*>($4),
 								NULL,NULL,
 								fn_extern_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR  EnclosedExpr
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.expr]\n";
 #endif
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
-								dynamic_cast<ParamList*>($3),
+								dynamic_cast<ParamList*>($4),
 								NULL,
-								dynamic_cast<EnclosedExpr*>($5),
+								dynamic_cast<EnclosedExpr*>($6),
 								fn_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EXTERNAL
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.external]\n";
@@ -1643,11 +1643,11 @@ FunctionDecl :
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,
-								dynamic_cast<SequenceType*>($4),
+								dynamic_cast<SequenceType*>($5),
 								NULL,
 								fn_extern_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EnclosedExpr
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.expr]\n";
@@ -1655,32 +1655,32 @@ FunctionDecl :
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,
-								dynamic_cast<SequenceType*>($4),
-								dynamic_cast<EnclosedExpr*>($5),
+								dynamic_cast<SequenceType*>($5),
+								dynamic_cast<EnclosedExpr*>($6),
 								fn_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
 #endif
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
-								dynamic_cast<ParamList*>($3),
-								dynamic_cast<SequenceType*>($5),
+								dynamic_cast<ParamList*>($4),
+								dynamic_cast<SequenceType*>($6),
 								NULL,
 								fn_extern_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
 #endif
 			$$ = new FunctionDecl(@$,
 								new QName(@$,driver.symtab.get((off_t)$2)),
-								dynamic_cast<ParamList*>($3),
-								dynamic_cast<SequenceType*>($5),
-								dynamic_cast<EnclosedExpr*>($6),
+								dynamic_cast<ParamList*>($4),
+								dynamic_cast<SequenceType*>($6),
+								dynamic_cast<EnclosedExpr*>($7),
 								fn_update);
 		}
 	;
@@ -3303,7 +3303,8 @@ Pragma :
 // [67] PathExpr
 // -------------
 PathExpr :
-		LEADING_LONE_SLASH
+		//LEADING_LONE_SLASH
+    SLASH
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/]\n";
@@ -3966,7 +3967,7 @@ UnorderedExpr :
 |
 |____________________________________________________________________*/
 FunctionCall :
-		QNAME_LPAR  RPAR
+		QNAME LPAR  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [ ]\n";
@@ -3975,14 +3976,14 @@ FunctionCall :
 								new QName(@$,driver.symtab.get((off_t)$1)),
 								NULL);
 		}
-	|	QNAME_LPAR  ArgList  RPAR
+	|	QNAME LPAR  ArgList  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [arglist]\n";
 #endif
 			$$ = new FunctionCall(@$,
 								new QName(@$,driver.symtab.get((off_t)$1)),
-								dynamic_cast<ArgList*>($2));
+								dynamic_cast<ArgList*>($3));
 		}
 	;
 
