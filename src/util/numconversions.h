@@ -64,6 +64,7 @@ public:
   static bool isNaN(xqp_float);
   static bool isPosOrNegInf(xqp_double);
   static bool isPosOrNegInf(xqp_float);
+  static xqpString sizetToStr(size_t);
 
   /********************************************************************************
    * Numeric to Numeric Conversions

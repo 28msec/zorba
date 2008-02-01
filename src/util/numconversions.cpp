@@ -449,4 +449,8 @@ namespace xqp {
     return (aFloat == std::numeric_limits<xqp_float>::infinity()
       || aFloat == -std::numeric_limits<xqp_float>::infinity());
   }
+
+  xqpString NumConversions::sizetToStr(size_t aSizeT) {
+    return boost::lexical_cast<std::string>(aSizeT);
+  }
 } /* namespace xqp */

@@ -43,6 +43,11 @@ Integer Integer::parseULong(unsigned long aULong) {
   MAPM lNumber = lStrRep.c_str();
   return Integer(lNumber);
 }
+Integer Integer::parseSizeT(size_t aSizeT) {
+  xqpString lStrRep = NumConversions::sizetToStr(aSizeT);
+  MAPM lNumber = lStrRep.c_str();
+  return Integer(lNumber);
+}
 
 Integer& Integer::operator=(const xqpString& aStr) {
   theInteger = aStr.c_str();

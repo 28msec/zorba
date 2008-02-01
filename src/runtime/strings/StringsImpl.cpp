@@ -524,7 +524,7 @@ StringLengthIterator::nextImpl(PlanState& planState) {
   {
     item = item->getAtomizationValue();
     STACK_PUSH(Zorba::getItemFactory()->createInteger(
-                            item->getStringValue().length()),
+                            Integer::parseSizeT(item->getStringValue().length())),
                             state);
   }
   else
