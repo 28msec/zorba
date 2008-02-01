@@ -317,7 +317,7 @@ void end_visit(const ConstructionDecl& v, void *visit_state)
 void *begin_visit(const CopyNamespacesDecl& v)
 {
   TRACE_VISIT ();
-  CHK_ONE_DECL (hadCopyNSDecl, XQST0032);
+  CHK_ONE_DECL (hadCopyNSDecl, XQST0055);
   return no_state;
 }
 
@@ -890,18 +890,26 @@ void end_visit(const CommonContent& v, void *visit_state)
       // &#xFF; or &#255;
       uint32_t codepoint;
       xqp_string charref;
-      stringstream ss;
+ 
+      ulong curToken = 0;
+      std::string content = v.get_ref();
 
-      if (v.get_ref()[2] == 'x')
-        ss << hex << v.get_ref().substr(3, v.get_ref().size()-3);
-      else
-        ss << v.get_ref().substr(2, v.get_ref().size()-2);
+      while (curToken < content.size())
+      {
+        stringstream ss;
+
+        if (content[curToken+2] == 'x')
+          ss << hex << content.substr(curToken+3, 2);
+        else
+          ss << content.substr(curToken+2, 3);
       
-      ss >> codepoint;
-      charref = (uint32_t)codepoint;
-      
+        ss >> codepoint;
+        charref += (uint32_t)codepoint;
+        curToken += 6;
+      }
+
       expr_t lConstExpr = new const_expr(v.get_location(), charref);
-      nodestack.push ( lConstExpr );
+      nodestack.push(lConstExpr);
       break;
     }
     case cont_escape_lbrace:
