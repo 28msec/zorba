@@ -4,8 +4,6 @@
 
 namespace xqp {
 
-static void *no_state = (void *) new int;
-
 ParseNodePrintDOTVisitor::ParseNodePrintDOTVisitor(std::ostream &aStream)
   : theIndent(0),
     os(aStream)

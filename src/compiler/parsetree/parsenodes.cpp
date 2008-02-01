@@ -28,6 +28,9 @@
 using namespace std;
 namespace xqp {
 
+int dummy;
+void *parsenode_visitor::no_state = (void *) &dummy;
+
 int printdepth = 0;
 ostringstream __oss;
 
