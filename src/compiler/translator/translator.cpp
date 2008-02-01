@@ -145,14 +145,13 @@ protected:
   var_expr *bind_var (yy::location loc, string varname, var_expr::var_kind kind)
   {
     Item_t qname = sctx_p->lookup_qname ("", varname);
-    var_expr *e = new var_expr (loc, kind, qname);
+    expr_t e = new var_expr (loc, kind, qname);
     sctx_p->bind_var (qname, e);
     return e;
   }
   
   fo_expr *create_seq (yy::location loc) {
-    fo_expr *e = new fo_expr (loc, LOOKUP_OPN ("concatenate"));
-    return e;
+    return new fo_expr (loc, LOOKUP_OPN ("concatenate"));
   }
 
   void push_scope ()
@@ -421,12 +420,13 @@ void *begin_visit(const DirCommentConstructor& v)
 void end_visit(const DirCommentConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-    
-  xqpString content = v.get_comment();
-  
-  nodestack.push (new text_expr(v.get_location(),
+
+  yy::location loc = v.get_location();
+  xqpString str = v.get_comment();
+  expr_t content = new const_expr (loc, content);
+  nodestack.push (new text_expr(loc,
                                 text_expr::comment_constructor,
-                                new const_expr (v.get_location (), content)));
+                                content));
 }
 
 void *begin_visit(const DirPIConstructor& v)
@@ -439,10 +439,13 @@ void end_visit(const DirPIConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   yy::location loc = v.get_location ();
-  xqp_string target = v.get_pi_target ();
+  xqp_string target_str = v.get_pi_target ();
   if (target.substr (0).uppercase () == "XML")
     ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
-  nodestack.push (new pi_expr (loc, new const_expr (loc, target), new const_expr (loc, v.get_pi_content ())));
+  expr_t
+    target = new const_expr (loc, target_str),
+    content = new const_expr (loc, v.get_pi_content ());
+  nodestack.push (new pi_expr (loc, target,  content));
 }
 
 
@@ -479,8 +482,7 @@ void end_visit(const DirElemConstructor& v, void *visit_state)
   nameExpr = new const_expr(v.get_location(),
                             sctx_p->lookup_elem_qname(v.get_elem_name()->get_qname())); 
 
-  elem_expr* elem = new elem_expr(v.get_location(), nameExpr, attrExpr, contentExpr, ns_ctx);
-  nodestack.push(elem);
+  nodestack.push (new elem_expr(v.get_location(), nameExpr, attrExpr, contentExpr, ns_ctx));
   pop_elem_scope();
   pop_scope();
 }
@@ -605,9 +607,10 @@ void end_visit(const DirElemContent& v, void *visit_state)
   else
   {
     if (!v.isStripped()) {
+      expr_t content = new const_expr (v.get_location (), v.get_elem_content());
       nodestack.push (new text_expr(v.get_location(),
-                      text_expr::text_constructor,
-                      new const_expr (v.get_location (), v.get_elem_content())));
+                                    text_expr::text_constructor,
+                                    content));
     }
   }
 }
@@ -890,7 +893,7 @@ void end_visit(const CommonContent& v, void *visit_state)
       ss >> codepoint;
       charref = (uint32_t)codepoint;
       
-      const_expr *lConstExpr = new const_expr(v.get_location(), charref);
+      expr_t lConstExpr = new const_expr(v.get_location(), charref);
       nodestack.push ( lConstExpr );
       break;
     }
@@ -899,7 +902,7 @@ void end_visit(const CommonContent& v, void *visit_state)
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
       xqpString content("{");
-      const_expr *lConstExpr = new const_expr(v.get_location(), content);
+      expr_t lConstExpr = new const_expr(v.get_location(), content);
       nodestack.push ( lConstExpr );
       break;
     }
@@ -908,7 +911,7 @@ void end_visit(const CommonContent& v, void *visit_state)
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
       xqpString content("}");
-      const_expr *lConstExpr = new const_expr(v.get_location(), content);
+      expr_t lConstExpr = new const_expr(v.get_location(), content);
       nodestack.push ( lConstExpr );
       break;
     }
@@ -957,7 +960,6 @@ void end_visit(const CompElemConstructor& v, void *visit_state)
 
   expr_t nameExpr;
   expr_t contentExpr = 0;
-  expr_t elemExpr = 0;
 
   if (v.get_content_expr() != 0) 
   {
@@ -992,8 +994,7 @@ void end_visit(const CompElemConstructor& v, void *visit_state)
                                                    TypeSystem::QUANT_ONE));
   }
 
-  elemExpr = new elem_expr(v.get_location(), nameExpr, contentExpr, ns_ctx);
-  nodestack.push(elemExpr);
+  nodestack.push (new elem_expr(v.get_location(), nameExpr, contentExpr, ns_ctx));
 }
 
 
@@ -1074,9 +1075,9 @@ void end_visit(const CompCommentConstructor& v, void *visit_state)
                                                LOOKUP_OP1("enclosed-expr"));
   enclosedExpr->add(inputExpr);
 
-  expr* textExpr = new text_expr(v.get_location(),
-                                 text_expr::comment_constructor,
-                                 enclosedExpr.getp());
+  expr_t textExpr = new text_expr(v.get_location(),
+                                  text_expr::comment_constructor,
+                                  enclosedExpr.getp());
 
   nodestack.push(textExpr);
 }
@@ -1152,9 +1153,9 @@ void end_visit(const CompTextConstructor& v, void *visit_state)
                                                LOOKUP_OP1("enclosed-expr"));
   enclosedExpr->add(inputExpr);
 
-  expr* textExpr = new text_expr(v.get_location(),
-                                 text_expr::text_constructor,
-                                 enclosedExpr.getp());
+  expr_t textExpr = new text_expr(v.get_location(),
+                                  text_expr::text_constructor,
+                                  enclosedExpr.getp());
 
   nodestack.push(textExpr);
 }
@@ -1177,7 +1178,7 @@ void end_visit(const FLWORExpr& v, void *visit_state)
 
   int i, j;
 
-  flwor_expr *flwor = new flwor_expr (v.get_location ());
+  rchandle<flwor_expr> flwor = new flwor_expr (v.get_location ());
   flwor->set_retval (pop_nodestack ());
   OrderByClause *orderby = &*v.get_orderby ();
   if (orderby) {
@@ -1260,7 +1261,7 @@ void end_visit(const FLWORExpr& v, void *visit_state)
   for (i = eclauses.size () - 1; i >= 0; i--)
     flwor->add (rchandle<forlet_clause> (eclauses [i]));
 
-  nodestack.push (rchandle<expr> (flwor));
+  nodestack.push (&*flwor);
 }
 
 
@@ -2196,8 +2197,8 @@ TRACE_VISIT_OUT ();
   expr_t e_h = pop_nodestack ();
   expr_t t_h = pop_nodestack ();
   expr_t c_h = pop_nodestack ();
-  rchandle<if_expr> if_h = new if_expr(v.get_location(),c_h,t_h,e_h);
-  nodestack.push(&*if_h);
+
+  nodestack.push(new if_expr(v.get_location(),c_h,t_h,e_h));
 }
 
 
