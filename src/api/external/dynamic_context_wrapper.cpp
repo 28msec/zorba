@@ -150,7 +150,7 @@ bool DynamicContextWrapper::SetVariableAsString( xqp_string varname, xqp_string 
 {
 	try{
 
-	if(!checkQName(varname))
+	if(varname != "." && !checkQName(varname))
 		return false;
 	DeleteVariable(varname);
 
@@ -581,7 +581,7 @@ void	DynamicContextWrapper::create_dynamic_context(static_context *sctx, dynamic
 			break;
 		}
 		
-		if((*it).varname != ".")
+		if (true || (*it).varname != ".")  // TODO
 		{
 			if((*it).vartype == VAR_DOCUMENT_URI)
 			{
@@ -610,6 +610,7 @@ void	DynamicContextWrapper::create_dynamic_context(static_context *sctx, dynamic
 				new_dctx->add_variable(expanded_name, iterator_plus_state);
 			}
 		}
+#if 0  // TODO
 		else//if((*it).varname == ".") //for context item
 		{
 			if((*it).vartype == VAR_DOCUMENT_URI)
@@ -621,6 +622,7 @@ void	DynamicContextWrapper::create_dynamic_context(static_context *sctx, dynamic
 			}
 			new_dctx->set_context_item(atomic_item, 1);
 		}
+#endif
 	}
 
 	new_dctx->set_implicit_timezone(implicit_timezone_seconds);

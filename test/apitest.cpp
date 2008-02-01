@@ -64,16 +64,14 @@ void set_var (string name, string val,
 {
   if (name [name.size () - 1] == ':' && dctx != NULL) 
   {
-    dctx->SetVariableAsString(name.substr (0, name.size () - 1), xqp_string(val));
+    bool result = dctx->SetVariableAsString(name.substr (0, name.size () - 1), xqp_string(val));
+    assert (result);
   }
   else if (name[name.size () - 1] != ':' && query != NULL)
   {
     ifstream is (val.c_str ());
     assert (is);
     query->SetVariable(name, val.c_str(), is);
-	//	XmlDataManager_t		store = ZorbaEngine::getInstance().getXmlDataManager();
-	//	store->loadDocument(val.c_str (), is);
-	//	dctx->SetVariableAsDocument(name, val.c_str());
   }
 }
 
@@ -122,16 +120,22 @@ public:
 
   bool initExecution (XQuery_t query, const vector< pair <string, string> > &vars) {
     DynamicQueryContext_t dctx = factory.createDynamicContext ();
+    bool dot_set = false;
     for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
-         iter != vars.end (); iter++)
+         iter != vars.end (); iter++) {
       set_var (iter->first, iter->second, dctx, NULL);
+      if (iter->first == ".") dot_set = true;
+    }
+    if (! dot_set)  // TODO: set to error item, or empty sequence
+      set_var (".:", "CONTEXT_NOT_SET", dctx, NULL);
     
     bool result = query->initExecution(dctx);
 
     if( result != false) {
       for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
-           iter != vars.end (); iter++)
+           iter != vars.end (); iter++) {
         set_var (iter->first, iter->second, NULL, query);
+      }
     }
     
     return result;

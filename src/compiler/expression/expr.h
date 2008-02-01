@@ -520,8 +520,15 @@ protected:
 	const function* func;
 
 public:
-	fo_expr(yy::location const& loc, const function *f)
+	fo_expr (yy::location const& loc, const function *f)
     : expr(loc), func (f) { assert (f != NULL); }
+  fo_expr (yy::location const& loc, const function *f, expr_t arg)
+    : expr(loc), func (f)
+  {
+    assert (f != NULL);
+    add (arg);
+  }
+
 
 public:
   void add(expr_t e_h) { assert (e_h != NULL); argv.push_back(e_h); }

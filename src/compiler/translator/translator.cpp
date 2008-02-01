@@ -74,6 +74,8 @@ namespace xqp {
     return x;
   }
 
+  static yy::location null_loc;
+
 class TranslatorImpl : public Translator 
 {
 public:
@@ -104,7 +106,7 @@ protected:
 
   bool hadBSpaceDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
 
-  var_expr_t theDotVar;
+  var_expr_t theDotVar, theDotPosVar;
 
   TranslatorImpl (static_context *sctx_p_)
     : depth (0),
@@ -119,8 +121,8 @@ protected:
     hadEmptyOrdDecl (false),
     hadOrdModeDecl (false)
   {
-    yy::location loc;
-    theDotVar = bind_var(loc, DOT_VAR, var_expr::context_var);
+    theDotVar = bind_var(null_loc, DOT_VAR, var_expr::for_var);
+    theDotPosVar = bind_var(null_loc, DOT_POS_VAR, var_expr::pos_var);
   }
 
   expr_t pop_nodestack (int n = 1)
@@ -3506,7 +3508,10 @@ void end_visit(const QueryBody& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
+  const function *ctxf = LOOKUP_OP1 ("ctxvariable");
   flwor_expr::clause_list_t clauses;
+
+  clauses.push_back (wrap_in_forclause (new fo_expr (null_loc, ctxf, new const_expr (null_loc, xqp_string ("."))), theDotVar, theDotPosVar));
   for (std::list<global_binding>::iterator i = global_vars.begin ();
        i != global_vars.end ();
        i++)
@@ -3515,15 +3520,11 @@ void end_visit(const QueryBody& v, void *visit_state)
     var_expr_t var = b.first;
     expr_t expr = b.second;
     if (expr == NULL) 
-    {
-      fo_expr *fo = new fo_expr (var->get_loc (), LOOKUP_OP1 ("ctxvariable"));
-      fo->add (new const_expr (var->get_loc (), var->get_varname ()->getStringValue ()));
-      expr = fo;
-    }
+      expr = new fo_expr (var->get_loc (), ctxf, new const_expr (var->get_loc (), var->get_varname ()->getStringValue ()));
     clauses.push_back (wrap_in_letclause (expr, var));
   }
-  if (clauses.size () > 0)
-    nodestack.push (new flwor_expr (v.get_location (), clauses, pop_nodestack ()));
+
+  nodestack.push (new flwor_expr (v.get_location (), clauses, pop_nodestack ()));
 }
 
 

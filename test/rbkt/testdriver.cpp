@@ -133,6 +133,9 @@ set_vars (Specification* aSpec, xqp::DynamicQueryContext_t dctx, xqp::XQuery_t e
   {
     set_var ((*lIter).theInline, (*lIter).theVarName, (*lIter).theVarValue, dctx, exec);
   }
+  
+  // TODO: set context item
+  set_var (false, ".", "CONTEXT_ITEM_NOT_SET", dctx, exec);
 }
 
 

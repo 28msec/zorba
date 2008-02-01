@@ -154,7 +154,6 @@ void end_visit(var_expr& v)
   switch (v.kind) 
   {
   case var_expr::for_var:
-  case var_expr::context_var:
   {
     ForVarIterator *v_p = new ForVarIterator(v.get_varname()->getLocalName(),
                                              v.get_loc(),
