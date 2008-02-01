@@ -3660,7 +3660,7 @@ public:
 
 public:
 	enum common_content_t get_type() const { return type; }
-	std::string get_ref() const { return ref; }
+	const std::string& get_ref() const { return ref; }
 	rchandle<EnclosedExpr> get_expr() const { return expr_h; }
 
 public:
