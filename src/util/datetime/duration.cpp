@@ -249,14 +249,14 @@ xqpString DayTimeDuration::toString() const
 
   result += "T";
 
-  if ( timeDuration.hours() != 0 ||
-       ( timeDuration.hours() == 0 && timeDuration.minutes() == 0 && timeDuration.seconds() == 0 && timeDuration.fractional_seconds() == 0 ) )
+  if ( timeDuration.hours() != 0)
     result += NumConversions::integerToStr ( timeDuration.hours() ) + "H";
 
   if ( timeDuration.minutes() != 0 )
     result += NumConversions::integerToStr ( timeDuration.minutes() ) + "M";
 
-  if ( timeDuration.seconds() != 0 || timeDuration.fractional_seconds() != 0 )
+  if ( timeDuration.seconds() != 0 || timeDuration.fractional_seconds() != 0  ||
+       (timeDuration.hours() == 0 && timeDuration.minutes() == 0 && timeDuration.seconds() == 0 && timeDuration.fractional_seconds() == 0))
   {
     result += NumConversions::integerToStr ( timeDuration.seconds() );
 
