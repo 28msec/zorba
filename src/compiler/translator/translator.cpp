@@ -149,6 +149,13 @@ protected:
     sctx_p->bind_var (qname, e.getp ());
     return e;
   }
+
+  var_expr_t bind_var_and_push (yy::location loc, string varname, var_expr::var_kind kind)
+  {
+    var_expr_t e = bind_var (loc, varname, kind);
+    nodestack.push (&*e);
+    return e;
+  }
   
   fo_expr *create_seq (yy::location loc) {
     return new fo_expr (loc, LOOKUP_OPN ("concatenate"));
@@ -1298,7 +1305,7 @@ void end_visit(const VarGetsDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
-  nodestack.push (bind_var (v.get_location (), v.get_varname (), var_expr::let_var));
+  bind_var_and_push (v.get_location (), v.get_varname (), var_expr::let_var);
 }
 
 
@@ -1326,10 +1333,10 @@ void end_visit(const VarInDecl& v, void *visit_state)
   const PositionalVar *pv = v.get_posvar ();
   if (pv != NULL) {
     expr_t val_expr = pop_nodestack ();
-    nodestack.push (bind_var (pv->get_location (), pv->get_varname (), var_expr::pos_var));
+    bind_var_and_push (pv->get_location (), pv->get_varname (), var_expr::pos_var);
     nodestack.push (val_expr);
   }
-  nodestack.push (bind_var (v.get_location (), v.get_varname (), var_expr::for_var));
+  bind_var_and_push (v.get_location (), v.get_varname (), var_expr::for_var);
 }
 
 void *begin_visit(const PositionalVar& v)
@@ -1716,7 +1723,7 @@ void end_visit(const QVarInDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
-  nodestack.push (bind_var (v.get_location (), v.get_name (), var_expr::for_var));
+  bind_var_and_push (v.get_location (), v.get_name (), var_expr::for_var);
 }
 
 
