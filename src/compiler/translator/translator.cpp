@@ -893,21 +893,23 @@ void end_visit(const CommonContent& v, void *visit_state)
       uint32_t codepoint;
       xqp_string charref;
  
-      ulong curToken = 0;
+      ulong curRefStart = 0;
       std::string content = v.get_ref();
 
-      while (curToken < content.size())
+      while (curRefStart < content.size())
       {
         stringstream ss;
 
-        if (content[curToken+2] == 'x')
-          ss << hex << content.substr(curToken+3, 2);
+        ulong curRefLen = content.find(';', curRefStart) - curRefStart + 1;
+
+        if (content[curRefStart+2] == 'x')
+          ss << hex << content.substr(curRefStart+3, curRefLen-3);
         else
-          ss << content.substr(curToken+2, 3);
+          ss << content.substr(curRefStart+2, curRefLen-2);
       
         ss >> codepoint;
         charref += (uint32_t)codepoint;
-        curToken += 6;
+        curRefStart += curRefLen;
       }
 
       expr_t lConstExpr = new const_expr(v.get_location(), charref);
