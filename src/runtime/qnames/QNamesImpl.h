@@ -161,34 +161,32 @@ class NamespaceUriForPrefixlIterator : public BinaryBaseIterator<NamespaceUriFor
 /* begin class InScopePrefixesIterator */
 class InScopePrefixesState : public PlanIteratorState
 {
-  private:
-    std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
-    std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
-  public:
-    void init(PlanState&);
-    void reset(PlanState&);
+  friend class InScopePrefixesIterator;
 
-    void setIterator(std::vector<std::pair<xqp_string, xqp_string> >::const_iterator newIter);
-    std::vector<std::pair<xqp_string, xqp_string> >& getVector() { return NamespaceBindings; }
-    
-    std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getVectBegin();
-    std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getVectEnd();
-    std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator getIterator();
+private:
+  std::vector<std::pair<xqp_string, xqp_string> > theBindings;
+  unsigned long theCurrentPos;
+
+public:
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
-class InScopePrefixesIterator : public UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesState>
+
+class InScopePrefixesIterator : public UnaryBaseIterator<InScopePrefixesIterator,
+                                                         InScopePrefixesState>
 {
-  public:
-    InScopePrefixesIterator ( const yy::location& loc, PlanIter_t& arg )
-  :
-    UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesState>( loc, arg ){};
+public:
+  InScopePrefixesIterator(const yy::location& loc, PlanIter_t& arg)
+    :
+  UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesState>(loc, arg) {};
   
-    ~InScopePrefixesIterator(){};
-  public:
-    Item_t nextImpl(PlanState& planState);
+  ~InScopePrefixesIterator() {};
 
-    virtual void accept(PlanIterVisitor&) const;
+public:
+  Item_t nextImpl(PlanState& planState);
 
+  virtual void accept(PlanIterVisitor&) const;
 };
 /* end class InScopePrefixesIterator */
 }/*namespace xqp*/
