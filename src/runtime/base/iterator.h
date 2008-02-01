@@ -41,33 +41,52 @@
 
 /*******************************************************************************
 
-  Macros to automate Duff's Device and separation of code and execution 
+  Consts and macros to automate Duff's Device and separation of code and state. 
 
-   DEFUALT_STACK_INIT : Initializes Duff's Device and gets the state of the
-                        current iterator from the state block
-   MANUAL_STACK_INIT  : If you want to do Resource allocation, you have to use
-                        this STACK_INIT, to have the full control.
-   STACK_PUSH         : Returns the passed item and saves the current position
-                        of the next functions
-   STACK_END          : Ends the execution of the next function
-   GET_STATE          : Specific function to load the state of the current
-                        iterator from the state block.
+
+  DUFFS_ALLOCATE_RESOURCES : This is the initial value of the duffs line in 
+                             every state object. Should always be 0 because of
+                             the way, the memory is allocated
+  DUFFS_RESTART            : The reset method of each iterator sets the duffs
+                             line to DUFFS_RESTART
+
+  DEFUALT_STACK_INIT : Initializes the state object of the current iterator
+                       (which always includes the Duff's Device) and returns
+                       a pointer to that state in the state block.
+  MANUAL_STACK_INIT  : If you want to do resource allocation in addition to
+                       what is done by the init() method of the state object,
+                       you have to use this STACK_INIT, to have the full control.
+  STACK_PUSH         : Returns the passed item and saves the current position
+                       in the file into the duffs line so that when the nextImpl
+                       method of the iterator is called again, execution will
+                       start right after the STACK_PUSH macro.
+  STACK_END          : Ends the execution of the nextImpl method
+  GET_STATE          : Specific function to load the state of the current
+                       iterator from the state block.
 
 ********************************************************************************/
+
+static const int32_t DUFFS_ALLOCATE_RESOURCES = 0;
+static const int32_t DUFFS_RESTART            = -1;
+
+
+#define GET_STATE(stateType, stateObject, planState) \
+  stateObject = reinterpret_cast<stateType*>(planState.theBlock + this->stateOffset)
+
 
 #define DEFAULT_STACK_INIT(stateType, stateObject, planState )  \
   GET_STATE(stateType, stateObject, planState);                 \
   switch (stateObject->getDuffsLine())                          \
   {                                                             \
-    case DUFFS_RELEASE_RESOURCES:                               \
-      stateObject->init(planState);                                      \
-    case DUFFS_RESET:
+    case DUFFS_ALLOCATE_RESOURCES:                              \
+      stateObject->init(planState);                             \
+    case DUFFS_RESTART:
 
 
 #define MANUAL_STACK_INIT(stateObject)                          \
   switch (stateObject->getDuffsLine())                          \
   {                                                             \
-    case DUFFS_RELEASE_RESOURCES:
+    case DUFFS_ALLOCATE_RESOURCES:
 
 
 #define STACK_PUSH(x, stateObject)                             \
@@ -81,16 +100,8 @@
 
 #define STACK_END()  } return NULL
 
+#define FINISHED_ALLOCATING_RESOURCES() case DUFFS_RESTART:
 
-#define GET_STATE(stateType, stateObject, planState) \
-  stateObject = reinterpret_cast<stateType*>(planState.theBlock + this->stateOffset)
-
-
-#define FINISHED_ALLOCATING_RESOURCES() case DUFFS_RESET:
-
-
-static const int32_t DUFFS_RELEASE_RESOURCES = 0; //Should always be 0 because of the way, the memory is allocated
-static const int32_t DUFFS_RESET =-1;
 
 
 namespace xqp
@@ -135,25 +146,25 @@ class StateTraitsImpl
 private:
   StateTraitsImpl() {}
 public:
- static uint32_t getStateSize()
- {
-   return sizeof(T);
- }
+  static uint32_t getStateSize()
+  {
+    return sizeof(T);
+  }
 
- static void createState(void *ptr)
- {
-   new (ptr)T();
- }
+  static void createState(void *ptr)
+  {
+    new (ptr)T();
+  }
  
- static void destroyState(void *ptr)
- {
-  (reinterpret_cast<T*>(ptr))->~T();
- }
+  static void destroyState(void *ptr)
+  {
+    (reinterpret_cast<T*>(ptr))->~T();
+  }
 
- static void reset(PlanState& planState, int8_t *block,  uint32_t stateOffset)
- {
-  (reinterpret_cast<T*>(block + stateOffset))->reset(planState);
- }
+  static void reset(PlanState& planState, int8_t *block,  uint32_t stateOffset)
+  {
+    (reinterpret_cast<T*>(block + stateOffset))->reset(planState);
+  }
 };
 
 
@@ -172,33 +183,39 @@ public:
   /** 
    * Initialize the current state object.
    * The base class initializes information used for the duffs device.
-   * To store information for new iterators, it might be necessary to derive from
-   * this class. All initialization of such information should be done in this function.
-   * If resources are requested during initializatioan, those must be released
-   * in the destructor.
-   * Classes that inherit from PlanIteratorState must call the init function 
-   * of the base class explicitly in order to guarantee proper initialization.
-    */
-  void init(PlanState&) { theDuffsLine = DUFFS_RELEASE_RESOURCES; }
+   *
+   * To store information for new iterators, it might be necessary to derive
+   * from this class. All initialization of such information should be done in
+   * this function. If resources are requested during initialization, they must
+   * be released in the destructor.
+   *
+   * Classes that inherit from PlanIteratorState must call the init function of 
+   * their parent class explicitly in order to guarantee proper initialization.
+   */
+  void init(PlanState&) { theDuffsLine = DUFFS_ALLOCATE_RESOURCES; }
 
   /** 
    * Reset the current state object.
-   * Reset is used in order to restart a run of the according iterator.
-   * Therefore, this function prepares the duffs device such that
-   * it restarts the iterator without initializing/requesting resources
-   * (e.g. without calling init()) again.
+   *
+   * Reset() is invoked by the resetImpl() method of the associated iterator.
+   * Reset() sets the duffs line so that when the nextImpl() method of the
+   * iterator is called again after a resetImpl(), no resources will be
+   * allocated again (i.e. the init() method of the state obj will not be
+   * called).
+   *
    * Classes that inherit from PlanIteratorState must call the reset function 
-   * of the base class explicitly in order to guarantee a proper reset.
-    */
-  void reset(PlanState&) { theDuffsLine = DUFFS_RESET; }
+   * of their parent class explicitly in order to guarantee a proper reset.
+   */
+  void reset(PlanState&) { theDuffsLine = DUFFS_RESTART; }
   
   void setDuffsLine(int32_t aVal) { theDuffsLine = aVal; }
   int32_t getDuffsLine() const    { return theDuffsLine; }
 };
 
-/**
- * Base class of all plan iterators.
- */
+
+/*******************************************************************************
+  Base class of all plan iterators.
+********************************************************************************/
 class PlanIterator : public rcobject
 {
   friend class PlanIterWrapper;
@@ -333,6 +350,7 @@ protected:
     return it;
   }
 #endif
+
   void open(PlanState& planState, uint32_t& offset)
   {
     static_cast<IterType*>(this)->openImpl(planState, offset);
@@ -357,6 +375,9 @@ public:
 };
 
 
+/*******************************************************************************
+  Generic N-ary iterator.
+********************************************************************************/
 template <class Iter, class StateTraits>
 class NaryIterator : public Batcher<Iter>
 {
@@ -471,15 +492,16 @@ public:\
 
 #define NARY_ITER(name) NARY_ITER_STATE(name, PlanIteratorState) 
 
-/**
- * Wrapper used to drive the evaluation of an iterator (sub)tree.
- * 
- * The wrapper wraps the root iterator of the (sub)tree. It is responsible
- * for allocating and deallocating the plan state that is shared by all
- * iterators in the (sub)tree. In general, it hides internal functionality
- * like separation of code and execution, or garabage collection, and it
- * provides a simple interface that the application can use.
- */
+
+/*******************************************************************************
+  Wrapper used to drive the evaluation of an iterator (sub)tree.
+  
+  The wrapper wraps the root iterator of the (sub)tree. It is responsible
+  for allocating and deallocating the plan state that is shared by all
+  iterators in the (sub)tree. In general, it hides internal functionality
+  like separation of code and execution, or garabage collection, and it
+  provides a simple interface that the application can use.
+********************************************************************************/
 class PlanWrapper : public Iterator
 {
 private:
