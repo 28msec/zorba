@@ -29,7 +29,6 @@
 #include <vector>
 
 #include "util/rchandle.h"
-#include "util/tracer.h"
 #include "compiler/parser/location.hh"
 #include "store/api/item.h"
 #include "util/utf8/xqpString.h"
@@ -101,11 +100,8 @@ class Item;
 typedef rchandle<Item> Item_t;
 
 class PlanIterator;
-class Zorba;
 
 typedef rchandle<PlanIterator> PlanIter_t;
-
-class Zorba_XQueryBinary;
 
 /*******************************************************************************
   Class to represent state that is shared by all plan iterators. 
@@ -263,7 +259,7 @@ public:
    *
    * @param stateBLock
    */
-  virtual void close(PlanState& planState) = 0;
+  virtual void close(PlanState& planState) throw() = 0;
 
   /** Returns the size of the state which must be saved for the current iterator
     * on the state block
@@ -347,7 +343,7 @@ protected:
     static_cast<IterType*>(this)->resetImpl(planState);
   }
 
-  void close(PlanState& planState)
+  void close(PlanState& planState) throw()
   {
     static_cast<IterType*>(this)->closeImpl(planState);
   }
