@@ -281,7 +281,13 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
   int closed_parent_tag = 0;
 
   if (item->getNodeKind() == StoreConsts::elementNode)
-  { 
+  {
+    // emit namespace bindings
+    NsBindings nsBindings;
+    item->getNamespaceBindings(nsBindings);
+    for (ulong i = 0; i < nsBindings.size(); i++)
+      tr << " xmlns:" <<  nsBindings[i].first << "=\"" << nsBindings[i].second << "\"";
+     
     // emit attributes 
     it = item->getAttributes();
     child = it->next();
@@ -465,23 +471,18 @@ int is_content_type_meta(Item_t item, Item_t element_parent)
   if (element_parent == NULL)
     return 0;
   
-  // TODO: should find a function to compare strings ignore case
-  if ((element_parent->getNodeName()->getStringValue() == "HEAD"
-      ||
-      element_parent->getNodeName()->getStringValue() == "head")
+  if (element_parent->getNodeName()->getStringValue().lowercase() == "head"
       &&
-      (item->getNodeName()->getStringValue() == "META"
-      ||
-      item->getNodeName()->getStringValue() == "meta"))
+      item->getNodeName()->getStringValue().lowercase() == "meta")
   {    
     // iterate through attributes
     Iterator_t it = item->getAttributes();
     Item_t child = it->next();
     while (child!= NULL)
     { 
-      if (child->getNodeName()->getStringValue() == "http-equiv"
+      if (child->getNodeName()->getStringValue().lowercase() == "http-equiv"
           &&
-          child->getStringValue() == "content-type")
+          child->getStringValue().lowercase() == "content-type")
         return 1;        
       
       child = it->next();
@@ -493,32 +494,31 @@ int is_content_type_meta(Item_t item, Item_t element_parent)
 
 int is_html_empty_element(Item_t item)
 {
-  // TODO: case should be ignored
-  if (item->getNodeName()->getStringValue() == "area"
+  if (item->getNodeName()->getStringValue().lowercase() == "area"
       ||
-      item->getNodeName()->getStringValue() == "base"
+      item->getNodeName()->getStringValue().lowercase() == "base"
       ||
-      item->getNodeName()->getStringValue() == "basefont"
+      item->getNodeName()->getStringValue().lowercase() == "basefont"
       ||
-      item->getNodeName()->getStringValue() == "br"
+      item->getNodeName()->getStringValue().lowercase() == "br"
       ||
-      item->getNodeName()->getStringValue() == "col"
+      item->getNodeName()->getStringValue().lowercase() == "col"
       ||
-      item->getNodeName()->getStringValue() == "frame"
+      item->getNodeName()->getStringValue().lowercase() == "frame"
       ||
-      item->getNodeName()->getStringValue() == "hr"
+      item->getNodeName()->getStringValue().lowercase() == "hr"
       ||
-      item->getNodeName()->getStringValue() == "img"
+      item->getNodeName()->getStringValue().lowercase() == "img"
       ||
-      item->getNodeName()->getStringValue() == "input"
+      item->getNodeName()->getStringValue().lowercase() == "input"
       ||
-      item->getNodeName()->getStringValue() == "isindex"
+      item->getNodeName()->getStringValue().lowercase() == "isindex"
       ||
-      item->getNodeName()->getStringValue() == "link"
+      item->getNodeName()->getStringValue().lowercase() == "link"
       ||
-      item->getNodeName()->getStringValue() == "meta"
+      item->getNodeName()->getStringValue().lowercase() == "meta"
       ||
-      item->getNodeName()->getStringValue() == "param")
+      item->getNodeName()->getStringValue().lowercase() == "param")
     return 1;
   else
     return 0;
@@ -554,12 +554,9 @@ void serializer::html_emitter::emit_node(Item* item, int depth, Item* element_pa
       HTML output method MUST add a meta element as the first child element of the head element 
       specifying the character encoding actually used.
     */
-    // TODO: ignore case
     if (ser.include_content_type == PARAMETER_VALUE_YES
         &&
-        (item->getNodeName()->getStringValue() == "HEAD"
-         ||
-         item->getNodeName()->getStringValue() == "head"))
+        item->getNodeName()->getStringValue().lowercase() == "head")
     {
       tr << "/>";
       if (ser.indent)
@@ -606,10 +603,9 @@ void serializer::html_emitter::emit_node(Item* item, int depth, Item* element_pa
     /*
       The HTML output method MUST NOT perform escaping for the content of the script and style elements.
     */
-    // TODO: ignore case
-    if (item->getNodeName()->getStringValue() == "script"
-       ||
-        item->getNodeName()->getStringValue() == "style")
+    if (item->getNodeName()->getStringValue().lowercase() == "script"
+        ||
+        item->getNodeName()->getStringValue().lowercase() == "style")
     {
       if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
         tr << " ";    
