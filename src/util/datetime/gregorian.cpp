@@ -131,7 +131,8 @@ bool GYear::parse_string(const xqpString& s, GYear_t& gy_t)
   if (ss.size()-position > 4) // we might have a timezone
   {
     RETURN_FALSE_ON_EXCEPTION( gy_t = new GYear(boost::gregorian::from_simple_string(ss.substr(position, 4) + "-01-01")); );
-    if (TimeZone::parse_string(ss.substr(position+4, ss.size() - position - 4), tz_t))
+
+    if (TimeZone::parse_string(ss.substr(position+4), tz_t))
       gy_t->the_time_zone = *tz_t;
     else
       return false;
