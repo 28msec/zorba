@@ -1,0 +1,1 @@
+fn:timezone-from-date(())
