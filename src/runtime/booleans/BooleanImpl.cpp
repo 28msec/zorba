@@ -353,55 +353,16 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
 }
   
   std::pair<Item_t, Item_t> CompareIterator::typePromotion(Item_t aItem0, Item_t aItem1) {
-    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
-    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
+    TypeSystem::xqtref_t aType0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
+    TypeSystem::xqtref_t aType1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
     
-    // numeric promotion
-    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
-      if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
-      {
-        aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
-      }
+    Item_t lResult = GenericCast::instance()->promote(aItem0, aType1); 
+    if (lResult != 0) {
+      aItem0 = lResult;
     }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
-    {
-      if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
-      {
-        aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-      }
-      else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
-      {
-        aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-      }
-    }
-    
-    if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
-      if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
-      {
-        aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
-      }
-    }
-    else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
-    {
-      if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
-      {
-        aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-      }
-      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
-      {
-        aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-      }
-    }
-    // uri promotion
-    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
-        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
-    {
-      aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
-    }
-    if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
-        && GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) 
-    {
-      aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+    lResult = GenericCast::instance()->promote(aItem1, aType0);
+    if (lResult != 0) {
+      aItem1 = lResult;
     }
     
     return std::pair<Item_t,Item_t>(aItem0, aItem1);

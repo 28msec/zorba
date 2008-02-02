@@ -38,7 +38,7 @@ namespace xqp
 	class GenericCast
 	{
 		private:
-			GenericCast();
+			GenericCast() {}
     
     public:
 			~GenericCast() {}
@@ -96,6 +96,16 @@ namespace xqp
        * @return true if castable, else false
        */
       bool isCastable( const xqpString& aStr, const TypeSystem::xqtref_t& aTargetType) const;
+
+      /**
+       * Promotes the passed item to the passed target type.
+       * @param aItem
+       * @param aTargetType
+       * @return 0 if promotion is not possible else promoted item
+       *         if the item type is a subtype of the target type, then
+       *         the passed item is returned
+       */
+      Item_t promote(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const;
 
   protected:
       bool castableToNCName(const xqpString& str) const;

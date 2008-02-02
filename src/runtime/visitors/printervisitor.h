@@ -419,6 +419,9 @@ public:
   virtual void beginVisit(const CastableIterator&);
   virtual void endVisit(const CastableIterator&);
   
+  virtual void beginVisit(const PromoteIterator&);
+  virtual void endVisit(const PromoteIterator&);
+  
   virtual void beginVisit(const CtxVariableIterator&);
   virtual void endVisit(const CtxVariableIterator&);
   

@@ -1193,6 +1193,17 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& a)
     thePrinter.endIter();
   }
 
+  void PrinterVisitor::beginVisit(const PromoteIterator& a) {
+    thePrinter.startIter("PromoteIterator");
+    std::ostringstream lStream;
+    GENV_TYPESYSTEM.serialize(lStream, *a.thePromoteType);
+    thePrinter.addAttribute("type", lStream.str());
+  }
+  
+  void PrinterVisitor::endVisit(const PromoteIterator&) {
+    thePrinter.endIter();
+  }
+
   void PrinterVisitor::beginVisit(const CastableIterator& a) {
     thePrinter.startIter("CastableIterator");
     std::ostringstream lStream;

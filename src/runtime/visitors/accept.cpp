@@ -102,6 +102,7 @@ namespace xqp {
   UNARY_ACCEPT(DocFilterIterator);
   UNARY_ACCEPT(CastIterator);
   UNARY_ACCEPT(CastableIterator);
+  UNARY_ACCEPT(PromoteIterator);
   UNARY_ACCEPT(PrefixFromQNameIterator);
   UNARY_ACCEPT(LocalNameFromQNameIterator);
   UNARY_ACCEPT(NamespaceUriFromQNameIterator);

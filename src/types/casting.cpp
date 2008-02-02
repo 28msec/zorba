@@ -38,11 +38,6 @@ namespace xqp
 
 
 /* begin class GenericCast */
-GenericCast::GenericCast()
-{
-}
-
-
 GenericCast* GenericCast::instance()
 {
   static GenericCast aGenericCast;
@@ -540,6 +535,34 @@ bool GenericCast::isCastable(
 {
   Item_t lItem = Zorba::getItemFactory()->createString(aStr);
   return isCastable(lItem, aTargetType);
+}
+
+Item_t GenericCast::promote(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const {
+  TypeSystem::xqtref_t lItemType = GENV_TYPESYSTEM.create_type(aItem->getType(), TypeSystem::QUANT_ONE);
+
+  if (GENV_TYPESYSTEM.is_subtype(*lItemType, *aTargetType)) {
+    return aItem;
+  }
+
+  Item_t lResult = 0;
+  if (GENV_TYPESYSTEM.is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
+    // Numeric Promotion to xs:float
+    if (GENV_TYPESYSTEM.is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) {
+      lResult = GenericCast::instance()->cast(aItem, GENV_TYPESYSTEM.FLOAT_TYPE_ONE); 
+    }
+  } else if (GENV_TYPESYSTEM.is_subtype(*aTargetType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)) {
+    // Numeric Promotion to xs:double
+    if (GENV_TYPESYSTEM.is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
+     || GENV_TYPESYSTEM.is_subtype(*lItemType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
+      lResult = GenericCast::instance()->cast(aItem, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+    }
+  } else if (GENV_TYPESYSTEM.is_subtype(*aTargetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
+    // URI Promotion
+    if (GENV_TYPESYSTEM.is_subtype(*lItemType, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
+      lResult = GenericCast::instance()->cast(aItem, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+    }
+  }
+  return lResult;
 }
 
 /* end class GenericCast */

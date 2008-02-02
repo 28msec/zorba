@@ -85,6 +85,21 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 
+/**
+ * Iterator which tries to promote an item to the passed target type. If it is not possible,
+ * a type error is thrown.
+ **/
+class PromoteIterator : public UnaryBaseIterator<PromoteIterator, PlanIteratorState> {
+  friend class PrinterVisitor;
+private:
+  TypeSystem::xqtref_t thePromoteType;
+  TypeSystem::quantifier_t theQuantifier;
+
+public:
+  PromoteIterator(const yy::location&, PlanIter_t&, const TypeSystem::xqtref_t& aPromoteType);
+  Item_t nextImpl(PlanState& aPlanState);
+  virtual void accept(PlanIterVisitor&) const;
+};
 
 } /* namespace xqp */
 #endif  /* XQP_SEQUENCETYPES_H */
