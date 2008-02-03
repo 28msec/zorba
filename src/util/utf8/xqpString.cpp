@@ -472,7 +472,9 @@ namespace xqp
     UnicodeString result;
     UErrorCode status = U_ZERO_ERROR;
 
-    if(normMode == "NFC")
+    if (normMode.empty ())
+      return *this;
+    else if(normMode == "NFC")
     {
       Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFC , 0, result, status);
     }

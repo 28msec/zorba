@@ -619,11 +619,10 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
       if(item1 != NULL)
       {
         item1 = item1->getAtomizationValue();
-        if( ! item1->getStringValue().empty() )
-          tempStr = item1->getStringValue().uppercase().trim();
+        tempStr = item1->getStringValue().uppercase().trim();
       }
     }
-    if(tempStr == "NFC" || tempStr =="NFKC" || tempStr =="NFD" || tempStr == "NFKD")
+    if(tempStr == "" || tempStr == "NFC" || tempStr =="NFKC" || tempStr =="NFD" || tempStr == "NFKD")
     {
       res = item0->getStringValue().normalize(tempStr);
       STACK_PUSH( Zorba::getItemFactory()->createString(res), state );
