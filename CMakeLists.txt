@@ -6,7 +6,7 @@ ENABLE_TESTING()
 INCLUDE(CTest)
 
 # Uncomment the next line to output make commands
-SET(CMAKE_VERBOSE_MAKEFILE ON)
+# SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 # prohibit in-source-builds
 IF (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
