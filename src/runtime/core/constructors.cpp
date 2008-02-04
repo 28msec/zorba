@@ -25,39 +25,33 @@ namespace xqp
 ********************************************************************************/
 Item_t DocumentIterator::nextImpl(PlanState& planState)
 {
-  Iterator* childWrapper = 0;
   xqpStringStore_t baseUri = 0;
   xqpStringStore_t docUri = 0;
   Item_t node;
 
   DocumentIteratorState* state;
-  DEFAULT_STACK_INIT(DocumentIteratorState, state, planState);
-  
+  GET_STATE(DocumentIteratorState, state, planState);
+  MANUAL_STACK_INIT(state);
+
   // Note: baseUri and docUri have to be rchandles because if createDocumentNode
   // throws and exception, we don't know if the exception was thrown before or
   // after the ownership of the uris was transfered to the doc node.
   baseUri = new xqpStringStore("");
   docUri = new xqpStringStore("");
-  childWrapper = new PlanIteratorWrapper(theChild, planState); 
+  state->childWrapper = new PlanIteratorWrapper(theChild, planState); 
+
+  FINISHED_ALLOCATING_RESOURCES();
   
-  try
-  {
-    node = Zorba::getItemFactory()->
-           createDocumentNode((unsigned long)&planState,
+  node = Zorba::getItemFactory()->
+          createDocumentNode((unsigned long)&planState,
                               baseUri,
                               docUri,
-                              childWrapper,
+                              state->childWrapper,
                               true, // is root
                               true, // copy children
                               state->theTypePreserve,
                               state->theNsPreserve,
                               state->theNsInherit);
-  }
-  catch(...)
-  {
-    delete childWrapper;
-    throw;
-  }
 
   STACK_PUSH(node, state);
   STACK_END();
@@ -84,6 +78,11 @@ void
 DocumentIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
+}
+
+DocumentIteratorState::~DocumentIteratorState()
+{
+  delete childWrapper; childWrapper = 0;
 }
 
 /*******************************************************************************

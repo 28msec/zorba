@@ -33,9 +33,11 @@ class zorba;
 class DocumentIteratorState : public PlanIteratorState
 {
 public:
+  ~DocumentIteratorState();
   bool theTypePreserve;
   bool theNsPreserve;
   bool theNsInherit;
+  Iterator* childWrapper;
 
   void init(PlanState&);
   void reset(PlanState&);
