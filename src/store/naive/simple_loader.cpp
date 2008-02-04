@@ -47,9 +47,6 @@ XmlLoader::XmlLoader()
 {
   theOrdPath.init();
 
-  // This initializes the library and checks potential ABI mismatches between
-  // the version it was compiled for and the actual shared library used.
-  LIBXML_TEST_VERSION
 
   memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
   theSaxHandler.initialized = XML_SAX2_MAGIC;
@@ -71,9 +68,6 @@ XmlLoader::XmlLoader()
 ********************************************************************************/
 XmlLoader::~XmlLoader()
 {
-  xmlCleanupParser(); // do cleanup of the libxml2 library
-  // however, after that a user would have to call LIBXML_TEST_VERSION again
-  // if he wants to go on using libxml2
 }
 
 

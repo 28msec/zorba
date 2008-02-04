@@ -2,6 +2,7 @@
 #define XQP_GLOBALENV_H
 
 #include <memory>
+#include "mapm/m_apm.h"
 
 namespace xqp {
 
@@ -18,6 +19,7 @@ class GlobalEnvironment {
     GlobalEnvironment();
 
     std::auto_ptr<TypeSystem> m_typesystem;
+    M_APM                     m_mapm; // this is a pointer type
 
     static GlobalEnvironment *m_globalEnv;
 };
