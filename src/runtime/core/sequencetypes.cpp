@@ -223,7 +223,7 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
     }
   } else {
     do {
-      lResult = GenericCast::instance()->promote(lResult, thePromoteType);
+      lResult = GenericCast::instance()->promote(lItem, thePromoteType);
       if (lResult == 0) {
         ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, false, "Type Promotion not possible");
       } else{
