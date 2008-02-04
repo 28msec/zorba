@@ -137,6 +137,7 @@ namespace xqp {
   NARY_ACCEPT(SubstringAfterIterator);
   NARY_ACCEPT(FnDistinctValuesIterator);
   NARY_ACCEPT(UDFunctionCallIterator);
+  NARY_ACCEPT(FnMinMaxIterator);
   
   // special iterators
   void ElementIterator::accept(PlanIterVisitor& v) const

@@ -215,11 +215,25 @@ NARY_ITER(FnCountIterator);
 //15.4.2 fn:avg
 NARY_ITER(FnAvgIterator);
 
-//15.4.3 fn:max
-NARY_ITER(FnMaxIterator);
+//15.4.3 fn:max & 15.4.4 fn:min
+class FnMinMaxIterator : public NaryBaseIterator<FnMinMaxIterator, PlanIteratorState> {
+public:
+  enum Type {
+    MIN = 0,
+    MAX
+  };
 
-//15.4.4 fn:min
-NARY_ITER(FnMinIterator);
+private:
+  Type theType;
+  CompareIterator::CompareType theCompareType;
+
+public:
+    FnMinMaxIterator(yy::location loc, std::vector<PlanIter_t>& aChildren, Type aType);
+    Item_t nextImpl(PlanState& aPlanState);
+    virtual void accept(PlanIterVisitor& v) const;
+    Type getType() const { return theType; }
+};
+
 
 //15.4.5 fn:sum
 NARY_ITER(FnSumIterator);

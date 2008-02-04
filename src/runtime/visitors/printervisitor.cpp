@@ -594,7 +594,6 @@ namespace xqp {
     thePrinter.endIter();
   }
 
-
   void PrinterVisitor::beginVisit ( const FnAvgIterator& a){
     thePrinter.startIter("FnAvgIterator");
     printCommons(&a);
@@ -604,26 +603,16 @@ namespace xqp {
     thePrinter.endIter();
   }
 
-
-  void PrinterVisitor::beginVisit ( const FnMaxIterator& a){
-    thePrinter.startIter("FnMaxIterator");
+  void PrinterVisitor::beginVisit ( const FnMinMaxIterator& a){
+    thePrinter.startIter("FnMinMaxIterator");
+    thePrinter.addAttribute("type", 
+      (a.getType() == FnMinMaxIterator::MIN ? "min" : "max"));
     printCommons(&a);
   }
 
-  void PrinterVisitor::endVisit ( const FnMaxIterator& ){
+  void PrinterVisitor::endVisit ( const FnMinMaxIterator& ){
     thePrinter.endIter();
   }
-
-
-  void PrinterVisitor::beginVisit ( const FnMinIterator& a){
-    thePrinter.startIter("FnMinIterator");
-    printCommons(&a);
-  }
-
-  void PrinterVisitor::endVisit ( const FnMinIterator& ){
-    thePrinter.endIter();
-  }
-
 
   void PrinterVisitor::beginVisit ( const FnSumIterator& a){
     thePrinter.startIter("FnSumIterator");

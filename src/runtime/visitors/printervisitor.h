@@ -218,11 +218,8 @@ public:
   virtual void beginVisit ( const FnAvgIterator& );
   virtual void endVisit ( const FnAvgIterator& );
   
-  virtual void beginVisit ( const FnMaxIterator& );
-  virtual void endVisit ( const FnMaxIterator& );
-  
-  virtual void beginVisit ( const FnMinIterator& );
-  virtual void endVisit ( const FnMinIterator& );
+  virtual void beginVisit ( const FnMinMaxIterator& );
+  virtual void endVisit ( const FnMinMaxIterator& );
   
   virtual void beginVisit ( const FnSumIterator& );
   virtual void endVisit ( const FnSumIterator& );

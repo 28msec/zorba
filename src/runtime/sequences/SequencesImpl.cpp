@@ -12,6 +12,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
+#include "system/globalenv.h"
 
 #include "types/casting.h"
 
@@ -584,11 +585,22 @@ FnAvgIterator::nextImpl(PlanState& planState) {
   STACK_END();
 }
 
-//15.4.3 fn:max
+//15.4.3 fn:max & 15.4.4 fn:min
+FnMinMaxIterator::FnMinMaxIterator
+  (yy::location loc, std::vector<PlanIter_t>& aChildren, Type aType)
+  : NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>(loc, aChildren), 
+    theType(aType),
+    theCompareType(
+       (aType == MIN 
+       ? CompareIterator::VALUE_LESS 
+       : CompareIterator::VALUE_GREATER)) 
+{ }
+
 Item_t 
-FnMaxIterator::nextImpl(PlanState& planState) {
+FnMinMaxIterator::nextImpl(PlanState& planState) {
   Item_t lMaxItem;
   Item_t lRunningItem;
+  TypeSystem::xqtref_t lMaxType;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -596,59 +608,62 @@ FnMaxIterator::nextImpl(PlanState& planState) {
   if (theChildren.size() == 3)
     assert(false);
 
-  lMaxItem = lRunningItem = consumeNext(theChildren[0], planState);
+  lMaxItem = 0;
+  lRunningItem = consumeNext(theChildren[0], planState);
   if ( lRunningItem != NULL )
   {
-    while ( (lRunningItem = consumeNext(theChildren[0], planState)) != NULL )
-    {
+    do {
+      // casting of untyped atomic
+      TypeSystem::xqtref_t lRunningType = GENV_TYPESYSTEM.create_type(lRunningItem->getType(),TypeSystem::QUANT_ONE);
+      if (GENV_TYPESYSTEM.is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
+        lRunningItem = GenericCast::instance()->cast(lRunningItem, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
+      }
+
       // FIXME collation support
       // implementation dependent: return the first occurence)
       if (lRunningItem->isNumeric() && lRunningItem->isNaN()) {
+        /** It must be checked if the sequence contains any 
+         * xs:double("NaN") [xs:double("NaN") is returned] or 
+         * only xs:float("NaN")'s [xs:float("NaN") is returned]'.
+         */
         lMaxItem = lRunningItem;
-        break;
+        if (GENV_TYPESYSTEM.is_subtype(*lRunningType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
+          break;
+
+        lMaxType = GENV_TYPESYSTEM.create_type(lMaxItem->getType(), TypeSystem::QUANT_ONE);
       }
-      if (CompareIterator::valueComparison(lRunningItem, lMaxItem, 
-                                           CompareIterator::VALUE_GREATER) )
+      if (lMaxItem != 0) {
+        // Type Promotion
+        Item_t lItemCur = GenericCast::instance()->promote(lRunningItem, lMaxType);
+        if (lItemCur == 0) {
+          lItemCur = GenericCast::instance()->promote(lMaxItem, lRunningType); 
+          if (lItemCur != 0) {
+            lMaxItem = lItemCur;
+            lMaxType = GENV_TYPESYSTEM.create_type(lMaxItem->getType(), TypeSystem::QUANT_ONE);
+          } else {
+            ZORBA_ERROR_ALERT(ZorbaError::FORG0006, &loc, "Promote not possible");
+          }
+        } else {
+          lRunningItem = lItemCur;
+          lRunningType = GENV_TYPESYSTEM.create_type(lRunningItem->getType(), TypeSystem::QUANT_ONE);
+        }
+        if (CompareIterator::valueComparison(lRunningItem, lMaxItem, 
+                                           theCompareType) ) {
+          lMaxType = lRunningType;
+          lMaxItem = lRunningItem;
+        }
+      } else {
+        lMaxType = lRunningType;
         lMaxItem = lRunningItem;
-    }
+      }
+    } while ((lRunningItem = consumeNext(theChildren[0], planState)) != NULL);
     STACK_PUSH(lMaxItem, state);
   }
 
   STACK_END();
 }
 
-//15.4.4 fn:min
-Item_t 
-FnMinIterator::nextImpl(PlanState& planState) {
-  Item_t lMinItem;
-  Item_t lRunningItem;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (theChildren.size() == 3)
-    assert(false);
-
-  lMinItem = lRunningItem = consumeNext(theChildren[0], planState);
-  if ( lRunningItem != NULL )
-  {
-    while ( (lRunningItem = consumeNext(theChildren[0], planState)) != NULL )
-    {
-      // FIXME collation support
-      // implementation dependent: return the first occurence)
-      if (lRunningItem->isNumeric() && lRunningItem->isNaN()) {
-        lMinItem = lRunningItem;
-        break;
-      }
-      if (CompareIterator::valueComparison(lRunningItem, lMinItem, 
-                                           CompareIterator::VALUE_LESS ))
-        lMinItem = lRunningItem;
-    }
-    STACK_PUSH(lMinItem, state);
-  }
-
-  STACK_END();
-}
 
 //15.4.5 fn:sum
 Item_t 

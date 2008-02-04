@@ -462,7 +462,7 @@ PlanIter_t fn_max_1::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new FnMaxIterator(loc, argv);
+  return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MAX);
 }
 
 bool fn_max_1::validate_args(
@@ -485,7 +485,7 @@ PlanIter_t fn_min_1::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new FnMinIterator(loc, argv);
+  return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MIN);
 }
 
 bool fn_min_1::validate_args(

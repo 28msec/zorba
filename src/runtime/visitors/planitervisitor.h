@@ -78,8 +78,7 @@ namespace xqp
   class FnExactlyOneIterator;
   class FnCountIterator;
   class FnAvgIterator;
-  class FnMaxIterator;
-  class FnMinIterator;
+  class FnMinMaxIterator;
   class FnSumIterator;
   class FnDocIterator;
   class FnTraceIterator;
@@ -352,11 +351,8 @@ namespace xqp
       virtual void beginVisit ( const FnAvgIterator& ) = 0;
       virtual void endVisit ( const FnAvgIterator& ) = 0;
 
-      virtual void beginVisit ( const FnMaxIterator& ) = 0;
-      virtual void endVisit ( const FnMaxIterator& ) = 0;
-
-      virtual void beginVisit ( const FnMinIterator& ) = 0;
-      virtual void endVisit ( const FnMinIterator& ) = 0;
+      virtual void beginVisit ( const FnMinMaxIterator& ) = 0;
+      virtual void endVisit ( const FnMinMaxIterator& ) = 0;
 
       virtual void beginVisit ( const FnSumIterator& ) = 0;
       virtual void endVisit ( const FnSumIterator& ) = 0;
