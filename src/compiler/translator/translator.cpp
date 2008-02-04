@@ -106,7 +106,7 @@ protected:
 
   bool hadBSpaceDecl, hadBUriDecl, hadConstrDecl, hadCopyNSDecl, hadDefNSDecl, hadEmptyOrdDecl, hadOrdModeDecl;
 
-  var_expr_t theDotVar, theDotPosVar;
+  var_expr_t theDotVar, theDotPosVar, theLastVar;
 
   TranslatorImpl (static_context *sctx_p_)
     : depth (0),
@@ -123,6 +123,7 @@ protected:
   {
     theDotVar = bind_var(null_loc, DOT_VAR, var_expr::for_var);
     theDotPosVar = bind_var(null_loc, DOT_POS_VAR, var_expr::pos_var);
+    theLastVar = bind_var (null_loc, LAST_IDX_VAR, var_expr::let_var);
   }
 
   expr_t pop_nodestack (int n = 1)
@@ -3515,7 +3516,6 @@ void end_visit(const QueryBody& v, void *visit_state)
   const function *ctxf = LOOKUP_OP1 ("ctxvariable");
   flwor_expr::clause_list_t clauses;
 
-  clauses.push_back (wrap_in_forclause (new fo_expr (null_loc, ctxf, new const_expr (null_loc, xqp_string ("."))), theDotVar, theDotPosVar));
   for (std::list<global_binding>::iterator i = global_vars.begin ();
        i != global_vars.end ();
        i++)
@@ -3528,7 +3528,8 @@ void end_visit(const QueryBody& v, void *visit_state)
     clauses.push_back (wrap_in_letclause (expr, var));
   }
 
-  nodestack.push (new flwor_expr (v.get_location (), clauses, pop_nodestack ()));
+  if (! clauses.empty ())
+    nodestack.push (new flwor_expr (v.get_location (), clauses, pop_nodestack ()));
 }
 
 

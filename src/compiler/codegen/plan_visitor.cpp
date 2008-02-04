@@ -21,6 +21,7 @@
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
+#include "runtime/fncontext/FnContextImpl.h"
 #include "util/tracer.h"
 #include "functions/function.h"
 #include "util/stl_extra.h"
@@ -48,6 +49,10 @@
 #define CODEGEN_TRACE_IN(msg)
 #define CODEGEN_TRACE_OUT(msg)
 #endif
+
+#define DOT_VAR "$$dot"
+#define DOT_POS_VAR "$$pos"
+#define LAST_IDX_VAR "$$last-idx"
 
 using namespace std;
 namespace xqp 
@@ -159,35 +164,51 @@ void end_visit(var_expr& v)
                                              v.get_loc(),
                                              (void *) &v);
     vector<var_iter_t> *map = NULL;
+    bool bound = fvar_iter_map.get ((uint64_t) &v, map);
     
-    ZORBA_ASSERT (fvar_iter_map.get ((uint64_t) &v, map));
-    map->push_back (v_p);
-    itstack.push(v_p);
+    if (v.get_varname ()->getStringValue () == DOT_VAR && ! bound)
+      itstack.push (new CtxVariableIterator (v.get_loc(), "."));
+    else {
+      ZORBA_ASSERT (bound);
+      map->push_back (v_p);
+      itstack.push(v_p);
+    }
   }
   break;
   case var_expr::pos_var:
   {
-    ForVarIterator *v_p = new ForVarIterator(v.get_varname ()->getLocalName(),
-                                             v.get_loc(),
-                                             (void *) &v);
     vector<var_iter_t> *map = NULL;
-    ZORBA_ASSERT (pvar_iter_map.get ((uint64_t) &v, map));
-    map->push_back (v_p);
+    bool bound = pvar_iter_map.get ((uint64_t) &v, map);
+
+    if (v.get_varname ()->getStringValue () == DOT_POS_VAR && ! bound) {
+      itstack.push (new SingletonIterator (v.get_loc(), ITEM_FACTORY.createInteger (1)));
+    } else {
+      ForVarIterator *v_p = new ForVarIterator(v.get_varname ()->getLocalName(),
+                                               v.get_loc(),
+                                               (void *) &v);
+      ZORBA_ASSERT (bound);
+      map->push_back (v_p);
     itstack.push(v_p);
+    }
   }
   break;
   case var_expr::let_var:
   {
-    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
-                                             v.get_loc(),
-                                             (void *) &v);
     vector<ref_iter_t> *map = NULL;
-    
-    ZORBA_ASSERT (lvar_iter_map.get ((uint64_t) &v, map));
-    map->push_back (v_p);
-    itstack.push(v_p);
+    bool bound = lvar_iter_map.get ((uint64_t) &v, map);
+      
+    if (v.get_varname ()->getStringValue () == LAST_IDX_VAR && ! bound) {
+      itstack.push (new SingletonIterator (v.get_loc(), ITEM_FACTORY.createInteger (1)));
+    } else {
+      LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
+                                               v.get_loc(),
+                                               (void *) &v);
+      ZORBA_ASSERT (bound);
+      map->push_back (v_p);
+      itstack.push(v_p);
+    }
   }
-    break;
+  break;
   case var_expr::param_var:
   {
     LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),

@@ -120,14 +120,10 @@ public:
 
   bool initExecution (XQuery_t query, const vector< pair <string, string> > &vars) {
     DynamicQueryContext_t dctx = factory.createDynamicContext ();
-    bool dot_set = false;
     for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
          iter != vars.end (); iter++) {
       set_var (iter->first, iter->second, dctx, NULL);
-      if (iter->first == ".") dot_set = true;
     }
-    if (! dot_set)  // TODO: set to error item, or empty sequence
-      set_var (".:", "CONTEXT_NOT_SET", dctx, NULL);
     
     bool result = query->initExecution(dctx);
 
