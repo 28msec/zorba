@@ -352,6 +352,9 @@ xqp_string static_context::default_collation_uri() const
 
 void static_context::set_default_collation_uri(xqp_string def_uri)
 {
+  if (CollationManager::getHardcodedCollator (def_uri) == NULL
+      && lookup_collation (def_uri) == NULL)
+    ZORBA_ERROR_ALERT (ZorbaError::XQST0038);
 	bind_str("def_collation_uri:", def_uri, ZorbaError::XQST0038);
 }
 
