@@ -341,7 +341,7 @@ void end_visit(promote_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
   // TODO: Currently we use cast. Promotion may be more efficient.
-  itstack.push(new CastIterator(v.get_loc(), lChild, v.get_target_type()));
+  itstack.push(new PromoteIterator(v.get_loc(), lChild, v.get_target_type()));
 }
 
 bool begin_visit(typeswitch_expr& v)
