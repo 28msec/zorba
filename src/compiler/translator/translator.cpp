@@ -635,6 +635,8 @@ void *begin_visit(const CDataSection& v)
 void end_visit(const CDataSection& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  expr_t content = new const_expr (v.get_location (), v.get_cdata_content ());
+  nodestack.push (new text_expr (v.get_location (), text_expr::text_constructor, content));
 }
 
 
