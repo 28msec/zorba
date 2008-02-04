@@ -71,6 +71,9 @@ XmlLoader::XmlLoader()
 ********************************************************************************/
 XmlLoader::~XmlLoader()
 {
+  xmlCleanupParser(); // do cleanup of the libxml2 library
+  // however, after that a user would have to call LIBXML_TEST_VERSION again
+  // if he wants to go on using libxml2
 }
 
 
