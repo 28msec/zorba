@@ -1,18 +1,18 @@
 MACRO (COMPILER_SETUP INCLUDE_DIRS)
 
-  SET(CMAKE_CXX_FLAGS)
+  SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_INITIAL})
 
   IF (MSVC)
-    SET(CMAKE_CXX_FLAGS ${${INCLUDE_DIRS}} ${DEFINITIONS})
+    SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${${INCLUDE_DIRS}} ${DEFINITIONS})
     STRING(REGEX REPLACE ";" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")  
   ELSE (MSVC)                                                         
     GET_FILENAME_COMPONENT(CXX_EXE ${CMAKE_CXX_COMPILER} NAME)
     IF ("icpc" STREQUAL ${CXX_EXE}) # intel cxx compiler
       MESSAGE(STATUS "it seems we are using the intel cxx compiler")
-      SET(CMAKE_CXX_FLAGS ${${INCLUDE_DIRS}} -D_DEBUG -DORBA_USE_PTHREAD_LIBRARY -wd981 -Wall)
+      SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${${INCLUDE_DIRS}} -D_DEBUG -DORBA_USE_PTHREAD_LIBRARY -wd981 -Wall)
       STRING(REGEX REPLACE ";" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     ELSE ("icpc" STREQUAL ${CXX_EXE}) # g++ compiler
-      SET(CMAKE_CXX_FLAGS ${${INCLUDE_DIRS}} -Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual ${DEFINITIONS})
+      SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${${INCLUDE_DIRS}} -Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual ${DEFINITIONS})
       STRING(REGEX REPLACE ";" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     ENDIF ("icpc" STREQUAL ${CXX_EXE})                                  
   ENDIF (MSVC)

@@ -29,6 +29,7 @@ SET(DEFINITIONS)
 SET(BUILD_STATIC_LIBRARY 0)
 SET(ZORBA_INCLUDES)
 SET(APPLICATION_INCLUDES)
+SET(CMAKE_CXX_FLAGS_INITIAL)
 
 
 ##############################################################################################################
@@ -148,6 +149,9 @@ SET(APPLICATION_INCLUDES ${APPLICATION_INCLUDES} "-I${CMAKE_CURRENT_BINARY_DIR}/
 SET(APPLICATION_INCLUDES ${APPLICATION_INCLUDES} "-I${CMAKE_CURRENT_SOURCE_DIR}/external")
 
 INCLUDE(CMakeConfiguration.txt)
+
+# Save initial value of CMAKE_CXX_FLAGS for later use
+SET(CMAKE_CXX_FLAGS_INITIAL ${CMAKE_CXX_FLAGS})
 
 # for the moment, we include everything
 # however, we should move the headers (at least the library headers) into a separate directory
