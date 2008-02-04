@@ -8,6 +8,7 @@ CREATE_TEST_SOURCELIST(UnitTests
 ADD_SUBDIRECTORY(external_api)
 
 # add the executable
+COMPILER_SETUP(ZORBA_INCLUDES)
 ADD_EXECUTABLE(UnitTests ${UnitTests})
 TARGET_LINK_LIBRARIES(UnitTests zorba)
 

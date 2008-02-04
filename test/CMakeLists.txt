@@ -6,6 +6,7 @@ SET(API_TEST_SRCS
     timer.cpp
     apitest.cpp)
 
+COMPILER_SETUP(APPLICATION_INCLUDES)
 ADD_EXECUTABLE(apitest ${API_TEST_SRCS})
 TARGET_LINK_LIBRARIES(apitest zorba)
 
@@ -19,5 +20,6 @@ SET(TEST_STORE_SRCS
     timer.cpp 
     test_store.cpp)
 
+COMPILER_SETUP(ZORBA_INCLUDES)
 ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
 TARGET_LINK_LIBRARIES(test_store zorba)
