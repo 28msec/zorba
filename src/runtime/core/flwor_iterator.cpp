@@ -285,6 +285,7 @@ FLWORIterator::FlworState::~FlworState()
 {
   if ( orderMap )
   {
+    orderMap->clear(); // TODO is this needed
     delete orderMap; orderMap = 0;
   }
 }
@@ -686,12 +687,7 @@ void FLWORIterator::closeImpl ( PlanState& planState )
     iter->input->close(planState);
   }
   
-  // TODO for releasing resources reset should be in the destructor or deinit
-  // after that replace it with the following line:
-  // StateTraitsImpl<FlworState>::destroyState(planState, this->stateOffset);
-  FlworState* flworState;
-  GET_STATE ( FlworState, flworState, planState );
-  flworState->reset(planState);   flworState->~FlworState();
+  StateTraitsImpl<FlworState>::destroyState(planState, this->stateOffset);
 }
 
 
