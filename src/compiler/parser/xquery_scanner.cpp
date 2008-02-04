@@ -6944,9 +6944,9 @@ static yyconst flex_int16_t yy_rule_linenum[500] =
      2606, 2627, 2633, 2655, 2663, 2667, 2671, 2695, 2702, 2709,
      2716, 2723, 2730, 2734, 2739, 2766, 2773, 2780, 2787, 2794,
      2801, 2808, 2813, 2818, 2823, 2827, 2833, 2854, 2861, 2868,
-     2889, 2896, 2901, 2922, 2928, 2932, 2953, 2960, 2967, 2990,
-     3013, 3021, 3048, 3055, 3062, 3066, 3071, 3075, 3080, 3084,
-     3106, 3113, 3121, 3125, 3130, 3134, 3139, 3143, 3150
+     2889, 2896, 2901, 2922, 2928, 2932, 2957, 2964, 2971, 2994,
+     3017, 3025, 3052, 3059, 3066, 3070, 3075, 3079, 3084, 3088,
+     3110, 3117, 3125, 3129, 3134, 3138, 3143, 3147, 3154
 
     } ;
 
@@ -6957,7 +6957,7 @@ static yyconst flex_int16_t yy_rule_linenum[500] =
 #define yymore() (yyg->yy_more_flag = 1)
 #define YY_MORE_ADJ yyg->yy_more_len
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 /* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: xquery.l,v 1.4 2006/11/14 05:24:43 Paul Pedersen Exp $
@@ -6979,7 +6979,7 @@ static yyconst flex_int16_t yy_rule_linenum[500] =
  |  [http://www.ximep-2006.org/papers/Paper-Chamberlin-Carey.pdf]       
  |                                                                      
  |_______________________________________________________________________*/
-#line 26 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 26 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)
@@ -7460,7 +7460,7 @@ YY_DECL
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 /* %% [7.0] user's declarations go here */
-#line 279 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 279 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 
 
  yylloc->step ();
@@ -7596,13 +7596,13 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 284 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 284 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 { yylloc->step(); }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 285 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 285 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 { yylloc->lines(yyleng); yylloc->step (); }
 	YY_BREAK
 
@@ -7620,7 +7620,7 @@ typedef yy::xquery_parser::token token;
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 304 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 304 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7630,7 +7630,7 @@ YY_RULE_SETUP
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 310 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 310 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext+9, yyleng-9);
   BEGIN MODE_OPERATOR;
@@ -7641,7 +7641,7 @@ YY_RULE_SETUP
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 317 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 317 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::TYPESWITCH_LPAR;
 }
@@ -7649,7 +7649,7 @@ YY_RULE_SETUP
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 321 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 321 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7659,7 +7659,7 @@ YY_RULE_SETUP
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 327 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 327 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7669,7 +7669,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 333 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 333 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext+10, yyleng-11, true, true);
   BEGIN MODE_OPERATOR;
@@ -7680,7 +7680,7 @@ YY_RULE_SETUP
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 340 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 340 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext+8, yyleng-9, true, true);
   BEGIN MODE_OPERATOR;
@@ -7691,7 +7691,7 @@ YY_RULE_SETUP
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 347 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 347 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7701,7 +7701,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 353 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 353 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7712,7 +7712,7 @@ YY_RULE_SETUP
 /* ---------------------------------------------- */
 case 12:
 YY_RULE_SETUP
-#line 361 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 361 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PROCESSING_INSTRUCTION_CTOR;
   return token::PROCESSING_INSTRUCTION;
@@ -7721,7 +7721,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 367 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 367 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7731,7 +7731,7 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 373 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 373 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_FUNCTION;
 }
@@ -7739,14 +7739,14 @@ YY_RULE_SETUP
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 377 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 377 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_UPDATING_FUNCTION;
 }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 381 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 381 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7756,7 +7756,7 @@ YY_RULE_SETUP
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 387 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 387 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7766,7 +7766,7 @@ YY_RULE_SETUP
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 393 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 393 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7775,21 +7775,21 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 399 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 399 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SEMI;
 }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 402 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 402 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::COMMA;
 }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 405 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 405 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LPAR;
 }
@@ -7797,7 +7797,7 @@ YY_RULE_SETUP
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 408 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 408 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::IF_LPAR;
 }
@@ -7807,7 +7807,7 @@ YY_RULE_SETUP
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 415 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 415 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7817,7 +7817,7 @@ YY_RULE_SETUP
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 421 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 421 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7827,7 +7827,7 @@ YY_RULE_SETUP
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 427 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 427 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7837,7 +7837,7 @@ YY_RULE_SETUP
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 433 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 433 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7847,7 +7847,7 @@ YY_RULE_SETUP
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 439 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 439 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7857,7 +7857,7 @@ YY_RULE_SETUP
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 445 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 445 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7867,7 +7867,7 @@ YY_RULE_SETUP
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 451 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 451 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7877,7 +7877,7 @@ YY_RULE_SETUP
 case 30:
 /* rule 30 can match eol */
 YY_RULE_SETUP
-#line 457 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 457 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7889,7 +7889,7 @@ YY_RULE_SETUP
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 466 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 466 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTESTFORPI, yyscanner);
@@ -7903,126 +7903,126 @@ YY_RULE_SETUP
   }*/
 case 32:
 YY_RULE_SETUP
-#line 478 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 478 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::MINUS;
 }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 481 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 481 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PLUS;
 }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 484 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 484 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SLASH;
 }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 487 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 487 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LEADING_LONE_SLASH;
 }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 490 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 490 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SLASH_SLASH;
 }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 493 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 493 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANCESTOR_OR_SELF_AXIS;
 }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 496 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 496 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANCESTOR_AXIS;
 }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 499 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 499 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ATTRIBUTE_AXIS;
 }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 502 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 502 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CHILD_AXIS;
 }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 505 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 505 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DESCENDANT_OR_SELF_AXIS;
 }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 508 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 508 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DESCENDANT_AXIS;
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 511 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 511 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FOLLOWING_SIBLING_AXIS;
 }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 514 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 514 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FOLLOWING_AXIS;
 }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 517 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 517 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PARENT_AXIS;
 }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 520 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 520 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PRECEDING_SIBLING_AXIS;
 }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 523 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 523 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PRECEDING_AXIS;
 }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 526 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 526 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SELF_AXIS;
 }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 529 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 529 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_SIGN;
 }
@@ -8034,14 +8034,14 @@ case 50:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 537 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 537 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 540 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 540 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->ival = driver.symtab.integerval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -8053,14 +8053,14 @@ case 52:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 546 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 546 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 549 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 549 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->decval = driver.symtab.decimalval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -8072,14 +8072,14 @@ case 54:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 555 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 555 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 558 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 558 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->dval = driver.symtab.doubleval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -8088,7 +8088,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 564 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 564 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_ncname(yytext, yyleng-2);
   BEGIN MODE_OPERATOR;
@@ -8097,7 +8097,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 570 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 570 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -8106,7 +8106,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 576 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 576 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::RPAR;
@@ -8114,7 +8114,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 581 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 581 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_ncname(yytext+2, yyleng-2);
   BEGIN MODE_OPERATOR;
@@ -8123,7 +8123,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 587 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 587 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::STAR;
@@ -8132,7 +8132,7 @@ YY_RULE_SETUP
 case 61:
 /* rule 61 can match eol */
 YY_RULE_SETUP
-#line 592 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 592 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
@@ -8141,7 +8141,7 @@ YY_RULE_SETUP
 case 62:
 /* rule 62 can match eol */
 YY_RULE_SETUP
-#line 597 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 597 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DECLARE_CONSTRUCTION;
@@ -8150,7 +8150,7 @@ YY_RULE_SETUP
 case 63:
 /* rule 63 can match eol */
 YY_RULE_SETUP
-#line 602 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 602 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DECLARE_DEFAULT_ORDER;
@@ -8158,7 +8158,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 607 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 607 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DOT_DOT;
@@ -8166,7 +8166,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 612 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 612 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DOT;
@@ -8177,7 +8177,7 @@ YY_RULE_SETUP
 case 66:
 /* rule 66 can match eol */
 YY_RULE_SETUP
-#line 620 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 620 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::DECLARE_DEFAULT_COLLATION;
@@ -8186,7 +8186,7 @@ YY_RULE_SETUP
 case 67:
 /* rule 67 can match eol */
 YY_RULE_SETUP
-#line 625 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 625 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::DECLARE_NAMESPACE;
@@ -8198,7 +8198,7 @@ case 68:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 630 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 630 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::MODULE_NAMESPACE;
@@ -8210,7 +8210,7 @@ case 69:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 635 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 635 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::DECLARE_BASE_URI;
@@ -8221,7 +8221,7 @@ YY_RULE_SETUP
 case 70:
 /* rule 70 can match eol */
 YY_RULE_SETUP
-#line 643 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 643 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::DECLARE_DEFAULT_ELEMENT;
@@ -8230,7 +8230,7 @@ YY_RULE_SETUP
 case 71:
 /* rule 71 can match eol */
 YY_RULE_SETUP
-#line 648 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 648 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::DECLARE_DEFAULT_FUNCTION;
@@ -8242,7 +8242,7 @@ case 72:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 653 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 653 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::IMPORT_SCHEMA;
@@ -8254,7 +8254,7 @@ case 73:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 658 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 658 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::IMPORT_MODULE;
@@ -8263,7 +8263,7 @@ YY_RULE_SETUP
 case 74:
 /* rule 74 can match eol */
 YY_RULE_SETUP
-#line 663 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 663 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::DECLARE_COPY_NAMESPACES;
@@ -8273,7 +8273,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 75:
 YY_RULE_SETUP
-#line 671 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 671 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DOLLAR;
@@ -8282,7 +8282,7 @@ YY_RULE_SETUP
 case 76:
 /* rule 76 can match eol */
 YY_RULE_SETUP
-#line 676 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 676 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::FOR_DOLLAR;
@@ -8291,7 +8291,7 @@ YY_RULE_SETUP
 case 77:
 /* rule 77 can match eol */
 YY_RULE_SETUP
-#line 681 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 681 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::LET_DOLLAR;
@@ -8300,7 +8300,7 @@ YY_RULE_SETUP
 case 78:
 /* rule 78 can match eol */
 YY_RULE_SETUP
-#line 686 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 686 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::SOME_DOLLAR;
@@ -8309,7 +8309,7 @@ YY_RULE_SETUP
 case 79:
 /* rule 79 can match eol */
 YY_RULE_SETUP
-#line 691 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 691 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::EVERY_DOLLAR;
@@ -8318,7 +8318,7 @@ YY_RULE_SETUP
 case 80:
 /* rule 80 can match eol */
 YY_RULE_SETUP
-#line 696 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 696 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DECLARE_VARIABLE_DOLLAR;
@@ -8328,7 +8328,7 @@ YY_RULE_SETUP
 case 81:
 /* rule 81 can match eol */
 YY_RULE_SETUP
-#line 702 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 702 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::TRANSFORM_COPY_DOLLAR;
@@ -8342,7 +8342,7 @@ case 82:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 710 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 710 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::RPAR_AS;
@@ -8352,7 +8352,7 @@ YY_RULE_SETUP
 /* ------------------------- */
 case 83:
 YY_RULE_SETUP
-#line 718 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 718 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_XML_COMMENT, yyscanner);
@@ -8363,7 +8363,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 84:
 YY_RULE_SETUP
-#line 727 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 727 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {  
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_PROCESSING_INSTRUCTION, yyscanner);
@@ -8374,7 +8374,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 85:
 YY_RULE_SETUP
-#line 736 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 736 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_CDATA_SECTION, yyscanner);
@@ -8384,7 +8384,7 @@ YY_RULE_SETUP
 case 86:
 /* rule 86 can match eol */
 YY_RULE_SETUP
-#line 743 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 743 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -8393,7 +8393,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 87:
 YY_RULE_SETUP
-#line 748 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 748 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {   
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_START_TAG, yyscanner);
@@ -8405,7 +8405,7 @@ YY_RULE_SETUP
 case 88:
 /* rule 88 can match eol */
 YY_RULE_SETUP
-#line 757 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 757 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_XMLSPACE_DECL;
   return token::DECLARE_BOUNDARY_SPACE;
@@ -8415,7 +8415,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 89:
 YY_RULE_SETUP
-#line 765 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 765 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -8425,7 +8425,7 @@ YY_RULE_SETUP
 case 90:
 /* rule 90 can match eol */
 YY_RULE_SETUP
-#line 772 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 772 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_DECLAREORDERING;
   return token::DECLARE_ORDERING;
@@ -8439,7 +8439,7 @@ case 91:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 780 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 780 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_XQUERY_VERSION;
   return token::XQUERY_VERSION;
@@ -8449,7 +8449,7 @@ YY_RULE_SETUP
 /* -------------------- */
 case 92:
 YY_RULE_SETUP
-#line 788 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 788 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {  
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -8460,7 +8460,7 @@ YY_RULE_SETUP
 case 93:
 /* rule 93 can match eol */
 YY_RULE_SETUP
-#line 796 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 796 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPTION;
   return token::DECLARE_OPTION;
@@ -8471,7 +8471,7 @@ YY_RULE_SETUP
 case 94:
 /* rule 94 can match eol */
 YY_RULE_SETUP
-#line 804 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 804 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   const char *p = yytext + 2;
   for (; *p != '\'' && *p != '"'; p++);
@@ -8483,7 +8483,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 95:
 YY_RULE_SETUP
-#line 814 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 814 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {   
   yy_pop_state(yyscanner);
   return token::RBRACE;
@@ -8496,7 +8496,7 @@ YY_RULE_SETUP
 case 96:
 /* rule 96 can match eol */
 YY_RULE_SETUP
-#line 825 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 825 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_REVALIDATION_MODE;
 }
@@ -8507,7 +8507,7 @@ case 97:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 828 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 828 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DO_INSERT;
 }
@@ -8515,7 +8515,7 @@ YY_RULE_SETUP
 case 98:
 /* rule 98 can match eol */
 YY_RULE_SETUP
-#line 831 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 831 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DO_DELETE;
 }
@@ -8526,7 +8526,7 @@ case 99:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 834 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 834 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DO_REPLACE;
 }
@@ -8537,7 +8537,7 @@ case 100:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 837 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 837 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   driver.set_rename(true);
   return token::DO_RENAME;
@@ -8549,7 +8549,7 @@ case 101:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 841 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 841 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::INTO;
 }
@@ -8560,7 +8560,7 @@ case 102:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 844 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 844 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FIRST_INTO;
 }
@@ -8571,7 +8571,7 @@ case 103:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 847 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 847 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LAST_INTO;
 }
@@ -8582,7 +8582,7 @@ case 104:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 850 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 850 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AFTER;
 }
@@ -8593,7 +8593,7 @@ case 105:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 853 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 853 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::BEFORE;
 }
@@ -8604,14 +8604,14 @@ case 106:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 856 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 856 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::VALUE_OF;
 }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 859 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 859 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH;
 }
@@ -8622,7 +8622,7 @@ case 108:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 862 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 862 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AS;
 }
@@ -8633,7 +8633,7 @@ case 109:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 865 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 865 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::MODIFY;
 }
@@ -8644,21 +8644,21 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 110:
 YY_RULE_SETUP
-#line 875 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 875 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTAND;
 }
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 878 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 878 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTNOT;
 }
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 881 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 881 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTOR;
 }
@@ -8669,7 +8669,7 @@ case 113:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 884 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 884 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTNOT_IN;
 }
@@ -8680,7 +8680,7 @@ case 114:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 887 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 887 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL;
 }
@@ -8691,7 +8691,7 @@ case 115:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 890 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 890 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL_WORDS;
 }
@@ -8702,7 +8702,7 @@ case 116:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 893 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 893 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY;
 }
@@ -8713,7 +8713,7 @@ case 117:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 896 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 896 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY_WORD;
 }
@@ -8724,7 +8724,7 @@ case 118:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 899 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 899 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_END;
 }
@@ -8735,7 +8735,7 @@ case 119:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 902 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 902 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_LEAST;
 }
@@ -8746,7 +8746,7 @@ case 120:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 905 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 905 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_MOST;
 }
@@ -8757,7 +8757,7 @@ case 121:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 908 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 908 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_START;
 }
@@ -8768,7 +8768,7 @@ case 122:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 911 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 911 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_INSENSITIVE;
 }
@@ -8779,7 +8779,7 @@ case 123:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 914 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 914 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_SENSITIVE;
 }
@@ -8790,7 +8790,7 @@ case 124:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 917 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 917 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_FTOPTION;
 }
@@ -8801,7 +8801,7 @@ case 125:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 920 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 920 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_INSENSITIVE;
 }
@@ -8812,7 +8812,7 @@ case 126:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 923 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 923 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_SENSITIVE;
 }
@@ -8823,7 +8823,7 @@ case 127:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 926 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 926 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIFFERENT;
 }
@@ -8834,7 +8834,7 @@ case 128:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 929 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 929 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DISTANCE;
 }
@@ -8845,7 +8845,7 @@ case 129:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 932 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 932 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENTIRE_CONTENT;
 }
@@ -8856,7 +8856,7 @@ case 130:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 935 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 935 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::EXACTLY;
 }
@@ -8867,7 +8867,7 @@ case 131:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 938 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 938 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::FROM;
 }
@@ -8878,7 +8878,7 @@ case 132:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 941 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 941 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LANGUAGE;
 }
@@ -8889,7 +8889,7 @@ case 133:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 944 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 944 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LEVELS;
 }
@@ -8900,7 +8900,7 @@ case 134:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 947 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 947 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LOWERCASE;
 }
@@ -8911,7 +8911,7 @@ case 135:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 950 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 950 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::OCCURS;
 }
@@ -8922,7 +8922,7 @@ case 136:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 953 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 953 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PARAGRAPH;
 }
@@ -8933,7 +8933,7 @@ case 137:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 956 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 956 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PHRASE;
 }
@@ -8944,7 +8944,7 @@ case 138:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 12;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 959 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 959 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::RELATIONSHIP;
 }
@@ -8955,7 +8955,7 @@ case 139:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 962 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 962 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SAME;
 }
@@ -8966,7 +8966,7 @@ case 140:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 965 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 965 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SCORE;
 }
@@ -8977,7 +8977,7 @@ case 141:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 968 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 968 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCE;
 }
@@ -8988,7 +8988,7 @@ case 142:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 971 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 971 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCES;
 }
@@ -8999,7 +8999,7 @@ case 143:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 974 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 974 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::TIMES;
 }
@@ -9010,7 +9010,7 @@ case 144:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 977 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 977 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UPPERCASE;
 }
@@ -9021,7 +9021,7 @@ case 145:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 980 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 980 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WEIGHT;
 }
@@ -9032,7 +9032,7 @@ case 146:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 983 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 983 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WINDOW;
 }
@@ -9043,7 +9043,7 @@ case 147:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 986 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 986 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_CONTENT;
 }
@@ -9054,7 +9054,7 @@ case 148:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 989 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 989 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_DIACRITICS;
 }
@@ -9065,7 +9065,7 @@ case 149:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 992 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 992 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STEMMING;
 }
@@ -9076,7 +9076,7 @@ case 150:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 995 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 995 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STOP_WORDS;
 }
@@ -9087,7 +9087,7 @@ case 151:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 998 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 998 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_THESAURUS;
 }
@@ -9098,7 +9098,7 @@ case 152:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1001 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1001 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_WILDCARDS;
 }
@@ -9109,7 +9109,7 @@ case 153:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1004 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1004 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DEFAULT_STOP_WORDS;
 }
@@ -9120,7 +9120,7 @@ case 154:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1007 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1007 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DIACRITICS;
 }
@@ -9131,7 +9131,7 @@ case 155:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1010 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1010 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STEMMING;
 }
@@ -9142,7 +9142,7 @@ case 156:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1013 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1013 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STOP_WORDS;
 }
@@ -9153,7 +9153,7 @@ case 157:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1016 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1016 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_THESAURUS;
 }
@@ -9164,7 +9164,7 @@ case 158:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1019 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1019 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_WILDCARDS;
 }
@@ -9175,7 +9175,7 @@ case 159:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1022 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1022 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WORDS;
 }
@@ -9183,7 +9183,7 @@ YY_RULE_SETUP
 case 160:
 /* rule 160 can match eol */
 YY_RULE_SETUP
-#line 1026 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1026 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -9191,7 +9191,7 @@ YY_RULE_SETUP
 /* catch all */
 case 161:
 YY_RULE_SETUP
-#line 1031 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1031 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -9206,7 +9206,7 @@ YY_RULE_SETUP
 
 case 162:
 YY_RULE_SETUP
-#line 1047 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1047 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -9215,7 +9215,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 1053 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1053 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
   return token::NCNAME;
@@ -9224,7 +9224,7 @@ YY_RULE_SETUP
 case 164:
 /* rule 164 can match eol */
 YY_RULE_SETUP
-#line 1058 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1058 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -9246,7 +9246,7 @@ case 165:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1076 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1076 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ORDERED;
@@ -9258,7 +9258,7 @@ case 166:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1081 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1081 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::UNORDERED;
@@ -9276,7 +9276,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 167:
 YY_RULE_SETUP
-#line 1102 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1102 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(INITIAL, yyscanner);
   return token::LBRACE;
@@ -9284,7 +9284,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 1106 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1106 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   /* yy_push_state(INITIAL, yyscanner); */
@@ -9293,7 +9293,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 1111 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1111 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -9305,7 +9305,7 @@ case 170:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1115 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1115 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::THEN;
@@ -9317,7 +9317,7 @@ case 171:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1119 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1119 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ELSE;
@@ -9329,7 +9329,7 @@ case 172:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1123 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1123 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXTERNAL;
@@ -9341,7 +9341,7 @@ case 173:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1127 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1127 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AND;
@@ -9353,7 +9353,7 @@ case 174:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1131 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1131 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   if (!driver.ftcontains()) {
     BEGIN INITIAL;
@@ -9368,7 +9368,7 @@ case 175:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1140 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1140 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SCORE;
@@ -9376,7 +9376,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 1146 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1146 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GETS;
@@ -9384,7 +9384,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 1150 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1150 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::COMMA;
@@ -9396,7 +9396,7 @@ case 178:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1154 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1154 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DIV;
@@ -9404,7 +9404,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 1158 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1158 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EQUALS;
@@ -9416,7 +9416,7 @@ case 180:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1162 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1162 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXCEPT;
@@ -9428,7 +9428,7 @@ case 181:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1166 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1166 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_EQ;
@@ -9440,7 +9440,7 @@ case 182:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1170 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1170 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GE;
@@ -9452,7 +9452,7 @@ case 183:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1174 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1174 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GT;
@@ -9464,7 +9464,7 @@ case 184:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1178 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1178 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LE;
@@ -9476,7 +9476,7 @@ case 185:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1182 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1182 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LT;
@@ -9488,7 +9488,7 @@ case 186:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1186 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1186 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_NE;
@@ -9496,7 +9496,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 1190 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1190 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GE;
@@ -9504,7 +9504,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 1194 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1194 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FOLLOWS;
@@ -9512,7 +9512,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 1198 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1198 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GT;
@@ -9524,7 +9524,7 @@ case 190:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1202 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1202 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IDIV;
@@ -9536,7 +9536,7 @@ case 191:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1206 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1206 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTERSECT;
@@ -9549,7 +9549,7 @@ case 192:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1214 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1214 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTO;
@@ -9561,7 +9561,7 @@ case 193:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1218 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1218 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WITH;
@@ -9573,7 +9573,7 @@ case 194:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1222 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1222 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DO_INSERT;
@@ -9582,7 +9582,7 @@ YY_RULE_SETUP
 case 195:
 /* rule 195 can match eol */
 YY_RULE_SETUP
-#line 1226 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1226 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DO_DELETE;
@@ -9594,7 +9594,7 @@ case 196:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1230 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1230 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DO_REPLACE;
@@ -9606,7 +9606,7 @@ case 197:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1234 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1234 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   driver.set_rename(true);
@@ -9619,7 +9619,7 @@ case 198:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1239 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1239 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTO;
@@ -9631,7 +9631,7 @@ case 199:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1243 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1243 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FIRST_INTO;
@@ -9643,7 +9643,7 @@ case 200:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1247 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1247 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LAST_INTO;
@@ -9655,7 +9655,7 @@ case 201:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1251 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1251 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AFTER;
@@ -9667,7 +9667,7 @@ case 202:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1255 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1255 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::BEFORE;
@@ -9679,7 +9679,7 @@ case 203:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1259 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1259 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VALUE_OF;
@@ -9691,7 +9691,7 @@ case 204:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1263 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1263 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MODIFY;
@@ -9703,7 +9703,7 @@ case 205:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1267 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1267 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::_IN_;
@@ -9715,7 +9715,7 @@ case 206:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1271 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1271 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IS;
@@ -9723,7 +9723,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 1275 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1275 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LBRACK;
@@ -9731,7 +9731,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 1279 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1279 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LE;
@@ -9739,7 +9739,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 1283 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1283 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRECEDES;
@@ -9747,7 +9747,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 1287 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1287 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LT;
@@ -9755,7 +9755,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 1291 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1291 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MINUS;
@@ -9767,7 +9767,7 @@ case 212:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1295 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1295 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MOD;
@@ -9775,7 +9775,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 1299 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1299 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STAR;
@@ -9783,7 +9783,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 1303 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1303 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::NE;
@@ -9795,7 +9795,7 @@ case 215:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1307 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1307 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ORDER_BY;
@@ -9807,7 +9807,7 @@ case 216:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1311 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1311 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STABLE_ORDER_BY;
@@ -9819,7 +9819,7 @@ case 217:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1315 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1315 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::OR;
@@ -9827,7 +9827,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 1319 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1319 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PLUS;
@@ -9839,7 +9839,7 @@ case 219:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1323 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1323 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::RETURN;
@@ -9851,7 +9851,7 @@ case 220:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1327 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1327 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SATISFIES;
@@ -9859,7 +9859,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-#line 1331 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1331 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SLASH;
@@ -9867,7 +9867,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 1335 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1335 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LEADING_LONE_SLASH;
@@ -9875,7 +9875,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 1339 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1339 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SLASH_SLASH;
@@ -9887,7 +9887,7 @@ case 224:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1343 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1343 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::TO;
@@ -9899,7 +9899,7 @@ case 225:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1347 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1347 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::UNION;
@@ -9907,7 +9907,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
-#line 1351 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1351 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VBAR;
@@ -9919,7 +9919,7 @@ case 227:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1355 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1355 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WHERE;
@@ -9931,7 +9931,7 @@ case 228:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1359 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1359 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRESERVE;
@@ -9943,7 +9943,7 @@ case 229:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1363 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1363 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STRIP;
@@ -9957,7 +9957,7 @@ case 230:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1373 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1373 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CASTABLE_AS;
@@ -9969,7 +9969,7 @@ case 231:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1377 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1377 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CAST_AS;
@@ -9983,7 +9983,7 @@ case 232:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1385 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1385 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::INSTANCE_OF;
@@ -9995,7 +9995,7 @@ case 233:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1389 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1389 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::TREAT_AS;
@@ -10007,7 +10007,7 @@ case 234:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1393 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1393 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::CASE;
@@ -10019,7 +10019,7 @@ case 235:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1397 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1397 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   if (driver.rename()) {
     driver.set_rename(false);
@@ -10037,7 +10037,7 @@ YY_RULE_SETUP
 case 236:
 /* rule 236 can match eol */
 YY_RULE_SETUP
-#line 1410 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1410 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::RPAR_AS;
@@ -10047,7 +10047,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 237:
 YY_RULE_SETUP
-#line 1418 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1418 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DOLLAR;
@@ -10056,7 +10056,7 @@ YY_RULE_SETUP
 case 238:
 /* rule 238 can match eol */
 YY_RULE_SETUP
-#line 1422 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1422 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::FOR_DOLLAR;
@@ -10065,7 +10065,7 @@ YY_RULE_SETUP
 case 239:
 /* rule 239 can match eol */
 YY_RULE_SETUP
-#line 1426 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1426 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::LET_DOLLAR;
@@ -10074,7 +10074,7 @@ YY_RULE_SETUP
 case 240:
 /* rule 240 can match eol */
 YY_RULE_SETUP
-#line 1430 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1430 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::LET_SCORE_DOLLAR;
@@ -10084,7 +10084,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 241:
 YY_RULE_SETUP
-#line 1438 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1438 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -10097,7 +10097,7 @@ case 242:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1445 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1445 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_URITOOPERATOR;
   return token::COLLATION;
@@ -10107,7 +10107,7 @@ YY_RULE_SETUP
 /* --------------------------------------- */
 case 243:
 YY_RULE_SETUP
-#line 1453 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1453 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::RBRACE;
@@ -10117,14 +10117,14 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 244:
 YY_RULE_SETUP
-#line 1461 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1461 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::RPAR;
 }
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-#line 1464 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1464 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::HOOK;
 }
@@ -10135,7 +10135,7 @@ case 246:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1467 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1467 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::EMPTY_GREATEST;
 }
@@ -10146,7 +10146,7 @@ case 247:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1470 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1470 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::EMPTY_LEAST;
 }
@@ -10157,7 +10157,7 @@ case 248:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1473 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1473 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ASCENDING;
 }
@@ -10168,7 +10168,7 @@ case 249:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 10;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1476 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1476 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DESCENDING;
 }
@@ -10179,14 +10179,14 @@ case 250:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1479 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1479 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DEFAULT;
 }
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 1482 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1482 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::RBRACK;
 }
@@ -10194,7 +10194,7 @@ YY_RULE_SETUP
 case 252:
 /* rule 252 can match eol */
 YY_RULE_SETUP
-#line 1485 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1485 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
@@ -10211,7 +10211,7 @@ case 253:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 10;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1498 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1498 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   driver.set_ftcontains(true);
@@ -10220,7 +10220,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-#line 1503 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1503 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTAND;
@@ -10228,7 +10228,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 255:
 YY_RULE_SETUP
-#line 1507 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1507 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTNOT;
@@ -10236,7 +10236,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
-#line 1511 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1511 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTOR;
@@ -10248,7 +10248,7 @@ case 257:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1515 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1515 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTNOT_IN;
@@ -10260,7 +10260,7 @@ case 258:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1519 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1519 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AT_LEAST;
@@ -10272,7 +10272,7 @@ case 259:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1523 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1523 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AT_MOST;
@@ -10284,7 +10284,7 @@ case 260:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1527 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1527 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DISTANCE;
@@ -10296,7 +10296,7 @@ case 261:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1531 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1531 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXACTLY;
@@ -10308,7 +10308,7 @@ case 262:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1535 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1535 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FROM;
@@ -10320,7 +10320,7 @@ case 263:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1539 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1539 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::OCCURS;
@@ -10332,7 +10332,7 @@ case 264:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1543 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1543 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WINDOW;
@@ -10346,7 +10346,7 @@ case 265:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1551 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1551 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL;
 }
@@ -10357,7 +10357,7 @@ case 266:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1554 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1554 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL_WORDS;
 }
@@ -10368,7 +10368,7 @@ case 267:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1557 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1557 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY;
 }
@@ -10379,7 +10379,7 @@ case 268:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1560 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1560 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY_WORD;
 }
@@ -10390,7 +10390,7 @@ case 269:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1563 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1563 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_END;
 }
@@ -10401,7 +10401,7 @@ case 270:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1566 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1566 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_START;
 }
@@ -10412,7 +10412,7 @@ case 271:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1569 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1569 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_INSENSITIVE;
 }
@@ -10423,7 +10423,7 @@ case 272:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1572 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1572 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_SENSITIVE;
 }
@@ -10434,7 +10434,7 @@ case 273:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1575 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1575 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_FTOPTION;
 }
@@ -10445,7 +10445,7 @@ case 274:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1578 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1578 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_INSENSITIVE;
 }
@@ -10456,7 +10456,7 @@ case 275:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1581 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1581 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_SENSITIVE;
 }
@@ -10467,7 +10467,7 @@ case 276:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1584 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1584 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIFFERENT;
 }
@@ -10478,7 +10478,7 @@ case 277:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1587 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1587 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENTIRE_CONTENT;
 }
@@ -10489,7 +10489,7 @@ case 278:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1590 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1590 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LANGUAGE;
 }
@@ -10500,7 +10500,7 @@ case 279:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1593 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1593 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LEVELS;
 }
@@ -10511,7 +10511,7 @@ case 280:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1596 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1596 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::LOWERCASE;
 }
@@ -10522,7 +10522,7 @@ case 281:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1599 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1599 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PARAGRAPH;
 }
@@ -10533,7 +10533,7 @@ case 282:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1602 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1602 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PHRASE;
 }
@@ -10544,7 +10544,7 @@ case 283:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 12;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1605 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1605 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::RELATIONSHIP;
 }
@@ -10555,7 +10555,7 @@ case 284:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1608 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1608 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SAME;
 }
@@ -10566,7 +10566,7 @@ case 285:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1611 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1611 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SCORE;
 }
@@ -10577,7 +10577,7 @@ case 286:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1614 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1614 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCE;
 }
@@ -10588,7 +10588,7 @@ case 287:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1617 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1617 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCES;
 }
@@ -10599,7 +10599,7 @@ case 288:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1620 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1620 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::TIMES;
 }
@@ -10610,7 +10610,7 @@ case 289:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1623 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1623 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UPPERCASE;
 }
@@ -10621,7 +10621,7 @@ case 290:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1626 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1626 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WEIGHT;
 }
@@ -10632,7 +10632,7 @@ case 291:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1629 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1629 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_CONTENT;
 }
@@ -10643,7 +10643,7 @@ case 292:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1632 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1632 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_DIACRITICS;
 }
@@ -10654,7 +10654,7 @@ case 293:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1635 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1635 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STEMMING;
 }
@@ -10665,7 +10665,7 @@ case 294:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1638 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1638 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STOP_WORDS;
 }
@@ -10676,7 +10676,7 @@ case 295:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1641 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1641 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_THESAURUS;
 }
@@ -10687,7 +10687,7 @@ case 296:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1644 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1644 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_WILDCARDS;
 }
@@ -10698,7 +10698,7 @@ case 297:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1647 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1647 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DEFAULT_STOP_WORDS;
 }
@@ -10709,7 +10709,7 @@ case 298:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1650 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1650 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DIACRITICS;
 }
@@ -10720,7 +10720,7 @@ case 299:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1653 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1653 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STEMMING;
 }
@@ -10731,7 +10731,7 @@ case 300:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1656 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1656 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STOP_WORDS;
 }
@@ -10742,7 +10742,7 @@ case 301:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1659 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1659 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_THESAURUS;
 }
@@ -10753,7 +10753,7 @@ case 302:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1662 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1662 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_WILDCARDS;
 }
@@ -10764,14 +10764,14 @@ case 303:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1665 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1665 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::WORDS;
 }
 	YY_BREAK
 case 304:
 YY_RULE_SETUP
-#line 1668 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1668 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -10779,7 +10779,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
-#line 1673 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1673 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -10787,7 +10787,7 @@ YY_RULE_SETUP
 case 306:
 /* rule 306 can match eol */
 YY_RULE_SETUP
-#line 1677 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1677 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10804,7 +10804,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 307:
 YY_RULE_SETUP
-#line 1696 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1696 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -10815,7 +10815,7 @@ YY_RULE_SETUP
 case 308:
 /* rule 308 can match eol */
 YY_RULE_SETUP
-#line 1703 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1703 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
@@ -10826,7 +10826,7 @@ case 309:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1707 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1707 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENCODING;
 }
@@ -10834,7 +10834,7 @@ YY_RULE_SETUP
 case 310:
 /* rule 310 can match eol */
 YY_RULE_SETUP
-#line 1711 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1711 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10852,14 +10852,14 @@ YY_RULE_SETUP
 
 case 311:
 YY_RULE_SETUP
-#line 1732 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1732 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 312:
 YY_RULE_SETUP
-#line 1736 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1736 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -10870,14 +10870,14 @@ YY_RULE_SETUP
 case 313:
 /* rule 313 can match eol */
 YY_RULE_SETUP
-#line 1743 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1743 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_URILIT (URI_LITERAL, yytext, yyleng);
 }
 	YY_BREAK
 case 314:
 YY_RULE_SETUP
-#line 1747 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1747 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::COMMA;
 }
@@ -10888,21 +10888,21 @@ case 315:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1751 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1751 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT;
 }
 	YY_BREAK
 case 316:
 YY_RULE_SETUP
-#line 1755 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1755 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::EQUALS;
 }
 	YY_BREAK
 case 317:
 YY_RULE_SETUP
-#line 1759 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1759 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
   return token::NCNAME;
@@ -10910,7 +10910,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 318:
 YY_RULE_SETUP
-#line 1764 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1764 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -10918,7 +10918,7 @@ YY_RULE_SETUP
 case 319:
 /* rule 319 can match eol */
 YY_RULE_SETUP
-#line 1768 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1768 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10934,7 +10934,7 @@ YY_RULE_SETUP
 case 320:
 /* rule 320 can match eol */
 YY_RULE_SETUP
-#line 1785 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1785 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_URILIT (URI_LITERAL, yytext, yyleng);
@@ -10954,7 +10954,7 @@ YY_RULE_SETUP
 case 321:
 /* rule 321 can match eol */
 YY_RULE_SETUP
-#line 1806 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1806 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   TRY_URILIT (URI_LITERAL, yytext, yyleng);
@@ -10966,7 +10966,7 @@ case 322:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1811 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1811 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::NAMESPACE;
@@ -10980,7 +10980,7 @@ case 323:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1818 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1818 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INHERIT;
@@ -10992,7 +10992,7 @@ case 324:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 10;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1823 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1823 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::NO_INHERIT;
@@ -11002,7 +11002,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 325:
 YY_RULE_SETUP
-#line 1830 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1830 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -11015,7 +11015,7 @@ case 326:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1837 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1837 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DEFAULT_ELEMENT;
 }
@@ -11026,7 +11026,7 @@ case 327:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1841 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1841 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::PRESERVE;
 }
@@ -11037,21 +11037,21 @@ case 328:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 11;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1845 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1845 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::NO_PRESERVE;
 }
 	YY_BREAK
 case 329:
 YY_RULE_SETUP
-#line 1849 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1849 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::COMMA;
 }
 	YY_BREAK
 case 330:
 YY_RULE_SETUP
-#line 1853 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1853 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11059,7 +11059,7 @@ YY_RULE_SETUP
 case 331:
 /* rule 331 can match eol */
 YY_RULE_SETUP
-#line 1857 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1857 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11082,7 +11082,7 @@ case 332:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1879 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1879 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRESERVE;
@@ -11094,7 +11094,7 @@ case 333:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1884 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1884 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STRIP;
@@ -11104,14 +11104,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 334:
 YY_RULE_SETUP
-#line 1891 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1891 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 335:
 YY_RULE_SETUP
-#line 1895 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1895 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11119,7 +11119,7 @@ YY_RULE_SETUP
 case 336:
 /* rule 336 can match eol */
 YY_RULE_SETUP
-#line 1899 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1899 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11137,7 +11137,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 337:
 YY_RULE_SETUP
-#line 1920 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1920 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -11148,14 +11148,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 338:
 YY_RULE_SETUP
-#line 1928 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1928 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 339:
 YY_RULE_SETUP
-#line 1932 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1932 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11163,7 +11163,7 @@ YY_RULE_SETUP
 case 340:
 /* rule 340 can match eol */
 YY_RULE_SETUP
-#line 1936 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1936 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11181,7 +11181,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 341:
 YY_RULE_SETUP
-#line 1957 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1957 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DOLLAR;
@@ -11190,7 +11190,7 @@ YY_RULE_SETUP
 case 342:
 /* rule 342 can match eol */
 YY_RULE_SETUP
-#line 1962 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1962 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::VOID_TEST;
@@ -11200,7 +11200,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 343:
 YY_RULE_SETUP
-#line 1969 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1969 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -11210,7 +11210,7 @@ YY_RULE_SETUP
 case 344:
 /* rule 344 can match eol */
 YY_RULE_SETUP
-#line 1975 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1975 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11220,7 +11220,7 @@ YY_RULE_SETUP
 case 345:
 /* rule 345 can match eol */
 YY_RULE_SETUP
-#line 1981 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1981 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11230,7 +11230,7 @@ YY_RULE_SETUP
 case 346:
 /* rule 346 can match eol */
 YY_RULE_SETUP
-#line 1987 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1987 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11240,7 +11240,7 @@ YY_RULE_SETUP
 case 347:
 /* rule 347 can match eol */
 YY_RULE_SETUP
-#line 1993 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1993 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11250,7 +11250,7 @@ YY_RULE_SETUP
 case 348:
 /* rule 348 can match eol */
 YY_RULE_SETUP
-#line 1999 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1999 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11260,7 +11260,7 @@ YY_RULE_SETUP
 case 349:
 /* rule 349 can match eol */
 YY_RULE_SETUP
-#line 2005 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2005 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11270,7 +11270,7 @@ YY_RULE_SETUP
 case 350:
 /* rule 350 can match eol */
 YY_RULE_SETUP
-#line 2011 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2011 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11280,7 +11280,7 @@ YY_RULE_SETUP
 case 351:
 /* rule 351 can match eol */
 YY_RULE_SETUP
-#line 2017 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2017 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11292,7 +11292,7 @@ YY_RULE_SETUP
 case 352:
 /* rule 352 can match eol */
 YY_RULE_SETUP
-#line 2025 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2025 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTESTFORPI, yyscanner);
@@ -11302,7 +11302,7 @@ YY_RULE_SETUP
 case 353:
 /* rule 353 can match eol */
 YY_RULE_SETUP
-#line 2031 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2031 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 { 
   BEGIN MODE_OCCURRENCE_INDICATOR;
   return token::ITEM_TEST;
@@ -11312,7 +11312,7 @@ YY_RULE_SETUP
 /* -------------------- */
 case 354:
 YY_RULE_SETUP
-#line 2038 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2038 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -11322,7 +11322,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 355:
 YY_RULE_SETUP
-#line 2045 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2045 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -11334,7 +11334,7 @@ case 356:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2050 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2050 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::THEN;
@@ -11346,7 +11346,7 @@ case 357:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2055 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2055 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ELSE;
@@ -11357,7 +11357,7 @@ YY_RULE_SETUP
 case 358:
 /* rule 358 can match eol */
 YY_RULE_SETUP
-#line 2062 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2062 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   const char *p = yytext + 2;
   for (; *p != '\'' && *p != '"'; p++);
@@ -11373,7 +11373,7 @@ case 359:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2071 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2071 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXTERNAL;
@@ -11385,7 +11385,7 @@ case 360:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2076 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2076 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AND;
@@ -11397,7 +11397,7 @@ case 361:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2081 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2081 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AT;
@@ -11405,7 +11405,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 362:
 YY_RULE_SETUP
-#line 2086 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2086 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GETS;
@@ -11413,7 +11413,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 363:
 YY_RULE_SETUP
-#line 2091 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2091 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::COMMA;
@@ -11425,7 +11425,7 @@ case 364:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2096 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2096 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DIV;
@@ -11433,7 +11433,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 365:
 YY_RULE_SETUP
-#line 2101 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2101 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EQUALS;
@@ -11445,7 +11445,7 @@ case 366:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2106 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2106 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXCEPT;
@@ -11457,7 +11457,7 @@ case 367:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2111 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2111 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_EQ;
@@ -11469,7 +11469,7 @@ case 368:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2116 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2116 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GE;
@@ -11481,7 +11481,7 @@ case 369:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2121 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2121 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GT;
@@ -11493,7 +11493,7 @@ case 370:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2126 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2126 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LE;
@@ -11505,7 +11505,7 @@ case 371:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2131 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2131 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LT;
@@ -11517,7 +11517,7 @@ case 372:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2136 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2136 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_NE;
@@ -11525,7 +11525,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 373:
 YY_RULE_SETUP
-#line 2141 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2141 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GE;
@@ -11533,7 +11533,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 374:
 YY_RULE_SETUP
-#line 2146 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2146 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FOLLOWS;
@@ -11541,7 +11541,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 375:
 YY_RULE_SETUP
-#line 2151 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2151 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GT;
@@ -11553,7 +11553,7 @@ case 376:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2156 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2156 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IDIV;
@@ -11565,7 +11565,7 @@ case 377:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2161 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2161 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTERSECT;
@@ -11577,7 +11577,7 @@ case 378:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2166 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2166 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::_IN_;
@@ -11589,7 +11589,7 @@ case 379:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2171 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2171 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IS;
@@ -11597,7 +11597,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 380:
 YY_RULE_SETUP
-#line 2176 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2176 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LBRACK;
@@ -11605,7 +11605,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 381:
 YY_RULE_SETUP
-#line 2181 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2181 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LPAR;
@@ -11613,7 +11613,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 382:
 YY_RULE_SETUP
-#line 2186 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2186 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LE;
@@ -11621,7 +11621,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 383:
 YY_RULE_SETUP
-#line 2191 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2191 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRECEDES;
@@ -11629,7 +11629,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 384:
 YY_RULE_SETUP
-#line 2196 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2196 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LT;
@@ -11637,7 +11637,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 385:
 YY_RULE_SETUP
-#line 2201 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2201 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MINUS;
@@ -11649,7 +11649,7 @@ case 386:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2206 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2206 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MOD;
@@ -11657,7 +11657,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 387:
 YY_RULE_SETUP
-#line 2211 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2211 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::NE;
@@ -11669,7 +11669,7 @@ case 388:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2216 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2216 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ORDER_BY;
@@ -11681,7 +11681,7 @@ case 389:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2221 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2221 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STABLE_ORDER_BY;
@@ -11693,7 +11693,7 @@ case 390:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2226 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2226 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::OR;
@@ -11705,7 +11705,7 @@ case 391:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2231 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2231 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::RETURN;
@@ -11717,7 +11717,7 @@ case 392:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2236 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2236 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SATISFIES;
@@ -11729,7 +11729,7 @@ case 393:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2241 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2241 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::TO;
@@ -11741,7 +11741,7 @@ case 394:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2246 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2246 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::UNION;
@@ -11749,7 +11749,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 395:
 YY_RULE_SETUP
-#line 2251 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2251 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VBAR;
@@ -11761,7 +11761,7 @@ case 396:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2256 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2256 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WHERE;
@@ -11775,7 +11775,7 @@ case 397:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2263 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2263 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CASTABLE_AS;
@@ -11787,7 +11787,7 @@ case 398:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2268 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2268 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CAST_AS;
@@ -11801,7 +11801,7 @@ case 399:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2275 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2275 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::INSTANCE_OF;
 }
@@ -11812,7 +11812,7 @@ case 400:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2279 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2279 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::TREAT_AS;
 }
@@ -11823,7 +11823,7 @@ case 401:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2283 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2283 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE;
 }
@@ -11834,7 +11834,7 @@ case 402:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2287 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2287 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::AS;
 }
@@ -11845,14 +11845,14 @@ case 403:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2291 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2291 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::RPAR_AS;
 }
 	YY_BREAK
 case 404:
 YY_RULE_SETUP
-#line 2295 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2295 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OCCURRENCE_INDICATOR; 
@@ -11861,7 +11861,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 405:
 YY_RULE_SETUP
-#line 2301 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2301 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11869,7 +11869,7 @@ YY_RULE_SETUP
 case 406:
 /* rule 406 can match eol */
 YY_RULE_SETUP
-#line 2305 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2305 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11886,7 +11886,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 407:
 YY_RULE_SETUP
-#line 2325 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2325 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -11897,7 +11897,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 408:
 YY_RULE_SETUP
-#line 2333 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2333 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_CLOSE_KINDTEST;
   return token::STAR;
@@ -11905,7 +11905,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 409:
 YY_RULE_SETUP
-#line 2338 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2338 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   BEGIN MODE_CLOSE_KINDTEST;
@@ -11916,7 +11916,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 410:
 YY_RULE_SETUP
-#line 2346 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2346 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -11925,7 +11925,7 @@ YY_RULE_SETUP
 /* --------------------------------- */
 case 411:
 YY_RULE_SETUP
-#line 2352 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2352 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::RPAR;
@@ -11936,7 +11936,7 @@ YY_RULE_SETUP
 case 412:
 /* rule 412 can match eol */
 YY_RULE_SETUP
-#line 2359 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2359 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_KINDTEST;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11946,7 +11946,7 @@ YY_RULE_SETUP
 case 413:
 /* rule 413 can match eol */
 YY_RULE_SETUP
-#line 2365 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2365 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_KINDTEST;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11957,7 +11957,7 @@ YY_RULE_SETUP
 /* --------- */
 case 414:
 YY_RULE_SETUP
-#line 2373 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2373 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11965,7 +11965,7 @@ YY_RULE_SETUP
 case 415:
 /* rule 415 can match eol */
 YY_RULE_SETUP
-#line 2377 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2377 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11983,7 +11983,7 @@ YY_RULE_SETUP
 /* --------------------------------- */
 case 416:
 YY_RULE_SETUP
-#line 2397 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2397 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::RPAR;
@@ -11993,7 +11993,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 417:
 YY_RULE_SETUP
-#line 2405 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2405 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -12002,7 +12002,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 418:
 YY_RULE_SETUP
-#line 2411 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2411 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
   return token::NCNAME;
@@ -12011,14 +12011,14 @@ YY_RULE_SETUP
 case 419:
 /* rule 419 can match eol */
 YY_RULE_SETUP
-#line 2416 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2416 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 	YY_BREAK
 case 420:
 YY_RULE_SETUP
-#line 2420 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2420 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12026,7 +12026,7 @@ YY_RULE_SETUP
 case 421:
 /* rule 421 can match eol */
 YY_RULE_SETUP
-#line 2424 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2424 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12043,7 +12043,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 422:
 YY_RULE_SETUP
-#line 2444 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2444 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::RPAR;
@@ -12053,7 +12053,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 423:
 YY_RULE_SETUP
-#line 2451 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2451 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_KINDTEST;
   return token::COMMA;
@@ -12063,7 +12063,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 424:
 YY_RULE_SETUP
-#line 2458 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2458 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -12074,7 +12074,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 425:
 YY_RULE_SETUP
-#line 2466 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2466 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -12083,14 +12083,14 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 426:
 YY_RULE_SETUP
-#line 2472 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2472 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::HOOK;
 }
 	YY_BREAK
 case 427:
 YY_RULE_SETUP
-#line 2476 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2476 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12098,7 +12098,7 @@ YY_RULE_SETUP
 case 428:
 /* rule 428 can match eol */
 YY_RULE_SETUP
-#line 2480 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2480 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12123,7 +12123,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 429:
 YY_RULE_SETUP
-#line 2508 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2508 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::OCCURS_HOOK;
@@ -12131,7 +12131,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 430:
 YY_RULE_SETUP
-#line 2513 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2513 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::OCCURS_STAR;
@@ -12139,7 +12139,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 431:
 YY_RULE_SETUP
-#line 2518 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2518 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::OCCURS_PLUS;
@@ -12149,7 +12149,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 432:
 YY_RULE_SETUP
-#line 2525 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2525 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -12158,7 +12158,7 @@ YY_RULE_SETUP
 /* --------------------------------------- */
 case 433:
 YY_RULE_SETUP
-#line 2531 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2531 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yyless(0);
   BEGIN MODE_OPERATOR;
@@ -12167,7 +12167,7 @@ YY_RULE_SETUP
 case 434:
 /* rule 434 can match eol */
 YY_RULE_SETUP
-#line 2536 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2536 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12186,7 +12186,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 435:
 YY_RULE_SETUP
-#line 2558 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2558 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   BEGIN INITIAL;
@@ -12195,7 +12195,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 436:
 YY_RULE_SETUP
-#line 2564 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2564 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12203,7 +12203,7 @@ YY_RULE_SETUP
 case 437:
 /* rule 437 can match eol */
 YY_RULE_SETUP
-#line 2568 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2568 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12223,7 +12223,7 @@ YY_RULE_SETUP
 case 438:
 /* rule 438 can match eol */
 YY_RULE_SETUP
-#line 2590 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2590 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng,true,true);
   BEGIN MODE_PRAGMACONTENTS;
@@ -12232,7 +12232,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 439:
 YY_RULE_SETUP
-#line 2596 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2596 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yylval->sval = driver.symtab.put(yytext, yyleng-2);
@@ -12242,14 +12242,14 @@ YY_RULE_SETUP
 case 440:
 /* rule 440 can match eol */
 YY_RULE_SETUP
-#line 2602 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2602 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
 	YY_BREAK
 case 441:
 YY_RULE_SETUP
-#line 2606 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2606 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12268,7 +12268,7 @@ YY_RULE_SETUP
 case 442:
 /* rule 442 can match eol */
 YY_RULE_SETUP
-#line 2627 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2627 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yylval->sval = driver.symtab.put(yytext, yyleng-2);
@@ -12277,7 +12277,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 443:
 YY_RULE_SETUP
-#line 2633 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2633 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12296,7 +12296,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 444:
 YY_RULE_SETUP
-#line 2655 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2655 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_varname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -12307,14 +12307,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 445:
 YY_RULE_SETUP
-#line 2663 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2663 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 446:
 YY_RULE_SETUP
-#line 2667 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2667 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12322,7 +12322,7 @@ YY_RULE_SETUP
 case 447:
 /* rule 447 can match eol */
 YY_RULE_SETUP
-#line 2671 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2671 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12343,7 +12343,7 @@ YY_RULE_SETUP
 /* ----------------------------- */
 case 448:
 YY_RULE_SETUP
-#line 2695 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2695 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ELEMENT_CONTENT;
   return token::TAG_END;
@@ -12353,7 +12353,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 449:
 YY_RULE_SETUP
-#line 2702 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2702 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT;
   return token::QUOTE;
@@ -12363,7 +12363,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 450:
 YY_RULE_SETUP
-#line 2709 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2709 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
   return token::APOS;
@@ -12373,7 +12373,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 451:
 YY_RULE_SETUP
-#line 2716 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2716 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_START_TAG;
   return token::EQUALS;
@@ -12383,7 +12383,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 452:
 YY_RULE_SETUP
-#line 2723 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2723 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::EMPTY_TAG_END;
@@ -12394,14 +12394,14 @@ YY_RULE_SETUP
 case 453:
 /* rule 453 can match eol */
 YY_RULE_SETUP
-#line 2730 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2730 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* continue lexing */
 }
 	YY_BREAK
 case 454:
 YY_RULE_SETUP
-#line 2734 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2734 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   return token::QNAME;
@@ -12409,7 +12409,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 455:
 YY_RULE_SETUP
-#line 2739 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2739 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12433,7 +12433,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 456:
 YY_RULE_SETUP
-#line 2766 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2766 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_END_TAG;
   return token::START_TAG_END;
@@ -12443,7 +12443,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 457:
 YY_RULE_SETUP
-#line 2773 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2773 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(INITIAL, yyscanner);
   return token::LBRACE;
@@ -12453,7 +12453,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 458:
 YY_RULE_SETUP
-#line 2780 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2780 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_XML_COMMENT, yyscanner);
   return token::XML_COMMENT_BEGIN;
@@ -12463,7 +12463,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 459:
 YY_RULE_SETUP
-#line 2787 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2787 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_PROCESSING_INSTRUCTION, yyscanner);
   return token::PI_BEGIN;
@@ -12473,7 +12473,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 460:
 YY_RULE_SETUP
-#line 2794 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2794 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_CDATA_SECTION, yyscanner);
   return token::CDATA_BEGIN;
@@ -12483,7 +12483,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 461:
 YY_RULE_SETUP
-#line 2801 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2801 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_START_TAG, yyscanner);
   return token::START_TAG;
@@ -12494,7 +12494,7 @@ YY_RULE_SETUP
 case 462:
 /* rule 462 can match eol */
 YY_RULE_SETUP
-#line 2808 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2808 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
   return token::ELEMENT_CONTENT;
@@ -12502,7 +12502,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 463:
 YY_RULE_SETUP
-#line 2813 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2813 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_entityref(yytext, yyleng);
   return token::ENTITY_REF;
@@ -12510,7 +12510,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 464:
 YY_RULE_SETUP
-#line 2818 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2818 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_charref(yytext, yyleng);
   return token::CHAR_REF_LITERAL;
@@ -12518,14 +12518,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 465:
 YY_RULE_SETUP
-#line 2823 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2823 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 466:
 YY_RULE_SETUP
-#line 2827 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2827 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_RBRACE;
 }
@@ -12534,7 +12534,7 @@ YY_RULE_SETUP
 /* -------------- */
 case 467:
 YY_RULE_SETUP
-#line 2833 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2833 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12552,7 +12552,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 468:
 YY_RULE_SETUP
-#line 2854 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2854 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::TAG_END;
@@ -12563,7 +12563,7 @@ YY_RULE_SETUP
 case 469:
 /* rule 469 can match eol */
 YY_RULE_SETUP
-#line 2861 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2861 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
    yylval->sval = driver.symtab.put_qname(yytext, yyleng, false, true);
   return token::QNAME;
@@ -12573,7 +12573,7 @@ YY_RULE_SETUP
 /* -------------- */
 case 470:
 YY_RULE_SETUP
-#line 2868 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2868 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12591,7 +12591,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 471:
 YY_RULE_SETUP
-#line 2889 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2889 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::XML_COMMENT_END;
@@ -12602,7 +12602,7 @@ YY_RULE_SETUP
 case 472:
 /* rule 472 can match eol */
 YY_RULE_SETUP
-#line 2896 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2896 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
   return token::XML_COMMENT_LITERAL;
@@ -12610,7 +12610,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 473:
 YY_RULE_SETUP
-#line 2901 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2901 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
    return token::UNRECOGNIZED;
  }
@@ -12629,7 +12629,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 474:
 YY_RULE_SETUP
-#line 2922 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2922 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
 }
@@ -12638,16 +12638,22 @@ YY_RULE_SETUP
 /* --------------------- */
 case 475:
 YY_RULE_SETUP
-#line 2928 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2928 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 476:
 YY_RULE_SETUP
-#line 2932 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2932 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* do nothing */
+}
+	YY_BREAK
+case YY_STATE_EOF(MODE_EXPR_COMMENT):
+#line 2936 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
+{
+  return token::UNRECOGNIZED;
 }
 	YY_BREAK
 /* <MODE_EXPR_COMMENT> */
@@ -12664,7 +12670,7 @@ YY_RULE_SETUP
 case 477:
 /* rule 477 can match eol */
 YY_RULE_SETUP
-#line 2953 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2957 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; 
   /* continue lexing */
@@ -12674,7 +12680,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 478:
 YY_RULE_SETUP
-#line 2960 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2964 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::PI_END;
@@ -12684,7 +12690,7 @@ YY_RULE_SETUP
 /* ------------------------------- */
 case 479:
 YY_RULE_SETUP
-#line 2967 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2971 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
   BEGIN MODE_PROCESSING_INSTRUCTION;
@@ -12705,7 +12711,7 @@ YY_RULE_SETUP
 case 480:
 /* rule 480 can match eol */
 YY_RULE_SETUP
-#line 2990 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2994 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   yylval->sval = driver.symtab.put(yytext, yyleng-2);
@@ -12725,7 +12731,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 481:
 YY_RULE_SETUP
-#line 3013 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3017 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   yylval->sval = driver.symtab.put(yytext, yyleng-3);
@@ -12737,7 +12743,7 @@ YY_RULE_SETUP
 case 482:
 /* rule 482 can match eol */
 YY_RULE_SETUP
-#line 3021 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3025 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yymore();
 }
@@ -12761,7 +12767,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 483:
 YY_RULE_SETUP
-#line 3048 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3052 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_START_TAG;
   return token::QUOTE;
@@ -12771,7 +12777,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 484:
 YY_RULE_SETUP
-#line 3055 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3059 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(INITIAL, yyscanner);
   return token::LBRACE;
@@ -12781,7 +12787,7 @@ YY_RULE_SETUP
 /* -------------------------------- */
 case 485:
 YY_RULE_SETUP
-#line 3062 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3066 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ESCAPE_QUOTE;
 }
@@ -12789,7 +12795,7 @@ YY_RULE_SETUP
 case 486:
 /* rule 486 can match eol */
 YY_RULE_SETUP
-#line 3066 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3070 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
   return token::QUOTE_ATTR_CONTENT;
@@ -12797,14 +12803,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 487:
 YY_RULE_SETUP
-#line 3071 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3075 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENTITY_REF;
 }
 	YY_BREAK
 case 488:
 YY_RULE_SETUP
-#line 3075 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3079 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_charref(yytext, yyleng);
   return token::CHAR_REF_LITERAL;
@@ -12812,14 +12818,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 489:
 YY_RULE_SETUP
-#line 3080 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3084 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 490:
 YY_RULE_SETUP
-#line 3084 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3088 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_RBRACE;
 }
@@ -12838,7 +12844,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 491:
 YY_RULE_SETUP
-#line 3106 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3110 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_START_TAG;
   return token::APOS;
@@ -12848,7 +12854,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 492:
 YY_RULE_SETUP
-#line 3113 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3117 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
   yy_push_state(INITIAL, yyscanner);
@@ -12859,7 +12865,7 @@ YY_RULE_SETUP
 /* ------------------------------- */
 case 493:
 YY_RULE_SETUP
-#line 3121 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3125 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ESCAPE_APOS;
 }
@@ -12867,7 +12873,7 @@ YY_RULE_SETUP
 case 494:
 /* rule 494 can match eol */
 YY_RULE_SETUP
-#line 3125 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3129 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
   return token::APOS_ATTR_CONTENT;
@@ -12875,14 +12881,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 495:
 YY_RULE_SETUP
-#line 3130 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3134 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENTITY_REF;
 }
 	YY_BREAK
 case 496:
 YY_RULE_SETUP
-#line 3134 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3138 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_charref(yytext, yyleng);
   return token::CHAR_REF_LITERAL;
@@ -12890,14 +12896,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 497:
 YY_RULE_SETUP
-#line 3139 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3143 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 498:
 YY_RULE_SETUP
-#line 3143 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3147 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_RBRACE;
 }
@@ -12905,15 +12911,15 @@ YY_RULE_SETUP
 /* <MODE_APOS_ATTRIBUTE_CONTENT> */
 case 499:
 YY_RULE_SETUP
-#line 3150 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3154 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 return token::UNRECOGNIZED;
 	YY_BREAK
 case 500:
 YY_RULE_SETUP
-#line 3152 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3156 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 ECHO;
 	YY_BREAK
-#line 12917 "xquery_scanner.yy.cpp"
+#line 12923 "xquery_scanner.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(MODE_APOS_ATTRIBUTE_CONTENT):
 case YY_STATE_EOF(MODE_CDATA_SECTION):
@@ -12921,7 +12927,6 @@ case YY_STATE_EOF(MODE_CLOSE_KINDTEST):
 case YY_STATE_EOF(MODE_DECLAREORDERING):
 case YY_STATE_EOF(MODE_ELEMENT_CONTENT):
 case YY_STATE_EOF(MODE_END_TAG):
-case YY_STATE_EOF(MODE_EXPR_COMMENT):
 case YY_STATE_EOF(MODE_ITEMTYPE):
 case YY_STATE_EOF(MODE_KINDTEST):
 case YY_STATE_EOF(MODE_KINDTESTFORPI):
@@ -13187,7 +13192,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			yyg->yy_n_chars, num_to_read );
+			yyg->yy_n_chars, (size_t) num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = yyg->yy_n_chars;
 		}
@@ -13569,19 +13574,9 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 
 /* %if-c-only */
 
-#ifndef _UNISTD_H /* assume unistd.h has isatty() for us */
-#ifdef __cplusplus
-extern "C" {
-#endif
-#ifdef __THROW /* this is a gnuism */
-extern int isatty (int ) __THROW;
-#else
+#ifndef __cplusplus
 extern int isatty (int );
-#endif
-#ifdef __cplusplus
-}
-#endif
-#endif
+#endif /* __cplusplus */
     
 /* %endif */
 
@@ -13813,7 +13808,7 @@ YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscann
 /* %if-c-only */
 /** Setup the input buffer state to scan a string. The next call to yylex() will
  * scan from a @e copy of @a str.
- * @param str a NUL-terminated string to scan
+ * @param yystr a NUL-terminated string to scan
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use
@@ -14175,9 +14170,13 @@ static int yy_init_globals (yyscan_t yyscanner)
 }
 /* %endif */
 
-/* %if-c-only SNIP! this currently causes conflicts with the c++ scanner */
+/* %if-c-or-c++ */
+/* %if-c-only */
 /* yylex_destroy is for both reentrant and non-reentrant scanners. */
 int yylex_destroy  (yyscan_t yyscanner)
+/* %endif */
+/* %if-c++-only */
+/* %endif */
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
@@ -14196,6 +14195,11 @@ int yylex_destroy  (yyscan_t yyscanner)
         yyfree(yyg->yy_start_stack ,yyscanner );
         yyg->yy_start_stack = NULL;
 
+/* %if-c++-only */
+/* %endif */
+
+/* %if-c-only */
+
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
      * yylex() is called, initialization will occur. */
     yy_init_globals( yyscanner);
@@ -14206,6 +14210,7 @@ int yylex_destroy  (yyscan_t yyscanner)
     yyscanner = NULL;
 /* %endif */
     return 0;
+/* %endif */
 }
 /* %endif */
 
@@ -14262,7 +14267,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 3152 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3156 "/usr/local/src/zorba/src/compiler/parser/xquery_scanner.l"
 
 
 

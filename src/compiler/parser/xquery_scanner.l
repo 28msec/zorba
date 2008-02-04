@@ -2933,6 +2933,10 @@ typedef yy::xquery_parser::token token;
   /* do nothing */
 }
 
+<<EOF>> {
+  return token::UNRECOGNIZED;
+}
+
 } /* <MODE_EXPR_COMMENT> */
 
 
