@@ -281,6 +281,14 @@ void FLWORIterator::FlworState::reset(PlanState& planState)
   }
 }
 
+FLWORIterator::FlworState::~FlworState()
+{
+  if ( orderMap )
+  {
+    delete orderMap; orderMap = 0;
+  }
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////

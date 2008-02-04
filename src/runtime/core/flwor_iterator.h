@@ -206,10 +206,8 @@ protected:
      */
     void reset(PlanState&);
           
-    /**
-     * Release the resources (especially those we used for Ordering)
-     */
-    void releaseResources(PlanState&);
+    ~FlworState();
+
   };
   
   /* ####################################################
