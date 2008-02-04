@@ -19,9 +19,9 @@ class CollationManager
 public:
 	typedef struct
 	{
-		std::string		coll_uri;
-		std::string		coll_string;
-		::Collator::ECollationStrength	coll_strength;
+		const char *coll_uri;
+		const char *coll_string;
+		::Collator::ECollationStrength coll_strength;
 	}COLLATION_DESCR;
 
 public:
