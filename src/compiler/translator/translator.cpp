@@ -3620,13 +3620,13 @@ void *begin_visit(const TypeswitchExpr& v)
     }
     e_p->accept (*this);
     TypeSystem::xqtref_t type = pop_tstack ();
+    if (! name.empty ()) {
+      pop_scope ();
+      nodestack.push (&*wrap_in_let_flwor (new cast_expr (loc, &*sv, type), var, pop_nodestack ()));
+    }
     defret = new if_expr (e_p->get_location (),
                           new instanceof_expr (loc, &*sv, type),
                           pop_nodestack (), defret);
-    if (! name.empty ()) {
-      pop_scope ();
-      defret = &*wrap_in_let_flwor (new cast_expr (loc, &*sv, type), var, defret);
-    }
   }
 
   {
