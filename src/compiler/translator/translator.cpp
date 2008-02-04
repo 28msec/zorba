@@ -1688,6 +1688,8 @@ void *begin_visit(const Pragma& v)
 void end_visit(const Pragma& v, void *visit_state)
 {
  TRACE_VISIT_OUT ();
+ // may raise XPST0081
+ sctx_p->lookup_ns (v.get_name ()->get_prefix ());
 }
 
 void *begin_visit(const PragmaList& v)
