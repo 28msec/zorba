@@ -13,7 +13,6 @@
 #include "util/utf8/xqpString.h"
 #include "types/representations.h"
 #include "store/api/store_consts.h"
-#include "util/Assert.h"
 
 #include <iostream>
 #include <sstream>
@@ -88,11 +87,7 @@ public:
    *
    * @return The hash value
    */
-  virtual uint32_t hash() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  };
+  virtual uint32_t hash() const;
 
   /**
    *  Compares (by value) two items. All comparisons must be done by this
@@ -142,231 +137,119 @@ public:
     
   /** Accessor for xs:base64Binary
    */
-  virtual xqp_base64Binary getBase64Binary() const
-  {
-    ZORBA_ASSERT(false);
-    return NULL;
-  }
+  virtual xqp_base64Binary getBase64Binary() const;
 
   /** Accessor for xs:boolean
    */
-  virtual bool getBooleanValue() const
-  {
-    ZORBA_ASSERT(false);
-    return false;
-  }
+  virtual bool getBooleanValue() const;
 
   /** Accessor for xs:decimal, xs:(nonPositive | negative | nonNegativeInteger | positive)integer,
    * xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
    */
-  virtual xqp_decimal getDecimalValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_decimal getDecimalValue() const;
 
   /** Accessor for xs:int
    */
-  virtual xqp_int getIntValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_int getIntValue() const;
 
   /** Accessor for xs:(nonPositive | negative | nonNegativeInteger | positive)integer,
    * xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
    */
-  virtual xqp_integer getIntegerValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_integer getIntegerValue() const;
   
   /** Accessor for xs:long
    */
-  virtual xqp_long getLongValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_long getLongValue() const;
 
   /** Accessor for xs:short
    */
-  virtual xqp_short getShortValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_short getShortValue() const;
   
   /** Accessor for xs:nonNegativeInteager, xs:positiveInteger
    */
-  virtual xqp_uinteger getUnsignedIntegerValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_uinteger getUnsignedIntegerValue() const;
 
   /** Accessor for xs:unsignedChar, xs:unsignedByte
    */
-  virtual xqp_ubyte getUnsignedByteValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_ubyte getUnsignedByteValue() const;
   
-  virtual xqp_byte getByteValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_byte getByteValue() const;
 
   /** Accessor for xs:date
    */
-  virtual xqp_date getDateValue() const
-  {
-    ZORBA_ASSERT(false);
-    return xqp_date();
-  }
+  virtual xqp_date getDateValue() const;
   
   /** Accessor for xs:dateTime
    */
-  virtual xqp_dateTime getDateTimeValue() const
-  {
-    ZORBA_ASSERT(false);
-    return xqp_dateTime();
-  }
+  virtual xqp_dateTime getDateTimeValue() const;
 
   /** Accessor for xs:double
    */
-  virtual xqp_double getDoubleValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_double getDoubleValue() const;
 
   /** Accessor for xs:duration
    */
-  virtual xqp_duration getDurationValue() const
-  {
-    ZORBA_ASSERT(false);
-    return xqp_duration();
-  }
+  virtual xqp_duration getDurationValue() const;
 
   /** Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
    */
-  virtual std::vector<xqp_string> getStringVectorValue() const
-  {
-    ZORBA_ASSERT(false);
-    return std::vector<xqp_string>();
-  }
+  virtual std::vector<xqp_string> getStringVectorValue() const;
 
   /** Accessor for xs:float
    */
-  virtual xqp_float getFloatValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_float getFloatValue() const;
 
   /** Accessor for xs:gDay
    */
-  virtual xqp_gDay getGDayValue() const
-  {
-    ZORBA_ASSERT(false);
-    return xqp_gDay();
-  }
+  virtual xqp_gDay getGDayValue() const;
   
   /** Accessor for xs:gMonth
    */
-  virtual xqp_gMonth getGMonthValue() const
-  {
-    ZORBA_ASSERT(false);
-    return xqp_gMonth();
-  }
+  virtual xqp_gMonth getGMonthValue() const;
 
   /** Accessor for xs:gMonthDay
    */
-  virtual xqp_gMonthDay getGMonthDayValue() const
-  {
-    ZORBA_ASSERT(false);
-    return xqp_gMonthDay();
-  }
+  virtual xqp_gMonthDay getGMonthDayValue() const;
 
   /** Accessor for xs:gYear
    */
-  virtual xqp_gYear getGYearValue() const
-  {
-    ZORBA_ASSERT(false);
-    return xqp_gYear();
-  }
+  virtual xqp_gYear getGYearValue() const;
 
   /** Accessor for xs:gYearMonth
    */
-  virtual xqp_gYearMonth getGYearMonthValue() const
-  {
-    ZORBA_ASSERT(false);
-    return xqp_gYearMonth();
-  }
+  virtual xqp_gYearMonth getGYearMonthValue() const;
 
   /** Accessor for xs:hexBinary
    */
-  virtual xqp_hexBinary getHexBinaryValue() const
-  {
-    ZORBA_ASSERT(false);
-    return xqp_hexBinary();
-  }
+  virtual xqp_hexBinary getHexBinaryValue() const;
 
   /** Accessor for xs:nonNegativeIntegerValue, xs:positiveInteger, xs:unsignedInt
    */
-  virtual xqp_uint getUnsignedIntValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_uint getUnsignedIntValue() const;
 
   /** Accessor for xs:time
    */
-  virtual xqp_time getTimeValue() const
-  {
-    ZORBA_ASSERT(false);
-    return xqp_time();
-  }
+  virtual xqp_time getTimeValue() const;
   
   /** Accessor for xs:unsignedLong
    */
-  virtual xqp_ulong getUnsignedLongValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_ulong getUnsignedLongValue() const;
 
   /** Accessor for xs:unsignedShort
    */
-  virtual xqp_ushort getUnsignedShortValue() const
-  {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqp_ushort getUnsignedShortValue() const;
 
   /**
    * Helper method for numeric atomic items
    * @return true, if containing number is not-a-number (possible for floating-point numbers)
    */
-  virtual bool isNaN() const
-  {
-    ZORBA_ASSERT(false);
-    return false;
-  }
+  virtual bool isNaN() const;
 
   /**
    * Helper method for numeric atomic items
    * @return true, if containing numbers represents -INF or +INF
    */
-  virtual bool isPosOrNegInf() const
-  {
-    ZORBA_ASSERT(false);
-    return false;
-  }
+  virtual bool isPosOrNegInf() const;
 
   /* -------------------  Methods for Nodes ------------------------------------- */
   
@@ -384,169 +267,98 @@ public:
   /** Accessor for element node
    *  @return  attribute*
    */
-  virtual Iterator_t getAttributes() const
-  {
-    ZORBA_ASSERT(false);
-    return NULL;
-  }
+  virtual Iterator_t getAttributes() const;
 
   /** Accessor for document node, element node, attribute node,
    * processing instruction node, comment node, text node
    *  @return  uri?
    */
-  virtual xqp_string getBaseURI() const
-  {
-    ZORBA_ASSERT(false);
-    return "";
-  }
+  virtual xqp_string getBaseURI() const;
 
   /** Accessor for document node, element node
    *  @return  node*
    */
-  virtual Iterator_t getChildren() const
-  {
-    ZORBA_ASSERT(false);
-    return NULL;
-  }
+  virtual Iterator_t getChildren() const;
   
   /** Accessor for document node
    *  @return  uri?
    */
-  virtual xqp_string getDocumentURI() const
-  {
-    ZORBA_ASSERT(false);
-    return "";
-  }
+  virtual xqp_string getDocumentURI() const;
 
   /** Accessor for attribute node
    * @return isId: Used for attribute items (defines the attribute an id?)
    */
-  virtual bool isId() const
-  {
-    ZORBA_ASSERT(false);
-    return false;
-  }
+  virtual bool isId() const;
 
   /** Accessor for attribute node
    * @return isIdrefs Used for attribute (defines the attribute an idref?))
    */
-  virtual bool isIdrefs() const
-  {
-    ZORBA_ASSERT(false);
-    return false;
-  }
+  virtual bool isIdrefs() const;
 
   /** Accessor for element node
    *  @return  returns prefix namespace pairs
    */
-  virtual void getNamespaceBindings(NsBindings& bindings) const
-  {
-    ZORBA_ASSERT(false);
-  }
+  virtual void getNamespaceBindings(NsBindings& bindings) const;
   
   /** Accessor for element node
    *  @return  boolean?
    */
-  virtual bool getNilled() const
-  {
-    ZORBA_ASSERT(false);
-    return false;
-  }
+  virtual bool getNilled() const;
 
   /** Accessor for document node, element node, attribute node, namespace node,
    *  processing instruction node, comment node, text node
    *  @return  TypeCode of the current node
    */
-  virtual NodeKind getNodeKind() const
-  {
-    ZORBA_ASSERT(false);
-    return StoreConsts::elementNode;
-  }
+  virtual NodeKind getNodeKind() const;
   
   /** Accessor for element node, attribute node
    *  @return qname?
    */
-  virtual Item_t getNodeName() const
-  {
-    ZORBA_ASSERT(false);
-    return NULL;
-  }
+  virtual Item_t getNodeName() const;
 
   /** Accessor for element node, attribute node, namespace node, processing instruction node,
    * comment node, text node
    * @return node?
    */
-  virtual Item_t getParent() const
-  {
-    ZORBA_ASSERT(false);
-    return NULL;
-  }
+  virtual Item_t getParent() const;
 
   /** Accessor for document node, element node, attribute node, namespace node,
    * processing instruction node, comment node, text node
    *
    * @return typedValue?
    */
-  virtual Iterator_t getTypedValue() const
-  {
-    ZORBA_ASSERT(false);
-    return NULL;
-  }
+  virtual Iterator_t getTypedValue() const;
   
   /** Accessor for xs:qname, namespace node
    * @return namespace uri
    */
-  virtual xqp_string getNamespace() const
-  {
-    ZORBA_ASSERT(false);
-    return "";
-  }
+  virtual xqp_string getNamespace() const;
 
   /** Accessor for xs:qname, namespace node
    * @return namespace prefix
    */
-  virtual xqp_string getPrefix() const
-  {
-    ZORBA_ASSERT(false);
-    return "";
-  }
+  virtual xqp_string getPrefix() const;
 
   /** Accessor for xs:qname
    * @return namespace local name
    */
-  virtual xqp_string getLocalName() const
-  {
-    ZORBA_ASSERT(false);
-    return "";
-  }
+  virtual xqp_string getLocalName() const;
 
   /** Accessor for document node
    * @return unparsed entity public id
    */
-  virtual xqp_string getUnparsedEntityPublicId() const
-  {
-    ZORBA_ASSERT(false);
-    return "";
-  }
+  virtual xqp_string getUnparsedEntityPublicId() const;
 
   /** Accessor for document node
    * @return unparsed entity system id
    */
-  virtual xqp_string getUnparsedEntitySystemId() const
-  {
-    ZORBA_ASSERT(false);
-    return "";
-  }
+  virtual xqp_string getUnparsedEntitySystemId() const;
 
   /**
    *  Accessor for processing instruction node
    * @return target of the PI
    */
-  virtual xqp_string getTarget() const
-  {
-    ZORBA_ASSERT(false);
-    return "";
-  }
+  virtual xqp_string getTarget() const;
 
   /** Method to print to content of the Item
    */
@@ -558,10 +370,7 @@ public:
    * Helper method with is used to return a StringValue of an Item
    * by pointer instead of rchandle
    */
-  virtual xqpStringStore* getStringValueP() {
-    ZORBA_ASSERT(false);
-    return 0;
-  }
+  virtual xqpStringStore* getStringValueP();
 };   /* Item */
 
   
