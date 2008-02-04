@@ -103,8 +103,8 @@ CollationManager::removeReference(std::string  coll_string,
 	{
 		delete it->second->coll;
 		delete it->second;
+		coll_map.erase(it);
 	}
-	coll_map.erase(it);
 }
 
 
@@ -115,7 +115,7 @@ CollationManager::getHardcodedCollator(std::string URI)
 	if(URI.empty())
 		return NULL;
 	for(unsigned int i=0;i<sizeof(default_collations)/sizeof(COLLATION_DESCR);i++)
-		if(default_collations[i].coll_uri == URI)
+		if(URI == default_collations[i].coll_uri)
 			return &default_collations[i];
 	return NULL;
 }
