@@ -242,6 +242,12 @@ std::ostream& TypeSystem::serialize(std::ostream& os, const XQType& type) const
   return type.serialize(os);
 }
 
+std::string TypeSystem::toString (const XQType& type) const {
+  std::ostringstream os;
+  serialize (os, type);
+  return os.str ();
+}
+
 TypeSystem::quantifier_t TypeSystem::quantifier(const XQType &type) const
 {
   return type.m_quantifier;

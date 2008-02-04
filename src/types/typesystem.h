@@ -84,6 +84,8 @@ class TypeSystem {
      * Writes a string representation of the given type to the output stream.
      */
     std::ostream& serialize(std::ostream& os, const XQType& type) const;
+  
+    std::string toString (const XQType& type) const;
 
     /*
      * Returns the quantifier of the argument.

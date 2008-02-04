@@ -217,7 +217,7 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
     }
     lResult = GenericCast::instance()->promote(lItem, thePromoteType);
     if (lResult == 0) {
-      ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, false, "Type Promotion not possible");
+      ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, false, "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeSystem::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
     } else {
       STACK_PUSH(lResult, lState);
     }
@@ -225,7 +225,7 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
     do {
       lResult = GenericCast::instance()->promote(lItem, thePromoteType);
       if (lResult == 0) {
-        ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, false, "Type Promotion not possible");
+        ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, false, "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeSystem::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
       } else{
         STACK_PUSH(lResult, lState);
       }
