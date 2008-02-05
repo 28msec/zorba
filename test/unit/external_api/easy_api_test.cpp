@@ -15,7 +15,7 @@ using namespace xqp;
 bool
 test_1()
 {
-	ZorbaSingleThread_t zorba_factory = ZorbaSingleThread::getInstance();
+	ZorbaSingleThread_t  zorba_factory = ZorbaSingleThread::getInstance();
 	XQuery_t lQuery = zorba_factory->createQuery("1+2"); 
 
 	lQuery->initExecution();
@@ -29,7 +29,7 @@ test_1()
 bool
 test_2()
 {
-	ZorbaSingleThread_t zorba_factory = ZorbaSingleThread::getInstance();
+	ZorbaSingleThread_t  zorba_factory = ZorbaSingleThread::getInstance();
 	XQuery_t lQuery = zorba_factory->createQuery("1+2"); 
 
 	lQuery->initExecution();
@@ -43,7 +43,7 @@ test_2()
 bool
 test_3()
 {
-	ZorbaSingleThread_t zorba_factory = ZorbaSingleThread::getInstance();
+	ZorbaSingleThread_t  zorba_factory = ZorbaSingleThread::getInstance();
 	XQuery_t lQuery = zorba_factory->createQuery("1+2"); 
 
 	lQuery->initExecution();
@@ -60,7 +60,7 @@ test_4()
 {
   std::string lQueryString("declare variable $x external; for $i in 1 to $x return $i");
 
-	ZorbaSingleThread_t zorba_factory = ZorbaSingleThread::getInstance();
+	ZorbaSingleThread_t  zorba_factory = ZorbaSingleThread::getInstance();
 	XQuery_t lQuery = zorba_factory->createQuery(lQueryString); 
 
   DynamicQueryContext_t lDynCtxt = zorba_factory->createDynamicContext();
@@ -70,6 +70,29 @@ test_4()
   lQuery->serializeXML(std::cout);
 
 	return true;
+}
+
+// test setting external variables in the dynamic context and use them in the query
+// executing the query should fail because a variable is not bound
+// in case the correct exception is thrown, this function returns true, otherwise it returns false
+bool
+test_5()
+{
+  std::string lQueryString("declare variable $x external; for $i in 1 to $x return $i");
+
+  ZorbaAlertsManager::setThrowExceptionsMode(true);
+  ZorbaSingleThread_t  zorba_factory = ZorbaSingleThread::getInstance();
+
+  try
+  {
+	  XQuery_t lQuery = zorba_factory->createQuery(lQueryString.c_str()); 
+
+    lQuery->serializeXML(std::cout);
+  } catch (xqp_exception &e)
+  {
+    return true;
+  }
+  return false;
 }
 
 int easy_api_test(int argc, char* argv[])
@@ -88,6 +111,10 @@ int easy_api_test(int argc, char* argv[])
 
   std::cout << std::endl << "executing easy api test 4" << std::endl;;
 	assert(test_4()); 
+  std::cout << std::endl;
+
+  std::cout << std::endl << "executing easy api test 5" << std::endl;;
+  assert(test_5()); 
   std::cout << std::endl;
 
   return 0;
