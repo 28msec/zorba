@@ -438,12 +438,14 @@ SubstringIterator::nextImpl(PlanState& planState) {
         if( item1 != NULL )
         {//note: The first character of a string is located at position 1, not position 0.
           item1 = item1->getAtomizationValue();
-          if(item1->getDoubleValue().isFinite())
+          if(!item1->getDoubleValue().isNaN())
           {
             tmpStart = item0->getStringValue().length();
-            xqp_int lInt;
-            if (NumConversions::doubleToInt(item1->getDoubleValue().round(), lInt)) {
-              tmpStart = lInt;
+            if (item1->getDoubleValue().isFinite()) {
+              xqp_int lInt;
+              if (NumConversions::doubleToInt(item1->getDoubleValue().round(), lInt)) {
+                tmpStart = lInt;
+              }
             }
             if( theChildren.size() == 2 )
             {
@@ -455,12 +457,14 @@ SubstringIterator::nextImpl(PlanState& planState) {
               {
                 item2 = item2->getAtomizationValue();
                 tmpLen = item0->getStringValue().length() - tmpStart + 1;
-                if(item2->getDoubleValue().isFinite())
+                if(!item2->getDoubleValue().isNaN())
                 {
-                  xqp_int lInt;
-                  if(NumConversions::doubleToInt(item2->getDoubleValue().round(), lInt))
-                    tmpLen = lInt;
-                  if( (item1->getDoubleValue() + item2->getDoubleValue()).isFinite())
+                  if (item2->getDoubleValue().isFinite()) {
+                    xqp_int lInt;
+                    if(NumConversions::doubleToInt(item2->getDoubleValue().round(), lInt))
+                      tmpLen = lInt;
+                  }
+                  if( !(item1->getDoubleValue() + item2->getDoubleValue()).isNaN())
                   {
                     if(tmpLen >= 0)
                     {
@@ -474,8 +478,6 @@ SubstringIterator::nextImpl(PlanState& planState) {
                             tmpLen);
                     }
                   }
-                } else if (item2->getDoubleValue().isPosInf()) {
-                  resStr = item0->getStringValue().substr(tmpStart-1);
                 }
               }
             }
