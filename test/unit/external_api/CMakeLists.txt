@@ -10,7 +10,6 @@ CREATE_TEST_SOURCELIST(UnitTests
 )
  
 # add the executable
-COMPILER_SETUP(APPLICATION_INCLUDES)
 ADD_EXECUTABLE(UnitTests ${UnitTests})
 TARGET_LINK_LIBRARIES(UnitTests zorba)
 # remove the test driver source file

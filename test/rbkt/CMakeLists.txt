@@ -6,7 +6,6 @@ IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
 ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
 
 # configure and compile the testdriver
-COMPILER_SETUP(ZORBA_INCLUDES)
 CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfig.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 ADD_EXECUTABLE(testdriver testdriver.cpp)

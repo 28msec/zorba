@@ -27,31 +27,16 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 SET(requiredlibs)
 SET(DEFINITIONS)
 SET(BUILD_STATIC_LIBRARY 0)
-SET(ZORBA_INCLUDES)
-SET(APPLICATION_INCLUDES)
-SET(CMAKE_CXX_FLAGS_INITIAL)
 
 
 ##############################################################################################################
 # Used libraries
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
-#############################################  ICU
 INCLUDE(cmake_modules/FindICU.cmake)
-SET(ZORBA_INCLUDES ${ZORBA_INCLUDES} "-I\"${ICU_INCLUDE_DIRS}\"")
 
-#############################################  LibXml2
 FIND_PACKAGE(LibXml2)
-IF(LIBXML2_FOUND)
-	SET(ZORBA_INCLUDES ${ZORBA_INCLUDES} "-I\"${LIBXML2_INCLUDE_DIR}\"")
-    SET(requiredlibs ${requiredlibs} ${LIBXML2_LIBRARIES})
-	SET(DEFINITIONS ${DEFINITIONS} ${LIBXML2_DEFINITONS})
-    # SET(CXXFLAGS ${CXXFLAGS} )
-ELSE(LIBXML2_FOUND)
-    MESSAGE(FATAL_ERROR "The libxml2  library is required in order to build Zorba.")
-ENDIF(LIBXML2_FOUND)
 
-#############################################  cURL
 IF(WITH_CURL)
   FIND_PACKAGE(CURL)
   IF(CURL_FOUND)
@@ -63,25 +48,41 @@ IF(WITH_CURL)
   ENDIF(CURL_FOUND)
 ENDIF(WITH_CURL)
 
-############################################# Iconv
 INCLUDE(cmake_modules/FindIconv.cmake)
 FIND_PACKAGE(Iconv)
 IF (Iconv_FOUND)
-	SET(ZORBA_INCLUDES ${ZORBA_INCLUDES} "-I\"${ICONV_INCLUDE_DIR}\"")
+    INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
     SET(requiredlibs ${requiredlibs} ${ICONV_LIBRARY})
 ENDIF (Iconv_FOUND)
 
-#############################################  Xerces-C
 INCLUDE(cmake_modules/FindXercesC.cmake)
 IF (XERCESC_FOUND)
-	SET(ZORBA_INCLUDES ${ZORBA_INCLUDES} "-I\"${XERCESC_INCLUDE}\"")
+	INCLUDE_DIRECTORIES(${XERCESC_INCLUDE_DIR})
 	SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
 ENDIF (XERCESC_FOUND)
 
-#############################################  Boost
+
+##############################################################################################################
+# do platform checks
+
+IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
+	MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
+ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
+    SET(requiredlibs ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
+ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
+
+IF(LIBXML2_FOUND)
+    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
+    SET(requiredlibs ${requiredlibs} ${LIBXML2_LIBRARIES})
+    SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
+ELSE(LIBXML2_FOUND)
+    MESSAGE(FATAL_ERROR "The libxml2  library is required in order to build Zorba.")
+ENDIF(LIBXML2_FOUND)
+
+
 FIND_PACKAGE(Boost)
 IF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
-	SET(ZORBA_INCLUDES ${ZORBA_INCLUDES} "-I\"${Boost_INCLUDE_DIRS}\"")
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
     LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
     IF (NOT WIN32)
         IF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD")
@@ -105,16 +106,6 @@ ELSE(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
     MESSAGE(FATAL_ERROR "The boost library is required in order to build Zorba.")
 ENDIF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
 
-
-##############################################################################################################
-# do platform checks
-
-IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-	MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
-ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-    SET(requiredlibs ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
-ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-
 IF (NOT MSVC)
     SET(requiredlibs ${requiredlibs} pthread)
 ENDIF (NOT MSVC)
@@ -136,25 +127,17 @@ MESSAGE(STATUS "Build type -- " ${CMAKE_BUILD_TYPE})
 IF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
 ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
 
-SET(ZORBA_INCLUDES "-I\"${CMAKE_CURRENT_SOURCE_DIR}/src\"" ${ZORBA_INCLUDES})             # include BEFORE
-SET(ZORBA_INCLUDES ${ZORBA_INCLUDES} "-I\"${CMAKE_CURRENT_SOURCE_DIR}/include\"")
-SET(ZORBA_INCLUDES ${ZORBA_INCLUDES} "-I\"${CMAKE_CURRENT_SOURCE_DIR}/include/zorba\"")
-SET(ZORBA_INCLUDES ${ZORBA_INCLUDES} "-I\"${CMAKE_CURRENT_BINARY_DIR}/include\"")
-SET(ZORBA_INCLUDES ${ZORBA_INCLUDES} "-I\"${CMAKE_CURRENT_SOURCE_DIR}/external\"")
-
-
-SET(APPLICATION_INCLUDES ${APPLICATION_INCLUDES} "-I\"${CMAKE_CURRENT_SOURCE_DIR}/include\"")
-SET(APPLICATION_INCLUDES ${APPLICATION_INCLUDES} "-I\"${CMAKE_CURRENT_SOURCE_DIR}/include/zorba\"")
-SET(APPLICATION_INCLUDES ${APPLICATION_INCLUDES} "-I\"${CMAKE_CURRENT_BINARY_DIR}/include\"")
-SET(APPLICATION_INCLUDES ${APPLICATION_INCLUDES} "-I\"${CMAKE_CURRENT_SOURCE_DIR}/external\"")
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include/zorba) # should be removed
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external) # should also be removed 
 
 INCLUDE(CMakeConfiguration.txt)
 
-# Save initial value of CMAKE_CXX_FLAGS for later use
-SET(CMAKE_CXX_FLAGS_INITIAL ${CMAKE_CXX_FLAGS})
 
 # for the moment, we include everything
 # however, we should move the headers (at least the library headers) into a separate directory
+INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
 
 # Tell CMake to process the sub-directories
 ADD_SUBDIRECTORY(external)
