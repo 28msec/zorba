@@ -185,7 +185,6 @@ bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
     }
              
     case 'E':
-	  lBuffer.replace(lCount++, 1, "e");
     case 'e': {
       if(!lGotDigit || lGotBase) {
         lStop = true;
