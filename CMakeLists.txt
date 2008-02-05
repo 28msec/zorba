@@ -130,7 +130,7 @@ ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include/zorba) # should be removed
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
-INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external) # should also be removed 
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external) # should also be removed if pthread has been removed and mapm is only included from within src
 
 INCLUDE(CMakeConfiguration.txt)
 
