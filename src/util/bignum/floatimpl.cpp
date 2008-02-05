@@ -1,4 +1,6 @@
 #include "util/bignum/floatimpl.h"
+#include <limits>
+#include <string>
 
 namespace xqp {
 
@@ -147,7 +149,7 @@ FloatConsts::NumType FloatImpl<FloatType>::checkInfNaNNeg(FloatType aFloat) {
 template <typename FloatType>
 bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
   const char* lCur = aCharStar;
-  char lBuffer[strlen(aCharStar)];
+  std::string lBuffer(aCharStar);
 
   bool lGotBase = false;
   bool lGotPoint = false;
@@ -164,7 +166,6 @@ bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
     switch(lTmp) {
 
     case '+': {
-      lBuffer[lCount++] = '+';
       if(lGotSign || lGotDigit) {
         lStop = true;
       } else {
@@ -174,7 +175,6 @@ bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
     }
              
     case '-': {
-      lBuffer[lCount++] = '-';
       if(lGotSign || lGotSign) {
         lStop = true;
       } else {
@@ -184,9 +184,9 @@ bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
       break;
     }
              
-    case 'e':
-    case 'E': {
-      lBuffer[lCount++] = 'e';
+    case 'E':
+	  lBuffer.replace(lCount++, 1, "e");
+    case 'e': {
       if(!lGotDigit || lGotBase) {
         lStop = true;
       } else {
@@ -199,7 +199,6 @@ bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
     }
              
     case '.': {
-      lBuffer[lCount++] = '.';
       if(lGotPoint || lGotBase) {
         lStop = true;
       } else {
@@ -219,7 +218,6 @@ bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
     case '8':
     case '9': {
       lGotDigit = true;
-      lBuffer[lCount++] = lTmp;
       break;
     }
              
@@ -244,8 +242,7 @@ bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
       break;
     }
   } else {
-    lBuffer[lCount++] = 0;
-    lNumber = lBuffer;
+    lNumber = lBuffer.c_str();
     if (lIsNegative) {
       lType = FloatConsts::NORMAL_NEG;
     } else {
@@ -839,8 +836,6 @@ xqpString FloatImpl<FloatType>::toString() const {
   }
 }
 
-template class FloatImplTraits<double>;
-template class FloatImplTraits<float>;
 template class FloatImpl<double>;
 template class FloatImpl<float>;
 
