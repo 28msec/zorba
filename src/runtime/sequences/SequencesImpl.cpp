@@ -642,7 +642,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) {
             lMaxItem = lItemCur;
             lMaxType = GENV_TYPESYSTEM.create_type(lMaxItem->getType(), TypeSystem::QUANT_ONE);
           } else {
-            ZORBA_ERROR_ALERT(ZorbaError::FORG0006, &loc, "Promote not possible");
+            ZORBA_ERROR_ALERT(ZorbaError::FORG0006, &loc, false, "Promote not possible");
           }
         } else {
           lRunningItem = lItemCur;
