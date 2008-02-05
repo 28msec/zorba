@@ -166,7 +166,11 @@ if (dd == 0.0)                     /* special case for 0 exactly */
    M_set_to_zero(atmp);
 else
   {
+#if defined (__WIN32__)
+   sprintf_s(buf, "%.14E", dd);
+#else
    sprintf(buf, "%.14E", dd);
+#endif
    
    if ((cp = strstr(buf, "E")) == NULL)
      {

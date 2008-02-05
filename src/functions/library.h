@@ -13,7 +13,6 @@
 #include <string>
 
 #include "context/common.h"
-#include "util/fx/fxhashmap.h"
 
 namespace xqp {
 

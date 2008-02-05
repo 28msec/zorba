@@ -186,7 +186,11 @@ if ((i = strlen(s_in)) > (M_lbuf - 4))
   }
 
 s = M_buf;
+#if defined (__WIN32__)
+strcpy_s(s,s_in);
+#else
 strcpy(s,s_in);
+#endif
 
 /* default == zero ... */
 
@@ -230,7 +234,11 @@ if ((cp = strstr(p,"e")) != NULL)
 j = M_strposition(p,".");        /* is there a decimal point ?? */
 if (j == -1)
   {
+#if defined (__WIN32__)
+   strcat_s(p,".");                /* if not, append one */
+#else
    strcat(p,".");                /* if not, append one */
+#endif
    j = M_strposition(p,".");     /* now find it ... */
   }
 
@@ -246,7 +254,11 @@ i = strlen(p);
 ctmp->m_apm_datalength = i;
 
 if ((i & 1) != 0)   /* if odd number of digits, append a '0' to make it even */
+#if defined (__WIN32__)
+  strcat_s(p,"0");    
+#else
   strcat(p,"0");    
+#endif
 
 j = strlen(p) >> 1;  /* number of bytes in encoded M_APM number */
 
@@ -337,18 +349,38 @@ else
 if (ctmp->m_apm_sign == 0)
   {
    if (dec_places < 0)
+#if defined (__win32__)
+      strcpy_s(s,"0.0E+0");
+#else
       strcpy(s,"0.0E+0");
+#endif
    else
      {
+#if defined (__win32__)
+      strcpy_s(s,"0");
+#else
       strcpy(s,"0");
+#endif
 
       if (dec_places > 0)
+#if defined (__win32__)
+        strcat_s(s,".");
+#else
         strcat(s,".");
+#endif
 
       for (i=0; i < dec_places; i++)
+#if defined (__WIN32__)
         strcat(s,"0");
+#else
+        strcat(s,"0");
+#endif
 
+#if defined (__WIN32__)
       strcat(s,"E+0");
+#else
+      strcat(s,"E+0");
+#endif
      }
 
    M_restore_stack(1);
@@ -403,9 +435,17 @@ while (TRUE)
 
 i = ctmp->m_apm_exponent - 1;
 if (i >= 0)
+#if defined (__WIN32__)
+  sprintf_s(cp,"E+%d",i);
+#else
   sprintf(cp,"E+%d",i);
+#endif
 else
+#if defined (__WIN32__)
+  sprintf_s(cp,"E%d",i);
+#else
   sprintf(cp,"E%d",i);
+#endif
 
 M_restore_stack(1);
 }

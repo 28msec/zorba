@@ -15,5 +15,7 @@ INCLUDE(CheckFunctionExists)
 CHECK_FUNCTION_EXISTS ("strtof"                     HAVE_STRTOF_FUNCTION)
 CHECK_FUNCTION_EXISTS ("_stricmp"                   HAVE_STRICMP_FUNCTION)
 CHECK_FUNCTION_EXISTS ("strcasecmp"                 HAVE_STRCASECMP_FUNCTION)
+CHECK_FUNCTION_EXISTS ("strcat_s"                   HAVE_STRCAT_S_FUNCTION)
+CHECK_FUNCTION_EXISTS ("strcpy_s"                   HAVE_STRCPY_S_FUNCTION)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)

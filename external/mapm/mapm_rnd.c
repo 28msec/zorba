@@ -261,10 +261,19 @@ millisec  = (int)timebuffer.millitm;
 timestamp = timebuffer.time;
 ul        = (unsigned long)(timestamp / 7);
 ul       += timestamp + 537;
+#if defined (__WIN32__)
+strcpy_s(ss,ctime_s(&timestamp));        /* convert to string and copy to ss */
+#else
 strcpy(ss,ctime(&timestamp));        /* convert to string and copy to ss */
+#endif
 
+#if defined (__WIN32__)
+sprintf_s(buf1,"%d",(millisec / 10));
+sprintf_s(buf2,"%lu",ul);
+#else
 sprintf(buf1,"%d",(millisec / 10));
 sprintf(buf2,"%lu",ul);
+#endif
 
 ss[0] = ss[18];
 ss[1] = ss[17];
@@ -278,8 +287,13 @@ ss[8] = ss[20];
 ss[9] = '\0';
 
 M_reverse_string(buf2);
+#if defined (__WIN32__)
+strcat_s(buf1,buf2);
+strcat_s(buf1,ss);
+#else
 strcat(buf1,buf2);
 strcat(buf1,ss);
+#endif
 
 m_apm_set_string(atmp, buf1);
 atmp->m_apm_exponent = 15;
@@ -305,10 +319,20 @@ M_APM		 atmp;
 atmp = M_get_stack_var();
 M_get_microsec(&sec3,&usec3);
 
+#if defined (__WIN32__)
+sprintf_s(buf1,"%ld",usec3);
+sprintf_s(buf2,"%lu",sec3);
+#else
 sprintf(buf1,"%ld",usec3);
 sprintf(buf2,"%lu",sec3);
+#endif
 M_reverse_string(buf2);
+#if defined (__WIN32__)
+strcat_s(buf1,buf2);
+#else
 strcat(buf1,buf2);
+#endif
+
 
 m_apm_set_string(atmp, buf1);
 atmp->m_apm_exponent = 15;
@@ -360,7 +384,11 @@ timer0   = Timer();
 
 millisec = (int)(0.01 + 1000.0 * (timer0 - floor(timer0)));
 
+#if defined (__WIN32__)
+sprintf_s(buf1, "%d", millisec);
+#else
 sprintf(buf1, "%d", millisec);
+#endif
 
 buf2[0]  = cvi_time[6];	/* time format: "HH:MM:SS" */
 buf2[1]  = cvi_time[7];
@@ -381,7 +409,11 @@ buf2[13] = '4';
 buf2[14] = '7';
 buf2[15] = '\0';
 
+#if defined (__WIN32__)
+strcat_s(buf1, buf2);
+#else
 strcat(buf1, buf2);
+#endif
 
 m_apm_set_string(atmp, buf1);
 atmp->m_apm_exponent = 15;

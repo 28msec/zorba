@@ -185,7 +185,11 @@ ct = M_strposition(cps, ".");      /* find the default (.) radix char */
 
 if (ct == -1)			   /* if not found .. */
   {
+#if defined (__WIN32__)
+   strcat_s(cps, ".");               /* add one */
+#else
    strcat(cps, ".");               /* add one */
+#endif
    ct = M_strposition(cps, ".");   /* and then find it */
   }
 
@@ -203,7 +207,12 @@ if (ct <= count_sep)
 
 if (no_sep_flg)
   {
+#if defined (__WIN32__)
+   strcpy_s(cpd, cps);
+#else
    strcpy(cpd, cps);
+#endif
+
   }
 else
   {

@@ -158,8 +158,8 @@ void serializer::emitter::emit_declaration()
     else if (ser.encoding == PARAMETER_VALUE_UTF_16)
     {
       // Little-endian
-      tr.verbatim(0xFF);
-      tr.verbatim(0xFE);
+      tr.verbatim((char)0xFF); // TODO isn't the value truncated?
+      tr.verbatim((char)0xFE);
     }
   }
 }

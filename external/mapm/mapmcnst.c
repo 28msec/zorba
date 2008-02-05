@@ -231,13 +231,21 @@ static char MM_cnst_1_log_10[] =
 /****************************************************************************/
 char	*m_apm_lib_version(char *v)
 {
+#if defined (__WIN32__)
+strcpy_s(v, MAPM_LIB_VERSION);
+#else
 strcpy(v, MAPM_LIB_VERSION);
+#endif
 return(v);
 }
 /****************************************************************************/
 char	*m_apm_lib_short_version(char *v)
 {
+#if defined (__WIN32__)
+strcpy_s(v, MAPM_LIB_SHORT_VERSION);
+#else
 strcpy(v, MAPM_LIB_SHORT_VERSION);
+#endif
 return(v);
 }
 /****************************************************************************/
