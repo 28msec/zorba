@@ -1,4 +1,5 @@
-INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
+# temporary include; the tests should probably go in the according src dir
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/src)
 
 ADD_SUBDIRECTORY(rbkt)
 ADD_SUBDIRECTORY(unit)
@@ -8,8 +9,6 @@ SET(API_TEST_SRCS
     timer.cpp
     apitest.cpp)
 
-MESSAGE(STATUS ${requiredlibs})
-#COMPILER_SETUP(APPLICATION_INCLUDES)
 ADD_EXECUTABLE(apitest ${API_TEST_SRCS})
 TARGET_LINK_LIBRARIES(apitest zorba)
 
@@ -19,10 +18,9 @@ IF (BUILD_STATIC_LIBRARY)
 ENDIF (BUILD_STATIC_LIBRARY)
 
 
-#SET(TEST_STORE_SRCS
-#    timer.cpp 
-#    test_store.cpp)
+SET(TEST_STORE_SRCS
+    timer.cpp 
+    test_store.cpp)
 
-#COMPILER_SETUP(ZORBA_INCLUDES)
-#ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
-#TARGET_LINK_LIBRARIES(test_store zorba)
+ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
+TARGET_LINK_LIBRARIES(test_store zorba)
