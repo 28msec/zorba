@@ -12,13 +12,13 @@
 #define XQP_RWLOCK_H
 
 #ifndef WIN32
-#include <pthread.h>
+# include <pthread.h>
 #else
-#include "util/win32/pthread.h"
+# include "win32_pthread/pthread.h" // must be remove
 #endif
 
 #ifndef _WIN32_WCE
-	#include <errno.h>
+# include <errno.h>
 #endif
 
 /*_____________________________________________________________________

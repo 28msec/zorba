@@ -11,7 +11,7 @@
 #ifndef WIN32
 #include <pthread.h>
 #else
-#include "util/win32/pthread.h"
+#include "win32_pthread/pthread.h" // must be removed 
 #endif
 
 #include <iostream>

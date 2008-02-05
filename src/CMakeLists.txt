@@ -1,6 +1,7 @@
 INCLUDE(../cmake_modules/AddSrcSubfolder.cmake)
 
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) # must be removed if pthread.h is removed from util/rwlock.h/cpp
 
 SET(ZORBA_SRCS)
 

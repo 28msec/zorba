@@ -3,7 +3,7 @@
 #ifdef HAVE_PTHREAD_H
 # include <pthread.h>
 #else
-# include "util/win32/pthread.h"
+# include "win32_pthread/pthread.h"
 #endif
 
 #include <iostream>

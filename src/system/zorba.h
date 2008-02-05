@@ -21,10 +21,6 @@ typedef unsigned long ulong;
 
 #include <stack>
 #include <map>
-//#ifdef WIN32
-//#include <windows.h>
-//#include "win32/pthread.h"
-//#endif
 
 namespace xqp {
 

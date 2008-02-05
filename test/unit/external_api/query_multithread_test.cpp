@@ -1,10 +1,10 @@
 #include "zorba/zorba_api.h"
 #include <fstream>
 //#include "../error_display.h"
-#ifndef HAVE_PTHREAD_H
-# include "util/win32/pthread.h"
-#else
+#ifdef HAVE_PTHREAD_H
 # include <pthread.h>
+#else
+# include "win32_pthread/pthread.h"
 #endif
 
 #include <assert.h>
