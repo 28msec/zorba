@@ -37,6 +37,7 @@
 
 #include "context/static_context_api.h"
 
+// TODO move into platform stuff
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER
 #define THROW_XQP_EXCEPTION		throw(xqp_exception)
