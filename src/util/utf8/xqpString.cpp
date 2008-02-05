@@ -112,7 +112,7 @@ namespace xqp
   //xqpString::operator+=()
   xqpString& xqpString::operator+=(xqpString src)
   {
-    xqpStringStore* temp = new xqpStringStore(*theStrStore);
+    xqpStringStore_t temp = new xqpStringStore(*theStrStore);
     *temp += src;
     theStrStore = temp;
     return *this;
@@ -120,7 +120,7 @@ namespace xqp
 
   xqpString& xqpString::operator+=(const char* src)
   {
-    xqpStringStore* temp = new xqpStringStore(*theStrStore);
+    xqpStringStore_t temp = new xqpStringStore(*theStrStore);
     *temp += src;
     theStrStore = temp;
     return *this;
@@ -427,7 +427,7 @@ namespace xqp
     uint32_t cp;
     char seq[4];
 
-    xqpStringStore* newStr = new xqpStringStore("");
+    xqpStringStore_t newStr = new xqpStringStore("");
 
     for(i; i<len; ++i)
     {
@@ -450,7 +450,7 @@ namespace xqp
     uint32_t cp;
     char seq[4];
 
-    xqpStringStore* newStr = new xqpStringStore("");
+    xqpStringStore_t newStr = new xqpStringStore("");
 
     for(i; i<len; ++i)
     {
