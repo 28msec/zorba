@@ -188,7 +188,7 @@ void end_visit(var_expr& v)
                                                (void *) &v);
       ZORBA_ASSERT (bound);
       map->push_back (v_p);
-    itstack.push(v_p);
+      itstack.push(v_p);
     }
   }
   break;

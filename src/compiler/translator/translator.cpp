@@ -3035,14 +3035,15 @@ void *begin_visit(const PathExpr& v)
     If path expr starts with / or // (cases 1, 2, or 3), create an expr E =
     fn:root(./self::node()).  In case 2 or 3 make E the 1st step of the rpe
     that was created above.  In case 1, just push E to the nodestack.
+    In case 4, add a "." to path expressions starting with an axis step
   */
-  if (v.get_type() != path_relative) 
-  {
+  if (v.get_type() == path_relative) {
+    const RelativePathExpr *vrpe = dynamic_cast<RelativePathExpr *> (v.get_relpath_expr ().getp());
+    if (vrpe != NULL && dynamic_cast<AxisStep *> (vrpe->get_step_expr ().getp ()) != NULL)
+      rpe->add_back (sctx_p->lookup_var_nofail (DOT_VAR));
+  } else {
     rchandle<relpath_expr> ctx_rpe = new relpath_expr(v.get_location());
-
-    var_expr* ctx_var = static_cast<var_expr *> (sctx_p->lookup_var_nofail (DOT_VAR));
-    ZORBA_ASSERT(ctx_var != NULL);
-    ctx_rpe->add_back(ctx_var);
+    ctx_rpe->add_back(sctx_p->lookup_var_nofail (DOT_VAR));
 
     rchandle<match_expr> me = new match_expr(v.get_location());
     me->setTestKind(match_anykind_test);
