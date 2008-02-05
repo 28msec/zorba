@@ -168,7 +168,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "m_apm.h"
+#include "mapm/m_apm.h"
 
 /* 
  *   this supports older (and maybe newer?) Borland compilers.

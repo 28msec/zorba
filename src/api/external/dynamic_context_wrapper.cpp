@@ -512,8 +512,15 @@ void	DynamicContextWrapper::create_dynamic_context(static_context *sctx, dynamic
 			switch((*it).double_type)
 			{
 			case XS_DECIMAL:
-				atomic_item = item_factory->createDecimal((xqp_decimal)(*it).double_value);
+      {
+        xqp_decimal lDecimal;
+        if (Decimal::parse((*it).double_value, lDecimal)) {
+          atomic_item = item_factory->createDecimal(lDecimal);
+        } else {
+          // TODO error handling
+        }
 				break;
+      }
 			case XS_FLOAT:
 				atomic_item = item_factory->createFloat((xqp_float)(*it).double_value);
 				break;

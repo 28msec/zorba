@@ -7,6 +7,7 @@
 #include "util/bignum/integer.h"
 #include "util/numconversions.h"
 #include "util/bignum/decimal.h"
+#include "util/bignum/floatimpl.h"
 
 namespace xqp {
 
@@ -29,11 +30,87 @@ Integer::Integer(uint32_t aUInt) {
   theInteger = lStrRep.c_str();
 }
 
-Integer::Integer(double aDouble) {
-  theInteger = aDouble;
-  theInteger.floor();
+bool Integer::parse(const char* aCharStar, Integer& aInteger) {
+  // correctness check
+  const char* lCur = aCharStar;
+  bool lGotSign = false;
+  bool lStop = false;
+  bool lGotDigit = false;
+  while (*lCur != '\0' && !lStop) {
+    char lTmp = *lCur++;
+    switch(lTmp) {
+      case '+': 
+        if (lGotSign || lGotDigit) {
+          lStop = true;
+        } else {
+          lGotSign = true;
+        }
+        break;
+      case '-':
+        if(lGotSign || lGotDigit) {
+          lStop = true;
+        } else {
+          lGotSign = true;
+        }
+        break;
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9': 
+        lGotDigit = true;
+        break;
+      default:
+        lStop = true;
+        break;
+    }
+  }
+  if (lStop || !lGotDigit) {
+    return false;
+  } else {
+    MAPM lNumber = aCharStar;
+    aInteger.theInteger = lNumber;
+    return true;
+  }
 }
 
+bool Integer::parseUnsigned(const char* aStarChar, Integer& aUInteger) {
+  // correctness check
+  const char* lCur = aStarChar;
+  bool lStop = false;
+  while (*lCur != '\0' && !lStop) {
+    char lTmp = *lCur++;
+    switch(lTmp) {
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9': 
+        break;
+      default:
+        lStop = true;
+        break;
+    }
+  }
+  if (lStop) {
+    return false;
+  } else {
+    MAPM lNumber = aStarChar;
+    aUInteger.theInteger = lNumber;
+    return true;
+  }
+}
+  
 Integer Integer::parseLong(long aLong) { 
   MAPM lNumber = aLong;
   return Integer(lNumber);
@@ -49,14 +126,37 @@ Integer Integer::parseSizeT(size_t aSizeT) {
   return Integer(lNumber);
 }
 
-Integer& Integer::operator=(const xqpString& aStr) {
-  theInteger = aStr.c_str();
-  return *this;
+
+bool Integer::parse(const Double& aDouble, Integer& aInteger) {
+  switch(aDouble.theType) {
+  case FloatConsts::NORMAL:
+  case FloatConsts::NORMAL_NEG:
+  {
+    MAPM lNum = aDouble.theFloatImpl;
+    aInteger.theInteger = floatingToInteger(lNum);
+    return true;
+  }
+    break;
+  default:
+    return false;
+    break;
+  }
 }
 
-Integer& Integer::operator=(const char* aStr) {
-  theInteger = aStr;
-  return *this;
+bool Integer::parse(const Float& aFloat, Integer& aInteger) {
+  switch(aFloat.theType) {
+  case FloatConsts::NORMAL:
+  case FloatConsts::NORMAL_NEG:
+  {
+    MAPM lNum = aFloat.theFloatImpl;
+    aInteger.theInteger = floatingToInteger(lNum);
+    return true;
+  }
+    break;
+  default:
+    return false;
+    break;
+  }
 }
 
 Integer& Integer::operator=(const Integer& aInteger) {
@@ -286,7 +386,7 @@ Integer& Integer::operator%=(int32_t aInt) {
   return *this;
 }
 
-Integer Integer::operator-() {
+Integer Integer::operator-() const {
   return Integer(-theInteger);
 }
 
@@ -341,6 +441,23 @@ bool Integer::operator<=(long long aLong) const {
   return theInteger <= Integer::longlongToMAPM(aLong);
 }
 
+bool Integer::operator<=(const Double& aDouble) const {
+  switch(aDouble.theType) {
+  case FloatConsts::INF_POS:
+    return true;
+    break;
+  case FloatConsts::INF_NEG:
+    return false;
+    break;
+  case FloatConsts::NOT_A_NUM:
+    return false;
+    break;
+  default:
+    return theInteger <= aDouble.theFloatImpl;
+    break;
+  }
+}
+
 bool Integer::operator>(const Decimal& aDecimal) const {
   return theInteger > aDecimal.theDecimal;
 }
@@ -355,6 +472,23 @@ bool Integer::operator>=(const Decimal& aDecimal) const {
 
 bool Integer::operator>=(long long aLong) const {
   return theInteger >= Integer::longlongToMAPM(aLong);
+}
+
+bool Integer::operator>=(const Double& aDouble) const {
+  switch(aDouble.theType) {
+  case FloatConsts::INF_POS:
+    return false;
+    break;
+  case FloatConsts::INF_NEG:
+    return true;
+    break;
+  case FloatConsts::NOT_A_NUM:
+    return false;
+    break;
+  default:
+    return theInteger >= aDouble.theFloatImpl;
+    break;
+  }
 }
 
 xqpString Integer::toString() const {

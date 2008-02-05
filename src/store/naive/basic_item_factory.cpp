@@ -228,7 +228,7 @@ Item_t BasicItemFactory::createDateTime (const Item_t& date, const Item_t& time)
     return new DateTimeItemNaive(date->getDateValue(), time->getTimeValue());
 }
 
-Item_t BasicItemFactory::createDouble ( double value ) 
+Item_t BasicItemFactory::createDouble ( xqp_double value ) 
 { 
   return new DoubleItemNaive( value ); 
 }
@@ -257,7 +257,7 @@ Item_t BasicItemFactory::createENTITY ( const xqp_string& value )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createFloat ( float value ) 
+Item_t BasicItemFactory::createFloat ( xqp_float value ) 
 { 
   return new FloatItemNaive( value ); 
 }

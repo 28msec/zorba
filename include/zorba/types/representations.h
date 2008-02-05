@@ -15,6 +15,7 @@
 #include "util/datetime/gregorian.h"
 #include "util/bignum/integer.h"
 #include "util/bignum/decimal.h"
+#include "util/bignum/floatimpl.h"
 
 namespace xqp
 {
@@ -42,8 +43,8 @@ namespace xqp
   typedef long long                 xqp_long;
   typedef short                     xqp_short;
   typedef Decimal                   xqp_decimal;
-  typedef float                     xqp_float;
-  typedef double                    xqp_double;
+  typedef Float                     xqp_float;
+  typedef Double                    xqp_double;
   typedef char                      xqp_byte;
   typedef bool                      xqp_boolean;
   typedef xqpString                 xqp_QName;

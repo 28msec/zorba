@@ -8,32 +8,37 @@
 #define XQP_INTEGER_H
 
 #include "mapm/m_apm.h"
+#include "zorba/common.h"
 #include "util/utf8/xqpString.h"
 
 namespace xqp {
 
 class Decimal;
+template <typename Type> class FloatImpl;
+typedef FloatImpl<double> Double;
+typedef FloatImpl<float> Float;
 
 class Integer {
   friend class Decimal;
+  template <typename Type>
+  friend class FloatImpl;
+
 private:
   MAPM theInteger;
-  Integer(MAPM aInteger) { theInteger = aInteger; }
+  Integer(MAPM aInteger) : theInteger(aInteger) { }
 public:
-  Integer() { theInteger = 0; }
-  Integer(const Integer& aInteger) { theInteger = aInteger.theInteger; }
+  Integer() : theInteger(0) { }
+  Integer(const Integer& aInteger) : theInteger(aInteger.theInteger) { }
   Integer(const Decimal& aDecimal);
-  Integer(const xqpString& aStr) { theInteger = aStr.c_str(); }
-  Integer(const char* aStr) { theInteger = aStr; }
-  Integer(long long);
-  Integer(unsigned long long);
-  Integer(int32_t aInt) { theInteger = aInt; }
+  Integer(long long aLong);
+  Integer(unsigned long long aULong);
+  Integer(int32_t aInt) : theInteger(aInt) { }
   Integer(uint32_t aUInt);
-  Integer(double aDouble);
   
 private:
   static MAPM longlongToMAPM(long long);
   static MAPM floatingToInteger(MAPM theFloating) {
+    // TODO inf and nan handling
     if (theFloating >= 0)
       return theFloating.floor();
     else
@@ -41,13 +46,15 @@ private:
   }
 
 public:
-  
+  static bool parse(const char*, Integer&);
+  static bool parseUnsigned(const char*, Integer&);
+  static bool parse(const Double&, Integer&);
+  static bool parse(const Float&, Integer&);
+
   static Integer parseLong(long aLong);
   static Integer parseULong(unsigned long);
   static Integer parseSizeT(size_t);
 
-  Integer& operator=(const xqpString&);
-  Integer& operator=(const char*);
   Integer& operator=(const Integer&);
   Integer& operator=(long long);
   Integer& operator=(int32_t);
@@ -102,7 +109,7 @@ public:
   Integer& operator%=(long long);
   Integer& operator%=(int32_t);
 
-  Integer operator-(); 
+  Integer operator-() const; 
   /** prefix */
   Integer& operator++();
   /** postfix */
@@ -133,6 +140,7 @@ public:
   bool operator<=(int32_t aInt) const { return theInteger <= aInt; } 
   bool operator<=(const Decimal&) const;
   bool operator<=(double aDouble) const { return theInteger <= aDouble; }
+  bool operator<=(const Double&) const;
 
   bool operator>(const Integer& aInteger) const { return theInteger > aInteger.theInteger; } 
   bool operator>(long long) const;
@@ -145,6 +153,7 @@ public:
   bool operator>=(int32_t aInt) const { return theInteger >= aInt; } 
   bool operator>=(const Decimal&) const;
   bool operator>=(double aDouble) const { return theInteger >= aDouble; }
+  bool operator>=(const Double&) const;
 
   xqpString toString() const;
 }; // class Integer

@@ -8,7 +8,6 @@
  */
 
 #include <iostream>
-#include <cmath>
 
 #include "system/globalenv.h"
 #include "runtime/numerics/NumericsImpl.h"
@@ -143,9 +142,11 @@ namespace xqp
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
-    return Zorba::getItemFactory()->createInteger (
-               static_cast<xqp_integer> ( d0 / d1 )
-           );
+
+    xqp_integer lInteger;
+    bool lBool = Integer::parse( d0 / d1, lInteger);
+    Assert(lBool);
+    return Zorba::getItemFactory()->createInteger ( lInteger );
   }
 
   Item_t IntegerDivideOperations::opFloat ( const yy::location* loc, Item_t i0, Item_t i1 )
@@ -170,9 +171,10 @@ namespace xqp
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
     }
-    return Zorba::getItemFactory()->createInteger (
-               static_cast<xqp_integer> ( f0 / f1 )
-           );
+    xqp_integer lInteger;
+    bool lBool = Integer::parse( f0 / f1, lInteger);
+    Assert(lBool);
+    return Zorba::getItemFactory()->createInteger ( lInteger );
   }
 
   Item_t IntegerDivideOperations::opDecimal ( const yy::location* loc, Item_t i0, Item_t i1 )
@@ -207,12 +209,12 @@ namespace xqp
   /* start class ModOperations */
   Item_t ModOperations::opDouble ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return Zorba::getItemFactory()->createDouble ( fmod ( i0->getDoubleValue(), i1->getDoubleValue() ) );
+    return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() % i1->getDoubleValue() );
   }
 
   Item_t ModOperations::opFloat ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
-    return Zorba::getItemFactory()->createFloat ( fmod ( i0->getFloatValue(), i1->getFloatValue() ) );
+    return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() % i1->getFloatValue() );
   }
 
   Item_t ModOperations::opDecimal ( const yy::location* loc, Item_t i0, Item_t i1 )
@@ -538,9 +540,9 @@ namespace xqp
 
       // TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createDouble ( mul * item->getDoubleValue() );
+        res = Zorba::getItemFactory()->createDouble ( item->getDoubleValue() * mul );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createFloat ( mul * item->getFloatValue() );
+        res = Zorba::getItemFactory()->createFloat ( item->getFloatValue() * mul );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
         res = Zorba::getItemFactory()->createInteger ( item->getIntegerValue() * mul );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
@@ -673,11 +675,11 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-          res = Zorba::getItemFactory()->createDouble(ceil(item->getDoubleValue()));
+          res = Zorba::getItemFactory()->createDouble(item->getDoubleValue().ceil());
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createFloat(ceil(item->getFloatValue()));
+        res = Zorba::getItemFactory()->createFloat(item->getFloatValue().ceil());
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
@@ -730,11 +732,11 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createDouble(floor(item->getDoubleValue()));
+        res = Zorba::getItemFactory()->createDouble(item->getDoubleValue().floor());
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createFloat(floor(item->getFloatValue()));
+        res = Zorba::getItemFactory()->createFloat(item->getFloatValue().floor());
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
@@ -787,11 +789,11 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createDouble(Decimal::round(item->getDoubleValue()));
+        res = Zorba::getItemFactory()->createDouble(item->getDoubleValue().round());
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createFloat(Decimal::round(item->getFloatValue()));
+        res = Zorba::getItemFactory()->createFloat(item->getFloatValue().round());
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
@@ -864,11 +866,11 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createDouble(Decimal::roundHalfToEven(item->getDoubleValue(), precision));
+        res = Zorba::getItemFactory()->createDouble(item->getDoubleValue().roundHalfToEven(precision));
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createFloat(Decimal::roundHalfToEven(item->getFloatValue(), precision));
+        res = Zorba::getItemFactory()->createFloat(item->getFloatValue().roundHalfToEven(precision));
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))

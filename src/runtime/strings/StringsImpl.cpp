@@ -10,18 +10,11 @@
  */
 
 #include <iostream>
-#include <math.h>
 #include "runtime/strings/StringsImpl.h"
 #include "system/zorba.h"
 #include "util/utf8/utf8.h"
 #include "util/Assert.h"
 #include "util/numconversions.h"
-
-// FIXME THIS IS A HACK! THIS MUST BE FIXED!!
-#if WIN32 && !UNIX
-# define isnan _isnan
-# define finite _finite
-#endif
 
 using namespace std;
 namespace xqp {
@@ -445,11 +438,15 @@ SubstringIterator::nextImpl(PlanState& planState) {
         if( item1 != NULL )
         {//note: The first character of a string is located at position 1, not position 0.
           item1 = item1->getAtomizationValue();
-          if(isnan(item1->getDoubleValue()) == 0)
+          if(item1->getDoubleValue().isFinite())
           {
             tmpStart = item0->getStringValue().length();
-            if( finite(item1->getDoubleValue()) != 0 )
-              tmpStart = (int32_t)Decimal::round(item1->getDoubleValue());
+            if( item1->getDoubleValue().isFinite() ) {
+              xqp_int lInt;
+              if (NumConversions::doubleToInt(item1->getDoubleValue().round(), lInt)) {
+                tmpStart = lInt;
+              }
+            }
             if( theChildren.size() == 2 )
             {
               resStr = item0->getStringValue().substr(tmpStart-1);
@@ -460,11 +457,14 @@ SubstringIterator::nextImpl(PlanState& planState) {
               {
                 item2 = item2->getAtomizationValue();
                 tmpLen = item0->getStringValue().length() - tmpStart + 1;
-                if(isnan(item2->getDoubleValue()) == 0)
+                if(item2->getDoubleValue().isFinite())
                 {
-                  if( finite(item2->getDoubleValue()) != 0 )
-                    tmpLen = (int32_t)Decimal::round(item2->getDoubleValue());
-                  if( isnan(item1->getDoubleValue() + item2->getDoubleValue()) == 0)
+                  if( item2->getDoubleValue().isFinite() ) {
+                    xqp_int lInt;
+                    if(NumConversions::doubleToInt(item2->getDoubleValue().round(), lInt))
+                      tmpLen = lInt;
+                  }
+                  if( (item1->getDoubleValue() + item2->getDoubleValue()).isFinite())
                   {
                     if(tmpLen >= 0)
                     {
@@ -1286,8 +1286,3 @@ SubstringAfterIterator::nextImpl(PlanState& planState) {
 /*end class SubstringAfterIterator*/
 } /* namespace xqp */
 
-// FIXME THIS IS A HACK! THIS MUST BE FIXED!!
-#if WIN32 && !UNIX
-# undef isnan
-# undef finite
-#endif

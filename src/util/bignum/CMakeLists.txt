@@ -1,3 +1,6 @@
 SET(BIGNUM_SRCS
 	integer.cpp
-	decimal.cpp)
+	decimal.cpp
+  floatimpl.cpp
+)
+

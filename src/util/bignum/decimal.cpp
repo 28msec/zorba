@@ -7,7 +7,6 @@
 #include "util/bignum/integer.h"
 #include "util/numconversions.h"
 #include "util/bignum/decimal.h"
-#include "util/Assert.h"
 
 namespace xqp {
 
@@ -28,6 +27,76 @@ Decimal::Decimal(long long aLong) {
 Decimal::Decimal(unsigned long long aULong) {
   xqpString lStrRep = NumConversions::ulongToStr(aULong);
   theDecimal = lStrRep.c_str();
+}
+
+bool Decimal::parse(const char* aCharStar, Decimal& aDecimal) {
+  // correctness check
+  const char* lCur = aCharStar;
+  bool lGotPoint = false;
+  bool lGotSign = false;
+  bool lStop = false;
+  bool lGotDigit = false;
+  while (*lCur != '\0' && !lStop) {
+    char lTmp = *lCur++;
+    switch(lTmp) {
+      case '+': 
+        if (lGotSign || lGotDigit || lGotPoint) {
+          lStop = true;
+        } else {
+          lGotSign = true;
+        }
+        break;
+      case '-':
+        if(lGotSign || lGotDigit || lGotPoint) {
+          lStop = true;
+        } else {
+          lGotSign = true;
+        }
+        break;
+      case '.': 
+        if (lGotPoint) {
+          lStop = true;
+        } else {
+          lGotPoint = true;
+        }
+        break;
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9': 
+        lGotDigit = true;
+        break;
+      default:
+        lStop = true;
+        break;
+    }
+  }
+  if (lStop || !lGotDigit) {
+    return false;
+  } else {
+    MAPM lNumber = aCharStar;
+    aDecimal.theDecimal = lNumber;
+    return true;
+  }
+}
+
+bool Decimal::parse(double aDouble, Decimal& aDecimal) {
+  switch(Double::checkInfNaNNeg(aDouble)) {
+  case FloatConsts::NORMAL:
+  case FloatConsts::NORMAL_NEG:
+    aDecimal.theDecimal = aDouble;
+    return true;
+    break;
+  default:
+    return false;
+    break;
+  }
 }
 
 Decimal Decimal::parseLong(long aLong) {
@@ -57,67 +126,8 @@ MAPM Decimal::roundHalfToEven(MAPM aValue, MAPM aPrecision) {
   return aCur;
 }
 
-double Decimal::round(double aDouble, Integer aPrecision) {
-  MAPM lValue = aDouble;
-  lValue = Decimal::round(lValue, aPrecision.theInteger);
-  Decimal lDecimal(lValue);
-  double lDouble;
-  bool lWorked = NumConversions::strToDouble(lDecimal.toString(), lDouble);
-  Assert(lWorked);
-  return lDouble;
-}
-
-float Decimal::round(float aDouble, Integer aPrecision) {
-  MAPM lValue = aDouble;
-  lValue = Decimal::round(lValue, aPrecision.theInteger);
-  Decimal lDecimal(lValue);
-  float lFloat;
-  bool lWorked = NumConversions::strToFloat(lDecimal.toString(), lFloat);
-  Assert(lWorked);
-  return lFloat;
-}
-
-double Decimal::roundHalfToEven(double aDouble, Integer aPrecision) {
-  MAPM lValue = aDouble;
-  lValue = Decimal::roundHalfToEven(lValue, aPrecision.theInteger);
-  Decimal lDecimal(lValue);
-  double lDouble;
-  bool lWorked = NumConversions::strToDouble(lDecimal.toString(), lDouble);
-  Assert(lWorked);
-  return lDouble;
-}
-
-float Decimal::roundHalfToEven(float aFloat, Integer aPrecision) {
-  MAPM lValue = aFloat;
-  lValue = Decimal::roundHalfToEven(lValue, aPrecision.theInteger);
-  Decimal lDecimal(lValue);
-  float lFloat;
-  bool lWorked = NumConversions::strToFloat(lDecimal.toString(), lFloat);
-  Assert(lWorked);
-  return lFloat;
-}
-
-double mapmToDouble(MAPM);
-
-float mapmToFloat(MAPM);
-
-Decimal& Decimal::operator=(const xqpString& aStr) {
-  theDecimal = aStr.c_str();
-  return *this;
-}
-
-Decimal& Decimal::operator=(const char* aStr) {
-  theDecimal = aStr;
-  return *this;
-}
-
 Decimal& Decimal::operator=(const Decimal& aDecimal) {
   theDecimal = aDecimal.theDecimal;
-  return *this;
-}
-
-Decimal& Decimal::operator=(double aDouble) {
-  theDecimal = aDouble;
   return *this;
 }
 
@@ -387,8 +397,20 @@ Decimal& Decimal::operator%=(double aDouble) {
   return *this;
 }
 
-Decimal Decimal::operator-() {
+Decimal Decimal::operator-() const {
   return Decimal(-theDecimal);
+}
+
+Decimal Decimal::round() const {
+  return round(0);
+}
+
+Decimal Decimal::round(Integer aPrecision) const {
+  return Decimal(Decimal::round(theDecimal, aPrecision.theInteger));
+}
+
+Decimal Decimal::roundHalfToEven(Integer aPrecision) const {
+  return Decimal(Decimal::roundHalfToEven(theDecimal, aPrecision.theInteger));
 }
 
 bool Decimal::operator==(const Integer& aInteger) const { 
@@ -439,9 +461,9 @@ bool Decimal::operator>=(long long aLong) const {
   return theDecimal >= Integer::longlongToMAPM(aLong);
 }
 
-xqpString Decimal::toString() const {
+xqpString Decimal::decimalToString(MAPM theValue) {
   char lBuffer[1024];
-  theDecimal.toFixPtString(lBuffer, 10);
+  theValue.toFixPtString(lBuffer, 16);
   
   // Note in the canonical representation the decimal point is required
   // and there must be at least one digit to the right and one digit to 
@@ -459,6 +481,10 @@ xqpString Decimal::toString() const {
     
   xqpString lResult = lBuffer;
   return lResult;
+}
+
+xqpString Decimal::toString() const {
+  return decimalToString(theDecimal);
 }
 
 std::ostream& operator<<(std::ostream& os, const Decimal& aDecimal) {

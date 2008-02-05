@@ -15,15 +15,6 @@ namespace xqp {
 class NumConversions {
 private:
   static bool isNegZero(const xqpString& aStr);
-  /**
-   * Checks if the passed string can be parsed to infinity or NaN for float and double
-   *
-   * @return -1 if aCharStar can be parsed to '-inf'
-   *          0 if aCharStar can be parsed to 'nan'
-   *          1 if aCharStar can be parsed to 'inf'
-   *         -2 else
-   */
-  static short isInfOrNan(const char* aCharStar);
 
 public:
   /**********************************************************************************
@@ -69,7 +60,7 @@ public:
   /********************************************************************************
    * Numeric to Numeric Conversions
    * *****************************************************************************/
-  // TODO
+  static bool doubleToInt(const xqp_double&, xqp_int&);
 }; /* class NumConversions */
 
 } /* namespace xqp */

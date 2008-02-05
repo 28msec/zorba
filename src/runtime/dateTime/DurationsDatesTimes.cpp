@@ -234,6 +234,8 @@ Item_t
 FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
+  xqp_decimal lDecimal;
+  bool lBool;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -242,7 +244,9 @@ FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createDecimal(itemArg->getDurationValue()->getSeconds()), state );
+    lBool = Decimal::parse(itemArg->getDurationValue()->getSeconds(), lDecimal);
+    Assert(lBool);
+    STACK_PUSH( Zorba::getItemFactory()->createDecimal(lDecimal), state );
   }
   STACK_END();
 }
@@ -397,6 +401,8 @@ Item_t
 FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
+  xqp_decimal lDecimal;
+  bool lBool;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -405,7 +411,9 @@ FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createDecimal(itemArg->getDateTimeValue()->getSeconds()), state );
+    lBool = Decimal::parse(itemArg->getDateTimeValue()->getSeconds(), lDecimal);
+    Assert(lBool);
+    STACK_PUSH( Zorba::getItemFactory()->createDecimal(lDecimal), state );
   }
   STACK_END();
 }
@@ -622,6 +630,8 @@ Item_t
 FnSecondsFromTimeIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
+  xqp_decimal lDecimal;
+  bool lBool;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -630,7 +640,9 @@ FnSecondsFromTimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createDecimal(itemArg->getTimeValue()->getSeconds()), state );
+    lBool = Decimal::parse(itemArg->getTimeValue()->getSeconds(), lDecimal);
+    Assert(lBool);
+    STACK_PUSH( Zorba::getItemFactory()->createDecimal(lDecimal), state );
   }
   STACK_END();
 }
