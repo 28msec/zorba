@@ -496,7 +496,7 @@ public:
   XmlNode* getChild(unsigned long i) const     { return theChildren.get(i); }
 
   bool isConstructed() const   { return true; }
-  bool isCopy() const          { return theFlags & XmlNode::IsCopy; }
+  bool isCopy() const          { return (theFlags & XmlNode::IsCopy) != 0; }
 
   bool typePreserve() const    { return (theFlags & XmlNode::TypePreserve) != 0; }
   bool nsPreserve() const      { return (theFlags & XmlNode::NsPreserve) != 0; }

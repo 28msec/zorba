@@ -606,7 +606,7 @@ namespace xqp {
   void PrinterVisitor::beginVisit ( const FnMinMaxIterator& a){
     thePrinter.startIter("FnMinMaxIterator");
     thePrinter.addAttribute("type", 
-      (a.getType() == FnMinMaxIterator::MIN ? "min" : "max"));
+      ((a.getType() == FnMinMaxIterator::MIN) != 0 ? std::string("min") : std::string("max")));
     printCommons(&a);
   }
 

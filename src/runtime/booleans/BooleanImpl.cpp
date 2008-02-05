@@ -148,8 +148,6 @@ namespace xqp
     int32_t i0;
     int32_t i1;
     bool found;
-    bool empty;
-    int8_t compareResult;
   
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
