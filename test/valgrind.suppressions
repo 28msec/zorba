@@ -320,6 +320,24 @@
    fun:_ZN3xqp5Zorba11getCollatorENS_9xqpStringE
 }
 
+{
+    static initialization
+    Memcheck:Leak
+    fun:_Znwm
+    fun:_ZN9__gnu_cxx13new_allocatorIN3xqp7hashmapINS1_9xqpStringEE5entryEE8allocateEmPKv
+    fun:_ZNSt12_Vector_baseIN3xqp7hashmapINS0_9xqpStringEE5entryESaIS4_EE11_M_allocateEm
+    fun:_ZNSt6vectorIN3xqp7hashmapINS0_9xqpStringEE5entryESaIS4_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS4_S6_EERKS4_
+    fun:_ZNSt6vectorIN3xqp7hashmapINS0_9xqpStringEE5entryESaIS4_EE9push_backERKS4_
+    fun:_ZN3xqp7hashmapINS_9xqpStringEE3putERKSsS1_
+    fun:_ZN3xqp7context8bind_strENS_9xqpStringES1_NS_10ZorbaError10ErrorCodesE
+    fun:_ZN3xqp14static_context7bind_nsENS_9xqpStringES1_NS_10ZorbaError10ErrorCodesE
+    fun:_ZN3xqp14static_contextC1EPPKc
+    fun:_ZN3xqp14static_context19root_static_contextEv
+    fun:_ZN3xqp23fn_data_func_init_classC1Ev
+    fun:_Z41__static_initialization_and_destruction_0ii
+    fun:_GLOBAL__I__ZN3xqp12library_initEv
+}
+
 
 # 32 bit linux suppressions
 
