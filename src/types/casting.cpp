@@ -545,7 +545,7 @@ Item_t GenericCast::promote(Item_t aItem, const TypeSystem::xqtref_t& aTargetTyp
   }
 
   Item_t lResult = 0;
-  if (GENV_TYPESYSTEM.is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
+  if (GENV_TYPESYSTEM.is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) && ! GENV_TYPESYSTEM.is_equal(*GENV_TYPESYSTEM.prime_type (*aTargetType), *GENV_TYPESYSTEM.QNAME_TYPE_ONE)) {
     lResult = GenericCast::instance()->cast(aItem, aTargetType);
   } else if (GENV_TYPESYSTEM.is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
     // Numeric Promotion to xs:float
