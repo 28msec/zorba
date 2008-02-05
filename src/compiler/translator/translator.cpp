@@ -896,14 +896,14 @@ void end_visit(const CommonContent& v, void *visit_state)
       uint32_t codepoint;
       xqp_string charref;
  
-      ulong curRefStart = 0;
+      unsigned long curRefStart = 0;
       std::string content = v.get_ref();
 
       while (curRefStart < content.size())
       {
         stringstream ss;
 
-        ulong curRefLen = content.find(';', curRefStart) - curRefStart + 1;
+        unsigned long curRefLen = content.find(';', curRefStart) - curRefStart + 1;
 
         if (content[curRefStart+2] == 'x')
           ss << hex << content.substr(curRefStart+3, curRefLen-3);

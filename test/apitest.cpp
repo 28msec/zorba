@@ -50,7 +50,7 @@ int apitest_alert_callback(ZorbaAlert *alert_mess,
   cerr << endl;
 
 //  DisplayOneAlert(alert_mess);
-	alert_mess->DumpAlert(cerr);
+	alert_mess->dumpAlert(cerr);
 
   cerr.flush();
 
@@ -64,14 +64,14 @@ void set_var (string name, string val,
 {
   if (name [name.size () - 1] == ':' && dctx != NULL) 
   {
-    bool result = dctx->SetVariableAsString(name.substr (0, name.size () - 1), xqp_string(val));
+    bool result = dctx->setVariableAsString(name.substr (0, name.size () - 1), xqp_string(val));
     assert (result);
   }
   else if (name[name.size () - 1] != ':' && query != NULL)
   {
     ifstream is (val.c_str ());
     assert (is);
-    query->SetVariable(name, val.c_str(), is);
+    query->setVariableAsDocumentFromStream(name, val.c_str(), is);
   }
 }
 
@@ -91,35 +91,35 @@ void slurp_file (const char *fname, string &result) {
 
 class ZorbaEngineWrapper {
 public:
-  ZorbaEngine &factory;
+  ZorbaEngine_t factory;
   StaticQueryContext_t sctx;
 
   ZorbaEngineWrapper (alert_callback alert_cb = NULL, void *alert_param = NULL)
     : factory (ZorbaEngine::getInstance())
   {
-    factory.initThread();
+    factory->initThread();
     /// register the alerts callback
-    ZorbaAlertsManager& errmanager = factory.getAlertsManagerForCurrentThread();
+    ZorbaAlertsManager_t errmanager = factory->getAlertsManagerForCurrentThread();
     
     if (alert_cb != NULL)
-      errmanager.RegisterAlertCallback(alert_cb, alert_param);
+      errmanager->registerAlertCallback(alert_cb, alert_param);
 
-    sctx = factory.createStaticContext();
-    sctx->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
-    sctx->AddCollation("http://www.flworfound.org/apitest/coll2", "de");
-    sctx->AddCollation("http://www.flworfound.org/apitest/coll3", "fr");
-    sctx->SetOrderingMode(StaticQueryContext::unordered);
+    sctx = factory->createStaticContext();
+    sctx->addCollation("http://www.flworfound.org/apitest/coll1", "en");
+    sctx->addCollation("http://www.flworfound.org/apitest/coll2", "de");
+    sctx->addCollation("http://www.flworfound.org/apitest/coll3", "fr");
+    sctx->setOrderingMode(StaticQueryContext::unordered);
   }
   ~ZorbaEngineWrapper () {
     //DisplayErrorListForCurrentThread();
-		factory.getAlertsManagerForCurrentThread().DumpAlerts(cerr);
+		factory->getAlertsManagerForCurrentThread()->dumpAlerts(cerr);
 
-    factory.uninitThread();
-    factory.shutdown();
+    factory->uninitThread();
+    factory->shutdown();
   }
 
   bool initExecution (XQuery_t query, const vector< pair <string, string> > &vars) {
-    DynamicQueryContext_t dctx = factory.createDynamicContext ();
+    DynamicQueryContext_t dctx = factory->createDynamicContext ();
     for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
          iter != vars.end (); iter++) {
       set_var (iter->first, iter->second, dctx, NULL);
@@ -190,7 +190,7 @@ int _tmain(int argc, _TCHAR* argv[])
   ZorbaEngineWrapper zengine (apitest_alert_callback, (void*) 101);
 
   // compile query
-  XQuery_t query = zengine.factory.createQuery(query_text.c_str(), zengine.sctx);
+  XQuery_t query = zengine.factory->createQuery(query_text.c_str(), zengine.sctx);
   if (query == NULL)
     return 0;
 
@@ -204,12 +204,15 @@ int _tmain(int argc, _TCHAR* argv[])
     query->serialize(*resultFile);
     // newline should not be sent when serializing!
   } else {
+		ResultIterator_t	result;
     Item_t it;
-    while (NULL != (it = query->next ()).getp ())
+		result = query->getIterator();
+    while (NULL != (it = result->next ()).getp ())
       *resultFile << it->show() << endl;
+		result->close();
   }
   
-  query->close ();
+  //query->close ();
 
   if (query->isError ())
     return 0;

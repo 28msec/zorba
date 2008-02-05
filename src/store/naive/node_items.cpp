@@ -89,10 +89,10 @@ void XmlTree::free()
 /////////////////////////////////////////////////////////////////////////////////
 
 
-ConstrNodeVector::ConstrNodeVector(ulong size) : NodeVector(size)
+ConstrNodeVector::ConstrNodeVector(unsigned long size) : NodeVector(size)
 {
   theBitmap.resize(size);
-  for (ulong i = 0; i < size; i++)
+  for (unsigned long i = 0; i < size; i++)
   {
     theBitmap[i] = false;
     theNodes[i] = 0;
@@ -100,7 +100,7 @@ ConstrNodeVector::ConstrNodeVector(ulong size) : NodeVector(size)
 }
 
 
-void ConstrNodeVector::set(ulong pos, XmlNode* node, bool shared)
+void ConstrNodeVector::set(unsigned long pos, XmlNode* node, bool shared)
 {
   ZORBA_ASSERT(pos <= size());
   
@@ -141,8 +141,8 @@ void ConstrNodeVector::push_back(XmlNode* node, bool shared)
 
 void ConstrNodeVector::clear()
 {
-  ulong size = this->size();
-  for (ulong i = 0; i < size; i++)
+  unsigned long size = this->size();
+  for (unsigned long i = 0; i < size; i++)
   {
     if (theBitmap[i])
       *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = NULL; 
@@ -152,7 +152,7 @@ void ConstrNodeVector::clear()
 }
 
 
-void ConstrNodeVector::resize(ulong newSize)
+void ConstrNodeVector::resize(unsigned long newSize)
 {
   if (newSize == 0)
   {
@@ -160,11 +160,11 @@ void ConstrNodeVector::resize(ulong newSize)
     return;
   }
 
-  ulong oldSize = size();
+  unsigned long oldSize = size();
 
   theNodes.resize(newSize);
   theBitmap.resize(newSize);
-  for (ulong i = oldSize; i < newSize; i++)
+  for (unsigned long i = oldSize; i < newSize; i++)
   {
     theBitmap[i] = false;
     theNodes[i] = NULL;
@@ -174,11 +174,11 @@ void ConstrNodeVector::resize(ulong newSize)
 
 void ConstrNodeVector::copy(const NodeVector& src)
 {
-  ulong size = src.size();
+  unsigned long size = src.size();
 
   resize(size);
 
-  for (ulong i = 0; i < size; i++)
+  for (unsigned long i = 0; i < size; i++)
   {
     *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = src.theNodes[i];
     theBitmap[i] = true;
@@ -196,7 +196,7 @@ void ConstrNodeVector::copy(const NodeVector& src)
 XmlNode::XmlNode(
     XmlTree*              tree,
     XmlNode*              parent,
-    ulong                 pos,
+    unsigned long                 pos,
     StoreConsts::NodeKind nodeKind)
   :
   theTree(NULL),
@@ -408,8 +408,8 @@ xqp_string DocumentNode::getStringValue() const
 {
   ostringstream oss;
 
-  ulong numChildren = this->numChildren();
-  for (ulong i = 0; i < numChildren; i++)
+  unsigned long numChildren = this->numChildren();
+  for (unsigned long i = 0; i < numChildren; i++)
   {
     StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
 
@@ -545,7 +545,7 @@ void ConstrDocumentNode::constructSubtree(Iterator* childrenIte, bool copy)
 ElementNode::ElementNode(
     XmlTree*  tree,
     XmlNode*  parent,
-    ulong     pos,
+    unsigned long     pos,
     Item*     nodeName)
   :
   XmlNode(tree, parent, pos, StoreConsts::elementNode),
@@ -666,8 +666,8 @@ Iterator_t ElementNode::getAttributes() const
 ********************************************************************************/
 void ElementNode::checkUniqueAttr(Item* attrName) const
 {
-  ulong numAttrs = numAttributes();
-  for (ulong i = 0; i < numAttrs; i++)
+  unsigned long numAttrs = numAttributes();
+  for (unsigned long i = 0; i < numAttrs; i++)
   {
     if (getAttr(i)->getNodeName()->equals(attrName))
     {
@@ -717,8 +717,8 @@ xqp_string ElementNode::getStringValue() const
 {
   ostringstream oss;
 
-  ulong numChildren = this->numChildren();
-  for (ulong i = 0; i < numChildren; i++)
+  unsigned long numChildren = this->numChildren();
+  for (unsigned long i = 0; i < numChildren; i++)
   {
     StoreConsts::NodeKind kind = getChild(i)->getNodeKind();
 
@@ -761,7 +761,7 @@ xqp_string ElementNode::show() const
   NsBindings nsBindings;
   getNamespaceBindings(nsBindings);
 
-  for (ulong i = 0; i < nsBindings.size(); i++)
+  for (unsigned long i = 0; i < nsBindings.size(); i++)
   {
     str << " xmlns:" <<  nsBindings[i].first << "=\""
         << nsBindings[i].second << "\"";
@@ -800,8 +800,8 @@ xqp_string ElementNode::show() const
 LoadedElementNode::LoadedElementNode(
     Item*  nodeName,
     Item*  typeName,
-    ulong  numBindings,
-    ulong  numAttributes)
+    unsigned long  numBindings,
+    unsigned long  numAttributes)
   :
   ElementNode(NULL, NULL, 0, nodeName)
 {
@@ -835,7 +835,7 @@ LoadedElementNode::LoadedElementNode(
 ConstrElementNode::ConstrElementNode(
     XmlTree*  tree,
     XmlNode*  parent,
-    ulong     pos,
+    unsigned long     pos,
     Item*     nodeName,
     Item*     typeName,
     bool      typePreserve,
@@ -978,7 +978,7 @@ void ConstrElementNode::constructSubtree(
 /*******************************************************************************
 
 ********************************************************************************/
-XmlNode* ElementNode::copy(XmlNode* parent, ulong pos)
+XmlNode* ElementNode::copy(XmlNode* parent, unsigned long pos)
 {
   // Get an rchandle to "this" node before copying it. This is needed because
   // the tree where "this" belongs to may be referenced only from "parent", and
@@ -1057,9 +1057,9 @@ XmlNode* ElementNode::copy(XmlNode* parent, ulong pos)
         ctx->addBinding(prefix, ns);
     }
 
-    ulong numAttrs = numAttributes();
+    unsigned long numAttrs = numAttributes();
 
-    for (ulong i = 0; i < numAttrs; i++)
+    for (unsigned long i = 0; i < numAttrs; i++)
     {
       prefix = getAttr(i)->getNodeName()->getPrefix().getStore();
       ns = getNsContext()->findBinding(prefix);
@@ -1117,7 +1117,7 @@ XmlNode* ElementNode::copy(XmlNode* parent, ulong pos)
 AttributeNode::AttributeNode(
     XmlTree*  tree,
     XmlNode*  parent,
-    ulong     pos,
+    unsigned long     pos,
     Item*     attrName,
     Item*     typeName,
     bool      isId,
@@ -1174,7 +1174,7 @@ void AttributeNode::constructValue(Iterator* valueIter)
 }
 
 
-XmlNode* AttributeNode::copy(XmlNode* parent, ulong pos)
+XmlNode* AttributeNode::copy(XmlNode* parent, unsigned long pos)
 {
   Item_t tmp = this;
 
@@ -1262,7 +1262,7 @@ xqp_string AttributeNode::show() const
 TextNode::TextNode(
     XmlTree*        tree,
     XmlNode*        parent,
-    ulong           pos,
+    unsigned long           pos,
     xqpStringStore* value)
   :
   XmlNode(tree, parent, pos, StoreConsts::textNode),
@@ -1343,7 +1343,7 @@ xqp_string TextNode::show() const
 PiNode::PiNode(
     XmlTree*        tree,
     XmlNode*        parent,
-    ulong           pos,
+    unsigned long           pos,
     xqpStringStore* target,
     xqpStringStore* data)
   :
@@ -1416,7 +1416,7 @@ xqp_string PiNode::show() const
 CommentNode::CommentNode(
     XmlTree*        tree,
     XmlNode*        parent,
-    ulong           pos,
+    unsigned long           pos,
     xqpStringStore* content)
   :
   XmlNode(tree, parent, pos, StoreConsts::commentNode),
@@ -1436,7 +1436,7 @@ CommentNode::~CommentNode()
 }
 
 
-XmlNode* CommentNode::copy(XmlNode* parent, ulong pos)
+XmlNode* CommentNode::copy(XmlNode* parent, unsigned long pos)
 {
   Item_t tmp = this;
 

@@ -35,7 +35,11 @@ StringPool::StringPool(unsigned long size)
 ********************************************************************************/
 StringPool::~StringPool() 
 {
-  unsigned long count = 0;
+/*daniel:?? 
+don't expect the string pool to be the last to close
+the ref count does the job of freeing xqpStringStore anyway
+
+	unsigned long count = 0;
   unsigned long n = theHashTab.size();
   for (unsigned long i = 0; i < n; i++)
   {
@@ -51,6 +55,7 @@ StringPool::~StringPool()
 
   if (count > 0)
     assert(0);
+*/
 }
 
 

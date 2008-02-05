@@ -235,13 +235,13 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) {
  }
 
  state->thePosition = lPositionItem->getIntegerValue();
- if (state->thePosition < 1)
-   state->thePosition = 1;
+ if (state->thePosition < (int32_t)1)
+   state->thePosition = (int32_t)1;
    
   
  while ( (state->theTargetItem = consumeNext(theChildren[0], planState)) != NULL ) 
  {
-    if ( state->theCurrentPos == state->thePosition-1 ) // position found => insert sequence
+    if ( state->theCurrentPos == state->thePosition-(int32_t)1 ) // position found => insert sequence
     {
       while ( (lInsertItem = consumeNext(theChildren[2], planState)) != NULL)
       {
@@ -266,16 +266,16 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) {
 void
 FnInsertBeforeIteratorState::init(PlanState& planState) {
  PlanIteratorState::init(planState);
- theCurrentPos = 0;
- thePosition = 0;
+ theCurrentPos = (int32_t)0;
+ thePosition = (int32_t)0;
  theTargetItem = NULL;
 }
 
 void
 FnInsertBeforeIteratorState::reset(PlanState& planState) {
  PlanIteratorState::reset(planState);
- theCurrentPos = 0;
- thePosition = 0; 
+ theCurrentPos = (int32_t)0;
+ thePosition = (int32_t)0; 
  theTargetItem = NULL;
 }
 
@@ -319,15 +319,15 @@ void
 FnRemoveIteratorState::init(PlanState& planState) 
 {
   PlanIteratorState::init(planState);
-  theCurrentPos = 0;
-  thePosition   = 0;
+  theCurrentPos = (int32_t)0;
+  thePosition   = (int32_t)0;
 }
 
 void
 FnRemoveIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurrentPos = 0;
-  thePosition = 0;
+  theCurrentPos = (int32_t)0;
+  thePosition = (int32_t)0;
 }
 
 
@@ -422,8 +422,8 @@ FnSubsequenceIteratorState::init(PlanState& planState)
  PlanIteratorState::init(planState);
  theStartingLoc = 0;
  theLength = 0;
- theCurrentPos = 1; // position starts with 1, not 0
- theCurrentLength = 1;
+ theCurrentPos = (int32_t)1; // position starts with 1, not 0
+ theCurrentLength = (int32_t)1;
 }
 
 void
@@ -432,8 +432,8 @@ FnSubsequenceIteratorState::reset(PlanState& planState)
  PlanIteratorState::reset(planState);
  theStartingLoc = 0;
  theLength = 0;
- theCurrentPos = 1; // position starts with 1, not 0
- theCurrentLength = 1;
+ theCurrentPos = (int32_t)1; // position starts with 1, not 0
+ theCurrentLength = (int32_t)1;
 }
 
 
@@ -539,7 +539,7 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) {
 Item_t 
 FnCountIterator::nextImpl(PlanState& planState) {
   Item_t lSequenceItem;
-  xqp_integer lCount = 0;
+  xqp_integer lCount = (int32_t)0;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -559,7 +559,7 @@ Item_t
 FnAvgIterator::nextImpl(PlanState& planState) {
   Item_t lSumItem;
   Item_t lRunningItem;
-  xqp_integer lCount = 1;
+  xqp_integer lCount = (int32_t)1;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -699,7 +699,7 @@ FnSumIterator::nextImpl(PlanState& planState) {
     }
     else
     {
-      STACK_PUSH(Zorba::getItemFactory()->createInteger(0), state);
+      STACK_PUSH(Zorba::getItemFactory()->createInteger((int32_t)0), state);
     }
   }
 
@@ -756,17 +756,17 @@ OpToIterator::nextImpl(PlanState& planState) {
 void
 OpToIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurInt = 0;
-  theFirstVal = 0;
-  theLastVal = 0;
+  theCurInt = (int32_t)0;
+  theFirstVal = (int32_t)0;
+  theLastVal = (int32_t)0;
 }
 
 void
 OpToIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurInt = 0;
-  theFirstVal = 0;
-  theLastVal = 0;
+  theCurInt = (int32_t)0;
+  theFirstVal = (int32_t)0;
+  theLastVal = (int32_t)0;
 }
 
 //15.5.2 fn:id

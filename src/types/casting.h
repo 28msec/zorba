@@ -109,6 +109,12 @@ namespace xqp
 
   protected:
       bool castableToNCName(const xqpString& str) const;
+			bool isLetter(uint32_t cp)const;
+			bool isBaseChar(uint32_t cp)const;
+			bool isIdeographic(uint32_t cp)const;
+			bool isDigit(uint32_t cp)const;
+			bool isCombiningChar(uint32_t cp)const;
+			bool isExtender(uint32_t cp)const;
 
 	}; /* class GenericCast */
 

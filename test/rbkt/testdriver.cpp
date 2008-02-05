@@ -117,11 +117,11 @@ set_var (bool inlineFile, std::string name, std::string val,
 {
   boost::replace_all(val, "$RBKT_SRC_DIR", xqp::RBKT_SRC_DIR);
   if (!inlineFile && dctx != NULL) {
-    dctx->SetVariableAsString (name, xqp::xqp_string (val));
+    dctx->setVariableAsString (name, xqp::xqp_string (val));
   } else if (inlineFile && exec != NULL) {
     std::ifstream is (val.c_str ());
     assert (is);
-    exec->SetVariable (name, val.c_str(), is);
+    exec->setVariableAsDocumentFromStream (name, val.c_str(), is);
   }
 }
 
@@ -210,17 +210,17 @@ isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
 
 class ZorbaEngineWrapper {
 public:
-  xqp::ZorbaEngine &factory;
+  xqp::ZorbaEngine_t factory;
 
   ZorbaEngineWrapper ()
     : factory (xqp::ZorbaEngine::getInstance())
   {
-    factory.initThread();
+    factory->initThread();
   }
   ~ZorbaEngineWrapper () {
 
-    factory.uninitThread();
-    factory.shutdown();
+    factory->uninitThread();
+    factory->shutdown();
   }
 };
 
@@ -314,13 +314,13 @@ main(int argc, char** argv)
   // create and compile the query
   std::string lQueryString;
   slurp_file(lQueryFile.native_file_string().c_str(), lQueryString);
-  xqp::XQuery_t lQuery = lEngine.factory.createQuery(lQueryString.c_str());
+  xqp::XQuery_t lQuery = lEngine.factory->createQuery(lQueryString.c_str());
 
-  xqp::ZorbaAlertsManager& lAlertsManager = lEngine.factory.getAlertsManagerForCurrentThread();
+  xqp::ZorbaAlertsManager_t lAlertsManager = lEngine.factory->getAlertsManagerForCurrentThread();
 
   if (lQuery == NULL)
   {
-    if (isErrorExpected(&lAlertsManager, &lSpec)) 
+    if (isErrorExpected(&*lAlertsManager, &lSpec)) 
     { 
       // done, we expected an error during compile
       return 0; 
@@ -328,25 +328,25 @@ main(int argc, char** argv)
     else 
     { 
       std::cerr << "Error compiling query" << std::endl;
-      printErrors(&lAlertsManager); return 4;
+      printErrors(&*lAlertsManager); return 4;
     }
   }
 
 
   // set the variables in the dynamic context
-	xqp::DynamicQueryContext_t lDynCtxt = lEngine.factory.createDynamicContext();
+	xqp::DynamicQueryContext_t lDynCtxt = lEngine.factory->createDynamicContext();
   set_vars(&lSpec, lDynCtxt, NULL);
 
   // execute the query
   if(!lQuery->initExecution(lDynCtxt))
   {
-    if (isErrorExpected(&lAlertsManager, &lSpec)) { return 0; } // done, we expected this error
+    if (isErrorExpected(&*lAlertsManager, &lSpec)) { return 0; } // done, we expected this error
     else 
     { 
       if ( ! fs::exists(lRefFile) )
       {
         std::cerr << "Error executing query" << std::endl;
-        printErrors(&lAlertsManager);
+        printErrors(&*lAlertsManager);
         return 5;
       }
     }
@@ -362,11 +362,11 @@ main(int argc, char** argv)
 
     if (lQuery->isError())
     {
-      if (isErrorExpected(&lAlertsManager, &lSpec)) { return 0; } // again done, we expected this error
+      if (isErrorExpected(&*lAlertsManager, &lSpec)) { return 0; } // again done, we expected this error
       else 
       { 
         std::cerr << "Error executing query" << std::endl;
-        printErrors(&lAlertsManager); 
+        printErrors(&*lAlertsManager); 
         return 6;
       }
     }

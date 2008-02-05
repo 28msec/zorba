@@ -79,31 +79,31 @@ bool verify_expected_result(string result_file_name, string expected_file)
 
 int test_api_static_context(const char *result_file_name)
 {
-	ofstream		result_file(make_absolute_file_name(result_file_name, __FILE__).c_str());
+	ofstream		result_file(result_file_name);
 	unsigned int		i;
 	unsigned int	max;
 	ostringstream		oss2;
 
 	///now start the zorba engine
-	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
+	ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
 
 	///thread specific
-	zorba_factory.initThread();
+	zorba_factory->initThread();
 
 	//do the test
-	ZorbaAlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+	ZorbaAlertsManager_t		errmanager = zorba_factory->getAlertsManagerForCurrentThread();
 
 	///testing the static context!
 	StaticQueryContext_t		sctx1;
 
 	for(i=0;i<100;i++)
 	{
-		sctx1 = zorba_factory.createStaticContext();
+		sctx1 = zorba_factory->createStaticContext();
 	}
 
-	sctx1->SetXPath1_0CompatibMode(StaticQueryContext::xpath2_0);
+	sctx1->setXPath1_0CompatibMode(StaticQueryContext::xpath2_0);
 	StaticQueryContext::xpath1_0compatib_mode_t		xp_compatib_mode;
-	xp_compatib_mode = sctx1->GetXPath1_0CompatibMode();
+	xp_compatib_mode = sctx1->getXPath1_0CompatibMode();
 	result_file << "GetXPath1_0CompatibMode " << xp_compatib_mode << endl;
 
 	for(i=0;i<100;i++)
@@ -112,89 +112,89 @@ int test_api_static_context(const char *result_file_name)
 		ostringstream		oss2;
 		oss1 << "ulu" << i;
 		oss2 << "http://www.flworfound.org/apitest/test_ns" << i;
-		sctx1->AddNamespace(oss1.str(), oss2.str());
+		sctx1->addNamespace(oss1.str(), oss2.str());
 	}
 	for(i=0;i<100;i++)
 	{
 		ostringstream		oss1;
 		oss1 << "ulu" << i;
-		xqp_string		ns_uri = sctx1->GetNamespaceURIByPrefix(oss1.str());
-		result_file << "ns uri " << i << ":" << (std::string)ns_uri << endl;
+		xqp_string		ns_uri = sctx1->getNamespaceURIByPrefix(oss1.str());
+		result_file << "ns uri " << i << ":" << ns_uri << endl;
 	}
 	result_file << "delete some namespaces..." << endl;
 	for(i=0;i<100;i+=2)
 	{
 		ostringstream		oss1;
 		oss1 << "ulu" << i;
-		sctx1->DeleteNamespace(oss1.str());
+		sctx1->deleteNamespace(oss1.str());
 	}
 	for(i=0;i<100;i++)
 	{
 		ostringstream		oss1;
 		oss1 << "ulu" << i;
-		xqp_string		ns_uri = sctx1->GetNamespaceURIByPrefix(oss1.str());
-		result_file << "ns uri " << i << ":" << (std::string)ns_uri << endl;
+		xqp_string		ns_uri = sctx1->getNamespaceURIByPrefix(oss1.str());
+		result_file << "ns uri " << i << ":" << ns_uri << endl;
 	}
-	max = sctx1->GetNamespaceCount();
+	max = sctx1->getNamespaceCount();
 	result_file << "there are " << max << " namespaces:" << endl;
 	for(i=0;i<max;i++)
 	{
 		xqp_string	prefix;
 		xqp_string	uri;
-		if(sctx1->GetNamespaceByIndex(i, &prefix, &uri))
+		if(sctx1->getNamespaceByIndex(i, &prefix, &uri))
 		{
-			result_file << "ns uri " << i << ":" << (std::string)prefix << "->" << (std::string)uri << endl;
+			result_file << "ns uri " << i << ":" << prefix << "->" << uri << endl;
 		}
 		else
 		{
-			result_file << "error on GetNamespaceByIndex(" << i << ")" << endl;
+			result_file << "error on getNamespaceByIndex(" << i << ")" << endl;
 			break;
 		}
 	}
 	result_file << "delete all namespaces" << endl;
-	sctx1->DeleteAllNamespaces();
-	sctx1->AddNamespace((xqp_string)"ulu1", (xqp_string)"http://www.flworfound.org/apitest/test_ns1");
-	result_file << "now there are " << sctx1->GetNamespaceCount() << "namespaces" << endl;
+	sctx1->deleteAllNamespaces();
+	sctx1->addNamespace((xqp_string)"ulu1", (xqp_string)"http://www.flworfound.org/apitest/test_ns1");
+	result_file << "now there are " << sctx1->getNamespaceCount() << "namespaces" << endl;
 
-	sctx1->SetDefaultElementAndTypeNamespace("http://www.flworfound.org/apitest/default_elem_type_ns1");
-	result_file << "1my default elem & type ns " << (std::string)sctx1->GetDefaultElementAndTypeNamespace() << endl;
-	sctx1->SetDefaultElementAndTypeNamespace("http://www.flworfound.org/apitest/default_elem_type_ns1");
-	result_file << "2my default elem & type ns " << (std::string)sctx1->GetDefaultElementAndTypeNamespace() << endl;
+	sctx1->setDefaultElementAndTypeNamespace("http://www.flworfound.org/apitest/default_elem_type_ns1");
+	result_file << "1my default elem & type ns " << sctx1->getDefaultElementAndTypeNamespace() << endl;
+	sctx1->setDefaultElementAndTypeNamespace("http://www.flworfound.org/apitest/default_elem_type_ns1");
+	result_file << "2my default elem & type ns " << sctx1->getDefaultElementAndTypeNamespace() << endl;
 
-	sctx1->SetDefaultFunctionNamespace("http://www.flworfound.org/apitest/default_function_ns1");
-	result_file << "1my default function ns " << (std::string)sctx1->GetDefaultFunctionNamespace() << endl;
-	sctx1->SetDefaultFunctionNamespace("http://www.flworfound.org/apitest/default_function_ns1");
-	result_file << "2my default function ns " << (std::string)sctx1->GetDefaultFunctionNamespace() << endl;
+	sctx1->setDefaultFunctionNamespace("http://www.flworfound.org/apitest/default_function_ns1");
+	result_file << "1my default function ns " << sctx1->getDefaultFunctionNamespace() << endl;
+	sctx1->setDefaultFunctionNamespace("http://www.flworfound.org/apitest/default_function_ns1");
+	result_file << "2my default function ns " << sctx1->getDefaultFunctionNamespace() << endl;
 
 
 	for(i=0;i<100;i++)
 	{
 		ostringstream		oss1;
 		oss1 << "ulu1:var" << i;
-		sctx1->AddExternalVariableType(oss1.str(), new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
+		sctx1->addExternalVariableType(oss1.str(), new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
 	}
 	for(i=0;i<100;i++)
 	{
 		type_ident_ref_t		vartype;
 		ostringstream		oss1;
 		oss1 << "ulu1:var" << i;
-		vartype = sctx1->GetExternalVariableType(oss1.str());
+		vartype = sctx1->getExternalVariableType(oss1.str());
 		result_file << "variable " << i << " has type (" << vartype->get_kind() << "," << vartype->get_quantifier() << ")" << endl;
 	}
 	for(i=0;i<100;i+=2)
 	{
 		ostringstream		oss1;
 		oss1 << "ulu1:var" << i;
-		sctx1->DeleteExternalVariableType(oss1.str());
+		sctx1->deleteExternalVariableType(oss1.str());
 	}
-	max = sctx1->GetExternalVariableCount();
+	max = sctx1->getExternalVariableCount();
 	result_file << "vars remaining after delete " << max << endl;
 	for(i=0;i<100;i++)
 	{
 		type_ident_ref_t		vartype;
 		ostringstream		oss1;
 		oss1 << "ulu1:var" << i;
-		vartype = sctx1->GetExternalVariableType(oss1.str());
+		vartype = sctx1->getExternalVariableType(oss1.str());
 		if(vartype != NULL)
 			result_file << "variable " << i << " has type (" << vartype->get_kind() << "," << vartype->get_quantifier() << ")" << endl;
 		else
@@ -205,9 +205,9 @@ int test_api_static_context(const char *result_file_name)
 	{
 		xqp_string		var_name;
 		type_ident_ref_t		vartype;
-		if(sctx1->GetExternalVariableByIndex(i, &var_name, &vartype))
+		if(sctx1->getExternalVariableByIndex(i, &var_name, &vartype))
 		{
-			result_file << "variable " << i << " " << (std::string)var_name << " has type (" << vartype->get_kind() << "," << vartype->get_quantifier() << ")" << endl;
+			result_file << "variable " << i << " " << var_name << " has type (" << vartype->get_kind() << "," << vartype->get_quantifier() << ")" << endl;
 		}
 		else
 		{
@@ -215,17 +215,17 @@ int test_api_static_context(const char *result_file_name)
 			break;
 		}
 	}
-	sctx1->DeleteAllVariables();
-	sctx1->AddExternalVariableType("ulu1:var1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
-	result_file << "vars remaining " << sctx1->GetExternalVariableCount() << endl;
+	sctx1->deleteAllVariables();
+	sctx1->addExternalVariableType("ulu1:var1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
+	result_file << "vars remaining " << sctx1->getExternalVariableCount() << endl;
 
-	sctx1->SetContextItemStaticType(new EmptyTypeIdentifier);
+	sctx1->setContextItemStaticType(new EmptyTypeIdentifier);
 	type_ident_ref_t		context_item_type;
-	context_item_type = sctx1->GetContextItemStaticType();
+	context_item_type = sctx1->getContextItemStaticType();
 	result_file << "1my context item static type " << context_item_type->get_kind() << "," << context_item_type->get_quantifier() << ")" << endl;
 
-	sctx1->SetContextItemStaticType(new EmptyTypeIdentifier);
-	context_item_type = sctx1->GetContextItemStaticType();
+	sctx1->setContextItemStaticType(new EmptyTypeIdentifier);
+	context_item_type = sctx1->getContextItemStaticType();
 	result_file << "2my context item static type " << context_item_type->get_kind() << "," << context_item_type->get_quantifier() << ")" << endl;
 
 
@@ -233,117 +233,117 @@ int test_api_static_context(const char *result_file_name)
 	{
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/coll" << i;
-		sctx1->AddCollation(oss1.str(), "en");
+		sctx1->addCollation(oss1.str(), "en");
 	}
 	for(i=0;i<100;i++)
 	{
 		CollationInfo	*colinfo;
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/coll" << i;
-		colinfo = sctx1->GetCollation(oss1.str());
+		colinfo = sctx1->getCollation(oss1.str());
 		if(colinfo)
 		{
-			result_file << "collation " << i << " " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (uint32_t)colinfo->coll << endl;
+			result_file << "collation " << i << " " << colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (uint32_t)colinfo->coll << endl;
 		}
 	}
 	for(i=0;i<100;i+=2)
 	{
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/coll" << i;
-		sctx1->DeleteCollation(oss1.str());
+		sctx1->deleteCollation(oss1.str());
 	}
-	max = sctx1->GetCollationCount();
+	max = sctx1->getCollationCount();
 	result_file << "remaining collations " << max << endl;
 	for(i=0;i<100;i++)
 	{
 		CollationInfo	*colinfo;
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/coll" << i;
-		colinfo = sctx1->GetCollation(oss1.str());
+		colinfo = sctx1->getCollation(oss1.str());
 		if(colinfo)
 		{
-			result_file << "collation " << i << " " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (uint32_t)colinfo->coll << endl;
+			result_file << "collation " << i << " " << colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (uint32_t)colinfo->coll << endl;
 		}
 	}
 	for(i=0;i<max;i++)
 	{
 		CollationInfo	*colinfo;
-		colinfo = sctx1->GetCollationInfoByIndex(i);
+		colinfo = sctx1->getCollationInfoByIndex(i);
 		if(colinfo)
 		{
-			result_file << "collation " << i << " " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (uint32_t)colinfo->coll << endl;
+			result_file << "collation " << i << " " << colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (uint32_t)colinfo->coll << endl;
 		}
 	}
-	sctx1->DeleteAllCollations();
-	sctx1->AddCollation((xqp_string)"http://www.flworfound.org/apitest/coll1", "en");
-	result_file << "remaining collations " << sctx1->GetCollationCount() << endl;
+	sctx1->deleteAllCollations();
+	sctx1->addCollation((xqp_string)"http://www.flworfound.org/apitest/coll1", "en");
+	result_file << "remaining collations " << sctx1->getCollationCount() << endl;
 
-	sctx1->SetDefaultCollation((xqp_string)"http://www.flworfound.org/apitest/coll1");
-	result_file << "my default collation " << (std::string)sctx1->GetDefaultCollation() << endl;
+	sctx1->setDefaultCollation((xqp_string)"http://www.flworfound.org/apitest/coll1");
+	result_file << "my default collation " << sctx1->getDefaultCollation() << endl;
 
-	sctx1->SetConstructionMode(StaticQueryContext::cons_strip);
-	result_file << "1my construction mode " << sctx1->GetConstructionMode() << endl;
-	sctx1->SetConstructionMode(StaticQueryContext::cons_preserve);
-	result_file << "2my construction mode " << sctx1->GetConstructionMode() << endl;
+	sctx1->setConstructionMode(StaticQueryContext::cons_strip);
+	result_file << "1my construction mode " << sctx1->getConstructionMode() << endl;
+	sctx1->setConstructionMode(StaticQueryContext::cons_preserve);
+	result_file << "2my construction mode " << sctx1->getConstructionMode() << endl;
 
-	sctx1->SetOrderingMode(StaticQueryContext::ordered);
-	result_file << "1my ordering mode " << sctx1->GetOrderingMode() << endl;
-	sctx1->SetOrderingMode(StaticQueryContext::unordered);
-	result_file << "2my ordering mode " << sctx1->GetOrderingMode() << endl;
+	sctx1->setOrderingMode(StaticQueryContext::ordered);
+	result_file << "1my ordering mode " << sctx1->getOrderingMode() << endl;
+	sctx1->setOrderingMode(StaticQueryContext::unordered);
+	result_file << "2my ordering mode " << sctx1->getOrderingMode() << endl;
 
-	sctx1->SetDefaultOrderForEmptySequences(StaticQueryContext::empty_greatest);
-	result_file << "1my DefaultOrderForEmptySequences" << sctx1->GetDefaultOrderForEmptySequences() << endl;
-	sctx1->SetDefaultOrderForEmptySequences(StaticQueryContext::empty_least);
-	result_file << "2my DefaultOrderForEmptySequences" << sctx1->GetDefaultOrderForEmptySequences() << endl;
+	sctx1->setDefaultOrderForEmptySequences(StaticQueryContext::empty_greatest);
+	result_file << "1my DefaultOrderForEmptySequences" << sctx1->getDefaultOrderForEmptySequences() << endl;
+	sctx1->setDefaultOrderForEmptySequences(StaticQueryContext::empty_least);
+	result_file << "2my DefaultOrderForEmptySequences" << sctx1->getDefaultOrderForEmptySequences() << endl;
 
-	sctx1->SetBoundarySpacePolicy(StaticQueryContext::preserve_space);
-	result_file << "1my BoundarySpacePolicy" << sctx1->GetBoundarySpacePolicy() << endl;
-	sctx1->SetBoundarySpacePolicy(StaticQueryContext::strip_space);
-	result_file << "2my BoundarySpacePolicy" << sctx1->GetBoundarySpacePolicy() << endl;
+	sctx1->setBoundarySpacePolicy(StaticQueryContext::preserve_space);
+	result_file << "1my BoundarySpacePolicy" << sctx1->getBoundarySpacePolicy() << endl;
+	sctx1->setBoundarySpacePolicy(StaticQueryContext::strip_space);
+	result_file << "2my BoundarySpacePolicy" << sctx1->getBoundarySpacePolicy() << endl;
 
 	StaticQueryContext::preserve_mode_t preserve_mode;
 	StaticQueryContext::inherit_mode_t inherit_mode;
-	sctx1->SetCopyNamespacesMode(StaticQueryContext::preserve_ns, StaticQueryContext::inherit_ns);
-	sctx1->GetCopyNamespacesMode(&preserve_mode, &inherit_mode);
+	sctx1->setCopyNamespacesMode(StaticQueryContext::preserve_ns, StaticQueryContext::inherit_ns);
+	sctx1->getCopyNamespacesMode(&preserve_mode, &inherit_mode);
 	result_file << "1my CopyNamespacesMode" << preserve_mode << "," << inherit_mode << endl;
-	sctx1->SetCopyNamespacesMode(StaticQueryContext::no_preserve_ns, StaticQueryContext::no_inherit_ns);
-	sctx1->GetCopyNamespacesMode(&preserve_mode, &inherit_mode);
+	sctx1->setCopyNamespacesMode(StaticQueryContext::no_preserve_ns, StaticQueryContext::no_inherit_ns);
+	sctx1->getCopyNamespacesMode(&preserve_mode, &inherit_mode);
 	result_file << "2my CopyNamespacesMode" << preserve_mode << "," << inherit_mode << endl;
 
-	sctx1->SetBaseURI("http://www.flworfound.orj");
-	result_file << "1my base URI " << (std::string)sctx1->GetBaseURI() << endl;
-	sctx1->SetBaseURI("http://www.flworfound.org");
-	result_file << "2my base URI " << (std::string)sctx1->GetBaseURI() << endl;
+	sctx1->setBaseURI("http://www.flworfound.orj");
+	result_file << "1my base URI " << sctx1->getBaseURI() << endl;
+	sctx1->setBaseURI("http://www.flworfound.org");
+	result_file << "2my base URI " << sctx1->getBaseURI() << endl;
 
 
 	for(i=0;i<100;i++)
 	{
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/doc" << i;
-		sctx1->AddDocumentType(oss1.str(), new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
+		sctx1->addDocumentType(oss1.str(), new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
 	}
 	for(i=0;i<100;i++)
 	{
 		type_ident_ref_t		doctype;
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/doc" << i;
-		doctype = sctx1->GetDocumentType(oss1.str());
+		doctype = sctx1->getDocumentType(oss1.str());
 		result_file << "doc " << i << " has type (" << doctype->get_kind() << "," << doctype->get_quantifier() << ")" << endl;
 	}
 	for(i=0;i<100;i+=2)
 	{
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/doc" << i;
-		sctx1->DeleteDocumentType(oss1.str());
+		sctx1->deleteDocumentType(oss1.str());
 	}
-	max = sctx1->GetDocumentTypeCount();
+	max = sctx1->getDocumentTypeCount();
 	result_file << "docs remaining after delete " << max << endl;
 	for(i=0;i<100;i++)
 	{
 		type_ident_ref_t		doctype;
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/doc" << i;
-		doctype = sctx1->GetDocumentType(oss1.str());
+		doctype = sctx1->getDocumentType(oss1.str());
 		if(doctype != NULL)
 			result_file << "doc " << i << " has type (" << doctype->get_kind() << "," << doctype->get_quantifier() << ")" << endl;
 	}
@@ -352,9 +352,9 @@ int test_api_static_context(const char *result_file_name)
 	{
 		xqp_string		doc_name;
 		type_ident_ref_t		doctype;
-		if(sctx1->GetDocumentByIndex(i, &doc_name, &doctype))
+		if(sctx1->getDocumentByIndex(i, &doc_name, &doctype))
 		{
-			result_file << "doc " << i << " " << (std::string)doc_name << " has type (" << doctype->get_kind() << "," << doctype->get_quantifier() << ")" << endl;
+			result_file << "doc " << i << " " << doc_name << " has type (" << doctype->get_kind() << "," << doctype->get_quantifier() << ")" << endl;
 		}
 		else
 		{
@@ -362,9 +362,9 @@ int test_api_static_context(const char *result_file_name)
 			break;
 		}
 	}
-	sctx1->DeleteAllDocumentTypes();
-	sctx1->AddDocumentType("http://www.flworfound.org/apitest/doc1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
-	result_file << "docs remaining " << sctx1->GetDocumentTypeCount() << endl;
+	sctx1->deleteAllDocumentTypes();
+	sctx1->addDocumentType("http://www.flworfound.org/apitest/doc1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
+	result_file << "docs remaining " << sctx1->getDocumentTypeCount() << endl;
 
 
 
@@ -372,30 +372,30 @@ int test_api_static_context(const char *result_file_name)
 	{
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/collection" << i;
-		sctx1->AddCollectionType(oss1.str(), new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
+		sctx1->addCollectionType(oss1.str(), new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
 	}
 	for(i=0;i<100;i++)
 	{
 		type_ident_ref_t		colectype;
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/collection" << i;
-		colectype = sctx1->GetCollectionType(oss1.str());
+		colectype = sctx1->getCollectionType(oss1.str());
 		result_file << "colec " << i << " has type (" << colectype->get_kind() << "," << colectype->get_quantifier() << ")" << endl;
 	}
 	for(i=0;i<100;i+=2)
 	{
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/collection" << i;
-		sctx1->DeleteCollectionType(oss1.str());
+		sctx1->deleteCollectionType(oss1.str());
 	}
-	max = sctx1->GetCollectionTypeCount();
+	max = sctx1->getCollectionTypeCount();
 	result_file << "colecs remaining after delete " << max << endl;
 	for(i=0;i<100;i++)
 	{
 		type_ident_ref_t		colectype;
 		ostringstream		oss1;
 		oss1 << "http://www.flworfound.org/apitest/collection" << i;
-		colectype = sctx1->GetCollectionType(oss1.str());
+		colectype = sctx1->getCollectionType(oss1.str());
 		if(colectype != NULL)
 			result_file << "colec " << i << " has type (" << colectype->get_kind() << "," << colectype->get_quantifier() << ")" << endl;
 	}
@@ -404,9 +404,9 @@ int test_api_static_context(const char *result_file_name)
 	{
 		xqp_string		colec_name;
 		type_ident_ref_t		colectype;
-		if(sctx1->GetCollectionTypeByIndex(i, &colec_name, &colectype))
+		if(sctx1->getCollectionTypeByIndex(i, &colec_name, &colectype))
 		{
-			result_file << "colec " << i << " " << (std::string)colec_name << " has type (" << colectype->get_kind() << "," << colectype->get_quantifier() << ")" << endl;
+			result_file << "colec " << i << " " << colec_name << " has type (" << colectype->get_kind() << "," << colectype->get_quantifier() << ")" << endl;
 		}
 		else
 		{
@@ -414,37 +414,37 @@ int test_api_static_context(const char *result_file_name)
 			break;
 		}
 	}
-	sctx1->DeleteAllCollectionTypes();
-	sctx1->AddCollectionType("http://www.flworfound.org/apitest/collection1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
-	result_file << "colecs remaining " << sctx1->GetCollectionTypeCount() << endl;
+	sctx1->deleteAllCollectionTypes();
+	sctx1->addCollectionType("http://www.flworfound.org/apitest/collection1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
+	result_file << "colecs remaining " << sctx1->getCollectionTypeCount() << endl;
 
 	type_ident_ref_t		def_colectype;
-	sctx1->SetDefaultCollectionType(new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
-	def_colectype = sctx1->GetDefaultCollectionType();
+	sctx1->setDefaultCollectionType(new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
+	def_colectype = sctx1->getDefaultCollectionType();
 	result_file << "1my def colec (" << def_colectype->get_kind() << "," << def_colectype->get_quantifier() << ")" << endl;
-	sctx1->SetDefaultCollectionType(new EmptyTypeIdentifier());
-	def_colectype = sctx1->GetDefaultCollectionType();
+	sctx1->setDefaultCollectionType(new EmptyTypeIdentifier());
+	def_colectype = sctx1->getDefaultCollectionType();
 	result_file << "2my def colec (" << def_colectype->get_kind() << "," << def_colectype->get_quantifier() << ")" << endl;
 
 	sctx1 = NULL;//free now the static context
 
-	zorba_factory.uninitThread();
-	zorba_factory.shutdown();
+	zorba_factory->uninitThread();
+	zorba_factory->shutdown();
 
 	//compare the results with expected result
 	oss2 << "expected_";
 	oss2 << result_file_name;
-	assert(verify_expected_result(make_absolute_file_name(result_file_name, __FILE__),
+	assert(verify_expected_result(result_file_name,
 																make_absolute_file_name(oss2.str().c_str(), __FILE__)));
 	return 0;
 
 DisplayErrorsAndExit:
 	result_file << endl << "Display all error list now:" << endl;
 
-	errmanager.DumpAlerts(result_file);
+	errmanager->dumpAlerts(result_file);
 
-	zorba_factory.uninitThread();
-	zorba_factory.shutdown();
+	zorba_factory->uninitThread();
+	zorba_factory->shutdown();
 
 	assert(false);
 	return -1; 
@@ -453,7 +453,7 @@ DisplayErrorsAndExit:
 //for CTEST
 int sctx_test(int argc, char* argv[])
 {
-//  ZorbaEngine& engine = ZorbaEngine::getInstance();
+//  ZorbaEngine_t engine = ZorbaEngine::getInstance();
 	test_api_static_context("sctx_test.txt");
 //	engine.shutdown();
 	return 0;

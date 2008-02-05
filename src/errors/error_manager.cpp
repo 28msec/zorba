@@ -51,7 +51,7 @@ void AlertsManagerImpl::clearAlertList()
 /*
 	Register the callback for the thread specific error manager
 */
-void AlertsManagerImpl::RegisterAlertCallback(
+void AlertsManagerImpl::registerAlertCallback(
     alert_callback* user_alert_callback,
     void* param)
 {
@@ -130,7 +130,7 @@ bool ZorbaAlertsManager::getThrowExceptionsMode()
 	return g_throw_exceptions;
 }
 
-void AlertsManagerImpl::DumpAlerts(std::ostream &os)
+void AlertsManagerImpl::dumpAlerts(std::ostream &os)
 {
 
   std::list<ZorbaAlert*>::const_iterator errit;
@@ -140,7 +140,7 @@ void AlertsManagerImpl::DumpAlerts(std::ostream &os)
     if (errit == this->begin())
       os << endl << "Error list:" << endl;
     
-    (*errit)->DumpAlert(os);
+    (*errit)->dumpAlert(os);
   }
 
   clearAlertList();
@@ -148,7 +148,7 @@ void AlertsManagerImpl::DumpAlerts(std::ostream &os)
 
 
 
-void ZorbaError::DumpAlert(std::ostream &os)
+void ZorbaError::dumpAlert(std::ostream &os)
 {
 //  if(err->theIsFatal)
 //    cerr << "Fatal Error: ";
@@ -168,7 +168,7 @@ void ZorbaError::DumpAlert(std::ostream &os)
 }
 
 
-void ZorbaWarning::DumpAlert(std::ostream &os)
+void ZorbaWarning::dumpAlert(std::ostream &os)
 {
   os << "Warning:";
   if(theLocation.line)
@@ -184,20 +184,20 @@ void ZorbaWarning::DumpAlert(std::ostream &os)
 }
 
 
-void ZorbaNotify::DumpAlert(std::ostream &os)
+void ZorbaNotify::dumpAlert(std::ostream &os)
 {
   os << "Notif: " << theDescription << std::endl;
 }
 
 
-void ZorbaAskUser::DumpAlert(std::ostream &os)
+void ZorbaAskUser::dumpAlert(std::ostream &os)
 {
   ///not implemented
   os << "Ask user: " << theDescription << std::endl;
 }
 
 
-void ZorbaFnError::DumpAlert(std::ostream &os)
+void ZorbaFnError::dumpAlert(std::ostream &os)
 {
   os << "User Error: ";
   os << "[QName: " << theErrorQName->getStringValue() 
@@ -215,7 +215,7 @@ void ZorbaFnError::DumpAlert(std::ostream &os)
 }
 
 
-void ZorbaFnTrace::DumpAlert(std::ostream &os)
+void ZorbaFnTrace::dumpAlert(std::ostream &os)
 {
   os << "User Trace: " << theDescription << endl;
 
@@ -232,7 +232,7 @@ void ZorbaFnTrace::DumpAlert(std::ostream &os)
 
 std::ostream& operator<<(std::ostream& os, ZorbaAlert &x)
 {
-	x.DumpAlert(os);
+	x.dumpAlert(os);
 	return os;
 }
 

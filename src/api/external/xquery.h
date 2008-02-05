@@ -18,20 +18,20 @@ template <class Object> class rchandle;
 
 typedef rchandle<class PlanIterator> PlanIter_t;
 
-class dynamic_context;
-
+class	ResultIteratorWrapper;
+typedef rchandle<ResultIteratorWrapper>		ResultIteratorWrapper_t;
 
 class Zorba_XQueryBinary : public XQuery
 {
   friend class ZorbaEngine;
   friend class zorba;
+	friend class ResultIteratorWrapper;
 
 private:
 	xqp_string                 m_xquery_source_uri;
 	xqp_string                 m_query_text;
 
 	bool                       is_compiled;
-	bool		                   theClosed;
 
 	PlanIter_t                 top_iterator;
 
@@ -42,11 +42,9 @@ public:
 	//execution specific
 public:
 	///state objects for the iterator tree
-	PlanState		             * state_block;
+	ResultIteratorWrapper_t		result;
 
 	void			               * alert_callback_param;
-
-	dynamic_context		       * internal_dyn_context;
 
 public:
   Zorba_XQueryBinary(xqp_string	xquery_source_uri, xqp_string query_text);
@@ -65,10 +63,7 @@ public:
   virtual bool serializeHTML( std::ostream& os );
   virtual bool serializeTEXT( std::ostream& os );
 
-  //get one item from result; check isError() for errors
-  virtual Item_t next();
-  virtual void reset();
-  virtual void close();
+	virtual ResultIterator_t		getIterator();
 
   virtual bool   serializeQuery(ostream &os);
 
@@ -84,9 +79,11 @@ public:
 
 public:
   // extension from dynamic context (specific only for this execution)
-  virtual bool SetVariable( xqp_string varname, XQuery_t item_iter );
-  virtual bool SetVariable( xqp_string varname, xqp_string docUri, std::istream &is );
+  virtual bool setVariableAsXQueryResult( xqp_string varname, ResultIterator_t item_iter );
+  virtual bool setVariableAsDocumentFromStream( xqp_string varname, xqp_string docUri, std::istream &is );
 };
+
+typedef rchandle<Zorba_XQueryBinary>		Zorba_XQueryBinary_t;
 
 }//end namespace xqp
 

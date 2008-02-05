@@ -64,11 +64,11 @@ int main(int argc, const char * argv[])
   //
   // Zorba initialization
   // 
-  ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
+  ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
 
-	zorba_factory.initThread();
+	zorba_factory->initThread();
 
-	ZorbaAlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+	ZorbaAlertsManager_t errmanager = zorba_factory->getAlertsManagerForCurrentThread();
 
   //
   // Create collections
@@ -86,11 +86,11 @@ int main(int argc, const char * argv[])
   }
   catch (xqp_exception& e)
   {
-    e.getError().DumpAlert(std::cerr);
+    std::cerr << e;
     abort();
   }
 
-	errmanager.DumpAlerts(std::cerr);
+	errmanager->dumpAlerts(std::cerr);
 
   //
   // Load an xml doc from a file to a collection
@@ -117,7 +117,7 @@ int main(int argc, const char * argv[])
   }
   catch (xqp_exception& e)
   {
-    e.getError().DumpAlert(std::cerr);
+    std::cerr << e;
     abort();
   }
 
@@ -142,12 +142,12 @@ int main(int argc, const char * argv[])
   if (doc != NULL)
     outXmlFile << doc->show() << std::endl;
   else
-    errmanager.DumpAlerts(outXmlFile);
+    errmanager->dumpAlerts(outXmlFile);
 
-  errmanager.DumpAlerts(std::cerr);
+  errmanager->dumpAlerts(std::cerr);
 
-  zorba_factory.uninitThread();
-  zorba_factory.shutdown();
+  zorba_factory->uninitThread();
+  zorba_factory->shutdown();
 
   return 0;
 }

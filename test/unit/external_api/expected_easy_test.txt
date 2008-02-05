@@ -1,8 +1,8 @@
-zorba_factory.createStaticContext()
-zorba_factory.createDynamicContext()
+zorba_factory->createStaticContext()
+zorba_factory->createDynamicContext()
 AddCollation
 query_sctx->GetCollation("http://www.flworfound.org/apitest/coll1") success http://www.flworfound.org/apitest/coll1 en 0 0
-zorba_factory.createQuery()
+zorba_factory->createQuery()
 dctx->SetVariable
 query->executeSerializeXML
 <?xml version="1.0" encoding="UTF-8"?>

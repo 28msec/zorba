@@ -11,7 +11,7 @@ bool verify_expected_result(string result_file_name, string expected_file);
 
 int test_api_zorba_engine(const char *result_file_name)
 {
-	ofstream result_file(make_absolute_file_name(result_file_name, __FILE__).c_str());
+	ofstream result_file(result_file_name);
 	unsigned int		i;
 	unsigned int	max;
 	ostringstream	oss2;
@@ -19,35 +19,35 @@ int test_api_zorba_engine(const char *result_file_name)
 
 	for(i=0;i<100;i++)
 	{
-		ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
+		ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
 		///thread specific
-		zorba_factory.initThread();
-		zorba_factory.uninitThread();
+		zorba_factory->initThread();
+		zorba_factory->uninitThread();
 	}
 
 	///now start the zorba engine
-	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
+	ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
 
-	zorba_factory.initThread();
+	zorba_factory->initThread();
 
 	result_file << "InitThread" << endl;
 
 	//do the test
-	ZorbaAlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+	ZorbaAlertsManager_t		errmanager = zorba_factory->getAlertsManagerForCurrentThread();
   StaticQueryContext_t    sctx1;
 
-  sctx1 = zorba_factory.createStaticContext();
-  sctx1 = zorba_factory.createStaticContext();
-  sctx1 = zorba_factory.createStaticContext();
+  sctx1 = zorba_factory->createStaticContext();
+  sctx1 = zorba_factory->createStaticContext();
+  sctx1 = zorba_factory->createStaticContext();
 	result_file << "createStaticContext()" << endl;
-  sctx1->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
+  sctx1->addCollation("http://www.flworfound.org/apitest/coll1", "en");
 	result_file << "AddCollation" << endl;
 
-	zorba_factory.setDefaultCollation("en");
+	zorba_factory->setDefaultCollation("en");
 	std::string	def_coll_str;
 	::Collator::ECollationStrength def_coll_strength;
 	::Collator *default_coll;
-	zorba_factory.getDefaultCollation(&def_coll_str, &def_coll_strength, &default_coll);
+	zorba_factory->getDefaultCollation(&def_coll_str, &def_coll_strength, &default_coll);
 	assert(default_coll == NULL);
 	result_file << "zorba engine default collation" << def_coll_str << "," << def_coll_strength << "," << endl;
 
@@ -60,9 +60,9 @@ int test_api_zorba_engine(const char *result_file_name)
 	StaticQueryContext_t		query_sctx;
 
   // create a compiled query
-  query = zorba_factory.createQuery(query_text, sctx1);
-  query = zorba_factory.createQuery(query_text, sctx1);
-  query = zorba_factory.createQuery(query_text, sctx1);
+  query = zorba_factory->createQuery(query_text, sctx1);
+  query = zorba_factory->createQuery(query_text, sctx1);
+  query = zorba_factory->createQuery(query_text, sctx1);
 	result_file << "CreateQuery" << endl;
 
   if(query == NULL)
@@ -71,7 +71,7 @@ int test_api_zorba_engine(const char *result_file_name)
   }
 
 	query_sctx = sctx1;//query->getInternalStaticContext();
-	colinfo = query_sctx->GetCollation("http://www.flworfound.org/apitest/coll1");
+	colinfo = query_sctx->getCollation("http://www.flworfound.org/apitest/coll1");
 	if(!colinfo)
 	{
 		result_file << "query_sctx->GetCollation(\"http://www.flworfound.org/apitest/coll1\") failed" << endl;
@@ -83,7 +83,7 @@ int test_api_zorba_engine(const char *result_file_name)
 	
 
 
-  dctx1 = zorba_factory.createDynamicContext();
+  dctx1 = zorba_factory->createDynamicContext();
 
 	result_file << "CreateExecution" << endl;
   query->initExecution(dctx1);
@@ -95,7 +95,7 @@ int test_api_zorba_engine(const char *result_file_name)
 	{
     string filename = make_absolute_file_name("test_xml.txt", __FILE__);
 		ifstream xml_stream(filename.c_str());
-		if(!xml_stream.is_open() || !query->SetVariable("var2", filename, xml_stream))
+		if(!xml_stream.is_open() || !query->setVariableAsDocumentFromStream("var2", filename, xml_stream))
 		{
 			result_file << "SetVariable with istream failed" << endl;
 			result_file << "file test_xml.txt exists: " << xml_stream.is_open() << endl;
@@ -116,25 +116,25 @@ int test_api_zorba_engine(const char *result_file_name)
 
 
 
-	zorba_factory.uninitThread();
-	zorba_factory.shutdown();
+	zorba_factory->uninitThread();
+	zorba_factory->shutdown();
 	result_file << endl;
 	result_file << "UninitThread" << endl;
 
 	//compare the results with expected result
 	oss2 << "expected_";
 	oss2 << result_file_name;
-	assert(verify_expected_result(make_absolute_file_name(result_file_name, __FILE__),
+	assert(verify_expected_result(result_file_name,
 																make_absolute_file_name(oss2.str().c_str(), __FILE__)));
 	return 0;
 
 DisplayErrorsAndExit:
 	result_file << endl << "Display all error list now:" << endl;
 
-	zorba_factory.getAlertsManagerForCurrentThread().DumpAlerts(result_file);
+	zorba_factory->getAlertsManagerForCurrentThread()->dumpAlerts(result_file);
 
-	zorba_factory.uninitThread();
-	zorba_factory.shutdown();
+	zorba_factory->uninitThread();
+	zorba_factory->shutdown();
 
 	assert(false);
 	return -1; 
@@ -143,7 +143,7 @@ DisplayErrorsAndExit:
 //for CTEST
 int zorba_engine_test(int argc, char* argv[])
 {
-//  ZorbaEngine& engine = ZorbaEngine::getInstance();
+//  ZorbaEngine_t engine = ZorbaEngine::getInstance();
 	test_api_zorba_engine("zorba_engine_test.txt");
 //	engine.shutdown();
 	return 0;

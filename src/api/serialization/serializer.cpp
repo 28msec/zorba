@@ -27,7 +27,7 @@
 #include "system/zorba.h"
 #include "util/Assert.h"
 #include "store/naive/basic_item_factory.h"
-#include "compiler/compiled_xquery.h"
+#include "runtime/result_iterator.h"
 #include "string.h"
 
 using namespace std;
@@ -285,7 +285,7 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
     // emit namespace bindings
     NsBindings nsBindings;
     item->getNamespaceBindings(nsBindings);
-    for (ulong i = 0; i < nsBindings.size(); i++)
+    for (unsigned long i = 0; i < nsBindings.size(); i++)
       tr << " xmlns:" <<  nsBindings[i].first << "=\"" << nsBindings[i].second << "\"";
      
     // emit attributes 
@@ -810,7 +810,7 @@ void serializer::setup(ostream& os)
   }
 }
 
-void serializer::serialize(XQuery *result, ostream& os)
+void serializer::serialize(ResultIterator *result, ostream& os)
 {
   validate_parameters();
   setup(os);

@@ -15,28 +15,28 @@ bool verify_expected_result(string result_file_name, string expected_file);
 
 int test_api_dynamic_context(const char *result_file_name)
 {
-	ofstream		result_file(make_absolute_file_name(result_file_name, __FILE__).c_str());
+	ofstream		result_file(result_file_name);
 	unsigned int		i;
 	unsigned int	max;
 	ostringstream		oss2;
 
 	///now start the zorba engine
-	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
+	ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
 
 	///thread specific
-	zorba_factory.initThread();
+	zorba_factory->initThread();
 
 	//do the test
-	ZorbaAlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+	ZorbaAlertsManager_t		errmanager = zorba_factory->getAlertsManagerForCurrentThread();
 
 	///testing the dynamic context!
 	DynamicQueryContext_t		dctx1;
 
 	for(i=0;i<100;i++)
 	{
-		dctx1 = zorba_factory.createDynamicContext();
+		dctx1 = zorba_factory->createDynamicContext();
 	}
-
+/*
 	struct int_types_descr
 	{
 		DynamicQueryContext::VAR_INT_TYPE	type;
@@ -198,8 +198,279 @@ int test_api_dynamic_context(const char *result_file_name)
 		}
 		result_file << "17/11/2007 16:27:03" << " and type [" << i << "] " << datetime_types[i].descr << endl;
 	}
+*/
 
-	if(dctx1->DeleteVariable("external_vars:tmx"))
+	assert(!dctx1->setVariableAsBigInteger( "..#$%", (int32_t)0, DynamicQueryContext::XS_INTEGER));
+  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (int32_t)0, DynamicQueryContext::XS_INTEGER));
+  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (long long)-1000000, DynamicQueryContext::XS_INTEGER));
+//  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", "12345678901234567890123456789012345678901234567890", DynamicQueryContext::XS_INTEGER));
+//  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (double)-1000000.4343, DynamicQueryContext::XS_INTEGER));
+
+	assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (int32_t)0, DynamicQueryContext::XS_NON_POSITIVE_INTEGER));
+  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (long long)-1000000, DynamicQueryContext::XS_NON_POSITIVE_INTEGER));
+//  assert(!dctx1->setVariableAsBigInteger( "external_vars:bigx", "12345678901234567890123456789012345678901234567890", DynamicQueryContext::XS_NON_POSITIVE_INTEGER));
+//  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (double)-1000000.4343, DynamicQueryContext::XS_NON_POSITIVE_INTEGER));
+
+  assert(!dctx1->setVariableAsBigInteger( "external_vars:bigx", (int32_t)0, DynamicQueryContext::XS_NEGATIVE_INTEGER));
+  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (long long)-1000000, DynamicQueryContext::XS_NEGATIVE_INTEGER));
+//  assert(!dctx1->setVariableAsBigInteger( "external_vars:bigx", "12345678901234567890123456789012345678901234567890", DynamicQueryContext::XS_NEGATIVE_INTEGER));
+//  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (double)-1000000.4343, DynamicQueryContext::XS_NEGATIVE_INTEGER));
+	
+	assert(!dctx1->setVariableAsBigUInteger( "..#$%", (int32_t)0));
+  assert(dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (int32_t)0, DynamicQueryContext::XS_NON_NEGATIVE_INTEGER));
+  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (long long)-1000000, DynamicQueryContext::XS_NON_NEGATIVE_INTEGER));
+//  assert(dctx1->setVariableAsBigUInteger( "external_vars:ubigx", "12345678901234567890123456789012345678901234567890", DynamicQueryContext::XS_NON_NEGATIVE_INTEGER));
+//  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (double)-1000000.4343, DynamicQueryContext::XS_NON_NEGATIVE_INTEGER));
+
+  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (int32_t)0, DynamicQueryContext::XS_POSITIVE_INTEGER));
+  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (long long)-1000000, DynamicQueryContext::XS_POSITIVE_INTEGER));
+//  assert(dctx1->setVariableAsBigUInteger( "external_vars:ubigx", "12345678901234567890123456789012345678901234567890", DynamicQueryContext::XS_POSITIVE_INTEGER));
+//  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (double)-1000000.4343, DynamicQueryContext::XS_POSITIVE_INTEGER));
+
+	assert(!dctx1->setVariableAsDecimal( "..#$%", (int32_t)0));
+  assert(dctx1->setVariableAsDecimal( "external_vars:decx", (int32_t)0));
+  assert(dctx1->setVariableAsDecimal( "external_vars:decx", (long long)-1000000));
+//  assert(dctx1->setVariableAsDecimal( "external_vars:decx", "12345678901234567890123456789012345678901234567890.1314"));
+//  assert(dctx1->setVariableAsDecimal( "external_vars:decx", (double)-1000000.4343));
+
+	assert(!dctx1->setVariableAsLong( "a:b:c", 0));
+  assert(dctx1->setVariableAsLong( "external_vars:longx", -1112131415161718ll));
+
+  assert(!dctx1->setVariableAsULong( "a:b:c", 0));
+  assert(dctx1->setVariableAsULong( "external_vars:ulongx", 1112131415161718ll));
+
+  assert(!dctx1->setVariableAsInt( "a:b:c", 0));
+  assert(dctx1->setVariableAsInt( "external_vars:intx", -1213141516));
+
+  assert(!dctx1->setVariableAsUInt( "a:b:c", 0));
+	assert(dctx1->setVariableAsUInt( "external_vars:uintx", 1213141516));
+
+  assert(!dctx1->setVariableAsShort( "a:b:c", 0));
+	assert(dctx1->setVariableAsShort( "external_vars:shx", -30000));
+
+  assert(!dctx1->setVariableAsUShort( "a:b:c", 0));
+	assert(dctx1->setVariableAsUShort( "external_vars:ushx", 60000));
+  
+  assert(!dctx1->setVariableAsByte( "a:b:c", 0));
+	assert(dctx1->setVariableAsByte( "external_vars:bytex", -60));
+
+  assert(!dctx1->setVariableAsUByte( "a:b:c", 0));
+	assert(dctx1->setVariableAsUByte( "external_vars:ubytex", 255));
+
+
+
+
+  assert(!dctx1->setVariableAsString( "a:b:c", ""));
+  assert(dctx1->setVariableAsString( "external_vars:strx", ""));
+  assert(dctx1->setVariableAsString( "external_vars:strx", "11"));
+  assert(dctx1->setVariableAsString( "external_vars:strx", "test string"));
+
+  assert(!dctx1->setVariableAsNormalizedString( "a:b:c", ""));
+	assert(dctx1->setVariableAsNormalizedString( "external_vars:strx", ""));
+	assert(dctx1->setVariableAsNormalizedString( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsNormalizedString( "external_vars:strx", "test string"));
+
+  assert(!dctx1->setVariableAsToken( "a:b:c", ""));
+	assert(dctx1->setVariableAsToken( "external_vars:strx", ""));
+	assert(dctx1->setVariableAsToken( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsToken( "external_vars:strx", "toKen"));
+
+  assert(!dctx1->setVariableAsLanguage( "a:b:c", ""));
+	assert(dctx1->setVariableAsLanguage( "external_vars:strx", ""));
+	assert(dctx1->setVariableAsLanguage( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsLanguage( "external_vars:strx", "Language"));
+
+  assert(!dctx1->setVariableAsNMToken( "a:b:c", ""));
+	assert(dctx1->setVariableAsNMToken( "external_vars:strx", ""));
+	assert(dctx1->setVariableAsNMToken( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsNMToken( "external_vars:strx", "NMToken"));
+
+  assert(!dctx1->setVariableAsName( "a:b:c", ""));
+	assert(dctx1->setVariableAsName( "external_vars:strx", ""));
+	assert(dctx1->setVariableAsName( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsName( "external_vars:strx", "Name"));
+
+  assert(!dctx1->setVariableAsNCName( "a:b:c", ""));
+	assert(dctx1->setVariableAsNCName( "external_vars:strx", ""));
+	assert(!dctx1->setVariableAsNCName( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsNCName( "external_vars:strx", "NCName"));
+
+  assert(!dctx1->setVariableAsID( "a:b:c", ""));
+	assert(dctx1->setVariableAsID( "external_vars:strx", ""));
+	assert(dctx1->setVariableAsID( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsID( "external_vars:strx", "ID"));
+
+  assert(!dctx1->setVariableAsIDREF( "a:b:c", ""));
+	assert(dctx1->setVariableAsIDREF( "external_vars:strx", ""));
+	assert(dctx1->setVariableAsIDREF( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsIDREF( "external_vars:strx", "IDREF"));
+
+  assert(!dctx1->setVariableAsEntity( "a:b:c", ""));
+	assert(dctx1->setVariableAsEntity( "external_vars:strx", ""));
+	assert(dctx1->setVariableAsEntity( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsEntity( "external_vars:strx", "Entity"));
+
+  assert(!dctx1->setVariableAsNotation( "a:b:c", ""));
+	assert(dctx1->setVariableAsNotation( "external_vars:strx", ""));
+	assert(dctx1->setVariableAsNotation( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsNotation( "external_vars:strx", "Notation"));
+
+  assert(!dctx1->setVariableAsAnyURI( "a:b:c", ""));
+	assert(dctx1->setVariableAsAnyURI( "external_vars:strx", ""));
+	assert(!dctx1->setVariableAsAnyURI( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsAnyURI( "external_vars:strx", "c:/file.xml"));
+	assert(dctx1->setVariableAsAnyURI( "external_vars:strx", "file://c:/file.xml"));
+
+  assert(!dctx1->setVariableAsQName( "a:b:c", "", "", ""));
+	assert(dctx1->setVariableAsQName( "external_vars:strx", "", "", ""));
+	assert(dctx1->setVariableAsQName( "external_vars:strx", "11", "22", "33"));
+	assert(dctx1->setVariableAsQName( "external_vars:strx", "ns", "prefix", "local"));
+
+  assert(!dctx1->setVariableAsUntypedAtomic( "a:b:c", ""));
+	assert(dctx1->setVariableAsUntypedAtomic( "external_vars:strx", ""));
+	assert(dctx1->setVariableAsUntypedAtomic( "external_vars:strx", "11"));
+	assert(dctx1->setVariableAsUntypedAtomic( "external_vars:strx", "Untyped Atomic"));
+
+
+
+  assert(!dctx1->setVariableAsDouble( "a:b:c", 0));
+  assert(dctx1->setVariableAsDouble( "external_vars:dblx", 0.0));
+  assert(dctx1->setVariableAsDouble( "external_vars:dblx", -1000000.0));
+  assert(dctx1->setVariableAsDouble( "external_vars:dblx", 12134.32948075));
+
+  assert(!dctx1->setVariableAsFloat( "a:b:c", 0));
+	assert(dctx1->setVariableAsFloat( "external_vars:fltx", 0.0));
+	assert(dctx1->setVariableAsFloat( "external_vars:fltx", -1000000.0f));
+	assert(dctx1->setVariableAsFloat( "external_vars:fltx", 12134.329f));
+
+  assert(!dctx1->setVariableAsBool( "a:b:c", 0));
+  assert(dctx1->setVariableAsBool( "external_vars:boolx", true));
+  assert(dctx1->setVariableAsBool( "external_vars:boolx", false));
+
+	struct tm		tmvalue;
+		tmvalue.tm_year = 107;//+1900=2007
+		tmvalue.tm_mon = 11;//december
+		tmvalue.tm_mday = 17;
+		tmvalue.tm_wday = 0;//monday
+		tmvalue.tm_yday = 340;
+		tmvalue.tm_hour = 16;
+		tmvalue.tm_min = 27;
+		tmvalue.tm_sec = 03;
+		tmvalue.tm_isdst = 0;
+  assert(!dctx1->setVariableAsDateTime( "a:b:c", 0));
+  assert(dctx1->setVariableAsDateTime( "external_vars:timex", tmvalue, +2*60*60));
+	tmvalue.tm_year = -107;
+  assert(!dctx1->setVariableAsDateTime( "external_vars:timex", tmvalue, +22*60*60));
+
+	//yyyy-mm-ddThh:mm:ss.msss
+	xqp_dateTime		dtt;
+	DateTime::parse_string("2007-12-1T14:58:43", dtt);
+  assert(!dctx1->setVariableAsDateTime( "a:b:c", 0));
+	assert(dctx1->setVariableAsDateTime( "external_vars:dttx", dtt));
+
+  assert(!dctx1->setVariableAsDateTime( "a:b:c", 0));
+	assert(dctx1->setVariableAsDateTime( "external_vars:timex", 2008, 2, 1, 12, 56, 49, +2));
+	assert(!dctx1->setVariableAsDateTime( "external_vars:timex", -2008, 2, 1, 12, 56, 49, +22));
+
+	YearMonthDuration		ymd(14);
+  assert(!dctx1->setVariableAsDuration( "a:b:c", 0));
+	assert(dctx1->setVariableAsDuration( "external_vars:durx", &ymd));
+
+  assert(!dctx1->setVariableAsDuration( "a:b:c", 0));
+	assert(dctx1->setVariableAsDuration( "external_vars:durx", 10, 1, 2, 4, 1, 0));
+	assert(dctx1->setVariableAsDuration( "external_vars:durx", -10, 1, 2, 4, 1, 0));
+
+	xqp_date		dt;
+	Date::parse_string("2007-11-1", dt);
+  assert(!dctx1->setVariableAsDate( "a:b:c", 0));
+	assert(dctx1->setVariableAsDate( "external_vars:datex", dt));
+
+  assert(!dctx1->setVariableAsDate( "a:b:c", 0));
+	assert(dctx1->setVariableAsDate( "external_vars:datex", 2008 , 2, 1));
+	assert(!dctx1->setVariableAsDate( "external_vars:datex", 2008 , 22, 100));
+
+	xqp_time		tt;
+	Time::parse_string("10:10:10", tt);
+  assert(!dctx1->setVariableAsTime( "a:b:c", 0));
+	assert(dctx1->setVariableAsTime( "external_vars:timex", tt));
+
+  assert(!dctx1->setVariableAsTime( "a:b:c", 0));
+	assert(dctx1->setVariableAsTime( "external_vars:timex", 10, 10, 10, +2));
+	assert(!dctx1->setVariableAsTime( "external_vars:timex", 100, 100, 100, +200));
+
+	xqp_gYearMonth		gymt;
+	GYearMonth::parse_string("2007-11", gymt);
+  assert(!dctx1->setVariableAsGYearMonth( "a:b:c", 0));
+	assert(dctx1->setVariableAsGYearMonth( "external_vars:gymx", gymt));
+
+  assert(!dctx1->setVariableAsGYearMonth( "a:b:c", 0));
+	assert(dctx1->setVariableAsGYearMonth( "external_vars:gymx", 2008 , 2));
+	assert(!dctx1->setVariableAsGYearMonth( "external_vars:gymx", 2008 , -2));
+
+	xqp_gYear		gyt;
+	GYear::parse_string("2008", gyt);
+  assert(!dctx1->setVariableAsGYear( "a:b:c", 0));
+	assert(dctx1->setVariableAsGYear( "external_vars:gyx", gyt));
+
+  assert(!dctx1->setVariableAsGYear( "a:b:c", 0));
+	assert(dctx1->setVariableAsGYear( "external_vars:gyx", 2008));
+	assert(!dctx1->setVariableAsGYear( "external_vars:gyx", -2008));
+
+	xqp_gMonthDay		gmdt;
+	GMonthDay::parse_string("10-30", gmdt);
+  assert(!dctx1->setVariableAsGMonthDay( "a:b:c", 0));
+	assert(dctx1->setVariableAsGMonthDay( "external_vars:gmdx", gmdt));
+
+  assert(!dctx1->setVariableAsGMonthDay( "a:b:c", 0));
+	assert(dctx1->setVariableAsGMonthDay( "external_vars:gmdx", 10, 30));
+	assert(!dctx1->setVariableAsGMonthDay( "external_vars:gmdx", 20, 130));
+
+	xqp_gDay		gdt;
+	GDay::parse_string("30", gdt);
+  assert(!dctx1->setVariableAsGDay( "a:b:c", 0));
+	assert(dctx1->setVariableAsGDay( "external_vars:gdx", gdt));
+
+  assert(!dctx1->setVariableAsGDay( "a:b:c", 0));
+	assert(dctx1->setVariableAsGDay( "external_vars:gdx", 30));
+	assert(dctx1->setVariableAsGDay( "external_vars:gdx", -30));
+  
+	xqp_gMonth		gmt;
+	GMonth::parse_string("10", gmt);
+  assert(!dctx1->setVariableAsGMonth( "a:b:c", 0));
+	assert(dctx1->setVariableAsGMonth( "external_vars:gmx", gmt));
+  
+  assert(!dctx1->setVariableAsGMonth( "a:b:c", 0));
+	assert(dctx1->setVariableAsGMonth( "external_vars:gmx", 12));
+	assert(!dctx1->setVariableAsGMonth( "external_vars:gmx", 13));
+
+	Item_t		docitem;
+	XmlDataManager_t		store = zorba_factory->getXmlDataManager();
+	docitem = store->loadDocument(make_absolute_file_name("test_xml.txt", __FILE__));
+  assert(!dctx1->setVariableAsItem( "a:b:c", 0));
+  assert(!dctx1->setVariableAsItem( "external_vars:itx", NULL));
+  assert(dctx1->setVariableAsItem( "external_vars:itx", docitem));
+
+  assert(!dctx1->setVariableAsDocument( "a:b:c", ""));
+	assert(!dctx1->setVariableAsDocument( "external_vars:docx", ""));
+	assert(dctx1->setVariableAsDocument( "external_vars:docx", make_absolute_file_name("test_xml.txt", __FILE__)));
+
+	char	strtemp[] = "So test so test";
+  assert(!dctx1->setVariableAsHexBinary( "a:b:c", 0));
+	assert(!dctx1->setVariableAsHexBinary( "external_vars:hexx", NULL));
+	assert(dctx1->setVariableAsHexBinary( "external_vars:hexx", strtemp));
+
+  assert(!dctx1->setVariableAsBase64Binary( "a:b:c", 0));
+	assert(!dctx1->setVariableAsBase64Binary( "external_vars:base64x", NULL));
+	assert(dctx1->setVariableAsBase64Binary( "external_vars:base64x", strtemp));
+
+
+
+
+
+
+
+
+	if(dctx1->deleteVariable("external_vars:tmx"))
 	{
 		result_file << "DeleteVariable succeeded for external_vars:tmx"<< endl;
 	}
@@ -207,7 +478,7 @@ int test_api_dynamic_context(const char *result_file_name)
 	{
 		result_file << "DeleteVariable failed for external_vars:tmx" << endl;
 	}
-	if(dctx1->DeleteVariable("external_vars:tmx"))
+	if(dctx1->deleteVariable("external_vars:tmx"))
 	{
 		result_file << "DeleteVariable succeeded for external_vars:tmx"<< endl;
 	}
@@ -217,31 +488,31 @@ int test_api_dynamic_context(const char *result_file_name)
 	}
 
 	result_file << "SetDefaultCollection" << endl;
-	dctx1->SetDefaultCollection("http://www.flworfound.org/collections/collec0");
-	dctx1->SetDefaultCollection("http://www.flworfound.org/collections/collec0");
-	dctx1->SetDefaultCollection("http://www.flworfound.org/collections/collec0");
+	dctx1->setDefaultCollection("http://www.flworfound.org/collections/collec0");
+	dctx1->setDefaultCollection("http://www.flworfound.org/collections/collec0");
+	dctx1->setDefaultCollection("http://www.flworfound.org/collections/collec0");
 
 
 	dctx1 = NULL;//free now the dyn context
 
 	result_file << "end of dynamic context test" << endl;
-	zorba_factory.uninitThread();
-	zorba_factory.shutdown();
+	zorba_factory->uninitThread();
+	zorba_factory->shutdown();
 
 	//compare the results with expected result
 	oss2 << "expected_";
 	oss2 << result_file_name;
-	assert(verify_expected_result(make_absolute_file_name(result_file_name, __FILE__),
+	assert(verify_expected_result(result_file_name,
 																make_absolute_file_name(oss2.str().c_str(), __FILE__)));
 	return 0;
 
 DisplayErrorsAndExit:
 	result_file << endl << "Display all error list now:" << endl;
 
-	errmanager.DumpAlerts(result_file);
+	errmanager->dumpAlerts(result_file);
 
-	zorba_factory.uninitThread();
-	zorba_factory.shutdown();
+	zorba_factory->uninitThread();
+	zorba_factory->shutdown();
 
 	assert(false);
 
@@ -251,7 +522,7 @@ DisplayErrorsAndExit:
 //for CTEST
 int dctx_test(int argc, char* argv[])
 {
-//	ZorbaEngine& engine = ZorbaEngine::getInstance();
+//	ZorbaEngine_t engine = ZorbaEngine::getInstance();
 	test_api_dynamic_context("dctx_test.txt");
 //	engine.shutdown();
 	return 0;

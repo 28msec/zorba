@@ -211,7 +211,7 @@ public:
         bool              nsInherit);
 
   Item_t createAttributeNode(
-        ulong     qid,
+        unsigned long     qid,
         Iterator* nameIter,
         Item*     typeName,
         Iterator* valueIter,

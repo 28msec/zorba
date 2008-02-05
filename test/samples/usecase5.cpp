@@ -8,8 +8,8 @@ using namespace xqp;
 
 /*
 	Using Zorba in single thread mode.
-	Init the engine, create a query and execute it.
-	How to retrieve and print error messages.
+	This is a should fail example.
+	It demonstrates how to retrieve and print error messages.
 	You can find the error codes and error classes in zorba/errors/errors.h.
 */
 
@@ -18,52 +18,36 @@ string make_absolute_file_name(const char *target_file_name, const char *this_fi
 
 int usecase5(int argc, char* argv[])
 {
+	bool original_throw_mode = ZorbaAlertsManager::setThrowExceptionsMode(true);
 	//init the engine
-	ZorbaSingleThread		&zorba_engine = ZorbaSingleThread::getInstance();
+	ZorbaSingleThread_t zorba_engine = ZorbaSingleThread::getInstance();
 	XQuery_t				xquery;
 	DynamicQueryContext_t		dctx;
 
-	//create and compile a query with the static context
-	xquery = zorba_engine.createQuery(".//book");
-	if(xquery == NULL)
-	{
-		cout << "Error creating and compiling query" << endl;
-		goto DisplayErrorsAndExit;
-		return 1;
-	}
-	dctx = zorba_engine.createDynamicContext();
-/*forget to set the context item
-	//context item is set as variable with reserved name "."
-	if(!dctx->SetVariableAsDocument(".", make_absolute_file_name("books.xml", __FILE__)))
-	{
-		assert(false);
-		return 1;
-	}
-*/
+	try{
+		//create and compile a query with the static context
+		xquery = zorba_engine->createQuery(".//book");
 
-	//execute the query and serialize its result
-	if(!xquery->initExecution(dctx) ||
-		!xquery->serializeXML(std::cout))
-	{
-		cout << "Error executing and serializing query" << endl;
-		goto DisplayErrorsAndExit;
+		dctx = zorba_engine->createDynamicContext();
+	/*forget to set the context item
+		//context item is set 
+		dctx->SetContextItemAsDocument(make_absolute_file_name("books.xml", __FILE__));
+	*/
+
+		//try to execute the query and serialize its result
+		xquery->initExecution(dctx);
+		xquery->serializeXML(std::cout);
+
+		assert(false);//unreachable, should exit on error path
 		return 1;
+	}catch(xqp_exception &x)
+	{
+		//multiple errors and warnings might get fired
+		//display all of them
+		ZorbaAlertsManager_t err_manager = zorba_engine->getAlertsManagerForCurrentThread();
+		err_manager->dumpAlerts(std::cout);
 	}
 
-	//shutdown the engine, just for exercise
-	zorba_engine.shutdown();
-	//using zorba objects after this moment is prohibited
-
-	assert(false);//unreachable, should exit on error way
-
+	ZorbaAlertsManager::setThrowExceptionsMode(original_throw_mode);
 	return 0;
-
-DisplayErrorsAndExit:
-	
-	zorba_engine.getAlertsManagerForCurrentThread().DumpAlerts(std::cout);
-
-	zorba_engine.shutdown();
-
-	return -1; 
-
 }

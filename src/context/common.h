@@ -31,9 +31,9 @@
 	#include "util/win32/compatib_defs.h"
 #endif
 
-#if defined (__FreeBSD__)
-typedef unsigned long ulong;
-#endif
+//#if defined (__FreeBSD__)
+//typedef unsigned long unsigned long;
+//#endif
 
 
 #include <utility>

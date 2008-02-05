@@ -42,17 +42,17 @@ rchandle<ZorbaEngineImpl>	 globalZorbaEngine = NULL;
 void library_init();
 
 
-ZorbaEngine& ZorbaEngine::getInstance()
+ZorbaEngine_t ZorbaEngine::getInstance()
 {
 	if(globalZorbaEngine == NULL)
 	{
 		globalZorbaEngine = new ZorbaEngineImpl(false);
 		globalZorbaEngine->initialize();
 	}
-	return *globalZorbaEngine;
+	return &*globalZorbaEngine;
 }
 
-ZorbaSingleThread& ZorbaSingleThread::getInstance()
+ZorbaSingleThread_t ZorbaSingleThread::getInstance()
 {
 	if(globalZorbaEngine == NULL)
 	{
@@ -60,7 +60,7 @@ ZorbaSingleThread& ZorbaSingleThread::getInstance()
 		globalZorbaEngine->initialize();
 		globalZorbaEngine->initThread();
 	}
-	return *globalZorbaEngine;
+	return &*globalZorbaEngine;
 }
 
 Zorba* ZORBA_FOR_CURRENT_THREAD()
@@ -287,7 +287,7 @@ XQuery_t ZorbaEngineImpl::createQuery(
 		return NULL;
 	}
 
-	return xq.release();
+		return xq.release();
 	}CATCH_ALL_RETURN_NULL;
 }
 
@@ -305,17 +305,20 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
 	fquery = fopen(xquery_file.c_str(), "r");
 	if(!fquery)
 	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0015_CANNOT_OPEN_FILE, NULL, false, xquery_file);
 		return NULL;
 	}
 	if(fseek(fquery, 0, SEEK_END))
 	{
 		fclose(fquery);
+		ZORBA_ERROR_ALERT(ZorbaError::API0018_CANNOT_ACCESS_FILE, NULL, false, xquery_file);
 		return NULL;
 	}
 	fsize = ftell(fquery);
 	if(fsize <= 0)
 	{
 		fclose(fquery);
+		ZORBA_ERROR_ALERT(ZorbaError::API0018_CANNOT_ACCESS_FILE, NULL, false, xquery_file);
 		return NULL;
 	}
 	fseek(fquery, 0, SEEK_SET);
@@ -324,6 +327,7 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
 	{
 		::free(xquerydata);
 		fclose(fquery);
+		ZORBA_ERROR_ALERT(ZorbaError::API0018_CANNOT_ACCESS_FILE, NULL, false, xquery_file);
 		return NULL;
 	}
 	fclose(fquery);
@@ -336,11 +340,44 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
 	}CATCH_ALL_RETURN_NULL;
 }
 
-ZorbaAlertsManager& ZorbaEngineImpl::getAlertsManagerForCurrentThread()
+XQuery_t ZorbaEngineImpl::createQueryFromStream(
+			std::istream		&is,
+      StaticQueryContext_t sctx,
+      xqp_string xquery_source_uri,
+      bool routing_mode)
+{
+	xqp_string		xquery_string;
+	char					*temp_str;
+
+	temp_str = new char[1000];
+	try{
+		while(1)
+		{
+			is.read(temp_str, 999);
+			temp_str[999] = 0;
+			xquery_string += temp_str;
+			if(is.gcount() < 999)
+				break;
+		}
+	}catch(...)
+	{
+	}
+	delete[] temp_str;
+	return createQuery(xquery_string, sctx, xquery_source_uri, routing_mode);
+}
+
+ZorbaAlertsManager_t ZorbaEngineImpl::getAlertsManagerForCurrentThread()
 {
 	Zorba* z = getZorbaForCurrentThread();
 
-	return *z->getErrorManager();
+	try{
+		if(!z)
+		{
+			ZORBA_ERROR_ALERT(ZorbaError::API0009_THREAD_NOT_INITIALIZED);
+		}
+
+		return &*z->getErrorManager();
+	}CATCH_ALL_RETURN_NULL;
 }
 
 

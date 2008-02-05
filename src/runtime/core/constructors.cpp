@@ -317,7 +317,7 @@ Item_t ElementContentIterator::nextImpl(PlanState& planState)
     }
     else 
     {
-      textNode = factory->createTextNode((ulong)&planState,
+      textNode = factory->createTextNode((unsigned long)&planState,
                                          item->getStringValue().getStore(),
                                          false);
       STACK_PUSH(textNode, state);
@@ -404,7 +404,7 @@ Item_t TextIterator::nextImpl(PlanState& planState)
 
   valueWrapper = new PlanIteratorWrapper(theChild, planState);
       
-  node = Zorba::getItemFactory()->createTextNode((ulong)&planState,
+  node = Zorba::getItemFactory()->createTextNode((unsigned long)&planState,
                                                  valueWrapper,
                                                  theIsRoot);
 
@@ -468,7 +468,7 @@ Item_t PiIterator::nextImpl(PlanState& planState)
 
   content = content.trimL(" \n\r\t", 4);
 
-  lItem = Zorba::getItemFactory()->createPiNode((ulong)&planState,
+  lItem = Zorba::getItemFactory()->createPiNode((unsigned long)&planState,
                                                 target.getStore(),
                                                 content.getStore (),
                                                 theIsRoot);
@@ -526,7 +526,7 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
     ZORBA_ERROR_ALERT(ZorbaError::XQDY0072);
   }
 
-  lItem = Zorba::getItemFactory()->createCommentNode((ulong)&planState,
+  lItem = Zorba::getItemFactory()->createCommentNode((unsigned long)&planState,
                                                      content.getStore(),
                                                      theIsRoot);
     
@@ -647,7 +647,7 @@ Item_t EnclosedIterator::nextImpl(PlanState& planState)
         if (str == "")
           continue;
 
-        state->theContextItem = factory->createTextNode((ulong)&planState,
+        state->theContextItem = factory->createTextNode((unsigned long)&planState,
                                                         str.getStore(),
                                                         false);
         STACK_PUSH(state->theContextItem, state);

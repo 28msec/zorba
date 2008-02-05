@@ -377,7 +377,7 @@ Item_t BasicItemFactory::createName ( const xqp_string& value )
 
 Item_t BasicItemFactory::createNegativeInteger ( xqp_integer value )
 { 
-  Assert(value < 0);
+  Assert(value < (int32_t)0);
   return new NegativeIntegerItemNaive ( value ); 
 }
 
@@ -390,7 +390,7 @@ Item_t BasicItemFactory::createNonNegativeInteger ( xqp_uinteger value )
 
 Item_t BasicItemFactory::createNonPositiveInteger ( xqp_integer value )
 { 
-  Assert(value <= 0);
+  Assert(value <= (int32_t)0);
   return new NonPositiveIntegerItemNaive( value );
 }
 
@@ -402,7 +402,7 @@ Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value )
 
 
 Item_t BasicItemFactory::createPositiveInteger ( xqp_uinteger value ) { 
-  Assert(value > 0);
+  Assert(value > (int32_t)0);
   return new PositiveIntegerItemNaive( value ); 
 }
 
@@ -522,7 +522,7 @@ Item_t BasicItemFactory::createElementNode(
   rchandle<XmlTree> xmlTree;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  ulong pos = 0;
+  unsigned long pos = 0;
 
   if (isRoot)
   {
@@ -563,7 +563,7 @@ Item_t BasicItemFactory::createElementNode(
 
 ********************************************************************************/
 Item_t BasicItemFactory::createAttributeNode(
-    ulong      qid,
+    unsigned long      qid,
     Iterator*  nameIter,
     Item*      typeName,
     Iterator*  valueIter,
@@ -572,7 +572,7 @@ Item_t BasicItemFactory::createAttributeNode(
   rchandle<XmlTree> xmlTree;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  ulong pos = 0;
+  unsigned long pos = 0;
 
   if (isRoot)
   {
@@ -640,7 +640,7 @@ Item_t BasicItemFactory::createTextNode(
   rchandle<XmlTree> xmlTree;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  ulong pos = 0;
+  unsigned long pos = 0;
 
   if (isRoot)
   {
@@ -708,7 +708,7 @@ Item_t BasicItemFactory::createPiNode(
   rchandle<XmlTree> xmlTree;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  ulong pos = 0;
+  unsigned long pos = 0;
 
   if (isRoot)
   {
@@ -737,7 +737,7 @@ Item_t BasicItemFactory::createCommentNode(
   rchandle<XmlTree> xmlTree;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  ulong pos = 0;
+  unsigned long pos = 0;
 
   if (isRoot)
   {

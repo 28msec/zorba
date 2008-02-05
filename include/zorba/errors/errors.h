@@ -69,7 +69,7 @@ public:
 
   virtual ~ZorbaAlert();
 
-	virtual void DumpAlert(std::ostream &os) = 0;
+	virtual void dumpAlert(std::ostream &os) = 0;
 };
 
 
@@ -598,6 +598,14 @@ public:
     API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
 		API0009_THREAD_NOT_INITIALIZED,
 		API0010_XQUERY_EXECUTION_NOT_STARTED,
+		API0011_INVALID_VARIABLE_QNAME,
+		API0012_INVALID_INDEX,
+		API0013_INAPPROPRIATE_VARIABLE_VALUE,
+		API0014_INVALID_ARGUMENT,
+		API0015_CANNOT_OPEN_FILE,
+		API0016_CANNOT_CREATE_COLLECTION,
+		API0017_CANNOT_LOAD_DOCUMENT,
+		API0018_CANNOT_ACCESS_FILE,
 
     MAX_ZORBA_ERROR_CODE
   };
@@ -607,7 +615,7 @@ public:
 
   virtual ~ZorbaError();
 
-	virtual void DumpAlert(std::ostream &os);
+	virtual void dumpAlert(std::ostream &os);
 
   static std::string toString(enum ErrorCodes);
 };
@@ -627,7 +635,7 @@ public:
   ZorbaAlertLocation  theLocation;
 
   virtual ~ZorbaWarning();
-	virtual void DumpAlert(std::ostream &os);
+	virtual void dumpAlert(std::ostream &os);
 };
 
 
@@ -645,7 +653,7 @@ public:
   NotifyCodes  theCode;
 
   virtual ~ZorbaNotify();
-	virtual void DumpAlert(std::ostream &os);
+	virtual void dumpAlert(std::ostream &os);
 };
 
 
@@ -672,7 +680,7 @@ public:
   UserReplyOptionsCodes  theReplyOptionsCode;
 
   virtual ~ZorbaAskUser();
-	virtual void DumpAlert(std::ostream &os);
+	virtual void dumpAlert(std::ostream &os);
 };
 
 
@@ -687,7 +695,7 @@ public:
   std::vector<Item*>  theItems;
 
   virtual ~ZorbaFnError();
-	virtual void DumpAlert(std::ostream &os);
+	virtual void dumpAlert(std::ostream &os);
 };
 
 
@@ -700,7 +708,7 @@ public:
   std::vector<Item*> items_trace;
 
   virtual ~ZorbaFnTrace();
-	virtual void DumpAlert(std::ostream &os);
+	virtual void dumpAlert(std::ostream &os);
 };
 
 
@@ -720,17 +728,17 @@ typedef int alert_callback(ZorbaAlert*       alert,
 /*******************************************************************************
 
 ********************************************************************************/
-class ZorbaAlertsManager : public std::list<ZorbaAlert*>
+class ZorbaAlertsManager : public std::list<ZorbaAlert*>, public rcobject
 {
 public:
   virtual ~ZorbaAlertsManager();
 
   // register function to be called when error/warning/alert happens
   // if callback function is NULL, then alerts are put in list
-  virtual void RegisterAlertCallback(alert_callback *user_alert_callback,
+  virtual void registerAlertCallback(alert_callback *user_alert_callback,
                                     void *param) = 0;
 
-	virtual void DumpAlerts(std::ostream &os) = 0;
+	virtual void dumpAlerts(std::ostream &os) = 0;
   virtual void clearAlertList() = 0;
 
 	virtual bool isError() = 0;
@@ -738,6 +746,8 @@ public:
 	static bool setThrowExceptionsMode(bool throw_exceptions);
 	static bool getThrowExceptionsMode();
 };
+
+typedef rchandle<ZorbaAlertsManager>		ZorbaAlertsManager_t;
 
 std::ostream& operator<<(std::ostream& os, ZorbaAlert &x);
 

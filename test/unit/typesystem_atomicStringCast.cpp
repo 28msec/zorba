@@ -10,8 +10,8 @@
 using namespace xqp;
 
 int typesystem_atomicStringCast (int argc, char* argv[]) {
-  ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
-  zorba_factory.initThread();
+  ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
+  zorba_factory->initThread();
   
   GenericCast* lCaster = GenericCast::instance();
   
@@ -79,8 +79,8 @@ int typesystem_atomicStringCast (int argc, char* argv[]) {
   }
 #endif
   
-  zorba_factory.uninitThread();
-  zorba_factory.shutdown();
+  zorba_factory->uninitThread();
+  zorba_factory->shutdown();
   
   return 0;
 }

@@ -165,7 +165,7 @@ public:
   FloatImpl ceil() const; 
 
   FloatImpl round() const{
-    return round(0);
+    return round((int32_t)0);
   }
 
   FloatImpl round(Integer aPrecision) const;

@@ -21,12 +21,12 @@ public:
 
 	int sendAlertToUser(Zorba* z, ZorbaAlert* alert);
 
-	void RegisterAlertCallback(alert_callback* user_alert_callback, void *param);
+	void registerAlertCallback(alert_callback* user_alert_callback, void *param);
 
 	AlertMessages& getAlertMessages();
   void setAlertMessages(AlertMessages* c, bool is_from_user);
 
-	virtual void DumpAlerts(std::ostream &os);
+	virtual void dumpAlerts(std::ostream &os);
 	void clearAlertList();
 
 	virtual bool isError();
@@ -44,6 +44,8 @@ protected:
 
 	bool						is_error;
 };
+
+typedef rchandle<AlertsManagerImpl>		AlertsManagerImpl_t;
 
 }//end namespace xqp
 

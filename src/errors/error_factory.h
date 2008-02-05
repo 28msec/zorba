@@ -171,20 +171,20 @@ extern bool						g_abort_when_fatal_error;
   catch(xqp_exception &)\
   {\
 		uninit_instr\
-		if(ZorbaEngine::getInstance().getAlertsManagerForCurrentThread().getThrowExceptionsMode())\
+		if(ZorbaEngine::getInstance()->getAlertsManagerForCurrentThread()->getThrowExceptionsMode())\
 			throw;\
     ret;                                                                \
 	}\
   catch (const std::exception &e) {                                     \
 		uninit_instr\
     ZORBA_ERROR_ALERT(ZorbaError::XQP0019_INTERNAL_ERROR, NULL, true, e.what ()); \
-		if(ZorbaEngine::getInstance().getAlertsManagerForCurrentThread().getThrowExceptionsMode())\
+		if(ZorbaEngine::getInstance()->getAlertsManagerForCurrentThread()->getThrowExceptionsMode())\
 			throw;\
     ret;                                                                \
   } catch (...) {                                                       \
 		uninit_instr\
     ZORBA_ERROR_ALERT(ZorbaError::XQP0019_INTERNAL_ERROR, NULL, true);  \
-		if(ZorbaEngine::getInstance().getAlertsManagerForCurrentThread().getThrowExceptionsMode())\
+		if(ZorbaEngine::getInstance()->getAlertsManagerForCurrentThread()->getThrowExceptionsMode())\
 			throw;\
     ret;                                                                \
   }

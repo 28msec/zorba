@@ -51,28 +51,28 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class QueryContextContainer : public std::map<ulong, QueryContext>
+class QueryContextContainer : public std::map<unsigned long, QueryContext>
 {
 public:
-  QueryContext& getContext(ulong queryId)
+  QueryContext& getContext(unsigned long queryId)
   {
-    std::map<ulong, QueryContext>::iterator ctxi;
+    std::map<unsigned long, QueryContext>::iterator ctxi;
 
     ctxi = find(queryId);
 
     if (ctxi != end())
       return ctxi->second;
 
-    std::pair<std::map<ulong, QueryContext>::iterator, bool> res =
-      insert(std::pair<ulong, QueryContext>(queryId, QueryContext()));
+    std::pair<std::map<unsigned long, QueryContext>::iterator, bool> res =
+      insert(std::pair<unsigned long, QueryContext>(queryId, QueryContext()));
 
     ctxi = res.first;
     return ctxi->second;
   }
 
-  void removeContext(ulong queryId)
+  void removeContext(unsigned long queryId)
   {
-    std::map<ulong, QueryContext>::iterator ctxi;
+    std::map<unsigned long, QueryContext>::iterator ctxi;
 
     ctxi = find(queryId);
 

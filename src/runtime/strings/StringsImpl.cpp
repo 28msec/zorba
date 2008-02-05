@@ -189,12 +189,12 @@ CompareStrIterator::nextImpl(PlanState& planState) {
         if ( n2 != NULL )  {
           n2 = n2->getAtomizationValue();
           res = Zorba::getItemFactory()->createInteger(
-                  n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue()));
+                  (int32_t)n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue()));
         }
       }
       else{
         res = Zorba::getItemFactory()->createInteger(
-                n0->getStringValue().compare(n1->getStringValue()));
+                (int32_t)n0->getStringValue().compare(n1->getStringValue()));
       }
       STACK_PUSH( res, state );
     }
@@ -530,7 +530,7 @@ StringLengthIterator::nextImpl(PlanState& planState) {
   else
   {
     STACK_PUSH(Zorba::getItemFactory()->createInteger(
-                            0),
+                            (int32_t)0),
                             state);
   }
   STACK_END();

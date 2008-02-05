@@ -54,7 +54,7 @@ void ZorbaAlertFactory::error_alert(
 			return;
 	}
 
-  AlertsManagerImpl* err_manager = z->getErrorManager();
+  AlertsManagerImpl_t err_manager = z->getErrorManager();
 
 	if(!ploc)
 	{
@@ -114,7 +114,7 @@ void ZorbaAlertFactory::warning_alert(
 	if(!z)
 		return;
 
-  AlertsManagerImpl* err_manager = z->getErrorManager();
+  AlertsManagerImpl_t err_manager = z->getErrorManager();
 
 	if(!ploc)
 	{
@@ -155,7 +155,7 @@ void ZorbaAlertFactory::notify_event(
 	if(!z)
 		return;
 
-  AlertsManagerImpl* err_manager = z->getErrorManager();
+  AlertsManagerImpl_t err_manager = z->getErrorManager();
 
 	std::string description;
 	description = err_manager->getAlertMessages().notify_event_decode(code);
@@ -184,7 +184,7 @@ int ZorbaAlertFactory::ask_user(
 	if(!z)
 		return -1;
 
-  AlertsManagerImpl* err_manager = z->getErrorManager();
+  AlertsManagerImpl_t err_manager = z->getErrorManager();
 
 	std::string description;
   description = err_manager->getAlertMessages().ask_user_decode(questionCode);
@@ -241,7 +241,7 @@ void fn_user_error(
 {
 	Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
 
-	AlertsManagerImpl* err_manager = z->getErrorManager();
+	AlertsManagerImpl_t err_manager = z->getErrorManager();
 
 	std::string err_decoded;
 
@@ -282,7 +282,7 @@ void fn_user_trace(
     const std::string label)
 {
 	Zorba* z = ZORBA_FOR_CURRENT_THREAD();
-	AlertsManagerImpl* err_manager = z->getErrorManager();
+	AlertsManagerImpl_t err_manager = z->getErrorManager();
 
 	///...send notification message label + items to user
 

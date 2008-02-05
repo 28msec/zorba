@@ -98,7 +98,7 @@ namespace xqp
   {
     xqp_decimal ld0 = i0->getDecimalValue();
     xqp_decimal ld1 = i1->getDecimalValue();
-    if ( ld1 == 0 )
+    if ( ld1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
@@ -110,7 +110,7 @@ namespace xqp
   {
     xqp_decimal ll0 = static_cast<xqp_decimal>(i0->getIntegerValue());
     xqp_decimal ll1 = static_cast<xqp_decimal>(i1->getIntegerValue());
-    if ( ll1 == 0 )
+    if ( ll1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
@@ -132,7 +132,7 @@ namespace xqp
     }
     if (i0->isPosOrNegInf()) {
       // idiv with +-INF divisor has 0 as result
-      return Zorba::getItemFactory()->createInteger(0);
+      return Zorba::getItemFactory()->createInteger((int32_t)0);
     }
 
     xqp_double d0 = i0->getDoubleValue();
@@ -161,7 +161,7 @@ namespace xqp
     }
     if (i0->isPosOrNegInf()) {
       // idiv with +-INF divisor has 0 as result
-      return Zorba::getItemFactory()->createInteger(0);
+      return Zorba::getItemFactory()->createInteger((int32_t)0);
     }
 
     xqp_float f0 = i0->getFloatValue();
@@ -181,7 +181,7 @@ namespace xqp
   {
     xqp_decimal ld0 = i0->getDecimalValue();
     xqp_decimal ld1 = i1->getDecimalValue();
-    if ( ld1 == 0 )
+    if ( ld1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
@@ -195,7 +195,7 @@ namespace xqp
   {
     xqp_integer ll0 = i0->getIntegerValue();
     xqp_integer ll1 = i1->getIntegerValue();
-    if ( ll1 == 0 )
+    if ( ll1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Division by zero (decimals)");
@@ -221,7 +221,7 @@ namespace xqp
   {
     xqp_decimal ld0 = i0->getDecimalValue();
     xqp_decimal ld1 = i1->getDecimalValue();
-    if ( ld1 == 0 )
+    if ( ld1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Modulo by zero (decimals)");
@@ -233,7 +233,7 @@ namespace xqp
   {
     xqp_integer ll0 = i0->getIntegerValue();
     xqp_integer ll1 = i1->getIntegerValue();
-    if ( ll1 == 0 )
+    if ( ll1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
          loc, false, "Modulo by zero (decimals)");
@@ -616,7 +616,7 @@ namespace xqp
         else
           res = Zorba::getItemFactory()->createFloat ( -item->getFloatValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-        if ( item->getDecimalValue() >= 0 )
+        if ( item->getDecimalValue() >= (int32_t)0 )
           if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
             res = item;
           else
@@ -624,7 +624,7 @@ namespace xqp
         else
           res = Zorba::getItemFactory()->createDecimal ( -item->getDecimalValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
-        if ( item->getIntegerValue() >= 0 )
+        if ( item->getIntegerValue() >= (int32_t)0 )
           if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
             res = item;
           else
@@ -838,7 +838,7 @@ namespace xqp
     Item_t itemPrec;
     Item_t res;
     TypeSystem::xqtref_t type;
-    Integer precision = 0;
+    Integer precision = (int32_t)0;
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );

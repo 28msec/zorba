@@ -69,7 +69,7 @@ bool Item::getBooleanValue() const
 xqp_decimal Item::getDecimalValue() const
 {
   ZORBA_ASSERT(false);
-  return 0;
+  return (int32_t)0;
 }
 
 /** Accessor for xs:int
@@ -86,7 +86,7 @@ xqp_int Item::getIntValue() const
 xqp_integer Item::getIntegerValue() const
 {
   ZORBA_ASSERT(false);
-  return 0;
+  return (int32_t)0;
 }
 
 /** Accessor for xs:long
@@ -110,7 +110,7 @@ xqp_short Item::getShortValue() const
 xqp_uinteger Item::getUnsignedIntegerValue() const
 {
   ZORBA_ASSERT(false);
-  return 0;
+  return (int32_t)0;
 }
 
 /** Accessor for xs:unsignedChar, xs:unsignedByte

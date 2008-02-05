@@ -10,7 +10,10 @@ namespace xqp {
 class XQuery;
 typedef rchandle<XQuery>	XQuery_t;
 
-class XQuery : public Iterator
+class ResultIterator;
+typedef rchandle<ResultIterator>		ResultIterator_t;
+
+class XQuery : public rcobject
 {
 public:
 		virtual ~XQuery() {};
@@ -26,8 +29,7 @@ public:
 		virtual bool serializeHTML( std::ostream& os ) = 0;
 		virtual bool serializeTEXT( std::ostream& os ) = 0;
 
-		//get one item from result; check isError() for errors
-		virtual Item_t next() = 0;
+		virtual ResultIterator_t		getIterator() = 0;
 
 		//serialize the query to persistent storage
     virtual bool   serializeQuery(std::ostream &os) = 0;
@@ -45,8 +47,8 @@ public:
 public:
 
 		// extension from dynamic context (specific only for this execution)
-		virtual bool SetVariable( xqp_string varname, XQuery_t item_iter ) = 0;
-		virtual bool SetVariable( xqp_string varname, xqp_string docUri, std::istream &is ) = 0;
+		virtual bool setVariableAsXQueryResult( xqp_string varname, ResultIterator_t item_iter ) = 0;
+		virtual bool setVariableAsDocumentFromStream( xqp_string varname, xqp_string docUri, std::istream &is ) = 0;
 
 		// register documents available through fn:doc() in xquery
 	//	virtual bool AddAvailableDocument(xqp_string docURI,

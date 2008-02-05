@@ -35,7 +35,7 @@ typedef rchandle<class TempSeq> TempSeq_t;
 
 typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
-typedef unsigned long ulong;
+//typedef unsigned long ulong;
 
 extern ConstrNodeVector dummyVector;
 
@@ -46,15 +46,15 @@ extern ConstrNodeVector dummyVector;
 class XmlTree : public rcobject
 {
 protected:
-  ulong      theId;
+  unsigned long      theId;
   XmlNode  * theRootNode;
 
 public:
-  XmlTree(XmlNode* root, ulong id);
+  XmlTree(XmlNode* root, unsigned long id);
 
   ~XmlTree() { theRootNode = 0; }
 
-  ulong getId() const         { return theId; }
+  unsigned long getId() const         { return theId; }
   XmlNode* getRoot() const    { return theRootNode; }
   void setRoot(XmlNode* root) { theRootNode = root; }
 
@@ -78,20 +78,20 @@ protected:
 
 public:
   NodeVector() { }
-  NodeVector(ulong size) : theNodes(size) { }
+  NodeVector(unsigned long size) : theNodes(size) { }
 
   virtual ~NodeVector() { }
 
   bool empty() const            { return theNodes.empty(); }
-  ulong size() const            { return theNodes.size(); }
+  unsigned long size() const            { return theNodes.size(); }
 
-  XmlNode* get(ulong pos) const { return theNodes[pos]; } 
+  XmlNode* get(unsigned long pos) const { return theNodes[pos]; } 
 
-  virtual void set(ulong pos, XmlNode* n, bool shared) = 0;
+  virtual void set(unsigned long pos, XmlNode* n, bool shared) = 0;
   virtual void push_back(XmlNode* n, bool shared) = 0;
 
   virtual void clear() = 0;
-  virtual void resize(ulong size) = 0;
+  virtual void resize(unsigned long size) = 0;
   virtual void copy(const NodeVector& v) = 0;
 };
 
@@ -103,15 +103,15 @@ class LoadedNodeVector : public NodeVector
 {
 public:
   LoadedNodeVector() : NodeVector() { }
-  LoadedNodeVector(ulong size) : NodeVector(size) { }
+  LoadedNodeVector(unsigned long size) : NodeVector(size) { }
 
   ~LoadedNodeVector() { }
 
-  void set(ulong pos, XmlNode* n, bool shared) { theNodes[pos] = n; }
+  void set(unsigned long pos, XmlNode* n, bool shared) { theNodes[pos] = n; }
   void push_back(XmlNode* n, bool shared)      { theNodes.push_back(n); }
 
   void clear()                                 { theNodes.clear(); }
-  void resize(ulong size)                      { theNodes.resize(size); }
+  void resize(unsigned long size)                      { theNodes.resize(size); }
   void copy(const NodeVector& v)               { Assert(0); }
 
 private:
@@ -130,15 +130,15 @@ private:
 
 public:
   ConstrNodeVector() : NodeVector() { }
-  ConstrNodeVector(ulong size);
+  ConstrNodeVector(unsigned long size);
 
   ~ConstrNodeVector()  { clear(); }
 
-  void set(ulong pos, XmlNode* n, bool shared);
+  void set(unsigned long pos, XmlNode* n, bool shared);
   void push_back(XmlNode* n, bool shared);
 
   void clear();
-  void resize(ulong size);
+  void resize(unsigned long size);
   void copy(const NodeVector& v);
 
 private:
@@ -186,7 +186,7 @@ public:
   XmlNode(
         XmlTree*              tree,
         XmlNode*              parent,
-        ulong                 pos,
+        unsigned long                 pos,
         StoreConsts::NodeKind nodeKind);
 
   virtual ~XmlNode();
@@ -216,7 +216,7 @@ public:
   void removeReference();
 
   bool hasId() const                { return theTree != 0; }
-  ulong getTreeId() const           { return theTree->getId(); }
+  unsigned long getTreeId() const           { return theTree->getId(); }
   XmlTree* getTree() const          { return theTree; }
   const OrdPath& getOrdPath() const { return theOrdPath; }
 
@@ -229,17 +229,17 @@ public:
 
   void deleteTree();
 
-  virtual XmlNode* copy(XmlNode* parent, ulong pos) = 0;
+  virtual XmlNode* copy(XmlNode* parent, unsigned long pos) = 0;
 
   virtual void checkUniqueAttr(Item* qn) const { Assert(0); }
 
-  virtual ulong numAttributes() const          { Assert(0); return 0; }
-  virtual XmlNode* getAttr(ulong i) const      { Assert(0); return NULL; }
+  virtual unsigned long numAttributes() const          { Assert(0); return 0; }
+  virtual XmlNode* getAttr(unsigned long i) const      { Assert(0); return NULL; }
   virtual NodeVector& attributes()             { Assert(0); return dummyVector; }
   virtual const NodeVector& attributes() const { Assert(0); return dummyVector; }
 
-  virtual ulong numChildren() const            { Assert(0); return 0; }
-  virtual XmlNode* getChild(ulong i) const     { Assert(0); return NULL; }
+  virtual unsigned long numChildren() const            { Assert(0); return 0; }
+  virtual XmlNode* getChild(unsigned long i) const     { Assert(0); return NULL; }
   virtual NodeVector& children()               { Assert(0); return dummyVector; }
   virtual const NodeVector& children() const   { Assert(0); return dummyVector; }
 
@@ -298,9 +298,9 @@ public:
   // SimpleStore Methods
   // 
 
-  XmlNode* copy(XmlNode* parent, ulong pos) { Assert(0); return 0; }
+  XmlNode* copy(XmlNode* parent, unsigned long pos) { Assert(0); return 0; }
 
-  ulong numAttributes() const { return 0; }
+  unsigned long numAttributes() const { return 0; }
 
   bool isConstructed() const  { return (theFlags & XmlNode::IsConstructed) != 0; }
   bool isCopy() const         { return (theFlags & XmlNode::IsCopy) != 0; }
@@ -327,10 +327,10 @@ public:
         xqpStringStore* baseUri, 
         xqpStringStore* documentUri);
 
-  ulong numChildren() const          { return theChildren.size(); }
+  unsigned long numChildren() const          { return theChildren.size(); }
   NodeVector& children()             { return theChildren; }
   const NodeVector& children() const { return theChildren; }
-  XmlNode* getChild(ulong i) const   { return theChildren.get(i); }
+  XmlNode* getChild(unsigned long i) const   { return theChildren.get(i); }
 };
 
 
@@ -353,10 +353,10 @@ public:
 
   void constructSubtree(Iterator* children, bool copy);
 
-  ulong numChildren() const          { return theChildren.size(); }
+  unsigned long numChildren() const          { return theChildren.size(); }
   NodeVector& children()             { return theChildren; }
   const NodeVector& children() const { return theChildren; }
-  XmlNode* getChild(ulong i) const   { return theChildren.get(i); }
+  XmlNode* getChild(unsigned long i) const   { return theChildren.get(i); }
 };
 
 
@@ -375,7 +375,7 @@ public:
   ElementNode(
         XmlTree*  tree,
         XmlNode*  parent,
-        ulong     pos,
+        unsigned long     pos,
         Item*     nodeName);
 
   virtual ~ElementNode();
@@ -403,7 +403,7 @@ public:
   // SimpleStore Methods
   // 
 
-  XmlNode* copy(XmlNode* parent, ulong pos);
+  XmlNode* copy(XmlNode* parent, unsigned long pos);
 
   void checkUniqueAttr(Item* attrName) const;
 
@@ -437,18 +437,18 @@ public:
   LoadedElementNode(
         Item*   nodeName,
         Item*   typeName,
-        ulong   numBindings,
-        ulong   numAttributes);
+        unsigned long   numBindings,
+        unsigned long   numAttributes);
 
-  ulong numAttributes() const          { return theAttributes.size(); }
+  unsigned long numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
   const NodeVector& attributes() const { return theAttributes; }
-  XmlNode* getAttr(ulong i) const      { return theAttributes.get(i); }
+  XmlNode* getAttr(unsigned long i) const      { return theAttributes.get(i); }
 
-  ulong numChildren() const            { return theChildren.size(); }
+  unsigned long numChildren() const            { return theChildren.size(); }
   NodeVector& children()               { return theChildren; }
   const NodeVector& children() const   { return theChildren; }
-  XmlNode* getChild(ulong i) const     { return theChildren.get(i); }
+  XmlNode* getChild(unsigned long i) const     { return theChildren.get(i); }
 
   bool isConstructed() const           { return false; }
   bool isCopy() const                  { return false; }
@@ -472,7 +472,7 @@ public:
   ConstrElementNode(
         XmlTree*  tree,
         XmlNode*  parent,
-        ulong     pos,
+        unsigned long     pos,
 			  Item*     nodeName,
         Item*     typeName,
         bool      typePreserve,
@@ -485,15 +485,15 @@ public:
         const NsBindings& nsBindings,
         bool              copy);
 
-  ulong numAttributes() const          { return theAttributes.size(); }
+  unsigned long numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
   const NodeVector& attributes() const { return theAttributes; }
-  XmlNode* getAttr(ulong i) const      { return theAttributes.get(i); }
+  XmlNode* getAttr(unsigned long i) const      { return theAttributes.get(i); }
 
-  ulong numChildren() const            { return theChildren.size(); }
+  unsigned long numChildren() const            { return theChildren.size(); }
   NodeVector& children()               { return theChildren; }
   const NodeVector& children() const   { return theChildren; }
-  XmlNode* getChild(ulong i) const     { return theChildren.get(i); }
+  XmlNode* getChild(unsigned long i) const     { return theChildren.get(i); }
 
   bool isConstructed() const   { return true; }
   bool isCopy() const          { return theFlags & XmlNode::IsCopy; }
@@ -526,7 +526,7 @@ class AttributeNode : public XmlNode
   AttributeNode(
         XmlTree* tree,
         XmlNode* parent,
-        ulong    pos,
+        unsigned long    pos,
         Item*    attrName,
         Item*    typeName,
         bool     isId,
@@ -536,7 +536,7 @@ class AttributeNode : public XmlNode
 
   void constructValue(Iterator* valueIter);
 
-  XmlNode* copy(XmlNode* parent, ulong pos);
+  XmlNode* copy(XmlNode* parent, unsigned long pos);
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::attributeNode; }
 
@@ -570,14 +570,14 @@ public:
   TextNode(
         XmlTree*        tree,
         XmlNode*        parent,
-        ulong           pos,
+        unsigned long           pos,
         xqpStringStore* content);
 
   TextNode();
 
   ~TextNode();
 
-  XmlNode* copy(XmlNode* parent, ulong pos);
+  XmlNode* copy(XmlNode* parent, unsigned long pos);
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::textNode; }
 
@@ -605,13 +605,13 @@ public:
   PiNode(
         XmlTree*        tree,
         XmlNode*        parent,
-        ulong           pos,
+        unsigned long           pos,
         xqpStringStore* target,
         xqpStringStore* data);
 
   ~PiNode();
 
-  XmlNode* copy(XmlNode* parent, ulong  pos);
+  XmlNode* copy(XmlNode* parent, unsigned long  pos);
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::piNode; }
 
@@ -639,12 +639,12 @@ public:
   CommentNode(
         XmlTree*        tree,
         XmlNode*        parent,
-        ulong           pos,
+        unsigned long           pos,
         xqpStringStore* content);
 
   ~CommentNode();
 
-  XmlNode* copy(XmlNode* parent, ulong pos);
+  XmlNode* copy(XmlNode* parent, unsigned long pos);
 
   StoreConsts::NodeKind getNodeKind() const { return StoreConsts::commentNode; }
 

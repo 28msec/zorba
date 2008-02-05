@@ -402,7 +402,7 @@ Decimal Decimal::operator-() const {
 }
 
 Decimal Decimal::round() const {
-  return round(0);
+  return round((int32_t)0);
 }
 
 Decimal Decimal::round(Integer aPrecision) const {

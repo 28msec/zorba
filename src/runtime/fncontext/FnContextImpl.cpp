@@ -41,18 +41,31 @@ Item_t CtxVariableIterator::nextImpl(PlanState& planState)
 
   FINISHED_ALLOCATING_RESOURCES();
 
-  iter = ZORBA_FOR_CURRENT_THREAD()->
-         current_xquery->internal_dyn_context->get_variable(theVarName);
+	if(theVarName == ".")//looking for context item?
+	{
 
-  if (iter == NULL)
-    ZORBA_ERROR_ALERT (ZorbaError::XPDY0002, &loc, false, theVarName);
+		item = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->context_item();
+		if(item == NULL)
+		{
+			ZORBA_ERROR_ALERT (ZorbaError::XPDY0002, &loc, false, theVarName);
+		}
+		STACK_PUSH( item, aState);
+	}
+	else
+	{
+		iter = ZORBA_FOR_CURRENT_THREAD()->
+					 get_base_dynamic_context()->get_variable(theVarName);
 
-  do
-  {
-    item = iter->next();
-    STACK_PUSH (item , aState);
-  }
-  while(item != NULL);
+		if (iter == NULL)
+			ZORBA_ERROR_ALERT (ZorbaError::XPDY0002, &loc, false, theVarName);
+
+		do
+		{
+			item = iter->next();
+			STACK_PUSH (item , aState);
+		}
+	  while(item != NULL);
+	}
   
   while(true)
   {
@@ -65,25 +78,33 @@ void CtxVariableIterator::resetImpl(PlanState& planState)
 {
   StateTraitsImpl<PlanIteratorState>::reset(planState, this->stateOffset);
 
-  Iterator_t iter;
+	if(theVarName == ".")//looking for context item?
+	{
+	}
+	else
+	{
+		Iterator_t iter;
 
-  iter = ZORBA_FOR_CURRENT_THREAD()->
-         current_xquery->internal_dyn_context->get_variable(theVarName);
+		iter = ZORBA_FOR_CURRENT_THREAD()->
+					 get_base_dynamic_context()->get_variable(theVarName);
 
-  iter->reset();
+		iter->reset();
+	}
 }
 
 
 void CtxVariableIterator::closeImpl(PlanState& planState)
 {
+/*daniel: dynamic context handles its own issues
   Iterator_t iter;
 
   Zorba* zorba = ZORBA_FOR_CURRENT_THREAD();
 
-  iter = zorba->current_xquery->internal_dyn_context->get_variable(theVarName);
+  iter = zorba->get_base_dynamic_context()->get_variable(theVarName);
 
   if (iter != NULL)
     iter->close();
+*/
 
   StateTraitsImpl<PlanIteratorState>::destroyState(planState, this->stateOffset);
 }

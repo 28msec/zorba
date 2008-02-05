@@ -32,13 +32,13 @@ int test_api_query_multithread(const char *result_file_name)
 	pthread_t		pt[NR_THREADS];
 
   XQuery_t    query;
-	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
+	ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
 
-	zorba_factory.initThread();
-	query = zorba_factory.createQuery("1+2");
+	zorba_factory->initThread();
+	query = zorba_factory->createQuery("1+2");
   if(query == NULL)
   {
-		zorba_factory.uninitThread();
+		zorba_factory->uninitThread();
 		return 0;
   }
 	//now execute this query in paralel in 20 threads
@@ -65,8 +65,8 @@ int test_api_query_multithread(const char *result_file_name)
 		pthread_join(pt[i], &thread_result);
 		thread_result_total += (int32_t)thread_result;
 	}
-	zorba_factory.uninitThread();
-	zorba_factory.shutdown();
+	zorba_factory->uninitThread();
+	zorba_factory->shutdown();
 
 	cout << "compare expected results" << endl;
 
@@ -82,7 +82,7 @@ int test_api_query_multithread(const char *result_file_name)
 		oss << i;
 		oss << ".txt";
 
-		assert(verify_expected_result(make_absolute_file_name(oss.str().c_str(), __FILE__),
+		assert(verify_expected_result(oss.str().c_str(),
 																make_absolute_file_name(oss2.str().c_str(), __FILE__)));
 	}
 
@@ -93,17 +93,17 @@ int test_api_query_multithread(const char *result_file_name)
 void* query_thread(void *param)
 {
 	QUERY_THREAD_PARAM	*query_param = (QUERY_THREAD_PARAM*)param;
-	ofstream		result_file(make_absolute_file_name(query_param->result_file_name.c_str(), __FILE__).c_str());
+	ofstream		result_file(query_param->result_file_name.c_str());
 	unsigned int		i;
 	unsigned int	max;
   XQuery_t    prev_query;
 
 
 	///now start the zorba engine
-	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
+	ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
 
 	result_file << "InitThread" << endl;
-	zorba_factory.initThread();
+	zorba_factory->initThread();
 
 
 	//do the test
@@ -117,20 +117,21 @@ void* query_thread(void *param)
 
 		// create a compiled query
 		result_file << "CreateQuery" << endl;
-		query = zorba_factory.createQuery("2+3");
+		query = zorba_factory->createQuery("2+3");
 		if(query == NULL)
 		{
 			goto DisplayErrorsAndExit;
 		}
 
-		dctx1 = zorba_factory.createDynamicContext();
+		dctx1 = zorba_factory->createDynamicContext();
 
 		result_file << "CreateExecution" << endl;
 		if(!query->initExecution(dctx1))
 		{
 			goto DisplayErrorsAndExit;
 		}
-		if(!query->SetVariable("external_var_name", prev_query))
+		ResultIterator_t	prev_result = prev_query->getIterator();
+		if(!query->setVariableAsXQueryResult("external_var_name", prev_result))
 		{
 			result_file << "SetVariable with prev_execution FAILED" << endl;
 		}
@@ -151,7 +152,7 @@ void* query_thread(void *param)
 
 
 	result_file << "UninitThread" << endl;
-	zorba_factory.uninitThread();
+	zorba_factory->uninitThread();
 
 	delete query_param;
 	return (void*)0;
@@ -159,10 +160,10 @@ void* query_thread(void *param)
 DisplayErrorsAndExit:
 	result_file << endl << "Display all error list now:" << endl;
 
-	zorba_factory.getAlertsManagerForCurrentThread().DumpAlerts(result_file);
+	zorba_factory->getAlertsManagerForCurrentThread()->dumpAlerts(result_file);
 
 	result_file << "UninitThread" << endl;
-	zorba_factory.uninitThread();
+	zorba_factory->uninitThread();
 
 	delete query_param;
 	return (void*)-1; 
@@ -172,7 +173,7 @@ DisplayErrorsAndExit:
 //for CTEST
 int query_multithread_test(int argc, char* argv[])
 {
-//	ZorbaEngine& engine = ZorbaEngine::getInstance();
+//	ZorbaEngine_t engine = ZorbaEngine::getInstance();
 	test_api_query_multithread("query_mt_test");//0,1,2,3...19.txt
 //	engine.shutdown();
 	return 0;

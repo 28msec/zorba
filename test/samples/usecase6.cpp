@@ -16,14 +16,14 @@ string make_absolute_file_name(const char *target_file_name, const char *this_fi
 int usecase6(int argc, char* argv[])
 {
 	//init the engine
-	ZorbaSingleThread		&zorba_engine = ZorbaSingleThread::getInstance();
+	ZorbaSingleThread_t zorba_engine = ZorbaSingleThread::getInstance();
 	DynamicQueryContext_t		dctx;
 	XQuery_t				xquery1;
 	XQuery_t				xquery2;
-//	XQueryExecution_t		xqe1;
-//	XQueryExecution_t		xqe2;
+	ResultIterator_t		xqe1;
+	ResultIterator_t		xqe2;
 
-	XmlDataManager_t		zorba_store = zorba_engine.getXmlDataManager();
+	XmlDataManager_t		zorba_store = zorba_engine->getXmlDataManager();
 
 	//load a document into xml data manager
 	//and then load it into a variable
@@ -31,7 +31,7 @@ int usecase6(int argc, char* argv[])
 
 
 	//create and compile a query with the static context
-	xquery1 = zorba_engine.createQuery(".//book");
+	xquery1 = zorba_engine->createQuery(".//book");
 	if(xquery1 == NULL)
 	{
 		cout << "Error creating and compiling query1" << endl;
@@ -39,9 +39,9 @@ int usecase6(int argc, char* argv[])
 		return 1;
 	}
 
-	dctx = zorba_engine.createDynamicContext();
+	dctx = zorba_engine->createDynamicContext();
 	//context item is set as variable with reserved name "."
-	if(!dctx->SetVariableAsDocument(".", make_absolute_file_name("books.xml", __FILE__)))
+	if(!dctx->setContextItemAsDocument(make_absolute_file_name("books.xml", __FILE__)))
 	{
 		cout << "cannot load document into context item" << endl;
 		assert(false);
@@ -55,9 +55,10 @@ int usecase6(int argc, char* argv[])
 		assert(false);
 		return 1;
 	}
-	
+	xqe1 = xquery1->getIterator();
+
 	//create the second query
-	xquery2 = zorba_engine.createQuery("declare variable $var1 as document-node() external; $var1//chapter");
+	xquery2 = zorba_engine->createQuery("declare variable $var1 as document-node() external; $var1//chapter");
 	if(xquery2 == NULL)
 	{
 		cout << "Error creating and compiling query2" << endl;
@@ -74,7 +75,7 @@ int usecase6(int argc, char* argv[])
 	}
 
 	//chain the result from first query
-	xquery2->SetVariable("var1", xquery1);
+	xquery2->setVariableAsXQueryResult("var1", xqe1);
 
 	//execute the query2 and serialize its result
 	if(!xquery2->serializeXML(std::cout))
@@ -85,7 +86,7 @@ int usecase6(int argc, char* argv[])
 	}
 
 	//shutdown the engine, just for exercise
-	zorba_engine.shutdown();
+	zorba_engine->shutdown();
 	//using zorba objects after this moment is prohibited
 
 	return 0;

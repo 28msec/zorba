@@ -9,7 +9,7 @@
 #if defined (WIN32)
 #include "util/win32/compatib_defs.h"
 #elif defined (__FreeBSD__)
-typedef unsigned long ulong;
+typedef unsigned long unsigned long;
 #endif
 
 namespace xqp
@@ -36,7 +36,7 @@ private:
 public:
   NsBindingsContext() { }
 
-  NsBindingsContext(ulong numBindings);
+  NsBindingsContext(unsigned long numBindings);
 
   NsBindingsContext(const NsBindings& bindings);
 

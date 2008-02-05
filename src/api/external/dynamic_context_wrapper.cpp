@@ -8,6 +8,9 @@
 #include "context/dynamic_context.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include <time.h>
+#include "types/casting.h"
+#include "types/typesystem.h"
+#include "system/globalenv.h"
 
 namespace xqp {
 
@@ -28,13 +31,13 @@ DynamicContextWrapper::~DynamicContextWrapper( )
 {
 	try{
 
-	DeleteAllVariables();
+	deleteAllVariables();
 
 	}	CATCH_ALL_NO_RETURN(;);
 
 }
 
-void		DynamicContextWrapper::SetCurrentDateTime( struct ::tm datetime, long timezone_seconds )
+void		DynamicContextWrapper::setCurrentDateTime( struct ::tm datetime, long timezone_seconds )
 {
 	try{
 
@@ -46,7 +49,7 @@ void		DynamicContextWrapper::SetCurrentDateTime( struct ::tm datetime, long time
 
 }
 
-struct ::tm	DynamicContextWrapper::GetCurrentDateTime( long *ptimezone_seconds )
+struct ::tm	DynamicContextWrapper::getCurrentDateTime( long *ptimezone_seconds )
 {
 	if(ptimezone_seconds)
 		*ptimezone_seconds = this->current_timezone_seconds;
@@ -54,91 +57,65 @@ struct ::tm	DynamicContextWrapper::GetCurrentDateTime( long *ptimezone_seconds )
 }
 
 //check if var name is well formed
-bool	DynamicContextWrapper::checkQName(xqp_string varname)
+//throw error if not
+void	DynamicContextWrapper::checkVarName(xqp_string varname)
 {
-	std::string::size_type n = static_cast<std::string> (varname).find (':');
-  if(n == string::npos)
-		return true;//no prefix
-	n = static_cast<std::string>(varname.substr (n+1)).find(':');
-  if(n == string::npos)
-		return true;//one prefix
-	return false;//two prefixes!
+/*	std::string::size_type n1 = static_cast<std::string> (varname).find (':');
+  if(n1 != string::npos)
+	{//has prefix
+		std::string::size_type n2 = static_cast<std::string>(varname.substr (n1+1)).find(':');
+		if(n2 != string::npos)
+			goto CheckVarNameError;//has two prefixes !!
+	}
+	else
+	{//has no prefix
+	}
+*/
+	if(GenericCast::instance()->isCastable(varname, GENV_TYPESYSTEM.QNAME_TYPE_ONE))
+		return;//all ok
+
+CheckVarNameError:
+	ZORBA_ERROR_ALERT(ZorbaError::API0011_INVALID_VARIABLE_QNAME, NULL, false, varname);
+	return ;//false;//no good
 }
 
-bool DynamicContextWrapper::SetVariableAsInteger( xqp_string varname, long long int_value, VAR_INT_TYPE type)
+bool DynamicContextWrapper::setVariableAsBigInteger( xqp_string varname, xqp_integer int_value, VAR_BIGINT_TYPE type)
 {
 	try{
 
-	if(!checkQName(varname))
-		return false;
+	checkVarName(varname);
+
+	dctx_extern_var_t		var;
+	ItemFactory* item_factory = Zorba::getItemFactory();
+
+	var.varname = varname;
 	switch(type)
 	{
 	case XS_INTEGER://derived from XS_DECIMAL
+			var.atomic_item = item_factory->createInteger(int_value);
 			break;
 	case XS_NON_POSITIVE_INTEGER://derived from XS_INTEGER
-			if(int_value > 0)
+			if(int_value > (int32_t)0)
+			{
+				ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 				return false;//inappropriate value
+			}
+			var.atomic_item = item_factory->createNonPositiveInteger(int_value);
 			break;
 	case XS_NEGATIVE_INTEGER://derived from XS_NON_POSITIVE_INTEGER
-			if(int_value >= 0)
+			if(int_value >= (int32_t)0)
+			{
+				ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 				return false;//inappropriate value
-		break;
-	case XS_LONG://derived from XS_INTEGER
-			if((int_value < -((long long)((1ull<<(sizeof(xqp_long)*8-1))-1))) || 
-				(int_value > ((long long)((1ull<<(sizeof(xqp_long)*8-1))-1))))
-				return false;//inappropriate value
-			break;
-	case XS_INT://derived from XS_LONG
-			if((int_value <= -((long long)1ll<<(sizeof(xqp_int)*8-1))) || 
-				(int_value >= ((long long)1ll<<(sizeof(xqp_int)*8-1))))
-				return false;//inappropriate value
-			break;
-	case XS_SHORT://derived from XS_INT
-			if((int_value <= -((long long)1ll<<(sizeof(xqp_short)*8-1))) || 
-				(int_value >= ((long long)1ll<<(sizeof(xqp_short)*8-1))))
-				return false;//inappropriate value
-			break;
-	case XS_BYTE://derived from XS_SHORT
-			if((int_value <= -((long long)1ll<<(sizeof(xqp_byte)*8-1))) || 
-				(int_value >= ((long long)1ll<<(sizeof(xqp_byte)*8-1))))
-				return false;//inappropriate value
-			break;
-	case XS_NON_NEGATIVE_INTEGER://derived from XS_INTEGER
-			if(int_value < 0)
-				return false;//inappropriate value
-		break;
-	case XS_UNSIGNED_LONG://derived from XS_NON_NEGATIVE_INTEGER
-			if((int_value < 0) || 
-				(sizeof(xqp_ulong) < sizeof(unsigned long long)) && ((unsigned long long)int_value > ((1ull<<(sizeof(xqp_ulong)*8))-1)))
-				return false;//inappropriate value
-		break;
-	case XS_UNSIGNED_INT://derived from XS_UNSIGNED_LONG
-			if((int_value < 0) || 
-				(sizeof(xqp_uint) < sizeof(unsigned long long)) && ((unsigned long long)int_value >= ((unsigned long long)1ull<<(sizeof(xqp_uint)*8))))
-				return false;//inappropriate value
-		break;
-	case XS_UNSIGNED_SHORT://derived from XS_UNSIGNED_INT
-			if((int_value < 0) || 
-				(sizeof(xqp_ushort) < sizeof(unsigned long long)) && ((unsigned long long)int_value >= ((unsigned long long)1ull<<(sizeof(xqp_ushort)*8))))
-				return false;//inappropriate value
-		break;
-	case XS_UNSIGNED_BYTE://derived from XS_UNSIGNED_SHORT
-			if((int_value < 0) || 
-				(sizeof(xqp_ubyte) < sizeof(unsigned long long)) && ((unsigned long long)int_value >= ((unsigned long long)1ull<<(sizeof(xqp_ubyte)*8))))
-				return false;//inappropriate value
-		break;
-	case XS_POSITIVE_INTEGER://derived from XS_NON_NEGATIVE_INTEGER
-			if(int_value < 0)
-				return false;//inappropriate value
+			}
+			var.atomic_item = item_factory->createNegativeInteger(int_value);
 		break;
 	}
-	DeleteVariable(varname);
-
-	dctx_extern_var_t		var;
-	var.varname = varname;
-	var.vartype = VAR_INT;
-	var.int_type = type;
-	var.int_value = int_value;
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+	deleteVariable(varname);
 
 	vars.push_back(var);
 	return true;
@@ -146,145 +123,40 @@ bool DynamicContextWrapper::SetVariableAsInteger( xqp_string varname, long long 
 	}CATCH_ALL_RETURN_false;
 }
 
-bool DynamicContextWrapper::SetVariableAsString( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type)
+bool DynamicContextWrapper::setVariableAsBigUInteger( xqp_string varname, xqp_uinteger uint_value, VAR_BIGUINT_TYPE type)
 {
 	try{
 
-	if(!checkQName(varname))
-		return false;
-	DeleteVariable(varname);
+	checkVarName(varname);
 
 	dctx_extern_var_t		var;
+	ItemFactory* item_factory = Zorba::getItemFactory();
+
 	var.varname = varname;
-	var.vartype = VAR_STR;
-	var.str_type = type;
-	var.str_value = str_value.getStore();
-	var.str_value->addReference();
-
-	vars.push_back(var);
-	return true;
-
-	}CATCH_ALL_RETURN_false;
-}
-
-bool DynamicContextWrapper::SetVariableAsDouble( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type)
-{
-	try{
-
-	if(!checkQName(varname))
-		return false;
-	DeleteVariable(varname);
-
-	dctx_extern_var_t		var;
-	var.varname = varname;
-	var.vartype = VAR_DOUBLE;
-	var.double_type = type;
-	var.double_value = double_value;
-
-	vars.push_back(var);
-	return true;
-
-	}CATCH_ALL_RETURN_false;
-}
-
-bool DynamicContextWrapper::SetVariableAsBool( xqp_string varname, bool bool_value)
-{
-	try{
-	if(!checkQName(varname))
-		return false;
-	DeleteVariable(varname);
-
-	dctx_extern_var_t		var;
-	var.varname = varname;
-	var.vartype = VAR_BOOL;
-	var.bool_value = bool_value;
-
-	vars.push_back(var);
-	return true;
-
-	}CATCH_ALL_RETURN_false;
-}
-
-bool DynamicContextWrapper::SetVariableAsDateTime( xqp_string varname, struct ::tm datetime_value, long timezone_seconds, VAR_DATETIME_TYPE type)
-{
-	try{
-	if(!checkQName(varname))
-		return false;
-
-	//validate the time
 	switch(type)
 	{
-	case XS_DATETIME:
-//				atomic_item = item_factory->createDateTime(
-//					(*it).dtt_value.datetime_value.tm_year+1900, (*it).dtt_value.datetime_value.tm_mon, (*it).dtt_value.datetime_value.tm_mday,
-//					(*it).dtt_value.datetime_value.tm_hour + (*it).dtt_value.datetime_value.tm_isdst ? 1 : 0, (*it).dtt_value.datetime_value.tm_min, (*it).dtt_value.datetime_value.tm_sec,
-//					(*it).dtt_value.timezone_seconds);
-		if((datetime_value.tm_sec < 0) || (datetime_value.tm_sec > 59) ||
-			(datetime_value.tm_min < 0) || (datetime_value.tm_min > 59) ||
-			(datetime_value.tm_hour < 0) || (datetime_value.tm_hour > 23) ||
-			(datetime_value.tm_mday < 1) || (datetime_value.tm_mday > 31) ||
-			(datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11) ||
-			(datetime_value.tm_year < 0))
-			return false;
+	case XS_NON_NEGATIVE_INTEGER://derived from XS_INTEGER
+			if(uint_value < (int32_t)0)
+			{
+				ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+				return false;//inappropriate value
+			}
+			var.atomic_item = item_factory->createNonNegativeInteger(uint_value);
 		break;
-	case XS_DATE:
-//		atomic_item = item_factory->createDate(
-//			(*it).datetime_value.tm_year+1900, (*it).datetime_value.tm_mon, (*it).datetime_value.tm_mday);
-		if((datetime_value.tm_mday < 1) || (datetime_value.tm_mday > 31) ||
-			(datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11) ||
-			(datetime_value.tm_year < 0))
-			return false;
-		break;
-	case XS_TIME:
-//		atomic_item = item_factory->createTime(
-//			(*it).datetime_value.tm_hour + (*it).datetime_value.tm_isdst ? 1 : 0, (*it).datetime_value.tm_min, (*it).datetime_value.tm_sec);
-		if((datetime_value.tm_sec < 0) || (datetime_value.tm_sec > 59) ||
-			(datetime_value.tm_min < 0) || (datetime_value.tm_min > 59) ||
-			(datetime_value.tm_hour < 0) || (datetime_value.tm_hour > 23))
-			return false;
-		break;
-	case XS_GYEAR_MONTH:
-//		atomic_item = item_factory->createGYearMonth(
-//			(*it).datetime_value.tm_year+1900, (*it).datetime_value.tm_mon);
-		if((datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11) ||
-			(datetime_value.tm_year < 0))
-			return false;
-		break;
-	case XS_GYEAR:
-//		atomic_item = item_factory->createGYear(
-//			(*it).datetime_value.tm_year+1900);
-		if((datetime_value.tm_year < 0))
-			return false;
-		break;
-	case XS_GMONTH_DAY:
-//		atomic_item = item_factory->createGMonthDay(
-//			(*it).datetime_value.tm_mon, (*it).datetime_value.tm_mday);
-		if((datetime_value.tm_mday < 1) || (datetime_value.tm_mday > 31) ||
-			(datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11))
-			return false;
-		break;
-	case XS_GDAY:
-//		atomic_item = item_factory->createGDay(
-//			(*it).datetime_value.tm_mday);
-		if((datetime_value.tm_mday < 1) || (datetime_value.tm_mday > 31))
-			return false;
-		break;
-	case XS_GMONTH:
-//		atomic_item = item_factory->createGMonth(
-//			(*it).datetime_value.tm_mon);
-		if((datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11))
-			return false;
+	case XS_POSITIVE_INTEGER://derived from XS_NON_NEGATIVE_INTEGER
+			if(uint_value < (int32_t)0)
+			{
+				ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+				return false;//inappropriate value
+			}
+			var.atomic_item = item_factory->createPositiveInteger(uint_value);
 		break;
 	}
-
-	DeleteVariable(varname);
-
-	dctx_extern_var_t		var;
-	var.varname = varname;
-	var.vartype = VAR_DATETIME;
-	var.datetime_type = type;
-	var.dtt_value.datetime_value = datetime_value;
-	var.dtt_value.timezone_seconds = timezone_seconds;
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+	deleteVariable(varname);
 
 	vars.push_back(var);
 	return true;
@@ -292,46 +164,1189 @@ bool DynamicContextWrapper::SetVariableAsDateTime( xqp_string varname, struct ::
 	}CATCH_ALL_RETURN_false;
 }
 
-bool DynamicContextWrapper::SetVariableAsItem( xqp_string varname, Item_t item)
+bool DynamicContextWrapper::setVariableAsDecimal( xqp_string varname, Decimal decimal_value)
 {
 	try{
-	if(!checkQName(varname))
-		return false;
-	DeleteVariable(varname);
 
+	checkVarName(varname);
+
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
-	var.vartype = VAR_ITEM;
-	var.item_value = item.getp();
-	var.item_value->addReference();
+	var.atomic_item = item_factory->createDecimal(decimal_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
 
+	deleteVariable(varname);
 	vars.push_back(var);
 	return true;
+
 	}CATCH_ALL_RETURN_false;
+
 }
 
-bool DynamicContextWrapper::SetVariableAsDocument( xqp_string varname, xqp_anyURI documentURI)
+bool DynamicContextWrapper::setVariableAsLong( xqp_string varname, xqp_long long_value)
 {
 	try{
-	if(varname != "." && !checkQName(varname))
-		return false;
 
-	DeleteVariable(varname);
+	checkVarName(varname);
 
+	ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
-	var.vartype = VAR_DOCUMENT_URI;
-	var.document_uri_value = documentURI.getStore();
-	var.document_uri_value->addReference();
+	var.atomic_item = item_factory->createLong(long_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
 
+	deleteVariable(varname);
 	vars.push_back(var);
 	return true;
 
 	}CATCH_ALL_RETURN_false;
+
+}
+
+bool DynamicContextWrapper::setVariableAsULong( xqp_string varname, xqp_ulong ulong_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createUnsignedLong(ulong_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsInt( xqp_string varname, xqp_int int_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createInt(int_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsUInt( xqp_string varname, xqp_uint uint_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createUnsignedInt(uint_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsShort( xqp_string varname, xqp_short short_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createShort(short_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsUShort( xqp_string varname, xqp_ushort ushort_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createUnsignedShort(ushort_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsByte( xqp_string varname, xqp_byte byte_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createByte(byte_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsUByte( xqp_string varname, xqp_ubyte ubyte_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createUnsignedByte(ubyte_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+
+bool DynamicContextWrapper::setVariableAsString( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createString(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsNormalizedString( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createNormalizedString(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsToken( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createToken(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsLanguage( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createLanguage(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsNMToken( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createNMTOKEN(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsName( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createName(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsNCName( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createNCName(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsID( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createID(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsIDREF( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createIDREF(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsEntity( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createENTITY(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsNotation( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createNOTATION(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsAnyURI( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createAnyURI(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsQName( xqp_string varname, xqp_string namespace_value, xqp_string prefix_value, xqp_string local_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createQName(namespace_value, prefix_value, local_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsUntypedAtomic( xqp_string varname, xqp_string str_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createUntypedAtomic(str_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+
+bool DynamicContextWrapper::setVariableAsDouble( xqp_string varname, xqp_double double_value)
+{
+	try{
+
+	checkVarName(varname);
+
+//	if(_isnan(double_value))
+//	{//NaN supplied as float/double value.
+//		ZORBA_ERROR_ALERT(ZorbaError::FOCA0005);
+//	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createDouble(double_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsFloat( xqp_string varname, xqp_float float_value)
+{
+	try{
+
+	checkVarName(varname);
+
+//	if(_isnan(float_value))
+//	{//NaN supplied as float/double value.
+//		ZORBA_ERROR_ALERT(ZorbaError::FOCA0005);
+//	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createFloat(float_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+
+bool DynamicContextWrapper::setVariableAsBool( xqp_string varname, xqp_boolean bool_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createBoolean(bool_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+
+bool DynamicContextWrapper::setVariableAsDateTime( xqp_string varname, struct ::tm datetime_value, long timezone_seconds)
+{
+	try{
+
+	checkVarName(varname);
+
+	if((datetime_value.tm_sec < 0) || (datetime_value.tm_sec > 59) ||
+		(datetime_value.tm_min < 0) || (datetime_value.tm_min > 59) ||
+		(datetime_value.tm_hour < 0) || (datetime_value.tm_hour > 23) ||
+		(datetime_value.tm_mday < 1) || (datetime_value.tm_mday > 31) ||
+		(datetime_value.tm_mon < 0) || (datetime_value.tm_mon > 11) ||
+		(datetime_value.tm_year < 0))
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+		return false;
+	}
+
+	if((timezone_seconds < -12*60*60) || (timezone_seconds > 13*60*60))
+	{//Invalid timezone value.
+		ZORBA_ERROR_ALERT(ZorbaError::FODT0003);
+	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createDateTime(
+					datetime_value.tm_year+1900, datetime_value.tm_mon, datetime_value.tm_mday,
+					datetime_value.tm_hour + datetime_value.tm_isdst ? 1 : 0, datetime_value.tm_min, datetime_value.tm_sec,
+					(short)timezone_seconds/60/60);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsDateTime( xqp_string varname, xqp_dateTime datetime_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createDateTime(datetime_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsDateTime( xqp_string varname, short year , short month, short day, short hour, short minute, short second, short timeZone )
+{
+	try{
+
+	checkVarName(varname);
+
+	if((second < 0) || (second > 59) ||
+		(minute < 0) || (minute > 59) ||
+		(hour < 0) || (hour > 23) ||
+		(day < 1) || (day > 31) ||
+		(month < 0) || (month > 11) ||
+		(year < 0))
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+		return false;
+	}
+	if((timeZone < -12) || (timeZone > 13))
+	{//Invalid timezone value.
+		ZORBA_ERROR_ALERT(ZorbaError::FODT0003);
+	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createDateTime(
+					year, month, day,	hour, minute, second,	timeZone);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsDuration( xqp_string varname, xqp_duration duration_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createDuration(duration_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsDuration( xqp_string varname, short years, short months, short days, short hours, short minutes, short seconds)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createDuration(years, months, days, hours, minutes, seconds);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsDate( xqp_string varname, xqp_date date_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createDate(date_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsDate( xqp_string varname, short year , short month, short day)
+{
+	try{
+
+	checkVarName(varname);
+
+	if((day < 1) || (day > 31) ||
+		(month < 0) || (month > 11) ||
+		(year < 0))
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+		return false;
+	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createDate(year, month, day);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsTime( xqp_string varname, xqp_time time_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createTime(time_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsTime( xqp_string varname, short hour, short minute, short second, short timeZone )
+{
+	try{
+
+	checkVarName(varname);
+
+	if((second < 0) || (second > 59) ||
+		(minute < 0) || (minute > 59) ||
+		(hour < 0) || (hour > 23))
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+		return false;
+	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createTime(hour, minute, second, timeZone);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsGYearMonth( xqp_string varname, xqp_gYearMonth gyearmonth_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createGYearMonth(gyearmonth_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsGYearMonth( xqp_string varname, short year , short month)
+{
+	try{
+
+	checkVarName(varname);
+
+	if((month < 0) || (month > 11) ||
+		(year < 0))
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+		return false;
+	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createGYearMonth(year, month);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsGYear( xqp_string varname, xqp_gYear gyear_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createGYear(gyear_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsGYear( xqp_string varname, short year)
+{
+	try{
+
+	checkVarName(varname);
+
+	if((year < 0))
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+		return false;
+	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createGYear(year);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsGMonthDay( xqp_string varname, xqp_gMonthDay gmonthday_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createGMonthDay(gmonthday_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsGMonthDay( xqp_string varname, short month , short day)
+{
+	try{
+
+	checkVarName(varname);
+
+	if((day < 1) || (day > 31) ||
+		(month < 0) || (month > 11))
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+		return false;
+	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createGMonthDay(month, day);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsGDay( xqp_string varname, xqp_gDay gday_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createGDay(gday_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsGDay( xqp_string varname, short day)
+{
+	try{
+
+	checkVarName(varname);
+
+	if((day < 1) || (day > 31))
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+		return false;
+	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createGDay(day);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsGMonth( xqp_string varname, xqp_gMonth gmonth_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createGMonth(gmonth_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsGMonth( xqp_string varname, short month)
+{
+	try{
+
+	checkVarName(varname);
+
+	if((month < 0) || (month > 11))
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+		return false;
+	}
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createGMonth(month);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+
+bool DynamicContextWrapper::setVariableAsItem( xqp_string varname, Item_t item)
+{
+	try{
+
+	checkVarName(varname);
+
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item;
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+
+bool DynamicContextWrapper::setVariableAsDocument( xqp_string varname, xqp_anyURI documentURI)
+{
+	try{
+
+	checkVarName(varname);
+
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	Store		&store = Store::getInstance();
+	var.atomic_item = store.getDocument(documentURI);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::FODC0002);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+
+bool DynamicContextWrapper::setVariableAsHexBinary( xqp_string varname, xqp_hexBinary hex_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createHexBinary(hex_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
+}
+bool DynamicContextWrapper::setVariableAsBase64Binary( xqp_string varname, xqp_base64Binary base64_value)
+{
+	try{
+
+	checkVarName(varname);
+
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	dctx_extern_var_t		var;
+	var.varname = varname;
+	var.atomic_item = item_factory->createBase64Binary(base64_value);
+	if(var.atomic_item == NULL)
+	{
+		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
+	}
+
+	deleteVariable(varname);
+	vars.push_back(var);
+	return true;
+
+	}CATCH_ALL_RETURN_false;
+
 }
 
 
-bool DynamicContextWrapper::DeleteVariable( xqp_string varname )
+bool DynamicContextWrapper::deleteVariable( xqp_string varname )
 {
 	try{
 	std::vector<dctx_extern_var_t>::iterator		it;
@@ -339,18 +1354,6 @@ bool DynamicContextWrapper::DeleteVariable( xqp_string varname )
 	{
 		if((*it).varname == varname)
 		{
-			if((*it).vartype == VAR_STR)
-			{
-				(*it).str_value->removeReference();
-			}
-			else if((*it).vartype == VAR_ITEM)
-			{
-				(*it).item_value->removeReference();
-			}
-			else if((*it).vartype == VAR_DOCUMENT_URI)
-			{
-				(*it).document_uri_value->removeReference();
-			}
 			vars.erase(it);
 			return true;
 		}
@@ -360,268 +1363,42 @@ bool DynamicContextWrapper::DeleteVariable( xqp_string varname )
 	}CATCH_ALL_RETURN_false;
 }
 
-void DynamicContextWrapper::DeleteAllVariables( )
+void DynamicContextWrapper::deleteAllVariables( )
 {
 	try{
-	std::vector<dctx_extern_var_t>::iterator		it;
-	for(it = vars.begin(); it != vars.end(); it++)
-	{
-		if((*it).vartype == VAR_STR)
-		{
-			(*it).str_value->removeReference();
-		}
-		else if((*it).vartype == VAR_ITEM)
-		{
-			(*it).item_value->removeReference();
-		}
-		else if((*it).vartype == VAR_DOCUMENT_URI)
-		{
-			(*it).document_uri_value->removeReference();
-		}
-	}
 	vars.clear();
 	
 	}CATCH_ALL_NO_RETURN(;);
 }
 
 
-void DynamicContextWrapper::SetDefaultCollection( xqp_string collectionURI )
+void DynamicContextWrapper::setDefaultCollection( xqp_string collectionURI )
 {
 	this->default_collection_uri = collectionURI;
 }
 
-void	DynamicContextWrapper::create_dynamic_context(static_context *sctx, dynamic_context** pdctx)//and fill in with the values
+dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *sctx)//and fill in with the values
 {
 	try{
 	///call for store to give iterators for accessing docs and collections...
 	dynamic_context*	new_dctx;
 
-	if(!*pdctx)
-	{
-		new_dctx = new dynamic_context;
-		*pdctx = new_dctx;
-	}
-	else
-		new_dctx = *pdctx;
+	new_dctx = new dynamic_context;
 	
 	///fill in with values
 	//for variables with atomic values, create singleton iterators with one item
-	Item_t		atomic_item;
-	ItemFactory* item_factory = Zorba::getItemFactory();
 	SingletonIterator		*one_item_iterator;
 	PlanWrapper					*iterator_plus_state;
 
 	std::vector<dctx_extern_var_t>::iterator		it;
 	for(it = vars.begin(); it != vars.end(); it++)
 	{
-		atomic_item = NULL;
-		switch((*it).vartype)
-		{
-		case VAR_INT :
-			switch((*it).int_type)
-			{
-			case XS_INTEGER://derived from XS_DECIMAL
-				atomic_item = item_factory->createInteger((*it).int_value);
-				break;
-			case XS_NON_POSITIVE_INTEGER://derived from XS_INTEGER
-				atomic_item = item_factory->createNonPositiveInteger((xqp_integer)(*it).int_value);
-				break;
-			case XS_NEGATIVE_INTEGER://derived from XS_NON_POSITIVE_INTEGER
-				atomic_item = item_factory->createNegativeInteger((xqp_uinteger)(*it).int_value);
-				break;
-			case XS_LONG://derived from XS_INTEGER
-				atomic_item = item_factory->createLong((xqp_long)(*it).int_value);
-				break;
-			case XS_INT://derived from XS_LONG
-				atomic_item = item_factory->createInt((xqp_int)(*it).int_value);
-				break;
-			case XS_SHORT://derived from XS_INT
-				atomic_item = item_factory->createShort((xqp_short)(*it).int_value);
-				break;
-			case XS_BYTE://derived from XS_SHORT
-				atomic_item = item_factory->createByte((xqp_byte)(*it).int_value);
-				break;
-			case XS_NON_NEGATIVE_INTEGER://derived from XS_INTEGER
-				atomic_item = item_factory->createNonNegativeInteger((xqp_uinteger)(*it).int_value);
-				break;
-			case XS_UNSIGNED_LONG://derived from XS_NON_NEGATIVE_INTEGER
-				atomic_item = item_factory->createUnsignedLong((xqp_ulong)(*it).int_value);
-				break;
-			case XS_UNSIGNED_INT://derived from XS_UNSIGNED_LONG
-				atomic_item = item_factory->createUnsignedInt((xqp_uint)(*it).int_value);
-				break;
-			case XS_UNSIGNED_SHORT://derived from XS_UNSIGNED_INT
-				atomic_item = item_factory->createUnsignedShort((xqp_ushort)(*it).int_value);
-				break;
-			case XS_UNSIGNED_BYTE://derived from XS_UNSIGNED_SHORT
-				atomic_item = item_factory->createUnsignedByte((xqp_ubyte)(*it).int_value);
-				break;
-			case XS_POSITIVE_INTEGER://derived from XS_NON_NEGATIVE_INTEGER
-				atomic_item = item_factory->createPositiveInteger((xqp_uinteger)(*it).int_value);
-				break;
-			}
-			break;
-		case VAR_STR :
-		{
-			xqpStringStore_t	sst((*it).str_value);
-			xqp_string				xqpstr(sst);
-			switch((*it).str_type)
-			{
-			case XS_STRING://derived from XS_ANY_ATOMIC_TYPE
-				atomic_item = item_factory->createString(xqpstr);
-				break;
-			case XS_NORMALIZED_STRING://derived from XS_STRING
-				atomic_item = item_factory->createNormalizedString(xqpstr);
-				break;
-			case XS_TOKEN://derived from XS_NORMALIZED_STRING
-				atomic_item = item_factory->createToken(xqpstr);
-				break;
-			case XS_LANGUAGE://derived from XS_TOKEN
-				atomic_item = item_factory->createLanguage(xqpstr);
-				break;
-			case XS_NMTOKEN://derived from XS_TOKEN
-				atomic_item = item_factory->createNMTOKEN(xqpstr);
-				break;
-			case XS_NAME://derived from XS_TOKEN
-				atomic_item = item_factory->createName(xqpstr);
-				break;
-			case XS_NCNAME://derived from XS_NAME
-				atomic_item = item_factory->createNCName(xqpstr);
-				break;
-			case XS_ID://derived from XS_NCNAME
-				atomic_item = item_factory->createID(xqpstr);
-				break;
-			case XS_IDREF://derived from XS_NCNAME
-				atomic_item = item_factory->createIDREF(xqpstr);
-				break;
-			case XS_ENTITY://derived from XS_NCNAME
-				atomic_item = item_factory->createENTITY(xqpstr);
-				break;
-			case XS_NOTATION:
-				atomic_item = item_factory->createNOTATION(xqpstr);
-				break;
-			case XS_ANYURI:
-				atomic_item = item_factory->createAnyURI(xqpstr);
-				break;
-			case XS_UNTYPED_ATOMIC:
-				atomic_item = item_factory->createUntypedAtomic(xqpstr);
-				break;
-			}
-		}break;
-		case VAR_DOUBLE :
-			switch((*it).double_type)
-			{
-			case XS_DECIMAL:
-      {
-        xqp_decimal lDecimal;
-        if (Decimal::parse((*it).double_value, lDecimal)) {
-          atomic_item = item_factory->createDecimal(lDecimal);
-        } else {
-          // TODO error handling
-        }
-				break;
-      }
-			case XS_FLOAT:
-				atomic_item = item_factory->createFloat((xqp_float)(*it).double_value);
-				break;
-			case XS_DOUBLE:
-				atomic_item = item_factory->createDouble((xqp_double)(*it).double_value);
-				break;
-			}
-			break;
-		case VAR_BOOL :
-			atomic_item = item_factory->createBoolean((*it).bool_value);
-			break;
-		case VAR_DATETIME :
-			switch((*it).datetime_type)
-			{
-			case XS_DATETIME:
-				atomic_item = item_factory->createDateTime(
-					(*it).dtt_value.datetime_value.tm_year+1900, (*it).dtt_value.datetime_value.tm_mon, (*it).dtt_value.datetime_value.tm_mday,
-					(*it).dtt_value.datetime_value.tm_hour + (*it).dtt_value.datetime_value.tm_isdst ? 1 : 0, (*it).dtt_value.datetime_value.tm_min, (*it).dtt_value.datetime_value.tm_sec,
-					(*it).dtt_value.timezone_seconds/60/60);
-				break;
-			case XS_DATE:
-				atomic_item = item_factory->createDate(
-					(*it).dtt_value.datetime_value.tm_year+1900, (*it).dtt_value.datetime_value.tm_mon, (*it).dtt_value.datetime_value.tm_mday);
-				break;
-			case XS_TIME:
-				atomic_item = item_factory->createTime(
-					(*it).dtt_value.datetime_value.tm_hour + (*it).dtt_value.datetime_value.tm_isdst ? 1 : 0, (*it).dtt_value.datetime_value.tm_min, (*it).dtt_value.datetime_value.tm_sec);
-				break;
-			case XS_GYEAR_MONTH:
-				atomic_item = item_factory->createGYearMonth(
-					(*it).dtt_value.datetime_value.tm_year+1900, (*it).dtt_value.datetime_value.tm_mon);
-				break;
-			case XS_GYEAR:
-				atomic_item = item_factory->createGYear(
-					(*it).dtt_value.datetime_value.tm_year+1900);
-				break;
-			case XS_GMONTH_DAY:
-				atomic_item = item_factory->createGMonthDay(
-					(*it).dtt_value.datetime_value.tm_mon, (*it).dtt_value.datetime_value.tm_mday);
-				break;
-			case XS_GDAY:
-				atomic_item = item_factory->createGDay(
-					(*it).dtt_value.datetime_value.tm_mday);
-				break;
-			case XS_GMONTH:
-				atomic_item = item_factory->createGMonth(
-					(*it).dtt_value.datetime_value.tm_mon);
-				break;
-			}
-			break;
-		case VAR_ITEM:
-			atomic_item = (*it).item_value;
-			break;
-		case VAR_DOCUMENT_URI:
-		//	Store		*pStore = Zorba::getStore();
-		//	xqpStringStore_t	sst((*it).document_uri_value);
-		//	xqp_string				xqpstr(sst);
-		//	atomic_item = pStore->getDocument(xqpstr);
-			break;
-		}
-		
-		if((*it).varname != ".")
-		{
-			if((*it).vartype == VAR_DOCUMENT_URI)
-			{
-				xqpStringStore_t	sst((*it).document_uri_value);
-				xqp_string				xqpstr(sst);
-				Item_t uriItem = item_factory->createAnyURI(xqpstr);
-				PlanIter_t iter;
-				PlanWrapper* planWrapper = NULL;
-
-				iter = new SingletonIterator(Zorba::null_loc, uriItem);
-				iter = new FnDocIterator(Zorba::null_loc, iter);
-
-				planWrapper = new PlanWrapper(iter);
-
-				xqp_string		expanded_name;
-				expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
-				new_dctx->add_variable(expanded_name, planWrapper);
-			}
-			else
-			{
-				one_item_iterator = new SingletonIterator(Zorba::null_loc, atomic_item);
-				PlanIter_t		iter_t(one_item_iterator);
-				iterator_plus_state = new PlanWrapper(iter_t);
-				xqp_string		expanded_name;
-				expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
-				new_dctx->add_variable(expanded_name, iterator_plus_state);
-			}
-		}
-		else//if((*it).varname == ".") //for context item
-		{
-			if((*it).vartype == VAR_DOCUMENT_URI)
-			{
-				xqpStringStore_t	sst((*it).document_uri_value);
-				xqp_string				uri(sst);
-				Store		&store = Store::getInstance();
-				atomic_item = store.getDocument(uri);
-			}
-			new_dctx->set_context_item(atomic_item, 1);
-		}
+		one_item_iterator = new SingletonIterator(Zorba::null_loc, (*it).atomic_item);
+		PlanIter_t		iter_t(one_item_iterator);
+		iterator_plus_state = new PlanWrapper(iter_t);
+		xqp_string		expanded_name;
+		expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
+		new_dctx->add_variable(expanded_name, iterator_plus_state);
 	}
 
 	new_dctx->set_implicit_timezone(implicit_timezone_seconds);
@@ -629,7 +1406,15 @@ void	DynamicContextWrapper::create_dynamic_context(static_context *sctx, dynamic
 		new_dctx->set_execution_date_time(current_date_time, current_timezone_seconds);
 	new_dctx->set_default_collection(default_collection_uri);
 
-	}CATCH_ALL_NO_RETURN(;);
+	if(this->context_item != NULL)
+	{
+		new_dctx->set_context_item(this->context_item, 1);
+	}
+
+	return new_dctx;
+
+	}CATCH_ALL_RETURN_NULL;
+
 }
 
 }//end namespace xqp

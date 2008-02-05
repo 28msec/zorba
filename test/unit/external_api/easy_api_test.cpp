@@ -15,8 +15,8 @@ using namespace xqp;
 bool
 test_1()
 {
-	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
-	XQuery_t lQuery = zorba_factory.createQuery("1+2"); 
+	ZorbaSingleThread_t zorba_factory = ZorbaSingleThread::getInstance();
+	XQuery_t lQuery = zorba_factory->createQuery("1+2"); 
 
 	lQuery->initExecution();
   lQuery->serializeXML(std::cout);
@@ -29,8 +29,8 @@ test_1()
 bool
 test_2()
 {
-	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
-	XQuery_t lQuery = zorba_factory.createQuery("1+2"); 
+	ZorbaSingleThread_t zorba_factory = ZorbaSingleThread::getInstance();
+	XQuery_t lQuery = zorba_factory->createQuery("1+2"); 
 
 	lQuery->initExecution();
   lQuery->serializeHTML(std::cout);
@@ -43,8 +43,8 @@ test_2()
 bool
 test_3()
 {
-	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
-	XQuery_t lQuery = zorba_factory.createQuery("1+2"); 
+	ZorbaSingleThread_t zorba_factory = ZorbaSingleThread::getInstance();
+	XQuery_t lQuery = zorba_factory->createQuery("1+2"); 
 
 	lQuery->initExecution();
   lQuery->serializeTEXT(std::cout);
@@ -60,11 +60,11 @@ test_4()
 {
   std::string lQueryString("declare variable $x external; for $i in 1 to $x return $i");
 
-	ZorbaSingleThread& zorba_factory = ZorbaSingleThread::getInstance();
-	XQuery_t lQuery = zorba_factory.createQuery(lQueryString); 
+	ZorbaSingleThread_t zorba_factory = ZorbaSingleThread::getInstance();
+	XQuery_t lQuery = zorba_factory->createQuery(lQueryString); 
 
-  DynamicQueryContext_t lDynCtxt = zorba_factory.createDynamicContext();
-  lDynCtxt->SetVariableAsInteger("x", 2);
+  DynamicQueryContext_t lDynCtxt = zorba_factory->createDynamicContext();
+  lDynCtxt->setVariableAsInt("x", 2);
 
 	lQuery->initExecution(lDynCtxt);
   lQuery->serializeXML(std::cout);

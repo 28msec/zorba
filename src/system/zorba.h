@@ -7,8 +7,8 @@
 
 #if defined (WIN32)
 #include "util/win32/compatib_defs.h"
-#elif defined (__FreeBSD__)
-typedef unsigned long ulong;
+//#elif defined (__FreeBSD__)
+//typedef unsigned long unsigned long;
 #endif
 
 #include <unicode/utypes.h>
@@ -33,7 +33,10 @@ class AlertsManagerImpl;
 //class Zorba_XQueryExecution;
 class serializer;
 class CollationManager;
+class ResultIteratorWrapper;
+class dynamic_context;
 
+typedef rchandle<AlertsManagerImpl>		AlertsManagerImpl_t;
 
 ///Thread Local Storage: this object is global specific to each thread
 class Zorba
@@ -48,6 +51,8 @@ public:
 public:///things specific for each thread
 	Zorba_XQueryBinary              * current_xquery;//current xquery executed for this thread
 //	Zorba_XQueryExecution           * current_xqueryresult;
+	ResultIteratorWrapper						*current_xqueryresult;
+
 	std::stack<const PlanIterator*>	  current_iterator;
 	CollationManager                * coll_manager;
 
@@ -57,7 +62,7 @@ public:///things specific for each thread
 	::Collator		                  * default_coll;
 
 protected:
-	AlertsManagerImpl               * m_error_manager;
+	AlertsManagerImpl_t				       m_error_manager;
 
 	serializer                      * m_item_serializer;///specific for serializing items
 	serializer                      * m_doc_serializer;///specific for serializing complete xml
@@ -70,7 +75,7 @@ public:
   static inline ItemFactory* getItemFactory() { return theItemFactory; }
   static inline Store* getStore() { return theStore; }
 
-	AlertsManagerImpl* getErrorManager();
+	AlertsManagerImpl_t getErrorManager();
 
 	::Collator* getCollator(xqp_string collURI = "");
 
@@ -88,6 +93,7 @@ public:
         ::Collator **default_coll);
 
 	static_context* get_static_context();///of the current xquery
+	dynamic_context* get_base_dynamic_context();//of the current ResultIterator
 
 	serializer* getItemSerializer();
 	serializer* getDocSerializer();

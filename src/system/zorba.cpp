@@ -13,7 +13,7 @@
 #include "errors/error_manager.h"
 #include "runtime/base/iterator.h"
 #include "api/serialization/serializer.h"
-
+#include "api/external/result_iterator_wrapper.h"
 
 using namespace std;
 namespace xqp {
@@ -27,7 +27,7 @@ Zorba::Zorba()
 {
 //	coll = NULL;
 	current_xquery = NULL;
-	//current_xqueryresult = NULL;
+	current_xqueryresult = NULL;
 
 	m_error_manager = new AlertsManagerImpl;
 	m_item_serializer = NULL;
@@ -46,7 +46,7 @@ Zorba::~Zorba()
 //	if(coll)
 //		delete coll;
 
-	delete m_error_manager;
+	//delete m_error_manager;
 	delete m_item_serializer;
 	delete m_doc_serializer;
 	if(!is_user_set_coll)
@@ -93,7 +93,7 @@ void Zorba::getDefaultCollation(
 ::Collator* Zorba::getCollator(xqp_string collURI)
 {
 	::Collator	*coll;
-	if(!current_xquery)
+	if(!get_static_context())
 	{//get the zorba default collation, or a hardcoded one
 		if(!collURI.empty())
 		{
@@ -169,8 +169,15 @@ static_context* Zorba::get_static_context()///of the current xquery
 	return current_xquery->internal_sctx;
 }
 
+dynamic_context* Zorba::get_base_dynamic_context()//of the current ResultIterator
+{
+	if(!current_xqueryresult)
+		return NULL;
+	return current_xqueryresult->internal_dyn_context;
+}
 
-AlertsManagerImpl* Zorba::getErrorManager()
+
+AlertsManagerImpl_t Zorba::getErrorManager()
 { 
 	return m_error_manager;
 }

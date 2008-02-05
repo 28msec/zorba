@@ -6,6 +6,7 @@
 
 #include "store/api/store_api.h"
 #include "system/zorba_engine_api.h"
+#include "system/zorba_engine_singlethread_api.h"
 
 namespace xqp
 {
@@ -89,7 +90,13 @@ public:
         StaticQueryContext_t = 0, 
         bool routing_mode = false);
 
-	ZorbaAlertsManager& getAlertsManagerForCurrentThread();
+  virtual XQuery_t createQueryFromStream(
+				std::istream		&is,
+        StaticQueryContext_t = 0, 
+        xqp_string xquery_source_uri = "",
+        bool routing_mode = false);
+
+	ZorbaAlertsManager_t getAlertsManagerForCurrentThread();
 
 	void setDefaultCollation(
         std::string coll_string,

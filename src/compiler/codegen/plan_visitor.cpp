@@ -181,7 +181,7 @@ void end_visit(var_expr& v)
     bool bound = pvar_iter_map.get ((uint64_t) &v, map);
 
     if (v.get_varname ()->getStringValue () == DOT_POS_VAR && ! bound) {
-      itstack.push (new SingletonIterator (v.get_loc(), ITEM_FACTORY.createInteger (1)));
+      itstack.push (new SingletonIterator (v.get_loc(), ITEM_FACTORY.createInteger ((int32_t)1)));
     } else {
       ForVarIterator *v_p = new ForVarIterator(v.get_varname ()->getLocalName(),
                                                v.get_loc(),
@@ -198,7 +198,7 @@ void end_visit(var_expr& v)
     bool bound = lvar_iter_map.get ((uint64_t) &v, map);
       
     if (v.get_varname ()->getStringValue () == LAST_IDX_VAR && ! bound) {
-      itstack.push (new SingletonIterator (v.get_loc(), ITEM_FACTORY.createInteger (1)));
+      itstack.push (new SingletonIterator (v.get_loc(), ITEM_FACTORY.createInteger ((int32_t)1)));
     } else {
       LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
                                                v.get_loc(),

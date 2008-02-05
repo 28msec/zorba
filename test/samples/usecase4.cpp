@@ -9,7 +9,7 @@ using namespace xqp;
 /*
 	Using Zorba in single thread mode.
 	Init the engine, create a query and execute it.
-	Set the context item in dynamic context
+	Set the context item as a document item in dynamic context.
 */
 
 string make_absolute_file_name(const char *target_file_name, const char *this_file_name)
@@ -32,57 +32,40 @@ string make_absolute_file_name(const char *target_file_name, const char *this_fi
 
 int usecase4(int argc, char* argv[])
 {
+	bool original_throw_mode = ZorbaAlertsManager::setThrowExceptionsMode(true);
 	//init the engine
-	ZorbaAlertsManager::setThrowExceptionsMode(true);
-	ZorbaSingleThread		&zorba_engine = ZorbaSingleThread::getInstance();
+	ZorbaSingleThread_t zorba_engine = ZorbaSingleThread::getInstance();
 	try{
 
-	XQuery_t				xquery;
-	DynamicQueryContext_t		dctx;
+		XQuery_t				xquery;
+		DynamicQueryContext_t		dctx;
 
-	XmlDataManager_t		zorba_store = zorba_engine.getXmlDataManager();
+		XmlDataManager_t		zorba_store = zorba_engine->getXmlDataManager();
 
-	//load a document into xml data manager
-	//and then load it into a variable
-	zorba_store->loadDocument(make_absolute_file_name("books.xml", __FILE__));
+		//load a document into xml data manager
+		//and then load it into a variable
+		zorba_store->loadDocument(make_absolute_file_name("books.xml", __FILE__));
 
-	//create and compile a query with the static context
-	xquery = zorba_engine.createQuery(".//book");
-	if(xquery == NULL)
-	{
-		cout << "Error creating and compiling query" << endl;
-		assert(false);
-		return 1;
-	}
+		//create and compile a query
+		xquery = zorba_engine->createQuery(".//book");
 
-	dctx = zorba_engine.createDynamicContext();
-	//context item is set as variable with reserved name "."
-	if(!dctx->SetVariableAsDocument(".", make_absolute_file_name("books.xml", __FILE__)))
-	{
-		cout << "cannot load document into context item" << endl;
-		assert(false);
-		return 1;
-	}
+		//create a dynamic context object
+		dctx = zorba_engine->createDynamicContext();
+		//set context item as a document from XmlDataManager
+		dctx->setContextItemAsDocument(make_absolute_file_name("books.xml", __FILE__));
 
 
-	//execute the query and serialize its result
-	if(!xquery->initExecution(dctx) ||
-		!xquery->serializeXML(std::cout))
-	{
-		cout << "Error executing and serializing query" << endl;
-		assert(false);
-		return 1;
-	}
+		//execute the query and serialize its result
+		xquery->initExecution(dctx);
+		xquery->serializeXML(std::cout);
 
 	}catch(xqp_exception &x)
 	{
-		int	i=0;
-		zorba_engine.getAlertsManagerForCurrentThread().DumpAlerts(cerr);
+		//output the error message
+		cerr << x;
 	}
-	//shutdown the engine, just for exercise
-	zorba_engine.shutdown();
-	ZorbaAlertsManager::setThrowExceptionsMode(false);
-	//using zorba objects after this moment is prohibited
+
+	ZorbaAlertsManager::setThrowExceptionsMode(original_throw_mode);
 
 	return 0;
 }

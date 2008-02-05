@@ -9,42 +9,41 @@ using namespace xqp;
 /*
 	Using Zorba in single thread mode.
 	Init the engine, create a query and execute it.
-	Change the static context for compiling the query.
+	Compile the query with different static context settings.
 */
 
 int usecase2(int argc, char* argv[])
 {
+	bool original_throw_mode = ZorbaAlertsManager::setThrowExceptionsMode(true);
 	//init the engine
-	ZorbaSingleThread		&zorba_engine = ZorbaSingleThread::getInstance();
+	ZorbaSingleThread_t zorba_engine = ZorbaSingleThread::getInstance();
 	XQuery_t				xquery;
 	StaticQueryContext_t		sctx;
 
-	//create a static context object
-	sctx = zorba_engine.createStaticContext();
-	sctx->AddNamespace("ns1", "http://www.flworfound.org/samples/ns1");
-	cout << "new namespace " << (std::string)sctx->GetNamespaceURIByPrefix("ns1") << endl;
-	sctx->SetDefaultElementAndTypeNamespace("http://www.flworfound.org/samples/ns1");
-	cout << "default element ns " << (std::string)sctx->GetDefaultElementAndTypeNamespace() << endl;
+	try{
+		//create a static context object
+		sctx = zorba_engine->createStaticContext();
+		sctx->addNamespace("ns1", "http://www.flworfound.org/samples/ns1");
+		cout << "new namespace " << sctx->getNamespaceURIByPrefix("ns1") << endl;
+		sctx->setDefaultElementAndTypeNamespace("http://www.flworfound.org/samples/ns1");
+		cout << "default element ns " << sctx->getDefaultElementAndTypeNamespace() << endl;
 
-	//create and compile a query with the static context
-	xquery = zorba_engine.createQuery("1+2", sctx);
-	if(xquery == NULL)
-	{
-		cout << "Error creating and compiling \"1+2\"" << endl;
-		assert(false);
-		return 1;
+		//create and compile a query with the static context
+		xquery = zorba_engine->createQuery("1+2", sctx);
+
+		//execute the query and serialize its result
+		xquery->initExecution();
+		xquery->serializeXML(std::cout);
 	}
-
-	//execute the query and serialize its result
-	if(!xquery->initExecution() ||
-		!xquery->serializeXML(std::cout))
+	catch(xqp_exception &x)
 	{
-		cout << "Error executing and serializing \"1+2\"" << endl;
+		//output the error message
+		cerr << x;
 		assert(false);
-		return 1;
 	}
-
 	//no need to care about freeing objects or closing the engine
 
+	//set back the throw exceptions mode for next usecase
+	ZorbaAlertsManager::setThrowExceptionsMode(original_throw_mode);
 	return 0;
 }
