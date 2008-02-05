@@ -106,9 +106,9 @@ ELSE(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
     MESSAGE(FATAL_ERROR "The boost library is required in order to build Zorba.")
 ENDIF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
 
-IF (NOT MSVC)
-    SET(requiredlibs ${requiredlibs} pthread)
-ENDIF (NOT MSVC)
+# for windows it is located in external/win32_pthread
+# but this should be removed
+SET(requiredlibs ${requiredlibs} pthread)
 
 # is located in external/mapm
 SET(requiredlibs ${requiredlibs} mapm)  
