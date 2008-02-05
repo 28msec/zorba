@@ -441,11 +441,9 @@ SubstringIterator::nextImpl(PlanState& planState) {
           if(item1->getDoubleValue().isFinite())
           {
             tmpStart = item0->getStringValue().length();
-            if( item1->getDoubleValue().isFinite() ) {
-              xqp_int lInt;
-              if (NumConversions::doubleToInt(item1->getDoubleValue().round(), lInt)) {
-                tmpStart = lInt;
-              }
+            xqp_int lInt;
+            if (NumConversions::doubleToInt(item1->getDoubleValue().round(), lInt)) {
+              tmpStart = lInt;
             }
             if( theChildren.size() == 2 )
             {
@@ -459,11 +457,9 @@ SubstringIterator::nextImpl(PlanState& planState) {
                 tmpLen = item0->getStringValue().length() - tmpStart + 1;
                 if(item2->getDoubleValue().isFinite())
                 {
-                  if( item2->getDoubleValue().isFinite() ) {
-                    xqp_int lInt;
-                    if(NumConversions::doubleToInt(item2->getDoubleValue().round(), lInt))
-                      tmpLen = lInt;
-                  }
+                  xqp_int lInt;
+                  if(NumConversions::doubleToInt(item2->getDoubleValue().round(), lInt))
+                    tmpLen = lInt;
                   if( (item1->getDoubleValue() + item2->getDoubleValue()).isFinite())
                   {
                     if(tmpLen >= 0)
@@ -478,6 +474,8 @@ SubstringIterator::nextImpl(PlanState& planState) {
                             tmpLen);
                     }
                   }
+                } else if (item2->getDoubleValue().isPosInf()) {
+                  resStr = item0->getStringValue().substr(tmpStart-1);
                 }
               }
             }
