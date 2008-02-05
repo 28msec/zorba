@@ -45,7 +45,7 @@ bool FloatImplTraits<float>::isPosInf(MAPM aMAPM) {
 
 bool FloatImplTraits<float>::isZero(MAPM aMAPM) { 
   int lExp = aMAPM.exponent();
-  return lExp < -308 || (lExp == -308 && aMAPM.abs() < MAPM("1.1754944e-38"));
+  return lExp < -38 || (lExp == -38 && aMAPM.abs() < MAPM("1.1754944e-38"));
 }
 
 bool FloatImplTraits<float>::isNegInf(MAPM aMAPM) { 
@@ -159,7 +159,6 @@ bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
   bool lIsNegative = false;
 
   char lTmp;
-  int lCount = 0;
   while(!lStop && *lCur != 0) {
     lTmp = *lCur++;
     
