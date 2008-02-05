@@ -8,6 +8,7 @@ SET(API_TEST_SRCS
     timer.cpp
     apitest.cpp)
 
+MESSAGE(STATUS ${requiredlibs})
 #COMPILER_SETUP(APPLICATION_INCLUDES)
 ADD_EXECUTABLE(apitest ${API_TEST_SRCS})
 TARGET_LINK_LIBRARIES(apitest zorba)
