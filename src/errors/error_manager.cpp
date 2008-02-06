@@ -4,6 +4,7 @@
 #include "system/zorba.h"
 #include "errors/errors.h"
 #include "api/external/xquery.h"
+#include "api/external/result_iterator_wrapper.h"
 
 using namespace std;
 namespace xqp {
@@ -38,10 +39,10 @@ AlertsManagerImpl::~AlertsManagerImpl()
 
 void AlertsManagerImpl::clearAlertList()
 {
-	std::list<ZorbaAlert*>::const_iterator errit;
+	std::list<ZorbaAlert_t>::const_iterator errit;
 	
-	for(errit = begin(); errit != end(); errit++)
-		delete *errit;
+//	for(errit = begin(); errit != end(); errit++)
+//		delete *errit;
 
 	clear();
 	is_error = false;
@@ -75,39 +76,52 @@ void AlertsManagerImpl::setAlertMessages(AlertMessages* c, bool is_from_user)
 }
 
 
-int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert* alert)
+int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert_t alert,
+																			 bool dont_send_callback)
 {
-	int		retval;
+	int		retval = -1;
 
 	if(alert->theKind == ZorbaAlert::ERROR_ALERT)
 		setIsError();
 
-	if(thread_registered_callback)
-	{
-		if(z->current_xquery && z->current_xquery->alert_callback_param)
-    {
-			retval = thread_registered_callback(alert, 
-																			z->current_xquery,
-																			z->current_xquery->alert_callback_param);
-    }
-		else
-    {
-			retval = thread_registered_callback(alert, 
-																			z->current_xquery,
-																			thread_registered_param);
-    }
-		delete alert;
-		return retval;
-	}
-	else
+	if(sendAlertByCallback(z, alert, dont_send_callback, &retval))
 	{
 		///if no callback was registered, then put the error in list
 		push_back(alert);
 	}
 
-	return -1;
+	return retval;
 }
 
+bool AlertsManagerImpl::sendAlertByCallback(Zorba* z, 
+																						ZorbaAlert_t alert, 
+																						bool dont_send_callback,
+																						int *retval)
+{
+	if(thread_registered_callback)
+	{
+		if(!dont_send_callback)
+		{
+			if(z->current_xquery && z->current_xquery->alert_callback_param)
+			{
+				*retval = thread_registered_callback(alert, 
+																				z->current_xquery,
+																				z->current_xqueryresult,
+																				z->current_xquery->alert_callback_param);
+			}
+			else
+			{
+				*retval = thread_registered_callback(alert, 
+																				z->current_xquery,
+																				z->current_xqueryresult,
+																				thread_registered_param);
+			}
+			//delete alert;
+		}
+		return true;
+	}
+	return false;
+}
 bool AlertsManagerImpl::isError()
 {
 	return is_error;
@@ -133,7 +147,7 @@ bool ZorbaAlertsManager::getThrowExceptionsMode()
 void AlertsManagerImpl::dumpAlerts(std::ostream &os)
 {
 
-  std::list<ZorbaAlert*>::const_iterator errit;
+  std::list<ZorbaAlert_t>::const_iterator errit;
 
   for(errit = this->begin(); errit != this->end(); errit++)
   {
@@ -144,96 +158,6 @@ void AlertsManagerImpl::dumpAlerts(std::ostream &os)
   }
 
   clearAlertList();
-}
-
-
-
-void ZorbaError::dumpAlert(std::ostream &os)
-{
-//  if(err->theIsFatal)
-//    cerr << "Fatal Error: ";
-//  else
-    os << "Error: ";
-
-  if(theLocation.line)
-  {
-    if(!theLocation.filename.empty())
-      os << theLocation.filename;
-
-    os << "[line: " << theLocation.line << "][col: "
-         << theLocation.column << "]: ";
-  } 
-
-  os << theDescription << std::endl;
-}
-
-
-void ZorbaWarning::dumpAlert(std::ostream &os)
-{
-  os << "Warning:";
-  if(theLocation.line)
-  {
-    if(!theLocation.filename.empty())
-      os << theLocation.filename;
-
-    os << "[line: " << theLocation.line << "][col: "
-         << theLocation.column << "]";
-  } 
-
-  os << " : " << theDescription << std::endl;
-}
-
-
-void ZorbaNotify::dumpAlert(std::ostream &os)
-{
-  os << "Notif: " << theDescription << std::endl;
-}
-
-
-void ZorbaAskUser::dumpAlert(std::ostream &os)
-{
-  ///not implemented
-  os << "Ask user: " << theDescription << std::endl;
-}
-
-
-void ZorbaFnError::dumpAlert(std::ostream &os)
-{
-  os << "User Error: ";
-  os << "[QName: " << theErrorQName->getStringValue() 
-    << "<decoded: " << theDescription << " > ]";
-  os << " : " <<  theUserDescription << endl;
-
-	std::vector<class Item*>::const_iterator item_it;
-
-  for ( item_it = theItems.begin( ) ; item_it != theItems.end( ) ; item_it++ )
-  {
-    os  << " =-= " 
-          << (*item_it)->getStringValue() 
-          << "  [0x" << std::hex << (void*)(*item_it) << "]" << endl;
-  }
-}
-
-
-void ZorbaFnTrace::dumpAlert(std::ostream &os)
-{
-  os << "User Trace: " << theDescription << endl;
-
-  std::vector<class Item*>::const_iterator item_it;
-
-  for ( item_it = items_trace.begin( ) ; item_it != items_trace.end( ) ; item_it++ )
-  {
-    os  << " =-= " 
-          << (*item_it)->getStringValue() 
-          << "  [0x" << std::hex << (void*)(*item_it) << "]" << endl;
-  }
-
-}
-
-std::ostream& operator<<(std::ostream& os, ZorbaAlert &x)
-{
-	x.dumpAlert(os);
-	return os;
 }
 
 }

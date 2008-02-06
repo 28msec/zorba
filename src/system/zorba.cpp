@@ -152,7 +152,7 @@ void Zorba::getDefaultCollation(
 
 }
 
-
+/*
 yy::location& Zorba::GetCurrentLocation()//from top iterator
 {
 	if(current_iterator.empty())
@@ -160,7 +160,7 @@ yy::location& Zorba::GetCurrentLocation()//from top iterator
 	else
 		return (yy::location&)(current_iterator.top()->loc);
 }
-
+*/
 
 static_context* Zorba::get_static_context()///of the current xquery
 {

@@ -53,7 +53,7 @@ public:///things specific for each thread
 //	Zorba_XQueryExecution           * current_xqueryresult;
 	ResultIteratorWrapper						*current_xqueryresult;
 
-	std::stack<const PlanIterator*>	  current_iterator;
+//	std::stack<const PlanIterator*>	  current_iterator;
 	CollationManager                * coll_manager;
 
 	std::string                       default_coll_string;
@@ -79,7 +79,7 @@ public:
 
 	::Collator* getCollator(xqp_string collURI = "");
 
-	yy::location& GetCurrentLocation();//from top iterator
+//	yy::location& GetCurrentLocation();//from top iterator
 	
 	void setDefaultCollation(
         std::string  coll_string,

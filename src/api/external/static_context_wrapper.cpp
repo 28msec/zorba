@@ -3,6 +3,7 @@
 #include "system/globalenv.h"
 #include "errors/error_manager.h"
 #include "system/zorba_engine.h"
+#include "system/zorba.h"
 
 namespace xqp{
 

@@ -40,7 +40,7 @@ int usecase5(int argc, char* argv[])
 
 		assert(false);//unreachable, should exit on error path
 		return 1;
-	}catch(xqp_exception &x)
+	}catch(ZorbaException &x)
 	{
 		//multiple errors and warnings might get fired
 		//display all of them

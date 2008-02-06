@@ -88,7 +88,7 @@ test_5()
 	  XQuery_t lQuery = zorba_factory->createQuery(lQueryString.c_str()); 
 
     lQuery->serializeXML(std::cout);
-  } catch (xqp_exception &e)
+  } catch (ZorbaException &e)
   {
     return true;
   }

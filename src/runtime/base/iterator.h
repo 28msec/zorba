@@ -299,7 +299,7 @@ protected:
 #if ZORBA_BATCHING_TYPE == 1  
   void produceNext(PlanState& planState) 
   {
-    planState.theZorba->current_iterator.push(this);
+  //  planState.theZorba->current_iterator.push(this);
 
     int32_t i = 0;
     theBatch[0] = static_cast<IterType*>(this)->nextImpl();
@@ -309,18 +309,12 @@ protected:
       theBatch[i] = static_cast<IterType*>(this)->nextImpl();
     }
 
-    planState.theZorba->current_iterator.pop();
+   // planState.theZorba->current_iterator.pop();
   }
 #else
   Item_t produceNext(PlanState& planState)
   {
-    Item_t  it;
-    planState.theZorba->current_iterator.push(this);
-
-    it = static_cast<IterType*>(this)->nextImpl(planState);
-  
-    planState.theZorba->current_iterator.pop();
-    return it;
+    return static_cast<IterType*>(this)->nextImpl(planState);
   }
 #endif
 

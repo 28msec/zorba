@@ -55,12 +55,12 @@ isErrorExpected(xqp::ZorbaAlertsManager* aManager, Specification* aSpec)
   for (xqp::ZorbaAlertsManager::const_iterator lIter = aManager->begin();
        lIter != aManager->end(); ++lIter)
   {
-    xqp::ZorbaAlert* lAlert = *lIter;
+    xqp::ZorbaAlert_t lAlert = *lIter;
     switch (lAlert->theKind)
     {
       case xqp::ZorbaAlert::ERROR_ALERT:
         {
-          xqp::ZorbaError* lErrorAlert = dynamic_cast<xqp::ZorbaError*>(lAlert);
+          xqp::ZorbaError* lErrorAlert = dynamic_cast<xqp::ZorbaError*>(&*lAlert);
           std::string lErrorCode = lErrorAlert->toString(lErrorAlert->theCode);
           for (std::vector<std::string>::const_iterator lErrorIter = aSpec->errorsBegin();
                lErrorIter != aSpec->errorsEnd(); ++lErrorIter)
@@ -89,12 +89,12 @@ printErrors(xqp::ZorbaAlertsManager* aManager)
   for (xqp::ZorbaAlertsManager::const_iterator lIter = aManager->begin();
        lIter != aManager->end(); ++lIter)
   {
-    xqp::ZorbaAlert* lAlert = *lIter;
+    xqp::ZorbaAlert_t lAlert = *lIter;
     switch (lAlert->theKind)
     {
     case xqp::ZorbaAlert::ERROR_ALERT:
     {
-      xqp::ZorbaError* lErrorAlert = dynamic_cast<xqp::ZorbaError*>(lAlert);
+      xqp::ZorbaError* lErrorAlert = dynamic_cast<xqp::ZorbaError*>(&*lAlert);
       assert(lErrorAlert);
       std::string lErrorCode = lErrorAlert->toString(lErrorAlert->theCode);
       std::cerr << lErrorCode << " " << lErrorAlert->theDescription << std::endl;

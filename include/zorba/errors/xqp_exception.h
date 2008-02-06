@@ -43,96 +43,23 @@ namespace xqp
 		throw bad_dynamic_cast(os_loc_.str(),os_err_.str());
 */
 
-class xqp_exception //: public std::runtime_error 
+typedef rchandle<ZorbaError>		ZorbaError_t;
+
+class ZorbaException //: public std::runtime_error 
 { 
 public:
-	ZorbaError		error_descr;
+	ZorbaError_t		error_descr;
 
 public: 
-	xqp_exception(ZorbaError::ErrorCodes ecode);
-	xqp_exception(ZorbaError &err);
-
-  ~xqp_exception();
+	virtual ~ZorbaException() {}
 
 public:
   long getCode() const;
-	ZorbaError	getError();
+	ZorbaError_t getError();
 };
 
 
-/*daniel
-class bad_arg : public xqp_exception
-{
-public:
-	bad_arg();
-  bad_arg(const bad_arg&);
-	bad_arg(const std::string& loc);
-	bad_arg(const std::string& loc, const std::string& msg);
-	~bad_arg() throw();
-
-public:
-	std::string get_msg() const { return "bad_arg: " + msg; }
-};
-
-
-class normalize_error : public xqp_exception
-{
-public:
-	normalize_error();
-  normalize_error(const normalize_error&);
-	normalize_error(const std::string& loc);
-	normalize_error(const std::string& loc, const std::string& msg);
-	~normalize_error() throw();
-
-public:
-	std::string get_msg() const { return "normalize_error: " + msg; }
-};
-
-
-class null_pointer : public xqp_exception
-{
-public:
-	null_pointer();
-  null_pointer(const null_pointer&);
-	null_pointer(const std::string& loc);
-	null_pointer(const std::string& loc, const std::string& msg);
-	~null_pointer() throw();
-
-public:
-	std::string get_msg() const { return "null_pointer: " + msg; }
-};
-
-
-class bad_dynamic_cast : public xqp_exception
-{
-public:
-	bad_dynamic_cast();
-  bad_dynamic_cast(const bad_dynamic_cast&);
-	bad_dynamic_cast(const std::string& loc);
-	bad_dynamic_cast(const std::string& loc, const std::string& msg);
-	~bad_dynamic_cast() throw();
-
-public:
-	std::string get_msg() const { return "bad_dynamic_cast: " + msg; }
-};
-
-
-class invariant : public xqp_exception
-{
-public:
-	invariant();
-  invariant(const invariant&);
-	invariant(const std::string& loc);
-	invariant(const std::string& loc, const std::string& msg);
-	~invariant() throw();
-
-public:
-	std::string get_msg() const { return "invariant: " + msg; }
-};
-
-*/
-
-std::ostream& operator<<(std::ostream& os, xqp_exception &x);
+std::ostream& operator<<(std::ostream& os, ZorbaException &x);
 
 } /* namespace xqp */
 #endif /* XQP_XQP_EXCEPTION_H */

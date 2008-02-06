@@ -31,6 +31,7 @@ public:
 
 public:
   // xqp_string   module_name; ///empty if is main module
+	bool		location_is_set;
 
   xqpString    filename;
   unsigned int line;
@@ -48,7 +49,7 @@ public:
   theTime        : The time when the alert was generated.
 
 ********************************************************************************/
-class ZorbaAlert
+class ZorbaAlert : public rcobject
 {
 public:
 
@@ -72,6 +73,7 @@ public:
 	virtual void dumpAlert(std::ostream &os) = 0;
 };
 
+typedef rchandle<ZorbaAlert>		ZorbaAlert_t;
 
 /*******************************************************************************
 
@@ -613,6 +615,7 @@ public:
   ErrorCodes          theCode;
   ZorbaAlertLocation  theLocation;
 
+
   virtual ~ZorbaError();
 
 	virtual void dumpAlert(std::ostream &os);
@@ -715,20 +718,21 @@ public:
 class XQuery;
 typedef rchandle<XQuery> XQuery_t;
 
-class XQueryExecution;
-typedef rchandle<XQueryExecution> XQueryExecution_t;
+class ResultIterator;
+typedef rchandle<ResultIterator> ResultIterator_t;
 
 
 // user might choose to receive the alerts through callback functions
-typedef int alert_callback(ZorbaAlert*       alert, 
-                           XQuery*           current_xquery,
+typedef int alert_callback(ZorbaAlert_t      alert, 
+                           XQuery_t          current_xquery,
+													 ResultIterator_t	 current_result,
                            void*             param);
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class ZorbaAlertsManager : public std::list<ZorbaAlert*>, public rcobject
+class ZorbaAlertsManager : public std::list<ZorbaAlert_t>, public rcobject
 {
 public:
   virtual ~ZorbaAlertsManager();

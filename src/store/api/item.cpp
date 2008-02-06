@@ -513,7 +513,7 @@ Item_t AtomicItem::getAtomizationValue() const
 
 Iterator_t AtomicItem::getTypedValue() const
 {
-  PlanIter_t planIter = new SingletonIterator(ZORBA_FOR_CURRENT_THREAD()->GetCurrentLocation(), this->getAtomizationValue());
+	PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, this->getAtomizationValue());
   return new PlanWrapper ( planIter );
 }
 /* end class AtomicItem */

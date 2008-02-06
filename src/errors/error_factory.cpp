@@ -56,11 +56,11 @@ void ZorbaAlertFactory::error_alert(
 
   AlertsManagerImpl_t err_manager = z->getErrorManager();
 
-	if(!ploc)
-	{
-		if(!z->current_iterator.empty())
-			ploc = &z->current_iterator.top()->loc;
-	}
+//	if(!ploc)
+//	{
+//		if(!z->current_iterator.empty())
+//			ploc = &z->current_iterator.top()->loc;
+//	}
 
 	std::string description;
 	description = err_manager->getAlertMessages().error_decode(code);
@@ -77,6 +77,7 @@ void ZorbaAlertFactory::error_alert(
 			error->theLocation.filename = *ploc->begin.filename;
 		error->theLocation.line = ploc->begin.line;
 		error->theLocation.column = ploc->begin.column;
+		error->theLocation.location_is_set = true;
 	}
 	error->theDescription = description;
 	time(&error->theTime);
@@ -84,9 +85,9 @@ void ZorbaAlertFactory::error_alert(
 //	if(z->current_xqueryresult)
 //		z->current_xqueryresult->is_error = true;
 
-	xqp_exception		x(*error);
+	xqp_exception		x(error);
 
-	err_manager->sendAlertToUser(z, error);
+	err_manager->sendAlertToUser(z, error, !error->theLocation.location_is_set);
 
 	if(!continue_execution)
 	{
@@ -116,11 +117,11 @@ void ZorbaAlertFactory::warning_alert(
 
   AlertsManagerImpl_t err_manager = z->getErrorManager();
 
-	if(!ploc)
-	{
-		if (!z->current_iterator.empty())
-			ploc = &z->current_iterator.top()->loc;
-	}
+//	if(!ploc)
+//	{
+//		if (!z->current_iterator.empty())
+//			ploc = &z->current_iterator.top()->loc;
+//	}
 
 	std::string description;
 	description = err_manager->getAlertMessages().warning_decode(code);
@@ -135,6 +136,7 @@ void ZorbaAlertFactory::warning_alert(
 			warning->theLocation.filename = *ploc->begin.filename;
 		warning->theLocation.line = ploc->begin.line;
 		warning->theLocation.column = ploc->begin.column;
+		warning->theLocation.location_is_set = true;
 	}
 	warning->theDescription = description;
 	time(&warning->theTime);

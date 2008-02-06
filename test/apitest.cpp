@@ -35,8 +35,9 @@ using namespace std;
 #error apitest: UNICODE no longer supported
 #endif
 
-int apitest_alert_callback(ZorbaAlert *alert_mess, 
-                           XQuery*  current_xquery,
+int apitest_alert_callback(ZorbaAlert_t alert_mess, 
+                           XQuery_t  current_xquery,
+													 ResultIterator_t	current_result,
                            void *param)
 {
 #ifndef NDEBUG

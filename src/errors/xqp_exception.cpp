@@ -9,6 +9,11 @@
  */
 
 #include "errors/xqp_exception.h"
+#include "errors/error_factory.h"
+#include "system/zorba.h"
+#include "system/zorba_engine.h"
+#include "errors/error_manager.h"
+
 
 #include <sstream>
 #include <typeinfo>
@@ -23,10 +28,11 @@ namespace xqp
 // -------------------------
 xqp_exception::xqp_exception(ZorbaError::ErrorCodes ecode)
 {
-	error_descr.theCode = ecode;
+	error_descr = new ZorbaError;
+	error_descr->theCode = ecode;
 }
 
-xqp_exception::xqp_exception(ZorbaError& err)
+xqp_exception::xqp_exception(ZorbaError_t err)
 {
 	error_descr = err;
 }
@@ -35,159 +41,42 @@ xqp_exception::~xqp_exception()
 {
 }
 
-long xqp_exception::getCode() const 
+long ZorbaException::getCode() const 
 { 
-	return error_descr.theCode; 
+	return error_descr->theCode; 
 }
-ZorbaError	xqp_exception::getError()
+ZorbaError_t	ZorbaException::getError()
 {
 	return error_descr;
 }
 
-/*daniel
-// bad_arg implementations
-// ----------------------
-bad_arg::bad_arg()
-: xqp_exception(string())
+void	xqp_exception::setLocation(const yy::location* ploc)
 {
-}
-
-bad_arg::bad_arg(const bad_arg& e)
-: xqp_exception(e.loc, e.msg)
-{
-}
-
-bad_arg::bad_arg(const string& loc)
-: xqp_exception(loc)
-{
-}
-
-bad_arg::bad_arg(const string& loc, const string& msg)
-: xqp_exception(loc,msg)
-{
-}
-
-bad_arg::~bad_arg()
-throw()
-{
+	if(error_descr == NULL)
+		return;
+	if(error_descr->theLocation.location_is_set)//already set
+		return;
+	
+	if(ploc)
+	{
+		if(ploc->begin.filename)
+			error_descr->theLocation.filename = *ploc->begin.filename;
+		error_descr->theLocation.line = ploc->begin.line;
+		error_descr->theLocation.column = ploc->begin.column;
+		error_descr->theLocation.location_is_set = true;
+	}
+	
+	Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
+	if(!z)
+		return;
+	int		retval;
+	z->getErrorManager()->sendAlertByCallback(z, &*error_descr, false, &retval);
 }
 
 
-// normalize_error implementations
-// ----------------------
-normalize_error::normalize_error()
-: xqp_exception(string())
+std::ostream& operator<<(std::ostream& os, ZorbaException &x)
 {
-}
-
-normalize_error::normalize_error(const normalize_error& e)
-: xqp_exception(e.loc, e.msg)
-{
-}
-
-normalize_error::normalize_error(const string& loc)
-: xqp_exception(loc)
-{
-}
-
-normalize_error::normalize_error(const string& loc, const string& msg)
-: xqp_exception(loc,msg)
-{
-}
-
-normalize_error::~normalize_error()
-throw()
-{
-}
-
-
-// null_pointer implementations
-// ----------------------------
-null_pointer::null_pointer()
-: xqp_exception(string())
-{
-}
-
-null_pointer::null_pointer(const null_pointer& e)
-: xqp_exception(e.loc, e.msg)
-{
-}
-
-null_pointer::null_pointer(const string& loc)
-: xqp_exception(loc)
-{
-}
-
-null_pointer::null_pointer(const string& loc, const string& msg)
-: xqp_exception(loc,msg)
-{
-}
-
-
-null_pointer::~null_pointer() throw() { }
-
-
-
-// bad_dynamic_cast implementations
-// ----------------------------
-bad_dynamic_cast::bad_dynamic_cast()
-: xqp_exception(string())
-{
-}
-
-bad_dynamic_cast::bad_dynamic_cast(const bad_dynamic_cast& e)
-: xqp_exception(e.loc, e.msg)
-{
-}
-
-bad_dynamic_cast::bad_dynamic_cast(const string& loc)
-: xqp_exception(loc)
-{
-}
-
-bad_dynamic_cast::bad_dynamic_cast(const string& loc, const string& msg)
-: xqp_exception(loc,msg)
-{
-}
-
-
-bad_dynamic_cast::~bad_dynamic_cast() throw() { }
-
-
-
-// invariant implementations
-// -------------------------
-invariant::invariant()
-: xqp_exception(string())
-{
-}
-
-invariant::invariant(const invariant& e)
-: xqp_exception(e.loc, e.msg)
-{
-}
-
-invariant::invariant(const string& loc)
-: xqp_exception(loc)
-{
-}
-
-invariant::invariant(const string& loc, const string& msg)
-: xqp_exception(loc,msg)
-{
-}
-
-
-invariant::~invariant()
-throw()
-{
-}
-
-daniel */
-
-std::ostream& operator<<(std::ostream& os, xqp_exception &x)
-{
-	return (os << x.error_descr);
+	return (os << *x.error_descr);
 }
 
 

@@ -49,8 +49,8 @@ int traceLevel = 0;
 namespace xqp
 {
 
-#define GET_CURRENT_LOCATION() \
-        ZORBA_FOR_CURRENT_THREAD()->GetCurrentLocation()
+//#define GET_CURRENT_LOCATION() \
+//        ZORBA_FOR_CURRENT_THREAD()->GetCurrentLocation()
 
 
 ConstrNodeVector dummyVector;
@@ -393,7 +393,7 @@ Iterator_t DocumentNode::getChildren() const
 Iterator_t DocumentNode::getTypedValue() const
 {
   Item_t item = GET_FACTORY().createUntypedAtomic(getStringValue());
-  PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), item));
+  PlanIter_t ret(new SingletonIterator(Zorba::null_loc, item));
   return new PlanWrapper(ret);
 }
 
@@ -694,7 +694,7 @@ Iterator_t ElementNode::getChildren() const
 Iterator_t ElementNode::getTypedValue() const
 {
   Item_t retItem = getAtomizationValue();
-  PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), retItem));
+  PlanIter_t ret(new SingletonIterator(Zorba::null_loc, retItem));
   return new PlanWrapper(ret);
 }
 
@@ -1226,7 +1226,7 @@ XmlNode* AttributeNode::copy(XmlNode* parent, unsigned long pos)
 
 Iterator_t AttributeNode::getTypedValue() const
 {
-  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), theTypedValue);
+  PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, theTypedValue);
   return new PlanWrapper(planIter);
 }
 
@@ -1316,7 +1316,7 @@ Iterator_t TextNode::getTypedValue() const
 {
   const Item_t& item = GET_FACTORY().createUntypedAtomic(theContent);
 
-  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
+  PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, item);
   return new PlanWrapper(planIter);
 }
 
@@ -1389,7 +1389,7 @@ Item_t PiNode::getType() const
 Iterator_t PiNode::getTypedValue() const
 {
   const Item_t& item = GET_FACTORY().createString(theData.getp());
-  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
+  PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, item);
   return new PlanWrapper(planIter);
 }
 
@@ -1459,7 +1459,7 @@ Item_t CommentNode::getType() const
 Iterator_t CommentNode::getTypedValue() const
 {
   const Item_t& item = GET_FACTORY().createString(theContent.getp());
-  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
+  PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, item);
   return new PlanWrapper(planIter);
 }
 

@@ -19,7 +19,11 @@ public:
 
 	virtual ~AlertsManagerImpl();
 
-	int sendAlertToUser(Zorba* z, ZorbaAlert* alert);
+	int sendAlertToUser(Zorba* z, ZorbaAlert_t alert, bool dont_send_callback = false);
+	bool sendAlertByCallback(Zorba* z, 
+														ZorbaAlert_t alert, 
+														bool dont_send_callback,
+														int *retval);
 
 	void registerAlertCallback(alert_callback* user_alert_callback, void *param);
 

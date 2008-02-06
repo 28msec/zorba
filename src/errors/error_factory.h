@@ -168,9 +168,10 @@ extern bool						g_abort_when_fatal_error;
   ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false, what)
   
 #define CATCH_ALL( uninit_instr, ret )                                                \
-  catch(xqp_exception &)\
+  catch(xqp_exception &x)\
   {\
 		uninit_instr\
+		x.setLocation(&Zorba::null_loc);\
 		if(ZorbaEngine::getInstance()->getAlertsManagerForCurrentThread()->getThrowExceptionsMode())\
 			throw;\
     ret;                                                                \
@@ -194,6 +195,25 @@ extern bool						g_abort_when_fatal_error;
 #define	CATCH_ALL_RETURN_VOID  CATCH_ALL (;, return)
 
 #define CATCH_ALL_NO_RETURN(uninit_instr)    CATCH_ALL (uninit_instr, (void) 0)
+
+#define CATCH_ITERATOR_EXCEPTION		\
+  catch(xqp_exception &x)\
+  {\
+		x.setLocation(&this->loc);\
+		throw;\
+	}
+
+
+
+class xqp_exception : public ZorbaException
+{
+public:
+	xqp_exception(ZorbaError::ErrorCodes ecode);
+	xqp_exception(ZorbaError_t err); 
+	virtual ~xqp_exception();
+
+	void	setLocation(const yy::location* ploc);
+};
 
 }
 

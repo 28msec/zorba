@@ -45,7 +45,7 @@ int usecase3(int argc, char* argv[])
 		xquery->serializeXML(std::cout);
 
 	}
-	catch(xqp_exception &x)
+	catch(ZorbaException &x)
 	{
 		//output the error message
 		cerr << x;

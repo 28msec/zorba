@@ -239,7 +239,7 @@ void mmfile::destroy()
 		DeleteFile(path_str);
 #endif
 	} catch (xqp_exception& e) {
-		IOEXCEPTION("remove on: '"+path+"' application exception: "+e.getError().theDescription);
+		IOEXCEPTION("remove on: '"+path+"' application exception: "+e.getError()->theDescription);
   } catch (exception& e) {
 		IOEXCEPTION("remove on: '"+path+"' system exception: "+e.what());
   } catch (...) {
