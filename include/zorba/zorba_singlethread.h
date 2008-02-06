@@ -18,5 +18,27 @@
 #include "zorba/types/typeident.h"
 #include "errors/xqp_exception.h"
 
+/** \example usecase1.cpp
+ * This is an example of how to use the single threaded API in zorba.
+ */
 
+/** \example usecase2.cpp
+ * This is an example of how to use the single threaded API in zorba.
+ */
+
+/** \example usecase3.cpp
+ * This is an example of how to use the single threaded API in zorba.
+ */
+
+/** \example usecase4.cpp
+ * This is an example of how to use the single threaded API in zorba.
+ */
+
+/** \example usecase5.cpp
+ * This is an example of how to use the single threaded API in zorba.
+ */
+
+/** \example usecase6.cpp
+ * This is an example of how to use the single threaded API in zorba.
+ */
 #endif
