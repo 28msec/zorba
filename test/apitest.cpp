@@ -66,7 +66,12 @@ void set_var (string name, string val,
 	{
 		if(dctx)
 		{
-			bool result = dctx->setContextItemAsString(xqp_string(val));
+			XmlDataManager_t		zorba_store = ZorbaEngine::getInstance()->getXmlDataManager();
+
+			//load a document into xml data manager
+			//and then load it into context item
+			zorba_store->loadDocument(val);
+			bool result = dctx->setContextItemAsDocument(val);
 			assert(result);
 		}
 		return;
