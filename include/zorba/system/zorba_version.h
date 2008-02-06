@@ -1,6 +1,7 @@
 #ifndef ZORBA_VERSION_H
 #define ZORBA_VERSION_H
 
+#include "zorba/common.h"
 #include <string>
 #include <sstream>
 
@@ -9,16 +10,16 @@ namespace xqp {
 class ZorbaVersion
 { 
 protected:
-  static uint32_t ZORBA_MAJOR_VERSION;
-  static uint32_t ZORBA_MINOR_VERSION;
-  static uint32_t ZORBA_PATCH_VERSION;
+  static int theMajorVersion;
+  static int theMinorVersion;
+  static int thePatchVersion;
 
 public:
-  static uint32_t getZorbaMajorVersion();
+  static int getZorbaMajorVersion();
 
-  static uint32_t getZorbaMinorVersion();
+  static int getZorbaMinorVersion();
 
-  static uint32_t getZorbaPatchVersion();
+  static int getZorbaPatchVersion();
 
   static std::string getZorbaVersion();
 

@@ -5,18 +5,18 @@
 
 namespace xqp {
 
-  uint32_t ZorbaVersion::ZORBA_MAJOR_VERSION = @CPACK_PACKAGE_VERSION_MAJOR@;
-  uint32_t ZorbaVersion::ZORBA_MINOR_VERSION = @CPACK_PACKAGE_VERSION_MINOR@;
-  uint32_t ZorbaVersion::ZORBA_PATCH_VERSION = @CPACK_PACKAGE_VERSION_PATCH@;
+  int ZorbaVersion::theMajorVersion = @CPACK_PACKAGE_VERSION_MAJOR@;
+  int ZorbaVersion::theMinorVersion = @CPACK_PACKAGE_VERSION_MINOR@;
+  int ZorbaVersion::thePatchVersion = @CPACK_PACKAGE_VERSION_PATCH@;
 
-  uint32_t
-  ZorbaVersion::getZorbaMajorVersion() { return ZORBA_MAJOR_VERSION; }
+  int
+  ZorbaVersion::getZorbaMajorVersion() { return theMajorVersion; }
 
-  uint32_t
-  ZorbaVersion::getZorbaMinorVersion() { return ZORBA_MINOR_VERSION; }
+  int
+  ZorbaVersion::getZorbaMinorVersion() { return theMinorVersion; }
 
-  uint32_t
-  ZorbaVersion::getZorbaPatchVersion() { return ZORBA_PATCH_VERSION; }
+  int
+  ZorbaVersion::getZorbaPatchVersion() { return thePatchVersion; }
 
   std::string
   ZorbaVersion::getZorbaVersion() 
