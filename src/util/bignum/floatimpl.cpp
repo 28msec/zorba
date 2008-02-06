@@ -680,21 +680,50 @@ FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) c
 
 template <typename FloatType>
 bool FloatImpl<FloatType>::operator==(const FloatImpl& aFloatImpl) const{
-  if (theType != aFloatImpl.theType) {
-    return false;
-  }
-
   switch(theType) {
   case FloatConsts::NOT_A_NUM:
     return false;
   case FloatConsts::INF_POS:
+    switch(aFloatImpl.theType) {
+    case FloatConsts::NOT_A_NUM:
+    case FloatConsts::INF_NEG:
+    case FloatConsts::NORMAL_NEG:
+    case FloatConsts::NORMAL:
+      return false;
+    case FloatConsts::INF_POS:
+      return true;
+    }
   case FloatConsts::INF_NEG:
-    return true; 
+    switch(aFloatImpl.theType) {
+    case FloatConsts::NOT_A_NUM:
+    case FloatConsts::INF_POS:
+    case FloatConsts::NORMAL_NEG:
+    case FloatConsts::NORMAL:
+      return false;
+    case FloatConsts::INF_NEG:
+      return true;
+    }
   case FloatConsts::NORMAL_NEG:
+    switch(aFloatImpl.theType) {
+    case FloatConsts::NOT_A_NUM:
+    case FloatConsts::INF_POS:
+    case FloatConsts::INF_NEG:
+      return false;
+    case FloatConsts::NORMAL_NEG:
+    case FloatConsts::NORMAL:
+      return theFloatImpl == aFloatImpl.theFloatImpl;
+    }
   case FloatConsts::NORMAL:
-    return (theFloatImpl == aFloatImpl.theFloatImpl);
+    switch(aFloatImpl.theType) {
+    case FloatConsts::NOT_A_NUM:
+    case FloatConsts::INF_POS:
+    case FloatConsts::INF_NEG:
+      return false;
+    case FloatConsts::NORMAL_NEG:
+    case FloatConsts::NORMAL:
+      return theFloatImpl == aFloatImpl.theFloatImpl;
+    }
   }
-  return false;
 }
 
 template <typename FloatType>
@@ -727,8 +756,8 @@ bool FloatImpl<FloatType>::operator<(const FloatImpl& aFloatImpl) const{
     case FloatConsts::INF_NEG:
       return false;
     case FloatConsts::INF_POS:
-    case FloatConsts::NORMAL:
       return true;
+    case FloatConsts::NORMAL:
     case FloatConsts::NORMAL_NEG:
       return theFloatImpl < aFloatImpl.theFloatImpl;
     }
@@ -736,10 +765,10 @@ bool FloatImpl<FloatType>::operator<(const FloatImpl& aFloatImpl) const{
     switch(aFloatImpl.theType) {
     case FloatConsts::NOT_A_NUM:
     case FloatConsts::INF_NEG:
-    case FloatConsts::NORMAL_NEG:
       return false;
     case FloatConsts::INF_POS:
       return true;
+    case FloatConsts::NORMAL_NEG:
     case FloatConsts::NORMAL:
       return theFloatImpl < aFloatImpl.theFloatImpl;
     }
@@ -777,19 +806,19 @@ bool FloatImpl<FloatType>::operator>(const FloatImpl& aFloatImpl) const{
     case FloatConsts::INF_POS:
       return false;
     case FloatConsts::INF_NEG:
-    case FloatConsts::NORMAL_NEG:
       return true;
     case FloatConsts::NORMAL:
+    case FloatConsts::NORMAL_NEG:
       return theFloatImpl > aFloatImpl.theFloatImpl;
     }
   case FloatConsts::NORMAL:
     switch(aFloatImpl.theType) {
     case FloatConsts::NOT_A_NUM:
     case FloatConsts::INF_POS:
-    case FloatConsts::NORMAL:
       return false;
     case FloatConsts::INF_NEG:
       return true;
+    case FloatConsts::NORMAL:
     case FloatConsts::NORMAL_NEG:
       return theFloatImpl > aFloatImpl.theFloatImpl;
     }
