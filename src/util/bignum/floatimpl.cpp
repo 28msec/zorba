@@ -580,8 +580,25 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator%(const FloatImpl& aFloatImpl
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::operator-() const{
   FloatImpl lFloatImpl;
-  lFloatImpl.theType = (isPos() ? FloatConsts::NORMAL : FloatConsts::NORMAL_NEG);
-  lFloatImpl.theFloatImpl = -theFloatImpl;
+  switch(theType) {
+  case FloatConsts::NORMAL:
+    lFloatImpl.theType = FloatConsts::NORMAL_NEG;
+    lFloatImpl.theFloatImpl = -theFloatImpl;
+    break;
+  case FloatConsts::NORMAL_NEG:
+    lFloatImpl.theType = FloatConsts::NORMAL;
+    lFloatImpl.theFloatImpl = -theFloatImpl;
+    break;
+  case FloatConsts::NOT_A_NUM:
+    lFloatImpl.theType = FloatConsts::NOT_A_NUM;
+    break;
+  case FloatConsts::INF_POS:
+    lFloatImpl.theType = FloatConsts::INF_NEG;
+    break;
+  case FloatConsts::INF_NEG:
+    lFloatImpl.theType = FloatConsts::INF_POS;
+    break;
+  }
   return lFloatImpl;
 }
 
