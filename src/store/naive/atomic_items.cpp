@@ -328,11 +328,11 @@ bool DoubleItemNaive::equals ( Item_t item ) const
 Item_t DoubleItemNaive::getEBV() const
 {
   bool b;
-  if (theValue != theValue)
-    // NaN case
+  if (theValue.isNaN()) {
     b = false;
-  else
-    b = ( theValue != 0 );
+  } else {
+    b = !theValue.isZero();
+  }
   return CREATE_BOOLITEM(b);
 }
 
@@ -371,11 +371,11 @@ bool FloatItemNaive::equals ( Item_t item ) const
 Item_t FloatItemNaive::getEBV() const
 {
   bool b;
-  if (theValue != theValue)
-    // NaN case
+  if (theValue.isNaN()) {
     b = false;
-  else
-    b = ( theValue != 0 );
+  } else {
+    b = !theValue.isZero();
+  }
   return CREATE_BOOLITEM(b);
 }
 
