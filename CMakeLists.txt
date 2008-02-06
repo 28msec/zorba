@@ -134,6 +134,10 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external) # should also be
 
 INCLUDE(CMakeConfiguration.txt)
 
+# cpack
+SET(CPACK_PACKAGE_VERSION_MAJOR  "0")
+SET(CPACK_PACKAGE_VERSION_MINOR  "5")
+SET(CPACK_PACKAGE_VERSION_PATCH  "0")
 
 # for the moment, we include everything
 # however, we should move the headers (at least the library headers) into a separate directory
@@ -144,5 +148,7 @@ ADD_SUBDIRECTORY(external)
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
-ADD_SUBDIRECTORY(doc)
 #ADD_SUBDIRECTORY(bin)
+ADD_SUBDIRECTORY(doc)
+
+
