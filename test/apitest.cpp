@@ -62,6 +62,15 @@ void set_var (string name, string val,
               DynamicQueryContext_t dctx,
               XQuery_t query)
 {
+	if(name == ".") 
+	{
+		if(dctx)
+		{
+			bool result = dctx->setContextItemAsString(xqp_string(val));
+			assert(result);
+		}
+		return;
+	}
   if (name [name.size () - 1] == ':' && dctx != NULL) 
   {
     bool result = dctx->setVariableAsString(name.substr (0, name.size () - 1), xqp_string(val));

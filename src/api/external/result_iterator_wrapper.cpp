@@ -94,6 +94,9 @@ Item_t	ResultIteratorWrapper::next()
 
 void		ResultIteratorWrapper::close()
 {
+	if(theClosed)
+		return;
+
 	try{
 		if(!state_block)
 		{
