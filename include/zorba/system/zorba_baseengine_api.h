@@ -2,6 +2,10 @@
 #ifndef ZORBA_BASE_ENGINE_API_CLASS_21_JAN_2008
 #define ZORBA_BASE_ENGINE_API_CLASS_21_JAN_2008
 
+#include "zorba/util/rchandle.h"
+#include "store/api/store_api.h"
+#include "zorba/system/zorba_version.h"
+
 namespace xqp{
 
 class AlertCodes;
@@ -14,8 +18,6 @@ typedef rchandle<class DynamicQueryContext> DynamicQueryContext_t;
 typedef rchandle<class XQuery> XQuery_t;
 typedef rchandle<class ZorbaAlertsManager>	ZorbaAlertsManager_t;
 
-#include "zorba/util/rchandle.h"
-#include "store/api/store_api.h"
 
 class ZorbaBaseEngine : public rcobject
 {
@@ -68,6 +70,10 @@ public:
 	virtual DynamicQueryContext_t createDynamicContext() = 0;
 
 	virtual	XmlDataManager_t		getXmlDataManager() = 0;
+
+
+  static std::string
+  getZorbaVersion() { return ZorbaVersion::getZorbaVersion(); }
 };
 
 }//end namespace xqp
