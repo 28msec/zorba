@@ -978,6 +978,74 @@ xqp_string DurationItemNaive::show() const
 }
 
 /*******************************************************************************
+ * class DayTimeDuration
+ *******************************************************************************/
+xqp_dayTimeDuration DayTimeDurationItemNaive::getDayTimeDurationValue() const
+{
+  return theValue;
+}
+
+xqp_string DayTimeDurationItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t DayTimeDurationItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("dayTimeDuration");
+}
+
+bool DayTimeDurationItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getDayTimeDurationValue();
+}
+
+Item_t DayTimeDurationItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string DayTimeDurationItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+/*******************************************************************************
+ * class YearMonthDuration
+ *******************************************************************************/
+xqp_yearMonthDuration YearMonthDurationItemNaive::getYearMonthDurationValue() const
+{
+  return theValue;
+}
+
+xqp_string YearMonthDurationItemNaive::getStringValue() const
+{
+  return theValue->toString();
+}
+  
+Item_t YearMonthDurationItemNaive::getType() const
+{
+  return CREATE_XS_TYPE("yearMonthDuration");
+}
+
+bool YearMonthDurationItemNaive::equals(Item_t aItem) const
+{
+  return *theValue == *aItem->getYearMonthDurationValue();
+}
+
+Item_t YearMonthDurationItemNaive::getEBV() const
+{
+  // TODO:
+  return NULL;
+}
+
+xqp_string YearMonthDurationItemNaive::show() const
+{
+  return theValue->toString();
+}
+
+/*******************************************************************************
  * class GYearMonthItemNaive
  *******************************************************************************/
 xqp_gYearMonth GYearMonthItemNaive::getGYearMonthValue() const

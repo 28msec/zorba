@@ -191,6 +191,14 @@ public:
    */
   virtual xqp_duration getDurationValue() const;
 
+  /** Accessor for xs:dayTimeDuration
+    */
+  virtual xqp_dayTimeDuration getDayTimeDurationValue() const;
+
+  /** Accessor for xs:yearMonthDuration
+    */
+  virtual YearMonthDuration_t getYearMonthDurationValue() const;
+
   /** Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
    */
   virtual std::vector<xqp_string> getStringVectorValue() const;

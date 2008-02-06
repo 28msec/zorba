@@ -341,6 +341,36 @@ class fn_datetime_ctor : public function
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
       TypeSystem::xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.6.1 op:add-yearMonthDurations
+ *-----------------------*/
+  class op_ym_durations_add : public function
+  {
+    public:
+      op_ym_durations_add(const signature&);
+      ~op_ym_durations_add() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+  
+/*
+ * 10.6.6 op:add-dayTimeDurations
+ *-----------------------*/
+  class op_dt_durations_add : public function
+  {
+    public:
+      op_dt_durations_add(const signature&);
+      ~op_dt_durations_add() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
   }; 
 } // namespace xqp
 

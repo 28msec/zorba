@@ -821,6 +821,20 @@ DECL(fn_timezone_from_time,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "timezone-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
+
+//TODO change the type to YM_DURATION_TYPE_ONE
+DECL(op_ym_durations_add,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-yearMonthDurations"),
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE));
+
+//TODO change it to DT_DURATION_TYPE_ONE
+DECL(op_dt_durations_add,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-dayTimeDurations"),
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE));
 // end date time
 
 // begin debug functions

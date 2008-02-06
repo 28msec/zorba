@@ -216,6 +216,42 @@ public:
 };
 
 /*******************************************************************************
+ * class DayTimeDurationItem
+ *******************************************************************************/
+class DayTimeDurationItemNaive : public AtomicItem
+{
+protected:
+  xqp_dayTimeDuration theValue;
+
+public:
+  DayTimeDurationItemNaive(xqp_dayTimeDuration& aValue) : theValue(aValue) { };
+  virtual xqp_string getStringValue() const;
+  virtual xqp_dayTimeDuration getDayTimeDurationValue() const;
+  virtual Item_t getType() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string show() const;
+};
+
+/*******************************************************************************
+ * class YearMonthDurationItem
+ *******************************************************************************/
+class YearMonthDurationItemNaive : public AtomicItem
+{
+protected:
+  xqp_yearMonthDuration theValue;
+
+public:
+  YearMonthDurationItemNaive(xqp_yearMonthDuration& aValue) : theValue(aValue) { };
+  virtual xqp_string getStringValue() const;
+  virtual xqp_yearMonthDuration getYearMonthDurationValue() const;
+  virtual Item_t getType() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string show() const;
+};
+
+/*******************************************************************************
  * class GYearMonthItem
  *******************************************************************************/
 class GYearMonthItemNaive : public AtomicItem

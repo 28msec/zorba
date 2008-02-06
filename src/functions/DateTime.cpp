@@ -6,6 +6,7 @@
 #include "functions/DateTime.h"
 #include "system/globalenv.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
+#include "runtime/numerics/NumericsImpl.h"
 
 namespace xqp
 {
@@ -752,5 +753,76 @@ fn_timezone_from_time::type_check (
   return GENV_TYPESYSTEM.TIME_TYPE_QUESTION;
 }
 /*end class fn_timezone_from_time*/
+
+/*
+ * 10.6.1 op:add-yearMonthDurations
+ * --------------------*/
+/*begin class op_ym_durations_add*/
+op_ym_durations_add::op_ym_durations_add (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+op_ym_durations_add::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>(loc, argv);
+}
+
+bool
+op_ym_durations_add::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2);
+}
+
+//TODO change the type to YM_DURATION_TYPE_ONE
+TypeSystem::xqtref_t
+op_ym_durations_add::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+}
+/*end class op_ym_durations_add*/
+
+/*
+ * 10.6.6 op:add-dayTimeDurations
+ * --------------------*/
+/*begin class op_dt_durations_add*/
+op_dt_durations_add::op_dt_durations_add (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+op_dt_durations_add::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>(loc, argv);
+}
+
+bool
+op_dt_durations_add::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2);
+}
+
+//TODO change the type to DT_DURATION_TYPE_ONE
+TypeSystem::xqtref_t
+op_dt_durations_add::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+}
+/*end class op_dt_durations_add*/
+
 } // namespace xqp
 

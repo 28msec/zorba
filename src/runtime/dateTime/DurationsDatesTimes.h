@@ -6,7 +6,7 @@
 #ifndef XQP_DURATIONSDATESTIMES_H
 #define XQP_DURATIONSDATESTIMES_H
 
-#include "runtime/base/unarybase.h"
+#include "runtime/base/unarybase.h" //TODO remove this
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
 #include "runtime/base/iterator.h"
@@ -78,175 +78,99 @@ public:
 /*  
  * 10.5 Component Extraction Functions on Durations, Dates and Times
  * --------------------*/
-/*
- * 10.5.1 fn:years-from-duration
- * --------------------*/
- 
-/*begin class YearsFromDurationIterator */
+
+//10.5.1 fn:years-from-duration
 NARY_ITER(FnYearsFromDurationIterator);
-/*end class YearsFromDurationIterator */
 
-/*
- * 10.5.2 fn:months-from-duration
- * --------------------*/
- 
-/*begin class FnMonthsFromDurationIterator */
+// 10.5.2 fn:months-from-duration
 NARY_ITER(FnMonthsFromDurationIterator);
-/*end class FnMonthsFromDurationIterator */
 
-/*
- * 10.5.3 fn:days-from-duration
- * --------------------*/
- 
-/*begin class FnDaysFromDurationIterator */
+// 10.5.3 fn:days-from-duration
 NARY_ITER(FnDaysFromDurationIterator);
-/*end class FnDaysFromDurationIterator */
 
-
-/*
- * 10.5.4 fn:hours-from-duration
- * --------------------*/
- 
-/*begin class FnHoursFromDurationIterator */
+// 10.5.4 fn:hours-from-duration
 NARY_ITER(FnHoursFromDurationIterator);
-/*end class FnHoursFromDurationIterator */
 
-/*
- * 10.5.5 fn:minutes-from-duration
- * --------------------*/
- 
-/*begin class FnMinutesFromDurationIterator */
+// 10.5.5 fn:minutes-from-duration
 NARY_ITER(FnMinutesFromDurationIterator);
-/*end class FnMinutesFromDurationIterator */
 
-/*
- * 10.5.6 fn:seconds-from-duration
- * --------------------*/
- 
-/*begin class FnSecondsFromDurationIterator */
+// 10.5.6 fn:seconds-from-duration
 NARY_ITER(FnSecondsFromDurationIterator);
-/*end class FnSecondsFromDurationIterator */
 
-/*
- * 10.5.7 fn:year-from-dateTime
- * --------------------*/
- 
-/*begin class FnYearFromDatetimeIterator */
+// 10.5.7 fn:year-from-dateTime
 NARY_ITER(FnYearFromDatetimeIterator);
-/*end class FnYearFromDatetimeIterator */
 
-/*
- * 10.5.8 fn:month-from-dateTime
- * --------------------*/
- 
-/*begin class FnMonthFromDatetimeIterator */
+// 10.5.8 fn:month-from-dateTime
 NARY_ITER(FnMonthFromDatetimeIterator);
-/*end class FnMonthFromDatetimeIterator */
 
-/*
- * 10.5.9 fn:day-from-dateTime
- * --------------------*/
- 
-/*begin class FnDayFromDatetimeIterator */
+// 10.5.9 fn:day-from-dateTime
 NARY_ITER(FnDayFromDatetimeIterator);
-/*end class FnDayFromDatetimeIterator */
 
-/*
- * 10.5.10 fn:hours-from-dateTime
- * --------------------*/
- 
-/*begin class FnHoursFromDatetimeIterator */
+// 10.5.10 fn:hours-from-dateTime
 NARY_ITER(FnHoursFromDatetimeIterator);
-/*end class FnHoursFromDatetimeIterator */
 
-/*
- * 10.5.11 fn:minutes-from-dateTime
- * --------------------*/
- 
-/*begin class FnMinutesFromDatetimeIterator */
+// 10.5.11 fn:minutes-from-dateTime
 NARY_ITER(FnMinutesFromDatetimeIterator);
-/*end class FnMinutesFromDatetimeIterator */
 
-/*
- * 10.5.12 fn:seconds-from-dateTime
- * --------------------*/
- 
-/*begin class FnSecondsFromDatetimeIterator */
+// 10.5.12 fn:seconds-from-dateTime
 NARY_ITER(FnSecondsFromDatetimeIterator);
-/*end class FnSecondsFromDatetimeIterator */
 
-/*
- * 10.5.13 fn:timezone-from-dateTime
- * --------------------*/
- 
-/*begin class FnTimezoneFromDatetimeIterator */
+// 10.5.13 fn:timezone-from-dateTime
 NARY_ITER(FnTimezoneFromDatetimeIterator);
-/*end class FnTimezoneFromDatetimeIterator */
 
-/*
- * 10.5.14 fn:year-from-date
- * --------------------*/
- 
-/*begin class FnYearFromDateIterator */
+// 10.5.14 fn:year-from-date
 NARY_ITER(FnYearFromDateIterator);
-/*end class FnYearFromDateIterator */
 
-/*
- * 10.5.15 fn:month-from-date
- * --------------------*/
- 
-/*begin class FnMonthFromDateIterator */
+// 10.5.15 fn:month-from-date
 NARY_ITER(FnMonthFromDateIterator);
-/*end class FnMonthFromDateIterator */
 
-/*
- * 10.5.16 fn:day-from-date
- * --------------------*/
- 
-/*begin class FnDayFromDateIterator */
+// 10.5.16 fn:day-from-date
 NARY_ITER(FnDayFromDateIterator);
-/*end class FnDayFromDateIterator */
 
-/*
- * 10.5.17 fn:timezone-from-date
- * --------------------*/
- 
-/*begin class FnTimezoneFromDateIterator */
+// 10.5.17 fn:timezone-from-date
 NARY_ITER(FnTimezoneFromDateIterator);
-/*end class FnTimezoneFromDateIterator */
 
-/*
- * 10.5.18 fn:hours-from-time
- * --------------------*/
- 
-/*begin class FnHoursFromTimeIterator */
+// 10.5.18 fn:hours-from-time
 NARY_ITER(FnHoursFromTimeIterator);
-/*end class FnHoursFromTimeIterator */
 
-/*
- * 10.5.19 fn:minutes-from-time
- * --------------------*/
- 
-/*begin class FnMinutesFromTimeIterator */
+// 10.5.19 fn:minutes-from-time
 NARY_ITER(FnMinutesFromTimeIterator);
-/*end class FnMinutesFromTimeIterator */
 
-
-/*
- * 10.5.20 fn:seconds-from-time
- * --------------------*/
- 
-/*begin class FnSecondsFromTimeIterator */
+// 10.5.20 fn:seconds-from-time
 NARY_ITER(FnSecondsFromTimeIterator);
-/*end class FnSecondsFromTimeIterator */
 
-/*
- * 10.5.21 fn:timezone-from-time
- * --------------------*/
- 
-/*begin class FnTimezoneFromTimeIterator */
+// 10.5.21 fn:timezone-from-time
 NARY_ITER(FnTimezoneFromTimeIterator);
-/*end class FnTimezoneFromTimeIterator */
+
+
+/** Operations for Add Duration, Date and Times
+  */
+class AddOperationsDurationDateTime
+{
+  public:
+    static Item_t opDurations (const yy::location* , Item_t, Item_t );
+};
+
+  /**
+    * Generic Iterator for Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
+    */
+  template < typename Operations >
+      class ArithmeticIteratorDurationDateTime : public NaryBaseIterator<ArithmeticIteratorDurationDateTime<Operations>,
+                                                      PlanIteratorState>
+  {
+    public:
+      ArithmeticIteratorDurationDateTime ( const yy::location&, std::vector<PlanIter_t>& aChildren);
+      ~ArithmeticIteratorDurationDateTime();
+
+      Item_t nextImpl(PlanState&);
+      
+      virtual void accept(PlanIterVisitor&) const;
+
+      static Item_t
+      compute(const yy::location& loc, Item_t n0, Item_t n1);
+
+  }; /* class ArithmeticIteratorDurationDateTime */
+  
 
 /*
 10.6 Arithmetic Operators on Durations

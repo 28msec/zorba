@@ -142,6 +142,8 @@ namespace xqp
   class FnMinutesFromTimeIterator;
   class FnSecondsFromTimeIterator;
   class FnTimezoneFromTimeIterator;
+  class AddOperationsDurationDateTime;
+  template <class AddOperationsDurationDateTime> class ArithmeticIteratorDurationDateTime;
   class OpIsSameNodeIterator;
   class OpNodeBeforeIterator;
   class OpNodeAfterIterator;
@@ -548,6 +550,9 @@ namespace xqp
 
       virtual void beginVisit ( const FnTimezoneFromTimeIterator&) = 0;
       virtual void endVisit ( const FnTimezoneFromTimeIterator&) = 0;
+
+      virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>& ) = 0;
+      virtual void endVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>& ) = 0;
 
       virtual void beginVisit(const CtxVariableIterator&) = 0;
       virtual void endVisit(const CtxVariableIterator&) = 0;

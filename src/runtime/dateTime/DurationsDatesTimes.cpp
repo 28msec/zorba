@@ -3,6 +3,10 @@
  *  Authors: Nicolae Brinza, Sorin Nasoi
  */
 
+#include "system/globalenv.h"
+#include "types/casting.h"
+#include "system/zorba.h"
+
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/base/iterator.h"
 
@@ -680,4 +684,76 @@ FnTimezoneFromTimeIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 /*end class FnTimezoneFromTimeIterator */
+
+/* begin class AddOperationsDurationDateTime */
+Item_t AddOperationsDurationDateTime::opDurations ( const yy::location* loc,  Item_t i0, Item_t i1 )
+{
+  xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDuration (d);
+}
+
+/* begin class ArithmeticIteratorDurationDateTime */
+template< class Operations>
+ArithmeticIteratorDurationDateTime<Operations>::ArithmeticIteratorDurationDateTime
+    ( const yy::location& loc, std::vector<PlanIter_t>& aChildren)
+    :
+    NaryBaseIterator<ArithmeticIteratorDurationDateTime<Operations>, PlanIteratorState > ( loc, aChildren )
+{ }
+
+  template< class Operations>
+  ArithmeticIteratorDurationDateTime<Operations>::~ArithmeticIteratorDurationDateTime()
+  { }
+
+  template< class Operations>
+  Item_t ArithmeticIteratorDurationDateTime<Operations>::nextImpl ( PlanState& planState )
+  {
+    Item_t n0;
+    Item_t n1;
+    Item_t res;
+
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+    n0 = this->consumeNext ( this->theChildren[0], planState );
+    if ( n0 != NULL )
+    {
+      n1 = this->consumeNext ( this->theChildren[1], planState );
+      if ( n1 != NULL )
+      {
+        res = ArithmeticIteratorDurationDateTime<Operations>::compute(this->loc, n0, n1);
+        STACK_PUSH ( res, state );
+      }
+    }
+    STACK_END();
+  }
+
+  template< class Operations>
+  Item_t ArithmeticIteratorDurationDateTime<Operations>::compute(const yy::location& aLoc, Item_t n0, Item_t n1)
+  {
+    n0 = n0->getAtomizationValue();
+    n1 = n1->getAtomizationValue();
+
+    Item_t res;
+
+    // case TypeSystem::XS_DT_DURATION || TypeSystem::XS_YM_DURATION:
+    res = Operations::opDurations( &aLoc, n0, n1 );
+
+    return res;
+  }
+  
+  /**
+   * Information: It is not possible to move this function to
+   * runtime/visitors/accept.cpp!
+   */
+  template< class Operations>
+  void ArithmeticIteratorDurationDateTime<Operations>::accept(PlanIterVisitor& v) const {
+    v.beginVisit(*this); 
+    this->theChildren[0]->accept(v);
+    this->theChildren[1]->accept(v);
+    v.endVisit(*this); 
+  }
+
+  /* instantiate ArithmeticIteratorDurationDateTime for all types */
+  template class ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>;
+/* end class AddOperationsDurationDateTime */
 }

@@ -159,6 +159,22 @@ xqp_duration Item::getDurationValue() const
   return xqp_duration();
 }
 
+/* Accessor for xs:dayTimeDuration
+  */
+xqp_dayTimeDuration Item::getDayTimeDurationValue() const
+{
+  ZORBA_ASSERT(false);
+  return xqp_dayTimeDuration();
+}
+
+/*Accessor for xs:yearMonthDuration
+  */
+YearMonthDuration_t Item::getYearMonthDurationValue() const
+{
+  ZORBA_ASSERT(false);
+  return xqp_yearMonthDuration();
+}
+
 /** Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
  */
 std::vector<xqp_string> Item::getStringVectorValue() const

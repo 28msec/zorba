@@ -12,9 +12,10 @@
 #include "util/utf8/xqpString.h"
 #include "util/rchandle.h"
 
+
 namespace xqp
 {
-  class TimeZone;
+class TimeZone;
 class DurationBase;
 class YearMonthDuration;
 class DayTimeDuration;
@@ -29,10 +30,12 @@ class DurationBase : public rcobject
 {
 public:
   virtual bool operator<(const DurationBase& dt) const = 0;
-  virtual bool operator==(const DurationBase& dt) const = 0;;
-  virtual int compare(const DurationBase& dt) const = 0;;
-  virtual xqpString toString() const = 0;;
-  
+  virtual bool operator==(const DurationBase& dt) const = 0;
+  virtual int compare(const DurationBase& dt) const = 0;
+  virtual xqpString toString() const = 0;
+
+  virtual DurationBase_t operator+(const DurationBase& db) const = 0;
+
   virtual int32_t getYears() const = 0;
   virtual int32_t getMonths() const = 0;
   virtual int32_t getDays() const = 0;
@@ -57,6 +60,8 @@ public:
   virtual bool operator==(const DurationBase& dt) const;
   virtual int compare(const DurationBase& dt) const;
   virtual xqpString toString() const;
+
+  virtual DurationBase_t operator+(const DurationBase& db) const;
 
   virtual int32_t getYears() const;
   virtual int32_t getMonths() const;
@@ -88,6 +93,8 @@ public:
   virtual int compare(const DurationBase& dt) const;
   virtual xqpString toString() const;
 
+  virtual DurationBase_t operator+(const DurationBase& dt) const;
+  
   virtual int32_t getYears() const;
   virtual int32_t getMonths() const;
   virtual int32_t getDays() const;
@@ -99,7 +106,7 @@ public:
 
 protected:
   DayTimeDuration& operator=(const DayTimeDuration_t& dt_t);
-  
+
   bool is_negative;
   long days;
   boost::posix_time::time_duration timeDuration;
@@ -117,6 +124,8 @@ public:
   virtual bool operator==(const DurationBase& d) const;
   virtual int compare(const DurationBase& d) const;
   virtual xqpString toString() const;
+
+  virtual DurationBase_t operator+(const DurationBase& d) const;
 
   virtual int32_t getYears() const;
   virtual int32_t getMonths() const;
