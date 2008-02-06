@@ -184,7 +184,7 @@ public:
 
   bool isPos() const { return theType == FloatConsts::NORMAL_NEG || theType == FloatConsts::INF_NEG; }
 
-  bool isZero() const { return theFloatImpl == 0; }
+  bool isZero() const { return ((theType == FloatConsts::NORMAL || theType == FloatConsts::NORMAL_NEG) && theFloatImpl == 0); }
 
   bool operator==(const FloatImpl& aFloatImpl) const;
 
