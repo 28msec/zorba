@@ -97,6 +97,10 @@ public:
   virtual bool setVariableAsItem( xqp_string varname, Item_t item);
 
 	virtual bool setVariableAsDocument( xqp_string varname, xqp_anyURI documentURI);
+	virtual bool setVariableAsDocumentFromFile(
+																			xqp_string		varname,
+																			xqp_string		file_path,
+																			xqp_string    storeUri = "");
 
 	virtual bool setVariableAsHexBinary( xqp_string varname, xqp_hexBinary hex_value);
 	virtual bool setVariableAsBase64Binary( xqp_string varname, xqp_base64Binary base64_value);
@@ -163,6 +167,9 @@ public:
   virtual bool setContextItemAsItem( Item_t item);
 
 	virtual bool setContextItemAsDocument( xqp_anyURI documentURI);
+	virtual bool setContextItemAsDocumentFromFile(
+																					xqp_string		file_path,
+																					xqp_string    storeUri = "");
 
 	virtual bool setContextItemAsHexBinary( xqp_hexBinary hex_value);
 	virtual bool setContextItemAsBase64Binary( xqp_base64Binary base64_value);

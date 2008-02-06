@@ -117,11 +117,17 @@ set_var (bool inlineFile, std::string name, std::string val,
 {
   boost::replace_all(val, "$RBKT_SRC_DIR", xqp::RBKT_SRC_DIR);
   if (!inlineFile && dctx != NULL) {
-    dctx->setVariableAsString (name, xqp::xqp_string (val));
+		if(name != ".")
+			dctx->setVariableAsString (name, xqp::xqp_string (val));
+		else
+			dctx->setContextItemAsString(xqp::xqp_string(val));
   } else if (inlineFile && exec != NULL) {
     std::ifstream is (val.c_str ());
     assert (is);
-    exec->setVariableAsDocumentFromStream (name, val.c_str(), is);
+		if(name != ".")
+			exec->setVariableAsDocumentFromStream (name, val.c_str(), is);
+		else
+			exec->setContextItemAsDocumentFromStream (val.c_str(), is);
   }
 }
 

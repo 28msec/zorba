@@ -11,6 +11,7 @@
 #include "types/casting.h"
 #include "types/typesystem.h"
 #include "system/globalenv.h"
+#include <fstream>
 
 namespace xqp {
 
@@ -1299,6 +1300,46 @@ bool DynamicContextWrapper::setVariableAsDocument( xqp_string varname, xqp_anyUR
 	}CATCH_ALL_RETURN_false;
 
 }
+
+bool DynamicContextWrapper::setVariableAsDocumentFromFile(
+		xqp_string		varname,
+		xqp_string		file_path,
+    xqp_string    storeUri)
+{
+	try
+  {
+		checkVarName(varname);
+		dctx_extern_var_t		var;
+		var.varname = varname;
+  
+		std::ifstream			is(file_path.c_str ());
+		if(!is.is_open())
+		{
+			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, false, file_path);
+			return false;
+		}
+		Store		&store = Store::getInstance();
+
+		if(storeUri == "")
+			storeUri = file_path;
+
+		//?store.deleteDocument(docUri);
+		var.atomic_item = store.loadDocument(storeUri, is);
+		if(var.atomic_item == NULL)
+		{//cannot upload document into store
+			//or maybe is not valid xml
+			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, false, file_path);
+			return false;
+		}
+
+		deleteVariable(varname);
+		vars.push_back(var);
+   return true;
+	}
+	CATCH_ALL_RETURN_false;
+  return false;
+}
+
 
 bool DynamicContextWrapper::setVariableAsHexBinary( xqp_string varname, xqp_hexBinary hex_value)
 {

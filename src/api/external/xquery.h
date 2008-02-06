@@ -81,6 +81,7 @@ public:
   // extension from dynamic context (specific only for this execution)
   virtual bool setVariableAsXQueryResult( xqp_string varname, ResultIterator_t item_iter );
   virtual bool setVariableAsDocumentFromStream( xqp_string varname, xqp_string docUri, std::istream &is );
+	virtual bool setContextItemAsDocumentFromStream( xqp_string docUri, std::istream &is );
 };
 
 typedef rchandle<Zorba_XQueryBinary>		Zorba_XQueryBinary_t;

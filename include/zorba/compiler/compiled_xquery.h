@@ -50,7 +50,9 @@ public:
 		virtual bool setVariableAsXQueryResult( xqp_string varname, ResultIterator_t item_iter ) = 0;
 		virtual bool setVariableAsDocumentFromStream( xqp_string varname, xqp_string docUri, std::istream &is ) = 0;
 
-		// register documents available through fn:doc() in xquery
+		virtual bool setContextItemAsDocumentFromStream( xqp_string docUri, std::istream &is ) = 0;
+
+	// register documents available through fn:doc() in xquery
 	//	virtual bool AddAvailableDocument(xqp_string docURI,
 	//																		Item_t docitem) = 0;
 		// register collections available through fn:collection() in xquery

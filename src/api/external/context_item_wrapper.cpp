@@ -4,6 +4,7 @@
 #include "store/api/item_factory.h"
 #include "system/zorba.h"
 #include "runtime/core/item_iterator.h"
+#include <fstream>
 
 namespace xqp{
 
@@ -1002,6 +1003,38 @@ bool DynamicContextWrapper::setContextItemAsDocument( xqp_anyURI documentURI)
 	}CATCH_ALL_RETURN_false;
 
 }
+
+bool DynamicContextWrapper::setContextItemAsDocumentFromFile(
+		xqp_string		file_path,
+    xqp_string    storeUri)
+{
+	try
+  {
+		std::ifstream			is(file_path.c_str ());
+		if(!is.is_open())
+		{
+			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, false, file_path);
+			return false;
+		}
+		Store		&store = Store::getInstance();
+
+		if(storeUri == "")
+			storeUri = file_path;
+
+		//?store.deleteDocument(docUri);
+		context_item = store.loadDocument(storeUri, is);
+		if(context_item == NULL)
+		{//cannot upload document into store
+			//or maybe is not valid xml
+			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, false, file_path);
+			return false;
+		}
+
+   return true;
+	}
+	CATCH_ALL_RETURN_false;
+}
+
 
 bool DynamicContextWrapper::setContextItemAsHexBinary( xqp_hexBinary hex_value)
 {

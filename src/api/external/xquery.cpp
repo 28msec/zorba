@@ -605,6 +605,43 @@ bool Zorba_XQueryBinary::setVariableAsDocumentFromStream(
   return false;
 }
 
+bool Zorba_XQueryBinary::setContextItemAsDocumentFromStream(
+    xqp_string    docUri,
+    std::istream& is)
+{
+	try{
+		if(result == NULL)
+		{
+			ZORBA_ERROR_ALERT(ZorbaError::API0010_XQUERY_EXECUTION_NOT_STARTED);
+			return false;
+		}
+	}CATCH_ALL_RETURN_false;
+
+  result->state_block->theZorba->current_xquery = this;
+
+	try
+  {
+		Store		&store = Store::getInstance();
+
+		//?store.deleteDocument(docUri);
+		Item_t	docItem = store.loadDocument(docUri, is);
+		if(docItem == NULL)
+		{//cannot upload document into store
+			//or maybe is not valid xml
+			result->state_block->theZorba->current_xquery = NULL;
+			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, false, docUri);
+			return false;
+		}
+
+		result->internal_dyn_context->set_context_item(docItem, 1);
+
+		result->state_block->theZorba->current_xquery = NULL;
+    return true;
+	}
+	CATCH_ALL_NO_RETURN(result->state_block->theZorba->current_xquery = NULL;);
+  return false;
+}
+
 
 ///register documents available through fn:doc() in xquery
 /*

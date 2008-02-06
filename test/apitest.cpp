@@ -62,30 +62,23 @@ void set_var (string name, string val,
               DynamicQueryContext_t dctx,
               XQuery_t query)
 {
-	if(name == ".") 
-	{
-		if(dctx)
-		{
-			XmlDataManager_t		zorba_store = ZorbaEngine::getInstance()->getXmlDataManager();
-
-			//load a document into xml data manager
-			//and then load it into context item
-			zorba_store->loadDocument(val);
-			bool result = dctx->setContextItemAsDocument(val);
-			assert(result);
-		}
-		return;
-	}
   if (name [name.size () - 1] == ':' && dctx != NULL) 
   {
-    bool result = dctx->setVariableAsString(name.substr (0, name.size () - 1), xqp_string(val));
+		bool result;
+		if(name != ".")
+			result = dctx->setVariableAsString(name.substr (0, name.size () - 1), xqp_string(val));
+		else
+			result = dctx->setContextItemAsString(xqp_string(val));
     assert (result);
   }
   else if (name[name.size () - 1] != ':' && query != NULL)
   {
     ifstream is (val.c_str ());
     assert (is);
-    query->setVariableAsDocumentFromStream(name, val.c_str(), is);
+		if(name != ".")
+			query->setVariableAsDocumentFromStream(name, val.c_str(), is);
+		else
+			query->setContextItemAsDocumentFromStream(val.c_str(), is);
   }
 }
 
