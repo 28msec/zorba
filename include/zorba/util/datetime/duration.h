@@ -11,6 +11,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "util/utf8/xqpString.h"
 #include "util/rchandle.h"
+#include "zorba/util/bignum/floatimpl.h"
 
 
 namespace xqp
@@ -20,6 +21,8 @@ class DurationBase;
 class YearMonthDuration;
 class DayTimeDuration;
 class Duration;
+class Decimal;
+typedef FloatImpl<double> Double;
 typedef rchandle<DurationBase> DurationBase_t;
 typedef rchandle<DayTimeDuration> DayTimeDuration_t;
 typedef rchandle<YearMonthDuration> YearMonthDuration_t;
@@ -35,6 +38,10 @@ public:
   virtual xqpString toString() const = 0;
 
   virtual DurationBase_t operator+(const DurationBase& db) const = 0;
+  virtual DurationBase_t operator-(const DurationBase& db) const = 0;
+  virtual DurationBase_t operator*(const Double value) const = 0;
+  virtual DurationBase_t operator/(const Double value) const = 0;
+  virtual Decimal operator/(const DurationBase& db) const = 0;
 
   virtual int32_t getYears() const = 0;
   virtual int32_t getMonths() const = 0;
@@ -62,7 +69,11 @@ public:
   virtual xqpString toString() const;
 
   virtual DurationBase_t operator+(const DurationBase& db) const;
-
+  virtual DurationBase_t operator-(const DurationBase& db) const;
+  virtual DurationBase_t operator*(const Double value) const;
+  virtual DurationBase_t operator/(const Double value) const;
+  virtual Decimal operator/(const DurationBase& db) const;
+  
   virtual int32_t getYears() const;
   virtual int32_t getMonths() const;
   virtual int32_t getDays() const;
@@ -94,6 +105,10 @@ public:
   virtual xqpString toString() const;
 
   virtual DurationBase_t operator+(const DurationBase& dt) const;
+  virtual DurationBase_t operator-(const DurationBase& dt) const;
+  virtual DurationBase_t operator*(const Double value) const;
+  virtual DurationBase_t operator/(const Double value) const;
+  virtual Decimal operator/(const DurationBase& db) const;
   
   virtual int32_t getYears() const;
   virtual int32_t getMonths() const;
@@ -126,6 +141,10 @@ public:
   virtual xqpString toString() const;
 
   virtual DurationBase_t operator+(const DurationBase& d) const;
+  virtual DurationBase_t operator-(const DurationBase& d) const;
+  virtual DurationBase_t operator*(const Double value) const;
+  virtual DurationBase_t operator/(const Double value) const;
+  virtual Decimal operator/(const DurationBase& db) const;
 
   virtual int32_t getYears() const;
   virtual int32_t getMonths() const;

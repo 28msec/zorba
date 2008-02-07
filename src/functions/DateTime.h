@@ -357,6 +357,66 @@ class fn_datetime_ctor : public function
       TypeSystem::xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
+
+/*
+ * 10.6.2 op:subtract-yearMonthDurations
+ *-----------------------*/
+  class op_ym_durations_subtract : public function
+  {
+    public:
+      op_ym_durations_subtract(const signature&);
+      ~op_ym_durations_subtract() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.6.3 op:multiply-yearMonthDuration
+ *-----------------------*/
+  class op_ym_durations_multiply : public function
+  {
+    public:
+      op_ym_durations_multiply(const signature&);
+      ~op_ym_durations_multiply() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.6.4 op:divide-yearMonthDuration
+ *-----------------------*/
+  class op_ym_durations_divide : public function
+  {
+    public:
+      op_ym_durations_divide(const signature&);
+      ~op_ym_durations_divide() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.6.5 op:divide-yearMonthDuration-by-yearMonthDuration
+ *-----------------------*/
+  class op_divide_ymd_by_ymd : public function
+  {
+    public:
+      op_divide_ymd_by_ymd(const signature&);
+      ~op_divide_ymd_by_ymd() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
   
 /*
  * 10.6.6 op:add-dayTimeDurations
@@ -371,7 +431,67 @@ class fn_datetime_ctor : public function
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
       TypeSystem::xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
-  }; 
+  };
+
+/*
+ * 10.6.7 op:subtract-dayTimeDurations
+ *-----------------------*/
+  class op_dt_durations_subtract : public function
+  {
+    public:
+      op_dt_durations_subtract(const signature&);
+      ~op_dt_durations_subtract() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.6.8 op:multiply-dayTimeDuration
+ *-----------------------*/
+  class op_dt_durations_multiply : public function
+  {
+    public:
+      op_dt_durations_multiply(const signature&);
+      ~op_dt_durations_multiply() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.6.9 op:divide-dayTimeDuration
+ *-----------------------*/
+  class op_dt_durations_divide : public function
+  {
+    public:
+      op_dt_durations_divide(const signature&);
+      ~op_dt_durations_divide() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.6.10 op:divide-dayTimeDuration-by-dayTimeDuration
+ *-----------------------*/
+  class op_divide_dtd_by_dtd : public function
+  {
+    public:
+      op_divide_dtd_by_dtd(const signature&);
+      ~op_divide_dtd_by_dtd() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
 } // namespace xqp
 
 #endif

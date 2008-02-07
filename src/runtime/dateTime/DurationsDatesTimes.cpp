@@ -686,11 +686,109 @@ FnTimezoneFromTimeIterator::nextImpl(PlanState& planState)
 /*end class FnTimezoneFromTimeIterator */
 
 /* begin class AddOperationsDurationDateTime */
-Item_t AddOperationsDurationDateTime::opDurations ( const yy::location* loc,  Item_t i0, Item_t i1 )
+Item_t AddOperationsDurationDateTime::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
   xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
+
+Item_t AddOperationsDurationDateTime::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+{
+  xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDuration (d);
+}
+/* end class AddOperationsDurationDateTime */
+
+/* begin class SubtractOperationsDurationDateTime */
+Item_t SubtractOperationsDurationDateTime::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+{
+  xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDuration (d);
+}
+
+Item_t SubtractOperationsDurationDateTime::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+{
+  xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDuration (d);
+}
+/* end class SubtractOperationsDurationDateTime */
+
+/* begin class MultiplyOperationsDurationDateTime */
+Item_t MultiplyOperationsDurationDateTime::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+{
+  if( i1->getDoubleValue().isZero() )
+    return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
+  else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
+    ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
+  else if (  i1->getDoubleValue().isNaN() )
+    ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
+  else
+  {
+    xqp_duration d = *i0->getDurationValue() * (i1->getDoubleValue());
+    return Zorba::getItemFactory()->createDuration (d);
+  }
+}
+
+Item_t MultiplyOperationsDurationDateTime::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+{
+  if( i1->getDoubleValue().isZero() )
+    return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
+  else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
+    ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
+  else if (  i1->getDoubleValue().isNaN() )
+    ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
+  else
+  {
+    xqp_duration d = *i0->getDurationValue() * i1->getDoubleValue();
+    return Zorba::getItemFactory()->createDuration (d);
+  }
+}
+/* end class MultiplyOperationsDurationDateTime */
+
+/* begin class DivideOperationsDurationDateTime */
+Item_t DivideOperationsDurationDateTime::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+{
+  if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
+    return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
+  else if ( i1->getDoubleValue().isZero() )
+    ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
+  else if ( i1->getDoubleValue().isNaN() )
+    ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
+  else
+  {
+    xqp_duration d = *i0->getDurationValue() / i1->getDoubleValue();
+    return Zorba::getItemFactory()->createDuration (d);
+  }
+}
+
+Item_t DivideOperationsDurationDateTime::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+{
+  if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
+    return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
+  else if ( i1->getDoubleValue().isZero() )
+    ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
+  else if ( i1->getDoubleValue().isNaN() )
+    ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
+  else
+  {
+    xqp_duration d = *i0->getDurationValue() / i1->getDoubleValue();
+    return Zorba::getItemFactory()->createDuration (d);
+  }
+}
+/* end class DivideOperationsDurationDateTime */
+
+/* begin class DivideOperationsDurationByDuration*/
+Item_t DivideOperationsDurationByDuration::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+{
+  xqp_decimal d = *i0->getDurationValue() / *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDecimal (d);
+}
+Item_t DivideOperationsDurationByDuration::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+{
+  xqp_decimal d = *i0->getDurationValue() / *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDecimal(d);
+}
+/* end class DivideOperationsDurationByDuration*/
 
 /* begin class ArithmeticIteratorDurationDateTime */
 template< class Operations>
@@ -732,11 +830,23 @@ ArithmeticIteratorDurationDateTime<Operations>::ArithmeticIteratorDurationDateTi
   {
     n0 = n0->getAtomizationValue();
     n1 = n1->getAtomizationValue();
+    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeSystem::QUANT_ONE );
 
     Item_t res;
 
-    // case TypeSystem::XS_DT_DURATION || TypeSystem::XS_YM_DURATION:
-    res = Operations::opDurations( &aLoc, n0, n1 );
+    switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *type0 ))
+    {
+      //TODO change the type
+      //case TypeSystem::XS_DT_DURATION:
+      case TypeSystem::XS_DURATION:
+        res = Operations::opDtDuration ( &aLoc, n0, n1 );
+        break;
+      case TypeSystem::XS_YM_DURATION:
+        res = Operations::opYmDuration ( &aLoc, n0, n1 );
+        break;
+      default:
+        assert(false);   
+    }
 
     return res;
   }
@@ -755,5 +865,9 @@ ArithmeticIteratorDurationDateTime<Operations>::ArithmeticIteratorDurationDateTi
 
   /* instantiate ArithmeticIteratorDurationDateTime for all types */
   template class ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>;
+  template class ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>;
+  template class ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>;
+  template class ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>;
+  template class ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>;
 /* end class AddOperationsDurationDateTime */
 }

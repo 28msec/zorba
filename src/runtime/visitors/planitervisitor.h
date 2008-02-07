@@ -142,8 +142,18 @@ namespace xqp
   class FnMinutesFromTimeIterator;
   class FnSecondsFromTimeIterator;
   class FnTimezoneFromTimeIterator;
+  
   class AddOperationsDurationDateTime;
   template <class AddOperationsDurationDateTime> class ArithmeticIteratorDurationDateTime;
+  class SubtractOperationsDurationDateTime;
+  template <class SubtractOperationsDurationDateTime> class ArithmeticIteratorDurationDateTime;
+  class MultiplyOperationsDurationDateTime;
+  template <class MultiplyOperationsDurationDateTime> class ArithmeticIteratorDurationDateTime;
+  class DivideOperationsDurationDateTime;
+  template <class DivideOperationsDurationDateTime> class ArithmeticIteratorDurationDateTime;
+  class DivideOperationsDurationByDuration;
+  template <class DivideOperationsDurationByDuration> class ArithmeticIteratorDurationDateTime;
+  
   class OpIsSameNodeIterator;
   class OpNodeBeforeIterator;
   class OpNodeAfterIterator;
@@ -553,6 +563,18 @@ namespace xqp
 
       virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>& ) = 0;
       virtual void endVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>& ) = 0;
+
+      virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>& ) = 0;
+      virtual void endVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>& ) = 0;
+
+      virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>& ) = 0;
+      virtual void endVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>& ) = 0;
+
+      virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>& ) = 0;
+      virtual void endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>& ) = 0;
+
+      virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>& ) = 0;
+      virtual void endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>& ) = 0;
 
       virtual void beginVisit(const CtxVariableIterator&) = 0;
       virtual void endVisit(const CtxVariableIterator&) = 0;

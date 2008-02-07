@@ -94,6 +94,35 @@ DurationBase_t YearMonthDuration::operator+(const DurationBase& db) const
   return ym;
 }
 
+DurationBase_t YearMonthDuration::operator-(const DurationBase& db) const
+{
+  const YearMonthDuration& ymd = dynamic_cast<const YearMonthDuration&>(db);
+  YearMonthDuration* ym = new YearMonthDuration(months - ymd.months);
+  return ym;
+}
+
+DurationBase_t YearMonthDuration::operator*(const Double value) const
+{
+//   Double tmp = value * months;
+//   Double tmp2 = tmp.round();
+  //TODO: fix this
+  YearMonthDuration* ym = new YearMonthDuration( months );
+  return ym;
+}
+
+DurationBase_t YearMonthDuration::operator/(const Double value) const
+{
+//   Double tmp = 1/value * months;
+  //TODO: fix this
+  YearMonthDuration* ym = new YearMonthDuration(months);// tmp.round());
+  return ym;
+}
+
+Decimal YearMonthDuration::operator/(const DurationBase& db) const
+{
+  return 0;
+}
+
 int32_t YearMonthDuration::getYears() const
 {
   return months/NO_MONTHS_IN_YEAR;
@@ -300,6 +329,73 @@ DurationBase_t DayTimeDuration::operator+(const DurationBase& db) const
       resTimeDuration.fractional_seconds());
 
   return dt;
+}
+
+DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
+{
+  const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
+  long resDays;
+
+  if(is_negative)
+    resDays = dtd.is_negative ? -days+dtd.days : -days-dtd.days;
+  else
+    resDays = dtd.is_negative ? days+dtd.days : days-dtd.days;
+
+  bool resIsNeg = resDays<0 ? true : false;
+
+  boost::posix_time::time_duration resTimeDuration = timeDuration - dtd.timeDuration;
+
+  //TODO Should normalization be part of the constructor?
+  DayTimeDuration* dt = new DayTimeDuration(
+      resIsNeg,
+  resDays + resTimeDuration.hours() / NO_HOURS_IN_DAY,
+  resTimeDuration.hours() % NO_HOURS_IN_DAY,
+  resTimeDuration.minutes(),
+  resTimeDuration.seconds(),
+  resTimeDuration.fractional_seconds());
+
+  return dt;
+}
+
+DurationBase_t DayTimeDuration::operator*(const Double value) const
+{
+  long resDays;
+
+//   resDays *= value;
+
+  //TODO Should normalization be part of the constructor?
+  DayTimeDuration* dt = new DayTimeDuration(
+      is_negative,
+  resDays + timeDuration.hours() / NO_HOURS_IN_DAY,
+  timeDuration.hours() % NO_HOURS_IN_DAY,
+  timeDuration.minutes(),
+  timeDuration.seconds(),
+  timeDuration.fractional_seconds());
+
+  return dt;
+}
+
+DurationBase_t DayTimeDuration::operator/(const Double value) const
+{
+  long resDays;
+
+//   resDays /= value;
+
+  //TODO Should normalization be part of the constructor?
+  DayTimeDuration* dt = new DayTimeDuration(
+      is_negative,
+  resDays + timeDuration.hours() / NO_HOURS_IN_DAY,
+  timeDuration.hours() % NO_HOURS_IN_DAY,
+  timeDuration.minutes(),
+  timeDuration.seconds(),
+  timeDuration.fractional_seconds());
+
+  return dt;
+}
+
+Decimal DayTimeDuration::operator/(const DurationBase& db) const
+{
+  return 0;
 }
 
 int32_t DayTimeDuration::getYears() const
@@ -604,11 +700,32 @@ xqpString Duration::toString() const
 
 DurationBase_t Duration::operator+(const DurationBase& db) const
 {
-  const Duration& dtd = dynamic_cast<const Duration&>(db);
   Duration* d;
   return d;
 }
 
+DurationBase_t Duration::operator-(const DurationBase& db) const
+{
+  Duration* d;
+  return d;
+}
+
+DurationBase_t Duration::operator*(const Double value) const
+{
+  Duration* d;
+  return d;
+}
+
+DurationBase_t Duration::operator/(const Double value) const
+{
+  Duration* d;
+  return d;
+}
+
+Decimal Duration::operator/(const DurationBase& db) const
+{
+  return 0;
+}
 
 int32_t Duration::getYears() const
 {

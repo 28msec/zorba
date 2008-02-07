@@ -790,6 +790,146 @@ op_ym_durations_add::type_check (
 /*end class op_ym_durations_add*/
 
 /*
+ * 10.6.2 op:subtract-yearMonthDurations
+ * --------------------*/
+/*begin class op_ym_durations_subtract*/
+op_ym_durations_subtract::op_ym_durations_subtract (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+op_ym_durations_subtract::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>(loc, argv);
+}
+
+bool
+op_ym_durations_subtract::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2);
+}
+
+//TODO change the type to YM_DURATION_TYPE_ONE
+TypeSystem::xqtref_t
+op_ym_durations_subtract::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+}
+/*end class op_ym_durations_subtract*/
+
+/*
+ * 10.6.3 op:multiply-yearMonthDuration
+ * --------------------*/
+/*begin class op_ym_durations_multiply*/
+op_ym_durations_multiply::op_ym_durations_multiply (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+op_ym_durations_multiply::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>(loc, argv);
+}
+
+bool
+op_ym_durations_multiply::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2);
+}
+
+//TODO change the type to YM_DURATION_TYPE_ONE
+TypeSystem::xqtref_t
+op_ym_durations_multiply::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+}
+/*end class op_ym_durations_multiply*/
+
+/*
+ * 10.6.4 op:divide-yearMonthDuration
+ * --------------------*/
+/*begin class op_ym_durations_divide*/
+op_ym_durations_divide::op_ym_durations_divide (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+op_ym_durations_divide::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>(loc, argv);
+}
+
+bool
+op_ym_durations_divide::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2);
+}
+
+//TODO change the type to YM_DURATION_TYPE_ONE
+TypeSystem::xqtref_t
+op_ym_durations_divide::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+}
+/*end class op_ym_durations_divide*/
+
+/*
+ * 10.6.5 op:divide-yearMonthDuration-by-yearMonthDuration
+ * --------------------*/
+/*begin class op_divide_ymd_by_ymd*/
+op_divide_ymd_by_ymd::op_divide_ymd_by_ymd (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+op_divide_ymd_by_ymd::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>(loc, argv);
+}
+
+bool
+op_divide_ymd_by_ymd::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2);
+}
+
+//TODO change the type to YM_DURATION_TYPE_ONE
+TypeSystem::xqtref_t
+op_divide_ymd_by_ymd::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+}
+/*end class op_divide_ymd_by_ymd*/
+
+/*
  * 10.6.6 op:add-dayTimeDurations
  * --------------------*/
 /*begin class op_dt_durations_add*/
@@ -823,6 +963,147 @@ op_dt_durations_add::type_check (
   return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
 }
 /*end class op_dt_durations_add*/
+
+/*
+ * 10.6.7 op:subtract-dayTimeDurations
+ * --------------------*/
+/*begin class op_dt_durations_subtract*/
+op_dt_durations_subtract::op_dt_durations_subtract (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+op_dt_durations_subtract::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>(loc, argv);
+}
+
+bool
+op_dt_durations_subtract::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2);
+}
+
+//TODO change the type to DT_DURATION_TYPE_ONE
+TypeSystem::xqtref_t
+op_dt_durations_subtract::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+}
+/*end class op_dt_durations_subtract*/
+
+/*
+ *  10.6.8 op:multiply-dayTimeDuration
+ * --------------------*/
+/*begin class op_dt_durations_multiply*/
+op_dt_durations_multiply::op_dt_durations_multiply (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+op_dt_durations_multiply::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>(loc, argv);
+}
+
+bool
+op_dt_durations_multiply::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2);
+}
+
+//TODO change the type to DT_DURATION_TYPE_ONE
+TypeSystem::xqtref_t
+op_dt_durations_multiply::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+}
+/*end class op_dt_durations_multiply*/
+
+/*
+ *  10.6.9 op:divide-dayTimeDuration
+ * --------------------*/
+/*begin class op_dt_durations_divide*/
+op_dt_durations_divide::op_dt_durations_divide (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+op_dt_durations_divide::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>(loc, argv);
+}
+
+bool
+op_dt_durations_divide::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2);
+}
+
+//TODO change the type to DT_DURATION_TYPE_ONE
+TypeSystem::xqtref_t
+op_dt_durations_divide::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+}
+/*end class op_dt_durations_divide*/
+
+
+/*
+ *  10.6.10 op:divide-dayTimeDuration-by-dayTimeDuration
+ * --------------------*/
+/*begin class op_divide_dtd_by_dtd*/
+op_divide_dtd_by_dtd::op_divide_dtd_by_dtd (
+    const signature& sig )
+  :
+    function ( sig )
+{
+}
+
+PlanIter_t
+op_divide_dtd_by_dtd::operator() (
+    const yy::location& loc,
+    vector<PlanIter_t>& argv ) const
+{
+  return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>(loc, argv);
+}
+
+bool
+op_divide_dtd_by_dtd::validate_args (
+    vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2);
+}
+
+//TODO change the type to DT_DURATION_TYPE_ONE
+TypeSystem::xqtref_t
+op_divide_dtd_by_dtd::type_check (
+    signature& sig ) const
+{
+  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+}
+/*end class op_divide_dtd_by_dtd*/
 
 } // namespace xqp
 

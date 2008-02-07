@@ -143,16 +143,53 @@ NARY_ITER(FnSecondsFromTimeIterator);
 NARY_ITER(FnTimezoneFromTimeIterator);
 
 
-/** Operations for Add Duration, Date and Times
+/** Operations for Add Duration By Duration
   */
 class AddOperationsDurationDateTime
 {
   public:
-    static Item_t opDurations (const yy::location* , Item_t, Item_t );
+    static Item_t opDtDuration (const yy::location* , Item_t, Item_t );
+    static Item_t opYmDuration (const yy::location* , Item_t, Item_t );
+};
+
+/** Operations for subtract Duration By Duration
+ */
+class SubtractOperationsDurationDateTime
+{
+  public:
+    static Item_t opDtDuration (const yy::location* , Item_t, Item_t );
+    static Item_t opYmDuration (const yy::location* , Item_t, Item_t );
+};
+
+/** Operations for Multiply Duration By Double
+ */
+class MultiplyOperationsDurationDateTime
+{
+  public:
+    static Item_t opDtDuration (const yy::location* , Item_t, Item_t );
+    static Item_t opYmDuration (const yy::location* , Item_t, Item_t );
+};
+
+/** Operations for Divide Duration By Double
+ */
+class DivideOperationsDurationDateTime
+{
+  public:
+    static Item_t opDtDuration (const yy::location* , Item_t, Item_t );
+    static Item_t opYmDuration (const yy::location* , Item_t, Item_t );
+};
+
+/** Operations for Divide Duration By Duration
+ */
+class DivideOperationsDurationByDuration
+{
+  public:
+    static Item_t opDtDuration (const yy::location* , Item_t, Item_t );
+    static Item_t opYmDuration (const yy::location* , Item_t, Item_t );
 };
 
   /**
-    * Generic Iterator for Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
+    * Generic Iterator for Arithmetic Operations. Specific operation (add, subtract, multiply, divide) is passed over the template parameter.
     */
   template < typename Operations >
       class ArithmeticIteratorDurationDateTime : public NaryBaseIterator<ArithmeticIteratorDurationDateTime<Operations>,

@@ -1098,6 +1098,38 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>& a ) {
     thePrinter.endIter();
   }
+
+  void PrinterVisitor::beginVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>& a ) {
+    thePrinter.startIter("ArithmeticIteratorDurationDateTime_SubtractOperationsDurationDateTime");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>& a ) {
+    thePrinter.startIter("ArithmeticIteratorDurationDateTime_MultiplyOperationsDurationDateTime");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>& a ) {
+    thePrinter.startIter("ArithmeticIteratorDurationDateTime_DivideOperationsDurationDateTime");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>& a ) {
+    thePrinter.startIter("ArithmeticIteratorDurationDateTime_DivideOperationsDurationByDuration");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>& a ) {
+    thePrinter.endIter();
+  }
   
   void PrinterVisitor::beginVisit ( const FLWORIterator& a ) {
     thePrinter.startIter("FLWORIterator");

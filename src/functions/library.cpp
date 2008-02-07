@@ -835,6 +835,62 @@ DECL(op_dt_durations_add,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE));
+
+//TODO change the type to YM_DURATION_TYPE_ONE
+DECL(op_ym_durations_subtract,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDurations"),
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE));
+
+//TODO change it to DT_DURATION_TYPE_ONE
+DECL(op_dt_durations_subtract,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDurations"),
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE));
+
+//TODO change the type to YM_DURATION_TYPE_ONE
+DECL(op_ym_durations_multiply,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "multiply-yearMonthDuration"),
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE));
+
+//TODO change it to DT_DURATION_TYPE_ONE
+DECL(op_dt_durations_multiply,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "multiply-dayTimeDuration"),
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE));
+
+//TODO change the type to YM_DURATION_TYPE_ONE
+DECL(op_ym_durations_divide,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "divide-yearMonthDuration"),
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE));
+
+//TODO change it to DT_DURATION_TYPE_ONE
+DECL(op_dt_durations_divide,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "divide-dayTimeDuration"),
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE));
+
+ //TODO change the type to YM_DURATION_TYPE_ONE
+DECL(op_divide_ymd_by_ymd,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "divide-yearMonthDuration-by-yearMonthDuration"),
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+
+//TODO change it to DT_DURATION_TYPE_ONE
+DECL(op_divide_dtd_by_dtd,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "divide-dayTimeDuration-by-dayTimeDuration"),
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));      
 // end date time
 
 // begin debug functions
