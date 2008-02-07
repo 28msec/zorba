@@ -992,7 +992,7 @@ namespace xqp
     }
 
     //Convert from UTF-16 to UTF-8
-    ucnv_fromUChars (conv, target, targetLen, src, len, &status);
+    ucnv_fromUChars (conv, target, targetLen, (const UChar*)src, len, &status);
     //close the converter
     ucnv_close(conv);
 

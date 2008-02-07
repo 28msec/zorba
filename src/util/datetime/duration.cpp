@@ -120,7 +120,7 @@ DurationBase_t YearMonthDuration::operator/(const Double value) const
 
 Decimal YearMonthDuration::operator/(const DurationBase& db) const
 {
-  return 0;
+  return (int32_t)0;
 }
 
 int32_t YearMonthDuration::getYears() const
@@ -395,7 +395,7 @@ DurationBase_t DayTimeDuration::operator/(const Double value) const
 
 Decimal DayTimeDuration::operator/(const DurationBase& db) const
 {
-  return 0;
+  return (int32_t)0;
 }
 
 int32_t DayTimeDuration::getYears() const
@@ -724,7 +724,7 @@ DurationBase_t Duration::operator/(const Double value) const
 
 Decimal Duration::operator/(const DurationBase& db) const
 {
-  return 0;
+  return (int32_t)0;
 }
 
 int32_t Duration::getYears() const

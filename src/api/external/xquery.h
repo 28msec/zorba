@@ -67,14 +67,14 @@ public:
 
   virtual bool   serializeQuery(ostream &os);
 
-  virtual void	AbortQueryExecution();
+  virtual void	abortQueryExecution();
 
   virtual bool isError();
 
   //set param to be received by alert callback
   virtual void setAlertsParam(void *alert_callback_param);
   
-  //create a duplicate of this compiled xquery
+	//create a duplicate of this compiled xquery
   virtual XQuery_t		clone();
 
 public:

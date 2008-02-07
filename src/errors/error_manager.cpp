@@ -24,13 +24,15 @@ AlertsManagerImpl::AlertsManagerImpl( )
 //	theAlertMessages = NULL;
   AlertMessagesEnglish* codes = new AlertMessagesEnglish;
 	setAlertMessages(codes, false);
-	is_error = false;
+//	is_error = false;
+
+	alert_list = new AlertListImpl;
 }
 
 
 AlertsManagerImpl::~AlertsManagerImpl()
 {
-	clearAlertList();
+	//clearAlertList();
 
   if (!theIsFromUser && theAlertMessages != NULL)
     delete theAlertMessages;
@@ -39,13 +41,7 @@ AlertsManagerImpl::~AlertsManagerImpl()
 
 void AlertsManagerImpl::clearAlertList()
 {
-	std::list<ZorbaAlert_t>::const_iterator errit;
-	
-//	for(errit = begin(); errit != end(); errit++)
-//		delete *errit;
-
-	clear();
-	is_error = false;
+	alert_list = new AlertListImpl;//->clearAlertList();
 }
 
 
@@ -87,7 +83,7 @@ int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert_t alert,
 	if(!sendAlertByCallback(z, alert, dont_send_callback, &retval))
 	{
 		///if no callback was registered, then put the error in list
-		push_back(alert);
+		alert_list->push_back(alert);
 	}
 
 	return retval;
@@ -122,14 +118,15 @@ bool AlertsManagerImpl::sendAlertByCallback(Zorba* z,
 	}
 	return false;
 }
+
 bool AlertsManagerImpl::isError()
 {
-	return is_error;
+	return alert_list->isError();
 }
 
 void AlertsManagerImpl::setIsError()
 {
-	is_error = true;
+	alert_list->setIsError();
 }
 
 bool ZorbaAlertsManager::setThrowExceptionsMode(bool throw_exceptions)
@@ -146,8 +143,28 @@ bool ZorbaAlertsManager::getThrowExceptionsMode()
 
 void AlertsManagerImpl::dumpAlerts(std::ostream &os)
 {
+	alert_list->dumpAlerts(os);
+}
 
-  std::list<ZorbaAlert_t>::const_iterator errit;
+AlertList_t		AlertsManagerImpl::getAlertList()
+{
+	return &*alert_list;
+}
+
+
+
+AlertListImpl::AlertListImpl()
+{
+	is_error = false;
+}
+
+AlertListImpl::~AlertListImpl()
+{
+}
+
+void AlertListImpl::dumpAlerts(std::ostream &os)
+{
+  AlertListImpl::const_iterator errit;
 
   for(errit = this->begin(); errit != this->end(); errit++)
   {
@@ -159,5 +176,27 @@ void AlertsManagerImpl::dumpAlerts(std::ostream &os)
 
   clearAlertList();
 }
+
+void AlertListImpl::clearAlertList()
+{
+//	AlertListImpl::const_iterator errit;
+	
+//	for(errit = begin(); errit != end(); errit++)
+//		delete *errit;
+
+	clear();
+	is_error = false;
+}
+
+bool AlertListImpl::isError()
+{
+	return is_error;
+}
+
+void AlertListImpl::setIsError()
+{
+	is_error = true;
+}
+
 
 }

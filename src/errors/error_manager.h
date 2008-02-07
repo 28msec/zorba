@@ -9,6 +9,20 @@ namespace xqp
 class Zorba;
 class AlertMessages;
 
+class AlertListImpl : public AlertList
+{
+public:
+	bool		is_error;
+public:
+	AlertListImpl();
+	virtual ~AlertListImpl();
+	virtual void dumpAlerts(std::ostream &os);
+  virtual void clearAlertList();
+
+	virtual bool isError();
+	void setIsError();
+};
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -30,6 +44,7 @@ public:
 	AlertMessages& getAlertMessages();
   void setAlertMessages(AlertMessages* c, bool is_from_user);
 
+	virtual AlertList_t		getAlertList();
 	virtual void dumpAlerts(std::ostream &os);
 	void clearAlertList();
 
@@ -41,12 +56,14 @@ public:
 protected:
 	AlertMessages   * theAlertMessages;
 	bool			        theIsFromUser;
+	
+	rchandle<AlertListImpl>			alert_list;
 
 	//if ZorbaErrorAlertsImpl::xquery_registered_callback is not specified, call this callback
 	alert_callback	* thread_registered_callback;
 	void						* thread_registered_param;
 
-	bool						is_error;
+	//bool						is_error;
 };
 
 typedef rchandle<AlertsManagerImpl>		AlertsManagerImpl_t;

@@ -721,6 +721,17 @@ typedef rchandle<XQuery> XQuery_t;
 class ResultIterator;
 typedef rchandle<ResultIterator> ResultIterator_t;
 
+class AlertList : public std::list<ZorbaAlert_t>, public rcobject
+{
+public:
+	virtual ~AlertList(){}
+	virtual void dumpAlerts(std::ostream &os) = 0;
+  virtual void clearAlertList() = 0;
+
+	virtual bool isError() = 0;
+};
+
+typedef rchandle<AlertList>		AlertList_t;
 
 // user might choose to receive the alerts through callback functions
 typedef int alert_callback(ZorbaAlert_t      alert, 
@@ -732,7 +743,7 @@ typedef int alert_callback(ZorbaAlert_t      alert,
 /*******************************************************************************
 
 ********************************************************************************/
-class ZorbaAlertsManager : public std::list<ZorbaAlert_t>, public rcobject
+class ZorbaAlertsManager : public rcobject
 {
 public:
   virtual ~ZorbaAlertsManager();
@@ -742,6 +753,7 @@ public:
   virtual void registerAlertCallback(alert_callback *user_alert_callback,
                                     void *param) = 0;
 
+	virtual AlertList_t		getAlertList() = 0;
 	virtual void dumpAlerts(std::ostream &os) = 0;
   virtual void clearAlertList() = 0;
 

@@ -44,6 +44,7 @@ Zorba_XQueryBinary::Zorba_XQueryBinary(
   default_collator = NULL;
 
 	alert_callback_param = NULL;
+
 }
 
 Zorba_XQueryBinary::Zorba_XQueryBinary(
@@ -498,7 +499,7 @@ bool Zorba_XQueryBinary::isError()
 	return ZorbaEngine::getInstance()->getAlertsManagerForCurrentThread()->isError();
 }
 
-void  Zorba_XQueryBinary::AbortQueryExecution()
+void  Zorba_XQueryBinary::abortQueryExecution()
 {
 	try{
   ZORBA_ERROR_ALERT(ZorbaError::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,

@@ -52,8 +52,9 @@ printPart(std::ostream& os, std::string aInFile,
 bool
 isErrorExpected(xqp::ZorbaAlertsManager* aManager, Specification* aSpec)
 {
-  for (xqp::ZorbaAlertsManager::const_iterator lIter = aManager->begin();
-       lIter != aManager->end(); ++lIter)
+	xqp::AlertList_t		alert_list = aManager->getAlertList();
+  for (xqp::AlertList::const_iterator lIter = alert_list->begin();
+       lIter != alert_list->end(); ++lIter)
   {
     xqp::ZorbaAlert_t lAlert = *lIter;
     switch (lAlert->theKind)
@@ -82,12 +83,13 @@ isErrorExpected(xqp::ZorbaAlertsManager* aManager, Specification* aSpec)
 void
 printErrors(xqp::ZorbaAlertsManager* aManager)
 {
-  if (aManager->size() == 0) return;
+	xqp::AlertList_t		alert_list = aManager->getAlertList();
+  if (alert_list->size() == 0) return;
 
   std::cerr << "Errors:" << std::endl;
 
-  for (xqp::ZorbaAlertsManager::const_iterator lIter = aManager->begin();
-       lIter != aManager->end(); ++lIter)
+  for (xqp::AlertList::const_iterator lIter = alert_list->begin();
+       lIter != alert_list->end(); ++lIter)
   {
     xqp::ZorbaAlert_t lAlert = *lIter;
     switch (lAlert->theKind)

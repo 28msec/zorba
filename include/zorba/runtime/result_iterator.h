@@ -19,6 +19,7 @@ public:
 	virtual Item_t	next() = 0;
 
 	virtual void		close() = 0;
+
 };
 
 typedef rchandle<ResultIterator>		ResultIterator_t;
