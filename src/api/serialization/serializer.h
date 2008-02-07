@@ -194,6 +194,14 @@ protected:
      *  @return  returns 1 if the functions has closed parent's tag with ">"
      */ 
     virtual int emit_node_children(Item* item, int depth, bool perform_escaping);
+
+    /**
+     *  Serializes the namespace bindings, if any.
+     *
+     *  @return  returns true if the function has added a set of bindings to the list,
+     *           which should be removed when the elememnt is out of the scope.
+     */ 
+    virtual bool emit_bindings(Item* item);
         
     /**
      * Serializes the given item, depending on its type, and its children.
@@ -212,8 +220,11 @@ protected:
     virtual ~emitter() { };
   
   protected:
+    bool haveBinding(std::pair<xqpString,xqpString>& nsBinding) const;
+    
     serializer& ser;
     transcoder& tr;
+    std::vector<NsBindings> bindings;
     
     enum {
       INVALID_ITEM,   

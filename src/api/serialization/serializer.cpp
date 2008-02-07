@@ -274,20 +274,30 @@ void serializer::emitter::emit_indentation(int depth)
 		tr << "  ";
 }
 
+bool serializer::emitter::haveBinding(std::pair<xqpString,xqpString>& nsBinding) const
+{
+  for (unsigned long i = 0; i < bindings.size(); i++)
+  {
+    NsBindings nsBindings = bindings[i];
+    
+    for (unsigned long j = 0; j < nsBindings.size(); j++)
+      if (nsBindings[j].first == nsBinding.first
+         &&
+         nsBindings[j].second == nsBinding.second)
+        return true;
+  }
+
+  return false;
+}
+
 int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_escaping = true)
 {
   Iterator_t it;
   Item_t child;	
   int closed_parent_tag = 0;
-
+  
   if (item->getNodeKind() == StoreConsts::elementNode)
   {
-    // emit namespace bindings
-    NsBindings nsBindings;
-    item->getNamespaceBindings(nsBindings);
-    for (unsigned long i = 0; i < nsBindings.size(); i++)
-      tr << " xmlns:" <<  nsBindings[i].first << "=\"" << nsBindings[i].second << "\"";
-     
     // emit attributes 
     it = item->getAttributes();
     child = it->next();
@@ -322,6 +332,25 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
   return closed_parent_tag;
 }
 
+bool serializer::emitter::emit_bindings(Item* item)
+{
+  // emit namespace bindings
+  NsBindings nsBindings;
+  item->getNamespaceBindings(nsBindings);
+    
+  for (unsigned long i = 0; i < nsBindings.size(); i++)
+    if (!haveBinding(nsBindings[i]))
+      tr << " xmlns:" <<  nsBindings[i].first << "=\"" << nsBindings[i].second << "\"";
+
+  if (nsBindings.size() > 0)
+  {
+    bindings.push_back(nsBindings);
+    return true;
+  }
+  else
+    return false;
+}
+
 void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent /* = NULL */)
 {
 	if( item->getNodeKind() == StoreConsts::documentNode )
@@ -335,7 +364,11 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
 		tr << "<" << item->getNodeName()->getStringValue();
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 
+    bool should_remove_binding = emit_bindings(item);
 		int closed_parent_tag = emit_node_children(item, depth);
+
+    if (should_remove_binding)
+      bindings.pop_back();
 
 		if (closed_parent_tag)		
 			tr << "</" << item->getNodeName()->getStringValue() << ">";

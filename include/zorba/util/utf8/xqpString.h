@@ -309,7 +309,7 @@ public:
     /**
      * Create and return an xqpString from an UTF-16 encoded string
      */
-    static xqpString fromUTF16(const unsigned short* src, int32_t len);
+    static xqpString fromUTF16(const UChar* src, int32_t len);
 
 private:
 

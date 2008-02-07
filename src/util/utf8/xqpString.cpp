@@ -973,7 +973,7 @@ namespace xqp
     return ret;
   }
 
-  xqpString xqpString::fromUTF16(const unsigned short* src, int32_t len)
+  xqpString xqpString::fromUTF16(const UChar* src, int32_t len)
   {
     char* target;
     int32_t targetLen = len*4 + 1;
