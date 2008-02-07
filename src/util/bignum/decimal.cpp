@@ -120,7 +120,7 @@ MAPM Decimal::roundHalfToEven(MAPM aValue, MAPM aPrecision) {
   aCur += 0.5;
   aCur = aCur.floor();
   if (aHalfVal && aCur.is_odd()) {
-    aCur -= aCur;
+    aCur -= 1;
   }
   aCur /= aExp;
   return aCur;

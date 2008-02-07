@@ -644,7 +644,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const{
   case FloatConsts::NORMAL:
   {
     lFloatImpl.theType = theType;
-    lFloatImpl.theFloatImpl = Decimal::roundHalfToEven(theFloatImpl, aPrecision.theInteger);
+    lFloatImpl.theFloatImpl = Decimal::round(theFloatImpl, aPrecision.theInteger);
     checkInfNaN(lFloatImpl);
   }
     break;
