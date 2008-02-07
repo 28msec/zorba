@@ -84,7 +84,7 @@ int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert_t alert,
 	if(alert->theKind == ZorbaAlert::ERROR_ALERT)
 		setIsError();
 
-	if(sendAlertByCallback(z, alert, dont_send_callback, &retval))
+	if(!sendAlertByCallback(z, alert, dont_send_callback, &retval))
 	{
 		///if no callback was registered, then put the error in list
 		push_back(alert);
