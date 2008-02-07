@@ -152,7 +152,7 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
     if (stream.bad())
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
-                        NULL, false,
+                        NULL, DONT_CONTINUE_EXECUTION,
                         "Input stream in bad state");
     }
 
@@ -161,12 +161,12 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
   catch (std::iostream::failure e)
   {
     ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
-                      NULL, false, e.what());
+                      NULL, DONT_CONTINUE_EXECUTION, e.what());
   }
   catch (...)
   {
     ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
-                      NULL, false, "Unknown exception");
+                      NULL, DONT_CONTINUE_EXECUTION, "Unknown exception");
   }
 
   return -1;
@@ -192,7 +192,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
     if (numChars < 0)
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
-                        NULL, true, "Unknown I/O error");
+                        NULL, CONTINUE_EXECUTION, "Unknown I/O error");
       abort();
       return NULL;
     }
@@ -202,7 +202,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
     if (ctxt == NULL)
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                        NULL, true,
+                        NULL, CONTINUE_EXECUTION,
                         "Failed to initialize parser");
       abort();
 			return NULL;
@@ -216,7 +216,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
     if (numChars < 0)
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
-                        NULL, true, "Unknown I/O error");
+                        NULL, CONTINUE_EXECUTION, "Unknown I/O error");
       xmlFreeParserCtxt(ctxt);
       abort();
       return NULL;
@@ -240,14 +240,14 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
     if (theDocUri != NULL)
     {
       ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                            NULL, true,
+                            NULL, CONTINUE_EXECUTION,
                             "The document with URI " << *theDocUri
                             <<" is not well formed", "");
     }
     else
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                        NULL, true,
+                        NULL, CONTINUE_EXECUTION,
                         "Not well formed XML");
     }
 
@@ -672,7 +672,7 @@ void  XmlLoader::error(void * ctx, const char * msg, ... )
   vsprintf(buf, msg, args);
   va_end(args);
   ZORBA_ERROR_ALERT(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                    NULL, true, buf);
+                    NULL, CONTINUE_EXECUTION, buf);
 }
 
 

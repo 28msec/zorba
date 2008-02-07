@@ -60,7 +60,7 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
   {
     ZORBA_ERROR_ALERT(
          ZorbaError::XPTY0004,
-         &loc, false, "The argument of the fn:root function is not a node");
+         &loc, DONT_CONTINUE_EXECUTION, "The argument of the fn:root function is not a node");
   }
 
   parentNode = contextNode->getParent();
@@ -93,7 +93,7 @@ Item_t FnNodeNameIterator::nextImpl(PlanState& planState)
   if (!inNode->isNode()) {
     ZORBA_ERROR_ALERT(
          ZorbaError::XPTY0004,
-         &loc, false, "The argument of the fn:node-name function is not a node");
+         &loc, DONT_CONTINUE_EXECUTION, "The argument of the fn:node-name function is not a node");
   }
   
   STACK_PUSH(inNode->getNodeName(), state);

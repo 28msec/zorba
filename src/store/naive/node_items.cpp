@@ -671,7 +671,7 @@ void ElementNode::checkUniqueAttr(Item* attrName) const
   {
     if (getAttr(i)->getNodeName()->equals(attrName))
     {
-      ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0025, false, false, 
+      ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0025, NULL, DONT_CONTINUE_EXECUTION, 
                             "Attribute name " << attrName->getStringValue() 
                             << " is not unique", "");
     }

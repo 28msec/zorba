@@ -205,7 +205,7 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
     else {
       f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) + qname_internal_key (default_function_namespace (), prefix, local));
       if (f == NULL)
-        ZORBA_ERROR_ALERT (ZorbaError::XPST0017, NULL, false, local, to_string (arity));
+        ZORBA_ERROR_ALERT (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, local, to_string (arity));
       return f;
     }
   }
@@ -398,7 +398,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 			if(error_if_not_found)
 			{
 				//static context component missing
-				ZORBA_ERROR_ALERT( ZorbaError::XPST0001, NULL, true, "collation " + collURI);  //continue execution
+				ZORBA_ERROR_ALERT( ZorbaError::XPST0001, NULL, CONTINUE_EXECUTION, "collation " + collURI);  //continue execution
 			}
 			return NULL;///collation non-existant
 		}
@@ -593,7 +593,7 @@ xqp_string		static_context::resolve_relative_uri( xqp_string uri )
 	if(abs_base_uri.empty())
 	{
 		//then error ! cannot resolve relative uri
-		ZORBA_ERROR_ALERT(ZorbaError::XPST0001, NULL, false, "empty base URI");
+		ZORBA_ERROR_ALERT(ZorbaError::XPST0001, NULL, DONT_CONTINUE_EXECUTION, "empty base URI");
 		return "";
 	}
 

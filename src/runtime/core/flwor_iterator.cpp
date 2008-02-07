@@ -196,7 +196,7 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
     int8_t result = CompareIterator::valueCompare ( s1 , s2 );
     if (result > 1 || result < -1) {
       ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-                        NULL, false, "Non-comparable types found while sorting" );
+                        NULL, DONT_CONTINUE_EXECUTION, "Non-comparable types found while sorting" );
       
     }
     return descAsc (result , desc );
@@ -468,7 +468,7 @@ void FLWORIterator::matResultAndOrder(
       if ( lItem != 0 )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-                          NULL, false, "Expected a singleton" );
+                          NULL, DONT_CONTINUE_EXECUTION, "Expected a singleton" );
       }
     }
     lSpecIter->orderByIter->reset(planState);

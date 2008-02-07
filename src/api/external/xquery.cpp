@@ -126,7 +126,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     if ((mm_p = dynamic_cast<MainModule*>(&*n_p))==NULL) 
 	  {
       ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
-                        NULL, false,
+                        NULL, DONT_CONTINUE_EXECUTION,
                         "Parse error: expecting MainModule");
       zorba->current_xquery = NULL;
       return false;
@@ -135,7 +135,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL)
 	  {
       ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
-                        NULL, false,
+                        NULL, DONT_CONTINUE_EXECUTION,
                         "Parse error: expecting MainModule->QueryBody");
       //UnregisterCurrentXQueryForCurrentThread( this );
       zorba->current_xquery = NULL;
@@ -145,7 +145,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     if ((ex_p = dynamic_cast<Expr*>(&*qb_p->get_expr()))==NULL) 
 	  {
       ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
-                        NULL, false, 
+                        NULL, DONT_CONTINUE_EXECUTION, 
                         "Parse error: expecting MainModule->QueryBody->Expr");
       zorba->current_xquery = NULL;
       return false;
@@ -262,7 +262,7 @@ bool   Zorba_XQueryBinary::serializeQuery(ostream &os)
 
   ZORBA_ERROR_ALERT(ZorbaError::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
                     NULL,
-                    false,
+                    DONT_CONTINUE_EXECUTION,
                     "Zorba_XQueryBinary::serializeQuery"
                     );
 	}
@@ -503,7 +503,7 @@ void  Zorba_XQueryBinary::AbortQueryExecution()
 	try{
   ZORBA_ERROR_ALERT(ZorbaError::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
                     NULL,
-                    false,
+                    DONT_CONTINUE_EXECUTION,
                     "AbortQueryExecution"
                     );
 	}CATCH_ALL_NO_RETURN(;);
@@ -575,7 +575,7 @@ bool Zorba_XQueryBinary::setVariableAsDocumentFromStream(
 		if(uriItem == NULL)
 		{//not a valid uri
 			result->state_block->theZorba->current_xquery = NULL;
-			ZORBA_ERROR_ALERT(ZorbaError::API0014_INVALID_ARGUMENT, NULL, false, docUri);
+			ZORBA_ERROR_ALERT(ZorbaError::API0014_INVALID_ARGUMENT, NULL, DONT_CONTINUE_EXECUTION, docUri);
 			return false;
 		}
 		//?store.deleteDocument(docUri);
@@ -584,7 +584,7 @@ bool Zorba_XQueryBinary::setVariableAsDocumentFromStream(
 		{//cannot upload document into store
 			//or maybe is not valid xml
 			result->state_block->theZorba->current_xquery = NULL;
-			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, false, docUri);
+			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, DONT_CONTINUE_EXECUTION, docUri);
 			return false;
 		}
 
@@ -629,7 +629,7 @@ bool Zorba_XQueryBinary::setContextItemAsDocumentFromStream(
 		{//cannot upload document into store
 			//or maybe is not valid xml
 			result->state_block->theZorba->current_xquery = NULL;
-			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, false, docUri);
+			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, DONT_CONTINUE_EXECUTION, docUri);
 			return false;
 		}
 

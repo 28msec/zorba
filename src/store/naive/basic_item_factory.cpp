@@ -593,7 +593,7 @@ Item_t BasicItemFactory::createAttributeNode(
 
   if (attrName->getLocalName().size() == 0)
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, false, false,
+    ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, NULL, DONT_CONTINUE_EXECUTION,
                       "Attribute name must not have an empty local part.");
   }
 

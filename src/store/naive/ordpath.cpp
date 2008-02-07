@@ -406,7 +406,7 @@ void OrdPath::appendComp(long value)
     else
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_ERROR,
-                        NULL, false,
+                        NULL, DONT_CONTINUE_EXECUTION,
                         "A nodeid component is too large to be encoded");
       return;
     }
@@ -469,7 +469,7 @@ void OrdPath::appendComp(long value)
     else
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_ERROR,
-                        NULL, false,
+                        NULL, DONT_CONTINUE_EXECUTION,
                         "A nodeid component is too large to be encoded");
       return;
     }
@@ -479,7 +479,7 @@ void OrdPath::appendComp(long value)
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
     ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0018_NODEID_ERROR,
-                          NULL, false,
+                          NULL, DONT_CONTINUE_EXECUTION,
                           "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
                           << " bytes", "");
   }
@@ -2800,7 +2800,7 @@ void OrdPathStack::pushChild()
       (theByteIndex == OrdPath::MAX_BYTE_LEN - 1 && theBitsAvailable < 2))
   {
     ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0018_NODEID_ERROR,
-                          NULL, false,
+                          NULL, DONT_CONTINUE_EXECUTION,
                           "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
                           << " bytes", "");
   }
@@ -2944,7 +2944,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     else
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_ERROR,
-                        NULL, false,
+                        NULL, DONT_CONTINUE_EXECUTION,
                         "A nodeid component is too large to be encoded");
       return;
     }
@@ -2998,7 +2998,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     else
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0018_NODEID_ERROR,
-                        NULL, false,
+                        NULL, DONT_CONTINUE_EXECUTION,
                         "A nodeid component is too large to be encoded");
       return;
     }
@@ -3010,7 +3010,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
     ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0018_NODEID_ERROR,
-                          NULL, false,
+                          NULL, DONT_CONTINUE_EXECUTION,
                           "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
                           << " bytes", "");
     return;

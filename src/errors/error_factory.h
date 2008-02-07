@@ -21,6 +21,12 @@
 namespace xqp
 {
 
+typedef enum
+{
+	DONT_CONTINUE_EXECUTION = 0,
+	CONTINUE_EXECUTION
+}enumContinueExecution_t;
+
 class ZorbaAlertFactory 
 {
 public:
@@ -33,7 +39,7 @@ public:
 	static void error_alert(
         const ZorbaError::ErrorCodes code,
         const yy::location* ploc = NULL,
-        bool continue_execution = false,
+        enumContinueExecution_t continue_execution = DONT_CONTINUE_EXECUTION,
 				const std::string param1 = "",
         const std::string param2 = "");
 
@@ -162,10 +168,10 @@ extern bool						g_abort_when_fatal_error;
 #endif //#ifndef NDEBUG
 
 #define ZORBA_NOT_SUPPORTED( what )                                     \
-  ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false, what)
+  ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, DONT_CONTINUE_EXECUTION, what)
 
 #define ZORBA_NOT_IMPLEMENTED( what )                                     \
-  ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, false, what)
+  ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, NULL, DONT_CONTINUE_EXECUTION, what)
   
 #define CATCH_ALL( uninit_instr, ret )                                                \
   catch(xqp_exception &x)\
@@ -178,13 +184,13 @@ extern bool						g_abort_when_fatal_error;
 	}\
   catch (const std::exception &e) {                                     \
 		uninit_instr\
-    ZORBA_ERROR_ALERT(ZorbaError::XQP0019_INTERNAL_ERROR, NULL, true, e.what ()); \
+    ZORBA_ERROR_ALERT(ZorbaError::XQP0019_INTERNAL_ERROR, NULL, CONTINUE_EXECUTION, e.what ()); \
 		if(ZorbaEngine::getInstance()->getAlertsManagerForCurrentThread()->getThrowExceptionsMode())\
 			throw;\
     ret;                                                                \
   } catch (...) {                                                       \
 		uninit_instr\
-    ZORBA_ERROR_ALERT(ZorbaError::XQP0019_INTERNAL_ERROR, NULL, true);  \
+    ZORBA_ERROR_ALERT(ZorbaError::XQP0019_INTERNAL_ERROR, NULL, CONTINUE_EXECUTION);  \
 		if(ZorbaEngine::getInstance()->getAlertsManagerForCurrentThread()->getThrowExceptionsMode())\
 			throw;\
     ret;                                                                \

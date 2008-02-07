@@ -294,7 +294,7 @@ Item_t SelfAxisIterator::nextImpl(PlanState& planState)
     {
       ZORBA_ERROR_ALERT(
          ZorbaError::XPTY0020,
-         &loc, false, "The context item of an axis step is not a node");
+         &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
     }
   }
   while (theNodeKind != StoreConsts::anyNode &&
@@ -340,7 +340,7 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
       {
         ZORBA_ERROR_ALERT(
            ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+           &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
       }
     }
     while (state->theContextNode->getNodeKind() != StoreConsts::elementNode);
@@ -379,7 +379,7 @@ Item_t ParentAxisIterator::nextImpl(PlanState& planState)
     if (!state->theContextNode->isNode())
     {
       ZORBA_ERROR_ALERT(ZorbaError::XPTY0020,
-                        &loc, false,
+                        &loc, DONT_CONTINUE_EXECUTION,
                         "The context item of an axis step is not a node");
     }
 
@@ -416,7 +416,7 @@ Item_t AncestorAxisIterator::nextImpl(PlanState& planState)
     {
       ZORBA_ERROR_ALERT(
            ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+           &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
     }
 
     state->theCurrentAnc = state->theContextNode->getParent();
@@ -454,7 +454,7 @@ Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState)
     {
       ZORBA_ERROR_ALERT(
            ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+           &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
     }
 
     state->theCurrentAnc = state->theContextNode;
@@ -512,7 +512,7 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
       {
         ZORBA_ERROR_ALERT(
            ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+           &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
       }
     }
     while (state->theContextNode->getNodeKind() == StoreConsts::attributeNode);
@@ -581,7 +581,7 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
       {
         ZORBA_ERROR_ALERT(
            ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+           &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
       }
     }
     while (state->theContextNode->getNodeKind() == StoreConsts::attributeNode);
@@ -649,7 +649,7 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
       {
         ZORBA_ERROR_ALERT(
            ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+           &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
       }
     }
     while (state->theContextNode->getNodeKind() != StoreConsts::elementNode &&
@@ -723,7 +723,7 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
       {
         ZORBA_ERROR_ALERT(
            ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+           &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
       }
     }
     while (state->theContextNode->getNodeKind() != StoreConsts::elementNode &&
@@ -827,7 +827,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
       {
         ZORBA_ERROR_ALERT(
            ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+           &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
       }
     }
     while (state->theContextNode->getNodeKind() != StoreConsts::elementNode &&
@@ -928,7 +928,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
     {
       ZORBA_ERROR_ALERT(
            ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+           &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
     }
 
     // Collect the context node and its ancestors
@@ -1042,7 +1042,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
     {
       ZORBA_ERROR_ALERT(
            ZorbaError::XPTY0020,
-           &loc, false, "The context item of an axis step is not a node");
+           &loc, DONT_CONTINUE_EXECUTION, "The context item of an axis step is not a node");
     }
 
     // Collect the context node and its ancestors

@@ -719,7 +719,7 @@ void end_visit(const DirAttr& v, void *visit_state)
       prefix = qname->get_localname();
       if (prefix == "xmlns")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), false, 
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), DONT_CONTINUE_EXECUTION, 
                           "Cannot bind predefined prefix \"xmlns\"");
       }
     }
@@ -731,12 +731,12 @@ void end_visit(const DirAttr& v, void *visit_state)
 
       if (prefix == "xml" && uri != "http://www.w3.org/XML/1998/namespace")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), false, 
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), DONT_CONTINUE_EXECUTION, 
                           "Predefined prefix \"xml\" is not bound to uri \"http://www.w3.org/XML/1998/namespace\"");
       }
       if (prefix != "xml" && uri == "http://www.w3.org/XML/1998/namespace")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), false, 
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), DONT_CONTINUE_EXECUTION, 
                           "Uri \"http://www.w3.org/XML/1998/namespace\" can only be bound to prefix \"xml\"");
       }
       sctx_p->bind_ns(prefix, uri, ZorbaError::XQST0071);
@@ -746,7 +746,7 @@ void end_visit(const DirAttr& v, void *visit_state)
     {
       if (prefix == "xml")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), false, 
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), DONT_CONTINUE_EXECUTION, 
                           "Cannot unbind predefined prefix \"xml\"");
       }
 
@@ -759,7 +759,7 @@ void end_visit(const DirAttr& v, void *visit_state)
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQST0022, &v.get_location(), false, "", "");
+      ZORBA_ERROR_ALERT(ZorbaError::XQST0022, &v.get_location(), DONT_CONTINUE_EXECUTION, "", "");
     }
   }
   else
@@ -2178,7 +2178,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
     case 1:
       break;
     default:
-      ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, false, "fn:string", arguments.size ());
+      ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:string", arguments.size ());
     }
   }
   TypeSystem::xqtref_t type =
@@ -2187,7 +2187,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
   if (type != NULL)
   {
     if (arguments.size () != 1)
-      ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, false, prefix + ":" + fname, arguments.size ());
+      ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, prefix + ":" + fname, arguments.size ());
     nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
   }
   else
@@ -2642,7 +2642,7 @@ void end_visit(const DocumentTest& v, void *visit_state)
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
                         &v.get_location(),
-                        false, "Document kind test");
+                        DONT_CONTINUE_EXECUTION, "Document kind test");
     }
   }
 }
@@ -2689,7 +2689,7 @@ void end_visit(const ElementTest& v, void *visit_state)
     {
       ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
                         &v.get_location(),
-                        false, "schema types");
+                        DONT_CONTINUE_EXECUTION, "schema types");
     }
 
     rchandle<NodeTest> nodeTest;
@@ -3723,7 +3723,7 @@ void end_visit(const VarRef& v, void *visit_state)
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
   if (e == NULL)
-    ZORBA_ERROR_ALERT (ZorbaError::XPST0008, NULL, false, v.get_varname ());
+    ZORBA_ERROR_ALERT (ZorbaError::XPST0008, NULL, DONT_CONTINUE_EXECUTION, v.get_varname ());
   nodestack.push (rchandle<expr> (e));
 }
 

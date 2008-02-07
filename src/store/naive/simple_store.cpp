@@ -242,7 +242,7 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
   if (theCollections.find(uri))
   {
     ZORBA_ERROR_ALERT_OSS(ZorbaError::API0005_COLLECTION_ALREADY_EXISTS,
-                          NULL, true, uri, "");
+                          NULL, CONTINUE_EXECUTION, uri, "");
     return NULL;
   }
 

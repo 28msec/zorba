@@ -297,7 +297,7 @@ ConcatStrIterator::nextImpl(PlanState& planState) {
     if  ( ( lItem = consumeNext(*iter, planState) ) != NULL )
     {
       ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-        &loc, false, "A sequence with more than one item is not allowed as argument to fn:concat");
+        &loc, DONT_CONTINUE_EXECUTION, "A sequence with more than one item is not allowed as argument to fn:concat");
         break;
     }
   }
@@ -630,7 +630,7 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
     else
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOCH0003,
-                        &loc, false, "Unsupported normalization form.");
+                        &loc, DONT_CONTINUE_EXECUTION, "Unsupported normalization form.");
     }
   }
   

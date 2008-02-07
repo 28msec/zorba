@@ -276,13 +276,13 @@ THROW_XQP_EXCEPTION
   errno = 0;
   //daniel throw xqp_exception(location, msg + " ["+err+']');
 	ZORBA_ERROR_ALERT(ZorbaError::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
-													NULL,false,
+													NULL,DONT_CONTINUE_EXECUTION,
 													msg + " ["+err+']', location);
 #else
 	ostringstream		oss;
 	oss << msg << " [" << GetLastError() << "]";
 	ZORBA_ERROR_ALERT(ZorbaError::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
-													NULL,false,
+													NULL,DONT_CONTINUE_EXECUTION,
 													oss.str() , location);
 #endif
 }

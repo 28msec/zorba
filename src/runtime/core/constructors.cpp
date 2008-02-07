@@ -103,7 +103,7 @@ Item_t DocumentContentIterator::nextImpl(PlanState& planState)
 
     if (lItem->isNode() && lItem->getNodeKind() == StoreConsts::attributeNode)
     {
-        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, false,
+        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION,
                           "A Document Node must not contain attribute nodes!");
     }
 
@@ -178,7 +178,7 @@ Item_t ElementIterator::nextImpl(PlanState& planState)
   // the compiler wraps an xs:qname cast around the expression
   if (qnameItem->getLocalName().size() == 0)
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, false, false,
+    ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, NULL, DONT_CONTINUE_EXECUTION,
                       "Element name must not have an empty local part.");
   }
 
@@ -304,7 +304,7 @@ Item_t ElementContentIterator::nextImpl(PlanState& planState)
     if (item->isNode() && item->getNodeKind() == StoreConsts::attributeNode) 
     {
       if (state->theNoAttrAllowed)
-        ZORBA_ERROR_ALERT(ZorbaError::XQTY0024, &loc, false);
+        ZORBA_ERROR_ALERT(ZorbaError::XQTY0024, &loc, DONT_CONTINUE_EXECUTION);
     }
     else
     {

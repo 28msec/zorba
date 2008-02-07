@@ -409,7 +409,7 @@ THROW_XQP_EXCEPTION
   {
     ZORBA_ERROR_ALERT_OSS(
           ZorbaError::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
-          NULL, false,///dont continue execution, stop here
+          NULL, DONT_CONTINUE_EXECUTION,///dont continue execution, stop here
           n, MAX_KEYLEN);
   }
   if (sz > dsz*ld) resize();
@@ -443,7 +443,7 @@ THROW_XQP_EXCEPTION
     ostr2 << MAX_KEYLEN;
     ZORBA_ERROR_ALERT(
            ZorbaError::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
-           NULL, false,///dont continue execution, stop here
+           NULL, DONT_CONTINUE_EXECUTION,///dont continue execution, stop here
            ostr1.str(), ostr2.str());///param1 and param2 for error message
   }
   if (sz > dsz*ld) resize();
@@ -473,7 +473,7 @@ THROW_XQP_EXCEPTION
   {
     ZORBA_ERROR_ALERT(
            ZorbaError::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
-           NULL, false,
+           NULL, DONT_CONTINUE_EXECUTION,
            n, MAX_KEYLEN);
   }
 

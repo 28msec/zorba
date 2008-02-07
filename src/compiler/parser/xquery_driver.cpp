@@ -44,13 +44,13 @@ void xquery_driver::error(
 	yy::location const& l,
 	string const& m)
 {
-  ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &l, false, m);
+  ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &l, DONT_CONTINUE_EXECUTION, m);
 }
      
 void xquery_driver::error(
 	string const& m)
 {
-  ZORBA_ERROR_ALERT (ZorbaError::XPST0003, NULL, false, m); 
+  ZORBA_ERROR_ALERT (ZorbaError::XPST0003, NULL, DONT_CONTINUE_EXECUTION, m); 
 }
 
 }	/* namespace xqp */

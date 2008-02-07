@@ -47,7 +47,7 @@ Item_t CtxVariableIterator::nextImpl(PlanState& planState)
 		item = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->context_item();
 		if(item == NULL)
 		{
-			ZORBA_ERROR_ALERT (ZorbaError::XPDY0002, &loc, false, theVarName);
+			ZORBA_ERROR_ALERT (ZorbaError::XPDY0002, &loc, DONT_CONTINUE_EXECUTION, theVarName);
 		}
 		STACK_PUSH( item, aState);
 	}
@@ -57,7 +57,7 @@ Item_t CtxVariableIterator::nextImpl(PlanState& planState)
 					 get_base_dynamic_context()->get_variable(theVarName);
 
 		if (iter == NULL)
-			ZORBA_ERROR_ALERT (ZorbaError::XPDY0002, &loc, false, theVarName);
+			ZORBA_ERROR_ALERT (ZorbaError::XPDY0002, &loc, DONT_CONTINUE_EXECUTION, theVarName);
 
 		do
 		{

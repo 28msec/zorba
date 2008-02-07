@@ -74,8 +74,7 @@ void SimpleCollection::addToCollection(const Item* node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
-                      NULL, false);
+    ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
   theXmlTrees.insert(static_cast<const XmlNode*>(node)->getTree());
@@ -104,8 +103,7 @@ void SimpleCollection::removeFromCollection(const Item* node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
-                      NULL, false);
+    ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
   theXmlTrees.erase(static_cast<const XmlNode*>(node)->getTree());

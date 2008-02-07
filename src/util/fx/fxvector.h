@@ -259,7 +259,7 @@ protected:
 			ostr1 << n;
 			ostr2 << size();
 			ZORBA_ERROR_ALERT(ZorbaError::XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE,
-                        NULL, false,///dont continue execution, stop here
+                        NULL, DONT_CONTINUE_EXECUTION,///dont continue execution, stop here
                         ostr1.str(), ostr2.str()///param1 and param2 for error message
                         );
 		}

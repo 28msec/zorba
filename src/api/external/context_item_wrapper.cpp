@@ -1013,7 +1013,7 @@ bool DynamicContextWrapper::setContextItemAsDocumentFromFile(
 		std::ifstream			is(file_path.c_str ());
 		if(!is.is_open())
 		{
-			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, false, file_path);
+			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, DONT_CONTINUE_EXECUTION, file_path);
 			return false;
 		}
 		Store		&store = Store::getInstance();
@@ -1026,7 +1026,7 @@ bool DynamicContextWrapper::setContextItemAsDocumentFromFile(
 		if(context_item == NULL)
 		{//cannot upload document into store
 			//or maybe is not valid xml
-			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, false, file_path);
+			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, DONT_CONTINUE_EXECUTION, file_path);
 			return false;
 		}
 

@@ -76,7 +76,7 @@ namespace xqp
       else
       {
         ZORBA_ERROR_ALERT( ZorbaError::FORG0006,
-            &loc, false, "Wrong arguments in fn:boolean function.");
+            &loc, DONT_CONTINUE_EXECUTION, "Wrong arguments in fn:boolean function.");
       }
     }
 
@@ -186,14 +186,14 @@ namespace xqp
         if ( this->consumeNext ( theChild0, planState ) != NULL || this->consumeNext ( theChild1, planState ) != NULL )
         {
           ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
-              &loc, false, "Value comparions must not be made with sequences with length greater 1.");
+              &loc, DONT_CONTINUE_EXECUTION, "Value comparions must not be made with sequences with length greater 1.");
         }
       }
     } /* if value comparison */
     else if ( this->isNodeComparison() )
     {
       ZORBA_ERROR_ALERT( ZorbaError::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
-          &loc, false, "Node comparison is not yet implemented.");
+          &loc, DONT_CONTINUE_EXECUTION, "Node comparison is not yet implemented.");
     } /* if node comparison */
   
     STACK_END();
@@ -346,7 +346,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
         break;
     }
 
-  ZORBA_ERROR_ALERT( ZorbaError::FORG0006, NULL, false, "Dynamic type of a value does not match a required type.");
+  ZORBA_ERROR_ALERT( ZorbaError::FORG0006, NULL, DONT_CONTINUE_EXECUTION, "Dynamic type of a value does not match a required type.");
   return false;
 }
   
@@ -617,7 +617,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
            ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
-             &loc, false, "The IsSameNode function must have nodes as parameters.");
+             &loc, DONT_CONTINUE_EXECUTION, "The IsSameNode function must have nodes as parameters.");
         }
         lBool = (Zorba::getStore()->compare(lItem0, lItem1) == 0); 
         STACK_PUSH ( 
@@ -644,7 +644,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
            ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
-             &loc, false, "The IsSameNode function must have nodes as parameters.");
+             &loc, DONT_CONTINUE_EXECUTION, "The IsSameNode function must have nodes as parameters.");
         }
         lBool = (Zorba::getStore()->compare(lItem0, lItem1) == -1); 
         STACK_PUSH ( 
@@ -671,7 +671,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
            ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
-             &loc, false, "The IsSameNode function must have nodes as parameters.");
+             &loc, DONT_CONTINUE_EXECUTION, "The IsSameNode function must have nodes as parameters.");
         }
         lBool = (Zorba::getStore()->compare(lItem0, lItem1) == 1); 
         STACK_PUSH ( 

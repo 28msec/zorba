@@ -339,7 +339,7 @@ Item_t GenericCast::stringSimpleCast(
     if (!ts.is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
         !ts.is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      ZORBA_ERROR_ALERT_OSS(ZorbaError::XPTY0004, false, false,
+      ZORBA_ERROR_ALERT_OSS(ZorbaError::XPTY0004, NULL, DONT_CONTINUE_EXECUTION,
                             "Cannot cast " << lString
                             << " to an NCName because its type is "
                             << aSourceType->toString(), "");
@@ -351,7 +351,7 @@ Item_t GenericCast::stringSimpleCast(
     }
     else
     {
-      ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0041, false, false,
+      ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0041, NULL, DONT_CONTINUE_EXECUTION,
                           "Cannot cast " << lString << " to an NCName", ""); 
     }
     break;
@@ -364,7 +364,7 @@ Item_t GenericCast::stringSimpleCast(
     if (!ts.is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
         !ts.is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      ZORBA_ERROR_ALERT_OSS(ZorbaError::XPTY0004, false, false,
+      ZORBA_ERROR_ALERT_OSS(ZorbaError::XPTY0004, NULL, DONT_CONTINUE_EXECUTION,
                             "Cannot cast string \"" << lString
                             << "\" to an NCName because its type is "
                             << aSourceType->toString(), "");
@@ -382,7 +382,7 @@ Item_t GenericCast::stringSimpleCast(
       }
       else
       {
-        ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0074, false, false,
+        ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0074, NULL, DONT_CONTINUE_EXECUTION,
                               "Cannot cast string \"" << lString
                               << "\" to an QName", ""); 
       }
@@ -398,7 +398,7 @@ Item_t GenericCast::stringSimpleCast(
       }
       else
       {
-        ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0074, false, false,
+        ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0074, NULL, DONT_CONTINUE_EXECUTION,
                               "Cannot cast string \"" << lString
                               << "\" to an QName", ""); 
       }
@@ -583,7 +583,7 @@ Item_t GenericCast::castToBoolean(
         lRetValue = false;
       else if (lString != "true" && lString != "1")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::FORG0001, false, "String cannot be cast to boolean");
+        ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL, DONT_CONTINUE_EXECUTION, "String cannot be cast to boolean");
       }
       
     }
@@ -609,7 +609,7 @@ Item_t GenericCast::cast(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) 
   lResult = stringSimpleCast(aItem, lItemType, aTargetType);
   if ( lResult == 0 ) 
   {
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, false, false,
+    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL, DONT_CONTINUE_EXECUTION,
                       "Passed item is not castable to passed target type.");
   }
 

@@ -104,7 +104,7 @@ bool		StaticContextWrapper::addNamespace( xqp_string prefix, xqp_string URI )//o
 	if((prefix == "xmlns") ||
 		(prefix == "xml") && (URI != "http://www.w3.org/XML/1998/namespace" ))
 	{
-		ZORBA_ERROR_ALERT(ZorbaError::XQST0070, NULL, false, prefix, URI);
+		ZORBA_ERROR_ALERT(ZorbaError::XQST0070, NULL, DONT_CONTINUE_EXECUTION, prefix, URI);
 		return false;//ignore that
 	}
 

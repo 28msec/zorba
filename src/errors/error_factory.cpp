@@ -32,7 +32,7 @@ bool        g_abort_when_fatal_error = false;
 void ZorbaAlertFactory::error_alert( 
     const ZorbaError::ErrorCodes code,
     const yy::location* ploc, 
-    bool continue_execution,
+    enumContinueExecution_t continue_execution,
     const std::string param1,
     const std::string param2)
 {
@@ -41,7 +41,7 @@ void ZorbaAlertFactory::error_alert(
   //If there is no Zorba obj, we cannot generate a detailed description of the error
 	if(!z)
 	{
-		if(!continue_execution)
+		if(continue_execution == DONT_CONTINUE_EXECUTION)
 		{
 	#ifndef NDEBUG
 			if(g_abort_when_fatal_error)
@@ -89,7 +89,7 @@ void ZorbaAlertFactory::error_alert(
 
 	err_manager->sendAlertToUser(z, error, !error->theLocation.location_is_set);
 
-	if(!continue_execution)
+	if(continue_execution == DONT_CONTINUE_EXECUTION)
 	{
 #ifndef NDEBUG
 		if(g_abort_when_fatal_error)
@@ -307,7 +307,7 @@ void ZorbaAssert(const char *where, const char *fun, const char *what)
   string where_fun (where);
   where_fun += ": "; where_fun += fun;
   ZorbaAlertFactory::error_alert(ZorbaError::XQP0005_SYSTEM_ASSERT_FAILED,
-                                 NULL, false, what, where_fun);
+                                 NULL, DONT_CONTINUE_EXECUTION, what, where_fun);
 }
 
 }

@@ -305,20 +305,20 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
 	fquery = fopen(xquery_file.c_str(), "r");
 	if(!fquery)
 	{
-		ZORBA_ERROR_ALERT(ZorbaError::API0015_CANNOT_OPEN_FILE, NULL, false, xquery_file);
+		ZORBA_ERROR_ALERT(ZorbaError::API0015_CANNOT_OPEN_FILE, NULL, DONT_CONTINUE_EXECUTION, xquery_file);
 		return NULL;
 	}
 	if(fseek(fquery, 0, SEEK_END))
 	{
 		fclose(fquery);
-		ZORBA_ERROR_ALERT(ZorbaError::API0018_CANNOT_ACCESS_FILE, NULL, false, xquery_file);
+		ZORBA_ERROR_ALERT(ZorbaError::API0018_CANNOT_ACCESS_FILE, NULL, DONT_CONTINUE_EXECUTION, xquery_file);
 		return NULL;
 	}
 	fsize = ftell(fquery);
 	if(fsize <= 0)
 	{
 		fclose(fquery);
-		ZORBA_ERROR_ALERT(ZorbaError::API0018_CANNOT_ACCESS_FILE, NULL, false, xquery_file);
+		ZORBA_ERROR_ALERT(ZorbaError::API0018_CANNOT_ACCESS_FILE, NULL, DONT_CONTINUE_EXECUTION, xquery_file);
 		return NULL;
 	}
 	fseek(fquery, 0, SEEK_SET);
@@ -327,7 +327,7 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
 	{
 		::free(xquerydata);
 		fclose(fquery);
-		ZORBA_ERROR_ALERT(ZorbaError::API0018_CANNOT_ACCESS_FILE, NULL, false, xquery_file);
+		ZORBA_ERROR_ALERT(ZorbaError::API0018_CANNOT_ACCESS_FILE, NULL, DONT_CONTINUE_EXECUTION, xquery_file);
 		return NULL;
 	}
 	fclose(fquery);

@@ -29,7 +29,7 @@ FnTraceIterator::nextImpl(PlanState& planState)
   DEFAULT_STACK_INIT(FnTraceIteratorState, state, planState);
 
   if ( (state->theTagItem = consumeNext(theChildren[1], planState)) == NULL ) {
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0006, &loc, false,
+    ZORBA_ERROR_ALERT(ZorbaError::FORG0006, &loc, DONT_CONTINUE_EXECUTION,
         "An empty sequence is not allowed as as second argument to fn:trace");
   }
 

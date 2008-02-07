@@ -101,7 +101,7 @@ namespace xqp
     if ( ld1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
-         loc, false, "Division by zero (decimals)");
+         loc, DONT_CONTINUE_EXECUTION, "Division by zero (decimals)");
     }
     return Zorba::getItemFactory()->createDecimal ( ld0 / ld1 );
   }
@@ -113,7 +113,7 @@ namespace xqp
     if ( ll1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
-         loc, false, "Division by zero (decimals)");
+         loc, DONT_CONTINUE_EXECUTION, "Division by zero (decimals)");
     }
     return Zorba::getItemFactory()->createDecimal ( ll0 / ll1 );
   }
@@ -124,11 +124,11 @@ namespace xqp
   {
     if (i0->isNaN() || i1->isNaN()) {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
-        loc, false, "Integer Devision with doubles must not be done with NaNs");
+        loc, DONT_CONTINUE_EXECUTION, "Integer Devision with doubles must not be done with NaNs");
     }
     if (i0->isPosOrNegInf()) {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
-        loc, false, "Integer Devision must not be done with a +-INF dividend");
+        loc, DONT_CONTINUE_EXECUTION, "Integer Devision must not be done with a +-INF dividend");
     }
     if (i0->isPosOrNegInf()) {
       // idiv with +-INF divisor has 0 as result
@@ -140,7 +140,7 @@ namespace xqp
     if ( d1 == 0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
-         loc, false, "Division by zero (decimals)");
+         loc, DONT_CONTINUE_EXECUTION, "Division by zero (decimals)");
     }
 
     xqp_integer lInteger;
@@ -153,11 +153,11 @@ namespace xqp
   {
     if (i0->isNaN() || i1->isNaN() ) {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
-        loc, false, "Integer Devision with floats must not be done with NaNs");
+        loc, DONT_CONTINUE_EXECUTION, "Integer Devision with floats must not be done with NaNs");
     }
     if (i0->isPosOrNegInf()) {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
-        loc, false, "Integer Devision must not be done with a +-INF dividend");
+        loc, DONT_CONTINUE_EXECUTION, "Integer Devision must not be done with a +-INF dividend");
     }
     if (i0->isPosOrNegInf()) {
       // idiv with +-INF divisor has 0 as result
@@ -169,7 +169,7 @@ namespace xqp
     if ( f1 == 0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
-         loc, false, "Division by zero (decimals)");
+         loc, DONT_CONTINUE_EXECUTION, "Division by zero (decimals)");
     }
     xqp_integer lInteger;
     bool lBool = Integer::parse( f0 / f1, lInteger);
@@ -184,7 +184,7 @@ namespace xqp
     if ( ld1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
-         loc, false, "Division by zero (decimals)");
+         loc, DONT_CONTINUE_EXECUTION, "Division by zero (decimals)");
     }
     return Zorba::getItemFactory()->createInteger (
                static_cast<xqp_integer> ( ld0 / ld1 )
@@ -198,7 +198,7 @@ namespace xqp
     if ( ll1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
-         loc, false, "Division by zero (decimals)");
+         loc, DONT_CONTINUE_EXECUTION, "Division by zero (decimals)");
     }
     return Zorba::getItemFactory()->createInteger (
                ll0 / ll1
@@ -224,7 +224,7 @@ namespace xqp
     if ( ld1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
-         loc, false, "Modulo by zero (decimals)");
+         loc, DONT_CONTINUE_EXECUTION, "Modulo by zero (decimals)");
     }
     return Zorba::getItemFactory()->createDecimal ( ld0 % ld1  );
   }
@@ -236,7 +236,7 @@ namespace xqp
     if ( ll1 == (int32_t)0 )
     {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0001,
-         loc, false, "Modulo by zero (decimals)");
+         loc, DONT_CONTINUE_EXECUTION, "Modulo by zero (decimals)");
     }
     return Zorba::getItemFactory()->createInteger ( ll0 % ll1 );
   }
@@ -277,7 +277,7 @@ namespace xqp
         if ( consumeNext ( this->theChild0, planState ) != NULL 
              || consumeNext ( this->theChild1, planState ) != NULL )
           ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-              NULL, false, "Arithmetic operation has a sequences greater than one as an operator.");
+              NULL, DONT_CONTINUE_EXECUTION, "Arithmetic operation has a sequences greater than one as an operator.");
         STACK_PUSH ( res, state );
       }
     }
@@ -550,12 +550,12 @@ namespace xqp
       else
       {
           ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-              &loc, false, "Wrong operator type for an unary arithmetic operation.");
+              &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for an unary arithmetic operation.");
       }
 
       if ( this->consumeNext ( theChild, planState ) != NULL )
           ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-              &loc, false, "Arithmetic operation has a sequences greater than one as an operator.");
+              &loc, DONT_CONTINUE_EXECUTION, "Arithmetic operation has a sequences greater than one as an operator.");
       STACK_PUSH ( res, state );
     }
     STACK_END();
@@ -634,13 +634,13 @@ namespace xqp
       else
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-            &loc, false, "Wrong operator type for an abs operation.");
+            &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for an abs operation.");
       }
 
       if ( this->consumeNext ( theChildren[0], planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-            &loc, false, "Abs operation has a sequences greater than one as an operator.");
+            &loc, DONT_CONTINUE_EXECUTION, "Abs operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
     }
@@ -692,13 +692,13 @@ namespace xqp
       else
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-            &loc, false, "Wrong operator type for a ceiling operation.");
+            &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for a ceiling operation.");
       }
 
       if ( this->consumeNext ( theChildren[0], planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-            &loc, false, "Ceiling operation has a sequences greater than one as an operator.");
+            &loc, DONT_CONTINUE_EXECUTION, "Ceiling operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
     }
@@ -749,13 +749,13 @@ namespace xqp
       else
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-            &loc, false, "Wrong operator type for a floor operation.");
+            &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for a floor operation.");
       }
 
       if ( this->consumeNext ( theChildren[0], planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-            &loc, false, "Floor operation has a sequences greater than one as an operator.");
+            &loc, DONT_CONTINUE_EXECUTION, "Floor operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
     }
@@ -806,13 +806,13 @@ namespace xqp
       else
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-            &loc, false, "Wrong operator type for a round operation.");
+            &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for a round operation.");
       }
 
       if ( this->consumeNext ( theChildren[0], planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-            &loc, false, "Round operation has a sequences greater than one as an operator.");
+            &loc, DONT_CONTINUE_EXECUTION, "Round operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
     }
@@ -883,13 +883,13 @@ namespace xqp
       else
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-            &loc, false, "Wrong operator type for a round-half-to-even operation.");
+            &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for a round-half-to-even operation.");
       }
 
       if ( this->consumeNext ( theChild0, planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-           &loc, false, "Round-half-to-even operation has a sequences greater than one as an operator.");
+           &loc, DONT_CONTINUE_EXECUTION, "Round-half-to-even operation has a sequences greater than one as an operator.");
       }
       STACK_PUSH ( res, state );
     }

@@ -73,7 +73,7 @@ InstanceOfIterator::nextImpl(PlanState& planState)
   }
     
   if (mustBeInstance && ! lResult)
-    ZORBA_ERROR_ALERT (ZorbaError::XPDY0050, NULL, false);
+    ZORBA_ERROR_ALERT (ZorbaError::XPDY0050, NULL, DONT_CONTINUE_EXECUTION);
   STACK_PUSH(Zorba::getItemFactory()->createBoolean(lResult), state);
   STACK_END();
 }
@@ -108,7 +108,7 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState)
     if (theQuantifier == TypeSystem::QUANT_PLUS ||
         theQuantifier == TypeSystem::QUANT_ONE)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, false,
+      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION,
         "Empty sequences cannot be casted to a type with quantifier ONE or PLUS!"
       );
     }
@@ -118,7 +118,7 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState)
   {
     if (consumeNext(theChild, aPlanState) != NULL)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, false,
+      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION,
                         "Sequence with more than one item cannot be casted to a type with quantifier ONE or QUESTION!");
     }
 
@@ -206,18 +206,18 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
   
   if (lItem == 0) {
     if (theQuantifier == TypeSystem::QUANT_PLUS || theQuantifier == TypeSystem::QUANT_ONE) {
-      ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, false, 
+      ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, 
       "Empty seq cannot be promoted to QUANT_ONE or QUANT_PULS type.");
     }
   } else if(theQuantifier == TypeSystem::QUANT_QUESTION 
          || theQuantifier == TypeSystem::QUANT_ONE) {
     if(consumeNext(theChild, aPlanState) != 0) {
-      ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, false, 
+      ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, 
       "Seq with 2 or more items cannot be promotioned to a QUANT_QUESTION or QUANT_ONE type.");
     }
     lResult = GenericCast::instance()->promote(lItem, thePromoteType);
     if (lResult == 0) {
-      ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, false, "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeSystem::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
+      ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeSystem::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
     } else {
       STACK_PUSH(lResult, lState);
     }
@@ -225,7 +225,7 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
     do {
       lResult = GenericCast::instance()->promote(lItem, thePromoteType);
       if (lResult == 0) {
-        ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, false, "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeSystem::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
+        ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeSystem::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
       } else{
         STACK_PUSH(lResult, lState);
       }
