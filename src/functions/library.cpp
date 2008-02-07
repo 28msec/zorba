@@ -164,13 +164,13 @@ DECL(fn_round_half_to_even,
 // nodeTest = new NodeTest(StoreConsts::elementNode);
 
 DECL(fn_resolve_qname,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn",  "resolve-qname"),
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn",  "resolve-QName"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.create_node_type(new NodeTest(StoreConsts::elementNode), NULL, TypeSystem::QUANT_ONE),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
       
 DECL(fn_qname,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "qname"),
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "QName"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE));
