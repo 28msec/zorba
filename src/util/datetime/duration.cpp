@@ -768,10 +768,11 @@ bool Duration::parse_string(const xqpString& s, Duration_t& d_t)
   if (pos == -1)
     pos = s.indexOf("Y");
 
+  d_t = new Duration();
+
   // Check month or year
   if (pos != -1)
   {
-    d_t = new Duration();
     if (YearMonthDuration::parse_string(s.substr(0, pos+1), ymd_t))
       d_t->yearMonthDuration = *ymd_t;
     else
@@ -779,16 +780,15 @@ bool Duration::parse_string(const xqpString& s, Duration_t& d_t)
 
     if ((unsigned int)pos+1 < s.size())
     {
-      if (DayTimeDuration::parse_string(s.substr(pos+1, s.size() - pos - 1), dtd_t, false))
+      if (DayTimeDuration::parse_string(s.substr(pos+1), dtd_t, true))
         d_t->dayTimeDuration = *dtd_t;
       else
         return false;
     }
   }
-  // No month or year -- parse DayTime
   else 
   {
-    d_t = new Duration();
+    // No month or year -- parse DayTime
     if (DayTimeDuration::parse_string(s, dtd_t))
       d_t->dayTimeDuration = *dtd_t;
     else
