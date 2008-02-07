@@ -92,7 +92,7 @@ protected:
   void reset();
   void validate_parameters();
   static int get_utf8_length(char ch);
-  void setup(std::ostream& os);
+  bool setup(std::ostream& os);
   
 protected:
   class emitter;

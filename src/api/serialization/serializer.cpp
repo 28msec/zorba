@@ -778,7 +778,7 @@ void serializer::validate_parameters(void)
   }
 }
 
-void serializer::setup(ostream& os)
+bool serializer::setup(ostream& os)
 {
   if (encoding == PARAMETER_VALUE_UTF_8)
     tr = new transcoder(os); // the strings are UTF_8, so we use the ``transparent'' transcoder
@@ -787,7 +787,7 @@ void serializer::setup(ostream& os)
   else
   {
     ZORBA_ASSERT(0);
-    return;
+    return false;
   }
     
   if (method == PARAMETER_VALUE_XML)
@@ -797,14 +797,17 @@ void serializer::setup(ostream& os)
   else
   {
     ZORBA_ASSERT(0);
-    return;
+    return false;
   }
+
+  return true;
 }
 
 void serializer::serialize(ResultIterator *result, ostream& os)
 {
   validate_parameters();
-  setup(os);
+  if (!setup(os))
+    return;
   
   e->emit_declaration();
 

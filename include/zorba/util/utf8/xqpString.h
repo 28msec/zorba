@@ -301,11 +301,22 @@ public:
     // Removes the leading and trailing whitespace (one of the " \t\r\n")
     // TODO: xqpString trim_whitespace() const;
 
+    /**
+     * Return an UnicodeString (UTF-16 encoded) version of the string
+     */
+    UnicodeString getUnicodeString() const;
+
+    /**
+     * Create and return an xqpString from an UTF-16 encoded string
+     */
+    static xqpString fromUTF16(const unsigned short* src, int32_t len);
+
 private:
 
     /**  Return an UnicodeString (UTF-16 encoded) given a xqpString (UTF-8 encoded)
     */
     UnicodeString getUnicodeString(xqpString source) const;
+    
     /**  Return a xqpString (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
     */
     xqpString getXqpString(UnicodeString source);

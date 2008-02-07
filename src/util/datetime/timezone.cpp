@@ -106,8 +106,10 @@ xqpString TimeZone::toString() const
   else
   {
     result = boost::posix_time::to_simple_string(the_time_zone);
-    
-    if (the_time_zone.hours() >= 0)
+
+    if (the_time_zone.hours() == 0 && the_time_zone.minutes() == 0)
+      return xqpString("Z");
+    else if (the_time_zone.hours() >= 0)
       result = "+" + result.substr(0, 5);
     else
       result = result.substr(0, 6);

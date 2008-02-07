@@ -954,7 +954,61 @@ namespace xqp
     xqpString tmp = trimL(&seq, 1);
     return tmp.trimR(&seq,1);
   }
-  
+
+  UnicodeString xqpString::getUnicodeString() const
+  {
+    UnicodeString ret;
+    UErrorCode status = U_ZERO_ERROR;
+    int32_t len = bytes();
+    UChar* buffer = ret.getBuffer(len);
+
+    u_strFromUTF8(buffer, ret.getCapacity(), &len, c_str(), len, &status);
+    ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
+
+    if(U_FAILURE(status))
+    {
+      ZORBA_ASSERT (false);
+    }
+
+    return ret;
+  }
+
+  xqpString xqpString::fromUTF16(const unsigned short* src, int32_t len)
+  {
+    char* target;
+    int32_t targetLen = len*4 + 1;
+    target = new char[targetLen];
+    UErrorCode status = U_ZERO_ERROR;
+
+    //open a convertor to UTF-8
+    UConverter *conv = ucnv_open("utf-8", &status);
+
+    if(U_FAILURE(status))
+    {
+      ZORBA_ASSERT (false);
+
+      delete[] target;
+      return "";
+    }
+
+    //Convert from UTF-16 to UTF-8
+    ucnv_fromUChars (conv, target, targetLen, src, len, &status);
+    //close the converter
+    ucnv_close(conv);
+
+    if(U_FAILURE(status))
+    {
+      ZORBA_ASSERT (false);
+
+      delete[] target;
+      return "";
+    }
+
+    xqpString ret(&target[0]);
+    delete[] target;
+    return ret;
+  }
+
   // Private methods
   UnicodeString xqpString::getUnicodeString(xqpString source) const
   {
