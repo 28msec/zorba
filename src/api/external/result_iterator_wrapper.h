@@ -12,7 +12,6 @@ class PlanIterator;
 typedef rchandle<class PlanIterator> PlanIter_t;
 
 class Zorba_XQueryBinary;
-typedef rchandle<Zorba_XQueryBinary>		Zorba_XQueryBinary_t;
 
 class dynamic_context;
 class DynamicContextWrapper;
@@ -23,13 +22,13 @@ class ResultIteratorWrapper : public ResultIterator
 	friend class Zorba_XQueryBinary;
 
 
-	Zorba_XQueryBinary_t       xquery;
+	Zorba_XQueryBinary       *xquery;
 	PlanState		             * state_block;
 	bool		                   theClosed;
 	dynamic_context		       * internal_dyn_context;
 public:
 	
-	ResultIteratorWrapper(Zorba_XQueryBinary_t x, DynamicContextWrapper *dctx);
+	ResultIteratorWrapper(Zorba_XQueryBinary *x, DynamicContextWrapper *dctx);
 	virtual ~ResultIteratorWrapper();
 
 	virtual void		open();
