@@ -107,14 +107,6 @@ namespace xqp
        */
       Item_t promote(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const;
 
-      /**
-       * Casts the passed string to xs:QName if possible.
-       * @param str
-       * @param isCast true if a cast is requested, false if this is a castable inquiry
-       * @return an item if the promotion is possible, otherwise raises an error
-       */
-    Item_t castToQName (const xqpString &aStr, bool isCast) const;
-
   protected:
       bool castableToNCName(const xqpString& str) const;
 			bool isLetter(uint32_t cp)const;
@@ -129,9 +121,3 @@ namespace xqp
 } /* namespace xqp */
 
 #endif	/* XQP_CASTING_H */
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */

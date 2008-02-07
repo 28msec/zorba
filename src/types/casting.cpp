@@ -66,31 +66,6 @@ GenericCast* GenericCast::instance()
   return &aGenericCast;
 }
 
-Item_t GenericCast::castToQName (const xqpString &qname, bool isCast) const {
-  ItemFactory* factory = Zorba::getItemFactory();
-  xqpString lNamespace = "";
-  xqpString lPrefix = "";
-  int32_t lIndex = qname.indexOf(":");
-
-  if (lIndex < 0) {
-    if (castableToNCName(qname))
-        return factory->createQName(lNamespace, lPrefix, qname);
-    else ZORBA_ERROR_ALERT (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003);
-  } else if (lIndex == 0) {
-    ZORBA_ERROR_ALERT (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003);
-  } else {
-    // TODO namespace resolution
-    // raise XPST0081 or FONS0004 if namespace cannot be resolved
-
-    lPrefix = qname.substr(0, lIndex);
-    xqpString lLocal = qname.substr(lIndex + 1);
-    
-    if (castableToNCName(lPrefix) && castableToNCName(lLocal))
-      return factory->createQName(lNamespace, lPrefix, lLocal);
-    else 
-      ZORBA_ERROR_ALERT (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003);
-  }
-}
   
 Item_t GenericCast::stringSimpleCast(
     const Item_t aSourceItem,
@@ -364,10 +339,10 @@ Item_t GenericCast::stringSimpleCast(
     if (!ts.is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
         !ts.is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      ZORBA_ERROR_ALERT (ZorbaError::XPTY0004, false, false,
-                         "Cannot cast " + lString
-                         + " to an NCName because its type is "
-                         + aSourceType->toString());
+      ZORBA_ERROR_ALERT_OSS(ZorbaError::XPTY0004, false, false,
+                            "Cannot cast " << lString
+                            << " to an NCName because its type is "
+                            << aSourceType->toString(), "");
     }
 
     if (castableToNCName(lString))
@@ -383,11 +358,51 @@ Item_t GenericCast::stringSimpleCast(
   }
   case TypeSystem::XS_QNAME:
   {
-    // casting to a QName succeeds if the source is a string literal
-    // (already handled by translator) or if source is already a QName
-    if (!ts.is_subtype(*aSourceType, *ts.QNAME_TYPE_ONE))
-      return NULL;
-    return castToQName (lString, false);
+    // It seem that casting untyped atomic to qname is not allowed in
+    // general, but it is allowed in the case of name expressions in
+    // computed element/attribute constructors. ????
+    if (!ts.is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
+        !ts.is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
+    {
+      ZORBA_ERROR_ALERT_OSS(ZorbaError::XPTY0004, false, false,
+                            "Cannot cast string \"" << lString
+                            << "\" to an NCName because its type is "
+                            << aSourceType->toString(), "");
+    }
+    
+    // TODO namespace resolution
+    xqpString lNamespace = "";
+    xqpString lPrefix = "";
+    int32_t lIndex = lString.indexOf(":");
+    if (lIndex < 0) 
+    {
+      if (castableToNCName(lString))
+      {
+        lItem = factory->createQName(lNamespace, lPrefix, lString);
+      }
+      else
+      {
+        ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0074, false, false,
+                              "Cannot cast string \"" << lString
+                              << "\" to an QName", ""); 
+      }
+    }
+    else
+    {
+      lPrefix = lString.substr(0, lIndex);
+      xqpString lLocal = lString.substr(lIndex + 1);
+
+      if (castableToNCName(lPrefix) && castableToNCName(lLocal))
+      {
+        lItem = factory->createQName(lNamespace, lPrefix, lLocal);
+      }
+      else
+      {
+        ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0074, false, false,
+                              "Cannot cast string \"" << lString
+                              << "\" to an QName", ""); 
+      }
+    }
     break;
   }
 
@@ -409,6 +424,12 @@ NameChar			::=    Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar | Exten
 */
 bool GenericCast::castableToNCName(const xqpString& str) const
 {
+  // TODO: replace this with the real stuff
+//  if (str.indexOf(":") >= 0 || str.indexOf(" ") >= 0)
+//  {
+//    return false;
+//  }
+	//daniel
 	uint32_t	cp;
 	std::vector<uint32_t> cps = str.getCodepoints();
 	std::vector<uint32_t>::size_type	i, cps_size = cps.size();
@@ -623,12 +644,7 @@ bool GenericCast::isCastable(
   }
   
   // Most simple implementation: Check if string cast works
-  try {
-    lItem = stringSimpleCast(aItem, lItemType, aTargetType);
-  } catch (xqp_exception) {
-    // FIXME: stringSimpleCast should not throw exceptions in the first place!
-    return false;
-  }
+  lItem = stringSimpleCast(aItem, lItemType, aTargetType);
 
   return lItem != 0;
 }

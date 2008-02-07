@@ -14,7 +14,6 @@
 
 #include "context/namespace_context.h"
 #include "types/node_test.h"
-#include "types/casting.h"
 #include "functions/library.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/normalizer/normalizer.h"
@@ -1980,15 +1979,7 @@ void *begin_visit(const CastExpr& v)
 void end_visit(const CastExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  TypeSystem::xqtref_t type = pop_tstack();
-  expr_t node = pop_nodestack ();
-  const const_expr *ce = dynamic_cast<const_expr *> (node.getp());
-  if (GENV_TYPESYSTEM.is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_ONE)
-      && ce != NULL
-      && GENV_TYPESYSTEM.is_equal (*GENV_TYPESYSTEM.create_type (ce->get_val ()->getType (), TypeSystem::QUANT_ONE), *GENV_TYPESYSTEM.STRING_TYPE_ONE))
-    nodestack.push (new const_expr (v.get_location(), GenericCast::instance()->castToQName (ce->get_val ()->getStringValue(), true)));
-  else
-    nodestack.push (new cast_expr (v.get_location (), node, type));
+  nodestack.push (new cast_expr (v.get_location (), pop_nodestack (), pop_tstack ()));
 }
 
 void *begin_visit(const CastableExpr& v)
@@ -2000,15 +1991,7 @@ void *begin_visit(const CastableExpr& v)
 void end_visit(const CastableExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  TypeSystem::xqtref_t type = pop_tstack();
-  expr_t node = pop_nodestack ();
-  const const_expr *ce = dynamic_cast<const_expr *> (node.getp());
-  if (GENV_TYPESYSTEM.is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_ONE)
-      && ce != NULL
-      && GENV_TYPESYSTEM.is_equal (*GENV_TYPESYSTEM.create_type (ce->get_val ()->getType (), TypeSystem::QUANT_ONE), *GENV_TYPESYSTEM.STRING_TYPE_ONE))
-    nodestack.push (new const_expr (v.get_location(), GenericCast::instance()->castToQName (ce->get_val ()->getStringValue(), false) != NULL));
-  else
-    nodestack.push(new castable_expr(v.get_location(), node, type));
+  nodestack.push(new castable_expr(v.get_location(), pop_nodestack(), pop_tstack()));
 }
 
 
@@ -2201,7 +2184,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
   TypeSystem::xqtref_t type =
     GENV_TYPESYSTEM.create_type (fn_qname,
                                  TypeSystem::QUANT_QUESTION);
-  if (type != NULL && fn_qname->getStringValue () != "xs:anyAtomicType")
+  if (type != NULL)
   {
     if (arguments.size () != 1)
       ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, false, prefix + ":" + fname, arguments.size ());
