@@ -3,7 +3,6 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <inttypes.h>
 
 #include "zorba/zorba_singlethread.h"
 
