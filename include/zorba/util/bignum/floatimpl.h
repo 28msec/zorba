@@ -21,9 +21,6 @@ template <typename Type> class FloatImpl;
 typedef FloatImpl<double> Double;
 typedef FloatImpl<float> Float;
 
-std::ostream& operator<<(std::ostream& os, const Double& aFloatImpl); 
-std::ostream& operator<<(std::ostream& os, const Float& aFloatImpl);
-
 /**
  * Class to implement isPosInf, isZero und isNegInf for every different Template
  * Parameter of FloatImpl
@@ -41,7 +38,7 @@ public:
   static bool isNegInf(MAPM aMAPM); 
 };
 
-class FloatConsts {
+class FloatCommons {
 public:
   enum NumType {
     NORMAL = 0,
@@ -54,6 +51,9 @@ public:
   static const xqpString INF_POS_STR;
   static const xqpString INF_NEG_STR;
   static const xqpString NOT_A_NUM_STR;
+
+  static Double parseFloat(const Float&);
+  static Float parseDouble(const Double&);
 };
 
 /**
@@ -70,15 +70,16 @@ public:
 template <typename FloatType>
 class FloatImpl {
   friend class Integer;
+  friend class FloatCommons;
 
 private:
-  FloatConsts::NumType theType;
+  FloatCommons::NumType theType;
   MAPM theFloatImpl;
 
-  FloatImpl(FloatConsts::NumType aType, MAPM aFloatImpl) : theType(aType), theFloatImpl(aFloatImpl) { }
+  FloatImpl(FloatCommons::NumType aType, MAPM aFloatImpl) : theType(aType), theFloatImpl(aFloatImpl) { }
 
 public:
-  FloatImpl() : theType(FloatConsts::NORMAL), theFloatImpl(0) { }
+  FloatImpl() : theType(FloatCommons::NORMAL), theFloatImpl(0) { }
   FloatImpl(FloatType aFloatImpl) { setFloatImpl(aFloatImpl); }
   FloatImpl(const FloatImpl& aFloatImpl) : theType(aFloatImpl.theType), theFloatImpl(aFloatImpl.theFloatImpl) {}
 
@@ -94,13 +95,15 @@ protected:
   static bool checkInfNaN(FloatImpl& aFloatImpl);
 
 public:
+  FloatCommons::NumType getType() const { return theType; }
+  MAPM getNumber() const { return theFloatImpl; }
   /**
    * Checks if the passed number in string format is NaN, inf, 
    * -inf, negative or non-negative number.
    * @param aNumber Number in string format
    * @return number type
    */
-  static FloatConsts::NumType checkInfNaNNeg(const char* aNumber);
+  static FloatCommons::NumType checkInfNaNNeg(const char* aNumber);
 
   /**
    * Checks if the passed FloatType is Nan, inf, -inf, negative
@@ -108,7 +111,7 @@ public:
    * @param aNumber Number
    * @return number type
    */
-  static FloatConsts::NumType checkInfNaNNeg(FloatType aNumber);
+  static FloatCommons::NumType checkInfNaNNeg(FloatType aNumber);
 
   static bool parse(const char* aCharStar, FloatImpl& aFloatImpl);
 
@@ -172,19 +175,19 @@ public:
 
   FloatImpl roundHalfToEven(Integer aPrecision) const;
 
-  bool isNaN() const { return theType == FloatConsts::NOT_A_NUM; }
+  bool isNaN() const { return theType == FloatCommons::NOT_A_NUM; }
 
-  bool isFinite() const { return theType == FloatConsts::NORMAL || theType == FloatConsts::NORMAL_NEG; }
+  bool isFinite() const { return theType == FloatCommons::NORMAL || theType == FloatCommons::NORMAL_NEG; }
 
-  bool isPosInf() const { return theType == FloatConsts::INF_POS; }
+  bool isPosInf() const { return theType == FloatCommons::INF_POS; }
 
-  bool isNegInf() const { return theType == FloatConsts::INF_NEG; }
+  bool isNegInf() const { return theType == FloatCommons::INF_NEG; }
 
-  bool isNeg() const { return theType == FloatConsts::NORMAL || theType == FloatConsts::INF_POS;  }
+  bool isNeg() const { return theType == FloatCommons::NORMAL || theType == FloatCommons::INF_POS;  }
 
-  bool isPos() const { return theType == FloatConsts::NORMAL_NEG || theType == FloatConsts::INF_NEG; }
+  bool isPos() const { return theType == FloatCommons::NORMAL_NEG || theType == FloatCommons::INF_NEG; }
 
-  bool isZero() const { return ((theType == FloatConsts::NORMAL || theType == FloatConsts::NORMAL_NEG) && theFloatImpl == 0); }
+  bool isZero() const { return ((theType == FloatCommons::NORMAL || theType == FloatCommons::NORMAL_NEG) && theFloatImpl == 0); }
 
   bool operator==(const FloatImpl& aFloatImpl) const;
 
@@ -201,6 +204,19 @@ public:
   xqpString toString() const;
 
 }; // class FloatImpl
+
+std::ostream& operator<<(std::ostream& os, const Double& aFloatImpl); 
+std::ostream& operator<<(std::ostream& os, const Float& aFloatImpl);
+Double operator+(const Double&, const Float&);
+Double operator+(const Float&, const Double&);
+Double operator-(const Double&, const Float&);
+Double operator-(const Float&, const Double&);
+Double operator*(const Double&, const Float&);
+Double operator*(const Float&, const Double&);
+Double operator/(const Double&, const Float&);
+Double operator/(const Float&, const Double&);
+Double operator%(const Double&, const Float&);
+Double operator%(const Float&, const Double&);
 
 } // namespace xqp
 

@@ -533,20 +533,23 @@ namespace xqp
         type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
       }
 
-      if ( thePlus )
-        mul = 1;
-      else
-        mul = -1;
-
       // TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createDouble ( item->getDoubleValue() * mul );
+        res = Zorba::getItemFactory()->createDouble ( 
+          (thePlus ? item->getDoubleValue() : -item->getDoubleValue())
+        );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createFloat ( item->getFloatValue() * mul );
+        res = Zorba::getItemFactory()->createFloat ( 
+          (thePlus ? item->getFloatValue() : -item->getFloatValue())
+        );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createInteger ( item->getIntegerValue() * mul );
+        res = Zorba::getItemFactory()->createInteger ( 
+          (thePlus ? item->getIntegerValue() : -item->getIntegerValue())
+        );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-        res = Zorba::getItemFactory()->createDecimal ( item->getDecimalValue() * mul );
+        res = Zorba::getItemFactory()->createDecimal ( 
+          (thePlus ? item->getDecimalValue() : -item->getDecimalValue())
+        );
       else
       {
           ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,

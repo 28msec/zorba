@@ -129,8 +129,8 @@ Integer Integer::parseSizeT(size_t aSizeT) {
 
 bool Integer::parse(const Double& aDouble, Integer& aInteger) {
   switch(aDouble.theType) {
-  case FloatConsts::NORMAL:
-  case FloatConsts::NORMAL_NEG:
+  case FloatCommons::NORMAL:
+  case FloatCommons::NORMAL_NEG:
   {
     MAPM lNum = aDouble.theFloatImpl;
     aInteger.theInteger = floatingToInteger(lNum);
@@ -145,8 +145,8 @@ bool Integer::parse(const Double& aDouble, Integer& aInteger) {
 
 bool Integer::parse(const Float& aFloat, Integer& aInteger) {
   switch(aFloat.theType) {
-  case FloatConsts::NORMAL:
-  case FloatConsts::NORMAL_NEG:
+  case FloatCommons::NORMAL:
+  case FloatCommons::NORMAL_NEG:
   {
     MAPM lNum = aFloat.theFloatImpl;
     aInteger.theInteger = floatingToInteger(lNum);
@@ -443,13 +443,13 @@ bool Integer::operator<=(long long aLong) const {
 
 bool Integer::operator<=(const Double& aDouble) const {
   switch(aDouble.theType) {
-  case FloatConsts::INF_POS:
+  case FloatCommons::INF_POS:
     return true;
     break;
-  case FloatConsts::INF_NEG:
+  case FloatCommons::INF_NEG:
     return false;
     break;
-  case FloatConsts::NOT_A_NUM:
+  case FloatCommons::NOT_A_NUM:
     return false;
     break;
   default:
@@ -476,13 +476,13 @@ bool Integer::operator>=(long long aLong) const {
 
 bool Integer::operator>=(const Double& aDouble) const {
   switch(aDouble.theType) {
-  case FloatConsts::INF_POS:
+  case FloatCommons::INF_POS:
     return false;
     break;
-  case FloatConsts::INF_NEG:
+  case FloatCommons::INF_NEG:
     return true;
     break;
-  case FloatConsts::NOT_A_NUM:
+  case FloatCommons::NOT_A_NUM:
     return false;
     break;
   default:

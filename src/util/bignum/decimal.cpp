@@ -88,8 +88,8 @@ bool Decimal::parse(const char* aCharStar, Decimal& aDecimal) {
 
 bool Decimal::parse(double aDouble, Decimal& aDecimal) {
   switch(Double::checkInfNaNNeg(aDouble)) {
-  case FloatConsts::NORMAL:
-  case FloatConsts::NORMAL_NEG:
+  case FloatCommons::NORMAL:
+  case FloatCommons::NORMAL_NEG:
     aDecimal.theDecimal = aDouble;
     return true;
     break;
