@@ -716,6 +716,8 @@ Item_t SubtractOperationsDurationDateTime::opYmDuration ( const yy::location* lo
 /* begin class MultiplyOperationsDurationDateTime */
 Item_t MultiplyOperationsDurationDateTime::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
+  xqp_duration d;
+  
   if( i1->getDoubleValue().isZero() )
     return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
   else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
@@ -723,14 +725,15 @@ Item_t MultiplyOperationsDurationDateTime::opDtDuration ( const yy::location* lo
   else if (  i1->getDoubleValue().isNaN() )
     ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
   else
-  {
-    xqp_duration d = *i0->getDurationValue() * (i1->getDoubleValue());
-    return Zorba::getItemFactory()->createDuration (d);
-  }
+    d = *i0->getDurationValue() * (i1->getDoubleValue());
+
+  return Zorba::getItemFactory()->createDuration (d);
 }
 
 Item_t MultiplyOperationsDurationDateTime::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
+  xqp_duration d;
+  
   if( i1->getDoubleValue().isZero() )
     return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
   else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
@@ -738,16 +741,17 @@ Item_t MultiplyOperationsDurationDateTime::opYmDuration ( const yy::location* lo
   else if (  i1->getDoubleValue().isNaN() )
     ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
   else
-  {
-    xqp_duration d = *i0->getDurationValue() * i1->getDoubleValue();
-    return Zorba::getItemFactory()->createDuration (d);
-  }
+    d = *i0->getDurationValue() * i1->getDoubleValue();
+  
+  return Zorba::getItemFactory()->createDuration (d);
 }
 /* end class MultiplyOperationsDurationDateTime */
 
 /* begin class DivideOperationsDurationDateTime */
 Item_t DivideOperationsDurationDateTime::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
+  xqp_duration d;
+  
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
     return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
   else if ( i1->getDoubleValue().isZero() )
@@ -755,14 +759,15 @@ Item_t DivideOperationsDurationDateTime::opDtDuration ( const yy::location* loc,
   else if ( i1->getDoubleValue().isNaN() )
     ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
   else
-  {
-    xqp_duration d = *i0->getDurationValue() / i1->getDoubleValue();
-    return Zorba::getItemFactory()->createDuration (d);
-  }
+    d= *i0->getDurationValue() / i1->getDoubleValue();
+
+  return Zorba::getItemFactory()->createDuration (d);
 }
 
 Item_t DivideOperationsDurationDateTime::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
+  xqp_duration d;
+  
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
     return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
   else if ( i1->getDoubleValue().isZero() )
@@ -770,10 +775,9 @@ Item_t DivideOperationsDurationDateTime::opYmDuration ( const yy::location* loc,
   else if ( i1->getDoubleValue().isNaN() )
     ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
   else
-  {
-    xqp_duration d = *i0->getDurationValue() / i1->getDoubleValue();
-    return Zorba::getItemFactory()->createDuration (d);
-  }
+    d = *i0->getDurationValue() / i1->getDoubleValue();
+
+  return Zorba::getItemFactory()->createDuration (d);
 }
 /* end class DivideOperationsDurationDateTime */
 

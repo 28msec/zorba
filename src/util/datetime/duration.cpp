@@ -14,12 +14,13 @@ using namespace std;
 
 namespace xqp
 {
-  const uint16_t NO_MONTHS_IN_YEAR = 12;
-  const uint16_t NO_HOURS_IN_DAY = 24;
-  const uint16_t NO_MINUTES_IN_HOUR = 60;
-  const uint16_t NO_SECONDS_IN_MINUTE = 60;
-  
-  
+  const uint32_t NO_MONTHS_IN_YEAR = 12;
+  const uint32_t NO_HOURS_IN_DAY = 24;
+  const uint32_t NO_MINUTES_IN_HOUR = 60;
+  const uint32_t NO_SECONDS_IN_MINUTE = 60;
+  const uint32_t NO_SEC_IN_DAY = NO_HOURS_IN_DAY * NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE;
+  const uint32_t NO_SEC_IN_HOUR = NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE;
+ 
 
 YearMonthDuration::YearMonthDuration(long the_months)
   :
@@ -103,18 +104,13 @@ DurationBase_t YearMonthDuration::operator-(const DurationBase& db) const
 
 DurationBase_t YearMonthDuration::operator*(const Double value) const
 {
-//   Double tmp = value * months;
-//   Double tmp2 = tmp.round();
-  //TODO: fix this
-  YearMonthDuration* ym = new YearMonthDuration( months );
+  YearMonthDuration* ym = new YearMonthDuration( atol ((months * value).round().toString().c_str()) );
   return ym;
 }
 
 DurationBase_t YearMonthDuration::operator/(const Double value) const
 {
-//   Double tmp = 1/value * months;
-  //TODO: fix this
-  YearMonthDuration* ym = new YearMonthDuration(months);// tmp.round());
+  YearMonthDuration* ym = new YearMonthDuration(atol ((months / value).round().toString().c_str()));
   return ym;
 }
 
@@ -359,36 +355,34 @@ DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
 
 DurationBase_t DayTimeDuration::operator*(const Double value) const
 {
-  long resDays;
-
-//   resDays *= value;
+  long resSeconds = days * NO_HOURS_IN_DAY * NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE + timeDuration.total_seconds();
+  resSeconds = atol (( resSeconds * value).round().toString().c_str());
 
   //TODO Should normalization be part of the constructor?
   DayTimeDuration* dt = new DayTimeDuration(
       is_negative,
-  resDays + timeDuration.hours() / NO_HOURS_IN_DAY,
-  timeDuration.hours() % NO_HOURS_IN_DAY,
-  timeDuration.minutes(),
-  timeDuration.seconds(),
-  timeDuration.fractional_seconds());
+      resSeconds / NO_SEC_IN_DAY, //days
+      (resSeconds % NO_SEC_IN_DAY) / NO_SEC_IN_HOUR, //hours
+      ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) / NO_SECONDS_IN_MINUTE, //minutes
+      ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) % NO_SECONDS_IN_MINUTE, //seconds
+      timeDuration.fractional_seconds());
 
   return dt;
 }
 
 DurationBase_t DayTimeDuration::operator/(const Double value) const
 {
-  long resDays;
-
-//   resDays /= value;
+  long resSeconds = days * NO_HOURS_IN_DAY * NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE + timeDuration.total_seconds();
+  resSeconds = atol (( resSeconds / value).round().toString().c_str());
 
   //TODO Should normalization be part of the constructor?
   DayTimeDuration* dt = new DayTimeDuration(
       is_negative,
-  resDays + timeDuration.hours() / NO_HOURS_IN_DAY,
-  timeDuration.hours() % NO_HOURS_IN_DAY,
-  timeDuration.minutes(),
-  timeDuration.seconds(),
-  timeDuration.fractional_seconds());
+      resSeconds / NO_SEC_IN_DAY, //days
+      (resSeconds % NO_SEC_IN_DAY) / NO_SEC_IN_HOUR, //hours
+      ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) / NO_SECONDS_IN_MINUTE, //minutes
+      ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) % NO_SECONDS_IN_MINUTE, //seconds
+      0);
 
   return dt;
 }
@@ -700,25 +694,25 @@ xqpString Duration::toString() const
 
 DurationBase_t Duration::operator+(const DurationBase& db) const
 {
-  Duration* d;
+  Duration* d = new Duration();
   return d;
 }
 
 DurationBase_t Duration::operator-(const DurationBase& db) const
 {
-  Duration* d;
+  Duration* d = new Duration();
   return d;
 }
 
 DurationBase_t Duration::operator*(const Double value) const
 {
-  Duration* d;
+  Duration* d = new Duration();
   return d;
 }
 
 DurationBase_t Duration::operator/(const Double value) const
 {
-  Duration* d;
+  Duration* d = new Duration();
   return d;
 }
 
