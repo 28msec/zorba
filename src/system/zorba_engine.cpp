@@ -450,5 +450,24 @@ XmlDataManager_t		ZorbaEngineImpl::getXmlDataManager()
 	return xml_data_manager;
 }
 
+bool		ZorbaSingleThread::execute(xqp_string xquery_text, std::ostream &os)
+{
+	ZorbaSingleThread_t		zorba_engine = ZorbaSingleThread::getInstance();
+	XQuery_t				xquery;
+
+	//create and compile a query
+	xquery = zorba_engine->createQuery(xquery_text);
+	if(xquery == NULL)
+		return false;
+	//init execution
+	if(!xquery->initExecution())
+		return false;
+	//do actual execution
+	if(!xquery->serializeXML(os))
+		return false;
+
+	return true;
+}
+
 
 }//end namespace xqp

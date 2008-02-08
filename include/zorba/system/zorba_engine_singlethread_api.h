@@ -14,6 +14,8 @@ class ZorbaSingleThread : public virtual ZorbaBaseEngine
 {
 public:
 	static ZorbaSingleThread_t getInstance();
+	
+	static bool		execute(xqp_string xquery_text, std::ostream &os);
 
 public:
   virtual ~ZorbaSingleThread() {}

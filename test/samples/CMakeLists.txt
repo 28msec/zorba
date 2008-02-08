@@ -1,13 +1,20 @@
 # create the testing file and list of tests
 CREATE_TEST_SOURCELIST(APISamples
 	APISamples.cpp
-	usecase1.cpp
-	usecase2.cpp
-	usecase3.cpp
-	usecase4.cpp
-	usecase5.cpp
-	usecase6.cpp
-	usecase7.cpp
+	uc1a_simpleQueryOneStep.cpp
+	uc1b_simpleQueryThreeSteps.cpp
+	uc2_simpleQueryWithErrorCheck.cpp
+	uc3a_externalVar.cpp
+	uc3b_contextItem.cpp
+	uc3c_currentTime.cpp
+	uc4_chainXQuery.cpp
+	uc5a_errorManager.cpp
+	uc5b_errorCallback.cpp
+	uc5c_errorList.cpp
+	uc6a_staticContext.cpp
+	uc6b_defaultCollation.cpp
+	uc6c_baseUri.cpp
+	uc7_multithread.cpp
 )
  
 # add the executable

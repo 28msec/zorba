@@ -16,9 +16,9 @@ using namespace xqp;
 	Init the engine, create a query in main thread and execute it in parallel threads.
 	This way we optimize on compiling time.
 	The xquery from main thread is cloned in the parallel threads.
+  Each function is checked for errors. No try catch mechanism is demonstrated here.
 */
 
-void DisplayErrorListForCurrentThread(std::ostream &result_file);
 void* query_thread(void *param);
 string make_absolute_file_name(const char *target_file_name, const char *this_file_name);
 
@@ -26,7 +26,7 @@ string make_absolute_file_name(const char *target_file_name, const char *this_fi
 
 static XQuery_t				xquery;
 
-int usecase7(int argc, char* argv[])
+int uc7_multithread(int argc, char* argv[])
 {
 	//init the engine in full api mode
 	ZorbaEngine_t		zorba_engine = ZorbaEngine::getInstance();

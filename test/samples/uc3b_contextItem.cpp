@@ -12,6 +12,10 @@ using namespace xqp;
 	Set the context item as a document item in dynamic context.
 */
 
+/*
+  Utility function.
+  Gives the full name of a file from the folder where another file resides
+*/
 string make_absolute_file_name(const char *target_file_name, const char *this_file_name)
 {
 	string		str_result;
@@ -30,7 +34,7 @@ string make_absolute_file_name(const char *target_file_name, const char *this_fi
 }
 
 
-int usecase4(int argc, char* argv[])
+int uc3b_contextItem(int argc, char* argv[])
 {
 	bool original_throw_mode = ZorbaAlertsManager::setThrowExceptionsMode(true);
 	//init the engine
@@ -40,19 +44,14 @@ int usecase4(int argc, char* argv[])
 		XQuery_t				xquery;
 		DynamicQueryContext_t		dctx;
 
-		XmlDataManager_t		zorba_store = zorba_engine->getXmlDataManager();
-
-		//load a document into xml data manager
-		//and then load it into a variable
-		zorba_store->loadDocument(make_absolute_file_name("books.xml", __FILE__));
-
 		//create and compile a query
+    //"." is the context item
 		xquery = zorba_engine->createQuery(".//book");
 
 		//create a dynamic context object
 		dctx = zorba_engine->createDynamicContext();
-		//set context item as a document from XmlDataManager
-		dctx->setContextItemAsDocument(make_absolute_file_name("books.xml", __FILE__));
+		//set context item as a document
+		dctx->setContextItemAsDocumentFromFile(make_absolute_file_name("books.xml", __FILE__));
 
 
 		//execute the query and serialize its result
