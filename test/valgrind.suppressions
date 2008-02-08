@@ -180,9 +180,9 @@
 }
 
 {
-   XS_ANY type is not deleted because the root static context is still held at the end
+   static initialization
    Memcheck:Leak
-   fun:_Znwm
+   fun:*
    fun:_ZN3xqp10TypeSystemC1Ev
    fun:_ZN3xqp17GlobalEnvironment4initEv
    fun:_ZN3xqp17GlobalEnvironment11getInstanceEv
@@ -355,6 +355,14 @@
     fun:_GLOBAL__I__ZN3xqp12library_initEv
 }
 
+{
+    static initialization
+    Memcheck:Leak
+    fun:*
+    fun:_Z41__static_initialization_and_destruction_0ii
+    fun:_GLOBAL__I__ZN3xqp8NodeTest13ANY_NODE_TESTE
+}
+
 
 # 32 bit linux suppressions
 
@@ -450,15 +458,17 @@
    fun:_ZN3xqp7context9bind_funcENS_9xqpStringEPNS_8functionE
 }
 
+
 {
-   XS_ANY type is not deleted because the root static context is still held at the end
-   fun:_Znwj
-   fun:_ZN3xqp10TypeSystemC1Ev
-   fun:_ZN3xqp17GlobalEnvironment4initEv
-   fun:_ZN3xqp17GlobalEnvironment11getInstanceEv
-   fun:_Z41__static_initialization_and_destruction_0ii
-   fun:_GLOBAL__I__ZN3xqp12library_initEv
+  <insert a suppression name here>
+    Memcheck:Leak
+    fun:_Znwm
+    fun:_ZN3xqp17GlobalEnvironment4initEv
+    fun:_ZN3xqp17GlobalEnvironment11getInstanceEv
+    fun:_Z41__static_initialization_and_destruction_0ii
+    fun:_GLOBAL__I__ZN3xqp12library_initEv
 }
+
 
 {
    mapm globally initialized memory that we cannot destroy
