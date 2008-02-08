@@ -15,7 +15,7 @@
   {                                             \
     sequence;                                   \
   }                                             \
-  catch (std::exception& ex)                    \
+  catch (std::exception)                        \
   {                                             \
     return false;                               \
   }

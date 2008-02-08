@@ -14,7 +14,7 @@
   {                                             \
     sequence;                                   \
   }                                             \
-  catch (std::exception& ex)                    \
+  catch (std::exception)                        \
   {                                             \
     return false;                               \
   }
@@ -70,11 +70,13 @@ bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
     if (is_negative)
       temp = "-" + temp;
 
-    //RETURN_FALSE_ON_EXCEPTION( tz_t = new TimeZone(boost::posix_time::duration_from_string(temp)); );
-    boost::posix_time::time_duration t = boost::posix_time::duration_from_string (temp);
+    boost::posix_time::time_duration t;
+    RETURN_FALSE_ON_EXCEPTION( t = boost::posix_time::duration_from_string (temp); );
+    
     // hours must be between -14 .. 14
     if (t.hours () > 14 || t.hours () < -14)
       return false;
+    
     tz_t = new TimeZone(t);
   }
   
