@@ -10,6 +10,21 @@
 
 #include "boost/date_time/posix_time/posix_time.hpp" 
 
+void 
+slurp_file (const char *fname, std::string &result) {
+  std::ifstream qfile(fname); assert (qfile);
+
+  qfile.seekg (0, std::ios::end);
+  size_t len = qfile.tellg ();
+  qfile.seekg (0, std::ios::beg);
+  char *str = new char [len];
+  qfile.read (str, len);
+  
+  std::string sstr (str, len);
+  result.swap (sstr);
+  delete [] str;
+}
+
 bool
 populateStaticContext(xqp::StaticQueryContext_t& aStaticContext, ZorbaCMDProperties* aProperties)
 {
@@ -117,26 +132,21 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // the query or the query file
-  const std::string& lQueryOrFile = lProperties.getQueryOrFile();
+  std::string lQueryString;
+
+  if ( lProperties.inlineQuery() )
+  {
+    lQueryString = lProperties.getQueryOrFile();
+  }
+  else
+  {
+    slurp_file(lProperties.getQueryOrFile().c_str(), lQueryString);
+  }
 
   // print the query if requested
   if ( lProperties.printQuery() )
   {
-    if ( lProperties.inlineQuery() )
-    {
-      *lOutputStream << "Query:" << std::endl << lQueryOrFile << std::endl;
-    }
-    else
-    {
-       std::ifstream lInFileStream(lQueryOrFile.c_str());
-       if ( !lInFileStream )
-       {
-         std::cerr << "Query file not found or not readable" << std::endl;
-         return 4;
-       }
-
-      *lOutputStream << "Query:" << std::endl << lInFileStream.rdbuf() << std::endl;
-    }
+      *lOutputStream << "Query:" << std::endl << lQueryString << std::endl;
   }
 
   // time compilation and execution
@@ -157,26 +167,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
   try 
   {
-    if ( lProperties.inlineQuery() )
-    {
-      if (lTiming)
-        lStartCompileTime = boost::posix_time::microsec_clock::local_time();
+    if (lTiming)
+      lStartCompileTime = boost::posix_time::microsec_clock::local_time();
 
-      lQuery = lZorbaInstance->createQuery(lQueryOrFile, lStaticContext);
+    lQuery = lZorbaInstance->createQuery(lQueryString, lStaticContext);
 
-      if (lTiming)
-        lStopCompileTime = boost::posix_time::microsec_clock::local_time();
-    }
-    else
-    {
-      if (lTiming)
-        lStartCompileTime = boost::posix_time::microsec_clock::local_time();
-
-      lQuery = lZorbaInstance->createQueryFromFile(lQueryOrFile, lStaticContext);
-
-      if (lTiming)
-        lStopCompileTime = boost::posix_time::microsec_clock::local_time();
-    }
+    if (lTiming)
+      lStopCompileTime = boost::posix_time::microsec_clock::local_time();
   } catch (xqp::ZorbaException& e) // catch parse errors and exit the program
   {
     std::cerr << e << std::endl;
@@ -230,11 +227,11 @@ int _tmain(int argc, _TCHAR* argv[])
     lDiffCompileTime = lStopCompileTime - lStartCompileTime; 
     lDiffExecutionTime = (lStopExecutionTime - lStartExecutionTime)/lProperties.getNoOfExecutions(); 
 
-    std::cerr << "Compile time: " 
-              << boost::posix_time::to_simple_string(lDiffCompileTime) << std::endl;
+    std::cerr << "Compilation time: " 
+              << lDiffCompileTime.total_milliseconds() << " milliseconds" << std::endl;
 
-    std::cerr << "(Average) execution time: " 
-              << boost::posix_time::to_simple_string(lDiffExecutionTime) << std::endl;
+    std::cerr << "Execution time: " 
+              << lDiffExecutionTime.total_milliseconds() << " milliseconds" << std::endl;
   }
 
   return 0;
