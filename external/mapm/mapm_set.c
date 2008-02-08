@@ -186,8 +186,8 @@ if ((i = strlen(s_in)) > (M_lbuf - 4))
   }
 
 s = M_buf;
-#if defined (__WIN32__)
-strcpy_s(s,s_in);
+#ifdef WIN32
+strcpy_s(s, sizeof(s_in), s_in);
 #else
 strcpy(s,s_in);
 #endif
@@ -234,8 +234,8 @@ if ((cp = strstr(p,"e")) != NULL)
 j = M_strposition(p,".");        /* is there a decimal point ?? */
 if (j == -1)
   {
-#if defined (__WIN32__)
-   strcat_s(p,".");                /* if not, append one */
+#ifdef WIN32
+   strcat_s(p, 1, ".");                /* if not, append one */
 #else
    strcat(p,".");                /* if not, append one */
 #endif
@@ -254,8 +254,8 @@ i = strlen(p);
 ctmp->m_apm_datalength = i;
 
 if ((i & 1) != 0)   /* if odd number of digits, append a '0' to make it even */
-#if defined (__WIN32__)
-  strcat_s(p,"0");    
+#ifdef WIN32
+  strcat_s(p, 1, "0");    
 #else
   strcat(p,"0");    
 #endif
@@ -349,35 +349,35 @@ else
 if (ctmp->m_apm_sign == 0)
   {
    if (dec_places < 0)
-#if defined (__win32__)
-      strcpy_s(s,"0.0E+0");
+#ifdef WIN32
+      strcpy_s(s, 6, "0.0E+0");
 #else
       strcpy(s,"0.0E+0");
 #endif
    else
      {
-#if defined (__win32__)
-      strcpy_s(s,"0");
+#ifdef WIN32
+      strcpy_s(s, 1, "0");
 #else
       strcpy(s,"0");
 #endif
 
       if (dec_places > 0)
-#if defined (__win32__)
-        strcat_s(s,".");
+#ifdef WIN32
+        strcat_s(s, 1, ".");
 #else
         strcat(s,".");
 #endif
 
       for (i=0; i < dec_places; i++)
-#if defined (__WIN32__)
-        strcat(s,"0");
+#ifdef WIN32
+        strcat_s(s, 1, "0");
 #else
         strcat(s,"0");
 #endif
 
-#if defined (__WIN32__)
-      strcat(s,"E+0");
+#ifdef WIN32
+      strcat_s(s, 3,"E+0");
 #else
       strcat(s,"E+0");
 #endif
@@ -435,14 +435,14 @@ while (TRUE)
 
 i = ctmp->m_apm_exponent - 1;
 if (i >= 0)
-#if defined (__WIN32__)
-  sprintf_s(cp,"E+%d",i);
+#ifdef WIN32
+  sprintf_s(cp, sizeof(cp), "E+%d",i);
 #else
   sprintf(cp,"E+%d",i);
 #endif
 else
-#if defined (__WIN32__)
-  sprintf_s(cp,"E%d",i);
+#ifdef WIN32
+  sprintf_s(cp, sizeof(cp), "E%d",i);
 #else
   sprintf(cp,"E%d",i);
 #endif
