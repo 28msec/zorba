@@ -47,20 +47,12 @@ void	M_apm_log_error_msg(int fatal, char *message)
 {
 if (fatal)
   {
-#ifdef WIN32
-   fprintf_s(stderr, "MAPM Error: %s\n", message);
-#else
    fprintf(stderr, "MAPM Error: %s\n", message);
-#endif
    exit(100);
   }
 else
   {
-#ifdef WIN32
-   fprintf_s(stderr, "MAPM Warning: %s\n", message);
-#else
    fprintf(stderr, "MAPM Warning: %s\n", message);
-#endif
   }
 }
 /****************************************************************************/
