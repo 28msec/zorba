@@ -391,12 +391,12 @@ DurationBase_t DayTimeDuration::operator/(const Double value) const
 
 Decimal DayTimeDuration::operator/(const DurationBase& db) const
 {
-  Decimal op1 = Decimal::parseLong(days * NO_SEC_IN_DAY + timeDuration.total_seconds()) + timeDuration.fractional_seconds();
+  Decimal op1 = Decimal::parseLong(days * NO_SEC_IN_DAY + timeDuration.total_seconds()) + Decimal::parseLong(timeDuration.fractional_seconds());
   if( is_negative )
     op1 = -op1;
 
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
-  Decimal op2 = Decimal::parseLong(dtd.days * NO_SEC_IN_DAY + dtd.timeDuration.total_seconds()) + dtd.timeDuration.fractional_seconds();
+  Decimal op2 = Decimal::parseLong(dtd.days * NO_SEC_IN_DAY + dtd.timeDuration.total_seconds()) + Decimal::parseLong(dtd.timeDuration.fractional_seconds());
   if( is_negative )
     op2 = -op2;
 
