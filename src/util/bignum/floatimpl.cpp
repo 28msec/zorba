@@ -62,21 +62,6 @@ const xqpString FloatCommons::INF_NEG_STR = "-INF";
 const xqpString FloatCommons::NOT_A_NUM_STR = "NaN";
 
 template <typename FloatType>
-void FloatImpl<FloatType>::setFloatImpl(FloatType aFloatImpl){
-  switch(theType = checkInfNaNNeg(aFloatImpl)) {
-    case FloatCommons::INF_NEG:
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-      theFloatImpl = 0;
-      break;
-    case FloatCommons::NORMAL_NEG:
-    case FloatCommons::NORMAL:
-      theFloatImpl = aFloatImpl;
-      break;
-  }
-}
-
-template <typename FloatType>
 bool FloatImpl<FloatType>::checkInfNaN(FloatImpl& aFloatImpl) {
   if (aFloatImpl.theType == FloatCommons::NORMAL || aFloatImpl.theType == FloatCommons::NORMAL_NEG) {
     if (FloatImplTraits<FloatType>::isPosInf(aFloatImpl.theFloatImpl)) {
@@ -148,7 +133,7 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(FloatType aFloat) {
 }
 
 template <typename FloatType>
-bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
+bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatImpl) {
   const char* lCur = aCharStar;
   std::string lBuffer(aCharStar);
 
@@ -254,6 +239,39 @@ bool FloatImpl<FloatType>::parse(const char* aCharStar, FloatImpl& aFloatImpl) {
 
   checkInfNaN(aFloatImpl);
   return true;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::parseFloatType(FloatType aFloatImpl){
+  FloatImpl<FloatType> lFloating;
+  switch(lFloating.theType = checkInfNaNNeg(aFloatImpl)) {
+    case FloatCommons::INF_NEG:
+    case FloatCommons::NOT_A_NUM:
+    case FloatCommons::INF_POS:
+      lFloating.theFloatImpl = 0;
+      break;
+    case FloatCommons::NORMAL_NEG:
+    case FloatCommons::NORMAL:
+      lFloating.theFloatImpl = aFloatImpl;
+      break;
+  }
+  return lFloating;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::parseInt(int32_t aInt) {
+  FloatImpl<FloatType> lFloating;
+  lFloating.theType = ( aInt < 0 ? FloatCommons::NORMAL_NEG : FloatCommons::NORMAL );
+  lFloating.theFloatImpl = aInt;
+  return lFloating;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::parseLong(long aLong) {
+  FloatImpl<FloatType> lFloating;
+  lFloating.theType = ( aLong < 0 ? FloatCommons::NORMAL_NEG : FloatCommons::NORMAL );
+  lFloating.theFloatImpl = aLong;
+  return lFloating;
 }
 
 template <typename FloatType>

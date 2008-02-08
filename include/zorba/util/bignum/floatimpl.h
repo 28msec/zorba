@@ -80,15 +80,9 @@ private:
 
 public:
   FloatImpl() : theType(FloatCommons::NORMAL), theFloatImpl(0) { }
-  FloatImpl(FloatType aFloatImpl) { setFloatImpl(aFloatImpl); }
   FloatImpl(const FloatImpl& aFloatImpl) : theType(aFloatImpl.theType), theFloatImpl(aFloatImpl.theFloatImpl) {}
 
 protected:
-  /**
-   * Sets the value of the template parameter type.
-   */
-  void setFloatImpl(FloatType aFloatImpl);
-
   /**
    * @return true, if aFloatImpl has been changed
    */
@@ -97,6 +91,7 @@ protected:
 public:
   FloatCommons::NumType getType() const { return theType; }
   MAPM getNumber() const { return theFloatImpl; }
+
   /**
    * Checks if the passed number in string format is NaN, inf, 
    * -inf, negative or non-negative number.
@@ -113,13 +108,11 @@ public:
    */
   static FloatCommons::NumType checkInfNaNNeg(FloatType aNumber);
 
-  static bool parse(const char* aCharStar, FloatImpl& aFloatImpl);
+  static bool parseString(const char* aCharStar, FloatImpl& aFloatImpl);
+  static FloatImpl<FloatType> parseFloatType(FloatType aFloatImpl);
+  static FloatImpl<FloatType> parseInt(int32_t);
+  static FloatImpl<FloatType> parseLong(long);
 
-  FloatImpl& operator=(FloatType aFloatImpl){
-    setFloatImpl(aFloatImpl);
-    return *this;
-  }
- 
   FloatImpl& operator=(const FloatImpl& aFloatImpl) {
     theType = aFloatImpl.theType;
     theFloatImpl = aFloatImpl.theFloatImpl;
@@ -168,7 +161,7 @@ public:
   FloatImpl ceil() const; 
 
   FloatImpl round() const{
-    return round((int32_t)0);
+    return round(Integer::parseInt((int32_t)0));
   }
 
   FloatImpl round(Integer aPrecision) const;

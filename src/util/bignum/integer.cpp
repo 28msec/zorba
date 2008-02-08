@@ -11,26 +11,7 @@
 
 namespace xqp {
 
-Integer::Integer(const Decimal& aDecimal) {
-  theInteger = floatingToInteger(aDecimal.theDecimal);
-}
-
-Integer::Integer(long long aLong) {
-  xqpString lStrRep = NumConversions::longToStr(aLong);
-  theInteger = lStrRep.c_str();
-}
-
-Integer::Integer(unsigned long long aULong) {
-  xqpString lStrRep = NumConversions::ulongToStr(aULong);
-  theInteger = lStrRep.c_str();
-}
-
-Integer::Integer(uint32_t aUInt) {
-  xqpString lStrRep = NumConversions::uintToStr(aUInt);
-  theInteger = lStrRep.c_str();
-}
-
-bool Integer::parse(const char* aCharStar, Integer& aInteger) {
+bool Integer::parseString(const char* aCharStar, Integer& aInteger) {
   // correctness check
   const char* lCur = aCharStar;
   bool lGotSign = false;
@@ -79,7 +60,7 @@ bool Integer::parse(const char* aCharStar, Integer& aInteger) {
   }
 }
 
-bool Integer::parseUnsigned(const char* aStarChar, Integer& aUInteger) {
+bool Integer::parseStringUnsigned(const char* aStarChar, Integer& aUInteger) {
   // correctness check
   const char* lCur = aStarChar;
   bool lStop = false;
@@ -111,23 +92,7 @@ bool Integer::parseUnsigned(const char* aStarChar, Integer& aUInteger) {
   }
 }
   
-Integer Integer::parseLong(long aLong) { 
-  MAPM lNumber = aLong;
-  return Integer(lNumber);
-}
-Integer Integer::parseULong(unsigned long aULong) {
-  xqpString lStrRep = NumConversions::ulongToStr(aULong);
-  MAPM lNumber = lStrRep.c_str();
-  return Integer(lNumber);
-}
-Integer Integer::parseSizeT(size_t aSizeT) {
-  xqpString lStrRep = NumConversions::sizetToStr(aSizeT);
-  MAPM lNumber = lStrRep.c_str();
-  return Integer(lNumber);
-}
-
-
-bool Integer::parse(const Double& aDouble, Integer& aInteger) {
+bool Integer::parseDouble(const Double& aDouble, Integer& aInteger) {
   switch(aDouble.theType) {
   case FloatCommons::NORMAL:
   case FloatCommons::NORMAL_NEG:
@@ -143,7 +108,7 @@ bool Integer::parse(const Double& aDouble, Integer& aInteger) {
   }
 }
 
-bool Integer::parse(const Float& aFloat, Integer& aInteger) {
+bool Integer::parseFloat(const Float& aFloat, Integer& aInteger) {
   switch(aFloat.theType) {
   case FloatCommons::NORMAL:
   case FloatCommons::NORMAL_NEG:
@@ -159,19 +124,57 @@ bool Integer::parse(const Float& aFloat, Integer& aInteger) {
   }
 }
 
+Integer Integer::parseDecimal(const Decimal& aDecimal) {
+  Integer lInteger(aDecimal.theDecimal);
+  return lInteger;
+}
+
+Integer Integer::parseLongLong(long long aLong) {
+  xqpString lStrRep = NumConversions::longToStr(aLong);
+  MAPM lMAPM = lStrRep.c_str();
+  Integer lInteger(lMAPM);
+  return lInteger;
+}
+
+Integer Integer::parseULongLong(unsigned long long aULong) {
+  xqpString lStrRep = NumConversions::ulongLongToStr(aULong);
+  MAPM lMAPM = lStrRep.c_str();
+  Integer lInteger(lMAPM);
+  return lInteger;
+}
+
+Integer Integer::parseInt(int32_t aInt) {
+  MAPM lMAPM = aInt;
+  Integer lInteger(lMAPM);
+  return lInteger;
+}
+
+Integer Integer::parseUInt(uint32_t aUInt) {
+  xqpString lStrRep = NumConversions::uintToStr(aUInt);
+  MAPM lMAPM = lStrRep.c_str();
+  Integer lInteger(lMAPM);
+  return lInteger;
+}
+
+Integer Integer::parseLong(long aLong) { 
+  MAPM lNumber = aLong;
+  return Integer(lNumber);
+}
+
+Integer Integer::parseULong(unsigned long aULong) {
+  xqpString lStrRep = NumConversions::ulongToStr(aULong);
+  MAPM lNumber = lStrRep.c_str();
+  return Integer(lNumber);
+}
+Integer Integer::parseSizeT(size_t aSizeT) {
+  xqpString lStrRep = NumConversions::sizetToStr(aSizeT);
+  MAPM lNumber = lStrRep.c_str();
+  return Integer(lNumber);
+}
+
+
 Integer& Integer::operator=(const Integer& aInteger) {
   theInteger = aInteger.theInteger;
-  return *this;
-}
-
-Integer& Integer::operator=(long long aLong) {
-  xqpString lStrRep = NumConversions::longToStr(aLong);
-  theInteger = lStrRep.c_str();
-  return *this;
-}
-
-Integer& Integer::operator=(int32_t aInt) {
-  theInteger = aInt;
   return *this;
 }
 
@@ -185,23 +188,8 @@ Integer Integer::operator+(const Integer& aInteger) const {
   return lResult;
 }
 
-Integer Integer::operator+(long long aLong) const {
-  Integer lResult(theInteger + Integer::longlongToMAPM(aLong));
-  return lResult;
-}
-
-Integer Integer::operator+(int32_t aInt) const {
-  Integer lResult(theInteger + aInt);
-  return lResult;
-}
-
 Decimal Integer::operator+(const Decimal& aDecimal) const {
   Decimal lResult(theInteger + aDecimal.theDecimal);
-  return lResult;
-}
-
-Decimal Integer::operator+(double aDouble) const {
-  Decimal lResult(theInteger + aDouble);
   return lResult;
 }
 
@@ -210,28 +198,8 @@ Integer& Integer::operator+=(const Integer& aInteger) {
   return *this;
 }
 
-Integer& Integer::operator+=(long long aLong) {
-  theInteger += Integer::longlongToMAPM(aLong);
-  return *this;
-}
-
-Integer& Integer::operator+=(int32_t aInt) {
-  theInteger += aInt;
-  return *this;
-}
-
 Integer Integer::operator-(const Integer& aInteger) const {
   Integer lResult(theInteger - aInteger.theInteger);
-  return lResult;
-}
-
-Integer Integer::operator-(long long aLong) const {
-  Integer lResult(theInteger - Integer::longlongToMAPM(aLong));
-  return lResult;
-}
-
-Integer Integer::operator-(int32_t aInt) const {
-  Integer lResult(theInteger - aInt);
   return lResult;
 }
 
@@ -240,23 +208,8 @@ Decimal Integer::operator-(const Decimal& aDecimal) const {
   return lResult;
 }
 
-Decimal Integer::operator-(double aDouble) const {
-  Decimal lResult(theInteger - aDouble);
-  return lResult;
-}
-
 Integer& Integer::operator-=(const Integer& aInteger) {
   theInteger -= aInteger.theInteger;
-  return *this;
-}
-
-Integer& Integer::operator-=(long long aLong) {
-  theInteger -= Integer::longlongToMAPM(aLong);
-  return *this;
-}
-
-Integer& Integer::operator-=(int32_t aInt) {
-  theInteger -= aInt;
   return *this;
 }
 
@@ -265,38 +218,13 @@ Integer Integer::operator*(const Integer& aInteger) const {
   return lResult;
 }
 
-Integer Integer::operator*(long long aLong) const {
-  Integer lResult(theInteger * Integer::longlongToMAPM(aLong));
-  return lResult;
-}
-
-Integer Integer::operator*(int32_t aInt) const {
-  Integer lResult(theInteger * aInt);
-  return lResult;
-}
-
 Decimal Integer::operator*(const Decimal& aDecimal) const {
   Decimal lResult(theInteger * aDecimal.theDecimal);
   return lResult;
 }
 
-Decimal Integer::operator*(double aDouble) const {
-  Decimal lResult(theInteger * aDouble);
-  return lResult;
-}
-
 Integer& Integer::operator*=(const Integer& aInteger) {
   theInteger *= aInteger.theInteger;
-  return *this;
-}
-
-Integer& Integer::operator*=(long long aLong) {
-  theInteger *= Integer::longlongToMAPM(aLong);
-  return *this;
-}
-
-Integer& Integer::operator*=(int32_t aInt) {
-  theInteger *= aInt;
   return *this;
 }
 
@@ -306,25 +234,8 @@ Integer Integer::operator/(const Integer& aInteger) const {
   return Integer(lRes);
 }
 
-Integer Integer::operator/(long long aLong) const {
-  MAPM lRes = theInteger / Integer::longlongToMAPM(aLong);
-  lRes = floatingToInteger(lRes);
-  return Integer(lRes);
-}
-
-Integer Integer::operator/(int32_t aInt) const {
-  MAPM lRes = theInteger / aInt;
-  lRes = floatingToInteger(lRes);
-  return Integer(lRes);
-}
-
 Decimal Integer::operator/(const Decimal& aDecimal) const {
   MAPM lRes = theInteger / aDecimal.theDecimal;
-  return Decimal(lRes);
-}
-
-Decimal Integer::operator/(double aDouble) const {
-  MAPM lRes = theInteger / aDouble;
   return Decimal(lRes);
 }
 
@@ -334,30 +245,8 @@ Integer& Integer::operator/=(const Integer& aInteger) {
   return *this;
 }
 
-Integer& Integer::operator/=(long long aLong) {
-  theInteger /= Integer::longlongToMAPM(aLong);
-  theInteger = floatingToInteger(theInteger);
-  return *this;
-}
-
-Integer& Integer::operator/=(int32_t aInt) {
-  theInteger /= aInt;
-  theInteger = floatingToInteger(theInteger);
-  return *this;
-}
-
 Integer Integer::operator%(const Integer& aInteger) const {
   MAPM lRes = theInteger % aInteger.theInteger;
-  return Integer(lRes);
-}
-
-Integer Integer::operator%(long long aLong) const {
-  MAPM lRes = theInteger % Integer::longlongToMAPM(aLong);
-  return Integer(lRes);
-}
-
-Integer Integer::operator%(int32_t aInt) const {
-  MAPM lRes = theInteger % aInt;
   return Integer(lRes);
 }
 
@@ -366,23 +255,8 @@ Decimal Integer::operator%(const Decimal& aDecimal) const {
   return Decimal(lRes);
 }
 
-Decimal Integer::operator%(double aDouble) const {
-  MAPM lRes = theInteger % aDouble;
-  return Decimal(lRes);
-}
-
 Integer& Integer::operator%=(const Integer& aInteger) {
   theInteger %= aInteger.theInteger;
-  return *this;
-}
-
-Integer& Integer::operator%=(long long aLong) {
-  theInteger %= Integer::longlongToMAPM(aLong);
-  return *this;
-}
-
-Integer& Integer::operator%=(int32_t aInt) {
-  theInteger %= aInt;
   return *this;
 }
 
@@ -413,32 +287,16 @@ bool Integer::operator==(const Decimal& aDecimal) const {
   return theInteger == aDecimal.theDecimal;
 }
 
-bool Integer::operator==(long long aLong) const {
-  return theInteger == Integer::longlongToMAPM(aLong);
-}
-
 bool Integer::operator!=(const Decimal& aDecimal) const {
   return theInteger != aDecimal.theDecimal;
-}
-
-bool Integer::operator!=(long long aLong) const {
-  return theInteger != Integer::longlongToMAPM(aLong);
 }
 
 bool Integer::operator<(const Decimal& aDecimal) const {
   return theInteger < aDecimal.theDecimal;
 }
 
-bool Integer::operator<(long long aLong) const {
-  return theInteger < Integer::longlongToMAPM(aLong);
-}
-
 bool Integer::operator<=(const Decimal& aDecimal) const {
   return theInteger <= aDecimal.theDecimal;
-}
-
-bool Integer::operator<=(long long aLong) const {
-  return theInteger <= Integer::longlongToMAPM(aLong);
 }
 
 bool Integer::operator<=(const Double& aDouble) const {
@@ -462,16 +320,8 @@ bool Integer::operator>(const Decimal& aDecimal) const {
   return theInteger > aDecimal.theDecimal;
 }
 
-bool Integer::operator>(long long aLong) const {
-  return theInteger > Integer::longlongToMAPM(aLong);
-}
-
 bool Integer::operator>=(const Decimal& aDecimal) const {
   return theInteger >= aDecimal.theDecimal;
-}
-
-bool Integer::operator>=(long long aLong) const {
-  return theInteger >= Integer::longlongToMAPM(aLong);
 }
 
 bool Integer::operator>=(const Double& aDouble) const {

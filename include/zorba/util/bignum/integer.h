@@ -29,11 +29,6 @@ private:
 public:
   Integer() : theInteger(0) { }
   Integer(const Integer& aInteger) : theInteger(aInteger.theInteger) { }
-  Integer(const Decimal& aDecimal);
-  Integer(long long aLong);
-  Integer(unsigned long long aULong);
-  Integer(int32_t aInt) : theInteger(aInt) { }
-  Integer(uint32_t aUInt);
   
 private:
   static MAPM longlongToMAPM(long long);
@@ -46,68 +41,70 @@ private:
   }
 
 public:
-  static bool parse(const char*, Integer&);
-  static bool parseUnsigned(const char*, Integer&);
-  static bool parse(const Double&, Integer&);
-  static bool parse(const Float&, Integer&);
-
+  /**
+   * Parse string to Integer.
+   * @param aStr String
+   * @param aInteger Result
+   * @return true if parsing succeed, else false
+   */ 
+  static bool parseString(const char* aStr, Integer& aInteger);
+  /**
+   * Parsing of string to unsigned integer. Zorba does not differ between
+   * unsigned and signed Integer because unsigned Integer is never a result
+   * of an numeric operation => The only places where the unsignedness must
+   * be checked is the parsing.
+   *
+   * @param aStr String
+   * @param aInteger result
+   * @return true if parsing succeed, else false
+   */
+  static bool parseStringUnsigned(const char*, Integer&);
+  /**
+   * Parsing form double to Integer. Decimal places are cut of.
+   */
+  static bool parseDouble(const Double&, Integer&);
+  /**
+   * Parsing form float to Integer. Decimal places are cut of.
+   */
+  static bool parseFloat(const Float&, Integer&);
+  /**
+   * Parsing form Decimal to Integer. Decimal places are cut of.
+   */
+  static Integer parseDecimal(const Decimal&);
+  static Integer parseLongLong(long long);
+  static Integer parseULongLong(unsigned long long);
+  static Integer parseInt(int32_t);
+  static Integer parseUInt(uint32_t);
   static Integer parseLong(long aLong);
   static Integer parseULong(unsigned long);
   static Integer parseSizeT(size_t);
 
   Integer& operator=(const Integer&);
-  Integer& operator=(long long);
-  Integer& operator=(int32_t);
 
   Integer operator+(const Integer&) const;
-  Integer operator+(long long) const;
-  Integer operator+(int32_t) const;
   Decimal operator+(const Decimal&) const;
-  Decimal operator+(double) const;
 
   Integer& operator+=(const Integer&);
-  Integer& operator+=(long long);
-  Integer& operator+=(int32_t);
 
   Integer operator-(const Integer&) const;
-  Integer operator-(long long) const;
-  Integer operator-(int32_t) const;
   Decimal operator-(const Decimal&) const;
-  Decimal operator-(double) const;
 
   Integer& operator-=(const Integer&);
-  Integer& operator-=(long long);
-  Integer& operator-=(int32_t);
 
   Integer operator*(const Integer&) const;
-  Integer operator*(long long) const;
-  Integer operator*(int32_t) const;
   Decimal operator*(const Decimal&) const;
-  Decimal operator*(double) const;
 
   Integer& operator*=(const Integer&);
-  Integer& operator*=(long long);
-  Integer& operator*=(int32_t);
 
   Integer operator/(const Integer&) const;
-  Integer operator/(long long) const;
-  Integer operator/(int32_t) const;
   Decimal operator/(const Decimal&) const;
-  Decimal operator/(double) const;
 
   Integer& operator/=(const Integer&);
-  Integer& operator/=(long long);
-  Integer& operator/=(int32_t);
 
   Integer operator%(const Integer&) const;
-  Integer operator%(long long) const;
-  Integer operator%(int32_t) const;
   Decimal operator%(const Decimal&) const;
-  Decimal operator%(double) const;
 
   Integer& operator%=(const Integer&);
-  Integer& operator%=(long long);
-  Integer& operator%=(int32_t);
 
   Integer operator-() const; 
   /** prefix */
@@ -118,41 +115,23 @@ public:
   Integer roundHalfToEven(Integer aPrecision) const;
 
   bool operator==(const Integer& aInteger) const { return theInteger == aInteger.theInteger; } 
-  bool operator==(long long) const;
-  bool operator==(int32_t aInt) const { return theInteger == aInt; } 
   bool operator==(const Decimal&) const;
-  bool operator==(double aDouble) const { return theInteger == aDouble; }
 
   bool operator!=(const Integer& aInteger) const { return theInteger != aInteger.theInteger; } 
-  bool operator!=(long long) const;
-  bool operator!=(int32_t aInt) const { return theInteger != aInt; } 
   bool operator!=(const Decimal&) const;
-  bool operator!=(double aDouble) const { return theInteger != aDouble; }
 
   bool operator<(const Integer& aInteger) const { return theInteger < aInteger.theInteger; } 
-  bool operator<(long long) const;
-  bool operator<(int32_t aInt) const { return theInteger < aInt; } 
   bool operator<(const Decimal&) const;
-  bool operator<(double aDouble) const { return theInteger < aDouble; }
 
   bool operator<=(const Integer& aInteger) const { return theInteger <= aInteger.theInteger; } 
-  bool operator<=(long long) const;
-  bool operator<=(int32_t aInt) const { return theInteger <= aInt; } 
   bool operator<=(const Decimal&) const;
-  bool operator<=(double aDouble) const { return theInteger <= aDouble; }
   bool operator<=(const Double&) const;
 
   bool operator>(const Integer& aInteger) const { return theInteger > aInteger.theInteger; } 
-  bool operator>(long long) const;
-  bool operator>(int32_t aInt) const { return theInteger > aInt; } 
   bool operator>(const Decimal&) const;
-  bool operator>(double aDouble) const { return theInteger > aDouble; }
 
   bool operator>=(const Integer& aInteger) const { return theInteger >= aInteger.theInteger; } 
-  bool operator>=(long long) const;
-  bool operator>=(int32_t aInt) const { return theInteger >= aInt; } 
   bool operator>=(const Decimal&) const;
-  bool operator>=(double aDouble) const { return theInteger >= aDouble; }
   bool operator>=(const Double&) const;
 
   xqpString toString() const;

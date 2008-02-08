@@ -23,7 +23,7 @@ namespace xqp {
   }
 
   bool NumConversions::starCharToInteger(const char* aCharStar, xqp_integer& aInteger) {
-    return Integer::parse(aCharStar, aInteger);
+    return Integer::parseString(aCharStar, aInteger);
   }
 
   bool NumConversions::strToInteger(const xqpString& aStr, xqp_integer& aInteger){
@@ -33,7 +33,7 @@ namespace xqp {
     return aInteger.toString();
   }
   bool NumConversions::strToUInteger(const xqpString& aStr, xqp_uinteger& aUInteger){
-    return Integer::parseUnsigned(aStr.c_str(), aUInteger);
+    return Integer::parseStringUnsigned(aStr.c_str(), aUInteger);
   }
   xqpString NumConversions::uintegerToStr(xqp_uinteger aUInteger){
     return aUInteger.toString();
@@ -67,7 +67,7 @@ namespace xqp {
   xqpString NumConversions::uintToStr(xqp_uint aUInt){
     return boost::lexical_cast<std::string>(aUInt);
   }
-  bool NumConversions::strToLong(const xqpString& aStr, xqp_long& aLong){
+  bool NumConversions::strToLongLong(const xqpString& aStr, xqp_long& aLong){
     try {
       aLong = boost::lexical_cast<xqp_long>(aStr.c_str());
       return true;
@@ -75,10 +75,21 @@ namespace xqp {
       return false;
     }
   }
-  xqpString NumConversions::longToStr(xqp_long aLong){
+  xqpString NumConversions::longLongToStr(xqp_long aLong){
     return boost::lexical_cast<std::string>(aLong);
   }
-  bool NumConversions::strToULong(const xqpString& aStr, xqp_ulong& aULong){
+  bool NumConversions::strToLong(const xqpString& aStr, long& aLong){
+    try {
+      aLong = boost::lexical_cast<long>(aStr.c_str());
+      return true;
+    } catch (boost::bad_lexical_cast &) {
+      return false;
+    }
+  }
+  xqpString NumConversions::longToStr(long aLong) {
+    return boost::lexical_cast<std::string>(aLong);
+  }
+  bool NumConversions::strToULongLong(const xqpString& aStr, xqp_ulong& aULong){
     if ( isNegZero(aStr)) {
       aULong = 0;
       return true;
@@ -90,7 +101,10 @@ namespace xqp {
       return false;
     }
   }
-  xqpString NumConversions::ulongToStr(xqp_ulong aULong){
+  xqpString NumConversions::ulongLongToStr(xqp_ulong aULong){
+    return boost::lexical_cast<std::string>(aULong);
+  }
+  xqpString NumConversions::ulongToStr(unsigned long aULong) {
     return boost::lexical_cast<std::string>(aULong);
   }
   bool NumConversions::strToShort(const xqpString& aStr, xqp_short& aShort){
@@ -120,7 +134,7 @@ namespace xqp {
     return boost::lexical_cast<std::string>(aUShort);
   }
   bool NumConversions::starCharToDecimal(const char* aCharStar, xqp_decimal& aDecimal){
-    return Decimal::parse(aCharStar, aDecimal);
+    return Decimal::parseString(aCharStar, aDecimal);
   }
   bool NumConversions::strToDecimal(const xqpString& aStr, xqp_decimal& aDecimal) {
     return starCharToDecimal(aStr.c_str(), aDecimal);
@@ -130,7 +144,7 @@ namespace xqp {
   }
 
   bool NumConversions::starCharToFloat(const char* aCharStar, xqp_float& aFloat) {
-    return Float::parse(aCharStar, aFloat);
+    return Float::parseString(aCharStar, aFloat);
   }
 
   bool NumConversions::strToFloat(const xqpString& aStr, xqp_float& aFloat){
@@ -140,7 +154,7 @@ namespace xqp {
     return aFloat.toString();
   }
   bool NumConversions::starCharToDouble(const char* aCharStar, xqp_double& aDouble){
-    return Double::parse(aCharStar, aDouble);
+    return Double::parseString(aCharStar, aDouble);
   }
   bool NumConversions::strToDouble(const xqpString& aStr, xqp_double& aDouble) {
     return starCharToDouble(aStr.c_str(), aDouble);
@@ -187,30 +201,24 @@ namespace xqp {
     return boost::lexical_cast<std::string>(lUInt);
   }
 
-  bool NumConversions::isNaN(xqp_double aDouble) {
-    return aDouble.isNaN();
-  }
-
-  bool NumConversions::isNaN(xqp_float aFloat) {
-    return aFloat.isNaN();
-  }
-
-  bool NumConversions::isPosOrNegInf(xqp_double aDouble) {
-    return (aDouble == std::numeric_limits<xqp_double>::infinity() 
-      || aDouble == -std::numeric_limits<xqp_double>::infinity());
-  }
-
-  bool NumConversions::isPosOrNegInf(xqp_float aFloat) {
-    return (aFloat == std::numeric_limits<xqp_float>::infinity()
-      || aFloat == -std::numeric_limits<xqp_float>::infinity());
-  }
-  
   xqpString NumConversions::sizetToStr(size_t aSizeT) {
     return boost::lexical_cast<std::string>(aSizeT);
   }
 
+  // TODO must be tested if it works for numbers like 1e3
   bool NumConversions::doubleToInt(const xqp_double& aDouble, xqp_int& aInt) {
     xqpString lStr = aDouble.toString();
     return NumConversions::strToInt(lStr, aInt);
+  }
+
+  // TODO must be tested if it works for numbers like 1e3
+  bool NumConversions::doubleToLongLong(const xqp_double& aDouble, xqp_long& aLong) {
+    xqpString lStr = aDouble.toString();
+    return NumConversions::strToLongLong(lStr, aLong);
+  }
+
+  bool NumConversions::doubleToLong(const xqp_double& aDouble, long& aLong) {
+    xqpString lStr = aDouble.toString();
+    return NumConversions::strToLong(lStr, aLong);
   }
 } /* namespace xqp */

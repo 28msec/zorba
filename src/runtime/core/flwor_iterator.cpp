@@ -552,7 +552,7 @@ bool FLWORIterator::bindVariable(
     if ( !lForLetClause.posVars.empty() )
     {
       Item_t posItem = Zorba::getItemFactory()->
-                       createInteger(flworState->varBindingState[varNb]);
+                       createInteger(Integer::parseInt(flworState->varBindingState[varNb]));
 
       std::vector<var_iter_t>::iterator posIter;
       for (posIter = lForLetClause.posVars.begin();

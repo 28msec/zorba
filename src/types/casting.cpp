@@ -247,14 +247,14 @@ Item_t GenericCast::stringSimpleCast(
       case TypeSystem::XS_NEGATIVE_INTEGER:
       {
         xqp_integer n;
-        if (NumConversions::strToInteger(lString, n) && n < (int32_t)0)
+        if (NumConversions::strToInteger(lString, n) && n < xqp_integer::parseInt(0))
           lItem = factory->createNegativeInteger(n);
       }
         break;
       case TypeSystem::XS_LONG:
       {
         xqp_long n;
-        if (NumConversions::strToLong(lString, n))
+        if (NumConversions::strToLongLong(lString, n))
           lItem = factory->createLong(n);
       }
         break;
@@ -289,7 +289,7 @@ Item_t GenericCast::stringSimpleCast(
       case TypeSystem::XS_UNSIGNED_LONG:
       {
         xqp_ulong n;
-        if (NumConversions::strToULong(lString, n))
+        if (NumConversions::strToULongLong(lString, n))
           lItem = factory->createUnsignedLong(n);
       }
         break;
@@ -317,7 +317,7 @@ Item_t GenericCast::stringSimpleCast(
   case TypeSystem::XS_POSITIVE_INTEGER:
   {
     xqp_integer n;
-    if (NumConversions::strToInteger(lString, n) && n > (int32_t)0)
+    if (NumConversions::strToInteger(lString, n) && n > xqp_integer::parseInt(0))
       lItem = factory->createPositiveInteger(n);
   }
   break;

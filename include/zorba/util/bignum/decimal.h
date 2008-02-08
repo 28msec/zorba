@@ -25,11 +25,6 @@ private:
 public:
   Decimal() : theDecimal(0) { }
   Decimal(const Decimal& aDecimal) : theDecimal(aDecimal.theDecimal) { }
-  Decimal(const Integer& aInteger);
-  Decimal(long long);
-  Decimal(unsigned long long);
-  Decimal(int32_t aInt) : theDecimal(aInt) { }
-  Decimal(uint32_t aUInt);
 
 private:
   static MAPM round(MAPM aValue, MAPM aPrecision);
@@ -37,74 +32,47 @@ private:
   static xqpString decimalToString(MAPM);
 
 public:
-  static bool parse(const char*, Decimal&);
-  static bool parse(double, Decimal&);
+  static bool parseString(const char*, Decimal&);
+  static bool parseNativeDouble(double, Decimal&);
   static Decimal parseLong(long aLong);
+  static Decimal parseULong(unsigned long aULong);
+  static Decimal parseInteger(const Integer& aInteger);
+  static Decimal parseLongLong(long long);
+  static Decimal parseULongLong(unsigned long long);
+  static Decimal parseInt(int32_t aInt);
+  static Decimal parseUInt(uint32_t aUInt);
 
   Decimal& operator=(const Decimal&);
-  Decimal& operator=(const Integer&);
-  Decimal& operator=(long long);
-  Decimal& operator=(int32_t);
 
   Decimal operator+(const Integer&) const;
-  Decimal operator+(long long) const;
-  Decimal operator+(int32_t) const;
   Decimal operator+(const Decimal&) const;
-  Decimal operator+(double) const;
 
   Decimal& operator+=(const Integer&);
-  Decimal& operator+=(long long);
-  Decimal& operator+=(int32_t);
   Decimal& operator+=(const Decimal&);
-  Decimal& operator+=(double);
 
   Decimal operator-(const Integer&) const;
-  Decimal operator-(long long) const;
-  Decimal operator-(int32_t) const;
   Decimal operator-(const Decimal&) const;
-  Decimal operator-(double) const;
 
   Decimal& operator-=(const Integer&);
-  Decimal& operator-=(long long);
-  Decimal& operator-=(int32_t);
   Decimal& operator-=(const Decimal&);
-  Decimal& operator-=(double);
 
   Decimal operator*(const Integer&) const;
-  Decimal operator*(long long) const;
-  Decimal operator*(int32_t) const;
   Decimal operator*(const Decimal&) const;
-  Decimal operator*(double) const;
 
   Decimal& operator*=(const Integer&);
-  Decimal& operator*=(long long);
-  Decimal& operator*=(int32_t);
   Decimal& operator*=(const Decimal&);
-  Decimal& operator*=(double);
 
   Decimal operator/(const Integer&) const;
-  Decimal operator/(long long) const;
-  Decimal operator/(int32_t) const;
   Decimal operator/(const Decimal&) const;
-  Decimal operator/(double) const;
 
   Decimal& operator/=(const Integer&);
-  Decimal& operator/=(long long);
-  Decimal& operator/=(int32_t);
   Decimal& operator/=(const Decimal&);
-  Decimal& operator/=(double);
 
   Decimal operator%(const Integer&) const;
-  Decimal operator%(long long) const;
-  Decimal operator%(int32_t) const;
   Decimal operator%(const Decimal&) const;
-  Decimal operator%(double) const;
 
   Decimal& operator%=(const Integer&);
-  Decimal& operator%=(long long);
-  Decimal& operator%=(int32_t);
   Decimal& operator%=(const Decimal&);
-  Decimal& operator%=(double);
 
   Decimal operator-() const; 
   Decimal floor() const { return Decimal(theDecimal.floor()); }
@@ -114,40 +82,22 @@ public:
   Decimal roundHalfToEven(Integer aPrecision) const;
 
   bool operator==(const Integer&) const;
-  bool operator==(long long) const;
-  bool operator==(int32_t aInt) const { return theDecimal == aInt; }
   bool operator==(const Decimal& aDecimal) const { return theDecimal == aDecimal.theDecimal; }
-  bool operator==(double aDouble) const { return theDecimal == aDouble; }
 
   bool operator!=(const Integer&) const;
-  bool operator!=(long long) const;
-  bool operator!=(int32_t aInt) const { return theDecimal != aInt; }
   bool operator!=(const Decimal& aDecimal) const { return theDecimal != aDecimal.theDecimal; }
-  bool operator!=(double aDouble) const { return theDecimal != aDouble; }
 
   bool operator<(const Integer&) const;
-  bool operator<(long long) const;
-  bool operator<(int32_t aInt) const { return theDecimal < aInt; }
   bool operator<(const Decimal& aDecimal) const { return theDecimal < aDecimal.theDecimal; }
-  bool operator<(double aDouble) const { return theDecimal < aDouble; }
 
   bool operator<=(const Integer&) const;
-  bool operator<=(long long) const;
-  bool operator<=(int32_t aInt) const { return theDecimal <= aInt; }
   bool operator<=(const Decimal& aDecimal) const { return theDecimal <= aDecimal.theDecimal; }
-  bool operator<=(double aDouble) const { return theDecimal <= aDouble; }
 
   bool operator>(const Integer&) const;
-  bool operator>(long long) const;
-  bool operator>(int32_t aInt) const { return theDecimal > aInt; }
   bool operator>(const Decimal& aDecimal) const { return theDecimal > aDecimal.theDecimal; }
-  bool operator>(double aDouble) const { return theDecimal > aDouble; }
 
   bool operator>=(const Integer&) const;
-  bool operator>=(long long) const;
-  bool operator>=(int32_t aInt) const { return theDecimal >= aInt; }
   bool operator>=(const Decimal& aDecimal) const { return theDecimal >= aDecimal.theDecimal; }
-  bool operator>=(double aDouble) const { return theDecimal >= aDouble; }
 
   xqpString toString() const;
 }; // class Decimal

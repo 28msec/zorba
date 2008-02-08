@@ -377,7 +377,7 @@ Item_t BasicItemFactory::createName ( const xqp_string& value )
 
 Item_t BasicItemFactory::createNegativeInteger ( xqp_integer value )
 { 
-  Assert(value < (int32_t)0);
+  Assert(value < xqp_integer::parseInt(0));
   return new NegativeIntegerItemNaive ( value ); 
 }
 
@@ -390,7 +390,7 @@ Item_t BasicItemFactory::createNonNegativeInteger ( xqp_uinteger value )
 
 Item_t BasicItemFactory::createNonPositiveInteger ( xqp_integer value )
 { 
-  Assert(value <= (int32_t)0);
+  Assert(value <= Integer::parseInt(0));
   return new NonPositiveIntegerItemNaive( value );
 }
 
@@ -402,7 +402,7 @@ Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value )
 
 
 Item_t BasicItemFactory::createPositiveInteger ( xqp_uinteger value ) { 
-  Assert(value > (int32_t)0);
+  Assert(value > Integer::parseInt(0));
   return new PositiveIntegerItemNaive( value ); 
 }
 

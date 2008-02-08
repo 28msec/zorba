@@ -21,7 +21,7 @@ bool DynamicContextWrapper::setContextItemAsBigInteger( xqp_integer int_value, V
 			context_item = item_factory->createInteger(int_value);
 			break;
 	case XS_NON_POSITIVE_INTEGER://derived from XS_INTEGER
-			if(int_value > (int32_t)0)
+			if(int_value > Integer::parseInt(0))
 			{
 				ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 				return false;//inappropriate value
@@ -29,7 +29,7 @@ bool DynamicContextWrapper::setContextItemAsBigInteger( xqp_integer int_value, V
 			context_item = item_factory->createNonPositiveInteger(int_value);
 			break;
 	case XS_NEGATIVE_INTEGER://derived from XS_NON_POSITIVE_INTEGER
-			if(int_value >= (int32_t)0)
+			if(int_value >= Integer::parseInt(0))
 			{
 				ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 				return false;//inappropriate value
@@ -58,7 +58,7 @@ bool DynamicContextWrapper::setContextItemAsBigUInteger( xqp_uinteger uint_value
 	switch(type)
 	{
 	case XS_NON_NEGATIVE_INTEGER://derived from XS_INTEGER
-			if(uint_value < (int32_t)0)
+			if(uint_value < Integer::parseInt(0))
 			{
 				ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 				return false;//inappropriate value
@@ -66,7 +66,7 @@ bool DynamicContextWrapper::setContextItemAsBigUInteger( xqp_uinteger uint_value
 			context_item = item_factory->createNonNegativeInteger(uint_value);
 		break;
 	case XS_POSITIVE_INTEGER://derived from XS_NON_NEGATIVE_INTEGER
-			if(uint_value < (int32_t)0)
+			if(uint_value < Integer::parseInt(0))
 			{
 				ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 				return false;//inappropriate value

@@ -95,7 +95,9 @@ StringToCodepointsIterator::nextImpl(PlanState& planState){
   
       while (state->getIterator() < state->getVectSize())
       {
-        resItem = Zorba::getItemFactory()->createInteger( state->getItem( state->getIterator() ) );
+        resItem = Zorba::getItemFactory()->createInteger( 
+          Integer::parseInt(state->getItem( state->getIterator() )) 
+        );
         STACK_PUSH( resItem, state );
         state->setIterator( state->getIterator() + 1 );
       }
@@ -189,12 +191,12 @@ CompareStrIterator::nextImpl(PlanState& planState) {
         if ( n2 != NULL )  {
           n2 = n2->getAtomizationValue();
           res = Zorba::getItemFactory()->createInteger(
-                  (int32_t)n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue()));
+                  Integer::parseInt((int32_t)n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue())));
         }
       }
       else{
         res = Zorba::getItemFactory()->createInteger(
-                (int32_t)n0->getStringValue().compare(n1->getStringValue()));
+                Integer::parseInt((int32_t)n0->getStringValue().compare(n1->getStringValue())));
       }
       STACK_PUSH( res, state );
     }
@@ -530,7 +532,7 @@ StringLengthIterator::nextImpl(PlanState& planState) {
   else
   {
     STACK_PUSH(Zorba::getItemFactory()->createInteger(
-                            (int32_t)0),
+                            Integer::parseInt((int32_t)0)),
                             state);
   }
   STACK_END();

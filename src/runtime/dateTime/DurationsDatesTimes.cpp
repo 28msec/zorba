@@ -111,7 +111,10 @@ FnYearsFromDurationIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDurationValue()->getYears()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDurationValue()->getYears())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -138,7 +141,10 @@ FnMonthsFromDurationIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDurationValue()->getMonths()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDurationValue()->getMonths())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -165,7 +171,10 @@ FnDaysFromDurationIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDurationValue()->getDays()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDurationValue()->getDays())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -192,7 +201,10 @@ FnHoursFromDurationIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDurationValue()->getHours()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDurationValue()->getHours())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -219,7 +231,10 @@ FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDurationValue()->getMinutes()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDurationValue()->getMinutes())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -248,7 +263,7 @@ FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    lBool = Decimal::parse(itemArg->getDurationValue()->getSeconds(), lDecimal);
+    lBool = Decimal::parseNativeDouble(itemArg->getDurationValue()->getSeconds(), lDecimal);
     Assert(lBool);
     STACK_PUSH( Zorba::getItemFactory()->createDecimal(lDecimal), state );
   }
@@ -278,7 +293,8 @@ FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
   {
     itemArg = itemArg->getAtomizationValue();
     STACK_PUSH(
-        Zorba::getItemFactory()->createInteger(itemArg->getDateTimeValue()->getYear()), state );
+        Zorba::getItemFactory()->createInteger(
+          Integer::parseInt(itemArg->getDateTimeValue()->getYear())), state );
   }
   STACK_END();
 }
@@ -305,7 +321,10 @@ FnMonthFromDatetimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDateTimeValue()->getMonth()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDateTimeValue()->getMonth())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -332,7 +351,10 @@ FnDayFromDatetimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDateTimeValue()->getDay()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDateTimeValue()->getDay())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -359,7 +381,10 @@ FnHoursFromDatetimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDateTimeValue()->getHours()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDateTimeValue()->getHours())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -386,7 +411,10 @@ FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDateTimeValue()->getMinutes()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDateTimeValue()->getMinutes())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -415,7 +443,7 @@ FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    lBool = Decimal::parse(itemArg->getDateTimeValue()->getSeconds(), lDecimal);
+    lBool = Decimal::parseNativeDouble(itemArg->getDateTimeValue()->getSeconds(), lDecimal);
     Assert(lBool);
     STACK_PUSH( Zorba::getItemFactory()->createDecimal(lDecimal), state );
   }
@@ -475,7 +503,10 @@ FnYearFromDateIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDateValue()->getYear()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDateValue()->getYear())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -502,7 +533,10 @@ FnMonthFromDateIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDateValue()->getMonth()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDateValue()->getMonth())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -529,7 +563,10 @@ FnDayFromDateIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getDateValue()->getDay()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getDateValue()->getDay())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -587,7 +624,10 @@ FnHoursFromTimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getTimeValue()->getHours()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getTimeValue()->getHours())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -614,7 +654,10 @@ FnMinutesFromTimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createInteger(itemArg->getTimeValue()->getMinutes()), state );
+    STACK_PUSH( Zorba::getItemFactory()->createInteger(
+      Integer::parseInt(itemArg->getTimeValue()->getMinutes())), 
+      state 
+    );
   }
   STACK_END();
 }
@@ -644,7 +687,7 @@ FnSecondsFromTimeIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
-    lBool = Decimal::parse(itemArg->getTimeValue()->getSeconds(), lDecimal);
+    lBool = Decimal::parseNativeDouble(itemArg->getTimeValue()->getSeconds(), lDecimal);
     Assert(lBool);
     STACK_PUSH( Zorba::getItemFactory()->createDecimal(lDecimal), state );
   }

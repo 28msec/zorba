@@ -8,6 +8,7 @@
 #include "util/datetime/duration.h"
 #include "util/datetime/parse.h"
 #include "util/numconversions.h"
+#include "util/Assert.h"
 
 #include <iostream>
 using namespace std;
@@ -104,13 +105,21 @@ DurationBase_t YearMonthDuration::operator-(const DurationBase& db) const
 
 DurationBase_t YearMonthDuration::operator*(const Double value) const
 {
-  YearMonthDuration* ym = new YearMonthDuration( atol ((months * value).round().toString().c_str()) );
+  xqp_double lDouble = xqp_double::parseInt(months) * value;
+  xqp_long lLong;
+  bool b = NumConversions::doubleToLongLong(lDouble.round(), lLong);
+  ZORBA_ASSERT(b);
+  YearMonthDuration* ym = new YearMonthDuration( lLong );
   return ym;
 }
 
 DurationBase_t YearMonthDuration::operator/(const Double value) const
 {
-  YearMonthDuration* ym = new YearMonthDuration(atol ((months / value).round().toString().c_str()));
+  xqp_double lDouble = xqp_double::parseInt(months) / value;
+  xqp_long lLong;
+  bool b = NumConversions::doubleToLongLong(lDouble.round(), lLong);
+  ZORBA_ASSERT(b);
+  YearMonthDuration* ym = new YearMonthDuration(lLong);
   return ym;
 }
 
@@ -284,15 +293,15 @@ xqpString DayTimeDuration::toString() const
   result += "T";
 
   if ( timeDuration.hours() != 0)
-    result += NumConversions::integerToStr ( timeDuration.hours() ) + "H";
+    result += NumConversions::intToStr ( timeDuration.hours() ) + "H";
 
   if ( timeDuration.minutes() != 0 )
-    result += NumConversions::integerToStr ( timeDuration.minutes() ) + "M";
+    result += NumConversions::intToStr ( timeDuration.minutes() ) + "M";
 
   if ( timeDuration.seconds() != 0 || timeDuration.fractional_seconds() != 0  ||
        (timeDuration.hours() == 0 && timeDuration.minutes() == 0 && timeDuration.seconds() == 0 && timeDuration.fractional_seconds() == 0))
   {
-    result += NumConversions::integerToStr ( timeDuration.seconds() );
+    result += NumConversions::intToStr ( timeDuration.seconds() );
 
     if ( timeDuration.fractional_seconds() != 0 )
       result += "." + NumConversions::longToStr ( timeDuration.fractional_seconds() );
@@ -358,8 +367,10 @@ DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
 DurationBase_t DayTimeDuration::operator*(const Double value) const
 {
   long resSeconds = days * NO_HOURS_IN_DAY * NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE + timeDuration.total_seconds();
-  resSeconds = atol (( resSeconds * value).round().toString().c_str());
-
+  xqp_double lDouble = xqp_double::parseLong(resSeconds) * value;
+  bool b = NumConversions::doubleToLong(lDouble.round(), resSeconds);
+  ZORBA_ASSERT(b);
+  
   //TODO Should normalization be part of the constructor?
   DayTimeDuration* dt = new DayTimeDuration(
       is_negative,
@@ -375,7 +386,9 @@ DurationBase_t DayTimeDuration::operator*(const Double value) const
 DurationBase_t DayTimeDuration::operator/(const Double value) const
 {
   long resSeconds = days * NO_SEC_IN_DAY + timeDuration.total_seconds();
-  resSeconds = atol (( resSeconds / value).round().toString().c_str());
+  xqp_double lDouble = xqp_double::parseLong(resSeconds) / value;
+  bool b = NumConversions::doubleToLong(lDouble.round(), resSeconds);
+  ZORBA_ASSERT(b);
 
   //TODO Should normalization be part of the constructor?
   DayTimeDuration* dt = new DayTimeDuration(
@@ -391,12 +404,14 @@ DurationBase_t DayTimeDuration::operator/(const Double value) const
 
 Decimal DayTimeDuration::operator/(const DurationBase& db) const
 {
-  Decimal op1 = Decimal::parseLong(days * NO_SEC_IN_DAY + timeDuration.total_seconds()) + Decimal::parseLong(timeDuration.fractional_seconds());
+  long lLong = days * NO_SEC_IN_DAY + timeDuration.total_seconds()+ timeDuration.fractional_seconds();
+  Decimal op1 = Decimal::parseLong(lLong);
   if( is_negative )
     op1 = -op1;
 
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
-  Decimal op2 = Decimal::parseLong(dtd.days * NO_SEC_IN_DAY + dtd.timeDuration.total_seconds()) + Decimal::parseLong(dtd.timeDuration.fractional_seconds());
+  long lLong2 = dtd.days * NO_SEC_IN_DAY + dtd.timeDuration.total_seconds() + dtd.timeDuration.fractional_seconds();
+  Decimal op2 = Decimal::parseLong(lLong2);
   if( is_negative )
     op2 = -op2;
 
@@ -729,7 +744,7 @@ DurationBase_t Duration::operator/(const Double value) const
 
 Decimal Duration::operator/(const DurationBase& db) const
 {
-  return (int32_t)0;
+  return Decimal::parseInt(0);
 }
 
 int32_t Duration::getYears() const

@@ -30,10 +30,13 @@ public:
   static xqpString intToStr(xqp_int aInt);
   static bool strToUInt(const xqpString& aStr, xqp_uint& aUInt);
   static xqpString uintToStr(xqp_uint aUInt);
-  static bool strToLong(const xqpString& aStr, xqp_long& aLong);
-  static xqpString longToStr(xqp_long aLong);
-  static bool strToULong(const xqpString& aStr, xqp_ulong& aULong);
-  static xqpString ulongToStr(xqp_ulong aULong);
+  static bool strToLongLong(const xqpString& aStr, xqp_long& aLong);
+  static xqpString longLongToStr(xqp_long aLong);
+  static bool strToLong(const xqpString& aStr, long&);
+  static xqpString longToStr(long aLong);
+  static bool strToULongLong(const xqpString& aStr, xqp_ulong& aULong);
+  static xqpString ulongLongToStr(xqp_ulong aULong);
+  static xqpString ulongToStr(unsigned long);
   static bool strToShort(const xqpString& aStr, xqp_short& aShort);
   static xqpString shortToStr(xqp_short aShort);
   static bool strToUShort(const xqpString& aStr, xqp_ushort& aUShort);
@@ -51,16 +54,14 @@ public:
   static xqpString byteToStr(xqp_byte aByte);
   static bool strToUByte(const xqpString& aStr, xqp_ubyte& aUByte);
   static xqpString ubyteToStr(xqp_ubyte aUByte);
-  static bool isNaN(xqp_double);
-  static bool isNaN(xqp_float);
-  static bool isPosOrNegInf(xqp_double);
-  static bool isPosOrNegInf(xqp_float);
   static xqpString sizetToStr(size_t);
 
   /********************************************************************************
    * Numeric to Numeric Conversions
    * *****************************************************************************/
   static bool doubleToInt(const xqp_double&, xqp_int&);
+  static bool doubleToLongLong(const xqp_double&, xqp_long&);
+  static bool doubleToLong(const xqp_double&, long&);
 }; /* class NumConversions */
 
 } /* namespace xqp */

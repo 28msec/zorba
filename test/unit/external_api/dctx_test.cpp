@@ -200,36 +200,36 @@ int test_api_dynamic_context(const char *result_file_name)
 	}
 */
 
-	assert(!dctx1->setVariableAsBigInteger( "..#$%", (int32_t)0, DynamicQueryContext::XS_INTEGER));
-  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (int32_t)0, DynamicQueryContext::XS_INTEGER));
-  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (long long)-1000000, DynamicQueryContext::XS_INTEGER));
+	assert(!dctx1->setVariableAsBigInteger( "..#$%", Integer::parseInt((int32_t)0), DynamicQueryContext::XS_INTEGER));
+  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", Integer::parseInt((int32_t)0), DynamicQueryContext::XS_INTEGER));
+  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", Integer::parseLongLong((long long)-1000000), DynamicQueryContext::XS_INTEGER));
 //  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", "12345678901234567890123456789012345678901234567890", DynamicQueryContext::XS_INTEGER));
 //  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (double)-1000000.4343, DynamicQueryContext::XS_INTEGER));
 
-	assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (int32_t)0, DynamicQueryContext::XS_NON_POSITIVE_INTEGER));
-  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (long long)-1000000, DynamicQueryContext::XS_NON_POSITIVE_INTEGER));
+	assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", Integer::parseInt((int32_t)0), DynamicQueryContext::XS_NON_POSITIVE_INTEGER));
+  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", Integer::parseLongLong((long long)-1000000), DynamicQueryContext::XS_NON_POSITIVE_INTEGER));
 //  assert(!dctx1->setVariableAsBigInteger( "external_vars:bigx", "12345678901234567890123456789012345678901234567890", DynamicQueryContext::XS_NON_POSITIVE_INTEGER));
 //  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (double)-1000000.4343, DynamicQueryContext::XS_NON_POSITIVE_INTEGER));
 
-  assert(!dctx1->setVariableAsBigInteger( "external_vars:bigx", (int32_t)0, DynamicQueryContext::XS_NEGATIVE_INTEGER));
-  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (long long)-1000000, DynamicQueryContext::XS_NEGATIVE_INTEGER));
+  assert(!dctx1->setVariableAsBigInteger( "external_vars:bigx", Integer::parseInt((int32_t)0), DynamicQueryContext::XS_NEGATIVE_INTEGER));
+  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", Integer::parseLongLong((long long)-1000000), DynamicQueryContext::XS_NEGATIVE_INTEGER));
 //  assert(!dctx1->setVariableAsBigInteger( "external_vars:bigx", "12345678901234567890123456789012345678901234567890", DynamicQueryContext::XS_NEGATIVE_INTEGER));
 //  assert(dctx1->setVariableAsBigInteger( "external_vars:bigx", (double)-1000000.4343, DynamicQueryContext::XS_NEGATIVE_INTEGER));
 	
-	assert(!dctx1->setVariableAsBigUInteger( "..#$%", (int32_t)0));
-  assert(dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (int32_t)0, DynamicQueryContext::XS_NON_NEGATIVE_INTEGER));
-  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (long long)-1000000, DynamicQueryContext::XS_NON_NEGATIVE_INTEGER));
+	assert(!dctx1->setVariableAsBigUInteger( "..#$%", Integer::parseInt(0)));
+  assert(dctx1->setVariableAsBigUInteger( "external_vars:ubigx", Integer::parseInt(0), DynamicQueryContext::XS_NON_NEGATIVE_INTEGER));
+  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", Integer::parseLongLong((long long)-1000000), DynamicQueryContext::XS_NON_NEGATIVE_INTEGER));
 //  assert(dctx1->setVariableAsBigUInteger( "external_vars:ubigx", "12345678901234567890123456789012345678901234567890", DynamicQueryContext::XS_NON_NEGATIVE_INTEGER));
 //  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (double)-1000000.4343, DynamicQueryContext::XS_NON_NEGATIVE_INTEGER));
 
-  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (int32_t)0, DynamicQueryContext::XS_POSITIVE_INTEGER));
-  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (long long)-1000000, DynamicQueryContext::XS_POSITIVE_INTEGER));
+  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", Integer::parseInt(0), DynamicQueryContext::XS_POSITIVE_INTEGER));
+  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", Integer::parseLongLong((long long)-1000000), DynamicQueryContext::XS_POSITIVE_INTEGER));
 //  assert(dctx1->setVariableAsBigUInteger( "external_vars:ubigx", "12345678901234567890123456789012345678901234567890", DynamicQueryContext::XS_POSITIVE_INTEGER));
 //  assert(!dctx1->setVariableAsBigUInteger( "external_vars:ubigx", (double)-1000000.4343, DynamicQueryContext::XS_POSITIVE_INTEGER));
 
-	assert(!dctx1->setVariableAsDecimal( "..#$%", (int32_t)0));
-  assert(dctx1->setVariableAsDecimal( "external_vars:decx", (int32_t)0));
-  assert(dctx1->setVariableAsDecimal( "external_vars:decx", (long long)-1000000));
+	assert(!dctx1->setVariableAsDecimal( "..#$%", Decimal::parseInt(0)));
+  assert(dctx1->setVariableAsDecimal( "external_vars:decx", Decimal::parseInt(0)));
+  assert(dctx1->setVariableAsDecimal( "external_vars:decx", Decimal::parseLongLong((long long)-1000000)));
 //  assert(dctx1->setVariableAsDecimal( "external_vars:decx", "12345678901234567890123456789012345678901234567890.1314"));
 //  assert(dctx1->setVariableAsDecimal( "external_vars:decx", (double)-1000000.4343));
 
@@ -333,15 +333,15 @@ int test_api_dynamic_context(const char *result_file_name)
 
 
 
-  assert(!dctx1->setVariableAsDouble( "a:b:c", 0));
-  assert(dctx1->setVariableAsDouble( "external_vars:dblx", 0.0));
-  assert(dctx1->setVariableAsDouble( "external_vars:dblx", -1000000.0));
-  assert(dctx1->setVariableAsDouble( "external_vars:dblx", 12134.32948075));
+  assert(!dctx1->setVariableAsDouble( "a:b:c", xqp_double::parseInt(0)));
+  assert(dctx1->setVariableAsDouble( "external_vars:dblx", xqp_double::parseFloatType(0.0)));
+  assert(dctx1->setVariableAsDouble( "external_vars:dblx", xqp_double::parseFloatType(-1000000.0)));
+  assert(dctx1->setVariableAsDouble( "external_vars:dblx", xqp_double::parseFloatType(12134.32948075)));
 
-  assert(!dctx1->setVariableAsFloat( "a:b:c", 0));
-	assert(dctx1->setVariableAsFloat( "external_vars:fltx", 0.0));
-	assert(dctx1->setVariableAsFloat( "external_vars:fltx", -1000000.0f));
-	assert(dctx1->setVariableAsFloat( "external_vars:fltx", 12134.329f));
+  assert(!dctx1->setVariableAsFloat( "a:b:c", xqp_float::parseInt(0)));
+	assert(dctx1->setVariableAsFloat( "external_vars:fltx", xqp_float::parseFloatType(0.0)));
+	assert(dctx1->setVariableAsFloat( "external_vars:fltx", xqp_float::parseFloatType(-1000000.0f)));
+	assert(dctx1->setVariableAsFloat( "external_vars:fltx", xqp_float::parseFloatType(12134.329f)));
 
   assert(!dctx1->setVariableAsBool( "a:b:c", 0));
   assert(dctx1->setVariableAsBool( "external_vars:boolx", true));

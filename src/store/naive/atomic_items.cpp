@@ -218,7 +218,7 @@ bool DecimalItemNaive::equals ( Item_t item ) const
 
 Item_t DecimalItemNaive::getEBV() const
 {
-  bool b = ( theValue != (int32_t)0 );
+  bool b = ( theValue != xqp_decimal::parseInt(0) );
   return CREATE_BOOLITEM(b);
 }
 
@@ -241,12 +241,12 @@ bool DecimalItemNaive::isNaN() const {
 ********************************************************************************/
 xqp_integer IntItemNaive::getIntegerValue() const
 {
-  return static_cast<xqp_integer> ( theValue );
+  return Integer::parseInt( theValue );
 }
 
 xqp_decimal IntItemNaive::getDecimalValue() const
 {
-  return static_cast<xqp_decimal> ( theValue );
+  return Decimal::parseInt( theValue );
 }
 
 xqp_long IntItemNaive::getLongValue() const {
@@ -284,7 +284,7 @@ Item_t IntItemNaive::getEBV() const
 ********************************************************************************/
 xqp_decimal IntegerItemNaive::getDecimalValue() const
 {
-  return static_cast<xqp_decimal> ( theValue );
+  return Decimal::parseInteger ( theValue );
 }
 
 Item_t IntegerItemNaive::getType() const
@@ -299,7 +299,7 @@ bool IntegerItemNaive::equals ( Item_t item ) const
 
 Item_t IntegerItemNaive::getEBV() const
 {
-  bool b = ( theValue != (int32_t)0 );
+  bool b = ( theValue != xqp_integer::parseInt(0) );
   return CREATE_BOOLITEM( b );
 }
 
@@ -347,11 +347,11 @@ xqp_string DoubleItemNaive::show() const
 }
 
 bool DoubleItemNaive::isNaN() const {
-  return NumConversions::isNaN(theValue);
+  return theValue.isNaN();
 }
 
 bool DoubleItemNaive::isPosOrNegInf() const {
-  return NumConversions::isPosOrNegInf(theValue);
+  return theValue.isPosInf() || theValue.isNegInf();
 }
 
   
@@ -390,11 +390,11 @@ xqp_string FloatItemNaive::show() const
 }
 
 bool FloatItemNaive::isNaN() const {
-  return NumConversions::isNaN(theValue);
+  return theValue.isNaN();
 }
 
 bool FloatItemNaive::isPosOrNegInf() const {
-  return NumConversions::isPosOrNegInf(theValue);;
+  return theValue.isPosInf() || theValue.isNegInf();
 }
 
 
@@ -433,7 +433,7 @@ xqp_string BooleanItemNaive::show() const
   class NonPositiveIntegerItemNaive
 ********************************************************************************/
 xqp_decimal NonPositiveIntegerItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal> ( theValue );
+  return Decimal::parseInteger ( theValue );
 }
 
 Item_t NonPositiveIntegerItemNaive::getType() const {
@@ -445,7 +445,7 @@ bool NonPositiveIntegerItemNaive::equals(Item_t aItem) const {
 }
 
 Item_t NonPositiveIntegerItemNaive::getEBV() const {
-  bool b = (theValue != (int32_t)0);
+  bool b = (theValue != xqp_integer::parseInt(0));
   return CREATE_BOOLITEM(b);
 }
 
@@ -461,7 +461,7 @@ xqp_string NonPositiveIntegerItemNaive::show() const {
   class NonPositiveIntegerItemNaive
 ********************************************************************************/
 xqp_decimal NegativeIntegerItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal> ( theValue );
+  return Decimal::parseInteger ( theValue );
 }
 
 Item_t NegativeIntegerItemNaive::getType() const {
@@ -473,7 +473,7 @@ bool NegativeIntegerItemNaive::equals(Item_t aItem) const {
 }
 
 Item_t NegativeIntegerItemNaive::getEBV() const {
-  bool b = (theValue != (int32_t)0);
+  bool b = (theValue != xqp_integer::parseInt(0));
   return CREATE_BOOLITEM(b);
 }
 
@@ -489,11 +489,11 @@ xqp_string NegativeIntegerItemNaive::show() const {
   class LongItemNaive
 ********************************************************************************/
 xqp_integer LongItemNaive::getIntegerValue() const {
-  return theValue;
+  return Integer::parseInt(theValue);
 }
 
 xqp_decimal LongItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal>(theValue);
+  return Decimal::parseLong(theValue);
 }
 
 Item_t LongItemNaive::getType() const {
@@ -510,7 +510,7 @@ Item_t LongItemNaive::getEBV() const {
 }
 
 xqp_string LongItemNaive::getStringValue() const {
-  return NumConversions::longToStr(theValue);
+  return NumConversions::longLongToStr(theValue);
 }
 
 xqp_string LongItemNaive::show() const {
@@ -521,11 +521,11 @@ xqp_string LongItemNaive::show() const {
   class ShortItemNaive
 ********************************************************************************/
 xqp_integer ShortItemNaive::getIntegerValue() const {
-  return static_cast<xqp_integer>((int32_t)theValue); 
+  return Integer::parseInt((int32_t)theValue); 
 }
 
 xqp_decimal ShortItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal>((int32_t)theValue);
+  return Decimal::parseInt((int32_t)theValue);
 }
 
 xqp_long ShortItemNaive::getLongValue() const {
@@ -561,11 +561,11 @@ xqp_string ShortItemNaive::show() const {
   class ByteItemNaive
 ********************************************************************************/
 xqp_integer ByteItemNaive::getIntegerValue() const {
-  return static_cast<xqp_integer>((int32_t)theValue); 
+  return Integer::parseInt((int32_t)theValue); 
 }
 
 xqp_decimal ByteItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal>((int32_t)theValue);
+  return Decimal::parseInt((int32_t)theValue);
 }
 
 xqp_long ByteItemNaive::getLongValue() const {
@@ -606,11 +606,11 @@ xqp_string ByteItemNaive::show() const {
   class NonNegativeINtegerItemNaive
 ********************************************************************************/
 xqp_integer NonNegativeIntegerItemNaive::getIntegerValue() const {
- return static_cast<xqp_integer>(theValue); 
+ return theValue; 
 }
 
 xqp_decimal NonNegativeIntegerItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal>(theValue);
+  return Decimal::parseInteger(theValue);
 }
 
 Item_t NonNegativeIntegerItemNaive::getType() const {
@@ -622,7 +622,7 @@ bool NonNegativeIntegerItemNaive::equals(Item_t aItem) const {
 }
 
 Item_t NonNegativeIntegerItemNaive::getEBV() const {
-  bool b = (theValue != (int32_t)0);
+  bool b = (theValue != xqp_integer::parseInt(0));
   return CREATE_BOOLITEM(b);
 }
 
@@ -639,15 +639,15 @@ xqp_string NonNegativeIntegerItemNaive::show() const {
   class UnsignedLongItemNaive
 ********************************************************************************/
 xqp_integer UnsignedLongItemNaive::getIntegerValue() const {
-  return theValue;
+  return Integer::parseInt(theValue);
 }
 
 xqp_decimal UnsignedLongItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal>(theValue);
+  return Decimal::parseULong(theValue);
 }
 
 xqp_uinteger UnsignedLongItemNaive::getUnsignedIntegerValue() const {
-  return theValue;
+  return Integer::parseInt(theValue);
 }
 
 Item_t UnsignedLongItemNaive::getType() const {
@@ -664,7 +664,7 @@ Item_t UnsignedLongItemNaive::getEBV() const {
 }
 
 xqp_string UnsignedLongItemNaive::getStringValue() const {
-  return NumConversions::ulongToStr(theValue);
+  return NumConversions::ulongLongToStr(theValue);
 }
 
 xqp_string UnsignedLongItemNaive::show() const {
@@ -675,15 +675,15 @@ xqp_string UnsignedLongItemNaive::show() const {
   class UnsignedIntItemNaive
 ********************************************************************************/
 xqp_integer UnsignedIntItemNaive::getIntegerValue() const {
-  return static_cast<xqp_integer>(theValue);
+  return Integer::parseInt(theValue);
 }
 
 xqp_decimal UnsignedIntItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal>(theValue);
+  return Decimal::parseUInt(theValue);
 }
 
 xqp_uinteger UnsignedIntItemNaive::getUnsignedIntegerValue() const {
-  return static_cast<xqp_uinteger>(theValue);
+  return Integer::parseInt(theValue);
 }
 
 xqp_ulong UnsignedIntItemNaive::getUnsignedLongValue() const {
@@ -716,15 +716,15 @@ xqp_string UnsignedIntItemNaive::show() const {
   class UnsignedShortItemNaive
 ********************************************************************************/
 xqp_integer UnsignedShortItemNaive::getIntegerValue() const {
-  return static_cast<xqp_integer>((uint32_t)theValue);
+  return Integer::parseInt((uint32_t)theValue);
 }
 
 xqp_decimal UnsignedShortItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal>((uint32_t)theValue);
+  return Decimal::parseInt((uint32_t)theValue);
 }
 
 xqp_uinteger UnsignedShortItemNaive::getUnsignedIntegerValue() const {
-  return static_cast<xqp_uinteger>((uint32_t)theValue);
+  return Integer::parseInt((uint32_t)theValue);
 }
 
 xqp_ulong UnsignedShortItemNaive::getUnsignedLongValue() const {
@@ -760,15 +760,15 @@ xqp_string UnsignedShortItemNaive::show() const {
   class UnsignedByteItemNaive
 ********************************************************************************/
 xqp_integer UnsignedByteItemNaive::getIntegerValue() const {
-  return static_cast<xqp_integer>((uint32_t)theValue);
+  return Integer::parseInt((uint32_t)theValue);
 }
 
 xqp_decimal UnsignedByteItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal>((uint32_t)theValue);
+  return Decimal::parseUInt((uint32_t)theValue);
 }
 
 xqp_uinteger UnsignedByteItemNaive::getUnsignedIntegerValue() const {
-  return static_cast<xqp_uinteger>((uint32_t)theValue);
+  return Integer::parseInt(theValue);
 }
 
 xqp_ulong UnsignedByteItemNaive::getUnsignedLongValue() const {
@@ -812,7 +812,7 @@ xqp_integer PositiveIntegerItemNaive::getIntegerValue() const {
 }
 
 xqp_decimal PositiveIntegerItemNaive::getDecimalValue() const {
-  return static_cast<xqp_decimal>(theValue);
+  return Decimal::parseInteger(theValue);
 }
 
 Item_t PositiveIntegerItemNaive::getType() const {
@@ -824,7 +824,7 @@ bool PositiveIntegerItemNaive::equals(Item_t aItem) const {
 }
 
 Item_t PositiveIntegerItemNaive::getEBV() const {
-  bool b = (theValue != (int32_t)0);
+  bool b = (theValue != xqp_integer::parseInt(0));
   return CREATE_BOOLITEM(b);
 }
 

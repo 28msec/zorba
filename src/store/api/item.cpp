@@ -69,7 +69,7 @@ bool Item::getBooleanValue() const
 xqp_decimal Item::getDecimalValue() const
 {
   ZORBA_ASSERT(false);
-  return (int32_t)0;
+  return Decimal::parseInt(0);
 }
 
 /** Accessor for xs:int
@@ -86,7 +86,7 @@ xqp_int Item::getIntValue() const
 xqp_integer Item::getIntegerValue() const
 {
   ZORBA_ASSERT(false);
-  return (int32_t)0;
+  return Integer::parseInt((int32_t)0);
 }
 
 /** Accessor for xs:long
@@ -110,7 +110,7 @@ xqp_short Item::getShortValue() const
 xqp_uinteger Item::getUnsignedIntegerValue() const
 {
   ZORBA_ASSERT(false);
-  return (int32_t)0;
+  return Integer::parseInt(0);
 }
 
 /** Accessor for xs:unsignedChar, xs:unsignedByte
@@ -148,7 +148,7 @@ xqp_dateTime Item::getDateTimeValue() const
 xqp_double Item::getDoubleValue() const
 {
   ZORBA_ASSERT(false);
-  return 0;
+  return xqp_double::parseInt(0);
 }
 
 /** Accessor for xs:duration
@@ -188,7 +188,7 @@ std::vector<xqp_string> Item::getStringVectorValue() const
 xqp_float Item::getFloatValue() const
 {
   ZORBA_ASSERT(false);
-  return 0;
+  return xqp_float::parseInt(0);
 }
 
 /** Accessor for xs:gDay
