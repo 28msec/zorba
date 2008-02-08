@@ -340,7 +340,12 @@ bool serializer::emitter::emit_bindings(Item* item)
     
   for (unsigned long i = 0; i < nsBindings.size(); i++)
     if (!haveBinding(nsBindings[i]))
-      tr << " xmlns:" <<  nsBindings[i].first << "=\"" << nsBindings[i].second << "\"";
+    {
+      tr << " xmlns";
+      if (nsBindings[i].first.size() > 0)
+        tr << ":" <<  nsBindings[i].first;
+      tr << "=\"" << nsBindings[i].second << "\"";
+    }
 
   if (nsBindings.size() > 0)
   {
