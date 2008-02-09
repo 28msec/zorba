@@ -324,10 +324,9 @@ void ft_contains_expr::accept(
 
 instanceof_expr::instanceof_expr(yy::location const& loc,
                                  rchandle<expr> _expr_h,
-                                 TypeSystem::xqtref_t _type,
-                                 bool forced_)
+                                 TypeSystem::xqtref_t _type)
 :
-  expr(loc), expr_h(_expr_h), type (_type), forced (forced_)
+  expr(loc), expr_h(_expr_h), type (_type)
 {
 }
 
@@ -350,11 +349,13 @@ void instanceof_expr::accept(
 treat_expr::treat_expr(
   yy::location const& loc,
   rchandle<expr> _expr_h,
-  TypeSystem::xqtref_t _type)
+  TypeSystem::xqtref_t _type,
+  enum ZorbaError::ErrorCodes err_)
 :
   expr(loc),
   expr_h(_expr_h),
-  type(_type)
+  type(_type),
+  err (err_)
 {
 }
 

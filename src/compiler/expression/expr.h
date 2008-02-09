@@ -609,9 +609,7 @@ protected:
 public:
 	instanceof_expr (yy::location const&,
                    expr_t,
-                   TypeSystem::xqtref_t,
-                   bool forced_ = false);
-
+                   TypeSystem::xqtref_t);
 	~instanceof_expr();
 
 public:
@@ -636,23 +634,25 @@ class treat_expr : public expr
 protected:
 	expr_t expr_h;
 	TypeSystem::xqtref_t type;
+  enum ZorbaError::ErrorCodes err;
 
 public:
 	treat_expr(
 		yy::location const&,
 		expr_t,
-		TypeSystem::xqtref_t);
+		TypeSystem::xqtref_t,
+    enum ZorbaError::ErrorCodes);
 
 	~treat_expr();
 
 public:
 	expr_t get_expr() const { return expr_h; }
 	TypeSystem::xqtref_t get_type() const { return type; }
+  enum ZorbaError::ErrorCodes get_err () { return err; }
 
 public:
 	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
-
 };
 
 

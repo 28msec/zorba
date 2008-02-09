@@ -473,7 +473,7 @@ void end_visit(instanceof_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t p = pop_itstack ();
-  itstack.push (new InstanceOfIterator (v.get_loc (), p, v.get_type (), v.isForced ()));
+  itstack.push (new InstanceOfIterator (v.get_loc (), p, v.get_type ()));
 }
 
 bool begin_visit(treat_expr& v)
@@ -485,7 +485,8 @@ bool begin_visit(treat_expr& v)
 void end_visit(treat_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  ZORBA_ASSERT (false);
+  PlanIter_t p = pop_itstack ();
+  itstack.push (new TreatIterator (v.get_loc (), p, v.get_type (), v.get_err ()));
 }
 
 bool begin_visit(castable_expr& v)

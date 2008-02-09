@@ -29,13 +29,11 @@ class InstanceOfIterator : public UnaryBaseIterator<InstanceOfIterator, PlanIter
 
 private:
   TypeSystem::xqtref_t theSequenceType;
-  bool mustBeInstance;  // raise XDPY0050 if not castable
 
 public:
   InstanceOfIterator(yy::location loc, 
                      PlanIter_t& aTreatExpr, 
-                     TypeSystem::xqtref_t aSequenceType,
-                     bool aMustBeInstance = false);
+                     TypeSystem::xqtref_t aSequenceType);
  
   ~InstanceOfIterator();
   
@@ -97,6 +95,23 @@ private:
 
 public:
   PromoteIterator(const yy::location&, PlanIter_t&, const TypeSystem::xqtref_t& aPromoteType);
+  Item_t nextImpl(PlanState& aPlanState);
+  virtual void accept(PlanIterVisitor&) const;
+};
+
+/**
+ * Iterator which tries to promote an item to the passed target type. If it is not possible,
+ * a type error is thrown.
+ **/
+class TreatIterator : public UnaryBaseIterator<TreatIterator, PlanIteratorState> {
+  friend class PrinterVisitor;
+private:
+  TypeSystem::xqtref_t theTreatType;
+  TypeSystem::quantifier_t theQuantifier;
+  ZorbaError::ErrorCodes theErrorCode;
+
+public:
+  TreatIterator(const yy::location&, PlanIter_t&, const TypeSystem::xqtref_t& aTreatType, enum ZorbaError::ErrorCodes);
   Item_t nextImpl(PlanState& aPlanState);
   virtual void accept(PlanIterVisitor&) const;
 };

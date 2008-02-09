@@ -142,6 +142,9 @@ public:
   virtual void beginVisit ( const InstanceOfIterator& ) ;
   virtual void endVisit ( const InstanceOfIterator& ) ;       
   
+  virtual void beginVisit ( const TreatIterator& ) ;
+  virtual void endVisit ( const TreatIterator& ) ;       
+  
   virtual void beginVisit ( const ArithmeticIterator<AddOperations>& ) ;
   virtual void beginVisit ( const ArithmeticIterator<SubtractOperations>& ) ;
   virtual void beginVisit ( const ArithmeticIterator<MultiplyOperations>& ) ;

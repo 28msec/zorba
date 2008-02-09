@@ -3581,11 +3581,7 @@ void *begin_visit(const TreatExpr& v)
 void end_visit(const TreatExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  
-  yy::location loc = v.get_location();
-  var_expr_t x = tempvar (v.get_location (), var_expr::let_var);
-  expr_t cond = new instanceof_expr(loc, &*x, pop_tstack(), true);
-  nodestack.push (&*wrap_in_let_flwor (pop_nodestack (), x, new if_expr (loc, cond, &*x, &*x)));
+  nodestack.push (new treat_expr (v.get_location (), pop_nodestack (), pop_tstack (), ZorbaError::XPDY0050));
 }
 
 void *begin_visit(const TypeswitchExpr& v)

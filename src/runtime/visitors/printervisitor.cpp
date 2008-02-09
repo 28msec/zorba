@@ -378,6 +378,14 @@ namespace xqp {
     thePrinter.endIter();
   }
 
+  void PrinterVisitor::beginVisit ( const TreatIterator& a ) {
+    thePrinter.startIter("InstanceOfIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const TreatIterator& a ) {
+    thePrinter.endIter();
+  }
+
   void PrinterVisitor::beginVisit ( const ArithmeticIterator<AddOperations>& a ) {
     thePrinter.startIter("ArithmeticIterator_AddOperations");
     printCommons( &a );

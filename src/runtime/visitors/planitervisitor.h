@@ -45,6 +45,7 @@ namespace xqp
   class PrecedingAxisIterator;
   class FollowingAxisIterator;
   class InstanceOfIterator;
+  class TreatIterator;
   class AddOperations;
   template <class AddOperations> class ArithmeticIterator;
   class SubtractOperations;
@@ -286,6 +287,9 @@ namespace xqp
 
       virtual void beginVisit ( const InstanceOfIterator& ) = 0;
       virtual void endVisit ( const InstanceOfIterator& ) = 0;
+       
+      virtual void beginVisit ( const TreatIterator& ) = 0;
+      virtual void endVisit ( const TreatIterator& ) = 0;
        
       virtual void beginVisit ( const ArithmeticIterator<AddOperations>& ) = 0;
       virtual void beginVisit ( const ArithmeticIterator<SubtractOperations>& ) = 0;
