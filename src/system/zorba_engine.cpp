@@ -65,10 +65,6 @@ ZorbaSingleThread_t ZorbaSingleThread::getInstance()
 
 ZorbaSingleThread::~ZorbaSingleThread()
 {
-  if (globalZorbaEngine)
-  {
-    GlobalEnvironment::destroy();
-  }
 }
 
 Zorba* ZORBA_FOR_CURRENT_THREAD()
