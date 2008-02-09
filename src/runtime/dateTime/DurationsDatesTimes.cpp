@@ -103,6 +103,7 @@ Item_t
 FnYearsFromDurationIterator::nextImpl(PlanState& planState)
 {
   Item_t itemArg;
+  int32_t lYears;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -111,8 +112,9 @@ FnYearsFromDurationIterator::nextImpl(PlanState& planState)
   if ( itemArg != NULL )
   {
     itemArg = itemArg->getAtomizationValue();
+    lYears = itemArg->getDurationValue()->getYears();
     STACK_PUSH( Zorba::getItemFactory()->createInteger(
-      Integer::parseInt(itemArg->getDurationValue()->getYears())), 
+      Integer::parseInt(lYears)), 
       state 
     );
   }

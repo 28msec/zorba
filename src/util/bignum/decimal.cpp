@@ -110,14 +110,14 @@ Decimal Decimal::parseUInt(uint32_t aUInt) {
 }
 
 Decimal Decimal::parseLongLong(long long aLong) {
-  xqpString lStrRep = NumConversions::longToStr(aLong);
+  xqpString lStrRep = NumConversions::longLongToStr(aLong);
   Decimal lDecimal;
   lDecimal.theDecimal = lStrRep.c_str();
   return lDecimal;
 }
 
 Decimal Decimal::parseULongLong(unsigned long long aULong) {
-  xqpString lStrRep = NumConversions::ulongToStr(aULong);
+  xqpString lStrRep = NumConversions::ulongLongToStr(aULong);
   Decimal lDecimal;
   lDecimal.theDecimal = lStrRep.c_str();
   return lDecimal;

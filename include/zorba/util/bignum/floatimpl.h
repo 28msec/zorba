@@ -194,6 +194,7 @@ public:
 
   bool operator>=(const FloatImpl& aFloatImpl) const;
 
+  xqpString toIntegerString() const;
   xqpString toString() const;
 
 }; // class FloatImpl

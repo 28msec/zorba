@@ -207,18 +207,18 @@ namespace xqp {
 
   // TODO must be tested if it works for numbers like 1e3
   bool NumConversions::doubleToInt(const xqp_double& aDouble, xqp_int& aInt) {
-    xqpString lStr = aDouble.toString();
+    xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToInt(lStr, aInt);
   }
 
   // TODO must be tested if it works for numbers like 1e3
   bool NumConversions::doubleToLongLong(const xqp_double& aDouble, xqp_long& aLong) {
-    xqpString lStr = aDouble.toString();
+    xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToLongLong(lStr, aLong);
   }
 
   bool NumConversions::doubleToLong(const xqp_double& aDouble, long& aLong) {
-    xqpString lStr = aDouble.toString();
+    xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToLong(lStr, aLong);
   }
 } /* namespace xqp */

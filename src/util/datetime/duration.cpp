@@ -132,12 +132,14 @@ Decimal YearMonthDuration::operator/(const DurationBase& db) const
 
 int32_t YearMonthDuration::getYears() const
 {
-  return months/NO_MONTHS_IN_YEAR;
+  long lLong = months/(long)NO_MONTHS_IN_YEAR;
+  return (int32_t)lLong;
 }
 
 int32_t YearMonthDuration::getMonths() const
 {
-  return (months % NO_MONTHS_IN_YEAR);
+  long lLong = months % (long)NO_MONTHS_IN_YEAR;
+  return (int32_t)lLong;
 }
 
 int32_t YearMonthDuration::getDays() const

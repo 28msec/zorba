@@ -489,11 +489,11 @@ xqp_string NegativeIntegerItemNaive::show() const {
   class LongItemNaive
 ********************************************************************************/
 xqp_integer LongItemNaive::getIntegerValue() const {
-  return Integer::parseInt(theValue);
+  return Integer::parseLongLong(theValue);
 }
 
 xqp_decimal LongItemNaive::getDecimalValue() const {
-  return Decimal::parseLong(theValue);
+  return Decimal::parseLongLong(theValue);
 }
 
 Item_t LongItemNaive::getType() const {
@@ -639,15 +639,15 @@ xqp_string NonNegativeIntegerItemNaive::show() const {
   class UnsignedLongItemNaive
 ********************************************************************************/
 xqp_integer UnsignedLongItemNaive::getIntegerValue() const {
-  return Integer::parseInt(theValue);
+  return Integer::parseULongLong(theValue);
 }
 
 xqp_decimal UnsignedLongItemNaive::getDecimalValue() const {
-  return Decimal::parseULong(theValue);
+  return Decimal::parseULongLong(theValue);
 }
 
 xqp_uinteger UnsignedLongItemNaive::getUnsignedIntegerValue() const {
-  return Integer::parseInt(theValue);
+  return Integer::parseULongLong(theValue);
 }
 
 Item_t UnsignedLongItemNaive::getType() const {

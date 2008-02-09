@@ -125,12 +125,12 @@ bool Integer::parseFloat(const Float& aFloat, Integer& aInteger) {
 }
 
 Integer Integer::parseDecimal(const Decimal& aDecimal) {
-  Integer lInteger(aDecimal.theDecimal);
+  Integer lInteger(floatingToInteger(aDecimal.theDecimal));
   return lInteger;
 }
 
 Integer Integer::parseLongLong(long long aLong) {
-  xqpString lStrRep = NumConversions::longToStr(aLong);
+  xqpString lStrRep = NumConversions::longLongToStr(aLong);
   MAPM lMAPM = lStrRep.c_str();
   Integer lInteger(lMAPM);
   return lInteger;
@@ -162,7 +162,7 @@ Integer Integer::parseLong(long aLong) {
 }
 
 Integer Integer::parseULong(unsigned long aULong) {
-  xqpString lStrRep = NumConversions::ulongToStr(aULong);
+  xqpString lStrRep = NumConversions::ulongLongToStr(aULong);
   MAPM lNumber = lStrRep.c_str();
   return Integer(lNumber);
 }
@@ -179,7 +179,7 @@ Integer& Integer::operator=(const Integer& aInteger) {
 }
 
 MAPM Integer::longlongToMAPM(long long aLong) {
-  xqpString lStrRep = NumConversions::longToStr(aLong);
+  xqpString lStrRep = NumConversions::longLongToStr(aLong);
   return MAPM(lStrRep.c_str());
 }
 

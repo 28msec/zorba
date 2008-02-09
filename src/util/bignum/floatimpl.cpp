@@ -135,7 +135,6 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(FloatType aFloat) {
 template <typename FloatType>
 bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatImpl) {
   const char* lCur = aCharStar;
-  std::string lBuffer(aCharStar);
 
   bool lGotBase = false;
   bool lGotPoint = false;
@@ -226,7 +225,7 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
       break;
     }
   } else {
-    lNumber = lBuffer.c_str();
+    lNumber = aCharStar;
     if (lIsNegative) {
       lType = FloatCommons::NORMAL_NEG;
     } else {
@@ -854,6 +853,28 @@ bool FloatImpl<FloatType>::operator>=(const FloatImpl& aFloatImpl) const{
 }
 
 template <typename FloatType>
+xqpString FloatImpl<FloatType>::toIntegerString() const {
+  switch(theType) {
+    case FloatCommons::NOT_A_NUM:
+      return FloatCommons::NOT_A_NUM_STR;
+    case FloatCommons::INF_POS:
+      return FloatCommons::INF_POS_STR;
+    case FloatCommons::INF_NEG:
+      return FloatCommons::INF_NEG_STR;
+    case FloatCommons::NORMAL_NEG:
+      if (theFloatImpl == 0)
+        return "-0";
+    default: 
+      break;
+  }
+
+  char lBuffer[1024];
+  theFloatImpl.toIntegerString(lBuffer);
+  xqpString lResult = lBuffer;
+  return lResult;
+}
+
+template <typename FloatType>
 xqpString FloatImpl<FloatType>::toString() const {
   switch(theType) {
     case FloatCommons::NOT_A_NUM:
@@ -876,15 +897,15 @@ xqpString FloatImpl<FloatType>::toString() const {
   } else {
     char lBuffer[1024];
     theFloatImpl.toString(lBuffer, 16);
-    xqpString lResult = lBuffer;
-    int32_t lE = lResult.indexOf("E");
+    std::string lResult = lBuffer;
+    size_t lE = lResult.find('E');
     if (lE >= 0) {
-      bool lPosExp = (lResult.substr(lE+1,1) == "+");
+      bool lPosExp = lResult[lE+1] == '+';
       int32_t lZeros = lE;
-      while(lResult.substr(lZeros-1,1) == "0") {
+      while(lResult[lZeros-1] == '0') {
         --lZeros; 
       }
-      if(lResult.substr(lZeros-1,1) == ".") {
+      if(lResult[lZeros-1] == '.') {
         ++lZeros;
       }
       if (lE != lZeros && lPosExp) {
