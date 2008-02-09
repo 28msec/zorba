@@ -18,7 +18,7 @@ public:
 	static bool		execute(xqp_string xquery_text, std::ostream &os);
 
 public:
-  virtual ~ZorbaSingleThread() {}
+  virtual ~ZorbaSingleThread();
 };
 
 
