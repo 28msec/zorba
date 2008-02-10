@@ -13,14 +13,14 @@
 #include <string>
 #include "util/checked_vector.h"
 
+#include "common/shared_types.h"
+#include "types/root_typemanager.h"
 #include "context/common.h"
-#include "types/typesystem.h"
 #include "store/api/item.h"
 
 namespace xqp {
 
 class context;
-class Item;
 
 #define VARIADIC_SIG_SIZE 100
 
@@ -45,34 +45,34 @@ class signature : public signature_base
 {
 public:
   Item_t qname_p;
-  checked_vector<TypeSystem::xqtref_t> argv;
+  checked_vector<xqtref_t> argv;
 
 public:
-  signature (Item_t name, TypeSystem::xqtref_t arg1,
-             bool variadic, TypeSystem::xqtref_t return_type);
+  signature (Item_t name, xqtref_t arg1,
+             bool variadic, xqtref_t return_type);
   signature(Item_t name,
-            TypeSystem::xqtref_t return_type);
+            xqtref_t return_type);
   signature(Item_t name,
-            TypeSystem::xqtref_t arg1,
-            TypeSystem::xqtref_t return_type);
+            xqtref_t arg1,
+            xqtref_t return_type);
   signature(Item_t name,
-            TypeSystem::xqtref_t arg1,
-            TypeSystem::xqtref_t arg2,
-            TypeSystem::xqtref_t return_type);
+            xqtref_t arg1,
+            xqtref_t arg2,
+            xqtref_t return_type);
   signature(Item_t name,
-            TypeSystem::xqtref_t arg1,
-            TypeSystem::xqtref_t arg2,
-            TypeSystem::xqtref_t arg3,
-            TypeSystem::xqtref_t return_type);
+            xqtref_t arg1,
+            xqtref_t arg2,
+            xqtref_t arg3,
+            xqtref_t return_type);
   signature(Item_t name,
-            TypeSystem::xqtref_t arg1,
-            TypeSystem::xqtref_t arg2,
-            TypeSystem::xqtref_t arg3,
-            TypeSystem::xqtref_t arg4,
-            TypeSystem::xqtref_t return_type);
+            xqtref_t arg1,
+            xqtref_t arg2,
+            xqtref_t arg3,
+            xqtref_t arg4,
+            xqtref_t return_type);
   signature(Item_t name,
-            const std::vector<TypeSystem::xqtref_t>& argv,
-            TypeSystem::xqtref_t return_type);
+            const std::vector<xqtref_t>& argv,
+            xqtref_t return_type);
   ~signature();
 
 public:
@@ -81,10 +81,10 @@ public:
     return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
   }
 
-  TypeSystem::xqtref_t const& operator[](int i) const { return argv [variadic ? 1 : (i + 1)]; }
-  TypeSystem::xqtref_t & operator[](int i)            { return argv [variadic ? 1 : (i + 1)]; }
-  TypeSystem::xqtref_t const& return_type() const     { return argv [0]; }
-  TypeSystem::xqtref_t & return_type()                { return argv [0]; }
+  xqtref_t const& operator[](int i) const { return argv [variadic ? 1 : (i + 1)]; }
+  xqtref_t & operator[](int i)            { return argv [variadic ? 1 : (i + 1)]; }
+  xqtref_t const& return_type() const     { return argv [0]; }
+  xqtref_t & return_type()                { return argv [0]; }
 
 };
 

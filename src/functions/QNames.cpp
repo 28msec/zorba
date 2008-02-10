@@ -34,7 +34,7 @@ PlanIter_t
   return new ResolveQNameIterator(loc, argv[0], argv[1]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
     fn_resolve_qname::type_check(
     signature& sig) const
 {
@@ -68,7 +68,7 @@ PlanIter_t
   return new QNameIterator(loc, argv[0], argv[1]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
     fn_qname::type_check(
     signature& sig) const
 {
@@ -102,7 +102,7 @@ PlanIter_t
   return new QNameEqualIterator(loc, argv[0], argv[1]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
     op_qname_equal::type_check(
     signature& sig) const
 {
@@ -136,7 +136,7 @@ PlanIter_t
   return new PrefixFromQNameIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
     fn_prefix_from_qname::type_check(
     signature& sig) const
 {
@@ -170,7 +170,7 @@ PlanIter_t
   return new LocalNameFromQNameIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
     fn_local_name_from_qname::type_check(
     signature& sig) const
 {
@@ -204,7 +204,7 @@ PlanIter_t
   return new NamespaceUriFromQNameIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
     fn_namespace_uri_from_qname::type_check(
     signature& sig) const
 {
@@ -238,7 +238,7 @@ PlanIter_t
   return new NamespaceUriForPrefixlIterator(loc, argv[0], argv[1]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
     fn_namespace_uri_for_prefix::type_check(
     signature& sig) const
 {
@@ -272,11 +272,11 @@ PlanIter_t
   return new InScopePrefixesIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
     fn_in_scope_prefixes::type_check(
     signature& sig) const
 {
-  return GENV_TYPESYSTEM.create_node_type(new NodeTest(StoreConsts::elementNode), NULL, TypeSystem::QUANT_ONE);
+  return GENV_TYPESYSTEM.create_node_type(new NodeTest(StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE);
 }
 
 bool

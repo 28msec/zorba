@@ -9,7 +9,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include <time.h>
 #include "types/casting.h"
-#include "types/typesystem.h"
+#include "types/root_typemanager.h"
 #include "system/globalenv.h"
 #include <fstream>
 

@@ -1,5 +1,5 @@
 #include "globalenv.h"
-#include "types/typesystem.h"
+#include "types/root_typemanager.h"
 #include "mapm/m_apm.h"
 #include <libxml/parser.h>
 
@@ -18,7 +18,7 @@ GlobalEnvironment& GlobalEnvironment::getInstance()
 void GlobalEnvironment::init()
 {
   m_globalEnv = new GlobalEnvironment();
-  m_globalEnv->m_typesystem.reset(new TypeSystem());
+  m_globalEnv->m_rootTypeManager.reset(new RootTypeManager());
 
   // initialize mapm for bignum handling
   m_globalEnv->m_mapm = m_apm_init();
@@ -55,9 +55,9 @@ GlobalEnvironment::GlobalEnvironment()
 {
 }
 
-TypeSystem& GlobalEnvironment::getTypeSystem()
+RootTypeManager& GlobalEnvironment::getRootTypeManager()
 {
-  return *m_typesystem;
+  return *m_rootTypeManager;
 }
 
 /* vim:set ts=2 sw=2: */

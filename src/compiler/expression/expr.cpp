@@ -17,7 +17,7 @@
 #include "errors/error_factory.h"
 #include "compiler/expression/expr_visitor.h"
 #include "system/zorba.h"
-#include "types/typesystem.h"
+#include "types/root_typemanager.h"
 
 #include <algorithm>
 #include <iostream>
@@ -324,7 +324,7 @@ void ft_contains_expr::accept(
 
 instanceof_expr::instanceof_expr(yy::location const& loc,
                                  rchandle<expr> _expr_h,
-                                 TypeSystem::xqtref_t _type)
+                                 xqtref_t _type)
 :
   expr(loc), expr_h(_expr_h), type (_type)
 {
@@ -349,7 +349,7 @@ void instanceof_expr::accept(
 treat_expr::treat_expr(
   yy::location const& loc,
   rchandle<expr> _expr_h,
-  TypeSystem::xqtref_t _type,
+  xqtref_t _type,
   enum ZorbaError::ErrorCodes err_)
 :
   expr(loc),
@@ -378,7 +378,7 @@ void treat_expr::accept(
 castable_expr::castable_expr(
   yy::location const& loc,
   rchandle<expr> _expr_h,
-  TypeSystem::xqtref_t _type)
+  xqtref_t _type)
 :
   expr(loc),
   expr_h(_expr_h),
@@ -405,7 +405,7 @@ void castable_expr::accept(
 cast_expr::cast_expr(
   yy::location const& loc,
   rchandle<expr> _expr_h,
-  TypeSystem::xqtref_t _type)
+  xqtref_t _type)
 :
   expr(loc),
   expr_h(_expr_h),
@@ -888,12 +888,12 @@ void pi_expr::accept(
 void function_def_expr::accept (expr_visitor& v) {
 }
 
-function_def_expr::function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, TypeSystem::xqtref_t return_type)
+function_def_expr::function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type)
   : expr (loc), name (name_)
 {
   assert (return_type != NULL);
   params.swap (params_);
-  vector<TypeSystem::xqtref_t> args;
+  vector<xqtref_t> args;
   // TODO: copy param types into sig
   for (unsigned i = 0; i < param_size (); i++)
     args.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);

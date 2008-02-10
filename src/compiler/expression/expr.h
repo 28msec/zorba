@@ -25,9 +25,9 @@
 #include <string>
 #include <map>
 
+#include "types/root_typemanager.h"
 #include "system/globalenv.h"
 #include "compiler/parsetree/parsenodes.h"
-#include "types/typesystem.h"
 #include "util/list.h"
 #include "util/rchandle.h"
 #include "util/checked_vector.h"
@@ -141,7 +141,7 @@ public:
 
   var_kind kind;
   Item_t varname_h;
-  TypeSystem::xqtref_t type;
+  xqtref_t type;
 
 public:
   var_expr(yy::location const& loc, Item_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
@@ -154,8 +154,8 @@ public:
 	var_kind get_kind() const { return kind; }
 	void set_kind(var_kind k) { kind = k; }
 
-  TypeSystem::xqtref_t get_type() const { return type; }
-  void set_type(TypeSystem::xqtref_t t) { type = t; }
+  xqtref_t get_type() const { return type; }
+  void set_type(xqtref_t t) { type = t; }
 
 public:
 	static std::string decode_var_kind(enum var_kind);
@@ -344,7 +344,7 @@ public:
 public:
 	varref_t var_h;
 	expr_t case_expr_h;
-	TypeSystem::xqtref_t type;
+	xqtref_t type;
 
 public:
 	case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
@@ -355,7 +355,7 @@ public:
 class promote_expr : public expr {
   public:
     promote_expr(yy::location const& loc) : expr(loc) { }
-    promote_expr(yy::location const& loc, expr_t input, TypeSystem::xqtref_t type)
+    promote_expr(yy::location const& loc, expr_t input, xqtref_t type)
       : expr(loc),
       input_expr_h(input),
       target_type(type) { }
@@ -363,14 +363,14 @@ class promote_expr : public expr {
 
   protected:
     expr_t input_expr_h;
-    TypeSystem::xqtref_t target_type;
+    xqtref_t target_type;
 
   public:
     expr_t get_input() { return input_expr_h; }
     void set_input(expr_t input) { input_expr_h = input; }
 
-    TypeSystem::xqtref_t get_target_type() { return target_type; }
-    void set_target_type(TypeSystem::xqtref_t target) { target_type = target; }
+    xqtref_t get_target_type() { return target_type; }
+    void set_target_type(xqtref_t target) { target_type = target; }
 
 public:
 	void accept(expr_visitor&);
@@ -488,7 +488,7 @@ protected:
   auto_ptr<signature> sig;
 
 public:
-  function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, TypeSystem::xqtref_t return_type);
+  function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type);
 
   Item_t get_name () const { return name; }
   expr_t get_body () { return body; }
@@ -603,18 +603,18 @@ class instanceof_expr : public expr
 {
 protected:
 	expr_t expr_h;
-	TypeSystem::xqtref_t type;
+	xqtref_t type;
   bool forced;  // error if not instance?
 
 public:
 	instanceof_expr (yy::location const&,
                    expr_t,
-                   TypeSystem::xqtref_t);
+                   xqtref_t);
 	~instanceof_expr();
 
 public:
 	expr_t get_expr() const { return expr_h; }
-	TypeSystem::xqtref_t get_type() const { return type; }
+	xqtref_t get_type() const { return type; }
   bool isForced () { return forced; }
 
 public:
@@ -633,21 +633,21 @@ class treat_expr : public expr
 {
 protected:
 	expr_t expr_h;
-	TypeSystem::xqtref_t type;
+	xqtref_t type;
   enum ZorbaError::ErrorCodes err;
 
 public:
 	treat_expr(
 		yy::location const&,
 		expr_t,
-		TypeSystem::xqtref_t,
+		xqtref_t,
     enum ZorbaError::ErrorCodes);
 
 	~treat_expr();
 
 public:
 	expr_t get_expr() const { return expr_h; }
-	TypeSystem::xqtref_t get_type() const { return type; }
+	xqtref_t get_type() const { return type; }
   enum ZorbaError::ErrorCodes get_err () { return err; }
 
 public:
@@ -665,19 +665,19 @@ class castable_expr : public expr
 {
 protected:
 	expr_t expr_h;
-	TypeSystem::xqtref_t type;
+	xqtref_t type;
 
 public:
 	castable_expr(
 		yy::location const&,
 		expr_t,
-		TypeSystem::xqtref_t);
+		xqtref_t);
 	~castable_expr();
 
 public:
 	expr_t get_cast_expr() const { return expr_h; }
-	TypeSystem::xqtref_t get_type() const { return type; }
-	bool is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeSystem::QUANT_QUESTION; }
+	xqtref_t get_type() const { return type; }
+	bool is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeConstants::QUANT_QUESTION; }
 
 public:
 	void accept(expr_visitor&);
@@ -695,19 +695,19 @@ class cast_expr : public expr
 {
 protected:
 	expr_t expr_h;
-	TypeSystem::xqtref_t type;
+	xqtref_t type;
 
 public:
 	cast_expr(
 		yy::location const&,
 		expr_t,
-		TypeSystem::xqtref_t);
+		xqtref_t);
 	~cast_expr();
 
 public:
 	expr_t get_unary_expr() const { return expr_h; }
-	TypeSystem::xqtref_t get_type() const { return type; }
-	bool is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeSystem::QUANT_QUESTION; }
+	xqtref_t get_type() const { return type; }
+	bool is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeConstants::QUANT_QUESTION; }
 
 public:
 	void accept(expr_visitor&);

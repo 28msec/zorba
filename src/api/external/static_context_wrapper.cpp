@@ -1,5 +1,6 @@
 
 #include "static_context_wrapper.h"
+#include "types/root_typemanager.h"
 #include "system/globalenv.h"
 #include "errors/error_manager.h"
 #include "system/zorba_engine.h"
@@ -301,7 +302,7 @@ void		StaticContextWrapper::deleteAllVariables()
 
 void		StaticContextWrapper::setContextItemStaticType( type_ident_ref_t		type )
 {
-//	TypeSystem::xqtref_t		internal_type;
+//	xqtref_t		internal_type;
 //	internal_type = GENV_TYPESYSTEM.create_type( *type );
 //	//now what
 //	internal_sctx.set_context_item_static_type( internal_type );
@@ -315,7 +316,7 @@ type_ident_ref_t		StaticContextWrapper::getContextItemStaticType( )
 		return context_item_type;
 
 	///else get the default value from root_static_context
-	TypeSystem::xqtref_t t =  static_context::root_static_context()->context_item_static_type();
+	xqtref_t t =  static_context::root_static_context()->context_item_static_type();
 
 	return GENV_TYPESYSTEM.get_type_identifier(*t);
 }
@@ -708,7 +709,7 @@ type_ident_ref_t	StaticContextWrapper::getDefaultCollectionType( )
 		return default_collection_type;
 
 	//else return the default value set in root_static_context
-	TypeSystem::xqtref_t t = static_context::root_static_context()->default_collection_type();
+	xqtref_t t = static_context::root_static_context()->default_collection_type();
 
 	return GENV_TYPESYSTEM.get_type_identifier(*t);
 	}CATCH_ALL_RETURN_NULL;
@@ -724,7 +725,7 @@ static_context*		StaticContextWrapper::fillInStaticContext()
 	xqp_string				prefix, uri;
 	xqp_string				var_name;
 	type_ident_ref_t	type;
-	TypeSystem::xqtref_t		internal_type;
+	xqtref_t		internal_type;
 
 	sctx = new static_context;
 

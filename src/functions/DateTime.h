@@ -19,7 +19,7 @@ class fn_datetime_ctor : public function
 
   public:
     PlanIter_t operator()(const yy::location& loc,std::vector<PlanIter_t>&) const;
-    TypeSystem::xqtref_t type_check(signature&) const;
+    xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -39,7 +39,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -54,7 +54,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -69,7 +69,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -84,7 +84,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -99,7 +99,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -114,7 +114,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -129,7 +129,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -144,7 +144,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -159,7 +159,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -174,7 +174,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
   
@@ -189,7 +189,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -204,7 +204,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -219,7 +219,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -234,7 +234,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -249,7 +249,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -264,7 +264,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -279,7 +279,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -294,7 +294,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -309,7 +309,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -324,7 +324,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -339,7 +339,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -354,7 +354,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -369,7 +369,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -384,7 +384,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -399,7 +399,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -414,7 +414,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
   
@@ -429,7 +429,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -444,7 +444,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -459,7 +459,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -474,7 +474,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 
@@ -489,7 +489,7 @@ class fn_datetime_ctor : public function
 
     public:
       PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-      TypeSystem::xqtref_t type_check(signature&) const;
+      xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
 } // namespace xqp

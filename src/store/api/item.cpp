@@ -16,7 +16,7 @@
 #include "runtime/core/item_iterator.h"
 #include "api/serialization/serializer.h"
 #include "system/globalenv.h"
-#include "types/typesystem.h"
+#include "types/root_typemanager.h"
 #include "util/Assert.h"
 
 namespace xqp
@@ -482,7 +482,7 @@ xqpStringStore* Item::getStringValueP() {
 
 
 bool Item::isNumeric() const {
-  TypeSystem::xqtref_t type = GENV_TYPESYSTEM.create_type(getType(), TypeSystem::QUANT_ONE);
+  xqtref_t type = GENV_TYPESYSTEM.create_type(getType(), TypeConstants::QUANT_ONE);
   return GENV_TYPESYSTEM.is_numeric(*type);
 }
 

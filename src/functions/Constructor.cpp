@@ -20,7 +20,7 @@ namespace xqp
     return new EnclosedIterator ( loc, argv[0] );
   }
 
-  TypeSystem::xqtref_t op_enclosed_expr::type_check (
+  xqtref_t op_enclosed_expr::type_check (
       signature& sig ) const
   {
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -48,7 +48,7 @@ namespace xqp
     return new DocFilterIterator ( loc, argv[0] );
   }
   
-  TypeSystem::xqtref_t op_docfilter_expr::type_check (
+  xqtref_t op_docfilter_expr::type_check (
       signature& sig ) const
   {
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;

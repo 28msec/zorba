@@ -36,7 +36,7 @@ fn_codepoints_to_string::operator()(
   return new CodepointsToStringIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_codepoints_to_string::type_check(
   signature& sig) const
 {
@@ -70,7 +70,7 @@ fn_string_to_codepoints::operator()(
   return new StringToCodepointsIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_string_to_codepoints::type_check(
   signature& sig) const
 {
@@ -105,7 +105,7 @@ fn_string_compare_2::operator()(
   return new CompareStrIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_string_compare_2::type_check(
   signature& sig) const
 {
@@ -134,7 +134,7 @@ fn_string_compare_3::operator()(
   return new CompareStrIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_string_compare_3::type_check(
     signature& sig) const
 {
@@ -168,7 +168,7 @@ fn_codepoint_equal::operator()(
   return new CodepointEqualIterator(loc, argv[0], argv[1]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_codepoint_equal::type_check(
   signature& sig) const
 {
@@ -209,7 +209,7 @@ fn_concat::validate_args(
   return true;
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_concat::type_check(
   signature& sig) const
 {
@@ -236,7 +236,7 @@ fn_string_join::operator()(
   return new StringJoinIterator(loc, argv[0], argv[1]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_string_join::type_check(
   signature& sig) const
 {
@@ -270,7 +270,7 @@ fn_substring_2::operator()(
   return new SubstringIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_substring_2::type_check(
   signature& sig) const
 {
@@ -299,7 +299,7 @@ fn_substring_3::operator()(
   return new SubstringIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_substring_3::type_check(
   signature& sig) const
 {
@@ -333,7 +333,7 @@ fn_string_length::operator()(
   return new StringLengthIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_string_length::type_check(
   signature& sig) const
 {
@@ -367,7 +367,7 @@ fn_normalize_space::operator()(
   return new NormalizeSpaceIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_normalize_space::type_check(
   signature& sig) const
 {
@@ -401,7 +401,7 @@ fn_normalize_unicode_1::operator()(
   return new NormalizeUnicodeIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_normalize_unicode_1::type_check(
   signature& sig) const
 {
@@ -430,7 +430,7 @@ fn_normalize_unicode_2::operator()(
   return new NormalizeUnicodeIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_normalize_unicode_2::type_check(
   signature& sig) const
 {
@@ -465,7 +465,7 @@ fn_upper_case::operator()(
   return new UpperCaseIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_upper_case::type_check(
   signature& sig) const
 {
@@ -500,7 +500,7 @@ fn_lower_case::operator()(
   return new LowerCaseIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_lower_case::type_check(
   signature& sig) const
 {
@@ -535,7 +535,7 @@ fn_translate::operator()(
   return new TranslateIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_translate::type_check(
   signature& sig) const
 {
@@ -569,7 +569,7 @@ vector<PlanIter_t>& argv) const
   return new EncodeForUriIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_encode_for_uri::type_check(
   signature& sig) const
 {
@@ -603,7 +603,7 @@ vector<PlanIter_t>& argv) const
   return new IriToUriIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_iri_to_uri::type_check(
 signature& sig) const
 {
@@ -637,7 +637,7 @@ fn_escape_html_uri::operator()(
   return new EscapeHtmlUriIterator(loc, argv[0]);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_escape_html_uri::type_check(
   signature& sig) const
 {
@@ -672,7 +672,7 @@ fn_contains_2::operator()(
   return new ContainsIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_contains_2::type_check(
   signature& sig) const
 {
@@ -701,7 +701,7 @@ fn_contains_3::operator()(
   return new ContainsIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_contains_3::type_check(
   signature& sig) const
 {
@@ -735,7 +735,7 @@ fn_starts_with_2::operator()(
   return new StartsWithIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_starts_with_2::type_check(
   signature& sig) const
 {
@@ -764,7 +764,7 @@ fn_starts_with_3::operator()(
   return new StartsWithIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_starts_with_3::type_check(
   signature& sig) const
 {
@@ -798,7 +798,7 @@ fn_ends_with_2::operator()(
   return new EndsWithIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_ends_with_2::type_check(
   signature& sig) const
 {
@@ -827,7 +827,7 @@ fn_ends_with_3::operator()(
   return new EndsWithIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_ends_with_3::type_check(
   signature& sig) const
 {
@@ -861,7 +861,7 @@ fn_substring_before_2::operator()(
   return new SubstringBeforeIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_substring_before_2::type_check(
   signature& sig) const
 {
@@ -890,7 +890,7 @@ fn_substring_before_3::operator()(
   return new SubstringBeforeIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_substring_before_3::type_check(
   signature& sig) const
 {
@@ -924,7 +924,7 @@ fn_substring_after_2::operator()(
   return new SubstringAfterIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_substring_after_2::type_check(
   signature& sig) const
 {
@@ -953,7 +953,7 @@ fn_substring_after_3::operator()(
   return new SubstringAfterIterator(loc, argv);
 }
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_substring_after_3::type_check(
   signature& sig) const
 {

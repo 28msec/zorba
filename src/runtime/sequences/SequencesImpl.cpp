@@ -603,7 +603,7 @@ Item_t
 FnMinMaxIterator::nextImpl(PlanState& planState) {
   Item_t lMaxItem;
   Item_t lRunningItem;
-  TypeSystem::xqtref_t lMaxType;
+  xqtref_t lMaxType;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -617,7 +617,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) {
   {
     do {
       // casting of untyped atomic
-      TypeSystem::xqtref_t lRunningType = GENV_TYPESYSTEM.create_type(lRunningItem->getType(),TypeSystem::QUANT_ONE);
+      xqtref_t lRunningType = GENV_TYPESYSTEM.create_type(lRunningItem->getType(),TypeConstants::QUANT_ONE);
       if (GENV_TYPESYSTEM.is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
         lRunningItem = GenericCast::instance()->cast(lRunningItem, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
         lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
@@ -634,7 +634,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) {
         if (GENV_TYPESYSTEM.is_subtype(*lRunningType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
           break;
 
-        lMaxType = GENV_TYPESYSTEM.create_type(lMaxItem->getType(), TypeSystem::QUANT_ONE);
+        lMaxType = GENV_TYPESYSTEM.create_type(lMaxItem->getType(), TypeConstants::QUANT_ONE);
       }
       if (lMaxItem != 0) {
         // Type Promotion
@@ -643,13 +643,13 @@ FnMinMaxIterator::nextImpl(PlanState& planState) {
           lItemCur = GenericCast::instance()->promote(lMaxItem, lRunningType); 
           if (lItemCur != 0) {
             lMaxItem = lItemCur;
-            lMaxType = GENV_TYPESYSTEM.create_type(lMaxItem->getType(), TypeSystem::QUANT_ONE);
+            lMaxType = GENV_TYPESYSTEM.create_type(lMaxItem->getType(), TypeConstants::QUANT_ONE);
           } else {
             ZORBA_ERROR_ALERT(ZorbaError::FORG0006, &loc, DONT_CONTINUE_EXECUTION, "Promote not possible");
           }
         } else {
           lRunningItem = lItemCur;
-          lRunningType = GENV_TYPESYSTEM.create_type(lRunningItem->getType(), TypeSystem::QUANT_ONE);
+          lRunningType = GENV_TYPESYSTEM.create_type(lRunningItem->getType(), TypeConstants::QUANT_ONE);
         }
         if (CompareIterator::valueComparison(lRunningItem, lMaxItem, 
                                            theCompareType) ) {

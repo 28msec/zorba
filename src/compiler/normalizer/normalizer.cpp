@@ -1,7 +1,7 @@
 #include "compiler/normalizer/normalizer.h"
 #include "functions/function.h"
 #include "functions/signature.h"
-#include "types/typesystem.h"
+#include "types/root_typemanager.h"
 #include "system/globalenv.h"
 
 using namespace xqp;
@@ -24,13 +24,13 @@ static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_
   return fh;
 }
 
-static inline expr::expr_t wrap_in_typematch(expr::expr_t e, TypeSystem::xqtref_t type)
+static inline expr::expr_t wrap_in_typematch(expr::expr_t e, xqtref_t type)
 {
   // TODO : Need to add typematch_expr
   return e;
 }
 
-static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, TypeSystem::xqtref_t type)
+static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, xqtref_t type)
 {
   expr::expr_t ph = new promote_expr(e->get_loc(), e, type);
   // TODO : Need to add convert_simple_operand
@@ -94,14 +94,14 @@ bool normalizer::begin_visit(fo_expr& node)
   int n = node.size();
   for(int i = 0; i < n; ++i) {
     expr::expr_t arg = node[i];
-    const TypeSystem::xqtref_t& arg_type = sign[i];
-    TypeSystem::xqtref_t arg_prime_type = GENV_TYPESYSTEM.prime_type(*arg_type);
+    const xqtref_t& arg_type = sign[i];
+    xqtref_t arg_prime_type = GENV_TYPESYSTEM.prime_type(*arg_type);
     if (GENV_TYPESYSTEM.is_subtype(*arg_prime_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)) {
       arg = wrap_in_atomization(m_sctx, arg);
       arg = wrap_in_type_conversion(arg, arg_type);
     }
 
-    if (GENV_TYPESYSTEM.quantifier(*arg_type) != TypeSystem::QUANT_STAR) {
+    if (GENV_TYPESYSTEM.quantifier(*arg_type) != TypeConstants::QUANT_STAR) {
       arg = wrap_in_typematch(arg, arg_type);
     }
 

@@ -31,7 +31,7 @@ namespace xqp
   FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, PlanState& planState, PlanIter_t& iter, bool negate )
   {
     Item_t item;
-    TypeSystem::xqtref_t type;
+    xqtref_t type;
     Item_t result;
 
     // TODO produceNext must be replaced to allow batching
@@ -53,7 +53,7 @@ namespace xqp
       std::string str = lType->getLocalName();
       str = lType->getPrefix();
       str = lType->getNamespace();
-      type = GENV_TYPESYSTEM.create_type(lType, TypeSystem::QUANT_ONE);
+      type = GENV_TYPESYSTEM.create_type(lType, TypeConstants::QUANT_ONE);
       bool res = GENV_TYPESYSTEM.is_numeric ( *type );
       if (
           // TODO produceNext must be replaced to allow batching
@@ -259,8 +259,8 @@ namespace xqp
   }
   
   std::pair<Item_t, Item_t> CompareIterator::valueCasting(Item_t aItem0, Item_t aItem1) {
-    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
-    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
+    xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     // all untyped Atomics to String
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
@@ -275,8 +275,8 @@ namespace xqp
   }
   
   std::pair<Item_t, Item_t> CompareIterator::generalCasting(Item_t aItem0, Item_t aItem1) {
-    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
-    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
+    xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
       if (GENV_TYPESYSTEM.is_numeric(*type1))
@@ -351,8 +351,8 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
 }
   
   std::pair<Item_t, Item_t> CompareIterator::typePromotion(Item_t aItem0, Item_t aItem1) {
-    TypeSystem::xqtref_t aType0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
-    TypeSystem::xqtref_t aType1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
+    xqtref_t aType0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t aType1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     
     Item_t lResult = GenericCast::instance()->promote(aItem0, aType1); 
     if (lResult != 0) {
@@ -444,8 +444,8 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
       return 0;
     else if (compareRes == -1 || compareRes == 1 || compareRes == 2)
       return 1;
-    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
-    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
+    xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     bool equal;
 //     if (false)
       // TODO, equal implementation for types which do not support compare
@@ -475,8 +475,8 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
   int8_t 
   CompareIterator::compare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation)
   {
-    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
-    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
+    xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
+    xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     int8_t ret = -2;
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)) {

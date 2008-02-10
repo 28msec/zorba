@@ -6,7 +6,7 @@
 
 namespace xqp {
 
-class TypeSystem;
+class RootTypeManager;
 
 class GlobalEnvironment {
   public:
@@ -14,17 +14,17 @@ class GlobalEnvironment {
     static void destroy();
     static GlobalEnvironment& getInstance();
 
-    TypeSystem& getTypeSystem();
+    RootTypeManager& getRootTypeManager();
   private:
     GlobalEnvironment();
 
-    std::auto_ptr<TypeSystem> m_typesystem;
+    std::auto_ptr <RootTypeManager> m_rootTypeManager;
     M_APM                     m_mapm; // this is a pointer type
 
     static GlobalEnvironment *m_globalEnv;
 };
 
-#define GENV_TYPESYSTEM GlobalEnvironment::getInstance().getTypeSystem()
+#define GENV_TYPESYSTEM GlobalEnvironment::getInstance().getRootTypeManager()
 
 }
 

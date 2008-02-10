@@ -40,7 +40,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -52,7 +52,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location&, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -67,7 +67,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -82,7 +82,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -97,7 +97,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -111,7 +111,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -125,7 +125,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -139,7 +139,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -153,7 +153,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -184,7 +184,7 @@ public:
 
 public:
 	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -196,7 +196,7 @@ class fn_ceiling : public function
     ~fn_ceiling(){}
 
     PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-    TypeSystem::xqtref_t type_check(signature&) const;
+    xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -208,7 +208,7 @@ class fn_floor : public function
     ~fn_floor(){}
 
     PlanIter_t operator ( )( const yy::location& loc, std::vector<PlanIter_t>&) const;
-    TypeSystem::xqtref_t type_check( signature&) const;
+    xqtref_t type_check( signature&) const;
     bool validate_args( std::vector<PlanIter_t>&) const;
 };
 
@@ -220,7 +220,7 @@ class fn_round : public function
     ~fn_round(){}
      
     PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-    TypeSystem::xqtref_t type_check( signature& ) const;
+    xqtref_t type_check( signature& ) const;
     bool validate_args( std::vector<PlanIter_t>&) const;
 };
 
@@ -232,7 +232,7 @@ class fn_round_half_to_even : public function
     ~fn_round_half_to_even(){}
      
     PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-    TypeSystem::xqtref_t type_check( signature& ) const;
+    xqtref_t type_check( signature& ) const;
     bool validate_args( std::vector<PlanIter_t>&) const;
 };
 
@@ -248,7 +248,7 @@ public:
 	
 public:
 	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
-	TypeSystem::xqtref_t type_check(signature&) const;
+	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 

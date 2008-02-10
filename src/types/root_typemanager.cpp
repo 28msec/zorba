@@ -1,21 +1,18 @@
-
 #include <assert.h>
 #include "types/typeident.h"
 #include "store/naive/atomic_items.h"
 #include "node_test.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
-#include "types/typesystem.h"
+#include "types/root_typemanager.h"
 #include "util/Assert.h"
-
-#include "system/globalenv.h"
 
 using namespace xqp;
 
 #define T true
 #define F false
 
-const bool TypeSystem::ATOMIC_SUBTYPE_MATRIX[45][45] = {
+const bool RootTypeManager::ATOMIC_SUBTYPE_MATRIX[45][45] = {
   {T, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, /* anyAtomicType */
   {T, T, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, /* string */
   {T, T, T, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, /* normalizedString */
@@ -63,7 +60,7 @@ const bool TypeSystem::ATOMIC_SUBTYPE_MATRIX[45][45] = {
   {T, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, T}, /* NOTATION */
 };
 
-const bool TypeSystem::QUANT_SUBTYPE_MATRIX[4][4] = {
+const bool RootTypeManager::QUANT_SUBTYPE_MATRIX[4][4] = {
   {T, T, T, T}, /* QUANT_ONE */
   {F, T, T, F}, /* QUANT_QUESTION */
   {F, F, T, F}, /* QUANT_STAR */
@@ -73,7 +70,7 @@ const bool TypeSystem::QUANT_SUBTYPE_MATRIX[4][4] = {
 #undef T
 #undef F
 
-TypeSystem::TypeSystem()
+RootTypeManager::RootTypeManager()
 {
 #define XS_URI "http://www.w3.org/2001/XMLSchema"
 #define XS_PREFIX "xs"
@@ -133,16 +130,16 @@ TypeSystem::TypeSystem()
   XSQNDECL(XS_UNTYPED_QNAME, "untyped");
 
 #define ATOMIC_TYPE_DEFN(basename) \
-  basename##_TYPE_ONE = new AtomicXQType(XS_##basename, QUANT_ONE); \
-  basename##_TYPE_QUESTION = new AtomicXQType(XS_##basename, QUANT_QUESTION); \
-  basename##_TYPE_STAR = new AtomicXQType(XS_##basename, QUANT_STAR); \
-  basename##_TYPE_PLUS = new AtomicXQType(XS_##basename, QUANT_PLUS); \
-  m_atomic_typecode_qname_map[XS_##basename] = &XS_##basename##_QNAME; \
-  m_atomic_qnametype_map[XS_##basename##_QNAME] = XS_##basename; \
-  m_atomic_typecode_map[XS_##basename][QUANT_ONE] = &basename##_TYPE_ONE; \
-  m_atomic_typecode_map[XS_##basename][QUANT_QUESTION] = &basename##_TYPE_QUESTION; \
-  m_atomic_typecode_map[XS_##basename][QUANT_STAR] = &basename##_TYPE_STAR; \
-  m_atomic_typecode_map[XS_##basename][QUANT_PLUS] = &basename##_TYPE_PLUS;
+  basename##_TYPE_ONE = new AtomicXQType(TypeConstants::XS_##basename, TypeConstants::QUANT_ONE); \
+  basename##_TYPE_QUESTION = new AtomicXQType(TypeConstants::XS_##basename, TypeConstants::QUANT_QUESTION); \
+  basename##_TYPE_STAR = new AtomicXQType(TypeConstants::XS_##basename, TypeConstants::QUANT_STAR); \
+  basename##_TYPE_PLUS = new AtomicXQType(TypeConstants::XS_##basename, TypeConstants::QUANT_PLUS); \
+  m_atomic_typecode_qname_map[TypeConstants::XS_##basename] = &XS_##basename##_QNAME; \
+  m_atomic_qnametype_map[XS_##basename##_QNAME] = TypeConstants::XS_##basename; \
+  m_atomic_typecode_map[TypeConstants::XS_##basename][TypeConstants::QUANT_ONE] = &basename##_TYPE_ONE; \
+  m_atomic_typecode_map[TypeConstants::XS_##basename][TypeConstants::QUANT_QUESTION] = &basename##_TYPE_QUESTION; \
+  m_atomic_typecode_map[TypeConstants::XS_##basename][TypeConstants::QUANT_STAR] = &basename##_TYPE_STAR; \
+  m_atomic_typecode_map[TypeConstants::XS_##basename][TypeConstants::QUANT_PLUS] = &basename##_TYPE_PLUS;
 
   ATOMIC_TYPE_DEFN(ANY_ATOMIC)
   ATOMIC_TYPE_DEFN(STRING)
@@ -201,16 +198,16 @@ TypeSystem::TypeSystem()
 
   NONE_TYPE = new NoneXQType();
 
-  ITEM_TYPE_ONE = new ItemXQType(QUANT_ONE);
-  ITEM_TYPE_QUESTION = new ItemXQType(QUANT_QUESTION);
-  ITEM_TYPE_STAR = new ItemXQType(QUANT_STAR);
-  ITEM_TYPE_PLUS = new ItemXQType(QUANT_PLUS);
+  ITEM_TYPE_ONE = new ItemXQType(TypeConstants::QUANT_ONE);
+  ITEM_TYPE_QUESTION = new ItemXQType(TypeConstants::QUANT_QUESTION);
+  ITEM_TYPE_STAR = new ItemXQType(TypeConstants::QUANT_STAR);
+  ITEM_TYPE_PLUS = new ItemXQType(TypeConstants::QUANT_PLUS);
 
 #define NODE_TYPE_DEFN(basename) \
-  basename##_TYPE_ONE = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, QUANT_ONE); \
-  basename##_TYPE_QUESTION = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, QUANT_QUESTION); \
-  basename##_TYPE_STAR = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, QUANT_STAR); \
-  basename##_TYPE_PLUS = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, QUANT_PLUS);
+  basename##_TYPE_ONE = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_ONE); \
+  basename##_TYPE_QUESTION = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_QUESTION); \
+  basename##_TYPE_STAR = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_STAR); \
+  basename##_TYPE_PLUS = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, TypeConstants::QUANT_PLUS);
   NODE_TYPE_DEFN(PI)
   NODE_TYPE_DEFN(TEXT)
   NODE_TYPE_DEFN(COMMENT)
@@ -218,44 +215,29 @@ TypeSystem::TypeSystem()
 #undef NODE_TYPE_DEFN
 }
 
-TypeSystem::~TypeSystem()
+RootTypeManager::~RootTypeManager()
 {
 }
 
-static const char *decode_quantifier (TypeSystem::quantifier_t quant) {
-  switch (quant) {
-  case TypeSystem::QUANT_ONE:
-    return "";
-  case TypeSystem::QUANT_QUESTION:
-    return "?";
-  case TypeSystem::QUANT_STAR:
-    return "*";
-  case TypeSystem::QUANT_PLUS:
-    return "+";
-  default:
-    return "<unknown-quant>";
-  }
-}
-
-std::ostream& TypeSystem::serialize(std::ostream& os, const XQType& type) const
+std::ostream& RootTypeManager::serialize(std::ostream& os, const XQType& type) const
 {
   return type.serialize(os);
 }
 
-std::string TypeSystem::toString (const XQType& type) const {
+std::string RootTypeManager::toString (const XQType& type) const {
   std::ostringstream os;
   serialize (os, type);
   return os.str ();
 }
 
-TypeSystem::quantifier_t TypeSystem::quantifier(const XQType &type) const
+TypeConstants::quantifier_t RootTypeManager::quantifier(const XQType &type) const
 {
-  return type.m_quantifier;
+  return type.get_quantifier();
 }
 
-bool TypeSystem::is_equal(const XQType& type1, const XQType& type2) const
+bool RootTypeManager::is_equal(const XQType& type1, const XQType& type2) const
 {
-  if (type1.m_quantifier != type2.m_quantifier) {
+  if (type1.get_quantifier() != type2.get_quantifier()) {
     return false;
   }
   if (type1.type_kind() != type2.type_kind()) {
@@ -266,13 +248,13 @@ bool TypeSystem::is_equal(const XQType& type1, const XQType& type2) const
     {
       const AtomicXQType& a1 = static_cast<const AtomicXQType&>(type1);
       const AtomicXQType& a2 = static_cast<const AtomicXQType&>(type2);
-      return a1.m_type_code == a2.m_type_code;
+      return a1.get_type_code() == a2.get_type_code();
     }
     case XQType::NODE_TYPE_KIND:
     {
       const NodeXQType& n1 = static_cast<const NodeXQType&>(type1);
       const NodeXQType& n2 = static_cast<const NodeXQType&>(type2);
-      return *n1.m_nodetest == *n2.m_nodetest;
+      return *n1.get_nodetest() == *n2.get_nodetest();
     }
     default:
       break;
@@ -280,12 +262,12 @@ bool TypeSystem::is_equal(const XQType& type1, const XQType& type2) const
   return true;
 }
 
-bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) const
+bool RootTypeManager::is_subtype(const XQType& subtype, const XQType& supertype) const
 {
   if (is_equal(subtype, *NONE_TYPE)) {
     return true;
   }
-  if (!QUANT_SUBTYPE_MATRIX[subtype.m_quantifier][supertype.m_quantifier]) {
+  if (!QUANT_SUBTYPE_MATRIX[subtype.get_quantifier()][supertype.get_quantifier()]) {
     return false;
   }
   switch(supertype.type_kind()) {
@@ -295,7 +277,7 @@ bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) cons
         {
           const AtomicXQType& a1 = static_cast<const AtomicXQType&>(subtype);
           const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
-          return ATOMIC_SUBTYPE_MATRIX[a1.m_type_code][a2.m_type_code];
+          return ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()][a2.get_type_code()];
         }
         default:
           return false;
@@ -308,7 +290,7 @@ bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) cons
         {
           const NodeXQType& n1 = static_cast<const NodeXQType&>(subtype);
           const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
-          return n1.m_nodetest->is_sub_nodetest_of(*n2.m_nodetest);
+          return n1.get_nodetest()->is_sub_nodetest_of(*n2.get_nodetest());
         }
         default:
           return false;
@@ -378,51 +360,51 @@ bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) cons
   return false;
 }
 
-bool TypeSystem::is_promotable(const XQType& srctype, const XQType& targettype) const
+bool RootTypeManager::is_promotable(const XQType& srctype, const XQType& targettype) const
 {
   return false;
 }
 
-bool TypeSystem::is_atomic(const XQType& type) const
+bool RootTypeManager::is_atomic(const XQType& type) const
 {
-  return type.m_quantifier == QUANT_ONE && type.type_kind() == XQType::ATOMIC_TYPE_KIND;
+  return type.get_quantifier() == TypeConstants::QUANT_ONE && type.type_kind() == XQType::ATOMIC_TYPE_KIND;
 }
 
-bool TypeSystem::is_simple(const XQType& type) const
+bool RootTypeManager::is_simple(const XQType& type) const
 {
   return type.type_kind() == XQType::ATOMIC_TYPE_KIND;
 }
 
-bool TypeSystem::is_numeric(const XQType& type) const
+bool RootTypeManager::is_numeric(const XQType& type) const
 {
   return is_subtype(type, *DOUBLE_TYPE_ONE)
     || is_subtype(type, *FLOAT_TYPE_ONE)
     || is_subtype(type, *DECIMAL_TYPE_ONE);
 }
 
-TypeSystem::atomic_type_code_t TypeSystem::get_atomic_type_code(const XQType& type) const
+TypeConstants::atomic_type_code_t RootTypeManager::get_atomic_type_code(const XQType& type) const
 {
   assert(type.type_kind() == XQType::ATOMIC_TYPE_KIND);
-  return (static_cast<const AtomicXQType&>(type)).m_type_code;
+  return (static_cast<const AtomicXQType&>(type)).get_type_code();
 }
 
-TypeSystem::xqtref_t TypeSystem::union_type(const XQType& type1, const XQType& type2) const
+xqtref_t RootTypeManager::union_type(const XQType& type1, const XQType& type2) const
 {
-  return TypeSystem::xqtref_t(0);
+  return xqtref_t(0);
 }
 
-TypeSystem::xqtref_t TypeSystem::intersect_type(const XQType& type1, const XQType& type2) const
+xqtref_t RootTypeManager::intersect_type(const XQType& type1, const XQType& type2) const
 {
-  return TypeSystem::xqtref_t(0);
+  return xqtref_t(0);
 }
 
-TypeSystem::xqtref_t TypeSystem::prime_type(const XQType& type) const
+xqtref_t RootTypeManager::prime_type(const XQType& type) const
 {
   if (is_equal(type, *EMPTY_TYPE)) {
     return NONE_TYPE;
   } else if (type.type_kind() == XQType::ATOMIC_TYPE_KIND) {
     const AtomicXQType& atype = static_cast<const AtomicXQType&>(type);
-    return create_atomic_type(atype.m_type_code, QUANT_ONE);
+    return create_atomic_type(atype.get_type_code(), TypeConstants::QUANT_ONE);
   } else if (is_equal(type, *NONE_TYPE)) {
     return NONE_TYPE;
   } else if (type.type_kind() == XQType::ITEM_KIND) {
@@ -435,14 +417,14 @@ TypeSystem::xqtref_t TypeSystem::prime_type(const XQType& type) const
     return ITEM_TYPE_ONE;
   } else if (type.type_kind() == XQType::NODE_TYPE_KIND) {
     const NodeXQType& ntype = static_cast<const NodeXQType&>(type);
-    return create_node_type(ntype.m_nodetest, ntype.m_content_type, TypeSystem::QUANT_ONE);
+    return create_node_type(ntype.get_nodetest(), ntype.get_content_type(), TypeConstants::QUANT_ONE);
   }
   Assert(false);
 
   return NULL;
 }
 
-TypeSystem::xqtref_t TypeSystem::arithmetic_type(const XQType& type1, const XQType& type2) const
+xqtref_t RootTypeManager::arithmetic_type(const XQType& type1, const XQType& type2) const
 {
   if (is_subtype(type1, *UNTYPED_ATOMIC_TYPE_ONE)
       || is_subtype(type2, *UNTYPED_ATOMIC_TYPE_ONE)
@@ -466,11 +448,11 @@ TypeSystem::xqtref_t TypeSystem::arithmetic_type(const XQType& type1, const XQTy
   return INTEGER_TYPE_ONE;
 }
 
-rchandle<NodeNameTest> TypeSystem::get_nametest(const XQType& type) const
+rchandle<NodeNameTest> RootTypeManager::get_nametest(const XQType& type) const
 {
   if (type.type_kind() == XQType::NODE_TYPE_KIND) {
     const NodeXQType& n = static_cast<const NodeXQType&>(type);
-    const NodeTest *nt = n.m_nodetest.getp();
+    const NodeTest *nt = n.get_nodetest().getp();
     if (nt) {
       return rchandle<NodeNameTest>(nt->get_nametest());
     }
@@ -478,35 +460,24 @@ rchandle<NodeNameTest> TypeSystem::get_nametest(const XQType& type) const
   return rchandle<NodeNameTest>(0);
 }
 
-
-NodeXQType::NodeXQType(
-    rchandle<NodeTest> nodetest,
-    TypeSystem::xqtref_t content_type,
-    TypeSystem::quantifier_t quantifier)
-  :
-  XQType(quantifier), m_nodetest(nodetest), m_content_type(content_type)
+xqtref_t RootTypeManager::create_type(const TypeIdentifier& ident) const
 {
-}
-
-
-TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
-{
-  TypeSystem::quantifier_t q = TypeSystem::QUANT_ONE;
+  TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
   switch(ident.get_quantifier()) {
     case TypeIdentifier::QUANT_ONE:
-      q = TypeSystem::QUANT_ONE;
+      q = TypeConstants::QUANT_ONE;
       break;
 
     case TypeIdentifier::QUANT_QUESTION:
-      q = TypeSystem::QUANT_QUESTION;
+      q = TypeConstants::QUANT_QUESTION;
       break;
 
     case TypeIdentifier::QUANT_PLUS:
-      q = TypeSystem::QUANT_PLUS;
+      q = TypeConstants::QUANT_PLUS;
       break;
 
     case TypeIdentifier::QUANT_STAR:
-      q = TypeSystem::QUANT_STAR;
+      q = TypeConstants::QUANT_STAR;
       break;
   }
 
@@ -565,23 +536,23 @@ TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
       return create_empty_type();
   }
 
-  return TypeSystem::xqtref_t(0);
+  return xqtref_t(0);
 }
 
 
-TypeSystem::xqtref_t TypeSystem::create_type(
+xqtref_t RootTypeManager::create_type(
     const XQType& type,
-    quantifier_t quantifier) const
+    TypeConstants::quantifier_t quantifier) const
 {
   // TODO: full implem. danm: at least provide atomic types for now
   switch(type.type_kind()) {
     case XQType::ATOMIC_TYPE_KIND:
-      return create_atomic_type(static_cast <const AtomicXQType *> (& type)->m_type_code, quantifier);
+      return create_atomic_type(static_cast <const AtomicXQType *> (& type)->get_type_code(), quantifier);
 
     case XQType::NODE_TYPE_KIND:
       {
         const NodeXQType& nt = static_cast<const NodeXQType&>(type);
-        return create_node_type(nt.m_nodetest, nt.m_content_type, quantifier);
+        return create_node_type(nt.get_nodetest(), nt.get_content_type(), quantifier);
       }
 
     case XQType::ANY_TYPE_KIND:
@@ -608,28 +579,28 @@ TypeSystem::xqtref_t TypeSystem::create_type(
 }
 
 
-TypeSystem::xqtref_t TypeSystem::create_node_type(
+xqtref_t RootTypeManager::create_node_type(
     rchandle<NodeTest> nodetest,
     xqtref_t content_type,
-    TypeSystem::quantifier_t quantifier) const
+    TypeConstants::quantifier_t quantifier) const
 {
   return new NodeXQType(nodetest, content_type, quantifier);
 }
 
 
-static inline TypeIdentifier::quantifier_t get_typeident_quant(TypeSystem::quantifier_t quant)
+static inline TypeIdentifier::quantifier_t get_typeident_quant(TypeConstants::quantifier_t quant)
 {
   switch(quant) {
-    case TypeSystem::QUANT_ONE:
+    case TypeConstants::QUANT_ONE:
       return TypeIdentifier::QUANT_ONE;
 
-    case TypeSystem::QUANT_QUESTION:
+    case TypeConstants::QUANT_QUESTION:
       return TypeIdentifier::QUANT_QUESTION;
 
-    case TypeSystem::QUANT_STAR:
+    case TypeConstants::QUANT_STAR:
       return TypeIdentifier::QUANT_STAR;
 
-    case TypeSystem::QUANT_PLUS:
+    case TypeConstants::QUANT_PLUS:
       return TypeIdentifier::QUANT_PLUS;
 
     default:
@@ -639,20 +610,20 @@ static inline TypeIdentifier::quantifier_t get_typeident_quant(TypeSystem::quant
   return TypeIdentifier::QUANT_ONE;
 }
 
-type_ident_ref_t TypeSystem::get_type_identifier(const XQType& type) const
+type_ident_ref_t RootTypeManager::get_type_identifier(const XQType& type) const
 {
   TypeIdentifier::quantifier_t q = get_typeident_quant(quantifier(type));
   switch(type.type_kind()) {
     case XQType::ATOMIC_TYPE_KIND:
       {
         const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
-        return type_ident_ref_t(new NamedTypeIdentifier(q, *m_atomic_typecode_qname_map[at.m_type_code]));
+        return type_ident_ref_t(new NamedTypeIdentifier(q, *m_atomic_typecode_qname_map[at.get_type_code()]));
       }
     case XQType::NODE_TYPE_KIND:
       {
         const NodeXQType& nt = static_cast<const NodeXQType&>(type);
-        const type_ident_ref_t& content_type = get_type_identifier(*nt.m_content_type);
-        const NodeTest *test = nt.m_nodetest.getp();
+        const type_ident_ref_t& content_type = get_type_identifier(*nt.get_content_type());
+        const NodeTest *test = nt.get_nodetest().getp();
         const NodeNameTest *nametest = test->get_nametest().getp();
         switch(test->get_kind()) {
           case StoreConsts::anyNode:
@@ -701,87 +672,85 @@ type_ident_ref_t TypeSystem::get_type_identifier(const XQType& type) const
   return type_ident_ref_t(0);
 }
 
-
-
-const char *XQType::KIND_STRINGS[XQType::NONE_KIND + 1] =
+xqtref_t RootTypeManager::create_type(
+    Item_t qname,
+    TypeConstants::quantifier_t quantifier) const
 {
-  "ATOMIC_TYPE_KIND",
-  "NODE_TYPE_KIND",
-  "ANY_TYPE_KIND",
-  "ITEM_KIND",
-  "ANY_SIMPLE_TYPE_KIND",
-  "UNTYPED_KIND",
-  "EMPTY_KIND",
-  "NONE_KIND"
-};
-
-std::ostream& XQType::serialize(std::ostream& os) const
-{
-  return os << "[XQType " << KIND_STRINGS[type_kind()] << decode_quantifier (GENV_TYPESYSTEM.quantifier (*this)) << "]";
+  if (m_atomic_qnametype_map.find(qname) != m_atomic_qnametype_map.end()) {
+    return create_atomic_type(qname, quantifier);
+  }
+  else if (qname == XS_ANY_TYPE_QNAME) {
+    return create_any_type();
+  }
+  else if (qname == XS_ANY_SIMPLE_TYPE_QNAME) {
+    return create_any_simple_type();
+  }
+  else if (qname == XS_UNTYPED_QNAME) {
+    return create_untyped_type();
+  }
+  return xqtref_t(0);
 }
 
 
-std::string XQType::toString() const
+xqtref_t RootTypeManager::create_atomic_type(
+    TypeConstants::atomic_type_code_t type_code,
+    TypeConstants::quantifier_t quantifier) const
 {
-  std::ostringstream os;
-  serialize(os);
-  return os.str();
+  return *m_atomic_typecode_map[type_code][quantifier];
 }
 
 
-const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeSystem::ATOMIC_TYPE_CODE_LIST_SIZE] =
+xqtref_t RootTypeManager::create_atomic_type(
+    Item_t qname,
+    TypeConstants::quantifier_t quantifier) const
 {
-  "XS_ANY_ATOMIC",
-  "XS_STRING",
-  "XS_NORMALIZED_STRING",
-  "XS_TOKEN",
-  "XS_LANGUAGE",
-  "XS_NMTOKEN",
-  "XS_NAME",
-  "XS_NCNAME",
-  "XS_ID",
-  "XS_IDREF",
-  "XS_ENTITY",
-  "XS_UNTYPED_ATOMIC",
-  "XS_DATETIME",
-  "XS_DATE",
-  "XS_TIME",
-  "XS_DURATION",
-  "XS_DT_DURATION",
-  "XS_YM_DURATION",
-  "XS_FLOAT",
-  "XS_DOUBLE",
-  "XS_DECIMAL",
-  "XS_INTEGER",
-  "XS_NON_POSITIVE_INTEGER",
-  "XS_NEGATIVE_INTEGER",
-  "XS_LONG",
-  "XS_INT",
-  "XS_SHORT",
-  "XS_BYTE",
-  "XS_NON_NEGATIVE_INTEGER",
-  "XS_UNSIGNED_LONG",
-  "XS_UNSIGNED_INT",
-  "XS_UNSIGNED_SHORT",
-  "XS_UNSIGNED_BYTE",
-  "XS_POSITIVE_INTEGER",
-  "XS_GYEAR_MONTH",
-  "XS_GYEAR",
-  "XS_GMONTH_DAY",
-  "XS_GDAY",
-  "XS_GMONTH",
-  "XS_BOOLEAN",
-  "XS_BASE64BINARY",
-  "XS_HEXBINARY",
-  "XS_ANY_URI",
-  "XS_QNAME",
-  "XS_NOTATION"
-};
-
-std::ostream& AtomicXQType::serialize(std::ostream& os) const
-{
-  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[m_type_code] << decode_quantifier (GENV_TYPESYSTEM.quantifier (*this)) << "]";
+  qnametype_map_t::const_iterator i = m_atomic_qnametype_map.find(qname);
+  return (i == m_atomic_qnametype_map.end()) ? 
+    xqtref_t (NULL) : create_atomic_type(i->second, quantifier);
 }
 
+
+xqtref_t RootTypeManager::create_any_type() const
+{
+  return ANY_TYPE;
+}
+
+
+xqtref_t RootTypeManager::create_item_type(
+    TypeConstants::quantifier_t quantifier) const
+{
+  switch(quantifier) {
+    case TypeConstants::QUANT_ONE:
+      return ITEM_TYPE_ONE;
+    case TypeConstants::QUANT_QUESTION:
+      return ITEM_TYPE_QUESTION;
+    case TypeConstants::QUANT_STAR:
+      return ITEM_TYPE_STAR;
+    case TypeConstants::QUANT_PLUS:
+      return ITEM_TYPE_PLUS;
+    default:
+      return xqtref_t(0);
+  }
+}
+
+xqtref_t RootTypeManager::create_any_simple_type() const
+{
+  return ANY_SIMPLE_TYPE;
+}
+
+xqtref_t RootTypeManager::create_untyped_type() const
+{
+  return UNTYPED_TYPE;
+}
+
+xqtref_t RootTypeManager::create_empty_type() const
+{
+  return EMPTY_TYPE;
+}
+
+xqtref_t RootTypeManager::create_none_type() const
+{
+  return NONE_TYPE;
+}
 
 /* vim:set ts=2 sw=2: */

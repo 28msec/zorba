@@ -2,7 +2,7 @@
 #include <string>
 
 #include "types/casting.h"
-#include "types/typesystem.h"
+#include "types/root_typemanager.h"
 #include "system/globalenv.h"
 #include "system/zorba.h"
 #include "zorba_api.h"

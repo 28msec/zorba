@@ -7,7 +7,6 @@
 #define XQP_BOOLEAN_IMPL_H
 
 #include "context/common.h"
-#include "types/typesystem.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"

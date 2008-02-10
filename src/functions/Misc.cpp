@@ -20,7 +20,7 @@ PlanIter_t fn_trace_func::operator()(const yy::location& loc, std::vector<PlanIt
   return new FnTraceIterator ( loc, argv );
 }
 
-TypeSystem::xqtref_t fn_trace_func::type_check(signature& sig) const
+xqtref_t fn_trace_func::type_check(signature& sig) const
 {
   return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }

@@ -879,18 +879,18 @@ ArithmeticIteratorDurationDateTime<Operations>::ArithmeticIteratorDurationDateTi
   {
     n0 = n0->getAtomizationValue();
     n1 = n1->getAtomizationValue();
-    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeSystem::QUANT_ONE );
+    xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
 
     Item_t res;
 
     switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *type0 ))
     {
       //TODO change the type
-      //case TypeSystem::XS_DT_DURATION:
-      case TypeSystem::XS_DURATION:
+      //case TypeConstants::XS_DT_DURATION:
+      case TypeConstants::XS_DURATION:
         res = Operations::opDtDuration ( &aLoc, n0, n1 );
         break;
-      case TypeSystem::XS_YM_DURATION:
+      case TypeConstants::XS_YM_DURATION:
         res = Operations::opYmDuration ( &aLoc, n0, n1 );
         break;
       default:

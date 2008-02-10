@@ -22,7 +22,7 @@ namespace xqp
 static bool empty_item (Item_t s)
 {
   return (s == 0) ||
-         (GENV_TYPESYSTEM.is_numeric(*GENV_TYPESYSTEM.create_type(s->getType(), TypeSystem::QUANT_ONE)) &&
+         (GENV_TYPESYSTEM.is_numeric(*GENV_TYPESYSTEM.create_type(s->getType(), TypeConstants::QUANT_ONE)) &&
           s->isNaN());
   }
 

@@ -32,7 +32,6 @@
 #include "functions/function.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
-#include "types/typesystem.h"
 #include "util/Assert.h"
 
 #include "context/static_context_api.h"
@@ -137,11 +136,11 @@ public:
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), fname), f);
   }
 
-	void add_variable_type( const xqp_string var_name, TypeSystem::xqtref_t var_type);
-	TypeSystem::xqtref_t  get_variable_type( Item *var_name );
+	void add_variable_type( const xqp_string var_name, xqtref_t var_type);
+	xqtref_t  get_variable_type( Item *var_name );
 
-	void bind_type( xqp_string key, TypeSystem::xqtref_t t);
-	TypeSystem::xqtref_t  lookup_type (xqp_string key);
+	void bind_type( xqp_string key, xqtref_t t);
+	xqtref_t  lookup_type (xqp_string key);
 
 	COLLATION_OBJ	*lookup_collation(xqp_string coll_uri);
 	void		bind_collation(xqp_string coll_uri, COLLATION_OBJ*);
@@ -178,20 +177,20 @@ public:
 										bool is_user_created);
 	::Collator *getDefaultCollation();
 
-	void set_context_item_static_type(TypeSystem::xqtref_t t);
-	TypeSystem::xqtref_t		context_item_static_type();
+	void set_context_item_static_type(xqtref_t t);
+	xqtref_t		context_item_static_type();
 
-	void set_default_collection_type(TypeSystem::xqtref_t t);
-	TypeSystem::xqtref_t		default_collection_type();
+	void set_default_collection_type(xqtref_t t);
+	xqtref_t		default_collection_type();
 
-	void set_function_type(const Item *qname, TypeSystem::xqtref_t t);
-  TypeSystem::xqtref_t get_function_type(const Item_t);
+	void set_function_type(const Item *qname, xqtref_t t);
+  xqtref_t get_function_type(const Item_t);
 	
-	void set_document_type(xqp_string docURI, TypeSystem::xqtref_t t);
-  TypeSystem::xqtref_t get_document_type(const xqp_string);
+	void set_document_type(xqp_string docURI, xqtref_t t);
+  xqtref_t get_document_type(const xqp_string);
 	
-	void set_collection_type(xqp_string collURI, TypeSystem::xqtref_t t);
-  TypeSystem::xqtref_t get_collection_type(const xqp_string);
+	void set_collection_type(xqp_string collURI, xqtref_t t);
+  xqtref_t get_collection_type(const xqp_string);
 	
 	StaticQueryContext::ordering_mode_t ordering_mode() const;
 	void set_ordering_mode(StaticQueryContext::ordering_mode_t v);

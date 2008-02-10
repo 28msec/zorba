@@ -5,7 +5,7 @@
 #include "system/zorba.h"
 #include "errors/error_factory.h"
 #include "system/globalenv.h"
-#include "types/typesystem.h"
+#include "types/root_typemanager.h"
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 #include "store/api/item.h"

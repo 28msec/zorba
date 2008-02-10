@@ -22,7 +22,7 @@ namespace xqp
 		return this->createIterator(loc, argv);
 	}
 
-	TypeSystem::xqtref_t
+	xqtref_t
 	GenericOpComparison::type_check ( signature& sig ) const
 	{
 		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
@@ -152,7 +152,7 @@ namespace xqp
 		return new OpIsSameNodeIterator ( loc, argv );
 	}
 
-	TypeSystem::xqtref_t
+	xqtref_t
 	op_is_same_node::type_check (
 	    signature& sig ) const
 	{
@@ -175,7 +175,7 @@ namespace xqp
 		return new OpNodeBeforeIterator ( loc, argv );
 	}
 
-	TypeSystem::xqtref_t
+	xqtref_t
 	op_node_before::type_check (
 	    signature& sig ) const
 	{
@@ -198,7 +198,7 @@ namespace xqp
 		return new OpNodeAfterIterator ( loc, argv );
 	}
 
-	TypeSystem::xqtref_t
+	xqtref_t
 	op_node_after::type_check (
 	    signature& sig ) const
 	{
@@ -223,7 +223,7 @@ namespace xqp
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::AND );
 	}
 
-	TypeSystem::xqtref_t
+	xqtref_t
 	op_and::type_check (
 	    signature& sig ) const
 	{
@@ -248,7 +248,7 @@ namespace xqp
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::OR );
 	}
 
-	TypeSystem::xqtref_t
+	xqtref_t
 	op_or::type_check (
 	    signature& sig ) const
 	{
@@ -273,7 +273,7 @@ namespace xqp
 		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(true) );
 	}
 
-	TypeSystem::xqtref_t
+	xqtref_t
 	fn_true::type_check (
 	    signature& sig ) const
 	{
@@ -298,7 +298,7 @@ namespace xqp
 		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(false) );
 	}
 
-	TypeSystem::xqtref_t
+	xqtref_t
 	fn_false::type_check (
 	    signature& sig ) const
 	{
@@ -323,7 +323,7 @@ namespace xqp
 		return new FnBooleanIterator(loc, argv[0], true );
 	}
 
-	TypeSystem::xqtref_t
+	xqtref_t
 	fn_not::type_check (
 	    signature& sig ) const
 	{
@@ -348,7 +348,7 @@ namespace xqp
 		return new FnBooleanIterator ( loc, argv[0] );
 	}
 
-	TypeSystem::xqtref_t
+	xqtref_t
 	fn_boolean::type_check (
 	    signature& sig ) const
 	{

@@ -153,7 +153,7 @@ unsigned long dynamic_context::context_position()
 	return ctxt_position;
 }
 
-TypeSystem::xqtref_t dynamic_context::context_item_type() const
+xqtref_t dynamic_context::context_item_type() const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
@@ -161,7 +161,7 @@ TypeSystem::xqtref_t dynamic_context::context_item_type() const
 //daniel DECL_ENUM_PARAM (dynamic_context, ordering_mode)
 
 void dynamic_context::set_context_item_type(
-	TypeSystem::xqtref_t v)
+	xqtref_t v)
 {
 }
 

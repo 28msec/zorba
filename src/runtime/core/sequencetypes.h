@@ -8,7 +8,7 @@
 #include "compiler/parser/location.hh"
 #include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h"
-#include "types/typesystem.h"
+#include "types/root_typemanager.h"
 #include "types/casting.h"
 
 #include <assert.h>
@@ -28,12 +28,12 @@ class InstanceOfIterator : public UnaryBaseIterator<InstanceOfIterator, PlanIter
 {
 
 private:
-  TypeSystem::xqtref_t theSequenceType;
+  xqtref_t theSequenceType;
 
 public:
   InstanceOfIterator(yy::location loc, 
                      PlanIter_t& aTreatExpr, 
-                     TypeSystem::xqtref_t aSequenceType);
+                     xqtref_t aSequenceType);
  
   ~InstanceOfIterator();
   
@@ -50,13 +50,13 @@ public:
 class CastIterator : public UnaryBaseIterator<CastIterator, PlanIteratorState> {
   friend class PrinterVisitor;
 private:
-  TypeSystem::xqtref_t theCastType;
-  TypeSystem::quantifier_t theQuantifier;
+  xqtref_t theCastType;
+  TypeConstants::quantifier_t theQuantifier;
 
 public:
   CastIterator(const yy::location& loc,
                PlanIter_t& aChild,
-               const TypeSystem::xqtref_t& aCastType);
+               const xqtref_t& aCastType);
   
   Item_t nextImpl(PlanState& aPlanState);
   virtual void accept(PlanIterVisitor&) const;
@@ -71,13 +71,13 @@ public:
 class CastableIterator : public UnaryBaseIterator<CastableIterator, PlanIteratorState> {
   friend class PrinterVisitor;
 private:
-  TypeSystem::xqtref_t theCastType;
-  TypeSystem::quantifier_t theQuantifier;
+  xqtref_t theCastType;
+  TypeConstants::quantifier_t theQuantifier;
 
 public:
   CastableIterator(const yy::location& aLoc,
                    PlanIter_t& aChild,
-                   const TypeSystem::xqtref_t& aCastType);
+                   const xqtref_t& aCastType);
 
   Item_t nextImpl(PlanState& aPlanState);
   virtual void accept(PlanIterVisitor&) const;
@@ -90,11 +90,11 @@ public:
 class PromoteIterator : public UnaryBaseIterator<PromoteIterator, PlanIteratorState> {
   friend class PrinterVisitor;
 private:
-  TypeSystem::xqtref_t thePromoteType;
-  TypeSystem::quantifier_t theQuantifier;
+  xqtref_t thePromoteType;
+  TypeConstants::quantifier_t theQuantifier;
 
 public:
-  PromoteIterator(const yy::location&, PlanIter_t&, const TypeSystem::xqtref_t& aPromoteType);
+  PromoteIterator(const yy::location&, PlanIter_t&, const xqtref_t& aPromoteType);
   Item_t nextImpl(PlanState& aPlanState);
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -106,12 +106,12 @@ public:
 class TreatIterator : public UnaryBaseIterator<TreatIterator, PlanIteratorState> {
   friend class PrinterVisitor;
 private:
-  TypeSystem::xqtref_t theTreatType;
-  TypeSystem::quantifier_t theQuantifier;
+  xqtref_t theTreatType;
+  TypeConstants::quantifier_t theQuantifier;
   ZorbaError::ErrorCodes theErrorCode;
 
 public:
-  TreatIterator(const yy::location&, PlanIter_t&, const TypeSystem::xqtref_t& aTreatType, enum ZorbaError::ErrorCodes);
+  TreatIterator(const yy::location&, PlanIter_t&, const xqtref_t& aTreatType, enum ZorbaError::ErrorCodes);
   Item_t nextImpl(PlanState& aPlanState);
   virtual void accept(PlanIterVisitor&) const;
 };

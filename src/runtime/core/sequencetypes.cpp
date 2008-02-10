@@ -11,7 +11,7 @@ namespace xqp
 ********************************************************************************/
 InstanceOfIterator::InstanceOfIterator(yy::location loc,
                                        PlanIter_t& aTreatExpr,
-                                       TypeSystem::xqtref_t aSequenceType)
+                                       xqtref_t aSequenceType)
   : UnaryBaseIterator<InstanceOfIterator, PlanIteratorState> ( loc, aTreatExpr ),
     theSequenceType (aSequenceType)
 { }
@@ -24,8 +24,8 @@ Item_t
 InstanceOfIterator::nextImpl(PlanState& planState)
 {
   Item_t lTreatItem;
-  TypeSystem::xqtref_t lTreatType;
-  TypeSystem::quantifier_t lQuantifier;
+  xqtref_t lTreatType;
+  TypeConstants::quantifier_t lQuantifier;
   bool lResult;
 
   PlanIteratorState* state;
@@ -38,15 +38,15 @@ InstanceOfIterator::nextImpl(PlanState& planState)
   if (lTreatItem != 0)
   {
     if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), 
-                                    TypeSystem::QUANT_ONE), *theSequenceType)) {
+                                    TypeConstants::QUANT_ONE), *theSequenceType)) {
       lTreatItem = consumeNext(theChild, planState);
       if (lTreatItem != 0) {
-        if (lQuantifier == TypeSystem::QUANT_ONE || lQuantifier == TypeSystem::QUANT_QUESTION) {
+        if (lQuantifier == TypeConstants::QUANT_ONE || lQuantifier == TypeConstants::QUANT_QUESTION) {
           lResult = false;
         } else {
           lResult = true;
           do {
-            if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), TypeSystem::QUANT_ONE), *theSequenceType)) {
+            if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), TypeConstants::QUANT_ONE), *theSequenceType)) {
               lResult = false;
             }
             lTreatItem = consumeNext(theChild, planState);
@@ -61,8 +61,8 @@ InstanceOfIterator::nextImpl(PlanState& planState)
   }
   else
   {
-    if ((lQuantifier == TypeSystem::QUANT_ONE
-        || lQuantifier == TypeSystem::QUANT_PLUS)
+    if ((lQuantifier == TypeConstants::QUANT_ONE
+        || lQuantifier == TypeConstants::QUANT_PLUS)
         && !GENV_TYPESYSTEM.is_equal(*GENV_TYPESYSTEM.EMPTY_TYPE, *theSequenceType)) {
       lResult = false;
     } else {
@@ -83,10 +83,10 @@ InstanceOfIterator::nextImpl(PlanState& planState)
 CastIterator::CastIterator(
     const yy::location& loc,
     PlanIter_t& aChild,
-    const TypeSystem::xqtref_t& aCastType)
+    const xqtref_t& aCastType)
   : UnaryBaseIterator<CastIterator, PlanIteratorState>(loc, aChild)
 {
-  theCastType = GENV_TYPESYSTEM.create_type(*aCastType, TypeSystem::QUANT_ONE);  
+  theCastType = GENV_TYPESYSTEM.create_type(*aCastType, TypeConstants::QUANT_ONE);  
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aCastType);
 }
 
@@ -101,16 +101,16 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState)
   lItem = consumeNext(theChild, aPlanState);
   if (lItem == 0)
   {
-    if (theQuantifier == TypeSystem::QUANT_PLUS ||
-        theQuantifier == TypeSystem::QUANT_ONE)
+    if (theQuantifier == TypeConstants::QUANT_PLUS ||
+        theQuantifier == TypeConstants::QUANT_ONE)
     {
       ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION,
         "Empty sequences cannot be casted to a type with quantifier ONE or PLUS!"
       );
     }
   }
-  else if (theQuantifier == TypeSystem::QUANT_ONE ||
-          theQuantifier == TypeSystem::QUANT_QUESTION)
+  else if (theQuantifier == TypeConstants::QUANT_ONE ||
+          theQuantifier == TypeConstants::QUANT_QUESTION)
   {
     if (consumeNext(theChild, aPlanState) != NULL)
     {
@@ -143,11 +143,11 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState)
 CastableIterator::CastableIterator(
   const yy::location& aLoc,
   PlanIter_t& aChild,
-  const TypeSystem::xqtref_t& aCastType)
+  const xqtref_t& aCastType)
 :
   UnaryBaseIterator<CastableIterator, PlanIteratorState>(aLoc, aChild)
 {
-  theCastType = GENV_TYPESYSTEM.create_type(*aCastType, TypeSystem::QUANT_ONE);  
+  theCastType = GENV_TYPESYSTEM.create_type(*aCastType, TypeConstants::QUANT_ONE);  
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aCastType);
 }
 
@@ -159,7 +159,7 @@ Item_t CastableIterator::nextImpl(PlanState& aPlanState) {
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
   lItem = consumeNext(theChild, aPlanState);
   if (lItem == 0) {
-    if (theQuantifier == TypeSystem::QUANT_PLUS || theQuantifier == TypeSystem::QUANT_ONE) {
+    if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
       lBool = false;
     } else {
       lBool = true;
@@ -169,7 +169,7 @@ Item_t CastableIterator::nextImpl(PlanState& aPlanState) {
     if (lBool) {
       lItem = consumeNext(theChild, aPlanState);
       if (lItem != 0) {
-        if (theQuantifier == TypeSystem::QUANT_ONE || theQuantifier == TypeSystem::QUANT_QUESTION) {
+        if (theQuantifier == TypeConstants::QUANT_ONE || theQuantifier == TypeConstants::QUANT_QUESTION) {
           lBool = false;
         } else {
           do {
@@ -185,10 +185,10 @@ Item_t CastableIterator::nextImpl(PlanState& aPlanState) {
   STACK_END();
 }
 
-PromoteIterator::PromoteIterator(const yy::location& aLoc, PlanIter_t& aChild, const TypeSystem::xqtref_t& aPromoteType)
+PromoteIterator::PromoteIterator(const yy::location& aLoc, PlanIter_t& aChild, const xqtref_t& aPromoteType)
   : UnaryBaseIterator<PromoteIterator, PlanIteratorState>(aLoc, aChild)
 {
-  thePromoteType = GENV_TYPESYSTEM.create_type(*aPromoteType, TypeSystem::QUANT_ONE);  
+  thePromoteType = GENV_TYPESYSTEM.create_type(*aPromoteType, TypeConstants::QUANT_ONE);  
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aPromoteType);
 }
 
@@ -201,19 +201,19 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
   lItem = consumeNext(theChild, aPlanState);
   
   if (lItem == 0) {
-    if (theQuantifier == TypeSystem::QUANT_PLUS || theQuantifier == TypeSystem::QUANT_ONE) {
+    if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
       ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, 
       "Empty seq cannot be promoted to QUANT_ONE or QUANT_PULS type.");
     }
-  } else if(theQuantifier == TypeSystem::QUANT_QUESTION 
-         || theQuantifier == TypeSystem::QUANT_ONE) {
+  } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
+         || theQuantifier == TypeConstants::QUANT_ONE) {
     if(consumeNext(theChild, aPlanState) != 0) {
       ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, 
       "Seq with 2 or more items cannot be promotioned to a QUANT_QUESTION or QUANT_ONE type.");
     }
     lResult = GenericCast::instance()->promote(lItem, thePromoteType);
     if (lResult == 0) {
-      ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeSystem::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
+      ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
     } else {
       STACK_PUSH(lResult, lState);
     }
@@ -221,7 +221,7 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
     do {
       lResult = GenericCast::instance()->promote(lItem, thePromoteType);
       if (lResult == 0) {
-        ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeSystem::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
+        ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
       } else{
         STACK_PUSH(lResult, lState);
       }
@@ -231,10 +231,10 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
   STACK_END();
 }
 
-  TreatIterator::TreatIterator(const yy::location& aLoc, PlanIter_t& aChild, const TypeSystem::xqtref_t& aTreatType, ZorbaError::ErrorCodes aErrorCode)
+  TreatIterator::TreatIterator(const yy::location& aLoc, PlanIter_t& aChild, const xqtref_t& aTreatType, ZorbaError::ErrorCodes aErrorCode)
   : UnaryBaseIterator<TreatIterator, PlanIteratorState>(aLoc, aChild), theErrorCode (aErrorCode)
 {
-  theTreatType = GENV_TYPESYSTEM.create_type(*aTreatType, TypeSystem::QUANT_ONE);  
+  theTreatType = GENV_TYPESYSTEM.create_type(*aTreatType, TypeConstants::QUANT_ONE);  
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aTreatType);
 }
 
@@ -246,25 +246,25 @@ Item_t TreatIterator::nextImpl(PlanState& aPlanState) {
   lItem = consumeNext(theChild, aPlanState);
   
   if (lItem == 0) {
-    if (theQuantifier == TypeSystem::QUANT_PLUS || theQuantifier == TypeSystem::QUANT_ONE) {
+    if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
       ZORBA_ERROR_ALERT( theErrorCode, &loc, DONT_CONTINUE_EXECUTION, 
       "Empty seq cannot be treated as QUANT_ONE or QUANT_PULS type.");
     }
-  } else if(theQuantifier == TypeSystem::QUANT_QUESTION 
-         || theQuantifier == TypeSystem::QUANT_ONE) {
+  } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
+         || theQuantifier == TypeConstants::QUANT_ONE) {
     if(consumeNext(theChild, aPlanState) != 0) {
       ZORBA_ERROR_ALERT( theErrorCode, &loc, DONT_CONTINUE_EXECUTION,
       "Seq with 2 or more items cannot treated as a QUANT_QUESTION or QUANT_ONE type.");
     }
-    if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lItem->getType(), TypeSystem::QUANT_ONE), *theTreatType)) {
-      ZORBA_ERROR_ALERT( theErrorCode, &loc, DONT_CONTINUE_EXECUTION, "Cannot treat " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeSystem::QUANT_ONE)) + " as " + GENV_TYPESYSTEM.toString (*theTreatType) );
+    if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lItem->getType(), TypeConstants::QUANT_ONE), *theTreatType)) {
+      ZORBA_ERROR_ALERT( theErrorCode, &loc, DONT_CONTINUE_EXECUTION, "Cannot treat " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + GENV_TYPESYSTEM.toString (*theTreatType) );
     } else {
       STACK_PUSH(lItem, lState);
     }
   } else {
     do {
-      if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lItem->getType(), TypeSystem::QUANT_ONE), *theTreatType)) {
-        ZORBA_ERROR_ALERT( theErrorCode, &loc, DONT_CONTINUE_EXECUTION, "Cannot treat " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeSystem::QUANT_ONE)) + " as " + GENV_TYPESYSTEM.toString (*theTreatType) );
+      if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lItem->getType(), TypeConstants::QUANT_ONE), *theTreatType)) {
+        ZORBA_ERROR_ALERT( theErrorCode, &loc, DONT_CONTINUE_EXECUTION, "Cannot treat " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + GENV_TYPESYSTEM.toString (*theTreatType) );
       } else{
         STACK_PUSH(lItem, lState);
       }

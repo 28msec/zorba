@@ -31,7 +31,6 @@
 #include "functions/library.h"
 #include "store/api/item.h"
 #include "util/rchandle.h"
-#include "types/typesystem.h"
 
 namespace xqp {
 
@@ -82,10 +81,10 @@ public:
 	Item_t context_item() const;
 	unsigned long	context_position();
 
-	TypeSystem::xqtref_t context_item_type() const;
+	xqtref_t context_item_type() const;
 
 	void set_context_item(Item_t, unsigned long position);
-	void set_context_item_type(TypeSystem::xqtref_t );
+	void set_context_item_type(xqtref_t );
 
   #if 0
   // return the value of a variable by QName

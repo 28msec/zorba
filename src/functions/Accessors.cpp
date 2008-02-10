@@ -34,7 +34,7 @@ fn_data_func::operator() (
 }
 
 
-TypeSystem::xqtref_t
+xqtref_t
 fn_data_func::type_check (
 	  signature& sig ) const
 {
@@ -75,7 +75,7 @@ PlanIter_t fn_root_func::operator() (
 }
 
 
-TypeSystem::xqtref_t fn_root_func::type_check(signature& sig) const
+xqtref_t fn_root_func::type_check(signature& sig) const
 {
   return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
 }
@@ -110,7 +110,7 @@ PlanIter_t fn_nodename_func::operator() (
 }
 
 
-TypeSystem::xqtref_t fn_nodename_func::type_check(signature& sig) const
+xqtref_t fn_nodename_func::type_check(signature& sig) const
 {
   return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
 }
@@ -147,7 +147,7 @@ PlanIter_t fn_name_func::operator() (
 }
 
 
-TypeSystem::xqtref_t fn_name_func::type_check(signature& sig) const
+xqtref_t fn_name_func::type_check(signature& sig) const
 {
   return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
 }

@@ -237,14 +237,14 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
     return f;
   }
 
-	TypeSystem::xqtref_t static_context::lookup_type( xqp_string key)
+	xqtref_t static_context::lookup_type( xqp_string key)
 	{
     ctx_value_t val;
     Assert (context_value (key, val));
     return val.typeValue;
 	}
 
-	void	static_context::bind_type(xqp_string key, TypeSystem::xqtref_t t)
+	void	static_context::bind_type(xqp_string key, xqtref_t t)
 	{
 		ctx_value_t v;
     v.typeValue = &*t;
@@ -254,43 +254,43 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
 
 	void static_context::add_variable_type(
 		const xqp_string var_name, 
-		TypeSystem::xqtref_t var_type)
+		xqtref_t var_type)
 	{
 		bind_type("type:var:" + qname_internal_key("", var_name), var_type);
 	}
 
-	TypeSystem::xqtref_t	static_context::get_variable_type(
+	xqtref_t	static_context::get_variable_type(
 		Item *var_name)
 	{
 		return lookup_type( "type:var:" + qname_internal_key("", var_name->getPrefix(), var_name->getLocalName()));
 	}
 
-	void static_context::set_context_item_static_type(TypeSystem::xqtref_t t)
+	void static_context::set_context_item_static_type(xqtref_t t)
 	{
 		bind_type("type:context:", t);
 	}
 
-	TypeSystem::xqtref_t		static_context::context_item_static_type()
+	xqtref_t		static_context::context_item_static_type()
 	{
 		return lookup_type("type:context:");
 	}
 
-	void static_context::set_default_collection_type(TypeSystem::xqtref_t t)
+	void static_context::set_default_collection_type(xqtref_t t)
 	{
 		bind_type("type:defcollection:", t);
 	}
 
-	TypeSystem::xqtref_t		static_context::default_collection_type()
+	xqtref_t		static_context::default_collection_type()
 	{
 		return lookup_type("type:defcollection:");
 	}
 
-void static_context::set_function_type(const Item *qname, TypeSystem::xqtref_t t)
+void static_context::set_function_type(const Item *qname, xqtref_t t)
 {
 	bind_type("type:fun:"+qname_internal_key( default_function_namespace(), qname->getPrefix(), qname->getLocalName()), t);
 }
 
-TypeSystem::xqtref_t static_context::get_function_type(
+xqtref_t static_context::get_function_type(
 	const Item_t qname) 
 {
 	// TODO
@@ -298,12 +298,12 @@ TypeSystem::xqtref_t static_context::get_function_type(
 	return lookup_type("type:fun:" + qname_internal_key( default_function_namespace(), qname->getPrefix(), qname->getLocalName()));
 }
 
-void static_context::set_document_type(xqp_string docURI, TypeSystem::xqtref_t t)
+void static_context::set_document_type(xqp_string docURI, xqtref_t t)
 {
 	bind_type("type:doc:"+docURI, t);
 }
 
-TypeSystem::xqtref_t static_context::get_document_type(
+xqtref_t static_context::get_document_type(
 	const xqp_string docURI) 
 {
 	// TODO
@@ -312,12 +312,12 @@ TypeSystem::xqtref_t static_context::get_document_type(
 
 }
 
-void static_context::set_collection_type(xqp_string collURI, TypeSystem::xqtref_t t)
+void static_context::set_collection_type(xqp_string collURI, xqtref_t t)
 {
 	bind_type("type:collection:"+collURI, t);
 }
 
-TypeSystem::xqtref_t static_context::get_collection_type(
+xqtref_t static_context::get_collection_type(
 	const xqp_string collURI) 
 {
 	// TODO

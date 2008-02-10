@@ -260,9 +260,9 @@ namespace xqp
     Item_t n0;
     Item_t n1;
     Item_t res;
-    TypeSystem::xqtref_t type0;
-    TypeSystem::xqtref_t type1;
-    TypeSystem::xqtref_t resultType;
+    xqtref_t type0;
+    xqtref_t type1;
+    xqtref_t resultType;
 
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -290,26 +290,26 @@ namespace xqp
     n0 = n0->getAtomizationValue();
     n1 = n1->getAtomizationValue();
 
-    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeSystem::QUANT_ONE );
-    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeSystem::QUANT_ONE );
+    xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
+    xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeConstants::QUANT_ONE );
 
-    TypeSystem::xqtref_t resultType = GENV_TYPESYSTEM.arithmetic_type ( *type0, *type1 );
+    xqtref_t resultType = GENV_TYPESYSTEM.arithmetic_type ( *type0, *type1 );
     n0 = GenericCast::instance()->cast ( n0, resultType );
     n1 = GenericCast::instance()->cast ( n1, resultType );
     Item_t res;
 
     switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *resultType ) )
     {
-      case TypeSystem::XS_DOUBLE:
+      case TypeConstants::XS_DOUBLE:
         res = Operations::opDouble ( &aLoc, n0, n1 );
         break;
-      case TypeSystem::XS_FLOAT:
+      case TypeConstants::XS_FLOAT:
         res = Operations::opFloat ( &aLoc,n0, n1 );
         break;
-      case TypeSystem::XS_DECIMAL:
+      case TypeConstants::XS_DECIMAL:
         res = Operations::opDecimal ( &aLoc,n0, n1 );
         break;
-      case TypeSystem::XS_INTEGER:
+      case TypeConstants::XS_INTEGER:
         res = Operations::opInteger ( &aLoc,n0, n1 );
         break;
       default:
@@ -518,7 +518,7 @@ namespace xqp
     Item_t item;
     Item_t res;
     int32_t mul;
-    TypeSystem::xqtref_t type;
+    xqtref_t type;
 
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -526,11 +526,11 @@ namespace xqp
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
-      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       // TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
@@ -586,7 +586,7 @@ namespace xqp
   {
     Item_t item;
     Item_t res;
-    TypeSystem::xqtref_t type;
+    xqtref_t type;
 
     
     PlanIteratorState* state;
@@ -595,11 +595,11 @@ namespace xqp
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
-      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
@@ -657,7 +657,7 @@ namespace xqp
   {
     Item_t item;
     Item_t res;
-    TypeSystem::xqtref_t type;
+    xqtref_t type;
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -667,13 +667,13 @@ namespace xqp
     {
       //get the value and the type of the item
       item = item->getAtomizationValue();
-      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       //item type is subtype of DOUBLE
@@ -714,7 +714,7 @@ namespace xqp
   {
     Item_t item;
     Item_t res;
-    TypeSystem::xqtref_t type;
+    xqtref_t type;
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -724,13 +724,13 @@ namespace xqp
     {
       //get the value and the type of the item
       item = item->getAtomizationValue();
-      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       //item type is subtype of DOUBLE
@@ -771,7 +771,7 @@ namespace xqp
   {
     Item_t item;
     Item_t res;
-    TypeSystem::xqtref_t type;
+    xqtref_t type;
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -781,13 +781,13 @@ namespace xqp
     {
       //get the value and the type of the item
       item = item->getAtomizationValue();
-      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       //item type is subtype of DOUBLE
@@ -840,7 +840,7 @@ namespace xqp
     Item_t item;
     Item_t itemPrec;
     Item_t res;
-    TypeSystem::xqtref_t type;
+    xqtref_t type;
     Integer precision = Integer::parseInt((int32_t)0);
     
     PlanIteratorState* state;
@@ -858,13 +858,13 @@ namespace xqp
       
       //get the value and the type of the item
       item = item->getAtomizationValue();
-      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       //item type is subtype of DOUBLE

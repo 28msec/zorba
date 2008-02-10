@@ -26,7 +26,7 @@
 #define XQP_CASTING_H
 
 #include "util/rchandle.h"
-#include "types/typesystem.h"
+#include "types/root_typemanager.h"
 
 namespace xqp
 {
@@ -53,15 +53,15 @@ namespace xqp
        * @return Created Item or 0 if the parsing was not possible
        */
       Item_t stringSimpleCast(const Item_t aSourceItem,
-                              const TypeSystem::xqtref_t& aSourceType,
-                              const TypeSystem::xqtref_t& aTargetType) const;
+                              const xqtref_t& aSourceType,
+                              const xqtref_t& aTargetType) const;
 
       Item_t castToNCName(const xqpString& str) const;
       
       // XQuery 1.0 and XPath 2.0 Functions and Operators
       // 17.1.6 Casting to xs:boolean
       Item_t castToBoolean(const Item_t aSourceItem,
-                           const TypeSystem::xqtref_t& aSourceType) const;
+                           const xqtref_t& aSourceType) const;
 
     public:
 			/**
@@ -71,7 +71,7 @@ namespace xqp
        * @param aTargetType
 			 * @return resutling item
 			 */
-      Item_t cast ( Item_t aItem, const TypeSystem::xqtref_t& aTargetType ) const;
+      Item_t cast ( Item_t aItem, const xqtref_t& aTargetType ) const;
 
 			/**
 			 * Executes the string casting of the passed string to an item of the passed target type.
@@ -79,7 +79,7 @@ namespace xqp
        * @param aTargetType
 			 * @return resutling item
 			 */
-      Item_t cast ( const xqpString& aStr, const TypeSystem::xqtref_t& aTargetType ) const;
+      Item_t cast ( const xqpString& aStr, const xqtref_t& aTargetType ) const;
 
       /**
        * Checks if the passed item would be castable to the passed target type.
@@ -87,7 +87,7 @@ namespace xqp
        * @param aTargetType
        * @return true if castable, else false
        */
-      bool isCastable( Item_t aItem, const TypeSystem::xqtref_t& aTargetType ) const; 
+      bool isCastable( Item_t aItem, const xqtref_t& aTargetType ) const; 
 
       /**
        * Checks if the passed string is castable to the passed target type.
@@ -95,7 +95,7 @@ namespace xqp
        * @param aTargetType
        * @return true if castable, else false
        */
-      bool isCastable( const xqpString& aStr, const TypeSystem::xqtref_t& aTargetType) const;
+      bool isCastable( const xqpString& aStr, const xqtref_t& aTargetType) const;
 
       /**
        * Promotes the passed item to the passed target type.
@@ -105,7 +105,7 @@ namespace xqp
        *         if the item type is a subtype of the target type, then
        *         the passed item is returned
        */
-      Item_t promote(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const;
+      Item_t promote(Item_t aItem, const xqtref_t& aTargetType) const;
 
       /**
        * Casts the passed string to xs:QName if possible.

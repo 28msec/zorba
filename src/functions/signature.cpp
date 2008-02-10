@@ -15,8 +15,8 @@ using namespace std;
 
 namespace xqp {
 
-  signature::signature (Item_t name, TypeSystem::xqtref_t arg1,
-                        bool variadic, TypeSystem::xqtref_t return_type)
+  signature::signature (Item_t name, xqtref_t arg1,
+                        bool variadic, xqtref_t return_type)
     : signature_base (variadic),
       qname_p(name)
   {
@@ -26,7 +26,7 @@ namespace xqp {
 
 signature::signature(
   Item_t name,
-  TypeSystem::xqtref_t return_type)
+  xqtref_t return_type)
 :
   qname_p(name)
 {
@@ -35,8 +35,8 @@ signature::signature(
 
 signature::signature(
   Item_t name,
-  TypeSystem::xqtref_t arg1,
-  TypeSystem::xqtref_t return_type)
+  xqtref_t arg1,
+  xqtref_t return_type)
 :
   qname_p(name)
 {
@@ -46,9 +46,9 @@ signature::signature(
 
 signature::signature(
   Item_t name,
-  TypeSystem::xqtref_t arg1,
-  TypeSystem::xqtref_t arg2,
-  TypeSystem::xqtref_t return_type)
+  xqtref_t arg1,
+  xqtref_t arg2,
+  xqtref_t return_type)
 :
   qname_p(name)
 {
@@ -59,10 +59,10 @@ signature::signature(
 
 signature::signature(
   Item_t name,
-  TypeSystem::xqtref_t arg1,
-  TypeSystem::xqtref_t arg2,
-  TypeSystem::xqtref_t arg3,
-  TypeSystem::xqtref_t return_type)
+  xqtref_t arg1,
+  xqtref_t arg2,
+  xqtref_t arg3,
+  xqtref_t return_type)
 :
   qname_p(name)
 {
@@ -74,11 +74,11 @@ signature::signature(
 
 signature::signature(
   Item_t name,
-  TypeSystem::xqtref_t arg1,
-  TypeSystem::xqtref_t arg2,
-  TypeSystem::xqtref_t arg3,
-  TypeSystem::xqtref_t arg4,
-  TypeSystem::xqtref_t return_type)
+  xqtref_t arg1,
+  xqtref_t arg2,
+  xqtref_t arg3,
+  xqtref_t arg4,
+  xqtref_t return_type)
 :
   qname_p(name)
 {
@@ -90,8 +90,8 @@ signature::signature(
 }
 
 signature::signature(Item_t name,
-                     const vector<TypeSystem::xqtref_t>& _argv,
-                     TypeSystem::xqtref_t return_type)
+                     const vector<xqtref_t>& _argv,
+                     xqtref_t return_type)
   : qname_p(name)
 {
   argv.push_back (return_type);

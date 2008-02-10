@@ -46,6 +46,7 @@
 #endif
 
 #include <string>
+#include "common/shared_types.h"
 #include "util/checked_vector.h"
 #include "util/Assert.h"
 

@@ -74,7 +74,7 @@ bool op_concatenate::validate_args(
 	return true;
 }
 
-TypeSystem::xqtref_t op_concatenate::type_check(
+xqtref_t op_concatenate::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -126,7 +126,7 @@ bool fn_index_of::validate_args(
 	return (argv.size()==2 || argv.size()==3);
 }
 
-TypeSystem::xqtref_t fn_index_of::type_check(
+xqtref_t fn_index_of::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -151,7 +151,7 @@ bool fn_empty::validate_args(
   return ( argv.size() ==1 );
 }
 
-TypeSystem::xqtref_t fn_empty::type_check(
+xqtref_t fn_empty::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -176,7 +176,7 @@ bool fn_exists::validate_args(
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t fn_exists::type_check(
+xqtref_t fn_exists::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
@@ -203,7 +203,7 @@ bool fn_distinct_values_1::validate_args(
   return (argv.size() == 1 || argv.size() == 2);
 }
 
-TypeSystem::xqtref_t fn_distinct_values_1::type_check(
+xqtref_t fn_distinct_values_1::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR;
@@ -228,7 +228,7 @@ bool fn_insert_before::validate_args(
   return (argv.size() == 3); 
 }
 
-TypeSystem::xqtref_t fn_insert_before::type_check(
+xqtref_t fn_insert_before::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_ONE; // what to do here?
@@ -252,7 +252,7 @@ bool fn_remove::validate_args(
   return (argv.size() == 2); 
 }
 
-TypeSystem::xqtref_t fn_remove::type_check(
+xqtref_t fn_remove::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -277,7 +277,7 @@ bool fn_reverse::validate_args(
 	return argv.size() == 1;
 }
 
-TypeSystem::xqtref_t fn_reverse::type_check(
+xqtref_t fn_reverse::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -302,7 +302,7 @@ bool fn_subsequence_2::validate_args(
   return (argv.size() == 2 || argv.size() == 3 );
 }
 
-TypeSystem::xqtref_t fn_subsequence_2::type_check(
+xqtref_t fn_subsequence_2::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -335,7 +335,7 @@ bool fn_zero_or_one::validate_args(
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t fn_zero_or_one::type_check(
+xqtref_t fn_zero_or_one::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -358,7 +358,7 @@ bool fn_one_or_more::validate_args(
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t fn_one_or_more::type_check(
+xqtref_t fn_one_or_more::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -381,7 +381,7 @@ bool fn_exactly_one::validate_args(
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t fn_exactly_one::type_check(
+xqtref_t fn_exactly_one::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -425,7 +425,7 @@ bool fn_count::validate_args(
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t fn_count::type_check(
+xqtref_t fn_count::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
@@ -448,7 +448,7 @@ bool fn_avg::validate_args(
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t fn_avg::type_check(
+xqtref_t fn_avg::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
@@ -471,7 +471,7 @@ bool fn_max_1::validate_args(
   return (argv.size() == 1 || argv.size() == 2);
 }
 
-TypeSystem::xqtref_t fn_max_1::type_check(
+xqtref_t fn_max_1::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
@@ -494,7 +494,7 @@ bool fn_min_1::validate_args(
   return (argv.size() == 1 || argv.size() == 2);
 }
 
-TypeSystem::xqtref_t fn_min_1::type_check(
+xqtref_t fn_min_1::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
@@ -517,13 +517,13 @@ bool fn_sum_1::validate_args(
   return (argv.size() == 1 || argv.size() == 2);
 }
 
-TypeSystem::xqtref_t fn_sum_1::type_check(
+xqtref_t fn_sum_1::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
 }
 
-TypeSystem::xqtref_t fn_sum_2::type_check(
+xqtref_t fn_sum_2::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION;
@@ -552,7 +552,7 @@ bool op_to::validate_args(
   return (argv.size() == 2);
 }
 
-TypeSystem::xqtref_t op_to::type_check(
+xqtref_t op_to::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -587,7 +587,7 @@ bool fn_doc_func::validate_args(
 	return true;
 }
 
-TypeSystem::xqtref_t fn_doc_func::type_check(
+xqtref_t fn_doc_func::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -620,7 +620,7 @@ bool op_distinct_nodes::validate_args(
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t op_distinct_nodes::type_check(
+xqtref_t op_distinct_nodes::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -645,7 +645,7 @@ bool op_distinct_nodes_or_atomics::validate_args(
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t op_distinct_nodes_or_atomics::type_check(
+xqtref_t op_distinct_nodes_or_atomics::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -669,7 +669,7 @@ bool op_sort_nodes_ascending::validate_args(vector<PlanIter_t>& argv) const
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t op_sort_nodes_ascending::type_check(signature& sig) const
+xqtref_t op_sort_nodes_ascending::type_check(signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
@@ -691,7 +691,7 @@ bool op_sort_nodes_asc_or_atomics::validate_args(vector<PlanIter_t>& argv) const
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t op_sort_nodes_asc_or_atomics::type_check(signature& sig) const
+xqtref_t op_sort_nodes_asc_or_atomics::type_check(signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
@@ -713,7 +713,7 @@ bool op_sort_nodes_descending::validate_args(vector<PlanIter_t>& argv) const
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t op_sort_nodes_descending::type_check(signature& sig) const
+xqtref_t op_sort_nodes_descending::type_check(signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
@@ -736,7 +736,7 @@ bool op_sort_nodes_desc_or_atomics::validate_args(vector<PlanIter_t>& argv) cons
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t op_sort_nodes_desc_or_atomics::type_check(signature& sig) const
+xqtref_t op_sort_nodes_desc_or_atomics::type_check(signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
@@ -758,7 +758,7 @@ bool op_sort_distinct_nodes_ascending::validate_args(vector<PlanIter_t>& argv) c
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t op_sort_distinct_nodes_ascending::type_check(signature& sig) const
+xqtref_t op_sort_distinct_nodes_ascending::type_check(signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
@@ -781,7 +781,7 @@ bool op_sort_distinct_nodes_asc_or_atomics::validate_args(vector<PlanIter_t>& ar
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t op_sort_distinct_nodes_asc_or_atomics::type_check(signature& sig) const
+xqtref_t op_sort_distinct_nodes_asc_or_atomics::type_check(signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
@@ -804,7 +804,7 @@ bool op_sort_distinct_nodes_descending::validate_args(vector<PlanIter_t>& argv) 
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t op_sort_distinct_nodes_descending::type_check(signature& sig) const
+xqtref_t op_sort_distinct_nodes_descending::type_check(signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }

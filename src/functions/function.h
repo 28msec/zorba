@@ -30,8 +30,8 @@ class function_typechecker {
         function_typechecker() {}
         virtual ~function_typechecker() {}
 
-        virtual TypeSystem::xqtref_t return_type(const fo_expr *fo) = 0;
-        virtual TypeSystem::xqtref_t type_check(const fo_expr *fo) = 0;
+        virtual xqtref_t return_type(const fo_expr *fo) = 0;
+        virtual xqtref_t type_check(const fo_expr *fo) = 0;
 };
 
 class function_codegenerator {
@@ -60,7 +60,7 @@ public:
 	virtual PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const = 0;
 
 	// polymorphic type inference
-	virtual TypeSystem::xqtref_t type_check(signature&) const = 0;
+	virtual xqtref_t type_check(signature&) const = 0;
 
 	// runtime arg validation: XXX move this out
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const = 0;
@@ -84,7 +84,7 @@ class user_function : public function {
 
     virtual PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const;
 
-    virtual TypeSystem::xqtref_t type_check(signature&) const;
+    virtual xqtref_t type_check(signature&) const;
 
     virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
 

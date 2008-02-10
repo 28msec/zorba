@@ -27,7 +27,7 @@ PlanIter_t ctx_variable::operator() (
 }
 
 
-TypeSystem::xqtref_t ctx_variable::type_check(signature& sig) const
+xqtref_t ctx_variable::type_check(signature& sig) const
 {
   return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 }

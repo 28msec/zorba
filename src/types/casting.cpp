@@ -35,7 +35,7 @@ namespace xqp
 {
 
 #define ATOMIC_TYPE(type) \
-  GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_##type, TypeSystem::QUANT_ONE)
+  GENV_TYPESYSTEM.create_atomic_type(TypeConstants::XS_##type, TypeConstants::QUANT_ONE)
 
 
 typedef struct
@@ -100,19 +100,19 @@ Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExp
   
 Item_t GenericCast::stringSimpleCast(
     const Item_t aSourceItem,
-    const TypeSystem::xqtref_t& aSourceType,
-    const TypeSystem::xqtref_t& aTargetType) const
+    const xqtref_t& aSourceType,
+    const xqtref_t& aTargetType) const
 {
   Item_t lItem = 0;
-  TypeSystem& ts = GENV_TYPESYSTEM;
+  RootTypeManager& ts = GENV_TYPESYSTEM;
   ItemFactory* factory = Zorba::getItemFactory();
 
   xqpString lString = aSourceItem->getStringValue();
   switch(ts.get_atomic_type_code(*aTargetType)) {
-  case TypeSystem::XS_ANY_ATOMIC:
-  case TypeSystem::XS_STRING:
-  case TypeSystem::XS_NORMALIZED_STRING:
-  case TypeSystem::XS_UNTYPED_ATOMIC:
+  case TypeConstants::XS_ANY_ATOMIC:
+  case TypeConstants::XS_STRING:
+  case TypeConstants::XS_NORMALIZED_STRING:
+  case TypeConstants::XS_UNTYPED_ATOMIC:
     break;
   default:
     lString = lString.trim(" \n\r\t",4);
@@ -121,61 +121,61 @@ Item_t GenericCast::stringSimpleCast(
   
   switch(ts.get_atomic_type_code(*aTargetType))
   {
-  case TypeSystem::XS_ANY_ATOMIC:
+  case TypeConstants::XS_ANY_ATOMIC:
     lItem = factory->createUntypedAtomic(lString);
     break;
-  case TypeSystem::XS_STRING:
+  case TypeConstants::XS_STRING:
     lItem = factory->createString(lString);
     break;
-  case TypeSystem::XS_NORMALIZED_STRING:
+  case TypeConstants::XS_NORMALIZED_STRING:
     lItem = factory->createNormalizedString(lString);
     break;
-  case TypeSystem::XS_TOKEN:
+  case TypeConstants::XS_TOKEN:
     lItem = factory->createToken(lString);
     break;
-  case TypeSystem::XS_LANGUAGE:
+  case TypeConstants::XS_LANGUAGE:
     lItem = factory->createLanguage(lString);
     break;
-  case TypeSystem::XS_NMTOKEN:
+  case TypeConstants::XS_NMTOKEN:
     lItem = factory->createNMTOKEN(lString);
     break;
-  case TypeSystem::XS_NAME:
+  case TypeConstants::XS_NAME:
     lItem = factory->createName(lString);
     break;
-  case TypeSystem::XS_ID:
+  case TypeConstants::XS_ID:
     lItem = factory->createID(lString);
     break;
-  case TypeSystem::XS_IDREF:
+  case TypeConstants::XS_IDREF:
     lItem = factory->createIDREF(lString);
     break;
-  case TypeSystem::XS_ENTITY:
+  case TypeConstants::XS_ENTITY:
     lItem = factory->createENTITY(lString);
     break;
-  case TypeSystem::XS_UNTYPED_ATOMIC:
+  case TypeConstants::XS_UNTYPED_ATOMIC:
     lItem = factory->createUntypedAtomic(lString);
     break;
-  case TypeSystem::XS_DATETIME:
+  case TypeConstants::XS_DATETIME:
   {
     xqp_dateTime dt;
     if (DateTime::parse_string(lString, dt))
       lItem = factory->createDateTime(dt);
   }
   break;
-  case TypeSystem::XS_DATE:
+  case TypeConstants::XS_DATE:
   {
     xqp_date d;
     if (Date::parse_string(lString, d))
       lItem = factory->createDate(d);
   }
   break;
-  case TypeSystem::XS_TIME:
+  case TypeConstants::XS_TIME:
   {
           xqp_time t;
           if (Time::parse_string(lString, t))
             lItem = factory->createTime(t);
         }
         break;
-      case TypeSystem::XS_DURATION:
+      case TypeConstants::XS_DURATION:
         {
           Duration_t d_t;
           if (Duration::parse_string(lString, d_t))
@@ -185,7 +185,7 @@ Item_t GenericCast::stringSimpleCast(
           }
         }
         break;
-      case TypeSystem::XS_DT_DURATION:
+      case TypeConstants::XS_DT_DURATION:
         {
           DayTimeDuration_t dtd_t;
           if (DayTimeDuration::parse_string(lString, dtd_t))
@@ -195,7 +195,7 @@ Item_t GenericCast::stringSimpleCast(
           }
         }
         break;
-      case TypeSystem::XS_YM_DURATION:
+      case TypeConstants::XS_YM_DURATION:
         {
           YearMonthDuration_t ymd_t;
           if (YearMonthDuration::parse_string(lString, ymd_t))
@@ -205,167 +205,167 @@ Item_t GenericCast::stringSimpleCast(
           }
         }
         break;
-      case TypeSystem::XS_GYEAR_MONTH:
+      case TypeConstants::XS_GYEAR_MONTH:
         {
           xqp_gYearMonth ym;
           if (GYearMonth::parse_string(lString, ym))
             lItem = factory->createGYearMonth(ym);
         }
         break;
-      case TypeSystem::XS_GYEAR:
+      case TypeConstants::XS_GYEAR:
         {
           xqp_gYear y;
           if (GYear::parse_string(lString, y))
             lItem = factory->createGYear(y);
         }
         break;
-      case TypeSystem::XS_GMONTH_DAY:
+      case TypeConstants::XS_GMONTH_DAY:
         {
           xqp_gMonthDay md;
           if (GMonthDay::parse_string(lString, md))
             lItem = factory->createGMonthDay(md);
         }
         break;
-      case TypeSystem::XS_GDAY:
+      case TypeConstants::XS_GDAY:
         {
           xqp_gDay d;
           if (GDay::parse_string(lString, d))
             lItem = factory->createGDay(d);
         }
         break;
-      case TypeSystem::XS_GMONTH:
+      case TypeConstants::XS_GMONTH:
         {
           xqp_gMonth m;
           if (GMonth::parse_string(lString, m))
             lItem = factory->createGMonth(m);
         }
         break;
-      case TypeSystem::XS_FLOAT:
+      case TypeConstants::XS_FLOAT:
       {
         xqp_float n;
         if (NumConversions::strToFloat(lString, n))
           lItem = factory->createFloat(n);
       }
         break;
-      case TypeSystem::XS_DOUBLE:
+      case TypeConstants::XS_DOUBLE:
       {
         xqp_double n;
         if (NumConversions::strToDouble(lString, n))
           lItem = factory->createDouble(n);
       }
         break;
-      case TypeSystem::XS_DECIMAL:
+      case TypeConstants::XS_DECIMAL:
       {
         xqp_decimal n;
         if (NumConversions::strToDecimal(lString, n))
           lItem = factory->createDecimal(n);
       }
         break;
-      case TypeSystem::XS_INTEGER:
+      case TypeConstants::XS_INTEGER:
       {
         xqp_integer n;
         if (NumConversions::strToInteger(lString, n))
           lItem = factory->createInteger(n);
       }
         break;
-      case TypeSystem::XS_NON_POSITIVE_INTEGER:
+      case TypeConstants::XS_NON_POSITIVE_INTEGER:
       {
         xqp_integer n;
         if (NumConversions::strToInteger(lString, n)) 
           lItem = factory->createNonPositiveInteger(n);
       }
         break;
-      case TypeSystem::XS_NEGATIVE_INTEGER:
+      case TypeConstants::XS_NEGATIVE_INTEGER:
       {
         xqp_integer n;
         if (NumConversions::strToInteger(lString, n) && n < xqp_integer::parseInt(0))
           lItem = factory->createNegativeInteger(n);
       }
         break;
-      case TypeSystem::XS_LONG:
+      case TypeConstants::XS_LONG:
       {
         xqp_long n;
         if (NumConversions::strToLongLong(lString, n))
           lItem = factory->createLong(n);
       }
         break;
-      case TypeSystem::XS_INT:
+      case TypeConstants::XS_INT:
       {
         xqp_int n;
         if (NumConversions::strToInt(lString, n))
           lItem = factory->createInt(n);
       }
         break;
-      case TypeSystem::XS_SHORT:
+      case TypeConstants::XS_SHORT:
       {
         xqp_short n;
         if (NumConversions::strToShort(lString, n))
           lItem = factory->createShort(n);
       }
         break;
-      case TypeSystem::XS_BYTE:
+      case TypeConstants::XS_BYTE:
       {
         xqp_byte n;
         if (NumConversions::strToByte(lString, n))
           lItem = factory->createByte(n);
       }
         break;
-      case TypeSystem::XS_NON_NEGATIVE_INTEGER:
+      case TypeConstants::XS_NON_NEGATIVE_INTEGER:
       {
         xqp_uinteger n;
         if (NumConversions::strToUInteger(lString, n))
           lItem = factory->createNonNegativeInteger(n);
       }
         break;
-      case TypeSystem::XS_UNSIGNED_LONG:
+      case TypeConstants::XS_UNSIGNED_LONG:
       {
         xqp_ulong n;
         if (NumConversions::strToULongLong(lString, n))
           lItem = factory->createUnsignedLong(n);
       }
         break;
-      case TypeSystem::XS_UNSIGNED_INT:
+      case TypeConstants::XS_UNSIGNED_INT:
       {
         xqp_uint n;
         if (NumConversions::strToUInt(lString, n))          
           lItem = factory->createUnsignedInt(n);
       }
         break;
-      case TypeSystem::XS_UNSIGNED_SHORT:
+      case TypeConstants::XS_UNSIGNED_SHORT:
       {
         xqp_ushort n;
         if (NumConversions::strToUShort(lString, n))
           lItem = factory->createUnsignedShort(n);
       }
         break;
-      case TypeSystem::XS_UNSIGNED_BYTE:
+      case TypeConstants::XS_UNSIGNED_BYTE:
       {
         xqp_ubyte n;
         if (NumConversions::strToUByte(lString, n))
           lItem = factory->createUnsignedByte(n);
       }
         break;
-  case TypeSystem::XS_POSITIVE_INTEGER:
+  case TypeConstants::XS_POSITIVE_INTEGER:
   {
     xqp_integer n;
     if (NumConversions::strToInteger(lString, n) && n > xqp_integer::parseInt(0))
       lItem = factory->createPositiveInteger(n);
   }
   break;
-  case TypeSystem::XS_BOOLEAN:
+  case TypeConstants::XS_BOOLEAN:
   {
     lItem = castToBoolean(aSourceItem, aSourceType);
     break;
   }
-  case TypeSystem::XS_BASE64BINARY:
+  case TypeConstants::XS_BASE64BINARY:
     break;
-  case TypeSystem::XS_HEXBINARY:
+  case TypeConstants::XS_HEXBINARY:
     break;
-  case TypeSystem::XS_ANY_URI:
+  case TypeConstants::XS_ANY_URI:
     lItem = factory->createAnyURI(lString);
     break;
     
-  case TypeSystem::XS_NCNAME:
+  case TypeConstants::XS_NCNAME:
   {
     if (!ts.is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
         !ts.is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
@@ -387,7 +387,7 @@ Item_t GenericCast::stringSimpleCast(
     }
     break;
   }
-  case TypeSystem::XS_QNAME:
+  case TypeConstants::XS_QNAME:
   {
     if (! ts.is_subtype(*aSourceType, *ts.QNAME_TYPE_ONE)
         && ! ts.is_subtype (*aSourceType, *ts.STRING_TYPE_ONE)
@@ -400,7 +400,7 @@ Item_t GenericCast::stringSimpleCast(
     break;
   }
 
-  case TypeSystem::XS_NOTATION:
+  case TypeConstants::XS_NOTATION:
     lItem = factory->createNOTATION(lString);
     break;
   default:
@@ -518,7 +518,7 @@ bool GenericCast::isExtender(uint32_t cp) const
 
 Item_t GenericCast::castToBoolean(
     const Item_t aSourceItem,
-    const TypeSystem::xqtref_t& aSourceType) const
+    const xqtref_t& aSourceType) const
 {
   bool lRetValue = true;
 
@@ -581,13 +581,13 @@ Item_t GenericCast::castToBoolean(
 #undef ATOMIC_TYPE
 
 
-Item_t GenericCast::cast(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const
+Item_t GenericCast::cast(Item_t aItem, const xqtref_t& aTargetType) const
 {
   Item_t lResult;
-  TypeSystem& ts = GENV_TYPESYSTEM;
+  RootTypeManager& ts = GENV_TYPESYSTEM;
 
-  TypeSystem::xqtref_t lItemType = ts.create_type(aItem->getType(),
-                                                  TypeSystem::QUANT_ONE);
+  xqtref_t lItemType = ts.create_type(aItem->getType(),
+                                                  TypeConstants::QUANT_ONE);
 
   if (ts.is_subtype(*lItemType, *aTargetType)) 
   {
@@ -607,7 +607,7 @@ Item_t GenericCast::cast(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) 
 
 Item_t GenericCast::cast(
     const xqpString& aStr,
-    const TypeSystem::xqtref_t& aTargetType) const
+    const xqtref_t& aTargetType) const
 {
   Item_t lItem = Zorba::getItemFactory()->createString(aStr);
   Item_t lResult = cast(lItem, aTargetType);
@@ -617,13 +617,13 @@ Item_t GenericCast::cast(
 
 bool GenericCast::isCastable(
     Item_t aItem,
-    const TypeSystem::xqtref_t& aTargetType) const
+    const xqtref_t& aTargetType) const
 {
   Item_t lItem;
-  TypeSystem& ts = GENV_TYPESYSTEM;
+  RootTypeManager& ts = GENV_TYPESYSTEM;
 
-  TypeSystem::xqtref_t lItemType = ts.create_type(aItem->getType(),
-                                                  TypeSystem::QUANT_ONE);
+  xqtref_t lItemType = ts.create_type(aItem->getType(),
+                                                  TypeConstants::QUANT_ONE);
 
   if (ts.is_subtype(*lItemType, *aTargetType))
   {
@@ -644,14 +644,14 @@ bool GenericCast::isCastable(
 
 bool GenericCast::isCastable(
     const xqpString& aStr,
-    const TypeSystem::xqtref_t& aTargetType) const
+    const xqtref_t& aTargetType) const
 {
   Item_t lItem = Zorba::getItemFactory()->createString(aStr);
   return isCastable(lItem, aTargetType);
 }
 
-Item_t GenericCast::promote(Item_t aItem, const TypeSystem::xqtref_t& aTargetType) const {
-  TypeSystem::xqtref_t lItemType = GENV_TYPESYSTEM.create_type(aItem->getType(), TypeSystem::QUANT_ONE);
+Item_t GenericCast::promote(Item_t aItem, const xqtref_t& aTargetType) const {
+  xqtref_t lItemType = GENV_TYPESYSTEM.create_type(aItem->getType(), TypeConstants::QUANT_ONE);
 
   if (GENV_TYPESYSTEM.is_subtype(*lItemType, *aTargetType)) {
     return aItem;
