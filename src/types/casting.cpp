@@ -66,6 +66,37 @@ GenericCast* GenericCast::instance()
   return &aGenericCast;
 }
 
+/// Casts a string to a qname.
+/// Raises Zorba errors.
+/// @param isExplicit true when called from the translator
+/// @param isCast true when this is a cast, false when this is a castable
+/// TODO: return an error code, let the caller decide on the error
+Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExplicit) const {
+  ItemFactory* factory = Zorba::getItemFactory();
+  xqpString lNamespace = "";
+  xqpString lPrefix = "";
+  int32_t lIndex = qname.indexOf(":");
+  ZorbaError::ErrorCodes code = isExplicit ? (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003) : ZorbaError::XQDY0074;
+
+  if (lIndex < 0) {
+    if (castableToNCName(qname))
+        return factory->createQName(lNamespace, lPrefix, qname);
+    else ZORBA_ERROR_ALERT (code);
+  } else if (lIndex == 0) {
+    ZORBA_ERROR_ALERT (code);
+  } else {
+    // TODO namespace resolution
+    // raise XPST0081 (isCast false) or FONS0004 (isCast true) if namespace unknown
+
+    lPrefix = qname.substr(0, lIndex);
+    xqpString lLocal = qname.substr(lIndex + 1);
+    
+    if (castableToNCName(lPrefix) && castableToNCName(lLocal))
+      return factory->createQName(lNamespace, lPrefix, lLocal);
+    else 
+      ZORBA_ERROR_ALERT (code);
+  }
+}
   
 Item_t GenericCast::stringSimpleCast(
     const Item_t aSourceItem,
@@ -339,10 +370,10 @@ Item_t GenericCast::stringSimpleCast(
     if (!ts.is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
         !ts.is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      ZORBA_ERROR_ALERT_OSS(ZorbaError::XPTY0004, NULL, DONT_CONTINUE_EXECUTION,
-                            "Cannot cast " << lString
-                            << " to an NCName because its type is "
-                            << aSourceType->toString(), "");
+      ZORBA_ERROR_ALERT (ZorbaError::XPTY0004, false, DONT_CONTINUE_EXECUTION,
+                         "Cannot cast " + lString
+                         + " to an NCName because its type is "
+                         + aSourceType->toString());
     }
 
     if (castableToNCName(lString))
@@ -358,51 +389,14 @@ Item_t GenericCast::stringSimpleCast(
   }
   case TypeSystem::XS_QNAME:
   {
-    // It seem that casting untyped atomic to qname is not allowed in
-    // general, but it is allowed in the case of name expressions in
-    // computed element/attribute constructors. ????
-    if (!ts.is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
-        !ts.is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
-    {
-      ZORBA_ERROR_ALERT_OSS(ZorbaError::XPTY0004, NULL, DONT_CONTINUE_EXECUTION,
-                            "Cannot cast string \"" << lString
-                            << "\" to an NCName because its type is "
-                            << aSourceType->toString(), "");
-    }
-    
-    // TODO namespace resolution
-    xqpString lNamespace = "";
-    xqpString lPrefix = "";
-    int32_t lIndex = lString.indexOf(":");
-    if (lIndex < 0) 
-    {
-      if (castableToNCName(lString))
-      {
-        lItem = factory->createQName(lNamespace, lPrefix, lString);
-      }
-      else
-      {
-        ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0074, NULL, DONT_CONTINUE_EXECUTION,
-                              "Cannot cast string \"" << lString
-                              << "\" to an QName", ""); 
-      }
-    }
-    else
-    {
-      lPrefix = lString.substr(0, lIndex);
-      xqpString lLocal = lString.substr(lIndex + 1);
-
-      if (castableToNCName(lPrefix) && castableToNCName(lLocal))
-      {
-        lItem = factory->createQName(lNamespace, lPrefix, lLocal);
-      }
-      else
-      {
-        ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0074, NULL, DONT_CONTINUE_EXECUTION,
-                              "Cannot cast string \"" << lString
-                              << "\" to an QName", ""); 
-      }
-    }
+    if (! ts.is_subtype(*aSourceType, *ts.QNAME_TYPE_ONE)
+        && ! ts.is_subtype (*aSourceType, *ts.STRING_TYPE_ONE)
+        && ! ts.is_subtype (*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
+      return NULL;
+    // Explicit XQuery casts and castable expressions are translated
+    // into treat and instance of expressions (or resolved in-place
+    // in the case of string literals), so they never arrive here.
+    return castToQName (lString, true, false);
     break;
   }
 
@@ -417,19 +411,13 @@ Item_t GenericCast::stringSimpleCast(
 }
 
 /*
-NCName				::=    NCNameStartChar NCNameChar* // An XML Name, minus the ":" 
-NCNameChar    ::=    NameChar - ':' 
-NCNameStartChar  ::=    Letter | '_' 
-NameChar			::=    Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar | Extender 
+NCName				  ::=    NCNameStartChar NCNameChar* // An XML Name, minus the ":" 
+NCNameChar      ::=    NameChar - ':' 
+NCNameStartChar ::=    Letter | '_' 
+NameChar			  ::=    Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar | Extender 
 */
 bool GenericCast::castableToNCName(const xqpString& str) const
 {
-  // TODO: replace this with the real stuff
-//  if (str.indexOf(":") >= 0 || str.indexOf(" ") >= 0)
-//  {
-//    return false;
-//  }
-	//daniel
 	uint32_t	cp;
 	std::vector<uint32_t> cps = str.getCodepoints();
 	std::vector<uint32_t>::size_type	i, cps_size = cps.size();
@@ -644,7 +632,11 @@ bool GenericCast::isCastable(
   }
   
   // Most simple implementation: Check if string cast works
-  lItem = stringSimpleCast(aItem, lItemType, aTargetType);
+  try {
+    lItem = stringSimpleCast(aItem, lItemType, aTargetType);
+  } catch (xqp_exception) {
+    return false;
+  }
 
   return lItem != 0;
 }

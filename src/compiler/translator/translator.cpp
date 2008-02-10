@@ -14,6 +14,7 @@
 
 #include "context/namespace_context.h"
 #include "types/node_test.h"
+#include "types/casting.h"
 #include "functions/library.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/normalizer/normalizer.h"
@@ -1970,6 +1971,32 @@ void end_visit(const AndExpr& v, void *visit_state)
 }
 
 
+expr_t create_cast_expr (const yy::location &loc, expr_t node, TypeSystem::xqtref_t type, bool isCast) {
+  if (GENV_TYPESYSTEM.get_atomic_type_code (*type) != TypeSystem::XS_QNAME) {
+    if (isCast)
+      return new cast_expr (loc, node, type);
+    else
+      return new castable_expr (loc, node, type);
+  } else {  // a QName cast
+    const const_expr *ce = dynamic_cast<const_expr *> (node.getp());
+    if (ce != NULL
+        && GENV_TYPESYSTEM.is_equal (*GENV_TYPESYSTEM.create_type (ce->get_val ()->getType (), TypeSystem::QUANT_ONE),
+                                     *GENV_TYPESYSTEM.STRING_TYPE_ONE))
+      {
+        Item_t castLiteral = GenericCast::instance()->castToQName (ce->get_val ()->getStringValue(), isCast, true);
+        if (isCast)
+          return new const_expr (loc, castLiteral);
+        else
+          return new const_expr (loc, castLiteral != NULL);
+      } else {
+      if (isCast)
+        return new treat_expr (loc, node, type, ZorbaError::XPTY0004);
+      else
+        return new instanceof_expr (loc, node, type);
+    }
+  }
+}
+
 void *begin_visit(const CastExpr& v)
 {
   TRACE_VISIT ();
@@ -1979,7 +2006,7 @@ void *begin_visit(const CastExpr& v)
 void end_visit(const CastExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (new cast_expr (v.get_location (), pop_nodestack (), pop_tstack ()));
+  nodestack.push (create_cast_expr (v.get_location (), pop_nodestack (), pop_tstack (), true));
 }
 
 void *begin_visit(const CastableExpr& v)
@@ -1991,7 +2018,7 @@ void *begin_visit(const CastableExpr& v)
 void end_visit(const CastableExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push(new castable_expr(v.get_location(), pop_nodestack(), pop_tstack()));
+  nodestack.push (create_cast_expr (v.get_location (), pop_nodestack (), pop_tstack (), false));
 }
 
 
@@ -2188,7 +2215,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
   {
     if (arguments.size () != 1)
       ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, prefix + ":" + fname, arguments.size ());
-    nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
+    nodestack.push (create_cast_expr (v.get_location (), arguments [0], type, true));
   }
   else
   {
