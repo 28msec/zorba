@@ -50,7 +50,6 @@ public:
 	
 public:///things specific for each thread
 	Zorba_XQueryBinary              * current_xquery;//current xquery executed for this thread
-//	Zorba_XQueryExecution           * current_xqueryresult;
 	ResultIteratorWrapper						*current_xqueryresult;
 
 //	std::stack<const PlanIterator*>	  current_iterator;
@@ -102,3 +101,8 @@ public:
 }	/* namespace xqp */
 #endif /*	XQP_ZORBA_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

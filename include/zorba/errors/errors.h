@@ -735,8 +735,8 @@ typedef rchandle<AlertList>		AlertList_t;
 
 // user might choose to receive the alerts through callback functions
 typedef int alert_callback(ZorbaAlert_t      alert, 
-                           XQuery_t          current_xquery,
-													 ResultIterator_t	 current_result,
+                           XQuery           *current_xquery,
+													 ResultIterator   *current_result,
                            void*             param);
 
 

@@ -36,8 +36,8 @@ using namespace std;
 #endif
 
 int apitest_alert_callback(ZorbaAlert_t alert_mess, 
-                           XQuery_t  current_xquery,
-													 ResultIterator_t	current_result,
+                           XQuery *current_xquery,
+													 ResultIterator	*current_result,
                            void *param)
 {
 #ifndef NDEBUG

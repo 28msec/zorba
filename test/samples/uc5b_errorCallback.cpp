@@ -18,8 +18,8 @@ Will be called for any alert from zorba.
 The alert will not be put in the error manager list anymore.
 */
 int errCallback(ZorbaAlert_t alert_mess, 
-                 XQuery_t  current_xquery,
-								 ResultIterator_t	current_result,
+                 XQuery         *current_xquery,
+                 ResultIterator *current_result,
                  void *param)
 {
   cerr << endl;
