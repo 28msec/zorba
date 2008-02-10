@@ -2174,6 +2174,9 @@ void *begin_visit(const FunctionCall& v)
 void end_visit(const FunctionCall& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+
+  yy::location loc = v.get_location ();
+
   std::vector<expr_t> arguments;
   while (true) {
     expr_t e_h = pop_nodestack();
@@ -2188,24 +2191,43 @@ void end_visit(const FunctionCall& v, void *visit_state)
 
   Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
 
-  if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "position") {
-    nodestack.push(sctx_p->lookup_var_nofail (DOT_POS_VAR));
-    return;
-  }
-  if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "last") {
-    nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VAR));
-    return;
-  }
-  if (fn_qname->getNamespace() == XQUERY_FN_NS && fn_qname->getLocalName() == "string") {
-    fn_qname = sctx_p->lookup_fn_qname("xs", "string");
-    switch (arguments.size ()) {
-    case 0:
-      arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
-      break;
-    case 1:
-      break;
-    default:
-      ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:string", arguments.size ());
+  if (fn_qname->getNamespace() == XQUERY_FN_NS) {
+    xqp_string fn_local = fn_qname->getLocalName ();
+    if (fn_local == "position") {
+      nodestack.push(sctx_p->lookup_var_nofail (DOT_POS_VAR));
+      return;
+    } else if (fn_local == "last") {
+      nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VAR));
+      return;
+    } else if (fn_local == "string") {
+      // TODO: casting to xs:string? almost works; it fails, for example,
+      // 'fn:string (()) instance of xs:string'
+      fn_qname = sctx_p->lookup_fn_qname("xs", "string");
+      switch (arguments.size ()) {
+      case 0:
+        arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
+        break;
+      case 1:
+        break;
+      default:
+        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:string", arguments.size ());
+      }
+    } else if (fn_local == "number") {
+      switch (arguments.size ()) {
+      case 0:
+        arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
+        break;
+      case 1:
+        break;
+      default:
+        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:number", arguments.size ());
+      }
+      var_expr_t tv = tempvar (loc, var_expr::let_var);
+      expr_t nan_expr = new cast_expr (loc, new const_expr (loc, xqp_string ("NaN")), GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      expr_t ret = new if_expr (loc, new castable_expr (loc, &*tv, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE), new cast_expr (loc, &*tv, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE), nan_expr);
+      expr_t data_expr = new fo_expr (loc, LOOKUP_FN("fn", "data", 1), arguments [0]);
+      nodestack.push (wrap_in_let_flwor (new treat_expr (loc, data_expr, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, ZorbaError::XPTY0004), tv, ret));
+      return;
     }
   }
   xqtref_t type =
@@ -2215,15 +2237,15 @@ void end_visit(const FunctionCall& v, void *visit_state)
   {
     if (arguments.size () != 1)
       ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, prefix + ":" + fname, arguments.size ());
-    nodestack.push (create_cast_expr (v.get_location (), arguments [0], type, true));
+    nodestack.push (create_cast_expr (loc, arguments [0], type, true));
   }
   else
   {
     int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
     const user_function *udf = sctx_p->lookup_udf (prefix, fname, sz);
     rchandle<fo_expr> fo_h = (udf == NULL) ?
-      new fo_expr (v.get_location(), LOOKUP_FN (prefix, fname, sz)) :
-      new fo_expr (v.get_location(), udf);
+      new fo_expr (loc, LOOKUP_FN (prefix, fname, sz)) :
+      new fo_expr (loc, udf);
     
     // TODO this should be a const iterator
     std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
