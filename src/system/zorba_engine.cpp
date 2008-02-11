@@ -171,6 +171,9 @@ void ZorbaEngineImpl::shutdown()
 void ZorbaEngineImpl::initThread()
 {
 	try{
+	if(for_single_thread_api && theSingleThreadZorba)
+		return;//ignore for single threaded
+
 	Zorba* zorba = this->getZorbaForCurrentThread();
 
 	if(zorba == 0)
@@ -200,6 +203,7 @@ void ZorbaEngineImpl::initThread()
 		}
 		else//if (!for_single_thread_api)
 		{
+      delete theSingleThreadZorba;
 			theSingleThreadZorba = zorba;
 		}
   }
