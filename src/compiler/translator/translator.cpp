@@ -2226,7 +2226,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
       expr_t nan_expr = new cast_expr (loc, new const_expr (loc, xqp_string ("NaN")), GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       expr_t ret = new if_expr (loc, new castable_expr (loc, &*tv, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE), new cast_expr (loc, &*tv, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE), nan_expr);
       expr_t data_expr = new fo_expr (loc, LOOKUP_FN("fn", "data", 1), arguments [0]);
-      nodestack.push (wrap_in_let_flwor (new treat_expr (loc, data_expr, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, ZorbaError::XPTY0004), tv, ret));
+      nodestack.push (&*wrap_in_let_flwor (new treat_expr (loc, data_expr, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, ZorbaError::XPTY0004), tv, ret));
       return;
     }
   }
