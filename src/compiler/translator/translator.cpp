@@ -2237,10 +2237,12 @@ void end_visit(const FunctionCall& v, void *visit_state)
       return;
     }
   }
+
+  // try constructor functions
   xqtref_t type =
     GENV_TYPESYSTEM.create_type (fn_qname,
                                  TypeConstants::QUANT_QUESTION);
-  if (type != NULL)
+  if (type != NULL && fn_qname->getStringValue () != "xs:anyAtomicType")
   {
     if (arguments.size () != 1)
       ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, prefix + ":" + fname, arguments.size ());
