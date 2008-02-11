@@ -2230,7 +2230,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
         ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:number", arguments.size ());
       }
       var_expr_t tv = tempvar (loc, var_expr::let_var);
-      expr_t nan_expr = new cast_expr (loc, new const_expr (loc, xqp_string ("NaN")), GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      expr_t nan_expr = new const_expr (loc, xqp_double::nan ());
       expr_t ret = new if_expr (loc, new castable_expr (loc, &*tv, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE), new cast_expr (loc, &*tv, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE), nan_expr);
       expr_t data_expr = new fo_expr (loc, LOOKUP_FN("fn", "data", 1), arguments [0]);
       nodestack.push (&*wrap_in_let_flwor (new treat_expr (loc, data_expr, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, ZorbaError::XPTY0004), tv, ret));
