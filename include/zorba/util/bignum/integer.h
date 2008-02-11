@@ -9,7 +9,7 @@
 
 #include "mapm/m_apm.h"
 #include "zorba/common.h"
-#include "util/utf8/xqpString.h"
+#include "zorba/util/utf8/xqpString.h"
 
 namespace xqp {
 
@@ -41,6 +41,10 @@ private:
   }
 
 public:
+  /**
+   * @return integer that represents 0
+   */
+  static Integer& zero();
   /**
    * Parse string to Integer.
    * @param aStr String

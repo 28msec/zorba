@@ -1,4 +1,4 @@
-#include "util/bignum/floatimpl.h"
+#include "zorba/util/bignum/floatimpl.h"
 #include <limits>
 #include <string>
 
@@ -11,7 +11,7 @@ Double FloatCommons::parseFloat(const Float& aFloat) {
 
 Float FloatCommons::parseDouble(const Double& aDouble) {
   Float lFloat(aDouble.getType(), aDouble.getNumber());
-  FloatImpl<float>::checkInfNaN(lFloat);
+  FloatImpl<float>::checkInfZero(lFloat);
   return lFloat;
 }
 
@@ -62,7 +62,37 @@ const xqpString FloatCommons::INF_NEG_STR = "-INF";
 const xqpString FloatCommons::NOT_A_NUM_STR = "NaN";
 
 template <typename FloatType>
-bool FloatImpl<FloatType>::checkInfNaN(FloatImpl& aFloatImpl) {
+FloatImpl<FloatType>& FloatImpl<FloatType>::zero() {
+  static FloatImpl<FloatType> lValue(FloatCommons::NORMAL, MAPM(0));
+  return lValue;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType>& FloatImpl<FloatType>::zero_neg() {
+  static FloatImpl<FloatType> lValue(FloatCommons::NORMAL_NEG, MAPM(0));
+  return lValue;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType>& FloatImpl<FloatType>::nan() {
+  static FloatImpl<FloatType> lValue(FloatCommons::NOT_A_NUM, MAPM(0));
+  return lValue;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType>& FloatImpl<FloatType>::inf_pos() {
+  static FloatImpl<FloatType> lValue(FloatCommons::INF_POS, MAPM(0));
+  return lValue;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType>& FloatImpl<FloatType>::inf_neg() {
+  static FloatImpl<FloatType> lValue(FloatCommons::INF_NEG, MAPM(0));
+  return lValue;
+}
+
+template <typename FloatType>
+bool FloatImpl<FloatType>::checkInfZero(FloatImpl& aFloatImpl) {
   if (aFloatImpl.theType == FloatCommons::NORMAL || aFloatImpl.theType == FloatCommons::NORMAL_NEG) {
     if (FloatImplTraits<FloatType>::isPosInf(aFloatImpl.theFloatImpl)) {
       aFloatImpl.theType = FloatCommons::INF_POS;
@@ -236,7 +266,7 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
   aFloatImpl.theType = lType;
   aFloatImpl.theFloatImpl = lNumber;
 
-  checkInfNaN(aFloatImpl);
+  checkInfZero(aFloatImpl);
   return true;
 }
 
@@ -334,7 +364,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator+(const FloatImpl& aFloatImpl
         } else {
           lFloatImpl.theType = FloatCommons::NORMAL;
         }
-        checkInfNaN(lFloatImpl);
+        checkInfZero(lFloatImpl);
       }
       break;
     }
@@ -404,7 +434,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator-(const FloatImpl& aFloatImpl
         } else {
           lFloatImpl.theType = FloatCommons::NORMAL;
         }
-        checkInfNaN(lFloatImpl);
+        checkInfZero(lFloatImpl);
       }
       break;
     }
@@ -478,7 +508,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator*(const FloatImpl& aFloatImpl
         } else {
           lFloatImpl.theType = FloatCommons::NORMAL;
         }
-        checkInfNaN(lFloatImpl);
+        checkInfZero(lFloatImpl);
       }
       break;
     }
@@ -562,7 +592,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator/(const FloatImpl& aFloatImpl
         } else {
           lFloatImpl.theType = FloatCommons::NORMAL;
         }
-        checkInfNaN(lFloatImpl);
+        checkInfZero(lFloatImpl);
       }
       break;
     }
@@ -663,7 +693,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const{
   {
     lFloatImpl.theType = theType;
     lFloatImpl.theFloatImpl = Decimal::round(theFloatImpl, aPrecision.theInteger);
-    checkInfNaN(lFloatImpl);
+    checkInfZero(lFloatImpl);
   }
     break;
   case FloatCommons::NOT_A_NUM:
@@ -684,7 +714,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) c
   {
     lFloatImpl.theType = theType;
     lFloatImpl.theFloatImpl = Decimal::roundHalfToEven(theFloatImpl, aPrecision.theInteger);
-    checkInfNaN(lFloatImpl);
+    checkInfZero(lFloatImpl);
   }
     break;
   case FloatCommons::NOT_A_NUM:

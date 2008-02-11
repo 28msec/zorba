@@ -4,12 +4,17 @@
  * Authros: David Graf (davidgraf@28msec.com)
  */
 
-#include "util/bignum/integer.h"
+#include "zorba/util/bignum/integer.h"
 #include "util/numconversions.h"
-#include "util/bignum/decimal.h"
-#include "util/bignum/floatimpl.h"
+#include "zorba/util/bignum/decimal.h"
+#include "zorba/util/bignum/floatimpl.h"
 
 namespace xqp {
+
+Integer& Integer::zero() {
+  static Integer lValue(MAPM(0));
+  return lValue;
+}
 
 bool Integer::parseString(const char* aCharStar, Integer& aInteger) {
   // correctness check

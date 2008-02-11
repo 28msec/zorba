@@ -8,9 +8,9 @@
 #define XQP_DOUBLE_H
 
 #include "mapm/m_apm.h"
-#include "util/utf8/xqpString.h"
-#include "util/bignum/integer.h"
-#include "util/bignum/decimal.h"
+#include "zorba/util/utf8/xqpString.h"
+#include "zorba/util/bignum/integer.h"
+#include "zorba/util/bignum/decimal.h"
 
 namespace xqp {
 
@@ -84,12 +84,41 @@ public:
 
 protected:
   /**
+   * Checks if the MAPM value is to big or too small => possible type change to 0, INF or -INF
    * @return true, if aFloatImpl has been changed
    */
-  static bool checkInfNaN(FloatImpl& aFloatImpl);
+  static bool checkInfZero(FloatImpl& aFloatImpl);
 
 public:
+  /**
+   * @return float or double that represents 0
+   */
+  static FloatImpl<FloatType>& zero();
+  /**
+   * @return float or double that represents -0
+   */
+  static FloatImpl<FloatType>& zero_neg();
+  /**
+   * @return float or double that represents NaN
+   */
+  static FloatImpl<FloatType>& nan();
+  /**
+   * @return float or double that represents +INF
+   */
+  static FloatImpl<FloatType>& inf_pos();
+  /**
+   * @return float or double that represents -INF
+   */
+  static FloatImpl<FloatType>& inf_neg();
+
+  /**
+   * @return type of the float value (NaN, INF, -INF, NaN, NORMAL, or NORMAL_NEG
+   */
   FloatCommons::NumType getType() const { return theType; }
+
+  /**
+   * @return mapm number
+   */
   MAPM getNumber() const { return theFloatImpl; }
 
   /**
@@ -108,9 +137,24 @@ public:
    */
   static FloatCommons::NumType checkInfNaNNeg(FloatType aNumber);
 
+  /**
+   * Parses string to float value
+   */
   static bool parseString(const char* aCharStar, FloatImpl& aFloatImpl);
+
+  /**
+   * Parses float type (double of float) to float value
+   */
   static FloatImpl<FloatType> parseFloatType(FloatType aFloatImpl);
+
+  /**
+   * Parses int to float value
+   */
   static FloatImpl<FloatType> parseInt(int32_t);
+
+  /**
+   * Parses long to float value
+   */
   static FloatImpl<FloatType> parseLong(long);
 
   FloatImpl& operator=(const FloatImpl& aFloatImpl) {

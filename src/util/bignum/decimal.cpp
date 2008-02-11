@@ -4,11 +4,16 @@
  * Authros: David Graf (davidgraf@28msec.com)
  */
 
-#include "util/bignum/integer.h"
+#include "zorba/util/bignum/integer.h"
 #include "util/numconversions.h"
-#include "util/bignum/decimal.h"
+#include "zorba/util/bignum/decimal.h"
 
 namespace xqp {
+
+Decimal& Decimal::zero() {
+  static Decimal lValue(MAPM(0));
+  return lValue;
+}
 
 bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal) {
   // correctness check
