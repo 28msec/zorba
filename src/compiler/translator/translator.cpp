@@ -2235,6 +2235,15 @@ void end_visit(const FunctionCall& v, void *visit_state)
       expr_t data_expr = new fo_expr (loc, LOOKUP_FN("fn", "data", 1), arguments [0]);
       nodestack.push (&*wrap_in_let_flwor (new treat_expr (loc, data_expr, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, ZorbaError::XPTY0004), tv, ret));
       return;
+    } else if (fn_local == "static-base-uri") {
+      if (arguments.size () != 0)
+        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:static-base-uri", arguments.size ());
+      xqp_string baseuri = sctx_p->baseuri ();
+      if (baseuri.empty ())
+        nodestack.push (create_seq (loc));
+      else
+        nodestack.push (new cast_expr (loc, new const_expr (loc, baseuri), GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
+      return;
     }
   }
 

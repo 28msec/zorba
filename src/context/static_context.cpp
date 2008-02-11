@@ -494,7 +494,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 xqp_string static_context::baseuri () const 
 {
   xqp_string val;                                        
-  context_value ("int:" "baseuri", val);  // if not found val remains ""
+  context_value ("int:" "from_prolog_baseuri", val);  // if not found val remains ""
   return val;
 }
 
@@ -503,7 +503,7 @@ void static_context::set_baseuri (xqp_string val, bool from_prolog)
 	if (from_prolog)
     bind_str ("int:" "from_prolog_baseuri", val, ZorbaError::XQST0032);
   else
-    str_keymap.put ("int:" "baseuri", val);                
+    str_keymap.put ("int:" "baseuri", val);
 }
 
 void static_context::compute_current_absolute_baseuri()
