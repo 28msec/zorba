@@ -603,7 +603,7 @@ namespace xqp
       }
 
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        if ( item->getDoubleValue() >= xqp_double::parseInt(0) )
+        if ( item->getDoubleValue().isPos() )
           if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
             res = item;
           else
@@ -611,7 +611,7 @@ namespace xqp
         else
           res = Zorba::getItemFactory()->createDouble ( -item->getDoubleValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        if ( item->getFloatValue() >= xqp_float::parseInt(0) )
+        if ( item->getFloatValue().isPos() )
           if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
             res = item;
           else
@@ -619,7 +619,7 @@ namespace xqp
         else
           res = Zorba::getItemFactory()->createFloat ( -item->getFloatValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
-        if ( item->getDecimalValue() >= Decimal::parseInt(0) )
+        if ( item->getDecimalValue() >= xqp_decimal::zero() )
           if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
             res = item;
           else
@@ -627,7 +627,7 @@ namespace xqp
         else
           res = Zorba::getItemFactory()->createDecimal ( -item->getDecimalValue() );
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
-        if ( item->getIntegerValue() >= Decimal::parseInt(0) )
+        if ( item->getIntegerValue() >= xqp_decimal::zero() )
           if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
             res = item;
           else

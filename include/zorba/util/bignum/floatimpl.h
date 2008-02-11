@@ -220,9 +220,9 @@ public:
 
   bool isNegInf() const { return theType == FloatCommons::INF_NEG; }
 
-  bool isNeg() const { return theType == FloatCommons::NORMAL || theType == FloatCommons::INF_POS;  }
+  bool isNeg() const { return theType == FloatCommons::NORMAL_NEG || theType == FloatCommons::INF_NEG;  }
 
-  bool isPos() const { return theType == FloatCommons::NORMAL_NEG || theType == FloatCommons::INF_NEG; }
+  bool isPos() const { return theType == FloatCommons::NORMAL || theType == FloatCommons::INF_POS; }
 
   bool isZero() const { return ((theType == FloatCommons::NORMAL || theType == FloatCommons::NORMAL_NEG) && theFloatImpl == 0); }
 

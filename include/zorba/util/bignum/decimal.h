@@ -32,7 +32,7 @@ private:
   static xqpString decimalToString(MAPM);
 
 public:
-  Decimal& zero();
+  static Decimal& zero();
   static bool parseString(const char*, Decimal&);
   static bool parseNativeDouble(double, Decimal&);
   static Decimal parseLong(long aLong);
