@@ -113,7 +113,7 @@ public:
   virtual void    setCopyNamespacesMode( preserve_mode_t preserve, inherit_mode_t inherit ) = 0;
   virtual void    getCopyNamespacesMode( preserve_mode_t *preserve, inherit_mode_t *inherit ) = 0;
 
-  virtual void    setBaseURI( xqp_string baseURI ) = 0;
+  virtual bool    setBaseURI( xqp_string baseURI ) = 0;
   virtual xqp_string    getBaseURI( ) = 0;
 
   // statically known documents (types)

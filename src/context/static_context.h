@@ -68,8 +68,6 @@ protected:
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
   static xqp_string fn_internal_key (int arity);
 
-	xqp_string		make_absolute_uri(xqp_string uri, xqp_string base_uri);
-	void					compute_current_absolute_baseuri();
 public:
 	static void init();
   static_context()
@@ -195,16 +193,20 @@ public:
 	StaticQueryContext::ordering_mode_t ordering_mode() const;
 	void set_ordering_mode(StaticQueryContext::ordering_mode_t v);
 
+protected:
+  xqp_string current_absolute_baseuri() const;
+  xqp_string encapsulating_entity_baseuri() const;
+  xqp_string entity_file_uri() const;
+	xqp_string	make_absolute_uri(xqp_string uri, xqp_string base_uri);
+	void				compute_current_absolute_baseuri();
+public:
   xqp_string baseuri() const;
 	void set_baseuri(xqp_string, bool from_prolog = true);
-  xqp_string current_absolute_baseuri() const;
 	void set_current_absolute_baseuri(xqp_string);
-  xqp_string encapsulating_entity_baseuri() const;
 	void set_encapsulating_entity_baseuri(xqp_string);
-  xqp_string entity_file_uri() const;
 	void set_entity_file_uri(xqp_string);
-	
-	xqp_string		resolve_relative_uri( xqp_string uri );
+
+	xqp_string resolve_relative_uri( xqp_string uri );
 
 };
 

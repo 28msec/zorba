@@ -19,7 +19,6 @@ int uc2_simpleQueryWithErrorCheck(int argc, char* argv[])
 	//init the engine
 	ZorbaSingleThread_t zorba_engine = ZorbaSingleThread::getInstance();
 	XQuery_t				xquery;
-	StaticQueryContext_t		sctx;
 
 	try{
 

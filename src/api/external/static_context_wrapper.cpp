@@ -5,6 +5,7 @@
 #include "errors/error_manager.h"
 #include "system/zorba_engine.h"
 #include "system/zorba.h"
+#include "types/casting.h"
 
 namespace xqp{
 
@@ -517,11 +518,30 @@ void		StaticContextWrapper::getCopyNamespacesMode( preserve_mode_t *preserve, in
 	*inherit = static_context::root_static_context()->inherit_mode( );
 }
 
-void		StaticContextWrapper::setBaseURI( xqp_string baseURI )
+bool		StaticContextWrapper::setBaseURI( xqp_string baseURI )
 {
+  try{
 	//internal_sctx.set_baseuri( baseURI );
+  if(((std::string)baseURI).find("://") == std::string::npos)
+  {
+    xqp_string    newbase;
+    newbase = "file://";
+    newbase += baseURI;
+    baseURI = newbase;
+  }
+
+  if(!GenericCast::instance()->isCastable(baseURI, GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
+  {
+    ZORBA_ERROR_ALERT(ZorbaError::XQP0020_INVALID_URI, NULL, DONT_CONTINUE_EXECUTION,
+                baseURI);
+    return false;
+  }
+
 	this->baseURI = baseURI;
 	baseURI_was_set = true;
+  return true;
+
+  }CATCH_ALL_RETURN_false;
 }
 
 xqp_string		StaticContextWrapper::getBaseURI( )
@@ -817,7 +837,6 @@ static_context*		StaticContextWrapper::fillInStaticContext()
 
 	if(baseURI_was_set)
 		sctx->set_baseuri(baseURI, false);///not from prolog
-
 
 	max = getDocumentTypeCount();
 	for(i=0;i<max;i++)

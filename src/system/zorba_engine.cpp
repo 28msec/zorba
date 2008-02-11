@@ -284,14 +284,14 @@ XQuery_t ZorbaEngineImpl::createQuery(
     bool routing_mode)
 {
 	try{
-  std::auto_ptr<Zorba_XQueryBinary> xq(new Zorba_XQueryBinary(xquery_source_uri,
+  rchandle<Zorba_XQueryBinary> xq(new Zorba_XQueryBinary(xquery_source_uri,
                                                               aQueryString));
 	if (!xq->compile(sctx.getp(), routing_mode))
 	{
 		return NULL;
 	}
 
-		return xq.release();
+		return &*xq;//.release();
 	}CATCH_ALL_RETURN_NULL;
 }
 
