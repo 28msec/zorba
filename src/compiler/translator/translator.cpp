@@ -2199,8 +2199,15 @@ void end_visit(const FunctionCall& v, void *visit_state)
     } else if (fn_local == "last") {
       nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VAR));
       return;
+    } else if (fn_local == "unordered") {
+      if (arguments.size () != 1)
+        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:unordered", arguments.size ());
+      // put argument back, ignore fn:unordered
+      nodestack.push (arguments [0]);
+      return;
     } else if (fn_local == "string") {
-      // TODO: casting to xs:string? almost works; it fails, for example,
+      // TODO: casting to xs:string? is almost correct;
+      // it fails, however, the following test:
       // 'fn:string (()) instance of xs:string'
       fn_qname = sctx_p->lookup_fn_qname("xs", "string");
       switch (arguments.size ()) {
