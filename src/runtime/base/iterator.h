@@ -193,6 +193,9 @@ public:
     theDuffsLine = DUFFS_RESTART; 
 #if ZORBA_BATCHING_TYPE == 1
     theCurrItem = ZORBA_BATCHING_BATCHSIZE;
+    for (uint32_t i = 0; i < ZORBA_BATCHING_BATCHSIZE; ++i)
+      theBatch[i] = NULL;
+
 #endif
   }
   
@@ -362,13 +365,13 @@ protected:
 #if ZORBA_BATCHING_TYPE == 1  
   void produceNext(PlanState& planState) 
   {
-    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, this->stateOffset);
+    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
     uint32_t i = 0;
-    lState->theBatch[i] = static_cast<IterType*>(this)->nextImpl(planState);
-    while (i < ZORBA_BATCHING_BATCHSIZE && lState->theBatch[i] != NULL) 
+    do
     {
-      lState->theBatch[++i] = static_cast<IterType*>(this)->nextImpl(planState);
-    }
+      lState->theBatch[i] = static_cast<IterType*>(this)->nextImpl(planState);
+    } while ( lState->theBatch[i] != NULL && ++i < ZORBA_BATCHING_BATCHSIZE ); 
+    // note the pre-increment in the second operand above
   }
 #else
   Item_t produceNext(PlanState& planState) 
@@ -416,7 +419,6 @@ class PlanWrapper : public Iterator
 private:
   PlanIter_t   theIterator;
   PlanState*   theStateBlock;
-  bool         theClosed;
   
 public:
   PlanWrapper(PlanIter_t& iter);
@@ -443,7 +445,6 @@ class PlanIteratorWrapper : public Iterator
 private:
   PlanIter_t   theIterator;
   PlanState*   theStateBlock;
-  bool         theClosed;
 
 public:
   PlanIteratorWrapper(PlanIter_t& iter, PlanState& planState);

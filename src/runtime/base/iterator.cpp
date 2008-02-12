@@ -53,14 +53,10 @@ PlanState::~PlanState()
   class PlanWraper
 ********************************************************************************/
 PlanWrapper::PlanWrapper(PlanIter_t& aIter)
-  :
-  theIterator(aIter),
-  theClosed(false)
+  : theIterator(aIter)
 {
   uint32_t stackSize = theIterator->getStateSizeOfSubtree();
   theStateBlock = new PlanState(stackSize);
-  uint32_t offset = 0;
-  theIterator->open(*theStateBlock, offset);
 }
 
 
@@ -72,7 +68,6 @@ PlanWrapper::~PlanWrapper()
 void
 PlanWrapper::open()
 {
-  theClosed = false;
   uint32_t offset = 0;
   theIterator->open(*theStateBlock, offset);
 }
@@ -80,51 +75,28 @@ PlanWrapper::open()
 Item_t
 PlanWrapper::next()
 {
-  if (!theClosed)
-  {
-#if ZORBA_BATCHING_TYPE == 1
-    return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
-#else
-    return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
-#endif
-  }
-  else
-  { 
-    return NULL;
-  }
+  return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
 }
 
 void
 PlanWrapper::reset()
 {
-  // TODO make this an assertion
-  if (!theClosed)
-    theIterator->reset(*theStateBlock);
+  theIterator->reset(*theStateBlock);
 }
 
 void
 PlanWrapper::close()
 {
-#ifndef NDEBUG
-  Assert(!theClosed);
-#endif
-
   theIterator->close(*theStateBlock); 
-  theClosed = true;
 }
 
 
 /*******************************************************************************
   class PlanIteratorWrapper
 ********************************************************************************/
-// TODO why do PlanIteratorWrapper and PlanWrapper do exactly the same
-// except allocating the state
-// couldn't this be factorized by deriving the one from the other?
 PlanIteratorWrapper::PlanIteratorWrapper(PlanIter_t& iter, PlanState& state) 
-  :
-  theIterator(iter),
-  theStateBlock(&state),
-  theClosed(false)
+  : theIterator(iter),
+    theStateBlock(&state)
 {
 }
 
@@ -133,23 +105,15 @@ PlanIteratorWrapper::~PlanIteratorWrapper()
 {
 }
 
+void
+PlanIteratorWrapper::open()
+{
+}
 
 Item_t
 PlanIteratorWrapper::next()
 {
-  // TODO make this an assertion or why is this needed here?
-  if (!theClosed)
-  {
-#if ZORBA_BATCHING_TYPE == 1
-    return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
-#else
-    return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
-#endif
-  }
-  else
-  { 
-    return NULL;
-  }
+  return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
 }
 
 void
@@ -162,12 +126,6 @@ PlanIteratorWrapper::reset()
 void
 PlanIteratorWrapper::close()
 {
-#ifndef NDEBUG
-  Assert(!theClosed);
-#endif
-
-  theIterator->close(*theStateBlock); 
-  theClosed = true;
 }
 
 

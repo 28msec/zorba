@@ -33,6 +33,7 @@ class Iterator : public rcobject
 public:
   virtual ~Iterator() {}
 
+  virtual void open() = 0;
   virtual Item_t next() = 0;
   virtual void reset() = 0;
   virtual void close() = 0;

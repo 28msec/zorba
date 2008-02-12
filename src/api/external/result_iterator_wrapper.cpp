@@ -154,6 +154,13 @@ ResultIteratorInternalWrapper::~ResultIteratorInternalWrapper()
 {
 }
 
+
+void ResultIteratorInternalWrapper::open()
+{
+  result->open();
+}
+
+
 Item_t ResultIteratorInternalWrapper::next()
 {
 	return result->next();

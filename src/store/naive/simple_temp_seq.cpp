@@ -212,6 +212,19 @@ SimpleTempSeq::SimpleTempSeqIter::~SimpleTempSeqIter()
 {
 }
 
+void SimpleTempSeq::SimpleTempSeqIter::open()
+{
+  switch (theBorderType)
+	{
+  case startEnd:
+    theCurPos = theStartPos - 2;
+    break;
+  case none:
+  case specificPositions:
+    theCurPos = -1;
+    break;
+  }
+}
 
 Item_t SimpleTempSeq::SimpleTempSeqIter::next()
 {

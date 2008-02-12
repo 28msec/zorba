@@ -430,7 +430,9 @@ void FLWORIterator::matResultAndOrder(
 
   Iterator_t iterWrapper = new PlanIteratorWrapper(returnClause, planState);
   TempSeq_t result = Zorba::getStore()->createTempSeq(iterWrapper, false);
-  flworState->orderMap->insert(std::pair<std::vector<Item_t>, Iterator_t>(orderKey, result->getIterator()));
+  Iterator_t iter = result->getIterator();
+  iter->open();
+  flworState->orderMap->insert(std::pair<std::vector<Item_t>, Iterator_t>(orderKey, iter));
   returnClause->reset(planState);
 
 }
@@ -537,7 +539,9 @@ bool FLWORIterator::bindVariable(
            letIter != lForLetClause.letVars.end();
            letIter++ )
       {
-        (*letIter)->bind(tmpSeq->getIterator(), planState);
+        Iterator_t iter = tmpSeq->getIterator();
+        iter->open();
+        (*letIter)->bind(iter, planState);
       }
     }
     else

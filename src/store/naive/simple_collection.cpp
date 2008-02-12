@@ -115,12 +115,17 @@ void SimpleCollection::removeFromCollection(const Item* node)
 ********************************************************************************/
 SimpleCollection::CollectionIter::CollectionIter(
     SimpleCollection* collection)
-  :
-  theCollection(collection),
-  theIterator(collection->theXmlTrees.begin())
+  : theCollection(collection)
 {
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleCollection::CollectionIter::open() 
+{
+  theIterator = theCollection->theXmlTrees.begin();
+}
 
 /*******************************************************************************
 
@@ -152,7 +157,6 @@ void SimpleCollection::CollectionIter::reset()
 ********************************************************************************/
 void SimpleCollection::CollectionIter::close() 
 {
-  theCollection = NULL;
 }
 
 } /* namespace xqp */

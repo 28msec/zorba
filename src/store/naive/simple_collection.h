@@ -35,6 +35,7 @@ public:
 
     virtual ~CollectionIter() { }
 
+    void open();
     Item_t next();
     void reset();
     void close();

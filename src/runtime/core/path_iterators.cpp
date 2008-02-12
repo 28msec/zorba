@@ -84,6 +84,7 @@ Item_t KindTestIterator::nextImpl(PlanState& planState)
       }
 
       Iterator_t children = contextNode->getChildren();
+      children->open();
       Item_t child = children->next();
       match_test_t elemTest = match_no_test;
 
@@ -346,6 +347,7 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
     while (state->theContextNode->getNodeKind() != StoreConsts::elementNode);
 
     state->theAttributes = state->theContextNode->getAttributes();
+    state->theAttributes->open();
 
     attr = state->theAttributes->next();
 
@@ -523,6 +525,7 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
       return NULL;
 
     state->theChildren = parent->getChildren();
+    state->theChildren->open();
 
     while (state->theChildren->next() != state->theContextNode) ;
 
@@ -592,6 +595,7 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
       return NULL;
 
     state->theChildren = parent->getChildren();
+    state->theChildren->open();
 
     sibling = state->theChildren->next();
 
@@ -657,6 +661,7 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
 
     state->theChildren = state->theContextNode->getChildren();
     assert (state->theChildren != NULL);
+    state->theChildren->open();
 
     child = state->theChildren->next();
 
@@ -733,6 +738,7 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
     //        << " " << state->theContextNode->getNodeName()->show() << "]");
 
     children = state->theContextNode->getChildren();
+    children->open();
 
     state->theCurrentPath.push(std::pair<Item_t, Iterator_t>
                               (state->theContextNode, children));
@@ -840,8 +846,10 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
       if (desc->getNodeKind() == StoreConsts::elementNode ||
           desc->getNodeKind() == StoreConsts::documentNode)
       {
+        Iterator_t children = desc->getChildren();
+        children->open();
         state->theCurrentPath.push(std::pair<Item_t, Iterator_t>
-                                  (desc, desc->getChildren()));
+                                  (desc, children));
       }
 
       if (theNodeKind == StoreConsts::anyNode ||
@@ -950,6 +958,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
       state->theAncestorPath.pop();
 
       children = ancestor->getChildren();
+      children->open();
 
       state->theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
     
@@ -959,8 +968,10 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
       {
         if (desc->getNodeKind() == StoreConsts::elementNode)
         {
+          Iterator_t children = desc->getChildren();
+          children->open();
           state->theCurrentPath.push(std::pair<Item_t, Iterator_t>
-                                    (desc, desc->getChildren()));
+                                    (desc, children));
         }
 
         if (theNodeKind == StoreConsts::anyNode ||
@@ -1064,6 +1075,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
       state->theAncestorPath.pop();
 
       children = ancestor->getChildren();
+      children->open();
 
       state->theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
 
@@ -1079,8 +1091,10 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
       {
         if (following->getNodeKind() == StoreConsts::elementNode)
         {
+          Iterator_t children = following->getChildren();
+          children->open();
           state->theCurrentPath.push(std::pair<Item_t, Iterator_t>
-                                    (following, following->getChildren()));
+                                    (following, children));
         }
 
         if (theNodeKind == StoreConsts::anyNode ||

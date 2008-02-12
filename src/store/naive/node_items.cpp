@@ -778,6 +778,7 @@ xqp_string ElementNode::show() const
   str << ">";
 
   iter = getChildren();
+  iter->open();
   item = iter->next();
   while (item != NULL)
   {

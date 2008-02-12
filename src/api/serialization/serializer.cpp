@@ -300,6 +300,7 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
   {
     // emit attributes 
     it = item->getAttributes();
+    it->open();
     child = it->next();
     while (child!= NULL)
     {		
@@ -314,6 +315,7 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
 	
 	// output all the other nodes
 	it = item->getChildren();
+  it->open();
 	child = it->next();
 	while (child!= NULL)
 	{
@@ -514,6 +516,7 @@ int is_content_type_meta(Item_t item, Item_t element_parent)
   {    
     // iterate through attributes
     Iterator_t it = item->getAttributes();
+    it->open();
     Item_t child = it->next();
     while (child!= NULL)
     { 

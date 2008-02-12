@@ -23,6 +23,11 @@ ChildrenIterator::ChildrenIterator(XmlNode* parent)
   theNumChildren = parent->numChildren();
 }
 
+void ChildrenIterator::open()
+{
+  theCurrentPos = 0;
+}
+
 
 Item_t ChildrenIterator::next()
 {
@@ -47,7 +52,6 @@ Item_t ChildrenIterator::next()
 
   return cnode;
 }
-
 
 void ChildrenIterator::reset()
 {
@@ -76,6 +80,10 @@ AttributesIterator::AttributesIterator(ElementNode* parent)
   theNumAttributes = parent->numAttributes();
 }
 
+void AttributesIterator::open()
+{
+  theCurrentPos = 0;
+}
 
 Item_t AttributesIterator::next()
 {
@@ -120,6 +128,10 @@ void AttributesIterator::close()
 //  class NodeDistinctIterator                                                 //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
+void StoreNodeDistinctIterator::open()
+{
+}
 
 Item_t StoreNodeDistinctIterator::next()
 {
@@ -196,6 +208,10 @@ Item_t StoreNodeDistinctOrAtomicIterator::next()
 //  class StoreNodeSortIterator                                                //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+void StoreNodeSortIterator::open()
+{
+  theCurrentNode = -1;
+}
 
 Item_t StoreNodeSortIterator::next()
 {

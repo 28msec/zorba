@@ -594,6 +594,7 @@ bool Zorba_XQueryBinary::setVariableAsDocumentFromStream(
     iter = new FnDocIterator(Zorba::null_loc, iter);
 
     planWrapper = new PlanWrapper(iter);
+    planWrapper->open();
 
     result->internal_dyn_context->add_variable(expanded_name, planWrapper);
 

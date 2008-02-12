@@ -28,6 +28,7 @@ FnDataIterator::nextImpl(PlanState& planState)
     if (item == NULL)
       break;
     lState->theTypedValue = item->getTypedValue();
+    lState->theTypedValue->open();
       
     while (true) {
       item = lState->theTypedValue->next();

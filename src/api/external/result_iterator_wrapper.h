@@ -49,6 +49,7 @@ class ResultIteratorInternalWrapper : public Iterator
 public:
 	ResultIteratorInternalWrapper(ResultIterator_t result);
 	virtual ~ResultIteratorInternalWrapper();
+  virtual void open();
   virtual Item_t next();
   virtual void reset();
   virtual void close();

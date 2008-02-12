@@ -38,6 +38,7 @@ void NodeDistinctIterator::openImpl(PlanState& planState, uint32_t& offset)
   Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 
   state->theStoreIterator = Store::getInstance().distinctNodes(input, theAcceptAtomics);
+  state->theStoreIterator->open();
   theChild->open(planState, offset);
 }
 
@@ -53,6 +54,7 @@ void NodeDistinctIterator::resetImpl(PlanState& planState)
 void NodeDistinctIterator::closeImpl(PlanState& planState)
 {
   theChild->close(planState);
+  // Question: do we need to call state->theStoreIterator->close() ?
 
   StateTraitsImpl<NodeDistinctState>::destroyState(planState, this->stateOffset);
 }
@@ -85,6 +87,7 @@ void NodeSortIterator::openImpl(PlanState& planState, uint32_t& offset)
                                                            theAscendant,
                                                            theDistinct,
                                                            theAcceptAtomics);
+  state->theStoreIterator->open();
   theChild->open(planState, offset);
 }
 

@@ -707,6 +707,7 @@ Item_t DocFilterIterator::nextImpl(PlanState& planState)
       if (lItem->isNode() && lItem->getNodeKind() == StoreConsts::documentNode)
       {
         state->theChildren = lItem->getChildren();
+        state->theChildren->open();
         state->theCurItem = lItem;
       }
       else

@@ -1438,6 +1438,7 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 		one_item_iterator = new SingletonIterator(Zorba::null_loc, (*it).atomic_item);
 		PlanIter_t		iter_t(one_item_iterator);
 		iterator_plus_state = new PlanWrapper(iter_t);
+    iterator_plus_state->open();
 		xqp_string		expanded_name;
 		expanded_name = new_dctx->expand_varname(sctx, (*it).varname);
 		new_dctx->add_variable(expanded_name, iterator_plus_state);

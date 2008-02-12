@@ -35,6 +35,7 @@ protected:
 public:
   ChildrenIterator(XmlNode* parent);
 
+  void open();
   Item_t next();
   void reset();
   void close();
@@ -60,6 +61,7 @@ protected:
 public:
   AttributesIterator(ElementNode* parent);
 
+  void open();
   Item_t next();
   void reset();
   void close();
@@ -87,6 +89,7 @@ public:
 
   virtual ~StoreNodeDistinctIterator() { close(); }
 
+  void open();
   Item_t next();
   void reset();
   void close();
@@ -176,6 +179,7 @@ public:
 
   virtual ~StoreNodeSortIterator() { close(); }
 
+  void open();
   Item_t next();
   void reset();
   void close();

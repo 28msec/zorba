@@ -92,6 +92,7 @@ public:
     SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, const std::vector<int32_t>& positions);
     virtual ~SimpleTempSeqIter();
 
+    void open();
     Item_t next();
     void reset();
     void close();
