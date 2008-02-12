@@ -2,7 +2,7 @@
 #include <sstream>
 #include <limits>
 #include "util/numconversions.h"
-#include "zorba/common.h"
+#include "zorba/common/common.h"
 #include "util/Assert.h"
 
 namespace xqp {

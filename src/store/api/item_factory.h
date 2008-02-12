@@ -14,21 +14,13 @@
 #include "util/win32/compatib_defs.h"
 #endif
 
-#include "util/rchandle.h"
-#include "types/representations.h"
+#include "common/shared_types.h"
+#include "zorba/types/representations.h"
+#include <vector>
 
 
 namespace xqp
 {
-template <class Object> class rchandle;
-
-typedef rchandle<class Item> Item_t;
-typedef rchandle<class AnyUriItem> AnyUriItem_t;
-typedef rchandle<class NodeItem> NodeItem_t;
-
-typedef rchandle<class Iterator> Iterator_t;
-typedef rchandle<class TempSeq> TempSeq_t;
-
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
 class ItemFactory

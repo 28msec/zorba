@@ -8,7 +8,6 @@
 #define XQP_INTEGER_H
 
 #include "mapm/m_apm.h"
-#include "zorba/common.h"
 #include "zorba/util/utf8/xqpString.h"
 
 namespace xqp {

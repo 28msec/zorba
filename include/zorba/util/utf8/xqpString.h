@@ -14,7 +14,7 @@
 #ifndef XQP_STRING
 #define XQP_STRING
 
-#include "zorba/common.h"
+#include "zorba/common/common.h"
 
 #include <iostream>
 #include <stdlib.h>

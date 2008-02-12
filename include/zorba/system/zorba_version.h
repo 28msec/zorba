@@ -1,7 +1,7 @@
 #ifndef ZORBA_VERSION_H
 #define ZORBA_VERSION_H
 
-#include "zorba/common.h"
+#include "zorba/common/common.h"
 #include <string>
 #include <sstream>
 

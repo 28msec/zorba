@@ -9,16 +9,10 @@
 #ifndef STORE_COLLECTION
 #define STORE_COLLECTION
 
-#include <iostream>
-
-#include "store/api/item.h"
+#include "common/shared_types.h"
 
 namespace xqp 
 {
-template <class Object> class rchandle;
-	
-typedef rchandle<class Iterator> Iterator_t;
-
 
 class Collection : public rcobject
 {

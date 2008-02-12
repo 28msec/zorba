@@ -51,7 +51,7 @@ namespace yy
 #line 30 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
 
-#include "zorba/common.h"
+#include "zorba/common/common.h"
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)

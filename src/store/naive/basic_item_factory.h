@@ -9,15 +9,14 @@
 #ifndef XQP_BASIC_ITEM_FACTORY_H
 #define XQP_BASIC_ITEM_FACTORY_H
 
+#include "common/shared_types.h"
+#include "zorba/util/utf8/xqpString.h"
 #include "store/api/item_factory.h"
-#include "store/naive/node_items.h"
+#include "zorba/types/representations.h"
 
 
 namespace xqp
 {
-class StringPool;
-class QNamePool;
-
 typedef StringPool UriPool;
 
 

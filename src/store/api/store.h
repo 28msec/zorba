@@ -10,27 +10,14 @@
 #ifndef XQP_STORE_H
 #define XQP_STORE_H
 
-#include <string>
-
+#include "common/shared_types.h"
 #include "types/representations.h"
-#include "store/update/pending_update_list.h"
 
 namespace xqp
 {
 
-class ItemFactory;
-
-template <class Object> class rchandle;
-	
-typedef rchandle<class Iterator> Iterator_t;
-typedef rchandle<class Item> Item_t;
-typedef rchandle<class AnyUriItem> AnyUriItem_t;
-
-typedef rchandle<class Collection> Collection_t;
-typedef rchandle<class TempSeq> TempSeq_t;
-typedef rchandle<class PUL> PUL_t;
-class Timetravel;
-class Requester;
+class Timetravel; // TODO move to shared_types.h when implemented
+class Requester; // TODO move to shared_types.h when implemented
 	
 
 /**

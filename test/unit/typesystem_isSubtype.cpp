@@ -1,5 +1,5 @@
 #include <cassert>
-#include "zorba/common.h"
+#include "zorba/common/common.h"
 #include "zorba/store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"

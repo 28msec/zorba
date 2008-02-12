@@ -29,7 +29,7 @@
 
 %{
 
-#include "zorba/common.h"
+#include "zorba/common/common.h"
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)

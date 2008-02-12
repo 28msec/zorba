@@ -1,13 +1,11 @@
 #ifndef ZORBA_XML_DOCUMENTS_STORE_MODULE_EXTERNAL_API_10_JAN_2008
 #define ZORBA_XML_DOCUMENTS_STORE_MODULE_EXTERNAL_API_10_JAN_2008
 
-#include "util/rchandle.h"
-#include "types/representations.h"
-#include "store/api/item.h"
+#include "zorba/common/shared_types_incl.h"
+#include "zorba/types/representations.h"
 
 namespace xqp
 {
-
 
 class XmlDataManager : public rcobject
 {

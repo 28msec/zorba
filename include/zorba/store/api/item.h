@@ -10,28 +10,17 @@
 #ifndef XQP_STORE_ITEM_H
 #define XQP_STORE_ITEM_H
 
-#include "util/utf8/xqpString.h"
-#include "types/representations.h"
-#include "store/api/store_consts.h"
+#include "zorba/common/shared_types_incl.h"
+#include "zorba/util/utf8/xqpString.h"
+#include "zorba/types/representations.h"
+#include "zorba/store/api/store_consts.h"
 
-#include <iostream>
-#include <sstream>
 #include <vector>
 
 
 namespace xqp
 {
-
-template <class Object> class rchandle;
-  
-typedef rchandle<class Item> Item_t;
-typedef rchandle<class AnyUriItem> AnyUriItem_t;
-typedef rchandle<class NodeItem> NodeItem_t;
-
-typedef rchandle<class Iterator> Iterator_t;
-
 typedef std::vector<std::pair<xqp_string, xqp_string> > NsBindings;
-
 typedef StoreConsts::NodeKind NodeKind;
 
 

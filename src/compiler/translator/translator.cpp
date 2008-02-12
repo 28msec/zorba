@@ -10,7 +10,7 @@
 
 #include "compiler/translator/translator.h"
 
-#include "common.h"
+#include "zorba/common/common.h"
 
 #include "context/namespace_context.h"
 #include "types/node_test.h"
