@@ -34,6 +34,7 @@ private:
 	bool                       is_compiled;
 
 	PlanIter_t                 top_iterator;
+  std::vector<rchandle<static_context> > sctx_list;
 
 public:
 	::Collator	             * default_collator;
@@ -90,3 +91,8 @@ typedef rchandle<Zorba_XQueryBinary>		Zorba_XQueryBinary_t;
 
 #endif
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -153,7 +153,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       return false;
     }
 
-    rchandle<expr> e_h = translate (zorba->get_static_context(), *mm_p);
+    rchandle<expr> e_h = translate (zorba->get_static_context(), *mm_p, sctx_list);
     if (e_h == NULL)
     {
       ZORBA_ERROR_ALERT(ZorbaError::API0002_COMPILE_FAILED);

@@ -80,12 +80,13 @@ namespace xqp {
 class TranslatorImpl : public Translator 
 {
 public:
-  friend Translator *make_translator (static_context *);
+  friend Translator *make_translator (static_context *, vector<rchandle<static_context> > &);
 
 protected:
   uint32_t                         depth;
 
   static_context                 * sctx_p;
+  vector<rchandle<static_context> > &sctx_list;
   std::stack<expr_t>               nodestack;
   std::stack<xqtref_t> tstack;  // types stack
   int                              tempvar_counter;
@@ -109,9 +110,10 @@ protected:
 
   var_expr_t theDotVar, theDotPosVar, theLastVar;
 
-  TranslatorImpl (static_context *sctx_p_)
+  TranslatorImpl (static_context *sctx_p_, vector<rchandle<static_context> > &sctx_list_)
     : depth (0),
     sctx_p (sctx_p_),
+    sctx_list (sctx_list_),
     tempvar_counter (0),
     theRootRelPathExpr(0),
     ns_ctx(new namespace_context(sctx_p)),
@@ -167,14 +169,13 @@ protected:
 
   void push_scope ()
   {
-    sctx_p = new static_context (sctx_p);
+    sctx_list.push_back (sctx_p = new static_context (sctx_p));
   }
 
   void pop_scope (int n = 1)
   { 
     while (n-- > 0) {
       static_context *parent = (static_context *) sctx_p->get_parent ();
-      delete sctx_p;
       sctx_p = parent;
     }
   }
@@ -4366,12 +4367,12 @@ void end_visit(const VarGetsDeclList& v, void *visit_state)
 };
 
 
-Translator *make_translator (static_context *sctx_p) {
-  return new TranslatorImpl (sctx_p);
+Translator *make_translator (static_context *sctx_p, vector<rchandle<static_context> > &sctx_list) {
+  return new TranslatorImpl (sctx_p, sctx_list);
 }
 
-rchandle<expr> translate (static_context *sctx_p, const parsenode &root) {
-  auto_ptr<Translator> t (make_translator (sctx_p));
+rchandle<expr> translate (static_context *sctx_p, const parsenode &root, vector<rchandle<static_context> > &sctx_list) {
+  auto_ptr<Translator> t (make_translator (sctx_p, sctx_list));
   root.accept (*t);
   return t->result ();
 }
