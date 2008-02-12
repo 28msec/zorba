@@ -210,7 +210,7 @@ public:
 
 };
 
-pair<xqp_string, xqp_string> parse_qname (xqp_string qname);
+std::pair<xqp_string, xqp_string> parse_qname (xqp_string qname);
 
 
 

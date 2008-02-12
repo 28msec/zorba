@@ -20,13 +20,13 @@ fn_datetime_ctor::fn_datetime_ctor (
 
 PlanIter_t fn_datetime_ctor::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnDateTimeConstructorIterator(loc, argv[0], argv[1]);
 }
 
 bool fn_datetime_ctor::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return true;
 }
@@ -51,14 +51,14 @@ fn_years_from_duration::fn_years_from_duration (
 PlanIter_t
 fn_years_from_duration::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnYearsFromDurationIterator(loc, argv);
 }
 
 bool
 fn_years_from_duration::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -85,14 +85,14 @@ fn_months_from_duration::fn_months_from_duration (
 PlanIter_t
 fn_months_from_duration::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnMonthsFromDurationIterator(loc, argv);
 }
 
 bool
 fn_months_from_duration::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -119,14 +119,14 @@ fn_days_from_duration::fn_days_from_duration (
 PlanIter_t
 fn_days_from_duration::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnDaysFromDurationIterator(loc, argv);
 }
 
 bool
 fn_days_from_duration::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -153,14 +153,14 @@ fn_hours_from_duration::fn_hours_from_duration (
 PlanIter_t
 fn_hours_from_duration::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnHoursFromDurationIterator(loc, argv);
 }
 
 bool
 fn_hours_from_duration::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -187,14 +187,14 @@ fn_minutes_from_duration::fn_minutes_from_duration (
 PlanIter_t
 fn_minutes_from_duration::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnMinutesFromDurationIterator(loc, argv);
 }
 
 bool
 fn_minutes_from_duration::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -221,14 +221,14 @@ fn_seconds_from_duration::fn_seconds_from_duration (
 PlanIter_t
 fn_seconds_from_duration::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnSecondsFromDurationIterator(loc, argv);
 }
 
 bool
 fn_seconds_from_duration::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -255,14 +255,14 @@ fn_year_from_datetime::fn_year_from_datetime (
 PlanIter_t
 fn_year_from_datetime::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnYearFromDatetimeIterator(loc, argv);
 }
 
 bool
 fn_year_from_datetime::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -289,14 +289,14 @@ fn_month_from_datetime::fn_month_from_datetime (
 PlanIter_t
 fn_month_from_datetime::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnMonthFromDatetimeIterator(loc, argv);
 }
 
 bool
 fn_month_from_datetime::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -323,14 +323,14 @@ fn_day_from_datetime::fn_day_from_datetime (
 PlanIter_t
 fn_day_from_datetime::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnDayFromDatetimeIterator(loc, argv);
 }
 
 bool
 fn_day_from_datetime::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -357,14 +357,14 @@ fn_hours_from_datetime::fn_hours_from_datetime (
 PlanIter_t
 fn_hours_from_datetime::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnHoursFromDatetimeIterator(loc, argv);
 }
 
 bool
 fn_hours_from_datetime::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -391,14 +391,14 @@ fn_minutes_from_datetime::fn_minutes_from_datetime (
 PlanIter_t
 fn_minutes_from_datetime::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnMinutesFromDatetimeIterator(loc, argv);
 }
 
 bool
 fn_minutes_from_datetime::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -425,14 +425,14 @@ fn_seconds_from_datetime::fn_seconds_from_datetime (
 PlanIter_t
 fn_seconds_from_datetime::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnSecondsFromDatetimeIterator(loc, argv);
 }
 
 bool
 fn_seconds_from_datetime::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -460,14 +460,14 @@ fn_timezone_from_datetime::fn_timezone_from_datetime (
 PlanIter_t
 fn_timezone_from_datetime::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnTimezoneFromDatetimeIterator(loc, argv);
 }
 
 bool
 fn_timezone_from_datetime::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -494,14 +494,14 @@ fn_year_from_date::fn_year_from_date (
 PlanIter_t
 fn_year_from_date::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnYearFromDateIterator(loc, argv);
 }
 
 bool
 fn_year_from_date::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -528,14 +528,14 @@ fn_month_from_date::fn_month_from_date (
 PlanIter_t
 fn_month_from_date::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnMonthFromDateIterator(loc, argv);
 }
 
 bool
 fn_month_from_date::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -563,14 +563,14 @@ fn_day_from_date::fn_day_from_date (
 PlanIter_t
 fn_day_from_date::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnDayFromDateIterator(loc, argv);
 }
 
 bool
 fn_day_from_date::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -597,14 +597,14 @@ fn_timezone_from_date::fn_timezone_from_date (
 PlanIter_t
 fn_timezone_from_date::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnTimezoneFromDateIterator(loc, argv);
 }
 
 bool
 fn_timezone_from_date::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -631,14 +631,14 @@ fn_hours_from_time::fn_hours_from_time (
 PlanIter_t
 fn_hours_from_time::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnHoursFromTimeIterator(loc, argv);
 }
 
 bool
 fn_hours_from_time::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -665,14 +665,14 @@ fn_minutes_from_time::fn_minutes_from_time (
 PlanIter_t
 fn_minutes_from_time::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnMinutesFromTimeIterator(loc, argv);
 }
 
 bool
 fn_minutes_from_time::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -699,14 +699,14 @@ fn_seconds_from_time::fn_seconds_from_time (
 PlanIter_t
 fn_seconds_from_time::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnSecondsFromTimeIterator(loc, argv);
 }
 
 bool
 fn_seconds_from_time::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -734,14 +734,14 @@ fn_timezone_from_time::fn_timezone_from_time (
 PlanIter_t
 fn_timezone_from_time::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new FnTimezoneFromTimeIterator(loc, argv);
 }
 
 bool
 fn_timezone_from_time::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 1);
 }
@@ -768,14 +768,14 @@ op_ym_durations_add::op_ym_durations_add (
 PlanIter_t
 op_ym_durations_add::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>(loc, argv);
 }
 
 bool
 op_ym_durations_add::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 2);
 }
@@ -803,14 +803,14 @@ op_ym_durations_subtract::op_ym_durations_subtract (
 PlanIter_t
 op_ym_durations_subtract::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>(loc, argv);
 }
 
 bool
 op_ym_durations_subtract::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 2);
 }
@@ -838,14 +838,14 @@ op_ym_durations_multiply::op_ym_durations_multiply (
 PlanIter_t
 op_ym_durations_multiply::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>(loc, argv);
 }
 
 bool
 op_ym_durations_multiply::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 2);
 }
@@ -873,14 +873,14 @@ op_ym_durations_divide::op_ym_durations_divide (
 PlanIter_t
 op_ym_durations_divide::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>(loc, argv);
 }
 
 bool
 op_ym_durations_divide::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 2);
 }
@@ -908,14 +908,14 @@ op_divide_ymd_by_ymd::op_divide_ymd_by_ymd (
 PlanIter_t
 op_divide_ymd_by_ymd::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>(loc, argv);
 }
 
 bool
 op_divide_ymd_by_ymd::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 2);
 }
@@ -943,14 +943,14 @@ op_dt_durations_add::op_dt_durations_add (
 PlanIter_t
 op_dt_durations_add::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>(loc, argv);
 }
 
 bool
 op_dt_durations_add::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 2);
 }
@@ -978,14 +978,14 @@ op_dt_durations_subtract::op_dt_durations_subtract (
 PlanIter_t
 op_dt_durations_subtract::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>(loc, argv);
 }
 
 bool
 op_dt_durations_subtract::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 2);
 }
@@ -1013,14 +1013,14 @@ op_dt_durations_multiply::op_dt_durations_multiply (
 PlanIter_t
 op_dt_durations_multiply::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>(loc, argv);
 }
 
 bool
 op_dt_durations_multiply::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 2);
 }
@@ -1048,14 +1048,14 @@ op_dt_durations_divide::op_dt_durations_divide (
 PlanIter_t
 op_dt_durations_divide::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>(loc, argv);
 }
 
 bool
 op_dt_durations_divide::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 2);
 }
@@ -1084,14 +1084,14 @@ op_divide_dtd_by_dtd::op_divide_dtd_by_dtd (
 PlanIter_t
 op_divide_dtd_by_dtd::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>(loc, argv);
 }
 
 bool
 op_divide_dtd_by_dtd::validate_args (
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   return (argv.size() == 2);
 }

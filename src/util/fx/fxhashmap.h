@@ -41,7 +41,6 @@
 #include "util/rchandle.h"
 #include "errors/error_factory.h"
 
-using namespace std;
 namespace xqp {
 
 #define MAX_KEYLEN 65535

@@ -1,13 +1,9 @@
 #ifndef XQP_RUNTIME_VAR_ITERATORS
 #define XQP_RUNTIME_VAR_ITERATORS
 
-// FIXME so many includes needed?
-#include "context/common.h"
-#include "util/tracer.h"
-#include "compiler/parser/location.hh"
+#include "common/shared_types.h"
 #include "runtime/base/iterator.h"
-#include "runtime/base/noarybase.h"
-#include "system/zorba_engine.h"
+#include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
 
 namespace xqp
 {

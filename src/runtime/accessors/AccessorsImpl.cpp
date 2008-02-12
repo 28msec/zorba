@@ -8,6 +8,7 @@
  */
 
 #include "runtime/accessors/AccessorsImpl.h"
+#include "util/Assert.h"
 
 namespace xqp {
 

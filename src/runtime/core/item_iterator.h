@@ -7,20 +7,11 @@
 #ifndef XQP_ITEM_ITERATOR_H
 #define XQP_ITEM_ITERATOR_H
 
+#include "common/shared_types.h"
 #include "context/common.h"
-#include "util/rchandle.h"
-#include "util/tracer.h"
-#include "compiler/parser/location.hh"
 #include "runtime/base/iterator.h"
-#include "runtime/base/unarybase.h"
 #include "runtime/base/noarybase.h"
-#include "system/zorba_engine.h"
 
-#include <assert.h>
-#include <iostream>
-#include <vector>
-
-using namespace std;
 namespace xqp {
 
 class Item;

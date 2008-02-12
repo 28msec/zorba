@@ -9,6 +9,7 @@
 
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/base/iterator.h"
+#include "util/Assert.h"
 
 #include <iostream>
 using namespace std;

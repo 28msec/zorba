@@ -10,9 +10,6 @@
 #ifndef XQP_ACCESSORS_IMPL_H
 #define XQP_ACCESSORS_IMPL_H
 
-#include "context/common.h" // TODO remove?
-#include "functions/function.h" // TODO remove?
-
 #include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h" // TODO remove after changing the FnStringIterator
 #include "runtime/base/narybase.h"

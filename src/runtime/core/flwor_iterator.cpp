@@ -97,7 +97,7 @@ void FLWORIterator::ForLetClause::accept ( PlanIterVisitor& v ) const
     v.endVisitFlworLetVariable(*input);
     break;
   default:
-    assert ( false );
+    ZORBA_ASSERT ( false );
   }
 }
 
@@ -206,7 +206,7 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
 
 int8_t FLWORIterator::OrderKeyCmp::descAsc ( int8_t result, bool desc ) const
 {
-  assert (result <= 1 && result >= -1);
+  ZORBA_ASSERT (result <= 1 && result >= -1);
   return desc ? -result : result;
 }
 
@@ -215,8 +215,8 @@ bool FLWORIterator::OrderKeyCmp::operator() (
     const std::vector<Item_t>& s1,
     const std::vector<Item_t>& s2 ) const
 {
-  assert ( s1.size() == s2.size() );
-  assert ( s1.size() == mOrderSpecs->size() );
+  ZORBA_ASSERT ( s1.size() == s2.size() );
+  ZORBA_ASSERT ( s1.size() == mOrderSpecs->size() );
 
   std::vector<Item_t>::const_iterator s1iter = s1.begin();
   std::vector<Item_t>::const_iterator s2iter = s2.begin();
@@ -261,7 +261,7 @@ void FLWORIterator::FlworState::init(PlanState& planState, size_t nb_variables)
 void FLWORIterator::FlworState::init(
     PlanState& planState,
     size_t nb_variables,
-    vector<OrderSpec>* orderSpecs)
+    std::vector<OrderSpec>* orderSpecs)
 {
   init (planState, nb_variables);
   orderMap = new order_map_t(orderSpecs);
@@ -450,9 +450,9 @@ void FLWORIterator::matResultAndOrder(
     FlworState* flworState,
     PlanState& planState)
 {
-  assert ( doOrderBy );
+  ZORBA_ASSERT ( doOrderBy );
 
-  vector<OrderSpec> lOrderSpecs = orderByClause->orderSpecs;
+  std::vector<OrderSpec> lOrderSpecs = orderByClause->orderSpecs;
   //FIXME hould be a const iterator after the change of Plan_Iter
   std::vector<OrderSpec>::iterator lSpecIter = lOrderSpecs.begin();
   std::vector<Item_t> orderKey;
@@ -602,7 +602,7 @@ bool FLWORIterator::bindVariable(
   }
   default:
     //That should never happen
-    assert ( false );
+    ZORBA_ASSERT ( false );
   }
 
   return false;

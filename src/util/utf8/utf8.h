@@ -3,7 +3,6 @@
 
 #include "errors/error_factory.h"
 
-using namespace std;
 namespace xqp {
   // Unicode constants
   // Leading (high) surrogates: 0xd800 - 0xdbff

@@ -1,12 +1,9 @@
 #ifndef XQP_NODEID_ITERATORS_H
 #define XQP_NODEID_ITERATORS_H
 
-
-#include "util/rchandle.h"
-#include "util/logging/logging.hh"
-#include "compiler/expression/expr_consts.h"
+#include "common/shared_types.h"
 #include "runtime/base/iterator.h"
-#include "runtime/base/unarybase.h"
+#include "runtime/base/unarybase.h" // TODO remove after iterator refactoring
 
 namespace xqp 
 {

@@ -6,8 +6,8 @@
 #ifndef XQP_DURATIONSDATESTIMES_H
 #define XQP_DURATIONSDATESTIMES_H
 
-#include "runtime/base/unarybase.h" //TODO remove this
-#include "runtime/base/binarybase.h"
+#include "common/shared_types.h"
+#include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/narybase.h"
 #include "runtime/base/iterator.h"
 

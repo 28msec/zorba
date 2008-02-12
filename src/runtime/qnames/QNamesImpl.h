@@ -12,9 +12,8 @@
 #ifndef XQP_QNAMES_IMPL_H
 #define XQP_QNAMES_IMPL_H
 
-#include "runtime/base/unarybase.h"
-#include "runtime/base/binarybase.h"
-#include "errors/error_factory.h"
+#include "runtime/base/unarybase.h" // remove after iterator refactoring
+#include "runtime/base/binarybase.h" // remove after iterator refactoring
 #include <vector>
 
 namespace xqp {

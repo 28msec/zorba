@@ -2,6 +2,7 @@
 
 #include "system/globalenv.h"
 #include "errors/error_factory.h"
+#include "types/casting.h"
 
 namespace xqp
 {

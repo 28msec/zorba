@@ -20,13 +20,12 @@
 #ifndef XQP_NUMERICS_IMPL_H
 #define XQP_NUMERICS_IMPL_H
 
-#include "context/common.h"
+#include "common/shared_types.h"
 #include "runtime/base/iterator.h"
-#include "runtime/base/noarybase.h"
-#include "runtime/base/unarybase.h"
-#include "runtime/base/binarybase.h"
+#include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
+#include "runtime/base/unarybase.h" // TODO remove after iterator refactoring
+#include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/narybase.h"
-#include <math.h>
 
 namespace xqp
 {

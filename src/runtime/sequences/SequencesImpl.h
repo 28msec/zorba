@@ -8,15 +8,13 @@
 #ifndef XQP_SEQUENCES_IMPL_H
 #define XQP_SEQUENCES_IMPL_H
 
-#include <string>
 #include <vector>
 #include <stack>
 
-#include "context/common.h"
+#include "common/shared_types.h"
 #include "runtime/base/iterator.h"
-#include "store/naive/simple_store.h"
-#include "runtime/base/unarybase.h"
-#include "runtime/base/binarybase.h"
+#include "runtime/base/unarybase.h" // TODO remove after refactoring
+#include "runtime/base/binarybase.h" // TODO remove after refactoring
 #include "runtime/base/narybase.h"
 #include "runtime/booleans/BooleanImpl.h"
 
@@ -101,7 +99,7 @@ class FnDistinctValuesIterator : public NaryBaseIterator<FnDistinctValuesIterato
 
 public:
   FnDistinctValuesIterator(yy::location loc,
-                           vector<PlanIter_t>& args);
+                           std::vector<PlanIter_t>& args);
  
   ~FnDistinctValuesIterator();
 

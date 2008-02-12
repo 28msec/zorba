@@ -494,7 +494,7 @@ xqp_string Item::show() const
   /* end class Item */
 
 
-void Item::serializeXML( ostream& os )
+void Item::serializeXML( std::ostream& os )
 {
   serializer *ser;
   ser = ZORBA_FOR_CURRENT_THREAD()->getItemSerializer();

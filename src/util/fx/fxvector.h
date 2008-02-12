@@ -36,7 +36,6 @@
 #include <sstream>
 #include <iostream>
 
-using namespace std;
 namespace xqp {
 
 #define DEFAULT_SIZE		4096		// default initial vector size

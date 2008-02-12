@@ -19,6 +19,7 @@
 #include "api/external/result_iterator_wrapper.h"
 
 #include "zorba/util/properties.h"
+#include "system/zorba_engine.h"
 
 #include <iostream>
 #include <fstream>

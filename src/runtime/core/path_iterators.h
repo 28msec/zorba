@@ -26,12 +26,9 @@
 #define XQP_PATH_ITERATORS_H
 
 
-#include "util/rchandle.h"
-#include "util/logging/logging.hh"
 #include "compiler/expression/expr_consts.h"
 #include "runtime/base/iterator.h"
-#include "runtime/base/unarybase.h"
-#include "store/api/store_consts.h"
+#include "runtime/base/unarybase.h" // TODO remove after refactoring
 #include <stack>
 
 namespace xqp 

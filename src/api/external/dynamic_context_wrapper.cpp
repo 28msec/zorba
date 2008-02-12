@@ -11,6 +11,7 @@
 #include "types/casting.h"
 #include "types/root_typemanager.h"
 #include "system/globalenv.h"
+#include "system/zorba_engine.h"
 #include <fstream>
 
 namespace xqp {

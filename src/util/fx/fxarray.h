@@ -38,7 +38,6 @@
 #include "util/fx/mmfile.h"
 #include "errors/error_factory.h"
 
-using namespace std;
 namespace xqp {
 
 #define DEFAULT_SIZE 4096
@@ -73,7 +72,7 @@ public:		// ctor,dtor
    ** @param path - backing file pathname 
 	 ** @param size - initial size
   */
-  fxarray(string const& path, uint32_t initial_size=DEFAULT_SIZE);
+  fxarray(std::string const& path, uint32_t initial_size=DEFAULT_SIZE);
 
 	/**
    ** Create a fxarray in memory.
@@ -157,12 +156,12 @@ public:		// memory-mapped only, nops in the non-mm case
 	 **
 	 ** @return path of backing file
 	 */
-	string get_path() const { return mmf_p ? mmf_p->get_path() : ""; }
+  std::string get_path() const { return mmf_p ? mmf_p->get_path() : ""; }
 
 	/**
 	 ** Rename the backing file.
 	 */
-  void rename_backing_file(string const& new_path) THROW_XQP_EXCEPTION;
+  void rename_backing_file(std::string const& new_path) THROW_XQP_EXCEPTION;
 	/**
 	 ** Return data array pointer.
 	 **
@@ -183,7 +182,7 @@ public:		// memory-mapped only, nops in the non-mm case
 
 
 template<typename T>
-fxarray<T>::fxarray(string const& path, uint32_t size)
+fxarray<T>::fxarray(std::string const& path, uint32_t size)
 :
 	mmf_p(new mmfile(path, size*sizeof(T)))
 {
@@ -256,7 +255,7 @@ THROW_XQP_EXCEPTION
 }
 
 template<typename T>
-void fxarray<T>::rename_backing_file(const string& new_path)
+void fxarray<T>::rename_backing_file(const std::string& new_path)
 THROW_XQP_EXCEPTION
 {
 	if (mmf_p) mmf_p->rename_backing_file(new_path);

@@ -65,7 +65,7 @@ public:
 
 	virtual ResultIterator_t		getIterator();
 
-  virtual bool   serializeQuery(ostream &os);
+  virtual bool   serializeQuery(std::ostream &os);
 
   virtual void	abortQueryExecution();
 

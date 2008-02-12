@@ -13,7 +13,6 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
 namespace xqp {
 
 /*______________________________________________________________________

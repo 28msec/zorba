@@ -1,8 +1,6 @@
 #include <algorithm>
 #include <functional>
 
-using namespace std;
-
 namespace xqp {
 
   template <typename adaptable_unary> class binderonly {
@@ -27,9 +25,9 @@ namespace xqp {
   }
 
   template <typename T> class stack_generator {
-    stack<T> &stk;
+    std::stack<T> &stk;
   public:
-    stack_generator (stack<T> &stk_) : stk (stk_) {}
+    stack_generator (std::stack<T> &stk_) : stk (stk_) {}
     T operator () () {
       assert (! stk.empty ());
       T x = stk.top ();
@@ -38,7 +36,7 @@ namespace xqp {
     }
   };
 
-  template <typename T> stack_generator<T> stack_to_generator (stack<T> &stk) {
+  template <typename T> stack_generator<T> stack_to_generator (std::stack<T> &stk) {
     return stack_generator<T> (stk);
   }
 

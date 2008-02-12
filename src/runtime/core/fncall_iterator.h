@@ -1,9 +1,8 @@
 #ifndef XQP_FNCALL_ITERATOR_H
 #define XQP_FNCALL_ITERATOR_H
 
-#include "context/common.h"
+#include "common/shared_types.h"
 #include "runtime/base/narybase.h"
-#include "functions/function.h"
 
 namespace xqp {
 

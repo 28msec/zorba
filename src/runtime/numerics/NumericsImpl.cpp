@@ -7,8 +7,6 @@
  *
  */
 
-#include <iostream>
-
 #include "system/globalenv.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "util/tracer.h"
@@ -16,6 +14,7 @@
 #include "errors/error_factory.h"
 #include "system/zorba.h"
 #include "runtime/visitors/planitervisitor.h"
+#include "util/Assert.h"
 
 using namespace std;
 namespace xqp

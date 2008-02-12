@@ -406,7 +406,7 @@ Item_t DocumentNode::getAtomizationValue() const
 
 xqp_string DocumentNode::getStringValue() const
 {
-  ostringstream oss;
+  std::ostringstream oss;
 
   unsigned long numChildren = this->numChildren();
   for (unsigned long i = 0; i < numChildren; i++)
@@ -715,7 +715,7 @@ Item_t ElementNode::getAtomizationValue() const
 ********************************************************************************/
 xqp_string ElementNode::getStringValue() const
 {
-  ostringstream oss;
+  std::ostringstream oss;
 
   unsigned long numChildren = this->numChildren();
   for (unsigned long i = 0; i < numChildren; i++)
@@ -1007,7 +1007,7 @@ XmlNode* ElementNode::copy(XmlNode* parent, unsigned long pos)
   {
     if (!parent->isCopy())
     {
-      auto_ptr<NsBindingsContext> ctx(new NsBindingsContext());
+      std::auto_ptr<NsBindingsContext> ctx(new NsBindingsContext());
       getNamespaceBindings(ctx->getBindings());
 
       if (!ctx->empty())

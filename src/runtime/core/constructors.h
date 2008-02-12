@@ -1,26 +1,15 @@
-
 #ifndef XQP_CONSTRUCTORS_H
 #define XQP_CONSTRUCTORS_H
-#include "zorba/common.h"
-#include "context/common.h"
-#include "util/rchandle.h"
-#include "util/tracer.h"
-#include "compiler/parser/location.hh"
-#include "runtime/base/iterator.h"
-#include "runtime/base/unarybase.h"
-#include "runtime/base/binarybase.h"
-#include "runtime/base/narybase.h"
-#include "context/namespace_context.h"
 
-#include <assert.h>
-#include <iostream>
+#include "runtime/base/iterator.h"
+#include "runtime/base/unarybase.h" // TODO delete after iterator refactoring
+#include "runtime/base/binarybase.h" // TODO delete after iterator refactoring
+#include "runtime/base/narybase.h"
+#include "common/shared_types.h"
+
 #include <vector>
 
 namespace xqp {
-
-class Item;
-class node;
-class zorba;
 
 
 /*********************************************************************************

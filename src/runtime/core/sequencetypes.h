@@ -1,19 +1,11 @@
 #ifndef XQP_SEQUENCETYPES_H
 #define XQP_SEQUENCETYPES_H
 
-#include "zorba/common.h"
-
-#include "util/rchandle.h"
-#include "util/tracer.h"
-#include "compiler/parser/location.hh"
+#include "common/shared_types.h"
 #include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h"
 #include "types/root_typemanager.h"
-#include "types/casting.h"
-
-#include <assert.h>
-#include <iostream>
-#include <vector>
+#include "util/Assert.h"
 
 namespace xqp {
 

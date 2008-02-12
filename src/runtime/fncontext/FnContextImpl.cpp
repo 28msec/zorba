@@ -7,6 +7,7 @@
 #include "api/external/xquery.h"
 #include "context/dynamic_context.h"
 #include "runtime/core/item_iterator.h"
+#include "system/zorba_engine.h"
 
 namespace xqp
 {

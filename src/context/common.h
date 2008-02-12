@@ -50,7 +50,6 @@
 #include "util/checked_vector.h"
 #include "util/Assert.h"
 
-using namespace std;
 namespace xqp {
 
 // zorba id types

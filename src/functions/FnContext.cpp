@@ -20,7 +20,7 @@ ctx_variable::ctx_variable ( const signature& sig )
 
 PlanIter_t ctx_variable::operator() (
     const yy::location& loc,
-    vector<PlanIter_t>& argv ) const
+    std::vector<PlanIter_t>& argv ) const
 {
   xqpString varName = argv[0].cast<SingletonIterator>()->getValue()->getStringValue();
   return new CtxVariableIterator(loc, varName);
@@ -33,7 +33,7 @@ xqtref_t ctx_variable::type_check(signature& sig) const
 }
 
 
-bool ctx_variable::validate_args ( vector<PlanIter_t>& argv ) const
+bool ctx_variable::validate_args ( std::vector<PlanIter_t>& argv ) const
 {
   return ( argv.size() == 1 );
 }

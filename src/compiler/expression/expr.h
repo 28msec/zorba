@@ -246,7 +246,7 @@ public:	// accessors
 	void set_expr(expr_t v) { expr_h = v; }
 
 public:
-	std::ostream& put(ostream&) const;
+	std::ostream& put(std::ostream&) const;
 	
   rchandle<forlet_clause> clone(expr::substitution_t& substitution);
 };
@@ -485,7 +485,7 @@ protected:
   Item_t name;
   std::vector<rchandle<var_expr> > params;
   expr_t body;
-  auto_ptr<signature> sig;
+  std::auto_ptr<signature> sig;
 
 public:
   function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type);
@@ -499,7 +499,7 @@ public:
   const signature &get_signature () const { return *sig; }
 
   void accept (expr_visitor& v);
-  ostream &put (ostream &) const;
+  std::ostream &put (std::ostream &) const;
 };
 
 

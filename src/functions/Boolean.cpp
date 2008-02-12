@@ -17,7 +17,7 @@ namespace xqp
 		: function ( sig ) {}
 
 	PlanIter_t
-	GenericOpComparison::operator() ( const yy::location& loc, vector<PlanIter_t>& argv ) const
+	GenericOpComparison::operator() ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return this->createIterator(loc, argv);
 	}
@@ -29,7 +29,7 @@ namespace xqp
 	}
 
 	bool
-	GenericOpComparison::validate_args ( vector<PlanIter_t>& argv ) const
+	GenericOpComparison::validate_args ( std::vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 2 );
 	}
@@ -147,7 +147,7 @@ namespace xqp
 	PlanIter_t
 	op_is_same_node::operator() (
 	    const yy::location& loc,
-	    vector<PlanIter_t>& argv ) const
+	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new OpIsSameNodeIterator ( loc, argv );
 	}
@@ -160,7 +160,7 @@ namespace xqp
 	}
 
 	bool
-	op_is_same_node::validate_args ( vector<PlanIter_t>& argv ) const
+	op_is_same_node::validate_args ( std::vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 2 );
 	}
@@ -170,7 +170,7 @@ namespace xqp
 	PlanIter_t
 	op_node_before::operator() (
 	    const yy::location& loc,
-	    vector<PlanIter_t>& argv ) const
+	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new OpNodeBeforeIterator ( loc, argv );
 	}
@@ -183,7 +183,7 @@ namespace xqp
 	}
 
 	bool
-	op_node_before::validate_args ( vector<PlanIter_t>& argv ) const
+	op_node_before::validate_args ( std::vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 2 );
 	}
@@ -193,7 +193,7 @@ namespace xqp
 	PlanIter_t
 	op_node_after::operator() (
 	    const yy::location& loc,
-	    vector<PlanIter_t>& argv ) const
+	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new OpNodeAfterIterator ( loc, argv );
 	}
@@ -206,7 +206,7 @@ namespace xqp
 	}
 
 	bool
-	op_node_after::validate_args ( vector<PlanIter_t>& argv ) const
+	op_node_after::validate_args ( std::vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 2 );
 	}
@@ -218,7 +218,7 @@ namespace xqp
 	PlanIter_t
 	op_and::operator() (
 	    const yy::location& loc,
-	    vector<PlanIter_t>& argv ) const
+	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::AND );
 	}
@@ -231,7 +231,7 @@ namespace xqp
 	}
 
 	bool
-	op_and::validate_args ( vector<PlanIter_t>& argv ) const
+	op_and::validate_args ( std::vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 2 );
 	}
@@ -243,7 +243,7 @@ namespace xqp
 	PlanIter_t
 	op_or::operator() (
 	    const yy::location& loc,
-	    vector<PlanIter_t>& argv ) const
+	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::OR );
 	}
@@ -256,7 +256,7 @@ namespace xqp
 	}
 
 	bool
-	op_or::validate_args ( vector<PlanIter_t>& argv ) const
+	op_or::validate_args ( std::vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 2 );
 	}
@@ -268,7 +268,7 @@ namespace xqp
 	PlanIter_t
 	fn_true::operator() (
 	    const yy::location& loc,
-	    vector<PlanIter_t>& argv ) const
+	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(true) );
 	}
@@ -281,7 +281,7 @@ namespace xqp
 	}
 
 	bool
-	fn_true::validate_args ( vector<PlanIter_t>& argv ) const
+	fn_true::validate_args ( std::vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 0 );
 	}
@@ -293,7 +293,7 @@ namespace xqp
 	PlanIter_t
 	fn_false::operator() (
 	    const yy::location& loc,
-	    vector<PlanIter_t>& argv ) const
+	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(false) );
 	}
@@ -306,7 +306,7 @@ namespace xqp
 	}
 
 	bool
-	fn_false::validate_args ( vector<PlanIter_t>& argv ) const
+	fn_false::validate_args ( std::vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 0 );
 	}	
@@ -318,7 +318,7 @@ namespace xqp
 	PlanIter_t
 	fn_not::operator() (
 	    const yy::location& loc,
-	    vector<PlanIter_t>& argv ) const
+	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new FnBooleanIterator(loc, argv[0], true );
 	}
@@ -331,7 +331,7 @@ namespace xqp
 	}
 
 	bool
-	fn_not::validate_args ( vector<PlanIter_t>& argv ) const
+	fn_not::validate_args ( std::vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 1 );
 	}	
@@ -343,7 +343,7 @@ namespace xqp
 	PlanIter_t
 	fn_boolean::operator() (
 	    const yy::location& loc,
-	    vector<PlanIter_t>& argv ) const
+	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new FnBooleanIterator ( loc, argv[0] );
 	}
@@ -356,7 +356,7 @@ namespace xqp
 	}
 
 	bool
-	fn_boolean::validate_args ( vector<PlanIter_t>& argv ) const
+	fn_boolean::validate_args ( std::vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 1 );
 	}

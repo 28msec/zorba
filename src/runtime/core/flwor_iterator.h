@@ -8,16 +8,9 @@
 #ifndef XQP_RUNTIME_FLWOR_ITERATOR
 #define XQP_RUNTIME_FLWOR_ITERATOR
 
-#include "context/common.h"
-#include "util/rchandle.h"
-#include "util/tracer.h"
-#include "compiler/parser/location.hh"
 #include "runtime/base/iterator.h"
-#include "runtime/base/unarybase.h"
-
-#include <assert.h>
-#include <iostream>
 #include "util/checked_vector.h"
+#include "common/shared_types.h"
 
 namespace xqp
 {
@@ -140,7 +133,7 @@ public:
   {
   public:
     OrderKeyCmp() : mOrderSpecs ( 0 ) {}
-    OrderKeyCmp ( vector<OrderSpec>* aOrderSpecs ) : mOrderSpecs ( aOrderSpecs ) {}
+    OrderKeyCmp ( std::vector<OrderSpec>* aOrderSpecs ) : mOrderSpecs ( aOrderSpecs ) {}
 
     /**
      * The key comparison function, a Strict Weak Ordering whose argument type is key_type;
@@ -167,7 +160,7 @@ public:
     inline int8_t descAsc(int8_t result, bool asc) const;
     
   private:
-    vector<OrderSpec>* mOrderSpecs; //Pointer to the OrderSpec to do the comparison accordingly  
+    std::vector<OrderSpec>* mOrderSpecs; //Pointer to the OrderSpec to do the comparison accordingly  
   };
       
 protected:

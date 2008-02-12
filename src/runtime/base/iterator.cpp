@@ -26,6 +26,7 @@
 
 #include "system/zorba.h"
 #include "system/zorba_engine.h"
+#include "util/Assert.h"
 
 namespace xqp
 {

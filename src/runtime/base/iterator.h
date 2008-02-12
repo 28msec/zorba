@@ -24,16 +24,9 @@
 #ifndef XQP_ITERATOR_H
 #define XQP_ITERATOR_H
 
-#include "zorba/common.h"
-
-#include <vector>
-
-#include "util/rchandle.h"
-#include "compiler/parser/location.hh"
+#include "common/shared_types.h"
 #include "store/api/item.h"
-#include "util/utf8/xqpString.h"
 #include "system/zorba.h"
-#include "util/Assert.h"
 #include "runtime/visitors/planitervisitor.h"
 
 // Info: Forcing inlining a function in g++:

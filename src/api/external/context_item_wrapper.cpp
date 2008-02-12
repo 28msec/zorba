@@ -3,6 +3,7 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "system/zorba.h"
+#include "system/zorba_engine.h"
 #include "runtime/core/item_iterator.h"
 #include <fstream>
 
