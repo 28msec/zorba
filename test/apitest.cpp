@@ -84,7 +84,7 @@ void set_var (string name, string val,
 }
 
 void slurp_file (const char *fname, string &result) {
-  ifstream qfile(fname); assert (qfile);
+  ifstream qfile(fname, ios::binary | ios_base::in); assert (qfile);
 
   qfile.seekg (0, ios::end);
   size_t len = qfile.tellg ();

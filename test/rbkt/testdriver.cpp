@@ -234,7 +234,7 @@ public:
 
 void 
 slurp_file (const char *fname, std::string &result) {
-  std::ifstream qfile(fname); assert (qfile);
+  std::ifstream qfile(fname, std::ios::binary | std::ios_base::in); assert (qfile);
 
   qfile.seekg (0, std::ios::end);
   size_t len = qfile.tellg ();
