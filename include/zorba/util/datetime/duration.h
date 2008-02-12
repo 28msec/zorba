@@ -35,7 +35,7 @@ public:
   virtual bool operator<(const DurationBase& dt) const = 0;
   virtual bool operator==(const DurationBase& dt) const = 0;
   virtual int compare(const DurationBase& dt) const = 0;
-  virtual xqpString toString() const = 0;
+  virtual xqpString toString(bool output_when_zero = true) const = 0;
 
   virtual DurationBase_t operator+(const DurationBase& db) const = 0;
   virtual DurationBase_t operator-(const DurationBase& db) const = 0;
@@ -66,7 +66,7 @@ public:
   virtual bool operator<(const DurationBase& dt) const;
   virtual bool operator==(const DurationBase& dt) const;
   virtual int compare(const DurationBase& dt) const;
-  virtual xqpString toString() const;
+  virtual xqpString toString(bool output_when_zero = true) const;
 
   virtual DurationBase_t operator+(const DurationBase& db) const;
   virtual DurationBase_t operator-(const DurationBase& db) const;
@@ -102,7 +102,7 @@ public:
   virtual bool operator<(const DurationBase& dt) const;
   virtual bool operator==(const DurationBase& dt) const;
   virtual int compare(const DurationBase& dt) const;
-  virtual xqpString toString() const;
+  virtual xqpString toString(bool output_when_zero = true) const;
 
   virtual DurationBase_t operator+(const DurationBase& dt) const;
   virtual DurationBase_t operator-(const DurationBase& dt) const;
@@ -138,7 +138,7 @@ public:
   virtual bool operator<(const DurationBase& d) const;
   virtual bool operator==(const DurationBase& d) const;
   virtual int compare(const DurationBase& d) const;
-  virtual xqpString toString() const;
+  virtual xqpString toString(bool output_when_zero = true) const;
 
   virtual DurationBase_t operator+(const DurationBase& d) const;
   virtual DurationBase_t operator-(const DurationBase& d) const;

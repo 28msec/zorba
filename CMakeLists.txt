@@ -31,12 +31,28 @@ SET(BUILD_STATIC_LIBRARY 0)
 
 ##############################################################################################################
 # Used libraries
+
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
+#####################################################  ICU
 INCLUDE(cmake_modules/FindICU.cmake)
+IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
+	MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
+ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
+    SET(requiredlibs ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
+ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 
+#####################################################  LibXml2
 FIND_PACKAGE(LibXml2)
+IF(LIBXML2_FOUND)
+    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
+    SET(requiredlibs ${requiredlibs} ${LIBXML2_LIBRARIES})
+    SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
+ELSE(LIBXML2_FOUND)
+    MESSAGE(FATAL_ERROR "The libxml2 library is required in order to build Zorba.")
+ENDIF(LIBXML2_FOUND)
 
+#####################################################  cURL    
 IF(WITH_CURL)
   FIND_PACKAGE(CURL)
   IF(CURL_FOUND)
@@ -48,6 +64,7 @@ IF(WITH_CURL)
   ENDIF(CURL_FOUND)
 ENDIF(WITH_CURL)
 
+#####################################################  Iconv
 INCLUDE(cmake_modules/FindIconv.cmake)
 FIND_PACKAGE(Iconv)
 IF (Iconv_FOUND)
@@ -55,31 +72,14 @@ IF (Iconv_FOUND)
     SET(requiredlibs ${requiredlibs} ${ICONV_LIBRARY})
 ENDIF (Iconv_FOUND)
 
+#####################################################  Xerces-C
 INCLUDE(cmake_modules/FindXercesC.cmake)
 IF (XERCESC_FOUND)
 	INCLUDE_DIRECTORIES(${XERCESC_INCLUDE_DIR})
 	SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
 ENDIF (XERCESC_FOUND)
 
-
-##############################################################################################################
-# do platform checks
-
-IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-	MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
-ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-    SET(requiredlibs ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
-ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
-
-IF(LIBXML2_FOUND)
-    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
-    SET(requiredlibs ${requiredlibs} ${LIBXML2_LIBRARIES})
-    SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
-ELSE(LIBXML2_FOUND)
-    MESSAGE(FATAL_ERROR "The libxml2  library is required in order to build Zorba.")
-ENDIF(LIBXML2_FOUND)
-
-
+#####################################################  Boost
 FIND_PACKAGE(Boost)
 IF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
@@ -105,6 +105,9 @@ IF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
 ELSE(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
     MESSAGE(FATAL_ERROR "The boost library is required in order to build Zorba.")
 ENDIF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
+
+
+##############################################################################################################
 
 # for windows it is located in external/win32_pthread
 # but this should be removed

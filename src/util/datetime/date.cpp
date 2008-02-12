@@ -9,6 +9,7 @@
 #include "util/datetime/date.h"
 #include "util/datetime/timezone.h"
 #include "util/datetime/parse.h"
+#include "util/numconversions.h"
 
 #define RETURN_FALSE_ON_EXCEPTION(sequence)     \
   try                                           \
@@ -20,23 +21,24 @@
     return false;                               \
   }
 
+using namespace std;
 
 namespace xqp
 {
-    
-bool Date::parse_string(const xqpString& s, Date_t& d_t)
+
+int Date::parse_string(const xqpString& s, Date_t& d_t)
 {
-  // Date_t d_t;
   unsigned int position = 0;
   bool is_negative = false;
   std::string ss = *s.getStore();
   TimeZone_t tz_t;
 
-  // date of form: '-'? yyyy '-' mm '-' dd zzzzzz?
+  // date is in form of '-'? yyyy '-' mm '-' dd zzzzzz?
+  
 
   skip_whitespace(ss, position);
   if (position == ss.size())
-    return false;
+    return 1;
 
   if (ss[position] == '-')
   {
@@ -44,66 +46,123 @@ bool Date::parse_string(const xqpString& s, Date_t& d_t)
     position++;
   }
 
-  if (ss.size()-position > 10) // we might have a timezone
+  d_t = new Date();
+
+  // Parse year
+  if (position == ss.size() || parse_int(ss, position, d_t->year, 4))
+    return 1;
+  if (is_negative)
+    d_t->year = -d_t->year;
+  if (position == ss.size() || ss[position++] != '-')
+    return 1;
+
+  // Parse month
+  if (position == ss.size() || parse_int(ss, position, d_t->month, 2, 2))
+    return 1;
+  if (position == ss.size() || ss[position++] != '-')
+    return 1;
+
+  // Parse day
+  if (position == ss.size() || parse_int(ss, position, d_t->day, 2, 2))
+    return 1;
+
+  if (position != ss.size())
   {
-    RETURN_FALSE_ON_EXCEPTION( d_t = new Date(boost::gregorian::from_simple_string(ss.substr(position, 10))); );
-    if( TimeZone::parse_string(ss.substr(position+10, ss.size() - position - 10), tz_t))
-      d_t->the_time_zone = *tz_t;
-    else
-      return false;
-  }
-  else
-  {
-    RETURN_FALSE_ON_EXCEPTION( d_t = new Date(boost::gregorian::from_simple_string(ss)); );
+    // we might have a timezone
+    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+      return 1;
+    d_t->the_time_zone = *tz_t;
   }
 
-  // TODO: date can be negative
+  // Validate the date
+  // year can be anything
+  if (d_t->month < 1 || d_t->month > 12)
+    return 1;
 
-  return true;
+  if (d_t->day < 1 || d_t->day > get_last_day(d_t->year, d_t->month))
+    return 1;
+
+  return 0;
 }
+
+int Date::createDate(int a_year, int a_month, int a_day, Date_t& d_t)
+{
+  if (a_month < 1 || a_month > 12)
+    return 1;
+  if (a_day < 1 || a_day > get_last_day(a_year, a_month))
+    return 1;
+
+  d_t = new Date();
+  d_t->year = a_year;
+  d_t->month = a_month;
+  d_t->day = a_day;
+  return 0;
+}
+
 
 Date& Date::operator=(const Date_t& d_t)
 {
-  the_date = d_t->the_date;
+  year = d_t->year;
+  month = d_t->month;
+  day = d_t->day;
   return *this;
 }
 
 bool Date::operator<(const Date& d) const
 {
-  return (the_date < d.the_date);
+  // TODO: check timezone
+  if (year < d.year
+     ||
+     (year == d.year && month < d.month)
+     ||
+     (year == d.year && month == d.month && day < d.day))
+    return true;
+  else
+    return false;
 }
 
 bool Date::operator==(const Date& d) const
 {
-  return (the_date == d.the_date);
+  // TODO: check timezone
+  return (year == d.year && month == d.month && day == d.month);
 }
 
 xqpString Date::toString() const
 {
-  xqpString result = boost::gregorian::to_iso_extended_string(the_date);
+  xqpString result = NumConversions::longToStr(year) + "-";
+
+  if (month < 10)
+    result += "0";
+  result += NumConversions::longToStr(month) + "-";
+
+  if (day < 10)
+    result += "0";
+  result += NumConversions::longToStr(day);
+      
   result += the_time_zone.toString();
-  // TODO:
   return result;
 }
 
+/*
 const boost::gregorian::date& Date::get_date() const
 {
   return the_date;
 }
+*/
 
 int32_t Date::getYear() const
 {
-  return the_date.year();
+  return year;
 }
 
 int32_t Date::getMonth() const
 {
-  return the_date.month();
+  return month;
 }
 
 int32_t Date::getDay() const
 {
-  return the_date.day();
+  return day;
 }
 
 TimeZone Date::getTimezone() const

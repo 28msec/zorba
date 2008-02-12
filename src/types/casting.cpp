@@ -164,7 +164,7 @@ Item_t GenericCast::stringSimpleCast(
   case TypeConstants::XS_DATE:
   {
     xqp_date d;
-    if (Date::parse_string(lString, d))
+    if (0 == Date::parse_string(lString, d))
       lItem = factory->createDate(d);
   }
   break;

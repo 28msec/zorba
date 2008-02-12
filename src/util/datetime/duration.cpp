@@ -66,7 +66,7 @@ int YearMonthDuration::compare(const DurationBase& db) const
     return 1;
 }
 
-xqpString YearMonthDuration::toString() const
+xqpString YearMonthDuration::toString(bool output_when_zero) const
 {
   xqpString result = "";
   long abs_months = months;
@@ -82,10 +82,9 @@ xqpString YearMonthDuration::toString() const
   if (abs_months > 12 )
     result = result + NumConversions::longToStr(abs_months / 12) + "Y";
 
-  if (abs_months%12 != 0)
+  if ((abs_months%12) != 0 || (abs_months < 12 && output_when_zero))
     result = result + NumConversions::longToStr(abs_months % 12) + "M";
     
-  // TODO:
   return result;
 }
 
@@ -277,32 +276,45 @@ int DayTimeDuration::compare(const DurationBase& db) const
     return 1;
 }
 
-xqpString DayTimeDuration::toString() const
+#define OUTPUT_T_SEPARATOR(result, have_t_separator)  do { \
+  if (!have_t_separator) { \
+    result += "T"; \
+    have_t_separator = true; \
+  } \
+} while(0);
+
+xqpString DayTimeDuration::toString(bool output_when_zero) const
 {
   xqpString result = "";
+  bool have_t_separator = false;
 
   if ( is_negative )
     result += "-";
 
   result += "P";
 
-    // TODO: check
-
   if ( days != 0 )
     result += NumConversions::longToStr ( days ) + "D";
 
-
-  result += "T";
-
   if ( timeDuration.hours() != 0)
+  {
+    OUTPUT_T_SEPARATOR(result, have_t_separator);
     result += NumConversions::intToStr ( timeDuration.hours() ) + "H";
+  }
 
   if ( timeDuration.minutes() != 0 )
-    result += NumConversions::intToStr ( timeDuration.minutes() ) + "M";
-
-  if ( timeDuration.seconds() != 0 || timeDuration.fractional_seconds() != 0  ||
-       (timeDuration.hours() == 0 && timeDuration.minutes() == 0 && timeDuration.seconds() == 0 && timeDuration.fractional_seconds() == 0))
   {
+    OUTPUT_T_SEPARATOR(result, have_t_separator);
+    result += NumConversions::intToStr ( timeDuration.minutes() ) + "M";
+  }
+
+  if ( timeDuration.seconds() != 0 || timeDuration.fractional_seconds() != 0
+       ||
+       (output_when_zero
+       &&
+       (timeDuration.hours() == 0 && timeDuration.minutes() == 0 && timeDuration.seconds() == 0 && timeDuration.fractional_seconds() == 0)))
+  {
+    OUTPUT_T_SEPARATOR(result, have_t_separator);
     result += NumConversions::intToStr ( timeDuration.seconds() );
 
     if ( timeDuration.fractional_seconds() != 0 )
@@ -707,13 +719,14 @@ int Duration::compare(const DurationBase& db) const
     return 1;
 }
 
-xqpString Duration::toString() const
+xqpString Duration::toString(bool output_when_zero) const
 {
   xqpString result;
-  xqpString temp = dayTimeDuration.toString();
 
   // TODO: check "-" signs
-  result = yearMonthDuration.toString() + temp.substr(1, temp.size() - 1);
+  result = yearMonthDuration.toString(false)
+      +
+      dayTimeDuration.toString(yearMonthDuration.getYears() == 0 && yearMonthDuration.getDays() == 0).substr(1);
 
   
   // TODO:

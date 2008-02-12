@@ -26,7 +26,9 @@ namespace xqp
     
 DateTime::DateTime(const Date_t& d_t, const Time_t& t_t)
 {
-  the_date_time = boost::posix_time::ptime(d_t->get_date(), t_t->get_time_duration());
+  the_date_time = boost::posix_time::ptime(
+      boost::gregorian::date(d_t->getYear(), d_t->getMonth(), d_t->getDay()),
+      t_t->get_time_duration());
 }
 
 bool DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)

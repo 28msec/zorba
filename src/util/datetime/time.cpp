@@ -111,6 +111,7 @@ bool Time::operator==(const Time& t) const
 xqpString Time::toString() const
 {
   xqpString result = boost::posix_time::to_simple_string(the_time);
+  result += the_time_zone.toString();
   // TODO:
   return result;
 }

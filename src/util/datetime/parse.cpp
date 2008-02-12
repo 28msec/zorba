@@ -37,22 +37,6 @@ void skip_whitespace(std::string& s, unsigned int& position)
   }
 }
 
-// Returns 1 if there is an error
-int parse_int(std::string& s, unsigned int& position, long& result)
-{
-  if (s[position] < '0' || s[position] > '9')
-    return 1;
-
-  result = 0;
-  while (s[position] >= '0' && s[position] <= '9' && position < s.size())
-  {
-    result = 10*result + s[position] - '0';
-    position++;
-  }
-
-  return 0;
-}
-
 bool is_digit(char ch)
 {
   return (ch >= '0' && ch <= '9');
