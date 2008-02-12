@@ -15,12 +15,12 @@ using namespace std;
 
 namespace xqp
 {
-  const uint32_t NO_MONTHS_IN_YEAR = 12;
-  const uint32_t NO_HOURS_IN_DAY = 24;
-  const uint32_t NO_MINUTES_IN_HOUR = 60;
-  const uint32_t NO_SECONDS_IN_MINUTE = 60;
-  const uint32_t NO_SEC_IN_DAY = NO_HOURS_IN_DAY * NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE;
-  const uint32_t NO_SEC_IN_HOUR = NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE;
+  const int32_t NO_MONTHS_IN_YEAR = 12;
+  const int32_t NO_HOURS_IN_DAY = 24;
+  const int32_t NO_MINUTES_IN_HOUR = 60;
+  const int32_t NO_SECONDS_IN_MINUTE = 60;
+  const int32_t NO_SEC_IN_DAY = NO_HOURS_IN_DAY * NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE;
+  const int32_t NO_SEC_IN_HOUR = NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE;
  
 
 YearMonthDuration::YearMonthDuration(long the_months)
