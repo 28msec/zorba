@@ -5,9 +5,9 @@
 
 namespace xqp {
 
-  int ZorbaVersion::theMajorVersion = @ZORBA_MAJOR_VERSION@;
-  int ZorbaVersion::theMinorVersion = @ZORBA_MINOR_VERSION@;
-  int ZorbaVersion::thePatchVersion = @ZORBA_PATCH_VERSION@;
+  int ZorbaVersion::theMajorVersion = @ZORBA_MAJOR_NUMBER@;
+  int ZorbaVersion::theMinorVersion = @ZORBA_MINOR_NUMBER@;
+  int ZorbaVersion::thePatchVersion = @ZORBA_PATCH_NUMBER@;
 
   int
   ZorbaVersion::getZorbaMajorVersion() { return theMajorVersion; }
