@@ -33,6 +33,8 @@ int test_api_query_multithread(const char *result_file_name)
 
   XQuery_t    query;
 	ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
+  zorba_factory->shutdown();
+  zorba_factory = ZorbaEngine::getInstance();
 
 	zorba_factory->initThread();
 	query = zorba_factory->createQuery("1+2");

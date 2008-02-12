@@ -12,7 +12,7 @@
 
 namespace xqp{
 
-ResultIteratorWrapper::ResultIteratorWrapper(Zorba_XQueryBinary *x,
+ResultIteratorWrapper::ResultIteratorWrapper(Zorba_XQueryBinary_t x,
 																						 DynamicContextWrapper *dctx)
 {
 	xquery = x;
