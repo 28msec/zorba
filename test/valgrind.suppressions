@@ -179,16 +179,6 @@
    fun:_GLOBAL__I__ZN3xqp12library_initEv
 }
 
-{
-   static initialization
-   Memcheck:Leak
-   fun:*
-   fun:_ZN3xqp10TypeSystemC1Ev
-   fun:_ZN3xqp17GlobalEnvironment4initEv
-   fun:_ZN3xqp17GlobalEnvironment11getInstanceEv
-   fun:_Z41__static_initialization_and_destruction_0ii
-   fun:_GLOBAL__I__ZN3xqp12library_initEv
-}
 
 {
    static initialization
@@ -363,6 +353,17 @@
     fun:_GLOBAL__I__ZN3xqp8NodeTest13ANY_NODE_TESTE
 }
 
+{
+    static initialization
+    Memcheck:Leak
+    fun:*
+    fun:_ZN3xqp15RootTypeManagerC1Ev
+    fun:_ZN3xqp17GlobalEnvironment4initEv
+    fun:_ZN3xqp17GlobalEnvironment11getInstanceEv
+    fun:_Z41__static_initialization_and_destruction_0ii
+    fun:_GLOBAL__I__ZN3xqp12library_initEv
+}
+                                          
 
 # 32 bit linux suppressions
 
