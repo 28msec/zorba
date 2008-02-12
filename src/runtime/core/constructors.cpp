@@ -12,7 +12,6 @@
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
 #include "runtime/visitors/planitervisitor.h"
-#include "runtime/base/statetraits.h"
 
 
 using namespace std;
@@ -97,7 +96,7 @@ Item_t DocumentContentIterator::nextImpl(PlanState& planState)
 
   while (true)
   {
-    lItem = consumeNext(theChild, planState);
+    lItem = consumeNext(theChild.getp(), planState);
     if (lItem == 0)
       break;
 
@@ -172,7 +171,7 @@ Item_t ElementIterator::nextImpl(PlanState& planState)
   ElementIteratorState* state;
   DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
 
-  qnameItem = consumeNext(theQNameIter, planState);
+  qnameItem = consumeNext(theQNameIter.getp(), planState);
 
   // parsing of QNameItem does not have to be checked because 
   // the compiler wraps an xs:qname cast around the expression
@@ -295,7 +294,7 @@ Item_t ElementContentIterator::nextImpl(PlanState& planState)
   
   while (true)
   {
-    item = this->consumeNext(theChildren[0], planState );
+    item = consumeNext(theChildren[0].getp(), planState );
     if (item == NULL)
       break;
 
@@ -440,11 +439,11 @@ Item_t PiIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
       
-  lItem = consumeNext(theChild0, planState);
+  lItem = consumeNext(theChild0.getp(), planState);
   if (lItem == 0)
     ZORBA_ERROR_ALERT (ZorbaError::XPTY0004);
 
-  if (consumeNext(theChild0, planState) != 0)
+  if (consumeNext(theChild0.getp(), planState) != 0)
     ZORBA_ERROR_ALERT (ZorbaError::XPTY0004);
 
   // TODO: check if lItem is string, raise XPTY0004 if not
@@ -454,7 +453,7 @@ Item_t PiIterator::nextImpl(PlanState& planState)
   else if (target.substr (0).uppercase () == "XML") 
     ZORBA_ERROR_ALERT (ZorbaError::XQDY0064);
   
-  for (lFirst = true; 0 != (lItem = consumeNext (theChild1, planState)); lFirst = false)
+  for (lFirst = true; 0 != (lItem = consumeNext (theChild1.getp(), planState)); lFirst = false)
   {
     if (! lFirst) content += " ";
 
@@ -505,7 +504,7 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
   lFirst = true;
   while (true)
   {
-    lItem = consumeNext(theChild, planState);
+    lItem = consumeNext(theChild.getp(), planState);
     if (lItem == 0)
       break;
     
@@ -582,7 +581,7 @@ Item_t EnclosedIterator::nextImpl(PlanState& planState)
   {
     while ( true )
     {
-      state->theContextItem = consumeNext(theChild, planState);
+      state->theContextItem = consumeNext(theChild.getp(), planState);
 
       if (state->theContextItem == NULL)
       {
@@ -623,7 +622,7 @@ Item_t EnclosedIterator::nextImpl(PlanState& planState)
   {
     while ( true )
     {
-      state->theContextItem = consumeNext(theChild, planState);
+      state->theContextItem = consumeNext(theChild.getp(), planState);
 
       if (state->theContextItem == NULL)
         break;
@@ -702,7 +701,7 @@ Item_t DocFilterIterator::nextImpl(PlanState& planState)
     }
     else
     {
-      lItem = consumeNext(theChild, planState);
+      lItem = consumeNext(theChild.getp(), planState);
       if (lItem == 0)
         break;
       if (lItem->isNode() && lItem->getNodeKind() == StoreConsts::documentNode)

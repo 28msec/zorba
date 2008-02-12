@@ -367,7 +367,7 @@ Item_t FLWORIterator::nextImpl ( PlanState& planState )
       {
         while ( true )
         {
-          curItem = this->consumeNext ( returnClause, planState );
+          curItem = consumeNext ( returnClause.getp(), planState );
           if ( curItem == NULL )
           {
             curVar = bindingsNb - 1;
@@ -412,12 +412,12 @@ void FLWORIterator::matResultAndOrder(
 
   while ( lSpecIter != lOrderSpecs.end() )
   {
-    Item_t lItem = consumeNext ( lSpecIter->orderByIter, planState );
+    Item_t lItem = consumeNext ( lSpecIter->orderByIter.getp(), planState );
     orderKey.push_back ( lItem );
     //Test for singleton
     if ( lItem != 0 )
     {
-      lItem = consumeNext ( lSpecIter->orderByIter, planState );
+      lItem = consumeNext ( lSpecIter->orderByIter.getp(), planState );
       if ( lItem != 0 )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
@@ -443,7 +443,7 @@ bool FLWORIterator::evalWhereClause ( PlanState& planState )
 
   if ( whereClauseReturnsBooleanPlus )
   {
-    Item_t boolValue = this->consumeNext ( whereClause, planState );
+    Item_t boolValue = consumeNext ( whereClause.getp(), planState );
     if ( boolValue == NULL )
       return false;
 
@@ -484,7 +484,7 @@ bool FLWORIterator::bindVariable(
   // it to all the variable references
   case ForLetClause::FOR :
   {
-    Item_t lItem = this->consumeNext ( lForLetClause.input, planState );
+    Item_t lItem = consumeNext ( lForLetClause.input.getp(), planState );
     if ( lItem == NULL )
     {
       return false;

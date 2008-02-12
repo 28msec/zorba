@@ -8,7 +8,6 @@
 #define XQP_NOARYBASE_H
 
 #include "runtime/base/iterator.h"
-#include "runtime/base/statetraits.h"
 
 namespace xqp
 {

@@ -63,7 +63,7 @@ Item_t KindTestIterator::nextImpl(PlanState& planState)
 
   do
   {
-    contextNode = consumeNext(theChild, planState);
+    contextNode = consumeNext(theChild.getp(), planState);
     if (contextNode == NULL)
       return NULL;
 
@@ -236,7 +236,7 @@ Item_t NameTestIterator::nextImpl(PlanState& planState)
 
   while (true)
   {
-    contextNode = consumeNext(theChild, planState);
+    contextNode = consumeNext(theChild.getp(), planState);
     if (contextNode == NULL)
       return NULL;
 
@@ -286,7 +286,7 @@ Item_t SelfAxisIterator::nextImpl(PlanState& planState)
 
   do
   {
-    state->theContextNode = consumeNext(theChild, planState);
+    state->theContextNode = consumeNext(theChild.getp(), planState);
     if (state->theContextNode == NULL)
       return NULL;
 
@@ -332,7 +332,7 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
   {
     do
     {
-      state->theContextNode = consumeNext(theChild, planState);
+      state->theContextNode = consumeNext(theChild.getp(), planState);
       if (state->theContextNode == NULL)
         return NULL;
 
@@ -372,7 +372,7 @@ Item_t ParentAxisIterator::nextImpl(PlanState& planState)
 
   while (true)
   {
-    state->theContextNode = consumeNext(theChild, planState);
+    state->theContextNode = consumeNext(theChild.getp(), planState);
     if (state->theContextNode == NULL)
       return NULL;
 
@@ -408,7 +408,7 @@ Item_t AncestorAxisIterator::nextImpl(PlanState& planState)
 
   while (true)
   {
-    state->theContextNode = consumeNext(theChild, planState);
+    state->theContextNode = consumeNext(theChild.getp(), planState);
     if (state->theContextNode == NULL)
       return NULL;
 
@@ -446,7 +446,7 @@ Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState)
 
   while (true)
   {
-    state->theContextNode = consumeNext(theChild, planState);
+    state->theContextNode = consumeNext(theChild.getp(), planState);
     if (state->theContextNode == NULL)
       return NULL;
 
@@ -504,7 +504,7 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
   {
     do
     {
-      state->theContextNode = consumeNext(theChild, planState);
+      state->theContextNode = consumeNext(theChild.getp(), planState);
       if (state->theContextNode == NULL)
         return NULL;
 
@@ -573,7 +573,7 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
   {
     do
     {
-      state->theContextNode = consumeNext(theChild, planState);
+      state->theContextNode = consumeNext(theChild.getp(), planState);
       if (state->theContextNode == NULL)
         return NULL;
 
@@ -641,7 +641,7 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
   {
     do
     {
-      state->theContextNode = consumeNext(theChild, planState);
+      state->theContextNode = consumeNext(theChild.getp(), planState);
       if (state->theContextNode == NULL)
         return NULL;
 
@@ -715,7 +715,7 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
   {
     do
     {
-      state->theContextNode = consumeNext(theChild, planState);
+      state->theContextNode = consumeNext(theChild.getp(), planState);
       if (state->theContextNode == NULL)
         return NULL;
 
@@ -819,7 +819,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
   {
     do
     {
-      state->theContextNode = consumeNext(theChild, planState);
+      state->theContextNode = consumeNext(theChild.getp(), planState);
       if (state->theContextNode == NULL)
         return NULL;
 
@@ -920,7 +920,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
 
   while (true)
   {
-    state->theContextNode = consumeNext(theChild, planState);
+    state->theContextNode = consumeNext(theChild.getp(), planState);
     if (state->theContextNode == NULL)
       return NULL;
 
@@ -1034,7 +1034,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
 
   while (true)
   {
-    state->theContextNode = consumeNext(theChild, planState);
+    state->theContextNode = consumeNext(theChild.getp(), planState);
     if (state->theContextNode == NULL)
       return NULL;
 

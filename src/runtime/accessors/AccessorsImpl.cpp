@@ -24,7 +24,7 @@ FnDataIterator::nextImpl(PlanState& planState)
   DEFAULT_STACK_INIT(FnDataIteratorState, lState, planState);
   
   while (true) {
-    item = this->consumeNext( theChildren[0], planState );
+    item = consumeNext( theChildren[0].getp(), planState );
     if (item == NULL)
       break;
     lState->theTypedValue = item->getTypedValue();
@@ -52,7 +52,7 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
 
-  contextNode = consumeNext(theChildren[0], planState);
+  contextNode = consumeNext(theChildren[0].getp(), planState);
 
   if (contextNode == NULL)
     return NULL;
@@ -85,7 +85,7 @@ Item_t FnNodeNameIterator::nextImpl(PlanState& planState)
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  inNode = consumeNext(theChildren[0], planState);
+  inNode = consumeNext(theChildren[0].getp(), planState);
 
   if (inNode == NULL) {
     return NULL;
@@ -111,7 +111,7 @@ Item_t FnStringIterator::nextImpl(PlanState& planState)
   FnStringIteratorState *state;
   DEFAULT_STACK_INIT(FnStringIteratorState, state, planState);
 
-  while((inVal = consumeNext(theChild, planState)) != NULL) {
+  while((inVal = consumeNext(theChild.getp(), planState)) != NULL) {
     state->hasOutput = true;
     STACK_PUSH(Zorba::getItemFactory()->createString(inVal->getStringValue()), state);
   }

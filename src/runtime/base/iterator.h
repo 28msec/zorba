@@ -64,8 +64,7 @@ static const int32_t DUFFS_RESTART            = -1;
 
 
 #define GET_STATE(stateType, stateObject, planState) \
-  stateObject = reinterpret_cast<stateType*>(planState.theBlock + this->stateOffset)
-
+  stateObject = StateTraitsImpl<stateType>::getState(planState, this->stateOffset);
 
 #define DEFAULT_STACK_INIT(stateType, stateObject, planState )  \
   GET_STATE(stateType, stateObject, planState);                 \
@@ -87,7 +86,7 @@ static const int32_t DUFFS_RESTART            = -1;
    {                                                           \
      stateObject->setDuffsLine(__LINE__);                      \
      return x;                                                 \
- case __LINE__: ;                                              \
+     case __LINE__: ;                                              \
    } while (0)
 
 
@@ -141,7 +140,20 @@ private:
   int32_t theDuffsLine;
 
 public:
-  PlanIteratorState() {}
+#if ZORBA_BATCHING_TYPE == 1
+public:
+  uint32_t theCurrItem;
+  Item_t   theBatch[ZORBA_BATCHING_BATCHSIZE];
+#endif
+
+public:
+  PlanIteratorState() 
+    : theDuffsLine(DUFFS_ALLOCATE_RESOURCES)
+#if ZORBA_BATCHING_TYPE == 1
+      , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
+#endif
+      
+  {}
   ~PlanIteratorState() {}
 
   /** 
@@ -156,7 +168,13 @@ public:
    * Classes that inherit from PlanIteratorState must call the init function of 
    * their parent class explicitly in order to guarantee proper initialization.
    */
-  void init(PlanState&) { theDuffsLine = DUFFS_ALLOCATE_RESOURCES; }
+  void init(PlanState&) 
+  { 
+    theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
+#if ZORBA_BATCHING_TYPE == 1
+    theCurrItem = ZORBA_BATCHING_BATCHSIZE;
+#endif
+  }
 
   /** 
    * Reset the current state object.
@@ -170,12 +188,51 @@ public:
    * Classes that inherit from PlanIteratorState must call the reset function 
    * of their parent class explicitly in order to guarantee a proper reset.
    */
-  void reset(PlanState&) { theDuffsLine = DUFFS_RESTART; }
+  void reset(PlanState&) 
+  { 
+    theDuffsLine = DUFFS_RESTART; 
+#if ZORBA_BATCHING_TYPE == 1
+    theCurrItem = ZORBA_BATCHING_BATCHSIZE;
+#endif
+  }
   
   void setDuffsLine(int32_t aVal) { theDuffsLine = aVal; }
   int32_t getDuffsLine() const    { return theDuffsLine; }
 };
 
+template <class T>
+class StateTraitsImpl
+{
+private:
+  StateTraitsImpl() {} // prevent instantiation
+public:
+  static uint32_t getStateSize() 
+  { 
+    return sizeof(T); 
+  }
+
+  static void createState(PlanState& planState, uint32_t& stateOffset, uint32_t& offset)
+  {
+    stateOffset = offset;
+    offset += StateTraitsImpl<T>::getStateSize();
+    new (planState.theBlock + stateOffset)T();
+  }
+
+  static void destroyState(PlanState& planState, uint32_t stateOffset) 
+  { 
+    (reinterpret_cast<T*>(planState.theBlock + stateOffset))->~T(); 
+  }
+
+  static void reset(PlanState& planState, uint32_t stateOffset)
+  {
+    (reinterpret_cast<T*>(planState.theBlock+ stateOffset))->reset(planState);
+  }
+
+  static T* getState(PlanState& planState, uint32_t stateOffset)
+  {
+    return reinterpret_cast<T*>(planState.theBlock + stateOffset);
+  }
+};
 
 /*******************************************************************************
   Base class of all plan iterators.
@@ -186,18 +243,25 @@ class PlanIterator : public rcobject
 
 protected:
   uint32_t      stateOffset;
+
+public:
+  uint32_t getStateOffset() { return stateOffset; }
   
 public:
   yy::location  loc;
-  
-#if ZORBA_BATCHING_TYPE == 1  
-  int32_t       theCurrItem;
-  Item_t        theBatch[ZORBA_BATCHING_BATCHSIZE];
-#endif
 
 public:
-  PlanIterator(yy::location aLoc) : loc(aLoc) {}
-  PlanIterator(const PlanIterator& it) : rcobject(it), loc(it.loc) {}
+  PlanIterator(yy::location aLoc) 
+    : stateOffset(0),
+      loc(aLoc) 
+  {}
+  
+  PlanIterator(const PlanIterator& it) 
+    : rcobject(it), 
+      stateOffset(0),
+      loc(it.loc)
+  {}
+
   virtual ~PlanIterator() {}
 
 public:
@@ -223,7 +287,12 @@ public:
    *
    * @param stateBLock
    */
+#if ZORBA_BATCHING_TYPE == 1
+  virtual void produceNext(PlanState& planState) = 0;
+#else
   virtual Item_t produceNext(PlanState& planState) = 0;
+#endif
+
 
   /** 
    * Restarts the iterator so that the next 'produceNext' call will start 
@@ -253,26 +322,27 @@ public:
     * and all its sub-iterators.
     */
   virtual uint32_t getStateSizeOfSubtree() const = 0;
-  
-protected:
 
 #if ZORBA_BATCHING_TYPE == 1  
-  Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+  static
+  Item_t consumeNext(PlanIterator* subIter, PlanState& planState)
   {
-    if (subIter->theCurrItem == ZORBA_BATCHING_BATCHSIZE)
+    // use the producer's (subIter) planstate to access it's batch
+    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, subIter->getStateOffset());
+    if ( lState->theCurrItem == ZORBA_BATCHING_BATCHSIZE )
     {
       subIter->produceNext(planState);
-      subIter->theCurrItem = 0;
+      lState->theCurrItem = 0;
     }
-    return subIter->theBatch[subIter->theCurrItem++];
+    return lState->theBatch[lState->theCurrItem++];
   }
 #else
-  inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState) const
+  static
+  Item_t consumeNext(PlanIterator* subIter, PlanState& planState)
   {
     return subIter->produceNext(planState);
   }
 #endif
-
 };
 
 
@@ -292,20 +362,16 @@ protected:
 #if ZORBA_BATCHING_TYPE == 1  
   void produceNext(PlanState& planState) 
   {
-  //  planState.theZorba->current_iterator.push(this);
-
-    int32_t i = 0;
-    theBatch[0] = static_cast<IterType*>(this)->nextImpl();
-    while (i < ZORBA_BATCHING_BATCHSIZE && batch[i] != NULL) 
+    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, this->stateOffset);
+    uint32_t i = 0;
+    lState->theBatch[i] = static_cast<IterType*>(this)->nextImpl(planState);
+    while (i < ZORBA_BATCHING_BATCHSIZE && lState->theBatch[i] != NULL) 
     {
-      i++;
-      theBatch[i] = static_cast<IterType*>(this)->nextImpl();
+      lState->theBatch[++i] = static_cast<IterType*>(this)->nextImpl(planState);
     }
-
-   // planState.theZorba->current_iterator.pop();
   }
 #else
-  Item_t produceNext(PlanState& planState)
+  Item_t produceNext(PlanState& planState) 
   {
     return static_cast<IterType*>(this)->nextImpl(planState);
   }
@@ -325,6 +391,7 @@ protected:
   {
     static_cast<IterType*>(this)->closeImpl(planState);
   }
+
 
 public:
   inline Item_t nextImpl(PlanState& planState);

@@ -47,7 +47,7 @@ Item_t IfThenElseIterator::nextImpl ( PlanState& planState )
   DEFAULT_STACK_INIT ( IfThenElseIteratorState, state, planState );
 
   if ( theIsBooleanIter )
-    condResult = this->consumeNext ( theCondIter, planState );
+    condResult = consumeNext ( theCondIter.getp(), planState );
   else
     condResult = FnBooleanIterator::effectiveBooleanValue ( this->loc,
                  planState, theCondIter );
@@ -60,9 +60,7 @@ Item_t IfThenElseIterator::nextImpl ( PlanState& planState )
   while ( true )
   {
     STACK_PUSH (
-      this->consumeNext ( 
-        (state->theThenUsed ? theThenIter : theElseIter), planState 
-      ), 
+      consumeNext ( (state->theThenUsed ? theThenIter.getp() : theElseIter.getp()), planState ), 
       state 
     );
   }

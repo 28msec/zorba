@@ -78,7 +78,7 @@ Item_t	ResultIteratorWrapper::next()
   state_block->theZorba->current_xqueryresult = this;
   try
   {
-    Item_t it = xquery->top_iterator->produceNext( *state_block );
+    Item_t it = PlanIterator::consumeNext( xquery->top_iterator, *state_block );
 
     state_block->theZorba->current_xquery = prev_current_xquery;
 		state_block->theZorba->current_xqueryresult = prev_result;

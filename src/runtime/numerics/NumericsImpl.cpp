@@ -265,16 +265,16 @@ namespace xqp
 
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    n0 = this->consumeNext ( this->theChild0, planState );
+    n0 = consumeNext( this->theChild0.getp(), planState );
     if ( n0 != NULL )
     {
-      n1 = this->consumeNext ( this->theChild1, planState );
+      n1 = consumeNext( this->theChild1.getp(), planState );
       if ( n1 != NULL )
       {
         res = ArithmeticIterator<Operations>::compute(this->loc, n0, n1);
       
-        if ( consumeNext ( this->theChild0, planState ) != NULL 
-             || consumeNext ( this->theChild1, planState ) != NULL )
+        if ( consumeNext(this->theChild0.getp(), planState ) != NULL 
+             || consumeNext(this->theChild1.getp(), planState ) != NULL )
           ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
               NULL, DONT_CONTINUE_EXECUTION, "Arithmetic operation has a sequences greater than one as an operator.");
         STACK_PUSH ( res, state );
@@ -521,7 +521,7 @@ namespace xqp
 
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    item = this->consumeNext ( theChild, planState );
+    item = consumeNext(theChild.getp(), planState );
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
@@ -555,7 +555,7 @@ namespace xqp
               &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for an unary arithmetic operation.");
       }
 
-      if ( this->consumeNext ( theChild, planState ) != NULL )
+      if ( consumeNext(theChild.getp(), planState ) != NULL )
           ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
               &loc, DONT_CONTINUE_EXECUTION, "Arithmetic operation has a sequences greater than one as an operator.");
       STACK_PUSH ( res, state );
@@ -590,7 +590,7 @@ namespace xqp
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    item = this->consumeNext ( theChildren[0], planState );
+    item = consumeNext(theChildren[0].getp(), planState );
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
@@ -639,7 +639,7 @@ namespace xqp
             &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for an abs operation.");
       }
 
-      if ( this->consumeNext ( theChildren[0], planState ) != NULL )
+      if ( consumeNext(theChildren[0].getp(), planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, DONT_CONTINUE_EXECUTION, "Abs operation has a sequences greater than one as an operator.");
@@ -660,7 +660,7 @@ namespace xqp
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    item = this->consumeNext ( theChildren[0], planState );
+    item = consumeNext(theChildren[0].getp(), planState );
 
     if ( item != NULL )
     {
@@ -697,7 +697,7 @@ namespace xqp
             &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for a ceiling operation.");
       }
 
-      if ( this->consumeNext ( theChildren[0], planState ) != NULL )
+      if ( consumeNext(theChildren[0].getp(), planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, DONT_CONTINUE_EXECUTION, "Ceiling operation has a sequences greater than one as an operator.");
@@ -717,7 +717,7 @@ namespace xqp
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    item = this->consumeNext ( theChildren[0], planState );
+    item = consumeNext(theChildren[0].getp(), planState );
 
     if ( item != NULL )
     {
@@ -754,7 +754,7 @@ namespace xqp
             &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for a floor operation.");
       }
 
-      if ( this->consumeNext ( theChildren[0], planState ) != NULL )
+      if ( consumeNext(theChildren[0].getp(), planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, DONT_CONTINUE_EXECUTION, "Floor operation has a sequences greater than one as an operator.");
@@ -774,7 +774,7 @@ namespace xqp
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    item = this->consumeNext ( theChildren[0], planState );
+    item = consumeNext(theChildren[0].getp(), planState );
 
     if ( item != NULL )
     {
@@ -811,7 +811,7 @@ namespace xqp
             &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for a round operation.");
       }
 
-      if ( this->consumeNext ( theChildren[0], planState ) != NULL )
+      if ( consumeNext(theChildren[0].getp(), planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             &loc, DONT_CONTINUE_EXECUTION, "Round operation has a sequences greater than one as an operator.");
@@ -845,10 +845,10 @@ namespace xqp
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     
-    item = this->consumeNext ( theChild0, planState );
+    item = consumeNext(theChild0.getp(), planState );
     if ( item != NULL )
     {
-      itemPrec = this->consumeNext ( theChild1, planState );
+      itemPrec = consumeNext(theChild1.getp(), planState );
       if ( itemPrec != NULL )
       {
         itemPrec = itemPrec->getAtomizationValue();
@@ -888,7 +888,7 @@ namespace xqp
             &loc, DONT_CONTINUE_EXECUTION, "Wrong operator type for a round-half-to-even operation.");
       }
 
-      if ( this->consumeNext ( theChild0, planState ) != NULL )
+      if ( consumeNext(theChild0.getp(), planState ) != NULL )
       {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
            &loc, DONT_CONTINUE_EXECUTION, "Round-half-to-even operation has a sequences greater than one as an operator.");

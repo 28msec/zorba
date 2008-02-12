@@ -83,9 +83,9 @@ PlanWrapper::next()
   if (!theClosed)
   {
 #if ZORBA_BATCHING_TYPE == 1
-    return theIterator->consumeNext(theIterator, *theStateBlock);
+    return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
 #else
-    return theIterator->produceNext(*theStateBlock);
+    return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
 #endif
   }
   else
@@ -137,13 +137,13 @@ PlanIteratorWrapper::~PlanIteratorWrapper()
 Item_t
 PlanIteratorWrapper::next()
 {
-  // TODO make this an assertion?
+  // TODO make this an assertion or why is this needed here?
   if (!theClosed)
   {
 #if ZORBA_BATCHING_TYPE == 1
-    return theIterator->consumeNext(theIterator, *theStateBlock);
+    return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
 #else
-    return theIterator->produceNext(*theStateBlock);
+    return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
 #endif
   }
   else

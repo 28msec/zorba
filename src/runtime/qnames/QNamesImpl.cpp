@@ -55,7 +55,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState){
     PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-    itemQName = consumeNext( theChild0, planState );
+    itemQName = consumeNext(theChild0.getp(), planState );
     if( itemQName != NULL)
     {
       itemQName = itemQName->getAtomizationValue();
@@ -68,7 +68,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState){
         resPre = itemQName->getStringValue().trim().substr( 0, index );
         resQName = itemQName->getStringValue().trim().substr( index+1, resQName.length() - index );
 
-        itemElem = consumeNext( theChild1, planState );
+        itemElem = consumeNext(theChild1.getp(), planState );
         if( itemElem != NULL )
         {
           itemElem->getNamespaceBindings(NamespaceBindings);
@@ -134,14 +134,14 @@ QNameIterator::nextImpl(PlanState& planState)
     PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-    itemURI = consumeNext ( theChild0, planState );
+    itemURI = consumeNext(theChild0.getp(), planState );
     if ( itemURI != NULL )
     {
       itemURI = itemURI->getAtomizationValue();
       resNs = itemURI->getStringValue().trim();
     }
 
-    itemQName = consumeNext ( theChild1, planState );
+    itemQName = consumeNext(theChild1.getp(), planState );
     if ( itemQName != NULL )
     {
       itemQName = itemQName->getAtomizationValue();
@@ -201,10 +201,10 @@ QNameEqualIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  arg1 = consumeNext ( theChild0, planState );
+  arg1 = consumeNext(theChild0.getp(), planState );
   if ( arg1 != NULL )
   {
-    arg2 = consumeNext ( theChild1, planState );
+    arg2 = consumeNext(theChild1.getp(), planState );
     if ( arg2 != NULL )
     {
       arg1 = arg1->getAtomizationValue();
@@ -248,7 +248,7 @@ PrefixFromQNameIterator::nextImpl(PlanState& planState){
 
     PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-    item = consumeNext (theChild, planState);
+    item = consumeNext(theChild.getp(), planState);
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
@@ -278,7 +278,7 @@ LocalNameFromQNameIterator::nextImpl(PlanState& planState){
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  item = consumeNext (theChild, planState);
+  item = consumeNext(theChild.getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -308,7 +308,7 @@ NamespaceUriFromQNameIterator::nextImpl(PlanState& planState){
     PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
-    item = consumeNext (theChild, planState);
+    item = consumeNext(theChild.getp(), planState);
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
@@ -348,12 +348,12 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemPrefix = consumeNext( theChild0, planState );
+  itemPrefix = consumeNext(theChild0.getp(), planState );
   if( itemPrefix != NULL)
   {
     itemPrefix = itemPrefix->getAtomizationValue();
 
-    itemElem = consumeNext( theChild1, planState );
+    itemElem = consumeNext(theChild1.getp(), planState );
     if( itemElem != NULL && !itemElem->getStringValue().empty())
     {
       itemElem->getNamespaceBindings(NamespaceBindings);
@@ -402,7 +402,7 @@ InScopePrefixesIterator::nextImpl(PlanState& planState)
   InScopePrefixesState* state;
   DEFAULT_STACK_INIT(InScopePrefixesState, state, planState);
 
-  itemElem = consumeNext( theChild, planState );
+  itemElem = consumeNext(theChild.getp(), planState );
   if( itemElem != NULL)
   {
     itemElem->getNamespaceBindings(state->theBindings);

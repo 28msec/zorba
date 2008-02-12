@@ -41,7 +41,7 @@ CodepointsToStringIterator::nextImpl(PlanState& planState){
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   while(true){
-    item = consumeNext ( theChild, planState );
+    item = consumeNext(theChild.getp(), planState );
     if ( item != NULL ){
       item = item->getAtomizationValue();
       {
@@ -86,7 +86,7 @@ StringToCodepointsIterator::nextImpl(PlanState& planState){
   StringToCodepointsState* state;
   DEFAULT_STACK_INIT(StringToCodepointsState, state, planState);
 
-  item = consumeNext ( theChild, planState );
+  item = consumeNext(theChild.getp(), planState );
   if ( item != NULL ){
     inputStr = item->getStringValue();
     if(!inputStr.empty())
@@ -180,14 +180,14 @@ CompareStrIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  n0 = consumeNext ( theChildren[0], planState );
+  n0 = consumeNext(theChildren[0].getp(), planState );
   if ( n0 != NULL )  {
-    n1 = consumeNext ( theChildren[1], planState );
+    n1 = consumeNext(theChildren[1].getp(), planState );
     if ( n1 != NULL )  {
       n0 = n0->getAtomizationValue();
       n1 = n1->getAtomizationValue();
       if(theChildren.size() == 3)  {
-        n2 = consumeNext ( theChildren[2], planState );
+        n2 = consumeNext(theChildren[2].getp(), planState );
         if ( n2 != NULL )  {
           n2 = n2->getAtomizationValue();
           res = Zorba::getItemFactory()->createInteger(
@@ -234,9 +234,9 @@ CodepointEqualIterator::nextImpl(PlanState& planState){
     PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-    item0 = consumeNext ( theChild0, planState );
+    item0 = consumeNext(theChild0.getp(), planState );
     if ( item0 != NULL )  {
-      item1 = consumeNext ( theChild1, planState );
+      item1 = consumeNext(theChild1.getp(), planState );
       if ( item1 != NULL )  {
         item0 = item0->getAtomizationValue();
         item1 = item1->getAtomizationValue();
@@ -339,14 +339,14 @@ StringJoinIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext(theChild1, planState);
+  item = consumeNext(theChild1.getp(), planState);
   separator = item->getStringValue();
 
   if(separator == "")
   {
     while(true)
     {
-      item = consumeNext ( theChild0, planState );
+      item = consumeNext(theChild0.getp(), planState );
       if ( item != NULL )
       {
         item = item->getAtomizationValue();
@@ -363,7 +363,7 @@ StringJoinIterator::nextImpl(PlanState& planState) {
       lFirst = true;
       while(true)
       {
-        item = consumeNext ( theChild0, planState );
+        item = consumeNext(theChild0.getp(), planState );
         if ( item != NULL )
         {
           item = item->getAtomizationValue();
@@ -427,7 +427,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
-    item0 = consumeNext ( theChildren[0], planState );
+    item0 = consumeNext(theChildren[0].getp(), planState );
     if ( item0 != NULL )
     {
       item0 = item0->getAtomizationValue();
@@ -436,7 +436,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
         STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
       }
       else{
-        item1 = consumeNext( theChildren[1], planState );
+        item1 = consumeNext(theChildren[1].getp(), planState );
         if( item1 != NULL )
         {//note: The first character of a string is located at position 1, not position 0.
           item1 = item1->getAtomizationValue();
@@ -454,7 +454,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
               resStr = item0->getStringValue().substr(tmpStart-1);
             }
             else{ //theChildren.size() ==3
-              item2 = consumeNext ( theChildren[2], planState );
+              item2 = consumeNext(theChildren[2].getp(), planState );
               if ( item2 != NULL )
               {
                 item2 = item2->getAtomizationValue();
@@ -521,7 +521,7 @@ StringLengthIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext (theChild, planState);
+  item = consumeNext(theChild.getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -560,7 +560,7 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext (theChild, planState);
+  item = consumeNext(theChild.getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -612,12 +612,12 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item0 = consumeNext (theChildren[0], planState );
+  item0 = consumeNext(theChildren[0].getp(), planState );
   if(item0 != NULL)
   {
     if(theChildren.size() == 2)
     {
-      item1 = consumeNext(theChildren[1], planState );
+      item1 = consumeNext(theChildren[1].getp(), planState );
       if(item1 != NULL)
       {
         item1 = item1->getAtomizationValue();
@@ -666,7 +666,7 @@ UpperCaseIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext (theChild, planState);
+  item = consumeNext(theChild.getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -706,7 +706,7 @@ LowerCaseIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext (theChild, planState);
+  item = consumeNext(theChild.getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -758,13 +758,13 @@ TranslateIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemArg = consumeNext ( theChildren[0], planState );
+  itemArg = consumeNext(theChildren[0].getp(), planState );
   if ( itemArg != NULL )
   {
-    item0 = consumeNext ( theChildren[1], planState );
+    item0 = consumeNext(theChildren[1].getp(), planState );
     if ( item0 != NULL )
     {
-      item1 = consumeNext ( theChildren[2], planState );
+      item1 = consumeNext(theChildren[2].getp(), planState );
       if ( item1 != NULL )
       {
         item0 = item0->getAtomizationValue();
@@ -795,7 +795,7 @@ EncodeForUriIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext (theChild, planState);
+  item = consumeNext(theChild.getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -824,7 +824,7 @@ IriToUriIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext (theChild, planState);
+  item = consumeNext(theChild.getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -853,7 +853,7 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  item = consumeNext (theChild, planState);
+  item = consumeNext(theChild.getp(), planState);
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
@@ -907,14 +907,14 @@ ContainsIterator::nextImpl(PlanState& planState) {
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
-    item0 = consumeNext ( theChildren[0], planState );
+    item0 = consumeNext(theChildren[0].getp(), planState );
     if ( item0 != NULL )
     {
       item0 = item0->getAtomizationValue();
       arg1 = item0->getStringValue();
     }
     
-    item1 = consumeNext( theChildren[1], planState );
+    item1 = consumeNext(theChildren[1].getp(), planState );
     if( item1 != NULL )
     {
       item1 = item1->getAtomizationValue();
@@ -937,7 +937,7 @@ ContainsIterator::nextImpl(PlanState& planState) {
       }
       else
       { //theChildren.size() ==3
-        itemColl = consumeNext ( theChildren[2], planState );
+        itemColl = consumeNext(theChildren[2].getp(), planState );
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
@@ -989,14 +989,14 @@ StartsWithIterator::nextImpl(PlanState& planState) {
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
-    item0 = consumeNext ( theChildren[0], planState );
+    item0 = consumeNext(theChildren[0].getp(), planState );
     if ( item0 != NULL )
     {
       item0 = item0->getAtomizationValue();
       arg1 = item0->getStringValue();
     }
     
-    item1 = consumeNext( theChildren[1], planState );
+    item1 = consumeNext(theChildren[1].getp(), planState );
     if( item1 != NULL )
     {
       item1 = item1->getAtomizationValue();
@@ -1019,7 +1019,7 @@ StartsWithIterator::nextImpl(PlanState& planState) {
       }
       else
       { //theChildren.size() ==3
-        itemColl = consumeNext ( theChildren[2], planState );
+        itemColl = consumeNext(theChildren[2].getp(), planState );
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
@@ -1072,14 +1072,14 @@ EndsWithIterator::nextImpl(PlanState& planState) {
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
-    item0 = consumeNext ( theChildren[0], planState );
+    item0 = consumeNext(theChildren[0].getp(), planState );
     if ( item0 != NULL )
     {
       item0 = item0->getAtomizationValue();
       arg1 = item0->getStringValue();
     }
     
-    item1 = consumeNext( theChildren[1], planState );
+    item1 = consumeNext(theChildren[1].getp(), planState );
     if( item1 != NULL )
     {
       item1 = item1->getAtomizationValue();
@@ -1102,7 +1102,7 @@ EndsWithIterator::nextImpl(PlanState& planState) {
       }
       else
       { //theChildren.size() ==3
-        itemColl = consumeNext ( theChildren[2], planState );
+        itemColl = consumeNext(theChildren[2].getp(), planState );
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
@@ -1157,14 +1157,14 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) {
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
-    item0 = consumeNext ( theChildren[0], planState );
+    item0 = consumeNext(theChildren[0].getp(), planState );
     if ( item0 != NULL )
     {
       item0 = item0->getAtomizationValue();
       arg1 = item0->getStringValue();
     }
     
-    item1 = consumeNext( theChildren[1], planState );
+    item1 = consumeNext(theChildren[1].getp(), planState );
     if( item1 != NULL )
     {
       item1 = item1->getAtomizationValue();
@@ -1183,7 +1183,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) {
       }
       else
       { //theChildren.size() ==3
-        itemColl = consumeNext ( theChildren[2], planState );
+        itemColl = consumeNext(theChildren[2].getp(), planState );
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
@@ -1242,14 +1242,14 @@ SubstringAfterIterator::nextImpl(PlanState& planState) {
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
-    item0 = consumeNext ( theChildren[0], planState );
+    item0 = consumeNext(theChildren[0].getp(), planState );
     if ( item0 != NULL )
     {
       item0 = item0->getAtomizationValue();
       arg1 = item0->getStringValue();
     }
     
-    item1 = consumeNext( theChildren[1], planState );
+    item1 = consumeNext(theChildren[1].getp(), planState );
     if( item1 != NULL )
     {
       item1 = item1->getAtomizationValue();
@@ -1268,7 +1268,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) {
       }
       else
       { //theChildren.size() ==3
-        itemColl = consumeNext ( theChildren[2], planState );
+        itemColl = consumeNext(theChildren[2].getp(), planState );
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();

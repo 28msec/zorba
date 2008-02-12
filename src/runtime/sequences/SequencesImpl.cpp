@@ -54,10 +54,10 @@ FnConcatIterator::nextImpl(PlanState& planState) {
   DEFAULT_STACK_INIT(FnConcatIteratorState, state, planState);
   
   for (; state->theCurIter < theChildren.size(); ++state->theCurIter) {;
-    item = this->consumeNext(theChildren[state->theCurIter], planState);
+    item = consumeNext(theChildren[state->theCurIter].getp(), planState);
     while (item != NULL) {
       STACK_PUSH (item, state);
-      item = this->consumeNext(theChildren[state->theCurIter], planState);
+      item = consumeNext(theChildren[state->theCurIter].getp(), planState);
     }
   }
   
@@ -74,14 +74,14 @@ FnIndexOfIterator::nextImpl(PlanState& planState) {
   FnIndexOfIteratorState* state;
   DEFAULT_STACK_INIT(FnIndexOfIteratorState, state, planState);
   
-  state->theSearchItem = consumeNext(theChildren[1], planState);
+  state->theSearchItem = consumeNext(theChildren[1].getp(), planState);
   if ( state->theSearchItem == NULL ) 
   {
     ZORBA_ERROR_ALERT( ZorbaError::FORG0006, &loc, DONT_CONTINUE_EXECUTION,
          "An empty sequence is not allowed as search item of fn:index-of");    
   }
 
-  while ( (lSequenceItem = consumeNext(theChildren[0], planState)) != NULL )
+  while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
   {
     // inc the position in the sequence; do it at the beginning of the loop because index-of starts with one
     ++state->theCurrentPos; 
@@ -129,7 +129,7 @@ FnEmptyIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if ( ( lSequenceItem = consumeNext(theChildren[0], planState) ) == NULL ) 
+  if ( ( lSequenceItem = consumeNext(theChildren[0].getp(), planState) ) == NULL ) 
   {
     STACK_PUSH (Zorba::getItemFactory()->createBoolean ( true ), state);
   }
@@ -153,7 +153,7 @@ FnExistsIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   
-  if ( (lSequenceItem = consumeNext(theChildren[0], planState) ) != NULL) 
+  if ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState) ) != NULL) 
   {
     STACK_PUSH (Zorba::getItemFactory()->createBoolean ( true ), state);
   }
@@ -193,7 +193,7 @@ FnDistinctValuesIterator::nextImpl(PlanState& planState) {
     // TODO collation support
   }
       
-  while ( (lItem = consumeNext(theChildren[0], planState)) != NULL )
+  while ( (lItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
   {
     // check if the item is alrady in the map
     lConstIter = state->theAlreadySeenMap.find(lItem);
@@ -231,7 +231,7 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) {
  FnInsertBeforeIteratorState* state;
  DEFAULT_STACK_INIT(FnInsertBeforeIteratorState, state, planState);
  
- lPositionItem = consumeNext(theChildren[1], planState);
+ lPositionItem = consumeNext(theChildren[1].getp(), planState);
  if ( lPositionItem == NULL )
  {
    // raise error
@@ -242,11 +242,11 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) {
    state->thePosition = xqp_integer::parseInt(1);
    
   
- while ( (state->theTargetItem = consumeNext(theChildren[0], planState)) != NULL ) 
+ while ( (state->theTargetItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) 
  {
     if ( state->theCurrentPos == state->thePosition-xqp_integer::parseInt(1) ) // position found => insert sequence
     {
-      while ( (lInsertItem = consumeNext(theChildren[2], planState)) != NULL)
+      while ( (lInsertItem = consumeNext(theChildren[2].getp(), planState)) != NULL)
       {
         STACK_PUSH (lInsertItem, state);
       }
@@ -257,7 +257,7 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) {
   
   if (state->theCurrentPos < state->thePosition) // append to the end
   {
-    while ( (lInsertItem = consumeNext(theChildren[2], planState)) != NULL)
+    while ( (lInsertItem = consumeNext(theChildren[2].getp(), planState)) != NULL)
     {
       STACK_PUSH (lInsertItem, state);
     }    
@@ -293,7 +293,7 @@ FnRemoveIterator::nextImpl(PlanState& planState) {
   FnRemoveIteratorState* state;
   DEFAULT_STACK_INIT(FnRemoveIteratorState, state, planState);
   
-  lPositionItem = consumeNext(theChildren[1], planState);
+  lPositionItem = consumeNext(theChildren[1].getp(), planState);
   if ( lPositionItem == NULL ) 
   {
     ZORBA_ERROR_ALERT(
@@ -304,7 +304,7 @@ FnRemoveIterator::nextImpl(PlanState& planState) {
 
   state->thePosition = lPositionItem->getIntegerValue();
 
-  while ( (lSequenceItem = consumeNext(theChildren[0], planState)) != NULL )
+  while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
   {
     // inc the position in the sequence; do it at the beginning of the loop because fn:remove starts with one
     ++state->theCurrentPos; 
@@ -342,7 +342,7 @@ Item_t FnReverseIterator::nextImpl(PlanState& planState)
   FnReverseIteratorState *state;
   DEFAULT_STACK_INIT(FnReverseIteratorState, state, planState);
 
-  while((iVal = consumeNext(theChildren[0], planState)) != NULL) {
+  while((iVal = consumeNext(theChildren[0].getp(), planState)) != NULL) {
     state->theStack.push(iVal);
   }
 
@@ -377,7 +377,7 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) {
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
   
-  lStartingLoc = consumeNext(theChildren[1], planState);
+  lStartingLoc = consumeNext(theChildren[1].getp(), planState);
   if ( lStartingLoc == NULL ) 
   {
     ZORBA_ERROR_ALERT(
@@ -391,7 +391,7 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) {
     
   if (theChildren.size() == 3)
   {
-    lLength = consumeNext(theChildren[2], planState);
+    lLength = consumeNext(theChildren[2].getp(), planState);
     if ( lLength == NULL )
     {
       ZORBA_ERROR_ALERT( ZorbaError::FORG0006, &loc, DONT_CONTINUE_EXECUTION,
@@ -404,7 +404,7 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) {
     state->theLength = xqp_double::parseInt(-1);
   }
   
-  while ( ((lSequence = consumeNext(theChildren[0], planState)) != NULL) 
+  while ( ((lSequence = consumeNext(theChildren[0].getp(), planState)) != NULL) 
           && (( state->theLength == xqp_double::parseInt(-1) ) || ( state->theCurrentLength <= state->theLength  )))
   {
     if (state->theCurrentPos >= state->theStartingLoc)
@@ -457,10 +457,10 @@ FnZeroOrOneIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lFirstSequenceItem = consumeNext(theChildren[0], planState);
+  lFirstSequenceItem = consumeNext(theChildren[0].getp(), planState);
   if (lFirstSequenceItem != NULL)
   {
-    lNextSequenceItem = consumeNext(theChildren[0], planState);
+    lNextSequenceItem = consumeNext(theChildren[0].getp(), planState);
     if (lNextSequenceItem != NULL)
     {
       ZORBA_ERROR_ALERT(ZorbaError::FORG0003, 
@@ -482,7 +482,7 @@ FnOneOrMoreIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lSequenceItem = consumeNext(theChildren[0], planState);
+  lSequenceItem = consumeNext(theChildren[0].getp(), planState);
   if (lSequenceItem == NULL)
   {
     ZORBA_ERROR_ALERT(ZorbaError::FORG0004,
@@ -491,7 +491,7 @@ FnOneOrMoreIterator::nextImpl(PlanState& planState) {
   do
   {
     STACK_PUSH(lSequenceItem, state);
-  } while ( (lSequenceItem = consumeNext(theChildren[0], planState)) != NULL );
+  } while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL );
 
   STACK_END();
 }
@@ -505,8 +505,8 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lFirstItem = consumeNext(theChildren[0], planState);
-  lNextItem = consumeNext(theChildren[0], planState);
+  lFirstItem = consumeNext(theChildren[0].getp(), planState);
+  lNextItem = consumeNext(theChildren[0].getp(), planState);
   if ( lFirstItem == NULL || lNextItem != NULL )
   {
     ZORBA_ERROR_ALERT(ZorbaError::FORG0005,
@@ -547,7 +547,7 @@ FnCountIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while ( (lSequenceItem = consumeNext(theChildren[0], planState)) != NULL )
+  while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
   {
     ++lCount;
   }
@@ -567,10 +567,10 @@ FnAvgIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lSumItem = consumeNext(theChildren[0], planState);
+  lSumItem = consumeNext(theChildren[0].getp(), planState);
   if (lSumItem != NULL) // return empty-sequence if input is empty
   {
-    while ( (lRunningItem = consumeNext(theChildren[0], planState)) != NULL )
+    while ( (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
     {
       // TODO add datetime
       if (lRunningItem->isNumeric() && lRunningItem->isNaN()) {
@@ -612,7 +612,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) {
     assert(false);
 
   lMaxItem = 0;
-  lRunningItem = consumeNext(theChildren[0], planState);
+  lRunningItem = consumeNext(theChildren[0].getp(), planState);
   if ( lRunningItem != NULL )
   {
     do {
@@ -660,7 +660,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) {
         lMaxType = lRunningType;
         lMaxItem = lRunningItem;
       }
-    } while ((lRunningItem = consumeNext(theChildren[0], planState)) != NULL);
+    } while ((lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL);
     STACK_PUSH(lMaxItem, state);
   }
 
@@ -677,10 +677,10 @@ FnSumIterator::nextImpl(PlanState& planState) {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lSumItem = consumeNext(theChildren[0], planState);
+  lSumItem = consumeNext(theChildren[0].getp(), planState);
   if (lSumItem != NULL) // return 0 or given value if empty sequence
   {
-    while ( (lRunningItem = consumeNext(theChildren[0], planState)) != NULL )
+    while ( (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
     {
       // TODO add datetime
       lSumItem = ArithmeticIterator<AddOperations>::compute(loc, lSumItem, lRunningItem); 
@@ -693,7 +693,7 @@ FnSumIterator::nextImpl(PlanState& planState) {
   {
     if (theChildren.size() == 2)
     {
-      lSumItem = consumeNext(theChildren[1], planState);
+      lSumItem = consumeNext(theChildren[1].getp(), planState);
       if (lSumItem != NULL)
       {
         STACK_PUSH(lSumItem, state);
@@ -723,7 +723,7 @@ OpToIterator::nextImpl(PlanState& planState) {
   OpToIteratorState* state;
   DEFAULT_STACK_INIT(OpToIteratorState, state, planState);
 
-  lItem = consumeNext(theChildren[0], planState);
+  lItem = consumeNext(theChildren[0].getp(), planState);
   if (lItem == NULL)
   {
     ZorbaAlertFactory::error_alert (ZorbaError::XPTY0004, NULL,
@@ -732,7 +732,7 @@ OpToIterator::nextImpl(PlanState& planState) {
   }
   state->theFirstVal = lItem->getIntegerValue();
 
-  lItem = consumeNext(theChildren[1], planState);
+  lItem = consumeNext(theChildren[1].getp(), planState);
   if (lItem == NULL)
   {
     ZorbaAlertFactory::error_alert (ZorbaError::XPTY0004, NULL,DONT_CONTINUE_EXECUTION,
@@ -821,7 +821,7 @@ Item_t FnDocIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  uriItem = consumeNext(theChild, planState);
+  uriItem = consumeNext(theChild.getp(), planState);
   if (uriItem == NULL)
     return NULL;
 

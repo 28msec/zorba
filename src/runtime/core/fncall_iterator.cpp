@@ -29,7 +29,7 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState)
     }
   }
 
-  while((lSequenceItem = state->thePlan->produceNext(*state->theFnBodyStateBlock)) != NULL) {
+  while((lSequenceItem = consumeNext(state->thePlan, *state->theFnBodyStateBlock)) != NULL) {
     STACK_PUSH(lSequenceItem, state);
   }
 

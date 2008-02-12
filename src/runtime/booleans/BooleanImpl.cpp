@@ -34,8 +34,7 @@ namespace xqp
     xqtref_t type;
     Item_t result;
 
-    // TODO produceNext must be replaced to allow batching
-    item = iter->produceNext(planState);
+    item = consumeNext(iter.getp(), planState);
 
     if ( item == NULL )
     {
@@ -56,8 +55,7 @@ namespace xqp
       type = GENV_TYPESYSTEM.create_type(lType, TypeConstants::QUANT_ONE);
       bool res = GENV_TYPESYSTEM.is_numeric ( *type );
       if (
-          // TODO produceNext must be replaced to allow batching
-          ( iter->produceNext(planState) == NULL )
+          ( consumeNext(iter.getp(), planState) == NULL )
           &&
           ( GENV_TYPESYSTEM.is_equal(*type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
              || GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE )
@@ -110,6 +108,7 @@ namespace xqp
     
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
     switch(theLogicType)
     {
     case AND:
@@ -179,11 +178,12 @@ namespace xqp
     } /* if general comparison */
     else if ( this->isValueComparison() )
     {
-      if ( ( ( lItem0 = this->consumeNext ( theChild0, planState ) ) != NULL )
-              && ( ( lItem1 = this->consumeNext ( theChild1, planState ) ) !=NULL ) )
+      if ( ( ( lItem0 = consumeNext ( theChild0.getp(), planState ) ) != NULL )
+              && ( ( lItem1 = consumeNext ( theChild1.getp(), planState ) ) !=NULL ) )
       {
         STACK_PUSH ( Zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( lItem0, lItem1, theCompType ) ), state );
-        if ( this->consumeNext ( theChild0, planState ) != NULL || this->consumeNext ( theChild1, planState ) != NULL )
+        if ( consumeNext ( theChild0.getp(), planState ) != NULL 
+             || consumeNext ( theChild1.getp(), planState ) != NULL )
         {
           ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
               &loc, DONT_CONTINUE_EXECUTION, "Value comparions must not be made with sequences with length greater 1.");
@@ -611,9 +611,9 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
-    lItem0 = consumeNext(theChildren[0], aPlanState);
+    lItem0 = consumeNext(theChildren[0].getp(), aPlanState);
     if (lItem0 != 0) {
-      lItem1 = consumeNext(theChildren[1], aPlanState);
+      lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
            ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
@@ -638,9 +638,9 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
-    lItem0 = consumeNext(theChildren[0], aPlanState);
+    lItem0 = consumeNext(theChildren[0].getp(), aPlanState);
     if (lItem0 != 0) {
-      lItem1 = consumeNext(theChildren[1], aPlanState);
+      lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
            ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
@@ -665,9 +665,9 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
-    lItem0 = consumeNext(theChildren[0], aPlanState);
+    lItem0 = consumeNext(theChildren[0].getp(), aPlanState);
     if (lItem0 != 0) {
-      lItem1 = consumeNext(theChildren[1], aPlanState);
+      lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
            ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,

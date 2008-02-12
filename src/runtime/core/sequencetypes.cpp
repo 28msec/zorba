@@ -32,7 +32,7 @@ InstanceOfIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   
-  lTreatItem = consumeNext(theChild, planState);
+  lTreatItem = consumeNext(theChild.getp(), planState);
 
   lQuantifier = GENV_TYPESYSTEM.quantifier(*theSequenceType);
 
@@ -40,7 +40,7 @@ InstanceOfIterator::nextImpl(PlanState& planState)
   {
     if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), 
                                     TypeConstants::QUANT_ONE), *theSequenceType)) {
-      lTreatItem = consumeNext(theChild, planState);
+      lTreatItem = consumeNext(theChild.getp(), planState);
       if (lTreatItem != 0) {
         if (lQuantifier == TypeConstants::QUANT_ONE || lQuantifier == TypeConstants::QUANT_QUESTION) {
           lResult = false;
@@ -50,7 +50,7 @@ InstanceOfIterator::nextImpl(PlanState& planState)
             if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), TypeConstants::QUANT_ONE), *theSequenceType)) {
               lResult = false;
             }
-            lTreatItem = consumeNext(theChild, planState);
+            lTreatItem = consumeNext(theChild.getp(), planState);
           } while (lTreatItem != 0);
         }
       } else {
@@ -99,7 +99,7 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  lItem = consumeNext(theChild, aPlanState);
+  lItem = consumeNext(theChild.getp(), aPlanState);
   if (lItem == 0)
   {
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
@@ -113,7 +113,7 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState)
   else if (theQuantifier == TypeConstants::QUANT_ONE ||
           theQuantifier == TypeConstants::QUANT_QUESTION)
   {
-    if (consumeNext(theChild, aPlanState) != NULL)
+    if (consumeNext(theChild.getp(), aPlanState) != NULL)
     {
       ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION,
                         "Sequence with more than one item cannot be casted to a type with quantifier ONE or QUESTION!");
@@ -125,11 +125,11 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState)
   {
     STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
 
-    lItem = consumeNext(theChild, aPlanState);
+    lItem = consumeNext(theChild.getp(), aPlanState);
     while (lItem != 0)
     {
       STACK_PUSH(GenericCast::instance()->cast(lItem, theCastType), state);
-      lItem = consumeNext(theChild, aPlanState);
+      lItem = consumeNext(theChild.getp(), aPlanState);
     }
   }
 
@@ -158,7 +158,7 @@ Item_t CastableIterator::nextImpl(PlanState& aPlanState) {
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
-  lItem = consumeNext(theChild, aPlanState);
+  lItem = consumeNext(theChild.getp(), aPlanState);
   if (lItem == 0) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
       lBool = false;
@@ -168,7 +168,7 @@ Item_t CastableIterator::nextImpl(PlanState& aPlanState) {
   } else {
     lBool = GenericCast::instance()->isCastable(lItem, theCastType);
     if (lBool) {
-      lItem = consumeNext(theChild, aPlanState);
+      lItem = consumeNext(theChild.getp(), aPlanState);
       if (lItem != 0) {
         if (theQuantifier == TypeConstants::QUANT_ONE || theQuantifier == TypeConstants::QUANT_QUESTION) {
           lBool = false;
@@ -176,7 +176,7 @@ Item_t CastableIterator::nextImpl(PlanState& aPlanState) {
           do {
             lBool = GenericCast::instance()->isCastable(lItem, theCastType);
             if (lBool)
-              lItem = consumeNext(theChild, aPlanState);
+              lItem = consumeNext(theChild.getp(), aPlanState);
           } while (lBool && (lItem != 0));
         }
       }
@@ -199,7 +199,7 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 
-  lItem = consumeNext(theChild, aPlanState);
+  lItem = consumeNext(theChild.getp(), aPlanState);
   
   if (lItem == 0) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
@@ -208,7 +208,7 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
     }
   } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) {
-    if(consumeNext(theChild, aPlanState) != 0) {
+    if(consumeNext(theChild.getp(), aPlanState) != 0) {
       ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION, 
       "Seq with 2 or more items cannot be promotioned to a QUANT_QUESTION or QUANT_ONE type.");
     }
@@ -226,7 +226,7 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) {
       } else{
         STACK_PUSH(lResult, lState);
       }
-      lItem = consumeNext(theChild, aPlanState);
+      lItem = consumeNext(theChild.getp(), aPlanState);
     } while (lItem != 0);
   }
   STACK_END();
@@ -244,7 +244,7 @@ Item_t TreatIterator::nextImpl(PlanState& aPlanState) {
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 
-  lItem = consumeNext(theChild, aPlanState);
+  lItem = consumeNext(theChild.getp(), aPlanState);
   
   if (lItem == 0) {
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
@@ -253,7 +253,7 @@ Item_t TreatIterator::nextImpl(PlanState& aPlanState) {
     }
   } else if(theQuantifier == TypeConstants::QUANT_QUESTION 
          || theQuantifier == TypeConstants::QUANT_ONE) {
-    if(consumeNext(theChild, aPlanState) != 0) {
+    if(consumeNext(theChild.getp(), aPlanState) != 0) {
       ZORBA_ERROR_ALERT( theErrorCode, &loc, DONT_CONTINUE_EXECUTION,
       "Seq with 2 or more items cannot treated as a QUANT_QUESTION or QUANT_ONE type.");
     }
@@ -269,7 +269,7 @@ Item_t TreatIterator::nextImpl(PlanState& aPlanState) {
       } else{
         STACK_PUSH(lItem, lState);
       }
-      lItem = consumeNext(theChild, aPlanState);
+      lItem = consumeNext(theChild.getp(), aPlanState);
     } while (lItem != 0);
   }
   STACK_END();
