@@ -132,16 +132,18 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include/zorba) # should be
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external) # should also be removed if pthread has been removed and mapm is only included from within src
 
-INCLUDE(CMakeConfiguration.txt)
-
-# cpack
-SET(CPACK_PACKAGE_VERSION_MAJOR  "0")
-SET(CPACK_PACKAGE_VERSION_MINOR  "5")
-SET(CPACK_PACKAGE_VERSION_PATCH  "0")
-
 # for the moment, we include everything
 # however, we should move the headers (at least the library headers) into a separate directory
 INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
+
+INCLUDE(CMakeConfiguration.txt)
+
+SET(ZORBA_MAJOR_NUMBER "0")
+SET(ZORBA_MINOR_NUMBER "5")
+SET(ZORBA_PATCH_NUMBER)
+FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/svn_rev.txt ZORBA_PATCH_NUMBER)
+STRING(REGEX REPLACE "[^0-9]*([0-9]*)..*" "\\1" ZORBA_PATCH_NUMBER ${ZORBA_PATCH_NUMBER})
+MESSAGE(STATUS "Zorba version number: " ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 
 # Tell CMake to process the sub-directories
 ADD_SUBDIRECTORY(external)
@@ -151,4 +153,5 @@ ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(bin)
 ADD_SUBDIRECTORY(doc)
 
-
+#Include CPack
+INCLUDE(CPack.txt)
