@@ -23,7 +23,9 @@ typedef rchandle<ForVarIterator> var_iter_t;
 class LetVarIterator;
 typedef rchandle<LetVarIterator> ref_iter_t;
   
-  
+
+class FlworState;
+
  
  /**
   Main FLWOR class designed after   http://www.w3.org/TR/xquery/#id-flwor-expressions. 
@@ -34,6 +36,8 @@ class FLWORIterator : public Batcher<FLWORIterator>
 {
 public:
   class OrderKeyCmp;
+  
+  typedef std::multimap<std::vector<Item_t>, Iterator_t, OrderKeyCmp> order_map_t;
       
   /**
      Wrappes a FOR or LET clause. 
@@ -162,46 +166,7 @@ public:
   private:
     std::vector<OrderSpec>* mOrderSpecs; //Pointer to the OrderSpec to do the comparison accordingly  
   };
-      
-protected:
-    
-  typedef std::multimap<std::vector<Item_t>, Iterator_t, OrderKeyCmp> order_map_t;
-
-  class FlworState : public PlanIteratorState
-  {
-  public:
-    //varBindingState holds if a LET is already bound or not and futhermore for FORs it holds
-    //as wenn the positional integer value
-    checked_vector<uint32_t> varBindingState;
-          
-    //orderMap, curOrderPos and curOrderResultSeq are just needed if we have a Orderclause
-    //The MultiMap does the actual ordering
-    //When returning the result, this indicates, which return sequence we are
-    // touching at the moment and the curOrderPos indicates 
-    order_map_t* orderMap; 
-    Iterator_t curOrderResultSeq; 
-    order_map_t::const_iterator curOrderPos; 
-     
-    /**
-     * Init the state for a certain nb of variables but not the ordering
-     * @nb_variables  Number of FOR and LET clauses
-     */
-    void init(PlanState&, size_t nb_variables);
-          
-    /**
-     * Init the state for a certain nb of variables and ordering
-     * @nb_variables  Number of FOR and LET clauses
-     * @orderSpecs    The OrderSpec which defines how to compare during ordering
-     */
-    void init(PlanState&, size_t nb_variables, std::vector<OrderSpec>* orderSpecs);
-    /**
-     * Resets the state
-     */
-    void reset(PlanState&);
-          
-    ~FlworState();
-
-  };
+       
   
   /* ####################################################
    * Here we have the actual FLWOR class
@@ -234,7 +199,7 @@ protected:
   void resetImpl(PlanState& planState);
   void closeImpl(PlanState& planState);
 
-  virtual uint32_t getStateSize() const  { return sizeof ( FlworState); }
+  virtual uint32_t getStateSize() const;
   virtual uint32_t getStateSizeOfSubtree() const;
   
   void accept ( PlanIterVisitor& ) const;
@@ -269,6 +234,43 @@ protected:
   bool                      whereClauseReturnsBooleanPlus;
   const int                 bindingsNb; //Number of FORs and LETs (overall)  
 };
+
+class FlworState : public PlanIteratorState
+{
+  
+  public:
+    //varBindingState holds if a LET is already bound or not and futhermore for FORs it holds
+    //as wenn the positional integer value
+    checked_vector<uint32_t> varBindingState;
+          
+    //orderMap, curOrderPos and curOrderResultSeq are just needed if we have a Orderclause
+    //The MultiMap does the actual ordering
+    //When returning the result, this indicates, which return sequence we are
+    // touching at the moment and the curOrderPos indicates 
+    FLWORIterator::order_map_t* orderMap; 
+    Iterator_t curOrderResultSeq; 
+    FLWORIterator::order_map_t::const_iterator curOrderPos; 
+     
+    /**
+     * Init the state for a certain nb of variables but not the ordering
+     * @nb_variables  Number of FOR and LET clauses
+     */
+    void init(PlanState&, size_t nb_variables);
+          
+    /**
+     * Init the state for a certain nb of variables and ordering
+     * @nb_variables  Number of FOR and LET clauses
+     * @orderSpecs    The OrderSpec which defines how to compare during ordering
+     */
+    void init(PlanState&, size_t nb_variables, std::vector<FLWORIterator::OrderSpec>* orderSpecs);
+    /**
+     * Resets the state
+     */
+    void reset(PlanState&);
+          
+    ~FlworState();
+
+};  
 
 
 } /* namespace xqp */

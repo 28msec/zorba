@@ -244,53 +244,6 @@ bool FLWORIterator::OrderKeyCmp::operator() (
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  FlworState                                                                 //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-void FLWORIterator::FlworState::init(PlanState& planState, size_t nb_variables)
-{
-  PlanIteratorState::init(planState);
-  std::vector<uint32_t> v( nb_variables, 0 );
-  varBindingState.swap (v);
-}
-
-
-void FLWORIterator::FlworState::init(
-    PlanState& planState,
-    size_t nb_variables,
-    std::vector<OrderSpec>* orderSpecs)
-{
-  init (planState, nb_variables);
-  orderMap = new order_map_t(orderSpecs);
-}
-
-
-void FLWORIterator::FlworState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  size_t size = varBindingState.size();
-  varBindingState.clear();
-  varBindingState.insert(varBindingState.begin(), size, 0);
-  curOrderResultSeq = 0;
-  if ( orderMap != 0 )
-  {
-    orderMap->clear();
-  }
-}
-
-FLWORIterator::FlworState::~FlworState()
-{
-  if ( orderMap )
-  {
-    orderMap->clear(); // TODO is this needed
-    delete orderMap; orderMap = 0;
-  }
-}
-
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -691,6 +644,8 @@ void FLWORIterator::closeImpl ( PlanState& planState )
 }
 
 
+uint32_t FLWORIterator::getStateSize() const  { return sizeof ( FlworState); }
+
 uint32_t FLWORIterator::getStateSizeOfSubtree() const
 {
   int32_t size = this->getStateSize();
@@ -746,5 +701,50 @@ void FLWORIterator::accept ( PlanIterVisitor& v ) const
   v.endVisit(*this);
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  FlworState                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+void FlworState::init(PlanState& planState, size_t nb_variables)
+{
+  PlanIteratorState::init(planState);
+  std::vector<uint32_t> v( nb_variables, 0 );
+  varBindingState.swap (v);
+}
+
+
+void FlworState::init(
+                      PlanState& planState,
+                      size_t nb_variables,
+                      std::vector<FLWORIterator::OrderSpec>* orderSpecs)
+{
+  init (planState, nb_variables);
+  orderMap = new FLWORIterator::order_map_t(orderSpecs);
+}
+
+
+void FlworState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  size_t size = varBindingState.size();
+  varBindingState.clear();
+  varBindingState.insert(varBindingState.begin(), size, 0);
+  curOrderResultSeq = 0;
+  if ( orderMap != 0 )
+  {
+    orderMap->clear();
+  }
+}
+
+FlworState::~FlworState()
+{
+  if ( orderMap )
+  {
+    orderMap->clear(); // TODO is this needed
+    delete orderMap; orderMap = 0;
+  }
+}
 
 }
