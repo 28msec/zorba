@@ -26,7 +26,6 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 # Variables
 SET(requiredlibs)
 SET(DEFINITIONS)
-SET(BUILD_STATIC_LIBRARY 0)
 
 
 ##############################################################################################################

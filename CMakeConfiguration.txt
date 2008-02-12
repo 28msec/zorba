@@ -46,6 +46,9 @@ IF (NOT WIN32)
 
 ENDIF (NOT WIN32)
 
+SET(ZORBA_BUILD_STATIC_LIBRARY OFF CACHE BOOL "build a static library, e.g. when creating a release")
+MESSAGE(STATUS "ZORBA_BUILD_STATIC_LIBRARY:     " ${ZORBA_BUILD_STATIC_LIBRARY})
+
 # flags for debugging the parser
 SET(ZORBA_DEBUG_PARSER OFF CACHE BOOL "debug the parser")
 MESSAGE(STATUS "ZORBA_DEBUG_PARSER:             " ${ZORBA_DEBUG_PARSER})     
