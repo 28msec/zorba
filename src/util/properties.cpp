@@ -198,21 +198,21 @@ namespace xqp
     notify ( lVarMap );
 
     // Setting flags
-    theTraceParsing = lVarMap.count("trace-parsing");
-    theTraceScanning = lVarMap.count("trace-scanning");
-    theUseSerializer = lVarMap.count("use-serializer");
-    theUseResultFile = lVarMap.count("result-file");
-    theAbortWhenFatalError = lVarMap.count("abort");
-    theInlineQuery = lVarMap.count("inline-query");
-    thePrintQuery = lVarMap.count("print-query");
-    thePrintTime = lVarMap.count("print-time");
-    thePrintAST = lVarMap.count("print-ast");
-    thePrintNormalizedExpressions = lVarMap.count("print-normalized");
-    thePrintTranslatedExpressions = lVarMap.count("print-translated");
-    thePrintIteratorTree = lVarMap.count("print-iterator-tree");
+    theTraceParsing = (lVarMap.count("trace-parsing") != 0);
+    theTraceScanning = (lVarMap.count("trace-scanning") != 0);
+    theUseSerializer = (lVarMap.count("use-serializer") != 0);
+    theUseResultFile = (lVarMap.count("result-file") != 0);
+    theAbortWhenFatalError = (lVarMap.count("abort") != 0);
+    theInlineQuery = (lVarMap.count("inline-query") != 0);
+    thePrintQuery = (lVarMap.count("print-query") != 0);
+    thePrintTime = (lVarMap.count("print-time") != 0);
+    thePrintAST = (lVarMap.count("print-ast") != 0);
+    thePrintNormalizedExpressions = (lVarMap.count("print-normalized") != 0);
+    thePrintTranslatedExpressions = (lVarMap.count("print-translated") != 0);
+    thePrintIteratorTree = (lVarMap.count("print-iterator-tree") != 0);
 #ifndef NDEBUG
-    theTraceTranslator = lVarMap.count("trace-translator");
-    theTraceCodegen = lVarMap.count("trace-codegen");
+    theTraceTranslator = (lVarMap.count("trace-translator") != 0);
+    theTraceCodegen = (lVarMap.count("trace-codegen") != 0);
 #endif
     
     Properties::theLoaded = true;

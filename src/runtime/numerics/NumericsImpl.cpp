@@ -516,7 +516,6 @@ namespace xqp
   {
     Item_t item;
     Item_t res;
-    int32_t mul;
     xqtref_t type;
 
     PlanIteratorState* state;

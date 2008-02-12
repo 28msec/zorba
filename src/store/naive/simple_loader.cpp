@@ -231,7 +231,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
     return NULL;
   }
 
-  bool ok = ctxt->wellFormed;
+  bool ok = ctxt->wellFormed != 0;
 
   xmlFreeParserCtxt(ctxt);
 

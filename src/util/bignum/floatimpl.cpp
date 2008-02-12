@@ -772,6 +772,7 @@ bool FloatImpl<FloatType>::operator==(const FloatImpl& aFloatImpl) const{
       return theFloatImpl == aFloatImpl.theFloatImpl;
     }
   }
+  return false;
 }
 
 template <typename FloatType>

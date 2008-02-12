@@ -19,6 +19,7 @@
 #include "store/naive/node_iterators.h"
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/query_context.h"
+#include "store/update/pending_update_list.h"
 
 namespace xqp
 {
