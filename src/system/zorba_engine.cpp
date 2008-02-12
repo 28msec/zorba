@@ -44,7 +44,7 @@ void library_init();
 
 ZorbaEngine_t ZorbaEngine::getInstance()
 {
-	if(globalZorbaEngine == NULL)
+	if((globalZorbaEngine == NULL) || (globalZorbaEngine->is_shutdown))
 	{
 		globalZorbaEngine = new ZorbaEngineImpl(false);
 		globalZorbaEngine->initialize();
@@ -54,7 +54,7 @@ ZorbaEngine_t ZorbaEngine::getInstance()
 
 ZorbaSingleThread_t ZorbaSingleThread::getInstance()
 {
-	if(globalZorbaEngine == NULL)
+	if((globalZorbaEngine == NULL) || (globalZorbaEngine->is_shutdown))
 	{
 		globalZorbaEngine = new ZorbaEngineImpl(true);//single thread
 		globalZorbaEngine->initialize();
@@ -76,6 +76,7 @@ Zorba* ZORBA_FOR_CURRENT_THREAD()
 
 ZorbaEngineImpl::ZorbaEngineImpl(bool single_thread)
 {
+  in_destructor = false;
 	for_single_thread_api = single_thread;
 	theSingleThreadZorba = NULL;
 	xml_data_manager = new XmlDataManager_Impl;
@@ -86,6 +87,9 @@ ZorbaEngineImpl::ZorbaEngineImpl(bool single_thread)
 ZorbaEngineImpl::~ZorbaEngineImpl()
 {
 	try{
+  in_destructor = true;
+  shutdown();
+
 	xml_data_manager->removeReference();
 //  assert(globalZorbaEngine == NULL);
 	delete theSingleThreadZorba;
@@ -125,6 +129,8 @@ void ZorbaEngineImpl::initialize()
   Zorba::theItemFactory = &Zorba::theStore->getItemFactory();
   GlobalEnvironment::getInstance();
 
+  is_shutdown = false;
+
 	}CATCH_ALL_NO_RETURN(;);
 }
 
@@ -132,9 +138,11 @@ void ZorbaEngineImpl::initialize()
 void ZorbaEngineImpl::shutdown()
 {
 	try{
-  if (globalZorbaEngine != NULL)
+  if (!is_shutdown)
   {
-		if(!for_single_thread_api)
+    is_shutdown = true;
+
+    if(!for_single_thread_api)
 		{
 #ifdef WIN32
     TlsFree(theThreadData);
@@ -162,7 +170,8 @@ void ZorbaEngineImpl::shutdown()
   //  ZorbaEngineImpl* temp = globalZorbaEngine;
   //  globalZorbaEngine = NULL;
   //  delete temp;
-		globalZorbaEngine = NULL;//also deletes globalZorbaEngine
+    if(!in_destructor)
+      globalZorbaEngine = NULL;//also deletes globalZorbaEngine
   }
 	}CATCH_ALL_NO_RETURN(;);
 }

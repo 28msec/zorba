@@ -63,6 +63,9 @@ private:
 	XmlDataManager_Impl		*xml_data_manager;
 	bool									for_single_thread_api;
 	Zorba									*theSingleThreadZorba;
+  bool                  in_destructor;
+public:
+  bool                  is_shutdown;
 
 public:
 	ZorbaEngineImpl(bool single_thread);

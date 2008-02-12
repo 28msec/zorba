@@ -75,7 +75,7 @@ int test_easy_api(const char *result_file_name)
 	result_file << endl;
 	result_file << "end easy api test" << endl;
 
-	zorba_factory->shutdown();
+//+	zorba_factory->shutdown();
 
 	//compare the results with expected result
 	oss2 << "expected_";
