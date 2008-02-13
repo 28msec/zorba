@@ -371,7 +371,7 @@ protected:
 #else
   Item_t produceNext(PlanState& planState) 
   {
-#ifndef ndebug
+#ifndef NDEBUG
     assert(theIsOpened); // open must have been called before
 #endif
     return static_cast<IterType*>(this)->nextImpl(planState);
@@ -380,7 +380,7 @@ protected:
 
   void open(PlanState& planState, uint32_t& offset)
   {
-#ifndef ndebug
+#ifndef NDEBUG
     assert(!theIsOpened); // don't call open twice
     theIsOpened = true;
 #endif
@@ -389,7 +389,7 @@ protected:
 
   void reset(PlanState& planState)
   {
-#ifndef ndebug
+#ifndef NDEBUG
     assert(theIsOpened); // must have called opened before reset
 #endif
     static_cast<IterType*>(this)->resetImpl(planState);
@@ -397,7 +397,7 @@ protected:
 
   void close(PlanState& planState) throw()
   {
-#ifndef ndebug
+#ifndef NDEBUG
     assert(theIsOpened); // must have called opened before close
     theIsOpened = false;
 #endif
