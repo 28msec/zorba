@@ -1972,6 +1972,7 @@ void end_visit(const AndExpr& v, void *visit_state)
 }
 
 
+/// Creates a cast_expr or castable_expr.
 expr_t create_cast_expr (const yy::location &loc, expr_t node, xqtref_t type, bool isCast) {
   if (GENV_TYPESYSTEM.get_atomic_type_code (*type) != TypeConstants::XS_QNAME) {
     if (isCast)
@@ -2515,7 +2516,9 @@ void end_visit(const AtomicType& v, void *visit_state)
                                                      qname->get_prefix (),
                                                      qname->get_localname ()),
                                 TypeConstants::QUANT_ONE);
-  if (t == NULL)
+  // some types that should never be parsed, like xs:untyped, are;
+  // we catch them with is_simple()
+  if (t == NULL || ! GENV_TYPESYSTEM.is_simple (*t))
     ZORBA_ERROR_ALERT (ZorbaError::XPST0051, NULL);
   else
     tstack.push (t);
