@@ -15,9 +15,14 @@ class PrinterVisitor : public PlanIterVisitor
 {
 private:
   IterPrinter& thePrinter;
+  PlanIterator* theIterator;
       
 public:
-  PrinterVisitor(IterPrinter& aPrinter) : thePrinter(aPrinter) {}
+  PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter) 
+    : thePrinter(aPrinter),
+      theIterator(aIter) {}
+
+  void print();
       
 private:
   void printCommons(const PlanIterator* aIter);
@@ -413,8 +418,8 @@ public:
   virtual void beginVisitFlworWhereClause(const  PlanIterator&);
   virtual void endVisitFlworWhereClause(const PlanIterator&);
   
-  virtual void beginVisitFlworVariables();
-  virtual void endVisitFlworVariables();
+//virtual void beginVisitFlworVariables();
+//virtual void endVisitFlworVariables();
   
   virtual void beginVisitFlworLetVariable(const PlanIterator&, bool, const xqpStringStore&);
   virtual void endVisitFlworLetVariable(const PlanIterator&);

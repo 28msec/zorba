@@ -475,8 +475,8 @@ namespace xqp
       virtual void beginVisitFlworWhereClause(const  PlanIterator&) = 0;
       virtual void endVisitFlworWhereClause(const PlanIterator&) = 0;
         
-      virtual void beginVisitFlworVariables() = 0;
-      virtual void endVisitFlworVariables() = 0;
+//    virtual void beginVisitFlworVariables() = 0;
+//    virtual void endVisitFlworVariables() = 0;
         
       virtual void beginVisitFlworLetVariable(const PlanIterator&, bool, const xqpStringStore&) = 0;
       virtual void endVisitFlworLetVariable(const PlanIterator&) = 0;

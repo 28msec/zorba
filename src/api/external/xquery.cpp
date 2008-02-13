@@ -188,8 +188,8 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     if (Properties::instance()->printIteratorTree()) {
       cout << "Iterator tree:\n";
       XMLIterPrinter vp(std::cout);
-      PrinterVisitor pv(vp);
-      top_iterator->accept(pv);
+      PrinterVisitor pv(vp, top_iterator);
+      pv.print();
     }
 	
     is_compiled = true;

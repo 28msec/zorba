@@ -349,7 +349,11 @@ public:
   ~Batcher() {}
 
 protected:
-#ifndef NDEBUG
+#ifndef NDEBUG 
+  // TODO remove this member if we finished debugging
+  // because it is not safe in a multithreaded environment
+  // for now, we use it to check if all the functions are used
+  // properly in our iterators
   bool theIsOpened;
 #endif
 

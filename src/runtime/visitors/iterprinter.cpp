@@ -1,12 +1,21 @@
 #include <cassert>
+#include <iostream>
 
 #include "runtime/visitors/iterprinter.h"
 
 namespace xqp {
 
-XMLIterPrinter::XMLIterPrinter(std::ostream& aOStream) : theOStream(aOStream), theOpenStart(false) {}
+/**
+ * Iterator printer for xml
+ */
+XMLIterPrinter::XMLIterPrinter(std::ostream& aOStream) : IterPrinter(aOStream), theOpenStart(false) {}
+
+void
+XMLIterPrinter::start() {}
+void
+XMLIterPrinter::stop() {}
   
-void XMLIterPrinter::startIter(const std::string& aName) {
+void XMLIterPrinter::startBeginVisit(const std::string& aName, intptr_t) {
   if (theOpenStart)
     theOStream << ">\n";
   printSpaces(theNameStack.size());
@@ -15,6 +24,7 @@ void XMLIterPrinter::startIter(const std::string& aName) {
   theOpenStart = true;
 }
 
+void XMLIterPrinter::endBeginVisit(intptr_t) {}
 
 void XMLIterPrinter::addAttribute(const std::string& aName, const std::string& aValue)
 {
@@ -23,7 +33,7 @@ void XMLIterPrinter::addAttribute(const std::string& aName, const std::string& a
 }
 
 
-void XMLIterPrinter::endIter() {
+void XMLIterPrinter::startEndVisit() {
   assert(!theNameStack.empty());
   if (theOpenStart)
     theOStream << "/>" << std::endl;
@@ -34,10 +44,62 @@ void XMLIterPrinter::endIter() {
   theNameStack.pop();
   theOpenStart = false;
 }
+
+void XMLIterPrinter::endEndVisit() {}
   
-void XMLIterPrinter::printSpaces(size_t aNr) {
-  for (unsigned int i = 0; i < aNr; i++)
-    theOStream << "  ";
+
+/**
+ * Iterator printer for dot
+ */
+DOTIterPrinter::DOTIterPrinter(std::ostream& aOStream) 
+  : IterPrinter(aOStream),
+    theIndent(0)
+{
 }
 
+void
+DOTIterPrinter::start() 
+{
+  theOStream << "digraph {" << std::endl;
+}
+
+void
+DOTIterPrinter::stop() 
+{
+  theOStream << "}" << std::endl;
+}
+  
+void DOTIterPrinter::startBeginVisit(const std::string& aName, intptr_t aAddr) 
+{
+  printSpaces(theIndent);
+  theOStream << aAddr << " [ label=\"" << aName;
+  ++theIndent;
+}
+
+void DOTIterPrinter::endBeginVisit(intptr_t aAddr) 
+{
+  --theIndent;
+  printSpaces(theIndent);
+  theOStream << "\"];" << std::endl;
+  printSpaces(theIndent);
+  if (!theNameStack.empty() && theNameStack.top() != aAddr)
+    theOStream << theNameStack.top() << "->" << aAddr << std::endl;
+  theNameStack.push(aAddr);
+}
+
+void DOTIterPrinter::addAttribute(const std::string& aName, const std::string& aValue)
+{
+  printSpaces(theIndent);
+  theOStream << "\\n" << aName << "=" << aValue;
+}
+
+void DOTIterPrinter::startEndVisit() {
+}
+
+void DOTIterPrinter::endEndVisit() 
+{
+  theNameStack.pop();
+}
+  
+  
 }; /* namespace xqp */
