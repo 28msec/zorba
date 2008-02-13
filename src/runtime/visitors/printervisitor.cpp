@@ -192,7 +192,7 @@ namespace xqp {
        
   void PrinterVisitor::beginVisit ( const EnclosedIterator& a ) {
     thePrinter.startIter("EnclosedIterator");
-    thePrinter.addAttribute("attr_cont", a.getAttrContent());
+	thePrinter.addAttribute("attr_cont", (a.getAttrContent() ? "true" : "false"));
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const EnclosedIterator& a ) {
@@ -1167,14 +1167,14 @@ namespace xqp {
       
 void PrinterVisitor::beginVisitFlworLetVariable(
     const PlanIterator& a,
-    bool meterialize,
+    bool materialize,
     const xqpStringStore& varName)
 {
   thePrinter.startIter("LetVariable");
 #ifndef NDEBUG
   thePrinter.addAttribute("name", varName.c_str());
 #endif
-  thePrinter.addAttribute("materialize", meterialize ? "true" : "false");
+  thePrinter.addAttribute("materialize", materialize ? "true" : "false");
   a.accept(*this);
 }
   

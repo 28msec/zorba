@@ -22,12 +22,6 @@ void XMLIterPrinter::addAttribute(const std::string& aName, const std::string& a
   theOStream << " " << aName << "=\"" << aValue << "\"";
 }
 
-void XMLIterPrinter::addAttribute(const std::string& aName, bool aValue)
-{
-  assert(theOpenStart);
-  theOStream << " " << aName << "=\"" << (aValue ? "true" : "false") << "\"";
-}
-
 
 void XMLIterPrinter::endIter() {
   assert(!theNameStack.empty());

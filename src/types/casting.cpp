@@ -70,7 +70,7 @@ GenericCast* GenericCast::instance()
 /// Raises Zorba errors.
 /// @param isExplicit true when called from the translator
 /// @param isCast true when this is a cast, false when this is a castable
-/// TODO: return an error code, let the caller decide on the error
+/// TODO: return 0 instead of throwing an error code, let the caller decide on the error
 Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExplicit) const {
   ItemFactory* factory = Zorba::getItemFactory();
   xqpString lNamespace = "";
@@ -96,6 +96,7 @@ Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExp
     else 
       ZORBA_ERROR_ALERT (code);
   }
+  return 0;
 }
   
 Item_t GenericCast::stringSimpleCast(
