@@ -124,7 +124,18 @@ bool Date::operator<(const Date& d) const
 bool Date::operator==(const Date& d) const
 {
   // TODO: check timezone
-  return (year == d.year && month == d.month && day == d.month);
+  return (year == d.year && month == d.month && day == d.day);
+}
+
+int Date::compare(const Date& d) const
+{
+  // TODO: handle timezone
+  if (operator<(d))
+    return -1;
+  else if (operator==(d))
+    return 0;
+  else
+    return 1;
 }
 
 xqpString Date::toString() const
@@ -142,13 +153,6 @@ xqpString Date::toString() const
   result += the_time_zone.toString();
   return result;
 }
-
-/*
-const boost::gregorian::date& Date::get_date() const
-{
-  return the_date;
-}
-*/
 
 int32_t Date::getYear() const
 {
@@ -170,15 +174,5 @@ TimeZone Date::getTimezone() const
   return the_time_zone;
 }
 
-int Date::compare(const Date& d) const
-{
-  // TODO: handle timezone
-  if (operator<(d))
-    return -1;
-  else if (operator==(d))
-    return 0;
-  else
-    return 1;
-}
 
 } // namespace xqp
