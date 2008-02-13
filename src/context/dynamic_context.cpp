@@ -27,6 +27,7 @@
 #include "context/static_context.h"
 #include <assert.h>
 #include <time.h>
+#include "system/zorba.h"
 
 using namespace std;
 namespace xqp {
@@ -56,9 +57,10 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 		gmtime_r(&t0, &gmtm);//thread safe gmtime on Linux
 #endif
 
-		execution_date_time = gmtm;
+		//execution_date_time = gmtm;
 		tzset();
     //execution_timezone_seconds = _timezone;//global var set by _tzset in C runtime
+    set_execution_date_time(gmtm, -_timezone);
     
 		implicit_timezone = 0;
 
@@ -66,7 +68,7 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 	}
 	else
 	{
-		execution_date_time = parent->execution_date_time;
+		execution_date_time_item = parent->execution_date_time_item;
 		execution_timezone_seconds = parent->execution_timezone_seconds;
 		implicit_timezone = parent->implicit_timezone;
 		default_collection_uri = parent->default_collection_uri;
@@ -165,17 +167,21 @@ void dynamic_context::set_context_item_type(
 {
 }
 
-void	dynamic_context::set_execution_date_time(struct ::tm t, long tz_seconds)
+void	dynamic_context::set_execution_date_time(struct ::tm datetime_value, long tz_seconds)
 {
-	this->execution_date_time = t;
+//	this->execution_date_time = t;
+	ItemFactory* item_factory = Zorba::getItemFactory();
+	execution_date_time_item = 
+    item_factory->createDateTime(
+					datetime_value.tm_year+1900, datetime_value.tm_mon, datetime_value.tm_mday,
+					datetime_value.tm_hour + datetime_value.tm_isdst ? 1 : 0, datetime_value.tm_min, datetime_value.tm_sec,
+					(short)tz_seconds/60/60);
 	this->execution_timezone_seconds = tz_seconds;
 }
 
-struct ::tm	dynamic_context::get_execution_date_time(long *ptz_seconds)
+Item_t	dynamic_context::get_execution_date_time()
 {
-	if(ptz_seconds)
-		*ptz_seconds = execution_timezone_seconds;
-	return execution_date_time;
+	return execution_date_time_item;
 }
 
 void	dynamic_context::set_implicit_timezone(long tzone_seconds)
