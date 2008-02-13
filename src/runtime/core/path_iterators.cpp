@@ -283,7 +283,7 @@ Item_t NameTestIterator::nextImpl(PlanState& planState)
 Item_t SelfAxisIterator::nextImpl(PlanState& planState)
 {
   SelfAxisState* state;
-  GET_STATE(SelfAxisState, state, planState);
+  state = StateTraitsImpl<SelfAxisState>::getState(planState, this->stateOffset);
 
   do
   {

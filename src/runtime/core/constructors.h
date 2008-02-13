@@ -38,9 +38,9 @@ class DocumentIterator : public UnaryBaseIterator<DocumentIterator,
 {
 public:
   DocumentIterator(const yy::location& loc, PlanIter_t& aChild)
-    :
-    UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
+    : UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
 
+  void openImpl(PlanState& planState, uint32_t& offset);
   Item_t nextImpl(PlanState& planState);
 
   void accept(PlanIterVisitor&) const;

@@ -906,9 +906,8 @@ namespace xqp
   ZorNumGen::nextImpl ( PlanState& planState )
   {
     ZorNumGenState* state;
-    GET_STATE ( ZorNumGenState, state, planState );
-
     DEFAULT_STACK_INIT ( ZorNumGenState, state, planState );
+
     while ( state->getCurNumber() < 100 )
     {
       STACK_PUSH (

@@ -33,7 +33,8 @@ Item_t ForVarIterator::nextImpl(PlanState& planState)
 void ForVarIterator::bind(Item_t value, PlanState& planState)
 {
   ForVarState* state;
-  GET_STATE(ForVarState, state, planState);
+  state = StateTraitsImpl<ForVarState>::getState(planState, this->stateOffset);
+
   state->theValue = value;
 }
 
@@ -57,7 +58,8 @@ LetVarIterator::LetVarIterator(xqpString vn, yy::location loc, const void* origi
 Item_t LetVarIterator::nextImpl(PlanState& planState)
 {
   LetVarState* state;
-  GET_STATE(LetVarState, state, planState);
+  state = StateTraitsImpl<LetVarState>::getState(planState, this->stateOffset);
+
   ZORBA_ASSERT (state->theSourceIter != NULL);
   return state->theSourceIter->next();
 }
@@ -66,7 +68,8 @@ Item_t LetVarIterator::nextImpl(PlanState& planState)
 void LetVarIterator::bind(Iterator_t it, PlanState& planState)
 {
   LetVarState* state;
-  GET_STATE(LetVarState, state, planState);
+  state = StateTraitsImpl<LetVarState>::getState(planState, this->stateOffset);
+
   state->theSourceIter = it;
 }
 

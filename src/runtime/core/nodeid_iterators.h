@@ -62,8 +62,6 @@ public:
 class NodeSortIterator : public UnaryBaseIterator<NodeSortIterator, NodeSortState>
 {
 protected:
-
-protected:
   bool  theAscendant;
   bool  theDistinct;
   bool  theAcceptAtomics;

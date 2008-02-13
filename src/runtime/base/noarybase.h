@@ -49,6 +49,7 @@ void
 NoaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset )
 {
   StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
+  StateTraitsImpl<StateType>::initState(planState, this->stateOffset);
 }
 
 

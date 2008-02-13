@@ -63,6 +63,7 @@ namespace xqp
   NaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset )
   {
     StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
+    StateTraitsImpl<StateType>::initState(planState, this->stateOffset);
 
     std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
 		std::vector<PlanIter_t>::iterator lEnd = theChildren.end();

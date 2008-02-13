@@ -36,11 +36,7 @@ Item_t CtxVariableIterator::nextImpl(PlanState& planState)
   Iterator_t iter;
 
   PlanIteratorState* aState;
-  GET_STATE(PlanIteratorState, aState, planState);
-
-  MANUAL_STACK_INIT(aState);
-
-  FINISHED_ALLOCATING_RESOURCES();
+  DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
 
 	if(theVarName == ".")//looking for context item?
 	{

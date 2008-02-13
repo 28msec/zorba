@@ -36,64 +36,32 @@
 
   Consts and macros to automate Duff's Device and separation of code and state. 
 
-
-  DUFFS_ALLOCATE_RESOURCES : This is the initial value of the duffs line in 
-                             every state object. Should always be 0 because of
-                             the way, the memory is allocated
-  DUFFS_RESTART            : The reset method of each iterator sets the duffs
-                             line to DUFFS_RESTART
-
   DEFUALT_STACK_INIT : Initializes the state object of the current iterator
                        (which always includes the Duff's Device) and returns
                        a pointer to that state in the state block.
-  MANUAL_STACK_INIT  : If you want to do resource allocation in addition to
-                       what is done by the init() method of the state object,
-                       you have to use this STACK_INIT, to have the full control.
   STACK_PUSH         : Returns the passed item and saves the current position
                        in the file into the duffs line so that when the nextImpl
                        method of the iterator is called again, execution will
                        start right after the STACK_PUSH macro.
   STACK_END          : Ends the execution of the nextImpl method
-  GET_STATE          : Specific function to load the state of the current
-                       iterator from the state block.
 
 ********************************************************************************/
 
-static const int32_t DUFFS_ALLOCATE_RESOURCES = 0;
-static const int32_t DUFFS_RESTART            = -1;
-
-
-#define GET_STATE(stateType, stateObject, planState) \
-  stateObject = StateTraitsImpl<stateType>::getState(planState, this->stateOffset);
-
 #define DEFAULT_STACK_INIT(stateType, stateObject, planState )  \
-  GET_STATE(stateType, stateObject, planState);                 \
+  stateObject = StateTraitsImpl<stateType>::getState(planState, this->stateOffset); \
   switch (stateObject->getDuffsLine())                          \
   {                                                             \
-    case DUFFS_ALLOCATE_RESOURCES:                              \
-      stateObject->init(planState);                             \
-    case DUFFS_RESTART:
-
-
-#define MANUAL_STACK_INIT(stateObject)                          \
-  switch (stateObject->getDuffsLine())                          \
-  {                                                             \
-    case DUFFS_ALLOCATE_RESOURCES:
-
+    case PlanIteratorState::DUFFS_ALLOCATE_RESOURCES:
 
 #define STACK_PUSH(x, stateObject)                             \
    do                                                          \
    {                                                           \
      stateObject->setDuffsLine(__LINE__);                      \
      return x;                                                 \
-     case __LINE__: ;                                              \
+     case __LINE__: ;                                          \
    } while (0)
 
-
 #define STACK_END()  } return NULL
-
-#define FINISHED_ALLOCATING_RESOURCES() case DUFFS_RESTART:
-
 
 
 namespace xqp
@@ -136,8 +104,11 @@ public:
  */
 class PlanIteratorState
 {
+public:
+  static const uint32_t DUFFS_ALLOCATE_RESOURCES = 0;
+
 private:
-  int32_t theDuffsLine;
+  uint32_t theDuffsLine;
 
 public:
 #if ZORBA_BATCHING_TYPE == 1
@@ -190,17 +161,17 @@ public:
    */
   void reset(PlanState&) 
   { 
-    theDuffsLine = DUFFS_RESTART; 
+    theDuffsLine = DUFFS_ALLOCATE_RESOURCES; 
 #if ZORBA_BATCHING_TYPE == 1
     theCurrItem = ZORBA_BATCHING_BATCHSIZE;
-    for (uint32_t i = 0; i < ZORBA_BATCHING_BATCHSIZE; ++i)
-      theBatch[i] = NULL;
-
+    // seeting the first item to NULL only is sufficient so
+    // that produceNext knows that it's not finished yet
+    theBatch[0] = NULL; 
 #endif
   }
   
-  void setDuffsLine(int32_t aVal) { theDuffsLine = aVal; }
-  int32_t getDuffsLine() const    { return theDuffsLine; }
+  void setDuffsLine(uint32_t aVal) { theDuffsLine = aVal; }
+  uint32_t getDuffsLine() const    { return theDuffsLine; }
 };
 
 template <class T>
@@ -221,6 +192,16 @@ public:
     new (planState.theBlock + stateOffset)T();
   }
 
+  static T* getState(PlanState& planState, uint32_t stateOffset)
+  {
+    return reinterpret_cast<T*>(planState.theBlock + stateOffset);
+  }
+
+  static void initState(PlanState& planState, uint32_t& stateOffset)
+  {
+    getState(planState, stateOffset)->init(planState); 
+  }
+
   static void destroyState(PlanState& planState, uint32_t stateOffset) 
   { 
     (reinterpret_cast<T*>(planState.theBlock + stateOffset))->~T(); 
@@ -231,10 +212,6 @@ public:
     (reinterpret_cast<T*>(planState.theBlock+ stateOffset))->reset(planState);
   }
 
-  static T* getState(PlanState& planState, uint32_t stateOffset)
-  {
-    return reinterpret_cast<T*>(planState.theBlock + stateOffset);
-  }
 };
 
 /*******************************************************************************
@@ -356,15 +333,33 @@ template <class IterType>
 class Batcher: public PlanIterator
 {
 public:
-  Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
-  Batcher(yy::location loc) : PlanIterator(loc) {}
+  Batcher(const Batcher<IterType>& b)  
+    : PlanIterator(b)
+#ifndef NDEBUG
+      , theIsOpened(false)
+#endif
+  {}
+  Batcher(yy::location loc) 
+    : PlanIterator(loc) 
+#ifndef NDEBUG
+      , theIsOpened(false)
+#endif
+  {}
 
   ~Batcher() {}
 
 protected:
+#ifndef NDEBUG
+  bool theIsOpened;
+#endif
+
+
 #if ZORBA_BATCHING_TYPE == 1  
   void produceNext(PlanState& planState) 
   {
+#ifndef NDEBUG
+    assert(theIsOpened); // open must hve been called before
+#endif
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
     uint32_t i = 0;
     do
@@ -376,22 +371,36 @@ protected:
 #else
   Item_t produceNext(PlanState& planState) 
   {
+#ifndef ndebug
+    assert(theIsOpened); // open must have been called before
+#endif
     return static_cast<IterType*>(this)->nextImpl(planState);
   }
 #endif
 
   void open(PlanState& planState, uint32_t& offset)
   {
+#ifndef ndebug
+    assert(!theIsOpened); // don't call open twice
+    theIsOpened = true;
+#endif
     static_cast<IterType*>(this)->openImpl(planState, offset);
   }
 
   void reset(PlanState& planState)
   {
+#ifndef ndebug
+    assert(theIsOpened); // must have called opened before reset
+#endif
     static_cast<IterType*>(this)->resetImpl(planState);
   }
 
   void close(PlanState& planState) throw()
   {
+#ifndef ndebug
+    assert(theIsOpened); // must have called opened before close
+    theIsOpened = false;
+#endif
     static_cast<IterType*>(this)->closeImpl(planState);
   }
 

@@ -22,25 +22,35 @@ namespace xqp
 /*******************************************************************************
 
 ********************************************************************************/
+void
+DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  StateTraitsImpl<DocumentIteratorState>::createState(planState, this->stateOffset, offset);
+  StateTraitsImpl<DocumentIteratorState>::initState(planState, this->stateOffset);
+  
+  DocumentIteratorState* lState = StateTraitsImpl<DocumentIteratorState>::getState(planState, this->stateOffset);
+  lState->childWrapper = new PlanIteratorWrapper(theChild, planState); 
+
+  theChild->open(planState, offset);
+}
+
 Item_t DocumentIterator::nextImpl(PlanState& planState)
 {
+  // Note: baseUri and docUri have to be rchandles because if createDocumentNode
+  // throws and exception, we don't know if the exception was thrown before or
+  // after the ownership of the uris was transfered to the doc node.
   xqpStringStore_t baseUri = 0;
   xqpStringStore_t docUri = 0;
   Item_t node;
 
   DocumentIteratorState* state;
-  GET_STATE(DocumentIteratorState, state, planState);
-  MANUAL_STACK_INIT(state);
+  DEFAULT_STACK_INIT(DocumentIteratorState, state, planState);
 
-  // Note: baseUri and docUri have to be rchandles because if createDocumentNode
-  // throws and exception, we don't know if the exception was thrown before or
-  // after the ownership of the uris was transfered to the doc node.
+  // maybe we can make these members of the class in order to save new's when calling 
+  // close or reset
   baseUri = new xqpStringStore("");
   docUri = new xqpStringStore("");
-  state->childWrapper = new PlanIteratorWrapper(theChild, planState); 
 
-  FINISHED_ALLOCATING_RESOURCES();
-  
   node = Zorba::getItemFactory()->
           createDocumentNode((unsigned long)&planState,
                               baseUri,

@@ -293,22 +293,12 @@ Item_t FLWORIterator::nextImpl ( PlanState& planState )
 {
   //Needed variables
   int curVar = 0;
-  FlworState* flworState;
   Item_t curItem;
 
-  GET_STATE(FlworState, flworState, planState);
-  MANUAL_STACK_INIT(flworState);
+  FlworState* flworState;
+  DEFAULT_STACK_INIT(FlworState, flworState, planState);
 
-  //we allocate resources
-  if ( doOrderBy )
-  {
-    flworState->init(planState, bindingsNb, &orderByClause->orderSpecs);
-  }
-  else
-  {
-    flworState->init ( planState, bindingsNb );
-  }
-  FINISHED_ALLOCATING_RESOURCES();
+  assert(flworState->varBindingState.size() > 0);
 
   while ( true )
   {
@@ -568,6 +558,21 @@ bool FLWORIterator::bindVariable(
 void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<FlworState>::createState(planState, this->stateOffset, offset);
+  FlworState* flworState = StateTraitsImpl<FlworState>::getState(planState, this->stateOffset);
+
+  //we allocate resources
+  if ( doOrderBy )
+  {
+    flworState->init(planState, bindingsNb, &orderByClause->orderSpecs);
+  }
+  else
+  {
+    flworState->init ( planState, bindingsNb );
+  }
+
+#ifndef NDEBUG
+  assert(flworState->varBindingState.size() > 0); // some variables must have been bound
+#endif
 
   std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
   for (iter = forLetClauses.begin(); iter != forLetClauses.end(); iter++)
@@ -590,6 +595,7 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
       iter->orderByIter->open ( planState, offset );
     }
   }
+  
 }
 
 void FLWORIterator::resetImpl ( PlanState& planState )
@@ -716,6 +722,7 @@ void FlworState::init(PlanState& planState, size_t nb_variables)
   PlanIteratorState::init(planState);
   std::vector<uint32_t> v( nb_variables, 0 );
   varBindingState.swap (v);
+  assert(varBindingState.size() > 0);
 }
 
 
@@ -732,6 +739,7 @@ void FlworState::init(
 void FlworState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
+  assert(varBindingState.size() > 0);
   size_t size = varBindingState.size();
   varBindingState.clear();
   varBindingState.insert(varBindingState.begin(), size, 0);

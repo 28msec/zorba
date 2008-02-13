@@ -9,11 +9,10 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState)
 {
   Item_t lSequenceItem;
   UDFunctionCallIteratorState *state;
-  GET_STATE(UDFunctionCallIteratorState, state, planState);
-  MANUAL_STACK_INIT(state);
-  state->init(planState);
-  FINISHED_ALLOCATING_RESOURCES();
 
+  DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
+
+  // TODO maybe this can be done in open
   state->thePlan = theUDF->get_plan().getp();
   state->theFnBodyStateBlock = theUDF->create_plan_state();
 
