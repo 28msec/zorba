@@ -116,12 +116,18 @@ public:
   uint32_t theCurrItem;
   Item_t   theBatch[ZORBA_BATCHING_BATCHSIZE];
 #endif
+#ifndef NDEBUG
+  bool     theIsOpened;
+#endif
 
 public:
   PlanIteratorState() 
     : theDuffsLine(DUFFS_ALLOCATE_RESOURCES)
 #if ZORBA_BATCHING_TYPE == 1
       , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
+#endif
+#ifdef NDEBUG
+      , theIsOpened(false)
 #endif
       
   {}
@@ -335,36 +341,22 @@ class Batcher: public PlanIterator
 public:
   Batcher(const Batcher<IterType>& b)  
     : PlanIterator(b)
-#ifndef NDEBUG
-      , theIsOpened(false)
-#endif
   {}
   Batcher(yy::location loc) 
     : PlanIterator(loc) 
-#ifndef NDEBUG
-      , theIsOpened(false)
-#endif
   {}
 
   ~Batcher() {}
 
 protected:
-#ifndef NDEBUG 
-  // TODO remove this member if we finished debugging
-  // because it is not safe in a multithreaded environment
-  // for now, we use it to check if all the functions are used
-  // properly in our iterators
-  bool theIsOpened;
-#endif
-
 
 #if ZORBA_BATCHING_TYPE == 1  
   void produceNext(PlanState& planState) 
   {
-#ifndef NDEBUG
-    assert(theIsOpened); // open must hve been called before
-#endif
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
+#ifndef NDEBUG
+    assert(lState->theIsOpened); // open must hve been called before
+#endif
     uint32_t i = 0;
     do
     {
@@ -376,7 +368,8 @@ protected:
   Item_t produceNext(PlanState& planState) 
   {
 #ifndef NDEBUG
-    assert(theIsOpened); // open must have been called before
+    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
+    assert(lState->theIsOpened); // open must hve been called before
 #endif
     return static_cast<IterType*>(this)->nextImpl(planState);
   }
@@ -384,17 +377,20 @@ protected:
 
   void open(PlanState& planState, uint32_t& offset)
   {
-#ifndef NDEBUG
-    assert(!theIsOpened); // don't call open twice
-    theIsOpened = true;
-#endif
     static_cast<IterType*>(this)->openImpl(planState, offset);
+#ifndef NDEBUG
+    // do it after openImpl because the state is created there
+    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
+    assert( ! lState->theIsOpened ); // don't call open twice
+    lState->theIsOpened = true;
+#endif
   }
 
   void reset(PlanState& planState)
   {
 #ifndef NDEBUG
-    assert(theIsOpened); // must have called opened before reset
+    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
+    assert( lState->theIsOpened ); // must be open
 #endif
     static_cast<IterType*>(this)->resetImpl(planState);
   }
@@ -402,8 +398,9 @@ protected:
   void close(PlanState& planState) throw()
   {
 #ifndef NDEBUG
-    assert(theIsOpened); // must have called opened before close
-    theIsOpened = false;
+    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
+    assert( lState->theIsOpened ); // must be open
+    lState->theIsOpened = false;
 #endif
     static_cast<IterType*>(this)->closeImpl(planState);
   }
