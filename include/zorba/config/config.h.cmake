@@ -36,6 +36,11 @@
 #cmakedefine HAVE_STRCAT_S_FUNCTION          1
 #cmakedefine HAVE_STRCPY_S_FUNCTION          1
 
+/* Threading mechanism*/
+#cmakedefine ZORBA_USE_PTHREAD_LIBRARY          1
+#cmakedefine ZORBA_USE_BOOST_THREAD_LIBRARY     1
+#cmakedefine ZORBA_FOR_ONE_THREAD_ONLY          1
+
 #include "config/platform.h"
 
 #endif

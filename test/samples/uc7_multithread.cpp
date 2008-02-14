@@ -33,6 +33,10 @@ int uc7_multithread(int argc, char* argv[])
 	unsigned int		i;
 	pthread_t		pt[NR_THREADS];
 
+  //ensure the single thread engine is shutdown
+  zorba_engine->shutdown();
+  zorba_engine = ZorbaEngine::getInstance();
+
 	///in full api mode you have to call initThread() / uninitThread()
 	zorba_engine->initThread();
 

@@ -2,7 +2,7 @@
 #ifndef SYSTEM_ZORBA_ENGINE
 #define SYSTEM_ZORBA_ENGINE
 
-#define ZORBA_USE_PTHREAD_LIBRARY
+#include "common/common.h"
 
 #include "store/api/store_api.h"
 #include "system/zorba_engine_api.h"
@@ -55,8 +55,7 @@ private:
   thread_specific_ptr<zorba> theThreadData;
 
 #else
-  std::map<uint64_t, Zorba*> theThreadData;
-  pthread_mutex_t						 theThreadDataMutex;
+#error Unsupported thread system
 #endif
 
 	//the store wrapper
@@ -121,7 +120,8 @@ public:
 	virtual	XmlDataManager_t		getXmlDataManager();
 
 protected:
-#if defined ZORBA_USE_PTHREAD_LIBRARY
+#ifdef WIN32
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
 	static void threadDataDestructor(void *data);
 #endif
 };

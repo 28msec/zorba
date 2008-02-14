@@ -77,7 +77,8 @@ int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert_t alert,
 {
 	int		retval = -1;
 
-	if(alert->theKind == ZorbaAlert::ERROR_ALERT)
+	if((alert->theKind == ZorbaAlert::ERROR_ALERT) ||
+    (alert->theKind == ZorbaAlert::USER_ERROR_ALERT))
 		setIsError();
 
 	if(!sendAlertByCallback(z, alert, dont_send_callback, &retval))

@@ -1,16 +1,16 @@
 ///Created: Daniel Turcanu @ IPDevel 
 
+#include "common/common.h"
+
 #ifdef WIN32
-#include <windows.h>
-#include "util/win32/compatib_defs.h"
-#endif
-
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
-#include <pthread.h>
-#endif
-
-#ifdef ZORBA_USE_BOOST_THREAD_LIBRARY
-#include <boost/thread/tss.hpp>
+  #include <windows.h>
+  #include "util/win32/compatib_defs.h"
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+  #include <pthread.h>
+#elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
+  #include <boost/thread/tss.hpp>
+#else
+#error Unsupported thread system
 #endif
 
 #include "zorba_api.h"
@@ -115,7 +115,7 @@ void ZorbaEngineImpl::initialize()
   theThreadData = NULL;//new Zorba();
 
 #else
-  pthread_mutex_init(&theThreadDataMutex, NULL);
+  #error Unsupported thread system
 
 #endif
 	}//end if(for_single_thread_api)
@@ -158,7 +158,7 @@ void ZorbaEngineImpl::shutdown()
     theThreadData = 0;
 
 #else
-    pthread_mutex_destroy(&theThreadDataMutex);
+    #error Unsupported thread system
 
 #endif
 		}//end if (for_single_thread_api)
@@ -205,9 +205,7 @@ void ZorbaEngineImpl::initThread()
 		theThreadData = zorba;
 
 #else
-    pthread_mutex_lock(&theThreadDataMutex);
-    theThreadData[(uint64_t)(uintptr_t)pthread_self()] = zorba;
-    pthread_mutex_unlock(&theThreadDataMutex);
+      #error Unsupported thread system
 #endif
 		}
 		else//if (!for_single_thread_api)
@@ -243,9 +241,7 @@ void ZorbaEngineImpl::uninitThread()
 #elif defined ZORBA_FOR_ONE_THREAD_ONLY
 	theThdreadData = NULL;
 #else
-	pthread_mutex_lock(&theThreadDataMutex);
-	theThreadData.erase((uint64_t)(uintptr_t)pthread_self());
-	pthread_mutex_unlock(&theThreadDataMutex);
+  #error Unsupported thread system
 #endif
 	}CATCH_ALL_NO_RETURN(;);
 }
@@ -269,23 +265,7 @@ Zorba* ZorbaEngineImpl::getZorbaForCurrentThread()
   return theThreadData;
 
 #else
-  std::map<uint64_t, Zorba*>::iterator	it_zorba;
-
-	pthread_mutex_lock(&theThreadDataMutex);
-	it_zorba = theThreadData.find((uint64_t)(uintptr_t)pthread_self());
-	if(it_zorba == theThreadData.end())
-	{
-    ///not found, big error
-		pthread_mutex_unlock(&theThreadDataMutex);
-		return NULL;
-	}
-	else
-	{
-    Zorba* zorba = (*it_zorba).second; 
-		pthread_mutex_unlock(&theThreadDataMutex);
-		return zorba;
-	}
-
+#error Unsupported thread system
 #endif
 }
 
@@ -312,14 +292,14 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
       xqp_string xquery_file,
       StaticQueryContext_t sctx,
       bool routing_mode)
-{
+{/*
 	try{
 	FILE	*fquery;
 	size_t	fsize;
 	char	*xquerydata;
 	XQuery_t	result_query;
 
-	fquery = fopen(xquery_file.c_str(), "r");
+	fquery = fopen(xquery_file.c_str(), "rb");
 	if(!fquery)
 	{
 		ZORBA_ERROR_ALERT(ZorbaError::API0015_CANNOT_OPEN_FILE, NULL, DONT_CONTINUE_EXECUTION, xquery_file);
@@ -339,7 +319,8 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
 		return NULL;
 	}
 	fseek(fquery, 0, SEEK_SET);
-	xquerydata = (char*)malloc(fsize);
+	xquerydata = (char*)malloc(fsize+1);
+  memset(xquerydata, 0, fsize+1);
 	if(fread(xquerydata, 1, fsize, fquery) < fsize)
 	{
 		::free(xquerydata);
@@ -355,6 +336,8 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
 	return result_query;
 
 	}CATCH_ALL_RETURN_NULL;
+ */
+  return createQuery("", sctx, xquery_file, routing_mode);
 }
 
 XQuery_t ZorbaEngineImpl::createQueryFromStream(
@@ -370,10 +353,10 @@ XQuery_t ZorbaEngineImpl::createQueryFromStream(
 	try{
 		while(1)
 		{
+			memset(temp_str, 0, 1000);
 			is.read(temp_str, 999);
-			temp_str[999] = 0;
 			xquery_string += temp_str;
-			if(is.gcount() < 999)
+			if(is.gcount() <= 0)
 				break;
 		}
 	}catch(...)

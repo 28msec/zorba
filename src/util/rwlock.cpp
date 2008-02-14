@@ -8,12 +8,6 @@
 
 #include "util/rwlock.h"
 
-#ifndef WIN32
-#include <pthread.h>
-#else
-#include "win32_pthread/pthread.h" // must be removed 
-#endif
-
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -29,6 +23,25 @@ rwlock::rwlock()
 	r_wait(0),
 	w_wait(0)
 {
+#ifdef WIN32
+ 	mutex = CreateEvent(NULL, FALSE, TRUE, NULL);
+  if(mutex == NULL)
+    return;
+ 	cond_read = CreateEvent(NULL, FALSE, FALSE, NULL);
+  if(cond_read == NULL)
+  {
+    CloseHandle(mutex);
+    return;
+  }
+ 	cond_write = CreateEvent(NULL, FALSE, FALSE, NULL);
+  if(cond_read == NULL)
+  {
+    CloseHandle(mutex);
+    CloseHandle(cond_read);
+    return;
+  }
+
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
 	if (pthread_mutex_init(&mutex, NULL)!=0) return;
 	if (pthread_cond_init(&read, NULL)!=0) {
 		pthread_mutex_destroy(&mutex);
@@ -39,13 +52,123 @@ rwlock::rwlock()
 		pthread_cond_destroy(&read);
 		return;
 	}
+#else
+  #error Unsupported thread system
+#endif
 	valid = RWLOCK_VALID;
 }
 
 rwlock::~rwlock()
 {
+  destroy();
 }
 
+/*
+return 0 for success
+*/
+int rwlock::lock_mutex()
+{
+#ifdef WIN32
+  if(WaitForSingleObject(mutex, INFINITE) != WAIT_OBJECT_0)
+    return 1;
+  return 0;
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+  return pthread_mutex_lock(&mutex);
+#else
+  #error Unsupported thread system
+#endif
+}
+
+/*
+return 0 for success
+*/
+int rwlock::unlock_mutex()
+{
+#ifdef WIN32
+  return !SetEvent(mutex);
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+  return pthread_mutex_unlock(&mutex);
+#else
+  #error Unsupported thread system
+#endif
+}
+
+
+int rwlock::signal_cond_read()
+{
+#ifdef WIN32
+	return !SetEvent(cond_read);
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+  return pthread_cond_signal(&read);
+#else
+  #error Unsupported thread system
+#endif
+}
+
+int rwlock::broadcast_cond_read ()
+{
+#ifdef WIN32
+	return !PulseEvent(cond_read);
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+  return pthread_cond_broadcast(&read);
+#else
+  #error Unsupported thread system
+#endif
+}
+
+int rwlock::wait_cond_read ()
+{
+#ifdef WIN32
+  DWORD   retwait;
+	unlock_mutex();
+	retwait = WaitForSingleObject(cond_read, INFINITE);
+  lock_mutex();
+  return retwait != WAIT_OBJECT_0;
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+  return pthread_cond_wait(&read, &mutex);
+#else
+  #error Unsupported thread system
+#endif
+	
+}
+
+
+int rwlock::signal_cond_write()
+{
+#ifdef WIN32
+	return !SetEvent(cond_write);
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+  return pthread_cond_signal(&write);
+#else
+  #error Unsupported thread system
+#endif
+}
+
+int rwlock::broadcast_cond_write ()
+{
+#ifdef WIN32
+	return !PulseEvent(cond_write);
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+  return pthread_cond_broadcast(&write);
+#else
+  #error Unsupported thread system
+#endif
+}
+
+int rwlock::wait_cond_write ()
+{
+#ifdef WIN32
+  DWORD   retwait;
+	unlock_mutex();
+	retwait = WaitForSingleObject(cond_write, INFINITE);
+  lock_mutex();
+  return retwait != WAIT_OBJECT_0;
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+  return pthread_cond_wait(&write, &mutex);
+#else
+  #error Unsupported thread system
+#endif
+}
 
 
 /*_____________________________________________________________
@@ -55,32 +178,42 @@ rwlock::~rwlock()
 
 int rwlock::destroy()
 {
-	int status, status1, status2;
+	int status;
 
 	if (valid!=RWLOCK_VALID) return EINVAL;
-	status = pthread_mutex_lock(&mutex);
+	status = lock_mutex();
 	if (status!=0) return status;
 	
 	// check if any threads own the lock, report "busy" if so.
 	if (r_active > 0 || w_active) {
-		pthread_mutex_unlock(&mutex);
+		unlock_mutex();
 		return EBUSY;
 	}
 
 	// check if any threads are known to be waiting, report "busy" if so
 	if (r_wait > 0 || w_wait > 0) {
-		pthread_mutex_unlock(&mutex);
+		unlock_mutex();
 		return EBUSY;
 	}
 
 	valid = RWLOCK_INVALID;
-	status = pthread_mutex_unlock(&mutex);
+	status = unlock_mutex();
 	if (status!=0) return status;
+#ifdef WIN32
+  CloseHandle(mutex);
+  CloseHandle(cond_read);
+  CloseHandle(cond_write);
+  return 0;
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+  int status1, status2;
 	status = pthread_mutex_destroy(&mutex);
 	status1 = pthread_cond_destroy(&read);
 	status2 = pthread_cond_destroy(&write);
 	return (status!=0 ? status
 										: (status1 != 0 ? status1 : status2));
+#else
+  #error Unsupported thread system
+#endif
 	
 }
 
@@ -96,7 +229,7 @@ void rwlock::read_cleanup(void* arg)
 {
 	rwlock *rwl = (rwlock*)arg;
 	rwl->r_wait--;
-	pthread_mutex_unlock(&rwl->mutex);
+  rwl->unlock_mutex();
 }
 
 
@@ -111,8 +244,20 @@ void rwlock::write_cleanup(void* arg)
 {
 	rwlock *rwl = (rwlock*)arg;
 	rwl->w_wait--;
-	pthread_mutex_unlock(&rwl->mutex);
+	rwl->unlock_mutex();
 }
+
+#ifdef WIN32
+#define cleanup_push_read()
+#define cleanup_pop()
+#define cleanup_push_write()
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#define cleanup_push_read()	  pthread_cleanup_push(read_cleanup, (void*)this)
+#define cleanup_pop()         pthread_cleanup_pop(0)
+#define cleanup_push_write()  pthread_cleanup_push(write_cleanup, (void*)this)
+#else
+ #error Unsupported thread system
+#endif
 
 
 /*_____________________________________________________________
@@ -128,23 +273,23 @@ int rwlock::readlock()
 	int status;
 
 	if (valid!=RWLOCK_VALID) return EINVAL;
-	if ( (status = pthread_mutex_lock(&mutex)) != 0) return status;
+	if ( (status = lock_mutex()) != 0) return status;
 
 	if (w_active) {	// (as opposed to (w_wait > 0) )
 		// writer is active
 		r_wait++;
-		pthread_cleanup_push(read_cleanup, (void*)this);
+		cleanup_push_read();
 
 		// wait on read condition variable broadcast by writer
 		while (w_active) {
-			status = pthread_cond_wait(&read, &mutex);
+			status = wait_cond_read();
 			if (status!=0) break;
 		}
-		pthread_cleanup_pop(0);
+		cleanup_pop();
 		r_wait--;
 	}
 	if (status==0) r_active++;
-	pthread_mutex_unlock(&mutex);
+	unlock_mutex();
 	return status;
 }
 
@@ -159,14 +304,14 @@ int rwlock::readtrylock()
 	int status, status2;
 
 	if (valid!=RWLOCK_VALID) return EINVAL;
-	if ( (status = pthread_mutex_lock(&mutex)) != 0) return status;
+	if ( (status = lock_mutex()) != 0) return status;
 	if (w_active) {
 		status = EBUSY;
 	}
 	else {
 		r_active++;
 	}
-	status2 = pthread_mutex_unlock(&mutex);
+	status2 = unlock_mutex();
 	return (status2 != 0 ? status2 : status);
 }
 
@@ -184,12 +329,12 @@ int rwlock::readunlock()
 	int status, status2;
 	
 	if (valid != RWLOCK_VALID) return EINVAL;
-	if ( (status = pthread_mutex_lock(&mutex)) != 0) return status;
+	if ( (status = lock_mutex()) != 0) return status;
 	r_active--;
 	if (r_active==0 && w_wait > 0) {
-		status = pthread_cond_signal(&write);
+		status = signal_cond_write();
 	}
-	status2 = pthread_mutex_unlock(&mutex);
+	status2 = unlock_mutex();
 	return (status2==0 ? status : status2);
 	
 }
@@ -204,19 +349,19 @@ int rwlock::writelock()
 	int status;
 
 	if (valid!=RWLOCK_VALID) return EINVAL;
-	if ( (status = pthread_mutex_lock(&mutex)) != 0) return status;
+	if ( (status = lock_mutex()) != 0) return status;
 
 	if (w_active || r_active > 0) {
 		w_wait++;
-		pthread_cleanup_push(write_cleanup, (void*)this);
+		cleanup_push_write();
 		while (w_active || r_active > 0) {
-			if ( (status = pthread_cond_wait(&write, &mutex)) != 0) break;
+			if ( (status = wait_cond_write()) != 0) break;
 		}
-		pthread_cleanup_pop(0);
+		cleanup_pop();
 		w_wait--;
 	}
 	if (status==0) w_active = 1;
-	pthread_mutex_unlock(&mutex);
+	unlock_mutex();
 	return status;
 }
 
@@ -226,7 +371,7 @@ int rwlock::writetrylock()
 	int status, status2;
 
 	if (valid!=RWLOCK_VALID) return EINVAL;
-	if ( (status = pthread_mutex_lock(&mutex)) != 0) return status;
+	if ( (status = lock_mutex()) != 0) return status;
 
 	if (w_active || r_active > 0) {
 		status = EBUSY;
@@ -234,7 +379,7 @@ int rwlock::writetrylock()
 	else {
 		w_active = 1;
 	}
-	status2 = pthread_mutex_unlock(&mutex);
+	status2 = unlock_mutex();
 	return (status != 0 ? status : status2);
 }
 
@@ -244,25 +389,25 @@ int rwlock::writeunlock()
 	int status;
 
 	if (valid!=RWLOCK_VALID) return EINVAL;
-	if ( (status = pthread_mutex_lock(&mutex)) != 0) return status;
+	if ( (status = lock_mutex()) != 0) return status;
 
 	w_active = 0;
 	// preferrentially wake up waiting readers
 	if (r_wait > 0) {
-		if ( (status = pthread_cond_broadcast(&read)) != 0) {
-			pthread_mutex_unlock(&mutex);
+		if ( (status = broadcast_cond_read()) != 0) {
+			unlock_mutex();
 			return status;
 		}
 	}
 	// if no waiting readers, look for waiting writers
 	else if (w_wait > 0) {
-		if ( (status = pthread_cond_signal(&write)) != 0) {
-			pthread_mutex_unlock(&mutex);
+		if ( (status = signal_cond_write()) != 0) {
+			unlock_mutex();
 			return status;
 		}
 	}
 
-	return pthread_mutex_unlock(&mutex);
+	return unlock_mutex();
 }
 
 

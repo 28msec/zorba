@@ -83,7 +83,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       return false;
     }
 
-    if(m_query_text.empty())
+    if(m_query_text.empty() && m_xquery_source_uri.empty())
 	  {
       ZORBA_ERROR_ALERT(ZorbaError::API0001_XQUERY_STRING_IS_EMPTY);
       zorba->current_xquery = NULL;
@@ -110,7 +110,10 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     driver.filename = m_xquery_source_uri;
 
     ///build up the expression tree
-    driver.parse_string(m_query_text.c_str());
+    if(m_query_text.empty())
+      driver.parse(m_xquery_source_uri.c_str());
+    else
+      driver.parse_string(m_query_text.c_str());
 
     rchandle<parsenode> n_p = driver.get_expr();
 

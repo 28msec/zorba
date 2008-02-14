@@ -241,6 +241,7 @@ slurp_file (const char *fname, std::string &result) {
   qfile.seekg (0, std::ios::beg);
   char *str = new char [len];
   qfile.read (str, len);
+  len = qfile.gcount();
   
   std::string sstr (str, len);
   result.swap (sstr);

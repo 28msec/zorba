@@ -91,6 +91,7 @@ void slurp_file (const char *fname, string &result) {
   qfile.seekg (0, ios::beg);
   char *str = new char [len];
   qfile.read (str, len);
+  len = qfile.gcount();
   
   string sstr (str, len);
   result.swap (sstr);

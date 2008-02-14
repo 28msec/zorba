@@ -4,7 +4,7 @@
 #include <string>
 #include <ostream>
 #include <stack>
-#if defined WIN32 and ! defined (UNIX)
+#if defined(WIN32) && !defined(UNIX)
 #include "zorba/util/win32/stdint.h"
 #else
 #include <stdint.h>

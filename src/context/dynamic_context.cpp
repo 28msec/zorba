@@ -171,12 +171,12 @@ void	dynamic_context::set_execution_date_time(struct ::tm datetime_value, long t
 {
 //	this->execution_date_time = t;
 	ItemFactory* item_factory = Zorba::getItemFactory();
+	this->execution_timezone_seconds = tz_seconds + datetime_value.tm_isdst ? 1 : 0;
 	execution_date_time_item = 
     item_factory->createDateTime(
 					datetime_value.tm_year+1900, datetime_value.tm_mon, datetime_value.tm_mday,
-					datetime_value.tm_hour + datetime_value.tm_isdst ? 1 : 0, datetime_value.tm_min, datetime_value.tm_sec,
-					(short)tz_seconds/60/60);
-	this->execution_timezone_seconds = tz_seconds;
+					datetime_value.tm_hour, datetime_value.tm_min, datetime_value.tm_sec,
+					(short)execution_timezone_seconds/60/60);
 }
 
 Item_t	dynamic_context::get_execution_date_time()

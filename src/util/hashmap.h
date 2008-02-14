@@ -896,7 +896,8 @@ template<class V>
 inline bool hash64map<V>::put(
   uint64_t key, V val)
 {
-  if (rwl.writelock()!=0) {
+  int rwl_status;
+  if ((rwl_status=rwl.writelock())!=0) {
     //throw xqp_exception(__FUNCTION__,"write lock failed");
     ZORBA_ERROR_ALERT(ZorbaError::XQP0009_SYSTEM_WRITE_LOCK_FAILED);
   }
