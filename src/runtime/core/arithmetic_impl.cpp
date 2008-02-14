@@ -52,7 +52,10 @@ Item_t GenericArithIterator<Operation>::compute(const yy::location& aLoc, Item_t
   xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
   xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeConstants::QUANT_ONE );
 
-  if (GENV_TYPESYSTEM.is_numeric(*type0) || GENV_TYPESYSTEM.is_numeric(*type1)) {
+  if ( GENV_TYPESYSTEM.is_numeric(*type0) 
+    || GENV_TYPESYSTEM.is_numeric(*type1)
+    || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
+    || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
     return NumArithIterator<Operation>::computeAtomic(aLoc, n0, type0, n1, type1);
   } else {
     ZORBA_ASSERT(false);
