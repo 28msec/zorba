@@ -15,7 +15,7 @@ namespace xqp
 	 * Superclass for all iterators which have n child iterators 
 	 * and no additional state variables.
 	 */
-	template <class IterType, class StateType>
+	template <class IterType, class StateType = PlanIteratorState>
 	class NaryBaseIterator : public Batcher<IterType>
 	{
 		protected:

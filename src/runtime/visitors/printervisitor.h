@@ -60,6 +60,9 @@ public:
   virtual void beginVisit ( const UDFunctionCallIterator& ) ;
   virtual void endVisit ( const UDFunctionCallIterator& ) ;
        
+  virtual void beginVisit ( const StatelessExtFunctionCallIterator& ) ;
+  virtual void endVisit ( const StatelessExtFunctionCallIterator& ) ;
+       
   virtual void beginVisit ( const AttributeIterator & ) ;
   virtual void endVisit ( const AttributeIterator& ) ;
       

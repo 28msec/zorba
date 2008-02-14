@@ -25,6 +25,7 @@
 #ifndef XQP_STATIC_CONTEXT_H
 #define XQP_STATIC_CONTEXT_H
 
+// TODO maybe we should remove most of these includes and move implementations into the cpp file
 #include "common.h"
 #include "context/context.h"
 #include "context/context_impl.h"
@@ -33,6 +34,8 @@
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "util/Assert.h"
+
+#include "common/shared_types.h"
 
 #include "context/static_context_api.h"
 
@@ -68,14 +71,14 @@ protected:
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
   static xqp_string fn_internal_key (int arity);
 
+  hashmap<StatelessExternalFunction_t> m_stateless_ext_functions;
+
 public:
 	static void init();
-  static_context()
-		: context (root_static_context ()) {}
-  static_context (static_context *_parent)
-    : context (_parent) {}
+  static_context();
+  static_context (static_context *_parent);
 
-	~static_context();
+  ~static_context();
 
   static static_context *root_static_context ();
 
@@ -115,9 +118,20 @@ public:
   void bind_var (const Item *qname, expr *expr) {
     bind_expr ("var:" + qname_internal_key (qname), expr);
   }
-  void bind_udf (const Item *qname, user_function *func, int arity) {
-    bind_func (fn_internal_key (arity) + qname_internal_key (qname), func);
-  }
+
+  /**
+   * bind external functions
+   * no duplicates allowed, the api is responsible for that
+   */
+  void bind_stateless_external_function(StatelessExternalFunction_t& aExternalFunction);
+  
+  /**
+   * lookup an external function by qname
+   * returns the external function to that qname or null if it has not been registered
+   */
+  StatelessExternalFunction *
+  lookup_stateless_external_function(xqp_string prefix, xqp_string local);
+
   void bind_var (xqp_string prefix, xqp_string local, expr *expr) {
     bind_expr ("var:" + qname_internal_key ("", prefix, local), expr);
   }
@@ -125,13 +139,15 @@ public:
     bind_expr ("var:" + qname_internal_key ("", varname), expr);
   }
   function *lookup_fn (xqp_string prefix, xqp_string local, int arity) const;
-  user_function *lookup_udf (xqp_string prefix, xqp_string local, int arity) const;
   static function *lookup_builtin_fn (xqp_string local, int arity);
   void bind_fn (xqp_string prefix, xqp_string local, function *f, int arity) {
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local), f);
   }
   void bind_fn (xqp_string fname, function *f, int arity) {
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), fname), f);
+  }
+  void bind_fn (const Item *qname, function *f, int arity) {
+    bind_func (fn_internal_key (arity) + qname_internal_key (qname), f);
   }
 
 	void add_variable_type( const xqp_string var_name, xqtref_t var_type);

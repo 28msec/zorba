@@ -23,6 +23,7 @@
 #include "system/zorba.h"
 #include "util/utf8/Unicode_util.h"
 #include "functions/signature.h"
+#include "functions/external_function_adapters.h"
 #include "system/zorba_engine.h"
 #include "util/stl_extra.h"
 
@@ -1488,37 +1489,45 @@ void *begin_visit(const FunctionDecl& v)
 void end_visit(const FunctionDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  expr_t body = pop_nodestack ();
-  if (v.get_return_type () != NULL)
-    pop_tstack ();
-  
-  int nargs = v.get_param_count ();
-  vector<var_expr_t> params;
-  if (nargs > 0) {
-    rchandle<flwor_expr> flwor = dynamic_cast<flwor_expr *>(&*pop_nodestack());
-    Assert(flwor != NULL);
+  switch(v.get_type()) {
+    case fn_read:
+      {
+        expr_t body = pop_nodestack ();
+        if (v.get_return_type () != NULL)
+          pop_tstack ();
 
-    for(int i = 0; i < nargs; ++i) {
-      rchandle<forlet_clause>& flc = (*flwor)[i];
-      var_expr *param_var = dynamic_cast<var_expr *>(&*flc->get_expr());
-      Assert(param_var != NULL);
-      params.push_back(param_var);
-    }
-    flwor->set_retval(body);
-    body = &*flwor;
+        int nargs = v.get_param_count ();
+        vector<var_expr_t> params;
+        if (nargs > 0) {
+          rchandle<flwor_expr> flwor = dynamic_cast<flwor_expr *>(&*pop_nodestack());
+          Assert(flwor != NULL);
+
+          for(int i = 0; i < nargs; ++i) {
+            rchandle<forlet_clause>& flc = (*flwor)[i];
+            var_expr *param_var = dynamic_cast<var_expr *>(&*flc->get_expr());
+            Assert(param_var != NULL);
+            params.push_back(param_var);
+          }
+          flwor->set_retval(body);
+          body = &*flwor;
+        }
+
+        user_function *udf = dynamic_cast<user_function *>(LOOKUP_FN(v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs));
+        ZORBA_ASSERT (udf != NULL);
+
+        {
+          assert (body != NULL);
+          normalizer norm(sctx_p);
+          body->accept(norm);
+        }
+
+        udf->set_body (body);
+        udf->set_params(params);
+      }
+      break;
+    default:
+      break;
   }
-
-  user_function *udf = sctx_p->lookup_udf (v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs);
-  ZORBA_ASSERT (udf != NULL);
-
-  {
-    assert (body != NULL);
-    normalizer norm(sctx_p);
-    body->accept(norm);
-  }
-
-  udf->set_body (body);
-  udf->set_params(params);
   pop_scope ();
 }
 
@@ -1915,7 +1924,22 @@ void *begin_visit(const VFO_DeclList& v)
       }
       Item_t qname = sctx_p->lookup_fn_qname (n->get_name ()->get_prefix (), n->get_name ()->get_localname ());
       signature sig(qname, arg_types, return_type);
-      sctx_p->bind_udf (qname, new user_function (n->get_location(), sig, NULL), nargs);
+      switch(n->get_type()) {
+        case fn_extern:
+          {
+            StatelessExternalFunction *ef = sctx_p->lookup_stateless_external_function(
+              n->get_name()->get_prefix(), n->get_name()->get_localname());
+            ZORBA_ASSERT(ef != NULL);
+            sctx_p->bind_fn(qname, new stateless_external_function_adapter(sig, ef), nargs);
+          }
+          break;
+
+        case fn_read:
+          sctx_p->bind_fn (qname, new user_function (n->get_location(), sig, NULL), nargs);
+          break;
+        default:
+          Assert(false);
+      }
     }
   }
   return no_state;
@@ -2262,10 +2286,7 @@ void end_visit(const FunctionCall& v, void *visit_state)
   else
   {
     int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
-    const user_function *udf = sctx_p->lookup_udf (prefix, fname, sz);
-    rchandle<fo_expr> fo_h = (udf == NULL) ?
-      new fo_expr (loc, LOOKUP_FN (prefix, fname, sz)) :
-      new fo_expr (loc, udf);
+    rchandle<fo_expr> fo_h = new fo_expr (loc, LOOKUP_FN (prefix, fname, sz));
     
     // TODO this should be a const iterator
     std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();

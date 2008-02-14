@@ -4,7 +4,11 @@
 #include "context/static_context_api.h"
 #include "context/static_context.h"
 
+#include <vector>
+#include "util/hashmap.h"
+
 namespace xqp{
+
 
 class StaticContextWrapper : public StaticQueryContext //defined in zorba_api
 {
@@ -51,6 +55,9 @@ public:
 	std::vector<scw_URI_plus_type>		doc_type_list;
 	std::vector<scw_URI_plus_type>		collection_type_list;
 	type_ident_ref_t							default_collection_type;
+
+  // contains all the stateless external functions
+  hashmap<StatelessExternalFunction_t>  stateless_ext_functions;
 
 public:
 
@@ -139,6 +146,11 @@ public:
 
 
 	static_context*		fillInStaticContext();
+
+  /**
+   * functions that are used for registering external functions
+   */
+  virtual void registerStatelessExternalFunction(StatelessExternalFunction_t aExternalFunction);
 
 };
 

@@ -38,6 +38,36 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
     const user_function *theUDF;
 };
 
+class StatelessExtFunctionCallIteratorState : public PlanIteratorState {
+  public:
+    StatelessExtFunctionCallIteratorState();
+    ~StatelessExtFunctionCallIteratorState();
+
+    std::vector<ItemSequence_t> m_extArgs;
+    ItemSequence_t m_result;
+
+    void reset(PlanState&);
+};
+
+class StatelessExtFunctionCallIterator
+  : public NaryBaseIterator
+      <StatelessExtFunctionCallIterator, StatelessExtFunctionCallIteratorState> {
+  public:
+    StatelessExtFunctionCallIterator(const yy::location& loc,
+                                     std::vector<PlanIter_t>& args,
+                                     const StatelessExternalFunction *function);
+    virtual ~StatelessExtFunctionCallIterator() { }
+
+    void openImpl(PlanState& planState, uint32_t& offset);
+
+    Item_t nextImpl(PlanState& planState);
+
+    virtual void accept(PlanIterVisitor& v) const;
+
+  protected:
+    const StatelessExternalFunction *m_function;
+};
+
 }
 
 #endif /* XQP_FNCALL_ITERATOR_H */

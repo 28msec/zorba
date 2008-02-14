@@ -40,6 +40,8 @@
 #include "system/zorba_engine.h"
 #include "types/casting.h"
 
+#include "zorba/functions/stateless_function.h"
+
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER
 #define THROW_XQP_EXCEPTION		throw(xqp_exception)
@@ -59,10 +61,16 @@ namespace xqp {
     NULL, NULL
   };
 
-
 #define ITEM_FACTORY (Store::getInstance().getItemFactory())
+  
+  static_context::static_context()
+		: context (root_static_context ()) {}
+ 
+  static_context::static_context (static_context *_parent)
+    : context (_parent) {}
 
-  static_context *static_context::root_static_context () {
+  static_context* 
+  static_context::static_context::root_static_context () {
     static static_context *p = new static_context (default_ns_initializers);
     return p;
   }
@@ -211,10 +219,6 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
         ZORBA_ERROR_ALERT (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, local, to_string (arity));
       return f;
     }
-  }
-
-  user_function *static_context::lookup_udf (xqp_string prefix, xqp_string local, int arity) const {
-    return dynamic_cast<user_function *>(lookup_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local)));
   }
 
   xqp_string static_context::lookup_ns (xqp_string prefix) const
@@ -674,6 +678,21 @@ xqp_string		static_context::resolve_relative_uri( xqp_string uri )
 	}
 
 	return make_absolute_uri(uri, abs_base_uri);
+}
+
+void 
+static_context::bind_stateless_external_function(StatelessExternalFunction_t& aExternalFunction) {
+  m_stateless_ext_functions.put(aExternalFunction->getLocalName() +":" +aExternalFunction->getURI(),
+                                aExternalFunction);
+}
+
+StatelessExternalFunction *
+static_context::lookup_stateless_external_function(xqp_string aPrefix, xqp_string aLocalName)
+{
+  StatelessExternalFunction_t lExtFun;
+  return  m_stateless_ext_functions.get(
+                 qname_internal_key(default_function_namespace(), aPrefix, aLocalName), lExtFun) 
+                 ? lExtFun.getp() : NULL;
 }
 
 }	/* namespace xqp */

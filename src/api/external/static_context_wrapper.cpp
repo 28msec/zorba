@@ -7,6 +7,8 @@
 #include "system/zorba.h"
 #include "types/casting.h"
 
+#include "zorba/functions/stateless_function.h"
+
 namespace xqp{
 
 /*
@@ -868,10 +870,28 @@ static_context*		StaticContextWrapper::fillInStaticContext()
 		sctx->set_default_collection_type(internal_type);
 	}
 
+  for (uint32_t i = 0; i < stateless_ext_functions.size(); ++i)
+  {
+    StatelessExternalFunction_t lFun = stateless_ext_functions.getentryVal(i);
+    sctx->bind_stateless_external_function(lFun);
+  }
+
 	return sctx;
 	}CATCH_ALL_RETURN_NULL;
 }
 
+  /**
+   * functions that are used for registering external functions
+   */
+  void 
+  StaticContextWrapper::registerStatelessExternalFunction(StatelessExternalFunction_t aExtFunction)
+  {
+    if ( stateless_ext_functions.put( aExtFunction->getURI() + aExtFunction->getLocalName(), 
+                                      aExtFunction ) )
+		  ZORBA_ERROR_ALERT(ZorbaError::API0019_FUNCTION_ALREADY_REGISTERED, 
+                        NULL, DONT_CONTINUE_EXECUTION, aExtFunction->getURI(), 
+                        aExtFunction->getLocalName());
+  }
 
 }//end namespace xqp
 

@@ -82,6 +82,16 @@ namespace xqp {
     thePrinter.endEndVisit();
   }
 
+  void PrinterVisitor::beginVisit ( const StatelessExtFunctionCallIterator& a ) {
+    thePrinter.startBeginVisit("StatelessExtFunctionCallIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const StatelessExtFunctionCallIterator& a ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   void PrinterVisitor::beginVisit ( const FnStringIterator& a ) {
     thePrinter.startBeginVisit("FnStringIterator", (intptr_t) &a);
     printCommons(  &a );

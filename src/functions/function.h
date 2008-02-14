@@ -103,6 +103,13 @@ class user_function : public function {
     mutable int32_t m_state_size;
 };
 
+class external_function : public function {
+  public:
+    external_function(const signature& sig)
+      : function(sig) { }
+    virtual ~external_function() { }
+};
+
 
 } /* namespace xqp */
 #endif  /* XQP_FUNCTION_H */

@@ -14,6 +14,7 @@ namespace xqp
   class LogicIterator;
   class CompareIterator;
   class UDFunctionCallIterator;
+  class StatelessExtFunctionCallIterator;
   class ElementIterator;
   class ElementContentIterator;
   class AttributeIterator;
@@ -212,6 +213,9 @@ namespace xqp
        
       virtual void beginVisit ( const UDFunctionCallIterator& ) = 0;
       virtual void endVisit ( const UDFunctionCallIterator& ) = 0;
+       
+      virtual void beginVisit ( const StatelessExtFunctionCallIterator& ) = 0;
+      virtual void endVisit ( const StatelessExtFunctionCallIterator& ) = 0;
        
       virtual void beginVisit ( const CommentIterator& ) = 0;
       virtual void endVisit ( const CommentIterator& ) = 0;

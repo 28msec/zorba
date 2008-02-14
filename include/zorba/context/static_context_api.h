@@ -6,6 +6,8 @@
 #include <unicode/coll.h>
 #include "types/typeident.h"
 
+#include "zorba/common/shared_types_incl.h"
+
 
 namespace xqp {
 
@@ -133,6 +135,11 @@ public:
 
   virtual void    setDefaultCollectionType( type_ident_ref_t default_collection_type ) = 0;///default node()*
   virtual type_ident_ref_t  getDefaultCollectionType( ) = 0;
+
+  /**
+   * functions that are used for registering external functions
+   */
+  virtual void registerStatelessExternalFunction(StatelessExternalFunction_t aExternalFunction) = 0;
 
 };
 

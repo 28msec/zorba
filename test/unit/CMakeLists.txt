@@ -6,6 +6,7 @@ CREATE_TEST_SOURCELIST(UnitTests
 )
 
 ADD_SUBDIRECTORY(external_api)
+ADD_SUBDIRECTORY(external_functions)
 
 # add the executable
 ADD_EXECUTABLE(UnitTests ${UnitTests})
