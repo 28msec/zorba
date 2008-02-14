@@ -4,6 +4,11 @@
 #include <string>
 #include <ostream>
 #include <stack>
+#ifdef WIN32 and NOT UNIX
+#include "zorba/util/win32/stdint.h"
+#else
+#include <stdint.h>
+#endif
 
 namespace yy {
   class location;
