@@ -21,9 +21,9 @@ class MySimpleExternalFunction : public StatelessExternalFunction
         iv_t vec;
         for(int i = 0; i < 2; ++i) {
             ItemSequence_t iseq = args[i];
-            Item_t i;
-            while((i = iseq->next()) != NULL) {
-                vec.push_back(i);
+            Item_t lItem;
+            while((lItem = iseq->next()) != NULL) {
+                vec.push_back(lItem);
             }
         }
         return new IteratorBackedItemSequence(vec);

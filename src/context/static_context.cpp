@@ -70,7 +70,7 @@ namespace xqp {
     : context (_parent) {}
 
   static_context* 
-  static_context::static_context::root_static_context () {
+  static_context::root_static_context () {
     static static_context *p = new static_context (default_ns_initializers);
     return p;
   }
