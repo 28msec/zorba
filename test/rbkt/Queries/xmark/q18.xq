@@ -1,5 +1,5 @@
-declare variable $input-context external;
 declare namespace local = "http://www.foobar.org";
+declare variable $input-context external;
 declare function local:convert($v as xs:decimal?) as xs:decimal?
 {
   2.20371 * $v (: convert Dfl to Euro :)
