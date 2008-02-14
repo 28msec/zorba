@@ -8,6 +8,7 @@ SET(RUNTIME_SRCS
     core/nodeid_iterators.cpp
     core/sequencetypes.cpp
     core/fncall_iterator.cpp
+    core/arithmetic_impl.cpp
     numerics/NumericsImpl.cpp
     qnames/QNamesImpl.cpp
     strings/StringsImpl.cpp

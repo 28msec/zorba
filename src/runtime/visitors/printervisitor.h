@@ -150,18 +150,31 @@ public:
   virtual void beginVisit ( const TreatIterator& ) ;
   virtual void endVisit ( const TreatIterator& ) ;       
   
-  virtual void beginVisit ( const ArithmeticIterator<AddOperations>& ) ;
-  virtual void beginVisit ( const ArithmeticIterator<SubtractOperations>& ) ;
-  virtual void beginVisit ( const ArithmeticIterator<MultiplyOperations>& ) ;
-  virtual void beginVisit ( const ArithmeticIterator<DivideOperations>& ) ;
-  virtual void beginVisit ( const ArithmeticIterator<IntegerDivideOperations>& ) ;
-  virtual void beginVisit ( const ArithmeticIterator<ModOperations>& ) ;
-  virtual void endVisit ( const ArithmeticIterator<AddOperations>& ) ;
-  virtual void endVisit ( const ArithmeticIterator<SubtractOperations>& ) ;
-  virtual void endVisit ( const ArithmeticIterator<MultiplyOperations>& ) ;
-  virtual void endVisit ( const ArithmeticIterator<DivideOperations>& ) ;
-  virtual void endVisit ( const ArithmeticIterator<IntegerDivideOperations>& ) ;
-  virtual void endVisit ( const ArithmeticIterator<ModOperations>& ) ;
+  virtual void beginVisit ( const NumArithIterator<AddOperation>& ) ;
+  virtual void beginVisit ( const NumArithIterator<SubtractOperation>& ) ;
+  virtual void beginVisit ( const NumArithIterator<MultiplyOperation>& ) ;
+  virtual void beginVisit ( const NumArithIterator<DivideOperation>& ) ;
+  virtual void beginVisit ( const NumArithIterator<IntegerDivideOperation>& ) ;
+  virtual void beginVisit ( const NumArithIterator<ModOperation>& ) ;
+  virtual void endVisit ( const NumArithIterator<AddOperation>& ) ;
+  virtual void endVisit ( const NumArithIterator<SubtractOperation>& ) ;
+  virtual void endVisit ( const NumArithIterator<MultiplyOperation>& ) ;
+  virtual void endVisit ( const NumArithIterator<DivideOperation>& ) ;
+  virtual void endVisit ( const NumArithIterator<IntegerDivideOperation>& ) ;
+  virtual void endVisit ( const NumArithIterator<ModOperation>& ) ;
+       
+  virtual void beginVisit ( const GenericArithIterator<AddOperation>& ) ;
+  virtual void beginVisit ( const GenericArithIterator<SubtractOperation>& ) ;
+  virtual void beginVisit ( const GenericArithIterator<MultiplyOperation>& ) ;
+  virtual void beginVisit ( const GenericArithIterator<DivideOperation>& ) ;
+  virtual void beginVisit ( const GenericArithIterator<IntegerDivideOperation>& ) ;
+  virtual void beginVisit ( const GenericArithIterator<ModOperation>& ) ;
+  virtual void endVisit ( const GenericArithIterator<AddOperation>& ) ;
+  virtual void endVisit ( const GenericArithIterator<SubtractOperation>& ) ;
+  virtual void endVisit ( const GenericArithIterator<MultiplyOperation>& ) ;
+  virtual void endVisit ( const GenericArithIterator<DivideOperation>& ) ;
+  virtual void endVisit ( const GenericArithIterator<IntegerDivideOperation>& ) ;
+  virtual void endVisit ( const GenericArithIterator<ModOperation>& ) ;
        
   virtual void beginVisit ( const OpNumericUnaryIterator& ) ;
   virtual void endVisit ( const OpNumericUnaryIterator& ) ;

@@ -577,11 +577,11 @@ FnAvgIterator::nextImpl(PlanState& planState) {
         lSumItem = lRunningItem;
         break;
       }
-      lSumItem = ArithmeticIterator<AddOperations>::compute(loc, lSumItem, lRunningItem); 
+      lSumItem = NumArithIterator<AddOperation>::compute(loc, lSumItem, lRunningItem); 
       ++lCount;
     }
 
-    STACK_PUSH(ArithmeticIterator<DivideOperations>::compute(loc, lSumItem, 
+    STACK_PUSH(NumArithIterator<DivideOperation>::compute(loc, lSumItem, 
                Zorba::getItemFactory()->createInteger(lCount)), state);
   }
 
@@ -683,7 +683,7 @@ FnSumIterator::nextImpl(PlanState& planState) {
     while ( (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
     {
       // TODO add datetime
-      lSumItem = ArithmeticIterator<AddOperations>::compute(loc, lSumItem, lRunningItem); 
+      lSumItem = NumArithIterator<AddOperation>::compute(loc, lSumItem, lRunningItem); 
       // TODO break if one item is NaN
     }
 

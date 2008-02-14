@@ -24,6 +24,7 @@
 #include "functions/DateTime.h"
 #include "functions/FnContext.h"
 #include "functions/Misc.h"
+#include "functions/arithmetic.h"
 
 #include "context/common.h"
 #include "context/static_context.h"
@@ -82,42 +83,76 @@ DECL(fn_name_func,
       GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
 // end Accessors
 
-// Numerics
-// TODO The parameter and return types of the numeric functions are not correct.
-// e.g. it is possible to add two untyped atomics or the parameters can be element nodes
-// which contain a number.
-DECL(op_numeric_add,
+// Generic Arithmetics
+DECL(op_add,
      (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":add"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(op_numeric_subtract,
+DECL(op_subtract,
      (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":subtract"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(op_numeric_multiply,
+DECL(op_multiply,
      (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":multiply"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(op_numeric_divide,
+DECL(op_divide,
      (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":divide"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(op_numeric_integer_divide,
+DECL(op_integer_divide,
      (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":integer-divide"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(op_numeric_mod,
+DECL(op_mod,
      (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":mod"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+// Numerics
+DECL(op_numeric_add,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-add"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(op_numeric_subtract,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-subtract"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(op_numeric_multiply,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-multiply"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(op_numeric_divide,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-divide"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(op_numeric_integer_divide,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-integer-divide"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+DECL(op_numeric_mod,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":numeric-mod"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));

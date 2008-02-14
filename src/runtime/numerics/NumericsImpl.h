@@ -29,95 +29,45 @@
 
 namespace xqp
 {
-
-  class zorba;
-  class GenericCast;
-
-  /** Operations for Add
-    */
-  class AddOperations
-  {
-    public:
-      static Item_t opDouble (const yy::location* , Item_t, Item_t );
-      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-  };
-  
-  /** Operations for Subtract
-    */
-  class SubtractOperations
-  {
-    public:
-      static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
-      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-  };
-  
-  /** Operations for Multiply
-    */
-  class MultiplyOperations
-  {
-    public:
-      static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
-      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-  };
-  
-  /** Operations for Division
-    */
-  class DivideOperations
-  {
-    public:
-      static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
-      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-  };
-  
-  /** Operations for Integer Division
-    */
-  class IntegerDivideOperations
-  {
-    public:
-      static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
-      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-  };
-  
-  /** Operations for Mod
-    */
-  class ModOperations
-  {
-    public:
-      static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
-      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-  };
-
   /**
-    * Generic Iterator for Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
+    * Generic Iterator for Numeric Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
     */
-  template < typename Operations >
-  class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator<Operations>, 
-                                                      PlanIteratorState>
+  template < class Operation >
+  class NumArithIterator 
+    : public BinaryBaseIterator<NumArithIterator<Operation>, PlanIteratorState>
   {
     public:
-      ArithmeticIterator ( const yy::location&, PlanIter_t&, PlanIter_t& );
-      ~ArithmeticIterator();
+      NumArithIterator ( const yy::location&, PlanIter_t&, PlanIter_t& );
+      virtual ~NumArithIterator(){}
 
       Item_t nextImpl(PlanState&);
       
       virtual void accept(PlanIterVisitor&) const;
 
+      /**
+       * Computes Operation on passed items.
+       *
+       * @param loc
+       * @param item0
+       * @param item1
+       */
       static Item_t
-      compute(const yy::location& loc, Item_t n0, Item_t n1);
+      compute(const yy::location& loc, Item_t item0, Item_t item1);
+      
+      /**
+       * Computes Operation on passed items.
+       *
+       * @param loc
+       * @param item0 Atomized Item
+       * @param type0 Type of item0
+       * @param item1 Atomized Item
+       * @param type1 Type of item1
+       */
+      static Item_t
+      computeAtomic
+        (const yy::location&, Item_t item0, xqtref_t type0, Item_t item1, xqtref_t type1);
 
-  }; /* class ArithmeticIterator */
+  }; /* class NumArithIterator */
 
   /*______________________________________________________________________
   |

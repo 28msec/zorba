@@ -44,17 +44,17 @@ public:
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
-class op_numeric_add_int : public function
-{
-public:
-	op_numeric_add_int(const signature&);
-	~op_numeric_add_int() {}
-
-public:
-	PlanIter_t operator()(const yy::location&, std::vector<PlanIter_t>&) const;
-	xqtref_t type_check(signature&) const;
-	bool validate_args(std::vector<PlanIter_t>&) const;
-};
+//class op_numeric_add_int : public function
+//{
+//public:
+//	op_numeric_add_int(const signature&);
+//	~op_numeric_add_int() {}
+//
+//public:
+//	PlanIter_t operator()(const yy::location&, std::vector<PlanIter_t>&) const;
+//	xqtref_t type_check(signature&) const;
+//	bool validate_args(std::vector<PlanIter_t>&) const;
+//};
 
 
 // 6.2.2 op:numeric-subtract

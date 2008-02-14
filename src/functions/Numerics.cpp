@@ -10,7 +10,7 @@
  *
  */
 
-#include <iostream>
+#include <vector>
 
 #include "system/globalenv.h"
 #include "functions/Numerics.h"
@@ -18,10 +18,8 @@
 #include "runtime/booleans/BooleanImpl.h"
 
 using namespace std;
+
 namespace xqp {
-
-
-
 
 /*______________________________________________________________________
 |  
@@ -50,7 +48,7 @@ PlanIter_t op_numeric_add::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return new ArithmeticIterator<AddOperations>(loc, argv[0], argv[1]);
+	return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
 }
 
 xqtref_t op_numeric_add::type_check(
@@ -66,31 +64,31 @@ bool op_numeric_add::validate_args(
 }
 
 
-op_numeric_add_int::op_numeric_add_int(
-	const signature& sig)
-:
-	function(sig)
-{
-}
-
-PlanIter_t op_numeric_add_int::operator()(
-	const yy::location& loc, 
-	vector<PlanIter_t>& argv) const
-{
-	return new ArithmeticIterator<AddOperations>(loc, argv[0], argv[1]);
-}
-
-xqtref_t op_numeric_add_int::type_check(
-	signature& sig) const
-{
-	return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
-}
-
-bool op_numeric_add_int::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
+//op_numeric_add_int::op_numeric_add_int(
+//	const signature& sig)
+//:
+//	function(sig)
+//{
+//}
+//
+//PlanIter_t op_numeric_add_int::operator()(
+//	const yy::location& loc, 
+//	vector<PlanIter_t>& argv) const
+//{
+//	return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
+//}
+//
+//xqtref_t op_numeric_add_int::type_check(
+//	signature& sig) const
+//{
+//	return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
+//}
+//
+//bool op_numeric_add_int::validate_args(
+//	vector<PlanIter_t>& argv) const
+//{
+//	return (argv.size()==2);
+//}
 
 
 
@@ -121,7 +119,7 @@ PlanIter_t op_numeric_subtract::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return new ArithmeticIterator<SubtractOperations>(loc, argv[0], argv[1]);
+	return new NumArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
 }
 
 xqtref_t op_numeric_subtract::type_check(
@@ -164,7 +162,7 @@ PlanIter_t op_numeric_multiply::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return new ArithmeticIterator<MultiplyOperations>(loc, argv[0], argv[1]);
+	return new NumArithIterator<MultiplyOperation>(loc, argv[0], argv[1]);
 }
 
 xqtref_t op_numeric_multiply::type_check(
@@ -217,7 +215,7 @@ PlanIter_t op_numeric_divide::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return new ArithmeticIterator<DivideOperations>(loc, argv[0], argv[1]);
+	return new NumArithIterator<DivideOperation>(loc, argv[0], argv[1]);
 }
 
 xqtref_t op_numeric_divide::type_check(
@@ -272,7 +270,7 @@ PlanIter_t op_numeric_integer_divide::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return new ArithmeticIterator<IntegerDivideOperations>(loc, argv[0], argv[1]);
+	return new NumArithIterator<IntegerDivideOperation>(loc, argv[0], argv[1]);
 }
 
 xqtref_t op_numeric_integer_divide::type_check(
@@ -335,7 +333,7 @@ PlanIter_t op_numeric_mod::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return new ArithmeticIterator<ModOperations>(loc, argv[0], argv[1]);
+	return new NumArithIterator<ModOperation>(loc, argv[0], argv[1]);
 }
 
 xqtref_t op_numeric_mod::type_check(

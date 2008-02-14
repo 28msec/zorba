@@ -13,6 +13,7 @@
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/numerics/NumericsImpl.h"
+#include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
@@ -472,57 +473,112 @@ namespace xqp {
     thePrinter.endEndVisit();
   }
 
-  void PrinterVisitor::beginVisit ( const ArithmeticIterator<AddOperations>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIterator_AddOperations", (intptr_t) &a);
+  void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a ) {
+    thePrinter.startBeginVisit("NumArithIterator_AddOperation", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::beginVisit ( const ArithmeticIterator<SubtractOperations>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIterator_SubtractOperations", (intptr_t) &a);
+  void PrinterVisitor::beginVisit ( const NumArithIterator<SubtractOperation>& a ) {
+    thePrinter.startBeginVisit("NumArithIterator_SubtractOperation", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::beginVisit ( const ArithmeticIterator<MultiplyOperations>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIterator_MultiplyOperations", (intptr_t) &a);
+  void PrinterVisitor::beginVisit ( const NumArithIterator<MultiplyOperation>& a ) {
+    thePrinter.startBeginVisit("NumArithIterator_MultiplyOperation", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::beginVisit ( const ArithmeticIterator<DivideOperations>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIterator_DivideOperations", (intptr_t) &a);
+  void PrinterVisitor::beginVisit ( const NumArithIterator<DivideOperation>& a ) {
+    thePrinter.startBeginVisit("NumArithIterator_DivideOperation", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::beginVisit ( const ArithmeticIterator<IntegerDivideOperations>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIterator_IntegerDivideOperations", (intptr_t) &a);
+  void PrinterVisitor::beginVisit ( const NumArithIterator<IntegerDivideOperation>& a ) {
+    thePrinter.startBeginVisit("NumArithIterator_IntegerDivideOperation", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::beginVisit ( const ArithmeticIterator<ModOperations>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIterator_ModOperations", (intptr_t) &a);
+  void PrinterVisitor::beginVisit ( const NumArithIterator<ModOperation>& a ) {
+    thePrinter.startBeginVisit("NumArithIterator_ModOperation", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const ArithmeticIterator<AddOperations>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<AddOperation>& a ) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const ArithmeticIterator<SubtractOperations>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<SubtractOperation>& a ) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const ArithmeticIterator<MultiplyOperations>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<MultiplyOperation>& a ) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const ArithmeticIterator<DivideOperations>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<DivideOperation>& a ) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const ArithmeticIterator<IntegerDivideOperations>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<IntegerDivideOperation>& a ) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const ArithmeticIterator<ModOperations>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<ModOperation>& a ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit ( const GenericArithIterator<AddOperation>& a ) {
+    thePrinter.startBeginVisit("GenericArithIterator_AddOperation", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::beginVisit ( const GenericArithIterator<SubtractOperation>& a ) {
+    thePrinter.startBeginVisit("GenericArithIterator_SubtractOperation", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::beginVisit ( const GenericArithIterator<MultiplyOperation>& a ) {
+    thePrinter.startBeginVisit("GenericArithIterator_MultiplyOperation", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::beginVisit ( const GenericArithIterator<DivideOperation>& a ) {
+    thePrinter.startBeginVisit("GenericArithIterator_DivideOperation", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::beginVisit ( const GenericArithIterator<IntegerDivideOperation>& a ) {
+    thePrinter.startBeginVisit("GenericArithIterator_IntegerDivideOperation", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::beginVisit ( const GenericArithIterator<ModOperation>& a ) {
+    thePrinter.startBeginVisit("GenericArithIterator_ModOperation", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const GenericArithIterator<AddOperation>& a ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void PrinterVisitor::endVisit ( const GenericArithIterator<SubtractOperation>& a ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void PrinterVisitor::endVisit ( const GenericArithIterator<MultiplyOperation>& a ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void PrinterVisitor::endVisit ( const GenericArithIterator<DivideOperation>& a ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void PrinterVisitor::endVisit ( const GenericArithIterator<IntegerDivideOperation>& a ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  void PrinterVisitor::endVisit ( const GenericArithIterator<ModOperation>& a ) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
