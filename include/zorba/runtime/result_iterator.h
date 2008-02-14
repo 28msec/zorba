@@ -8,17 +8,17 @@
 //Wrap the iterator interface
 namespace xqp{
 
-class ResultIterator : public rcobject
+class ResultIterator : virtual public rcobject
 {
 public:
 
 	virtual ~ResultIterator() {}
 
-	virtual void		open() = 0;
+	virtual void		openIterator() = 0;
 
-	virtual Item_t	next() = 0;
+	virtual Item_t	nextItem() = 0;
 
-	virtual void		close() = 0;
+	virtual void		closeIterator() = 0;
 
 };
 

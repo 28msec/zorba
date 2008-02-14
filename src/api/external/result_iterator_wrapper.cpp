@@ -13,21 +13,24 @@
 namespace xqp{
 
 ResultIteratorWrapper::ResultIteratorWrapper(Zorba_XQueryBinary_t x,
-																						 DynamicContextWrapper *dctx)
+                                             DynamicContextWrapper *dctx) :
+        PlanWrapper(x->top_iterator)
 {
 	xquery = x;
 
+  openIterator();
+/*
 	theClosed = false;
   ///compute the offsets for each iterator into the state block
 	int32_t		lStateSize;
   lStateSize = x->top_iterator->getStateSizeOfSubtree();
-  state_block = new PlanState(lStateSize);
+  theStateBlock = new PlanState(lStateSize);
   uint32_t lOffset = 0;
-  x->top_iterator->open(*state_block, lOffset);
+  x->top_iterator->open(*theStateBlock, lOffset);
 
   ///and construct the state block of state objects...
-  state_block->theZorba = ZORBA_FOR_CURRENT_THREAD();
-
+  theStateBlock->theZorba = ZORBA_FOR_CURRENT_THREAD();
+*/
 	if(dctx != NULL)
   {
     internal_dyn_context = dctx->create_dynamic_context(x->internal_sctx);
@@ -44,21 +47,22 @@ ResultIteratorWrapper::~ResultIteratorWrapper()
 	try{
 
   //delete internal_sctx;
-  close();
-  delete state_block;
+  closeIterator();
+  //delete theStateBlock;
 	delete internal_dyn_context;
 	}CATCH_ALL_NO_RETURN(;);
 }
 
 
-void		ResultIteratorWrapper::open()
+void		ResultIteratorWrapper::openIterator()
 {
+  PlanWrapper::open();
 }
 
-Item_t	ResultIteratorWrapper::next()
+Item_t	ResultIteratorWrapper::nextItem()
 {
 	try{
-		if(!state_block)
+		if(!theStateBlock)
 		{
 			ZORBA_ERROR_ALERT(ZorbaError::API0010_XQUERY_EXECUTION_NOT_STARTED);
 			return NULL;
@@ -71,34 +75,35 @@ Item_t	ResultIteratorWrapper::next()
 	}
 	CATCH_ALL_RETURN_NULL;
 
-	Zorba_XQueryBinary        *prev_current_xquery = state_block->theZorba->current_xquery;
-	ResultIteratorWrapper			*prev_result = state_block->theZorba->current_xqueryresult;
+	Zorba_XQueryBinary        *prev_current_xquery = theStateBlock->theZorba->current_xquery;
+	ResultIteratorWrapper			*prev_result = theStateBlock->theZorba->current_xqueryresult;
 
-  state_block->theZorba->current_xquery = xquery;
-  state_block->theZorba->current_xqueryresult = this;
+  theStateBlock->theZorba->current_xquery = xquery;
+  theStateBlock->theZorba->current_xqueryresult = this;
   try
   {
-    Item_t it = PlanIterator::consumeNext( xquery->top_iterator, *state_block );
+    //Item_t it = PlanIterator::consumeNext( xquery->top_iterator, *theStateBlock );
+    Item_t  it = PlanWrapper::next();
 
-    state_block->theZorba->current_xquery = prev_current_xquery;
-		state_block->theZorba->current_xqueryresult = prev_result;
+    theStateBlock->theZorba->current_xquery = prev_current_xquery;
+		theStateBlock->theZorba->current_xqueryresult = prev_result;
 
     return it;
   }
 	CATCH_ALL_NO_RETURN(  \
-  state_block->theZorba->current_xquery = prev_current_xquery;\
-	state_block->theZorba->current_xqueryresult = prev_result;)
+  theStateBlock->theZorba->current_xquery = prev_current_xquery;\
+	theStateBlock->theZorba->current_xqueryresult = prev_result;)
 
   return NULL;
 }
 
-void		ResultIteratorWrapper::close()
+void		ResultIteratorWrapper::closeIterator()
 {
 	if(theClosed)
 		return;
 
 	try{
-		if(!state_block)
+		if(!theStateBlock)
 		{
 			ZORBA_ERROR_ALERT(ZorbaError::API0010_XQUERY_EXECUTION_NOT_STARTED);
 			return;
@@ -118,14 +123,16 @@ void		ResultIteratorWrapper::close()
 
 	try
   {
-    if (!theClosed)
+/*    if (!theClosed)
     {
-      xquery->top_iterator->close(*state_block); 
-	    delete state_block;
-			state_block = NULL;
+      xquery->top_iterator->close(*theStateBlock); 
+	    delete theStateBlock;
+			theStateBlock = NULL;
       theClosed = true;
     }
-		if(zorba)
+*/
+    PlanWrapper::close();
+    if(zorba)
 		{
 			zorba->current_xquery = prev_current_xquery;
 			zorba->current_xqueryresult = prev_result;
@@ -136,15 +143,25 @@ void		ResultIteratorWrapper::close()
 		zorba->current_xqueryresult = prev_result;});
 }
 
-void ResultIteratorWrapper::reset()
+void ResultIteratorWrapper::open()
 {
+  openIterator();
+}
+
+Item_t ResultIteratorWrapper::next()
+{
+  return nextItem();
+}
+
+void ResultIteratorWrapper::close()
+{
+  closeIterator();
 }
 
 
 
 
-
-
+/*
 ResultIteratorInternalWrapper::ResultIteratorInternalWrapper(ResultIterator_t result)
 {
 	this->result = result;
@@ -174,6 +191,6 @@ void ResultIteratorInternalWrapper::close()
 {
 	result->close();
 }
-
+*/
 
 }//end namespace xqp

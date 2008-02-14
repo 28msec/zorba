@@ -429,19 +429,20 @@ public:
 ********************************************************************************/
 class PlanWrapper : public Iterator
 {
-private:
+protected:
   PlanIter_t   theIterator;
   PlanState*   theStateBlock;
+	bool		     theClosed;
   
 public:
   PlanWrapper(PlanIter_t& iter);
   
   virtual ~PlanWrapper();
   
-  void open();
-  Item_t next();
-  void reset();
-  void close();
+  virtual void open();
+  virtual Item_t next();
+  virtual void reset();
+  virtual void close();
 };
 
 

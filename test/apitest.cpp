@@ -216,9 +216,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		ResultIterator_t	result;
     Item_t it;
 		result = query->getIterator();
-    while (NULL != (it = result->next ()).getp ())
+    while (NULL != (it = result->nextItem ()).getp ())
       *resultFile << it->show() << endl;
-		result->close();
+		result->closeIterator();
   }
   
   //query->close ();

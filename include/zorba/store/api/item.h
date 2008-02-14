@@ -28,7 +28,7 @@ typedef StoreConsts::NodeKind NodeKind;
  * General iterator interface. Used to program iterators which return a
  * sequence of items, wrapped into a rchandle object for garbage collection
  */
-class Iterator : public rcobject
+class Iterator : virtual public rcobject
 {
 public:
   virtual ~Iterator() {}

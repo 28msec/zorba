@@ -852,11 +852,11 @@ void serializer::serialize(ResultIterator *result, ostream& os)
   
   e->emit_declaration();
 
-  Item_t item = result->next();
+  Item_t item = result->nextItem();
   while (item != NULL )
   {
     e->emit_item(&*item);
-    item = result->next();
+    item = result->nextItem();
   }
   
   e->emit_declaration_end();
