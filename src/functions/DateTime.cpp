@@ -770,7 +770,7 @@ op_ym_durations_add::operator() (
     const yy::location& loc,
     std::vector<PlanIter_t>& argv ) const
 {
-  return new ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>(loc, argv);
+  return new ArithmeticIteratorDurationDateTime<AddOperationsDuration>(loc, argv);
 }
 
 bool
@@ -785,7 +785,7 @@ xqtref_t
 op_ym_durations_add::type_check (
     signature& sig ) const
 {
-  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+  return GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE;
 }
 /*end class op_ym_durations_add*/
 
@@ -805,7 +805,7 @@ op_ym_durations_subtract::operator() (
     const yy::location& loc,
     std::vector<PlanIter_t>& argv ) const
 {
-  return new ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>(loc, argv);
+  return new ArithmeticIteratorDurationDateTime<SubtractOperationsDuration>(loc, argv);
 }
 
 bool
@@ -840,7 +840,7 @@ op_ym_durations_multiply::operator() (
     const yy::location& loc,
     std::vector<PlanIter_t>& argv ) const
 {
-  return new ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>(loc, argv);
+  return new ArithmeticIteratorDurationDateTime<MultiplyOperationsDuration>(loc, argv);
 }
 
 bool
@@ -875,7 +875,7 @@ op_ym_durations_divide::operator() (
     const yy::location& loc,
     std::vector<PlanIter_t>& argv ) const
 {
-  return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>(loc, argv);
+  return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDouble>(loc, argv);
 }
 
 bool
@@ -945,7 +945,7 @@ op_dt_durations_add::operator() (
     const yy::location& loc,
     std::vector<PlanIter_t>& argv ) const
 {
-  return new ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>(loc, argv);
+  return new ArithmeticIteratorDurationDateTime<AddOperationsDuration>(loc, argv);
 }
 
 bool
@@ -955,12 +955,11 @@ op_dt_durations_add::validate_args (
   return (argv.size() == 2);
 }
 
-//TODO change the type to DT_DURATION_TYPE_ONE
 xqtref_t
 op_dt_durations_add::type_check (
     signature& sig ) const
 {
-  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+  return GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
 }
 /*end class op_dt_durations_add*/
 
@@ -980,7 +979,7 @@ op_dt_durations_subtract::operator() (
     const yy::location& loc,
     std::vector<PlanIter_t>& argv ) const
 {
-  return new ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>(loc, argv);
+  return new ArithmeticIteratorDurationDateTime<SubtractOperationsDuration>(loc, argv);
 }
 
 bool
@@ -1015,7 +1014,7 @@ op_dt_durations_multiply::operator() (
     const yy::location& loc,
     std::vector<PlanIter_t>& argv ) const
 {
-  return new ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>(loc, argv);
+  return new ArithmeticIteratorDurationDateTime<MultiplyOperationsDuration>(loc, argv);
 }
 
 bool
@@ -1050,7 +1049,7 @@ op_dt_durations_divide::operator() (
     const yy::location& loc,
     std::vector<PlanIter_t>& argv ) const
 {
-  return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>(loc, argv);
+  return new ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDouble>(loc, argv);
 }
 
 bool

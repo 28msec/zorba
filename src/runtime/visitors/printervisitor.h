@@ -397,17 +397,17 @@ public:
   virtual void beginVisit(const FnTimezoneFromTimeIterator&) ;
   virtual void endVisit(const FnTimezoneFromTimeIterator&);
 
-  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>& ) ;
-  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>& ) ;
+  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDuration>& ) ;
+  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDuration>& ) ;
 
-  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>& ) ;
-  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>& ) ;
+  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDuration>& ) ;
+  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDuration>& ) ;
 
-  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>& ) ;
-  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>& ) ;
+  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDuration>& ) ;
+  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDuration>& ) ;
 
-  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>& ) ;
-  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>& ) ;
+  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDouble>& ) ;
+  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDouble>& ) ;
 
   virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>& ) ;
   virtual void endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>& ) ;

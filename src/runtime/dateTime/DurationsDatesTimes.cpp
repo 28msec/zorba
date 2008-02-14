@@ -731,36 +731,36 @@ FnTimezoneFromTimeIterator::nextImpl(PlanState& planState)
 }
 /*end class FnTimezoneFromTimeIterator */
 
-/* begin class AddOperationsDurationDateTime */
-Item_t AddOperationsDurationDateTime::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+/* begin class AddOperationsDuration */
+Item_t AddOperationsDuration::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
   xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
 
-Item_t AddOperationsDurationDateTime::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+Item_t AddOperationsDuration::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
   xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
-/* end class AddOperationsDurationDateTime */
+/* end class AddOperationsDuration */
 
-/* begin class SubtractOperationsDurationDateTime */
-Item_t SubtractOperationsDurationDateTime::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+/* begin class SubtractOperationsDuration */
+Item_t SubtractOperationsDuration::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
   xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
 
-Item_t SubtractOperationsDurationDateTime::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+Item_t SubtractOperationsDuration::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
   xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
-/* end class SubtractOperationsDurationDateTime */
+/* end class SubtractOperationsDuration */
 
-/* begin class MultiplyOperationsDurationDateTime */
-Item_t MultiplyOperationsDurationDateTime::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+/* begin class MultiplyOperationsDuration */
+Item_t MultiplyOperationsDuration::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
   xqp_duration d;
   
@@ -776,7 +776,7 @@ Item_t MultiplyOperationsDurationDateTime::opDtDuration ( const yy::location* lo
   return Zorba::getItemFactory()->createDuration (d);
 }
 
-Item_t MultiplyOperationsDurationDateTime::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+Item_t MultiplyOperationsDuration::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
   xqp_duration d;
   
@@ -791,10 +791,10 @@ Item_t MultiplyOperationsDurationDateTime::opYmDuration ( const yy::location* lo
   
   return Zorba::getItemFactory()->createDuration (d);
 }
-/* end class MultiplyOperationsDurationDateTime */
+/* end class MultiplyOperationsDuration */
 
-/* begin class DivideOperationsDurationDateTime */
-Item_t DivideOperationsDurationDateTime::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+/* begin class DivideOperationsDurationByDouble */
+Item_t DivideOperationsDurationByDouble::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
   xqp_duration d;
   
@@ -810,7 +810,7 @@ Item_t DivideOperationsDurationDateTime::opDtDuration ( const yy::location* loc,
   return Zorba::getItemFactory()->createDuration (d);
 }
 
-Item_t DivideOperationsDurationDateTime::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
+Item_t DivideOperationsDurationByDouble::opYmDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
 {
   xqp_duration d;
   
@@ -825,7 +825,7 @@ Item_t DivideOperationsDurationDateTime::opYmDuration ( const yy::location* loc,
 
   return Zorba::getItemFactory()->createDuration (d);
 }
-/* end class DivideOperationsDurationDateTime */
+/* end class DivideOperationsDurationByDouble */
 
 /* begin class DivideOperationsDurationByDuration*/
 Item_t DivideOperationsDurationByDuration::opDtDuration ( const yy::location* loc,  Item_t i0, Item_t i1 )
@@ -881,14 +881,15 @@ ArithmeticIteratorDurationDateTime<Operations>::ArithmeticIteratorDurationDateTi
     n0 = n0->getAtomizationValue();
     n1 = n1->getAtomizationValue();
     xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
-
+    xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
+    
     Item_t res;
 
     switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *type0 ))
     {
       //TODO change the type
-      //case TypeConstants::XS_DT_DURATION:
-      case TypeConstants::XS_DURATION:
+      case TypeConstants::XS_DT_DURATION:
+//       case TypeConstants::XS_DURATION:
         res = Operations::opDtDuration ( &aLoc, n0, n1 );
         break;
       case TypeConstants::XS_YM_DURATION:
@@ -914,10 +915,10 @@ ArithmeticIteratorDurationDateTime<Operations>::ArithmeticIteratorDurationDateTi
   }
 
   /* instantiate ArithmeticIteratorDurationDateTime for all types */
-  template class ArithmeticIteratorDurationDateTime<AddOperationsDurationDateTime>;
-  template class ArithmeticIteratorDurationDateTime<SubtractOperationsDurationDateTime>;
-  template class ArithmeticIteratorDurationDateTime<MultiplyOperationsDurationDateTime>;
-  template class ArithmeticIteratorDurationDateTime<DivideOperationsDurationDateTime>;
+  template class ArithmeticIteratorDurationDateTime<AddOperationsDuration>;
+  template class ArithmeticIteratorDurationDateTime<SubtractOperationsDuration>;
+  template class ArithmeticIteratorDurationDateTime<MultiplyOperationsDuration>;
+  template class ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDouble>;
   template class ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>;
 /* end class AddOperationsDurationDateTime */
 }

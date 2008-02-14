@@ -142,10 +142,22 @@ NARY_ITER(FnSecondsFromTimeIterator);
 // 10.5.21 fn:timezone-from-time
 NARY_ITER(FnTimezoneFromTimeIterator);
 
-
+/* begin 10.6 Arithmetic Operators on Durations
+10.6 Arithmetic Operators on Durations
+10.6.1 op:add-yearMonthDurations
+10.6.2 op:subtract-yearMonthDurations
+10.6.3 op:multiply-yearMonthDuration
+10.6.4 op:divide-yearMonthDuration
+10.6.5 op:divide-yearMonthDuration-by-yearMonthDuration
+10.6.6 op:add-dayTimeDurations
+10.6.7 op:subtract-dayTimeDurations
+10.6.8 op:multiply-dayTimeDuration
+10.6.9 op:divide-dayTimeDuration
+10.6.10 op:divide-dayTimeDuration-by-dayTimeDuration
+*/
 /** Operations for Add Duration By Duration
   */
-class AddOperationsDurationDateTime
+class AddOperationsDuration
 {
   public:
     static Item_t opDtDuration (const yy::location* , Item_t, Item_t );
@@ -154,7 +166,7 @@ class AddOperationsDurationDateTime
 
 /** Operations for subtract Duration By Duration
  */
-class SubtractOperationsDurationDateTime
+class SubtractOperationsDuration
 {
   public:
     static Item_t opDtDuration (const yy::location* , Item_t, Item_t );
@@ -163,7 +175,7 @@ class SubtractOperationsDurationDateTime
 
 /** Operations for Multiply Duration By Double
  */
-class MultiplyOperationsDurationDateTime
+class MultiplyOperationsDuration
 {
   public:
     static Item_t opDtDuration (const yy::location* , Item_t, Item_t );
@@ -172,7 +184,7 @@ class MultiplyOperationsDurationDateTime
 
 /** Operations for Divide Duration By Double
  */
-class DivideOperationsDurationDateTime
+class DivideOperationsDurationByDouble
 {
   public:
     static Item_t opDtDuration (const yy::location* , Item_t, Item_t );
@@ -207,20 +219,9 @@ class DivideOperationsDurationByDuration
       compute(const yy::location& loc, Item_t n0, Item_t n1);
 
   }; /* class ArithmeticIteratorDurationDateTime */
-  
+// end  10.6 Arithmetic Operators on Durations
 
 /*
-10.6 Arithmetic Operators on Durations
-10.6.1 op:add-yearMonthDurations
-10.6.2 op:subtract-yearMonthDurations
-10.6.3 op:multiply-yearMonthDuration
-10.6.4 op:divide-yearMonthDuration
-10.6.5 op:divide-yearMonthDuration-by-yearMonthDuration
-10.6.6 op:add-dayTimeDurations
-10.6.7 op:subtract-dayTimeDurations
-10.6.8 op:multiply-dayTimeDuration
-10.6.9 op:divide-dayTimeDuration
-10.6.10 op:divide-dayTimeDuration-by-dayTimeDuration
 10.7 Timezone Adjustment Functions on Dates and Time Values
 10.7.1 fn:adjust-dateTime-to-timezone
 10.7.2 fn:adjust-date-to-timezone
