@@ -3073,6 +3073,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {PredefinedEntityRef} {
+  yylval->sval = driver.symtab.put_entityref(yytext, yyleng);
   return token::ENTITY_REF;
 }
 
