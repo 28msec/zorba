@@ -4,6 +4,7 @@
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/fncall_iterator.h"
 #include "functions/function.h"
+#include "runtime/base/plan_iterator_wrapper.h"
 
 namespace xqp {
 

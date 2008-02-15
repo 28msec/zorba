@@ -20,6 +20,7 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/nsbindings.h"
 #include "store/api/temp_seq.h"
+#include "runtime/base/plan_wrapper.h"
 
 
 #ifndef NDEBUG

@@ -269,6 +269,7 @@ class FlworState : public PlanIteratorState
     void reset(PlanState&);
           
     ~FlworState();
+    FlworState();
 
 };  
 

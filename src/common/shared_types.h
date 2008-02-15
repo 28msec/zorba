@@ -26,6 +26,7 @@ class ItemFactory;
 class Collection;
 class StringPool;
 class QNamePool;
+class Iterator;
 
 typedef rchandle<XQType> xqtref_t;
 typedef rchandle<namespace_context> NamespaceContext_t;
@@ -37,6 +38,7 @@ typedef rchandle<NodeItem> NodeItem_t;
 typedef rchandle<TempSeq> TempSeq_t;
 typedef rchandle<PUL> PUL_t;
 typedef rchandle<Collection> Collection_t;
+typedef rchandle<Iterator>   Iterator_t;
 
 }
 

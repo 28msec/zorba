@@ -26,10 +26,11 @@
 #include "errors/error_factory.h"
 #include "system/zorba.h"
 #include "util/Assert.h"
-#include "runtime/iterator.h"
-#include "store/naive/basic_item_factory.h"
+//#include "runtime/iterator.h"
+//#include "store/naive/basic_item_factory.h"
 #include "runtime/result_iterator.h"
-#include "string.h"
+#include "runtime/iterator.h"
+//#include "string.h"
 
 using namespace std;
 

@@ -2,6 +2,7 @@
 #include "store/api/store.h"
 #include "store/api/item.h"
 #include "runtime/core/nodeid_iterators.h"
+#include "runtime/base/plan_iterator_wrapper.h"
 
 namespace xqp 
 {

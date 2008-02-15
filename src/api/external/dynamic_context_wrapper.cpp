@@ -7,6 +7,7 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/base/plan_wrapper.h"
 #include <time.h>
 #include "types/casting.h"
 #include "types/root_typemanager.h"

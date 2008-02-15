@@ -11,6 +11,7 @@
 #include "compiler/parser/xquery_driver.h"
 #include "system/zorba.h"
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/base/plan_wrapper.h"
 
 #include "api/serialization/serializer.h"
 #include "api/external/dynamic_context_wrapper.h"

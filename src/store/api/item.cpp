@@ -19,6 +19,7 @@
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
 #include "util/Assert.h"
+#include "runtime/base/plan_wrapper.h"
 
 namespace xqp
 {

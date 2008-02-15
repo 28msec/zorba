@@ -27,14 +27,14 @@
 #define XQP_SERIALIZER_H
 
 #include <ostream>
-#include "util/rchandle.h"
-#include "store/api/item.h"
+#include "zorba/types/representations.h"
+#include "common/shared_types.h"
+#include "store/naive/nsbindings.h"
 
 namespace xqp
 {
 
 class ResultIterator;
-class serializer;
 
 class serializer : public rcobject
 {

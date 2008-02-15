@@ -1,17 +1,11 @@
-#ifndef XQP_ITERATOR
-#define XQP_ITERATOR
+#ifndef XQP_ITERATOR_H
+#define XQP_ITERATOR_H
 
 #include "util/rchandle.h"
-
+#include "zorba/common/shared_types_incl.h"
 
 namespace xqp
 {
-
-template <class Object> class rchandle;
-  
-typedef rchandle<class Item> Item_t;
-typedef rchandle<class Iterator> Iterator_t;
-
 
 /**
  * General iterator interface. Used to program iterators which return a

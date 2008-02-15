@@ -21,8 +21,8 @@
  * @file runtime/core/batching.h
  *
  */
-#ifndef XQP_ITERATOR_H
-#define XQP_ITERATOR_H
+#ifndef XQP_PLAN_ITERATOR_H
+#define XQP_PLAN_ITERATOR_H
 
 #include "common/shared_types.h"
 #include "store/api/item.h"
@@ -408,60 +408,6 @@ public:
   inline void openImpl(PlanState& planState, uint32_t& offset);
   inline void resetImpl(PlanState& planState);
   inline void closeImpl(PlanState& planState);
-};
-
-
-/*******************************************************************************
-  Wrapper used to drive the evaluation of an iterator (sub)tree.
-  
-  The wrapper wraps the root iterator of the (sub)tree. It is responsible
-  for allocating and deallocating the plan state that is shared by all
-  iterators in the (sub)tree. In general, it hides internal functionality
-  like separation of code and execution, or garabage collection, and it
-  provides a simple interface that the application can use.
-********************************************************************************/
-class PlanWrapper : public Iterator
-{
-protected:
-  PlanIter_t   theIterator;
-  PlanState*   theStateBlock;
-	bool		     theClosed;
-  
-public:
-  PlanWrapper(PlanIter_t& iter);
-  
-  virtual ~PlanWrapper();
-  
-  virtual void open();
-  virtual Item_t next();
-  virtual void reset();
-  virtual void close();
-};
-
-
-/*******************************************************************************
-  This is a "helper" wrapper that is used when we need to pass a plan iterator
-  to the store. The wrapper wraps the plan iterator in order to provide a
-  simpler interface that the store can use.
- 
-  The wrapper does not allocate a new state block, but it points to the same 
-  block that contains the state of the wrapped plan iterator.
-********************************************************************************/
-class PlanIteratorWrapper : public Iterator
-{
-private:
-  PlanIter_t   theIterator;
-  PlanState*   theStateBlock;
-
-public:
-  PlanIteratorWrapper(PlanIter_t& iter, PlanState& planState);
-  
-  virtual ~PlanIteratorWrapper();
- 
-  void open();
-  Item_t next();
-  void reset();
-  void close();
 };
 
 } /* namespace xqp */

@@ -11,6 +11,7 @@
 #include "runtime/accessors//AccessorsImpl.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item.h"
+#include "runtime/base/plan_iterator_wrapper.h"
 
 namespace xqp
 {

@@ -6,7 +6,7 @@
 #include "context/dynamic_context.h"
 #include "api/external/dynamic_context_wrapper.h"
 #include "api/external/xquery.h"
-#include "runtime/base/plan_iterator.h"
+#include "runtime/base/plan_iterator.h" // for state block, TODO should be removed
 #include "system/zorba.h"
 #include "system/zorba_engine.h"
 

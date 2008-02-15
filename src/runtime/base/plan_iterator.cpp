@@ -24,9 +24,7 @@
 
 #include "runtime/base/plan_iterator.h"
 
-#include "system/zorba.h"
 #include "system/zorba_engine.h"
-#include "util/Assert.h"
 
 namespace xqp
 {
@@ -37,7 +35,6 @@ PlanState::PlanState(uint32_t blockSize)
 {
   theBlockSize = blockSize;
   theBlock = new int8_t[theBlockSize];
-  memset(theBlock, 0, theBlockSize);
 
   theZorba = ZORBA_FOR_CURRENT_THREAD();
 }
@@ -46,106 +43,6 @@ PlanState::PlanState(uint32_t blockSize)
 PlanState::~PlanState()
 {
   delete[] theBlock; theBlock = 0;
-}
-
-
-/*******************************************************************************
-  class PlanWraper
-********************************************************************************/
-PlanWrapper::PlanWrapper(PlanIter_t& aIter)
-  : theIterator(aIter)
-{
-  uint32_t stackSize = theIterator->getStateSizeOfSubtree();
-  theStateBlock = new PlanState(stackSize);
-  theClosed = true;
-}
-
-
-PlanWrapper::~PlanWrapper()
-{
-  if(!theClosed)
-    close();
-  delete theStateBlock; 
-  theStateBlock = NULL;
-  theClosed = true;
-}
-
-void
-PlanWrapper::open()
-{
-  assert(theClosed);
-  if(!theClosed)
-    return;
-
-  uint32_t offset = 0;
-  theIterator->open(*theStateBlock, offset);
-  theClosed = false;
-}
-
-Item_t
-PlanWrapper::next()
-{
-  assert(!theClosed);
-  if(theClosed)
-    return NULL;
-
-  return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
-}
-
-void
-PlanWrapper::reset()
-{
-  theIterator->reset(*theStateBlock); 
-  theClosed = false;
-}
-
-void
-PlanWrapper::close()
-{
-  assert(!theClosed);
-  if(theClosed)
-    return;
-
-  theIterator->close(*theStateBlock); 
-  theClosed = true;
-}
-
-
-/*******************************************************************************
-  class PlanIteratorWrapper
-********************************************************************************/
-PlanIteratorWrapper::PlanIteratorWrapper(PlanIter_t& iter, PlanState& state) 
-  : theIterator(iter),
-    theStateBlock(&state)
-{
-}
-
-
-PlanIteratorWrapper::~PlanIteratorWrapper()
-{
-}
-
-void
-PlanIteratorWrapper::open()
-{
-}
-
-Item_t
-PlanIteratorWrapper::next()
-{
-  return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
-}
-
-void
-PlanIteratorWrapper::reset()
-{
-  theIterator->reset(*theStateBlock);
-}
-
-
-void
-PlanIteratorWrapper::close()
-{
 }
 
 

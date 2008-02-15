@@ -12,6 +12,7 @@
 #include "store/api/temp_seq.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planitervisitor.h"
+#include "runtime/base/plan_iterator_wrapper.h"
 #include "util/Assert.h"
 #include "system/globalenv.h"
 
@@ -749,6 +750,11 @@ void FlworState::reset(PlanState& planState)
     orderMap->clear();
   }
 }
+
+FlworState::FlworState()
+  : orderMap(0)
+{}
+
 
 FlworState::~FlworState()
 {
