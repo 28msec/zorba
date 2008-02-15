@@ -6,6 +6,7 @@
 
 #include "util/rchandle.h"
 
+#include "store/api/item.h"
 #include "store/naive/simple_temp_seq.h"
 
 namespace xqp

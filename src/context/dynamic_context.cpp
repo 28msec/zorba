@@ -25,6 +25,7 @@
 #include "system/globalenv.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+#include "runtime/iterator.h"
 #include <assert.h>
 #include <time.h>
 #include "system/zorba.h"

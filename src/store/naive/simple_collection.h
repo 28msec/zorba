@@ -11,7 +11,8 @@
 #include <set>
 #include "common/shared_types.h"
 #include "store/api/collection.h"
-#include "zorba/store/api/item.h"
+#include "runtime/iterator.h"
+
 
 namespace xqp
 {

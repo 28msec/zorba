@@ -18,6 +18,9 @@
 #include "store/naive/qname_pool.h"
 #include "store/util/string_pool.h"
 
+#include "runtime/iterator.h"
+
+
 namespace xqp
 {
 

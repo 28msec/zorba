@@ -12,6 +12,7 @@
 #include "errors/error_factory.h"
 
 #include "system/zorba_engine.h"
+#include "system/zorba.h"
 
 #include "runtime/core/item_iterator.h"
 #include "api/serialization/serializer.h"

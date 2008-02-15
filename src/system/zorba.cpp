@@ -11,7 +11,6 @@
 #include "context/collation_manager.h"
 #include "api/external/xquery.h"
 #include "errors/error_manager.h"
-#include "runtime/base/iterator.h"
 #include "api/serialization/serializer.h"
 #include "api/external/result_iterator_wrapper.h"
 

@@ -35,10 +35,6 @@ StringPool::StringPool(unsigned long size)
 ********************************************************************************/
 StringPool::~StringPool() 
 {
-/*daniel:?? 
-don't expect the string pool to be the last to close
-the ref count does the job of freeing xqpStringStore anyway
-
 	unsigned long count = 0;
   unsigned long n = theHashTab.size();
   for (unsigned long i = 0; i < n; i++)
@@ -48,14 +44,13 @@ the ref count does the job of freeing xqpStringStore anyway
     {
       std::cout << "i = " << i << " String " << theHashTab[i].theString->c_str()
                 << " is still in the pool" << std::endl;
-      delete theHashTab[i].theString.getp();
+      //delete theHashTab[i].theString.getp();
       count++;
     }
   }
 
-  if (count > 0)
-    assert(0);
-*/
+  //if (count > 0)
+  //  assert(0);
 }
 
 

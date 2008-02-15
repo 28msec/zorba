@@ -1138,7 +1138,9 @@ public:
   void setQNameExpr(expr_t aQNameExpr) { theQNameExpr = aQNameExpr; }
 	expr_t getValueExpr() const { return theValueExpr; }
   void setValueExpr(expr_t aValueExpr) { theValueExpr = aValueExpr; }
-public:
+
+  Item* getQName() const;
+
 	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 

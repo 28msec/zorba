@@ -26,6 +26,7 @@
 #include "errors/error_factory.h"
 #include "system/zorba.h"
 #include "util/Assert.h"
+#include "runtime/iterator.h"
 #include "store/naive/basic_item_factory.h"
 #include "runtime/result_iterator.h"
 #include "string.h"
@@ -175,7 +176,7 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
 	int is_quote;
   int skip = 0;
 	
-	for (unsigned int i=0; i<str.bytes(); i++, chars++ )
+	for (unsigned int i = 0; i < str.bytes(); i++, chars++ )
 	{       
     // the input string is UTF-8
     if ((unsigned char)*chars < 0x80)
@@ -216,8 +217,9 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
 			
 		case '&':
       /*
-        The HTML output method MUST NOT escape a & character occurring in an attribute value 
-        immediately followed by a { character (see Section B.7.1 of the HTML Recommendation [HTML]).
+        The HTML output method MUST NOT escape a & character occurring in an
+        attribute value immediately followed by a { character (see Section
+        B.7.1 of the HTML Recommendation [HTML]).
       */      
       if (ser.method == PARAMETER_VALUE_HTML && emit_attribute_value)
       {
@@ -258,7 +260,39 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
 			 else
 				  tr << "&amp;";
       }
-      
+      /*
+      {      
+        is_quote = 0;
+        unsigned int j;
+        for (j = 1; j < str.bytes() - i; j++)
+        {
+				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'z') 
+            ||
+            (*(chars+j) >= 'A' && *(chars+j) <= 'Z')
+            ||
+            (*(chars+j) >= '0' && *(chars+j) <= '9')
+            ||
+            (*(chars+j) == '#')))
+				  {
+            break;
+          }
+        }
+
+        if (j < str.bytes() - i && *(chars+j) == ';' && j > 1)
+          is_quote = 1;
+
+        if (is_quote)
+        {
+          tr << std::string(chars, j+1);
+          chars += j;
+          i += j;
+        }
+        else
+        {
+				  tr << "&amp;";
+        }
+      }
+      */
       break;      
 			
 		default:

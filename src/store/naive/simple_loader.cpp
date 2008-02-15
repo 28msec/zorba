@@ -490,12 +490,26 @@ void  XmlLoader::endElement(
   // Collect the children of this element node from the node stack
   std::vector<XmlNode*> revChildNodes;
 
-  XmlNode* childNode = loader.theNodeStack.top();
-  while (childNode != NULL)
+  XmlNode* prevChild = NULL;
+  XmlNode* currChild = loader.theNodeStack.top();
+  while (currChild != NULL)
   {
-    revChildNodes.push_back(childNode);
+    if (currChild->getNodeKind() == StoreConsts::textNode &&
+        prevChild != NULL &&
+        prevChild->getNodeKind() == StoreConsts::textNode)
+    {
+      *(prevChild->getStringValueP()) = *(currChild->getStringValueP()) +
+                                        *(prevChild->getStringValueP());
+      delete currChild;
+    }
+    else
+    {
+      revChildNodes.push_back(currChild);
+      prevChild = currChild;
+    }
+
     loader.theNodeStack.pop();
-    childNode = loader.theNodeStack.top();
+    currChild = loader.theNodeStack.top();
   }
   loader.theNodeStack.pop();
 
@@ -515,20 +529,22 @@ void  XmlLoader::endElement(
   children.resize(revChildNodes.size());
 
   std::vector<XmlNode*>::const_reverse_iterator it;
-  unsigned long i = 0;
+  ulong i = 0;
   for (it = revChildNodes.rbegin();
        it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
        it++, i++)
   {
-    children.set(i, *it, false);
-    (*it)->setParent(elemNode);
+    currChild = *it;
 
-    if ((*it)->getNodeKind() == StoreConsts::elementNode)
+    children.set(i, currChild, false);
+    currChild->setParent(elemNode);
+
+    if (currChild->getNodeKind() == StoreConsts::elementNode)
     {
       if (!loader.theBindingsStack.empty())
-        (*it)->setNsContext(loader.theBindingsStack.top());
+        currChild->setNsContext(loader.theBindingsStack.top());
       else
-        (*it)->setNsContext(NULL);
+        currChild->setNsContext(NULL);
     }
   }
 

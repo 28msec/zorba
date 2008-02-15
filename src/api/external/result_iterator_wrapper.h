@@ -3,7 +3,7 @@
 #define XQUERY_RESULT_ITERATOR_API_WRAPPER_31_JAN_2008
 
 #include "runtime/result_iterator.h"
-#include "runtime/base/iterator.h"
+#include "runtime/base/plan_iterator.h"
 
 namespace xqp{
 

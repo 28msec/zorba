@@ -819,6 +819,16 @@ attr_expr::~attr_expr()
 }
 
 
+Item* attr_expr::getQName() const
+{
+  const_expr* qnExpr =  dynamic_cast<const_expr*>(theQNameExpr.getp());
+  if (qnExpr != 0)
+    return qnExpr->get_val().getp();
+
+  return 0;
+}
+
+
 void attr_expr::accept(
   expr_visitor& v)
 {

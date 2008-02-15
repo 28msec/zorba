@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "store/api/temp_seq.h"
-#include "runtime/base/iterator.h"
+#include "runtime/iterator.h"
 
 namespace xqp
 {

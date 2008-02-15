@@ -22,6 +22,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/fncontext/FnContextImpl.h"
+#include "store/api/item_factory.h"
 #include "util/tracer.h"
 #include "functions/function.h"
 #include "util/stl_extra.h"

@@ -2,8 +2,7 @@
 #define XQP_DEFAULT_STORE_NODE_ITERATORS
 
 
-#include "util/Assert.h"
-#include "store/api/item.h"
+#include "runtime/iterator.h"
 #include "store/naive/ordpath.h"
 #include "store/util/handle_set.h"
 

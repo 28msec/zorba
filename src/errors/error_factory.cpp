@@ -11,7 +11,6 @@
 
 #include "system/zorba.h"
 #include "store/api/item.h"
-#include "runtime/base/iterator.h"
 #include "system/zorba_engine.h"
 #include "api/external/xquery.h"
 
@@ -56,12 +55,6 @@ void ZorbaAlertFactory::error_alert(
 
   AlertsManagerImpl_t err_manager = z->getErrorManager();
 
-//	if(!ploc)
-//	{
-//		if(!z->current_iterator.empty())
-//			ploc = &z->current_iterator.top()->loc;
-//	}
-
 	std::string description;
 	description = err_manager->getAlertMessages().error_decode(code);
 	err_manager->getAlertMessages().applyParams(&description, &param1, &param2);
@@ -81,9 +74,6 @@ void ZorbaAlertFactory::error_alert(
 	}
 	error->theDescription = description;
 	time(&error->theTime);
-
-//	if(z->current_xqueryresult)
-//		z->current_xqueryresult->is_error = true;
 
 	xqp_exception		x(error);
 
@@ -116,12 +106,6 @@ void ZorbaAlertFactory::warning_alert(
 		return;
 
   AlertsManagerImpl_t err_manager = z->getErrorManager();
-
-//	if(!ploc)
-//	{
-//		if (!z->current_iterator.empty())
-//			ploc = &z->current_iterator.top()->loc;
-//	}
 
 	std::string description;
 	description = err_manager->getAlertMessages().warning_decode(code);
