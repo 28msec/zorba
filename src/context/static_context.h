@@ -34,6 +34,7 @@
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "util/Assert.h"
+#include "types/typemanager.h"
 
 #include "common/shared_types.h"
 
@@ -72,6 +73,7 @@ protected:
   static xqp_string fn_internal_key (int arity);
 
   hashmap<StatelessExternalFunction_t> m_stateless_ext_functions;
+  std::auto_ptr<TypeManager> typemgr;
 
 public:
 	static void init();
@@ -84,6 +86,11 @@ public:
 
 
 public:
+
+public:
+  TypeManager *get_typemanager () { return typemgr.get (); }
+  void set_typemanager (TypeManager *tm) { typemgr.reset (tm); }
+  
   xqp_string default_function_namespace() const;
 	void set_default_function_namespace(xqp_string);
   xqp_string default_elem_type_ns () const;
