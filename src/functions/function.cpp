@@ -41,7 +41,6 @@ const std::vector<var_expr_t>& user_function::get_params() const
 
 PlanIter_t user_function::operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const
 {
-  get_plan ();
   return new UDFunctionCallIterator(loc, argv, this);
 }
 
