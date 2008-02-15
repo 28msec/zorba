@@ -14,7 +14,7 @@ class AddOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t compute (const yy::location* , Item_t, Item_t );
+  static Item_t compute (const yy::location* , const Item*, const Item* );
 };
 
 /** Operations for Subtract
@@ -23,7 +23,7 @@ class SubtractOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t compute (const yy::location* , Item_t, Item_t );
+  static Item_t compute (const yy::location* , const Item*, const Item* );
 };
 
 /** Operations for Multiply
@@ -32,7 +32,7 @@ class MultiplyOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t compute (const yy::location* , Item_t, Item_t );
+  static Item_t compute (const yy::location* , const Item*, const Item* );
 };
 
 /** Operations for Division
@@ -41,7 +41,7 @@ class DivideOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t compute (const yy::location* , Item_t, Item_t );
+  static Item_t compute (const yy::location* , const Item*, const Item* );
 };
 
 /** Operations for Integer Division
@@ -50,7 +50,7 @@ class IntegerDivideOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t compute (const yy::location* , Item_t, Item_t );
+  static Item_t compute (const yy::location* , const Item*, const Item* );
 };
 
 /** Operations for Mod
@@ -59,7 +59,7 @@ class ModOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t compute (const yy::location* , Item_t, Item_t );
+  static Item_t compute (const yy::location* , const Item*, const Item* );
 };
 
 template < class Operation >
