@@ -5,7 +5,7 @@
 
 #include "util/win32/stdint.h"
 
-// typedef unsigned long unsigned long;
+typedef unsigned long ulong;
 // typedef __int64		int64_t;
 // typedef unsigned __int64	uint64_t;
 // typedef unsigned short		uint16_t;
