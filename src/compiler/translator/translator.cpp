@@ -29,9 +29,7 @@
 #include "system/zorba_engine.h"
 #include "util/stl_extra.h"
 
-#ifndef NDEBUG
 # include "util/properties.h"
-#endif
 
 #include <string>
 #include <stack>
