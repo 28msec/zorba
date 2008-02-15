@@ -256,14 +256,14 @@ namespace xqp
   }
 
   template<>
-  Item_t ModOperation::compute<TypeConstants::XS_FLOAT> 
+  Item_t ModOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
   ( const yy::location* loc, const Item* i0, const Item* i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() % i1->getFloatValue() );
   }
 
   template<>
-  Item_t ModOperation::compute<TypeConstants::XS_DECIMAL> 
+  Item_t ModOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
   ( const yy::location* loc, const Item* i0, const Item* i1 )
   {
     xqp_decimal ld0 = i0->getDecimalValue();
@@ -350,16 +350,16 @@ namespace xqp
     switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *resultType ) )
     {
       case TypeConstants::XS_DOUBLE:
-        res = Operation::template compute<TypeConstants::XS_DOUBLE> ( &aLoc, n0, n1 );
+        res = Operation::template computeSingleType<TypeConstants::XS_DOUBLE> ( &aLoc, n0, n1 );
         break;
       case TypeConstants::XS_FLOAT:
-        res = Operation::template compute<TypeConstants::XS_FLOAT> ( &aLoc,n0, n1 );
+        res = Operation::template computeSingleType<TypeConstants::XS_FLOAT> ( &aLoc,n0, n1 );
         break;
       case TypeConstants::XS_DECIMAL:
-        res = Operation::template compute<TypeConstants::XS_DECIMAL> ( &aLoc,n0, n1 );
+        res = Operation::template computeSingleType<TypeConstants::XS_DECIMAL> ( &aLoc,n0, n1 );
         break;
       case TypeConstants::XS_INTEGER:
-        res = Operation::template compute<TypeConstants::XS_INTEGER> ( &aLoc,n0, n1 );
+        res = Operation::template computeSingleType<TypeConstants::XS_INTEGER> ( &aLoc,n0, n1 );
         break;
       default:
         ZORBA_ASSERT(false);
