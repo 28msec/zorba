@@ -495,7 +495,11 @@ void end_visit(const DirElemConstructor& v, void *visit_state)
   nameExpr = new const_expr(v.get_location(),
                             sctx_p->lookup_elem_qname(v.get_elem_name()->get_qname())); 
 
-  nodestack.push (new elem_expr(v.get_location(), nameExpr, attrExpr, contentExpr, ns_ctx));
+  nodestack.push(new elem_expr(v.get_location(),
+                               nameExpr,
+                               attrExpr,
+                               contentExpr,
+                               ns_ctx));
   pop_elem_scope();
   pop_scope();
 }
@@ -655,14 +659,26 @@ void end_visit(const DirAttributeList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  std::vector<expr_t> attributes;
+  ulong numAttrs = 0;
+  std::vector<rchandle<attr_expr> > attributes;
   while(true)
   {
-    expr_t e_h = pop_nodestack();
-    if (e_h == NULL)
+    expr_t expr = pop_nodestack();
+    if (expr == NULL)
       break;
 
-    attributes.push_back(e_h);
+    attr_expr* attrExpr = dynamic_cast<attr_expr*>(expr.getp());
+
+    for (ulong i = 0; i < numAttrs; i++)
+    {
+      if (attributes[i]->getQName()->equals(attrExpr->getQName()))
+         ZORBA_ERROR_ALERT(ZorbaError::XQST0040, &v.get_location(),
+                          DONT_CONTINUE_EXECUTION, 
+                          "");
+    }
+
+    attributes.push_back(attrExpr);
+    numAttrs++;
   }
 
   if (attributes.size() == 1)
@@ -673,9 +689,9 @@ void end_visit(const DirAttributeList& v, void *visit_state)
   {
     fo_expr* expr_list = create_seq(v.get_location());
 
-    std::vector<expr_t>::const_reverse_iterator it;
+    std::vector<rchandle<attr_expr> >::const_reverse_iterator it;
     for (it = attributes.rbegin();
-         it != (std::vector<expr_t>::const_reverse_iterator)attributes.rend();
+         it != (std::vector<rchandle<attr_expr> >::const_reverse_iterator)attributes.rend();
          ++it)
     {
       expr_list->add(*it);
@@ -722,7 +738,8 @@ void end_visit(const DirAttr& v, void *visit_state)
       prefix = qname->get_localname();
       if (prefix == "xmlns")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), DONT_CONTINUE_EXECUTION, 
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(),
+                          DONT_CONTINUE_EXECUTION, 
                           "Cannot bind predefined prefix \"xmlns\"");
       }
     }
@@ -734,12 +751,14 @@ void end_visit(const DirAttr& v, void *visit_state)
 
       if (prefix == "xml" && uri != "http://www.w3.org/XML/1998/namespace")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), DONT_CONTINUE_EXECUTION, 
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(),
+                          DONT_CONTINUE_EXECUTION, 
                           "Predefined prefix \"xml\" is not bound to uri \"http://www.w3.org/XML/1998/namespace\"");
       }
       if (prefix != "xml" && uri == "http://www.w3.org/XML/1998/namespace")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), DONT_CONTINUE_EXECUTION, 
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(),
+                          DONT_CONTINUE_EXECUTION, 
                           "Uri \"http://www.w3.org/XML/1998/namespace\" can only be bound to prefix \"xml\"");
       }
       sctx_p->bind_ns(prefix, uri, ZorbaError::XQST0071);
@@ -749,7 +768,8 @@ void end_visit(const DirAttr& v, void *visit_state)
     {
       if (prefix == "xml")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(), DONT_CONTINUE_EXECUTION, 
+        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(),
+                          DONT_CONTINUE_EXECUTION, 
                           "Cannot unbind predefined prefix \"xml\"");
       }
 
@@ -762,13 +782,14 @@ void end_visit(const DirAttr& v, void *visit_state)
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQST0022, &v.get_location(), DONT_CONTINUE_EXECUTION, "", "");
+      ZORBA_ERROR_ALERT(ZorbaError::XQST0022, &v.get_location(),
+                        DONT_CONTINUE_EXECUTION, "", "");
     }
   }
   else
   {
     expr_t nameExpr = new const_expr(v.get_location(),
-                              sctx_p->lookup_qname("", qname->get_qname()));
+                                     sctx_p->lookup_qname("", qname->get_qname()));
     expr_t attrExpr = new attr_expr(v.get_location(), nameExpr, valueExpr);
     nodestack.push(attrExpr);
   }
@@ -891,6 +912,15 @@ void end_visit(const CommonContent& v, void *visit_state)
   {
     case cont_entity:
     {
+      expr_t lConstExpr;
+      if (v.get_ref() == "&amp;")
+        lConstExpr = new const_expr(v.get_location(), xqpString("&"));
+      else if (v.get_ref() == "&lt;")
+        lConstExpr = new const_expr(v.get_location(),  xqpString("<"));
+      else if (v.get_ref() == "&gt;")
+        lConstExpr = new const_expr(v.get_location(),  xqpString(">"));
+
+      nodestack.push(lConstExpr);
       break;
     }
     case cont_charref:
