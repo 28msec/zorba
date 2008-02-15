@@ -8,6 +8,8 @@
  *
  */
 
+#include "zorba/config/platform.h"
+
 #include "compiler/translator/translator.h"
 
 #include "zorba/common/common.h"
