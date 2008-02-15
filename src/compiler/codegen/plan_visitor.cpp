@@ -31,9 +31,7 @@
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
-#ifndef NDEBUG
-#  include "zorba/util/properties.h"
-#endif
+#include "zorba/util/properties.h"
 
 #include <iostream>
 #include <vector>
