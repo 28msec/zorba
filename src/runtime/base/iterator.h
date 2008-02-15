@@ -126,11 +126,11 @@ public:
 #if ZORBA_BATCHING_TYPE == 1
       , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
 #endif
-#ifdef NDEBUG
+#ifndef NDEBUG
       , theIsOpened(false)
 #endif
-      
   {}
+
   ~PlanIteratorState() {}
 
   /** 
