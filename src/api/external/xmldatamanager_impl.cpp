@@ -7,6 +7,8 @@
 #include "store/api/collection.h"
 #include "system/zorba.h"
 #include "zorba/store/api/item.h"
+#include "zorba/runtime/iterator.h"
+#include "store/api/store.h"
 
 namespace xqp
 {
