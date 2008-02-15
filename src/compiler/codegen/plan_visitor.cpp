@@ -160,9 +160,6 @@ void end_visit(var_expr& v)
   {
   case var_expr::for_var:
   {
-    ForVarIterator *v_p = new ForVarIterator(v.get_varname()->getLocalName(),
-                                             v.get_loc(),
-                                             (void *) &v);
     vector<var_iter_t> *map = NULL;
     bool bound = fvar_iter_map.get ((uint64_t) &v, map);
     
@@ -170,6 +167,9 @@ void end_visit(var_expr& v)
       itstack.push (new CtxVariableIterator (v.get_loc(), "."));
     else {
       ZORBA_ASSERT (bound);
+      ForVarIterator *v_p = new ForVarIterator(v.get_varname()->getLocalName(),
+                                               v.get_loc(),
+                                               (void *) &v);
       map->push_back (v_p);
       itstack.push(v_p);
     }
@@ -185,10 +185,10 @@ void end_visit(var_expr& v)
         v.get_loc(), ITEM_FACTORY.createInteger (Integer::parseInt((int32_t)1))
       ));
     } else {
+      ZORBA_ASSERT (bound);
       ForVarIterator *v_p = new ForVarIterator(v.get_varname ()->getLocalName(),
                                                v.get_loc(),
                                                (void *) &v);
-      ZORBA_ASSERT (bound);
       map->push_back (v_p);
       itstack.push(v_p);
     }
@@ -204,10 +204,10 @@ void end_visit(var_expr& v)
         v.get_loc(), ITEM_FACTORY.createInteger (Integer::parseInt((int32_t)1))
       ));
     } else {
+      ZORBA_ASSERT (bound);
       LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
                                                v.get_loc(),
                                                (void *) &v);
-      ZORBA_ASSERT (bound);
       map->push_back (v_p);
       itstack.push(v_p);
     }
@@ -215,12 +215,12 @@ void end_visit(var_expr& v)
   break;
   case var_expr::param_var:
   {
+    vector<ref_iter_t> *map = NULL;    
+    ZORBA_ASSERT (param_var_iter_map->get ((uint64_t) &v, map));
     LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
                                              v.get_loc(),
                                              (void *) &v);
-    vector<ref_iter_t> *map = NULL;
     
-    ZORBA_ASSERT (param_var_iter_map->get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   }
