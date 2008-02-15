@@ -16,6 +16,10 @@ public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
 };
+template<TypeConstants::atomic_type_code_t ATC>
+Item_t AddOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return 0;
+}
 
 /** Operations for Subtract
   */
@@ -25,6 +29,10 @@ public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
 };
+template<TypeConstants::atomic_type_code_t ATC>
+Item_t SubtractOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return 0;
+}
 
 /** Operations for Multiply
   */
@@ -34,6 +42,10 @@ public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
 };
+template<TypeConstants::atomic_type_code_t ATC>
+Item_t MultiplyOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return 0;
+}
 
 /** Operations for Division
   */
@@ -43,6 +55,10 @@ public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
 };
+template<TypeConstants::atomic_type_code_t ATC>
+Item_t DivideOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return 0;
+}
 
 /** Operations for Integer Division
   */
@@ -52,6 +68,10 @@ public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
 };
+template<TypeConstants::atomic_type_code_t ATC>
+Item_t IntegerDivideOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return 0;
+}
 
 /** Operations for Mod
   */
@@ -61,6 +81,10 @@ public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
 };
+template<TypeConstants::atomic_type_code_t ATC>
+Item_t ModOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return 0;
+}
 
 template < class Operation >
 class GenericArithIterator 
