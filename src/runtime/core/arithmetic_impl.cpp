@@ -1,3 +1,4 @@
+#include <sstream>
 #include "runtime/core/arithmetic_impl.h"
 #include "errors/error_factory.h"
 #include "system/globalenv.h"
@@ -5,8 +6,34 @@
 #include "types/casting.h"
 #include "util/Assert.h"
 #include "runtime/numerics/NumericsImpl.h"
+#include "errors/error_factory.h"
 
 namespace xqp {
+
+void ArithOperationsCommons::createError(
+  const char* aOp, 
+  const yy::location* aLoc, 
+  TypeConstants::atomic_type_code_t aType0,
+  TypeConstants::atomic_type_code_t aType1
+)
+{
+  AtomicXQType lAType0(aType0, TypeConstants::QUANT_ONE);
+  AtomicXQType lAType1(aType1, TypeConstants::QUANT_ONE);
+  std::stringstream lStream;
+  lStream << "The operation '";
+  lStream << aOp;
+  lStream << "' is not possible with parameters of the type ";
+  lAType0.serialize(lStream);
+  lStream << " and ";
+  lAType1.serialize(lStream);
+  lStream << "!";
+  ZORBA_ERROR_ALERT(
+    ZorbaError::XPTY0004,
+    aLoc,
+    DONT_CONTINUE_EXECUTION,
+    lStream.str()
+  );
+}
 
 /* begin class GenericArithIterator */
 template< class Operations>

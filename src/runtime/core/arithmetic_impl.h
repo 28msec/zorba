@@ -8,6 +8,16 @@
 
 namespace xqp {
 
+class ArithOperationsCommons {
+public:
+  static void createError(
+      const char* aOp, 
+      const yy::location*, 
+      TypeConstants::atomic_type_code_t aType0,
+      TypeConstants::atomic_type_code_t aType1
+  );
+};
+
 /** Operations for Add
   */
 class AddOperation
@@ -15,9 +25,17 @@ class AddOperation
 public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
+
+  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  static Item_t compute (const yy::location*, const Item*, const Item*);
 };
 template<TypeConstants::atomic_type_code_t ATC>
 Item_t AddOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return AddOperation::compute<ATC,ATC>(loc, i0, i1);
+}
+template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+Item_t AddOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  ArithOperationsCommons::createError("add", loc, ATC0, ATC1);
   return 0;
 }
 
@@ -28,9 +46,17 @@ class SubtractOperation
 public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
+
+  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  static Item_t compute (const yy::location*, const Item*, const Item*);
 };
 template<TypeConstants::atomic_type_code_t ATC>
 Item_t SubtractOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return SubtractOperation::compute<ATC,ATC>(loc, i0, i1);
+}
+template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+Item_t SubtractOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  ArithOperationsCommons::createError("sub", loc, ATC0, ATC1);
   return 0;
 }
 
@@ -41,9 +67,17 @@ class MultiplyOperation
 public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
+
+  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  static Item_t compute (const yy::location*, const Item*, const Item*);
 };
 template<TypeConstants::atomic_type_code_t ATC>
 Item_t MultiplyOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return MultiplyOperation::compute<ATC,ATC>(loc, i0, i1);
+}
+template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+Item_t MultiplyOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  ArithOperationsCommons::createError("mul", loc, ATC0, ATC1);
   return 0;
 }
 
@@ -54,9 +88,17 @@ class DivideOperation
 public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
+
+  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  static Item_t compute (const yy::location*, const Item*, const Item*);
 };
 template<TypeConstants::atomic_type_code_t ATC>
 Item_t DivideOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return DivideOperation::compute<ATC,ATC>(loc, i0, i1);
+}
+template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+Item_t DivideOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  ArithOperationsCommons::createError("div", loc, ATC0, ATC1);
   return 0;
 }
 
@@ -67,9 +109,17 @@ class IntegerDivideOperation
 public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
+
+  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  static Item_t compute (const yy::location*, const Item*, const Item*);
 };
 template<TypeConstants::atomic_type_code_t ATC>
 Item_t IntegerDivideOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return IntegerDivideOperation::compute<ATC,ATC>(loc, i0, i1);
+}
+template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+Item_t IntegerDivideOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  ArithOperationsCommons::createError("int-div", loc, ATC0, ATC1);
   return 0;
 }
 
@@ -80,9 +130,17 @@ class ModOperation
 public:
   template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , const Item*, const Item* );
+
+  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+  static Item_t compute (const yy::location*, const Item*, const Item*);
 };
 template<TypeConstants::atomic_type_code_t ATC>
 Item_t ModOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  return ModOperation::compute<ATC,ATC>(loc, i0, i1);
+}
+template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
+Item_t ModOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+  ArithOperationsCommons::createError("mod", loc, ATC0, ATC1);
   return 0;
 }
 
