@@ -25,22 +25,6 @@ typedef StoreConsts::NodeKind NodeKind;
 
 
 /**
- * General iterator interface. Used to program iterators which return a
- * sequence of items, wrapped into a rchandle object for garbage collection
- */
-class Iterator : virtual public rcobject
-{
-public:
-  virtual ~Iterator() {}
-
-  virtual void open() = 0;
-  virtual Item_t next() = 0;
-  virtual void reset() = 0;
-  virtual void close() = 0;
-};
-  
-  
-/**
  *
  *  'item' - top of the XQuery value hierarchy,
  *         union of node types and atomic types
