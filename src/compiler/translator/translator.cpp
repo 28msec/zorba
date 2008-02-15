@@ -687,7 +687,7 @@ void end_visit(const DirAttributeList& v, void *visit_state)
 
   if (attributes.size() == 1)
   {
-    nodestack.push(attributes[0]);
+    nodestack.push(attributes[0].getp());
   }
   else
   {
