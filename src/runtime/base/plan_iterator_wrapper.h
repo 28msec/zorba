@@ -20,11 +20,11 @@ namespace xqp {
   class PlanIteratorWrapper : public Iterator
   {
     private:
-      PlanIter_t   theIterator;
-      PlanState*   theStateBlock;
+      const PlanIterator*   theIterator;
+      PlanState*            theStateBlock;
 
     public:
-      PlanIteratorWrapper(PlanIter_t& iter, PlanState& planState);
+      PlanIteratorWrapper(const PlanIterator* iter, PlanState& planState);
 
       virtual ~PlanIteratorWrapper();
 

@@ -103,7 +103,7 @@ public:
   ~FnDistinctValuesIterator();
 
   Item_t 
-  nextImpl(PlanState& planState);
+  nextImpl(PlanState& planState) const;
  
   virtual void 
   accept(PlanIterVisitor&) const;
@@ -226,7 +226,7 @@ private:
 
 public:
     FnMinMaxIterator(yy::location loc, std::vector<PlanIter_t>& aChildren, Type aType);
-    Item_t nextImpl(PlanState& aPlanState);
+    Item_t nextImpl(PlanState& aPlanState) const;
     virtual void accept(PlanIterVisitor& v) const;
     Type getType() const { return theType; }
 };
@@ -267,7 +267,7 @@ public:
   FnDocIterator(yy::location loc, PlanIter_t& arg);
   virtual ~FnDocIterator();
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };

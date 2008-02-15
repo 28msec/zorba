@@ -18,7 +18,7 @@ namespace xqp {
 // 2.4 fn:data
 //---------------------
 Item_t
-FnDataIterator::nextImpl(PlanState& planState)
+FnDataIterator::nextImpl(PlanState& planState) const
 {
   Item_t item;
   PlanIter_t iter;
@@ -48,7 +48,7 @@ FnDataIterator::nextImpl(PlanState& planState)
 
 // 14.9 fn:root
 //---------------------
-Item_t FnRootIterator::nextImpl(PlanState& planState)
+Item_t FnRootIterator::nextImpl(PlanState& planState) const
 {
   Item_t contextNode;
   Item_t parentNode;
@@ -82,7 +82,7 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
 
 // 14.9 fn:node-name
 //---------------------
-Item_t FnNodeNameIterator::nextImpl(PlanState& planState)
+Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
 {
   Item_t inNode;
 
@@ -108,7 +108,7 @@ Item_t FnNodeNameIterator::nextImpl(PlanState& planState)
 
 // 2.3 fn:string
 //---------------------
-Item_t FnStringIterator::nextImpl(PlanState& planState)
+Item_t FnStringIterator::nextImpl(PlanState& planState) const
 {
   Item_t inVal;
 

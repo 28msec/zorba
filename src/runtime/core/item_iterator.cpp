@@ -20,7 +20,7 @@ namespace xqp
 
 
 /* start class SingletonIterator */
-Item_t SingletonIterator::nextImpl ( PlanState& planState )
+Item_t SingletonIterator::nextImpl ( PlanState& planState ) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -39,7 +39,7 @@ IfThenElseIterator::IfThenElseIterator ( const yy::location& loc,
 {
 }
 
-Item_t IfThenElseIterator::nextImpl ( PlanState& planState )
+Item_t IfThenElseIterator::nextImpl ( PlanState& planState ) const
 {
   Item_t condResult;
 
@@ -76,7 +76,7 @@ void IfThenElseIterator::openImpl ( PlanState& planState, uint32_t& offset ) {
   theElseIter->open( planState , offset);
 }
 
-void IfThenElseIterator::resetImpl ( PlanState& planState )
+void IfThenElseIterator::resetImpl ( PlanState& planState ) const
 {
   StateTraitsImpl<IfThenElseIteratorState>::reset(planState, this->stateOffset);
   
@@ -85,7 +85,7 @@ void IfThenElseIterator::resetImpl ( PlanState& planState )
   theElseIter->reset( planState );
 }
 
-void IfThenElseIterator::closeImpl ( PlanState& planState )
+void IfThenElseIterator::closeImpl ( PlanState& planState ) const
 {
   theCondIter->close( planState );
   theThenIter->close( planState );

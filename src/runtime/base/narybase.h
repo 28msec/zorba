@@ -24,10 +24,10 @@ namespace xqp
 
 		public:
 			NaryBaseIterator ( const yy::location& loc, std::vector<PlanIter_t>& args );
-			virtual ~NaryBaseIterator();
+			virtual ~NaryBaseIterator(){}
 
       void openImpl ( PlanState& planState, uint32_t& offset );
-			void resetImpl ( PlanState& planState );
+			void resetImpl ( PlanState& planState ) const;
 			void closeImpl ( PlanState& planState );
 
       virtual uint32_t getStateSize() const { return StateTraitsImpl<StateType>::getStateSize(); } 
@@ -54,14 +54,9 @@ namespace xqp
 #endif
 	}
 
-	template <class IterType, class StateType>
-	NaryBaseIterator<IterType, StateType>::~NaryBaseIterator()
-	{
-	}
-
   template <class IterType, class StateType>
   void
-  NaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset )
+  NaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_t& offset ) 
   {
     StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
     StateTraitsImpl<StateType>::initState(planState, this->stateOffset);
@@ -77,12 +72,12 @@ namespace xqp
 
 	template <class IterType, class StateType>
 	void
-	NaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState )
+	NaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState ) const
 	{
     StateTraitsImpl<StateType>::reset(planState, this->stateOffset);
 
-    std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
-		std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
+    std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
+		std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
 		for ( ; lIter!= lEnd; ++lIter )
 		{
       ( *lIter )->reset( planState );
@@ -94,8 +89,8 @@ namespace xqp
 	void
 	NaryBaseIterator<IterType, StateType>::closeImpl ( PlanState& planState )
 	{
-    std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
-    std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
+    std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
+    std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
     for ( ; lIter!= lEnd; ++lIter )
     {
       ( *lIter )->close( planState );
@@ -130,7 +125,7 @@ public:\
   { } \
   virtual ~iterName() { } \
   \
-  Item_t nextImpl(PlanState& aPlanState); \
+  Item_t nextImpl(PlanState& aPlanState) const; \
   \
   virtual void accept(PlanIterVisitor& v) const \
   {  \

@@ -37,7 +37,7 @@ public:
   virtual ~EmptyIterator() {}
   
 public:
-  Item_t nextImpl(PlanState& planState) { return NULL; }
+  Item_t nextImpl(PlanState& planState) const { return NULL; }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -60,7 +60,7 @@ public:
   virtual ~SingletonIterator() {}
   
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   const Item_t& getValue() const { return theValue; }
   
@@ -106,9 +106,9 @@ public:
         bool aIsBooleanIter = false);
     
   void openImpl(PlanState& planState, uint32_t& offset);
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void closeImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
+  void resetImpl(PlanState& planState) const;
+  void closeImpl(PlanState& planState) const;
   
   virtual uint32_t getStateSize() const { return sizeof(IfThenElseIteratorState); }
   virtual uint32_t getStateSizeOfSubtree() const;

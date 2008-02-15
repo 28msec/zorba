@@ -195,8 +195,8 @@ public:
   ~FLWORIterator();
 
   void openImpl ( PlanState& planState, uint32_t& offset );
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
+  void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
   virtual uint32_t getStateSize() const;
@@ -208,22 +208,22 @@ public:
   /**
    * Resets a input of a FOR or LET
    */
-  void resetInput(const int& varNb, FlworState* flworState, PlanState& planState);
+  void resetInput(const int& varNb, FlworState* flworState, PlanState& planState) const;
       
   /**
    * Binds the variable to all its places
    */
-  bool bindVariable ( int varNb, FlworState* flworState, PlanState& planState );
+  bool bindVariable ( int varNb, FlworState* flworState, PlanState& planState ) const;
     
   /**
    * Evaluates the where clause. If there doesn't exist a where clause it returns always true
    */
-  bool evalWhereClause( PlanState& planState );
+  bool evalWhereClause( PlanState& planState ) const;
     
   /**
    * Materialized the result after binding the variables (needed for OrderBy)
    */
-  void matResultAndOrder (FlworState* flworState, PlanState& planState);
+  void matResultAndOrder (FlworState* flworState, PlanState& planState) const;
       
  private:
   std::vector<ForLetClause> forLetClauses;

@@ -42,9 +42,9 @@ namespace xqp
        * @param negate optinal parameter which negates the effective boolean value (default == false)
        * @return effective boolean value
        */
-      static Item_t effectiveBooleanValue ( const yy::location& loc, PlanState& planState, PlanIter_t&, bool negate = false);
+      static Item_t effectiveBooleanValue ( const yy::location& loc, PlanState& planState, const PlanIterator* , bool negate = false);
 
-      Item_t nextImpl(PlanState& planState);
+      Item_t nextImpl(PlanState& planState) const;
 
       virtual void accept(PlanIterVisitor&) const;
   };
@@ -63,7 +63,7 @@ namespace xqp
       LogicIterator ( const yy::location& loc, PlanIter_t aChild0, PlanIter_t aChild1, LogicType aLogicType);
       virtual ~LogicIterator();
       
-      Item_t nextImpl(PlanState& planState);
+      Item_t nextImpl(PlanState& planState) const;
       
       virtual void accept(PlanIterVisitor&) const;
   }; /* class LogicIterator */
@@ -87,11 +87,11 @@ namespace xqp
       CompareIterator ( const yy::location& loc, PlanIter_t theChild0, PlanIter_t theChild1, CompareType aCompType );
       virtual ~CompareIterator();
 
-      Item_t nextImpl(PlanState& planState);
+      Item_t nextImpl(PlanState& planState) const;
       
-      bool isValueComparison();
-      bool isGeneralComparison();
-      bool isNodeComparison();
+      bool isValueComparison() const;
+      bool isGeneralComparison() const;
+      bool isNodeComparison() const;
       
     private:
       static std::pair<Item_t, Item_t> valueCasting(Item_t aItem0, Item_t aItem1);

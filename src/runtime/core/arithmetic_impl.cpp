@@ -44,7 +44,7 @@ GenericArithIterator<Operations>::GenericArithIterator
 { }
 
 template < class Operation >
-Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState )
+Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState ) const
 {
   Item_t n0;
   Item_t n1;

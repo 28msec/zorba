@@ -290,7 +290,7 @@ FLWORIterator::~FLWORIterator()
 
 
 
-Item_t FLWORIterator::nextImpl ( PlanState& planState )
+Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
 {
   //Needed variables
   int curVar = 0;
@@ -392,7 +392,7 @@ Item_t FLWORIterator::nextImpl ( PlanState& planState )
 
 void FLWORIterator::matResultAndOrder(
     FlworState* flworState,
-    PlanState& planState)
+    PlanState& planState) const
 {
   ZORBA_ASSERT ( doOrderBy );
 
@@ -429,7 +429,7 @@ void FLWORIterator::matResultAndOrder(
 }
 
 
-bool FLWORIterator::evalWhereClause ( PlanState& planState )
+bool FLWORIterator::evalWhereClause ( PlanState& planState ) const
 {
   if ( whereClause == NULL )
     return true;
@@ -456,7 +456,7 @@ bool FLWORIterator::evalWhereClause ( PlanState& planState )
 void FLWORIterator::resetInput(
     const int& varNb,
     FlworState* flworState,
-    PlanState& planState)
+    PlanState& planState) const
 {
   FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
   lForLetClause.input->reset( planState );
@@ -464,10 +464,10 @@ void FLWORIterator::resetInput(
 }
 
 
-bool FLWORIterator::bindVariable(
+bool FLWORIterator::bindVariable (
     int varNb,
     FlworState* flworState,
-    PlanState& planState )
+    PlanState& planState ) const
 {
   FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
 
@@ -599,7 +599,7 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
   
 }
 
-void FLWORIterator::resetImpl ( PlanState& planState )
+void FLWORIterator::resetImpl ( PlanState& planState ) const
 {
   returnClause->reset(planState);
 
@@ -617,7 +617,7 @@ void FLWORIterator::resetImpl ( PlanState& planState )
     }
   }
 
-  std::vector<FLWORIterator::ForLetClause>::iterator iter;
+  std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
   for (iter = forLetClauses.begin(); iter != forLetClauses.end(); iter++)
   {
     iter->input->reset(planState);

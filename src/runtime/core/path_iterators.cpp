@@ -55,7 +55,7 @@ namespace xqp
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t KindTestIterator::nextImpl(PlanState& planState)
+Item_t KindTestIterator::nextImpl(PlanState& planState) const
 {
   Item_t contextNode;
 
@@ -231,7 +231,7 @@ doctest2:
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t NameTestIterator::nextImpl(PlanState& planState)
+Item_t NameTestIterator::nextImpl(PlanState& planState) const
 {
   Item_t contextNode;
 
@@ -280,7 +280,7 @@ Item_t NameTestIterator::nextImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SelfAxisIterator::nextImpl(PlanState& planState)
+Item_t SelfAxisIterator::nextImpl(PlanState& planState) const
 {
   SelfAxisState* state;
   state = StateTraitsImpl<SelfAxisState>::getState(planState, this->stateOffset);
@@ -322,7 +322,7 @@ AttributeAxisState::reset(PlanState& planState)
     theAttributes->reset();
 }
 
-Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
+Item_t AttributeAxisIterator::nextImpl(PlanState& planState) const
 {
   Item_t attr;
 
@@ -365,7 +365,7 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ParentAxisIterator::nextImpl(PlanState& planState)
+Item_t ParentAxisIterator::nextImpl(PlanState& planState) const
 {
   Item_t parent;
 
@@ -403,7 +403,7 @@ Item_t ParentAxisIterator::nextImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AncestorAxisIterator::nextImpl(PlanState& planState)
+Item_t AncestorAxisIterator::nextImpl(PlanState& planState) const
 {
   AncestorAxisState* state;
   DEFAULT_STACK_INIT(AncestorAxisState, state, planState);
@@ -441,7 +441,7 @@ Item_t AncestorAxisIterator::nextImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState)
+Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState) const
 {
   AncestorSelfAxisState* state;
   DEFAULT_STACK_INIT(AncestorSelfAxisState, state, planState);
@@ -494,7 +494,7 @@ RSiblingAxisState::reset(PlanState& planState)
     theChildren->reset(); 
 }
 
-Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
+Item_t RSiblingAxisIterator::nextImpl(PlanState& planState) const
 {
   Item_t parent;
   Item_t sibling;
@@ -564,7 +564,7 @@ LSiblingAxisState::reset(PlanState& planState)
     theChildren->reset(); 
 }
 
-Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
+Item_t LSiblingAxisIterator::nextImpl(PlanState& planState) const
 {
   Item_t parent;
   Item_t sibling;
@@ -634,7 +634,7 @@ ChildAxisState::reset(PlanState& planState)
     theChildren->reset(); 
 }
 
-Item_t ChildAxisIterator::nextImpl(PlanState& planState)
+Item_t ChildAxisIterator::nextImpl(PlanState& planState) const
 {
   Item_t child;
 
@@ -708,7 +708,7 @@ DescendantAxisState::~DescendantAxisState()
   }
 }
 
-Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
+Item_t DescendantAxisIterator::nextImpl(PlanState& planState) const
 {
   Item_t desc;
   Iterator_t children;
@@ -814,7 +814,7 @@ DescendantSelfAxisState::~DescendantSelfAxisState()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
+Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState) const
 {
   Item_t desc;
 
@@ -917,7 +917,7 @@ PrecedingAxisState::~PrecedingAxisState()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
+Item_t PrecedingAxisIterator::nextImpl(PlanState& planState) const
 {
   Item_t ancestor;
   Item_t desc;
@@ -1034,7 +1034,7 @@ FollowingAxisState::~FollowingAxisState()
   }
 }
 
-Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
+Item_t FollowingAxisIterator::nextImpl(PlanState& planState) const
 {
   Item_t ancestor;
   Item_t following;

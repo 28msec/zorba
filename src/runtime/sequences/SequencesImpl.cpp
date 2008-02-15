@@ -49,7 +49,7 @@ FnConcatIteratorState::reset(PlanState& planState) {
 }
 
 Item_t
-FnConcatIterator::nextImpl(PlanState& planState) {
+FnConcatIterator::nextImpl(PlanState& planState) const {
   Item_t item;
   
   FnConcatIteratorState* state;
@@ -69,7 +69,7 @@ FnConcatIterator::nextImpl(PlanState& planState) {
 //15.1.3 fn:index-of
 // FIXME this iterator has three arguments (i.e. the collaction as #3)
 Item_t 
-FnIndexOfIterator::nextImpl(PlanState& planState) {
+FnIndexOfIterator::nextImpl(PlanState& planState) const {
   Item_t lSequenceItem;
   int8_t lCmpRes;
 
@@ -125,7 +125,7 @@ FnIndexOfIteratorState::reset(PlanState& planState) {
  * otherwise, the function returns false.
  */
 Item_t 
-FnEmptyIterator::nextImpl(PlanState& planState) {
+FnEmptyIterator::nextImpl(PlanState& planState) const {
   Item_t lSequenceItem;
 
   PlanIteratorState* state;
@@ -149,7 +149,7 @@ FnEmptyIterator::nextImpl(PlanState& planState) {
  * otherwise, the function returns false.
  */
 Item_t 
-FnExistsIterator::nextImpl(PlanState& planState) {
+FnExistsIterator::nextImpl(PlanState& planState) const {
   Item_t lSequenceItem;
   
   PlanIteratorState* state;
@@ -183,7 +183,7 @@ FnDistinctValuesIterator::FnDistinctValuesIterator(yy::location loc,
 FnDistinctValuesIterator::~FnDistinctValuesIterator(){}
 
 Item_t 
-FnDistinctValuesIterator::nextImpl(PlanState& planState) {
+FnDistinctValuesIterator::nextImpl(PlanState& planState) const {
   Item_t lItem;
   FnDistinctValuesIteratorState::AlreadySeenConstIter_t lConstIter;
   
@@ -226,7 +226,7 @@ FnDistinctValuesIteratorState::reset(PlanState& planState) {
 
 //15.1.7 fn:insert-before
 Item_t 
-FnInsertBeforeIterator::nextImpl(PlanState& planState) {
+FnInsertBeforeIterator::nextImpl(PlanState& planState) const {
  Item_t lInsertItem;
  Item_t lPositionItem;
  
@@ -288,7 +288,7 @@ FnInsertBeforeIteratorState::reset(PlanState& planState) {
 //15.1.8 fn:remove
 // FIXME this iterator has three arguments (i.e. the collaction as #3)
 Item_t 
-FnRemoveIterator::nextImpl(PlanState& planState) {
+FnRemoveIterator::nextImpl(PlanState& planState) const {
   Item_t lSequenceItem;
   Item_t lPositionItem;
 
@@ -337,7 +337,7 @@ FnRemoveIteratorState::reset(PlanState& planState) {
 
 
 //15.1.9 fn:reverse
-Item_t FnReverseIterator::nextImpl(PlanState& planState)
+Item_t FnReverseIterator::nextImpl(PlanState& planState) const
 {
   Item_t iVal;
 
@@ -371,7 +371,7 @@ void FnReverseIteratorState::reset(PlanState& planState)
 
 //15.1.10 fn:subsequence
 Item_t 
-FnSubsequenceIterator::nextImpl(PlanState& planState) {
+FnSubsequenceIterator::nextImpl(PlanState& planState) const {
   Item_t lSequence;
   Item_t lStartingLoc;
   Item_t lLength;
@@ -452,7 +452,7 @@ FnSubsequenceIteratorState::reset(PlanState& planState)
 
 //15.2.1 fn:zero-or-one
 Item_t 
-FnZeroOrOneIterator::nextImpl(PlanState& planState) {
+FnZeroOrOneIterator::nextImpl(PlanState& planState) const {
   Item_t lFirstSequenceItem;
   Item_t lNextSequenceItem;
 
@@ -478,7 +478,7 @@ FnZeroOrOneIterator::nextImpl(PlanState& planState) {
 
 //15.2.2 fn:one-or-more
 Item_t 
-FnOneOrMoreIterator::nextImpl(PlanState& planState) {
+FnOneOrMoreIterator::nextImpl(PlanState& planState) const {
   Item_t lSequenceItem;
 
   PlanIteratorState* state;
@@ -500,7 +500,7 @@ FnOneOrMoreIterator::nextImpl(PlanState& planState) {
 
 //15.2.3 fn:exactly-one
 Item_t 
-FnExactlyOneIterator::nextImpl(PlanState& planState) {
+FnExactlyOneIterator::nextImpl(PlanState& planState) const {
   Item_t lFirstItem;
   Item_t lNextItem;
 
@@ -542,7 +542,7 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) {
 
 //15.4.1 fn:count
 Item_t 
-FnCountIterator::nextImpl(PlanState& planState) {
+FnCountIterator::nextImpl(PlanState& planState) const {
   Item_t lSequenceItem;
   xqp_integer lCount = Integer::parseInt(0);
 
@@ -561,7 +561,7 @@ FnCountIterator::nextImpl(PlanState& planState) {
 
 //15.4.2 fn:avg
 Item_t 
-FnAvgIterator::nextImpl(PlanState& planState) {
+FnAvgIterator::nextImpl(PlanState& planState) const {
   Item_t lSumItem;
   Item_t lRunningItem;
   xqp_integer lCount = Integer::parseInt(1);
@@ -602,7 +602,7 @@ FnMinMaxIterator::FnMinMaxIterator
 { }
 
 Item_t 
-FnMinMaxIterator::nextImpl(PlanState& planState) {
+FnMinMaxIterator::nextImpl(PlanState& planState) const {
   Item_t lMaxItem;
   Item_t lRunningItem;
   xqtref_t lMaxType;
@@ -672,7 +672,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) {
 
 //15.4.5 fn:sum
 Item_t 
-FnSumIterator::nextImpl(PlanState& planState) {
+FnSumIterator::nextImpl(PlanState& planState) const {
   Item_t lSumItem;
   Item_t lRunningItem;
 
@@ -719,7 +719,7 @@ FnSumIterator::nextImpl(PlanState& planState) {
 
 //15.5.1 op:to
 Item_t 
-OpToIterator::nextImpl(PlanState& planState) {
+OpToIterator::nextImpl(PlanState& planState) const {
   Item_t lItem;
   
   OpToIteratorState* state;
@@ -812,7 +812,7 @@ FnDocIterator::~FnDocIterator()
 }
 
 
-Item_t FnDocIterator::nextImpl(PlanState& planState)
+Item_t FnDocIterator::nextImpl(PlanState& planState) const
 {
   Store& store = Store::getInstance();
 

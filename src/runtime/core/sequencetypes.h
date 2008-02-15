@@ -29,7 +29,7 @@ public:
  
   ~InstanceOfIterator();
   
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -50,7 +50,7 @@ public:
                PlanIter_t& aChild,
                const xqtref_t& aCastType);
   
-  Item_t nextImpl(PlanState& aPlanState);
+  Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -71,7 +71,7 @@ public:
                    PlanIter_t& aChild,
                    const xqtref_t& aCastType);
 
-  Item_t nextImpl(PlanState& aPlanState);
+  Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -87,7 +87,7 @@ private:
 
 public:
   PromoteIterator(const yy::location&, PlanIter_t&, const xqtref_t& aPromoteType);
-  Item_t nextImpl(PlanState& aPlanState);
+  Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -104,7 +104,7 @@ private:
 
 public:
   TreatIterator(const yy::location&, PlanIter_t&, const xqtref_t& aTreatType, enum ZorbaError::ErrorCodes);
-  Item_t nextImpl(PlanState& aPlanState);
+  Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 

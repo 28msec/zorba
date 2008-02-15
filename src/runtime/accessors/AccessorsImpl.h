@@ -73,7 +73,7 @@ class FnStringIterator : public UnaryBaseIterator<FnStringIterator, FnStringIter
 
     virtual ~FnStringIterator() { }
 
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
 
     virtual void accept(PlanIterVisitor& v) const;
 

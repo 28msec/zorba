@@ -41,7 +41,8 @@ namespace xqp {
 
  /* begin class ResolveQNameIterator */
 Item_t
-ResolveQNameIterator::nextImpl(PlanState& planState){
+ResolveQNameIterator::nextImpl(PlanState& planState) const
+{
     Item_t res;
     Item_t itemQName;
     Item_t itemElem;
@@ -122,7 +123,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState){
 
  /* begin class QNameIterator */
 Item_t
-QNameIterator::nextImpl(PlanState& planState)
+QNameIterator::nextImpl(PlanState& planState) const
 {
     Item_t itemURI;
     Item_t itemQName;
@@ -192,7 +193,7 @@ QNameIterator::nextImpl(PlanState& planState)
 
  /* begin class QNameEqualIterator */
 Item_t
-QNameEqualIterator::nextImpl(PlanState& planState)
+QNameEqualIterator::nextImpl(PlanState& planState) const
 {
   Item_t arg1;
   Item_t arg2;
@@ -242,7 +243,8 @@ QNameEqualIterator::nextImpl(PlanState& planState)
 
  /* begin class PrefixFromQNameIterator */
 Item_t
-PrefixFromQNameIterator::nextImpl(PlanState& planState){
+PrefixFromQNameIterator::nextImpl(PlanState& planState) const
+{
     Item_t item;
     xqp_string tmp="";
 
@@ -273,7 +275,8 @@ PrefixFromQNameIterator::nextImpl(PlanState& planState){
 
  /* begin class LocalNameFromQNameIterator */
 Item_t
-LocalNameFromQNameIterator::nextImpl(PlanState& planState){
+LocalNameFromQNameIterator::nextImpl(PlanState& planState) const 
+{
   Item_t item;
 
   PlanIteratorState* state;
@@ -302,7 +305,8 @@ LocalNameFromQNameIterator::nextImpl(PlanState& planState){
 
  /* begin class NamespaceUriFromQNameIterator */
 Item_t
-NamespaceUriFromQNameIterator::nextImpl(PlanState& planState){
+NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const 
+{
     Item_t item;
 
     PlanIteratorState* state;
@@ -337,7 +341,7 @@ NamespaceUriFromQNameIterator::nextImpl(PlanState& planState){
 
  /* begin class NamespaceUriForPrefixlIterator */
 Item_t
-NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState)
+NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemPrefix;
   Item_t itemElem;
@@ -395,7 +399,7 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState)
  *_______________________________________________________________________*/
 
 Item_t
-InScopePrefixesIterator::nextImpl(PlanState& planState)
+InScopePrefixesIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemElem;
 

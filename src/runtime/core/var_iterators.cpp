@@ -21,7 +21,7 @@ ForVarIterator::ForVarIterator(xqpString name, yy::location loc, const void* ori
 }
 
 
-Item_t ForVarIterator::nextImpl(PlanState& planState)
+Item_t ForVarIterator::nextImpl(PlanState& planState) const
 {
   ForVarState* state;
   DEFAULT_STACK_INIT(ForVarState, state, planState);
@@ -55,7 +55,7 @@ LetVarIterator::LetVarIterator(xqpString vn, yy::location loc, const void* origi
 }
 
 
-Item_t LetVarIterator::nextImpl(PlanState& planState)
+Item_t LetVarIterator::nextImpl(PlanState& planState) const
 {
   LetVarState* state;
   state = StateTraitsImpl<LetVarState>::getState(planState, this->stateOffset);

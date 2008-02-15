@@ -20,7 +20,7 @@ using namespace std;
 namespace xqp
 {
 
-Item_t FnDateTimeConstructorIterator::nextImpl(PlanState& planState)
+Item_t FnDateTimeConstructorIterator::nextImpl(PlanState& planState) const
 {
   Item_t item0;
   Item_t item1;
@@ -41,7 +41,7 @@ Item_t FnDateTimeConstructorIterator::nextImpl(PlanState& planState)
 
 
 Item_t 
-OpDurationEqualIterator::nextImpl(PlanState& planState)
+OpDurationEqualIterator::nextImpl(PlanState& planState) const
 {
   Item_t item0;
   Item_t item1;
@@ -104,7 +104,7 @@ OpDurationEqualIterator::nextImpl(PlanState& planState)
 
 /*begin class FnYearsFromDurationIterator */
 Item_t
-FnYearsFromDurationIterator::nextImpl(PlanState& planState)
+FnYearsFromDurationIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
   int32_t lYears;
@@ -136,7 +136,7 @@ FnYearsFromDurationIterator::nextImpl(PlanState& planState)
 
 /*begin class FnMonthsFromDurationIterator */
 Item_t
-FnMonthsFromDurationIterator::nextImpl(PlanState& planState)
+FnMonthsFromDurationIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -166,7 +166,7 @@ FnMonthsFromDurationIterator::nextImpl(PlanState& planState)
 
 /*begin class FnDaysFromDurationIterator */
 Item_t
-FnDaysFromDurationIterator::nextImpl(PlanState& planState)
+FnDaysFromDurationIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -196,7 +196,7 @@ FnDaysFromDurationIterator::nextImpl(PlanState& planState)
 
 /*begin class FnHoursFromDurationIterator */
 Item_t
-FnHoursFromDurationIterator::nextImpl(PlanState& planState)
+FnHoursFromDurationIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -226,7 +226,7 @@ FnHoursFromDurationIterator::nextImpl(PlanState& planState)
 
 /*begin class FnMinutesFromDurationIterator */
 Item_t
-FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
+FnMinutesFromDurationIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -256,7 +256,7 @@ FnMinutesFromDurationIterator::nextImpl(PlanState& planState)
 
 /*begin class FnSecondsFromDurationIterator */
 Item_t
-FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
+FnSecondsFromDurationIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
   xqp_decimal lDecimal;
@@ -287,7 +287,7 @@ FnSecondsFromDurationIterator::nextImpl(PlanState& planState)
 
 /*begin class FnYearFromDatetimeIterator */
 Item_t
-FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
+FnYearFromDatetimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -316,7 +316,7 @@ FnYearFromDatetimeIterator::nextImpl(PlanState& planState)
 
 /*begin class FnMonthFromDatetimeIterator */
 Item_t
-FnMonthFromDatetimeIterator::nextImpl(PlanState& planState)
+FnMonthFromDatetimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -346,7 +346,7 @@ FnMonthFromDatetimeIterator::nextImpl(PlanState& planState)
 
 /*begin class FnDayFromDatetimeIterator */
 Item_t
-FnDayFromDatetimeIterator::nextImpl(PlanState& planState)
+FnDayFromDatetimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -376,7 +376,7 @@ FnDayFromDatetimeIterator::nextImpl(PlanState& planState)
 
 /*begin class FnHoursFromDatetimeIterator */
 Item_t
-FnHoursFromDatetimeIterator::nextImpl(PlanState& planState)
+FnHoursFromDatetimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -406,7 +406,7 @@ FnHoursFromDatetimeIterator::nextImpl(PlanState& planState)
 
 /*begin class FnMinutesFromDatetimeIterator */
 Item_t
-FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
+FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -436,7 +436,7 @@ FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState)
 
 /*begin class FnSecondsFromDatetimeIterator */
 Item_t
-FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
+FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
   xqp_decimal lDecimal;
@@ -467,7 +467,7 @@ FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState)
 
 /*begin class FnTimezoneFromDatetimeIterator */
 Item_t
-FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState)
+FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
   xqp_duration tmpDuration;
@@ -498,7 +498,7 @@ FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState)
 
 /*begin class FnYearFromDateIterator */
 Item_t
-FnYearFromDateIterator::nextImpl(PlanState& planState)
+FnYearFromDateIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -528,7 +528,7 @@ FnYearFromDateIterator::nextImpl(PlanState& planState)
 
 /*begin class FnMonthFromDateIterator */
 Item_t
-FnMonthFromDateIterator::nextImpl(PlanState& planState)
+FnMonthFromDateIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -558,7 +558,7 @@ FnMonthFromDateIterator::nextImpl(PlanState& planState)
 
 /*begin class FnDayFromDateIterator */
 Item_t
-FnDayFromDateIterator::nextImpl(PlanState& planState)
+FnDayFromDateIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -588,7 +588,7 @@ FnDayFromDateIterator::nextImpl(PlanState& planState)
 
 /*begin class FnTimezoneFromDateIterator */
 Item_t
-FnTimezoneFromDateIterator::nextImpl(PlanState& planState)
+FnTimezoneFromDateIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
   xqp_duration tmpDuration;
@@ -619,7 +619,7 @@ FnTimezoneFromDateIterator::nextImpl(PlanState& planState)
 
 /*begin class FnHoursFromTimeIterator */
 Item_t
-FnHoursFromTimeIterator::nextImpl(PlanState& planState)
+FnHoursFromTimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -649,7 +649,7 @@ FnHoursFromTimeIterator::nextImpl(PlanState& planState)
 
 /*begin class FnMinutesFromTimeIterator */
 Item_t
-FnMinutesFromTimeIterator::nextImpl(PlanState& planState)
+FnMinutesFromTimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
 
@@ -680,7 +680,7 @@ FnMinutesFromTimeIterator::nextImpl(PlanState& planState)
 
 /*begin class FnSecondsFromTimeIterator */
 Item_t
-FnSecondsFromTimeIterator::nextImpl(PlanState& planState)
+FnSecondsFromTimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
   xqp_decimal lDecimal;
@@ -713,7 +713,7 @@ FnSecondsFromTimeIterator::nextImpl(PlanState& planState)
 
 /*begin class FnTimezoneFromTimeIterator */
 Item_t
-FnTimezoneFromTimeIterator::nextImpl(PlanState& planState)
+FnTimezoneFromTimeIterator::nextImpl(PlanState& planState) const
 {
   Item_t itemArg;
   xqp_duration tmpDuration;
@@ -856,7 +856,7 @@ ArithmeticIteratorDurationDateTime<Operations>::ArithmeticIteratorDurationDateTi
   { }
 
   template< class Operations>
-  Item_t ArithmeticIteratorDurationDateTime<Operations>::nextImpl ( PlanState& planState )
+  Item_t ArithmeticIteratorDurationDateTime<Operations>::nextImpl ( PlanState& planState ) const
   {
     Item_t n0;
     Item_t n1;

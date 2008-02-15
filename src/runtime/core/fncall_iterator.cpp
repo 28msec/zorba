@@ -8,7 +8,7 @@
 
 namespace xqp {
 
-Item_t UDFunctionCallIterator::nextImpl(PlanState& planState)
+Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
 {
   Item_t lSequenceItem;
   UDFunctionCallIteratorState *state;
@@ -106,7 +106,7 @@ void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& 
   }
 }
 
-Item_t StatelessExtFunctionCallIterator::nextImpl(PlanState& planState)
+Item_t StatelessExtFunctionCallIterator::nextImpl(PlanState& planState) const
 {
   StatelessExtFunctionCallIteratorState *state;
   Item_t lSequenceItem;

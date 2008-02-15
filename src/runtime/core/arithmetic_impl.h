@@ -150,7 +150,7 @@ class GenericArithIterator
     GenericArithIterator ( const yy::location&, PlanIter_t&, PlanIter_t& );
     virtual ~GenericArithIterator(){}
 
-    Item_t nextImpl(PlanState&);
+    Item_t nextImpl(PlanState&) const;
     
     virtual void accept(PlanIterVisitor&) const;
 

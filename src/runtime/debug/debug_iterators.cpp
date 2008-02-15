@@ -22,7 +22,7 @@ FnTraceIteratorState::reset(PlanState& planState)
 }
 
 Item_t 
-FnTraceIterator::nextImpl(PlanState& planState)
+FnTraceIterator::nextImpl(PlanState& planState) const
 {
   Item_t lSequenceItem;
 

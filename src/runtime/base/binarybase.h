@@ -27,7 +27,7 @@ namespace xqp
 			virtual ~BinaryBaseIterator();
 
       void openImpl( PlanState& planState, uint32_t& offset);
-			void resetImpl ( PlanState& planState );
+			void resetImpl ( PlanState& planState ) const;
 			void closeImpl ( PlanState& planState );
 
       virtual uint32_t getStateSize() const { return StateTraitsImpl<StateType>::getStateSize(); }
@@ -70,7 +70,7 @@ namespace xqp
 
 	template <class IterType, class StateType>
 	void
-	BinaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState )
+	BinaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState ) const
 	{
     StateTraitsImpl<StateType>::reset(planState, this->stateOffset);
 

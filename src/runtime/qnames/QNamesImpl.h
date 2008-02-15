@@ -33,7 +33,7 @@ class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator, Pla
 
     ~ResolveQNameIterator() {};
   public:
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -53,7 +53,7 @@ class QNameIterator : public BinaryBaseIterator<QNameIterator, PlanIteratorState
 
     ~QNameIterator() {};
   public:
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -73,7 +73,7 @@ class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator, PlanIte
 
     ~QNameEqualIterator() {};
   public:
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -92,7 +92,7 @@ class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator
   
     ~PrefixFromQNameIterator(){};
   public:
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
     
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -111,7 +111,7 @@ class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIt
   
     ~LocalNameFromQNameIterator(){};
   public:
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
     
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -130,7 +130,7 @@ class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQ
   
     ~NamespaceUriFromQNameIterator(){};
   public:
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
     
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -150,7 +150,7 @@ class NamespaceUriForPrefixlIterator : public BinaryBaseIterator<NamespaceUriFor
 
     ~NamespaceUriForPrefixlIterator() {};
   public:
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
   
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -185,7 +185,7 @@ public:
   ~InScopePrefixesIterator() {};
 
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };

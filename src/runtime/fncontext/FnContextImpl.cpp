@@ -32,7 +32,7 @@ CtxVariableIterator::~CtxVariableIterator()
 }
 
 
-Item_t CtxVariableIterator::nextImpl(PlanState& planState)
+Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
 {
   Item_t item;
   Iterator_t iter;
@@ -73,7 +73,7 @@ Item_t CtxVariableIterator::nextImpl(PlanState& planState)
   STACK_END();
 }
 
-void CtxVariableIterator::resetImpl(PlanState& planState)
+void CtxVariableIterator::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<PlanIteratorState>::reset(planState, this->stateOffset);
 

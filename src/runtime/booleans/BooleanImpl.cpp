@@ -30,13 +30,13 @@ namespace xqp
   FnBooleanIterator::~FnBooleanIterator() {}
 
   Item_t
-  FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, PlanState& planState, PlanIter_t& iter, bool negate )
+  FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, PlanState& planState, const PlanIterator* iter, bool negate )
   {
     Item_t item;
     xqtref_t type;
     Item_t result;
 
-    item = consumeNext(iter.getp(), planState);
+    item = consumeNext(iter, planState);
 
     if ( item == NULL )
     {
@@ -57,7 +57,7 @@ namespace xqp
       type = GENV_TYPESYSTEM.create_type(lType, TypeConstants::QUANT_ONE);
       bool res = GENV_TYPESYSTEM.is_numeric ( *type );
       if (
-          ( consumeNext(iter.getp(), planState) == NULL )
+          ( consumeNext(iter, planState) == NULL )
           &&
           ( GENV_TYPESYSTEM.is_equal(*type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
              || GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE )
@@ -84,7 +84,7 @@ namespace xqp
   }
 
   Item_t
-  FnBooleanIterator::nextImpl(PlanState& planState)
+  FnBooleanIterator::nextImpl(PlanState& planState) const
   { 
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
@@ -104,7 +104,7 @@ namespace xqp
   LogicIterator::~LogicIterator(){}
       
   Item_t 
-  LogicIterator::nextImpl(PlanState& planState)
+  LogicIterator::nextImpl(PlanState& planState) const
   {
     bool bRes = false;
     
@@ -138,7 +138,7 @@ namespace xqp
   { }
   
   Item_t
-  CompareIterator::nextImpl ( PlanState& planState )
+  CompareIterator::nextImpl ( PlanState& planState ) const
   {
     Item_t lItem0;
     Item_t lItem1;
@@ -202,7 +202,7 @@ namespace xqp
   }
   
   bool 
-  CompareIterator::isValueComparison()
+  CompareIterator::isValueComparison() const
   {
     bool retVal = false;
     switch(theCompType)
@@ -223,7 +223,7 @@ namespace xqp
   }
   
   bool 
-  CompareIterator::isGeneralComparison()
+  CompareIterator::isGeneralComparison() const
   {
     bool retVal = false;
     switch(theCompType)
@@ -244,7 +244,7 @@ namespace xqp
   }
   
   bool
-  CompareIterator::isNodeComparison()
+  CompareIterator::isNodeComparison() const
   {
     bool retVal = false;
     switch(theCompType)
@@ -605,7 +605,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
   /* end class ComparisonIterator */
 
   Item_t
-  OpIsSameNodeIterator::nextImpl(PlanState& aPlanState)
+  OpIsSameNodeIterator::nextImpl(PlanState& aPlanState) const
   { 
     bool lBool;
     Item_t lItem0, lItem1;
@@ -632,7 +632,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
   }
 
   Item_t
-  OpNodeBeforeIterator::nextImpl(PlanState& aPlanState)
+  OpNodeBeforeIterator::nextImpl(PlanState& aPlanState) const
   { 
     bool lBool;
     Item_t lItem0, lItem1;
@@ -659,7 +659,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
   }
 
   Item_t
-  OpNodeAfterIterator::nextImpl(PlanState& aPlanState)
+  OpNodeAfterIterator::nextImpl(PlanState& aPlanState) const
   { 
     bool lBool;
     Item_t lItem0, lItem1;

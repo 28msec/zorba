@@ -29,7 +29,7 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
 
     virtual ~UDFunctionCallIterator() { }
 
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
 
     virtual void accept(PlanIterVisitor& v) const;
 
@@ -60,7 +60,7 @@ class StatelessExtFunctionCallIterator
 
     void openImpl(PlanState& planState, uint32_t& offset);
 
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
 
     virtual void accept(PlanIterVisitor& v) const;
 

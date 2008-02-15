@@ -44,7 +44,7 @@ public:
 
     ~CodepointsToStringIterator(){};
 
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
     
     virtual void accept(PlanIterVisitor&) const;
 };
@@ -83,7 +83,7 @@ public:
 
   ~StringToCodepointsIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -106,7 +106,7 @@ public:
 
   ~CompareStrIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -124,7 +124,7 @@ public:
 
   ~CodepointEqualIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -147,7 +147,7 @@ public:
 
   ~ConcatStrIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -166,7 +166,7 @@ public:
 
   ~StringJoinIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -184,7 +184,7 @@ public:
 
   ~SubstringIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -202,7 +202,7 @@ public:
 
   ~StringLengthIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -220,7 +220,7 @@ public:
 
   ~NormalizeSpaceIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -238,7 +238,7 @@ public:
 
   ~NormalizeUnicodeIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -256,7 +256,7 @@ public:
 
   ~UpperCaseIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -274,7 +274,7 @@ public:
 
   ~LowerCaseIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -292,7 +292,7 @@ public:
 
   ~TranslateIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -310,7 +310,7 @@ public:
 
   ~EncodeForUriIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -328,7 +328,7 @@ public:
 
   ~IriToUriIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -346,7 +346,7 @@ public:
 
   ~EscapeHtmlUriIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -369,7 +369,7 @@ public:
 
   ~ContainsIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -387,7 +387,7 @@ public:
 
   ~StartsWithIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -405,7 +405,7 @@ public:
 
   ~EndsWithIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -423,7 +423,7 @@ public:
 
   ~SubstringBeforeIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -441,7 +441,7 @@ public:
 
   ~SubstringAfterIterator() {};
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };

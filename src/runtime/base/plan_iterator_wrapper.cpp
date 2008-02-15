@@ -6,7 +6,7 @@ namespace xqp {
   /*******************************************************************************
     class PlanIteratorWrapper
    ********************************************************************************/
-  PlanIteratorWrapper::PlanIteratorWrapper(PlanIter_t& iter, PlanState& state) 
+  PlanIteratorWrapper::PlanIteratorWrapper(const PlanIterator* iter, PlanState& state) 
     : theIterator(iter),
     theStateBlock(&state)
   {
@@ -25,7 +25,7 @@ namespace xqp {
   Item_t
   PlanIteratorWrapper::next()
   {
-    return PlanIterator::consumeNext(theIterator.getp(), *theStateBlock);
+    return PlanIterator::consumeNext(theIterator, *theStateBlock);
   }
 
   void

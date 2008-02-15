@@ -27,7 +27,7 @@ public:
   virtual ~UnaryBaseIterator();
 
   void openImpl ( PlanState& planState, uint32_t& offset );
-  void resetImpl ( PlanState& planState );
+  void resetImpl ( PlanState& planState ) const;
   void closeImpl ( PlanState& planState );
 
   virtual uint32_t getStateSize() const { return StateTraitsImpl<StateType>::getStateSize(); }
@@ -65,7 +65,7 @@ UnaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_
 
 template <class IterType, class StateType>
 void
-UnaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState )
+UnaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState ) const
 {
   StateTraitsImpl<StateType>::reset(planState, this->stateOffset);
     

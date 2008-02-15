@@ -40,7 +40,7 @@ public:
     : UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
 
   void openImpl(PlanState& planState, uint32_t& offset);
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
 };
@@ -62,7 +62,7 @@ public:
     : UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(loc, aContent)
   {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
 };
@@ -124,8 +124,8 @@ public:
       bool                isRoot);
   
   void openImpl(PlanState& planState, uint32_t& offset);
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
+  void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
   uint32_t getStateSize() const { return sizeof(ElementIteratorState); }
@@ -177,7 +177,7 @@ public:
         PlanIter_t& aValueIter,
         bool isRoot);
     
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -202,7 +202,7 @@ public:
         PlanIter_t& aComment,
         bool isRoot);
   
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -225,7 +225,7 @@ public:
         PlanIter_t& aContent,
         bool isRoot);
   
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -247,7 +247,7 @@ protected:
 public:
   TextIterator( const yy::location& loc, PlanIter_t& aChild, bool isRoot);
   
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -278,7 +278,7 @@ public:
         const yy::location& loc,
         PlanIter_t& childIter);
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 
@@ -316,7 +316,7 @@ public:
   DocFilterIterator( const yy::location& loc, PlanIter_t& aChild)
     : UnaryBaseIterator<DocFilterIterator, DocFilterIteratorState>(loc, aChild) {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };

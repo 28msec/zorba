@@ -39,7 +39,7 @@ namespace xqp
       NumArithIterator ( const yy::location&, PlanIter_t&, PlanIter_t& );
       virtual ~NumArithIterator(){}
 
-      Item_t nextImpl(PlanState&);
+      Item_t nextImpl(PlanState&) const;
       
       virtual void accept(PlanIterVisitor&) const;
 
@@ -115,7 +115,7 @@ namespace xqp
       virtual ~OpNumericUnaryIterator();
 
     public: // iterator interface
-      Item_t nextImpl(PlanState& planState);
+      Item_t nextImpl(PlanState& planState) const;
       
       virtual void accept(PlanIterVisitor&) const;
   };
@@ -159,7 +159,7 @@ namespace xqp
       FnRoundHalfToEvenIterator(const yy::location&, PlanIter_t&, PlanIter_t&);
       virtual ~FnRoundHalfToEvenIterator();
 
-      Item_t nextImpl(PlanState&);
+      Item_t nextImpl(PlanState&) const;
       virtual void accept(PlanIterVisitor&) const;
   };
 
@@ -184,7 +184,7 @@ namespace xqp
     ZorNumGen ( const yy::location& loc);
     ~ZorNumGen();
 
-    Item_t nextImpl(PlanState& planState);
+    Item_t nextImpl(PlanState& planState) const;
 
     virtual void accept(PlanIterVisitor&) const;
   };

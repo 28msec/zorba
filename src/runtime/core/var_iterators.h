@@ -36,7 +36,7 @@ public:
 
   ~ForVarIterator() { }
   
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
   
@@ -86,7 +86,7 @@ public:
 
   ~LetVarIterator() {}
   
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
 

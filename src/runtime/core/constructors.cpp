@@ -35,7 +35,7 @@ DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
   theChild->open(planState, offset);
 }
 
-Item_t DocumentIterator::nextImpl(PlanState& planState)
+Item_t DocumentIterator::nextImpl(PlanState& planState) const
 {
   // Note: baseUri and docUri have to be rchandles because if createDocumentNode
   // throws and exception, we don't know if the exception was thrown before or
@@ -98,7 +98,7 @@ DocumentIteratorState::~DocumentIteratorState()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t DocumentContentIterator::nextImpl(PlanState& planState)
+Item_t DocumentContentIterator::nextImpl(PlanState& planState) const
 {
   Item_t lItem;
   
@@ -171,7 +171,7 @@ ElementIterator::ElementIterator (
 }
 
 
-Item_t ElementIterator::nextImpl(PlanState& planState)
+Item_t ElementIterator::nextImpl(PlanState& planState) const
 {
   std::auto_ptr<Iterator> cwrapper;
   std::auto_ptr<Iterator> awrapper;
@@ -235,7 +235,7 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
   
 }
 
-void ElementIterator::resetImpl(PlanState& planState)
+void ElementIterator::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<ElementIteratorState>::reset(planState, this->stateOffset);
 
@@ -294,7 +294,7 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ElementContentIterator::nextImpl(PlanState& planState)
+Item_t ElementContentIterator::nextImpl(PlanState& planState) const
 {
   ItemFactory* factory = Zorba::getItemFactory();
   Item_t item;
@@ -367,7 +367,7 @@ AttributeIterator::AttributeIterator(
 }
 
 
-Item_t AttributeIterator::nextImpl(PlanState& planState)
+Item_t AttributeIterator::nextImpl(PlanState& planState) const
 {
   Item_t node;
   Iterator_t nameWrapper;
@@ -404,7 +404,7 @@ TextIterator::TextIterator(
 }
 
 
-Item_t TextIterator::nextImpl(PlanState& planState)
+Item_t TextIterator::nextImpl(PlanState& planState) const
 {
   Item_t node;
   Iterator_t valueWrapper;
@@ -439,7 +439,7 @@ PiIterator::PiIterator (
 }
 
 
-Item_t PiIterator::nextImpl(PlanState& planState)
+Item_t PiIterator::nextImpl(PlanState& planState) const
 {
   Item_t lItem;
   xqp_string target, content;
@@ -501,7 +501,7 @@ CommentIterator::CommentIterator(
 }
 
 
-Item_t CommentIterator::nextImpl(PlanState& planState)
+Item_t CommentIterator::nextImpl(PlanState& planState) const
 {
   Item_t lItem;
   xqp_string content = "";
@@ -582,7 +582,7 @@ EnclosedIterator::EnclosedIterator (
 }
 
 
-Item_t EnclosedIterator::nextImpl(PlanState& planState)
+Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 {
   Item_t lItem;
   ItemFactory* factory = Zorba::getItemFactory();
@@ -690,7 +690,7 @@ void DocFilterIteratorState::reset(PlanState& planState )
   theCurItem = 0;
 }
 
-Item_t DocFilterIterator::nextImpl(PlanState& planState)
+Item_t DocFilterIterator::nextImpl(PlanState& planState) const
 {
   Item_t lItem;
   

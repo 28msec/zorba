@@ -73,7 +73,7 @@ public:
   bool nilledAllowed() const { return theNilledAllowed; }
 
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -106,7 +106,7 @@ public:
   const Item_t& getQName() const { return theQName; }
 
 public:
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -177,7 +177,7 @@ public:
 
   ~SelfAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   // Manually instantiated here, as MSVC does not do it
   // void closeImpl(PlanState& planState); 
@@ -211,7 +211,7 @@ public:
 
   ~AttributeAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   uint32_t getStateSize() const { return sizeof(AttributeAxisState); }
 
@@ -238,7 +238,7 @@ public:
 
   ~ParentAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
  
   // Manually instantiated here, as MSVC does not do it
   // void closeImpl(PlanState& planState); 
@@ -268,7 +268,7 @@ public:
   ~AncestorAxisIterator() {}
 
   //void openImpl(PlanState& planState, uint32_t& offset);
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   //void closeImpl(PlanState& planState);
 
   virtual void accept(PlanIterVisitor&) const;
@@ -297,7 +297,7 @@ public:
 
   ~AncestorSelfAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -324,7 +324,7 @@ public:
 
   ~RSiblingAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -354,7 +354,7 @@ public:
 
   ~LSiblingAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -384,7 +384,7 @@ public:
 
   ~ChildAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -415,7 +415,7 @@ public:
 
   ~DescendantAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -445,7 +445,7 @@ public:
 
   ~DescendantSelfAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -475,7 +475,7 @@ public:
 
   ~PrecedingAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -505,7 +505,7 @@ public:
 
   ~FollowingAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };

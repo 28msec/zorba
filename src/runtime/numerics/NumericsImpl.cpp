@@ -300,7 +300,7 @@ namespace xqp
   { }
 
   template < class Operation >
-  Item_t NumArithIterator<Operation>::nextImpl ( PlanState& planState )
+  Item_t NumArithIterator<Operation>::nextImpl ( PlanState& planState ) const
   {
     Item_t n0;
     Item_t n1;
@@ -562,7 +562,7 @@ namespace xqp
   OpNumericUnaryIterator::~OpNumericUnaryIterator()
   { }
 
-  Item_t OpNumericUnaryIterator::nextImpl ( PlanState& planState )
+  Item_t OpNumericUnaryIterator::nextImpl ( PlanState& planState ) const
   {
     Item_t item;
     Item_t res;
@@ -630,7 +630,7 @@ namespace xqp
 
 // 6.4.1 fn:abs
 
-  Item_t FnAbsIterator::nextImpl ( PlanState& planState )
+  Item_t FnAbsIterator::nextImpl ( PlanState& planState ) const
   {
     Item_t item;
     Item_t res;
@@ -701,7 +701,7 @@ namespace xqp
 
 // 6.4.2 fn:ceiling
 
-  Item_t FnCeilingIterator::nextImpl(PlanState& planState)
+  Item_t FnCeilingIterator::nextImpl(PlanState& planState) const
   {
     Item_t item;
     Item_t res;
@@ -758,7 +758,7 @@ namespace xqp
   
 // 6.4.3 fn:floor
 
-  Item_t FnFloorIterator::nextImpl(PlanState& planState)
+  Item_t FnFloorIterator::nextImpl(PlanState& planState) const
   {
     Item_t item;
     Item_t res;
@@ -815,7 +815,7 @@ namespace xqp
   
 // 6.4.4 fn:round
 
-  Item_t FnRoundIterator::nextImpl(PlanState& planState)
+  Item_t FnRoundIterator::nextImpl(PlanState& planState) const
   {
     Item_t item;
     Item_t res;
@@ -883,7 +883,7 @@ namespace xqp
   FnRoundHalfToEvenIterator::~ FnRoundHalfToEvenIterator()
   {}
 
-  Item_t FnRoundHalfToEvenIterator::nextImpl(PlanState& planState)
+  Item_t FnRoundHalfToEvenIterator::nextImpl(PlanState& planState) const
   {
     Item_t item;
     Item_t itemPrec;
@@ -953,7 +953,7 @@ namespace xqp
   ZorNumGen::~ZorNumGen() {}
 
   Item_t
-  ZorNumGen::nextImpl ( PlanState& planState )
+  ZorNumGen::nextImpl ( PlanState& planState ) const
   {
     ZorNumGenState* state;
     DEFAULT_STACK_INIT ( ZorNumGenState, state, planState );

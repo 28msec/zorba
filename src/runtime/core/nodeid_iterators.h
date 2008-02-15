@@ -39,8 +39,8 @@ public:
   ~NodeDistinctIterator() { }
 
   void openImpl(PlanState& planState, uint32_t& offset);
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
+  void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
   virtual void accept(PlanIterVisitor&) const;
@@ -83,8 +83,8 @@ public:
   ~NodeSortIterator() { }
 
   void openImpl(PlanState& planState, uint32_t& offset);
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState) const;
+  void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
 

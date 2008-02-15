@@ -270,9 +270,9 @@ public:
    * @param stateBLock
    */
 #if ZORBA_BATCHING_TYPE == 1
-  virtual void produceNext(PlanState& planState) = 0;
+  virtual void produceNext(PlanState& planState) const = 0;
 #else
-  virtual Item_t produceNext(PlanState& planState) = 0;
+  virtual Item_t produceNext(PlanState& planState) const = 0;
 #endif
 
 
@@ -282,7 +282,7 @@ public:
    *
    * @param planState
    */
-  virtual void reset(PlanState& planState) = 0;
+  virtual void reset(PlanState& planState) const = 0;
 
   /** 
    * Finish the execution of the iterator.
@@ -307,7 +307,7 @@ public:
 
 #if ZORBA_BATCHING_TYPE == 1  
   static
-  Item_t consumeNext(PlanIterator* subIter, PlanState& planState)
+  Item_t consumeNext(const PlanIterator* subIter, PlanState& planState)
   {
     // use the producer's (subIter) planstate to access it's batch
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, subIter->getStateOffset());
@@ -320,7 +320,7 @@ public:
   }
 #else
   static
-  Item_t consumeNext(PlanIterator* subIter, PlanState& planState)
+  Item_t consumeNext(const PlanIterator* subIter, PlanState& planState)
   {
     return subIter->produceNext(planState);
   }
@@ -347,7 +347,7 @@ public:
 protected:
 
 #if ZORBA_BATCHING_TYPE == 1  
-  void produceNext(PlanState& planState) 
+  void produceNext(PlanState& planState) const 
   {
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
 #ifndef NDEBUG
@@ -356,18 +356,18 @@ protected:
     uint32_t i = 0;
     do
     {
-      lState->theBatch[i] = static_cast<IterType*>(this)->nextImpl(planState);
+      lState->theBatch[i] = static_cast<const IterType*>(this)->nextImpl(planState);
     } while ( lState->theBatch[i] != NULL && ++i < ZORBA_BATCHING_BATCHSIZE ); 
     // note the pre-increment in the second operand above
   }
 #else
-  Item_t produceNext(PlanState& planState) 
+  Item_t produceNext(PlanState& planState) const
   {
 #ifndef NDEBUG
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
     assert(lState->theIsOpened); // open must hve been called before
 #endif
-    return static_cast<IterType*>(this)->nextImpl(planState);
+    return static_cast<const IterType*>(this)->nextImpl(planState);
   }
 #endif
 
@@ -382,13 +382,13 @@ protected:
 #endif
   }
 
-  void reset(PlanState& planState)
+  void reset(PlanState& planState) const
   {
 #ifndef NDEBUG
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
     assert( lState->theIsOpened ); // must be open
 #endif
-    static_cast<IterType*>(this)->resetImpl(planState);
+    static_cast<const IterType*>(this)->resetImpl(planState);
   }
 
   void close(PlanState& planState) throw()
@@ -403,10 +403,10 @@ protected:
 
 
 public:
-  inline Item_t nextImpl(PlanState& planState);
+  inline Item_t nextImpl(PlanState& planState) const;
 
-  inline void openImpl(PlanState& planState, uint32_t& offset);
-  inline void resetImpl(PlanState& planState);
+  inline void openImpl(PlanState& planState, uint32_t& offset) const;
+  inline void resetImpl(PlanState& planState) const;
   inline void closeImpl(PlanState& planState);
 };
 

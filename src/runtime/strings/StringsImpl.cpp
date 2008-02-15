@@ -35,7 +35,7 @@ namespace xqp {
  *_______________________________________________________________________*/
 /* begin class CodepointsToStringIterator */
 Item_t
-CodepointsToStringIterator::nextImpl(PlanState& planState){
+CodepointsToStringIterator::nextImpl(PlanState& planState) const {
   Item_t item;
   Item_t resItem;
   xqp_string resStr;
@@ -80,7 +80,7 @@ CodepointsToStringIterator::nextImpl(PlanState& planState){
  *_______________________________________________________________________*/
 /* begin class StringToCodepointsIterator */
 Item_t
-StringToCodepointsIterator::nextImpl(PlanState& planState){
+StringToCodepointsIterator::nextImpl(PlanState& planState) const {
   // TODO Optimization for large strings: large strings mean that a large integer vector should be store in the state that is not good.
   Item_t item;
   Item_t resItem;
@@ -174,7 +174,7 @@ StringToCodepointsState::getVectSize()
  *_______________________________________________________________________*/
 /* begin class CompareStrIterator */
 Item_t
-CompareStrIterator::nextImpl(PlanState& planState) {
+CompareStrIterator::nextImpl(PlanState& planState) const {
   Item_t n0;
   Item_t n1;
   Item_t n2;
@@ -229,7 +229,7 @@ CompareStrIterator::nextImpl(PlanState& planState) {
  *_______________________________________________________________________*/
 /* begin class CodepointEqualIterator */
 Item_t
-CodepointEqualIterator::nextImpl(PlanState& planState){
+CodepointEqualIterator::nextImpl(PlanState& planState) const {
     Item_t item0;
     Item_t item1;
     Item_t res;
@@ -278,12 +278,12 @@ CodepointEqualIterator::nextImpl(PlanState& planState){
  *_______________________________________________________________________*/
 /* begin class ConcatStrIterator */
 Item_t
-ConcatStrIterator::nextImpl(PlanState& planState) {
+ConcatStrIterator::nextImpl(PlanState& planState) const {
   Item_t lItem;
   std::stringstream lResStream;
 
-  std::vector<PlanIter_t>::iterator iter = theChildren.begin();
-  std::vector<PlanIter_t>::iterator end  = theChildren.end();
+  std::vector<PlanIter_t>::const_iterator iter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator end  = theChildren.end();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -332,7 +332,7 @@ ConcatStrIterator::nextImpl(PlanState& planState) {
  *_______________________________________________________________________*/
 /* begin class StringJoinIterator */
 Item_t
-StringJoinIterator::nextImpl(PlanState& planState) {
+StringJoinIterator::nextImpl(PlanState& planState) const {
   Item_t item;
   Item_t resItem;
   xqp_string resStr;
@@ -417,7 +417,7 @@ StringJoinIterator::nextImpl(PlanState& planState) {
  *_______________________________________________________________________*/
 /* begin class SubstringIterator */
 Item_t
-SubstringIterator::nextImpl(PlanState& planState) {
+SubstringIterator::nextImpl(PlanState& planState) const {
   Item_t item0;
   Item_t item1;
   Item_t item2;
@@ -518,7 +518,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
   *_______________________________________________________________________*/
 /* begin class StringLengthIterator */
 Item_t
-StringLengthIterator::nextImpl(PlanState& planState) {
+StringLengthIterator::nextImpl(PlanState& planState) const {
   Item_t item;
 
   PlanIteratorState* state;
@@ -556,7 +556,7 @@ StringLengthIterator::nextImpl(PlanState& planState) {
   *_______________________________________________________________________*/
 /* begin class NormalizeSpaceIterator */
 Item_t
-NormalizeSpaceIterator::nextImpl(PlanState& planState)
+NormalizeSpaceIterator::nextImpl(PlanState& planState) const
 {
   Item_t item;
 
@@ -605,7 +605,7 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState)
   *_______________________________________________________________________*/
 /* begin class NormalizeUnicodeIterator */
 Item_t
-NormalizeUnicodeIterator::nextImpl(PlanState& planState)
+NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
 {
   Item_t item0;
   Item_t item1;
@@ -662,7 +662,7 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
   *_______________________________________________________________________*/
 /* begin class UpperCaseIterator */
 Item_t
-UpperCaseIterator::nextImpl(PlanState& planState)
+UpperCaseIterator::nextImpl(PlanState& planState) const
 {
   Item_t item;
 
@@ -703,7 +703,7 @@ UpperCaseIterator::nextImpl(PlanState& planState)
   *_______________________________________________________________________*/
 /* begin class LowerCaseIterator */
 Item_t
-LowerCaseIterator::nextImpl(PlanState& planState) {
+LowerCaseIterator::nextImpl(PlanState& planState) const {
   Item_t item;
 
   PlanIteratorState* state;
@@ -753,7 +753,7 @@ LowerCaseIterator::nextImpl(PlanState& planState) {
   *_______________________________________________________________________*/
 /* begin class TranslateIterator */
 Item_t
-TranslateIterator::nextImpl(PlanState& planState) {
+TranslateIterator::nextImpl(PlanState& planState) const {
   Item_t itemArg, item0, item1;
   Item_t res;
   res = Zorba::getItemFactory()->createString("");
@@ -792,7 +792,7 @@ TranslateIterator::nextImpl(PlanState& planState) {
  *_______________________________________________________________________*/
 /* begin class EncodeForUriIterator */
 Item_t
-EncodeForUriIterator::nextImpl(PlanState& planState) {
+EncodeForUriIterator::nextImpl(PlanState& planState) const {
   Item_t item;
 
   PlanIteratorState* state;
@@ -821,7 +821,7 @@ EncodeForUriIterator::nextImpl(PlanState& planState) {
  *_______________________________________________________________________*/
 /* begin class IriToUriIterator */
 Item_t
-IriToUriIterator::nextImpl(PlanState& planState) {
+IriToUriIterator::nextImpl(PlanState& planState) const {
   Item_t item;
 
   PlanIteratorState* state;
@@ -850,7 +850,7 @@ IriToUriIterator::nextImpl(PlanState& planState) {
  *_______________________________________________________________________*/
 /* begin class EscapeHtmlUriIterator */
 Item_t
-EscapeHtmlUriIterator::nextImpl(PlanState& planState) {
+EscapeHtmlUriIterator::nextImpl(PlanState& planState) const {
   Item_t item;
 
   PlanIteratorState* state;
@@ -897,7 +897,7 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) {
   *_______________________________________________________________________*/
 /* begin class ContainsIterator */
 Item_t
-ContainsIterator::nextImpl(PlanState& planState) {
+ContainsIterator::nextImpl(PlanState& planState) const {
   Item_t item0;
   Item_t item1;
   Item_t itemColl;
@@ -979,7 +979,7 @@ ContainsIterator::nextImpl(PlanState& planState) {
   *_______________________________________________________________________*/
 /*begin class StartsWithIterator*/
 Item_t
-StartsWithIterator::nextImpl(PlanState& planState) {
+StartsWithIterator::nextImpl(PlanState& planState) const {
   Item_t item0;
   Item_t item1;
   Item_t itemColl;
@@ -1062,7 +1062,7 @@ StartsWithIterator::nextImpl(PlanState& planState) {
   *_______________________________________________________________________*/
 /*begin class EndsWithIterator*/
 Item_t
-EndsWithIterator::nextImpl(PlanState& planState) {
+EndsWithIterator::nextImpl(PlanState& planState) const {
   Item_t item0;
   Item_t item1;
   Item_t itemColl;
@@ -1146,7 +1146,7 @@ EndsWithIterator::nextImpl(PlanState& planState) {
   *_______________________________________________________________________*/
 /*begin class SubstringBeforeIterator*/
 Item_t
-SubstringBeforeIterator::nextImpl(PlanState& planState) {
+SubstringBeforeIterator::nextImpl(PlanState& planState) const {
   Item_t item0;
   Item_t item1;
   Item_t itemColl;
@@ -1231,7 +1231,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) {
   *_______________________________________________________________________*/
 /*begin class SubstringAfterIterator*/
 Item_t
-SubstringAfterIterator::nextImpl(PlanState& planState) {
+SubstringAfterIterator::nextImpl(PlanState& planState) const {
   Item_t item0;
   Item_t item1;
   Item_t itemColl;
