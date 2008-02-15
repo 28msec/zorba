@@ -20,9 +20,8 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState)
 
   // Bind the args.
   {
-    uint32_t nargs = theUDF->get_params().size();
     std::vector<ref_iter_t>& iters = theUDF->get_param_iters();
-    for(uint32_t i = 0; i < nargs; ++i) {
+    for(uint32_t i = 0; i < iters.size (); ++i) {
       ref_iter_t& ref = iters[i];
       if (ref != NULL) {
         ref->bind(new PlanIteratorWrapper(theChildren[i], planState), *state->theFnBodyStateBlock);

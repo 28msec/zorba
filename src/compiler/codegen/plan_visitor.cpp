@@ -28,6 +28,9 @@
 #include "util/stl_extra.h"
 #include "util/hashmap.h"
 
+#include "runtime/visitors/printervisitor.h"
+#include "runtime/visitors/iterprinter.h"
+
 #ifndef NDEBUG
 #  include "zorba/util/properties.h"
 #endif
@@ -1003,10 +1006,19 @@ void end_visit(extension_expr& v)
 
 };
 
-PlanIter_t codegen (expr *root, hash64map<std::vector<ref_iter_t> *> *param_var_map) {
+PlanIter_t codegen (const char *descr, expr *root, hash64map<std::vector<ref_iter_t> *> *param_var_map) {
   plan_visitor c(param_var_map);
   root->accept (c);
-  return c.pop_itstack ();
+  PlanIter_t result = c.pop_itstack ();
+  if (result != NULL && descr != NULL && Properties::instance()->printIteratorTree()) {
+    cout << "Iterator tree for " << descr << ":\n";
+    XMLIterPrinter vp(std::cout);
+    PrinterVisitor pv(vp, result);
+    pv.print();
+    cout << endl;
+  }
+	
+  return result;
 }
 
 } /* namespace xqp */

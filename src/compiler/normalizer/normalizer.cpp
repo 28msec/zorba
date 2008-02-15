@@ -3,6 +3,7 @@
 #include "functions/signature.h"
 #include "types/root_typemanager.h"
 #include "system/globalenv.h"
+#include <iostream>
 
 using namespace xqp;
 
@@ -341,6 +342,13 @@ bool normalizer::begin_visit (function_def_expr &v) {
 void normalizer::end_visit (function_def_expr &v) {
 }
 
-
+void xqp::normalize_expr_tree (const char *norm_descr, static_context *sctx, expr_t root) {
+  normalizer n (sctx);
+  root->accept(n);
+  if (norm_descr != NULL) {
+    std::cout << "Expression tree for " << norm_descr << " after normalization:\n";
+    root->put(std::cout) << std::endl;
+  }
+}
 
 /* vim:set ts=2 sw=2: */

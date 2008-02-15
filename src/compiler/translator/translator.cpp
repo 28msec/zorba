@@ -80,23 +80,24 @@ namespace xqp {
 
   static yy::location null_loc;
 
-class TranslatorImpl : public Translator 
+class TranslatorImpl : public parsenode_visitor
 {
 public:
-  friend Translator *make_translator (static_context *, vector<rchandle<static_context> > &);
+  friend TranslatorImpl *make_translator (bool, static_context *, vector<rchandle<static_context> > &);
 
 protected:
-  uint32_t                         depth;
+  uint32_t depth;
+  bool     print_translated;
 
-  static_context                 * sctx_p;
+  static_context                    *sctx_p;
   vector<rchandle<static_context> > &sctx_list;
-  std::stack<expr_t>               nodestack;
-  std::stack<xqtref_t> tstack;  // types stack
-  int                              tempvar_counter;
-  std::list<global_binding>        global_vars;
-  const RelativePathExpr         * theRootRelPathExpr;
+  std::stack<expr_t>                 nodestack;
+  std::stack<xqtref_t>               tstack;  // types stack
+  int                                tempvar_counter;
+  std::list<global_binding>          global_vars;
+  const RelativePathExpr           * theRootRelPathExpr;
   std::stack<const RelativePathExpr *> relpathstack;
-  rchandle<namespace_context>      ns_ctx;
+  rchandle<namespace_context>          ns_ctx;
 
   // FOR WHITESPACE CHECKING OF DirElemContent (stack is need because of nested elements)
   /**
@@ -113,8 +114,9 @@ protected:
 
   var_expr_t theDotVar, theDotPosVar, theLastVar;
 
-  TranslatorImpl (static_context *sctx_p_, vector<rchandle<static_context> > &sctx_list_)
-    : depth (0),
+  TranslatorImpl (bool print_, static_context *sctx_p_, vector<rchandle<static_context> > &sctx_list_)
+    : 
+    depth (0), print_translated (print_),
     sctx_p (sctx_p_),
     sctx_list (sctx_list_),
     tempvar_counter (0),
@@ -1547,11 +1549,14 @@ void end_visit(const FunctionDecl& v, void *visit_state)
         user_function *udf = dynamic_cast<user_function *>(LOOKUP_FN(v.get_name ()->get_prefix (), v.get_name ()->get_localname (), nargs));
         ZORBA_ASSERT (udf != NULL);
 
-        {
-          assert (body != NULL);
-          normalizer norm(sctx_p);
-          body->accept(norm);
+        assert (body != NULL);
+        if (print_translated) {
+          cout << "Expression tree for " << v.get_name ()->get_qname () << " after translation:\n";
+          body->put(cout) << endl;
         }
+        normalize_expr_tree (Properties::instance ()->printNormalizedExpressions ()
+                             ? v.get_name ()->get_qname ().c_str () : NULL,
+                             sctx_p, body);
 
         udf->set_body (body);
         udf->set_params(params);
@@ -2565,13 +2570,13 @@ void end_visit(const AtomicType& v, void *visit_state)
   TRACE_VISIT_OUT ();
   rchandle<QName> qname = v.get_qname ();
   xqtref_t t =
-    GENV_TYPESYSTEM.create_type(sctx_p->lookup_qname("",
-                                                     qname->get_prefix (),
-                                                     qname->get_localname ()),
+    GENV_TYPESYSTEM.create_atomic_type(sctx_p->lookup_qname("",
+                                                            qname->get_prefix (),
+                                                            qname->get_localname ()),
                                 TypeConstants::QUANT_ONE);
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
-  if (t == NULL || ! GENV_TYPESYSTEM.is_simple (*t))
+  if (t == NULL)
     ZORBA_ERROR_ALERT (ZorbaError::XPST0051, NULL);
   else
     tstack.push (t);
@@ -4423,14 +4428,19 @@ void end_visit(const VarGetsDeclList& v, void *visit_state)
 };
 
 
-Translator *make_translator (static_context *sctx_p, vector<rchandle<static_context> > &sctx_list) {
-  return new TranslatorImpl (sctx_p, sctx_list);
+TranslatorImpl *make_translator (bool print, static_context *sctx_p, vector<rchandle<static_context> > &sctx_list) {
+  return new TranslatorImpl (print, sctx_p, sctx_list);
 }
 
-rchandle<expr> translate (static_context *sctx_p, const parsenode &root, vector<rchandle<static_context> > &sctx_list) {
-  auto_ptr<Translator> t (make_translator (sctx_p, sctx_list));
+rchandle<expr> translate (bool print, static_context *sctx_p, const parsenode &root, vector<rchandle<static_context> > &sctx_list) {
+  auto_ptr<TranslatorImpl> t (make_translator (print, sctx_p, sctx_list));
   root.accept (*t);
-  return t->result ();
+  rchandle<expr> result = t->result ();
+  if (print) {
+    cout << "Expression tree for query after translation:\n";
+    result->put(cout) << endl;
+  }
+  return result;
 }
 
 

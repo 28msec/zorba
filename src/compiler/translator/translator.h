@@ -23,13 +23,7 @@
 
 namespace xqp {
 
-  class Translator : public parsenode_visitor {
-  public:
-    virtual rchandle<expr> result () = 0;
-  };
-
-  Translator *make_translator (static_context *);
-  rchandle<expr> translate (static_context *, const parsenode &, std::vector<rchandle<static_context> > &);
+  rchandle<expr> translate (bool, static_context *, const parsenode &, std::vector<rchandle<static_context> > &);
   
 } /* namespace xqp */
 #endif /* XQP_NORMALIZE_VISITOR_H */

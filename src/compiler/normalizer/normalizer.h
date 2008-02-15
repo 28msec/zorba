@@ -73,6 +73,14 @@ class normalizer : public expr_visitor {
     static_context *m_sctx;
 };
 
+void normalize_expr_tree (const char *, static_context *sctx, expr_t root);
+
 } /* namespace xqp */
 #endif /* XQP_NORMALIZER_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
 /* vim:set ts=2 sw=2: */

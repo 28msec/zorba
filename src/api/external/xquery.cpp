@@ -10,8 +10,6 @@
 #include "compiler/parsetree/parsenode_print_dot_visitor.h"
 #include "compiler/parser/xquery_driver.h"
 #include "system/zorba.h"
-#include "runtime/visitors/printervisitor.h"
-#include "runtime/visitors/iterprinter.h"
 #include "runtime/sequences/SequencesImpl.h"
 
 #include "api/serialization/serializer.h"
@@ -156,30 +154,20 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       return false;
     }
 
-    rchandle<expr> e_h = translate (zorba->get_static_context(), *mm_p, sctx_list);
+    rchandle<expr> e_h = translate (Properties::instance ()->printTranslatedExpressions (), zorba->get_static_context(), *mm_p, sctx_list);
     if (e_h == NULL)
     {
       ZORBA_ERROR_ALERT(ZorbaError::API0002_COMPILE_FAILED);
       zorba->current_xquery = NULL;
       return false;
     }
-  
-    if (Properties::instance ()->printTranslatedExpressions ()) {
-      cout << "Expression tree after translation:\n";
-      e_h->put(cout) << endl;
-    }
 
-    normalizer n(zorba->get_static_context());
-    e_h->accept(n);
-
-    if (Properties::instance ()->printNormalizedExpressions ()) {
-      cout << "Expression tree after normalization:\n";
-      e_h->put(cout) << endl;
-    }
+    normalize_expr_tree (Properties::instance ()->printNormalizedExpressions () ? "query" : NULL,
+                         zorba->get_static_context(), e_h);
 
     ///now do code generation (generate iterator tree)
 
-    top_iterator = codegen (e_h);
+    top_iterator = codegen ("query", e_h);
 
     if (top_iterator == NULL) {
       cout << "Codegen returned null";
@@ -188,13 +176,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       return false;
     }
 
-    if (Properties::instance()->printIteratorTree()) {
-      cout << "Iterator tree:\n";
-      XMLIterPrinter vp(std::cout);
-      PrinterVisitor pv(vp, top_iterator);
-      pv.print();
-    }
-	
     is_compiled = true;
 
 		zorba->current_xquery = NULL;

@@ -26,7 +26,7 @@ namespace xqp {
   typedef rchandle<class LetVarIterator> ref_iter_t;
   template <class T> class hash64map;
 
-  PlanIter_t codegen (expr *root, hash64map<std::vector<ref_iter_t> *> *param_var_map = NULL);
+  PlanIter_t codegen (const char *descr, expr *root, hash64map<std::vector<ref_iter_t> *> *param_var_map = NULL);
 
 } /* namespace xqp */
 #endif /* XQP_PLAN_VISITOR_H */
