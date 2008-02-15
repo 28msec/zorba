@@ -589,6 +589,8 @@ void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
   }
 
   theNsContext->addBinding(prefix, ns);
+
+  theFlags |= XmlNode::HaveLocalBindings;
 }
 
 
@@ -886,11 +888,12 @@ void ConstrElementNode::constructSubtree(
   xqpStringStore* prefix = theName->getPrefix().getStore();
   xqpStringStore* ns = theName->getNamespace().getStore();
 
-  xqpStringStore* ns2 = findBinding(prefix);
-
-  if (ns2 == NULL && *prefix != "")
+  if (*prefix != "xml")
   {
-    addLocalBinding(prefix, ns);
+    xqpStringStore* ns2 = findBinding(prefix);
+
+    if (ns2 == NULL && *ns != "")
+      addLocalBinding(prefix, ns);
   }
 
   if (attributesIte != 0)
@@ -913,6 +916,17 @@ void ConstrElementNode::constructSubtree(
           cnode = cnode->copy(this, numAttributes());
         else
           theAttributes.push_back(cnode, true);
+      }
+
+      prefix = cnode->getNodeName()->getPrefix().getStore();
+      ns = cnode->getNodeName()->getNamespace().getStore();
+
+      if (*prefix != "xml")
+      {
+        xqpStringStore* ns2 = findBinding(prefix);
+
+        if (ns2 == NULL && *ns != "")
+          addLocalBinding(prefix, ns);
       }
 
       item = attributesIte->next();
@@ -941,6 +955,17 @@ void ConstrElementNode::constructSubtree(
             cnode = cnode->copy(this, numAttributes());
           else
             theAttributes.push_back(cnode, true);
+        }
+
+        prefix = cnode->getNodeName()->getPrefix().getStore();
+        ns = cnode->getNodeName()->getNamespace().getStore();
+
+        if (*prefix != "xml")
+        {
+          xqpStringStore* ns2 = findBinding(prefix);
+
+          if (ns2 == NULL && *prefix != "")
+            addLocalBinding(prefix, ns);
         }
       }
       else if (cnode->getTree() != getTree())
