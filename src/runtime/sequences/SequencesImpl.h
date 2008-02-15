@@ -12,7 +12,6 @@
 #include <stack>
 
 #include "common/shared_types.h"
-#include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h" // TODO remove after refactoring
 #include "runtime/base/binarybase.h" // TODO remove after refactoring
 #include "runtime/base/narybase.h"

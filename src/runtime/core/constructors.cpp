@@ -525,14 +525,17 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
   }
 
   
-  if (content.indexOf("-") == (long)(content.size()-1))
+  if (content != "")
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQDY0072);
-  }
+    if (content.indexOf("-") == (long)(content.size()-1))
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XQDY0072);
+    }
 
-  if (content.indexOf("--") >= 0)
-  {
-    ZORBA_ERROR_ALERT(ZorbaError::XQDY0072);
+    if (content.indexOf("--") >= 0)
+    {
+      ZORBA_ERROR_ALERT(ZorbaError::XQDY0072);
+    }
   }
 
   lItem = Zorba::getItemFactory()->createCommentNode((unsigned long)&planState,

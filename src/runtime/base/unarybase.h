@@ -4,10 +4,10 @@
  * Author: David Graf (david.graf@28msec.com)
  */
 
-#ifndef XQP_UNARYBASE_H
-#define XQP_UNARYBASE_H
+#ifndef XQP_UNARY_ITERATOR
+#define XQP_UNARY_ITERATOR
 
-#include "runtime/base/iterator.h"
+#include "runtime/base/plan_iterator.h"
 
 namespace xqp
 {

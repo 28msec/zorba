@@ -27,7 +27,6 @@
 
 
 #include "compiler/expression/expr_consts.h"
-#include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h" // TODO remove after refactoring
 #include <stack>
 

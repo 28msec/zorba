@@ -10,7 +10,6 @@
 #ifndef XQP_ACCESSORS_IMPL_H
 #define XQP_ACCESSORS_IMPL_H
 
-#include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h" // TODO remove after changing the FnStringIterator
 #include "runtime/base/narybase.h"
 

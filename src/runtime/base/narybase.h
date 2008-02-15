@@ -4,10 +4,11 @@
  * Author: David Graf (david.graf@28msec.com)
  */
 
-#ifndef XQP_NARYBASE_H
-#define XQP_NARYBASE_H
+#ifndef XQP_NARY_ITERATOR
+#define XQP_NARY_ITERATOR
 
-#include "runtime/base/iterator.h"
+#include "runtime/base/plan_iterator.h"
+#include "runtime/visitors/planitervisitor.h"
 
 namespace xqp
 {
@@ -124,7 +125,7 @@ namespace xqp
 #define NARY_ITER_STATE(iterName, stateName) class iterName \
   : public NaryBaseIterator<iterName, stateName > {\
 public:\
-  iterName(yy::location loc, std::vector<PlanIter_t>& aChildren) :\
+  iterName(const yy::location& loc, std::vector<PlanIter_t>& aChildren) :\
     NaryBaseIterator<iterName, stateName >(loc, aChildren) \
   { } \
   virtual ~iterName() { } \

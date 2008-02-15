@@ -22,7 +22,7 @@
  *
  */
 
-#include "runtime/base/iterator.h"
+#include "runtime/base/plan_iterator.h"
 
 #include "system/zorba.h"
 #include "system/zorba_engine.h"

@@ -9,7 +9,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/narybase.h"
-#include "runtime/base/iterator.h"
+
 
 namespace xqp
 {

@@ -7,7 +7,7 @@
 #ifndef XQP_NOARYBASE_H
 #define XQP_NOARYBASE_H
 
-#include "runtime/base/iterator.h"
+#include "runtime/base/plan_iterator.h"
 
 namespace xqp
 {

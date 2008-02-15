@@ -2,7 +2,7 @@
 #define XQP_SEQUENCETYPES_H
 
 #include "common/shared_types.h"
-#include "runtime/base/iterator.h"
+
 #include "runtime/base/unarybase.h"
 #include "types/root_typemanager.h"
 #include "util/Assert.h"

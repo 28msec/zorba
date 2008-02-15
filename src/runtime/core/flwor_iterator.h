@@ -8,7 +8,7 @@
 #ifndef XQP_RUNTIME_FLWOR_ITERATOR
 #define XQP_RUNTIME_FLWOR_ITERATOR
 
-#include "runtime/base/iterator.h"
+#include "runtime/base/plan_iterator.h"
 #include "util/checked_vector.h"
 #include "common/shared_types.h"
 

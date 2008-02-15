@@ -1,7 +1,9 @@
 /*
  *  Copyright 2006-2007 FLWOR Foundation.
- *  Authors: Tim Kraska, David Graf
+ *  Authors: David Graf, Tim Kraska, Markos Zaharioudakis
  */
+
+#include "system/zorba.h"
 
 #include "runtime/fncontext/FnContextImpl.h"
 #include "api/external/xquery.h"

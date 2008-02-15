@@ -7,8 +7,11 @@
  *
  */
 
+#include "system/zorba.h"
 #include "runtime/accessors/AccessorsImpl.h"
+#include "store/api/item.h"
 #include "util/Assert.h"
+
 
 namespace xqp {
 

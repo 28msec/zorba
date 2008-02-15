@@ -1,4 +1,6 @@
 
+#include "store/api/store.h"
+#include "store/api/item.h"
 #include "runtime/core/nodeid_iterators.h"
 
 namespace xqp 

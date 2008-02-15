@@ -21,7 +21,6 @@
 #define XQP_NUMERICS_IMPL_H
 
 #include "common/shared_types.h"
-#include "runtime/base/iterator.h"
 #include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/unarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring

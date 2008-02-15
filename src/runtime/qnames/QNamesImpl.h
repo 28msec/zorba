@@ -14,6 +14,8 @@
 
 #include "runtime/base/unarybase.h" // remove after iterator refactoring
 #include "runtime/base/binarybase.h" // remove after iterator refactoring
+#include "util/utf8/xqpString.h"
+
 #include <vector>
 
 namespace xqp {
@@ -163,7 +165,7 @@ class InScopePrefixesState : public PlanIteratorState
   friend class InScopePrefixesIterator;
 
 private:
-  std::vector<std::pair<xqp_string, xqp_string> > theBindings;
+  std::vector<std::pair<xqpString, xqpString> > theBindings;
   unsigned long theCurrentPos;
 
 public:

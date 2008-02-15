@@ -26,8 +26,8 @@
 
 #include "common/shared_types.h"
 #include "store/api/item.h"
-#include "system/zorba.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/iterator.h"
+#include "compiler/parser/location.hh"
 
 // Info: Forcing inlining a function in g++:
 // Item_t next() __attribute__((always_inline)) {...}
@@ -67,12 +67,8 @@
 namespace xqp
 {
 
-class Item;
-typedef rchandle<Item> Item_t;
-
-class PlanIterator;
-
-typedef rchandle<PlanIterator> PlanIter_t;
+class Zorba;
+class PlanIterVisitor;
 
 /*******************************************************************************
   Class to represent state that is shared by all plan iterators. 

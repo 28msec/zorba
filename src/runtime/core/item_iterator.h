@@ -9,7 +9,7 @@
 
 #include "common/shared_types.h"
 #include "context/common.h"
-#include "runtime/base/iterator.h"
+#include "runtime/base/plan_iterator.h"
 #include "runtime/base/noarybase.h"
 
 namespace xqp {

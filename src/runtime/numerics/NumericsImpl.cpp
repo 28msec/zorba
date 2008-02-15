@@ -14,6 +14,7 @@
 #include "errors/error_factory.h"
 #include "system/zorba.h"
 #include "runtime/visitors/planitervisitor.h"
+#include "store/api/item.h"
 #include "util/Assert.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "types/typeconstants.h"

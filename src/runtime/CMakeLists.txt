@@ -14,7 +14,7 @@ SET(RUNTIME_SRCS
     strings/StringsImpl.cpp
     booleans/BooleanImpl.cpp
     dateTime/DurationsDatesTimes.cpp
-    base/iterator.cpp
+    base/plan_iterator.cpp
     sequences/SequencesImpl.cpp
     visitors/accept.cpp
     visitors/printervisitor.cpp

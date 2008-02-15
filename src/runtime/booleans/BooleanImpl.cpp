@@ -10,6 +10,7 @@
 #include "errors/error_factory.h"
 #include "runtime/accessors//AccessorsImpl.h"
 #include "store/api/temp_seq.h"
+#include "store/api/item.h"
 
 namespace xqp
 {

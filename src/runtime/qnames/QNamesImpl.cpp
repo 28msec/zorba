@@ -13,7 +13,7 @@
 #include "system/zorba.h"
 #include "system/zorba_engine.h"
 #include "context/static_context.h"
-
+#include "store/api/item.h"
 
 namespace xqp {
 /**

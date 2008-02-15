@@ -1,7 +1,6 @@
 #ifndef XQP_CONSTRUCTORS_H
 #define XQP_CONSTRUCTORS_H
 
-#include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h" // TODO delete after iterator refactoring
 #include "runtime/base/binarybase.h" // TODO delete after iterator refactoring
 #include "runtime/base/narybase.h"

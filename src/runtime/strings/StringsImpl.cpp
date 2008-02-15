@@ -15,8 +15,11 @@
 #include "util/utf8/utf8.h"
 #include "util/Assert.h"
 #include "util/numconversions.h"
+#include "store/api/item.h"
+
 
 using namespace std;
+
 namespace xqp {
 /**
  *______________________________________________________________________

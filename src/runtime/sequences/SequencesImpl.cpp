@@ -12,7 +12,9 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
+
 #include "system/globalenv.h"
+#include "system/zorba.h"
 
 #include "types/casting.h"
 

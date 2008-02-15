@@ -1,7 +1,7 @@
 #ifndef XQP_DEBUG_ITERATORS_H
 #define XQP_DEBUG_ITERATORS_H
 
-#include "runtime/base/iterator.h"
+#include "util/utf8/xqpString.h"
 #include "runtime/base/narybase.h"
 
 namespace xqp {
@@ -10,7 +10,7 @@ namespace xqp {
 class FnTraceIteratorState : public PlanIteratorState {
   public:
     Item_t theTagItem;
-    xqp_string theTag;
+    xqpString theTag;
 
     void init(PlanState&);
     void reset(PlanState&);

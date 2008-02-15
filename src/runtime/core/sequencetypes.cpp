@@ -1,7 +1,9 @@
 #include "runtime/core/sequencetypes.h"
 
 #include "system/globalenv.h"
+#include "system/zorba.h"
 #include "errors/error_factory.h"
+#include "store/api/item.h"
 #include "types/casting.h"
 
 namespace xqp

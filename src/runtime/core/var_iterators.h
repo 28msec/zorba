@@ -2,7 +2,7 @@
 #define XQP_RUNTIME_VAR_ITERATORS
 
 #include "common/shared_types.h"
-#include "runtime/base/iterator.h"
+#include "util/utf8/xqpString.h"
 #include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
 
 namespace xqp
@@ -41,7 +41,7 @@ public:
   void accept(PlanIterVisitor&) const;
   
 public:
-  xqp_string getVarName() const { return theVarName; }
+  xqpString getVarName() const { return theVarName; }
 
   void bind(Item_t value, PlanState& planState);
 };
@@ -91,7 +91,7 @@ public:
   void accept(PlanIterVisitor&) const;
 
 public:
-  xqp_string getVarName() const { return theVarName; }
+  xqpString getVarName() const { return theVarName; }
 
   void bind(Iterator_t it, PlanState& planState);
 };
