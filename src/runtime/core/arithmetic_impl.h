@@ -2,6 +2,7 @@
 #define XQP_ARITHMETIC_IMPL_H
 
 #include "common/shared_types.h"
+#include "types/typeconstants.h"
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 
 
@@ -12,7 +13,7 @@ namespace xqp {
 class AddOperation
 {
 public:
-  template<typename T>
+  template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , Item_t, Item_t );
 };
 
@@ -21,7 +22,7 @@ public:
 class SubtractOperation
 {
 public:
-  template<typename T>
+  template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , Item_t, Item_t );
 };
 
@@ -30,7 +31,7 @@ public:
 class MultiplyOperation
 {
 public:
-  template<typename T>
+  template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , Item_t, Item_t );
 };
 
@@ -39,7 +40,7 @@ public:
 class DivideOperation
 {
 public:
-  template<typename T>
+  template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , Item_t, Item_t );
 };
 
@@ -48,7 +49,7 @@ public:
 class IntegerDivideOperation
 {
 public:
-  template<typename T>
+  template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , Item_t, Item_t );
 };
 
@@ -57,7 +58,7 @@ public:
 class ModOperation
 {
 public:
-  template<typename T>
+  template<TypeConstants::atomic_type_code_t ATC>
   static Item_t compute (const yy::location* , Item_t, Item_t );
 };
 

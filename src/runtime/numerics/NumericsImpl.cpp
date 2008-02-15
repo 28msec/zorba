@@ -16,27 +16,28 @@
 #include "runtime/visitors/planitervisitor.h"
 #include "util/Assert.h"
 #include "runtime/core/arithmetic_impl.h"
+#include "types/typeconstants.h"
 
 namespace xqp
 {
   /* begin class AddOperations */
   template<>
-  Item_t AddOperation::compute<xqp_double> ( const yy::location* loc,  Item_t i0, Item_t i1 )
+  Item_t AddOperation::compute<TypeConstants::XS_DOUBLE> ( const yy::location* loc,  Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() + i1->getDoubleValue() );
   }
   template<>
-  Item_t AddOperation::compute<xqp_float> ( const yy::location* loc,  Item_t i0, Item_t i1 )
+  Item_t AddOperation::compute<TypeConstants::XS_FLOAT> ( const yy::location* loc,  Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() + i1->getFloatValue() );
   }
   template<>
-  Item_t AddOperation::compute<xqp_decimal> ( const yy::location* loc,  Item_t i0, Item_t i1 )
+  Item_t AddOperation::compute<TypeConstants::XS_DECIMAL> ( const yy::location* loc,  Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() + i1->getDecimalValue() );
   }
   template<>
-  Item_t AddOperation::compute<xqp_integer> ( const yy::location* loc,  Item_t i0, Item_t i1 )
+  Item_t AddOperation::compute<TypeConstants::XS_INTEGER> ( const yy::location* loc,  Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() + i1->getIntegerValue() );
   }
@@ -44,25 +45,25 @@ namespace xqp
 
   /* start class SubtractOperations */
   template<>
-  Item_t SubtractOperation::compute<xqp_double> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t SubtractOperation::compute<TypeConstants::XS_DOUBLE> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() - i1->getDoubleValue() );
   }
 
   template<>
-  Item_t SubtractOperation::compute<xqp_float> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t SubtractOperation::compute<TypeConstants::XS_FLOAT> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() - i1->getFloatValue() );
   }
 
   template<>
-  Item_t SubtractOperation::compute<xqp_decimal> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t SubtractOperation::compute<TypeConstants::XS_DECIMAL> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() - i1->getDecimalValue() );
   }
 
   template<>
-  Item_t SubtractOperation::compute<xqp_integer> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t SubtractOperation::compute<TypeConstants::XS_INTEGER> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() - i1->getIntegerValue() );
   }
@@ -70,25 +71,25 @@ namespace xqp
 
   /* start class MultiplyOperations */
   template<>
-  Item_t MultiplyOperation::compute<xqp_double> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t MultiplyOperation::compute<TypeConstants::XS_DOUBLE> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() * i1->getDoubleValue() );
   }
 
   template<>
-  Item_t MultiplyOperation::compute<xqp_float> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t MultiplyOperation::compute<TypeConstants::XS_FLOAT> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() * i1->getFloatValue() );
   }
 
   template<>
-  Item_t MultiplyOperation::compute<xqp_decimal> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t MultiplyOperation::compute<TypeConstants::XS_DECIMAL> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() * i1->getDecimalValue() );
   }
 
   template<>
-  Item_t MultiplyOperation::compute<xqp_integer> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t MultiplyOperation::compute<TypeConstants::XS_INTEGER> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() * i1->getIntegerValue() );
   }
@@ -96,19 +97,19 @@ namespace xqp
 
   /* start class DivideOperations */
   template<>
-  Item_t DivideOperation::compute<xqp_double> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t DivideOperation::compute<TypeConstants::XS_DOUBLE> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() / i1->getDoubleValue() );
   }
 
   template<>
-  Item_t DivideOperation::compute<xqp_float> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t DivideOperation::compute<TypeConstants::XS_FLOAT> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() / i1->getFloatValue() );
   }
 
   template<>
-  Item_t DivideOperation::compute<xqp_decimal> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t DivideOperation::compute<TypeConstants::XS_DECIMAL> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     xqp_decimal ld0 = i0->getDecimalValue();
     xqp_decimal ld1 = i1->getDecimalValue();
@@ -121,7 +122,7 @@ namespace xqp
   }
 
   template<>
-  Item_t DivideOperation::compute<xqp_integer> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t DivideOperation::compute<TypeConstants::XS_INTEGER> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     xqp_decimal ll0 = Decimal::parseInteger(i0->getIntegerValue());
     xqp_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
@@ -136,7 +137,7 @@ namespace xqp
 
   /* start class IntegerDivideOperations */
   template<>
-  Item_t IntegerDivideOperation::compute<xqp_double> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     if (i0->isNaN() || i1->isNaN()) {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
@@ -166,7 +167,7 @@ namespace xqp
   }
 
   template<>
-  Item_t IntegerDivideOperation::compute<xqp_float> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t IntegerDivideOperation::compute<TypeConstants::XS_FLOAT> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     if (i0->isNaN() || i1->isNaN() ) {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
@@ -195,7 +196,7 @@ namespace xqp
   }
 
   template<>
-  Item_t IntegerDivideOperation::compute<xqp_decimal> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     xqp_decimal ld0 = i0->getDecimalValue();
     xqp_decimal ld1 = i1->getDecimalValue();
@@ -210,7 +211,7 @@ namespace xqp
   }
 
   template<>
-  Item_t IntegerDivideOperation::compute<xqp_integer> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t IntegerDivideOperation::compute<TypeConstants::XS_INTEGER> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     xqp_integer ll0 = i0->getIntegerValue();
     xqp_integer ll1 = i1->getIntegerValue();
@@ -227,19 +228,19 @@ namespace xqp
 
   /* start class ModOperations */
   template<>
-  Item_t ModOperation::compute<xqp_double> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t ModOperation::compute<TypeConstants::XS_DOUBLE> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() % i1->getDoubleValue() );
   }
 
   template<>
-  Item_t ModOperation::compute<xqp_float> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t ModOperation::compute<TypeConstants::XS_FLOAT> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() % i1->getFloatValue() );
   }
 
   template<>
-  Item_t ModOperation::compute<xqp_decimal> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t ModOperation::compute<TypeConstants::XS_DECIMAL> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     xqp_decimal ld0 = i0->getDecimalValue();
     xqp_decimal ld1 = i1->getDecimalValue();
@@ -252,7 +253,7 @@ namespace xqp
   }
 
   template<>
-  Item_t ModOperation::compute<xqp_integer> ( const yy::location* loc, Item_t i0, Item_t i1 )
+  Item_t ModOperation::compute<TypeConstants::XS_INTEGER> ( const yy::location* loc, Item_t i0, Item_t i1 )
   {
     xqp_integer ll0 = i0->getIntegerValue();
     xqp_integer ll1 = i1->getIntegerValue();
@@ -324,16 +325,16 @@ namespace xqp
     switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *resultType ) )
     {
       case TypeConstants::XS_DOUBLE:
-        res = Operation::template compute<xqp_double> ( &aLoc, n0, n1 );
+        res = Operation::template compute<TypeConstants::XS_DOUBLE> ( &aLoc, n0, n1 );
         break;
       case TypeConstants::XS_FLOAT:
-        res = Operation::template compute<xqp_float> ( &aLoc,n0, n1 );
+        res = Operation::template compute<TypeConstants::XS_FLOAT> ( &aLoc,n0, n1 );
         break;
       case TypeConstants::XS_DECIMAL:
-        res = Operation::template compute<xqp_decimal> ( &aLoc,n0, n1 );
+        res = Operation::template compute<TypeConstants::XS_DECIMAL> ( &aLoc,n0, n1 );
         break;
       case TypeConstants::XS_INTEGER:
-        res = Operation::template compute<xqp_integer> ( &aLoc,n0, n1 );
+        res = Operation::template compute<TypeConstants::XS_INTEGER> ( &aLoc,n0, n1 );
         break;
       default:
         ZORBA_ASSERT(false);
