@@ -118,7 +118,7 @@ class RootTypeManager : public TypeManager {
 
     xqtref_t create_atomic_type(TypeConstants::atomic_type_code_t type_code, TypeConstants::quantifier_t quantifier) const;
 
-    inline xqtref_t create_atomic_type(Item_t qname, TypeConstants::quantifier_t quantifier) const;
+    xqtref_t create_atomic_type(Item_t qname, TypeConstants::quantifier_t quantifier) const;
 
     xqtref_t create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeConstants::quantifier_t quantifier) const;
 
