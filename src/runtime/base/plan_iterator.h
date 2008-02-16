@@ -227,7 +227,7 @@ protected:
   uint32_t      stateOffset;
 
 public:
-  uint32_t getStateOffset() { return stateOffset; }
+  uint32_t getStateOffset() const { return stateOffset; }
   
 public:
   yy::location  loc;
