@@ -102,6 +102,20 @@ namespace xqp
 // 6.2.7 op:numeric-unary-plus
 // ---------------------------
 
+  /* begin 10.6 Arithmetic Operators on Durations
+  10.6 Arithmetic Operators on Durations
+  10.6.1 op:add-yearMonthDurations
+  10.6.2 op:subtract-yearMonthDurations
+  10.6.3 op:multiply-yearMonthDuration
+  10.6.4 op:divide-yearMonthDuration
+  10.6.5 op:divide-yearMonthDuration-by-yearMonthDuration
+  10.6.6 op:add-dayTimeDurations
+  10.6.7 op:subtract-dayTimeDurations
+  10.6.8 op:multiply-dayTimeDuration
+  10.6.9 op:divide-dayTimeDuration
+  10.6.10 op:divide-dayTimeDuration-by-dayTimeDuration
+  - end 10.6 Arithmetic Operators on Durations*/
+  
 
 // 6.2.8 op:numeric-unary-minus
 // ----------------------------

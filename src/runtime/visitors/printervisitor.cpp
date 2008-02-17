@@ -1419,56 +1419,28 @@ namespace xqp {
     thePrinter.endEndVisit();
   }
 
-  void PrinterVisitor::beginVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDuration>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIteratorDurationDateTime_AddOperationsDuration", (intptr_t) &a);
+  void PrinterVisitor::beginVisit ( const GenericArithIterator<DivideOperationsDurationByDouble>& a ) {
+    thePrinter.startBeginVisit("GenericArithIterator_DivideOperationsDurationByDouble", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDuration>& a ) {
+  
+  void PrinterVisitor::endVisit ( const GenericArithIterator<DivideOperationsDurationByDouble>& a ) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
 
-  void PrinterVisitor::beginVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDuration>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIteratorDurationDateTime_SubtractOperationsDuration", (intptr_t) &a);
+  void PrinterVisitor::beginVisit ( const NumArithIterator<DivideOperationsDurationByDouble>& a ) {
+    thePrinter.startBeginVisit("NumArithIterator_DivideOperationsDurationByDouble", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDuration>& a ) {
+  
+  void PrinterVisitor::endVisit ( const NumArithIterator<DivideOperationsDurationByDouble>& a ) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-
-  void PrinterVisitor::beginVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDuration>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIteratorDurationDateTime_MultiplyOperationsDuration", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
-  }
-  void PrinterVisitor::endVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDuration>& a ) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void PrinterVisitor::beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDouble>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIteratorDurationDateTime_DivideOperationsDurationByDouble", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
-  }
-  void PrinterVisitor::endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDouble>& a ) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void PrinterVisitor::beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>& a ) {
-    thePrinter.startBeginVisit("ArithmeticIteratorDurationDateTime_DivideOperationsDurationByDuration", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
-  }
-  void PrinterVisitor::endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>& a ) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
+  
   void PrinterVisitor::beginVisit ( const FLWORIterator& a ) {
     thePrinter.startBeginVisit("FLWORIterator", (intptr_t) &a);
     printCommons(  &a );

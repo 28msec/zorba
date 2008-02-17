@@ -60,7 +60,7 @@ Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState ) const
     {
       res = compute(this->loc, n0, n1);
     
-      if ( consumeNext(this->theChild0.getp(), planState ) != NULL 
+      if ( consumeNext(this->theChild0.getp(), planState ) != NULL
            || consumeNext(this->theChild1.getp(), planState ) != NULL )
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
             NULL, DONT_CONTINUE_EXECUTION, "Arithmetic operation has a sequences greater than one as an operator.");
@@ -82,9 +82,12 @@ Item_t GenericArithIterator<Operation>::compute(const yy::location& aLoc, Item_t
   if ( GENV_TYPESYSTEM.is_numeric(*type0) 
     || GENV_TYPESYSTEM.is_numeric(*type1)
     || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
-    || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
+    || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
+    || GENV_TYPESYSTEM.get_atomic_type_code ( *type0 ) == TypeConstants::XS_DURATION
+     ) {
     return NumArithIterator<Operation>::computeAtomic(aLoc, n0, type0, n1, type1);
-  } else {
+  }
+  else {
     ZORBA_ASSERT(false);
   }
   return 0;
@@ -109,6 +112,7 @@ template class GenericArithIterator<MultiplyOperation>;
 template class GenericArithIterator<DivideOperation>;
 template class GenericArithIterator<IntegerDivideOperation>;
 template class GenericArithIterator<ModOperation>;
+template class GenericArithIterator<DivideOperationsDurationByDouble>;
 /* end class GenericArithIterator */
 
 }

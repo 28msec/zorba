@@ -599,7 +599,7 @@ Item_t GenericCast::cast(Item_t aItem, const xqtref_t& aTargetType) const
   if ( lResult == 0 ) 
   {
     ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL, DONT_CONTINUE_EXECUTION,
-                      "Passed item is not castable to passed target type.");
+                      "Passed item (of type " + GENV_TYPESYSTEM.toString (*lItemType) + ") is not castable to passed target type (" + GENV_TYPESYSTEM.toString (*aTargetType) + ").");
   }
 
   return lResult;

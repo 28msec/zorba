@@ -413,21 +413,12 @@ public:
   virtual void beginVisit(const FnTimezoneFromTimeIterator&) ;
   virtual void endVisit(const FnTimezoneFromTimeIterator&);
 
-  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDuration>& ) ;
-  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<AddOperationsDuration>& ) ;
-
-  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDuration>& ) ;
-  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<SubtractOperationsDuration>& ) ;
-
-  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDuration>& ) ;
-  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<MultiplyOperationsDuration>& ) ;
-
-  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDouble>& ) ;
-  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDouble>& ) ;
-
-  virtual void beginVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>& ) ;
-  virtual void endVisit ( const ArithmeticIteratorDurationDateTime<DivideOperationsDurationByDuration>& ) ;
+  virtual void beginVisit ( const GenericArithIterator<DivideOperationsDurationByDouble>& ) ;
+  virtual void endVisit ( const GenericArithIterator<DivideOperationsDurationByDouble>& ) ;
   
+  virtual void beginVisit ( const NumArithIterator<DivideOperationsDurationByDouble>& ) ;
+  virtual void endVisit ( const NumArithIterator<DivideOperationsDurationByDouble>& ) ;
+
   virtual void beginVisit ( const FLWORIterator& ) ;
   virtual void endVisit ( const FLWORIterator& ) ;
   
