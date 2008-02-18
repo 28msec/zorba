@@ -1245,7 +1245,7 @@ void end_visit(const FLWORExpr& v, void *visit_state)
     for (i = 0; i < n; i++) {
       OrderSpec *spec = &*((*order_list) [i]);
       OrderModifier *mod = &*spec->get_modifier ();
-      dir_spec_t dir_spec = dir_descending;
+      dir_spec_t dir_spec = dir_ascending;
       if (mod && mod->get_dir_spec () != NULL)
         dir_spec = mod->get_dir_spec ()->get_dir_spec ();
       StaticQueryContext::order_empty_mode_t empty_spec = sctx_p->order_empty_mode ();
