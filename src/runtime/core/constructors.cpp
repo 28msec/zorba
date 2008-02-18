@@ -220,6 +220,7 @@ Item_t ElementIterator::nextImpl(PlanState& planState) const
 void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<ElementIteratorState>::createState(planState, this->stateOffset, offset);
+  StateTraitsImpl<ElementIteratorState>::initState(planState, this->stateOffset);
 
   if (theQNameIter != 0)
     theQNameIter->open(planState, offset);
