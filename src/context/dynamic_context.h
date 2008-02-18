@@ -25,17 +25,23 @@
 #ifndef XQP_DYNAMIC_CONTEXT_H
 #define XQP_DYNAMIC_CONTEXT_H
 
-#include "context/common.h"
-#include "context/context.h"
-#include "context/context_impl.h"
-#include "functions/library.h"
-#include "store/api/item.h"
+//#include "context/common.h"
+//#include "context/context.h"
+//#include "context/context_impl.h"
+//#include "functions/library.h"
+//#include "store/api/item.h"
 #include "util/rchandle.h"
+#include "util/hashmap.h"
+#include "types/representations.h"
+#include "common/shared_types.h"
 
 namespace xqp {
 
 //class itemstore;
 class static_context;
+class Iterator;
+class Item;
+typedef rchandle<Item>    Item_t;
 
 class dynamic_context// : public context
 {

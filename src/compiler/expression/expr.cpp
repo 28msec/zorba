@@ -18,6 +18,8 @@
 #include "compiler/expression/expr_visitor.h"
 #include "system/zorba.h"
 #include "types/root_typemanager.h"
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 #include <algorithm>
 #include <iostream>

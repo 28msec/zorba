@@ -15,8 +15,11 @@
 
 #include "errors/errors.h"
 #include "errors/xqp_exception.h"
-#include "compiler/parser/location.hh"
+//#include "compiler/parser/location.hh"
 
+namespace yy{
+class location;
+};
 
 namespace xqp
 {

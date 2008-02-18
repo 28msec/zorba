@@ -14,6 +14,7 @@
 #include "util/Assert.h"
 
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
 
 #include <iostream>
 using namespace std;

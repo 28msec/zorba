@@ -15,6 +15,8 @@
 #include "runtime/base/plan_iterator_wrapper.h"
 #include "util/Assert.h"
 #include "system/globalenv.h"
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 namespace xqp
 {

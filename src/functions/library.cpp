@@ -30,8 +30,10 @@
 #include "context/static_context.h"
 #include "system/zorba.h"
 #include "util/tracer.h"
-#include "util/list.h"
+//#include "util/list.h"
 #include "store/api/item.h"
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 using namespace std;
 namespace xqp {

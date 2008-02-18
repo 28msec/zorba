@@ -32,6 +32,8 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "api/external/xmldatamanager_impl.h"
+#include "api/external/plan_print_impl.h"
+#include "types/typemanager.h"
 
 namespace xqp{
 
@@ -274,12 +276,13 @@ XQuery_t ZorbaEngineImpl::createQuery(
     xqp_string aQueryString,
     StaticQueryContext_t sctx, 
     xqp_string	xquery_source_uri,
-    bool routing_mode)
+    bool routing_mode,
+    XQueryTreePlans_t planprint)
 {
 	try{
   rchandle<Zorba_XQueryBinary> xq(new Zorba_XQueryBinary(xquery_source_uri,
-                                                              aQueryString));
-	if (!xq->compile(sctx.getp(), routing_mode))
+                                                         aQueryString));
+	if (!xq->compile(sctx.getp(), routing_mode, planprint))
 	{
 		return NULL;
 	}
@@ -291,7 +294,8 @@ XQuery_t ZorbaEngineImpl::createQuery(
 XQuery_t ZorbaEngineImpl::createQueryFromFile(
       xqp_string xquery_file,
       StaticQueryContext_t sctx,
-      bool routing_mode)
+      bool routing_mode,
+      XQueryTreePlans_t planprint)
 {/*
 	try{
 	FILE	*fquery;
@@ -337,14 +341,15 @@ XQuery_t ZorbaEngineImpl::createQueryFromFile(
 
 	}CATCH_ALL_RETURN_NULL;
  */
-  return createQuery("", sctx, xquery_file, routing_mode);
+  return createQuery("", sctx, xquery_file, routing_mode, planprint);
 }
 
 XQuery_t ZorbaEngineImpl::createQueryFromStream(
 			std::istream		&is,
       StaticQueryContext_t sctx,
       xqp_string xquery_source_uri,
-      bool routing_mode)
+      bool routing_mode,
+      XQueryTreePlans_t planprint)
 {
 	xqp_string		xquery_string;
 	char					*temp_str;
@@ -363,7 +368,7 @@ XQuery_t ZorbaEngineImpl::createQueryFromStream(
 	{
 	}
 	delete[] temp_str;
-	return createQuery(xquery_string, sctx, xquery_source_uri, routing_mode);
+	return createQuery(xquery_string, sctx, xquery_source_uri, routing_mode, planprint);
 }
 
 ZorbaAlertsManager_t ZorbaEngineImpl::getAlertsManagerForCurrentThread()
@@ -450,6 +455,11 @@ XmlDataManager_t		ZorbaEngineImpl::getXmlDataManager()
 	return xml_data_manager;
 }
 
+XQueryTreePlans_t ZorbaEngineImpl::createDebugPlanPrintObject()
+{
+  return new XQueryTreePlansImpl;
+}
+
 bool		ZorbaSingleThread::execute(xqp_string xquery_text, std::ostream &os)
 {
 	ZorbaSingleThread_t		zorba_engine = ZorbaSingleThread::getInstance();
@@ -468,6 +478,5 @@ bool		ZorbaSingleThread::execute(xqp_string xquery_text, std::ostream &os)
 
 	return true;
 }
-
 
 }//end namespace xqp

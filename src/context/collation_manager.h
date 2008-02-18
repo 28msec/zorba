@@ -2,11 +2,9 @@
 #ifndef ZORBA_UNICODE_COLLATION_MANAGER_26_NOV_2007
 #define ZORBA_UNICODE_COLLATION_MANAGER_26_NOV_2007
 
-//#include "zorba_api.h"
 #include <unicode/coll.h>
 #include <map>
-#include <unicode/coll.h>
-#include "types/representations.h"
+//#include "types/representations.h"
 
 namespace xqp{
 

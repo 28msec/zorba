@@ -13,7 +13,8 @@
 
 #include <stdexcept>
 #include <string>
-#include "errors/errors.h"
+#include "util/rchandle.h"
+//#include "errors/errors.h"
 
 namespace xqp
 {
@@ -43,6 +44,7 @@ namespace xqp
 		throw bad_dynamic_cast(os_loc_.str(),os_err_.str());
 */
 
+class ZorbaError;
 typedef rchandle<ZorbaError>		ZorbaError_t;
 
 class ZorbaException //: public std::runtime_error 

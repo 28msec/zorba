@@ -529,7 +529,7 @@ void  XmlLoader::endElement(
   children.resize(revChildNodes.size());
 
   std::vector<XmlNode*>::const_reverse_iterator it;
-  ulong i = 0;
+  unsigned long i = 0;
   for (it = revChildNodes.rbegin();
        it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
        it++, i++)

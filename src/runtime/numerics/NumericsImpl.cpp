@@ -18,6 +18,8 @@
 #include "util/Assert.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "types/typeconstants.h"
+//#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 namespace xqp
 {

@@ -39,6 +39,9 @@
 #include "functions/library.h"
 #include "system/zorba_engine.h"
 #include "types/casting.h"
+#include "functions/signature.h"
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 #include "zorba/functions/stateless_function.h"
 
@@ -91,7 +94,7 @@ namespace xqp {
 		set_boundary_space_mode(StaticQueryContext::strip_space);
 		set_inherit_mode(StaticQueryContext::no_inherit_ns);
 		set_preserve_mode(StaticQueryContext::no_preserve_ns);
-		set_order_empty_mode (StaticQueryContext::empty_least);
+//		set_order_empty_mode (StaticQueryContext::empty_least);
 		set_default_collection_type(GENV_TYPESYSTEM.create_any_type());
 
     set_current_absolute_baseuri("");

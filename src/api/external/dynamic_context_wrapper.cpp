@@ -13,7 +13,9 @@
 #include "types/root_typemanager.h"
 #include "system/globalenv.h"
 #include "system/zorba_engine.h"
+#include "zorba/store/api/item.h"
 #include <fstream>
+#include "store/api/store.h"
 
 namespace xqp {
 

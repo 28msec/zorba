@@ -29,12 +29,12 @@
 #include "common.h"
 #include "context/context.h"
 #include "context/context_impl.h"
-#include "functions/signature.h"
-#include "functions/function.h"
-#include "store/api/item.h"
-#include "store/api/store.h"
+//#include "functions/signature.h"
+//#include "functions/function.h"
+//#include "store/api/item.h"
+//#include "store/api/store.h"
 #include "util/Assert.h"
-#include "types/typemanager.h"
+//#include "types/typemanager.h"
 
 #include "common/shared_types.h"
 
@@ -53,7 +53,8 @@ namespace xqp {
 
 class namespace_node;
 class user_function;
-
+class Item;
+class TypeManager;
 /*______________________________________________________________________
 |  
 |	XQuery 1.0 context

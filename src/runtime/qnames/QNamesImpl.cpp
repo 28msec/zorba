@@ -14,6 +14,9 @@
 #include "system/zorba_engine.h"
 #include "context/static_context.h"
 #include "store/api/item.h"
+//#include "store/api/store.h"
+#include "store/api/item_factory.h"
+#include "types/typemanager.h"
 
 namespace xqp {
 /**

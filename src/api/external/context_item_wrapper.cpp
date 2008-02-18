@@ -6,6 +6,7 @@
 #include "system/zorba_engine.h"
 #include "runtime/core/item_iterator.h"
 #include <fstream>
+#include "store/api/store.h"
 
 namespace xqp{
 

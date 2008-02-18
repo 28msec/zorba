@@ -1,6 +1,7 @@
 #include <ostream>
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
+#include "types/typemanager.h"
 
 namespace xqp {
 

@@ -14,10 +14,11 @@
 #include <unicode/utypes.h>
 #include <unicode/coll.h>
 #include <unicode/ustring.h>
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
+//#include "store/api/item_factory.h"
+//#include "store/api/store.h"
 
 #include "compiler/parser/location.hh"
+#include "types/representations.h"
 
 #include <stack>
 #include <map>

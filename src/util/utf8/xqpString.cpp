@@ -611,7 +611,7 @@ namespace xqp
       while(mapLen > 0)
       {
         tmp0 = UTF8Decode(mapPtr);
-        mapArray.insert(std::pair<uint32_t,uint32_t>(tmp0, 0xFFFFFFFF)); //0xFFFFFFFF = ULONG_MAX
+        mapArray.insert(std::pair<uint32_t,uint32_t>(tmp0, 0xFFFFFFFF)); //0xFFFFFFFF = unsigned long_MAX
         --mapLen;
       }
     }
@@ -769,7 +769,7 @@ namespace xqp
         cp = (*it).second;
       }
 
-      if(cp != 0xFFFFFFFF) //0xFFFFFFFF = ULONG_MAX
+      if(cp != 0xFFFFFFFF) //0xFFFFFFFF = unsigned long_MAX
       {
         memset(seq, 0, sizeof(seq));
         UTF8Encode(cp, seq);

@@ -11,6 +11,7 @@
 #include "runtime/accessors/AccessorsImpl.h"
 #include "store/api/item.h"
 #include "util/Assert.h"
+#include "store/api/item_factory.h"
 
 
 namespace xqp {

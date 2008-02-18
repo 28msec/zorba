@@ -13,6 +13,7 @@
 #include "compiler/expression/expr.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/base/plan_iterator_wrapper.h"
+#include "store/api/item_factory.h"
 
 
 using namespace std;

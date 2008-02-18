@@ -21,6 +21,7 @@
 #include "compiler/parser/xquery_parser.hpp"
 #include "compiler/parser/location.hh"
 #include "errors/error_factory.h"
+#include "types/typemanager.h"
 
 using namespace std;
 namespace xqp {

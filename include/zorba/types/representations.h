@@ -59,10 +59,10 @@ namespace xqp
   typedef GMonth_t                  xqp_gMonth;
   typedef DurationBase_t            xqp_duration;
   typedef DayTimeDuration_t       xqp_dayTimeDuration;
-  typedef YearMonthDuration_t    xqp_yearMonthDuration;
+  typedef YearMonthDuration_t     xqp_yearMonthDuration;
   typedef unsigned char              xqp_ubyte;
   typedef uint32_t                     xqp_uint;
-  typedef unsigned long long    xqp_ulong;
+  typedef unsigned long long      xqp_ulong;
   typedef unsigned short           xqp_ushort;
   typedef Integer                     xqp_uinteger;
   typedef void*                       xqp_base64Binary;

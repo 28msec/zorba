@@ -13,6 +13,7 @@
 #include "errors/error_manager.h"
 #include "api/serialization/serializer.h"
 #include "api/external/result_iterator_wrapper.h"
+#include "types/typemanager.h"
 
 using namespace std;
 namespace xqp {

@@ -28,7 +28,6 @@
 #include "types/root_typemanager.h"
 #include "system/globalenv.h"
 #include "compiler/parsetree/parsenodes.h"
-#include "util/list.h"
 #include "util/rchandle.h"
 #include "util/checked_vector.h"
 #include "compiler/expression/expr_consts.h"
@@ -100,6 +99,8 @@ public:
 */
 
 };
+
+typedef rchandle<expr>    expr_t;
 
   class constructor_expr : public expr {
   public:
@@ -471,6 +472,7 @@ public:
 
 };
 
+class signature;
 
 class function_def_expr : public expr {
 protected:
@@ -810,17 +812,17 @@ public:
 class relpath_expr : public expr
 {
 protected:
-	list<expr_t> theSteps;
+  std::vector<expr_t> theSteps;
 
 public:
 	relpath_expr(yy::location const&);
 
 	void add_back(expr_t step)          { theSteps.push_back(step); }
-	void add_front(expr_t step)         { theSteps.push_front(step); }
+	void add_front(expr_t step)         { theSteps.insert(theSteps.begin (), step); }
 	uint32_t size() const               { return theSteps.size(); }
 
-	list_iterator<expr_t> begin() const { return theSteps.begin(); }
-	list_iterator<expr_t> end() const   { return theSteps.end(); }
+  std::vector<expr_t>::const_iterator begin() const { return theSteps.begin(); }
+	std::vector<expr_t>::const_iterator end() const   { return theSteps.end(); }
 
 	expr_t& operator[](int n)           { return theSteps[n]; }
 

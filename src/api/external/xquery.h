@@ -5,7 +5,7 @@
 #define ZORBA_XQUERY_BINARY_FOR_EXTERNAL_API_24_SEP_2007
 
 #include "compiler/compiled_xquery.h"
-#include "api/external/static_context_wrapper.h"
+//#include "api/external/static_context_wrapper.h"
 
 ///Implement the objects for the Zorba external C++ API
 ////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,12 @@ typedef rchandle<class PlanIterator> PlanIter_t;
 
 class	ResultIteratorWrapper;
 typedef rchandle<ResultIteratorWrapper>		ResultIteratorWrapper_t;
+
+class XQueryTreePlans;
+typedef rchandle<XQueryTreePlans>   XQueryTreePlans_t;
+
+class StaticQueryContext;
+class static_context;
 
 class Zorba_XQueryBinary : public XQuery
 {
@@ -54,7 +60,8 @@ public:
 
   virtual ~Zorba_XQueryBinary();
 
-  bool compile(StaticQueryContext* = 0, bool routing_mode = false);
+  bool compile(StaticQueryContext* = 0, bool routing_mode = false,
+               XQueryTreePlans_t planprint = NULL);
 
   // start/restart the query execution
   virtual bool initExecution( DynamicQueryContext_t = 0);

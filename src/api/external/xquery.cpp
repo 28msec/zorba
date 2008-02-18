@@ -15,10 +15,15 @@
 
 #include "api/serialization/serializer.h"
 #include "api/external/dynamic_context_wrapper.h"
+#include "api/external/static_context_wrapper.h"
 #include "api/external/result_iterator_wrapper.h"
 
 #include "zorba/util/properties.h"
 #include "system/zorba_engine.h"
+#include "api/external/plan_print_impl.h"
+
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 #include <iostream>
 #include <fstream>
@@ -68,7 +73,8 @@ Zorba_XQueryBinary::~Zorba_XQueryBinary()
 
 
 bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, 
-                                 bool routing_mode)
+                                 bool routing_mode,
+                                 XQueryTreePlans_t planprint)
 {
   Zorba* zorba = ZORBA_FOR_CURRENT_THREAD();
   zorba->current_xquery = this;
@@ -104,6 +110,10 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     // reset the error list from error manager
     // m_error_manager.clear();///delete all alerts from list
 
+    XQueryTreePlansImpl   *pp = NULL;
+    if(planprint != NULL)
+      pp = static_cast<XQueryTreePlansImpl*>(&*planprint);
+
     ///NOW COMPILE
     xquery_driver driver;
     driver.filename = m_xquery_source_uri;
@@ -121,7 +131,9 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       cout << "Parse tree:\n";
       ParseNodePrintXMLVisitor lPrintXMLVisitor(std::cout);
       lPrintXMLVisitor.print(&*n_p);
-    }    
+    }
+    if(pp)
+      pp->printASTPlan(n_p);
 	
     MainModule* mm_p;
     QueryBody* qb_p;
@@ -162,9 +174,14 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       zorba->current_xquery = NULL;
       return false;
     }
+    if(pp)
+      pp->printExprPlan(e_h);
 
     normalize_expr_tree (Properties::instance ()->printNormalizedExpressions () ? "query" : NULL,
                          zorba->get_static_context(), e_h);
+
+    if(pp)
+      pp->printNormalizedExprPlan(e_h);
 
     ///now do code generation (generate iterator tree)
 
@@ -176,6 +193,9 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
       zorba->current_xquery = NULL;
       return false;
     }
+
+	  if(pp)
+      pp->printRuntimePlan(top_iterator);
 
     is_compiled = true;
 

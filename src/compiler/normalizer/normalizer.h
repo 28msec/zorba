@@ -73,6 +73,7 @@ class normalizer : public expr_visitor {
     static_context *m_sctx;
 };
 
+
 void normalize_expr_tree (const char *, static_context *sctx, expr_t root);
 
 } /* namespace xqp */

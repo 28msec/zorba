@@ -35,7 +35,7 @@ typedef rchandle<class TempSeq> TempSeq_t;
 
 typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
-//typedef unsigned long ulong;
+//typedef unsigned long unsigned long;
 
 extern ConstrNodeVector dummyVector;
 

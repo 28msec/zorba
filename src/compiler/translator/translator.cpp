@@ -28,6 +28,9 @@
 #include "functions/external_function_adapters.h"
 #include "system/zorba_engine.h"
 #include "util/stl_extra.h"
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
+#include "common/common.h"
 
 # include "util/properties.h"
 
@@ -661,7 +664,7 @@ void end_visit(const DirAttributeList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  ulong numAttrs = 0;
+  unsigned long numAttrs = 0;
   std::vector<rchandle<attr_expr> > attributes;
   while(true)
   {
@@ -671,7 +674,7 @@ void end_visit(const DirAttributeList& v, void *visit_state)
 
     attr_expr* attrExpr = dynamic_cast<attr_expr*>(expr.getp());
 
-    for (ulong i = 0; i < numAttrs; i++)
+    for (unsigned long i = 0; i < numAttrs; i++)
     {
       if (attributes[i]->getQName()->equals(attrExpr->getQName()))
          ZORBA_ERROR_ALERT(ZorbaError::XQST0040, &v.get_location(),

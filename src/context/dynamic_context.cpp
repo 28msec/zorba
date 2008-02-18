@@ -29,6 +29,8 @@
 #include <assert.h>
 #include <time.h>
 #include "system/zorba.h"
+#include "types/root_typemanager.h"
+#include "store/api/item_factory.h"
 
 using namespace std;
 namespace xqp {

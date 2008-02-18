@@ -313,7 +313,7 @@ ostream& relpath_expr::put( ostream& os) const
 {
   os << INDENT << "relpath_expr (" << this << ") [\n";
 
-  for (list_iterator<expr_t> it = begin(); it != end(); ++it)
+  for (std::vector<expr_t>::const_iterator it = begin(); it != end(); ++it)
   {
     expr_t expr = *it;
     Assert(expr != NULL);

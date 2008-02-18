@@ -8,6 +8,7 @@
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "system/zorba.h"
+#include "store/api/item_factory.h"
 
 namespace xqp
 {

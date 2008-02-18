@@ -2,13 +2,14 @@
 #define ZORBA_XQUERY_STATIC_CONTEXT_WRAPPER_20_NOV_2007
 
 #include "context/static_context_api.h"
-#include "context/static_context.h"
+//#include "context/static_context.h"
 
 #include <vector>
 #include "util/hashmap.h"
 
 namespace xqp{
 
+class static_context;
 
 class StaticContextWrapper : public StaticQueryContext //defined in zorba_api
 {

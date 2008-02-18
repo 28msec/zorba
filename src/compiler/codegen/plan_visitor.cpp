@@ -32,6 +32,8 @@
 #include "runtime/visitors/iterprinter.h"
 
 #include "zorba/util/properties.h"
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 #include <iostream>
 #include <vector>

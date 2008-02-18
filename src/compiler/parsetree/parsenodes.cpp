@@ -22,6 +22,7 @@
 #include "util/tracer.h"
 #include "errors/error_factory.h"
 #include "store/api/item.h"
+#include "types/typemanager.h"
 
 #include "util/utf8/Unicode_util.h"
 

@@ -3,8 +3,9 @@
 #define ZORBA_BASE_ENGINE_API_CLASS_21_JAN_2008
 
 #include "zorba/util/rchandle.h"
-#include "store/api/store_api.h"
+//#include "zorba/store/api/store_api.h"
 #include "zorba/system/zorba_version.h"
+//#include "zorba/compiler/xquery_plan_print.h"
 
 namespace xqp{
 
@@ -18,6 +19,11 @@ typedef rchandle<class DynamicQueryContext> DynamicQueryContext_t;
 typedef rchandle<class XQuery> XQuery_t;
 typedef rchandle<class ZorbaAlertsManager>	ZorbaAlertsManager_t;
 
+class XmlDataManager;
+typedef rchandle<class XmlDataManager>	XmlDataManager_t;
+
+class XQueryTreePlans;
+typedef rchandle<class XQueryTreePlans>	XQueryTreePlans_t;
 
 class ZorbaBaseEngine : public rcobject
 {
@@ -32,18 +38,21 @@ public:
         xqp_string aQueryString,
         StaticQueryContext_t = 0, 
 				xqp_string	xquery_source_uri = "",
-        bool routing_mode = false) = 0;
+        bool routing_mode = false,
+        XQueryTreePlans_t planprint = NULL) = 0;
 
   virtual XQuery_t createQueryFromFile(
         xqp_string xquery_file,
         StaticQueryContext_t = 0, 
-        bool routing_mode = false) = 0;
+        bool routing_mode = false,
+        XQueryTreePlans_t planprint = NULL) = 0;
 
   virtual XQuery_t createQueryFromStream(
 				std::istream		&is,
         StaticQueryContext_t = 0, 
         xqp_string xquery_source_uri = "",
-				bool routing_mode = false) = 0;
+				bool routing_mode = false,
+        XQueryTreePlans_t planprint = NULL) = 0;
 
 	virtual ZorbaAlertsManager_t getAlertsManagerForCurrentThread() = 0;
 
@@ -71,6 +80,7 @@ public:
 
 	virtual	XmlDataManager_t		getXmlDataManager() = 0;
 
+  virtual XQueryTreePlans_t createDebugPlanPrintObject() = 0;
 
   static std::string
   getZorbaVersion() { return ZorbaVersion::getZorbaVersion(); }

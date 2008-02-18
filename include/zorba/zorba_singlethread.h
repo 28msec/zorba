@@ -17,6 +17,7 @@
 #include "zorba/system/zorba_engine_singlethread_api.h"
 #include "zorba/types/typeident.h"
 #include "errors/xqp_exception.h"
+#include "compiler/xquery_plan_print.h"
 
 /** \example usecase1.cpp
  * This is an example of how to use the single threaded API in zorba.

@@ -17,6 +17,7 @@
 #include "zorba/system/zorba_engine_api.h"
 #include "zorba/types/typeident.h"
 #include "errors/xqp_exception.h"
+#include "compiler/xquery_plan_print.h"
 
 
 #endif

@@ -3,8 +3,8 @@
 #define ZORBA_XML_STORE_WRAPPER_IMPL_10_JAN_2008
 
 #include <iostream>
-#include "common/shared_types.h"
-#include "zorba/types/representations.h"
+//#include "common/shared_types.h"
+//#include "zorba/types/representations.h"
 #include "store/api/store_api.h"
 
 namespace xqp

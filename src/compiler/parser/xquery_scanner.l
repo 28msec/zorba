@@ -48,6 +48,7 @@
 #include "compiler/parser/xquery_parser.hpp"
 #include "zorba/util/properties.h"
 #include "types/representations.h"
+#include "types/typemanager.h"
 
 #define TRY_STR_LIT( ttype, put, yytext, yyleng )                       \
   do {                                                                  \

@@ -12,6 +12,8 @@
 #include "store/api/temp_seq.h"
 #include "store/api/item.h"
 #include "runtime/base/plan_iterator_wrapper.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
 
 namespace xqp
 {

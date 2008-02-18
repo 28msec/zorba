@@ -4,7 +4,7 @@
 
 #include "common/common.h"
 
-#include "store/api/store_api.h"
+//#include "store/api/store_api.h"
 #include "system/zorba_engine_api.h"
 #include "system/zorba_engine_singlethread_api.h"
 
@@ -85,18 +85,21 @@ public:
         xqp_string aQueryString,
         StaticQueryContext_t = 0, 
 				xqp_string	xquery_source_uri = "",
-        bool routing_mode = false);
+        bool routing_mode = false,
+        XQueryTreePlans_t planprint = NULL);
 
   virtual XQuery_t createQueryFromFile(
         xqp_string xquery_file,
         StaticQueryContext_t = 0, 
-        bool routing_mode = false);
+        bool routing_mode = false,
+        XQueryTreePlans_t planprint = NULL);
 
   virtual XQuery_t createQueryFromStream(
 				std::istream		&is,
         StaticQueryContext_t = 0, 
         xqp_string xquery_source_uri = "",
-        bool routing_mode = false);
+        bool routing_mode = false,
+        XQueryTreePlans_t planprint = NULL);
 
 	ZorbaAlertsManager_t getAlertsManagerForCurrentThread();
 
@@ -118,6 +121,8 @@ public:
 	DynamicQueryContext_t createDynamicContext();
 
 	virtual	XmlDataManager_t		getXmlDataManager();
+
+  virtual XQueryTreePlans_t createDebugPlanPrintObject();
 
 protected:
 #ifdef WIN32

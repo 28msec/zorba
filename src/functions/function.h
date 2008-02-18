@@ -15,6 +15,7 @@
 
 #include "functions/signature.h"
 #include "context/common.h"
+#include "compiler/parser/location.hh"
 
 namespace xqp {
 

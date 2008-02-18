@@ -5,6 +5,7 @@
 #include "errors/error_factory.h"
 #include "store/api/item.h"
 #include "types/casting.h"
+#include "store/api/item_factory.h"
 
 namespace xqp
 {

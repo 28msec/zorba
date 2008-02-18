@@ -6,6 +6,7 @@
 #include "system/zorba_engine.h"
 #include "system/zorba.h"
 #include "types/casting.h"
+#include "context/static_context.h"
 
 #include "zorba/functions/stateless_function.h"
 

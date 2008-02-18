@@ -23,6 +23,8 @@
 #include "errors/error_factory.h"
 
 #include "util/web/web.h"
+//#include "store/api/store.h"
+#include "store/api/item_factory.h"
 
 using namespace std;
 namespace xqp {
