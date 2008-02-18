@@ -21,8 +21,7 @@ class ResultIteratorWrapper : public ResultIterator, public PlanWrapper
 	friend class Zorba_XQueryBinary;
 
 
-	Zorba_XQueryBinary_t       xquery;
-//	bool		                   theClosed;
+	Zorba_XQueryBinary       * xquery;
 	dynamic_context		       * internal_dyn_context;
 public:
 	
