@@ -104,7 +104,6 @@ public:
   class constructor_expr : public expr {
   public:
     constructor_expr(yy::location const& loc) : expr (loc) {}
-    virtual ~constructor_expr() {}
   };
 
 /////////////////////////////////////////////////////////////////////////
@@ -146,7 +145,6 @@ public:
 public:
   var_expr(yy::location const& loc, Item_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
   var_expr(yy::location const& loc, var_kind k, Item_t name) : expr (loc), kind (k), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
-  ~var_expr() {}
 
 public:
   Item_t get_varname() const { return varname_h; }
@@ -185,7 +183,6 @@ public:
 public:
   order_modifier (dir_spec_t _dir, StaticQueryContext::order_empty_mode_t _empty_mode, std::string _collation)
     : dir (_dir), empty_mode (_empty_mode), collation (_collation) {}
-	~order_modifier() {}
 
 };
 
@@ -230,7 +227,6 @@ public:	// ctor,dtor
 		varref_t _score_var_h,
 		expr_t _expr_h);
 
-	~forlet_clause();
 
 public:	// accessors
 	enum forlet_t get_type() const { return type; }
@@ -348,7 +344,6 @@ public:
 
 public:
 	case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
-	~case_clause() {}
 
 };
 
@@ -359,7 +354,6 @@ class promote_expr : public expr {
       : expr(loc),
       input_expr_h(input),
       target_type(type) { }
-    virtual ~promote_expr() { }
 
   protected:
     expr_t input_expr_h;
@@ -397,7 +391,6 @@ protected:
 
 public:
 	typeswitch_expr(yy::location const&);
-	~typeswitch_expr();
 
 public:
 	expr_t get_switch_expr() const
@@ -461,7 +454,6 @@ public:
 	if_expr(
 		yy::location const&);
 
-	~if_expr();
 
 public:
 	expr_t get_cond_expr() const { return cond_expr_h; }
@@ -574,7 +566,6 @@ public:
 		expr_t,
 		expr_t);
 
-	~ft_contains_expr();
 
 public:
 	expr_t get_range() const { return range_h; }
@@ -610,7 +601,6 @@ public:
 	instanceof_expr (yy::location const&,
                    expr_t,
                    xqtref_t);
-	~instanceof_expr();
 
 public:
 	expr_t get_expr() const { return expr_h; }
@@ -643,7 +633,6 @@ public:
 		xqtref_t,
     enum ZorbaError::ErrorCodes);
 
-	~treat_expr();
 
 public:
 	expr_t get_expr() const { return expr_h; }
@@ -672,7 +661,6 @@ public:
 		yy::location const&,
 		expr_t,
 		xqtref_t);
-	~castable_expr();
 
 public:
 	expr_t get_cast_expr() const { return expr_h; }
@@ -702,7 +690,6 @@ public:
 		yy::location const&,
 		expr_t,
 		xqtref_t);
-	~cast_expr();
 
 public:
 	expr_t get_unary_expr() const { return expr_h; }
@@ -731,7 +718,6 @@ public:
 		yy::location const&,
 		enum validation_mode_t,
 		expr_t);
-	~validate_expr();
 
 public:
 	expr_t get_expr() const { return expr_h; }
@@ -754,7 +740,6 @@ struct pragma : public rcobject
 
 	pragma(Item_t _name_h, std::string const& _content)
 	: name_h(_name_h), content(_content) {}
-	~pragma() {}
 };
 
 
@@ -773,7 +758,6 @@ public:
 	extension_expr(
 		yy::location const&,
 		expr_t);
-	~extension_expr();
 
 public:
 	void add(rchandle<pragma> _pragma_h) { pragma_h = _pragma_h; }
@@ -830,7 +814,6 @@ protected:
 
 public:
 	relpath_expr(yy::location const&);
-	~relpath_expr();
 
 	void add_back(expr_t step)          { theSteps.push_back(step); }
 	void add_front(expr_t step)         { theSteps.push_front(step); }
@@ -871,7 +854,6 @@ protected:
 
 public:
 	axis_step_expr(yy::location const&);
-	~axis_step_expr();
 
 public:
 	axis_kind_t getAxis() const          { return theAxis; }
@@ -924,7 +906,6 @@ protected:
 
 public:
 	match_expr(yy::location const&);
-	~match_expr();
 
 	match_test_t getTestKind() const         { return theTestKind; }
 	match_test_t getDocTestKind() const      { return theDocTestKind; }
@@ -983,7 +964,6 @@ public:
   const_expr(yy::location const&, xqp_boolean);
   const_expr(yy::location const&, Item_t);  
   const_expr(yy::location const&, const char* aNamespace, const char* aPrefix, const char* aLocal);
-  ~const_expr();
 
 public:
   Item_t get_val () const { return val; }
@@ -1019,7 +999,6 @@ public:
 		yy::location const&,
 		order_type_t,
 		expr_t);
-	~order_expr();
 
 public:
 	order_type_t get_type() const { return type; }
@@ -1064,7 +1043,6 @@ public:
     expr_t aContent,
     rchandle<namespace_context> aNSCtx);
   
-	~elem_expr();
 	
   expr_t getQNameExpr() const { return theQNameExpr; }
   void setQNameExpr(expr_t aQNameExpr) { theQNameExpr = aQNameExpr; }
@@ -1091,7 +1069,6 @@ public:
 	doc_expr(
 		yy::location const&,
 		expr_t aContent);
-	~doc_expr();
 
 public:
 	expr_t getContent() const { return theContent; }
@@ -1131,7 +1108,6 @@ public:
 		expr_t aQNameExpr,
 		expr_t aValueExpr);
 
-	~attr_expr();
 
 public:
 	expr_t getQNameExpr() const { return theQNameExpr; }
@@ -1167,7 +1143,6 @@ public:
 		yy::location const&,
     text_constructor_type,
 		expr_t);
-	~text_expr();
 
 public:
 	expr_t get_text () const { return text; }
@@ -1203,7 +1178,6 @@ public:
   pi_expr (yy::location const&,
            expr_t,
            expr_t);
-  ~pi_expr();
   
 public:
   expr_t get_target_expr() const { return target_expr_h; }

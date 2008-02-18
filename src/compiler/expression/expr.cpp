@@ -78,10 +78,10 @@ string var_expr::decode_var_kind(
 }
 
 
-void var_expr::accept(expr_visitor& v)
+void var_expr::accept (expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
-  v.end_visit(*this);
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 expr::expr_t var_expr::clone(expr::substitution_t& substitution)
@@ -108,10 +108,6 @@ forlet_clause::forlet_clause(
   pos_var_h(_pos_var_h),
   score_var_h(_score_var_h),
   expr_h(_expr_h)
-{
-}
-
-forlet_clause::~forlet_clause()
 {
 }
 
@@ -144,9 +140,9 @@ rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
 DECLARE_VISITOR_FUNCTOR (forletref_visitor_functor, flwor_expr::forletref_t, { ACCEPT (e->expr_h); });
 DECLARE_VISITOR_FUNCTOR (orderspec_visitor_functor, flwor_expr::orderspec_t, { ACCEPT (e.first); });
 
-void flwor_expr::accept(expr_visitor& v)
+void flwor_expr::accept (expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
+  BEGIN_VISITOR();
 
   for_each (clause_v.begin (), clause_v.end (), forletref_visitor_functor (v));
   
@@ -156,7 +152,7 @@ void flwor_expr::accept(expr_visitor& v)
 
   retval_h->accept(v);
   
-  v.end_visit(*this); 
+  END_VISITOR(); 
 }
 
 expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
@@ -184,7 +180,7 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
   return flwor_copy;
 }
 
-void promote_expr::accept(expr_visitor& v)
+void promote_expr::accept (expr_visitor& v)
 {
   BEGIN_VISITOR ();
   ACCEPT (input_expr_h);
@@ -203,14 +199,10 @@ typeswitch_expr::typeswitch_expr(
 {
 }
 
-typeswitch_expr::~typeswitch_expr()
-{
-}
-
 
 DECLARE_VISITOR_FUNCTOR (caseclause_visitor_functor, typeswitch_expr::clauseref_t, { ACCEPT (e->var_h); ACCEPT (e->case_expr_h); });
 
-void typeswitch_expr::accept(expr_visitor& v) {
+void typeswitch_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   ACCEPT (switch_expr_h);
   caseclause_visitor_functor f (v);
@@ -243,19 +235,14 @@ if_expr::if_expr(
 {
 }
 
-if_expr::~if_expr()
-{
-}
 
-
-void if_expr::accept(
-  expr_visitor& v)
+void if_expr::accept (expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
+  BEGIN_VISITOR();
   cond_expr_h->accept(v);
   then_expr_h->accept(v);
   else_expr_h->accept(v);
-  v.end_visit(*this);
+  END_VISITOR();
 }
 
 
@@ -272,12 +259,10 @@ void if_expr::accept(
 // [52] [http://www.w3.org/TR/xquery/#prod-xquery-UnionExpr]
 // [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
 
-void fo_expr::accept(
-  expr_visitor& v)
+void fo_expr::accept (expr_visitor& v)
 {
   BEGIN_VISITOR ();
-  visitor_functor a (v);
-  for_each (begin (), end (), a);
+  for_each (begin (), end (), visitor_functor (v));
   END_VISITOR ();
 }
 
@@ -304,13 +289,8 @@ ft_contains_expr::ft_contains_expr(
 {
 }
 
-ft_contains_expr::~ft_contains_expr()
-{
-}
 
-
-void ft_contains_expr::accept(
-  expr_visitor& v)
+void ft_contains_expr::accept (expr_visitor& v)
 {
   BEGIN_VISITOR ();
   ACCEPT (range_h);
@@ -330,17 +310,12 @@ instanceof_expr::instanceof_expr(yy::location const& loc,
 {
 }
 
-instanceof_expr::~instanceof_expr()
-{
-}
 
-
-void instanceof_expr::accept(
-  expr_visitor& v)
+void instanceof_expr::accept (expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
+  BEGIN_VISITOR();
   expr_h->accept(v);
-  v.end_visit(*this);  
+  END_VISITOR();  
 }
 
 
@@ -359,13 +334,8 @@ treat_expr::treat_expr(
 {
 }
 
-treat_expr::~treat_expr()
-{
-}
 
-
-void treat_expr::accept(
-  expr_visitor& v)
+void treat_expr::accept (expr_visitor& v)
 {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
@@ -386,13 +356,8 @@ castable_expr::castable_expr(
 {
 }
 
-castable_expr::~castable_expr()
-{
-}
 
-
-void castable_expr::accept(
-  expr_visitor& v)
+void castable_expr::accept (expr_visitor& v)
 {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
@@ -413,13 +378,8 @@ cast_expr::cast_expr(
 {
 }
 
-cast_expr::~cast_expr()
-{
-}
 
-
-void cast_expr::accept(
-  expr_visitor& v)
+void cast_expr::accept (expr_visitor& v)
 {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
@@ -440,13 +400,8 @@ validate_expr::validate_expr(
 {
 }
 
-validate_expr::~validate_expr()
-{
-}
 
-
-void validate_expr::accept(
-  expr_visitor& v)
+void validate_expr::accept (expr_visitor& v)
 {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
@@ -472,13 +427,8 @@ extension_expr::extension_expr(
 {
 }
 
-extension_expr::~extension_expr()
-{
-}
 
-
-void extension_expr::accept(
-  expr_visitor& v)
+void extension_expr::accept (expr_visitor& v)
 {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
@@ -500,23 +450,13 @@ relpath_expr::relpath_expr(yy::location const& loc)
 }
 
 
-relpath_expr::~relpath_expr()
+void relpath_expr::accept (expr_visitor& v)
 {
-}
+  BEGIN_VISITOR();
 
+  for_each (begin (), end (), visitor_functor (v));
 
-void relpath_expr::accept(expr_visitor& v)
-{
-  if (!v.begin_visit(*this)) return;
-
-  for (list_iterator<expr_t> it = begin(); it != end(); ++it)
-  {
-    expr_t expr = *it;
-    Assert(expr != NULL);
-    expr->accept(v);
-  }
-
-  v.end_visit(*this);
+  END_VISITOR();
 }
 
 
@@ -534,20 +474,15 @@ axis_step_expr::axis_step_expr(yy::location const& loc)
 }
 
 
-axis_step_expr::~axis_step_expr()
+void axis_step_expr::accept (expr_visitor& v)
 {
-}
-
-
-void axis_step_expr::accept(expr_visitor& v)
-{
-  if (!v.begin_visit(*this)) return;
+  BEGIN_VISITOR();
 
   for_each (thePreds.begin (), thePreds.end (), visitor_functor (v));
 
   ACCEPT (theNodeTest);
 
-  v.end_visit(*this);
+  END_VISITOR();
 }
 
 
@@ -574,15 +509,10 @@ match_expr::match_expr(yy::location const& loc)
 }
 
 
-match_expr::~match_expr()
+void match_expr::accept (expr_visitor& v)
 {
-}
-
-
-void match_expr::accept(expr_visitor& v)
-{
-  if (!v.begin_visit(*this)) return;
-  v.end_visit(*this);
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -685,16 +615,11 @@ const_expr::const_expr(
 {
 }
 
-const_expr::~const_expr()
-{
-}
 
-
-void const_expr::accept(
-  expr_visitor& v)
+void const_expr::accept (expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
-  v.end_visit(*this);
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -711,13 +636,8 @@ order_expr::order_expr(
 {
 }
 
-order_expr::~order_expr()
-{
-}
 
-
-void order_expr::accept(
-  expr_visitor& v)
+void order_expr::accept (expr_visitor& v)
 {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
@@ -758,18 +678,14 @@ elem_expr::elem_expr (
 }
   
 
-elem_expr::~elem_expr()
-{
-}
 
-
-void elem_expr::accept(expr_visitor& v)
+void elem_expr::accept (expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
+  BEGIN_VISITOR();
   ACCEPT (theQNameExpr);
   ACCEPT (theAttrs);
   ACCEPT (theContent);
-  v.end_visit(*this);
+  END_VISITOR();
 }
 
 
@@ -784,17 +700,12 @@ doc_expr::doc_expr(
 {
 }
 
-doc_expr::~doc_expr()
-{
-}
 
-
-void doc_expr::accept(
-  expr_visitor& v)
+void doc_expr::accept (expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
+  BEGIN_VISITOR();
   ACCEPT(theContent);
-  v.end_visit(*this);
+  END_VISITOR();
 }
 
 
@@ -814,10 +725,6 @@ attr_expr::attr_expr(
 {
 }
 
-attr_expr::~attr_expr()
-{
-}
-
 
 Item* attr_expr::getQName() const
 {
@@ -829,13 +736,12 @@ Item* attr_expr::getQName() const
 }
 
 
-void attr_expr::accept(
-  expr_visitor& v)
+void attr_expr::accept (expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
+  BEGIN_VISITOR();
   ACCEPT (theQNameExpr);
   ACCEPT (theValueExpr);
-  v.end_visit(*this);
+  END_VISITOR();
 }
 
 
@@ -852,17 +758,12 @@ text_expr::text_expr(
 {
 }
 
-text_expr::~text_expr()
-{
-}
 
-
-void text_expr::accept(
-  expr_visitor& v)
+void text_expr::accept (expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
+  BEGIN_VISITOR();
   ACCEPT (text);
-  v.end_visit(*this);
+  END_VISITOR();
 }
 
 
@@ -881,13 +782,8 @@ pi_expr::pi_expr(
 {
 }
 
-pi_expr::~pi_expr()
-{
-}
 
-
-void pi_expr::accept(
-  expr_visitor& v)
+void pi_expr::accept (expr_visitor& v)
 {
   BEGIN_VISITOR ();
   ACCEPT (target_expr_h);
@@ -909,7 +805,6 @@ function_def_expr::function_def_expr (yy::location const& loc, Item_t name_, std
     args.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
   sig = auto_ptr<signature> (new signature (get_name (), args, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
-
 
 
 } /* namespace xqp */
