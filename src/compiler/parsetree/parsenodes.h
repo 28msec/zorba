@@ -75,7 +75,6 @@ class exprnode : public parsenode
 {
 public:
 	exprnode(const yy::location& loc) : parsenode(loc) { }
-  virtual ~exprnode() {}
 
 public:
   
@@ -286,7 +285,6 @@ class Module : public parsenode
 {
 public:
 	Module(const yy::location&);
-	~Module();
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -307,7 +305,7 @@ protected:
 	std::string version;
 	std::string encoding;
 
-    friend class ParseNodePrintXMLVisitor;
+  friend class ParseNodePrintXMLVisitor;
 
 public:
 	VersionDecl(
@@ -315,7 +313,6 @@ public:
 		std::string const& version,
 		std::string const& encoding);
 
-	~VersionDecl();
 
 public:
 	std::string get_version() const { return version; }
@@ -349,7 +346,6 @@ public:
 		const yy::location&,
 		rchandle<QueryBody>);
 
-	~MainModule();
 
 public:
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
@@ -379,7 +375,6 @@ public:
 		rchandle<ModuleDecl>, 
 		rchandle<Prolog>);
 
-	~LibraryModule();
 
 public:
 	rchandle<ModuleDecl> get_decl() const { return decl_h; }
@@ -409,7 +404,6 @@ public:
 		std::string const& prefix,
 		std::string const& target_namespace);
 
-	~ModuleDecl();
 
 public:
 	std::string get_prefix() const { return prefix; }
@@ -439,7 +433,6 @@ public:
 		rchandle<SIND_DeclList>,
 		rchandle<VFO_DeclList>);
 
-	~Prolog();
 
 public:
 	rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
@@ -464,7 +457,6 @@ protected:
 
 public:
 	SIND_DeclList(const yy::location&);
-	~SIND_DeclList();
 
 public:
 	void push_back(rchandle<parsenode> sind_h) { sind_hv.push_back(sind_h); }
@@ -489,7 +481,6 @@ protected:
 
 public:
 	VFO_DeclList(const yy::location&);
-	~VFO_DeclList();
 
 public:
 	void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
@@ -564,7 +555,6 @@ public:
 		std::string const& prefix,
 		std::string const& uri);
 
-	~NamespaceDecl();
 
 public:
 	std::string get_prefix() const { return thePrefix; }
@@ -592,7 +582,6 @@ public:
 		const yy::location&,
 		StaticQueryContext::boundary_space_mode_t);
 
-	~BoundarySpaceDecl();
 
 public:
 	StaticQueryContext::boundary_space_mode_t
@@ -623,7 +612,6 @@ public:
 		enum default_namespace_mode_t mode,
 		std::string const& default_namespace);
 
-	~DefaultNamespaceDecl();
 
 public:
 	enum default_namespace_mode_t get_mode() const { return mode; }
@@ -653,7 +641,6 @@ public:
 		rchandle<QName> qname_h,
 		std::string const& val);
 
-	~OptionDecl();
 
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
@@ -682,7 +669,6 @@ public:
 		const yy::location&,
 		rchandle<parsenode>);
 
-	~FTOptionDecl();
 
 public:
 	rchandle<parsenode> get_match_option() const { return match_option_h; }
@@ -709,7 +695,6 @@ public:
 		const yy::location&,
 		StaticQueryContext::ordering_mode_t);
 
-	~OrderingModeDecl();
 	
 public:
 	StaticQueryContext::ordering_mode_t get_mode() const { return mode; }
@@ -737,7 +722,6 @@ public:
 		const yy::location&,
 		StaticQueryContext::order_empty_mode_t);
 
-	~EmptyOrderDecl();
 	
 public:
 	StaticQueryContext::order_empty_mode_t get_mode() const { return mode; }
@@ -767,7 +751,6 @@ public:
 		StaticQueryContext::preserve_mode_t preserve_mode,
 		StaticQueryContext::inherit_mode_t  inherit_mode);
 
-	~CopyNamespacesDecl();
 
 public: 
 	StaticQueryContext::preserve_mode_t get_preserve_mode() const
@@ -806,7 +789,6 @@ public:
 		const yy::location&,
 		std::string const&  collation);
 
-	~DefaultCollationDecl();
 
 public:
 	std::string get_collation() const { return collation; }
@@ -833,7 +815,6 @@ public:
 		const yy::location&,
 		std::string const& base_uri);
 
-	~BaseURIDecl();
 
 public:
 	std::string get_base_uri() const { return base_uri; }
@@ -867,7 +848,6 @@ public:
 		std::string const& uri,
 		rchandle<URILiteralList>);
 
-	~SchemaImport();
 
 public:
 	rchandle<SchemaPrefix> get_prefix() const { return prefix_h; }
@@ -896,7 +876,6 @@ public:
 	URILiteralList(
 		const yy::location&);
 
-	~URILiteralList();
 
 public:
 	void push_back(std::string const& uri) { uri_v.push_back(uri); }
@@ -930,7 +909,6 @@ public:
 		const yy::location&,
 		std::string const& prefix);
 
-	~SchemaPrefix();
 
 public:
 	std::string get_prefix() const { return prefix; }
@@ -968,7 +946,6 @@ public:
 		std::string const& prefix,
 		std::string const& uri,
 		rchandle<URILiteralList>);
-	~ModuleImport();
 
 public:
 	std::string get_prefix() const { return prefix; }
@@ -1003,7 +980,6 @@ public:
 		std::string varname,
 		rchandle<TypeDeclaration>,
 		rchandle<exprnode>);
-	~VarDecl();
 
 public:
 	std::string get_varname() const { return varname; }
@@ -1034,7 +1010,6 @@ public:
 		const yy::location&,
 		StaticQueryContext::construction_mode_t);
 
-	~ConstructionDecl();
 
 public:
 	StaticQueryContext::construction_mode_t get_mode() const { return mode; }
@@ -1078,7 +1053,6 @@ public:
 		rchandle<EnclosedExpr>,
 		function_type_t type);
 
-	~FunctionDecl();
 
 public:
 	rchandle<QName> get_name() const { return name_h; }
@@ -1108,7 +1082,6 @@ protected:
 
 public:
 	ParamList(const yy::location&);
-	~ParamList();
 
 public:
 	void push_back(rchandle<Param> param_h) { param_hv.push_back(param_h); }
@@ -1142,7 +1115,6 @@ public:
 		std::string name,
 		rchandle<TypeDeclaration>);
 
-	~Param();
 
 public:
 	std::string get_name() const { return name; }
@@ -1170,7 +1142,6 @@ public:
 		const yy::location&,
 		rchandle<exprnode>);
 
-	~EnclosedExpr();
 
 public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
@@ -1199,7 +1170,6 @@ public:
 
 	QueryBody();
 
-	~QueryBody();
 
 public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
@@ -1224,7 +1194,6 @@ protected:
 
 public:
 	Expr(const yy::location&);
-	~Expr();
 
 public:
 	void push_back(rchandle<exprnode> expr_h) { expr_hv.push_back(expr_h); }
@@ -1272,7 +1241,6 @@ public:
 		rchandle<OrderByClause>,
 		rchandle<exprnode>);
 
-	~FLWORExpr();
 
 public:
 	rchandle<ForLetClauseList> get_forlet_list() const { return forlet_list_h; }
@@ -1300,7 +1268,6 @@ protected:
 
 public:
 	ForLetClauseList(const yy::location&);
-	~ForLetClauseList();
 
 public:
 	void push_back(rchandle<ForOrLetClause> forlet_h) { forlet_hv.push_back(forlet_h); }
@@ -1342,7 +1309,6 @@ public:
 		const yy::location&,
 		rchandle<VarInDeclList>);
 
-	~ForClause();
 
 public:
 	rchandle<VarInDeclList> get_vardecl_list() const { return vardecl_list_h; }
@@ -1370,7 +1336,6 @@ protected:
 
 public:
 	VarInDeclList(const yy::location&);
-	~VarInDeclList();
 
 public:
 	void push_back(rchandle<VarInDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
@@ -1415,7 +1380,6 @@ public:
 		rchandle<FTScoreVar>,
 		rchandle<exprnode>);
 
-	~VarInDecl();
 
 public:
 	std::string get_varname() const { return varname; }
@@ -1446,7 +1410,6 @@ public:
 		const yy::location&,
 		std::string const& varname);
 
-	~PositionalVar();
 
 public:
 	std::string get_varname() const { return varname; }
@@ -1473,7 +1436,6 @@ public:
 	LetClause(
 		const yy::location&,
 		rchandle<VarGetsDeclList>);
-	~LetClause();
 
 public:
 	rchandle<VarGetsDeclList> get_vardecl_list() const { return vardecl_list_h; }
@@ -1501,7 +1463,6 @@ protected:
 
 public:
 	VarGetsDeclList(const yy::location&);
-	~VarGetsDeclList();
 
 public:
 	void push_back(rchandle<VarGetsDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
@@ -1540,7 +1501,6 @@ public:
 		rchandle<TypeDeclaration>,
 		rchandle<FTScoreVar>,
 		rchandle<exprnode>);
-	~VarGetsDecl();
 
 public:
 	std::string get_varname() const { return varname; }
@@ -1569,7 +1529,6 @@ public:
 	FTScoreVar(
 		const yy::location&,
 		std::string varname);
-	~FTScoreVar();
 
 public:
 	std::string get_varname() const { return varname; }
@@ -1595,7 +1554,6 @@ public:
 	WhereClause(
 		const yy::location&,
 		rchandle<exprnode>);
-	~WhereClause();
 
 public:
 	rchandle<exprnode> get_predicate() const { return predicate_h; }
@@ -1624,7 +1582,6 @@ public:
 		const yy::location&,
 		rchandle<OrderSpecList>,
 		bool stable_b = false);
-	~OrderByClause();
 
 public:
 	rchandle<OrderSpecList> get_spec_list() const { return spec_list_h; }
@@ -1650,7 +1607,6 @@ protected:
 
 public:
 	OrderSpecList(const yy::location&);
-	~OrderSpecList();
 
 public:
 	void push_back(rchandle<OrderSpec> spec_h) { spec_hv.push_back(spec_h); }
@@ -1681,7 +1637,6 @@ public:
 		const yy::location&,
 		rchandle<exprnode>,
 		rchandle<OrderModifier>);
-	~OrderSpec();
 
 public:
 	rchandle<exprnode> get_spec() const { return spec_h; }
@@ -1718,7 +1673,6 @@ public:
 		rchandle<OrderDirSpec>,
 		rchandle<OrderEmptySpec>,
 		rchandle<OrderCollationSpec>);
-	~OrderModifier();
 
 public:
 	rchandle<OrderDirSpec> get_dir_spec() const
@@ -1749,7 +1703,6 @@ public:
 	OrderDirSpec(
 		const yy::location&,
 		dir_spec_t dir_spec);
-	~OrderDirSpec();
 	
 public:
 	dir_spec_t get_dir_spec() const { return dir_spec; }
@@ -1775,7 +1728,6 @@ public:
 	OrderEmptySpec(
 		const yy::location&,
 		StaticQueryContext::order_empty_mode_t empty_order_spec);
-	~OrderEmptySpec();
 
 public:
 	StaticQueryContext::order_empty_mode_t get_empty_order_spec() const
@@ -1802,7 +1754,6 @@ public:
 	OrderCollationSpec(
 		const yy::location&,
 		std::string const& uri);
-	~OrderCollationSpec();
 
 public:
 	std::string get_uri() const { return uri; }
@@ -1833,7 +1784,6 @@ public:
 		quantification_mode_t qmode,
 		rchandle<QVarInDeclList>,
 		rchandle<exprnode>);
-	~QuantifiedExpr();
 
 public:
 	quantification_mode_t get_qmode() const { return qmode; }
@@ -1860,7 +1810,6 @@ protected:
 
 public:
 	QVarInDeclList(const yy::location&);
-	~QVarInDeclList();
 
 public:
 	void push_back(rchandle<QVarInDecl> decl_h) { qvar_decl_hv.push_back(decl_h); }
@@ -1899,7 +1848,6 @@ public:
 		rchandle<TypeDeclaration>,
 		rchandle<exprnode>);
 
-	~QVarInDecl();
 
 public:
 	std::string get_name() const { return name; }
@@ -1942,7 +1890,6 @@ public:
 		std::string default_varname,
 		rchandle<exprnode>);
 
-	~TypeswitchExpr();
 
 public:
 	rchandle<exprnode> get_switch_expr() const { return switch_expr_h; }
@@ -1970,7 +1917,6 @@ protected:
 
 public:
 	CaseClauseList(const yy::location&);
-	~CaseClauseList();
 
 public:
 	void push_back(rchandle<CaseClause> clause_h)
@@ -2020,7 +1966,6 @@ public:
 		rchandle<SequenceType>,
 		rchandle<exprnode>);
 		
-	~CaseClause();
 
 public:
 	std::string get_varname() const { return varname; }
@@ -2052,7 +1997,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
-	~IfExpr();
 
 public:
 	rchandle<exprnode> get_cond_expr() const { return cond_expr_h; }
@@ -2084,7 +2028,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~OrExpr();
 
 public:
 	rchandle<exprnode> get_or_expr() const { return or_expr_h; }
@@ -2115,7 +2058,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~AndExpr();
 
 public:
 	rchandle<exprnode> get_and_expr() const { return and_expr_h; }
@@ -2165,7 +2107,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~ComparisonExpr();
 
 public:
 	rchandle<exprnode> get_left() const { return left_h; }
@@ -2202,7 +2143,6 @@ public:
 		rchandle<FTSelection>,
 		rchandle<FTIgnoreOption>);
 
-	~FTContainsExpr();
 
 public:
 	rchandle<exprnode> get_range_expr() const { return range_expr_h; }
@@ -2235,7 +2175,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~RangeExpr();
 
 public:
 	rchandle<exprnode> get_from_expr() const { return from_expr_h; }
@@ -2270,7 +2209,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~AdditiveExpr();
 
 public:
 	add_op_t get_add_op() const { return add_op; }
@@ -2308,7 +2246,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~MultiplicativeExpr();
 
 public:
 	rchandle<exprnode> get_mult_expr() const { return mult_expr_h; }
@@ -2342,7 +2279,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~UnionExpr();
 
 public:
 	rchandle<exprnode> union_expr() const { return union_expr_h; }
@@ -2377,7 +2313,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~IntersectExceptExpr();
 
 public:
 	rchandle<exprnode> get_intex_expr() const { return intex_expr_h; }
@@ -2410,7 +2345,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<SequenceType>);
 
-	~InstanceofExpr();
 
 public:
 	rchandle<exprnode> get_treat_expr() const { return treat_expr_h; }
@@ -2442,7 +2376,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<SequenceType>);
 
-	~TreatExpr();
 
 public:
 	rchandle<exprnode> get_castable_expr() const { return castable_expr_h; }
@@ -2474,7 +2407,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<SingleType>);
 
-	~CastableExpr();
 
 public:
 	rchandle<exprnode> cast_expr() const { return cast_expr_h; }
@@ -2506,7 +2438,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<SingleType>);
 	
-	~CastExpr();
 
 public:
 	rchandle<exprnode> get_unary_expr() const { return unary_expr_h; }
@@ -2538,7 +2469,6 @@ public:
 		rchandle<SignList>,
 		rchandle<exprnode>);
 
-	~UnaryExpr();
 
 public:
 	rchandle<exprnode> get_value_expr() const { return value_expr_h; }
@@ -2570,7 +2500,6 @@ public:
 		const yy::location&,
 		bool _sign);
 
-	~SignList();
 
 public:
 	bool get_sign() const { return sign; }
@@ -2609,7 +2538,6 @@ public:
 
 	GeneralComp();
 
-	~GeneralComp();
 
 public:
 	enum gencomp_t get_type() const { return type; }
@@ -2639,7 +2567,6 @@ public:
 
 	ValueComp();
 
-	~ValueComp();
 
 public:
 	enum valcomp_t get_type() const { return type; }
@@ -2669,7 +2596,6 @@ public:
 
 	NodeComp();
 
-	~NodeComp();
 
 public:
 	enum nodecomp_t get_type() const { return type; }
@@ -2700,7 +2626,6 @@ public:
 		std::string const& valmode,
 		rchandle<exprnode>);
 
-	~ValidateExpr();
 
 public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
@@ -2732,7 +2657,6 @@ public:
 		rchandle<PragmaList>,
 		rchandle<exprnode>);
 
-	~ExtensionExpr();
 
 public:
 	rchandle<PragmaList> get_pragma_list() const { return pragma_list_h; }
@@ -2758,7 +2682,6 @@ protected:
 
 public:
 	PragmaList(const yy::location&);
-	~PragmaList();
 
 public:
 	void push_back(rchandle<Pragma> pragma_h) { pragma_hv.push_back(pragma_h); }
@@ -2789,7 +2712,6 @@ public:
 		rchandle<QName>,
 		std::string pragma_lit);
 
-	~Pragma();
 
 public:
 	rchandle<QName> get_name() const { return name_h; }
@@ -2847,7 +2769,6 @@ public:
 		enum pathtype_t type,
 		rchandle<exprnode>);
 
-	~PathExpr();
 
 public:
 	enum pathtype_t get_type() const { return type; }
@@ -2883,7 +2804,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~RelativePathExpr();
 
 public:
 	enum steptype_t get_step_type() const { return step_type; }
@@ -2926,7 +2846,6 @@ public:
 		rchandle<ReverseStep>,
 		rchandle<PredicateList>);
 
-	~AxisStep();
 
 public:
 	rchandle<ForwardStep> get_forward_step() const { return forward_step_h; }
@@ -2961,7 +2880,6 @@ public:
 		const yy::location&,
 		rchandle<AbbrevForwardStep>);
 
-	~ForwardStep();
 
 public:
 	rchandle<ForwardAxis> get_forward_axis() const { return forward_axis_h; }
@@ -2994,7 +2912,6 @@ public:
 		const yy::location&,
 		enum forward_axis_t);
 
-	~ForwardAxis();
 
 public:
 	enum forward_axis_t get_axis() const { return axis; }
@@ -3025,7 +2942,6 @@ public:
 		const yy::location&,
 		rchandle<parsenode>);
 		
-	~AbbrevForwardStep();
 
 public:
 	rchandle<parsenode> get_node_test() const { return node_test_h; }
@@ -3057,7 +2973,6 @@ public:
 		const yy::location&,
 		rchandle<ReverseAxis>);
 
-	~ReverseStep();
 
 public:
 	rchandle<ReverseAxis> get_axis() const { return axis_h; }
@@ -3087,7 +3002,6 @@ public:
 		const yy::location&,
 		enum reverse_axis_t);
 
-	~ReverseAxis();
 
 public:
 	enum reverse_axis_t get_axis() const { return axis; }
@@ -3129,7 +3043,6 @@ public:
 
 	NameTest(const yy::location& l, rchandle<Wildcard> w);
 
-	~NameTest();
 
 public:
 	rchandle<QName> getQName() const { return theQName; }
@@ -3163,7 +3076,6 @@ public:
     const xqp_string& lname,
 		enum wildcard_t type);
 
-	~Wildcard();
 
 public:
 	enum wildcard_t getKind() const        { return theKind; }
@@ -3194,7 +3106,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<PredicateList>);
 
-	~FilterExpr();
 
 public:
 	rchandle<exprnode> get_primary() const { return primary_h; }
@@ -3221,7 +3132,6 @@ protected:
 
 public:
 	PredicateList(const yy::location&);
-	~PredicateList();
 
 public:
 	void push_back(rchandle<exprnode> pred_h) { pred_hv.push_back(pred_h); }
@@ -3292,7 +3202,6 @@ public:
 		const yy::location&,
 		xqp_double);
 
-	~NumericLiteral();
 
 public:
 	enum numeric_type_t get_type() const { return type; }
@@ -3324,7 +3233,6 @@ public:
 		const yy::location&,
 		std::string varname);
 
-	~VarRef();
 
 public:
 	std::string get_varname() const { return varname; }
@@ -3353,7 +3261,6 @@ public:
 		const yy::location&,
 		rchandle<exprnode>);
 
-	~ParenthesizedExpr();
 
 public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
@@ -3375,7 +3282,6 @@ class ContextItemExpr : public exprnode
 {
 public:
 	ContextItemExpr(const yy::location&);
-	~ContextItemExpr();
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -3400,7 +3306,6 @@ public:
 		const yy::location&,
 		rchandle<exprnode>);
 
-	~OrderedExpr();
 
 public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
@@ -3428,7 +3333,6 @@ public:
 		const yy::location&,
 		rchandle<exprnode>);
 
-	~UnorderedExpr();
 
 public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
@@ -3460,7 +3364,6 @@ public:
 		rchandle<QName>,
 		rchandle<ArgList>);
 
-	~FunctionCall();
 
 public:
 	rchandle<QName> get_fname() const { return fname_h; }
@@ -3486,7 +3389,6 @@ protected:
 
 public:
 	ArgList(const yy::location&);
-	~ArgList();
 
 public:
 	void push_back(rchandle<exprnode> arg_h) { arg_hv.push_back(arg_h); }
@@ -3532,7 +3434,6 @@ public:
 		rchandle<DirAttributeList>,
 		rchandle<DirElemContentList>);
 
-	~DirElemConstructor();
 
 public:
 	rchandle<QName> get_elem_name() const { return elem_name_h; }
@@ -3559,7 +3460,6 @@ protected:
 
 public:
 	DirElemContentList(const yy::location&);
-	~DirElemContentList();
 
 public:
 	void push_back(rchandle<DirElemContent> dir_content_h)
@@ -3607,7 +3507,6 @@ public:
 		const yy::location&,
 		rchandle<CommonContent>); 
 
-	~DirElemContent();
 
 public:
 	rchandle<exprnode> get_direct_cons() const
@@ -3656,7 +3555,6 @@ public:
 		const yy::location&,
 		enum common_content_t);
 
-	~CommonContent();
 
 public:
 	enum common_content_t get_type() const { return type; }
@@ -3684,7 +3582,6 @@ public:
 		const yy::location&,
 		std::string cdata_content);
 
-	~CDataSection();
 
 public:
 	std::string get_cdata_content() const { return cdata_content; }
@@ -3713,7 +3610,6 @@ protected:
 
 public:
 	DirAttributeList(const yy::location&);
-	~DirAttributeList();
 
 public:
 	void push_back(rchandle<DirAttr> attr)
@@ -3748,7 +3644,6 @@ public:
         rchandle<QName>,
         rchandle<DirAttributeValue>);
   
-	~DirAttr();
 
 public:
 	rchandle<QName> get_name() const { return theName; }
@@ -3780,7 +3675,6 @@ public:
 		const yy::location&,
 		rchandle<AposAttrContentList>);
 
-	~DirAttributeValue();
 
 public:
 	rchandle<QuoteAttrContentList> get_quot_attr_content() const
@@ -3813,7 +3707,6 @@ protected:
 	
 public:
 	QuoteAttrContentList(const yy::location&);
-	~QuoteAttrContentList();
 
 public:
 	void push_back(rchandle<QuoteAttrValueContent> quot_atval_content_h)
@@ -3847,7 +3740,6 @@ protected:
 	
 public:
 	AposAttrContentList(const yy::location&);
-	~AposAttrContentList();
 
 public:
 	void push_back(rchandle<AposAttrValueContent> apos_atval_content_h)
@@ -3881,7 +3773,6 @@ public:
 		const yy::location&,
 		rchandle<CommonContent>);
 
-	~QuoteAttrValueContent();
 
 public:
 	std::string get_quot_atcontent() const { return quot_atcontent; }
@@ -3912,7 +3803,6 @@ public:
 		const yy::location&,
 		rchandle<CommonContent>);
 
-	~AposAttrValueContent();
 
 public:
 	std::string get_apos_atcontent() const { return apos_atcontent; }
@@ -3944,7 +3834,6 @@ public:
 		const yy::location&,
 		std::string const& comment);
 
-	~DirCommentConstructor();
 
 public:
   std::string get_comment() const { return comment; }
@@ -3987,7 +3876,6 @@ public:
 		std::string const& pi_target,
 		std::string const& pi_content);
 
-	~DirPIConstructor();
 
 public:
 	std::string get_pi_target() const { return pi_target; }
@@ -4039,7 +3927,6 @@ public:
 		const yy::location&,
 		rchandle<exprnode>);
 
-	~CompDocConstructor();
 
 public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
@@ -4072,7 +3959,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~CompElemConstructor();
 
 public:
 	rchandle<exprnode> get_qname_expr() const { return qname_expr_h; }
@@ -4103,7 +3989,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~CompAttrConstructor();
 
 public:
 	rchandle<exprnode> get_qname_expr() const { return qname_expr_h; }
@@ -4132,7 +4017,6 @@ public:
 		const yy::location&,
 		rchandle<exprnode> text_expr_h);
 
-	~CompTextConstructor();
 
 public:
 	rchandle<exprnode> get_text_expr() const { return text_expr_h; }
@@ -4160,7 +4044,6 @@ public:
 		const yy::location&,
 		rchandle<exprnode>);
 
-	~CompCommentConstructor();
 
 public:
 	rchandle<exprnode> get_comment_expr() const { return comment_expr_h; }
@@ -4199,7 +4082,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~CompPIConstructor();
 
 public:
 	std::string get_target() const { return target; }
@@ -4230,7 +4112,6 @@ public:
 		rchandle<AtomicType>,
 		bool hook_b);
 
-	~SingleType();
 
 public:
 	rchandle<AtomicType> get_atomic_type() const { return atomic_type_h; }
@@ -4258,7 +4139,6 @@ public:
 		const yy::location&,
 		rchandle<SequenceType>);
 
-	~TypeDeclaration();
 
 public:
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
@@ -4286,7 +4166,6 @@ public:
 		rchandle<parsenode>,
 		rchandle<OccurrenceIndicator>);
 
-	~SequenceType();
 
 public:
 	rchandle<parsenode> get_itemtype() const { return itemtype_h; }
@@ -4313,7 +4192,6 @@ public:
 		const yy::location&,
 		enum occurrence_t);
 
-	~OccurrenceIndicator();
 
 public:
 	enum occurrence_t get_type() const { return type; }
@@ -4340,7 +4218,6 @@ public:
 		
 	ItemType(const yy::location&);
 		
-	~ItemType();
 
 public:
 	bool get_item_test_bit() const { return item_test_b; }
@@ -4365,7 +4242,6 @@ public:
 		const yy::location&,
 		rchandle<QName>);
 		
-	~AtomicType();
 
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
@@ -4399,7 +4275,6 @@ class AnyKindTest : public parsenode
 {
 public:
 	AnyKindTest(const yy::location&);
-	~AnyKindTest();
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4430,7 +4305,6 @@ public:
 		const yy::location&,
 		rchandle<SchemaElementTest>);
 
-	~DocumentTest();
 
 public:
 	rchandle<ElementTest> get_elem_test() const
@@ -4452,7 +4326,6 @@ class TextTest : public parsenode
 {
 public:
 	TextTest(const yy::location&);
-	~TextTest();
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4469,7 +4342,6 @@ class CommentTest : public parsenode
 {
 public:
 	CommentTest(const yy::location&);
-	~CommentTest();
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4495,7 +4367,6 @@ public:
 		const yy::location&,
 		std::string target);
 
-	~PITest();
 
 public:
 	std::string get_target() const { return target; }
@@ -4524,7 +4395,6 @@ public:
 		rchandle<QName>,
 		rchandle<TypeName>);
 
-	~AttributeTest();
 
 public:
 	rchandle<QName> get_attr_name() const    { return theAttrName; }
@@ -4553,7 +4423,6 @@ public:
 		const yy::location&,
 		rchandle<QName>);
 
-	~SchemaAttributeTest();
 
 public:
 	rchandle<QName> get_attr() const { return attr_h; }
@@ -4591,7 +4460,6 @@ public:
 		rchandle<TypeName> tn,
     bool na = false);
 
-	~ElementTest();
 
 public:
 	rchandle<QName> getElementName() const { return theElementName; }
@@ -4620,7 +4488,6 @@ public:
 		const yy::location&,
 		rchandle<QName> _elem_h);
 
-	~SchemaElementTest();
 
 public:
 	rchandle<QName> get_elem() const { return elem_h; }
@@ -4665,7 +4532,6 @@ public:
 		rchandle<QName>,
 		bool);
 
-	~TypeName();
 
 public:
 	rchandle<QName> get_name() const { return qname_h; }
@@ -4703,7 +4569,6 @@ public:
 		const yy::location&,
 		std::string const&);
 
-	~StringLiteral();
 
 public:
 	std::string get_strval() const { return strval; }
@@ -4747,7 +4612,6 @@ protected:
 public:
 	QName(const yy::location&, const std::string& qname);
 
-	~QName();
 
 public:
 	std::string get_qname() const { return qname; }
@@ -4790,7 +4654,6 @@ public:
 		const yy::location&,
 		rchandle<QName>);
 
-	~RevalidationDecl();
 
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
@@ -4824,7 +4687,6 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-	~InsertExpr();
 
 public:
 	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
@@ -4853,7 +4715,6 @@ public:
 		const yy::location&,
 		rchandle<exprnode>);
 
-	~DeleteExpr();
 
 public:
 	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
@@ -4884,7 +4745,6 @@ public:
 		rchandle<exprnode> source_expr_h,
 		rchandle<exprnode> target_expr_h);
 
-	~ReplaceExpr();
 
 public:
 	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
@@ -4915,7 +4775,6 @@ public:
 		rchandle<exprnode> source_expr_h,
 		rchandle<exprnode> target_expr_h);
 
-	~RenameExpr();
 
 public:
 	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
@@ -4963,7 +4822,6 @@ public:
 		rchandle<exprnode> source_expr_h,
 		rchandle<exprnode> target_expr_h);
 
-	~TransformExpr();
 
 public:
 	rchandle<VarNameList> get_varname_list() const { return varname_list_h; }
@@ -4990,7 +4848,6 @@ protected:
 	
 public:
 	VarNameList(const yy::location&);
-	~VarNameList();
 
 public:
 	void push_back(rchandle<VarBinding> varbinding_h)
@@ -5023,7 +4880,6 @@ public:
 		std::string varname,
 		rchandle<exprnode>);
 
-	~VarBinding();
 
 public:
 	std::string get_varname() const { return varname; }
@@ -5073,7 +4929,6 @@ public:
 		rchandle<FTMatchOptionProximityList>,
 		rchandle<RangeExpr>);
 
-	~FTSelection();
 
 public:
 	rchandle<FTOr> get_ftor() const
@@ -5104,7 +4959,6 @@ protected:
 
 public:
 	FTMatchOptionProximityList(const yy::location&);
-	~FTMatchOptionProximityList();
 
 public:
 	void push_back(rchandle<FTMatchOptionProximity> opt_prox_h)
@@ -5143,7 +4997,6 @@ public:
 	FTMatchOptionProximity(
 		const yy::location&);
 
-	~FTMatchOptionProximity();
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5171,7 +5024,6 @@ public:
 		rchandle<FTOr>,
 		rchandle<FTAnd>);
 
-	~FTOr();
 
 public:
 	rchandle<FTOr> get_ftor() const { return ftor_h; }
@@ -5203,7 +5055,6 @@ public:
 		rchandle<FTAnd>,
 		rchandle<FTMildnot>);
 	
-	~FTAnd();
 
 public:
 	rchandle<FTAnd> get_ftand() const { return ftand_h; }
@@ -5235,7 +5086,6 @@ public:
 		rchandle<FTMildnot>,
 		rchandle<FTUnaryNot>);
 
-	~FTMildnot();
 
 public:
 	rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
@@ -5267,7 +5117,6 @@ public:
 		rchandle<FTWordsSelection>,
 		bool not_b);
 
-	~FTUnaryNot();
 
 public:
 	rchandle<FTWordsSelection> get_words_selection() const
@@ -5304,7 +5153,6 @@ public:
 		rchandle<FTTimes>,
 		rchandle<FTSelection>);
 
-	~FTWordsSelection();
 
 public:
 	rchandle<FTWords> get_words() const { return words_h; }
@@ -5337,7 +5185,6 @@ public:
 		rchandle<FTWordsValue>,
 		rchandle<FTAnyallOption>);
 
-	~FTWords();
 
 public:
 	rchandle<FTWordsValue> get_words_val() const
@@ -5371,7 +5218,6 @@ public:
 		rchandle<StringLiteral>,
 		rchandle<Expr>);
 
-	~FTWordsValue();
 
 public:
 	rchandle<StringLiteral> get_lit() const { return lit_h; }
@@ -5398,7 +5244,6 @@ class FTProximity : public parsenode
 {
 public:
 	FTProximity(const yy::location&);
-	~FTProximity();
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5417,7 +5262,6 @@ class FTOrderedIndicator : public FTProximity
 {
 public:
 	FTOrderedIndicator(const yy::location&);
-	~FTOrderedIndicator();
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5442,7 +5286,6 @@ class FTMatchOption : public parsenode
 {
 public:
 	FTMatchOption(const yy::location&);
-	~FTMatchOption();
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5470,7 +5313,6 @@ public:
 		const yy::location&,
 		enum ft_case_mode_t);
 
-	~FTCaseOption();
 
 public:
 	enum ft_case_mode_t get_mode() const { return mode; }
@@ -5501,7 +5343,6 @@ public:
 		const yy::location&,
 		ft_diacritics_mode_t);
 
-	~FTDiacriticsOption();
 
 public:
 	enum ft_diacritics_mode_t get_mode() const { return mode; }
@@ -5536,7 +5377,6 @@ public:
 		const yy::location&,
 		ft_stem_mode_t);
 
-	~FTStemOption();
 
 public:
 	enum ft_stem_mode_t get_mode() const { return mode; }
@@ -5575,7 +5415,6 @@ public:
 		bool default_b,
 		bool without_b);
 
-	~FTThesaurusOption();
 
 public:
 	rchandle<FTThesaurusID> get_thesaurusid() const
@@ -5609,7 +5448,6 @@ protected:
 
 public:
 	FTThesaurusList(const yy::location&);
-	~FTThesaurusList();
 
 public:
 	void push_back(rchandle<FTThesaurusID> thesaurus_h)
@@ -5647,7 +5485,6 @@ public:
 		std::string relationship_name,
 		rchandle<FTRange> levels_h);
 	
-	~FTThesaurusID();
 
 public:
 	std::string get_thesaurus_name() const { return thesaurus_name; }
@@ -5685,7 +5522,6 @@ public:
 		rchandle<FTInclExclStringLiteralList>,
 		stop_words_mode_t);
 
-	~FTStopwordOption();
 
 public:
 	rchandle<FTRefOrList> get_refor_list() const
@@ -5716,7 +5552,6 @@ protected:
 
 public:
 	FTInclExclStringLiteralList(const yy::location&);
-	~FTInclExclStringLiteralList();
 
 public:
 	void push_back(rchandle<FTInclExclStringLiteral> incl_excl_lit_h)
@@ -5752,7 +5587,6 @@ public:
 		std::string at_str,
 		rchandle<FTStringLiteralList>);
 
-	~FTRefOrList();
 
 	std::string get_at_str() const
 		{ return at_str; }
@@ -5780,7 +5614,6 @@ protected:
 
 public:
 	FTStringLiteralList(const yy::location&);
-	~FTStringLiteralList();
 
 public:
 	void push_back(std::string strlit) { strlit_v.push_back(strlit); }
@@ -5812,7 +5645,6 @@ public:
 		rchandle<FTRefOrList>,
 		intex_op_t);
 
-	~FTInclExclStringLiteral();
 
 public:
 	rchandle<FTRefOrList> get_ref_or_list() const
@@ -5843,7 +5675,6 @@ public:
 		const yy::location&,
 		std::string lang);
 
-	~FTLanguageOption();
 
 public:
 	std::string get_lang() const { return lang; }
@@ -5872,7 +5703,6 @@ public:
 		const yy::location&,
 		bool with_b);
 
-	~FTWildcardOption();
 
 public:
 	bool get_with_bit() const { return with_b; }
@@ -5902,7 +5732,6 @@ public:
 		const yy::location&,
 		enum ft_content_mode_t);
 
-	~FTContent();
 
 public:
 	enum ft_content_mode_t get_mode() const { return mode; }
@@ -5934,7 +5763,6 @@ public:
 		const yy::location&,
 		enum ft_anyall_option_t);
 
-	~FTAnyallOption();
 
 public:
 	enum ft_anyall_option_t get_option() const { return option; }
@@ -5975,7 +5803,6 @@ public:
 		rchandle<UnionExpr> src_expr_h,
 		rchandle<UnionExpr> dst_expr_h);
 
-	~FTRange();
 
 public:
 	rchandle<UnionExpr> get_src_expr() const { return src_expr_h; }
@@ -6006,7 +5833,6 @@ public:
 		rchandle<FTRange>,
 		rchandle<FTUnit>);
 
-	~FTDistance();
 
 public:
 	rchandle<FTRange> get_dist() const { return dist_h; }
@@ -6037,7 +5863,6 @@ public:
 		rchandle<UnionExpr> window_h,
 		rchandle<FTUnit> unit_h);
 
-	~FTWindow();
 
 public:
 	rchandle<UnionExpr> get_window() const { return window_h; }
@@ -6066,7 +5891,6 @@ public:
 		const yy::location&,
 		rchandle<FTRange>);
 
-	~FTTimes();
 
 public:
 	rchandle<FTRange> get_range() const { return range_h; }
@@ -6095,7 +5919,6 @@ public:
 		const yy::location&,
 		ft_scope_t);
 
-	~FTScope();
 
 public:
 	enum ft_scope_t get_scope() const { return scope; }
@@ -6123,7 +5946,6 @@ public:
 		const yy::location&,
 		ft_unit_t);
 
-	~FTUnit();
 
 public:
 	enum ft_unit_t get_unit() const { return unit; }
@@ -6151,7 +5973,6 @@ public:
 		const yy::location&,
 		enum ft_big_unit_t);
 
-	~FTBigUnit();
 
 public:
 	enum ft_big_unit_t get_unit() const { return unit; }
@@ -6179,7 +6000,6 @@ public:
 		const yy::location&,
 		rchandle<UnionExpr>);
 
-	~FTIgnoreOption();
 
 public:
 	rchandle<UnionExpr> get_union() const { return union_h; }
