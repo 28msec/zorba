@@ -78,8 +78,7 @@ string var_expr::decode_var_kind(
 }
 
 
-void var_expr::accept (expr_visitor& v)
-{
+void var_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
   END_VISITOR();
 }
@@ -140,8 +139,7 @@ rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
 DECLARE_VISITOR_FUNCTOR (forletref_visitor_functor, flwor_expr::forletref_t, { ACCEPT (e->expr_h); });
 DECLARE_VISITOR_FUNCTOR (orderspec_visitor_functor, flwor_expr::orderspec_t, { ACCEPT (e.first); });
 
-void flwor_expr::accept (expr_visitor& v)
-{
+void flwor_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
 
   for_each (clause_v.begin (), clause_v.end (), forletref_visitor_functor (v));
@@ -150,7 +148,7 @@ void flwor_expr::accept (expr_visitor& v)
 
   for_each (orderspec_rbegin (), orderspec_rend (), orderspec_visitor_functor (v));
 
-  retval_h->accept(v);
+  ACCEPT (retval_h);
   
   END_VISITOR(); 
 }
@@ -180,8 +178,7 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
   return flwor_copy;
 }
 
-void promote_expr::accept (expr_visitor& v)
-{
+void promote_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   ACCEPT (input_expr_h);
   END_VISITOR ();
@@ -236,12 +233,11 @@ if_expr::if_expr(
 }
 
 
-void if_expr::accept (expr_visitor& v)
-{
+void if_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
-  cond_expr_h->accept(v);
-  then_expr_h->accept(v);
-  else_expr_h->accept(v);
+  ACCEPT (cond_expr_h);
+  ACCEPT (then_expr_h);
+  ACCEPT (else_expr_h);
   END_VISITOR();
 }
 
@@ -259,8 +255,7 @@ void if_expr::accept (expr_visitor& v)
 // [52] [http://www.w3.org/TR/xquery/#prod-xquery-UnionExpr]
 // [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
 
-void fo_expr::accept (expr_visitor& v)
-{
+void fo_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   for_each (begin (), end (), visitor_functor (v));
   END_VISITOR ();
@@ -290,8 +285,7 @@ ft_contains_expr::ft_contains_expr(
 }
 
 
-void ft_contains_expr::accept (expr_visitor& v)
-{
+void ft_contains_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   ACCEPT (range_h);
   ACCEPT (ft_select_h);
@@ -311,10 +305,9 @@ instanceof_expr::instanceof_expr(yy::location const& loc,
 }
 
 
-void instanceof_expr::accept (expr_visitor& v)
-{
+void instanceof_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
-  expr_h->accept(v);
+  ACCEPT (expr_h);
   END_VISITOR();  
 }
 
@@ -335,8 +328,7 @@ treat_expr::treat_expr(
 }
 
 
-void treat_expr::accept (expr_visitor& v)
-{
+void treat_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -357,8 +349,7 @@ castable_expr::castable_expr(
 }
 
 
-void castable_expr::accept (expr_visitor& v)
-{
+void castable_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -379,8 +370,7 @@ cast_expr::cast_expr(
 }
 
 
-void cast_expr::accept (expr_visitor& v)
-{
+void cast_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -401,8 +391,7 @@ validate_expr::validate_expr(
 }
 
 
-void validate_expr::accept (expr_visitor& v)
-{
+void validate_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -428,8 +417,7 @@ extension_expr::extension_expr(
 }
 
 
-void extension_expr::accept (expr_visitor& v)
-{
+void extension_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -450,8 +438,7 @@ relpath_expr::relpath_expr(yy::location const& loc)
 }
 
 
-void relpath_expr::accept (expr_visitor& v)
-{
+void relpath_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
 
   for_each (begin (), end (), visitor_functor (v));
@@ -474,8 +461,7 @@ axis_step_expr::axis_step_expr(yy::location const& loc)
 }
 
 
-void axis_step_expr::accept (expr_visitor& v)
-{
+void axis_step_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
 
   for_each (thePreds.begin (), thePreds.end (), visitor_functor (v));
@@ -509,8 +495,7 @@ match_expr::match_expr(yy::location const& loc)
 }
 
 
-void match_expr::accept (expr_visitor& v)
-{
+void match_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
   END_VISITOR();
 }
@@ -616,8 +601,7 @@ const_expr::const_expr(
 }
 
 
-void const_expr::accept (expr_visitor& v)
-{
+void const_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
   END_VISITOR();
 }
@@ -637,8 +621,7 @@ order_expr::order_expr(
 }
 
 
-void order_expr::accept (expr_visitor& v)
-{
+void order_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   ACCEPT (expr_h);
   END_VISITOR ();
@@ -679,8 +662,7 @@ elem_expr::elem_expr (
   
 
 
-void elem_expr::accept (expr_visitor& v)
-{
+void elem_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
   ACCEPT (theQNameExpr);
   ACCEPT (theAttrs);
@@ -701,8 +683,7 @@ doc_expr::doc_expr(
 }
 
 
-void doc_expr::accept (expr_visitor& v)
-{
+void doc_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
   ACCEPT(theContent);
   END_VISITOR();
@@ -736,8 +717,7 @@ Item* attr_expr::getQName() const
 }
 
 
-void attr_expr::accept (expr_visitor& v)
-{
+void attr_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
   ACCEPT (theQNameExpr);
   ACCEPT (theValueExpr);
@@ -759,8 +739,7 @@ text_expr::text_expr(
 }
 
 
-void text_expr::accept (expr_visitor& v)
-{
+void text_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR();
   ACCEPT (text);
   END_VISITOR();
@@ -783,8 +762,7 @@ pi_expr::pi_expr(
 }
 
 
-void pi_expr::accept (expr_visitor& v)
-{
+void pi_expr::accept (expr_visitor& v) {
   BEGIN_VISITOR ();
   ACCEPT (target_expr_h);
   ACCEPT (text);
