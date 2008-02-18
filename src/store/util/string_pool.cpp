@@ -49,8 +49,8 @@ StringPool::~StringPool()
     }
   }
 
-  //if (count > 0)
-  //  assert(0);
+  if (count > 0)
+    assert(0);
 }
 
 
