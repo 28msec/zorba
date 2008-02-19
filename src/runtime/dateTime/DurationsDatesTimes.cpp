@@ -10,7 +10,6 @@
 #include "system/zorba.h"
 
 #include "runtime/dateTime/DurationsDatesTimes.h"
-#include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "util/Assert.h"
 
