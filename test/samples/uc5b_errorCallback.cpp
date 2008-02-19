@@ -16,15 +16,20 @@ using namespace xqp;
 Callback for errors.
 Will be called for any alert from zorba.
 The alert will not be put in the error manager list anymore.
+Parameters:
+alert : describes the alert, be it error, user error, user trace, warning, notification message
+current_xquery : pointer to the current xquery being executed
+current_result : pointer to the current result iterator
+param : parameter registered by the user in ZorbaAlertsManager::registerAlertCallback
 */
-int errCallback(ZorbaAlert_t alert_mess, 
+int errCallback(ZorbaAlert_t    alert, 
                  XQuery         *current_xquery,
                  ResultIterator *current_result,
                  void *param)
 {
   cerr << endl;
 
-  alert_mess->dumpAlert(cerr);
+  alert->dumpAlert(cerr);
 
   return -1;
 }
@@ -37,7 +42,6 @@ int uc5b_errorCallback(int argc, char* argv[])
 	//init the engine
 	ZorbaSingleThread_t zorba_engine = ZorbaSingleThread::getInstance();
 	XQuery_t				xquery;
-	DynamicQueryContext_t		dctx;
   ZorbaAlertsManager_t err_manager;
 
 	try{
@@ -46,19 +50,13 @@ int uc5b_errorCallback(int argc, char* argv[])
     err_manager->registerAlertCallback(errCallback, (void*)1);
 
     //create and compile a query with the static context
-		xquery = zorba_engine->createQuery(".//book");
-
-		dctx = zorba_engine->createDynamicContext();
-	/*forget to set the context item
-		//context item is set 
-		dctx->SetContextItemAsDocumentFromFile(make_absolute_file_name("books.xml", __FILE__));
-	*/
+		xquery = zorba_engine->createQuery("1/0");
 
 		//try to execute the query and serialize its result
-		xquery->initExecution(dctx);
+		xquery->initExecution();
 		xquery->serializeXML(std::cout);
 
-		assert(false);//unreachable, should exit on error path
+		exit(1);//unreachable, should exit on error path
 		return 1;
 	}catch(ZorbaException &x)
 	{

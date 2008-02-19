@@ -31,6 +31,7 @@ int uc4_chainXQuery(int argc, char* argv[])
 
 	  //create the first query execution (but do not execute yet)
 	  xquery1->initExecution();
+    //get the iterator over the result sequence
 	  xqe1 = xquery1->getIterator();
 
 	  //create the second query
@@ -39,7 +40,8 @@ int uc4_chainXQuery(int argc, char* argv[])
 	  //no need for dynamic context here
 	  xquery2->initExecution();
 
-	  //chain the result from first query
+	  //chain in the result from first query
+    //this function can be called only between initExecution and serialize or getIterator
 	  xquery2->setVariableAsXQueryResult("var1", xqe1);
 
 	  //execute the query2 and serialize its result
@@ -49,11 +51,8 @@ int uc4_chainXQuery(int argc, char* argv[])
 	{
 		//output the error message
 		cerr << x;
-    assert(false);
+    exit(1);
 	}
-	//shutdown the engine, just for exercise
-	zorba_engine->shutdown();
-	//using zorba objects after this moment is prohibited
 
 	ZorbaAlertsManager::setThrowExceptionsMode(original_throw_mode);
 

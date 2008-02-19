@@ -37,7 +37,7 @@ int uc7_multithread(int argc, char* argv[])
   zorba_engine->shutdown();
   zorba_engine = ZorbaEngine::getInstance();
 
-	///in full api mode you have to call initThread() / uninitThread()
+	//in full api mode you have to call initThread() / uninitThread()
 	zorba_engine->initThread();
 
 	//create and compile a query with the static context
@@ -45,7 +45,7 @@ int uc7_multithread(int argc, char* argv[])
 	if(xquery == NULL)
 	{
 		cout << "Error creating and compiling query1" << endl;
-		assert(false);
+		exit(1);
 		return 1;
 	}
 
@@ -85,7 +85,7 @@ void* query_thread(void *param)
 	if(xquery_clone == NULL)
 	{
 		cout << "cannot clone xquery object" << endl;
-		assert(false);
+		exit(1);
 		zorba_engine->uninitThread();
 		return (void*)1;
 	}
@@ -101,14 +101,14 @@ void* query_thread(void *param)
 	if(!dctx->setContextItemAsDocument(make_absolute_file_name("books.xml", __FILE__)))
 	{
 		cout << "cannot load document into context item" << endl;
-		assert(false);
+		exit(1);
 		zorba_engine->uninitThread();
 		return (void*)1;
 	}
 	if(!dctx->setVariableAsInt("var1", iparam))
 	{
 		cout << "cannot set var1 to iparam " << iparam << endl;
-		assert(false);
+		exit(1);
 		zorba_engine->uninitThread();
 		return (void*)1;
 	}
@@ -118,7 +118,7 @@ void* query_thread(void *param)
 		!xquery_clone->serializeXML(std::cout))//output will be a little scrammbled
 	{
 		cout << "Error executing and serializing query" << endl;
-		assert(false);
+		exit(1);
 		zorba_engine->uninitThread();
 		return (void*)1;
 	}

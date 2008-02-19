@@ -13,7 +13,7 @@ using namespace xqp;
 */
 
 
-int uc3c_currentTime(int argc, char* argv[])
+int uc3d_currentTime(int argc, char* argv[])
 {
 	bool original_throw_mode = ZorbaAlertsManager::setThrowExceptionsMode(true);
 	//init the engine
@@ -22,6 +22,15 @@ int uc3c_currentTime(int argc, char* argv[])
 
 		XQuery_t				xquery;
 		DynamicQueryContext_t		dctx;
+
+		//create and compile a query
+    xquery = zorba_engine->createQuery("fn:current-dateTime()");
+
+		//execute the query and serialize its result
+    //before setting manually the current date-time
+		xquery->initExecution();
+		xquery->serializeXML(std::cout);
+
 
 		//create a dynamic context object
 		dctx = zorba_engine->createDynamicContext();
@@ -35,22 +44,20 @@ int uc3c_currentTime(int argc, char* argv[])
     tm1.tm_min = 6;
     tm1.tm_sec = 0;
 
-    //timezone +2
+    //timezone +2h in seconds
 		dctx->setCurrentDateTime(tm1, +2*60*60);
 
+    std::cout << std::endl << "now execute with custom current date-time" << std::endl;
 
-		//create and compile a query
-    xquery = zorba_engine->createQuery("fn:current-dateTime()");
-
-		//execute the query and serialize its result
-		xquery->initExecution(dctx);
+    xquery->initExecution(dctx);
 		xquery->serializeXML(std::cout);
+
 
 	}catch(ZorbaException &x)
 	{
 		//output the error message
 		cerr << x;
-    assert(false);
+    exit(1);
 	}
 
 	ZorbaAlertsManager::setThrowExceptionsMode(original_throw_mode);

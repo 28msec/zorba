@@ -26,6 +26,8 @@ int uc6a_staticContext(int argc, char* argv[])
 		//create a static context object
 		sctx = zorba_engine->createStaticContext();
 
+    //set the $var1 statically known type
+    //the type is managed by the type system, it must not be freed by the user
     sctx->addExternalVariableType("var1", new ItemTypeIdentifier(TypeIdentifier::QUANT_ONE));
 
 		//create and compile a query with the static context
@@ -43,7 +45,7 @@ int uc6a_staticContext(int argc, char* argv[])
 	{
 		//output the error message
 		cerr << x;
-		assert(false);
+		exit(1);
 	}
 	//no need to care about freeing objects or closing the engine
 

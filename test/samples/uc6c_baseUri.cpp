@@ -14,7 +14,6 @@ using namespace xqp;
   Try to retrieve it in xquery using a relative URI.
 */
 
-string make_absolute_file_name(const char *target_file_name, const char *this_file_name);
 
 int uc6c_baseUri(int argc, char* argv[])
 {
@@ -23,21 +22,16 @@ int uc6c_baseUri(int argc, char* argv[])
 	ZorbaSingleThread_t zorba_engine = ZorbaSingleThread::getInstance();
 	XQuery_t				xquery;
 	StaticQueryContext_t		sctx;
-  XmlDataManager_t  xml_store;
 
 	try{
-    xml_store = zorba_engine->getXmlDataManager();
-
-    xml_store->loadDocument(make_absolute_file_name("books.xml", __FILE__));
-
 
 		//create a static context object
 		sctx = zorba_engine->createStaticContext();
 
-    sctx->setBaseURI(make_absolute_file_name("", __FILE__));
+    sctx->setBaseURI("http://flowrfound.ethz.ch/usecases");
 
-		//create and compile a query with the static context
-    xquery = zorba_engine->createQuery("fn:doc(\"books.xml\")", sctx);
+		//create and compile a query with the static context containing the base URI
+    xquery = zorba_engine->createQuery("fn:resolve-uri(\"books.xml\")", sctx);
 
     //execute the query and serialize its result
 		xquery->initExecution();
@@ -47,11 +41,8 @@ int uc6c_baseUri(int argc, char* argv[])
 	{
 		//output the error message
 		cerr << x;
-		assert(false);
+		exit(1);
 	}
-
-  //close the single threaded engine to make way to full api
-  zorba_engine->shutdown();
 
 	//set back the throw exceptions mode for next usecase
 	ZorbaAlertsManager::setThrowExceptionsMode(original_throw_mode);

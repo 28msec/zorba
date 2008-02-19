@@ -91,7 +91,7 @@ DisplayErrorsAndExit:
 
 	result_file << "end easy api test" << endl;
 
-	assert(false);
+	exit(1);
 	return -1; 
 }
 

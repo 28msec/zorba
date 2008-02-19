@@ -19,10 +19,10 @@ public:
 
   virtual ~XQueryTreePlans() {}
 
-  virtual void  setOutputASTPlan(std::ostream *os, enum PrintFormat_t format) = 0;
-  virtual void  setOutputExpressionPlan(std::ostream *os, enum PrintFormat_t format) = 0;
-  virtual void  setOutputNormalizedExpressionPlan(std::ostream *os, enum PrintFormat_t format) = 0;
-  virtual void  setOutputRuntimePlan(std::ostream *os, enum PrintFormat_t format) = 0;
+  virtual void  setOutputASTPlan(std::ostream *os, enum PrintFormat_t format = PRINT_TEXT) = 0;
+  virtual void  setOutputExpressionPlan(std::ostream *os, enum PrintFormat_t format = PRINT_TEXT) = 0;
+  virtual void  setOutputNormalizedExpressionPlan(std::ostream *os, enum PrintFormat_t format = PRINT_TEXT) = 0;
+  virtual void  setOutputRuntimePlan(std::ostream *os, enum PrintFormat_t format = PRINT_TEXT) = 0;
 };
 
 typedef rchandle<XQueryTreePlans>   XQueryTreePlans_t;

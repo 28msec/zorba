@@ -51,7 +51,7 @@ int uc3a_externalVar(int argc, char* argv[])
 	{
 		//output the error message
 		cerr << x;
-		assert(false);
+		exit(1);
 	}
 	//set back the throw exceptions mode for next usecase
 	ZorbaAlertsManager::setThrowExceptionsMode(original_throw_mode);

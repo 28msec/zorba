@@ -23,19 +23,21 @@ int uc2_simpleQueryWithErrorCheck(int argc, char* argv[])
 	try{
 
 		//create and compile a query with the static context
-		xquery = zorba_engine->createQuery("1+2");
+		xquery = zorba_engine->createQuery("1/0");
 
 		//out query in execution mode 
 		xquery->initExecution();
 		
 		//serialize its result
 		xquery->serializeXML(std::cout);
+
+    //unreachable
+    exit(1);
 	}
 	catch(ZorbaException &x)
 	{
 		//output the error message
 		cerr << x;
-		assert(false);
 	}
 	//no need to care about freeing objects or closing the engine in single thread mode
 

@@ -22,23 +22,35 @@ int uc6b_defaultCollation(int argc, char* argv[])
 	StaticQueryContext_t		sctx;
 
 	try{
-		//create a static context object
-		sctx = zorba_engine->createStaticContext();
-
-    sctx->setDefaultCollation("http://flowrfound.ethz.ch/FLWOR1/collations/German");
-
-		//create and compile a query with the static context
-    xquery = zorba_engine->createQuery("fn:compare(\"string1\", \"string2\")", sctx);
+		//create and compile a query comparing two strings with normal collation
+    xquery = zorba_engine->createQuery("fn:compare (\"Straße\", \"Strasse\")");
 
     //execute the query and serialize its result
 		xquery->initExecution();
+    //strings are different with Zorba default collation
+		xquery->serializeXML(std::cout);
+
+    //try again with German collation
+    
+    //create a static context object
+		sctx = zorba_engine->createStaticContext();
+
+    //set the German collation
+    sctx->setDefaultCollation("http://flowrfound.ethz.ch/FLWOR1/collations/German");
+
+		//create and compile a query with the static context
+    xquery = zorba_engine->createQuery("fn:compare (\"Straße\", \"Strasse\")", sctx);
+
+    //execute the query and serialize its result
+		xquery->initExecution();
+    //now the strings should compare equal
 		xquery->serializeXML(std::cout);
 	}
 	catch(ZorbaException &x)
 	{
 		//output the error message
 		cerr << x;
-		assert(false);
+		exit(1);
 	}
 	//no need to care about freeing objects or closing the engine
 

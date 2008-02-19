@@ -136,7 +136,7 @@ DisplayErrorsAndExit:
 	zorba_factory->uninitThread();
 	zorba_factory->shutdown();
 
-	assert(false);
+	exit(1);
 	return -1; 
 }
 

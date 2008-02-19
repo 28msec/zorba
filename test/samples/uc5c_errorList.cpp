@@ -23,25 +23,19 @@ int uc5c_errorList(int argc, char* argv[])
 	ZorbaSingleThread_t zorba_engine = ZorbaSingleThread::getInstance();
 	XQuery_t				xquery1;
 	XQuery_t				xquery2;
-	DynamicQueryContext_t		dctx;
   AlertList_t     alist1;
   AlertList_t     alist2;
 
 	try{
 		//create and compile a query with the static context
-		xquery1 = zorba_engine->createQuery(".//book");
+		xquery1 = zorba_engine->createQuery("$var1 + 1");
 
-		dctx = zorba_engine->createDynamicContext();
-	/*forget to set the context item
-		//context item is set 
-		dctx->SetContextItemAsDocumentFromFile(make_absolute_file_name("books.xml", __FILE__));
-	*/
 
 		//try to execute the query and serialize its result
-		xquery1->initExecution(dctx);
+		xquery1->initExecution();
 		xquery1->serializeXML(std::cout);
 
-		assert(false);//unreachable, should exit on error path
+		exit(1);//unreachable, should exit on error path
 		return 1;
 	}catch(ZorbaException &x)
 	{
@@ -56,19 +50,13 @@ int uc5c_errorList(int argc, char* argv[])
 
 	try{
 		//create and compile a query with the static context
-		xquery2 = zorba_engine->createQuery(".//chapter");
-
-		dctx = zorba_engine->createDynamicContext();
-	/*forget to set the context item
-		//context item is set 
-		dctx->SetContextItemAsDocumentFromFile(make_absolute_file_name("books.xml", __FILE__));
-	*/
+		xquery2 = zorba_engine->createQuery("$var1 + 10");
 
 		//try to execute the query and serialize its result
-		xquery2->initExecution(dctx);
+		xquery2->initExecution();
 		xquery2->serializeXML(std::cout);
 
-		assert(false);//unreachable, should exit on error path
+		exit(1);//unreachable, should exit on error path
 		return 1;
 	}catch(ZorbaException &x)
 	{

@@ -20,23 +20,16 @@ int uc5a_errorManager(int argc, char* argv[])
 	//init the engine
 	ZorbaSingleThread_t zorba_engine = ZorbaSingleThread::getInstance();
 	XQuery_t				xquery;
-	DynamicQueryContext_t		dctx;
 
 	try{
 		//create and compile a query with the static context
-		xquery = zorba_engine->createQuery(".//book");
-
-		dctx = zorba_engine->createDynamicContext();
-	/*forget to set the context item
-		//context item is set 
-		dctx->SetContextItemAsDocumentFromFile(make_absolute_file_name("books.xml", __FILE__));
-	*/
+		xquery = zorba_engine->createQuery("1/0");
 
 		//try to execute the query and serialize its result
-		xquery->initExecution(dctx);
+		xquery->initExecution();
 		xquery->serializeXML(std::cout);
 
-		assert(false);//unreachable, should exit on error path
+		exit(1);//unreachable, should exit on error path
 		return 1;
 	}catch(ZorbaException &x)
 	{
