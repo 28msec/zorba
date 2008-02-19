@@ -60,7 +60,7 @@ static struct err_msg_initializer
 {
   err_msg_initializer () 
   {
-#define DEF_ERR_CODE( code, name, msg ) canonical_err_names [ ZorbaError::code ] = #name; err_msg [ZorbaError::code] = msg;
+#define DEF_ERR_CODE( code, name, msg ) canonical_err_names [ ZorbaError::code ] = strdup(#name); err_msg [ZorbaError::code] = strdup(msg);
 
     for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
       canonical_err_names [i] = NULL;
@@ -206,11 +206,22 @@ DEF_ERR_CODE (XQP0019_INTERNAL_ERROR, XQP0019, "Zorba internal error /s")
 
   for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
     if (canonical_err_names [i] == NULL)
-      canonical_err_names [i] = "?";
+      canonical_err_names [i] = strdup("?");
     if (err_msg [i] == NULL)
       err_msg [i] = strdup (string ("<Unknown errcode " + to_string (i) + "> /s /s").c_str ());
   }
 
+
+  }
+
+  ~err_msg_initializer()
+  {
+  for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
+    if (canonical_err_names [i] != NULL)
+      free(const_cast<char *>(canonical_err_names [i]));
+    if (err_msg [i] != NULL)
+      free(const_cast<char *>(err_msg [i]));
+  }
 
   }
 } err_msg_initializer_obj;
