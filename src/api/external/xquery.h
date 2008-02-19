@@ -26,14 +26,18 @@ typedef rchandle<XQueryTreePlans>   XQueryTreePlans_t;
 
 class StaticQueryContext;
 class static_context;
+class Zorba_XQueryBinary;
 
-class Zorba_XQueryBinary : public XQuery
+class Zorba_XQueryInfo : public rcobject
 {
-  friend class ZorbaEngine;
-  friend class zorba;
-	friend class ResultIteratorWrapper;
-
-private:
+public:
+  Zorba_XQueryInfo( Zorba_XQueryBinary *xquery,
+                    xqp_string  xquery_source_uri, 
+                    xqp_string  query_text);
+  Zorba_XQueryInfo( Zorba_XQueryBinary *xquery,
+                    Zorba_XQueryInfo* original_info);
+public:
+  Zorba_XQueryBinary         *xquery;
 	xqp_string                 m_xquery_source_uri;
 	xqp_string                 m_query_text;
 
@@ -46,12 +50,22 @@ public:
 	::Collator	             * default_collator;
 	rchandle<static_context>   internal_sctx;///generated at compilation
 
+  void			               * alert_callback_param;
+};
+
+class Zorba_XQueryBinary : public XQuery
+{
+  friend class ZorbaEngine;
+  friend class zorba;
+	friend class ResultIteratorWrapper;
+
+public:
+  rchandle<Zorba_XQueryInfo>      info;
+
 	//execution specific
 public:
 	///state objects for the iterator tree
 	ResultIteratorWrapper_t		result;
-
-	void			               * alert_callback_param;
 
 public:
   Zorba_XQueryBinary(xqp_string	xquery_source_uri, xqp_string query_text);

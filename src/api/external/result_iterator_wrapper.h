@@ -12,6 +12,7 @@ namespace xqp{
 class Zorba_XQueryBinary;
 typedef rchandle<Zorba_XQueryBinary>		Zorba_XQueryBinary_t;
 
+class Zorba_XQueryInfo;
 class dynamic_context;
 class DynamicContextWrapper;
 
@@ -21,11 +22,12 @@ class ResultIteratorWrapper : public ResultIterator, public PlanWrapper
 	friend class Zorba_XQueryBinary;
 
 
-	Zorba_XQueryBinary       * xquery;
-	dynamic_context		       * internal_dyn_context;
+	rchandle<Zorba_XQueryInfo>       xquery_info;
+
+  dynamic_context		       * internal_dyn_context;
 public:
 	
-	ResultIteratorWrapper(Zorba_XQueryBinary_t x, DynamicContextWrapper *dctx);
+	ResultIteratorWrapper(Zorba_XQueryInfo* x, DynamicContextWrapper *dctx);
 	virtual ~ResultIteratorWrapper();
 
 	virtual void		openIterator();

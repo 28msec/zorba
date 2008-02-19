@@ -79,7 +79,7 @@ void	DynamicContextWrapper::checkVarName(xqp_string varname)
 	if(GenericCast::instance()->isCastable(varname, GENV_TYPESYSTEM.QNAME_TYPE_ONE))
 		return;//all ok
 
-CheckVarNameError:
+//CheckVarNameError:
 	ZORBA_ERROR_ALERT(ZorbaError::API0011_INVALID_VARIABLE_QNAME, NULL, DONT_CONTINUE_EXECUTION, varname);
 	return ;//false;//no good
 }

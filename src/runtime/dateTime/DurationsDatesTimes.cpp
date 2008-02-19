@@ -751,6 +751,7 @@ FnTimezoneFromTimeIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 /* begin class AddOperations */
 //TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
+/*
 template<>
 Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
 ( const yy::location* loc,  const Item* i0, const Item* i1 )
@@ -758,6 +759,7 @@ Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATI
   xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
+*/
 /* end class AddOperations */
 
  /**
@@ -778,6 +780,7 @@ Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATI
  *_______________________________________________________________________*/
 /* start class SubtractOperations */
 //TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
+/*
 template<>
 Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
 ( const yy::location* loc, const Item* i0, const Item* i1 )
@@ -785,6 +788,7 @@ Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
   xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
+*/
 /* end class SubtractOperations */
 
  /**
@@ -805,6 +809,7 @@ Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
  *_______________________________________________________________________*/
 /* start class MultiplyOperations */
 //TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
+/*
 template<>
 Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
 ( const yy::location* loc, const Item* i0, const Item* i1 )
@@ -822,6 +827,7 @@ Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
   
   return Zorba::getItemFactory()->createDuration (d);
 }
+*/
 /* end class MultiplyOperations */
 
 /* start class DivideOperations */
@@ -842,6 +848,7 @@ Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
  *                                            $arg2    as xs:double) as xs:dayTimeDuration
  *_______________________________________________________________________*/
 //TODO: replace the first type with XS_YM_DURATION and add another specialization for XS_DT_DURATION
+/*
 template<>
 Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
 ( const yy::location* loc, const Item* i0, const Item* i1 )
@@ -859,7 +866,7 @@ Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOU
 
   return Zorba::getItemFactory()->createDuration (d);
 }
-
+*/
 
  /**
  *______________________________________________________________________
@@ -878,6 +885,7 @@ Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOU
  *                                                                         $arg2    as xs:dayTimeDuration) as xs:decimal
  *_______________________________________________________________________*/
 //TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
+/*
 template<>
 Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
 ( const yy::location* loc, const Item* i0, const Item* i1 )
@@ -885,5 +893,6 @@ Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DUR
   xqp_decimal d = *i0->getDurationValue() / *i1->getDurationValue();
   return Zorba::getItemFactory()->createDecimal(d);
 }
+*/
 /* end class DivideOperations */
 }

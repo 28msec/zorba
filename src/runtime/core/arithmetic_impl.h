@@ -5,7 +5,6 @@
 #include "types/typeconstants.h"
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 
-
 namespace xqp {
 
 /**

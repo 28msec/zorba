@@ -12,11 +12,11 @@
 
 namespace xqp{
 
-ResultIteratorWrapper::ResultIteratorWrapper(Zorba_XQueryBinary_t x,
+ResultIteratorWrapper::ResultIteratorWrapper(Zorba_XQueryInfo* xinfo,
                                              DynamicContextWrapper *dctx) :
-        PlanWrapper(x->top_iterator)
+        PlanWrapper(xinfo->top_iterator)
 {
-	xquery = x;
+	xquery_info = xinfo;
 
   openIterator();
 /*
@@ -33,7 +33,7 @@ ResultIteratorWrapper::ResultIteratorWrapper(Zorba_XQueryBinary_t x,
 */
 	if(dctx != NULL)
   {
-    internal_dyn_context = dctx->create_dynamic_context(x->internal_sctx);
+    internal_dyn_context = dctx->create_dynamic_context(xinfo->internal_sctx);
   }
 	else
 	{
@@ -75,10 +75,10 @@ Item_t	ResultIteratorWrapper::nextItem()
 	}
 	CATCH_ALL_RETURN_NULL;
 
-	Zorba_XQueryBinary        *prev_current_xquery = theStateBlock->theZorba->current_xquery;
+	Zorba_XQueryInfo          *prev_current_xquery = theStateBlock->theZorba->current_xquery;
 	ResultIteratorWrapper			*prev_result = theStateBlock->theZorba->current_xqueryresult;
 
-  theStateBlock->theZorba->current_xquery = xquery;
+  theStateBlock->theZorba->current_xquery = xquery_info;
   theStateBlock->theZorba->current_xqueryresult = this;
   try
   {
@@ -111,13 +111,13 @@ void		ResultIteratorWrapper::closeIterator()
 	}CATCH_ALL_NO_RETURN(;);
 
 	Zorba			*zorba = ZORBA_FOR_CURRENT_THREAD();
-	Zorba_XQueryBinary        *prev_current_xquery = NULL;
+	Zorba_XQueryInfo          *prev_current_xquery = NULL;
 	ResultIteratorWrapper			*prev_result = NULL;
 	if(zorba)
 	{
 		prev_current_xquery = zorba->current_xquery;
 		prev_result = zorba->current_xqueryresult;
-		zorba->current_xquery = xquery;
+		zorba->current_xquery = xquery_info;
 		zorba->current_xqueryresult = this;
 	}
 

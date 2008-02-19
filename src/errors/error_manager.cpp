@@ -102,14 +102,14 @@ bool AlertsManagerImpl::sendAlertByCallback(Zorba* z,
 			if(z->current_xquery && z->current_xquery->alert_callback_param)
 			{
 				*retval = thread_registered_callback(alert, 
-																				z->current_xquery,
+                                        z->current_xquery ? z->current_xquery->xquery : NULL,
 																				z->current_xqueryresult,
 																				z->current_xquery->alert_callback_param);
 			}
 			else
 			{
 				*retval = thread_registered_callback(alert, 
-																				z->current_xquery,
+                                        z->current_xquery ? z->current_xquery->xquery : NULL,
 																				z->current_xqueryresult,
 																				thread_registered_param);
 			}

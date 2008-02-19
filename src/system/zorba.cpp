@@ -164,9 +164,10 @@ yy::location& Zorba::GetCurrentLocation()//from top iterator
 
 static_context* Zorba::get_static_context()///of the current xquery
 {
-	if(!current_xquery)
+  if(current_xquery)
+	  return current_xquery->internal_sctx;
+  else
 		return NULL;
-	return current_xquery->internal_sctx;
 }
 
 dynamic_context* Zorba::get_base_dynamic_context()//of the current ResultIterator
@@ -175,7 +176,6 @@ dynamic_context* Zorba::get_base_dynamic_context()//of the current ResultIterato
 		return NULL;
 	return current_xqueryresult->internal_dyn_context;
 }
-
 
 AlertsManagerImpl_t Zorba::getErrorManager()
 { 

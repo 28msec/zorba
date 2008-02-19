@@ -26,7 +26,7 @@
 namespace xqp {
 
 class ItemFactory;
-class Zorba_XQueryBinary;
+//class Zorba_XQueryBinary;
 class PlanIterator;
 class Store;
 class static_context;
@@ -36,6 +36,7 @@ class serializer;
 class CollationManager;
 class ResultIteratorWrapper;
 class dynamic_context;
+class Zorba_XQueryInfo;
 
 typedef rchandle<AlertsManagerImpl>		AlertsManagerImpl_t;
 
@@ -50,7 +51,7 @@ public:
 	static yy::location	  null_loc;
 	
 public:///things specific for each thread
-	Zorba_XQueryBinary              * current_xquery;//current xquery executed for this thread
+	Zorba_XQueryInfo              * current_xquery;//current xquery executed for this thread
 	ResultIteratorWrapper						*current_xqueryresult;
 
 //	std::stack<const PlanIterator*>	  current_iterator;

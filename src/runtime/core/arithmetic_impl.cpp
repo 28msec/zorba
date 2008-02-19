@@ -6,7 +6,10 @@
 #include "types/casting.h"
 #include "util/Assert.h"
 #include "runtime/numerics/NumericsImpl.h"
+#include "runtime/dateTime/DurationsDatesTimes.h"
 #include "errors/error_factory.h"
+#include "system/zorba.h"
+#include "store/api/item_factory.h"
 
 namespace xqp {
 
@@ -115,6 +118,63 @@ void GenericArithIterator<Operation>::accept(PlanIterVisitor& v) const {
   v.endVisit(*this); 
 }
 
+//moved from DurationsDatesTimes
+template<>
+Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
+( const yy::location* loc,  const Item* i0, const Item* i1 )
+{
+  xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDuration (d);
+}
+template<>
+Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
+( const yy::location* loc, const Item* i0, const Item* i1 )
+{
+  xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDuration (d);
+}
+template<>
+Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
+( const yy::location* loc, const Item* i0, const Item* i1 )
+{
+  xqp_duration d;
+
+  if( i1->getDoubleValue().isZero() )
+    return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
+  else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
+    ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
+  else if (  i1->getDoubleValue().isNaN() )
+    ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
+  else
+    d = *i0->getDurationValue() * (i1->getDoubleValue());
+  
+  return Zorba::getItemFactory()->createDuration (d);
+}
+template<>
+Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
+( const yy::location* loc, const Item* i0, const Item* i1 )
+{
+  xqp_duration d;
+
+  if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
+    return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
+  else if ( i1->getDoubleValue().isZero() )
+    ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
+  else if ( i1->getDoubleValue().isNaN() )
+    ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
+  else
+    d= *i0->getDurationValue() / i1->getDoubleValue();
+
+  return Zorba::getItemFactory()->createDuration (d);
+}
+template<>
+Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
+( const yy::location* loc, const Item* i0, const Item* i1 )
+{
+  xqp_decimal d = *i0->getDurationValue() / *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDecimal(d);
+}
+
 /* instantiate GenericArithIterator for all types */
 template class GenericArithIterator<AddOperation>;
 template class GenericArithIterator<SubtractOperation>;
@@ -123,5 +183,6 @@ template class GenericArithIterator<DivideOperation>;
 template class GenericArithIterator<IntegerDivideOperation>;
 template class GenericArithIterator<ModOperation>;
 /* end class GenericArithIterator */
+
 
 }
