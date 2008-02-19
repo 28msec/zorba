@@ -285,7 +285,7 @@ void end_visit(flwor_expr& v)
   PlanIter_t ret = pop_itstack ();
 
   vector<FLWORIterator::OrderSpec> orderSpecs;
-  for (flwor_expr::orderspec_list_t::const_reverse_iterator i = v.orderspec_rbegin ();
+  for (flwor_expr::orderspec_list_t::reverse_iterator i = v.orderspec_rbegin ();
        i != v.orderspec_rend ();
        i++) 
   {

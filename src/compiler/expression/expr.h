@@ -340,10 +340,6 @@ public: // accessors
   { return orderspec_v.begin(); }
   orderspec_list_t::iterator orderspec_end()
   { return orderspec_v.end(); }
-  orderspec_list_t::const_reverse_iterator orderspec_rbegin() const
-  { return orderspec_v.rbegin(); }
-  orderspec_list_t::const_reverse_iterator orderspec_rend() const
-  { return orderspec_v.rend(); }
   orderspec_list_t::reverse_iterator orderspec_rbegin()
   { return orderspec_v.rbegin(); }
   orderspec_list_t::reverse_iterator orderspec_rend()
