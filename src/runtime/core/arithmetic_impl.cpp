@@ -81,7 +81,7 @@ Item_t GenericArithIterator<Operation>::compute(const yy::location& aLoc, Item_t
 
   if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
   {
-    if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ))
+    if(GENV_TYPESYSTEM.is_numeric(*type1))
       return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE> ( &aLoc, n0, n1 );
     else
       return Operation::template computeSingleType<TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
