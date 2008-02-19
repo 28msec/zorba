@@ -5,6 +5,7 @@
  */
 #include "errors/error_factory.h"
 #include "util/rchandle.h"
+#include "system/globalenv.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_loader.h"
 #include "store/naive/simple_store.h"

@@ -5,6 +5,7 @@
 #include "system/zorba_engine.h"
 #include "errors/error_manager.h"
 #include "store/api/collection.h"
+#include "system/globalenv.h"
 #include "system/zorba.h"
 #include "zorba/store/api/item.h"
 #include "zorba/runtime/iterator.h"
@@ -17,7 +18,7 @@ namespace xqp
 XmlDataManager_Impl::XmlDataManager_Impl()
 {
 	try{
-	internal_store = &Store::getInstance();
+	internal_store = &GENV.getStore();
 	}CATCH_ALL_NO_RETURN(;);
 
 }

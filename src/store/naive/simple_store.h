@@ -46,7 +46,7 @@ typedef StringHashMap<XmlTree_t> DocumentSet;
 ********************************************************************************/
 class SimpleStore : public Store
 {
-  friend class Store;
+  friend class GlobalEnvironment;
  
   typedef StringPool  NamespacePool;
 

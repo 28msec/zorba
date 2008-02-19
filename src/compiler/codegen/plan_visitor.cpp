@@ -10,6 +10,7 @@
 #include "plan_visitor.h"
 
 #include <memory>
+#include "system/globalenv.h"
 #include "context/namespace_context.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
@@ -62,7 +63,7 @@ using namespace std;
 namespace xqp 
 {
 
-#define ITEM_FACTORY (Store::getInstance().getItemFactory())
+#define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
   template <typename T> T pop_stack (stack<T> &stk) {
     assert (! stk.empty ());
@@ -670,7 +671,7 @@ bool begin_visit(match_expr& v)
   Item_t qname;
   Item_t tname;
 
-  ItemFactory& iFactory = Store::getInstance().getItemFactory();
+  ItemFactory& iFactory = GENV.getStore().getItemFactory();
 
   if (v.getTestKind() == match_name_test)
   {
@@ -784,7 +785,7 @@ void end_visit(elem_expr& v)
   PlanIter_t lContentIter = 0;
   PlanIter_t lAttrsIter = 0;
 
-  ItemFactory& iFactory = Store::getInstance().getItemFactory();
+  ItemFactory& iFactory = GENV.getStore().getItemFactory();
 
   if ( v.getContent() != 0 )
   {
@@ -840,7 +841,7 @@ void end_visit(attr_expr& v)
   PlanIter_t lVarIter = 0;
   PlanIter_t lContentIter = 0;
   
-  ItemFactory& iFactory = Store::getInstance().getItemFactory();
+  ItemFactory& iFactory = GENV.getStore().getItemFactory();
 
   if (v.getValueExpr() != 0) {
     lVarIter = pop_itstack();

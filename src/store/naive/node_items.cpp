@@ -6,6 +6,7 @@
 
 #include <algorithm>
 
+#include "system/globalenv.h"
 #include "system/zorba.h"
 #include "system/zorba_engine.h"
 

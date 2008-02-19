@@ -230,7 +230,7 @@ class RootTypeManager : public TypeManager {
 
     RootTypeManager();
 
-    friend class GlobalEnvironment;
+    friend class root_static_context;
 };
 
 }

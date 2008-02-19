@@ -65,9 +65,6 @@ class TypeManager;
 class static_context : public context
 {
 protected:
-  static const char *default_ns_initializers [];
-
-	static_context (const char **);
   xqp_string qname_internal_key (const Item *qname) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
@@ -76,21 +73,13 @@ protected:
   hashmap<StatelessExternalFunction_t> m_stateless_ext_functions;
   std::auto_ptr<TypeManager> typemgr;
 
-public:
-	static void init();
   static_context();
   static_context (static_context *_parent);
 
-  ~static_context();
-
-  static static_context *root_static_context ();
-
-
 public:
-
-public:
+  virtual ~static_context();
+  static_context *create_child_context() { return new static_context(this); }
   TypeManager *get_typemanager () { return typemgr.get (); }
-  void set_typemanager (TypeManager *tm) { typemgr.reset (tm); }
   
   xqp_string default_function_namespace() const;
 	void set_default_function_namespace(xqp_string);

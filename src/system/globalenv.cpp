@@ -1,6 +1,9 @@
 #include "globalenv.h"
-#include "types/root_typemanager.h"
 #include "mapm/m_apm.h"
+#include "types/root_typemanager.h"
+#include "context/root_static_context.h"
+#include "functions/library.h"
+#include "store/naive/simple_store.h"
 #include <libxml/parser.h>
 
 using namespace xqp;
@@ -18,7 +21,10 @@ GlobalEnvironment& GlobalEnvironment::getInstance()
 void GlobalEnvironment::init()
 {
   m_globalEnv = new GlobalEnvironment();
-  m_globalEnv->m_rootTypeManager.reset(new RootTypeManager());
+  m_globalEnv->m_store.reset(new SimpleStore());
+  static_cast<SimpleStore *>(m_globalEnv->m_store.get())->init();
+  m_globalEnv->m_rootStaticContext.reset(new root_static_context());
+  BuiltinFunctionLibrary::populateContext(m_globalEnv->m_rootStaticContext.get());
 
   // initialize mapm for bignum handling
   m_globalEnv->m_mapm = m_apm_init();
@@ -47,6 +53,9 @@ void GlobalEnvironment::destroy()
   m_apm_free_all_mem();
   m_globalEnv->m_mapm = 0;
 
+  m_globalEnv->m_rootStaticContext.reset(NULL);
+  m_globalEnv->m_store.reset(NULL);
+
   delete m_globalEnv;
 	m_globalEnv = NULL;
 }
@@ -55,9 +64,19 @@ GlobalEnvironment::GlobalEnvironment()
 {
 }
 
+static_context& GlobalEnvironment::getRootStaticContext()
+{
+  return *m_rootStaticContext;
+}
+
 RootTypeManager& GlobalEnvironment::getRootTypeManager()
 {
-  return *m_rootTypeManager;
+  return *(static_cast<RootTypeManager *>(m_rootStaticContext->get_typemanager()));
+}
+
+Store& GlobalEnvironment::getStore()
+{
+  return *m_store;
 }
 
 /* vim:set ts=2 sw=2: */

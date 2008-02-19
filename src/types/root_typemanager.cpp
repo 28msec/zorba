@@ -1,4 +1,5 @@
 #include <assert.h>
+#include "system/globalenv.h"
 #include "types/typeident.h"
 #include "store/naive/atomic_items.h"
 #include "node_test.h"
@@ -77,7 +78,7 @@ RootTypeManager::RootTypeManager()
 
 #define XSQNDECL(var, local)                         \
         var =                    \
-            Store::getInstance().getItemFactory().   \
+            GENV.getStore().getItemFactory().   \
             createQName(XS_URI, XS_PREFIX, local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");

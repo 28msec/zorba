@@ -19,6 +19,7 @@
 #include "api/external/result_iterator_wrapper.h"
 
 #include "zorba/util/properties.h"
+#include "system/globalenv.h"
 #include "system/zorba_engine.h"
 #include "api/external/plan_print_impl.h"
 
@@ -118,7 +119,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     }
     else
     {
-      info->internal_sctx = new static_context;
+      info->internal_sctx = GENV.getRootStaticContext().create_child_context();
     }
     info->internal_sctx->set_entity_file_uri(info->m_xquery_source_uri);
 
@@ -592,7 +593,7 @@ bool Zorba_XQueryBinary::setVariableAsDocumentFromStream(
 
     xqp_string expanded_name = result->internal_dyn_context->expand_varname(info->internal_sctx, varname);
 
-		Store		&store = Store::getInstance();
+		Store		&store = GENV.getStore();
 		ItemFactory* factory = Zorba::getItemFactory();
 
     Item_t uriItem = factory->createAnyURI(docUri);
@@ -646,7 +647,7 @@ bool Zorba_XQueryBinary::setContextItemAsDocumentFromStream(
 
 	try
   {
-		Store		&store = Store::getInstance();
+		Store		&store = GENV.getStore();
 
 		//?store.deleteDocument(docUri);
 		Item_t	docItem = store.loadDocument(docUri, is);

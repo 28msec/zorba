@@ -3,7 +3,7 @@
 #define DEFAULT_STORE_DEFS
  
 #define GET_STORE() \
-        (*(static_cast<SimpleStore*>(&Store::getInstance())))
+        (*(static_cast<SimpleStore*>(&GENV.getStore())))
 
 #define GET_FACTORY() \
         (*(static_cast<BasicItemFactory*>(& GET_STORE().getItemFactory())))

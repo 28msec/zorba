@@ -42,7 +42,7 @@ class function_codegenerator {
         virtual PlanIter_t codegen(const fo_expr *fo) = 0;
 };
 
-class function : public rcobject
+class function
 {
 protected:
 	signature sig;

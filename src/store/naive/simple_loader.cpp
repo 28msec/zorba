@@ -4,6 +4,7 @@
 #include <string>
 #include <libxml/xmlmemory.h>
 
+#include "system/globalenv.h"
 #include "store/api/store_consts.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_loader.h"

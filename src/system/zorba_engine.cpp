@@ -122,12 +122,11 @@ void ZorbaEngineImpl::initialize()
 #endif
 	}//end if(for_single_thread_api)
 
-	static_context::init();
 	dynamic_context::init();
 	library_init();
 
 	///optimize access to store
-  Zorba::theStore = &Store::getInstance();
+  Zorba::theStore = &GENV.getStore();
   Zorba::theItemFactory = &Zorba::theStore->getItemFactory();
   GlobalEnvironment::getInstance();
 

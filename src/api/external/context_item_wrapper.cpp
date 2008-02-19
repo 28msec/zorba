@@ -2,6 +2,7 @@
 #include "dynamic_context_wrapper.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "system/globalenv.h"
 #include "system/zorba.h"
 #include "system/zorba_engine.h"
 #include "runtime/core/item_iterator.h"
@@ -993,7 +994,7 @@ bool DynamicContextWrapper::setContextItemAsDocument( xqp_anyURI documentURI)
 {
 	try{
 	
-	Store		&store = Store::getInstance();
+	Store		&store = GENV.getStore();
 	context_item = store.getDocument(documentURI);
 	if(context_item == NULL)
 	{
@@ -1018,7 +1019,7 @@ bool DynamicContextWrapper::setContextItemAsDocumentFromFile(
 			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, DONT_CONTINUE_EXECUTION, file_path);
 			return false;
 		}
-		Store		&store = Store::getInstance();
+		Store		&store = GENV.getStore();
 
 		if(storeUri == "")
 			storeUri = file_path;

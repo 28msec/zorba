@@ -7,6 +7,8 @@
 namespace xqp {
 
 class RootTypeManager;
+class static_context;
+class Store;
 
 class GlobalEnvironment {
   public:
@@ -15,14 +17,19 @@ class GlobalEnvironment {
     static GlobalEnvironment& getInstance();
 
     RootTypeManager& getRootTypeManager();
+    static_context& getRootStaticContext();
+    Store& getStore();
   private:
     GlobalEnvironment();
 
-    std::auto_ptr <RootTypeManager> m_rootTypeManager;
+    std::auto_ptr<Store> m_store;
+    std::auto_ptr<static_context> m_rootStaticContext;
     M_APM                     m_mapm; // this is a pointer type
 
     static GlobalEnvironment *m_globalEnv;
 };
+
+#define GENV GlobalEnvironment::getInstance()
 
 #define GENV_TYPESYSTEM GlobalEnvironment::getInstance().getRootTypeManager()
 

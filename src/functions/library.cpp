@@ -8,6 +8,7 @@
 
 #include <iostream>
 
+#include <memory>
 #include "system/globalenv.h"
 #include "functions/library.h"
 #include "functions/function.h"
@@ -52,20 +53,16 @@ static string get_qname(const function &f)
   return name->getPrefix() + ":" + name->getLocalName();
 }
 
-
-#define DECL( type, sig )                                               \
-  type type##_obj (signature sig);                                      \
-  class type##_init_class {                                             \
-  public:                                                               \
-    type##_init_class () {                                              \
-      static_context::root_static_context ()->                          \
-        bind_fn (get_qname (type##_obj), & type##_obj,                  \
-                 type##_obj.get_signature ().arg_count ());             \
-    }                                                                   \
-  } type##_init_obj
+#define DECL(type, sig) do { \
+std::auto_ptr<function> type##_ptr(new type(signature sig)); \
+sctx->bind_fn(get_qname(*type##_ptr), type##_ptr.get(), type##_ptr->get_signature().arg_count()); \
+type##_ptr.release(); } while(0)
 
 
-#define ITEM_FACTORY (Store::getInstance().getItemFactory())
+#define ITEM_FACTORY (GENV.getStore().getItemFactory())
+
+void BuiltinFunctionLibrary::populateContext(static_context *sctx)
+{
 
 // Accessors
 DECL(fn_data_func,
@@ -949,5 +946,6 @@ DECL(ctx_variable,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 // end context functions
+}
 
 } /* namespace xqp */

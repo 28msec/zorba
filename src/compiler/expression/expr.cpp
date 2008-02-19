@@ -8,6 +8,7 @@
  *
  */
 
+#include "system/globalenv.h"
 #include "compiler/expression/expr.h"
 #include "functions/function.h"
 #include "compiler/parser/parse_constants.h"
@@ -29,10 +30,17 @@
 using namespace std;
 namespace xqp {
   
-#define ITEM_FACTORY (Store::getInstance().getItemFactory())
+#define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
   static yy::location null_loc;
-  static const_expr dummy_expr (null_loc, xqp_boolean (false));
+
+class dummy_expr : public expr {
+  public:
+    dummy_expr(yy::location& loc) : expr(loc) { }
+    ~dummy_expr() { }
+    void next_iter(expr_base_iterator&) {}
+};
+  static dummy_expr dummy_expr (null_loc);
   static expr *expr_iter_done = &dummy_expr;
 
 #define BEGIN_EXPR_ITER() switch (v.state) { case 0:

@@ -1,5 +1,6 @@
 
 #include "store/api/store.h"
+#include "system/globalenv.h"
 #include "store/api/item.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/base/plan_iterator_wrapper.h"
@@ -40,7 +41,7 @@ void NodeDistinctIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 
-  state->theStoreIterator = Store::getInstance().distinctNodes(input, theAcceptAtomics);
+  state->theStoreIterator = GENV.getStore().distinctNodes(input, theAcceptAtomics);
   state->theStoreIterator->open();
   theChild->open(planState, offset);
 }
@@ -89,7 +90,7 @@ void NodeSortIterator::openImpl(PlanState& planState, uint32_t& offset)
   NodeSortState* state;
   state = StateTraitsImpl<NodeSortState>::getState(planState, this->stateOffset);
 
-  state->theStoreIterator = Store::getInstance().sortNodes(input,
+  state->theStoreIterator = GENV.getStore().sortNodes(input,
                                                            theAscendant,
                                                            theDistinct,
                                                            theAcceptAtomics);

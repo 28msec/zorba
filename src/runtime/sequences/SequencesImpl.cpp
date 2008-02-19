@@ -816,7 +816,7 @@ FnDocIterator::~FnDocIterator()
 
 Item_t FnDocIterator::nextImpl(PlanState& planState) const
 {
-  Store& store = Store::getInstance();
+  Store& store = GENV.getStore();
 
   Item_t doc;
   Item_t uriItem;

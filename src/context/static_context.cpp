@@ -36,6 +36,7 @@
 #include "system/zorba.h"
 #include "util/utf8/Unicode_util.h"
 #include "context/collation_manager.h"
+#include "functions/function.h"
 #include "functions/library.h"
 #include "system/zorba_engine.h"
 #include "types/casting.h"
@@ -55,50 +56,13 @@
 using namespace std;
 namespace xqp {
 
-  const char *static_context::default_ns_initializers [] = {
-    "fn", XQUERY_FN_NS,
-    "xml", "http://www.w3.org/XML/1998/namespace",
-    "xs", "http://www.w3.org/2001/XMLSchema",
-    "xsi", "http://www.w3.org/2001/XMLSchema-instance",
-    "local", "http://www.w3.org/2005/xquery-local-functions",
-    NULL, NULL
-  };
+#define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-#define ITEM_FACTORY (Store::getInstance().getItemFactory())
+static_context::static_context()
+    : context(NULL) { }
   
-  static_context::static_context()
-		: context (root_static_context ()) {}
- 
   static_context::static_context (static_context *_parent)
     : context (_parent) {}
-
-  static_context* 
-  static_context::root_static_context () {
-    static static_context *p = new static_context (default_ns_initializers);
-    return p;
-  }
-  
-	///constructor called only for root static context
-  static_context::static_context (const char **p) {
-		//set up the implementation-default values in the root static context
-		set_xpath1_0compatib_mode(StaticQueryContext::xpath2_0);
-    for (; *p != NULL; p += 2)
-      bind_ns (p [0], p [1]);
-    set_default_elem_type_ns ("");		
-    set_default_function_namespace (lookup_ns ("fn"));
-		set_context_item_static_type(GENV_TYPESYSTEM.create_any_type());
-    set_default_collation_uri ("http://www.w3.org/2005/xpath-functions/collation/codepoint");
-		set_construction_mode(StaticQueryContext::cons_strip);
-		set_ordering_mode(StaticQueryContext::ordered);
-		set_order_empty_mode(StaticQueryContext::empty_greatest);
-		set_boundary_space_mode(StaticQueryContext::strip_space);
-		set_inherit_mode(StaticQueryContext::no_inherit_ns);
-		set_preserve_mode(StaticQueryContext::no_preserve_ns);
-//		set_order_empty_mode (StaticQueryContext::empty_least);
-		set_default_collection_type(GENV_TYPESYSTEM.create_any_type());
-
-    set_current_absolute_baseuri("");
-  }
 
 	static_context::~static_context()
 	{
@@ -135,12 +99,14 @@ namespace xqp {
           delete val->collationValue;
 				}
 			}
+            else if (!strncmp(keybuff, "fn:", 3))
+            {
+                val = &(*it).val;
+                delete val->functionValue;
+            }
 		}
 	}
 
-  void static_context::init () {
-  }
-  
   DECL_ENUM_PARAM (static_context, construction_mode)
   DECL_ENUM_PARAM (static_context, order_empty_mode)
   DECL_ENUM_PARAM (static_context, boundary_space_mode)
@@ -241,7 +207,7 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
 
   function *static_context::lookup_builtin_fn (xqp_string local, int arity)
   {
-    function *f = root_static_context ()->lookup_func (fn_internal_key (arity) + qname_internal_key2 (XQUERY_FN_NS, local));
+    function *f = GENV.getRootStaticContext().lookup_func (fn_internal_key (arity) + qname_internal_key2 (XQUERY_FN_NS, local));
     if (f == NULL)
       ZORBA_NOT_IMPLEMENTED ("built-in `" + local + "/" + to_string (arity) + "'");
     return f;

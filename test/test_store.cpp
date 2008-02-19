@@ -4,6 +4,7 @@
 #include "timer.h"
 
 #include "errors/error_factory.h"
+#include "system/globalenv.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_collection.h"
@@ -59,7 +60,7 @@ int main(int argc, const char * argv[])
   //
   // Store initialization
   //
-  xqp::SimpleStore* store = static_cast<xqp::SimpleStore*>(&xqp::Store::getInstance());
+  xqp::SimpleStore* store = static_cast<xqp::SimpleStore*>(&xqp::GENV.getStore());
 
   //
   // Zorba initialization

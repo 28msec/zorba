@@ -3,6 +3,7 @@
 #include "types/root_typemanager.h"
 #include "system/globalenv.h"
 #include "errors/error_manager.h"
+#include "system/globalenv.h"
 #include "system/zorba_engine.h"
 #include "system/zorba.h"
 #include "types/casting.h"
@@ -97,7 +98,7 @@ StaticQueryContext::xpath1_0compatib_mode_t		StaticContextWrapper::getXPath1_0Co
 		return xpath1_0compatib_mode;//previously set by user
 	//else take the default value from root_static_context
 
-	return static_context::root_static_context()->xpath1_0compatib_mode();
+	return GENV.getRootStaticContext().xpath1_0compatib_mode();
 }
 
 bool		StaticContextWrapper::addNamespace( xqp_string prefix, xqp_string URI )//override the previous set prefix
@@ -200,7 +201,7 @@ xqp_string		StaticContextWrapper::getDefaultElementAndTypeNamespace( )
 		return default_elem_ns;
 
 	//else return the default
-	return static_context::root_static_context()->default_elem_type_ns();
+	return GENV.getRootStaticContext().default_elem_type_ns();
 }
 
 
@@ -218,7 +219,7 @@ xqp_string		StaticContextWrapper::getDefaultFunctionNamespace( )
 		return default_fun_ns;
 
 	//else return the default
-	return static_context::root_static_context()->default_function_namespace();
+	return GENV.getRootStaticContext().default_function_namespace();
 }
 
 
@@ -320,7 +321,7 @@ type_ident_ref_t		StaticContextWrapper::getContextItemStaticType( )
 		return context_item_type;
 
 	///else get the default value from root_static_context
-	xqtref_t t =  static_context::root_static_context()->context_item_static_type();
+	xqtref_t t =  GENV.getRootStaticContext().context_item_static_type();
 
 	return GENV_TYPESYSTEM.get_type_identifier(*t);
 }
@@ -435,7 +436,7 @@ xqp_string	StaticContextWrapper::getDefaultCollation()
 		return default_collation_URI;
 
 	//else return the default collation from root_static_context
-	return static_context::root_static_context()->default_collation_uri();
+	return GENV.getRootStaticContext().default_collation_uri();
 }
 
 
@@ -452,7 +453,7 @@ StaticQueryContext::construction_mode_t		StaticContextWrapper::getConstructionMo
 	if(construction_mode >= 0)
 		return construction_mode;
 
-	return static_context::root_static_context()->construction_mode();
+	return GENV.getRootStaticContext().construction_mode();
 }
 
 void		StaticContextWrapper::setOrderingMode( ordering_mode_t o)
@@ -467,7 +468,7 @@ StaticQueryContext::ordering_mode_t		StaticContextWrapper::getOrderingMode( )
 	if(ordering_mode >= 0)
 		return ordering_mode;
 
-	return static_context::root_static_context()->ordering_mode();
+	return GENV.getRootStaticContext().ordering_mode();
 }
 
 
@@ -482,7 +483,7 @@ StaticQueryContext::order_empty_mode_t		StaticContextWrapper::getDefaultOrderFor
 	//return internal_sctx.order_empty_mode();
 	if(order_empty_mode >= 0)
 		return order_empty_mode;
-	return static_context::root_static_context()->order_empty_mode();
+	return GENV.getRootStaticContext().order_empty_mode();
 }
 
 
@@ -497,7 +498,7 @@ StaticQueryContext::boundary_space_mode_t		StaticContextWrapper::getBoundarySpac
 	//return internal_sctx.boundary_space_mode();
 	if(boundary_space_mode >= 0)
 		return boundary_space_mode;
-	return static_context::root_static_context()->boundary_space_mode();
+	return GENV.getRootStaticContext().boundary_space_mode();
 
 }
 
@@ -517,8 +518,8 @@ void		StaticContextWrapper::getCopyNamespacesMode( preserve_mode_t *preserve, in
 		*inherit = inherit_mode;
 		return;
 	}
-	*preserve = static_context::root_static_context()->preserve_mode( );
-	*inherit = static_context::root_static_context()->inherit_mode( );
+	*preserve = GENV.getRootStaticContext().preserve_mode( );
+	*inherit = GENV.getRootStaticContext().inherit_mode( );
 }
 
 bool		StaticContextWrapper::setBaseURI( xqp_string baseURI )
@@ -554,7 +555,7 @@ xqp_string		StaticContextWrapper::getBaseURI( )
 		return this->baseURI;
 
 	///else return the value set in root_static_context
-	return static_context::root_static_context()->baseuri();
+	return GENV.getRootStaticContext().baseuri();
 }
 
 	//statically known documents (types)
@@ -732,7 +733,7 @@ type_ident_ref_t	StaticContextWrapper::getDefaultCollectionType( )
 		return default_collection_type;
 
 	//else return the default value set in root_static_context
-	xqtref_t t = static_context::root_static_context()->default_collection_type();
+	xqtref_t t = GENV.getRootStaticContext().default_collection_type();
 
 	return GENV_TYPESYSTEM.get_type_identifier(*t);
 	}CATCH_ALL_RETURN_NULL;
@@ -750,7 +751,7 @@ static_context*		StaticContextWrapper::fillInStaticContext()
 	type_ident_ref_t	type;
 	xqtref_t		internal_type;
 
-	sctx = new static_context;
+	sctx = GENV.getRootStaticContext().create_child_context();
 
 	if(xpath1_0compatib_mode >= 0)
 		sctx->set_xpath1_0compatib_mode(xpath1_0compatib_mode);

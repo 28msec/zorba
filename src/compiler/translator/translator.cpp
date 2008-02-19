@@ -17,10 +17,10 @@
 #include "context/namespace_context.h"
 #include "types/node_test.h"
 #include "types/casting.h"
-#include "functions/library.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/normalizer/normalizer.h"
 #include "util/tracer.h"
+#include "system/globalenv.h"
 #include "store/api/item.h"
 #include "system/zorba.h"
 #include "util/utf8/Unicode_util.h"
@@ -62,7 +62,7 @@ namespace xqp {
 #define DOT_POS_VAR "$$pos"
 #define LAST_IDX_VAR "$$last-idx"
 
-#define ITEM_FACTORY (Store::getInstance().getItemFactory())
+#define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
   typedef rchandle<expr> expr_t;
   typedef rchandle<var_expr> var_expr_t;
@@ -175,7 +175,7 @@ protected:
 
   void push_scope ()
   {
-    sctx_list.push_back (sctx_p = new static_context (sctx_p));
+    sctx_list.push_back (sctx_p = sctx_p->create_child_context());
   }
 
   void pop_scope (int n = 1)

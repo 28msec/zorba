@@ -1290,7 +1290,7 @@ bool DynamicContextWrapper::setVariableAsDocument( xqp_string varname, xqp_anyUR
 
 	dctx_extern_var_t		var;
 	var.varname = varname;
-	Store		&store = Store::getInstance();
+	Store		&store = GENV.getStore();
 	var.atomic_item = store.getDocument(documentURI);
 	if(var.atomic_item == NULL)
 	{
@@ -1322,7 +1322,7 @@ bool DynamicContextWrapper::setVariableAsDocumentFromFile(
 			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, DONT_CONTINUE_EXECUTION, file_path);
 			return false;
 		}
-		Store		&store = Store::getInstance();
+		Store		&store = GENV.getStore();
 
 		if(storeUri == "")
 			storeUri = file_path;

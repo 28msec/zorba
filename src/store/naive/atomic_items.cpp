@@ -11,6 +11,7 @@
 #include "util/Assert.h"
 #include "util/datetime/date.h"
 #include "errors/error_factory.h"
+#include "system/globalenv.h"
 #include "store/naive/atomic_items.h"
 #include "store/api/store.h"
 #include "store/api/item.h"
@@ -34,7 +35,7 @@ namespace xqp
 
 void QNameItemImpl::free()
 {
-  reinterpret_cast<SimpleStore*>(&Store::getInstance())->getQNamePool().remove(this);
+  reinterpret_cast<SimpleStore*>(&GENV.getStore())->getQNamePool().remove(this);
 }
 
 
@@ -114,7 +115,7 @@ xqp_string NCNameItemImpl::show() const
 ********************************************************************************/
 Item_t AnyUriItemImpl::getType() const
 {
-  return Store::getInstance().getItemFactory().
+  return GENV.getStore().getItemFactory().
          createQName(SimpleStore::XS_URI, "xs", "anyURI");
 }
 
@@ -148,7 +149,7 @@ xqp_string AnyUriItemImpl::show() const
 ********************************************************************************/
 Item_t UntypedAtomicItemImpl::getType() const
 {
-  return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
+  return static_cast<SimpleStore*>(&GENV.getStore())->theUntypedAtomicType;
 }
 
 uint32_t UntypedAtomicItemImpl::hash() const

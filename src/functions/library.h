@@ -12,12 +12,19 @@
 
 #include <string>
 
-#include "context/common.h"
-
 namespace xqp {
 
 class function;
 class zorba;
+
+class static_context;
+
+class BuiltinFunctionLibrary {
+    private:
+        static void populateContext(static_context *sctx);
+        friend class GlobalEnvironment;
+};
+
 
 } /* namespace xqp */
 #endif /* XQP_LIBRARY_H */
