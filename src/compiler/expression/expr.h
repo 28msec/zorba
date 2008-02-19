@@ -874,9 +874,11 @@ protected:
 public:
   relpath_expr(yy::location const&);
 
-  void add_back(expr_t step)          { theSteps.push_back (step); }
-  void add_front(expr_t step)         { theSteps.insert (theSteps.begin (), step); }
-  uint32_t size() const               { return theSteps.size(); }
+  void add_back(expr_t step)   { theSteps.push_back (step); }
+  void add_front(expr_t step)  { theSteps.insert (theSteps.begin (), step); }
+  void erase(ulong i)          { theSteps.erase(theSteps.begin() + i); }
+
+  uint32_t size() const        { return theSteps.size(); }
 
   std::vector<expr_t>::const_iterator begin() const { return theSteps.begin(); }
   std::vector<expr_t>::const_iterator end()   const { return theSteps.end(); }

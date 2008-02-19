@@ -152,8 +152,35 @@ bool normalizer::begin_visit(extension_expr& /*node*/)
   return true;
 }
 
-bool normalizer::begin_visit(relpath_expr& /*node*/)
+bool normalizer::begin_visit(relpath_expr& node)
 {
+#if 1
+  ulong numSteps = node.size();
+
+  for (ulong i = 0; i < numSteps; i++)
+  {
+    axis_step_expr* axisStep = dynamic_cast<axis_step_expr*>(node[i].getp());
+
+    if (axisStep != NULL &&
+        i < numSteps - 1 &&
+        axisStep->getAxis() == axis_kind_descendant_or_self &&
+        axisStep->numPreds() == 0 &&
+        axisStep->getTest()->getTestKind() == match_anykind_test)
+    {
+      axis_step_expr* nextStep = dynamic_cast<axis_step_expr*>(node[i+1].getp());
+      if (nextStep != NULL &&
+          nextStep->getAxis() == axis_kind_child &&
+          axisStep->numPreds() == 0)
+      {
+        nextStep->setAxis(axis_kind_descendant);
+        node.erase(i);
+        numSteps--;
+        i--;
+      }
+    }   
+  }
+#endif
+
   return true;
 }
 
