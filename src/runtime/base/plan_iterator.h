@@ -24,10 +24,10 @@
 #ifndef XQP_PLAN_ITERATOR_H
 #define XQP_PLAN_ITERATOR_H
 
+#include <cassert>
 #include "common/shared_types.h"
-#include "store/api/item.h"
-#include "runtime/iterator.h"
 #include "compiler/parser/location.hh"
+#include "zorba/store/api/item.h"
 
 // Info: Forcing inlining a function in g++:
 // Item_t next() __attribute__((always_inline)) {...}
@@ -233,7 +233,7 @@ public:
   yy::location  loc;
 
 public:
-  PlanIterator(yy::location aLoc) 
+  PlanIterator(const yy::location& aLoc) 
     : stateOffset(0),
       loc(aLoc) 
   {}
@@ -365,7 +365,7 @@ protected:
   {
 #ifndef NDEBUG
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
-    assert(lState->theIsOpened); // open must hve been called before
+    assert(lState->theIsOpened); // open must have been called before
 #endif
     return static_cast<const IterType*>(this)->nextImpl(planState);
   }

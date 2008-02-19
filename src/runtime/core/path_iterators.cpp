@@ -23,14 +23,12 @@
  */
 
 #include "util/Assert.h"
-#include "util/logging/logger.hh"
-#include "util/logging/loggerconfig.hh"
-#include "util/logging/loggermanager.hh"
 #include "runtime/core/path_iterators.h"
 #include "system/zorba.h"
 #include "store/api/item.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "errors/error_factory.h"
+#include "zorba/runtime/iterator.h"
 
 #define MYTRACE(msg) \
 {\
@@ -308,6 +306,9 @@ Item_t SelfAxisIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
+AttributeAxisState::AttributeAxisState(){}
+AttributeAxisState::~AttributeAxisState(){}
+
 void
 AttributeAxisState::init(PlanState& planState)
 {
@@ -480,6 +481,9 @@ Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
+RSiblingAxisState::RSiblingAxisState(){}
+RSiblingAxisState::~RSiblingAxisState(){}
+
 void
 RSiblingAxisState::init(PlanState& planState)
 {
@@ -550,6 +554,9 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
+LSiblingAxisState::LSiblingAxisState(){}
+LSiblingAxisState::~LSiblingAxisState(){}
+
 void
 LSiblingAxisState::init(PlanState& planState)
 {
@@ -620,6 +627,9 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
+ChildAxisState::ChildAxisState() {}
+ChildAxisState::~ChildAxisState() {}
+
 void
 ChildAxisState::init(PlanState& planState)
 {
@@ -684,6 +694,15 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
+DescendantAxisState::DescendantAxisState(){}
+DescendantAxisState::~DescendantAxisState()
+{
+  while (!theCurrentPath.empty())
+  {
+    theCurrentPath.pop();
+  }
+}
+
 void
 DescendantAxisState::init(PlanState& planState)
 {
@@ -694,14 +713,6 @@ void
 DescendantAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
-  while (!theCurrentPath.empty())
-  {
-    theCurrentPath.pop();
-  }
-}
-
-DescendantAxisState::~DescendantAxisState()
-{
   while (!theCurrentPath.empty())
   {
     theCurrentPath.pop();
@@ -786,6 +797,16 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
+DescendantSelfAxisState::DescendantSelfAxisState(){}
+DescendantSelfAxisState::~DescendantSelfAxisState()
+{
+  while (!theCurrentPath.empty())
+  {
+    theCurrentPath.pop();
+  }
+}
+
+
 void
 DescendantSelfAxisState::init(PlanState& planState)
 {
@@ -796,14 +817,6 @@ void
 DescendantSelfAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
-  while (!theCurrentPath.empty())
-  {
-    theCurrentPath.pop();
-  }
-}
-
-DescendantSelfAxisState::~DescendantSelfAxisState()
-{
   while (!theCurrentPath.empty())
   {
     theCurrentPath.pop();
@@ -881,16 +894,9 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
-void
-PrecedingAxisState::init(PlanState& planState)
+PrecedingAxisState::PrecedingAxisState(){}
+PrecedingAxisState::~PrecedingAxisState()
 {
-  AxisState::init(planState);
-}
-
-void
-PrecedingAxisState::reset(PlanState& planState)
-{
-  AxisState::reset(planState);
   while (!theCurrentPath.empty())
   {
     theCurrentPath.pop();
@@ -901,8 +907,17 @@ PrecedingAxisState::reset(PlanState& planState)
   }
 }
 
-PrecedingAxisState::~PrecedingAxisState()
+
+void
+PrecedingAxisState::init(PlanState& planState)
 {
+  AxisState::init(planState);
+}
+
+void
+PrecedingAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
   while (!theCurrentPath.empty())
   {
     theCurrentPath.pop();
@@ -1001,6 +1016,20 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
+FollowingAxisState::FollowingAxisState(){}
+FollowingAxisState::~FollowingAxisState()
+{
+  while (!theCurrentPath.empty())
+  {
+    theCurrentPath.pop();
+  }
+  while (!theAncestorPath.empty())
+  {
+    theAncestorPath.pop();
+  }
+}
+
+
 void
 FollowingAxisState::init(PlanState& planState)
 {
@@ -1020,18 +1049,6 @@ FollowingAxisState::reset(PlanState& planState)
     theAncestorPath.pop();
   }
   theContextNode = NULL;
-}
-
-FollowingAxisState::~FollowingAxisState()
-{
-  while (!theCurrentPath.empty())
-  {
-    theCurrentPath.pop();
-  }
-  while (!theAncestorPath.empty())
-  {
-    theAncestorPath.pop();
-  }
 }
 
 Item_t FollowingAxisIterator::nextImpl(PlanState& planState) const

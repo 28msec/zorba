@@ -3,9 +3,8 @@
 #define ZORBA_BASE_ENGINE_API_CLASS_21_JAN_2008
 
 #include "zorba/util/rchandle.h"
-//#include "zorba/store/api/store_api.h"
 #include "zorba/system/zorba_version.h"
-//#include "zorba/compiler/xquery_plan_print.h"
+#include "zorba/types/representations.h"
 
 namespace xqp{
 

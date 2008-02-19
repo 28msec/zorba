@@ -12,12 +12,27 @@
 #include "store/api/item.h"
 #include "util/Assert.h"
 #include "store/api/item_factory.h"
-
+#include "zorba/runtime/iterator.h"
 
 namespace xqp {
 
 // 2.4 fn:data
 //---------------------
+FnDataIteratorState::FnDataIteratorState() {}
+FnDataIteratorState::~FnDataIteratorState() {}
+
+void FnDataIteratorState::init(PlanState& planState) 
+{ 
+  PlanIteratorState::init( planState );
+  theTypedValue = NULL;
+}
+
+void FnDataIteratorState::reset(PlanState& planState) 
+{
+  PlanIteratorState::reset( planState );
+  theTypedValue = NULL;
+}
+
 Item_t
 FnDataIterator::nextImpl(PlanState& planState) const
 {
@@ -116,7 +131,7 @@ Item_t FnStringIterator::nextImpl(PlanState& planState) const
   FnStringIteratorState *state;
   DEFAULT_STACK_INIT(FnStringIteratorState, state, planState);
 
-  while((inVal = consumeNext(theChild.getp(), planState)) != NULL) {
+  while((inVal = consumeNext(theChildren[0].getp(), planState)) != NULL) {
     state->hasOutput = true;
     STACK_PUSH(Zorba::getItemFactory()->createString(inVal->getStringValue()), state);
   }

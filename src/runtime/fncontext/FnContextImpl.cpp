@@ -10,6 +10,7 @@
 #include "context/dynamic_context.h"
 #include "runtime/core/item_iterator.h"
 #include "system/zorba_engine.h"
+#include "zorba/runtime/iterator.h"
 
 namespace xqp
 {

@@ -7,6 +7,7 @@
 #ifndef XQP_BINARYBASE_H
 #define XQP_BINARYBASE_H
 
+#include "common/shared_types.h"
 #include "runtime/base/plan_iterator.h"
 
 namespace xqp

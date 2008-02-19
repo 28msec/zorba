@@ -447,8 +447,6 @@ Item_t PiIterator::nextImpl(PlanState& planState) const
   xqp_string target, content;
   bool lFirst;
 
-  Store* store = Zorba::getStore();
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
       
@@ -508,8 +506,6 @@ Item_t CommentIterator::nextImpl(PlanState& planState) const
   Item_t lItem;
   xqp_string content = "";
   bool lFirst;
-
-  Store* store = Zorba::getStore();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -677,6 +673,14 @@ Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
+DocFilterIteratorState::DocFilterIteratorState(){}
+
+DocFilterIteratorState::~DocFilterIteratorState()
+{
+  if (theChildren != NULL) {
+    theChildren->close();
+  }
+}
 
 void DocFilterIteratorState::init(PlanState& planState) 
 {

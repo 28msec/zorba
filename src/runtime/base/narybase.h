@@ -7,6 +7,8 @@
 #ifndef XQP_NARY_ITERATOR
 #define XQP_NARY_ITERATOR
 
+#include <vector>
+#include "common/shared_types.h"
 #include "runtime/base/plan_iterator.h"
 #include "runtime/visitors/planitervisitor.h"
 

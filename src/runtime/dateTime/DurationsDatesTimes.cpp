@@ -13,6 +13,7 @@
 #include "runtime/core/arithmetic_impl.h"
 
 #include "store/api/item_factory.h"
+#include "zorba/store/api/item.h"
 
 using namespace std;
 

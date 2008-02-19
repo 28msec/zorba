@@ -7,6 +7,7 @@
 #ifndef XQP_UNARY_ITERATOR
 #define XQP_UNARY_ITERATOR
 
+#include "common/shared_types.h"
 #include "runtime/base/plan_iterator.h"
 
 namespace xqp

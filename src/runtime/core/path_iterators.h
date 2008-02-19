@@ -25,10 +25,11 @@
 #ifndef XQP_PATH_ITERATORS_H
 #define XQP_PATH_ITERATORS_H
 
-
-#include "compiler/expression/expr_consts.h"
-#include "runtime/base/unarybase.h" // TODO remove after refactoring
 #include <stack>
+#include "common/shared_types.h"
+#include "compiler/expression/expr_consts.h"
+#include "runtime/base/unarybase.h" 
+#include "zorba/store/api/store_consts.h"
 
 namespace xqp 
 {
@@ -194,6 +195,8 @@ class AttributeAxisState : public AxisState
 {
 public:
   Iterator_t  theAttributes;
+  AttributeAxisState();
+  ~AttributeAxisState();
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -310,6 +313,8 @@ class RSiblingAxisState : public AxisState
 {
 public:
   Iterator_t  theChildren;
+  RSiblingAxisState();
+  ~RSiblingAxisState();
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -337,6 +342,8 @@ class LSiblingAxisState : public AxisState
 {
 public:
   Iterator_t  theChildren;
+  LSiblingAxisState();
+  ~LSiblingAxisState();
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -367,6 +374,8 @@ class ChildAxisState : public AxisState
 {
 public:
   Iterator_t  theChildren;
+  ChildAxisState();
+  ~ChildAxisState();
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -397,9 +406,10 @@ class DescendantAxisState : public AxisState
 {
 public:
   std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  DescendantAxisState();
+  ~DescendantAxisState();
   void init(PlanState&);
   void reset(PlanState&);
-  ~DescendantAxisState();
 };
 
 class DescendantAxisIterator : public AxisIterator<DescendantAxisIterator, DescendantAxisState>
@@ -428,9 +438,10 @@ class DescendantSelfAxisState : public AxisState
 {
 public:
   std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  DescendantSelfAxisState();
+  ~DescendantSelfAxisState();
   void init(PlanState&);
   void reset(PlanState&);
-  ~DescendantSelfAxisState();
 };
 class DescendantSelfAxisIterator : public AxisIterator<DescendantSelfAxisIterator, DescendantSelfAxisState>
 {
@@ -459,9 +470,10 @@ class PrecedingAxisState : public AxisState
 public:
   std::stack<Item_t>                         theAncestorPath;
   std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  PrecedingAxisState();
+  ~PrecedingAxisState();
   void init(PlanState&);
   void reset(PlanState&);
-  ~PrecedingAxisState();
 };
 
 class PrecedingAxisIterator : public AxisIterator<PrecedingAxisIterator, PrecedingAxisState>
@@ -489,9 +501,10 @@ class FollowingAxisState : public AxisState
 public:
   std::stack<Item_t>                         theAncestorPath;
   std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  FollowingAxisState();
+  ~FollowingAxisState();
   void init(PlanState&);
   void reset(PlanState&);
-  ~FollowingAxisState();
 };
 class FollowingAxisIterator : public AxisIterator<FollowingAxisIterator, FollowingAxisState>
 {

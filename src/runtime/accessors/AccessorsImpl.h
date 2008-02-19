@@ -10,7 +10,7 @@
 #ifndef XQP_ACCESSORS_IMPL_H
 #define XQP_ACCESSORS_IMPL_H
 
-#include "runtime/base/unarybase.h" // TODO remove after changing the FnStringIterator
+#include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 
 namespace xqp {
@@ -19,18 +19,11 @@ namespace xqp {
 class FnDataIteratorState : public PlanIteratorState {
 public:
   Iterator_t theTypedValue;
+  FnDataIteratorState();
+  ~FnDataIteratorState();
 
-  void init(PlanState& planState) 
-  { 
-    PlanIteratorState::init( planState );
-    theTypedValue = NULL;
-  }
-
-  void reset(PlanState& planState) 
-  {
-    PlanIteratorState::reset( planState );
-    theTypedValue = NULL;
-  }
+  void init(PlanState& planState);
+  void reset(PlanState& planState);
 };
 
 NARY_ITER_STATE(FnDataIterator, FnDataIteratorState);
@@ -59,16 +52,16 @@ class FnStringIteratorState : public PlanIteratorState {
 };
 
 
-class FnStringIterator : public UnaryBaseIterator<FnStringIterator, FnStringIteratorState> {
+class FnStringIterator : public NaryBaseIterator<FnStringIterator, FnStringIteratorState> {
   public:
     // TODO is the parameter theEmptyStringOnNULL needed?
     // otherwise we could replace this declaration with the macro
-    FnStringIterator(const yy::location& loc, PlanIter_t& in)
-      : UnaryBaseIterator<FnStringIterator, FnStringIteratorState>(loc, in), 
+    FnStringIterator(const yy::location& loc, std::vector<PlanIter_t>& aChildren)
+      : NaryBaseIterator<FnStringIterator, FnStringIteratorState>(loc, aChildren), 
         theEmptyStringOnNULL(false) { }
 
-    FnStringIterator(const yy::location& loc, PlanIter_t& in, bool emptyStringOnNULL)
-      : UnaryBaseIterator<FnStringIterator, FnStringIteratorState>(loc, in), 
+    FnStringIterator(const yy::location& loc, std::vector<PlanIter_t>& aChildren, bool emptyStringOnNULL)
+      : NaryBaseIterator<FnStringIterator, FnStringIteratorState>(loc, aChildren), 
         theEmptyStringOnNULL(emptyStringOnNULL) { }
 
     virtual ~FnStringIterator() { }

@@ -3,7 +3,7 @@
 
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
-#include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
+#include "runtime/base/binarybase.h" 
 
 namespace xqp {
 

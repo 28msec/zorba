@@ -142,8 +142,9 @@ PlanIter_t fn_name_func::operator() (
   }
 
   PlanIter_t nnIter = new FnNodeNameIterator(loc, argv);
-
-  return new FnStringIterator(loc, nnIter, true);
+  std::vector<PlanIter_t> lVec;
+  lVec.push_back(nnIter);
+  return new FnStringIterator(loc, lVec, true);
 }
 
 

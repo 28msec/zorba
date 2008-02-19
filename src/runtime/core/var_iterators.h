@@ -59,20 +59,10 @@ class LetVarState : public PlanIteratorState
 {
 public:
   Iterator_t theSourceIter;
+  LetVarState();
+  ~LetVarState();
   void init(PlanState& planState) { PlanIteratorState::init(planState); }
-  void reset(PlanState& planState) 
-  { 
-    PlanIteratorState::reset(planState); 
-    if (theSourceIter != NULL) {
-      theSourceIter->reset();
-    }
-  }
-
-  ~LetVarState()
-  {
-    if (theSourceIter != NULL)
-      theSourceIter->close();
-  }
+  void reset(PlanState& planState);
 };
 
 class LetVarIterator : public NoaryBaseIterator<LetVarIterator, LetVarState>

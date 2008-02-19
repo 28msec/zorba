@@ -1,6 +1,8 @@
 #include "util/Assert.h"
 #include "runtime/base/noarybase.h"
 #include "runtime/core/var_iterators.h"
+#include "zorba/runtime/iterator.h"
+#include "zorba/store/api/item.h"
 
 
 namespace xqp
@@ -11,6 +13,22 @@ namespace xqp
 //  ForVarIterator                                                             //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+LetVarState::LetVarState(){}
+
+LetVarState::~LetVarState()
+{
+  if (theSourceIter != NULL)
+    theSourceIter->close();
+}
+
+void LetVarState::reset(PlanState& planState) 
+{ 
+  PlanIteratorState::reset(planState); 
+  if (theSourceIter != NULL) {
+    theSourceIter->reset();
+  }
+}
+
 
 ForVarIterator::ForVarIterator(xqpString name, yy::location loc, const void* origin) 
   : 

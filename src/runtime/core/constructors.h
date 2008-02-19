@@ -1,12 +1,12 @@
 #ifndef XQP_CONSTRUCTORS_H
 #define XQP_CONSTRUCTORS_H
 
-#include "runtime/base/unarybase.h" // TODO delete after iterator refactoring
-#include "runtime/base/binarybase.h" // TODO delete after iterator refactoring
-#include "runtime/base/narybase.h"
-#include "common/shared_types.h"
-
 #include <vector>
+#include "common/shared_types.h"
+#include "runtime/base/unarybase.h"
+#include "runtime/base/binarybase.h"
+#include "runtime/base/narybase.h"
+#include "zorba/util/utf8/xqpString.h"
 
 namespace xqp {
 
@@ -298,15 +298,10 @@ public:
   Iterator_t theChildren;
   Item_t     theCurItem;
     
+  DocFilterIteratorState();
+  ~DocFilterIteratorState();
   void init(PlanState&);
   void reset(PlanState&);
-
-  ~DocFilterIteratorState()
-  {
-    if (theChildren != NULL) {
-      theChildren->close();
-    }
-  }
 };
 
 class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator,

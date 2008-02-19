@@ -96,7 +96,6 @@ namespace xqp {
   UNARY_ACCEPT(EscapeHtmlUriIterator);
   UNARY_ACCEPT(EnclosedIterator);
   UNARY_ACCEPT(FnDocIterator);
-  UNARY_ACCEPT(FnStringIterator);
   UNARY_ACCEPT(OpNumericUnaryIterator);
   UNARY_ACCEPT(TextIterator);
   UNARY_ACCEPT(CommentIterator);
@@ -140,6 +139,7 @@ namespace xqp {
   NARY_ACCEPT(UDFunctionCallIterator);
   NARY_ACCEPT(StatelessExtFunctionCallIterator);
   NARY_ACCEPT(FnMinMaxIterator);
+  NARY_ACCEPT(FnStringIterator);
   
   // special iterators
   void ElementIterator::accept(PlanIterVisitor& v) const

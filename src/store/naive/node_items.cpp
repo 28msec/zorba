@@ -51,9 +51,6 @@ int traceLevel = 0;
 namespace xqp
 {
 
-//#define GET_CURRENT_LOCATION() \
-//        ZORBA_FOR_CURRENT_THREAD()->GetCurrentLocation()
-
 
 ConstrNodeVector dummyVector;
 

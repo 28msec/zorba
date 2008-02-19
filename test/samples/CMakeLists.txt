@@ -3,7 +3,6 @@ CREATE_TEST_SOURCELIST(APISamples
 	APISamples.cpp
 	uc1a_simpleQueryOneStep.cpp
 	uc1b_simpleQueryThreeSteps.cpp
-	uc1c_simpleQueryPlanPrint.cpp
 	uc2_simpleQueryWithErrorCheck.cpp
 	uc3a_externalVar.cpp
 	uc3b_contextItem.cpp
