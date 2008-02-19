@@ -58,6 +58,10 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 #  IF(NOT CMAKE_CXX_FLAGS MATCHES "-Wmissing-include-dirs")
 #    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmissing-include-dirs")
 #  ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "-Wmissing-include-dirs")
+  # Temporarly supresses the unused parameter warning
+  IF(NOT CMAKE_CXX_FLAGS MATCHES "-Wno-unused-parameter")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
+  ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "-Wno-unused-parameter")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 IF(CMAKE_COMPILER_IS_GNUCC)
