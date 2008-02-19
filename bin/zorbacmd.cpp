@@ -152,8 +152,10 @@ int _tmain(int argc, _TCHAR* argv[])
   // time compilation and execution
   bool lTiming = lProperties.useTiming();
   boost::posix_time::ptime lStartCompileTime, lStopCompileTime;
+  boost::posix_time::ptime lStartFirstExecutionTime, lStopFirstExecutionTime;
   boost::posix_time::ptime lStartExecutionTime, lStopExecutionTime;
   boost::posix_time::time_duration lDiffCompileTime;
+  boost::posix_time::time_duration lDiffFirstExecutionTime;
   boost::posix_time::time_duration lDiffExecutionTime;
 
   xqp::XQuery_t lQuery;
@@ -174,7 +176,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
     if (lTiming)
       lStopCompileTime = boost::posix_time::microsec_clock::local_time();
-  } catch (xqp::ZorbaException& e) // catch parse errors and exit the program
+  }
+  catch (xqp::ZorbaException& e) // catch parse errors and exit the program
   {
     std::cerr << e << std::endl;
     return 3;
@@ -194,14 +197,31 @@ int _tmain(int argc, _TCHAR* argv[])
     return 6;
   }
 
+  int lNumExecutions = lProperties.getNoOfExecutions();
+
   try
   {
-    int lMultipleExecutions = lProperties.getNoOfExecutions();
+    if (lTiming)
+      lStartFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
+
+    lQuery->initExecution(lDynamicContext);
+
+    if (lProperties.serializeHTML())
+      lQuery->serializeHTML(*lOutputStream);
+    else if (lProperties.serializeText())
+      lQuery->serializeTEXT(*lOutputStream);
+    else
+      lQuery->serializeXML(*lOutputStream);
+
+    if (lTiming)
+      lStopFirstExecutionTime = boost::posix_time::microsec_clock::local_time();
+
+    lNumExecutions--;
 
     if (lTiming)
       lStartExecutionTime = boost::posix_time::microsec_clock::local_time();
 
-    while (--lMultipleExecutions >= 0 )
+    while (--lNumExecutions >= 0 )
     {
       lQuery->initExecution(lDynamicContext);
 
@@ -216,7 +236,8 @@ int _tmain(int argc, _TCHAR* argv[])
     if (lTiming)
       lStopExecutionTime = boost::posix_time::microsec_clock::local_time();
 
-  } catch (xqp::ZorbaException& e)
+  }
+  catch (xqp::ZorbaException& e)
   {
     std::cerr << e << std::endl;
     return 5;
@@ -224,14 +245,28 @@ int _tmain(int argc, _TCHAR* argv[])
   
   if (lTiming)
   {
+    lNumExecutions = lProperties.getNoOfExecutions();
+
+    std::cerr << std::endl;
+
     lDiffCompileTime = lStopCompileTime - lStartCompileTime; 
-    lDiffExecutionTime = (lStopExecutionTime - lStartExecutionTime)/lProperties.getNoOfExecutions(); 
-
     std::cerr << "Compilation time: " 
-              << lDiffCompileTime.total_milliseconds() << " milliseconds" << std::endl;
+              << lDiffCompileTime.total_milliseconds()
+              << " milliseconds" << std::endl;
 
-    std::cerr << "Execution time: " 
-              << lDiffExecutionTime.total_milliseconds() << " milliseconds" << std::endl;
+    lDiffFirstExecutionTime = lStopFirstExecutionTime - lStartFirstExecutionTime;
+    std::cerr << "First Execution time: " 
+              << lDiffFirstExecutionTime.total_milliseconds()
+              << " milliseconds" << std::endl;
+
+    if (lNumExecutions > 1)
+    {
+      lDiffExecutionTime = (lStopExecutionTime - lStartExecutionTime) /
+                            (lNumExecutions - 1); 
+      std::cerr << "Average Execution time: " 
+                << lDiffExecutionTime.total_milliseconds()
+                << " milliseconds" << std::endl;
+    }
   }
 
   return 0;
