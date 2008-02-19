@@ -1,7 +1,7 @@
 #ifndef XQP_ITEM_SEQUENCE_H
 #define XQP_ITEM_SEQUENCE_H
 
-#include "zorba/common/shared_types_incl.h"
+#include "zorba/common/api_shared_types.h"
 
 namespace xqp {
 

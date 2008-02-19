@@ -1,7 +1,7 @@
 #ifndef XQP_STATELESS_EXTERNAL_FUNCTION_H
 #define XQP_STATELESS_EXTERNAL_FUNCTION_H
 
-#include "zorba/common/shared_types_incl.h" // for ItemSequence_t
+#include "zorba/common/api_shared_types.h" // for ItemSequence_t
 #include "zorba/types/representations.h" // for xqpQName
 
 #include "zorba/functions/external_function_data.h"

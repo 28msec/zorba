@@ -6,7 +6,7 @@
 #include <unicode/coll.h>
 #include "types/typeident.h"
 
-#include "zorba/common/shared_types_incl.h"
+#include "zorba/common/api_shared_types.h"
 
 
 namespace xqp {

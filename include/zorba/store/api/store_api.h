@@ -1,7 +1,7 @@
 #ifndef ZORBA_XML_DOCUMENTS_STORE_MODULE_EXTERNAL_API_10_JAN_2008
 #define ZORBA_XML_DOCUMENTS_STORE_MODULE_EXTERNAL_API_10_JAN_2008
 
-#include "zorba/common/shared_types_incl.h"
+#include "zorba/common/api_shared_types.h"
 #include "zorba/types/representations.h"
 
 namespace xqp

@@ -10,7 +10,7 @@
 #ifndef XQP_STORE_ITEM_H
 #define XQP_STORE_ITEM_H
 
-#include "zorba/common/shared_types_incl.h"
+#include "zorba/common/api_shared_types.h"
 #include "zorba/util/utf8/xqpString.h"
 #include "zorba/types/representations.h"
 #include "zorba/store/api/store_consts.h"
