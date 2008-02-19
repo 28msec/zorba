@@ -1,22 +1,19 @@
-/*
+  /*
  *  Copyright 2006-2007 FLWOR Foundation.
  *  Authors: Nicolae Brinza, Sorin Nasoi
  */
 
 #include "errors/error_factory.h"
 #include "util/Assert.h"
-#include "system/globalenv.h"
+
 #include "types/casting.h"
 #include "system/zorba.h"
 
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/core/arithmetic_impl.h"
-#include "util/Assert.h"
 
-#include "store/api/item.h"
 #include "store/api/item_factory.h"
 
-#include <iostream>
 using namespace std;
 
 namespace xqp
