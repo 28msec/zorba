@@ -91,7 +91,10 @@ ostream& flwor_expr::put( ostream& os) const
     fl_h->put(os);
   }
 
-  if (where_h!=NULL) where_h->put(os);
+  if (where_h!=NULL) {
+    os << DENT << "WHERE\n";
+    where_h->put(os);
+  }
 
   
   for (vector<orderspec_t>::const_iterator ord_it = orderspec_begin();
@@ -103,10 +106,7 @@ ostream& flwor_expr::put( ostream& os) const
     orderref_t ord_h = spec.second;
     Assert(ord_h != NULL);
 
-    os << INDENT << "ORDERBY\n"; UNDENT;
-    e_h->put(os) << endl;
-
-    os << INDENT;
+    os << DENT << "ORDER BY ";
     switch (ord_h->dir) 
     {
     case dir_ascending: os << "ASCENDING "; break;
@@ -120,10 +120,10 @@ ostream& flwor_expr::put( ostream& os) const
     default: os << "?? ";
     }
     os << ord_h->collation << endl;
-    UNDENT;
+    os << DENT; e_h->put(os);
   }
 
-  os << INDENT << "RETURN\n"; UNDENT;
+  os << DENT << "RETURN\n";
   if (retval_h == NULL) {
     os << "$NULL$";
   } else {
@@ -172,14 +172,11 @@ ostream& typeswitch_expr::put( ostream& os) const
 ostream& if_expr::put( ostream& os) const
 {
   os << INDENT << "if_expr (" << this << ") [\n";
-  //d Assert<null_pointer>(cond_expr_h!=NULL);
   Assert(cond_expr_h!=NULL);
   cond_expr_h->put(os);
-  //d Assert<null_pointer>(then_expr_h!=NULL);
   Assert(then_expr_h!=NULL);
   os << DENT << "THEN\n";
   then_expr_h->put(os);
-  //d Assert<null_pointer>(else_expr_h!=NULL);
   Assert(else_expr_h!=NULL);
   os << DENT << "ELSE\n";
   else_expr_h->put(os);

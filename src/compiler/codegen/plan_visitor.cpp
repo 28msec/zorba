@@ -43,11 +43,11 @@
 #ifndef NDEBUG
 #define CODEGEN_TRACE(msg)                      \
   if (Properties::instance()->traceCodegen())   \
-    std::cout << (msg) << TRACE << std::endl;
+    cout << (msg) << TRACE << endl;
 #define CODEGEN_TRACE_IN( msg )  \
-  CODEGEN_TRACE (std::string (++depth, ' ') + msg)
+  CODEGEN_TRACE (string (++depth, ' ') + msg)
 #define CODEGEN_TRACE_OUT( msg ) \
-  CODEGEN_TRACE (std::string (depth--, ' ') + msg)
+  CODEGEN_TRACE (string (depth--, ' ') + msg)
 #else
 #define CODEGEN_TRACE(msg)
 #define CODEGEN_TRACE_IN(msg)
@@ -78,9 +78,9 @@ namespace xqp
 
 template <typename V>
 struct vector_destroyer {
-    void operator()(const struct hash64map<std::vector<V> *>::entry& entry)
+    void operator()(const struct hash64map<vector<V> *>::entry& entry)
     {
-        delete (const_cast<struct hash64map<std::vector<V> *>::entry&>(entry)).val;
+        delete (const_cast<struct hash64map<vector<V> *>::entry&>(entry)).val;
     }
 };
   
@@ -94,28 +94,28 @@ public:
 protected:
   uint32_t depth;
   
-  std::stack<PlanIter_t>                    itstack;
+  stack<PlanIter_t>                    itstack;
 
-  std::stack<expr*>                         theConstructorsStack;
-  std::stack<bool>                          theAttrContentStack;
+  stack<expr*>                         theConstructorsStack;
+  stack<bool>                          theAttrContentStack;
 
   namespace_context                       * theLastNSCtx;
-  std::stack<namespace_context *>           theNSCtxStack;
-  std::stack<namespace_context::bindings_t> theFlatBindingsStack;
+  stack<namespace_context *>           theNSCtxStack;
+  stack<namespace_context::bindings_t> theFlatBindingsStack;
 
-  hash64map<std::vector<var_iter_t> *>      fvar_iter_map;
-  hash64map<std::vector<var_iter_t> *>      pvar_iter_map;
-  hash64map<std::vector<ref_iter_t> *>      lvar_iter_map;
-  hash64map<std::vector<ref_iter_t> *>    * param_var_iter_map;
+  hash64map<vector<var_iter_t> *>      fvar_iter_map;
+  hash64map<vector<var_iter_t> *>      pvar_iter_map;
+  hash64map<vector<ref_iter_t> *>      lvar_iter_map;
+  hash64map<vector<ref_iter_t> *>    * param_var_iter_map;
 
 public:
-	plan_visitor(hash64map<std::vector<ref_iter_t> *> *param_var_map = NULL)
+	plan_visitor(hash64map<vector<ref_iter_t> *> *param_var_map = NULL)
         : depth (0), theLastNSCtx(NULL), param_var_iter_map(param_var_map) {}
 	~plan_visitor()
     {
-        std::for_each(fvar_iter_map.begin(), fvar_iter_map.end(), vector_destroyer<var_iter_t>());
-        std::for_each(pvar_iter_map.begin(), pvar_iter_map.end(), vector_destroyer<var_iter_t>());
-        std::for_each(lvar_iter_map.begin(), lvar_iter_map.end(), vector_destroyer<ref_iter_t>());
+        for_each(fvar_iter_map.begin(), fvar_iter_map.end(), vector_destroyer<var_iter_t>());
+        for_each(pvar_iter_map.begin(), pvar_iter_map.end(), vector_destroyer<var_iter_t>());
+        for_each(lvar_iter_map.begin(), lvar_iter_map.end(), vector_destroyer<ref_iter_t>());
     }
 
 public:
@@ -285,8 +285,8 @@ void end_visit(flwor_expr& v)
   PlanIter_t ret = pop_itstack ();
 
   vector<FLWORIterator::OrderSpec> orderSpecs;
-  for (vector<flwor_expr::orderspec_t>::const_iterator i = v.orderspec_begin ();
-       i != v.orderspec_end ();
+  for (flwor_expr::orderspec_list_t::const_reverse_iterator i = v.orderspec_rbegin ();
+       i != v.orderspec_rend ();
        i++) 
   {
     flwor_expr::orderspec_t spec = *i;
@@ -294,8 +294,9 @@ void end_visit(flwor_expr& v)
 																									spec.second->empty_mode == StaticQueryContext::empty_least,
                                                   spec.second->dir == dir_descending));
   }
+  reverse (orderSpecs.begin (), orderSpecs.end ());
 
-  std::auto_ptr<FLWORIterator::OrderByClause> orderby(orderSpecs.empty() ? NULL : new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ()));
+  auto_ptr<FLWORIterator::OrderByClause> orderby(orderSpecs.empty() ? NULL : new FLWORIterator::OrderByClause(orderSpecs, v.get_order_stable ()));
 
   PlanIter_t where = NULL;
   if (v.get_where () != NULL)
@@ -788,7 +789,7 @@ void end_visit(elem_expr& v)
   if ( v.getContent() != 0 )
   {
     lContentIter = pop_itstack();
-    std::vector<PlanIter_t> lArgs;
+    vector<PlanIter_t> lArgs;
     lArgs.push_back(lContentIter);
     lContentIter = new ElementContentIterator(v.get_loc(), lArgs);
   }
@@ -1006,13 +1007,13 @@ void end_visit(extension_expr& v)
 
 };
 
-PlanIter_t codegen (const char *descr, expr *root, hash64map<std::vector<ref_iter_t> *> *param_var_map) {
+PlanIter_t codegen (const char *descr, expr *root, hash64map<vector<ref_iter_t> *> *param_var_map) {
   plan_visitor c(param_var_map);
   root->accept (c);
   PlanIter_t result = c.pop_itstack ();
   if (result != NULL && descr != NULL && Properties::instance()->printIteratorTree()) {
     cout << "Iterator tree for " << descr << ":\n";
-    XMLIterPrinter vp(std::cout);
+    XMLIterPrinter vp(cout);
     PrinterVisitor pv(vp, result);
     pv.print();
     cout << endl;
