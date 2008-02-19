@@ -118,6 +118,7 @@ void GenericArithIterator<Operation>::accept(PlanIterVisitor& v) const {
   v.endVisit(*this); 
 }
 
+// FIXME Why can the following template specializations not be moved to src/runtime/dateTime/DurationsDatesTimes.cpp?
 //moved from DurationsDatesTimes
 template<>
 Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
