@@ -32,7 +32,7 @@ bool fn_datetime_ctor::validate_args (
 }
 
 xqtref_t fn_datetime_ctor::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
@@ -65,7 +65,7 @@ fn_years_from_duration::validate_args (
 
 xqtref_t
 fn_years_from_duration::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_QUESTION;
 }
@@ -99,7 +99,7 @@ fn_months_from_duration::validate_args (
 
 xqtref_t
 fn_months_from_duration::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_QUESTION;
 }
@@ -133,7 +133,7 @@ fn_days_from_duration::validate_args (
 
 xqtref_t
 fn_days_from_duration::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_QUESTION;
 }
@@ -167,7 +167,7 @@ fn_hours_from_duration::validate_args (
 
 xqtref_t
 fn_hours_from_duration::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_QUESTION;
 }
@@ -201,7 +201,7 @@ fn_minutes_from_duration::validate_args (
 
 xqtref_t
 fn_minutes_from_duration::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_QUESTION;
 }
@@ -235,7 +235,7 @@ fn_seconds_from_duration::validate_args (
 
 xqtref_t
 fn_seconds_from_duration::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_QUESTION;
 }
@@ -269,7 +269,7 @@ fn_year_from_datetime::validate_args (
 
 xqtref_t
 fn_year_from_datetime::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
@@ -303,7 +303,7 @@ fn_month_from_datetime::validate_args (
 
 xqtref_t
 fn_month_from_datetime::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
@@ -337,7 +337,7 @@ fn_day_from_datetime::validate_args (
 
 xqtref_t
 fn_day_from_datetime::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
@@ -371,7 +371,7 @@ fn_hours_from_datetime::validate_args (
 
 xqtref_t
 fn_hours_from_datetime::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
@@ -405,7 +405,7 @@ fn_minutes_from_datetime::validate_args (
 
 xqtref_t
 fn_minutes_from_datetime::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
@@ -439,7 +439,7 @@ fn_seconds_from_datetime::validate_args (
 
 xqtref_t
 fn_seconds_from_datetime::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
@@ -474,7 +474,7 @@ fn_timezone_from_datetime::validate_args (
 
 xqtref_t
 fn_timezone_from_datetime::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
 }
@@ -508,7 +508,7 @@ fn_year_from_date::validate_args (
 
 xqtref_t
 fn_year_from_date::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATE_TYPE_QUESTION;
 }
@@ -542,7 +542,7 @@ fn_month_from_date::validate_args (
 
 xqtref_t
 fn_month_from_date::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATE_TYPE_QUESTION;
 }
@@ -577,7 +577,7 @@ fn_day_from_date::validate_args (
 
 xqtref_t
 fn_day_from_date::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATE_TYPE_QUESTION;
 }
@@ -611,7 +611,7 @@ fn_timezone_from_date::validate_args (
 
 xqtref_t
 fn_timezone_from_date::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DATE_TYPE_QUESTION;
 }
@@ -645,7 +645,7 @@ fn_hours_from_time::validate_args (
 
 xqtref_t
 fn_hours_from_time::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.TIME_TYPE_QUESTION;
 }
@@ -679,7 +679,7 @@ fn_minutes_from_time::validate_args (
 
 xqtref_t
 fn_minutes_from_time::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.TIME_TYPE_QUESTION;
 }
@@ -713,7 +713,7 @@ fn_seconds_from_time::validate_args (
 
 xqtref_t
 fn_seconds_from_time::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.TIME_TYPE_QUESTION;
 }
@@ -748,7 +748,7 @@ fn_timezone_from_time::validate_args (
 
 xqtref_t
 fn_timezone_from_time::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.TIME_TYPE_QUESTION;
 }
@@ -782,7 +782,7 @@ op_ym_durations_add::validate_args (
 
 xqtref_t
 op_ym_durations_add::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE;
 }
@@ -817,7 +817,7 @@ op_ym_durations_subtract::validate_args (
 //TODO change the type to YM_DURATION_TYPE_ONE
 xqtref_t
 op_ym_durations_subtract::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
 }
@@ -852,7 +852,7 @@ op_ym_durations_multiply::validate_args (
 //TODO change the type to YM_DURATION_TYPE_ONE
 xqtref_t
 op_ym_durations_multiply::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
 }
@@ -887,7 +887,7 @@ op_ym_durations_divide::validate_args (
 //TODO change the type to YM_DURATION_TYPE_ONE
 xqtref_t
 op_ym_durations_divide::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
 }
@@ -922,7 +922,7 @@ op_divide_ymd_by_ymd::validate_args (
 //TODO change the type to YM_DURATION_TYPE_ONE
 xqtref_t
 op_divide_ymd_by_ymd::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
 }
@@ -956,7 +956,7 @@ op_dt_durations_add::validate_args (
 
 xqtref_t
 op_dt_durations_add::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
 }
@@ -991,7 +991,7 @@ op_dt_durations_subtract::validate_args (
 //TODO change the type to DT_DURATION_TYPE_ONE
 xqtref_t
 op_dt_durations_subtract::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
 }
@@ -1026,7 +1026,7 @@ op_dt_durations_multiply::validate_args (
 //TODO change the type to DT_DURATION_TYPE_ONE
 xqtref_t
 op_dt_durations_multiply::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
 }
@@ -1061,7 +1061,7 @@ op_dt_durations_divide::validate_args (
 //TODO change the type to DT_DURATION_TYPE_ONE
 xqtref_t
 op_dt_durations_divide::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
 }
@@ -1097,7 +1097,7 @@ op_divide_dtd_by_dtd::validate_args (
 //TODO change the type to DT_DURATION_TYPE_ONE
 xqtref_t
 op_divide_dtd_by_dtd::type_check (
-    signature& sig ) const
+    signature& /*sig*/ ) const
 {
   return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
 }

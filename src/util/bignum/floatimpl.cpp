@@ -930,9 +930,9 @@ xqpString FloatImpl<FloatType>::toString() const {
     theFloatImpl.toString(lBuffer, 16);
     std::string lResult = lBuffer;
     size_t lE = lResult.find('E');
-    if (lE >= 0) {
+    if (lE < lResult.size()) {
       bool lPosExp = lResult[lE+1] == '+';
-      int32_t lZeros = lE;
+      size_t lZeros = lE;
       while(lResult[lZeros-1] == '0') {
         --lZeros; 
       }

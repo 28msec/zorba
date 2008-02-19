@@ -24,7 +24,7 @@ namespace xqp
 	}
 
 	xqtref_t
-	GenericOpComparison::type_check ( signature& sig ) const
+	GenericOpComparison::type_check ( signature& /*sig*/ ) const
 	{
 		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
@@ -178,7 +178,7 @@ namespace xqp
 
 	xqtref_t
 	op_node_before::type_check (
-	    signature& sig ) const
+	    signature& /*sig*/ ) const
 	{
 		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
@@ -226,7 +226,7 @@ namespace xqp
 
 	xqtref_t
 	op_and::type_check (
-	    signature& sig ) const
+	    signature& /*sig*/ ) const
 	{
 		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
@@ -251,7 +251,7 @@ namespace xqp
 
 	xqtref_t
 	op_or::type_check (
-	    signature& sig ) const
+	    signature& /*sig*/ ) const
 	{
 		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
@@ -276,7 +276,7 @@ namespace xqp
 
 	xqtref_t
 	fn_true::type_check (
-	    signature& sig ) const
+	    signature& /*sig*/ ) const
 	{
 		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
@@ -301,7 +301,7 @@ namespace xqp
 
 	xqtref_t
 	fn_false::type_check (
-	    signature& sig ) const
+	    signature& /*sig*/ ) const
 	{
 		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
@@ -326,7 +326,7 @@ namespace xqp
 
 	xqtref_t
 	fn_not::type_check (
-	    signature& sig ) const
+	    signature& /*sig*/ ) const
 	{
 		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
@@ -351,7 +351,7 @@ namespace xqp
 
 	xqtref_t
 	fn_boolean::type_check (
-	    signature& sig ) const
+	    signature& /*sig*/ ) const
 	{
 		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}

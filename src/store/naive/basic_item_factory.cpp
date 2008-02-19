@@ -127,7 +127,7 @@ Item_t BasicItemFactory::createString(const xqp_string& value)
 }
 
 
-Item_t BasicItemFactory::createBase64Binary(xqp_base64Binary value)
+Item_t BasicItemFactory::createBase64Binary(xqp_base64Binary /*value*/)
 {
   return Item_t ( NULL );
 }
@@ -179,12 +179,12 @@ Item_t BasicItemFactory::createDate(xqp_date& value)
   return new DateItemNaive(value);
 }
 
-Item_t BasicItemFactory::createDate ( short year, short month, short day )
+Item_t BasicItemFactory::createDate ( short /*year*/, short /*month*/, short /*day*/ )
 {
   return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createDate ( const xqp_string& value )
+Item_t BasicItemFactory::createDate ( const xqp_string& /*value*/ )
 {
   return Item_t ( NULL );
 }
@@ -195,30 +195,30 @@ Item_t BasicItemFactory::createDateTime(xqp_dateTime& value)
 }
 
 Item_t BasicItemFactory::createDateTime(
-    short year,
-    short month,
-    short day,
-    short hour,
-    short minute,
-    short second)
+    short /*year*/,
+    short /*month*/,
+    short /*day*/,
+    short /*hour*/,
+    short /*minute*/,
+    short /*second*/)
 {
   return Item_t ( NULL );
 }
 
 
 Item_t BasicItemFactory::createDateTime(
-    short year ,
-    short month,
-    short day,
-    short hour,
-    short minute,
-    short second,
-    short timeZone)
+    short /*year*/ ,
+    short /*month*/,
+    short /*day*/,
+    short /*hour*/,
+    short /*minute*/,
+    short /*second*/,
+    short /*timeZone*/)
 {
   return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createDateTime ( const xqp_string& value )
+Item_t BasicItemFactory::createDateTime ( const xqp_string& /*value*/ )
 {
   return Item_t(NULL);
 }
@@ -241,22 +241,22 @@ Item_t BasicItemFactory::createDuration (xqp_duration& value )
   return new DurationItemNaive(value);
 }
 
-Item_t BasicItemFactory::createDuration ( const xqp_string& value )
+Item_t BasicItemFactory::createDuration ( const xqp_string& /*value*/ )
 {
   return Item_t(NULL);
 }
 
 Item_t BasicItemFactory::createDuration (
-	    short years, short months, short days, short hours, short minutes, short seconds
+	    short /*years*/, short /*months*/, short /*days*/, short /*hours*/, short /*minutes*/, short /*seconds*/
 	)
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createENTITIES ( const xqp_string& value )
+Item_t BasicItemFactory::createENTITIES ( const xqp_string& /*value*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createENTITY ( const xqp_string& value )
+Item_t BasicItemFactory::createENTITY ( const xqp_string& /*value*/ )
 { return Item_t ( NULL ); }
 
 
@@ -270,13 +270,13 @@ Item_t BasicItemFactory::createGDay (xqp_gDay& value )
   return new GDayItemNaive(value);
 }
 
-Item_t BasicItemFactory::createGDay ( const xqp_string& value )
+Item_t BasicItemFactory::createGDay ( const xqp_string& /*value*/ )
 {
   return Item_t(NULL);
 }
 
 
-Item_t BasicItemFactory::createGDay ( short day )
+Item_t BasicItemFactory::createGDay ( short /*day*/ )
 { return Item_t ( NULL ); }
 
 Item_t BasicItemFactory::createGMonth(xqp_gMonth& value )
@@ -284,12 +284,12 @@ Item_t BasicItemFactory::createGMonth(xqp_gMonth& value )
   return new GMonthItemNaive(value);
 }
 
-Item_t BasicItemFactory::createGMonth ( const xqp_string& value )
+Item_t BasicItemFactory::createGMonth ( const xqp_string& /*value*/ )
 {
   return Item_t(NULL);
 }
 
-Item_t BasicItemFactory::createGMonth ( short month )
+Item_t BasicItemFactory::createGMonth ( short /*month*/ )
 { return Item_t ( NULL ); }
 
 Item_t BasicItemFactory::createGMonthDay (xqp_gMonthDay& value)
@@ -297,13 +297,13 @@ Item_t BasicItemFactory::createGMonthDay (xqp_gMonthDay& value)
   return new GMonthDayItemNaive(value);
 }
 
-Item_t BasicItemFactory::createGMonthDay ( const xqp_string& value )
+Item_t BasicItemFactory::createGMonthDay ( const xqp_string& /*value*/ )
 {
   return Item_t(NULL);
 }
 
 
-Item_t BasicItemFactory::createGMonthDay ( short month, short day )
+Item_t BasicItemFactory::createGMonthDay ( short /*month*/, short /*day*/ )
 { return Item_t ( NULL ); }
 
 Item_t BasicItemFactory::createGYear (xqp_gYear& value )
@@ -311,13 +311,13 @@ Item_t BasicItemFactory::createGYear (xqp_gYear& value )
   return new GYearItemNaive(value);
 }
 
-Item_t BasicItemFactory::createGYear ( const xqp_string& value )
+Item_t BasicItemFactory::createGYear ( const xqp_string& /*value*/ )
 {
   return Item_t(NULL);
 }
 
 
-Item_t BasicItemFactory::createGYear ( short year )
+Item_t BasicItemFactory::createGYear ( short /*year*/ )
 { return Item_t ( NULL ); }
 
 Item_t BasicItemFactory::createGYearMonth (xqp_gYearMonth& value )
@@ -325,54 +325,54 @@ Item_t BasicItemFactory::createGYearMonth (xqp_gYearMonth& value )
   return new GYearMonthItemNaive(value);
 }
 
-Item_t BasicItemFactory::createGYearMonth ( const xqp_string& value )
+Item_t BasicItemFactory::createGYearMonth ( const xqp_string& /*value*/ )
 {
   return Item_t(NULL);
 }
 
-Item_t BasicItemFactory::createGYearMonth ( short year, short month )
+Item_t BasicItemFactory::createGYearMonth ( short /*year*/, short /*month*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createHexBinary ( xqp_hexBinary value )
+Item_t BasicItemFactory::createHexBinary ( xqp_hexBinary /*value*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createID ( const xqp_string& value )
+Item_t BasicItemFactory::createID ( const xqp_string& /*value*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createIDREF ( const xqp_string& value )
+Item_t BasicItemFactory::createIDREF ( const xqp_string& /*value*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createIDREFS ( const xqp_string& value )
+Item_t BasicItemFactory::createIDREFS ( const xqp_string& /*value*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createLanguage ( const xqp_string& value )
+Item_t BasicItemFactory::createLanguage ( const xqp_string& /*value*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createNMTOKEN ( const xqp_string& value )
+Item_t BasicItemFactory::createNMTOKEN ( const xqp_string& /*value*/ )
 {
   return Item_t ( NULL );
 }
 
 
-Item_t BasicItemFactory::createNMTOKENS ( const xqp_string& value )
+Item_t BasicItemFactory::createNMTOKENS ( const xqp_string& /*value*/ )
 {
   return Item_t ( NULL );
 }
 
 
-Item_t BasicItemFactory::createNOTATION ( const xqp_string& value )
+Item_t BasicItemFactory::createNOTATION ( const xqp_string& /*value*/ )
 {
   return Item_t ( NULL );
 }
 
 
-Item_t BasicItemFactory::createName ( const xqp_string& value )
+Item_t BasicItemFactory::createName ( const xqp_string& /*value*/ )
 {
   return Item_t ( NULL );
 }
@@ -414,22 +414,22 @@ Item_t BasicItemFactory::createTime(xqp_time& value)
   return new TimeItemNaive(value);
 }
 
-Item_t BasicItemFactory::createTime(const xqp_string& value)
+Item_t BasicItemFactory::createTime(const xqp_string& /*value*/)
 {
   return Item_t(NULL);
 }
 
-Item_t BasicItemFactory::createTime(short hour, short minute, short second)
+Item_t BasicItemFactory::createTime(short /*hour*/, short /*minute*/, short /*second*/)
 {
   return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createTime(short hour, short minute, short second, short timeZone)
+Item_t BasicItemFactory::createTime(short /*hour*/, short /*minute*/, short /*second*/, short /*timeZone*/)
 {
   return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createToken ( const xqp_string& value )
+Item_t BasicItemFactory::createToken ( const xqp_string& /*value*/ )
 {
   return Item_t ( NULL );
 }

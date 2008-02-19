@@ -27,6 +27,9 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 SET(requiredlibs)
 SET(DEFINITIONS)
 
+##################################################### Setup Compiler Options
+INCLUDE(CMakeCompiler.txt)
+
 
 ##############################################################################################################
 # Used libraries

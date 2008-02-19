@@ -36,7 +36,7 @@ PlanIter_t
 
 xqtref_t
     fn_resolve_qname::type_check(
-    signature& sig) const
+    signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -70,7 +70,7 @@ PlanIter_t
 
 xqtref_t
     fn_qname::type_check(
-    signature& sig) const
+    signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -104,7 +104,7 @@ PlanIter_t
 
 xqtref_t
     op_qname_equal::type_check(
-    signature& sig) const
+    signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.QNAME_TYPE_ONE;
 }
@@ -138,7 +138,7 @@ PlanIter_t
 
 xqtref_t
     fn_prefix_from_qname::type_check(
-    signature& sig) const
+    signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
 }
@@ -172,7 +172,7 @@ PlanIter_t
 
 xqtref_t
     fn_local_name_from_qname::type_check(
-    signature& sig) const
+    signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
 }
@@ -206,7 +206,7 @@ PlanIter_t
 
 xqtref_t
     fn_namespace_uri_from_qname::type_check(
-    signature& sig) const
+    signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.QNAME_TYPE_QUESTION;
 }
@@ -240,7 +240,7 @@ PlanIter_t
 
 xqtref_t
     fn_namespace_uri_for_prefix::type_check(
-    signature& sig) const
+    signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -274,7 +274,7 @@ PlanIter_t
 
 xqtref_t
     fn_in_scope_prefixes::type_check(
-    signature& sig) const
+    signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.create_node_type(new NodeTest(StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE);
 }

@@ -38,7 +38,7 @@ fn_codepoints_to_string::operator()(
 
 xqtref_t
 fn_codepoints_to_string::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.INTEGER_TYPE_STAR;
 }
@@ -72,7 +72,7 @@ fn_string_to_codepoints::operator()(
 
 xqtref_t
 fn_string_to_codepoints::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -107,7 +107,7 @@ fn_string_compare_2::operator()(
 
 xqtref_t
 fn_string_compare_2::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -136,7 +136,7 @@ fn_string_compare_3::operator()(
 
 xqtref_t
 fn_string_compare_3::type_check(
-    signature& sig) const
+    signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -170,7 +170,7 @@ fn_codepoint_equal::operator()(
 
 xqtref_t
 fn_codepoint_equal::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -211,7 +211,7 @@ fn_concat::validate_args(
 
 xqtref_t
 fn_concat::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
@@ -238,7 +238,7 @@ fn_string_join::operator()(
 
 xqtref_t
 fn_string_join::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_STAR;
 }
@@ -272,7 +272,7 @@ fn_substring_2::operator()(
 
 xqtref_t
 fn_substring_2::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -301,7 +301,7 @@ fn_substring_3::operator()(
 
 xqtref_t
 fn_substring_3::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -335,7 +335,7 @@ fn_string_length::operator()(
 
 xqtref_t
 fn_string_length::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -369,7 +369,7 @@ fn_normalize_space::operator()(
 
 xqtref_t
 fn_normalize_space::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -403,7 +403,7 @@ fn_normalize_unicode_1::operator()(
 
 xqtref_t
 fn_normalize_unicode_1::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -432,7 +432,7 @@ fn_normalize_unicode_2::operator()(
 
 xqtref_t
 fn_normalize_unicode_2::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -467,7 +467,7 @@ fn_upper_case::operator()(
 
 xqtref_t
 fn_upper_case::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -502,7 +502,7 @@ fn_lower_case::operator()(
 
 xqtref_t
 fn_lower_case::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -537,7 +537,7 @@ fn_translate::operator()(
 
 xqtref_t
 fn_translate::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -571,7 +571,7 @@ vector<PlanIter_t>& argv) const
 
 xqtref_t
 fn_encode_for_uri::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -605,7 +605,7 @@ vector<PlanIter_t>& argv) const
 
 xqtref_t
 fn_iri_to_uri::type_check(
-signature& sig) const
+signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -639,7 +639,7 @@ fn_escape_html_uri::operator()(
 
 xqtref_t
 fn_escape_html_uri::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -674,7 +674,7 @@ fn_contains_2::operator()(
 
 xqtref_t
 fn_contains_2::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -703,7 +703,7 @@ fn_contains_3::operator()(
 
 xqtref_t
 fn_contains_3::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -737,7 +737,7 @@ fn_starts_with_2::operator()(
 
 xqtref_t
 fn_starts_with_2::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -766,7 +766,7 @@ fn_starts_with_3::operator()(
 
 xqtref_t
 fn_starts_with_3::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -800,7 +800,7 @@ fn_ends_with_2::operator()(
 
 xqtref_t
 fn_ends_with_2::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -829,7 +829,7 @@ fn_ends_with_3::operator()(
 
 xqtref_t
 fn_ends_with_3::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -863,7 +863,7 @@ fn_substring_before_2::operator()(
 
 xqtref_t
 fn_substring_before_2::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -892,7 +892,7 @@ fn_substring_before_3::operator()(
 
 xqtref_t
 fn_substring_before_3::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -926,7 +926,7 @@ fn_substring_after_2::operator()(
 
 xqtref_t
 fn_substring_after_2::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
@@ -955,7 +955,7 @@ fn_substring_after_3::operator()(
 
 xqtref_t
 fn_substring_after_3::type_check(
-  signature& sig) const
+  signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }

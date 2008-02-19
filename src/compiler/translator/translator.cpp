@@ -223,37 +223,37 @@ expr_t result ()
 }
 
 
-void *begin_visit(const parsenode& v)
+void *begin_visit(const parsenode& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const parsenode& v, void *visit_state)
+void end_visit(const parsenode& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const exprnode& v)
+void *begin_visit(const exprnode& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const exprnode& v, void *visit_state)
+void end_visit(const exprnode& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const ArgList& v)
+void *begin_visit(const ArgList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const ArgList& v, void *visit_state)
+void end_visit(const ArgList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
@@ -267,7 +267,7 @@ void *begin_visit(const BaseURIDecl& v)
   return NULL;
 }
 
-void end_visit(const BaseURIDecl& v, void *visit_state)
+void end_visit(const BaseURIDecl& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
@@ -281,31 +281,31 @@ void *begin_visit(const BoundarySpaceDecl& v)
   return NULL;
 }
 
-void end_visit(const BoundarySpaceDecl& v, void *visit_state)
+void end_visit(const BoundarySpaceDecl& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const CaseClause& v)
+void *begin_visit(const CaseClause& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CaseClause& v, void *visit_state)
+void end_visit(const CaseClause& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const CaseClauseList& v)
+void *begin_visit(const CaseClauseList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CaseClauseList& v, void *visit_state)
+void end_visit(const CaseClauseList& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
@@ -319,20 +319,20 @@ void *begin_visit(const ConstructionDecl& v)
   return NULL;
 }
 
-void end_visit(const ConstructionDecl& v, void *visit_state)
+void end_visit(const ConstructionDecl& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const CopyNamespacesDecl& v)
+void *begin_visit(const CopyNamespacesDecl& /*v*/)
 {
   TRACE_VISIT ();
   CHK_ONE_DECL (hadCopyNSDecl, XQST0055);
   return no_state;
 }
 
-void end_visit(const CopyNamespacesDecl& v, void *visit_state)
+void end_visit(const CopyNamespacesDecl& v, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
  sctx_p->set_inherit_mode  (v.get_inherit_mode ());
@@ -348,7 +348,7 @@ void *begin_visit(DefaultCollationDecl const& v)
   return NULL;
 }
 
-void end_visit(const DefaultCollationDecl& v, void *visit_state)
+void end_visit(const DefaultCollationDecl& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
@@ -380,7 +380,7 @@ void *begin_visit(DefaultNamespaceDecl const& v)
   return NULL;
 }
 
-void end_visit(const DefaultNamespaceDecl& v, void *visit_state)
+void end_visit(const DefaultNamespaceDecl& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
@@ -394,7 +394,7 @@ void *begin_visit(const EmptyOrderDecl& v)
   return no_state;
 }
 
-void end_visit(const EmptyOrderDecl& v, void *visit_state)
+void end_visit(const EmptyOrderDecl& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
@@ -406,13 +406,13 @@ void end_visit(const EmptyOrderDecl& v, void *visit_state)
    Used in direct element/attribute constructors and in function definition.
 
 ********************************************************************************/
-void *begin_visit(const EnclosedExpr& v)
+void *begin_visit(const EnclosedExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const EnclosedExpr& v, void *visit_state)
+void end_visit(const EnclosedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   
@@ -429,13 +429,13 @@ void end_visit(const EnclosedExpr& v, void *visit_state)
 
 ********************************************************************************/
 
-void *begin_visit(const DirCommentConstructor& v)
+void *begin_visit(const DirCommentConstructor& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const DirCommentConstructor& v, void *visit_state)
+void end_visit(const DirCommentConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -447,13 +447,13 @@ void end_visit(const DirCommentConstructor& v, void *visit_state)
                                 content));
 }
 
-void *begin_visit(const DirPIConstructor& v)
+void *begin_visit(const DirPIConstructor& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const DirPIConstructor& v, void *visit_state)
+void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   yy::location loc = v.get_location ();
@@ -467,7 +467,7 @@ void end_visit(const DirPIConstructor& v, void *visit_state)
 }
 
 
-void *begin_visit(const DirElemConstructor& v)
+void *begin_visit(const DirElemConstructor& /*v*/)
 {
   TRACE_VISIT();
   push_scope();
@@ -475,7 +475,7 @@ void *begin_visit(const DirElemConstructor& v)
   return no_state;
 }
 
-void end_visit(const DirElemConstructor& v, void *visit_state)
+void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -574,14 +574,14 @@ void end_check_boundary_whitespace() {
   }
 }
 
-void *begin_visit(const DirElemContentList& v)
+void *begin_visit(const DirElemContentList& /*v*/)
 {
   TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void end_visit(const DirElemContentList& v, void *visit_state)
+void end_visit(const DirElemContentList& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -605,14 +605,14 @@ void end_visit(const DirElemContentList& v, void *visit_state)
 }
 
 
-void *begin_visit(const DirElemContent& v)
+void *begin_visit(const DirElemContent& /*v*/)
 {
   TRACE_VISIT ();
   
   return no_state;
 }
 
-void end_visit(const DirElemContent& v, void *visit_state)
+void end_visit(const DirElemContent& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -638,13 +638,13 @@ void end_visit(const DirElemContent& v, void *visit_state)
 }
 
 
-void *begin_visit(const CDataSection& v)
+void *begin_visit(const CDataSection& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CDataSection& v, void *visit_state)
+void end_visit(const CDataSection& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   expr_t content = new const_expr (v.get_location (), v.get_cdata_content ());
@@ -652,7 +652,7 @@ void end_visit(const CDataSection& v, void *visit_state)
 }
 
 
-void *begin_visit(const DirAttributeList& v)
+void *begin_visit(const DirAttributeList& /*v*/)
 {
   TRACE_VISIT ();
 
@@ -660,7 +660,7 @@ void *begin_visit(const DirAttributeList& v)
   return no_state;
 }
 
-void end_visit(const DirAttributeList& v, void *visit_state)
+void end_visit(const DirAttributeList& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -707,7 +707,7 @@ void end_visit(const DirAttributeList& v, void *visit_state)
 }
 
 
-void *begin_visit(const DirAttr& v)
+void *begin_visit(const DirAttr& /*v*/)
 {
   TRACE_VISIT ();
   // boundary is needed because the value of an attribute might be empty
@@ -715,7 +715,7 @@ void *begin_visit(const DirAttr& v)
   return no_state;
 }
 
-void end_visit(const DirAttr& v, void *visit_state)
+void end_visit(const DirAttr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -801,19 +801,19 @@ void end_visit(const DirAttr& v, void *visit_state)
 }
 
 
-void *begin_visit(const DirAttributeValue& v)
+void *begin_visit(const DirAttributeValue& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const DirAttributeValue& v, void *visit_state)
+void end_visit(const DirAttributeValue& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void attr_content_list(yy::location loc, void *visit_state)
+void attr_content_list(yy::location loc, void* /*visit_state*/)
 {
   rchandle<fo_expr> expr_list_t = create_seq(loc);
   expr_t e_h;
@@ -831,7 +831,7 @@ void attr_content_list(yy::location loc, void *visit_state)
     nodestack.push(expr_list_t.getp());
 }
 
-void *begin_visit(const QuoteAttrContentList& v)
+void *begin_visit(const QuoteAttrContentList& /*v*/)
 {
   TRACE_VISIT ();
 
@@ -839,14 +839,14 @@ void *begin_visit(const QuoteAttrContentList& v)
   return no_state;
 }
 
-void end_visit(const QuoteAttrContentList& v, void *visit_state)
+void end_visit(const QuoteAttrContentList& v, void* visit_state)
 {
   TRACE_VISIT_OUT ();
   attr_content_list(v.get_location (), visit_state);
 }
 
 
-void *begin_visit(const AposAttrContentList& v)
+void *begin_visit(const AposAttrContentList& /*v*/)
 {
   TRACE_VISIT ();
 
@@ -854,7 +854,7 @@ void *begin_visit(const AposAttrContentList& v)
   return no_state;
 }
 
-void end_visit(const AposAttrContentList& v, void *visit_state)
+void end_visit(const AposAttrContentList& v, void* visit_state)
 {
   TRACE_VISIT_OUT ();
   attr_content_list (v.get_location (), visit_state);
@@ -878,40 +878,40 @@ void attr_val_content (yy::location loc, const CommonContent *cc, xqpString cont
   }
 }
 
-void *begin_visit(const QuoteAttrValueContent& v)
+void *begin_visit(const QuoteAttrValueContent& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const QuoteAttrValueContent& v, void *visit_state)
+void end_visit(const QuoteAttrValueContent& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   attr_val_content (v.get_location(), v.get_common_content(), v.get_quot_atcontent());
 }
 
 
-void *begin_visit(const AposAttrValueContent& v)
+void *begin_visit(const AposAttrValueContent& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const AposAttrValueContent& v, void *visit_state)
+void end_visit(const AposAttrValueContent& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   attr_val_content (v.get_location(), v.get_common_content(), v.get_apos_atcontent());
 }
 
 
-void *begin_visit(const CommonContent& v)
+void *begin_visit(const CommonContent& /*v*/)
 {
   TRACE_VISIT ();
   
   return no_state;
 }
 
-void end_visit(const CommonContent& v, void *visit_state)
+void end_visit(const CommonContent& v, void* /*visit_state*/)
 {
   switch (v.get_type())
   {
@@ -984,13 +984,13 @@ void end_visit(const CommonContent& v, void *visit_state)
 }
 
 
-void *begin_visit(const CompDocConstructor& v)
+void *begin_visit(const CompDocConstructor& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CompDocConstructor& v, void *visit_state)
+void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   
@@ -1006,13 +1006,13 @@ void end_visit(const CompDocConstructor& v, void *visit_state)
 }
 
 
-void *begin_visit(const CompElemConstructor& v)
+void *begin_visit(const CompElemConstructor& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CompElemConstructor& v, void *visit_state)
+void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   
@@ -1058,13 +1058,13 @@ void end_visit(const CompElemConstructor& v, void *visit_state)
 }
 
 
-void *begin_visit(const CompAttrConstructor& v)
+void *begin_visit(const CompAttrConstructor& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CompAttrConstructor& v, void *visit_state)
+void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   
@@ -1119,13 +1119,13 @@ void end_visit(const CompAttrConstructor& v, void *visit_state)
 }
 
 
-void *begin_visit(const CompCommentConstructor& v)
+void *begin_visit(const CompCommentConstructor& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CompCommentConstructor& v, void *visit_state)
+void end_visit(const CompCommentConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -1143,13 +1143,13 @@ void end_visit(const CompCommentConstructor& v, void *visit_state)
 }
 
 
-void *begin_visit(const CompPIConstructor& v)
+void *begin_visit(const CompPIConstructor& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CompPIConstructor& v, void *visit_state)
+void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -1197,13 +1197,13 @@ void end_visit(const CompPIConstructor& v, void *visit_state)
 }
 
 
-void *begin_visit(const CompTextConstructor& v)
+void *begin_visit(const CompTextConstructor& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CompTextConstructor& v, void *visit_state)
+void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -1226,13 +1226,13 @@ void end_visit(const CompTextConstructor& v, void *visit_state)
   FLWOR Expression
 
 ********************************************************************************/
-void *begin_visit(const FLWORExpr& v)
+void *begin_visit(const FLWORExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const FLWORExpr& v, void *visit_state)
+void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -1325,36 +1325,36 @@ void end_visit(const FLWORExpr& v, void *visit_state)
 }
 
 
-void *begin_visit(const ForLetClauseList& v)
+void *begin_visit(const ForLetClauseList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const ForLetClauseList& v, void *visit_state)
+void end_visit(const ForLetClauseList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const LetClause& v)
+void *begin_visit(const LetClause& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const LetClause& v, void *visit_state)
+void end_visit(const LetClause& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const VarGetsDecl& v)
+void *begin_visit(const VarGetsDecl& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const VarGetsDecl& v, void *visit_state)
+void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
@@ -1362,24 +1362,24 @@ void end_visit(const VarGetsDecl& v, void *visit_state)
 }
 
 
-void *begin_visit(const ForClause& v)
+void *begin_visit(const ForClause& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const ForClause& v, void *visit_state)
+void end_visit(const ForClause& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const VarInDecl& v)
+void *begin_visit(const VarInDecl& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const VarInDecl& v, void *visit_state)
+void end_visit(const VarInDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
@@ -1392,103 +1392,103 @@ void end_visit(const VarInDecl& v, void *visit_state)
   bind_var_and_push (v.get_location (), v.get_varname (), var_expr::for_var);
 }
 
-void *begin_visit(const PositionalVar& v)
+void *begin_visit(const PositionalVar& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const PositionalVar& v, void *visit_state)
+void end_visit(const PositionalVar& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const WhereClause& v)
+void *begin_visit(const WhereClause& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const WhereClause& v, void *visit_state)
+void end_visit(const WhereClause& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const OrderByClause& v)
+void *begin_visit(const OrderByClause& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const OrderByClause& v, void *visit_state)
+void end_visit(const OrderByClause& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const OrderSpecList& v)
+void *begin_visit(const OrderSpecList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const OrderSpecList& v, void *visit_state)
+void end_visit(const OrderSpecList& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const OrderSpec& v)
+void *begin_visit(const OrderSpec& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const OrderSpec& v, void *visit_state)
+void end_visit(const OrderSpec& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const OrderModifier& v)
+void *begin_visit(const OrderModifier& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const OrderModifier& v, void *visit_state)
+void end_visit(const OrderModifier& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const OrderCollationSpec& v)
+void *begin_visit(const OrderCollationSpec& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const OrderCollationSpec& v, void *visit_state)
+void end_visit(const OrderCollationSpec& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const OrderDirSpec& v)
+void *begin_visit(const OrderDirSpec& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const OrderDirSpec& v, void *visit_state)
+void end_visit(const OrderDirSpec& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const OrderEmptySpec& v)
+void *begin_visit(const OrderEmptySpec& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const OrderEmptySpec& v, void *visit_state)
+void end_visit(const OrderEmptySpec& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
@@ -1498,13 +1498,13 @@ void end_visit(const OrderEmptySpec& v, void *visit_state)
 
 ********************************************************************************/
 
-void *begin_visit(const VarDecl& v)
+void *begin_visit(const VarDecl& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const VarDecl& v, void *visit_state)
+void end_visit(const VarDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   global_vars.push_back(global_binding(bind_var(v.get_location(),
@@ -1514,14 +1514,14 @@ void end_visit(const VarDecl& v, void *visit_state)
 }
 
 
-void *begin_visit(const FunctionDecl& v)
+void *begin_visit(const FunctionDecl& /*v*/)
 {
   TRACE_VISIT ();
   push_scope ();
   return no_state;
 }
 
-void end_visit(const FunctionDecl& v, void *visit_state)
+void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   switch(v.get_type()) {
@@ -1570,73 +1570,73 @@ void end_visit(const FunctionDecl& v, void *visit_state)
 }
 
 
-void *begin_visit(const GeneralComp& v)
+void *begin_visit(const GeneralComp& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const GeneralComp& v, void *visit_state)
+void end_visit(const GeneralComp& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const LibraryModule& v)
+void *begin_visit(const LibraryModule& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const LibraryModule& v, void *visit_state)
+void end_visit(const LibraryModule& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const MainModule & v)
+void *begin_visit(const MainModule & /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const MainModule & v, void *visit_state)
+void end_visit(const MainModule & /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const Module& v)
+void *begin_visit(const Module& /*v*/)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const Module& v, void *visit_state)
+void end_visit(const Module& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const ModuleDecl& v)
+void *begin_visit(const ModuleDecl& /*v*/)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const ModuleDecl& v, void *visit_state)
+void end_visit(const ModuleDecl& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const ModuleImport& v)
+void *begin_visit(const ModuleImport& /*v*/)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const ModuleImport& v, void *visit_state)
+void end_visit(const ModuleImport& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
@@ -1649,30 +1649,30 @@ void *begin_visit(const NamespaceDecl& v)
   return NULL;
 }
 
-void end_visit(const NamespaceDecl& v, void *visit_state)
+void end_visit(const NamespaceDecl& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const NodeComp& v)
+void *begin_visit(const NodeComp& /*v*/)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const NodeComp& v, void *visit_state)
+void end_visit(const NodeComp& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const OptionDecl& v)
+void *begin_visit(const OptionDecl& /*v*/)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const OptionDecl& v, void *visit_state)
+void end_visit(const OptionDecl& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
@@ -1687,18 +1687,18 @@ void *begin_visit(const OrderingModeDecl& v)
 }
 
 
-void end_visit(const OrderingModeDecl& v, void *visit_state)
+void end_visit(const OrderingModeDecl& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const Param& v)
+void *begin_visit(const Param& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const Param& v, void *visit_state)
+void end_visit(const Param& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -1725,67 +1725,67 @@ void *begin_visit(const ParamList& v)
   return no_state;
 }
 
-void end_visit(const ParamList& v, void *visit_state)
+void end_visit(const ParamList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const Pragma& v)
+void *begin_visit(const Pragma& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const Pragma& v, void *visit_state)
+void end_visit(const Pragma& v, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
  // may raise XPST0081
  sctx_p->lookup_ns (v.get_name ()->get_prefix ());
 }
 
-void *begin_visit(const PragmaList& v)
+void *begin_visit(const PragmaList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const PragmaList& v, void *visit_state)
+void end_visit(const PragmaList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const PredicateList& v)
+void *begin_visit(const PredicateList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const PredicateList& v, void *visit_state)
+void end_visit(const PredicateList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const Prolog& v)
+void *begin_visit(const Prolog& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const Prolog& v, void *visit_state)
+void end_visit(const Prolog& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const QVarInDecl& v)
+void *begin_visit(const QVarInDecl& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const QVarInDecl& v, void *visit_state)
+void end_visit(const QVarInDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
@@ -1793,73 +1793,73 @@ void end_visit(const QVarInDecl& v, void *visit_state)
 }
 
 
-void *begin_visit(const QVarInDeclList& v)
+void *begin_visit(const QVarInDeclList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const QVarInDeclList& v, void *visit_state)
+void end_visit(const QVarInDeclList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const SIND_DeclList& v)
+void *begin_visit(const SIND_DeclList& /*v*/)
 {
   TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void end_visit(const SIND_DeclList& v, void *visit_state)
+void end_visit(const SIND_DeclList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const SchemaImport& v)
+void *begin_visit(const SchemaImport& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const SchemaImport& v, void *visit_state)
+void end_visit(const SchemaImport& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const SchemaPrefix& v)
+void *begin_visit(const SchemaPrefix& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const SchemaPrefix& v, void *visit_state)
-{
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit(const SignList& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const SignList& v, void *visit_state)
+void end_visit(const SchemaPrefix& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const SingleType& v)
+void *begin_visit(const SignList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const SingleType& v, void *visit_state)
+void end_visit(const SignList& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+void *begin_visit(const SingleType& /*v*/)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const SingleType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   if (v.get_hook_bit ())
@@ -1868,60 +1868,60 @@ void end_visit(const SingleType& v, void *visit_state)
 }
 
 
-void *begin_visit(const TypeDeclaration& v)
+void *begin_visit(const TypeDeclaration& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const TypeDeclaration& v, void *visit_state)
+void end_visit(const TypeDeclaration& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const TypeName& v)
+void *begin_visit(const TypeName& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const TypeName& v, void *visit_state)
+void end_visit(const TypeName& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const URILiteralList& v)
+void *begin_visit(const URILiteralList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const URILiteralList& v, void *visit_state)
-{
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit(const ValueComp& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit(const ValueComp& v, void *visit_state)
+void end_visit(const URILiteralList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const VersionDecl& v)
+void *begin_visit(const ValueComp& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const VersionDecl& v, void *visit_state)
+void end_visit(const ValueComp& /*v*/, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+void *begin_visit(const VersionDecl& /*v*/)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const VersionDecl& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
@@ -1983,19 +1983,19 @@ void *begin_visit(const VFO_DeclList& v)
   return no_state;
 }
 
-void end_visit(const VFO_DeclList& v, void *visit_state)
+void end_visit(const VFO_DeclList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const AdditiveExpr& v)
+void *begin_visit(const AdditiveExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const AdditiveExpr& v, void *visit_state)
+void end_visit(const AdditiveExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
@@ -2016,13 +2016,13 @@ void end_visit(const AdditiveExpr& v, void *visit_state)
 }
 
 
-void *begin_visit(const AndExpr& v)
+void *begin_visit(const AndExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const AndExpr& v, void *visit_state)
+void end_visit(const AndExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
@@ -2061,38 +2061,38 @@ expr_t create_cast_expr (const yy::location &loc, expr_t node, xqtref_t type, bo
   }
 }
 
-void *begin_visit(const CastExpr& v)
+void *begin_visit(const CastExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CastExpr& v, void *visit_state)
+void end_visit(const CastExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (create_cast_expr (v.get_location (), pop_nodestack (), pop_tstack (), true));
 }
 
-void *begin_visit(const CastableExpr& v)
+void *begin_visit(const CastableExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const CastableExpr& v, void *visit_state)
+void end_visit(const CastableExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (create_cast_expr (v.get_location (), pop_nodestack (), pop_tstack (), false));
 }
 
 
-void *begin_visit(const ComparisonExpr& v)
+void *begin_visit(const ComparisonExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const ComparisonExpr& v, void *visit_state)
+void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -2164,13 +2164,13 @@ void end_visit(const ComparisonExpr& v, void *visit_state)
 
 
 
-void *begin_visit(const ContextItemExpr& v)
+void *begin_visit(const ContextItemExpr& /*v*/)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const ContextItemExpr& v, void *visit_state)
+void end_visit(const ContextItemExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var_nofail (DOT_VAR));
@@ -2178,13 +2178,13 @@ void end_visit(const ContextItemExpr& v, void *visit_state)
 }
 
 
-void *begin_visit(const Expr& v)
+void *begin_visit(const Expr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const Expr& v, void *visit_state)
+void end_visit(const Expr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   
@@ -2204,38 +2204,38 @@ void end_visit(const Expr& v, void *visit_state)
 //  return no_state;
 // }
 
-void *begin_visit(const ExtensionExpr& v)
+void *begin_visit(const ExtensionExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const ExtensionExpr& v, void *visit_state)
+void end_visit(const ExtensionExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   if (v.get_expr () == NULL)
     ZORBA_ERROR_ALERT (ZorbaError::XQST0079);
 }
 
-void *begin_visit(const FilterExpr& v)
+void *begin_visit(const FilterExpr& /*v*/)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const FilterExpr& v, void *visit_state)
+void end_visit(const FilterExpr& /*v*/, void* /*visit_state*/)
 {
 TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FunctionCall& v)
+void *begin_visit(const FunctionCall& /*v*/)
 {
   TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void end_visit(const FunctionCall& v, void *visit_state)
+void end_visit(const FunctionCall& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -2336,14 +2336,14 @@ void end_visit(const FunctionCall& v, void *visit_state)
   }
 }
 
-void *begin_visit(const IfExpr& v)
+void *begin_visit(const IfExpr& /*v*/)
 {
 TRACE_VISIT ();
   // nothing to do here
   return no_state;
 }
 
-void end_visit(const IfExpr& v, void *visit_state)
+void end_visit(const IfExpr& v, void* /*visit_state*/)
 {
 TRACE_VISIT_OUT ();
   expr_t e_h = pop_nodestack ();
@@ -2354,26 +2354,26 @@ TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const InstanceofExpr& v)
+void *begin_visit(const InstanceofExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const InstanceofExpr& v, void *visit_state)
+void end_visit(const InstanceofExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   nodestack.push(new instanceof_expr(v.get_location(), pop_nodestack(), pop_tstack()));
 }
 
 
-void *begin_visit(const IntersectExceptExpr& v)
+void *begin_visit(const IntersectExceptExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const IntersectExceptExpr& v, void *visit_state)
+void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -2396,13 +2396,13 @@ void end_visit(const IntersectExceptExpr& v, void *visit_state)
   nodestack.push(fo_h);
 }
 
-void *begin_visit(const MultiplicativeExpr& v)
+void *begin_visit(const MultiplicativeExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const MultiplicativeExpr& v, void *visit_state)
+void end_visit(const MultiplicativeExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack ();
@@ -2428,13 +2428,13 @@ void end_visit(const MultiplicativeExpr& v, void *visit_state)
   nodestack.push (fo_h);
 }
 
-void *begin_visit(const NumericLiteral& v)
+void *begin_visit(const NumericLiteral& /*v*/)
 {
 TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const NumericLiteral& v, void *visit_state)
+void end_visit(const NumericLiteral& v, void* /*visit_state*/)
 {
 TRACE_VISIT_OUT ();
   switch (v.get_type()) {
@@ -2453,13 +2453,13 @@ TRACE_VISIT_OUT ();
   }
 }
 
-void *begin_visit(const OrExpr& v)
+void *begin_visit(const OrExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const OrExpr& v, void *visit_state)
+void end_visit(const OrExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   rchandle<expr> e1_h = pop_nodestack();
@@ -2470,13 +2470,13 @@ void end_visit(const OrExpr& v, void *visit_state)
   nodestack.push (fo_p);
 }
 
-void *begin_visit(const OrderedExpr& v)
+void *begin_visit(const OrderedExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const OrderedExpr& v, void *visit_state)
+void end_visit(const OrderedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (new order_expr (v.get_location (), order_expr::ordered, 
@@ -2484,14 +2484,14 @@ void end_visit(const OrderedExpr& v, void *visit_state)
 }
 
 
-void *begin_visit(const ParenthesizedExpr& v)
+void *begin_visit(const ParenthesizedExpr& /*v*/)
 {
   TRACE_VISIT ();
   nodestack.push(NULL);
   return no_state;
 }
 
-void end_visit(const ParenthesizedExpr& v, void *visit_state)
+void end_visit(const ParenthesizedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   expr_t expr = pop_nodestack();
@@ -2525,7 +2525,7 @@ void *begin_visit(const SequenceType& v)
   return no_state;
 }
 
-void end_visit(const SequenceType& v, void *visit_state)
+void end_visit(const SequenceType& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
@@ -2554,19 +2554,19 @@ void *begin_visit(const OccurrenceIndicator& v)
   return no_state;
 }
 
-void end_visit(const OccurrenceIndicator& v, void *visit_state)
+void end_visit(const OccurrenceIndicator& /*v*/, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const AtomicType& v)
+void *begin_visit(const AtomicType& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const AtomicType& v, void *visit_state)
+void end_visit(const AtomicType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   rchandle<QName> qname = v.get_qname ();
@@ -2584,13 +2584,13 @@ void end_visit(const AtomicType& v, void *visit_state)
 }
 
 
-void *begin_visit(const ItemType& v)
+void *begin_visit(const ItemType& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const ItemType& v, void *visit_state)
+void end_visit(const ItemType& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   tstack.push (GENV_TYPESYSTEM.ITEM_TYPE_ONE);
@@ -2602,7 +2602,7 @@ void end_visit(const ItemType& v, void *visit_state)
   NodeTest (NameTest | KindTest)
 
 ********************************************************************************/
-void *begin_visit(const NameTest& v)
+void *begin_visit(const NameTest& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
@@ -2610,7 +2610,7 @@ void *begin_visit(const NameTest& v)
 
 
 
-void end_visit(const NameTest& v, void *visit_state)
+void end_visit(const NameTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -2653,20 +2653,20 @@ void end_visit(const NameTest& v, void *visit_state)
 }
 
 
-void *begin_visit(const Wildcard& v)
+void *begin_visit(const Wildcard& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit(const Wildcard& v, void *visit_state)
+void end_visit(const Wildcard& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const QName& v)
+void *begin_visit(const QName& /*v*/)
 {
   TRACE_VISIT();
   ZORBA_ASSERT(0);
@@ -2674,14 +2674,14 @@ void *begin_visit(const QName& v)
 }
 
 
-void end_visit(const QName& v, void *visit_state)
+void end_visit(const QName& /*v*/, void* /*visit_state*/)
 {
   ZORBA_ASSERT(0);
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const AnyKindTest& v)
+void *begin_visit(const AnyKindTest& /*v*/)
 {
   TRACE_VISIT ();
   // no action needed here
@@ -2689,7 +2689,7 @@ void *begin_visit(const AnyKindTest& v)
 }
 
 
-void end_visit(const AnyKindTest& v, void *visit_state)
+void end_visit(const AnyKindTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -2711,7 +2711,7 @@ void end_visit(const AnyKindTest& v, void *visit_state)
 }
 
 
-void *begin_visit(const DocumentTest& v)
+void *begin_visit(const DocumentTest& /*v*/)
 {
   TRACE_VISIT ();
 
@@ -2719,7 +2719,7 @@ void *begin_visit(const DocumentTest& v)
 }
 
 
-void end_visit(const DocumentTest& v, void *visit_state)
+void end_visit(const DocumentTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -2778,14 +2778,14 @@ void end_visit(const DocumentTest& v, void *visit_state)
 }
 
 
-void *begin_visit(const ElementTest& v)
+void *begin_visit(const ElementTest& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit(const ElementTest& v, void *visit_state)
+void end_visit(const ElementTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -2854,14 +2854,14 @@ void end_visit(const ElementTest& v, void *visit_state)
 }
 
 
-void *begin_visit(const AttributeTest& v)
+void *begin_visit(const AttributeTest& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit(const AttributeTest& v, void *visit_state)
+void end_visit(const AttributeTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
@@ -2917,7 +2917,7 @@ void end_visit(const AttributeTest& v, void *visit_state)
 }
 
 
-void *begin_visit(const TextTest& v)
+void *begin_visit(const TextTest& /*v*/)
 {
   TRACE_VISIT ();
   // no action needed here
@@ -2925,7 +2925,7 @@ void *begin_visit(const TextTest& v)
 }
 
 
-void end_visit(const TextTest& v, void *visit_state)
+void end_visit(const TextTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -2946,7 +2946,7 @@ void end_visit(const TextTest& v, void *visit_state)
 }
 
 
-void *begin_visit(const CommentTest& v)
+void *begin_visit(const CommentTest& /*v*/)
 {
   TRACE_VISIT ();
   // no action needed here
@@ -2954,7 +2954,7 @@ void *begin_visit(const CommentTest& v)
 }
 
 
-void end_visit(const CommentTest& v, void *visit_state)
+void end_visit(const CommentTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -2975,14 +2975,14 @@ void end_visit(const CommentTest& v, void *visit_state)
 }
 
 
-void *begin_visit(const PITest& v)
+void *begin_visit(const PITest& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit(const PITest& v, void *visit_state)
+void end_visit(const PITest& v, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
   axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
@@ -3020,7 +3020,7 @@ void *begin_visit(const SchemaAttributeTest& v)
 }
 
 
-void end_visit(const SchemaAttributeTest& v, void *visit_state)
+void end_visit(const SchemaAttributeTest& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
@@ -3041,7 +3041,7 @@ void *begin_visit(const SchemaElementTest& v)
 }
 
 
-void end_visit(const SchemaElementTest& v, void *visit_state)
+void end_visit(const SchemaElementTest& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
@@ -3211,7 +3211,7 @@ void *begin_visit(const PathExpr& v)
 }
 
 
-void end_visit(const PathExpr& v, void *visit_state)
+void end_visit(const PathExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -3237,7 +3237,7 @@ void* begin_visit(const RelativePathExpr& v)
   return no_state;
 }
 
-void intermediate_visit(const RelativePathExpr& v, void *visit_state)
+void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
 {
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
@@ -3304,7 +3304,7 @@ void intermediate_visit(const RelativePathExpr& v, void *visit_state)
   }
 }
 
-void end_visit(const RelativePathExpr& v, void *visit_state)
+void end_visit(const RelativePathExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -3356,7 +3356,7 @@ void *begin_visit(const AxisStep& v)
   return no_state;
 }
 
-void post_step_visit(const AxisStep& v, void *visit_state)
+void post_step_visit(const AxisStep& v, void* /*visit_state*/)
 {
   PredicateList *pl = v.get_predicate_list().getp();
   if (pl != NULL && pl->size() > 0) {
@@ -3373,13 +3373,13 @@ void post_step_visit(const AxisStep& v, void *visit_state)
   }
 }
 
-void end_visit(const AxisStep& v, void *visit_state)
+void end_visit(const AxisStep& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void pre_predicate_visit(const PredicateList& v, void *visit_state)
+void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 {
   push_scope();
   expr_t seq = pop_nodestack();
@@ -3408,7 +3408,7 @@ static inline bool is_numeric_literal(expr *e)
 }
 
 
-void post_predicate_visit(const PredicateList& v, void *visit_state)
+void post_predicate_visit(const PredicateList& /*v*/, void* /*visit_state*/)
 {
   expr_t pred = pop_nodestack();
   expr_t f = pop_nodestack();
@@ -3450,27 +3450,27 @@ void post_predicate_visit(const PredicateList& v, void *visit_state)
 }
 
 
-void *begin_visit(const ForwardStep& v)
+void *begin_visit(const ForwardStep& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit(const ForwardStep& v, void *visit_state)
+void end_visit(const ForwardStep& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const AbbrevForwardStep& v)
+void *begin_visit(const AbbrevForwardStep& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit(const AbbrevForwardStep& v, void *visit_state)
+void end_visit(const AbbrevForwardStep& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -3487,14 +3487,14 @@ void end_visit(const AbbrevForwardStep& v, void *visit_state)
 }
 
 
-void *begin_visit(const ForwardAxis& v)
+void *begin_visit(const ForwardAxis& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit(const ForwardAxis& v, void *visit_state)
+void end_visit(const ForwardAxis& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -3541,27 +3541,27 @@ void end_visit(const ForwardAxis& v, void *visit_state)
 }
 
 
-void *begin_visit(const ReverseStep& v)
+void *begin_visit(const ReverseStep& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit(const ReverseStep& v, void *visit_state)
+void end_visit(const ReverseStep& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const ReverseAxis& v)
+void *begin_visit(const ReverseAxis& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit(const ReverseAxis& v, void *visit_state)
+void end_visit(const ReverseAxis& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -3601,14 +3601,14 @@ void end_visit(const ReverseAxis& v, void *visit_state)
 /*******************************************************************************
 
 ********************************************************************************/
-void *begin_visit(const QuantifiedExpr& v)
+void *begin_visit(const QuantifiedExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit(const QuantifiedExpr& v, void *visit_state)
+void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   rchandle<flwor_expr> flwor(new flwor_expr(v.get_location()));
@@ -3636,13 +3636,13 @@ void end_visit(const QuantifiedExpr& v, void *visit_state)
 /*******************************************************************************
 
 ********************************************************************************/
-void *begin_visit(const QueryBody& v)
+void *begin_visit(const QueryBody& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const QueryBody& v, void *visit_state)
+void end_visit(const QueryBody& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -3669,13 +3669,13 @@ void end_visit(const QueryBody& v, void *visit_state)
 /*******************************************************************************
 
 ********************************************************************************/
-void *begin_visit(const RangeExpr& v)
+void *begin_visit(const RangeExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const RangeExpr& v, void *visit_state)
+void end_visit(const RangeExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   fo_expr *e = new fo_expr (v.get_location(), LOOKUP_OP2 ("to"));
@@ -3690,25 +3690,25 @@ void end_visit(const RangeExpr& v, void *visit_state)
 }
 
 
-void *begin_visit(const StringLiteral& v)
+void *begin_visit(const StringLiteral& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const StringLiteral& v, void *visit_state)
+void end_visit(const StringLiteral& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   nodestack.push(new const_expr(v.get_location(),v.get_strval()));
 }
 
-void *begin_visit(const TreatExpr& v)
+void *begin_visit(const TreatExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const TreatExpr& v, void *visit_state)
+void end_visit(const TreatExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (new treat_expr (v.get_location (), pop_nodestack (), pop_tstack (), ZorbaError::XPDY0050));
@@ -3768,7 +3768,7 @@ void *begin_visit(const TypeswitchExpr& v)
   return NULL;
 }
 
-void end_visit(const TypeswitchExpr& v, void *visit_state)
+void end_visit(const TypeswitchExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   // shouldn't get here, begin_visit() rejects visitor
@@ -3776,13 +3776,13 @@ void end_visit(const TypeswitchExpr& v, void *visit_state)
 }
 
 
-void *begin_visit(const UnaryExpr& v)
+void *begin_visit(const UnaryExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const UnaryExpr& v, void *visit_state)
+void end_visit(const UnaryExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -3795,13 +3795,13 @@ void end_visit(const UnaryExpr& v, void *visit_state)
   nodestack.push(fo_p);
 }
 
-void *begin_visit(const UnionExpr& v)
+void *begin_visit(const UnionExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const UnionExpr& v, void *visit_state)
+void end_visit(const UnionExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
@@ -3813,38 +3813,38 @@ void end_visit(const UnionExpr& v, void *visit_state)
   nodestack.push(fo_h);
 }
 
-void *begin_visit(const UnorderedExpr& v)
+void *begin_visit(const UnorderedExpr& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const UnorderedExpr& v, void *visit_state)
+void end_visit(const UnorderedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   nodestack.push (new order_expr (v.get_location (), order_expr::unordered, 
                                   pop_nodestack ()));
 }
 
-void *begin_visit(const ValidateExpr& v)
+void *begin_visit(const ValidateExpr& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_IMPLEMENTED ("validation");
   return no_state;
 }
 
-void end_visit(const ValidateExpr& v, void *visit_state)
+void end_visit(const ValidateExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const VarRef& v)
+void *begin_visit(const VarRef& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const VarRef& v, void *visit_state)
+void end_visit(const VarRef& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
@@ -3855,93 +3855,93 @@ void end_visit(const VarRef& v, void *visit_state)
 
 
 /* update-related */
-void *begin_visit(const DeleteExpr& v)
+void *begin_visit(const DeleteExpr& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_IMPLEMENTED ("delete");
   return no_state;
 }
 
-void end_visit(const DeleteExpr& v, void *visit_state)
+void end_visit(const DeleteExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const InsertExpr& v)
+void *begin_visit(const InsertExpr& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_IMPLEMENTED ("insert");
   return no_state;
 }
 
-void end_visit(const InsertExpr& v, void *visit_state)
+void end_visit(const InsertExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const RenameExpr& v)
+void *begin_visit(const RenameExpr& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_IMPLEMENTED ("rename");
   return no_state;
 }
 
-void end_visit(const RenameExpr& v, void *visit_state)
+void end_visit(const RenameExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const ReplaceExpr& v)
+void *begin_visit(const ReplaceExpr& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_IMPLEMENTED ("replace");
   return no_state;
 }
 
-void end_visit(const ReplaceExpr& v, void *visit_state)
+void end_visit(const ReplaceExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const RevalidationDecl& v)
+void *begin_visit(const RevalidationDecl& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_IMPLEMENTED ("revalidation");
   return no_state;
 }
 
-void end_visit(const RevalidationDecl& v, void *visit_state)
+void end_visit(const RevalidationDecl& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const TransformExpr& v)
+void *begin_visit(const TransformExpr& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_IMPLEMENTED ("transform");
   return no_state;
 }
 
-void end_visit(const TransformExpr& v, void *visit_state)
+void end_visit(const TransformExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const VarNameList& v)
+void *begin_visit(const VarNameList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const VarNameList& v, void *visit_state)
+void end_visit(const VarNameList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
 /* full-text-related */
-void *begin_visit(const FTAnd& v)
+void *begin_visit(const FTAnd& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
@@ -3949,476 +3949,476 @@ void *begin_visit(const FTAnd& v)
   return no_state;
 }
 
-void end_visit(const FTAnd& v, void *visit_state)
+void end_visit(const FTAnd& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTAnyallOption& v)
+void *begin_visit(const FTAnyallOption& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTAnyallOption& v, void *visit_state)
+void end_visit(const FTAnyallOption& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTBigUnit& v)
+void *begin_visit(const FTBigUnit& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTBigUnit& v, void *visit_state)
+void end_visit(const FTBigUnit& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTCaseOption& v)
+void *begin_visit(const FTCaseOption& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTCaseOption& v, void *visit_state)
+void end_visit(const FTCaseOption& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTContainsExpr& v)
+void *begin_visit(const FTContainsExpr& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTContainsExpr& v, void *visit_state)
+void end_visit(const FTContainsExpr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTContent& v)
+void *begin_visit(const FTContent& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTContent& v, void *visit_state)
+void end_visit(const FTContent& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTDiacriticsOption& v)
+void *begin_visit(const FTDiacriticsOption& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTDiacriticsOption& v, void *visit_state)
+void end_visit(const FTDiacriticsOption& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTDistance& v)
+void *begin_visit(const FTDistance& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTDistance& v, void *visit_state)
+void end_visit(const FTDistance& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTIgnoreOption& v)
+void *begin_visit(const FTIgnoreOption& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTIgnoreOption& v, void *visit_state)
+void end_visit(const FTIgnoreOption& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTInclExclStringLiteral& v)
+void *begin_visit(const FTInclExclStringLiteral& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTInclExclStringLiteral& v, void *visit_state)
+void end_visit(const FTInclExclStringLiteral& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTInclExclStringLiteralList& v)
+void *begin_visit(const FTInclExclStringLiteralList& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTInclExclStringLiteralList& v, void *visit_state)
+void end_visit(const FTInclExclStringLiteralList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTLanguageOption& v)
+void *begin_visit(const FTLanguageOption& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTLanguageOption& v, void *visit_state)
+void end_visit(const FTLanguageOption& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTMatchOption& v)
+void *begin_visit(const FTMatchOption& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTMatchOption& v, void *visit_state)
+void end_visit(const FTMatchOption& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit(const FTMatchOptionProximityList& v)
+void *begin_visit(const FTMatchOptionProximityList& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTMatchOptionProximityList& v, void *visit_state)
+void end_visit(const FTMatchOptionProximityList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTMildnot& v)
+void *begin_visit(const FTMildnot& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTMildnot& v, void *visit_state)
+void end_visit(const FTMildnot& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTOptionDecl& v)
+void *begin_visit(const FTOptionDecl& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTOptionDecl& v, void *visit_state)
+void end_visit(const FTOptionDecl& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTOr& v)
+void *begin_visit(const FTOr& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTOr& v, void *visit_state)
+void end_visit(const FTOr& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTOrderedIndicator& v)
+void *begin_visit(const FTOrderedIndicator& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTOrderedIndicator& v, void *visit_state)
+void end_visit(const FTOrderedIndicator& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTProximity& v)
+void *begin_visit(const FTProximity& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTProximity& v, void *visit_state)
+void end_visit(const FTProximity& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTRange& v)
+void *begin_visit(const FTRange& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTRange& v, void *visit_state)
+void end_visit(const FTRange& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTRefOrList& v)
+void *begin_visit(const FTRefOrList& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTRefOrList& v, void *visit_state)
+void end_visit(const FTRefOrList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTScope& v)
+void *begin_visit(const FTScope& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTScope& v, void *visit_state)
+void end_visit(const FTScope& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTScoreVar& v)
+void *begin_visit(const FTScoreVar& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTScoreVar& v, void *visit_state)
+void end_visit(const FTScoreVar& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTSelection& v)
+void *begin_visit(const FTSelection& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTSelection& v, void *visit_state)
+void end_visit(const FTSelection& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTStemOption& v)
+void *begin_visit(const FTStemOption& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTStemOption& v, void *visit_state)
+void end_visit(const FTStemOption& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTStopwordOption& v)
+void *begin_visit(const FTStopwordOption& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTStopwordOption& v, void *visit_state)
+void end_visit(const FTStopwordOption& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTStringLiteralList& v)
+void *begin_visit(const FTStringLiteralList& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTStringLiteralList& v, void *visit_state)
+void end_visit(const FTStringLiteralList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTThesaurusID& v)
+void *begin_visit(const FTThesaurusID& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTThesaurusID& v, void *visit_state)
+void end_visit(const FTThesaurusID& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTThesaurusList& v)
+void *begin_visit(const FTThesaurusList& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTThesaurusList& v, void *visit_state)
+void end_visit(const FTThesaurusList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTThesaurusOption& v)
+void *begin_visit(const FTThesaurusOption& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTThesaurusOption& v, void *visit_state)
+void end_visit(const FTThesaurusOption& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTTimes& v)
+void *begin_visit(const FTTimes& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTTimes& v, void *visit_state)
+void end_visit(const FTTimes& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTUnaryNot& v)
+void *begin_visit(const FTUnaryNot& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTUnaryNot& v, void *visit_state)
+void end_visit(const FTUnaryNot& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTUnit& v)
+void *begin_visit(const FTUnit& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTUnit& v, void *visit_state)
+void end_visit(const FTUnit& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTWildcardOption& v)
+void *begin_visit(const FTWildcardOption& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTWildcardOption& v, void *visit_state)
+void end_visit(const FTWildcardOption& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTWindow& v)
+void *begin_visit(const FTWindow& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTWindow& v, void *visit_state)
+void end_visit(const FTWindow& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTWords& v)
+void *begin_visit(const FTWords& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTWords& v, void *visit_state)
+void end_visit(const FTWords& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTWordsSelection& v)
+void *begin_visit(const FTWordsSelection& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTWordsSelection& v, void *visit_state)
+void end_visit(const FTWordsSelection& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const FTWordsValue& v)
+void *begin_visit(const FTWordsValue& /*v*/)
 {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit(const FTWordsValue& v, void *visit_state)
+void end_visit(const FTWordsValue& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 // Pass-thru -- nothing to be done
 
-void *begin_visit(const VarInDeclList& v)
+void *begin_visit(const VarInDeclList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const VarInDeclList& v, void *visit_state)
+void end_visit(const VarInDeclList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit(const VarGetsDeclList& v)
+void *begin_visit(const VarGetsDeclList& /*v*/)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit(const VarGetsDeclList& v, void *visit_state)
+void end_visit(const VarGetsDeclList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }

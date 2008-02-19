@@ -136,20 +136,20 @@ public:
 /*..........................................
  :  begin visit                            :
  :.........................................*/
-bool begin_visit(expr& v)
+bool begin_visit(expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
 
-void end_visit(expr& v)
+void end_visit(expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
 
 
-bool begin_visit(var_expr& v)
+bool begin_visit(var_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -238,14 +238,14 @@ void end_visit(var_expr& v)
   }
 }
 
-bool begin_visit(order_modifier& v)
+bool begin_visit(order_modifier& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   // not implemented, but this is a performance, not a conformance issue
   return true;
 }
 
-void end_visit(order_modifier& v)
+void end_visit(order_modifier& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -347,7 +347,7 @@ void end_visit(flwor_expr& v)
 }
 
 
-bool begin_visit(case_clause& v)
+bool begin_visit(case_clause& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   // TODO: Not implemented
@@ -355,12 +355,12 @@ bool begin_visit(case_clause& v)
 }
 
 
-void end_visit(case_clause& v)
+void end_visit(case_clause& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
 
-bool begin_visit(promote_expr& v)
+bool begin_visit(promote_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -374,20 +374,20 @@ void end_visit(promote_expr& v)
   itstack.push(new PromoteIterator(v.get_loc(), lChild, v.get_target_type()));
 }
 
-bool begin_visit(typeswitch_expr& v)
+bool begin_visit(typeswitch_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   ZORBA_NOT_IMPLEMENTED ("typeswitch codegen");
   return true;
 }
 
-void end_visit(typeswitch_expr& v)
+void end_visit(typeswitch_expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
 
 
-bool begin_visit(if_expr& v)
+bool begin_visit(if_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -456,19 +456,19 @@ void end_visit(fo_expr& v)
 }
 
 
-bool begin_visit(ft_select_expr& v)
+bool begin_visit(ft_select_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-bool begin_visit(ft_contains_expr& v)
+bool begin_visit(ft_contains_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-bool begin_visit(instanceof_expr& v)
+bool begin_visit(instanceof_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -481,7 +481,7 @@ void end_visit(instanceof_expr& v)
   itstack.push (new InstanceOfIterator (v.get_loc (), p, v.get_type ()));
 }
 
-bool begin_visit(treat_expr& v)
+bool begin_visit(treat_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -494,7 +494,7 @@ void end_visit(treat_expr& v)
   itstack.push (new TreatIterator (v.get_loc (), p, v.get_type (), v.get_err ()));
 }
 
-bool begin_visit(castable_expr& v)
+bool begin_visit(castable_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -507,7 +507,7 @@ void end_visit(castable_expr& v)
   itstack.push(new CastableIterator(v.get_loc(), lChild, v.get_type()));
 }
 
-bool begin_visit(cast_expr& v)
+bool begin_visit(cast_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -520,13 +520,13 @@ void end_visit(cast_expr& v)
   itstack.push(new CastIterator(v.get_loc(), lChild, v.get_type()));
 }
 
-bool begin_visit(validate_expr& v)
+bool begin_visit(validate_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-bool begin_visit(extension_expr& v)
+bool begin_visit(extension_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -536,7 +536,7 @@ bool begin_visit(extension_expr& v)
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit(relpath_expr& v)
+bool begin_visit(relpath_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   // Done in axis itself
@@ -544,7 +544,7 @@ bool begin_visit(relpath_expr& v)
 }
 
 
-void end_visit(relpath_expr& v)
+void end_visit(relpath_expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -649,7 +649,7 @@ bool begin_visit(axis_step_expr& v)
 }
 
 
-void end_visit(axis_step_expr& v)
+void end_visit(axis_step_expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -718,7 +718,7 @@ bool begin_visit(match_expr& v)
 }
 
 
-void end_visit(match_expr& v)
+void end_visit(match_expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -939,7 +939,7 @@ void end_visit(pi_expr& v)
 }
 
 
-bool begin_visit (function_def_expr &v) {
+bool begin_visit(function_def_expr& /*v*/) {
   CODEGEN_TRACE_IN("");
   return true;
 }
@@ -949,7 +949,7 @@ void end_visit (function_def_expr &v) {
 }
 
 
-bool begin_visit(const_expr& v)
+bool begin_visit(const_expr& /*v*/)
 {
   CODEGEN_TRACE_IN ("");
   return true;
@@ -963,13 +963,13 @@ void end_visit(const_expr& v)
 }
 
 
-bool begin_visit(order_expr& v)
+bool begin_visit(order_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit(order_expr& v)
+void end_visit(order_expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -984,22 +984,22 @@ void end_visit(order_expr& v)
  :  end visit                              :
  :.........................................*/
 
-void end_visit(ft_select_expr& v)
+void end_visit(ft_select_expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
 
-void end_visit(ft_contains_expr& v)
+void end_visit(ft_contains_expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
 
-void end_visit(validate_expr& v)
+void end_visit(validate_expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }
 
-void end_visit(extension_expr& v)
+void end_visit(extension_expr& /*v*/)
 {
   CODEGEN_TRACE_OUT("");
 }

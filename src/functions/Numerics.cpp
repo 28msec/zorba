@@ -52,7 +52,7 @@ PlanIter_t op_numeric_add::operator()(
 }
 
 xqtref_t op_numeric_add::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -123,7 +123,7 @@ PlanIter_t op_numeric_subtract::operator()(
 }
 
 xqtref_t op_numeric_subtract::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -166,7 +166,7 @@ PlanIter_t op_numeric_multiply::operator()(
 }
 
 xqtref_t op_numeric_multiply::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -219,7 +219,7 @@ PlanIter_t op_numeric_divide::operator()(
 }
 
 xqtref_t op_numeric_divide::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -274,7 +274,7 @@ PlanIter_t op_numeric_integer_divide::operator()(
 }
 
 xqtref_t op_numeric_integer_divide::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -337,7 +337,7 @@ PlanIter_t op_numeric_mod::operator()(
 }
 
 xqtref_t op_numeric_mod::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -375,7 +375,7 @@ PlanIter_t op_numeric_unary_plus::operator()(
 }
 
 xqtref_t op_numeric_unary_plus::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -418,7 +418,7 @@ PlanIter_t op_numeric_unary_minus::operator()(
 }
 
 xqtref_t op_numeric_unary_minus::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -457,7 +457,7 @@ PlanIter_t fn_abs::operator()( const yy::location& loc, vector<PlanIter_t>& argv
 	return new FnAbsIterator(loc, argv);
 }
 
-xqtref_t fn_abs::type_check(signature& sig) const
+xqtref_t fn_abs::type_check(signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -478,7 +478,7 @@ PlanIter_t fn_ceiling::operator ( )(const yy::location& loc, vector<PlanIter_t>&
   return new FnCeilingIterator(loc, argv);
 }
 
-xqtref_t fn_ceiling::type_check(signature& sig) const
+xqtref_t fn_ceiling::type_check(signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -499,7 +499,7 @@ PlanIter_t fn_floor::operator ( )(const yy::location& loc, vector<PlanIter_t>& a
   return new FnFloorIterator(loc, argv);
 }
 
-xqtref_t fn_floor::type_check(signature& sig) const
+xqtref_t fn_floor::type_check(signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -520,7 +520,7 @@ PlanIter_t fn_round::operator ( )( const yy::location& loc, vector<PlanIter_t>& 
   return new FnRoundIterator(loc, argv);
 }
 
-xqtref_t fn_round::type_check(signature& sig) const
+xqtref_t fn_round::type_check(signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -542,7 +542,7 @@ fn_round_half_to_even::operator ( )( const yy::location& loc, vector<PlanIter_t>
   return new FnRoundHalfToEvenIterator(loc, argv[0], argv[1]);
 }
 
-xqtref_t fn_round_half_to_even::type_check(signature& sig) const
+xqtref_t fn_round_half_to_even::type_check(signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -563,7 +563,7 @@ PlanIter_t zor_numgen::operator()( const yy::location& loc, vector<PlanIter_t>& 
 	return new ZorNumGen(loc);
 }
 
-xqtref_t zor_numgen::type_check(signature& sig) const
+xqtref_t zor_numgen::type_check(signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }

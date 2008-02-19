@@ -38,7 +38,7 @@ protected:
 public:
   rcobject() : theRefCount(0) { }
 
-  rcobject(const rcobject& rhs) : theRefCount(0) { }
+  rcobject(const rcobject& /*rhs*/) : theRefCount(0) { }
 
   virtual ~rcobject() { }
 

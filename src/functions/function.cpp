@@ -44,7 +44,7 @@ PlanIter_t user_function::operator()(const yy::location& loc, std::vector<PlanIt
   return new UDFunctionCallIterator(loc, argv, this);
 }
 
-xqtref_t user_function::type_check(signature& sig) const
+xqtref_t user_function::type_check(signature& /*sig*/) const
 {
   return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }

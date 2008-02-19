@@ -23,7 +23,7 @@ PlanIter_t op_add::operator()(
 }
 
 xqtref_t op_add::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -49,7 +49,7 @@ PlanIter_t op_subtract::operator()(
 }
 
 xqtref_t op_subtract::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -75,7 +75,7 @@ PlanIter_t op_multiply::operator()(
 }
 
 xqtref_t op_multiply::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -101,7 +101,7 @@ PlanIter_t op_divide::operator()(
 }
 
 xqtref_t op_divide::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -127,7 +127,7 @@ PlanIter_t op_integer_divide::operator()(
 }
 
 xqtref_t op_integer_divide::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
@@ -153,7 +153,7 @@ PlanIter_t op_mod::operator()(
 }
 
 xqtref_t op_mod::type_check(
-	signature& sig) const
+	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }

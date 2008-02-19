@@ -36,7 +36,7 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t AddOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+inline Item_t AddOperation::compute(const yy::location* loc, const Item*, const Item*) {
   ArithOperationsCommons::createError("add", loc, ATC0, ATC1);
   return 0;
 }
@@ -56,7 +56,7 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t SubtractOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+inline Item_t SubtractOperation::compute(const yy::location* loc, const Item*, const Item*) {
   ArithOperationsCommons::createError("sub", loc, ATC0, ATC1);
   return 0;
 }
@@ -76,7 +76,7 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t MultiplyOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+inline Item_t MultiplyOperation::compute(const yy::location* loc, const Item*, const Item*) {
   ArithOperationsCommons::createError("mul", loc, ATC0, ATC1);
   return 0;
 }
@@ -96,7 +96,7 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t DivideOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+inline Item_t DivideOperation::compute(const yy::location* loc, const Item*, const Item*) {
   ArithOperationsCommons::createError("div", loc, ATC0, ATC1);
   return 0;
 }
@@ -116,7 +116,7 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t IntegerDivideOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+inline Item_t IntegerDivideOperation::compute(const yy::location* loc, const Item*, const Item*) {
   ArithOperationsCommons::createError("int-div", loc, ATC0, ATC1);
   return 0;
 }
@@ -136,7 +136,7 @@ public:
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t ModOperation::compute(const yy::location* loc, const Item* i0, const Item* i1) {
+inline Item_t ModOperation::compute(const yy::location* loc, const Item*, const Item*) {
   ArithOperationsCommons::createError("mod", loc, ATC0, ATC1);
   return 0;
 }

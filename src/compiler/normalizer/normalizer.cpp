@@ -25,7 +25,7 @@ static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_
   return fh;
 }
 
-static inline expr::expr_t wrap_in_typematch(expr::expr_t e, xqtref_t type)
+static inline expr::expr_t wrap_in_typematch(expr::expr_t e, xqtref_t /*type*/)
 {
   // TODO : Need to add typematch_expr
   return e;
@@ -38,17 +38,17 @@ static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, xqtref_t type
   return ph;
 }
 
-bool normalizer::begin_visit(expr& node)
+bool normalizer::begin_visit(expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(var_expr& node)
+bool normalizer::begin_visit(var_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(order_modifier& node)
+bool normalizer::begin_visit(order_modifier& /*node*/)
 {
   return true;
 }
@@ -67,17 +67,17 @@ bool normalizer::begin_visit(flwor_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(case_clause& node)
+bool normalizer::begin_visit(case_clause& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(promote_expr& node)
+bool normalizer::begin_visit(promote_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(typeswitch_expr& node)
+bool normalizer::begin_visit(typeswitch_expr& /*node*/)
 {
   return true;
 }
@@ -112,78 +112,78 @@ bool normalizer::begin_visit(fo_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(ft_select_expr& node)
+bool normalizer::begin_visit(ft_select_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(ft_contains_expr& node)
+bool normalizer::begin_visit(ft_contains_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(instanceof_expr& node)
+bool normalizer::begin_visit(instanceof_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(treat_expr& node)
+bool normalizer::begin_visit(treat_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(castable_expr& node)
+bool normalizer::begin_visit(castable_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(cast_expr& node)
+bool normalizer::begin_visit(cast_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(validate_expr& node)
+bool normalizer::begin_visit(validate_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(extension_expr& node)
+bool normalizer::begin_visit(extension_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(relpath_expr& node)
+bool normalizer::begin_visit(relpath_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(axis_step_expr& node)
+bool normalizer::begin_visit(axis_step_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(match_expr& node)
+bool normalizer::begin_visit(match_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(const_expr& node)
+bool normalizer::begin_visit(const_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(order_expr& node)
+bool normalizer::begin_visit(order_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(elem_expr& node)
+bool normalizer::begin_visit(elem_expr& /*node*/)
 {
   //node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
   return true;
 }
 
-bool normalizer::begin_visit(doc_expr& node)
+bool normalizer::begin_visit(doc_expr& /*node*/)
 {
   return true;
 }
@@ -217,125 +217,125 @@ bool normalizer::begin_visit(attr_expr& node)
 
 #undef LOOKUP_OP1
 
-bool normalizer::begin_visit(text_expr& node)
+bool normalizer::begin_visit(text_expr& /*node*/)
 {
   return true;
 }
 
-bool normalizer::begin_visit(pi_expr& node)
+bool normalizer::begin_visit(pi_expr& /*node*/)
 {
   return true;
 }
 
-void normalizer::end_visit(expr& node)
+void normalizer::end_visit(expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(var_expr& node)
+void normalizer::end_visit(var_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(order_modifier& node)
+void normalizer::end_visit(order_modifier& /*node*/)
 {
 }
 
-void normalizer::end_visit(flwor_expr& node)
+void normalizer::end_visit(flwor_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(case_clause& node)
+void normalizer::end_visit(case_clause& /*node*/)
 {
 }
 
-void normalizer::end_visit(promote_expr& node)
+void normalizer::end_visit(promote_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(typeswitch_expr& node)
+void normalizer::end_visit(typeswitch_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(if_expr& node)
+void normalizer::end_visit(if_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(fo_expr& node)
+void normalizer::end_visit(fo_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(ft_select_expr& node)
+void normalizer::end_visit(ft_select_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(ft_contains_expr& node)
+void normalizer::end_visit(ft_contains_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(instanceof_expr& node)
+void normalizer::end_visit(instanceof_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(treat_expr& node)
+void normalizer::end_visit(treat_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(castable_expr& node)
+void normalizer::end_visit(castable_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(cast_expr& node)
+void normalizer::end_visit(cast_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(validate_expr& node)
+void normalizer::end_visit(validate_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(extension_expr& node)
+void normalizer::end_visit(extension_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(relpath_expr& node)
+void normalizer::end_visit(relpath_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(axis_step_expr& node)
+void normalizer::end_visit(axis_step_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(match_expr& node)
+void normalizer::end_visit(match_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(const_expr& node)
+void normalizer::end_visit(const_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(order_expr& node)
+void normalizer::end_visit(order_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(elem_expr& node)
+void normalizer::end_visit(elem_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(doc_expr& node)
+void normalizer::end_visit(doc_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(attr_expr& node)
+void normalizer::end_visit(attr_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(text_expr& node)
+void normalizer::end_visit(text_expr& /*node*/)
 {
 }
 
-void normalizer::end_visit(pi_expr& node)
+void normalizer::end_visit(pi_expr& /*node*/)
 {
 }
 
-bool normalizer::begin_visit (function_def_expr &v) {
+bool normalizer::begin_visit (function_def_expr& /*v*/) {
   return true;
 }
 

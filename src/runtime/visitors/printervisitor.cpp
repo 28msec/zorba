@@ -42,12 +42,12 @@ namespace xqp {
     }
   }
 
-  void PrinterVisitor::beginVisit ( const FnDataIterator& a ) {
+  void PrinterVisitor::beginVisit ( const FnDataIterator& a) {
     thePrinter.startBeginVisit("FnDataIterator", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnDataIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnDataIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -57,7 +57,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnRootIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnRootIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -67,7 +67,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnNodeNameIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnNodeNameIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -77,7 +77,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const UDFunctionCallIterator& a ) {
+  void PrinterVisitor::endVisit ( const UDFunctionCallIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -87,7 +87,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const StatelessExtFunctionCallIterator& a ) {
+  void PrinterVisitor::endVisit ( const StatelessExtFunctionCallIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -97,7 +97,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnStringIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnStringIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -107,7 +107,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnBooleanIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnBooleanIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -117,7 +117,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const LogicIterator& a ) {
+  void PrinterVisitor::endVisit ( const LogicIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -137,7 +137,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const ElementIterator& a ) {
+  void PrinterVisitor::endVisit ( const ElementIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -147,7 +147,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const ElementContentIterator& a ) {
+  void PrinterVisitor::endVisit ( const ElementContentIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -157,7 +157,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const AttributeIterator& a ) {
+  void PrinterVisitor::endVisit ( const AttributeIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -167,7 +167,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const DocumentIterator& a ) {
+  void PrinterVisitor::endVisit ( const DocumentIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -177,7 +177,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const DocumentContentIterator& a ) {
+  void PrinterVisitor::endVisit ( const DocumentContentIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -187,7 +187,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const CommentIterator& a ) {
+  void PrinterVisitor::endVisit ( const CommentIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -197,7 +197,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const PiIterator& a ) {
+  void PrinterVisitor::endVisit ( const PiIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -208,7 +208,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const SingletonIterator& a ) {
+  void PrinterVisitor::endVisit ( const SingletonIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -218,7 +218,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const EmptyIterator& a ) {
+  void PrinterVisitor::endVisit ( const EmptyIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -229,7 +229,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const ForVarIterator& a ) {
+  void PrinterVisitor::endVisit ( const ForVarIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -240,7 +240,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const LetVarIterator& a ) {
+  void PrinterVisitor::endVisit ( const LetVarIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -251,7 +251,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const EnclosedIterator& a ) {
+  void PrinterVisitor::endVisit ( const EnclosedIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -261,7 +261,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const DocFilterIterator& a ) {
+  void PrinterVisitor::endVisit ( const DocFilterIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -271,7 +271,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const IfThenElseIterator& a ) {
+  void PrinterVisitor::endVisit ( const IfThenElseIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -284,7 +284,7 @@ namespace xqp {
     thePrinter.endBeginVisit((intptr_t) &a);
   }
 
-  void PrinterVisitor::endVisit ( const NodeDistinctIterator& a ) {
+  void PrinterVisitor::endVisit ( const NodeDistinctIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -295,7 +295,7 @@ namespace xqp {
     thePrinter.endBeginVisit((intptr_t) &a);
   }
 
-  void PrinterVisitor::endVisit ( const NodeSortIterator& a ) {
+  void PrinterVisitor::endVisit ( const NodeSortIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -323,7 +323,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const KindTestIterator& a ) {
+  void PrinterVisitor::endVisit ( const KindTestIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -337,7 +337,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const NameTestIterator& a ) {
+  void PrinterVisitor::endVisit ( const NameTestIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -348,7 +348,7 @@ namespace xqp {
     thePrinter.endBeginVisit( (intptr_t) &a);
 
   }
-  void PrinterVisitor::endVisit ( const SelfAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const SelfAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -358,7 +358,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const AttributeAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const AttributeAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -368,7 +368,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const ParentAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const ParentAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -378,7 +378,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const AncestorAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const AncestorAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -388,7 +388,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const AncestorSelfAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const AncestorSelfAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -398,7 +398,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const RSiblingAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const RSiblingAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -408,7 +408,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const LSiblingAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const LSiblingAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -418,7 +418,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const ChildAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const ChildAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -428,7 +428,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const DescendantAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const DescendantAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -438,7 +438,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const DescendantSelfAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const DescendantSelfAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -448,7 +448,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const PrecedingAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const PrecedingAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -458,7 +458,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FollowingAxisIterator& a ) {
+  void PrinterVisitor::endVisit ( const FollowingAxisIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -468,7 +468,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const InstanceOfIterator& a ) {
+  void PrinterVisitor::endVisit ( const InstanceOfIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -478,7 +478,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const TreatIterator& a ) {
+  void PrinterVisitor::endVisit ( const TreatIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -513,27 +513,27 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const NumArithIterator<AddOperation>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<AddOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const NumArithIterator<SubtractOperation>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<SubtractOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const NumArithIterator<MultiplyOperation>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<MultiplyOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const NumArithIterator<DivideOperation>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<DivideOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const NumArithIterator<IntegerDivideOperation>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<IntegerDivideOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const NumArithIterator<ModOperation>& a ) {
+  void PrinterVisitor::endVisit ( const NumArithIterator<ModOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -568,27 +568,27 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const GenericArithIterator<AddOperation>& a ) {
+  void PrinterVisitor::endVisit ( const GenericArithIterator<AddOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const GenericArithIterator<SubtractOperation>& a ) {
+  void PrinterVisitor::endVisit ( const GenericArithIterator<SubtractOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const GenericArithIterator<MultiplyOperation>& a ) {
+  void PrinterVisitor::endVisit ( const GenericArithIterator<MultiplyOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const GenericArithIterator<DivideOperation>& a ) {
+  void PrinterVisitor::endVisit ( const GenericArithIterator<DivideOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const GenericArithIterator<IntegerDivideOperation>& a ) {
+  void PrinterVisitor::endVisit ( const GenericArithIterator<IntegerDivideOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  void PrinterVisitor::endVisit ( const GenericArithIterator<ModOperation>& a ) {
+  void PrinterVisitor::endVisit ( const GenericArithIterator<ModOperation>& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -598,7 +598,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const OpNumericUnaryIterator& a ) {
+  void PrinterVisitor::endVisit ( const OpNumericUnaryIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -608,7 +608,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnAbsIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnAbsIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -620,20 +620,20 @@ namespace xqp {
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
 
-  void PrinterVisitor::endVisit( const FnCeilingIterator& a)
+  void PrinterVisitor::endVisit( const FnCeilingIterator& )
   {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
 
-  void PrinterVisitor::beginVisit( const FnFloorIterator& a)
+  void PrinterVisitor::beginVisit( const FnFloorIterator& a )
   {
     thePrinter.startBeginVisit("FnFloorIterator", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
 
-  void PrinterVisitor::endVisit( const FnFloorIterator& a )
+  void PrinterVisitor::endVisit( const FnFloorIterator& )
   {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
@@ -646,7 +646,7 @@ namespace xqp {
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
 
-  void PrinterVisitor::endVisit( const FnRoundIterator& a )
+  void PrinterVisitor::endVisit( const FnRoundIterator& )
   {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
@@ -659,7 +659,7 @@ namespace xqp {
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
 
-  void PrinterVisitor::endVisit( const FnRoundHalfToEvenIterator& a )
+  void PrinterVisitor::endVisit( const FnRoundHalfToEvenIterator& )
   {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
@@ -670,7 +670,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnConcatIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnConcatIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -680,7 +680,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnEmptyIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnEmptyIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -690,7 +690,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnExistsIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnExistsIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -700,7 +700,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnIndexOfIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnIndexOfIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -710,7 +710,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnRemoveIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnRemoveIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -720,7 +720,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnReverseIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnReverseIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -730,7 +730,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const OpToIterator& a ) {
+  void PrinterVisitor::endVisit ( const OpToIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -740,7 +740,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnDistinctValuesIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnDistinctValuesIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -750,7 +750,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnInsertBeforeIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnInsertBeforeIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -760,7 +760,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnSubsequenceIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnSubsequenceIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -770,7 +770,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnZeroOrOneIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnZeroOrOneIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -780,7 +780,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnOneOrMoreIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnOneOrMoreIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -790,7 +790,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FnExactlyOneIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnExactlyOneIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -1424,7 +1424,7 @@ namespace xqp {
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
-  void PrinterVisitor::endVisit ( const FLWORIterator& a ) {
+  void PrinterVisitor::endVisit ( const FLWORIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -1435,7 +1435,7 @@ namespace xqp {
     a.accept(*this);
   }
 
-  void PrinterVisitor::endVisitFlworWhereClause(const PlanIterator& a){
+  void PrinterVisitor::endVisitFlworWhereClause(const PlanIterator& /*a*/){
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -1464,7 +1464,7 @@ void PrinterVisitor::beginVisitFlworLetVariable(
   a.accept(*this);
 }
 
-void PrinterVisitor::endVisitFlworLetVariable(const PlanIterator& a)
+void PrinterVisitor::endVisitFlworLetVariable(const PlanIterator& /*a*/)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -1484,7 +1484,7 @@ void PrinterVisitor::beginVisitFlworForVariable(
 }
 
 
-void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& a)
+void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -1497,7 +1497,7 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& a)
     a.accept(*this);
   }    
 
-  void PrinterVisitor::endVisitFlworOrderBy(const PlanIterator& a){
+  void PrinterVisitor::endVisitFlworOrderBy(const PlanIterator& /*a*/){
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
@@ -1508,7 +1508,7 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& a)
     a.accept(*this);
   }
 
-  void PrinterVisitor::endVisitFlworReturn(const PlanIterator& a){
+  void PrinterVisitor::endVisitFlworReturn(const PlanIterator& /*a*/){
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }

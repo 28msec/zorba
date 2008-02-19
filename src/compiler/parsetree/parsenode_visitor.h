@@ -486,10 +486,10 @@ public:
      * needed in various situations.
      */
 
-	virtual void intermediate_visit(RelativePathExpr const&, void *visit_state) { }
-  virtual void post_step_visit(AxisStep const&, void *visit_state) { }
-  virtual void pre_predicate_visit(PredicateList const&, void *visit_state) { }
-  virtual void post_predicate_visit(PredicateList const&, void *visit_state) { }
+	virtual void intermediate_visit(RelativePathExpr const&, void* /*visit_state*/) { }
+  virtual void post_step_visit(AxisStep const&, void * /*visit_state*/) { }
+  virtual void pre_predicate_visit(PredicateList const&, void* /*visit_state*/) { }
+  virtual void post_predicate_visit(PredicateList const&, void* /*visit_state*/) { }
 
   /**
    * Methods are used in the translator to check if a DirElemContent is boundary whitespace.
