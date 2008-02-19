@@ -413,12 +413,6 @@ public:
   virtual void beginVisit(const FnTimezoneFromTimeIterator&) ;
   virtual void endVisit(const FnTimezoneFromTimeIterator&);
 
-  virtual void beginVisit ( const GenericArithIterator<DivideOperationsDurationByDouble>& ) ;
-  virtual void endVisit ( const GenericArithIterator<DivideOperationsDurationByDouble>& ) ;
-  
-  virtual void beginVisit ( const NumArithIterator<DivideOperationsDurationByDouble>& ) ;
-  virtual void endVisit ( const NumArithIterator<DivideOperationsDurationByDouble>& ) ;
-
   virtual void beginVisit ( const FLWORIterator& ) ;
   virtual void endVisit ( const FLWORIterator& ) ;
   

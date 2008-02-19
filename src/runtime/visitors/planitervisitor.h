@@ -150,9 +150,6 @@ namespace xqp
   class FnMinutesFromTimeIterator;
   class FnSecondsFromTimeIterator;
   class FnTimezoneFromTimeIterator;
-  class DivideOperationsDurationByDouble;
-  template < class DivideOperationsDurationByDouble> class NumArithIterator;
-  template < class DivideOperationsDurationByDouble> class GenericArithIterator;
   class OpIsSameNodeIterator;
   class OpNodeBeforeIterator;
   class OpNodeAfterIterator;
@@ -578,12 +575,6 @@ namespace xqp
 
       virtual void beginVisit ( const FnTimezoneFromTimeIterator&) = 0;
       virtual void endVisit ( const FnTimezoneFromTimeIterator&) = 0;
-
-      virtual void beginVisit ( const NumArithIterator<DivideOperationsDurationByDouble>& ) = 0;
-      virtual void endVisit ( const NumArithIterator<DivideOperationsDurationByDouble>& ) = 0;
-
-      virtual void beginVisit ( const GenericArithIterator<DivideOperationsDurationByDouble>& ) = 0;
-      virtual void endVisit ( const GenericArithIterator<DivideOperationsDurationByDouble>& ) = 0;
 
       virtual void beginVisit(const CtxVariableIterator&) = 0;
       virtual void endVisit(const CtxVariableIterator&) = 0;

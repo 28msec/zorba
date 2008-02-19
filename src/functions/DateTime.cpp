@@ -874,7 +874,7 @@ op_ym_durations_divide::operator() (
     const yy::location& loc,
     std::vector<PlanIter_t>& argv ) const
 {
-  return new NumArithIterator<DivideOperationsDurationByDouble>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
 }
 
 bool
@@ -1048,7 +1048,7 @@ op_dt_durations_divide::operator() (
     const yy::location& loc,
     std::vector<PlanIter_t>& argv ) const
 {
-  return new NumArithIterator<DivideOperationsDurationByDouble>(loc,  argv[0], argv[1]);
+  return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
 }
 
 bool

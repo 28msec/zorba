@@ -1419,28 +1419,6 @@ namespace xqp {
     thePrinter.endEndVisit();
   }
 
-  void PrinterVisitor::beginVisit ( const GenericArithIterator<DivideOperationsDurationByDouble>& a ) {
-    thePrinter.startBeginVisit("GenericArithIterator_DivideOperationsDurationByDouble", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
-  }
-  
-  void PrinterVisitor::endVisit ( const GenericArithIterator<DivideOperationsDurationByDouble>& a ) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void PrinterVisitor::beginVisit ( const NumArithIterator<DivideOperationsDurationByDouble>& a ) {
-    thePrinter.startBeginVisit("NumArithIterator_DivideOperationsDurationByDouble", (intptr_t) &a);
-    printCommons(  &a );
-    thePrinter.endBeginVisit( (intptr_t) &a);
-  }
-  
-  void PrinterVisitor::endVisit ( const NumArithIterator<DivideOperationsDurationByDouble>& a ) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-  
   void PrinterVisitor::beginVisit ( const FLWORIterator& a ) {
     thePrinter.startBeginVisit("FLWORIterator", (intptr_t) &a);
     printCommons(  &a );

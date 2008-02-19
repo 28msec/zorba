@@ -79,15 +79,22 @@ Item_t GenericArithIterator<Operation>::compute(const yy::location& aLoc, Item_t
   xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
   xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeConstants::QUANT_ONE );
 
-  if ( GENV_TYPESYSTEM.is_numeric(*type0) 
+  if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
+  {
+    if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ))
+      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE> ( &aLoc, n0, n1 );
+    else
+      return Operation::template computeSingleType<TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
+  }
+  else if ( GENV_TYPESYSTEM.is_numeric(*type0) 
     || GENV_TYPESYSTEM.is_numeric(*type1)
     || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
-    || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
-    || GENV_TYPESYSTEM.get_atomic_type_code ( *type0 ) == TypeConstants::XS_DURATION
-     ) {
+    || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  {
     return NumArithIterator<Operation>::computeAtomic(aLoc, n0, type0, n1, type1);
   }
-  else {
+  else
+  {
     ZORBA_ASSERT(false);
   }
   return 0;
@@ -112,7 +119,6 @@ template class GenericArithIterator<MultiplyOperation>;
 template class GenericArithIterator<DivideOperation>;
 template class GenericArithIterator<IntegerDivideOperation>;
 template class GenericArithIterator<ModOperation>;
-template class GenericArithIterator<DivideOperationsDurationByDouble>;
 /* end class GenericArithIterator */
 
 }

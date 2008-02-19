@@ -48,15 +48,6 @@ namespace xqp
   {
     return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() + i1->getIntegerValue() );
   }
-
-  //TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
-  template<>
-  Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-  ( const yy::location* loc,  const Item* i0, const Item* i1 )
-  {
-    xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
-    return Zorba::getItemFactory()->createDuration (d);
-  }
   /* end class AddOperations */
 
   /* start class SubtractOperations */
@@ -87,15 +78,6 @@ namespace xqp
   {
     return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() - i1->getIntegerValue() );
   }
-
-  //TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
-  template<>
-  Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-  ( const yy::location* loc, const Item* i0, const Item* i1 )
-  {
-    xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
-    return Zorba::getItemFactory()->createDuration (d);
-  }
   /* end class SubtractOperations */
 
   /* start class MultiplyOperations */
@@ -125,25 +107,6 @@ namespace xqp
   ( const yy::location* loc, const Item* i0, const Item* i1 )
   {
     return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() * i1->getIntegerValue() );
-  }
-
-  //TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
-  template<>
-  Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-  ( const yy::location* loc, const Item* i0, const Item* i1 )
-  {
-    xqp_duration d;
-
-    if( i1->getDoubleValue().isZero() )
-      return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
-    else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-      ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
-    else if (  i1->getDoubleValue().isNaN() )
-      ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
-    else
-      d = *i0->getDurationValue() * (i1->getDoubleValue());
-  
-    return Zorba::getItemFactory()->createDuration (d);
   }
   /* end class MultiplyOperations */
 
@@ -189,39 +152,8 @@ namespace xqp
     }
     return Zorba::getItemFactory()->createDecimal ( ll0 / ll1 );
   }
-
-      //TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
-  template<>
-  Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-  ( const yy::location* loc, const Item* i0, const Item* i1 )
-  {
-    xqp_decimal d = *i0->getDurationValue() / *i1->getDurationValue();
-    return Zorba::getItemFactory()->createDecimal(d);
-  }
   /* end class DivideOperations */
 
-  /* end class DivideOperationsDurationByDouble */
-    //TODO: replace the first type with XS_YM_DURATION and add another specialization for XS_DT_DURATION
-  template<>
-  Item_t DivideOperationsDurationByDouble::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
-  ( const yy::location* loc, const Item* i0, const Item* i1 )
-  {
-    xqp_duration d;
-
-    if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-      return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
-    else if ( i1->getDoubleValue().isZero() )
-      ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
-    else if ( i1->getDoubleValue().isNaN() )
-      ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
-    else
-      d= *i0->getDurationValue() / i1->getDoubleValue();
-
-    return Zorba::getItemFactory()->createDuration (d);
-  }
-
-  /* end class DivideOperationsDurationByDouble */
-  
   /* start class IntegerDivideOperations */
   template<>
   Item_t IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
@@ -414,35 +346,27 @@ namespace xqp
   {
     Item_t res;
     
-    if ( GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ) )
-    {
-      res = Operation::template computeSingleType<TypeConstants::XS_DURATION> ( &aLoc, item0, item1 );
-    }
-    else
-    {
-      xqtref_t resultType = GENV_TYPESYSTEM.arithmetic_type ( *type0, *type1 );
-      Item_t n0 = GenericCast::instance()->cast ( item0, resultType );
-      Item_t n1 = GenericCast::instance()->cast ( item1, resultType );
-  
-      switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *resultType ) )
-      {
-        case TypeConstants::XS_DOUBLE:
-          res = Operation::template computeSingleType<TypeConstants::XS_DOUBLE> ( &aLoc, n0, n1 );
-          break;
-        case TypeConstants::XS_FLOAT:
-          res = Operation::template computeSingleType<TypeConstants::XS_FLOAT> ( &aLoc,n0, n1 );
-          break;
-        case TypeConstants::XS_DECIMAL:
-          res = Operation::template computeSingleType<TypeConstants::XS_DECIMAL> ( &aLoc,n0, n1 );
-          break;
-        case TypeConstants::XS_INTEGER:
-          res = Operation::template computeSingleType<TypeConstants::XS_INTEGER> ( &aLoc,n0, n1 );
-          break;
-        default:
-          ZORBA_ASSERT(false);
-      }
-    }
+    xqtref_t resultType = GENV_TYPESYSTEM.arithmetic_type ( *type0, *type1 );
+    Item_t n0 = GenericCast::instance()->cast ( item0, resultType );
+    Item_t n1 = GenericCast::instance()->cast ( item1, resultType );
 
+    switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *resultType ) )
+    {
+      case TypeConstants::XS_DOUBLE:
+        res = Operation::template computeSingleType<TypeConstants::XS_DOUBLE> ( &aLoc, n0, n1 );
+        break;
+      case TypeConstants::XS_FLOAT:
+        res = Operation::template computeSingleType<TypeConstants::XS_FLOAT> ( &aLoc,n0, n1 );
+        break;
+      case TypeConstants::XS_DECIMAL:
+        res = Operation::template computeSingleType<TypeConstants::XS_DECIMAL> ( &aLoc,n0, n1 );
+        break;
+      case TypeConstants::XS_INTEGER:
+        res = Operation::template computeSingleType<TypeConstants::XS_INTEGER> ( &aLoc,n0, n1 );
+        break;
+      default:
+        ZORBA_ASSERT(false);
+    }
     return res;
   }
   
@@ -465,7 +389,6 @@ namespace xqp
   template class NumArithIterator<DivideOperation>;
   template class NumArithIterator<IntegerDivideOperation>;
   template class NumArithIterator<ModOperation>;
-  template class NumArithIterator<DivideOperationsDurationByDouble>;
   /* end class NumArithIterator */
 
   /*______________________________________________________________________

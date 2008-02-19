@@ -121,24 +121,6 @@ inline Item_t IntegerDivideOperation::compute(const yy::location* loc, const Ite
   return 0;
 }
 
-class DivideOperationsDurationByDouble
-{
-public:
-  template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static Item_t compute (const yy::location*, const Item*, const Item*);
-
-  template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t computeSingleType (const yy::location* loc, const Item* i0, const Item* i1)
-  {
-    return DivideOperationsDurationByDouble::compute<ATC,ATC>(loc, i0, i1);
-  }
-};
-template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t DivideOperationsDurationByDouble::compute(const yy::location* loc, const Item* i0, const Item* i1) {
-  ArithOperationsCommons::createError("DivideOperationsDurationByDouble", loc, ATC0, ATC1);
-  return 0;
-}
-
 /** Operations for Mod
   */
 class ModOperation

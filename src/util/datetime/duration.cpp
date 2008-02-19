@@ -355,7 +355,7 @@ DurationBase_t DayTimeDuration::operator+(const DurationBase& db) const
 DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
 {
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
-  long resDays;
+  long resDays, resHours;
 
   if(is_negative)
     resDays = dtd.is_negative ? -days+dtd.days : -days-dtd.days;
@@ -366,14 +366,19 @@ DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
 
   boost::posix_time::time_duration resTimeDuration = timeDuration - dtd.timeDuration;
 
+  resDays  = resDays + resTimeDuration.hours() / NO_HOURS_IN_DAY;
+  resHours = resTimeDuration.hours() % NO_HOURS_IN_DAY;
+
+  resIsNeg = resDays<0 ? true : false;
+  
   //TODO Should normalization be part of the constructor?
   DayTimeDuration* dt = new DayTimeDuration(
       resIsNeg,
-  resDays + resTimeDuration.hours() / NO_HOURS_IN_DAY,
-  resTimeDuration.hours() % NO_HOURS_IN_DAY,
-  resTimeDuration.minutes(),
-  resTimeDuration.seconds(),
-  resTimeDuration.fractional_seconds());
+      resIsNeg? -resDays: resDays,
+      resHours,
+      resTimeDuration.minutes(),
+      resTimeDuration.seconds(),
+      resTimeDuration.fractional_seconds());
 
   return dt;
 }
