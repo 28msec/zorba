@@ -13,6 +13,7 @@
 #include "store/api/collection.h"
 #include "runtime/iterator.h"
 
+typedef unsigned long ulong;
 
 namespace xqp
 {

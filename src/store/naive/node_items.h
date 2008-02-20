@@ -14,6 +14,8 @@
 #include "store/api/item.h"
 #include "store/naive/ordpath.h"
 
+typedef unsigned long ulong;
+
 
 namespace xqp
 {
