@@ -258,7 +258,7 @@ int _tmain(int argc, _TCHAR* argv[])
     lDiffFirstExecutionTime = lStopFirstExecutionTime - lStartFirstExecutionTime;
     std::cerr << "First Execution time: " 
               << lDiffFirstExecutionTime.total_milliseconds()
-              << " milliseconds" << std::endl;
+              << " milliseconds (i.e. parsing the document is included)" << std::endl;
 
     if (lNumExecutions > 1)
     {
