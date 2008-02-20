@@ -492,6 +492,202 @@ class fn_datetime_ctor : public function
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
+
+ /*
+  * 10.8.1 op:subtract-dateTimes
+  *-----------------------*/
+  class op_sub_dt : public function
+  {
+    public:
+      op_sub_dt(const signature&);
+      ~op_sub_dt() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+ /*
+  * 10.8.2 op:subtract-dates
+  *-----------------------*/
+  class op_sub_d : public function
+  {
+    public:
+      op_sub_d(const signature&);
+      ~op_sub_d() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+ /*
+  * 10.8.3 op:subtract-times
+  *-----------------------*/
+  class op_sub_t : public function
+  {
+    public:
+      op_sub_t(const signature&);
+      ~op_sub_t() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+  
+/*
+ * 10.8.4 op:add-yearMonthDuration-to-dateTime
+ *-----------------------*/
+  class op_add_ymd_to_dt : public function
+  {
+    public:
+      op_add_ymd_to_dt(const signature&);
+      ~op_add_ymd_to_dt() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.8.5 op:add-dayTimeDuration-to-dateTime
+ *-----------------------*/
+  class op_add_dtd_to_dt : public function
+  {
+    public:
+      op_add_dtd_to_dt(const signature&);
+      ~op_add_dtd_to_dt() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.8.6 op:subtract-yearMonthDuration-from-dateTime
+ *-----------------------*/
+  class op_sub_ymd_from_dt : public function
+  {
+    public:
+      op_sub_ymd_from_dt(const signature&);
+      ~op_sub_ymd_from_dt() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.8.7 op:subtract-dayTimeDuration-from-dateTime
+ *-----------------------*/
+  class op_sub_dtd_from_dt : public function
+  {
+    public:
+      op_sub_dtd_from_dt(const signature&);
+      ~op_sub_dtd_from_dt() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+  
+/*
+ * 10.8.8 op:add-yearMonthDuration-to-date
+ *-----------------------*/
+  class op_add_ymd_to_d : public function
+  {
+    public:
+      op_add_ymd_to_d(const signature&);
+      ~op_add_ymd_to_d() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.8.9 op:add-dayTimeDuration-to-date
+ *-----------------------*/
+  class op_add_dtd_to_d : public function
+  {
+    public:
+      op_add_dtd_to_d(const signature&);
+      ~op_add_dtd_to_d() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+  
+/*
+ * 10.8.10 op:subtract-yearMonthDuration-from-date
+ *-----------------------*/
+  class op_sub_ymd_from_d : public function
+  {
+    public:
+      op_sub_ymd_from_d(const signature&);
+      ~op_sub_ymd_from_d() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.8.11 op:subtract-dayTimeDuration-from-date
+ *-----------------------*/
+  class op_sub_dtd_from_d : public function
+  {
+    public:
+      op_sub_dtd_from_d(const signature&);
+      ~op_sub_dtd_from_d() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.8.12 op:add-dayTimeDuration-to-time
+ *-----------------------*/
+  class op_add_dtd_to_t : public function
+  {
+    public:
+      op_add_dtd_to_t(const signature&);
+      ~op_add_dtd_to_t() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
+
+/*
+ * 10.8.13 op:subtract-dayTimeDuration-from-time
+ *-----------------------*/
+  class op_sub_dtd_from_t : public function
+  {
+    public:
+      op_sub_dtd_from_t(const signature&);
+      ~op_sub_dtd_from_t() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  };
 } // namespace xqp
 
 #endif

@@ -93,6 +93,27 @@ Item_t GenericArithIterator<Operation>::compute(const yy::location& aLoc, Item_t
     else
       return Operation::template computeSingleType<TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
   }
+  else if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
+  {
+    if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
+      return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME> ( &aLoc, n0, n1 );
+    else
+      return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
+  }
+  else if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
+  {
+    if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
+      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE> ( &aLoc, n0, n1 );
+    else
+      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
+  }
+  else if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
+  {
+    if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
+      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME> ( &aLoc, n0, n1 );
+    else
+      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
+  }
   else if ( GENV_TYPESYSTEM.is_numeric(*type0) 
     || GENV_TYPESYSTEM.is_numeric(*type1)
     || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
@@ -121,6 +142,8 @@ void GenericArithIterator<Operation>::accept(PlanIterVisitor& v) const {
 
 // FIXME Why can the following template specializations not be moved to src/runtime/dateTime/DurationsDatesTimes.cpp?
 //moved from DurationsDatesTimes
+ /* begin class AddOperations */
+ //TODO: replace the types with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
 template<>
 Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
 ( const yy::location* loc,  const Item* i0, const Item* i1 )
@@ -128,6 +151,37 @@ Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATI
   xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
+
+//TODO: replace the second type with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
+template<>
+Item_t AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
+( const yy::location* loc,  const Item* i0, const Item* i1 )
+{
+  xqp_dateTime d = i0->getDateTimeValue();// + *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDateTime (d);
+}
+
+//TODO: replace the second type with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
+template<>
+Item_t AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
+( const yy::location* loc,  const Item* i0, const Item* i1 )
+{
+  xqp_date d = i0->getDateValue();// + *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDate (d);
+}
+
+//TODO: replace the second type with XS_DT_DURATION
+template<>
+Item_t AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
+( const yy::location* loc,  const Item* i0, const Item* i1 )
+{
+  xqp_time t = i0->getTimeValue();// + *i1->getDurationValue();
+  return Zorba::getItemFactory()->createTime (t);
+}
+ /* end class AddOperations */
+
+/* start class SubtractOperations */
+//TODO: replace the types with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
 template<>
 Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
 ( const yy::location* loc, const Item* i0, const Item* i1 )
@@ -135,6 +189,64 @@ Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
   xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
+
+//TODO: replace the second type with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
+template<>
+Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
+( const yy::location* loc,  const Item* i0, const Item* i1 )
+{
+  xqp_dateTime d = i0->getDateTimeValue();// + *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDateTime (d);
+}
+
+//TODO: replace the second type with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
+template<>
+Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
+( const yy::location* loc,  const Item* i0, const Item* i1 )
+{
+  xqp_date d = i0->getDateValue();// + *i1->getDurationValue();
+  return Zorba::getItemFactory()->createDate (d);
+}
+
+//TODO: replace the second type with XS_DT_DURATION
+template<>
+Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
+( const yy::location* loc,  const Item* i0, const Item* i1 )
+{
+  xqp_time t = i0->getTimeValue();// + *i1->getDurationValue();
+  return Zorba::getItemFactory()->createTime (t);
+}
+
+template<>
+Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME>
+( const yy::location* loc,  const Item* i0, const Item* i1 )
+{
+  DayTimeDuration_t d_t = new DayTimeDuration(false, 337, 2, 12, 0, 0);
+  xqp_duration d = d_t;
+  return Zorba::getItemFactory()->createDuration (d);
+}
+
+template<>
+Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
+( const yy::location* loc,  const Item* i0, const Item* i1 )
+{
+  DayTimeDuration_t d_t = new DayTimeDuration(false, 337, 0, 0, 0, 0);
+  xqp_duration d = d_t;
+  return Zorba::getItemFactory()->createDuration (d);
+}
+
+template<>
+Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
+( const yy::location* loc,  const Item* i0, const Item* i1 )
+{
+  DayTimeDuration_t d_t = new DayTimeDuration(false, 0, 2, 12, 0, 0);
+  xqp_duration d = d_t;
+  return Zorba::getItemFactory()->createDuration (d);
+}
+/* end class SubtractOperations */
+
+/* start class MultiplyOperations */
+//TODO: replace the first type with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
 template<>
 Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
 ( const yy::location* loc, const Item* i0, const Item* i1 )
@@ -152,6 +264,10 @@ Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
   
   return Zorba::getItemFactory()->createDuration (d);
 }
+/* end class MultiplyOperations */
+
+/* start class DivideOperations */
+//TODO: replace the first type with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
 template<>
 Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
 ( const yy::location* loc, const Item* i0, const Item* i1 )
@@ -169,6 +285,8 @@ Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOU
 
   return Zorba::getItemFactory()->createDuration (d);
 }
+
+//TODO: replace the types with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
 template<>
 Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
 ( const yy::location* loc, const Item* i0, const Item* i1 )
@@ -176,6 +294,7 @@ Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DUR
   xqp_decimal d = *i0->getDurationValue() / *i1->getDurationValue();
   return Zorba::getItemFactory()->createDecimal(d);
 }
+/* end class DivideOperations */
 
 /* instantiate GenericArithIterator for all types */
 template class GenericArithIterator<AddOperation>;

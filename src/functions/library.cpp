@@ -922,7 +922,98 @@ DECL(op_divide_dtd_by_dtd,
      (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "divide-dayTimeDuration-by-dayTimeDuration"),
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
-      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));      
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+
+ //TODO change the returned type to DT_DURATION_TYPE_QUESTION
+DECL(op_sub_dt,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dateTimes"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
+
+ //TODO change the returned type to DT_DURATION_TYPE_QUESTION
+DECL(op_sub_d,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dates"),
+      GENV_TYPESYSTEM.DATE_TYPE_ONE,
+      GENV_TYPESYSTEM.DATE_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
+
+ //TODO change the returned type to DT_DURATION_TYPE_QUESTION
+DECL(op_sub_t,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-times"),
+      GENV_TYPESYSTEM.TIME_TYPE_ONE,
+      GENV_TYPESYSTEM.TIME_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION));
+
+ //TODO change the type of the second arg to YM_DURATION_TYPE_ONE
+DECL(op_add_ymd_to_dt,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-yearMonthDuration-to-dateTime"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
+
+ //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
+DECL(op_add_dtd_to_dt,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-dateTime"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
+
+ //TODO change the type of the second arg to YM_DURATION_TYPE_ONE
+DECL(op_sub_ymd_from_dt,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDuration-from-dateTime"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
+
+ //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
+DECL(op_sub_dtd_from_dt,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-dateTime"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
+
+ //TODO change the type of the second arg to YM_DURATION_TYPE_ONE
+DECL(op_add_ymd_to_d,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-yearMonthDuration-to-date"),
+      GENV_TYPESYSTEM.DATE_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DATE_TYPE_ONE));
+
+ //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
+DECL(op_add_dtd_to_d,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-date"),
+      GENV_TYPESYSTEM.DATE_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DATE_TYPE_ONE));
+
+ //TODO change the type of the second arg to YM_DURATION_TYPE_ONE
+DECL(op_sub_ymd_from_d,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDuration-from-date"),
+      GENV_TYPESYSTEM.DATE_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DATE_TYPE_ONE));
+
+ //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
+DECL(op_sub_dtd_from_d,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-date"),
+      GENV_TYPESYSTEM.DATE_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.DATE_TYPE_ONE));
+
+ //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
+DECL(op_add_dtd_to_t,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-time"),
+      GENV_TYPESYSTEM.TIME_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.TIME_TYPE_ONE));
+
+ //TODO change the type of the second arg to DT_DURATION_TYPE_ONE
+DECL(op_sub_dtd_from_t,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-time"),
+      GENV_TYPESYSTEM.TIME_TYPE_ONE,
+      GENV_TYPESYSTEM.DURATION_TYPE_ONE,
+      GENV_TYPESYSTEM.TIME_TYPE_ONE));
 // end date time
 
 // begin debug functions
