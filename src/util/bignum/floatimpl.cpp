@@ -1,5 +1,7 @@
 #include "zorba/common/common.h"
 #include "zorba/util/bignum/floatimpl.h"
+#include "zorba/util/bignum/integer.h"
+#include "zorba/util/bignum/decimal.h"
 #include <limits>
 #include <string>
 
@@ -683,6 +685,11 @@ FloatImpl<FloatType> FloatImpl<FloatType>::ceil() const {
     break;
   }
   return lFloatImpl;
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::round() const{
+  return round(Integer::parseInt(0));
 }
 
 template <typename FloatType>

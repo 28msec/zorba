@@ -9,8 +9,6 @@
 
 #include "mapm/m_apm.h"
 #include "zorba/util/utf8/xqpString.h"
-#include "zorba/util/bignum/integer.h"
-#include "zorba/util/bignum/decimal.h"
 
 namespace xqp {
 
@@ -157,60 +155,58 @@ public:
    */
   static FloatImpl<FloatType> parseLong(long);
 
-  FloatImpl& operator=(const FloatImpl& aFloatImpl) {
+  FloatImpl<FloatType>& operator=(const FloatImpl& aFloatImpl) {
     theType = aFloatImpl.theType;
     theFloatImpl = aFloatImpl.theFloatImpl;
     return *this;
   }
 
-  FloatImpl operator+(const FloatImpl& aFloatImpl) const;
+  FloatImpl<FloatType> operator+(const FloatImpl& aFloatImpl) const;
  
-  FloatImpl& operator+=(const FloatImpl& aFloatImpl){
+  FloatImpl<FloatType>& operator+=(const FloatImpl& aFloatImpl){
     *this = *this + aFloatImpl;
     return *this;
   }
 
-  FloatImpl operator-(const FloatImpl& aFloatImpl) const;
+  FloatImpl<FloatType> operator-(const FloatImpl& aFloatImpl) const;
 
-  FloatImpl& operator-=(const FloatImpl& aFloatImpl){
+  FloatImpl<FloatType>& operator-=(const FloatImpl& aFloatImpl){
     *this = *this - aFloatImpl;
     return *this;
   }
 
-  FloatImpl operator*(const FloatImpl& aFloatImpl) const;
+  FloatImpl<FloatType> operator*(const FloatImpl& aFloatImpl) const;
 
-  FloatImpl& operator*=(const FloatImpl& aFloatImpl){
+  FloatImpl<FloatType>& operator*=(const FloatImpl& aFloatImpl){
     *this = *this * aFloatImpl;
     return *this;
   }
 
-  FloatImpl operator/(const FloatImpl& aFloatImpl) const;
+  FloatImpl<FloatType> operator/(const FloatImpl& aFloatImpl) const;
 
-  FloatImpl& operator/=(const FloatImpl& aFloatImpl){
+  FloatImpl<FloatType>& operator/=(const FloatImpl& aFloatImpl){
     *this = *this / aFloatImpl;
     return *this;
   }
 
-  FloatImpl operator%(const FloatImpl& aFloatImpl) const;
+  FloatImpl<FloatType> operator%(const FloatImpl& aFloatImpl) const;
 
-  FloatImpl& operator%=(const FloatImpl& aFloatImpl){
+  FloatImpl<FloatType>& operator%=(const FloatImpl& aFloatImpl){
     *this = *this % aFloatImpl;
     return *this;
   }
 
-  FloatImpl operator-() const;
+  FloatImpl<FloatType> operator-() const;
 
-  FloatImpl floor() const; 
+  FloatImpl<FloatType> floor() const; 
 
-  FloatImpl ceil() const; 
+  FloatImpl<FloatType> ceil() const; 
 
-  FloatImpl round() const{
-    return round(Integer::parseInt((int32_t)0));
-  }
+  FloatImpl<FloatType> round() const;
 
-  FloatImpl round(Integer aPrecision) const;
+  FloatImpl<FloatType> round(Integer aPrecision) const;
 
-  FloatImpl roundHalfToEven(Integer aPrecision) const;
+  FloatImpl<FloatType> roundHalfToEven(Integer aPrecision) const;
 
   bool isNaN() const { return theType == FloatCommons::NOT_A_NUM; }
 
@@ -257,7 +253,6 @@ Double operator%(const Double&, const Float&);
 Double operator%(const Float&, const Double&);
 
 } // namespace xqp
-
 
 #endif // XQP_DOUBLE_H
 
