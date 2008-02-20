@@ -27,6 +27,11 @@ IF (ZORBA_BATCHING_TYPE GREATER 0)
     MESSAGE( STATUS "ZORBA_BATCHING_BATCHSIZE: " ${ZORBA_BATCHING_BATCHSIZE} )
 ENDIF (ZORBA_BATCHING_TYPE GREATER 0)
 
+# float point precision
+SET(ZORBA_FLOAT_POINT_PRECISION 18 CACHE STRING
+   "number of decimal places in floating point serialization")
+MESSAGE( STATUS "ZORBA_FLOAT_POINT_PRECISION: " ${ZORBA_FLOAT_POINT_PRECISION} )
+
 
 #specify the threading mechanism used
 #for WIN32 you don't have to specify it

@@ -4,6 +4,7 @@
  * Authros: David Graf (davidgraf@28msec.com)
  */
 
+#include "zorba/common/common.h"
 #include "zorba/util/bignum/integer.h"
 #include "util/numconversions.h"
 #include "zorba/util/bignum/decimal.h"
@@ -298,7 +299,7 @@ bool Decimal::operator>=(const Integer& aInteger) const {
 
 xqpString Decimal::decimalToString(MAPM theValue) {
   char lBuffer[1024];
-  theValue.toFixPtString(lBuffer, 128);
+  theValue.toFixPtString(lBuffer, ZORBA_FLOAT_POINT_PRECISION);
   
   // Note in the canonical representation the decimal point is required
   // and there must be at least one digit to the right and one digit to 

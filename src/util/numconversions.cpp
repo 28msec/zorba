@@ -186,7 +186,7 @@ namespace xqp {
     }
     try {
       xqp_uint lUInt = boost::lexical_cast<xqp_uint>(aStr.c_str());
-      if (lUInt >= 0 && lUInt <= 255) {
+      if (lUInt <= 255) {
         aUByte = lUInt;
         return true;
       } else {

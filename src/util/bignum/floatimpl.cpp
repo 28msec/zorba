@@ -1,3 +1,4 @@
+#include "zorba/common/common.h"
 #include "zorba/util/bignum/floatimpl.h"
 #include <limits>
 #include <string>
@@ -927,7 +928,7 @@ xqpString FloatImpl<FloatType>::toString() const {
     return Decimal::decimalToString(theFloatImpl);
   } else {
     char lBuffer[1024];
-    theFloatImpl.toString(lBuffer, 16);
+    theFloatImpl.toString(lBuffer, ZORBA_FLOAT_POINT_PRECISION);
     std::string lResult = lBuffer;
     size_t lE = lResult.find('E');
     if (lE < lResult.size()) {

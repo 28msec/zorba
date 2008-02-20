@@ -11,6 +11,7 @@
 /* zorba runtime configuration parameters */
 #define ZORBA_BATCHING_TYPE         ${ZORBA_BATCHING_TYPE}
 #define ZORBA_BATCHING_BATCHSIZE    ${ZORBA_BATCHING_BATCHSIZE}
+#define ZORBA_FLOAT_POINT_PRECISION ${ZORBA_FLOAT_POINT_PRECISION}
 
 /* parser configuration */
 #cmakedefine ZORBA_DEBUG_PARSER 
