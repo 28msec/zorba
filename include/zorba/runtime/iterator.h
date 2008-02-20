@@ -1,7 +1,6 @@
 #ifndef XQP_ITERATOR_H
 #define XQP_ITERATOR_H
 
-#include "util/rchandle.h"
 #include "zorba/common/api_shared_types.h"
 
 namespace xqp

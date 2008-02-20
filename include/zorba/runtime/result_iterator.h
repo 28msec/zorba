@@ -2,7 +2,7 @@
 #ifndef XQUERY_RESULT_ITERATOR_API_31_JAN_2008
 #define XQUERY_RESULT_ITERATOR_API_31_JAN_2008
 
-#include "zorba/util/rchandle.h"
+#include "common/api_shared_types.h"
 #include "zorba/store/api/item.h"
 
 //Wrap the iterator interface
