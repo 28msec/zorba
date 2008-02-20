@@ -5,6 +5,8 @@
 #include "functions/library.h"
 #include "store/naive/simple_store.h"
 #include <libxml/parser.h>
+#include <cassert>
+#include <unicode/uclean.h>
 
 using namespace xqp;
 
@@ -21,6 +23,18 @@ GlobalEnvironment& GlobalEnvironment::getInstance()
 void GlobalEnvironment::init()
 {
   m_globalEnv = new GlobalEnvironment();
+
+  // initialize the icu library
+  // we do this here because we are sure that is used
+  // from one thread only
+  // see http://www.icu-project.org/userguide/design.html#Init_and_Termination
+  // and http://www.icu-project.org/apiref/icu4c/uclean_8h.html
+  {
+    UErrorCode lICUInitStatus = U_ZERO_ERROR;
+    u_init(&lICUInitStatus);
+    assert(lICUInitStatus == U_ZERO_ERROR);
+  }
+  
   m_globalEnv->m_store.reset(new SimpleStore());
   static_cast<SimpleStore *>(m_globalEnv->m_store.get())->init();
   m_globalEnv->m_rootStaticContext.reset(new root_static_context());
@@ -55,6 +69,16 @@ void GlobalEnvironment::destroy()
 
   m_globalEnv->m_rootStaticContext.reset(NULL);
   m_globalEnv->m_store.reset(NULL);
+
+  // we shutdown icu
+  // again it is important to mention this in the documentation
+  // we might disable this call because it only
+  // releases statically initialized memory and prevents
+  // valgrind from reporting those problems at the end
+  // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
+  {
+    u_cleanup();
+  }
 
   delete m_globalEnv;
 	m_globalEnv = NULL;
