@@ -161,8 +161,6 @@ namespace xqp
   //xqpString::compare
   int xqpString::compare(xqpString src) const
   {
-    UErrorCode status = U_ZERO_ERROR;
-
     //get the collator for the default collation
     Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
 
@@ -176,8 +174,6 @@ namespace xqp
 
   int xqpString::compare(xqpString src, xqpString collationUri) const
   {
-    UErrorCode status = U_ZERO_ERROR;
-
     //get the collator object fromthe Static context
       ::Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(collationUri);
 
@@ -421,7 +417,7 @@ namespace xqp
   //uppercase/lowercase
   xqpString xqpString::uppercase()
   {
-    uint32_t i =0;
+    uint32_t i;
     uint32_t len = length();
     const char* c = c_str();
     uint32_t cp;
@@ -429,7 +425,7 @@ namespace xqp
 
     xqpStringStore_t newStr = new xqpStringStore("");
 
-    for(i; i<len; ++i)
+    for(i=0; i<len; ++i)
     {
       cp = toUpper(UTF8Decode(c));
       memset(seq, 0, sizeof(seq));
@@ -444,7 +440,7 @@ namespace xqp
 
   xqpString xqpString::lowercase()
   {
-    uint32_t i =0;
+    uint32_t i;
     uint32_t len = length();
     const char* c = c_str();
     uint32_t cp;
@@ -452,7 +448,7 @@ namespace xqp
 
     xqpStringStore_t newStr = new xqpStringStore("");
 
-    for(i; i<len; ++i)
+    for(i=0; i<len; ++i)
     {
       cp = toLower(UTF8Decode(c));
       memset(seq, 0, sizeof(seq));
@@ -620,7 +616,7 @@ namespace xqp
   
   xqpString xqpString::encodeForUri() const
   {
-    uint32_t i =0;
+    uint32_t i;
     uint32_t len = length();
     const char* c = c_str();
     unsigned int cp;
@@ -630,7 +626,7 @@ namespace xqp
 
     std::string tmp = "";
     
-    for(i; i<len; ++i)
+    for(i=0; i<len; ++i)
     {
       prev = c;
       cp = UTF8Decode(c);
@@ -659,7 +655,7 @@ namespace xqp
 
   xqpString xqpString::iriToUri() const
   {
-    uint32_t i =0;
+    uint32_t i;
     uint32_t len = length();
     const char* c = c_str();
     unsigned int cp;
@@ -669,7 +665,7 @@ namespace xqp
 
     std::string tmp = "";
     
-    for(i; i<len; ++i)
+    for(i=0; i<len; ++i)
     {
       prev = c;
       cp = UTF8Decode(c);
@@ -701,7 +697,7 @@ namespace xqp
  
   xqpString xqpString::escapeHtmlUri() const
   {
-    uint32_t i =0;
+    uint32_t i;
     uint32_t len = length();
     const char* c = c_str();
     unsigned int cp;
@@ -711,7 +707,7 @@ namespace xqp
 
     std::string tmp = "";
     
-    for(i; i<len; ++i)
+    for(i=0; i<len; ++i)
     {
       prev = c;
       cp = UTF8Decode(c);
@@ -747,7 +743,6 @@ namespace xqp
     
     std::map<uint32_t,uint32_t> myMap;
     std::map<uint32_t,uint32_t>::iterator it;
-    uint32_t first, second;
 
     //create the map
     myMap = createMapArray(mapString, transString);
