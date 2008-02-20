@@ -456,7 +456,7 @@ bool GenericCast::isLetter(uint32_t cp) const
 
 bool GenericCast::isBaseChar(uint32_t cp) const
 {
-	int	i;
+	unsigned int	i;
 	for(i=0;i<sizeof(base_char_range)/sizeof(CodePointRange_t);i++)
 	{
 		if((cp >= base_char_range[i].left) && (cp <= base_char_range[i].right))
@@ -468,7 +468,7 @@ bool GenericCast::isBaseChar(uint32_t cp) const
 
 bool GenericCast::isIdeographic(uint32_t cp) const
 {
-	int	i;
+	unsigned int	i;
 	for(i=0;i<sizeof(ideographic_range)/sizeof(CodePointRange_t);i++)
 	{
 		if((cp >= ideographic_range[i].left) && (cp <= ideographic_range[i].right))
@@ -480,7 +480,7 @@ bool GenericCast::isIdeographic(uint32_t cp) const
 
 bool GenericCast::isDigit(uint32_t cp) const
 {
-	int	i;
+	unsigned int	i;
 	for(i=0;i<sizeof(digit_range)/sizeof(CodePointRange_t);i++)
 	{
 		if((cp >= digit_range[i].left) && (cp <= digit_range[i].right))
@@ -504,7 +504,7 @@ bool GenericCast::isCombiningChar(uint32_t cp) const
 
 bool GenericCast::isExtender(uint32_t cp) const
 {
-	int	i;
+	unsigned int	i;
 	for(i=0;i<sizeof(extender_range)/sizeof(CodePointRange_t);i++)
 	{
 		if((cp >= extender_range[i].left) && (cp <= extender_range[i].right))

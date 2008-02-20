@@ -302,11 +302,7 @@ namespace xqp {
 
   void PrinterVisitor::beginVisit ( const KindTestIterator& a ) {
     thePrinter.startBeginVisit("KindTestIterator", (intptr_t) &a);
-    {
-      std::stringstream lStream;
-      lStream << a.getTestKind();
-      thePrinter.addAttribute("test kind", lStream.str());
-    }
+    thePrinter.addAttribute("test kind", toString(a.getTestKind()));
     if (a.getQName() != 0)
       thePrinter.addAttribute("qname",a.getQName()->show());
     else

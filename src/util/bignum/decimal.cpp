@@ -298,7 +298,7 @@ bool Decimal::operator>=(const Integer& aInteger) const {
 
 xqpString Decimal::decimalToString(MAPM theValue) {
   char lBuffer[1024];
-  theValue.toFixPtString(lBuffer, 16);
+  theValue.toFixPtString(lBuffer, 128);
   
   // Note in the canonical representation the decimal point is required
   // and there must be at least one digit to the right and one digit to 

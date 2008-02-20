@@ -24,7 +24,6 @@
 #ifndef XQP_EXPR_CONSTS_H
 #define XQP_EXPR_CONSTS_H
 
-
 namespace xqp {
 
 
@@ -60,6 +59,7 @@ enum match_test_t
   match_anykind_test
 };
 
+std::string toString(match_test_t a);
 
 enum match_wild_t
 {

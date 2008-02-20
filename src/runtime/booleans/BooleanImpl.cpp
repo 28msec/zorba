@@ -57,7 +57,6 @@ namespace xqp
       str = lType->getPrefix();
       str = lType->getNamespace();
       type = GENV_TYPESYSTEM.create_type(lType, TypeConstants::QUANT_ONE);
-      bool res = GENV_TYPESYSTEM.is_numeric ( *type );
       if (
           ( consumeNext(iter, planState) == NULL )
           &&
