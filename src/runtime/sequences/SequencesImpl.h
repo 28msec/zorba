@@ -76,7 +76,7 @@ NARY_ITER(FnExistsIterator);
 
 struct ItemCmp 
 {
-    bool operator() ( const Item_t& i2, const Item_t& i2) const;
+    bool operator() ( const Item_t& i1, const Item_t& i2) const;
 };
 
 class FnDistinctValuesIteratorState : public PlanIteratorState {
