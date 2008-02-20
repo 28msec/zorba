@@ -31,14 +31,14 @@ template <class Object> class rchandle;
 
 typedef rchandle<class Iterator> Iterator_t;
 typedef rchandle<class Item> Item_t;
-typedef rchandle<class XmlTree> XmlTree_t;
+typedef rchandle<class XmlNode> XmlNode_t;
 typedef rchandle<class AnyUriItem> AnyUriItem_t;
 typedef rchandle<class Collection> Collection_t;
 typedef rchandle<class TempSeq> TempSeq_t;
 typedef rchandle<class PUL> PUL_t;
 
 typedef StringHashMap<Collection_t> CollectionSet;
-typedef StringHashMap<XmlTree_t> DocumentSet;
+typedef StringHashMap<XmlNode_t> DocumentSet;
 
 
 /*******************************************************************************
@@ -89,6 +89,7 @@ private:
   virtual ~SimpleStore();
 
   void init();
+  void shutdown();
 
 public:
   ItemFactory& getItemFactory() const     { return *theItemFactory; }

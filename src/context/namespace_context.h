@@ -13,7 +13,7 @@ class namespace_context;
 
 typedef rchandle<namespace_context> NamespaceContext_t;
 
-class namespace_context : public rcobject {
+class namespace_context : public SimpleRCObject {
   public:
     typedef std::vector<std::pair<xqp_string, xqp_string> > bindings_t;
 

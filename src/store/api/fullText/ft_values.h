@@ -29,7 +29,7 @@ namespace xqp {
 |	[http://www.w3.org/TR/xquery-full-text/]
 |_______________________________________________________________________*/
 
-class ft_value : virtual public rcobject { };
+class ft_value : virtual public SimpleRCObject { };
 
 
 class ft_or_value : public ft_value

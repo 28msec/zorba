@@ -374,8 +374,10 @@ class ChildAxisState : public AxisState
 {
 public:
   Iterator_t  theChildren;
+
   ChildAxisState();
   ~ChildAxisState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };

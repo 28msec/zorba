@@ -627,7 +627,9 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
+
 ChildAxisState::ChildAxisState() {}
+
 ChildAxisState::~ChildAxisState() {}
 
 void
@@ -636,13 +638,14 @@ ChildAxisState::init(PlanState& planState)
   AxisState::init(planState);
 }
 
-void
-ChildAxisState::reset(PlanState& planState)
+
+void ChildAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
   if (theChildren != NULL)
     theChildren->reset(); 
 }
+
 
 Item_t ChildAxisIterator::nextImpl(PlanState& planState) const
 {

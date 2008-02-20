@@ -785,8 +785,6 @@ void end_visit(elem_expr& v)
   PlanIter_t lContentIter = 0;
   PlanIter_t lAttrsIter = 0;
 
-  ItemFactory& iFactory = GENV.getStore().getItemFactory();
-
   if ( v.getContent() != 0 )
   {
     lContentIter = pop_itstack();
@@ -841,8 +839,6 @@ void end_visit(attr_expr& v)
   PlanIter_t lVarIter = 0;
   PlanIter_t lContentIter = 0;
   
-  ItemFactory& iFactory = GENV.getStore().getItemFactory();
-
   if (v.getValueExpr() != 0) {
     lVarIter = pop_itstack();
   }

@@ -221,10 +221,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		result->closeIterator();
   }
   
-  //query->close ();
-
   if (query->isError ())
+  {
+    query = 0;
     return 0;
+  }
 
+  //  query = 0;
   return 0;
 }

@@ -219,7 +219,7 @@ public:
 /*******************************************************************************
   Base class of all plan iterators.
 ********************************************************************************/
-class PlanIterator : public rcobject
+class PlanIterator : public SimpleRCObject
 {
   friend class PlanIterWrapper;
 
@@ -239,7 +239,7 @@ public:
   {}
   
   PlanIterator(const PlanIterator& it) 
-    : rcobject(it), 
+    : SimpleRCObject(it), 
       stateOffset(0),
       loc(it.loc)
   {}

@@ -43,7 +43,7 @@
 
 namespace xqp {
 
-class file : public rcobject
+class file : public SimpleRCObject
 {
 public:
   enum filetype {
@@ -150,7 +150,7 @@ public:	// file methods
 		uint32_t maxlen) THROW_XQP_EXCEPTION;
 
 public:	// directory methods
-	class dir_iterator : public rcobject
+	class dir_iterator : public SimpleRCObject
 	{
 	public:
   	std::string dirpath;

@@ -44,7 +44,7 @@ namespace xqp {
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
-class context : public rcobject
+class context : public SimpleRCObject
 {
 protected:
 	typedef struct //: public CollationManager::COLLATION_DESCR

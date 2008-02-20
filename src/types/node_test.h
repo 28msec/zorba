@@ -9,7 +9,7 @@ namespace xqp {
 
 class Item;
 
-class NodeNameTest : virtual public rcobject
+class NodeNameTest : virtual public SimpleRCObject
 {
  public:
   typedef enum {
@@ -35,7 +35,7 @@ class NodeNameTest : virtual public rcobject
 };
 
 
-class NodeTest : virtual public rcobject
+class NodeTest : virtual public SimpleRCObject
 {
  public:
   static const rchandle<NodeTest> ANY_NODE_TEST;

@@ -27,7 +27,7 @@ typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 /*******************************************************************************
 
 ********************************************************************************/
-class NsBindingsContext : public rcobject
+class NsBindingsContext : public SimpleRCObject
 {
 private:
   NsBindings           theBindings;

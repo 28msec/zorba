@@ -36,7 +36,7 @@ namespace xqp
 
 class ResultIterator;
 
-class serializer : public rcobject
+class serializer : public SimpleRCObject
 {
 public:
 	serializer();
@@ -116,7 +116,7 @@ protected:
   } PARAMETER_VALUE_TYPE;
 
   
-  class transcoder : public rcobject
+  class transcoder : public SimpleRCObject
   {
   public:
     transcoder(std::ostream& output_stream);
@@ -153,7 +153,7 @@ protected:
   };
   
   
-  class emitter : public rcobject
+  class emitter : public SimpleRCObject
   {
   public:
     /**

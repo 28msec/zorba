@@ -209,7 +209,6 @@ QNamePool::HashEntry* QNamePool::hashInsert(
     unsigned long           lnlen,
     bool&                   found)
 {
-  unsigned long len;
   HashEntry* entry;
   HashEntry* lastentry;
 

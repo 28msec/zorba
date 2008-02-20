@@ -32,7 +32,7 @@ class context;
                   ...       =  ...  
 
 ********************************************************************************/
-  class signature_base: public rcobject {
+  class signature_base: public SimpleRCObject {
   protected:
     bool variadic;
   public:

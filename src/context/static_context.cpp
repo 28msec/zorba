@@ -85,7 +85,7 @@ static_context::static_context()
 			if(!strncmp(keybuff, "type:", 5))
 			{
 				val = &(*it).val;
-				val->typeValue->removeReference();
+				val->typeValue->removeReference(val->typeValue->getRefCounter());
 			}
 			else if(!strncmp(keybuff, "collation:", 10))
 			{
@@ -225,7 +225,7 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
 		ctx_value_t v;
     v.typeValue = &*t;
     keymap.put (key, v);
-		t->addReference();///will be decremented in static context destructor
+		t->addReference(t->getRefCounter());///will be decremented in static context destructor
 	}
 
 	void static_context::add_variable_type(

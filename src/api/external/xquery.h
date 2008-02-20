@@ -28,7 +28,7 @@ class StaticQueryContext;
 class static_context;
 class Zorba_XQueryBinary;
 
-class Zorba_XQueryInfo : public rcobject
+class Zorba_XQueryInfo : public SimpleRCObject
 {
 public:
   Zorba_XQueryInfo( Zorba_XQueryBinary *xquery,

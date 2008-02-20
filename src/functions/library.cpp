@@ -30,8 +30,6 @@
 #include "context/common.h"
 #include "context/static_context.h"
 #include "system/zorba.h"
-#include "util/tracer.h"
-//#include "util/list.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
@@ -53,10 +51,16 @@ static string get_qname(const function &f)
   return name->getPrefix() + ":" + name->getLocalName();
 }
 
-#define DECL(type, sig) do { \
-std::auto_ptr<function> type##_ptr(new type(signature sig)); \
-sctx->bind_fn(get_qname(*type##_ptr), type##_ptr.get(), type##_ptr->get_signature().arg_count()); \
-type##_ptr.release(); } while(0)
+#define DECL(type, sig)                                        \
+do                                                             \
+{                                                              \
+  std::auto_ptr<function> type##_ptr(new type(signature sig)); \
+                                                               \
+  sctx->bind_fn(get_qname(*type##_ptr),                        \
+                type##_ptr.get(),                              \
+                type##_ptr->get_signature().arg_count());      \
+  type##_ptr.release();                                        \
+} while(0)
 
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())

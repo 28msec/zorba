@@ -84,7 +84,7 @@ public:
 };
 
 
-class ft_options : public rcobject
+class ft_options : public SimpleRCObject
 {
 protected:
 	uint16_t matchopt;

@@ -35,7 +35,7 @@ class parsenode_visitor;
 /*
 **  base class: syntax-only nodes
 */
-class parsenode : public rcobject
+class parsenode : public SimpleRCObject
 {
 protected:
 	yy::location loc;

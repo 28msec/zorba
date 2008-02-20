@@ -25,7 +25,7 @@ class var_iterator;
  * XQuery Data Model Instance: Logically, implements a "vector&lt;Item_t&gt;"
  * Used internally to materialize temporary query results
  */
-class TempSeq : public rcobject
+class TempSeq : public SimpleRCObject
 {  
 public:
   virtual ~TempSeq(){}

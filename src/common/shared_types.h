@@ -1,7 +1,9 @@
 #ifndef XQP_SHARED_TYPES_H
 #define XQP_SHARED_TYPES_H
 
+#include "zorba/config/platform.h"
 #include "zorba/common/api_shared_types.h"
+
 #include "zorba/util/rchandle.h"
 
 namespace yy {

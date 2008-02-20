@@ -13,7 +13,7 @@
 
 namespace xqp {
 
-class collation : public rcobject
+class collation : public SimpleRCObject
 {
 protected:
 	std::string name;

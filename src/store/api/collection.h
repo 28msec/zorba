@@ -14,7 +14,7 @@
 namespace xqp 
 {
 
-class Collection : public rcobject
+class Collection : public SimpleRCObject
 {
 public:
   virtual ~Collection() {}

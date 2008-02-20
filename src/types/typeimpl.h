@@ -9,7 +9,7 @@ namespace xqp {
  * Implementation specific classes after this point.
  */
 
-class XQType : virtual public rcobject {
+class XQType : virtual public SimpleRCObject {
 public:
     typedef enum {
       ATOMIC_TYPE_KIND,

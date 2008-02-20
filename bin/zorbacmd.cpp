@@ -247,7 +247,8 @@ int _tmain(int argc, _TCHAR* argv[])
   {
     lNumExecutions = lProperties.getNoOfExecutions();
 
-    std::cerr << std::endl;
+    std::cerr << std::endl << "Number of executions = "
+              << lNumExecutions << std::endl;
 
     lDiffCompileTime = lStopCompileTime - lStartCompileTime; 
     std::cerr << "Compilation time: " 

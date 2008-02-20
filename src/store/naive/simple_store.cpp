@@ -78,6 +78,15 @@ void SimpleStore::init()
 ********************************************************************************/
 SimpleStore::~SimpleStore()
 {
+  shutdown();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::shutdown()
+{
   theCollections.clear();
 
   theDocuments.clear();
@@ -168,17 +177,17 @@ Item_t SimpleStore::createUri()
 ********************************************************************************/
 Item_t SimpleStore::loadDocument(const xqp_string& uri, std::istream& stream)
 {
-  XmlTree_t tree;
-  bool found = theDocuments.get(uri, tree);
+  XmlNode_t root;
+  bool found = theDocuments.get(uri, root);
 
   if (found)
-    return tree->getRoot();
+    return root;
 
   XmlLoader& loader = getXmlLoader();
 
-  XmlNode* rootNode = loader.loadXml(uri.getStore(), stream);
+  root = loader.loadXml(uri.getStore(), stream);
 
-  found = theDocuments.insert(uri, rootNode->getTree());
+  found = theDocuments.insert(uri, root);
 
   if (found)
   {
@@ -186,16 +195,16 @@ Item_t SimpleStore::loadDocument(const xqp_string& uri, std::istream& stream)
     ZORBA_ASSERT(0);
   }
   
-  return rootNode;
+  return root;
 }
 
-Item_t SimpleStore::loadDocument(const xqp_string& uri, Item_t	 doc_item)
+Item_t SimpleStore::loadDocument(const xqp_string& uri, Item_t doc_item)
 {
 	if((doc_item == NULL) || (!doc_item->isNode()))
 		return NULL;
 
-  XmlTree_t tree;
-  bool found = theDocuments.get(uri, tree);
+  XmlNode_t root;
+  bool found = theDocuments.get(uri, root);
 
   if (found)
     return NULL;//error, already exists
@@ -214,10 +223,10 @@ Item_t SimpleStore::loadDocument(const xqp_string& uri, Item_t	 doc_item)
 ********************************************************************************/
 Item_t SimpleStore::getDocument(const xqp_string& uri)
 {
-  XmlTree_t tree;
-  bool found = theDocuments.get(uri, tree);
+  XmlNode_t root;
+  bool found = theDocuments.get(uri, root);
   if (found)
-    return tree->getRoot();
+    return root;
 
   return NULL;
 }
@@ -276,7 +285,7 @@ Collection_t SimpleStore::createCollection()
 Collection_t SimpleStore::getCollection(const xqp_string& uri)
 {
   Collection_t collection;  // initialized to NULL
-  bool found = theCollections.get(uri, collection);
+  theCollections.get(uri, collection);
   return collection;
 }
 

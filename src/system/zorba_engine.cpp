@@ -82,7 +82,7 @@ ZorbaEngineImpl::ZorbaEngineImpl(bool single_thread)
 	for_single_thread_api = single_thread;
 	theSingleThreadZorba = NULL;
 	xml_data_manager = new XmlDataManager_Impl;
-	xml_data_manager->addReference();
+	xml_data_manager->addReference(xml_data_manager->getRefCounter());
 }
 
 
@@ -92,7 +92,7 @@ ZorbaEngineImpl::~ZorbaEngineImpl()
   in_destructor = true;
   shutdown();
 
-	xml_data_manager->removeReference();
+	xml_data_manager->removeReference(xml_data_manager->getRefCounter());
 //  assert(globalZorbaEngine == NULL);
 	delete theSingleThreadZorba;
 

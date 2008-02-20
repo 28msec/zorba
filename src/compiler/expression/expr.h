@@ -25,10 +25,10 @@
 #include <string>
 #include <map>
 
+#include "common/shared_types.h"
 #include "types/root_typemanager.h"
 #include "system/globalenv.h"
 #include "compiler/parsetree/parsenodes.h"
-#include "util/rchandle.h"
 #include "util/checked_vector.h"
 #include "compiler/expression/expr_consts.h"
 #include "store/api/fullText/ft_options.h"
@@ -49,7 +49,7 @@ class expr_base_iterator;
 | base class for the expression tree node hierarchy
 |_______________________________________________________________________*/
 
-class expr : public rcobject
+class expr : public SimpleRCObject
 {
 public:
   typedef rchandle<expr> expr_t;
@@ -199,7 +199,7 @@ public:
 
 // [41] [http://www.w3.org/TR/xquery/#prod-xquery-OrderModifier]
 
-class order_modifier : public rcobject
+class order_modifier : public SimpleRCObject
 /*______________________________________________________________________
 | ::= ("ascending" | "descending")?
 |     ("empty" ("greatest" | "least"))?
@@ -232,7 +232,7 @@ public:
      | VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  "in"  ExprSingle
 
 ********************************************************************************/
-class forlet_clause : public rcobject
+class forlet_clause : public SimpleRCObject
 {
 public:
   enum forlet_t {
@@ -367,7 +367,7 @@ public:
 
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
 
-class case_clause : public rcobject
+class case_clause : public SimpleRCObject
 {
 public:
   typedef rchandle<expr> expr_t;
@@ -791,7 +791,7 @@ public:
 
 // [65] [http://www.w3.org/TR/xquery/#prod-xquery-ExtensionExpr]
 
-struct pragma : public rcobject
+struct pragma : public SimpleRCObject
 {
   Item_t name_h;
   std::string content;
@@ -874,18 +874,17 @@ protected:
 public:
   relpath_expr(yy::location const&);
 
-  void add_back(expr_t step)   { theSteps.push_back (step); }
-  void add_front(expr_t step)  { theSteps.insert (theSteps.begin (), step); }
+	uint32_t size() const        { return theSteps.size(); }
+	void add_back(expr_t step)   { theSteps.push_back(step); }
+	void add_front(expr_t step)  { theSteps.insert(theSteps.begin (), step); }
   void erase(ulong i)          { theSteps.erase(theSteps.begin() + i); }
 
-  uint32_t size() const        { return theSteps.size(); }
+	expr_t& operator[](int n)    { return theSteps[n]; }
 
   std::vector<expr_t>::const_iterator begin() const { return theSteps.begin(); }
   std::vector<expr_t>::const_iterator end()   const { return theSteps.end(); }
   std::vector<expr_t>::iterator begin() { return theSteps.begin(); }
   std::vector<expr_t>::iterator end()   { return theSteps.end(); }
-
-  expr_t& operator[] (int n) { return theSteps[n]; }
 
   expr_base_iterator *make_iter_impl ();
   void next_iter (expr_base_iterator&);

@@ -34,7 +34,7 @@ namespace xqp {
 
 #define DEFAULT_SIZE 4096
 
-class fxcharheap : public rcobject
+class fxcharheap : public SimpleRCObject
 {
 public:  //iterator 
 

@@ -470,15 +470,16 @@ Item_t BasicItemFactory::createDocumentNode(
     bool            nsPreserve,
     bool            nsInherit)
 {
-  rchandle<XmlTree> xmlTree;
+  std::auto_ptr<XmlTree> xmlTree;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
 
   if (isRoot)
   {
-    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
+    xmlTree->addReference();
   }
 
-  ConstrDocumentNode* n = new ConstrDocumentNode(xmlTree,
+  ConstrDocumentNode* n = new ConstrDocumentNode(xmlTree.get(),
                                                  baseUri,
                                                  docUri,
                                                  typePreserve,
@@ -494,6 +495,7 @@ Item_t BasicItemFactory::createDocumentNode(
     }
     catch (...)
     {
+      if (xmlTree.get() != 0) xmlTree.release()->free();
       ctx.clear();
       throw;
     }
@@ -501,6 +503,11 @@ Item_t BasicItemFactory::createDocumentNode(
     ctx.pop();
   }
 
+  if (xmlTree.get() != 0)
+  {
+    xmlTree->removeReference();
+    xmlTree.release();
+  }
   return n;
 }
 
@@ -523,14 +530,15 @@ Item_t BasicItemFactory::createElementNode(
     bool              nsPreserve,
     bool              nsInherit) 
 {
-  rchandle<XmlTree> xmlTree;
+  std::auto_ptr<XmlTree> xmlTree;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
   unsigned long pos = 0;
 
   if (isRoot)
   {
-    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
+    xmlTree->addReference();
   }
   else
   {
@@ -538,7 +546,7 @@ Item_t BasicItemFactory::createElementNode(
     pos = parent->numChildren();
   }
 
-  ConstrElementNode* n = new ConstrElementNode(xmlTree, parent, pos,
+  ConstrElementNode* n = new ConstrElementNode(xmlTree.get(), parent, pos,
                                                name,
                                                type,
                                                typePreserve,
@@ -553,12 +561,18 @@ Item_t BasicItemFactory::createElementNode(
   }
   catch (...)
   {
+    if (xmlTree.get() != 0) xmlTree.release()->free();
     ctx.clear();
     throw;
   }
 
   ctx.pop();
 
+  if (xmlTree.get() != 0)
+  {
+    xmlTree->removeReference();
+    xmlTree.release();
+  }
   return n;
 }
 
@@ -567,20 +581,21 @@ Item_t BasicItemFactory::createElementNode(
 
 ********************************************************************************/
 Item_t BasicItemFactory::createAttributeNode(
-    unsigned long      qid,
+    ulong      qid,
     Iterator*  nameIter,
     Item*      typeName,
     Iterator*  valueIter,
     bool       isRoot)
 {
-  rchandle<XmlTree> xmlTree;
+  std::auto_ptr<XmlTree> xmlTree;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
   unsigned long pos = 0;
 
   if (isRoot)
   {
-    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
+    xmlTree->addReference();
   }
   else
   {
@@ -612,7 +627,7 @@ Item_t BasicItemFactory::createAttributeNode(
     parent->checkUniqueAttr(attrName.getp());
   }
 
-  AttributeNode* n = new AttributeNode(xmlTree, parent, pos,
+  AttributeNode* n = new AttributeNode(xmlTree.get(), parent, pos,
                                        attrName, typeName,
                                        false, false);
 
@@ -624,11 +639,17 @@ Item_t BasicItemFactory::createAttributeNode(
     }
     catch (...)
     {
+      if (xmlTree.get() != 0) xmlTree.release()->free();
       ctx.clear();
       throw;
     }
   }
 
+  if (xmlTree.get() != 0)
+  {
+    xmlTree->removeReference();
+    xmlTree.release();
+  }
   return n;
 }
 
@@ -641,14 +662,15 @@ Item_t BasicItemFactory::createTextNode(
     xqpStringStore* value,
     bool            isRoot)
 {
-  rchandle<XmlTree> xmlTree;
+  std::auto_ptr<XmlTree> xmlTree;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
   unsigned long pos = 0;
 
   if (isRoot)
   {
-    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
+    xmlTree->addReference();
   }
   else
   {
@@ -664,8 +686,13 @@ Item_t BasicItemFactory::createTextNode(
     }
   }
 
-  XmlNode* n = new TextNode(xmlTree, parent, pos, value);
+  XmlNode* n = new TextNode(xmlTree.get(), parent, pos, value);
 
+  if (xmlTree.get() != 0)
+  {
+    xmlTree->removeReference();
+    xmlTree.release();
+  }
   return n;
 }
 
@@ -709,14 +736,15 @@ Item_t BasicItemFactory::createPiNode(
     xqpStringStore* data,
     bool            isRoot)
 {
-  rchandle<XmlTree> xmlTree;
+  std::auto_ptr<XmlTree> xmlTree;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
   unsigned long pos = 0;
 
   if (isRoot)
   {
-    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
+    xmlTree->addReference();
   }
   else
   {
@@ -724,8 +752,13 @@ Item_t BasicItemFactory::createPiNode(
     pos = parent->numChildren();
   }
 
-  XmlNode* n = new PiNode(xmlTree, parent, pos, target, data);
+  XmlNode* n = new PiNode(xmlTree.get(), parent, pos, target, data);
 
+  if (xmlTree.get() != 0)
+  {
+    xmlTree->removeReference();
+    xmlTree.release();
+  }
   return n;
 }
 
@@ -738,14 +771,15 @@ Item_t BasicItemFactory::createCommentNode(
     xqpStringStore* comment,
     bool            isRoot)
 {
-  rchandle<XmlTree> xmlTree;
+  std::auto_ptr<XmlTree> xmlTree;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
   unsigned long pos = 0;
 
   if (isRoot)
   {
-    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
+    xmlTree->addReference();
   }
   else
   {
@@ -753,8 +787,13 @@ Item_t BasicItemFactory::createCommentNode(
     pos = parent->numChildren();
   }
 
-  XmlNode* n = new CommentNode(xmlTree, parent, pos, comment);
+  XmlNode* n = new CommentNode(xmlTree.get(), parent, pos, comment);
 
+  if (xmlTree.get() != 0)
+  {
+    xmlTree->removeReference();
+    xmlTree.release();
+  }
   return n;
 }
 

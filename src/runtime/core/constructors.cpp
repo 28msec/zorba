@@ -10,7 +10,6 @@
 #include "context/namespace_context.h"
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
-#include "compiler/expression/expr.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/base/plan_iterator_wrapper.h"
 #include "store/api/item_factory.h"
@@ -400,7 +399,8 @@ TextIterator::TextIterator(
     const yy::location& loc,
     PlanIter_t& aChild,
     bool isRoot) 
-  : UnaryBaseIterator<TextIterator, PlanIteratorState>(loc, aChild),
+  :
+  UnaryBaseIterator<TextIterator, PlanIteratorState>(loc, aChild),
   theIsRoot(isRoot)
 {
 }

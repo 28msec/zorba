@@ -136,7 +136,7 @@ public:
   uint32_t h(const string&) const;
 
 public:
-  class fxhashmap_iterator : public rcobject
+  class fxhashmap_iterator : public SimpleRCObject
   {
   public:
     fxhashmap_iterator(fxhashmap<V>* map) : m(map), i(m->begin()) {}
@@ -579,7 +579,7 @@ public:
   bool put(uint32_t key, V val);
 
 public:
-  class fxhash32map_iterator : public rcobject
+  class fxhash32map_iterator : public SimpleRCObject
   {
   public:
     fxhash32map_iterator(fxhash32map<V>* map) : m(map), i(m->begin()) {}
@@ -592,7 +592,7 @@ public:
     typename fxvector<entry>::const_iterator i;
   };
 
-  class fxhash32map_const_iterator : public rcobject
+  class fxhash32map_const_iterator : public SimpleRCObject
   {
   public:
     fxhash32map_const_iterator(const fxhash32map<V>* map) : m(map), i(m->begin()) {}
@@ -840,7 +840,7 @@ public:
   bool put(uint64_t key, V val);      
 
 public:
-  class fxhash64map_iterator : public rcobject
+  class fxhash64map_iterator : public SimpleRCObject
   {
   public:
     fxhash64map_iterator(fxhash64map<V>* map) : m(map), i(m->begin()) {}
@@ -853,7 +853,7 @@ public:
     typename fxvector<entry>::const_iterator i;
   };
 
-  class fxhash64map_const_iterator : public rcobject
+  class fxhash64map_const_iterator : public SimpleRCObject
   {
   public:
     fxhash64map_const_iterator(const fxhash64map<V>* map) : m(map), i(m->begin()) {}

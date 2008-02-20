@@ -29,7 +29,7 @@ public:
 	{
   private:
     SimpleCollection_t            theCollection;
-    std::set<XmlTree_t>::iterator theIterator;
+    std::set<Item_t>::iterator    theIterator;
     
   public:
     CollectionIter(SimpleCollection* collection);
@@ -45,7 +45,7 @@ public:
 
 protected:
   Item_t               theUri;
-  std::set<XmlTree_t>  theXmlTrees;
+  std::set<Item_t>     theXmlTrees;
 
 public:
   SimpleCollection(Item* uri);
@@ -53,7 +53,7 @@ public:
 
   Item_t getUri() { return theUri; }
 
-  unsigned long size() const { return theXmlTrees.size(); }
+  ulong size() const { return theXmlTrees.size(); }
 
   Iterator_t getIterator(bool idsNeeded);
 

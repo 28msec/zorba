@@ -398,7 +398,7 @@ void FLWORIterator::matResultAndOrder(
 {
   ZORBA_ASSERT ( doOrderBy );
 
-  std::vector<OrderSpec> lOrderSpecs = orderByClause->orderSpecs;
+  std::vector<OrderSpec>& lOrderSpecs = orderByClause->orderSpecs;
   //FIXME hould be a const iterator after the change of Plan_Iter
   std::vector<OrderSpec>::iterator lSpecIter = lOrderSpecs.begin();
   std::vector<Item_t> orderKey;
@@ -471,7 +471,7 @@ bool FLWORIterator::bindVariable (
     FlworState* flworState,
     PlanState& planState ) const
 {
-  FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
+  const FLWORIterator::ForLetClause& lForLetClause = forLetClauses[varNb];
 
   switch (lForLetClause.type)
   {
@@ -488,7 +488,7 @@ bool FLWORIterator::bindVariable (
     //We increase the position counter
     ++ ( flworState->varBindingState[varNb] );
 
-    std::vector<var_iter_t>::iterator forIter;
+    std::vector<var_iter_t>::const_iterator forIter;
     for (forIter = lForLetClause.forVars.begin();
          forIter != lForLetClause.forVars.end();
          forIter++)
@@ -502,7 +502,7 @@ bool FLWORIterator::bindVariable (
       Item_t posItem = Zorba::getItemFactory()->
                        createInteger(Integer::parseInt(flworState->varBindingState[varNb]));
 
-      std::vector<var_iter_t>::iterator posIter;
+      std::vector<var_iter_t>::const_iterator posIter;
       for (posIter = lForLetClause.posVars.begin();
            posIter != lForLetClause.posVars.end();
            posIter++)
@@ -527,7 +527,7 @@ bool FLWORIterator::bindVariable (
     if ( lForLetClause.needsMaterialization )
     {
       TempSeq_t tmpSeq = Zorba::getStore()->createTempSeq(iterWrapper, true);
-      std::vector<ref_iter_t>::iterator letIter;
+      std::vector<ref_iter_t>::const_iterator letIter;
       for (letIter = lForLetClause.letVars.begin();
            letIter != lForLetClause.letVars.end();
            letIter++ )
@@ -539,7 +539,7 @@ bool FLWORIterator::bindVariable (
     }
     else
     {
-      std::vector<ref_iter_t>::iterator letIter;
+      std::vector<ref_iter_t>::const_iterator letIter;
       for (letIter = lForLetClause.letVars.begin();
            letIter != lForLetClause.letVars.end();
            letIter++)
