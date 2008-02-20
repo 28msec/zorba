@@ -441,24 +441,33 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
   int8_t
   CompareIterator::equal(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation)
   {
+    int result;
     // tries first normal compare
-    int8_t compareRes = CompareIterator::compare(aItem0, aItem1, aCollation);
-    if (compareRes == 0)
+    result = CompareIterator::compare(aItem0, aItem1, aCollation);
+    if (result == 0)
       return 0;
-    else if (compareRes == -1 || compareRes == 1 || compareRes == 2)
+    else if (result == -1 || result == 1 || result == 2)
       return 1;
+
+    int equal = -2;
     xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
-    bool equal;
-//     if (false)
-      // TODO, equal implementation for types which do not support compare
-//     else
+
+    // TODO, equal implementation for types which do not support compare
+
+    if (GENV_TYPESYSTEM.is_equal(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
+        &&
+        GENV_TYPESYSTEM.is_equal(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+    {
+      equal = (*aItem0->getDurationValue() == *aItem1->getDurationValue());
+    }
+
+    if (equal == -2)
       return -2;
-    
-    if (equal)
-      return 0;
-    else
+    else if (equal == 0)
       return 1;
+    else
+      return 0;
   }
   
   int8_t CompareIterator::valueEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation) {
@@ -547,12 +556,6 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
     {
       ret = aItem0->getDateTimeValue()->compare(*aItem1->getDateTimeValue());
     }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
-             &&
-             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
-    {
-      ret = aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
-    }
     else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE)
              &&
              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE))
@@ -582,6 +585,18 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GDAY_TYPE_ONE))
     {
       ret = aItem0->getGDayValue()->compare(*aItem1->getGDayValue());
+    }
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
+             &&
+             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
+             &&
+             GENV_TYPESYSTEM.is_equal(*type0, *type1)
+             &&
+             (!GENV_TYPESYSTEM.is_equal(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+             &&
+             (!GENV_TYPESYSTEM.is_equal(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)))
+    {
+      ret = aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
     }
 
     

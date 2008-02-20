@@ -22,6 +22,16 @@ namespace xqp
   const int32_t NO_SEC_IN_DAY = NO_HOURS_IN_DAY * NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE;
   const int32_t NO_SEC_IN_HOUR = NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE;
  
+int DurationBase::compare(const DurationBase& dt) const
+{
+  return toDuration()->compare(*dt.toDuration());
+}
+
+bool DurationBase::operator==(const DurationBase& dt) const
+{
+  return *toDuration() == *dt.toDuration();
+}
+
 
 YearMonthDuration::YearMonthDuration(long the_months)
   :
@@ -35,25 +45,23 @@ YearMonthDuration& YearMonthDuration::operator=(const YearMonthDuration_t& ym_t)
   return *this;
 }
 
-bool YearMonthDuration::operator<(const DurationBase& db) const
+bool YearMonthDuration::operator<(const YearMonthDuration& ymd) const
 {
-  const YearMonthDuration& ymd = dynamic_cast<const YearMonthDuration&>(db); // TODO: catch bad_cast and throw Zorba exception?
   if (months < ymd.months)
     return true;
   else
     return false;
 }
 
-bool YearMonthDuration::operator==(const DurationBase& db) const
+bool YearMonthDuration::operator==(const YearMonthDuration& ymd) const
 {
-  const YearMonthDuration& ymd = dynamic_cast<const YearMonthDuration&>(db);
-  
   if (months == ymd.months)
     return true;
   else
     return false;
 }
 
+/*
 int YearMonthDuration::compare(const DurationBase& db) const
 {
   const YearMonthDuration& ymd = dynamic_cast<const YearMonthDuration&>(db);
@@ -65,6 +73,7 @@ int YearMonthDuration::compare(const DurationBase& db) const
   else
     return 1;
 }
+*/
 
 xqpString YearMonthDuration::toString(bool output_when_zero) const
 {
@@ -86,6 +95,12 @@ xqpString YearMonthDuration::toString(bool output_when_zero) const
     result = result + NumConversions::longToStr(abs_months % 12) + "M";
     
   return result;
+}
+
+Duration_t YearMonthDuration::toDuration() const
+{
+  Duration_t d_t = new Duration(*this);
+  return d_t;
 }
 
 DurationBase_t YearMonthDuration::operator+(const DurationBase& db) const
@@ -238,10 +253,8 @@ DayTimeDuration& DayTimeDuration::operator=(const DayTimeDuration_t& dt_t)
   return *this;
 }
 
-bool DayTimeDuration::operator<(const DurationBase& db) const
+bool DayTimeDuration::operator<(const DayTimeDuration& dtd) const
 {
-  const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
-  
   if (is_negative != dtd.is_negative)
     return (is_negative == true);
   else if (days != dtd.days)
@@ -250,10 +263,8 @@ bool DayTimeDuration::operator<(const DurationBase& db) const
     return timeDuration < dtd.timeDuration;
 }
 
-bool DayTimeDuration::operator==(const DurationBase& db) const
+bool DayTimeDuration::operator==(const DayTimeDuration& dtd) const
 {
-  const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
-  
   if (is_negative == dtd.is_negative
       &&
       days == dtd.days
@@ -264,6 +275,7 @@ bool DayTimeDuration::operator==(const DurationBase& db) const
     return false;
 }
 
+/*
 int DayTimeDuration::compare(const DurationBase& db) const
 {
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
@@ -275,6 +287,7 @@ int DayTimeDuration::compare(const DurationBase& db) const
   else
     return 1;
 }
+*/
 
 #define OUTPUT_T_SEPARATOR(result, have_t_separator)  do { \
   if (!have_t_separator) { \
@@ -324,6 +337,12 @@ xqpString DayTimeDuration::toString(bool output_when_zero) const
   }
 
   return result;
+}
+
+Duration_t DayTimeDuration::toDuration() const
+{
+  Duration_t d_t = new Duration(*this);
+  return d_t;
 }
 
 DurationBase_t DayTimeDuration::operator+(const DurationBase& db) const
@@ -687,23 +706,22 @@ Duration::Duration()
   
 }
 
-bool Duration::operator<(const DurationBase& db) const
+bool Duration::operator<(const Duration& d) const
 {
-  const Duration& d = dynamic_cast<const Duration&>(db);
-  
   if (yearMonthDuration == d.yearMonthDuration)
     return dayTimeDuration < d.dayTimeDuration;
   else if (dayTimeDuration == d.dayTimeDuration)
     return yearMonthDuration < d.yearMonthDuration;
   else
-    // TODO: treat other cases ?
+  {
+    // it should not be possible to compare duration in the other cases.
+    ZORBA_ASSERT(0);
     return false;
+  }
 }
 
-bool Duration::operator==(const DurationBase& db) const
+bool Duration::operator==(const Duration& d) const
 {
-  const Duration& d = dynamic_cast<const Duration&>(db);
-  
   if (yearMonthDuration == d.yearMonthDuration
       &&
       dayTimeDuration == d.dayTimeDuration)
@@ -712,10 +730,8 @@ bool Duration::operator==(const DurationBase& db) const
     return false;
 }
 
-int Duration::compare(const DurationBase& db) const
+int Duration::compare(const Duration& d) const
 {
-  const Duration& d = dynamic_cast<const Duration&>(db);
-  
   if (operator<(d))
     return -1;
   if (operator==(d))
@@ -736,6 +752,12 @@ xqpString Duration::toString(bool output_when_zero) const
   
   // TODO:
   return result;
+}
+
+Duration_t Duration::toDuration() const
+{
+  Duration_t d_t = new Duration(*this);
+  return d_t;
 }
 
 DurationBase_t Duration::operator+(const DurationBase& db) const

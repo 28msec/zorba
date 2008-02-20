@@ -32,10 +32,10 @@ typedef rchandle<Duration> Duration_t;
 class DurationBase : public SimpleRCObject
 {
 public:
-  virtual bool operator<(const DurationBase& dt) const = 0;
-  virtual bool operator==(const DurationBase& dt) const = 0;
-  virtual int compare(const DurationBase& dt) const = 0;
+  bool operator==(const DurationBase& dt) const;
+  int compare(const DurationBase& dt) const;
   virtual xqpString toString(bool output_when_zero = true) const = 0;
+  virtual Duration_t toDuration() const = 0;
 
   virtual DurationBase_t operator+(const DurationBase& db) const = 0;
   virtual DurationBase_t operator-(const DurationBase& db) const = 0;
@@ -63,10 +63,10 @@ public:
 
   static bool parse_string(const xqpString& s, YearMonthDuration_t& ymd_t);
 
-  virtual bool operator<(const DurationBase& dt) const;
-  virtual bool operator==(const DurationBase& dt) const;
-  virtual int compare(const DurationBase& dt) const;
+  bool operator==(const YearMonthDuration& ymd) const;
+  bool operator<(const YearMonthDuration& ymd) const;
   virtual xqpString toString(bool output_when_zero = true) const;
+  virtual Duration_t toDuration() const;
 
   virtual DurationBase_t operator+(const DurationBase& db) const;
   virtual DurationBase_t operator-(const DurationBase& db) const;
@@ -98,11 +98,11 @@ public:
 
   static bool parse_string(const xqpString& s, DayTimeDuration_t& dtd_t, bool dont_check_letter_p = false);
   static bool from_Timezone(const TimeZone& t, DurationBase_t& dt);
-  
-  virtual bool operator<(const DurationBase& dt) const;
-  virtual bool operator==(const DurationBase& dt) const;
-  virtual int compare(const DurationBase& dt) const;
+
+  bool operator==(const DayTimeDuration& dtd) const;
+  bool operator<(const DayTimeDuration& dtd) const;
   virtual xqpString toString(bool output_when_zero = true) const;
+  virtual Duration_t toDuration() const;
 
   virtual DurationBase_t operator+(const DurationBase& dt) const;
   virtual DurationBase_t operator-(const DurationBase& dt) const;
@@ -131,14 +131,17 @@ class Duration : public DurationBase
 {
 public:
   Duration();
+  Duration(const YearMonthDuration& ymd) : yearMonthDuration(ymd) { };
+  Duration(const DayTimeDuration& dtd) : dayTimeDuration(dtd) { };
   virtual ~Duration() { };
 
   static bool parse_string(const xqpString& s, Duration_t& d_t);
 
-  virtual bool operator<(const DurationBase& d) const;
-  virtual bool operator==(const DurationBase& d) const;
-  virtual int compare(const DurationBase& d) const;
+  bool operator==(const Duration& d) const;
+  int compare(const Duration& d) const;
+  bool operator<(const Duration& d) const;
   virtual xqpString toString(bool output_when_zero = true) const;
+  virtual Duration_t toDuration() const;
 
   virtual DurationBase_t operator+(const DurationBase& d) const;
   virtual DurationBase_t operator-(const DurationBase& d) const;
