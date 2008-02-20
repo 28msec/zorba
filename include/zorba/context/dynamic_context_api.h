@@ -5,14 +5,14 @@
 #include <time.h>
 #include "zorba/util/rchandle.h"
 #include "zorba/types/representations.h"
-//#include "zorba/store/api/item.h"
+
 
 namespace xqp {
 
 class Item;
 typedef rchandle<Item>    Item_t;
 
-class DynamicQueryContext : public rcobject
+class DynamicQueryContext : public SimpleRCObject
 {
 public:
 	typedef enum

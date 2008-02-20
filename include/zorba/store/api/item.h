@@ -20,7 +20,7 @@
 
 namespace xqp
 {
-typedef std::vector<std::pair<xqp_string, xqp_string> > NsBindings;
+typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 typedef StoreConsts::NodeKind NodeKind;
 
 
@@ -30,10 +30,18 @@ typedef StoreConsts::NodeKind NodeKind;
  *         union of node types and atomic types
  *  [http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
  */
-class Item : public rcobject
+class Item : public RCObject
 {
+protected:
+  long  * theRefCounterPtr;
+
+
+  Item() : theRefCounterPtr(0) { }
+
 public:
   virtual ~Item() {}
+
+  long& getRefCounter() { return *theRefCounterPtr; }
 
   /* -------------------   General Methods for Items ------------------------------ */
   /**
@@ -359,13 +367,16 @@ public:
 class AtomicItem : public Item
 {
 public:
+  AtomicItem() : Item() { theRefCounterPtr = &theRefCount; }
+
   virtual ~AtomicItem() {}
+
   bool isNode() const { return false; }
   bool isAtomic() const { return true; }
   
   virtual Item_t getAtomizationValue() const;
   virtual Iterator_t getTypedValue() const;
-}; /* class AtomicItem */
+};
   
 
 } /* namespace xqp */

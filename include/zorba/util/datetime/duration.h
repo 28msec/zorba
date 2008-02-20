@@ -29,7 +29,7 @@ typedef rchandle<YearMonthDuration> YearMonthDuration_t;
 typedef rchandle<Duration> Duration_t;
 
 
-class DurationBase : public rcobject
+class DurationBase : public SimpleRCObject
 {
 public:
   virtual bool operator<(const DurationBase& dt) const = 0;

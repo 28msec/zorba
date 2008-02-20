@@ -7,7 +7,7 @@
 namespace xqp
 {
 
-class XmlDataManager : public rcobject
+class XmlDataManager : public SimpleRCObject
 {
 public:
 	virtual ~XmlDataManager() {};

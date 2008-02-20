@@ -49,7 +49,7 @@ public:
   theTime        : The time when the alert was generated.
 
 ********************************************************************************/
-class ZorbaAlert : public rcobject
+class ZorbaAlert : public SimpleRCObject
 {
 public:
 
@@ -723,7 +723,7 @@ typedef rchandle<XQuery> XQuery_t;
 class ResultIterator;
 typedef rchandle<ResultIterator> ResultIterator_t;
 
-class AlertList : public std::list<ZorbaAlert_t>, public rcobject
+class AlertList : public std::list<ZorbaAlert_t>, public SimpleRCObject
 {
 public:
 	virtual ~AlertList(){}
@@ -745,7 +745,7 @@ typedef int alert_callback(ZorbaAlert_t      alert,
 /*******************************************************************************
 
 ********************************************************************************/
-class ZorbaAlertsManager : public rcobject
+class ZorbaAlertsManager : public SimpleRCObject
 {
 public:
   virtual ~ZorbaAlertsManager();

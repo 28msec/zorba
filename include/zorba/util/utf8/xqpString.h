@@ -36,11 +36,11 @@ class xqpStringStore;
 typedef rchandle<xqpStringStore> xqpStringStore_t;
 
 
-class xqpStringStore : public rcobject, public std::string
+class xqpStringStore : public SimpleRCObject, public std::string
 {
 public:
   xqpStringStore() { }
-  xqpStringStore(const xqpStringStore &other) : rcobject(other), std::string(other) {}
+  xqpStringStore(const xqpStringStore &other) : SimpleRCObject(other), std::string(other) {}
   xqpStringStore(const std::string& other) : std::string(other) {}
   xqpStringStore(const char* start, const char* end) : std::string(start, end) {}
   xqpStringStore(const char* start, long len) : std::string(start, len) {}

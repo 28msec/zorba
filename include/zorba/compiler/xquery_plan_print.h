@@ -7,7 +7,7 @@
 
 namespace xqp{
 
-class XQueryTreePlans : public rcobject
+class XQueryTreePlans : public SimpleRCObject
 {
 public:
   enum PrintFormat_t

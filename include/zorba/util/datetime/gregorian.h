@@ -34,7 +34,7 @@ typedef rchandle<GMonth> GMonth_t;
  * GYearMonth
  * 
  */
-class GYearMonth : public rcobject
+class GYearMonth : public SimpleRCObject
 {
 public:
   GYearMonth(boost::gregorian::date d) : the_gyear_month(d) { };
@@ -58,7 +58,7 @@ protected:
  * GYear
  *
  */
-class GYear : public rcobject
+class GYear : public SimpleRCObject
 {
 public:
   GYear(boost::gregorian::date d) : the_gyear(d) { };
@@ -84,7 +84,7 @@ protected:
  * GMonthDay
  *
  */
-class GMonthDay : public rcobject
+class GMonthDay : public SimpleRCObject
 {
 public:
   GMonthDay(boost::gregorian::date d) : the_gmonth_day(d) { };
@@ -109,7 +109,7 @@ protected:
  * GDay
  *
  */
-class GDay: public rcobject
+class GDay: public SimpleRCObject
 {
 public:
   GDay(boost::gregorian::date d) : the_gday(d) { };
@@ -134,7 +134,7 @@ protected:
  * GMonth
  *
  */
-class GMonth: public rcobject
+class GMonth: public SimpleRCObject
 {
 public:
   GMonth(boost::gregorian::date d) : the_gmonth(d) { };

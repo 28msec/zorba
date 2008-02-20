@@ -16,7 +16,7 @@ namespace xqp
 class TimeZone;
 typedef rchandle<TimeZone> TimeZone_t;
 
-class TimeZone : public rcobject
+class TimeZone : public SimpleRCObject
 {
 public:
   TimeZone() : the_time_zone(boost::posix_time::not_a_date_time) { };

@@ -5,7 +5,7 @@
 
 namespace xqp {
 
-  class ExternalFunctionData : public rcobject
+  class ExternalFunctionData : public SimpleRCObject
   {
   };
 

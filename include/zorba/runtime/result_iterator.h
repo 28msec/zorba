@@ -8,7 +8,7 @@
 //Wrap the iterator interface
 namespace xqp{
 
-class ResultIterator : virtual public rcobject
+class ResultIterator : virtual public SimpleRCObject
 {
 public:
 

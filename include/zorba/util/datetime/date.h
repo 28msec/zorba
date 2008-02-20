@@ -24,7 +24,7 @@ class xqpString;
  *
  */
 
-class Date : public rcobject
+class Date : public SimpleRCObject
 {
 public:
   // Date(boost::gregorian::date d) : the_date(d) { };

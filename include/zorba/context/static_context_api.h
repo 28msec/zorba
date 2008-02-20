@@ -12,7 +12,7 @@
 namespace xqp {
 
 /*
-class CollationInfo : public rcobject
+class CollationInfo : public SimpleRCObject
 {
   std::string  coll_string;
   ::Collator::ECollationStrength coll_strength;
@@ -41,7 +41,7 @@ typedef struct
 }CollationInfo;
 /// the Static Context
 /// this class represents only the part that is the interface to the user
-class StaticQueryContext : public rcobject
+class StaticQueryContext : public SimpleRCObject
 {
 public:
   typedef enum { xpath2_0, xpath1_0_only }    xpath1_0compatib_mode_t;

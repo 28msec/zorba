@@ -20,7 +20,7 @@ typedef rchandle<StaticQueryContext>		StaticQueryContext_t;
 class DynamicQueryContext;
 typedef rchandle<DynamicQueryContext>		DynamicQueryContext_t;
 
-class XQuery : public rcobject
+class XQuery : public SimpleRCObject
 {
 public:
 		virtual ~XQuery() {};

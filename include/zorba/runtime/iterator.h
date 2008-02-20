@@ -11,7 +11,7 @@ namespace xqp
  * General iterator interface. Used to program iterators which return a
  * sequence of items, wrapped into a rchandle object for garbage collection
  */
-class Iterator : virtual public rcobject
+class Iterator : virtual public SimpleRCObject
 {
 public:
   virtual ~Iterator() {}

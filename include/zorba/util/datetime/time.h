@@ -19,7 +19,7 @@ namespace xqp
   class Time;
   typedef rchandle<Time> Time_t;
 
-class Time : public rcobject
+class Time : public SimpleRCObject
 {
 public:
   Time(boost::posix_time::time_duration t) : the_time(t) { };

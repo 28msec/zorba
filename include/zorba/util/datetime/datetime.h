@@ -25,7 +25,7 @@ class DateTime;
 typedef rchandle<DateTime> DateTime_t;
 
 class xqpString;
-class DateTime : public rcobject
+class DateTime : public SimpleRCObject
 {
 public:
   DateTime(boost::posix_time::ptime t) : the_date_time(t) { };

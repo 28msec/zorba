@@ -5,7 +5,7 @@
 
 namespace xqp {
 
-  class ItemSequence : public rcobject 
+  class ItemSequence : public SimpleRCObject 
   {
     public:
       virtual ~ItemSequence() { }

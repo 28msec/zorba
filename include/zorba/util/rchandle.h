@@ -29,39 +29,52 @@ namespace xqp {
   for incrementing and decrementing the count. It also contains code
   for destroying a value when it is no longer in use, i.e., when its
   reference count becomes 0.
+
 ********************************************************************************/
-class rcobject
+class RCObject
 {
 protected:
   long theRefCount;
 
 public:
-  rcobject() : theRefCount(0) { }
+  RCObject() : theRefCount(0) { }
 
-  rcobject(const rcobject& /*rhs*/) : theRefCount(0) { }
 
-  virtual ~rcobject() { }
+  RCObject(const RCObject& /*rhs*/) : theRefCount(0) { }
 
-  virtual void free()              { delete this; }
+  virtual ~RCObject() { }
 
-	long getRefCount() const         { return theRefCount; }
+  virtual void free()                  { delete this; }
 
-  virtual void addReference()      { ++(theRefCount); }
+  long getRefCount() const             { return theRefCount; }
+  void addReference(long& counter)     { ++counter; }
+  void removeReference(long& counter)  { if (--counter == 0) free(); }
 
-  virtual void removeReference()   { if (--theRefCount == 0) this->free(); }
-
-	rcobject& operator=(const rcobject&) { return *this; }
+	RCObject& operator=(const RCObject&) { return *this; }
 };
 
 
-/*__________________________________________________________________________  
-|                                                                           |
-|  rchandle = r(ef)c(ount)handle                                            |
-|                                                                           |
-|  Template class for smart pointers-to-T objects. T must support the       |
-|  rcobject interface, typically by inheriting from rcobject								| 
-|___________________________________________________________________________|*/
+class SimpleRCObject : public RCObject
+{
+public:
+  SimpleRCObject() : RCObject() { }
 
+  SimpleRCObject(const SimpleRCObject& rhs) : RCObject(rhs) { }
+
+  long& getRefCounter() { return theRefCount; }  
+
+  SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
+};
+
+
+/*******************************************************************************
+
+  rchandle = r(ef)c(ount)handle
+
+  Template class for smart pointers-to-T objects. T must support the RCObject
+  interface, typically by inheriting from RCObject
+
+********************************************************************************/
 template<class T>
 class rchandle
 {
@@ -84,49 +97,71 @@ public:
   ~rchandle()
   {
     if (p)
-      p->removeReference(); 
+      p->removeReference(p->getRefCounter());
     p = 0;
   }
 
-public:
-  T* getp() const { return p; }
-  bool isNull () const { return p==NULL; }
+  bool isNull () const        { return p == NULL; }
 
-  template <class otherT> rchandle<otherT> cast () const
+  T* getp() const             { return p; }
+
+
+  // rchandle const-ness is unclear. The implicit operators are more
+  // restrictive than the explicit cast() and getp() methods.
+  operator T* ()              { return getp(); }
+  operator const T * () const { return getp(); }
+
+  T* operator->() const       { return p; } 
+  T& operator*() const        { return *p; } 
+
+	bool operator==(rchandle const& h) const  { return p == h.p; }
+	bool operator!=(rchandle const& h) const  { return p != h.p; }
+	bool operator==(T const* pp) const        { return p == pp; } 
+	bool operator!=(T const* pp) const        { return p != pp; }
+  bool operator<(const rchandle& h) const   { return p < h.p; }
+
+
+  template <class otherT> rchandle<otherT> cast() const
   {
     return rchandle<otherT> (static_cast<otherT *> (p));
   }
 
-public:
-  rchandle& operator=(rchandle const& rhs);
+  template <class otherT> operator rchandle<otherT> ()
+  {
+    return cast<otherT> ();
+  }
+
+  template <class otherT> operator const rchandle<otherT> () const
+  {
+    return cast<otherT> ();
+  }
+
+  rchandle& operator=(rchandle const& rhs)
+  {
+    if (p != rhs.p)
+    {
+      if (p) p->removeReference(p->getRefCounter());
+      p = rhs.p;
+      init();
+    }
+    return *this;
+  }
 
 	template <class otherT> rchandle& operator=(rchandle<otherT> const& rhs)
 	{
-		if (p != rhs.getp()) {
-			if (p) p->removeReference();
+		if (p != rhs.getp()) 
+    {
+			if (p) p->removeReference(p->getRefCounter());
 			p = static_cast<T*>(rhs.getp());
 			init();
 		}
 		return *this;
 	}
 
-  T* operator->() const; 
-  T& operator*() const;
-
-  // rchandle const-ness is unclear.
-  // The implicit operators are more restrictive than the explicit
-  // cast() and getp() methods.
-  operator T* () { return getp(); }
-  operator const T * () const { return getp(); }
-  template <class otherT> operator rchandle<otherT> () { return cast<otherT> (); }
-  template <class otherT> operator const rchandle<otherT> () const { return cast<otherT> (); }
-
-	bool operator==(rchandle const& h) const;
-	bool operator!=(rchandle const& h) const;
-	bool operator==(T const* pp) const;
-	bool operator!=(T const* pp) const;
-  bool operator<(const rchandle& h) const;
-  unsigned long hash() const;
+  unsigned long hash() const
+  {
+    return hashfun::h32((void*)(&p), sizeof(void*), FNV_32_INIT);
+  }
 
 public:
 	std::string debug() const;
@@ -134,60 +169,22 @@ public:
 
 
 template<class T>
-inline T* rchandle<T>::operator->() const { return p; } 
-
-template<class T>
-inline T& rchandle<T>::operator*() const { return *p; } 
-
-template<class T>
-inline bool rchandle<T>::operator==(rchandle const& h) const { return p==h.p; }
-
-template<class T>
-inline bool rchandle<T>::operator!=(rchandle const& h) const { return p!=h.p; }
-
-template<class T>
-inline bool rchandle<T>::operator==(T const* pp) const { return p==pp; } 
-
-template<class T>
-inline bool rchandle<T>::operator!=(T const* pp) const { return p!=pp; }
-
-template<class T>
-bool rchandle<T>::operator<(const rchandle& h) const { return p < h.p; }
-
-template<class T>
-unsigned long rchandle<T>::hash() const
-{
-  return hashfun::h32((void*)(&p), sizeof(void*), FNV_32_INIT);
-}
-
-
-template<class T>
 inline void rchandle<T>::init()
 {
   if (p == 0) return;
-  p->addReference();
-}
-
-template<class T>
-inline rchandle<T>& rchandle<T>::operator=(rchandle const& rhs)
-{
-  if (p != rhs.p) {
-    if (p) p->removeReference();
-    p = rhs.p;
-    init();
-  }
-  return *this;
+  p->addReference(p->getRefCounter());
 }
 
 template<class T>
 inline std::string rchandle<T>::debug() const
 {
 	std::ostringstream oss;
-	oss << "rchandle[refcount="<<p->get_refCount()<<']';
+	oss << "rchandle[refcount=" << p->getRefCount() << ']';
 	return oss.str();
 }
 
 
+#if 0
 /*__________________________________________________________________________  
 |                                                                           |           
 |  rcihandle = r(ef)c(ount)i(ndirect)handle                                 |
@@ -206,7 +203,7 @@ template<class T>
 class rcihandle
 {
 private:
-  struct CountHolder: public rcobject
+  struct CountHolder: public RCObject
 	{
     ~CountHolder() { delete p; }
     T *p;
@@ -323,7 +320,7 @@ inline T& rcihandle<T>::operator*()								// conw needed
 {
 	makeCopy(); return *(counter->p);
 } 
-
+#endif
 
 }	/* namespace xqp */
 #endif	/* XQP_RCHANDLE_H */

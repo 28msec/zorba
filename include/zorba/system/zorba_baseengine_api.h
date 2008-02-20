@@ -4,7 +4,9 @@
 
 #include "zorba/util/rchandle.h"
 #include "zorba/system/zorba_version.h"
+
 #include "zorba/types/representations.h"
+
 
 namespace xqp{
 
@@ -24,7 +26,7 @@ typedef rchandle<class XmlDataManager>	XmlDataManager_t;
 class XQueryTreePlans;
 typedef rchandle<class XQueryTreePlans>	XQueryTreePlans_t;
 
-class ZorbaBaseEngine : public rcobject
+class ZorbaBaseEngine : public SimpleRCObject
 {
 public:
 

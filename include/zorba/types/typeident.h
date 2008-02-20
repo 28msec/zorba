@@ -6,7 +6,7 @@
 
 namespace xqp {
 
-class TypeIdentifier : virtual public rcobject {
+class TypeIdentifier : virtual public SimpleRCObject {
   public:
     typedef enum {
       NAMED_TYPE,
