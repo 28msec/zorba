@@ -349,7 +349,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
         break;
     }
 
-  ZORBA_ERROR_ALERT( ZorbaError::FORG0006, NULL, DONT_CONTINUE_EXECUTION, "Dynamic type of a value does not match a required type.");
+    ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, NULL, DONT_CONTINUE_EXECUTION, "Dynamic type of a value does not match a required type.");
   return false;
 }
   
