@@ -2,8 +2,7 @@
 #define XQP_MISC_H
 
 #include <vector>
-
-#include "context/common.h"
+#include "common/shared_types.h"
 #include "functions/function.h"
 
 namespace xqp {

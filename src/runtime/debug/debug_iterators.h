@@ -1,6 +1,7 @@
 #ifndef XQP_DEBUG_ITERATORS_H
 #define XQP_DEBUG_ITERATORS_H
 
+#include "common/shared_types.h"
 #include "util/utf8/xqpString.h"
 #include "runtime/base/narybase.h"
 

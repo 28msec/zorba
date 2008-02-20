@@ -11,6 +11,7 @@
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
 #include "zorba/util/utf8/xqpString.h"
+#include "runtime/booleans/compare_types.h"
 
 namespace xqp
 {
@@ -71,21 +72,11 @@ namespace xqp
   
   class CompareIterator : public BinaryBaseIterator<CompareIterator, PlanIteratorState>
   {
-    public:
-      enum CompareType{
-        VALUE_EQUAL, GENERAL_EQUAL, NODE_EQUAL,
-        VALUE_NOT_EQUAL, GENERAL_NOT_EQUAL, NODE_NOT_EQUAL,
-        VALUE_LESS, GENERAL_LESS,
-        VALUE_LESS_EQUAL, GENERAL_LESS_EQUAL,
-        VALUE_GREATER, GENERAL_GREATER,
-        VALUE_GREATER_EQUAL, GENERAL_GREATER_EQUAL
-      };
-      
     private:
-      CompareType theCompType;
+      CompareConsts::CompareType theCompType;
 
     public:
-      CompareIterator ( const yy::location& loc, PlanIter_t theChild0, PlanIter_t theChild1, CompareType aCompType );
+      CompareIterator ( const yy::location& loc, PlanIter_t theChild0, PlanIter_t theChild1, CompareConsts::CompareType aCompType );
       virtual ~CompareIterator();
 
       Item_t nextImpl(PlanState& planState) const;
@@ -98,7 +89,7 @@ namespace xqp
       static std::pair<Item_t, Item_t> valueCasting(Item_t aItem0, Item_t aItem1);
       static std::pair<Item_t, Item_t> generalCasting(Item_t aItem0, Item_t aItem1);
       static std::pair<Item_t, Item_t> typePromotion(Item_t aItem0, Item_t aItem1);
-      static bool boolResult(int8_t aCompValue, CompareType aCompType);
+      static bool boolResult(int8_t aCompValue, CompareConsts::CompareType aCompType);
       
     public:
       /**
@@ -176,7 +167,7 @@ namespace xqp
        * @return 
        */
       static bool valueComparison(const Item_t& aItem0, const Item_t& aItem1, 
-                                  CompareType aCompType, xqpString* aCollation = 0);
+                                  CompareConsts::CompareType aCompType, xqpString* aCollation = 0);
       
       /**
        * General comparison of the passed two items with the operator 
@@ -189,7 +180,7 @@ namespace xqp
        * @return 
        */
       static bool generalComparison(const Item_t& aItem0, const Item_t& aItem_1,
-                                    CompareType aCompType, xqpString* aCollation = 0);
+                                    CompareConsts::CompareType aCompType, xqpString* aCollation = 0);
 
       virtual void accept(PlanIterVisitor&) const;
   }; /* class CompareIterator */

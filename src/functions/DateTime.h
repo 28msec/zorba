@@ -6,6 +6,8 @@
 #ifndef XQP_DATETIME_H
 #define XQP_DATETIME_H
 
+#include <vector>
+#include "common/shared_types.h"
 #include "functions/function.h"
 
 namespace xqp

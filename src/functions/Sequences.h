@@ -22,8 +22,7 @@
 
 #include <string>
 #include <vector>
-
-#include "system/globalenv.h"
+#include "common/shared_types.h"
 #include "functions/function.h"
 
 namespace xqp {

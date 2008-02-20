@@ -8,6 +8,7 @@
 #include "runtime/core/item_iterator.h"
 #include <fstream>
 #include "store/api/store.h"
+#include "errors/error_factory.h"
 
 namespace xqp{
 

@@ -1,6 +1,8 @@
 #ifndef XQP_EXTERNAL_FUNCTION_ADAPTERS_H
 #define XQP_EXTERNAL_FUNCTION_ADAPTERS_H
 
+#include <vector>
+#include "common/shared_types.h"
 #include "functions/function.h"
 
 namespace xqp {

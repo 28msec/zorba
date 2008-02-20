@@ -94,6 +94,8 @@ CastIterator::CastIterator(
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aCastType);
 }
 
+CastIterator::~CastIterator(){}
+
 
 Item_t CastIterator::nextImpl(PlanState& aPlanState) const
 {
@@ -155,6 +157,8 @@ CastableIterator::CastableIterator(
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aCastType);
 }
 
+CastableIterator::~CastableIterator(){}
+
 Item_t CastableIterator::nextImpl(PlanState& aPlanState) const 
 {
   bool lBool;
@@ -196,6 +200,8 @@ PromoteIterator::PromoteIterator(const yy::location& aLoc, PlanIter_t& aChild, c
   thePromoteType = GENV_TYPESYSTEM.create_type(*aPromoteType, TypeConstants::QUANT_ONE);  
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aPromoteType);
 }
+
+PromoteIterator::~PromoteIterator(){}
 
 Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const 
 {
@@ -243,6 +249,8 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
   theTreatType = GENV_TYPESYSTEM.create_type(*aTreatType, TypeConstants::QUANT_ONE);  
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aTreatType);
 }
+
+TreatIterator::~TreatIterator(){}
 
 Item_t TreatIterator::nextImpl(PlanState& aPlanState) const
 {

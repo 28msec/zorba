@@ -12,9 +12,8 @@
 
 #include <string>
 #include <vector>
-
+#include "common/shared_types.h"
 #include "functions/signature.h"
-#include "context/common.h"
 #include "compiler/parser/location.hh"
 
 namespace xqp {
@@ -67,8 +66,6 @@ public:
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const = 0;
 
 };
-
-class PlanState;
 
 class user_function : public function {
   public:

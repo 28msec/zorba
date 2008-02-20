@@ -13,19 +13,14 @@
 #define XQP_STRINGS_IMPL_H
 
 #include "common/shared_types.h"
-
 #include "runtime/base/binarybase.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
 
 
-#ifdef WIN32
-#include "util/win32/compatib_defs.h"
-#endif
 
 namespace xqp {
 
-class zorba;
 
 /*______________________________________________________________________
  *

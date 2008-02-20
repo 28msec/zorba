@@ -19,6 +19,7 @@
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/debug/debug_iterators.h"
+#include "types/root_typemanager.h"
 
 #include "system/globalenv.h"
 

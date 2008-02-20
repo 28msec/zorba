@@ -1,6 +1,7 @@
 #ifndef XQP_FN_CONTEXT_IMPL_H
 #define XQP_FN_CONTEXT_IMPL_H
 
+#include "common/shared_types.h"
 #include "runtime/base/noarybase.h"
 
 namespace xqp

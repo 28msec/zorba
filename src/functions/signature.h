@@ -10,17 +10,11 @@
 #ifndef XQP_SIGNATURE_H
 #define XQP_SIGNATURE_H
 
-#include <string>
-#include "util/checked_vector.h"
-
 #include "common/shared_types.h"
+#include "util/checked_vector.h"
 #include "types/root_typemanager.h"
-#include "context/common.h"
-#include "store/api/item.h"
 
 namespace xqp {
-
-class context;
 
 #define VARIADIC_SIG_SIZE 100
 

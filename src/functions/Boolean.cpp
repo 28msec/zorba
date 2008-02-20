@@ -5,6 +5,7 @@
 
 #include "system/globalenv.h"
 #include "functions/Boolean.h"
+#include "runtime/booleans/compare_types.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "system/zorba.h"
@@ -41,7 +42,7 @@ namespace xqp
 	PlanIter_t 
 	op_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_EQUAL );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_EQUAL );
 	}
 	/* end class op_equal */
 	
@@ -50,7 +51,7 @@ namespace xqp
 	PlanIter_t 
 	op_not_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_NOT_EQUAL );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_NOT_EQUAL );
 	}
 	/* end class op_not_equal */
 	
@@ -59,7 +60,7 @@ namespace xqp
 	PlanIter_t 
 	op_greater::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_GREATER );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_GREATER );
 	}
 	/* end class op_greater */
 	
@@ -68,7 +69,7 @@ namespace xqp
 	PlanIter_t 
 	op_greater_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_GREATER_EQUAL );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_GREATER_EQUAL );
 	}
 	/* end class op_greater_equal */
 	
@@ -77,7 +78,7 @@ namespace xqp
 	PlanIter_t 
 	op_less::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_LESS );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_LESS );
 	}
 	/* end class op_less */
 	
@@ -86,7 +87,7 @@ namespace xqp
 	PlanIter_t 
 	op_less_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_LESS_EQUAL );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_LESS_EQUAL );
 	}
 	/* end class op_less_equal */
 
@@ -95,7 +96,7 @@ namespace xqp
 	PlanIter_t 
 	op_value_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_EQUAL );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_EQUAL );
 	}
 	/* end class op_value_equal */
 	
@@ -104,7 +105,7 @@ namespace xqp
 	PlanIter_t 
 	op_value_not_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_NOT_EQUAL );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_NOT_EQUAL );
 	}
 	/* end class op_value_not_equal */
 	
@@ -113,7 +114,7 @@ namespace xqp
 	PlanIter_t 
 	op_value_greater::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_GREATER );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_GREATER );
 	}
 	/* end class value_op_greater */
 	
@@ -122,7 +123,7 @@ namespace xqp
 	PlanIter_t 
 	op_value_greater_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_GREATER_EQUAL );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_GREATER_EQUAL );
 	}
 	/* end class op_greater_equal */
 	
@@ -131,7 +132,7 @@ namespace xqp
 	PlanIter_t 
 	op_value_less::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_LESS );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_LESS );
 	}
 	/* end class op_value_less */
 	
@@ -140,7 +141,7 @@ namespace xqp
 	PlanIter_t 
 	op_value_less_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
-		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_LESS_EQUAL );
+		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_LESS_EQUAL );
 	}
 	/* end class op_value_less_equal */
 

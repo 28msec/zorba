@@ -129,7 +129,7 @@ namespace xqp
   /* end class LogicIterator */
 
   /* begin class ComparisonIterator */
-  CompareIterator::CompareIterator ( const yy::location& loc, PlanIter_t aChild0, PlanIter_t aChild1, CompareType aCompType )
+  CompareIterator::CompareIterator ( const yy::location& loc, PlanIter_t aChild0, PlanIter_t aChild1, CompareConsts::CompareType aCompType )
   :
     BinaryBaseIterator<CompareIterator, PlanIteratorState> ( loc, aChild0, aChild1 ), 
     theCompType(aCompType) 
@@ -208,12 +208,12 @@ namespace xqp
     bool retVal = false;
     switch(theCompType)
     {
-    case VALUE_EQUAL:
-    case VALUE_NOT_EQUAL:
-    case VALUE_LESS:
-    case VALUE_LESS_EQUAL:
-    case VALUE_GREATER:
-    case VALUE_GREATER_EQUAL:
+    case CompareConsts::VALUE_EQUAL:
+    case CompareConsts::VALUE_NOT_EQUAL:
+    case CompareConsts::VALUE_LESS:
+    case CompareConsts::VALUE_LESS_EQUAL:
+    case CompareConsts::VALUE_GREATER:
+    case CompareConsts::VALUE_GREATER_EQUAL:
       retVal = true;
       break;
     default:
@@ -229,12 +229,12 @@ namespace xqp
     bool retVal = false;
     switch(theCompType)
     {
-    case GENERAL_EQUAL:
-    case GENERAL_NOT_EQUAL:
-    case GENERAL_LESS:
-    case GENERAL_LESS_EQUAL:
-    case GENERAL_GREATER:
-    case GENERAL_GREATER_EQUAL:
+    case CompareConsts::GENERAL_EQUAL:
+    case CompareConsts::GENERAL_NOT_EQUAL:
+    case CompareConsts::GENERAL_LESS:
+    case CompareConsts::GENERAL_LESS_EQUAL:
+    case CompareConsts::GENERAL_GREATER:
+    case CompareConsts::GENERAL_GREATER_EQUAL:
       retVal = true;
       break;
     default:
@@ -250,8 +250,8 @@ namespace xqp
     bool retVal = false;
     switch(theCompType)
     {
-    case NODE_EQUAL:
-    case NODE_NOT_EQUAL:
+    case CompareConsts::NODE_EQUAL:
+    case CompareConsts::NODE_NOT_EQUAL:
       retVal = true;
       break;
     default:
@@ -316,33 +316,33 @@ namespace xqp
     return std::pair<Item_t,Item_t>(aItem0, aItem1);
   }
   
-bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
+bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType aCompType )
 {
   if ( aCompValue > -2 )
     switch ( aCompType )
     {
-      case VALUE_EQUAL:
-      case GENERAL_EQUAL:
+      case CompareConsts::VALUE_EQUAL:
+      case CompareConsts::GENERAL_EQUAL:
         return aCompValue == 0;
         break;
-      case VALUE_NOT_EQUAL:
-      case GENERAL_NOT_EQUAL:
+      case CompareConsts::VALUE_NOT_EQUAL:
+      case CompareConsts::GENERAL_NOT_EQUAL:
         return aCompValue != 0;
         break;
-      case VALUE_GREATER:
-      case GENERAL_GREATER:
+      case CompareConsts::VALUE_GREATER:
+      case CompareConsts::GENERAL_GREATER:
         return aCompValue == 1;
         break;
-      case VALUE_GREATER_EQUAL:
-      case GENERAL_GREATER_EQUAL:
+      case CompareConsts::VALUE_GREATER_EQUAL:
+      case CompareConsts::GENERAL_GREATER_EQUAL:
         return (aCompValue == 0) || (aCompValue == 1);
         break;
-      case VALUE_LESS:
-      case GENERAL_LESS:
+      case CompareConsts::VALUE_LESS:
+      case CompareConsts::GENERAL_LESS:
         return aCompValue == -1;
         break;
-      case VALUE_LESS_EQUAL:
-      case GENERAL_LESS_EQUAL:
+      case CompareConsts::VALUE_LESS_EQUAL:
+      case CompareConsts::GENERAL_LESS_EQUAL:
         return (aCompValue == -1) || (aCompValue == 0);
         break;
       default:
@@ -371,28 +371,28 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
   
   bool
   CompareIterator::generalComparison(const Item_t& aItem0, const Item_t& aItem1, 
-                                     CompareType aCompType, xqpString* aCollation)
+                                     CompareConsts::CompareType aCompType, xqpString* aCollation)
   {
     int8_t compValue = -2;
     switch(aCompType)
     {
-      case VALUE_EQUAL:
-      case GENERAL_EQUAL:
-      case VALUE_NOT_EQUAL:
-      case GENERAL_NOT_EQUAL:
+      case CompareConsts::VALUE_EQUAL:
+      case CompareConsts::GENERAL_EQUAL:
+      case CompareConsts::VALUE_NOT_EQUAL:
+      case CompareConsts::GENERAL_NOT_EQUAL:
         if (aCollation == 0)
           compValue = CompareIterator::generalEqual(aItem0, aItem1);
         else
           compValue = CompareIterator::generalEqual(aItem0, aItem1, aCollation);
         break;
-      case VALUE_GREATER:
-      case GENERAL_GREATER:
-      case VALUE_GREATER_EQUAL:
-      case GENERAL_GREATER_EQUAL:
-      case VALUE_LESS:
-      case GENERAL_LESS:
-      case VALUE_LESS_EQUAL:
-      case GENERAL_LESS_EQUAL:
+      case CompareConsts::VALUE_GREATER:
+      case CompareConsts::GENERAL_GREATER:
+      case CompareConsts::VALUE_GREATER_EQUAL:
+      case CompareConsts::GENERAL_GREATER_EQUAL:
+      case CompareConsts::VALUE_LESS:
+      case CompareConsts::GENERAL_LESS:
+      case CompareConsts::VALUE_LESS_EQUAL:
+      case CompareConsts::GENERAL_LESS_EQUAL:
         if (aCollation == 0)
           compValue = CompareIterator::generalCompare(aItem0, aItem1);
         else
@@ -405,28 +405,28 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
   } /* end CompareIterator::generalComparison (...) */
   
   bool CompareIterator::valueComparison(const Item_t& aItem0, const Item_t& aItem1, 
-                                        CompareType aCompType, xqpString* aCollation)
+                                        CompareConsts::CompareType aCompType, xqpString* aCollation)
   {
     int8_t compValue = -2;
     switch(aCompType)
     {
-      case VALUE_EQUAL:
-      case GENERAL_EQUAL:
-      case VALUE_NOT_EQUAL:
-      case GENERAL_NOT_EQUAL:
+      case CompareConsts::VALUE_EQUAL:
+      case CompareConsts::GENERAL_EQUAL:
+      case CompareConsts::VALUE_NOT_EQUAL:
+      case CompareConsts::GENERAL_NOT_EQUAL:
         if (aCollation == 0)
           compValue = CompareIterator::valueEqual(aItem0, aItem1);
         else
           compValue = CompareIterator::valueEqual(aItem0, aItem1, aCollation);
         break;
-      case VALUE_GREATER:
-      case GENERAL_GREATER:
-      case VALUE_GREATER_EQUAL:
-      case GENERAL_GREATER_EQUAL:
-      case VALUE_LESS:
-      case GENERAL_LESS:
-      case VALUE_LESS_EQUAL:
-      case GENERAL_LESS_EQUAL:
+      case CompareConsts::VALUE_GREATER:
+      case CompareConsts::GENERAL_GREATER:
+      case CompareConsts::VALUE_GREATER_EQUAL:
+      case CompareConsts::GENERAL_GREATER_EQUAL:
+      case CompareConsts::VALUE_LESS:
+      case CompareConsts::GENERAL_LESS:
+      case CompareConsts::VALUE_LESS_EQUAL:
+      case CompareConsts::GENERAL_LESS_EQUAL:
         if (aCollation == 0)
           compValue = CompareIterator::valueCompare(aItem0, aItem1);
         else

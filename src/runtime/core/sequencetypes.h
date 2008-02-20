@@ -2,10 +2,9 @@
 #define XQP_SEQUENCETYPES_H
 
 #include "common/shared_types.h"
-
 #include "runtime/base/unarybase.h"
-#include "types/root_typemanager.h"
-#include "util/Assert.h"
+#include "types/typemanager.h"
+#include "zorba/errors/errors.h"
 
 namespace xqp {
 
@@ -49,6 +48,7 @@ public:
   CastIterator(const yy::location& loc,
                PlanIter_t& aChild,
                const xqtref_t& aCastType);
+  ~CastIterator();
   
   Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
@@ -70,6 +70,7 @@ public:
   CastableIterator(const yy::location& aLoc,
                    PlanIter_t& aChild,
                    const xqtref_t& aCastType);
+  virtual ~CastableIterator();
 
   Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
@@ -87,6 +88,7 @@ private:
 
 public:
   PromoteIterator(const yy::location&, PlanIter_t&, const xqtref_t& aPromoteType);
+  virtual ~PromoteIterator();
   Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -104,6 +106,7 @@ private:
 
 public:
   TreatIterator(const yy::location&, PlanIter_t&, const xqtref_t& aTreatType, enum ZorbaError::ErrorCodes);
+  virtual ~TreatIterator();
   Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };

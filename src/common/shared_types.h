@@ -28,6 +28,7 @@ class ItemFactory;
 class Collection;
 class StringPool;
 class QNamePool;
+class PlanState;
 
 typedef rchandle<XQType> xqtref_t;
 typedef rchandle<namespace_context> NamespaceContext_t;

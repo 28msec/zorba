@@ -10,7 +10,8 @@
 #ifndef XQP_ACCESSORS_H
 #define XQP_ACCESSORS_H
 
-#include "context/common.h"
+#include <vector>
+#include "common/shared_types.h"
 #include "functions/function.h"
 
 namespace xqp {

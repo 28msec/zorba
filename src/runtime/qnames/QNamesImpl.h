@@ -12,11 +12,11 @@
 #ifndef XQP_QNAMES_IMPL_H
 #define XQP_QNAMES_IMPL_H
 
+#include <vector>
+#include "common/shared_types.h"
+#include "util/utf8/xqpString.h"
 #include "runtime/base/unarybase.h" // remove after iterator refactoring
 #include "runtime/base/binarybase.h" // remove after iterator refactoring
-#include "util/utf8/xqpString.h"
-
-#include <vector>
 
 namespace xqp {
 /*

@@ -10,12 +10,10 @@
 #ifndef XQP_LIBRARY_H
 #define XQP_LIBRARY_H
 
-#include <string>
+
+#include "common/shared_types.h"
 
 namespace xqp {
-
-class function;
-class zorba;
 
 class static_context;
 

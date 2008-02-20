@@ -27,8 +27,8 @@
 
 #include <stack>
 #include "common/shared_types.h"
-#include "compiler/expression/expr_consts.h"
 #include "runtime/base/unarybase.h" 
+#include "compiler/expression/expr_consts.h"
 #include "zorba/store/api/store_consts.h"
 
 namespace xqp 

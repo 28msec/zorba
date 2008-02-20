@@ -2,6 +2,7 @@
 #define XQP_ARITHMETIC_H
 
 #include <vector>
+#include "common/shared_types.h"
 #include "functions/function.h"
 
 namespace xqp {

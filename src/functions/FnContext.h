@@ -7,7 +7,7 @@
 #define XQP_FN_CONTEXT_H
 
 #include <vector>
-
+#include "common/shared_types.h"
 #include "functions/function.h"
 
 /**

@@ -15,7 +15,7 @@
 #include "runtime/base/unarybase.h" // TODO remove after refactoring
 #include "runtime/base/binarybase.h" // TODO remove after refactoring
 #include "runtime/base/narybase.h"
-#include "runtime/booleans/BooleanImpl.h"
+#include "runtime/booleans/compare_types.h"
 
 namespace xqp
 {
@@ -72,13 +72,11 @@ NARY_ITER(FnEmptyIterator);
 NARY_ITER(FnExistsIterator);
 
 //15.1.6 fn:distinct-values
+
+
 struct ItemCmp 
 {
-    bool operator() ( const Item_t& i1, const Item_t& i2) const
-    {
-      return CompareIterator::compare(i1, i2)<0?true:false;
-    }
-
+    bool operator() ( const Item_t& i2, const Item_t& i2) const;
 };
 
 class FnDistinctValuesIteratorState : public PlanIteratorState {
@@ -222,7 +220,7 @@ public:
 
 private:
   Type theType;
-  CompareIterator::CompareType theCompareType;
+  CompareConsts::CompareType theCompareType;
 
 public:
     FnMinMaxIterator(yy::location loc, std::vector<PlanIter_t>& aChildren, Type aType);

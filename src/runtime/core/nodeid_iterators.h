@@ -2,7 +2,7 @@
 #define XQP_NODEID_ITERATORS_H
 
 #include "common/shared_types.h"
-#include "runtime/base/unarybase.h" // TODO remove after iterator refactoring
+#include "runtime/base/unarybase.h"
 
 namespace xqp 
 {

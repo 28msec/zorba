@@ -14,11 +14,8 @@
 #define XQP_NUMERICS_H
 
 #include <vector>
-
-#include "context/common.h"
+#include "common/shared_types.h"
 #include "functions/function.h"
-#include "runtime/core/item_iterator.h"
-#include "util/rchandle.h"
 
 namespace xqp {
 

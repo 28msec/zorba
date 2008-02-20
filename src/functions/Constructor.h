@@ -6,6 +6,7 @@
 #ifndef XQP_CONSTRUCTOR_H
 #define XQP_CONSTRUCTOR_H
 
+#include "common/shared_types.h"
 #include "functions/function.h"
 
 namespace xqp {

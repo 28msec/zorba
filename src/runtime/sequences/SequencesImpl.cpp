@@ -25,6 +25,7 @@
 #include "util/web/web.h"
 //#include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "runtime/booleans/compare_types.h"
 
 using namespace std;
 namespace xqp {
@@ -177,6 +178,11 @@ FnExistsIterator::nextImpl(PlanState& planState) const {
  * The order in which the sequence of values is returned is ·implementation dependent·.
  * Here, we return the first item that is not a duplicate and throw away the remaining ones
  */
+bool ItemCmp::operator() ( const Item_t& i1, const Item_t& i2) const
+{
+  return CompareIterator::compare(i1, i2)<0?true:false;
+}
+
 FnDistinctValuesIterator::FnDistinctValuesIterator(yy::location loc,
                                                    vector<PlanIter_t>& args)
  : NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState> ( loc, args )
@@ -599,8 +605,8 @@ FnMinMaxIterator::FnMinMaxIterator
     theType(aType),
     theCompareType(
        (aType == MIN 
-       ? CompareIterator::VALUE_LESS 
-       : CompareIterator::VALUE_GREATER)) 
+       ? CompareConsts::VALUE_LESS 
+       : CompareConsts::VALUE_GREATER)) 
 { }
 
 Item_t 

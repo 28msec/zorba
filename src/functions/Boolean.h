@@ -7,8 +7,7 @@
 #define XQP_BOOLEAN_H
 
 #include <vector>
-
-#include "context/common.h"
+#include "common/shared_types.h"
 #include "functions/function.h"
 
 namespace xqp

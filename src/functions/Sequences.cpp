@@ -20,14 +20,10 @@
 
 #include "functions/Sequences.h"
 #include "runtime/sequences/SequencesImpl.h"
-
 #include "runtime/core/nodeid_iterators.h"
-
-#include <iostream>
-
 #include "context/static_context.h"
-//#include "util/zorba.h"
 #include "util/tracer.h"
+#include "system/globalenv.h"
 
 using namespace std;
 namespace xqp {
