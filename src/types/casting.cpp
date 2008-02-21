@@ -156,98 +156,98 @@ Item_t GenericCast::stringSimpleCast(
     lItem = factory->createUntypedAtomic(lString);
     break;
   case TypeConstants::XS_DATETIME:
-  {
-    xqp_dateTime dt;
-    if (DateTime::parse_string(lString, dt))
-      lItem = factory->createDateTime(dt);
-  }
-  break;
+    {
+      xqp_dateTime dt;
+      if (0 == DateTime::parse_string(lString, dt))
+        lItem = factory->createDateTime(dt);
+    }
+    break;
   case TypeConstants::XS_DATE:
-  {
-    xqp_date d;
-    if (0 == Date::parse_string(lString, d))
-      lItem = factory->createDate(d);
-  }
-  break;
+    {
+      xqp_date d;
+      if (0 == Date::parse_string(lString, d))
+        lItem = factory->createDate(d);
+    }
+    break;
   case TypeConstants::XS_TIME:
-  {
-          xqp_time t;
-          if (0 == Time::parse_string(lString, t))
-            lItem = factory->createTime(t);
-        }
-        break;
-      case TypeConstants::XS_DURATION:
-        {
-          Duration_t d_t;
-          if (Duration::parse_string(lString, d_t))
-          {
-            xqp_duration d = d_t;
-            lItem = factory->createDuration(d);
-          }
-        }
-        break;
-      case TypeConstants::XS_DT_DURATION:
-        {
-          DayTimeDuration_t dtd_t;
-          if (DayTimeDuration::parse_string(lString, dtd_t))
-          {
-            xqp_duration d = dtd_t;
-            lItem = factory->createDuration(d);
-          }
-        }
-        break;
-      case TypeConstants::XS_YM_DURATION:
-        {
-          YearMonthDuration_t ymd_t;
-          if (YearMonthDuration::parse_string(lString, ymd_t))
-          {
-            xqp_duration d = ymd_t;
-            lItem = factory->createDuration(d);
-          }
-        }
-        break;
-      case TypeConstants::XS_GYEAR_MONTH:
-        {
-          xqp_gYearMonth ym;
-          if (GYearMonth::parse_string(lString, ym))
-            lItem = factory->createGYearMonth(ym);
-        }
-        break;
-      case TypeConstants::XS_GYEAR:
-        {
-          xqp_gYear y;
-          if (GYear::parse_string(lString, y))
-            lItem = factory->createGYear(y);
-        }
-        break;
-      case TypeConstants::XS_GMONTH_DAY:
-        {
-          xqp_gMonthDay md;
-          if (GMonthDay::parse_string(lString, md))
-            lItem = factory->createGMonthDay(md);
-        }
-        break;
-      case TypeConstants::XS_GDAY:
-        {
-          xqp_gDay d;
-          if (GDay::parse_string(lString, d))
-            lItem = factory->createGDay(d);
-        }
-        break;
-      case TypeConstants::XS_GMONTH:
-        {
-          xqp_gMonth m;
-          if (GMonth::parse_string(lString, m))
-            lItem = factory->createGMonth(m);
-        }
-        break;
-      case TypeConstants::XS_FLOAT:
+    {
+      xqp_time t;
+      if (0 == Time::parse_string(lString, t))
+        lItem = factory->createTime(t);
+    }
+    break;
+  case TypeConstants::XS_DURATION:
+    {
+      Duration_t d_t;
+      if (Duration::parse_string(lString, d_t))
       {
-        xqp_float n;
-        if (NumConversions::strToFloat(lString, n))
-          lItem = factory->createFloat(n);
+        xqp_duration d = d_t;
+        lItem = factory->createDuration(d);
       }
-        break;
+    }
+    break;
+  case TypeConstants::XS_DT_DURATION:
+    {
+      DayTimeDuration_t dtd_t;
+      if (DayTimeDuration::parse_string(lString, dtd_t))
+      {
+        xqp_duration d = dtd_t;
+        lItem = factory->createDuration(d);
+      }
+    }
+    break;
+  case TypeConstants::XS_YM_DURATION:
+    {
+      YearMonthDuration_t ymd_t;
+      if (YearMonthDuration::parse_string(lString, ymd_t))
+      {
+        xqp_duration d = ymd_t;
+        lItem = factory->createDuration(d);
+      }
+    }
+    break;
+  case TypeConstants::XS_GYEAR_MONTH:
+    {
+      xqp_gYearMonth ym;
+      if (GYearMonth::parse_string(lString, ym))
+        lItem = factory->createGYearMonth(ym);
+    }
+    break;
+  case TypeConstants::XS_GYEAR:
+    {
+      xqp_gYear y;
+      if (GYear::parse_string(lString, y))
+        lItem = factory->createGYear(y);
+    }
+    break;
+  case TypeConstants::XS_GMONTH_DAY:
+    {
+      xqp_gMonthDay md;
+      if (GMonthDay::parse_string(lString, md))
+        lItem = factory->createGMonthDay(md);
+    }
+    break;
+  case TypeConstants::XS_GDAY:
+    {
+      xqp_gDay d;
+      if (GDay::parse_string(lString, d))
+        lItem = factory->createGDay(d);
+    }
+    break;
+  case TypeConstants::XS_GMONTH:
+    {
+      xqp_gMonth m;
+      if (GMonth::parse_string(lString, m))
+        lItem = factory->createGMonth(m);
+    }
+    break;
+  case TypeConstants::XS_FLOAT:
+    {
+      xqp_float n;
+      if (NumConversions::strToFloat(lString, n))
+        lItem = factory->createFloat(n);
+    }
+    break;
       case TypeConstants::XS_DOUBLE:
       {
         xqp_double n;
@@ -272,7 +272,7 @@ Item_t GenericCast::stringSimpleCast(
       case TypeConstants::XS_NON_POSITIVE_INTEGER:
       {
         xqp_integer n;
-        if (NumConversions::strToInteger(lString, n)) 
+        if (NumConversions::strToInteger(lString, n))
           lItem = factory->createNonPositiveInteger(n);
       }
         break;
@@ -328,7 +328,7 @@ Item_t GenericCast::stringSimpleCast(
       case TypeConstants::XS_UNSIGNED_INT:
       {
         xqp_uint n;
-        if (NumConversions::strToUInt(lString, n))          
+        if (NumConversions::strToUInt(lString, n))
           lItem = factory->createUnsignedInt(n);
       }
         break;

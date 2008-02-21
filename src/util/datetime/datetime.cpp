@@ -45,7 +45,7 @@ DateTime::DateTime(const Date_t& d_t, const Time_t& t_t)
 
 int DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)
 {
-  unsigned int time_zone_start = -1;
+  unsigned int time_zone_start;
   unsigned int position = 0;
   int frac_start;
   long temp_frac;
@@ -71,16 +71,16 @@ int DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)
   if (frac_start != -1)
   {
     time_zone_start = frac_start + 1;
-    parse_int(ss, time_zone_start, temp_frac);
-  }
-
-  if (time_zone_start == -1)
-  {
-    RETURN_1_ON_EXCEPTION( dt_t = new DateTime(is_negative, boost::posix_time::time_from_string(ss.substr(position))); );
+    parse_int(ss, (unsigned int&)time_zone_start, temp_frac);
   }
   else
+    time_zone_start = position+19;
+
+  RETURN_1_ON_EXCEPTION(
+    dt_t = new DateTime(is_negative, boost::posix_time::time_from_string(ss.substr(position,time_zone_start-position))); );
+
+  if (ss.size() > time_zone_start)
   {
-    RETURN_1_ON_EXCEPTION( dt_t = new DateTime(is_negative, boost::posix_time::time_from_string(ss.substr(position, time_zone_start-position))); );
     if (!TimeZone::parse_string(ss.substr(time_zone_start), tz_t))
       return 1;
     dt_t->the_time_zone = *tz_t;
@@ -213,6 +213,8 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
     years = years + quotient<int>(months + carry-1, 12);
     months = modulo<int>(months + carry -1, 12) + 1;
   }
+
+  return NULL;
 }
 
 } // namespace xqp
