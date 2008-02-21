@@ -734,33 +734,27 @@ OpToIterator::nextImpl(PlanState& planState) const {
   DEFAULT_STACK_INIT(OpToIteratorState, state, planState);
 
   lItem = consumeNext(theChildren[0].getp(), planState);
-  if (lItem == NULL)
+  if (lItem != NULL)
   {
-    ZorbaAlertFactory::error_alert (ZorbaError::XPTY0004, NULL,
-        DONT_CONTINUE_EXECUTION, "The empty sequence is not allowed as first argument to op:to.");
+    state->theFirstVal = lItem->getIntegerValue();
 
-  }
-  state->theFirstVal = lItem->getIntegerValue();
-
-  lItem = consumeNext(theChildren[1].getp(), planState);
-  if (lItem == NULL)
-  {
-    ZorbaAlertFactory::error_alert (ZorbaError::XPTY0004, NULL,DONT_CONTINUE_EXECUTION,
-        "The empty sequence is not allowed as second argument to op:to.");
-
-  }
-  state->theLastVal = lItem->getIntegerValue();
-
-  // return empty sequence otherwise
-  if ( state->theLastVal >= state->theFirstVal )
-  {
-    state->theCurInt = state->theFirstVal;
-    while ( state->theCurInt <= state->theLastVal )
+    lItem = consumeNext(theChildren[1].getp(), planState);
+    if (lItem != NULL)
     {
-      STACK_PUSH(Zorba::getItemFactory()->createInteger(state->theCurInt), state);
-      ++state->theCurInt;
-    }
+      state->theLastVal = lItem->getIntegerValue();
 
+      // return empty sequence otherwise
+      if ( state->theLastVal >= state->theFirstVal )
+      {
+        state->theCurInt = state->theFirstVal;
+        while ( state->theCurInt <= state->theLastVal )
+        {
+          STACK_PUSH(Zorba::getItemFactory()->createInteger(state->theCurInt), state);
+          ++state->theCurInt;
+        }
+
+      }
+    }
   }
 
   STACK_END();
