@@ -51,7 +51,7 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 	if(!parent)
 	{
 		time_t		t0 = time(NULL);
-#if defined (WIN32) && ! defined (CYGWIN)
+#if defined (WIN32)
 		struct	::tm	gmtm;
 		gmtime_s(&gmtm, &t0);//thread safe gmtime on Windows
 #else

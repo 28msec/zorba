@@ -22,7 +22,7 @@
 #include <time.h>
 #include <stdio.h>
 
-#if defined (WIN32) and ! defined (CYGWIN)
+#if defined (WIN32) 
 #include <tchar.h>
 #ifndef _WIN32_WCE
 #include <io.h>
@@ -72,7 +72,7 @@ THROW_XQP_EXCEPTION
 	path(_path),
   type(type_non_existent)
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 	struct stat st;
   if (::stat(path.c_str(), &st)) {
     if (errno!=ENOENT) error(__FUNCTION__,"stat failed on "+path);
@@ -138,7 +138,7 @@ file::file(
 	path(base+"/"+name),
   type(type_non_existent)
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 	struct stat st;
   if (::stat(path.c_str(), &st)) {
     if (errno!=ENOENT) error(__FUNCTION__,"stat failed on "+path);
@@ -213,7 +213,7 @@ THROW_XQP_EXCEPTION
 {
   if (type!=type_non_existent) return type;
 
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 	// call native file system status
 	struct stat st;
   if (::stat(path.c_str(), &st)) {
@@ -319,7 +319,7 @@ THROW_XQP_EXCEPTION
 void file::mkdir()
 THROW_XQP_EXCEPTION
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 	if (::mkdir(path.c_str(),0777)) {
 		ostringstream oss;
 		oss<<"mkdir failed ["<<strerror(errno) << "]"<<"] for: "<<path;
@@ -351,7 +351,7 @@ THROW_XQP_EXCEPTION
 void file::remove(bool ignore)
 THROW_XQP_EXCEPTION
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 	if (::remove(path.c_str()) && !ignore) {
     error(__FUNCTION__, "failed to remove "+path);
 	}
@@ -379,7 +379,7 @@ THROW_XQP_EXCEPTION
 void file::rmdir(bool ignore)
 THROW_XQP_EXCEPTION
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 	if (::rmdir(path.c_str()) && !ignore) {
     error(__FUNCTION__, "rmdir failed on "+path);
 	}
@@ -405,7 +405,7 @@ void file::chdir()
 THROW_XQP_EXCEPTION
 {
   if (!is_directory()) return;
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 	if (::chdir(path.c_str())) {
     error(__FUNCTION__, "chdir failed on "+path);
 	}
@@ -421,7 +421,7 @@ void file::rename(
 	std::string const& newpath)
 THROW_XQP_EXCEPTION
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
   if (::rename(path.c_str(), newpath.c_str())) {
     ostringstream oss;
     oss << path << " to " << newpath;
@@ -454,7 +454,7 @@ THROW_XQP_EXCEPTION
 void file::touch()
 THROW_XQP_EXCEPTION
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
   int fd = 0;
 	fd = open(path.c_str(),O_CREAT|O_WRONLY,0666);
   if (fd<0) error(__FUNCTION__, "failed to open "+path);
@@ -520,7 +520,7 @@ int file::readfile(
 	uint32_t maxlen)
 THROW_XQP_EXCEPTION
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
   int fd = open(path.c_str(), O_RDONLY);
 	if (fd < 0) {
 		error(__FUNCTION__, "open("+path+") failed ["+strerror(errno)+"]");
@@ -583,11 +583,11 @@ file::dir_iterator::dir_iterator(
 THROW_XQP_EXCEPTION
 :
 	dirpath(path)
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 	,dirent(0)
 #endif
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 	dir = opendir(path.c_str());
   if (dir==0) {
     error(__FUNCTION__, "opendir failed on "+dirpath);
@@ -619,7 +619,7 @@ THROW_XQP_EXCEPTION
 
 file::dir_iterator::~dir_iterator()
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
   if (dir!=0) closedir(dir);
 #else
 	if(win32_dir != INVALID_HANDLE_VALUE)
@@ -630,7 +630,7 @@ file::dir_iterator::~dir_iterator()
 
 void file::dir_iterator::operator++()
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
   if (dir!=0) {
     while (true) {
       dirent = readdir(dir);
@@ -674,7 +674,7 @@ bool operator!=(
 	file::dir_iterator const& x,
 	file::dir_iterator const& y)
 {
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 	if (x.dirpath==y.dirpath) return false;
 	if (x.dirent==y.dirent) return false;
 	return true;

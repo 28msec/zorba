@@ -14,7 +14,7 @@
 
 #include <stdio.h>
 
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 #include <dirent.h>
 #endif
 
@@ -59,20 +59,20 @@ protected:
 
 private:	// file attributes
   int64_t  size;      		// size in bytes
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
   time_t   atime;     		// most recent access time
   time_t   mtime;     		// most recent mod time
 #else
 	FILETIME	atime;
 	FILETIME	mtime;
 #endif
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
   uint32_t owner;     		// file owner uid
   uint32_t group;     		// file group gid
   uint32_t perms;     		// file permissions
 #endif
 
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 private:	// volume attributes
   uint64_t filtotal;    	// total number of file inodes in file system
   uint64_t filfree;     	// number of free file inodes in file system
@@ -124,7 +124,7 @@ public:	// file methods
 	void touch() THROW_XQP_EXCEPTION;
 
   int64_t get_size() const				{ return size; }
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
   time_t  get_acctime() const			{ return atime; }
   time_t  get_modtime() const			{ return mtime; }
 	uint32_t get_ownerid() const		{ return owner; }
@@ -146,7 +146,7 @@ public:	// directory methods
 	public:
   	std::string dirpath;
   	std::string path;
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
   	DIR *dir;
   	struct dirent *dirent;
 #else
@@ -158,7 +158,7 @@ public:	// directory methods
   	~dir_iterator();
 	public:	// iterator interface
 		void operator++();
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 		const char* operator*() { 
 			return dirent->d_name; 
 		}
@@ -168,7 +168,7 @@ public:	// directory methods
 		}
 #endif
 	public:	
-#if ! defined (WIN32) || defined (CYGWIN)
+#if ! defined (WIN32) 
 		const char* get_name() const { 
 			return dirent?dirent->d_name:0;
 		}

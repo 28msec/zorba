@@ -123,7 +123,7 @@ void FloatImpl<FloatType>::checkInfZeroPrecision(FloatImpl& aFloatImpl) {
 
 template <typename FloatType>
 FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar) {
-#if defined (HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) || defined (CYGWIN))
+#if defined (HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) )
     if (strcasecmp(aCharStar, "inf") == 0 || strcasecmp(aCharStar, "+inf") == 0 )
 #else
     if (_stricmp(aCharStar, "inf") == 0 || _stricmp(aCharStar, "+inf") == 0 )
@@ -131,7 +131,7 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar
     {
       return FloatCommons::INF_POS;
     }
-#if defined (HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) || defined (CYGWIN))
+#if defined (HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) )
     else if (strcasecmp(aCharStar, "-inf") == 0 )
 #else
     else if (_stricmp(aCharStar, "-inf") == 0 )
@@ -139,7 +139,7 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar
     {
       return FloatCommons::INF_NEG;
     }
-#if defined (HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) || defined (CYGWIN))
+#if defined (HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) )
     else if (strcasecmp(aCharStar, "nan") == 0 )
 #else
     else if (_stricmp(aCharStar, "nan") == 0 )
