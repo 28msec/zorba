@@ -4,8 +4,7 @@
 #include <iostream>
 #include <cassert>
 
-
-#include "zorba/config/config.h"
+#include "zorba/config/platform.h"
 
 #ifdef WIN32
 #elif defined ZORBA_USE_PTHREAD_LIBRARY

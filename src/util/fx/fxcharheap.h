@@ -15,12 +15,7 @@
 #include "util/rchandle.h"
 
 #include <string>
-#ifndef _WIN32_WCE
-  #include <sys/types.h>
-#else
-  #include <windows.h>
-  #include <types.h>
-#endif
+#include "zorba/common/common.h"
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER

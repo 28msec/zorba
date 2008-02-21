@@ -1,17 +1,7 @@
 ///Created: Daniel Turcanu @ IPDevel 
 
-#include "common/common.h"
+#include "zorba/common/common.h"
 
-#ifdef WIN32
-  #include <windows.h>
-  #include "util/win32/compatib_defs.h"
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
-  #include <pthread.h>
-#elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
-  #include <boost/thread/tss.hpp>
-#else
-#error Unsupported thread system
-#endif
 
 #include "zorba_api.h"
 #include "store/api/item_factory.h"

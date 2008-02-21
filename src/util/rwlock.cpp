@@ -11,6 +11,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <errno.h>
 
 using namespace std;
 namespace xqp {

@@ -10,20 +10,11 @@
 
 #ifndef XQP_FILE_H
 #define XQP_FILE_H
+#include "zorba/common/common.h"
 
-#ifndef _WIN32_WCE
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#else
-#include <windows.h>
-#include <types.h>
-#endif
+#include <stdio.h>
 
-#ifdef WIN32
-#include <Windows.h>
-#include "win32/compatib_defs.h"
-#else
+#if ! defined (WIN32) || defined (CYGWIN)
 #include <dirent.h>
 #endif
 
@@ -68,20 +59,20 @@ protected:
 
 private:	// file attributes
   int64_t  size;      		// size in bytes
-#ifndef WIN32
+#if ! defined (WIN32) || defined (CYGWIN)
   time_t   atime;     		// most recent access time
   time_t   mtime;     		// most recent mod time
 #else
 	FILETIME	atime;
 	FILETIME	mtime;
 #endif
-#ifndef WIN32
+#if ! defined (WIN32) || defined (CYGWIN)
   uint32_t owner;     		// file owner uid
   uint32_t group;     		// file group gid
   uint32_t perms;     		// file permissions
 #endif
 
-#ifndef WIN32
+#if ! defined (WIN32) || defined (CYGWIN)
 private:	// volume attributes
   uint64_t filtotal;    	// total number of file inodes in file system
   uint64_t filfree;     	// number of free file inodes in file system
@@ -118,8 +109,8 @@ public:	// common methods
   bool exists() const { return (type!=type_non_existent && type!=type_invalid); }  
   static volatile void error(std::string const& location, std::string const& msg) THROW_XQP_EXCEPTION;
   static void sync() { 
-#ifndef WIN32
-		::sync(); 
+#if defined UNIX
+	::sync(); 
 #else
 	_flushall();
 #endif
@@ -133,7 +124,7 @@ public:	// file methods
 	void touch() THROW_XQP_EXCEPTION;
 
   int64_t get_size() const				{ return size; }
-#ifndef WIN32
+#if ! defined (WIN32) || defined (CYGWIN)
   time_t  get_acctime() const			{ return atime; }
   time_t  get_modtime() const			{ return mtime; }
 	uint32_t get_ownerid() const		{ return owner; }
@@ -155,7 +146,7 @@ public:	// directory methods
 	public:
   	std::string dirpath;
   	std::string path;
-#ifndef WIN32
+#if ! defined (WIN32) || defined (CYGWIN)
   	DIR *dir;
   	struct dirent *dirent;
 #else
@@ -167,7 +158,7 @@ public:	// directory methods
   	~dir_iterator();
 	public:	// iterator interface
 		void operator++();
-#ifndef WIN32
+#if ! defined (WIN32) || defined (CYGWIN)
 		const char* operator*() { 
 			return dirent->d_name; 
 		}
@@ -177,7 +168,7 @@ public:	// directory methods
 		}
 #endif
 	public:	
-#ifndef WIN32
+#if ! defined (WIN32) || defined (CYGWIN)
 		const char* get_name() const { 
 			return dirent?dirent->d_name:0;
 		}

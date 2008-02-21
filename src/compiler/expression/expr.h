@@ -24,6 +24,7 @@
 
 #include <string>
 #include <map>
+#include "zorba/common/common.h"
 
 #include "common/shared_types.h"
 #include "compiler/parser/location.hh"

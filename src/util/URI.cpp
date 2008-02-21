@@ -11,9 +11,9 @@
 #include <sstream>
 #include <iostream>
 
+#include "zorba/common/common.h"
 #ifdef WIN32
 	#include <algorithm>
-	#include "util/win32/compatib_defs.h"
 #endif
 
 using namespace std;

@@ -35,12 +35,7 @@
 #pragma warning(disable: 4786)
 #endif
 
-#ifdef WIN32
-#include "util/win32/compatib_defs.h"
-#ifndef _WIN32_WCE
-#include <io.h>
-#endif
-#endif
+#include "zorba/common/common.h"
 
 #include <stdio.h>
 #include <stdlib.h>

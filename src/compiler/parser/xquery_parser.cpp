@@ -36,13 +36,13 @@
 #include "xquery_parser.hpp"
 
 /* User implementation prologue.  */
-#line 131 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 127 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parser/xquery_driver.h"
 
 
 /* Line 317 of lalr1.cc.  */
-#line 46 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.cpp"
+#line 46 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/build/src/compiler/parser/xquery_parser.cpp"
 
 #ifndef YY_
 # if YYENABLE_NLS
@@ -274,12 +274,12 @@ namespace yy
 
 
     /* User initialization code.  */
-    #line 90 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+    #line 86 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
 {
   yylloc.begin.filename = yylloc.end.filename = driver.filename.getStore();
 }
   /* Line 547 of yacc.c.  */
-#line 283 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.cpp"
+#line 283 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/build/src/compiler/parser/xquery_parser.cpp"
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
@@ -395,7 +395,7 @@ namespace yy
     switch (yyn)
       {
 	  case 2:
-#line 734 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 730 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [main]\n";
@@ -406,7 +406,7 @@ namespace yy
     break;
 
   case 3:
-#line 742 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 738 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
 			driver.set_expr((yyval.node));
@@ -417,7 +417,7 @@ namespace yy
     break;
 
   case 4:
-#line 750 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 746 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [library]\n";
@@ -426,7 +426,7 @@ namespace yy
     break;
 
   case 5:
-#line 756 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 752 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [version.library]\n";
@@ -435,7 +435,7 @@ namespace yy
     break;
 
   case 6:
-#line 768 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 764 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version]\n";
@@ -444,7 +444,7 @@ namespace yy
     break;
 
   case 7:
-#line 774 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 770 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version.encoding]\n";
@@ -453,7 +453,7 @@ namespace yy
     break;
 
   case 8:
-#line 786 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 782 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [prolog.querybody]\n";
@@ -465,7 +465,7 @@ namespace yy
     break;
 
   case 9:
-#line 796 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 792 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [querybody]\n";
@@ -477,7 +477,7 @@ namespace yy
     break;
 
   case 10:
-#line 811 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 807 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LibraryModule [ ]\n";
@@ -489,7 +489,7 @@ namespace yy
     break;
 
   case 11:
-#line 826 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 822 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleDecl [ ]\n";
@@ -501,7 +501,7 @@ namespace yy
     break;
 
   case 12:
-#line 841 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 837 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind]\n";
@@ -513,7 +513,7 @@ namespace yy
     break;
 
   case 13:
-#line 850 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 846 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [vfo]\n";
@@ -525,7 +525,7 @@ namespace yy
     break;
 
   case 14:
-#line 859 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 855 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind.vfo]\n";
@@ -537,7 +537,7 @@ namespace yy
     break;
 
   case 15:
-#line 874 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 870 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [single]\n";
@@ -549,7 +549,7 @@ namespace yy
     break;
 
   case 16:
-#line 883 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 879 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [list]\n";
@@ -563,7 +563,7 @@ namespace yy
     break;
 
   case 17:
-#line 900 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 896 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [single]\n";
@@ -575,7 +575,7 @@ namespace yy
     break;
 
   case 18:
-#line 909 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 905 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [list]\n";
@@ -589,7 +589,7 @@ namespace yy
     break;
 
   case 19:
-#line 926 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 922 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [setter]\n";
@@ -599,7 +599,7 @@ namespace yy
     break;
 
   case 20:
-#line 933 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 929 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [import]\n";
@@ -609,7 +609,7 @@ namespace yy
     break;
 
   case 21:
-#line 940 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 936 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [namespace]\n";
@@ -619,7 +619,7 @@ namespace yy
     break;
 
   case 22:
-#line 947 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 943 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [default namespace]\n";
@@ -629,7 +629,7 @@ namespace yy
     break;
 
   case 23:
-#line 959 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 955 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [var]\n";
@@ -639,7 +639,7 @@ namespace yy
     break;
 
   case 24:
-#line 966 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 962 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [function]\n";
@@ -649,7 +649,7 @@ namespace yy
     break;
 
   case 25:
-#line 973 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 969 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [option]\n";
@@ -659,7 +659,7 @@ namespace yy
     break;
 
   case 26:
-#line 982 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 978 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [ftoption]\n";
@@ -669,7 +669,7 @@ namespace yy
     break;
 
   case 27:
-#line 995 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 991 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [boundary space]\n";
@@ -679,7 +679,7 @@ namespace yy
     break;
 
   case 28:
-#line 1002 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 998 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [default collation]\n";
@@ -689,7 +689,7 @@ namespace yy
     break;
 
   case 29:
-#line 1009 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1005 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [base uri]\n";
@@ -699,7 +699,7 @@ namespace yy
     break;
 
   case 30:
-#line 1016 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1012 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [construction]\n";
@@ -709,7 +709,7 @@ namespace yy
     break;
 
   case 31:
-#line 1023 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1019 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [ordering mode]\n";
@@ -719,7 +719,7 @@ namespace yy
     break;
 
   case 32:
-#line 1030 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1026 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [empty order]\n";
@@ -729,7 +729,7 @@ namespace yy
     break;
 
   case 33:
-#line 1037 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1033 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [copy namespaces]\n";
@@ -739,7 +739,7 @@ namespace yy
     break;
 
   case 34:
-#line 1046 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1042 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [revalidation]\n";
@@ -749,7 +749,7 @@ namespace yy
     break;
 
   case 35:
-#line 1059 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1055 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [schema]\n";
@@ -759,7 +759,7 @@ namespace yy
     break;
 
   case 36:
-#line 1066 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1062 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [module]\n";
@@ -769,7 +769,7 @@ namespace yy
     break;
 
   case 37:
-#line 1084 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1080 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NamespaceDecl [ ]\n";
@@ -781,7 +781,7 @@ namespace yy
     break;
 
   case 38:
-#line 1099 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1095 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [preserve]\n";
@@ -792,7 +792,7 @@ namespace yy
     break;
 
   case 39:
-#line 1107 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1103 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [strip]\n";
@@ -803,7 +803,7 @@ namespace yy
     break;
 
   case 40:
-#line 1121 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1117 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [element]\n";
@@ -815,7 +815,7 @@ namespace yy
     break;
 
   case 41:
-#line 1130 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1126 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [function]\n";
@@ -827,7 +827,7 @@ namespace yy
     break;
 
   case 42:
-#line 1145 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1141 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OptionDecl [ ]\n";
@@ -839,7 +839,7 @@ namespace yy
     break;
 
   case 43:
-#line 1161 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1157 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOptionDecl [ ]\n";
@@ -850,7 +850,7 @@ namespace yy
     break;
 
   case 44:
-#line 1175 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1171 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [ordered]\n";
@@ -861,7 +861,7 @@ namespace yy
     break;
 
   case 45:
-#line 1183 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1179 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [unordered]\n";
@@ -872,7 +872,7 @@ namespace yy
     break;
 
   case 46:
-#line 1198 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1194 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty greatest]\n";
@@ -883,7 +883,7 @@ namespace yy
     break;
 
   case 47:
-#line 1206 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1202 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty least]\n";
@@ -894,7 +894,7 @@ namespace yy
     break;
 
   case 48:
-#line 1220 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1216 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
@@ -906,7 +906,7 @@ namespace yy
     break;
 
   case 49:
-#line 1229 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1225 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
@@ -918,7 +918,7 @@ namespace yy
     break;
 
   case 50:
-#line 1238 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1234 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
@@ -930,7 +930,7 @@ namespace yy
     break;
 
   case 51:
-#line 1247 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1243 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
@@ -942,7 +942,7 @@ namespace yy
     break;
 
   case 52:
-#line 1269 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1265 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultCollationMode [ ]\n";
@@ -953,7 +953,7 @@ namespace yy
     break;
 
   case 53:
-#line 1283 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1279 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BaseURIDecl [ ]\n";
@@ -964,7 +964,7 @@ namespace yy
     break;
 
   case 54:
-#line 1297 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1293 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri]\n";
@@ -977,7 +977,7 @@ namespace yy
     break;
 
   case 55:
-#line 1307 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1303 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri]\n";
@@ -990,7 +990,7 @@ namespace yy
     break;
 
   case 56:
-#line 1317 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1313 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri.urilist]\n";
@@ -1003,7 +1003,7 @@ namespace yy
     break;
 
   case 57:
-#line 1327 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1323 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri.aturi]\n";
@@ -1016,7 +1016,7 @@ namespace yy
     break;
 
   case 58:
-#line 1343 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1339 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [single]\n";
@@ -1028,7 +1028,7 @@ namespace yy
     break;
 
   case 59:
-#line 1352 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1348 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [list]\n";
@@ -1042,7 +1042,7 @@ namespace yy
     break;
 
   case 60:
-#line 1370 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1366 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [namespace]\n";
@@ -1052,7 +1052,7 @@ namespace yy
     break;
 
   case 61:
-#line 1377 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1373 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [default element]\n";
@@ -1062,7 +1062,7 @@ namespace yy
     break;
 
   case 62:
-#line 1390 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1386 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri]\n";
@@ -1074,7 +1074,7 @@ namespace yy
     break;
 
   case 63:
-#line 1399 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1395 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri]\n";
@@ -1087,7 +1087,7 @@ namespace yy
     break;
 
   case 64:
-#line 1409 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1405 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri.at_uri.list]\n";
@@ -1099,7 +1099,7 @@ namespace yy
     break;
 
   case 65:
-#line 1418 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1414 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri.at_uri.list]\n";
@@ -1112,7 +1112,7 @@ namespace yy
     break;
 
   case 66:
-#line 1435 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1431 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [expr]\n";
@@ -1125,7 +1125,7 @@ namespace yy
     break;
 
   case 67:
-#line 1445 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1441 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [external]\n";
@@ -1138,7 +1138,7 @@ namespace yy
     break;
 
   case 68:
-#line 1455 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1451 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.expr]\n";
@@ -1151,7 +1151,7 @@ namespace yy
     break;
 
   case 69:
-#line 1465 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1461 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.external]\n";
@@ -1164,7 +1164,7 @@ namespace yy
     break;
 
   case 70:
-#line 1481 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1477 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [preserve]\n";
@@ -1175,7 +1175,7 @@ namespace yy
     break;
 
   case 71:
-#line 1489 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1485 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [strip]\n";
@@ -1186,7 +1186,7 @@ namespace yy
     break;
 
   case 72:
-#line 1503 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1499 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [external]\n";
@@ -1199,7 +1199,7 @@ namespace yy
     break;
 
   case 73:
-#line 1513 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1509 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [expr]\n";
@@ -1213,7 +1213,7 @@ namespace yy
     break;
 
   case 74:
-#line 1524 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1520 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.external]\n";
@@ -1227,7 +1227,7 @@ namespace yy
     break;
 
   case 75:
-#line 1535 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1531 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.expr]\n";
@@ -1242,7 +1242,7 @@ namespace yy
     break;
 
   case 76:
-#line 1547 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1543 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.external]\n";
@@ -1257,7 +1257,7 @@ namespace yy
     break;
 
   case 77:
-#line 1559 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1555 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.expr]\n";
@@ -1272,7 +1272,7 @@ namespace yy
     break;
 
   case 78:
-#line 1571 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1567 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.external]\n";
@@ -1287,7 +1287,7 @@ namespace yy
     break;
 
   case 79:
-#line 1583 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1579 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.expr]\n";
@@ -1302,7 +1302,7 @@ namespace yy
     break;
 
   case 80:
-#line 1595 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1591 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) external]\n";
@@ -1315,7 +1315,7 @@ namespace yy
     break;
 
   case 81:
-#line 1605 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1601 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) expr]\n";
@@ -1329,7 +1329,7 @@ namespace yy
     break;
 
   case 82:
-#line 1616 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1612 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.external]\n";
@@ -1343,7 +1343,7 @@ namespace yy
     break;
 
   case 83:
-#line 1627 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1623 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.expr]\n";
@@ -1358,7 +1358,7 @@ namespace yy
     break;
 
   case 84:
-#line 1639 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1635 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.external]\n";
@@ -1373,7 +1373,7 @@ namespace yy
     break;
 
   case 85:
-#line 1651 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1647 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.expr]\n";
@@ -1388,7 +1388,7 @@ namespace yy
     break;
 
   case 86:
-#line 1663 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1659 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
@@ -1403,7 +1403,7 @@ namespace yy
     break;
 
   case 87:
-#line 1675 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1671 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
@@ -1418,7 +1418,7 @@ namespace yy
     break;
 
   case 88:
-#line 1693 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1689 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [single]\n";
@@ -1432,7 +1432,7 @@ namespace yy
     break;
 
   case 89:
-#line 1704 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1700 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [list]\n";
@@ -1446,7 +1446,7 @@ namespace yy
     break;
 
   case 90:
-#line 1721 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1717 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname]\n";
@@ -1458,7 +1458,7 @@ namespace yy
     break;
 
   case 91:
-#line 1730 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1726 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname.type]\n";
@@ -1470,7 +1470,7 @@ namespace yy
     break;
 
   case 92:
-#line 1745 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1741 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EnclosedExpr [ ]\n";
@@ -1481,7 +1481,7 @@ namespace yy
     break;
 
   case 93:
-#line 1759 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1755 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QueryBody [expr]\n";
@@ -1492,7 +1492,7 @@ namespace yy
     break;
 
   case 94:
-#line 1773 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1769 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [single]\n";
@@ -1504,7 +1504,7 @@ namespace yy
     break;
 
   case 95:
-#line 1782 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1778 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [expr.single]\n";
@@ -1516,7 +1516,7 @@ namespace yy
     break;
 
   case 96:
-#line 1797 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1793 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [FLWORExpr]\n";
@@ -1526,7 +1526,7 @@ namespace yy
     break;
 
   case 97:
-#line 1804 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1800 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [QuantifiedExpr]\n";
@@ -1536,7 +1536,7 @@ namespace yy
     break;
 
   case 98:
-#line 1811 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1807 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TypeswitchExpr]\n";
@@ -1546,7 +1546,7 @@ namespace yy
     break;
 
   case 99:
-#line 1818 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1814 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [IfExpr]\n";
@@ -1556,7 +1556,7 @@ namespace yy
     break;
 
   case 100:
-#line 1825 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1821 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [OrExpr]\n";
@@ -1566,7 +1566,7 @@ namespace yy
     break;
 
   case 101:
-#line 1834 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1830 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [InsertExpr]\n";
@@ -1576,7 +1576,7 @@ namespace yy
     break;
 
   case 102:
-#line 1841 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1837 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [DeleteExpr]\n";
@@ -1586,7 +1586,7 @@ namespace yy
     break;
 
   case 103:
-#line 1848 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1844 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [RenameExpr]\n";
@@ -1596,7 +1596,7 @@ namespace yy
     break;
 
   case 104:
-#line 1855 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1851 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [ReplaceExpr]\n";
@@ -1606,7 +1606,7 @@ namespace yy
     break;
 
   case 105:
-#line 1862 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1858 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TransformExpr]\n";
@@ -1616,7 +1616,7 @@ namespace yy
     break;
 
   case 106:
-#line 1875 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1871 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [return]\n";
@@ -1629,7 +1629,7 @@ namespace yy
     break;
 
   case 107:
-#line 1885 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1881 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.return]\n";
@@ -1643,7 +1643,7 @@ namespace yy
     break;
 
   case 108:
-#line 1896 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1892 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [orderby.return]\n";
@@ -1657,7 +1657,7 @@ namespace yy
     break;
 
   case 109:
-#line 1907 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1903 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.orderby.return]\n";
@@ -1671,7 +1671,7 @@ namespace yy
     break;
 
   case 110:
-#line 1924 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1920 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [single]\n";
@@ -1683,7 +1683,7 @@ namespace yy
     break;
 
   case 111:
-#line 1933 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1929 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [list]\n";
@@ -1695,7 +1695,7 @@ namespace yy
     break;
 
   case 112:
-#line 1948 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1944 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [for]\n";
@@ -1705,7 +1705,7 @@ namespace yy
     break;
 
   case 113:
-#line 1955 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1951 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [let]\n";
@@ -1715,7 +1715,7 @@ namespace yy
     break;
 
   case 114:
-#line 1968 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1964 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForClause [ ]\n";
@@ -1726,7 +1726,7 @@ namespace yy
     break;
 
   case 115:
-#line 1982 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1978 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [single]\n";
@@ -1738,7 +1738,7 @@ namespace yy
     break;
 
   case 116:
-#line 1991 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 1987 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [list]\n";
@@ -1752,7 +1752,7 @@ namespace yy
     break;
 
   case 117:
-#line 2008 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2004 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [in]\n";
@@ -1765,7 +1765,7 @@ namespace yy
     break;
 
   case 118:
-#line 2018 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2014 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.in]\n";
@@ -1779,7 +1779,7 @@ namespace yy
     break;
 
   case 119:
-#line 2029 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2025 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.in]\n";
@@ -1794,7 +1794,7 @@ namespace yy
     break;
 
   case 120:
-#line 2041 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2037 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.in]\n";
@@ -1809,7 +1809,7 @@ namespace yy
     break;
 
   case 121:
-#line 2054 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2050 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [scorevar.in]\n";
@@ -1823,7 +1823,7 @@ namespace yy
     break;
 
   case 122:
-#line 2065 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2061 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.scorevar.in]\n";
@@ -1838,7 +1838,7 @@ namespace yy
     break;
 
   case 123:
-#line 2077 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2073 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.scorevar.in]\n";
@@ -1853,7 +1853,7 @@ namespace yy
     break;
 
   case 124:
-#line 2089 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2085 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.scorevar.in]\n";
@@ -1868,7 +1868,7 @@ namespace yy
     break;
 
   case 125:
-#line 2107 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2103 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PositionalVar [ ]\n";
@@ -1879,7 +1879,7 @@ namespace yy
     break;
 
   case 126:
-#line 2122 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2118 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTScoreVar [ ]\n";
@@ -1890,7 +1890,7 @@ namespace yy
     break;
 
   case 127:
-#line 2136 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2132 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClause [ ]\n";
@@ -1902,7 +1902,7 @@ namespace yy
     break;
 
   case 128:
-#line 2151 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2147 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [single]\n";
@@ -1914,7 +1914,7 @@ namespace yy
     break;
 
   case 129:
-#line 2160 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2156 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [list.single]\n";
@@ -1928,7 +1928,7 @@ namespace yy
     break;
 
   case 130:
-#line 2177 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2173 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [gets]\n";
@@ -1942,7 +1942,7 @@ namespace yy
     break;
 
   case 131:
-#line 2188 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2184 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.gets]\n";
@@ -1956,7 +1956,7 @@ namespace yy
     break;
 
   case 132:
-#line 2200 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2196 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [scorevar.gets]\n";
@@ -1970,7 +1970,7 @@ namespace yy
     break;
 
   case 133:
-#line 2211 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2207 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.scorevar.gets]\n";
@@ -1984,7 +1984,7 @@ namespace yy
     break;
 
   case 134:
-#line 2229 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2225 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "WhereClause [ ]\n";
@@ -1995,7 +1995,7 @@ namespace yy
     break;
 
   case 135:
-#line 2243 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2239 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [ ]\n";
@@ -2006,7 +2006,7 @@ namespace yy
     break;
 
   case 136:
-#line 2251 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2247 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [stable]\n";
@@ -2018,7 +2018,7 @@ namespace yy
     break;
 
   case 137:
-#line 2266 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2262 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [single]\n";
@@ -2030,7 +2030,7 @@ namespace yy
     break;
 
   case 138:
-#line 2275 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2271 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [list]\n";
@@ -2044,7 +2044,7 @@ namespace yy
     break;
 
   case 139:
-#line 2292 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2288 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single]\n";
@@ -2056,7 +2056,7 @@ namespace yy
     break;
 
   case 140:
-#line 2301 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2297 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single.modifier]\n";
@@ -2068,7 +2068,7 @@ namespace yy
     break;
 
   case 141:
-#line 2316 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2312 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir]\n";
@@ -2081,7 +2081,7 @@ namespace yy
     break;
 
   case 142:
-#line 2326 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2322 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty]\n";
@@ -2094,7 +2094,7 @@ namespace yy
     break;
 
   case 143:
-#line 2336 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2332 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [collation]\n";
@@ -2107,7 +2107,7 @@ namespace yy
     break;
 
   case 144:
-#line 2346 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2342 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty]\n";
@@ -2120,7 +2120,7 @@ namespace yy
     break;
 
   case 145:
-#line 2356 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2352 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.collation]\n";
@@ -2133,7 +2133,7 @@ namespace yy
     break;
 
   case 146:
-#line 2366 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2362 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty.collation]\n";
@@ -2146,7 +2146,7 @@ namespace yy
     break;
 
   case 147:
-#line 2376 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2372 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty.collation]\n";
@@ -2159,7 +2159,7 @@ namespace yy
     break;
 
   case 148:
-#line 2392 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2388 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [ascending]\n";
@@ -2169,7 +2169,7 @@ namespace yy
     break;
 
   case 149:
-#line 2399 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2395 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [descending]\n";
@@ -2179,7 +2179,7 @@ namespace yy
     break;
 
   case 150:
-#line 2412 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2408 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [greatest]\n";
@@ -2190,7 +2190,7 @@ namespace yy
     break;
 
   case 151:
-#line 2420 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2416 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [least]\n";
@@ -2201,7 +2201,7 @@ namespace yy
     break;
 
   case 152:
-#line 2434 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2430 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderCollationSpec [ ]\n";
@@ -2212,7 +2212,7 @@ namespace yy
     break;
 
   case 153:
-#line 2448 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2444 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [some]\n";
@@ -2225,7 +2225,7 @@ namespace yy
     break;
 
   case 154:
-#line 2458 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2454 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [every]\n";
@@ -2238,7 +2238,7 @@ namespace yy
     break;
 
   case 155:
-#line 2474 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2470 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [single]\n";
@@ -2251,7 +2251,7 @@ namespace yy
     break;
 
   case 156:
-#line 2484 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2480 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [list]\n";
@@ -2263,7 +2263,7 @@ namespace yy
     break;
 
   case 157:
-#line 2499 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2495 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [in]\n";
@@ -2275,7 +2275,7 @@ namespace yy
     break;
 
   case 158:
-#line 2508 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2504 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [type.in]\n";
@@ -2288,7 +2288,7 @@ namespace yy
     break;
 
   case 159:
-#line 2524 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2520 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.return]\n";
@@ -2301,7 +2301,7 @@ namespace yy
     break;
 
   case 160:
-#line 2534 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2530 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.varname.return]\n";
@@ -2315,7 +2315,7 @@ namespace yy
     break;
 
   case 161:
-#line 2551 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2547 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [single]\n";
@@ -2327,7 +2327,7 @@ namespace yy
     break;
 
   case 162:
-#line 2560 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2556 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [list]\n";
@@ -2339,7 +2339,7 @@ namespace yy
     break;
 
   case 163:
-#line 2575 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2571 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.return]\n";
@@ -2351,7 +2351,7 @@ namespace yy
     break;
 
   case 164:
-#line 2584 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2580 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.as.return]\n";
@@ -2364,7 +2364,7 @@ namespace yy
     break;
 
   case 165:
-#line 2600 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2596 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IfExpr [ ]\n";
@@ -2375,7 +2375,7 @@ namespace yy
     break;
 
   case 166:
-#line 2614 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2610 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [and]\n";
@@ -2385,7 +2385,7 @@ namespace yy
     break;
 
   case 167:
-#line 2621 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2617 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [or.and]\n";
@@ -2396,7 +2396,7 @@ namespace yy
     break;
 
   case 168:
-#line 2635 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2631 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [comp]\n";
@@ -2406,7 +2406,7 @@ namespace yy
     break;
 
   case 169:
-#line 2642 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2638 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [and.comp]\n";
@@ -2417,7 +2417,7 @@ namespace yy
     break;
 
   case 170:
-#line 2664 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2660 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains]\n";
@@ -2427,7 +2427,7 @@ namespace yy
     break;
 
   case 171:
-#line 2671 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2667 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -2441,7 +2441,7 @@ namespace yy
     break;
 
   case 172:
-#line 2682 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2678 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -2455,7 +2455,7 @@ namespace yy
     break;
 
   case 173:
-#line 2693 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2689 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "is" | "<<" | ">>" */
 #ifdef ZORBA_DEBUG_PARSER
@@ -2469,7 +2469,7 @@ namespace yy
     break;
 
   case 174:
-#line 2710 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2706 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range]\n";
@@ -2479,7 +2479,7 @@ namespace yy
     break;
 
   case 175:
-#line 2717 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2713 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect]\n";
@@ -2492,7 +2492,7 @@ namespace yy
     break;
 
   case 176:
-#line 2727 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2723 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect.ftignore]\n";
@@ -2505,7 +2505,7 @@ namespace yy
     break;
 
   case 177:
-#line 2743 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2739 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add]\n";
@@ -2515,7 +2515,7 @@ namespace yy
     break;
 
   case 178:
-#line 2750 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2746 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add.to.add]\n";
@@ -2526,7 +2526,7 @@ namespace yy
     break;
 
   case 179:
-#line 2764 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2760 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult]\n";
@@ -2536,7 +2536,7 @@ namespace yy
     break;
 
   case 180:
-#line 2771 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2767 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult+mult]\n";
@@ -2546,7 +2546,7 @@ namespace yy
     break;
 
   case 181:
-#line 2778 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2774 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult-mult]\n";
@@ -2556,7 +2556,7 @@ namespace yy
     break;
 
   case 182:
-#line 2791 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2787 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [union]\n";
@@ -2565,7 +2565,7 @@ namespace yy
     break;
 
   case 183:
-#line 2797 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2793 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult*union]\n";
@@ -2575,7 +2575,7 @@ namespace yy
     break;
 
   case 184:
-#line 2804 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2800 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.div.union]\n";
@@ -2585,7 +2585,7 @@ namespace yy
     break;
 
   case 185:
-#line 2811 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2807 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.idiv.union]\n";
@@ -2595,7 +2595,7 @@ namespace yy
     break;
 
   case 186:
-#line 2818 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2814 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.mod.union]\n";
@@ -2605,7 +2605,7 @@ namespace yy
     break;
 
   case 187:
-#line 2831 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2827 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [interexcept]\n";
@@ -2615,7 +2615,7 @@ namespace yy
     break;
 
   case 188:
-#line 2838 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2834 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union.union.interexcept]\n";
@@ -2626,7 +2626,7 @@ namespace yy
     break;
 
   case 189:
-#line 2846 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2842 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union|interexcept]\n";
@@ -2637,7 +2637,7 @@ namespace yy
     break;
 
   case 190:
-#line 2860 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2856 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [instanceof]\n";
@@ -2647,7 +2647,7 @@ namespace yy
     break;
 
   case 191:
-#line 2867 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2863 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
@@ -2657,7 +2657,7 @@ namespace yy
     break;
 
   case 192:
-#line 2874 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2870 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
@@ -2667,7 +2667,7 @@ namespace yy
     break;
 
   case 193:
-#line 2887 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2883 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat]\n";
@@ -2677,7 +2677,7 @@ namespace yy
     break;
 
   case 194:
-#line 2894 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2890 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat.seqtype]\n";
@@ -2689,7 +2689,7 @@ namespace yy
     break;
 
   case 195:
-#line 2909 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2905 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable]\n";
@@ -2699,7 +2699,7 @@ namespace yy
     break;
 
   case 196:
-#line 2916 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2912 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable.seqtype]\n";
@@ -2711,7 +2711,7 @@ namespace yy
     break;
 
   case 197:
-#line 2931 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2927 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast]\n";
@@ -2721,7 +2721,7 @@ namespace yy
     break;
 
   case 198:
-#line 2938 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2934 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast.singletype]\n";
@@ -2733,7 +2733,7 @@ namespace yy
     break;
 
   case 199:
-#line 2953 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2949 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary]\n";
@@ -2743,7 +2743,7 @@ namespace yy
     break;
 
   case 200:
-#line 2960 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2956 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary.singletype]\n";
@@ -2755,7 +2755,7 @@ namespace yy
     break;
 
   case 201:
-#line 2975 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2971 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [value]\n";
@@ -2765,7 +2765,7 @@ namespace yy
     break;
 
   case 202:
-#line 2982 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2978 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [signlist.value]\n";
@@ -2777,7 +2777,7 @@ namespace yy
     break;
 
   case 203:
-#line 2997 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 2993 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [+]\n";
@@ -2787,7 +2787,7 @@ namespace yy
     break;
 
   case 204:
-#line 3004 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3000 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [-]\n";
@@ -2797,7 +2797,7 @@ namespace yy
     break;
 
   case 205:
-#line 3011 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3007 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.+]\n";
@@ -2807,7 +2807,7 @@ namespace yy
     break;
 
   case 206:
-#line 3018 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3014 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.-]\n";
@@ -2819,7 +2819,7 @@ namespace yy
     break;
 
   case 207:
-#line 3033 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3029 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [validate]\n";
@@ -2829,7 +2829,7 @@ namespace yy
     break;
 
   case 208:
-#line 3040 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3036 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [path]\n";
@@ -2839,7 +2839,7 @@ namespace yy
     break;
 
   case 209:
-#line 3047 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3043 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [extension]\n";
@@ -2849,7 +2849,7 @@ namespace yy
     break;
 
   case 210:
-#line 3061 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3057 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [=]\n";
@@ -2859,7 +2859,7 @@ namespace yy
     break;
 
   case 211:
-#line 3068 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3064 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [!=]\n";
@@ -2869,7 +2869,7 @@ namespace yy
     break;
 
   case 212:
-#line 3075 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3071 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<]\n";
@@ -2879,7 +2879,7 @@ namespace yy
     break;
 
   case 213:
-#line 3082 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3078 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<=]\n";
@@ -2889,7 +2889,7 @@ namespace yy
     break;
 
   case 214:
-#line 3089 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3085 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>]\n";
@@ -2899,7 +2899,7 @@ namespace yy
     break;
 
   case 215:
-#line 3096 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3092 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>=]\n";
@@ -2909,7 +2909,7 @@ namespace yy
     break;
 
   case 216:
-#line 3109 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3105 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [eq]\n";
@@ -2919,7 +2919,7 @@ namespace yy
     break;
 
   case 217:
-#line 3116 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3112 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ne]\n";
@@ -2929,7 +2929,7 @@ namespace yy
     break;
 
   case 218:
-#line 3123 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3119 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [lt]\n";
@@ -2939,7 +2939,7 @@ namespace yy
     break;
 
   case 219:
-#line 3130 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3126 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [le]\n";
@@ -2949,7 +2949,7 @@ namespace yy
     break;
 
   case 220:
-#line 3137 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3133 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [gt]\n";
@@ -2959,7 +2959,7 @@ namespace yy
     break;
 
   case 221:
-#line 3144 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3140 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ge]\n";
@@ -2969,7 +2969,7 @@ namespace yy
     break;
 
   case 222:
-#line 3157 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3153 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [is]\n";
@@ -2979,7 +2979,7 @@ namespace yy
     break;
 
   case 223:
-#line 3164 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3160 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [<<]\n";
@@ -2989,7 +2989,7 @@ namespace yy
     break;
 
   case 224:
-#line 3171 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3167 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [>>]\n";
@@ -2999,7 +2999,7 @@ namespace yy
     break;
 
   case 225:
-#line 3185 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3181 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [expr]\n";
@@ -3009,7 +3009,7 @@ namespace yy
     break;
 
   case 226:
-#line 3192 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3188 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [mode.expr]\n";
@@ -3021,7 +3021,7 @@ namespace yy
     break;
 
   case 227:
-#line 3207 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3203 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist]\n";
@@ -3033,7 +3033,7 @@ namespace yy
     break;
 
   case 228:
-#line 3216 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3212 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist.expr]\n";
@@ -3045,7 +3045,7 @@ namespace yy
     break;
 
   case 229:
-#line 3231 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3227 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [single]\n";
@@ -3057,7 +3057,7 @@ namespace yy
     break;
 
   case 230:
-#line 3240 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3236 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [list]\n";
@@ -3071,7 +3071,7 @@ namespace yy
     break;
 
   case 231:
-#line 3257 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3253 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Pragma [ ]\n";
@@ -3084,7 +3084,7 @@ namespace yy
     break;
 
   case 232:
-#line 3265 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3261 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = new Pragma((yyloc),
 								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval))),
@@ -3093,7 +3093,7 @@ namespace yy
     break;
 
   case 233:
-#line 3308 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3304 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/]\n";
@@ -3103,7 +3103,7 @@ namespace yy
     break;
 
   case 234:
-#line 3315 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3311 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/relative]\n";
@@ -3113,7 +3113,7 @@ namespace yy
     break;
 
   case 235:
-#line 3322 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3318 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [//relative]\n";
@@ -3123,7 +3123,7 @@ namespace yy
     break;
 
   case 236:
-#line 3329 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3325 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [relative]\n";
@@ -3134,7 +3134,7 @@ namespace yy
     break;
 
   case 237:
-#line 3343 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3339 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step]\n";
@@ -3145,7 +3145,7 @@ namespace yy
     break;
 
   case 238:
-#line 3351 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3347 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step/relative]\n";
@@ -3155,7 +3155,7 @@ namespace yy
     break;
 
   case 239:
-#line 3358 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3354 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step//relative]\n";
@@ -3165,7 +3165,7 @@ namespace yy
     break;
 
   case 240:
-#line 3371 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3367 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [axis]\n";
@@ -3175,7 +3175,7 @@ namespace yy
     break;
 
   case 241:
-#line 3378 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3374 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [filter]\n";
@@ -3185,7 +3185,7 @@ namespace yy
     break;
 
   case 242:
-#line 3391 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3387 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward]\n";
@@ -3197,7 +3197,7 @@ namespace yy
     break;
 
   case 243:
-#line 3400 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3396 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward.predlist]\n";
@@ -3209,7 +3209,7 @@ namespace yy
     break;
 
   case 244:
-#line 3409 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3405 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse]\n";
@@ -3221,7 +3221,7 @@ namespace yy
     break;
 
   case 245:
-#line 3418 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3414 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse.predlist]\n";
@@ -3233,7 +3233,7 @@ namespace yy
     break;
 
   case 246:
-#line 3433 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3429 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [nodetest]\n";
@@ -3245,7 +3245,7 @@ namespace yy
     break;
 
   case 247:
-#line 3442 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3438 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [abbrev]\n";
@@ -3256,7 +3256,7 @@ namespace yy
     break;
 
   case 248:
-#line 3456 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3452 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [child]\n";
@@ -3266,7 +3266,7 @@ namespace yy
     break;
 
   case 249:
-#line 3463 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3459 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant]\n";
@@ -3276,7 +3276,7 @@ namespace yy
     break;
 
   case 250:
-#line 3470 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3466 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [attribute]\n";
@@ -3286,7 +3286,7 @@ namespace yy
     break;
 
   case 251:
-#line 3477 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3473 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [self]\n";
@@ -3296,7 +3296,7 @@ namespace yy
     break;
 
   case 252:
-#line 3484 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3480 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant_or_self]\n";
@@ -3306,7 +3306,7 @@ namespace yy
     break;
 
   case 253:
-#line 3491 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3487 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following_sibling]\n";
@@ -3316,7 +3316,7 @@ namespace yy
     break;
 
   case 254:
-#line 3498 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3494 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following]\n";
@@ -3326,7 +3326,7 @@ namespace yy
     break;
 
   case 255:
-#line 3511 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3507 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [nodetest]\n";
@@ -3336,7 +3336,7 @@ namespace yy
     break;
 
   case 256:
-#line 3518 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3514 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [@ nodetest]\n";
@@ -3346,7 +3346,7 @@ namespace yy
     break;
 
   case 257:
-#line 3531 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3527 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [nodetest]\n";
@@ -3358,7 +3358,7 @@ namespace yy
     break;
 
   case 258:
-#line 3540 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3536 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [..]\n";
@@ -3370,7 +3370,7 @@ namespace yy
     break;
 
   case 259:
-#line 3555 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3551 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [parent]\n";
@@ -3380,7 +3380,7 @@ namespace yy
     break;
 
   case 260:
-#line 3562 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3558 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor]\n";
@@ -3390,7 +3390,7 @@ namespace yy
     break;
 
   case 261:
-#line 3569 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3565 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding_sibling]\n";
@@ -3400,7 +3400,7 @@ namespace yy
     break;
 
   case 262:
-#line 3576 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3572 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding]\n";
@@ -3410,7 +3410,7 @@ namespace yy
     break;
 
   case 263:
-#line 3583 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3579 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor_or_self]\n";
@@ -3420,7 +3420,7 @@ namespace yy
     break;
 
   case 264:
-#line 3601 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3597 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [kindtest]\n";
@@ -3430,7 +3430,7 @@ namespace yy
     break;
 
   case 265:
-#line 3608 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3604 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [nametest]\n";
@@ -3440,7 +3440,7 @@ namespace yy
     break;
 
   case 266:
-#line 3621 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3617 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [qname]\n";
@@ -3450,7 +3450,7 @@ namespace yy
     break;
 
   case 267:
-#line 3628 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3624 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [wildcard]\n";
@@ -3460,7 +3460,7 @@ namespace yy
     break;
 
   case 268:
-#line 3641 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3637 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*]\n";
@@ -3473,7 +3473,7 @@ namespace yy
     break;
 
   case 269:
-#line 3651 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3647 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [pref:*]\n";
@@ -3486,7 +3486,7 @@ namespace yy
     break;
 
   case 270:
-#line 3661 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3657 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*:qname]\n";
@@ -3499,7 +3499,7 @@ namespace yy
     break;
 
   case 271:
-#line 3677 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3673 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary]\n";
@@ -3509,7 +3509,7 @@ namespace yy
     break;
 
   case 272:
-#line 3684 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3680 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary.predlist]\n";
@@ -3521,7 +3521,7 @@ namespace yy
     break;
 
   case 273:
-#line 3699 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3695 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [single]\n";
@@ -3533,7 +3533,7 @@ namespace yy
     break;
 
   case 274:
-#line 3708 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3704 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [list]\n";
@@ -3547,7 +3547,7 @@ namespace yy
     break;
 
   case 275:
-#line 3725 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3721 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Predicate [ ]\n";
@@ -3557,7 +3557,7 @@ namespace yy
     break;
 
   case 276:
-#line 3739 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3735 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [literal]\n";
@@ -3567,7 +3567,7 @@ namespace yy
     break;
 
   case 277:
-#line 3746 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3742 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [varref]\n";
@@ -3577,7 +3577,7 @@ namespace yy
     break;
 
   case 278:
-#line 3753 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3749 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [paren]\n";
@@ -3587,7 +3587,7 @@ namespace yy
     break;
 
   case 279:
-#line 3760 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3756 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [context_item]\n";
@@ -3597,7 +3597,7 @@ namespace yy
     break;
 
   case 280:
-#line 3767 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3763 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [funcall]\n";
@@ -3607,7 +3607,7 @@ namespace yy
     break;
 
   case 281:
-#line 3774 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3770 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [cons]\n";
@@ -3617,7 +3617,7 @@ namespace yy
     break;
 
   case 282:
-#line 3781 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3777 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [ordered]\n";
@@ -3627,7 +3627,7 @@ namespace yy
     break;
 
   case 283:
-#line 3788 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3784 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [unordered]\n";
@@ -3637,7 +3637,7 @@ namespace yy
     break;
 
   case 284:
-#line 3801 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3797 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [numeric]\n";
@@ -3647,7 +3647,7 @@ namespace yy
     break;
 
   case 285:
-#line 3808 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3804 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [string]\n";
@@ -3657,7 +3657,7 @@ namespace yy
     break;
 
   case 286:
-#line 3821 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3817 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [decimal]\n";
@@ -3668,7 +3668,7 @@ namespace yy
     break;
 
   case 287:
-#line 3829 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3825 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [int]\n";
@@ -3679,7 +3679,7 @@ namespace yy
     break;
 
   case 288:
-#line 3837 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3833 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [double]\n";
@@ -3690,7 +3690,7 @@ namespace yy
     break;
 
   case 289:
-#line 3851 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3847 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarRef [ ]\n";
@@ -3700,7 +3700,7 @@ namespace yy
     break;
 
   case 290:
-#line 3864 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3860 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [()]\n";
@@ -3710,7 +3710,7 @@ namespace yy
     break;
 
   case 291:
-#line 3871 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3867 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [(expr)]\n";
@@ -3721,7 +3721,7 @@ namespace yy
     break;
 
   case 292:
-#line 3885 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3881 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ContextItemExpr [.]\n";
@@ -3731,7 +3731,7 @@ namespace yy
     break;
 
   case 293:
-#line 3898 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3894 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderedExpr [expr]\n";
@@ -3742,7 +3742,7 @@ namespace yy
     break;
 
   case 294:
-#line 3912 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3908 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnorderedExpr [expr]\n";
@@ -3753,7 +3753,7 @@ namespace yy
     break;
 
   case 295:
-#line 3971 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3967 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [ ]\n";
@@ -3765,7 +3765,7 @@ namespace yy
     break;
 
   case 296:
-#line 3980 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3976 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [arglist]\n";
@@ -3777,7 +3777,7 @@ namespace yy
     break;
 
   case 297:
-#line 3995 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 3991 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [single]\n";
@@ -3789,7 +3789,7 @@ namespace yy
     break;
 
   case 298:
-#line 4004 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4000 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [list]\n";
@@ -3801,7 +3801,7 @@ namespace yy
     break;
 
   case 299:
-#line 4019 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4015 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [direct]\n";
@@ -3811,7 +3811,7 @@ namespace yy
     break;
 
   case 300:
-#line 4026 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4022 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [computed]\n";
@@ -3821,7 +3821,7 @@ namespace yy
     break;
 
   case 301:
-#line 4039 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4035 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [element]\n";
@@ -3831,7 +3831,7 @@ namespace yy
     break;
 
   case 302:
-#line 4046 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4042 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [comment]\n";
@@ -3841,7 +3841,7 @@ namespace yy
     break;
 
   case 303:
-#line 4053 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4049 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [pi]\n";
@@ -3851,7 +3851,7 @@ namespace yy
     break;
 
   case 304:
-#line 4066 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4062 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname/> ]\n";
@@ -3865,7 +3865,7 @@ namespace yy
     break;
 
   case 305:
-#line 4077 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4073 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist/> ]\n";
@@ -3879,7 +3879,7 @@ namespace yy
     break;
 
   case 306:
-#line 4088 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4084 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname></qname>]\n";
@@ -3893,7 +3893,7 @@ namespace yy
     break;
 
   case 307:
-#line 4099 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4095 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname>content</qname>]\n";
@@ -3907,7 +3907,7 @@ namespace yy
     break;
 
   case 308:
-#line 4110 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4106 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist></qname>]\n";
@@ -3921,7 +3921,7 @@ namespace yy
     break;
 
   case 309:
-#line 4121 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4117 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
@@ -3935,7 +3935,7 @@ namespace yy
     break;
 
   case 310:
-#line 4139 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4135 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [single]\n";
@@ -3947,7 +3947,7 @@ namespace yy
     break;
 
   case 311:
-#line 4148 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4144 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [list]\n";
@@ -3959,7 +3959,7 @@ namespace yy
     break;
 
   case 312:
-#line 4163 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4159 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [single]\n";
@@ -3971,7 +3971,7 @@ namespace yy
     break;
 
   case 313:
-#line 4172 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4168 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [list]\n";
@@ -3985,7 +3985,7 @@ namespace yy
     break;
 
   case 314:
-#line 4189 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4185 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttr [ ]\n";
@@ -3997,7 +3997,7 @@ namespace yy
     break;
 
   case 315:
-#line 4204 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4200 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [quote]\n";
@@ -4008,7 +4008,7 @@ namespace yy
     break;
 
   case 316:
-#line 4212 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4208 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [apos]\n";
@@ -4019,7 +4019,7 @@ namespace yy
     break;
 
   case 317:
-#line 4226 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4222 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList[empty]\n";
@@ -4029,14 +4029,14 @@ namespace yy
     break;
 
   case 318:
-#line 4233 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4229 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 319:
-#line 4240 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4236 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [""]\n";
@@ -4048,7 +4048,7 @@ namespace yy
     break;
 
   case 320:
-#line 4249 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4245 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [single]\n";
@@ -4060,7 +4060,7 @@ namespace yy
     break;
 
   case 321:
-#line 4258 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4254 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list ""]\n";
@@ -4074,7 +4074,7 @@ namespace yy
     break;
 
   case 322:
-#line 4269 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4265 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list]\n";
@@ -4087,7 +4087,7 @@ namespace yy
     break;
 
   case 323:
-#line 4285 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4281 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']\n";
@@ -4097,14 +4097,14 @@ namespace yy
     break;
 
   case 324:
-#line 4292 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4288 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 325:
-#line 4299 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4295 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']\n";
@@ -4116,7 +4116,7 @@ namespace yy
     break;
 
   case 326:
-#line 4308 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4304 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [single]\n";
@@ -4128,7 +4128,7 @@ namespace yy
     break;
 
   case 327:
-#line 4317 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4313 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.'']\n";
@@ -4142,7 +4142,7 @@ namespace yy
     break;
 
   case 328:
-#line 4328 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4324 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.single]\n";
@@ -4156,7 +4156,7 @@ namespace yy
     break;
 
   case 329:
-#line 4345 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4341 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [quote_attr_content]\n";
@@ -4167,7 +4167,7 @@ namespace yy
     break;
 
   case 330:
-#line 4353 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4349 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [common_content]\n";
@@ -4178,7 +4178,7 @@ namespace yy
     break;
 
   case 331:
-#line 4367 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4363 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [apos_attr_content]\n";
@@ -4189,7 +4189,7 @@ namespace yy
     break;
 
   case 332:
-#line 4375 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4371 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [common_content]\n";
@@ -4200,7 +4200,7 @@ namespace yy
     break;
 
   case 333:
-#line 4389 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4385 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cons]\n";
@@ -4211,7 +4211,7 @@ namespace yy
     break;
 
   case 334:
-#line 4397 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4393 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [elem_content]\n";
@@ -4222,7 +4222,7 @@ namespace yy
     break;
 
   case 335:
-#line 4405 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4401 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cdata]\n";
@@ -4234,7 +4234,7 @@ namespace yy
     break;
 
   case 336:
-#line 4414 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4410 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [common_content]\n";
@@ -4246,7 +4246,7 @@ namespace yy
     break;
 
   case 337:
-#line 4429 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4425 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [entity_ref]\n";
@@ -4258,7 +4258,7 @@ namespace yy
     break;
 
   case 338:
-#line 4438 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4434 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [char_ref]\n";
@@ -4270,7 +4270,7 @@ namespace yy
     break;
 
   case 339:
-#line 4447 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4443 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [{{]\n";
@@ -4281,7 +4281,7 @@ namespace yy
     break;
 
   case 340:
-#line 4455 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4451 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [}}]\n";
@@ -4292,7 +4292,7 @@ namespace yy
     break;
 
   case 341:
-#line 4463 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4459 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [expr]\n";
@@ -4303,7 +4303,7 @@ namespace yy
     break;
 
   case 342:
-#line 4477 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4473 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirCommentConstructor [ ]\n";
@@ -4314,7 +4314,7 @@ namespace yy
     break;
 
   case 343:
-#line 4485 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4481 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
        cout << "DirCommentConstructor [ ]\n";
@@ -4324,7 +4324,7 @@ namespace yy
     break;
 
   case 344:
-#line 4503 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4499 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target]\n";
@@ -4335,7 +4335,7 @@ namespace yy
     break;
 
   case 345:
-#line 4511 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4507 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target.charlit]\n";
@@ -4347,7 +4347,7 @@ namespace yy
     break;
 
   case 346:
-#line 4531 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4527 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CDataSection [ ]\n";
@@ -4357,7 +4357,7 @@ namespace yy
     break;
 
   case 347:
-#line 4549 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4545 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [doc]\n";
@@ -4367,7 +4367,7 @@ namespace yy
     break;
 
   case 348:
-#line 4556 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4552 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [elem]\n";
@@ -4377,7 +4377,7 @@ namespace yy
     break;
 
   case 349:
-#line 4563 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4559 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [attr]\n";
@@ -4387,7 +4387,7 @@ namespace yy
     break;
 
   case 350:
-#line 4570 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4566 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [text]\n";
@@ -4397,7 +4397,7 @@ namespace yy
     break;
 
   case 351:
-#line 4577 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4573 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [comment]\n";
@@ -4407,7 +4407,7 @@ namespace yy
     break;
 
   case 352:
-#line 4584 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4580 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [pi]\n";
@@ -4417,7 +4417,7 @@ namespace yy
     break;
 
   case 353:
-#line 4597 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4593 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompDocConstructor [ ]\n";
@@ -4428,7 +4428,7 @@ namespace yy
     break;
 
   case 354:
-#line 4611 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4607 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [ ]\n";
@@ -4440,7 +4440,7 @@ namespace yy
     break;
 
   case 355:
-#line 4620 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4616 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [content]\n";
@@ -4452,7 +4452,7 @@ namespace yy
     break;
 
   case 356:
-#line 4629 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4625 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name]\n";
@@ -4463,7 +4463,7 @@ namespace yy
     break;
 
   case 357:
-#line 4637 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4633 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name.content]\n";
@@ -4474,7 +4474,7 @@ namespace yy
     break;
 
   case 358:
-#line 4665 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4661 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [ ]\n";
@@ -4486,7 +4486,7 @@ namespace yy
     break;
 
   case 359:
-#line 4674 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4670 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [val]\n";
@@ -4498,7 +4498,7 @@ namespace yy
     break;
 
   case 360:
-#line 4683 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4679 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name]\n";
@@ -4509,7 +4509,7 @@ namespace yy
     break;
 
   case 361:
-#line 4691 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4687 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name.val]\n";
@@ -4520,7 +4520,7 @@ namespace yy
     break;
 
   case 362:
-#line 4705 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4701 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompTextConstructor [content]\n";
@@ -4531,7 +4531,7 @@ namespace yy
     break;
 
   case 363:
-#line 4719 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4715 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompCommentConstructor [content]\n";
@@ -4542,7 +4542,7 @@ namespace yy
     break;
 
   case 364:
-#line 4733 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4729 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [ ]\n";
@@ -4554,7 +4554,7 @@ namespace yy
     break;
 
   case 365:
-#line 4742 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4738 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [content]\n";
@@ -4566,7 +4566,7 @@ namespace yy
     break;
 
   case 366:
-#line 4751 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4747 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target]\n";
@@ -4577,7 +4577,7 @@ namespace yy
     break;
 
   case 367:
-#line 4759 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4755 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target.content]\n";
@@ -4588,7 +4588,7 @@ namespace yy
     break;
 
   case 368:
-#line 4773 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4769 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic]\n";
@@ -4600,7 +4600,7 @@ namespace yy
     break;
 
   case 369:
-#line 4782 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4778 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic ?]\n";
@@ -4612,7 +4612,7 @@ namespace yy
     break;
 
   case 370:
-#line 4797 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4793 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeDeclaration [as seqtype]\n";
@@ -4623,7 +4623,7 @@ namespace yy
     break;
 
   case 371:
-#line 4811 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4807 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type]\n";
@@ -4635,7 +4635,7 @@ namespace yy
     break;
 
   case 372:
-#line 4820 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4816 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type.occurs]\n";
@@ -4647,7 +4647,7 @@ namespace yy
     break;
 
   case 373:
-#line 4829 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4825 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [void]\n";
@@ -4657,7 +4657,7 @@ namespace yy
     break;
 
   case 374:
-#line 4869 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4865 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [?]\n";
@@ -4668,7 +4668,7 @@ namespace yy
     break;
 
   case 375:
-#line 4877 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4873 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [*]\n";
@@ -4679,7 +4679,7 @@ namespace yy
     break;
 
   case 376:
-#line 4885 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4881 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [+]\n";
@@ -4690,7 +4690,7 @@ namespace yy
     break;
 
   case 377:
-#line 4899 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4895 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [atomic]\n";
@@ -4700,7 +4700,7 @@ namespace yy
     break;
 
   case 378:
-#line 4906 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4902 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [kind]\n";
@@ -4710,7 +4710,7 @@ namespace yy
     break;
 
   case 379:
-#line 4913 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4909 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [item]\n";
@@ -4720,7 +4720,7 @@ namespace yy
     break;
 
   case 380:
-#line 4926 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4922 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AtomicType [qname]\n";
@@ -4731,7 +4731,7 @@ namespace yy
     break;
 
   case 381:
-#line 4940 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4936 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [doc]\n";
@@ -4741,7 +4741,7 @@ namespace yy
     break;
 
   case 382:
-#line 4947 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4943 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [elem]\n";
@@ -4751,7 +4751,7 @@ namespace yy
     break;
 
   case 383:
-#line 4954 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4950 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [attr]\n";
@@ -4761,7 +4761,7 @@ namespace yy
     break;
 
   case 384:
-#line 4961 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4957 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_elem]\n";
@@ -4771,7 +4771,7 @@ namespace yy
     break;
 
   case 385:
-#line 4968 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4964 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_attr]\n";
@@ -4781,7 +4781,7 @@ namespace yy
     break;
 
   case 386:
-#line 4975 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4971 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [pi]\n";
@@ -4791,7 +4791,7 @@ namespace yy
     break;
 
   case 387:
-#line 4982 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4978 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [comment]\n";
@@ -4801,7 +4801,7 @@ namespace yy
     break;
 
   case 388:
-#line 4989 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4985 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [text]\n";
@@ -4811,7 +4811,7 @@ namespace yy
     break;
 
   case 389:
-#line 4996 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 4992 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [any]\n";
@@ -4821,7 +4821,7 @@ namespace yy
     break;
 
   case 390:
-#line 5009 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5005 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AnyKindTest [ ]\n";
@@ -4831,7 +4831,7 @@ namespace yy
     break;
 
   case 391:
-#line 5022 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5018 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [ ]\n";
@@ -4841,7 +4841,7 @@ namespace yy
     break;
 
   case 392:
-#line 5029 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5025 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [elem]\n";
@@ -4852,7 +4852,7 @@ namespace yy
     break;
 
   case 393:
-#line 5037 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5033 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [schema_elem]\n";
@@ -4863,7 +4863,7 @@ namespace yy
     break;
 
   case 394:
-#line 5051 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5047 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TextTest [ ]\n";
@@ -4873,7 +4873,7 @@ namespace yy
     break;
 
   case 395:
-#line 5064 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5060 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommentTest [ ]\n";
@@ -4883,7 +4883,7 @@ namespace yy
     break;
 
   case 396:
-#line 5077 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5073 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ ]\n";
@@ -4893,7 +4893,7 @@ namespace yy
     break;
 
   case 397:
-#line 5084 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5080 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ncname]\n";
@@ -4903,7 +4903,7 @@ namespace yy
     break;
 
   case 398:
-#line 5091 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5087 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [stringlit]\n";
@@ -4913,7 +4913,7 @@ namespace yy
     break;
 
   case 399:
-#line 5104 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5100 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [ ]\n";
@@ -4925,7 +4925,7 @@ namespace yy
     break;
 
   case 400:
-#line 5113 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5109 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name]\n";
@@ -4937,7 +4937,7 @@ namespace yy
     break;
 
   case 401:
-#line 5122 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5118 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name.type]\n";
@@ -4949,7 +4949,7 @@ namespace yy
     break;
 
   case 402:
-#line 5131 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5127 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*]\n";
@@ -4961,7 +4961,7 @@ namespace yy
     break;
 
   case 403:
-#line 5140 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5136 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*.type]\n";
@@ -4973,7 +4973,7 @@ namespace yy
     break;
 
   case 404:
-#line 5155 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5151 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaAttributeTest [ ]\n";
@@ -4984,7 +4984,7 @@ namespace yy
     break;
 
   case 405:
-#line 5169 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5165 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [ ]\n";
@@ -4996,7 +4996,7 @@ namespace yy
     break;
 
   case 406:
-#line 5178 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5174 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name]\n";
@@ -5008,7 +5008,7 @@ namespace yy
     break;
 
   case 407:
-#line 5187 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5183 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]\n";
@@ -5020,7 +5020,7 @@ namespace yy
     break;
 
   case 408:
-#line 5196 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5192 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]\n";
@@ -5032,7 +5032,7 @@ namespace yy
     break;
 
   case 409:
-#line 5205 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5201 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*]\n";
@@ -5045,7 +5045,7 @@ namespace yy
     break;
 
   case 410:
-#line 5215 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5211 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]\n";
@@ -5058,7 +5058,7 @@ namespace yy
     break;
 
   case 411:
-#line 5225 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5221 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]\n";
@@ -5071,7 +5071,7 @@ namespace yy
     break;
 
   case 412:
-#line 5241 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5237 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaElementTest [ ]\n";
@@ -5082,7 +5082,7 @@ namespace yy
     break;
 
   case 413:
-#line 5265 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5261 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name]\n";
@@ -5093,7 +5093,7 @@ namespace yy
     break;
 
   case 414:
-#line 5275 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5271 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name?]\n";
@@ -5105,7 +5105,7 @@ namespace yy
     break;
 
   case 415:
-#line 5298 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5294 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StringLiteral [ ]\n";
@@ -5115,7 +5115,7 @@ namespace yy
     break;
 
   case 416:
-#line 5340 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5336 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [ ]\n";
@@ -5124,7 +5124,7 @@ namespace yy
     break;
 
   case 417:
-#line 5352 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5348 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr]\n";
@@ -5133,7 +5133,7 @@ namespace yy
     break;
 
   case 418:
-#line 5358 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5354 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.as_first]\n";
@@ -5142,7 +5142,7 @@ namespace yy
     break;
 
   case 419:
-#line 5364 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5360 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.as_last]\n";
@@ -5151,7 +5151,7 @@ namespace yy
     break;
 
   case 420:
-#line 5370 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5366 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.after]\n";
@@ -5160,7 +5160,7 @@ namespace yy
     break;
 
   case 421:
-#line 5376 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5372 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.before]\n";
@@ -5169,7 +5169,7 @@ namespace yy
     break;
 
   case 422:
-#line 5388 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5384 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteExpr [expr]\n";
@@ -5178,7 +5178,7 @@ namespace yy
     break;
 
   case 423:
-#line 5400 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5396 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceExpr [expr.expr]\n";
@@ -5187,7 +5187,7 @@ namespace yy
     break;
 
   case 424:
-#line 5406 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5402 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceExpr [value.expr]\n";
@@ -5196,7 +5196,7 @@ namespace yy
     break;
 
   case 425:
-#line 5418 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5414 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RenameExpr [expr.expr]\n";
@@ -5205,7 +5205,7 @@ namespace yy
     break;
 
   case 426:
-#line 5445 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5441 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TransformExpr [ ]\n";
@@ -5214,7 +5214,7 @@ namespace yy
     break;
 
   case 427:
-#line 5457 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5453 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [single]\n";
@@ -5223,7 +5223,7 @@ namespace yy
     break;
 
   case 428:
-#line 5463 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5459 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [list]\n";
@@ -5232,7 +5232,7 @@ namespace yy
     break;
 
   case 429:
-#line 5483 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5479 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or]\n";
@@ -5241,7 +5241,7 @@ namespace yy
     break;
 
   case 430:
-#line 5489 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5485 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity]\n";
@@ -5250,7 +5250,7 @@ namespace yy
     break;
 
   case 431:
-#line 5495 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5491 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.weight_range]\n";
@@ -5259,7 +5259,7 @@ namespace yy
     break;
 
   case 432:
-#line 5501 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5497 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity.weight_range]\n";
@@ -5268,7 +5268,7 @@ namespace yy
     break;
 
   case 433:
-#line 5513 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5509 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_single]\n";
@@ -5277,7 +5277,7 @@ namespace yy
     break;
 
   case 434:
-#line 5519 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5515 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_single]\n";
@@ -5286,7 +5286,7 @@ namespace yy
     break;
 
   case 435:
-#line 5525 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5521 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_list]\n";
@@ -5295,7 +5295,7 @@ namespace yy
     break;
 
   case 436:
-#line 5531 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5527 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_list]\n";
@@ -5304,7 +5304,7 @@ namespace yy
     break;
 
   case 437:
-#line 5543 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5539 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [and]\n";
@@ -5313,7 +5313,7 @@ namespace yy
     break;
 
   case 438:
-#line 5549 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5545 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [or.and]\n";
@@ -5322,7 +5322,7 @@ namespace yy
     break;
 
   case 439:
-#line 5561 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5557 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [mild_not]\n";
@@ -5331,7 +5331,7 @@ namespace yy
     break;
 
   case 440:
-#line 5567 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5563 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [and.mild_not]\n";
@@ -5340,7 +5340,7 @@ namespace yy
     break;
 
   case 441:
-#line 5579 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5575 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [unary_not]\n";
@@ -5349,7 +5349,7 @@ namespace yy
     break;
 
   case 442:
-#line 5585 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5581 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [mild_not.unary_not]\n";
@@ -5358,7 +5358,7 @@ namespace yy
     break;
 
   case 443:
-#line 5597 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5593 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [words]\n";
@@ -5367,7 +5367,7 @@ namespace yy
     break;
 
   case 444:
-#line 5603 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5599 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [not.words]\n";
@@ -5376,7 +5376,7 @@ namespace yy
     break;
 
   case 445:
-#line 5615 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5611 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words]\n";
@@ -5385,7 +5385,7 @@ namespace yy
     break;
 
   case 446:
-#line 5621 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5617 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words.times]\n";
@@ -5394,7 +5394,7 @@ namespace yy
     break;
 
   case 447:
-#line 5627 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5623 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [selection]\n";
@@ -5403,7 +5403,7 @@ namespace yy
     break;
 
   case 448:
-#line 5639 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5635 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value]\n";
@@ -5412,7 +5412,7 @@ namespace yy
     break;
 
   case 449:
-#line 5645 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5641 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value.any_all_option]\n";
@@ -5421,7 +5421,7 @@ namespace yy
     break;
 
   case 450:
-#line 5657 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5653 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [literal]\n";
@@ -5430,7 +5430,7 @@ namespace yy
     break;
 
   case 451:
-#line 5663 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5659 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [expr]\n";
@@ -5439,7 +5439,7 @@ namespace yy
     break;
 
   case 452:
-#line 5675 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5671 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [order]\n";
@@ -5448,7 +5448,7 @@ namespace yy
     break;
 
   case 453:
-#line 5681 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5677 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [window]\n";
@@ -5457,7 +5457,7 @@ namespace yy
     break;
 
   case 454:
-#line 5687 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5683 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [distance]\n";
@@ -5466,7 +5466,7 @@ namespace yy
     break;
 
   case 455:
-#line 5693 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5689 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [scope]\n";
@@ -5475,7 +5475,7 @@ namespace yy
     break;
 
   case 456:
-#line 5699 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5695 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [content]\n";
@@ -5484,7 +5484,7 @@ namespace yy
     break;
 
   case 457:
-#line 5711 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5707 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOrderedIndicator [ ]\n";
@@ -5493,7 +5493,7 @@ namespace yy
     break;
 
   case 458:
-#line 5723 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5719 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [case]\n";
@@ -5503,7 +5503,7 @@ namespace yy
     break;
 
   case 459:
-#line 5730 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5726 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [diacritics]\n";
@@ -5513,7 +5513,7 @@ namespace yy
     break;
 
   case 460:
-#line 5737 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5733 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stem]\n";
@@ -5523,7 +5523,7 @@ namespace yy
     break;
 
   case 461:
-#line 5744 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5740 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [thesaurus]\n";
@@ -5533,7 +5533,7 @@ namespace yy
     break;
 
   case 462:
-#line 5751 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5747 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stopword]\n";
@@ -5543,7 +5543,7 @@ namespace yy
     break;
 
   case 463:
-#line 5758 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5754 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [language]\n";
@@ -5553,7 +5553,7 @@ namespace yy
     break;
 
   case 464:
-#line 5765 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5761 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [wildcard]\n";
@@ -5563,7 +5563,7 @@ namespace yy
     break;
 
   case 465:
-#line 5778 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5774 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [lower]\n";
@@ -5572,7 +5572,7 @@ namespace yy
     break;
 
   case 466:
-#line 5784 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5780 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [upper]\n";
@@ -5581,7 +5581,7 @@ namespace yy
     break;
 
   case 467:
-#line 5790 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5786 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [sensitive]\n";
@@ -5590,7 +5590,7 @@ namespace yy
     break;
 
   case 468:
-#line 5796 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5792 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [insensitive]\n";
@@ -5599,7 +5599,7 @@ namespace yy
     break;
 
   case 469:
-#line 5808 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5804 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [with]\n";
@@ -5608,7 +5608,7 @@ namespace yy
     break;
 
   case 470:
-#line 5814 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5810 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [without]\n";
@@ -5617,7 +5617,7 @@ namespace yy
     break;
 
   case 471:
-#line 5820 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5816 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [sensitive]\n";
@@ -5626,7 +5626,7 @@ namespace yy
     break;
 
   case 472:
-#line 5826 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5822 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [insensitive]\n";
@@ -5635,7 +5635,7 @@ namespace yy
     break;
 
   case 473:
-#line 5838 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5834 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [with]\n";
@@ -5644,7 +5644,7 @@ namespace yy
     break;
 
   case 474:
-#line 5844 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5840 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [without]\n";
@@ -5653,7 +5653,7 @@ namespace yy
     break;
 
   case 475:
-#line 5856 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5852 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [id]\n";
@@ -5662,7 +5662,7 @@ namespace yy
     break;
 
   case 476:
-#line 5862 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5858 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [default]\n";
@@ -5671,7 +5671,7 @@ namespace yy
     break;
 
   case 477:
-#line 5868 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5864 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id)]\n";
@@ -5680,7 +5680,7 @@ namespace yy
     break;
 
   case 478:
-#line 5874 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5870 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id,id,..)]\n";
@@ -5689,7 +5689,7 @@ namespace yy
     break;
 
   case 479:
-#line 5880 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5876 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default)]\n";
@@ -5698,7 +5698,7 @@ namespace yy
     break;
 
   case 480:
-#line 5886 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5882 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default,id,id,..)]\n";
@@ -5707,7 +5707,7 @@ namespace yy
     break;
 
   case 481:
-#line 5892 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5888 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [without]\n";
@@ -5716,7 +5716,7 @@ namespace yy
     break;
 
   case 482:
-#line 5904 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5900 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [single]\n";
@@ -5725,7 +5725,7 @@ namespace yy
     break;
 
   case 483:
-#line 5910 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5906 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [list]\n";
@@ -5734,7 +5734,7 @@ namespace yy
     break;
 
   case 484:
-#line 5922 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5918 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name]\n";
@@ -5743,7 +5743,7 @@ namespace yy
     break;
 
   case 485:
-#line 5928 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5924 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel]\n";
@@ -5752,7 +5752,7 @@ namespace yy
     break;
 
   case 486:
-#line 5934 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5930 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.range]\n";
@@ -5761,7 +5761,7 @@ namespace yy
     break;
 
   case 487:
-#line 5940 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5936 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel.range]\n";
@@ -5770,7 +5770,7 @@ namespace yy
     break;
 
   case 488:
-#line 5952 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5948 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list]\n";
@@ -5779,7 +5779,7 @@ namespace yy
     break;
 
   case 489:
-#line 5958 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5954 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list.incl_excl]\n";
@@ -5788,7 +5788,7 @@ namespace yy
     break;
 
   case 490:
-#line 5964 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5960 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default]\n";
@@ -5797,7 +5797,7 @@ namespace yy
     break;
 
   case 491:
-#line 5970 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5966 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default.incl_excl]\n";
@@ -5806,7 +5806,7 @@ namespace yy
     break;
 
   case 492:
-#line 5976 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5972 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [without]\n";
@@ -5815,7 +5815,7 @@ namespace yy
     break;
 
   case 493:
-#line 5988 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5984 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [.]\n";
@@ -5824,7 +5824,7 @@ namespace yy
     break;
 
   case 494:
-#line 5994 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 5990 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [*]\n";
@@ -5833,7 +5833,7 @@ namespace yy
     break;
 
   case 495:
-#line 6006 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6002 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [.]\n";
@@ -5842,7 +5842,7 @@ namespace yy
     break;
 
   case 496:
-#line 6012 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6008 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [(*)]\n";
@@ -5851,7 +5851,7 @@ namespace yy
     break;
 
   case 497:
-#line 6024 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6020 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [.]\n";
@@ -5860,7 +5860,7 @@ namespace yy
     break;
 
   case 498:
-#line 6030 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6026 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [*]\n";
@@ -5869,7 +5869,7 @@ namespace yy
     break;
 
   case 499:
-#line 6042 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6038 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [union]\n";
@@ -5878,7 +5878,7 @@ namespace yy
     break;
 
   case 500:
-#line 6048 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6044 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [except]\n";
@@ -5887,7 +5887,7 @@ namespace yy
     break;
 
   case 501:
-#line 6060 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6056 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTLanguageOption [ ]\n";
@@ -5896,7 +5896,7 @@ namespace yy
     break;
 
   case 502:
-#line 6072 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6068 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [with]\n";
@@ -5905,7 +5905,7 @@ namespace yy
     break;
 
   case 503:
-#line 6078 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6074 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [without]\n";
@@ -5914,7 +5914,7 @@ namespace yy
     break;
 
   case 504:
-#line 6090 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6086 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [start]\n";
@@ -5923,7 +5923,7 @@ namespace yy
     break;
 
   case 505:
-#line 6096 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6092 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [end]\n";
@@ -5932,7 +5932,7 @@ namespace yy
     break;
 
   case 506:
-#line 6102 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6098 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [entire]\n";
@@ -5941,7 +5941,7 @@ namespace yy
     break;
 
   case 507:
-#line 6114 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6110 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any]\n";
@@ -5950,7 +5950,7 @@ namespace yy
     break;
 
   case 508:
-#line 6120 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6116 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any_word]\n";
@@ -5959,7 +5959,7 @@ namespace yy
     break;
 
   case 509:
-#line 6126 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6122 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all]\n";
@@ -5968,7 +5968,7 @@ namespace yy
     break;
 
   case 510:
-#line 6132 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6128 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all_words]\n";
@@ -5977,7 +5977,7 @@ namespace yy
     break;
 
   case 511:
-#line 6138 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6134 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [phrase]\n";
@@ -5986,7 +5986,7 @@ namespace yy
     break;
 
   case 512:
-#line 6150 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6146 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [exactly]\n";
@@ -5995,7 +5995,7 @@ namespace yy
     break;
 
   case 513:
-#line 6156 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6152 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_least]\n";
@@ -6004,7 +6004,7 @@ namespace yy
     break;
 
   case 514:
-#line 6162 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6158 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_most]\n";
@@ -6013,7 +6013,7 @@ namespace yy
     break;
 
   case 515:
-#line 6168 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6164 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [range]\n";
@@ -6022,7 +6022,7 @@ namespace yy
     break;
 
   case 516:
-#line 6180 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6176 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDistance [ ]\n";
@@ -6031,7 +6031,7 @@ namespace yy
     break;
 
   case 517:
-#line 6192 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6188 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWindow [ ]\n";
@@ -6040,7 +6040,7 @@ namespace yy
     break;
 
   case 518:
-#line 6204 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6200 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [ ]\n";
@@ -6049,7 +6049,7 @@ namespace yy
     break;
 
   case 519:
-#line 6216 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6212 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [same]\n";
@@ -6058,7 +6058,7 @@ namespace yy
     break;
 
   case 520:
-#line 6222 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6218 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [different]\n";
@@ -6067,7 +6067,7 @@ namespace yy
     break;
 
   case 521:
-#line 6234 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6230 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [words]\n";
@@ -6076,7 +6076,7 @@ namespace yy
     break;
 
   case 522:
-#line 6240 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6236 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [sentences]\n";
@@ -6085,7 +6085,7 @@ namespace yy
     break;
 
   case 523:
-#line 6246 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6242 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [paragraph]\n";
@@ -6094,7 +6094,7 @@ namespace yy
     break;
 
   case 524:
-#line 6258 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6254 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [sentence]\n";
@@ -6103,7 +6103,7 @@ namespace yy
     break;
 
   case 525:
-#line 6264 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6260 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [paragraph]\n";
@@ -6112,7 +6112,7 @@ namespace yy
     break;
 
   case 526:
-#line 6276 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6272 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTIgnoreOption [ ]\n";
@@ -6122,7 +6122,7 @@ namespace yy
 
 
     /* Line 675 of lalr1.cc.  */
-#line 6126 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.cpp"
+#line 6126 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -7936,59 +7936,59 @@ namespace yy
   const unsigned short int
   xquery_parser::yyrline_[] =
   {
-         0,   733,   733,   741,   749,   755,   767,   773,   785,   795,
-     810,   825,   840,   849,   858,   873,   882,   899,   908,   925,
-     932,   939,   946,   958,   965,   972,   981,   994,  1001,  1008,
-    1015,  1022,  1029,  1036,  1045,  1058,  1065,  1083,  1098,  1106,
-    1120,  1129,  1144,  1160,  1174,  1182,  1197,  1205,  1219,  1228,
-    1237,  1246,  1268,  1282,  1296,  1306,  1316,  1326,  1342,  1351,
-    1369,  1376,  1389,  1398,  1408,  1417,  1434,  1444,  1454,  1464,
-    1480,  1488,  1502,  1512,  1523,  1534,  1546,  1558,  1570,  1582,
-    1594,  1604,  1615,  1626,  1638,  1650,  1662,  1674,  1692,  1703,
-    1720,  1729,  1744,  1758,  1772,  1781,  1796,  1803,  1810,  1817,
-    1824,  1833,  1840,  1847,  1854,  1861,  1874,  1884,  1895,  1906,
-    1923,  1932,  1947,  1954,  1967,  1981,  1990,  2007,  2017,  2028,
-    2040,  2053,  2064,  2076,  2088,  2106,  2121,  2135,  2150,  2159,
-    2176,  2187,  2199,  2210,  2228,  2242,  2250,  2265,  2274,  2291,
-    2300,  2315,  2325,  2335,  2345,  2355,  2365,  2375,  2391,  2398,
-    2411,  2419,  2433,  2447,  2457,  2473,  2483,  2498,  2507,  2523,
-    2533,  2550,  2559,  2574,  2583,  2599,  2613,  2620,  2634,  2641,
-    2663,  2670,  2681,  2692,  2709,  2716,  2726,  2742,  2749,  2763,
-    2770,  2777,  2790,  2796,  2803,  2810,  2817,  2830,  2837,  2845,
-    2859,  2866,  2873,  2886,  2893,  2908,  2915,  2930,  2937,  2952,
-    2959,  2974,  2981,  2996,  3003,  3010,  3017,  3032,  3039,  3046,
-    3060,  3067,  3074,  3081,  3088,  3095,  3108,  3115,  3122,  3129,
-    3136,  3143,  3156,  3163,  3170,  3184,  3191,  3206,  3215,  3230,
-    3239,  3256,  3265,  3307,  3314,  3321,  3328,  3342,  3350,  3357,
-    3370,  3377,  3390,  3399,  3408,  3417,  3432,  3441,  3455,  3462,
-    3469,  3476,  3483,  3490,  3497,  3510,  3517,  3530,  3539,  3554,
-    3561,  3568,  3575,  3582,  3600,  3607,  3620,  3627,  3640,  3650,
-    3660,  3676,  3683,  3698,  3707,  3724,  3738,  3745,  3752,  3759,
-    3766,  3773,  3780,  3787,  3800,  3807,  3820,  3828,  3836,  3850,
-    3863,  3870,  3884,  3897,  3911,  3970,  3979,  3994,  4003,  4018,
-    4025,  4038,  4045,  4052,  4065,  4076,  4087,  4098,  4109,  4120,
-    4138,  4147,  4162,  4171,  4188,  4203,  4211,  4226,  4232,  4239,
-    4248,  4257,  4268,  4285,  4291,  4298,  4307,  4316,  4327,  4344,
-    4352,  4366,  4374,  4388,  4396,  4404,  4413,  4428,  4437,  4446,
-    4454,  4462,  4476,  4484,  4502,  4510,  4530,  4548,  4555,  4562,
-    4569,  4576,  4583,  4596,  4610,  4619,  4628,  4636,  4664,  4673,
-    4682,  4690,  4704,  4718,  4732,  4741,  4750,  4758,  4772,  4781,
-    4796,  4810,  4819,  4828,  4868,  4876,  4884,  4898,  4905,  4912,
-    4925,  4939,  4946,  4953,  4960,  4967,  4974,  4981,  4988,  4995,
-    5008,  5021,  5028,  5036,  5050,  5063,  5076,  5083,  5090,  5103,
-    5112,  5121,  5130,  5139,  5154,  5168,  5177,  5186,  5195,  5204,
-    5214,  5224,  5240,  5264,  5274,  5297,  5339,  5351,  5357,  5363,
-    5369,  5375,  5387,  5399,  5405,  5417,  5444,  5456,  5462,  5482,
-    5488,  5494,  5500,  5512,  5518,  5524,  5530,  5542,  5548,  5560,
-    5566,  5578,  5584,  5596,  5602,  5614,  5620,  5626,  5638,  5644,
-    5656,  5662,  5674,  5680,  5686,  5692,  5698,  5710,  5722,  5729,
-    5736,  5743,  5750,  5757,  5764,  5777,  5783,  5789,  5795,  5807,
-    5813,  5819,  5825,  5837,  5843,  5855,  5861,  5867,  5873,  5879,
-    5885,  5891,  5903,  5909,  5921,  5927,  5933,  5939,  5951,  5957,
-    5963,  5969,  5975,  5987,  5993,  6005,  6011,  6023,  6029,  6041,
-    6047,  6059,  6071,  6077,  6089,  6095,  6101,  6113,  6119,  6125,
-    6131,  6137,  6149,  6155,  6161,  6167,  6179,  6191,  6203,  6215,
-    6221,  6233,  6239,  6245,  6257,  6263,  6275
+         0,   729,   729,   737,   745,   751,   763,   769,   781,   791,
+     806,   821,   836,   845,   854,   869,   878,   895,   904,   921,
+     928,   935,   942,   954,   961,   968,   977,   990,   997,  1004,
+    1011,  1018,  1025,  1032,  1041,  1054,  1061,  1079,  1094,  1102,
+    1116,  1125,  1140,  1156,  1170,  1178,  1193,  1201,  1215,  1224,
+    1233,  1242,  1264,  1278,  1292,  1302,  1312,  1322,  1338,  1347,
+    1365,  1372,  1385,  1394,  1404,  1413,  1430,  1440,  1450,  1460,
+    1476,  1484,  1498,  1508,  1519,  1530,  1542,  1554,  1566,  1578,
+    1590,  1600,  1611,  1622,  1634,  1646,  1658,  1670,  1688,  1699,
+    1716,  1725,  1740,  1754,  1768,  1777,  1792,  1799,  1806,  1813,
+    1820,  1829,  1836,  1843,  1850,  1857,  1870,  1880,  1891,  1902,
+    1919,  1928,  1943,  1950,  1963,  1977,  1986,  2003,  2013,  2024,
+    2036,  2049,  2060,  2072,  2084,  2102,  2117,  2131,  2146,  2155,
+    2172,  2183,  2195,  2206,  2224,  2238,  2246,  2261,  2270,  2287,
+    2296,  2311,  2321,  2331,  2341,  2351,  2361,  2371,  2387,  2394,
+    2407,  2415,  2429,  2443,  2453,  2469,  2479,  2494,  2503,  2519,
+    2529,  2546,  2555,  2570,  2579,  2595,  2609,  2616,  2630,  2637,
+    2659,  2666,  2677,  2688,  2705,  2712,  2722,  2738,  2745,  2759,
+    2766,  2773,  2786,  2792,  2799,  2806,  2813,  2826,  2833,  2841,
+    2855,  2862,  2869,  2882,  2889,  2904,  2911,  2926,  2933,  2948,
+    2955,  2970,  2977,  2992,  2999,  3006,  3013,  3028,  3035,  3042,
+    3056,  3063,  3070,  3077,  3084,  3091,  3104,  3111,  3118,  3125,
+    3132,  3139,  3152,  3159,  3166,  3180,  3187,  3202,  3211,  3226,
+    3235,  3252,  3261,  3303,  3310,  3317,  3324,  3338,  3346,  3353,
+    3366,  3373,  3386,  3395,  3404,  3413,  3428,  3437,  3451,  3458,
+    3465,  3472,  3479,  3486,  3493,  3506,  3513,  3526,  3535,  3550,
+    3557,  3564,  3571,  3578,  3596,  3603,  3616,  3623,  3636,  3646,
+    3656,  3672,  3679,  3694,  3703,  3720,  3734,  3741,  3748,  3755,
+    3762,  3769,  3776,  3783,  3796,  3803,  3816,  3824,  3832,  3846,
+    3859,  3866,  3880,  3893,  3907,  3966,  3975,  3990,  3999,  4014,
+    4021,  4034,  4041,  4048,  4061,  4072,  4083,  4094,  4105,  4116,
+    4134,  4143,  4158,  4167,  4184,  4199,  4207,  4222,  4228,  4235,
+    4244,  4253,  4264,  4281,  4287,  4294,  4303,  4312,  4323,  4340,
+    4348,  4362,  4370,  4384,  4392,  4400,  4409,  4424,  4433,  4442,
+    4450,  4458,  4472,  4480,  4498,  4506,  4526,  4544,  4551,  4558,
+    4565,  4572,  4579,  4592,  4606,  4615,  4624,  4632,  4660,  4669,
+    4678,  4686,  4700,  4714,  4728,  4737,  4746,  4754,  4768,  4777,
+    4792,  4806,  4815,  4824,  4864,  4872,  4880,  4894,  4901,  4908,
+    4921,  4935,  4942,  4949,  4956,  4963,  4970,  4977,  4984,  4991,
+    5004,  5017,  5024,  5032,  5046,  5059,  5072,  5079,  5086,  5099,
+    5108,  5117,  5126,  5135,  5150,  5164,  5173,  5182,  5191,  5200,
+    5210,  5220,  5236,  5260,  5270,  5293,  5335,  5347,  5353,  5359,
+    5365,  5371,  5383,  5395,  5401,  5413,  5440,  5452,  5458,  5478,
+    5484,  5490,  5496,  5508,  5514,  5520,  5526,  5538,  5544,  5556,
+    5562,  5574,  5580,  5592,  5598,  5610,  5616,  5622,  5634,  5640,
+    5652,  5658,  5670,  5676,  5682,  5688,  5694,  5706,  5718,  5725,
+    5732,  5739,  5746,  5753,  5760,  5773,  5779,  5785,  5791,  5803,
+    5809,  5815,  5821,  5833,  5839,  5851,  5857,  5863,  5869,  5875,
+    5881,  5887,  5899,  5905,  5917,  5923,  5929,  5935,  5947,  5953,
+    5959,  5965,  5971,  5983,  5989,  6001,  6007,  6019,  6025,  6037,
+    6043,  6055,  6067,  6073,  6085,  6091,  6097,  6109,  6115,  6121,
+    6127,  6133,  6145,  6151,  6157,  6163,  6175,  6187,  6199,  6211,
+    6217,  6229,  6235,  6241,  6253,  6259,  6271
   };
 
   // Print the state stack on the debug stream.
@@ -8102,7 +8102,7 @@ namespace yy
 
 } // namespace yy
 
-#line 6285 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 6281 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
 
 
 

@@ -9,12 +9,9 @@
 #ifndef XQP_TEMP_SEQ_H
 #define XQP_TEMP_SEQ_H
 
-#ifdef WIN32
-#include "util/win32/compatib_defs.h"
-#endif
-
-#include <vector>
+#include "zorba/common/common.h"
 #include "common/shared_types.h"
+#include <vector>
 
 
 namespace xqp {

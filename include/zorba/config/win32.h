@@ -1,5 +1,5 @@
 #include <windows.h>
-#include <types.h>
+#include <sys/types.h>
 
-#include "util/win32/stdint.h"
-#include "util/win32/compatib_defs.h"
+#include "zorba/config/stdint.h"
+#include "zorba/config/compatib_defs.h"

@@ -2,18 +2,12 @@
 ////using the C++ API
 
 #include "zorba/zorba_api.h"
+#include "zorba/common/common.h"
 
-//for debug
-//#include "../src/compiler/parser/xquery_driver.h"
 #include "../src/util/logging/loggermanager.hh"
 #include "timer.h"
-//#include "error_display.h"
-//#include "errors/error_factory.h"
 #include "zorba/util/properties.h"
 
-#ifdef WIN32
-	#include "../src/util/win32/compatib_defs.h"
-#endif
 
 #include <fstream>
 #include <iostream>

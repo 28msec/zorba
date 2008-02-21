@@ -6,10 +6,13 @@
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/translator/translator.h"
 #include "compiler/normalizer/normalizer.h"
+
+#include "compiler/parser/xquery_driver.h"
+
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_dot_visitor.h"
-#include "compiler/parser/xquery_driver.h"
 #include "system/zorba.h"
+
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/base/plan_wrapper.h"
 

@@ -10,9 +10,7 @@
 #define XQP_TOKENBUF_H
 
 #include <string>
-#ifdef WIN32
-#include "util/win32/compatib_defs.h"
-#endif
+#include "zorba/common/common.h"
 
 namespace xqp {
 

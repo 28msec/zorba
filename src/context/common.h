@@ -25,25 +25,9 @@
 #ifndef XQP_COMMON_H
 #define XQP_COMMON_H
 
-#ifndef WIN32
-	#include <stdint.h>
-#else
-	#include "util/win32/compatib_defs.h"
-#endif
-
-//#if defined (__FreeBSD__)
-//typedef unsigned long unsigned long;
-//#endif
-
+#include "zorba/common/common.h"
 
 #include <utility>
-
-#ifndef _WIN32_WCE
-	#include <sys/types.h>
-#else
-	#include <windows.h>
-	#include <types.h>
-#endif
 
 #include <string>
 #include "common/shared_types.h"

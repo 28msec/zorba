@@ -4,16 +4,10 @@
 #define XQP_ZORBA_H
 
 #include "util/rchandle.h"
+#include "zorba/common/common.h"
+#include "zorba/common/libicu.h"
 
-#if defined (WIN32)
-#include "util/win32/compatib_defs.h"
-//#elif defined (__FreeBSD__)
-//typedef unsigned long unsigned long;
-#endif
 
-#include <unicode/utypes.h>
-#include <unicode/coll.h>
-#include <unicode/ustring.h>
 //#include "store/api/item_factory.h"
 //#include "store/api/store.h"
 

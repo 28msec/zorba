@@ -9,12 +9,6 @@
 #define XQP_SYMBOL_TABLE_H
 
 #include "util/fx/fxcharheap.h"
-// #ifndef _WIN32_WCE
-// #   include <sys/types.h>
-// #else
-// #   include <windows.h>
-// #   include <types.h>
-// #endif
 #include "zorba/types/representations.h"
 
 namespace xqp {

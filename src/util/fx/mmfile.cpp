@@ -9,14 +9,13 @@
  */
 
 #include "util/fx/mmfile.h"
+#include "zorba/common/common.h"
 
 #ifndef WIN32
 	#include <sys/mman.h>
 #elif _WIN32_WCE
-	#include <windows.h>
 	#include <winbase.h>
 #else
-	#include <windows.h>
 	#include <io.h>
 #endif
 
@@ -26,7 +25,6 @@
 	#include <errno.h>
 	#include <fcntl.h>
 #else
-	#include <windows.h>
 	#include <types.h>
 #endif
 #include <string>

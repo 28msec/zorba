@@ -6,11 +6,6 @@
 #include "zorba/common/common.h"
 #include "util/rchandle.h"
 
-#if defined (WIN32)
-#include "util/win32/compatib_defs.h"
-#elif defined (__FreeBSD__)
-typedef unsigned long unsigned long;
-#endif
 
 namespace xqp
 {

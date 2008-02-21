@@ -10,10 +10,7 @@
 #ifndef XQP_ITEM_FACTORY_H
 #define XQP_ITEM_FACTORY_H
 
-#ifdef WIN32
-#include "util/win32/compatib_defs.h"
-#endif
-
+#include "zorba/common/common.h"
 #include "common/shared_types.h"
 #include "zorba/types/representations.h"
 #include <vector>

@@ -23,8 +23,8 @@
 #include <string>
 #include <ostream>
 
-#include "compiler/parser/symbol_table.h"
 #include "compiler/parser/xquery_parser.hpp"
+#include "compiler/parser/symbol_table.h"
 #include "types/representations.h"
 
 using namespace yy;

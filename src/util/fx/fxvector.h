@@ -14,6 +14,7 @@
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "errors/error_factory.h"
+#include "zorba/common/common.h"
 
 #ifndef WIN32
 	#include <sys/mman.h>
@@ -26,7 +27,6 @@
 	#include <errno.h>
 	#include <fcntl.h>
 #else
-	#include <windows.h>
 	#include <types.h>
 #endif
 #include <string.h>

@@ -13,10 +13,7 @@
 #define XQP_FTOPTIONS_H
 
 #include "util/rchandle.h"
-
-#ifdef WIN32
-	#include "util/win32/compatib_defs.h"
-#endif
+#include "zorba/common/common.h"
 
 #include <iostream>
 #include <string>

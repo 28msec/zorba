@@ -11,19 +11,7 @@
 #ifndef XQP_RWLOCK_H
 #define XQP_RWLOCK_H
 
-#include "zorba/config/config.h"
-
-#ifdef WIN32
-  #include <windows.h>
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
-  #include <pthread.h>
-#else
-  #error Unsupported thread system
-#endif
-
-#ifndef _WIN32_WCE
-# include <errno.h>
-#endif
+#include "zorba/common/common.h"
 
 /*_____________________________________________________________________
 | 
@@ -39,7 +27,7 @@ namespace xqp {
 **                                                    
 ** Read/write lock static initializer
 */
-#ifdef WIN32
+#if defined (WIN32)
 #elif defined ZORBA_USE_PTHREAD_LIBRARY
 #define RWL_INITIALIZER \
 	{	PTHREAD_MUTEX_INITIALIZER,	\
@@ -58,7 +46,7 @@ namespace xqp {
 class rwlock
 {
 protected:
-#ifdef WIN32
+#if defined (WIN32)
   HANDLE    mutex;
   HANDLE    cond_read;
   HANDLE    cond_write;

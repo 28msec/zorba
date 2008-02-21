@@ -40,7 +40,7 @@ class ZorbaEngineImpl : public ZorbaSingleThread, public ZorbaEngine
 {
 private:
 
-#ifdef WIN32
+#if defined (WIN32)
   DWORD                      theThreadData;
 
 #elif defined ZORBA_FOR_ONE_THREAD_ONLY

@@ -6,6 +6,21 @@
 /* Zorba Configuration */
 
 /* general zorba configuration parameters */
+#ifndef WIN32
+#cmakedefine WIN32
+#endif
+#cmakedefine CYGWIN
+#ifdef CYGWIN
+#undef WIN32
+#endif
+#cmakedefine UNIX
+#cmakedefine MINGW
+#cmakedefine APPLE
+#cmakedefine MSVC
+#cmakedefine MSVC60
+#cmakedefine MSVC70
+#cmakedefine MSVC71
+#cmakedefine MSVC80
 
 
 /* zorba runtime configuration parameters */
@@ -16,32 +31,29 @@
 /* parser configuration */
 #cmakedefine ZORBA_DEBUG_PARSER 
 
-
 /* Platform checks */
-#cmakedefine HAVE_SYS_MOUNT_H       1
-#cmakedefine HAVE_UTYPES_H          1
-#cmakedefine HAVE_COLL_H            1
-#cmakedefine HAVE_USTRING_H         1
-#cmakedefine HAVE_PTHREAD_H         1
-#cmakedefine HAVE_INTTYPES_H        1
-#cmakedefine HAVE_STDINT_H          1
-#cmakedefine HAVE_STDLIB_H          1
-#cmakedefine HAVE_LIMITS_H          1
-#cmakedefine HAVE_SYS_TYPES_H       1
-#cmakedefine HAVE_ICONV_H           1
+#cmakedefine HAVE_SYS_MOUNT_H
+#cmakedefine HAVE_UTYPES_H   
+#cmakedefine HAVE_COLL_H     
+#cmakedefine HAVE_USTRING_H  
+#cmakedefine HAVE_PTHREAD_H  
+#cmakedefine HAVE_INTTYPES_H 
+#cmakedefine HAVE_STDINT_H   
+#cmakedefine HAVE_STDLIB_H   
+#cmakedefine HAVE_LIMITS_H   
+#cmakedefine HAVE_SYS_TYPES_H
+#cmakedefine HAVE_ICONV_H    
 
 /* function checks */
-#cmakedefine HAVE_STRTOF_FUNCTION            1
-#cmakedefine HAVE_STRICMP_FUNCTION           1
-#cmakedefine HAVE_STRCASECMP_FUNCTION        1
-#cmakedefine HAVE_STRCAT_S_FUNCTION          1
-#cmakedefine HAVE_STRCPY_S_FUNCTION          1
+#cmakedefine HAVE_STRTOF_FUNCTION    
+#cmakedefine HAVE_STRICMP_FUNCTION   
+#cmakedefine HAVE_STRCASECMP_FUNCTION
+#cmakedefine HAVE_STRCAT_S_FUNCTION  
+#cmakedefine HAVE_STRCPY_S_FUNCTION  
 
 /* Threading mechanism*/
-#cmakedefine ZORBA_USE_PTHREAD_LIBRARY          1
-#cmakedefine ZORBA_USE_BOOST_THREAD_LIBRARY     1
-#cmakedefine ZORBA_FOR_ONE_THREAD_ONLY          1
-
-#include "config/platform.h"
+#cmakedefine ZORBA_USE_PTHREAD_LIBRARY     
+#cmakedefine ZORBA_USE_BOOST_THREAD_LIBRARY
+#cmakedefine ZORBA_FOR_ONE_THREAD_ONLY     
 
 #endif

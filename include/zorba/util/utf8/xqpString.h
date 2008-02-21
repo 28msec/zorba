@@ -15,18 +15,13 @@
 #define XQP_STRING
 
 #include "zorba/common/common.h"
+#include "zorba/common/libicu.h"
 
-#include <iostream>
 #include <stdlib.h>
+#include <iostream>
 #include <vector>
 #include <map>
 
-#include <unicode/utypes.h>
-#include <unicode/coll.h>
-#include <unicode/ustring.h>
-#include <unicode/stsearch.h>
-#include <unicode/ucnv.h>
-#include <unicode/normlzr.h>
 
 #include "util/rchandle.h"
 

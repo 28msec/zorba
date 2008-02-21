@@ -16,11 +16,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
-#ifndef WIN32
-  #include <strings.h>
-#else
-  #include "util/win32/compatib_defs.h"
-#endif
+#include "zorba/common/common.h"
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER

@@ -11,17 +11,8 @@
 #ifndef XQP_MMFILE_H
 #define XQP_MMFILE_H
 
-#ifdef WIN32
-	#include "util/win32/compatib_defs.h"
-	#include <windows.h>
-#endif
+#include "zorba/common/common.h"
 
-#ifndef _WIN32_WCE
-	#include <sys/types.h>
-#else
-	#include <windows.h>
-	#include <types.h>
-#endif
 
 #include <string>
 
@@ -42,11 +33,11 @@ protected:	// state
   std::string path;			// backing file path name
   off_t eofoff;					// offset to eof = size of array in bytes
   char* data;						// raw bytes
-#ifndef WIN32
-  int fd;								// backing file id
-#else
+#if defined (WIN32)
 	HANDLE	fd;
 	HANDLE	file_mapping;
+#else
+  int fd;	// backing file id
 #endif
 
 public:			// ctor,dtor

@@ -12,9 +12,7 @@
 
 #include <string>
 
-#ifdef WIN32
-	#include "win32/stdint.h"	
-#endif
+#include "zorba/common/common.h"
 
 /*_____________________________________________________________
 |                                                              |

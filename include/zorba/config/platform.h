@@ -1,11 +1,15 @@
 #ifndef XQP_PLATFORM_H
 #define XQP_PLATFORM_H
 
-#if defined (__WIN32__)
+#include "zorba/config/config.h"
+
+
+#if defined (WIN32) && ! defined (CYGWIN)
 # include "zorba/config/win32.h"
 #endif
 
-#if defined (__APPLE__)
+
+#if defined (APPLE)
 # include "zorba/config/apple.h"
 #endif
 
@@ -13,11 +17,11 @@
 # include "zorba/config/freebsd.h"
 #endif
 
-#if defined (__UNIX__)
+#if defined (UNIX)
 # include "zorba/config/unix.h"
 #endif
 
-#if defined (__CYWIN__)
+#if defined (CYGWIN)
 # include "zorba/config/cygwin.h"
 #endif
 

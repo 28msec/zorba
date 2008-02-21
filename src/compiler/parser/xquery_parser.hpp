@@ -48,7 +48,7 @@ namespace yy
 }
 
 /* First part of user declarations.  */
-#line 30 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 30 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
 
 
 #include "zorba/common/common.h"
@@ -57,12 +57,7 @@ namespace yy
 #pragma warning(disable: 4786)
 #endif
 
-#ifdef WIN32
-#include "util/win32/compatib_defs.h"
-#ifndef _WIN32_WCE
-#include <io.h>
-#endif
-#endif
+#include "zorba/common/common.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -74,6 +69,7 @@ namespace yy
 #include "context/dynamic_context.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
+#include "types/typemanager.h"
 
 
 using namespace std;
@@ -89,7 +85,7 @@ namespace xqp {
 
 
 /* Line 35 of lalr1.cc.  */
-#line 93 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 89 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -140,7 +136,7 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 116 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 112 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
 {
   xqp::parsenode * node;
   xqp::exprnode * expr;
@@ -150,7 +146,7 @@ namespace yy
 	xqp_decimal* decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 154 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 150 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

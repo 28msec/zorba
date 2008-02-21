@@ -2,8 +2,7 @@
 #ifndef STATIC_CONTEXT_API_12_DEC_2007
 #define STATIC_CONTEXT_API_12_DEC_2007
 
-///from ICU
-#include <unicode/coll.h>
+#include "zorba/common/libicu.h"
 #include "types/typeident.h"
 
 #include "zorba/common/api_shared_types.h"
