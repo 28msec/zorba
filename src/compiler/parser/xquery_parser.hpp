@@ -48,7 +48,7 @@ namespace yy
 }
 
 /* First part of user declarations.  */
-#line 30 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
+#line 30 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include "zorba/common/common.h"
@@ -84,8 +84,8 @@ namespace xqp {
 
 
 
-/* Line 35 of lalr1.cc.  */
-#line 89 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 89 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -136,7 +136,7 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 112 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/src/compiler/parser/xquery_parser.y"
+#line 112 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
 {
   xqp::parsenode * node;
   xqp::exprnode * expr;
@@ -145,8 +145,8 @@ namespace yy
 	xqp_double* dval;
 	xqp_decimal* decval;
 }
-/* Line 35 of lalr1.cc.  */
-#line 150 "/cygdrive/c/Documents and Settings/brantnem/Desktop/xquerycygwin/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 150 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

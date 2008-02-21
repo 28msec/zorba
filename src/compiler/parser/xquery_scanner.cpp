@@ -6986,7 +6986,7 @@ static yyconst flex_int16_t yy_rule_linenum[500] =
 #endif
 
 #ifdef WIN32
-#include "zorba/config/compatib_defs.h"
+#include "util/win32/compatib_defs.h"
 #ifndef _WIN32_WCE
 #include <io.h>
 #endif
