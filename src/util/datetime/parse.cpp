@@ -66,8 +66,8 @@ int get_last_day(int year, int month)
 {
   static const int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-  year = year + quotient(month-1, 12);
-  month = modulo(month-1, 12) + 1;
+  year = year + quotient<int>(month-1, 12);
+  month = modulo<int>(month-1, 12) + 1;
 
   if (is_leap_year(year) && month == 2)
     return 29;

@@ -177,15 +177,15 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
   // For the algorithm, see XML Schema 2 spec, Appendix E
   // http://www.w3.org/TR/xmlschema-2/#adding-durations-to-dateTimes
   
-  months = modulo(dt.getMonth() + d.getMonths() - 1, 12) + 1;
-  years = dt.getYear() + d.getYears() + quotient(dt.getMonth() + d.getMonths() - 1, 12);
+  months = modulo<int>(dt.getMonth() + d.getMonths() - 1, 12) + 1;
+  years = dt.getYear() + d.getYears() + quotient<int>(dt.getMonth() + d.getMonths() - 1, 12);
 
-  int_seconds = modulo(floor(dt.getSeconds() + d.getSeconds()), 60);                            // TODO: frac_seconds
-  minutes = dt.getMinutes() + d.getMinutes() + quotient(floor(dt.getSeconds() + d.getSeconds()), 60);
-  hours = dt.getHours() + d.getHours() + quotient(minutes, 60);
-  minutes = modulo(minutes, 60);
-  carry = quotient(hours, 24);
-  hours = modulo(hours, 24);
+  int_seconds = modulo<int>(floor(dt.getSeconds() + d.getSeconds()), 60);                            // TODO: frac_seconds
+  minutes = dt.getMinutes() + d.getMinutes() + quotient<int>(floor(dt.getSeconds() + d.getSeconds()), 60);
+  hours = dt.getHours() + d.getHours() + quotient<int>(minutes, 60);
+  minutes = modulo<int>(minutes, 60);
+  carry = quotient<int>(hours, 24);
+  hours = modulo<int>(hours, 24);
 
   if (dt.getDay() > get_last_day(years, months))
     temp_days = get_last_day(years, months);
@@ -210,8 +210,8 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
     else
       break;
 
-    years = years + quotient(months + carry-1, 12);
-    months = modulo(months + carry -1, 12) + 1;
+    years = years + quotient<int>(months + carry-1, 12);
+    months = modulo<int>(months + carry -1, 12) + 1;
   }
 }
 
