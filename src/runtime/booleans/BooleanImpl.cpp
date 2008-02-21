@@ -455,9 +455,9 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
 
     // TODO, equal implementation for types which do not support compare
 
-    if (GENV_TYPESYSTEM.is_equal(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
+    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
         &&
-        GENV_TYPESYSTEM.is_equal(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+        GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
     {
       equal = (*aItem0->getDurationValue() == *aItem1->getDurationValue());
     }
@@ -590,16 +590,15 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
              &&
              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
              &&
-             GENV_TYPESYSTEM.is_equal(*type0, *type1)
-             &&
              (!GENV_TYPESYSTEM.is_equal(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
              &&
-             (!GENV_TYPESYSTEM.is_equal(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)))
+             (!GENV_TYPESYSTEM.is_equal(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+             &&
+             GENV_TYPESYSTEM.is_equal(*type0, *type1))
     {
       ret = aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
     }
 
-    
     // TODO comparisons for all types
 
     return ret;

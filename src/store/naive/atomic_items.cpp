@@ -959,6 +959,15 @@ xqp_string DurationItemNaive::getStringValue() const
   
 Item_t DurationItemNaive::getType() const
 {
+  // get the effective type or subtype
+  DayTimeDuration* dtd = dynamic_cast<DayTimeDuration*>(theValue.getp());
+  if (dtd != NULL)
+    return CREATE_XS_TYPE("dayTimeDuration");
+  
+  YearMonthDuration* ymd = dynamic_cast<YearMonthDuration*>(theValue.getp());
+  if (ymd != NULL)
+    return CREATE_XS_TYPE("yearMonthDuration");
+  
   return CREATE_XS_TYPE("duration");
 }
 

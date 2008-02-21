@@ -80,6 +80,14 @@ xqpString YearMonthDuration::toString(bool output_when_zero) const
   xqpString result = "";
   long abs_months = months;
 
+  if (months == 0)
+  {
+    if (output_when_zero)
+      return "P0M";
+    else
+      return "";
+  }
+
   if (months < 0)
   {
     result += "-";
@@ -88,10 +96,10 @@ xqpString YearMonthDuration::toString(bool output_when_zero) const
 
   result += "P";
 
-  if (abs_months > 12 )
+  if (abs_months >= 12 )
     result = result + NumConversions::longToStr(abs_months / 12) + "Y";
 
-  if ((abs_months%12) != 0 || (abs_months < 12 && output_when_zero))
+  if ((abs_months%12) != 0)
     result = result + NumConversions::longToStr(abs_months % 12) + "M";
     
   return result;
@@ -242,7 +250,22 @@ DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long 
   :
   is_negative(negative), days(the_days), timeDuration(hours, minutes, seconds, frac_seconds)
 {
-  // TODO: normalization
+  normalize();
+}
+
+void DayTimeDuration::normalize()
+{
+  if (timeDuration.hours() >= 24)
+  {
+    days += timeDuration.hours() / 24;
+    timeDuration = boost::posix_time::time_duration(timeDuration.hours() % 24,
+        timeDuration.minutes(), timeDuration.seconds(), timeDuration.fractional_seconds());
+  }
+
+  if (days == 0 && timeDuration.hours() == 0 && timeDuration.minutes() == 0
+      &&
+      timeDuration.seconds() == 0 && timeDuration.fractional_seconds() == 0)
+    is_negative = false;
 }
 
 DayTimeDuration& DayTimeDuration::operator=(const DayTimeDuration_t& dt_t)
@@ -301,6 +324,16 @@ xqpString DayTimeDuration::toString(bool output_when_zero) const
   xqpString result = "";
   bool have_t_separator = false;
 
+  if (days == 0 && timeDuration.hours() == 0 && timeDuration.minutes() == 0
+       &&
+       timeDuration.seconds() == 0 && timeDuration.fractional_seconds() == 0)
+  {
+    if (output_when_zero)
+      return "PT0S";
+    else
+      return "";
+  }
+    
   if ( is_negative )
     result += "-";
 
@@ -321,11 +354,7 @@ xqpString DayTimeDuration::toString(bool output_when_zero) const
     result += NumConversions::intToStr ( timeDuration.minutes() ) + "M";
   }
 
-  if ( timeDuration.seconds() != 0 || timeDuration.fractional_seconds() != 0
-       ||
-       (output_when_zero
-       &&
-       (timeDuration.hours() == 0 && timeDuration.minutes() == 0 && timeDuration.seconds() == 0 && timeDuration.fractional_seconds() == 0)))
+  if (timeDuration.seconds() != 0 || timeDuration.fractional_seconds() != 0)
   {
     OUTPUT_T_SEPARATOR(result, have_t_separator);
     result += NumConversions::intToStr ( timeDuration.seconds() );
@@ -468,23 +497,17 @@ int32_t DayTimeDuration::getMonths() const
 
 int32_t DayTimeDuration::getDays() const
 {
-    return is_negative?
-        -normalize().days:
-        normalize().days;
+    return is_negative ? -days : days;
 }
 
 int32_t DayTimeDuration::getHours() const
 {
-  return is_negative?
-      -timeDuration.hours() % NO_HOURS_IN_DAY:
-      timeDuration.hours() % NO_HOURS_IN_DAY;
+  return is_negative ? -timeDuration.hours() : timeDuration.hours();
 }
 
 int32_t DayTimeDuration::getMinutes() const
 {
-  return is_negative?
-      -timeDuration.minutes() % NO_MINUTES_IN_HOUR:
-      timeDuration.minutes() % NO_MINUTES_IN_HOUR;
+  return is_negative ? -timeDuration.minutes() : timeDuration.minutes();
 }
 
 double DayTimeDuration::getSeconds() const
@@ -495,21 +518,7 @@ double DayTimeDuration::getSeconds() const
     frac_sec = frac_sec /10;
   }
   
-  return is_negative?
-      -(timeDuration.seconds() % NO_SECONDS_IN_MINUTE) + frac_sec:
-      (timeDuration.seconds() % NO_SECONDS_IN_MINUTE) + frac_sec;
-}
-
-DayTimeDuration DayTimeDuration::normalize() const
-{
-  int32_t tmp = timeDuration.hours() / NO_HOURS_IN_DAY;
-  DayTimeDuration_t dt = new DayTimeDuration(is_negative,
-                                             days + tmp,
-                                             timeDuration.hours(),
-                                             timeDuration.minutes(),
-                                             timeDuration.seconds(),
-                                             timeDuration.fractional_seconds());
-  return *dt;
+  return is_negative? -timeDuration.seconds()+frac_sec : timeDuration.seconds()+frac_sec;
 }
 
 // parse a 'nS' string, with fractional seconds, returns 0 on success and 1 on failure
@@ -745,12 +754,10 @@ xqpString Duration::toString(bool output_when_zero) const
   xqpString result;
 
   // TODO: check "-" signs
-  result = yearMonthDuration.toString(false)
+  result = "P" + yearMonthDuration.toString(false).substr(1)
       +
       dayTimeDuration.toString(yearMonthDuration.getYears() == 0 && yearMonthDuration.getDays() == 0).substr(1);
 
-  
-  // TODO:
   return result;
 }
 
@@ -822,13 +829,16 @@ double Duration::getSeconds() const
 // Parse a '(-)PnYnMnDTnHnMnS'
 bool Duration::parse_string(const xqpString& s, Duration_t& d_t)
 {
-  int pos;
+  int pos, t_pos;
   YearMonthDuration_t ymd_t;
   DayTimeDuration_t dtd_t;
 
+  t_pos = s.indexOf("T");
   pos = s.indexOf("M");
   if (pos == -1)
     pos = s.indexOf("Y");
+  else if (t_pos != -1 && t_pos < pos)
+    pos = -1;
 
   d_t = new Duration();
 

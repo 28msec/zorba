@@ -117,9 +117,9 @@ public:
   virtual int32_t getMinutes() const;
   virtual double getSeconds() const;
 
-  virtual DayTimeDuration normalize() const;
 
 protected:
+  void normalize();
   DayTimeDuration& operator=(const DayTimeDuration_t& dt_t);
 
   bool is_negative;
