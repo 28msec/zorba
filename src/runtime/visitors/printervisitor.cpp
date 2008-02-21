@@ -20,6 +20,7 @@
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/debug/debug_iterators.h"
 #include "types/root_typemanager.h"
+#include "runtime/visitors/iterprinter.h"
 
 #include "system/globalenv.h"
 

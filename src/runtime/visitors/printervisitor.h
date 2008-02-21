@@ -2,11 +2,11 @@
 #define XQP_PRINTERVISITOR_H
 
 #include "runtime/visitors/planitervisitor.h"
-#include "runtime/visitors/iterprinter.h"
 
 namespace xqp {
 
 class PlanIterator;
+class IterPrinter;
 
 /**
  * Visitor implementation to print a tree.
