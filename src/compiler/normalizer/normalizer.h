@@ -1,7 +1,7 @@
 #ifndef XQP_NORMALIZER_H
 #define XQP_NORMALIZER_H
 
-#include "compiler/expression/expr.h"
+#include "common/shared_types.h"
 #include "compiler/expression/expr_visitor.h"
 
 namespace xqp {

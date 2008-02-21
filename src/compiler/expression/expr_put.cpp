@@ -1,4 +1,5 @@
 #include "compiler/expression/expr.h"
+#include "system/globalenv.h"
 #include "functions/function.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenodes.h"

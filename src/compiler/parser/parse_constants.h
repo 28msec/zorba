@@ -11,6 +11,8 @@
 #ifndef XQP_PARSE_CONSTANTS_H
 #define XQP_PARSE_CONSTANTS_H
 
+#include <assert.h>
+
 namespace xqp {
 
 enum default_namespace_mode_t {

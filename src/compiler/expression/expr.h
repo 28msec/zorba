@@ -26,14 +26,15 @@
 #include <map>
 
 #include "common/shared_types.h"
-#include "types/root_typemanager.h"
-#include "system/globalenv.h"
-#include "compiler/parsetree/parsenodes.h"
+#include "compiler/parser/location.hh"
 #include "util/checked_vector.h"
+#include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_consts.h"
 #include "store/api/fullText/ft_options.h"
+#include "store/api/store_consts.h"
+#include "context/static_context_api.h"
 #include "util/utf8/xqpString.h"
-#include "context/namespace_context.h"
+#include "errors/errors.h"
 
 namespace xqp {
 
@@ -65,32 +66,20 @@ protected:
   
 public:
   expr(yy::location const&);
-  virtual ~expr() {}
+  virtual ~expr();
 
 public:
   yy::location get_loc() const { return loc; }
 
 public:
-  virtual expr_base_iterator *make_iter () {
-    expr_base_iterator *iter = make_iter_impl ();
-    next_iter (*iter);
-    return iter;
-  }
-  
+  virtual expr_base_iterator *make_iter ();
   virtual void accept(expr_visitor&);
   virtual void accept_children(expr_visitor &v);
   virtual void next_iter (expr_base_iterator &) = 0;
   virtual std::ostream& put(std::ostream&) const;
 
-  expr_t clone() {
-      substitution_t s;
-      return clone(s);
-  }
-
-  virtual expr_t clone(substitution_t& substitution) {
-      throw std::exception();
-  }
-
+  expr_t clone();
+  virtual expr_t clone(substitution_t& substitution);
 };
 
 typedef rchandle<expr> expr_t;
@@ -173,17 +162,17 @@ public:
   xqtref_t type;
 
 public:
-  var_expr(yy::location const& loc, Item_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
-  var_expr(yy::location const& loc, var_kind k, Item_t name) : expr (loc), kind (k), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
+  var_expr(yy::location const& loc, Item_t name);
+  var_expr(yy::location const& loc, var_kind k, Item_t name);
 
 public:
-  Item_t get_varname() const { return varname_h; }
+  Item_t get_varname() const;
 
   var_kind get_kind() const { return kind; }
   void set_kind(var_kind k) { kind = k; }
 
-  xqtref_t get_type() const { return type; }
-  void set_type(xqtref_t t) { type = t; }
+  xqtref_t get_type() const;
+  void set_type(xqtref_t t);
 
 public:
   static std::string decode_var_kind(enum var_kind);
@@ -379,17 +368,14 @@ public:
   xqtref_t type;
 
 public:
-  case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
+  case_clause();
 
 };
 
 class promote_expr : public expr {
 public:
-  promote_expr(yy::location const& loc) : expr(loc) { }
-  promote_expr(yy::location const& loc, expr_t input, xqtref_t type)
-    : expr(loc),
-      input_expr_h(input),
-      target_type(type) { }
+  promote_expr(yy::location const& loc);
+  promote_expr(yy::location const& loc, expr_t input, xqtref_t type);
 
 protected:
   expr_t input_expr_h;
@@ -399,8 +385,8 @@ public:
   expr_t get_input() { return input_expr_h; }
   void set_input(expr_t input) { input_expr_h = input; }
   
-  xqtref_t get_target_type() { return target_type; }
-  void set_target_type(xqtref_t target) { target_type = target; }
+  xqtref_t get_target_type();
+  void set_target_type(xqtref_t target);
   
 public:
   void next_iter (expr_base_iterator&);
@@ -657,7 +643,7 @@ public:
 
 public:
   expr_t get_expr() const { return expr_h; }
-  xqtref_t get_type() const { return type; }
+  xqtref_t get_type() const;
   bool isForced () { return forced; }
 
 public:
@@ -690,7 +676,7 @@ public:
 
 public:
   expr_t get_expr() const { return expr_h; }
-  xqtref_t get_type() const { return type; }
+  xqtref_t get_type() const;
   enum ZorbaError::ErrorCodes get_err () { return err; }
 
 public:
@@ -719,8 +705,8 @@ public:
 
 public:
   expr_t get_cast_expr() const { return expr_h; }
-  xqtref_t get_type() const { return type; }
-  bool is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeConstants::QUANT_QUESTION; }
+  xqtref_t get_type() const;
+  bool is_optional() const;
 
 public:
   void next_iter (expr_base_iterator&);
@@ -749,8 +735,8 @@ public:
 
 public:
   expr_t get_unary_expr() const { return expr_h; }
-  xqtref_t get_type() const { return type; }
-  bool is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeConstants::QUANT_QUESTION; }
+  xqtref_t get_type() const;
+  bool is_optional() const;
 
 public:
   void next_iter (expr_base_iterator&);
@@ -1119,7 +1105,7 @@ public:
   void setQNameExpr(expr_t aQNameExpr) { theQNameExpr = aQNameExpr; }
   expr_t getContent() const { return theContent; }
   expr_t getAttrs() const { return theAttrs; }
-  rchandle<namespace_context> getNSCtx() { return theNSCtx; }
+  rchandle<namespace_context> getNSCtx();
   
   void next_iter (expr_base_iterator&);
   void accept (expr_visitor&);

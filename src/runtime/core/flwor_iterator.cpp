@@ -5,6 +5,7 @@
  */
 #include "compiler/expression/expr.h"
 #include "runtime/core/flwor_iterator.h"
+#include "types/root_typemanager.h"
 #include "runtime/core/var_iterators.h"
 #include "system/zorba.h"
 #include "errors/error_factory.h"

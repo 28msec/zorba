@@ -1301,8 +1301,6 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
         eclauses.push_back (flc);
       }
     } else {  // let clause
-      LetClause *letclause = static_cast<LetClause *> (clause);
-      
       for (j = 0; j < size; j++) {
         var_expr_t ve = pop_nodestack ().cast<var_expr> ();
         exprs.push_back(pop_nodestack ());

@@ -1,5 +1,6 @@
 #include "compiler/normalizer/normalizer.h"
-#include "functions/function.h"
+#include "context/static_context.h"
+#include "compiler/expression/expr.h"
 #include "functions/signature.h"
 #include "types/root_typemanager.h"
 #include "system/globalenv.h"

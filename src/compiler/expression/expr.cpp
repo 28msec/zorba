@@ -8,8 +8,9 @@
  *
  */
 
-#include "system/globalenv.h"
 #include "compiler/expression/expr.h"
+#include "system/globalenv.h"
+#include "context/namespace_context.h"
 #include "functions/function.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenodes.h"
@@ -146,6 +147,8 @@ expr::expr(
 {
 }
 
+expr::~expr() { }
+
   expr_base_iterator *expr::make_iter_impl () {
     return new expr_base_iterator (this);
   }
@@ -160,10 +163,29 @@ expr::expr(
     }
   }
 
+  expr_base_iterator *expr::make_iter()
+  {
+    expr_base_iterator *iter = make_iter_impl ();
+    next_iter (*iter);
+    return iter;
+  }
+
   void expr::next_iter (expr_base_iterator &v) {
     BEGIN_EXPR_ITER();
     ZORBA_ASSERT (false);
     END_EXPR_ITER();
+  }
+
+  expr_t expr::clone()
+  {
+      substitution_t s;
+      return clone(s);
+  }
+
+  expr_t expr::clone(substitution_t& substitution)
+  {
+    Assert(false);
+    return NULL; // Make the compiler happy
   }
 
 /////////////////////////////////////////////////////////////////////////
@@ -190,6 +212,13 @@ string var_expr::decode_var_kind(
   }
 }
 
+var_expr::var_expr(yy::location const& loc, Item_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}
+
+var_expr::var_expr(yy::location const& loc, var_kind k, Item_t name) : expr (loc), kind (k), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
+
+Item_t var_expr::get_varname() const { return varname_h; }
+xqtref_t var_expr::get_type() const { return type; }
+void var_expr::set_type(xqtref_t t) { type = t; }
 
 void var_expr::next_iter (expr_base_iterator& v) {
   BEGIN_EXPR_ITER();
@@ -294,12 +323,23 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
   return flwor_copy;
 }
 
+case_clause::case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
+
+promote_expr::promote_expr(yy::location const& loc) : expr(loc) { }
+
+promote_expr::promote_expr(yy::location const& loc, expr_t input, xqtref_t type)
+  : expr(loc),
+  input_expr_h(input),
+  target_type(type) { }
+
 void promote_expr::next_iter (expr_base_iterator& v) {
   BEGIN_EXPR_ITER ();
   ITER (input_expr_h);
   END_EXPR_ITER ();
 }
 
+xqtref_t promote_expr::get_target_type() { return target_type; }
+void promote_expr::set_target_type(xqtref_t target) { target_type = target; }
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 
@@ -425,6 +465,7 @@ instanceof_expr::instanceof_expr(yy::location const& loc,
 {
 }
 
+xqtref_t instanceof_expr::get_type() const { return type; }
 
 void instanceof_expr::next_iter (expr_base_iterator& v) {
   BEGIN_EXPR_ITER();
@@ -448,6 +489,7 @@ treat_expr::treat_expr(
 {
 }
 
+xqtref_t treat_expr::get_type() const { return type; }
 
 void treat_expr::next_iter (expr_base_iterator& v) {
   BEGIN_EXPR_ITER ();
@@ -469,6 +511,9 @@ castable_expr::castable_expr(
 {
 }
 
+bool castable_expr::is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeConstants::QUANT_QUESTION; }
+
+xqtref_t castable_expr::get_type() const { return type; }
 
 void castable_expr::next_iter (expr_base_iterator& v) {
   BEGIN_EXPR_ITER ();
@@ -490,6 +535,9 @@ cast_expr::cast_expr(
 {
 }
 
+bool cast_expr::is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeConstants::QUANT_QUESTION; }
+
+xqtref_t cast_expr::get_type() const { return type; }
 
 void cast_expr::next_iter (expr_base_iterator& v) {
   BEGIN_EXPR_ITER ();
@@ -786,6 +834,7 @@ elem_expr::elem_expr (
 }
   
 
+rchandle<namespace_context> elem_expr::getNSCtx() { return theNSCtx; }
 
 void elem_expr::next_iter (expr_base_iterator& v) {
   BEGIN_EXPR_ITER();

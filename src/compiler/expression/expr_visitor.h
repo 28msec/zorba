@@ -10,6 +10,8 @@
 #ifndef XQP_EXPR_VISITOR_H
 #define XQP_EXPR_VISITOR_H
 
+#include "common/shared_types.h"
+
 /*______________________________________________________________________
 |  
 |  Design note: Visitor pattern.  See, for example:
@@ -19,38 +21,6 @@
 
 namespace xqp 
 {
-
-class context;
-class expr;
-class var_expr;
-class order_modifier;
-class flwor_expr;
-class case_clause;
-class promote_expr;
-class typeswitch_expr;
-class if_expr;
-class fo_expr;
-class ft_select_expr;
-class ft_contains_expr;
-class instanceof_expr;
-class treat_expr;
-class castable_expr;
-class cast_expr;
-class validate_expr;
-class extension_expr;
-class relpath_expr;
-class axis_step_expr;
-class match_expr;
-class primary_expr;
-class const_expr;
-class order_expr;
-class funcall_expr;
-class elem_expr;
-class doc_expr;
-class attr_expr;
-class text_expr;
-class pi_expr;
-class function_def_expr;
 
 class expr_visitor
 {

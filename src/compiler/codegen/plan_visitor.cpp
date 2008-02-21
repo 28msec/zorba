@@ -11,6 +11,7 @@
 
 #include <memory>
 #include "system/globalenv.h"
+#include "util/Assert.h"
 #include "context/namespace_context.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"

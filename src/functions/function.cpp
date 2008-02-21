@@ -1,5 +1,5 @@
-
 #include "system/zorba.h"
+#include "system/globalenv.h"
 #include "compiler/expression/expr.h"
 #include "compiler/codegen/plan_visitor.h"
 #include "runtime/core/fncall_iterator.h"
