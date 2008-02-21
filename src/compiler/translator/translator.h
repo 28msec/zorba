@@ -11,8 +11,8 @@
 #ifndef XQP_NORMALIZE_VISITOR_H
 #define XQP_NORMALIZE_VISITOR_H
 
-#include "compiler/parsetree/parsenode_visitor.h"
-#include "compiler/expression/expr.h"
+#include <vector>
+#include "common/shared_types.h"
 
 /*______________________________________________________________________
 |  
@@ -23,7 +23,7 @@
 
 namespace xqp {
 
-  rchandle<expr> translate (bool, static_context *, const parsenode &, std::vector<rchandle<static_context> > &);
+  expr_t translate (bool, static_context *, const parsenode &, std::vector<rchandle<static_context> > &);
   
 } /* namespace xqp */
 #endif /* XQP_NORMALIZE_VISITOR_H */
