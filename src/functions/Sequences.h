@@ -20,7 +20,6 @@
 #ifndef XQP_SEQUENCES_H
 #define XQP_SEQUENCES_H
 
-#include <string>
 #include <vector>
 #include "common/shared_types.h"
 #include "functions/function.h"
@@ -537,12 +536,6 @@ public:
 	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
-
-PlanIter_t xqp_load(
-	const std::string& path,
-	const std::string& baseuri,
-	const std::string& uri);
-
 
 } /* namespace xqp */
 #endif /* XQP_SEQUENCES_H */

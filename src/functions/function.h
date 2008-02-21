@@ -10,7 +10,6 @@
 #ifndef XQP_FUNCTION_H
 #define XQP_FUNCTION_H
 
-#include <string>
 #include <vector>
 #include "common/shared_types.h"
 #include "functions/signature.h"
