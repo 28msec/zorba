@@ -814,12 +814,11 @@ op_ym_durations_subtract::validate_args (
   return (argv.size() == 2);
 }
 
-//TODO change the type to YM_DURATION_TYPE_ONE
 xqtref_t
 op_ym_durations_subtract::type_check (
     signature&) const
 {
-  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+  return GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE;
 }
 /*end class op_ym_durations_subtract*/
 
@@ -849,12 +848,11 @@ op_ym_durations_multiply::validate_args (
   return (argv.size() == 2);
 }
 
-//TODO change the type to YM_DURATION_TYPE_ONE
 xqtref_t
 op_ym_durations_multiply::type_check (
     signature&) const
 {
-  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+  return GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE;
 }
 /*end class op_ym_durations_multiply*/
 
@@ -884,12 +882,11 @@ op_ym_durations_divide::validate_args (
   return (argv.size() == 2);
 }
 
-//TODO change the type to YM_DURATION_TYPE_ONE
 xqtref_t
 op_ym_durations_divide::type_check (
     signature&) const
 {
-  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+  return GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE;
 }
 /*end class op_ym_durations_divide*/
 
@@ -919,12 +916,11 @@ op_divide_ymd_by_ymd::validate_args (
   return (argv.size() == 2);
 }
 
-//TODO change the type to YM_DURATION_TYPE_ONE
 xqtref_t
 op_divide_ymd_by_ymd::type_check (
     signature& ) const
 {
-  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+  return GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE;
 }
 /*end class op_divide_ymd_by_ymd*/
 
@@ -988,12 +984,11 @@ op_dt_durations_subtract::validate_args (
   return (argv.size() == 2);
 }
 
-//TODO change the type to DT_DURATION_TYPE_ONE
 xqtref_t
 op_dt_durations_subtract::type_check (
     signature& ) const
 {
-  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+  return GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
 }
 /*end class op_dt_durations_subtract*/
 
@@ -1023,12 +1018,11 @@ op_dt_durations_multiply::validate_args (
   return (argv.size() == 2);
 }
 
-//TODO change the type to DT_DURATION_TYPE_ONE
 xqtref_t
 op_dt_durations_multiply::type_check (
     signature& ) const
 {
-  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+  return GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
 }
 /*end class op_dt_durations_multiply*/
 
@@ -1058,12 +1052,11 @@ op_dt_durations_divide::validate_args (
   return (argv.size() == 2);
 }
 
-//TODO change the type to DT_DURATION_TYPE_ONE
 xqtref_t
 op_dt_durations_divide::type_check (
     signature&) const
 {
-  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+  return GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
 }
 /*end class op_dt_durations_divide*/
 
@@ -1094,12 +1087,11 @@ op_divide_dtd_by_dtd::validate_args (
   return (argv.size() == 2);
 }
 
-//TODO change the type to DT_DURATION_TYPE_ONE
 xqtref_t
 op_divide_dtd_by_dtd::type_check (
     signature&) const
 {
-  return GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+  return GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
 }
 /*end class op_divide_dtd_by_dtd*/
 
