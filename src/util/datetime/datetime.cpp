@@ -128,27 +128,27 @@ int DateTime::compare(const DateTime& dt) const
     return 1;
 }
 
-int32_t DateTime::getYear() const
+int DateTime::getYear() const
 {
   return (is_negative? -1 : 1) * the_date_time.date().year();
 }
 
-int32_t DateTime::getMonth() const
+int DateTime::getMonth() const
 {
   return the_date_time.date().month();
 }
 
-int32_t DateTime::getDay() const
+int DateTime::getDay() const
 {
   return the_date_time.date().day();
 }
 
-int32_t DateTime::getHours() const
+int DateTime::getHours() const
 {
   return the_date_time.time_of_day().hours();
 }
 
-int32_t DateTime::getMinutes() const
+int DateTime::getMinutes() const
 {
   return the_date_time.time_of_day().minutes();
 }
@@ -187,7 +187,6 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
   carry = quotient(hours, 24);
   hours = modulo(hours, 24);
 
-  //
   if (dt.getDay() > get_last_day(years, months))
     temp_days = get_last_day(years, months);
   else if (dt.getDay() < 1)
@@ -196,19 +195,24 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
     temp_days = dt.getDay();
 
   days = d.getDays() + temp_days + carry;
-
-  /*
   while (1)
   {
     if (days <1)
     {
-      days = days + 
-
+      days = days + get_last_day(years,months-1);
+      carry = -1;
     }
+    else if (days > get_last_day(years, months))
+    {
+      days = days - get_last_day(years, months);
+      carry = 1;
+    }
+    else
+      break;
 
+    years = years + quotient(months + carry-1, 12);
+    months = modulo(months + carry -1, 12) + 1;
   }
-  */
-
 }
 
 } // namespace xqp
