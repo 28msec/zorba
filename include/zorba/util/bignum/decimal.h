@@ -26,9 +26,11 @@ public:
   Decimal() : theDecimal(0) { }
   Decimal(const Decimal& aDecimal) : theDecimal(aDecimal.theDecimal) { }
 
-private:
+public:
   static MAPM round(MAPM aValue, MAPM aPrecision);
   static MAPM roundHalfToEven(MAPM aValue, MAPM aPrecision);
+
+private:
   static xqpString decimalToString(MAPM);
 
 public:

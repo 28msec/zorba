@@ -14,7 +14,7 @@ Double FloatCommons::parseFloat(const Float& aFloat) {
 
 Float FloatCommons::parseDouble(const Double& aDouble) {
   Float lFloat(aDouble.getType(), aDouble.getNumber());
-  FloatImpl<float>::checkInfZero(lFloat);
+  FloatImpl<float>::checkInfZeroPrecision(lFloat);
   return lFloat;
 }
 
@@ -39,6 +39,11 @@ bool FloatImplTraits<double>::isNegInf(MAPM aMAPM) {
   }
 }
 
+// FIXME this is not yet correct! Just a very simple temporary solution.
+MAPM FloatImplTraits<double>::cutMantissa(MAPM aMAPM) {
+  return Decimal::round(aMAPM, 16-aMAPM.exponent());
+}
+
 bool FloatImplTraits<float>::isPosInf(MAPM aMAPM) {
   if (aMAPM > 0) {
     return aMAPM.exponent() > 38 || aMAPM > MAPM("3.4028235e+38");
@@ -58,6 +63,11 @@ bool FloatImplTraits<float>::isNegInf(MAPM aMAPM) {
   } else {
     return false;
   }
+}
+
+// FIXME this is not yet correct! Just a very simple temporary solution.
+MAPM FloatImplTraits<float>::cutMantissa(MAPM aMAPM) {
+  return Decimal::round(aMAPM, 7-aMAPM.exponent());
 }
   
 const xqpString FloatCommons::INF_POS_STR = "INF";
@@ -95,23 +105,20 @@ FloatImpl<FloatType>& FloatImpl<FloatType>::inf_neg() {
 }
 
 template <typename FloatType>
-bool FloatImpl<FloatType>::checkInfZero(FloatImpl& aFloatImpl) {
+void FloatImpl<FloatType>::checkInfZeroPrecision(FloatImpl& aFloatImpl) {
   if (aFloatImpl.theType == FloatCommons::NORMAL || aFloatImpl.theType == FloatCommons::NORMAL_NEG) {
+    aFloatImpl.theFloatImpl = FloatImplTraits<FloatType>::cutMantissa(aFloatImpl.theFloatImpl);
     if (FloatImplTraits<FloatType>::isPosInf(aFloatImpl.theFloatImpl)) {
       aFloatImpl.theType = FloatCommons::INF_POS;
       aFloatImpl.theFloatImpl = 0;
-      return true;
     } else if (FloatImplTraits<FloatType>::isNegInf(aFloatImpl.theFloatImpl)) {
       aFloatImpl.theType = FloatCommons::INF_NEG;
       aFloatImpl.theFloatImpl = 0;
-      return true;
     } else if (FloatImplTraits<FloatType>::isZero(aFloatImpl.theFloatImpl)) {
       aFloatImpl.theType = FloatCommons::NORMAL;
       aFloatImpl.theFloatImpl = 0;
-      return true;
     }
   }
-  return false;
 }
 
 template <typename FloatType>
@@ -269,7 +276,7 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
   aFloatImpl.theType = lType;
   aFloatImpl.theFloatImpl = lNumber;
 
-  checkInfZero(aFloatImpl);
+  checkInfZeroPrecision(aFloatImpl);
   return true;
 }
 
@@ -367,7 +374,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator+(const FloatImpl& aFloatImpl
         } else {
           lFloatImpl.theType = FloatCommons::NORMAL;
         }
-        checkInfZero(lFloatImpl);
+        checkInfZeroPrecision(lFloatImpl);
       }
       break;
     }
@@ -437,7 +444,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator-(const FloatImpl& aFloatImpl
         } else {
           lFloatImpl.theType = FloatCommons::NORMAL;
         }
-        checkInfZero(lFloatImpl);
+        checkInfZeroPrecision(lFloatImpl);
       }
       break;
     }
@@ -511,7 +518,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator*(const FloatImpl& aFloatImpl
         } else {
           lFloatImpl.theType = FloatCommons::NORMAL;
         }
-        checkInfZero(lFloatImpl);
+        checkInfZeroPrecision(lFloatImpl);
       }
       break;
     }
@@ -595,7 +602,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator/(const FloatImpl& aFloatImpl
         } else {
           lFloatImpl.theType = FloatCommons::NORMAL;
         }
-        checkInfZero(lFloatImpl);
+        checkInfZeroPrecision(lFloatImpl);
       }
       break;
     }
@@ -701,7 +708,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const{
   {
     lFloatImpl.theType = theType;
     lFloatImpl.theFloatImpl = Decimal::round(theFloatImpl, aPrecision.theInteger);
-    checkInfZero(lFloatImpl);
+    checkInfZeroPrecision(lFloatImpl);
   }
     break;
   case FloatCommons::NOT_A_NUM:
@@ -722,7 +729,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) c
   {
     lFloatImpl.theType = theType;
     lFloatImpl.theFloatImpl = Decimal::roundHalfToEven(theFloatImpl, aPrecision.theInteger);
-    checkInfZero(lFloatImpl);
+    checkInfZeroPrecision(lFloatImpl);
   }
     break;
   case FloatCommons::NOT_A_NUM:

@@ -19,23 +19,6 @@ template <typename Type> class FloatImpl;
 typedef FloatImpl<double> Double;
 typedef FloatImpl<float> Float;
 
-/**
- * Class to implement isPosInf, isZero und isNegInf for every different Template
- * Parameter of FloatImpl
- */
-template <typename FloatType> class FloatImplTraits;
-
-/**
- * Specialization for double
- */
-template <>
-class FloatImplTraits<double> {
-public:
-  static bool isPosInf(MAPM aMAPM);
-  static bool isZero(MAPM aMAPM); 
-  static bool isNegInf(MAPM aMAPM); 
-};
-
 class FloatCommons {
 public:
   enum NumType {
@@ -55,6 +38,24 @@ public:
 };
 
 /**
+ * Class to implement isPosInf, isZero und isNegInf for every different Template
+ * Parameter of FloatImpl
+ */
+template <typename FloatType> class FloatImplTraits;
+
+/**
+ * Specialization for double
+ */
+template <>
+class FloatImplTraits<double> {
+public:
+  static bool isPosInf(MAPM aMAPM);
+  static bool isZero(MAPM aMAPM); 
+  static bool isNegInf(MAPM aMAPM); 
+  static MAPM cutMantissa(MAPM aMAPM);
+};
+
+/**
  * Specialization for float
  */
 template <>
@@ -63,6 +64,7 @@ public:
   static bool isPosInf(MAPM aMAPM);
   static bool isZero(MAPM aMAPM); 
   static bool isNegInf(MAPM aMAPM); 
+  static MAPM cutMantissa(MAPM aMAPM);
 };
 
 template <typename FloatType>
@@ -82,10 +84,10 @@ public:
 
 protected:
   /**
-   * Checks if the MAPM value is to big or too small => possible type change to 0, INF or -INF
-   * @return true, if aFloatImpl has been changed
+   * Checks if the MAPM value is to big, too small, or too precise 
+   * => possible type change to 0, INF or -INF, or reduced precision
    */
-  static bool checkInfZero(FloatImpl& aFloatImpl);
+  static void checkInfZeroPrecision(FloatImpl& aFloatImpl);
 
 public:
   /**
