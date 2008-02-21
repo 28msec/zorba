@@ -3,6 +3,7 @@
 
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
+#include <vector>
 
 namespace xqp {
 
@@ -10,12 +11,13 @@ class UDFunctionCallIteratorState : public PlanIteratorState {
   public:
     PlanState *theFnBodyStateBlock;
     PlanIterator *thePlan;
+    uint32_t thePlanStateSize;
+    std::vector<Iterator_t> theChildIterators;
 
     UDFunctionCallIteratorState();
     ~UDFunctionCallIteratorState();
 
-    void init(PlanState&);
-    void reset(PlanState&);
+    void resetChildIters();
 };
 
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
@@ -29,12 +31,14 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
 
     virtual ~UDFunctionCallIterator() { }
 
+    void openImpl(PlanState& planState, uint32_t& offset);
     Item_t nextImpl(PlanState& planState) const;
+    void resetImpl(PlanState& planState) const;
+    void closeImpl(PlanState& planState);
 
     virtual void accept(PlanIterVisitor& v) const;
 
   protected:
-
     const user_function *theUDF;
 };
 

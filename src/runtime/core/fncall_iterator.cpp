@@ -8,6 +8,58 @@
 
 namespace xqp {
 
+UDFunctionCallIteratorState::UDFunctionCallIteratorState()
+  : theFnBodyStateBlock(NULL),
+    thePlan(NULL),
+    thePlanStateSize(0) { }
+
+UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
+{
+}
+
+void UDFunctionCallIteratorState::resetChildIters()
+{
+  std::vector<Iterator_t>::const_iterator lIter = theChildIterators.begin();
+  std::vector<Iterator_t>::const_iterator lEnd = theChildIterators.end();
+  for ( ; lIter != lEnd; ++lIter)
+    (*lIter)->close();
+
+  theChildIterators.clear();
+}
+
+void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::openImpl(planState, offset);
+  UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, this->stateOffset);
+
+  state->thePlan = theUDF->get_plan().getp();
+  state->thePlanStateSize = state->thePlan->getStateSizeOfSubtree();
+  state->theFnBodyStateBlock = new PlanState(state->thePlanStateSize);
+  uint32_t planOffset = 0;
+  state->thePlan->open(*state->theFnBodyStateBlock, planOffset);
+
+}
+
+void UDFunctionCallIterator::closeImpl(PlanState& planState)
+{
+  UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, this->stateOffset);
+
+  state->thePlan->close(*state->theFnBodyStateBlock);
+  delete state->theFnBodyStateBlock;
+  state->resetChildIters();
+
+  NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::closeImpl(planState);
+}
+
+void UDFunctionCallIterator::resetImpl(PlanState& planState) const
+{
+  NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::resetImpl(planState);
+  UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, this->stateOffset);
+
+  state->thePlan->reset(*state->theFnBodyStateBlock);
+  state->resetChildIters();
+}
+
 Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
 {
   Item_t lSequenceItem;
@@ -15,57 +67,28 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
 
   DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
 
-  // TODO maybe this can be done in open
-  state->thePlan = theUDF->get_plan().getp();
-  state->theFnBodyStateBlock = theUDF->create_plan_state();
-
-  // Bind the args.
   {
+    // Bind the args.
     std::vector<ref_iter_t>& iters = theUDF->get_param_iters();
-    for(uint32_t i = 0; i < iters.size (); ++i) {
+    for (uint32_t i = 0; i < iters.size (); ++i) {
       ref_iter_t& ref = iters[i];
-      if (ref != NULL) {
-        ref->bind(new PlanIteratorWrapper(theChildren[i], planState), *state->theFnBodyStateBlock);
+      if ( ref != NULL) {
+        state->theChildIterators.push_back(new PlanIteratorWrapper(theChildren[i], planState));
+        state->theChildIterators.back()->open();
+        ref->bind(state->theChildIterators.back(), *state->theFnBodyStateBlock);
       }
     }
   }
 
-  while((lSequenceItem = consumeNext(state->thePlan, *state->theFnBodyStateBlock)) != NULL) {
+  while ((lSequenceItem = consumeNext(state->thePlan, *state->theFnBodyStateBlock)) != NULL) {
     STACK_PUSH(lSequenceItem, state);
   }
-
+  
   STACK_END();
 }
 
-UDFunctionCallIteratorState::UDFunctionCallIteratorState()
-  : theFnBodyStateBlock(NULL),
-    thePlan(NULL) { }
 
-UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
-{
-  if (theFnBodyStateBlock != NULL) {
-    delete theFnBodyStateBlock;
-  }
-}
-
-void UDFunctionCallIteratorState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  reset(planState);
-}
-
-void UDFunctionCallIteratorState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-
-  if (theFnBodyStateBlock != NULL) {
-    delete theFnBodyStateBlock;
-  }
-
-  theFnBodyStateBlock = NULL;
-  thePlan = NULL;
-}
-
+// external functions
 class ExtFuncArgItemSequence : public ItemSequence {
   public:
     ExtFuncArgItemSequence(PlanIter_t child, PlanState& stateBlock)

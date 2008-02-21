@@ -89,8 +89,6 @@ class user_function : public function {
 
     virtual std::vector<ref_iter_t>& get_param_iters() const;
 
-    virtual PlanState *create_plan_state() const;
-
   private:
     yy::location m_loc;
     expr_t m_expr_body;

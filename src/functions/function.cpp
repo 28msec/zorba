@@ -79,7 +79,6 @@ PlanIter_t user_function::get_plan() const
           break;
       }
     }
-    m_state_size = m_plan->getStateSizeOfSubtree();
   }
   return m_plan;
 }
@@ -87,15 +86,6 @@ PlanIter_t user_function::get_plan() const
 std::vector<ref_iter_t>& user_function::get_param_iters() const
 {
   return m_param_iters;
-}
-
-PlanState *user_function::create_plan_state() const
-{
-  PlanState *state = new PlanState(m_state_size);
-  uint32_t offset = 0;
-  m_plan->open(*state, offset);
-
-  return state;
 }
 
 }
