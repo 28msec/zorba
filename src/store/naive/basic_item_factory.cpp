@@ -7,6 +7,7 @@
  *`
  */
 
+#include "zorba/common/common.h"
 #include "system/globalenv.h"
 #include "store/api/temp_seq.h"
 #include "store/naive/store_defs.h"
