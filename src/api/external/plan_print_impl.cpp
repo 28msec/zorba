@@ -1,5 +1,6 @@
 
 #include "api/external/plan_print_impl.h"
+#include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_dot_visitor.h"
 #include "runtime/visitors/printervisitor.h"
