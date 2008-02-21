@@ -8,12 +8,13 @@
 #define XQP_UTIL_DATETIME_H
 
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include "util/utf8/xqpString.h"
 #include "util/rchandle.h"
 #include "util/datetime/timezone.h"
 
 namespace xqp
 {
+class xqpString;
+class Duration;
 
 class Date;
 typedef rchandle<Date> Date_t;
@@ -24,37 +25,43 @@ typedef rchandle<Time> Time_t;
 class DateTime;
 typedef rchandle<DateTime> DateTime_t;
 
-class xqpString;
+
 class DateTime : public SimpleRCObject
 {
 public:
-  DateTime(boost::posix_time::ptime t) : the_date_time(t) { };
+  DateTime(bool negative, boost::posix_time::ptime t) : is_negative(negative), the_date_time(t) { };
   DateTime(const Date_t& d_t, const Time_t& t_t);
   
   virtual ~DateTime() { };
 
-  static bool parse_string(const xqpString& s, DateTime_t& dt_t);
+  /**
+   *  Returns 0 on success
+   */
+  static int parse_string(const xqpString& s, DateTime_t& dt_t);
   
-  bool operator<(const DateTime& t) const;
-  bool operator==(const DateTime& t) const;
-  int compare(const DateTime& t) const;
+  bool operator<(const DateTime& dt) const;
+  bool operator==(const DateTime& dt) const;
+  int compare(const DateTime& dt) const;
 
   xqpString toString() const;
 
-  int32_t getYear() const;
-  int32_t getMonth() const;
-  int32_t getDay() const;
-  int32_t getHours() const;
-  int32_t getMinutes() const;
+  int getYear() const;
+  int getMonth() const;
+  int getDay() const;
+  int getHours() const;
+  int getMinutes() const;
   double getSeconds() const;
   TimeZone getTimezone() const;
 
 protected:
-  DateTime& operator=(const DateTime_t& t_t);
-  
+  DateTime& operator=(const DateTime_t& dt_t);
+
+  bool is_negative;
   boost::posix_time::ptime the_date_time;
   TimeZone the_time_zone;  
 };
+
+DateTime_t operator+(const DateTime& dt, const Duration& d);
 
 } // namespace xqp
 

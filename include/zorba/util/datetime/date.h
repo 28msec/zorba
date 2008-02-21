@@ -8,19 +8,18 @@
 #define XQP_DATE_H
 
 #include <boost/date_time/gregorian/gregorian.hpp>
-#include "util/utf8/xqpString.h"
 #include "util/rchandle.h"
 #include "util/datetime/timezone.h"
 
 namespace xqp
 {
+class xqpString;
 class Date;
 typedef rchandle<Date> Date_t;
 
-class xqpString;
 
 /**
- *  date is in form of '-'? yyyy '-' mm '-' dd zzzzzz?
+ *  date has the form: '-'? yyyy '-' mm '-' dd zzzzzz?
  *
  */
 

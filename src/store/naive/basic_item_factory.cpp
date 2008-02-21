@@ -226,7 +226,7 @@ Item_t BasicItemFactory::createDateTime ( const xqp_string& /*value*/ )
 
 Item_t BasicItemFactory::createDateTime (const Item_t& date, const Item_t& time)
 {
-  if (date == NULL || time == NULL)
+  if (date.isNull() || time.isNull())
     return Item_t(NULL);
   else
     return new DateTimeItemNaive(date->getDateValue(), time->getTimeValue());

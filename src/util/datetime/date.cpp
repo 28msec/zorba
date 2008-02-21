@@ -10,16 +10,7 @@
 #include "util/datetime/timezone.h"
 #include "util/datetime/parse.h"
 #include "util/numconversions.h"
-
-#define RETURN_FALSE_ON_EXCEPTION(sequence)     \
-  try                                           \
-  {                                             \
-    sequence;                                   \
-  }                                             \
-  catch (std::exception)                        \
-  {                                             \
-    return false;                               \
-  }
+#include "util/utf8/xqpString.h"
 
 using namespace std;
 

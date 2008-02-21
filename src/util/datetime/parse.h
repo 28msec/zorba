@@ -52,6 +52,38 @@ int parse_int(std::string& s, unsigned int& position, T& result, int min_digits 
   return 0;
 }
 
+template <typename T>
+T quotient(T a, T b)
+{
+  a = a / b;
+  if (a<0)
+    a--;
+
+  return a;
+}
+
+
+template <typename T>
+T modulo(T a, T b)
+{
+  a = a % b;
+  if (a<0)
+    a += b;
+
+  return a;
+}
+
+template <typename T>
+int floor(T a)
+{
+  if (a>=0)
+    return (int)a;
+  else
+    return (int)(a-1);
+}
+
+
+
 bool is_digit(char ch);
 bool are_digits(std::string& s, unsigned int& position, int count);
     

@@ -172,7 +172,7 @@ Item_t GenericCast::stringSimpleCast(
   case TypeConstants::XS_TIME:
   {
           xqp_time t;
-          if (Time::parse_string(lString, t))
+          if (0 == Time::parse_string(lString, t))
             lItem = factory->createTime(t);
         }
         break;

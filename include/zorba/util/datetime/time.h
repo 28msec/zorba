@@ -8,16 +8,21 @@
 #define XQP_TIME_H
 
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include "util/utf8/xqpString.h"
 #include "util/rchandle.h"
 #include "util/datetime/timezone.h"
 
 namespace xqp
 {
-  class xqpString;
-  
-  class Time;
-  typedef rchandle<Time> Time_t;
+class xqpString;
+class Time;
+typedef rchandle<Time> Time_t;
+
+/**
+ *  time has the form: hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+ *
+ *  time cannot be negative
+ *
+ */
 
 class Time : public SimpleRCObject
 {
@@ -25,7 +30,10 @@ public:
   Time(boost::posix_time::time_duration t) : the_time(t) { };
   virtual ~Time() { };
 
-  static bool parse_string(const xqpString& s, Time_t& t_t);
+  /**
+   *  Returns 0 on success
+   */
+  static int parse_string(const xqpString& s, Time_t& t_t);
   
   bool operator<(const Time& t) const;
   bool operator==(const Time& t) const;
