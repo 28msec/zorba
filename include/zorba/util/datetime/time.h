@@ -16,6 +16,7 @@ namespace xqp
 class xqpString;
 class Time;
 typedef rchandle<Time> Time_t;
+class Duration;
 
 /**
  *  time has the form: hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
@@ -53,6 +54,9 @@ protected:
   boost::posix_time::time_duration the_time;
   TimeZone the_time_zone;
 };
+
+Time_t operator+(const Time& t, const Duration& dur);
+Time_t operator-(const Time& t, const Duration& dur);
 
 } // namespace xqp
 

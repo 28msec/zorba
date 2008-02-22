@@ -16,7 +16,7 @@ namespace xqp
 class xqpString;
 class Date;
 typedef rchandle<Date> Date_t;
-
+class Duration;
 
 /**
  *  date has the form: '-'? yyyy '-' mm '-' dd zzzzzz?
@@ -56,6 +56,9 @@ protected:
   int day;
   TimeZone the_time_zone;
 };
+
+Date_t operator+(const Date& d, const Duration& dur);
+Date_t operator-(const Date& d, const Duration& dur);
 
 } // namespace xqp
 

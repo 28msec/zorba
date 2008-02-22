@@ -161,21 +161,19 @@ Item_t AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATI
   return Zorba::getItemFactory()->createDateTime (d);
 }
 
-//TODO: replace the second type with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
 template<>
 Item_t AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( const yy::location* loc,  const Item* i0, const Item* i1 )
 {
-  xqp_date d = i0->getDateValue();// + *i1->getDurationValue();
+  xqp_date d = *i0->getDateValue() + *i1->getDurationValue()->toDuration();
   return Zorba::getItemFactory()->createDate (d);
 }
 
-//TODO: replace the second type with XS_DT_DURATION
 template<>
 Item_t AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( const yy::location* loc,  const Item* i0, const Item* i1 )
 {
-  xqp_time t = i0->getTimeValue();// + *i1->getDurationValue();
+  xqp_time t = *i0->getTimeValue() + *i1->getDurationValue()->toDuration();
   return Zorba::getItemFactory()->createTime (t);
 }
  /* end class AddOperations */
@@ -189,31 +187,28 @@ Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
   return Zorba::getItemFactory()->createDuration (d);
 }
 
-//TODO: replace the second type with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
 template<>
 Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
 ( const yy::location* loc,  const Item* i0, const Item* i1 )
 {
 //   long timezone_sec = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
-  xqp_dateTime d = i0->getDateTimeValue();// + *i1->getDurationValue();
+  xqp_dateTime d = *i0->getDateTimeValue() - *i1->getDurationValue()->toDuration();
   return Zorba::getItemFactory()->createDateTime (d);
 }
 
-//TODO: replace the second type with XS_YM_DURATION and implement another specialization for XS_DT_DURATION
 template<>
 Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( const yy::location* loc,  const Item* i0, const Item* i1 )
 {
-  xqp_date d = i0->getDateValue();// + *i1->getDurationValue();
+  xqp_date d = *i0->getDateValue() - *i1->getDurationValue()->toDuration();
   return Zorba::getItemFactory()->createDate (d);
 }
 
-//TODO: replace the second type with XS_DT_DURATION
 template<>
 Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( const yy::location* loc,  const Item* i0, const Item* i1 )
 {
-  xqp_time t = i0->getTimeValue();// + *i1->getDurationValue();
+  xqp_time t = *i0->getTimeValue() + *i1->getDurationValue()->toDuration();
   return Zorba::getItemFactory()->createTime (t);
 }
 

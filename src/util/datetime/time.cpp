@@ -128,4 +128,13 @@ int Time::compare(const Time& t) const
     return 1;
 }
 
+Time_t operator+(const Time& t, const Duration& dur)
+{
+  return NULL;
+}
+
+Time_t operator-(const Time& t, const Duration& dur)
+{
+  return NULL;
+}
 } // namespace xqp

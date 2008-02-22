@@ -217,4 +217,8 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
   return NULL;
 }
 
+DateTime_t operator-(const DateTime& dt, const Duration& d)
+{
+  return NULL;
+}
 } // namespace xqp

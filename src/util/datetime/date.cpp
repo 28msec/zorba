@@ -165,5 +165,13 @@ TimeZone Date::getTimezone() const
   return the_time_zone;
 }
 
+Date_t operator+(const Date& d, const Duration& dur)
+{
+  return NULL;
+}
 
+Date_t operator-(const Date& d, const Duration& dur)
+{
+  return NULL;
+}
 } // namespace xqp

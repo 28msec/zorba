@@ -62,6 +62,7 @@ protected:
 };
 
 DateTime_t operator+(const DateTime& dt, const Duration& d);
+DateTime_t operator-(const DateTime& dt, const Duration& d);
 
 } // namespace xqp
 
