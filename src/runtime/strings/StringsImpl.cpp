@@ -9,6 +9,7 @@
  *
  */
 
+#include "zorba/common/common.h"
 #include <iostream>
 #include "runtime/strings/StringsImpl.h"
 #include "system/zorba.h"
@@ -18,9 +19,6 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 
-#ifdef WIN32
-# include "util/win32/compatib_defs.h"
-#endif
 
 using namespace std;
 
