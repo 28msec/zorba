@@ -13,6 +13,12 @@
 #include "specification.h" // parsing spec files
 #include "zorba/zorba_api.h"
 
+#ifdef CYGWIN
+#  include <stdio.h>
+#  include <dirent.h>
+#  include <sys/stat.h>
+#endif
+
 namespace fs = boost::filesystem;
 
 void
@@ -160,11 +166,22 @@ trim(std::string& str) {
 // aCol contains the column number in which the first difference occurs
 // aPos is the character number off the first difference in the file
 // -1 is returned for aLine, aCol, and aPos if the files are equal
+#ifndef CYGWIN
 bool
 isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
+#else
+bool
+isEqual(std::string aRefFile, std::string aResFile, int& aLine, int& aCol,
+        int&aPos)
+#endif
 {
+#ifndef CYGWIN
   std::ifstream li(aRefFile.native_file_string().c_str());
   std::ifstream ri(aResFile.native_file_string().c_str()); 
+#else
+  std::ifstream li(aRefFile.c_str());
+  std::ifstream ri(aResFile.c_str()); 
+#endif
 
   std::streambuf * lb = li.rdbuf();
   std::streambuf * rb = ri.rdbuf();
@@ -255,18 +272,26 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
+#ifndef CYGWIN
   fs::path lQueryFile, lResultFile, lErrorFile, lRefFile, lSpecFile;
+#else
+  std::string lQueryFile, lResultFile, lErrorFile, lRefFile, lSpecFile;
+#endif
   Specification lSpec;
 
   // do initial stuff
   if ( argc == 2 )
   {
     std::string lQueryFileString  = xqp::RBKT_SRC_DIR +"/Queries/" + argv[1];
+#ifndef CYGWIN
     lQueryFile = fs::system_complete( fs::path( lQueryFileString, fs::native ) );
+#else
+    lQueryFile = lQueryFileString; 
+#endif
 
     std::string lQueryWithoutSuffix = std::string(argv[1]).substr( 0, std::string(argv[1]).size()-3 );
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
-
+#ifndef CYGWIN
     lResultFile = fs::system_complete(fs::path( xqp::RBKT_BINARY_DIR +"/QueryResults/" 
                                       +lQueryWithoutSuffix + ".res", fs::native) );
     lErrorFile = fs::system_complete(fs::path(xqp::RBKT_BINARY_DIR +"/" 
@@ -275,6 +300,12 @@ main(int argc, char** argv)
                                      +lQueryWithoutSuffix +".xml.res", fs::native) );
     lSpecFile  = fs::system_complete(fs::path(xqp::RBKT_SRC_DIR+ "/Queries/" 
                                      +lQueryWithoutSuffix +".spec", fs::native) );
+#else
+    lResultFile = xqp::RBKT_BINARY_DIR + "/QueryResults/" + lQueryWithoutSuffix +".res";
+    lErrorFile = xqp::RBKT_BINARY_DIR + "/" + lQueryWithoutSuffix +".err";
+    lRefFile   = xqp::RBKT_SRC_DIR + "/ExpQueryResults/" + lQueryWithoutSuffix +".xml.res";
+    lSpecFile  = xqp::RBKT_SRC_DIR + "/Queries/" + lQueryWithoutSuffix +".spec";
+#endif
   }
   else
   {
@@ -282,18 +313,42 @@ main(int argc, char** argv)
     return 1;
   }
 
+#ifndef CYGWIN
   // does the query file exists
-  if ( (! fs::exists( lQueryFile )) || fs::is_directory( lQueryFile) )
-  {
+  if ( (! fs::exists( lQueryFile )) || fs::is_directory( lQueryFile) ) {
     std::cerr << "\n query file " << lQueryFile.native_file_string() 
               << " does not exist or is not a file" << std::endl;
     return 2;
   }
+#else
+  FILE *fp = fopen(lQueryFile.c_str(), "r");
+  if ( ! fp ) {
+    std::cerr << "\n query file " << lQueryFile
+              << " does not exist or is not a file" << std::endl;
+    return 2;
+  } else {
+    fclose(fp);
+  }
+#endif
 
   // delete previous files if they exists
+#ifndef CYGWIN
   if ( fs::exists ( lResultFile ) ) { fs::remove (lResultFile); }
   if ( fs::exists ( lErrorFile ) )  { fs::remove (lErrorFile);  }
+#else
+  fp = fopen(lResultFile.c_str(), "r");
+  if (fp) {
+    fclose(fp);
+    remove (lResultFile.c_str());
+  }
+  fp = fopen(lErrorFile.c_str(), "r");
+  if (fp) {
+    fclose(fp);
+    remove (lErrorFile.c_str());
+  }
+#endif
 
+#ifndef CYGWIN
   // create the result directory
   fs::path lBucket = fs::system_complete(fs::path( lResultFile.branch_path().string(), fs::native ));
   if ( ! fs::exists( lBucket ) )
@@ -304,17 +359,53 @@ main(int argc, char** argv)
   { 
     lSpec.parseFile(lSpecFile.native_file_string()); 
   }
+#else
+  {
+    size_t lPos = 0;
+    std::string lTmpSubPath;
+    do {
+      lPos = lResultFile.find_first_of("/", lPos);
+      if (lPos==std::string::npos)
+        break;
+      lTmpSubPath = lResultFile.substr(0, lPos++);
+      DIR *dir = opendir(lTmpSubPath.c_str());
+      if (!dir)
+        mkdir (lTmpSubPath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+      else
+        closedir(dir);
+    } while ( true );
+  }
+  fp = fopen(lSpecFile.c_str(), "r");
+  if (fp) {
+    lSpec.parseFile(lSpecFile);
+    fclose(fp);
+  }
+#endif
 
+#ifndef CYGWIN
   // we must either have a reference file or an expected error code
   if ( (lSpec.errorsSize() == 0) && ((! fs::exists( lRefFile )) || fs::is_directory( lRefFile)))
   {
     std::cerr << "No reference result and no expected errors." << std::endl;
     return 3;
   }
+#else
+  fp = fopen(lRefFile.c_str(), "r");
+  if ( (lSpec.errorsSize() == 0) && (!fp) )
+  {
+    std::cerr << "No reference result and no expected errors." << std::endl;
+    return 3;
+  }
+  fclose(fp);
+#endif
 
   // print the query
   std::cout << "Query:" << std::endl;
+#ifndef CYGWIN
   printFile(std::cout, lQueryFile.native_file_string());
+#else
+  printFile(std::cout, lQueryFile);
+#endif
   std::cout << std::endl;
 
   // initialize the zorba engine
@@ -322,7 +413,11 @@ main(int argc, char** argv)
 
   // create and compile the query
   std::string lQueryString;
+#ifndef CYGWIN
   slurp_file(lQueryFile.native_file_string().c_str(), lQueryString);
+#else
+  slurp_file(lQueryFile.c_str(), lQueryString);
+#endif
   xqp::XQuery_t lQuery = lEngine.factory->createQuery(lQueryString.c_str());
 
   xqp::ZorbaAlertsManager_t lAlertsManager = lEngine.factory->getAlertsManagerForCurrentThread();
@@ -364,8 +459,13 @@ main(int argc, char** argv)
   
   {
     // serialize xml
+#ifndef CYGWIN
     std::ofstream lResFileStream(lResultFile.native_file_string().c_str());
     assert (lResFileStream.good());
+#else
+    std::ofstream lResFileStream(lResultFile.c_str());
+    assert (lResFileStream.good());
+#endif
 
     lQuery->serializeXML(lResFileStream);
 
@@ -394,7 +494,11 @@ main(int argc, char** argv)
         else
         {
           std::cerr << " but got result:" << std::endl;
+#ifndef CYGWIN
           printFile(std::cerr, lResultFile.native_file_string());
+#else
+          printFile(std::cerr, lResultFile);
+#endif
           std::cerr<< std::endl;
         } 
         return 7;
@@ -402,7 +506,11 @@ main(int argc, char** argv)
     }
   }
   std::cout << "Result:" << std::endl;
+#ifndef CYGWIN
   printFile(std::cout, lResultFile.native_file_string());
+#else
+  printFile(std::cout, lResultFile);
+#endif
   std::cout.flush();
   std::cout << std::endl;
 
@@ -413,14 +521,27 @@ main(int argc, char** argv)
   if ( !lRes )  // results differ
   {
     std::cerr << std::endl << "Result does not match expected result" << std::endl;
+#ifndef CYGWIN
     printFile(std::cerr, lRefFile.native_file_string());
+#else
+    printFile(std::cerr, lRefFile);
+#endif
     std::cerr << std::endl;
 
     std::cerr << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
     std::cerr << "Got "; 
+#ifndef CYGWIN
+    printFile(std::cerr, lRefFile.native_file_string());
     printPart(std::cerr, lResultFile.native_file_string(), lPos, 15);
     std::cerr << std::endl << "Expected ";
     printPart(std::cerr, lRefFile.native_file_string(), lPos, 15);
+#else
+    printFile(std::cerr, lRefFile);
+    printPart(std::cerr, lResultFile, lPos, 15);
+    std::cerr << std::endl << "Expected ";
+    printPart(std::cerr, lRefFile, lPos, 15);
+    std::cerr <<  std::endl;
+#endif
     std::cerr <<  std::endl;
 
     return 8;
