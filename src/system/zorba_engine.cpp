@@ -22,7 +22,7 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "api/external/xmldatamanager_impl.h"
-#include "api/external/plan_print_impl.h"
+#include "compiler/api/compiler_api.h"
 #include "types/typemanager.h"
 
 namespace xqp{
@@ -446,7 +446,7 @@ XmlDataManager_t		ZorbaEngineImpl::getXmlDataManager()
 
 XQueryTreePlans_t ZorbaEngineImpl::createDebugPlanPrintObject()
 {
-  return new XQueryTreePlansImpl;
+  return new XQueryPlanPrinterConfig;
 }
 
 bool		ZorbaSingleThread::execute(xqp_string xquery_text, std::ostream &os)

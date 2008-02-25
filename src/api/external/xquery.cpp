@@ -1,20 +1,17 @@
 ///Created: Daniel Turcanu @ IPDevel 
 
+#include "common/shared_types.h"
+#include "context/static_context.h"
+#include "context/dynamic_context.h"
+#include "compiler/api/compiler_api.h"
 #include "errors/error_factory.h"
 #include "xquery.h"
 
-#include "compiler/codegen/plan_visitor.h"
-#include "compiler/translator/translator.h"
-#include "compiler/normalizer/normalizer.h"
-
-#include "compiler/parser/xquery_driver.h"
-
-#include "compiler/parsetree/parsenode_print_xml_visitor.h"
-#include "compiler/parsetree/parsenode_print_dot_visitor.h"
 #include "system/zorba.h"
 
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/base/plan_wrapper.h"
+#include "runtime/core/item_iterator.h"
 
 #include "api/serialization/serializer.h"
 #include "api/external/dynamic_context_wrapper.h"
@@ -24,7 +21,6 @@
 #include "zorba/util/properties.h"
 #include "system/globalenv.h"
 #include "system/zorba_engine.h"
-#include "api/external/plan_print_impl.h"
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
@@ -129,92 +125,16 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     // reset the error list from error manager
     // m_error_manager.clear();///delete all alerts from list
 
-    XQueryTreePlansImpl   *pp = NULL;
+    XQueryPlanPrinterConfig   *pp = NULL;
     if(planprint != NULL)
-      pp = static_cast<XQueryTreePlansImpl*>(&*planprint);
+        pp = static_cast<XQueryPlanPrinterConfig*>(&*planprint);
 
-    ///NOW COMPILE
-    xquery_driver driver;
-    driver.filename = info->m_xquery_source_uri;
-
-    ///build up the expression tree
-    if(info->m_query_text.empty())
-      driver.parse(info->m_xquery_source_uri.c_str());
-    else
-      driver.parse_string(info->m_query_text.c_str());
-
-    rchandle<parsenode> n_p = driver.get_expr();
-
-    if (Properties::instance()->printAST())
-	  {
-      cout << "Parse tree:\n";
-      ParseNodePrintXMLVisitor lPrintXMLVisitor(std::cout);
-      lPrintXMLVisitor.print(&*n_p);
-    }
-    if(pp)
-      pp->printASTPlan(n_p);
-	
-    MainModule* mm_p;
-    QueryBody* qb_p;
-    Expr* ex_p;
-
-    if ((mm_p = dynamic_cast<MainModule*>(&*n_p))==NULL) 
-	  {
-      ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
-                        NULL, DONT_CONTINUE_EXECUTION,
-                        "Parse error: expecting MainModule");
-      zorba->current_xquery = NULL;
-      return false;
-    }
-
-    if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL)
-	  {
-      ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
-                        NULL, DONT_CONTINUE_EXECUTION,
-                        "Parse error: expecting MainModule->QueryBody");
-      //UnregisterCurrentXQueryForCurrentThread( this );
-      zorba->current_xquery = NULL;
-      return false;
-    }
-
-    if ((ex_p = dynamic_cast<Expr*>(&*qb_p->get_expr()))==NULL) 
-	  {
-      ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
-                        NULL, DONT_CONTINUE_EXECUTION, 
-                        "Parse error: expecting MainModule->QueryBody->Expr");
-      zorba->current_xquery = NULL;
-      return false;
-    }
-
-    rchandle<expr> e_h = translate (Properties::instance ()->printTranslatedExpressions (), zorba->get_static_context(), *mm_p, info->sctx_list);
-    if (e_h == NULL)
-    {
-      ZORBA_ERROR_ALERT(ZorbaError::API0002_COMPILE_FAILED);
-      zorba->current_xquery = NULL;
-      return false;
-    }
-    if(pp)
-      pp->printExprPlan(e_h);
-
-    normalize_expr_tree (Properties::instance ()->printNormalizedExpressions () ? "query" : NULL,
-                         zorba->get_static_context(), e_h);
-
-    if(pp)
-      pp->printNormalizedExprPlan(e_h);
-
-    ///now do code generation (generate iterator tree)
-
-    info->top_iterator = codegen ("query", e_h);
-
+    XQueryCompiler compiler(info->sctx_list, info->internal_sctx);
+    info->top_iterator = compiler.compile(info->m_xquery_source_uri, info->m_query_text, pp);
     if (info->top_iterator == NULL) {
-      cout << "Codegen returned null";
-      ZORBA_ERROR_ALERT(ZorbaError::API0002_COMPILE_FAILED);
-      zorba->current_xquery = NULL;
-      return false;
+        zorba->current_xquery = NULL;
+        return false;
     }
-
-	  if(pp)
-      pp->printRuntimePlan(info->top_iterator);
 
     info->is_compiled = true;
 

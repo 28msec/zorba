@@ -4,5 +4,4 @@ SET(EXTERNAL_API_SRCS
     dynamic_context_wrapper.cpp
     xmldatamanager_impl.cpp
     result_iterator_wrapper.cpp
-    context_item_wrapper.cpp
-    plan_print_impl.cpp) 
+    context_item_wrapper.cpp)
