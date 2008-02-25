@@ -3,19 +3,19 @@
 #ifndef XQP_ZORBA_H
 #define XQP_ZORBA_H
 
-#include "util/rchandle.h"
-#include "zorba/common/common.h"
-#include "zorba/common/libicu.h"
+#include <stack>
+#include <map>
+
+#include <zorba/rchandle.h>
+#include <zorba/common/common.h>
+#include <zorba/common/libicu.h>
+#include <zorba/representations.h>
 
 
 //#include "store/api/item_factory.h"
 //#include "store/api/store.h"
 
 #include "compiler/parser/location.hh"
-#include "types/representations.h"
-
-#include <stack>
-#include <map>
 
 namespace xqp {
 

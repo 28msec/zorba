@@ -6,7 +6,8 @@
 
 #include <string>
 #include <exception>
-#include "util/datetime/timezone.h"
+#include <zorba/timezone.h>
+
 #include "util/datetime/parse.h"
 
 #define RETURN_FALSE_ON_EXCEPTION(sequence)     \

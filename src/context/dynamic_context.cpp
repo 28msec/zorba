@@ -22,12 +22,13 @@
  *
  */
 
+#include <assert.h>
+#include <time.h>
+#include <zorba/iterator.h>
+
 #include "system/globalenv.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-#include "runtime/iterator.h"
-#include <assert.h>
-#include <time.h>
 #include "system/zorba.h"
 #include "types/root_typemanager.h"
 #include "store/api/item_factory.h"

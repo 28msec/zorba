@@ -1,8 +1,9 @@
 #ifndef XQP_PLAN_ITERATOR_WRAPPER_H
 #define XQP_PLAN_ITERATOR_WRAPPER_H
 
+#include <zorba/iterator.h>
+
 #include "common/shared_types.h"
-#include "zorba/runtime/iterator.h"
 
 namespace xqp {
 

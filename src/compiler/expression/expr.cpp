@@ -7,6 +7,10 @@
  *  Author: Paul Pedersen
  *
  */
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "compiler/expression/expr.h"
 #include "system/globalenv.h"
@@ -23,10 +27,6 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-#include <algorithm>
-#include <iostream>
-#include <string>
-#include <vector>
 
 using namespace std;
 namespace xqp {

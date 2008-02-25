@@ -1,7 +1,7 @@
 #ifndef XQP_STRING_POOL_H
 #define XQP_STRING_POOL_H
 
-#include "types/representations.h"
+#include <zorba/representations.h>
 
 namespace xqp
 {

@@ -6,12 +6,13 @@
  *
  */
 
-#include "util/URI.h"
-
 #include <sstream>
 #include <iostream>
 
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
+
+#include "util/URI.h"
+
 #ifdef WIN32
 	#include <algorithm>
 #endif

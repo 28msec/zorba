@@ -3,7 +3,7 @@
 #define XQP_STORE_NODEID
 
 #include <vector>
-#include "types/representations.h"
+#include <zorba/representations.h>
 
 namespace xqp
 {

@@ -2,7 +2,7 @@
 #define XQP_RUNTIME_VAR_ITERATORS
 
 #include "common/shared_types.h"
-#include "util/utf8/xqpString.h"
+#include <zorba/xqpString.h>
 #include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
 
 namespace xqp

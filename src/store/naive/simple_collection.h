@@ -9,10 +9,11 @@
 #define XQP_DEFAULT_STORE_COLLECTION
 
 #include <set>
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
+#include <zorba/iterator.h>
+
 #include "common/shared_types.h"
 #include "store/api/collection.h"
-#include "runtime/iterator.h"
 
 namespace xqp
 {

@@ -1,11 +1,12 @@
 #include <cassert>
 #include <string>
 
+#include <zorba/zorba_api.h>
+
 #include "types/casting.h"
 #include "types/root_typemanager.h"
 #include "system/globalenv.h"
 #include "system/zorba.h"
-#include "zorba_api.h"
 
 using namespace xqp;
 

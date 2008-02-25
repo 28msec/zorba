@@ -2,6 +2,7 @@
  *  Copyright 2006-2007 FLWOR Foundation.
  *  Authors: Tim Kraska, David Graf
  */
+#include <zorba/item.h>
 
 #include "system/globalenv.h"
 #include "runtime/booleans/BooleanImpl.h"
@@ -10,7 +11,6 @@
 #include "errors/error_factory.h"
 #include "runtime/accessors//AccessorsImpl.h"
 #include "store/api/temp_seq.h"
-#include "store/api/item.h"
 #include "runtime/base/plan_iterator_wrapper.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"

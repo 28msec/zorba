@@ -1,3 +1,5 @@
+#include <zorba/properties.h>
+
 #include "errors/error_factory.h"
 #include "compiler/api/compiler_api.h"
 #include "compiler/parsetree/parsenodes.h"
@@ -11,7 +13,6 @@
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/base/plan_iterator.h"
-#include "zorba/util/properties.h"
 
 namespace xqp {
 

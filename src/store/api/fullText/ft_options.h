@@ -12,12 +12,12 @@
 #ifndef XQP_FTOPTIONS_H
 #define XQP_FTOPTIONS_H
 
-#include "util/rchandle.h"
-#include "zorba/common/common.h"
-
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include <zorba/rchandle.h>
+#include <zorba/common/common.h>
 
 namespace xqp {
 

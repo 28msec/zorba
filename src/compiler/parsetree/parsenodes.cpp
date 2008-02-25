@@ -6,6 +6,9 @@
  *
  */
 
+#include <zorba/rchandle.h>
+#include <zorba/item.h>
+
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
 
@@ -18,10 +21,8 @@
 #include <assert.h>
 
 #include "compiler/parsetree/parsenode_visitor.h"
-#include "util/rchandle.h"
 #include "util/tracer.h"
 #include "errors/error_factory.h"
-#include "store/api/item.h"
 #include "types/typemanager.h"
 
 #include "util/utf8/Unicode_util.h"

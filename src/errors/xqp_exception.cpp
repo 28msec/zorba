@@ -7,17 +7,17 @@
  *  Author: Paul Pedersen
  *
  */
+#include <sstream>
+#include <typeinfo>
+#include <iostream>
 
-#include "errors/xqp_exception.h"
+#include <zorba/xqp_exception.h>
+
 #include "errors/error_factory.h"
 #include "system/zorba.h"
 #include "system/zorba_engine.h"
 #include "errors/error_manager.h"
 
-
-#include <sstream>
-#include <typeinfo>
-#include <iostream>
 
 using namespace std;
 namespace xqp

@@ -10,7 +10,7 @@
 
 #ifndef XQP_FXARRAY_H
 #define XQP_FXARRAY_H
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
 
 #ifndef WIN32
 #include <sys/mman.h>

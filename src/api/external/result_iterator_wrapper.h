@@ -2,9 +2,9 @@
 #ifndef XQUERY_RESULT_ITERATOR_API_WRAPPER_31_JAN_2008
 #define XQUERY_RESULT_ITERATOR_API_WRAPPER_31_JAN_2008
 
-#include "runtime/result_iterator.h"
-#include "runtime/base/plan_wrapper.h"
+#include <zorba/result_iterator.h>
 
+#include "runtime/base/plan_wrapper.h"
 #include "common/shared_types.h"
 
 namespace xqp{

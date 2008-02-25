@@ -1,8 +1,8 @@
 #ifndef XQP_DEFAULT_STORE_NODE_ITERATORS
 #define XQP_DEFAULT_STORE_NODE_ITERATORS
 
+#include <zorba/iterator.h>
 
-#include "runtime/iterator.h"
 #include "store/naive/ordpath.h"
 #include "store/util/handle_set.h"
 

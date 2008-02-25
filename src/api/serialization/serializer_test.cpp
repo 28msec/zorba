@@ -25,7 +25,7 @@
 
 
 #include "api/serialization/serializer.h"
-#include "store/api/item.h"
+#include <zorba/item.h>
 #include "util/list.h"
 #include "store/naive/basic_item_factory.h"
 

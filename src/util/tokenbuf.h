@@ -10,7 +10,7 @@
 #define XQP_TOKENBUF_H
 
 #include <string>
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
 
 namespace xqp {
 

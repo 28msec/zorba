@@ -28,9 +28,9 @@
 
 #include "context/common.h"
 #include "util/hashmap.h"
-#include "util/rchandle.h"
-#include "util/utf8/xqpString.h"
-#include "types/representations.h"
+#include <zorba/rchandle.h>
+#include <zorba/xqpString.h>
+#include <zorba/representations.h>
 
 namespace xqp {
 

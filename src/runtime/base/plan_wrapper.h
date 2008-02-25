@@ -1,7 +1,7 @@
 #ifndef XQP_PLAN_WRAPPER_H
 #define XQP_PLAN_WRAPPER_H
 
-#include "zorba/runtime/iterator.h"
+#include <zorba/iterator.h>
 
 #include "common/shared_types.h"
 

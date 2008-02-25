@@ -11,7 +11,7 @@
 #define XQP_STORE_H
 
 #include "common/shared_types.h"
-#include "types/representations.h"
+#include <zorba/representations.h>
 
 namespace xqp
 {

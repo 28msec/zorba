@@ -24,10 +24,10 @@
 |		 
 |_______________________________________________________________________*/
 
-#include "util/hashfun.h"
-
 #include <string>
 #include <vector>
+
+#include <zorba/hashfun.h>
 
 namespace xqp {
 

@@ -2,9 +2,9 @@
 
 #include <map>
 
-#include "compiler/compiled_xquery.h"
-#include "zorba.h"
+#include <zorba/compiled_xquery.h>
 
+#include "system/zorba.h"
 #include "context/common.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"

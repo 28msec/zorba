@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "zorba/config/stdint.h"
+#include <zorba/config/stdint.h>
 
 typedef unsigned long ulong;
 // typedef __int64		int64_t;

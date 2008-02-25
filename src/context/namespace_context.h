@@ -3,8 +3,8 @@
 
 #include <string>
 #include <vector>
-#include "util/rchandle.h"
-#include "types/representations.h"
+#include <zorba/rchandle.h>
+#include <zorba/representations.h>
 
 namespace xqp {
 

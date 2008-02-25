@@ -10,11 +10,12 @@
 #ifndef XQP_FXVECTOR_H
 #define XQP_FXVECTOR_H
 
+#include <zorba/rchandle.h>
+#include <zorba/common/common.h>
+
 #include "util/fx/mmfile.h"
-#include "util/rchandle.h"
 #include "util/tracer.h"
 #include "errors/error_factory.h"
-#include "zorba/common/common.h"
 
 #ifndef WIN32
 	#include <sys/mman.h>

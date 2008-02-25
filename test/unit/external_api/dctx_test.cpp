@@ -1,9 +1,9 @@
 
-#include "zorba/zorba_api.h"
+#include <zorba/zorba_api.h>
 #include <fstream>
 #include <time.h>
 #include <assert.h>
-#include "zorba/types/representations.h"
+#include <zorba/representations.h>
 
 //#include "../error_display.h"
 

@@ -5,13 +5,15 @@
  */
 
 #include <string>
-#include <exception>
-#include "util/datetime/date.h"
-#include "util/datetime/datetime.h"
-#include "util/datetime/timezone.h"
+#include <exception> // TODO for what?
+
+#include <zorba/date.h>
+#include <zorba/datetime.h>
+#include <zorba/timezone.h>
+#include <zorba/xqpString.h>
+
 #include "util/datetime/parse.h"
 #include "util/numconversions.h"
-#include "util/utf8/xqpString.h"
 
 using namespace std;
 

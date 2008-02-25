@@ -1,7 +1,7 @@
 #ifndef __WEB_H_INCLUDED__
 #define __WEB_H_INCLUDED__
 
-#include "types/representations.h"
+#include <zorba/representations.h>
 
 namespace xqp
 {

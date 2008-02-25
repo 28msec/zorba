@@ -27,7 +27,7 @@
 #define XQP_SERIALIZER_H
 
 #include <ostream>
-#include "zorba/types/representations.h"
+#include <zorba/representations.h>
 #include "common/shared_types.h"
 #include "store/naive/nsbindings.h"
 

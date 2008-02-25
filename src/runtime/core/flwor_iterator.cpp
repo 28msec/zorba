@@ -3,13 +3,14 @@
  *  Author: Tim Kraska
  *
  */
+#include <zorba/item.h>
+
 #include "compiler/expression/expr.h"
 #include "runtime/core/flwor_iterator.h"
 #include "types/root_typemanager.h"
 #include "runtime/core/var_iterators.h"
 #include "system/zorba.h"
 #include "errors/error_factory.h"
-#include "store/api/item.h"
 #include "store/api/temp_seq.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planitervisitor.h"

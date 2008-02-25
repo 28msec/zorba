@@ -2,7 +2,7 @@
 #define XQP_TYPEMANAGER_H
 
 #include <ostream>
-#include "util/rchandle.h"
+#include <zorba/rchandle.h>
 #include "types/typeconstants.h"
 
 namespace xqp {

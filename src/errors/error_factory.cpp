@@ -3,14 +3,14 @@
 #include <iomanip>
 #include <stdlib.h>
 
-#include "errors/errors.h"
+#include <zorba/errors.h>
+#include <zorba/item.h>
 
 #include "error_messages.h"
 #include "error_factory.h"
 #include "error_manager.h"
 
 #include "system/zorba.h"
-#include "store/api/item.h"
 #include "system/zorba_engine.h"
 #include "api/external/xquery.h"
 

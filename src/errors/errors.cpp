@@ -1,6 +1,6 @@
 
-#include "errors/errors.h"
-#include "store/api/item.h"
+#include <zorba/errors.h>
+#include <zorba/item.h>
 
 using namespace std;
 

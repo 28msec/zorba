@@ -11,7 +11,7 @@
 #ifndef XQP_RWLOCK_H
 #define XQP_RWLOCK_H
 
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
 
 /*_____________________________________________________________________
 | 

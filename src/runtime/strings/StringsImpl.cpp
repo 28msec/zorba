@@ -8,15 +8,16 @@
  * @file runtime/strings/StringsImpl.cpp
  *
  */
-
-#include "zorba/common/common.h"
 #include <iostream>
+
+#include <zorba/common/common.h>
+#include <zorba/item.h>
+
 #include "runtime/strings/StringsImpl.h"
 #include "system/zorba.h"
 #include "util/utf8/utf8.h"
 #include "util/Assert.h"
 #include "util/numconversions.h"
-#include "store/api/item.h"
 #include "store/api/item_factory.h"
 
 

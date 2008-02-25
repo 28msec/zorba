@@ -1,7 +1,7 @@
 #ifndef XQP_STRING_HASHMAP_H
 #define XQP_STRING_HASHMAP_H
 
-#include "store/api/item.h"
+#include <zorba/item.h>
 
 namespace xqp
 {

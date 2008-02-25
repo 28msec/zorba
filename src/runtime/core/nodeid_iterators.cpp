@@ -1,7 +1,7 @@
 
 #include "store/api/store.h"
 #include "system/globalenv.h"
-#include "store/api/item.h"
+#include <zorba/item.h>
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/base/plan_iterator_wrapper.h"
 

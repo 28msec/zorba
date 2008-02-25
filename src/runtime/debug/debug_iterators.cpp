@@ -1,7 +1,7 @@
 #include <iostream>
 #include "errors/error_factory.h"
 #include "runtime/debug/debug_iterators.h"
-#include "store/api/item.h"
+#include <zorba/item.h>
 
 using namespace std;
 

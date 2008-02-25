@@ -3,6 +3,7 @@
  *  Authors: David Graf, Tim Kraska, Markos Zaharioudakis
  */
 
+#include <zorba/iterator.h>
 #include "system/zorba.h"
 
 #include "runtime/fncontext/FnContextImpl.h"
@@ -10,7 +11,6 @@
 #include "context/dynamic_context.h"
 #include "runtime/core/item_iterator.h"
 #include "system/zorba_engine.h"
-#include "zorba/runtime/iterator.h"
 
 namespace xqp
 {

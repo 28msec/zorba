@@ -1,7 +1,7 @@
 #ifndef XQP_QNAME_POOL_H
 #define XQP_QNAME_POOL_H
 
-#include "store/api/item.h"
+#include <zorba/item.h>
 
 
 namespace xqp

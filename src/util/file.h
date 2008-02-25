@@ -10,13 +10,18 @@
 
 #ifndef XQP_FILE_H
 #define XQP_FILE_H
-#include "zorba/common/common.h"
-
 #include <stdio.h>
 
 #if ! defined (WIN32) 
 #include <dirent.h>
 #endif
+#include <time.h>
+#include <string>
+
+
+#include <zorba/common/common.h>
+#include <zorba/rchandle.h>
+
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER
@@ -26,11 +31,7 @@
 #endif
 
 
-#include <time.h>
-#include <string>
-
 #include "errors/error_factory.h"
-#include "util/rchandle.h"
 
 namespace xqp {
 

@@ -10,10 +10,12 @@
 #ifndef XQP_ITEM_FACTORY_H
 #define XQP_ITEM_FACTORY_H
 
-#include "zorba/common/common.h"
-#include "common/shared_types.h"
-#include "zorba/types/representations.h"
 #include <vector>
+
+#include <zorba/common/common.h>
+#include <zorba/representations.h>
+
+#include "common/shared_types.h"
 
 
 namespace xqp

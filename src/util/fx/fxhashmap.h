@@ -16,7 +16,9 @@
 
 #include <stddef.h>
 #include <stdlib.h>
-#include "zorba/common/common.h"
+
+#include <zorba/common/common.h>
+#include <zorba/rchandle.h>
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER
@@ -34,7 +36,6 @@
 #include "util/fx/fxarray.h"
 #include "util/fx/fxvector.h"
 #include "util/hashfun.h"
-#include "util/rchandle.h"
 #include "errors/error_factory.h"
 
 namespace xqp {

@@ -25,7 +25,7 @@
 #ifndef XQP_CASTING_H
 #define XQP_CASTING_H
 
-#include "util/rchandle.h"
+#include <zorba/rchandle.h>
 #include "types/root_typemanager.h"
 
 namespace xqp

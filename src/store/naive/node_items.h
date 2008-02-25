@@ -10,9 +10,10 @@
 #define XQP_DEFAULT_STORE_NODES
 
 
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
+#include <zorba/item.h>
+
 #include "util/Assert.h"
-#include "store/api/item.h"
 #include "store/naive/ordpath.h"
 
 typedef unsigned long ulong;

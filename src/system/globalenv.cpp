@@ -1,12 +1,14 @@
+#include <libxml/parser.h>
+#include <cassert>
+#include <unicode/uclean.h>
+
+#include <zorba/m_apm.h>
+
 #include "globalenv.h"
-#include "mapm/m_apm.h"
 #include "types/root_typemanager.h"
 #include "context/root_static_context.h"
 #include "functions/library.h"
 #include "store/naive/simple_store.h"
-#include <libxml/parser.h>
-#include <cassert>
-#include <unicode/uclean.h>
 
 using namespace xqp;
 

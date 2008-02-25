@@ -1,10 +1,11 @@
-#include "zorba/system/zorba_version.h"
-
 #include <string>
 #include <sstream>
 
+#include <zorba/zorba_version.h>
+
 namespace xqp {
 
+  // the following vars will be replaced by cmake
   int ZorbaVersion::theMajorVersion = @ZORBA_MAJOR_NUMBER@;
   int ZorbaVersion::theMinorVersion = @ZORBA_MINOR_NUMBER@;
   int ZorbaVersion::thePatchVersion = @ZORBA_PATCH_NUMBER@;

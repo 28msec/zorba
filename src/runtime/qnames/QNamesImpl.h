@@ -14,7 +14,7 @@
 
 #include <vector>
 #include "common/shared_types.h"
-#include "util/utf8/xqpString.h"
+#include <zorba/xqpString.h>
 #include "runtime/base/unarybase.h" // remove after iterator refactoring
 #include "runtime/base/binarybase.h" // remove after iterator refactoring
 

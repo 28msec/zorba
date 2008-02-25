@@ -1,5 +1,5 @@
 
-#include "store/api/store_consts.h"
+#include <zorba/store_consts.h>
 
 namespace xqp
 {

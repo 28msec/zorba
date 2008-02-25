@@ -21,15 +21,15 @@
  * @file types/casting.cpp
  *
  */
+#include <vector>
+#include <zorba/item.h>
 
 #include "util/numconversions.h"
 #include "casting.h"
 #include "system/globalenv.h"
-#include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "system/zorba.h"
 #include "errors/error_factory.h"
-#include <vector>
 
 namespace xqp
 {

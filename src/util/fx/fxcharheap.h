@@ -11,11 +11,11 @@
 #ifndef XQP_FXCHARHEAP_H
 #define XQP_FXCHARHEAP_H
 
-#include "util/fx/fxarray.h"
-#include "util/rchandle.h"
+#include <zorba/rchandle.h>
+#include <zorba/common/common.h>
 
+#include "util/fx/fxarray.h"
 #include <string>
-#include "zorba/common/common.h"
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER

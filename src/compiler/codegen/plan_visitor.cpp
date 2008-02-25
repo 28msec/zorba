@@ -6,10 +6,15 @@
  *  Author: John Cowan, Paul Pedersen
  *
  */
-
-#include "plan_visitor.h"
-
+ // TODO what is this include for?
 #include <memory>
+#include <iostream>
+#include <vector>
+#include <stack>
+
+#include <zorba/properties.h>
+
+#include "compiler/codegen/plan_visitor.h"
 #include "system/globalenv.h"
 #include "util/Assert.h"
 #include "context/namespace_context.h"
@@ -33,13 +38,8 @@
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
-#include "zorba/util/properties.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-
-#include <iostream>
-#include <vector>
-#include <stack>
 
 
 #ifndef NDEBUG

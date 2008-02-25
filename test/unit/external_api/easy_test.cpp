@@ -1,10 +1,10 @@
-#include "zorba/zorba_singlethread.h"
+#include <zorba/zorba_singlethread.h>
 #include <fstream>
 #include <assert.h>
 //#include "../error_display.h"
 
 //needed to call shutdown on single thread engine
-#include "zorba/zorba_api.h"
+#include <zorba/zorba_api.h>
 
 using namespace std;
 using namespace xqp;

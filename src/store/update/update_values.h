@@ -12,9 +12,10 @@
 
 #include <vector>
 
-#include "store/api/item.h"
+#include <zorba/item.h>
+#include <zorba/rchandle.h>
+
 #include "runtime/core/item_iterator.h"
-#include "util/rchandle.h"
 
 /*______________________________________________________________________
 |  

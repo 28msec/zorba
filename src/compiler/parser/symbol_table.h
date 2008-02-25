@@ -9,7 +9,7 @@
 #define XQP_SYMBOL_TABLE_H
 
 #include "util/fx/fxcharheap.h"
-#include "zorba/types/representations.h"
+#include <zorba/representations.h>
 
 namespace xqp {
 

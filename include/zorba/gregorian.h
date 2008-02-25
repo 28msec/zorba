@@ -1,0 +1,179 @@
+#ifndef ZORBA_GREGORIAN_H
+#define ZORBA_GREGORIAN_H
+
+// TODO cannot get rid of boost in the api?
+#include <boost/date_time/gregorian/gregorian.hpp>
+
+#include <zorba/timezone.h>
+#include <zorba/xqpString.h>
+
+namespace xqp
+{
+
+  /**
+   * GYearMonth
+   * 
+   */
+  class GYearMonth : public SimpleRCObject
+  {
+    public:
+      GYearMonth(boost::gregorian::date d) : the_gyear_month(d) { };
+      virtual ~GYearMonth() { };
+
+      static bool 
+      parse_string(const xqpString& s, GYearMonth_t& gym_t);
+
+      GYearMonth& 
+      operator=(const GYearMonth_t& gym_t);
+      
+      bool 
+      operator<(const GYearMonth& gym) const;
+      
+      bool 
+      operator==(const GYearMonth& gym) const;
+      
+      int 
+      compare(const GYearMonth& gym) const;
+
+      xqpString 
+      toString() const;
+
+    protected:
+      boost::gregorian::date the_gyear_month;
+      TimeZone the_time_zone;
+  };
+
+  /**
+   * GYear
+   *
+   */
+  class GYear : public SimpleRCObject
+  {
+    public:
+      GYear(boost::gregorian::date d) : the_gyear(d) { };
+      virtual ~GYear() { };
+
+      static bool
+      parse_string(const xqpString& s, GYear_t& gy_t);
+
+      bool 
+      operator<(const GYear& gy) const;
+      
+      bool 
+      operator==(const GYear& gy) const;
+      
+      int
+      compare(const GYear& gy) const;
+
+      xqpString
+      toString() const;
+
+    protected:
+      GYear&
+      operator=(const GYear_t& gy_t);
+
+      boost::gregorian::date the_gyear;
+      TimeZone the_time_zone;
+  };
+
+  /**
+   * GMonthDay
+   *
+   */
+  class GMonthDay : public SimpleRCObject
+  {
+    public:
+      GMonthDay(boost::gregorian::date d) : the_gmonth_day(d) { };
+      virtual ~GMonthDay() { };
+
+      static bool
+      parse_string(const xqpString& s, GMonthDay_t& gmd_t);
+
+      bool 
+      operator<(const GMonthDay& gmd) const;
+      
+      bool 
+      operator==(const GMonthDay& gmd) const;
+      
+      int 
+      compare(const GMonthDay& gmd) const;
+
+      xqpString 
+      toString() const;
+
+    protected:
+      GMonthDay& 
+      operator=(const GMonthDay_t& gmd_t);
+
+      boost::gregorian::date the_gmonth_day;
+      TimeZone the_time_zone;
+  };
+
+  /**
+   * GDay
+   *
+   */
+  class GDay: public SimpleRCObject
+  {
+    public:
+      GDay(boost::gregorian::date d) : the_gday(d) { };
+      virtual ~GDay() { };
+
+      static bool
+      parse_string(const xqpString& s, GDay_t& gd_t);
+
+      bool 
+      operator<(const GDay& gd) const;
+      
+      bool
+      operator==(const GDay& gd) const;
+      
+      int 
+      compare(const GDay& gd) const;
+
+      xqpString 
+      toString() const;
+
+    protected:
+      GDay& 
+      operator=(const GDay_t& gd_t);
+
+      boost::gregorian::date the_gday;
+      TimeZone the_time_zone;
+  };
+
+  /**
+   * GMonth
+   *
+   */
+  class GMonth: public SimpleRCObject
+  {
+    public:
+      GMonth(boost::gregorian::date d) : the_gmonth(d) { };
+      virtual ~GMonth() { };
+
+      static bool
+      parse_string(const xqpString& s, GMonth_t& gm_t);
+
+      bool
+      operator<(const GMonth& gm) const;
+      
+      bool
+      operator==(const GMonth& gm) const;
+      
+      int
+      compare(const GMonth& gm) const;
+
+      xqpString
+      toString() const;
+
+    protected:
+      GMonth& 
+      operator=(const GMonth_t& gm_t);
+
+      boost::gregorian::date the_gmonth;
+      TimeZone the_time_zone;
+  };
+
+} /* namespace xqp */
+#endif

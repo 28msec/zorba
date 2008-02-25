@@ -1,4 +1,6 @@
 #include <sstream>
+#include <zorba/item.h>
+
 #include "runtime/core/arithmetic_impl.h"
 #include "errors/error_factory.h"
 #include "system/globalenv.h"
@@ -10,7 +12,6 @@
 #include "errors/error_factory.h"
 #include "system/zorba.h"
 #include "store/api/item_factory.h"
-#include "zorba/store/api/item.h"
 #include "system/zorba_engine.h"
 #include "context/dynamic_context.h"
 

@@ -29,13 +29,11 @@
 
 %{
 
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)
 #endif
-
-#include "zorba/common/common.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,7 +41,7 @@
 #include <string>
 
 //#include "context/static_context.h"
-#include "zorba_api.h"
+#include "zorba/zorba_api.h"
 #include "context/dynamic_context.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"

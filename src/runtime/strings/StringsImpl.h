@@ -12,7 +12,7 @@
 #ifndef XQP_STRINGS_IMPL_H
 #define XQP_STRINGS_IMPL_H
 
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
 
 #include "common/shared_types.h"
 #include "runtime/base/binarybase.h"

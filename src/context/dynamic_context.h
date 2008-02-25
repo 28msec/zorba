@@ -30,9 +30,9 @@
 //#include "context/context_impl.h"
 //#include "functions/library.h"
 //#include "store/api/item.h"
-#include "util/rchandle.h"
+#include <zorba/rchandle.h>
 #include "util/hashmap.h"
-#include "types/representations.h"
+#include <zorba/representations.h>
 #include "common/shared_types.h"
 
 namespace xqp {

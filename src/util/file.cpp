@@ -9,8 +9,9 @@
   ported to windows
  */
 
+#include <zorba/common/common.h>
+
 #include "util/file.h"
-#include "zorba/common/common.h"
 
 #ifndef _WIN32_WCE
 #include <errno.h>

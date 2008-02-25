@@ -1,7 +1,7 @@
 #ifndef XQP_PLATFORM_H
 #define XQP_PLATFORM_H
 
-#include "zorba/config/config.h"
+#include <zorba/config/config.h>
 
 
 #if defined (WIN32) && ! defined (CYGWIN)

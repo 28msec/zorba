@@ -1,7 +1,7 @@
 #ifndef ALERTS_ALERTS_MANAGER
 #define ALERTS_ALERTS_MANAGER
 
-#include "errors/errors.h"
+#include <zorba/errors.h>
 
 namespace xqp
 {

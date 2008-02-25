@@ -4,10 +4,11 @@
  * Authros: David Graf (davidgraf@28msec.com)
  */
 
-#include "zorba/common/common.h"
-#include "zorba/util/bignum/integer.h"
+#include <zorba/common/common.h>
+#include <zorba/decimal.h>
+#include <zorba/integer.h>
+
 #include "util/numconversions.h"
-#include "zorba/util/bignum/decimal.h"
 
 namespace xqp {
 

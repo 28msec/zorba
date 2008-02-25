@@ -25,7 +25,7 @@
 
 #include "compiler/parser/xquery_parser.hpp"
 #include "compiler/parser/symbol_table.h"
-#include "types/representations.h"
+#include <zorba/representations.h>
 
 using namespace yy;
 

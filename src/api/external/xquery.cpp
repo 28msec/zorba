@@ -1,5 +1,10 @@
-///Created: Daniel Turcanu @ IPDevel 
+#include <iostream>
+#include <fstream>
 
+#include <zorba/properties.h>
+
+#include "system/zorba_engine.h"
+#include "system/zorba.h"
 #include "common/shared_types.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -7,7 +12,6 @@
 #include "errors/error_factory.h"
 #include "xquery.h"
 
-#include "system/zorba.h"
 
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/base/plan_wrapper.h"
@@ -18,15 +22,10 @@
 #include "api/external/static_context_wrapper.h"
 #include "api/external/result_iterator_wrapper.h"
 
-#include "zorba/util/properties.h"
 #include "system/globalenv.h"
-#include "system/zorba_engine.h"
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-
-#include <iostream>
-#include <fstream>
 
 using namespace std;
 

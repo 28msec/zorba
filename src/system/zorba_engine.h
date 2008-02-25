@@ -2,11 +2,9 @@
 #ifndef SYSTEM_ZORBA_ENGINE
 #define SYSTEM_ZORBA_ENGINE
 
-#include "common/common.h"
-
-//#include "store/api/store_api.h"
-#include "system/zorba_engine_api.h"
-#include "system/zorba_engine_singlethread_api.h"
+#include <zorba/common/common.h>
+#include <zorba//zorba_engine_api.h>
+#include <zorba/zorba_engine_singlethread_api.h>
 
 namespace xqp
 {

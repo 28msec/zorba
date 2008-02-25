@@ -4,8 +4,9 @@
 #include <string>
 #include <libxml/xmlmemory.h>
 
+#include <zorba/store_consts.h>
+
 #include "system/globalenv.h"
-#include "store/api/store_consts.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_loader.h"
 #include "store/naive/atomic_items.h"
@@ -682,7 +683,7 @@ void XmlLoader::processingInstruction(
 ********************************************************************************/
 void  XmlLoader::error(void * ctx, const char * msg, ... )
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  //XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   char buf[1024];
   va_list args;
   va_start(args, msg);

@@ -17,11 +17,12 @@
 #include <vector>
 #include <assert.h>
 
+#include <zorba/item.h>
+
 #include "compiler/parser/parse_constants.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include "store/api/item.h"
-#include "util/rchandle.h"
+#include <zorba/rchandle.h>
 #include "compiler/parser/location.hh"
 #include <boost/variant.hpp>
 

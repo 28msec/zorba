@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "zorba/zorba_singlethread.h"
+#include <zorba/zorba_singlethread.h>
 
 using namespace xqp;
 

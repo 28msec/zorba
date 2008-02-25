@@ -1,8 +1,9 @@
+#include <zorba/item.h>
+#include <zorba/iterator.h>
+
 #include "util/Assert.h"
 #include "runtime/base/noarybase.h"
 #include "runtime/core/var_iterators.h"
-#include "zorba/runtime/iterator.h"
-#include "zorba/store/api/item.h"
 
 
 namespace xqp

@@ -13,8 +13,8 @@
 
 #include <string>
 
-#include "errors/errors.h"
-#include "errors/xqp_exception.h"
+#include <zorba/errors.h>
+#include <zorba/xqp_exception.h>
 //#include "compiler/parser/location.hh"
 
 namespace yy{

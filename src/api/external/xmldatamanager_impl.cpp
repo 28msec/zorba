@@ -1,14 +1,15 @@
 
-#include "xmldatamanager_impl.h"
 #include <fstream>
-#include "errors/error_factory.h"
+#include <zorba/item.h>
+#include <zorba/iterator.h>
+
 #include "system/zorba_engine.h"
+#include "system/zorba.h"
+#include "xmldatamanager_impl.h"
+#include "errors/error_factory.h"
 #include "errors/error_manager.h"
 #include "store/api/collection.h"
 #include "system/globalenv.h"
-#include "system/zorba.h"
-#include "zorba/store/api/item.h"
-#include "zorba/runtime/iterator.h"
 #include "store/api/store.h"
 
 namespace xqp

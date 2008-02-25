@@ -1,3 +1,8 @@
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+
 #include "compiler/expression/expr.h"
 #include "system/globalenv.h"
 #include "functions/function.h"
@@ -8,10 +13,6 @@
 #include "errors/error_factory.h"
 #include "system/zorba.h"
 
-#include <algorithm>
-#include <iostream>
-#include <string>
-#include <vector>
 
 using namespace std;
 namespace xqp {

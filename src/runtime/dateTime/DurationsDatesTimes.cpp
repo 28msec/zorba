@@ -2,6 +2,7 @@
  *  Copyright 2006-2007 FLWOR Foundation.
  *  Authors: Nicolae Brinza, Sorin Nasoi
  */
+#include <zorba/item.h>
 
 #include "errors/error_factory.h"
 #include "util/Assert.h"
@@ -13,7 +14,6 @@
 #include "runtime/core/arithmetic_impl.h"
 
 #include "store/api/item_factory.h"
-#include "zorba/store/api/item.h"
 
 using namespace std;
 

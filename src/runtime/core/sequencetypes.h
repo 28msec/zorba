@@ -1,10 +1,10 @@
 #ifndef XQP_SEQUENCETYPES_H
 #define XQP_SEQUENCETYPES_H
 
+#include <zorba/errors.h>
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 #include "types/typeconstants.h"
-#include "zorba/errors/errors.h"
 
 namespace xqp {
 

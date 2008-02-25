@@ -10,8 +10,8 @@
 #ifndef XQP_ATOMIC_ITEMS_H
 #define XQP_ATOMIC_ITEMS_H
 
-#include "zorba/util/utf8/xqpString.h"
-#include "store/api/item.h"
+#include <zorba/xqpString.h>
+#include <zorba/item.h>
 
 namespace xqp
 {

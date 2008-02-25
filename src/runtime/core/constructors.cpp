@@ -1,6 +1,8 @@
-#include "runtime/core/constructors.h"
 #include <memory>
 #include <sys/types.h>
+#include <zorba/item.h>
+
+#include "runtime/core/constructors.h"
 #include "util/Assert.h"
 #include "system/zorba.h"
 #include "errors/error_factory.h"
@@ -8,7 +10,6 @@
 #include "types/root_typemanager.h"
 #include "context/static_context.h"
 #include "context/namespace_context.h"
-#include "store/api/item.h"
 #include "store/api/temp_seq.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/base/plan_iterator_wrapper.h"

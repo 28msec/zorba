@@ -1,10 +1,10 @@
-#ifndef XQP_ZORBA_COMMON_H
-#define XQP_ZORBA_COMMON_H
+#ifndef XQP_COMMON_API_H
+#define XQP_COMMON_API_H
 
 #include <iostream>
 #include <cassert>
 
-#include "zorba/config/platform.h"
+#include <zorba/config/platform.h>
 
 #ifdef WIN32
 #elif defined ZORBA_USE_PTHREAD_LIBRARY

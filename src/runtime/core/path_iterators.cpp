@@ -21,14 +21,14 @@
  * @file runtime/path_iterators.h
  *
  */
+#include <zorba/item.h>
+#include <zorba/iterator.h>
 
 #include "util/Assert.h"
 #include "runtime/core/path_iterators.h"
 #include "system/zorba.h"
-#include "store/api/item.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "errors/error_factory.h"
-#include "zorba/runtime/iterator.h"
 
 #define MYTRACE(msg) \
 {\

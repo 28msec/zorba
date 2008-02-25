@@ -28,7 +28,9 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
+#include <zorba/properties.h>
+#include <zorba/representations.h>
 
 #include <cstdlib>
 #ifndef _WIN32_WCE
@@ -41,8 +43,6 @@
 #include "compiler/parser/symbol_table.h"
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_parser.hpp"
-#include "zorba/util/properties.h"
-#include "types/representations.h"
 #include "types/typemanager.h"
 
 #define TRY_STR_LIT( ttype, put, yytext, yyleng )                       \

@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "zorba/common/common.h"
-#include "util/rchandle.h"
+#include <zorba/common/common.h>
+#include <zorba/rchandle.h>
 
 
 namespace xqp

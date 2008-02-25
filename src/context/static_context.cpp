@@ -29,6 +29,10 @@
 |_______________________________________________________________________*/
 
 #include <assert.h>
+
+#include <zorba/stateless_function.h>
+
+#include "system/zorba_engine.h"
 #include "context/common.h"
 #include "errors/error_factory.h"
 #include "system/globalenv.h"
@@ -38,13 +42,11 @@
 #include "context/collation_manager.h"
 #include "functions/function.h"
 #include "functions/library.h"
-#include "system/zorba_engine.h"
 #include "types/casting.h"
 #include "functions/signature.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-#include "zorba/functions/stateless_function.h"
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER

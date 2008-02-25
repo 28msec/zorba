@@ -14,7 +14,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
 
 namespace xqp {
 

@@ -24,7 +24,11 @@
 
 #include <string>
 #include <map>
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
+#include <zorba/static_context.h>
+#include <zorba/store_consts.h>
+#include <zorba/xqpString.h>
+#include <zorba/errors.h>
 
 #include "common/shared_types.h"
 #include "compiler/parser/location.hh"
@@ -32,10 +36,6 @@
 #include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_consts.h"
 #include "store/api/fullText/ft_options.h"
-#include "store/api/store_consts.h"
-#include "context/static_context_api.h"
-#include "util/utf8/xqpString.h"
-#include "errors/errors.h"
 
 namespace xqp {
 

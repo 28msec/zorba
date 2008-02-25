@@ -3,8 +3,9 @@
  *
  *  Authors: David Graf, Markos Zaharioudakis
  */
+#include <zorba/rchandle.h>
+
 #include "errors/error_factory.h"
-#include "util/rchandle.h"
 #include "system/globalenv.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_loader.h"

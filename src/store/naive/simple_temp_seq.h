@@ -9,8 +9,9 @@
 
 #include <vector>
 
+#include <zorba/iterator.h>
+
 #include "store/api/temp_seq.h"
-#include "runtime/iterator.h"
 
 namespace xqp
 {

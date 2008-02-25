@@ -25,11 +25,11 @@
 #ifndef XQP_COMMON_H
 #define XQP_COMMON_H
 
-#include "zorba/common/common.h"
-
 #include <utility>
-
 #include <string>
+
+#include <zorba/common/common.h>
+
 #include "common/shared_types.h"
 #include "util/checked_vector.h"
 #include "util/Assert.h"

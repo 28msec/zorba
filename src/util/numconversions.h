@@ -1,7 +1,7 @@
 #ifndef XQP_NUM_CONVERSIONS_H
 #define XQP_NUM_CONVERSIONS_H
 
-#include "zorba/types/representations.h"
+#include <zorba/representations.h>
 
 namespace xqp {
 

@@ -7,9 +7,9 @@
  *	Author: Paul Pedersen
  *
  */
+#include <zorba/common/common.h>
 
 #include "util/fx/mmfile.h"
-#include "zorba/common/common.h"
 
 #ifndef WIN32
 	#include <sys/mman.h>

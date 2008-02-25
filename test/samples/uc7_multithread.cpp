@@ -1,5 +1,5 @@
 
-#include "zorba/zorba_api.h"
+#include <zorba/zorba_api.h>
 #ifdef HAVE_PTHREAD_H
 # include <pthread.h>
 #else

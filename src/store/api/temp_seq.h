@@ -9,9 +9,11 @@
 #ifndef XQP_TEMP_SEQ_H
 #define XQP_TEMP_SEQ_H
 
-#include "zorba/common/common.h"
-#include "common/shared_types.h"
 #include <vector>
+
+#include <zorba/common/common.h>
+
+#include "common/shared_types.h"
 
 
 namespace xqp {

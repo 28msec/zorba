@@ -1,8 +1,9 @@
+#include <zorba/common/common.h>
+
 #include <boost/lexical_cast.hpp>
 #include <sstream>
 #include <limits>
 #include "util/numconversions.h"
-#include "zorba/common/common.h"
 #include "util/Assert.h"
 
 namespace xqp {

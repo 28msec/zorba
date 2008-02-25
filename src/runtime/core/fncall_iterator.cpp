@@ -1,6 +1,7 @@
+#include <zorba/item_sequence.h>
+#include <zorba/stateless_function.h>
+
 #include "errors/error_factory.h"
-#include "runtime/item_sequence.h"
-#include "functions/stateless_function.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/fncall_iterator.h"
 #include "functions/function.h"

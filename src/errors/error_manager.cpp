@@ -1,8 +1,9 @@
 
+#include <zorba/errors.h>
+
 #include "errors/error_messages.h"
 #include "error_manager.h"
 #include "system/zorba.h"
-#include "errors/errors.h"
 #include "api/external/xquery.h"
 #include "api/external/result_iterator_wrapper.h"
 

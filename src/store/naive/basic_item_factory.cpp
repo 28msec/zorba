@@ -7,7 +7,9 @@
  *`
  */
 
-#include "zorba/common/common.h"
+#include <zorba/common/common.h>
+#include <zorba/iterator.h>
+
 #include "system/globalenv.h"
 #include "store/api/temp_seq.h"
 #include "store/naive/store_defs.h"
@@ -20,7 +22,6 @@
 #include "store/naive/qname_pool.h"
 #include "store/util/string_pool.h"
 
-#include "runtime/iterator.h"
 
 
 namespace xqp

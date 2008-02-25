@@ -6,10 +6,12 @@
 
 #include <string>
 #include <exception>
-#include "util/datetime/time.h"
-#include "util/datetime/datetime.h"
+
+#include <zorba/time.h>
+#include <zorba/datetime.h>
+#include <zorba/xqpString.h>
+
 #include "util/datetime/parse.h"
-#include "util/utf8/xqpString.h"
 
 #define RETURN_1_ON_EXCEPTION(sequence)         \
   try                                           \

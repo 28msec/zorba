@@ -25,9 +25,10 @@
 #define XQP_PLAN_ITERATOR_H
 
 #include <cassert>
+#include <zorba/item.h>
+
 #include "common/shared_types.h"
 #include "compiler/parser/location.hh"
-#include "zorba/store/api/item.h"
 
 // Info: Forcing inlining a function in g++:
 // Item_t next() __attribute__((always_inline)) {...}

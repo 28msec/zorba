@@ -26,10 +26,10 @@
 #define XQP_PATH_ITERATORS_H
 
 #include <stack>
+#include <zorba/store_consts.h>
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h" 
 #include "compiler/expression/expr_consts.h"
-#include "zorba/store/api/store_consts.h"
 
 namespace xqp 
 {

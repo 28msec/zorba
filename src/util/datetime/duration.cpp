@@ -5,12 +5,14 @@
  */
 
 #include <string>
-#include "util/datetime/duration.h"
+#include <iostream>
+
+#include <zorba/duration.h>
+
 #include "util/datetime/parse.h"
 #include "util/numconversions.h"
 #include "util/Assert.h"
 
-#include <iostream>
 using namespace std;
 
 namespace xqp

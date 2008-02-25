@@ -6,15 +6,16 @@
  *  Authors: David Graf, Donald Kossmann, Tim Kraska, Markos zaharioudakis
  */
 
+#include <zorba/hashfun.h>
+#include <zorba/item.h>
+#include <zorba/date.h>
+
 #include "util/numconversions.h"
-#include "util/hashfun.h"
 #include "util/Assert.h"
-#include "util/datetime/date.h"
 #include "errors/error_factory.h"
 #include "system/globalenv.h"
 #include "store/naive/atomic_items.h"
 #include "store/api/store.h"
-#include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/simple_store.h"

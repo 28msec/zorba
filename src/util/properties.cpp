@@ -1,5 +1,3 @@
-#include "zorba/util/properties.h"
-
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/positional_options.hpp>
@@ -7,6 +5,9 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+#include <zorba/properties.h>
+
 
 #define CONFIG_FOLDER "zorba"
 #define CONFIG_FILE "properties.cfg"

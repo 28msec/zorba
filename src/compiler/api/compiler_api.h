@@ -1,9 +1,10 @@
 #ifndef XQP_COMPILER_API_H
 #define XQP_COMPILER_API_H
 
+#include <zorba/xquery_plan_print.h>
+#include <zorba/representations.h>
+
 #include "common/shared_types.h"
-#include "compiler/xquery_plan_print.h"
-#include "types/representations.h"
 
 namespace xqp {
 

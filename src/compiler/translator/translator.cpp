@@ -8,11 +8,16 @@
  *
  */
 
-#include "zorba/config/platform.h"
+#include <string>
+#include <stack>
+#include <sstream>
+
+#include <zorba/config/platform.h>
+#include <zorba/common/common.h>
+#include <zorba/item.h>
+#include <zorba/properties.h>
 
 #include "compiler/translator/translator.h"
-
-#include "zorba/common/common.h"
 
 #include "context/namespace_context.h"
 #include "types/node_test.h"
@@ -23,7 +28,6 @@
 #include "compiler/normalizer/normalizer.h"
 #include "util/tracer.h"
 #include "system/globalenv.h"
-#include "store/api/item.h"
 #include "system/zorba.h"
 #include "util/utf8/Unicode_util.h"
 #include "functions/signature.h"
@@ -32,13 +36,7 @@
 #include "util/stl_extra.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-#include "common/common.h"
 
-# include "util/properties.h"
-
-#include <string>
-#include <stack>
-#include <sstream>
 
 
 using namespace std;

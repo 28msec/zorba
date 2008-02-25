@@ -6,13 +6,13 @@
  *  Author: David Graf
  *
  */
+#include <zorba/item.h>
+#include <zorba/iterator.h>
 
 #include "system/zorba.h"
 #include "runtime/accessors/AccessorsImpl.h"
-#include "store/api/item.h"
 #include "util/Assert.h"
 #include "store/api/item_factory.h"
-#include "zorba/runtime/iterator.h"
 
 namespace xqp {
 

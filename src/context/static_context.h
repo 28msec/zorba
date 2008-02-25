@@ -27,18 +27,14 @@
 
 // TODO maybe we should remove most of these includes and move implementations into the cpp file
 #include "common.h"
+
+#include <zorba/static_context.h>
+
 #include "context/context.h"
 #include "context/context_impl.h"
-//#include "functions/signature.h"
-//#include "functions/function.h"
-//#include "store/api/item.h"
-//#include "store/api/store.h"
 #include "util/Assert.h"
-//#include "types/typemanager.h"
-
 #include "common/shared_types.h"
 
-#include "context/static_context_api.h"
 
 // TODO move into platform stuff
 // MS Visual Studio does not fully support throw(), and issues a warning

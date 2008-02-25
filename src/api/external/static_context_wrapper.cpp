@@ -1,57 +1,19 @@
 
+#include <zorba/stateless_function.h>
+
+#include "system/zorba.h"
+#include "system/zorba_engine.h"
 #include "static_context_wrapper.h"
 #include "types/root_typemanager.h"
 #include "system/globalenv.h"
 #include "errors/error_manager.h"
 #include "system/globalenv.h"
-#include "system/zorba_engine.h"
-#include "system/zorba.h"
 #include "types/casting.h"
 #include "context/static_context.h"
 
-#include "zorba/functions/stateless_function.h"
 
 namespace xqp{
 
-/*
-CollationInfo::CollationInfo()
-{
-	coll = NULL;
-}
-
-CollationInfo::CollationInfo( ::Collator *coll )
-{
-	this->coll = coll;//take control of the collator pointer
-}
-
-CollationInfo::CollationInfo( std::string  coll_string, ::Collator::ECollationStrength coll_strength)
-{
-	this->coll_string = coll_string;
-	this->coll_strength = coll_strength;
-	this->coll = NULL;
-}
-
-CollationInfo::~CollationInfo()
-{
-	if(coll)
-		delete coll;//we take control of the collator pointer
-}
-
-::Collator* CollationInfo::getCollator()
-{
-	return this->coll;
-}
-
-std::string	CollationInfo::getLocaleString()
-{
-	return this->coll_string;
-}
-
-::Collator::ECollationStrength CollationInfo::getCollatorStrength()
-{
-	return this->coll_strength;
-}
-*/
 
 StaticContextWrapper::StaticContextWrapper()
 {

@@ -1,12 +1,11 @@
 
 ////using the C++ API
 
-#include "zorba/zorba_api.h"
-#include "zorba/common/common.h"
+#include <zorba/zorba_api.h>
 
 #include "../src/util/logging/loggermanager.hh"
 #include "timer.h"
-#include "zorba/util/properties.h"
+#include <zorba/properties.h>
 
 
 #include <fstream>

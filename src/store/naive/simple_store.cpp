@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "util/rchandle.h"
+#include <zorba/rchandle.h>
 
 #include "errors/error_factory.h"
 #include "store/naive/simple_store.h"

@@ -7,7 +7,7 @@
  *
  */
 
-#include "store/api/item.h"
+#include <zorba/item.h>
 
 #include "errors/error_factory.h"
 

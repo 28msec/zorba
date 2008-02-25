@@ -3,6 +3,8 @@
 
 #include "timer.h"
 
+#include <zorba/zorba_api.h>
+
 #include "errors/error_factory.h"
 #include "system/globalenv.h"
 #include "store/naive/atomic_items.h"
@@ -10,9 +12,8 @@
 #include "store/naive/simple_collection.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/simple_loader.h"
-
-#include "zorba_api.h"
 #include "store/naive/basic_item_factory.h"
+
 
 using namespace xqp;
 

@@ -1,6 +1,7 @@
 
+#include <zorba/hashfun.h>
+
 #include "util/Assert.h"
-#include "util/hashfun.h"
 #include "system/globalenv.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/atomic_items.h"

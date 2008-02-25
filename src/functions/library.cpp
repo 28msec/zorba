@@ -7,8 +7,10 @@
  */
 
 #include <iostream>
-
 #include <memory>
+
+#include <zorba/item.h>
+
 #include "system/globalenv.h"
 #include "functions/library.h"
 #include "functions/function.h"
@@ -30,7 +32,6 @@
 #include "context/common.h"
 #include "context/static_context.h"
 #include "system/zorba.h"
-#include "store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
