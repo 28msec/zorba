@@ -43,7 +43,25 @@ class match_expr;
 class expr_visitor;
 class var_expr;
 
-class expr_base_iterator;
+class expr_iterator_data;
+class expr_iterator {
+  // should be an auto_ptr, but older gcc's don't like auto_ptr w/ forward decl
+  expr_iterator_data *iter;
+  // comparisson forbidden; use done()
+  bool operator== (const expr_iterator &other) { return false; }
+
+public:
+  expr_iterator () : iter (0) {}
+  expr_iterator (expr_iterator_data *iter_) : iter (iter_) {}
+  expr_iterator (const expr_iterator &other);
+  ~expr_iterator ();
+  expr_iterator &operator= (const expr_iterator &other);
+
+  expr_iterator &operator++ ();
+  expr_iterator operator++ (int);
+  expr_t &operator* ();
+  bool done () const;
+};
 
 
 /*______________________________________________________________________
@@ -63,7 +81,7 @@ protected:
 
 
 protected:
-  virtual expr_base_iterator *make_iter_impl ();
+  virtual expr_iterator_data *make_iter ();
   
 public:
   expr(yy::location const&);
@@ -73,10 +91,10 @@ public:
   yy::location get_loc() const { return loc; }
 
 public:
-  virtual expr_base_iterator *make_iter ();
+  virtual expr_iterator expr_begin ();
   virtual void accept(expr_visitor&);
   virtual void accept_children(expr_visitor &v);
-  virtual void next_iter (expr_base_iterator &) = 0;
+  virtual void next_iter (expr_iterator_data &) = 0;
   virtual std::ostream& put(std::ostream&) const;
 
   expr_t clone();
@@ -85,41 +103,22 @@ public:
 
 typedef rchandle<expr> expr_t;
 
-class expr_base_iterator {
+class expr_iterator_data {
+protected:
   expr *e;
   
 public:
-  expr *i;
+  expr_t *i;
   int state;
   
 public:
-  expr_base_iterator (expr *e_) : e (e_), i (NULL), state (0) {}
-  virtual ~expr_base_iterator () {}
-  
-  expr *operator * () {
-    return i;
-  }
-  const expr *operator * () const {
-    return i;
-  }
-  virtual expr *operator++ () {     // ++i
+  expr_iterator_data (expr *e_) : e (e_), i (NULL), state (0) {}
+  virtual ~expr_iterator_data () {}
+  virtual void next () {
     e->next_iter (*this);
-    return i;
-  }
-  virtual expr *operator++ (int) {  // i++
-    expr *old_i = i;
-    ++(*this);
-    return old_i;
   }
   bool done () const;
 };
-  
-  inline bool operator== (const expr *e, const expr_base_iterator &i) {
-    return (*i) == e;
-  }
-  inline bool operator== (const expr_base_iterator &i, const expr *e) {
-    return (*i) == e;
-  }
 
   class constructor_expr : public expr {
   public:
@@ -179,7 +178,7 @@ public:
   static std::string decode_var_kind(enum var_kind);
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -300,7 +299,7 @@ public: // ctor,dtor
   {}
 
 public: // accessors
-  expr_base_iterator *make_iter_impl ();
+  expr_iterator_data *make_iter ();
   void add(forletref_t v) { clause_v.push_back(v); }
   uint32_t forlet_count() const { return clause_v.size(); }
   forletref_t const& operator[](int i) const { return clause_v[i]; }
@@ -345,7 +344,7 @@ public: // accessors
   void set_retval(expr_t e_h) { retval_h = e_h; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -390,7 +389,7 @@ public:
   void set_target_type(xqtref_t target);
   
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };
@@ -454,9 +453,9 @@ public:
   { return case_clause_hv[i]; }
   
 public:
-  expr_base_iterator *make_iter_impl ();
+  expr_iterator_data *make_iter ();
   
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -497,7 +496,7 @@ public:
   void set_else_expr(expr_t e_h) { else_expr_h = e_h; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -523,7 +522,7 @@ public:
   std::vector<rchandle<var_expr> >::size_type param_size () const { return params.size (); }
   const signature &get_signature () const { return *sig; }
 
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream &put (std::ostream &) const;
 };
@@ -557,7 +556,7 @@ public:
 
 
 public:
-  expr_base_iterator *make_iter_impl ();
+  expr_iterator_data *make_iter ();
   
   void add(expr_t e_h) { assert (e_h != NULL); argv.push_back(e_h); }
 
@@ -576,7 +575,7 @@ public:
   const signature &get_signature () const;
   Item_t get_fname () const;
 
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };
@@ -612,7 +611,7 @@ public:
   expr_t get_ignore() const { return ft_ignore_h; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -648,7 +647,7 @@ public:
   bool isForced () { return forced; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -681,7 +680,7 @@ public:
   enum ZorbaError::ErrorCodes get_err () { return err; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };
@@ -710,7 +709,7 @@ public:
   bool is_optional() const;
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -740,7 +739,7 @@ public:
   bool is_optional() const;
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -768,7 +767,7 @@ public:
   enum validation_mode_t get_valmode() const { return valmode; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -827,7 +826,7 @@ public:
   expr_t get_expr() const { return expr_h; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };
@@ -873,8 +872,8 @@ public:
   std::vector<expr_t>::iterator begin() { return theSteps.begin(); }
   std::vector<expr_t>::iterator end()   { return theSteps.end(); }
 
-  expr_base_iterator *make_iter_impl ();
-  void next_iter (expr_base_iterator&);
+  expr_iterator_data *make_iter ();
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };
@@ -923,8 +922,8 @@ public:
   std::vector<expr_t>::iterator begin() { return thePreds.begin(); }
   std::vector<expr_t>::iterator end()   { return thePreds.end(); }
 
-  expr_base_iterator *make_iter_impl ();
-  void next_iter (expr_base_iterator&);
+  expr_iterator_data *make_iter ();
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };
@@ -979,7 +978,7 @@ public:
   void setTypeName(Item_t v)               { theTypeName = v; }
   void setNilledAllowed(bool v)            { theNilledAllowed = v; }
 
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -1025,7 +1024,7 @@ public:
   Item_t get_val () const { return val; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };
@@ -1062,7 +1061,7 @@ public:
   expr_t get_expr() const { return expr_h; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -1108,7 +1107,7 @@ public:
   expr_t getAttrs() const { return theAttrs; }
   rchandle<namespace_context> getNSCtx();
   
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };
@@ -1133,7 +1132,7 @@ public:
   expr_t getContent() const { return theContent; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -1177,7 +1176,7 @@ public:
 
   Item* getQName() const;
 
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -1210,7 +1209,7 @@ public:
   text_constructor_type get_type () const { return type; }
 
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
@@ -1245,7 +1244,7 @@ public:
   expr_t get_target_expr() const { return target_expr_h; }
   
 public:
-  void next_iter (expr_base_iterator&);
+  void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 };

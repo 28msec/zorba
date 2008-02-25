@@ -35,24 +35,18 @@ namespace xqp {
 
   static yy::location null_loc;
 
-class dummy_expr : public expr {
-  public:
-    dummy_expr(yy::location& loc) : expr(loc) { }
-    ~dummy_expr() { }
-    void next_iter(expr_base_iterator&) {}
-};
-  static dummy_expr dummy_expr (null_loc);
-  static expr *expr_iter_done = &dummy_expr;
+  static expr_t dummy_expr;
+  static expr_t *expr_iter_done = &dummy_expr;
 
 #define BEGIN_EXPR_ITER() switch (v.state) { case 0:
 #define BEGIN_EXPR_ITER2( type )                 \
   type &vv = dynamic_cast<type &> (v);           \
   BEGIN_EXPR_ITER()
 #define END_EXPR_ITER()   v.i = expr_iter_done; }
-#define ITER( m )                                         \
-  do {                                                    \
-    v.state = __LINE__; v.i = (m);                        \
-    if (v.i != NULL) return;                              \
+#define ITER( m )                                           \
+  do {                                                      \
+    v.state = __LINE__; v.i = reinterpret_cast<expr_t *> (&(m)); \
+    return;                                                 \
   case __LINE__:; } while (0)
 #define ITER_FOR_EACH( iter, begin, end, expr )                      \
   for (vv.iter = (begin); vv.iter != (end); ++(vv.iter))  {          \
@@ -61,47 +55,47 @@ class dummy_expr : public expr {
 
 // Other iterators
 
-bool expr_base_iterator::done () const { return i == expr_iter_done; }
+bool expr_iterator_data::done () const { return i == expr_iter_done; }
 
-class fo_expr_iterator : public expr_base_iterator {
+class fo_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<expr_t>::iterator arg_iter;
   
 public:
-  fo_expr_iterator (expr *e_) : expr_base_iterator (e_) {}
+  fo_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
-class flwor_expr_iterator : public expr_base_iterator {
+class flwor_expr_iterator_data : public expr_iterator_data {
 public:
   flwor_expr::clause_list_t::iterator clause_iter;
   flwor_expr::orderspec_list_t::iterator order_mod_iter;
   
 public:
-  flwor_expr_iterator (expr *e_) : expr_base_iterator (e_) {}
+  flwor_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
-class typeswitch_expr_iterator : public expr_base_iterator {
+class typeswitch_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<typeswitch_expr::clauseref_t>::const_iterator clause_iter;
 
 public:
-  typeswitch_expr_iterator (expr *e_) : expr_base_iterator (e_) {}
+  typeswitch_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
-class relpath_expr_iterator : public expr_base_iterator {
+class relpath_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<expr_t>::iterator step_iter;
   
 public:
-  relpath_expr_iterator (expr *e_) : expr_base_iterator (e_) {}
+  relpath_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
-class axis_step_expr_iterator : public expr_base_iterator {
+class axis_step_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<expr_t>::iterator pred_iter;
   
 public:
-  axis_step_expr_iterator (expr *e_) : expr_base_iterator (e_) {}
+  axis_step_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
   
@@ -139,6 +133,21 @@ DEF_ACCEPT (text_expr)
 DEF_ACCEPT (pi_expr)
 
 #undef DEF_ACCEPT
+
+expr_iterator::expr_iterator (const expr_iterator &other) : iter (new expr_iterator_data (*other.iter)) {}
+expr_iterator &expr_iterator::operator= (const expr_iterator &other) {
+  if (this != &other) {
+    delete iter;
+    iter = new expr_iterator_data (*other.iter);
+  }
+  return *this;
+}
+expr_iterator &expr_iterator::operator++ () { iter->next (); return *this; }
+expr_iterator expr_iterator::operator++ (int) { expr_iterator old; old = *this; ++*this; return old; }
+expr_t &expr_iterator::operator* () { return *(iter->i); }
+bool expr_iterator::done () const { return iter->done (); }
+expr_iterator::~expr_iterator () { delete iter; }
+
   
 expr::expr(
   yy::location const& _loc)
@@ -149,28 +158,24 @@ expr::expr(
 
 expr::~expr() { }
 
-  expr_base_iterator *expr::make_iter_impl () {
-    return new expr_base_iterator (this);
+  expr_iterator_data *expr::make_iter () {
+    return new expr_iterator_data (this);
   }
   
   void expr::accept_children (expr_visitor &v) {
-    for (auto_ptr<expr_base_iterator> i (make_iter ());
-         ! i->done ();
-         ++*i)
-    {
-      if (**i != NULL)
-        (**i)->accept (v);
+    for (expr_iterator i = expr_begin (); ! i.done (); ++i) {
+      if (*i != NULL)
+        (*i)->accept (v);
     }
   }
 
-  expr_base_iterator *expr::make_iter()
-  {
-    expr_base_iterator *iter = make_iter_impl ();
-    next_iter (*iter);
-    return iter;
+  expr_iterator expr::expr_begin() {
+    expr_iterator_data *iter_data = make_iter ();
+    iter_data->next ();
+    return expr_iterator (iter_data);
   }
 
-  void expr::next_iter (expr_base_iterator &v) {
+  void expr::next_iter (expr_iterator_data &v) {
     BEGIN_EXPR_ITER();
     ZORBA_ASSERT (false);
     END_EXPR_ITER();
@@ -220,7 +225,7 @@ Item_t var_expr::get_varname() const { return varname_h; }
 xqtref_t var_expr::get_type() const { return type; }
 void var_expr::set_type(xqtref_t t) { type = t; }
 
-void var_expr::next_iter (expr_base_iterator& v) {
+void var_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   END_EXPR_ITER();
 }
@@ -278,12 +283,12 @@ rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
 }
 
 
-expr_base_iterator *flwor_expr::make_iter_impl () {
-  return new flwor_expr_iterator (this);
+expr_iterator_data *flwor_expr::make_iter () {
+  return new flwor_expr_iterator_data (this);
 }
 
-void flwor_expr::next_iter (expr_base_iterator& v) {
-  BEGIN_EXPR_ITER2 (flwor_expr_iterator);
+void flwor_expr::next_iter (expr_iterator_data& v) {
+  BEGIN_EXPR_ITER2 (flwor_expr_iterator_data);
 
   ITER_FOR_EACH (clause_iter, clause_v.begin (), clause_v.end (),
                  (*vv.clause_iter)->expr_h);
@@ -332,7 +337,7 @@ promote_expr::promote_expr(yy::location const& loc, expr_t input, xqtref_t type)
   input_expr_h(input),
   target_type(type) { }
 
-void promote_expr::next_iter (expr_base_iterator& v) {
+void promote_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
   ITER (input_expr_h);
   END_EXPR_ITER ();
@@ -352,12 +357,12 @@ typeswitch_expr::typeswitch_expr(
 {
 }
 
-expr_base_iterator *typeswitch_expr::make_iter_impl () {
-  return new typeswitch_expr_iterator (this);
+expr_iterator_data *typeswitch_expr::make_iter () {
+  return new typeswitch_expr_iterator_data (this);
 }
 
-void typeswitch_expr::next_iter (expr_base_iterator& v) {
-  BEGIN_EXPR_ITER2(typeswitch_expr_iterator);
+void typeswitch_expr::next_iter (expr_iterator_data& v) {
+  BEGIN_EXPR_ITER2(typeswitch_expr_iterator_data);
   ITER (switch_expr_h);
   for (vv.clause_iter = begin (); vv.clause_iter != end (); ++(vv.clause_iter)) {
     ITER ((*vv.clause_iter)->var_h);
@@ -392,7 +397,7 @@ if_expr::if_expr(
 }
 
 
-void if_expr::next_iter (expr_base_iterator& v) {
+void if_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   ITER (cond_expr_h);
   ITER (then_expr_h);
@@ -414,10 +419,10 @@ void if_expr::next_iter (expr_base_iterator& v) {
 // [52] [http://www.w3.org/TR/xquery/#prod-xquery-UnionExpr]
 // [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
 
-expr_base_iterator *fo_expr::make_iter_impl () { return new fo_expr_iterator (this); }
+expr_iterator_data *fo_expr::make_iter () { return new fo_expr_iterator_data (this); }
 
-void fo_expr::next_iter (expr_base_iterator& v) {
-  BEGIN_EXPR_ITER2(fo_expr_iterator);
+void fo_expr::next_iter (expr_iterator_data& v) {
+  BEGIN_EXPR_ITER2(fo_expr_iterator_data);
   ITER_FOR_EACH (arg_iter, begin (), end (), *vv.arg_iter);
   END_EXPR_ITER ();
 }
@@ -446,7 +451,7 @@ ft_contains_expr::ft_contains_expr(
 }
 
 
-void ft_contains_expr::next_iter (expr_base_iterator& v) {
+void ft_contains_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
   ITER (range_h);
   ITER (ft_select_h);
@@ -467,7 +472,7 @@ instanceof_expr::instanceof_expr(yy::location const& loc,
 
 xqtref_t instanceof_expr::get_type() const { return type; }
 
-void instanceof_expr::next_iter (expr_base_iterator& v) {
+void instanceof_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   ITER (expr_h);
   END_EXPR_ITER();  
@@ -491,7 +496,7 @@ treat_expr::treat_expr(
 
 xqtref_t treat_expr::get_type() const { return type; }
 
-void treat_expr::next_iter (expr_base_iterator& v) {
+void treat_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
   ITER (expr_h);
   END_EXPR_ITER ();
@@ -515,7 +520,7 @@ bool castable_expr::is_optional() const { return GENV_TYPESYSTEM.quantifier(*typ
 
 xqtref_t castable_expr::get_type() const { return type; }
 
-void castable_expr::next_iter (expr_base_iterator& v) {
+void castable_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
   ITER (expr_h);
   END_EXPR_ITER ();
@@ -539,7 +544,7 @@ bool cast_expr::is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) =
 
 xqtref_t cast_expr::get_type() const { return type; }
 
-void cast_expr::next_iter (expr_base_iterator& v) {
+void cast_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
   ITER (expr_h);
   END_EXPR_ITER ();
@@ -560,7 +565,7 @@ validate_expr::validate_expr(
 }
 
 
-void validate_expr::next_iter (expr_base_iterator& v) {
+void validate_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
   ITER (expr_h);
   END_EXPR_ITER ();
@@ -586,7 +591,7 @@ extension_expr::extension_expr(
 }
 
 
-void extension_expr::next_iter (expr_base_iterator& v) {
+void extension_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
   ITER (expr_h);
   END_EXPR_ITER ();
@@ -606,10 +611,10 @@ relpath_expr::relpath_expr(yy::location const& loc)
 {
 }
 
-expr_base_iterator *relpath_expr::make_iter_impl () { return new relpath_expr_iterator (this); }
+expr_iterator_data *relpath_expr::make_iter () { return new relpath_expr_iterator_data (this); }
 
-void relpath_expr::next_iter (expr_base_iterator& v) {
-  BEGIN_EXPR_ITER2(relpath_expr_iterator);
+void relpath_expr::next_iter (expr_iterator_data& v) {
+  BEGIN_EXPR_ITER2(relpath_expr_iterator_data);
 
   ITER_FOR_EACH (step_iter, begin (), end (), *vv.step_iter);
 
@@ -630,12 +635,12 @@ axis_step_expr::axis_step_expr(yy::location const& loc)
 {
 }
 
-expr_base_iterator *axis_step_expr::make_iter_impl () {
-  return new axis_step_expr_iterator (this);
+expr_iterator_data *axis_step_expr::make_iter () {
+  return new axis_step_expr_iterator_data (this);
 }
 
-void axis_step_expr::next_iter (expr_base_iterator& v) {
-  BEGIN_EXPR_ITER2(axis_step_expr_iterator);
+void axis_step_expr::next_iter (expr_iterator_data& v) {
+  BEGIN_EXPR_ITER2(axis_step_expr_iterator_data);
 
   ITER_FOR_EACH (pred_iter, thePreds.begin (), thePreds.end (), *vv.pred_iter);
 
@@ -668,7 +673,7 @@ match_expr::match_expr(yy::location const& loc)
 }
 
 
-void match_expr::next_iter (expr_base_iterator& v) {
+void match_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   END_EXPR_ITER();
 }
@@ -774,7 +779,7 @@ const_expr::const_expr(
 }
 
 
-void const_expr::next_iter (expr_base_iterator& v) {
+void const_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   END_EXPR_ITER();
 }
@@ -794,7 +799,7 @@ order_expr::order_expr(
 }
 
 
-void order_expr::next_iter (expr_base_iterator& v) {
+void order_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
   ITER (expr_h);
   END_EXPR_ITER ();
@@ -836,7 +841,7 @@ elem_expr::elem_expr (
 
 rchandle<namespace_context> elem_expr::getNSCtx() { return theNSCtx; }
 
-void elem_expr::next_iter (expr_base_iterator& v) {
+void elem_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   ITER (theQNameExpr);
   ITER (theAttrs);
@@ -857,7 +862,7 @@ doc_expr::doc_expr(
 }
 
 
-void doc_expr::next_iter (expr_base_iterator& v) {
+void doc_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   ITER(theContent);
   END_EXPR_ITER();
@@ -891,7 +896,7 @@ Item* attr_expr::getQName() const
 }
 
 
-void attr_expr::next_iter (expr_base_iterator& v) {
+void attr_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   ITER (theQNameExpr);
   ITER (theValueExpr);
@@ -913,7 +918,7 @@ text_expr::text_expr(
 }
 
 
-void text_expr::next_iter (expr_base_iterator& v) {
+void text_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   ITER (text);
   END_EXPR_ITER();
@@ -936,14 +941,14 @@ pi_expr::pi_expr(
 }
 
 
-void pi_expr::next_iter (expr_base_iterator& v) {
+void pi_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
   ITER (target_expr_h);
   ITER (text);
   END_EXPR_ITER ();
 }
 
-void function_def_expr::next_iter (expr_base_iterator& v) {
+void function_def_expr::next_iter (expr_iterator_data& v) {
 }
 
 function_def_expr::function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type)
