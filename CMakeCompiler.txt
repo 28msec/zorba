@@ -32,7 +32,9 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 #  ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "-Wabi")
   # Warn when a class seems unusable because all the constructors or destructors in that class are private, and it has neither friends nor public static member functions.
   IF(NOT CMAKE_CXX_FLAGS MATCHES "-Wctor-dtor-privacy")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wctor-dtor-privacy")
+    IF (NOT APPLE)  # apple g++ throws to many of these warnings for boost 
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wctor-dtor-privacy")
+    ENDIF (NOT APPLE)
   ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "-Wctor-dtor-privacy")
 #  # Warn about violations of the following style guidelines from Scott Meyers’ Effective C++ book (Problem: std header do not obey this guideline)
 #  IF(NOT CMAKE_CXX_FLAGS MATCHES "-Weffc++")
