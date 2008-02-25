@@ -182,54 +182,27 @@ isEqual(std::string aRefFile, std::string aResFile, int& aLine, int& aCol,
   std::ifstream li(aRefFile.c_str());
   std::ifstream ri(aResFile.c_str()); 
 #endif
-
-  std::streambuf * lb = li.rdbuf();
-  std::streambuf * rb = ri.rdbuf();
-
-  long ls = lb->pubseekoff (0, std::ios::end, std::ios::in);
-  long rs = rb->pubseekoff (0, std::ios::end, std::ios::in);
-  lb->pubseekpos (0, std::ios::in);
-  rb->pubseekpos (0, std::ios::in);
-
-  char* lBuf = new char[ls];
-  char* rBuf = new char[rs];
-
-  try {
-    lb->sgetn (lBuf, ls);
-    rb->sgetn (rBuf, rs);
-  } catch (...)
-  {
-    li.close(); ri.close();
-    delete[] lBuf; delete[] rBuf;
-    return false;
-  }
-
-  li.close();
-  ri.close();
-
-  std::string lString(lBuf, ls);
-  std::string rString(rBuf, rs);
-
-  delete[] lBuf; delete[] rBuf;
-
-  trim(lString);
-  trim(rString);
+  
+  std::string lLine, rLine;
 
   aLine = 1; aCol = 0; aPos = -1;
-
-  size_t aLPos = 0, aRPos = 0;
-  char lc, rc;
-  while (aLPos != lString.length() && aRPos != rString.length())
+  while (! li.eof() )
   {
-    lc = lString.at(aLPos);
-    rc = rString.at(aRPos);
-
-    ++aPos; ++aCol;
-    if (lc == '\n') { ++aLine; aCol = 0; }
-    if ( lc != rc ) return false;
-    ++aLPos; ++aRPos;
+    if ( ri.eof() ) {
+      std::getline(li, lLine);
+      if (li.peek() == -1) // ignore end-of-line in the ref result
+        return true;
+      else 
+        return false;
+    }
+    std::getline(li, lLine);
+    std::getline(ri, rLine);
+    ++aLine;
+    if ( (aCol = lLine.compare(rLine)) != 0) {
+      return false;
+    }
   }
-  aLine = aCol = aPos = -1;
+
   return true;
 }
 
