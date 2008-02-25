@@ -25,21 +25,12 @@
 namespace xqp
 {
 
-static long abs(long value)
-{
-  if (value < 0)
-    return -value;
-  else
-    return value;
-}
-
 DateTime::DateTime(const Date_t& d_t, const Time_t& t_t)
 {
-  if (d_t->getYear() < 0)
-    is_negative = true;
+  is_negative = (d_t->getYear() < 0);
   
   the_date_time = boost::posix_time::ptime(
-      boost::gregorian::date(abs(d_t->getYear()), abs(d_t->getMonth()), abs(d_t->getDay())),
+      boost::gregorian::date(abs<int>(d_t->getYear()), abs<int>(d_t->getMonth()), abs<int>(d_t->getDay())),
       t_t->get_time_duration());
 }
 
@@ -51,7 +42,7 @@ int DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)
   long temp_frac;
   std::string ss;
   TimeZone_t tz_t;
-  bool is_negative;
+  bool is_negative = false;
 
   // DateTime is of form: '-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
 
@@ -63,7 +54,7 @@ int DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)
 
   if (ss[position] == '-')
   {
-    is_negative = 1;
+    is_negative = true;
     position++;
   }
   
@@ -85,6 +76,31 @@ int DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)
       return 1;
     dt_t->the_time_zone = *tz_t;
   }
+
+  return 0;
+}
+
+int DateTime::createDateTime(bool is_negative, int years, int months, int days,
+                            int hours, int minutes, int seconds, int fractional_seconds, TimeZone_t& tz_t, DateTime_t& dt_t)
+{
+  dt_t = new DateTime(is_negative, boost::posix_time::ptime(
+    boost::gregorian::date(abs<int>(years), abs<int>(months), abs<int>(days)),
+    boost::posix_time::time_duration(abs<int>(hours), abs<int>(minutes), abs<int>(seconds), abs<int>(fractional_seconds))));
+
+  if (!tz_t.isNull())
+    dt_t->the_time_zone = *tz_t;
+
+  return 0;
+}
+
+int DateTime::createDateTime(bool is_negative, int years, int months, int days,
+                            int hours, int minutes, int seconds, int fractional_seconds, const TimeZone& tz, DateTime_t& dt_t)
+{
+  dt_t = new DateTime(is_negative, boost::posix_time::ptime(
+    boost::gregorian::date(abs<int>(years), abs<int>(months), abs<int>(days)),
+    boost::posix_time::time_duration(abs<int>(hours), abs<int>(minutes), abs<int>(seconds), abs<int>(fractional_seconds))));
+
+  dt_t->the_time_zone = tz;
 
   return 0;
 }
@@ -111,9 +127,14 @@ bool DateTime::operator==(const DateTime& dt) const
 
 xqpString DateTime::toString() const
 {
-  xqpString result = boost::posix_time::to_iso_extended_string(the_date_time);
+  xqpString result;
+
+  if (is_negative)
+    result += "-";
+  
+  result += boost::posix_time::to_iso_extended_string(the_date_time);
   result += the_time_zone.toString();
-  // TODO:
+  
   return result;
 }
 
@@ -130,7 +151,7 @@ int DateTime::compare(const DateTime& dt) const
 
 int DateTime::getYear() const
 {
-  return (is_negative? -1 : 1) * the_date_time.date().year();
+  return (is_negative? -1 : 1) * abs<int>(the_date_time.date().year());
 }
 
 int DateTime::getMonth() const
@@ -155,12 +176,7 @@ int DateTime::getMinutes() const
 
 double DateTime::getSeconds() const
 {
-  double frac_sec = the_date_time.time_of_day().fractional_seconds();
-  while(frac_sec > 1)
-  {
-    frac_sec = frac_sec /10;
-  }
-  
+  double frac_sec = double(the_date_time.time_of_day().fractional_seconds()) / boost::posix_time::time_duration::ticks_per_second();
   return the_date_time.time_of_day().seconds() + frac_sec;
 }
 
@@ -171,8 +187,9 @@ TimeZone DateTime::getTimezone() const
 
 DateTime_t operator+(const DateTime& dt, const Duration& d)
 {
-  DateTime_t dt_t;
+  DateTime_t new_dt_t;
   int years, months, days, hours, minutes, int_seconds, frac_seconds, temp_days, carry;
+  double temp_frac_seconds;
 
   // For the algorithm, see XML Schema 2 spec, Appendix E
   // http://www.w3.org/TR/xmlschema-2/#adding-durations-to-dateTimes
@@ -180,7 +197,10 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
   months = modulo<int>(dt.getMonth() + d.getMonths() - 1, 12) + 1;
   years = dt.getYear() + d.getYears() + quotient<int>(dt.getMonth() + d.getMonths() - 1, 12);
 
-  int_seconds = modulo<int>(floor(dt.getSeconds() + d.getSeconds()), 60);                            // TODO: frac_seconds
+  int_seconds = modulo<int>(floor(dt.getSeconds() + d.getSeconds()), 60);
+  temp_frac_seconds = (dt.getSeconds() + d.getSeconds() - floor(dt.getSeconds() + d.getSeconds()));
+  frac_seconds = round(temp_frac_seconds * boost::posix_time::time_duration::ticks_per_second());
+  
   minutes = dt.getMinutes() + d.getMinutes() + quotient<int>(floor(dt.getSeconds() + d.getSeconds()), 60);
   hours = dt.getHours() + d.getHours() + quotient<int>(minutes, 60);
   minutes = modulo<int>(minutes, 60);
@@ -214,11 +234,11 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
     months = modulo<int>(months + carry -1, 12) + 1;
   }
 
-  return NULL;
+  // TODO: find out if the dateTime is negative
+  DateTime::createDateTime((years<0), years, months, days, hours, minutes, int_seconds, frac_seconds,
+                            dt.getTimezone(), new_dt_t);
+
+  return new_dt_t;
 }
 
-DateTime_t operator-(const DateTime& dt, const Duration& d)
-{
-  return NULL;
-}
 } // namespace xqp

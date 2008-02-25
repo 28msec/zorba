@@ -19,16 +19,17 @@ typedef rchandle<TimeZone> TimeZone_t;
 class TimeZone : public SimpleRCObject
 {
 public:
+  virtual ~TimeZone() { };
+  
   TimeZone() : the_time_zone(boost::posix_time::not_a_date_time) { };
   TimeZone(boost::posix_time::time_duration t) : the_time_zone(t) { };
-  virtual ~TimeZone() { };
 
   static bool parse_string(const xqpString& s, TimeZone_t& tz_t);
 
   bool operator<(const TimeZone& t) const;
   bool operator==(const TimeZone& t) const;
   int compare(const TimeZone& t) const;
-
+  
   xqpString toString() const;
   virtual bool is_negative() const;
   virtual bool is_not_a_date_time() const;

@@ -36,6 +36,7 @@ public:
   int compare(const DurationBase& dt) const;
   virtual xqpString toString(bool output_when_zero = true) const = 0;
   virtual Duration_t toDuration() const = 0;
+  virtual Duration_t toNegDuration() const = 0;
 
   virtual DurationBase_t operator+(const DurationBase& db) const = 0;
   virtual DurationBase_t operator-(const DurationBase& db) const = 0;
@@ -43,11 +44,11 @@ public:
   virtual DurationBase_t operator/(const Double value) const = 0;
   virtual Decimal operator/(const DurationBase& db) const = 0;
 
-  virtual int32_t getYears() const = 0;
-  virtual int32_t getMonths() const = 0;
-  virtual int32_t getDays() const = 0;
-  virtual int32_t getHours() const = 0;
-  virtual int32_t getMinutes() const = 0;
+  virtual int getYears() const = 0;
+  virtual int getMonths() const = 0;
+  virtual int getDays() const = 0;
+  virtual int getHours() const = 0;
+  virtual int getMinutes() const = 0;
   virtual double getSeconds() const = 0;
 };
 
@@ -67,6 +68,7 @@ public:
   bool operator<(const YearMonthDuration& ymd) const;
   virtual xqpString toString(bool output_when_zero = true) const;
   virtual Duration_t toDuration() const;
+  virtual Duration_t toNegDuration() const;
 
   virtual DurationBase_t operator+(const DurationBase& db) const;
   virtual DurationBase_t operator-(const DurationBase& db) const;
@@ -74,12 +76,15 @@ public:
   virtual DurationBase_t operator/(const Double value) const;
   virtual Decimal operator/(const DurationBase& db) const;
   
-  virtual int32_t getYears() const;
-  virtual int32_t getMonths() const;
-  virtual int32_t getDays() const;
-  virtual int32_t getHours() const;
-  virtual int32_t getMinutes() const;
+  virtual int getYears() const;
+  virtual int getMonths() const;
+  virtual int getDays() const;
+  virtual int getHours() const;
+  virtual int getMinutes() const;
   virtual double getSeconds() const;
+
+  bool isNegative() const { return (months < 0); }
+  bool isZero() const { return (months == 0); }
   
 protected:
   YearMonthDuration& operator=(const YearMonthDuration_t& ym_t);
@@ -103,6 +108,7 @@ public:
   bool operator<(const DayTimeDuration& dtd) const;
   virtual xqpString toString(bool output_when_zero = true) const;
   virtual Duration_t toDuration() const;
+  virtual Duration_t toNegDuration() const;
 
   virtual DurationBase_t operator+(const DurationBase& dt) const;
   virtual DurationBase_t operator-(const DurationBase& dt) const;
@@ -110,12 +116,15 @@ public:
   virtual DurationBase_t operator/(const Double value) const;
   virtual Decimal operator/(const DurationBase& db) const;
   
-  virtual int32_t getYears() const;
-  virtual int32_t getMonths() const;
-  virtual int32_t getDays() const;
-  virtual int32_t getHours() const;
-  virtual int32_t getMinutes() const;
+  virtual int getYears() const;
+  virtual int getMonths() const;
+  virtual int getDays() const;
+  virtual int getHours() const;
+  virtual int getMinutes() const;
   virtual double getSeconds() const;
+
+  bool isNegative() const { return is_negative; }
+  bool isZero() const;
 
 
 protected:
@@ -130,11 +139,25 @@ protected:
 class Duration : public DurationBase
 {
 public:
-  Duration();
-  Duration(const YearMonthDuration& ymd) : yearMonthDuration(ymd) { };
-  Duration(const DayTimeDuration& dtd) : dayTimeDuration(dtd) { };
   virtual ~Duration() { };
 
+  /**
+   * Constructs a Duration from an YearMonthDuration
+   * @param ymd source YearMonthDuration
+   * @param negate if true, the created Duration's sign will be inverted
+   */
+  Duration(const YearMonthDuration& ymd, bool negate = false);
+
+  /**
+   * Constructs a Duration from a DateTimeDuration
+   * @param dtd source DateTimeDuration
+   * @param negate if true, the created Duration's sign will be inverted
+   */
+  Duration(const DayTimeDuration& dtd, bool negate = false);
+  
+  /**
+   * Returns true on success
+   */
   static bool parse_string(const xqpString& s, Duration_t& d_t);
 
   bool operator==(const Duration& d) const;
@@ -142,6 +165,7 @@ public:
   bool operator<(const Duration& d) const;
   virtual xqpString toString(bool output_when_zero = true) const;
   virtual Duration_t toDuration() const;
+  virtual Duration_t toNegDuration() const;
 
   virtual DurationBase_t operator+(const DurationBase& d) const;
   virtual DurationBase_t operator-(const DurationBase& d) const;
@@ -149,12 +173,15 @@ public:
   virtual DurationBase_t operator/(const Double value) const;
   virtual Decimal operator/(const DurationBase& db) const;
 
-  virtual int32_t getYears() const;
-  virtual int32_t getMonths() const;
-  virtual int32_t getDays() const;
-  virtual int32_t getHours() const;
-  virtual int32_t getMinutes() const;
+  virtual int getYears() const;
+  virtual int getMonths() const;
+  virtual int getDays() const;
+  virtual int getHours() const;
+  virtual int getMinutes() const;
   virtual double getSeconds() const;
+
+  bool isNegative() const;
+  bool isZero() const;
 
 protected:
   YearMonthDuration yearMonthDuration;

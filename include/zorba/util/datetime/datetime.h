@@ -29,15 +29,29 @@ typedef rchandle<DateTime> DateTime_t;
 class DateTime : public SimpleRCObject
 {
 public:
+  virtual ~DateTime() { };
+  
   DateTime(bool negative, boost::posix_time::ptime t) : is_negative(negative), the_date_time(t) { };
   DateTime(const Date_t& d_t, const Time_t& t_t);
   
-  virtual ~DateTime() { };
-
   /**
    *  Returns 0 on success
    */
   static int parse_string(const xqpString& s, DateTime_t& dt_t);
+
+  /**
+   *  The function will use the absolute values of all int parameters. TimeZone may be NULL
+   */
+  static int createDateTime(bool is_negative, int years, int months, int days,
+                      int hours, int minutes, int seconds, int fractional_seconds,
+                      TimeZone_t& tz_t, DateTime_t& dt_t);
+
+  /**
+   *  The function will use the absolute values of all int parameters. TimeZone is a reference
+   */
+  static int createDateTime(bool is_negative, int years, int months, int days,
+                            int hours, int minutes, int seconds, int fractional_seconds,
+                            const TimeZone& tz, DateTime_t& dt_t);
   
   bool operator<(const DateTime& dt) const;
   bool operator==(const DateTime& dt) const;
@@ -62,7 +76,6 @@ protected:
 };
 
 DateTime_t operator+(const DateTime& dt, const Duration& d);
-DateTime_t operator-(const DateTime& dt, const Duration& d);
 
 } // namespace xqp
 

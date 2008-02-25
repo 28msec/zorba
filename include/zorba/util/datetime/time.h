@@ -16,6 +16,8 @@ namespace xqp
 class xqpString;
 class Time;
 typedef rchandle<Time> Time_t;
+class DateTime;
+typedef rchandle<DateTime> DateTime_t;
 class Duration;
 
 /**
@@ -35,16 +37,22 @@ public:
    *  Returns 0 on success
    */
   static int parse_string(const xqpString& s, Time_t& t_t);
+
+  /**
+   *  Returns 0 on success
+   */
+  static int createTime(int hours, int minutes, double seconds, const TimeZone& tz, Time_t& t_t);
   
   bool operator<(const Time& t) const;
   bool operator==(const Time& t) const;
   int compare(const Time& t) const;
 
+  DateTime_t toDateTime() const;
   xqpString toString() const;
   const boost::posix_time::time_duration& get_time_duration() const;
 
-  int32_t getHours() const;
-  int32_t getMinutes() const;
+  int getHours() const;
+  int getMinutes() const;
   double getSeconds() const;
   TimeZone getTimezone() const;
 
@@ -56,7 +64,6 @@ protected:
 };
 
 Time_t operator+(const Time& t, const Duration& dur);
-Time_t operator-(const Time& t, const Duration& dur);
 
 } // namespace xqp
 

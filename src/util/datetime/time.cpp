@@ -7,6 +7,7 @@
 #include <string>
 #include <exception>
 #include "util/datetime/time.h"
+#include "util/datetime/datetime.h"
 #include "util/datetime/parse.h"
 #include "util/utf8/xqpString.h"
 
@@ -63,29 +64,52 @@ int Time::parse_string(const xqpString& s, Time_t& t_t)
   return 0;
 }
 
+int Time::createTime(int hours, int minutes, double seconds, const TimeZone& tz, Time_t& t_t)
+{
+  if (seconds < 0 || seconds >= 60)
+    return 1;
+  if (minutes < 0 || minutes >= 60)
+    return 1;
+  if (hours < 0 || hours > 24)
+    return 1;
+
+  if (hours == 24 && minutes == 0 && seconds == 0)
+    hours = 0;
+
+  t_t = new Time(boost::posix_time::time_duration(hours,minutes,floor<double>(seconds),
+    round(frac(seconds) * boost::posix_time::time_duration::ticks_per_second())));
+
+  t_t->the_time_zone = tz;
+
+  return 0;
+}
+
+DateTime_t Time::toDateTime() const
+{
+  DateTime_t dt_t;
+  DateTime::createDateTime(false, 1972, 12, 31,
+    the_time.hours(), the_time.minutes(), the_time.seconds(), the_time.fractional_seconds(), the_time_zone, dt_t);
+  return dt_t;
+}
+
 const boost::posix_time::time_duration& Time::get_time_duration() const
 {
   return the_time;
 }
 
-int32_t Time::getHours() const
+int Time::getHours() const
 {
   return the_time.hours();
 }
 
-int32_t Time::getMinutes() const
+int Time::getMinutes() const
 {
   return the_time.minutes();
 }
 
 double Time::getSeconds() const
 {
-  double frac_sec = the_time.fractional_seconds();
-  while(frac_sec > 1)
-  {
-    frac_sec = frac_sec /10;
-  }
-  
+  double frac_sec = double(the_time.fractional_seconds()) / boost::posix_time::time_duration::ticks_per_second();
   return (the_time.seconds() % NO_SECONDS_IN_MINUTE) + frac_sec;
 }
 
@@ -130,11 +154,11 @@ int Time::compare(const Time& t) const
 
 Time_t operator+(const Time& t, const Duration& dur)
 {
-  return NULL;
+  Time_t t_t;
+  // TODO: days in duration must be made to be 0
+  DateTime_t dt_t = *t.toDateTime() + dur;
+  Time::createTime(dt_t->getHours(), dt_t->getMinutes(), dt_t->getSeconds(), dt_t->getTimezone(), t_t);
+  return t_t;
 }
 
-Time_t operator-(const Time& t, const Duration& dur)
-{
-  return NULL;
-}
 } // namespace xqp

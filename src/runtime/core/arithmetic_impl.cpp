@@ -192,7 +192,7 @@ Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_D
 ( const yy::location* loc,  const Item* i0, const Item* i1 )
 {
 //   long timezone_sec = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
-  xqp_dateTime d = *i0->getDateTimeValue() - *i1->getDurationValue()->toDuration();
+  xqp_dateTime d = *i0->getDateTimeValue() + *i1->getDurationValue()->toNegDuration();
   return Zorba::getItemFactory()->createDateTime (d);
 }
 
@@ -200,7 +200,7 @@ template<>
 Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( const yy::location* loc,  const Item* i0, const Item* i1 )
 {
-  xqp_date d = *i0->getDateValue() - *i1->getDurationValue()->toDuration();
+  xqp_date d = *i0->getDateValue() + *i1->getDurationValue()->toNegDuration();
   return Zorba::getItemFactory()->createDate (d);
 }
 
@@ -208,7 +208,7 @@ template<>
 Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( const yy::location* loc,  const Item* i0, const Item* i1 )
 {
-  xqp_time t = *i0->getTimeValue() + *i1->getDurationValue()->toDuration();
+  xqp_time t = *i0->getTimeValue() + *i1->getDurationValue()->toNegDuration();
   return Zorba::getItemFactory()->createTime (t);
 }
 

@@ -55,13 +55,11 @@ int parse_int(std::string& s, unsigned int& position, T& result, int min_digits 
 template <typename T>
 T quotient(T a, T b)
 {
-  a = a / b;
-  if (a<0)
-    a--;
-
-  return a;
+  if (a >= 0)
+    return a / b;
+  else
+    return (a+1) / b - 1;
 }
-
 
 template <typename T>
 T modulo(T a, T b)
@@ -82,7 +80,30 @@ int floor(T a)
     return (int)(a-1);
 }
 
+template <typename T>
+T abs(T value)
+{
+  if (value < 0)
+    return -value;
+  else
+    return value;
+}
 
+/**
+ * Rounds to the nearest integer
+ */
+inline int round(double value)
+{
+  if (value >= 0)
+    return int(value+0.5);
+  else
+    return int(value-0.5);
+}
+
+inline double frac(double value)
+{
+  return value - floor<double>(value);
+}
 
 bool is_digit(char ch);
 bool are_digits(std::string& s, unsigned int& position, int count);

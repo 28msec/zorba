@@ -7,6 +7,7 @@
 #include <string>
 #include <exception>
 #include "util/datetime/date.h"
+#include "util/datetime/datetime.h"
 #include "util/datetime/timezone.h"
 #include "util/datetime/parse.h"
 #include "util/numconversions.h"
@@ -90,6 +91,14 @@ int Date::createDate(int a_year, int a_month, int a_day, Date_t& d_t)
   return 0;
 }
 
+int Date::createDate(int a_year, int a_month, int a_day, const TimeZone& tz, Date_t& d_t)
+{
+  if (1 == createDate(a_year, a_month, a_day, d_t))
+    return 1;
+  
+  d_t->the_time_zone = tz;
+  return 0;
+}
 
 Date& Date::operator=(const Date_t& d_t)
 {
@@ -129,6 +138,13 @@ int Date::compare(const Date& d) const
     return 1;
 }
 
+DateTime_t Date::toDateTime() const
+{
+  DateTime_t dt_t;
+  DateTime::createDateTime(year<0, year, month, day, 0, 0, 0, 0, the_time_zone, dt_t);
+  return dt_t;
+}
+
 xqpString Date::toString() const
 {
   xqpString result = NumConversions::longToStr(year) + "-";
@@ -145,17 +161,17 @@ xqpString Date::toString() const
   return result;
 }
 
-int32_t Date::getYear() const
+int Date::getYear() const
 {
   return year;
 }
 
-int32_t Date::getMonth() const
+int Date::getMonth() const
 {
   return month;
 }
 
-int32_t Date::getDay() const
+int Date::getDay() const
 {
   return day;
 }
@@ -167,11 +183,10 @@ TimeZone Date::getTimezone() const
 
 Date_t operator+(const Date& d, const Duration& dur)
 {
-  return NULL;
+  Date_t d_t;
+  DateTime_t dt_t = *d.toDateTime() + dur;
+  Date::createDate(dt_t->getYear(), dt_t->getMonth(), dt_t->getDay(), dt_t->getTimezone(), d_t);
+  return d_t;
 }
 
-Date_t operator-(const Date& d, const Duration& dur)
-{
-  return NULL;
-}
 } // namespace xqp

@@ -14,9 +14,13 @@
 namespace xqp
 {
 class xqpString;
+class Duration;
+class DateTime;
+typedef rchandle<DateTime> DateTime_t;
+    
 class Date;
 typedef rchandle<Date> Date_t;
-class Duration;
+
 
 /**
  *  date has the form: '-'? yyyy '-' mm '-' dd zzzzzz?
@@ -26,25 +30,33 @@ class Duration;
 class Date : public SimpleRCObject
 {
 public:
-  // Date(boost::gregorian::date d) : the_date(d) { };
   virtual ~Date() { };
 
   /**
    *  Returns 0 on success
    */
   static int parse_string(const xqpString& s, Date_t& d_t);
-  static int createDate(int year, int month, int date, Date_t& d_t);
+
+  /**
+   *  Returns 0 on success
+   */
+  static int createDate(int a_year, int a_month, int a_day, Date_t& d_t);
+
+  /**
+   *  Returns 0 on success
+   */
+  static int createDate(int a_year, int a_month, int a_day, const TimeZone& tz, Date_t& d_t);
   
   bool operator<(const Date& d) const;
   bool operator==(const Date& d) const;
   int compare(const Date& d) const;
 
+  DateTime_t toDateTime() const;
   xqpString toString() const;
-  // const boost::gregorian::date& get_date() const;
-
-  int32_t getYear() const;
-  int32_t getMonth() const;
-  int32_t getDay() const;
+  
+  int getYear() const;
+  int getMonth() const;
+  int getDay() const;
   TimeZone getTimezone() const;
 
 protected:
@@ -58,7 +70,6 @@ protected:
 };
 
 Date_t operator+(const Date& d, const Duration& dur);
-Date_t operator-(const Date& d, const Duration& dur);
 
 } // namespace xqp
 
