@@ -1,0 +1,22 @@
+#include "compiler/rewriter/framework/sequential_rewriter.h"
+
+namespace xqp {
+
+SequentialRewriter::SequentialRewriter()
+{
+}
+
+SequentialRewriter::~SequentialRewriter() throw ()
+{
+}
+
+void SequentialRewriter::rewrite(RewriterContext& rCtx)
+{
+  std::vector<Rewriter *>::const_iterator end = m_childRewriters.end();
+  for(std::vector<Rewriter *>::const_iterator i = m_childRewriters.begin(); i != end; ++i) {
+    (*i)->rewrite(rCtx);
+  }
+}
+
+}
+/* vim:set ts=2 sw=2: */

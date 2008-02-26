@@ -3,6 +3,7 @@
 
 #include <zorba/xquery_plan_print.h>
 #include <zorba/representations.h>
+#include <memory>
 
 #include "common/shared_types.h"
 
@@ -46,6 +47,18 @@ class XQueryCompiler {
   private:
     std::vector<rchandle<static_context> >& m_sctx_list;
     static_context *m_sctx;
+};
+
+class XQueryCompilerSubsystem {
+  public:
+    XQueryCompilerSubsystem();
+    virtual ~XQueryCompilerSubsystem() throw ();
+
+    virtual Rewriter *getDefaultOptimizingRewriter() = 0;
+
+  private:
+    static std::auto_ptr<XQueryCompilerSubsystem> create();
+    friend class GlobalEnvironment;
 };
 
 } /* namespace xqp */

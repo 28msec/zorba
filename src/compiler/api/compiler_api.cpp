@@ -1,7 +1,9 @@
 #include <zorba/properties.h>
 
+#include "system/globalenv.h"
 #include "errors/error_factory.h"
 #include "compiler/api/compiler_api.h"
+#include "compiler/api/compiler_api_impl.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_dot_visitor.h"
@@ -9,6 +11,8 @@
 #include "compiler/translator/translator.h"
 #include "compiler/normalizer/normalizer.h"
 #include "compiler/parser/xquery_driver.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
+#include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/expression/expr.h"
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
@@ -167,6 +171,10 @@ PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text
     pp_cfg->printNormalizedExprPlan(e_h);
   }
 
+  RewriterContext rCtx(m_sctx, e_h);
+  GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+  e_h = rCtx.getRoot();
+
   PlanIter_t plan = codegen ("query", e_h);
   if (plan == NULL) {
     cout << "Codegen returned null";
@@ -179,6 +187,20 @@ PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text
   }
 
   return plan;
+}
+
+XQueryCompilerSubsystem::XQueryCompilerSubsystem()
+{
+  
+}
+
+XQueryCompilerSubsystem::~XQueryCompilerSubsystem() throw ()
+{
+}
+
+std::auto_ptr<XQueryCompilerSubsystem> XQueryCompilerSubsystem::create()
+{
+  return std::auto_ptr<XQueryCompilerSubsystem>(new XQueryCompilerSubsystemImpl());
 }
 
 }

@@ -23,6 +23,10 @@ class Collection;
 class StringPool;
 class QNamePool;
 class PlanState;
+class XQueryCompiler;
+class XQueryCompilerSubsystem;
+class Rewriter;
+class RewriterContext;
 
 class context;
 class static_context;

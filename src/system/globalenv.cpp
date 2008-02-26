@@ -9,6 +9,7 @@
 #include "context/root_static_context.h"
 #include "functions/library.h"
 #include "store/naive/simple_store.h"
+#include "compiler/api/compiler_api.h"
 
 using namespace xqp;
 
@@ -52,6 +53,8 @@ void GlobalEnvironment::init()
   // calling its init is done here because we also want to
   // free it at the end, i.e. when zorba is shutdown
   LIBXML_TEST_VERSION
+
+  m_globalEnv->m_compilerSubSys = XQueryCompilerSubsystem::create();
 }
 
 void GlobalEnvironment::destroy()
@@ -103,6 +106,11 @@ RootTypeManager& GlobalEnvironment::getRootTypeManager()
 Store& GlobalEnvironment::getStore()
 {
   return *m_store;
+}
+
+XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()
+{
+  return *m_compilerSubSys;
 }
 
 /* vim:set ts=2 sw=2: */

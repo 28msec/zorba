@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <zorba/m_apm.h>
+#include "common/shared_types.h"
 
 namespace xqp {
 
@@ -18,6 +19,7 @@ class GlobalEnvironment {
 
     RootTypeManager& getRootTypeManager();
     static_context& getRootStaticContext();
+    XQueryCompilerSubsystem& getCompilerSubsystem();
     Store& getStore();
   private:
     GlobalEnvironment();
@@ -25,6 +27,7 @@ class GlobalEnvironment {
     std::auto_ptr<Store> m_store;
     std::auto_ptr<static_context> m_rootStaticContext;
     M_APM                     m_mapm; // this is a pointer type
+    std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;
 
     static GlobalEnvironment *m_globalEnv;
 };
@@ -32,6 +35,8 @@ class GlobalEnvironment {
 #define GENV GlobalEnvironment::getInstance()
 
 #define GENV_TYPESYSTEM GlobalEnvironment::getInstance().getRootTypeManager()
+
+#define GENV_COMPILERSUBSYS GlobalEnvironment::getInstance().getCompilerSubsystem()
 
 }
 
