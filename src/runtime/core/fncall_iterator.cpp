@@ -12,10 +12,33 @@ namespace xqp {
 UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   : theFnBodyStateBlock(NULL),
     thePlan(NULL),
-    thePlanStateSize(0) { }
+    thePlanStateSize(0),
+    thePlanOpen(false) { }
 
 UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
+}
+
+void UDFunctionCallIteratorState::openPlan()
+{
+  uint32_t planOffset = 0;
+  thePlan->open(*theFnBodyStateBlock, planOffset);
+  thePlanOpen = true;
+}
+
+void UDFunctionCallIteratorState::closePlan()
+{
+  if (thePlanOpen) {
+    thePlan->close(*theFnBodyStateBlock);
+  }
+  thePlanOpen = false;
+}
+
+void UDFunctionCallIteratorState::resetPlan()
+{
+  if (thePlanOpen) {
+    thePlan->reset(*theFnBodyStateBlock);
+  }
 }
 
 void UDFunctionCallIteratorState::resetChildIters()
@@ -36,8 +59,6 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   state->thePlan = theUDF->get_plan().getp();
   state->thePlanStateSize = state->thePlan->getStateSizeOfSubtree();
   state->theFnBodyStateBlock = new PlanState(state->thePlanStateSize);
-  uint32_t planOffset = 0;
-  state->thePlan->open(*state->theFnBodyStateBlock, planOffset);
 
 }
 
@@ -45,7 +66,7 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
 {
   UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, this->stateOffset);
 
-  state->thePlan->close(*state->theFnBodyStateBlock);
+  state->closePlan();
   delete state->theFnBodyStateBlock;
   state->resetChildIters();
 
@@ -57,7 +78,7 @@ void UDFunctionCallIterator::resetImpl(PlanState& planState) const
   NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::resetImpl(planState);
   UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, this->stateOffset);
 
-  state->thePlan->reset(*state->theFnBodyStateBlock);
+  state->resetPlan();
   state->resetChildIters();
 }
 
@@ -70,6 +91,7 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
 
   {
     // Bind the args.
+    state->openPlan();
     std::vector<ref_iter_t>& iters = theUDF->get_param_iters();
     for (uint32_t i = 0; i < iters.size (); ++i) {
       ref_iter_t& ref = iters[i];

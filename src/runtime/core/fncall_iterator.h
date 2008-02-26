@@ -13,10 +13,14 @@ class UDFunctionCallIteratorState : public PlanIteratorState {
     PlanIterator *thePlan;
     uint32_t thePlanStateSize;
     std::vector<Iterator_t> theChildIterators;
+    bool thePlanOpen;
 
     UDFunctionCallIteratorState();
     ~UDFunctionCallIteratorState();
 
+    void openPlan();
+    void closePlan();
+    void resetPlan();
     void resetChildIters();
 };
 
