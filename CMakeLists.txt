@@ -110,6 +110,11 @@ ELSE(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
     MESSAGE(FATAL_ERROR "The boost library is required in order to build Zorba.")
 ENDIF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
 
+####################################################### Debugging
+INCLUDE(${CMAKE_ROOT}/Modules/CheckIncludeFile.cmake)
+INCLUDE(${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake)
+CHECK_INCLUDE_FILE(execinfo.h HAVE_EXECINFO_H)
+
 
 ##############################################################################################################
 

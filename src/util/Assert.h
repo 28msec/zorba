@@ -15,7 +15,28 @@
 #include <string>
 #include "errors/error_factory.h"
 
+#ifdef HAVE_EXECINFO_H
+#include <execinfo.h>
+#endif
+
 namespace xqp {
+
+class StackTracePrinter {
+  public:
+    StackTracePrinter()
+    {
+#ifdef HAVE_EXECINFO_H
+#define TRACE_SIZE 25
+      void *trace[TRACE_SIZE];
+      int sz = backtrace(trace, TRACE_SIZE);
+      char **syms = backtrace_symbols(trace, sz);
+      for(int i = 0; i < sz; ++i) {
+        std::cerr << syms[i] << std::endl;
+      }
+      free(syms);
+#endif
+    }
+};
 
 #ifdef __GNUC__
 #define __ZORBA_ASSERT_aux4( ) __PRETTY_FUNCTION__
@@ -25,8 +46,12 @@ namespace xqp {
 #define __ZORBA_ASSERT_aux3( line ) #line
 #define __ZORBA_ASSERT_aux2( line ) __ZORBA_ASSERT_aux3( line )
 #define __ZORBA_ASSERT_aux1( cond, line )       \
-  if (! (cond)) \
-    ZorbaAssert (__FILE__ ":" __ZORBA_ASSERT_aux2 (line), __ZORBA_ASSERT_aux4(), #cond)
+  do {\
+    if (! (cond)) {\
+      StackTracePrinter p; \
+      ZorbaAssert (__FILE__ ":" __ZORBA_ASSERT_aux2 (line), __ZORBA_ASSERT_aux4(), #cond); \
+    } \
+  } while(0)
   
 #define ZORBA_ASSERT( cond ) __ZORBA_ASSERT_aux1 (cond, __LINE__)
 
