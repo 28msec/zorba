@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "common/shared_types.h"
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"

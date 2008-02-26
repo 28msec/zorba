@@ -11,7 +11,7 @@
  *
  */
 
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 
 #include "util/utf8/Unicode_util.h"
 #include "util/utf8/utf8.h"

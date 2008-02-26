@@ -4,7 +4,7 @@
 #include <vector>
 
 #include <zorba/common/api_shared_types.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 #include <zorba/representations.h>
 #include <zorba/store_consts.h>
 

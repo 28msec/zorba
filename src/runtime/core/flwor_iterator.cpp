@@ -315,13 +315,13 @@ Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
       // level back and try the previous level
       if ( bindVariable ( curVar, flworState, planState ) )
       {
-        curVar++;
+        ++curVar;
       }
       else
       {
         flworState->varBindingState[curVar] = 0;
         resetInput ( curVar, flworState, planState );
-        curVar--;
+        --curVar;
 
         //If we finished the last binding (curVar == -1) and we had to Orde
         //r we need to return the results, otherwise we just need to indicate
@@ -335,12 +335,10 @@ Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
             while ( flworState->curOrderPos != flworState->orderMap->end() )
             {
               flworState->curOrderResultSeq = flworState->curOrderPos->second;
-              curItem = flworState->curOrderResultSeq->next();
 
-              while ( curItem != 0 )
+              while ( ( curItem = flworState->curOrderResultSeq->next() ) != 0 )
               {
                 STACK_PUSH ( curItem, flworState );
-                curItem = flworState->curOrderResultSeq->next();
               }
               ++ ( flworState->curOrderPos );
             }
@@ -360,32 +358,19 @@ Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
       //by the ReturnClause
       if ( !doOrderBy )
       {
-        while ( true )
+        while ( ( curItem = consumeNext ( returnClause.getp(), planState )) != 0  )
         {
-          curItem = consumeNext ( returnClause.getp(), planState );
-          if ( curItem == NULL )
-          {
-            curVar = bindingsNb - 1;
-            returnClause->reset(planState);
-            break;
-          }
-          else
-          {
-            STACK_PUSH ( curItem, flworState );
-          }
+          STACK_PUSH ( curItem, flworState );
         }
+        returnClause->reset(planState);
         //In the case we have to order we are materializing the result
       }
       else
       {
         matResultAndOrder ( flworState, planState );
-        curVar = bindingsNb - 1;
       }
     }
-    else
-    {
-      curVar = bindingsNb - 1;
-    }
+    curVar = bindingsNb - 1;
   }
 
  stop:

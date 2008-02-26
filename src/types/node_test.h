@@ -2,7 +2,7 @@
 #define XQP_NODE_TEST_H
 
 #include <zorba/rchandle.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 #include <zorba/store_consts.h>
 
 namespace xqp {

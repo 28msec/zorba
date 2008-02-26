@@ -10,7 +10,7 @@
 #include <zorba/date.h>
 #include <zorba/datetime.h>
 #include <zorba/timezone.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 
 #include "util/datetime/parse.h"
 #include "util/numconversions.h"

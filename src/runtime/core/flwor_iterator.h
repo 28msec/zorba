@@ -28,9 +28,8 @@ class FlworState;
 
  
  /**
-  Main FLWOR class designed after   http://www.w3.org/TR/xquery/#id-flwor-expressions. 
-  The complete tuple-stream handling is done in this
-  class. 
+  Main FLWOR class designed according to http://www.w3.org/TR/xquery/#id-flwor-expressions. 
+  The complete tuple-stream handling is done in this class. 
  */
 class FLWORIterator : public Batcher<FLWORIterator>
 {

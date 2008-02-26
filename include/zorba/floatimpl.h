@@ -3,7 +3,7 @@
 
 #include <zorba/m_apm.h>
 #include <zorba/common/api_shared_types.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 
 namespace xqp {
 

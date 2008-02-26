@@ -9,7 +9,7 @@
 
 #include <zorba/time.h>
 #include <zorba/datetime.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 
 #include "util/datetime/parse.h"
 

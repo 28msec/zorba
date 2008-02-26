@@ -4,7 +4,7 @@
 // TODO remove boost here
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <zorba/common/api_shared_types.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 
 namespace xqp
 {

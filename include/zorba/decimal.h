@@ -2,7 +2,7 @@
 #define ZORBA_DECIMAL_H
 
 #include <zorba/m_apm.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 
 namespace xqp {
 

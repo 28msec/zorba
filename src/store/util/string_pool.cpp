@@ -1,5 +1,5 @@
 
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 #include "util/Assert.h"
 #include "store/util/string_pool.h"
 

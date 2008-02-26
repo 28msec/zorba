@@ -10,7 +10,7 @@
 #define XQP_BASIC_ITEM_FACTORY_H
 
 #include "common/shared_types.h"
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 #include "store/api/item_factory.h"
 #include <zorba/representations.h>
 

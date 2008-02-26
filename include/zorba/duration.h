@@ -8,7 +8,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 #include <zorba/common/api_shared_types.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 
 namespace xqp
 {

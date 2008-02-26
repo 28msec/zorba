@@ -2,7 +2,7 @@
 #define ZORBA_REPRESENTATIONS_H
 
 // TODO only include api_shared_types here
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 #include <zorba/duration.h>
 #include <zorba/date.h>
 #include <zorba/datetime.h>

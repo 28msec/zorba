@@ -5,7 +5,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 #include <zorba/timezone.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 
 namespace xqp
 {

@@ -1,6 +1,6 @@
 
 #include "util/Assert.h"
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 #include "store/naive/nsbindings.h"
 
 namespace xqp

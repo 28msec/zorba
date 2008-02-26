@@ -29,7 +29,7 @@
 #include "context/common.h"
 #include "util/hashmap.h"
 #include <zorba/rchandle.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 #include <zorba/representations.h>
 
 namespace xqp {

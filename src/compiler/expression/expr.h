@@ -27,7 +27,7 @@
 #include <zorba/common/common.h>
 #include <zorba/static_context.h>
 #include <zorba/store_consts.h>
-#include <zorba/xqpString.h>
+#include <zorba/xqpstring.h>
 #include <zorba/errors.h>
 
 #include "common/shared_types.h"
