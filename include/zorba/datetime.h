@@ -46,6 +46,9 @@ namespace xqp
       
       bool 
       operator==(const DateTime& dt) const;
+
+      DayTimeDuration_t
+      operator-(const DateTime& dt) const;
       
       int 
       compare(const DateTime& dt) const;
@@ -72,6 +75,9 @@ namespace xqp
       
       TimeZone
       getTimezone() const;
+
+      DateTime_t
+      normalize(const long tz_seconds);
 
     protected:
       DateTime& 

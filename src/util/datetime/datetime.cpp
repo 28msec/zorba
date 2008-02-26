@@ -126,6 +126,43 @@ bool DateTime::operator==(const DateTime& dt) const
   return (the_date_time == dt.the_date_time);
 }
 
+DayTimeDuration_t DateTime::operator-(const DateTime& dt) const
+{
+  boost::posix_time::time_duration td;
+  td = the_date_time - dt.the_date_time;
+  
+  DayTimeDuration_t d_t = new DayTimeDuration(
+      the_date_time <= dt.the_date_time ? true: false,
+      quotient<int>(td.hours(), 24),
+      modulo<int>(td.hours(), 24),
+      td.minutes(),
+      td.seconds(),
+      td.fractional_seconds());
+ 
+  return d_t;
+}
+
+DateTime_t  DateTime::normalize(const long tz_seconds)
+{
+  if( the_time_zone.is_not_a_date_time() )
+  {
+    boost::posix_time::time_duration tz( 0, 0, tz_seconds, 0 );
+    boost::posix_time::time_duration td(the_date_time.time_of_day().hours(), the_date_time.time_of_day().minutes(),
+                                        the_date_time.time_of_day().seconds(), the_date_time.time_of_day().fractional_seconds());
+
+    tz = tz_seconds < 0 ? td - tz: td + tz;
+    
+    DateTime_t new_dt_t;
+
+    DateTime::createDateTime(is_negative, getYear(), getMonth(), getDay(), tz.hours(), tz.minutes(),
+                             tz.seconds(), tz.fractional_seconds(), tz, new_dt_t);
+ 
+    return new_dt_t;
+  }
+  else
+    return this;
+}
+
 xqpString DateTime::toString() const
 {
   xqpString result;
