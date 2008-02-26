@@ -117,9 +117,6 @@ ENDIF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
 # but this should be removed
 SET(requiredlibs ${requiredlibs} pthread)
 
-# is located in external/mapm
-SET(requiredlibs ${requiredlibs} mapm)  
-
 ##############################################################################################################
 # Custom user-defined settings
 
