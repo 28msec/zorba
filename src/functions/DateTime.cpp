@@ -19,7 +19,7 @@ fn_datetime_ctor::fn_datetime_ctor (
 }
 
 PlanIter_t fn_datetime_ctor::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnDateTimeConstructorIterator(loc, argv[0], argv[1]);
@@ -50,7 +50,7 @@ fn_years_from_duration::fn_years_from_duration (
 
 PlanIter_t
 fn_years_from_duration::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnYearsFromDurationIterator(loc, argv);
@@ -84,7 +84,7 @@ fn_months_from_duration::fn_months_from_duration (
 
 PlanIter_t
 fn_months_from_duration::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnMonthsFromDurationIterator(loc, argv);
@@ -118,7 +118,7 @@ fn_days_from_duration::fn_days_from_duration (
 
 PlanIter_t
 fn_days_from_duration::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnDaysFromDurationIterator(loc, argv);
@@ -152,7 +152,7 @@ fn_hours_from_duration::fn_hours_from_duration (
 
 PlanIter_t
 fn_hours_from_duration::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnHoursFromDurationIterator(loc, argv);
@@ -186,7 +186,7 @@ fn_minutes_from_duration::fn_minutes_from_duration (
 
 PlanIter_t
 fn_minutes_from_duration::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnMinutesFromDurationIterator(loc, argv);
@@ -220,7 +220,7 @@ fn_seconds_from_duration::fn_seconds_from_duration (
 
 PlanIter_t
 fn_seconds_from_duration::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnSecondsFromDurationIterator(loc, argv);
@@ -254,7 +254,7 @@ fn_year_from_datetime::fn_year_from_datetime (
 
 PlanIter_t
 fn_year_from_datetime::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnYearFromDatetimeIterator(loc, argv);
@@ -288,7 +288,7 @@ fn_month_from_datetime::fn_month_from_datetime (
 
 PlanIter_t
 fn_month_from_datetime::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnMonthFromDatetimeIterator(loc, argv);
@@ -322,7 +322,7 @@ fn_day_from_datetime::fn_day_from_datetime (
 
 PlanIter_t
 fn_day_from_datetime::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnDayFromDatetimeIterator(loc, argv);
@@ -356,7 +356,7 @@ fn_hours_from_datetime::fn_hours_from_datetime (
 
 PlanIter_t
 fn_hours_from_datetime::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnHoursFromDatetimeIterator(loc, argv);
@@ -390,7 +390,7 @@ fn_minutes_from_datetime::fn_minutes_from_datetime (
 
 PlanIter_t
 fn_minutes_from_datetime::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnMinutesFromDatetimeIterator(loc, argv);
@@ -424,7 +424,7 @@ fn_seconds_from_datetime::fn_seconds_from_datetime (
 
 PlanIter_t
 fn_seconds_from_datetime::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnSecondsFromDatetimeIterator(loc, argv);
@@ -459,7 +459,7 @@ fn_timezone_from_datetime::fn_timezone_from_datetime (
 
 PlanIter_t
 fn_timezone_from_datetime::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnTimezoneFromDatetimeIterator(loc, argv);
@@ -493,7 +493,7 @@ fn_year_from_date::fn_year_from_date (
 
 PlanIter_t
 fn_year_from_date::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnYearFromDateIterator(loc, argv);
@@ -527,7 +527,7 @@ fn_month_from_date::fn_month_from_date (
 
 PlanIter_t
 fn_month_from_date::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnMonthFromDateIterator(loc, argv);
@@ -562,7 +562,7 @@ fn_day_from_date::fn_day_from_date (
 
 PlanIter_t
 fn_day_from_date::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnDayFromDateIterator(loc, argv);
@@ -596,7 +596,7 @@ fn_timezone_from_date::fn_timezone_from_date (
 
 PlanIter_t
 fn_timezone_from_date::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnTimezoneFromDateIterator(loc, argv);
@@ -630,7 +630,7 @@ fn_hours_from_time::fn_hours_from_time (
 
 PlanIter_t
 fn_hours_from_time::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnHoursFromTimeIterator(loc, argv);
@@ -664,7 +664,7 @@ fn_minutes_from_time::fn_minutes_from_time (
 
 PlanIter_t
 fn_minutes_from_time::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnMinutesFromTimeIterator(loc, argv);
@@ -698,7 +698,7 @@ fn_seconds_from_time::fn_seconds_from_time (
 
 PlanIter_t
 fn_seconds_from_time::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnSecondsFromTimeIterator(loc, argv);
@@ -733,7 +733,7 @@ fn_timezone_from_time::fn_timezone_from_time (
 
 PlanIter_t
 fn_timezone_from_time::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new FnTimezoneFromTimeIterator(loc, argv);
@@ -767,7 +767,7 @@ op_ym_durations_add::op_ym_durations_add (
 
 PlanIter_t
 op_ym_durations_add::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
@@ -801,7 +801,7 @@ op_ym_durations_subtract::op_ym_durations_subtract (
 
 PlanIter_t
 op_ym_durations_subtract::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
@@ -835,7 +835,7 @@ op_ym_durations_multiply::op_ym_durations_multiply (
 
 PlanIter_t
 op_ym_durations_multiply::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<MultiplyOperation>(loc,  argv[0], argv[1]);
@@ -869,7 +869,7 @@ op_ym_durations_divide::op_ym_durations_divide (
 
 PlanIter_t
 op_ym_durations_divide::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
@@ -903,7 +903,7 @@ op_divide_ymd_by_ymd::op_divide_ymd_by_ymd (
 
 PlanIter_t
 op_divide_ymd_by_ymd::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
@@ -937,7 +937,7 @@ op_dt_durations_add::op_dt_durations_add (
 
 PlanIter_t
 op_dt_durations_add::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
@@ -971,7 +971,7 @@ op_dt_durations_subtract::op_dt_durations_subtract (
 
 PlanIter_t
 op_dt_durations_subtract::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
@@ -1005,7 +1005,7 @@ op_dt_durations_multiply::op_dt_durations_multiply (
 
 PlanIter_t
 op_dt_durations_multiply::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<MultiplyOperation>(loc,  argv[0], argv[1]);
@@ -1039,7 +1039,7 @@ op_dt_durations_divide::op_dt_durations_divide (
 
 PlanIter_t
 op_dt_durations_divide::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
@@ -1074,7 +1074,7 @@ op_divide_dtd_by_dtd::op_divide_dtd_by_dtd (
 
 PlanIter_t
 op_divide_dtd_by_dtd::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<DivideOperation>(loc,  argv[0], argv[1]);
@@ -1108,7 +1108,7 @@ op_sub_dt::op_sub_dt (
 
 PlanIter_t
 op_sub_dt::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
@@ -1142,7 +1142,7 @@ op_sub_d::op_sub_d (
 
 PlanIter_t
 op_sub_d::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
@@ -1176,7 +1176,7 @@ op_sub_t::op_sub_t (
 
 PlanIter_t
 op_sub_t::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
@@ -1210,7 +1210,7 @@ op_add_ymd_to_dt::op_add_ymd_to_dt (
 
 PlanIter_t
 op_add_ymd_to_dt::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
@@ -1244,7 +1244,7 @@ op_add_dtd_to_dt::op_add_dtd_to_dt (
 
 PlanIter_t
 op_add_dtd_to_dt::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
@@ -1279,7 +1279,7 @@ op_sub_ymd_from_dt::op_sub_ymd_from_dt (
 
 PlanIter_t
 op_sub_ymd_from_dt::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
@@ -1313,7 +1313,7 @@ op_sub_dtd_from_dt::op_sub_dtd_from_dt (
 
 PlanIter_t
 op_sub_dtd_from_dt::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
@@ -1347,7 +1347,7 @@ op_add_ymd_to_d::op_add_ymd_to_d (
 
 PlanIter_t
 op_add_ymd_to_d::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
@@ -1381,7 +1381,7 @@ op_add_dtd_to_d::op_add_dtd_to_d (
 
 PlanIter_t
 op_add_dtd_to_d::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
@@ -1416,7 +1416,7 @@ op_sub_ymd_from_d::op_sub_ymd_from_d (
 
 PlanIter_t
 op_sub_ymd_from_d::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
@@ -1450,7 +1450,7 @@ op_sub_dtd_from_d::op_sub_dtd_from_d (
 
 PlanIter_t
 op_sub_dtd_from_d::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);
@@ -1484,7 +1484,7 @@ op_add_dtd_to_t::op_add_dtd_to_t (
 
 PlanIter_t
 op_add_dtd_to_t::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<AddOperation>(loc,  argv[0], argv[1]);
@@ -1518,7 +1518,7 @@ op_sub_dtd_from_t::op_sub_dtd_from_t (
 
 PlanIter_t
 op_sub_dtd_from_t::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   return new NumArithIterator<SubtractOperation>(loc,  argv[0], argv[1]);

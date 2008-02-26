@@ -28,7 +28,7 @@
 #include <zorba/item.h>
 
 #include "common/shared_types.h"
-#include "compiler/parser/location.hh"
+#include "compiler/parser/query_loc.h"
 
 // Info: Forcing inlining a function in g++:
 // Item_t next() __attribute__((always_inline)) {...}
@@ -231,10 +231,10 @@ public:
   uint32_t getStateOffset() const { return stateOffset; }
   
 public:
-  yy::location  loc;
+  QueryLoc  loc;
 
 public:
-  PlanIterator(const yy::location& aLoc) 
+  PlanIterator(const QueryLoc& aLoc) 
     : stateOffset(0),
       loc(aLoc) 
   {}
@@ -339,7 +339,7 @@ public:
   Batcher(const Batcher<IterType>& b)  
     : PlanIterator(b)
   {}
-  Batcher(yy::location loc) 
+  Batcher(const QueryLoc& loc) 
     : PlanIterator(loc) 
   {}
 

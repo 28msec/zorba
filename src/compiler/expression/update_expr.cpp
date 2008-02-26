@@ -22,7 +22,7 @@ namespace xqp {
 // [242] [http://www.w3.org/TR/xqupdate/#prod-xquery-InsertExpr]
 
 insert_expr::insert_expr(
-	yy::location const& loc,
+	const QueryLoc& loc,
 	expr_t _source_expr_h,
 	expr_t _target_expr_h)
 :
@@ -46,7 +46,7 @@ ostream& insert_expr::put(ostream& os) const
 // [243] [http://www.w3.org/TR/xqupdate/#prod-xquery-DeleteExpr]
 
 delete_expr::delete_expr(
-	yy::location const& loc,
+	const QueryLoc& loc,
 	expr_t _target_expr_h)
 :
 	expr(loc),
@@ -68,7 +68,7 @@ ostream& delete_expr::put(ostream& os) const
 // [244] [http://www.w3.org/TR/xqupdate/#prod-xquery-ReplaceExpr]
 
 replace_expr::replace_expr(
-	yy::location const& loc,
+	const QueryLoc& loc,
 	expr_t _source_expr_h,
 	expr_t _target_expr_h)
 :
@@ -92,7 +92,7 @@ ostream& replace_expr::put(ostream& os) const
 // [245] [http://www.w3.org/TR/xqupdate/#prod-xquery-RenameExpr]
 
 rename_expr::rename_expr(
-	yy::location const& loc,
+	const QueryLoc& loc,
 	expr_t _source_expr_h,
 	expr_t _target_expr_h)
 :
@@ -116,7 +116,7 @@ ostream& rename_expr::put(ostream& os) const
 // [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
 
 transform_expr::transform_expr(
-	yy::location const& loc,
+	const QueryLoc& loc,
 	expr_t _source_expr_h,
 	expr_t _target_expr_h)
 :

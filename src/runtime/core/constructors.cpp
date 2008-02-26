@@ -153,7 +153,7 @@ ElementIteratorState::reset(PlanState& planState)
 
 
 ElementIterator::ElementIterator (
-    const yy::location& loc,
+    const QueryLoc& loc,
     PlanIter_t&         qnameIter,
     PlanIter_t&         attrsIter,
     PlanIter_t&         childrenIter,
@@ -358,7 +358,7 @@ void ElementContentState::reset(PlanState& planState)
 
 ********************************************************************************/
 AttributeIterator::AttributeIterator(
-    const yy::location& loc,
+    const QueryLoc& loc,
     PlanIter_t&  aQNameIter,
     PlanIter_t&  aValueIter,
     bool         isRoot)
@@ -397,7 +397,7 @@ Item_t AttributeIterator::nextImpl(PlanState& planState) const
 
 ********************************************************************************/
 TextIterator::TextIterator(
-    const yy::location& loc,
+    const QueryLoc& loc,
     PlanIter_t& aChild,
     bool isRoot) 
   :
@@ -431,7 +431,7 @@ Item_t TextIterator::nextImpl(PlanState& planState) const
 
 ********************************************************************************/
 PiIterator::PiIterator (
-    const yy::location& loc,
+    const QueryLoc& loc,
     PlanIter_t& aTarget,
     PlanIter_t& aContent,
     bool isRoot)
@@ -493,7 +493,7 @@ Item_t PiIterator::nextImpl(PlanState& planState) const
 
 ********************************************************************************/
 CommentIterator::CommentIterator(
-    const yy::location& loc,
+    const QueryLoc& loc,
     PlanIter_t& aComment,
     bool isRoot)
   : UnaryBaseIterator<CommentIterator, PlanIteratorState>(loc, aComment),
@@ -572,7 +572,7 @@ EnclosedIteratorState::~EnclosedIteratorState()
 }
 
 EnclosedIterator::EnclosedIterator (
-    const yy::location& loc,
+    const QueryLoc& loc,
     PlanIter_t& childIter)
   :
   UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState> ( loc, childIter ),

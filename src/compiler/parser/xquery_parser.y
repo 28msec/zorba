@@ -781,7 +781,7 @@ MainModule :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [prolog.querybody]\n";
 #endif
-			$$ = new MainModule(@$,
+			$$ = new MainModule(driver.createQueryLoc(@$),
 								static_cast<Prolog*>($1),
 								static_cast<QueryBody*>($2));
 		}
@@ -791,7 +791,7 @@ MainModule :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [querybody]\n";
 #endif
-			$$ = new MainModule(@$,
+			$$ = new MainModule(driver.createQueryLoc(@$),
 								NULL,
 								static_cast<QueryBody*>($1));
 		}
@@ -806,7 +806,7 @@ LibraryModule :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LibraryModule [ ]\n";
 #endif
-			$$ = new LibraryModule(@$,
+			$$ = new LibraryModule(driver.createQueryLoc(@$),
 								static_cast<ModuleDecl*>($1),
 								static_cast<Prolog*>($2));
 		}
@@ -821,7 +821,7 @@ ModuleDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleDecl [ ]\n";
 #endif
-			$$ = new ModuleDecl(@$,
+			$$ = new ModuleDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2), 
 								driver.symtab.get((off_t)$4));
 		}
@@ -836,7 +836,7 @@ Prolog :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind]\n";
 #endif
-			$$ = new Prolog(@$,
+			$$ = new Prolog(driver.createQueryLoc(@$),
 								static_cast<SIND_DeclList*>($1),
 								NULL);
 		}
@@ -845,7 +845,7 @@ Prolog :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [vfo]\n";
 #endif
-			$$ = new Prolog(@$,
+			$$ = new Prolog(driver.createQueryLoc(@$),
 								NULL,
 								static_cast<VFO_DeclList*>($1));
 		}
@@ -854,7 +854,7 @@ Prolog :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind.vfo]\n";
 #endif
-			$$ = new Prolog(@$,
+			$$ = new Prolog(driver.createQueryLoc(@$),
 								static_cast<SIND_DeclList*>($1),
 								static_cast<VFO_DeclList*>($3));
 		}
@@ -869,7 +869,7 @@ SIND_DeclList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [single]\n";
 #endif
-			SIND_DeclList* sindList_p = new SIND_DeclList(@$);
+			SIND_DeclList* sindList_p = new SIND_DeclList(driver.createQueryLoc(@$));
 			sindList_p->push_back($1);
 			$$ = sindList_p;
 		}
@@ -895,7 +895,7 @@ VFO_DeclList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [single]\n";
 #endif
-			VFO_DeclList* vfoList_p = new VFO_DeclList(@$);
+			VFO_DeclList* vfoList_p = new VFO_DeclList(driver.createQueryLoc(@$));
 			vfoList_p->push_back($1);
 			$$ = vfoList_p;
 		}
@@ -1079,7 +1079,7 @@ NamespaceDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NamespaceDecl [ ]\n";
 #endif
-			$$ = new NamespaceDecl(@$,
+			$$ = new NamespaceDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								driver.symtab.get((off_t)$4));
 		}
@@ -1094,7 +1094,7 @@ BoundarySpaceDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [preserve]\n";
 #endif
-			$$ = new BoundarySpaceDecl(@$,
+			$$ = new BoundarySpaceDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::preserve_space);
 		}
 	|	DECLARE_BOUNDARY_SPACE  STRIP
@@ -1102,7 +1102,7 @@ BoundarySpaceDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [strip]\n";
 #endif
-			$$ = new BoundarySpaceDecl(@$,
+			$$ = new BoundarySpaceDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::strip_space);
 		}
 	;
@@ -1116,7 +1116,7 @@ DefaultNamespaceDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [element]\n";
 #endif
-			$$ = new DefaultNamespaceDecl(@$,
+			$$ = new DefaultNamespaceDecl(driver.createQueryLoc(@$),
 								ns_element_default,
 								driver.symtab.get((off_t)$3));
 		}
@@ -1125,7 +1125,7 @@ DefaultNamespaceDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [function]\n";
 #endif
-			$$ = new DefaultNamespaceDecl(@$,
+			$$ = new DefaultNamespaceDecl(driver.createQueryLoc(@$),
 								ns_function_default,
 								driver.symtab.get((off_t)$3));
 		}
@@ -1140,8 +1140,8 @@ OptionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OptionDecl [ ]\n";
 #endif
-			$$ = new OptionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new OptionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								driver.symtab.get((off_t)$3));
 		}
 	;
@@ -1156,7 +1156,7 @@ FTOptionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOptionDecl [ ]\n";
 #endif
-			$$ = new FTOptionDecl(@$,
+			$$ = new FTOptionDecl(driver.createQueryLoc(@$),
 								$2);
 		}
 	;
@@ -1170,7 +1170,7 @@ OrderingModeDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [ordered]\n";
 #endif
-			$$ = new OrderingModeDecl(@$,
+			$$ = new OrderingModeDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::ordered);
 		}
 	| DECLARE_ORDERING  UNORDERED
@@ -1178,7 +1178,7 @@ OrderingModeDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [unordered]\n";
 #endif
-			$$ = new OrderingModeDecl(@$,
+			$$ = new OrderingModeDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::unordered);
 		}
 	;
@@ -1193,7 +1193,7 @@ EmptyOrderDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty greatest]\n";
 #endif
-			$$ = new EmptyOrderDecl(@$,
+			$$ = new EmptyOrderDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::empty_greatest);
 		}
 	|	DECLARE_DEFAULT_ORDER  EMPTY_LEAST
@@ -1201,7 +1201,7 @@ EmptyOrderDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty least]\n";
 #endif
-			$$ = new EmptyOrderDecl(@$,
+			$$ = new EmptyOrderDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::empty_least);
 		}
 	;
@@ -1215,7 +1215,7 @@ CopyNamespacesDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
 #endif
-			$$ = new CopyNamespacesDecl(@$,
+			$$ = new CopyNamespacesDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::preserve_ns,
 								StaticQueryContext::inherit_ns);
 		}
@@ -1224,7 +1224,7 @@ CopyNamespacesDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
 #endif
-			$$ = new CopyNamespacesDecl(@$,
+			$$ = new CopyNamespacesDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::preserve_ns,
 								StaticQueryContext::no_inherit_ns);
 		}
@@ -1233,7 +1233,7 @@ CopyNamespacesDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
 #endif
-			$$ = new CopyNamespacesDecl(@$,
+			$$ = new CopyNamespacesDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::no_preserve_ns,
 								StaticQueryContext::inherit_ns);
 		}
@@ -1242,7 +1242,7 @@ CopyNamespacesDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
 #endif
-			$$ = new CopyNamespacesDecl(@$,
+			$$ = new CopyNamespacesDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::no_preserve_ns,
 								StaticQueryContext::no_inherit_ns);
 		}
@@ -1264,7 +1264,7 @@ DefaultCollationDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultCollationMode [ ]\n";
 #endif
-			$$ = new DefaultCollationDecl(@$,
+			$$ = new DefaultCollationDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2));
 		}
 	;
@@ -1278,7 +1278,7 @@ BaseURIDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BaseURIDecl [ ]\n";
 #endif
-			$$ = new BaseURIDecl(@$,
+			$$ = new BaseURIDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2));
 		}
 	;
@@ -1292,7 +1292,7 @@ SchemaImport :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri]\n";
 #endif
-			$$ = new SchemaImport(@$,
+			$$ = new SchemaImport(driver.createQueryLoc(@$),
 								NULL,
 								driver.symtab.get((off_t)$2),
 								NULL);
@@ -1302,7 +1302,7 @@ SchemaImport :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri]\n";
 #endif
-			$$ = new SchemaImport(@$,
+			$$ = new SchemaImport(driver.createQueryLoc(@$),
 								dynamic_cast<SchemaPrefix*>($2),
 								driver.symtab.get((off_t)$3),
 								NULL);
@@ -1312,7 +1312,7 @@ SchemaImport :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri.urilist]\n";
 #endif
-			$$ = new SchemaImport(@$,
+			$$ = new SchemaImport(driver.createQueryLoc(@$),
 								NULL,
 								driver.symtab.get((off_t)$2),
 								dynamic_cast<URILiteralList*>($4));
@@ -1322,7 +1322,7 @@ SchemaImport :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri.aturi]\n";
 #endif
-			$$ = new SchemaImport(@$,
+			$$ = new SchemaImport(driver.createQueryLoc(@$),
 								dynamic_cast<SchemaPrefix*>($2),
 								driver.symtab.get((off_t)$3),
 								dynamic_cast<URILiteralList*>($5));
@@ -1338,7 +1338,7 @@ URILiteralList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [single]\n";
 #endif
-			URILiteralList* uri_list_p = new URILiteralList(@$);
+			URILiteralList* uri_list_p = new URILiteralList(driver.createQueryLoc(@$));
 			uri_list_p->push_back(driver.symtab.get((off_t)$1));
 			$$ = uri_list_p;
 		}
@@ -1365,14 +1365,14 @@ SchemaPrefix :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [namespace]\n";
 #endif
-			$$ = new SchemaPrefix(@$, driver.symtab.get((off_t)$2));
+			$$ = new SchemaPrefix(driver.createQueryLoc(@$), driver.symtab.get((off_t)$2));
 		}
 	|	DEFAULT_ELEMENT  NAMESPACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [default element]\n";
 #endif
-			$$ = new SchemaPrefix(@$, true);
+			$$ = new SchemaPrefix(driver.createQueryLoc(@$), true);
 		}
 	;
 
@@ -1385,7 +1385,7 @@ ModuleImport :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri]\n";
 #endif
-			$$ = new ModuleImport(@$,
+			$$ = new ModuleImport(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								NULL);
 		}
@@ -1394,7 +1394,7 @@ ModuleImport :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri]\n";
 #endif
-			$$ = new ModuleImport(@$,
+			$$ = new ModuleImport(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$3),
 								driver.symtab.get((off_t)$5),
 								NULL);
@@ -1404,7 +1404,7 @@ ModuleImport :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri.at_uri.list]\n";
 #endif
-			$$ = new ModuleImport(@$,
+			$$ = new ModuleImport(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								dynamic_cast<URILiteralList*>($4));
 		}
@@ -1413,7 +1413,7 @@ ModuleImport :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri.at_uri.list]\n";
 #endif
-			$$ = new ModuleImport(@$,
+			$$ = new ModuleImport(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$3),
 								driver.symtab.get((off_t)$5),
 								dynamic_cast<URILiteralList*>($7));
@@ -1430,7 +1430,7 @@ VarDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [expr]\n";
 #endif
-			$$ = new VarDecl(@$,
+			$$ = new VarDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								NULL,
 								$4);
@@ -1440,7 +1440,7 @@ VarDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [external]\n";
 #endif
-			$$ = new VarDecl(@$,
+			$$ = new VarDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								NULL,
 								NULL);
@@ -1450,7 +1450,7 @@ VarDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.expr]\n";
 #endif
-			$$ = new VarDecl(@$,
+			$$ = new VarDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								dynamic_cast<TypeDeclaration*>($3),
 								$5);
@@ -1460,7 +1460,7 @@ VarDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.external]\n";
 #endif
-			$$ = new VarDecl(@$,
+			$$ = new VarDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								dynamic_cast<TypeDeclaration*>($3),
 								NULL);
@@ -1476,7 +1476,7 @@ ConstructionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [preserve]\n";
 #endif
-			$$ = new ConstructionDecl(@$,
+			$$ = new ConstructionDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::cons_preserve);
 		}
 	|	DECLARE_CONSTRUCTION  STRIP
@@ -1484,7 +1484,7 @@ ConstructionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [strip]\n";
 #endif
-			$$ = new ConstructionDecl(@$,
+			$$ = new ConstructionDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::cons_strip);
 		}
 	;
@@ -1498,8 +1498,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [external]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL,NULL,NULL,
 								fn_extern);
 		}
@@ -1508,8 +1508,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [expr]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>($5),
 								fn_read);
@@ -1519,8 +1519,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.external]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								NULL,NULL,
 								fn_extern);
@@ -1530,8 +1530,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.expr]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								NULL,
 								dynamic_cast<EnclosedExpr*>($6),
@@ -1542,8 +1542,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.external]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<SequenceType*>($5),
 								NULL,
@@ -1554,8 +1554,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.expr]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<SequenceType*>($5),
 								dynamic_cast<EnclosedExpr*>($6),
@@ -1566,8 +1566,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.external]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								dynamic_cast<SequenceType*>($6),
 								NULL,
@@ -1578,8 +1578,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.expr]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								dynamic_cast<SequenceType*>($6),
 								dynamic_cast<EnclosedExpr*>($7),
@@ -1590,8 +1590,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) external]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL,NULL,NULL,
 								fn_extern_update);
 		}
@@ -1600,8 +1600,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) expr]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>($5),
 								fn_update);
@@ -1611,8 +1611,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.external]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								NULL,NULL,
 								fn_extern_update);
@@ -1622,8 +1622,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.expr]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								NULL,
 								dynamic_cast<EnclosedExpr*>($6),
@@ -1634,8 +1634,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.external]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<SequenceType*>($5),
 								NULL,
@@ -1646,8 +1646,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.expr]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<SequenceType*>($5),
 								dynamic_cast<EnclosedExpr*>($6),
@@ -1658,8 +1658,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								dynamic_cast<SequenceType*>($6),
 								NULL,
@@ -1670,8 +1670,8 @@ FunctionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
 #endif
-			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new FunctionDecl(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								dynamic_cast<SequenceType*>($6),
 								dynamic_cast<EnclosedExpr*>($7),
@@ -1688,7 +1688,7 @@ ParamList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [single]\n";
 #endif
-			ParamList* plist_p = new ParamList(@$);
+			ParamList* plist_p = new ParamList(driver.createQueryLoc(@$));
 			if (plist_p) {
 				plist_p->push_back(dynamic_cast<Param*>($1));
 			}
@@ -1716,7 +1716,7 @@ Param :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname]\n";
 #endif
-			$$ = new Param(@$,
+			$$ = new Param(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								NULL);
 		}
@@ -1725,7 +1725,7 @@ Param :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname.type]\n";
 #endif
-			$$ = new Param(@$,
+			$$ = new Param(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								dynamic_cast<TypeDeclaration*>($3));
 		}
@@ -1740,7 +1740,7 @@ EnclosedExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EnclosedExpr [ ]\n";
 #endif
-			$$ = new EnclosedExpr(@$,
+			$$ = new EnclosedExpr(driver.createQueryLoc(@$),
 								$2);
 		}
 	;
@@ -1754,7 +1754,7 @@ QueryBody :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QueryBody [expr]\n";
 #endif
-			$$ = new QueryBody(@$,
+			$$ = new QueryBody(driver.createQueryLoc(@$),
 								$1);
 		}
 	;
@@ -1768,7 +1768,7 @@ Expr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [single]\n";
 #endif
-			Expr* expr_p = new Expr(@$);
+			Expr* expr_p = new Expr(driver.createQueryLoc(@$));
 			expr_p->push_back($1);
 			$$ = expr_p;
 		}
@@ -1870,7 +1870,7 @@ FLWORExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [return]\n";
 #endif
-			$$ = new FLWORExpr(@$,
+			$$ = new FLWORExpr(driver.createQueryLoc(@$),
 								dynamic_cast<ForLetClauseList*>($1),
 								NULL,NULL,
 								$3);
@@ -1880,7 +1880,7 @@ FLWORExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.return]\n";
 #endif
-			$$ = new FLWORExpr(@$,
+			$$ = new FLWORExpr(driver.createQueryLoc(@$),
 								dynamic_cast<ForLetClauseList*>($1),
 								dynamic_cast<WhereClause*>($2),
 								NULL,
@@ -1891,7 +1891,7 @@ FLWORExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [orderby.return]\n";
 #endif
-			$$ = new FLWORExpr(@$,
+			$$ = new FLWORExpr(driver.createQueryLoc(@$),
 								dynamic_cast<ForLetClauseList*>($1),
 								NULL,
 								dynamic_cast<OrderByClause*>($2),
@@ -1902,7 +1902,7 @@ FLWORExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.orderby.return]\n";
 #endif
-			$$ = new FLWORExpr(@$,
+			$$ = new FLWORExpr(driver.createQueryLoc(@$),
 								dynamic_cast<ForLetClauseList*>($1),
 								dynamic_cast<WhereClause*>($2),
 								dynamic_cast<OrderByClause*>($3),
@@ -1919,7 +1919,7 @@ ForLetClauseList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [single]\n";
 #endif
-			ForLetClauseList* flc_list_p = new ForLetClauseList(@$);
+			ForLetClauseList* flc_list_p = new ForLetClauseList(driver.createQueryLoc(@$));
 			flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ($1));
 			$$ = flc_list_p;
 		}
@@ -1963,7 +1963,7 @@ ForClause :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForClause [ ]\n";
 #endif
-			$$ = new ForClause(@$,
+			$$ = new ForClause(driver.createQueryLoc(@$),
 								dynamic_cast<VarInDeclList*>($2));
 		}
 	;
@@ -1977,7 +1977,7 @@ VarInDeclList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [single]\n";
 #endif
-			VarInDeclList* vardecl_list_p = new VarInDeclList(@$);
+			VarInDeclList* vardecl_list_p = new VarInDeclList(driver.createQueryLoc(@$));
 			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>($1));
 			$$ = vardecl_list_p;
 		}
@@ -2003,7 +2003,7 @@ VarInDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [in]\n";
 #endif
-			$$ = new VarInDecl(@$,
+			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								NULL,NULL,NULL,
 								$3);
@@ -2013,7 +2013,7 @@ VarInDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.in]\n";
 #endif
-			$$ = new VarInDecl(@$,
+			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,NULL,
@@ -2024,7 +2024,7 @@ VarInDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.in]\n";
 #endif
-			$$ = new VarInDecl(@$,
+			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								NULL,
 								dynamic_cast<PositionalVar*>($2),
@@ -2036,7 +2036,7 @@ VarInDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.in]\n";
 #endif
-			$$ = new VarInDecl(@$,
+			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<PositionalVar*>($3),
@@ -2049,7 +2049,7 @@ VarInDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [scorevar.in]\n";
 #endif
-			$$ = new VarInDecl(@$,
+			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								NULL,NULL,
 								dynamic_cast<FTScoreVar*>($2),
@@ -2060,7 +2060,7 @@ VarInDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.scorevar.in]\n";
 #endif
-			$$ = new VarInDecl(@$,
+			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,
@@ -2072,7 +2072,7 @@ VarInDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.scorevar.in]\n";
 #endif
-			$$ = new VarInDecl(@$,
+			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								NULL,
 								dynamic_cast<PositionalVar*>($2),
@@ -2084,7 +2084,7 @@ VarInDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.scorevar.in]\n";
 #endif
-			$$ = new VarInDecl(@$,
+			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<PositionalVar*>($3),
@@ -2102,7 +2102,7 @@ PositionalVar :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PositionalVar [ ]\n";
 #endif
-			$$ = new PositionalVar(@$,
+			$$ = new PositionalVar(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$3));
 		}
 	;
@@ -2117,7 +2117,7 @@ FTScoreVar :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTScoreVar [ ]\n";
 #endif
-			$$ = new FTScoreVar(@$,
+			$$ = new FTScoreVar(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$3));
 		}
 	;
@@ -2131,7 +2131,7 @@ LetClause :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClause [ ]\n";
 #endif
-			$$ = new LetClause(@$,
+			$$ = new LetClause(driver.createQueryLoc(@$),
 								dynamic_cast<VarGetsDeclList*>($2));
 			
 		}
@@ -2146,7 +2146,7 @@ VarGetsDeclList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [single]\n";
 #endif
-			VarGetsDeclList* vgdl_p = new VarGetsDeclList(@$);
+			VarGetsDeclList* vgdl_p = new VarGetsDeclList(driver.createQueryLoc(@$));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($1));
 			$$ = vgdl_p;
 		}
@@ -2172,7 +2172,7 @@ VarGetsDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [gets]\n";
 #endif
-			$$ = new VarGetsDecl(@$,
+			$$ = new VarGetsDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								NULL,
 								NULL,
@@ -2183,7 +2183,7 @@ VarGetsDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.gets]\n";
 #endif
-			$$ = new VarGetsDecl(@$,
+			$$ = new VarGetsDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,
@@ -2195,7 +2195,7 @@ VarGetsDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [scorevar.gets]\n";
 #endif
-			$$ = new VarGetsDecl(@$,
+			$$ = new VarGetsDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								NULL,
 								dynamic_cast<FTScoreVar*>($2),
@@ -2206,7 +2206,7 @@ VarGetsDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.scorevar.gets]\n";
 #endif
-			$$ = new VarGetsDecl(@$,
+			$$ = new VarGetsDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<FTScoreVar*>($3),
@@ -2224,7 +2224,7 @@ WhereClause :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "WhereClause [ ]\n";
 #endif
-			$$ = new WhereClause(@$,
+			$$ = new WhereClause(driver.createQueryLoc(@$),
 								$2);
 		}
 	;
@@ -2238,7 +2238,7 @@ OrderByClause :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [ ]\n";
 #endif
-			$$ = new OrderByClause(@$,
+			$$ = new OrderByClause(driver.createQueryLoc(@$),
 								dynamic_cast<OrderSpecList*>($2));
 		}
 	|	STABLE_ORDER_BY  OrderSpecList
@@ -2246,7 +2246,7 @@ OrderByClause :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [stable]\n";
 #endif
-			$$ = new OrderByClause(@$,
+			$$ = new OrderByClause(driver.createQueryLoc(@$),
 								dynamic_cast<OrderSpecList*>($2),
 								true);
 		}
@@ -2261,7 +2261,7 @@ OrderSpecList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [single]\n";
 #endif
-			OrderSpecList* osl_p = new OrderSpecList(@$);
+			OrderSpecList* osl_p = new OrderSpecList(driver.createQueryLoc(@$));
 			osl_p->push_back(dynamic_cast<OrderSpec*>($1));
 			$$ = osl_p;
 		}
@@ -2287,7 +2287,7 @@ OrderSpec :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single]\n";
 #endif
-			$$ = new OrderSpec(@$,
+			$$ = new OrderSpec(driver.createQueryLoc(@$),
 								$1,
 								NULL);
 		}
@@ -2296,7 +2296,7 @@ OrderSpec :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single.modifier]\n";
 #endif
-			$$ = new OrderSpec(@$,
+			$$ = new OrderSpec(driver.createQueryLoc(@$),
 								$1,
 								dynamic_cast<OrderModifier*>($2));
 		}
@@ -2311,7 +2311,7 @@ OrderModifier :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir]\n";
 #endif
-			$$ = new OrderModifier(@$,
+			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								dynamic_cast<OrderDirSpec*>($1),
 								NULL,
 								NULL);
@@ -2321,7 +2321,7 @@ OrderModifier :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty]\n";
 #endif
-			$$ = new OrderModifier(@$,
+			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								NULL,
 								dynamic_cast<OrderEmptySpec*>($1),
 								NULL);
@@ -2331,7 +2331,7 @@ OrderModifier :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [collation]\n";
 #endif
-			$$ = new OrderModifier(@$,
+			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								NULL,
 								NULL,
 								dynamic_cast<OrderCollationSpec*>($1));
@@ -2341,7 +2341,7 @@ OrderModifier :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty]\n";
 #endif
-			$$ = new OrderModifier(@$,
+			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								dynamic_cast<OrderDirSpec*>($1),
 								dynamic_cast<OrderEmptySpec*>($2),
 								NULL);
@@ -2351,7 +2351,7 @@ OrderModifier :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.collation]\n";
 #endif
-			$$ = new OrderModifier(@$,
+			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								dynamic_cast<OrderDirSpec*>($1),
 								NULL,
 								dynamic_cast<OrderCollationSpec*>($2));
@@ -2361,7 +2361,7 @@ OrderModifier :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty.collation]\n";
 #endif
-			$$ = new OrderModifier(@$,
+			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								NULL,
 								dynamic_cast<OrderEmptySpec*>($1),
 								dynamic_cast<OrderCollationSpec*>($2));
@@ -2371,7 +2371,7 @@ OrderModifier :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty.collation]\n";
 #endif
-			$$ = new OrderModifier(@$,
+			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								dynamic_cast<OrderDirSpec*>($1),
 								dynamic_cast<OrderEmptySpec*>($2),
 								dynamic_cast<OrderCollationSpec*>($3));
@@ -2387,14 +2387,14 @@ OrderDirSpec :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [ascending]\n";
 #endif
-			$$ = new OrderDirSpec(@$, dir_ascending);
+			$$ = new OrderDirSpec(driver.createQueryLoc(@$), dir_ascending);
 		}
 	|	DESCENDING
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [descending]\n";
 #endif
-			$$ = new OrderDirSpec(@$, dir_descending);
+			$$ = new OrderDirSpec(driver.createQueryLoc(@$), dir_descending);
 		}
 	;
 
@@ -2407,7 +2407,7 @@ OrderEmptySpec:
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [greatest]\n";
 #endif
-			$$ = new OrderEmptySpec(@$,
+			$$ = new OrderEmptySpec(driver.createQueryLoc(@$),
 								StaticQueryContext::empty_greatest);
 		}
 	|	EMPTY_LEAST
@@ -2415,7 +2415,7 @@ OrderEmptySpec:
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [least]\n";
 #endif
-			$$ = new OrderEmptySpec(@$,
+			$$ = new OrderEmptySpec(driver.createQueryLoc(@$),
 								StaticQueryContext::empty_least);
 		}
 	;
@@ -2429,7 +2429,7 @@ OrderCollationSpec :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderCollationSpec [ ]\n";
 #endif
-			$$ = new OrderCollationSpec(@$,
+			$$ = new OrderCollationSpec(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2));
 		}
 	;
@@ -2443,7 +2443,7 @@ QuantifiedExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [some]\n";
 #endif
-			$$ = new QuantifiedExpr(@$,
+			$$ = new QuantifiedExpr(driver.createQueryLoc(@$),
 								quant_some,
 								dynamic_cast<QVarInDeclList*>($2),
 								$4);
@@ -2453,7 +2453,7 @@ QuantifiedExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [every]\n";
 #endif
-			$$ = new QuantifiedExpr(@$,
+			$$ = new QuantifiedExpr(driver.createQueryLoc(@$),
 								quant_every,
 								dynamic_cast<QVarInDeclList*>($2),
 								$4);
@@ -2469,7 +2469,7 @@ QVarInDeclList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [single]\n";
 #endif
-			QVarInDeclList* qvid_list_p = new QVarInDeclList(@$);
+			QVarInDeclList* qvid_list_p = new QVarInDeclList(driver.createQueryLoc(@$));
 			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>($1));
 			$$ = qvid_list_p;
 				
@@ -2494,7 +2494,7 @@ QVarInDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [in]\n";
 #endif
-			$$ = new QVarInDecl(@$,
+			$$ = new QVarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								$3);
 		}
@@ -2503,7 +2503,7 @@ QVarInDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [type.in]\n";
 #endif
-			$$ = new QVarInDecl(@$,
+			$$ = new QVarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								$4);
@@ -2519,7 +2519,7 @@ TypeswitchExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.return]\n";
 #endif
-			$$ = new TypeswitchExpr(@$,
+			$$ = new TypeswitchExpr(driver.createQueryLoc(@$),
 								$2,
 								dynamic_cast<CaseClauseList*>($4),
 								$7);
@@ -2529,7 +2529,7 @@ TypeswitchExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.varname.return]\n";
 #endif
-			$$ = new TypeswitchExpr(@$,
+			$$ = new TypeswitchExpr(driver.createQueryLoc(@$),
 								$2,
 								dynamic_cast<CaseClauseList*>($4),
 								driver.symtab.get((off_t)$7),
@@ -2546,7 +2546,7 @@ CaseClauseList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [single]\n";
 #endif
-			CaseClauseList* cc_list_p = new CaseClauseList(@$);
+			CaseClauseList* cc_list_p = new CaseClauseList(driver.createQueryLoc(@$));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>($1));
 			$$ = cc_list_p;
 		}
@@ -2570,7 +2570,7 @@ CaseClause :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.return]\n";
 #endif
-			$$ = new CaseClause(@$,
+			$$ = new CaseClause(driver.createQueryLoc(@$),
 								dynamic_cast<SequenceType*>($2),
 								$4);
 		}
@@ -2579,7 +2579,7 @@ CaseClause :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.as.return]\n";
 #endif
-			$$ = new CaseClause(@$,
+			$$ = new CaseClause(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$3),
 								dynamic_cast<SequenceType*>($5),
 								$7);
@@ -2595,7 +2595,7 @@ IfExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IfExpr [ ]\n";
 #endif
-			$$ = new IfExpr(@$,
+			$$ = new IfExpr(driver.createQueryLoc(@$),
 								$2, $5, $7);
 		}
 	;
@@ -2616,7 +2616,7 @@ OrExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [or.and]\n";
 #endif
-			$$ = new OrExpr(@$,
+			$$ = new OrExpr(driver.createQueryLoc(@$),
 								$1, $3);
 		}
 	;
@@ -2637,7 +2637,7 @@ AndExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [and.comp]\n";
 #endif
-			$$ = new AndExpr(@$,
+			$$ = new AndExpr(driver.createQueryLoc(@$),
 								$1, $3);
 		}
 	;
@@ -2667,7 +2667,7 @@ ComparisonExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
 #endif
-			$$ = new ComparisonExpr(@$,
+			$$ = new ComparisonExpr(driver.createQueryLoc(@$),
 								dynamic_cast<ValueComp*>($2),
 								$1,
 								$3);
@@ -2678,7 +2678,7 @@ ComparisonExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
 #endif
-			$$ = new ComparisonExpr(@$,
+			$$ = new ComparisonExpr(driver.createQueryLoc(@$),
 								dynamic_cast<GeneralComp*>($2),
 								$1,
 								$3);
@@ -2689,7 +2689,7 @@ ComparisonExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
 #endif
-			$$ = new ComparisonExpr(@$,
+			$$ = new ComparisonExpr(driver.createQueryLoc(@$),
 								dynamic_cast<NodeComp*>($2),
 								$1,
 								$3);
@@ -2712,7 +2712,7 @@ FTContainsExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect]\n";
 #endif
-			$$ = new FTContainsExpr(@$,
+			$$ = new FTContainsExpr(driver.createQueryLoc(@$),
 								$1,
 								dynamic_cast<FTSelection*>($3),
 								NULL);
@@ -2722,7 +2722,7 @@ FTContainsExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect.ftignore]\n";
 #endif
-			$$ = new FTContainsExpr(@$,
+			$$ = new FTContainsExpr(driver.createQueryLoc(@$),
 								$1,
 								dynamic_cast<FTSelection*>($3),
 								dynamic_cast<FTIgnoreOption*>($4));
@@ -2745,7 +2745,7 @@ RangeExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add.to.add]\n";
 #endif
-			$$ = new RangeExpr(@$,
+			$$ = new RangeExpr(driver.createQueryLoc(@$),
 								$1, $3);
 		}
 	;
@@ -2766,14 +2766,14 @@ AdditiveExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult+mult]\n";
 #endif
-			$$ = new AdditiveExpr(@$, op_plus, $1, $3);
+			$$ = new AdditiveExpr(driver.createQueryLoc(@$), op_plus, $1, $3);
 		}
 	|	AdditiveExpr  MINUS  MultiplicativeExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult-mult]\n";
 #endif
-			$$ = new AdditiveExpr(@$, op_minus, $1, $3);
+			$$ = new AdditiveExpr(driver.createQueryLoc(@$), op_minus, $1, $3);
 		}
 	;
 
@@ -2792,28 +2792,28 @@ MultiplicativeExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult*union]\n";
 #endif
-			$$ = new MultiplicativeExpr(@$, op_mul, $1, $3);
+			$$ = new MultiplicativeExpr(driver.createQueryLoc(@$), op_mul, $1, $3);
 		}
 	|	MultiplicativeExpr  DIV  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.div.union]\n";
 #endif
-			$$ = new MultiplicativeExpr(@$, op_div, $1, $3);
+			$$ = new MultiplicativeExpr(driver.createQueryLoc(@$), op_div, $1, $3);
 		}
 	|	MultiplicativeExpr  IDIV  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.idiv.union]\n";
 #endif
-			$$ = new MultiplicativeExpr(@$, op_idiv, $1, $3);
+			$$ = new MultiplicativeExpr(driver.createQueryLoc(@$), op_idiv, $1, $3);
 		}
 	|	MultiplicativeExpr  MOD  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.mod.union]\n";
 #endif
-			$$ = new MultiplicativeExpr(@$, op_mod, $1, $3);
+			$$ = new MultiplicativeExpr(driver.createQueryLoc(@$), op_mod, $1, $3);
 		}
 	;
 
@@ -2833,7 +2833,7 @@ UnionExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union.union.interexcept]\n";
 #endif
-			$$ = new UnionExpr(@$,
+			$$ = new UnionExpr(driver.createQueryLoc(@$),
 								$1, $3);
 		}
 	|	UnionExpr  VBAR  IntersectExceptExpr
@@ -2841,7 +2841,7 @@ UnionExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union|interexcept]\n";
 #endif
-			$$ = new UnionExpr(@$,
+			$$ = new UnionExpr(driver.createQueryLoc(@$),
 								$1, $3);
 		}
 	;
@@ -2862,14 +2862,14 @@ IntersectExceptExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
 #endif
-			$$ = new IntersectExceptExpr(@$, op_intersect, $1, $3);
+			$$ = new IntersectExceptExpr(driver.createQueryLoc(@$), op_intersect, $1, $3);
 		}
 	|	IntersectExceptExpr  EXCEPT  InstanceofExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
 #endif
-			$$ = new IntersectExceptExpr(@$, op_except, $1, $3);
+			$$ = new IntersectExceptExpr(driver.createQueryLoc(@$), op_except, $1, $3);
 		}
 	;
 
@@ -2889,7 +2889,7 @@ InstanceofExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat.seqtype]\n";
 #endif
-			$$ = new InstanceofExpr(@$,
+			$$ = new InstanceofExpr(driver.createQueryLoc(@$),
 								$1,
 								dynamic_cast<SequenceType*>($3));
 		}
@@ -2911,7 +2911,7 @@ TreatExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable.seqtype]\n";
 #endif
-			$$ = new TreatExpr(@$,
+			$$ = new TreatExpr(driver.createQueryLoc(@$),
 								$1,
 								dynamic_cast<SequenceType*>($3));
 		}
@@ -2933,7 +2933,7 @@ CastableExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast.singletype]\n";
 #endif
-			$$ = new CastableExpr(@$,
+			$$ = new CastableExpr(driver.createQueryLoc(@$),
 								$1,
 								dynamic_cast<SingleType*>($3));
 		}
@@ -2955,7 +2955,7 @@ CastExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary.singletype]\n";
 #endif
-			$$ = new CastExpr(@$,
+			$$ = new CastExpr(driver.createQueryLoc(@$),
 								$1,
 								dynamic_cast<SingleType*>($3));
 		}
@@ -2977,7 +2977,7 @@ UnaryExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [signlist.value]\n";
 #endif
-			$$ = new UnaryExpr(@$,
+			$$ = new UnaryExpr(driver.createQueryLoc(@$),
 								dynamic_cast<SignList*>($1),
 								$2);
 		}
@@ -2992,14 +2992,14 @@ SignList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [+]\n";
 #endif
-			$$ = new SignList(@$, true);
+			$$ = new SignList(driver.createQueryLoc(@$), true);
 		}
 	|	MINUS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [-]\n";
 #endif
-			$$ = new SignList(@$, false);
+			$$ = new SignList(driver.createQueryLoc(@$), false);
 		}
 	|	SignList  PLUS
 		{
@@ -3056,42 +3056,42 @@ GeneralComp :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [=]\n";
 #endif
-			$$ = new GeneralComp(@$, op_eq);
+			$$ = new GeneralComp(driver.createQueryLoc(@$), op_eq);
 		}
 	| NE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [!=]\n";
 #endif
-			$$ = new GeneralComp(@$, op_ne);
+			$$ = new GeneralComp(driver.createQueryLoc(@$), op_ne);
 		}
 	| LT
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<]\n";
 #endif
-			$$ = new GeneralComp(@$, op_lt);
+			$$ = new GeneralComp(driver.createQueryLoc(@$), op_lt);
 		}
 	| LE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<=]\n";
 #endif
-			$$ = new GeneralComp(@$, op_le);
+			$$ = new GeneralComp(driver.createQueryLoc(@$), op_le);
 		}
 	| GT
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>]\n";
 #endif
-			$$ = new GeneralComp(@$, op_gt);
+			$$ = new GeneralComp(driver.createQueryLoc(@$), op_gt);
 		}
 	| GE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>=]\n";
 #endif
-			$$ = new GeneralComp(@$, op_ge);
+			$$ = new GeneralComp(driver.createQueryLoc(@$), op_ge);
 		}
 	;
 
@@ -3104,42 +3104,42 @@ ValueComp :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [eq]\n";
 #endif
-			$$ = new ValueComp(@$, op_val_eq);
+			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_eq);
 		}
 	| VAL_NE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ne]\n";
 #endif
-			$$ = new ValueComp(@$, op_val_ne);
+			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_ne);
 		}
 	| VAL_LT
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [lt]\n";
 #endif
-			$$ = new ValueComp(@$, op_val_lt);
+			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_lt);
 		}
 	| VAL_LE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [le]\n";
 #endif
-			$$ = new ValueComp(@$, op_val_le);
+			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_le);
 		}
 	| VAL_GT
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [gt]\n";
 #endif
-			$$ = new ValueComp(@$, op_val_gt);
+			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_gt);
 		}
 	| VAL_GE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ge]\n";
 #endif
-			$$ = new ValueComp(@$, op_val_ge);
+			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_ge);
 		}
 	;
 
@@ -3152,21 +3152,21 @@ NodeComp :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [is]\n";
 #endif
-			$$ = new NodeComp(@$, op_is);
+			$$ = new NodeComp(driver.createQueryLoc(@$), op_is);
 		}
 	| PRECEDES
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [<<]\n";
 #endif
-			$$ = new NodeComp(@$, op_precedes);
+			$$ = new NodeComp(driver.createQueryLoc(@$), op_precedes);
 		}
 	| FOLLOWS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [>>]\n";
 #endif
-			$$ = new NodeComp(@$, op_follows);
+			$$ = new NodeComp(driver.createQueryLoc(@$), op_follows);
 		}
 	;
 
@@ -3180,14 +3180,14 @@ ValidateExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [expr]\n";
 #endif
-			$$ = new ValidateExpr(@$, "strict", $2);
+			$$ = new ValidateExpr(driver.createQueryLoc(@$), "strict", $2);
 		}
 	|	VALIDATE_MODE  LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [mode.expr]\n";
 #endif
-			$$ = new ValidateExpr(@$,
+			$$ = new ValidateExpr(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
 								$3);
 		}
@@ -3202,7 +3202,7 @@ ExtensionExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist]\n";
 #endif
-			$$ = new ExtensionExpr(@$,
+			$$ = new ExtensionExpr(driver.createQueryLoc(@$),
 								dynamic_cast<PragmaList*>($1),
 								NULL);
 		}
@@ -3211,7 +3211,7 @@ ExtensionExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist.expr]\n";
 #endif
-			$$ = new ExtensionExpr(@$,
+			$$ = new ExtensionExpr(driver.createQueryLoc(@$),
 								dynamic_cast<PragmaList*>($1),
 								$3);
 		}
@@ -3226,7 +3226,7 @@ PragmaList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [single]\n";
 #endif
-			PragmaList* pragma_list_p = new PragmaList(@$);
+			PragmaList* pragma_list_p = new PragmaList(driver.createQueryLoc(@$));
 			pragma_list_p->push_back(dynamic_cast<Pragma*>($1));
 			$$ = pragma_list_p;
 		}
@@ -3252,13 +3252,13 @@ Pragma :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Pragma [ ]\n";
 #endif
-			$$ = new Pragma(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new Pragma(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								driver.symtab.get((off_t)$3));
 
 		} | PRAGMA_BEGIN QNAME_AND_END_PRAGMA {
-			$$ = new Pragma(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new Pragma(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								"");      
     }
 	;	/* ws: explicit */
@@ -3303,21 +3303,21 @@ PathExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/]\n";
 #endif
-			$$ = new PathExpr(@$, path_leading_lone_slash, NULL);
+			$$ = new PathExpr(driver.createQueryLoc(@$), path_leading_lone_slash, NULL);
 		}
 	|	SLASH  RelativePathExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/relative]\n";
 #endif
-			$$ = new PathExpr(@$, path_leading_slash, $2);
+			$$ = new PathExpr(driver.createQueryLoc(@$), path_leading_slash, $2);
 		}
 	|	SLASH_SLASH  RelativePathExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [//relative]\n";
 #endif
-			$$ = new PathExpr(@$, path_leading_slashslash, $2);
+			$$ = new PathExpr(driver.createQueryLoc(@$), path_leading_slashslash, $2);
 		}
 	|	RelativePathExpr	 	/* gn: leading-lone-slashXQ */
 		{
@@ -3325,7 +3325,7 @@ PathExpr :
 			 cout << "PathExpr [relative]\n";
 #endif
             RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>($1);
-            $$ = rpe == NULL ? $1 : new PathExpr(@$, path_relative, $1);
+            $$ = rpe == NULL ? $1 : new PathExpr(driver.createQueryLoc(@$), path_relative, $1);
 		}
 	;
 
@@ -3339,21 +3339,21 @@ RelativePathExpr :
 			 cout << "RelativePathExpr [step]\n";
 #endif
             AxisStep *as = dynamic_cast<AxisStep *>($1);
-            $$ = as != NULL ? new RelativePathExpr(@$, st_slash, new ContextItemExpr(@$), $1) : $1;
+            $$ = as != NULL ? new RelativePathExpr(driver.createQueryLoc(@$), st_slash, new ContextItemExpr(driver.createQueryLoc(@$)), $1) : $1;
 		}
 	|	StepExpr  SLASH  RelativePathExpr 
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step/relative]\n";
 #endif
-			$$ = new RelativePathExpr(@$, st_slash, $1, $3);
+			$$ = new RelativePathExpr(driver.createQueryLoc(@$), st_slash, $1, $3);
 		}
 	|	StepExpr  SLASH_SLASH  RelativePathExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step//relative]\n";
 #endif
-			$$ = new RelativePathExpr(@$, st_slashslash, $1, $3);
+			$$ = new RelativePathExpr(driver.createQueryLoc(@$), st_slashslash, $1, $3);
 		}
 	;
 
@@ -3386,7 +3386,7 @@ AxisStep :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward]\n";
 #endif
-			$$ = new AxisStep(@$,
+			$$ = new AxisStep(driver.createQueryLoc(@$),
 								dynamic_cast<ForwardStep*>($1),
 								NULL);
 		}
@@ -3395,7 +3395,7 @@ AxisStep :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward.predlist]\n";
 #endif
-			$$ = new AxisStep(@$,
+			$$ = new AxisStep(driver.createQueryLoc(@$),
 								dynamic_cast<ForwardStep*>($1),
 								dynamic_cast<PredicateList*>($2));
 		}
@@ -3404,7 +3404,7 @@ AxisStep :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse]\n";
 #endif
-			$$ = new AxisStep(@$,
+			$$ = new AxisStep(driver.createQueryLoc(@$),
 								dynamic_cast<ReverseStep*>($1),
 								NULL);
 		}
@@ -3413,7 +3413,7 @@ AxisStep :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse.predlist]\n";
 #endif
-			$$ = new AxisStep(@$,
+			$$ = new AxisStep(driver.createQueryLoc(@$),
 								dynamic_cast<ReverseStep*>($1),
 								dynamic_cast<PredicateList*>($2));
 		}
@@ -3428,7 +3428,7 @@ ForwardStep :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [nodetest]\n";
 #endif
-			$$ = new ForwardStep(@$,
+			$$ = new ForwardStep(driver.createQueryLoc(@$),
 								dynamic_cast<ForwardAxis*>($1),
 								$2);
 		}
@@ -3437,7 +3437,7 @@ ForwardStep :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [abbrev]\n";
 #endif
-			$$ = new ForwardStep(@$,
+			$$ = new ForwardStep(driver.createQueryLoc(@$),
 								dynamic_cast<AbbrevForwardStep*>($1));
 		}
 	;
@@ -3451,49 +3451,49 @@ ForwardAxis :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [child]\n";
 #endif
-			$$ = new ForwardAxis(@$, axis_child);
+			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_child);
 		}
 	| DESCENDANT_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant]\n";
 #endif
-			$$ = new ForwardAxis(@$, axis_descendant);
+			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_descendant);
 		}
 	| ATTRIBUTE_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [attribute]\n";
 #endif
-			$$ = new ForwardAxis(@$, axis_attribute);
+			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_attribute);
 		}
 	| SELF_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [self]\n";
 #endif
-			$$ = new ForwardAxis(@$, axis_self);
+			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_self);
 		}
 	| DESCENDANT_OR_SELF_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant_or_self]\n";
 #endif
-			$$ = new ForwardAxis(@$, axis_descendant_or_self);
+			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_descendant_or_self);
 		}
 	| FOLLOWING_SIBLING_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following_sibling]\n";
 #endif
-			$$ = new ForwardAxis(@$, axis_following_sibling);
+			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_following_sibling);
 		}
 	| FOLLOWING_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following]\n";
 #endif
-			$$ = new ForwardAxis(@$, axis_following);
+			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_following);
 		}
 	;
 
@@ -3506,14 +3506,14 @@ AbbrevForwardStep :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [nodetest]\n";
 #endif
-			$$ = new AbbrevForwardStep(@$, $1);
+			$$ = new AbbrevForwardStep(driver.createQueryLoc(@$), $1);
 		}
 	|	AT_SIGN  NodeTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [@ nodetest]\n";
 #endif
-			$$ = new AbbrevForwardStep(@$, $2, true);
+			$$ = new AbbrevForwardStep(driver.createQueryLoc(@$), $2, true);
 		}
 	;
 
@@ -3526,7 +3526,7 @@ ReverseStep :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [nodetest]\n";
 #endif
-			$$ = new ReverseStep(@$,
+			$$ = new ReverseStep(driver.createQueryLoc(@$),
 								dynamic_cast<ReverseAxis*>($1),
 								$2);
 		}
@@ -3535,8 +3535,8 @@ ReverseStep :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [..]\n";
 #endif
-			ReverseAxis* rev_p = new ReverseAxis(@$, axis_parent);
-			$$ = new ReverseStep(@$,
+			ReverseAxis* rev_p = new ReverseAxis(driver.createQueryLoc(@$), axis_parent);
+			$$ = new ReverseStep(driver.createQueryLoc(@$),
 								rev_p);
 		}
 	;
@@ -3550,35 +3550,35 @@ ReverseAxis :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [parent]\n";
 #endif
-			$$ = new ReverseAxis(@$, axis_parent);
+			$$ = new ReverseAxis(driver.createQueryLoc(@$), axis_parent);
 		}
 	| ANCESTOR_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor]\n";
 #endif
-			$$ = new ReverseAxis(@$, axis_ancestor);
+			$$ = new ReverseAxis(driver.createQueryLoc(@$), axis_ancestor);
 		}
 	| PRECEDING_SIBLING_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding_sibling]\n";
 #endif
-			$$ = new ReverseAxis(@$, axis_preceding_sibling);
+			$$ = new ReverseAxis(driver.createQueryLoc(@$), axis_preceding_sibling);
 		}
 	| PRECEDING_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding]\n";
 #endif
-			$$ = new ReverseAxis(@$, axis_preceding);
+			$$ = new ReverseAxis(driver.createQueryLoc(@$), axis_preceding);
 		}
 	| ANCESTOR_OR_SELF_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor_or_self]\n";
 #endif
-			$$ = new ReverseAxis(@$, axis_ancestor_or_self);
+			$$ = new ReverseAxis(driver.createQueryLoc(@$), axis_ancestor_or_self);
 		}
 	;
 
@@ -3616,14 +3616,14 @@ NameTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [qname]\n";
 #endif
-			$$ = new NameTest(@$, new QName(@$,driver.symtab.get((off_t)$1)));
+			$$ = new NameTest(driver.createQueryLoc(@$), new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)));
 		}
 	|	Wildcard
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [wildcard]\n";
 #endif
-			$$ = new NameTest(@$, dynamic_cast<Wildcard*>($1));
+			$$ = new NameTest(driver.createQueryLoc(@$), dynamic_cast<Wildcard*>($1));
 		}
 	;
 
@@ -3636,7 +3636,7 @@ Wildcard :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*]\n";
 #endif
-			$$ = new Wildcard(@$,
+			$$ = new Wildcard(driver.createQueryLoc(@$),
                         "",
                         "",
                         wild_all);
@@ -3646,7 +3646,7 @@ Wildcard :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [pref:*]\n";
 #endif
-			$$ = new Wildcard(@$,
+			$$ = new Wildcard(driver.createQueryLoc(@$),
                         driver.symtab.get((off_t)$1),
                         "",
                         wild_elem);
@@ -3656,7 +3656,7 @@ Wildcard :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*:qname]\n";
 #endif
-			$$ = new Wildcard(@$,
+			$$ = new Wildcard(driver.createQueryLoc(@$),
                         "",
                         driver.symtab.get((off_t)$1),
                         wild_prefix);
@@ -3679,7 +3679,7 @@ FilterExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary.predlist]\n";
 #endif
-			$$ = new FilterExpr(@$,
+			$$ = new FilterExpr(driver.createQueryLoc(@$),
 								$1,
 								dynamic_cast<PredicateList*>($2));
 		}
@@ -3694,7 +3694,7 @@ PredicateList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [single]\n";
 #endif
-			PredicateList* pred_list_p = new PredicateList(@$);
+			PredicateList* pred_list_p = new PredicateList(driver.createQueryLoc(@$));
 			pred_list_p->push_back(dynamic_cast<exprnode*>($1));
 			$$ = pred_list_p;
 		}
@@ -3816,7 +3816,7 @@ NumericLiteral :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [decimal]\n";
 #endif
-			$$ = new NumericLiteral(@$, *yylval.decval);
+			$$ = new NumericLiteral(driver.createQueryLoc(@$), *yylval.decval);
       delete yylval.decval;
 		}
 	| INTEGER_LITERAL
@@ -3824,7 +3824,7 @@ NumericLiteral :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [int]\n";
 #endif
-			$$ = new NumericLiteral(@$, *yylval.ival);
+			$$ = new NumericLiteral(driver.createQueryLoc(@$), *yylval.ival);
       delete yylval.ival;
 		}
 	|	DOUBLE_LITERAL
@@ -3832,7 +3832,7 @@ NumericLiteral :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [double]\n";
 #endif
-			$$ = new NumericLiteral(@$, *yylval.dval);
+			$$ = new NumericLiteral(driver.createQueryLoc(@$), *yylval.dval);
       delete yylval.dval;
 		}
 	;
@@ -3846,7 +3846,7 @@ VarRef :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarRef [ ]\n";
 #endif
-			$$ = new VarRef(@$, driver.symtab.get((off_t)$2));
+			$$ = new VarRef(driver.createQueryLoc(@$), driver.symtab.get((off_t)$2));
 		}
 	;
 
@@ -3859,14 +3859,14 @@ ParenthesizedExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [()]\n";
 #endif
-			$$ = new ParenthesizedExpr(@$, NULL);
+			$$ = new ParenthesizedExpr(driver.createQueryLoc(@$), NULL);
 		}
 	|	LPAR  Expr  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [(expr)]\n";
 #endif
-			$$ = new ParenthesizedExpr(@$,
+			$$ = new ParenthesizedExpr(driver.createQueryLoc(@$),
 								$2);
 		}
 	;	
@@ -3880,7 +3880,7 @@ ContextItemExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ContextItemExpr [.]\n";
 #endif
-			$$ = new ContextItemExpr(@$);
+			$$ = new ContextItemExpr(driver.createQueryLoc(@$));
 		}
 	;	
 
@@ -3893,7 +3893,7 @@ OrderedExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderedExpr [expr]\n";
 #endif
-			$$ = new OrderedExpr(@$,
+			$$ = new OrderedExpr(driver.createQueryLoc(@$),
 								$2);
 		}
 	;
@@ -3907,7 +3907,7 @@ UnorderedExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnorderedExpr [expr]\n";
 #endif
-			$$ = new UnorderedExpr(@$,
+			$$ = new UnorderedExpr(driver.createQueryLoc(@$),
 								$2);
 		}
 	;
@@ -3966,8 +3966,8 @@ FunctionCall :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [ ]\n";
 #endif
-			$$ = new FunctionCall(@$,
-								new QName(@$,driver.symtab.get((off_t)$1)),
+			$$ = new FunctionCall(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
 								NULL);
 		}
 	|	QNAME LPAR  ArgList  RPAR
@@ -3975,8 +3975,8 @@ FunctionCall :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [arglist]\n";
 #endif
-			$$ = new FunctionCall(@$,
-								new QName(@$,driver.symtab.get((off_t)$1)),
+			$$ = new FunctionCall(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
 								dynamic_cast<ArgList*>($3));
 		}
 	;
@@ -3990,7 +3990,7 @@ ArgList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [single]\n";
 #endif
-			ArgList* a_list_p = new ArgList(@$); 
+			ArgList* a_list_p = new ArgList(driver.createQueryLoc(@$)); 
 			a_list_p->push_back($1);
 			$$ = a_list_p;
 		}
@@ -4061,8 +4061,8 @@ DirElemConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname/> ]\n";
 #endif
-			$$ = new DirElemConstructor(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL,
 								NULL,
 								NULL);
@@ -4072,8 +4072,8 @@ DirElemConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist/> ]\n";
 #endif
-			$$ = new DirElemConstructor(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<DirAttributeList*>($3), 
 								NULL);
@@ -4083,9 +4083,9 @@ DirElemConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname></qname>]\n";
 #endif
-			$$ = new DirElemConstructor(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
-								new QName(@$,driver.symtab.get((off_t)$5)),
+			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$5)),
 								NULL,
 								NULL);
 		}
@@ -4094,9 +4094,9 @@ DirElemConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname>content</qname>]\n";
 #endif
-			$$ = new DirElemConstructor(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
-								new QName(@$,driver.symtab.get((off_t)$6)),
+			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$6)),
 								NULL,
 								dynamic_cast<DirElemContentList*>($4));
 		}
@@ -4105,9 +4105,9 @@ DirElemConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist></qname>]\n";
 #endif
-			$$ = new DirElemConstructor(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
-								new QName(@$,driver.symtab.get((off_t)$6)),
+			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$6)),
 								dynamic_cast<DirAttributeList*>($3),
 								NULL);
 		}
@@ -4116,9 +4116,9 @@ DirElemConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
 #endif
-			$$ = new DirElemConstructor(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
-								new QName(@$,driver.symtab.get((off_t)$7)),
+			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$7)),
 								dynamic_cast<DirAttributeList*>($3), 
 								dynamic_cast<DirElemContentList*>($5));
 		}
@@ -4134,7 +4134,7 @@ DirElemContentList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [single]\n";
 #endif
-			DirElemContentList* elem_content_list_p = new DirElemContentList(@$);
+			DirElemContentList* elem_content_list_p = new DirElemContentList(driver.createQueryLoc(@$));
 			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($1));
 			$$ = elem_content_list_p;
 		}
@@ -4158,7 +4158,7 @@ DirAttributeList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [single]\n";
 #endif
-			DirAttributeList* at_list_p = new DirAttributeList(@$);
+			DirAttributeList* at_list_p = new DirAttributeList(driver.createQueryLoc(@$));
 			at_list_p->push_back(dynamic_cast<DirAttr*>($1));
 			$$ = at_list_p;
 		}
@@ -4184,8 +4184,8 @@ DirAttr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttr [ ]\n";
 #endif
-			$$ = new DirAttr(@$,
-								new QName(@$,driver.symtab.get((off_t)$1)),
+			$$ = new DirAttr(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
 								dynamic_cast<DirAttributeValue*>($3));
 		}
 	;
@@ -4199,7 +4199,7 @@ DirAttributeValue :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [quote]\n";
 #endif
-			$$ = new DirAttributeValue(@$,
+			$$ = new DirAttributeValue(driver.createQueryLoc(@$),
 								dynamic_cast<QuoteAttrContentList*>($2));
 		}
 	|	APOS  Opt_AposAttrContentList  APOS 	/* ws: explicitXQ */
@@ -4207,7 +4207,7 @@ DirAttributeValue :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [apos]\n";
 #endif
-			$$ = new DirAttributeValue(@$,
+			$$ = new DirAttributeValue(driver.createQueryLoc(@$),
 								dynamic_cast<AposAttrContentList*>($2));
 		}
 	;
@@ -4221,7 +4221,7 @@ Opt_QuoteAttrContentList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList[empty]\n";
 #endif
-			$$ = new QuoteAttrContentList(@$);
+			$$ = new QuoteAttrContentList(driver.createQueryLoc(@$));
 		}
 	|	QuoteAttrContentList
 		{
@@ -4235,8 +4235,8 @@ QuoteAttrContentList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [""]\n";
 #endif
-			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(@$);
-			qo_list_p->push_back(new QuoteAttrValueContent(@$,string("\"")));
+			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(driver.createQueryLoc(@$));
+			qo_list_p->push_back(new QuoteAttrValueContent(driver.createQueryLoc(@$),string("\"")));
 			$$ = qo_list_p;
 		}
 	|	QuoteAttrValueContent
@@ -4244,7 +4244,7 @@ QuoteAttrContentList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [single]\n";
 #endif
-			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(@$);
+			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(driver.createQueryLoc(@$));
 			qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>($1));
 			$$ = qo_list_p;
 		}
@@ -4255,7 +4255,7 @@ QuoteAttrContentList :
 #endif
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>($1);
 			if (qo_list_p) {
-				qo_list_p->push_back(new QuoteAttrValueContent(@$,string("\"")));
+				qo_list_p->push_back(new QuoteAttrValueContent(driver.createQueryLoc(@$),string("\"")));
 			}
 			$$ = $1;
 		}
@@ -4280,7 +4280,7 @@ Opt_AposAttrContentList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']\n";
 #endif
-			$$ = new AposAttrContentList(@$);
+			$$ = new AposAttrContentList(driver.createQueryLoc(@$));
 		}
 	|	AposAttrContentList
 		{
@@ -4294,8 +4294,8 @@ AposAttrContentList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']\n";
 #endif
-			AposAttrContentList* at_list_p = new AposAttrContentList(@$);
-			at_list_p->push_back(new AposAttrValueContent(@$,"'"));
+			AposAttrContentList* at_list_p = new AposAttrContentList(driver.createQueryLoc(@$));
+			at_list_p->push_back(new AposAttrValueContent(driver.createQueryLoc(@$),"'"));
 			$$ = at_list_p;
 		}
 	|	AposAttrValueContent
@@ -4303,7 +4303,7 @@ AposAttrContentList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [single]\n";
 #endif
-			AposAttrContentList* at_list_p = new AposAttrContentList(@$);
+			AposAttrContentList* at_list_p = new AposAttrContentList(driver.createQueryLoc(@$));
 			at_list_p->push_back(dynamic_cast<AposAttrValueContent*>($1));
 			$$ = at_list_p;
 		}
@@ -4314,7 +4314,7 @@ AposAttrContentList :
 #endif
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>($1);
 			if (at_list_p) {
-				at_list_p->push_back(new AposAttrValueContent(@$,"'"));
+				at_list_p->push_back(new AposAttrValueContent(driver.createQueryLoc(@$),"'"));
 			}
 			$$ = $1;
 		}
@@ -4340,7 +4340,7 @@ QuoteAttrValueContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [quote_attr_content]\n";
 #endif
-			$$ = new QuoteAttrValueContent(@$,
+			$$ = new QuoteAttrValueContent(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1));
 		}
 	|	CommonContent
@@ -4348,7 +4348,7 @@ QuoteAttrValueContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [common_content]\n";
 #endif
-			$$ = new QuoteAttrValueContent(@$,
+			$$ = new QuoteAttrValueContent(driver.createQueryLoc(@$),
 								dynamic_cast<CommonContent*>($1));
 		}
 	;
@@ -4362,7 +4362,7 @@ AposAttrValueContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [apos_attr_content]\n";
 #endif
-			$$ = new AposAttrValueContent(@$,
+			$$ = new AposAttrValueContent(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1));
 		}
 	|	CommonContent
@@ -4370,7 +4370,7 @@ AposAttrValueContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [common_content]\n";
 #endif
-			$$ = new AposAttrValueContent(@$,
+			$$ = new AposAttrValueContent(driver.createQueryLoc(@$),
 								dynamic_cast<CommonContent*>($1));
 		}
 	;
@@ -4384,7 +4384,7 @@ DirElemContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cons]\n";
 #endif
-			$$ = new DirElemContent(@$,
+			$$ = new DirElemContent(driver.createQueryLoc(@$),
 								$1);
 		}
 	|	ELEMENT_CONTENT
@@ -4392,7 +4392,7 @@ DirElemContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [elem_content]\n";
 #endif
-			$$ = new DirElemContent(@$,
+			$$ = new DirElemContent(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1));
 		}
 	|	CDataSection
@@ -4401,7 +4401,7 @@ DirElemContent :
 			 cout << "DirElemContent [cdata]\n";
 #endif
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>($1);
-			$$ = new DirElemContent(@$,
+			$$ = new DirElemContent(driver.createQueryLoc(@$),
 								cdata_h);
 		}
 	|	CommonContent
@@ -4410,7 +4410,7 @@ DirElemContent :
 			 cout << "DirElemContent [common_content]\n";
 #endif
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>($1);
-			$$ = new DirElemContent(@$,
+			$$ = new DirElemContent(driver.createQueryLoc(@$),
 								cont_h);
 		}
 	;
@@ -4424,7 +4424,7 @@ CommonContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [entity_ref]\n";
 #endif
-			$$ = new CommonContent(@$,
+			$$ = new CommonContent(driver.createQueryLoc(@$),
 								cont_entity,
 								driver.symtab.get((off_t)$1));
 		}
@@ -4433,7 +4433,7 @@ CommonContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [char_ref]\n";
 #endif
-			$$ = new CommonContent(@$,
+			$$ = new CommonContent(driver.createQueryLoc(@$),
 								cont_charref,
 								driver.symtab.get((off_t)$1));
 		}
@@ -4442,7 +4442,7 @@ CommonContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [{{]\n";
 #endif
-			$$ = new CommonContent(@$,
+			$$ = new CommonContent(driver.createQueryLoc(@$),
 								cont_escape_lbrace);
 		}
 	|	DOUBLE_RBRACE
@@ -4450,7 +4450,7 @@ CommonContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [}}]\n";
 #endif
-			$$ = new CommonContent(@$,
+			$$ = new CommonContent(driver.createQueryLoc(@$),
 								cont_escape_rbrace);
 		}
 	|	EnclosedExpr
@@ -4458,7 +4458,7 @@ CommonContent :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [expr]\n";
 #endif
-			$$ = new CommonContent(@$,
+			$$ = new CommonContent(driver.createQueryLoc(@$),
 								dynamic_cast<EnclosedExpr*>($1));
 		}
 	;
@@ -4472,7 +4472,7 @@ DirCommentConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirCommentConstructor [ ]\n";
 #endif
-			$$ = new DirCommentConstructor(@$,
+			$$ = new DirCommentConstructor(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2));
 		}
   | XML_COMMENT_BEGIN  XML_COMMENT_END                        /* ws: explicitXQ */
@@ -4480,7 +4480,7 @@ DirCommentConstructor :
 #ifdef ZORBA_DEBUG_PARSER
        cout << "DirCommentConstructor [ ]\n";
 #endif
-      $$ = new DirCommentConstructor(@$, "");
+      $$ = new DirCommentConstructor(driver.createQueryLoc(@$), "");
     }
 	;
 
@@ -4498,7 +4498,7 @@ DirPIConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target]\n";
 #endif
-			$$ = new DirPIConstructor(@$,
+			$$ = new DirPIConstructor(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2));
 		}
     |	PI_BEGIN  PI_TARGET_LITERAL CHAR_LITERAL_AND_PI_END 	/* ws: explicitXQ */
@@ -4506,7 +4506,7 @@ DirPIConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target.charlit]\n";
 #endif
-			$$ = new DirPIConstructor(@$,
+			$$ = new DirPIConstructor(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								driver.symtab.get((off_t)$3));
 		}
@@ -4526,7 +4526,7 @@ CDataSection :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CDataSection [ ]\n";
 #endif
-			$$ = new CDataSection(@$,driver.symtab.get((off_t)$2));
+			$$ = new CDataSection(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2));
 		}
 	;
 
@@ -4592,7 +4592,7 @@ CompDocConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompDocConstructor [ ]\n";
 #endif
-			$$ = new CompDocConstructor(@$,
+			$$ = new CompDocConstructor(driver.createQueryLoc(@$),
 								$2);
 		}
 	;
@@ -4606,8 +4606,8 @@ CompElemConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [ ]\n";
 #endif
-			$$ = new CompElemConstructor(@$,
-								new QName(@$,driver.symtab.get((off_t)$1)),
+			$$ = new CompElemConstructor(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
 								NULL);
 		}
 	|	ELEMENT_QNAME_LBRACE  Expr  RBRACE
@@ -4615,8 +4615,8 @@ CompElemConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [content]\n";
 #endif
-			$$ = new CompElemConstructor(@$,
-								new QName(@$,driver.symtab.get((off_t)$1)),
+			$$ = new CompElemConstructor(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
 								$2);
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -4624,7 +4624,7 @@ CompElemConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name]\n";
 #endif
-			$$ = new CompElemConstructor(@$,
+			$$ = new CompElemConstructor(driver.createQueryLoc(@$),
 								$2, NULL);
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
@@ -4632,7 +4632,7 @@ CompElemConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name.content]\n";
 #endif
-			$$ = new CompElemConstructor(@$,
+			$$ = new CompElemConstructor(driver.createQueryLoc(@$),
 								$2, $5);
 		}
 	;
@@ -4660,8 +4660,8 @@ CompAttrConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [ ]\n";
 #endif
-			$$ = new CompAttrConstructor(@$,
-								new QName(@$,driver.symtab.get((off_t)$1)),
+			$$ = new CompAttrConstructor(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
 								NULL);
 		}
 	|	ATTRIBUTE_QNAME_LBRACE  Expr  RBRACE
@@ -4669,8 +4669,8 @@ CompAttrConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [val]\n";
 #endif
-			$$ = new CompAttrConstructor(@$,
-								new QName(@$,driver.symtab.get((off_t)$1)),
+			$$ = new CompAttrConstructor(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
 								$2);
 		}
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -4678,7 +4678,7 @@ CompAttrConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name]\n";
 #endif
-			$$ = new CompAttrConstructor(@$,
+			$$ = new CompAttrConstructor(driver.createQueryLoc(@$),
 								$2, NULL);
 		}
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
@@ -4686,7 +4686,7 @@ CompAttrConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name.val]\n";
 #endif
-			$$ = new CompAttrConstructor(@$,
+			$$ = new CompAttrConstructor(driver.createQueryLoc(@$),
 								$2, $5);
 		}
 	;
@@ -4700,7 +4700,7 @@ CompTextConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompTextConstructor [content]\n";
 #endif
-			$$ = new CompTextConstructor(@$,
+			$$ = new CompTextConstructor(driver.createQueryLoc(@$),
 								dynamic_cast<Expr*>($2));
 		}
 	;
@@ -4714,7 +4714,7 @@ CompCommentConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompCommentConstructor [content]\n";
 #endif
-			$$ = new CompCommentConstructor(@$,
+			$$ = new CompCommentConstructor(driver.createQueryLoc(@$),
 								dynamic_cast<Expr*>($2));
 		}
 	;
@@ -4728,7 +4728,7 @@ CompPIConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [ ]\n";
 #endif
-			$$ = new CompPIConstructor(@$,
+			$$ = new CompPIConstructor(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								NULL);
 		}
@@ -4737,7 +4737,7 @@ CompPIConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [content]\n";
 #endif
-			$$ = new CompPIConstructor(@$,
+			$$ = new CompPIConstructor(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
 								$4);
 		}
@@ -4746,7 +4746,7 @@ CompPIConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target]\n";
 #endif
-			$$ = new CompPIConstructor(@$,
+			$$ = new CompPIConstructor(driver.createQueryLoc(@$),
 								$3, NULL);
 		}
 	|	PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
@@ -4754,7 +4754,7 @@ CompPIConstructor :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target.content]\n";
 #endif
-			$$ = new CompPIConstructor(@$,
+			$$ = new CompPIConstructor(driver.createQueryLoc(@$),
 								$3, $6);
 		}
 	;
@@ -4768,7 +4768,7 @@ SingleType :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic]\n";
 #endif
-			$$ = new SingleType(@$,
+			$$ = new SingleType(driver.createQueryLoc(@$),
 								dynamic_cast<AtomicType*>($1),
 								false);
 		}
@@ -4777,7 +4777,7 @@ SingleType :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic ?]\n";
 #endif
-			$$ = new SingleType(@$,
+			$$ = new SingleType(driver.createQueryLoc(@$),
 								dynamic_cast<AtomicType*>($1),
 								true);
 		}
@@ -4792,7 +4792,7 @@ TypeDeclaration :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeDeclaration [as seqtype]\n";
 #endif
-			$$ = new TypeDeclaration(@$,
+			$$ = new TypeDeclaration(driver.createQueryLoc(@$),
 								dynamic_cast<SequenceType*>($2));
 		}
 	;
@@ -4806,7 +4806,7 @@ SequenceType :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type]\n";
 #endif
-			$$ = new SequenceType(@$,
+			$$ = new SequenceType(driver.createQueryLoc(@$),
 								$1,
 								NULL);
 		}
@@ -4815,7 +4815,7 @@ SequenceType :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type.occurs]\n";
 #endif
-			$$ = new SequenceType(@$,
+			$$ = new SequenceType(driver.createQueryLoc(@$),
 								$1,
 								dynamic_cast<OccurrenceIndicator*>($2));
 		}
@@ -4824,7 +4824,7 @@ SequenceType :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [void]\n";
 #endif
-			$$ = new SequenceType(@$, NULL, NULL);
+			$$ = new SequenceType(driver.createQueryLoc(@$), NULL, NULL);
 		}
 	;
 
@@ -4864,7 +4864,7 @@ OccurrenceIndicator :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [?]\n";
 #endif
-			$$ = new OccurrenceIndicator(@$,
+			$$ = new OccurrenceIndicator(driver.createQueryLoc(@$),
 								occurs_optionally);
 		}
 	|	OCCURS_STAR
@@ -4872,7 +4872,7 @@ OccurrenceIndicator :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [*]\n";
 #endif
-			$$ = new OccurrenceIndicator(@$,
+			$$ = new OccurrenceIndicator(driver.createQueryLoc(@$),
 								occurs_zero_or_more);
 		}
 	|	OCCURS_PLUS 	/* gn: occurrence-indicatorsXQ */
@@ -4880,7 +4880,7 @@ OccurrenceIndicator :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [+]\n";
 #endif
-			$$ = new OccurrenceIndicator(@$,
+			$$ = new OccurrenceIndicator(driver.createQueryLoc(@$),
 								occurs_one_or_more);
 		}
 	;
@@ -4908,7 +4908,7 @@ ItemType :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [item]\n";
 #endif
-			$$ = new ItemType(@$,true);
+			$$ = new ItemType(driver.createQueryLoc(@$),true);
 		}
 	;
 
@@ -4921,8 +4921,8 @@ AtomicType :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AtomicType [qname]\n";
 #endif
-			$$ = new AtomicType(@$,
-								new QName(@$, driver.symtab.get((off_t)$1)));
+			$$ = new AtomicType(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$), driver.symtab.get((off_t)$1)));
 		}
 	;
 
@@ -5004,7 +5004,7 @@ AnyKindTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AnyKindTest [ ]\n";
 #endif
-			$$ = new AnyKindTest(@$);
+			$$ = new AnyKindTest(driver.createQueryLoc(@$));
 		}
 	;
  
@@ -5017,14 +5017,14 @@ DocumentTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [ ]\n";
 #endif
-			$$ = new DocumentTest(@$);
+			$$ = new DocumentTest(driver.createQueryLoc(@$));
 		}
 	|	DOCUMENT_NODE_LPAR  ElementTest  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [elem]\n";
 #endif
-			$$ = new DocumentTest(@$,
+			$$ = new DocumentTest(driver.createQueryLoc(@$),
 								dynamic_cast<ElementTest*>($2));
 		}
 	|	DOCUMENT_NODE_LPAR  SchemaElementTest  RPAR
@@ -5032,7 +5032,7 @@ DocumentTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [schema_elem]\n";
 #endif
-			$$ = new DocumentTest(@$,
+			$$ = new DocumentTest(driver.createQueryLoc(@$),
 								dynamic_cast<SchemaElementTest*>($2));
 		}
 	;
@@ -5046,7 +5046,7 @@ TextTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TextTest [ ]\n";
 #endif
-			$$ = new TextTest(@$);
+			$$ = new TextTest(driver.createQueryLoc(@$));
 		}
 	;
 
@@ -5059,7 +5059,7 @@ CommentTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommentTest [ ]\n";
 #endif
-			$$ = new CommentTest(@$);
+			$$ = new CommentTest(driver.createQueryLoc(@$));
 		}
 	;
  
@@ -5072,21 +5072,21 @@ PITest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ ]\n";
 #endif
-			$$ = new PITest(@$, "");
+			$$ = new PITest(driver.createQueryLoc(@$), "");
 		}
 	|	PI_LPAR  NCNAME  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ncname]\n";
 #endif
-			$$ = new PITest(@$, driver.symtab.get((off_t)$2));
+			$$ = new PITest(driver.createQueryLoc(@$), driver.symtab.get((off_t)$2));
 		}
 	|	PI_LPAR  STRING_LITERAL  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [stringlit]\n";
 #endif
-			$$ = new PITest(@$, driver.symtab.get((off_t)$2));
+			$$ = new PITest(driver.createQueryLoc(@$), driver.symtab.get((off_t)$2));
 		}
 	;
 
@@ -5099,7 +5099,7 @@ AttributeTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [ ]\n";
 #endif
-			$$ = new AttributeTest(@$,
+			$$ = new AttributeTest(driver.createQueryLoc(@$),
 								NULL,
 								NULL);
 		}
@@ -5108,8 +5108,8 @@ AttributeTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name]\n";
 #endif
-			$$ = new AttributeTest(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new AttributeTest(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								NULL);
 		}
 	|	ATTRIBUTE_LPAR  QNAME  COMMA  TypeName  RPAR
@@ -5117,8 +5117,8 @@ AttributeTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name.type]\n";
 #endif
-			$$ = new AttributeTest(@$,
-								new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new AttributeTest(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<TypeName*>($4));
 		}
 	|	ATTRIBUTE_LPAR  STAR  RPAR
@@ -5126,7 +5126,7 @@ AttributeTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*]\n";
 #endif
-			$$ = new AttributeTest(@$,
+			$$ = new AttributeTest(driver.createQueryLoc(@$),
 								NULL,
 								NULL);
 		}
@@ -5135,7 +5135,7 @@ AttributeTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*.type]\n";
 #endif
-			$$ = new AttributeTest(@$,
+			$$ = new AttributeTest(driver.createQueryLoc(@$),
 								NULL,
 								dynamic_cast<TypeName*>($4));
 		}
@@ -5150,8 +5150,8 @@ SchemaAttributeTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaAttributeTest [ ]\n";
 #endif
-			$$ = new SchemaAttributeTest(@$,
-								new QName(@$, driver.symtab.get((off_t)$2)));
+			$$ = new SchemaAttributeTest(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$), driver.symtab.get((off_t)$2)));
 		}
 	;
 
@@ -5164,7 +5164,7 @@ ElementTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [ ]\n";
 #endif
-			$$ = new ElementTest(@$,
+			$$ = new ElementTest(driver.createQueryLoc(@$),
 									NULL,
 									NULL);
 		}
@@ -5173,8 +5173,8 @@ ElementTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name]\n";
 #endif
-			$$ = new ElementTest(@$,
-									new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new ElementTest(driver.createQueryLoc(@$),
+									new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 									NULL);
 		}
 	|	ELEMENT_LPAR  QNAME  COMMA  TypeName  RPAR
@@ -5182,8 +5182,8 @@ ElementTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]\n";
 #endif
-			$$ = new ElementTest(@$,
-									new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new ElementTest(driver.createQueryLoc(@$),
+									new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 									dynamic_cast<TypeName*>($4));
 		}
 	|	ELEMENT_LPAR  QNAME  COMMA  TypeName_WITH_HOOK RPAR
@@ -5191,8 +5191,8 @@ ElementTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]\n";
 #endif
-			$$ = new ElementTest(@$,
-									new QName(@$,driver.symtab.get((off_t)$2)),
+			$$ = new ElementTest(driver.createQueryLoc(@$),
+									new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
 									dynamic_cast<TypeName*>($4));
 		}
 	|	ELEMENT_LPAR  STAR  RPAR
@@ -5200,7 +5200,7 @@ ElementTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*]\n";
 #endif
-			$$ = new ElementTest(@$,
+			$$ = new ElementTest(driver.createQueryLoc(@$),
 									NULL,
 									NULL,
 									true);
@@ -5210,7 +5210,7 @@ ElementTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]\n";
 #endif
-			$$ = new ElementTest(@$,
+			$$ = new ElementTest(driver.createQueryLoc(@$),
 									NULL,
 									dynamic_cast<TypeName*>($4),
 									true);
@@ -5220,7 +5220,7 @@ ElementTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]\n";
 #endif
-			$$ = new ElementTest(@$,
+			$$ = new ElementTest(driver.createQueryLoc(@$),
 									NULL,
 									dynamic_cast<TypeName*>($4),
 									true);
@@ -5236,8 +5236,8 @@ SchemaElementTest :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaElementTest [ ]\n";
 #endif
-			$$ = new SchemaElementTest(@$,
-									new QName(@$,driver.symtab.get((off_t)$2)));
+			$$ = new SchemaElementTest(driver.createQueryLoc(@$),
+									new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)));
 		}
 	;
 
@@ -5260,8 +5260,8 @@ TypeName :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name]\n";
 #endif
-			$$ = new TypeName(@$,
-								new QName(@$,driver.symtab.get((off_t)$1)));
+			$$ = new TypeName(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)));
 		};
     
 TypeName_WITH_HOOK :
@@ -5270,8 +5270,8 @@ TypeName_WITH_HOOK :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name?]\n";
 #endif
-			$$ = new TypeName(@$,
-								new QName(@$,driver.symtab.get((off_t)$1)),
+			$$ = new TypeName(driver.createQueryLoc(@$),
+								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
 								true);
 		}
 	;
@@ -5293,7 +5293,7 @@ StringLiteral :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StringLiteral [ ]\n";
 #endif
-			$$ = new StringLiteral(@$, driver.symtab.get((off_t)$1));
+			$$ = new StringLiteral(driver.createQueryLoc(@$), driver.symtab.get((off_t)$1));
 		}
 	;
 

@@ -32,7 +32,7 @@ protected:
   const void  * theOrigin;  ///< origin expr, used as a kind of ID
   
 public:
-  ForVarIterator(xqpString vn, yy::location loc, const void* origin);
+  ForVarIterator(xqpString vn,const QueryLoc& loc, const void* origin);
 
   ~ForVarIterator() { }
   
@@ -72,7 +72,7 @@ private:
   const void  * theOrigin;  ///< like origin in var_iterator
   
 public:
-  LetVarIterator(xqpString vn, yy::location loc, const void *origin);
+  LetVarIterator(xqpString vn,const QueryLoc& loc, const void *origin);
 
   ~LetVarIterator() {}
   

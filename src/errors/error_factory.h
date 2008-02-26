@@ -15,14 +15,10 @@
 
 #include <zorba/errors.h>
 #include <zorba/xqp_exception.h>
-//#include "compiler/parser/location.hh"
-
-namespace yy{
-class location;
-};
 
 namespace xqp
 {
+class QueryLoc;
 
 typedef enum
 {
@@ -41,7 +37,7 @@ public:
    */
 	static void error_alert(
         const ZorbaError::ErrorCodes code,
-        const yy::location* ploc = NULL,
+        const QueryLoc* ploc = NULL,
         enumContinueExecution_t continue_execution = DONT_CONTINUE_EXECUTION,
 				const std::string param1 = "",
         const std::string param2 = "");
@@ -49,7 +45,7 @@ public:
 
 	static void warning_alert(
         const ZorbaWarning::WarningCodes code,
-        const yy::location* ploc = NULL,
+        const QueryLoc* ploc = NULL,
         const std::string param1 = "",
         const std::string param2 = "");
 
@@ -221,7 +217,7 @@ public:
 	xqp_exception(ZorbaError_t err); 
 	virtual ~xqp_exception();
 
-	void	setLocation(const yy::location* ploc);
+	void	setLocation(const QueryLoc* ploc);
 };
 
 }

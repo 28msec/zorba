@@ -23,7 +23,7 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 #include <zorba/rchandle.h>
-#include "compiler/parser/location.hh"
+#include "compiler/parser/query_loc.h"
 #include <boost/variant.hpp>
 
 namespace xqp {
@@ -39,16 +39,16 @@ class parsenode_visitor;
 class parsenode : public SimpleRCObject
 {
 protected:
-	yy::location loc;
+	QueryLoc loc;
 
     friend class ParseNodePrintXMLVisitor;
 
 public:
-	parsenode(const yy::location& _loc) : loc(_loc) { }
+	parsenode(const QueryLoc& _loc) : loc(_loc) { }
   virtual ~parsenode() {}
 
 public:
-	const yy::location& get_location() const { return loc; }
+	const QueryLoc& get_location() const { return loc; }
   
   virtual void accept(parsenode_visitor&) const = 0;
 
@@ -75,7 +75,7 @@ std::ostream& operator<<(std::ostream& s, parsenode const& r)
 class exprnode : public parsenode
 {
 public:
-	exprnode(const yy::location& loc) : parsenode(loc) { }
+	exprnode(const QueryLoc& loc) : parsenode(loc) { }
 
 public:
   
@@ -285,7 +285,7 @@ class Module : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	Module(const yy::location&);
+	Module(const QueryLoc&);
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -310,7 +310,7 @@ protected:
 
 public:
 	VersionDecl(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& version,
 		std::string const& encoding);
 
@@ -339,12 +339,12 @@ protected:
 
 public:
 	MainModule(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<Prolog>,
 		rchandle<QueryBody>);
 	
 	MainModule(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QueryBody>);
 
 
@@ -372,7 +372,7 @@ protected:
 
 public:
 	LibraryModule(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<ModuleDecl>, 
 		rchandle<Prolog>);
 
@@ -401,7 +401,7 @@ protected:
 
 public:
 	ModuleDecl(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& prefix,
 		std::string const& target_namespace);
 
@@ -430,7 +430,7 @@ protected:
 
 public:
 	Prolog(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<SIND_DeclList>,
 		rchandle<VFO_DeclList>);
 
@@ -457,7 +457,7 @@ protected:
 	std::vector<rchandle<parsenode> > sind_hv;
 
 public:
-	SIND_DeclList(const yy::location&);
+	SIND_DeclList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<parsenode> sind_h) { sind_hv.push_back(sind_h); }
@@ -481,7 +481,7 @@ protected:
 	std::vector<rchandle<parsenode> > vfo_hv;
 
 public:
-	VFO_DeclList(const yy::location&);
+	VFO_DeclList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<parsenode> vfo_h) { vfo_hv.push_back(vfo_h); }
@@ -552,7 +552,7 @@ protected:
 
 public:
 	NamespaceDecl(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& prefix,
 		std::string const& uri);
 
@@ -580,7 +580,7 @@ protected:
 
 public:
 	BoundarySpaceDecl(
-		const yy::location&,
+		const QueryLoc&,
 		StaticQueryContext::boundary_space_mode_t);
 
 
@@ -609,7 +609,7 @@ protected:
 
 public:
 	DefaultNamespaceDecl(
-		const yy::location&,
+		const QueryLoc&,
 		enum default_namespace_mode_t mode,
 		std::string const& default_namespace);
 
@@ -638,7 +638,7 @@ protected:
 
 public:
 	OptionDecl(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName> qname_h,
 		std::string const& val);
 
@@ -667,7 +667,7 @@ protected:
 
 public:
 	FTOptionDecl(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<parsenode>);
 
 
@@ -693,7 +693,7 @@ protected:
 		
 public:
 	OrderingModeDecl(
-		const yy::location&,
+		const QueryLoc&,
 		StaticQueryContext::ordering_mode_t);
 
 	
@@ -720,7 +720,7 @@ protected:
 
 public:
 	EmptyOrderDecl(
-		const yy::location&,
+		const QueryLoc&,
 		StaticQueryContext::order_empty_mode_t);
 
 	
@@ -748,7 +748,7 @@ protected:
 
 public:
 	CopyNamespacesDecl(
-		const yy::location&,
+		const QueryLoc&,
 		StaticQueryContext::preserve_mode_t preserve_mode,
 		StaticQueryContext::inherit_mode_t  inherit_mode);
 
@@ -787,7 +787,7 @@ protected:
 
 public:
 	DefaultCollationDecl(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const&  collation);
 
 
@@ -813,7 +813,7 @@ protected:
 
 public:
 	BaseURIDecl(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& base_uri);
 
 
@@ -844,7 +844,7 @@ protected:
 
 public:
 	SchemaImport(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<SchemaPrefix>,
 		std::string const& uri,
 		rchandle<URILiteralList>);
@@ -875,7 +875,7 @@ protected:
 
 public:
 	URILiteralList(
-		const yy::location&);
+		const QueryLoc&);
 
 
 public:
@@ -903,11 +903,11 @@ protected:
 
 public:
 	SchemaPrefix(
-		const yy::location&,
+		const QueryLoc&,
 		bool default_b);
 
 	SchemaPrefix(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& prefix);
 
 
@@ -939,11 +939,11 @@ protected:
 
 public:
 	ModuleImport(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& uri,
 		rchandle<URILiteralList>);
 	ModuleImport(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& prefix,
 		std::string const& uri,
 		rchandle<URILiteralList>);
@@ -977,7 +977,7 @@ protected:
 
 public:
 	VarDecl(
-		const yy::location&,
+		const QueryLoc&,
 		std::string varname,
 		rchandle<TypeDeclaration>,
 		rchandle<exprnode>);
@@ -1008,7 +1008,7 @@ protected:
 
 public:
 	ConstructionDecl(
-		const yy::location&,
+		const QueryLoc&,
 		StaticQueryContext::construction_mode_t);
 
 
@@ -1047,7 +1047,7 @@ protected:
 
 public:
 	FunctionDecl(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName>,
 		rchandle<ParamList>,
 		rchandle<SequenceType>,
@@ -1082,7 +1082,7 @@ protected:
 	std::vector<rchandle<Param> > param_hv;
 
 public:
-	ParamList(const yy::location&);
+	ParamList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<Param> param_h) { param_hv.push_back(param_h); }
@@ -1112,7 +1112,7 @@ protected:
 
 public:
 	Param(
-		const yy::location&,
+		const QueryLoc&,
 		std::string name,
 		rchandle<TypeDeclaration>);
 
@@ -1140,7 +1140,7 @@ protected:
 
 public:
 	EnclosedExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>);
 
 
@@ -1166,7 +1166,7 @@ protected:
 
 public:
 	QueryBody(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>);
 
 	QueryBody();
@@ -1194,7 +1194,7 @@ protected:
 	std::vector<rchandle<exprnode> > expr_hv;
 
 public:
-	Expr(const yy::location&);
+	Expr(const QueryLoc&);
 
 public:
 	void push_back(rchandle<exprnode> expr_h) { expr_hv.push_back(expr_h); }
@@ -1236,7 +1236,7 @@ protected:
 
 public:
 	FLWORExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<ForLetClauseList>,
 		rchandle<WhereClause>,
 		rchandle<OrderByClause>,
@@ -1268,7 +1268,7 @@ protected:
 	std::vector<rchandle<ForOrLetClause> > forlet_hv;
 
 public:
-	ForLetClauseList(const yy::location&);
+	ForLetClauseList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<ForOrLetClause> forlet_h) { forlet_hv.push_back(forlet_h); }
@@ -1288,7 +1288,7 @@ public:
 
 class ForOrLetClause : public parsenode {
 public:
-  ForOrLetClause (const yy::location& _loc) : parsenode (_loc) {}
+  ForOrLetClause (const QueryLoc& _loc) : parsenode (_loc) {}
   typedef enum { for_clause, let_clause } for_or_let_t;
   virtual for_or_let_t for_or_let () const = 0;
   virtual int get_decl_count () const = 0;
@@ -1307,7 +1307,7 @@ protected:
 
 public:
 	ForClause(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<VarInDeclList>);
 
 
@@ -1336,7 +1336,7 @@ protected:
 	std::vector<rchandle<VarInDecl> > vardecl_hv;
 
 public:
-	VarInDeclList(const yy::location&);
+	VarInDeclList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<VarInDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
@@ -1374,7 +1374,7 @@ protected:
 	
 public:
 	VarInDecl(
-		const yy::location&,
+		const QueryLoc&,
 		std::string varname,
 		rchandle<TypeDeclaration>,
 		rchandle<PositionalVar>,
@@ -1408,7 +1408,7 @@ protected:
 
 public:
 	PositionalVar(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& varname);
 
 
@@ -1435,7 +1435,7 @@ protected:
 
 public:
 	LetClause(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<VarGetsDeclList>);
 
 public:
@@ -1463,7 +1463,7 @@ protected:
 	std::vector<rchandle<VarGetsDecl> > vardecl_hv;
 
 public:
-	VarGetsDeclList(const yy::location&);
+	VarGetsDeclList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<VarGetsDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
@@ -1497,7 +1497,7 @@ protected:
 
 public:
 	VarGetsDecl(
-		const yy::location&,
+		const QueryLoc&,
 		std::string varname,
 		rchandle<TypeDeclaration>,
 		rchandle<FTScoreVar>,
@@ -1528,7 +1528,7 @@ protected:
 
 public:
 	FTScoreVar(
-		const yy::location&,
+		const QueryLoc&,
 		std::string varname);
 
 public:
@@ -1553,7 +1553,7 @@ protected:
 
 public:
 	WhereClause(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>);
 
 public:
@@ -1580,7 +1580,7 @@ protected:
 		
 public:
 	OrderByClause(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<OrderSpecList>,
 		bool stable_b = false);
 
@@ -1607,7 +1607,7 @@ protected:
 	std::vector<rchandle<OrderSpec> > spec_hv;
 
 public:
-	OrderSpecList(const yy::location&);
+	OrderSpecList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<OrderSpec> spec_h) { spec_hv.push_back(spec_h); }
@@ -1635,7 +1635,7 @@ protected:
 
 public:
 	OrderSpec(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<OrderModifier>);
 
@@ -1670,7 +1670,7 @@ protected:
 
 public:
 	OrderModifier(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<OrderDirSpec>,
 		rchandle<OrderEmptySpec>,
 		rchandle<OrderCollationSpec>);
@@ -1702,7 +1702,7 @@ protected:
 
 public:
 	OrderDirSpec(
-		const yy::location&,
+		const QueryLoc&,
 		dir_spec_t dir_spec);
 	
 public:
@@ -1727,7 +1727,7 @@ protected:
 
 public:
 	OrderEmptySpec(
-		const yy::location&,
+		const QueryLoc&,
 		StaticQueryContext::order_empty_mode_t empty_order_spec);
 
 public:
@@ -1753,7 +1753,7 @@ protected:
 
 public:
 	OrderCollationSpec(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& uri);
 
 public:
@@ -1781,7 +1781,7 @@ protected:
 
 public:
 	QuantifiedExpr(
-		const yy::location&,
+		const QueryLoc&,
 		quantification_mode_t qmode,
 		rchandle<QVarInDeclList>,
 		rchandle<exprnode>);
@@ -1810,7 +1810,7 @@ protected:
 	std::vector<rchandle<QVarInDecl> > qvar_decl_hv;
 
 public:
-	QVarInDeclList(const yy::location&);
+	QVarInDeclList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<QVarInDecl> decl_h) { qvar_decl_hv.push_back(decl_h); }
@@ -1839,12 +1839,12 @@ protected:
 
 public:
 	QVarInDecl(
-		const yy::location&,
+		const QueryLoc&,
 		std::string name,
 		rchandle<exprnode>);
 
 	QVarInDecl(
-		const yy::location&,
+		const QueryLoc&,
 		std::string name,
 		rchandle<TypeDeclaration>,
 		rchandle<exprnode>);
@@ -1879,13 +1879,13 @@ protected:
 
 public:
 	TypeswitchExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<CaseClauseList>,
 		rchandle<exprnode>);
 
 	TypeswitchExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<CaseClauseList>,
 		std::string default_varname,
@@ -1917,7 +1917,7 @@ protected:
 	std::vector<rchandle<CaseClause> > clause_hv;
 
 public:
-	CaseClauseList(const yy::location&);
+	CaseClauseList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<CaseClause> clause_h)
@@ -1957,13 +1957,13 @@ protected:
 
 public:
 	CaseClause(
-		const yy::location&,
+		const QueryLoc&,
 		std::string varname,
 		rchandle<SequenceType>,
 		rchandle<exprnode>);
 		
 	CaseClause(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<SequenceType>,
 		rchandle<exprnode>);
 		
@@ -1994,7 +1994,7 @@ protected:
 
 public:
 	IfExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2025,7 +2025,7 @@ protected:
 
 public:
 	OrExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -2055,7 +2055,7 @@ protected:
 
 public:
 	AndExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -2091,19 +2091,19 @@ protected:
 
 public:
 	ComparisonExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<ValueComp>,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
 	ComparisonExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<GeneralComp>,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
 	ComparisonExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<NodeComp>,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2139,7 +2139,7 @@ protected:
 
 public:
 	FTContainsExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<FTSelection>,
 		rchandle<FTIgnoreOption>);
@@ -2172,7 +2172,7 @@ protected:
 
 public:
 	RangeExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -2205,7 +2205,7 @@ protected:
 
 public:
 	AdditiveExpr(
-		const yy::location&,
+		const QueryLoc&,
 		add_op_t add_op,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2242,7 +2242,7 @@ protected:
 
 public:
 	MultiplicativeExpr(
-		const yy::location&,
+		const QueryLoc&,
 		mult_op_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2276,7 +2276,7 @@ protected:
 
 public:
 	UnionExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -2309,7 +2309,7 @@ protected:
 
 public:
 	IntersectExceptExpr(
-		const yy::location&,
+		const QueryLoc&,
 		enum intex_op_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2342,7 +2342,7 @@ protected:
 
 public:
 	InstanceofExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<SequenceType>);
 
@@ -2373,7 +2373,7 @@ protected:
 
 public:
 	TreatExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<SequenceType>);
 
@@ -2404,7 +2404,7 @@ protected:
 
 public:
 	CastableExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<SingleType>);
 
@@ -2435,7 +2435,7 @@ protected:
 
 public:
 	CastExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<SingleType>);
 	
@@ -2466,7 +2466,7 @@ protected:
 
 public:
 	UnaryExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<SignList>,
 		rchandle<exprnode>);
 
@@ -2498,7 +2498,7 @@ protected:
 
 public:
 	SignList(
-		const yy::location&,
+		const QueryLoc&,
 		bool _sign);
 
 
@@ -2534,7 +2534,7 @@ protected:
 
 public:
 	GeneralComp(
-		const yy::location&,
+		const QueryLoc&,
 		enum gencomp_t);
 
 	GeneralComp();
@@ -2563,7 +2563,7 @@ protected:
 
 public:
 	ValueComp(
-		const yy::location&,
+		const QueryLoc&,
 		enum valcomp_t);
 
 	ValueComp();
@@ -2592,7 +2592,7 @@ protected:
 
 public:
 	NodeComp(
-		const yy::location&,
+		const QueryLoc&,
 		enum nodecomp_t);
 
 	NodeComp();
@@ -2623,7 +2623,7 @@ protected:
 
 public:
 	ValidateExpr(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& valmode,
 		rchandle<exprnode>);
 
@@ -2654,7 +2654,7 @@ protected:
 
 public:
 	ExtensionExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<PragmaList>,
 		rchandle<exprnode>);
 
@@ -2682,7 +2682,7 @@ protected:
 	std::vector<rchandle<Pragma> > pragma_hv;
 
 public:
-	PragmaList(const yy::location&);
+	PragmaList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<Pragma> pragma_h) { pragma_hv.push_back(pragma_h); }
@@ -2709,7 +2709,7 @@ protected:
 
 public:
 	Pragma(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName>,
 		std::string pragma_lit);
 
@@ -2766,7 +2766,7 @@ protected:
 
 public:
 	PathExpr(
-		const yy::location&,
+		const QueryLoc&,
 		enum pathtype_t type,
 		rchandle<exprnode>);
 
@@ -2800,7 +2800,7 @@ protected:
 
 public:
 	RelativePathExpr(
-		const yy::location&,
+		const QueryLoc&,
 		enum steptype_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2838,12 +2838,12 @@ protected:
 
 public:
 	AxisStep(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<ForwardStep>,
 		rchandle<PredicateList>);
 
 	AxisStep(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<ReverseStep>,
 		rchandle<PredicateList>);
 
@@ -2873,12 +2873,12 @@ protected:
 
 public:
 	ForwardStep(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<ForwardAxis>,
 		rchandle<parsenode> node_test_h);
 
 	ForwardStep(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<AbbrevForwardStep>);
 
 
@@ -2910,7 +2910,7 @@ protected:
 
 public:
 	ForwardAxis(
-		const yy::location&,
+		const QueryLoc&,
 		enum forward_axis_t);
 
 
@@ -2935,12 +2935,12 @@ protected:
 	
 public:
 	AbbrevForwardStep(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<parsenode>,
 		bool attr_b);
 		
 	AbbrevForwardStep(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<parsenode>);
 		
 
@@ -2966,12 +2966,12 @@ protected:
 
 public:
 	ReverseStep(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<ReverseAxis>,
 		rchandle<parsenode>);
 
 	ReverseStep(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<ReverseAxis>);
 
 
@@ -3000,7 +3000,7 @@ protected:
 
 public:
 	ReverseAxis(
-		const yy::location&,
+		const QueryLoc&,
 		enum reverse_axis_t);
 
 
@@ -3040,9 +3040,9 @@ protected:
 	rchandle<Wildcard> theWildcard;
 
 public:
-	NameTest(const yy::location& l, rchandle<QName> n);
+	NameTest(const QueryLoc& l, rchandle<QName> n);
 
-	NameTest(const yy::location& l, rchandle<Wildcard> w);
+	NameTest(const QueryLoc& l, rchandle<Wildcard> w);
 
 
 public:
@@ -3072,7 +3072,7 @@ protected:
 	
 public:
 	Wildcard(
-		const yy::location& loc,
+		const QueryLoc& loc,
     const xqp_string& prefix,
     const xqp_string& lname,
 		enum wildcard_t type);
@@ -3103,7 +3103,7 @@ protected:
 
 public:
 	FilterExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<PredicateList>);
 
@@ -3132,7 +3132,7 @@ protected:
 	std::vector<rchandle<exprnode> > pred_hv;
 
 public:
-	PredicateList(const yy::location&);
+	PredicateList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<exprnode> pred_h) { pred_hv.push_back(pred_h); }
@@ -3192,15 +3192,15 @@ protected:
 
 public:
 	NumericLiteral(
-		const yy::location&,
+		const QueryLoc&,
 		xqp_integer);
 
 	NumericLiteral(
-		const yy::location&,
+		const QueryLoc&,
 		xqp_decimal);
 
 	NumericLiteral(
-		const yy::location&,
+		const QueryLoc&,
 		xqp_double);
 
 
@@ -3231,7 +3231,7 @@ protected:
 
 public:
 	VarRef(
-		const yy::location&,
+		const QueryLoc&,
 		std::string varname);
 
 
@@ -3259,7 +3259,7 @@ protected:
 
 public:
 	ParenthesizedExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>);
 
 
@@ -3282,7 +3282,7 @@ class ContextItemExpr : public exprnode
 |_______________________________________________________________________*/
 {
 public:
-	ContextItemExpr(const yy::location&);
+	ContextItemExpr(const QueryLoc&);
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -3304,7 +3304,7 @@ protected:
 
 public:
 	OrderedExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>);
 
 
@@ -3331,7 +3331,7 @@ protected:
 
 public:
 	UnorderedExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>);
 
 
@@ -3361,7 +3361,7 @@ protected:
 
 public:
 	FunctionCall(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName>,
 		rchandle<ArgList>);
 
@@ -3389,7 +3389,7 @@ protected:
 	std::vector<rchandle<exprnode> > arg_hv;
 
 public:
-	ArgList(const yy::location&);
+	ArgList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<exprnode> arg_h) { arg_hv.push_back(arg_h); }
@@ -3429,7 +3429,7 @@ protected:
 
 public:
 	DirElemConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName>,
 		rchandle<QName>,
 		rchandle<DirAttributeList>,
@@ -3460,7 +3460,7 @@ protected:
 	std::vector<rchandle<DirElemContent> > dir_content_hv;
 
 public:
-	DirElemContentList(const yy::location&);
+	DirElemContentList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<DirElemContent> dir_content_h)
@@ -3493,19 +3493,19 @@ protected:
 
 public:
 	DirElemContent(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>);
 
 	DirElemContent(
-		const yy::location&,
+		const QueryLoc&,
 		std::string elem_content);
 
 	DirElemContent(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<CDataSection>);
 
 	DirElemContent(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<CommonContent>); 
 
 
@@ -3544,16 +3544,16 @@ protected:
 
 public:
 	CommonContent(
-		const yy::location&,
+		const QueryLoc&,
 		enum common_content_t,
 		std::string ref);
 
 	CommonContent(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<EnclosedExpr> expr_h);
 
 	CommonContent(
-		const yy::location&,
+		const QueryLoc&,
 		enum common_content_t);
 
 
@@ -3580,7 +3580,7 @@ protected:
 
 public:
 	CDataSection(
-		const yy::location&,
+		const QueryLoc&,
 		std::string cdata_content);
 
 
@@ -3610,7 +3610,7 @@ protected:
 	std::vector<rchandle<DirAttr> > theAttributes;
 
 public:
-	DirAttributeList(const yy::location&);
+	DirAttributeList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<DirAttr> attr)
@@ -3641,7 +3641,7 @@ protected:
 	
 public:
 	DirAttr(
-        const yy::location&,
+        const QueryLoc&,
         rchandle<QName>,
         rchandle<DirAttributeValue>);
   
@@ -3669,11 +3669,11 @@ protected:
 
 public:
 	DirAttributeValue(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QuoteAttrContentList>);
 
 	DirAttributeValue(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<AposAttrContentList>);
 
 
@@ -3707,7 +3707,7 @@ protected:
 	std::vector<rchandle<QuoteAttrValueContent> > quot_atval_content_hv;
 	
 public:
-	QuoteAttrContentList(const yy::location&);
+	QuoteAttrContentList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<QuoteAttrValueContent> quot_atval_content_h)
@@ -3740,7 +3740,7 @@ protected:
 	std::vector<rchandle<AposAttrValueContent> > apos_atval_content_hv;
 	
 public:
-	AposAttrContentList(const yy::location&);
+	AposAttrContentList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<AposAttrValueContent> apos_atval_content_h)
@@ -3767,11 +3767,11 @@ protected:
 
 public:
 	QuoteAttrValueContent(
-		const yy::location&,
+		const QueryLoc&,
 		std::string quot_atcontent);
 
 	QuoteAttrValueContent(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<CommonContent>);
 
 
@@ -3797,11 +3797,11 @@ protected:
 
 public:
 	AposAttrValueContent(
-		const yy::location&,
+		const QueryLoc&,
 		std::string apos_atcontent);
 
 	AposAttrValueContent(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<CommonContent>);
 
 
@@ -3832,7 +3832,7 @@ protected:
 
 public:
 	DirCommentConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& comment);
 
 
@@ -3869,11 +3869,11 @@ protected:
 
 public:
 	DirPIConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& pi_target);
 
 	DirPIConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const& pi_target,
 		std::string const& pi_content);
 
@@ -3925,7 +3925,7 @@ protected:
 
 public:
 	CompDocConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>);
 
 
@@ -3956,7 +3956,7 @@ protected:
 
 public:
 	CompElemConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -3986,7 +3986,7 @@ protected:
 
 public:
 	CompAttrConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -4015,7 +4015,7 @@ protected:
 
 public:
 	CompTextConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode> text_expr_h);
 
 
@@ -4042,7 +4042,7 @@ protected:
 
 public:
 	CompCommentConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>);
 
 
@@ -4074,12 +4074,12 @@ protected:
 
 public:
 	CompPIConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		std::string target,
 		rchandle<exprnode>);
 
 	CompPIConstructor(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -4109,7 +4109,7 @@ protected:
 
 public:
 	SingleType(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<AtomicType>,
 		bool hook_b);
 
@@ -4137,7 +4137,7 @@ protected:
 
 public:
 	TypeDeclaration(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<SequenceType>);
 
 
@@ -4163,7 +4163,7 @@ protected:
 
 public:
 	SequenceType(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<parsenode>,
 		rchandle<OccurrenceIndicator>);
 
@@ -4190,7 +4190,7 @@ protected:
 
 public:
 	OccurrenceIndicator(
-		const yy::location&,
+		const QueryLoc&,
 		enum occurrence_t);
 
 
@@ -4214,10 +4214,10 @@ protected:
 
 public:
 	ItemType(
-		const yy::location&,
+		const QueryLoc&,
 		bool item_test_b);
 		
-	ItemType(const yy::location&);
+	ItemType(const QueryLoc&);
 		
 
 public:
@@ -4240,7 +4240,7 @@ protected:
 
 public:
 	AtomicType(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName>);
 		
 
@@ -4275,7 +4275,7 @@ public:
 class AnyKindTest : public parsenode
 {
 public:
-	AnyKindTest(const yy::location&);
+	AnyKindTest(const QueryLoc&);
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4296,14 +4296,14 @@ protected:
 	rchandle<SchemaElementTest> schema_elem_test_h;
 
 public:
-	DocumentTest(const yy::location&);
+	DocumentTest(const QueryLoc&);
 
 	DocumentTest(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<ElementTest>);
 	
 	DocumentTest(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<SchemaElementTest>);
 
 
@@ -4326,7 +4326,7 @@ public:
 class TextTest : public parsenode
 {
 public:
-	TextTest(const yy::location&);
+	TextTest(const QueryLoc&);
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4342,7 +4342,7 @@ class CommentTest : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	CommentTest(const yy::location&);
+	CommentTest(const QueryLoc&);
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4365,7 +4365,7 @@ protected:
 
 public:
 	PITest(
-		const yy::location&,
+		const QueryLoc&,
 		std::string target);
 
 
@@ -4392,7 +4392,7 @@ protected:
 
 public:
 	AttributeTest(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName>,
 		rchandle<TypeName>);
 
@@ -4421,7 +4421,7 @@ protected:
 
 public:
 	SchemaAttributeTest(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName>);
 
 
@@ -4456,7 +4456,7 @@ protected:
 
 public:
 	ElementTest(
-		const yy::location& l,
+		const QueryLoc& l,
 		rchandle<QName> qn,
 		rchandle<TypeName> tn,
     bool na = false);
@@ -4486,7 +4486,7 @@ protected:
 
 public:
 	SchemaElementTest(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName> _elem_h);
 
 
@@ -4525,11 +4525,11 @@ protected:
 
 public:
 	TypeName(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName>);
 
 	TypeName(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName>,
 		bool);
 
@@ -4567,7 +4567,7 @@ protected:
 
 public:
 	StringLiteral(
-		const yy::location&,
+		const QueryLoc&,
 		std::string const&);
 
 
@@ -4611,7 +4611,7 @@ protected:
 	std::string qname;
 
 public:
-	QName(const yy::location&, const std::string& qname);
+	QName(const QueryLoc&, const std::string& qname);
 
 
 public:
@@ -4652,7 +4652,7 @@ protected:
 
 public:
 	RevalidationDecl(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<QName>);
 
 
@@ -4684,7 +4684,7 @@ protected:
 
 public:
 	InsertExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -4713,7 +4713,7 @@ protected:
 
 public:
 	DeleteExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode>);
 
 
@@ -4742,7 +4742,7 @@ protected:
 
 public:
 	ReplaceExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode> source_expr_h,
 		rchandle<exprnode> target_expr_h);
 
@@ -4772,7 +4772,7 @@ protected:
 
 public:
 	RenameExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<exprnode> source_expr_h,
 		rchandle<exprnode> target_expr_h);
 
@@ -4818,7 +4818,7 @@ protected:
 
 public:
 	TransformExpr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<VarNameList>,
 		rchandle<exprnode> source_expr_h,
 		rchandle<exprnode> target_expr_h);
@@ -4848,7 +4848,7 @@ protected:
 	std::vector<rchandle<VarBinding> > varbinding_hv;
 	
 public:
-	VarNameList(const yy::location&);
+	VarNameList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<VarBinding> varbinding_h)
@@ -4877,7 +4877,7 @@ protected:
 
 public:
 	VarBinding(
-		const yy::location&,
+		const QueryLoc&,
 		std::string varname,
 		rchandle<exprnode>);
 
@@ -4925,7 +4925,7 @@ protected:
 
 public:
 	FTSelection(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTOr>,
 		rchandle<FTMatchOptionProximityList>,
 		rchandle<RangeExpr>);
@@ -4959,7 +4959,7 @@ protected:
 	std::vector<rchandle<FTMatchOptionProximity> > opt_prox_hv;
 
 public:
-	FTMatchOptionProximityList(const yy::location&);
+	FTMatchOptionProximityList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<FTMatchOptionProximity> opt_prox_h)
@@ -4989,14 +4989,14 @@ protected:
 public:
 	FTMatchOptionProximity(
 		rchandle<FTMatchOption>,
-		const yy::location&);
+		const QueryLoc&);
 
 	FTMatchOptionProximity(
 		rchandle<FTProximity>,
-		const yy::location&);
+		const QueryLoc&);
 
 	FTMatchOptionProximity(
-		const yy::location&);
+		const QueryLoc&);
 
 
 public:
@@ -5021,7 +5021,7 @@ protected:
 
 public:
 	FTOr(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTOr>,
 		rchandle<FTAnd>);
 
@@ -5052,7 +5052,7 @@ protected:
 
 public:
 	FTAnd(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTAnd>,
 		rchandle<FTMildnot>);
 	
@@ -5083,7 +5083,7 @@ protected:
 
 public:
 	FTMildnot(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTMildnot>,
 		rchandle<FTUnaryNot>);
 
@@ -5114,7 +5114,7 @@ protected:
 
 public:
 	FTUnaryNot(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTWordsSelection>,
 		bool not_b);
 
@@ -5149,7 +5149,7 @@ protected:
 
 public:
 	FTWordsSelection(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTWords>,
 		rchandle<FTTimes>,
 		rchandle<FTSelection>);
@@ -5182,7 +5182,7 @@ protected:
 
 public:
 	FTWords(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTWordsValue>,
 		rchandle<FTAnyallOption>);
 
@@ -5215,7 +5215,7 @@ protected:
 
 public:
 	FTWordsValue(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<StringLiteral>,
 		rchandle<Expr>);
 
@@ -5244,7 +5244,7 @@ class FTProximity : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	FTProximity(const yy::location&);
+	FTProximity(const QueryLoc&);
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5262,7 +5262,7 @@ class FTOrderedIndicator : public FTProximity
 |_______________________________________________________________________*/
 {
 public:
-	FTOrderedIndicator(const yy::location&);
+	FTOrderedIndicator(const QueryLoc&);
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5286,7 +5286,7 @@ class FTMatchOption : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	FTMatchOption(const yy::location&);
+	FTMatchOption(const QueryLoc&);
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5311,7 +5311,7 @@ protected:
 
 public:
 	FTCaseOption(
-		const yy::location&,
+		const QueryLoc&,
 		enum ft_case_mode_t);
 
 
@@ -5341,7 +5341,7 @@ protected:
 
 public:
 	FTDiacriticsOption(
-		const yy::location&,
+		const QueryLoc&,
 		ft_diacritics_mode_t);
 
 
@@ -5375,7 +5375,7 @@ protected:
 
 public:
 	FTStemOption(
-		const yy::location&,
+		const QueryLoc&,
 		ft_stem_mode_t);
 
 
@@ -5410,7 +5410,7 @@ protected:
 
 public:
 	FTThesaurusOption(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTThesaurusID>,
 		rchandle<FTThesaurusList>,
 		bool default_b,
@@ -5448,7 +5448,7 @@ protected:
 	std::vector<rchandle<FTThesaurusID> > thesaurus_hv;
 
 public:
-	FTThesaurusList(const yy::location&);
+	FTThesaurusList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<FTThesaurusID> thesaurus_h)
@@ -5481,7 +5481,7 @@ protected:
 
 public:
 	FTThesaurusID(
-		const yy::location&,
+		const QueryLoc&,
 		std::string thesaurus_name,
 		std::string relationship_name,
 		rchandle<FTRange> levels_h);
@@ -5518,7 +5518,7 @@ protected:
 
 public:
 	FTStopwordOption(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTRefOrList>,
 		rchandle<FTInclExclStringLiteralList>,
 		stop_words_mode_t);
@@ -5552,7 +5552,7 @@ protected:
 	std::vector<rchandle<FTInclExclStringLiteral> > incl_excl_lit_hv;
 
 public:
-	FTInclExclStringLiteralList(const yy::location&);
+	FTInclExclStringLiteralList(const QueryLoc&);
 
 public:
 	void push_back(rchandle<FTInclExclStringLiteral> incl_excl_lit_h)
@@ -5584,7 +5584,7 @@ protected:
 
 public:
 	FTRefOrList(
-		const yy::location&,
+		const QueryLoc&,
 		std::string at_str,
 		rchandle<FTStringLiteralList>);
 
@@ -5614,7 +5614,7 @@ protected:
 	std::vector<std::string> strlit_v;
 
 public:
-	FTStringLiteralList(const yy::location&);
+	FTStringLiteralList(const QueryLoc&);
 
 public:
 	void push_back(std::string strlit) { strlit_v.push_back(strlit); }
@@ -5642,7 +5642,7 @@ protected:
 
 public:
 	FTInclExclStringLiteral(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTRefOrList>,
 		intex_op_t);
 
@@ -5673,7 +5673,7 @@ protected:
 
 public:
 	FTLanguageOption(
-		const yy::location&,
+		const QueryLoc&,
 		std::string lang);
 
 
@@ -5701,7 +5701,7 @@ protected:
 
 public:
 	FTWildcardOption(
-		const yy::location&,
+		const QueryLoc&,
 		bool with_b);
 
 
@@ -5730,7 +5730,7 @@ protected:
 
 public:
 	FTContent(
-		const yy::location&,
+		const QueryLoc&,
 		enum ft_content_mode_t);
 
 
@@ -5761,7 +5761,7 @@ protected:
 
 public:
 	FTAnyallOption(
-		const yy::location&,
+		const QueryLoc&,
 		enum ft_anyall_option_t);
 
 
@@ -5800,7 +5800,7 @@ protected:
 
 public:
 	FTRange(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<UnionExpr> src_expr_h,
 		rchandle<UnionExpr> dst_expr_h);
 
@@ -5830,7 +5830,7 @@ protected:
 
 public:
 	FTDistance(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTRange>,
 		rchandle<FTUnit>);
 
@@ -5860,7 +5860,7 @@ protected:
 
 public:
 	FTWindow(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<UnionExpr> window_h,
 		rchandle<FTUnit> unit_h);
 
@@ -5889,7 +5889,7 @@ protected:
 
 public:
 	FTTimes(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<FTRange>);
 
 
@@ -5917,7 +5917,7 @@ protected:
 
 public:
 	FTScope(
-		const yy::location&,
+		const QueryLoc&,
 		ft_scope_t);
 
 
@@ -5944,7 +5944,7 @@ protected:
 
 public:
 	FTUnit(
-		const yy::location&,
+		const QueryLoc&,
 		ft_unit_t);
 
 
@@ -5971,7 +5971,7 @@ protected:
 
 public:
 	FTBigUnit(
-		const yy::location&,
+		const QueryLoc&,
 		enum ft_big_unit_t);
 
 
@@ -5998,7 +5998,7 @@ protected:
 
 public:
 	FTIgnoreOption(
-		const yy::location&,
+		const QueryLoc&,
 		rchandle<UnionExpr>);
 
 

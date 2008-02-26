@@ -23,7 +23,7 @@ private:
   xqpString theVarName;
 
 public:
-  CtxVariableIterator(const yy::location& loc, xqpString varName);
+  CtxVariableIterator(const QueryLoc& loc, xqpString varName);
 
   virtual ~CtxVariableIterator();
 

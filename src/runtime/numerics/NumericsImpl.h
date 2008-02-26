@@ -36,7 +36,7 @@ namespace xqp
     : public BinaryBaseIterator<NumArithIterator<Operation>, PlanIteratorState>
   {
     public:
-      NumArithIterator ( const yy::location&, PlanIter_t&, PlanIter_t& );
+      NumArithIterator ( const QueryLoc&, PlanIter_t&, PlanIter_t& );
       virtual ~NumArithIterator(){}
 
       Item_t nextImpl(PlanState&) const;
@@ -51,7 +51,7 @@ namespace xqp
        * @param item1
        */
       static Item_t
-      compute(const yy::location& loc, Item_t item0, Item_t item1);
+      compute(const QueryLoc& loc, Item_t item0, Item_t item1);
       
       /**
        * Computes Operation on passed items.
@@ -64,7 +64,7 @@ namespace xqp
        */
       static Item_t
       computeAtomic
-        (const yy::location&, Item_t item0, xqtref_t type0, Item_t item1, xqtref_t type1);
+        (const QueryLoc&, Item_t item0, xqtref_t type0, Item_t item1, xqtref_t type1);
 
   }; /* class NumArithIterator */
 
@@ -110,7 +110,7 @@ namespace xqp
       bool thePlus;
 
     public:
-      OpNumericUnaryIterator ( const yy::location& loc, PlanIter_t& aChild, bool aPlus);
+      OpNumericUnaryIterator ( const QueryLoc& loc, PlanIter_t& aChild, bool aPlus);
       virtual ~OpNumericUnaryIterator();
 
     public: // iterator interface
@@ -155,7 +155,7 @@ namespace xqp
   class FnRoundHalfToEvenIterator : public BinaryBaseIterator<FnRoundHalfToEvenIterator, PlanIteratorState>
   {
     public:
-      FnRoundHalfToEvenIterator(const yy::location&, PlanIter_t&, PlanIter_t&);
+      FnRoundHalfToEvenIterator(const QueryLoc&, PlanIter_t&, PlanIter_t&);
       virtual ~FnRoundHalfToEvenIterator();
 
       Item_t nextImpl(PlanState&) const;
@@ -180,7 +180,7 @@ namespace xqp
   class ZorNumGen : public NoaryBaseIterator<ZorNumGen, ZorNumGenState> 
   {
   public:
-    ZorNumGen ( const yy::location& loc);
+    ZorNumGen ( const QueryLoc& loc);
     ~ZorNumGen();
 
     Item_t nextImpl(PlanState& planState) const;

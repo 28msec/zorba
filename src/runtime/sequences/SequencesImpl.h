@@ -95,7 +95,7 @@ class FnDistinctValuesIterator : public NaryBaseIterator<FnDistinctValuesIterato
 {
 
 public:
-  FnDistinctValuesIterator(yy::location loc,
+  FnDistinctValuesIterator(const QueryLoc& loc,
                            std::vector<PlanIter_t>& args);
  
   ~FnDistinctValuesIterator();
@@ -223,7 +223,7 @@ private:
   CompareConsts::CompareType theCompareType;
 
 public:
-    FnMinMaxIterator(yy::location loc, std::vector<PlanIter_t>& aChildren, Type aType);
+    FnMinMaxIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType);
     Item_t nextImpl(PlanState& aPlanState) const;
     virtual void accept(PlanIterVisitor& v) const;
     Type getType() const { return theType; }
@@ -262,7 +262,7 @@ NARY_ITER_STATE(OpToIterator, OpToIteratorState);
 class FnDocIterator : public UnaryBaseIterator<FnDocIterator, PlanIteratorState>
 {
 public:
-  FnDocIterator(yy::location loc, PlanIter_t& arg);
+  FnDocIterator(const QueryLoc& loc, PlanIter_t& arg);
   virtual ~FnDocIterator();
 
   Item_t nextImpl(PlanState& planState) const;

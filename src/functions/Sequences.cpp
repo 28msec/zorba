@@ -58,7 +58,7 @@ op_concatenate::op_concatenate(
 }
 
 PlanIter_t op_concatenate::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new FnConcatIterator(loc, argv);
@@ -110,7 +110,7 @@ fn_index_of::fn_index_of(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_index_of::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnIndexOfIterator(loc, argv);
@@ -135,7 +135,7 @@ fn_empty::fn_empty(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_empty::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnEmptyIterator(loc, argv);
@@ -160,7 +160,7 @@ fn_exists::fn_exists(const signature& sig)
   : function(sig) { }
 
 PlanIter_t fn_exists::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnExistsIterator(loc,argv);
@@ -187,7 +187,7 @@ fn_distinct_values_1::fn_distinct_values_1(
 	function(sig) { }
 
 PlanIter_t fn_distinct_values_1::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnDistinctValuesIterator(loc, argv);
@@ -212,7 +212,7 @@ fn_insert_before::fn_insert_before(const signature& sig)
   : function(sig) { }
 
 PlanIter_t fn_insert_before::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnInsertBeforeIterator(loc, argv);
@@ -236,7 +236,7 @@ fn_remove::fn_remove(const signature& sig)
   : function(sig) { }
 
 PlanIter_t fn_remove::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnRemoveIterator(loc, argv);
@@ -261,7 +261,7 @@ fn_reverse::fn_reverse(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_reverse::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new FnReverseIterator(loc, argv);
@@ -286,7 +286,7 @@ fn_subsequence_2::fn_subsequence_2(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_subsequence_2::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnSubsequenceIterator(loc, argv);
@@ -319,7 +319,7 @@ fn_zero_or_one::fn_zero_or_one(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_zero_or_one::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnZeroOrOneIterator(loc, argv);
@@ -342,7 +342,7 @@ fn_one_or_more::fn_one_or_more(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_one_or_more::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnOneOrMoreIterator(loc, argv);
@@ -365,7 +365,7 @@ fn_exactly_one::fn_exactly_one(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_exactly_one::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnExactlyOneIterator(loc, argv);
@@ -409,7 +409,7 @@ fn_count::fn_count(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_count::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
  return new FnCountIterator(loc, argv);
@@ -432,7 +432,7 @@ fn_avg::fn_avg(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_avg::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnAvgIterator(loc, argv);
@@ -455,7 +455,7 @@ fn_max_1::fn_max_1(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_max_1::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MAX);
@@ -478,7 +478,7 @@ fn_min_1::fn_min_1(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_min_1::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MIN);
@@ -501,7 +501,7 @@ fn_sum_1::fn_sum_1(const signature& sig)
 : function(sig) { }
 
 PlanIter_t fn_sum_1::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnSumIterator(loc, argv);
@@ -536,7 +536,7 @@ op_to::op_to(const signature& sig)
 : function(sig) { }
 
 PlanIter_t op_to::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new OpToIterator(loc, argv);
@@ -570,7 +570,7 @@ fn_doc_func::fn_doc_func(
 }
 
 PlanIter_t fn_doc_func::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
   return new FnDocIterator(loc, argv[0]);
@@ -604,7 +604,7 @@ op_distinct_nodes::op_distinct_nodes(const signature& sig)
 }
 
 PlanIter_t op_distinct_nodes::operator()
-  (const yy::location& loc, 
+  (const QueryLoc& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   return new NodeDistinctIterator(loc, argv[0]);
@@ -629,7 +629,7 @@ op_distinct_nodes_or_atomics::op_distinct_nodes_or_atomics(const signature& sig)
 }
 
 PlanIter_t op_distinct_nodes_or_atomics::operator()
-  (const yy::location& loc, 
+  (const QueryLoc& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   return new NodeDistinctIterator(loc, argv[0], true);
@@ -653,7 +653,7 @@ op_sort_nodes_ascending::op_sort_nodes_ascending(const signature& sig)
 {}
 
 PlanIter_t op_sort_nodes_ascending::operator()
-  (const yy::location& loc, 
+  (const QueryLoc& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   // sorting in document order without dupelim
@@ -676,7 +676,7 @@ op_sort_nodes_asc_or_atomics::op_sort_nodes_asc_or_atomics(const signature& sig)
 {}
 
 PlanIter_t op_sort_nodes_asc_or_atomics::operator()
-  (const yy::location& loc, 
+  (const QueryLoc& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   return new NodeSortIterator(loc, argv[0], true, false, true);
@@ -697,7 +697,7 @@ op_sort_nodes_descending::op_sort_nodes_descending(const signature& sig)
 {}
 
 PlanIter_t op_sort_nodes_descending::operator()
-  (const yy::location& loc, 
+  (const QueryLoc& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   // sorting in reverse document order without dupelim
@@ -720,7 +720,7 @@ op_sort_nodes_desc_or_atomics::op_sort_nodes_desc_or_atomics(const signature& si
 {}
 
 PlanIter_t op_sort_nodes_desc_or_atomics::operator()
-  (const yy::location& loc, 
+  (const QueryLoc& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   // sorting in reverse document order without dupelim
@@ -742,7 +742,7 @@ op_sort_distinct_nodes_ascending::op_sort_distinct_nodes_ascending(const signatu
 {}
 
 PlanIter_t op_sort_distinct_nodes_ascending::operator()
-  (const yy::location& loc, 
+  (const QueryLoc& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   // sorting in document order and doing dup elim
@@ -765,7 +765,7 @@ op_sort_distinct_nodes_asc_or_atomics::op_sort_distinct_nodes_asc_or_atomics(con
 {}
 
 PlanIter_t op_sort_distinct_nodes_asc_or_atomics::operator()
-  (const yy::location& loc, 
+  (const QueryLoc& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   // sorting in document order and doing dup elim
@@ -788,7 +788,7 @@ op_sort_distinct_nodes_descending::op_sort_distinct_nodes_descending(const signa
 {}
 
 PlanIter_t op_sort_distinct_nodes_descending::operator()
-  (const yy::location& loc, 
+  (const QueryLoc& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   // sorting in document order and doing dup elim

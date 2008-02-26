@@ -25,7 +25,7 @@ namespace xqp
 			std::vector<PlanIter_t> theChildren;
 
 		public:
-			NaryBaseIterator ( const yy::location& loc, std::vector<PlanIter_t>& args );
+			NaryBaseIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& args );
 			virtual ~NaryBaseIterator(){}
 
       void openImpl ( PlanState& planState, uint32_t& offset );
@@ -39,7 +39,7 @@ namespace xqp
 	/* begin class NaryBaseIterator */
 	template <class IterType, class StateType>
 	NaryBaseIterator<IterType, StateType>::NaryBaseIterator (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    std::vector<PlanIter_t>& aChildren )
 			:
 			Batcher<IterType> ( loc ), theChildren ( aChildren )
@@ -122,7 +122,7 @@ namespace xqp
 #define NARY_ITER_STATE(iterName, stateName) class iterName \
   : public NaryBaseIterator<iterName, stateName > {\
 public:\
-  iterName(const yy::location& loc, std::vector<PlanIter_t>& aChildren) :\
+  iterName(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren) :\
     NaryBaseIterator<iterName, stateName >(loc, aChildren) \
   { } \
   virtual ~iterName() { } \

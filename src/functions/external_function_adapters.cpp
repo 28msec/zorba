@@ -13,7 +13,7 @@ stateless_external_function_adapter::~stateless_external_function_adapter()
 {
 }
 
-PlanIter_t stateless_external_function_adapter::operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const
+PlanIter_t stateless_external_function_adapter::operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const
 {
     return new StatelessExtFunctionCallIterator(loc, argv, m_function);
 }

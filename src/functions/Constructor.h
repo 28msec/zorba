@@ -16,7 +16,7 @@ namespace xqp {
       ~op_enclosed_expr() {}
 
     public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   }; /* class op_enclosed_expr */
@@ -27,7 +27,7 @@ namespace xqp {
       ~op_docfilter_expr() {}
 
     public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   }; /* class op_docfilter_expr */

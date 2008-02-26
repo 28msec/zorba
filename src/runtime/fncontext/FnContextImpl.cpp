@@ -19,7 +19,7 @@ namespace xqp
 
 
 CtxVariableIterator::CtxVariableIterator(
-    const yy::location& loc,
+    const QueryLoc& loc,
     xqp_string aVarname)
   : 
   NoaryBaseIterator<CtxVariableIterator, PlanIteratorState>(loc),

@@ -45,7 +45,7 @@ op_numeric_add::op_numeric_add(
 }
 
 PlanIter_t op_numeric_add::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
@@ -72,7 +72,7 @@ bool op_numeric_add::validate_args(
 //}
 //
 //PlanIter_t op_numeric_add_int::operator()(
-//	const yy::location& loc, 
+//	const QueryLoc& loc, 
 //	vector<PlanIter_t>& argv) const
 //{
 //	return new NumArithIterator<AddOperation>(loc, argv[0], argv[1]);
@@ -116,7 +116,7 @@ op_numeric_subtract::op_numeric_subtract(
 }
 
 PlanIter_t op_numeric_subtract::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new NumArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
@@ -159,7 +159,7 @@ op_numeric_multiply::op_numeric_multiply(
 }
 
 PlanIter_t op_numeric_multiply::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new NumArithIterator<MultiplyOperation>(loc, argv[0], argv[1]);
@@ -212,7 +212,7 @@ op_numeric_divide::op_numeric_divide(
 }
 
 PlanIter_t op_numeric_divide::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new NumArithIterator<DivideOperation>(loc, argv[0], argv[1]);
@@ -267,7 +267,7 @@ op_numeric_integer_divide::op_numeric_integer_divide(
 }
 
 PlanIter_t op_numeric_integer_divide::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new NumArithIterator<IntegerDivideOperation>(loc, argv[0], argv[1]);
@@ -330,7 +330,7 @@ op_numeric_mod::op_numeric_mod(
 }
 
 PlanIter_t op_numeric_mod::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new NumArithIterator<ModOperation>(loc, argv[0], argv[1]);
@@ -368,7 +368,7 @@ op_numeric_unary_plus::op_numeric_unary_plus(
 }
 
 PlanIter_t op_numeric_unary_plus::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new OpNumericUnaryIterator(loc, argv[0], true);
@@ -411,7 +411,7 @@ op_numeric_unary_minus::op_numeric_unary_minus(
 }
 
 PlanIter_t op_numeric_unary_minus::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new OpNumericUnaryIterator(loc, argv[0], false);
@@ -452,7 +452,7 @@ fn_abs::fn_abs(const signature& sig)
 {   	
 }
 
-PlanIter_t fn_abs::operator()( const yy::location& loc, vector<PlanIter_t>& argv) const
+PlanIter_t fn_abs::operator()( const QueryLoc& loc, vector<PlanIter_t>& argv) const
 {
 	return new FnAbsIterator(loc, argv);
 }
@@ -473,7 +473,7 @@ fn_ceiling::fn_ceiling(const signature& sig)
 function(sig)
 {}
 
-PlanIter_t fn_ceiling::operator ( )(const yy::location& loc, vector<PlanIter_t>& argv) const
+PlanIter_t fn_ceiling::operator ( )(const QueryLoc& loc, vector<PlanIter_t>& argv) const
 {
   return new FnCeilingIterator(loc, argv);
 }
@@ -494,7 +494,7 @@ fn_floor::fn_floor(const signature& sig)
 function(sig)
 {}
 
-PlanIter_t fn_floor::operator ( )(const yy::location& loc, vector<PlanIter_t>& argv) const
+PlanIter_t fn_floor::operator ( )(const QueryLoc& loc, vector<PlanIter_t>& argv) const
 {
   return new FnFloorIterator(loc, argv);
 }
@@ -515,7 +515,7 @@ fn_round::fn_round(const signature& sig)
 function(sig)
 {}
 
-PlanIter_t fn_round::operator ( )( const yy::location& loc, vector<PlanIter_t>& argv) const
+PlanIter_t fn_round::operator ( )( const QueryLoc& loc, vector<PlanIter_t>& argv) const
 {
   return new FnRoundIterator(loc, argv);
 }
@@ -537,7 +537,7 @@ function(sig)
 {}
 
 PlanIter_t
-fn_round_half_to_even::operator ( )( const yy::location& loc, vector<PlanIter_t>& argv) const
+fn_round_half_to_even::operator ( )( const QueryLoc& loc, vector<PlanIter_t>& argv) const
 {
   return new FnRoundHalfToEvenIterator(loc, argv[0], argv[1]);
 }
@@ -558,7 +558,7 @@ zor_numgen::zor_numgen(const signature& sig)
 {   	
 }
 
-PlanIter_t zor_numgen::operator()( const yy::location& loc, vector<PlanIter_t>& argv) const
+PlanIter_t zor_numgen::operator()( const QueryLoc& loc, vector<PlanIter_t>& argv) const
 {
 	return new ZorNumGen(loc);
 }

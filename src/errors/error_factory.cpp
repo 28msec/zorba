@@ -30,7 +30,7 @@ bool        g_abort_when_fatal_error = false;
 ********************************************************************************/
 void ZorbaAlertFactory::error_alert( 
     const ZorbaError::ErrorCodes code,
-    const yy::location* ploc, 
+    const QueryLoc* ploc, 
     enumContinueExecution_t continue_execution,
     const std::string param1,
     const std::string param2)
@@ -66,10 +66,10 @@ void ZorbaAlertFactory::error_alert(
 //	error->theIsFatal = !continue_execution;
 	if(ploc)
 	{
-		if(ploc->begin.filename)
-			error->theLocation.filename = *ploc->begin.filename;
-		error->theLocation.line = ploc->begin.line;
-		error->theLocation.column = ploc->begin.column;
+		if(ploc->getFilenameBegin())
+			error->theLocation.filename = *ploc->getFilenameBegin();
+		error->theLocation.line = ploc->getLineBegin();
+		error->theLocation.column = ploc->getColumnBegin();
 		error->theLocation.location_is_set = true;
 	}
 	error->theDescription = description;
@@ -96,7 +96,7 @@ void ZorbaAlertFactory::error_alert(
 ********************************************************************************/
 void ZorbaAlertFactory::warning_alert( 
     const ZorbaWarning::WarningCodes code,
-    const yy::location* ploc, 
+    const QueryLoc* ploc, 
     const string param1,
     const string param2)
 {
@@ -116,10 +116,10 @@ void ZorbaAlertFactory::warning_alert(
 	warning->theCode = code;
 	if(ploc)
 	{
-		if(ploc->begin.filename)
-			warning->theLocation.filename = *ploc->begin.filename;
-		warning->theLocation.line = ploc->begin.line;
-		warning->theLocation.column = ploc->begin.column;
+		if(ploc->getFilenameBegin())
+			warning->theLocation.filename = *ploc->getFilenameBegin();
+		warning->theLocation.line = ploc->getLineBegin();
+		warning->theLocation.column = ploc->getColumnBegin();
 		warning->theLocation.location_is_set = true;
 	}
 	warning->theDescription = description;

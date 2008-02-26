@@ -36,7 +36,7 @@ class DocumentIterator : public UnaryBaseIterator<DocumentIterator,
                                                   DocumentIteratorState>
 {
 public:
-  DocumentIterator(const yy::location& loc, PlanIter_t& aChild)
+  DocumentIterator(const QueryLoc& loc, PlanIter_t& aChild)
     : UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
 
   void openImpl(PlanState& planState, uint32_t& offset);
@@ -58,7 +58,7 @@ class DocumentContentIterator : public UnaryBaseIterator<DocumentContentIterator
                                                          PlanIteratorState> 
 {
 public:
-  DocumentContentIterator(const yy::location& loc, PlanIter_t& aContent)
+  DocumentContentIterator(const QueryLoc& loc, PlanIter_t& aContent)
     : UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(loc, aContent)
   {}
 
@@ -115,7 +115,7 @@ private:
 
 public:
   ElementIterator (
-      const yy::location& loc,
+      const QueryLoc& loc,
       PlanIter_t&         aQNameIter,
       PlanIter_t&         aAttrs,
       PlanIter_t&         aChildren,
@@ -172,7 +172,7 @@ private:
 
 public:
   AttributeIterator(
-        const yy::location& loc,
+        const QueryLoc& loc,
         PlanIter_t& aQNameIter,
         PlanIter_t& aValueIter,
         bool isRoot);
@@ -198,7 +198,7 @@ protected:
 
 public:
   CommentIterator(
-        const yy::location& loc, 
+        const QueryLoc& loc, 
         PlanIter_t& aComment,
         bool isRoot);
   
@@ -220,7 +220,7 @@ protected:
 
 public:
   PiIterator(
-        const yy::location& loc, 
+        const QueryLoc& loc, 
         PlanIter_t& aTarget,
         PlanIter_t& aContent,
         bool isRoot);
@@ -245,7 +245,7 @@ protected:
   bool       theIsRoot;
 
 public:
-  TextIterator( const yy::location& loc, PlanIter_t& aChild, bool isRoot);
+  TextIterator( const QueryLoc& loc, PlanIter_t& aChild, bool isRoot);
   
   Item_t nextImpl(PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
@@ -275,7 +275,7 @@ private:
   
 public:
   EnclosedIterator(
-        const yy::location& loc,
+        const QueryLoc& loc,
         PlanIter_t& childIter);
 
   Item_t nextImpl(PlanState& planState) const;
@@ -308,7 +308,7 @@ class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator,
                                                    DocFilterIteratorState>
 {
 public:
-  DocFilterIterator( const yy::location& loc, PlanIter_t& aChild)
+  DocFilterIterator( const QueryLoc& loc, PlanIter_t& aChild)
     : UnaryBaseIterator<DocFilterIterator, DocFilterIteratorState>(loc, aChild) {}
 
   Item_t nextImpl(PlanState& planState) const;

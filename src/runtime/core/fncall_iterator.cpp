@@ -135,7 +135,7 @@ void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
   m_result = NULL;
 }
 
-StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(const yy::location& loc,
+StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(const QueryLoc& loc,
     std::vector<PlanIter_t>& args,
     const StatelessExternalFunction *function)
   : NaryBaseIterator<StatelessExtFunctionCallIterator, StatelessExtFunctionCallIteratorState>(loc, args),

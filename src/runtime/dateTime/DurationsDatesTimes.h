@@ -18,7 +18,7 @@ class FnDateTimeConstructorIterator : public BinaryBaseIterator<FnDateTimeConstr
                                                                 PlanIteratorState>
 {
 public:
-  FnDateTimeConstructorIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+  FnDateTimeConstructorIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
     :
     BinaryBaseIterator<FnDateTimeConstructorIterator, PlanIteratorState>(loc, arg0, arg1){}
 
@@ -46,7 +46,7 @@ public:
 // 10.4.5 op:duration-equal
 class OpDurationEqualIterator : public BinaryBaseIterator<OpDurationEqualIterator, PlanIteratorState>{
 public:
-  OpDurationEqualIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+  OpDurationEqualIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
   BinaryBaseIterator<OpDurationEqualIterator, PlanIteratorState>(loc, arg0, arg1){}
 

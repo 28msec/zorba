@@ -257,7 +257,7 @@ bool FLWORIterator::OrderKeyCmp::operator() (
 /////////////////////////////////////////////////////////////////////////////////
 
 FLWORIterator::FLWORIterator(
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<FLWORIterator::ForLetClause> &aForLetClauses,
     PlanIter_t& aWhereClause,
     FLWORIterator::OrderByClause* aOrderByClause,

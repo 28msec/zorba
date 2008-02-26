@@ -20,7 +20,7 @@ namespace xqp {
 
 Store*				Zorba::theStore = NULL;
 ItemFactory	*	Zorba::theItemFactory = NULL;
-yy::location	Zorba::null_loc;
+QueryLoc	Zorba::null_loc;
 
 
 Zorba::Zorba()
@@ -153,12 +153,12 @@ void Zorba::getDefaultCollation(
 }
 
 /*
-yy::location& Zorba::GetCurrentLocation()//from top iterator
+QueryLoc& Zorba::GetCurrentLocation()//from top iterator
 {
 	if(current_iterator.empty())
 		return null_loc;///no current location information
 	else
-		return (yy::location&)(current_iterator.top()->loc);
+		return (QueryLoc&)(current_iterator.top()->loc);
 }
 */
 

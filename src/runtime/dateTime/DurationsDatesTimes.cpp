@@ -755,7 +755,7 @@ FnTimezoneFromTimeIterator::nextImpl(PlanState& planState) const
 /*
 template<>
 Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const yy::location* loc,  const Item* i0, const Item* i1 )
+( const QueryLoc* loc,  const Item* i0, const Item* i1 )
 {
   xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
@@ -784,7 +784,7 @@ Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATI
 /*
 template<>
 Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const yy::location* loc, const Item* i0, const Item* i1 )
+( const QueryLoc* loc, const Item* i0, const Item* i1 )
 {
   xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
@@ -813,7 +813,7 @@ Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
 /*
 template<>
 Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
-( const yy::location* loc, const Item* i0, const Item* i1 )
+( const QueryLoc* loc, const Item* i0, const Item* i1 )
 {
   xqp_duration d;
 
@@ -852,7 +852,7 @@ Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
 /*
 template<>
 Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
-( const yy::location* loc, const Item* i0, const Item* i1 )
+( const QueryLoc* loc, const Item* i0, const Item* i1 )
 {
   xqp_duration d;
 
@@ -889,7 +889,7 @@ Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOU
 /*
 template<>
 Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const yy::location* loc, const Item* i0, const Item* i1 )
+( const QueryLoc* loc, const Item* i0, const Item* i1 )
 {
   xqp_decimal d = *i0->getDurationValue() / *i1->getDurationValue();
   return Zorba::getItemFactory()->createDecimal(d);

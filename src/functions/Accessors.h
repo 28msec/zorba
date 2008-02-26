@@ -23,7 +23,7 @@ namespace xqp {
 			~fn_data_func() {}
 
 		public:
-			PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
             xqtref_t type_check ( signature& ) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -36,7 +36,7 @@ namespace xqp {
 			~fn_root_func() {}
 
 		public:
-			PlanIter_t operator() (const yy::location& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t operator() (const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
             xqtref_t type_check(signature& s) const;
 			bool validate_args(std::vector<PlanIter_t>& ) const;
 	};
@@ -48,7 +48,7 @@ namespace xqp {
 			~fn_nodename_func() {}
 
 		public:
-			PlanIter_t operator() (const yy::location& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t operator() (const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
             xqtref_t type_check(signature& s) const;
 			bool validate_args(std::vector<PlanIter_t>& ) const;
 	};
@@ -60,7 +60,7 @@ namespace xqp {
 			~fn_name_func() {}
 
 		public:
-			PlanIter_t operator() (const yy::location& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t operator() (const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
             xqtref_t type_check(signature& s) const;
 			bool validate_args(std::vector<PlanIter_t>& ) const;
 	};

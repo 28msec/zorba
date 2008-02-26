@@ -13,7 +13,7 @@
 #include <vector>
 #include "common/shared_types.h"
 #include "functions/signature.h"
-#include "compiler/parser/location.hh"
+#include "compiler/parser/query_loc.h"
 
 namespace xqp {
 
@@ -56,7 +56,7 @@ public:
     const signature& get_signature() const { return sig; }
 
 	// codegen: functor specification
-	virtual PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const = 0;
+	virtual PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const = 0;
 
 	// polymorphic type inference
 	virtual xqtref_t type_check(signature&) const = 0;
@@ -68,10 +68,10 @@ public:
 
 class user_function : public function {
   public:
-    user_function(const yy::location& loc, const signature& _sig, expr_t expr_body);
+    user_function(const QueryLoc& loc, const signature& _sig, expr_t expr_body);
     virtual ~user_function();
 
-    const yy::location& get_location() const;
+    const QueryLoc& get_location() const;
 
     void set_body(expr_t body);
     expr_t get_body() const;
@@ -79,7 +79,7 @@ class user_function : public function {
     void set_params(std::vector<var_expr_t>& params);
     const std::vector<var_expr_t>& get_params() const;
 
-    virtual PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const;
+    virtual PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const;
 
     virtual xqtref_t type_check(signature&) const;
 
@@ -90,7 +90,7 @@ class user_function : public function {
     virtual std::vector<ref_iter_t>& get_param_iters() const;
 
   private:
-    yy::location m_loc;
+    QueryLoc m_loc;
     expr_t m_expr_body;
     std::vector<var_expr_t> m_params;
     mutable PlanIter_t m_plan;

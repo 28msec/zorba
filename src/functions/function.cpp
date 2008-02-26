@@ -9,12 +9,12 @@
 
 namespace xqp {
 
-user_function::user_function(const yy::location& loc, const signature& _sig, expr_t expr_body)
+user_function::user_function(const QueryLoc& loc, const signature& _sig, expr_t expr_body)
   : function(_sig), m_loc(loc), m_expr_body(expr_body) { }
 
 user_function::~user_function() { }
 
-const yy::location& user_function::get_location() const
+const QueryLoc& user_function::get_location() const
 {
   return m_loc;
 }
@@ -39,7 +39,7 @@ const std::vector<var_expr_t>& user_function::get_params() const
   return m_params;
 }
 
-PlanIter_t user_function::operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const
+PlanIter_t user_function::operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const
 {
   return new UDFunctionCallIterator(loc, argv, this);
 }

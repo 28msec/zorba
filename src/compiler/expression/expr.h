@@ -31,7 +31,7 @@
 #include <zorba/errors.h>
 
 #include "common/shared_types.h"
-#include "compiler/parser/location.hh"
+#include "compiler/parser/query_loc.h"
 #include "util/checked_vector.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_consts.h"
@@ -77,18 +77,18 @@ public:
   typedef substitution_t::iterator subst_iter_t;
 
 protected:
-  yy::location loc;
+  QueryLoc loc;
 
 
 protected:
   virtual expr_iterator_data *make_iter ();
   
 public:
-  expr(yy::location const&);
+  expr(const QueryLoc&);
   virtual ~expr();
 
 public:
-  yy::location get_loc() const { return loc; }
+  QueryLoc get_loc() const { return loc; }
 
 public:
   virtual expr_iterator expr_begin ();
@@ -122,7 +122,7 @@ public:
 
   class constructor_expr : public expr {
   public:
-    constructor_expr(yy::location const& loc) : expr (loc) {}
+    constructor_expr(const QueryLoc& loc) : expr (loc) {}
   };
 
 /////////////////////////////////////////////////////////////////////////
@@ -162,8 +162,8 @@ public:
   xqtref_t type;
 
 public:
-  var_expr(yy::location const& loc, Item_t name);
-  var_expr(yy::location const& loc, var_kind k, Item_t name);
+  var_expr(const QueryLoc& loc, Item_t name);
+  var_expr(const QueryLoc& loc, var_kind k, Item_t name);
 
 public:
   Item_t get_varname() const;
@@ -291,10 +291,10 @@ protected:  // state
   expr_t retval_h;
 
 public: // ctor,dtor
-  flwor_expr(yy::location const& loc)
+  flwor_expr(const QueryLoc& loc)
     : expr(loc), order_stable (false)
   {}
-  flwor_expr(const yy::location &loc, clause_list_t clause_v_, expr_t retval_)
+  flwor_expr(const QueryLoc& loc, clause_list_t clause_v_, expr_t retval_)
     : expr (loc), clause_v (clause_v_), order_stable (false), retval_h (retval_)
   {}
 
@@ -374,8 +374,8 @@ public:
 
 class promote_expr : public expr {
 public:
-  promote_expr(yy::location const& loc);
-  promote_expr(yy::location const& loc, expr_t input, xqtref_t type);
+  promote_expr(const QueryLoc& loc);
+  promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
 
 protected:
   expr_t input_expr_h;
@@ -413,7 +413,7 @@ protected:
   expr_t default_clause_h;
 
 public:
-  typeswitch_expr(yy::location const&);
+  typeswitch_expr(const QueryLoc&);
 
 public:
   expr_t get_switch_expr() const
@@ -476,13 +476,13 @@ protected:
 
 public:
   if_expr(
-    yy::location const&,
+    const QueryLoc&,
     expr_t,
     expr_t,
     expr_t);
 
   if_expr(
-    yy::location const&);
+    const QueryLoc&);
 
 
 public:
@@ -512,7 +512,7 @@ protected:
   std::auto_ptr<signature> sig;
 
 public:
-  function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type);
+  function_def_expr (const QueryLoc& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type);
 
   Item_t get_name () const { return name; }
   expr_t get_body () { return body; }
@@ -545,9 +545,9 @@ protected:
   const function* func;
 
 public:
-  fo_expr (yy::location const& loc, const function *f)
+  fo_expr (const QueryLoc& loc, const function *f)
     : expr(loc), func (f) { assert (f != NULL); }
-  fo_expr (yy::location const& loc, const function *f, expr_t arg)
+  fo_expr (const QueryLoc& loc, const function *f, expr_t arg)
     : expr(loc), func (f)
   {
     assert (f != NULL);
@@ -599,7 +599,7 @@ protected:
 
 public:
   ft_contains_expr(
-    yy::location const&,
+    const QueryLoc&,
     expr_t,
     expr_t,
     expr_t);
@@ -637,7 +637,7 @@ protected:
   bool forced;  // error if not instance?
 
 public:
-  instanceof_expr (yy::location const&,
+  instanceof_expr (const QueryLoc&,
                    expr_t,
                    xqtref_t);
 
@@ -668,7 +668,7 @@ protected:
 
 public:
   treat_expr(
-    yy::location const&,
+    const QueryLoc&,
     expr_t,
     xqtref_t,
     enum ZorbaError::ErrorCodes);
@@ -699,7 +699,7 @@ protected:
 
 public:
   castable_expr(
-    yy::location const&,
+    const QueryLoc&,
     expr_t,
     xqtref_t);
 
@@ -729,7 +729,7 @@ protected:
 
 public:
   cast_expr(
-    yy::location const&,
+    const QueryLoc&,
     expr_t,
     xqtref_t);
 
@@ -758,7 +758,7 @@ protected:
 
 public:
   validate_expr(
-    yy::location const&,
+    const QueryLoc&,
     enum validation_mode_t,
     expr_t);
 
@@ -798,9 +798,9 @@ protected:
 
 public:
   extension_expr(
-    yy::location const&);
+    const QueryLoc&);
   extension_expr(
-    yy::location const&,
+    const QueryLoc&,
     expr_t);
 
 public:
@@ -858,7 +858,7 @@ protected:
   std::vector<expr_t> theSteps;
 
 public:
-  relpath_expr(yy::location const&);
+  relpath_expr(const QueryLoc&);
 
 	uint32_t size() const        { return theSteps.size(); }
 	void add_back(expr_t step)   { theSteps.push_back(step); }
@@ -903,7 +903,7 @@ protected:
   checked_vector<expr_t>  thePreds;
 
 public:
-  axis_step_expr(yy::location const&);
+  axis_step_expr(const QueryLoc&);
 
 public:
   axis_kind_t getAxis() const          { return theAxis; }
@@ -959,7 +959,7 @@ protected:
   bool          theNilledAllowed;
 
 public:
-  match_expr(yy::location const&);
+  match_expr(const QueryLoc&);
 
   match_test_t getTestKind() const         { return theTestKind; }
   match_test_t getDocTestKind() const      { return theDocTestKind; }
@@ -1012,13 +1012,13 @@ protected:
   Item_t val;
 
 public:
-  const_expr(yy::location const&, xqpString sval);
-  const_expr(yy::location const&, xqp_integer);
-  const_expr(yy::location const&, xqp_decimal);
-  const_expr(yy::location const&, xqp_double);
-  const_expr(yy::location const&, xqp_boolean);
-  const_expr(yy::location const&, Item_t);  
-  const_expr(yy::location const&, const char* aNamespace, const char* aPrefix, const char* aLocal);
+  const_expr(const QueryLoc&, xqpString sval);
+  const_expr(const QueryLoc&, xqp_integer);
+  const_expr(const QueryLoc&, xqp_decimal);
+  const_expr(const QueryLoc&, xqp_double);
+  const_expr(const QueryLoc&, xqp_boolean);
+  const_expr(const QueryLoc&, Item_t);  
+  const_expr(const QueryLoc&, const char* aNamespace, const char* aPrefix, const char* aLocal);
 
 public:
   Item_t get_val () const { return val; }
@@ -1052,7 +1052,7 @@ protected:
 
 public:
   order_expr(
-    yy::location const&,
+    const QueryLoc&,
     order_type_t,
     expr_t);
 
@@ -1088,14 +1088,14 @@ protected:
   
 public:
   elem_expr(
-    yy::location const&,
+    const QueryLoc&,
     expr_t aQNameExpr,
     expr_t aAttrs,
     expr_t aContent,
     rchandle<namespace_context> aNSCtx);
   
   elem_expr(
-    yy::location const&,
+    const QueryLoc&,
     expr_t aQNameExpr,
     expr_t aContent,
     rchandle<namespace_context> aNSCtx);
@@ -1125,7 +1125,7 @@ protected:
 
 public:
   doc_expr(
-    yy::location const&,
+    const QueryLoc&,
     expr_t aContent);
 
 public:
@@ -1163,7 +1163,7 @@ protected:
 
 public:
   attr_expr(
-    yy::location const& loc,
+    const QueryLoc& loc,
     expr_t aQNameExpr,
     expr_t aValueExpr);
 
@@ -1200,7 +1200,7 @@ protected:
 
 public:
   text_expr(
-    yy::location const&,
+    const QueryLoc&,
     text_constructor_type,
     expr_t);
 
@@ -1236,7 +1236,7 @@ protected:
   expr_t target_expr_h;
   
 public:
-  pi_expr (yy::location const&,
+  pi_expr (const QueryLoc&,
            expr_t,
            expr_t);
   

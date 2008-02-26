@@ -27,7 +27,7 @@ namespace xqp {
 class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>
 {
   public:
-    ResolveQNameIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+    ResolveQNameIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
     BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>(loc, arg0, arg1){}
 
@@ -47,7 +47,7 @@ class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator, Pla
 class QNameIterator : public BinaryBaseIterator<QNameIterator, PlanIteratorState>
 {
   public:
-    QNameIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+    QNameIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
     BinaryBaseIterator<QNameIterator, PlanIteratorState>(loc, arg0, arg1){}
 
@@ -67,7 +67,7 @@ class QNameIterator : public BinaryBaseIterator<QNameIterator, PlanIteratorState
 class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>
 {
   public:
-    QNameEqualIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+    QNameEqualIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
     BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>(loc, arg0, arg1){}
 
@@ -86,7 +86,7 @@ class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator, PlanIte
 class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>
 {
   public:
-    PrefixFromQNameIterator ( const yy::location& loc, PlanIter_t& arg )
+    PrefixFromQNameIterator ( const QueryLoc& loc, PlanIter_t& arg )
   :
     UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>( loc, arg ){};
   
@@ -105,7 +105,7 @@ class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator
 class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>
 {
   public:
-    LocalNameFromQNameIterator ( const yy::location& loc, PlanIter_t& arg )
+    LocalNameFromQNameIterator ( const QueryLoc& loc, PlanIter_t& arg )
   :
     UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>( loc, arg ){};
   
@@ -124,7 +124,7 @@ class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIt
 class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>
 {
   public:
-    NamespaceUriFromQNameIterator ( const yy::location& loc, PlanIter_t& arg )
+    NamespaceUriFromQNameIterator ( const QueryLoc& loc, PlanIter_t& arg )
   :
     UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>( loc, arg ){};
   
@@ -144,7 +144,7 @@ class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQ
 class NamespaceUriForPrefixlIterator : public BinaryBaseIterator<NamespaceUriForPrefixlIterator, PlanIteratorState>
 {
   public:
-    NamespaceUriForPrefixlIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+    NamespaceUriForPrefixlIterator( const QueryLoc& loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
   :
     BinaryBaseIterator<NamespaceUriForPrefixlIterator, PlanIteratorState>(loc, arg0, arg1){}
 
@@ -178,7 +178,7 @@ class InScopePrefixesIterator : public UnaryBaseIterator<InScopePrefixesIterator
                                                          InScopePrefixesState>
 {
 public:
-  InScopePrefixesIterator(const yy::location& loc, PlanIter_t& arg)
+  InScopePrefixesIterator(const QueryLoc& loc, PlanIter_t& arg)
     :
   UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesState>(loc, arg) {};
   

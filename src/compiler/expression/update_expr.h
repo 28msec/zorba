@@ -39,7 +39,7 @@ protected:
 
 public:
 	insert_expr(
-		yy::location const&,
+		const QueryLoc&,
 		expr_t,
 		expr_t);
 	~insert_expr();
@@ -66,7 +66,7 @@ protected:
 
 public:
 	delete_expr(
-		yy::location const&,
+		const QueryLoc&,
 		expr_t);
 	~delete_expr();
 
@@ -93,7 +93,7 @@ protected:
 
 public:
 	replace_expr(
-		yy::location const&,
+		const QueryLoc&,
 		expr_t source_expr_h,
 		expr_t target_expr_h);
 	~replace_expr();
@@ -121,7 +121,7 @@ protected:
 
 public:
 	rename_expr(
-		yy::location const&,
+		const QueryLoc&,
 		expr_t source_expr_h,
 		expr_t target_expr_h);
 	~rename_expr();
@@ -154,7 +154,7 @@ protected:
 
 public:
 	transform_expr(
-		yy::location const&,
+		const QueryLoc&,
 		expr_t source_expr_h,
 		expr_t target_expr_h);
 	~transform_expr();

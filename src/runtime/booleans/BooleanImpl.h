@@ -32,7 +32,7 @@ namespace xqp
       bool theNegate;
 
     public:
-      FnBooleanIterator ( const yy::location& loc, PlanIter_t& aIter, bool aNegate = false );
+      FnBooleanIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool aNegate = false );
       virtual ~FnBooleanIterator();
 
       /**
@@ -44,7 +44,7 @@ namespace xqp
        * @param negate optinal parameter which negates the effective boolean value (default == false)
        * @return effective boolean value
        */
-      static Item_t effectiveBooleanValue ( const yy::location& loc, PlanState& planState, const PlanIterator* , bool negate = false);
+      static Item_t effectiveBooleanValue ( const QueryLoc& loc, PlanState& planState, const PlanIterator* , bool negate = false);
 
       Item_t nextImpl(PlanState& planState) const;
 
@@ -62,7 +62,7 @@ namespace xqp
       LogicType theLogicType;
       
     public:
-      LogicIterator ( const yy::location& loc, PlanIter_t aChild0, PlanIter_t aChild1, LogicType aLogicType);
+      LogicIterator ( const QueryLoc& loc, PlanIter_t aChild0, PlanIter_t aChild1, LogicType aLogicType);
       virtual ~LogicIterator();
       
       Item_t nextImpl(PlanState& planState) const;
@@ -76,7 +76,7 @@ namespace xqp
       CompareConsts::CompareType theCompType;
 
     public:
-      CompareIterator ( const yy::location& loc, PlanIter_t theChild0, PlanIter_t theChild1, CompareConsts::CompareType aCompType );
+      CompareIterator ( const QueryLoc& loc, PlanIter_t theChild0, PlanIter_t theChild1, CompareConsts::CompareType aCompType );
       virtual ~CompareIterator();
 
       Item_t nextImpl(PlanState& planState) const;

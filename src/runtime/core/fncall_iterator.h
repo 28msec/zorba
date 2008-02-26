@@ -27,7 +27,7 @@ class UDFunctionCallIteratorState : public PlanIteratorState {
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
                                                        UDFunctionCallIteratorState> {
   public:
-    UDFunctionCallIterator(const yy::location& loc, 
+    UDFunctionCallIterator(const QueryLoc& loc, 
                            std::vector<PlanIter_t>& args, 
                            const user_function *aUDF)
       : NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(loc, args), 
@@ -61,7 +61,7 @@ class StatelessExtFunctionCallIterator
   : public NaryBaseIterator
       <StatelessExtFunctionCallIterator, StatelessExtFunctionCallIteratorState> {
   public:
-    StatelessExtFunctionCallIterator(const yy::location& loc,
+    StatelessExtFunctionCallIterator(const QueryLoc& loc,
                                      std::vector<PlanIter_t>& args,
                                      const StatelessExternalFunction *function);
     virtual ~StatelessExtFunctionCallIterator() { }

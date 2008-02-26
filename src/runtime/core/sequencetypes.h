@@ -22,7 +22,7 @@ private:
   xqtref_t theSequenceType;
 
 public:
-  InstanceOfIterator(yy::location loc, 
+  InstanceOfIterator(const QueryLoc& loc, 
                      PlanIter_t& aTreatExpr, 
                      xqtref_t aSequenceType);
  
@@ -45,7 +45,7 @@ private:
   TypeConstants::quantifier_t theQuantifier;
 
 public:
-  CastIterator(const yy::location& loc,
+  CastIterator(const QueryLoc& loc,
                PlanIter_t& aChild,
                const xqtref_t& aCastType);
   ~CastIterator();
@@ -67,7 +67,7 @@ private:
   TypeConstants::quantifier_t theQuantifier;
 
 public:
-  CastableIterator(const yy::location& aLoc,
+  CastableIterator(const QueryLoc& aLoc,
                    PlanIter_t& aChild,
                    const xqtref_t& aCastType);
   virtual ~CastableIterator();
@@ -87,7 +87,7 @@ private:
   TypeConstants::quantifier_t theQuantifier;
 
 public:
-  PromoteIterator(const yy::location&, PlanIter_t&, const xqtref_t& aPromoteType);
+  PromoteIterator(const QueryLoc&, PlanIter_t&, const xqtref_t& aPromoteType);
   virtual ~PromoteIterator();
   Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
@@ -105,7 +105,7 @@ private:
   ZorbaError::ErrorCodes theErrorCode;
 
 public:
-  TreatIterator(const yy::location&, PlanIter_t&, const xqtref_t& aTreatType, enum ZorbaError::ErrorCodes);
+  TreatIterator(const QueryLoc&, PlanIter_t&, const xqtref_t& aTreatType, enum ZorbaError::ErrorCodes);
   virtual ~TreatIterator();
   Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;

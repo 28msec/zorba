@@ -79,7 +79,7 @@ namespace xqp {
     return x;
   }
 
-  static yy::location null_loc;
+  static QueryLoc null_loc;
 
 class TranslatorImpl : public parsenode_visitor
 {
@@ -154,7 +154,7 @@ protected:
     return (nodestack.empty ()) ? expr_t (NULL) : peek_stack (nodestack);
   }
 
-  var_expr_t bind_var (yy::location loc, string varname, var_expr::var_kind kind)
+  var_expr_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind)
   {
     Item_t qname = sctx_p->lookup_qname ("", varname);
     var_expr_t e = new var_expr (loc, kind, qname);
@@ -162,14 +162,14 @@ protected:
     return e;
   }
 
-  var_expr_t bind_var_and_push (yy::location loc, string varname, var_expr::var_kind kind)
+  var_expr_t bind_var_and_push (const QueryLoc& loc, string varname, var_expr::var_kind kind)
   {
     var_expr_t e = bind_var (loc, varname, kind);
     nodestack.push (&*e);
     return e;
   }
   
-  fo_expr *create_seq (yy::location loc) {
+  fo_expr *create_seq (const QueryLoc& loc) {
     return new fo_expr (loc, LOOKUP_OPN ("concatenate"));
   }
 
@@ -439,7 +439,7 @@ void end_visit(const DirCommentConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  yy::location loc = v.get_location();
+  QueryLoc loc = v.get_location();
   xqpString str = v.get_comment();
   expr_t content = new const_expr (loc, str);
   nodestack.push (new text_expr(loc,
@@ -456,7 +456,7 @@ void *begin_visit(const DirPIConstructor& /*v*/)
 void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  yy::location loc = v.get_location ();
+  QueryLoc loc = v.get_location ();
   xqp_string target_str = v.get_pi_target ();
   if (target_str.substr (0).uppercase () == "XML")
     ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
@@ -813,7 +813,7 @@ void end_visit(const DirAttributeValue& /*v*/, void* /*visit_state*/)
 }
 
 
-void attr_content_list(yy::location loc, void* /*visit_state*/)
+void attr_content_list(const QueryLoc& loc, void* /*visit_state*/)
 {
   rchandle<fo_expr> expr_list_t = create_seq(loc);
   expr_t e_h;
@@ -861,7 +861,7 @@ void end_visit(const AposAttrContentList& v, void* visit_state)
 }
 
 
-void attr_val_content (yy::location loc, const CommonContent *cc, xqpString content)
+void attr_val_content (const QueryLoc& loc, const CommonContent *cc, xqpString content)
 {
   if (cc == NULL)
   {
@@ -1153,7 +1153,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  yy::location loc = v.get_location();
+  QueryLoc loc = v.get_location();
   expr_t target;
   expr_t content;
 
@@ -2033,7 +2033,7 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
 
 /// Creates a cast_expr or castable_expr.
-expr_t create_cast_expr (const yy::location &loc, expr_t node, xqtref_t type, bool isCast) {
+expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool isCast) {
   if (GENV_TYPESYSTEM.get_atomic_type_code (*type) != TypeConstants::XS_QNAME) {
     if (isCast)
       return new cast_expr (loc, node, type);
@@ -2237,7 +2237,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  yy::location loc = v.get_location ();
+  QueryLoc loc = v.get_location ();
 
   std::vector<expr_t> arguments;
   while (true) {
@@ -3047,7 +3047,7 @@ void end_visit(const SchemaElementTest& /*v*/, void* /*visit_state*/)
 #define TEMP_VAR_URI "http://www.flworfound.org/zorba/temp-var"
 #define TEMP_VAR_PREFIX "ztv"
 
-var_expr_t tempvar(yy::location loc, var_expr::var_kind kind)
+var_expr_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 {
   return new var_expr(loc, kind, ITEM_FACTORY.createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, "v" + to_string (tempvar_counter++)));
 }
@@ -3075,7 +3075,7 @@ rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar)
 
 rchandle<forlet_clause> wrap_in_forclause(
     expr_t expr,
-    yy::location loc,
+    const QueryLoc& loc,
     string fv_name,
     string pv_name)
 {
@@ -3089,7 +3089,7 @@ rchandle<forlet_clause> wrap_in_letclause(expr_t expr, var_expr_t lv)
   return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.getp());
 }
 
-rchandle<forlet_clause> wrap_in_letclause(expr_t expr, yy::location loc, string name)
+rchandle<forlet_clause> wrap_in_letclause(expr_t expr, const QueryLoc& loc, string name)
 {
   return wrap_in_letclause (expr, bind_var (loc, name, var_expr::let_var));
 }
@@ -3739,7 +3739,7 @@ void *begin_visit(const TypeswitchExpr& v)
        it!=clauses->rend(); ++it)
   {
     const CaseClause *e_p = &**it;
-    yy::location loc = e_p->get_location ();
+    QueryLoc loc = e_p->get_location ();
     string name = e_p->get_varname ();
     var_expr_t var;
     if (! name.empty ()) {

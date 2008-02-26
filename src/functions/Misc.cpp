@@ -8,7 +8,7 @@ namespace xqp {
 fn_trace_func::fn_trace_func(const signature& sig)
   : function(sig) { }
 
-PlanIter_t fn_trace_func::operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const
+PlanIter_t fn_trace_func::operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const
 {
   if ( !validate_args ( argv ) )
 	{

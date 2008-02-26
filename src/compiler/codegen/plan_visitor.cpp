@@ -432,7 +432,7 @@ void end_visit(fo_expr& v)
   vector<PlanIter_t> argv (v.size ());
   generate (argv.rbegin (), argv.rend (), stack_to_generator (itstack));
 
-  const yy::location& loc = v.get_loc ();
+  const QueryLoc& loc = v.get_loc ();
 
   if (func->validate_args (argv))
   {

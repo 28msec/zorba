@@ -24,7 +24,7 @@ namespace xqp
 			PlanIter_t theChild1;
 
 		public:
-			BinaryBaseIterator ( const yy::location& loc, PlanIter_t& arg0, PlanIter_t& arg1 );
+			BinaryBaseIterator ( const QueryLoc& loc, PlanIter_t& arg0, PlanIter_t& arg1 );
 			virtual ~BinaryBaseIterator();
 
       void openImpl( PlanState& planState, uint32_t& offset);
@@ -38,7 +38,7 @@ namespace xqp
 	/* begin class BinaryBaseIterator */
 	template <class IterType, class StateType>
 	BinaryBaseIterator<IterType, StateType>::BinaryBaseIterator (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    PlanIter_t& aChild0,
 	    PlanIter_t& aChild1 )
 			:

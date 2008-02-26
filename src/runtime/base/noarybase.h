@@ -20,7 +20,7 @@ template <class IterType, class StateType>
 class NoaryBaseIterator : public Batcher<IterType>
 {
 public:
-  NoaryBaseIterator ( const yy::location& loc );
+  NoaryBaseIterator ( const QueryLoc& loc );
   virtual ~NoaryBaseIterator();
 
   void openImpl (PlanState&, uint32_t& offset);
@@ -33,7 +33,7 @@ public:
 
 
 template <class IterType, class StateType>
-NoaryBaseIterator<IterType, StateType>::NoaryBaseIterator ( const yy::location& loc )
+NoaryBaseIterator<IterType, StateType>::NoaryBaseIterator ( const QueryLoc& loc )
   :
   Batcher<IterType> ( loc )
 {

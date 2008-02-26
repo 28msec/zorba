@@ -15,7 +15,7 @@
 //#include "store/api/item_factory.h"
 //#include "store/api/store.h"
 
-#include "compiler/parser/location.hh"
+#include "compiler/parser/query_loc.h"
 
 namespace xqp {
 
@@ -42,7 +42,7 @@ class Zorba
 public:
 	static Store				* theStore;
 	static ItemFactory	* theItemFactory;
-	static yy::location	  null_loc;
+	static QueryLoc	    null_loc;
 	
 public:///things specific for each thread
 	Zorba_XQueryInfo              * current_xquery;//current xquery executed for this thread
@@ -74,7 +74,7 @@ public:
 
 	::Collator* getCollator(xqp_string collURI = "");
 
-//	yy::location& GetCurrentLocation();//from top iterator
+//	QueryLoc& GetCurrentLocation();//from top iterator
 	
 	void setDefaultCollation(
         std::string  coll_string,

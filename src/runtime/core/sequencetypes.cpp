@@ -13,7 +13,7 @@ namespace xqp
 /*******************************************************************************
 
 ********************************************************************************/
-InstanceOfIterator::InstanceOfIterator(yy::location loc,
+InstanceOfIterator::InstanceOfIterator(const QueryLoc& loc,
                                        PlanIter_t& aTreatExpr,
                                        xqtref_t aSequenceType)
   : UnaryBaseIterator<InstanceOfIterator, PlanIteratorState> ( loc, aTreatExpr ),
@@ -85,7 +85,7 @@ InstanceOfIterator::nextImpl(PlanState& planState) const
 ********************************************************************************/
 
 CastIterator::CastIterator(
-    const yy::location& loc,
+    const QueryLoc& loc,
     PlanIter_t& aChild,
     const xqtref_t& aCastType)
   : UnaryBaseIterator<CastIterator, PlanIteratorState>(loc, aChild)
@@ -147,7 +147,7 @@ Item_t CastIterator::nextImpl(PlanState& aPlanState) const
 ********************************************************************************/
 
 CastableIterator::CastableIterator(
-  const yy::location& aLoc,
+  const QueryLoc& aLoc,
   PlanIter_t& aChild,
   const xqtref_t& aCastType)
 :
@@ -194,7 +194,7 @@ Item_t CastableIterator::nextImpl(PlanState& aPlanState) const
   STACK_END();
 }
 
-PromoteIterator::PromoteIterator(const yy::location& aLoc, PlanIter_t& aChild, const xqtref_t& aPromoteType)
+PromoteIterator::PromoteIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const xqtref_t& aPromoteType)
   : UnaryBaseIterator<PromoteIterator, PlanIteratorState>(aLoc, aChild)
 {
   thePromoteType = GENV_TYPESYSTEM.create_type(*aPromoteType, TypeConstants::QUANT_ONE);  
@@ -243,7 +243,7 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
   STACK_END();
 }
 
-  TreatIterator::TreatIterator(const yy::location& aLoc, PlanIter_t& aChild, const xqtref_t& aTreatType, ZorbaError::ErrorCodes aErrorCode)
+  TreatIterator::TreatIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const xqtref_t& aTreatType, ZorbaError::ErrorCodes aErrorCode)
   : UnaryBaseIterator<TreatIterator, PlanIteratorState>(aLoc, aChild), theErrorCode (aErrorCode)
 {
   theTreatType = GENV_TYPESYSTEM.create_type(*aTreatType, TypeConstants::QUANT_ONE);  

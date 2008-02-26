@@ -33,7 +33,7 @@ namespace xqp
       ~fn_resolve_qname() {}
 
     public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -48,7 +48,7 @@ namespace xqp
       ~fn_qname() {}
 
     public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -63,7 +63,7 @@ namespace xqp
       ~op_qname_equal() {}
 
     public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -78,7 +78,7 @@ namespace xqp
       ~fn_prefix_from_qname() {}
 
     public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -93,7 +93,7 @@ namespace xqp
       ~fn_local_name_from_qname() {}
 
     public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -108,7 +108,7 @@ namespace xqp
       ~fn_namespace_uri_from_qname() {}
 
     public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -123,7 +123,7 @@ namespace xqp
       ~fn_namespace_uri_for_prefix() {}
 
     public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -138,7 +138,7 @@ namespace xqp
       ~fn_in_scope_prefixes() {}
 
     public:
-      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };  

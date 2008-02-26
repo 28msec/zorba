@@ -4,14 +4,9 @@
 #include <zorba/config/platform.h>
 #include <zorba/common/api_shared_types.h>
 
-namespace yy {
-
-class location;
-
-}
-
 namespace xqp {
 
+class QueryLoc;
 class XQType;
 class namespace_context;
 class function;

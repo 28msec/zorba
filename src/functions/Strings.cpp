@@ -30,7 +30,7 @@ fn_codepoints_to_string::fn_codepoints_to_string(
 
 PlanIter_t
 fn_codepoints_to_string::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new CodepointsToStringIterator(loc, argv[0]);
@@ -64,7 +64,7 @@ fn_string_to_codepoints::fn_string_to_codepoints(
 
 PlanIter_t
 fn_string_to_codepoints::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new StringToCodepointsIterator(loc, argv[0]);
@@ -99,7 +99,7 @@ fn_string_compare_2::fn_string_compare_2(
 
 PlanIter_t
 fn_string_compare_2::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new CompareStrIterator(loc, argv);
@@ -128,7 +128,7 @@ fn_string_compare_3::fn_string_compare_3(
 
 PlanIter_t
 fn_string_compare_3::operator()(
-    const yy::location& loc,
+    const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new CompareStrIterator(loc, argv);
@@ -162,7 +162,7 @@ fn_codepoint_equal::fn_codepoint_equal(
 
 PlanIter_t
 fn_codepoint_equal::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new CodepointEqualIterator(loc, argv[0], argv[1]);
@@ -196,7 +196,7 @@ fn_concat::fn_concat(
 
 PlanIter_t
 fn_concat::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
     return new ConcatStrIterator(loc,argv);
@@ -230,7 +230,7 @@ fn_string_join::fn_string_join(
 
 PlanIter_t
 fn_string_join::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new StringJoinIterator(loc, argv[0], argv[1]);
@@ -264,7 +264,7 @@ fn_substring_2::fn_substring_2(
 
 PlanIter_t
 fn_substring_2::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new SubstringIterator(loc, argv);
@@ -293,7 +293,7 @@ fn_substring_3::fn_substring_3(
 
 PlanIter_t
 fn_substring_3::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new SubstringIterator(loc, argv);
@@ -327,7 +327,7 @@ fn_string_length::fn_string_length(
 
 PlanIter_t
 fn_string_length::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new StringLengthIterator(loc, argv[0]);
@@ -361,7 +361,7 @@ fn_normalize_space::fn_normalize_space(
 
 PlanIter_t
 fn_normalize_space::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new NormalizeSpaceIterator(loc, argv[0]);
@@ -395,7 +395,7 @@ fn_normalize_unicode_1::fn_normalize_unicode_1(
 
 PlanIter_t
 fn_normalize_unicode_1::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new NormalizeUnicodeIterator(loc, argv);
@@ -424,7 +424,7 @@ fn_normalize_unicode_2::fn_normalize_unicode_2(
 
 PlanIter_t
 fn_normalize_unicode_2::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new NormalizeUnicodeIterator(loc, argv);
@@ -459,7 +459,7 @@ fn_upper_case::fn_upper_case(
 
 PlanIter_t
 fn_upper_case::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new UpperCaseIterator(loc, argv[0]);
@@ -494,7 +494,7 @@ fn_lower_case::fn_lower_case(
 
 PlanIter_t
 fn_lower_case::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new LowerCaseIterator(loc, argv[0]);
@@ -529,7 +529,7 @@ fn_translate::fn_translate(
 
 PlanIter_t
 fn_translate::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new TranslateIterator(loc, argv);
@@ -563,7 +563,7 @@ function(sig)
 
 PlanIter_t
 fn_encode_for_uri::operator()(
-const yy::location& loc,
+const QueryLoc& loc,
 vector<PlanIter_t>& argv) const
 {
   return new EncodeForUriIterator(loc, argv[0]);
@@ -597,7 +597,7 @@ function(sig)
 
 PlanIter_t
 fn_iri_to_uri::operator()(
-const yy::location& loc,
+const QueryLoc& loc,
 vector<PlanIter_t>& argv) const
 {
   return new IriToUriIterator(loc, argv[0]);
@@ -631,7 +631,7 @@ const signature& sig)
 
 PlanIter_t
 fn_escape_html_uri::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new EscapeHtmlUriIterator(loc, argv[0]);
@@ -666,7 +666,7 @@ fn_contains_2::fn_contains_2(
 
 PlanIter_t
 fn_contains_2::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new ContainsIterator(loc, argv);
@@ -695,7 +695,7 @@ fn_contains_3::fn_contains_3(
 
 PlanIter_t
 fn_contains_3::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new ContainsIterator(loc, argv);
@@ -729,7 +729,7 @@ fn_starts_with_2::fn_starts_with_2(
 
 PlanIter_t
 fn_starts_with_2::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new StartsWithIterator(loc, argv);
@@ -758,7 +758,7 @@ fn_starts_with_3::fn_starts_with_3(
 
 PlanIter_t
 fn_starts_with_3::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new StartsWithIterator(loc, argv);
@@ -792,7 +792,7 @@ fn_ends_with_2::fn_ends_with_2(
 
 PlanIter_t
 fn_ends_with_2::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new EndsWithIterator(loc, argv);
@@ -821,7 +821,7 @@ fn_ends_with_3::fn_ends_with_3(
 
 PlanIter_t
 fn_ends_with_3::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new EndsWithIterator(loc, argv);
@@ -855,7 +855,7 @@ fn_substring_before_2::fn_substring_before_2(
 
 PlanIter_t
 fn_substring_before_2::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new SubstringBeforeIterator(loc, argv);
@@ -884,7 +884,7 @@ fn_substring_before_3::fn_substring_before_3(
 
 PlanIter_t
 fn_substring_before_3::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new SubstringBeforeIterator(loc, argv);
@@ -918,7 +918,7 @@ fn_substring_after_2::fn_substring_after_2(
 
 PlanIter_t
 fn_substring_after_2::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new SubstringAfterIterator(loc, argv);
@@ -947,7 +947,7 @@ fn_substring_after_3::fn_substring_after_3(
 
 PlanIter_t
 fn_substring_after_3::operator()(
-  const yy::location& loc,
+  const QueryLoc& loc,
   vector<PlanIter_t>& argv) const
 {
   return new SubstringAfterIterator(loc, argv);

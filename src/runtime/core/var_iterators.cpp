@@ -31,7 +31,7 @@ void LetVarState::reset(PlanState& planState)
 }
 
 
-ForVarIterator::ForVarIterator(xqpString name, yy::location loc, const void* origin) 
+ForVarIterator::ForVarIterator(xqpString name, const QueryLoc& loc, const void* origin) 
   : 
   NoaryBaseIterator<ForVarIterator, ForVarState >(loc), 
   theVarName(name),
@@ -65,7 +65,7 @@ void ForVarIterator::bind(Item_t value, PlanState& planState)
 /////////////////////////////////////////////////////////////////////////////////
 
 
-LetVarIterator::LetVarIterator(xqpString vn, yy::location loc, const void* origin)
+LetVarIterator::LetVarIterator(xqpString vn, const QueryLoc& loc, const void* origin)
   :
   NoaryBaseIterator<LetVarIterator, LetVarState>(loc),
   theVarName(vn),

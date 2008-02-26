@@ -185,7 +185,7 @@ public:
    *  If true => The iterator has to return xs:boolean+
    */
   FLWORIterator(
-        const yy::location&         loc,
+        const QueryLoc&         loc,
         std::vector<ForLetClause>&  forLetClauses,
         PlanIter_t&                 whereClause,
         OrderByClause*              orderByClause,

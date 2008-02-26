@@ -182,7 +182,7 @@ bool ItemCmp::operator() ( const Item_t& i1, const Item_t& i2) const
   return CompareIterator::compare(i1, i2)<0?true:false;
 }
 
-FnDistinctValuesIterator::FnDistinctValuesIterator(yy::location loc,
+FnDistinctValuesIterator::FnDistinctValuesIterator(const QueryLoc& loc,
                                                    vector<PlanIter_t>& args)
  : NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState> ( loc, args )
 { }
@@ -599,7 +599,7 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
 
 //15.4.3 fn:max & 15.4.4 fn:min
 FnMinMaxIterator::FnMinMaxIterator
-  (yy::location loc, std::vector<PlanIter_t>& aChildren, Type aType)
+  (const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType)
   : NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>(loc, aChildren), 
     theType(aType),
     theCompareType(
@@ -801,7 +801,7 @@ OpToIteratorState::reset(PlanState& planState) {
 | If $uri is the empty sequence, the result is an empty sequence.
 |_______________________________________________________________________*/
 
-FnDocIterator::FnDocIterator(yy::location loc, PlanIter_t& arg)
+FnDocIterator::FnDocIterator(const QueryLoc& loc, PlanIter_t& arg)
   :
   UnaryBaseIterator<FnDocIterator, PlanIteratorState> ( loc, arg )
 {

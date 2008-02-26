@@ -1,0 +1,34 @@
+#include <ostream>
+#include "compiler/parser/query_loc.h"
+
+namespace xqp {
+
+QueryLoc::QueryLoc()
+ : theFilenameBegin (0),
+   theLineBegin (0),
+   theColumnBegin (0),
+   theFilenameEnd (0),
+   theLineEnd (0),
+   theColumnEnd (0)
+{}
+
+QueryLoc::QueryLoc(const QueryLoc& aQueryLoc) 
+ : theFilenameBegin (aQueryLoc.theFilenameBegin),
+   theLineBegin (aQueryLoc.theLineBegin),
+   theColumnBegin (aQueryLoc.theColumnBegin),
+   theFilenameEnd (aQueryLoc.theFilenameEnd),
+   theLineEnd (aQueryLoc.theLineEnd),
+   theColumnEnd (aQueryLoc.theColumnEnd)
+{}
+
+std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
+  if ( aQueryLoc.getFilenameBegin() ) {
+    std::string lStr = *aQueryLoc.getFilenameBegin();
+    aOstr << lStr << ":";
+  }
+  aOstr << aQueryLoc.getLineBegin() << "." << aQueryLoc.getColumnBegin();
+
+  return aOstr;
+}
+
+} // namespace xqp

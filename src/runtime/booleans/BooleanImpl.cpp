@@ -25,14 +25,14 @@ namespace xqp
   |
   | Computes the effective boolean value of the sequence $arg.
   |_______________________________________________________________________*/
-  FnBooleanIterator::FnBooleanIterator ( const yy::location& loc, PlanIter_t& aIter, bool aNegate )
+  FnBooleanIterator::FnBooleanIterator ( const QueryLoc& loc, PlanIter_t& aIter, bool aNegate )
   :
     UnaryBaseIterator<FnBooleanIterator, PlanIteratorState> ( loc, aIter ), theNegate ( aNegate ) {}
     
   FnBooleanIterator::~FnBooleanIterator() {}
 
   Item_t
-  FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, PlanState& planState, const PlanIterator* iter, bool negate )
+  FnBooleanIterator::effectiveBooleanValue ( const QueryLoc& loc, PlanState& planState, const PlanIterator* iter, bool negate )
   {
     Item_t item;
     xqtref_t type;
@@ -98,7 +98,7 @@ namespace xqp
   /* end class FnBooleanIterator */
   
   /* begin class LogicIterator */
-  LogicIterator::LogicIterator ( const yy::location& loc, PlanIter_t theChild0, PlanIter_t theChild1, LogicType aLogicType)
+  LogicIterator::LogicIterator ( const QueryLoc& loc, PlanIter_t theChild0, PlanIter_t theChild1, LogicType aLogicType)
   :
     BinaryBaseIterator<LogicIterator, PlanIteratorState> ( loc, theChild0, theChild1), theLogicType(aLogicType) {}
   
@@ -129,7 +129,7 @@ namespace xqp
   /* end class LogicIterator */
 
   /* begin class ComparisonIterator */
-  CompareIterator::CompareIterator ( const yy::location& loc, PlanIter_t aChild0, PlanIter_t aChild1, CompareConsts::CompareType aCompType )
+  CompareIterator::CompareIterator ( const QueryLoc& loc, PlanIter_t aChild0, PlanIter_t aChild1, CompareConsts::CompareType aCompType )
   :
     BinaryBaseIterator<CompareIterator, PlanIteratorState> ( loc, aChild0, aChild1 ), 
     theCompType(aCompType) 

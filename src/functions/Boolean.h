@@ -18,12 +18,12 @@ namespace xqp
 			GenericOpComparison ( const signature&);
 			virtual ~GenericOpComparison() {}
 
-			virtual PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+			virtual PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 			virtual xqtref_t type_check ( signature& ) const;
 			virtual bool validate_args ( std::vector<PlanIter_t>& ) const;
 			
 		protected:
-			virtual PlanIter_t createIterator( const yy::location& loc, std::vector<PlanIter_t>& ) const = 0;
+			virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& ) const = 0;
 	};
 	
 	/*----------------------------------- generic comparison --------------------------------*/
@@ -33,7 +33,7 @@ namespace xqp
 		op_equal( const signature&);
 		virtual ~op_equal() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_not_equal : public GenericOpComparison
@@ -42,7 +42,7 @@ namespace xqp
 		op_not_equal( const signature&);
 		virtual ~op_not_equal() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_greater : public GenericOpComparison
@@ -51,7 +51,7 @@ namespace xqp
 		op_greater( const signature&);
 		virtual ~op_greater() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_greater_equal : public GenericOpComparison
@@ -60,7 +60,7 @@ namespace xqp
 		op_greater_equal( const signature&);
 		virtual ~op_greater_equal() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_less : public GenericOpComparison
@@ -69,7 +69,7 @@ namespace xqp
 		op_less( const signature&);
 		virtual ~op_less() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_less_equal : public GenericOpComparison
@@ -78,7 +78,7 @@ namespace xqp
 		op_less_equal( const signature&);
 		virtual ~op_less_equal() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	/*----------------------------------- value comparison --------------------------------*/
@@ -88,7 +88,7 @@ namespace xqp
 		op_value_equal( const signature&);
 		virtual ~op_value_equal() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_value_not_equal : public GenericOpComparison
@@ -97,7 +97,7 @@ namespace xqp
 		op_value_not_equal( const signature&);
 		virtual ~op_value_not_equal() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_value_greater : public GenericOpComparison
@@ -106,7 +106,7 @@ namespace xqp
 		op_value_greater( const signature&);
 		virtual ~op_value_greater() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_value_greater_equal : public GenericOpComparison
@@ -115,7 +115,7 @@ namespace xqp
 		op_value_greater_equal( const signature&);
 		virtual ~op_value_greater_equal() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_value_less : public GenericOpComparison
@@ -124,7 +124,7 @@ namespace xqp
 		op_value_less( const signature&);
 		virtual ~op_value_less() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_value_less_equal : public GenericOpComparison
@@ -133,7 +133,7 @@ namespace xqp
 		op_value_less_equal( const signature&);
 		virtual ~op_value_less_equal() {}
 	protected:
-		virtual PlanIter_t createIterator ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	class op_is_same_node : public function
@@ -142,7 +142,7 @@ namespace xqp
 		op_is_same_node( const signature& aSig) : function(aSig) {}
 		virtual ~op_is_same_node() {}
   public:
-    PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+    PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
     xqtref_t type_check ( signature&) const;
     bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -153,7 +153,7 @@ namespace xqp
 		op_node_before( const signature& aSig) : function(aSig) {}
 		virtual ~op_node_before() {}
   public:
-    PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+    PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
     xqtref_t type_check ( signature&) const;
     bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -164,7 +164,7 @@ namespace xqp
 		op_node_after( const signature& aSig) : function(aSig) {}
 		virtual ~op_node_after() {}
   public:
-    PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+    PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
     xqtref_t type_check ( signature&) const;
     bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -177,7 +177,7 @@ namespace xqp
 			~op_and() {}
 			
 		public:
-			PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 			xqtref_t type_check ( signature&) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -189,7 +189,7 @@ namespace xqp
 			~op_or() {}
 			
 		public:
-			PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 			xqtref_t type_check ( signature&) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -204,7 +204,7 @@ namespace xqp
 			~fn_true() {}
 			
 		public:
-			PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 			xqtref_t type_check ( signature&) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	}; /* class fn_true */
@@ -217,7 +217,7 @@ namespace xqp
 			~fn_false() {}
 			
 		public:
-			PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 			xqtref_t type_check ( signature&) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	}; /* class fn_false */
@@ -230,7 +230,7 @@ namespace xqp
 		~fn_not() {}
 		
 	public:
-		PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+		PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 		xqtref_t type_check ( signature&) const;
 		bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -244,7 +244,7 @@ namespace xqp
 			~fn_boolean() {}
 
 		public:
-			PlanIter_t operator() ( const yy::location& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 			xqtref_t type_check ( signature& ) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	}; /* class fn_false */

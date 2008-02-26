@@ -30,7 +30,7 @@ Item_t SingletonIterator::nextImpl ( PlanState& planState ) const
 
 
 /* start class IfThenElseIterator */
-IfThenElseIterator::IfThenElseIterator ( const yy::location& loc,
+IfThenElseIterator::IfThenElseIterator ( const QueryLoc& loc,
         PlanIter_t& aCondIter, PlanIter_t& aThenIter,
         PlanIter_t& aElseIter, bool aIsBooleanIter ) :
     Batcher<IfThenElseIterator> ( loc ), theCondIter ( aCondIter ),

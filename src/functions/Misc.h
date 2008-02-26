@@ -12,7 +12,7 @@ class fn_trace_func : public function {
     fn_trace_func(const signature&);
     ~fn_trace_func() {}
 
-    PlanIter_t operator() (const yy::location& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t operator() (const QueryLoc& loc, std::vector<PlanIter_t>&) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };

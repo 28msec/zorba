@@ -14,7 +14,7 @@ namespace xqp
   }
 
   PlanIter_t op_enclosed_expr::operator() (
-      const yy::location& loc,
+      const QueryLoc& loc,
       std::vector<PlanIter_t>& argv ) const
   {
     return new EnclosedIterator ( loc, argv[0] );
@@ -42,7 +42,7 @@ namespace xqp
   }
   
   PlanIter_t op_docfilter_expr::operator() (
-      const yy::location& loc,
+      const QueryLoc& loc,
       std::vector<PlanIter_t>& argv ) const
   {
     return new DocFilterIterator ( loc, argv[0] );

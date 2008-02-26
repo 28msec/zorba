@@ -42,10 +42,11 @@ xquery_driver::~xquery_driver()
 }
 
 void xquery_driver::error(
-	yy::location const& l,
+	const yy::location& l,
 	string const& m)
 {
-  ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &l, DONT_CONTINUE_EXECUTION, m);
+  QueryLoc lLoc = createQueryLoc(l);
+  ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &lLoc, DONT_CONTINUE_EXECUTION, m);
 }
      
 void xquery_driver::error(

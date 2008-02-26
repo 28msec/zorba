@@ -16,7 +16,7 @@ public:
 	~op_add() {}
 
 public:
-	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
 	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -30,7 +30,7 @@ public:
 	~op_subtract() {}
 
 public:
-	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
 	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -45,7 +45,7 @@ public:
 	~op_multiply() {}
 
 public:
-	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
 	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -60,7 +60,7 @@ public:
 	~op_divide() {}
 
 public:
-	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
 	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -74,7 +74,7 @@ public:
 	~op_integer_divide() {}
 
 public:
-	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
 	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -88,7 +88,7 @@ public:
 	~op_mod() {}
 
 public:
-	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
 	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };

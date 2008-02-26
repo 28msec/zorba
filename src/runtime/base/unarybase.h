@@ -24,7 +24,7 @@ protected:
   PlanIter_t theChild;
 
 public:
-  UnaryBaseIterator ( const yy::location& loc, PlanIter_t& arg );
+  UnaryBaseIterator ( const QueryLoc& loc, PlanIter_t& arg );
   virtual ~UnaryBaseIterator();
 
   void openImpl ( PlanState& planState, uint32_t& offset );
@@ -38,7 +38,7 @@ public:
 
 template <class IterType, class StateType>
 UnaryBaseIterator<IterType, StateType>::UnaryBaseIterator(
-    const yy::location& loc,
+    const QueryLoc& loc,
     PlanIter_t& aChild)
   :
   Batcher<IterType> ( loc ), theChild ( aChild )

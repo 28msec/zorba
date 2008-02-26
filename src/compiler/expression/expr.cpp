@@ -33,7 +33,7 @@ namespace xqp {
   
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-  static yy::location null_loc;
+  static QueryLoc null_loc;
 
   static expr_t dummy_expr;
   static expr_t *expr_iter_done = &dummy_expr;
@@ -150,7 +150,7 @@ expr_iterator::~expr_iterator () { delete iter; }
 
   
 expr::expr(
-  yy::location const& _loc)
+  const QueryLoc& _loc)
 :
   loc(_loc)
 {
@@ -217,9 +217,9 @@ string var_expr::decode_var_kind(
   }
 }
 
-var_expr::var_expr(yy::location const& loc, Item_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}
+var_expr::var_expr(const QueryLoc& loc, Item_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}
 
-var_expr::var_expr(yy::location const& loc, var_kind k, Item_t name) : expr (loc), kind (k), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
+var_expr::var_expr(const QueryLoc& loc, var_kind k, Item_t name) : expr (loc), kind (k), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
 
 Item_t var_expr::get_varname() const { return varname_h; }
 xqtref_t var_expr::get_type() const { return type; }
@@ -330,9 +330,9 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
 
 case_clause::case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
 
-promote_expr::promote_expr(yy::location const& loc) : expr(loc) { }
+promote_expr::promote_expr(const QueryLoc& loc) : expr(loc) { }
 
-promote_expr::promote_expr(yy::location const& loc, expr_t input, xqtref_t type)
+promote_expr::promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
   : expr(loc),
   input_expr_h(input),
   target_type(type) { }
@@ -351,7 +351,7 @@ void promote_expr::set_target_type(xqtref_t target) { target_type = target; }
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
 
 typeswitch_expr::typeswitch_expr(
-  yy::location const& loc)
+  const QueryLoc& loc)
 :
   expr(loc)
 {
@@ -377,7 +377,7 @@ void typeswitch_expr::next_iter (expr_iterator_data& v) {
 // [45] [http://www.w3.org/TR/xquery/#prod-xquery-IfExpr]
 
 if_expr::if_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   rchandle<expr> _cond_expr_h,
   rchandle<expr> _then_expr_h,
   rchandle<expr> _else_expr_h)
@@ -390,7 +390,7 @@ if_expr::if_expr(
 }
 
 if_expr::if_expr(
-  yy::location const& loc)
+  const QueryLoc& loc)
 :
   expr(loc)
 {
@@ -438,7 +438,7 @@ Item_t fo_expr::get_fname () const
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
 
 ft_contains_expr::ft_contains_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   rchandle<expr> _range_h,
   rchandle<expr> _ft_select_h,
   rchandle<expr> _ft_ignore_h)
@@ -462,7 +462,7 @@ void ft_contains_expr::next_iter (expr_iterator_data& v) {
 
 // [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
 
-instanceof_expr::instanceof_expr(yy::location const& loc,
+instanceof_expr::instanceof_expr(const QueryLoc& loc,
                                  rchandle<expr> _expr_h,
                                  xqtref_t _type)
 :
@@ -482,7 +482,7 @@ void instanceof_expr::next_iter (expr_iterator_data& v) {
 // [55] [http://www.w3.org/TR/xquery/#prod-xquery-TreatExpr]
 
 treat_expr::treat_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   rchandle<expr> _expr_h,
   xqtref_t _type,
   enum ZorbaError::ErrorCodes err_)
@@ -506,7 +506,7 @@ void treat_expr::next_iter (expr_iterator_data& v) {
 // [56] [http://www.w3.org/TR/xquery/#prod-xquery-CastableExpr]
 
 castable_expr::castable_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   rchandle<expr> _expr_h,
   xqtref_t _type)
 :
@@ -530,7 +530,7 @@ void castable_expr::next_iter (expr_iterator_data& v) {
 // [57] [http://www.w3.org/TR/xquery/#prod-xquery-CastExpr]
 
 cast_expr::cast_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   rchandle<expr> _expr_h,
   xqtref_t _type)
 :
@@ -554,7 +554,7 @@ void cast_expr::next_iter (expr_iterator_data& v) {
 // [63] [http://www.w3.org/TR/xquery/#prod-xquery-ValidateExpr]
 
 validate_expr::validate_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   enum validation_mode_t _valmode,
   rchandle<expr> _expr_h)
 :
@@ -575,14 +575,14 @@ void validate_expr::next_iter (expr_iterator_data& v) {
 // [65] [http://www.w3.org/TR/xquery/#prod-xquery-ExtensionExpr]
 
 extension_expr::extension_expr(
-  yy::location const& loc)
+  const QueryLoc& loc)
 :
   expr(loc)
 {
 }
 
 extension_expr::extension_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   expr_t _expr_h)
 :
   expr(loc),
@@ -605,7 +605,7 @@ void extension_expr::next_iter (expr_iterator_data& v) {
   RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
-relpath_expr::relpath_expr(yy::location const& loc)
+relpath_expr::relpath_expr(const QueryLoc& loc)
   :
   expr(loc)
 {
@@ -629,7 +629,7 @@ void relpath_expr::next_iter (expr_iterator_data& v) {
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-axis_step_expr::axis_step_expr(yy::location const& loc)
+axis_step_expr::axis_step_expr(const QueryLoc& loc)
   :
   expr(loc)
 {
@@ -662,7 +662,7 @@ void axis_step_expr::next_iter (expr_iterator_data& v) {
                      PITest | CommentTest | TextTest | AnyKindTest
 
 ********************************************************************************/
-match_expr::match_expr(yy::location const& loc)
+match_expr::match_expr(const QueryLoc& loc)
   :
   expr(loc),
   theWildKind(match_no_wild),
@@ -715,7 +715,7 @@ StoreConsts::NodeKind match_expr::getNodeKind() const
 
 // [85] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
 
-const_expr::const_expr(yy::location const& loc,
+const_expr::const_expr(const QueryLoc& loc,
                            xqpString v)
   :
   expr(loc),
@@ -723,7 +723,7 @@ const_expr::const_expr(yy::location const& loc,
 {
 }
 
-const_expr::const_expr(yy::location const& loc,
+const_expr::const_expr(const QueryLoc& loc,
                            xqp_integer v)
 :
   expr(loc),
@@ -732,7 +732,7 @@ const_expr::const_expr(yy::location const& loc,
 }
 
 const_expr::const_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   xqp_decimal v)
 :
   expr(loc),
@@ -741,7 +741,7 @@ const_expr::const_expr(
 }
 
 const_expr::const_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   xqp_double v)
 :
   expr(loc),
@@ -750,7 +750,7 @@ const_expr::const_expr(
 }
 
 const_expr::const_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   xqp_boolean v)
 :
   expr(loc),
@@ -759,7 +759,7 @@ const_expr::const_expr(
 }
 
 const_expr::const_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   Item_t v)
 :
   expr(loc),
@@ -768,7 +768,7 @@ const_expr::const_expr(
 }
 
 const_expr::const_expr(
-  yy::location const& aLoc, 
+  const QueryLoc& aLoc, 
   const char* aNamespace,
   const char* aPrefix, 
   const char* aLocal)
@@ -788,7 +788,7 @@ void const_expr::next_iter (expr_iterator_data& v) {
 // [91] [http://www.w3.org/TR/xquery/#prod-xquery-OrderedExpr]
 
 order_expr::order_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   order_type_t _type,
   rchandle<expr> _expr_h)
 :
@@ -810,7 +810,7 @@ void order_expr::next_iter (expr_iterator_data& v) {
 
 // [96] [http://www.w3.org/TR/xquery/#doc-exquery-DirElemConstructor]
 elem_expr::elem_expr (
-    yy::location const& aLoc,
+    const QueryLoc& aLoc,
     expr_t aQNameExpr,
     expr_t aAttrs,
     expr_t aContent,
@@ -825,7 +825,7 @@ elem_expr::elem_expr (
 }
 
 elem_expr::elem_expr (
-    yy::location const& aLoc,
+    const QueryLoc& aLoc,
     expr_t aQNameExpr,
     expr_t aContent,
     rchandle<namespace_context> aNSCtx)
@@ -853,7 +853,7 @@ void elem_expr::next_iter (expr_iterator_data& v) {
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
 
 doc_expr::doc_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   rchandle<expr> aContent)
 :
   constructor_expr(loc),
@@ -875,7 +875,7 @@ void doc_expr::next_iter (expr_iterator_data& v) {
 // [113] [http://www.w3.org/TR/xquery/#prod-xquery-CompAttrConstructor]
 
 attr_expr::attr_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   expr_t aQNameExpr,
   expr_t aValueExpr)
 :
@@ -907,7 +907,7 @@ void attr_expr::next_iter (expr_iterator_data& v) {
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
 
 text_expr::text_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   text_constructor_type type_arg,
   expr_t text_arg)
 :
@@ -931,7 +931,7 @@ void text_expr::next_iter (expr_iterator_data& v) {
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompPIConstructor]
 
 pi_expr::pi_expr(
-  yy::location const& loc,
+  const QueryLoc& loc,
   rchandle<expr> _target_expr_h,
   rchandle<expr> _content_expr_h)
 :
@@ -951,7 +951,7 @@ void pi_expr::next_iter (expr_iterator_data& v) {
 void function_def_expr::next_iter (expr_iterator_data& v) {
 }
 
-function_def_expr::function_def_expr (yy::location const& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type)
+function_def_expr::function_def_expr (const QueryLoc& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type)
   : expr (loc), name (name_)
 {
   assert (return_type != NULL);

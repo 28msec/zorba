@@ -20,7 +20,7 @@ fn_data_func::fn_data_func ( const signature& sig ) : function ( sig ) {}
 
 PlanIter_t
 fn_data_func::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     vector<PlanIter_t>& argv ) const
 {
   if ( !validate_args ( argv ) )
@@ -60,7 +60,7 @@ fn_root_func::fn_root_func(const signature& sig) : function (sig)
 
 
 PlanIter_t fn_root_func::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     vector<PlanIter_t>& argv) const
 {
   if (!validate_args(argv))
@@ -95,7 +95,7 @@ fn_nodename_func::fn_nodename_func(const signature& sig) : function (sig)
 
 
 PlanIter_t fn_nodename_func::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     vector<PlanIter_t>& argv) const
 {
   if (!validate_args(argv))
@@ -130,7 +130,7 @@ fn_name_func::fn_name_func(const signature& sig) : function (sig)
 
 
 PlanIter_t fn_name_func::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     vector<PlanIter_t>& argv) const
 {
   if (!validate_args(argv))

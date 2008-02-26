@@ -19,7 +19,7 @@ namespace xqp
 		: function ( sig ) {}
 
 	PlanIter_t
-	GenericOpComparison::operator() ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	GenericOpComparison::operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return this->createIterator(loc, argv);
 	}
@@ -40,7 +40,7 @@ namespace xqp
 	/* begin class op_equal */
 	op_equal::op_equal( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_EQUAL );
 	}
@@ -49,7 +49,7 @@ namespace xqp
 	/* begin class op_not_equal */
 	op_not_equal::op_not_equal( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_not_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_not_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_NOT_EQUAL );
 	}
@@ -58,7 +58,7 @@ namespace xqp
 	/* begin class op_greater */
 	op_greater::op_greater( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_greater::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_greater::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_GREATER );
 	}
@@ -67,7 +67,7 @@ namespace xqp
 	/* begin class op_greater_equal */
 	op_greater_equal::op_greater_equal( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_greater_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_greater_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_GREATER_EQUAL );
 	}
@@ -76,7 +76,7 @@ namespace xqp
 	/* begin class op_less */
 	op_less::op_less( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_less::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_less::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_LESS );
 	}
@@ -85,7 +85,7 @@ namespace xqp
 	/* begin class op_less_equal */
 	op_less_equal::op_less_equal( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_less_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_less_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::GENERAL_LESS_EQUAL );
 	}
@@ -94,7 +94,7 @@ namespace xqp
 		/* begin class op_value_equal */
 	op_value_equal::op_value_equal( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_value_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_value_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_EQUAL );
 	}
@@ -103,7 +103,7 @@ namespace xqp
 	/* begin class op_value_not_equal */
 	op_value_not_equal::op_value_not_equal( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_value_not_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_value_not_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_NOT_EQUAL );
 	}
@@ -112,7 +112,7 @@ namespace xqp
 	/* begin class op_value_greater */
 	op_value_greater::op_value_greater( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_value_greater::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_value_greater::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_GREATER );
 	}
@@ -121,7 +121,7 @@ namespace xqp
 	/* begin class op_value_greater_equal */
 	op_value_greater_equal::op_value_greater_equal( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_value_greater_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_value_greater_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_GREATER_EQUAL );
 	}
@@ -130,7 +130,7 @@ namespace xqp
 	/* begin class op_value_less */
 	op_value_less::op_value_less( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_value_less::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_value_less::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_LESS );
 	}
@@ -139,7 +139,7 @@ namespace xqp
 	/* begin class op_value_less_equal */
 	op_value_less_equal::op_value_less_equal( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
-	op_value_less_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
+	op_value_less_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareConsts::VALUE_LESS_EQUAL );
 	}
@@ -148,7 +148,7 @@ namespace xqp
   /* begin class op_is_same_node */
 	PlanIter_t
 	op_is_same_node::operator() (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new OpIsSameNodeIterator ( loc, argv );
@@ -171,7 +171,7 @@ namespace xqp
   /* begin class op_node_before */
 	PlanIter_t
 	op_node_before::operator() (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new OpNodeBeforeIterator ( loc, argv );
@@ -194,7 +194,7 @@ namespace xqp
   /* begin class op_node_after */
 	PlanIter_t
 	op_node_after::operator() (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new OpNodeAfterIterator ( loc, argv );
@@ -219,7 +219,7 @@ namespace xqp
 
 	PlanIter_t
 	op_and::operator() (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::AND );
@@ -244,7 +244,7 @@ namespace xqp
 
 	PlanIter_t
 	op_or::operator() (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::OR );
@@ -269,7 +269,7 @@ namespace xqp
 
 	PlanIter_t
 	fn_true::operator() (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(true) );
@@ -294,7 +294,7 @@ namespace xqp
 
 	PlanIter_t
 	fn_false::operator() (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(false) );
@@ -319,7 +319,7 @@ namespace xqp
 
 	PlanIter_t
 	fn_not::operator() (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new FnBooleanIterator(loc, argv[0], true );
@@ -344,7 +344,7 @@ namespace xqp
 
 	PlanIter_t
 	fn_boolean::operator() (
-	    const yy::location& loc,
+	    const QueryLoc& loc,
 	    std::vector<PlanIter_t>& argv ) const
 	{
 		return new FnBooleanIterator ( loc, argv[0] );

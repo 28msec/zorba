@@ -50,7 +50,7 @@ ZorbaError_t	ZorbaException::getError()
 	return error_descr;
 }
 
-void	xqp_exception::setLocation(const yy::location* ploc)
+void	xqp_exception::setLocation(const QueryLoc* ploc)
 {
 	if(error_descr == NULL)
 		return;
@@ -59,10 +59,10 @@ void	xqp_exception::setLocation(const yy::location* ploc)
 	
 	if(ploc)
 	{
-		if(ploc->begin.filename)
-			error_descr->theLocation.filename = *ploc->begin.filename;
-		error_descr->theLocation.line = ploc->begin.line;
-		error_descr->theLocation.column = ploc->begin.column;
+		if(ploc->getFilenameBegin())
+			error_descr->theLocation.filename = *ploc->getFilenameBegin();
+		error_descr->theLocation.line = ploc->getLineBegin();
+		error_descr->theLocation.column = ploc->getColumnBegin();
 		error_descr->theLocation.location_is_set = true;
 	}
 	

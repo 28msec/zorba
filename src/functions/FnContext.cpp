@@ -19,7 +19,7 @@ ctx_variable::ctx_variable ( const signature& sig )
 
 
 PlanIter_t ctx_variable::operator() (
-    const yy::location& loc,
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv ) const
 {
   xqpString varName = argv[0].cast<SingletonIterator>()->getValue()->getStringValue();

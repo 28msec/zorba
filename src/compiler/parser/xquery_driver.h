@@ -27,8 +27,6 @@
 #include "compiler/parser/symbol_table.h"
 #include <zorba/representations.h>
 
-using namespace yy;
-
 /*
 **	Flex expects the signature of yylex to be defined in the macro
 **	YY_DECL, and the C++ parser expects it to be declared. We can
@@ -100,6 +98,17 @@ public:
 	void set_ftcontains(bool b) { ftcontains_bit = b; }
 	bool ftcontains() const { return ftcontains_bit; }
 
+  QueryLoc createQueryLoc(const yy::location& aLoc) 
+  {
+    QueryLoc lLoc;
+    lLoc.setFilenameBegin(aLoc.begin.filename);
+    lLoc.setLineBegin(aLoc.begin.line);
+    lLoc.setColumnBegin(aLoc.begin.line);
+    lLoc.setFilenameEnd(aLoc.end.filename);
+    lLoc.setLineEnd(aLoc.end.line);
+    lLoc.setColumnEnd(aLoc.end.line);
+    return lLoc;
+  }
 };
 
 }	/* namespace xqp */

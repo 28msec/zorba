@@ -28,7 +28,7 @@ protected:
 
 public:
   NodeDistinctIterator(
-        const yy::location& loc,
+        const QueryLoc& loc,
         PlanIter_t input,
         bool aAcceptAtomics = false)
     :
@@ -67,7 +67,7 @@ protected:
 
 public:
   NodeSortIterator(
-        const yy::location& loc,
+        const QueryLoc& loc,
         PlanIter_t input,
         bool ascendant,
         bool distinct,

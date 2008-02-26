@@ -16,7 +16,7 @@ op_add::op_add(
 }
 
 PlanIter_t op_add::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new GenericArithIterator<AddOperation>(loc, argv[0], argv[1]);
@@ -42,7 +42,7 @@ op_subtract::op_subtract(
 }
 
 PlanIter_t op_subtract::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new GenericArithIterator<SubtractOperation>(loc, argv[0], argv[1]);
@@ -68,7 +68,7 @@ op_multiply::op_multiply(
 }
 
 PlanIter_t op_multiply::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new GenericArithIterator<MultiplyOperation>(loc, argv[0], argv[1]);
@@ -94,7 +94,7 @@ op_divide::op_divide(
 }
 
 PlanIter_t op_divide::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new GenericArithIterator<DivideOperation>(loc, argv[0], argv[1]);
@@ -120,7 +120,7 @@ op_integer_divide::op_integer_divide(
 }
 
 PlanIter_t op_integer_divide::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new GenericArithIterator<IntegerDivideOperation>(loc, argv[0], argv[1]);
@@ -146,7 +146,7 @@ op_mod::op_mod(
 }
 
 PlanIter_t op_mod::operator()(
-	const yy::location& loc, 
+	const QueryLoc& loc, 
 	vector<PlanIter_t>& argv) const
 {
 	return new GenericArithIterator<ModOperation>(loc, argv[0], argv[1]);
