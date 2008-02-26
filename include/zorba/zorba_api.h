@@ -2,7 +2,7 @@
 #define ZORBA_ZORBA_API_H
 
 #include <zorba/item.h>
-#include <zorba/store_api.h>
+#include <zorba/xmldatamanager.h>
 #include <zorba/rchandle.h>
 #include <zorba/errors.h>
 #include <zorba/static_context.h>

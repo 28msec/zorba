@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include <zorba/store_api.h>
+#include <zorba/xmldatamanager.h>
 
 namespace xqp
 {
