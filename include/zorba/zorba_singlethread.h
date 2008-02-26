@@ -69,7 +69,4 @@
 /** \example uc8a_loadDocument.cpp
  *
  */
-/** \example usecase2.cpp
- *
- */
 #endif
