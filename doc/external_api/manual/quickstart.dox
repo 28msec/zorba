@@ -1,0 +1,20 @@
+/** \page quickstart Quickstart
+  \section quickstart Quickstart
+
+  Installation description here.
+
+  \code
+    ...
+  \endcode
+
+  \include uc1a_simpleQueryOneStep.cpp
+
+  \dontinclude uc1a_simpleQueryOneStep.cpp
+ 
+  It works like this...
+  \skip uc1a_simpleQueryOneStep
+  \until } 
+
+
+*/
+

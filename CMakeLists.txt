@@ -1,7 +1,7 @@
 #
 # Project name
 #
-PROJECT(zorba)
+PROJECT(Zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)
 

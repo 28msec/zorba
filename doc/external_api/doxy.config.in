@@ -30,7 +30,7 @@ PROJECT_NUMBER         = @CPACK_PACKAGE_VERSION_MAJOR@.@CPACK_PACKAGE_VERSION_MI
 # If a relative path is entered, it will be relative to the location 
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = Doc
+OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 
 # 4096 sub-directories (in 2 levels) under the output directory of each output 
@@ -96,7 +96,7 @@ INLINE_INHERITED_MEMB  = YES
 # path before files name in the file list and in the header files. If set 
 # to NO the shortest path that makes the file name unique will be used.
 
-FULL_PATH_NAMES        = YES
+FULL_PATH_NAMES        = NO
 
 # If the FULL_PATH_NAMES tag is set to YES then the STRIP_FROM_PATH tag 
 # can be used to strip a user-defined part of the path. Stripping is 
@@ -105,7 +105,7 @@ FULL_PATH_NAMES        = YES
 # If left blank the directory from which doxygen is run is used as the 
 # path to strip.
 
-STRIP_FROM_PATH        = @CMAKE_SOURCE_DIR@/src
+STRIP_FROM_PATH        = @CMAKE_SOURCE_DIR@/src @CMAKE_BINARY_DIR@/src
 
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of 
@@ -115,7 +115,7 @@ STRIP_FROM_PATH        = @CMAKE_SOURCE_DIR@/src
 # definition is used. Otherwise one should specify the include paths that 
 # are normally passed to the compiler using the -I flag.
 
-STRIP_FROM_INC_PATH    = @CMAKE_SOURCE_DIR@/include
+STRIP_FROM_INC_PATH    = @CMAKE_SOURCE_DIR@/include @CMAKE_BINARY_DIR@/include
 
 # If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter 
 # (but less readable) file names. This can be useful is your file systems 
@@ -356,7 +356,7 @@ GENERATE_DEPRECATEDLIST= YES
 # The ENABLED_SECTIONS tag can be used to enable conditional 
 # documentation sections, marked by \if sectionname ... \endif.
 
-ENABLED_SECTIONS       = 
+ENABLED_SECTIONS       =
 
 # The MAX_INITIALIZER_LINES tag determines the maximum number of lines 
 # the initial value of a variable or define consists of for it to appear in 
@@ -450,7 +450,7 @@ WARN_LOGFILE           = Doc/doxy.log
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = @CMAKE_SOURCE_DIR@/include
+INPUT                  = @CMAKE_SOURCE_DIR@/include @CMAKE_CURRENT_SOURCE_DIR@/manual
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -497,7 +497,7 @@ EXCLUDE_PATTERNS       = */.svn \
 # directories that contain example code fragments that are included (see 
 # the \include command).
 
-EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/test/samples
+EXAMPLE_PATH           = @CMAKE_CURRENT_SOURCE_DIR@/samples
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the 
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -521,8 +521,7 @@ EXAMPLE_RECURSIVE      = YES
 # directories that contain image that are included in the documentation (see 
 # the \image command).
 
-IMAGE_PATH             = @CMAKE_CURRENT_SOURCE_DIR@/Doc \
-                         @CMAKE_CURRENT_SOURCE_DIR@ 
+IMAGE_PATH             = @CMAKE_CURRENT_SOURCE_DIR@
 
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should 
@@ -1051,7 +1050,7 @@ TAGFILES               =
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create 
 # a tag file that is based on the input files it reads.
 
-GENERATE_TAGFILE       = Doc/html/@PROJECT_NAME@.TAGFILE
+GENERATE_TAGFILE       = html/@PROJECT_NAME@.TAGFILE
 
 # If the ALLEXTERNALS tag is set to YES all external classes will be listed 
 # in the class index. If set to NO only the inherited external classes 

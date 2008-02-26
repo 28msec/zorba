@@ -14,28 +14,62 @@
 #include <zorba/xqp_exception.h>
 #include <zorba/xquery_plan_print.h>
 
-// TODO change to new samples
-/** \example usecase1.cpp
+/** \example uc1a_simpleQueryOneStep.cpp
  * This is an example of how to use the single threaded API in zorba.
  */
 
+/** \example uc1a_simpleQueryOneStep.cpp
+ *
+ */
+/** \example uc1b_simpleQueryThreeSteps.cpp
+ *
+ */
+/** \example uc1c_simpleQueryPlanPrint.cpp
+ *
+ */
+/** \example uc2_simpleQueryWithErrorCheck.cpp
+ *
+ */
+/** \example uc3a_externalVar.cpp
+ *
+ */
+/** \example uc3b_contextItem.cpp
+ *
+ */
+/** \example uc3c_contextItem.cpp
+ *
+ */
+/** \example uc3d_currentTime.cpp
+ *
+ */
+/** \example uc4_chainXQuery.cpp
+ *
+ */
+/** \example uc5a_errorManager.cpp
+ *
+ */
+/** \example uc5b_errorCallback.cpp
+ *
+ */
+/** \example uc5c_errorList.cpp
+ *
+ */
+/** \example uc6a_staticContext.cpp
+ *
+ */
+/** \example uc6b_defaultCollation.cpp
+ *
+ */
+/** \example uc6c_baseUri.cpp
+ *
+ */
+/** \example uc7_multithread.cpp
+ *
+ */
+/** \example uc8a_loadDocument.cpp
+ *
+ */
 /** \example usecase2.cpp
- * This is an example of how to use the single threaded API in zorba.
- */
-
-/** \example usecase3.cpp
- * This is an example of how to use the single threaded API in zorba.
- */
-
-/** \example usecase4.cpp
- * This is an example of how to use the single threaded API in zorba.
- */
-
-/** \example usecase5.cpp
- * This is an example of how to use the single threaded API in zorba.
- */
-
-/** \example usecase6.cpp
- * This is an example of how to use the single threaded API in zorba.
+ *
  */
 #endif

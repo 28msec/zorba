@@ -14,6 +14,9 @@ namespace xqp{
   class ZorbaBaseEngine : public SimpleRCObject
   {
     public:
+      /*! \brief shutdown Zorba
+       *
+       */
       virtual void 
       shutdown() = 0;
 

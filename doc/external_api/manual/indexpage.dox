@@ -1,0 +1,14 @@
+/*! \mainpage Main Page
+  
+  Text for the main page
+
+ <ul>
+   <li> \ref introduction
+   <li> The User Guide
+   <ul>
+     <li> \ref quickstart
+     <li> \ref installation
+   </ul>
+   <li> \ref contact
+ </ul>
+ */
