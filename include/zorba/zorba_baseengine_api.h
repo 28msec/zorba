@@ -5,7 +5,7 @@
 #include <string>
 
 #include <zorba/common/api_shared_types.h>
-#include <zorba/zorba_version.h>
+#include <zorba/version.h>
 #include <zorba/representations.h>
 
 
@@ -77,7 +77,7 @@ namespace xqp{
       createDebugPlanPrintObject() = 0;
 
       static std::string
-      getZorbaVersion() { return ZorbaVersion::getZorbaVersion(); }
+      getVersion() { return Version::getVersion(); }
   };
 
 } /* namespace xqp */

@@ -4,11 +4,11 @@
 #include <vector>
 #include <string>
 
-#include "zorba/zorba_singlethread.h"
+#include <zorba/zorba_singlethread.h>
 
 #include "zorbacmdproperties.h"
 
-#include "boost/date_time/posix_time/posix_time.hpp" 
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 void 
 slurp_file (const char *fname, std::string &result) {
@@ -112,7 +112,7 @@ int _tmain(int argc, _TCHAR* argv[])
   if (lProperties.printVersion())
   {
     std::cout << "Zorba XQuery Engine, Version: " 
-              << xqp::ZorbaSingleThread::getZorbaVersion() << std::endl;
+              << xqp::ZorbaSingleThread::getVersion() << std::endl;
     return 0;
   }
   

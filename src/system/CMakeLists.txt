@@ -1,4 +1,4 @@
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/system/zorba_version.cpp.cmake ${CMAKE_CURRENT_BINARY_DIR}/system/zorba_version.cpp)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/system/version.cpp.cmake ${CMAKE_CURRENT_BINARY_DIR}/system/version.cpp)
 
 SET(SYSTEM_SRCS
     globalenv.cpp
@@ -7,5 +7,5 @@ SET(SYSTEM_SRCS
 )
 
 SET(SYSTEM_BUILD_SRCS
-  ${CMAKE_CURRENT_BINARY_DIR}/system/zorba_version.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/system/version.cpp
   )
