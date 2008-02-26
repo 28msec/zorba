@@ -1,5 +1,5 @@
-#ifndef XQP_SHARED_TYPES_INCL_H
-#define XQP_SHARED_TYPES_INCL_H
+#ifndef ZORBA_SHARED_TYPES_INCL_H
+#define ZORBA_SHARED_TYPES_INCL_H
 
 #include <zorba/rchandle.h>
 
