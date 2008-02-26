@@ -14,7 +14,7 @@ namespace xqp
   class ZorbaException 
   { 
     public:
-      ZorbaError_t		error_descr;
+      ZorbaError_t error_descr;
 
     public: 
       virtual ~ZorbaException() {}

@@ -25,7 +25,7 @@ namespace xqp{
 
       virtual XQuery_t
       createQuery( xqp_string aQueryString, StaticQueryContext_t = 0, 
-                   xqp_string	xquery_source_uri = "",
+                   xqp_string xquery_source_uri = "",
                    bool routing_mode = false,
                    XQueryTreePlans_t planprint = NULL) = 0;
 
@@ -36,7 +36,7 @@ namespace xqp{
                            XQueryTreePlans_t planprint = NULL) = 0;
 
       virtual XQuery_t
-      createQueryFromStream( std::istream		&is,
+      createQueryFromStream( std::istream &is,
                              StaticQueryContext_t = 0, 
                              xqp_string xquery_source_uri = "",
                              bool routing_mode = false,
@@ -73,7 +73,7 @@ namespace xqp{
       virtual DynamicQueryContext_t
       createDynamicContext() = 0;
 
-      virtual	XmlDataManager_t
+      virtual XmlDataManager_t
       getXmlDataManager() = 0;
 
       virtual XQueryTreePlans_t

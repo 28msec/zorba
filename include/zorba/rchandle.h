@@ -205,6 +205,6 @@ namespace xqp {
     oss << "rchandle[refcount=" << p->getRefCount() << ']';
     return oss.str();
   }
-}	/* namespace xqp */
+} /* namespace xqp */
 #endif
 

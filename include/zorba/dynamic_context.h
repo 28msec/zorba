@@ -26,7 +26,7 @@ namespace xqp {
       }VAR_BIGUINT_TYPE;
 
     public:
-      //	struct ::tm  current_date_time;//includes the explicit timezone
+      // struct ::tm  current_date_time;//includes the explicit timezone
       long     implicit_timezone_seconds;
 
       virtual ~DynamicQueryContext( ) {};
@@ -35,7 +35,7 @@ namespace xqp {
       setCurrentDateTime( struct ::tm datetime, long timezone_seconds ) = 0;
       
       virtual struct
-      ::tm	getCurrentDateTime( long *timezone_seconds ) = 0;
+      ::tm getCurrentDateTime( long *timezone_seconds ) = 0;
 
       //set variables into dynamic context
       virtual bool
@@ -188,7 +188,7 @@ namespace xqp {
       virtual bool
       setVariableAsDocument( xqp_string varname, xqp_anyURI documentURI) = 0;
 
-      virtual bool setVariableAsDocumentFromFile( xqp_string  varname, xqp_string	file_path, 
+      virtual bool setVariableAsDocumentFromFile( xqp_string  varname, xqp_string file_path, 
                                                   xqp_string  storeUri = "") = 0;
 
       virtual bool

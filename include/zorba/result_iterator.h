@@ -11,17 +11,17 @@ class ResultIterator : virtual public SimpleRCObject
 {
 public:
 
-	virtual ~ResultIterator() {}
+  virtual ~ResultIterator() {}
 
-	virtual void		openIterator() = 0;
+  virtual void openIterator() = 0;
 
-	virtual Item_t	nextItem() = 0;
+  virtual Item_t nextItem() = 0;
 
-	virtual void		closeIterator() = 0;
+  virtual void closeIterator() = 0;
 
 };
 
-typedef rchandle<ResultIterator>		ResultIterator_t;
+typedef rchandle<ResultIterator> ResultIterator_t;
 
 }//end namespace xqp
 

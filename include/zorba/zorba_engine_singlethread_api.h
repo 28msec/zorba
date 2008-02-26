@@ -7,7 +7,7 @@ namespace xqp{
 
   // TODO move into api_shared_types.h
   class ZorbaSingleThread;
-  typedef rchandle<ZorbaSingleThread>		ZorbaSingleThread_t;
+  typedef rchandle<ZorbaSingleThread> ZorbaSingleThread_t;
 
   /** 
    * Class description...

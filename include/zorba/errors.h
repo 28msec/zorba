@@ -24,7 +24,7 @@ namespace xqp
 
     public:
       // xqp_string   module_name; ///empty if is main module
-      bool		location_is_set;
+      bool location_is_set;
 
       xqpString    filename;
       unsigned int line;
@@ -66,7 +66,7 @@ namespace xqp
       dumpAlert(std::ostream &os) = 0;
   };
 
-  typedef rchandle<ZorbaAlert>		ZorbaAlert_t;
+  typedef rchandle<ZorbaAlert> ZorbaAlert_t;
 
   /*******************************************************************************
 
