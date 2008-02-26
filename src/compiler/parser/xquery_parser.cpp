@@ -36,16 +36,16 @@
 #include "xquery_parser.hpp"
 
 /* User implementation prologue.  */
-#line 125 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 125 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parser/xquery_driver.h"
 
 
 /* Line 317 of lalr1.cc.  */
-#line 46 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.cpp"
+#line 46 "/home/dagraf/Work/28msec/zorba4/xquery/build/src/compiler/parser/xquery_parser.cpp"
 
 #ifndef YY_
-# if defined YYENABLE_NLS && YYENABLE_NLS
+# if YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -274,12 +274,12 @@ namespace yy
 
 
     /* User initialization code.  */
-    #line 84 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+    #line 84 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
 {
   yylloc.begin.filename = yylloc.end.filename = driver.filename.getStore();
 }
-  /* Line 555 of yacc.c.  */
-#line 283 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.cpp"
+  /* Line 547 of yacc.c.  */
+#line 283 "/home/dagraf/Work/28msec/zorba4/xquery/build/src/compiler/parser/xquery_parser.cpp"
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
@@ -395,7 +395,7 @@ namespace yy
     switch (yyn)
       {
 	  case 2:
-#line 728 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 728 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [main]\n";
@@ -406,7 +406,7 @@ namespace yy
     break;
 
   case 3:
-#line 736 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 736 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
 			driver.set_expr((yyval.node));
@@ -417,7 +417,7 @@ namespace yy
     break;
 
   case 4:
-#line 744 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 744 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [library]\n";
@@ -426,7 +426,7 @@ namespace yy
     break;
 
   case 5:
-#line 750 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 750 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [version.library]\n";
@@ -435,7 +435,7 @@ namespace yy
     break;
 
   case 6:
-#line 762 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 762 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version]\n";
@@ -444,7 +444,7 @@ namespace yy
     break;
 
   case 7:
-#line 768 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 768 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version.encoding]\n";
@@ -453,103 +453,103 @@ namespace yy
     break;
 
   case 8:
-#line 780 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 780 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [prolog.querybody]\n";
 #endif
-			(yyval.node) = new MainModule((yyloc),
+			(yyval.node) = new MainModule(driver.createQueryLoc((yyloc)),
 								static_cast<Prolog*>((yysemantic_stack_[(2) - (1)].node)),
 								static_cast<QueryBody*>((yysemantic_stack_[(2) - (2)].expr)));
 		;}
     break;
 
   case 9:
-#line 790 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 790 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [querybody]\n";
 #endif
-			(yyval.node) = new MainModule((yyloc),
+			(yyval.node) = new MainModule(driver.createQueryLoc((yyloc)),
 								NULL,
 								static_cast<QueryBody*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 10:
-#line 805 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 805 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LibraryModule [ ]\n";
 #endif
-			(yyval.node) = new LibraryModule((yyloc),
+			(yyval.node) = new LibraryModule(driver.createQueryLoc((yyloc)),
 								static_cast<ModuleDecl*>((yysemantic_stack_[(2) - (1)].node)),
 								static_cast<Prolog*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 11:
-#line 820 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 820 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleDecl [ ]\n";
 #endif
-			(yyval.node) = new ModuleDecl((yyloc),
+			(yyval.node) = new ModuleDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval)), 
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (4)].sval)));
 		;}
     break;
 
   case 12:
-#line 835 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 835 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind]\n";
 #endif
-			(yyval.node) = new Prolog((yyloc),
+			(yyval.node) = new Prolog(driver.createQueryLoc((yyloc)),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(2) - (1)].node)),
 								NULL);
 		;}
     break;
 
   case 13:
-#line 844 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 844 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [vfo]\n";
 #endif
-			(yyval.node) = new Prolog((yyloc),
+			(yyval.node) = new Prolog(driver.createQueryLoc((yyloc)),
 								NULL,
 								static_cast<VFO_DeclList*>((yysemantic_stack_[(2) - (1)].node)));
 		;}
     break;
 
   case 14:
-#line 853 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 853 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind.vfo]\n";
 #endif
-			(yyval.node) = new Prolog((yyloc),
+			(yyval.node) = new Prolog(driver.createQueryLoc((yyloc)),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(4) - (1)].node)),
 								static_cast<VFO_DeclList*>((yysemantic_stack_[(4) - (3)].node)));
 		;}
     break;
 
   case 15:
-#line 868 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 868 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [single]\n";
 #endif
-			SIND_DeclList* sindList_p = new SIND_DeclList((yyloc));
+			SIND_DeclList* sindList_p = new SIND_DeclList(driver.createQueryLoc((yyloc)));
 			sindList_p->push_back((yysemantic_stack_[(1) - (1)].node));
 			(yyval.node) = sindList_p;
 		;}
     break;
 
   case 16:
-#line 877 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 877 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [list]\n";
@@ -563,19 +563,19 @@ namespace yy
     break;
 
   case 17:
-#line 894 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 894 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [single]\n";
 #endif
-			VFO_DeclList* vfoList_p = new VFO_DeclList((yyloc));
+			VFO_DeclList* vfoList_p = new VFO_DeclList(driver.createQueryLoc((yyloc)));
 			vfoList_p->push_back((yysemantic_stack_[(1) - (1)].node));
 			(yyval.node) = vfoList_p;
 		;}
     break;
 
   case 18:
-#line 903 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 903 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [list]\n";
@@ -589,7 +589,7 @@ namespace yy
     break;
 
   case 19:
-#line 920 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 920 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [setter]\n";
@@ -599,7 +599,7 @@ namespace yy
     break;
 
   case 20:
-#line 927 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 927 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [import]\n";
@@ -609,7 +609,7 @@ namespace yy
     break;
 
   case 21:
-#line 934 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 934 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [namespace]\n";
@@ -619,7 +619,7 @@ namespace yy
     break;
 
   case 22:
-#line 941 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 941 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [default namespace]\n";
@@ -629,7 +629,7 @@ namespace yy
     break;
 
   case 23:
-#line 953 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 953 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [var]\n";
@@ -639,7 +639,7 @@ namespace yy
     break;
 
   case 24:
-#line 960 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 960 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [function]\n";
@@ -649,7 +649,7 @@ namespace yy
     break;
 
   case 25:
-#line 967 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 967 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [option]\n";
@@ -659,7 +659,7 @@ namespace yy
     break;
 
   case 26:
-#line 976 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 976 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [ftoption]\n";
@@ -669,7 +669,7 @@ namespace yy
     break;
 
   case 27:
-#line 989 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 989 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [boundary space]\n";
@@ -679,7 +679,7 @@ namespace yy
     break;
 
   case 28:
-#line 996 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 996 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [default collation]\n";
@@ -689,7 +689,7 @@ namespace yy
     break;
 
   case 29:
-#line 1003 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1003 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [base uri]\n";
@@ -699,7 +699,7 @@ namespace yy
     break;
 
   case 30:
-#line 1010 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1010 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [construction]\n";
@@ -709,7 +709,7 @@ namespace yy
     break;
 
   case 31:
-#line 1017 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1017 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [ordering mode]\n";
@@ -719,7 +719,7 @@ namespace yy
     break;
 
   case 32:
-#line 1024 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1024 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [empty order]\n";
@@ -729,7 +729,7 @@ namespace yy
     break;
 
   case 33:
-#line 1031 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1031 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [copy namespaces]\n";
@@ -739,7 +739,7 @@ namespace yy
     break;
 
   case 34:
-#line 1040 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1040 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [revalidation]\n";
@@ -749,7 +749,7 @@ namespace yy
     break;
 
   case 35:
-#line 1053 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1053 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [schema]\n";
@@ -759,7 +759,7 @@ namespace yy
     break;
 
   case 36:
-#line 1060 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1060 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [module]\n";
@@ -769,207 +769,207 @@ namespace yy
     break;
 
   case 37:
-#line 1078 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1078 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NamespaceDecl [ ]\n";
 #endif
-			(yyval.node) = new NamespaceDecl((yyloc),
+			(yyval.node) = new NamespaceDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (4)].sval)));
 		;}
     break;
 
   case 38:
-#line 1093 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1093 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [preserve]\n";
 #endif
-			(yyval.node) = new BoundarySpaceDecl((yyloc),
+			(yyval.node) = new BoundarySpaceDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::preserve_space);
 		;}
     break;
 
   case 39:
-#line 1101 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1101 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [strip]\n";
 #endif
-			(yyval.node) = new BoundarySpaceDecl((yyloc),
+			(yyval.node) = new BoundarySpaceDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::strip_space);
 		;}
     break;
 
   case 40:
-#line 1115 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1115 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [element]\n";
 #endif
-			(yyval.node) = new DefaultNamespaceDecl((yyloc),
+			(yyval.node) = new DefaultNamespaceDecl(driver.createQueryLoc((yyloc)),
 								ns_element_default,
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 41:
-#line 1124 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1124 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [function]\n";
 #endif
-			(yyval.node) = new DefaultNamespaceDecl((yyloc),
+			(yyval.node) = new DefaultNamespaceDecl(driver.createQueryLoc((yyloc)),
 								ns_function_default,
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 42:
-#line 1139 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1139 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OptionDecl [ ]\n";
 #endif
-			(yyval.node) = new OptionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
+			(yyval.node) = new OptionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 43:
-#line 1155 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1155 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOptionDecl [ ]\n";
 #endif
-			(yyval.node) = new FTOptionDecl((yyloc),
+			(yyval.node) = new FTOptionDecl(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(2) - (2)].node));
 		;}
     break;
 
   case 44:
-#line 1169 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1169 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [ordered]\n";
 #endif
-			(yyval.node) = new OrderingModeDecl((yyloc),
+			(yyval.node) = new OrderingModeDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::ordered);
 		;}
     break;
 
   case 45:
-#line 1177 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1177 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [unordered]\n";
 #endif
-			(yyval.node) = new OrderingModeDecl((yyloc),
+			(yyval.node) = new OrderingModeDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::unordered);
 		;}
     break;
 
   case 46:
-#line 1192 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1192 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty greatest]\n";
 #endif
-			(yyval.node) = new EmptyOrderDecl((yyloc),
+			(yyval.node) = new EmptyOrderDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::empty_greatest);
 		;}
     break;
 
   case 47:
-#line 1200 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1200 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty least]\n";
 #endif
-			(yyval.node) = new EmptyOrderDecl((yyloc),
+			(yyval.node) = new EmptyOrderDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::empty_least);
 		;}
     break;
 
   case 48:
-#line 1214 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1214 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
 #endif
-			(yyval.node) = new CopyNamespacesDecl((yyloc),
+			(yyval.node) = new CopyNamespacesDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::preserve_ns,
 								StaticQueryContext::inherit_ns);
 		;}
     break;
 
   case 49:
-#line 1223 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1223 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
 #endif
-			(yyval.node) = new CopyNamespacesDecl((yyloc),
+			(yyval.node) = new CopyNamespacesDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::preserve_ns,
 								StaticQueryContext::no_inherit_ns);
 		;}
     break;
 
   case 50:
-#line 1232 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1232 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
 #endif
-			(yyval.node) = new CopyNamespacesDecl((yyloc),
+			(yyval.node) = new CopyNamespacesDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::no_preserve_ns,
 								StaticQueryContext::inherit_ns);
 		;}
     break;
 
   case 51:
-#line 1241 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1241 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]\n";
 #endif
-			(yyval.node) = new CopyNamespacesDecl((yyloc),
+			(yyval.node) = new CopyNamespacesDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::no_preserve_ns,
 								StaticQueryContext::no_inherit_ns);
 		;}
     break;
 
   case 52:
-#line 1263 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1263 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultCollationMode [ ]\n";
 #endif
-			(yyval.node) = new DefaultCollationDecl((yyloc),
+			(yyval.node) = new DefaultCollationDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 53:
-#line 1277 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1277 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BaseURIDecl [ ]\n";
 #endif
-			(yyval.node) = new BaseURIDecl((yyloc),
+			(yyval.node) = new BaseURIDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 54:
-#line 1291 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1291 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri]\n";
 #endif
-			(yyval.node) = new SchemaImport((yyloc),
+			(yyval.node) = new SchemaImport(driver.createQueryLoc((yyloc)),
 								NULL,
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
 								NULL);
@@ -977,12 +977,12 @@ namespace yy
     break;
 
   case 55:
-#line 1301 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1301 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri]\n";
 #endif
-			(yyval.node) = new SchemaImport((yyloc),
+			(yyval.node) = new SchemaImport(driver.createQueryLoc((yyloc)),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(3) - (2)].node)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)),
 								NULL);
@@ -990,12 +990,12 @@ namespace yy
     break;
 
   case 56:
-#line 1311 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1311 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri.urilist]\n";
 #endif
-			(yyval.node) = new SchemaImport((yyloc),
+			(yyval.node) = new SchemaImport(driver.createQueryLoc((yyloc)),
 								NULL,
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								dynamic_cast<URILiteralList*>((yysemantic_stack_[(4) - (4)].node)));
@@ -1003,12 +1003,12 @@ namespace yy
     break;
 
   case 57:
-#line 1321 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1321 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri.aturi]\n";
 #endif
-			(yyval.node) = new SchemaImport((yyloc),
+			(yyval.node) = new SchemaImport(driver.createQueryLoc((yyloc)),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(5) - (2)].node)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (3)].sval)),
 								dynamic_cast<URILiteralList*>((yysemantic_stack_[(5) - (5)].node)));
@@ -1016,19 +1016,19 @@ namespace yy
     break;
 
   case 58:
-#line 1337 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1337 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [single]\n";
 #endif
-			URILiteralList* uri_list_p = new URILiteralList((yyloc));
+			URILiteralList* uri_list_p = new URILiteralList(driver.createQueryLoc((yyloc)));
 			uri_list_p->push_back(driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 			(yyval.node) = uri_list_p;
 		;}
     break;
 
   case 59:
-#line 1346 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1346 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [list]\n";
@@ -1042,44 +1042,44 @@ namespace yy
     break;
 
   case 60:
-#line 1364 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1364 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [namespace]\n";
 #endif
-			(yyval.node) = new SchemaPrefix((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
+			(yyval.node) = new SchemaPrefix(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 61:
-#line 1371 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1371 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [default element]\n";
 #endif
-			(yyval.node) = new SchemaPrefix((yyloc), true);
+			(yyval.node) = new SchemaPrefix(driver.createQueryLoc((yyloc)), true);
 		;}
     break;
 
   case 62:
-#line 1384 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1384 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri]\n";
 #endif
-			(yyval.node) = new ModuleImport((yyloc),
+			(yyval.node) = new ModuleImport(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
 								NULL);
 		;}
     break;
 
   case 63:
-#line 1393 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1393 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri]\n";
 #endif
-			(yyval.node) = new ModuleImport((yyloc),
+			(yyval.node) = new ModuleImport(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (3)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (5)].sval)),
 								NULL);
@@ -1087,24 +1087,24 @@ namespace yy
     break;
 
   case 64:
-#line 1403 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1403 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri.at_uri.list]\n";
 #endif
-			(yyval.node) = new ModuleImport((yyloc),
+			(yyval.node) = new ModuleImport(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								dynamic_cast<URILiteralList*>((yysemantic_stack_[(4) - (4)].node)));
 		;}
     break;
 
   case 65:
-#line 1412 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1412 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri.at_uri.list]\n";
 #endif
-			(yyval.node) = new ModuleImport((yyloc),
+			(yyval.node) = new ModuleImport(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (3)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (5)].sval)),
 								dynamic_cast<URILiteralList*>((yysemantic_stack_[(7) - (7)].node)));
@@ -1112,12 +1112,12 @@ namespace yy
     break;
 
   case 66:
-#line 1429 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1429 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [expr]\n";
 #endif
-			(yyval.node) = new VarDecl((yyloc),
+			(yyval.node) = new VarDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								NULL,
 								(yysemantic_stack_[(4) - (4)].expr));
@@ -1125,12 +1125,12 @@ namespace yy
     break;
 
   case 67:
-#line 1439 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1439 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [external]\n";
 #endif
-			(yyval.node) = new VarDecl((yyloc),
+			(yyval.node) = new VarDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)),
 								NULL,
 								NULL);
@@ -1138,12 +1138,12 @@ namespace yy
     break;
 
   case 68:
-#line 1449 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1449 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.expr]\n";
 #endif
-			(yyval.node) = new VarDecl((yyloc),
+			(yyval.node) = new VarDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (3)].node)),
 								(yysemantic_stack_[(5) - (5)].expr));
@@ -1151,12 +1151,12 @@ namespace yy
     break;
 
   case 69:
-#line 1459 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1459 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.external]\n";
 #endif
-			(yyval.node) = new VarDecl((yyloc),
+			(yyval.node) = new VarDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (3)].node)),
 								NULL);
@@ -1164,48 +1164,48 @@ namespace yy
     break;
 
   case 70:
-#line 1475 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1475 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [preserve]\n";
 #endif
-			(yyval.node) = new ConstructionDecl((yyloc),
+			(yyval.node) = new ConstructionDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::cons_preserve);
 		;}
     break;
 
   case 71:
-#line 1483 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1483 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [strip]\n";
 #endif
-			(yyval.node) = new ConstructionDecl((yyloc),
+			(yyval.node) = new ConstructionDecl(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::cons_strip);
 		;}
     break;
 
   case 72:
-#line 1497 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1497 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [external]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,NULL,NULL,
 								fn_extern);
 		;}
     break;
 
   case 73:
-#line 1507 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1507 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [expr]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(5) - (5)].expr)),
 								fn_read);
@@ -1213,13 +1213,13 @@ namespace yy
     break;
 
   case 74:
-#line 1518 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1518 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.external]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (4)].node)),
 								NULL,NULL,
 								fn_extern);
@@ -1227,13 +1227,13 @@ namespace yy
     break;
 
   case 75:
-#line 1529 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1529 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.expr]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (4)].node)),
 								NULL,
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(6) - (6)].expr)),
@@ -1242,13 +1242,13 @@ namespace yy
     break;
 
   case 76:
-#line 1541 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1541 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.external]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								NULL,
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(6) - (5)].node)),
 								NULL,
@@ -1257,13 +1257,13 @@ namespace yy
     break;
 
   case 77:
-#line 1553 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1553 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.expr]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								NULL,
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(6) - (5)].node)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(6) - (6)].expr)),
@@ -1272,13 +1272,13 @@ namespace yy
     break;
 
   case 78:
-#line 1565 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1565 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.external]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(7) - (4)].node)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (6)].node)),
 								NULL,
@@ -1287,13 +1287,13 @@ namespace yy
     break;
 
   case 79:
-#line 1577 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1577 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.expr]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(7) - (4)].node)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (6)].node)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(7) - (7)].expr)),
@@ -1302,26 +1302,26 @@ namespace yy
     break;
 
   case 80:
-#line 1589 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1589 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) external]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,NULL,NULL,
 								fn_extern_update);
 		;}
     break;
 
   case 81:
-#line 1599 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1599 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) expr]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(5) - (5)].expr)),
 								fn_update);
@@ -1329,13 +1329,13 @@ namespace yy
     break;
 
   case 82:
-#line 1610 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1610 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.external]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (4)].node)),
 								NULL,NULL,
 								fn_extern_update);
@@ -1343,13 +1343,13 @@ namespace yy
     break;
 
   case 83:
-#line 1621 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1621 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.expr]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (4)].node)),
 								NULL,
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(6) - (6)].expr)),
@@ -1358,13 +1358,13 @@ namespace yy
     break;
 
   case 84:
-#line 1633 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1633 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.external]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								NULL,
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(6) - (5)].node)),
 								NULL,
@@ -1373,13 +1373,13 @@ namespace yy
     break;
 
   case 85:
-#line 1645 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1645 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.expr]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								NULL,
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(6) - (5)].node)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(6) - (6)].expr)),
@@ -1388,13 +1388,13 @@ namespace yy
     break;
 
   case 86:
-#line 1657 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1657 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(7) - (4)].node)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (6)].node)),
 								NULL,
@@ -1403,13 +1403,13 @@ namespace yy
     break;
 
   case 87:
-#line 1669 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1669 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
 #endif
-			(yyval.node) = new FunctionDecl((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(7) - (4)].node)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (6)].node)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(7) - (7)].expr)),
@@ -1418,12 +1418,12 @@ namespace yy
     break;
 
   case 88:
-#line 1687 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1687 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [single]\n";
 #endif
-			ParamList* plist_p = new ParamList((yyloc));
+			ParamList* plist_p = new ParamList(driver.createQueryLoc((yyloc)));
 			if (plist_p) {
 				plist_p->push_back(dynamic_cast<Param*>((yysemantic_stack_[(1) - (1)].node)));
 			}
@@ -1432,7 +1432,7 @@ namespace yy
     break;
 
   case 89:
-#line 1698 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1698 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [list]\n";
@@ -1446,65 +1446,65 @@ namespace yy
     break;
 
   case 90:
-#line 1715 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1715 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname]\n";
 #endif
-			(yyval.node) = new Param((yyloc),
+			(yyval.node) = new Param(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
 								NULL);
 		;}
     break;
 
   case 91:
-#line 1724 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1724 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname.type]\n";
 #endif
-			(yyval.node) = new Param((yyloc),
+			(yyval.node) = new Param(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 92:
-#line 1739 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1739 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EnclosedExpr [ ]\n";
 #endif
-			(yyval.expr) = new EnclosedExpr((yyloc),
+			(yyval.expr) = new EnclosedExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 93:
-#line 1753 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1753 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QueryBody [expr]\n";
 #endif
-			(yyval.expr) = new QueryBody((yyloc),
+			(yyval.expr) = new QueryBody(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 94:
-#line 1767 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1767 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [single]\n";
 #endif
-			Expr* expr_p = new Expr((yyloc));
+			Expr* expr_p = new Expr(driver.createQueryLoc((yyloc)));
 			expr_p->push_back((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = expr_p;
 		;}
     break;
 
   case 95:
-#line 1776 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1776 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [expr.single]\n";
@@ -1516,7 +1516,7 @@ namespace yy
     break;
 
   case 96:
-#line 1791 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1791 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [FLWORExpr]\n";
@@ -1526,7 +1526,7 @@ namespace yy
     break;
 
   case 97:
-#line 1798 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1798 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [QuantifiedExpr]\n";
@@ -1536,7 +1536,7 @@ namespace yy
     break;
 
   case 98:
-#line 1805 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1805 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TypeswitchExpr]\n";
@@ -1546,7 +1546,7 @@ namespace yy
     break;
 
   case 99:
-#line 1812 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1812 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [IfExpr]\n";
@@ -1556,7 +1556,7 @@ namespace yy
     break;
 
   case 100:
-#line 1819 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1819 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [OrExpr]\n";
@@ -1566,7 +1566,7 @@ namespace yy
     break;
 
   case 101:
-#line 1828 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1828 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [InsertExpr]\n";
@@ -1576,7 +1576,7 @@ namespace yy
     break;
 
   case 102:
-#line 1835 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1835 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [DeleteExpr]\n";
@@ -1586,7 +1586,7 @@ namespace yy
     break;
 
   case 103:
-#line 1842 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1842 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [RenameExpr]\n";
@@ -1596,7 +1596,7 @@ namespace yy
     break;
 
   case 104:
-#line 1849 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1849 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [ReplaceExpr]\n";
@@ -1606,7 +1606,7 @@ namespace yy
     break;
 
   case 105:
-#line 1856 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1856 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TransformExpr]\n";
@@ -1616,12 +1616,12 @@ namespace yy
     break;
 
   case 106:
-#line 1869 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1869 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [return]\n";
 #endif
-			(yyval.expr) = new FLWORExpr((yyloc),
+			(yyval.expr) = new FLWORExpr(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(3) - (1)].node)),
 								NULL,NULL,
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -1629,12 +1629,12 @@ namespace yy
     break;
 
   case 107:
-#line 1879 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1879 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.return]\n";
 #endif
-			(yyval.expr) = new FLWORExpr((yyloc),
+			(yyval.expr) = new FLWORExpr(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(4) - (1)].node)),
 								dynamic_cast<WhereClause*>((yysemantic_stack_[(4) - (2)].node)),
 								NULL,
@@ -1643,12 +1643,12 @@ namespace yy
     break;
 
   case 108:
-#line 1890 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1890 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [orderby.return]\n";
 #endif
-			(yyval.expr) = new FLWORExpr((yyloc),
+			(yyval.expr) = new FLWORExpr(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(4) - (1)].node)),
 								NULL,
 								dynamic_cast<OrderByClause*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1657,12 +1657,12 @@ namespace yy
     break;
 
   case 109:
-#line 1901 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1901 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.orderby.return]\n";
 #endif
-			(yyval.expr) = new FLWORExpr((yyloc),
+			(yyval.expr) = new FLWORExpr(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(5) - (1)].node)),
 								dynamic_cast<WhereClause*>((yysemantic_stack_[(5) - (2)].node)),
 								dynamic_cast<OrderByClause*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1671,19 +1671,19 @@ namespace yy
     break;
 
   case 110:
-#line 1918 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1918 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [single]\n";
 #endif
-			ForLetClauseList* flc_list_p = new ForLetClauseList((yyloc));
+			ForLetClauseList* flc_list_p = new ForLetClauseList(driver.createQueryLoc((yyloc)));
 			flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = flc_list_p;
 		;}
     break;
 
   case 111:
-#line 1927 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1927 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [list]\n";
@@ -1695,7 +1695,7 @@ namespace yy
     break;
 
   case 112:
-#line 1942 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1942 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [for]\n";
@@ -1705,7 +1705,7 @@ namespace yy
     break;
 
   case 113:
-#line 1949 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1949 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [let]\n";
@@ -1715,30 +1715,30 @@ namespace yy
     break;
 
   case 114:
-#line 1962 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1962 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForClause [ ]\n";
 #endif
-			(yyval.node) = new ForClause((yyloc),
+			(yyval.node) = new ForClause(driver.createQueryLoc((yyloc)),
 								dynamic_cast<VarInDeclList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 115:
-#line 1976 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1976 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [single]\n";
 #endif
-			VarInDeclList* vardecl_list_p = new VarInDeclList((yyloc));
+			VarInDeclList* vardecl_list_p = new VarInDeclList(driver.createQueryLoc((yyloc)));
 			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = vardecl_list_p;
 		;}
     break;
 
   case 116:
-#line 1985 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 1985 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [list]\n";
@@ -1752,12 +1752,12 @@ namespace yy
     break;
 
   case 117:
-#line 2002 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2002 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [in]\n";
 #endif
-			(yyval.node) = new VarInDecl((yyloc),
+			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
 								NULL,NULL,NULL,
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -1765,12 +1765,12 @@ namespace yy
     break;
 
   case 118:
-#line 2012 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2012 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.in]\n";
 #endif
-			(yyval.node) = new VarInDecl((yyloc),
+			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (2)].node)),
 								NULL,NULL,
@@ -1779,12 +1779,12 @@ namespace yy
     break;
 
   case 119:
-#line 2023 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2023 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.in]\n";
 #endif
-			(yyval.node) = new VarInDecl((yyloc),
+			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								NULL,
 								dynamic_cast<PositionalVar*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1794,12 +1794,12 @@ namespace yy
     break;
 
   case 120:
-#line 2035 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2035 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.in]\n";
 #endif
-			(yyval.node) = new VarInDecl((yyloc),
+			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (2)].node)),
 								dynamic_cast<PositionalVar*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1809,12 +1809,12 @@ namespace yy
     break;
 
   case 121:
-#line 2048 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2048 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [scorevar.in]\n";
 #endif
-			(yyval.node) = new VarInDecl((yyloc),
+			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								NULL,NULL,
 								dynamic_cast<FTScoreVar*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1823,12 +1823,12 @@ namespace yy
     break;
 
   case 122:
-#line 2059 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2059 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.scorevar.in]\n";
 #endif
-			(yyval.node) = new VarInDecl((yyloc),
+			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (2)].node)),
 								NULL,
@@ -1838,12 +1838,12 @@ namespace yy
     break;
 
   case 123:
-#line 2071 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2071 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.scorevar.in]\n";
 #endif
-			(yyval.node) = new VarInDecl((yyloc),
+			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								NULL,
 								dynamic_cast<PositionalVar*>((yysemantic_stack_[(5) - (2)].node)),
@@ -1853,12 +1853,12 @@ namespace yy
     break;
 
   case 124:
-#line 2083 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2083 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.scorevar.in]\n";
 #endif
-			(yyval.node) = new VarInDecl((yyloc),
+			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(6) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(6) - (2)].node)),
 								dynamic_cast<PositionalVar*>((yysemantic_stack_[(6) - (3)].node)),
@@ -1868,53 +1868,53 @@ namespace yy
     break;
 
   case 125:
-#line 2101 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2101 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PositionalVar [ ]\n";
 #endif
-			(yyval.node) = new PositionalVar((yyloc),
+			(yyval.node) = new PositionalVar(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 126:
-#line 2116 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2116 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTScoreVar [ ]\n";
 #endif
-			(yyval.node) = new FTScoreVar((yyloc),
+			(yyval.node) = new FTScoreVar(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 127:
-#line 2130 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2130 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClause [ ]\n";
 #endif
-			(yyval.node) = new LetClause((yyloc),
+			(yyval.node) = new LetClause(driver.createQueryLoc((yyloc)),
 								dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(2) - (2)].node)));
 			
 		;}
     break;
 
   case 128:
-#line 2145 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2145 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [single]\n";
 #endif
-			VarGetsDeclList* vgdl_p = new VarGetsDeclList((yyloc));
+			VarGetsDeclList* vgdl_p = new VarGetsDeclList(driver.createQueryLoc((yyloc)));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = vgdl_p;
 		;}
     break;
 
   case 129:
-#line 2154 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2154 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [list.single]\n";
@@ -1928,12 +1928,12 @@ namespace yy
     break;
 
   case 130:
-#line 2171 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2171 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [gets]\n";
 #endif
-			(yyval.node) = new VarGetsDecl((yyloc),
+			(yyval.node) = new VarGetsDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
 								NULL,
 								NULL,
@@ -1942,12 +1942,12 @@ namespace yy
     break;
 
   case 131:
-#line 2182 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2182 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.gets]\n";
 #endif
-			(yyval.node) = new VarGetsDecl((yyloc),
+			(yyval.node) = new VarGetsDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (2)].node)),
 								NULL,
@@ -1956,12 +1956,12 @@ namespace yy
     break;
 
   case 132:
-#line 2194 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2194 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [scorevar.gets]\n";
 #endif
-			(yyval.node) = new VarGetsDecl((yyloc),
+			(yyval.node) = new VarGetsDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								NULL,
 								dynamic_cast<FTScoreVar*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1970,12 +1970,12 @@ namespace yy
     break;
 
   case 133:
-#line 2205 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2205 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.scorevar.gets]\n";
 #endif
-			(yyval.node) = new VarGetsDecl((yyloc),
+			(yyval.node) = new VarGetsDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (2)].node)),
 								dynamic_cast<FTScoreVar*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1984,53 +1984,53 @@ namespace yy
     break;
 
   case 134:
-#line 2223 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2223 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "WhereClause [ ]\n";
 #endif
-			(yyval.node) = new WhereClause((yyloc),
+			(yyval.node) = new WhereClause(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 135:
-#line 2237 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2237 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [ ]\n";
 #endif
-			(yyval.node) = new OrderByClause((yyloc),
+			(yyval.node) = new OrderByClause(driver.createQueryLoc((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 136:
-#line 2245 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2245 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [stable]\n";
 #endif
-			(yyval.node) = new OrderByClause((yyloc),
+			(yyval.node) = new OrderByClause(driver.createQueryLoc((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(2) - (2)].node)),
 								true);
 		;}
     break;
 
   case 137:
-#line 2260 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2260 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [single]\n";
 #endif
-			OrderSpecList* osl_p = new OrderSpecList((yyloc));
+			OrderSpecList* osl_p = new OrderSpecList(driver.createQueryLoc((yyloc)));
 			osl_p->push_back(dynamic_cast<OrderSpec*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = osl_p;
 		;}
     break;
 
   case 138:
-#line 2269 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2269 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [list]\n";
@@ -2044,36 +2044,36 @@ namespace yy
     break;
 
   case 139:
-#line 2286 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2286 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single]\n";
 #endif
-			(yyval.node) = new OrderSpec((yyloc),
+			(yyval.node) = new OrderSpec(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr),
 								NULL);
 		;}
     break;
 
   case 140:
-#line 2295 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2295 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single.modifier]\n";
 #endif
-			(yyval.node) = new OrderSpec((yyloc),
+			(yyval.node) = new OrderSpec(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(2) - (1)].expr),
 								dynamic_cast<OrderModifier*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 141:
-#line 2310 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2310 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir]\n";
 #endif
-			(yyval.node) = new OrderModifier((yyloc),
+			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL,
 								NULL);
@@ -2081,12 +2081,12 @@ namespace yy
     break;
 
   case 142:
-#line 2320 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2320 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty]\n";
 #endif
-			(yyval.node) = new OrderModifier((yyloc),
+			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
 								NULL,
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL);
@@ -2094,12 +2094,12 @@ namespace yy
     break;
 
   case 143:
-#line 2330 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2330 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [collation]\n";
 #endif
-			(yyval.node) = new OrderModifier((yyloc),
+			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
 								NULL,
 								NULL,
 								dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2107,12 +2107,12 @@ namespace yy
     break;
 
   case 144:
-#line 2340 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2340 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty]\n";
 #endif
-			(yyval.node) = new OrderModifier((yyloc),
+			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(2) - (2)].node)),
 								NULL);
@@ -2120,12 +2120,12 @@ namespace yy
     break;
 
   case 145:
-#line 2350 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2350 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.collation]\n";
 #endif
-			(yyval.node) = new OrderModifier((yyloc),
+			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
 								NULL,
 								dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(2) - (2)].node)));
@@ -2133,12 +2133,12 @@ namespace yy
     break;
 
   case 146:
-#line 2360 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2360 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty.collation]\n";
 #endif
-			(yyval.node) = new OrderModifier((yyloc),
+			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
 								NULL,
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(2) - (2)].node)));
@@ -2146,12 +2146,12 @@ namespace yy
     break;
 
   case 147:
-#line 2370 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2370 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty.collation]\n";
 #endif
-			(yyval.node) = new OrderModifier((yyloc),
+			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(3) - (1)].node)),
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(3) - (2)].node)),
 								dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2159,65 +2159,65 @@ namespace yy
     break;
 
   case 148:
-#line 2386 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2386 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [ascending]\n";
 #endif
-			(yyval.node) = new OrderDirSpec((yyloc), dir_ascending);
+			(yyval.node) = new OrderDirSpec(driver.createQueryLoc((yyloc)), dir_ascending);
 		;}
     break;
 
   case 149:
-#line 2393 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2393 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [descending]\n";
 #endif
-			(yyval.node) = new OrderDirSpec((yyloc), dir_descending);
+			(yyval.node) = new OrderDirSpec(driver.createQueryLoc((yyloc)), dir_descending);
 		;}
     break;
 
   case 150:
-#line 2406 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2406 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [greatest]\n";
 #endif
-			(yyval.node) = new OrderEmptySpec((yyloc),
+			(yyval.node) = new OrderEmptySpec(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::empty_greatest);
 		;}
     break;
 
   case 151:
-#line 2414 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2414 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [least]\n";
 #endif
-			(yyval.node) = new OrderEmptySpec((yyloc),
+			(yyval.node) = new OrderEmptySpec(driver.createQueryLoc((yyloc)),
 								StaticQueryContext::empty_least);
 		;}
     break;
 
   case 152:
-#line 2428 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2428 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderCollationSpec [ ]\n";
 #endif
-			(yyval.node) = new OrderCollationSpec((yyloc),
+			(yyval.node) = new OrderCollationSpec(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 153:
-#line 2442 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2442 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [some]\n";
 #endif
-			(yyval.expr) = new QuantifiedExpr((yyloc),
+			(yyval.expr) = new QuantifiedExpr(driver.createQueryLoc((yyloc)),
 								quant_some,
 								dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (2)].node)),
 								(yysemantic_stack_[(4) - (4)].expr));
@@ -2225,12 +2225,12 @@ namespace yy
     break;
 
   case 154:
-#line 2452 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2452 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [every]\n";
 #endif
-			(yyval.expr) = new QuantifiedExpr((yyloc),
+			(yyval.expr) = new QuantifiedExpr(driver.createQueryLoc((yyloc)),
 								quant_every,
 								dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (2)].node)),
 								(yysemantic_stack_[(4) - (4)].expr));
@@ -2238,12 +2238,12 @@ namespace yy
     break;
 
   case 155:
-#line 2468 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2468 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [single]\n";
 #endif
-			QVarInDeclList* qvid_list_p = new QVarInDeclList((yyloc));
+			QVarInDeclList* qvid_list_p = new QVarInDeclList(driver.createQueryLoc((yyloc)));
 			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = qvid_list_p;
 				
@@ -2251,7 +2251,7 @@ namespace yy
     break;
 
   case 156:
-#line 2478 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2478 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [list]\n";
@@ -2263,24 +2263,24 @@ namespace yy
     break;
 
   case 157:
-#line 2493 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2493 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [in]\n";
 #endif
-			(yyval.node) = new QVarInDecl((yyloc),
+			(yyval.node) = new QVarInDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
 								(yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 158:
-#line 2502 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2502 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [type.in]\n";
 #endif
-			(yyval.node) = new QVarInDecl((yyloc),
+			(yyval.node) = new QVarInDecl(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (2)].node)),
 								(yysemantic_stack_[(4) - (4)].expr));
@@ -2288,12 +2288,12 @@ namespace yy
     break;
 
   case 159:
-#line 2518 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2518 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.return]\n";
 #endif
-			(yyval.expr) = new TypeswitchExpr((yyloc),
+			(yyval.expr) = new TypeswitchExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(7) - (2)].expr),
 								dynamic_cast<CaseClauseList*>((yysemantic_stack_[(7) - (4)].node)),
 								(yysemantic_stack_[(7) - (7)].expr));
@@ -2301,12 +2301,12 @@ namespace yy
     break;
 
   case 160:
-#line 2528 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2528 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.varname.return]\n";
 #endif
-			(yyval.expr) = new TypeswitchExpr((yyloc),
+			(yyval.expr) = new TypeswitchExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(9) - (2)].expr),
 								dynamic_cast<CaseClauseList*>((yysemantic_stack_[(9) - (4)].node)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(9) - (7)].sval)),
@@ -2315,19 +2315,19 @@ namespace yy
     break;
 
   case 161:
-#line 2545 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2545 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [single]\n";
 #endif
-			CaseClauseList* cc_list_p = new CaseClauseList((yyloc));
+			CaseClauseList* cc_list_p = new CaseClauseList(driver.createQueryLoc((yyloc)));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = cc_list_p;
 		;}
     break;
 
   case 162:
-#line 2554 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2554 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [list]\n";
@@ -2339,24 +2339,24 @@ namespace yy
     break;
 
   case 163:
-#line 2569 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2569 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.return]\n";
 #endif
-			(yyval.node) = new CaseClause((yyloc),
+			(yyval.node) = new CaseClause(driver.createQueryLoc((yyloc)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (2)].node)),
 								(yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 164:
-#line 2578 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2578 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.as.return]\n";
 #endif
-			(yyval.node) = new CaseClause((yyloc),
+			(yyval.node) = new CaseClause(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (3)].sval)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (5)].node)),
 								(yysemantic_stack_[(7) - (7)].expr));
@@ -2364,18 +2364,18 @@ namespace yy
     break;
 
   case 165:
-#line 2594 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2594 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IfExpr [ ]\n";
 #endif
-			(yyval.expr) = new IfExpr((yyloc),
+			(yyval.expr) = new IfExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(7) - (2)].expr), (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr));
 		;}
     break;
 
   case 166:
-#line 2608 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2608 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [and]\n";
@@ -2385,18 +2385,18 @@ namespace yy
     break;
 
   case 167:
-#line 2615 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2615 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [or.and]\n";
 #endif
-			(yyval.expr) = new OrExpr((yyloc),
+			(yyval.expr) = new OrExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 168:
-#line 2629 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2629 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [comp]\n";
@@ -2406,18 +2406,18 @@ namespace yy
     break;
 
   case 169:
-#line 2636 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2636 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [and.comp]\n";
 #endif
-			(yyval.expr) = new AndExpr((yyloc),
+			(yyval.expr) = new AndExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 170:
-#line 2658 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2658 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains]\n";
@@ -2427,13 +2427,13 @@ namespace yy
     break;
 
   case 171:
-#line 2665 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2665 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
 #endif
-			(yyval.expr) = new ComparisonExpr((yyloc),
+			(yyval.expr) = new ComparisonExpr(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ValueComp*>((yysemantic_stack_[(3) - (2)].node)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -2441,13 +2441,13 @@ namespace yy
     break;
 
   case 172:
-#line 2676 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2676 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
 #endif
-			(yyval.expr) = new ComparisonExpr((yyloc),
+			(yyval.expr) = new ComparisonExpr(driver.createQueryLoc((yyloc)),
 								dynamic_cast<GeneralComp*>((yysemantic_stack_[(3) - (2)].node)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -2455,13 +2455,13 @@ namespace yy
     break;
 
   case 173:
-#line 2687 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2687 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "is" | "<<" | ">>" */
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
 #endif
-			(yyval.expr) = new ComparisonExpr((yyloc),
+			(yyval.expr) = new ComparisonExpr(driver.createQueryLoc((yyloc)),
 								dynamic_cast<NodeComp*>((yysemantic_stack_[(3) - (2)].node)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -2469,7 +2469,7 @@ namespace yy
     break;
 
   case 174:
-#line 2704 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2704 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range]\n";
@@ -2479,12 +2479,12 @@ namespace yy
     break;
 
   case 175:
-#line 2711 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2711 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect]\n";
 #endif
-			(yyval.expr) = new FTContainsExpr((yyloc),
+			(yyval.expr) = new FTContainsExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<FTSelection*>((yysemantic_stack_[(3) - (3)].node)),
 								NULL);
@@ -2492,12 +2492,12 @@ namespace yy
     break;
 
   case 176:
-#line 2721 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2721 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect.ftignore]\n";
 #endif
-			(yyval.expr) = new FTContainsExpr((yyloc),
+			(yyval.expr) = new FTContainsExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
 								dynamic_cast<FTSelection*>((yysemantic_stack_[(4) - (3)].node)),
 								dynamic_cast<FTIgnoreOption*>((yysemantic_stack_[(4) - (4)].node)));
@@ -2505,7 +2505,7 @@ namespace yy
     break;
 
   case 177:
-#line 2737 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2737 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add]\n";
@@ -2515,18 +2515,18 @@ namespace yy
     break;
 
   case 178:
-#line 2744 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2744 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add.to.add]\n";
 #endif
-			(yyval.expr) = new RangeExpr((yyloc),
+			(yyval.expr) = new RangeExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 179:
-#line 2758 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2758 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult]\n";
@@ -2536,27 +2536,27 @@ namespace yy
     break;
 
   case 180:
-#line 2765 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2765 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult+mult]\n";
 #endif
-			(yyval.expr) = new AdditiveExpr((yyloc), op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new AdditiveExpr(driver.createQueryLoc((yyloc)), op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 181:
-#line 2772 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2772 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult-mult]\n";
 #endif
-			(yyval.expr) = new AdditiveExpr((yyloc), op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new AdditiveExpr(driver.createQueryLoc((yyloc)), op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 182:
-#line 2785 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2785 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [union]\n";
@@ -2565,47 +2565,47 @@ namespace yy
     break;
 
   case 183:
-#line 2791 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2791 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult*union]\n";
 #endif
-			(yyval.expr) = new MultiplicativeExpr((yyloc), op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(driver.createQueryLoc((yyloc)), op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 184:
-#line 2798 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2798 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.div.union]\n";
 #endif
-			(yyval.expr) = new MultiplicativeExpr((yyloc), op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(driver.createQueryLoc((yyloc)), op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 185:
-#line 2805 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2805 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.idiv.union]\n";
 #endif
-			(yyval.expr) = new MultiplicativeExpr((yyloc), op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(driver.createQueryLoc((yyloc)), op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 186:
-#line 2812 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2812 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.mod.union]\n";
 #endif
-			(yyval.expr) = new MultiplicativeExpr((yyloc), op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(driver.createQueryLoc((yyloc)), op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 187:
-#line 2825 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2825 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [interexcept]\n";
@@ -2615,29 +2615,29 @@ namespace yy
     break;
 
   case 188:
-#line 2832 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2832 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union.union.interexcept]\n";
 #endif
-			(yyval.expr) = new UnionExpr((yyloc),
+			(yyval.expr) = new UnionExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 189:
-#line 2840 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2840 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union|interexcept]\n";
 #endif
-			(yyval.expr) = new UnionExpr((yyloc),
+			(yyval.expr) = new UnionExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 190:
-#line 2854 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2854 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [instanceof]\n";
@@ -2647,27 +2647,27 @@ namespace yy
     break;
 
   case 191:
-#line 2861 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2861 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
 #endif
-			(yyval.expr) = new IntersectExceptExpr((yyloc), op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new IntersectExceptExpr(driver.createQueryLoc((yyloc)), op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 192:
-#line 2868 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2868 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
 #endif
-			(yyval.expr) = new IntersectExceptExpr((yyloc), op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new IntersectExceptExpr(driver.createQueryLoc((yyloc)), op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 193:
-#line 2881 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2881 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat]\n";
@@ -2677,19 +2677,19 @@ namespace yy
     break;
 
   case 194:
-#line 2888 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2888 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat.seqtype]\n";
 #endif
-			(yyval.expr) = new InstanceofExpr((yyloc),
+			(yyval.expr) = new InstanceofExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 195:
-#line 2903 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2903 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable]\n";
@@ -2699,19 +2699,19 @@ namespace yy
     break;
 
   case 196:
-#line 2910 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2910 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable.seqtype]\n";
 #endif
-			(yyval.expr) = new TreatExpr((yyloc),
+			(yyval.expr) = new TreatExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 197:
-#line 2925 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2925 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast]\n";
@@ -2721,19 +2721,19 @@ namespace yy
     break;
 
   case 198:
-#line 2932 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2932 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast.singletype]\n";
 #endif
-			(yyval.expr) = new CastableExpr((yyloc),
+			(yyval.expr) = new CastableExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SingleType*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 199:
-#line 2947 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2947 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary]\n";
@@ -2743,19 +2743,19 @@ namespace yy
     break;
 
   case 200:
-#line 2954 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2954 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary.singletype]\n";
 #endif
-			(yyval.expr) = new CastExpr((yyloc),
+			(yyval.expr) = new CastExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SingleType*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 201:
-#line 2969 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2969 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [value]\n";
@@ -2765,39 +2765,39 @@ namespace yy
     break;
 
   case 202:
-#line 2976 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2976 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [signlist.value]\n";
 #endif
-			(yyval.expr) = new UnaryExpr((yyloc),
+			(yyval.expr) = new UnaryExpr(driver.createQueryLoc((yyloc)),
 								dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)),
 								(yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 203:
-#line 2991 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2991 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [+]\n";
 #endif
-			(yyval.node) = new SignList((yyloc), true);
+			(yyval.node) = new SignList(driver.createQueryLoc((yyloc)), true);
 		;}
     break;
 
   case 204:
-#line 2998 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 2998 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [-]\n";
 #endif
-			(yyval.node) = new SignList((yyloc), false);
+			(yyval.node) = new SignList(driver.createQueryLoc((yyloc)), false);
 		;}
     break;
 
   case 205:
-#line 3005 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3005 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.+]\n";
@@ -2807,7 +2807,7 @@ namespace yy
     break;
 
   case 206:
-#line 3012 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3012 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.-]\n";
@@ -2819,7 +2819,7 @@ namespace yy
     break;
 
   case 207:
-#line 3027 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3027 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [validate]\n";
@@ -2829,7 +2829,7 @@ namespace yy
     break;
 
   case 208:
-#line 3034 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3034 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [path]\n";
@@ -2839,7 +2839,7 @@ namespace yy
     break;
 
   case 209:
-#line 3041 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3041 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [extension]\n";
@@ -2849,215 +2849,215 @@ namespace yy
     break;
 
   case 210:
-#line 3055 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3055 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [=]\n";
 #endif
-			(yyval.node) = new GeneralComp((yyloc), op_eq);
+			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), op_eq);
 		;}
     break;
 
   case 211:
-#line 3062 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3062 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [!=]\n";
 #endif
-			(yyval.node) = new GeneralComp((yyloc), op_ne);
+			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), op_ne);
 		;}
     break;
 
   case 212:
-#line 3069 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3069 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<]\n";
 #endif
-			(yyval.node) = new GeneralComp((yyloc), op_lt);
+			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), op_lt);
 		;}
     break;
 
   case 213:
-#line 3076 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3076 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<=]\n";
 #endif
-			(yyval.node) = new GeneralComp((yyloc), op_le);
+			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), op_le);
 		;}
     break;
 
   case 214:
-#line 3083 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3083 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>]\n";
 #endif
-			(yyval.node) = new GeneralComp((yyloc), op_gt);
+			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), op_gt);
 		;}
     break;
 
   case 215:
-#line 3090 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3090 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>=]\n";
 #endif
-			(yyval.node) = new GeneralComp((yyloc), op_ge);
+			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), op_ge);
 		;}
     break;
 
   case 216:
-#line 3103 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3103 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [eq]\n";
 #endif
-			(yyval.node) = new ValueComp((yyloc), op_val_eq);
+			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), op_val_eq);
 		;}
     break;
 
   case 217:
-#line 3110 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3110 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ne]\n";
 #endif
-			(yyval.node) = new ValueComp((yyloc), op_val_ne);
+			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), op_val_ne);
 		;}
     break;
 
   case 218:
-#line 3117 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3117 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [lt]\n";
 #endif
-			(yyval.node) = new ValueComp((yyloc), op_val_lt);
+			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), op_val_lt);
 		;}
     break;
 
   case 219:
-#line 3124 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3124 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [le]\n";
 #endif
-			(yyval.node) = new ValueComp((yyloc), op_val_le);
+			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), op_val_le);
 		;}
     break;
 
   case 220:
-#line 3131 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3131 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [gt]\n";
 #endif
-			(yyval.node) = new ValueComp((yyloc), op_val_gt);
+			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), op_val_gt);
 		;}
     break;
 
   case 221:
-#line 3138 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3138 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ge]\n";
 #endif
-			(yyval.node) = new ValueComp((yyloc), op_val_ge);
+			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), op_val_ge);
 		;}
     break;
 
   case 222:
-#line 3151 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3151 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [is]\n";
 #endif
-			(yyval.node) = new NodeComp((yyloc), op_is);
+			(yyval.node) = new NodeComp(driver.createQueryLoc((yyloc)), op_is);
 		;}
     break;
 
   case 223:
-#line 3158 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3158 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [<<]\n";
 #endif
-			(yyval.node) = new NodeComp((yyloc), op_precedes);
+			(yyval.node) = new NodeComp(driver.createQueryLoc((yyloc)), op_precedes);
 		;}
     break;
 
   case 224:
-#line 3165 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3165 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [>>]\n";
 #endif
-			(yyval.node) = new NodeComp((yyloc), op_follows);
+			(yyval.node) = new NodeComp(driver.createQueryLoc((yyloc)), op_follows);
 		;}
     break;
 
   case 225:
-#line 3179 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3179 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [expr]\n";
 #endif
-			(yyval.expr) = new ValidateExpr((yyloc), "strict", (yysemantic_stack_[(3) - (2)].expr));
+			(yyval.expr) = new ValidateExpr(driver.createQueryLoc((yyloc)), "strict", (yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 226:
-#line 3186 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3186 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [mode.expr]\n";
 #endif
-			(yyval.expr) = new ValidateExpr((yyloc),
+			(yyval.expr) = new ValidateExpr(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								(yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
   case 227:
-#line 3201 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3201 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist]\n";
 #endif
-			(yyval.expr) = new ExtensionExpr((yyloc),
+			(yyval.expr) = new ExtensionExpr(driver.createQueryLoc((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(3) - (1)].node)),
 								NULL);
 		;}
     break;
 
   case 228:
-#line 3210 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3210 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist.expr]\n";
 #endif
-			(yyval.expr) = new ExtensionExpr((yyloc),
+			(yyval.expr) = new ExtensionExpr(driver.createQueryLoc((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(4) - (1)].node)),
 								(yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
   case 229:
-#line 3225 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3225 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [single]\n";
 #endif
-			PragmaList* pragma_list_p = new PragmaList((yyloc));
+			PragmaList* pragma_list_p = new PragmaList(driver.createQueryLoc((yyloc)));
 			pragma_list_p->push_back(dynamic_cast<Pragma*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = pragma_list_p;
 		;}
     break;
 
   case 230:
-#line 3234 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3234 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [list]\n";
@@ -3071,101 +3071,101 @@ namespace yy
     break;
 
   case 231:
-#line 3251 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3251 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Pragma [ ]\n";
 #endif
-			(yyval.node) = new Pragma((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
+			(yyval.node) = new Pragma(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 
 		;}
     break;
 
   case 232:
-#line 3259 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3259 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new Pragma((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval))),
+			(yyval.node) = new Pragma(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval))),
 								"");      
     ;}
     break;
 
   case 233:
-#line 3302 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3302 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/]\n";
 #endif
-			(yyval.expr) = new PathExpr((yyloc), path_leading_lone_slash, NULL);
+			(yyval.expr) = new PathExpr(driver.createQueryLoc((yyloc)), path_leading_lone_slash, NULL);
 		;}
     break;
 
   case 234:
-#line 3309 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3309 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/relative]\n";
 #endif
-			(yyval.expr) = new PathExpr((yyloc), path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
+			(yyval.expr) = new PathExpr(driver.createQueryLoc((yyloc)), path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 235:
-#line 3316 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3316 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [//relative]\n";
 #endif
-			(yyval.expr) = new PathExpr((yyloc), path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
+			(yyval.expr) = new PathExpr(driver.createQueryLoc((yyloc)), path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 236:
-#line 3323 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3323 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [relative]\n";
 #endif
             RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>((yysemantic_stack_[(1) - (1)].expr));
-            (yyval.expr) = rpe == NULL ? (yysemantic_stack_[(1) - (1)].expr) : new PathExpr((yyloc), path_relative, (yysemantic_stack_[(1) - (1)].expr));
+            (yyval.expr) = rpe == NULL ? (yysemantic_stack_[(1) - (1)].expr) : new PathExpr(driver.createQueryLoc((yyloc)), path_relative, (yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 237:
-#line 3337 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3337 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step]\n";
 #endif
             AxisStep *as = dynamic_cast<AxisStep *>((yysemantic_stack_[(1) - (1)].expr));
-            (yyval.expr) = as != NULL ? new RelativePathExpr((yyloc), st_slash, new ContextItemExpr((yyloc)), (yysemantic_stack_[(1) - (1)].expr)) : (yysemantic_stack_[(1) - (1)].expr);
+            (yyval.expr) = as != NULL ? new RelativePathExpr(driver.createQueryLoc((yyloc)), st_slash, new ContextItemExpr(driver.createQueryLoc((yyloc))), (yysemantic_stack_[(1) - (1)].expr)) : (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 238:
-#line 3345 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3345 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step/relative]\n";
 #endif
-			(yyval.expr) = new RelativePathExpr((yyloc), st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new RelativePathExpr(driver.createQueryLoc((yyloc)), st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 239:
-#line 3352 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3352 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step//relative]\n";
 #endif
-			(yyval.expr) = new RelativePathExpr((yyloc), st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new RelativePathExpr(driver.createQueryLoc((yyloc)), st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 240:
-#line 3365 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3365 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [axis]\n";
@@ -3175,7 +3175,7 @@ namespace yy
     break;
 
   case 241:
-#line 3372 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3372 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [filter]\n";
@@ -3185,242 +3185,242 @@ namespace yy
     break;
 
   case 242:
-#line 3385 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3385 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward]\n";
 #endif
-			(yyval.expr) = new AxisStep((yyloc),
+			(yyval.expr) = new AxisStep(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL);
 		;}
     break;
 
   case 243:
-#line 3394 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3394 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward.predlist]\n";
 #endif
-			(yyval.expr) = new AxisStep((yyloc),
+			(yyval.expr) = new AxisStep(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 244:
-#line 3403 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3403 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse]\n";
 #endif
-			(yyval.expr) = new AxisStep((yyloc),
+			(yyval.expr) = new AxisStep(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL);
 		;}
     break;
 
   case 245:
-#line 3412 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3412 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse.predlist]\n";
 #endif
-			(yyval.expr) = new AxisStep((yyloc),
+			(yyval.expr) = new AxisStep(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 246:
-#line 3427 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3427 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [nodetest]\n";
 #endif
-			(yyval.node) = new ForwardStep((yyloc),
+			(yyval.node) = new ForwardStep(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ForwardAxis*>((yysemantic_stack_[(2) - (1)].node)),
 								(yysemantic_stack_[(2) - (2)].node));
 		;}
     break;
 
   case 247:
-#line 3436 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3436 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [abbrev]\n";
 #endif
-			(yyval.node) = new ForwardStep((yyloc),
+			(yyval.node) = new ForwardStep(driver.createQueryLoc((yyloc)),
 								dynamic_cast<AbbrevForwardStep*>((yysemantic_stack_[(1) - (1)].node)));
 		;}
     break;
 
   case 248:
-#line 3450 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3450 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [child]\n";
 #endif
-			(yyval.node) = new ForwardAxis((yyloc), axis_child);
+			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), axis_child);
 		;}
     break;
 
   case 249:
-#line 3457 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3457 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant]\n";
 #endif
-			(yyval.node) = new ForwardAxis((yyloc), axis_descendant);
+			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), axis_descendant);
 		;}
     break;
 
   case 250:
-#line 3464 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3464 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [attribute]\n";
 #endif
-			(yyval.node) = new ForwardAxis((yyloc), axis_attribute);
+			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), axis_attribute);
 		;}
     break;
 
   case 251:
-#line 3471 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3471 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [self]\n";
 #endif
-			(yyval.node) = new ForwardAxis((yyloc), axis_self);
+			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), axis_self);
 		;}
     break;
 
   case 252:
-#line 3478 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3478 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant_or_self]\n";
 #endif
-			(yyval.node) = new ForwardAxis((yyloc), axis_descendant_or_self);
+			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), axis_descendant_or_self);
 		;}
     break;
 
   case 253:
-#line 3485 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3485 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following_sibling]\n";
 #endif
-			(yyval.node) = new ForwardAxis((yyloc), axis_following_sibling);
+			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), axis_following_sibling);
 		;}
     break;
 
   case 254:
-#line 3492 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3492 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following]\n";
 #endif
-			(yyval.node) = new ForwardAxis((yyloc), axis_following);
+			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), axis_following);
 		;}
     break;
 
   case 255:
-#line 3505 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3505 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [nodetest]\n";
 #endif
-			(yyval.node) = new AbbrevForwardStep((yyloc), (yysemantic_stack_[(1) - (1)].node));
+			(yyval.node) = new AbbrevForwardStep(driver.createQueryLoc((yyloc)), (yysemantic_stack_[(1) - (1)].node));
 		;}
     break;
 
   case 256:
-#line 3512 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3512 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [@ nodetest]\n";
 #endif
-			(yyval.node) = new AbbrevForwardStep((yyloc), (yysemantic_stack_[(2) - (2)].node), true);
+			(yyval.node) = new AbbrevForwardStep(driver.createQueryLoc((yyloc)), (yysemantic_stack_[(2) - (2)].node), true);
 		;}
     break;
 
   case 257:
-#line 3525 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3525 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [nodetest]\n";
 #endif
-			(yyval.node) = new ReverseStep((yyloc),
+			(yyval.node) = new ReverseStep(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)),
 								(yysemantic_stack_[(2) - (2)].node));
 		;}
     break;
 
   case 258:
-#line 3534 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3534 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [..]\n";
 #endif
-			ReverseAxis* rev_p = new ReverseAxis((yyloc), axis_parent);
-			(yyval.node) = new ReverseStep((yyloc),
+			ReverseAxis* rev_p = new ReverseAxis(driver.createQueryLoc((yyloc)), axis_parent);
+			(yyval.node) = new ReverseStep(driver.createQueryLoc((yyloc)),
 								rev_p);
 		;}
     break;
 
   case 259:
-#line 3549 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3549 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [parent]\n";
 #endif
-			(yyval.node) = new ReverseAxis((yyloc), axis_parent);
+			(yyval.node) = new ReverseAxis(driver.createQueryLoc((yyloc)), axis_parent);
 		;}
     break;
 
   case 260:
-#line 3556 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3556 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor]\n";
 #endif
-			(yyval.node) = new ReverseAxis((yyloc), axis_ancestor);
+			(yyval.node) = new ReverseAxis(driver.createQueryLoc((yyloc)), axis_ancestor);
 		;}
     break;
 
   case 261:
-#line 3563 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3563 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding_sibling]\n";
 #endif
-			(yyval.node) = new ReverseAxis((yyloc), axis_preceding_sibling);
+			(yyval.node) = new ReverseAxis(driver.createQueryLoc((yyloc)), axis_preceding_sibling);
 		;}
     break;
 
   case 262:
-#line 3570 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3570 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding]\n";
 #endif
-			(yyval.node) = new ReverseAxis((yyloc), axis_preceding);
+			(yyval.node) = new ReverseAxis(driver.createQueryLoc((yyloc)), axis_preceding);
 		;}
     break;
 
   case 263:
-#line 3577 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3577 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor_or_self]\n";
 #endif
-			(yyval.node) = new ReverseAxis((yyloc), axis_ancestor_or_self);
+			(yyval.node) = new ReverseAxis(driver.createQueryLoc((yyloc)), axis_ancestor_or_self);
 		;}
     break;
 
   case 264:
-#line 3595 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3595 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [kindtest]\n";
@@ -3430,7 +3430,7 @@ namespace yy
     break;
 
   case 265:
-#line 3602 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3602 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [nametest]\n";
@@ -3440,32 +3440,32 @@ namespace yy
     break;
 
   case 266:
-#line 3615 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3615 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [qname]\n";
 #endif
-			(yyval.node) = new NameTest((yyloc), new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = new NameTest(driver.createQueryLoc((yyloc)), new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 267:
-#line 3622 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3622 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [wildcard]\n";
 #endif
-			(yyval.node) = new NameTest((yyloc), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
+			(yyval.node) = new NameTest(driver.createQueryLoc((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
 		;}
     break;
 
   case 268:
-#line 3635 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3635 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*]\n";
 #endif
-			(yyval.node) = new Wildcard((yyloc),
+			(yyval.node) = new Wildcard(driver.createQueryLoc((yyloc)),
                         "",
                         "",
                         wild_all);
@@ -3473,12 +3473,12 @@ namespace yy
     break;
 
   case 269:
-#line 3645 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3645 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [pref:*]\n";
 #endif
-			(yyval.node) = new Wildcard((yyloc),
+			(yyval.node) = new Wildcard(driver.createQueryLoc((yyloc)),
                         driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)),
                         "",
                         wild_elem);
@@ -3486,12 +3486,12 @@ namespace yy
     break;
 
   case 270:
-#line 3655 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3655 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*:qname]\n";
 #endif
-			(yyval.node) = new Wildcard((yyloc),
+			(yyval.node) = new Wildcard(driver.createQueryLoc((yyloc)),
                         "",
                         driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)),
                         wild_prefix);
@@ -3499,7 +3499,7 @@ namespace yy
     break;
 
   case 271:
-#line 3671 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3671 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary]\n";
@@ -3509,31 +3509,31 @@ namespace yy
     break;
 
   case 272:
-#line 3678 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3678 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary.predlist]\n";
 #endif
-			(yyval.expr) = new FilterExpr((yyloc),
+			(yyval.expr) = new FilterExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(2) - (1)].expr),
 								dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 273:
-#line 3693 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3693 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [single]\n";
 #endif
-			PredicateList* pred_list_p = new PredicateList((yyloc));
+			PredicateList* pred_list_p = new PredicateList(driver.createQueryLoc((yyloc)));
 			pred_list_p->push_back(dynamic_cast<exprnode*>((yysemantic_stack_[(1) - (1)].expr)));
 			(yyval.node) = pred_list_p;
 		;}
     break;
 
   case 274:
-#line 3702 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3702 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [list]\n";
@@ -3547,7 +3547,7 @@ namespace yy
     break;
 
   case 275:
-#line 3719 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3719 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Predicate [ ]\n";
@@ -3557,7 +3557,7 @@ namespace yy
     break;
 
   case 276:
-#line 3733 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3733 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [literal]\n";
@@ -3567,7 +3567,7 @@ namespace yy
     break;
 
   case 277:
-#line 3740 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3740 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [varref]\n";
@@ -3577,7 +3577,7 @@ namespace yy
     break;
 
   case 278:
-#line 3747 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3747 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [paren]\n";
@@ -3587,7 +3587,7 @@ namespace yy
     break;
 
   case 279:
-#line 3754 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3754 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [context_item]\n";
@@ -3597,7 +3597,7 @@ namespace yy
     break;
 
   case 280:
-#line 3761 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3761 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [funcall]\n";
@@ -3607,7 +3607,7 @@ namespace yy
     break;
 
   case 281:
-#line 3768 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3768 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [cons]\n";
@@ -3617,7 +3617,7 @@ namespace yy
     break;
 
   case 282:
-#line 3775 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3775 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [ordered]\n";
@@ -3627,7 +3627,7 @@ namespace yy
     break;
 
   case 283:
-#line 3782 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3782 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [unordered]\n";
@@ -3637,7 +3637,7 @@ namespace yy
     break;
 
   case 284:
-#line 3795 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3795 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [numeric]\n";
@@ -3647,7 +3647,7 @@ namespace yy
     break;
 
   case 285:
-#line 3802 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3802 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [string]\n";
@@ -3657,139 +3657,139 @@ namespace yy
     break;
 
   case 286:
-#line 3815 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3815 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [decimal]\n";
 #endif
-			(yyval.expr) = new NumericLiteral((yyloc), *yylval.decval);
+			(yyval.expr) = new NumericLiteral(driver.createQueryLoc((yyloc)), *yylval.decval);
       delete yylval.decval;
 		;}
     break;
 
   case 287:
-#line 3823 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3823 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [int]\n";
 #endif
-			(yyval.expr) = new NumericLiteral((yyloc), *yylval.ival);
+			(yyval.expr) = new NumericLiteral(driver.createQueryLoc((yyloc)), *yylval.ival);
       delete yylval.ival;
 		;}
     break;
 
   case 288:
-#line 3831 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3831 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [double]\n";
 #endif
-			(yyval.expr) = new NumericLiteral((yyloc), *yylval.dval);
+			(yyval.expr) = new NumericLiteral(driver.createQueryLoc((yyloc)), *yylval.dval);
       delete yylval.dval;
 		;}
     break;
 
   case 289:
-#line 3845 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3845 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarRef [ ]\n";
 #endif
-			(yyval.expr) = new VarRef((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
+			(yyval.expr) = new VarRef(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 290:
-#line 3858 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3858 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [()]\n";
 #endif
-			(yyval.expr) = new ParenthesizedExpr((yyloc), NULL);
+			(yyval.expr) = new ParenthesizedExpr(driver.createQueryLoc((yyloc)), NULL);
 		;}
     break;
 
   case 291:
-#line 3865 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3865 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [(expr)]\n";
 #endif
-			(yyval.expr) = new ParenthesizedExpr((yyloc),
+			(yyval.expr) = new ParenthesizedExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 292:
-#line 3879 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3879 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ContextItemExpr [.]\n";
 #endif
-			(yyval.expr) = new ContextItemExpr((yyloc));
+			(yyval.expr) = new ContextItemExpr(driver.createQueryLoc((yyloc)));
 		;}
     break;
 
   case 293:
-#line 3892 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3892 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderedExpr [expr]\n";
 #endif
-			(yyval.expr) = new OrderedExpr((yyloc),
+			(yyval.expr) = new OrderedExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 294:
-#line 3906 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3906 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnorderedExpr [expr]\n";
 #endif
-			(yyval.expr) = new UnorderedExpr((yyloc),
+			(yyval.expr) = new UnorderedExpr(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 295:
-#line 3965 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3965 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [ ]\n";
 #endif
-			(yyval.expr) = new FunctionCall((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
+			(yyval.expr) = new FunctionCall(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								NULL);
 		;}
     break;
 
   case 296:
-#line 3974 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3974 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [arglist]\n";
 #endif
-			(yyval.expr) = new FunctionCall((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval))),
+			(yyval.expr) = new FunctionCall(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval))),
 								dynamic_cast<ArgList*>((yysemantic_stack_[(4) - (3)].node)));
 		;}
     break;
 
   case 297:
-#line 3989 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3989 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [single]\n";
 #endif
-			ArgList* a_list_p = new ArgList((yyloc)); 
+			ArgList* a_list_p = new ArgList(driver.createQueryLoc((yyloc))); 
 			a_list_p->push_back((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.node) = a_list_p;
 		;}
     break;
 
   case 298:
-#line 3998 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 3998 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [list]\n";
@@ -3801,7 +3801,7 @@ namespace yy
     break;
 
   case 299:
-#line 4013 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4013 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [direct]\n";
@@ -3811,7 +3811,7 @@ namespace yy
     break;
 
   case 300:
-#line 4020 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4020 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [computed]\n";
@@ -3821,7 +3821,7 @@ namespace yy
     break;
 
   case 301:
-#line 4033 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4033 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [element]\n";
@@ -3831,7 +3831,7 @@ namespace yy
     break;
 
   case 302:
-#line 4040 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4040 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [comment]\n";
@@ -3841,7 +3841,7 @@ namespace yy
     break;
 
   case 303:
-#line 4047 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4047 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [pi]\n";
@@ -3851,13 +3851,13 @@ namespace yy
     break;
 
   case 304:
-#line 4060 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4060 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname/> ]\n";
 #endif
-			(yyval.expr) = new DirElemConstructor((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
+			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								NULL,
 								NULL,
 								NULL);
@@ -3865,13 +3865,13 @@ namespace yy
     break;
 
   case 305:
-#line 4071 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4071 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist/> ]\n";
 #endif
-			(yyval.expr) = new DirElemConstructor((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
+			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
 								NULL,
 								dynamic_cast<DirAttributeList*>((yysemantic_stack_[(4) - (3)].node)), 
 								NULL);
@@ -3879,75 +3879,75 @@ namespace yy
     break;
 
   case 306:
-#line 4082 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4082 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname></qname>]\n";
 #endif
-			(yyval.expr) = new DirElemConstructor((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (5)].sval))),
+			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (5)].sval))),
 								NULL,
 								NULL);
 		;}
     break;
 
   case 307:
-#line 4093 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4093 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname>content</qname>]\n";
 #endif
-			(yyval.expr) = new DirElemConstructor((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (6)].sval))),
+			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (6)].sval))),
 								NULL,
 								dynamic_cast<DirElemContentList*>((yysemantic_stack_[(7) - (4)].node)));
 		;}
     break;
 
   case 308:
-#line 4104 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4104 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist></qname>]\n";
 #endif
-			(yyval.expr) = new DirElemConstructor((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (6)].sval))),
+			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (6)].sval))),
 								dynamic_cast<DirAttributeList*>((yysemantic_stack_[(7) - (3)].node)),
 								NULL);
 		;}
     break;
 
   case 309:
-#line 4115 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4115 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
 #endif
-			(yyval.expr) = new DirElemConstructor((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (2)].sval))),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (7)].sval))),
+			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (2)].sval))),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (7)].sval))),
 								dynamic_cast<DirAttributeList*>((yysemantic_stack_[(8) - (3)].node)), 
 								dynamic_cast<DirElemContentList*>((yysemantic_stack_[(8) - (5)].node)));
 		;}
     break;
 
   case 310:
-#line 4133 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4133 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [single]\n";
 #endif
-			DirElemContentList* elem_content_list_p = new DirElemContentList((yyloc));
+			DirElemContentList* elem_content_list_p = new DirElemContentList(driver.createQueryLoc((yyloc)));
 			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>((yysemantic_stack_[(1) - (1)].expr)));
 			(yyval.node) = elem_content_list_p;
 		;}
     break;
 
   case 311:
-#line 4142 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4142 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [list]\n";
@@ -3959,19 +3959,19 @@ namespace yy
     break;
 
   case 312:
-#line 4157 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4157 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [single]\n";
 #endif
-			DirAttributeList* at_list_p = new DirAttributeList((yyloc));
+			DirAttributeList* at_list_p = new DirAttributeList(driver.createQueryLoc((yyloc)));
 			at_list_p->push_back(dynamic_cast<DirAttr*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = at_list_p;
 		;}
     break;
 
   case 313:
-#line 4166 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4166 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [list]\n";
@@ -3985,96 +3985,96 @@ namespace yy
     break;
 
   case 314:
-#line 4183 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4183 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttr [ ]\n";
 #endif
-			(yyval.node) = new DirAttr((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
+			(yyval.node) = new DirAttr(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								dynamic_cast<DirAttributeValue*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 315:
-#line 4198 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4198 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [quote]\n";
 #endif
-			(yyval.node) = new DirAttributeValue((yyloc),
+			(yyval.node) = new DirAttributeValue(driver.createQueryLoc((yyloc)),
 								dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 316:
-#line 4206 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4206 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [apos]\n";
 #endif
-			(yyval.node) = new DirAttributeValue((yyloc),
+			(yyval.node) = new DirAttributeValue(driver.createQueryLoc((yyloc)),
 								dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 317:
-#line 4220 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4220 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList[empty]\n";
 #endif
-			(yyval.node) = new QuoteAttrContentList((yyloc));
+			(yyval.node) = new QuoteAttrContentList(driver.createQueryLoc((yyloc)));
 		;}
     break;
 
   case 318:
-#line 4227 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4227 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 319:
-#line 4234 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4234 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [""]\n";
 #endif
-			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList((yyloc));
-			qo_list_p->push_back(new QuoteAttrValueContent((yyloc),string("\"")));
+			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(driver.createQueryLoc((yyloc)));
+			qo_list_p->push_back(new QuoteAttrValueContent(driver.createQueryLoc((yyloc)),string("\"")));
 			(yyval.node) = qo_list_p;
 		;}
     break;
 
   case 320:
-#line 4243 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4243 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [single]\n";
 #endif
-			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList((yyloc));
+			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(driver.createQueryLoc((yyloc)));
 			qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = qo_list_p;
 		;}
     break;
 
   case 321:
-#line 4252 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4252 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list ""]\n";
 #endif
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
-				qo_list_p->push_back(new QuoteAttrValueContent((yyloc),string("\"")));
+				qo_list_p->push_back(new QuoteAttrValueContent(driver.createQueryLoc((yyloc)),string("\"")));
 			}
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		;}
     break;
 
   case 322:
-#line 4263 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4263 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list]\n";
@@ -4087,62 +4087,62 @@ namespace yy
     break;
 
   case 323:
-#line 4279 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4279 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']\n";
 #endif
-			(yyval.node) = new AposAttrContentList((yyloc));
+			(yyval.node) = new AposAttrContentList(driver.createQueryLoc((yyloc)));
 		;}
     break;
 
   case 324:
-#line 4286 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4286 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 325:
-#line 4293 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4293 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']\n";
 #endif
-			AposAttrContentList* at_list_p = new AposAttrContentList((yyloc));
-			at_list_p->push_back(new AposAttrValueContent((yyloc),"'"));
+			AposAttrContentList* at_list_p = new AposAttrContentList(driver.createQueryLoc((yyloc)));
+			at_list_p->push_back(new AposAttrValueContent(driver.createQueryLoc((yyloc)),"'"));
 			(yyval.node) = at_list_p;
 		;}
     break;
 
   case 326:
-#line 4302 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4302 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [single]\n";
 #endif
-			AposAttrContentList* at_list_p = new AposAttrContentList((yyloc));
+			AposAttrContentList* at_list_p = new AposAttrContentList(driver.createQueryLoc((yyloc)));
 			at_list_p->push_back(dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = at_list_p;
 		;}
     break;
 
   case 327:
-#line 4311 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4311 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.'']\n";
 #endif
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
-				at_list_p->push_back(new AposAttrValueContent((yyloc),"'"));
+				at_list_p->push_back(new AposAttrValueContent(driver.createQueryLoc((yyloc)),"'"));
 			}
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		;}
     break;
 
   case 328:
-#line 4322 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4322 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.single]\n";
@@ -4156,208 +4156,208 @@ namespace yy
     break;
 
   case 329:
-#line 4339 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4339 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [quote_attr_content]\n";
 #endif
-			(yyval.node) = new QuoteAttrValueContent((yyloc),
+			(yyval.node) = new QuoteAttrValueContent(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 330:
-#line 4347 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4347 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [common_content]\n";
 #endif
-			(yyval.node) = new QuoteAttrValueContent((yyloc),
+			(yyval.node) = new QuoteAttrValueContent(driver.createQueryLoc((yyloc)),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 331:
-#line 4361 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4361 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [apos_attr_content]\n";
 #endif
-			(yyval.node) = new AposAttrValueContent((yyloc),
+			(yyval.node) = new AposAttrValueContent(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 332:
-#line 4369 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4369 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [common_content]\n";
 #endif
-			(yyval.node) = new AposAttrValueContent((yyloc),
+			(yyval.node) = new AposAttrValueContent(driver.createQueryLoc((yyloc)),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 333:
-#line 4383 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4383 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cons]\n";
 #endif
-			(yyval.expr) = new DirElemContent((yyloc),
+			(yyval.expr) = new DirElemContent(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 334:
-#line 4391 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4391 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [elem_content]\n";
 #endif
-			(yyval.expr) = new DirElemContent((yyloc),
+			(yyval.expr) = new DirElemContent(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 335:
-#line 4399 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4399 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cdata]\n";
 #endif
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
-			(yyval.expr) = new DirElemContent((yyloc),
+			(yyval.expr) = new DirElemContent(driver.createQueryLoc((yyloc)),
 								cdata_h);
 		;}
     break;
 
   case 336:
-#line 4408 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4408 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [common_content]\n";
 #endif
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
-			(yyval.expr) = new DirElemContent((yyloc),
+			(yyval.expr) = new DirElemContent(driver.createQueryLoc((yyloc)),
 								cont_h);
 		;}
     break;
 
   case 337:
-#line 4423 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4423 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [entity_ref]\n";
 #endif
-			(yyval.expr) = new CommonContent((yyloc),
+			(yyval.expr) = new CommonContent(driver.createQueryLoc((yyloc)),
 								cont_entity,
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 338:
-#line 4432 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4432 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [char_ref]\n";
 #endif
-			(yyval.expr) = new CommonContent((yyloc),
+			(yyval.expr) = new CommonContent(driver.createQueryLoc((yyloc)),
 								cont_charref,
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 339:
-#line 4441 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4441 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [{{]\n";
 #endif
-			(yyval.expr) = new CommonContent((yyloc),
+			(yyval.expr) = new CommonContent(driver.createQueryLoc((yyloc)),
 								cont_escape_lbrace);
 		;}
     break;
 
   case 340:
-#line 4449 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4449 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [}}]\n";
 #endif
-			(yyval.expr) = new CommonContent((yyloc),
+			(yyval.expr) = new CommonContent(driver.createQueryLoc((yyloc)),
 								cont_escape_rbrace);
 		;}
     break;
 
   case 341:
-#line 4457 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4457 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [expr]\n";
 #endif
-			(yyval.expr) = new CommonContent((yyloc),
+			(yyval.expr) = new CommonContent(driver.createQueryLoc((yyloc)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 342:
-#line 4471 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4471 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirCommentConstructor [ ]\n";
 #endif
-			(yyval.expr) = new DirCommentConstructor((yyloc),
+			(yyval.expr) = new DirCommentConstructor(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 343:
-#line 4479 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4479 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
        cout << "DirCommentConstructor [ ]\n";
 #endif
-      (yyval.expr) = new DirCommentConstructor((yyloc), "");
+      (yyval.expr) = new DirCommentConstructor(driver.createQueryLoc((yyloc)), "");
     ;}
     break;
 
   case 344:
-#line 4497 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4497 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target]\n";
 #endif
-			(yyval.expr) = new DirPIConstructor((yyloc),
+			(yyval.expr) = new DirPIConstructor(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 345:
-#line 4505 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4505 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target.charlit]\n";
 #endif
-			(yyval.expr) = new DirPIConstructor((yyloc),
+			(yyval.expr) = new DirPIConstructor(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 346:
-#line 4525 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4525 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CDataSection [ ]\n";
 #endif
-			(yyval.expr) = new CDataSection((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
+			(yyval.expr) = new CDataSection(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 347:
-#line 4543 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4543 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [doc]\n";
@@ -4367,7 +4367,7 @@ namespace yy
     break;
 
   case 348:
-#line 4550 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4550 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [elem]\n";
@@ -4377,7 +4377,7 @@ namespace yy
     break;
 
   case 349:
-#line 4557 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4557 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [attr]\n";
@@ -4387,7 +4387,7 @@ namespace yy
     break;
 
   case 350:
-#line 4564 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4564 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [text]\n";
@@ -4397,7 +4397,7 @@ namespace yy
     break;
 
   case 351:
-#line 4571 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4571 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [comment]\n";
@@ -4407,7 +4407,7 @@ namespace yy
     break;
 
   case 352:
-#line 4578 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4578 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [pi]\n";
@@ -4417,280 +4417,280 @@ namespace yy
     break;
 
   case 353:
-#line 4591 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4591 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompDocConstructor [ ]\n";
 #endif
-			(yyval.expr) = new CompDocConstructor((yyloc),
+			(yyval.expr) = new CompDocConstructor(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 354:
-#line 4605 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4605 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [ ]\n";
 #endif
-			(yyval.expr) = new CompElemConstructor((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
+			(yyval.expr) = new CompElemConstructor(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
 								NULL);
 		;}
     break;
 
   case 355:
-#line 4614 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4614 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [content]\n";
 #endif
-			(yyval.expr) = new CompElemConstructor((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
+			(yyval.expr) = new CompElemConstructor(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 356:
-#line 4623 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4623 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name]\n";
 #endif
-			(yyval.expr) = new CompElemConstructor((yyloc),
+			(yyval.expr) = new CompElemConstructor(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(5) - (2)].expr), NULL);
 		;}
     break;
 
   case 357:
-#line 4631 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4631 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name.content]\n";
 #endif
-			(yyval.expr) = new CompElemConstructor((yyloc),
+			(yyval.expr) = new CompElemConstructor(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(6) - (2)].expr), (yysemantic_stack_[(6) - (5)].expr));
 		;}
     break;
 
   case 358:
-#line 4659 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4659 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [ ]\n";
 #endif
-			(yyval.expr) = new CompAttrConstructor((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
+			(yyval.expr) = new CompAttrConstructor(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
 								NULL);
 		;}
     break;
 
   case 359:
-#line 4668 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4668 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [val]\n";
 #endif
-			(yyval.expr) = new CompAttrConstructor((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
+			(yyval.expr) = new CompAttrConstructor(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 360:
-#line 4677 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4677 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name]\n";
 #endif
-			(yyval.expr) = new CompAttrConstructor((yyloc),
+			(yyval.expr) = new CompAttrConstructor(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(5) - (2)].expr), NULL);
 		;}
     break;
 
   case 361:
-#line 4685 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4685 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name.val]\n";
 #endif
-			(yyval.expr) = new CompAttrConstructor((yyloc),
+			(yyval.expr) = new CompAttrConstructor(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(6) - (2)].expr), (yysemantic_stack_[(6) - (5)].expr));
 		;}
     break;
 
   case 362:
-#line 4699 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4699 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompTextConstructor [content]\n";
 #endif
-			(yyval.expr) = new CompTextConstructor((yyloc),
+			(yyval.expr) = new CompTextConstructor(driver.createQueryLoc((yyloc)),
 								dynamic_cast<Expr*>((yysemantic_stack_[(3) - (2)].expr)));
 		;}
     break;
 
   case 363:
-#line 4713 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4713 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompCommentConstructor [content]\n";
 #endif
-			(yyval.expr) = new CompCommentConstructor((yyloc),
+			(yyval.expr) = new CompCommentConstructor(driver.createQueryLoc((yyloc)),
 								dynamic_cast<Expr*>((yysemantic_stack_[(3) - (2)].expr)));
 		;}
     break;
 
   case 364:
-#line 4727 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4727 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [ ]\n";
 #endif
-			(yyval.expr) = new CompPIConstructor((yyloc),
+			(yyval.expr) = new CompPIConstructor(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								NULL);
 		;}
     break;
 
   case 365:
-#line 4736 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4736 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [content]\n";
 #endif
-			(yyval.expr) = new CompPIConstructor((yyloc),
+			(yyval.expr) = new CompPIConstructor(driver.createQueryLoc((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval)),
 								(yysemantic_stack_[(5) - (4)].expr));
 		;}
     break;
 
   case 366:
-#line 4745 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4745 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target]\n";
 #endif
-			(yyval.expr) = new CompPIConstructor((yyloc),
+			(yyval.expr) = new CompPIConstructor(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
 		;}
     break;
 
   case 367:
-#line 4753 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4753 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target.content]\n";
 #endif
-			(yyval.expr) = new CompPIConstructor((yyloc),
+			(yyval.expr) = new CompPIConstructor(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
 		;}
     break;
 
   case 368:
-#line 4767 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4767 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic]\n";
 #endif
-			(yyval.node) = new SingleType((yyloc),
+			(yyval.node) = new SingleType(driver.createQueryLoc((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(1) - (1)].node)),
 								false);
 		;}
     break;
 
   case 369:
-#line 4776 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4776 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic ?]\n";
 #endif
-			(yyval.node) = new SingleType((yyloc),
+			(yyval.node) = new SingleType(driver.createQueryLoc((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(2) - (1)].node)),
 								true);
 		;}
     break;
 
   case 370:
-#line 4791 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4791 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeDeclaration [as seqtype]\n";
 #endif
-			(yyval.node) = new TypeDeclaration((yyloc),
+			(yyval.node) = new TypeDeclaration(driver.createQueryLoc((yyloc)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 371:
-#line 4805 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4805 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type]\n";
 #endif
-			(yyval.node) = new SequenceType((yyloc),
+			(yyval.node) = new SequenceType(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(1) - (1)].node),
 								NULL);
 		;}
     break;
 
   case 372:
-#line 4814 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4814 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type.occurs]\n";
 #endif
-			(yyval.node) = new SequenceType((yyloc),
+			(yyval.node) = new SequenceType(driver.createQueryLoc((yyloc)),
 								(yysemantic_stack_[(2) - (1)].node),
 								dynamic_cast<OccurrenceIndicator*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 373:
-#line 4823 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4823 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [void]\n";
 #endif
-			(yyval.node) = new SequenceType((yyloc), NULL, NULL);
+			(yyval.node) = new SequenceType(driver.createQueryLoc((yyloc)), NULL, NULL);
 		;}
     break;
 
   case 374:
-#line 4863 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4863 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [?]\n";
 #endif
-			(yyval.node) = new OccurrenceIndicator((yyloc),
+			(yyval.node) = new OccurrenceIndicator(driver.createQueryLoc((yyloc)),
 								occurs_optionally);
 		;}
     break;
 
   case 375:
-#line 4871 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4871 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [*]\n";
 #endif
-			(yyval.node) = new OccurrenceIndicator((yyloc),
+			(yyval.node) = new OccurrenceIndicator(driver.createQueryLoc((yyloc)),
 								occurs_zero_or_more);
 		;}
     break;
 
   case 376:
-#line 4879 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4879 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [+]\n";
 #endif
-			(yyval.node) = new OccurrenceIndicator((yyloc),
+			(yyval.node) = new OccurrenceIndicator(driver.createQueryLoc((yyloc)),
 								occurs_one_or_more);
 		;}
     break;
 
   case 377:
-#line 4893 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4893 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [atomic]\n";
@@ -4700,7 +4700,7 @@ namespace yy
     break;
 
   case 378:
-#line 4900 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4900 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [kind]\n";
@@ -4710,28 +4710,28 @@ namespace yy
     break;
 
   case 379:
-#line 4907 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4907 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [item]\n";
 #endif
-			(yyval.node) = new ItemType((yyloc),true);
+			(yyval.node) = new ItemType(driver.createQueryLoc((yyloc)),true);
 		;}
     break;
 
   case 380:
-#line 4920 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4920 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AtomicType [qname]\n";
 #endif
-			(yyval.node) = new AtomicType((yyloc),
-								new QName((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = new AtomicType(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 381:
-#line 4934 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4934 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [doc]\n";
@@ -4741,7 +4741,7 @@ namespace yy
     break;
 
   case 382:
-#line 4941 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4941 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [elem]\n";
@@ -4751,7 +4751,7 @@ namespace yy
     break;
 
   case 383:
-#line 4948 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4948 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [attr]\n";
@@ -4761,7 +4761,7 @@ namespace yy
     break;
 
   case 384:
-#line 4955 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4955 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_elem]\n";
@@ -4771,7 +4771,7 @@ namespace yy
     break;
 
   case 385:
-#line 4962 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4962 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_attr]\n";
@@ -4781,7 +4781,7 @@ namespace yy
     break;
 
   case 386:
-#line 4969 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4969 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [pi]\n";
@@ -4791,7 +4791,7 @@ namespace yy
     break;
 
   case 387:
-#line 4976 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4976 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [comment]\n";
@@ -4801,7 +4801,7 @@ namespace yy
     break;
 
   case 388:
-#line 4983 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4983 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [text]\n";
@@ -4811,7 +4811,7 @@ namespace yy
     break;
 
   case 389:
-#line 4990 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 4990 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [any]\n";
@@ -4821,223 +4821,223 @@ namespace yy
     break;
 
   case 390:
-#line 5003 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5003 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AnyKindTest [ ]\n";
 #endif
-			(yyval.node) = new AnyKindTest((yyloc));
+			(yyval.node) = new AnyKindTest(driver.createQueryLoc((yyloc)));
 		;}
     break;
 
   case 391:
-#line 5016 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5016 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [ ]\n";
 #endif
-			(yyval.node) = new DocumentTest((yyloc));
+			(yyval.node) = new DocumentTest(driver.createQueryLoc((yyloc)));
 		;}
     break;
 
   case 392:
-#line 5023 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5023 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [elem]\n";
 #endif
-			(yyval.node) = new DocumentTest((yyloc),
+			(yyval.node) = new DocumentTest(driver.createQueryLoc((yyloc)),
 								dynamic_cast<ElementTest*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 393:
-#line 5031 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5031 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [schema_elem]\n";
 #endif
-			(yyval.node) = new DocumentTest((yyloc),
+			(yyval.node) = new DocumentTest(driver.createQueryLoc((yyloc)),
 								dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 394:
-#line 5045 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5045 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TextTest [ ]\n";
 #endif
-			(yyval.node) = new TextTest((yyloc));
+			(yyval.node) = new TextTest(driver.createQueryLoc((yyloc)));
 		;}
     break;
 
   case 395:
-#line 5058 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5058 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommentTest [ ]\n";
 #endif
-			(yyval.node) = new CommentTest((yyloc));
+			(yyval.node) = new CommentTest(driver.createQueryLoc((yyloc)));
 		;}
     break;
 
   case 396:
-#line 5071 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5071 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ ]\n";
 #endif
-			(yyval.node) = new PITest((yyloc), "");
+			(yyval.node) = new PITest(driver.createQueryLoc((yyloc)), "");
 		;}
     break;
 
   case 397:
-#line 5078 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5078 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ncname]\n";
 #endif
-			(yyval.node) = new PITest((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
+			(yyval.node) = new PITest(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 398:
-#line 5085 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5085 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [stringlit]\n";
 #endif
-			(yyval.node) = new PITest((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
+			(yyval.node) = new PITest(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 399:
-#line 5098 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5098 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [ ]\n";
 #endif
-			(yyval.node) = new AttributeTest((yyloc),
+			(yyval.node) = new AttributeTest(driver.createQueryLoc((yyloc)),
 								NULL,
 								NULL);
 		;}
     break;
 
   case 400:
-#line 5107 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5107 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name]\n";
 #endif
-			(yyval.node) = new AttributeTest((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
+			(yyval.node) = new AttributeTest(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								NULL);
 		;}
     break;
 
   case 401:
-#line 5116 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5116 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name.type]\n";
 #endif
-			(yyval.node) = new AttributeTest((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new AttributeTest(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
 		;}
     break;
 
   case 402:
-#line 5125 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5125 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*]\n";
 #endif
-			(yyval.node) = new AttributeTest((yyloc),
+			(yyval.node) = new AttributeTest(driver.createQueryLoc((yyloc)),
 								NULL,
 								NULL);
 		;}
     break;
 
   case 403:
-#line 5134 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5134 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*.type]\n";
 #endif
-			(yyval.node) = new AttributeTest((yyloc),
+			(yyval.node) = new AttributeTest(driver.createQueryLoc((yyloc)),
 								NULL,
 								dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
 		;}
     break;
 
   case 404:
-#line 5149 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5149 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaAttributeTest [ ]\n";
 #endif
-			(yyval.node) = new SchemaAttributeTest((yyloc),
-								new QName((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
+			(yyval.node) = new SchemaAttributeTest(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
 		;}
     break;
 
   case 405:
-#line 5163 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5163 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [ ]\n";
 #endif
-			(yyval.node) = new ElementTest((yyloc),
+			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
 									NULL,
 									NULL);
 		;}
     break;
 
   case 406:
-#line 5172 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5172 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name]\n";
 #endif
-			(yyval.node) = new ElementTest((yyloc),
-									new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
+			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
+									new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 									NULL);
 		;}
     break;
 
   case 407:
-#line 5181 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5181 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]\n";
 #endif
-			(yyval.node) = new ElementTest((yyloc),
-									new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
+									new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
 		;}
     break;
 
   case 408:
-#line 5190 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5190 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]\n";
 #endif
-			(yyval.node) = new ElementTest((yyloc),
-									new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
+									new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
 		;}
     break;
 
   case 409:
-#line 5199 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5199 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*]\n";
 #endif
-			(yyval.node) = new ElementTest((yyloc),
+			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
 									NULL,
 									NULL,
 									true);
@@ -5045,12 +5045,12 @@ namespace yy
     break;
 
   case 410:
-#line 5209 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5209 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]\n";
 #endif
-			(yyval.node) = new ElementTest((yyloc),
+			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
 									NULL,
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)),
 									true);
@@ -5058,12 +5058,12 @@ namespace yy
     break;
 
   case 411:
-#line 5219 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5219 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]\n";
 #endif
-			(yyval.node) = new ElementTest((yyloc),
+			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
 									NULL,
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)),
 									true);
@@ -5071,51 +5071,51 @@ namespace yy
     break;
 
   case 412:
-#line 5235 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5235 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaElementTest [ ]\n";
 #endif
-			(yyval.node) = new SchemaElementTest((yyloc),
-									new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
+			(yyval.node) = new SchemaElementTest(driver.createQueryLoc((yyloc)),
+									new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
 		;}
     break;
 
   case 413:
-#line 5259 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5259 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name]\n";
 #endif
-			(yyval.node) = new TypeName((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = new TypeName(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 414:
-#line 5269 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5269 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name?]\n";
 #endif
-			(yyval.node) = new TypeName((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
+			(yyval.node) = new TypeName(driver.createQueryLoc((yyloc)),
+								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
 								true);
 		;}
     break;
 
   case 415:
-#line 5292 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5292 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StringLiteral [ ]\n";
 #endif
-			(yyval.expr) = new StringLiteral((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
+			(yyval.expr) = new StringLiteral(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 416:
-#line 5334 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5334 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [ ]\n";
@@ -5124,7 +5124,7 @@ namespace yy
     break;
 
   case 417:
-#line 5346 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5346 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr]\n";
@@ -5133,7 +5133,7 @@ namespace yy
     break;
 
   case 418:
-#line 5352 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5352 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.as_first]\n";
@@ -5142,7 +5142,7 @@ namespace yy
     break;
 
   case 419:
-#line 5358 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5358 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.as_last]\n";
@@ -5151,7 +5151,7 @@ namespace yy
     break;
 
   case 420:
-#line 5364 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5364 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.after]\n";
@@ -5160,7 +5160,7 @@ namespace yy
     break;
 
   case 421:
-#line 5370 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5370 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertExpr [expr.before]\n";
@@ -5169,7 +5169,7 @@ namespace yy
     break;
 
   case 422:
-#line 5382 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5382 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteExpr [expr]\n";
@@ -5178,7 +5178,7 @@ namespace yy
     break;
 
   case 423:
-#line 5394 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5394 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceExpr [expr.expr]\n";
@@ -5187,7 +5187,7 @@ namespace yy
     break;
 
   case 424:
-#line 5400 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5400 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceExpr [value.expr]\n";
@@ -5196,7 +5196,7 @@ namespace yy
     break;
 
   case 425:
-#line 5412 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5412 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RenameExpr [expr.expr]\n";
@@ -5205,7 +5205,7 @@ namespace yy
     break;
 
   case 426:
-#line 5439 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5439 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TransformExpr [ ]\n";
@@ -5214,7 +5214,7 @@ namespace yy
     break;
 
   case 427:
-#line 5451 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5451 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [single]\n";
@@ -5223,7 +5223,7 @@ namespace yy
     break;
 
   case 428:
-#line 5457 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5457 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [list]\n";
@@ -5232,7 +5232,7 @@ namespace yy
     break;
 
   case 429:
-#line 5477 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5477 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or]\n";
@@ -5241,7 +5241,7 @@ namespace yy
     break;
 
   case 430:
-#line 5483 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5483 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity]\n";
@@ -5250,7 +5250,7 @@ namespace yy
     break;
 
   case 431:
-#line 5489 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5489 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.weight_range]\n";
@@ -5259,7 +5259,7 @@ namespace yy
     break;
 
   case 432:
-#line 5495 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5495 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity.weight_range]\n";
@@ -5268,7 +5268,7 @@ namespace yy
     break;
 
   case 433:
-#line 5507 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5507 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_single]\n";
@@ -5277,7 +5277,7 @@ namespace yy
     break;
 
   case 434:
-#line 5513 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5513 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_single]\n";
@@ -5286,7 +5286,7 @@ namespace yy
     break;
 
   case 435:
-#line 5519 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5519 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_list]\n";
@@ -5295,7 +5295,7 @@ namespace yy
     break;
 
   case 436:
-#line 5525 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5525 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_list]\n";
@@ -5304,7 +5304,7 @@ namespace yy
     break;
 
   case 437:
-#line 5537 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5537 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [and]\n";
@@ -5313,7 +5313,7 @@ namespace yy
     break;
 
   case 438:
-#line 5543 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5543 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [or.and]\n";
@@ -5322,7 +5322,7 @@ namespace yy
     break;
 
   case 439:
-#line 5555 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5555 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [mild_not]\n";
@@ -5331,7 +5331,7 @@ namespace yy
     break;
 
   case 440:
-#line 5561 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5561 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [and.mild_not]\n";
@@ -5340,7 +5340,7 @@ namespace yy
     break;
 
   case 441:
-#line 5573 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5573 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [unary_not]\n";
@@ -5349,7 +5349,7 @@ namespace yy
     break;
 
   case 442:
-#line 5579 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5579 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [mild_not.unary_not]\n";
@@ -5358,7 +5358,7 @@ namespace yy
     break;
 
   case 443:
-#line 5591 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5591 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [words]\n";
@@ -5367,7 +5367,7 @@ namespace yy
     break;
 
   case 444:
-#line 5597 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5597 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [not.words]\n";
@@ -5376,7 +5376,7 @@ namespace yy
     break;
 
   case 445:
-#line 5609 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5609 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words]\n";
@@ -5385,7 +5385,7 @@ namespace yy
     break;
 
   case 446:
-#line 5615 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5615 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words.times]\n";
@@ -5394,7 +5394,7 @@ namespace yy
     break;
 
   case 447:
-#line 5621 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5621 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [selection]\n";
@@ -5403,7 +5403,7 @@ namespace yy
     break;
 
   case 448:
-#line 5633 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5633 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value]\n";
@@ -5412,7 +5412,7 @@ namespace yy
     break;
 
   case 449:
-#line 5639 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5639 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value.any_all_option]\n";
@@ -5421,7 +5421,7 @@ namespace yy
     break;
 
   case 450:
-#line 5651 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5651 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [literal]\n";
@@ -5430,7 +5430,7 @@ namespace yy
     break;
 
   case 451:
-#line 5657 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5657 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [expr]\n";
@@ -5439,7 +5439,7 @@ namespace yy
     break;
 
   case 452:
-#line 5669 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5669 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [order]\n";
@@ -5448,7 +5448,7 @@ namespace yy
     break;
 
   case 453:
-#line 5675 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5675 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [window]\n";
@@ -5457,7 +5457,7 @@ namespace yy
     break;
 
   case 454:
-#line 5681 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5681 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [distance]\n";
@@ -5466,7 +5466,7 @@ namespace yy
     break;
 
   case 455:
-#line 5687 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5687 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [scope]\n";
@@ -5475,7 +5475,7 @@ namespace yy
     break;
 
   case 456:
-#line 5693 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5693 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [content]\n";
@@ -5484,7 +5484,7 @@ namespace yy
     break;
 
   case 457:
-#line 5705 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5705 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOrderedIndicator [ ]\n";
@@ -5493,7 +5493,7 @@ namespace yy
     break;
 
   case 458:
-#line 5717 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5717 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [case]\n";
@@ -5503,7 +5503,7 @@ namespace yy
     break;
 
   case 459:
-#line 5724 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5724 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [diacritics]\n";
@@ -5513,7 +5513,7 @@ namespace yy
     break;
 
   case 460:
-#line 5731 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5731 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stem]\n";
@@ -5523,7 +5523,7 @@ namespace yy
     break;
 
   case 461:
-#line 5738 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5738 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [thesaurus]\n";
@@ -5533,7 +5533,7 @@ namespace yy
     break;
 
   case 462:
-#line 5745 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5745 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stopword]\n";
@@ -5543,7 +5543,7 @@ namespace yy
     break;
 
   case 463:
-#line 5752 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5752 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [language]\n";
@@ -5553,7 +5553,7 @@ namespace yy
     break;
 
   case 464:
-#line 5759 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5759 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [wildcard]\n";
@@ -5563,7 +5563,7 @@ namespace yy
     break;
 
   case 465:
-#line 5772 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5772 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [lower]\n";
@@ -5572,7 +5572,7 @@ namespace yy
     break;
 
   case 466:
-#line 5778 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5778 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [upper]\n";
@@ -5581,7 +5581,7 @@ namespace yy
     break;
 
   case 467:
-#line 5784 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5784 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [sensitive]\n";
@@ -5590,7 +5590,7 @@ namespace yy
     break;
 
   case 468:
-#line 5790 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5790 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [insensitive]\n";
@@ -5599,7 +5599,7 @@ namespace yy
     break;
 
   case 469:
-#line 5802 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5802 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [with]\n";
@@ -5608,7 +5608,7 @@ namespace yy
     break;
 
   case 470:
-#line 5808 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5808 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [without]\n";
@@ -5617,7 +5617,7 @@ namespace yy
     break;
 
   case 471:
-#line 5814 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5814 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [sensitive]\n";
@@ -5626,7 +5626,7 @@ namespace yy
     break;
 
   case 472:
-#line 5820 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5820 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [insensitive]\n";
@@ -5635,7 +5635,7 @@ namespace yy
     break;
 
   case 473:
-#line 5832 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5832 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [with]\n";
@@ -5644,7 +5644,7 @@ namespace yy
     break;
 
   case 474:
-#line 5838 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5838 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [without]\n";
@@ -5653,7 +5653,7 @@ namespace yy
     break;
 
   case 475:
-#line 5850 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5850 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [id]\n";
@@ -5662,7 +5662,7 @@ namespace yy
     break;
 
   case 476:
-#line 5856 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5856 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [default]\n";
@@ -5671,7 +5671,7 @@ namespace yy
     break;
 
   case 477:
-#line 5862 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5862 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id)]\n";
@@ -5680,7 +5680,7 @@ namespace yy
     break;
 
   case 478:
-#line 5868 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5868 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id,id,..)]\n";
@@ -5689,7 +5689,7 @@ namespace yy
     break;
 
   case 479:
-#line 5874 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5874 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default)]\n";
@@ -5698,7 +5698,7 @@ namespace yy
     break;
 
   case 480:
-#line 5880 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5880 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default,id,id,..)]\n";
@@ -5707,7 +5707,7 @@ namespace yy
     break;
 
   case 481:
-#line 5886 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5886 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [without]\n";
@@ -5716,7 +5716,7 @@ namespace yy
     break;
 
   case 482:
-#line 5898 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5898 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [single]\n";
@@ -5725,7 +5725,7 @@ namespace yy
     break;
 
   case 483:
-#line 5904 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5904 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [list]\n";
@@ -5734,7 +5734,7 @@ namespace yy
     break;
 
   case 484:
-#line 5916 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5916 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name]\n";
@@ -5743,7 +5743,7 @@ namespace yy
     break;
 
   case 485:
-#line 5922 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5922 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel]\n";
@@ -5752,7 +5752,7 @@ namespace yy
     break;
 
   case 486:
-#line 5928 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5928 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.range]\n";
@@ -5761,7 +5761,7 @@ namespace yy
     break;
 
   case 487:
-#line 5934 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5934 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel.range]\n";
@@ -5770,7 +5770,7 @@ namespace yy
     break;
 
   case 488:
-#line 5946 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5946 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list]\n";
@@ -5779,7 +5779,7 @@ namespace yy
     break;
 
   case 489:
-#line 5952 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5952 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list.incl_excl]\n";
@@ -5788,7 +5788,7 @@ namespace yy
     break;
 
   case 490:
-#line 5958 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5958 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default]\n";
@@ -5797,7 +5797,7 @@ namespace yy
     break;
 
   case 491:
-#line 5964 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5964 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default.incl_excl]\n";
@@ -5806,7 +5806,7 @@ namespace yy
     break;
 
   case 492:
-#line 5970 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5970 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [without]\n";
@@ -5815,7 +5815,7 @@ namespace yy
     break;
 
   case 493:
-#line 5982 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5982 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [.]\n";
@@ -5824,7 +5824,7 @@ namespace yy
     break;
 
   case 494:
-#line 5988 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 5988 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [*]\n";
@@ -5833,7 +5833,7 @@ namespace yy
     break;
 
   case 495:
-#line 6000 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6000 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [.]\n";
@@ -5842,7 +5842,7 @@ namespace yy
     break;
 
   case 496:
-#line 6006 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6006 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [(*)]\n";
@@ -5851,7 +5851,7 @@ namespace yy
     break;
 
   case 497:
-#line 6018 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6018 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [.]\n";
@@ -5860,7 +5860,7 @@ namespace yy
     break;
 
   case 498:
-#line 6024 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6024 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [*]\n";
@@ -5869,7 +5869,7 @@ namespace yy
     break;
 
   case 499:
-#line 6036 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6036 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [union]\n";
@@ -5878,7 +5878,7 @@ namespace yy
     break;
 
   case 500:
-#line 6042 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6042 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [except]\n";
@@ -5887,7 +5887,7 @@ namespace yy
     break;
 
   case 501:
-#line 6054 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6054 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTLanguageOption [ ]\n";
@@ -5896,7 +5896,7 @@ namespace yy
     break;
 
   case 502:
-#line 6066 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6066 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [with]\n";
@@ -5905,7 +5905,7 @@ namespace yy
     break;
 
   case 503:
-#line 6072 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6072 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [without]\n";
@@ -5914,7 +5914,7 @@ namespace yy
     break;
 
   case 504:
-#line 6084 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6084 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [start]\n";
@@ -5923,7 +5923,7 @@ namespace yy
     break;
 
   case 505:
-#line 6090 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6090 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [end]\n";
@@ -5932,7 +5932,7 @@ namespace yy
     break;
 
   case 506:
-#line 6096 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6096 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [entire]\n";
@@ -5941,7 +5941,7 @@ namespace yy
     break;
 
   case 507:
-#line 6108 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6108 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any]\n";
@@ -5950,7 +5950,7 @@ namespace yy
     break;
 
   case 508:
-#line 6114 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6114 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any_word]\n";
@@ -5959,7 +5959,7 @@ namespace yy
     break;
 
   case 509:
-#line 6120 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6120 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all]\n";
@@ -5968,7 +5968,7 @@ namespace yy
     break;
 
   case 510:
-#line 6126 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6126 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all_words]\n";
@@ -5977,7 +5977,7 @@ namespace yy
     break;
 
   case 511:
-#line 6132 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6132 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [phrase]\n";
@@ -5986,7 +5986,7 @@ namespace yy
     break;
 
   case 512:
-#line 6144 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6144 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [exactly]\n";
@@ -5995,7 +5995,7 @@ namespace yy
     break;
 
   case 513:
-#line 6150 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6150 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_least]\n";
@@ -6004,7 +6004,7 @@ namespace yy
     break;
 
   case 514:
-#line 6156 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6156 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_most]\n";
@@ -6013,7 +6013,7 @@ namespace yy
     break;
 
   case 515:
-#line 6162 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6162 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [range]\n";
@@ -6022,7 +6022,7 @@ namespace yy
     break;
 
   case 516:
-#line 6174 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6174 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDistance [ ]\n";
@@ -6031,7 +6031,7 @@ namespace yy
     break;
 
   case 517:
-#line 6186 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6186 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWindow [ ]\n";
@@ -6040,7 +6040,7 @@ namespace yy
     break;
 
   case 518:
-#line 6198 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6198 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [ ]\n";
@@ -6049,7 +6049,7 @@ namespace yy
     break;
 
   case 519:
-#line 6210 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6210 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [same]\n";
@@ -6058,7 +6058,7 @@ namespace yy
     break;
 
   case 520:
-#line 6216 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6216 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [different]\n";
@@ -6067,7 +6067,7 @@ namespace yy
     break;
 
   case 521:
-#line 6228 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6228 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [words]\n";
@@ -6076,7 +6076,7 @@ namespace yy
     break;
 
   case 522:
-#line 6234 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6234 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [sentences]\n";
@@ -6085,7 +6085,7 @@ namespace yy
     break;
 
   case 523:
-#line 6240 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6240 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [paragraph]\n";
@@ -6094,7 +6094,7 @@ namespace yy
     break;
 
   case 524:
-#line 6252 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6252 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [sentence]\n";
@@ -6103,7 +6103,7 @@ namespace yy
     break;
 
   case 525:
-#line 6258 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6258 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [paragraph]\n";
@@ -6112,7 +6112,7 @@ namespace yy
     break;
 
   case 526:
-#line 6270 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6270 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTIgnoreOption [ ]\n";
@@ -6122,7 +6122,7 @@ namespace yy
 
 
     /* Line 675 of lalr1.cc.  */
-#line 6126 "/Users/mbrantner/misc/code/vanilla/xquery/build/src/compiler/parser/xquery_parser.cpp"
+#line 6126 "/home/dagraf/Work/28msec/zorba4/xquery/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -8102,7 +8102,7 @@ namespace yy
 
 } // namespace yy
 
-#line 6279 "/Users/mbrantner/misc/code/vanilla/xquery/src/compiler/parser/xquery_parser.y"
+#line 6279 "/home/dagraf/Work/28msec/zorba4/xquery/src/compiler/parser/xquery_parser.y"
 
 
 
