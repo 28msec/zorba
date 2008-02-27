@@ -17,14 +17,30 @@ namespace xqp {
   class xqpStringStore;
   typedef rchandle<xqpStringStore> xqpStringStore_t;
 
-  class xqpStringStore : public SimpleRCObject, public std::string
+  class xqpStringStore : public RCObject, public std::string
   {
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  protected:
+    RCSync  theRCSyncObject;
+#endif
+
     public:
       xqpStringStore() { }
-      xqpStringStore(const xqpStringStore &other) : SimpleRCObject(other), std::string(other) {}
+      xqpStringStore(const xqpStringStore &other) : RCObject(other), std::string(other) {}
       xqpStringStore(const std::string& other) : std::string(other) {}
       xqpStringStore(const char* start, const char* end) : std::string(start, end) {}
       xqpStringStore(const char* start, long len) : std::string(start, len) {}
+
+      long&
+      getRefCounter() { return theRefCount; }  
+
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
+      RCSync*
+      getSync()     { return NULL; }
+#else
+      RCSync*
+      getSync()     { return &theRCSyncObject; }
+#endif
 
       std::string::size_type bytes() const { return size(); }
 

@@ -22,23 +22,46 @@ namespace xqp
    */
   class Item : public RCObject
   {
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
+
     protected:
       long  * theRefCounterPtr;
 
       Item() : theRefCounterPtr(0) { }
 
     public:
-      virtual ~Item() {}
 
       long& 
       getRefCounter() { return *theRefCounterPtr; }
+
+      RCSync*
+      getSync()       { return NULL; }
+
+#else
+
+protected:
+      long   * theRefCounterPtr;
+      RCSync * theRCSyncObjectPtr;
+
+      Item() : theRefCounterPtr(0), theRCSyncObjectPtr(0) { }
+
+public:
+      long&
+      getRefCounter() { return *theRefCounterPtr; }
+
+      RCSync*
+      getSync()       { return theRCSyncObjectPtr; }
+
+#endif
+
+      virtual ~Item() {}
 
       /* -------------------   General Methods for Items ------------------------------ */
       /**
        *  @return  (dynamic) XQuery type of the item
        */
       virtual Item_t
-       getType( ) const = 0;
+      getType( ) const = 0;
 
       /**
        * @return true if items contains a numeric value
@@ -437,26 +460,7 @@ namespace xqp
   };   /* Item */
 
 
-  class AtomicItem : public Item
-  {
-    public:
-      AtomicItem() : Item() { theRefCounterPtr = &theRefCount; }
-
-      virtual ~AtomicItem() {}
-
-      bool isNode() const { return false; }
-      bool isAtomic() const { return true; }
-
-      virtual Item_t
-      getAtomizationValue() const;
-
-      virtual Iterator_t
-      getTypedValue() const;
-
-  };
-
-  // TODO do we need to put atomic_items.h into the include folder? 
-
 } /* namespace xqp */
+
 #endif
 
