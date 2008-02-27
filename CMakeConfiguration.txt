@@ -36,7 +36,7 @@ MESSAGE( STATUS "ZORBA_FLOAT_POINT_PRECISION: " ${ZORBA_FLOAT_POINT_PRECISION} )
 #specify the threading mechanism used
 #for WIN32 you don't have to specify it
 # one valid thread options must be present for any non win32 platform
-IF (NOT DEFINED WIN32)
+IF (DEFINED UNIX)
   SET(ZORBA_THREAD "pthread" CACHE STRING "thread mechanism")
   MESSAGE(STATUS "ZORBA_THREAD [pthread/boost/singlethread]: " ${ZORBA_THREAD})
 
@@ -59,7 +59,7 @@ IF (NOT DEFINED WIN32)
     MESSAGE( FATAL_ERROR "Unsupported thread system. For non WIN32 systems set ZORBA_THREAD=pthread, boost, or singlethread using the cmake -D ZORBA_THREAD=... option")
   ENDIF (NOT DEFINED ZORBA_USE_PTHREAD_LIBRARY AND NOT DEFINED ZORBA_FOR_ONE_THREAD_ONLY AND NOT DEFINED ZORBA_USE_BOOST_THREAD_LIBRARY)
 
-ENDIF (NOT DEFINED WIN32) 
+ENDIF (DEFINED UNIX) 
 
 
 SET(ZORBA_BUILD_STATIC_LIBRARY OFF CACHE BOOL "build a static library, e.g. when creating a release")
