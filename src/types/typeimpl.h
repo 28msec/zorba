@@ -4,7 +4,11 @@
 #include "common/shared_types.h"
 #include "types/node_test.h"
 
+
 namespace xqp {
+
+typedef rchandle<Item> Item_t;
+
 /*
  * Implementation specific classes after this point.
  */
@@ -20,6 +24,7 @@ public:
       UNTYPED_KIND,
       EMPTY_KIND,
       NONE_KIND,
+      USER_DEFINED_KIND,
     } type_kind_t;
 
     virtual std::ostream& serialize(std::ostream& os) const;
@@ -134,6 +139,29 @@ class NoneXQType : public XQType {
     }
 
     NoneXQType() : XQType(TypeConstants::QUANT_ONE) { }
+};
+
+
+class UserDefinedXQType : public XQType
+{
+private:
+    Item_t& _qname;
+    xqtref_t _baseType;
+    bool _isAtomic;
+    
+public:
+    virtual type_kind_t type_kind() const
+    {
+      return USER_DEFINED_KIND;
+    }
+
+    UserDefinedXQType(Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier);
+    
+    bool isSubTypeOf(const XQType& superType) const;
+
+    Item_t& getQName() const      { return _qname; }
+    bool isAtomic() const        { return _isAtomic; }
+    xqtref_t getBaseType() const { return _baseType; }
 };
 
 }

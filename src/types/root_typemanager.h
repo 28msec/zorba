@@ -133,7 +133,9 @@ class RootTypeManager : public TypeManager {
     xqtref_t create_empty_type() const;
 
     xqtref_t create_none_type() const;
-
+    
+    xqtref_t create_user_defined_type(const UserDefinedXQType& type, TypeConstants::quantifier_t quantifier) const;
+    
     Item_t XS_ANY_TYPE_QNAME;
 
     Item_t XS_ANY_SIMPLE_TYPE_QNAME;

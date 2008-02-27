@@ -282,6 +282,11 @@ bool RootTypeManager::is_subtype(const XQType& subtype, const XQType& supertype)
           const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
           return ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()][a2.get_type_code()];
         }
+        case XQType::USER_DEFINED_KIND:
+        {
+            const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+            return udSubType.isSubTypeOf(supertype);
+        }
         default:
           return false;
       }
@@ -307,6 +312,7 @@ bool RootTypeManager::is_subtype(const XQType& subtype, const XQType& supertype)
         case XQType::ANY_TYPE_KIND:
         case XQType::ANY_SIMPLE_TYPE_KIND:
         case XQType::UNTYPED_KIND:
+        case XQType::USER_DEFINED_KIND:
           return true;
 
         default:
@@ -331,6 +337,12 @@ bool RootTypeManager::is_subtype(const XQType& subtype, const XQType& supertype)
         case XQType::ATOMIC_TYPE_KIND:
         case XQType::ANY_SIMPLE_TYPE_KIND:
           return true;
+
+        case XQType::USER_DEFINED_KIND:
+        {
+            const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+            return udSubType.isAtomic();
+        }
 
         default:
           return false;
@@ -359,6 +371,12 @@ bool RootTypeManager::is_subtype(const XQType& subtype, const XQType& supertype)
 
     case XQType::NONE_KIND:
       return false;
+
+    case XQType::USER_DEFINED_KIND:
+      {
+          const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+          return udSubType.isSubTypeOf(supertype);
+      }
   }
   return false;
 }
@@ -575,6 +593,12 @@ xqtref_t RootTypeManager::create_type(
 
     case XQType::NONE_KIND:
       return NONE_TYPE;
+
+    case XQType::USER_DEFINED_KIND:
+    {
+      const UserDefinedXQType& udt = static_cast<const UserDefinedXQType&>(type);
+      return create_user_defined_type(udt, quantifier);
+    }
   }
 
   assert(false);
@@ -669,6 +693,8 @@ type_ident_ref_t RootTypeManager::get_type_identifier(const XQType& type) const
     case XQType::EMPTY_KIND:
       return type_ident_ref_t(new EmptyTypeIdentifier());
 
+    case XQType::USER_DEFINED_KIND:
+        //TODO for Vinayak return type identifier
     default:
       break;
   }
@@ -754,6 +780,11 @@ xqtref_t RootTypeManager::create_empty_type() const
 xqtref_t RootTypeManager::create_none_type() const
 {
   return NONE_TYPE;
+}
+
+xqtref_t RootTypeManager::create_user_defined_type(const UserDefinedXQType& type, TypeConstants::quantifier_t quantifier) const
+{
+    return xqtref_t(new UserDefinedXQType(type.getQName(), type.getBaseType(), quantifier));
 }
 
 /* vim:set ts=2 sw=2: */

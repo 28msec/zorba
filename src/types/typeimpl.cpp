@@ -108,5 +108,60 @@ NodeXQType::NodeXQType(
   XQType(quantifier), m_nodetest(nodetest), m_content_type(content_type)
 {
 }
+    
+UserDefinedXQType::UserDefinedXQType(Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
+    XQType(quantifier), _qname(qname), _baseType(baseType)
+{
+    switch (baseType.getp()->type_kind())
+    {
+    case USER_DEFINED_KIND:
+        {
+            const UserDefinedXQType& udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
+            _isAtomic = udBaseType.isAtomic();
+        }
+        break;
+    case ATOMIC_TYPE_KIND:
+        _isAtomic = true;
+        break;
+    default:
+        _isAtomic = false;            
+    }        
+}
 
+bool UserDefinedXQType::isSubTypeOf(const XQType& superType) const
+{
+    if (this==&superType)
+    {
+        return true;
+    }
+    
+    //const XQType* baseType_ptr = &getBaseType();
+    const XQType* baseType_ptr = getBaseType().getp();
+    do
+    {
+        if (baseType_ptr == &superType)
+            return true;
+        
+        switch(baseType_ptr->type_kind())
+        {
+        case XQType::ATOMIC_TYPE_KIND:
+            return false;
+            break;
+            
+        case XQType::USER_DEFINED_KIND:
+            {
+                UserDefinedXQType* udBaseType_ptr = (UserDefinedXQType*)baseType_ptr;//static_cast<UD&>(baseType);
+                //baseType_ptr = &(udBaseType_ptr->getBaseType());
+                baseType_ptr = udBaseType_ptr->getBaseType().getp();
+            }
+            break;
+        
+        default:
+            return false;
+        }
+    }
+    while(true);
+    
+    return false;
+}
 }
