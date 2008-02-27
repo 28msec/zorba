@@ -80,11 +80,12 @@ int main(int argc, const char * argv[])
 
   try
   {
-    coll1 = store->createCollection("http://MyCollection1");
+    xqpStringStore_t uri(new xqpStringStore("http://MyCollection1"));
+    coll1 = store->createCollection(uri);
 
     std::cout << coll1->getUri()->show() << std::endl;
 
-    coll2 = store->createCollection("http://MyCollection1");
+    coll2 = store->createCollection(uri);
   }
   catch (xqp_exception& e)
   {
@@ -131,7 +132,8 @@ int main(int argc, const char * argv[])
 
   xmlFile.close();
 
-  store->deleteCollection(coll1->getUri()->getStringValue());
+  store->deleteCollection(coll1->getUri()->getStringValue().getStore());
+  coll1 = 0;
 
   fileName += ".res";
   std::ofstream outXmlFile(fileName.c_str());
@@ -147,6 +149,8 @@ int main(int argc, const char * argv[])
     errmanager->dumpAlerts(outXmlFile);
 
   errmanager->dumpAlerts(std::cerr);
+
+  doc = 0;
 
   zorba_factory->uninitThread();
   zorba_factory->shutdown();
