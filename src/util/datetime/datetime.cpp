@@ -129,8 +129,23 @@ bool DateTime::operator==(const DateTime& dt) const
 DayTimeDuration_t DateTime::operator-(const DateTime& dt) const
 {
   boost::posix_time::time_duration td;
-  td = the_date_time - dt.the_date_time;
-  
+  boost::posix_time::time_duration td_tz(
+         abs<int>(the_time_zone.getHours()),
+         abs<int>(the_time_zone.getMinutes()),
+         abs<int>(the_time_zone.getSeconds()),
+         abs<int>(the_time_zone.getFractionalSeconds()));
+
+  boost::posix_time::time_duration td_dt(
+      abs<int>(dt.the_time_zone.getHours()),
+      abs<int>(dt.the_time_zone.getMinutes()),
+      abs<int>(dt.the_time_zone.getSeconds()),
+      abs<int>(dt.the_time_zone.getFractionalSeconds()));
+
+  if(the_time_zone.is_negative())
+      td = dt.the_time_zone.is_negative() ? (the_date_time + td_tz) - (dt.the_date_time + td_dt) : (the_date_time + td_tz) - (dt.the_date_time - td_dt);
+  else
+      td = dt.the_time_zone.is_negative() ? (the_date_time - td_tz) - (dt.the_date_time + td_dt) : (the_date_time - td_tz) - (dt.the_date_time - td_dt);
+
   DayTimeDuration_t d_t = new DayTimeDuration(
       the_date_time <= dt.the_date_time ? true: false,
       quotient<int>(td.hours(), 24),
