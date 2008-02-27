@@ -146,11 +146,11 @@ DateTime_t  DateTime::normalize(const long tz_seconds)
 {
   if( the_time_zone.is_not_a_date_time() )
   {
-    boost::posix_time::time_duration tz( 0, 0, tz_seconds, 0 );
+    boost::posix_time::time_duration tz( 0, 0, abs<int>(tz_seconds), 0 );
     boost::posix_time::time_duration td(the_date_time.time_of_day().hours(), the_date_time.time_of_day().minutes(),
                                         the_date_time.time_of_day().seconds(), the_date_time.time_of_day().fractional_seconds());
 
-    tz = tz_seconds < 0 ? td - tz: td + tz;
+    tz = tz_seconds < 0 ? td + tz: td - tz;
     
     DateTime_t new_dt_t;
 

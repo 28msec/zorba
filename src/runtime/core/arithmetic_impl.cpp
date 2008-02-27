@@ -225,8 +225,8 @@ template<>
 Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
 ( const QueryLoc* loc,  const Item* i0, const Item* i1 )
 {
-  DayTimeDuration_t d_t = new DayTimeDuration(false, 337, 0, 0, 0, 0);
-  xqp_duration d = d_t;
+  long timezone_sec = /*18000;*/ ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
+  xqp_duration d = *i0->getDateValue()->normalize(timezone_sec) - *i1->getDateValue()->normalize(timezone_sec);
   return Zorba::getItemFactory()->createDuration (d);
 }
 
@@ -234,8 +234,8 @@ template<>
 Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
 ( const QueryLoc* loc,  const Item* i0, const Item* i1 )
 {
-  DayTimeDuration_t d_t = new DayTimeDuration(false, 0, 2, 12, 0, 0);
-  xqp_duration d = d_t;
+  long timezone_sec = /*-18000;*/ ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
+  xqp_duration d = *i0->getTimeValue()->normalize(timezone_sec) - * i1->getTimeValue()->normalize(timezone_sec);
   return Zorba::getItemFactory()->createDuration (d);
 }
 /* end class SubtractOperations */

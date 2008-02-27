@@ -64,6 +64,9 @@ namespace xqp
       TimeZone
       getTimezone() const;
 
+      DateTime_t
+      normalize(const long tz_seconds);
+
     protected:
       Time& 
       operator=(const Time_t& t_t);

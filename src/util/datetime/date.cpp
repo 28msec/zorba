@@ -110,6 +110,19 @@ Date& Date::operator=(const Date_t& d_t)
   return *this;
 }
 
+DateTime_t  Date::normalize(const long tz_seconds)
+{
+  if( the_time_zone.is_not_a_date_time() )
+  {
+    boost::posix_time::time_duration tz( 0, 0, abs<int>(tz_seconds), 0 );
+    boost::posix_time::ptime the_date_time(boost::gregorian::date(year,month,day), boost::posix_time::time_duration(0,0,0,0));
+    the_date_time = tz_seconds < 0 ? the_date_time + tz: the_date_time - tz;
+    return new DateTime(year<0, the_date_time);
+  }
+  else
+    return toDateTime();
+}
+
 bool Date::operator<(const Date& d) const
 {
   // TODO: check timezone

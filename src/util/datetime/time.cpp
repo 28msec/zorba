@@ -120,6 +120,19 @@ TimeZone Time::getTimezone() const
   return the_time_zone;
 }
 
+DateTime_t  Time::normalize(const long tz_seconds)
+{
+  if( the_time_zone.is_not_a_date_time() )
+  {
+    boost::posix_time::time_duration tz( 0, 0, abs<int>(tz_seconds), 0 );
+    boost::posix_time::ptime the_date_time(boost::gregorian::date(1972,12,31), the_time);
+    the_date_time = tz_seconds < 0 ? the_date_time + tz: the_date_time - tz;
+    return new DateTime(false, the_date_time);
+  }
+  else
+    return toDateTime();
+}
+
 Time& Time::operator=(const Time_t& t_t)
 {
   the_time = t_t->the_time;
