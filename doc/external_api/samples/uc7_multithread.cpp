@@ -24,7 +24,13 @@ string make_absolute_file_name(const char *target_file_name, const char *this_fi
 
 #define				NR_THREADS		20
 
-static XQuery_t				xquery;
+
+struct ThreadArgs
+{
+  unsigned int theId;
+  XQuery*      theQuery;
+};
+
 
 int uc7_multithread(int argc, char* argv[])
 {
@@ -41,7 +47,7 @@ int uc7_multithread(int argc, char* argv[])
 	zorba_engine->initThread();
 
 	//create and compile a query with the static context
-	xquery = zorba_engine->createQuery("declare variable $var1 external; .//chapter[@id=$var1]");
+	XQuery_t xquery = zorba_engine->createQuery("declare variable $var1 external; .//chapter[@id=$var1]");
 	if(xquery == NULL)
 	{
 		cout << "Error creating and compiling query1" << endl;
@@ -49,10 +55,14 @@ int uc7_multithread(int argc, char* argv[])
 		return 1;
 	}
 
+  ThreadArgs targs[NR_THREADS];
 
-	for(i=0;i<NR_THREADS;i++)
+	for(i = 0; i < NR_THREADS; i++)
 	{
-		pthread_create(&pt[i], NULL, query_thread, (void*)i);
+    targs[i].theId = i;
+    targs[i].theQuery = xquery;
+
+		pthread_create(&pt[i], NULL, query_thread, (void*)(&targs[i]));
 	}
 
 	///now wait for threads to finish
@@ -62,6 +72,8 @@ int uc7_multithread(int argc, char* argv[])
 		pthread_join(pt[i], &thread_result);
 	}
 	
+  xquery = 0;
+
 	//close the engine for this thread and shutdown completely
 	zorba_engine->uninitThread();
 	zorba_engine->shutdown();
@@ -73,15 +85,16 @@ void* query_thread(void *param)
 {
 	//ZorbaEngine::getInstance can be called at any time
 	//only first call initializes the engine
-	ZorbaEngine_t		zorba_engine = ZorbaEngine::getInstance();
-	DynamicQueryContext_t		dctx;
-	unsigned int			iparam = (unsigned int)param;
-	XQuery_t				xquery_clone;
+	ZorbaEngine_t zorba_engine = ZorbaEngine::getInstance();
+	DynamicQueryContext_t dctx;
+	XQuery_t xquery_clone;
+
+  ThreadArgs* args = (ThreadArgs*)param;
 
 	//must call initThread before using any of Zorba features (other than getInstance())
 	zorba_engine->initThread();
 
-	xquery_clone = xquery->clone();
+	xquery_clone = args->theQuery->clone();
 	if(xquery_clone == NULL)
 	{
 		cout << "cannot clone xquery object" << endl;
@@ -105,9 +118,10 @@ void* query_thread(void *param)
 		zorba_engine->uninitThread();
 		return (void*)1;
 	}
-	if(!dctx->setVariableAsInt("var1", iparam))
+
+	if(!dctx->setVariableAsInt("var1", args->theId))
 	{
-		cout << "cannot set var1 to iparam " << iparam << endl;
+		cout << "cannot set var1 to iparam " << args->theId << endl;
 		exit(1);
 		zorba_engine->uninitThread();
 		return (void*)1;
