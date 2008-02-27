@@ -22,7 +22,9 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 void UDFunctionCallIteratorState::openPlan()
 {
   uint32_t planOffset = 0;
-  thePlan->open(*theFnBodyStateBlock, planOffset);
+  if (!thePlanOpen) {
+    thePlan->open(*theFnBodyStateBlock, planOffset);
+  }
   thePlanOpen = true;
 }
 
@@ -106,7 +108,7 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
   while ((lSequenceItem = consumeNext(state->thePlan, *state->theFnBodyStateBlock)) != NULL) {
     STACK_PUSH(lSequenceItem, state);
   }
-  
+
   STACK_END();
 }
 
