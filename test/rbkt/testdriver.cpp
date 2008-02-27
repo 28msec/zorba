@@ -160,14 +160,8 @@ trim(std::string& str) {
 // aCol contains the column number in which the first difference occurs
 // aPos is the character number off the first difference in the file
 // -1 is returned for aLine, aCol, and aPos if the files are equal
-#ifndef CYGWIN
 bool
 isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
-#else
-bool
-isEqual(std::string aRefFile, std::string aResFile, int& aLine, int& aCol,
-        int&aPos)
-#endif
 {
   std::ifstream li(aRefFile.native_file_string().c_str());
   std::ifstream ri(aResFile.native_file_string().c_str()); 
