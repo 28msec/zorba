@@ -127,18 +127,20 @@ Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
 Item_t FnStringIterator::nextImpl(PlanState& planState) const
 {
   Item_t inVal;
+  xqpStringStore_t empty;
 
   FnStringIteratorState *state;
   DEFAULT_STACK_INIT(FnStringIteratorState, state, planState);
 
   while((inVal = consumeNext(theChildren[0].getp(), planState)) != NULL) {
     state->hasOutput = true;
-    STACK_PUSH(Zorba::getItemFactory()->createString(inVal->getStringValue()), state);
+    STACK_PUSH(Zorba::getItemFactory()->createString(inVal->getStringValue().getStore()), state);
   }
 
   if (!state->hasOutput && theEmptyStringOnNULL) {
     state->hasOutput = true;
-    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
+    empty = new xqpStringStore("");
+    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
   }
 
   STACK_END();

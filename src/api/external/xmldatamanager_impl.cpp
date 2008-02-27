@@ -35,7 +35,7 @@ Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, std::istream& st
 {
 	try{
 
-	return internal_store->loadDocument(uri, stream);
+	return internal_store->loadDocument(uri.getStore(), stream);
 
 	}CATCH_ALL_RETURN_NULL;
 }
@@ -51,7 +51,7 @@ Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& local_file_uri)
 		ZORBA_ERROR_ALERT(ZorbaError::API0015_CANNOT_OPEN_FILE, NULL, DONT_CONTINUE_EXECUTION, local_file_uri);
 		return NULL;
 	}
-	return loadDocument(local_file_uri, ifuri);
+	return loadDocument(local_file_uri.getStore(), ifuri);
 
 	}CATCH_ALL_RETURN_NULL;
 }
@@ -60,7 +60,7 @@ Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, Item_t item)  //
 {
 	try{
 
-	return internal_store->loadDocument(uri, item);
+	return internal_store->loadDocument(uri.getStore(), item);
 
 	}CATCH_ALL_RETURN_NULL;
 }
@@ -70,7 +70,7 @@ Item_t XmlDataManager_Impl::getDocument(const xqp_anyURI& uri)
 {
 	try{
 
-	return internal_store->getDocument(uri);
+    return internal_store->getDocument(uri.getStore());
 
 	}CATCH_ALL_RETURN_NULL;
 }
@@ -79,7 +79,7 @@ void XmlDataManager_Impl::deleteDocument(const xqp_anyURI& uri)
 {
 	try{
 
-	internal_store->deleteDocument(uri);
+	internal_store->deleteDocument(uri.getStore());
 
 	}CATCH_ALL_NO_RETURN(;);
 }
@@ -90,7 +90,7 @@ bool XmlDataManager_Impl::createCollection(const xqp_anyURI& uri)
 {
 	try{
 
-		if(internal_store->createCollection( uri ) == NULL)
+		if(internal_store->createCollection(uri.getStore()) == NULL)
 		{
 			ZORBA_ERROR_ALERT(ZorbaError::API0016_CANNOT_CREATE_COLLECTION, NULL, DONT_CONTINUE_EXECUTION, uri);
 			return false;
@@ -103,7 +103,7 @@ bool XmlDataManager_Impl::createCollection(const xqp_anyURI& uri)
 bool XmlDataManager_Impl::deleteCollection(const xqp_anyURI& uri)
 {
 	try{
-	internal_store->deleteCollection(uri);
+	internal_store->deleteCollection(uri.getStore());
 	}CATCH_ALL_RETURN_false;
 	
 	return true;
@@ -113,7 +113,7 @@ bool XmlDataManager_Impl::addToCollection(const xqp_anyURI& uri, Iterator_t iter
 {
 	try{
 		Collection_t		colec;
-		colec = internal_store->getCollection(uri);
+		colec = internal_store->getCollection(uri.getStore());
 		if(colec == NULL)
 		{
 			ZORBA_ERROR_ALERT(ZorbaError::API0006_COLLECTION_NOT_FOUND, NULL, DONT_CONTINUE_EXECUTION, uri);
@@ -130,7 +130,7 @@ bool XmlDataManager_Impl::addToCollection(const xqp_anyURI& uri, std::istream& s
 {
 	try{
 		Collection_t		colec;
-		colec = internal_store->getCollection(uri);
+		colec = internal_store->getCollection(uri.getStore());
 		if(colec == NULL)
 		{
 			ZORBA_ERROR_ALERT(ZorbaError::API0006_COLLECTION_NOT_FOUND, NULL, DONT_CONTINUE_EXECUTION, uri);

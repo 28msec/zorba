@@ -1,17 +1,14 @@
-/*
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Authors: David Graf (david.graf@28msec.com), Markos Zaharioudakis
- *
- */
+#ifndef ZORBA_DEFAULT_STORE_H
+#define ZORBA_DEFAULT_STORE_H
 
-#ifndef XQP_DEFAULT_STORE_H
-#define XQP_DEFAULT_STORE_H
 
+#include "zorba/common/api_shared_types.h"
 
 #include "store/api/store.h"
-#include "store/util/string_pool.h"
+#include "store/util/string_hashset.h"
 #include "store/util/string_hashmap.h"
-#include "store/naive/basic_item_factory.h"
+#include "store/util/mutex.h"
+
 
 namespace xqp
 {
@@ -24,6 +21,8 @@ class Requester;
 class XmlNode;
 class QueryContextContainer;
 class QueryContext;
+class ItemFactory;
+class BasicItemFactory;
 
 template <class V> class StringHashMap;
 
@@ -55,10 +54,7 @@ public:
 
 protected:
   static const float DEFAULT_HASH_LOAD_FACTOR;
-  static const unsigned long long DEFAULT_COLLECTION_MAP_SIZE;
-
-  static unsigned long     theUriCounter;
-  static unsigned long     theTreeCounter;
+  static const ulong DEFAULT_COLLECTION_MAP_SIZE;
 
 public:
   xqpStringStore_t         theEmptyNs;
@@ -71,15 +67,19 @@ public:
 protected:
   bool                     theIsInitialized;
 
+  ulong                    theUriCounter;
+  Mutex                    theUriCounterMutex;
+
+  ulong                    theTreeCounter;
+  Mutex                    theTreeCounterMutex;
+
   NamespacePool          * theNamespacePool;
   QNamePool              * theQNamePool;
 
-  BasicItemFactory       * theItemFactory;
+  ItemFactory            * theItemFactory;
 
-  CollectionSet            theCollections;
   DocumentSet              theDocuments;
-
-  XmlLoader              * theXmlLoader;
+  CollectionSet            theCollections;
 
   QueryContextContainer  * theQueryContextContainer; 
 
@@ -92,30 +92,31 @@ private:
   void shutdown();
 
 public:
-  ItemFactory& getItemFactory() const     { return *theItemFactory; }
+  ItemFactory* getItemFactory() const     { return theItemFactory; }
 
   NamespacePool& getNamespacePool() const { return *theNamespacePool; }
   QNamePool& getQNamePool() const         { return *theQNamePool; }
 
-  XmlLoader& getXmlLoader();
+  XmlLoader* getXmlLoader();
 
-  unsigned long getTreeId()               { return theTreeCounter++; }
+  ulong getTreeId();
 
-  QueryContext& getQueryContext(unsigned long queryId);
+  QueryContext& getQueryContext(ulong queryId);
+  void deleteQueryContext(ulong queryId);
 
-  void setGarbageCollectionStrategy(const xqp_string& strategy);
+  void setGarbageCollectionStrategy(xqpStringStore* strategy);
 
   Item_t createUri();
 
-  Item_t loadDocument(const xqp_string& uri, std::istream& stream);
-  Item_t loadDocument(const xqp_string& uri, Item_t	 doc_item);
-  Item_t getDocument(const xqp_string& uri);
-  void deleteDocument(const xqp_string& uri);
+  Item_t loadDocument(xqpStringStore* uri, std::istream& stream);
+  Item_t loadDocument(xqpStringStore* uri, Item_t	 doc_item);
+  Item_t getDocument(xqpStringStore* uri);
+  void deleteDocument(xqpStringStore* uri);
 
-  Collection_t createCollection(const xqp_string& uri);
+  Collection_t createCollection(xqpStringStore* uri);
   Collection_t createCollection();
-  Collection_t getCollection(const xqp_string& uri);
-  void deleteCollection(const xqp_string& uri);
+  Collection_t getCollection(xqpStringStore* uri);
+  void deleteCollection(xqpStringStore* uri);
 
   int32_t compare(Item* item1, Item* item2) const;
 

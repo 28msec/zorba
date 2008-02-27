@@ -9,10 +9,13 @@
 #ifndef XQP_BASIC_ITEM_FACTORY_H
 #define XQP_BASIC_ITEM_FACTORY_H
 
-#include "common/shared_types.h"
 #include <zorba/xqpstring.h>
-#include "store/api/item_factory.h"
 #include <zorba/representations.h>
+
+#include "common/shared_types.h"
+
+#include "store/api/item_factory.h"
+
 
 
 namespace xqp
@@ -31,33 +34,24 @@ public:
 
   virtual ~BasicItemFactory();
 
-  virtual Item_t createQName(
-        const xqpStringStore_t& ns,
-        const xqpStringStore_t& pre,
-        const xqpStringStore_t& local);
+  Item_t createQName(
+        xqpStringStore* ns,
+        xqpStringStore* pre,
+        xqpStringStore* local);
 
-  virtual Item_t createQName(
-        const xqp_string& ns,
-        const xqp_string& pre,
-        const xqp_string& local);
-
-  virtual Item_t createQName(
+  Item_t createQName(
         const char* ns,
         const char* pre,
         const char* ln);
 
   Item_t createNCName(xqpStringStore* value);
-  Item_t createNCName(const xqp_string& value);
 
-  virtual Item_t createAnyURI(const xqpStringStore_t& value);
-  virtual Item_t createAnyURI(const xqp_string& value);
-  virtual Item_t createAnyURI(const char* value);
+  Item_t createAnyURI(xqpStringStore* value);
+  Item_t createAnyURI(const char* value);
 
-  virtual Item_t createUntypedAtomic(const xqpStringStore_t& value);
-  virtual Item_t createUntypedAtomic(const xqp_string& value);
+  Item_t createUntypedAtomic(xqpStringStore* value);
 
-  virtual Item_t createString(xqpStringStore* value);
-  virtual Item_t createString(const xqp_string& value);
+  Item_t createString(xqpStringStore* value);
 
   virtual Item_t createBase64Binary(xqp_base64Binary value);
 

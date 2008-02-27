@@ -6,7 +6,6 @@
 #include <zorba/common/common.h>
 #include <zorba/rchandle.h>
 
-
 namespace xqp
 {
 class xqpString;
@@ -31,7 +30,7 @@ private:
 public:
   NsBindingsContext() { }
 
-  NsBindingsContext(unsigned long numBindings);
+  NsBindingsContext(ulong numBindings);
 
   NsBindingsContext(const NsBindings& bindings);
 

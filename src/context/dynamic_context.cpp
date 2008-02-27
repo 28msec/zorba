@@ -96,7 +96,8 @@ dynamic_context::~dynamic_context()
 		if(!strncmp(keybuff, "var:", 4))
 		{
 			val = &(*it).val;
-			val->var_iterator->removeReference(val->var_iterator->getRefCounter());
+			val->var_iterator->removeReference(val->var_iterator->getRefCounter(),
+                                         val->var_iterator->getSync());
 		}
 	}
 }
@@ -203,7 +204,8 @@ constructed by static_context::qname_internal_key( .. )
 */
 void	dynamic_context::add_variable(xqp_string var_name, Iterator* var_iterator)
 {
-  var_iterator->addReference(var_iterator->getRefCounter());
+  var_iterator->addReference(var_iterator->getRefCounter(),
+                             var_iterator->getSync());
 
   dctx_value_t v = { var_iterator };
   keymap.put ("var:" + var_name, v);

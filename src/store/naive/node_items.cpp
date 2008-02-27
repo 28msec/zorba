@@ -18,6 +18,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/node_iterators.h"
 #include "store/naive/simple_store.h"
+#include "store/naive/basic_item_factory.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/nsbindings.h"
 #include "store/api/temp_seq.h"
@@ -135,7 +136,7 @@ void ConstrNodeVector::push_back(XmlNode* node, bool shared)
   theBitmap.push_back(shared);
 
   if (shared)
-    node->addReference(node->getRefCounter());
+    node->addReference(node->getRefCounter(), node->getSync());
 }
 
 
@@ -206,6 +207,7 @@ XmlNode::XmlNode(
   {
     if (tree != NULL)
     {
+      theRCSyncObjectPtr = &(tree->getRCSyncObject());
       setTree(tree);
       getTree()->setRoot(this);
 
@@ -222,6 +224,7 @@ XmlNode::XmlNode(
 
     theParent = parent;
     setTree(parent->getTree());
+    theRCSyncObjectPtr = &(getTree()->getRCSyncObject());
 
     theOrdPath = parent->theOrdPath;
 
@@ -374,7 +377,7 @@ Iterator_t DocumentNode::getChildren() const
 
 Iterator_t DocumentNode::getTypedValue() const
 {
-  Item_t item = GET_FACTORY().createUntypedAtomic(getStringValue());
+  Item_t item = GET_FACTORY().createUntypedAtomic(getStringValue().getStore());
   PlanIter_t ret(new SingletonIterator(Zorba::null_loc, item));
   return new PlanWrapper(ret);
 }
@@ -382,7 +385,7 @@ Iterator_t DocumentNode::getTypedValue() const
 
 Item_t DocumentNode::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(getStringValue());
+  return GET_FACTORY().createUntypedAtomic(getStringValue().getStore());
 }
 
 
@@ -688,9 +691,7 @@ Iterator_t ElementNode::getTypedValue() const
 ********************************************************************************/
 Item_t ElementNode::getAtomizationValue() const
 {
-  xqp_string stringValue = getStringValue();
-
-  return GET_FACTORY().createUntypedAtomic(stringValue);
+  return GET_FACTORY().createUntypedAtomic(getStringValue().getStore());
 }
 
 
@@ -1152,7 +1153,6 @@ AttributeNode::~AttributeNode()
 
 void AttributeNode::constructValue(Iterator* valueIter)
 {
-  Item_t typedValue;
   xqpStringStore_t lexicalValue;
 
   Item_t valueItem = valueIter->next();
@@ -1166,18 +1166,16 @@ void AttributeNode::constructValue(Iterator* valueIter)
       lexicalValue->append(valueItem->getStringValue().c_str());
       valueItem = valueIter->next();
     }
-
-    typedValue = GET_FACTORY().createUntypedAtomic(lexicalValue);
   }
   else
   {
-    typedValue = GET_FACTORY().createUntypedAtomic("");
+    lexicalValue = new xqpStringStore("");
   }
 
-  theTypedValue = typedValue;
+  theTypedValue = GET_FACTORY().createUntypedAtomic(lexicalValue);
 
   NODE_TRACE2("Constructed attr node " << this << ":" << theName->getStringValue()
-              << " value = " << typedValue->show());
+              << " value = " << theTypedValue->show());
   NODE_TRACE1("}");
 }
 
@@ -1322,7 +1320,7 @@ Item_t TextNode::getType() const
 
 Iterator_t TextNode::getTypedValue() const
 {
-  const Item_t& item = GET_FACTORY().createUntypedAtomic(theContent);
+  const Item_t& item = GET_FACTORY().createUntypedAtomic(theContent.getp());
 
   PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, item);
   return new PlanWrapper(planIter);
@@ -1331,7 +1329,7 @@ Iterator_t TextNode::getTypedValue() const
 
 Item_t TextNode::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(theContent);
+  return GET_FACTORY().createUntypedAtomic(theContent.getp());
 }
 
 
@@ -1404,7 +1402,7 @@ Iterator_t PiNode::getTypedValue() const
 
 Item_t PiNode::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(theData);
+  return GET_FACTORY().createUntypedAtomic(theData.getp());
 }
 
 
@@ -1474,7 +1472,7 @@ Iterator_t CommentNode::getTypedValue() const
 
 Item_t CommentNode::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(theContent);
+  return GET_FACTORY().createUntypedAtomic(theContent.getp());
 }
 
 

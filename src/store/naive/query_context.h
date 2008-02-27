@@ -1,9 +1,12 @@
-#ifndef XQP_DEFAULT_STORE_QUERY_CONTEXT
-#define XQP_DEFAULT_STORE_QUERY_CONTEXT
+#ifndef ZORBA_DEFAULT_STORE_QUERY_CONTEXT
+#define ZORBA_DEFAULT_STORE_QUERY_CONTEXT
 
 #include <stack>
 #include <map>
 
+#include <zorba/common/api_shared_types.h>
+
+#include "store/util/mutex.h"
 
 namespace xqp
 {
@@ -51,35 +54,43 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class QueryContextContainer : public std::map<unsigned long, QueryContext>
+class QueryContextContainer
 {
+protected:
+  std::map<ulong, QueryContext> theContainer;
+  Mutex                         theMutex;
+
 public:
-  QueryContext& getContext(unsigned long queryId)
+  QueryContext& getContext(ulong queryId)
   {
-    std::map<unsigned long, QueryContext>::iterator ctxi;
+    AutoMutex lock(theMutex);
 
-    ctxi = find(queryId);
+    std::map<ulong, QueryContext>::iterator ctxi;
 
-    if (ctxi != end())
+    ctxi = theContainer.find(queryId);
+
+    if (ctxi != theContainer.end())
       return ctxi->second;
 
-    std::pair<std::map<unsigned long, QueryContext>::iterator, bool> res =
-      insert(std::pair<unsigned long, QueryContext>(queryId, QueryContext()));
+    std::pair<std::map<ulong, QueryContext>::iterator, bool> res =
+      theContainer.insert(std::pair<ulong, QueryContext>(queryId, QueryContext()));
 
     ctxi = res.first;
     return ctxi->second;
   }
 
-  void removeContext(unsigned long queryId)
+  void removeContext(ulong queryId, bool soft)
   {
-    std::map<unsigned long, QueryContext>::iterator ctxi;
+    AutoMutex lock(theMutex);
 
-    ctxi = find(queryId);
+    std::map<ulong, QueryContext>::iterator ctxi;
 
-    if (ctxi == end())
+    ctxi = theContainer.find(queryId);
+
+    if (ctxi == theContainer.end() || (soft && !ctxi->second.empty()))
       return;
 
-    erase(queryId);
+    theContainer.erase(queryId);
   }
 };
 

@@ -28,13 +28,9 @@ typedef rchandle<TempSeq> TempSeq_t;
 
 const float SimpleStore::DEFAULT_HASH_LOAD_FACTOR = 0.6f;
 
-const xqp_ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
+const ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
-
-unsigned long SimpleStore::theUriCounter = 0;
-
-unsigned long SimpleStore::theTreeCounter = 1;
 
 
 /*******************************************************************************
@@ -43,12 +39,13 @@ unsigned long SimpleStore::theTreeCounter = 1;
 SimpleStore::SimpleStore()
   :
   theIsInitialized(false),
+  theUriCounter(0),
+  theTreeCounter(1),
   theNamespacePool(new StringPool(StringPool::DEFAULT_POOL_SIZE)),
   theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
   theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
-  theCollections(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
-  theXmlLoader(NULL),
+  theCollections(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
   theQueryContextContainer(new QueryContextContainer)
 {
 }
@@ -63,8 +60,11 @@ void SimpleStore::init()
   {
     theIsInitialized = true;
 
-    theNamespacePool->insert("", theEmptyNs);
-    theNamespacePool->insert(XS_URI, theXmlSchemaNs);
+    theUriCounter = 0;
+    theTreeCounter = 1;
+
+    theNamespacePool->insertc("", theEmptyNs);
+    theNamespacePool->insertc(XS_URI, theXmlSchemaNs);
     theUntypedType = theItemFactory->createQName(XS_URI, "xs", "untyped");
     theAnyType = theItemFactory->createQName(XS_URI, "xs", "anyType");
     theUntypedAtomicType = theItemFactory->createQName(XS_URI, "xs", "untypedAtomic");
@@ -95,12 +95,6 @@ void SimpleStore::shutdown()
   {
     delete theQueryContextContainer;
     theQueryContextContainer = NULL;
-  }
-
-  if (theXmlLoader != NULL)
-  {
-    delete theXmlLoader;
-    theXmlLoader = NULL;
   }
 
   if (theItemFactory != NULL)
@@ -134,18 +128,34 @@ void SimpleStore::shutdown()
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader& SimpleStore::getXmlLoader()
+ulong SimpleStore::getTreeId()
 {
-  if (theXmlLoader == NULL)
-    theXmlLoader = new XmlLoader();
-
-  return *theXmlLoader;
+  AutoMutex lock(theTreeCounterMutex);
+  return theTreeCounter++;
 }
 
 
-QueryContext& SimpleStore::getQueryContext(unsigned long queryId)
+/*******************************************************************************
+
+********************************************************************************/
+XmlLoader* SimpleStore::getXmlLoader()
+{
+  return new XmlLoader();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+QueryContext& SimpleStore::getQueryContext(ulong queryId)
 {
   return theQueryContextContainer->getContext(queryId);
+}
+
+
+void SimpleStore::deleteQueryContext(ulong queryId)
+{
+  theQueryContextContainer->removeContext(queryId, true);
 }
 
 
@@ -154,7 +164,7 @@ QueryContext& SimpleStore::getQueryContext(unsigned long queryId)
 
   @param garbageCollectionStrategy
 ********************************************************************************/
-void SimpleStore::setGarbageCollectionStrategy(const xqp_string& strategy)
+void SimpleStore::setGarbageCollectionStrategy(xqpStringStore* strategy)
 {
 
 }
@@ -165,8 +175,10 @@ void SimpleStore::setGarbageCollectionStrategy(const xqp_string& strategy)
 ********************************************************************************/
 Item_t SimpleStore::createUri()
 {
+  theUriCounterMutex.lock();
   std::ostringstream uristream;
   uristream << "zorba://internalURI-" << SimpleStore::theUriCounter++;
+  theUriCounterMutex.unlock();
 
   return theItemFactory->createAnyURI(uristream.str().c_str()).getp();
 }
@@ -175,45 +187,56 @@ Item_t SimpleStore::createUri()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SimpleStore::loadDocument(const xqp_string& uri, std::istream& stream)
+Item_t SimpleStore::loadDocument(xqpStringStore* uri, std::istream& stream)
 {
+  if (uri == NULL)
+    return NULL;
+
   XmlNode_t root;
   bool found = theDocuments.get(uri, root);
 
   if (found)
     return root;
 
-  XmlLoader& loader = getXmlLoader();
+  std::auto_ptr<XmlLoader> loader(getXmlLoader());
 
-  root = loader.loadXml(uri.getStore(), stream);
+  root = loader->loadXml(uri, stream);
 
-  found = theDocuments.insert(uri, root);
+  if (root != NULL)
+    theDocuments.insert(uri, root);
 
-  if (found)
-  {
-    // TODO : multi-threading not supported yet.
-    ZORBA_ASSERT(0);
-  }
-  
   return root;
 }
 
-Item_t SimpleStore::loadDocument(const xqp_string& uri, Item_t doc_item)
+
+/*******************************************************************************
+
+********************************************************************************/
+Item_t SimpleStore::loadDocument(xqpStringStore* uri, Item_t docItem)
 {
-	if((doc_item == NULL) || (!doc_item->isNode()))
+  if (uri == NULL || docItem == NULL)
+    return NULL;
+
+	if(!docItem->isNode())
+  {
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::API0021_ITEM_TO_LOAD_IS_NOT_NODE,
+                          NULL, CONTINUE_EXECUTION, uri, "");
 		return NULL;
+  }
 
   XmlNode_t root;
-  bool found = theDocuments.get(uri, root);
+  bool inserted = theDocuments.insert(uri, root);
 
-  if (found)
-    return NULL;//error, already exists
+  if (!inserted && docItem.getp() != root.getp())
+  {
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::API0020_DOCUMENT_ALREADY_EXISTS,
+                          NULL, CONTINUE_EXECUTION, uri, "");
+    return NULL; 
+  }
 
-	//to be implemented
+  ZORBA_ASSERT(docItem.getp() == root.getp());
 
-  ZORBA_ASSERT(0);
-
-	return doc_item;
+	return root;
 }
 
 
@@ -221,8 +244,11 @@ Item_t SimpleStore::loadDocument(const xqp_string& uri, Item_t doc_item)
   Return an rchandle to the root node of the document corresponding to the given
   URI, or NULL if there is no document with that URI.
 ********************************************************************************/
-Item_t SimpleStore::getDocument(const xqp_string& uri)
+Item_t SimpleStore::getDocument(xqpStringStore* uri)
 {
+  if (uri == NULL)
+    return NULL;
+
   XmlNode_t root;
   bool found = theDocuments.get(uri, root);
   if (found)
@@ -236,8 +262,11 @@ Item_t SimpleStore::getDocument(const xqp_string& uri)
   Delete the document with the given URI. If there is no document with that
   URI, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteDocument(const xqp_string& uri)
+void SimpleStore::deleteDocument(xqpStringStore* uri)
 {
+  if (uri == NULL)
+    return;
+
   theDocuments.remove(uri);
 }
 
@@ -247,20 +276,23 @@ void SimpleStore::deleteDocument(const xqp_string& uri)
   collection object. If a collection with the given URI exists already, return
   NULL and register an error.
 ********************************************************************************/
-Collection_t SimpleStore::createCollection(const xqp_string& uri)
+Collection_t SimpleStore::createCollection(xqpStringStore* uri)
 {
-  if (theCollections.find(uri))
-  {
-    ZORBA_ERROR_ALERT_OSS(ZorbaError::API0005_COLLECTION_ALREADY_EXISTS,
-                          NULL, CONTINUE_EXECUTION, uri, "");
+  if (uri == NULL)
     return NULL;
-  }
 
   Item_t uriItem = theItemFactory->createAnyURI(uri);
 
   Collection_t collection(new SimpleCollection(uriItem));
 
-  theCollections.insert(uri, collection);
+  bool inserted = theCollections.insert(uri, collection);
+
+  if (!inserted)
+  {
+    ZORBA_ERROR_ALERT_OSS(ZorbaError::API0005_COLLECTION_ALREADY_EXISTS,
+                          NULL, CONTINUE_EXECUTION, uri->c_str(), "");
+    return NULL;
+  }
 
   return collection;
 }
@@ -274,7 +306,7 @@ Collection_t SimpleStore::createCollection()
 {
   Item_t uri = createUri();
 
-  return createCollection(uri->getStringValue());
+  return createCollection(uri->getStringValueP());
 }
 
 
@@ -282,9 +314,12 @@ Collection_t SimpleStore::createCollection()
   Return an rchandle to the Collection object corresponding to the given URI,
   or NULL if there is no collection with that URI.
 ********************************************************************************/
-Collection_t SimpleStore::getCollection(const xqp_string& uri)
+Collection_t SimpleStore::getCollection(xqpStringStore* uri)
 {
-  Collection_t collection;  // initialized to NULL
+  if (uri == NULL)
+    return NULL;
+
+  Collection_t collection;
   theCollections.get(uri, collection);
   return collection;
 }
@@ -294,8 +329,11 @@ Collection_t SimpleStore::getCollection(const xqp_string& uri)
   Delete the collection with the given URI. If there is no collection with
   that URI, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteCollection(const xqp_string& uri)
+void SimpleStore::deleteCollection(xqpStringStore* uri)
 {
+  if (uri == NULL)
+    return;
+
   theCollections.remove(uri);
 }
 

@@ -36,7 +36,7 @@ public:
   /**
    *  Get the item factory used by this store.
    */
-  virtual ItemFactory& getItemFactory() const = 0;
+  virtual ItemFactory* getItemFactory() const = 0;
 
   /**
    * Creates a new TempSeq. The instance can be used, e.g. for variable bindings.
@@ -52,7 +52,7 @@ public:
    * Possibility to change the Garbage Collection strategy of the store.
    * @param garbageCollectionStrategy
    */
-  virtual void setGarbageCollectionStrategy(const xqp_string& strategy) = 0;
+  virtual void setGarbageCollectionStrategy(xqpStringStore* strategy) = 0;
 		
   /**
    * Applies a pending update list on this store
@@ -134,7 +134,8 @@ public:
         bool duplicateElemination,
         bool aAcceptAtomics = false) = 0;
 		
-  /** Eliminates the duplicates in collection of items which is produced by the passed iterator
+  /** Eliminates the duplicates in collection of items which is produced by
+   *  the passed iterator
    * @param iterator
    */
   virtual Iterator_t distinctNodes(Iterator*, bool aAllowAtomics = false) = 0;
@@ -149,23 +150,23 @@ public:
    * @return rchandle to the newly created document or NULL if a document
    *         with the given uri exists already.
    */
-  virtual Item_t loadDocument(const xqp_string& uri, std::istream& stream) = 0;
+  virtual Item_t loadDocument(xqpStringStore* uri, std::istream& stream) = 0;
 
-  virtual Item_t loadDocument(const xqp_string& uri, Item_t	 doc_item) = 0;
+  virtual Item_t loadDocument(xqpStringStore* uri, Item_t	 doc_item) = 0;
 
   /**
    * Get an rchandle to the root node of the document with the given uri.
    *
    * @param uri The uri of the document to access.
    */
-  virtual Item_t getDocument(const xqp_string& uri) = 0;
+  virtual Item_t getDocument(xqpStringStore* uri) = 0;
 
   /**
    * Delete the document with the given uri.
    *
    * @param uri The uri of the document to delete.
    */
-  virtual void deleteDocument(const xqp_string& uri) = 0;
+  virtual void deleteDocument(xqpStringStore* uri) = 0;
 		
   /* ------------------------ Collection Management ---------------------------*/
 
@@ -183,7 +184,7 @@ public:
    * @return rchandle to the newly created collection or NULL if a collection
    *         with the given uri exists already.
    */
-  virtual Collection_t createCollection(const xqp_string& uri) = 0;
+  virtual Collection_t createCollection(xqpStringStore* uri) = 0;
 
   /** Creates a collection in the store (without given URI).
    * 
@@ -197,13 +198,13 @@ public:
    * @param URI of the colleciton
    * @return handle object of the collection. Returns NULL if the collection does not exist
    */
-  virtual Collection_t getCollection(const xqp_string& uri) = 0;
+  virtual Collection_t getCollection(xqpStringStore* uri) = 0;
 		
   /** Deletes a collection.
    *
    * @param URI to identify the collection to delete.
    */
-  virtual void deleteCollection(const xqp_string& uri) = 0;
+  virtual void deleteCollection(xqpStringStore* uri) = 0;
 		
 }; /* class Store */
 	

@@ -71,7 +71,8 @@ ZorbaEngineImpl::ZorbaEngineImpl(bool single_thread)
 	for_single_thread_api = single_thread;
 	theSingleThreadZorba = NULL;
 	xml_data_manager = new XmlDataManager_Impl;
-	xml_data_manager->addReference(xml_data_manager->getRefCounter());
+	xml_data_manager->addReference(xml_data_manager->getRefCounter(),
+                                 xml_data_manager->getSync());
 }
 
 
@@ -81,7 +82,8 @@ ZorbaEngineImpl::~ZorbaEngineImpl()
   in_destructor = true;
   shutdown();
 
-	xml_data_manager->removeReference(xml_data_manager->getRefCounter());
+	xml_data_manager->removeReference(xml_data_manager->getRefCounter(),
+                                    xml_data_manager->getSync());
 //  assert(globalZorbaEngine == NULL);
 	delete theSingleThreadZorba;
 
@@ -116,7 +118,7 @@ void ZorbaEngineImpl::initialize()
 
 	///optimize access to store
   Zorba::theStore = &GENV.getStore();
-  Zorba::theItemFactory = &Zorba::theStore->getItemFactory();
+  Zorba::theItemFactory = Zorba::theStore->getItemFactory();
   GlobalEnvironment::getInstance();
 
   is_shutdown = false;
@@ -127,10 +129,15 @@ void ZorbaEngineImpl::initialize()
 
 void ZorbaEngineImpl::shutdown()
 {
-	try{
+	try
+  {
   if (!is_shutdown)
   {
     is_shutdown = true;
+
+    GlobalEnvironment::destroy();
+		Zorba::theStore = NULL;
+    Zorba::theItemFactory = NULL;
 
     if(!for_single_thread_api)
 		{
@@ -153,13 +160,6 @@ void ZorbaEngineImpl::shutdown()
 #endif
 		}//end if (for_single_thread_api)
 
-    GlobalEnvironment::destroy();
-		Zorba::theStore = NULL;
-    Zorba::theItemFactory = NULL;
-
-  //  ZorbaEngineImpl* temp = globalZorbaEngine;
-  //  globalZorbaEngine = NULL;
-  //  delete temp;
     if(!in_destructor)
       globalZorbaEngine = NULL;//also deletes globalZorbaEngine
   }

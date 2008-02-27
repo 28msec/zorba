@@ -55,8 +55,6 @@ public:
 
   ~XmlLoader();
 
-  XmlNode* getRootNode() const { return theRootNode; }
-  
   XmlNode* loadXml(xqpStringStore* uri, std::istream& xmlStream);
 
 protected:

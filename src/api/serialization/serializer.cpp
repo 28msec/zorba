@@ -196,6 +196,10 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
     
 		switch (*chars)
 		{
+    case '\r':
+      tr << "&#xD;";
+      break;
+
 		case '<':
       /*
         The HTML output method MUST NOT escape "<" characters occurring in attribute values.

@@ -188,7 +188,7 @@ void end_visit(var_expr& v)
 
     if (v.get_varname ()->getStringValue () == DOT_POS_VAR && ! bound) {
       itstack.push (new SingletonIterator (
-        v.get_loc(), ITEM_FACTORY.createInteger (Integer::parseInt((int32_t)1))
+        v.get_loc(), ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
       ));
     } else {
       ZORBA_ASSERT (bound);
@@ -207,7 +207,7 @@ void end_visit(var_expr& v)
       
     if (v.get_varname ()->getStringValue () == LAST_IDX_VAR && ! bound) {
       itstack.push (new SingletonIterator (
-        v.get_loc(), ITEM_FACTORY.createInteger (Integer::parseInt((int32_t)1))
+        v.get_loc(), ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
       ));
     } else {
       ZORBA_ASSERT (bound);
@@ -672,7 +672,7 @@ bool begin_visit(match_expr& v)
   Item_t qname;
   Item_t tname;
 
-  ItemFactory& iFactory = GENV.getStore().getItemFactory();
+  ItemFactory& iFactory = *(GENV.getStore().getItemFactory());
 
   if (v.getTestKind() == match_name_test)
   {

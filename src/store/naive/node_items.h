@@ -1,10 +1,3 @@
-/*
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Authors: David Graf (david.graf@28msec.com), Markos Zaharioudakis
- *
- *  Info: This file contains the class declarations of all nodes defined in
- * [http://www.w3.org/TR/xpath-datamodel/#Nodes].
- */
 
 #ifndef XQP_DEFAULT_STORE_NODES
 #define XQP_DEFAULT_STORE_NODES
@@ -49,6 +42,7 @@ class XmlTree
 {
 protected:
   long       theRefCount;
+  RCSync     theRCSyncObject;
 
   ulong      theId;
   XmlNode  * theRootNode;
@@ -62,6 +56,7 @@ public:
   long getRefCount() const    { return theRefCount; }
   void addReference()         { ++theRefCount; }
   void removeReference()      { --theRefCount; }
+  RCSync& getRCSyncObject()   { return theRCSyncObject; }
 
   ulong getId() const         { return theId; }
   XmlNode* getRoot() const    { return theRootNode; }
@@ -85,20 +80,20 @@ protected:
 
 public:
   NodeVector() { }
-  NodeVector(unsigned long size) : theNodes(size) { }
+  NodeVector(ulong size) : theNodes(size) { }
 
   virtual ~NodeVector() { }
 
   bool empty() const            { return theNodes.empty(); }
-  unsigned long size() const            { return theNodes.size(); }
+  ulong size() const            { return theNodes.size(); }
 
-  XmlNode* get(unsigned long pos) const { return theNodes[pos]; } 
+  XmlNode* get(ulong pos) const { return theNodes[pos]; } 
 
-  virtual void set(unsigned long pos, XmlNode* n, bool shared) = 0;
+  virtual void set(ulong pos, XmlNode* n, bool shared) = 0;
   virtual void push_back(XmlNode* n, bool shared) = 0;
 
   virtual void clear() = 0;
-  virtual void resize(unsigned long size) = 0;
+  virtual void resize(ulong size) = 0;
   virtual void copy(const NodeVector& v) = 0;
 };
 
@@ -110,15 +105,15 @@ class LoadedNodeVector : public NodeVector
 {
 public:
   LoadedNodeVector() : NodeVector() { }
-  LoadedNodeVector(unsigned long size) : NodeVector(size) { }
+  LoadedNodeVector(ulong size) : NodeVector(size) { }
 
   ~LoadedNodeVector() { }
 
-  void set(unsigned long pos, XmlNode* n, bool shared) { theNodes[pos] = n; }
+  void set(ulong pos, XmlNode* n, bool shared) { theNodes[pos] = n; }
   void push_back(XmlNode* n, bool shared)      { theNodes.push_back(n); }
 
   void clear()                                 { theNodes.clear(); }
-  void resize(unsigned long size)                      { theNodes.resize(size); }
+  void resize(ulong size)                      { theNodes.resize(size); }
   void copy(const NodeVector& v)               { Assert(0); }
 
 private:
@@ -137,15 +132,15 @@ private:
 
 public:
   ConstrNodeVector() : NodeVector() { }
-  ConstrNodeVector(unsigned long size);
+  ConstrNodeVector(ulong size);
 
   ~ConstrNodeVector()  { clear(); }
 
-  void set(unsigned long pos, XmlNode* n, bool shared);
+  void set(ulong pos, XmlNode* n, bool shared);
   void push_back(XmlNode* n, bool shared);
 
   void clear();
-  void resize(unsigned long size);
+  void resize(ulong size);
   void copy(const NodeVector& v);
 
 private:

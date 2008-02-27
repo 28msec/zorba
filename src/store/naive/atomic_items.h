@@ -13,8 +13,41 @@
 #include <zorba/xqpstring.h>
 #include <zorba/item.h>
 
+
 namespace xqp
 {
+
+/*******************************************************************************
+
+********************************************************************************/
+class AtomicItem : public Item
+{
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
+public:
+  AtomicItem() : Item() { theRefCounterPtr = &theRefCount; }
+
+#else
+
+protected:
+  RCSync  theRCSyncObject;
+
+public:
+  AtomicItem() : Item() 
+  {
+    theRefCounterPtr = &theRefCount;
+    theRCSyncObjectPtr = &theRCSyncObject;
+  }
+#endif
+
+  virtual ~AtomicItem() {}
+
+  bool isNode() const { return false; }
+  bool isAtomic() const { return true; }
+  
+  virtual Item_t getAtomizationValue() const;
+  virtual Iterator_t getTypedValue() const;
+};
+
 
 /*******************************************************************************
   class QNameItem
@@ -39,21 +72,21 @@ private:
 
   void free();
 
-  bool isInCache() const                  { return thePosition != 0; }
-  bool isOverflow() const                 { return thePosition == 0; }
+  bool isInCache() const          { return thePosition != 0; }
+  bool isOverflow() const         { return thePosition == 0; }
 
  public:
-  virtual xqp_string getNamespace() const { return theNamespace.getp(); }
-  virtual xqp_string getPrefix() const    { return thePrefix.getp(); }
-  virtual xqp_string getLocalName() const { return theLocal.getp(); }
+  xqp_string getNamespace() const { return theNamespace.getp(); }
+  xqp_string getPrefix() const    { return thePrefix.getp(); }
+  xqp_string getLocalName() const { return theLocal.getp(); }
 
-  virtual Item_t getType() const;
-  virtual uint32_t hash() const;
-  virtual bool equals(Item_t) const;
-  virtual Item_t getEBV() const;
-  virtual xqp_string getStringValue() const;
+  Item_t getType() const;
+  uint32_t hash() const;
+  bool equals(Item_t) const;
+  Item_t getEBV() const;
+  xqp_string getStringValue() const;
 
-  virtual xqp_string show() const;
+  xqp_string show() const;
 };
 
 
@@ -66,7 +99,8 @@ private:
   xqpStringStore_t  theValue;
 
 public:
-  NCNameItemImpl(xqpStringStore* aValue) : theValue ( aValue ) {}
+  NCNameItemImpl(xqpStringStore* aValue) : theValue(aValue)
+  {}
 
   Item_t getType() const;
   uint32_t hash() const;
@@ -88,15 +122,16 @@ protected:
   xqpStringStore_t theValue;
 
 public:
-  AnyUriItemImpl(const xqpStringStore_t& aValue) : theValue(aValue) {}
+  AnyUriItemImpl(xqpStringStore* aValue) : theValue(aValue)
+  {}
 
-  virtual Item_t getType( ) const;
-  virtual uint32_t hash() const;
-  virtual bool equals (Item_t) const;
-  virtual Item_t getEBV( ) const;
-  virtual xqp_string getStringValue( ) const { return theValue.getp(); }
-  virtual xqpStringStore* getStringValueP() { return theValue.getp(); }
-  virtual xqp_string show() const;
+  Item_t getType( ) const;
+  uint32_t hash() const;
+  bool equals (Item_t) const;
+  Item_t getEBV( ) const;
+  xqp_string getStringValue( ) const { return theValue.getp(); }
+  xqpStringStore* getStringValueP() { return theValue.getp(); }
+  xqp_string show() const;
 };
 
 

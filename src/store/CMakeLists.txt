@@ -12,7 +12,9 @@ SET(STORE_SRCS
     naive/simple_loader.cpp
     naive/ordpath.cpp
     naive/nsbindings.cpp
-    util/string_pool.cpp)
+    util/string_hashset.cpp
+    util/mutex.cpp
+    util/latch.cpp)
 
 
 HEADER_GROUP_SUBFOLDER(STORE_SRCS api)

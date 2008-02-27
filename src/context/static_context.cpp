@@ -87,7 +87,8 @@ static_context::static_context()
 			if(!strncmp(keybuff, "type:", 5))
 			{
 				val = &(*it).val;
-				val->typeValue->removeReference(val->typeValue->getRefCounter());
+				val->typeValue->removeReference(val->typeValue->getRefCounter(),
+                                        val->typeValue->getSync());
 			}
 			else if(!strncmp(keybuff, "collation:", 10))
 			{
@@ -147,9 +148,10 @@ Item_t static_context::lookup_qname(
     xqp_string local) const
 {
   // Note: lookup_ns throws exception if there is no binding for the prefix.
-  return ITEM_FACTORY.createQName((prefix.empty() ? default_ns : lookup_ns(prefix)),
-                                  prefix,
-                                  local);
+  return ITEM_FACTORY->createQName((prefix.empty() ? default_ns.getStore() :
+                                                     lookup_ns(prefix).getStore()),
+                                   prefix.getStore(),
+                                   local.getStore());
 }
 
 
@@ -227,7 +229,7 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
 		ctx_value_t v;
     v.typeValue = &*t;
     keymap.put (key, v);
-		t->addReference(t->getRefCounter());///will be decremented in static context destructor
+		t->addReference(t->getRefCounter(), t->getSync());///will be decremented in static context destructor
 	}
 
 	void static_context::add_variable_type(

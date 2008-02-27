@@ -61,7 +61,7 @@ CodepointsToStringIterator::nextImpl(PlanState& planState) const {
       }
     }
     else{
-      resItem = Zorba::getItemFactory()->createString(resStr);
+      resItem = Zorba::getItemFactory()->createString(resStr.getStore());
       STACK_PUSH( resItem, state );
       break;
     }
@@ -284,6 +284,7 @@ Item_t
 ConcatStrIterator::nextImpl(PlanState& planState) const {
   Item_t lItem;
   std::stringstream lResStream;
+  xqpStringStore_t tmp;
 
   std::vector<PlanIter_t>::const_iterator iter = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator end  = theChildren.end();
@@ -310,7 +311,8 @@ ConcatStrIterator::nextImpl(PlanState& planState) const {
     }
   }
 
-  STACK_PUSH( Zorba::getItemFactory()->createString( lResStream.str()), state );
+  tmp = new xqpStringStore(lResStream.str());
+  STACK_PUSH(Zorba::getItemFactory()->createString(tmp), state);
 
   STACK_END();
 }
@@ -359,7 +361,7 @@ StringJoinIterator::nextImpl(PlanState& planState) const {
         resStr += item->getStringValue();
       }
       else{
-        resItem = Zorba::getItemFactory()->createString(resStr);
+        resItem = Zorba::getItemFactory()->createString(resStr.getStore());
         STACK_PUSH( resItem, state );
         break;
       }
@@ -382,7 +384,7 @@ StringJoinIterator::nextImpl(PlanState& planState) const {
         }
         else
         {
-          resItem = Zorba::getItemFactory()->createString(resStr);
+          resItem = Zorba::getItemFactory()->createString(resStr.getStore());
           STACK_PUSH( resItem, state );
           break;
         }
@@ -427,6 +429,7 @@ SubstringIterator::nextImpl(PlanState& planState) const {
   xqp_string resStr;
   int32_t tmpStart;
   int32_t tmpLen;
+  xqpStringStore_t empty;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -439,7 +442,7 @@ SubstringIterator::nextImpl(PlanState& planState) const {
       item0 = item0->getAtomizationValue();
       if(item0->getStringValue().length() == 0)
       {
-        STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
+        STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
       }
       else{
         item1 = consumeNext(theChildren[1].getp(), planState );
@@ -490,12 +493,13 @@ SubstringIterator::nextImpl(PlanState& planState) const {
               }
             }
           }
-          STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
+          STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
         }
       }
     } else {
       // fn:substring returns empty string in this case
-      STACK_PUSH( Zorba::getItemFactory()->createString(""), state );
+      empty = new xqpStringStore("");
+      STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
     }
   }
   STACK_END();
@@ -562,6 +566,7 @@ Item_t
 NormalizeSpaceIterator::nextImpl(PlanState& planState) const
 {
   Item_t item;
+  xqpStringStore_t empty;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -571,13 +576,13 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState) const
   {
     item = item->getAtomizationValue();
     STACK_PUSH(Zorba::getItemFactory()->createString(
-        item->getStringValue().normalizeSpace()),
+        item->getStringValue().normalizeSpace().getStore()),
     state);
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createString(""),
-    state);
+    empty = new xqpStringStore("");
+    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
   }
   STACK_END();
 }
@@ -633,7 +638,7 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
     if(tempStr == "" || tempStr == "NFC" || tempStr =="NFKC" || tempStr =="NFD" || tempStr == "NFKD")
     {
       res = item0->getStringValue().normalize(tempStr);
-      STACK_PUSH( Zorba::getItemFactory()->createString(res), state );
+      STACK_PUSH( Zorba::getItemFactory()->createString(res.getStore()), state );
     }
     else
     {
@@ -668,6 +673,7 @@ Item_t
 UpperCaseIterator::nextImpl(PlanState& planState) const
 {
   Item_t item;
+  xqpStringStore_t empty;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -676,12 +682,13 @@ UpperCaseIterator::nextImpl(PlanState& planState) const
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(Zorba::getItemFactory()->createString(item->getStringValue().uppercase()),
+    STACK_PUSH(Zorba::getItemFactory()->createString(item->getStringValue().uppercase().getStore()),
                 state);
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
+    empty = new xqpStringStore("");
+    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
   }
   STACK_END();
 }
@@ -708,6 +715,7 @@ UpperCaseIterator::nextImpl(PlanState& planState) const
 Item_t
 LowerCaseIterator::nextImpl(PlanState& planState) const {
   Item_t item;
+  xqpStringStore_t empty;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -717,12 +725,13 @@ LowerCaseIterator::nextImpl(PlanState& planState) const {
   {
     item = item->getAtomizationValue();
     STACK_PUSH(Zorba::getItemFactory()->createString(
-        item->getStringValue().lowercase()),
+        item->getStringValue().lowercase().getStore()),
     state);
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
+    empty = new xqpStringStore("");
+    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
   }
   STACK_END();
 }
@@ -759,7 +768,8 @@ Item_t
 TranslateIterator::nextImpl(PlanState& planState) const {
   Item_t itemArg, item0, item1;
   Item_t res;
-  res = Zorba::getItemFactory()->createString("");
+  xqpStringStore_t empty(new xqpStringStore(""));
+  res = Zorba::getItemFactory()->createString(empty);
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -777,7 +787,7 @@ TranslateIterator::nextImpl(PlanState& planState) const {
         item1 = item1->getAtomizationValue();
 
         res = Zorba::getItemFactory()->createString(
-            itemArg->getStringValue().translate(item0->getStringValue(), item1->getStringValue()));
+            itemArg->getStringValue().translate(item0->getStringValue(), item1->getStringValue()).getStore());
       }
     }
   }
@@ -797,6 +807,7 @@ TranslateIterator::nextImpl(PlanState& planState) const {
 Item_t
 EncodeForUriIterator::nextImpl(PlanState& planState) const {
   Item_t item;
+  xqpStringStore_t empty;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -806,12 +817,13 @@ EncodeForUriIterator::nextImpl(PlanState& planState) const {
   {
     item = item->getAtomizationValue();
     STACK_PUSH(Zorba::getItemFactory()->createString(
-        item->getStringValue().encodeForUri()),
+        item->getStringValue().encodeForUri().getStore()),
     state);
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
+    empty = new xqpStringStore("");
+    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
   }
   STACK_END();
 }
@@ -826,6 +838,7 @@ EncodeForUriIterator::nextImpl(PlanState& planState) const {
 Item_t
 IriToUriIterator::nextImpl(PlanState& planState) const {
   Item_t item;
+  xqpStringStore_t empty;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -835,12 +848,13 @@ IriToUriIterator::nextImpl(PlanState& planState) const {
   {
     item = item->getAtomizationValue();
     STACK_PUSH(Zorba::getItemFactory()->createString(
-        item->getStringValue().iriToUri()),
+        item->getStringValue().iriToUri().getStore()),
     state);
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
+    empty = new xqpStringStore("");
+    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
   }
   STACK_END();
 }
@@ -855,6 +869,7 @@ IriToUriIterator::nextImpl(PlanState& planState) const {
 Item_t
 EscapeHtmlUriIterator::nextImpl(PlanState& planState) const {
   Item_t item;
+  xqpStringStore_t empty;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -864,12 +879,13 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) const {
   {
     item = item->getAtomizationValue();
     STACK_PUSH(Zorba::getItemFactory()->createString(
-        item->getStringValue().escapeHtmlUri()),
+        item->getStringValue().escapeHtmlUri().getStore()),
     state);
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createString(""), state);
+    empty = new xqpStringStore("");
+    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
   }
   STACK_END();
 }
@@ -1179,7 +1195,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
     
     if( arg1.length() == 0  || arg2.length() == 0)
     {
-      STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
+      STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
     }
     else
     {
@@ -1200,7 +1216,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
       {
         resStr = arg1.substr(0,index);
       }
-      STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
+      STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
     }
   }
   STACK_END();
@@ -1264,7 +1280,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
 
     if( arg1.length() == 0  || arg2.length() == 0)
     {
-      STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
+      STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
     }
     else
     {
@@ -1286,7 +1302,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
         startPos += arg2.length();
         resStr = arg1.substr( startPos, arg1.length() - startPos );
       }
-      STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
+      STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
     }
   }
   STACK_END();

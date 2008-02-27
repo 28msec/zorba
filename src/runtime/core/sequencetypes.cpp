@@ -13,15 +13,20 @@ namespace xqp
 /*******************************************************************************
 
 ********************************************************************************/
-InstanceOfIterator::InstanceOfIterator(const QueryLoc& loc,
-                                       PlanIter_t& aTreatExpr,
-                                       xqtref_t aSequenceType)
-  : UnaryBaseIterator<InstanceOfIterator, PlanIteratorState> ( loc, aTreatExpr ),
-    theSequenceType (aSequenceType)
-{ }
+InstanceOfIterator::InstanceOfIterator(
+   const QueryLoc& loc,
+   PlanIter_t& aTreatExpr,
+   xqtref_t aSequenceType)
+  :
+  UnaryBaseIterator<InstanceOfIterator, PlanIteratorState> ( loc, aTreatExpr ),
+  theSequenceType (aSequenceType)
+{ 
+}
+
 
 InstanceOfIterator::~InstanceOfIterator() 
-{ }
+{
+}
 
 
 Item_t
@@ -31,45 +36,64 @@ InstanceOfIterator::nextImpl(PlanState& planState) const
   xqtref_t lTreatType;
   TypeConstants::quantifier_t lQuantifier;
   bool lResult;
+  RootTypeManager& ts = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   
   lTreatItem = consumeNext(theChild.getp(), planState);
 
-  lQuantifier = GENV_TYPESYSTEM.quantifier(*theSequenceType);
+  lQuantifier = ts.quantifier(*theSequenceType);
 
   if (lTreatItem != 0)
   {
-    if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), 
-                                    TypeConstants::QUANT_ONE), *theSequenceType)) {
+    if (ts.is_subtype(*ts.create_type(lTreatItem->getType(), 
+                                      TypeConstants::QUANT_ONE),
+                      *theSequenceType))
+    {
       lTreatItem = consumeNext(theChild.getp(), planState);
-      if (lTreatItem != 0) {
-        if (lQuantifier == TypeConstants::QUANT_ONE || lQuantifier == TypeConstants::QUANT_QUESTION) {
+      if (lTreatItem != 0)
+      {
+        if (lQuantifier == TypeConstants::QUANT_ONE ||
+            lQuantifier == TypeConstants::QUANT_QUESTION)
+        {
           lResult = false;
-        } else {
+        }
+        else
+        {
           lResult = true;
-          do {
-            if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lTreatItem->getType(), TypeConstants::QUANT_ONE), *theSequenceType)) {
+          do
+          {
+            if (!ts.is_subtype(*ts.create_type(lTreatItem->getType(),
+                                               TypeConstants::QUANT_ONE),
+                               *theSequenceType))
+            {
               lResult = false;
             }
             lTreatItem = consumeNext(theChild.getp(), planState);
           } while (lTreatItem != 0);
         }
-      } else {
+      }
+      else
+      {
         lResult = true;
       }
-    } else {
+    }
+    else
+    {
       lResult = false;
     }
   }
   else
   {
-    if ((lQuantifier == TypeConstants::QUANT_ONE
-        || lQuantifier == TypeConstants::QUANT_PLUS)
-        && !GENV_TYPESYSTEM.is_equal(*GENV_TYPESYSTEM.EMPTY_TYPE, *theSequenceType)) {
+    if ((lQuantifier == TypeConstants::QUANT_ONE ||
+         lQuantifier == TypeConstants::QUANT_PLUS) &&
+        !ts.is_equal(*ts.EMPTY_TYPE, *theSequenceType))
+    {
       lResult = false;
-    } else {
+    }
+    else
+    {
       lResult = true;
     }
   }

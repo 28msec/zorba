@@ -2712,7 +2712,7 @@ void OrdPath::extractValue(
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string OrdPath::show() const
+std::string OrdPath::show() const
 {
   std::stringstream str;
 
@@ -3040,7 +3040,7 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string OrdPathStack::show() const
+std::string OrdPathStack::show() const
 {
   std::stringstream str;
 

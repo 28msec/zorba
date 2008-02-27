@@ -64,7 +64,7 @@ do                                                             \
 } while(0)
 
 
-#define ITEM_FACTORY (GENV.getStore().getItemFactory())
+#define ITEM_FACTORY (*(GENV.getStore().getItemFactory()))
 
 void BuiltinFunctionLibrary::populateContext(static_context *sctx)
 {

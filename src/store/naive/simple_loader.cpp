@@ -49,7 +49,6 @@ XmlLoader::XmlLoader()
 {
   theOrdPath.init();
 
-
   memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
   theSaxHandler.initialized = XML_SAX2_MAGIC;
   theSaxHandler.startDocument = &XmlLoader::startDocument;
@@ -294,6 +293,7 @@ void XmlLoader::startDocument(void * ctx)
   loader.theNodeStack.push(docNode);
   loader.theNodeStack.push(NULL);
 
+  docNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
   docNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.pushChild();
 
@@ -403,6 +403,8 @@ void XmlLoader::startElement(
   elemNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.pushChild();
 
+  elemNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
+
   LOADER_TRACE("Element name ["
                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
@@ -422,7 +424,7 @@ void XmlLoader::startElement(
         prefix = "";
 
       xqpStringStore_t pooledNs;
-      store.getNamespacePool().insert(nsuri, pooledNs);
+      store.getNamespacePool().insertc(nsuri, pooledNs);
 
       bindings[i].first = prefix;
       bindings[i].second = pooledNs.getp();
@@ -463,6 +465,8 @@ void XmlLoader::startElement(
       attrNodes.set(i, attrNode, false);
 
       loader.theOrdPath.nextChild();
+
+      attrNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
 
       LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
                    << ":" << lname << " (" << (uri != NULL ? uri : "NULL")
@@ -583,6 +587,8 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   textNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 
+  textNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
+
   LOADER_TRACE("Text Node = " << textNode.getp() 
                << "content = " << content->c_str());
 }
@@ -611,6 +617,8 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   textNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 
+  textNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
+ 
   LOADER_TRACE("Text Node = " << textNode.getp() 
                << "content = " << content->c_str());
 }
@@ -641,6 +649,8 @@ void XmlLoader::comment(
 
   commentNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
+
+  commentNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
 }
 
 
@@ -671,6 +681,8 @@ void XmlLoader::processingInstruction(
 
   piNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
+
+  piNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
 }
 
 
@@ -683,7 +695,6 @@ void XmlLoader::processingInstruction(
 ********************************************************************************/
 void  XmlLoader::error(void * ctx, const char * msg, ... )
 {
-  //XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   char buf[1024];
   va_list args;
   va_start(args, msg);

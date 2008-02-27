@@ -3,7 +3,7 @@
 #define SYSTEM_ZORBA_ENGINE
 
 #include <zorba/common/common.h>
-#include <zorba//zorba_engine_api.h>
+#include <zorba/zorba_engine_api.h>
 #include <zorba/zorba_engine_singlethread_api.h>
 
 namespace xqp

@@ -20,7 +20,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/qname_pool.h"
-#include "store/util/string_pool.h"
+#include "store/util/string_hashset.h"
 
 
 
@@ -43,24 +43,11 @@ BasicItemFactory::~BasicItemFactory()
 
 
 Item_t BasicItemFactory::createQName(
-    const xqpStringStore_t& ns,
-    const xqpStringStore_t& pre,
-    const xqpStringStore_t& local)
+    xqpStringStore* ns,
+    xqpStringStore* pre,
+    xqpStringStore* local)
 {
   return theQNamePool->insert(ns, pre, local);
-}
-
-
-Item_t BasicItemFactory::createQName(
-    const xqp_string& ns,
-    const xqp_string& pre,
-    const xqp_string& local)
-{
-  xqpStringStore_t ns_t(ns.getStore());
-  xqpStringStore_t pre_t(pre.getStore());
-  xqpStringStore_t local_t(local.getStore());
-
-  return theQNamePool->insert(ns_t, pre_t, local_t);
 }
 
 
@@ -79,54 +66,30 @@ Item_t BasicItemFactory::createNCName(xqpStringStore* value)
 }
 
 
-Item_t BasicItemFactory::createNCName(const xqp_string& value)
+Item_t BasicItemFactory::createAnyURI(xqpStringStore* value)
 {
-  return new NCNameItemImpl(value.getStore());
-}
-
-
-Item_t BasicItemFactory::createAnyURI(const xqpStringStore_t& value)
-{
-  theUriPool->insert(value.getp());
+  theUriPool->insert(value);
   return new AnyUriItemImpl(value);
-}
-
-
-Item_t BasicItemFactory::createAnyURI(const xqp_string& value)
-{
-  theUriPool->insert(value.getStore());
-  return new AnyUriItemImpl(xqpStringStore_t(value.getStore()));
 }
 
 
 Item_t BasicItemFactory::createAnyURI(const char* value)
 {
   xqpStringStore_t str;
-  theUriPool->insert(value, str);
+  theUriPool->insertc(value, str);
   return new AnyUriItemImpl(str);
 }
 
 
-Item_t BasicItemFactory::createUntypedAtomic(const xqpStringStore_t& value)
+Item_t BasicItemFactory::createUntypedAtomic(xqpStringStore* value)
 {
-  return new UntypedAtomicItemImpl(value.getp());
-}
-
-Item_t BasicItemFactory::createUntypedAtomic(const xqp_string& value)
-{
-  return new UntypedAtomicItemImpl(value.getStore());
+  return new UntypedAtomicItemImpl(value);
 }
 
 
 Item_t BasicItemFactory::createString(xqpStringStore* value)
 {
   return new StringItemNaive(value);
-}
-
-
-Item_t BasicItemFactory::createString(const xqp_string& value)
-{
-  return new StringItemNaive(xqpStringStore_t(value.getStore()));
 }
 
 
@@ -509,6 +472,7 @@ Item_t BasicItemFactory::createDocumentNode(
   {
     xmlTree->removeReference();
     xmlTree.release();
+    GET_STORE().deleteQueryContext(qid);
   }
   return n;
 }
@@ -574,6 +538,7 @@ Item_t BasicItemFactory::createElementNode(
   {
     xmlTree->removeReference();
     xmlTree.release();
+    GET_STORE().deleteQueryContext(qid);
   }
   return n;
 }
@@ -651,6 +616,7 @@ Item_t BasicItemFactory::createAttributeNode(
   {
     xmlTree->removeReference();
     xmlTree.release();
+    GET_STORE().deleteQueryContext(qid);
   }
   return n;
 }
@@ -694,6 +660,7 @@ Item_t BasicItemFactory::createTextNode(
   {
     xmlTree->removeReference();
     xmlTree.release();
+    GET_STORE().deleteQueryContext(qid);
   }
   return n;
 }
@@ -760,6 +727,7 @@ Item_t BasicItemFactory::createPiNode(
   {
     xmlTree->removeReference();
     xmlTree.release();
+    GET_STORE().deleteQueryContext(qid);
   }
   return n;
 }
@@ -795,6 +763,7 @@ Item_t BasicItemFactory::createCommentNode(
   {
     xmlTree->removeReference();
     xmlTree.release();
+    GET_STORE().deleteQueryContext(qid);
   }
   return n;
 }

@@ -3049,7 +3049,13 @@ void end_visit(const SchemaElementTest& /*v*/, void* /*visit_state*/)
 
 var_expr_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 {
-  return new var_expr(loc, kind, ITEM_FACTORY.createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, "v" + to_string (tempvar_counter++)));
+  xqpString uri(TEMP_VAR_URI);
+  xqpString pre(TEMP_VAR_PREFIX);
+  xqpString lname("v" + to_string(tempvar_counter++));
+
+  return new var_expr(loc, kind, ITEM_FACTORY->createQName(uri.getStore(),
+                                                           pre.getStore(),
+                                                           lname.getStore()));
 }
 
 

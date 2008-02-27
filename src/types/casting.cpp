@@ -80,7 +80,7 @@ Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExp
 
   if (lIndex < 0) {
     if (castableToNCName(qname))
-        return factory->createQName(lNamespace, lPrefix, qname);
+      return factory->createQName(lNamespace.getStore(), lPrefix.getStore(), qname.getStore());
     else ZORBA_ERROR_ALERT (code);
   } else if (lIndex == 0) {
     ZORBA_ERROR_ALERT (code);
@@ -92,7 +92,7 @@ Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExp
     xqpString lLocal = qname.substr(lIndex + 1);
     
     if (castableToNCName(lPrefix) && castableToNCName(lLocal))
-      return factory->createQName(lNamespace, lPrefix, lLocal);
+      return factory->createQName(lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
     else 
       ZORBA_ERROR_ALERT (code);
   }
@@ -123,10 +123,10 @@ Item_t GenericCast::stringSimpleCast(
   switch(ts.get_atomic_type_code(*aTargetType))
   {
   case TypeConstants::XS_ANY_ATOMIC:
-    lItem = factory->createUntypedAtomic(lString);
+    lItem = factory->createUntypedAtomic(lString.getStore());
     break;
   case TypeConstants::XS_STRING:
-    lItem = factory->createString(lString);
+    lItem = factory->createString(lString.getStore());
     break;
   case TypeConstants::XS_NORMALIZED_STRING:
     lItem = factory->createNormalizedString(lString);
@@ -153,7 +153,7 @@ Item_t GenericCast::stringSimpleCast(
     lItem = factory->createENTITY(lString);
     break;
   case TypeConstants::XS_UNTYPED_ATOMIC:
-    lItem = factory->createUntypedAtomic(lString);
+    lItem = factory->createUntypedAtomic(lString.getStore());
     break;
   case TypeConstants::XS_DATETIME:
     {
@@ -363,7 +363,7 @@ Item_t GenericCast::stringSimpleCast(
   case TypeConstants::XS_HEXBINARY:
     break;
   case TypeConstants::XS_ANY_URI:
-    lItem = factory->createAnyURI(lString);
+    lItem = factory->createAnyURI(lString.getStore());
     break;
     
   case TypeConstants::XS_NCNAME:
@@ -379,7 +379,7 @@ Item_t GenericCast::stringSimpleCast(
 
     if (castableToNCName(lString))
     {
-      lItem = factory->createNCName(lString);
+      lItem = factory->createNCName(lString.getStore());
     }
     else
     {
@@ -492,8 +492,8 @@ bool GenericCast::isDigit(uint32_t cp) const
 
 bool GenericCast::isCombiningChar(uint32_t cp) const
 {
-	int	i;
-	for(i=0;i<sizeof(combining_char_range)/sizeof(CodePointRange_t);i++)
+	unsigned int i;
+	for(i = 0; i < sizeof(combining_char_range)/sizeof(CodePointRange_t); i++)
 	{
 		if((cp >= combining_char_range[i].left) && (cp <= combining_char_range[i].right))
 			return true;
@@ -610,7 +610,7 @@ Item_t GenericCast::cast(
     const xqpString& aStr,
     const xqtref_t& aTargetType) const
 {
-  Item_t lItem = Zorba::getItemFactory()->createString(aStr);
+  Item_t lItem = Zorba::getItemFactory()->createString(aStr.getStore());
   Item_t lResult = cast(lItem, aTargetType);
   return lResult;
 }
@@ -623,8 +623,7 @@ bool GenericCast::isCastable(
   Item_t lItem;
   RootTypeManager& ts = GENV_TYPESYSTEM;
 
-  xqtref_t lItemType = ts.create_type(aItem->getType(),
-                                                  TypeConstants::QUANT_ONE);
+  xqtref_t lItemType = ts.create_type(aItem->getType(), TypeConstants::QUANT_ONE);
 
   if (ts.is_subtype(*lItemType, *aTargetType))
   {
@@ -647,7 +646,7 @@ bool GenericCast::isCastable(
     const xqpString& aStr,
     const xqtref_t& aTargetType) const
 {
-  Item_t lItem = Zorba::getItemFactory()->createString(aStr);
+  Item_t lItem = Zorba::getItemFactory()->createString(aStr.getStore());
   return isCastable(lItem, aTargetType);
 }
 

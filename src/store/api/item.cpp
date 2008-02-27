@@ -8,18 +8,18 @@
  */
 
 #include <zorba/item.h>
+#include <zorba/iterator.h>
 
 #include "errors/error_factory.h"
+#include "util/Assert.h"
 
 #include "system/zorba_engine.h"
 #include "system/zorba.h"
-
-#include "runtime/core/item_iterator.h"
-#include "api/serialization/serializer.h"
 #include "system/globalenv.h"
+
+#include "api/serialization/serializer.h"
+
 #include "types/root_typemanager.h"
-#include "util/Assert.h"
-#include "runtime/base/plan_wrapper.h"
 
 namespace xqp
 {
@@ -503,21 +503,5 @@ void Item::serializeXML( std::ostream& os )
   
   ser->serialize(this, os);
 }
-
-
-/* begin class AtomicItem */
-Item_t AtomicItem::getAtomizationValue() const
-{
-  Item* lItem = const_cast<AtomicItem *>(this);
-  return lItem;
-}
-
-
-Iterator_t AtomicItem::getTypedValue() const
-{
-	PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, this->getAtomizationValue());
-  return new PlanWrapper ( planIter );
-}
-/* end class AtomicItem */
 
 }

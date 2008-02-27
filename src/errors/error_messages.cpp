@@ -72,10 +72,15 @@ DEF_ERR_CODE (API0002_COMPILE_FAILED, API0002, "Query compilation failed")
 DEF_ERR_CODE (API0003_XQUERY_NOT_COMPILED, API0003, "Query not compiled")
 DEF_ERR_CODE (API0004_XQUERY_ALREADY_COMPILED, API0004, "Query already compiled")
 
-DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI `/s' exists already.")
+DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI /s exists already.")
+
 DEF_ERR_CODE (API0006_COLLECTION_NOT_FOUND, API0006, "A collection with URI `/s' does not exist.")
+
 DEF_ERR_CODE (API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert to a collectionan item that is not a node.")
 
+DEF_ERR_CODE (API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri `/s' exists in the store already.")
+
+  DEF_ERR_CODE (API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, "The uri `/s' does not identify an XML node")
 
 DEF_ERR_CODE (FOAR0001, FOAR0001, "Division by zero.")
 DEF_ERR_CODE (FOAR0002, FOAR0002, "Numeric operation overflow/underflow.")

@@ -518,7 +518,7 @@ bool Zorba_XQueryBinary::setVariableAsDocumentFromStream(
 		Store		&store = GENV.getStore();
 		ItemFactory* factory = Zorba::getItemFactory();
 
-    Item_t uriItem = factory->createAnyURI(docUri);
+    Item_t uriItem = factory->createAnyURI(docUri.getStore());
 		if(uriItem == NULL)
 		{//not a valid uri
 			result->theStateBlock->theZorba->current_xquery = NULL;
@@ -526,7 +526,7 @@ bool Zorba_XQueryBinary::setVariableAsDocumentFromStream(
 			return false;
 		}
 		//?store.deleteDocument(docUri);
-		Item_t	docItem = store.loadDocument(docUri, is);
+		Item_t	docItem = store.loadDocument(docUri.getStore(), is);
 		if(docItem == NULL)
 		{//cannot upload document into store
 			//or maybe is not valid xml
@@ -572,7 +572,7 @@ bool Zorba_XQueryBinary::setContextItemAsDocumentFromStream(
 		Store		&store = GENV.getStore();
 
 		//?store.deleteDocument(docUri);
-		Item_t	docItem = store.loadDocument(docUri, is);
+		Item_t	docItem = store.loadDocument(docUri.getStore(), is);
 		if(docItem == NULL)
 		{//cannot upload document into store
 			//or maybe is not valid xml

@@ -1,12 +1,12 @@
 
-#ifndef DEFAULT_STORE_DEFS
-#define DEFAULT_STORE_DEFS
+#ifndef XQP_DEFAULT_STORE_DEFS
+#define XQP_DEFAULT_STORE_DEFS
  
 #define GET_STORE() \
         (*(static_cast<SimpleStore*>(&GENV.getStore())))
 
 #define GET_FACTORY() \
-        (*(static_cast<BasicItemFactory*>(& GET_STORE().getItemFactory())))
+        (*(reinterpret_cast<BasicItemFactory*>(GET_STORE().getItemFactory())))
 
 
 #define BASE_NODE(item) (static_cast<XmlNode*>((item).getp()))

@@ -29,12 +29,16 @@
 #include <ostream>
 #include <zorba/representations.h>
 #include "common/shared_types.h"
-#include "store/naive/nsbindings.h"
+
 
 namespace xqp
 {
 
 class ResultIterator;
+
+
+typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
+
 
 class serializer : public SimpleRCObject
 {

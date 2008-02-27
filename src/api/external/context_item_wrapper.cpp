@@ -258,7 +258,7 @@ bool DynamicContextWrapper::setContextItemAsString( xqp_string str_value)
 
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	
-	context_item = item_factory->createString(str_value);
+	context_item = item_factory->createString(str_value.getStore());
 
 	if(context_item == NULL)
 	{
@@ -366,7 +366,7 @@ bool DynamicContextWrapper::setContextItemAsNCName( xqp_string str_value)
 
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	
-	context_item = item_factory->createNCName(str_value);
+	context_item = item_factory->createNCName(str_value.getStore());
 
 	if(context_item == NULL)
 	{
@@ -455,7 +455,7 @@ bool DynamicContextWrapper::setContextItemAsAnyURI( xqp_string str_value)
 	try{
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	
-	context_item = item_factory->createAnyURI(str_value);
+	context_item = item_factory->createAnyURI(str_value.getStore());
 
 	if(context_item == NULL)
 	{
@@ -473,7 +473,9 @@ bool DynamicContextWrapper::setContextItemAsQName( xqp_string namespace_value, x
 
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	
-	context_item = item_factory->createQName(namespace_value, prefix_value, local_value);
+	context_item = item_factory->createQName(namespace_value.getStore(),
+                                           prefix_value.getStore(),
+                                           local_value.getStore());
 
 	if(context_item == NULL)
 	{
@@ -491,7 +493,7 @@ bool DynamicContextWrapper::setContextItemAsUntypedAtomic( xqp_string str_value)
 
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	
-	context_item = item_factory->createUntypedAtomic(str_value);
+	context_item = item_factory->createUntypedAtomic(str_value.getStore());
 
 	if(context_item == NULL)
 	{
@@ -997,7 +999,7 @@ bool DynamicContextWrapper::setContextItemAsDocument( xqp_anyURI documentURI)
 	try{
 	
 	Store		&store = GENV.getStore();
-	context_item = store.getDocument(documentURI);
+	context_item = store.getDocument(documentURI.getStore());
 	if(context_item == NULL)
 	{
 		ZORBA_ERROR_ALERT(ZorbaError::FODC0002);
@@ -1027,7 +1029,7 @@ bool DynamicContextWrapper::setContextItemAsDocumentFromFile(
 			storeUri = file_path;
 
 		//?store.deleteDocument(docUri);
-		context_item = store.loadDocument(storeUri, is);
+		context_item = store.loadDocument(storeUri.getStore(), is);
 		if(context_item == NULL)
 		{//cannot upload document into store
 			//or maybe is not valid xml

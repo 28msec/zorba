@@ -719,7 +719,7 @@ const_expr::const_expr(const QueryLoc& loc,
                            xqpString v)
   :
   expr(loc),
-  val (ITEM_FACTORY.createString (v))
+  val (ITEM_FACTORY->createString (v.getStore()))
 {
 }
 
@@ -727,7 +727,7 @@ const_expr::const_expr(const QueryLoc& loc,
                            xqp_integer v)
 :
   expr(loc),
-  val (ITEM_FACTORY.createInteger (v))
+  val (ITEM_FACTORY->createInteger (v))
 {
 }
 
@@ -736,7 +736,7 @@ const_expr::const_expr(
   xqp_decimal v)
 :
   expr(loc),
-  val (ITEM_FACTORY.createDecimal (v))
+  val (ITEM_FACTORY->createDecimal (v))
 {
 }
 
@@ -745,7 +745,7 @@ const_expr::const_expr(
   xqp_double v)
 :
   expr(loc),
-  val (ITEM_FACTORY.createDouble (v))
+  val (ITEM_FACTORY->createDouble (v))
 {
 }
 
@@ -754,7 +754,7 @@ const_expr::const_expr(
   xqp_boolean v)
 :
   expr(loc),
-  val (ITEM_FACTORY.createBoolean (v))
+  val (ITEM_FACTORY->createBoolean (v))
 {
 }
 
@@ -774,7 +774,7 @@ const_expr::const_expr(
   const char* aLocal)
 :
   expr(aLoc),
-  val ((Item*)&*ITEM_FACTORY.createQName(aNamespace, aPrefix, aLocal))
+  val ((Item*)&*ITEM_FACTORY->createQName(aNamespace, aPrefix, aLocal))
 {
 }
 

@@ -1,8 +1,11 @@
 #ifndef XQP_QNAME_POOL_H
 #define XQP_QNAME_POOL_H
 
-#include <zorba/item.h>
+#include <vector>
 
+#include <zorba/common/common.h>
+
+#include "store/util/mutex.h"
 
 namespace xqp
 {
@@ -51,23 +54,25 @@ protected:
   };
 
 public:
-  static const unsigned long MAX_CACHE_SIZE = 65536;
+  static const ulong MAX_CACHE_SIZE = 65536;
   static const float DEFAULT_LOAD_FACTOR;// = 0.6;//daniel: to compile on windows
 
 protected:
   QNameItemImpl         * theCache;
-  unsigned long           theCacheSize;
-	unsigned long           theFirstFree;
-  unsigned long           theNumFree;
+  ulong                   theCacheSize;
+	ulong                   theFirstFree;
+  ulong                   theNumFree;
 
-  unsigned long           theNumQNames;
+  ulong                   theNumQNames;
 
   std::vector<HashEntry>  theHashTab;
-  unsigned long           theHashTabSize;
+  ulong                   theHashTabSize;
   float                   theLoadFactor;
 
+  Mutex                   theMutex;
+
 public:
-  QNamePool(xqp_ulong size);
+  QNamePool(ulong size);
 
   ~QNamePool();
 
@@ -77,9 +82,9 @@ public:
         const char* ln);
 
   Item_t insert(
-        const xqpStringStore_t& ns,
-        const xqpStringStore_t& pre,
-        const xqpStringStore_t& ln);
+        xqpStringStore* ns,
+        xqpStringStore* pre,
+        xqpStringStore* ln);
 
   void remove(QNameItemImpl* qn);
 
@@ -87,17 +92,18 @@ protected:
   QNameItemImpl* cacheInsert(HashEntry* entry);
 
   HashEntry* hashInsert(
-        const xqpStringStore_t& ns,
+        const char* ns,
         const char* pre,
         const char* ln,
-        unsigned long       prelen,
-        unsigned long       lnlen,
+        ulong       nslen,
+        ulong       prelen,
+        ulong       lnlen,
         bool&       found);
 
   void hashRemove(
-        const xqpStringStore_t& ns,
-        const xqpStringStore_t& pre,
-        const xqpStringStore_t& ln);
+        xqpStringStore* ns,
+        xqpStringStore* pre,
+        xqpStringStore* ln);
 
   void resizeHashTab();
 };

@@ -95,10 +95,9 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
         resQName = itemQName->getStringValue().trim();
       }
 
-      res = Zorba::getItemFactory()->createQName(
-        resNs,
-        resPre,
-        resQName);
+      res = Zorba::getItemFactory()->createQName(resNs.getStore(),
+                                                 resPre.getStore(),
+                                                 resQName.getStore());
       STACK_PUSH( res, state );
     }
     STACK_END();
@@ -161,17 +160,17 @@ QNameIterator::nextImpl(PlanState& planState) const
 
     if( -1 != index )
     {
-    res = Zorba::getItemFactory()->createQName(
-        resNs,
-        resQName.substr( 0, index ),
-        resQName.substr( index+1, resQName.length() - index ));
+      res = Zorba::getItemFactory()->createQName(
+        resNs.getStore(),
+        resQName.substr( 0, index ).getStore(),
+        resQName.substr( index+1, resQName.length() - index ).getStore());
     }
     else
     {
-      res = Zorba::getItemFactory()->createQName(
-        resNs,
-        "",
-        resQName);
+      xqpString empty("");
+      res = Zorba::getItemFactory()->createQName(resNs.getStore(),
+                                                 empty.getStore(),
+                                                 resQName.getStore());
     }
 
     STACK_PUSH( res, state );
@@ -259,7 +258,7 @@ PrefixFromQNameIterator::nextImpl(PlanState& planState) const
       item = item->getAtomizationValue();
       tmp = item->getPrefix();
       if(!tmp.empty())
-        STACK_PUSH( Zorba::getItemFactory()->createNCName(tmp), state );
+        STACK_PUSH( Zorba::getItemFactory()->createNCName(tmp.getStore()), state );
     }
     STACK_END();
 }
@@ -288,7 +287,7 @@ LocalNameFromQNameIterator::nextImpl(PlanState& planState) const
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH( Zorba::getItemFactory()->createNCName(item->getLocalName()), state );
+    STACK_PUSH(Zorba::getItemFactory()->createNCName(item->getLocalName().getStore()), state);
   }
   STACK_END();
 }
@@ -319,7 +318,7 @@ NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const
     if ( item != NULL )
     {
       item = item->getAtomizationValue();
-      STACK_PUSH( Zorba::getItemFactory()->createString(item->getNamespace()), state );
+      STACK_PUSH( Zorba::getItemFactory()->createString(item->getNamespace().getStore()), state );
     }
     STACK_END();
 }
@@ -383,7 +382,7 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
     }
 
     if( !resNs.empty() )
-      STACK_PUSH( Zorba::getItemFactory()->createString(resNs), state );
+      STACK_PUSH( Zorba::getItemFactory()->createString(resNs.getStore()), state );
   }
   STACK_END();
 }
@@ -416,7 +415,7 @@ InScopePrefixesIterator::nextImpl(PlanState& planState) const
     while (state->theCurrentPos < state->theBindings.size())
     {
       STACK_PUSH(Zorba::getItemFactory()->
-                 createNCName(state->theBindings[state->theCurrentPos].first), state);
+                 createNCName(state->theBindings[state->theCurrentPos].first.getStore()), state);
       state->theCurrentPos++;
     }
   }

@@ -382,7 +382,7 @@ bool DynamicContextWrapper::setVariableAsString( xqp_string varname, xqp_string 
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
-	var.atomic_item = item_factory->createString(str_value);
+	var.atomic_item = item_factory->createString(str_value.getStore());
 	if(var.atomic_item == NULL)
 	{
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
@@ -514,7 +514,7 @@ bool DynamicContextWrapper::setVariableAsNCName( xqp_string varname, xqp_string 
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
-	var.atomic_item = item_factory->createNCName(str_value);
+	var.atomic_item = item_factory->createNCName(str_value.getStore());
 	if(var.atomic_item == NULL)
 	{
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
@@ -624,7 +624,7 @@ bool DynamicContextWrapper::setVariableAsAnyURI( xqp_string varname, xqp_string 
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
-	var.atomic_item = item_factory->createAnyURI(str_value);
+	var.atomic_item = item_factory->createAnyURI(str_value.getStore());
 	if(var.atomic_item == NULL)
 	{
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
@@ -637,7 +637,11 @@ bool DynamicContextWrapper::setVariableAsAnyURI( xqp_string varname, xqp_string 
 	}CATCH_ALL_RETURN_false;
 
 }
-bool DynamicContextWrapper::setVariableAsQName( xqp_string varname, xqp_string namespace_value, xqp_string prefix_value, xqp_string local_value)
+bool DynamicContextWrapper::setVariableAsQName(
+    xqp_string varname,
+    xqp_string namespace_value,
+    xqp_string prefix_value,
+    xqp_string local_value)
 {
 	try{
 
@@ -646,7 +650,9 @@ bool DynamicContextWrapper::setVariableAsQName( xqp_string varname, xqp_string n
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
-	var.atomic_item = item_factory->createQName(namespace_value, prefix_value, local_value);
+	var.atomic_item = item_factory->createQName(namespace_value.getStore(),
+                                              prefix_value.getStore(),
+                                              local_value.getStore());
 	if(var.atomic_item == NULL)
 	{
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
@@ -668,7 +674,7 @@ bool DynamicContextWrapper::setVariableAsUntypedAtomic( xqp_string varname, xqp_
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
-	var.atomic_item = item_factory->createUntypedAtomic(str_value);
+	var.atomic_item = item_factory->createUntypedAtomic(str_value.getStore());
 	if(var.atomic_item == NULL)
 	{
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
@@ -1293,7 +1299,7 @@ bool DynamicContextWrapper::setVariableAsDocument( xqp_string varname, xqp_anyUR
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	Store		&store = GENV.getStore();
-	var.atomic_item = store.getDocument(documentURI);
+	var.atomic_item = store.getDocument(documentURI.getStore());
 	if(var.atomic_item == NULL)
 	{
 		ZORBA_ERROR_ALERT(ZorbaError::FODC0002);
@@ -1330,7 +1336,7 @@ bool DynamicContextWrapper::setVariableAsDocumentFromFile(
 			storeUri = file_path;
 
 		//?store.deleteDocument(docUri);
-		var.atomic_item = store.loadDocument(storeUri, is);
+		var.atomic_item = store.loadDocument(storeUri.getStore(), is);
 		if(var.atomic_item == NULL)
 		{//cannot upload document into store
 			//or maybe is not valid xml

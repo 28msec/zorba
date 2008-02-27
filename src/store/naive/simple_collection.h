@@ -1,19 +1,12 @@
-/*
- *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: David Graf, Markos Zaharioudakis
- *
- */
-
-#ifndef XQO_DEFAULT_STORE_COLLECTION
-#define XQP_DEFAULT_STORE_COLLECTION
+#ifndef ZORBA_DEFAULT_STORE_COLLECTION
+#define ZORBA_DEFAULT_STORE_COLLECTION
 
 #include <set>
 #include <zorba/common/common.h>
 #include <zorba/iterator.h>
 
-#include "common/shared_types.h"
 #include "store/api/collection.h"
+#include "store/util/latch.h"
 
 namespace xqp
 {
@@ -30,8 +23,9 @@ public:
 	{
   private:
     SimpleCollection_t            theCollection;
+    AutoLatch                     theLatch;
     std::set<Item_t>::iterator    theIterator;
-    
+
   public:
     CollectionIter(SimpleCollection* collection);
 
@@ -47,6 +41,7 @@ public:
 protected:
   Item_t               theUri;
   std::set<Item_t>     theXmlTrees;
+  Latch                theLatch;
 
 public:
   SimpleCollection(Item* uri);

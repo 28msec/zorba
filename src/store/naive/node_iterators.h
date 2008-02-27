@@ -4,7 +4,7 @@
 #include <zorba/iterator.h>
 
 #include "store/naive/ordpath.h"
-#include "store/util/handle_set.h"
+#include "store/util/item_hashset.h"
 
 namespace xqp
 {
@@ -80,8 +80,8 @@ public:
 class StoreNodeDistinctIterator : public Iterator
 {
 protected:
-  Iterator_t       theInput;
-  HandleSet<Item>  theNodeSet;
+  Iterator_t   theInput;
+  ItemHashSet  theNodeSet;
 
 public:
   StoreNodeDistinctIterator(Iterator* input) : theInput(input) { }

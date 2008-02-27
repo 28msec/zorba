@@ -17,7 +17,7 @@ const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6f;
 /*******************************************************************************
 
 ********************************************************************************/
-QNamePool::QNamePool(xqp_ulong size) 
+QNamePool::QNamePool(ulong size) 
   :
   theCache(new QNameItemImpl[size]),
   theCacheSize(size),
@@ -31,7 +31,7 @@ QNamePool::QNamePool(xqp_ulong size)
   QNameItemImpl* qn = &theCache[1];
   QNameItemImpl* last = qn + size - 1;
 
-  for (unsigned long i = 1; qn < last; qn++, i++)
+  for (ulong i = 1; qn < last; qn++, i++)
   {
     qn->theNextFree = i + 1;
     qn->thePrevFree = i - 1;
@@ -55,8 +55,8 @@ QNamePool::QNamePool(xqp_ulong size)
 ********************************************************************************/
 QNamePool::~QNamePool() 
 {
-  unsigned long n = theHashTab.size();
-  for (unsigned long i = 0; i < n; i++)
+  ulong n = theHashTab.size();
+  for (ulong i = 0; i < n; i++)
   {
     if (theHashTab[i].theQNameSlot != NULL &&
         theHashTab[i].theQNameSlot->isOverflow())
@@ -91,9 +91,12 @@ Item_t QNamePool::insert(
   Assert(ln != NULL && *ln != '\0');
 
   xqpStringStore_t pooledNs;
-  store.getNamespacePool().insert(ns, pooledNs);
+  store.getNamespacePool().insertc(ns, pooledNs);
 
-  HashEntry* entry = hashInsert(pooledNs, pre, ln, strlen(pre), strlen(ln),
+  AutoMutex lock(theMutex);
+
+  HashEntry* entry = hashInsert(pooledNs->c_str(), pre, ln,
+                                pooledNs->bytes(), strlen(pre), strlen(ln),
                                 found);
 
   qn = cacheInsert(entry);
@@ -113,15 +116,18 @@ Item_t QNamePool::insert(
 
 ********************************************************************************/
 Item_t QNamePool::insert(
-    const xqpStringStore_t& ns,
-    const xqpStringStore_t& pre,
-    const xqpStringStore_t& ln)
+    xqpStringStore* ns,
+    xqpStringStore* pre,
+    xqpStringStore* ln)
 {
   QNameItemImpl* qn;
   bool found;
 
-  HashEntry* entry = hashInsert(ns, pre->c_str(), ln->c_str(),
-                                pre->bytes(), ln->bytes(), found);
+  AutoMutex lock(theMutex);
+
+  HashEntry* entry = hashInsert(ns->c_str(), pre->c_str(), ln->c_str(),
+                                ns->bytes(), pre->bytes(), ln->bytes(),
+                                found);
 
   qn = cacheInsert(entry);
 
@@ -203,12 +209,13 @@ QNameItemImpl* QNamePool::cacheInsert(HashEntry* entry)
   entry. If not, allocate a new hash entry for it, and return it to the caller.
 ********************************************************************************/
 QNamePool::HashEntry* QNamePool::hashInsert(
-    const xqpStringStore_t& ns,
-    const char*             pre,
-    const char*             ln,
-    unsigned long           prelen,
-    unsigned long           lnlen,
-    bool&                   found)
+    const char* ns,
+    const char* pre,
+    const char* ln,
+    ulong       nslen,
+    ulong       prelen,
+    ulong       lnlen,
+    bool&       found)
 {
   HashEntry* entry;
   HashEntry* lastentry;
@@ -216,7 +223,7 @@ QNamePool::HashEntry* QNamePool::hashInsert(
   found = false;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  unsigned long hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns->c_str())));
+  ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns)));
   entry = &theHashTab[hval % theHashTabSize];
 
   // If the hash bucket is empty, its 1st entry is used to store the new qname.
@@ -232,7 +239,7 @@ QNamePool::HashEntry* QNamePool::hashInsert(
     QNameItemImpl* qnslot = entry->theQNameSlot;
 
     if (qnslot->theLocal->byteEqual(ln, lnlen) &&
-        qnslot->theNamespace->byteEqual(*ns) &&
+        qnslot->theNamespace->byteEqual(ns, nslen) &&
         qnslot->thePrefix->byteEqual(pre, prelen))
     {
       found = true;
@@ -251,7 +258,7 @@ QNamePool::HashEntry* QNamePool::hashInsert(
   {
     resizeHashTab();
 
-    hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns->c_str()))) % theHashTabSize;
+    hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns))) % theHashTabSize;
     entry = &theHashTab[ hval % theHashTabSize];
 
     if (entry->theQNameSlot == NULL)
@@ -289,8 +296,10 @@ QNamePool::HashEntry* QNamePool::hashInsert(
 ********************************************************************************/
 void QNamePool::remove(QNameItemImpl* qn)
 {
-  if (qn->getRefCount() > 0)
+  if (qn->getRefCount(qn->getSync()) > 0)
     return;
+
+  AutoMutex lock(theMutex);
 
   if (qn->isInCache())
   {
@@ -315,15 +324,15 @@ void QNamePool::remove(QNameItemImpl* qn)
   Remove the given qname from the hash table, if it is found there.
 ********************************************************************************/
 void QNamePool::hashRemove(
-   const xqpStringStore_t& ns,
-   const xqpStringStore_t& pre,
-   const xqpStringStore_t& ln)
+   xqpStringStore* ns,
+   xqpStringStore* pre,
+   xqpStringStore* ln)
 {
   HashEntry* entry;
   HashEntry* preventry = NULL;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  unsigned long hval = hashfun::h32(pre->c_str(),
+  ulong hval = hashfun::h32(pre->c_str(),
                                 hashfun::h32(ln->c_str(),
                                              hashfun::h32(ns->c_str())));
   entry = &theHashTab[hval % theHashTabSize];
@@ -384,7 +393,7 @@ void QNamePool::resizeHashTab()
 
   // Make a copy of theHashTab, and then resize it to double theHashTabSize
   std::vector<HashEntry> oldTab = theHashTab;
-  unsigned long oldsize = oldTab.size();
+  ulong oldsize = oldTab.size();
 
   theHashTabSize <<= 1;
 
@@ -397,13 +406,13 @@ void QNamePool::resizeHashTab()
     entry->theNext = entry + 1;
  
   // Now rehash every entry
-  for (unsigned long i = 0; i < oldsize; i++)
+  for (ulong i = 0; i < oldsize; i++)
   {
     QNameItemImpl* qn = oldTab[i].theQNameSlot;
 
-    unsigned long h = hashfun::h32(qn->thePrefix->c_str(),
-                             hashfun::h32(qn->theLocal->c_str(),
-                                          hashfun::h32(qn->theNamespace->c_str())));
+    ulong h = hashfun::h32(qn->thePrefix->c_str(),
+                           hashfun::h32(qn->theLocal->c_str(),
+                                        hashfun::h32(qn->theNamespace->c_str())));
     entry = &theHashTab[h % theHashTabSize];
 
     if (entry->theQNameSlot != NULL)

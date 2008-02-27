@@ -80,7 +80,7 @@ RootTypeManager::RootTypeManager()
 
 #define XSQNDECL(var, local)                         \
         var =                    \
-            GENV.getStore().getItemFactory().   \
+            GENV.getStore().getItemFactory()->   \
             createQName(XS_URI, XS_PREFIX, local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");

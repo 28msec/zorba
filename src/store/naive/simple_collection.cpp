@@ -57,12 +57,15 @@ Iterator_t SimpleCollection::getIterator(bool idsNeeded)
 ********************************************************************************/
 Item_t SimpleCollection::addToCollection(std::istream& stream)
 {
-  XmlLoader& loader = GET_STORE().getXmlLoader();
+  XmlLoader* loader = GET_STORE().getXmlLoader();
 
-  XmlNode* root = loader.loadXml(NULL, stream);
+  XmlNode* root = loader->loadXml(NULL, stream);
 
   if (root != NULL)
+  {
+    AutoLatch(theLatch, Latch::WRITE);
     theXmlTrees.insert(root);
+  }
 
   return root;
 }
@@ -79,6 +82,7 @@ void SimpleCollection::addToCollection(const Item* node)
     ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
+  AutoLatch(theLatch, Latch::WRITE);
   theXmlTrees.insert(const_cast<Item*>(node));
 }
 
@@ -108,6 +112,7 @@ void SimpleCollection::removeFromCollection(const Item* node)
     ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
+  AutoLatch(theLatch, Latch::WRITE);
   theXmlTrees.erase(const_cast<Item*>(node));
 }
 
@@ -118,7 +123,8 @@ void SimpleCollection::removeFromCollection(const Item* node)
 SimpleCollection::CollectionIter::CollectionIter(
     SimpleCollection* collection)
   :
-  theCollection(collection)
+  theCollection(collection),
+  theLatch(collection->theLatch, Latch::READ)
 {
 }
 
@@ -126,7 +132,7 @@ SimpleCollection::CollectionIter::CollectionIter(
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleCollection::CollectionIter::open() 
+void SimpleCollection::CollectionIter::open()
 {
   theIterator = theCollection->theXmlTrees.begin();
 }

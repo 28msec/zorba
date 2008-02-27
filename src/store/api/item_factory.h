@@ -35,14 +35,9 @@ public:
    * @param localName local name of the qname
    */
   virtual Item_t createQName(
-        const xqpStringStore_t& namespace_p,
-        const xqpStringStore_t& prefix,
-        const xqpStringStore_t& localName) = 0;
-
-  virtual Item_t createQName(
-        const xqp_string& namespace_p,
-        const xqp_string& prefix,
-        const xqp_string& localName) = 0;
+        xqpStringStore* namespace_p,
+        xqpStringStore* prefix,
+        xqpStringStore* localName) = 0;
 
   virtual Item_t createQName(
         const char* ns,
@@ -54,27 +49,24 @@ public:
    * @param value string representation of the value
    */
   virtual Item_t createNCName(xqpStringStore* value) = 0;
-  virtual Item_t createNCName(const xqp_string& value) = 0;
     
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
    * @param value parsed value
    */
-  virtual Item_t createAnyURI(const xqpStringStore_t& value) = 0;
-  virtual Item_t createAnyURI(const xqp_string& value) = 0;
+  virtual Item_t createAnyURI(xqpStringStore* value) = 0;
   virtual Item_t createAnyURI(const char* value) = 0;
 
   /**
    * @param value string value of the untyped atomic
    */
-  virtual Item_t createUntypedAtomic(const xqp_string& value) = 0;
+  virtual Item_t createUntypedAtomic(xqpStringStore* value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#string]
    * @param value string representation of the value
    */
   virtual Item_t createString(xqpStringStore* value) = 0;
-  virtual Item_t createString(const xqp_string& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]

@@ -13,22 +13,49 @@
 #include "util/numconversions.h"
 #include "util/Assert.h"
 #include "errors/error_factory.h"
+
 #include "system/globalenv.h"
+#include "system/zorba_engine.h"
+#include "system/zorba.h"
+
+#include "runtime/core/item_iterator.h"
+#include "runtime/base/plan_wrapper.h"
+
 #include "store/naive/atomic_items.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/simple_store.h"
+#include "store/naive/basic_item_factory.h"
 #include "store/naive/store_defs.h"
 
 #define CREATE_XS_TYPE(aType) \
-  GET_STORE().getItemFactory().createQName(SimpleStore::XS_URI, "xs", aType);
+  GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
 
 #define CREATE_BOOLITEM(aValue) \
-  GET_STORE().getItemFactory().createBoolean(aValue)
+  GET_STORE().getItemFactory()->createBoolean(aValue)
 
 namespace xqp
 {
+
+
+/*******************************************************************************
+
+********************************************************************************/
+Item_t AtomicItem::getAtomizationValue() const
+{
+  Item* lItem = const_cast<AtomicItem *>(this);
+  return lItem;
+}
+
+
+Iterator_t AtomicItem::getTypedValue() const
+{
+	PlanIter_t planIter = new SingletonIterator(Zorba::null_loc,
+                                              getAtomizationValue());
+  return new PlanWrapper(planIter);
+}
+
 
 /*******************************************************************************
   class QNameItemImpl
@@ -36,7 +63,7 @@ namespace xqp
 
 void QNameItemImpl::free()
 {
-  reinterpret_cast<SimpleStore*>(&GENV.getStore())->getQNamePool().remove(this);
+  GET_STORE().getQNamePool().remove(this);
 }
 
 
@@ -116,8 +143,7 @@ xqp_string NCNameItemImpl::show() const
 ********************************************************************************/
 Item_t AnyUriItemImpl::getType() const
 {
-  return GENV.getStore().getItemFactory().
-         createQName(SimpleStore::XS_URI, "xs", "anyURI");
+  return GET_FACTORY().createQName(SimpleStore::XS_URI, "xs", "anyURI");
 }
 
 uint32_t AnyUriItemImpl::hash() const
