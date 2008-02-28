@@ -170,6 +170,7 @@ namespace xqp {
     v.endVisit(*this);
   }
 
+  // TODO visit the catch expressions here
   void TryCatchIterator::accept(PlanIterVisitor &v) const {
     v.beginVisit(*this);
     theChild->accept ( v );

@@ -12,7 +12,7 @@
 namespace xqp {
   
 TryCatchIteratorState::TryCatchIteratorState()
-  : theIterator(0)
+  : theIterator(NULL)
 {}
 
 TryCatchIteratorState::~TryCatchIteratorState() {}
@@ -25,6 +25,8 @@ TryCatchIteratorState::init(PlanState& planState) {
 void
 TryCatchIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
+  theTargetSequence->purge(); // release the target sequence
+  theIterator = NULL;
 }
 
 TryCatchIterator::TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses)

@@ -26,7 +26,8 @@ namespace xqp
   public:
     struct CatchClause {
       NodeNameTest_t node_name;
-      
+      PlanIter_t     catch_expr;
+      // TODO        need an error var here
     };
 
     TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses);
