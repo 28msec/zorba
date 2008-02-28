@@ -9,6 +9,7 @@ SET(RUNTIME_SRCS
     core/sequencetypes.cpp
     core/fncall_iterator.cpp
     core/arithmetic_impl.cpp
+    core/trycatch.cpp
     numerics/NumericsImpl.cpp
     qnames/QNamesImpl.cpp
     strings/StringsImpl.cpp

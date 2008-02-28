@@ -11,6 +11,7 @@
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/flwor_iterator.h"
+#include "runtime/core/trycatch.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
@@ -1423,6 +1424,16 @@ namespace xqp {
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
   void PrinterVisitor::endVisit ( const FLWORIterator& /*a*/) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit ( const TryCatchIterator& a ) {
+    thePrinter.startBeginVisit("TryCatchIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const TryCatchIterator& /*a*/) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }

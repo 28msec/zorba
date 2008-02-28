@@ -38,6 +38,8 @@ class GlobalEnvironment {
 
 #define GENV_COMPILERSUBSYS GlobalEnvironment::getInstance().getCompilerSubsystem()
 
+#define GENV_STORE GlobalEnvironment::getInstance().getStore();
+
 }
 
 #endif /* XQP_GLOBALENV_H */

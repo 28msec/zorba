@@ -416,6 +416,9 @@ public:
   virtual void beginVisit ( const FLWORIterator& ) ;
   virtual void endVisit ( const FLWORIterator& ) ;
   
+  virtual void beginVisit ( const TryCatchIterator& ) ;
+  virtual void endVisit ( const TryCatchIterator& ) ;
+
   virtual void beginVisitFlworWhereClause(const  PlanIterator&);
   virtual void endVisitFlworWhereClause(const PlanIterator&);
   

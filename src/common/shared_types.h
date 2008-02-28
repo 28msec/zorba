@@ -27,6 +27,7 @@ class XQueryCompiler;
 class XQueryCompilerSubsystem;
 class Rewriter;
 class RewriterContext;
+class NodeNameTest;
 
 class context;
 class static_context;
@@ -125,6 +126,8 @@ typedef rchandle<NodeItem> NodeItem_t;
 typedef rchandle<TempSeq> TempSeq_t;
 typedef rchandle<PUL> PUL_t;
 typedef rchandle<Collection> Collection_t;
+
+typedef rchandle<NodeNameTest> NodeNameTest_t;
 
 }
 

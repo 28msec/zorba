@@ -12,6 +12,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/core/fncall_iterator.h"
+#include "runtime/core/trycatch.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/qnames/QNamesImpl.h"
 #include "runtime/strings/StringsImpl.h"
@@ -166,6 +167,12 @@ namespace xqp {
     theCondIter->accept ( v );
     theThenIter->accept ( v );
     theElseIter->accept ( v );
+    v.endVisit(*this);
+  }
+
+  void TryCatchIterator::accept(PlanIterVisitor &v) const {
+    v.beginVisit(*this);
+    theChild->accept ( v );
     v.endVisit(*this);
   }
 } /* namespace xqp */

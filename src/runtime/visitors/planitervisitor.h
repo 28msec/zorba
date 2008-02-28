@@ -28,6 +28,7 @@ namespace xqp
   class EnclosedIterator;
   class IfThenElseIterator;
   class FLWORIterator;
+  class TryCatchIterator;
   class NodeDistinctIterator;
   class NodeSortIterator;
   class KindTestIterator;
@@ -235,6 +236,9 @@ namespace xqp
       virtual void beginVisit ( const FLWORIterator& ) = 0;
       virtual void endVisit ( const FLWORIterator& ) = 0;
  
+      virtual void beginVisit ( const TryCatchIterator& ) = 0;
+      virtual void endVisit ( const TryCatchIterator& ) = 0;
+
       virtual void beginVisit ( const NodeDistinctIterator& a ) = 0;
       virtual void endVisit ( const NodeDistinctIterator& a ) = 0;
 
