@@ -1861,7 +1861,7 @@ void end_visit(const SingleType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   if (v.get_hook_bit ())
-    tstack.push (GENV_TYPESYSTEM.create_type (*pop_tstack (), TypeConstants::QUANT_QUESTION));
+    tstack.push (sctx_p->get_typemanager()->create_type (*pop_tstack (), TypeConstants::QUANT_QUESTION));
   // else leave type as it is on tstack
 }
 
@@ -2034,7 +2034,7 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
 /// Creates a cast_expr or castable_expr.
 expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool isCast) {
-  if (GENV_TYPESYSTEM.get_atomic_type_code (*type) != TypeConstants::XS_QNAME) {
+  if (sctx_p->get_typemanager()->get_atomic_type_code (*type) != TypeConstants::XS_QNAME) {
     if (isCast)
       return new cast_expr (loc, node, type);
     else
@@ -2042,7 +2042,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
   } else {  // a QName cast
     const const_expr *ce = dynamic_cast<const_expr *> (node.getp());
     if (ce != NULL
-        && GENV_TYPESYSTEM.is_equal (*GENV_TYPESYSTEM.create_type (ce->get_val ()->getType (), TypeConstants::QUANT_ONE),
+        && GENV_TYPESYSTEM.is_equal (*sctx_p->get_typemanager()->create_type (ce->get_val ()->getType (), TypeConstants::QUANT_ONE),
                                      *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
         Item_t castLiteral = GenericCast::instance()->castToQName (ce->get_val ()->getStringValue(), isCast, true);
@@ -2311,7 +2311,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   // try constructor functions
   xqtref_t type =
-    GENV_TYPESYSTEM.create_type (fn_qname,
+    sctx_p->get_typemanager()->create_type (fn_qname,
                                  TypeConstants::QUANT_QUESTION);
   if (type != NULL && fn_qname->getStringValue () != "xs:anyAtomicType")
   {
@@ -2547,7 +2547,7 @@ void *begin_visit(const OccurrenceIndicator& v)
   }
 
   if (q != TypeConstants::QUANT_ONE)
-    tstack.push (GENV_TYPESYSTEM.create_type (*pop_tstack (), q));
+    tstack.push (sctx_p->get_typemanager()->create_type (*pop_tstack (), q));
     
   return no_state;
 }
@@ -2569,7 +2569,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   rchandle<QName> qname = v.get_qname ();
   xqtref_t t =
-    GENV_TYPESYSTEM.create_atomic_type(sctx_p->lookup_qname("",
+    sctx_p->get_typemanager()->create_atomic_type(sctx_p->lookup_qname("",
                                                             qname->get_prefix (),
                                                             qname->get_localname ()),
                                 TypeConstants::QUANT_ONE);
@@ -2701,7 +2701,7 @@ void end_visit(const AnyKindTest& v, void* /*visit_state*/)
   }
   else
   {
-    xqtref_t seqmatch = GENV_TYPESYSTEM.
+    xqtref_t seqmatch = sctx_p->get_typemanager()->
       create_node_type(NodeTest::ANY_NODE_TEST, NULL, TypeConstants::QUANT_ONE);
 
     tstack.push(seqmatch);
@@ -2737,7 +2737,7 @@ void end_visit(const DocumentTest& v, void* /*visit_state*/)
     {
       rchandle<NodeTest> nodeTest = new NodeTest(StoreConsts::documentNode);
 
-      xqtref_t seqmatch = GENV_TYPESYSTEM.
+      xqtref_t seqmatch = sctx_p->get_typemanager()->
         create_node_type(nodeTest, NULL, TypeConstants::QUANT_ONE);
 
       tstack.push(seqmatch);
@@ -2841,10 +2841,10 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
     {
       Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
-      contentType = GENV_TYPESYSTEM.create_type(qnameItem, TypeConstants::QUANT_ONE);
+      contentType = sctx_p->get_typemanager()->create_type(qnameItem, TypeConstants::QUANT_ONE);
     }
 
-    xqtref_t seqmatch = GENV_TYPESYSTEM.
+    xqtref_t seqmatch = sctx_p->get_typemanager()->
       create_node_type(nodeTest, contentType, TypeConstants::QUANT_ONE);
 
     tstack.push(seqmatch);
@@ -2904,10 +2904,10 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
     {
       Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
-      contentType = GENV_TYPESYSTEM.create_type(qnameItem, TypeConstants::QUANT_ONE);
+      contentType = sctx_p->get_typemanager()->create_type(qnameItem, TypeConstants::QUANT_ONE);
     }
 
-    xqtref_t seqmatch = GENV_TYPESYSTEM.
+    xqtref_t seqmatch = sctx_p->get_typemanager()->
       create_node_type(nodeTest, contentType, TypeConstants::QUANT_ONE);
 
     tstack.push(seqmatch);
@@ -2936,7 +2936,7 @@ void end_visit(const TextTest& v, void* /*visit_state*/)
   }
   else
   {
-    xqtref_t seqmatch = GENV_TYPESYSTEM.
+    xqtref_t seqmatch = sctx_p->get_typemanager()->
       create_node_type(NodeTest::TEXT_TEST, NULL, TypeConstants::QUANT_ONE);
 
     tstack.push(seqmatch);
@@ -2965,7 +2965,7 @@ void end_visit(const CommentTest& v, void* /*visit_state*/)
   }
   else
   {
-    xqtref_t seqmatch = GENV_TYPESYSTEM.
+    xqtref_t seqmatch = sctx_p->get_typemanager()->
       create_node_type(NodeTest::COMMENT_TEST, NULL, TypeConstants::QUANT_ONE);
 
     tstack.push(seqmatch);
@@ -2995,7 +2995,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
   }
   else
   {
-    xqtref_t seqmatch = GENV_TYPESYSTEM.
+    xqtref_t seqmatch = sctx_p->get_typemanager()->
       create_node_type(NodeTest::PI_TEST, NULL, TypeConstants::QUANT_ONE);
 
     tstack.push(seqmatch);
@@ -3397,18 +3397,6 @@ void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   flwor->add(lclast);
   flwor->add(fc);
   nodestack.push(&*flwor);
-}
-
-
-static inline bool is_numeric_literal(expr *e)
-{
-  const_expr *ce = dynamic_cast<const_expr *>(e);
-  if (ce == NULL) {
-    return false;
-  }
-  Item_t it = ce->get_val();
-  xqtref_t itype = GENV_TYPESYSTEM.create_type(it->getType(), TypeConstants::QUANT_ONE);
-  return GENV_TYPESYSTEM.is_subtype(*itype, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE);
 }
 
 
