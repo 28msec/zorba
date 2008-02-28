@@ -38,6 +38,7 @@ public:
   virtual bool begin_visit(flwor_expr&) = 0;
   virtual bool begin_visit(case_clause&) = 0;
   virtual bool begin_visit(promote_expr&) = 0;
+  virtual bool begin_visit(trycatch_expr&) = 0;
   virtual bool begin_visit(typeswitch_expr&) = 0;
   virtual bool begin_visit(if_expr&) = 0;
   virtual bool begin_visit(fo_expr&) = 0;
@@ -70,6 +71,7 @@ public:
   virtual void end_visit(flwor_expr&) = 0;
   virtual void end_visit(case_clause&) = 0;
   virtual void end_visit(promote_expr&) = 0;
+  virtual void end_visit(trycatch_expr&) = 0;
   virtual void end_visit(typeswitch_expr&) = 0;
   virtual void end_visit(if_expr&) = 0;
   virtual void end_visit(fo_expr&) = 0;

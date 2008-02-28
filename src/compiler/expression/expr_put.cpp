@@ -146,6 +146,30 @@ ostream& promote_expr::put(ostream& os) const
   return os;
 }
 
+ostream& trycatch_expr::put( ostream& os) const
+{
+  os << INDENT << "trycatch_expr (" << this << ") [\n";
+
+  //d Assert<null_pointer>(switch_expr_h!=NULL);
+  Assert(try_expr_h!=NULL);
+  try_expr_h->put(os);
+
+  for (vector<clauseref_t>::const_iterator it = catch_clause_hv.begin();
+       it!=catch_clause_hv.end(); ++it)
+  {
+    clauseref_t cc_h = *it;
+    os << INDENT << "catch: ";
+    if (cc_h->var_h!=NULL) cc_h->var_h->put(os);
+        os << " return ";
+    //d Assert<null_pointer>(cc_h->case_expr_h!=NULL);
+    Assert(cc_h->catch_expr_h!=NULL);
+    cc_h->catch_expr_h->put(os) << endl;
+    UNDENT;
+  }
+  os << DENT << "]\n"; UNDENT;
+  return os;
+}
+
 ostream& typeswitch_expr::put( ostream& os) const
 {
   os << INDENT << "typeswitch_expr (" << this << ") [\n";

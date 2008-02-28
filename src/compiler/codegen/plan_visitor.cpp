@@ -376,6 +376,18 @@ void end_visit(promote_expr& v)
   itstack.push(new PromoteIterator(v.get_loc(), lChild, v.get_target_type()));
 }
 
+bool begin_visit(trycatch_expr& /*v*/)
+{
+  CODEGEN_TRACE_IN("");
+  ZORBA_NOT_IMPLEMENTED ("trycatch codegen");
+  return true;
+}
+
+void end_visit(trycatch_expr& /*v*/)
+{
+  CODEGEN_TRACE_OUT("");
+}
+
 bool begin_visit(typeswitch_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");

@@ -42,6 +42,7 @@ namespace xqp {
 class match_expr;
 class expr_visitor;
 class var_expr;
+class NodeNameTest;
 
 class expr_iterator_data;
 class expr_iterator {
@@ -349,6 +350,65 @@ public:
   std::ostream& put(std::ostream&) const;
 
   virtual expr_t clone(substitution_t& substitution);
+};
+
+class catch_clause : public SimpleRCObject {
+  public:
+    typedef rchandle<var_expr> varref_t;
+
+  public:
+    rchandle<NodeNameTest> nametest_h;
+    varref_t var_h;
+    expr_t catch_expr_h;
+
+  public:
+    catch_clause();
+};
+
+class trycatch_expr : public expr {
+  public:
+    typedef rchandle<catch_clause> clauseref_t;
+
+  protected:
+    expr_t try_expr_h;
+    std::vector<clauseref_t> catch_clause_hv;
+
+  public:
+    trycatch_expr(const QueryLoc&);
+
+  public:
+    expr_t get_try_expr() const
+    { return try_expr_h; }
+    void set_try_expr(expr_t e_h)
+    { try_expr_h = e_h; }
+
+  public:
+    void add_clause(clauseref_t cc_h)
+    { catch_clause_hv.push_back(cc_h); }
+
+    std::vector<clauseref_t>::const_iterator begin() const
+    { return catch_clause_hv.begin(); }
+    std::vector<clauseref_t>::const_iterator end() const
+    { return catch_clause_hv.end(); }
+    std::vector<clauseref_t>::iterator begin()
+    { return catch_clause_hv.begin(); }
+    std::vector<clauseref_t>::iterator end()
+    { return catch_clause_hv.end(); }
+
+    uint32_t clause_count() const
+    { return catch_clause_hv.size(); }
+
+    clauseref_t & operator[](int i)
+    { return catch_clause_hv[i]; }
+    clauseref_t const& operator[](int i) const
+    { return catch_clause_hv[i]; }
+
+  public:
+    expr_iterator_data *make_iter ();
+
+    void next_iter (expr_iterator_data&);
+    void accept (expr_visitor&);
+    std::ostream& put(std::ostream&) const;
 };
 
 

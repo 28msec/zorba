@@ -74,6 +74,14 @@ public:
   flwor_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
+class trycatch_expr_iterator_data : public expr_iterator_data {
+public:
+  std::vector<trycatch_expr::clauseref_t>::const_iterator clause_iter;
+
+public:
+  trycatch_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
+};
+
 class typeswitch_expr_iterator_data : public expr_iterator_data {
 public:
   std::vector<typeswitch_expr::clauseref_t>::const_iterator clause_iter;
@@ -110,6 +118,7 @@ DEF_ACCEPT (expr)
 DEF_ACCEPT (var_expr)
 DEF_ACCEPT (flwor_expr)
 DEF_ACCEPT (promote_expr)
+DEF_ACCEPT (trycatch_expr)
 DEF_ACCEPT (typeswitch_expr)
 DEF_ACCEPT (if_expr)
 DEF_ACCEPT (function_def_expr)
@@ -326,6 +335,27 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
   flwor_copy_ptr->set_retval(retval_h->clone(substitution));
 
   return flwor_copy;
+}
+
+catch_clause::catch_clause()
+  : nametest_h(NULL),
+  var_h(NULL),
+  catch_expr_h(NULL) { }
+
+expr_iterator_data *trycatch_expr::make_iter()
+{
+  return new trycatch_expr_iterator_data(this);
+}
+
+void trycatch_expr::next_iter(expr_iterator_data& v)
+{
+  BEGIN_EXPR_ITER2(trycatch_expr_iterator_data);
+  ITER (try_expr_h);
+  for (vv.clause_iter = begin (); vv.clause_iter != end (); ++(vv.clause_iter)) {
+    ITER ((*vv.clause_iter)->var_h);
+    ITER ((*vv.clause_iter)->catch_expr_h);
+  }
+  END_EXPR_ITER ();
 }
 
 case_clause::case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
