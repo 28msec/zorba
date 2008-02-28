@@ -106,7 +106,7 @@ class FTWordsValue;
 
 // Expression nodes
 class expr; class var_expr; class order_modifier; class flwor_expr;
-class case_clause; class promote_expr; class typeswitch_expr;
+class case_clause; class promote_expr; class trycatch_expr; class typeswitch_expr;
 class if_expr; class fo_expr; class ft_select_expr; class ft_contains_expr;
 class instanceof_expr; class treat_expr; class castable_expr; class cast_expr;
 class validate_expr; class extension_expr; class relpath_expr;
