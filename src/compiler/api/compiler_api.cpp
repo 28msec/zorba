@@ -14,6 +14,8 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/expression/expr.h"
+#include "types/root_typemanager.h"
+#include "types/delegating_typemanager.h"
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/base/plan_iterator.h"
@@ -100,7 +102,10 @@ void XQueryPlanPrinterConfig::printRuntimePlan(PlanIter_t top_iterator)
 XQueryCompiler::XQueryCompiler(std::vector<rchandle<static_context> >& sctx_list,
   static_context *sctx)
   : m_sctx_list(sctx_list),
-  m_sctx(sctx){ }
+  m_sctx(sctx)
+{
+  m_sctx->set_typemanager(std::auto_ptr<TypeManager>(new DelegatingTypeManager(&GENV_TYPESYSTEM)));
+}
 
 PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text,
     XQueryPlanPrinterConfig *pp_cfg)

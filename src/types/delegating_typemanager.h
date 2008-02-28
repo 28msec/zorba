@@ -131,7 +131,7 @@ class DelegatingTypeManager : public TypeManager {
     xqtref_t create_type(const TypeIdentifier& ident) const
     { return m_parent->create_type(ident); }
 
-    xqtref_t create_type(const XQType& type, TypeConstants::quantifier_t quantifier)
+    xqtref_t create_type(const XQType& type, TypeConstants::quantifier_t quantifier) const
     { return m_parent->create_type(type, quantifier); }
 
     xqtref_t create_atomic_type(TypeConstants::atomic_type_code_t type_code, TypeConstants::quantifier_t quantifier) const
@@ -155,7 +155,7 @@ class DelegatingTypeManager : public TypeManager {
     xqtref_t create_untyped_type() const
     { return m_parent->create_untyped_type(); }
 
-    xqtref_t create_empty_type()
+    xqtref_t create_empty_type() const
     { return m_parent->create_empty_type(); }
 
     xqtref_t create_none_type() const

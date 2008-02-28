@@ -29,7 +29,7 @@
 #include "common.h"
 
 #include <zorba/static_context.h>
-
+#include <memory>
 #include "context/context.h"
 #include "context/context_impl.h"
 #include "util/Assert.h"
@@ -75,7 +75,8 @@ protected:
 public:
   virtual ~static_context();
   static_context *create_child_context() { return new static_context(this); }
-  TypeManager *get_typemanager () { return typemgr.get (); }
+  TypeManager *get_typemanager ();
+  void set_typemanager(std::auto_ptr<TypeManager> _typemgr);
   
   xqp_string default_function_namespace() const;
 	void set_default_function_namespace(xqp_string);

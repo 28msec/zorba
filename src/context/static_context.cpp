@@ -37,6 +37,7 @@
 #include "errors/error_factory.h"
 #include "system/globalenv.h"
 #include "context/static_context.h"
+#include "types/typemanager.h"
 #include "system/zorba.h"
 #include "util/utf8/Unicode_util.h"
 #include "context/collation_manager.h"
@@ -126,6 +127,19 @@ static_context::static_context()
   DECL_STR_PARAM (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE)
   DECL_STR_PARAM (static_context, entity_file_uri, MAX_ZORBA_ERROR_CODE)
 
+  TypeManager *static_context::get_typemanager ()
+  {
+    TypeManager *tm = typemgr.get();
+    if (tm != NULL) {
+      return tm;
+    }
+    return dynamic_cast<static_context *>(parent)->get_typemanager();
+  }
+
+  void static_context::set_typemanager(std::auto_ptr<TypeManager> _typemgr)
+  {
+    typemgr = _typemgr;
+  }
 
 
   pair<xqp_string, xqp_string> parse_qname (xqp_string qname)
