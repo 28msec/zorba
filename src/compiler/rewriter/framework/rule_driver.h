@@ -2,6 +2,7 @@
 #define XQP_RULE_DRIVER_H
 
 #include <vector>
+#include <boost/shared_ptr.hpp>
 #include "common/shared_types.h"
 #include "compiler/rewriter/framework/rewriter.h"
 
@@ -12,14 +13,14 @@ class RewriteRule;
 
 class RuleMajorDriver : public Rewriter {
   public:
-    typedef std::vector<RewriteRule *> rules_t;
-
-    RuleMajorDriver(const rules_t& rules);
-    ~RuleMajorDriver();
+    RuleMajorDriver();;
+    virtual ~RuleMajorDriver();
 
     void rewrite(RewriterContext& rCtx);
 
-  private:
+  protected:
+    typedef boost::shared_ptr<RewriteRule> rule_ptr_t;
+    typedef std::vector<rule_ptr_t> rules_t;
     rules_t m_rules;
 
     void rewriteRuleMajor(RewriterContext& rCtx);

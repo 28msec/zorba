@@ -2,6 +2,7 @@
 #define XQP_SEQUENTIAL_REWRITER_H
 
 #include <vector>
+#include <boost/shared_ptr.hpp>
 #include "common/shared_types.h"
 #include "compiler/rewriter/framework/rewriter.h"
 
@@ -12,10 +13,12 @@ class SequentialRewriter : public Rewriter {
     void rewrite(RewriterContext& rCtx);
 
   protected:
+    typedef boost::shared_ptr<Rewriter> rewriter_ptr_t;
+    typedef std::vector<rewriter_ptr_t> rewriters_t;
     SequentialRewriter();
     ~SequentialRewriter() throw ();
 
-    std::vector<Rewriter *> m_childRewriters;
+    rewriters_t m_childRewriters;
 };
 
 }

@@ -5,8 +5,7 @@
 
 namespace xqp {
 
-RuleMajorDriver::RuleMajorDriver(const std::vector<RewriteRule *>& rules)
-  : m_rules(rules) { }
+RuleMajorDriver::RuleMajorDriver() { }
 
 RuleMajorDriver::~RuleMajorDriver() { }
 
@@ -23,7 +22,7 @@ void RuleMajorDriver::rewriteRuleMajor(RewriterContext& rCtx)
     modified = false;
 
     for(rules_t::iterator i = m_rules.begin(); i != end; ++i) {
-      expr_t newRoot = rewriteRec(rCtx, *i, &*rCtx.getRoot(), modified);
+      expr_t newRoot = rewriteRec(rCtx, &**i, &*rCtx.getRoot(), modified);
 
       if (newRoot != NULL) {
         rCtx.setRoot(newRoot);
