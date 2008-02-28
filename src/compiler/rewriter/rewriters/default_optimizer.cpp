@@ -12,9 +12,18 @@ class TestRuleDriver : public RuleMajorDriver {
     }
 };
 
+class NodeidRuleDriver : public RuleMajorDriver {
+  public:
+    NodeidRuleDriver()
+    {
+      m_rules.push_back(rule_ptr_t(new EliminateDocOrderSortRule()));
+    }
+};
+
 DefaultOptimizer::DefaultOptimizer()
 {
   //m_childRewriters.push_back(rewriter_ptr_t(new TestRuleDriver()));
+  //m_childRewriters.push_back(rewriter_ptr_t(new NodeidRuleDriver()));
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()

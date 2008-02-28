@@ -2,6 +2,7 @@
 #define XQP_RULESET_H
 
 #include "compiler/expression/expr.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewrite_rule.h"
 
 namespace xqp {
@@ -16,6 +17,10 @@ namespace xqp {
   }
 
 RULE(EchoNodeRule);
+
+// Node id rules
+RULE(MarkNodesWithNodeIdPropertiesRule);
+RULE(EliminateDocOrderSortRule);
 
 #undef RULE
 
