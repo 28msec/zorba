@@ -20,13 +20,17 @@ namespace xqp {
 
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
+
 /*******************************************************************************
 
 ********************************************************************************/
-#if 1
+
+#ifdef ZORBA_USE_PTHREAD_LIBRARY
+
+#if defined HAVE_PTHREAD_SPINLOCK
+
 class RCSync
 {
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
 protected:
   pthread_spinlock_t  theLock;
 
@@ -66,16 +70,12 @@ public:
       abort();
     }
   }
-#else
-  #error RCSync implemented for PTHREADs only
-#endif
 };
 
-#else
+#elif defined HAVE_PTHREAD_MUTEX
 
 class RCSync
 {
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
 protected:
   pthread_mutex_t  theLock;
 
@@ -119,11 +119,19 @@ public:
       abort();
     }
   }
+};
+
+#else
+  #error must have pthread mutex or phread spinlock
+
+#endif // HAVE_PTHREAD_SPINLOCK or HAVE_PTHREAD_MUTEX
+
 #else
   #error RCSync implemented for PTHREADs only
-#endif
-};
-#endif
+
+#endif // ZORBA_USE_PTHREAD_LIBRARY
+
+
 #endif // ZORBA_FOR_ONE_THREAD_ONLY
 
 

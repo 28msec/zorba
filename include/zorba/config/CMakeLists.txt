@@ -22,8 +22,9 @@ CHECK_FUNCTION_EXISTS ("strcpy_s"                   HAVE_STRCPY_S_FUNCTION)
 
 CHECK_INCLUDE_FILES ("pthread.h"                    HAVE_PTHREAD_H)
 
-CHECK_FUNCTION_EXISTS(pthread_spin_init             HAVE_PTHREAD_SPINLOCK)
-CHECK_FUNCTION_EXISTS(pthread_mutex_ini             HAVE_PTHREAD_MUTEX)
+CHECK_FUNCTION_EXISTS("pthread_spin_init"           HAVE_PTHREAD_SPINLOCK)
+CHECK_FUNCTION_EXISTS("pthread_mutex_init"          HAVE_PTHREAD_MUTEX)
+
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake -->${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake")
