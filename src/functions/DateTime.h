@@ -690,6 +690,89 @@ class fn_datetime_ctor : public function
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
+
+/*
+ * 10.7.1 fn:adjust-dateTime-to-timezone
+ *-----------------------*/
+class fn_adjust_dt_to_tz_1 : public function
+{
+public:
+  fn_adjust_dt_to_tz_1(const signature&);
+  ~fn_adjust_dt_to_tz_1() {}
+
+public:
+  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  xqtref_t type_check(signature&) const;
+  bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+class fn_adjust_dt_to_tz_2 : public function
+{
+public:
+  fn_adjust_dt_to_tz_2(const signature&);
+  ~fn_adjust_dt_to_tz_2() {}
+
+public:
+  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  xqtref_t type_check(signature&) const;
+  bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 10.7.2 fn:adjust-date-to-timezone
+ *-----------------------*/
+class fn_adjust_d_to_tz_1 : public function
+{
+  public:
+    fn_adjust_d_to_tz_1(const signature&);
+    ~fn_adjust_d_to_tz_1() {}
+
+  public:
+    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+class fn_adjust_d_to_tz_2 : public function
+{
+  public:
+    fn_adjust_d_to_tz_2(const signature&);
+    ~fn_adjust_d_to_tz_2() {}
+
+  public:
+    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 10.7.3 fn:adjust-time-to-timezone
+ *-----------------------*/
+class fn_adjust_t_to_tz_1 : public function
+{
+  public:
+    fn_adjust_t_to_tz_1(const signature&);
+    ~fn_adjust_t_to_tz_1() {}
+
+  public:
+    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+class fn_adjust_t_to_tz_2 : public function
+{
+  public:
+    fn_adjust_t_to_tz_2(const signature&);
+    ~fn_adjust_t_to_tz_2() {}
+
+  public:
+    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+
 } // namespace xqp
 
 #endif

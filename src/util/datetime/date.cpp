@@ -5,7 +5,6 @@
  */
 
 #include <string>
-#include <exception> // TODO for what?
 
 #include <zorba/date.h>
 #include <zorba/datetime.h>
@@ -14,6 +13,7 @@
 
 #include "util/datetime/parse.h"
 #include "util/numconversions.h"
+#include "util/Assert.h"
 
 using namespace std;
 
@@ -69,7 +69,10 @@ int Date::parse_string(const xqpString& s, Date_t& d_t)
   }
 
   // Validate the date
-  // year can be anything
+  // year may not be 0
+  if (d_t->year == 0)
+    return 1;
+  
   if (d_t->month < 1 || d_t->month > 12)
     return 1;
 
@@ -81,6 +84,8 @@ int Date::parse_string(const xqpString& s, Date_t& d_t)
 
 int Date::createDate(int a_year, int a_month, int a_day, Date_t& d_t)
 {
+  if (a_year == 0)
+    return 1;
   if (a_month < 1 || a_month > 12)
     return 1;
   if (a_day < 1 || a_day > get_last_day(a_year, a_month))
@@ -97,7 +102,7 @@ int Date::createDate(int a_year, int a_month, int a_day, const TimeZone& tz, Dat
 {
   if (1 == createDate(a_year, a_month, a_day, d_t))
     return 1;
-  
+
   d_t->the_time_zone = tz;
   return 0;
 }
@@ -156,13 +161,27 @@ int Date::compare(const Date& d) const
 DateTime_t Date::toDateTime() const
 {
   DateTime_t dt_t;
-  DateTime::createDateTime(year<0, year, month, day, 0, 0, 0, 0, the_time_zone, dt_t);
+
+  if (DateTime::createDateTime(year<0, year, month, day, 0, 0, 0, 0, the_time_zone, dt_t))
+    ZORBA_ASSERT(0);
+
   return dt_t;
 }
 
 xqpString Date::toString() const
 {
-  xqpString result = NumConversions::longToStr(year) + "-";
+  xqpString result;
+
+  if (year<0)
+    result += "-";
+  
+  if (abs<int>(year)<1000)
+    result += "0";
+  if (abs<int>(year)<100)
+    result += "0";
+  if (abs<int>(year)<10)
+    result += "0";
+  result += NumConversions::longToStr(abs<int>(year)) + "-";
 
   if (month < 10)
     result += "0";
@@ -200,7 +219,8 @@ Date_t operator+(const Date& d, const Duration& dur)
 {
   Date_t d_t;
   DateTime_t dt_t = *d.toDateTime() + dur;
-  Date::createDate(dt_t->getYear(), dt_t->getMonth(), dt_t->getDay(), dt_t->getTimezone(), d_t);
+  if (Date::createDate(dt_t->getYear(), dt_t->getMonth(), dt_t->getDay(), dt_t->getTimezone(), d_t))
+    ZORBA_ASSERT(0);
   return d_t;
 }
 

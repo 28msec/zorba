@@ -10,8 +10,13 @@
 #include <zorba/time.h>
 #include <zorba/date.h>
 #include <zorba/duration.h>
+#include <zorba/timezone.h>
 
 #include "util/datetime/parse.h"
+#include "util/Assert.h"
+#include "system/zorba.h"
+#include "system/zorba_engine.h"
+#include "context/dynamic_context.h"
 
 #define RETURN_1_ON_EXCEPTION(sequence)         \
   try                                           \
@@ -22,6 +27,8 @@
   {                                             \
     return 1;                                   \
   }
+
+using namespace std;
 
 namespace xqp
 {
@@ -86,9 +93,10 @@ int DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)
 int DateTime::createDateTime(bool is_negative, int years, int months, int days,
                             int hours, int minutes, int seconds, int fractional_seconds, TimeZone_t& tz_t, DateTime_t& dt_t)
 {
-  dt_t = new DateTime(is_negative, boost::posix_time::ptime(
-    boost::gregorian::date(abs<int>(years), abs<int>(months), abs<int>(days)),
-    boost::posix_time::time_duration(abs<int>(hours), abs<int>(minutes), abs<int>(seconds), abs<int>(fractional_seconds))));
+  RETURN_1_ON_EXCEPTION(
+    dt_t = new DateTime(is_negative, boost::posix_time::ptime(
+      boost::gregorian::date(abs<int>(years), abs<int>(months), abs<int>(days)),
+      boost::posix_time::time_duration(abs<int>(hours), abs<int>(minutes), abs<int>(seconds), abs<int>(fractional_seconds)))););
 
   if (!tz_t.isNull())
     dt_t->the_time_zone = *tz_t;
@@ -99,10 +107,11 @@ int DateTime::createDateTime(bool is_negative, int years, int months, int days,
 int DateTime::createDateTime(bool is_negative, int years, int months, int days,
                             int hours, int minutes, int seconds, int fractional_seconds, const TimeZone& tz, DateTime_t& dt_t)
 {
-  dt_t = new DateTime(is_negative, boost::posix_time::ptime(
-    boost::gregorian::date(abs<int>(years), abs<int>(months), abs<int>(days)),
-    boost::posix_time::time_duration(abs<int>(hours), abs<int>(minutes), abs<int>(seconds), abs<int>(fractional_seconds))));
-
+  RETURN_1_ON_EXCEPTION(
+    dt_t = new DateTime(is_negative, boost::posix_time::ptime(
+      boost::gregorian::date(abs<int>(years), abs<int>(months), abs<int>(days)),
+      boost::posix_time::time_duration(abs<int>(hours), abs<int>(minutes), abs<int>(seconds), abs<int>(fractional_seconds)))); );
+  
   dt_t->the_time_zone = tz;
 
   return 0;
@@ -112,6 +121,7 @@ DateTime& DateTime::operator=(const DateTime_t& dt_t)
 {
   is_negative = dt_t->is_negative;
   the_date_time = dt_t->the_date_time;
+  the_time_zone = dt_t->the_time_zone;
   return *this;
 }
 
@@ -254,6 +264,117 @@ TimeZone DateTime::getTimezone() const
   return the_time_zone;
 }
 
+DateTime_t DateTime::normalizeTimeZone() const
+{
+  Duration_t d_t;
+  DateTime_t new_dt_t;
+  
+  if( the_time_zone.is_not_a_date_time() )
+  {
+    // TODO: validate timezone value (-14 .. +14 H)
+    int tz_seconds = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
+    d_t = new Duration(DayTimeDuration((tz_seconds<0), 0, 0, 0, tz_seconds, 0));
+  }
+  else
+  {
+    if (Duration::from_Timezone(the_time_zone, d_t))
+      ZORBA_ASSERT(0);
+  }
+
+  new_dt_t = *this - *d_t;
+    
+  return new_dt_t;
+}
+
+DateTime_t DateTime::adjustToTimeZone() const
+{
+  DayTimeDuration_t dtduration_t;
+  DayTimeDuration_t context_tz_t;
+  DateTime_t dt_t;
+  TimeZone_t tz_t;
+
+  // If $timezone is not specified, then $timezone is the value of the implicit timezone in the dynamic context.
+  int tz_seconds = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
+  context_tz_t = new DayTimeDuration((tz_seconds<0), 0, 0, 0, tz_seconds, 0);
+
+  // TODO: validate timezone value (-14 .. +14 H)
+  dt_t = new DateTime(*this);
+  
+  // If $arg does not have a timezone component and $timezone is not the empty sequence,
+  // then the result is $arg with $timezone as the timezone component.
+  if (the_time_zone.is_not_a_date_time())
+  {
+    if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), context_tz_t->getSeconds(), tz_t))
+      ZORBA_ASSERT(0);
+    dt_t->the_time_zone = *tz_t;
+  }
+  else
+  {
+      // If $arg has a timezone component and $timezone is not the empty sequence, then
+      // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
+    dtduration_t = new DayTimeDuration(the_time_zone.is_negative(), 0, the_time_zone.getHours(),
+                       the_time_zone.getMinutes(), the_time_zone.getSeconds(), 0);
+
+    dtduration_t = *context_tz_t - *dtduration_t;
+    dt_t = *dt_t + *dtduration_t->toDuration();
+    if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), context_tz_t->getSeconds(), tz_t))
+      ZORBA_ASSERT(0);
+    dt_t->the_time_zone = *tz_t;
+  }
+
+  return dt_t;
+}
+
+DateTime_t DateTime::adjustToTimeZone(const DurationBase_t& db_t) const
+{
+  DateTime_t dt_t;
+  DayTimeDuration_t dtduration_t;
+  DayTimeDuration_t context_tz_t;
+  TimeZone_t tz_t;
+
+  // A dynamic error is raised [err:FODT0003] if $timezone is less than -PT14H or greater than PT14H or
+  // if does not contain an integral number of minutes.
+  // TODO: validate timezone value (-14 .. +14 H)
+
+  dt_t = new DateTime(*this);
+  
+  if (db_t.isNull())
+  {
+    if (!the_time_zone.is_not_a_date_time())
+      dt_t->the_time_zone = TimeZone();
+  }
+  else
+  {
+    // If $arg does not have a timezone component and $timezone is not the empty sequence,
+    // then the result is $arg with $timezone as the timezone component.
+    if (the_time_zone.is_not_a_date_time())
+    {
+      if (TimeZone::createTimeZone(db_t->getHours(), db_t->getMinutes(), db_t->getSeconds(), tz_t))
+        ZORBA_ASSERT(0);
+      dt_t->the_time_zone = *tz_t;
+    }
+    else
+    {
+      // If $arg has a timezone component and $timezone is not the empty sequence, then
+      // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
+      dtduration_t = new DayTimeDuration(the_time_zone.is_negative(), 0, the_time_zone.getHours(),
+                         the_time_zone.getMinutes(), the_time_zone.getSeconds(), 0);
+
+      context_tz_t = dynamic_cast<DayTimeDuration*>(db_t.getp());
+      if (context_tz_t.isNull())
+        ZORBA_ASSERT(0);
+
+      dtduration_t = *context_tz_t - *dtduration_t;
+      dt_t = *dt_t + *dtduration_t->toDuration();
+      if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), context_tz_t->getSeconds(), tz_t))
+        ZORBA_ASSERT(0);
+      dt_t->the_time_zone = *tz_t;
+    }
+  }
+
+  return dt_t;
+}
+
 DateTime_t operator+(const DateTime& dt, const Duration& d)
 {
   DateTime_t new_dt_t;
@@ -303,11 +424,32 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
     months = modulo<int>(months + carry -1, 12) + 1;
   }
 
-  // TODO: find out if the dateTime is negative
-  DateTime::createDateTime((years<0), years, months, days, hours, minutes, int_seconds, frac_seconds,
-                            dt.getTimezone(), new_dt_t);
+  int negative = false;
+  if (years != 0)
+    negative = years < 0;
+  else if (months != 0)
+    negative = months < 0;
+  else if (days != 0)
+    negative = days < 0;
+  else if (hours != 0)
+    negative = hours < 0;
+  else if (minutes != 0)
+    negative = minutes < 0;
+  else if (int_seconds != 0)
+    negative = int_seconds < 0;
+  else if (frac_seconds != 0)
+    negative = frac_seconds < 0;
+
+  if (DateTime::createDateTime(negative, years, months, days, hours, minutes, int_seconds, frac_seconds,
+                            dt.getTimezone(), new_dt_t))
+    ZORBA_ASSERT(0);
 
   return new_dt_t;
+}
+
+DateTime_t operator-(const DateTime& dt, const Duration& d)
+{
+  return dt + *d.toNegDuration();
 }
 
 } // namespace xqp

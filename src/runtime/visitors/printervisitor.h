@@ -8,6 +8,11 @@ namespace xqp {
 class PlanIterator;
 class IterPrinter;
 
+#define PRINTER_VISITOR(class)  \
+  virtual void beginVisit ( const class& ) ;  \
+  virtual void endVisit ( const class& ) ;
+
+
 /**
  * Visitor implementation to print a tree.
  */
@@ -472,6 +477,10 @@ public:
   
   virtual void beginVisit(const FnDefaultCollationIterator&);
   virtual void endVisit(const FnDefaultCollationIterator&);
+  
+  PRINTER_VISITOR(FnAdjustToTimeZoneIterator_1);
+  PRINTER_VISITOR(FnAdjustToTimeZoneIterator_2);
+
 };
 
 } /* namespace xqp */
@@ -483,3 +492,4 @@ public:
  * mode: c++
  * End:
  */
+

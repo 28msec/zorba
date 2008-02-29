@@ -1539,5 +1539,147 @@ op_sub_dtd_from_t::type_check (
 }
 /*end class op_sub_dtd_from_t*/
 
+
+/*
+ *  10.7.1 fn:adjust-dateTime-to-timezone
+ * --------------------*/
+/* begin class fn_adjust_dt_to_tz_1 */
+fn_adjust_dt_to_tz_1::fn_adjust_dt_to_tz_1(const signature& sig )
+  : function ( sig )
+{
+}
+
+PlanIter_t fn_adjust_dt_to_tz_1::operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
+{
+  return new FnAdjustToTimeZoneIterator_1(loc, argv[0]);
+}
+
+bool fn_adjust_dt_to_tz_1::validate_args (std::vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+xqtref_t fn_adjust_dt_to_tz_1::type_check (signature& ) const
+{
+  return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
+}
+/* end class fn_adjust_dt_to_tz_1 */
+
+/* begin class fn_adjust_dt_to_tz_2 */
+fn_adjust_dt_to_tz_2::fn_adjust_dt_to_tz_2(const signature& sig )
+  : function ( sig )
+{
+}
+
+PlanIter_t fn_adjust_dt_to_tz_2::operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
+{
+  return new FnAdjustToTimeZoneIterator_2(loc, argv[0], argv[1]);
+}
+
+bool fn_adjust_dt_to_tz_2::validate_args (std::vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+
+xqtref_t fn_adjust_dt_to_tz_2::type_check (signature& ) const
+{
+  return GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION;
+}
+/* end class fn_adjust_dt_to_tz_2 */
+
+/*
+ *  10.7.2 fn:adjust-date-to-timezone
+ * --------------------*/
+/* begin class fn_adjust_d_to_tz_1 */
+fn_adjust_d_to_tz_1::fn_adjust_d_to_tz_1(const signature& sig )
+  : function ( sig )
+{
+}
+
+PlanIter_t fn_adjust_d_to_tz_1::operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
+{
+  return new FnAdjustToTimeZoneIterator_1(loc, argv[0]);
+}
+
+bool fn_adjust_d_to_tz_1::validate_args (std::vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+xqtref_t fn_adjust_d_to_tz_1::type_check (signature& ) const
+{
+  return GENV_TYPESYSTEM.DATE_TYPE_QUESTION;
+}
+/* end class fn_adjust_d_to_tz_1 */
+
+/* begin class fn_adjust_d_to_tz_2 */
+fn_adjust_d_to_tz_2::fn_adjust_d_to_tz_2(const signature& sig )
+  : function ( sig )
+{
+}
+
+PlanIter_t fn_adjust_d_to_tz_2::operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
+{
+  return new FnAdjustToTimeZoneIterator_2(loc, argv[0], argv[1]);
+}
+
+bool fn_adjust_d_to_tz_2::validate_args (std::vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+
+xqtref_t fn_adjust_d_to_tz_2::type_check (signature& ) const
+{
+  return GENV_TYPESYSTEM.DATE_TYPE_QUESTION;
+}
+/* end class fn_adjust_d_to_tz_2 */
+
+/*
+ *  10.7.3 fn:adjust-time-to-timezone
+ * --------------------*/
+/* begin class fn_adjust_t_to_tz_1 */
+fn_adjust_t_to_tz_1::fn_adjust_t_to_tz_1(const signature& sig )
+  : function ( sig )
+{
+}
+
+PlanIter_t fn_adjust_t_to_tz_1::operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
+{
+  return new FnAdjustToTimeZoneIterator_1(loc, argv[0]);
+}
+
+bool fn_adjust_t_to_tz_1::validate_args (std::vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+xqtref_t fn_adjust_t_to_tz_1::type_check (signature& ) const
+{
+  return GENV_TYPESYSTEM.TIME_TYPE_QUESTION;
+}
+/* end class fn_adjust_t_to_tz_1 */
+
+/* begin class fn_adjust_t_to_tz_2 */
+fn_adjust_t_to_tz_2::fn_adjust_t_to_tz_2(const signature& sig )
+  : function ( sig )
+{
+}
+
+PlanIter_t fn_adjust_t_to_tz_2::operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
+{
+  return new FnAdjustToTimeZoneIterator_2(loc, argv[0], argv[1]);
+}
+
+bool fn_adjust_t_to_tz_2::validate_args (std::vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+
+xqtref_t fn_adjust_t_to_tz_2::type_check (signature& ) const
+{
+  return GENV_TYPESYSTEM.TIME_TYPE_QUESTION;
+}
+/* end class fn_adjust_t_to_tz_2 */
+
 } // namespace xqp
 

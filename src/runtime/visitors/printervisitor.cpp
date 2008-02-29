@@ -27,6 +27,19 @@
 #include "system/globalenv.h"
 
 namespace xqp {
+
+#define PRINTER_VISITOR_DEFINITION(class)  \
+  void PrinterVisitor::beginVisit ( const class& a )  {  \
+    thePrinter.startBeginVisit(#class, (intptr_t) &a);  \
+    printCommons(  &a );  \
+    thePrinter.endBeginVisit( (intptr_t) &a); \
+  } \
+  void PrinterVisitor::endVisit ( const class& ) { \
+    thePrinter.startEndVisit(); \
+    thePrinter.endEndVisit(); \
+  }
+
+  
   void PrinterVisitor::print() {
     thePrinter.start();
     theIterator->accept(*this);
@@ -1664,5 +1677,10 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
+  
+  PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_1);
+  PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_2);
+  
 } /* namespace xqp */
 /* vim:set ts=2 sw=2: */
+

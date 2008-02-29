@@ -146,7 +146,7 @@ namespace xqp
     friend class Duration;
 
     public:
-      DayTimeDuration() : is_negative(false), days(0), timeDuration(0, 0, 0, 0) { };
+      DayTimeDuration();
       DayTimeDuration(bool negative, long the_days, long hours, long minutes, long seconds, long frac_seconds);
       virtual ~DayTimeDuration() { };
 
@@ -211,9 +211,6 @@ namespace xqp
       isZero() const;
 
     protected:
-      void 
-      normalize();
-      
       DayTimeDuration& 
       operator=(const DayTimeDuration_t& dt_t);
 
@@ -246,6 +243,12 @@ namespace xqp
        */
       static bool
       parse_string(const xqpString& s, Duration_t& d_t);
+
+      /**
+       * Returns 0 on success
+       */
+      static int
+      from_Timezone(const TimeZone& t, Duration_t& dt);
 
       bool
       operator==(const Duration& d) const;

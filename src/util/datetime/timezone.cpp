@@ -81,13 +81,19 @@ bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
     RETURN_FALSE_ON_EXCEPTION( t = boost::posix_time::duration_from_string (temp); );
     
     // hours must be between -14 .. 14
-    if (t.hours () > 14 || t.hours () < -14)
+    if (t.hours()*60 + t.minutes() > 14*60 || t.hours()*60 + t.minutes() < -14*60)
       return false;
     
     tz_t = new TimeZone(t);
   }
   
   return true;
+}
+
+int TimeZone::createTimeZone(int hours, int minutes, int seconds, TimeZone_t& tz_t)
+{
+  tz_t = new TimeZone(boost::posix_time::time_duration(hours, minutes, seconds, 0));
+  return 0;
 }
 
 TimeZone& TimeZone::operator=(const TimeZone_t& tz_t)
@@ -148,29 +154,22 @@ bool TimeZone::is_not_a_date_time() const
 }
 long TimeZone::getHours() const
 {
-  return the_time_zone.is_negative()?
-      -the_time_zone.hours():
-      the_time_zone.hours();
+  return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.hours();
 }
 
 long TimeZone::getMinutes() const
 {
-  return the_time_zone.is_negative()?
-      -the_time_zone.minutes():
-      the_time_zone.minutes();
+  return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.minutes();
 }
 
 long TimeZone::getSeconds() const
 {
-  return the_time_zone.is_negative()?
-      -(the_time_zone.seconds()):
-      (the_time_zone.seconds());
+  return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.seconds();
 }
 
 long TimeZone::getFractionalSeconds() const
 {
-  return the_time_zone.is_negative()?
-      -the_time_zone.fractional_seconds():
-      the_time_zone.fractional_seconds();
+  return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.fractional_seconds();
 }
+
 } // namespace xqp

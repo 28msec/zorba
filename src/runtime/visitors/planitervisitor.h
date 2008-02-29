@@ -151,6 +151,8 @@ namespace xqp
   class FnMinutesFromTimeIterator;
   class FnSecondsFromTimeIterator;
   class FnTimezoneFromTimeIterator;
+  class FnAdjustToTimeZoneIterator_1;
+  class FnAdjustToTimeZoneIterator_2;
   class OpIsSameNodeIterator;
   class OpNodeBeforeIterator;
   class OpNodeAfterIterator;
@@ -160,6 +162,11 @@ namespace xqp
   class FnImplicitTimezoneIterator;
   class FnDefaultCollationIterator;
 
+#define PLAN_ITER_VISTOR(class)    \
+  virtual void beginVisit ( const class& ) = 0;  \
+  virtual void endVisit ( const class& ) = 0; 
+
+  
   /**
    * Visitor to visit a PlanIterator tree.
    */
@@ -610,6 +617,10 @@ namespace xqp
 
       virtual void beginVisit(const FnDefaultCollationIterator&) = 0;
       virtual void endVisit(const FnDefaultCollationIterator&) = 0;
+	  
+	  PLAN_ITER_VISTOR(FnAdjustToTimeZoneIterator_1);
+      PLAN_ITER_VISTOR(FnAdjustToTimeZoneIterator_2);
+	  
   }; /* class PlanIterVisitor */
 } /* namespace xqp */
 

@@ -5,7 +5,7 @@
 //      otherwise a user would need development header for writing
 //      his apps
 #include <boost/date_time/posix_time/posix_time.hpp>
-
+#include <zorba/duration.h>
 #include <zorba/timezone.h>
 
 namespace xqp
@@ -76,14 +76,18 @@ namespace xqp
       TimeZone
       getTimezone() const;
 
-      DateTime_t
-      normalize(const long tz_seconds);
-
       Date_t
       getDate() const;
 
       Time_t
       getTime() const;
+      
+      DateTime_t
+      normalize(const long tz_seconds);
+      
+      DateTime_t normalizeTimeZone() const;
+      DateTime_t adjustToTimeZone() const;
+      DateTime_t adjustToTimeZone(const DurationBase_t& db_t) const;
 
     protected:
       DateTime& 
@@ -97,6 +101,7 @@ namespace xqp
   };
 
   DateTime_t operator+(const DateTime& dt, const Duration& d);
+  DateTime_t operator-(const DateTime& dt, const Duration& d);
 
 } /* namespace xqp */
 

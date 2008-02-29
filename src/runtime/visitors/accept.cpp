@@ -110,6 +110,7 @@ namespace xqp {
   UNARY_ACCEPT(InScopePrefixesIterator);
   UNARY_ACCEPT(DocumentIterator);
   UNARY_ACCEPT(DocumentContentIterator);
+  UNARY_ACCEPT(FnAdjustToTimeZoneIterator_1);
 
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);
@@ -124,6 +125,7 @@ namespace xqp {
   BINARY_ACCEPT(NamespaceUriForPrefixlIterator);
   BINARY_ACCEPT(ResolveQNameIterator);
   BINARY_ACCEPT(QNameIterator);
+  BINARY_ACCEPT(FnAdjustToTimeZoneIterator_2);
   
   // nary iterators
   NARY_ACCEPT(NormalizeUnicodeIterator);

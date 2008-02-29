@@ -1037,6 +1037,40 @@ DECL(op_sub_dtd_from_t,
       GENV_TYPESYSTEM.TIME_TYPE_ONE,
       GENV_TYPESYSTEM.DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.TIME_TYPE_ONE));
+
+DECL(fn_adjust_dt_to_tz_1,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-dateTime-to-timezone"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
+
+DECL(fn_adjust_dt_to_tz_2,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-dateTime-to-timezone"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
+
+DECL(fn_adjust_d_to_tz_1,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-date-to-timezone"),
+      GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DATE_TYPE_QUESTION));
+
+DECL(fn_adjust_d_to_tz_2,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-date-to-timezone"),
+      GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DATE_TYPE_QUESTION));
+
+DECL(fn_adjust_t_to_tz_1,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-time-to-timezone"),
+      GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.TIME_TYPE_QUESTION));
+
+DECL(fn_adjust_t_to_tz_2,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS,"fn", "adjust-time-to-timezone"),
+      GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
+      GENV_TYPESYSTEM.TIME_TYPE_QUESTION));
+  
 // end date time
 
 // begin debug functions

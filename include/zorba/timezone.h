@@ -21,6 +21,12 @@ namespace xqp
       static bool
       parse_string(const xqpString& s, TimeZone_t& tz_t);
 
+      /**
+       *  Returns 0 on success.
+       */
+      static int
+      createTimeZone(int hours, int minutes, int seconds, TimeZone_t& tz_t);
+
       bool
       operator<(const TimeZone& t) const;
       

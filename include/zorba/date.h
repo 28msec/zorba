@@ -75,7 +75,7 @@ namespace xqp
       Date& 
       operator=(const Date_t& d_t);
 
-      int year; // the year carries the sign of the date
+      int year; // the year carries the sign of the date, year may not be 0
       int month;
       int day;
 

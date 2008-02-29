@@ -39,61 +39,6 @@ Item_t FnDateTimeConstructorIterator::nextImpl(PlanState& planState) const
   STACK_END();
 }
 
-
-Item_t 
-OpDurationEqualIterator::nextImpl(PlanState& planState) const
-{
-  Item_t item0;
-  Item_t item1;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  // TODO: arguments should be of type xs:duration
-
-  item0 = consumeNext(theChild0.getp(), planState);
-  item1 = consumeNext(theChild1.getp(), planState);
-  
-
-  // theChild0 theChild1
-  // if(theChildren.size() == 2 || theChildren.size()==3)
-  {
-    /*
-    item0 = consumeNext ( theChildren[0], planState );
-    if ( item0 != NULL )
-    {
-      item0 = item0->getAtomizationValue();
-      if(item0->getStringValue().length() == 0)
-      {
-        STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
-      }
-      else{
-        item1 = consumeNext( theChildren[1], planState );
-        if( item1 != NULL )
-        {//note: The first character of a string is located at position 1, not position 0.
-          item1 = item1->getAtomizationValue();
-          if( theChildren.size() == 2 )
-          {
-            resStr = item0->getStringValue().substr((int32_t)round(item1->getDecimalValue())-1);
-          }
-          else{ //theChildren.size() ==3
-            item2 = consumeNext ( theChildren[2], planState );
-            if ( item2 != NULL )
-            {
-              item2 = item2->getAtomizationValue();
-              resStr = item0->getStringValue().substr((int32_t)round(item1->getDecimalValue())-1,
-                                             (int32_t)round(item2->getDecimalValue()));
-            }
-          }
-          STACK_PUSH( Zorba::getItemFactory()->createString(resStr), state );
-        }
-      }
-    }
-    */
-  }
-  STACK_END();
-}
-
 /**
  *______________________________________________________________________
  *
@@ -810,7 +755,8 @@ FnTimezoneFromTimeIterator::nextImpl(PlanState& planState) const
  * op:divide-yearMonthDuration-by-yearMonthDuration(  $arg1    as xs:yearMonthDuration,
  *                                                                              $arg2    as xs:yearMonthDuration) as xs:decimal
  *_______________________________________________________________________*/
-  /**
+
+/**
  *______________________________________________________________________
  *
  * 10.6.10 op:divide-dayTimeDuration-by-dayTimeDuration
@@ -818,4 +764,63 @@ FnTimezoneFromTimeIterator::nextImpl(PlanState& planState) const
  * op:divide-dayTimeDuration-by-dayTimeDuration(  $arg1    as xs:dayTimeDuration,
  *                                                                         $arg2    as xs:dayTimeDuration) as xs:decimal
  *_______________________________________________________________________*/
+/* end class DivideOperations */
+
+/**
+ *______________________________________________________________________
+ *
+ * 10.7.1 fn:adjust-dateTime-to-timezone
+ * 10.7.2 fn:adjust-date-to-timezone
+ * 10.7.3 fn:adjust-time-to-timezone
+ *
+ * fn:adjust-dateTime-to-timezone($arg as xs:dateTime?, $timezone as xs:dayTimeDuration?) as xs:dateTime?
+ *
+ *_______________________________________________________________________*/
+Item_t FnAdjustToTimeZoneIterator_1::nextImpl(PlanState& planState) const
+{
+  Item_t item0;
+  Item_t item1;
+  DateTime_t dt_t;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  item0 = consumeNext(theChild.getp(), planState);
+
+  // If $arg is the empty sequence, then the result is the empty sequence.
+  if (item0 == NULL)
+    STACK_PUSH(NULL, state);
+  else
+  {
+    dt_t = item0->getDateTimeValue()->adjustToTimeZone();
+    STACK_PUSH(Zorba::getItemFactory()->createDateTime(dt_t), state);
+  }
+    
+  STACK_END();
+}
+
+Item_t FnAdjustToTimeZoneIterator_2::nextImpl(PlanState& planState) const
+{
+  Item_t item0;
+  Item_t item1;
+  DateTime_t dt_t;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  item0 = consumeNext(theChild0.getp(), planState);
+  
+  if (item0 == NULL)
+    STACK_PUSH(NULL, state);
+  else
+  {
+    item1 = consumeNext(theChild1.getp(), planState);
+    dt_t = item0->getDateTimeValue()->adjustToTimeZone(item1.isNull()? NULL : item1->getDurationValue());
+    STACK_PUSH(Zorba::getItemFactory()->createDateTime(dt_t), state);
+  }
+     
+  STACK_END();
+}
+
+
 }

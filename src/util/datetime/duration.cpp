@@ -256,22 +256,22 @@ bool YearMonthDuration::parse_string(const xqpString& s, YearMonthDuration_t& ym
  * DayTimeDuration
  *
  ****************************************************************************/
+DayTimeDuration::DayTimeDuration() : is_negative(false), days(0), timeDuration(0, 0, 0, 0)
+{
+};
+
 DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long minutes, long seconds, long frac_seconds)
-  :
-  is_negative(negative), days(the_days), timeDuration(hours, minutes, seconds, frac_seconds)
 {
-  normalize();
-}
-
-void DayTimeDuration::normalize()
-{
-  if (timeDuration.hours() >= 24)
+  if (abs<long>(hours) >= 24)
   {
-    days += timeDuration.hours() / 24;
-    timeDuration = boost::posix_time::time_duration(timeDuration.hours() % 24,
-        timeDuration.minutes(), timeDuration.seconds(), timeDuration.fractional_seconds());
+    the_days += quotient<long>(hours, 24);
+    hours = modulo<long>(hours, 24);
   }
-
+  
+  is_negative = negative;
+  days = abs<long>(the_days);
+  timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(minutes), abs<long>(seconds), abs<long>(frac_seconds));
+  
   if (isZero())
     is_negative = false;
 }
@@ -359,7 +359,13 @@ xqpString DayTimeDuration::toString(bool output_when_zero) const
     result += NumConversions::intToStr ( timeDuration.seconds() );
 
     if ( timeDuration.fractional_seconds() != 0 )
-      result += "." + NumConversions::longToStr ( timeDuration.fractional_seconds() );
+    {
+      // delete the trailing zeros
+      int temp = timeDuration.fractional_seconds();
+      while (temp != 0 && ((temp%10) == 0))
+        temp /= 10;
+      result += "." + NumConversions::longToStr(temp);
+    }
 
     result += "S";
   }
@@ -383,57 +389,64 @@ DurationBase_t DayTimeDuration::operator+(const DurationBase& db) const
 {
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
   long resDays;
+  bool resIsNeg;
+  
+  resDays = (is_negative?-1:1)*days + (dtd.is_negative?-1:1)*dtd.days;
+  boost::posix_time::time_duration resTimeDuration = timeDuration*(is_negative?-1:1) + dtd.timeDuration*(dtd.is_negative?-1:1);
+  
+  //TODO: move sign resolution to constructor
+  if (resDays != 0)
+    resIsNeg = resDays < 0;
+  else if (resTimeDuration.hours() != 0)
+    resIsNeg = resTimeDuration.hours() < 0;
+  else if (resTimeDuration.minutes() != 0)
+    resIsNeg = resTimeDuration.minutes() < 0;
+  else if (resTimeDuration.seconds() != 0)
+    resIsNeg = resTimeDuration.seconds() < 0;
+  else if (resTimeDuration.fractional_seconds() != 0)
+    resIsNeg = resTimeDuration.fractional_seconds() < 0;
 
-  if(is_negative)
-    resDays = dtd.is_negative ? -days-dtd.days : -days+dtd.days;
-  else
-    resDays = dtd.is_negative ? days-dtd.days : days+dtd.days;
-
-  bool resIsNeg = resDays<0 ? true : false;
-
-  boost::posix_time::time_duration resTimeDuration = timeDuration + dtd.timeDuration;
-
-  //TODO Should normalization be part of the constructor?
-  DayTimeDuration* dt = new DayTimeDuration(
+  DayTimeDuration_t dt_t = new DayTimeDuration(
       resIsNeg,
-      abs<int>(resDays + resTimeDuration.hours() / NO_HOURS_IN_DAY),
-      resTimeDuration.hours() % NO_HOURS_IN_DAY,
+      resDays,
+      resTimeDuration.hours(),
       resTimeDuration.minutes(),
       resTimeDuration.seconds(),
       resTimeDuration.fractional_seconds());
 
-  return dt;
+  return dt_t;
 }
 
 DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
 {
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
-  long resDays, resHours;
+  long resDays;
+  bool resIsNeg;
 
-  if(is_negative)
-    resDays = dtd.is_negative ? -days+dtd.days : -days-dtd.days;
-  else
-    resDays = dtd.is_negative ? days+dtd.days : days-dtd.days;
+  resDays = (is_negative?-1:1)*days - (dtd.is_negative?-1:1)*dtd.days;
+  boost::posix_time::time_duration resTimeDuration = timeDuration*(is_negative?-1:1) - dtd.timeDuration*(dtd.is_negative?-1:1);
 
-  bool resIsNeg = resDays<0 ? true : false;
+  //TODO: move sign resolution to constructor
+  if (resDays != 0)
+    resIsNeg = resDays < 0;
+  else if (resTimeDuration.hours() != 0)
+    resIsNeg = resTimeDuration.hours() < 0;
+  else if (resTimeDuration.minutes() != 0)
+    resIsNeg = resTimeDuration.minutes() < 0;
+  else if (resTimeDuration.seconds() != 0)
+    resIsNeg = resTimeDuration.seconds() < 0;
+  else if (resTimeDuration.fractional_seconds() != 0)
+    resIsNeg = resTimeDuration.fractional_seconds() < 0;
 
-  boost::posix_time::time_duration resTimeDuration = timeDuration - dtd.timeDuration;
-
-  resDays  = resDays + resTimeDuration.hours() / NO_HOURS_IN_DAY;
-  resHours = resTimeDuration.hours() % NO_HOURS_IN_DAY;
-
-  resIsNeg = resDays<0 ? true : false;
-  
-  //TODO Should normalization be part of the constructor?
-  DayTimeDuration* dt = new DayTimeDuration(
+  DayTimeDuration_t dt_t = new DayTimeDuration(
       resIsNeg,
-      resIsNeg? -resDays: resDays,
-      resHours,
+      resDays,
+      resTimeDuration.hours(),
       resTimeDuration.minutes(),
       resTimeDuration.seconds(),
       resTimeDuration.fractional_seconds());
 
-  return dt;
+  return dt_t;
 }
 
 DurationBase_t DayTimeDuration::operator*(const Double value) const
@@ -694,8 +707,14 @@ bool DayTimeDuration::parse_string(const xqpString& s, DayTimeDuration_t& dt_t, 
 
   if (ss.size() != position)
     return false;
+  
+  // process the fractional seconds
+  double frac = frac_seconds;
+  while (frac >= 1)
+    frac /= 10;
 
-  dt_t = new DayTimeDuration(negative, days, hours, minutes, seconds, frac_seconds);
+  dt_t = new DayTimeDuration(negative, days, hours, minutes, seconds, 
+                             round(frac * boost::posix_time::time_duration::ticks_per_second()));
   return true;
 }
 
@@ -726,6 +745,15 @@ Duration::Duration(const DayTimeDuration& dtd, bool negate) : dayTimeDuration(dt
 {
   if (negate && !dayTimeDuration.isZero())
     dayTimeDuration.is_negative = !dayTimeDuration.is_negative;
+}
+
+int Duration::from_Timezone(const TimeZone& t, Duration_t& dt)
+{
+  if(t.is_not_a_date_time())
+    return 1;
+  
+  dt = new Duration( DayTimeDuration(t.is_negative(), 0, t.getHours(), t.getMinutes(), t.getSeconds(), t.getFractionalSeconds()) );
+  return 0;
 }
 
 bool Duration::operator<(const Duration& d) const
@@ -797,11 +825,13 @@ Duration_t Duration::toNegDuration() const
 
 DurationBase_t Duration::operator+(const DurationBase& db) const
 {
+  ZORBA_ASSERT(0); // Addition not defined for general Duration
   return NULL;
 }
 
 DurationBase_t Duration::operator-(const DurationBase& db) const
 {
+  ZORBA_ASSERT(0); // Substraction not defined for general Duration
   return NULL;
 }
 

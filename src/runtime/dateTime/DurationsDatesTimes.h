@@ -8,6 +8,7 @@
 
 #include "common/shared_types.h"
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
+#include "runtime/base/unarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/narybase.h"
 
 
@@ -158,7 +159,46 @@ NARY_ITER(FnTimezoneFromTimeIterator);
 
 /*
 10.7 Timezone Adjustment Functions on Dates and Time Values
+*/
+
+/*
 10.7.1 fn:adjust-dateTime-to-timezone
+10.7.2 fn:adjust-date-to-timezone
+10.7.3 fn:adjust-time-to-timezone
+*/
+class FnAdjustToTimeZoneIterator_1 : public UnaryBaseIterator<FnAdjustToTimeZoneIterator_1,
+                                                                PlanIteratorState>
+{
+public:
+  FnAdjustToTimeZoneIterator_1(const QueryLoc& loc, PlanIter_t& arg0)
+    :
+    UnaryBaseIterator<FnAdjustToTimeZoneIterator_1, PlanIteratorState>(loc, arg0){}
+
+  virtual ~FnAdjustToTimeZoneIterator_1() {};
+
+public:
+  Item_t nextImpl(PlanState& planState) const;
+  virtual void accept(PlanIterVisitor&) const;
+};
+
+class FnAdjustToTimeZoneIterator_2 : public BinaryBaseIterator<FnAdjustToTimeZoneIterator_2,
+                                                                PlanIteratorState>
+{
+public:
+  FnAdjustToTimeZoneIterator_2(const QueryLoc& loc, PlanIter_t& arg0, PlanIter_t& arg1)
+  :
+  BinaryBaseIterator<FnAdjustToTimeZoneIterator_2, PlanIteratorState>(loc, arg0, arg1){}
+
+  virtual ~FnAdjustToTimeZoneIterator_2() {};
+
+public:
+  Item_t nextImpl(PlanState& planState) const;
+  virtual void accept(PlanIterVisitor&) const;
+};
+
+
+
+/*
 10.7.2 fn:adjust-date-to-timezone
 10.7.3 fn:adjust-time-to-timezone
 10.8 Arithmetic Operators on Durations, Dates and Times
