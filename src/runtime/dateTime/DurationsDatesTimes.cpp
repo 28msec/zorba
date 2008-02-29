@@ -783,6 +783,7 @@ Item_t FnAdjustToTimeZoneIterator_1::nextImpl(PlanState& planState) const
   Item_t item0;
   Item_t item1;
   DateTime_t dt_t;
+  int tz_seconds;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -794,7 +795,7 @@ Item_t FnAdjustToTimeZoneIterator_1::nextImpl(PlanState& planState) const
     STACK_PUSH(NULL, state);
   else
   {
-    int tz_seconds = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
+    tz_seconds = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
     dt_t = item0->getDateTimeValue()->adjustToTimeZone(tz_seconds);
     STACK_PUSH(Zorba::getItemFactory()->createDateTime(dt_t), state);
   }
