@@ -23,72 +23,6 @@ namespace xqp
  *_______________________________________________________________________*/
 
 /*
- * 16.1 fn:position
- *-----------------------*/
-
-fn_position::fn_position(
-  const signature& sig)
-:
-  function(sig)
-{
-}
-
-PlanIter_t
-fn_position::operator()(
-  const QueryLoc& loc, 
-  vector<PlanIter_t>& argv) const
-{
-  return new FnPositionIterator(loc, argv);
-}
-
-xqtref_t
-fn_position::type_check(
-  signature&) const
-{
-  return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
-}
-
-bool
-fn_position::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==0);
-}
-
-/*
- * 16.2 fn:last
- *-----------------------*/
-
-fn_last::fn_last(
-  const signature& sig)
-:
-  function(sig)
-{
-}
-
-PlanIter_t
-fn_last::operator()(
-  const QueryLoc& loc, 
-  vector<PlanIter_t>& argv) const
-{
-  return new FnLastIterator(loc, argv);
-}
-
-xqtref_t
-fn_last::type_check(
-  signature&) const
-{
-  return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
-}
-
-bool
-fn_last::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==0);
-}
-
-/*
  * 16.3 fn:current-dateTime
  *-----------------------*/
 
@@ -248,39 +182,6 @@ fn_default_collation::type_check(
 
 bool
 fn_default_collation::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==0);
-}
-
-/*
- * 16.8 fn:static-base-uri
- *-----------------------*/
-
-fn_static_base_uri::fn_static_base_uri(
-  const signature& sig)
-:
-  function(sig)
-{
-}
-
-PlanIter_t
-fn_static_base_uri::operator()(
-  const QueryLoc& loc, 
-  vector<PlanIter_t>& argv) const
-{
-  return new FnStaticBaseURIIterator(loc, argv);
-}
-
-xqtref_t
-fn_static_base_uri::type_check(
-  signature&) const
-{
-  return GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION;
-}
-
-bool
-fn_static_base_uri::validate_args(
   vector<PlanIter_t>& argv) const
 {
   return (argv.size()==0);

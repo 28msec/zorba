@@ -458,12 +458,6 @@ public:
   virtual void beginVisit(const OpNodeAfterIterator&);
   virtual void endVisit(const OpNodeAfterIterator&);
 
-  virtual void beginVisit(const FnPositionIterator&);
-  virtual void endVisit(const FnPositionIterator&);
-
-  virtual void beginVisit(const FnLastIterator&);
-  virtual void endVisit(const FnLastIterator&);
-  
   virtual void beginVisit(const FnCurrentDateTimeIterator&);
   virtual void endVisit(const FnCurrentDateTimeIterator&);
   
@@ -478,9 +472,6 @@ public:
   
   virtual void beginVisit(const FnDefaultCollationIterator&);
   virtual void endVisit(const FnDefaultCollationIterator&);
-  
-  virtual void beginVisit(const FnStaticBaseURIIterator&);
-  virtual void endVisit(const FnStaticBaseURIIterator&);
 };
 
 } /* namespace xqp */

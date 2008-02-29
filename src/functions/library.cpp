@@ -201,14 +201,7 @@ DECL(fn_round_half_to_even,
 
 
 // begin context functions
-DECL(fn_position,
-    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","position"),
-     GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
-
-DECL(fn_last,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","last"),
-      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
-
+//position(), last() and static-base-uri() are implemented in the context
 DECL(fn_current_dateTime,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","current-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
@@ -228,10 +221,6 @@ DECL(fn_implicit_timezone,
 DECL(fn_default_collation,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","default-collation"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
-
-DECL(fn_static_base_uri,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","static-base-uri"),
-      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 // end context functions
 
 

@@ -1610,28 +1610,6 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
     thePrinter.endEndVisit();
   }
 
-  void PrinterVisitor::beginVisit(const FnPositionIterator& a) {
-    thePrinter.startBeginVisit("FnPositionIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
-  }
-
-  void PrinterVisitor::endVisit(const FnPositionIterator&) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void PrinterVisitor::beginVisit(const FnLastIterator& a) {
-    thePrinter.startBeginVisit("FnLastIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
-  }
-
-  void PrinterVisitor::endVisit(const FnLastIterator&) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
   void PrinterVisitor::beginVisit(const FnCurrentDateTimeIterator& a) {
     thePrinter.startBeginVisit("FnCurrentDateTimeIterator", (intptr_t) &a);
     printCommons(  &a);
@@ -1686,17 +1664,5 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
-  
-  void PrinterVisitor::beginVisit(const FnStaticBaseURIIterator& a) {
-    thePrinter.startBeginVisit("FnStaticBaseURIIterator", (intptr_t) &a);
-    printCommons(  &a);
-    thePrinter.endBeginVisit((intptr_t) &a);
-  }
-
-  void PrinterVisitor::endVisit(const FnStaticBaseURIIterator&) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
 } /* namespace xqp */
 /* vim:set ts=2 sw=2: */

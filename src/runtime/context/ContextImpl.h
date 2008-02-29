@@ -23,16 +23,6 @@ namespace xqp
  * 16 Context Functions
  *_______________________________________________________________________*/
 
-/*
- * 16.1 fn:position
- *-----------------------*/
-  NARY_ITER(FnPositionIterator);
-
- /*
-  * 16.2 fn:last
-  *-----------------------*/
-  NARY_ITER(FnLastIterator);
-
  /*
   * 16.3 fn:current-dateTime
   *-----------------------*/
@@ -58,11 +48,5 @@ namespace xqp
   *-----------------------*/
   NARY_ITER(FnDefaultCollationIterator);
 
- /*
-  * 16.8 fn:static-base-uri
-  *-----------------------*/
-  NARY_ITER(FnStaticBaseURIIterator);
-
-  
 } /* namespace xqp */
 #endif /*XQP_CONTEXT_IMPL_H*/

@@ -23,55 +23,6 @@ namespace xqp
 /**
  *______________________________________________________________________
  *
- * 16.1 fn:position
- *
- * fn:position() as xs:integer
- *_______________________________________________________________________*/
-
-/*begin class FnPositionIterator */
-Item_t
-FnPositionIterator::nextImpl(PlanState& planState) const
-{
-  Item_t itemArg;
-  unsigned long position=0;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  position = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->context_position();
-  STACK_PUSH( Zorba::getItemFactory()->createInteger(Integer::parseLong(position)), state );
-
-  STACK_END();
-}
-/*end class FnPositionIterator */
-
-/**
- *______________________________________________________________________
- *
- * 16.2 fn:last
- *
- * fn:last() as xs:integer
- *_______________________________________________________________________*/
-
-/*begin class FnLastIterator */
-Item_t
-FnLastIterator::nextImpl(PlanState& planState) const
-{
-  Item_t itemArg;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-//     position = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->context_position();
-  STACK_PUSH( Zorba::getItemFactory()->createInteger(Integer::parseLong(2)), state );
-
-  STACK_END();
-}
-/*end class FnLastIterator */
-
-/**
- *______________________________________________________________________
- *
  * 16.3 fn:current-dateTime
  *
  * fn:current-dateTime() as xs:dateTime
@@ -203,29 +154,4 @@ FnDefaultCollationIterator::nextImpl(PlanState& planState) const
   STACK_END();
 }
 /*end class FnDefaultCollationIterator */
-
-/**
- *______________________________________________________________________
- *
- * 16.8 fn:static-base-uri
- *
- * fn:static-base-uri() as xs:anyURI?
- *_______________________________________________________________________*/
-
-/*begin class FnStaticBaseURIIterator */
-Item_t
-FnStaticBaseURIIterator::nextImpl(PlanState& planState) const
-{
-  xqp_string strBaseUri;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  strBaseUri = ZORBA_FOR_CURRENT_THREAD()->get_static_context()->baseuri();
-  STACK_PUSH( Zorba::getItemFactory()->createString(strBaseUri.getStore()), state );
-
-  STACK_END();
-}
-/*end class FnStaticBaseURIIterator */
-
 }/* namespace xqp */

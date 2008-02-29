@@ -21,30 +21,6 @@ namespace xqp
 
 class zorba;
 
-// 16.1 fn:position
-class fn_position : public function
-{
-  public:
-    fn_position(const signature&);
-    ~fn_position(){}
-     
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
-    xqtref_t type_check( signature& ) const;
-    bool validate_args( std::vector<PlanIter_t>&) const;
-};
-
-// 16.2 fn:last
-class fn_last : public function
-{
-  public:
-    fn_last(const signature&);
-    ~fn_last(){}
-     
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
-    xqtref_t type_check( signature& ) const;
-    bool validate_args( std::vector<PlanIter_t>&) const;
-};
-
 // 16.3 fn:current-dateTime
 class fn_current_dateTime : public function
 {
@@ -99,18 +75,6 @@ class fn_default_collation : public function
   public:
     fn_default_collation(const signature&);
     ~fn_default_collation(){}
-     
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
-    xqtref_t type_check( signature& ) const;
-    bool validate_args( std::vector<PlanIter_t>&) const;
-};
-
-// 16.8 fn:static-base-uri
-class fn_static_base_uri : public function
-{
-  public:
-    fn_static_base_uri(const signature&);
-    ~fn_static_base_uri(){}
      
     PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
     xqtref_t type_check( signature& ) const;
