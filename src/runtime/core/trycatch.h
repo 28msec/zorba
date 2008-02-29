@@ -19,7 +19,7 @@ namespace xqp
 
       // used for evaluating the target expression eagerly
       TempSeq_t  theTargetSequence;
-      Iterator*  theIterator; 
+      Iterator_t theIterator; 
   };
 
   class TryCatchIterator : public UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> {
