@@ -29,6 +29,7 @@
 #define ZORBA_FLOAT_POINT_PRECISION ${ZORBA_FLOAT_POINT_PRECISION}
 
 /* parser configuration */
+#cmakedefine ZORBA_DEBUG_SCANNER
 #cmakedefine ZORBA_DEBUG_PARSER 
 
 /* Platform checks */
