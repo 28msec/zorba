@@ -396,7 +396,7 @@ DurationBase_t DayTimeDuration::operator+(const DurationBase& db) const
   //TODO Should normalization be part of the constructor?
   DayTimeDuration* dt = new DayTimeDuration(
       resIsNeg,
-      resDays + resTimeDuration.hours() / NO_HOURS_IN_DAY,
+      abs<int>(resDays + resTimeDuration.hours() / NO_HOURS_IN_DAY),
       resTimeDuration.hours() % NO_HOURS_IN_DAY,
       resTimeDuration.minutes(),
       resTimeDuration.seconds(),
