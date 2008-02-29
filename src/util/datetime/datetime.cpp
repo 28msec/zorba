@@ -7,7 +7,7 @@
 #include <string>
 #include <exception>
 #include <zorba/datetime.h>
-#include <zorba/time.h>
+#include <zorba/zorba_time.h>
 #include <zorba/date.h>
 #include <zorba/duration.h>
 #include <zorba/timezone.h>

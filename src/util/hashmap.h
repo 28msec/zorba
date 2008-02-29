@@ -10,6 +10,7 @@
 #ifndef XQP_HASHMAP_H
 #define XQP_HASHMAP_H
 
+#include "zorba/common/common.h"
 
 #include <stddef.h>
 #include <stdlib.h>

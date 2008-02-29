@@ -3,6 +3,9 @@
 
 #include <zorba/common/common.h>
 
+#ifdef WIN32
+#include "util/rwlock.h"
+#endif
 
 namespace xqp
 {
@@ -22,8 +25,12 @@ protected:
 
 #ifdef ZORBA_USE_PTHREAD_LIBRARY
   pthread_rwlock_t  theLatch;
+#elif WIN32
+  rwlock  theLatch;
+  bool    rlocked;
+  bool    wlocked;
 #else
-  #error Latch implemented for PTHREADs only
+  #error Latch implemented for PTHREADs and WIN32 only
 #endif
 
 public:

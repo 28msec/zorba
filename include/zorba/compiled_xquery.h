@@ -7,8 +7,14 @@
 
 namespace xqp {
 
-  class XQuery : public SimpleRCObject
-  {
+class SAX2_ContentHandler;
+class SAX2_ErrorHandler;
+class SAX2_DTDHandler;
+class SAX2_DeclHandler;
+class SAX2_LexicalHandler;
+
+class XQuery : public SimpleRCObject
+{
     // TODO should we create a private constructor and make
     //      the zorba engine a friend of it
     //      this way, nobody else could ever create an xquery object
@@ -35,6 +41,13 @@ namespace xqp {
 
       virtual ResultIterator_t
       getIterator () = 0;
+
+      virtual void 
+      getResultAsSAX2(SAX2_ContentHandler *content_handler = NULL,
+                      SAX2_ErrorHandler* error_handler = NULL,
+                      SAX2_DTDHandler*  dtd_handler = NULL,
+                      SAX2_DeclHandler* decl_handler = NULL,
+                      SAX2_LexicalHandler* lexical_handler = NULL) = 0;
 
       //serialize the query to persistent storage
       virtual bool

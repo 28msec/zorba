@@ -220,7 +220,7 @@ int ZorbaAlertFactory::ask_user(
 
 ********************************************************************************/
 
-void fn_user_error(
+void ZorbaAlertFactory::fn_user_error(
     Item* err_qname,///optional
     const std::string description,//optional
     const std::vector<class Item*>* items)//optional
@@ -257,13 +257,15 @@ void fn_user_error(
 	time(&usererror->theTime);
 
 	err_manager->sendAlertToUser(z, usererror);
+  
+  ZORBA_ERROR_ALERT(ZorbaError::XQP0021_USER_ERROR);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void fn_user_trace(
+void ZorbaAlertFactory::fn_user_trace(
     const std::vector<class Item*>* items,
     const std::string label)
 {
@@ -280,6 +282,7 @@ void fn_user_trace(
 	time(&usertrace->theTime);
 
 	err_manager->sendAlertToUser(z, usertrace);
+
 }
 
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include "zorba/common/common.h"
 
 #include <zorba/properties.h>
 
@@ -27,7 +28,11 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include "sax2/using_libxml2/xmlreader_libxml2.h"
+
 using namespace std;
+
+//XERCES_CPP_NAMESPACE_USE
 
 namespace xqp
 {
@@ -435,7 +440,143 @@ bool Zorba_XQueryBinary::serializeTEXT( std::ostream& os )
   result->theStateBlock->theZorba->current_xquery = NULL;
   return !isError();
 }
+/*
+XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument*  Zorba_XQueryBinary::getResultAsDOM()
+{
 
+  std::ostringstream    oss;
+  if(!serializeXML(oss))
+    return NULL;
+
+	result->theStateBlock->theZorba->current_xquery = info;
+  XMLCh       *xml_utf16 = NULL;
+  MemBufInputSource*   mem_xml = NULL;
+  XercesDOMParser* parser = NULL;
+  ErrorHandler *errReporter = NULL;
+  try{
+
+    XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument*   myDocument;
+    std::string   oss_str = oss.str();
+   // xml_utf16 = new XMLCh[oss_str.length()+1];
+   // memset(xml_utf16, 0, (oss_str.length()+1)*sizeof(XMLCh));
+    xml_utf16 = XMLString::transcode(oss_str.c_str());
+   // mem_xml = new MemBufInputSource((XMLByte*)xml_utf16, (oss_str.length()+1)*sizeof(XMLCh), "getResultAsDOM");
+    mem_xml = new MemBufInputSource((XMLByte*)oss_str.c_str(), oss_str.length(), "getResultAsDOM");
+    parser = new XercesDOMParser();
+  
+    errReporter = new HandlerBase();
+    parser->setErrorHandler(errReporter);
+  //  parser->setValidationScheme(XercesDOMParser::Val_Always);    
+  //  parser->setDoNamespaces(true);    // optional
+    parser->parse(*mem_xml);
+    if(parser->getErrorCount())
+    {
+      delete parser;
+      delete errReporter;
+      delete mem_xml;
+      if(xml_utf16) XMLString::release (&xml_utf16);
+      result->theStateBlock->theZorba->current_xquery = NULL;
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0022_GET_RESULTS_AS_DOM_FAILED);
+      return NULL;
+    }
+    myDocument = parser->adoptDocument();
+
+    delete parser;
+    delete errReporter;
+    delete mem_xml;
+    if(xml_utf16) XMLString::release (&xml_utf16);
+    result->theStateBlock->theZorba->current_xquery = NULL;
+    return myDocument;
+	}
+	CATCH_ALL_NO_RETURN(delete parser;\
+    delete errReporter;\
+    delete mem_xml;\
+    if(xml_utf16) XMLString::release (&xml_utf16);\
+    result->theStateBlock->theZorba->current_xquery = NULL;);
+	
+  result->theStateBlock->theZorba->current_xquery = NULL;
+  return NULL;
+
+
+}
+*/
+
+/*
+bool  Zorba_XQueryBinary::getResultAsSAX(XERCES_CPP_NAMESPACE_QUALIFIER DocumentHandler *user_sax_dochandler,
+                                         XERCES_CPP_NAMESPACE_QUALIFIER ErrorHandler *user_sax_errhandler)
+{
+
+  std::ostringstream    oss;
+  if(!serializeXML(oss))
+    return false;
+
+	result->theStateBlock->theZorba->current_xquery = info;
+  XMLCh       *xml_utf16 = NULL;
+  MemBufInputSource*   mem_xml = NULL;
+  SAXParser* parser = NULL;
+  ErrorHandler *errReporter = NULL;
+  try{
+
+    std::string   oss_str = oss.str();
+   // xml_utf16 = new XMLCh[oss_str.length()+1];
+   // memset(xml_utf16, 0, (oss_str.length()+1)*sizeof(XMLCh));
+    xml_utf16 = XMLString::transcode(oss_str.c_str());
+   // mem_xml = new MemBufInputSource((XMLByte*)xml_utf16, (oss_str.length()+1)*sizeof(XMLCh), "getResultAsDOM");
+    mem_xml = new MemBufInputSource((XMLByte*)oss_str.c_str(), oss_str.length(), "getResultAsDOM");
+    parser = new SAXParser();
+
+    parser->setDocumentHandler(user_sax_dochandler);
+    parser->setErrorHandler(user_sax_errhandler);
+
+  //  parser->setValidationScheme(XercesDOMParser::Val_Always);    
+  //  parser->setDoNamespaces(true);    // optional
+    parser->parse(*mem_xml);
+
+    if(parser->getErrorCount())
+    {
+      delete parser;
+      delete errReporter;
+      delete mem_xml;
+      if(xml_utf16) XMLString::release (&xml_utf16);
+      result->theStateBlock->theZorba->current_xquery = NULL;
+      ZORBA_ERROR_ALERT(ZorbaError::XQP0023_GET_RESULTS_AS_SAX_FAILED);
+      return false;
+    }
+    delete parser;
+    delete errReporter;
+    delete mem_xml;
+    if(xml_utf16) XMLString::release (&xml_utf16);
+    result->theStateBlock->theZorba->current_xquery = NULL;
+    return true;
+	}
+	CATCH_ALL_NO_RETURN(delete parser;\
+    delete errReporter;\
+    delete mem_xml;\
+    if(xml_utf16) XMLString::release (&xml_utf16);\
+    result->theStateBlock->theZorba->current_xquery = NULL;);
+	
+  result->theStateBlock->theZorba->current_xquery = NULL;
+  return false;
+
+
+}
+*/
+
+void   Zorba_XQueryBinary::getResultAsSAX2( 
+                                SAX2_ContentHandler *content_handler,
+                                SAX2_ErrorHandler* error_handler,
+                                SAX2_DTDHandler*  dtd_handler,
+                                SAX2_DeclHandler* decl_handler,
+                                SAX2_LexicalHandler* lexical_handler)
+{
+  SAX2_XMLReaderLibXML2   xmlreader(content_handler,
+                                    error_handler,
+                                    dtd_handler,
+                                    decl_handler,
+                                    lexical_handler);
+
+  xmlreader.parse(this);
+}
 
 bool Zorba_XQueryBinary::isError()
 {

@@ -2,6 +2,7 @@
 #define WIN32_COMPATIBLE_DEFS_WITH_GNU_25_JULY_2007
 
 #include <iostream>
+#include <io.h>
 
 #include <zorba/config/stdint.h>
 

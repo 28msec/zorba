@@ -24,6 +24,10 @@
 #include "compiler/api/compiler_api.h"
 #include "types/typemanager.h"
 
+//#include "zorba/common/libxerces.h"
+
+//XERCES_CPP_NAMESPACE_USE
+
 namespace xqp{
 
 
@@ -120,6 +124,9 @@ void ZorbaEngineImpl::initialize()
   Zorba::theStore = &GENV.getStore();
   Zorba::theItemFactory = Zorba::theStore->getItemFactory();
   GlobalEnvironment::getInstance();
+  //init xerces
+//  XMLPlatformUtils::Initialize();
+
 
   is_shutdown = false;
 
@@ -162,6 +169,8 @@ void ZorbaEngineImpl::shutdown()
 
     if(!in_destructor)
       globalZorbaEngine = NULL;//also deletes globalZorbaEngine
+    //close xerces
+//    XMLPlatformUtils::Terminate();
   }
 	}CATCH_ALL_NO_RETURN(;);
 }

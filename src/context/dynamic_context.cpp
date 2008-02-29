@@ -54,10 +54,12 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 		time_t		t0 = time(NULL);
 #if defined (WIN32)
 		struct	::tm	gmtm;
-		gmtime_s(&gmtm, &t0);//thread safe gmtime on Windows
+		//gmtime_s(&gmtm, &t0);//thread safe gmtime on Windows
+    localtime_s(&gmtm, &t0);//thread safe localtime on Windows
 #else
 		struct	::tm	gmtm;
-		gmtime_r(&t0, &gmtm);//thread safe gmtime on Linux
+		//gmtime_r(&t0, &gmtm);//thread safe gmtime on Linux
+    localtime_r(&t0, &gmtm);//thread safe localtime on Linux
 #endif
 
 		//execution_date_time = gmtm;

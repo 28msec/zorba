@@ -620,6 +620,9 @@ bool DynamicContextWrapper::setVariableAsAnyURI( xqp_string varname, xqp_string 
 	try{
 
 	checkVarName(varname);
+	
+//  if(!GenericCast::instance()->isCastable(str_value, GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
+//		return false;
 
 	ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;

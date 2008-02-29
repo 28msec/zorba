@@ -85,6 +85,11 @@ public:
   virtual bool serializeTEXT( std::ostream& os );
 
 	virtual ResultIterator_t		getIterator();
+  virtual void   getResultAsSAX2( SAX2_ContentHandler *content_handler = NULL,
+                                  SAX2_ErrorHandler* error_handler = NULL,
+                                  SAX2_DTDHandler*  dtd_handler = NULL,
+                                  SAX2_DeclHandler* decl_handler = NULL,
+                                  SAX2_LexicalHandler* lexical_handler = NULL);
 
   virtual bool   serializeQuery(std::ostream &os);
 

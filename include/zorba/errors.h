@@ -582,6 +582,9 @@ namespace xqp
         XQP0018_NODEID_ERROR,
         XQP0019_INTERNAL_ERROR,
         XQP0020_INVALID_URI,
+        XQP0021_USER_ERROR,
+        XQP0022_GET_RESULTS_AS_DOM_FAILED,
+        XQP0023_GET_RESULTS_AS_SAX_FAILED,
 
         //
         // Zorba API errors

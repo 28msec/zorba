@@ -6,7 +6,7 @@
 #include <zorba/duration.h>
 #include <zorba/date.h>
 #include <zorba/datetime.h>
-#include <zorba/time.h>
+#include <zorba/zorba_time.h>
 #include <zorba/gregorian.h>
 #include <zorba/integer.h>
 #include <zorba/decimal.h>

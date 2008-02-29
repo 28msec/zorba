@@ -41,7 +41,7 @@
  */
 
 
-#include "m_apm.h"
+#include "zorba/m_apm.h"
 
 extern   void    m_apm_enter(void);
 extern   void    m_apm_leave(void);

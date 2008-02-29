@@ -32,6 +32,8 @@ namespace xqp {
   class GMonthDay;
   class GDay;
   class GMonth;
+class ResultIterator;
+typedef rchandle<ResultIterator>		        ResultIterator_t;
 
   /* context stuff */
   class DynamicQueryContext;

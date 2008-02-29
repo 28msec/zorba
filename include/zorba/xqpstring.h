@@ -467,6 +467,9 @@ namespace xqp {
     return tmp;
   }
 
+//from representations.h
+typedef xqpString           xqp_string;
+
 } /* namespace xqp */
 #endif
 

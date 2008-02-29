@@ -13,7 +13,7 @@
 #include <sstream>
 #include <iostream>
 
-#include <zorba/config/config.h>
+#include <zorba/common/common.h>
 #include <zorba/hashfun.h>
 
 namespace xqp {
@@ -71,7 +71,6 @@ public:
     }
   }
 };
-
 #elif defined HAVE_PTHREAD_MUTEX
 
 class RCSync
@@ -121,13 +120,40 @@ public:
   }
 };
 
+
 #else
   #error must have pthread mutex or phread spinlock
 
 #endif // HAVE_PTHREAD_SPINLOCK or HAVE_PTHREAD_MUTEX
 
+#elif WIN32
+class RCSync
+{
+protected:
+  HANDLE    mutex;
+public:
+  RCSync()
+  {
+    mutex = ::CreateEvent(NULL, FALSE, TRUE, NULL);
+  } 
+
+  ~RCSync()
+  {
+    ::CloseHandle(mutex);
+  } 
+
+  void lock()
+  {
+    ::WaitForSingleObject(mutex, INFINITE);
+  }
+
+  void unlock()
+  {
+    ::SetEvent(mutex);
+  }
+};
 #else
-  #error RCSync implemented for PTHREADs only
+  #error RCSync implemented for PTHREADs and WIN32
 
 #endif // ZORBA_USE_PTHREAD_LIBRARY
 
@@ -181,13 +207,38 @@ public:
 
   void addReference(long& counter, RCSync* sync)
   {
+#ifdef WIN32
+    if(sync)
+      InterlockedIncrement(&counter);
+    else
+      ++counter;
+#else
     RCLOCK(sync);
     ++counter;
     RCUNLOCK(sync);
+#endif
   }
 
   void removeReference(long& counter, RCSync* sync)
   {
+#ifdef WIN32
+    if(sync)
+    {
+      if(!InterlockedDecrement(&counter))
+      {
+        free();
+        return;
+      }
+    }
+    else
+    {
+      if (--counter == 0)
+      {
+        free();
+        return;
+      }
+    }
+#else
     RCLOCK(sync);
     if (--counter == 0)
     {
@@ -196,6 +247,7 @@ public:
       return;
     }
     RCUNLOCK(sync);
+#endif
   }
 
 	RCObject& operator=(const RCObject&) { return *this; }
