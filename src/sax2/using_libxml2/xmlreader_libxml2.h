@@ -2,12 +2,13 @@
 #ifndef ZORBA_SAX2_XML_READER_IMPLEMENTATION_USING_LIBXML2_27_FEB_2008
 #define ZORBA_SAX2_XML_READER_IMPLEMENTATION_USING_LIBXML2_27_FEB_2008
 
-#include "zorba/common/common.h"
-#include "zorba/representations.h"
-#include "sax2/xmlreader.h"
 #include <libxml/parser.h>
 #include <list>
 #include <utility>
+
+#include <zorba/common/common.h>
+#include <zorbatypes/representations.h>
+#include "sax2/xmlreader.h"
 
 namespace xqp{
 
