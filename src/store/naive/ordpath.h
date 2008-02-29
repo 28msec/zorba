@@ -90,6 +90,10 @@ protected:
   theDeweyId       : Array containing the current, uncompressed dewey id.
   theCompLens      : Array containing the bit-length of each component.
 
+  theBuffer        : Buffer containing the current, compressed ordpath.
+  theByteIndex     :
+  theBitsAvailable : The number of unsed bits in the last byte of the compressed
+                     ordpath. Can range between 0 and 7.
 ********************************************************************************/
 class OrdPathStack
 {

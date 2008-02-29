@@ -188,7 +188,7 @@ OrdPath& OrdPath::operator=(const OrdPath& other)
   if (theBuffer != NULL)
     delete [] theBuffer;
 
-  unsigned long len = other.getByteLength();
+  ulong len = other.getByteLength();
   if (len > 0)
   {
     theBuffer = new unsigned char[len];
@@ -207,7 +207,7 @@ OrdPath& OrdPath::operator=(const OrdPathStack& ops)
   if (theBuffer != NULL)
     delete [] theBuffer;
 
-  unsigned long len = ops.getByteLength();
+  ulong len = ops.getByteLength();
   theBuffer = new unsigned char[len];
   memcpy(theBuffer, ops.theBuffer, len);
   theBuffer[0] = (unsigned char)len;
@@ -218,7 +218,7 @@ OrdPath& OrdPath::operator=(const OrdPathStack& ops)
 /*******************************************************************************
 
 ********************************************************************************/
-unsigned long OrdPath::getByteLength() const
+ulong OrdPath::getByteLength() const
 {
   if (theBuffer == NULL)
     return 0;
@@ -232,7 +232,7 @@ unsigned long OrdPath::getByteLength() const
 ********************************************************************************/
 bool OrdPath::operator==(const OrdPath& other) const
 {
-  unsigned long len = getByteLength();
+  ulong len = getByteLength();
 
   if (len != other.getByteLength())
     return false;
@@ -246,8 +246,8 @@ bool OrdPath::operator==(const OrdPath& other) const
 ********************************************************************************/
 int OrdPath::operator<(const OrdPath& other) const
 {
-  unsigned long len1 = getByteLength();
-  unsigned long len2 = other.getByteLength();
+  ulong len1 = getByteLength();
+  ulong len2 = other.getByteLength();
 
   unsigned char* p1 = &theBuffer[1];
   unsigned char* p2 = &other.theBuffer[1];
@@ -266,6 +266,8 @@ int OrdPath::operator<(const OrdPath& other) const
       p1++;
       p2++;
     }
+
+    return 1;
   }
   else
   {
@@ -281,9 +283,9 @@ int OrdPath::operator<(const OrdPath& other) const
       p1++;
       p2++;
     }
-  }
 
-  return 0;
+    return 0;
+  }
 }
 
 
@@ -292,13 +294,13 @@ int OrdPath::operator<(const OrdPath& other) const
 ********************************************************************************/
 int OrdPath::operator>(const OrdPath& other) const
 {
-  unsigned long len1 = getByteLength();
-  unsigned long len2 = other.getByteLength();
+  ulong len1 = getByteLength();
+  ulong len2 = other.getByteLength();
 
   unsigned char* p1 = &theBuffer[1];
   unsigned char* p2 = &other.theBuffer[1];
 
-  if (len1 < len2)
+  if (len1 <= len2)
   {
     unsigned char* end = p1 + (len1-1);
 
@@ -312,6 +314,8 @@ int OrdPath::operator>(const OrdPath& other) const
       p1++;
       p2++;
     }
+
+    return 0;
   }
   else
   {
@@ -327,9 +331,9 @@ int OrdPath::operator>(const OrdPath& other) const
       p1++;
       p2++;
     }
-  }
 
-  return 0;
+    return 1;
+  }
 }
 
 
@@ -339,7 +343,7 @@ int OrdPath::operator>(const OrdPath& other) const
 void OrdPath::appendComp(long value)
 {
   uint32_t eval;
-  unsigned long bitsNeeded;
+  ulong bitsNeeded;
 
   if (theBuffer == NULL)
   {
@@ -348,8 +352,8 @@ void OrdPath::appendComp(long value)
     theBuffer[1] = 0;
   }
 
-  unsigned long byteIndex = getByteLength() - 1;
-  unsigned long bitsAvailable = 0;
+  ulong byteIndex = getByteLength() - 1;
+  ulong bitsAvailable = 0;
 
   unsigned char lastByte = theBuffer[byteIndex];
   while (bitsAvailable < 8 && (lastByte & 0x01) == 0)
@@ -475,7 +479,7 @@ void OrdPath::appendComp(long value)
     }
   }
 
-  unsigned long bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
+  ulong bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
     ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0018_NODEID_ERROR,
@@ -496,7 +500,7 @@ void OrdPath::appendComp(long value)
 
   do
   {
-    unsigned long bitsUsed = (bitsNeeded < bitsAvailable ?
+    ulong bitsUsed = (bitsNeeded < bitsAvailable ?
                               bitsNeeded : bitsAvailable);
 
     unsigned char byte = (unsigned char)
@@ -507,7 +511,7 @@ void OrdPath::appendComp(long value)
     eval = eval << bitsUsed;
     bitsNeeded -= bitsUsed;
     bitsAvailable -= bitsUsed;
-    unsigned long zerone = (bitsAvailable + 7) / 8;
+    ulong zerone = (bitsAvailable + 7) / 8;
     bitsAvailable = bitsAvailable * zerone + 8 * (1 - zerone);
     byteIndex += (1 - zerone);
   }
@@ -518,13 +522,13 @@ void OrdPath::appendComp(long value)
 /*******************************************************************************
 
 ********************************************************************************/
-void OrdPath::decompress(long* deweyid, unsigned long& deweylen) const
+void OrdPath::decompress(long* deweyid, ulong& deweylen) const
 {
-  unsigned long numComps = 0;
-  unsigned long byteIndex = 1;
-  unsigned long bitIndex = 0;
+  ulong numComps = 0;
+  ulong byteIndex = 1;
+  ulong bitIndex = 0;
 
-  unsigned long len = getByteLength() - 1;
+  ulong len = getByteLength() - 1;
 
   while (byteIndex < len)
   {
@@ -536,11 +540,20 @@ void OrdPath::decompress(long* deweyid, unsigned long& deweylen) const
   }
 
   // Treat the last byte
-  unsigned char lastByte = theBuffer[byteIndex];
-  Assert(lastByte != 0);
-  lastByte <<= bitIndex;
-  if (lastByte != 0)
-    decodeByte(deweyid, numComps, byteIndex, bitIndex, lastByte);
+  if (byteIndex == len)
+  {
+    unsigned char lastByte = theBuffer[byteIndex];
+    Assert(lastByte != 0);
+    lastByte <<= bitIndex;
+    if (lastByte != 0)
+      decodeByte(deweyid, numComps, byteIndex, bitIndex, lastByte);
+  }
+
+  for (ulong i = 0; i < numComps; i++)
+  {
+    if (deweyid[i] <= 0 || deweyid[i] % 2 == 0)
+      ZORBA_ASSERT(0);
+  }
 
   deweylen = numComps;
 }
@@ -560,11 +573,11 @@ void OrdPath::decompress(long* deweyid, unsigned long& deweylen) const
 
 ********************************************************************************/
 void OrdPath::decodeByte(
-    long*          deweyid,
-    unsigned long& numComps,
-    unsigned long& byteIndex,
-    unsigned long& bitIndex,
-    unsigned char  byte) const
+    long*         deweyid,
+    ulong&        numComps,
+    ulong&        byteIndex,
+    ulong&        bitIndex,
+    unsigned char byte) const
 {
   switch (byte)
   {
@@ -2087,7 +2100,7 @@ void OrdPath::decodeByte(
   {
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 3;
-    deweyid[numComps + 1] = 1;
+    deweyid[numComps + 2] = 1;
     ADVANCE(byteIndex, bitIndex, 8);
     numComps += 3;
     break;
@@ -2545,105 +2558,105 @@ void OrdPath::decodeByte(
   case 240:   // 1111 0000   11110,000...           (13/5,8)
   {
     ADVANCE(byteIndex, bitIndex, 5);
-    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 241:   // 1111 0001   11110,001...           (13/5,8)
   {
     ADVANCE(byteIndex, bitIndex, 5);
-    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 242:   // 1111 0010   11110,010...           (13/5,8)
   {
     ADVANCE(byteIndex, bitIndex, 5);
-    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 243:   // 1111 0011   11110,011...           (13/5,8)
   {
     ADVANCE(byteIndex, bitIndex, 5);
-    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 244:   // 1111 0100   11110,100...           (13/5,8)
   {
     ADVANCE(byteIndex, bitIndex, 5);
-    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 245:   // 1111 0101   11110,101...           (13/5,8)
   {
     ADVANCE(byteIndex, bitIndex, 5);
-    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 246:   // 1111 0110   11110,110...           (13/5,8)
   {
     ADVANCE(byteIndex, bitIndex, 5);
-    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 247:   // 1111 0111   11110,111...           (13/5,8)
   {
     ADVANCE(byteIndex, bitIndex, 5);
-    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 248:   // 1111 1000   111110,00...           (18/6,12)
   {
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 249:   // 1111 1001   111110,01...           (18/6,12)
   {
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 250:   // 1111 1010   111110,10...           (18/6,12)
   {
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 251:   // 1111 1011   111110,11...           (18/6,12)
   {
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 252:   // 1111 1100   1111110,0...           (23/7,16)
   {
     ADVANCE(byteIndex, bitIndex, 7);
-    extractValue(byteIndex, bitIndex, 16, 4376, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 16, 4376, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 253:   // 1111 1101   1111110,1...           (23/7,16)
   {
     ADVANCE(byteIndex, bitIndex, 7);
-    extractValue(byteIndex, bitIndex, 16, 4376, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 16, 4376, deweyid[numComps]);
     numComps += 1;
     break;
   }
   case 254:   // 1111 1110   11111110,...           (28/8,20)
   {
     ADVANCE(byteIndex, bitIndex, 8);
-    extractValue(byteIndex, bitIndex, 20, 69912, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 20, 69912, deweyid[numComps]);
     numComps += 1;
     break;
   }
@@ -2663,11 +2676,11 @@ void OrdPath::decodeByte(
 
 ********************************************************************************/
 void OrdPath::extractValue(
-    unsigned long& byteIndex,
-    unsigned long& bitIndex,
-    unsigned long  numBits,
-    long           baseValue,
-    long&          result) const
+    ulong& byteIndex,
+    ulong& bitIndex,
+    ulong  numBits,
+    long   baseValue,
+    long&  result) const
 {
   if (numBits < 8 - bitIndex)
   {
@@ -2685,9 +2698,9 @@ void OrdPath::extractValue(
   numBits -= (8 - bitIndex);
   byteIndex++;
 
-  unsigned long numBytes = numBits / 8;
+  ulong numBytes = numBits / 8;
 
-  for (unsigned long i = 0; i < numBytes; i++)
+  for (ulong i = 0; i < numBytes; i++)
   {
     result <<= 8;
     result |= theBuffer[byteIndex];
@@ -2721,11 +2734,11 @@ std::string OrdPath::show() const
   if (theBuffer == NULL)
     return str.str().c_str();
 
-  unsigned long len = getByteLength();
+  ulong len = getByteLength();
 
-  for (unsigned long i = 1; i < len; i++)
+  for (ulong i = 1; i < len; i++)
   {
-    str << std::hex << (unsigned short)theBuffer[i];
+    str << std::hex << (unsigned short)theBuffer[i] << '|';
   }
 
   str << " ";
@@ -2735,7 +2748,7 @@ std::string OrdPath::show() const
 
   decompress(deweyid, len);
 
-  for (unsigned long i = 0; i < len; i++)
+  for (ulong i = 0; i < len; i++)
   {
     str << std::dec << deweyid[i];
     if (i < len-1)
@@ -2785,9 +2798,9 @@ void OrdPathStack::init()
 /*******************************************************************************
 
 ********************************************************************************/
-unsigned long OrdPathStack::getByteLength() const
+ulong OrdPathStack::getByteLength() const
 {
-  return (theBitsAvailable == 8 ? theByteIndex : theByteIndex + 1);
+  return theByteIndex + 1;
 }
 
 
@@ -2809,22 +2822,22 @@ void OrdPathStack::pushChild()
   theCompLens[theNumComps] = 2;
   theNumComps++;
 
-  if (theBitsAvailable > 2)
+  if (theBitsAvailable >= 2)
   {
     theBuffer[theByteIndex] |= (0x40 >> (8 - theBitsAvailable));
     theBitsAvailable -= 2;
   }
-  else if (theBitsAvailable == 2)
-  {
-    theBuffer[theByteIndex] |= (0x40 >> 6);
-    theBitsAvailable = 8;
-    theByteIndex++;
-  }
-  else // bitsAvailable == 1
+  else if (theBitsAvailable == 1)
   {
     theBitsAvailable = 7;
     theByteIndex++;
     theBuffer[theByteIndex] |= 0x80;
+  }
+  else
+  {
+    theByteIndex++;
+    theBitsAvailable = 6;
+    theBuffer[theByteIndex] = 0x40;
   }
 }
 
@@ -2843,12 +2856,10 @@ void OrdPathStack::popChild()
   theDeweyId[theNumComps - 1] += 2;
 
   // Pop the last 2 compressed components
-  unsigned long numBits = theCompLens[theNumComps] + theCompLens[theNumComps-1];
-  unsigned long numBytes = (numBits + theBitsAvailable - 1 ) / 8;
+  ulong numBits = theCompLens[theNumComps] + theCompLens[theNumComps-1];
+  ulong numBytes = (numBits + theBitsAvailable) / 8;
   theByteIndex -= numBytes;
   theBitsAvailable = (numBits + theBitsAvailable) % 8;
-  if (theBitsAvailable == 0)
-    theBitsAvailable = 8;
 
   theBuffer[theByteIndex] &= 0xff << theBitsAvailable;
 
@@ -2871,12 +2882,10 @@ void OrdPathStack::nextChild()
   theDeweyId[theNumComps - 1] += 2;
 
   // Pop the last compressed component
-  unsigned long numBits = theCompLens[theNumComps-1];
-  unsigned long numBytes = (numBits + theBitsAvailable - 1 ) / 8;
+  ulong numBits = theCompLens[theNumComps-1];
+  ulong numBytes = (numBits + theBitsAvailable) / 8;
   theByteIndex -= numBytes;
   theBitsAvailable = (numBits + theBitsAvailable) % 8;
-  if (theBitsAvailable == 0)
-    theBitsAvailable = 8;
 
   theBuffer[theByteIndex] &= 0xff << theBitsAvailable;
 
@@ -2891,10 +2900,10 @@ void OrdPathStack::nextChild()
 /*******************************************************************************
 
 ********************************************************************************/
-void OrdPathStack::compressComp(unsigned long comp, long value)
+void OrdPathStack::compressComp(ulong comp, long value)
 {
   uint32_t eval;
-  unsigned long bitsNeeded;
+  ulong bitsNeeded;
 
   if (value < 0)
   {
@@ -3004,8 +3013,8 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     }
   }
 
-  unsigned long bytesNeeded = theByteIndex +
-                              (bitsNeeded + 15 - theBitsAvailable) / 8;
+  ulong bytesNeeded = theByteIndex +
+                      (bitsNeeded + 15 - theBitsAvailable) / 8;
 
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
@@ -3018,8 +3027,8 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
 
   do
   {
-    unsigned long bitsUsed = (bitsNeeded < theBitsAvailable ?
-                              bitsNeeded : theBitsAvailable);
+    ulong bitsUsed = (bitsNeeded < theBitsAvailable ?
+                      bitsNeeded : theBitsAvailable);
 
     unsigned char byte = (unsigned char)
                          ((eval & OrdPath::theValueMasks[bitsUsed]) >>
@@ -3029,9 +3038,11 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     eval = eval << bitsUsed;
     bitsNeeded -= bitsUsed;
     theBitsAvailable -= bitsUsed;
-    long zerone = (theBitsAvailable + 7) / 8;
-    theBitsAvailable = theBitsAvailable * zerone + 8 * (1 - zerone);
-    theByteIndex += (1 - zerone);
+    if (theBitsAvailable == 0 && bitsNeeded > 0)
+    {
+      theBitsAvailable = 8;
+      theByteIndex ++;
+    }
   }
   while (bitsNeeded > 0);
 }
@@ -3044,7 +3055,7 @@ std::string OrdPathStack::show() const
 {
   std::stringstream str;
 
-  for (unsigned long i = 0; i < theNumComps; i++)
+  for (ulong i = 0; i < theNumComps; i++)
   {
     str << theDeweyId[i];
     if (i < theNumComps-1)
@@ -3053,11 +3064,11 @@ std::string OrdPathStack::show() const
 #if 1
   str << " ";
 
-  unsigned long len = getByteLength();
+  ulong len = getByteLength();
 
-  for (unsigned long i = 1; i < len; i++)
+  for (ulong i = 1; i < len; i++)
   {
-    str << std::hex << (unsigned short)theBuffer[i];
+    str << std::hex << (unsigned short)theBuffer[i] << '|';
   }
 #endif
   return str.str().c_str();

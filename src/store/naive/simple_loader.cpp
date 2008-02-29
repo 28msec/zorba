@@ -21,19 +21,23 @@ namespace xqp
 
 #ifndef NDEBUG
 
-  //#define LOCAL_DEBUG
+int traceLevel = 0;
 
-#ifdef LOCAL_DEBUG
-#define LOADER_TRACE(msg)                                                     \
-{                                                                             \
-  std::cout << __FUNCTION__ << ": " << std::endl << "  " << msg << std::endl; \
+#define LOADER_TRACE(level, msg)             \
+{                                            \
+  if (level <= traceLevel)                   \
+    std::cout << msg << std::endl;           \
 }
-#else
-#define LOADER_TRACE(msg)
-#endif
+
+#define LOADER_TRACE1(msg) LOADER_TRACE(1, msg);
+#define LOADER_TRACE2(msg) LOADER_TRACE(2, msg);
+#define LOADER_TRACE3(msg) LOADER_TRACE(3, msg);
 
 #else
 #define LOADER_TRACE(msg)
+#define LOADER_TRACE1(msg)
+#define LOADER_TRACE2(msg)
+#define LOADER_TRACE3(msg)
 #endif
 
 
@@ -271,8 +275,6 @@ void XmlLoader::startDocument(void * ctx)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
-  LOADER_TRACE("");
-
   xqpStringStore* docUri = loader.theDocUri;
   xqpStringStore* baseUri = loader.theBaseUri;
   if (docUri == NULL)
@@ -297,7 +299,7 @@ void XmlLoader::startDocument(void * ctx)
   docNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.pushChild();
 
-  LOADER_TRACE("Doc Node = " << docNode);
+  LOADER_TRACE1("Start Doc Node = " << docNode);
 }
 
 
@@ -308,8 +310,6 @@ void XmlLoader::startDocument(void * ctx)
 ********************************************************************************/
 void XmlLoader::endDocument(void * ctx)
 {
-  LOADER_TRACE("");
-
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
   // This check is required because it is possible (in case of mal-formed doc)
@@ -344,6 +344,8 @@ void XmlLoader::endDocument(void * ctx)
     children.set(i, *it, false);
     (*it)->setParent(docNode);
   }
+
+  LOADER_TRACE2("End Doc Node = " << docNode);
 }
 
 
@@ -405,10 +407,11 @@ void XmlLoader::startElement(
 
   elemNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
 
-  LOADER_TRACE("Element name ["
-               << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
-               << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
-               << " Element Node = " << elemNode);
+  LOADER_TRACE1("Start Element: node = " << elemNode << " name = ["
+                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
+                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
+                << std::endl << " ordpath = " << elemNode->getOrdPath().show()
+                << std::endl);
 
   // Process namespace bindings
   if (numBindings > 0)
@@ -429,7 +432,7 @@ void XmlLoader::startElement(
       bindings[i].first = prefix;
       bindings[i].second = pooledNs.getp();
 
-      LOADER_TRACE("namespace decl: [" << prefix  << ":" << nsuri << "]");
+      LOADER_TRACE1("namespace decl: [" << prefix  << ":" << nsuri << "]");
     }
 
     loader.theBindingsStack.push(elemNode->getNsContext());
@@ -468,9 +471,11 @@ void XmlLoader::startElement(
 
       attrNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
 
-      LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
-                   << ":" << lname << " (" << (uri != NULL ? uri : "NULL")
-                   << ")]" << std::endl << "  Attribute value: " << value->c_str());
+      LOADER_TRACE1("Attribute: node = " << attrNode
+                    << " name [" << (prefix != NULL ? prefix : "") << ":"
+                    << lname << " (" << (uri != NULL ? uri : "NULL") << ")]"
+                    << " value = " << value->c_str() << std::endl
+                    << " ordpath = " << attrNode->getOrdPath().show() << std::endl);
     }
   }
 }
@@ -523,10 +528,9 @@ void  XmlLoader::endElement(
   LoadedElementNode* elemNode = dynamic_cast<LoadedElementNode*>(loader.theNodeStack.top());
   ZORBA_ASSERT(elemNode != NULL);
 
-  LOADER_TRACE("Element name ["
-               << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
-               << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
-               << " Element Node = " << elemNode);
+  LOADER_TRACE2("End Element: node = " << elemNode << " name ["
+                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
+                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
 
   // For each child, make this element node its parent and fix its namespace
   // bindings context. Note: the children were popped from the stack in reverse
@@ -589,8 +593,9 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
   textNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
 
-  LOADER_TRACE("Text Node = " << textNode.getp() 
-               << "content = " << content->c_str());
+  LOADER_TRACE1("Text Node = " << textNode << " content = " << content->c_str()
+                << std::endl << " ordpath = " << textNode->getOrdPath().show()
+                << std::endl);
 }
 
 
@@ -619,8 +624,9 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
   textNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
  
-  LOADER_TRACE("Text Node = " << textNode.getp() 
-               << "content = " << content->c_str());
+  LOADER_TRACE1("Text Node = " << textNode << " content = " << content->c_str()
+                << std::endl << " ordpath = " << textNode->getOrdPath().show()
+                << std::endl);
 }
 
 
@@ -636,8 +642,6 @@ void XmlLoader::comment(
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
 
-  LOADER_TRACE(content);
-
   xqpStringStore* contentp = new xqpStringStore(reinterpret_cast<const char*>(content));
 
   XmlNode* commentNode = new CommentNode(NULL, NULL, 0, contentp);
@@ -651,6 +655,10 @@ void XmlLoader::comment(
   loader.theOrdPath.nextChild();
 
   commentNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
+
+  LOADER_TRACE1("Comment Node = " << commentNode
+                << std::endl << " ordpath = " << commentNode->getOrdPath().show()
+                << std::endl); 
 }
 
 
@@ -667,8 +675,6 @@ void XmlLoader::processingInstruction(
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
 
-  LOADER_TRACE("target : " << target << " data: " << data);
-
   xqpStringStore* datap = new xqpStringStore(reinterpret_cast<const char*>(data));
   xqpStringStore* targetp = new xqpStringStore(reinterpret_cast<const char*>(target));
 
@@ -683,6 +689,10 @@ void XmlLoader::processingInstruction(
   loader.theOrdPath.nextChild();
 
   piNode->theRCSyncObjectPtr = &loader.theTree->getRCSyncObject();
+
+  LOADER_TRACE1("Pi Node = " << piNode
+                << " target : " << target << " data: " << data << std::endl
+                << " ordpath = " << piNode->getOrdPath().show() << std::endl);
 }
 
 
