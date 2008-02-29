@@ -652,17 +652,21 @@ void end_visit(const CDataSection& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit(const DirAttributeList& /*v*/)
+void *begin_visit(const DirAttributeList& v)
 {
   TRACE_VISIT ();
 
   nodestack.push(NULL);
-  return no_state;
-}
-
-void end_visit(const DirAttributeList& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT ();
+  // visit prefix attributes first
+  for (int visitType = 0; visitType < 2; visitType++) 
+    for (int i = 0; i < v.size (); i++) {
+      const DirAttr *attr = v [i];
+      const QName* qname = attr->get_name().getp();
+      bool isPrefix = qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns";
+      if ((isPrefix && visitType == 0)
+          || (! isPrefix && visitType == 1))
+        attr->accept (*this);
+    }
 
   unsigned long numAttrs = 0;
   std::vector<rchandle<attr_expr> > attributes;
@@ -704,6 +708,14 @@ void end_visit(const DirAttributeList& v, void* /*visit_state*/)
 
     nodestack.push(expr_list);
   }
+
+  return NULL;  // reject visitor -- everything done
+}
+
+void end_visit(const DirAttributeList& v, void* /*visit_state*/)
+{
+  // begin_visit() rejects visitor
+  assert (false);
 }
 
 

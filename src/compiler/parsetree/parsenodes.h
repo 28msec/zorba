@@ -3622,6 +3622,10 @@ public:
   {
     return theAttributes[i];
   }
+  const DirAttr *operator[] (int i) const {
+    return theAttributes[i];
+  }
+  int size () const { return theAttributes.size (); }
 
 public:
 	void accept(parsenode_visitor&) const;
