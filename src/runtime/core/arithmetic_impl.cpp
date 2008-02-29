@@ -248,7 +248,15 @@ Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
   xqp_duration d;
 
   if( i1->getDoubleValue().isZero() )
-    return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
+  {
+    xqtref_t type0 = GENV_TYPESYSTEM.create_type(i0->getType(), TypeConstants::QUANT_ONE);
+    if( GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
+      d = new YearMonthDuration();
+    else
+      d = new DayTimeDuration();
+
+    return Zorba::getItemFactory()->createDuration(d);
+  }
   else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
     ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
   else if (  i1->getDoubleValue().isNaN() )
@@ -268,7 +276,15 @@ Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOU
   xqp_duration d;
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
+  {
+    xqtref_t type0 = GENV_TYPESYSTEM.create_type(i0->getType(), TypeConstants::QUANT_ONE);
+    if( GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
+      d = new YearMonthDuration();
+    else
+      d = new DayTimeDuration();
+    
+    return Zorba::getItemFactory()->createDuration(d);
+  }
   else if ( i1->getDoubleValue().isZero() )
     ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
   else if ( i1->getDoubleValue().isNaN() )

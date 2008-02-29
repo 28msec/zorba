@@ -750,18 +750,6 @@ FnTimezoneFromTimeIterator::nextImpl(PlanState& planState) const
  * op:add-dayTimeDurations(  $arg1    as xs:dayTimeDuration,
  *                                         $arg2    as xs:dayTimeDuration) as xs:dayTimeDuration
  *_______________________________________________________________________*/
-/* begin class AddOperations */
-//TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
-/*
-template<>
-Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
-{
-  xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
-  return Zorba::getItemFactory()->createDuration (d);
-}
-*/
-/* end class AddOperations */
 
  /**
  *______________________________________________________________________
@@ -779,18 +767,6 @@ Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATI
  * op:subtract-dayTimeDurations(  $arg1    as xs:dayTimeDuration,
  *                                               $arg2    as xs:dayTimeDuration) as xs:dayTimeDuration
  *_______________________________________________________________________*/
-/* start class SubtractOperations */
-//TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
-/*
-template<>
-Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const QueryLoc* loc, const Item* i0, const Item* i1 )
-{
-  xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
-  return Zorba::getItemFactory()->createDuration (d);
-}
-*/
-/* end class SubtractOperations */
 
  /**
  *______________________________________________________________________
@@ -808,30 +784,7 @@ Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
  * op:multiply-dayTimeDuration(   $arg1    as xs:dayTimeDuration,
  *                                              $arg2    as xs:double) as xs:dayTimeDuration
  *_______________________________________________________________________*/
-/* start class MultiplyOperations */
-//TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
-/*
-template<>
-Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
-( const QueryLoc* loc, const Item* i0, const Item* i1 )
-{
-  xqp_duration d;
 
-  if( i1->getDoubleValue().isZero() )
-    return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
-  else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
-  else if (  i1->getDoubleValue().isNaN() )
-    ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
-  else
-    d = *i0->getDurationValue() * (i1->getDoubleValue());
-  
-  return Zorba::getItemFactory()->createDuration (d);
-}
-*/
-/* end class MultiplyOperations */
-
-/* start class DivideOperations */
   /**
  *______________________________________________________________________
  *
@@ -848,26 +801,6 @@ Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
  * op:divide-dayTimeDuration(   $arg1    as xs:dayTimeDuration,
  *                                            $arg2    as xs:double) as xs:dayTimeDuration
  *_______________________________________________________________________*/
-//TODO: replace the first type with XS_YM_DURATION and add another specialization for XS_DT_DURATION
-/*
-template<>
-Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
-( const QueryLoc* loc, const Item* i0, const Item* i1 )
-{
-  xqp_duration d;
-
-  if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    return Zorba::getItemFactory()->createDuration(0,0,0,0,0,0);
-  else if ( i1->getDoubleValue().isZero() )
-    ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
-  else if ( i1->getDoubleValue().isNaN() )
-    ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
-  else
-    d= *i0->getDurationValue() / i1->getDoubleValue();
-
-  return Zorba::getItemFactory()->createDuration (d);
-}
-*/
 
  /**
  *______________________________________________________________________
@@ -885,15 +818,4 @@ Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOU
  * op:divide-dayTimeDuration-by-dayTimeDuration(  $arg1    as xs:dayTimeDuration,
  *                                                                         $arg2    as xs:dayTimeDuration) as xs:decimal
  *_______________________________________________________________________*/
-//TODO: replace the types with XS_YM_DURATION and add another specialization for XS_DT_DURATION
-/*
-template<>
-Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const QueryLoc* loc, const Item* i0, const Item* i1 )
-{
-  xqp_decimal d = *i0->getDurationValue() / *i1->getDurationValue();
-  return Zorba::getItemFactory()->createDecimal(d);
-}
-*/
-/* end class DivideOperations */
 }
