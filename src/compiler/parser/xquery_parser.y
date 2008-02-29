@@ -726,7 +726,7 @@ Module :
     MainModule
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Module [main]\n";
+			 cout << "Module [main]" << endl;
 #endif
 			$$ = $1;
 			driver.set_expr($$);
@@ -736,19 +736,19 @@ Module :
 			$$ = $2;
 			driver.set_expr($$);
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Module [version.main]\n";
+			 cout << "Module [version.main]" << endl;
 #endif
 		}
   | LibraryModule 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Module [library]\n";
+			 cout << "Module [library]" << endl;
 #endif
 		}
   | VersionDecl LibraryModule 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Module [version.library]\n";
+			 cout << "Module [version.library]" << endl;
 #endif
 		}
   ;
@@ -760,13 +760,13 @@ VersionDecl :
 		XQUERY_VERSION  STRING_LITERAL  SEMI
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VersionDecl [version]\n";
+			 cout << "VersionDecl [version]" << endl;
 #endif
 		}
 	|	XQUERY_VERSION  STRING_LITERAL  ENCODING  STRING_LITERAL  SEMI
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VersionDecl [version.encoding]\n";
+			 cout << "VersionDecl [version.encoding]" << endl;
 #endif
 		}
 	;
@@ -778,7 +778,7 @@ MainModule :
     Prolog  QueryBody
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "MainModule [prolog.querybody]\n";
+			 cout << "MainModule [prolog.querybody]" << endl;
 #endif
 			$$ = new MainModule(driver.createQueryLoc(@$),
 								static_cast<Prolog*>($1),
@@ -788,7 +788,7 @@ MainModule :
     QueryBody
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "MainModule [querybody]\n";
+			 cout << "MainModule [querybody]" << endl;
 #endif
 			$$ = new MainModule(driver.createQueryLoc(@$),
 								NULL,
@@ -803,7 +803,7 @@ LibraryModule :
 		ModuleDecl  Prolog
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "LibraryModule [ ]\n";
+			 cout << "LibraryModule [ ]" << endl;
 #endif
 			$$ = new LibraryModule(driver.createQueryLoc(@$),
 								static_cast<ModuleDecl*>($1),
@@ -818,7 +818,7 @@ ModuleDecl :
 		MODULE_NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ModuleDecl [ ]\n";
+			 cout << "ModuleDecl [ ]" << endl;
 #endif
 			$$ = new ModuleDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2), 
@@ -833,7 +833,7 @@ Prolog :
 		SIND_DeclList  SEMI
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Prolog [sind]\n";
+			 cout << "Prolog [sind]" << endl;
 #endif
 			$$ = new Prolog(driver.createQueryLoc(@$),
 								static_cast<SIND_DeclList*>($1),
@@ -842,7 +842,7 @@ Prolog :
 	|	VFO_DeclList  SEMI
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Prolog [vfo]\n";
+			 cout << "Prolog [vfo]" << endl;
 #endif
 			$$ = new Prolog(driver.createQueryLoc(@$),
 								NULL,
@@ -851,7 +851,7 @@ Prolog :
 	|	SIND_DeclList  SEMI  VFO_DeclList  SEMI
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Prolog [sind.vfo]\n";
+			 cout << "Prolog [sind.vfo]" << endl;
 #endif
 			$$ = new Prolog(driver.createQueryLoc(@$),
 								static_cast<SIND_DeclList*>($1),
@@ -866,7 +866,7 @@ SIND_DeclList :
 		SIND_Decl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SIND_DeclList [single]\n";
+			 cout << "SIND_DeclList [single]" << endl;
 #endif
 			SIND_DeclList* sindList_p = new SIND_DeclList(driver.createQueryLoc(@$));
 			sindList_p->push_back($1);
@@ -875,7 +875,7 @@ SIND_DeclList :
 	| SIND_DeclList  SEMI  SIND_Decl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SIND_DeclList [list]\n";
+			 cout << "SIND_DeclList [list]" << endl;
 #endif
 			SIND_DeclList* sindList_p = static_cast<SIND_DeclList*>($1);
 			if (sindList_p) {
@@ -892,7 +892,7 @@ VFO_DeclList :
 		VFO_Decl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VFO_DeclList [single]\n";
+			 cout << "VFO_DeclList [single]" << endl;
 #endif
 			VFO_DeclList* vfoList_p = new VFO_DeclList(driver.createQueryLoc(@$));
 			vfoList_p->push_back($1);
@@ -901,7 +901,7 @@ VFO_DeclList :
 	| VFO_DeclList  SEMI  VFO_Decl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VFO_DeclList [list]\n";
+			 cout << "VFO_DeclList [list]" << endl;
 #endif
 			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>($1);
 			if (vfoList_p) {
@@ -918,28 +918,28 @@ SIND_Decl :
 		Setter
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SIND_Decl [setter]\n";
+			 cout << "SIND_Decl [setter]" << endl;
 #endif
 			$$ = $1;
 		}
 	| Import
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SIND_Decl [import]\n";
+			 cout << "SIND_Decl [import]" << endl;
 #endif
 			$$ = $1;
 		}
 	| NamespaceDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SIND_Decl [namespace]\n";
+			 cout << "SIND_Decl [namespace]" << endl;
 #endif
 			$$ = $1;
 		}
 	| DefaultNamespaceDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SIND_Decl [default namespace]\n";
+			 cout << "SIND_Decl [default namespace]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -951,21 +951,21 @@ VFO_Decl :
 		VarDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VFO_Decl [var]\n";
+			 cout << "VFO_Decl [var]" << endl;
 #endif
 			$$ = $1;
 		}
 	| FunctionDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VFO_Decl [function]\n";
+			 cout << "VFO_Decl [function]" << endl;
 #endif
 			$$ = $1;
 		}
 	| OptionDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VFO_Decl [option]\n";
+			 cout << "VFO_Decl [option]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -974,7 +974,7 @@ VFO_Decl :
 	| FTOptionDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VFO_Decl [ftoption]\n";
+			 cout << "VFO_Decl [ftoption]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -987,49 +987,49 @@ Setter :
 		BoundarySpaceDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Setter [boundary space]\n";
+			 cout << "Setter [boundary space]" << endl;
 #endif
 			$$ = $1;
 		}
 	| DefaultCollationDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Setter [default collation]\n";
+			 cout << "Setter [default collation]" << endl;
 #endif
 			$$ = $1;
 		}
 	| BaseURIDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Setter [base uri]\n";
+			 cout << "Setter [base uri]" << endl;
 #endif
 			$$ = $1;
 		}
 	| ConstructionDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Setter [construction]\n";
+			 cout << "Setter [construction]" << endl;
 #endif
 			$$ = $1;
 		}
 	| OrderingModeDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Setter [ordering mode]\n";
+			 cout << "Setter [ordering mode]" << endl;
 #endif
 			$$ = $1;
 		}
 	| EmptyOrderDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Setter [empty order]\n";
+			 cout << "Setter [empty order]" << endl;
 #endif
 			$$ = $1;
 		}
 	| CopyNamespacesDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Setter [copy namespaces]\n";
+			 cout << "Setter [copy namespaces]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -1038,7 +1038,7 @@ Setter :
 	| RevalidationDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Setter [revalidation]\n";
+			 cout << "Setter [revalidation]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -1051,14 +1051,14 @@ Import :
 		SchemaImport
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Import [schema]\n";
+			 cout << "Import [schema]" << endl;
 #endif
 			$$ = $1;
 		}
 	| ModuleImport
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Import [module]\n";
+			 cout << "Import [module]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -1076,7 +1076,7 @@ NamespaceDecl :
 		DECLARE_NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NamespaceDecl [ ]\n";
+			 cout << "NamespaceDecl [ ]" << endl;
 #endif
 			$$ = new NamespaceDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -1091,7 +1091,7 @@ BoundarySpaceDecl :
 		DECLARE_BOUNDARY_SPACE  PRESERVE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "BoundarySpaceDecl [preserve]\n";
+			 cout << "BoundarySpaceDecl [preserve]" << endl;
 #endif
 			$$ = new BoundarySpaceDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::preserve_space);
@@ -1099,7 +1099,7 @@ BoundarySpaceDecl :
 	|	DECLARE_BOUNDARY_SPACE  STRIP
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "BoundarySpaceDecl [strip]\n";
+			 cout << "BoundarySpaceDecl [strip]" << endl;
 #endif
 			$$ = new BoundarySpaceDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::strip_space);
@@ -1113,7 +1113,7 @@ DefaultNamespaceDecl :
 		DECLARE_DEFAULT_ELEMENT  NAMESPACE  URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DefaultNamespaceDecl [element]\n";
+			 cout << "DefaultNamespaceDecl [element]" << endl;
 #endif
 			$$ = new DefaultNamespaceDecl(driver.createQueryLoc(@$),
 								ns_element_default,
@@ -1122,7 +1122,7 @@ DefaultNamespaceDecl :
 	| DECLARE_DEFAULT_FUNCTION  NAMESPACE  URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DefaultNamespaceDecl [function]\n";
+			 cout << "DefaultNamespaceDecl [function]" << endl;
 #endif
 			$$ = new DefaultNamespaceDecl(driver.createQueryLoc(@$),
 								ns_function_default,
@@ -1137,7 +1137,7 @@ OptionDecl :
 		DECLARE_OPTION  QNAME  STRING_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OptionDecl [ ]\n";
+			 cout << "OptionDecl [ ]" << endl;
 #endif
 			$$ = new OptionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1153,7 +1153,7 @@ FTOptionDecl :
 		DECLARE_FTOPTION  FTMatchOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTOptionDecl [ ]\n";
+			 cout << "FTOptionDecl [ ]" << endl;
 #endif
 			$$ = new FTOptionDecl(driver.createQueryLoc(@$),
 								$2);
@@ -1167,7 +1167,7 @@ OrderingModeDecl :
 		DECLARE_ORDERING  ORDERED
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderingDecl [ordered]\n";
+			 cout << "OrderingDecl [ordered]" << endl;
 #endif
 			$$ = new OrderingModeDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::ordered);
@@ -1175,7 +1175,7 @@ OrderingModeDecl :
 	| DECLARE_ORDERING  UNORDERED
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderingDecl [unordered]\n";
+			 cout << "OrderingDecl [unordered]" << endl;
 #endif
 			$$ = new OrderingModeDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::unordered);
@@ -1190,7 +1190,7 @@ EmptyOrderDecl :
 		DECLARE_DEFAULT_ORDER  EMPTY_GREATEST
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "EmptyOrderDecl [empty greatest]\n";
+			 cout << "EmptyOrderDecl [empty greatest]" << endl;
 #endif
 			$$ = new EmptyOrderDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::empty_greatest);
@@ -1198,7 +1198,7 @@ EmptyOrderDecl :
 	|	DECLARE_DEFAULT_ORDER  EMPTY_LEAST
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "EmptyOrderDecl [empty least]\n";
+			 cout << "EmptyOrderDecl [empty least]" << endl;
 #endif
 			$$ = new EmptyOrderDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::empty_least);
@@ -1212,7 +1212,7 @@ CopyNamespacesDecl :
 		DECLARE_COPY_NAMESPACES  PRESERVE  COMMA  INHERIT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CopyNamespacesDecl [ ]\n";
+			 cout << "CopyNamespacesDecl [ ]" << endl;
 #endif
 			$$ = new CopyNamespacesDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::preserve_ns,
@@ -1221,7 +1221,7 @@ CopyNamespacesDecl :
 	| DECLARE_COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CopyNamespacesDecl [ ]\n";
+			 cout << "CopyNamespacesDecl [ ]" << endl;
 #endif
 			$$ = new CopyNamespacesDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::preserve_ns,
@@ -1230,7 +1230,7 @@ CopyNamespacesDecl :
 	| DECLARE_COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CopyNamespacesDecl [ ]\n";
+			 cout << "CopyNamespacesDecl [ ]" << endl;
 #endif
 			$$ = new CopyNamespacesDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::no_preserve_ns,
@@ -1239,7 +1239,7 @@ CopyNamespacesDecl :
 	| DECLARE_COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CopyNamespacesDecl [ ]\n";
+			 cout << "CopyNamespacesDecl [ ]" << endl;
 #endif
 			$$ = new CopyNamespacesDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::no_preserve_ns,
@@ -1261,7 +1261,7 @@ DefaultCollationDecl :
 		DECLARE_DEFAULT_COLLATION  URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DefaultCollationMode [ ]\n";
+			 cout << "DefaultCollationMode [ ]" << endl;
 #endif
 			$$ = new DefaultCollationDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2));
@@ -1275,7 +1275,7 @@ BaseURIDecl :
 		DECLARE_BASE_URI  URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "BaseURIDecl [ ]\n";
+			 cout << "BaseURIDecl [ ]" << endl;
 #endif
 			$$ = new BaseURIDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2));
@@ -1289,7 +1289,7 @@ SchemaImport :
 		IMPORT_SCHEMA  URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SchemaImport [uri]\n";
+			 cout << "SchemaImport [uri]" << endl;
 #endif
 			$$ = new SchemaImport(driver.createQueryLoc(@$),
 								NULL,
@@ -1299,7 +1299,7 @@ SchemaImport :
 	| IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SchemaImport [prefix.uri]\n";
+			 cout << "SchemaImport [prefix.uri]" << endl;
 #endif
 			$$ = new SchemaImport(driver.createQueryLoc(@$),
 								dynamic_cast<SchemaPrefix*>($2),
@@ -1309,7 +1309,7 @@ SchemaImport :
 	|	IMPORT_SCHEMA  URI_LITERAL  AT  URILiteralList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SchemaImport [uri.urilist]\n";
+			 cout << "SchemaImport [uri.urilist]" << endl;
 #endif
 			$$ = new SchemaImport(driver.createQueryLoc(@$),
 								NULL,
@@ -1319,7 +1319,7 @@ SchemaImport :
 	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT  URILiteralList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SchemaImport [prefix.uri.aturi]\n";
+			 cout << "SchemaImport [prefix.uri.aturi]" << endl;
 #endif
 			$$ = new SchemaImport(driver.createQueryLoc(@$),
 								dynamic_cast<SchemaPrefix*>($2),
@@ -1335,7 +1335,7 @@ URILiteralList :
 		URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "URILiteralList [single]\n";
+			 cout << "URILiteralList [single]" << endl;
 #endif
 			URILiteralList* uri_list_p = new URILiteralList(driver.createQueryLoc(@$));
 			uri_list_p->push_back(driver.symtab.get((off_t)$1));
@@ -1344,7 +1344,7 @@ URILiteralList :
 	| URILiteralList  COMMA  URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "URILiteralList [list]\n";
+			 cout << "URILiteralList [list]" << endl;
 #endif
 			URILiteralList* uri_list_p = dynamic_cast<URILiteralList*>($1);
 			if (uri_list_p) {
@@ -1362,14 +1362,14 @@ SchemaPrefix :
 		NAMESPACE  NCNAME  EQUALS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SchemaPrefix [namespace]\n";
+			 cout << "SchemaPrefix [namespace]" << endl;
 #endif
 			$$ = new SchemaPrefix(driver.createQueryLoc(@$), driver.symtab.get((off_t)$2));
 		}
 	|	DEFAULT_ELEMENT  NAMESPACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SchemaPrefix [default element]\n";
+			 cout << "SchemaPrefix [default element]" << endl;
 #endif
 			$$ = new SchemaPrefix(driver.createQueryLoc(@$), true);
 		}
@@ -1382,7 +1382,7 @@ ModuleImport :
 		IMPORT_MODULE  URI_LITERAL 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ModuleImport [uri]\n";
+			 cout << "ModuleImport [uri]" << endl;
 #endif
 			$$ = new ModuleImport(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -1391,7 +1391,7 @@ ModuleImport :
 	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ModuleImport [namespace.uri]\n";
+			 cout << "ModuleImport [namespace.uri]" << endl;
 #endif
 			$$ = new ModuleImport(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$3),
@@ -1401,7 +1401,7 @@ ModuleImport :
 	|	IMPORT_MODULE  URI_LITERAL  AT  URILiteralList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ModuleImport [uri.at_uri.list]\n";
+			 cout << "ModuleImport [uri.at_uri.list]" << endl;
 #endif
 			$$ = new ModuleImport(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -1410,7 +1410,7 @@ ModuleImport :
 	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ModuleImport [namespace.uri.at_uri.list]\n";
+			 cout << "ModuleImport [namespace.uri.at_uri.list]" << endl;
 #endif
 			$$ = new ModuleImport(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$3),
@@ -1427,7 +1427,7 @@ VarDecl :
 		DECLARE_VARIABLE_DOLLAR  VARNAME  GETS  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarDecl [expr]\n";
+			 cout << "VarDecl [expr]" << endl;
 #endif
 			$$ = new VarDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -1437,7 +1437,7 @@ VarDecl :
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarDecl [external]\n";
+			 cout << "VarDecl [external]" << endl;
 #endif
 			$$ = new VarDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -1447,7 +1447,7 @@ VarDecl :
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  GETS  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarDecl [type.expr]\n";
+			 cout << "VarDecl [type.expr]" << endl;
 #endif
 			$$ = new VarDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -1457,7 +1457,7 @@ VarDecl :
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarDecl [type.external]\n";
+			 cout << "VarDecl [type.external]" << endl;
 #endif
 			$$ = new VarDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -1473,7 +1473,7 @@ ConstructionDecl :
 		DECLARE_CONSTRUCTION  PRESERVE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ConstructionDecl [preserve]\n";
+			 cout << "ConstructionDecl [preserve]" << endl;
 #endif
 			$$ = new ConstructionDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::cons_preserve);
@@ -1481,7 +1481,7 @@ ConstructionDecl :
 	|	DECLARE_CONSTRUCTION  STRIP
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ConstructionDecl [strip]\n";
+			 cout << "ConstructionDecl [strip]" << endl;
 #endif
 			$$ = new ConstructionDecl(driver.createQueryLoc(@$),
 								StaticQueryContext::cons_strip);
@@ -1495,7 +1495,7 @@ FunctionDecl :
 		DECLARE_FUNCTION  QNAME LPAR  RPAR  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [external]\n";
+			 cout << "FunctionDecl [external]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1505,7 +1505,7 @@ FunctionDecl :
 	|	DECLARE_FUNCTION  QNAME LPAR  RPAR  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [expr]\n";
+			 cout << "FunctionDecl [expr]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1516,7 +1516,7 @@ FunctionDecl :
 	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [paramlist.external]\n";
+			 cout << "FunctionDecl [paramlist.external]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1527,7 +1527,7 @@ FunctionDecl :
 	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [paramlist.expr]\n";
+			 cout << "FunctionDecl [paramlist.expr]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1539,7 +1539,7 @@ FunctionDecl :
 	|	DECLARE_FUNCTION  QNAME LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [as_type.external]\n";
+			 cout << "FunctionDecl [as_type.external]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1551,7 +1551,7 @@ FunctionDecl :
 	|	DECLARE_FUNCTION  QNAME LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [as_type.expr]\n";
+			 cout << "FunctionDecl [as_type.expr]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1563,7 +1563,7 @@ FunctionDecl :
 	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [paramlist.as_type.external]\n";
+			 cout << "FunctionDecl [paramlist.as_type.external]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1575,7 +1575,7 @@ FunctionDecl :
 	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [paramlist.as_type.expr]\n";
+			 cout << "FunctionDecl [paramlist.as_type.expr]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1587,7 +1587,7 @@ FunctionDecl :
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [(update) external]\n";
+			 cout << "FunctionDecl [(update) external]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1597,7 +1597,7 @@ FunctionDecl :
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [(update) expr]\n";
+			 cout << "FunctionDecl [(update) expr]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1608,7 +1608,7 @@ FunctionDecl :
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [(update) paramlist.external]\n";
+			 cout << "FunctionDecl [(update) paramlist.external]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1619,7 +1619,7 @@ FunctionDecl :
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [(update) paramlist.expr]\n";
+			 cout << "FunctionDecl [(update) paramlist.expr]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1631,7 +1631,7 @@ FunctionDecl :
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [(update) as_type.external]\n";
+			 cout << "FunctionDecl [(update) as_type.external]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1643,7 +1643,7 @@ FunctionDecl :
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [(update) as_type.expr]\n";
+			 cout << "FunctionDecl [(update) as_type.expr]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1655,7 +1655,7 @@ FunctionDecl :
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
+			 cout << "FunctionDecl [(update) paramlist.as_type.external]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1667,7 +1667,7 @@ FunctionDecl :
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
+			 cout << "FunctionDecl [(update) paramlist.as_type.expr]" << endl;
 #endif
 			$$ = new FunctionDecl(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -1685,7 +1685,7 @@ ParamList :
 		Param
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ParamList [single]\n";
+			 cout << "ParamList [single]" << endl;
 #endif
 			ParamList* plist_p = new ParamList(driver.createQueryLoc(@$));
 			if (plist_p) {
@@ -1696,7 +1696,7 @@ ParamList :
 	|	ParamList  COMMA  Param
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ParamList [list]\n";
+			 cout << "ParamList [list]" << endl;
 #endif
 			ParamList* plist_p = dynamic_cast<ParamList*>($1);
 			if (plist_p) {
@@ -1713,7 +1713,7 @@ Param :
 		DOLLAR  VARNAME
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Param [varname]\n";
+			 cout << "Param [varname]" << endl;
 #endif
 			$$ = new Param(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -1722,7 +1722,7 @@ Param :
 	|	DOLLAR  VARNAME  TypeDeclaration
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Param [varname.type]\n";
+			 cout << "Param [varname.type]" << endl;
 #endif
 			$$ = new Param(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -1737,7 +1737,7 @@ EnclosedExpr :
 		LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "EnclosedExpr [ ]\n";
+			 cout << "EnclosedExpr [ ]" << endl;
 #endif
 			$$ = new EnclosedExpr(driver.createQueryLoc(@$),
 								$2);
@@ -1751,7 +1751,7 @@ QueryBody :
 		Expr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QueryBody [expr]\n";
+			 cout << "QueryBody [expr]" << endl;
 #endif
 			$$ = new QueryBody(driver.createQueryLoc(@$),
 								$1);
@@ -1765,7 +1765,7 @@ Expr :
 		ExprSingle 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Expr [single]\n";
+			 cout << "Expr [single]" << endl;
 #endif
 			Expr* expr_p = new Expr(driver.createQueryLoc(@$));
 			expr_p->push_back($1);
@@ -1774,7 +1774,7 @@ Expr :
 	|	Expr  COMMA  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Expr [expr.single]\n";
+			 cout << "Expr [expr.single]" << endl;
 #endif
 			Expr* expr_p = dynamic_cast<Expr*>($1);
 			if (expr_p) expr_p->push_back($3);
@@ -1789,35 +1789,35 @@ ExprSingle :
 		FLWORExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExprSingle [FLWORExpr]\n";
+			 cout << "ExprSingle [FLWORExpr]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	QuantifiedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExprSingle [QuantifiedExpr]\n";
+			 cout << "ExprSingle [QuantifiedExpr]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	TypeswitchExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExprSingle [TypeswitchExpr]\n";
+			 cout << "ExprSingle [TypeswitchExpr]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	IfExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExprSingle [IfExpr]\n";
+			 cout << "ExprSingle [IfExpr]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	OrExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExprSingle [OrExpr]\n";
+			 cout << "ExprSingle [OrExpr]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -1826,35 +1826,35 @@ ExprSingle :
 	| InsertExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExprSingle [InsertExpr]\n";
+			 cout << "ExprSingle [InsertExpr]" << endl;
 #endif
 			$$ = $1;
 		}
 	| DeleteExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExprSingle [DeleteExpr]\n";
+			 cout << "ExprSingle [DeleteExpr]" << endl;
 #endif
 			$$ = $1;
 		}
 	| RenameExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExprSingle [RenameExpr]\n";
+			 cout << "ExprSingle [RenameExpr]" << endl;
 #endif
 			$$ = $1;
 		}
 	| ReplaceExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExprSingle [ReplaceExpr]\n";
+			 cout << "ExprSingle [ReplaceExpr]" << endl;
 #endif
 			$$ = $1;
 		}
 	| TransformExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExprSingle [TransformExpr]\n";
+			 cout << "ExprSingle [TransformExpr]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -1867,7 +1867,7 @@ FLWORExpr :
 	  ForLetClauseList  RETURN  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FLWORExpr [return]\n";
+			 cout << "FLWORExpr [return]" << endl;
 #endif
 			$$ = new FLWORExpr(driver.createQueryLoc(@$),
 								dynamic_cast<ForLetClauseList*>($1),
@@ -1877,7 +1877,7 @@ FLWORExpr :
 	|	ForLetClauseList  WhereClause  RETURN  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FLWORExpr [where.return]\n";
+			 cout << "FLWORExpr [where.return]" << endl;
 #endif
 			$$ = new FLWORExpr(driver.createQueryLoc(@$),
 								dynamic_cast<ForLetClauseList*>($1),
@@ -1888,7 +1888,7 @@ FLWORExpr :
 	|	ForLetClauseList  OrderByClause  RETURN  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FLWORExpr [orderby.return]\n";
+			 cout << "FLWORExpr [orderby.return]" << endl;
 #endif
 			$$ = new FLWORExpr(driver.createQueryLoc(@$),
 								dynamic_cast<ForLetClauseList*>($1),
@@ -1899,7 +1899,7 @@ FLWORExpr :
 	|	ForLetClauseList  WhereClause  OrderByClause  RETURN  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FLWORExpr [where.orderby.return]\n";
+			 cout << "FLWORExpr [where.orderby.return]" << endl;
 #endif
 			$$ = new FLWORExpr(driver.createQueryLoc(@$),
 								dynamic_cast<ForLetClauseList*>($1),
@@ -1916,7 +1916,7 @@ ForLetClauseList :
 		ForLetClause
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForLetClauseList [single]\n";
+			 cout << "ForLetClauseList [single]" << endl;
 #endif
 			ForLetClauseList* flc_list_p = new ForLetClauseList(driver.createQueryLoc(@$));
 			flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ($1));
@@ -1925,7 +1925,7 @@ ForLetClauseList :
 	|	ForLetClauseList  ForLetClause
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForLetClauseList [list]\n";
+			 cout << "ForLetClauseList [list]" << endl;
 #endif
 			ForLetClauseList* flc_list_p = dynamic_cast<ForLetClauseList*>($1);
 			if (flc_list_p) flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ($2));
@@ -1940,14 +1940,14 @@ ForLetClause :
 		ForClause
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForLetClause [for]\n";
+			 cout << "ForLetClause [for]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	LetClause
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForLetClause [let]\n";
+			 cout << "ForLetClause [let]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -1960,7 +1960,7 @@ ForClause :
 		FOR_DOLLAR  VarInDeclList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForClause [ ]\n";
+			 cout << "ForClause [ ]" << endl;
 #endif
 			$$ = new ForClause(driver.createQueryLoc(@$),
 								dynamic_cast<VarInDeclList*>($2));
@@ -1974,7 +1974,7 @@ VarInDeclList :
 		VarInDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarInDeclList [single]\n";
+			 cout << "VarInDeclList [single]" << endl;
 #endif
 			VarInDeclList* vardecl_list_p = new VarInDeclList(driver.createQueryLoc(@$));
 			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>($1));
@@ -1983,7 +1983,7 @@ VarInDeclList :
 	|	VarInDeclList  COMMA  DOLLAR  VarInDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarInDeclList [list]\n";
+			 cout << "VarInDeclList [list]" << endl;
 #endif
 			VarInDeclList* vardecl_list_p = dynamic_cast<VarInDeclList*>($1);
 			if (vardecl_list_p) {
@@ -2000,7 +2000,7 @@ VarInDecl :
 		VARNAME  _IN_  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarInDecl [in]\n";
+			 cout << "VarInDecl [in]" << endl;
 #endif
 			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2010,7 +2010,7 @@ VarInDecl :
 	|	VARNAME  TypeDeclaration  _IN_  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarInDecl [type.in]\n";
+			 cout << "VarInDecl [type.in]" << endl;
 #endif
 			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2021,7 +2021,7 @@ VarInDecl :
 	|	VARNAME  PositionalVar  _IN_  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarInDecl [posvar.in]\n";
+			 cout << "VarInDecl [posvar.in]" << endl;
 #endif
 			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2033,7 +2033,7 @@ VarInDecl :
 	|	VARNAME  TypeDeclaration  PositionalVar  _IN_  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarInDecl [type.posvar.in]\n";
+			 cout << "VarInDecl [type.posvar.in]" << endl;
 #endif
 			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2046,7 +2046,7 @@ VarInDecl :
 	| VARNAME  FTScoreVar  _IN_  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarInDecl [scorevar.in]\n";
+			 cout << "VarInDecl [scorevar.in]" << endl;
 #endif
 			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2057,7 +2057,7 @@ VarInDecl :
 	| VARNAME  TypeDeclaration  FTScoreVar  _IN_  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarInDecl [type.scorevar.in]\n";
+			 cout << "VarInDecl [type.scorevar.in]" << endl;
 #endif
 			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2069,7 +2069,7 @@ VarInDecl :
 	| VARNAME  PositionalVar  FTScoreVar  _IN_  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarInDecl [posvar.scorevar.in]\n";
+			 cout << "VarInDecl [posvar.scorevar.in]" << endl;
 #endif
 			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2081,7 +2081,7 @@ VarInDecl :
 	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  _IN_  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarInDecl [type.posvar.scorevar.in]\n";
+			 cout << "VarInDecl [type.posvar.scorevar.in]" << endl;
 #endif
 			$$ = new VarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2099,7 +2099,7 @@ PositionalVar :
 		AT  DOLLAR  VARNAME
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PositionalVar [ ]\n";
+			 cout << "PositionalVar [ ]" << endl;
 #endif
 			$$ = new PositionalVar(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$3));
@@ -2114,7 +2114,7 @@ FTScoreVar :
 		SCORE  DOLLAR  VARNAME
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTScoreVar [ ]\n";
+			 cout << "FTScoreVar [ ]" << endl;
 #endif
 			$$ = new FTScoreVar(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$3));
@@ -2128,7 +2128,7 @@ LetClause :
 		LET_DOLLAR VarGetsDeclList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "LetClause [ ]\n";
+			 cout << "LetClause [ ]" << endl;
 #endif
 			$$ = new LetClause(driver.createQueryLoc(@$),
 								dynamic_cast<VarGetsDeclList*>($2));
@@ -2143,7 +2143,7 @@ VarGetsDeclList :
 		VarGetsDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarGetsDeclList [single]\n";
+			 cout << "VarGetsDeclList [single]" << endl;
 #endif
 			VarGetsDeclList* vgdl_p = new VarGetsDeclList(driver.createQueryLoc(@$));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($1));
@@ -2152,7 +2152,7 @@ VarGetsDeclList :
 	|	VarGetsDeclList  COMMA  DOLLAR  VarGetsDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarGetsDeclList [list.single]\n";
+			 cout << "VarGetsDeclList [list.single]" << endl;
 #endif
 			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>($1);
 			if (vgdl_p) {
@@ -2169,7 +2169,7 @@ VarGetsDecl :
 		VARNAME  GETS  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarGetsDecl [gets]\n";
+			 cout << "VarGetsDecl [gets]" << endl;
 #endif
 			$$ = new VarGetsDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2180,7 +2180,7 @@ VarGetsDecl :
 	|	VARNAME  TypeDeclaration  GETS  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarGetsDecl [type.gets]\n";
+			 cout << "VarGetsDecl [type.gets]" << endl;
 #endif
 			$$ = new VarGetsDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2192,7 +2192,7 @@ VarGetsDecl :
 	| VARNAME  FTScoreVar  GETS  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarGetsDecl [scorevar.gets]\n";
+			 cout << "VarGetsDecl [scorevar.gets]" << endl;
 #endif
 			$$ = new VarGetsDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2203,7 +2203,7 @@ VarGetsDecl :
 	| VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarGetsDecl [type.scorevar.gets]\n";
+			 cout << "VarGetsDecl [type.scorevar.gets]" << endl;
 #endif
 			$$ = new VarGetsDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2221,7 +2221,7 @@ WhereClause :
 		WHERE  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "WhereClause [ ]\n";
+			 cout << "WhereClause [ ]" << endl;
 #endif
 			$$ = new WhereClause(driver.createQueryLoc(@$),
 								$2);
@@ -2235,7 +2235,7 @@ OrderByClause :
 		ORDER_BY  OrderSpecList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderByClause [ ]\n";
+			 cout << "OrderByClause [ ]" << endl;
 #endif
 			$$ = new OrderByClause(driver.createQueryLoc(@$),
 								dynamic_cast<OrderSpecList*>($2));
@@ -2243,7 +2243,7 @@ OrderByClause :
 	|	STABLE_ORDER_BY  OrderSpecList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderByClause [stable]\n";
+			 cout << "OrderByClause [stable]" << endl;
 #endif
 			$$ = new OrderByClause(driver.createQueryLoc(@$),
 								dynamic_cast<OrderSpecList*>($2),
@@ -2258,7 +2258,7 @@ OrderSpecList :
 		OrderSpec 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderSpecList [single]\n";
+			 cout << "OrderSpecList [single]" << endl;
 #endif
 			OrderSpecList* osl_p = new OrderSpecList(driver.createQueryLoc(@$));
 			osl_p->push_back(dynamic_cast<OrderSpec*>($1));
@@ -2267,7 +2267,7 @@ OrderSpecList :
 	|	OrderSpecList  COMMA  OrderSpec
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderSpecList [list]\n";
+			 cout << "OrderSpecList [list]" << endl;
 #endif
 			OrderSpecList* osl_p = dynamic_cast<OrderSpecList*>($1);
 			if (osl_p) {
@@ -2284,7 +2284,7 @@ OrderSpec :
     ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderSpec [single]\n";
+			 cout << "OrderSpec [single]" << endl;
 #endif
 			$$ = new OrderSpec(driver.createQueryLoc(@$),
 								$1,
@@ -2293,7 +2293,7 @@ OrderSpec :
 	|	ExprSingle OrderModifier
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderSpec [single.modifier]\n";
+			 cout << "OrderSpec [single.modifier]" << endl;
 #endif
 			$$ = new OrderSpec(driver.createQueryLoc(@$),
 								$1,
@@ -2308,7 +2308,7 @@ OrderModifier :
 		OrderDirSpec
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderModifier [dir]\n";
+			 cout << "OrderModifier [dir]" << endl;
 #endif
 			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								dynamic_cast<OrderDirSpec*>($1),
@@ -2318,7 +2318,7 @@ OrderModifier :
 	|	OrderEmptySpec
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderModifier [empty]\n";
+			 cout << "OrderModifier [empty]" << endl;
 #endif
 			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								NULL,
@@ -2328,7 +2328,7 @@ OrderModifier :
 	|	OrderCollationSpec
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderModifier [collation]\n";
+			 cout << "OrderModifier [collation]" << endl;
 #endif
 			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								NULL,
@@ -2338,7 +2338,7 @@ OrderModifier :
 	|	OrderDirSpec  OrderEmptySpec
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderModifier [dir.empty]\n";
+			 cout << "OrderModifier [dir.empty]" << endl;
 #endif
 			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								dynamic_cast<OrderDirSpec*>($1),
@@ -2348,7 +2348,7 @@ OrderModifier :
 	|	OrderDirSpec  OrderCollationSpec
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderModifier [dir.collation]\n";
+			 cout << "OrderModifier [dir.collation]" << endl;
 #endif
 			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								dynamic_cast<OrderDirSpec*>($1),
@@ -2358,7 +2358,7 @@ OrderModifier :
 	|	OrderEmptySpec  OrderCollationSpec
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderModifier [empty.collation]\n";
+			 cout << "OrderModifier [empty.collation]" << endl;
 #endif
 			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								NULL,
@@ -2368,7 +2368,7 @@ OrderModifier :
 	|	OrderDirSpec  OrderEmptySpec  OrderCollationSpec
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderModifier [dir.empty.collation]\n";
+			 cout << "OrderModifier [dir.empty.collation]" << endl;
 #endif
 			$$ = new OrderModifier(driver.createQueryLoc(@$),
 								dynamic_cast<OrderDirSpec*>($1),
@@ -2384,14 +2384,14 @@ OrderDirSpec :
 		ASCENDING
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderDirSpec [ascending]\n";
+			 cout << "OrderDirSpec [ascending]" << endl;
 #endif
 			$$ = new OrderDirSpec(driver.createQueryLoc(@$), dir_ascending);
 		}
 	|	DESCENDING
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderDirSpec [descending]\n";
+			 cout << "OrderDirSpec [descending]" << endl;
 #endif
 			$$ = new OrderDirSpec(driver.createQueryLoc(@$), dir_descending);
 		}
@@ -2404,7 +2404,7 @@ OrderEmptySpec:
 		EMPTY_GREATEST
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderEmptySpec [greatest]\n";
+			 cout << "OrderEmptySpec [greatest]" << endl;
 #endif
 			$$ = new OrderEmptySpec(driver.createQueryLoc(@$),
 								StaticQueryContext::empty_greatest);
@@ -2412,7 +2412,7 @@ OrderEmptySpec:
 	|	EMPTY_LEAST
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderEmptySpec [least]\n";
+			 cout << "OrderEmptySpec [least]" << endl;
 #endif
 			$$ = new OrderEmptySpec(driver.createQueryLoc(@$),
 								StaticQueryContext::empty_least);
@@ -2426,7 +2426,7 @@ OrderCollationSpec :
 		COLLATION  URI_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderCollationSpec [ ]\n";
+			 cout << "OrderCollationSpec [ ]" << endl;
 #endif
 			$$ = new OrderCollationSpec(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2));
@@ -2440,7 +2440,7 @@ QuantifiedExpr :
 		SOME_DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QuantifiedExpr [some]\n";
+			 cout << "QuantifiedExpr [some]" << endl;
 #endif
 			$$ = new QuantifiedExpr(driver.createQueryLoc(@$),
 								quant_some,
@@ -2450,7 +2450,7 @@ QuantifiedExpr :
 	|	EVERY_DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QuantifiedExpr [every]\n";
+			 cout << "QuantifiedExpr [every]" << endl;
 #endif
 			$$ = new QuantifiedExpr(driver.createQueryLoc(@$),
 								quant_every,
@@ -2466,7 +2466,7 @@ QVarInDeclList :
 		QVarInDecl  %prec QVARINDECLLIST_REDUCE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QVarInDeclList [single]\n";
+			 cout << "QVarInDeclList [single]" << endl;
 #endif
 			QVarInDeclList* qvid_list_p = new QVarInDeclList(driver.createQueryLoc(@$));
 			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>($1));
@@ -2476,7 +2476,7 @@ QVarInDeclList :
 	|	QVarInDeclList  COMMA DOLLAR  QVarInDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QVarInDeclList [list]\n";
+			 cout << "QVarInDeclList [list]" << endl;
 #endif
 			QVarInDeclList* qvid_list_p = dynamic_cast<QVarInDeclList*>($1);
             qvid_list_p->push_back(dynamic_cast<QVarInDecl*>($4));
@@ -2491,7 +2491,7 @@ QVarInDecl :
 		VARNAME  _IN_  ExprSingle 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QVarInDecl [in]\n";
+			 cout << "QVarInDecl [in]" << endl;
 #endif
 			$$ = new QVarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2500,7 +2500,7 @@ QVarInDecl :
 	|	VARNAME  TypeDeclaration  _IN_  ExprSingle 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QVarInDecl [type.in]\n";
+			 cout << "QVarInDecl [type.in]" << endl;
 #endif
 			$$ = new QVarInDecl(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -2516,7 +2516,7 @@ TypeswitchExpr :
 		TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "TypeswitchExpr [cases.default.return]\n";
+			 cout << "TypeswitchExpr [cases.default.return]" << endl;
 #endif
 			$$ = new TypeswitchExpr(driver.createQueryLoc(@$),
 								$2,
@@ -2526,7 +2526,7 @@ TypeswitchExpr :
 	|	TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  DOLLAR  VARNAME  RETURN  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "TypeswitchExpr [cases.default.varname.return]\n";
+			 cout << "TypeswitchExpr [cases.default.varname.return]" << endl;
 #endif
 			$$ = new TypeswitchExpr(driver.createQueryLoc(@$),
 								$2,
@@ -2543,7 +2543,7 @@ CaseClauseList :
 		CaseClause
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CaseClauseList [single]\n";
+			 cout << "CaseClauseList [single]" << endl;
 #endif
 			CaseClauseList* cc_list_p = new CaseClauseList(driver.createQueryLoc(@$));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>($1));
@@ -2552,7 +2552,7 @@ CaseClauseList :
 	|	CaseClauseList  CaseClause
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CaseClauseList [list]\n";
+			 cout << "CaseClauseList [list]" << endl;
 #endif
 			CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>($1);
 			cc_list_p->push_back(dynamic_cast<CaseClause*>($2));
@@ -2567,7 +2567,7 @@ CaseClause :
 		CASE  SequenceType  RETURN  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CaseClause [case.return]\n";
+			 cout << "CaseClause [case.return]" << endl;
 #endif
 			$$ = new CaseClause(driver.createQueryLoc(@$),
 								dynamic_cast<SequenceType*>($2),
@@ -2576,7 +2576,7 @@ CaseClause :
 	|	CASE  DOLLAR  VARNAME  AS  SequenceType  RETURN  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CaseClause [case.as.return]\n";
+			 cout << "CaseClause [case.as.return]" << endl;
 #endif
 			$$ = new CaseClause(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$3),
@@ -2592,7 +2592,7 @@ IfExpr :
 		IF_LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "IfExpr [ ]\n";
+			 cout << "IfExpr [ ]" << endl;
 #endif
 			$$ = new IfExpr(driver.createQueryLoc(@$),
 								$2, $5, $7);
@@ -2606,14 +2606,14 @@ OrExpr :
 		AndExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrExpr [and]\n";
+			 cout << "OrExpr [and]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	OrExpr  OR  AndExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrExpr [or.and]\n";
+			 cout << "OrExpr [or.and]" << endl;
 #endif
 			$$ = new OrExpr(driver.createQueryLoc(@$),
 								$1, $3);
@@ -2627,14 +2627,14 @@ AndExpr :
 		ComparisonExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AndExpr [comp]\n";
+			 cout << "AndExpr [comp]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	AndExpr  AND  ComparisonExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AndExpr [and.comp]\n";
+			 cout << "AndExpr [and.comp]" << endl;
 #endif
 			$$ = new AndExpr(driver.createQueryLoc(@$),
 								$1, $3);
@@ -2656,7 +2656,7 @@ ComparisonExpr :
 		FTContainsExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ComparisonExpr [ftcontains]\n";
+			 cout << "ComparisonExpr [ftcontains]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -2664,7 +2664,7 @@ ComparisonExpr :
 		{
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
+			 cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]" << endl;
 #endif
 			$$ = new ComparisonExpr(driver.createQueryLoc(@$),
 								dynamic_cast<ValueComp*>($2),
@@ -2675,7 +2675,7 @@ ComparisonExpr :
 		{
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
+			 cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]" << endl;
 #endif
 			$$ = new ComparisonExpr(driver.createQueryLoc(@$),
 								dynamic_cast<GeneralComp*>($2),
@@ -2686,7 +2686,7 @@ ComparisonExpr :
 		{
 			/*  ::=  "is" | "<<" | ">>" */
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
+			 cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]" << endl;
 #endif
 			$$ = new ComparisonExpr(driver.createQueryLoc(@$),
 								dynamic_cast<NodeComp*>($2),
@@ -2702,14 +2702,14 @@ FTContainsExpr :
 		RangeExpr  %prec FTCONTAINS_REDUCE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTContainsExpr [range]\n";
+			 cout << "FTContainsExpr [range]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	RangeExpr  FTCONTAINS  FTSelection 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTContainsExpr [range.ftselect]\n";
+			 cout << "FTContainsExpr [range.ftselect]" << endl;
 #endif
 			$$ = new FTContainsExpr(driver.createQueryLoc(@$),
 								$1,
@@ -2719,7 +2719,7 @@ FTContainsExpr :
 	|	RangeExpr  FTCONTAINS  FTSelection  FTIgnoreOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTContainsExpr [range.ftselect.ftignore]\n";
+			 cout << "FTContainsExpr [range.ftselect.ftignore]" << endl;
 #endif
 			$$ = new FTContainsExpr(driver.createQueryLoc(@$),
 								$1,
@@ -2735,14 +2735,14 @@ RangeExpr :
 		AdditiveExpr  %prec RANGE_REDUCE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "RangeExpr [add]\n";
+			 cout << "RangeExpr [add]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	AdditiveExpr  TO  AdditiveExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "RangeExpr [add.to.add]\n";
+			 cout << "RangeExpr [add.to.add]" << endl;
 #endif
 			$$ = new RangeExpr(driver.createQueryLoc(@$),
 								$1, $3);
@@ -2756,21 +2756,21 @@ AdditiveExpr :
 		MultiplicativeExpr  %prec ADDITIVE_REDUCE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AdditiveExpr [mult]\n";
+			 cout << "AdditiveExpr [mult]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	AdditiveExpr  PLUS  MultiplicativeExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AdditiveExpr [mult+mult]\n";
+			 cout << "AdditiveExpr [mult+mult]" << endl;
 #endif
 			$$ = new AdditiveExpr(driver.createQueryLoc(@$), op_plus, $1, $3);
 		}
 	|	AdditiveExpr  MINUS  MultiplicativeExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AdditiveExpr [mult-mult]\n";
+			 cout << "AdditiveExpr [mult-mult]" << endl;
 #endif
 			$$ = new AdditiveExpr(driver.createQueryLoc(@$), op_minus, $1, $3);
 		}
@@ -2783,34 +2783,34 @@ MultiplicativeExpr :
 		UnionExpr  %prec MULTIPLICATIVE_REDUCE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "MultiplicativeExpr [union]\n";
+			 cout << "MultiplicativeExpr [union]" << endl;
 #endif
 		}
 	|	MultiplicativeExpr  STAR  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "MultiplicativeExpr [mult*union]\n";
+			 cout << "MultiplicativeExpr [mult*union]" << endl;
 #endif
 			$$ = new MultiplicativeExpr(driver.createQueryLoc(@$), op_mul, $1, $3);
 		}
 	|	MultiplicativeExpr  DIV  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "MultiplicativeExpr [mult.div.union]\n";
+			 cout << "MultiplicativeExpr [mult.div.union]" << endl;
 #endif
 			$$ = new MultiplicativeExpr(driver.createQueryLoc(@$), op_div, $1, $3);
 		}
 	|	MultiplicativeExpr  IDIV  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "MultiplicativeExpr [mult.idiv.union]\n";
+			 cout << "MultiplicativeExpr [mult.idiv.union]" << endl;
 #endif
 			$$ = new MultiplicativeExpr(driver.createQueryLoc(@$), op_idiv, $1, $3);
 		}
 	|	MultiplicativeExpr  MOD  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "MultiplicativeExpr [mult.mod.union]\n";
+			 cout << "MultiplicativeExpr [mult.mod.union]" << endl;
 #endif
 			$$ = new MultiplicativeExpr(driver.createQueryLoc(@$), op_mod, $1, $3);
 		}
@@ -2823,14 +2823,14 @@ UnionExpr :
 		IntersectExceptExpr  %prec UNION_REDUCE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "UnionExpr [interexcept]\n";
+			 cout << "UnionExpr [interexcept]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	UnionExpr  UNION  IntersectExceptExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "UnionExpr [union.union.interexcept]\n";
+			 cout << "UnionExpr [union.union.interexcept]" << endl;
 #endif
 			$$ = new UnionExpr(driver.createQueryLoc(@$),
 								$1, $3);
@@ -2838,7 +2838,7 @@ UnionExpr :
 	|	UnionExpr  VBAR  IntersectExceptExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "UnionExpr [union|interexcept]\n";
+			 cout << "UnionExpr [union|interexcept]" << endl;
 #endif
 			$$ = new UnionExpr(driver.createQueryLoc(@$),
 								$1, $3);
@@ -2852,21 +2852,21 @@ IntersectExceptExpr :
 		InstanceofExpr  %prec INTERSECT_EXCEPT_REDUCE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "IntersectExceptExpr [instanceof]\n";
+			 cout << "IntersectExceptExpr [instanceof]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	IntersectExceptExpr  INTERSECT  InstanceofExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
+			 cout << "IntersectExceptExpr [interexcept.inter.instanceof]" << endl;
 #endif
 			$$ = new IntersectExceptExpr(driver.createQueryLoc(@$), op_intersect, $1, $3);
 		}
 	|	IntersectExceptExpr  EXCEPT  InstanceofExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
+			 cout << "IntersectExceptExpr [interexcept.except.instanceof]" << endl;
 #endif
 			$$ = new IntersectExceptExpr(driver.createQueryLoc(@$), op_except, $1, $3);
 		}
@@ -2879,14 +2879,14 @@ InstanceofExpr :
 		TreatExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InstanceofExpr [treat]\n";
+			 cout << "InstanceofExpr [treat]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	TreatExpr  INSTANCE_OF  SequenceType
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InstanceofExpr [treat.seqtype]\n";
+			 cout << "InstanceofExpr [treat.seqtype]" << endl;
 #endif
 			$$ = new InstanceofExpr(driver.createQueryLoc(@$),
 								$1,
@@ -2901,14 +2901,14 @@ TreatExpr :
 		CastableExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "TreatExpr [castable]\n";
+			 cout << "TreatExpr [castable]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	CastableExpr  TREAT_AS  SequenceType
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "TreatExpr [castable.seqtype]\n";
+			 cout << "TreatExpr [castable.seqtype]" << endl;
 #endif
 			$$ = new TreatExpr(driver.createQueryLoc(@$),
 								$1,
@@ -2923,14 +2923,14 @@ CastableExpr :
 		CastExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CastableExpr [cast]\n";
+			 cout << "CastableExpr [cast]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	CastExpr  CASTABLE_AS  SingleType
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CastableExpr [cast.singletype]\n";
+			 cout << "CastableExpr [cast.singletype]" << endl;
 #endif
 			$$ = new CastableExpr(driver.createQueryLoc(@$),
 								$1,
@@ -2945,14 +2945,14 @@ CastExpr :
 		UnaryExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CastExpr [unary]\n";
+			 cout << "CastExpr [unary]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	UnaryExpr  CAST_AS  SingleType
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CastExpr [unary.singletype]\n";
+			 cout << "CastExpr [unary.singletype]" << endl;
 #endif
 			$$ = new CastExpr(driver.createQueryLoc(@$),
 								$1,
@@ -2967,14 +2967,14 @@ UnaryExpr :
 		ValueExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "UnaryExpr [value]\n";
+			 cout << "UnaryExpr [value]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	SignList  ValueExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "UnaryExpr [signlist.value]\n";
+			 cout << "UnaryExpr [signlist.value]" << endl;
 #endif
 			$$ = new UnaryExpr(driver.createQueryLoc(@$),
 								dynamic_cast<SignList*>($1),
@@ -2989,28 +2989,28 @@ SignList :
 		PLUS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SignList [+]\n";
+			 cout << "SignList [+]" << endl;
 #endif
 			$$ = new SignList(driver.createQueryLoc(@$), true);
 		}
 	|	MINUS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SignList [-]\n";
+			 cout << "SignList [-]" << endl;
 #endif
 			$$ = new SignList(driver.createQueryLoc(@$), false);
 		}
 	|	SignList  PLUS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SignList [signlist.+]\n";
+			 cout << "SignList [signlist.+]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	SignList  MINUS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SignList [signlist.-]\n";
+			 cout << "SignList [signlist.-]" << endl;
 #endif
 			SignList* slist_p = dynamic_cast<SignList*>($1);
 			if (slist_p) slist_p->negate();
@@ -3025,21 +3025,21 @@ ValueExpr :
 		ValidateExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValueExpr [validate]\n";
+			 cout << "ValueExpr [validate]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	PathExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValueExpr [path]\n";
+			 cout << "ValueExpr [path]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	ExtensionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValueExpr [extension]\n";
+			 cout << "ValueExpr [extension]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -3053,42 +3053,42 @@ GeneralComp :
 		EQUALS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "GeneralComp [=]\n";
+			 cout << "GeneralComp [=]" << endl;
 #endif
 			$$ = new GeneralComp(driver.createQueryLoc(@$), op_eq);
 		}
 	| NE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "GeneralComp [!=]\n";
+			 cout << "GeneralComp [!=]" << endl;
 #endif
 			$$ = new GeneralComp(driver.createQueryLoc(@$), op_ne);
 		}
 	| LT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "GeneralComp [<]\n";
+			 cout << "GeneralComp [<]" << endl;
 #endif
 			$$ = new GeneralComp(driver.createQueryLoc(@$), op_lt);
 		}
 	| LE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "GeneralComp [<=]\n";
+			 cout << "GeneralComp [<=]" << endl;
 #endif
 			$$ = new GeneralComp(driver.createQueryLoc(@$), op_le);
 		}
 	| GT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "GeneralComp [>]\n";
+			 cout << "GeneralComp [>]" << endl;
 #endif
 			$$ = new GeneralComp(driver.createQueryLoc(@$), op_gt);
 		}
 	| GE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "GeneralComp [>=]\n";
+			 cout << "GeneralComp [>=]" << endl;
 #endif
 			$$ = new GeneralComp(driver.createQueryLoc(@$), op_ge);
 		}
@@ -3101,42 +3101,42 @@ ValueComp :
 		VAL_EQ
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValueComp [eq]\n";
+			 cout << "ValueComp [eq]" << endl;
 #endif
 			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_eq);
 		}
 	| VAL_NE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValueComp [ne]\n";
+			 cout << "ValueComp [ne]" << endl;
 #endif
 			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_ne);
 		}
 	| VAL_LT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValueComp [lt]\n";
+			 cout << "ValueComp [lt]" << endl;
 #endif
 			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_lt);
 		}
 	| VAL_LE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValueComp [le]\n";
+			 cout << "ValueComp [le]" << endl;
 #endif
 			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_le);
 		}
 	| VAL_GT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValueComp [gt]\n";
+			 cout << "ValueComp [gt]" << endl;
 #endif
 			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_gt);
 		}
 	| VAL_GE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValueComp [ge]\n";
+			 cout << "ValueComp [ge]" << endl;
 #endif
 			$$ = new ValueComp(driver.createQueryLoc(@$), op_val_ge);
 		}
@@ -3149,21 +3149,21 @@ NodeComp :
 		IS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NodeComp [is]\n";
+			 cout << "NodeComp [is]" << endl;
 #endif
 			$$ = new NodeComp(driver.createQueryLoc(@$), op_is);
 		}
 	| PRECEDES
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NodeComp [<<]\n";
+			 cout << "NodeComp [<<]" << endl;
 #endif
 			$$ = new NodeComp(driver.createQueryLoc(@$), op_precedes);
 		}
 	| FOLLOWS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NodeComp [>>]\n";
+			 cout << "NodeComp [>>]" << endl;
 #endif
 			$$ = new NodeComp(driver.createQueryLoc(@$), op_follows);
 		}
@@ -3177,14 +3177,14 @@ ValidateExpr :
 		VALIDATE_LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValidateExpr [expr]\n";
+			 cout << "ValidateExpr [expr]" << endl;
 #endif
 			$$ = new ValidateExpr(driver.createQueryLoc(@$), "strict", $2);
 		}
 	|	VALIDATE_MODE  LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ValidateExpr [mode.expr]\n";
+			 cout << "ValidateExpr [mode.expr]" << endl;
 #endif
 			$$ = new ValidateExpr(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1),
@@ -3199,7 +3199,7 @@ ExtensionExpr :
 		PragmaList  LBRACE  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExtensionExpr [pragmalist]\n";
+			 cout << "ExtensionExpr [pragmalist]" << endl;
 #endif
 			$$ = new ExtensionExpr(driver.createQueryLoc(@$),
 								dynamic_cast<PragmaList*>($1),
@@ -3208,7 +3208,7 @@ ExtensionExpr :
 	|	PragmaList  LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ExtensionExpr [pragmalist.expr]\n";
+			 cout << "ExtensionExpr [pragmalist.expr]" << endl;
 #endif
 			$$ = new ExtensionExpr(driver.createQueryLoc(@$),
 								dynamic_cast<PragmaList*>($1),
@@ -3223,7 +3223,7 @@ PragmaList :
 		Pragma
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PragmaList [single]\n";
+			 cout << "PragmaList [single]" << endl;
 #endif
 			PragmaList* pragma_list_p = new PragmaList(driver.createQueryLoc(@$));
 			pragma_list_p->push_back(dynamic_cast<Pragma*>($1));
@@ -3232,7 +3232,7 @@ PragmaList :
 	|	PragmaList  Pragma
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PragmaList [list]\n";
+			 cout << "PragmaList [list]" << endl;
 #endif
 			PragmaList* pragma_list_p = dynamic_cast<PragmaList*>($1);
 			if (pragma_list_p) {
@@ -3249,7 +3249,7 @@ Pragma :
 		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL_AND_END
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Pragma [ ]\n";
+			 cout << "Pragma [ ]" << endl;
 #endif
 			$$ = new Pragma(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -3300,28 +3300,28 @@ PathExpr :
     SLASH
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PathExpr [/]\n";
+			 cout << "PathExpr [/]" << endl;
 #endif
 			$$ = new PathExpr(driver.createQueryLoc(@$), path_leading_lone_slash, NULL);
 		}
 	|	SLASH  RelativePathExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PathExpr [/relative]\n";
+			 cout << "PathExpr [/relative]" << endl;
 #endif
 			$$ = new PathExpr(driver.createQueryLoc(@$), path_leading_slash, $2);
 		}
 	|	SLASH_SLASH  RelativePathExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PathExpr [//relative]\n";
+			 cout << "PathExpr [//relative]" << endl;
 #endif
 			$$ = new PathExpr(driver.createQueryLoc(@$), path_leading_slashslash, $2);
 		}
 	|	RelativePathExpr	 	/* gn: leading-lone-slashXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PathExpr [relative]\n";
+			 cout << "PathExpr [relative]" << endl;
 #endif
             RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>($1);
             $$ = rpe == NULL ? $1 : new PathExpr(driver.createQueryLoc(@$), path_relative, $1);
@@ -3335,7 +3335,7 @@ RelativePathExpr :
 		StepExpr  %prec STEP_REDUCE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "RelativePathExpr [step]\n";
+			 cout << "RelativePathExpr [step]" << endl;
 #endif
             AxisStep *as = dynamic_cast<AxisStep *>($1);
             $$ = as != NULL ? new RelativePathExpr(driver.createQueryLoc(@$), st_slash, new ContextItemExpr(driver.createQueryLoc(@$)), $1) : $1;
@@ -3343,14 +3343,14 @@ RelativePathExpr :
 	|	StepExpr  SLASH  RelativePathExpr 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "RelativePathExpr [step/relative]\n";
+			 cout << "RelativePathExpr [step/relative]" << endl;
 #endif
 			$$ = new RelativePathExpr(driver.createQueryLoc(@$), st_slash, $1, $3);
 		}
 	|	StepExpr  SLASH_SLASH  RelativePathExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "RelativePathExpr [step//relative]\n";
+			 cout << "RelativePathExpr [step//relative]" << endl;
 #endif
 			$$ = new RelativePathExpr(driver.createQueryLoc(@$), st_slashslash, $1, $3);
 		}
@@ -3363,14 +3363,14 @@ StepExpr :
 		AxisStep
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "StepExpr [axis]\n";
+			 cout << "StepExpr [axis]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	FilterExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "StepExpr [filter]\n";
+			 cout << "StepExpr [filter]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -3383,7 +3383,7 @@ AxisStep :
 		ForwardStep 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AxisStep [forward]\n";
+			 cout << "AxisStep [forward]" << endl;
 #endif
 			$$ = new AxisStep(driver.createQueryLoc(@$),
 								dynamic_cast<ForwardStep*>($1),
@@ -3392,7 +3392,7 @@ AxisStep :
 	|	ForwardStep  PredicateList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AxisStep [forward.predlist]\n";
+			 cout << "AxisStep [forward.predlist]" << endl;
 #endif
 			$$ = new AxisStep(driver.createQueryLoc(@$),
 								dynamic_cast<ForwardStep*>($1),
@@ -3401,7 +3401,7 @@ AxisStep :
 	|	ReverseStep
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AxisStep [reverse]\n";
+			 cout << "AxisStep [reverse]" << endl;
 #endif
 			$$ = new AxisStep(driver.createQueryLoc(@$),
 								dynamic_cast<ReverseStep*>($1),
@@ -3410,7 +3410,7 @@ AxisStep :
 	|	ReverseStep  PredicateList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AxisStep [reverse.predlist]\n";
+			 cout << "AxisStep [reverse.predlist]" << endl;
 #endif
 			$$ = new AxisStep(driver.createQueryLoc(@$),
 								dynamic_cast<ReverseStep*>($1),
@@ -3425,7 +3425,7 @@ ForwardStep :
 		ForwardAxis  NodeTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForwardStep [nodetest]\n";
+			 cout << "ForwardStep [nodetest]" << endl;
 #endif
 			$$ = new ForwardStep(driver.createQueryLoc(@$),
 								dynamic_cast<ForwardAxis*>($1),
@@ -3434,7 +3434,7 @@ ForwardStep :
 	|	AbbrevForwardStep
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForwardStep [abbrev]\n";
+			 cout << "ForwardStep [abbrev]" << endl;
 #endif
 			$$ = new ForwardStep(driver.createQueryLoc(@$),
 								dynamic_cast<AbbrevForwardStep*>($1));
@@ -3448,49 +3448,49 @@ ForwardAxis :
 		CHILD_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForwardAxis [child]\n";
+			 cout << "ForwardAxis [child]" << endl;
 #endif
 			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_child);
 		}
 	| DESCENDANT_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForwardAxis [descendant]\n";
+			 cout << "ForwardAxis [descendant]" << endl;
 #endif
 			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_descendant);
 		}
 	| ATTRIBUTE_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForwardAxis [attribute]\n";
+			 cout << "ForwardAxis [attribute]" << endl;
 #endif
 			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_attribute);
 		}
 	| SELF_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForwardAxis [self]\n";
+			 cout << "ForwardAxis [self]" << endl;
 #endif
 			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_self);
 		}
 	| DESCENDANT_OR_SELF_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForwardAxis [descendant_or_self]\n";
+			 cout << "ForwardAxis [descendant_or_self]" << endl;
 #endif
 			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_descendant_or_self);
 		}
 	| FOLLOWING_SIBLING_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForwardAxis [following_sibling]\n";
+			 cout << "ForwardAxis [following_sibling]" << endl;
 #endif
 			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_following_sibling);
 		}
 	| FOLLOWING_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ForwardAxis [following]\n";
+			 cout << "ForwardAxis [following]" << endl;
 #endif
 			$$ = new ForwardAxis(driver.createQueryLoc(@$), axis_following);
 		}
@@ -3503,14 +3503,14 @@ AbbrevForwardStep :
 		NodeTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AbbrevForwardStep [nodetest]\n";
+			 cout << "AbbrevForwardStep [nodetest]" << endl;
 #endif
 			$$ = new AbbrevForwardStep(driver.createQueryLoc(@$), $1);
 		}
 	|	AT_SIGN  NodeTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AbbrevForwardStep [@ nodetest]\n";
+			 cout << "AbbrevForwardStep [@ nodetest]" << endl;
 #endif
 			$$ = new AbbrevForwardStep(driver.createQueryLoc(@$), $2, true);
 		}
@@ -3523,7 +3523,7 @@ ReverseStep :
 		ReverseAxis  NodeTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ReverseStep [nodetest]\n";
+			 cout << "ReverseStep [nodetest]" << endl;
 #endif
 			$$ = new ReverseStep(driver.createQueryLoc(@$),
 								dynamic_cast<ReverseAxis*>($1),
@@ -3532,7 +3532,7 @@ ReverseStep :
 	|	DOT_DOT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ReverseStep [..]\n";
+			 cout << "ReverseStep [..]" << endl;
 #endif
 			ReverseAxis* rev_p = new ReverseAxis(driver.createQueryLoc(@$), axis_parent);
 			$$ = new ReverseStep(driver.createQueryLoc(@$),
@@ -3547,35 +3547,35 @@ ReverseAxis :
 		PARENT_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ReverseAxis [parent]\n";
+			 cout << "ReverseAxis [parent]" << endl;
 #endif
 			$$ = new ReverseAxis(driver.createQueryLoc(@$), axis_parent);
 		}
 	| ANCESTOR_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ReverseAxis [ancestor]\n";
+			 cout << "ReverseAxis [ancestor]" << endl;
 #endif
 			$$ = new ReverseAxis(driver.createQueryLoc(@$), axis_ancestor);
 		}
 	| PRECEDING_SIBLING_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ReverseAxis [preceding_sibling]\n";
+			 cout << "ReverseAxis [preceding_sibling]" << endl;
 #endif
 			$$ = new ReverseAxis(driver.createQueryLoc(@$), axis_preceding_sibling);
 		}
 	| PRECEDING_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ReverseAxis [preceding]\n";
+			 cout << "ReverseAxis [preceding]" << endl;
 #endif
 			$$ = new ReverseAxis(driver.createQueryLoc(@$), axis_preceding);
 		}
 	| ANCESTOR_OR_SELF_AXIS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ReverseAxis [ancestor_or_self]\n";
+			 cout << "ReverseAxis [ancestor_or_self]" << endl;
 #endif
 			$$ = new ReverseAxis(driver.createQueryLoc(@$), axis_ancestor_or_self);
 		}
@@ -3593,14 +3593,14 @@ NodeTest :
 		KindTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NodeTest [kindtest]\n";
+			 cout << "NodeTest [kindtest]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	NameTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NodeTest [nametest]\n";
+			 cout << "NodeTest [nametest]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -3613,14 +3613,14 @@ NameTest :
 		QNAME
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NameTest [qname]\n";
+			 cout << "NameTest [qname]" << endl;
 #endif
 			$$ = new NameTest(driver.createQueryLoc(@$), new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)));
 		}
 	|	Wildcard
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NameTest [wildcard]\n";
+			 cout << "NameTest [wildcard]" << endl;
 #endif
 			$$ = new NameTest(driver.createQueryLoc(@$), dynamic_cast<Wildcard*>($1));
 		}
@@ -3633,7 +3633,7 @@ Wildcard :
 		STAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Wildcard [*]\n";
+			 cout << "Wildcard [*]" << endl;
 #endif
 			$$ = new Wildcard(driver.createQueryLoc(@$),
                         "",
@@ -3643,7 +3643,7 @@ Wildcard :
 	|	ELEM_WILDCARD
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Wildcard [pref:*]\n";
+			 cout << "Wildcard [pref:*]" << endl;
 #endif
 			$$ = new Wildcard(driver.createQueryLoc(@$),
                         driver.symtab.get((off_t)$1),
@@ -3653,7 +3653,7 @@ Wildcard :
 	|	PREFIX_WILDCARD   /* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Wildcard [*:qname]\n";
+			 cout << "Wildcard [*:qname]" << endl;
 #endif
 			$$ = new Wildcard(driver.createQueryLoc(@$),
                         "",
@@ -3669,14 +3669,14 @@ FilterExpr :
 		PrimaryExpr 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FilterExpr [primary]\n";
+			 cout << "FilterExpr [primary]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	PrimaryExpr  PredicateList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FilterExpr [primary.predlist]\n";
+			 cout << "FilterExpr [primary.predlist]" << endl;
 #endif
 			$$ = new FilterExpr(driver.createQueryLoc(@$),
 								$1,
@@ -3691,7 +3691,7 @@ PredicateList :
 		Predicate
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PredicateList [single]\n";
+			 cout << "PredicateList [single]" << endl;
 #endif
 			PredicateList* pred_list_p = new PredicateList(driver.createQueryLoc(@$));
 			pred_list_p->push_back(dynamic_cast<exprnode*>($1));
@@ -3700,7 +3700,7 @@ PredicateList :
 	|	PredicateList  Predicate
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PredicateList [list]\n";
+			 cout << "PredicateList [list]" << endl;
 #endif
 			PredicateList* pred_list_p = dynamic_cast<PredicateList*>($1);
 			if (pred_list_p) {
@@ -3717,7 +3717,7 @@ Predicate :
 		LBRACK  Expr  RBRACK
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Predicate [ ]\n";
+			 cout << "Predicate [ ]" << endl;
 #endif
 			$$ = $2;
 		}
@@ -3731,56 +3731,56 @@ PrimaryExpr :
 		Literal
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PrimaryExpr [literal]\n";
+			 cout << "PrimaryExpr [literal]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	VarRef
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PrimaryExpr [varref]\n";
+			 cout << "PrimaryExpr [varref]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	ParenthesizedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PrimaryExpr [paren]\n";
+			 cout << "PrimaryExpr [paren]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	ContextItemExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PrimaryExpr [context_item]\n";
+			 cout << "PrimaryExpr [context_item]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	FunctionCall
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PrimaryExpr [funcall]\n";
+			 cout << "PrimaryExpr [funcall]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	Constructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PrimaryExpr [cons]\n";
+			 cout << "PrimaryExpr [cons]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	OrderedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PrimaryExpr [ordered]\n";
+			 cout << "PrimaryExpr [ordered]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	UnorderedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PrimaryExpr [unordered]\n";
+			 cout << "PrimaryExpr [unordered]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -3793,14 +3793,14 @@ Literal :
 		NumericLiteral
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Literal [numeric]\n";
+			 cout << "Literal [numeric]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	StringLiteral
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Literal [string]\n";
+			 cout << "Literal [string]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -3813,7 +3813,7 @@ NumericLiteral :
 		DECIMAL_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NumericLiteral [decimal]\n";
+			 cout << "NumericLiteral [decimal]" << endl;
 #endif
 			$$ = new NumericLiteral(driver.createQueryLoc(@$), *yylval.decval);
       delete yylval.decval;
@@ -3821,7 +3821,7 @@ NumericLiteral :
 	| INTEGER_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NumericLiteral [int]\n";
+			 cout << "NumericLiteral [int]" << endl;
 #endif
 			$$ = new NumericLiteral(driver.createQueryLoc(@$), *yylval.ival);
       delete yylval.ival;
@@ -3829,7 +3829,7 @@ NumericLiteral :
 	|	DOUBLE_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "NumericLiteral [double]\n";
+			 cout << "NumericLiteral [double]" << endl;
 #endif
 			$$ = new NumericLiteral(driver.createQueryLoc(@$), *yylval.dval);
       delete yylval.dval;
@@ -3843,7 +3843,7 @@ VarRef :
 		DOLLAR  VARNAME
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarRef [ ]\n";
+			 cout << "VarRef [ ]" << endl;
 #endif
 			$$ = new VarRef(driver.createQueryLoc(@$), driver.symtab.get((off_t)$2));
 		}
@@ -3856,14 +3856,14 @@ ParenthesizedExpr :
 		LPAR  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ParenthesizedExpr [()]\n";
+			 cout << "ParenthesizedExpr [()]" << endl;
 #endif
 			$$ = new ParenthesizedExpr(driver.createQueryLoc(@$), NULL);
 		}
 	|	LPAR  Expr  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ParenthesizedExpr [(expr)]\n";
+			 cout << "ParenthesizedExpr [(expr)]" << endl;
 #endif
 			$$ = new ParenthesizedExpr(driver.createQueryLoc(@$),
 								$2);
@@ -3877,7 +3877,7 @@ ContextItemExpr :
 		DOT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ContextItemExpr [.]\n";
+			 cout << "ContextItemExpr [.]" << endl;
 #endif
 			$$ = new ContextItemExpr(driver.createQueryLoc(@$));
 		}
@@ -3890,7 +3890,7 @@ OrderedExpr :
 		ORDERED_LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OrderedExpr [expr]\n";
+			 cout << "OrderedExpr [expr]" << endl;
 #endif
 			$$ = new OrderedExpr(driver.createQueryLoc(@$),
 								$2);
@@ -3904,7 +3904,7 @@ UnorderedExpr :
 		UNORDERED_LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "UnorderedExpr [expr]\n";
+			 cout << "UnorderedExpr [expr]" << endl;
 #endif
 			$$ = new UnorderedExpr(driver.createQueryLoc(@$),
 								$2);
@@ -3963,7 +3963,7 @@ FunctionCall :
 		QNAME LPAR  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionCall [ ]\n";
+			 cout << "FunctionCall [ ]" << endl;
 #endif
 			$$ = new FunctionCall(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
@@ -3972,7 +3972,7 @@ FunctionCall :
 	|	QNAME LPAR  ArgList  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FunctionCall [arglist]\n";
+			 cout << "FunctionCall [arglist]" << endl;
 #endif
 			$$ = new FunctionCall(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
@@ -3987,7 +3987,7 @@ ArgList :
 		ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ArgList [single]\n";
+			 cout << "ArgList [single]" << endl;
 #endif
 			ArgList* a_list_p = new ArgList(driver.createQueryLoc(@$)); 
 			a_list_p->push_back($1);
@@ -3996,7 +3996,7 @@ ArgList :
 	|	ArgList  COMMA  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ArgList [list]\n";
+			 cout << "ArgList [list]" << endl;
 #endif
 			ArgList* a_list_p = dynamic_cast<ArgList*>($1);
 			if (a_list_p) a_list_p->push_back($3);
@@ -4011,14 +4011,14 @@ Constructor :
 		DirectConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Constructor [direct]\n";
+			 cout << "Constructor [direct]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	ComputedConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "Constructor [computed]\n";
+			 cout << "Constructor [computed]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -4031,21 +4031,21 @@ DirectConstructor :
 		DirElemConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirectConstructor [element]\n";
+			 cout << "DirectConstructor [element]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	DirCommentConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirectConstructor [comment]\n";
+			 cout << "DirectConstructor [comment]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	DirPIConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirectConstructor [pi]\n";
+			 cout << "DirectConstructor [pi]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -4058,7 +4058,7 @@ DirElemConstructor :
 		START_TAG  QNAME  EMPTY_TAG_END /* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemConstructor [<qname/> ]\n";
+			 cout << "DirElemConstructor [<qname/> ]" << endl;
 #endif
 			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -4069,7 +4069,7 @@ DirElemConstructor :
 	| START_TAG  QNAME  DirAttributeList EMPTY_TAG_END /* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemConstructor [<qname attrlist/> ]\n";
+			 cout << "DirElemConstructor [<qname attrlist/> ]" << endl;
 #endif
 			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -4080,7 +4080,7 @@ DirElemConstructor :
 	| START_TAG  QNAME  TAG_END  START_TAG_END  QNAME  TAG_END
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemConstructor [<qname></qname>]\n";
+			 cout << "DirElemConstructor [<qname></qname>]" << endl;
 #endif
 			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -4091,7 +4091,7 @@ DirElemConstructor :
 	|	START_TAG  QNAME  TAG_END  DirElemContentList  START_TAG_END  QNAME  TAG_END 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemConstructor [<qname>content</qname>]\n";
+			 cout << "DirElemConstructor [<qname>content</qname>]" << endl;
 #endif
 			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -4102,7 +4102,7 @@ DirElemConstructor :
 	| START_TAG  QNAME  DirAttributeList TAG_END  START_TAG_END  QNAME TAG_END
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemConstructor [<qname attrlist></qname>]\n";
+			 cout << "DirElemConstructor [<qname attrlist></qname>]" << endl;
 #endif
 			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -4113,7 +4113,7 @@ DirElemConstructor :
 	|	START_TAG  QNAME  DirAttributeList TAG_END  DirElemContentList  START_TAG_END  QNAME  TAG_END 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
+			 cout << "DirElemConstructor [<qname attrlist>content</qname>]" << endl;
 #endif
 			$$ = new DirElemConstructor(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -4131,7 +4131,7 @@ DirElemContentList :
 	DirElemContent
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemContentList [single]\n";
+			 cout << "DirElemContentList [single]" << endl;
 #endif
 			DirElemContentList* elem_content_list_p = new DirElemContentList(driver.createQueryLoc(@$));
 			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($1));
@@ -4140,7 +4140,7 @@ DirElemContentList :
 	|	DirElemContentList  DirElemContent
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemContentList [list]\n";
+			 cout << "DirElemContentList [list]" << endl;
 #endif
 			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>($1);
 			if (elem_content_list_p) elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($2));
@@ -4155,7 +4155,7 @@ DirAttributeList :
 		DirAttr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirAttributeList [single]\n";
+			 cout << "DirAttributeList [single]" << endl;
 #endif
 			DirAttributeList* at_list_p = new DirAttributeList(driver.createQueryLoc(@$));
 			at_list_p->push_back(dynamic_cast<DirAttr*>($1));
@@ -4164,7 +4164,7 @@ DirAttributeList :
 	|	DirAttributeList  DirAttr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirAttributeList [list]\n";
+			 cout << "DirAttributeList [list]" << endl;
 #endif
 			DirAttributeList* at_list_p = dynamic_cast<DirAttributeList*>($1);
 			if (at_list_p) {
@@ -4181,7 +4181,7 @@ DirAttr :
 		QNAME  EQUALS  DirAttributeValue 	/* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirAttr [ ]\n";
+			 cout << "DirAttr [ ]" << endl;
 #endif
 			$$ = new DirAttr(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
@@ -4196,7 +4196,7 @@ DirAttributeValue :
 		QUOTE  Opt_QuoteAttrContentList  QUOTE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirAttributeValue [quote]\n";
+			 cout << "DirAttributeValue [quote]" << endl;
 #endif
 			$$ = new DirAttributeValue(driver.createQueryLoc(@$),
 								dynamic_cast<QuoteAttrContentList*>($2));
@@ -4204,7 +4204,7 @@ DirAttributeValue :
 	|	APOS  Opt_AposAttrContentList  APOS 	/* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirAttributeValue [apos]\n";
+			 cout << "DirAttributeValue [apos]" << endl;
 #endif
 			$$ = new DirAttributeValue(driver.createQueryLoc(@$),
 								dynamic_cast<AposAttrContentList*>($2));
@@ -4218,7 +4218,7 @@ Opt_QuoteAttrContentList :
 		/* empty */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QuoteAttrContentList[empty]\n";
+			 cout << "QuoteAttrContentList[empty]" << endl;
 #endif
 			$$ = new QuoteAttrContentList(driver.createQueryLoc(@$));
 		}
@@ -4232,7 +4232,7 @@ QuoteAttrContentList :
 		ESCAPE_QUOTE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QuoteAttrContentList [""]\n";
+			 cout << "QuoteAttrContentList [""]" << endl;
 #endif
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(driver.createQueryLoc(@$));
 			qo_list_p->push_back(new QuoteAttrValueContent(driver.createQueryLoc(@$),string("\"")));
@@ -4241,7 +4241,7 @@ QuoteAttrContentList :
 	|	QuoteAttrValueContent
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QuoteAttrContentList [single]\n";
+			 cout << "QuoteAttrContentList [single]" << endl;
 #endif
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(driver.createQueryLoc(@$));
 			qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>($1));
@@ -4250,7 +4250,7 @@ QuoteAttrContentList :
 	|	QuoteAttrContentList  ESCAPE_QUOTE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QuoteAttrContentList [list ""]\n";
+			 cout << "QuoteAttrContentList [list ""]" << endl;
 #endif
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>($1);
 			if (qo_list_p) {
@@ -4261,7 +4261,7 @@ QuoteAttrContentList :
 	|	QuoteAttrContentList  QuoteAttrValueContent
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QuoteAttrContentList [list]\n";
+			 cout << "QuoteAttrContentList [list]" << endl;
 #endif
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>($1);
 			if (qo_list_p) {
@@ -4277,7 +4277,7 @@ Opt_AposAttrContentList :
 		/* empty */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AposAttrContentList ['']\n";
+			 cout << "AposAttrContentList ['']" << endl;
 #endif
 			$$ = new AposAttrContentList(driver.createQueryLoc(@$));
 		}
@@ -4291,7 +4291,7 @@ AposAttrContentList :
 		ESCAPE_APOS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AposAttrContentList ['']\n";
+			 cout << "AposAttrContentList ['']" << endl;
 #endif
 			AposAttrContentList* at_list_p = new AposAttrContentList(driver.createQueryLoc(@$));
 			at_list_p->push_back(new AposAttrValueContent(driver.createQueryLoc(@$),"'"));
@@ -4300,7 +4300,7 @@ AposAttrContentList :
 	|	AposAttrValueContent
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AposAttrContentList [single]\n";
+			 cout << "AposAttrContentList [single]" << endl;
 #endif
 			AposAttrContentList* at_list_p = new AposAttrContentList(driver.createQueryLoc(@$));
 			at_list_p->push_back(dynamic_cast<AposAttrValueContent*>($1));
@@ -4309,7 +4309,7 @@ AposAttrContentList :
 	|	AposAttrContentList  ESCAPE_APOS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AposAttrContentList [list.'']\n";
+			 cout << "AposAttrContentList [list.'']" << endl;
 #endif
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>($1);
 			if (at_list_p) {
@@ -4320,7 +4320,7 @@ AposAttrContentList :
 	|	AposAttrContentList  AposAttrValueContent
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AposAttrContentList [list.single]\n";
+			 cout << "AposAttrContentList [list.single]" << endl;
 #endif
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>($1);
 			if (at_list_p) {
@@ -4337,7 +4337,7 @@ QuoteAttrValueContent :
 		QUOTE_ATTR_CONTENT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QuoteAttrValueContent [quote_attr_content]\n";
+			 cout << "QuoteAttrValueContent [quote_attr_content]" << endl;
 #endif
 			$$ = new QuoteAttrValueContent(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1));
@@ -4345,7 +4345,7 @@ QuoteAttrValueContent :
 	|	CommonContent
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "QuoteAttrValueContent [common_content]\n";
+			 cout << "QuoteAttrValueContent [common_content]" << endl;
 #endif
 			$$ = new QuoteAttrValueContent(driver.createQueryLoc(@$),
 								dynamic_cast<CommonContent*>($1));
@@ -4359,7 +4359,7 @@ AposAttrValueContent :
 		APOS_ATTR_CONTENT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AposAttrValueContent [apos_attr_content]\n";
+			 cout << "AposAttrValueContent [apos_attr_content]" << endl;
 #endif
 			$$ = new AposAttrValueContent(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1));
@@ -4367,7 +4367,7 @@ AposAttrValueContent :
 	|	CommonContent
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AposAttrValueContent [common_content]\n";
+			 cout << "AposAttrValueContent [common_content]" << endl;
 #endif
 			$$ = new AposAttrValueContent(driver.createQueryLoc(@$),
 								dynamic_cast<CommonContent*>($1));
@@ -4381,7 +4381,7 @@ DirElemContent :
 		DirectConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemContent [cons]\n";
+			 cout << "DirElemContent [cons]" << endl;
 #endif
 			$$ = new DirElemContent(driver.createQueryLoc(@$),
 								$1);
@@ -4389,7 +4389,7 @@ DirElemContent :
 	|	ELEMENT_CONTENT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemContent [elem_content]\n";
+			 cout << "DirElemContent [elem_content]" << endl;
 #endif
 			$$ = new DirElemContent(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$1));
@@ -4397,7 +4397,7 @@ DirElemContent :
 	|	CDataSection
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemContent [cdata]\n";
+			 cout << "DirElemContent [cdata]" << endl;
 #endif
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>($1);
 			$$ = new DirElemContent(driver.createQueryLoc(@$),
@@ -4406,7 +4406,7 @@ DirElemContent :
 	|	CommonContent
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirElemContent [common_content]\n";
+			 cout << "DirElemContent [common_content]" << endl;
 #endif
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>($1);
 			$$ = new DirElemContent(driver.createQueryLoc(@$),
@@ -4421,7 +4421,7 @@ CommonContent :
 		ENTITY_REF
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CommonContent [entity_ref]\n";
+			 cout << "CommonContent [entity_ref]" << endl;
 #endif
 			$$ = new CommonContent(driver.createQueryLoc(@$),
 								cont_entity,
@@ -4430,7 +4430,7 @@ CommonContent :
 	|	DOUBLE_LBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CommonContent [{{]\n";
+			 cout << "CommonContent [{{]" << endl;
 #endif
 			$$ = new CommonContent(driver.createQueryLoc(@$),
 								cont_escape_lbrace);
@@ -4438,7 +4438,7 @@ CommonContent :
 	|	DOUBLE_RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CommonContent [}}]\n";
+			 cout << "CommonContent [}}]" << endl;
 #endif
 			$$ = new CommonContent(driver.createQueryLoc(@$),
 								cont_escape_rbrace);
@@ -4446,7 +4446,7 @@ CommonContent :
 	|	EnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CommonContent [expr]\n";
+			 cout << "CommonContent [expr]" << endl;
 #endif
 			$$ = new CommonContent(driver.createQueryLoc(@$),
 								dynamic_cast<EnclosedExpr*>($1));
@@ -4460,7 +4460,7 @@ DirCommentConstructor :
 		XML_COMMENT_BEGIN  XML_COMMENT_LITERAL  XML_COMMENT_END 	/* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirCommentConstructor [ ]\n";
+			 cout << "DirCommentConstructor [ ]" << endl;
 #endif
 			$$ = new DirCommentConstructor(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2));
@@ -4468,7 +4468,7 @@ DirCommentConstructor :
   | XML_COMMENT_BEGIN  XML_COMMENT_END                        /* ws: explicitXQ */
     {
 #ifdef ZORBA_DEBUG_PARSER
-       cout << "DirCommentConstructor [ ]\n";
+       cout << "DirCommentConstructor [ ]" << endl;
 #endif
       $$ = new DirCommentConstructor(driver.createQueryLoc(@$), "");
     }
@@ -4486,7 +4486,7 @@ DirPIConstructor :
 		PI_BEGIN  PI_TARGET_LITERAL PI_END 								/* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirPIConstructor [target]\n";
+			 cout << "DirPIConstructor [target]" << endl;
 #endif
 			$$ = new DirPIConstructor(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2));
@@ -4494,7 +4494,7 @@ DirPIConstructor :
     |	PI_BEGIN  PI_TARGET_LITERAL CHAR_LITERAL_AND_PI_END 	/* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DirPIConstructor [target.charlit]\n";
+			 cout << "DirPIConstructor [target.charlit]" << endl;
 #endif
 			$$ = new DirPIConstructor(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -4514,7 +4514,7 @@ CDataSection :
 		CDATA_BEGIN  CHAR_LITERAL_AND_CDATA_END 				/* ws: explicitXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CDataSection [ ]\n";
+			 cout << "CDataSection [ ]" << endl;
 #endif
 			$$ = new CDataSection(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2));
 		}
@@ -4532,42 +4532,42 @@ ComputedConstructor :
 		CompDocConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ComputedConstructor [doc]\n";
+			 cout << "ComputedConstructor [doc]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	CompElemConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ComputedConstructor [elem]\n";
+			 cout << "ComputedConstructor [elem]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	CompAttrConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ComputedConstructor [attr]\n";
+			 cout << "ComputedConstructor [attr]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	CompTextConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ComputedConstructor [text]\n";
+			 cout << "ComputedConstructor [text]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	CompCommentConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ComputedConstructor [comment]\n";
+			 cout << "ComputedConstructor [comment]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	CompPIConstructor
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ComputedConstructor [pi]\n";
+			 cout << "ComputedConstructor [pi]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -4580,7 +4580,7 @@ CompDocConstructor :
 		DOCUMENT_LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompDocConstructor [ ]\n";
+			 cout << "CompDocConstructor [ ]" << endl;
 #endif
 			$$ = new CompDocConstructor(driver.createQueryLoc(@$),
 								$2);
@@ -4594,7 +4594,7 @@ CompElemConstructor :
 		ELEMENT_QNAME_LBRACE  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompElemConstructor [ ]\n";
+			 cout << "CompElemConstructor [ ]" << endl;
 #endif
 			$$ = new CompElemConstructor(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
@@ -4603,7 +4603,7 @@ CompElemConstructor :
 	|	ELEMENT_QNAME_LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompElemConstructor [content]\n";
+			 cout << "CompElemConstructor [content]" << endl;
 #endif
 			$$ = new CompElemConstructor(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
@@ -4612,7 +4612,7 @@ CompElemConstructor :
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompElemConstructor [name]\n";
+			 cout << "CompElemConstructor [name]" << endl;
 #endif
 			$$ = new CompElemConstructor(driver.createQueryLoc(@$),
 								$2, NULL);
@@ -4620,7 +4620,7 @@ CompElemConstructor :
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompElemConstructor [name.content]\n";
+			 cout << "CompElemConstructor [name.content]" << endl;
 #endif
 			$$ = new CompElemConstructor(driver.createQueryLoc(@$),
 								$2, $5);
@@ -4635,7 +4635,7 @@ ContentExpr :
 		Expr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ContentExpr [ ]\n";
+			 cout << "ContentExpr [ ]" << endl;
 #endif
 		}
 	;
@@ -4648,7 +4648,7 @@ CompAttrConstructor :
 		ATTRIBUTE_QNAME_LBRACE  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompAttrConstructor [ ]\n";
+			 cout << "CompAttrConstructor [ ]" << endl;
 #endif
 			$$ = new CompAttrConstructor(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
@@ -4657,7 +4657,7 @@ CompAttrConstructor :
 	|	ATTRIBUTE_QNAME_LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompAttrConstructor [val]\n";
+			 cout << "CompAttrConstructor [val]" << endl;
 #endif
 			$$ = new CompAttrConstructor(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
@@ -4666,7 +4666,7 @@ CompAttrConstructor :
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompAttrConstructor [name]\n";
+			 cout << "CompAttrConstructor [name]" << endl;
 #endif
 			$$ = new CompAttrConstructor(driver.createQueryLoc(@$),
 								$2, NULL);
@@ -4674,7 +4674,7 @@ CompAttrConstructor :
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompAttrConstructor [name.val]\n";
+			 cout << "CompAttrConstructor [name.val]" << endl;
 #endif
 			$$ = new CompAttrConstructor(driver.createQueryLoc(@$),
 								$2, $5);
@@ -4688,7 +4688,7 @@ CompTextConstructor :
 		TEXT_LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompTextConstructor [content]\n";
+			 cout << "CompTextConstructor [content]" << endl;
 #endif
 			$$ = new CompTextConstructor(driver.createQueryLoc(@$),
 								dynamic_cast<Expr*>($2));
@@ -4702,7 +4702,7 @@ CompCommentConstructor :
 		COMMENT_LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompCommentConstructor [content]\n";
+			 cout << "CompCommentConstructor [content]" << endl;
 #endif
 			$$ = new CompCommentConstructor(driver.createQueryLoc(@$),
 								dynamic_cast<Expr*>($2));
@@ -4716,7 +4716,7 @@ CompPIConstructor :
 		PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompPIConstructor [ ]\n";
+			 cout << "CompPIConstructor [ ]" << endl;
 #endif
 			$$ = new CompPIConstructor(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -4725,7 +4725,7 @@ CompPIConstructor :
 	|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompPIConstructor [content]\n";
+			 cout << "CompPIConstructor [content]" << endl;
 #endif
 			$$ = new CompPIConstructor(driver.createQueryLoc(@$),
 								driver.symtab.get((off_t)$2),
@@ -4734,7 +4734,7 @@ CompPIConstructor :
 	|	PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompPIConstructor [target]\n";
+			 cout << "CompPIConstructor [target]" << endl;
 #endif
 			$$ = new CompPIConstructor(driver.createQueryLoc(@$),
 								$3, NULL);
@@ -4742,7 +4742,7 @@ CompPIConstructor :
 	|	PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CompPIConstructor [target.content]\n";
+			 cout << "CompPIConstructor [target.content]" << endl;
 #endif
 			$$ = new CompPIConstructor(driver.createQueryLoc(@$),
 								$3, $6);
@@ -4756,7 +4756,7 @@ SingleType :
 		AtomicType
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SingleType [atomic]\n";
+			 cout << "SingleType [atomic]" << endl;
 #endif
 			$$ = new SingleType(driver.createQueryLoc(@$),
 								dynamic_cast<AtomicType*>($1),
@@ -4765,7 +4765,7 @@ SingleType :
 	|	AtomicType  HOOK
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SingleType [atomic ?]\n";
+			 cout << "SingleType [atomic ?]" << endl;
 #endif
 			$$ = new SingleType(driver.createQueryLoc(@$),
 								dynamic_cast<AtomicType*>($1),
@@ -4780,7 +4780,7 @@ TypeDeclaration :
 		AS  SequenceType
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "TypeDeclaration [as seqtype]\n";
+			 cout << "TypeDeclaration [as seqtype]" << endl;
 #endif
 			$$ = new TypeDeclaration(driver.createQueryLoc(@$),
 								dynamic_cast<SequenceType*>($2));
@@ -4794,7 +4794,7 @@ SequenceType :
 		ItemType  %prec SEQUENCE_TYPE_REDUCE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ItemType [type]\n";
+			 cout << "ItemType [type]" << endl;
 #endif
 			$$ = new SequenceType(driver.createQueryLoc(@$),
 								$1,
@@ -4803,7 +4803,7 @@ SequenceType :
 	|	ItemType  OccurrenceIndicator
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ItemType [type.occurs]\n";
+			 cout << "ItemType [type.occurs]" << endl;
 #endif
 			$$ = new SequenceType(driver.createQueryLoc(@$),
 								$1,
@@ -4812,7 +4812,7 @@ SequenceType :
 	|	VOID_TEST
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ItemType [void]\n";
+			 cout << "ItemType [void]" << endl;
 #endif
 			$$ = new SequenceType(driver.createQueryLoc(@$), NULL, NULL);
 		}
@@ -4852,7 +4852,7 @@ OccurrenceIndicator :
 		OCCURS_HOOK
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OccurrenceIndicator [?]\n";
+			 cout << "OccurrenceIndicator [?]" << endl;
 #endif
 			$$ = new OccurrenceIndicator(driver.createQueryLoc(@$),
 								occurs_optionally);
@@ -4860,7 +4860,7 @@ OccurrenceIndicator :
 	|	OCCURS_STAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OccurrenceIndicator [*]\n";
+			 cout << "OccurrenceIndicator [*]" << endl;
 #endif
 			$$ = new OccurrenceIndicator(driver.createQueryLoc(@$),
 								occurs_zero_or_more);
@@ -4868,7 +4868,7 @@ OccurrenceIndicator :
 	|	OCCURS_PLUS 	/* gn: occurrence-indicatorsXQ */
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "OccurrenceIndicator [+]\n";
+			 cout << "OccurrenceIndicator [+]" << endl;
 #endif
 			$$ = new OccurrenceIndicator(driver.createQueryLoc(@$),
 								occurs_one_or_more);
@@ -4882,21 +4882,21 @@ ItemType :
 		AtomicType
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ItemType [atomic]\n";
+			 cout << "ItemType [atomic]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	KindTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ItemType [kind]\n";
+			 cout << "ItemType [kind]" << endl;
 #endif
 			$$ = $1;
 		}
 	|	ITEM_TEST
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ItemType [item]\n";
+			 cout << "ItemType [item]" << endl;
 #endif
 			$$ = new ItemType(driver.createQueryLoc(@$),true);
 		}
@@ -4909,7 +4909,7 @@ AtomicType :
 		QNAME
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AtomicType [qname]\n";
+			 cout << "AtomicType [qname]" << endl;
 #endif
 			$$ = new AtomicType(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$), driver.symtab.get((off_t)$1)));
@@ -4923,63 +4923,63 @@ KindTest :
 		DocumentTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "KindTest [doc]\n";
+			 cout << "KindTest [doc]" << endl;
 #endif
 			$$ = $1;
 		}
 	| ElementTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "KindTest [elem]\n";
+			 cout << "KindTest [elem]" << endl;
 #endif
 			$$ = $1;
 		}
 	| AttributeTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "KindTest [attr]\n";
+			 cout << "KindTest [attr]" << endl;
 #endif
 			$$ = $1;
 		}
 	| SchemaElementTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "KindTest [schema_elem]\n";
+			 cout << "KindTest [schema_elem]" << endl;
 #endif
 			$$ = $1;
 		}
 	| SchemaAttributeTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "KindTest [schema_attr]\n";
+			 cout << "KindTest [schema_attr]" << endl;
 #endif
 			$$ = $1;
 		}
 	| PITest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "KindTest [pi]\n";
+			 cout << "KindTest [pi]" << endl;
 #endif
 			$$ = $1;
 		}
 	| CommentTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "KindTest [comment]\n";
+			 cout << "KindTest [comment]" << endl;
 #endif
 			$$ = $1;
 		}
 	| TextTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "KindTest [text]\n";
+			 cout << "KindTest [text]" << endl;
 #endif
 			$$ = $1;
 		}
 	| AnyKindTest
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "KindTest [any]\n";
+			 cout << "KindTest [any]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -4992,7 +4992,7 @@ AnyKindTest :
 		NODE_LPAR  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AnyKindTest [ ]\n";
+			 cout << "AnyKindTest [ ]" << endl;
 #endif
 			$$ = new AnyKindTest(driver.createQueryLoc(@$));
 		}
@@ -5005,14 +5005,14 @@ DocumentTest :
 		DOCUMENT_NODE_LPAR  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DocumentTest [ ]\n";
+			 cout << "DocumentTest [ ]" << endl;
 #endif
 			$$ = new DocumentTest(driver.createQueryLoc(@$));
 		}
 	|	DOCUMENT_NODE_LPAR  ElementTest  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DocumentTest [elem]\n";
+			 cout << "DocumentTest [elem]" << endl;
 #endif
 			$$ = new DocumentTest(driver.createQueryLoc(@$),
 								dynamic_cast<ElementTest*>($2));
@@ -5020,7 +5020,7 @@ DocumentTest :
 	|	DOCUMENT_NODE_LPAR  SchemaElementTest  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DocumentTest [schema_elem]\n";
+			 cout << "DocumentTest [schema_elem]" << endl;
 #endif
 			$$ = new DocumentTest(driver.createQueryLoc(@$),
 								dynamic_cast<SchemaElementTest*>($2));
@@ -5034,7 +5034,7 @@ TextTest :
 		TEXT_LPAR  RPAR 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "TextTest [ ]\n";
+			 cout << "TextTest [ ]" << endl;
 #endif
 			$$ = new TextTest(driver.createQueryLoc(@$));
 		}
@@ -5047,7 +5047,7 @@ CommentTest :
 		COMMENT_LPAR  RPAR 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "CommentTest [ ]\n";
+			 cout << "CommentTest [ ]" << endl;
 #endif
 			$$ = new CommentTest(driver.createQueryLoc(@$));
 		}
@@ -5060,21 +5060,21 @@ PITest :
 		PI_LPAR  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PITest [ ]\n";
+			 cout << "PITest [ ]" << endl;
 #endif
 			$$ = new PITest(driver.createQueryLoc(@$), "");
 		}
 	|	PI_LPAR  NCNAME  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PITest [ncname]\n";
+			 cout << "PITest [ncname]" << endl;
 #endif
 			$$ = new PITest(driver.createQueryLoc(@$), driver.symtab.get((off_t)$2));
 		}
 	|	PI_LPAR  STRING_LITERAL  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "PITest [stringlit]\n";
+			 cout << "PITest [stringlit]" << endl;
 #endif
 			$$ = new PITest(driver.createQueryLoc(@$), driver.symtab.get((off_t)$2));
 		}
@@ -5087,7 +5087,7 @@ AttributeTest :
 		ATTRIBUTE_LPAR  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AttributeTest [ ]\n";
+			 cout << "AttributeTest [ ]" << endl;
 #endif
 			$$ = new AttributeTest(driver.createQueryLoc(@$),
 								NULL,
@@ -5096,7 +5096,7 @@ AttributeTest :
 	|	ATTRIBUTE_LPAR  QNAME  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AttributeTest [name]\n";
+			 cout << "AttributeTest [name]" << endl;
 #endif
 			$$ = new AttributeTest(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -5105,7 +5105,7 @@ AttributeTest :
 	|	ATTRIBUTE_LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AttributeTest [name.type]\n";
+			 cout << "AttributeTest [name.type]" << endl;
 #endif
 			$$ = new AttributeTest(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -5114,7 +5114,7 @@ AttributeTest :
 	|	ATTRIBUTE_LPAR  STAR  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AttributeTest [*]\n";
+			 cout << "AttributeTest [*]" << endl;
 #endif
 			$$ = new AttributeTest(driver.createQueryLoc(@$),
 								NULL,
@@ -5123,7 +5123,7 @@ AttributeTest :
 	|	ATTRIBUTE_LPAR  STAR  COMMA  TypeName  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "AttributeTest [*.type]\n";
+			 cout << "AttributeTest [*.type]" << endl;
 #endif
 			$$ = new AttributeTest(driver.createQueryLoc(@$),
 								NULL,
@@ -5138,7 +5138,7 @@ SchemaAttributeTest :
 		SCHEMA_ATTRIBUTE_LPAR  QNAME  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SchemaAttributeTest [ ]\n";
+			 cout << "SchemaAttributeTest [ ]" << endl;
 #endif
 			$$ = new SchemaAttributeTest(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$), driver.symtab.get((off_t)$2)));
@@ -5152,7 +5152,7 @@ ElementTest :
 		ELEMENT_LPAR  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ElementTest [ ]\n";
+			 cout << "ElementTest [ ]" << endl;
 #endif
 			$$ = new ElementTest(driver.createQueryLoc(@$),
 									NULL,
@@ -5161,7 +5161,7 @@ ElementTest :
 	|	ELEMENT_LPAR  QNAME  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ElementTest [name]\n";
+			 cout << "ElementTest [name]" << endl;
 #endif
 			$$ = new ElementTest(driver.createQueryLoc(@$),
 									new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -5170,7 +5170,7 @@ ElementTest :
 	|	ELEMENT_LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ElementTest [name.type]\n";
+			 cout << "ElementTest [name.type]" << endl;
 #endif
 			$$ = new ElementTest(driver.createQueryLoc(@$),
 									new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -5179,7 +5179,7 @@ ElementTest :
 	|	ELEMENT_LPAR  QNAME  COMMA  TypeName_WITH_HOOK RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ElementTest [name.type]\n";
+			 cout << "ElementTest [name.type]" << endl;
 #endif
 			$$ = new ElementTest(driver.createQueryLoc(@$),
 									new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)),
@@ -5188,7 +5188,7 @@ ElementTest :
 	|	ELEMENT_LPAR  STAR  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ElementTest [*]\n";
+			 cout << "ElementTest [*]" << endl;
 #endif
 			$$ = new ElementTest(driver.createQueryLoc(@$),
 									NULL,
@@ -5198,7 +5198,7 @@ ElementTest :
 	|	ELEMENT_LPAR  STAR  COMMA  TypeName  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ElementTest [*.type]\n";
+			 cout << "ElementTest [*.type]" << endl;
 #endif
 			$$ = new ElementTest(driver.createQueryLoc(@$),
 									NULL,
@@ -5208,7 +5208,7 @@ ElementTest :
 	|	ELEMENT_LPAR  STAR  COMMA  TypeName_WITH_HOOK RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ElementTest [*.type]\n";
+			 cout << "ElementTest [*.type]" << endl;
 #endif
 			$$ = new ElementTest(driver.createQueryLoc(@$),
 									NULL,
@@ -5224,7 +5224,7 @@ SchemaElementTest :
 		SCHEMA_ELEMENT_LPAR  QNAME  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "SchemaElementTest [ ]\n";
+			 cout << "SchemaElementTest [ ]" << endl;
 #endif
 			$$ = new SchemaElementTest(driver.createQueryLoc(@$),
 									new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$2)));
@@ -5248,7 +5248,7 @@ TypeName :
 		QNAME
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "TypeName [name]\n";
+			 cout << "TypeName [name]" << endl;
 #endif
 			$$ = new TypeName(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)));
@@ -5258,7 +5258,7 @@ TypeName_WITH_HOOK :
 	  QNAME  HOOK
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "TypeName [name?]\n";
+			 cout << "TypeName [name?]" << endl;
 #endif
 			$$ = new TypeName(driver.createQueryLoc(@$),
 								new QName(driver.createQueryLoc(@$),driver.symtab.get((off_t)$1)),
@@ -5281,7 +5281,7 @@ StringLiteral :
 		STRING_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "StringLiteral [ ]\n";
+			 cout << "StringLiteral [ ]" << endl;
 #endif
 			$$ = new StringLiteral(driver.createQueryLoc(@$), driver.symtab.get((off_t)$1));
 		}
@@ -5323,7 +5323,7 @@ RevalidationDecl :
 		DECLARE_REVALIDATION_MODE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "RevalidationDecl [ ]\n";
+			 cout << "RevalidationDecl [ ]" << endl;
 #endif
 		}
 	;
@@ -5335,31 +5335,31 @@ InsertExpr :
 		DO_INSERT  ExprSingle  INTO  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InsertExpr [expr]\n";
+			 cout << "InsertExpr [expr]" << endl;
 #endif
 		}
 	|	DO_INSERT  ExprSingle  AS  FIRST_INTO  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InsertExpr [expr.as_first]\n";
+			 cout << "InsertExpr [expr.as_first]" << endl;
 #endif
 		}
 	|	DO_INSERT  ExprSingle  AS  LAST_INTO  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InsertExpr [expr.as_last]\n";
+			 cout << "InsertExpr [expr.as_last]" << endl;
 #endif
 		}
 	| DO_INSERT  ExprSingle  AFTER  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InsertExpr [expr.after]\n";
+			 cout << "InsertExpr [expr.after]" << endl;
 #endif
 		}
 	| DO_INSERT  ExprSingle  BEFORE  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InsertExpr [expr.before]\n";
+			 cout << "InsertExpr [expr.before]" << endl;
 #endif
 		}
 	;
@@ -5371,7 +5371,7 @@ DeleteExpr:
 		DO_DELETE  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DeleteExpr [expr]\n";
+			 cout << "DeleteExpr [expr]" << endl;
 #endif
 		}
 	;
@@ -5383,13 +5383,13 @@ ReplaceExpr :
 		DO_REPLACE  ExprSingle  WITH  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ReplaceExpr [expr.expr]\n";
+			 cout << "ReplaceExpr [expr.expr]" << endl;
 #endif
 		}
 	|	DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ReplaceExpr [value.expr]\n";
+			 cout << "ReplaceExpr [value.expr]" << endl;
 #endif
 		}
 	;
@@ -5401,7 +5401,7 @@ RenameExpr :
 		DO_RENAME  ExprSingle  AS  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "RenameExpr [expr.expr]\n";
+			 cout << "RenameExpr [expr.expr]" << endl;
 #endif
 		}
 	;
@@ -5428,7 +5428,7 @@ TransformExpr :
 		TRANSFORM_COPY_DOLLAR  VarNameList  MODIFY  ExprSingle  RETURN  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "TransformExpr [ ]\n";
+			 cout << "TransformExpr [ ]" << endl;
 #endif
 		}
 	;
@@ -5440,13 +5440,13 @@ VarNameList :
 		VARNAME	 GETS  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarNameList [single]\n";
+			 cout << "VarNameList [single]" << endl;
 #endif
 		}
 	|	VarNameList  COMMA_DOLLAR  VARNAME  GETS  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "VarNameList [list]\n";
+			 cout << "VarNameList [list]" << endl;
 #endif
 		}
 	;
@@ -5466,25 +5466,25 @@ FTSelection :
 		FTOr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTSelection [or]\n";
+			 cout << "FTSelection [or]" << endl;
 #endif
 		}
 	|	FTOr  FTMatchOptionProximityList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTSelection [or.match_proximity]\n";
+			 cout << "FTSelection [or.match_proximity]" << endl;
 #endif
 		}
 	|	FTOr  WEIGHT  RangeExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTSelection [or.weight_range]\n";
+			 cout << "FTSelection [or.weight_range]" << endl;
 #endif
 		}
 	|	FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTSelection [or.match_proximity.weight_range]\n";
+			 cout << "FTSelection [or.match_proximity.weight_range]" << endl;
 #endif
 		}
 	;
@@ -5496,25 +5496,25 @@ FTMatchOptionProximityList :
 		FTMatchOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOptionProximityList [option_single]\n";
+			 cout << "FTMatchOptionProximityList [option_single]" << endl;
 #endif
 		}
 	| FTProximity
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOptionProximityList [proximity_single]\n";
+			 cout << "FTMatchOptionProximityList [proximity_single]" << endl;
 #endif
 		}
 	| FTMatchOptionProximityList  FTMatchOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOptionProximityList [option_list]\n";
+			 cout << "FTMatchOptionProximityList [option_list]" << endl;
 #endif
 		}
 	| FTMatchOptionProximityList  FTProximity
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOptionProximityList [proximity_list]\n";
+			 cout << "FTMatchOptionProximityList [proximity_list]" << endl;
 #endif
 		}
 	;
@@ -5526,13 +5526,13 @@ FTOr :
 		FTAnd
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTOr [and]\n";
+			 cout << "FTOr [and]" << endl;
 #endif
 		}
 	|	FTOr  FTOR  FTAnd
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTOr [or.and]\n";
+			 cout << "FTOr [or.and]" << endl;
 #endif
 		}
 	;
@@ -5544,13 +5544,13 @@ FTAnd :
 		FTMildnot
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTAnd [mild_not]\n";
+			 cout << "FTAnd [mild_not]" << endl;
 #endif
 		}
 	|	FTAnd  FTAND  FTMildnot
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTAnd [and.mild_not]\n";
+			 cout << "FTAnd [and.mild_not]" << endl;
 #endif
 		}
 	;
@@ -5562,13 +5562,13 @@ FTMildnot :
 		FTUnaryNot
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMildNot [unary_not]\n";
+			 cout << "FTMildNot [unary_not]" << endl;
 #endif
 		}
 	|	FTMildnot  FTNOT_IN  FTUnaryNot
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMildNot [mild_not.unary_not]\n";
+			 cout << "FTMildNot [mild_not.unary_not]" << endl;
 #endif
 		}
 	;
@@ -5580,13 +5580,13 @@ FTUnaryNot :
 		FTWordsSelection
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTUnaryNot [words]\n";
+			 cout << "FTUnaryNot [words]" << endl;
 #endif
 		}
 	|	FTNOT  FTWordsSelection
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTUnaryNot [not.words]\n";
+			 cout << "FTUnaryNot [not.words]" << endl;
 #endif
 		}
 	;
@@ -5598,19 +5598,19 @@ FTWordsSelection :
 		FTWords
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTWordsSelection [words]\n";
+			 cout << "FTWordsSelection [words]" << endl;
 #endif
 		}
 	|	FTWords FTTimes
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTWordsSelection [words.times]\n";
+			 cout << "FTWordsSelection [words.times]" << endl;
 #endif
 		}
 	| LPAR  FTSelection  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTWordsSelection [selection]\n";
+			 cout << "FTWordsSelection [selection]" << endl;
 #endif
 		}
 	;
@@ -5622,13 +5622,13 @@ FTWords :
 		FTWordsValue 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTWords [value]\n";
+			 cout << "FTWords [value]" << endl;
 #endif
 		}
 	|	FTWordsValue  FTAnyallOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTWords [value.any_all_option]\n";
+			 cout << "FTWords [value.any_all_option]" << endl;
 #endif
 		}
 	;
@@ -5640,13 +5640,13 @@ FTWordsValue :
 		Literal
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTWordsValue [literal]\n";
+			 cout << "FTWordsValue [literal]" << endl;
 #endif
 		}
 	| LBRACE  Expr  RBRACE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTWordsValue [expr]\n";
+			 cout << "FTWordsValue [expr]" << endl;
 #endif
 		}
 	;
@@ -5658,31 +5658,31 @@ FTProximity :
 		FTOrderedIndicator
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTProximity [order]\n";
+			 cout << "FTProximity [order]" << endl;
 #endif
 		}
 	| FTWindow
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTProximity [window]\n";
+			 cout << "FTProximity [window]" << endl;
 #endif
 		}
 	| FTDistance
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTProximity [distance]\n";
+			 cout << "FTProximity [distance]" << endl;
 #endif
 		}
 	| FTScope
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTProximity [scope]\n";
+			 cout << "FTProximity [scope]" << endl;
 #endif
 		}
 	| FTContent
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTProximity [content]\n";
+			 cout << "FTProximity [content]" << endl;
 #endif
 		}
 	;
@@ -5694,7 +5694,7 @@ FTOrderedIndicator :
 		ORDERED
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTOrderedIndicator [ ]\n";
+			 cout << "FTOrderedIndicator [ ]" << endl;
 #endif
 		}
 	;
@@ -5706,49 +5706,49 @@ FTMatchOption :
 		FTCaseOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOption [case]\n";
+			 cout << "FTMatchOption [case]" << endl;
 #endif
 			$$ = $1;
 		}
 	| FTDiacriticsOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOption [diacritics]\n";
+			 cout << "FTMatchOption [diacritics]" << endl;
 #endif
 			$$ = $1;
 		}
 	| FTStemOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOption [stem]\n";
+			 cout << "FTMatchOption [stem]" << endl;
 #endif
 			$$ = $1;
 		}
 	| FTThesaurusOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOption [thesaurus]\n";
+			 cout << "FTMatchOption [thesaurus]" << endl;
 #endif
 			$$ = $1;
 		}
 	| FTStopwordOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOption [stopword]\n";
+			 cout << "FTMatchOption [stopword]" << endl;
 #endif
 			$$ = $1;
 		}
 	| FTLanguageOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOption [language]\n";
+			 cout << "FTMatchOption [language]" << endl;
 #endif
 			$$ = $1;
 		}
 	| FTWildcardOption
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTMatchOption [wildcard]\n";
+			 cout << "FTMatchOption [wildcard]" << endl;
 #endif
 			$$ = $1;
 		}
@@ -5761,25 +5761,25 @@ FTCaseOption :
 		LOWERCASE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTCaseOption [lower]\n";
+			 cout << "FTCaseOption [lower]" << endl;
 #endif
 		}
 	| UPPERCASE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTCaseOption [upper]\n";
+			 cout << "FTCaseOption [upper]" << endl;
 #endif
 		}
 	| CASE_SENSITIVE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTCaseOption [sensitive]\n";
+			 cout << "FTCaseOption [sensitive]" << endl;
 #endif
 		}
 	| CASE_INSENSITIVE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTCaseOption [insensitive]\n";
+			 cout << "FTCaseOption [insensitive]" << endl;
 #endif
 		}
 	;
@@ -5791,25 +5791,25 @@ FTDiacriticsOption :
 		WITH_DIACRITICS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTDiacriticsOption [with]\n";
+			 cout << "FTDiacriticsOption [with]" << endl;
 #endif
 		}
 	| WITHOUT_DIACRITICS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTDiacriticsOption [without]\n";
+			 cout << "FTDiacriticsOption [without]" << endl;
 #endif
 		}
 	| DIACRITICS_SENSITIVE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTDiacriticsOption [sensitive]\n";
+			 cout << "FTDiacriticsOption [sensitive]" << endl;
 #endif
 		}
 	| DIACRITICS_INSENSITIVE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTDiacriticsOption [insensitive]\n";
+			 cout << "FTDiacriticsOption [insensitive]" << endl;
 #endif
 		}
 	;
@@ -5821,13 +5821,13 @@ FTStemOption :
 		WITH_STEMMING
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTStemOption [with]\n";
+			 cout << "FTStemOption [with]" << endl;
 #endif
 		}
 	| WITHOUT_STEMMING
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTStemOption [without]\n";
+			 cout << "FTStemOption [without]" << endl;
 #endif
 		}
 	;
@@ -5839,43 +5839,43 @@ FTThesaurusOption :
 		WITH_THESAURUS  FTThesaurusID
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusOption [id]\n";
+			 cout << "FTThesaurusOption [id]" << endl;
 #endif
 		}
 	|	WITH_THESAURUS  DEFAULT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusOption [default]\n";
+			 cout << "FTThesaurusOption [default]" << endl;
 #endif
 		}
 	| WITH_THESAURUS  LPAR  FTThesaurusID  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusOption [(id)]\n";
+			 cout << "FTThesaurusOption [(id)]" << endl;
 #endif
 		}
 	| WITH_THESAURUS  LPAR  FTThesaurusID COMMA  FTThesaurusList  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusOption [(id,id,..)]\n";
+			 cout << "FTThesaurusOption [(id,id,..)]" << endl;
 #endif
 		}
 	| WITH_THESAURUS  LPAR  DEFAULT  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusOption [(default)]\n";
+			 cout << "FTThesaurusOption [(default)]" << endl;
 #endif
 		}
 	| WITH_THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusOption [(default,id,id,..)]\n";
+			 cout << "FTThesaurusOption [(default,id,id,..)]" << endl;
 #endif
 		}
 	| WITHOUT_THESAURUS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusOption [without]\n";
+			 cout << "FTThesaurusOption [without]" << endl;
 #endif
 		}
 	;
@@ -5887,13 +5887,13 @@ FTThesaurusList :
 		FTThesaurusID
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusList [single]\n";
+			 cout << "FTThesaurusList [single]" << endl;
 #endif
 		}
 	| FTThesaurusList  COMMA  FTThesaurusID
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusList [list]\n";
+			 cout << "FTThesaurusList [list]" << endl;
 #endif
 		}
 	;
@@ -5905,25 +5905,25 @@ FTThesaurusID :
 		AT  STRING_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusID [name]\n";
+			 cout << "FTThesaurusID [name]" << endl;
 #endif
 		}
 	|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusID [name.rel]\n";
+			 cout << "FTThesaurusID [name.rel]" << endl;
 #endif
 		}
 	|	AT  STRING_LITERAL  FTRange  LEVELS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusID [name.range]\n";
+			 cout << "FTThesaurusID [name.range]" << endl;
 #endif
 		}
 	|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL  FTRange  LEVELS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTThesaurusID [name.rel.range]\n";
+			 cout << "FTThesaurusID [name.rel.range]" << endl;
 #endif
 		}
 	;
@@ -5935,31 +5935,31 @@ FTStopwordOption :
 		WITH_STOP_WORDS  FTRefOrList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTStopwordOption [list]\n";
+			 cout << "FTStopwordOption [list]" << endl;
 #endif
 		}
 	|	WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTStopwordOption [list.incl_excl]\n";
+			 cout << "FTStopwordOption [list.incl_excl]" << endl;
 #endif
 		}
 	| WITH_DEFAULT_STOP_WORDS 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTStopwordOption [default]\n";
+			 cout << "FTStopwordOption [default]" << endl;
 #endif
 		}
 	| WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTStopwordOption [default.incl_excl]\n";
+			 cout << "FTStopwordOption [default.incl_excl]" << endl;
 #endif
 		}
 	| WITHOUT_STOP_WORDS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTStopwordOption [without]\n";
+			 cout << "FTStopwordOption [without]" << endl;
 #endif
 		}
 	;
@@ -5971,13 +5971,13 @@ FTInclExclStringLiteralList :
 		FTInclExclStringLiteral
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTInclExclStringLiteralList [.]\n";
+			 cout << "FTInclExclStringLiteralList [.]" << endl;
 #endif
 		}
 	| FTInclExclStringLiteralList  FTInclExclStringLiteral
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTInclExclStringLiteralList [*]\n";
+			 cout << "FTInclExclStringLiteralList [*]" << endl;
 #endif
 		}
 	;
@@ -5989,13 +5989,13 @@ FTRefOrList :
 		AT  STRING_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTRefOrList [.]\n";
+			 cout << "FTRefOrList [.]" << endl;
 #endif
 		}
 	| LPAR  FTStringLiteralList  RPAR 
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTRefOrList [(*)]\n";
+			 cout << "FTRefOrList [(*)]" << endl;
 #endif
 		}
 	;
@@ -6007,13 +6007,13 @@ FTStringLiteralList :
 		STRING_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTStringLiteralList [.]\n";
+			 cout << "FTStringLiteralList [.]" << endl;
 #endif
 		}
 	|	FTStringLiteralList  STRING_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTStringLiteralList [*]\n";
+			 cout << "FTStringLiteralList [*]" << endl;
 #endif
 		}
 	;
@@ -6025,13 +6025,13 @@ FTInclExclStringLiteral :
 		UNION  FTRefOrList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTInclExclStringLiteral [union]\n";
+			 cout << "FTInclExclStringLiteral [union]" << endl;
 #endif
 		}
 	|	EXCEPT  FTRefOrList
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTInclExclStringLiteral [except]\n";
+			 cout << "FTInclExclStringLiteral [except]" << endl;
 #endif
 		}
 	;
@@ -6043,7 +6043,7 @@ FTLanguageOption :
 		LANGUAGE  STRING_LITERAL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTLanguageOption [ ]\n";
+			 cout << "FTLanguageOption [ ]" << endl;
 #endif
 		}
 	;
@@ -6055,13 +6055,13 @@ FTWildcardOption :
 		WITH_WILDCARDS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTWildcardOption [with]\n";
+			 cout << "FTWildcardOption [with]" << endl;
 #endif
 		}
 	| WITHOUT_WILDCARDS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTWildcardOption [without]\n";
+			 cout << "FTWildcardOption [without]" << endl;
 #endif
 		}
 	;
@@ -6073,19 +6073,19 @@ FTContent :
 		AT_START
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTContent [start]\n";
+			 cout << "FTContent [start]" << endl;
 #endif
 		}
 	| AT_END
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTContent [end]\n";
+			 cout << "FTContent [end]" << endl;
 #endif
 		}
 	| ENTIRE_CONTENT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTContent [entire]\n";
+			 cout << "FTContent [entire]" << endl;
 #endif
 		}
 	;
@@ -6097,31 +6097,31 @@ FTAnyallOption :
 		ANY
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTAnyallOption [any]\n";
+			 cout << "FTAnyallOption [any]" << endl;
 #endif
 		}
 	|	ANY_WORD
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTAnyallOption [any_word]\n";
+			 cout << "FTAnyallOption [any_word]" << endl;
 #endif
 		}
 	| ALL
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTAnyallOption [all]\n";
+			 cout << "FTAnyallOption [all]" << endl;
 #endif
 		}
 	| ALL_WORDS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTAnyallOption [all_words]\n";
+			 cout << "FTAnyallOption [all_words]" << endl;
 #endif
 		}
 	| PHRASE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTAnyallOption [phrase]\n";
+			 cout << "FTAnyallOption [phrase]" << endl;
 #endif
 		}
 	;
@@ -6133,25 +6133,25 @@ FTRange :
 		EXACTLY  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTRange [exactly]\n";
+			 cout << "FTRange [exactly]" << endl;
 #endif
 		}
 	| AT_LEAST  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTRange [at_least]\n";
+			 cout << "FTRange [at_least]" << endl;
 #endif
 		}
 	| AT_MOST  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTRange [at_most]\n";
+			 cout << "FTRange [at_most]" << endl;
 #endif
 		}
 	| FROM  UnionExpr  TO  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTRange [range]\n";
+			 cout << "FTRange [range]" << endl;
 #endif
 		}
 	;
@@ -6163,7 +6163,7 @@ FTDistance :
 		DISTANCE  FTRange  FTUnit
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTDistance [ ]\n";
+			 cout << "FTDistance [ ]" << endl;
 #endif
 		}
 	;
@@ -6175,7 +6175,7 @@ FTWindow :
 		WINDOW  UnionExpr  FTUnit
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTWindow [ ]\n";
+			 cout << "FTWindow [ ]" << endl;
 #endif
 		}
 	;
@@ -6187,7 +6187,7 @@ FTTimes :
 		OCCURS  FTRange  TIMES
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTTimes [ ]\n";
+			 cout << "FTTimes [ ]" << endl;
 #endif
 		}
 	;
@@ -6199,13 +6199,13 @@ FTScope :
 		SAME  FTBigUnit
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTTimes [same]\n";
+			 cout << "FTTimes [same]" << endl;
 #endif
 		}
 	|	DIFFERENT  FTBigUnit
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTTimes [different]\n";
+			 cout << "FTTimes [different]" << endl;
 #endif
 		}
 	;
@@ -6217,19 +6217,19 @@ FTUnit :
 		WORDS
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTUnit [words]\n";
+			 cout << "FTUnit [words]" << endl;
 #endif
 		}
 	| SENTENCES
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTUnit [sentences]\n";
+			 cout << "FTUnit [sentences]" << endl;
 #endif
 		}
 	| PARAGRAPH
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTUnit [paragraph]\n";
+			 cout << "FTUnit [paragraph]" << endl;
 #endif
 		}
 	;
@@ -6241,13 +6241,13 @@ FTBigUnit :
 		SENTENCE
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTBigUnit [sentence]\n";
+			 cout << "FTBigUnit [sentence]" << endl;
 #endif
 		}
 	| PARAGRAPH
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTBigUnit [paragraph]\n";
+			 cout << "FTBigUnit [paragraph]" << endl;
 #endif
 		}
 	;
@@ -6259,7 +6259,7 @@ FTIgnoreOption :
 		WITHOUT_CONTENT  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTIgnoreOption [ ]\n";
+			 cout << "FTIgnoreOption [ " << endl;
 #endif
 		}
 	;

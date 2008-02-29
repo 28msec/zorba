@@ -6957,7 +6957,7 @@ static yyconst flex_int16_t yy_rule_linenum[500] =
 #define yymore() (yyg->yy_more_flag = 1)
 #define YY_MORE_ADJ yyg->yy_more_len
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 /* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: xquery.l,v 1.4 2006/11/14 05:24:43 Paul Pedersen Exp $
@@ -6979,7 +6979,7 @@ static yyconst flex_int16_t yy_rule_linenum[500] =
  |  [http://www.ximep-2006.org/papers/Paper-Chamberlin-Carey.pdf]       
  |                                                                      
  |_______________________________________________________________________*/
-#line 26 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 26 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)
@@ -7457,7 +7457,7 @@ YY_DECL
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 /* %% [7.0] user's declarations go here */
-#line 276 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 276 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 
 
  yylloc->step ();
@@ -7593,13 +7593,13 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 281 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 281 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 { yylloc->step(); }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 282 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 282 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 { yylloc->lines(yyleng); yylloc->step (); }
 	YY_BREAK
 
@@ -7617,7 +7617,7 @@ typedef yy::xquery_parser::token token;
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 301 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 301 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7627,7 +7627,7 @@ YY_RULE_SETUP
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 307 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 307 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext+9, yyleng-9);
   BEGIN MODE_OPERATOR;
@@ -7638,7 +7638,7 @@ YY_RULE_SETUP
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 314 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 314 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::TYPESWITCH_LPAR;
 }
@@ -7646,7 +7646,7 @@ YY_RULE_SETUP
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 318 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 318 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7656,7 +7656,7 @@ YY_RULE_SETUP
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 324 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 324 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7666,7 +7666,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 330 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 330 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext+10, yyleng-11, true, true);
   BEGIN MODE_OPERATOR;
@@ -7677,7 +7677,7 @@ YY_RULE_SETUP
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 337 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 337 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext+8, yyleng-9, true, true);
   BEGIN MODE_OPERATOR;
@@ -7688,7 +7688,7 @@ YY_RULE_SETUP
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 344 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 344 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7698,7 +7698,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 350 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 350 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7709,7 +7709,7 @@ YY_RULE_SETUP
 /* ---------------------------------------------- */
 case 12:
 YY_RULE_SETUP
-#line 358 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 358 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PROCESSING_INSTRUCTION_CTOR;
   return token::PROCESSING_INSTRUCTION;
@@ -7718,7 +7718,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 364 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 364 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7728,7 +7728,7 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 370 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 370 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_FUNCTION;
 }
@@ -7736,14 +7736,14 @@ YY_RULE_SETUP
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 374 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 374 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_UPDATING_FUNCTION;
 }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 378 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 378 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7753,7 +7753,7 @@ YY_RULE_SETUP
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 384 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 384 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7763,7 +7763,7 @@ YY_RULE_SETUP
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 390 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 390 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -7772,21 +7772,21 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 396 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 396 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SEMI;
 }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 399 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 399 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::COMMA;
 }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 402 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 402 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::LPAR;
 }
@@ -7794,7 +7794,7 @@ YY_RULE_SETUP
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 405 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 405 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::IF_LPAR;
 }
@@ -7804,7 +7804,7 @@ YY_RULE_SETUP
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 412 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 412 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7814,7 +7814,7 @@ YY_RULE_SETUP
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 418 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 418 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7824,7 +7824,7 @@ YY_RULE_SETUP
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 424 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 424 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7834,7 +7834,7 @@ YY_RULE_SETUP
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 430 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 430 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7844,7 +7844,7 @@ YY_RULE_SETUP
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 436 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 436 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7854,7 +7854,7 @@ YY_RULE_SETUP
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 442 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 442 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7864,7 +7864,7 @@ YY_RULE_SETUP
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 448 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 448 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7874,7 +7874,7 @@ YY_RULE_SETUP
 case 30:
 /* rule 30 can match eol */
 YY_RULE_SETUP
-#line 454 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 454 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -7886,7 +7886,7 @@ YY_RULE_SETUP
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 463 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 463 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTESTFORPI, yyscanner);
@@ -7900,126 +7900,126 @@ YY_RULE_SETUP
   }*/
 case 32:
 YY_RULE_SETUP
-#line 475 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 475 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::MINUS;
 }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 478 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 478 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::PLUS;
 }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 481 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 481 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SLASH;
 }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 484 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 484 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::LEADING_LONE_SLASH;
 }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 487 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 487 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SLASH_SLASH;
 }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 490 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 490 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANCESTOR_OR_SELF_AXIS;
 }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 493 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 493 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANCESTOR_AXIS;
 }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 496 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 496 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ATTRIBUTE_AXIS;
 }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 499 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 499 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::CHILD_AXIS;
 }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 502 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 502 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DESCENDANT_OR_SELF_AXIS;
 }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 505 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 505 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DESCENDANT_AXIS;
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 508 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 508 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::FOLLOWING_SIBLING_AXIS;
 }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 511 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 511 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::FOLLOWING_AXIS;
 }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 514 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 514 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::PARENT_AXIS;
 }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 517 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 517 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::PRECEDING_SIBLING_AXIS;
 }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 520 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 520 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::PRECEDING_AXIS;
 }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 523 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 523 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SELF_AXIS;
 }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 526 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 526 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_SIGN;
 }
@@ -8031,14 +8031,14 @@ case 50:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 534 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 534 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 537 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 537 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->ival = driver.symtab.integerval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -8050,14 +8050,14 @@ case 52:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 543 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 543 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 546 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 546 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->decval = driver.symtab.decimalval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -8069,14 +8069,14 @@ case 54:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 552 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 552 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 555 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 555 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->dval = driver.symtab.doubleval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -8085,7 +8085,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 561 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 561 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_ncname(yytext, yyleng-2);
   BEGIN MODE_OPERATOR;
@@ -8094,7 +8094,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 567 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 567 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -8103,7 +8103,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 573 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 573 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::RPAR;
@@ -8111,7 +8111,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 578 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 578 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_ncname(yytext+2, yyleng-2);
   BEGIN MODE_OPERATOR;
@@ -8120,7 +8120,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 584 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 584 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::STAR;
@@ -8129,7 +8129,7 @@ YY_RULE_SETUP
 case 61:
 /* rule 61 can match eol */
 YY_RULE_SETUP
-#line 589 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 589 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
@@ -8138,7 +8138,7 @@ YY_RULE_SETUP
 case 62:
 /* rule 62 can match eol */
 YY_RULE_SETUP
-#line 594 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 594 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DECLARE_CONSTRUCTION;
@@ -8147,7 +8147,7 @@ YY_RULE_SETUP
 case 63:
 /* rule 63 can match eol */
 YY_RULE_SETUP
-#line 599 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 599 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DECLARE_DEFAULT_ORDER;
@@ -8155,7 +8155,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 604 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 604 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DOT_DOT;
@@ -8163,7 +8163,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 609 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 609 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::DOT;
@@ -8174,7 +8174,7 @@ YY_RULE_SETUP
 case 66:
 /* rule 66 can match eol */
 YY_RULE_SETUP
-#line 617 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 617 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::DECLARE_DEFAULT_COLLATION;
@@ -8183,7 +8183,7 @@ YY_RULE_SETUP
 case 67:
 /* rule 67 can match eol */
 YY_RULE_SETUP
-#line 622 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 622 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::DECLARE_NAMESPACE;
@@ -8195,7 +8195,7 @@ case 68:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 627 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 627 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::MODULE_NAMESPACE;
@@ -8207,7 +8207,7 @@ case 69:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 632 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 632 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::DECLARE_BASE_URI;
@@ -8218,7 +8218,7 @@ YY_RULE_SETUP
 case 70:
 /* rule 70 can match eol */
 YY_RULE_SETUP
-#line 640 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 640 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::DECLARE_DEFAULT_ELEMENT;
@@ -8227,7 +8227,7 @@ YY_RULE_SETUP
 case 71:
 /* rule 71 can match eol */
 YY_RULE_SETUP
-#line 645 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 645 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::DECLARE_DEFAULT_FUNCTION;
@@ -8239,7 +8239,7 @@ case 72:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 650 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 650 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::IMPORT_SCHEMA;
@@ -8251,7 +8251,7 @@ case 73:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 655 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 655 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::IMPORT_MODULE;
@@ -8260,7 +8260,7 @@ YY_RULE_SETUP
 case 74:
 /* rule 74 can match eol */
 YY_RULE_SETUP
-#line 660 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 660 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEKEYWORD;
   return token::DECLARE_COPY_NAMESPACES;
@@ -8270,7 +8270,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 75:
 YY_RULE_SETUP
-#line 668 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 668 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DOLLAR;
@@ -8279,7 +8279,7 @@ YY_RULE_SETUP
 case 76:
 /* rule 76 can match eol */
 YY_RULE_SETUP
-#line 673 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 673 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::FOR_DOLLAR;
@@ -8288,7 +8288,7 @@ YY_RULE_SETUP
 case 77:
 /* rule 77 can match eol */
 YY_RULE_SETUP
-#line 678 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 678 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::LET_DOLLAR;
@@ -8297,7 +8297,7 @@ YY_RULE_SETUP
 case 78:
 /* rule 78 can match eol */
 YY_RULE_SETUP
-#line 683 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 683 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::SOME_DOLLAR;
@@ -8306,7 +8306,7 @@ YY_RULE_SETUP
 case 79:
 /* rule 79 can match eol */
 YY_RULE_SETUP
-#line 688 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 688 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::EVERY_DOLLAR;
@@ -8315,7 +8315,7 @@ YY_RULE_SETUP
 case 80:
 /* rule 80 can match eol */
 YY_RULE_SETUP
-#line 693 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 693 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DECLARE_VARIABLE_DOLLAR;
@@ -8325,7 +8325,7 @@ YY_RULE_SETUP
 case 81:
 /* rule 81 can match eol */
 YY_RULE_SETUP
-#line 699 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 699 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::TRANSFORM_COPY_DOLLAR;
@@ -8339,7 +8339,7 @@ case 82:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 707 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 707 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::RPAR_AS;
@@ -8349,7 +8349,7 @@ YY_RULE_SETUP
 /* ------------------------- */
 case 83:
 YY_RULE_SETUP
-#line 715 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 715 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_XML_COMMENT, yyscanner);
@@ -8360,7 +8360,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 84:
 YY_RULE_SETUP
-#line 724 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 724 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {  
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_PROCESSING_INSTRUCTION, yyscanner);
@@ -8371,7 +8371,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 85:
 YY_RULE_SETUP
-#line 733 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 733 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_CDATA_SECTION, yyscanner);
@@ -8381,7 +8381,7 @@ YY_RULE_SETUP
 case 86:
 /* rule 86 can match eol */
 YY_RULE_SETUP
-#line 740 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 740 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -8390,7 +8390,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 87:
 YY_RULE_SETUP
-#line 745 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 745 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {   
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_START_TAG, yyscanner);
@@ -8402,7 +8402,7 @@ YY_RULE_SETUP
 case 88:
 /* rule 88 can match eol */
 YY_RULE_SETUP
-#line 754 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 754 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_XMLSPACE_DECL;
   return token::DECLARE_BOUNDARY_SPACE;
@@ -8412,7 +8412,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 89:
 YY_RULE_SETUP
-#line 762 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 762 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -8422,7 +8422,7 @@ YY_RULE_SETUP
 case 90:
 /* rule 90 can match eol */
 YY_RULE_SETUP
-#line 769 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 769 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_DECLAREORDERING;
   return token::DECLARE_ORDERING;
@@ -8436,7 +8436,7 @@ case 91:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 777 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 777 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_XQUERY_VERSION;
   return token::XQUERY_VERSION;
@@ -8446,7 +8446,7 @@ YY_RULE_SETUP
 /* -------------------- */
 case 92:
 YY_RULE_SETUP
-#line 785 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 785 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {  
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -8457,7 +8457,7 @@ YY_RULE_SETUP
 case 93:
 /* rule 93 can match eol */
 YY_RULE_SETUP
-#line 793 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 793 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPTION;
   return token::DECLARE_OPTION;
@@ -8468,7 +8468,7 @@ YY_RULE_SETUP
 case 94:
 /* rule 94 can match eol */
 YY_RULE_SETUP
-#line 801 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 801 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   const char *p = yytext + 2;
   for (; *p != '\'' && *p != '"'; p++);
@@ -8480,7 +8480,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 95:
 YY_RULE_SETUP
-#line 811 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 811 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {   
   yy_pop_state(yyscanner);
   return token::RBRACE;
@@ -8493,7 +8493,7 @@ YY_RULE_SETUP
 case 96:
 /* rule 96 can match eol */
 YY_RULE_SETUP
-#line 822 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 822 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_REVALIDATION_MODE;
 }
@@ -8504,7 +8504,7 @@ case 97:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 825 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 825 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DO_INSERT;
 }
@@ -8512,7 +8512,7 @@ YY_RULE_SETUP
 case 98:
 /* rule 98 can match eol */
 YY_RULE_SETUP
-#line 828 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 828 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DO_DELETE;
 }
@@ -8523,7 +8523,7 @@ case 99:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 831 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 831 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DO_REPLACE;
 }
@@ -8534,7 +8534,7 @@ case 100:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 834 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 834 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   driver.set_rename(true);
   return token::DO_RENAME;
@@ -8546,7 +8546,7 @@ case 101:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 838 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 838 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::INTO;
 }
@@ -8557,7 +8557,7 @@ case 102:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 841 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 841 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::FIRST_INTO;
 }
@@ -8568,7 +8568,7 @@ case 103:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 844 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 844 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::LAST_INTO;
 }
@@ -8579,7 +8579,7 @@ case 104:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 847 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 847 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AFTER;
 }
@@ -8590,7 +8590,7 @@ case 105:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 850 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 850 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::BEFORE;
 }
@@ -8601,14 +8601,14 @@ case 106:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 853 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 853 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::VALUE_OF;
 }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 856 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 856 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH;
 }
@@ -8619,7 +8619,7 @@ case 108:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 859 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 859 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AS;
 }
@@ -8630,7 +8630,7 @@ case 109:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 862 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 862 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::MODIFY;
 }
@@ -8641,21 +8641,21 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 110:
 YY_RULE_SETUP
-#line 872 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 872 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTAND;
 }
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 875 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 875 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTNOT;
 }
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 878 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 878 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTOR;
 }
@@ -8666,7 +8666,7 @@ case 113:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 881 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 881 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::FTNOT_IN;
 }
@@ -8677,7 +8677,7 @@ case 114:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 884 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 884 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL;
 }
@@ -8688,7 +8688,7 @@ case 115:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 887 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 887 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL_WORDS;
 }
@@ -8699,7 +8699,7 @@ case 116:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 890 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 890 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY;
 }
@@ -8710,7 +8710,7 @@ case 117:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 893 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 893 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY_WORD;
 }
@@ -8721,7 +8721,7 @@ case 118:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 896 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 896 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_END;
 }
@@ -8732,7 +8732,7 @@ case 119:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 899 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 899 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_LEAST;
 }
@@ -8743,7 +8743,7 @@ case 120:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 902 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 902 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_MOST;
 }
@@ -8754,7 +8754,7 @@ case 121:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 905 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 905 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_START;
 }
@@ -8765,7 +8765,7 @@ case 122:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 908 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 908 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_INSENSITIVE;
 }
@@ -8776,7 +8776,7 @@ case 123:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 911 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 911 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_SENSITIVE;
 }
@@ -8787,7 +8787,7 @@ case 124:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 914 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 914 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_FTOPTION;
 }
@@ -8798,7 +8798,7 @@ case 125:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 917 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 917 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_INSENSITIVE;
 }
@@ -8809,7 +8809,7 @@ case 126:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 920 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 920 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_SENSITIVE;
 }
@@ -8820,7 +8820,7 @@ case 127:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 923 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 923 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIFFERENT;
 }
@@ -8831,7 +8831,7 @@ case 128:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 926 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 926 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DISTANCE;
 }
@@ -8842,7 +8842,7 @@ case 129:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 929 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 929 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENTIRE_CONTENT;
 }
@@ -8853,7 +8853,7 @@ case 130:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 932 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 932 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::EXACTLY;
 }
@@ -8864,7 +8864,7 @@ case 131:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 935 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 935 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::FROM;
 }
@@ -8875,7 +8875,7 @@ case 132:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 938 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 938 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::LANGUAGE;
 }
@@ -8886,7 +8886,7 @@ case 133:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 941 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 941 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::LEVELS;
 }
@@ -8897,7 +8897,7 @@ case 134:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 944 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 944 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::LOWERCASE;
 }
@@ -8908,7 +8908,7 @@ case 135:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 947 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 947 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::OCCURS;
 }
@@ -8919,7 +8919,7 @@ case 136:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 950 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 950 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::PARAGRAPH;
 }
@@ -8930,7 +8930,7 @@ case 137:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 953 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 953 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::PHRASE;
 }
@@ -8941,7 +8941,7 @@ case 138:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 12;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 956 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 956 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::RELATIONSHIP;
 }
@@ -8952,7 +8952,7 @@ case 139:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 959 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 959 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SAME;
 }
@@ -8963,7 +8963,7 @@ case 140:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 962 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 962 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SCORE;
 }
@@ -8974,7 +8974,7 @@ case 141:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 965 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 965 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCE;
 }
@@ -8985,7 +8985,7 @@ case 142:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 968 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 968 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCES;
 }
@@ -8996,7 +8996,7 @@ case 143:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 971 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 971 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::TIMES;
 }
@@ -9007,7 +9007,7 @@ case 144:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 974 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 974 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UPPERCASE;
 }
@@ -9018,7 +9018,7 @@ case 145:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 977 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 977 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WEIGHT;
 }
@@ -9029,7 +9029,7 @@ case 146:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 980 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 980 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WINDOW;
 }
@@ -9040,7 +9040,7 @@ case 147:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 983 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 983 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_CONTENT;
 }
@@ -9051,7 +9051,7 @@ case 148:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 986 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 986 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_DIACRITICS;
 }
@@ -9062,7 +9062,7 @@ case 149:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 989 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 989 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STEMMING;
 }
@@ -9073,7 +9073,7 @@ case 150:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 992 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 992 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STOP_WORDS;
 }
@@ -9084,7 +9084,7 @@ case 151:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 995 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 995 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_THESAURUS;
 }
@@ -9095,7 +9095,7 @@ case 152:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 998 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 998 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_WILDCARDS;
 }
@@ -9106,7 +9106,7 @@ case 153:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1001 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1001 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DEFAULT_STOP_WORDS;
 }
@@ -9117,7 +9117,7 @@ case 154:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1004 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1004 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DIACRITICS;
 }
@@ -9128,7 +9128,7 @@ case 155:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1007 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1007 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STEMMING;
 }
@@ -9139,7 +9139,7 @@ case 156:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1010 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1010 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STOP_WORDS;
 }
@@ -9150,7 +9150,7 @@ case 157:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1013 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1013 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_THESAURUS;
 }
@@ -9161,7 +9161,7 @@ case 158:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1016 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1016 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_WILDCARDS;
 }
@@ -9172,7 +9172,7 @@ case 159:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1019 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1019 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WORDS;
 }
@@ -9180,7 +9180,7 @@ YY_RULE_SETUP
 case 160:
 /* rule 160 can match eol */
 YY_RULE_SETUP
-#line 1023 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1023 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -9188,7 +9188,7 @@ YY_RULE_SETUP
 /* catch all */
 case 161:
 YY_RULE_SETUP
-#line 1028 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1028 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -9203,7 +9203,7 @@ YY_RULE_SETUP
 
 case 162:
 YY_RULE_SETUP
-#line 1044 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1044 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -9212,7 +9212,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 1050 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1050 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
   return token::NCNAME;
@@ -9221,7 +9221,7 @@ YY_RULE_SETUP
 case 164:
 /* rule 164 can match eol */
 YY_RULE_SETUP
-#line 1055 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1055 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -9243,7 +9243,7 @@ case 165:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1073 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1073 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ORDERED;
@@ -9255,7 +9255,7 @@ case 166:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1078 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1078 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::UNORDERED;
@@ -9273,7 +9273,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 167:
 YY_RULE_SETUP
-#line 1099 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1099 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(INITIAL, yyscanner);
   return token::LBRACE;
@@ -9281,7 +9281,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 1103 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1103 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   /* yy_push_state(INITIAL, yyscanner); */
@@ -9290,7 +9290,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 1108 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1108 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -9302,7 +9302,7 @@ case 170:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1112 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1112 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::THEN;
@@ -9314,7 +9314,7 @@ case 171:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1116 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1116 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ELSE;
@@ -9326,7 +9326,7 @@ case 172:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1120 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1120 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXTERNAL;
@@ -9338,7 +9338,7 @@ case 173:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1124 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1124 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AND;
@@ -9350,7 +9350,7 @@ case 174:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1128 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1128 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   if (!driver.ftcontains()) {
     BEGIN INITIAL;
@@ -9365,7 +9365,7 @@ case 175:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1137 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1137 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SCORE;
@@ -9373,7 +9373,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 1143 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1143 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GETS;
@@ -9381,7 +9381,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 1147 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1147 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::COMMA;
@@ -9393,7 +9393,7 @@ case 178:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1151 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1151 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DIV;
@@ -9401,7 +9401,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 1155 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1155 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EQUALS;
@@ -9413,7 +9413,7 @@ case 180:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1159 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1159 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXCEPT;
@@ -9425,7 +9425,7 @@ case 181:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1163 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1163 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_EQ;
@@ -9437,7 +9437,7 @@ case 182:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1167 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1167 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GE;
@@ -9449,7 +9449,7 @@ case 183:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1171 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1171 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GT;
@@ -9461,7 +9461,7 @@ case 184:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1175 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1175 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LE;
@@ -9473,7 +9473,7 @@ case 185:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1179 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1179 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LT;
@@ -9485,7 +9485,7 @@ case 186:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1183 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1183 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_NE;
@@ -9493,7 +9493,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 1187 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1187 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GE;
@@ -9501,7 +9501,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 1191 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1191 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FOLLOWS;
@@ -9509,7 +9509,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 1195 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1195 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GT;
@@ -9521,7 +9521,7 @@ case 190:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1199 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1199 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IDIV;
@@ -9533,7 +9533,7 @@ case 191:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1203 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1203 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTERSECT;
@@ -9546,7 +9546,7 @@ case 192:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1211 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1211 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTO;
@@ -9558,7 +9558,7 @@ case 193:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1215 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1215 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WITH;
@@ -9570,7 +9570,7 @@ case 194:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1219 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1219 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DO_INSERT;
@@ -9579,7 +9579,7 @@ YY_RULE_SETUP
 case 195:
 /* rule 195 can match eol */
 YY_RULE_SETUP
-#line 1223 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1223 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DO_DELETE;
@@ -9591,7 +9591,7 @@ case 196:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1227 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1227 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DO_REPLACE;
@@ -9603,7 +9603,7 @@ case 197:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1231 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1231 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   driver.set_rename(true);
@@ -9616,7 +9616,7 @@ case 198:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1236 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1236 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTO;
@@ -9628,7 +9628,7 @@ case 199:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1240 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1240 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FIRST_INTO;
@@ -9640,7 +9640,7 @@ case 200:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1244 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1244 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LAST_INTO;
@@ -9652,7 +9652,7 @@ case 201:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1248 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1248 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AFTER;
@@ -9664,7 +9664,7 @@ case 202:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1252 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1252 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::BEFORE;
@@ -9676,7 +9676,7 @@ case 203:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1256 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1256 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VALUE_OF;
@@ -9688,7 +9688,7 @@ case 204:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1260 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1260 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MODIFY;
@@ -9700,7 +9700,7 @@ case 205:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1264 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1264 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::_IN_;
@@ -9712,7 +9712,7 @@ case 206:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1268 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1268 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IS;
@@ -9720,7 +9720,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 1272 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1272 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LBRACK;
@@ -9728,7 +9728,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 1276 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1276 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LE;
@@ -9736,7 +9736,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 1280 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1280 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRECEDES;
@@ -9744,7 +9744,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 1284 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1284 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LT;
@@ -9752,7 +9752,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 1288 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1288 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MINUS;
@@ -9764,7 +9764,7 @@ case 212:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1292 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1292 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MOD;
@@ -9772,7 +9772,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 1296 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1296 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STAR;
@@ -9780,7 +9780,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 1300 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1300 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::NE;
@@ -9792,7 +9792,7 @@ case 215:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1304 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1304 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ORDER_BY;
@@ -9804,7 +9804,7 @@ case 216:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1308 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1308 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STABLE_ORDER_BY;
@@ -9816,7 +9816,7 @@ case 217:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1312 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1312 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::OR;
@@ -9824,7 +9824,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 1316 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1316 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PLUS;
@@ -9836,7 +9836,7 @@ case 219:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1320 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1320 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::RETURN;
@@ -9848,7 +9848,7 @@ case 220:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1324 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1324 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SATISFIES;
@@ -9856,7 +9856,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-#line 1328 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1328 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SLASH;
@@ -9864,7 +9864,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 1332 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1332 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LEADING_LONE_SLASH;
@@ -9872,7 +9872,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 1336 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1336 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SLASH_SLASH;
@@ -9884,7 +9884,7 @@ case 224:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1340 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1340 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::TO;
@@ -9896,7 +9896,7 @@ case 225:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1344 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1344 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::UNION;
@@ -9904,7 +9904,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
-#line 1348 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1348 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VBAR;
@@ -9916,7 +9916,7 @@ case 227:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1352 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1352 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WHERE;
@@ -9928,7 +9928,7 @@ case 228:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1356 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1356 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRESERVE;
@@ -9940,7 +9940,7 @@ case 229:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1360 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1360 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STRIP;
@@ -9954,7 +9954,7 @@ case 230:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1370 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1370 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CASTABLE_AS;
@@ -9966,7 +9966,7 @@ case 231:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1374 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1374 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CAST_AS;
@@ -9980,7 +9980,7 @@ case 232:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1382 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1382 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::INSTANCE_OF;
@@ -9992,7 +9992,7 @@ case 233:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1386 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1386 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::TREAT_AS;
@@ -10004,7 +10004,7 @@ case 234:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1390 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1390 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::CASE;
@@ -10016,7 +10016,7 @@ case 235:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1394 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1394 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   if (driver.rename()) {
     driver.set_rename(false);
@@ -10034,7 +10034,7 @@ YY_RULE_SETUP
 case 236:
 /* rule 236 can match eol */
 YY_RULE_SETUP
-#line 1407 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1407 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ITEMTYPE;
   return token::RPAR_AS;
@@ -10044,7 +10044,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 237:
 YY_RULE_SETUP
-#line 1415 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1415 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DOLLAR;
@@ -10053,7 +10053,7 @@ YY_RULE_SETUP
 case 238:
 /* rule 238 can match eol */
 YY_RULE_SETUP
-#line 1419 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1419 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::FOR_DOLLAR;
@@ -10062,7 +10062,7 @@ YY_RULE_SETUP
 case 239:
 /* rule 239 can match eol */
 YY_RULE_SETUP
-#line 1423 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1423 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::LET_DOLLAR;
@@ -10071,7 +10071,7 @@ YY_RULE_SETUP
 case 240:
 /* rule 240 can match eol */
 YY_RULE_SETUP
-#line 1427 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1427 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::LET_SCORE_DOLLAR;
@@ -10081,7 +10081,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 241:
 YY_RULE_SETUP
-#line 1435 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1435 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -10094,7 +10094,7 @@ case 242:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1442 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1442 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_URITOOPERATOR;
   return token::COLLATION;
@@ -10104,7 +10104,7 @@ YY_RULE_SETUP
 /* --------------------------------------- */
 case 243:
 YY_RULE_SETUP
-#line 1450 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1450 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::RBRACE;
@@ -10114,14 +10114,14 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 244:
 YY_RULE_SETUP
-#line 1458 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1458 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::RPAR;
 }
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-#line 1461 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1461 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::HOOK;
 }
@@ -10132,7 +10132,7 @@ case 246:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1464 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1464 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::EMPTY_GREATEST;
 }
@@ -10143,7 +10143,7 @@ case 247:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1467 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1467 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::EMPTY_LEAST;
 }
@@ -10154,7 +10154,7 @@ case 248:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1470 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1470 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ASCENDING;
 }
@@ -10165,7 +10165,7 @@ case 249:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 10;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1473 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1473 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DESCENDING;
 }
@@ -10176,14 +10176,14 @@ case 250:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1476 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1476 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DEFAULT;
 }
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 1479 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1479 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::RBRACK;
 }
@@ -10191,7 +10191,7 @@ YY_RULE_SETUP
 case 252:
 /* rule 252 can match eol */
 YY_RULE_SETUP
-#line 1482 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1482 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
@@ -10208,7 +10208,7 @@ case 253:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 10;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1495 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1495 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   driver.set_ftcontains(true);
@@ -10217,7 +10217,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-#line 1500 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1500 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTAND;
@@ -10225,7 +10225,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 255:
 YY_RULE_SETUP
-#line 1504 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1504 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTNOT;
@@ -10233,7 +10233,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
-#line 1508 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1508 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTOR;
@@ -10245,7 +10245,7 @@ case 257:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1512 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1512 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FTNOT_IN;
@@ -10257,7 +10257,7 @@ case 258:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1516 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1516 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AT_LEAST;
@@ -10269,7 +10269,7 @@ case 259:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1520 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1520 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AT_MOST;
@@ -10281,7 +10281,7 @@ case 260:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1524 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1524 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DISTANCE;
@@ -10293,7 +10293,7 @@ case 261:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1528 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1528 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXACTLY;
@@ -10305,7 +10305,7 @@ case 262:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1532 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1532 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FROM;
@@ -10317,7 +10317,7 @@ case 263:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1536 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1536 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::OCCURS;
@@ -10329,7 +10329,7 @@ case 264:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1540 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1540 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WINDOW;
@@ -10343,7 +10343,7 @@ case 265:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1548 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1548 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL;
 }
@@ -10354,7 +10354,7 @@ case 266:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1551 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1551 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ALL_WORDS;
 }
@@ -10365,7 +10365,7 @@ case 267:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1554 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1554 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY;
 }
@@ -10376,7 +10376,7 @@ case 268:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1557 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1557 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ANY_WORD;
 }
@@ -10387,7 +10387,7 @@ case 269:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1560 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1560 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_END;
 }
@@ -10398,7 +10398,7 @@ case 270:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1563 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1563 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT_START;
 }
@@ -10409,7 +10409,7 @@ case 271:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1566 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1566 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_INSENSITIVE;
 }
@@ -10420,7 +10420,7 @@ case 272:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1569 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1569 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE_SENSITIVE;
 }
@@ -10431,7 +10431,7 @@ case 273:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1572 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1572 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DECLARE_FTOPTION;
 }
@@ -10442,7 +10442,7 @@ case 274:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1575 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1575 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_INSENSITIVE;
 }
@@ -10453,7 +10453,7 @@ case 275:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1578 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1578 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIACRITICS_SENSITIVE;
 }
@@ -10464,7 +10464,7 @@ case 276:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1581 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1581 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DIFFERENT;
 }
@@ -10475,7 +10475,7 @@ case 277:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1584 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1584 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENTIRE_CONTENT;
 }
@@ -10486,7 +10486,7 @@ case 278:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1587 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1587 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::LANGUAGE;
 }
@@ -10497,7 +10497,7 @@ case 279:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1590 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1590 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::LEVELS;
 }
@@ -10508,7 +10508,7 @@ case 280:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1593 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1593 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::LOWERCASE;
 }
@@ -10519,7 +10519,7 @@ case 281:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1596 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1596 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::PARAGRAPH;
 }
@@ -10530,7 +10530,7 @@ case 282:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1599 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1599 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::PHRASE;
 }
@@ -10541,7 +10541,7 @@ case 283:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 12;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1602 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1602 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::RELATIONSHIP;
 }
@@ -10552,7 +10552,7 @@ case 284:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1605 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1605 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SAME;
 }
@@ -10563,7 +10563,7 @@ case 285:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1608 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1608 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SCORE;
 }
@@ -10574,7 +10574,7 @@ case 286:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1611 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1611 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCE;
 }
@@ -10585,7 +10585,7 @@ case 287:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1614 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1614 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::SENTENCES;
 }
@@ -10596,7 +10596,7 @@ case 288:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1617 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1617 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::TIMES;
 }
@@ -10607,7 +10607,7 @@ case 289:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1620 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1620 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UPPERCASE;
 }
@@ -10618,7 +10618,7 @@ case 290:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1623 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1623 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WEIGHT;
 }
@@ -10629,7 +10629,7 @@ case 291:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1626 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1626 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_CONTENT;
 }
@@ -10640,7 +10640,7 @@ case 292:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1629 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1629 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_DIACRITICS;
 }
@@ -10651,7 +10651,7 @@ case 293:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1632 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1632 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STEMMING;
 }
@@ -10662,7 +10662,7 @@ case 294:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1635 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1635 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_STOP_WORDS;
 }
@@ -10673,7 +10673,7 @@ case 295:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1638 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1638 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_THESAURUS;
 }
@@ -10684,7 +10684,7 @@ case 296:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1641 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1641 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITHOUT_WILDCARDS;
 }
@@ -10695,7 +10695,7 @@ case 297:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1644 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1644 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DEFAULT_STOP_WORDS;
 }
@@ -10706,7 +10706,7 @@ case 298:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1647 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1647 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_DIACRITICS;
 }
@@ -10717,7 +10717,7 @@ case 299:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1650 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1650 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STEMMING;
 }
@@ -10728,7 +10728,7 @@ case 300:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1653 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1653 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_STOP_WORDS;
 }
@@ -10739,7 +10739,7 @@ case 301:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1656 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1656 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_THESAURUS;
 }
@@ -10750,7 +10750,7 @@ case 302:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1659 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1659 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WITH_WILDCARDS;
 }
@@ -10761,14 +10761,14 @@ case 303:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1662 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1662 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::WORDS;
 }
 	YY_BREAK
 case 304:
 YY_RULE_SETUP
-#line 1665 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1665 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -10776,7 +10776,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
-#line 1670 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1670 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -10784,7 +10784,7 @@ YY_RULE_SETUP
 case 306:
 /* rule 306 can match eol */
 YY_RULE_SETUP
-#line 1674 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1674 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10801,7 +10801,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 307:
 YY_RULE_SETUP
-#line 1693 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1693 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -10812,7 +10812,7 @@ YY_RULE_SETUP
 case 308:
 /* rule 308 can match eol */
 YY_RULE_SETUP
-#line 1700 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1700 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
@@ -10823,7 +10823,7 @@ case 309:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1704 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1704 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENCODING;
 }
@@ -10831,7 +10831,7 @@ YY_RULE_SETUP
 case 310:
 /* rule 310 can match eol */
 YY_RULE_SETUP
-#line 1708 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1708 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10849,14 +10849,14 @@ YY_RULE_SETUP
 
 case 311:
 YY_RULE_SETUP
-#line 1729 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1729 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 312:
 YY_RULE_SETUP
-#line 1733 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1733 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -10867,14 +10867,14 @@ YY_RULE_SETUP
 case 313:
 /* rule 313 can match eol */
 YY_RULE_SETUP
-#line 1740 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1740 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   TRY_URILIT (URI_LITERAL, yytext, yyleng);
 }
 	YY_BREAK
 case 314:
 YY_RULE_SETUP
-#line 1744 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1744 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::COMMA;
 }
@@ -10885,21 +10885,21 @@ case 315:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1748 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1748 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AT;
 }
 	YY_BREAK
 case 316:
 YY_RULE_SETUP
-#line 1752 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1752 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::EQUALS;
 }
 	YY_BREAK
 case 317:
 YY_RULE_SETUP
-#line 1756 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1756 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
   return token::NCNAME;
@@ -10907,7 +10907,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 318:
 YY_RULE_SETUP
-#line 1761 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1761 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -10915,7 +10915,7 @@ YY_RULE_SETUP
 case 319:
 /* rule 319 can match eol */
 YY_RULE_SETUP
-#line 1765 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1765 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -10931,7 +10931,7 @@ YY_RULE_SETUP
 case 320:
 /* rule 320 can match eol */
 YY_RULE_SETUP
-#line 1782 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1782 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   TRY_URILIT (URI_LITERAL, yytext, yyleng);
@@ -10951,7 +10951,7 @@ YY_RULE_SETUP
 case 321:
 /* rule 321 can match eol */
 YY_RULE_SETUP
-#line 1803 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1803 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   TRY_URILIT (URI_LITERAL, yytext, yyleng);
@@ -10963,7 +10963,7 @@ case 322:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1808 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1808 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_NAMESPACEDECL;
   return token::NAMESPACE;
@@ -10977,7 +10977,7 @@ case 323:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 7;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1815 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1815 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INHERIT;
@@ -10989,7 +10989,7 @@ case 324:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 10;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1820 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1820 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::NO_INHERIT;
@@ -10999,7 +10999,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 325:
 YY_RULE_SETUP
-#line 1827 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1827 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -11012,7 +11012,7 @@ case 326:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1834 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1834 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DEFAULT_ELEMENT;
 }
@@ -11023,7 +11023,7 @@ case 327:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1838 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1838 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::PRESERVE;
 }
@@ -11034,21 +11034,21 @@ case 328:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 11;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1842 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1842 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::NO_PRESERVE;
 }
 	YY_BREAK
 case 329:
 YY_RULE_SETUP
-#line 1846 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1846 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::COMMA;
 }
 	YY_BREAK
 case 330:
 YY_RULE_SETUP
-#line 1850 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1850 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11056,7 +11056,7 @@ YY_RULE_SETUP
 case 331:
 /* rule 331 can match eol */
 YY_RULE_SETUP
-#line 1854 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1854 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11079,7 +11079,7 @@ case 332:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1876 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1876 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRESERVE;
@@ -11091,7 +11091,7 @@ case 333:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 1881 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1881 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STRIP;
@@ -11101,14 +11101,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 334:
 YY_RULE_SETUP
-#line 1888 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1888 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 335:
 YY_RULE_SETUP
-#line 1892 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1892 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11116,7 +11116,7 @@ YY_RULE_SETUP
 case 336:
 /* rule 336 can match eol */
 YY_RULE_SETUP
-#line 1896 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1896 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11134,7 +11134,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 337:
 YY_RULE_SETUP
-#line 1917 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1917 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -11145,14 +11145,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 338:
 YY_RULE_SETUP
-#line 1925 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1925 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 339:
 YY_RULE_SETUP
-#line 1929 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1929 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11160,7 +11160,7 @@ YY_RULE_SETUP
 case 340:
 /* rule 340 can match eol */
 YY_RULE_SETUP
-#line 1933 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1933 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11178,7 +11178,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 341:
 YY_RULE_SETUP
-#line 1954 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1954 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_VARNAME;
   return token::DOLLAR;
@@ -11187,7 +11187,7 @@ YY_RULE_SETUP
 case 342:
 /* rule 342 can match eol */
 YY_RULE_SETUP
-#line 1959 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1959 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::VOID_TEST;
@@ -11197,7 +11197,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 343:
 YY_RULE_SETUP
-#line 1966 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1966 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -11207,7 +11207,7 @@ YY_RULE_SETUP
 case 344:
 /* rule 344 can match eol */
 YY_RULE_SETUP
-#line 1972 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1972 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11217,7 +11217,7 @@ YY_RULE_SETUP
 case 345:
 /* rule 345 can match eol */
 YY_RULE_SETUP
-#line 1978 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1978 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11227,7 +11227,7 @@ YY_RULE_SETUP
 case 346:
 /* rule 346 can match eol */
 YY_RULE_SETUP
-#line 1984 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1984 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11237,7 +11237,7 @@ YY_RULE_SETUP
 case 347:
 /* rule 347 can match eol */
 YY_RULE_SETUP
-#line 1990 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1990 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11247,7 +11247,7 @@ YY_RULE_SETUP
 case 348:
 /* rule 348 can match eol */
 YY_RULE_SETUP
-#line 1996 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 1996 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11257,7 +11257,7 @@ YY_RULE_SETUP
 case 349:
 /* rule 349 can match eol */
 YY_RULE_SETUP
-#line 2002 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2002 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11267,7 +11267,7 @@ YY_RULE_SETUP
 case 350:
 /* rule 350 can match eol */
 YY_RULE_SETUP
-#line 2008 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2008 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11277,7 +11277,7 @@ YY_RULE_SETUP
 case 351:
 /* rule 351 can match eol */
 YY_RULE_SETUP
-#line 2014 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2014 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11289,7 +11289,7 @@ YY_RULE_SETUP
 case 352:
 /* rule 352 can match eol */
 YY_RULE_SETUP
-#line 2022 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2022 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTESTFORPI, yyscanner);
@@ -11299,7 +11299,7 @@ YY_RULE_SETUP
 case 353:
 /* rule 353 can match eol */
 YY_RULE_SETUP
-#line 2028 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2028 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 { 
   BEGIN MODE_OCCURRENCE_INDICATOR;
   return token::ITEM_TEST;
@@ -11309,7 +11309,7 @@ YY_RULE_SETUP
 /* -------------------- */
 case 354:
 YY_RULE_SETUP
-#line 2035 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2035 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -11319,7 +11319,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 355:
 YY_RULE_SETUP
-#line 2042 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2042 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SEMI;
@@ -11331,7 +11331,7 @@ case 356:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2047 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2047 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::THEN;
@@ -11343,7 +11343,7 @@ case 357:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2052 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2052 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ELSE;
@@ -11354,7 +11354,7 @@ YY_RULE_SETUP
 case 358:
 /* rule 358 can match eol */
 YY_RULE_SETUP
-#line 2059 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2059 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   const char *p = yytext + 2;
   for (; *p != '\'' && *p != '"'; p++);
@@ -11370,7 +11370,7 @@ case 359:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2068 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2068 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXTERNAL;
@@ -11382,7 +11382,7 @@ case 360:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2073 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2073 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AND;
@@ -11394,7 +11394,7 @@ case 361:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2078 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2078 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::AT;
@@ -11402,7 +11402,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 362:
 YY_RULE_SETUP
-#line 2083 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2083 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GETS;
@@ -11410,7 +11410,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 363:
 YY_RULE_SETUP
-#line 2088 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2088 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::COMMA;
@@ -11422,7 +11422,7 @@ case 364:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2093 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2093 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::DIV;
@@ -11430,7 +11430,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 365:
 YY_RULE_SETUP
-#line 2098 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2098 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EQUALS;
@@ -11442,7 +11442,7 @@ case 366:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2103 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2103 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::EXCEPT;
@@ -11454,7 +11454,7 @@ case 367:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2108 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2108 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_EQ;
@@ -11466,7 +11466,7 @@ case 368:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2113 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2113 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GE;
@@ -11478,7 +11478,7 @@ case 369:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2118 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2118 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_GT;
@@ -11490,7 +11490,7 @@ case 370:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2123 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2123 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LE;
@@ -11502,7 +11502,7 @@ case 371:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2128 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2128 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_LT;
@@ -11514,7 +11514,7 @@ case 372:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2133 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2133 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VAL_NE;
@@ -11522,7 +11522,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 373:
 YY_RULE_SETUP
-#line 2138 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2138 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GE;
@@ -11530,7 +11530,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 374:
 YY_RULE_SETUP
-#line 2143 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2143 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::FOLLOWS;
@@ -11538,7 +11538,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 375:
 YY_RULE_SETUP
-#line 2148 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2148 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::GT;
@@ -11550,7 +11550,7 @@ case 376:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2153 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2153 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IDIV;
@@ -11562,7 +11562,7 @@ case 377:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2158 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2158 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::INTERSECT;
@@ -11574,7 +11574,7 @@ case 378:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2163 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2163 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::_IN_;
@@ -11586,7 +11586,7 @@ case 379:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2168 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2168 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::IS;
@@ -11594,7 +11594,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 380:
 YY_RULE_SETUP
-#line 2173 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2173 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LBRACK;
@@ -11602,7 +11602,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 381:
 YY_RULE_SETUP
-#line 2178 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2178 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LPAR;
@@ -11610,7 +11610,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 382:
 YY_RULE_SETUP
-#line 2183 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2183 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LE;
@@ -11618,7 +11618,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 383:
 YY_RULE_SETUP
-#line 2188 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2188 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::PRECEDES;
@@ -11626,7 +11626,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 384:
 YY_RULE_SETUP
-#line 2193 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2193 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::LT;
@@ -11634,7 +11634,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 385:
 YY_RULE_SETUP
-#line 2198 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2198 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MINUS;
@@ -11646,7 +11646,7 @@ case 386:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 3;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2203 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2203 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::MOD;
@@ -11654,7 +11654,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 387:
 YY_RULE_SETUP
-#line 2208 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2208 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::NE;
@@ -11666,7 +11666,7 @@ case 388:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2213 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2213 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::ORDER_BY;
@@ -11678,7 +11678,7 @@ case 389:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2218 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2218 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::STABLE_ORDER_BY;
@@ -11690,7 +11690,7 @@ case 390:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2223 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2223 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::OR;
@@ -11702,7 +11702,7 @@ case 391:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 6;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2228 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2228 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::RETURN;
@@ -11714,7 +11714,7 @@ case 392:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 9;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2233 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2233 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::SATISFIES;
@@ -11726,7 +11726,7 @@ case 393:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2238 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2238 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::TO;
@@ -11738,7 +11738,7 @@ case 394:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2243 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2243 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::UNION;
@@ -11746,7 +11746,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 395:
 YY_RULE_SETUP
-#line 2248 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2248 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::VBAR;
@@ -11758,7 +11758,7 @@ case 396:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 5;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2253 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2253 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
   return token::WHERE;
@@ -11772,7 +11772,7 @@ case 397:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2260 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2260 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CASTABLE_AS;
@@ -11784,7 +11784,7 @@ case 398:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2265 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2265 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_SINGLETYPE;
   return token::CAST_AS;
@@ -11798,7 +11798,7 @@ case 399:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2272 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2272 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::INSTANCE_OF;
 }
@@ -11809,7 +11809,7 @@ case 400:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2276 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2276 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::TREAT_AS;
 }
@@ -11820,7 +11820,7 @@ case 401:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2280 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2280 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::CASE;
 }
@@ -11831,7 +11831,7 @@ case 402:
 yyg->yy_c_buf_p = yy_cp = yy_bp + 2;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2284 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2284 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::AS;
 }
@@ -11842,14 +11842,14 @@ case 403:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 2288 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2288 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::RPAR_AS;
 }
 	YY_BREAK
 case 404:
 YY_RULE_SETUP
-#line 2292 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2292 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OCCURRENCE_INDICATOR; 
@@ -11858,7 +11858,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 405:
 YY_RULE_SETUP
-#line 2298 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2298 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11866,7 +11866,7 @@ YY_RULE_SETUP
 case 406:
 /* rule 406 can match eol */
 YY_RULE_SETUP
-#line 2302 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2302 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11883,7 +11883,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 407:
 YY_RULE_SETUP
-#line 2322 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2322 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -11894,7 +11894,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 408:
 YY_RULE_SETUP
-#line 2330 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2330 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_CLOSE_KINDTEST;
   return token::STAR;
@@ -11902,7 +11902,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 409:
 YY_RULE_SETUP
-#line 2335 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2335 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   BEGIN MODE_CLOSE_KINDTEST;
@@ -11913,7 +11913,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 410:
 YY_RULE_SETUP
-#line 2343 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2343 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -11922,7 +11922,7 @@ YY_RULE_SETUP
 /* --------------------------------- */
 case 411:
 YY_RULE_SETUP
-#line 2349 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2349 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::RPAR;
@@ -11933,7 +11933,7 @@ YY_RULE_SETUP
 case 412:
 /* rule 412 can match eol */
 YY_RULE_SETUP
-#line 2356 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2356 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_KINDTEST;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11943,7 +11943,7 @@ YY_RULE_SETUP
 case 413:
 /* rule 413 can match eol */
 YY_RULE_SETUP
-#line 2362 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2362 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_KINDTEST;
   yy_push_state(MODE_KINDTEST, yyscanner);
@@ -11954,7 +11954,7 @@ YY_RULE_SETUP
 /* --------- */
 case 414:
 YY_RULE_SETUP
-#line 2370 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2370 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -11962,7 +11962,7 @@ YY_RULE_SETUP
 case 415:
 /* rule 415 can match eol */
 YY_RULE_SETUP
-#line 2374 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2374 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -11980,7 +11980,7 @@ YY_RULE_SETUP
 /* --------------------------------- */
 case 416:
 YY_RULE_SETUP
-#line 2394 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2394 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::RPAR;
@@ -11990,7 +11990,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 417:
 YY_RULE_SETUP
-#line 2402 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2402 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -11999,7 +11999,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 418:
 YY_RULE_SETUP
-#line 2408 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2408 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
   return token::NCNAME;
@@ -12008,14 +12008,14 @@ YY_RULE_SETUP
 case 419:
 /* rule 419 can match eol */
 YY_RULE_SETUP
-#line 2413 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2413 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 	YY_BREAK
 case 420:
 YY_RULE_SETUP
-#line 2417 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2417 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12023,7 +12023,7 @@ YY_RULE_SETUP
 case 421:
 /* rule 421 can match eol */
 YY_RULE_SETUP
-#line 2421 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2421 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12040,7 +12040,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 422:
 YY_RULE_SETUP
-#line 2441 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2441 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::RPAR;
@@ -12050,7 +12050,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 423:
 YY_RULE_SETUP
-#line 2448 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2448 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_KINDTEST;
   return token::COMMA;
@@ -12060,7 +12060,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 424:
 YY_RULE_SETUP
-#line 2455 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2455 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL, yyscanner);
@@ -12071,7 +12071,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 425:
 YY_RULE_SETUP
-#line 2463 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2463 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -12080,14 +12080,14 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 426:
 YY_RULE_SETUP
-#line 2469 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2469 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::HOOK;
 }
 	YY_BREAK
 case 427:
 YY_RULE_SETUP
-#line 2473 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2473 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12095,7 +12095,7 @@ YY_RULE_SETUP
 case 428:
 /* rule 428 can match eol */
 YY_RULE_SETUP
-#line 2477 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2477 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12120,7 +12120,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 429:
 YY_RULE_SETUP
-#line 2505 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2505 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::OCCURS_HOOK;
@@ -12128,7 +12128,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 430:
 YY_RULE_SETUP
-#line 2510 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2510 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::OCCURS_STAR;
@@ -12136,7 +12136,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 431:
 YY_RULE_SETUP
-#line 2515 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2515 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   return token::OCCURS_PLUS;
@@ -12146,7 +12146,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 432:
 YY_RULE_SETUP
-#line 2522 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2522 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
@@ -12155,7 +12155,7 @@ YY_RULE_SETUP
 /* --------------------------------------- */
 case 433:
 YY_RULE_SETUP
-#line 2528 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2528 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yyless(0);
   BEGIN MODE_OPERATOR;
@@ -12164,7 +12164,7 @@ YY_RULE_SETUP
 case 434:
 /* rule 434 can match eol */
 YY_RULE_SETUP
-#line 2533 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2533 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12183,7 +12183,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 435:
 YY_RULE_SETUP
-#line 2555 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2555 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   BEGIN INITIAL;
@@ -12192,7 +12192,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 436:
 YY_RULE_SETUP
-#line 2561 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2561 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12200,7 +12200,7 @@ YY_RULE_SETUP
 case 437:
 /* rule 437 can match eol */
 YY_RULE_SETUP
-#line 2565 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2565 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12220,7 +12220,7 @@ YY_RULE_SETUP
 case 438:
 /* rule 438 can match eol */
 YY_RULE_SETUP
-#line 2587 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2587 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng,true,true);
   BEGIN MODE_PRAGMACONTENTS;
@@ -12229,7 +12229,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 439:
 YY_RULE_SETUP
-#line 2593 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2593 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yylval->sval = driver.symtab.put(yytext, yyleng-2);
@@ -12239,14 +12239,14 @@ YY_RULE_SETUP
 case 440:
 /* rule 440 can match eol */
 YY_RULE_SETUP
-#line 2599 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2599 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
 	YY_BREAK
 case 441:
 YY_RULE_SETUP
-#line 2603 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2603 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12265,7 +12265,7 @@ YY_RULE_SETUP
 case 442:
 /* rule 442 can match eol */
 YY_RULE_SETUP
-#line 2624 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2624 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_OPERATOR;
   yylval->sval = driver.symtab.put(yytext, yyleng-2);
@@ -12274,7 +12274,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 443:
 YY_RULE_SETUP
-#line 2630 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2630 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12293,7 +12293,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 444:
 YY_RULE_SETUP
-#line 2652 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2652 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_varname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
@@ -12304,14 +12304,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 445:
 YY_RULE_SETUP
-#line 2660 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2660 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 446:
 YY_RULE_SETUP
-#line 2664 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2664 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12319,7 +12319,7 @@ YY_RULE_SETUP
 case 447:
 /* rule 447 can match eol */
 YY_RULE_SETUP
-#line 2668 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2668 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -12340,7 +12340,7 @@ YY_RULE_SETUP
 /* ----------------------------- */
 case 448:
 YY_RULE_SETUP
-#line 2692 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2692 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_ELEMENT_CONTENT;
   return token::TAG_END;
@@ -12350,7 +12350,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 449:
 YY_RULE_SETUP
-#line 2699 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2699 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT;
   return token::QUOTE;
@@ -12360,7 +12360,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 450:
 YY_RULE_SETUP
-#line 2706 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2706 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
   return token::APOS;
@@ -12370,7 +12370,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 451:
 YY_RULE_SETUP
-#line 2713 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2713 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_START_TAG;
   return token::EQUALS;
@@ -12380,7 +12380,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 452:
 YY_RULE_SETUP
-#line 2720 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2720 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::EMPTY_TAG_END;
@@ -12391,14 +12391,14 @@ YY_RULE_SETUP
 case 453:
 /* rule 453 can match eol */
 YY_RULE_SETUP
-#line 2727 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2727 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* continue lexing */
 }
 	YY_BREAK
 case 454:
 YY_RULE_SETUP
-#line 2731 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2731 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng);
   return token::QNAME;
@@ -12406,7 +12406,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 455:
 YY_RULE_SETUP
-#line 2736 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2736 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12430,7 +12430,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 456:
 YY_RULE_SETUP
-#line 2763 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2763 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_END_TAG;
   return token::START_TAG_END;
@@ -12440,7 +12440,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 457:
 YY_RULE_SETUP
-#line 2770 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2770 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(INITIAL, yyscanner);
   return token::LBRACE;
@@ -12450,7 +12450,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 458:
 YY_RULE_SETUP
-#line 2777 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2777 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_XML_COMMENT, yyscanner);
   return token::XML_COMMENT_BEGIN;
@@ -12460,7 +12460,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 459:
 YY_RULE_SETUP
-#line 2784 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2784 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_PROCESSING_INSTRUCTION, yyscanner);
   return token::PI_BEGIN;
@@ -12470,7 +12470,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 460:
 YY_RULE_SETUP
-#line 2791 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2791 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_CDATA_SECTION, yyscanner);
   return token::CDATA_BEGIN;
@@ -12480,7 +12480,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 461:
 YY_RULE_SETUP
-#line 2798 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2798 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_START_TAG, yyscanner);
   return token::START_TAG;
@@ -12491,7 +12491,7 @@ YY_RULE_SETUP
 case 462:
 /* rule 462 can match eol */
 YY_RULE_SETUP
-#line 2805 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2805 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
   return token::ELEMENT_CONTENT;
@@ -12499,7 +12499,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 463:
 YY_RULE_SETUP
-#line 2810 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2810 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_entityref(yytext, yyleng);
   return token::ENTITY_REF;
@@ -12507,7 +12507,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 464:
 YY_RULE_SETUP
-#line 2815 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2815 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_charref(yytext, yyleng);
   return token::ELEMENT_CONTENT;
@@ -12515,14 +12515,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 465:
 YY_RULE_SETUP
-#line 2820 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2820 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 466:
 YY_RULE_SETUP
-#line 2824 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2824 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_RBRACE;
 }
@@ -12531,7 +12531,7 @@ YY_RULE_SETUP
 /* -------------- */
 case 467:
 YY_RULE_SETUP
-#line 2830 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2830 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12549,7 +12549,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 468:
 YY_RULE_SETUP
-#line 2851 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2851 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::TAG_END;
@@ -12560,7 +12560,7 @@ YY_RULE_SETUP
 case 469:
 /* rule 469 can match eol */
 YY_RULE_SETUP
-#line 2858 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2858 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
    yylval->sval = driver.symtab.put_qname(yytext, yyleng, false, true);
   return token::QNAME;
@@ -12570,7 +12570,7 @@ YY_RULE_SETUP
 /* -------------- */
 case 470:
 YY_RULE_SETUP
-#line 2865 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2865 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12588,7 +12588,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 471:
 YY_RULE_SETUP
-#line 2886 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2886 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::XML_COMMENT_END;
@@ -12599,7 +12599,7 @@ YY_RULE_SETUP
 case 472:
 /* rule 472 can match eol */
 YY_RULE_SETUP
-#line 2893 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2893 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
   return token::XML_COMMENT_LITERAL;
@@ -12607,7 +12607,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 473:
 YY_RULE_SETUP
-#line 2898 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2898 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
    return token::UNRECOGNIZED;
  }
@@ -12626,7 +12626,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 474:
 YY_RULE_SETUP
-#line 2919 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2919 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
 }
@@ -12635,20 +12635,20 @@ YY_RULE_SETUP
 /* --------------------- */
 case 475:
 YY_RULE_SETUP
-#line 2925 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2925 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 476:
 YY_RULE_SETUP
-#line 2929 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2929 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* do nothing */
 }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_COMMENT):
-#line 2933 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2933 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -12667,7 +12667,7 @@ case YY_STATE_EOF(MODE_EXPR_COMMENT):
 case 477:
 /* rule 477 can match eol */
 YY_RULE_SETUP
-#line 2954 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2954 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; 
   /* continue lexing */
@@ -12677,7 +12677,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 478:
 YY_RULE_SETUP
-#line 2961 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2961 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   return token::PI_END;
@@ -12687,7 +12687,7 @@ YY_RULE_SETUP
 /* ------------------------------- */
 case 479:
 YY_RULE_SETUP
-#line 2968 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2968 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
   BEGIN MODE_PROCESSING_INSTRUCTION;
@@ -12708,7 +12708,7 @@ YY_RULE_SETUP
 case 480:
 /* rule 480 can match eol */
 YY_RULE_SETUP
-#line 2991 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 2991 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   yylval->sval = driver.symtab.put(yytext, yyleng-2);
@@ -12728,7 +12728,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 481:
 YY_RULE_SETUP
-#line 3014 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3014 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_pop_state(yyscanner);
   yylval->sval = driver.symtab.put(yytext, yyleng-3);
@@ -12740,7 +12740,7 @@ YY_RULE_SETUP
 case 482:
 /* rule 482 can match eol */
 YY_RULE_SETUP
-#line 3022 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3022 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yymore();
 }
@@ -12764,7 +12764,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 483:
 YY_RULE_SETUP
-#line 3049 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3049 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_START_TAG;
   return token::QUOTE;
@@ -12774,7 +12774,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 484:
 YY_RULE_SETUP
-#line 3056 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3056 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yy_push_state(INITIAL, yyscanner);
   return token::LBRACE;
@@ -12784,7 +12784,7 @@ YY_RULE_SETUP
 /* -------------------------------- */
 case 485:
 YY_RULE_SETUP
-#line 3063 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3063 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ESCAPE_QUOTE;
 }
@@ -12792,7 +12792,7 @@ YY_RULE_SETUP
 case 486:
 /* rule 486 can match eol */
 YY_RULE_SETUP
-#line 3067 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3067 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
   return token::QUOTE_ATTR_CONTENT;
@@ -12800,7 +12800,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 487:
 YY_RULE_SETUP
-#line 3072 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3072 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_entityref(yytext, yyleng);
   return token::ENTITY_REF;
@@ -12808,7 +12808,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 488:
 YY_RULE_SETUP
-#line 3077 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3077 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_charref(yytext, yyleng);
   return token::QUOTE_ATTR_CONTENT;
@@ -12816,14 +12816,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 489:
 YY_RULE_SETUP
-#line 3082 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3082 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 490:
 YY_RULE_SETUP
-#line 3086 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3086 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_RBRACE;
 }
@@ -12842,7 +12842,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 491:
 YY_RULE_SETUP
-#line 3108 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3108 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_START_TAG;
   return token::APOS;
@@ -12852,7 +12852,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 492:
 YY_RULE_SETUP
-#line 3115 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3115 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
   yy_push_state(INITIAL, yyscanner);
@@ -12863,7 +12863,7 @@ YY_RULE_SETUP
 /* ------------------------------- */
 case 493:
 YY_RULE_SETUP
-#line 3123 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3123 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ESCAPE_APOS;
 }
@@ -12871,7 +12871,7 @@ YY_RULE_SETUP
 case 494:
 /* rule 494 can match eol */
 YY_RULE_SETUP
-#line 3127 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3127 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put(yytext, yyleng);
   return token::APOS_ATTR_CONTENT;
@@ -12879,14 +12879,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 495:
 YY_RULE_SETUP
-#line 3132 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3132 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::ENTITY_REF;
 }
 	YY_BREAK
 case 496:
 YY_RULE_SETUP
-#line 3136 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3136 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_charref(yytext, yyleng);
   return token::APOS_ATTR_CONTENT;
@@ -12894,14 +12894,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 497:
 YY_RULE_SETUP
-#line 3141 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3141 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 498:
 YY_RULE_SETUP
-#line 3145 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3145 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::DOUBLE_RBRACE;
 }
@@ -12909,12 +12909,12 @@ YY_RULE_SETUP
 /* <MODE_APOS_ATTRIBUTE_CONTENT> */
 case 499:
 YY_RULE_SETUP
-#line 3152 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3152 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 return token::UNRECOGNIZED;
 	YY_BREAK
 case 500:
 YY_RULE_SETUP
-#line 3154 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3154 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 ECHO;
 	YY_BREAK
 #line 12921 "xquery_scanner.yy.cpp"
@@ -13190,7 +13190,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			yyg->yy_n_chars, num_to_read );
+			yyg->yy_n_chars, (size_t) num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = yyg->yy_n_chars;
 		}
@@ -13400,7 +13400,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( yywrap(yyscanner ) )
-						return 0;
+						return EOF;
 
 					if ( ! yyg->yy_did_buffer_switch_on_eof )
 						YY_NEW_FILE;
@@ -13806,7 +13806,7 @@ YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscann
 /* %if-c-only */
 /** Setup the input buffer state to scan a string. The next call to yylex() will
  * scan from a @e copy of @a str.
- * @param str a NUL-terminated string to scan
+ * @param yystr a NUL-terminated string to scan
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use
@@ -14168,9 +14168,13 @@ static int yy_init_globals (yyscan_t yyscanner)
 }
 /* %endif */
 
-/* %if-c-only SNIP! this currently causes conflicts with the c++ scanner */
+/* %if-c-or-c++ */
+/* %if-c-only */
 /* yylex_destroy is for both reentrant and non-reentrant scanners. */
 int yylex_destroy  (yyscan_t yyscanner)
+/* %endif */
+/* %if-c++-only */
+/* %endif */
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
@@ -14189,6 +14193,11 @@ int yylex_destroy  (yyscan_t yyscanner)
         yyfree(yyg->yy_start_stack ,yyscanner );
         yyg->yy_start_stack = NULL;
 
+/* %if-c++-only */
+/* %endif */
+
+/* %if-c-only */
+
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
      * yylex() is called, initialization will occur. */
     yy_init_globals( yyscanner);
@@ -14199,6 +14208,7 @@ int yylex_destroy  (yyscan_t yyscanner)
     yyscanner = NULL;
 /* %endif */
     return 0;
+/* %endif */
 }
 /* %endif */
 
@@ -14255,7 +14265,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 3154 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_scanner.l"
+#line 3154 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_scanner.l"
 
 
 
