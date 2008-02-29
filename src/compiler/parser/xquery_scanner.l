@@ -2813,7 +2813,7 @@ typedef yy::xquery_parser::token token;
 
 {CharRef}+ {
   yylval->sval = driver.symtab.put_charref(yytext, yyleng);
-  return token::CHAR_REF_LITERAL;
+  return token::ELEMENT_CONTENT;
 }
 
 "{{" {
@@ -3075,7 +3075,7 @@ typedef yy::xquery_parser::token token;
 
 {CharRef}+ {
   yylval->sval = driver.symtab.put_charref(yytext, yyleng);
-  return token::CHAR_REF_LITERAL;
+  return token::QUOTE_ATTR_CONTENT;
 }
 
 "{{" {
@@ -3134,7 +3134,7 @@ typedef yy::xquery_parser::token token;
 
 {CharRef}+ {
   yylval->sval = driver.symtab.put_charref(yytext, yyleng);
-  return token::CHAR_REF_LITERAL;
+  return token::APOS_ATTR_CONTENT;
 }
 
 "{{" {

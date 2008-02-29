@@ -143,7 +143,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> CHAR_LITERAL						"'char literal'"
 %token <sval> CHAR_LITERAL_AND_CDATA_END  "'char literal]]>'"
 %token <sval> CHAR_LITERAL_AND_PI_END "'char literal and pi end'"
-%token <sval> CHAR_REF_LITERAL				"'#charref;'"
 %token <sval> ELEMENT_CONTENT					"'element content'"
 %token <sval> ELEMENT_QNAME_LBRACE		"'<QName {>'"
 %token <sval> ELEM_WILDCARD						"'pref:*'"
@@ -4426,15 +4425,6 @@ CommonContent :
 #endif
 			$$ = new CommonContent(driver.createQueryLoc(@$),
 								cont_entity,
-								driver.symtab.get((off_t)$1));
-		}
-	|	CHAR_REF_LITERAL
-		{
-#ifdef ZORBA_DEBUG_PARSER
-			 cout << "CommonContent [char_ref]\n";
-#endif
-			$$ = new CommonContent(driver.createQueryLoc(@$),
-								cont_charref,
 								driver.symtab.get((off_t)$1));
 		}
 	|	DOUBLE_LBRACE

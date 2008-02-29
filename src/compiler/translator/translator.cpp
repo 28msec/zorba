@@ -940,35 +940,6 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
       nodestack.push(lConstExpr);
       break;
     }
-    case cont_charref:
-    {
-      // &#xFF; or &#255;
-      uint32_t codepoint;
-      xqp_string charref;
- 
-      unsigned long curRefStart = 0;
-      std::string content = v.get_ref();
-
-      while (curRefStart < content.size())
-      {
-        stringstream ss;
-
-        unsigned long curRefLen = content.find(';', curRefStart) - curRefStart + 1;
-
-        if (content[curRefStart+2] == 'x')
-          ss << hex << content.substr(curRefStart+3, curRefLen-3);
-        else
-          ss << content.substr(curRefStart+2, curRefLen-2);
-      
-        ss >> codepoint;
-        charref += (uint32_t)codepoint;
-        curRefStart += curRefLen;
-      }
-
-      expr_t lConstExpr = new const_expr(v.get_location(), charref);
-      nodestack.push(lConstExpr);
-      break;
-    }
     case cont_escape_lbrace:
     {
       // we always create a text node here because if we are in an attribute, we atomice

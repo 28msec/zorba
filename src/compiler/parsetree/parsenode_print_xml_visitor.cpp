@@ -1417,11 +1417,6 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CommonContent &n)
         os << "entity";
         break;
       }
-      case cont_charref:
-      {
-        os << "charref";
-        break;
-      }
     	case cont_escape_lbrace:
     	{
         os << "escaped lbrace";
