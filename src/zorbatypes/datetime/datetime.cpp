@@ -15,9 +15,6 @@
  
 #include "zorbatypes/datetime/parse.h"
 
-#include "system/zorba_engine.h"
-#include "context/dynamic_context.h"
-
 #define RETURN_1_ON_EXCEPTION(sequence)         \
   try                                           \
   {                                             \
