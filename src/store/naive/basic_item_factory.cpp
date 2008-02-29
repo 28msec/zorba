@@ -173,15 +173,26 @@ Item_t BasicItemFactory::createDateTime(
 
 
 Item_t BasicItemFactory::createDateTime(
-    short /*year*/ ,
-    short /*month*/,
-    short /*day*/,
-    short /*hour*/,
-    short /*minute*/,
-    short /*second*/,
-    short /*timeZone*/)
+    short year ,
+    short month,
+    short day,
+    short hour,
+    short minute,
+    short second,
+    short timeZone_hours)
 {
-  return Item_t ( NULL );
+  Date_t d;
+  Time_t t;
+  
+  TimeZone tz( timeZone_hours );
+
+  if (Date::createDate( year, month, day, tz, d ) == 0)
+    if(Time::createTime( hour, minute, second, tz, t ) == 0)
+      return new DateTimeItemNaive( d, t );
+    else
+      return Item_t(NULL);
+  else
+    return Item_t(NULL);
 }
 
 Item_t BasicItemFactory::createDateTime ( const xqp_string& /*value*/ )

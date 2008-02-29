@@ -79,6 +79,12 @@ namespace xqp
       DateTime_t
       normalize(const long tz_seconds);
 
+      Date_t
+      getDate() const;
+
+      Time_t
+      getTime() const;
+
     protected:
       DateTime& 
       operator=(const DateTime_t& dt_t);

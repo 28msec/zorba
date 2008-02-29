@@ -457,7 +457,30 @@ public:
   
   virtual void beginVisit(const OpNodeAfterIterator&);
   virtual void endVisit(const OpNodeAfterIterator&);
+
+  virtual void beginVisit(const FnPositionIterator&);
+  virtual void endVisit(const FnPositionIterator&);
+
+  virtual void beginVisit(const FnLastIterator&);
+  virtual void endVisit(const FnLastIterator&);
   
+  virtual void beginVisit(const FnCurrentDateTimeIterator&);
+  virtual void endVisit(const FnCurrentDateTimeIterator&);
+  
+  virtual void beginVisit(const FnCurrentDateIterator&);
+  virtual void endVisit(const FnCurrentDateIterator&);
+  
+  virtual void beginVisit(const FnCurrentTimeIterator&);
+  virtual void endVisit(const FnCurrentTimeIterator&);
+  
+  virtual void beginVisit(const FnImplicitTimezoneIterator&);
+  virtual void endVisit(const FnImplicitTimezoneIterator&);
+  
+  virtual void beginVisit(const FnDefaultCollationIterator&);
+  virtual void endVisit(const FnDefaultCollationIterator&);
+  
+  virtual void beginVisit(const FnStaticBaseURIIterator&);
+  virtual void endVisit(const FnStaticBaseURIIterator&);
 };
 
 } /* namespace xqp */

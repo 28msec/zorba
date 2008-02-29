@@ -16,6 +16,7 @@ namespace xqp
 
       TimeZone() : the_time_zone(boost::posix_time::not_a_date_time) { };
       TimeZone(boost::posix_time::time_duration t) : the_time_zone(t) { };
+      TimeZone(short hours);
 
       static bool
       parse_string(const xqpString& s, TimeZone_t& tz_t);

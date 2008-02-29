@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include "runtime/visitors/printervisitor.h"
+#include "runtime/context/ContextImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
@@ -1605,6 +1606,94 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   }
 
   void PrinterVisitor::endVisit(const OpNodeAfterIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const FnPositionIterator& a) {
+    thePrinter.startBeginVisit("FnPositionIterator", (intptr_t) &a);
+    printCommons(  &a);
+    thePrinter.endBeginVisit((intptr_t) &a);
+  }
+
+  void PrinterVisitor::endVisit(const FnPositionIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const FnLastIterator& a) {
+    thePrinter.startBeginVisit("FnLastIterator", (intptr_t) &a);
+    printCommons(  &a);
+    thePrinter.endBeginVisit((intptr_t) &a);
+  }
+
+  void PrinterVisitor::endVisit(const FnLastIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const FnCurrentDateTimeIterator& a) {
+    thePrinter.startBeginVisit("FnCurrentDateTimeIterator", (intptr_t) &a);
+    printCommons(  &a);
+    thePrinter.endBeginVisit((intptr_t) &a);
+  }
+
+  void PrinterVisitor::endVisit(const FnCurrentDateTimeIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const FnCurrentDateIterator& a) {
+    thePrinter.startBeginVisit("FnCurrentDateIterator", (intptr_t) &a);
+    printCommons(  &a);
+    thePrinter.endBeginVisit((intptr_t) &a);
+  }
+
+  void PrinterVisitor::endVisit(const FnCurrentDateIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const FnCurrentTimeIterator& a) {
+    thePrinter.startBeginVisit("FnCurrentTimeIterator", (intptr_t) &a);
+    printCommons(  &a);
+    thePrinter.endBeginVisit((intptr_t) &a);
+  }
+
+  void PrinterVisitor::endVisit(const FnCurrentTimeIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const FnImplicitTimezoneIterator& a) {
+    thePrinter.startBeginVisit("FnImplicitTimezoneIterator", (intptr_t) &a);
+    printCommons(  &a);
+    thePrinter.endBeginVisit((intptr_t) &a);
+  }
+
+  void PrinterVisitor::endVisit(const FnImplicitTimezoneIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const FnDefaultCollationIterator& a) {
+    thePrinter.startBeginVisit("FnDefaultCollationIterator", (intptr_t) &a);
+    printCommons(  &a);
+    thePrinter.endBeginVisit((intptr_t) &a);
+  }
+
+  void PrinterVisitor::endVisit(const FnDefaultCollationIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  
+  void PrinterVisitor::beginVisit(const FnStaticBaseURIIterator& a) {
+    thePrinter.startBeginVisit("FnStaticBaseURIIterator", (intptr_t) &a);
+    printCommons(  &a);
+    thePrinter.endBeginVisit((intptr_t) &a);
+  }
+
+  void PrinterVisitor::endVisit(const FnStaticBaseURIIterator&) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }

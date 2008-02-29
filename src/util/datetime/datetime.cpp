@@ -33,6 +33,8 @@ DateTime::DateTime(const Date_t& d_t, const Time_t& t_t)
   the_date_time = boost::posix_time::ptime(
       boost::gregorian::date(abs<int>(d_t->getYear()), abs<int>(d_t->getMonth()), abs<int>(d_t->getDay())),
       t_t->get_time_duration());
+
+  the_time_zone = t_t->getTimezone();
 }
 
 int DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)
@@ -176,6 +178,20 @@ DateTime_t  DateTime::normalize(const long tz_seconds)
   }
   else
     return this;
+}
+
+Date_t DateTime::getDate() const
+{
+  Date_t new_dt_t;
+  Date::createDate(the_date_time.date().year(), the_date_time.date().month(), the_date_time.date().day(), the_time_zone, new_dt_t);
+  return new_dt_t;
+}
+
+Time_t DateTime::getTime() const
+{
+  Time_t new_t_t;
+  Time::createTime(the_date_time.time_of_day().hours(), the_date_time.time_of_day().minutes(), getSeconds(), the_time_zone, new_t_t);
+  return new_t_t;
 }
 
 xqpString DateTime::toString() const

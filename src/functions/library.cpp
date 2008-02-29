@@ -24,6 +24,7 @@
 #include "functions/Strings.h"
 #include "functions/Boolean.h"
 #include "functions/Constructor.h"
+#include "functions/ContextFunctions.h"
 #include "functions/DateTime.h"
 #include "functions/FnContext.h"
 #include "functions/Misc.h"
@@ -197,6 +198,42 @@ DECL(fn_round_half_to_even,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 // end Numerics
+
+
+// begin context functions
+DECL(fn_position,
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","position"),
+     GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+DECL(fn_last,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","last"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+DECL(fn_current_dateTime,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","current-dateTime"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
+
+DECL(fn_current_date,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","current-date"),
+      GENV_TYPESYSTEM.DATE_TYPE_ONE));
+
+DECL(fn_current_time,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","current-time"),
+      GENV_TYPESYSTEM.TIME_TYPE_ONE));
+
+DECL(fn_implicit_timezone,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","implicit-timezone"),
+      GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
+
+DECL(fn_default_collation,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","default-collation"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+DECL(fn_static_base_uri,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","static-base-uri"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+// end context functions
+
 
 //QNames
 // rchandle<NodeTest> nodeTest;

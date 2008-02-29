@@ -154,7 +154,14 @@ namespace xqp
   class OpIsSameNodeIterator;
   class OpNodeBeforeIterator;
   class OpNodeAfterIterator;
-
+  class FnPositionIterator;
+  class FnLastIterator;
+  class FnCurrentDateTimeIterator;
+  class FnCurrentDateIterator;
+  class FnCurrentTimeIterator;
+  class FnImplicitTimezoneIterator;
+  class FnDefaultCollationIterator;
+  class FnStaticBaseURIIterator;
   
   /**
    * Visitor to visit a PlanIterator tree.
@@ -591,6 +598,30 @@ namespace xqp
 
       virtual void beginVisit(const OpNodeAfterIterator&) = 0;
       virtual void endVisit(const OpNodeAfterIterator&) = 0;
+
+      virtual void beginVisit(const FnPositionIterator&) = 0;
+      virtual void endVisit(const FnPositionIterator&) = 0;
+
+      virtual void beginVisit(const FnLastIterator&) = 0;
+      virtual void endVisit(const FnLastIterator&) = 0;
+
+      virtual void beginVisit(const FnCurrentDateTimeIterator&) = 0;
+      virtual void endVisit(const FnCurrentDateTimeIterator&) = 0;
+
+      virtual void beginVisit(const FnCurrentDateIterator&) = 0;
+      virtual void endVisit(const FnCurrentDateIterator&) = 0;
+
+      virtual void beginVisit(const FnCurrentTimeIterator&) = 0;
+      virtual void endVisit(const FnCurrentTimeIterator&) = 0;
+
+      virtual void beginVisit(const FnImplicitTimezoneIterator&) = 0;
+      virtual void endVisit(const FnImplicitTimezoneIterator&) = 0;
+
+      virtual void beginVisit(const FnDefaultCollationIterator&) = 0;
+      virtual void endVisit(const FnDefaultCollationIterator&) = 0;
+
+      virtual void beginVisit(const FnStaticBaseURIIterator&) = 0;
+      virtual void endVisit(const FnStaticBaseURIIterator&) = 0;
 
   }; /* class PlanIterVisitor */
 } /* namespace xqp */

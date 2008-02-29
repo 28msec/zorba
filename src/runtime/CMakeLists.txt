@@ -1,5 +1,6 @@
 SET(RUNTIME_SRCS
     accessors/AccessorsImpl.cpp
+    context/ContextImpl.cpp
     core/item_iterator.cpp
     core/var_iterators.cpp
     core/flwor_iterator.cpp
@@ -27,6 +28,7 @@ SET(RUNTIME_SRCS
 )
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS accessors)
+HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS context)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS core)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS numerics)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS strings)
