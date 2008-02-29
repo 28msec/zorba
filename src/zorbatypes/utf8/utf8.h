@@ -2,6 +2,7 @@
 #define XQP_UTF8_H
 
 //#include "errors/error_factory.h"
+#include <zorba/common/common.h>
 
 namespace xqp {
   // Unicode constants
