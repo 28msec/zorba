@@ -4,8 +4,9 @@
 #include <vector>
 #include <list>
 
+#include <zorbatypes/xqpstring.h>
+
 #include <zorba/common/api_shared_types.h>
-#include <zorba/xqpstring.h>
 
 namespace xqp
 {

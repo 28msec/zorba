@@ -30,6 +30,8 @@
 
 #include <assert.h>
 
+#include <zorbatypes/Unicode_util.h>
+
 #include <zorba/stateless_function.h>
 
 #include "system/zorba_engine.h"
@@ -39,7 +41,6 @@
 #include "context/static_context.h"
 #include "types/typemanager.h"
 #include "system/zorba.h"
-#include "util/utf8/Unicode_util.h"
 #include "context/collation_manager.h"
 #include "functions/function.h"
 #include "functions/library.h"
@@ -566,6 +567,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
 //	"./../relativ/rel.exe"
 //	"http://gfd/sdf/gsd/sdfg/gfds/sdfg/fgds/"
 
+  // TODO is a collation comparison really necessary here?
 	if(!abs_uri.endsWith("/") && !abs_uri.endsWith("\\"))
 	{
     abs_uri += "/";

@@ -22,13 +22,16 @@
  *
  */
 #include <vector>
+
+#include <zorbatypes/numconversions.h>
+
 #include <zorba/item.h>
 
-#include "util/numconversions.h"
 #include "casting.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
 #include "system/zorba.h"
+#include "system/zorba_engine.h"
 #include "errors/error_factory.h"
 
 namespace xqp

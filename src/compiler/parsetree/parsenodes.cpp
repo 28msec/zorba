@@ -9,6 +9,9 @@
 #include <zorba/rchandle.h>
 #include <zorba/item.h>
 
+// TODO check the include
+#include <zorbatypes/Unicode_util.h>
+
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
 
@@ -25,7 +28,6 @@
 #include "errors/error_factory.h"
 #include "types/typemanager.h"
 
-#include "util/utf8/Unicode_util.h"
 
 using namespace std;
 namespace xqp {

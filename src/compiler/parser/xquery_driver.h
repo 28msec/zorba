@@ -23,9 +23,10 @@
 #include <string>
 #include <ostream>
 
+#include <zorbatypes/representations.h>
+
 #include "compiler/parser/xquery_parser.hpp"
 #include "compiler/parser/symbol_table.h"
-#include <zorba/representations.h>
 
 /*
 **	Flex expects the signature of yylex to be defined in the macro

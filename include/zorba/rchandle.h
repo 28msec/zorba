@@ -14,7 +14,7 @@
 #include <iostream>
 
 #include <zorba/common/common.h>
-#include <zorba/hashfun.h>
+//#include <zorba/hashfun.h>
 
 namespace xqp {
 
@@ -366,10 +366,10 @@ public:
 		return *this;
 	}
 
-  unsigned long hash() const
-  {
-    return hashfun::h32((void*)(&p), sizeof(void*), FNV_32_INIT);
-  }
+//unsigned long hash() const
+//{
+//  return hashfun::h32((void*)(&p), sizeof(void*), FNV_32_INIT);
+//}
 
 public:
 	std::string debug() const

@@ -2,7 +2,7 @@
 #define XQP_DEFAULT_STORE_STRING_HASHSET
 
 #include <zorba/common/common.h>
-#include <zorba/xqpstring.h>
+#include <zorbatypes/xqpstring.h>
 
 #include "store/util/handle_hashset.h"
 

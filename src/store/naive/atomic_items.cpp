@@ -6,11 +6,12 @@
  *  Authors: David Graf, Donald Kossmann, Tim Kraska, Markos zaharioudakis
  */
 
+#include <zorbatypes/numconversions.h>
+#include <zorbatypes/date.h>
+
 #include <zorba/hashfun.h>
 #include <zorba/item.h>
-#include <zorba/date.h>
 
-#include "util/numconversions.h"
 #include "util/Assert.h"
 #include "errors/error_factory.h"
 

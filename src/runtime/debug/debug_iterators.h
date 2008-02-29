@@ -1,8 +1,9 @@
 #ifndef XQP_DEBUG_ITERATORS_H
 #define XQP_DEBUG_ITERATORS_H
 
+#include <zorbatypes/xqpstring.h>
+
 #include "common/shared_types.h"
-#include <zorba/xqpstring.h>
 #include "runtime/base/narybase.h"
 
 namespace xqp {

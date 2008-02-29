@@ -8,13 +8,9 @@ SET(UTIL_SRCS
     file.cpp
     tokenbuf.cpp
     rwlock.cpp
-    properties.cpp
-    numconversions.cpp)
+    properties.cpp)
 
-ADD_SRC_SUBFOLDER(UTIL_SRCS utf8 UTF8_SRCS)
 ADD_SRC_SUBFOLDER(UTIL_SRCS web WEB_SRCS)
-ADD_SRC_SUBFOLDER(UTIL_SRCS datetime DATETIME_SRCS)
-ADD_SRC_SUBFOLDER(UTIL_SRCS bignum BIGNUM_SRCS)
     
 
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS fx)

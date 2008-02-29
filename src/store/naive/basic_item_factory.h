@@ -9,8 +9,8 @@
 #ifndef XQP_BASIC_ITEM_FACTORY_H
 #define XQP_BASIC_ITEM_FACTORY_H
 
-#include <zorba/xqpstring.h>
-#include <zorba/representations.h>
+#include <zorbatypes/xqpstring.h>
+#include <zorbatypes/representations.h>
 
 #include "common/shared_types.h"
 

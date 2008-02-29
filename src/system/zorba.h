@@ -6,10 +6,11 @@
 #include <stack>
 #include <map>
 
+#include <zorbatypes/representations.h>
+
 #include <zorba/rchandle.h>
 #include <zorba/common/common.h>
 #include <zorba/common/libicu.h>
-#include <zorba/representations.h>
 
 
 //#include "store/api/item_factory.h"

@@ -1,8 +1,9 @@
 #ifndef XQP_NODE_TEST_H
 #define XQP_NODE_TEST_H
 
+#include <zorbatypes/xqpstring.h>
+
 #include <zorba/rchandle.h>
-#include <zorba/xqpstring.h>
 #include <zorba/store_consts.h>
 
 namespace xqp {

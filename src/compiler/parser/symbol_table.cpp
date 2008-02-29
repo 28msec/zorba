@@ -5,10 +5,11 @@
  *	Copyright 2006-2007 FLWOR Foundation.
  */
 
+#include <zorbatypes/numconversions.h>
+#include <zorbatypes/utf8.h>
+
 #include "compiler/parser/symbol_table.h"
 #include "util/fx/fxcharheap.h"
-#include "util/numconversions.h"
-#include "util/utf8/utf8.h"
 
 #include <stdlib.h>
 #include <string>

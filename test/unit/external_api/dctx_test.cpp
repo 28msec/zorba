@@ -3,7 +3,7 @@
 #include <fstream>
 #include <time.h>
 #include <assert.h>
-#include <zorba/representations.h>
+#include <zorbatypes/representations.h>
 
 //#include "../error_display.h"
 

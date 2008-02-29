@@ -12,6 +12,8 @@
 #include <stack>
 #include <sstream>
 
+#include <zorbatypes/Unicode_util.h>
+
 #include <zorba/config/platform.h>
 #include <zorba/common/common.h>
 #include <zorba/item.h>
@@ -29,7 +31,6 @@
 #include "util/tracer.h"
 #include "system/globalenv.h"
 #include "system/zorba.h"
-#include "util/utf8/Unicode_util.h"
 #include "functions/signature.h"
 #include "functions/external_function_adapters.h"
 #include "system/zorba_engine.h"

@@ -3,9 +3,10 @@
 
 #include <vector>
 
+#include <zorbatypes/xqpstring.h>
+#include <zorbatypes/representations.h>
+
 #include <zorba/common/api_shared_types.h>
-#include <zorba/xqpstring.h>
-#include <zorba/representations.h>
 #include <zorba/store_consts.h>
 
 namespace xqp

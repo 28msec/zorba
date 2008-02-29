@@ -16,7 +16,6 @@
 #include "system/zorba_engine.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-#include "util/datetime/parse.h"
 
 namespace xqp
 {
@@ -123,7 +122,7 @@ FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   tz = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
-  db = new DayTimeDuration( tz < 0, 0, abs<int>(tz), 0 , 0, 0);
+  db = new DayTimeDuration( tz < 0, 0, tz<0?-tz:tz, 0 , 0, 0);
   
   STACK_PUSH( Zorba::getItemFactory()->createDuration(db), state );
 

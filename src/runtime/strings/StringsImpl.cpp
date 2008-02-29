@@ -10,14 +10,16 @@
  */
 #include <iostream>
 
+#include <zorbatypes/utf8.h>
+#include <zorbatypes/numconversions.h>
+
 #include <zorba/common/common.h>
 #include <zorba/item.h>
 
 #include "runtime/strings/StringsImpl.h"
 #include "system/zorba.h"
-#include "util/utf8/utf8.h"
+#include "system/zorba_engine.h"
 #include "util/Assert.h"
-#include "util/numconversions.h"
 #include "store/api/item_factory.h"
 
 
@@ -196,13 +198,15 @@ CompareStrIterator::nextImpl(PlanState& planState) const {
         n2 = consumeNext(theChildren[2].getp(), planState );
         if ( n2 != NULL )  {
           n2 = n2->getAtomizationValue();
+          Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(n2->getStringValue());
           res = Zorba::getItemFactory()->createInteger(
-                  Integer::parseInt((int32_t)n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue())));
+                  Integer::parseInt((int32_t)n0->getStringValue().compare(n1->getStringValue(), coll)));
         }
       }
       else{
+        Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
         res = Zorba::getItemFactory()->createInteger(
-                Integer::parseInt((int32_t)n0->getStringValue().compare(n1->getStringValue())));
+                Integer::parseInt((int32_t)n0->getStringValue().compare(n1->getStringValue(), coll)));
       }
       STACK_PUSH( res, state );
     }
@@ -963,7 +967,8 @@ ContainsIterator::nextImpl(PlanState& planState) const {
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
-          resBool = (arg1.indexOf(arg2, itemColl->getStringValue()) != -1);
+          Collator* coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
+          resBool = (arg1.indexOf(arg2, coll) != -1);
         }
       }
       STACK_PUSH( Zorba::getItemFactory()->createBoolean(resBool), state );
@@ -1045,7 +1050,8 @@ StartsWithIterator::nextImpl(PlanState& planState) const {
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
-          resBool = (arg1.indexOf(arg2, itemColl->getStringValue()) == 0);
+          Collator* coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
+          resBool = (arg1.indexOf(arg2, coll) == 0);
         }
       }
       STACK_PUSH( Zorba::getItemFactory()->createBoolean(resBool), state );
@@ -1128,7 +1134,8 @@ EndsWithIterator::nextImpl(PlanState& planState) const {
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
-          resBool = arg1.endsWith(arg2, itemColl->getStringValue());
+          Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
+          resBool = arg1.endsWith(arg2, coll);
         }
       }
       STACK_PUSH( Zorba::getItemFactory()->createBoolean(resBool), state );
@@ -1209,7 +1216,8 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
-          index = arg1.indexOf(arg2, itemColl->getStringValue());
+          Collator* coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
+          index = arg1.indexOf(arg2, coll);
         }
       }
       if(index != -1)
@@ -1257,7 +1265,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
   xqp_string resStr;
   int32_t startPos = -1;
   xqp_string arg1="";
-  xqp_string arg2="";
+  xqp_string arg2=""; 
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1294,7 +1302,8 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
-          startPos = arg1.lastIndexOf( arg2, itemColl->getStringValue() );
+          Collator* coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
+          startPos = arg1.lastIndexOf( arg2, coll );
         }
       }
       if(startPos != -1)

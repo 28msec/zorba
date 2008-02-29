@@ -4,9 +4,10 @@
 #include <istream>
 #include <string>
 
+#include <zorbatypes/representations.h>
+
 #include <zorba/common/api_shared_types.h>
 #include <zorba/version.h>
-#include <zorba/representations.h>
 
 
 namespace xqp{

@@ -447,6 +447,7 @@ Item_t PiIterator::nextImpl(PlanState& planState) const
   Item_t lItem;
   xqp_string target, content;
   bool lFirst;
+  
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

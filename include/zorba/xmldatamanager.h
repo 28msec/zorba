@@ -1,8 +1,9 @@
 #ifndef ZORBA_XMLDATAMANAGER_H
 #define ZORBA_XMLDATAMANAGER_H
 
+#include <zorbatypes/representations.h>
+
 #include <zorba/common/api_shared_types.h>
-#include <zorba/representations.h>
 
 
 namespace xqp

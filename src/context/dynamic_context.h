@@ -25,14 +25,11 @@
 #ifndef XQP_DYNAMIC_CONTEXT_H
 #define XQP_DYNAMIC_CONTEXT_H
 
-//#include "context/common.h"
-//#include "context/context.h"
-//#include "context/context_impl.h"
-//#include "functions/library.h"
-//#include "store/api/item.h"
+#include <zorbatypes/representations.h>
+
 #include <zorba/rchandle.h>
+
 #include "util/hashmap.h"
-#include <zorba/representations.h>
 #include "common/shared_types.h"
 
 namespace xqp {

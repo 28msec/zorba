@@ -2,7 +2,7 @@
 #include <cassert>
 #include <unicode/uclean.h>
 
-#include <zorba/m_apm.h>
+#include <zorbatypes/m_apm.h>
 
 #include "globalenv.h"
 #include "types/root_typemanager.h"

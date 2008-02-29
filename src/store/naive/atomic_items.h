@@ -10,7 +10,8 @@
 #ifndef XQP_ATOMIC_ITEMS_H
 #define XQP_ATOMIC_ITEMS_H
 
-#include <zorba/xqpstring.h>
+#include <zorbatypes/xqpstring.h>
+
 #include <zorba/item.h>
 
 

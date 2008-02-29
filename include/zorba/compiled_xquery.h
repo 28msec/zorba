@@ -2,8 +2,10 @@
 #define ZORBA_XQUERY_H
 
 #include <ostream>
+
+#include <zorbatypes/representations.h>
+
 #include <zorba/common/api_shared_types.h>
-#include <zorba/representations.h>
 
 namespace xqp {
 

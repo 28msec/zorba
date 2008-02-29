@@ -9,6 +9,8 @@
 
 #include "types/casting.h"
 #include "system/zorba.h"
+#include "system/zorba_engine.h"
+#include "context/dynamic_context.h"
 
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/core/arithmetic_impl.h"
@@ -792,7 +794,8 @@ Item_t FnAdjustToTimeZoneIterator_1::nextImpl(PlanState& planState) const
     STACK_PUSH(NULL, state);
   else
   {
-    dt_t = item0->getDateTimeValue()->adjustToTimeZone();
+    int tz_seconds = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
+    dt_t = item0->getDateTimeValue()->adjustToTimeZone(tz_seconds);
     STACK_PUSH(Zorba::getItemFactory()->createDateTime(dt_t), state);
   }
     

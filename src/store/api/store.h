@@ -10,8 +10,9 @@
 #ifndef XQP_STORE_H
 #define XQP_STORE_H
 
+#include <zorbatypes/representations.h>
+
 #include "common/shared_types.h"
-#include <zorba/representations.h>
 
 namespace xqp
 {

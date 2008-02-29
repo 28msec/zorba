@@ -26,11 +26,13 @@
 #ifndef XQP_CONTEXT_H
 #define XQP_CONTEXT_H
 
+#include <zorbatypes/xqpstring.h>
+#include <zorbatypes/representations.h>
+
+#include <zorba/rchandle.h>
+
 #include "context/common.h"
 #include "util/hashmap.h"
-#include <zorba/rchandle.h>
-#include <zorba/xqpstring.h>
-#include <zorba/representations.h>
 
 namespace xqp {
 

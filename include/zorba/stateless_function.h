@@ -1,8 +1,9 @@
 #ifndef ZORBA_STATELESS_EXTERNAL_FUNCTION_H
 #define ZORBA_STATELESS_EXTERNAL_FUNCTION_H
 
+#include <zorbatypes/representations.h> 
+
 #include <zorba/common/api_shared_types.h> 
-#include <zorba/representations.h> 
 
 #include <zorba/external_function_data.h>
 

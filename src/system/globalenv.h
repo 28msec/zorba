@@ -2,7 +2,7 @@
 #define XQP_GLOBALENV_H
 
 #include <memory>
-#include <zorba/m_apm.h>
+#include <zorbatypes/m_apm.h>
 #include "common/shared_types.h"
 
 namespace xqp {

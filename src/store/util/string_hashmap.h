@@ -2,7 +2,7 @@
 #define XQP_STRING_HASHMAP_H
 
 #include <zorba/common/api_shared_types.h>
-#include <zorba/xqpstring.h>
+#include <zorbatypes/xqpstring.h>
 
 #include "store/util/mutex.h"
 

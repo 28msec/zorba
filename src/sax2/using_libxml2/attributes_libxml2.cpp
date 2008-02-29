@@ -2,7 +2,8 @@
 #include "sax2/using_libxml2/attributes_libxml2.h"
 #include <string.h>
 //#include <libxml/xmlmemory.h>
-#include <zorba/xqpstring.h>
+#include <zorbatypes/xqpstring.h>
+#include <zorbatypes/representations.h>
 
 namespace xqp{
 

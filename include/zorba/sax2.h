@@ -3,7 +3,8 @@
 #define ZORBA_SAX_INTERFACE_25_FEB_2008
 
 //#include <zorba/rchandle.h>
-#include <zorba/xqpstring.h>
+#include <zorbatypes/xqpstring.h>
+#include <zorbatypes/representations.h>
 
 namespace xqp{
 

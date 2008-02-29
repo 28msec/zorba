@@ -28,9 +28,10 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <zorbatypes/representations.h>
+
 #include <zorba/common/common.h>
 #include <zorba/properties.h>
-#include <zorba/representations.h>
 
 #include <cstdlib>
 #ifndef _WIN32_WCE

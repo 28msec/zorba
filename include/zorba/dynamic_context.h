@@ -2,8 +2,10 @@
 #define ZORBA_DYNAMIC_CONTEXT_API_H
 
 #include <time.h>
+
+#include <zorbatypes/representations.h>
+
 #include <zorba/common/api_shared_types.h>
-#include <zorba/representations.h>
 
 namespace xqp {
 

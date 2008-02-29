@@ -4,7 +4,6 @@
 
 #include <unicode/coll.h>
 #include <map>
-//#include "types/representations.h"
 
 namespace xqp{
 

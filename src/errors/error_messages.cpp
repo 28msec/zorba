@@ -1,9 +1,11 @@
 
+#include <string>
+
+#include <zorbatypes/Unicode_util.h>
+
 #include "errors/error_messages.h"
 #include "util/Assert.h"
-#include "util/utf8/Unicode_util.h"
 
-#include <string>
 
 using namespace std;
 
