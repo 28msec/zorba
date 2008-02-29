@@ -48,7 +48,7 @@ namespace yy
 }
 
 /* First part of user declarations.  */
-#line 30 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 30 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_parser.y"
 
 
 #include <zorba/common/common.h>
@@ -82,8 +82,8 @@ namespace xqp {
 
 
 
-/* Line 35 of lalr1.cc.  */
-#line 87 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 87 "/Users/mbrantner/misc/code/vanilla/datatypes/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -134,7 +134,7 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 110 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 110 "/Users/mbrantner/misc/code/vanilla/datatypes/src/compiler/parser/xquery_parser.y"
 {
   xqp::parsenode * node;
   xqp::exprnode * expr;
@@ -143,8 +143,8 @@ namespace yy
 	xqp_double* dval;
 	xqp_decimal* decval;
 }
-/* Line 35 of lalr1.cc.  */
-#line 148 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 148 "/Users/mbrantner/misc/code/vanilla/datatypes/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
