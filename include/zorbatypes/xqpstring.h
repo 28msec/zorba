@@ -141,7 +141,7 @@ namespace xqp {
         // better use the collation manager statically 
         UErrorCode status = U_ZERO_ERROR;
         Collator* coll = ::Collator::createInstance(status); 
-        assert(status == U_ZERO_ERROR || status == U_USING_FALLBACK_WARNING);
+        assert(status == U_ZERO_ERROR || status == U_USING_FALLBACK_WARNING || status == U_USING_DEFAULT_WARNING);
         return coll;
       }
 
