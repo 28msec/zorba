@@ -3,6 +3,7 @@
 
 // TODO see below
 //#include "errors/error_factory.h"
+#include <zorba/common/common.h>
 
 namespace xqp {
   // Unicode constants
