@@ -1,8 +1,14 @@
 #!/bin/bash
 
+if test $# != 2; then
+  echo 'Args: submissionid1 submissionid2'
+  echo 'Identify submissionids from dashboard test result links'
+  exit 1
+fi
+
 URL='http://fifthelement.inf.ethz.ch:8082/zorba/Dashboard/TestCatalog?submissionid='
 SAXON=`dirname $0`/zorbatest/xquery
-echo $SAXON
+test -f $SAXON || { echo 'xquery script not present'; echo 'run setup_framework in test/zorbatest'; exit 1; }
 
 q=`mktemp /tmp/ctr.XXXXXX`
 cat > $q <<"EOF"
@@ -15,6 +21,6 @@ EOF
 f1=`mktemp /tmp/ctr.XXXXXX`
 
 wget "$URL""$1" -O - | sed -e's/\&nbsp;/ /g;s/\&/\&amp;/g' | tidy -q -asxml 2>/dev/null | $SAXON -s - $q | sort | cut -f6- -d'.' | cut -f1 -d'&' >$f1
-wget "$URL""$2" -O - | sed -e's/\&nbsp;/ /g;s/\&/\&amp;/g' | tidy -q -asxml 2>/dev/null | $SAXON -s - $q | sort | cut -f6- -d'.' | cut -f1 -d'&' | diff $f1 -
+wget "$URL""$2" -O - | sed -e's/\&nbsp;/ /g;s/\&/\&amp;/g' | tidy -q -asxml 2>/dev/null | $SAXON -s - $q | sort | cut -f6- -d'.' | cut -f1 -d'&' | diff -U0 $f1 - | tail -n +3 | egrep -v '^@'
 
 rm -f $f1 $q
