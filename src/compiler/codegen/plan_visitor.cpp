@@ -13,6 +13,7 @@
 #include <stack>
 
 #include <zorba/properties.h>
+#include <zorba/static_context_consts.h>
 
 #include "compiler/codegen/plan_visitor.h"
 #include "system/globalenv.h"
@@ -34,6 +35,7 @@
 #include "functions/function.h"
 #include "util/stl_extra.h"
 #include "util/hashmap.h"
+#include "compiler/parser/parse_constants.h"
 
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
@@ -293,8 +295,8 @@ void end_visit(flwor_expr& v)
   {
     flwor_expr::orderspec_t spec = *i;
     orderSpecs.push_back(FLWORIterator::OrderSpec(pop_itstack (),
-																									spec.second->empty_mode == StaticQueryContext::empty_least,
-                                                  spec.second->dir == dir_descending));
+																									spec.second->empty_mode == StaticContextConsts::empty_least, // TODO choose different representation for decoupling
+                                                  spec.second->dir == ParseConstants::dir_descending));
   }
   reverse (orderSpecs.begin (), orderSpecs.end ());
 

@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include <zorba/static_context_consts.h>
+
 #include "compiler/expression/expr.h"
 #include "system/globalenv.h"
 #include "functions/function.h"
@@ -111,14 +113,14 @@ ostream& flwor_expr::put( ostream& os) const
     os << DENT << "ORDER BY ";
     switch (ord_h->dir) 
     {
-    case dir_ascending: os << "ASCENDING "; break;
-    case dir_descending: os << "DESCENDING "; break;
+    case ParseConstants::dir_ascending: os << "ASCENDING "; break;
+    case ParseConstants::dir_descending: os << "DESCENDING "; break;
     default: os << "?? ";
     }
     switch (ord_h->empty_mode) 
     {
-    case StaticQueryContext::empty_greatest: os << "EMPTY GREATEST "; break;
-    case StaticQueryContext::empty_least: os << "EMPTY LEAST "; break;
+    case StaticContextConsts::empty_greatest: os << "EMPTY GREATEST "; break;
+    case StaticContextConsts::empty_least: os << "EMPTY LEAST "; break;
     default: os << "?? ";
     }
     os << ord_h->collation << endl;
@@ -288,8 +290,8 @@ ostream& validate_expr::put( ostream& os) const
   os << INDENT << "validate_expr (" << this << ") [\n";
 
   switch (valmode) {
-  case val_strict: os << "strict\n"; break;
-  case val_lax: os << "lax\n"; break;
+  case ParseConstants::val_strict: os << "strict\n"; break;
+  case ParseConstants::val_lax: os << "lax\n"; break;
   default: os << "??\n";
   }
   //d Assert<null_pointer>(expr_h!=NULL);

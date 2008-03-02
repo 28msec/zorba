@@ -135,7 +135,7 @@ ft_words_selection_expr::ft_words_selection_expr(
 	rchandle<ft_words_expr> _words_h,
 	rchandle<expr> _src_h,
 	rchandle<expr> _dst_h,
-	ft_range_mode_t _range_mode)
+	ParseConstants::ft_range_mode_t _range_mode)
 :
 	expr(loc),
 	words_h(_words_h),
@@ -170,7 +170,7 @@ ostream& ft_words_selection_expr::put(ostream& os) const
 ft_words_expr::ft_words_expr(
 	const QueryLoc& loc,
 	rchandle<expr> _words_expr_h,
-	ft_anyall_option_t _anyall_opt)
+	ParseConstants::ft_anyall_option_t _anyall_opt)
 :
 	expr(loc),
 	words_expr_h(_words_expr_h),

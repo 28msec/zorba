@@ -1,5 +1,6 @@
 
 #include <zorba/stateless_function.h>
+#include <zorba/static_context_consts.h>
 
 #include "system/zorba.h"
 #include "system/zorba_engine.h"
@@ -19,7 +20,7 @@ StaticContextWrapper::StaticContextWrapper()
 {
 	try{
 
-	xpath1_0compatib_mode = (xpath1_0compatib_mode_t)-1;//not initialized
+	xpath1_0compatib_mode = (StaticContextConsts::xpath1_0compatib_mode_t)-1;//not initialized
 	
 //	std::vector<scw_namespace_t>				ext_ns_list;
 	default_elem_ns_was_set = false;
@@ -31,12 +32,12 @@ StaticContextWrapper::StaticContextWrapper()
 //	std::vector<scw_collation_t>		collation_list;
 	default_collation_URI_was_set = false;
 //	xqp_string										default_collation_URI;
-	construction_mode = (construction_mode_t)-1;//not initialized
-	ordering_mode = (ordering_mode_t)-1;//not initialized
-	order_empty_mode = (order_empty_mode_t)-1;//not initialized
-	boundary_space_mode = (boundary_space_mode_t)-1;//not initialized
-	preserve_mode = (preserve_mode_t)-1;//not initialized
-	inherit_mode = (inherit_mode_t)-1;//not initialized
+	construction_mode = (StaticContextConsts::construction_mode_t)-1;//not initialized
+	ordering_mode = (StaticContextConsts::ordering_mode_t)-1;//not initialized
+	order_empty_mode = (StaticContextConsts::order_empty_mode_t)-1;//not initialized
+	boundary_space_mode = (StaticContextConsts::boundary_space_mode_t)-1;//not initialized
+	preserve_mode = (StaticContextConsts::preserve_mode_t)-1;//not initialized
+	inherit_mode = (StaticContextConsts::inherit_mode_t)-1;//not initialized
 	baseURI_was_set = false;
 //	xqp_string										baseURI;
 //	std::vector<scw_URI_plus_type>		doc_type_list;
@@ -49,12 +50,12 @@ StaticContextWrapper::~StaticContextWrapper()
 {
 }
 
-void		StaticContextWrapper::setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode )///true for XPath1.0 only, false for XPath2.0 (default false)
+void		StaticContextWrapper::setXPath1_0CompatibMode( StaticContextConsts::xpath1_0compatib_mode_t mode )///true for XPath1.0 only, false for XPath2.0 (default false)
 {
 	xpath1_0compatib_mode = mode ;
 }
 
-StaticQueryContext::xpath1_0compatib_mode_t		StaticContextWrapper::getXPath1_0CompatibMode( )///true for XPath1.0 only, false for XPath2.0
+StaticContextConsts::xpath1_0compatib_mode_t		StaticContextWrapper::getXPath1_0CompatibMode( )///true for XPath1.0 only, false for XPath2.0
 {
 	if(xpath1_0compatib_mode >= 0)
 		return xpath1_0compatib_mode;//previously set by user
@@ -403,13 +404,13 @@ xqp_string	StaticContextWrapper::getDefaultCollation()
 
 
 
-void		StaticContextWrapper::setConstructionMode( construction_mode_t c)
+void		StaticContextWrapper::setConstructionMode( StaticContextConsts::construction_mode_t c)
 {
 	//internal_sctx.set_construction_mode( c );
 	construction_mode = c;
 }
 
-StaticQueryContext::construction_mode_t		StaticContextWrapper::getConstructionMode( )
+StaticContextConsts::construction_mode_t		StaticContextWrapper::getConstructionMode( )
 {
 //	return internal_sctx.construction_mode();
 	if(construction_mode >= 0)
@@ -418,13 +419,13 @@ StaticQueryContext::construction_mode_t		StaticContextWrapper::getConstructionMo
 	return GENV.getRootStaticContext().construction_mode();
 }
 
-void		StaticContextWrapper::setOrderingMode( ordering_mode_t o)
+void		StaticContextWrapper::setOrderingMode( StaticContextConsts::ordering_mode_t o)
 {
 	//internal_sctx.set_ordering_mode(o);
 	ordering_mode = o;
 }
 
-StaticQueryContext::ordering_mode_t		StaticContextWrapper::getOrderingMode( )
+StaticContextConsts::ordering_mode_t		StaticContextWrapper::getOrderingMode( )
 {
 	//return internal_sctx.ordering_mode();
 	if(ordering_mode >= 0)
@@ -434,13 +435,13 @@ StaticQueryContext::ordering_mode_t		StaticContextWrapper::getOrderingMode( )
 }
 
 
-void		StaticContextWrapper::setDefaultOrderForEmptySequences( order_empty_mode_t o)
+void		StaticContextWrapper::setDefaultOrderForEmptySequences( StaticContextConsts::order_empty_mode_t o)
 {
 	//internal_sctx.set_order_empty_mode( o );
 	order_empty_mode = o;
 }
 
-StaticQueryContext::order_empty_mode_t		StaticContextWrapper::getDefaultOrderForEmptySequences( )
+StaticContextConsts::order_empty_mode_t		StaticContextWrapper::getDefaultOrderForEmptySequences( )
 {
 	//return internal_sctx.order_empty_mode();
 	if(order_empty_mode >= 0)
@@ -449,13 +450,13 @@ StaticQueryContext::order_empty_mode_t		StaticContextWrapper::getDefaultOrderFor
 }
 
 
-void		StaticContextWrapper::setBoundarySpacePolicy( boundary_space_mode_t b)
+void		StaticContextWrapper::setBoundarySpacePolicy( StaticContextConsts::boundary_space_mode_t b)
 {
 	//internal_sctx.set_boundary_space_mode( b );
 	boundary_space_mode = b;
 }
 
-StaticQueryContext::boundary_space_mode_t		StaticContextWrapper::getBoundarySpacePolicy( )
+StaticContextConsts::boundary_space_mode_t		StaticContextWrapper::getBoundarySpacePolicy( )
 {
 	//return internal_sctx.boundary_space_mode();
 	if(boundary_space_mode >= 0)
@@ -464,7 +465,7 @@ StaticQueryContext::boundary_space_mode_t		StaticContextWrapper::getBoundarySpac
 
 }
 
-void		StaticContextWrapper::setCopyNamespacesMode( preserve_mode_t preserve, inherit_mode_t inherit )
+void		StaticContextWrapper::setCopyNamespacesMode( StaticContextConsts::preserve_mode_t preserve, StaticContextConsts::inherit_mode_t inherit )
 {
 	//internal_sctx.set_preserve_mode( preserve );
 	//internal_sctx.set_inherit_mode( inherit );
@@ -472,7 +473,7 @@ void		StaticContextWrapper::setCopyNamespacesMode( preserve_mode_t preserve, inh
 	inherit_mode = inherit;
 }
 
-void		StaticContextWrapper::getCopyNamespacesMode( preserve_mode_t *preserve, inherit_mode_t *inherit )
+void		StaticContextWrapper::getCopyNamespacesMode( StaticContextConsts::preserve_mode_t *preserve, StaticContextConsts::inherit_mode_t *inherit )
 {
 	if(preserve_mode >= 0)
 	{

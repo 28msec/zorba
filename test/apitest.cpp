@@ -110,7 +110,7 @@ public:
     sctx->addCollation("http://www.flworfound.org/apitest/coll1", "en");
     sctx->addCollation("http://www.flworfound.org/apitest/coll2", "de");
     sctx->addCollation("http://www.flworfound.org/apitest/coll3", "fr");
-    sctx->setOrderingMode(StaticQueryContext::unordered);
+    sctx->setOrderingMode(StaticContextConsts::unordered);
   }
   ~ZorbaEngineWrapper () {
     //DisplayErrorListForCurrentThread();

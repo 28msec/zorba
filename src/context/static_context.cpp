@@ -33,6 +33,7 @@
 #include <zorbatypes/Unicode_util.h>
 
 #include <zorba/stateless_function.h>
+#include <zorba/static_context_consts.h>
 
 #include "system/zorba_engine.h"
 #include "context/common.h"

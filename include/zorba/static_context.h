@@ -4,6 +4,7 @@
 #include <zorba/common/libicu.h>
 #include <zorba/typeident.h>
 #include <zorba/common/api_shared_types.h>
+#include <zorba/static_context_consts.h>
 
 namespace xqp {
 
@@ -24,21 +25,12 @@ namespace xqp {
   class StaticQueryContext : public SimpleRCObject
   {
     public:
-      typedef enum { xpath2_0, xpath1_0_only }    xpath1_0compatib_mode_t;
-      typedef enum { cons_preserve, cons_strip }  construction_mode_t;
-      typedef enum { ordered, unordered }         ordering_mode_t;
-      typedef enum { empty_greatest, empty_least } order_empty_mode_t;
-      typedef enum { preserve_space, strip_space } boundary_space_mode_t;
-      typedef enum { inherit_ns, no_inherit_ns }  inherit_mode_t;
-      typedef enum { preserve_ns, no_preserve_ns } preserve_mode_t;
-
-    public:
       virtual ~StaticQueryContext() { }
 
       virtual void   
-      setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode ) = 0;
+      setXPath1_0CompatibMode( StaticContextConsts::xpath1_0compatib_mode_t mode ) = 0;
       ///true for XPath1.0 only, false for XPath2.0 (default false)
-      virtual xpath1_0compatib_mode_t  
+      virtual StaticContextConsts::xpath1_0compatib_mode_t  
       getXPath1_0CompatibMode( ) = 0;
       ///true for XPath1.0 only, false for XPath2.0
       
@@ -136,38 +128,38 @@ namespace xqp {
 
 
       virtual void   
-      setConstructionMode( construction_mode_t ) = 0;
+      setConstructionMode( StaticContextConsts::construction_mode_t ) = 0;
 
-      virtual construction_mode_t  
+      virtual StaticContextConsts::construction_mode_t  
       getConstructionMode( ) = 0;
 
 
       virtual void   
-      setOrderingMode( ordering_mode_t ) = 0;
+      setOrderingMode( StaticContextConsts::ordering_mode_t ) = 0;
 
-      virtual ordering_mode_t  
+      virtual StaticContextConsts::ordering_mode_t  
       getOrderingMode( ) = 0;
 
 
       virtual void   
-      setDefaultOrderForEmptySequences( order_empty_mode_t ) = 0;
+      setDefaultOrderForEmptySequences( StaticContextConsts::order_empty_mode_t ) = 0;
 
-      virtual order_empty_mode_t   
+      virtual StaticContextConsts::order_empty_mode_t   
       getDefaultOrderForEmptySequences( ) = 0;
 
 
       virtual void   
-      setBoundarySpacePolicy( boundary_space_mode_t ) = 0;
+      setBoundarySpacePolicy( StaticContextConsts::boundary_space_mode_t ) = 0;
 
-      virtual boundary_space_mode_t  
+      virtual StaticContextConsts::boundary_space_mode_t  
       getBoundarySpacePolicy( ) = 0;
 
 
       virtual void   
-      setCopyNamespacesMode( preserve_mode_t preserve, inherit_mode_t inherit ) = 0;
+      setCopyNamespacesMode( StaticContextConsts::preserve_mode_t preserve, StaticContextConsts::inherit_mode_t inherit ) = 0;
 
       virtual void   
-      getCopyNamespacesMode( preserve_mode_t *preserve, inherit_mode_t *inherit ) = 0;
+      getCopyNamespacesMode( StaticContextConsts::preserve_mode_t *preserve, StaticContextConsts::inherit_mode_t *inherit ) = 0;
 
 
       virtual bool   

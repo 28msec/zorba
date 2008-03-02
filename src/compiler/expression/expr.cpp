@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include <zorba/static_context_consts.h>
+
 #include "compiler/expression/expr.h"
 #include "system/globalenv.h"
 #include "context/namespace_context.h"
@@ -585,7 +587,7 @@ void cast_expr::next_iter (expr_iterator_data& v) {
 
 validate_expr::validate_expr(
   const QueryLoc& loc,
-  enum validation_mode_t _valmode,
+  enum ParseConstants::validation_mode_t _valmode,
   rchandle<expr> _expr_h)
 :
   expr(loc),

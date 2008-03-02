@@ -1412,22 +1412,22 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CommonContent &n)
     os << "<Type>";
     switch (n.get_type())
     {
-      case cont_entity:
+      case ParseConstants::cont_entity:
       {
         os << "entity";
         break;
       }
-    	case cont_escape_lbrace:
+    	case ParseConstants::cont_escape_lbrace:
     	{
         os << "escaped lbrace";
         break;
     	}
-    	case cont_escape_rbrace:
+    	case ParseConstants::cont_escape_rbrace:
   	  {
         os << "escaped rbrace";
         break;
   	  }
-    	case cont_expr:
+    	case ParseConstants::cont_expr:
     	{
         os << "expr";
         break;
@@ -1773,7 +1773,8 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NumericLiteral &n)
 {
     INDENT;
 
-    os << "<NumericLiteral pos='" << n.get_location() << "' ptr='" << &n << " type='" << decode_numeric_type (n.get_type ()) << "' val='" << n.toString () << "'";
+    os << "<NumericLiteral pos='" << n.get_location() << "' ptr='" << &n << " type='" 
+       << ParseConstants::decode_numeric_type (n.get_type ()) << "' val='" << n.toString () << "'";
 
     os << "/>";
 

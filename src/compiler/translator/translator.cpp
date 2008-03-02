@@ -18,14 +18,17 @@
 #include <zorba/common/common.h>
 #include <zorba/item.h>
 #include <zorba/properties.h>
+#include <zorba/static_context_consts.h>
 
 #include "compiler/translator/translator.h"
 
+#include "context/static_context.h"
 #include "context/namespace_context.h"
 #include "types/node_test.h"
 #include "types/casting.h"
 #include "compiler/expression/expr.h"
 #include "compiler/parsetree/parsenodes.h"
+#include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "compiler/normalizer/normalizer.h"
 #include "util/tracer.h"
@@ -371,10 +374,10 @@ void *begin_visit(DefaultNamespaceDecl const& v)
 //    break;
 //  }}
   switch (v.get_mode()) {
-  case ns_element_default:
+  case ParseConstants::ns_element_default:
     sctx_p->set_default_elem_type_ns (v.get_default_namespace ());
     break;
-  case ns_function_default:
+  case ParseConstants::ns_function_default:
     sctx_p->set_default_function_namespace (v.get_default_namespace ());
     break;
   }
@@ -515,7 +518,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
  * information during boundary whitespace checking.
  */
 void begin_check_boundary_whitespace() {
-  if (sctx_p->boundary_space_mode() == StaticQueryContext::strip_space) {
+  if (sctx_p->boundary_space_mode() == StaticContextConsts::strip_space) {
     theIsWSBoundaryStack.push(true);
     thePossibleWSContentStack.push(0);
   }
@@ -528,7 +531,7 @@ void begin_check_boundary_whitespace() {
  */
 void check_boundary_whitespace(const DirElemContent& v) {
   v.setIsStripped(false);
-  if (sctx_p->boundary_space_mode() == StaticQueryContext::strip_space) {
+  if (sctx_p->boundary_space_mode() == StaticContextConsts::strip_space) {
     bool lPrevIsBoundary = pop_stack (theIsWSBoundaryStack);
     const DirElemContent* lPrev = peek_stack (thePossibleWSContentStack);
     thePossibleWSContentStack.pop();
@@ -566,7 +569,7 @@ void check_boundary_whitespace(const DirElemContent& v) {
  * contains an item, this item is boundary whitespace because end of content is a boundary.
  */
 void end_check_boundary_whitespace() {
-  if (sctx_p->boundary_space_mode() == StaticQueryContext::strip_space) {
+  if (sctx_p->boundary_space_mode() == StaticContextConsts::strip_space) {
     const DirElemContent* lPrev = pop_stack (thePossibleWSContentStack);
     if (lPrev != 0) {
       lPrev->setIsStripped(true);
@@ -928,7 +931,7 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
 {
   switch (v.get_type())
   {
-    case cont_entity:
+    case ParseConstants::cont_entity:
     {
       expr_t lConstExpr;
       if (v.get_ref() == "&amp;")
@@ -941,7 +944,7 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
       nodestack.push(lConstExpr);
       break;
     }
-    case cont_escape_lbrace:
+    case ParseConstants::cont_escape_lbrace:
     {
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
@@ -950,7 +953,7 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
       nodestack.push ( lConstExpr );
       break;
     }
-    case cont_escape_rbrace:
+    case ParseConstants::cont_escape_rbrace:
     {
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
@@ -959,7 +962,7 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
       nodestack.push ( lConstExpr );
       break;
     }
-    case cont_expr:
+    case ParseConstants::cont_expr:
     {
        break;
     }
@@ -1232,10 +1235,10 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     for (i = 0; i < n; i++) {
       OrderSpec *spec = &*((*order_list) [i]);
       OrderModifier *mod = &*spec->get_modifier ();
-      dir_spec_t dir_spec = dir_ascending;
+      ParseConstants::dir_spec_t dir_spec = ParseConstants::dir_ascending;
       if (mod && mod->get_dir_spec () != NULL)
         dir_spec = mod->get_dir_spec ()->get_dir_spec ();
-      StaticQueryContext::order_empty_mode_t empty_spec = sctx_p->order_empty_mode ();
+      StaticContextConsts::order_empty_mode_t empty_spec = sctx_p->order_empty_mode ();
       if (mod && mod->get_empty_spec () != NULL)
         empty_spec = mod->get_empty_spec ()->get_empty_order_spec ();
       string col = sctx_p->default_collation_uri ();
@@ -1507,7 +1510,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   switch(v.get_type()) {
-    case fn_read:
+    case ParseConstants::fn_read:
       {
         expr_t body = pop_nodestack ();
         if (v.get_return_type () != NULL)
@@ -1945,7 +1948,7 @@ void *begin_visit(const VFO_DeclList& v)
       Item_t qname = sctx_p->lookup_fn_qname (n->get_name ()->get_prefix (), n->get_name ()->get_localname ());
       signature sig(qname, arg_types, return_type);
       switch(n->get_type()) {
-        case fn_extern:
+        case ParseConstants::fn_extern:
           {
             StatelessExternalFunction *ef = sctx_p->lookup_stateless_external_function(
               n->get_name()->get_prefix(), n->get_name()->get_localname());
@@ -1954,7 +1957,7 @@ void *begin_visit(const VFO_DeclList& v)
           }
           break;
 
-        case fn_read:
+        case ParseConstants::fn_read:
           sctx_p->bind_fn (qname, new user_function (n->get_location(), sig, NULL), nargs);
           break;
         default:
@@ -1984,10 +1987,10 @@ void end_visit(const AdditiveExpr& v, void* /*visit_state*/)
   rchandle<expr> e2_h = pop_nodestack();
   function *func = NULL;
   switch (v.get_add_op()) {
-  case op_plus:
+  case ParseConstants::op_plus:
     func = LOOKUP_OP2 ("add");
     break;
-  case op_minus:
+  case ParseConstants::op_minus:
     func = LOOKUP_OP2 ("subtract");
     break;
   }
@@ -2081,55 +2084,55 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
   function *f = NULL;
   if (v.get_gencomp()!=NULL) {
     switch (v.get_gencomp()->get_type()) {
-    case op_eq:
+    case ParseConstants::op_eq:
       f = (LOOKUP_OP2 ("equal"));
       break;
-    case op_ne:
+    case ParseConstants::op_ne:
       f = (LOOKUP_OP2 ("not-equal"));
       break;
-    case op_lt:
+    case ParseConstants::op_lt:
       f = (LOOKUP_OP2 ("less"));
       break;
-    case op_le:
+    case ParseConstants::op_le:
       f = (LOOKUP_OP2 ("less-equal"));
       break;
-    case op_gt:
+    case ParseConstants::op_gt:
       f = (LOOKUP_OP2 ("greater"));
       break;
-    case op_ge:
+    case ParseConstants::op_ge:
       f = (LOOKUP_OP2 ("greater-equal"));
       break;
     }
   } else if (v.get_valcomp () != NULL) {
     switch (v.get_valcomp()->get_type()) {
-    case op_val_eq:
+    case ParseConstants::op_val_eq:
       f = (LOOKUP_OP2 ("value-equal"));
       break;
-    case op_val_ne:
+    case ParseConstants::op_val_ne:
       f = (LOOKUP_OP2 ("value-not-equal"));
       break;
-    case op_val_lt:
+    case ParseConstants::op_val_lt:
       f = (LOOKUP_OP2 ("value-less"));
       break;
-    case op_val_le:
+    case ParseConstants::op_val_le:
       f = (LOOKUP_OP2 ("value-less-equal"));
       break;
-    case op_val_gt:
+    case ParseConstants::op_val_gt:
       f = (LOOKUP_OP2 ("value-greater"));
       break;
-    case op_val_ge:
+    case ParseConstants::op_val_ge:
       f = (LOOKUP_OP2 ("value-greater-equal"));
       break;
     }
   } else if (v.get_nodecomp()!=NULL) {
     switch (v.get_nodecomp()->get_type()) {
-    case op_is:
+    case ParseConstants::op_is:
       f = (LOOKUP_OP2 ("is-same-node"));
       break;
-    case op_precedes:
+    case ParseConstants::op_precedes:
       f = (LOOKUP_OP2 ("node-before"));
       break;
-    case op_follows:
+    case ParseConstants::op_follows:
       f = (LOOKUP_OP2 ("node-after"));
       break;
     }
@@ -2363,10 +2366,10 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
   rchandle<expr> e2_h = pop_nodestack ();
   function *f = NULL;
   switch (v.get_intex_op()) {
-  case op_intersect:
+  case ParseConstants::op_intersect:
     f = LOOKUP_OP2 ("intersect");
     break;
-  case op_except:
+  case ParseConstants::op_except:
     f = LOOKUP_OP2 ("except");
     break;
   }
@@ -2391,16 +2394,16 @@ void end_visit(const MultiplicativeExpr& v, void* /*visit_state*/)
   rchandle<expr> e2_h = pop_nodestack ();
   function *f = NULL;
   switch (v.get_mult_op()) {
-  case op_mul:
+  case ParseConstants::op_mul:
     f = LOOKUP_OP2 ("multiply");
     break;
-  case op_div:
+  case ParseConstants::op_div:
     f = LOOKUP_OP2 ("divide");
     break;
-  case op_idiv:
+  case ParseConstants::op_idiv:
     f = LOOKUP_OP2 ("integer-divide");
     break;
-  case op_mod:
+  case ParseConstants::op_mod:
     f = LOOKUP_OP2 ("mod");
     break;
   }
@@ -2420,15 +2423,15 @@ void end_visit(const NumericLiteral& v, void* /*visit_state*/)
 {
 TRACE_VISIT_OUT ();
   switch (v.get_type()) {
-  case num_integer: {
+  case ParseConstants::num_integer: {
     nodestack.push(new const_expr(v.get_location(), (xqp_integer) v.get_int()));
     break;
   }
-  case num_decimal: {
+  case ParseConstants::num_decimal: {
     nodestack.push(new const_expr(v.get_location(), (xqp_decimal) v.get_decimal()));
     break;
   }
-  case num_double: {
+  case ParseConstants::num_double: {
     nodestack.push(new const_expr(v.get_location(), (xqp_double) v.get_double()));
     break;
   }
@@ -2518,15 +2521,15 @@ void *begin_visit(const OccurrenceIndicator& v)
   TRACE_VISIT ();
   TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
   switch (v.get_type ()) {
-  case occurs_exactly_one:
+  case ParseConstants::occurs_exactly_one:
     q = TypeConstants::QUANT_ONE; break;
-  case occurs_one_or_more:
+  case ParseConstants::occurs_one_or_more:
     q = TypeConstants::QUANT_PLUS; break;
-  case occurs_optionally:
+  case ParseConstants::occurs_optionally:
     q = TypeConstants::QUANT_QUESTION; break;
-  case occurs_zero_or_more:
+  case ParseConstants::occurs_zero_or_more:
     q = TypeConstants::QUANT_STAR; break;
-  case occurs_never:
+  case ParseConstants::occurs_never:
     ZORBA_ASSERT (false);
   }
 
@@ -2616,14 +2619,14 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
 
     switch (wildcard->getKind())
     {
-    case wild_all:
+    case ParseConstants::wild_all:
       matchExpr->setWildKind(match_all_wild);
       break;
-    case wild_elem:
+    case ParseConstants::wild_elem:
       matchExpr->setWildKind(match_name_wild);
       matchExpr->setWildName(wildcard->getPrefix());
       break;
-    case wild_prefix:
+    case ParseConstants::wild_prefix:
       matchExpr->setWildKind(match_prefix_wild);
       matchExpr->setWildName(wildcard->getLocalName());
       break;
@@ -3142,7 +3145,7 @@ void *begin_visit(const PathExpr& v)
   // Put a NULL in the stack to mark the beginning of a PathExp tree.
   nodestack.push(NULL);
 
-  if (v.get_type() != path_leading_lone_slash)
+  if (v.get_type() != ParseConstants::path_leading_lone_slash)
   {
     rpe = new relpath_expr(v.get_location());
 
@@ -3155,7 +3158,7 @@ void *begin_visit(const PathExpr& v)
     that was created above.  In case 1, just push E to the nodestack.
     In case 4, add a "." to path expressions starting with an axis step
   */
-  if (v.get_type() == path_relative) {
+  if (v.get_type() == ParseConstants::path_relative) {
     const RelativePathExpr *vrpe = dynamic_cast<RelativePathExpr *> (v.get_relpath_expr ().getp());
     if (vrpe != NULL && dynamic_cast<AxisStep *> (vrpe->get_step_expr ().getp ()) != NULL)
       rpe->add_back (sctx_p->lookup_var_nofail (DOT_VAR));
@@ -3183,7 +3186,7 @@ void *begin_visit(const PathExpr& v)
     }
   }
 
-  if (v.get_type() == path_leading_slashslash)
+  if (v.get_type() == ParseConstants::path_leading_slashslash)
   {
     rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
     rchandle<match_expr> me = new match_expr(v.get_location());
@@ -3238,7 +3241,7 @@ void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
     ZORBA_ASSERT(rpe != NULL);
 
     rpe->add_back(arg2);
-    if (v.get_step_type() == st_slashslash)
+    if (v.get_step_type() == ParseConstants::st_slashslash)
     {
       rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
       rchandle<match_expr> me = new match_expr(v.get_location());
@@ -3478,37 +3481,37 @@ void end_visit(const ForwardAxis& v, void* /*visit_state*/)
 
   switch (v.get_axis())
   {
-  case axis_child:
+  case ParseConstants::axis_child:
   {
     ase->setAxis(axis_kind_child);
     break;
   }
-  case axis_descendant:
+  case ParseConstants::axis_descendant:
   {
     ase->setAxis(axis_kind_descendant);
     break;
   }
-  case axis_attribute:
+  case ParseConstants::axis_attribute:
   {
     ase->setAxis(axis_kind_attribute);
     break;
   }
-  case axis_self:
+  case ParseConstants::axis_self:
   {
     ase->setAxis(axis_kind_self);
     break;
   }
-  case axis_descendant_or_self:
+  case ParseConstants::axis_descendant_or_self:
   {
     ase->setAxis(axis_kind_descendant_or_self);
     break;
   }
-  case axis_following_sibling:
+  case ParseConstants::axis_following_sibling:
   {
     ase->setAxis(axis_kind_following_sibling);
     break;
   }
-  case axis_following:
+  case ParseConstants::axis_following:
   {
     ase->setAxis(axis_kind_following);
     break;
@@ -3545,27 +3548,27 @@ void end_visit(const ReverseAxis& v, void* /*visit_state*/)
 
   switch (v.get_axis())
   {
-  case axis_parent:
+  case ParseConstants::axis_parent:
   {
     ase->setAxis(axis_kind_parent);
     break;
   }
-  case axis_ancestor:
+  case ParseConstants::axis_ancestor:
   {
     ase->setAxis(axis_kind_ancestor);
     break;
   }
-  case axis_preceding_sibling:
+  case ParseConstants::axis_preceding_sibling:
   {
     ase->setAxis(axis_kind_preceding_sibling);
     break;
   }
-  case axis_preceding:
+  case ParseConstants::axis_preceding:
   {
     ase->setAxis(axis_kind_preceding);
     break;
   }
-  case axis_ancestor_or_self:
+  case ParseConstants::axis_ancestor_or_self:
   {
     ase->setAxis(axis_kind_ancestor_or_self);
     break;
@@ -3590,7 +3593,7 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
   rchandle<flwor_expr> flwor(new flwor_expr(v.get_location()));
   flwor->set_retval(new const_expr(v.get_location(), true));
   rchandle<expr> sat = pop_nodestack();
-  if (v.get_qmode() == quant_every) {
+  if (v.get_qmode() == ParseConstants::quant_every) {
     rchandle<fo_expr> uw = new fo_expr(v.get_expr()->get_location(), LOOKUP_FN("fn", "not", 1));
     uw->add(sat);
     sat = uw.getp();
@@ -3603,7 +3606,7 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
     var_expr_t ve = vars_vals [2 * i + 1].cast<var_expr> ();
     flwor->add(wrap_in_forclause (&*vars_vals [2 * i], ve, NULL));
   }
-  rchandle<fo_expr> quant = new fo_expr(v.get_location(), v.get_qmode() == quant_every ? LOOKUP_FN("fn", "empty", 1) : LOOKUP_FN("fn", "exists", 1));
+  rchandle<fo_expr> quant = new fo_expr(v.get_location(), v.get_qmode() == ParseConstants::quant_every ? LOOKUP_FN("fn", "empty", 1) : LOOKUP_FN("fn", "exists", 1));
   quant->add (&*flwor);
   nodestack.push (&*quant);
 }

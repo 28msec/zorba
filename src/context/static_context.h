@@ -29,6 +29,9 @@
 #include "common.h"
 
 #include <zorba/static_context.h>
+#include <zorba/static_context_consts.h>
+
+
 #include <memory>
 #include "context/context.h"
 #include "context/context_impl.h"
@@ -161,19 +164,19 @@ public:
 	PlanIter_t collations() const;
   #endif
 
-	StaticQueryContext::xpath1_0compatib_mode_t xpath1_0compatib_mode() const;
-	StaticQueryContext::construction_mode_t construction_mode() const;
-	StaticQueryContext::order_empty_mode_t order_empty_mode() const;
-	StaticQueryContext::boundary_space_mode_t boundary_space_mode() const;
-	StaticQueryContext::inherit_mode_t inherit_mode() const;
-	StaticQueryContext::preserve_mode_t preserve_mode() const;
+	StaticContextConsts::xpath1_0compatib_mode_t xpath1_0compatib_mode() const;
+	StaticContextConsts::construction_mode_t construction_mode() const;
+	StaticContextConsts::order_empty_mode_t order_empty_mode() const;
+	StaticContextConsts::boundary_space_mode_t boundary_space_mode() const;
+	StaticContextConsts::inherit_mode_t inherit_mode() const;
+	StaticContextConsts::preserve_mode_t preserve_mode() const;
 	
-	void set_xpath1_0compatib_mode(StaticQueryContext::xpath1_0compatib_mode_t v);
-	void set_construction_mode(StaticQueryContext::construction_mode_t v);
-	void set_order_empty_mode(StaticQueryContext::order_empty_mode_t v);
-	void set_boundary_space_mode(StaticQueryContext::boundary_space_mode_t v);
-	void set_inherit_mode(StaticQueryContext::inherit_mode_t v);
-	void set_preserve_mode(StaticQueryContext::preserve_mode_t v);
+	void set_xpath1_0compatib_mode(StaticContextConsts::xpath1_0compatib_mode_t v);
+	void set_construction_mode(StaticContextConsts::construction_mode_t v);
+	void set_order_empty_mode(StaticContextConsts::order_empty_mode_t v);
+	void set_boundary_space_mode(StaticContextConsts::boundary_space_mode_t v);
+	void set_inherit_mode(StaticContextConsts::inherit_mode_t v);
+	void set_preserve_mode(StaticContextConsts::preserve_mode_t v);
 
   xqp_string default_collation_uri() const;
 	void set_default_collation_uri(xqp_string);
@@ -200,8 +203,8 @@ public:
 	void set_collection_type(xqp_string collURI, xqtref_t t);
   xqtref_t get_collection_type(const xqp_string);
 	
-	StaticQueryContext::ordering_mode_t ordering_mode() const;
-	void set_ordering_mode(StaticQueryContext::ordering_mode_t v);
+	StaticContextConsts::ordering_mode_t ordering_mode() const;
+	void set_ordering_mode(StaticContextConsts::ordering_mode_t v);
 
 protected:
   xqp_string current_absolute_baseuri() const;

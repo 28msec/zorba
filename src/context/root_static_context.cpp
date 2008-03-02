@@ -16,7 +16,7 @@ root_static_context::root_static_context()
     : static_context()
 {
   typemgr.reset(new RootTypeManager());
-  set_xpath1_0compatib_mode(StaticQueryContext::xpath2_0);
+  set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
   const char **p = default_ns_initializers;
   for (; *p != NULL; p += 2)
     bind_ns (p [0], p [1]);
@@ -24,12 +24,12 @@ root_static_context::root_static_context()
   set_default_function_namespace (lookup_ns ("fn"));
   set_context_item_static_type(typemgr->create_any_type());
   set_default_collation_uri ("http://www.w3.org/2005/xpath-functions/collation/codepoint");
-  set_construction_mode(StaticQueryContext::cons_strip);
-  set_ordering_mode(StaticQueryContext::ordered);
-  set_order_empty_mode(StaticQueryContext::empty_greatest);
-  set_boundary_space_mode(StaticQueryContext::strip_space);
-  set_inherit_mode(StaticQueryContext::no_inherit_ns);
-  set_preserve_mode(StaticQueryContext::no_preserve_ns);
+  set_construction_mode(StaticContextConsts::cons_strip);
+  set_ordering_mode(StaticContextConsts::ordered);
+  set_order_empty_mode(StaticContextConsts::empty_greatest);
+  set_boundary_space_mode(StaticContextConsts::strip_space);
+  set_inherit_mode(StaticContextConsts::no_inherit_ns);
+  set_preserve_mode(StaticContextConsts::no_preserve_ns);
   set_default_collection_type(typemgr->create_any_type());
 
   set_current_absolute_baseuri("");

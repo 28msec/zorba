@@ -76,13 +76,13 @@ DocumentIteratorState::init(PlanState& planState)
   static_context* sctx = planState.theZorba->get_static_context();
 
   theTypePreserve =
-    (sctx->construction_mode() == StaticQueryContext::cons_preserve ? true : false);
+    (sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
 
   theNsPreserve =
-    (sctx->preserve_mode() == StaticQueryContext::preserve_ns ? true : false);
+    (sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
 
   theNsInherit = 
-    (sctx->inherit_mode() == StaticQueryContext::inherit_ns ? true : false);
+    (sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
 }
 
 void
@@ -135,13 +135,13 @@ ElementIteratorState::init(PlanState& planState)
   static_context* sctx = planState.theZorba->get_static_context();
 
   theTypePreserve =
-    (sctx->construction_mode() == StaticQueryContext::cons_preserve ? true : false);
+    (sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
 
   theNsPreserve =
-    (sctx->preserve_mode() == StaticQueryContext::preserve_ns ? true : false);
+    (sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
 
   theNsInherit = 
-    (sctx->inherit_mode() == StaticQueryContext::inherit_ns ? true : false);
+    (sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
 }
 
 

@@ -16,15 +16,15 @@
 #include <typeinfo>
 #include <vector>
 #include <assert.h>
+#include <boost/variant.hpp>
 
 #include <zorba/item.h>
+#include <zorba/rchandle.h>
+#include <zorba/static_context_consts.h>
 
 #include "compiler/parser/parse_constants.h"
-#include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include <zorba/rchandle.h>
 #include "compiler/parser/query_loc.h"
-#include <boost/variant.hpp>
 
 namespace xqp {
 
@@ -576,16 +576,16 @@ class BoundarySpaceDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	StaticQueryContext::boundary_space_mode_t mode;
+	StaticContextConsts::boundary_space_mode_t mode;
 
 public:
 	BoundarySpaceDecl(
 		const QueryLoc&,
-		StaticQueryContext::boundary_space_mode_t);
+		StaticContextConsts::boundary_space_mode_t);
 
 
 public:
-	StaticQueryContext::boundary_space_mode_t
+	StaticContextConsts::boundary_space_mode_t
 		get_boundary_space_mode() const { return mode; }
 
 public:
@@ -604,18 +604,18 @@ class DefaultNamespaceDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	enum default_namespace_mode_t mode;
+	enum ParseConstants::default_namespace_mode_t mode;
 	std::string default_namespace;
 
 public:
 	DefaultNamespaceDecl(
 		const QueryLoc&,
-		enum default_namespace_mode_t mode,
+		enum ParseConstants::default_namespace_mode_t mode,
 		std::string const& default_namespace);
 
 
 public:
-	enum default_namespace_mode_t get_mode() const { return mode; }
+	enum ParseConstants::default_namespace_mode_t get_mode() const { return mode; }
 	std::string get_default_namespace() const { return default_namespace; }
 
 public:
@@ -689,16 +689,16 @@ class OrderingModeDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	StaticQueryContext::ordering_mode_t mode;
+	StaticContextConsts::ordering_mode_t mode;
 		
 public:
 	OrderingModeDecl(
 		const QueryLoc&,
-		StaticQueryContext::ordering_mode_t);
+		StaticContextConsts::ordering_mode_t);
 
 	
 public:
-	StaticQueryContext::ordering_mode_t get_mode() const { return mode; }
+	StaticContextConsts::ordering_mode_t get_mode() const { return mode; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -716,16 +716,16 @@ class EmptyOrderDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	StaticQueryContext::order_empty_mode_t mode;
+	StaticContextConsts::order_empty_mode_t mode;
 
 public:
 	EmptyOrderDecl(
 		const QueryLoc&,
-		StaticQueryContext::order_empty_mode_t);
+		StaticContextConsts::order_empty_mode_t);
 
 	
 public:
-	StaticQueryContext::order_empty_mode_t get_mode() const { return mode; }
+	StaticContextConsts::order_empty_mode_t get_mode() const { return mode; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -743,20 +743,20 @@ class CopyNamespacesDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	StaticQueryContext::preserve_mode_t preserve_mode;
-	StaticQueryContext::inherit_mode_t inherit_mode;
+	StaticContextConsts::preserve_mode_t preserve_mode;
+	StaticContextConsts::inherit_mode_t inherit_mode;
 
 public:
 	CopyNamespacesDecl(
 		const QueryLoc&,
-		StaticQueryContext::preserve_mode_t preserve_mode,
-		StaticQueryContext::inherit_mode_t  inherit_mode);
+		StaticContextConsts::preserve_mode_t preserve_mode,
+		StaticContextConsts::inherit_mode_t  inherit_mode);
 
 
 public: 
-	StaticQueryContext::preserve_mode_t get_preserve_mode() const
+	StaticContextConsts::preserve_mode_t get_preserve_mode() const
   { return preserve_mode; }
-	StaticQueryContext::inherit_mode_t  get_inherit_mode() const
+	StaticContextConsts::inherit_mode_t  get_inherit_mode() const
   { return inherit_mode; }
 
 public:
@@ -1004,16 +1004,16 @@ class ConstructionDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	StaticQueryContext::construction_mode_t mode;
+	StaticContextConsts::construction_mode_t mode;
 
 public:
 	ConstructionDecl(
 		const QueryLoc&,
-		StaticQueryContext::construction_mode_t);
+		StaticContextConsts::construction_mode_t);
 
 
 public:
-	StaticQueryContext::construction_mode_t get_mode() const { return mode; }
+	StaticContextConsts::construction_mode_t get_mode() const { return mode; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1038,7 +1038,7 @@ class FunctionDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	function_type_t type;
+  ParseConstants::function_type_t type;
 	rchandle<QName> name_h;
 	rchandle<ParamList> paramlist_h;
 	rchandle<EnclosedExpr> body_h;
@@ -1052,7 +1052,7 @@ public:
 		rchandle<ParamList>,
 		rchandle<SequenceType>,
 		rchandle<EnclosedExpr>,
-		function_type_t type);
+		ParseConstants::function_type_t type);
 
 
 public:
@@ -1061,7 +1061,7 @@ public:
 	int get_param_count() const;
 	rchandle<EnclosedExpr> get_body() const { return body_h; }
 	rchandle<SequenceType> get_return_type() const { return return_type_h; }
-	function_type_t get_type() const { return type; }
+  ParseConstants::function_type_t get_type() const { return type; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1698,15 +1698,15 @@ class OrderDirSpec : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	dir_spec_t dir_spec;
+  ParseConstants::dir_spec_t dir_spec;
 
 public:
 	OrderDirSpec(
 		const QueryLoc&,
-		dir_spec_t dir_spec);
+		ParseConstants::dir_spec_t dir_spec);
 	
 public:
-	dir_spec_t get_dir_spec() const { return dir_spec; }
+  ParseConstants::dir_spec_t get_dir_spec() const { return dir_spec; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -1723,15 +1723,15 @@ class OrderEmptySpec : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	StaticQueryContext::order_empty_mode_t empty_order_spec;
+	StaticContextConsts::order_empty_mode_t empty_order_spec;
 
 public:
 	OrderEmptySpec(
 		const QueryLoc&,
-		StaticQueryContext::order_empty_mode_t empty_order_spec);
+		StaticContextConsts::order_empty_mode_t empty_order_spec);
 
 public:
-	StaticQueryContext::order_empty_mode_t get_empty_order_spec() const
+	StaticContextConsts::order_empty_mode_t get_empty_order_spec() const
 		{ return empty_order_spec; }
 
 public:
@@ -1775,19 +1775,19 @@ class QuantifiedExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	quantification_mode_t qmode;
+  ParseConstants::quantification_mode_t qmode;
 	rchandle<QVarInDeclList> decl_list_h;
 	rchandle<exprnode> expr_h;
 
 public:
 	QuantifiedExpr(
 		const QueryLoc&,
-		quantification_mode_t qmode,
+		ParseConstants::quantification_mode_t qmode,
 		rchandle<QVarInDeclList>,
 		rchandle<exprnode>);
 
 public:
-	quantification_mode_t get_qmode() const { return qmode; }
+  ParseConstants::quantification_mode_t get_qmode() const { return qmode; }
 	rchandle<QVarInDeclList> get_decl_list() const { return decl_list_h; }
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
@@ -2199,20 +2199,20 @@ class AdditiveExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	add_op_t add_op;
+  ParseConstants::add_op_t add_op;
 	rchandle<exprnode> add_expr_h;
 	rchandle<exprnode> mult_expr_h;
 
 public:
 	AdditiveExpr(
 		const QueryLoc&,
-		add_op_t add_op,
+		ParseConstants::add_op_t add_op,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
 
 public:
-	add_op_t get_add_op() const { return add_op; }
+  ParseConstants::add_op_t get_add_op() const { return add_op; }
 	rchandle<exprnode> get_add_expr() const { return add_expr_h; }
 	rchandle<exprnode> get_mult_expr() const { return mult_expr_h; }
 
@@ -2236,14 +2236,14 @@ class MultiplicativeExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	mult_op_t mult_op;
+  ParseConstants::mult_op_t mult_op;
 	rchandle<exprnode> mult_expr_h;
 	rchandle<exprnode> union_expr_h;
 
 public:
 	MultiplicativeExpr(
 		const QueryLoc&,
-		mult_op_t,
+		ParseConstants::mult_op_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
@@ -2251,7 +2251,7 @@ public:
 public:
 	rchandle<exprnode> get_mult_expr() const { return mult_expr_h; }
 	rchandle<exprnode> get_union_expr() const { return union_expr_h; }
-	mult_op_t get_mult_op() const { return mult_op; }
+  ParseConstants::mult_op_t get_mult_op() const { return mult_op; }
 
 public:
 	virtual	void accept(parsenode_visitor&) const;
@@ -2303,21 +2303,21 @@ class IntersectExceptExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	enum intex_op_t intex_op;
+	enum ParseConstants::intex_op_t intex_op;
 	rchandle<exprnode> intex_expr_h;
 	rchandle<exprnode> instof_expr_h;
 
 public:
 	IntersectExceptExpr(
 		const QueryLoc&,
-		enum intex_op_t,
+		enum ParseConstants::intex_op_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
 
 public:
 	rchandle<exprnode> get_intex_expr() const { return intex_expr_h; }
-	enum intex_op_t get_intex_op() const { return intex_op; }
+	enum ParseConstants::intex_op_t get_intex_op() const { return intex_op; }
 	rchandle<exprnode> get_instof_expr() const { return instof_expr_h; }
 
 public:
@@ -2530,18 +2530,18 @@ class GeneralComp : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	enum gencomp_t type;
+	enum ParseConstants::gencomp_t type;
 
 public:
 	GeneralComp(
 		const QueryLoc&,
-		enum gencomp_t);
+		enum ParseConstants::gencomp_t);
 
 	GeneralComp();
 
 
 public:
-	enum gencomp_t get_type() const { return type; }
+	enum ParseConstants::gencomp_t get_type() const { return type; }
 	
 public:
 	void accept(parsenode_visitor&) const;
@@ -2559,18 +2559,18 @@ class ValueComp : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	enum valcomp_t type; 
+	enum ParseConstants::valcomp_t type; 
 
 public:
 	ValueComp(
 		const QueryLoc&,
-		enum valcomp_t);
+		enum ParseConstants::valcomp_t);
 
 	ValueComp();
 
 
 public:
-	enum valcomp_t get_type() const { return type; }
+	enum ParseConstants::valcomp_t get_type() const { return type; }
 	
 public:
 	void accept(parsenode_visitor&) const;
@@ -2588,18 +2588,18 @@ class NodeComp : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	enum nodecomp_t type;
+	enum ParseConstants::nodecomp_t type;
 
 public:
 	NodeComp(
 		const QueryLoc&,
-		enum nodecomp_t);
+		enum ParseConstants::nodecomp_t);
 
 	NodeComp();
 
 
 public:
-	enum nodecomp_t get_type() const { return type; }
+	enum ParseConstants::nodecomp_t get_type() const { return type; }
 	
 public:
 	void accept(parsenode_visitor&) const;
@@ -2618,7 +2618,7 @@ class ValidateExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	enum validation_mode_t valmode;
+	enum ParseConstants::validation_mode_t valmode;
 	rchandle<exprnode> expr_h;
 
 public:
@@ -2630,7 +2630,7 @@ public:
 
 public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
-	enum validation_mode_t get_valmode() const { return valmode; }
+	enum ParseConstants::validation_mode_t get_valmode() const { return valmode; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -2761,18 +2761,18 @@ public:
 class PathExpr : public exprnode
 {
 protected:
-	enum pathtype_t type;
+	enum ParseConstants::pathtype_t type;
 	rchandle<exprnode> relpath_expr_h;
 
 public:
 	PathExpr(
 		const QueryLoc&,
-		enum pathtype_t type,
+		enum ParseConstants::pathtype_t type,
 		rchandle<exprnode>);
 
 
 public:
-	enum pathtype_t get_type() const { return type; }
+	enum ParseConstants::pathtype_t get_type() const { return type; }
 	rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
 
 public:
@@ -2794,20 +2794,20 @@ public:
 class RelativePathExpr : public exprnode
 {
 protected:
-	enum steptype_t step_type;
+	enum ParseConstants::steptype_t step_type;
 	rchandle<exprnode> step_expr_h;
 	rchandle<exprnode> relpath_expr_h;
 
 public:
 	RelativePathExpr(
 		const QueryLoc&,
-		enum steptype_t,
+		enum ParseConstants::steptype_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
 
 public:
-	enum steptype_t get_step_type() const { return step_type; }
+	enum ParseConstants::steptype_t get_step_type() const { return step_type; }
 	rchandle<exprnode> get_step_expr() const { return step_expr_h; }
 	rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
 
@@ -2906,16 +2906,16 @@ public:
 class ForwardAxis : public parsenode
 {
 protected:
-	enum forward_axis_t axis;
+	enum ParseConstants::forward_axis_t axis;
 
 public:
 	ForwardAxis(
 		const QueryLoc&,
-		enum forward_axis_t);
+		enum ParseConstants::forward_axis_t);
 
 
 public:
-	enum forward_axis_t get_axis() const { return axis; }
+	enum ParseConstants::forward_axis_t get_axis() const { return axis; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -2996,16 +2996,16 @@ public:
 class ReverseAxis : public parsenode
 {
 protected:
-	enum reverse_axis_t axis;
+	enum ParseConstants::reverse_axis_t axis;
 
 public:
 	ReverseAxis(
 		const QueryLoc&,
-		enum reverse_axis_t);
+		enum ParseConstants::reverse_axis_t);
 
 
 public:
-	enum reverse_axis_t get_axis() const { return axis; }
+	enum ParseConstants::reverse_axis_t get_axis() const { return axis; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -3066,7 +3066,7 @@ public:
 class Wildcard : public parsenode
 {
 protected:
-	enum wildcard_t theKind;
+	enum ParseConstants::wildcard_t theKind;
 	xqp_string      thePrefix;
   xqp_string      theLocalName;
 	
@@ -3075,11 +3075,11 @@ public:
 		const QueryLoc& loc,
     const xqp_string& prefix,
     const xqp_string& lname,
-		enum wildcard_t type);
+		enum ParseConstants::wildcard_t type);
 
 
 public:
-	enum wildcard_t getKind() const        { return theKind; }
+	enum ParseConstants::wildcard_t getKind() const        { return theKind; }
 	const xqp_string& getPrefix() const    { return thePrefix; }
 	const xqp_string& getLocalName() const { return theLocalName; }
 
@@ -3184,7 +3184,7 @@ class NumericLiteral : public exprnode
 public:
 
 protected:
-	enum numeric_type_t type;
+	enum ParseConstants::numeric_type_t type;
   boost::variant< xqp_integer, xqp_decimal, xqp_double > theValue;
 //  xqp_integer ival;
 //	xqp_decimal decval;
@@ -3205,7 +3205,7 @@ public:
 
 
 public:
-	enum numeric_type_t get_type() const { return type; }
+	enum ParseConstants::numeric_type_t get_type() const { return type; }
   std::string toString () const;
 	xqp_integer get_int() const { return boost::get<xqp_integer>(theValue); }
 	xqp_decimal get_decimal() const { return boost::get<xqp_decimal>(theValue); }
@@ -3538,14 +3538,14 @@ public:
 class CommonContent : public exprnode
 {
 protected:
-	enum common_content_t type;
+	enum ParseConstants::common_content_t type;
 	std::string ref;
 	rchandle<EnclosedExpr> expr_h;
 
 public:
 	CommonContent(
 		const QueryLoc&,
-		enum common_content_t,
+		enum ParseConstants::common_content_t,
 		std::string ref);
 
 	CommonContent(
@@ -3554,11 +3554,11 @@ public:
 
 	CommonContent(
 		const QueryLoc&,
-		enum common_content_t);
+		enum ParseConstants::common_content_t);
 
 
 public:
-	enum common_content_t get_type() const { return type; }
+	enum ParseConstants::common_content_t get_type() const { return type; }
 	const std::string& get_ref() const { return ref; }
 	rchandle<EnclosedExpr> get_expr() const { return expr_h; }
 
@@ -4190,16 +4190,16 @@ public:
 class OccurrenceIndicator : public parsenode
 {
 protected:
-	enum occurrence_t type;
+	enum ParseConstants::occurrence_t type;
 
 public:
 	OccurrenceIndicator(
 		const QueryLoc&,
-		enum occurrence_t);
+		enum ParseConstants::occurrence_t);
 
 
 public:
-	enum occurrence_t get_type() const { return type; }
+	enum ParseConstants::occurrence_t get_type() const { return type; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5311,16 +5311,16 @@ class FTCaseOption : public FTMatchOption
 |_______________________________________________________________________*/
 {
 protected:
-	ft_case_mode_t mode;
+  ParseConstants::ft_case_mode_t mode;
 
 public:
 	FTCaseOption(
 		const QueryLoc&,
-		enum ft_case_mode_t);
+		enum ParseConstants::ft_case_mode_t);
 
 
 public:
-	enum ft_case_mode_t get_mode() const { return mode; }
+	enum ParseConstants::ft_case_mode_t get_mode() const { return mode; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5341,16 +5341,16 @@ class FTDiacriticsOption : public FTMatchOption
 |_______________________________________________________________________*/
 {
 protected:
-	ft_diacritics_mode_t mode;
+  ParseConstants::ft_diacritics_mode_t mode;
 
 public:
 	FTDiacriticsOption(
 		const QueryLoc&,
-		ft_diacritics_mode_t);
+		ParseConstants::ft_diacritics_mode_t);
 
 
 public:
-	enum ft_diacritics_mode_t get_mode() const { return mode; }
+	enum ParseConstants::ft_diacritics_mode_t get_mode() const { return mode; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5368,23 +5368,17 @@ class FTStemOption : public FTMatchOption
 |			| WITHOUT_STEMMING
 |_______________________________________________________________________*/
 {
-public:
-	enum ft_stem_mode_t {
-		with,
-		without
-	};
-
 protected:
-	ft_stem_mode_t mode;
+  ParseConstants::ft_stem_mode_t mode;
 
 public:
 	FTStemOption(
 		const QueryLoc&,
-		ft_stem_mode_t);
+		ParseConstants::ft_stem_mode_t);
 
 
 public:
-	enum ft_stem_mode_t get_mode() const { return mode; }
+	enum ParseConstants::ft_stem_mode_t get_mode() const { return mode; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5518,14 +5512,14 @@ class FTStopwordOption : public FTMatchOption
 protected:
 	rchandle<FTRefOrList> refor_list_h;
 	rchandle<FTInclExclStringLiteralList> incl_excl_list_h;
-	stop_words_mode_t mode;
+  ParseConstants::stop_words_mode_t mode;
 
 public:
 	FTStopwordOption(
 		const QueryLoc&,
 		rchandle<FTRefOrList>,
 		rchandle<FTInclExclStringLiteralList>,
-		stop_words_mode_t);
+	  ParseConstants::stop_words_mode_t);
 
 
 public:
@@ -5533,7 +5527,7 @@ public:
 		{ return refor_list_h; }
 	rchandle<FTInclExclStringLiteralList> get_incl_excl_list() const
 		{ return incl_excl_list_h; }
-	stop_words_mode_t get_mode() const
+  ParseConstants::stop_words_mode_t get_mode() const
 		{ return mode; }
 
 public:
@@ -5642,19 +5636,19 @@ class FTInclExclStringLiteral : public parsenode
 {
 protected:
 	rchandle<FTRefOrList> ref_or_list_h;
-	intex_op_t mode;
+  ParseConstants::intex_op_t mode;
 
 public:
 	FTInclExclStringLiteral(
 		const QueryLoc&,
 		rchandle<FTRefOrList>,
-		intex_op_t);
+		ParseConstants::intex_op_t);
 
 
 public:
 	rchandle<FTRefOrList> get_ref_or_list() const
 		{ return ref_or_list_h; }
-	intex_op_t get_mode() const
+  ParseConstants::intex_op_t get_mode() const
 		{ return mode; }
 
 public:
@@ -5730,16 +5724,16 @@ class FTContent : public FTProximity
 |_______________________________________________________________________*/
 {
 protected:
-	ft_content_mode_t mode;
+  ParseConstants::ft_content_mode_t mode;
 
 public:
 	FTContent(
 		const QueryLoc&,
-		enum ft_content_mode_t);
+		enum ParseConstants::ft_content_mode_t);
 
 
 public:
-	enum ft_content_mode_t get_mode() const { return mode; }
+	enum ParseConstants::ft_content_mode_t get_mode() const { return mode; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5761,16 +5755,16 @@ class FTAnyallOption : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	enum ft_anyall_option_t option;
+	enum ParseConstants::ft_anyall_option_t option;
 
 public:
 	FTAnyallOption(
 		const QueryLoc&,
-		enum ft_anyall_option_t);
+		enum ParseConstants::ft_anyall_option_t);
 
 
 public:
-	enum ft_anyall_option_t get_option() const { return option; }
+	enum ParseConstants::ft_anyall_option_t get_option() const { return option; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5917,16 +5911,16 @@ class FTScope : public FTProximity
 |_______________________________________________________________________*/
 {
 protected:
-	ft_scope_t scope;
+  ParseConstants::ft_scope_t scope;
 
 public:
 	FTScope(
 		const QueryLoc&,
-		ft_scope_t);
+		ParseConstants::ft_scope_t);
 
 
 public:
-	enum ft_scope_t get_scope() const { return scope; }
+	enum ParseConstants::ft_scope_t get_scope() const { return scope; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5944,16 +5938,16 @@ class FTUnit : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	ft_unit_t unit;
+  ParseConstants::ft_unit_t unit;
 
 public:
 	FTUnit(
 		const QueryLoc&,
-		ft_unit_t);
+		ParseConstants::ft_unit_t);
 
 
 public:
-	enum ft_unit_t get_unit() const { return unit; }
+	enum ParseConstants::ft_unit_t get_unit() const { return unit; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5971,16 +5965,16 @@ class FTBigUnit : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	enum ft_big_unit_t unit;
+	enum ParseConstants::ft_big_unit_t unit;
 
 public:
 	FTBigUnit(
 		const QueryLoc&,
-		enum ft_big_unit_t);
+		enum ParseConstants::ft_big_unit_t);
 
 
 public:
-	enum ft_big_unit_t get_unit() const { return unit; }
+	enum ParseConstants::ft_big_unit_t get_unit() const { return unit; }
 
 public:
 	void accept(parsenode_visitor&) const;

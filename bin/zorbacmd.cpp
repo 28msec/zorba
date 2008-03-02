@@ -31,22 +31,22 @@ populateStaticContext(xqp::StaticQueryContext_t& aStaticContext, ZorbaCMDPropert
   if (aProperties->getBoundarySpace().size() != 0 )
   {
     aStaticContext->setBoundarySpacePolicy( aProperties->getBoundarySpace().compare("preserve") == 0 
-                                            ? xqp::StaticQueryContext::preserve_space 
-                                            : xqp::StaticQueryContext::strip_space );
+                                            ? xqp::StaticContextConsts::preserve_space 
+                                            : xqp::StaticContextConsts::strip_space );
   }
 
   if (aProperties->getConstructionMode().size() != 0 )
   {
     aStaticContext->setConstructionMode( aProperties->getBoundarySpace().compare("preserve") == 0 
-                                         ? xqp::StaticQueryContext::cons_preserve 
-                                         : xqp::StaticQueryContext::cons_strip );
+                                         ? xqp::StaticContextConsts::cons_preserve 
+                                         : xqp::StaticContextConsts::cons_strip );
   }
 
   if (aProperties->getOrderingMode().size() != 0 )
   {
     aStaticContext->setOrderingMode( aProperties->getBoundarySpace().compare("ordered") == 0 
-                                     ? xqp::StaticQueryContext::ordered 
-                                     : xqp::StaticQueryContext::unordered );
+                                     ? xqp::StaticContextConsts::ordered 
+                                     : xqp::StaticContextConsts::unordered );
   }
 
   if (aProperties->getBaseUri().size() != 0 )

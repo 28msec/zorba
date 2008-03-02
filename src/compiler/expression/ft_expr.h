@@ -10,6 +10,8 @@
 #ifndef XQP_FTEXPR_H
 #define XQP_FTEXPR_H
 
+#include "compiler/parser/parse_constants.h"
+
 #include "compiler/expression/expr.h"
 
 namespace xqp {
@@ -169,20 +171,20 @@ class ft_words_expr : public expr
 {
 protected:
 	rchandle<expr> words_expr_h;
-	ft_anyall_option_t anyall_opt;
+  ParseConstants::ft_anyall_option_t anyall_opt;
 
 public:
 	ft_words_expr(
 		const QueryLoc&,
 		rchandle<expr>,
-		ft_anyall_option_t);
+		ParseConstants::ft_anyall_option_t);
 
 	~ft_words_expr();
 
 public:
 	rchandle<expr> get_words_expr() const
 		{ return words_expr_h; }
-	ft_anyall_option_t get_anyall_option() const
+  ParseConstants::ft_anyall_option_t get_anyall_option() const
 		{ return anyall_opt; }
 
 public:
@@ -203,7 +205,7 @@ protected:
 	rchandle<ft_words_expr> words_h;
 	rchandle<expr> src_h;
 	rchandle<expr> dst_h;
-	ft_range_mode_t range_mode;
+  ParseConstants::ft_range_mode_t range_mode;
 	rchandle<ft_expr> selection_h;
 
 public:
@@ -212,7 +214,7 @@ public:
 		rchandle<ft_words_expr>,
 		rchandle<expr> src_h,
 		rchandle<expr> dst_h,
-		ft_range_mode_t range_mode);
+		ParseConstants::ft_range_mode_t range_mode);
 
 	ft_words_selection_expr(
 		const QueryLoc&,
@@ -224,7 +226,7 @@ public:
 	rchandle<ft_words_expr> get_words() const { return words_h; }
 	rchandle<expr> get_src() const { return src_h; }
 	rchandle<expr> get_dst() const { return dst_h; }
-	ft_range_mode_t get_range_mode() const { return range_mode; }
+  ParseConstants::ft_range_mode_t get_range_mode() const { return range_mode; }
 	rchandle<ft_expr> get_selection() const { return selection_h; }
 
 public:

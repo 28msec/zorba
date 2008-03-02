@@ -1,5 +1,6 @@
 #include <zorba/properties.h>
 
+#include "context/static_context.h"
 #include "system/globalenv.h"
 #include "errors/error_factory.h"
 #include "compiler/api/compiler_api.h"

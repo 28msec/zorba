@@ -32,7 +32,7 @@ public:
 		type_ident_ref_t		type;
 	}scw_URI_plus_type;
 
-	xpath1_0compatib_mode_t		xpath1_0compatib_mode;
+  StaticContextConsts::xpath1_0compatib_mode_t		xpath1_0compatib_mode;
 	
 	std::vector<scw_namespace_t>				ext_ns_list;
 	bool													default_elem_ns_was_set;
@@ -44,12 +44,12 @@ public:
 	std::vector<CollationInfo>		collation_list;
 	bool													default_collation_URI_was_set;
 	xqp_string										default_collation_URI;
-	construction_mode_t						construction_mode;
-	ordering_mode_t								ordering_mode;
-	order_empty_mode_t						order_empty_mode;
-	boundary_space_mode_t					boundary_space_mode;
-	preserve_mode_t								preserve_mode;
-	inherit_mode_t								inherit_mode;
+  StaticContextConsts::construction_mode_t						construction_mode;
+  StaticContextConsts::ordering_mode_t								ordering_mode;
+  StaticContextConsts::order_empty_mode_t						order_empty_mode;
+  StaticContextConsts::boundary_space_mode_t					boundary_space_mode;
+  StaticContextConsts::preserve_mode_t								preserve_mode;
+  StaticContextConsts::inherit_mode_t								inherit_mode;
 	bool													baseURI_was_set;
 	xqp_string										baseURI;
 	std::vector<scw_URI_plus_type>		doc_type_list;
@@ -64,8 +64,8 @@ public:
 	StaticContextWrapper();
 	virtual ~StaticContextWrapper();
 
-	virtual void		setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode );///true for XPath1.0 only, false for XPath2.0 (default false)
-	virtual xpath1_0compatib_mode_t		getXPath1_0CompatibMode( );///true for XPath1.0 only, false for XPath2.0
+	virtual void		setXPath1_0CompatibMode( StaticContextConsts::xpath1_0compatib_mode_t mode );///true for XPath1.0 only, false for XPath2.0 (default false)
+	virtual StaticContextConsts::xpath1_0compatib_mode_t		getXPath1_0CompatibMode( );///true for XPath1.0 only, false for XPath2.0
 
 	virtual bool		addNamespace( xqp_string prefix, xqp_string URI );//override the previous set prefix
 	virtual xqp_string		getNamespaceURIByPrefix( xqp_string prefix );
@@ -108,20 +108,22 @@ public:
 	virtual void		setDefaultCollation( xqp_string URI );//std::string  coll_string, ::Collator::ECollationStrength coll_strength );
 	virtual xqp_string	getDefaultCollation();
 
-	virtual void		setConstructionMode( construction_mode_t );
-	virtual construction_mode_t		getConstructionMode( );
+	virtual void		setConstructionMode( StaticContextConsts::construction_mode_t );
+	virtual StaticContextConsts::construction_mode_t		getConstructionMode( );
 
-	virtual void		setOrderingMode( ordering_mode_t );
-	virtual ordering_mode_t		getOrderingMode( );
+	virtual void		setOrderingMode( StaticContextConsts::ordering_mode_t );
+	virtual StaticContextConsts::ordering_mode_t		getOrderingMode( );
 
-	virtual void		setDefaultOrderForEmptySequences( order_empty_mode_t );
-	virtual order_empty_mode_t		getDefaultOrderForEmptySequences( );
+	virtual void		setDefaultOrderForEmptySequences( StaticContextConsts::order_empty_mode_t );
+	virtual StaticContextConsts::order_empty_mode_t		getDefaultOrderForEmptySequences( );
 
-	virtual void		setBoundarySpacePolicy( boundary_space_mode_t );
-	virtual boundary_space_mode_t		getBoundarySpacePolicy( );
+	virtual void		setBoundarySpacePolicy( StaticContextConsts::boundary_space_mode_t );
+	virtual StaticContextConsts::boundary_space_mode_t		getBoundarySpacePolicy( );
 
-	virtual void		setCopyNamespacesMode( preserve_mode_t preserve, inherit_mode_t inherit );
-	virtual void		getCopyNamespacesMode( preserve_mode_t *preserve, inherit_mode_t *inherit );
+	virtual void		setCopyNamespacesMode( StaticContextConsts::preserve_mode_t preserve, 
+                                         StaticContextConsts::inherit_mode_t inherit );
+	virtual void		getCopyNamespacesMode( StaticContextConsts::preserve_mode_t *preserve, 
+                                         StaticContextConsts::inherit_mode_t *inherit );
 
 	virtual bool		setBaseURI( xqp_string baseURI );
 	virtual xqp_string		getBaseURI( );

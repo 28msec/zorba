@@ -30,9 +30,11 @@
 #include <zorba/static_context.h>
 #include <zorba/store_consts.h>
 #include <zorba/errors.h>
+#include <zorba/static_context_consts.h>
 
 #include "common/shared_types.h"
 #include "compiler/parser/query_loc.h"
+#include "compiler/parser/parse_constants.h"
 #include "util/checked_vector.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_consts.h"
@@ -198,12 +200,12 @@ class order_modifier : public SimpleRCObject
 |_______________________________________________________________________*/
 {
 public:
-  dir_spec_t dir;
-  StaticQueryContext::order_empty_mode_t empty_mode;
+  ParseConstants::dir_spec_t dir;
+  StaticContextConsts::order_empty_mode_t empty_mode;
   std::string collation;
 
 public:
-  order_modifier (dir_spec_t _dir, StaticQueryContext::order_empty_mode_t _empty_mode, std::string _collation)
+  order_modifier (ParseConstants::dir_spec_t _dir, StaticContextConsts::order_empty_mode_t _empty_mode, std::string _collation)
     : dir (_dir), empty_mode (_empty_mode), collation (_collation) {}
 
 };
@@ -814,18 +816,18 @@ class validate_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-  enum validation_mode_t valmode;
+  enum ParseConstants::validation_mode_t valmode;
   expr_t expr_h;
 
 public:
   validate_expr(
     const QueryLoc&,
-    enum validation_mode_t,
+    enum ParseConstants::validation_mode_t,
     expr_t);
 
 public:
   expr_t get_expr() const { return expr_h; }
-  enum validation_mode_t get_valmode() const { return valmode; }
+  enum ParseConstants::validation_mode_t get_valmode() const { return valmode; }
 
 public:
   void next_iter (expr_iterator_data&);

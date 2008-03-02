@@ -14,6 +14,7 @@
 
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
+#include <zorba/static_context_consts.h>
 
 #include <iostream>
 #include <sstream>
@@ -25,6 +26,7 @@
 
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "util/tracer.h"
+#include "util/Assert.h"
 #include "errors/error_factory.h"
 #include "types/typemanager.h"
 
@@ -342,7 +344,7 @@ void NamespaceDecl::accept(parsenode_visitor& v) const
 // ----------------------
 BoundarySpaceDecl::BoundarySpaceDecl(
   const QueryLoc& _loc,
-  StaticQueryContext::boundary_space_mode_t _mode)
+  StaticContextConsts::boundary_space_mode_t _mode)
 :
   parsenode(_loc),
   mode(_mode)
@@ -354,8 +356,8 @@ BoundarySpaceDecl::BoundarySpaceDecl(
 // {
 //   s << INDENT << "BoundarySpaceDecl[";
 //   switch (mode) {
-//   case StaticQueryContext::preserve_space: s << "preserve"; break;
-//   case StaticQueryContext::strip_space: s << "strip"; break;
+//   case StaticContextConsts::preserve_space: s << "preserve"; break;
+//   case StaticContextConsts::strip_space: s << "strip"; break;
 //   default: s << "???";
 //   }
 //   return s << OUTDENT << "]\n";
@@ -374,7 +376,7 @@ void BoundarySpaceDecl::accept(parsenode_visitor& v) const
 // -------------------------
 DefaultNamespaceDecl::DefaultNamespaceDecl(
   const QueryLoc& _loc,
-  enum default_namespace_mode_t _mode,
+  enum ParseConstants::default_namespace_mode_t _mode,
   std::string const& _default_namespace)
 :
   parsenode(_loc),
@@ -469,7 +471,7 @@ void FTOptionDecl::accept(parsenode_visitor& v) const
 // ---------------------
 OrderingModeDecl::OrderingModeDecl(
   const QueryLoc& _loc,
-  StaticQueryContext::ordering_mode_t _mode)
+  StaticContextConsts::ordering_mode_t _mode)
 :
   parsenode(_loc),
   mode(_mode)
@@ -481,8 +483,8 @@ OrderingModeDecl::OrderingModeDecl(
 // {
 //   s << INDENT << "OrderingModeDecl[";
 //   switch (mode) {
-//   case StaticQueryContext::ordered: s << "ordered"; break;
-//   case StaticQueryContext::unordered: s << "unordered"; break;
+//   case StaticContextConsts::ordered: s << "ordered"; break;
+//   case StaticContextConsts::unordered: s << "unordered"; break;
 //   default: s << "???";
 //   }
 //   return s << OUTDENT << "]\n";
@@ -501,7 +503,7 @@ void OrderingModeDecl::accept(parsenode_visitor& v) const
 // -------------------
 EmptyOrderDecl::EmptyOrderDecl(
   const QueryLoc& _loc,
-  StaticQueryContext::order_empty_mode_t _mode)
+  StaticContextConsts::order_empty_mode_t _mode)
 :
   parsenode(_loc),
   mode(_mode)
@@ -513,8 +515,8 @@ EmptyOrderDecl::EmptyOrderDecl(
 // {
 //   s << INDENT << "EmptyOrderDecl[";
 //   switch (mode) {
-//   case StaticQueryContext::empty_greatest: s << "greatest"; break;
-//   case StaticQueryContext::empty_least: s << "least"; break;
+//   case StaticContextConsts::empty_greatest: s << "greatest"; break;
+//   case StaticContextConsts::empty_least: s << "least"; break;
 //   default: s << "???";
 //   }
 //   return s << OUTDENT << "]\n";
@@ -533,8 +535,8 @@ void EmptyOrderDecl::accept(parsenode_visitor& v) const
 // -----------------------
 CopyNamespacesDecl::CopyNamespacesDecl(
   const QueryLoc& _loc,
-  StaticQueryContext::preserve_mode_t _preserve_mode,
-  StaticQueryContext::inherit_mode_t  _inherit_mode)
+  StaticContextConsts::preserve_mode_t _preserve_mode,
+  StaticContextConsts::inherit_mode_t  _inherit_mode)
 :
   parsenode(_loc),
   preserve_mode(_preserve_mode),
@@ -547,13 +549,13 @@ CopyNamespacesDecl::CopyNamespacesDecl(
 // {
 //   s << INDENT << "CopyNamespacesDecl[";
 //   switch (preserve_mode) {
-//   case StaticQueryContext::preserve_ns: s << "preserve"; break;
-//   case StaticQueryContext::no_preserve_ns: s << "no preserve"; break;
+//   case StaticContextConsts::preserve_ns: s << "preserve"; break;
+//   case StaticContextConsts::no_preserve_ns: s << "no preserve"; break;
 //   }
 //   s << ", ";
 //   switch (inherit_mode) {
-//   case StaticQueryContext::inherit_ns: s << "inherit"; break;
-//   case StaticQueryContext::no_inherit_ns: s << "no inherit"; break;
+//   case StaticContextConsts::inherit_ns: s << "inherit"; break;
+//   case StaticContextConsts::no_inherit_ns: s << "no inherit"; break;
 //   }
 //   return s << OUTDENT << "]\n";
 // }
@@ -797,7 +799,7 @@ void VarDecl::accept(parsenode_visitor& v) const
 // ---------------------
 ConstructionDecl::ConstructionDecl(
   const QueryLoc& _loc,
-  StaticQueryContext::construction_mode_t _mode)
+  StaticContextConsts::construction_mode_t _mode)
 :
   parsenode(_loc),
   mode(_mode)
@@ -822,7 +824,7 @@ FunctionDecl::FunctionDecl(
   rchandle<ParamList> _paramlist_h,
   rchandle<SequenceType> _return_type_h,
   rchandle<EnclosedExpr> _body_h,
-  enum function_type_t _type)
+  enum ParseConstants::function_type_t _type)
 :
   parsenode(_loc),
   type(_type),
@@ -1368,7 +1370,7 @@ void OrderModifier::accept(parsenode_visitor& v) const
 // ------------------
 OrderDirSpec::OrderDirSpec(
   const QueryLoc& _loc,
-  enum dir_spec_t _dir_spec)
+  enum ParseConstants::dir_spec_t _dir_spec)
 :
   parsenode(_loc),
   dir_spec(_dir_spec)
@@ -1391,7 +1393,7 @@ void OrderDirSpec::accept(parsenode_visitor& v) const
 // --------------------
 OrderEmptySpec::OrderEmptySpec(
   const QueryLoc& _loc,
-  StaticQueryContext::order_empty_mode_t _empty_order_spec)
+  StaticContextConsts::order_empty_mode_t _empty_order_spec)
 :
   parsenode(_loc),
   empty_order_spec(_empty_order_spec)
@@ -1433,7 +1435,7 @@ void OrderCollationSpec::accept(parsenode_visitor& v) const
 // -------------------
 QuantifiedExpr::QuantifiedExpr(
   const QueryLoc& _loc,
-  quantification_mode_t _qmode,
+  ParseConstants::quantification_mode_t _qmode,
   rchandle<QVarInDeclList> _decl_list_h,
   rchandle<exprnode> _expr_h)
 :
@@ -1819,7 +1821,7 @@ void RangeExpr::accept(parsenode_visitor& v) const
 // -----------------
 AdditiveExpr::AdditiveExpr(
   const QueryLoc& _loc,
-  enum add_op_t _add_op,
+  enum ParseConstants::add_op_t _add_op,
   rchandle<exprnode> _add_expr_h,
   rchandle<exprnode> _mult_expr_h)
 :
@@ -1846,7 +1848,7 @@ void AdditiveExpr::accept(parsenode_visitor& v) const
 // -----------------------
 MultiplicativeExpr::MultiplicativeExpr(
   const QueryLoc& _loc,
-  enum mult_op_t _mult_op,
+  enum ParseConstants::mult_op_t _mult_op,
   rchandle<exprnode> _mult_expr_h,
   rchandle<exprnode> _union_expr_h)
 :
@@ -1898,7 +1900,7 @@ void UnionExpr::accept(parsenode_visitor& v) const
 // ------------------------
 IntersectExceptExpr::IntersectExceptExpr(
   const QueryLoc& _loc,
-  enum intex_op_t _intex_op,
+  enum ParseConstants::intex_op_t _intex_op,
   rchandle<exprnode> _intex_expr_h,
   rchandle<exprnode> _instof_expr_h)
 :
@@ -2075,7 +2077,7 @@ void SignList::accept(parsenode_visitor& v) const
 // ----------------
 GeneralComp::GeneralComp(
   const QueryLoc& _loc,
-  enum gencomp_t _type)
+  enum ParseConstants::gencomp_t _type)
 :
   parsenode(_loc),
   type(_type)
@@ -2096,7 +2098,7 @@ void GeneralComp::accept(parsenode_visitor& v) const
 // --------------
 ValueComp::ValueComp(
   const QueryLoc& _loc,
-  enum valcomp_t _type)
+  enum ParseConstants::valcomp_t _type)
 :
   parsenode(_loc),
   type(_type)
@@ -2117,7 +2119,7 @@ void ValueComp::accept(parsenode_visitor& v) const
 // -------------
 NodeComp::NodeComp(
   const QueryLoc& _loc,
-  enum nodecomp_t _type)
+  enum ParseConstants::nodecomp_t _type)
 :
   parsenode(_loc),
   type(_type)
@@ -2142,7 +2144,7 @@ ValidateExpr::ValidateExpr(
   rchandle<exprnode> _expr_h)
 :
   exprnode(_loc),
-  valmode(_valmode=="lax" ? val_lax : val_strict),
+  valmode(_valmode=="lax" ? ParseConstants::val_lax : ParseConstants::val_strict),
   expr_h(_expr_h)
 {
 }
@@ -2245,7 +2247,7 @@ void Pragma::accept(parsenode_visitor& v) const
 ********************************************************************************/
 PathExpr::PathExpr(
   const QueryLoc& _loc,
-  enum pathtype_t _type,
+  enum ParseConstants::pathtype_t _type,
   rchandle<exprnode> _relpath_expr_h)
   :
   exprnode(_loc),
@@ -2272,7 +2274,7 @@ void PathExpr::accept(parsenode_visitor& v) const
 ********************************************************************************/
 RelativePathExpr::RelativePathExpr(
   const QueryLoc& _loc,
-  enum steptype_t _step_type,
+  enum ParseConstants::steptype_t _step_type,
   rchandle<exprnode> _step_expr_h,
   rchandle<exprnode> _relpath_expr_h)
   :
@@ -2411,7 +2413,7 @@ void ForwardStep::accept(parsenode_visitor& v) const
 ********************************************************************************/
 ForwardAxis::ForwardAxis(
     const QueryLoc& _loc,
-    enum forward_axis_t _axis)
+    enum ParseConstants::forward_axis_t _axis)
   :
   parsenode(_loc),
   axis(_axis)
@@ -2512,7 +2514,7 @@ void ReverseStep::accept(parsenode_visitor& v) const
 ********************************************************************************/
 ReverseAxis::ReverseAxis(
     const QueryLoc& _loc,
-    enum reverse_axis_t _axis)
+    enum ParseConstants::reverse_axis_t _axis)
   :
   parsenode(_loc),
   axis(_axis)
@@ -2584,7 +2586,7 @@ Wildcard::Wildcard(
   const QueryLoc& loc,
   const xqp_string& prefix,
   const xqp_string& lname,
-  enum wildcard_t kind)
+  enum ParseConstants::wildcard_t kind)
   :
   parsenode(loc),
   theKind(kind),
@@ -2672,7 +2674,7 @@ NumericLiteral::NumericLiteral(
   xqp_integer _ival)
 :
   exprnode(_loc),
-  type(num_integer),
+  type(ParseConstants::num_integer),
   theValue(_ival)
 {
 }
@@ -2682,7 +2684,7 @@ NumericLiteral::NumericLiteral(
   xqp_double _dval)
 :
   exprnode(_loc),
-  type(num_double),
+  type(ParseConstants::num_double),
   theValue(_dval)
 {
 }
@@ -2692,16 +2694,16 @@ NumericLiteral::NumericLiteral(
   xqp_decimal _decval)
 :
   exprnode(_loc),
-  type(num_decimal),
+  type(ParseConstants::num_decimal),
   theValue(_decval)
 {
 }
 
 string NumericLiteral::toString () const {
   switch (type) {
-  case num_integer: 
-  case num_decimal:
-  case num_double:
+  case ParseConstants::num_integer: 
+  case ParseConstants::num_decimal:
+  case ParseConstants::num_double:
     return to_string(theValue);
     break;
   default: return "??";
@@ -3210,7 +3212,7 @@ void DirElemContent::accept(parsenode_visitor& v) const
 // -------------------
 CommonContent::CommonContent(
   const QueryLoc& _loc,
-  enum common_content_t _type,
+  enum ParseConstants::common_content_t _type,
   std::string _ref)
 :
   exprnode(_loc),
@@ -3225,7 +3227,7 @@ CommonContent::CommonContent(
   rchandle<EnclosedExpr> _expr_h)
 :
   exprnode(_loc),
-  type(cont_expr),
+  type(ParseConstants::cont_expr),
   ref(""),
   expr_h(_expr_h)
 {
@@ -3233,7 +3235,7 @@ CommonContent::CommonContent(
 
 CommonContent::CommonContent(
   const QueryLoc& _loc,
-  enum common_content_t _type)
+  enum ParseConstants::common_content_t _type)
 :
   exprnode(_loc),
   type(_type),
@@ -3570,7 +3572,7 @@ void SequenceType::accept(parsenode_visitor& v) const
 // -------------------------
 OccurrenceIndicator::OccurrenceIndicator(
   const QueryLoc& _loc,
-  enum occurrence_t _type)
+  enum ParseConstants::occurrence_t _type)
 :
   parsenode(_loc),
   type(_type)
@@ -4538,7 +4540,7 @@ void FTMatchOption::accept(parsenode_visitor& v) const
 // ------------------
 FTCaseOption::FTCaseOption(
   const QueryLoc& _loc,
-  ft_case_mode_t _mode)
+  ParseConstants::ft_case_mode_t _mode)
 :
   FTMatchOption(_loc),
   mode(_mode)
@@ -4559,7 +4561,7 @@ void FTCaseOption::accept(parsenode_visitor& v) const
 // ------------------------
 FTDiacriticsOption::FTDiacriticsOption(
   const QueryLoc& _loc,
-  ft_diacritics_mode_t _mode)
+  ParseConstants::ft_diacritics_mode_t _mode)
 :
   FTMatchOption(_loc),
   mode(_mode)
@@ -4580,7 +4582,7 @@ void FTDiacriticsOption::accept(parsenode_visitor& v) const
 // ------------------
 FTStemOption::FTStemOption(
   const QueryLoc& _loc,
-  ft_stem_mode_t _mode)
+  ParseConstants::ft_stem_mode_t _mode)
 :
   FTMatchOption(_loc),
   mode(_mode)
@@ -4682,7 +4684,7 @@ FTStopwordOption::FTStopwordOption(
   const QueryLoc& _loc,
   rchandle<FTRefOrList> _refor_list_h,
   rchandle<FTInclExclStringLiteralList> _incl_excl_list_h,
-  stop_words_mode_t _mode)
+  ParseConstants::stop_words_mode_t _mode)
 :
   FTMatchOption(_loc),
   refor_list_h(_refor_list_h),
@@ -4780,7 +4782,7 @@ void FTStringLiteralList::accept(parsenode_visitor& v) const
 FTInclExclStringLiteral::FTInclExclStringLiteral(
   const QueryLoc& _loc,
   rchandle<FTRefOrList> _ref_or_list_h,
-  intex_op_t _mode)
+  ParseConstants::intex_op_t _mode)
 :
   parsenode(_loc),
   ref_or_list_h(_ref_or_list_h),
@@ -4845,7 +4847,7 @@ void FTWildcardOption::accept(parsenode_visitor& v) const
 // ---------------
 FTContent::FTContent(
   const QueryLoc& _loc,
-  ft_content_mode_t _mode)
+  ParseConstants::ft_content_mode_t _mode)
 :
   FTProximity(_loc),
   mode(_mode)
@@ -4866,7 +4868,7 @@ void FTContent::accept(parsenode_visitor& v) const
 // --------------------
 FTAnyallOption::FTAnyallOption(
   const QueryLoc& _loc,
-  ft_anyall_option_t _option)
+  ParseConstants::ft_anyall_option_t _option)
 :
   parsenode(_loc),
   option(_option)
@@ -4984,7 +4986,7 @@ void FTTimes::accept(parsenode_visitor& v) const
 // -------------
 FTScope::FTScope(
   const QueryLoc& _loc,
-  ft_scope_t _scope)
+  ParseConstants::ft_scope_t _scope)
 :
   FTProximity(_loc),
   scope(_scope)
@@ -5005,7 +5007,7 @@ void FTScope::accept(parsenode_visitor& v) const
 // ------------
 FTUnit::FTUnit(
   const QueryLoc& _loc,
-  ft_unit_t _unit)
+  ParseConstants::ft_unit_t _unit)
 :
   parsenode(_loc),
   unit(_unit)
@@ -5026,7 +5028,7 @@ void FTUnit::accept(parsenode_visitor& v) const
 // ---------------
 FTBigUnit::FTBigUnit(
   const QueryLoc& _loc,
-  enum ft_big_unit_t _unit)
+  enum ParseConstants::ft_big_unit_t _unit)
 :
   parsenode(_loc),
   unit(_unit)
