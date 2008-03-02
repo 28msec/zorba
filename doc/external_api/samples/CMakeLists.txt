@@ -3,19 +3,19 @@ CREATE_TEST_SOURCELIST(APISamples
 	APISamples.cpp
 	uc1a_simpleQueryOneStep.cpp
 	uc1b_simpleQueryThreeSteps.cpp
-	uc2_simpleQueryWithErrorCheck.cpp
+#	uc2_simpleQueryWithErrorCheck.cpp
 	uc3a_externalVar.cpp
 	uc3b_contextItem.cpp
 	uc3c_contextItem.cpp
 	uc3d_currentTime.cpp
 	uc4_chainXQuery.cpp
-	uc5a_errorManager.cpp
-	uc5b_errorCallback.cpp
+#	uc5a_errorManager.cpp
+#	uc5b_errorCallback.cpp
 	uc5c_errorList.cpp
-	uc6a_staticContext.cpp
-	uc6b_defaultCollation.cpp
-	uc6c_baseUri.cpp
-	uc7_multithread.cpp
+#	uc6a_staticContext.cpp
+#	uc6b_defaultCollation.cpp
+#	uc6c_baseUri.cpp
+#	uc7_multithread.cpp
 	uc8a_loadDocument.cpp
 )
  
