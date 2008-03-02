@@ -9,13 +9,10 @@
 #include <vector>
 #include <map>
 
+#include <zorbatypes/zorbatypes_decl.h>
 #include <zorba/rchandle.h>
 
 namespace xqp {
-
-  // TODO move to api_shared_types.h?
-  class xqpStringStore;
-  typedef rchandle<xqpStringStore> xqpStringStore_t;
 
   class xqpStringStore : public RCObject, public std::string
   {
@@ -63,7 +60,7 @@ namespace xqp {
   class xqpString
   {
     public:
-      rchandle<xqpStringStore> theStrStore;
+      xqpStringStore_t theStrStore;
 
       typedef std::string::size_type  size_type;
       typedef ptrdiff_t distance_type;
@@ -133,52 +130,40 @@ namespace xqp {
       xqpString&
       operator+=(char c);
 
-      Collator*
-      getDefaultCollator() const
-      {
-        // TODO cache a default collator
-        // we need a mechanism to set the default collation here
-        // better use the collation manager statically 
-        UErrorCode status = U_ZERO_ERROR;
-        Collator* coll = ::Collator::createInstance(status); 
-        assert(status == U_ZERO_ERROR || status == U_USING_FALLBACK_WARNING || status == U_USING_DEFAULT_WARNING);
-        return coll;
-      }
-
       bool
       operator==(xqpString src) const
       {
-        return (compare(src, getDefaultCollator()) == 0);
+        return (compare(src) == 0);
       }
 
       bool
       operator==(const char* src) const
       {
-        return (compare(src, getDefaultCollator()) == 0);
+        return (compare(src) == 0);
       }
 
       bool
       operator!=(xqpString src) const
       {
-        return (compare(src, getDefaultCollator()) != 0);
+        return (compare(src) != 0);
       }
 
       bool
       operator!=(const char* src) const
       {
-        return (compare(src, getDefaultCollator()) != 0);
+        return (compare(src) != 0);
       }
 
       bool
       operator<(xqpString src) const
       {
-        return compare(src, getDefaultCollator()) == -1;
+        return compare(src) == -1;
       }
 
       bool
       operator>(xqpString src) const
       {
-        return compare(src, getDefaultCollator()) == 1;
+        return compare(src) == 1;
       }
 
       int

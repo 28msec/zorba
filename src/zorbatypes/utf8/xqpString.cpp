@@ -161,7 +161,7 @@ namespace xqp
   int xqpString::compare(xqpString src, Collator* coll) const
   {
     if ( ! coll )
-      coll = getDefaultCollator();
+      return theStrStore->compare(src.theStrStore->c_str());
 
     Collator::EComparisonResult result = ::Collator::EQUAL;
 
@@ -171,11 +171,8 @@ namespace xqp
     return result;
   }
 
-  int xqpString::compare(const char* src, ::Collator* coll) const
+  int xqpString::compare(const char* src, Collator* coll) const
   {
-    if ( ! coll )
-      coll = getDefaultCollator();
-
     //TODO optimize the code here
     xqpString tmp(src);
     return compare(tmp, coll);
@@ -231,12 +228,15 @@ namespace xqp
     if (size() == 0)
       return -1;
 
-    if ( ! coll )
-      coll = getDefaultCollator();
+    if ( ! coll ) {
+      size_t lRes = theStrStore->find(pattern.theStrStore->c_str());
+      return (lRes == std::string::npos)?-1:lRes;
+    }
 
     UErrorCode status = U_ZERO_ERROR;
 
-    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator *)coll, NULL, status);
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), 
+                        (RuleBasedCollator *)coll, NULL, status);
 
     if(U_FAILURE(status))
     {
@@ -261,12 +261,15 @@ namespace xqp
 
   int32_t xqpString::lastIndexOf(xqpString pattern, Collator* coll) const
   {
-    if ( ! coll )
-      coll = getDefaultCollator();
+    if ( ! coll ) {
+      size_t lRes = theStrStore->rfind(pattern.theStrStore->c_str());
+      return (lRes == std::string::npos)?-1:lRes;
+    }
 
     UErrorCode status = U_ZERO_ERROR;
 
-    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator *)coll, NULL, status);
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), 
+                        (RuleBasedCollator *)coll, NULL, status);
 
     if(U_FAILURE(status))
     {
@@ -292,9 +295,6 @@ namespace xqp
 
   bool xqpString::endsWith(xqpString pattern, Collator* coll) const
   {
-    if ( ! coll )
-      coll = getDefaultCollator();
-
     //TODO check if this condition is enough
     return( lastIndexOf(pattern, coll) + pattern.length() == length() );
   }
