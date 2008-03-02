@@ -37,5 +37,9 @@ namespace xqp {
   typedef rchandle<GMonthDay> GMonthDay_t;
   typedef rchandle<GDay> GDay_t;
   typedef rchandle<GMonth> GMonth_t;
+  
+  /* string */
+  class xqpStringStore;
+  typedef rchandle<xqpStringStore> xqpStringStore_t;
 };
 #endif
