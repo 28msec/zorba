@@ -75,6 +75,8 @@ static int decode_entity (const char *in, string *out) {
     unsigned long n = strtoul (in, (char **) &in, base);
     if (*in++ != ';')
       return -1;
+    if (! is_code_point_valid (n))
+      return -1;
     UTF8Encode (n, back_inserter (*out));
     return in - start;
   }
@@ -185,8 +187,9 @@ off_t symbol_table::put_entityref(char const* text, uint32_t length)
 off_t symbol_table::put_charref(char const* text, uint32_t length)
 {
   string result;
-  if (decode_entity (text, &result) == -1)
+  if (decode_entity (text + 1, &result) == -1) {
     return -1;
+  }
 	return heap.put (result.c_str (), 0, result.size ());
 }
 

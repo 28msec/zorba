@@ -4082,11 +4082,10 @@ typedef yy::xquery_parser::token token;
 }
 
 {CharRef}+ {
-  yylval->sval = driver.symtab.put_charref(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEMENT_CONTENT" << endl;
 #endif
-  return token::ELEMENT_CONTENT;
+  TRY_STR_LIT (ELEMENT_CONTENT, put_charref, yytext, yyleng);
 }
 
 "{{" {
@@ -4404,11 +4403,10 @@ typedef yy::xquery_parser::token token;
 }
 
 {CharRef}+ {
-  yylval->sval = driver.symtab.put_charref(yytext, yyleng);
+  TRY_STR_LIT (QUOTE_ATTR_CONTENT, put_charref, yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QUOTE_ATTR_CONTENT" << endl;
 #endif
-  return token::QUOTE_ATTR_CONTENT;
 }
 
 "{{" {
@@ -4487,11 +4485,10 @@ typedef yy::xquery_parser::token token;
 }
 
 {CharRef}+ {
-  yylval->sval = driver.symtab.put_charref(yytext, yyleng);
+  TRY_STR_LIT (APOS_ATTR_CONTENT, put_charref, yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::APOS_ATTR_CONTENT" << endl;
 #endif
-  return token::APOS_ATTR_CONTENT;
 }
 
 "{{" {
