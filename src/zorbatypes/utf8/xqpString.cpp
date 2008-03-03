@@ -15,8 +15,8 @@
 
 #include <zorbatypes/xqpstring.h>
 
-#include "zorbatypes/utf8/Unicode_util.h"
-#include "zorbatypes/utf8/utf8.h"
+#include <zorbatypes/Unicode_util.h>
+#include <zorbatypes/utf8.h>
 
 using namespace std;
 
