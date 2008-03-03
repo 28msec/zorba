@@ -79,8 +79,13 @@ namespace xqp {
     }
 
   template <typename u32>
-      inline bool is_code_point_valid(u32 cp){
-    return (cp <= CODE_POINT_MAX && !is_surrogate(cp) && cp != 0xfffe && cp != 0xffff);
+      inline bool is_code_point_valid(u32 cp)
+  {
+//     cp <= CODE_POINT_MAX && !is_surrogate(cp) && cp != 0xfffe && cp != 0xffff;
+    return ((cp == 0x9) || (cp ==0xA) || (cp == 0xD) ||
+        (0x20<=cp && cp <=0xD7FF) ||
+        (0xE000<=cp && cp <=0xFFFD) ||
+        (0x10000<= cp  && cp <=0x10FFFF));
   }
 
   template<typename octet_type>
@@ -193,22 +198,25 @@ namespace xqp {
     {
         // TODO throw a new error here one that is in libzorbatypes
     }
-    if (cp < 0x80)                        // one octet
-      *(result++) = static_cast<uint8_t>(cp);
-    else if (cp < 0x800) {                // two octets
-      *(result++) = static_cast<uint8_t>((cp >> 6)            | 0xc0);
-      *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
-    }
-    else if (cp < 0x10000) {              // three octets
-      *(result++) = static_cast<uint8_t>((cp >> 12)           | 0xe0);
-      *(result++) = static_cast<uint8_t>((cp >> 6) & 0x3f     | 0x80);
-      *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
-    }
-    else if (cp <= CODE_POINT_MAX) {      // four octets
-      *(result++) = static_cast<uint8_t>((cp >> 18)           | 0xf0);
-      *(result++) = static_cast<uint8_t>((cp >> 12)& 0x3f     | 0x80);
-      *(result++) = static_cast<uint8_t>((cp >> 6) & 0x3f     | 0x80);
-      *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
+    else
+    {
+      if (cp < 0x80)                        // one octet
+        *(result++) = static_cast<uint8_t>(cp);
+      else if (cp < 0x800) {                // two octets
+        *(result++) = static_cast<uint8_t>((cp >> 6)            | 0xc0);
+        *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
+      }
+      else if (cp < 0x10000) {              // three octets
+        *(result++) = static_cast<uint8_t>((cp >> 12)           | 0xe0);
+        *(result++) = static_cast<uint8_t>((cp >> 6) & 0x3f     | 0x80);
+        *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
+      }
+      else if (cp <= CODE_POINT_MAX) {      // four octets
+        *(result++) = static_cast<uint8_t>((cp >> 18)           | 0xf0);
+        *(result++) = static_cast<uint8_t>((cp >> 12)& 0x3f     | 0x80);
+        *(result++) = static_cast<uint8_t>((cp >> 6) & 0x3f     | 0x80);
+        *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
+      }
     }
 
     return result;
