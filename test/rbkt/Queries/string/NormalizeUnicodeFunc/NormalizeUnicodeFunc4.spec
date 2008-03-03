@@ -1,1 +1,1 @@
-Error:FOCH0003
+Error: FOCH0003
