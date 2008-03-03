@@ -462,6 +462,15 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
     {
       equal = (*aItem0->getDurationValue() == *aItem1->getDurationValue());
     }
+    else if(GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) &&
+            GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
+    {
+      equal = 0;
+      if(aItem0->getLocalName() == aItem1->getLocalName())
+        if((aItem0->getNamespace().empty() && aItem1->getNamespace().empty()) ||
+            (aItem0->getNamespace() == aItem1->getNamespace()))
+          equal = 1;
+    }
 
     if (equal == -2)
       return -2;
