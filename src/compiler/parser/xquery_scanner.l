@@ -769,6 +769,9 @@ typedef yy::xquery_parser::token token;
 
 {StringLiteral} {
   BEGIN MODE_OPERATOR;
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "scanner::TRY_STRINGLIT" << std::endl;
+#endif
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
@@ -1684,25 +1687,25 @@ typedef yy::xquery_parser::token token;
 "strict"/{WordBreak} {
   BEGIN INITIAL;
 #ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::STRICT" << endl;
+  cout << "token::REVAL_STRICT" << endl;
 #endif
-  return token::STRICT;
+  return token::REVAL_STRICT;
 }
 
 "lax"/{WordBreak} {
   BEGIN INITIAL;
 #ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LAX" << endl;
+  cout << "token::REVAL_LAX" << endl;
 #endif
-  return token::LAX;
+  return token::REVAL_LAX;
 }
 
 "skip"/{WordBreak} {
   BEGIN INITIAL;
 #ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SKIP" << endl;
+  cout << "token::REVAL_SKIP" << endl;
 #endif
-  return token::SKIP;
+  return token::REVAL_SKIP;
 }
 
 } /* <MODE_DECLAREORDERING> */
@@ -2262,6 +2265,9 @@ typedef yy::xquery_parser::token token;
   return token::RBRACK;
 }
 {StringLiteral} {
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "scanner::TRY_STRINGLIT" << std::endl;
+#endif
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
@@ -2642,6 +2648,9 @@ typedef yy::xquery_parser::token token;
   /* maintain XQUERYVERSION */
   /* ---------------------- */
 {StringLiteral} {
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "scanner::TRY_STRINGLIT" << std::endl;
+#endif
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
@@ -3631,6 +3640,9 @@ typedef yy::xquery_parser::token token;
 }
 
 {StringLiteral} {
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "scanner::TRY_STRINGLIT" << endl;
+#endif
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 

@@ -345,9 +345,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token AFTER											"'after'"
 %token BEFORE											"'before'"
 %token DECLARE_REVALIDATION	      "'<declare revalidation>'"
-%token STRICT											"'strict'"
-%token LAX										  	"'lax'"
-%token SKIP										  	"'skip'"
+%token REVAL_STRICT								"'strict'"
+%token REVAL_LAX							  	"'lax'"
+%token REVAL_SKIP							  	"'skip'"
 %token DELETE_NODE                "'<delete node>'"           
 %token DELETE_NODES               "'<delete nodes>'"          
 %token INSERT_NODE                "'<insert node>'"           
@@ -5346,7 +5346,7 @@ StringLiteral :
 // [241]	RevalidationDecl
 // ----------------------
 RevalidationDecl :
-		DECLARE_REVALIDATION STRICT
+		DECLARE_REVALIDATION REVAL_STRICT
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [strict]" << endl;
@@ -5354,13 +5354,13 @@ RevalidationDecl :
 //			$$ = new OrderingModeDecl(@$,
 //								StaticQueryContext::ordered);
 		}
-    | DECLARE_REVALIDATION LAX
+    | DECLARE_REVALIDATION REVAL_LAX
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [lax]" << endl;
 #endif
     }
-    | DECLARE_REVALIDATION SKIP
+    | DECLARE_REVALIDATION REVAL_SKIP
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [skip]" << endl;
