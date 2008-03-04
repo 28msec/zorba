@@ -1,1 +1,1 @@
-Error: FORG0006
+Error: XPTY0004
