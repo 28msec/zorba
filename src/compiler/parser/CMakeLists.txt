@@ -98,3 +98,7 @@ ELSE (GENERATE_FLEX_FILES)
 	LIST(APPEND PARSER_SRCS xquery_scanner.cpp)
 	INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/src)
 ENDIF (GENERATE_FLEX_FILES)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake ${CMAKE_BINARY_DIR}/copyparser.sh)
+MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake -->${CMAKE_BINARY_DIR}/copyparser.sh")
+

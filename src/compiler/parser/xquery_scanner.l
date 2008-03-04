@@ -39,14 +39,16 @@
 #include <iostream>
 #include <string>
 
-#include "compiler/parser/symbol_table.h"
-#include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_parser.hpp"
-#include "types/typemanager.h"
+#include "compiler/parser/xquery_scanner.h"
+#include "compiler/parser/xquery_driver.h"
+
+typedef xqp::xquery_parser::token token;
+typedef xqp::xquery_parser::token_type token_type;
 
 #define TRY_STR_LIT( ttype, put, yytext, yyleng )                       \
   do {                                                                  \
-    off_t res = driver.symtab.put (yytext, yyleng);                     \
+    off_t res = getDriver()->symtab.put (yytext, yyleng);               \
     if (res < 0) return token::UNRECOGNIZED;                            \
     else {                                                              \
       yylval->sval = res;                                               \
@@ -65,7 +67,7 @@
   <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=333231>.
 */
 #undef yywrap
-#define yywrap(yyscanner) 1
+#define yywrap() 1
      
 /*
   By default yylex returns int, we use token_type.
@@ -75,7 +77,6 @@
 #define yyterminate() return token::END
 
 std::string start_state(int);
-std::string start_state(yyscan_t* yyscanner);
 
 #define YY_USER_ACTION \
 { \
@@ -101,8 +102,10 @@ std::string start_state(yyscan_t* yyscanner);
 %option batch
 %option debug
 %option stack
-%option reentrant
+/* %option reentrant */
 %option nounistd
+%option c++
+%option prefix="Zorba"
 
 
 /* known expensive option */
@@ -287,7 +290,7 @@ ValidationMode        ("strict"|"lax"|"skip")
 
 
 %{
-typedef yy::xquery_parser::token token;
+typedef xqp::xquery_parser::token token;
 %}
 
 
@@ -304,7 +307,7 @@ typedef yy::xquery_parser::token token;
   /* ---------------- */
 "validate"{S}"{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::VALIDATE_LBRACE" << endl;
 #endif
@@ -312,9 +315,9 @@ typedef yy::xquery_parser::token token;
 }
 
 "validate"{SP}{ValidationMode} {
-  yylval->sval = driver.symtab.put(yytext+9, yyleng-9);
+  yylval->sval = getDriver()->symtab.put(yytext+9, yyleng-9);
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::VALIDATE_MODE" << endl;
 #endif
@@ -330,7 +333,7 @@ typedef yy::xquery_parser::token token;
 
 "element"{S}"{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEMENT_LBRACE" << endl;
 #endif
@@ -339,7 +342,7 @@ typedef yy::xquery_parser::token token;
 
 "attribute"{S}"{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ATTRIBUTE_LBRACE" << endl;
 #endif
@@ -347,9 +350,9 @@ typedef yy::xquery_parser::token token;
 }
 
 "attribute"{SP}{QName}{S}"{" {
-  yylval->sval = driver.symtab.put_qname(yytext+10, yyleng-11, true, true);
+  yylval->sval = getDriver()->symtab.put_qname(yytext+10, yyleng-11, true, true);
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ATTRIBUTE_QNAME_LBRACE" << endl;
 #endif
@@ -357,9 +360,9 @@ typedef yy::xquery_parser::token token;
 }
 
 "element"{SP}{QName}{S}"{" {
-  yylval->sval = driver.symtab.put_qname(yytext+8, yyleng-9, true, true);
+  yylval->sval = getDriver()->symtab.put_qname(yytext+8, yyleng-9, true, true);
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEMENT_QNAME_LBRACE" << endl;
 #endif
@@ -368,7 +371,7 @@ typedef yy::xquery_parser::token token;
 
 "document"{S}"{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::DOCUMENT_LBRACE" << endl;
 #endif
@@ -377,7 +380,7 @@ typedef yy::xquery_parser::token token;
 
 "text"{S}"{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::TEXT_LBRACE" << endl;
 #endif
@@ -397,7 +400,7 @@ typedef yy::xquery_parser::token token;
 
 "comment"{S}"{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::COMMENT_LBRACE" << endl;
 #endif
@@ -420,7 +423,7 @@ typedef yy::xquery_parser::token token;
 
 "{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::LBRACE" << endl;
 #endif
@@ -429,7 +432,7 @@ typedef yy::xquery_parser::token token;
 
 "ordered"{S}"{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ORDERED_LBRACE" << endl;
 #endif
@@ -438,7 +441,7 @@ typedef yy::xquery_parser::token token;
 
 "unordered"{S}"{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::UNORDERED_LBRACE" << endl;
 #endif
@@ -475,7 +478,7 @@ typedef yy::xquery_parser::token token;
   /* ---------------------- */
 "element"{S}"(" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEMENT_LPAR" << endl;
 #endif
@@ -484,7 +487,7 @@ typedef yy::xquery_parser::token token;
 
 "attribute"{S}"(" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ATTRIBUTE_LPAR" << endl;
 #endif
@@ -493,7 +496,7 @@ typedef yy::xquery_parser::token token;
 
 "schema-element"{S}"(" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::SCHEMA_ELEMENT_LPAR" << endl;
 #endif
@@ -502,7 +505,7 @@ typedef yy::xquery_parser::token token;
 
 "schema-attribute"{S}"(" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::SCHEMA_ATTRIBUTE_LPAR" << endl;
 #endif
@@ -511,7 +514,7 @@ typedef yy::xquery_parser::token token;
 
 "comment"{S}"(" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::COMMENT_LPAR" << endl;
 #endif
@@ -520,7 +523,7 @@ typedef yy::xquery_parser::token token;
 
 "text"{S}"(" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::TEXT_LPAR" << endl;
 #endif
@@ -529,7 +532,7 @@ typedef yy::xquery_parser::token token;
 
 "node"{S}"(" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::NODE_LPAR" << endl;
 #endif
@@ -538,7 +541,7 @@ typedef yy::xquery_parser::token token;
 
 "document-node"{S}"(" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::DOCUMENT_NODE_LPAR" << endl;
 #endif
@@ -550,7 +553,7 @@ typedef yy::xquery_parser::token token;
   /* --------------------------- */
 "processing-instruction"{S}"(" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTESTFORPI, yyscanner);
+  yy_push_state(MODE_KINDTESTFORPI);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::PI_LPAR" << endl;
 #endif
@@ -559,7 +562,7 @@ typedef yy::xquery_parser::token token;
 
   /* order dependence: this must follow the rules: xxx{S}"(" */
   /* {QName}{S}"(" {
-   yylval->sval = driver.symtab.put_qname(yytext, yyleng-1, false, true);
+   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng-1, false, true);
  #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME_LPAR" << endl;
 #endif
@@ -686,7 +689,7 @@ typedef yy::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 {IntegerLiteral}  {
-  yylval->ival = driver.symtab.integerval(yytext, yyleng);
+  yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::INTEGER_LITERAL" << endl;
@@ -701,7 +704,7 @@ typedef yy::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 {DecimalLiteral}  {
-  yylval->decval = driver.symtab.decimalval(yytext, yyleng);
+  yylval->decval = getDriver()->symtab.decimalval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::DECIMAL_LITERAL" << endl;
@@ -716,7 +719,7 @@ typedef yy::xquery_parser::token token;
   return token::UNRECOGNIZED;
 }
 {DoubleLiteral}   {
-  yylval->dval = driver.symtab.doubleval(yytext, yyleng);
+  yylval->dval = getDriver()->symtab.doubleval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::DOUBLE_LITERAL" << endl;
@@ -725,7 +728,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {NCName}":*" {
-  yylval->sval = driver.symtab.put_ncname(yytext, yyleng-2);
+  yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng-2);
   BEGIN MODE_OPERATOR;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEM_WILDCARD" << endl;
@@ -734,7 +737,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QName} {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME" << endl;
@@ -751,7 +754,7 @@ typedef yy::xquery_parser::token token;
 }
 
 "*:"{NCName} {
-  yylval->sval = driver.symtab.put_ncname(yytext+2, yyleng-2);
+  yylval->sval = getDriver()->symtab.put_ncname(yytext+2, yyleng-2);
   BEGIN MODE_OPERATOR;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::PREFIX_WILDCARD" << endl;
@@ -952,7 +955,7 @@ typedef yy::xquery_parser::token token;
   /* ------------------------- */
 "<!--" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_XML_COMMENT, yyscanner);
+  yy_push_state(MODE_XML_COMMENT);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::XML_COMMENT_BEGIN" << endl;
 #endif
@@ -964,7 +967,7 @@ typedef yy::xquery_parser::token token;
   /* ------------------------------------ */
 "<?" {  
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_PROCESSING_INSTRUCTION, yyscanner);
+  yy_push_state(MODE_PROCESSING_INSTRUCTION);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::PI_BEGIN" << endl;
 #endif
@@ -976,7 +979,7 @@ typedef yy::xquery_parser::token token;
   /* --------------------------- */
 "<![CDATA[" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_CDATA_SECTION, yyscanner);
+  yy_push_state(MODE_CDATA_SECTION);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::CDATA_BEGIN" << endl;
 #endif
@@ -994,7 +997,7 @@ typedef yy::xquery_parser::token token;
   /* ----------------------- */
 "<" {   
   BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_START_TAG, yyscanner);
+  yy_push_state(MODE_START_TAG);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::START_TAG" << endl;
 #endif
@@ -1016,7 +1019,7 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
 
@@ -1077,7 +1080,7 @@ typedef yy::xquery_parser::token token;
   /* pop previous state */
   /* ------------------ */
 "}" {   
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::RBRACE" << endl;
 #endif
@@ -1145,7 +1148,7 @@ typedef yy::xquery_parser::token token;
 }
 "rename"{SP}"node"/{WordBreak} {
   BEGIN INITIAL; 
-  driver.set_rename(true);
+  getDriver()->set_rename(true);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::RENAME" << endl;
 #endif
@@ -1232,7 +1235,7 @@ typedef yy::xquery_parser::token token;
 
 <MODE_OPERATOR>{
 "catch"{S}"(" {
-  yy_push_state(MODE_CATCH, yyscanner);
+  yy_push_state(MODE_CATCH);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::CATCH_LPAR" << endl;
 #endif
@@ -1243,7 +1246,7 @@ typedef yy::xquery_parser::token token;
 <MODE_CATCH>{
 
 ")" {
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::RPAR" << endl;
 #endif
@@ -1251,7 +1254,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QName}  {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN INITIAL;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME" << endl;
@@ -1268,7 +1271,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {NCName}":*" {
-  yylval->sval = driver.symtab.put_ncname(yytext, yyleng-2);
+  yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng-2);
   BEGIN MODE_OPERATOR;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEM_WILDCARD" << endl;
@@ -1277,7 +1280,7 @@ typedef yy::xquery_parser::token token;
 }
 
 "*:"{NCName} {
-  yylval->sval = driver.symtab.put_ncname(yytext+2, yyleng-2);
+  yylval->sval = getDriver()->symtab.put_ncname(yytext+2, yyleng-2);
   BEGIN MODE_OPERATOR;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::PREFIX_WILDCARD" << endl;
@@ -1620,7 +1623,7 @@ typedef yy::xquery_parser::token token;
 
 "{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::LBRACE" << endl;
 #endif
@@ -1628,7 +1631,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {NCName}  {
-  yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::NCNAME" << endl;
 #endif
@@ -1723,7 +1726,7 @@ typedef yy::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::LBRACE" << endl;
 #endif
@@ -1731,7 +1734,7 @@ typedef yy::xquery_parser::token token;
 }
 "(" {
   BEGIN INITIAL;
-  /* yy_push_state(INITIAL, yyscanner); */
+  /* yy_push_state(INITIAL); */
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::LPAR" << endl;
 #endif
@@ -1773,7 +1776,7 @@ typedef yy::xquery_parser::token token;
   return token::AND;
 }
 "at"/{WordBreak} {
-  if (!driver.ftcontains()) {
+  if (!getDriver()->ftcontains()) {
     BEGIN INITIAL;
   }
 #ifdef ZORBA_DEBUG_SCANNER
@@ -2129,12 +2132,12 @@ typedef yy::xquery_parser::token token;
   return token::CASE;
 }
 "as"/{WordBreak} {
-  if (driver.rename()) {
-    driver.set_rename(false);
+  if (getDriver()->rename()) {
+    getDriver()->set_rename(false);
     BEGIN INITIAL;
   }
-  else if (driver.ftcontains()) {
-    driver.set_ftcontains(false);
+  else if (getDriver()->ftcontains()) {
+    getDriver()->set_ftcontains(false);
   }
   else {
     BEGIN MODE_ITEMTYPE;
@@ -2188,7 +2191,7 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
 
@@ -2206,7 +2209,7 @@ typedef yy::xquery_parser::token token;
   /* restore previous state on closing brace */
   /* --------------------------------------- */
 "}" {
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::RBRACE" << endl;
 #endif
@@ -2282,7 +2285,7 @@ typedef yy::xquery_parser::token token;
   
 "ftcontains"/{WordBreak} {
   BEGIN INITIAL;
-  driver.set_ftcontains(true);
+  getDriver()->set_ftcontains(true);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::FTCONTAINS" << endl;
 #endif
@@ -2683,7 +2686,7 @@ typedef yy::xquery_parser::token token;
 <MODE_NAMESPACEDECL>{
 
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
 ";" {
@@ -2722,7 +2725,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {NCName} {
-  yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::NCNAME" << endl;
 #endif
@@ -2808,7 +2811,7 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
 
@@ -2890,7 +2893,7 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
 {CatchAll} {
@@ -2922,7 +2925,7 @@ typedef yy::xquery_parser::token token;
   /* transition to OPERATOR */
   /* ---------------------- */
 {QName} {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME" << endl;
@@ -2933,7 +2936,7 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
 {CatchAll} {
@@ -2983,14 +2986,14 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
   /* transition to KINDTEST */
   /* ---------------------- */
 "element"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEMENT_LPAR" << endl;
 #endif
@@ -2999,7 +3002,7 @@ typedef yy::xquery_parser::token token;
 
 "attribute"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ATTRIBUTE_LPAR" << endl;
 #endif
@@ -3008,7 +3011,7 @@ typedef yy::xquery_parser::token token;
 
 "schema-element"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::SCHEMA_ELEMENT_LPAR" << endl;
 #endif
@@ -3017,7 +3020,7 @@ typedef yy::xquery_parser::token token;
 
 "schema-attribute"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::SCHEMA_ATTRIBUTE_LPAR" << endl;
 #endif
@@ -3026,7 +3029,7 @@ typedef yy::xquery_parser::token token;
 
 "comment"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::COMMENT_LPAR" << endl;
 #endif
@@ -3035,7 +3038,7 @@ typedef yy::xquery_parser::token token;
 
 "text"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::TEXT_LPAR" << endl;
 #endif
@@ -3044,7 +3047,7 @@ typedef yy::xquery_parser::token token;
 
 "node"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::NODE_LPAR" << endl;
 #endif
@@ -3053,7 +3056,7 @@ typedef yy::xquery_parser::token token;
 
 "document-node"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::DOCUMENT_NODE_LPAR" << endl;
 #endif
@@ -3064,7 +3067,7 @@ typedef yy::xquery_parser::token token;
   /* --------------------------- */
 "processing-instruction"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTESTFORPI, yyscanner);
+  yy_push_state(MODE_KINDTESTFORPI);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::PI_LPAR" << endl;
 #endif
@@ -3486,7 +3489,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QName} {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OCCURRENCE_INDICATOR; 
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME" << endl;
@@ -3523,7 +3526,7 @@ typedef yy::xquery_parser::token token;
   /* --------------------- */
 "{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::LBRACE" << endl;
 #endif
@@ -3541,7 +3544,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QName} {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_CLOSE_KINDTEST;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME" << endl;
@@ -3552,13 +3555,13 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
   /* pop previous state on close paren */
   /* --------------------------------- */
 ")" {
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::RPAR" << endl;
 #endif
@@ -3569,7 +3572,7 @@ typedef yy::xquery_parser::token token;
   /* ----------------- */
 "element"{S}"(" {
   BEGIN MODE_KINDTEST;
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEMENT_LPAR" << endl;
 #endif
@@ -3578,7 +3581,7 @@ typedef yy::xquery_parser::token token;
 
 "schema-element"{S}"(" {
   BEGIN MODE_KINDTEST;
-  yy_push_state(MODE_KINDTEST, yyscanner);
+  yy_push_state(MODE_KINDTEST);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::SCHEMA_ELEMENT_LPAR" << endl;
 #endif
@@ -3615,7 +3618,7 @@ typedef yy::xquery_parser::token token;
   /* pop previous state on close paren */
   /* --------------------------------- */
 ")" {
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::RPAR" << endl;
 #endif
@@ -3626,13 +3629,13 @@ typedef yy::xquery_parser::token token;
   /* -------------------------- */
 
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
   /* maintain KINDTESTFORPI */
   /* ---------------------- */
 {NCName} {
-  yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::NCNAME" << endl;
 #endif
@@ -3674,7 +3677,7 @@ typedef yy::xquery_parser::token token;
   /* pop previous state */
   /* ------------------ */
 ")" {
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::RPAR" << endl;
 #endif
@@ -3695,7 +3698,7 @@ typedef yy::xquery_parser::token token;
   /* --------------------- */
 "{" {
   BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::LBRACE" << endl;
 #endif
@@ -3705,7 +3708,7 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
   /* maintain CLOSE_KINDTEST */
@@ -3779,7 +3782,7 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
   /* anything else: push back, goto OPERATOR */
@@ -3812,7 +3815,7 @@ typedef yy::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 {QName}  {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN INITIAL;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME" << endl;
@@ -3850,7 +3853,7 @@ typedef yy::xquery_parser::token token;
   /* transition to PRAGMACONTENTS */
   /* ---------------------------- */
 {QName}{SPNoComment} {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng,true,true);
+  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng,true,true);
   BEGIN MODE_PRAGMACONTENTS;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME" << endl;
@@ -3860,7 +3863,7 @@ typedef yy::xquery_parser::token token;
 
 {QName}"#)" {
   BEGIN MODE_OPERATOR;
-  yylval->sval = driver.symtab.put(yytext, yyleng-2);
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng-2);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME_AND_END_PRAGMA" << endl;
 #endif
@@ -3897,7 +3900,7 @@ typedef yy::xquery_parser::token token;
   /* ---------------------- */
 {PragmaChars}")" {
   BEGIN MODE_OPERATOR;
-  yylval->sval = driver.symtab.put(yytext, yyleng-2);
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng-2);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::PRAGMA_LITERAL_AND_END" << endl;
 #endif
@@ -3930,7 +3933,7 @@ typedef yy::xquery_parser::token token;
   /* transition to OPERATOR */
   /* ---------------------- */
 {VarName} {
-  yylval->sval = driver.symtab.put_varname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_varname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::VARNAME" << endl;
@@ -3941,7 +3944,7 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
 {CatchAll} {
@@ -4016,7 +4019,7 @@ typedef yy::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 "/>" {
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::EMPTY_TAG_END" << endl;
 #endif
@@ -4030,7 +4033,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QName} {
-  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME" << endl;
 #endif
@@ -4078,7 +4081,7 @@ typedef yy::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::LBRACE" << endl;
 #endif
@@ -4088,7 +4091,7 @@ typedef yy::xquery_parser::token token;
   /* transition to EXPR_COMMENT */
   /* -------------------------- */
 "<!--" {
-  yy_push_state(MODE_XML_COMMENT, yyscanner);
+  yy_push_state(MODE_XML_COMMENT);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::XML_COMMENT_BEGIN" << endl;
 #endif
@@ -4098,7 +4101,7 @@ typedef yy::xquery_parser::token token;
   /* transition to PROCESSING_INSTRUCTION */
   /* ------------------------------------ */
 "<?" {
-  yy_push_state(MODE_PROCESSING_INSTRUCTION, yyscanner);
+  yy_push_state(MODE_PROCESSING_INSTRUCTION);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::PI_BEGIN" << endl;
 #endif
@@ -4108,7 +4111,7 @@ typedef yy::xquery_parser::token token;
   /* transition to CDATA_SECTION */
   /* --------------------------- */
 "<![CDATA[" {
-  yy_push_state(MODE_CDATA_SECTION, yyscanner);
+  yy_push_state(MODE_CDATA_SECTION);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::CDATA_BEGIN" << endl;
 #endif
@@ -4118,7 +4121,7 @@ typedef yy::xquery_parser::token token;
   /* transition to START_TAG */
   /* ----------------------- */
 "<" {
-  yy_push_state(MODE_START_TAG, yyscanner);
+  yy_push_state(MODE_START_TAG);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::START_TAG" << endl;
 #endif
@@ -4128,7 +4131,7 @@ typedef yy::xquery_parser::token token;
   /* maintain ELEMENT_CONTENT */
   /* ------------------------ */
 {ElementContentChar}+ {
-  yylval->sval = driver.symtab.put(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEMENT_CONTENT" << endl;
 #endif
@@ -4136,7 +4139,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {PredefinedEntityRef} {
-  yylval->sval = driver.symtab.put_entityref(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_entityref(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ENTITY_REF" << endl;
 #endif
@@ -4191,7 +4194,7 @@ typedef yy::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 ">" {
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::TAG_END" << endl;
 #endif
@@ -4201,7 +4204,7 @@ typedef yy::xquery_parser::token token;
   /* maintain END_TAG */
   /* ---------------- */
  {QName}{S} {
-   yylval->sval = driver.symtab.put_qname(yytext, yyleng, false, true);
+   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng, false, true);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QNAME" << endl;
 #endif
@@ -4235,7 +4238,7 @@ typedef yy::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 "-->" {
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::XML_COMMENT_END" << endl;
 #endif
@@ -4245,7 +4248,7 @@ typedef yy::xquery_parser::token token;
   /* maintain XML_COMMENT */
   /* -------------------- */
 {XMLCommentChar}* {
-  yylval->sval = driver.symtab.put(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::XML_COMMENT_LITERAL" << endl;
 #endif
@@ -4277,13 +4280,13 @@ typedef yy::xquery_parser::token token;
   /* pop previous state */
   /* ------------------ */
 ":)" {
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 }
 
   /* maintain EXPR_COMMENT */
   /* --------------------- */
 "(:" {
-  yy_push_state(MODE_EXPR_COMMENT, yyscanner);
+  yy_push_state(MODE_EXPR_COMMENT);
 }
 
 . {
@@ -4322,7 +4325,7 @@ typedef yy::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 "?>" {
-  yy_pop_state(yyscanner);
+  yy_pop_state();
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::PI_END" << endl;
 #endif
@@ -4332,7 +4335,7 @@ typedef yy::xquery_parser::token token;
   /* maintain PROCESSING_INSTRUCTION */
   /* ------------------------------- */
 {PITarget} {
-  yylval->sval = driver.symtab.put(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng);
   BEGIN MODE_PROCESSING_INSTRUCTION;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::PI_TARGET_LITERAL" << endl;
@@ -4358,8 +4361,8 @@ typedef yy::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 {PIChars}"?>" {
-  yy_pop_state(yyscanner);
-  yylval->sval = driver.symtab.put(yytext, yyleng-2);
+  yy_pop_state();
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng-2);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::CHAR_LITERAL_AND_PI_END" << endl;
 #endif
@@ -4384,8 +4387,8 @@ typedef yy::xquery_parser::token token;
   /* pop previous state on exit */
   /* -------------------------- */
 "]]>" {
-  yy_pop_state(yyscanner);
-  yylval->sval = driver.symtab.put(yytext, yyleng-3);
+  yy_pop_state();
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng-3);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::CHAR_LITERAL_AND_CDATA_END" << endl;
 #endif
@@ -4432,7 +4435,7 @@ typedef yy::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::LBRACE" << endl;
 #endif
@@ -4449,7 +4452,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QuotAttrContentChar}+ {
-  yylval->sval = driver.symtab.put(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QUOTE_ATTR_CONTENT" << endl;
 #endif
@@ -4457,7 +4460,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {PredefinedEntityRef} {
-  yylval->sval = driver.symtab.put_entityref(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put_entityref(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ENTITY_REF" << endl;
 #endif
@@ -4515,7 +4518,7 @@ typedef yy::xquery_parser::token token;
   /* --------------------- */
 "{" {
   BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
-  yy_push_state(INITIAL, yyscanner);
+  yy_push_state(INITIAL);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::LBRACE" << endl;
 #endif
@@ -4532,7 +4535,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {AposAttrContentChar}+ {
-  yylval->sval = driver.symtab.put(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::APOS_ATTR_CONTENT" << endl;
 #endif
@@ -4579,66 +4582,6 @@ typedef yy::xquery_parser::token token;
   Finally, because the scanner related driver's member function depend 
   on the scanner's data, it is simpler to implement them in this file. 
 */
-namespace xqp {
-
-class safe_scanner {
-  public:
-    safe_scanner()
-      : str_buffer(0)
-    {
-      yylex_init(&scanner);
-    }
-
-    ~safe_scanner()
-    {
-      if (str_buffer) {
-          yy_delete_buffer(str_buffer, scanner); /* free up memory */
-      }
-      yylex_destroy(scanner);
-    }
-
-    yyscan_t scanner;
-    YY_BUFFER_STATE str_buffer;
-};
-  
-void xquery_driver::parse_string( const char *query_string)
-{
-  safe_scanner safe_scanner;
-  yyscan_t scanner = safe_scanner.scanner;
-
-  struct yyguts_t * yyg = (struct yyguts_t*)scanner;
-
-  safe_scanner.str_buffer = yy_scan_string(query_string, scanner);
-
-  yy_flex_debug = Properties::instance()->traceScanning();
-  yy::xquery_parser parser(*this, scanner);
-  parser.set_debug_level(Properties::instance()->traceParsing());
-  parser.parse();
-
-}
-
-void xquery_driver::parse(xqp_string const fname)
-{    
-  yyscan_t scanner;
-  yylex_init(&scanner);
-  struct yyguts_t * yyg = (struct yyguts_t*)scanner;
-  
-  filename = fname;
-  
-  if (!(yyin = fopen(((std::string)fname).c_str (), "r"))) {
-    error (std::string("cannot open ") + (std::string)fname);
-  }
-
-  yy_flex_debug = Properties::instance()->traceScanning();
-  yy::xquery_parser parser(*this, scanner);
-  parser.set_debug_level(Properties::instance()->traceParsing());
-  parser.parse();
-  
-  fclose(yyin);  
-  yylex_destroy(&scanner);
-}
-
-}
 
 std::string start_state(int state)
 {
@@ -4676,8 +4619,24 @@ std::string start_state(int state)
 }
 
 
-std::string start_state(yyscan_t* yyscanner)
+namespace xqp {
+
+xquery_scanner::xquery_scanner(
+  xquery_driver* aDriver, 
+  std::istream* i, 
+  std::ostream* o) 
+: ZorbaFlexLexer(i, o), theDriver(aDriver)
+{}
+
+xquery_scanner::~xquery_scanner() {}
+}
+
+#ifdef yylex
+#undef yylex
+#endif
+
+int ZorbaFlexLexer::yylex()
 {
-  struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-  return start_state(YY_START);
+  std::cerr << "in ZorbaFlexLexer::yylex() !" << std::endl;
+  return 0;
 }

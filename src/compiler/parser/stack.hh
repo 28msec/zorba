@@ -37,7 +37,7 @@
 
 #include <deque>
 
-namespace yy
+namespace xqp
 {
   template <class T, class S = std::deque<T> >
   class stack

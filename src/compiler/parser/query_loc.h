@@ -2,6 +2,7 @@
 #define XQP_QUERY_LOC_H
 
 #include <string>
+#include <zorbatypes/xqpstring.h>
 
 namespace xqp {
 
@@ -14,10 +15,10 @@ namespace xqp {
  */
 class QueryLoc {
 private:
-  std::string* theFilenameBegin;
+  xqpString    theFilenameBegin;
   unsigned int theLineBegin;
   unsigned int theColumnBegin;
-  std::string* theFilenameEnd;
+  xqpString    theFilenameEnd;
   unsigned int theLineEnd;
   unsigned int theColumnEnd;
 
@@ -26,17 +27,17 @@ public:
   QueryLoc(const QueryLoc& aQueryLoc);
   ~QueryLoc(){}
 public:
-  std::string* getFilenameBegin() const { return theFilenameBegin; } 
+  xqpString    getFilenameBegin() const { return theFilenameBegin; } 
   unsigned int getLineBegin() const     { return theLineBegin; }     
   unsigned int getColumnBegin() const   { return theColumnBegin; }   
-  std::string* getFilenameEnd() const   { return theFilenameEnd; }   
+  xqpString    getFilenameEnd() const   { return theFilenameEnd; }   
   unsigned int getLineEnd() const       { return theLineEnd; }       
   unsigned int getColumnEnd() const     { return theColumnEnd; }     
 
-  void setFilenameBegin ( std::string* aFilenameBegin ) { theFilenameBegin = aFilenameBegin; }
+  void setFilenameBegin ( std::string* aFilenameBegin ) { theFilenameBegin = *aFilenameBegin; }
   void setLineBegin     ( unsigned int aLineBegin )     { theLineBegin = aLineBegin; }
   void setColumnBegin   ( unsigned int aColumnBegin )   { theColumnBegin = aColumnBegin; }
-  void setFilenameEnd   ( std::string* aFilenameEnd )   { theFilenameEnd = aFilenameEnd; }
+  void setFilenameEnd   ( std::string* aFilenameEnd )   { theFilenameEnd = *aFilenameEnd; }
   void setLineEnd       ( unsigned int aLineEnd )       { theLineEnd = aLineEnd; }
   void setColumnEnd     ( unsigned int aColumnEnd )     { theColumnEnd = aColumnEnd; }
 };

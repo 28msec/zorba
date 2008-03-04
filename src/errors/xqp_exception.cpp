@@ -59,8 +59,8 @@ void	xqp_exception::setLocation(const QueryLoc* ploc)
 	
 	if(ploc)
 	{
-		if(ploc->getFilenameBegin())
-			error_descr->theLocation.filename = *ploc->getFilenameBegin();
+		if(!ploc->getFilenameBegin().empty())
+			error_descr->theLocation.filename = ploc->getFilenameBegin();
 		error_descr->theLocation.line = ploc->getLineBegin();
 		error_descr->theLocation.column = ploc->getColumnBegin();
 		error_descr->theLocation.location_is_set = true;

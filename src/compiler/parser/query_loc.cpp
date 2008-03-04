@@ -4,10 +4,10 @@
 namespace xqp {
 
 QueryLoc::QueryLoc()
- : theFilenameBegin (0),
+ : theFilenameBegin (""),
    theLineBegin (0),
    theColumnBegin (0),
-   theFilenameEnd (0),
+   theFilenameEnd (""),
    theLineEnd (0),
    theColumnEnd (0)
 {}
@@ -22,8 +22,8 @@ QueryLoc::QueryLoc(const QueryLoc& aQueryLoc)
 {}
 
 std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
-  if ( aQueryLoc.getFilenameBegin() ) {
-    std::string lStr = *aQueryLoc.getFilenameBegin();
+  if ( !aQueryLoc.getFilenameBegin().empty() ) {
+    std::string lStr = aQueryLoc.getFilenameBegin();
     aOstr << lStr << ":";
   }
   aOstr << aQueryLoc.getLineBegin() << "." << aQueryLoc.getColumnBegin();

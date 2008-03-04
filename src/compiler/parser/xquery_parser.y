@@ -1,12 +1,3 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: xquery_parser.y,v 1.2 2006/11/14 05:24:43 Paul Pedersen Exp $
- *
- *	Copyright 2006-2007 FLWOR Foundation.
- *	Author: Paul Pedersen
- */
-
-
 /*
 **	The parser definition file starts by asking for the C++ LALR(1) 
 **	skeleton, the creation of the parser header file, and specifies the 
@@ -17,6 +8,7 @@
 %skeleton "lalr1.cc"  /*  -*- C++ -*- */
 %require "2.3"
 %defines
+%name-prefix="xqp"
 %define "parser_class_name" "xquery_parser"
 
 /*
@@ -35,27 +27,19 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <string>
 
-//#include "context/static_context.h"
-#include "zorba/zorba_api.h"
-#include "context/dynamic_context.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
-#include <zorba/static_context_consts.h>
-#include "types/typemanager.h"
 
 
 using namespace std;
 using namespace xqp;
 
 namespace xqp {
-	class xquery_driver;
 	class parsenode;
 	class exprnode;
+  class xquery_driver;
 }
 
 #define YYDEBUG 1
@@ -70,9 +54,6 @@ namespace xqp {
 **	global variables. 
 */
 %parse-param { xquery_driver& driver }
-%parse-param { void* yyscanner }
-%lex-param   { xquery_driver& driver } 
-%lex-param   { void* yyscanner }
 
 
 /*
@@ -84,7 +65,7 @@ namespace xqp {
 %locations
 %initial-action
 {
-  @$.begin.filename = @$.end.filename = driver.filename.getStore();
+  @$.begin.filename = @$.end.filename = driver.theFilename.getStore();
 };
 
 
@@ -119,14 +100,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 };
 
 
-/*
-**	The code between `%{' and `%}' after the introduction of the `%union' 
-**	is output in the *.cc file; it needs detailed knowledge about the 
-**	driver. 
-*/
-%{
-#include "compiler/parser/xquery_driver.h"
-%}
 
 
 /*
@@ -730,6 +703,17 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /*%destructor { delete $$; }              */
 
 
+/*
+**	The code between `%{' and `%}' after the introduction of the `%union' 
+**	is output in the *.cc file; it needs detailed knowledge about the 
+**	driver. 
+*/
+%{
+#include "compiler/parser/xquery_driver.h"
+#include "compiler/parser/xquery_scanner.h"
+#undef yylex
+#define yylex driver.lexer->lex
+%}
 
 /*
 	The grammar
@@ -6473,8 +6457,8 @@ FTIgnoreOption :
 	The error member function registers the errors to the driver.
 */
 
-void yy::xquery_parser::error(
-	yy::xquery_parser::location_type const& loc,
+void xqp::xquery_parser::error(
+	xqp::xquery_parser::location_type const& loc,
 	std::string const& msg)
 {
   driver.error(loc, msg);

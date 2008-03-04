@@ -34,7 +34,7 @@
 
 /**
  ** \file position.hh
- ** Define the yy::position class.
+ ** Define the xqp::position class.
  */
 
 #ifndef BISON_POSITION_HH
@@ -43,7 +43,7 @@
 # include <iostream>
 # include <string>
 
-namespace yy
+namespace xqp
 {
   /// Abstract a position.
   class position

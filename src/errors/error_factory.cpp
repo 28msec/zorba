@@ -66,8 +66,8 @@ void ZorbaAlertFactory::error_alert(
 //	error->theIsFatal = !continue_execution;
 	if(ploc)
 	{
-		if(ploc->getFilenameBegin())
-			error->theLocation.filename = *ploc->getFilenameBegin();
+		if(!ploc->getFilenameBegin().empty())
+			error->theLocation.filename = ploc->getFilenameBegin();
 		error->theLocation.line = ploc->getLineBegin();
 		error->theLocation.column = ploc->getColumnBegin();
 		error->theLocation.location_is_set = true;
@@ -116,8 +116,8 @@ void ZorbaAlertFactory::warning_alert(
 	warning->theCode = code;
 	if(ploc)
 	{
-		if(ploc->getFilenameBegin())
-			warning->theLocation.filename = *ploc->getFilenameBegin();
+		if(!ploc->getFilenameBegin().empty())
+			warning->theLocation.filename = ploc->getFilenameBegin();
 		warning->theLocation.line = ploc->getLineBegin();
 		warning->theLocation.column = ploc->getColumnBegin();
 		warning->theLocation.location_is_set = true;

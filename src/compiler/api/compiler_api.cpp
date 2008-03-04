@@ -112,13 +112,12 @@ PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text
     XQueryPlanPrinterConfig *pp_cfg)
 {
   xquery_driver driver;
-  driver.filename = source_uri;
 
   ///build up the expression tree
   if(xquery_text.empty()) {
-    driver.parse(source_uri.c_str());
+    driver.parse_file(source_uri);
   } else {
-    driver.parse_string(xquery_text.c_str());
+    driver.parse_string(xquery_text);
   }
 
   rchandle<parsenode> n_p = driver.get_expr();
@@ -183,7 +182,7 @@ PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text
 
   PlanIter_t plan = codegen ("query", e_h);
   if (plan == NULL) {
-    cout << "Codegen returned null";
+    std::cout << "Codegen returned null";
     ZORBA_ERROR_ALERT(ZorbaError::API0002_COMPILE_FAILED);
     return NULL;
   }

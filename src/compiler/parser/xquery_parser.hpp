@@ -41,14 +41,14 @@
 #include <iostream>
 #include "stack.hh"
 
-namespace yy
+namespace xqp
 {
   class position;
   class location;
 }
 
 /* First part of user declarations.  */
-#line 30 "/home/dagraf/Work/28msec/zorba3/xquery/src/compiler/parser/xquery_parser.y"
+#line 22 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include <zorba/common/common.h>
@@ -57,27 +57,19 @@ namespace yy
 #pragma warning(disable: 4786)
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <string>
 
-//#include "context/static_context.h"
-#include "zorba/zorba_api.h"
-#include "context/dynamic_context.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
-#include <zorba/static_context_consts.h>
-#include "types/typemanager.h"
 
 
 using namespace std;
 using namespace xqp;
 
 namespace xqp {
-	class xquery_driver;
 	class parsenode;
 	class exprnode;
+  class xquery_driver;
 }
 
 #define YYDEBUG 1
@@ -85,7 +77,7 @@ namespace xqp {
 
 
 /* Line 35 of lalr1.cc.  */
-#line 89 "/home/dagraf/Work/28msec/zorba3/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 81 "/home/dagraf/Work/28msec/zorba5/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -126,7 +118,7 @@ do {							\
 } while (false)
 #endif
 
-namespace yy
+namespace xqp
 {
 
   /// A Bison parser.
@@ -136,7 +128,7 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 112 "/home/dagraf/Work/28msec/zorba3/xquery/src/compiler/parser/xquery_parser.y"
+#line 93 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_parser.y"
 {
   xqp::parsenode * node;
   xqp::exprnode * expr;
@@ -146,7 +138,7 @@ namespace yy
 	xqp_decimal* decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 150 "/home/dagraf/Work/28msec/zorba3/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 142 "/home/dagraf/Work/28msec/zorba5/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
@@ -444,7 +436,7 @@ namespace yy
     typedef token::yytokentype token_type;
 
     /// Build a parser object.
-    xquery_parser (xquery_driver& driver_yyarg, void* yyscanner_yyarg);
+    xquery_parser (xquery_driver& driver_yyarg);
     virtual ~xquery_parser ();
 
     /// Parse.
@@ -604,7 +596,6 @@ namespace yy
 
     /* User arguments.  */
     xquery_driver& driver;
-    void* yyscanner;
   };
 }
 

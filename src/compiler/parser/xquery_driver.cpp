@@ -17,32 +17,47 @@
  *
  */
 
+#include <fstream>
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_parser.hpp"
-#include "compiler/parser/location.hh"
+#include "compiler/parser/xquery_scanner.h"
 #include "errors/error_factory.h"
-#include "types/typemanager.h"
 
 using namespace std;
 namespace xqp {
 
+xquery_driver::xquery_driver(uint32_t initial_heapsize)
+    : symtab(initial_heapsize),
+      expr_p (NULL),
+      rename_bit(false),
+      ftcontains_bit(false)
+{ }
 
-xquery_driver::xquery_driver(
-  uint32_t initial_heapsize)
-  :
-	symtab(initial_heapsize),
-  expr_p (NULL),
-	rename_bit(false),
-	ftcontains_bit(false)
+bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 {
+    theFilename = aFilename;
+
+    xquery_scanner scanner(this, &in);
+    this->lexer = &scanner;
+
+    xqp::xquery_parser parser(*this);
+    return (parser.parse() == 0);
 }
 
-xquery_driver::~xquery_driver()
+bool xquery_driver::parse_file(const xqpString& aFilename)
 {
+    std::ifstream in(aFilename.c_str());
+    return parse_stream(in, aFilename);
+}
+
+bool xquery_driver::parse_string(const xqpString& input)
+{
+    std::istringstream iss(input);
+    return parse_stream(iss);
 }
 
 void xquery_driver::error(
-	const yy::location& l,
+	const xqp::location& l,
 	string const& m)
 {
   QueryLoc lLoc = createQueryLoc(l);
@@ -53,6 +68,18 @@ void xquery_driver::error(
 	string const& m)
 {
   ZORBA_ERROR_ALERT (ZorbaError::XPST0003, NULL, DONT_CONTINUE_EXECUTION, m); 
+}
+
+QueryLoc xquery_driver::createQueryLoc(const xqp::location& aLoc) 
+{
+  QueryLoc lLoc;
+  lLoc.setFilenameBegin(aLoc.begin.filename);
+  lLoc.setLineBegin(aLoc.begin.line);
+  lLoc.setColumnBegin(aLoc.begin.line);
+  lLoc.setFilenameEnd(aLoc.end.filename);
+  lLoc.setLineEnd(aLoc.end.line);
+  lLoc.setColumnEnd(aLoc.end.line);
+  return lLoc;
 }
 
 }	/* namespace xqp */
