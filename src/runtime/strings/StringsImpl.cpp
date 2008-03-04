@@ -56,10 +56,15 @@ CodepointsToStringIterator::nextImpl(PlanState& planState) const {
         xqp_string lUtf8Code = item->getIntegerValue().toString();
         uint32_t lCode;
         if (NumConversions::strToUInt(lUtf8Code, lCode)) {
-          resStr += lCode;
-        } else {
-          // TODO errorhandling
+          try{
+            resStr += lCode;
+            }
+            catch(exception_invalid_code_point){
+              ZORBA_ERROR_ALERT(ZorbaError::FOCH0001, &loc, DONT_CONTINUE_EXECUTION, lUtf8Code);
+            }
         }
+        else
+          ZORBA_ERROR_ALERT(ZorbaError::FOCH0001, &loc, DONT_CONTINUE_EXECUTION, lUtf8Code);
       }
     }
     else{

@@ -1,8 +1,6 @@
 #ifndef XQP_UTF8_H
 #define XQP_UTF8_H
 
-// TODO see below
-//#include "errors/error_factory.h"
 #include <zorba/common/common.h>
 
 namespace xqp {
@@ -19,6 +17,14 @@ namespace xqp {
   // Maximum valid value for a Unicode code point
   const uint32_t CODE_POINT_MAX = 0x0010ffffu;
 
+  class exception_invalid_code_point : public std::exception
+  {
+    uint32_t cp;
+    public:
+      exception_invalid_code_point(uint32_t cp) : cp(cp) {}
+      uint32_t code_point() const {return cp;}
+  };
+  
   /**
    * The iterator class adapts the underlying octet iterator to iterate
    * over the sequence of code points, rather than raw octets.
@@ -196,7 +202,7 @@ namespace xqp {
       octet_iterator UTF8Encode(uint32_t cp, octet_iterator result){
     if (!is_code_point_valid(cp))
     {
-        // TODO throw a new error here one that is in libzorbatypes
+      throw exception_invalid_code_point(cp);
     }
     else
     {
