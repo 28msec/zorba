@@ -27,6 +27,7 @@ main(int argc, char** argv)
     return 1;
   }
 
+  // TODO correct Exception handling with try-catch
   lDriver.parse_file(lQueryFileString.c_str());
 
   if ( lDriver.get_expr() == 0 ) {
