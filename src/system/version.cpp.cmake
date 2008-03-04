@@ -3,7 +3,7 @@
 
 #include <zorba/version.h>
 
-namespace xqp {
+namespace zorba {
 
   // the following vars will be replaced by cmake
   int Version::theMajorVersion = @ZORBA_MAJOR_NUMBER@;
@@ -27,4 +27,4 @@ namespace xqp {
     return lStream.str();
   }
 
-} /* end namespace xqp */
+} /* end namespace zorba */
