@@ -15,7 +15,7 @@
 
 using namespace std;
 
-namespace xqp
+namespace zorba
 {
 /*______________________________________________________________________
  *
@@ -187,4 +187,4 @@ fn_default_collation::validate_args(
   return (argv.size()==0);
 }
 
-} /* namespace xqp */
+} /* namespace zorba */

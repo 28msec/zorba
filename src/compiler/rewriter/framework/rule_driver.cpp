@@ -3,7 +3,7 @@
 #include "compiler/rewriter/framework/rewrite_rule.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
-namespace xqp {
+namespace zorba {
 
 RuleMajorDriver::RuleMajorDriver() { }
 

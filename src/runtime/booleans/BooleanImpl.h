@@ -14,7 +14,7 @@
 #include "runtime/base/narybase.h"
 #include "runtime/booleans/compare_types.h"
 
-namespace xqp
+namespace zorba
 {
 
   class zorba;

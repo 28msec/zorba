@@ -8,7 +8,7 @@
 
 #include <zorba/rchandle.h>
 
-namespace xqp {
+namespace zorba {
 
 class static_context;
 class namespace_context;

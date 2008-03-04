@@ -19,7 +19,7 @@
 |  Addison Wesley (2001), Chapter 10.
 |_______________________________________________________________________*/
 
-namespace xqp 
+namespace zorba 
 {
 
 class expr_visitor
@@ -97,5 +97,5 @@ public:
 
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_EXPR_VISITOR_H */

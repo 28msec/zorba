@@ -3,7 +3,7 @@
 
 #include "runtime/visitors/planitervisitor.h"
 
-namespace xqp {
+namespace zorba {
 
 class PlanIterator;
 class IterPrinter;
@@ -483,7 +483,7 @@ public:
 
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif
 

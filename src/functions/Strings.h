@@ -16,7 +16,7 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace xqp {
+namespace zorba {
 /*______________________________________________________________________
  *
  * 7.2 Functions to Assemble and Disassemble Strings
@@ -439,5 +439,5 @@ class fn_substring_after_3: public function
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_STRINGS_H */

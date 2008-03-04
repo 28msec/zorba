@@ -8,7 +8,7 @@
 
 #include "store/naive/ordpath.h"
 
-namespace xqp
+namespace zorba
 {
 
 class XmlTree;
@@ -110,7 +110,7 @@ public:
   static void warning(void * ctx, const char * msg, ... );
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif /* XQP_SIMPLE_LOADER_H */
 

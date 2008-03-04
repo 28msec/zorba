@@ -17,7 +17,7 @@
 
 
 using namespace std;
-namespace xqp {
+namespace zorba {
   
   static inline ostream &put_qname (Item_t qname, ostream &os) {
     xqp_string pfx = qname->getPrefix ();

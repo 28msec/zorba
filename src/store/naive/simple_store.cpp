@@ -21,7 +21,7 @@
 #include "store/naive/query_context.h"
 #include "store/update/pending_update_list.h"
 
-namespace xqp
+namespace zorba
 {
 
 typedef rchandle<TempSeq> TempSeq_t;
@@ -508,4 +508,4 @@ TempSeq_t SimpleStore::createTempSeq()
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */

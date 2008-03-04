@@ -32,7 +32,7 @@
 #include "util/hashmap.h"
 #include "common/shared_types.h"
 
-namespace xqp {
+namespace zorba {
 
 //class itemstore;
 class static_context;
@@ -118,7 +118,7 @@ public:
 };
 
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif /*	XQP_DYNAMIC_CONTEXT_H */
 
 /*

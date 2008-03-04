@@ -9,7 +9,7 @@
 #include <zorbatypes/integer.h>
 #include <zorbatypes/numconversions.h>
 
-namespace xqp {
+namespace zorba {
 
 Decimal& Decimal::zero() {
   static Decimal lValue(MAPM(0));
@@ -328,5 +328,5 @@ std::ostream& operator<<(std::ostream& os, const Decimal& aDecimal) {
   return os;
 }
 
-} // namespace xqp
+} // namespace zorba
 

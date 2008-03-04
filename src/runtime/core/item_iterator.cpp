@@ -15,7 +15,7 @@
 #include "runtime/visitors/planitervisitor.h"
 
 using namespace std;
-namespace xqp
+namespace zorba
 {
 
 
@@ -100,5 +100,5 @@ uint32_t IfThenElseIterator::getStateSizeOfSubtree() const {
       + theThenIter->getStateSizeOfSubtree()
       + theElseIter->getStateSizeOfSubtree();
 }
-} /* namespace xqp */
+} /* namespace zorba */
 

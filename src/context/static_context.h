@@ -48,7 +48,7 @@
 #endif
 
 
-namespace xqp {
+namespace zorba {
 
 class namespace_node;
 class user_function;
@@ -227,7 +227,7 @@ std::pair<xqp_string, xqp_string> parse_qname (xqp_string qname);
 
 
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif /*	XQP_STATIC_CONTEXT_H */
 
 /*

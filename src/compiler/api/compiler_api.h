@@ -8,7 +8,7 @@
 
 #include "common/shared_types.h"
 
-namespace xqp {
+namespace zorba {
 
 class XQueryPlanPrinterConfig : public XQueryTreePlans {
 private:
@@ -62,6 +62,6 @@ class XQueryCompilerSubsystem {
     friend class GlobalEnvironment;
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_COMPILER_API_H */
 /* vim:set ts=2 sw=2: */

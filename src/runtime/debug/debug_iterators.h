@@ -6,7 +6,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 
-namespace xqp {
+namespace zorba {
 
 
 class FnTraceIteratorState : public PlanIteratorState {
@@ -20,7 +20,7 @@ class FnTraceIteratorState : public PlanIteratorState {
 
 NARY_ITER_STATE(FnTraceIterator, FnTraceIteratorState);
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif /* XQP_DEBUG_ITERATORS_H */
 /* vim:set ts=2 sw=2: */

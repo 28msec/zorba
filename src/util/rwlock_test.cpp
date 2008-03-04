@@ -16,7 +16,7 @@
 #define ITERATIONS	100000
 
 
-using namespace xqp;
+using namespace zorba;
 using namespace std;
 
 struct thread_t {

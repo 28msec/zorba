@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace xqp
+namespace zorba
 {
 
 

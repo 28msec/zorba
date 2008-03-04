@@ -6,7 +6,7 @@
 #include <zorba/common/api_shared_types.h>
 
 
-namespace xqp
+namespace zorba
 {
 
   class XmlDataManager : public SimpleRCObject
@@ -64,5 +64,5 @@ namespace xqp
       virtual bool addToCollection(const xqp_anyURI& uri, std::istream& stream) = 0;
 
   };
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

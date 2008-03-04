@@ -32,7 +32,7 @@
 
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 int dummy;
 void *parsenode_visitor::no_state = (void *) &dummy;
@@ -5104,6 +5104,6 @@ void FTIgnoreOption::accept(parsenode_visitor& v) const
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 

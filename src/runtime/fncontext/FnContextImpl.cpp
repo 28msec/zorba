@@ -12,7 +12,7 @@
 #include "runtime/core/item_iterator.h"
 #include "system/zorba_engine.h"
 
-namespace xqp
+namespace zorba
 {
 
 

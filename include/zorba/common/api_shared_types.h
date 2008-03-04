@@ -3,7 +3,7 @@
 
 #include <zorba/rchandle.h>
 
-namespace xqp {
+namespace zorba {
 
   // TODO put xqpString here
 
@@ -90,5 +90,5 @@ typedef rchandle<ResultIterator>		        ResultIterator_t;
   typedef rchandle<AlertList>		AlertList_t;
   typedef rchandle<ZorbaAlertsManager>		ZorbaAlertsManager_t;
   typedef rchandle<ZorbaError> ZorbaError_t;
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

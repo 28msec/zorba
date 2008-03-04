@@ -1,7 +1,7 @@
 
 #include "sax2/using_libxml2/namespaces_libxml2.h"
 
-namespace xqp{
+namespace zorba{
 
 SAX2_NamespacesLibXML2::SAX2_NamespacesLibXML2(unsigned int nb_namespaces, const char** namespaces)
 {

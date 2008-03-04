@@ -2,7 +2,7 @@
 #include "parsertestdriverconfig.h" // SRC and BIN dir definitions
 #include "compiler/parser/xquery_driver.h"
 
-using namespace xqp;
+using namespace zorba;
 
 int
 #ifdef _WIN32_WCE
@@ -16,7 +16,7 @@ main(int argc, char** argv)
   // do initial stuff
   if ( argc == 2 )
   {
-    lQueryFileString  = xqp::PARSER_TEST_SRC_DIR +"/Queries/" + argv[1];
+    lQueryFileString  = zorba::PARSER_TEST_SRC_DIR +"/Queries/" + argv[1];
     std::string lQueryWithoutSuffix = std::string(argv[1]).substr( 0, std::string(argv[1]).size()-3 );
 
     std::cout << "parsertest " << lQueryWithoutSuffix << std::endl;

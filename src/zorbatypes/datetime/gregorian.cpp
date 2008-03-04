@@ -26,7 +26,7 @@
 
 using namespace std;
 
-namespace xqp
+namespace zorba
 {
 
 /**
@@ -411,4 +411,4 @@ int GMonth::compare(const GMonth& gm) const
 }
 
 
-} // namespace xqp
+} // namespace zorba

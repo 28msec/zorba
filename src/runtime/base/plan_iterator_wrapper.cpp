@@ -2,7 +2,7 @@
 
 #include "runtime/base/plan_iterator.h"
 
-namespace xqp {
+namespace zorba {
   /*******************************************************************************
     class PlanIteratorWrapper
    ********************************************************************************/
@@ -40,4 +40,4 @@ namespace xqp {
   {
   }
 
-} /* namespace xqp */
+} /* namespace zorba */

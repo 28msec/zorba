@@ -5,7 +5,7 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace xqp {
+namespace zorba {
 
 class stateless_external_function_adapter : public external_function {
   public:
@@ -22,6 +22,6 @@ class stateless_external_function_adapter : public external_function {
     StatelessExternalFunction *m_function;
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif  /* XQP_EXTERNAL_FUNCTION_ADAPTERS_H */
 /* vim:set ts=2 sw=2: */

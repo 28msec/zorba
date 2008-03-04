@@ -9,7 +9,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
 /*
 	Using Zorba in full api mode.

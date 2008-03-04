@@ -2,7 +2,7 @@
 
 #include <zorba/zorba_singlethread.h>
 
-using namespace xqp;
+using namespace zorba;
 
 /**
  * This file contains unit tests for the easy api.

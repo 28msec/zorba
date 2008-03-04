@@ -31,7 +31,7 @@
 
 
 using namespace std;
-namespace xqp {
+namespace zorba {
   
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
@@ -996,5 +996,5 @@ function_def_expr::function_def_expr (const QueryLoc& loc, Item_t name_, std::ve
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 /* vim:set ts=2 sw=2: */

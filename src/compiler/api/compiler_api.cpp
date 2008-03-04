@@ -21,7 +21,7 @@
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/base/plan_iterator.h"
 
-namespace xqp {
+namespace zorba {
 
 XQueryPlanPrinterConfig::XQueryPlanPrinterConfig()
 {

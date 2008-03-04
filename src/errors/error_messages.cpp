@@ -9,7 +9,7 @@
 
 using namespace std;
 
-namespace xqp
+namespace zorba
 {
 
 
@@ -278,5 +278,5 @@ AlertMessagesTable::AlertMessagesTable(std::string file_name)
 {
 }
 
-}///end namespace xqp
+}///end namespace zorba
 

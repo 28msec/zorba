@@ -63,7 +63,7 @@
 #define LAST_IDX_VAR "$$last-idx"
 
 using namespace std;
-namespace xqp 
+namespace zorba 
 {
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
@@ -1034,4 +1034,4 @@ PlanIter_t codegen (const char *descr, expr *root, hash64map<vector<ref_iter_t> 
   return result;
 }
 
-} /* namespace xqp */
+} /* namespace zorba */

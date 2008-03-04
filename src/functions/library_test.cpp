@@ -11,7 +11,7 @@
 #include "functions/Numerics.h"
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
 signature op_add_sig;
 op_numeric_add op_add;

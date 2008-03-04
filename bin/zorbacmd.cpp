@@ -26,43 +26,43 @@ slurp_file (const char *fname, std::string &result) {
 }
 
 bool
-populateStaticContext(xqp::StaticQueryContext_t& aStaticContext, ZorbaCMDProperties* aProperties)
+populateStaticContext(zorba::StaticQueryContext_t& aStaticContext, ZorbaCMDProperties* aProperties)
 {
   if (aProperties->getBoundarySpace().size() != 0 )
   {
     aStaticContext->setBoundarySpacePolicy( aProperties->getBoundarySpace().compare("preserve") == 0 
-                                            ? xqp::StaticContextConsts::preserve_space 
-                                            : xqp::StaticContextConsts::strip_space );
+                                            ? zorba::StaticContextConsts::preserve_space 
+                                            : zorba::StaticContextConsts::strip_space );
   }
 
   if (aProperties->getConstructionMode().size() != 0 )
   {
     aStaticContext->setConstructionMode( aProperties->getBoundarySpace().compare("preserve") == 0 
-                                         ? xqp::StaticContextConsts::cons_preserve 
-                                         : xqp::StaticContextConsts::cons_strip );
+                                         ? zorba::StaticContextConsts::cons_preserve 
+                                         : zorba::StaticContextConsts::cons_strip );
   }
 
   if (aProperties->getOrderingMode().size() != 0 )
   {
     aStaticContext->setOrderingMode( aProperties->getBoundarySpace().compare("ordered") == 0 
-                                     ? xqp::StaticContextConsts::ordered 
-                                     : xqp::StaticContextConsts::unordered );
+                                     ? zorba::StaticContextConsts::ordered 
+                                     : zorba::StaticContextConsts::unordered );
   }
 
   if (aProperties->getBaseUri().size() != 0 )
   {
-    aStaticContext->setBaseURI( xqp::xqp_string(aProperties->getBaseUri()) );
+    aStaticContext->setBaseURI( zorba::xqp_string(aProperties->getBaseUri()) );
   }
 
   if (aProperties->getDefaultCollation().size() != 0 )
   {
-    aStaticContext->setDefaultCollation( xqp::xqp_string(aProperties->getDefaultCollation()) );
+    aStaticContext->setDefaultCollation( zorba::xqp_string(aProperties->getDefaultCollation()) );
   }
   return true;
 }
 
 bool
-populateDynamicContext(xqp::DynamicQueryContext_t& aDynamicContext, ZorbaCMDProperties* aProperties)
+populateDynamicContext(zorba::DynamicQueryContext_t& aDynamicContext, ZorbaCMDProperties* aProperties)
 {
   if ( aProperties->getContextItem().size() != 0 )  
     aDynamicContext->setContextItemAsDocumentFromFile(aProperties->getContextItem());
@@ -72,7 +72,7 @@ populateDynamicContext(xqp::DynamicQueryContext_t& aDynamicContext, ZorbaCMDProp
     if ((*lIter).inline_file)
       aDynamicContext->setVariableAsDocumentFromFile((*lIter).var_name, (*lIter).var_value);
     else
-      aDynamicContext->setVariableAsString((*lIter).var_name, xqp::xqp_string((*lIter).var_value));
+      aDynamicContext->setVariableAsString((*lIter).var_name, zorba::xqp_string((*lIter).var_value));
     
   return true;
 }
@@ -83,8 +83,8 @@ int main(int argc, char* argv[])
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
-  xqp::ZorbaAlertsManager::setThrowExceptionsMode(true);
-  xqp::ZorbaSingleThread_t lZorbaInstance = xqp::ZorbaSingleThread::getInstance();
+  zorba::ZorbaAlertsManager::setThrowExceptionsMode(true);
+  zorba::ZorbaSingleThread_t lZorbaInstance = zorba::ZorbaSingleThread::getInstance();
 
   // parse the command line and/or the properties file
   ZorbaCMDProperties lProperties;
@@ -112,7 +112,7 @@ int _tmain(int argc, _TCHAR* argv[])
   if (lProperties.printVersion())
   {
     std::cout << "Zorba XQuery Engine, Version: " 
-              << xqp::ZorbaSingleThread::getVersion() << std::endl;
+              << zorba::ZorbaSingleThread::getVersion() << std::endl;
     return 0;
   }
   
@@ -158,8 +158,8 @@ int _tmain(int argc, _TCHAR* argv[])
   boost::posix_time::time_duration lDiffFirstExecutionTime;
   boost::posix_time::time_duration lDiffExecutionTime;
 
-  xqp::XQuery_t lQuery;
-  xqp::StaticQueryContext_t lStaticContext = lZorbaInstance->createStaticContext();
+  zorba::XQuery_t lQuery;
+  zorba::StaticQueryContext_t lStaticContext = lZorbaInstance->createStaticContext();
 
   // populate the static context with information passed as parameter
   if (! populateStaticContext(lStaticContext, &lProperties) )
@@ -177,21 +177,21 @@ int _tmain(int argc, _TCHAR* argv[])
     if (lTiming)
       lStopCompileTime = boost::posix_time::microsec_clock::local_time();
   }
-  catch (xqp::ZorbaException& e) // catch parse errors and exit the program
+  catch (zorba::ZorbaException& e) // catch parse errors and exit the program
   {
     std::cerr << e << std::endl;
     return 3;
   }
 
   // populat the dynamic context
-  xqp::DynamicQueryContext_t lDynamicContext;
+  zorba::DynamicQueryContext_t lDynamicContext;
   try {
     lDynamicContext = lZorbaInstance->createDynamicContext();
     if ( ! populateDynamicContext(lDynamicContext, &lProperties) )
     {
       return 4;
     }
-  } catch (xqp::ZorbaException& e)
+  } catch (zorba::ZorbaException& e)
   {
     std::cerr << e << std::endl;
     return 6;
@@ -237,7 +237,7 @@ int _tmain(int argc, _TCHAR* argv[])
       lStopExecutionTime = boost::posix_time::microsec_clock::local_time();
 
   }
-  catch (xqp::ZorbaException& e)
+  catch (zorba::ZorbaException& e)
   {
     std::cerr << e << std::endl;
     return 5;

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <zorba/rchandle.h>
 
-namespace xqp{
+namespace zorba{
 
   class XQueryTreePlans : public SimpleRCObject
   {
@@ -33,5 +33,5 @@ namespace xqp{
 
 typedef rchandle<XQueryTreePlans>   XQueryTreePlans_t;
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

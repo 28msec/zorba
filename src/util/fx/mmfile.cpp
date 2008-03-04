@@ -34,7 +34,7 @@
 #include "errors/error_factory.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 
 #ifndef _WIN32_WCE
@@ -367,4 +367,4 @@ void mmfile::rename_backing_file(const string& new_path)
 	path = new_path;
 }
 
-}  /* namespace xqp */
+}  /* namespace zorba */

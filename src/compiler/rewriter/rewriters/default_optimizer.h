@@ -4,7 +4,7 @@
 #include "common/shared_types.h"
 #include "compiler/rewriter/framework/sequential_rewriter.h"
 
-namespace xqp {
+namespace zorba {
 
 class DefaultOptimizer : public SequentialRewriter {
   public:

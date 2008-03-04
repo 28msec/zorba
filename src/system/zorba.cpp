@@ -16,7 +16,7 @@
 #include "types/typemanager.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 Store*				Zorba::theStore = NULL;
 ItemFactory	*	Zorba::theItemFactory = NULL;
@@ -205,7 +205,7 @@ serializer* Zorba::getDocSerializer()
 	return m_doc_serializer;
 }
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 
 
 

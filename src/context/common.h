@@ -34,7 +34,7 @@
 #include "util/checked_vector.h"
 #include "util/Assert.h"
 
-namespace xqp {
+namespace zorba {
 
 // zorba id types
 typedef uint32_t itemid_t;		// item identifier
@@ -112,7 +112,7 @@ typedef struct elempair
 } elempair_t;
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_COMMON_H */
 
 /*

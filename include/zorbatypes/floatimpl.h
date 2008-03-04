@@ -5,7 +5,7 @@
 #include <zorbatypes/zorbatypes_decl.h>
 #include <zorbatypes/xqpstring.h>
 
-namespace xqp {
+namespace zorba {
 
   class FloatCommons {
     public:
@@ -327,7 +327,7 @@ namespace xqp {
   Double
   operator%(const Float&, const Double&);
   
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif // XQP_DOUBLE_H
 

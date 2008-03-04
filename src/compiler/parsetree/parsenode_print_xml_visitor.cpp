@@ -3,7 +3,7 @@
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "types/typemanager.h"
 
-namespace xqp {
+namespace zorba {
 
 ParseNodePrintXMLVisitor::ParseNodePrintXMLVisitor(std::ostream &aStream)
   : theIndent(0),

@@ -10,7 +10,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/plan_iterator.h"
 
-namespace xqp
+namespace zorba
 {
 /**
  * Superclass for all iterators which have no child iterators
@@ -71,7 +71,7 @@ NoaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 
 
 
-}; /* namespace xqp*/
+}; /* namespace zorba*/
 
 #endif /* XQP_NOARYBASE_H */
 

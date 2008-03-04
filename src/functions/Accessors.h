@@ -14,7 +14,7 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace xqp {
+namespace zorba {
 
 	class fn_data_func : public function
 	{
@@ -64,6 +64,6 @@ namespace xqp {
             xqtref_t type_check(signature& s) const;
 			bool validate_args(std::vector<PlanIter_t>& ) const;
 	};
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif /* XQP_ACCESSORS_H */

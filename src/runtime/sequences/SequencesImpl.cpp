@@ -27,7 +27,7 @@
 #include "runtime/booleans/compare_types.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
   
 
 /*______________________________________________________________________
@@ -881,5 +881,5 @@ Item_t FnDocIterator::nextImpl(PlanState& planState) const
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 /* vim:set ts=2 sw=2: */

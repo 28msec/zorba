@@ -5,7 +5,7 @@
 #include <zorba/rchandle.h>
 #include "types/typeconstants.h"
 
-namespace xqp {
+namespace zorba {
 
 class XQType;
 class NodeTest;

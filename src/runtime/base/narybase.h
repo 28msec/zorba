@@ -12,7 +12,7 @@
 #include "runtime/base/plan_iterator.h"
 #include "runtime/visitors/planitervisitor.h"
 
-namespace xqp
+namespace zorba
 {
 	/**
 	 * Superclass for all iterators which have n child iterators 
@@ -143,6 +143,6 @@ public:\
 
 #define NARY_ITER(name) NARY_ITER_STATE(name, PlanIteratorState) 
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif /* XQP_NARYBASE_H */

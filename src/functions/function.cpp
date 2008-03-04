@@ -7,7 +7,7 @@
 #include "runtime/core/var_iterators.h"
 #include "util/hashmap.h"
 
-namespace xqp {
+namespace zorba {
 
 user_function::user_function(const QueryLoc& loc, const signature& _sig, expr_t expr_body)
   : function(_sig), m_loc(loc), m_expr_body(expr_body) { }

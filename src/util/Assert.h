@@ -19,7 +19,7 @@
 #include <execinfo.h>
 #endif
 
-namespace xqp {
+namespace zorba {
 
 class StackTracePrinter {
   public:
@@ -59,6 +59,6 @@ class StackTracePrinter {
 // Deprecated
 #define Assert( cond ) ZORBA_ASSERT (cond)
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif	/* XQP_ASSERT_H */
 

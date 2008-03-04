@@ -106,7 +106,7 @@ do {					\
 #define YYABORT		goto yyabortlab
 #define YYERROR		goto yyerrorlab
 
-namespace xqp
+namespace zorba
 {
 #if YYERROR_VERBOSE
 
@@ -8408,7 +8408,7 @@ namespace xqp
   const unsigned int xquery_parser::yyuser_token_number_max_ = 535;
   const xquery_parser::token_number_type xquery_parser::yyundef_token_ = 2;
 
-} // namespace xqp
+} // namespace zorba
 
 #line 6453 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_parser.y"
 

@@ -15,7 +15,7 @@
 #include "runtime/strings/StringsImpl.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 /*
  * 7.2.1 fn:codepoints-to-string
@@ -967,4 +967,4 @@ fn_substring_after_3::validate_args(
   return (argv.size() == 3);
 }
 /*end class fn_substring_after*/
-}/*namespace xqp*/
+}/*namespace zorba*/

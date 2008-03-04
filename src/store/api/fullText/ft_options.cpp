@@ -12,7 +12,7 @@
 #include "ft_options.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 std::ostream& operator<<(std::ostream& os, ft_thesaurus_id const& tid)
 {
@@ -51,5 +51,5 @@ ostream& operator<<(ostream & os, ft_options const& opt)
 	return os;
 }
 
-} /* namespace xqp */
+} /* namespace zorba */
 

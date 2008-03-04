@@ -1,7 +1,7 @@
 #ifndef XQP_COMPARE_TYPES_H
 #define XQP_COMPARE_TYPES_H
 
-namespace xqp {
+namespace zorba {
 class CompareConsts {
 public:
   enum CompareType{

@@ -3,7 +3,7 @@
 #include <sstream>
 #include "errors/error_factory.h"
 
-namespace xqp
+namespace zorba
 {
 
 	const CollationManager::COLLATION_DESCR		CollationManager::default_collations [] =
@@ -121,5 +121,5 @@ CollationManager::getHardcodedCollator(std::string URI)
 }
 
 
-}//end namespace xqp
+}//end namespace zorba
 

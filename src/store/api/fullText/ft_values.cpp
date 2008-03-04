@@ -13,7 +13,7 @@
 #include <iostream>
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 ostream& operator<<(ostream& os,ft_or_value const& v)
 {
@@ -51,5 +51,5 @@ ft_mildnot_value::ft_mildnot_value(
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 

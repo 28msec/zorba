@@ -34,7 +34,7 @@
 #include "system/zorba_engine.h"
 #include "errors/error_factory.h"
 
-namespace xqp
+namespace zorba
 {
 
 #define ATOMIC_TYPE(type) \
@@ -684,4 +684,4 @@ Item_t GenericCast::promote(Item_t aItem, const xqtref_t& aTargetType) const {
 }
 
 /* end class GenericCast */
-} /* namespace xqp */
+} /* namespace zorba */

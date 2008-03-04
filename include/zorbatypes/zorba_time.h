@@ -7,7 +7,7 @@
 #include <zorbatypes/zorbatypes_decl.h>
 #include <zorbatypes/timezone.h>
 
-namespace xqp
+namespace zorba
 {
 
  /**
@@ -77,5 +77,5 @@ namespace xqp
 
   Time_t operator+(const Time& t, const Duration& dur);
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

@@ -15,7 +15,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 
-namespace xqp
+namespace zorba
 {
 
 /*______________________________________________________________________
@@ -48,5 +48,5 @@ namespace xqp
   *-----------------------*/
   NARY_ITER(FnDefaultCollationIterator);
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /*XQP_CONTEXT_IMPL_H*/

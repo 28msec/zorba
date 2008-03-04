@@ -33,7 +33,7 @@
 #include "errors/error_factory.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 #define _SOURCE  __FUNCTION__
 
@@ -322,5 +322,5 @@ bool operator!=(fxcharheap::fxcharheap_iterator const& x,
 }
 
 
-}  /* namespace xqp */
+}  /* namespace zorba */
 

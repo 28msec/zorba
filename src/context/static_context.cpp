@@ -59,7 +59,7 @@
 #endif
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
@@ -685,5 +685,5 @@ static_context::lookup_stateless_external_function(xqp_string aPrefix, xqp_strin
                  ? lExtFun.getp() : NULL;
 }
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 

@@ -2,7 +2,7 @@
 
 #include "runtime/base/plan_iterator.h"
 
-namespace xqp {
+namespace zorba {
 
   /*******************************************************************************
     class PlanWraper
@@ -65,4 +65,4 @@ namespace xqp {
     theClosed = true;
   }
 
-} /* namespace xqp */
+} /* namespace zorba */

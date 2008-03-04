@@ -30,7 +30,7 @@
 #include "errors/error_factory.h"
 
 
-namespace xqp {
+namespace zorba {
 
 
 /*___________________________________________________________
@@ -928,5 +928,5 @@ inline uint32_t hash64map<V>::h(
 
 
 
-} /* namespace xqp  */
+} /* namespace zorba  */
 #endif  /* XQP_HASHMAP_H */

@@ -15,7 +15,7 @@
 #include "api/external/xquery.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 
 #ifndef NDEBUG

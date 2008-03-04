@@ -7,7 +7,7 @@
 #include "types/casting.h"
 #include "store/api/item_factory.h"
 
-namespace xqp
+namespace zorba
 {
 
 /*******************************************************************************
@@ -318,5 +318,5 @@ Item_t TreatIterator::nextImpl(PlanState& aPlanState) const
 ********************************************************************************/
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 

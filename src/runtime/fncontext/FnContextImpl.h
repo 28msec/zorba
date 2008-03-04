@@ -4,7 +4,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/noarybase.h"
 
-namespace xqp
+namespace zorba
 {
   
 /*******************************************************************************

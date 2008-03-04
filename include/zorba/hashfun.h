@@ -9,7 +9,7 @@
 |                                                              |
 |  hash functions                                              |
 |______________________________________________________________*/
-namespace xqp {
+namespace zorba {
 
   class hashfun
   {
@@ -219,5 +219,5 @@ namespace xqp {
 
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_HASHFUN_H */

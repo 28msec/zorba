@@ -7,7 +7,7 @@
 #include <zorbatypes/timezone.h>
 #include <zorbatypes/xqpstring.h>
 
-namespace xqp
+namespace zorba
 {
 
   /**
@@ -175,5 +175,5 @@ namespace xqp
       TimeZone the_time_zone;
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

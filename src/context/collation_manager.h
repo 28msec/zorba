@@ -5,7 +5,7 @@
 #include <unicode/coll.h>
 #include <map>
 
-namespace xqp{
+namespace zorba{
 
 /*
 	CollationManager is specific for each thread.
@@ -47,6 +47,6 @@ public:
 
 
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif

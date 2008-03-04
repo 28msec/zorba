@@ -3,7 +3,7 @@
 #include "parsenode_print_dot_visitor.h"
 #include "types/typemanager.h"
 
-namespace xqp {
+namespace zorba {
 
 ParseNodePrintDOTVisitor::ParseNodePrintDOTVisitor(std::ostream &aStream)
   : theIndent(0),

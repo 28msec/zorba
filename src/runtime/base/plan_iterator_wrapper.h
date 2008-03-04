@@ -5,7 +5,7 @@
 
 #include "common/shared_types.h"
 
-namespace xqp {
+namespace zorba {
 
   class PlanState;
 
@@ -34,5 +34,5 @@ namespace xqp {
       void close();
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

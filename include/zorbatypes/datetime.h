@@ -8,7 +8,7 @@
 #include <zorbatypes/timezone.h>
 #include <zorbatypes/duration.h>
 
-namespace xqp
+namespace zorba
 {
 
   class DateTime : public SimpleRCObject
@@ -103,6 +103,6 @@ namespace xqp
   DateTime_t operator+(const DateTime& dt, const Duration& d);
   DateTime_t operator-(const DateTime& dt, const Duration& d);
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif

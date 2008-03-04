@@ -12,7 +12,7 @@
 #include "util/checked_vector.h"
 #include "runtime/base/plan_iterator.h"
 
-namespace xqp
+namespace zorba
 {
 
 class var_expr;
@@ -273,5 +273,5 @@ class FlworState : public PlanIteratorState
 };  
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif  /* XQP_ITEM_ITERATOR_H */

@@ -6,7 +6,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 
-namespace xqp
+namespace zorba
 {
 
   class TryCatchIteratorState : public  PlanIteratorState {
@@ -43,7 +43,7 @@ namespace xqp
 
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif /* XQP_TRYCATCH_H */
 /* vim:set ts=2 sw=2: */

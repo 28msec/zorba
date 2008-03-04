@@ -14,7 +14,7 @@
 #include "util/checked_vector.h"
 #include "types/root_typemanager.h"
 
-namespace xqp {
+namespace zorba {
 
 #define VARIADIC_SIG_SIZE 100
 
@@ -82,6 +82,6 @@ public:
 
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif  /* XQP_SIGNATURE_H */
 

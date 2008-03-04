@@ -1,7 +1,7 @@
 #include "store/naive/atomic_items.h"
 #include "node_test.h"
 
-using namespace xqp;
+using namespace zorba;
 
 const rchandle<NodeTest> NodeTest::ANY_NODE_TEST(new NodeTest(StoreConsts::anyNode));
 const rchandle<NodeTest> NodeTest::PI_TEST(new NodeTest(StoreConsts::piNode));

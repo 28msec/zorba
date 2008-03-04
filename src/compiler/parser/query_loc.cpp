@@ -1,7 +1,7 @@
 #include <ostream>
 #include "compiler/parser/query_loc.h"
 
-namespace xqp {
+namespace zorba {
 
 QueryLoc::QueryLoc()
  : theFilenameBegin (""),
@@ -31,4 +31,4 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
   return aOstr;
 }
 
-} // namespace xqp
+} // namespace zorba

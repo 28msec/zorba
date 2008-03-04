@@ -10,7 +10,7 @@
 #include "types/root_typemanager.h"
 #include "util/Assert.h"
 
-using namespace xqp;
+using namespace zorba;
 
 #define T true
 #define F false

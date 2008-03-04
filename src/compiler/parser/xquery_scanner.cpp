@@ -15316,7 +15316,7 @@ std::string start_state(int state)
 }
 
 
-namespace xqp {
+namespace zorba {
 
 xquery_scanner::xquery_scanner(
   xquery_driver* aDriver, 

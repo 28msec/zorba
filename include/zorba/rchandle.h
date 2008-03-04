@@ -16,7 +16,7 @@
 #include <zorba/common/common.h>
 //#include <zorba/hashfun.h>
 
-namespace xqp {
+namespace zorba {
 
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
@@ -380,7 +380,7 @@ public:
   }
 }; 
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif
 

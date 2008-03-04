@@ -37,7 +37,7 @@
 
 
 
-namespace xqp
+namespace zorba
 {
 
   template <typename T> void checked_pop (std::stack<T> &stk) {

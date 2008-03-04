@@ -6,7 +6,7 @@
 #include "loggerconfig.hh"
 
 
-namespace xqp {
+namespace zorba {
 
 Logger::Logger(const std::string& loggerName) : theLoggerName(loggerName){ 
 	theLoggerPtr = LoggerManager::logmanager()->registerLogger(loggerName);
@@ -51,4 +51,4 @@ void Logger::setFileName(const std::string& newFileName)
 
 Logger::~Logger() {}
 
-} //end of namespace xqp
+} //end of namespace zorba

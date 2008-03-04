@@ -9,7 +9,7 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace xqp {
+namespace zorba {
   class op_enclosed_expr : public function {
     public:
       op_enclosed_expr(const signature&);
@@ -31,6 +31,6 @@ namespace xqp {
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   }; /* class op_docfilter_expr */
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif

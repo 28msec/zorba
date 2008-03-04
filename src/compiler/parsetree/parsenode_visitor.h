@@ -20,7 +20,7 @@
 |  Addison Wesley (2001), Chapter 10.
 |_______________________________________________________________________*/
 
-namespace xqp 
+namespace zorba 
 {
 
 class parsenode_visitor
@@ -444,5 +444,5 @@ public:
   virtual bool is_root_rpe(const RelativePathExpr*) { return true; }
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_PARSENODE_VISITOR_H */

@@ -5,7 +5,7 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewrite_rule.h"
 
-namespace xqp {
+namespace zorba {
 
 #define RULE(name) \
   class name : public RewriteRule { \

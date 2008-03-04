@@ -8,7 +8,7 @@
 #include "store/api/collection.h"
 #include "store/util/latch.h"
 
-namespace xqp
+namespace zorba
 {
 
 /*******************************************************************************
@@ -60,6 +60,6 @@ public:
   void removeFromCollection(const Item* node);  
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif

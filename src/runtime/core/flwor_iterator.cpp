@@ -20,7 +20,7 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-namespace xqp
+namespace zorba
 {
 
   // Utility function -- is this item null or a NaN?

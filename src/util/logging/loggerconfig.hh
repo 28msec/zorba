@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-namespace xqp {
+namespace zorba {
 	
 class LoggerConfig {
 

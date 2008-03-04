@@ -7,7 +7,7 @@
 #include "runtime/base/plan_wrapper.h"
 #include "common/shared_types.h"
 
-namespace xqp{
+namespace zorba{
 
 class Zorba_XQueryBinary;
 typedef rchandle<Zorba_XQueryBinary>		Zorba_XQueryBinary_t;
@@ -58,7 +58,7 @@ public:
 };
 */
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif
 

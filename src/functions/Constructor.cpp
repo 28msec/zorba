@@ -3,7 +3,7 @@
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/constructors.h"
 
-namespace xqp
+namespace zorba
 {
   /* begin class op_enclosed_expr */
   op_enclosed_expr::op_enclosed_expr (
@@ -60,4 +60,4 @@ namespace xqp
     return ( argv.size() ==1 );
   }
   /* end class op_enclosed_expr */
-} /* namespace xqp */
+} /* namespace zorba */

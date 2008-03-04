@@ -13,7 +13,7 @@
 #include <iostream>
 #include <vector>
 
-namespace xqp {
+namespace zorba {
 
 /*______________________________________________________________________
 |  Template sorting:                                                    |
@@ -107,6 +107,6 @@ void qsort(
 
 }
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif	/* XQP_SORTER_H */
 

@@ -7,7 +7,7 @@
 #include "zorbatypes/datetime/parse.h"
 #include <string>
 
-namespace xqp
+namespace zorba
 {
     
 /**
@@ -75,4 +75,4 @@ int get_last_day(int year, int month)
     return days[month-1];
 }
 
-} // namespace xqp
+} // namespace zorba

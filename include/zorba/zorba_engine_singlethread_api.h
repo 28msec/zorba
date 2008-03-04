@@ -3,7 +3,7 @@
 
 #include <zorba/zorba_baseengine_api.h>
 
-namespace xqp{
+namespace zorba{
 
   // TODO move into api_shared_types.h
   class ZorbaSingleThread;
@@ -41,5 +41,5 @@ namespace xqp{
       virtual ~ZorbaSingleThread();
   };
   
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

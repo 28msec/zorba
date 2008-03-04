@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace xqp
+namespace zorba
 {
 
 void skip_whitespace(std::string& s, unsigned int& position);
@@ -112,6 +112,6 @@ bool are_digits(std::string& s, unsigned int& position, int count);
 // will return 29. Returns 0 on an error
 int get_last_day(int year, int month);
 
-} // namespace xqp
+} // namespace zorba
 
 #endif

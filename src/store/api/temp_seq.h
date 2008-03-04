@@ -16,7 +16,7 @@
 #include "common/shared_types.h"
 
 
-namespace xqp {
+namespace zorba {
 
 class var_iterator;
 
@@ -145,6 +145,6 @@ public:
   virtual bool empty() = 0;
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif /* XQP_TEMP_SEQ_H */

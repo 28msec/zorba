@@ -6,7 +6,7 @@
 #include <zorba/common/common.h>
 #include <zorba/rchandle.h>
 
-namespace xqp
+namespace zorba
 {
 class xqpString;
 class xqpStringStore;

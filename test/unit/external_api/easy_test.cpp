@@ -7,7 +7,7 @@
 #include <zorba/zorba_api.h>
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
 string make_absolute_file_name(const char *result_file_name, const char *this_file_name);
 bool verify_expected_result(string result_file_name, string expected_file);

@@ -5,7 +5,7 @@
 
 #include <zorba/dynamic_context.h>
 
-namespace xqp{
+namespace zorba{
 
 class static_context;
 class dynamic_context;
@@ -182,7 +182,7 @@ public:
 	static void	checkVarName(xqp_string varname);//check if var name is well formed
 };
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif
 

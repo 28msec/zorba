@@ -17,7 +17,7 @@
 #include <string>
 
 
-namespace xqp {
+namespace zorba {
 /*_____________________________________________________________
 |
 |  A raw array of memory-mapped bytes.
@@ -59,5 +59,5 @@ public:			// manipulators
 
 };
 
-}  /* namespace xqp */
+}  /* namespace zorba */
 #endif  /* XQP_MMFILE_H */

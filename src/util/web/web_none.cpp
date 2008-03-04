@@ -1,7 +1,7 @@
 #include "util/web/web.h"
 #include "errors/error_factory.h"
 
-namespace xqp
+namespace zorba
 {
   
 int http_get(const char* url, xqp_string& result)
@@ -14,4 +14,4 @@ int http_get(const char* url, xqp_string& result)
   return 0;
 }
 
-} // namespace xqp
+} // namespace zorba

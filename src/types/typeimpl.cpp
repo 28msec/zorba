@@ -4,7 +4,7 @@
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"
 
-namespace xqp {
+namespace zorba {
 
 const char *XQType::KIND_STRINGS[XQType::NONE_KIND + 1] =
 {

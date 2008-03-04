@@ -10,7 +10,7 @@
 #include "compiler/expression/update_expr.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
   
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -136,5 +136,5 @@ ostream& transform_expr::put(ostream& os) const
 }
 
   
-} /* namespace xqp */
+} /* namespace zorba */
 

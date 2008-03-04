@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <functional>
 
-namespace xqp {
+namespace zorba {
 
   template <typename adaptable_unary> class binderonly {
   public:

@@ -1,7 +1,7 @@
 
 #include "zorba/sax2.h"
 
-namespace xqp{
+namespace zorba{
 
 //the SAX exception class hierarchy
 SAX2_Exception::SAX2_Exception(xqp_string message)
@@ -74,5 +74,5 @@ const xqp_string  SAX2_ParseException::getPublicId () const
 const xqp_string  SAX2_ParseException::getSystemId () const 
 {return systemId;}
 
-}//end namespace xqp
+}//end namespace zorba
 

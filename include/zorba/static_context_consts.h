@@ -1,7 +1,7 @@
 #ifndef XQP_STATIC_CONTEXT_CONSTS_H
 #define XQP_STATIC_CONTEXT_CONSTS_H
 
-namespace xqp {
+namespace zorba {
 
   class StaticContextConsts 
   {
@@ -16,6 +16,6 @@ namespace xqp {
 
   }; /* class StaticContextConsts */
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif

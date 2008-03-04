@@ -11,7 +11,7 @@
 #include "api/external/dynamic_context_wrapper.h"
 #include "runtime/base/plan_iterator.h" // for state block, TODO should be removed
 
-namespace xqp{
+namespace zorba{
 
 ResultIteratorWrapper::ResultIteratorWrapper(Zorba_XQueryInfo* xinfo,
                                              DynamicContextWrapper *dctx) :
@@ -194,4 +194,4 @@ void ResultIteratorInternalWrapper::close()
 }
 */
 
-}//end namespace xqp
+}//end namespace zorba

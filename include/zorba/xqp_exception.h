@@ -9,7 +9,7 @@
 
 #include <zorba/common/api_shared_types.h>
 
-namespace xqp
+namespace zorba
 {
   class ZorbaException 
   { 
@@ -27,6 +27,6 @@ namespace xqp
 
   std::ostream& operator<<(std::ostream& os, ZorbaException &x);
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_XQP_EXCEPTION_H */
 

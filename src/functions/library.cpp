@@ -37,7 +37,7 @@
 #include "store/api/item_factory.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 // clear static initializer state
 
@@ -1096,4 +1096,4 @@ DECL(ctx_variable,
 // end context functions
 }
 
-} /* namespace xqp */
+} /* namespace zorba */

@@ -16,7 +16,7 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace xqp
+namespace zorba
 {
   /*______________________________________________________________________
   *
@@ -142,5 +142,5 @@ namespace xqp
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };  
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_QNAMES_H */

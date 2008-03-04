@@ -4,7 +4,7 @@
 #include <zorba/common/api_shared_types.h>
 #include <zorba/item.h> // TODO this could maybe be removed if we have explizit destructors in cpp files
 
-namespace xqp {
+namespace zorba {
 
   class TypeIdentifier : virtual public SimpleRCObject {
     public:
@@ -226,7 +226,7 @@ namespace xqp {
       }
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_TYPEIDENT_H */
 
 /* vim:set ts=2 sw=2: */

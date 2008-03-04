@@ -20,7 +20,7 @@
 
 
 using namespace std;
-namespace xqp
+namespace zorba
 {
 
 
@@ -80,6 +80,6 @@ std::ostream& operator<<(std::ostream& os, ZorbaException &x)
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 

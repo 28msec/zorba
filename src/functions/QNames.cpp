@@ -14,7 +14,7 @@
 #include "runtime/qnames/QNamesImpl.h"
 #include "types/node_test.h"
 
- namespace xqp {
+ namespace zorba {
 /*
  * 11.1.1 fn:resolve-QName
  * --------------------*/
@@ -286,4 +286,4 @@ bool
   return (argv.size() == 1);
 }
 /*end class fn_in_scope_prefixes*/
- }/*namespace xqp*/
+ }/*namespace zorba*/

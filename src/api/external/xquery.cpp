@@ -34,7 +34,7 @@ using namespace std;
 
 //XERCES_CPP_NAMESPACE_USE
 
-namespace xqp
+namespace zorba
 {
 
 Zorba_XQueryInfo::Zorba_XQueryInfo(
@@ -784,4 +784,4 @@ XQuery_t Zorba_XQueryBinary::clone()
 	
 }
 
-}///end namespace xqp
+}///end namespace zorba

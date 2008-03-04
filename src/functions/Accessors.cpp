@@ -14,7 +14,7 @@
 
 using namespace std;
 
-namespace xqp {
+namespace zorba {
 
 fn_data_func::fn_data_func ( const signature& sig ) : function ( sig ) {}
 
@@ -159,4 +159,4 @@ bool fn_name_func::validate_args(vector<PlanIter_t>& argv) const
   return (argv.size() == 1);
 }
 
-} /* namespace xqp */
+} /* namespace zorba */

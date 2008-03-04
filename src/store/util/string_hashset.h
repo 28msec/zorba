@@ -7,7 +7,7 @@
 #include "store/util/handle_hashset.h"
 
 
-namespace xqp
+namespace zorba
 {
 
 class StringPool : public HandleSet<xqpStringStore, StringPool>

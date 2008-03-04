@@ -11,7 +11,7 @@
 #include "runtime/core/item_iterator.h"
 #include "errors/error_factory.h"
 
-namespace xqp{
+namespace zorba{
 
 bool DynamicContextWrapper::setContextItemAsBigInteger( xqp_integer int_value, VAR_BIGINT_TYPE type)
 {
@@ -1080,4 +1080,4 @@ bool DynamicContextWrapper::setContextItemAsBase64Binary( xqp_base64Binary base6
 
 }
 
-}//end namespace xqp
+}//end namespace zorba

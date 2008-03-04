@@ -9,7 +9,7 @@
 ///Implement the objects for the Zorba external C++ API
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-namespace xqp{
+namespace zorba{
 
 class PlanState;
 
@@ -112,7 +112,7 @@ public:
 
 typedef rchandle<Zorba_XQueryBinary>		Zorba_XQueryBinary_t;
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif
 

@@ -38,7 +38,7 @@
 #include "util/fx/mmfile.h"
 #include "errors/error_factory.h"
 
-namespace xqp {
+namespace zorba {
 
 #define DEFAULT_SIZE 4096
 
@@ -269,6 +269,6 @@ THROW_XQP_EXCEPTION
 }
 
 
-}  /* namespace xqp */
+}  /* namespace zorba */
 #endif  /* XQP_FXARRAY_H */
 

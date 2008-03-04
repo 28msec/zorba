@@ -3,7 +3,7 @@
 
 #include "types/typemanager.h"
 
-namespace xqp {
+namespace zorba {
 
 /*
  * Interface used by other parts of zorba to ask questions about types.

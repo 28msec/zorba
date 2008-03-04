@@ -34,9 +34,8 @@
 #include "context/common.h"
 #include "util/hashmap.h"
 
-namespace xqp {
+namespace zorba {
 
-  class zorba;
   class expr; class var_expr;
   class function;
 	class XQType;
@@ -118,7 +117,7 @@ public:
 };
 
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 
 #endif /*	XQP_CONTEXT_H */
 

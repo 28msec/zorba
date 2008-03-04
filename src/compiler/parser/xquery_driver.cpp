@@ -24,7 +24,7 @@
 #include "errors/error_factory.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 xquery_driver::xquery_driver(uint32_t initial_heapsize)
     : symtab(initial_heapsize),
@@ -40,7 +40,7 @@ bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
     xquery_scanner scanner(this, &in);
     this->lexer = &scanner;
 
-    xqp::xquery_parser parser(*this);
+    zorba::xquery_parser parser(*this);
     return (parser.parse() == 0);
 }
 
@@ -57,7 +57,7 @@ bool xquery_driver::parse_string(const xqpString& input)
 }
 
 void xquery_driver::error(
-	const xqp::location& l,
+	const zorba::location& l,
 	string const& m)
 {
   QueryLoc lLoc = createQueryLoc(l);
@@ -70,7 +70,7 @@ void xquery_driver::error(
   ZORBA_ERROR_ALERT (ZorbaError::XPST0003, NULL, DONT_CONTINUE_EXECUTION, m); 
 }
 
-QueryLoc xquery_driver::createQueryLoc(const xqp::location& aLoc) 
+QueryLoc xquery_driver::createQueryLoc(const zorba::location& aLoc) 
 {
   QueryLoc lLoc;
   lLoc.setFilenameBegin(aLoc.begin.filename);
@@ -82,4 +82,4 @@ QueryLoc xquery_driver::createQueryLoc(const xqp::location& aLoc)
   return lLoc;
 }
 
-}	/* namespace xqp */
+}	/* namespace zorba */

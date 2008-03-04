@@ -6,7 +6,7 @@
 
 #include "store/util/mutex.h"
 
-namespace xqp
+namespace zorba
 {
 /*******************************************************************************
 

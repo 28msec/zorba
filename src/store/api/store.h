@@ -14,7 +14,7 @@
 
 #include "common/shared_types.h"
 
-namespace xqp
+namespace zorba
 {
 
 class Timetravel; // TODO move to shared_types.h when implemented
@@ -230,6 +230,6 @@ class Timetravel {
   // TODO Timetravel interface
 }; /* Timetravel */
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif /* XQP_STORE_H */

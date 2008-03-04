@@ -6,7 +6,7 @@
 #include "runtime/base/unarybase.h"
 #include "types/typeconstants.h"
 
-namespace xqp {
+namespace zorba {
 
 /*******************************************************************************
   Implement 3.12.1: Instance Of
@@ -111,7 +111,7 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif  /* XQP_SEQUENCETYPES_H */
   
 /*

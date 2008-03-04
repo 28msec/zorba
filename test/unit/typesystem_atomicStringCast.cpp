@@ -8,7 +8,7 @@
 #include "system/globalenv.h"
 #include "system/zorba.h"
 
-using namespace xqp;
+using namespace zorba;
 
 int typesystem_atomicStringCast (int argc, char* argv[]) {
   ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();

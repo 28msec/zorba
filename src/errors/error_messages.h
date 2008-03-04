@@ -3,7 +3,7 @@
 
 #include <zorba/errors.h>
 
-namespace xqp
+namespace zorba
 {
 
 /*******************************************************************************

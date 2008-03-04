@@ -1,7 +1,7 @@
 #include <string>
 #include "compiler/expression/expr_consts.h"
 
-namespace xqp {
+namespace zorba {
 
 std::string toString(match_test_t a)
 {

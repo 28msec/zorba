@@ -65,7 +65,7 @@
 #define STACK_END()  } return NULL
 
 
-namespace xqp
+namespace zorba
 {
 
 class Zorba;
@@ -411,7 +411,7 @@ public:
   inline void closeImpl(PlanState& planState);
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif  /* XQP_ITERATOR_H */
 

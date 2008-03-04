@@ -4,7 +4,7 @@
 #include "zorba/common/common.h"
 
 
-namespace xqp
+namespace zorba
 {
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY

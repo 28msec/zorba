@@ -37,7 +37,7 @@
 
 #include <deque>
 
-namespace xqp
+namespace zorba
 {
   template <class T, class S = std::deque<T> >
   class stack

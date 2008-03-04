@@ -28,7 +28,7 @@
 |_______________________________________________________________________*/
 
 
-namespace xqp {
+namespace zorba {
 
 
 
@@ -327,6 +327,6 @@ public:
 };
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_UPDATE_VALUES_H */
 

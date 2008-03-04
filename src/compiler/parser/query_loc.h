@@ -4,7 +4,7 @@
 #include <string>
 #include <zorbatypes/xqpstring.h>
 
-namespace xqp {
+namespace zorba {
 
 /**
  * Class to save the query location of zorba elements that correspond to a code
@@ -44,6 +44,6 @@ public:
 
 std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc);
 
-} // namespace xqp
+} // namespace zorba
 
 #endif

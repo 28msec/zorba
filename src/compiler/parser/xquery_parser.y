@@ -8,7 +8,7 @@
 %skeleton "lalr1.cc"  /*  -*- C++ -*- */
 %require "2.3"
 %defines
-%name-prefix="xqp"
+%name-prefix="zorba"
 %define "parser_class_name" "xquery_parser"
 
 /*
@@ -34,9 +34,9 @@
 
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
-namespace xqp {
+namespace zorba {
 	class parsenode;
 	class exprnode;
   class xquery_driver;
@@ -91,8 +91,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 */
 %union
 {
-  xqp::parsenode * node;
-  xqp::exprnode * expr;
+  zorba::parsenode * node;
+  zorba::exprnode * expr;
   off_t sval;
 	xqp_integer* ival;
 	xqp_double* dval;
@@ -6457,8 +6457,8 @@ FTIgnoreOption :
 	The error member function registers the errors to the driver.
 */
 
-void xqp::xquery_parser::error(
-	xqp::xquery_parser::location_type const& loc,
+void zorba::xquery_parser::error(
+	zorba::xquery_parser::location_type const& loc,
 	std::string const& msg)
 {
   driver.error(loc, msg);

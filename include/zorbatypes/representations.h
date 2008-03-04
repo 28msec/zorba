@@ -11,7 +11,7 @@
 #include <zorbatypes/decimal.h>
 #include <zorbatypes/floatimpl.h>
 
-namespace xqp
+namespace zorba
 {
   /*______________________________________________________________________
   |
@@ -62,5 +62,5 @@ namespace xqp
   typedef void*               xqp_base64Binary;
   typedef void*               xqp_hexBinary;
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_REPRESENTATIONS_H */

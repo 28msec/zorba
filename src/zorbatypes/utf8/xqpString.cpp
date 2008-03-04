@@ -20,7 +20,7 @@
 
 using namespace std;
 
-namespace xqp
+namespace zorba
 {
   uint32_t xqpStringStore::hash() const
   {
@@ -802,7 +802,7 @@ namespace xqp
     const char* c = c_str();
     char seq[4];
 
-    xqp::advance(end, StrLen);
+    zorba::advance(end, StrLen);
 
     while(StrLen > 0)
     {
@@ -819,7 +819,7 @@ namespace xqp
       
       if( firstCp )
       {
-        pos = xqp::UTF8Distance(c, end);
+        pos = zorba::UTF8Distance(c, end);
         break;
       }
       --StrLen;
@@ -1000,4 +1000,4 @@ namespace xqp
 
     return ret;
   }
-}/* namespace xqp */
+}/* namespace zorba */

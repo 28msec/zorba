@@ -13,7 +13,7 @@
 
 #include "common/shared_types.h"
 
-namespace xqp {
+namespace zorba {
 
 class static_context;
 
@@ -24,6 +24,6 @@ class BuiltinFunctionLibrary {
 };
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_LIBRARY_H */
 

@@ -10,7 +10,7 @@
 #include <zorba/version.h>
 
 
-namespace xqp{
+namespace zorba{
 
   class ZorbaBaseEngine : public SimpleRCObject
   {
@@ -84,5 +84,5 @@ namespace xqp{
       getVersion() { return Version::getVersion(); }
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

@@ -6,7 +6,7 @@
 #include "system/globalenv.h"
 #include <iostream>
 
-using namespace xqp;
+using namespace zorba;
 
 #define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (sctx->lookup_fn (pfx, local, arity))
 
@@ -379,7 +379,7 @@ bool normalizer::begin_visit (function_def_expr& /*v*/) {
 void normalizer::end_visit (function_def_expr &v) {
 }
 
-void xqp::normalize_expr_tree (const char *norm_descr, static_context *sctx, expr_t root) {
+void zorba::normalize_expr_tree (const char *norm_descr, static_context *sctx, expr_t root) {
   normalizer n (sctx);
   root->accept(n);
   if (norm_descr != NULL) {

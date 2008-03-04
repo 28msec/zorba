@@ -12,7 +12,7 @@
 #include "system/globalenv.h"
 #include "store/api/store.h"
 
-namespace xqp
+namespace zorba
 {
 
 
@@ -144,4 +144,4 @@ bool XmlDataManager_Impl::addToCollection(const xqp_anyURI& uri, std::istream& s
 }
 
 
-}//end namespace xqp
+}//end namespace zorba

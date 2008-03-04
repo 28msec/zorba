@@ -7,7 +7,7 @@
 
 #include <zorba/common/api_shared_types.h>
 
-namespace xqp {
+namespace zorba {
 
 class SAX2_ContentHandler;
 class SAX2_ErrorHandler;
@@ -82,5 +82,5 @@ class XQuery : public SimpleRCObject
 
   };    
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

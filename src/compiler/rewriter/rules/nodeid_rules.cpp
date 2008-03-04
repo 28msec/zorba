@@ -3,7 +3,7 @@
 
 #define LOOKUP_OP1( local ) static_cast<function *> (rCtx.getStaticContext()->lookup_builtin_fn (":" local, 1))
 
-namespace xqp {
+namespace zorba {
 
 RULE_REWRITE_PRE(MarkNodesWithNodeIdPropertiesRule)
 {

@@ -5,7 +5,7 @@
 #include <zorbatypes/xqpstring.h>
 #include <zorbatypes/representations.h>
 
-namespace xqp{
+namespace zorba{
 
 SAX2_AttributesLibXML2::SAX2_AttributesLibXML2(	int nb_attributes,
 		                    const char **attributes)

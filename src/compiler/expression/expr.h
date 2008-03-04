@@ -40,7 +40,7 @@
 #include "compiler/expression/expr_consts.h"
 #include "store/api/fullText/ft_options.h"
 
-namespace xqp {
+namespace zorba {
 
 class match_expr;
 class expr_visitor;
@@ -1329,7 +1329,7 @@ public:
 */
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif  /*  XQP_EXPR_H */
 
 /*

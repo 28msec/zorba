@@ -1,7 +1,7 @@
 #include <curl/curl.h>
 #include "util/web/web.h"
 
-namespace xqp
+namespace zorba
 {
 
 static size_t
@@ -38,4 +38,4 @@ int http_get(const char* url, xqp_string& result)
   return result_code;
 }
 
-} // namespace xqp
+} // namespace zorba

@@ -6,7 +6,7 @@
 #include "store/naive/ordpath.h"
 #include "store/util/item_hashset.h"
 
-namespace xqp
+namespace zorba
 {
 
 template <class Object> class rchandle;

@@ -6,7 +6,7 @@
 
 #include <zorba/common/common.h>
 
-namespace xqp
+namespace zorba
 {
 class OrdPathStack;
 

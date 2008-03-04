@@ -1,7 +1,7 @@
 #ifndef XQP_PLANITERVISITOR_H
 #define XQP_PLANITERVISITOR_H
 
-namespace xqp
+namespace zorba
 {
   class xqpStringStore;
 
@@ -622,7 +622,7 @@ namespace xqp
       PLAN_ITER_VISTOR(FnAdjustToTimeZoneIterator_2);
 	  
   }; /* class PlanIterVisitor */
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif
 

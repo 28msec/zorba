@@ -16,7 +16,7 @@
 #include <zorba/errors.h>
 #include <zorba/xqp_exception.h>
 
-namespace xqp
+namespace zorba
 {
 class QueryLoc;
 

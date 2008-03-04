@@ -26,7 +26,7 @@
 
 #include "system/globalenv.h"
 
-namespace xqp {
+namespace zorba {
 
 #define PRINTER_VISITOR_DEFINITION(class)  \
   void PrinterVisitor::beginVisit ( const class& a )  {  \
@@ -1681,6 +1681,6 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_1);
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_2);
   
-} /* namespace xqp */
+} /* namespace zorba */
 /* vim:set ts=2 sw=2: */
 

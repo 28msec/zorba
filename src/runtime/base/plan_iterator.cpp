@@ -26,7 +26,7 @@
 
 #include "system/zorba_engine.h"
 
-namespace xqp
+namespace zorba
 {
 /*******************************************************************************
   class PlanState

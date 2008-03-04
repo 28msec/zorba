@@ -5,7 +5,7 @@
 #include "zorba/sax2.h"
 //#include <libxml/xmlmemory.h>
 
-namespace xqp{
+namespace zorba{
 
 class SAX2_AttributesLibXML2 : public SAX2_Attributes
 {

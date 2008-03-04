@@ -11,7 +11,7 @@
 #include "runtime/core/item_iterator.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 // upd_insert_before
 // -----------------
@@ -234,5 +234,5 @@ rename_value::~rename_value()
 
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 

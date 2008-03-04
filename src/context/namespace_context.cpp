@@ -1,6 +1,6 @@
 #include <context/namespace_context.h>
 
-namespace xqp {
+namespace zorba {
 
 void namespace_context::bind_ns(xqp_string prefix, xqp_string ns)
 {

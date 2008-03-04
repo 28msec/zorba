@@ -14,7 +14,7 @@
 
 namespace po = boost::program_options;
 
-namespace xqp
+namespace zorba
 {
   bool Properties::theLoaded = false;
   
@@ -242,4 +242,4 @@ namespace xqp
     Properties* lProps = Properties::instance(false);
     return lProps->loadProps(argc, argv);
   }
-} /* namespace xqp */
+} /* namespace zorba */

@@ -19,7 +19,7 @@
 
 using namespace std;
 
-namespace xqp {
+namespace zorba {
 
 /*______________________________________________________________________
 |  
@@ -573,5 +573,5 @@ bool zor_numgen::validate_args(vector<PlanIter_t>& argv) const
 	return (argv.size() == 0);
 }
   
-} /* namespace xqp */
+} /* namespace zorba */
 

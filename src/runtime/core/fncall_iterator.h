@@ -5,7 +5,7 @@
 #include "runtime/base/narybase.h"
 #include <vector>
 
-namespace xqp {
+namespace zorba {
 
 class UDFunctionCallIteratorState : public PlanIteratorState {
   public:

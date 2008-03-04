@@ -19,7 +19,7 @@
 #include "runtime/base/unarybase.h" // remove after iterator refactoring
 #include "runtime/base/binarybase.h" // remove after iterator refactoring
 
-namespace xqp {
+namespace zorba {
 /*
  * 11.1.1 fn:resolve-QName
  * --------------------*/
@@ -191,5 +191,5 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 /* end class InScopePrefixesIterator */
-}/*namespace xqp*/
+}/*namespace zorba*/
 #endif /* XQP_QNAMES_IMPL_H */

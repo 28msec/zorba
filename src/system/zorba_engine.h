@@ -6,7 +6,7 @@
 #include <zorba/zorba_engine_api.h>
 #include <zorba/zorba_engine_singlethread_api.h>
 
-namespace xqp
+namespace zorba
 {
 
 class Zorba;
@@ -131,7 +131,7 @@ protected:
 
 
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif
 

@@ -6,7 +6,7 @@
 #include <zorbatypes/xqpstring.h>
 #include <zorbatypes/representations.h>
 
-namespace xqp{
+namespace zorba{
 
 /*
 SAX2 interface inspired from Xerces C++.
@@ -289,6 +289,6 @@ public:
   virtual const xqp_string  getSystemId () const;
 };
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif

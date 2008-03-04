@@ -5,7 +5,7 @@
 #include <fstream>
 #include <vector>
 
-namespace xqp {
+namespace zorba {
 
   // TODO remove the properties from the system
   // only use them for the command line tools
@@ -148,7 +148,7 @@ namespace xqp {
       std::vector<std::pair<std::string,std::string> > getExternalVars();
       
   }; /* class Properties */
-} /* namespace xqp */
+} /* namespace zorba */
 #endif
 
 /* vim:set ts=2 sw=2: */

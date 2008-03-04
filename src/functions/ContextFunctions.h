@@ -16,7 +16,7 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace xqp
+namespace zorba
 {
 
 class zorba;
@@ -81,5 +81,5 @@ class fn_default_collation : public function
     bool validate_args( std::vector<PlanIter_t>&) const;
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif  /* XQP_CONTEXT_FUNCTIONS_H */

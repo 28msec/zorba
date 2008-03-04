@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace xqp {
+namespace zorba {
 
 void 
 FnTraceIteratorState::init(PlanState& planState)
@@ -43,6 +43,6 @@ FnTraceIterator::nextImpl(PlanState& planState) const
   STACK_END();
 }
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 /* vim:set ts=2 sw=2: */

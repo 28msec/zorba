@@ -11,7 +11,7 @@
 #ifndef XQP_TRACER_H
 #define XQP_TRACER_H
 
-namespace xqp {
+namespace zorba {
 
 #ifndef WIN32
 #define TRACE __FILE__<<':'<<__LINE__<<"::"<<__PRETTY_FUNCTION__
@@ -26,6 +26,6 @@ namespace xqp {
 
 #endif
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_TRACER_H */
 

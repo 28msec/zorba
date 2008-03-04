@@ -5,7 +5,7 @@
 #include "types/typeconstants.h"
 #include "runtime/base/binarybase.h" 
 
-namespace xqp {
+namespace zorba {
 
 /**
  * Functions that are used in all Arith Operations

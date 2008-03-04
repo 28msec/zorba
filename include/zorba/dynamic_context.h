@@ -7,7 +7,7 @@
 
 #include <zorba/common/api_shared_types.h>
 
-namespace xqp {
+namespace zorba {
 
   class DynamicQueryContext : public SimpleRCObject
   {
@@ -372,7 +372,7 @@ namespace xqp {
       setDefaultCollection( xqp_string collectionURI ) = 0;
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif
 
 /* vim:set ts=2 sw=2: */

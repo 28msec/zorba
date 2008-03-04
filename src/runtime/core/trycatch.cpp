@@ -9,7 +9,7 @@
 #include "system/globalenv.h"
 #include "types/node_test.h"
 
-namespace xqp {
+namespace zorba {
   
 TryCatchIteratorState::TryCatchIteratorState()
   : theIterator(NULL)
@@ -75,5 +75,5 @@ TryCatchIterator::nextImpl(PlanState& planState) const
   STACK_END();
 }
 
-} /* namespace xqp */
+} /* namespace zorba */
 /* vim:set ts=2 sw=2: */

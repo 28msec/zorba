@@ -3,11 +3,11 @@
 
 #include <zorba/common/api_shared_types.h>
 
-namespace xqp {
+namespace zorba {
 
   class ExternalFunctionData : public SimpleRCObject
   {
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

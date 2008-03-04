@@ -31,7 +31,7 @@
 #include "common/shared_types.h"
 
 
-namespace xqp
+namespace zorba
 {
 
 class ResultIterator;
@@ -254,6 +254,6 @@ protected:
   };  
 };
 
-} // namespace xqp
+} // namespace zorba
 
 #endif // #ifdef XQP_SERIALIZER_H

@@ -10,7 +10,7 @@
 #include "store/util/mutex.h"
 
 
-namespace xqp
+namespace zorba
 {
 
 class QNamePool;
@@ -151,6 +151,6 @@ public:
 
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif /* XQP_SIMPLE_STORE_H */

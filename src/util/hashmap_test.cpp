@@ -18,7 +18,7 @@
 #include "util/tokenbuf.h"
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
 
 void handle_cmd(

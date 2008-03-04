@@ -17,7 +17,7 @@
 
 using namespace std;
 
-namespace xqp
+namespace zorba
 {
 
 int Date::parse_string(const xqpString& s, Date_t& d_t)
@@ -224,4 +224,4 @@ Date_t operator+(const Date& d, const Duration& dur)
   return d_t;
 }
 
-} // namespace xqp
+} // namespace zorba

@@ -15,7 +15,7 @@
 #include <string>
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 /**
  * Whitespace characters used in the functions below
@@ -233,4 +233,4 @@ std::string symbol_table::get(off_t id)
 }
 
 
-}	/* namespace xqp */
+}	/* namespace zorba */

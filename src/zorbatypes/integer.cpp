@@ -9,7 +9,7 @@
 #include <zorbatypes/floatimpl.h>
 #include <zorbatypes/numconversions.h>
 
-namespace xqp {
+namespace zorba {
 
 Integer& Integer::zero() {
   static Integer lValue(MAPM(0));
@@ -358,4 +358,4 @@ std::ostream& operator<<(std::ostream& os, const Integer& aInteger) {
   return os;
 }
 
-} // namespace xqp
+} // namespace zorba

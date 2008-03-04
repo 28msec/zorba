@@ -4,7 +4,7 @@
 
 #include "zorba/sax2.h"
 
-namespace xqp{
+namespace zorba{
 
 class SAX2_NamespacesLibXML2 : public SAX2_Namespaces
 {

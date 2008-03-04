@@ -34,7 +34,7 @@
 #include "store/api/item_factory.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 bool dynamic_context::static_init = false;
 
@@ -245,5 +245,5 @@ void dynamic_context::set_default_collection(xqp_string default_collection_uri)
 }
 
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 

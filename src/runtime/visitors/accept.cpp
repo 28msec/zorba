@@ -56,7 +56,7 @@
     
     
 
-namespace xqp {
+namespace zorba {
   
   // noary iterators (iterators without children)
   NOARY_ACCEPT(LetVarIterator);
@@ -178,4 +178,4 @@ namespace xqp {
     theChild->accept ( v );
     v.endVisit(*this);
   }
-} /* namespace xqp */
+} /* namespace zorba */

@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-namespace xqp {
+namespace zorba {
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -185,6 +185,6 @@ public:
 };
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_UPDATE_EXPR_H */
 

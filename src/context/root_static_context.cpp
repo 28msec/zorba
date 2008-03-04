@@ -1,7 +1,7 @@
 #include "types/root_typemanager.h"
 #include "context/root_static_context.h"
 
-namespace xqp {
+namespace zorba {
 
 static const char *default_ns_initializers [] = {
   "fn", XQUERY_FN_NS,

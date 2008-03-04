@@ -6,7 +6,7 @@
 #include <zorba/rchandle.h>
 #include <zorba/store_consts.h>
 
-namespace xqp {
+namespace zorba {
 
 class Item;
 

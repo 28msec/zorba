@@ -6,7 +6,7 @@
 #include <zorbatypes/zorbatypes_decl.h>
 
 
-namespace xqp {
+namespace zorba {
 
   class Integer {
     friend class Decimal;
@@ -210,5 +210,5 @@ namespace xqp {
 
   std::ostream& operator<<(std::ostream& os, const Integer&);
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif // XQP_INTEGER_H

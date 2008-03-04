@@ -14,7 +14,7 @@
 
 using namespace std;
 
-namespace xqp
+namespace zorba
 {
 const int NO_MONTHS_IN_YEAR = 12;
 const int NO_HOURS_IN_DAY = 24;

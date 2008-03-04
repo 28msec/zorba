@@ -3,7 +3,7 @@
 
 #include <zorba/errors.h>
 
-namespace xqp
+namespace zorba
 {
 
 class Zorba;
@@ -68,7 +68,7 @@ protected:
 
 typedef rchandle<AlertsManagerImpl>		AlertsManagerImpl_t;
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif
 

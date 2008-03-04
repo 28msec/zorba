@@ -3,7 +3,7 @@
 
 #include <zorbatypes/representations.h>
 
-namespace xqp {
+namespace zorba {
 
 /**
  * Class contains all num conversions and string to num and num to string conversions
@@ -64,6 +64,6 @@ public:
   static bool doubleToLong(const xqp_double&, long&);
 }; /* class NumConversions */
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif

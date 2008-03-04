@@ -12,7 +12,7 @@
 typedef unsigned long ulong;
 
 
-namespace xqp
+namespace zorba
 {
 
 class XmlNode;

@@ -8,7 +8,7 @@
 
 #include <zorba/common/api_shared_types.h>
 
-namespace xqp
+namespace zorba
 {
 
   /*******************************************************************************
@@ -790,7 +790,7 @@ namespace xqp
 
   std::ostream& operator<<(std::ostream& os, ZorbaAlert &x);
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif
 
 /* vim:set ts=2 sw=2: */

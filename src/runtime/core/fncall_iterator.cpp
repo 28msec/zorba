@@ -7,7 +7,7 @@
 #include "functions/function.h"
 #include "runtime/base/plan_iterator_wrapper.h"
 
-namespace xqp {
+namespace zorba {
 
 UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   : theFnBodyStateBlock(NULL),

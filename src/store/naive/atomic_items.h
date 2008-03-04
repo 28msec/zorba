@@ -15,7 +15,7 @@
 #include <zorba/item.h>
 
 
-namespace xqp
+namespace zorba
 {
 
 /*******************************************************************************
@@ -699,5 +699,5 @@ public:
     virtual bool isNaN() const { return false; }
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_ATOMIC_ITEMS_H */

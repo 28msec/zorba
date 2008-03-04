@@ -4,7 +4,7 @@
 
 #include "zorba/rchandle.h"
 
-namespace xqp{
+namespace zorba{
 class  SAX2_ContentHandler;
 class  SAX2_ErrorHandler;
 class  SAX2_DTDHandler;
@@ -44,6 +44,6 @@ public:
 
 };
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif

@@ -9,7 +9,7 @@
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
 
-namespace xqp {
+namespace zorba {
 
 
 /*********************************************************************************
@@ -318,7 +318,7 @@ public:
 };
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif  /* XQP_CONSTRUCTORS_H */
 
 /*

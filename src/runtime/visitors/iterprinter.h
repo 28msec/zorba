@@ -11,7 +11,7 @@ namespace yy {
   class location;
 }
 
-namespace xqp {
+namespace zorba {
   /**
    * Interface to print the PlanIterators.
    */
@@ -86,6 +86,6 @@ namespace xqp {
       virtual void endEndVisit();
   
   }; /* class XMLVisitorPrinter */
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif

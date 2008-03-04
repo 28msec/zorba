@@ -5,7 +5,7 @@
 #include <zorbatypes/xqpstring.h>
 #include "compiler/parser/symbol_table.h"
 
-namespace xqp {
+namespace zorba {
 
 class location;
 class parsenode;
@@ -14,7 +14,7 @@ class xquery_driver
 {
 public:
   xqpString theFilename;
-  xqp::symbol_table symtab;
+  symbol_table symtab;
   parsenode* expr_p;
   bool rename_bit;
   bool ftcontains_bit;
@@ -32,7 +32,7 @@ public:
   parse_file(const xqpString& aFilename);
 
   void 
-  error(const xqp::location& l, const std::string& m);
+  error(const location& l, const std::string& m);
 
   void 
   error(const std::string& m);
@@ -52,11 +52,11 @@ public:
 	void set_ftcontains(bool b) { ftcontains_bit = b; }
 	bool ftcontains() const { return ftcontains_bit; }
 
-  QueryLoc createQueryLoc(const xqp::location& aLoc);
+  QueryLoc createQueryLoc(const location& aLoc);
 
   class xquery_scanner* lexer;
 };
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif /* XQP_XQUERY_DRIVER_H */
 

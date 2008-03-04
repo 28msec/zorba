@@ -11,7 +11,7 @@
 #ifndef XQP_TRIPLE_H
 #define XQP_TRIPLE_H
 
-namespace xqp {
+namespace zorba {
 
 template<class _T1, class _T2, class _T3>
 class triple
@@ -91,6 +91,6 @@ make_triple(_T1 _x, _T2 _y, _T3 _z)
 	return triple<_T1, _T2, _T3>(_x, _y, _z);
 }
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_TRIPLE_H */
 

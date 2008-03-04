@@ -13,7 +13,7 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"
 
-namespace xqp
+namespace zorba
 {
 
 /*******************************************************************************
@@ -170,4 +170,4 @@ void SimpleCollection::CollectionIter::close()
 {
 }
 
-} /* namespace xqp */
+} /* namespace zorba */

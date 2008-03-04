@@ -5,7 +5,7 @@
 #include <zorbatypes/m_apm.h>
 #include "common/shared_types.h"
 
-namespace xqp {
+namespace zorba {
 
 class RootTypeManager;
 class static_context;

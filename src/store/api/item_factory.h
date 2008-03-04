@@ -19,7 +19,7 @@
 #include "common/shared_types.h"
 
 
-namespace xqp
+namespace zorba
 {
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
@@ -518,6 +518,6 @@ public:
         bool            isRoot) = 0;
 };
 
-}/* namespace xqp */
+}/* namespace zorba */
 
 #endif

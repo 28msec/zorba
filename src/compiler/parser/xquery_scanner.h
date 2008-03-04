@@ -7,10 +7,10 @@
 #ifndef YY_DECL
 
 #define YY_DECL                                              \
-  xqp::xquery_parser::token_type                         \
-  xqp::xquery_scanner::lex(                              \
-    xqp::xquery_parser::semantic_type* yylval,           \
-    xqp::xquery_parser::location_type* yylloc            \
+  zorba::xquery_parser::token_type                         \
+  zorba::xquery_scanner::lex(                              \
+    zorba::xquery_parser::semantic_type* yylval,           \
+    zorba::xquery_parser::location_type* yylloc            \
     )
 #endif
 
@@ -22,7 +22,7 @@
 
 #include "compiler/parser/xquery_parser.hpp"
 
-namespace xqp {
+namespace zorba {
 
 class xquery_driver;
 
@@ -44,9 +44,9 @@ public:
    * the macro declaration YY_DECL above. The generated bison parser then
    * calls this virtual function to fetch new tokens. */
   virtual 
-  xqp::xquery_parser::token_type lex ( 
-    xqp::xquery_parser::semantic_type* yylval, 
-    xqp::xquery_parser::location_type* yylloc
+  zorba::xquery_parser::token_type lex ( 
+    zorba::xquery_parser::semantic_type* yylval, 
+    zorba::xquery_parser::location_type* yylloc
   );
 
   xquery_driver* getDriver() const { return theDriver; } 

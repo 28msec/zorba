@@ -16,7 +16,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 
-namespace xqp
+namespace zorba
 {
 
   /*______________________________________________________________________

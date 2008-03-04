@@ -3,7 +3,7 @@
 
 #include <zorba/common/api_shared_types.h>
 
-namespace xqp
+namespace zorba
 {
 
   /**
@@ -28,5 +28,5 @@ namespace xqp
       close() = 0;
 
   };
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

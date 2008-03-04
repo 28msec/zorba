@@ -10,7 +10,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/noarybase.h"
 
-namespace xqp {
+namespace zorba {
 
 class Item;
 class node;
@@ -115,6 +115,6 @@ public:
 };
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif  /* XQP_ITEM_ITERATOR_H */
 

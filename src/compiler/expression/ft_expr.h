@@ -14,7 +14,7 @@
 
 #include "compiler/expression/expr.h"
 
-namespace xqp {
+namespace zorba {
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -267,7 +267,7 @@ public:
 };
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_FTEXPR_H */
 
 

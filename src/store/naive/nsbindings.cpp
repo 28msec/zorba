@@ -3,7 +3,7 @@
 #include "util/Assert.h"
 #include "store/naive/nsbindings.h"
 
-namespace xqp
+namespace zorba
 {
 
 NsBindingsContext::NsBindingsContext(unsigned long numBindings)

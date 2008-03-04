@@ -1,6 +1,6 @@
 #include "compiler/rewriter/framework/sequential_rewriter.h"
 
-namespace xqp {
+namespace zorba {
 
 SequentialRewriter::SequentialRewriter()
 {

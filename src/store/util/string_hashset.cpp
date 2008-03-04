@@ -2,7 +2,7 @@
 #include "util/Assert.h"
 #include "store/util/string_hashset.h"
 
-namespace xqp
+namespace zorba
 {
 
 const ulong StringPool::DEFAULT_POOL_SIZE = 1024;

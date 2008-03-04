@@ -45,7 +45,7 @@
 
 using namespace std;
 
-namespace xqp {
+namespace zorba {
 
 #define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (sctx_p->lookup_fn (pfx, local, arity))
 #define LOOKUP_OP1( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 1))
@@ -4458,5 +4458,5 @@ rchandle<expr> translate (bool print, static_context *sctx_p, const parsenode &r
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 /* vim:set ts=2 sw=2: */

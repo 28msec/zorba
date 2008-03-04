@@ -11,7 +11,7 @@
 
 #include "common/shared_types.h"
 
-namespace xqp 
+namespace zorba 
 {
 
 class Collection : public SimpleRCObject
@@ -69,5 +69,5 @@ public:
   virtual void removeFromCollection(const Item* node) = 0;
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

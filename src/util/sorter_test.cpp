@@ -11,7 +11,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
 struct key_struct1
 {

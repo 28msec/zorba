@@ -13,7 +13,7 @@
 
 #include <assert.h>
 
-namespace xqp {
+namespace zorba {
 class ParseConstants
 {
   public:
@@ -218,6 +218,6 @@ class ParseConstants
 
 }; /* class ParseConstants */
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_PARSE_CONSTANTS_H */
 

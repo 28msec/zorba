@@ -3,7 +3,7 @@
 
 #include <zorbatypes/representations.h>
 
-namespace xqp
+namespace zorba
 {
   int http_get(const char* url, xqp_string& result);
 }

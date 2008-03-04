@@ -15,7 +15,7 @@
 #include "functions/signature.h"
 #include "compiler/parser/query_loc.h"
 
-namespace xqp {
+namespace zorba {
 
 typedef rchandle<class PlanIterator> PlanIter_t;
 typedef rchandle<class expr> expr_t;
@@ -106,6 +106,6 @@ class external_function : public function {
 };
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif  /* XQP_FUNCTION_H */
 /* vim:set ts=2 sw=2: */

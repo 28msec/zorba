@@ -21,9 +21,9 @@
 |	 Chapter 10.
 |_______________________________________________________________________*/
 
-namespace xqp {
+namespace zorba {
 
   expr_t translate (bool, static_context *, const parsenode &, std::vector<rchandle<static_context> > &);
   
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_NORMALIZE_VISITOR_H */

@@ -8,7 +8,7 @@
 #include <zorbatypes/xqpstring.h>
 
 
-namespace xqp
+namespace zorba
 {
 
   class TimeZone : public SimpleRCObject
@@ -66,5 +66,5 @@ namespace xqp
       boost::posix_time::time_duration the_time_zone;
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

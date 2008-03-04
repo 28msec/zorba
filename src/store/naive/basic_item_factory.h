@@ -18,7 +18,7 @@
 
 
 
-namespace xqp
+namespace zorba
 {
 typedef StringPool UriPool;
 
@@ -232,6 +232,6 @@ public:
         bool            isRoot);
 };
 
-}/* namespace xqp */
+}/* namespace zorba */
 
 #endif

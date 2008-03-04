@@ -8,7 +8,7 @@
 
 #include <zorbatypes/timezone.h>
 
-namespace xqp
+namespace zorba
 {
 
   /**
@@ -84,6 +84,6 @@ namespace xqp
   Date_t 
   operator+(const Date& d, const Duration& dur);
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif

@@ -29,7 +29,7 @@
 #include "util/list.h"
 #include "store/naive/basic_item_factory.h"
 
-using namespace xqp;
+using namespace zorba;
 
 int main (int argc, char** argv)
 {

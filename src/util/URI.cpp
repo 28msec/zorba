@@ -18,7 +18,7 @@
 #endif
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 /*______________________________________________________________________
 |
@@ -318,5 +318,5 @@ string URI::toString() const
 }
 
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 

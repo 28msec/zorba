@@ -31,7 +31,7 @@
 #include "runtime/base/unarybase.h" 
 #include "compiler/expression/expr_consts.h"
 
-namespace xqp 
+namespace zorba 
 {
 
 /*******************************************************************************
@@ -526,6 +526,6 @@ public:
 };
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif  /* XQP_PATH_ITERATORS_H */

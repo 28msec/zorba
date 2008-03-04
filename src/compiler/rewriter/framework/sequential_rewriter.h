@@ -6,7 +6,7 @@
 #include "common/shared_types.h"
 #include "compiler/rewriter/framework/rewriter.h"
 
-namespace xqp {
+namespace zorba {
 
 class SequentialRewriter : public Rewriter {
   public:

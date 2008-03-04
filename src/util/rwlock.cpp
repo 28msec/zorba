@@ -14,7 +14,7 @@
 #include <errno.h>
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 rwlock::rwlock()
 :
@@ -412,4 +412,4 @@ int rwlock::writeunlock()
 }
 
 
-}	/* namespace xqp */
+}	/* namespace zorba */

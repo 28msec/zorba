@@ -32,7 +32,7 @@
 
 using namespace std;
 
-namespace xqp {
+namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Default transcoder (transparent)
@@ -909,4 +909,4 @@ void serializer::serialize(Item* item, ostream& os)
   e->emit_declaration_end();
 }
 
-} // namespace xqp
+} // namespace zorba

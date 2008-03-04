@@ -8,12 +8,12 @@
 #include <time.h>
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
 //#include "../error_display.h"
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
 string make_absolute_file_name(const char *result_file_name, const char *this_file_name)
 {

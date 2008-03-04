@@ -12,7 +12,7 @@
 
 #include "util/fx/fxcharheap.h"
 
-namespace xqp {
+namespace zorba {
 
 class symbol_table
 {
@@ -42,6 +42,6 @@ public:			// table interface
 
 };
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif	/* XQP_SYMBOL_TABLE */
 

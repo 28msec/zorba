@@ -6,7 +6,7 @@
 #include <zorbatypes/integer.h>
 #include <zorbatypes/decimal.h>
 
-namespace xqp {
+namespace zorba {
 
 Double FloatCommons::parseFloat(const Float& aFloat) {
   Double lDouble(aFloat.getType(), aFloat.getNumber());

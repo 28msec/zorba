@@ -6,7 +6,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
 
-namespace xqp
+namespace zorba
 {
 
 class Item;

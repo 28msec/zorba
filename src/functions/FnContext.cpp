@@ -8,7 +8,7 @@
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/core/item_iterator.h"
 
-namespace xqp
+namespace zorba
 {
 
 ctx_variable::ctx_variable ( const signature& sig )

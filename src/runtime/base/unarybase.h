@@ -10,7 +10,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/plan_iterator.h"
 
-namespace xqp
+namespace zorba
 {
 
 /**
@@ -92,7 +92,7 @@ UnaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
 
 
 
-}; /* namespace xqp*/
+}; /* namespace zorba*/
 
 #endif /* XQP_UNARYBASE_H */
 

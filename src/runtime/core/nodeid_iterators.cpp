@@ -5,7 +5,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/base/plan_iterator_wrapper.h"
 
-namespace xqp 
+namespace zorba 
 {
 
 /*******************************************************************************

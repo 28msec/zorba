@@ -43,7 +43,7 @@
 # include <iostream>
 # include <string>
 
-namespace xqp
+namespace zorba
 {
   /// Abstract a position.
   class position

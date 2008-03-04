@@ -10,7 +10,7 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace xqp
+namespace zorba
 {
 
 class fn_datetime_ctor : public function
@@ -773,6 +773,6 @@ class fn_adjust_t_to_tz_2 : public function
 };
 
 
-} // namespace xqp
+} // namespace zorba
 
 #endif

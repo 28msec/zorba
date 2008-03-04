@@ -11,7 +11,7 @@
 #include "store/naive/simple_store.h"
 #include "compiler/api/compiler_api.h"
 
-using namespace xqp;
+using namespace zorba;
 
 GlobalEnvironment *GlobalEnvironment::m_globalEnv = 0;
 

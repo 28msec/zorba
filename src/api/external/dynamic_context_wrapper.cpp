@@ -19,7 +19,7 @@
 #include "types/root_typemanager.h"
 #include "system/globalenv.h"
 
-namespace xqp {
+namespace zorba {
 
 
 DynamicContextWrapper::DynamicContextWrapper()
@@ -1474,4 +1474,4 @@ dynamic_context*	DynamicContextWrapper::create_dynamic_context(static_context *s
 
 }
 
-}//end namespace xqp
+}//end namespace zorba

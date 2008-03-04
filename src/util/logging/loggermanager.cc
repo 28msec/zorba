@@ -10,7 +10,7 @@
 #include "logging.hh"
 
 
-namespace xqp {
+namespace zorba {
 
 bool LoggerManager::theLogTheLoggerNameFlag = true;
 std::string LoggerManager::theConfigSeparator = "#";
@@ -243,4 +243,4 @@ bool LoggerManager::isValidChar(const char c) const {
 	return false;
 }
 
-}//end namespace xqp
+}//end namespace zorba

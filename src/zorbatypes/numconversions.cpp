@@ -5,7 +5,7 @@
 #include <limits>
 #include <zorbatypes/numconversions.h>
 
-namespace xqp {
+namespace zorba {
   bool NumConversions::isNegZero(const xqpString& aStr) {
     xqpString lStr = aStr.trim(" \n\r\t", 4);
     size_t lLength = aStr.length();
@@ -221,4 +221,4 @@ namespace xqp {
     xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToLong(lStr, aLong);
   }
-} /* namespace xqp */
+} /* namespace zorba */

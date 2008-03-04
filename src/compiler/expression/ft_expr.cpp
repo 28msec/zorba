@@ -10,7 +10,7 @@
 #include "compiler/expression/ft_expr.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
   
   
 /////////////////////////////////////////////////////////////////////////
@@ -189,5 +189,5 @@ ostream& ft_words_expr::put(ostream& os) const
 
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 

@@ -33,7 +33,7 @@
 
 #include "errors/error_factory.h"
 
-namespace xqp {
+namespace zorba {
 
 class file : public SimpleRCObject
 {
@@ -213,5 +213,5 @@ public:	// volume methods
 };
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_FILE_H */

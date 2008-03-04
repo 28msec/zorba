@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 
-namespace xqp {
+namespace zorba {
 
   class Version
   { 
@@ -29,5 +29,5 @@ namespace xqp {
 
   };
 
-} /* end namespace xqp */
+} /* end namespace zorba */
 #endif

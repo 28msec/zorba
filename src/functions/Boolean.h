@@ -10,7 +10,7 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace xqp
+namespace zorba
 {
 	class GenericOpComparison : public function
 	{

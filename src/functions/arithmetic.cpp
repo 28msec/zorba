@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace xqp {
+namespace zorba {
 
 op_add::op_add(
 	const signature& sig)

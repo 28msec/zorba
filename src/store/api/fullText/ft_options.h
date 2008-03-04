@@ -19,7 +19,7 @@
 #include <zorba/rchandle.h>
 #include <zorba/common/common.h>
 
-namespace xqp {
+namespace zorba {
 
 #define ft_lowercase								  0
 #define ft_uppercase								  1
@@ -142,6 +142,6 @@ public:
 
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_FTOPTIONS_H */
 

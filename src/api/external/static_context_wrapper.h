@@ -6,7 +6,7 @@
 #include <vector>
 #include "util/hashmap.h"
 
-namespace xqp{
+namespace zorba{
 
 class static_context;
 
@@ -158,6 +158,6 @@ public:
 
 //typedef rchandle<StaticContextWrapper>		StaticContextWrapper_t;
 
-}///end namespace xqp
+}///end namespace zorba
 
 #endif

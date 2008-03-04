@@ -43,8 +43,8 @@
 #include "compiler/parser/xquery_scanner.h"
 #include "compiler/parser/xquery_driver.h"
 
-typedef xqp::xquery_parser::token token;
-typedef xqp::xquery_parser::token_type token_type;
+typedef zorba::xquery_parser::token token;
+typedef zorba::xquery_parser::token_type token_type;
 
 #define TRY_STR_LIT( ttype, put, yytext, yyleng )                       \
   do {                                                                  \
@@ -290,7 +290,7 @@ ValidationMode        ("strict"|"lax"|"skip")
 
 
 %{
-typedef xqp::xquery_parser::token token;
+typedef zorba::xquery_parser::token token;
 %}
 
 
@@ -4619,7 +4619,7 @@ std::string start_state(int state)
 }
 
 
-namespace xqp {
+namespace zorba {
 
 xquery_scanner::xquery_scanner(
   xquery_driver* aDriver, 

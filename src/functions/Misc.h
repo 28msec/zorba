@@ -5,7 +5,7 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace xqp {
+namespace zorba {
 
 class fn_trace_func : public function {
   public:

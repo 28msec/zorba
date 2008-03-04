@@ -10,7 +10,7 @@
 #ifndef XQP_PENDING_UPDATE_LIST_H
 #define XQP_PENDING_UPDATE_LIST_H
 
-namespace xqp
+namespace zorba
 {
 	/**
 		* Pending Update List
@@ -21,6 +21,6 @@ namespace xqp
 		// TODO PUL interface
 	}; /* class PUL */
 	
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif /* XQP_STORE_H */

@@ -15,7 +15,7 @@
 #include "system/zorba_engine.h"
 #include "context/dynamic_context.h"
 
-namespace xqp {
+namespace zorba {
 
 void ArithOperationsCommons::createError(
   const char* aOp, 

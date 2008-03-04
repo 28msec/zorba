@@ -37,7 +37,7 @@
 #include <sstream>
 #include <iostream>
 
-namespace xqp {
+namespace zorba {
 
 #define DEFAULT_SIZE		4096		// default initial vector size
 
@@ -614,5 +614,5 @@ void fxvector<T>::unmap()
 }
 
 
-} // namespace xqp
+} // namespace zorba
 #endif /* XQP_FXVECTOR_H */

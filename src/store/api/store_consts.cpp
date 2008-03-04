@@ -1,7 +1,7 @@
 
 #include <zorba/store_consts.h>
 
-namespace xqp
+namespace zorba
 {
 
 static const char* theNodeKindStrings[7] =

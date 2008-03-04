@@ -26,7 +26,7 @@
 #include "context/dynamic_context.h"
 #include "compiler/parser/query_loc.h"
 
-namespace xqp {
+namespace zorba {
 
 
 // (See: runtime/normalize.h)
@@ -6150,5 +6150,5 @@ public:
 };
 
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif	/*  XQP_PARSENODES_H */

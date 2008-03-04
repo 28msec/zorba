@@ -12,7 +12,7 @@
 #include <string>
 #include <zorba/common/common.h>
 
-namespace xqp {
+namespace zorba {
 
 /*______________________________________________________________________
 |		
@@ -95,5 +95,5 @@ public:
 
 
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif	/* XQP_TOKENBUF_H */

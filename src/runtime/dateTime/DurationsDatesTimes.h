@@ -12,7 +12,7 @@
 #include "runtime/base/narybase.h"
 
 
-namespace xqp
+namespace zorba
 {
 
 class FnDateTimeConstructorIterator : public BinaryBaseIterator<FnDateTimeConstructorIterator,
@@ -217,6 +217,6 @@ public:
 10.8.13 op:subtract-dayTimeDuration-from-time
 */
 
-} // namespace xqp
+} // namespace zorba
 
 #endif

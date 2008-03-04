@@ -11,7 +11,7 @@
 
 #include <string>
 
-namespace xqp {
+namespace zorba {
 
 class collation : public SimpleRCObject
 {
@@ -28,5 +28,5 @@ public:
 
 };
 
-}	/* namespace xqp*/
+}	/* namespace zorba*/
 #endif	/* XQP_COLLATION_H */

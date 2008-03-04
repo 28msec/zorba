@@ -7,7 +7,7 @@
 #include "types/typeimpl.h"
 #include "types/typemanager.h"
 
-namespace xqp {
+namespace zorba {
 
 class RootTypeManager : public TypeManager {
   public:

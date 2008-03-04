@@ -3,7 +3,7 @@
 #include "store/naive/node_iterators.h"
 #include "store/naive/store_defs.h"
 
-namespace xqp
+namespace zorba
 {
 
 /////////////////////////////////////////////////////////////////////////////////

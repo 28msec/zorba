@@ -28,7 +28,7 @@
 
 //XERCES_CPP_NAMESPACE_USE
 
-namespace xqp{
+namespace zorba{
 
 
 rchandle<ZorbaEngineImpl>	 globalZorbaEngine = NULL;
@@ -476,4 +476,4 @@ bool		ZorbaSingleThread::execute(xqp_string xquery_text, std::ostream &os)
 	return true;
 }
 
-}//end namespace xqp
+}//end namespace zorba

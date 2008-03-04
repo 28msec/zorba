@@ -1,7 +1,7 @@
 #ifndef XQP_TYPECONSTANTS_H
 #define XQP_TYPECONSTANTS_H
 
-namespace xqp {
+namespace zorba {
 
 class TypeConstants {
   public:

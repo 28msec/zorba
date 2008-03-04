@@ -10,7 +10,7 @@
 
 #include <zorbatypes/Unicode_util.h>
 
-namespace xqp {
+namespace zorba {
 
 
 static const uint32_t title_table[][2] = {
@@ -1083,4 +1083,4 @@ uint32_t toLower(uint32_t c){
   return c;
 }
 
-}/* namespace xqp */
+}/* namespace zorba */

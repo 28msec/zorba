@@ -5,7 +5,7 @@
 #include "types/node_test.h"
 
 
-namespace xqp {
+namespace zorba {
 
 typedef rchandle<Item> Item_t;
 

@@ -21,7 +21,7 @@
 #include "types/typeconstants.h"
 #include "store/api/item_factory.h"
 
-namespace xqp
+namespace zorba
 {
   /* begin class AddOperations */
   template<>
@@ -997,5 +997,5 @@ namespace xqp
     this->curNumber = value;
   }
 
-} /* namespace xqp */
+} /* namespace zorba */
 

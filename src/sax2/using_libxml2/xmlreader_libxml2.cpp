@@ -17,7 +17,7 @@
 #include <libxml/xmlstring.h>
 
 
-namespace xqp{
+namespace zorba{
 
 SAX2_XMLReaderLibXML2::SAX2_XMLReaderLibXML2(
                       SAX2_ContentHandler *content_handler,
@@ -514,4 +514,4 @@ void SAX2_XMLReaderLibXML2::zorba_endElementNsSAX2Func   (void *ctx,
 }
 
 
-}//end namespace xqp
+}//end namespace zorba

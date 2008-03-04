@@ -3,7 +3,7 @@
 
 #include <zorba/common/common.h>
 
-namespace xqp {
+namespace zorba {
   // Unicode constants
   // Leading (high) surrogates: 0xd800 - 0xdbff
   // Trailing (low) surrogates: 0xdc00 - 0xdfff
@@ -330,6 +330,6 @@ namespace xqp {
       return result;
   }
 
-}/* namespace xqp */
+}/* namespace zorba */
 
 #endif /* XQP_UTF8_H */

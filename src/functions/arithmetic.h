@@ -5,7 +5,7 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace xqp {
+namespace zorba {
 
 // 6.2.1 op:add
 // --------------------
@@ -93,6 +93,6 @@ public:
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
-} // namespace xqp
+} // namespace zorba
 
 #endif

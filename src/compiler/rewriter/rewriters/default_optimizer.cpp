@@ -2,7 +2,7 @@
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/rewriters/default_optimizer.h"
 
-namespace xqp {
+namespace zorba {
 
 class TestRuleDriver : public RuleMajorDriver {
   public:

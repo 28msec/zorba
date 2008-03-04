@@ -8,7 +8,7 @@
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/numerics/NumericsImpl.h"
 
-namespace xqp
+namespace zorba
 {
 
 fn_datetime_ctor::fn_datetime_ctor (
@@ -1681,5 +1681,5 @@ xqtref_t fn_adjust_t_to_tz_2::type_check (signature& ) const
 }
 /* end class fn_adjust_t_to_tz_2 */
 
-} // namespace xqp
+} // namespace zorba
 

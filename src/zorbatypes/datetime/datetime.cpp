@@ -27,7 +27,7 @@
 
 using namespace std;
 
-namespace xqp
+namespace zorba
 {
 
 DateTime::DateTime(const Date_t& d_t, const Time_t& t_t)
@@ -447,4 +447,4 @@ DateTime_t operator-(const DateTime& dt, const Duration& d)
   return dt + *d.toNegDuration();
 }
 
-} // namespace xqp
+} // namespace zorba

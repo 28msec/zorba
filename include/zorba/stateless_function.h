@@ -7,7 +7,7 @@
 
 #include <zorba/external_function_data.h>
 
-namespace xqp {
+namespace zorba {
 
   class StatelessExternalFunction : public ExternalFunctionData 
   {
@@ -26,5 +26,5 @@ namespace xqp {
       virtual ItemSequence_t
       evaluate(const Arguments_t&) const = 0;
   };
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

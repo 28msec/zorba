@@ -21,7 +21,7 @@
 |  David Butenhof, Addison-Wesley [1997], Section 7.1.2.
 |______________________________________________________________________*/
 
-namespace xqp {
+namespace zorba {
 
 /*
 **                                                    
@@ -134,5 +134,5 @@ private:
 };
 		
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif	/* XQP_RWLOCK_H */

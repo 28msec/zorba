@@ -16,7 +16,7 @@
 #include "store/naive/nsbindings.h"
 
 
-namespace xqp
+namespace zorba
 {
 
 #ifndef NDEBUG

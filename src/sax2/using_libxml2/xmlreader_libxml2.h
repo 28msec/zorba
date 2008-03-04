@@ -10,7 +10,7 @@
 #include <zorbatypes/representations.h>
 #include "sax2/xmlreader.h"
 
-namespace xqp{
+namespace zorba{
 
 class SAX2_Locator;
 class SAX2_ContentHandler;
@@ -404,6 +404,6 @@ protected:
 
 };
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif

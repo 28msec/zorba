@@ -6,7 +6,7 @@
 
 #include <zorba/xmldatamanager.h>
 
-namespace xqp
+namespace zorba
 {
 
   class Store;
@@ -40,6 +40,6 @@ public:
 
 };
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif

@@ -8,7 +8,7 @@
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
 
-namespace xqp
+namespace zorba
 {
 
 const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6f;

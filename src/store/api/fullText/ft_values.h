@@ -19,7 +19,7 @@
 #include <string>
 #include <vector>
 
-namespace xqp {
+namespace zorba {
 
 
 /*______________________________________________________________________
@@ -160,6 +160,6 @@ public:
 };
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_FTVALUES_H */
 

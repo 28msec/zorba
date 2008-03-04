@@ -25,7 +25,7 @@
 */
 
 
-namespace xqp {
+namespace zorba {
 
   
   

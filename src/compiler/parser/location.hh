@@ -44,7 +44,7 @@
 # include <string>
 # include "position.hh"
 
-namespace xqp
+namespace zorba
 {
 
   /// Abstract a location.

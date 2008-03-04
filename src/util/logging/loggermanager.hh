@@ -5,7 +5,7 @@
 #include <limits>
 #include <string>
 
-namespace xqp {
+namespace zorba {
 
 class LoggerConfig;
 	

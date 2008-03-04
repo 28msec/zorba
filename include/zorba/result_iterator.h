@@ -5,7 +5,7 @@
 #include <zorba/item.h>
 
 //Wrap the iterator interface
-namespace xqp{
+namespace zorba{
 
 class ResultIterator : virtual public SimpleRCObject
 {
@@ -23,6 +23,6 @@ public:
 
 typedef rchandle<ResultIterator> ResultIterator_t;
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif

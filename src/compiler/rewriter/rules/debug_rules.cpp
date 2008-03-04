@@ -1,7 +1,7 @@
 #include <iostream>
 #include "compiler/rewriter/rules/ruleset.h"
 
-namespace xqp {
+namespace zorba {
 
 RULE_REWRITE_PRE(EchoNodeRule)
 {

@@ -17,7 +17,7 @@
 #include "runtime/base/narybase.h"
 #include "runtime/booleans/compare_types.h"
 
-namespace xqp
+namespace zorba
 {
 
   /*______________________________________________________________________
@@ -282,6 +282,6 @@ public:
   |_______________________________________________________________________*/
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_SEQUENCES_H */
 /* vim:set ts=2 sw=2: */

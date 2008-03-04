@@ -26,7 +26,7 @@
 #include <typeinfo>
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
 int main(int argc, char* argv[])
 {

@@ -3,7 +3,7 @@
 #include "zorba/zorba_singlethread.h"
 #include "zorba/external_function.h"
 
-using namespace xqp;
+using namespace zorba;
 
 
 class MySimpleExternalFunction : public StatelessExternalFunction

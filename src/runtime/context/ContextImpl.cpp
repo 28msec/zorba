@@ -17,7 +17,7 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
-namespace xqp
+namespace zorba
 {
 /**
  *______________________________________________________________________
@@ -153,4 +153,4 @@ FnDefaultCollationIterator::nextImpl(PlanState& planState) const
   STACK_END();
 }
 /*end class FnDefaultCollationIterator */
-}/* namespace xqp */
+}/* namespace zorba */

@@ -3,7 +3,7 @@
 
 #include "runtime/visitors/iterprinter.h"
 
-namespace xqp {
+namespace zorba {
 
 /**
  * Iterator printer for xml
@@ -102,4 +102,4 @@ void DOTIterPrinter::endEndVisit()
 }
   
   
-}; /* namespace xqp */
+}; /* namespace zorba */

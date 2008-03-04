@@ -21,7 +21,7 @@
 
 #include "types/root_typemanager.h"
 
-namespace xqp
+namespace zorba
 {
 
 

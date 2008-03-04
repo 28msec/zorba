@@ -20,7 +20,7 @@
 #include "runtime/base/narybase.h"
 
 
-namespace xqp {
+namespace zorba {
 
 
 /*______________________________________________________________________
@@ -442,5 +442,5 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 /*end class SubstringAfterIterator*/
-}/*namespace xqp*/
+}/*namespace zorba*/
 #endif /* XQP_STRINGS_IMPL_H */

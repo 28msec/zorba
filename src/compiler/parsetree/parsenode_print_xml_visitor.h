@@ -12,7 +12,7 @@
 |	 Chapter 10.
 |_______________________________________________________________________*/
 
-namespace xqp {
+namespace zorba {
 
 class ParseNodePrintXMLVisitor : public parsenode_visitor
 {

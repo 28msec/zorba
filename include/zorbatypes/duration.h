@@ -10,7 +10,7 @@
 #include <zorbatypes/zorbatypes_decl.h>
 #include <zorbatypes/xqpstring.h>
 
-namespace xqp
+namespace zorba
 {
   class DurationBase;
   typedef rchandle<DurationBase> DurationBase_t;
@@ -312,5 +312,5 @@ namespace xqp
       DayTimeDuration dayTimeDuration;
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif

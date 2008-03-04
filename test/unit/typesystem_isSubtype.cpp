@@ -7,7 +7,7 @@
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
 
-using namespace xqp;
+using namespace zorba;
 
 int typesystem_isSubtype(int argc, char* argv[]) {
   {

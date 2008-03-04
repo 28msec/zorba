@@ -49,7 +49,7 @@ int traceLevel = 0;
 #endif
 
 
-namespace xqp
+namespace zorba
 {
 
 
@@ -1482,4 +1482,4 @@ xqp_string CommentNode::show() const
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */

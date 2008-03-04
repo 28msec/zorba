@@ -4,7 +4,7 @@
 #include <zorba/config/platform.h>
 #include <zorba/common/api_shared_types.h>
 
-namespace xqp {
+namespace zorba {
 
 class QueryLoc;
 class XQType;

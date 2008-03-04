@@ -26,7 +26,7 @@
 #include "system/globalenv.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 
 /*______________________________________________________________________
@@ -806,5 +806,5 @@ xqtref_t op_sort_distinct_nodes_descending::type_check(signature& /*sig*/) const
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 

@@ -9,7 +9,7 @@
 #include <zorba/common/api_shared_types.h>
 #include <zorba/store_consts.h>
 
-namespace xqp
+namespace zorba
 {
   typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
   typedef StoreConsts::NodeKind NodeKind;
@@ -461,7 +461,7 @@ public:
   };   /* Item */
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif
 

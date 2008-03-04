@@ -25,7 +25,7 @@
 #endif
 
 
-namespace xqp {
+namespace zorba {
 
 #define DEFAULT_SIZE 4096
 
@@ -177,6 +177,6 @@ protected:  //internals
 };
 
 
-}  /* namespace xqp */
+}  /* namespace zorba */
 #endif  /* XQP_FXCHARHEAP_H */
 

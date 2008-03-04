@@ -5,7 +5,7 @@
 #include <zorbatypes/xqpstring.h>
 #include <zorbatypes/zorbatypes_decl.h>
 
-namespace xqp {
+namespace zorba {
 
 
 class Decimal {
@@ -103,7 +103,7 @@ public:
 
 std::ostream& operator<<(std::ostream& os, const Decimal&);
 
-} // namespace xqp
+} // namespace zorba
 
 #endif // XQP_DECIMAL_H
 

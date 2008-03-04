@@ -1,7 +1,7 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/expr.h"
 
-namespace xqp {
+namespace zorba {
 
 RewriterContext::RewriterContext(static_context *sctx, expr_t root)
   : m_sctx(sctx),

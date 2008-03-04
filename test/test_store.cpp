@@ -15,7 +15,7 @@
 #include "store/naive/basic_item_factory.h"
 
 
-using namespace xqp;
+using namespace zorba;
 
 #ifdef _DEBUG
 extern const char*		xqp::g_error_in_file;
@@ -61,7 +61,7 @@ int main(int argc, const char * argv[])
   //
   // Store initialization
   //
-  xqp::SimpleStore* store = static_cast<xqp::SimpleStore*>(&xqp::GENV.getStore());
+  zorba::SimpleStore* store = static_cast<zorba::SimpleStore*>(&zorba::GENV.getStore());
 
   //
   // Zorba initialization
@@ -75,8 +75,8 @@ int main(int argc, const char * argv[])
   //
   // Create collections
   //
-  xqp::Collection_t coll1;
-  xqp::Collection_t coll2;
+  zorba::Collection_t coll1;
+  zorba::Collection_t coll2;
 
   try
   {

@@ -3,7 +3,7 @@
 
 #include <vector>
 
-namespace xqp {
+namespace zorba {
   
   template<typename T> class checked_vector : public std::vector<T> {
   public:

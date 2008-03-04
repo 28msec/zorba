@@ -26,7 +26,7 @@
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/narybase.h"
 
-namespace xqp
+namespace zorba
 {
   /**
     * Generic Iterator for Numeric Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
@@ -188,5 +188,5 @@ namespace xqp
     virtual void accept(PlanIterVisitor&) const;
   };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif  /* XQP_NUMERICS_H */

@@ -5,7 +5,7 @@
 #include "zorba/sax2.h"
 #include <libxml/tree.h>
 
-namespace xqp{
+namespace zorba{
 
 class SAX2_LocatorLibXML2 : public SAX2_Locator
 {
@@ -13,6 +13,6 @@ public:
   SAX2_LocatorLibXML2(xmlParserCtxtPtr ctxt, xmlSAXLocatorPtr loc);
 };
 
-}//end namespace xqp
+}//end namespace zorba
 
 #endif

@@ -3,7 +3,7 @@
 
 #include <zorba/rchandle.h>
 
-namespace xqp {
+namespace zorba {
   /* numerics */
   template <class Object> class FloatImpl;
   class Integer;

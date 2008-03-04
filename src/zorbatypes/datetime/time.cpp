@@ -23,7 +23,7 @@
     return 1;                                   \
   }
 
-namespace xqp
+namespace zorba
 {
 
 const uint16_t NO_SECONDS_IN_MINUTE = 60;
@@ -176,4 +176,4 @@ Time_t operator+(const Time& t, const Duration& dur)
   return t_t;
 }
 
-} // namespace xqp
+} // namespace zorba

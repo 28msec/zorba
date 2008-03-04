@@ -3,7 +3,7 @@
 
 #include "context/static_context.h"
 
-namespace xqp {
+namespace zorba {
 
 class root_static_context : public static_context {
     private:

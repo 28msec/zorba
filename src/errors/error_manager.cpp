@@ -8,7 +8,7 @@
 #include "api/external/result_iterator_wrapper.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 static bool g_throw_exceptions = false;
 

@@ -6,7 +6,7 @@
 #include "runtime/core/var_iterators.h"
 
 
-namespace xqp
+namespace zorba
 {
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -92,4 +92,4 @@ void LetVarIterator::bind(Iterator_t it, PlanState& planState)
   state->theSourceIter = it;
 }
 
-} /* namespace xqp */
+} /* namespace zorba */

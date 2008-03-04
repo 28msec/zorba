@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace xqp
+namespace zorba
 {
 
 class StoreConsts

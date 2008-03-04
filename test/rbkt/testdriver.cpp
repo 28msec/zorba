@@ -50,18 +50,18 @@ printPart(std::ostream& os, std::string aInFile,
 // check of an error that was repored was expected 
 // by the given specification object
 bool
-isErrorExpected(xqp::ZorbaAlertsManager* aManager, Specification* aSpec)
+isErrorExpected(zorba::ZorbaAlertsManager* aManager, Specification* aSpec)
 {
-	xqp::AlertList_t		alert_list = aManager->getAlertList();
-  for (xqp::AlertList::const_iterator lIter = alert_list->begin();
+	zorba::AlertList_t		alert_list = aManager->getAlertList();
+  for (zorba::AlertList::const_iterator lIter = alert_list->begin();
        lIter != alert_list->end(); ++lIter)
   {
-    xqp::ZorbaAlert_t lAlert = *lIter;
+    zorba::ZorbaAlert_t lAlert = *lIter;
     switch (lAlert->theKind)
     {
-      case xqp::ZorbaAlert::ERROR_ALERT:
+      case zorba::ZorbaAlert::ERROR_ALERT:
         {
-          xqp::ZorbaError* lErrorAlert = dynamic_cast<xqp::ZorbaError*>(&*lAlert);
+          zorba::ZorbaError* lErrorAlert = dynamic_cast<zorba::ZorbaError*>(&*lAlert);
           std::string lErrorCode = lErrorAlert->toString(lErrorAlert->theCode);
           for (std::vector<std::string>::const_iterator lErrorIter = aSpec->errorsBegin();
                lErrorIter != aSpec->errorsEnd(); ++lErrorIter)
@@ -81,22 +81,22 @@ isErrorExpected(xqp::ZorbaAlertsManager* aManager, Specification* aSpec)
 
 // print all errors that were raised
 void
-printErrors(xqp::ZorbaAlertsManager* aManager)
+printErrors(zorba::ZorbaAlertsManager* aManager)
 {
-	xqp::AlertList_t		alert_list = aManager->getAlertList();
+	zorba::AlertList_t		alert_list = aManager->getAlertList();
   if (alert_list->size() == 0) return;
 
   std::cerr << "Errors:" << std::endl;
 
-  for (xqp::AlertList::const_iterator lIter = alert_list->begin();
+  for (zorba::AlertList::const_iterator lIter = alert_list->begin();
        lIter != alert_list->end(); ++lIter)
   {
-    xqp::ZorbaAlert_t lAlert = *lIter;
+    zorba::ZorbaAlert_t lAlert = *lIter;
     switch (lAlert->theKind)
     {
-    case xqp::ZorbaAlert::ERROR_ALERT:
+    case zorba::ZorbaAlert::ERROR_ALERT:
     {
-      xqp::ZorbaError* lErrorAlert = dynamic_cast<xqp::ZorbaError*>(&*lAlert);
+      zorba::ZorbaError* lErrorAlert = dynamic_cast<zorba::ZorbaError*>(&*lAlert);
       assert(lErrorAlert);
       std::string lErrorCode = lErrorAlert->toString(lErrorAlert->theCode);
       std::cerr << lErrorCode << " " << lErrorAlert->theDescription << std::endl;
@@ -115,14 +115,14 @@ printErrors(xqp::ZorbaAlertsManager* aManager)
 // be inlined or not
 void
 set_var (bool inlineFile, std::string name, std::string val, 
-         xqp::DynamicQueryContext_t dctx, xqp::XQuery_t exec)
+         zorba::DynamicQueryContext_t dctx, zorba::XQuery_t exec)
 {
-  boost::replace_all(val, "$RBKT_SRC_DIR", xqp::RBKT_SRC_DIR);
+  boost::replace_all(val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
   if (!inlineFile && dctx != NULL) {
 		if(name != ".")
-			dctx->setVariableAsString (name, xqp::xqp_string (val));
+			dctx->setVariableAsString (name, zorba::xqp_string (val));
 		else
-			dctx->setContextItemAsString(xqp::xqp_string(val));
+			dctx->setContextItemAsString(zorba::xqp_string(val));
   } else if (inlineFile && exec != NULL) {
     std::ifstream is (val.c_str ());
     assert (is);
@@ -134,7 +134,7 @@ set_var (bool inlineFile, std::string name, std::string val,
 }
 
 void 
-set_vars (Specification* aSpec, xqp::DynamicQueryContext_t dctx, xqp::XQuery_t exec) 
+set_vars (Specification* aSpec, zorba::DynamicQueryContext_t dctx, zorba::XQuery_t exec) 
 {
   for (std::vector<Specification::Variable>::const_iterator lIter = aSpec->variablesBegin();
        lIter != aSpec->variablesEnd(); ++lIter)
@@ -191,10 +191,10 @@ isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
 
 class ZorbaEngineWrapper {
 public:
-  xqp::ZorbaEngine_t factory;
+  zorba::ZorbaEngine_t factory;
 
   ZorbaEngineWrapper ()
-    : factory (xqp::ZorbaEngine::getInstance())
+    : factory (zorba::ZorbaEngine::getInstance())
   {
     factory->initThread();
   }
@@ -234,18 +234,18 @@ main(int argc, char** argv)
   // do initial stuff
   if ( argc == 2 )
   {
-    std::string lQueryFileString  = xqp::RBKT_SRC_DIR +"/Queries/" + argv[1];
+    std::string lQueryFileString  = zorba::RBKT_SRC_DIR +"/Queries/" + argv[1];
     lQueryFile = fs::system_complete( fs::path( lQueryFileString, fs::native ) );
 
     std::string lQueryWithoutSuffix = std::string(argv[1]).substr( 0, std::string(argv[1]).size()-3 );
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
-    lResultFile = fs::system_complete(fs::path( xqp::RBKT_BINARY_DIR +"/QueryResults/" 
+    lResultFile = fs::system_complete(fs::path( zorba::RBKT_BINARY_DIR +"/QueryResults/" 
                                       +lQueryWithoutSuffix + ".res", fs::native) );
-    lErrorFile = fs::system_complete(fs::path(xqp::RBKT_BINARY_DIR +"/" 
+    lErrorFile = fs::system_complete(fs::path(zorba::RBKT_BINARY_DIR +"/" 
                                      +lQueryWithoutSuffix + ".err", fs::native) );
-    lRefFile   = fs::system_complete(fs::path( xqp::RBKT_SRC_DIR +"/ExpQueryResults/" 
+    lRefFile   = fs::system_complete(fs::path( zorba::RBKT_SRC_DIR +"/ExpQueryResults/" 
                                      +lQueryWithoutSuffix +".xml.res", fs::native) );
-    lSpecFile  = fs::system_complete(fs::path(xqp::RBKT_SRC_DIR+ "/Queries/" 
+    lSpecFile  = fs::system_complete(fs::path(zorba::RBKT_SRC_DIR+ "/Queries/" 
                                      +lQueryWithoutSuffix +".spec", fs::native) );
   }
   else
@@ -294,9 +294,9 @@ main(int argc, char** argv)
   // create and compile the query
   std::string lQueryString;
   slurp_file(lQueryFile.native_file_string().c_str(), lQueryString);
-  xqp::XQuery_t lQuery = lEngine.factory->createQuery(lQueryString.c_str());
+  zorba::XQuery_t lQuery = lEngine.factory->createQuery(lQueryString.c_str());
 
-  xqp::ZorbaAlertsManager_t lAlertsManager = lEngine.factory->getAlertsManagerForCurrentThread();
+  zorba::ZorbaAlertsManager_t lAlertsManager = lEngine.factory->getAlertsManagerForCurrentThread();
 
   if (lQuery == NULL)
   {
@@ -314,7 +314,7 @@ main(int argc, char** argv)
 
 
   // set the variables in the dynamic context
-	xqp::DynamicQueryContext_t lDynCtxt = lEngine.factory->createDynamicContext();
+	zorba::DynamicQueryContext_t lDynCtxt = lEngine.factory->createDynamicContext();
   set_vars(&lSpec, lDynCtxt, NULL);
 
   // execute the query

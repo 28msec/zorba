@@ -12,7 +12,7 @@
 #include <zorbatypes/zorbatypes_decl.h>
 #include <zorba/rchandle.h>
 
-namespace xqp {
+namespace zorba {
 
   class xqpStringStore : public RCObject, public std::string
   {
@@ -405,10 +405,10 @@ namespace xqp {
 
   // xqpString::stream I/O operators
   std::istream& 
-  operator>>(std::istream& is, xqp::xqpString utf8_src);
+  operator>>(std::istream& is, zorba::xqpString utf8_src);
   
   std::ostream& 
-  operator<<(std::ostream& os, xqp::xqpString utf8_src);
+  operator<<(std::ostream& os, zorba::xqpString utf8_src);
 
   //xqpString::concatenation operator+()
   inline xqpString
@@ -435,7 +435,7 @@ namespace xqp {
     return tmp;
   }
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif
 
 /*

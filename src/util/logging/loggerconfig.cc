@@ -4,7 +4,7 @@
 #include <cassert>
 
 
-namespace xqp {
+namespace zorba {
 
 LoggerConfig::LoggerConfig(const std::string& FileName) : theFileName(FileName),
     theLogLevel(0), theWriteLoggerConfig(true), theLogFile(0) {}

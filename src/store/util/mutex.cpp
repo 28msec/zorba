@@ -4,7 +4,7 @@
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
-namespace xqp
+namespace zorba
 {
 
 Mutex::Mutex()

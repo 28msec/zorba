@@ -18,7 +18,7 @@
 #include "store/api/item_factory.h"
 #include "types/typemanager.h"
 
-namespace xqp {
+namespace zorba {
 /**
  *______________________________________________________________________
  *
@@ -444,4 +444,4 @@ InScopePrefixesState::reset(PlanState& planState)
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */

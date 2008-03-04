@@ -19,7 +19,7 @@
 
 using namespace std;
 
-namespace xqp
+namespace zorba
 {
 
 Item_t FnDateTimeConstructorIterator::nextImpl(PlanState& planState) const

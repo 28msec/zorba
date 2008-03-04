@@ -7,7 +7,7 @@
 #include "util/rwlock.h"
 #endif
 
-namespace xqp
+namespace zorba
 {
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY

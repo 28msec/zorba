@@ -13,7 +13,7 @@
 
 using namespace std;
 
-namespace xqp {
+namespace zorba {
 
   signature::signature (Item_t name, xqtref_t arg1,
                         bool variadic, xqtref_t return_type)
@@ -103,5 +103,5 @@ signature::~signature()
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 

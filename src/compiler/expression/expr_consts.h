@@ -24,7 +24,7 @@
 #ifndef XQP_EXPR_CONSTS_H
 #define XQP_EXPR_CONSTS_H
 
-namespace xqp {
+namespace zorba {
 
 
 enum axis_kind_t
@@ -70,7 +70,7 @@ enum match_wild_t
 };
 
 
-}; // namespace xqp
+}; // namespace zorba
 
 
 #endif /* XQP_EXPR_CONSTS_H */

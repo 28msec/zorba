@@ -1,7 +1,7 @@
 
 #include "sax2/using_libxml2/locator_libxml2.h"
 
-namespace xqp{
+namespace zorba{
 
 SAX2_LocatorLibXML2::SAX2_LocatorLibXML2 (xmlParserCtxtPtr ctxt, 
                                           xmlSAXLocatorPtr loc)

@@ -13,7 +13,7 @@
 
 #include "store/api/temp_seq.h"
 
-namespace xqp
+namespace zorba
 {
 
 /**
@@ -101,6 +101,6 @@ public:
 
 }; /* class SimpleTempSeq */
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif /* XQP_SIIMPLE_TEMP_SEQ_H */

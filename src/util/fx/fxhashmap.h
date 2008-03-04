@@ -38,7 +38,7 @@
 #include "util/hashfun.h"
 #include "errors/error_factory.h"
 
-namespace xqp {
+namespace zorba {
 
 #define MAX_KEYLEN 65535
 #define DEFAULT_DIR_SIZE 65536
@@ -1033,6 +1033,6 @@ inline bool fxhash64map<V>::put(uint64_t key, V val)
 }
 
 
-}  /* namespace xqp  */
+}  /* namespace zorba  */
 #endif  /* XQP_FXHASHMAP_H */
 

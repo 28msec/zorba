@@ -9,7 +9,7 @@
 #include "util/tokenbuf.h"
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 
 tokenbuf::tokenbuf(
@@ -164,5 +164,5 @@ bool operator==(
 }
 
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 

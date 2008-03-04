@@ -3,7 +3,7 @@
 
 #include "compiler/api/compiler_api.h"
 
-namespace xqp {
+namespace zorba {
 
 class XQueryCompilerSubsystemImpl : public XQueryCompilerSubsystem {
   public:
@@ -18,6 +18,6 @@ class XQueryCompilerSubsystemImpl : public XQueryCompilerSubsystem {
     XQueryCompilerSubsystemImpl();
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_COMPILER_API_IMPL_H */
 /* vim:set ts=2 sw=2: */

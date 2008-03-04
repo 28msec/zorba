@@ -23,7 +23,7 @@
 #include <iostream>
 using namespace std;
 
-namespace xqp
+namespace zorba
 {
 TimeZone::TimeZone(short hours)
 {
@@ -172,4 +172,4 @@ long TimeZone::getFractionalSeconds() const
   return (the_time_zone.is_negative()? -1 : 1) * the_time_zone.fractional_seconds();
 }
 
-} // namespace xqp
+} // namespace zorba

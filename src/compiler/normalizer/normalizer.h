@@ -4,7 +4,7 @@
 #include "common/shared_types.h"
 #include "compiler/expression/expr_visitor.h"
 
-namespace xqp {
+namespace zorba {
 
 class normalizer : public expr_visitor {
   public:
@@ -78,7 +78,7 @@ class normalizer : public expr_visitor {
 
 void normalize_expr_tree (const char *, static_context *sctx, expr_t root);
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_NORMALIZER_H */
 
 /*

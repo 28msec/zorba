@@ -19,7 +19,7 @@
 #include "util/file.h"
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
 
 /*______________________________________________________________________

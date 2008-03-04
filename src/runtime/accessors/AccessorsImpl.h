@@ -13,7 +13,7 @@
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 
-namespace xqp {
+namespace zorba {
 
 // 2.4 fn:data
 class FnDataIteratorState : public PlanIteratorState {
@@ -74,6 +74,6 @@ class FnStringIterator : public NaryBaseIterator<FnStringIterator, FnStringItera
     bool theEmptyStringOnNULL;
 };
 
-} /* namespace xqp */
+} /* namespace zorba */
 #endif /* XQP_ACCESSORS_IMPL_H */
 /* vim:set ts=2 sw=2: */

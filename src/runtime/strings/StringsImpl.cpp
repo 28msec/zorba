@@ -25,7 +25,7 @@
 
 using namespace std;
 
-namespace xqp {
+namespace zorba {
 /**
  *______________________________________________________________________
  *
@@ -1322,5 +1322,5 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
   STACK_END();
 }
 /*end class SubstringAfterIterator*/
-} /* namespace xqp */
+} /* namespace zorba */
 

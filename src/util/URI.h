@@ -29,7 +29,7 @@
 
 #include <zorba/hashfun.h>
 
-namespace xqp {
+namespace zorba {
 
 #define FTP_DEFAULT_PORT         21
 #define SSH_DEFAULT_PORT         22
@@ -125,5 +125,5 @@ public:	// manipulators
 
 };
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif	/* XQP_URI_H */

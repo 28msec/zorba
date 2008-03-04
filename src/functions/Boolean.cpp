@@ -11,7 +11,7 @@
 #include "system/zorba.h"
 #include "store/api/item_factory.h"
 
-namespace xqp
+namespace zorba
 {
 
 	/* begin class GenericOpComparison */

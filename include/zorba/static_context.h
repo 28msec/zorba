@@ -6,7 +6,7 @@
 #include <zorba/common/api_shared_types.h>
 #include <zorba/static_context_consts.h>
 
-namespace xqp {
+namespace zorba {
 
   // TODO can we hide icu realted stuff from the api
   // otherwise, we cannot change it
@@ -223,7 +223,7 @@ namespace xqp {
       registerStatelessExternalFunction(StatelessExternalFunction_t aExternalFunction) = 0;
 
   };
-} /* namespace xqp */
+} /* namespace zorba */
 #endif
 
 /* vim:set ts=2 sw=2: */

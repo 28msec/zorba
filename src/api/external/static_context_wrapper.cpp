@@ -13,7 +13,7 @@
 #include "context/static_context.h"
 
 
-namespace xqp{
+namespace zorba{
 
 
 StaticContextWrapper::StaticContextWrapper()
@@ -858,5 +858,5 @@ static_context*		StaticContextWrapper::fillInStaticContext()
                         aExtFunction->getLocalName());
   }
 
-}//end namespace xqp
+}//end namespace zorba
 

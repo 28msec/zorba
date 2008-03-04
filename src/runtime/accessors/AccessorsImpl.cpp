@@ -14,7 +14,7 @@
 #include "util/Assert.h"
 #include "store/api/item_factory.h"
 
-namespace xqp {
+namespace zorba {
 
 // 2.4 fn:data
 //---------------------
@@ -146,5 +146,5 @@ Item_t FnStringIterator::nextImpl(PlanState& planState) const
   STACK_END();
 }
 
-} /* namespace xqp */
+} /* namespace zorba */
 /* vim:set ts=2 sw=2: */

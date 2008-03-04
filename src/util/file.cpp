@@ -49,7 +49,7 @@
 
 
 using namespace std;
-namespace xqp {
+namespace zorba {
 
 static const uint64_t FS_TYPES[] = {
     0x0000EF53, 0x0000adf5, 0x0000adff, 0x73757245, 0x00001373, 0x00414A53,
@@ -687,5 +687,5 @@ bool operator!=(
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */
 

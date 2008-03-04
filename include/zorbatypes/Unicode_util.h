@@ -16,7 +16,7 @@
 
 #include <zorba/common/common.h>
 
-namespace xqp {
+namespace zorba {
 
 #define TABLE_SIZE(arr)   (sizeof (arr) / sizeof ((arr)[0]))
 bool isUpper(uint32_t c);
@@ -43,7 +43,7 @@ uint32_t toLower(uint32_t c);
    return o.str ();
  }
 
-}/* namespace xqp */
+}/* namespace zorba */
 #endif /* UNICODE_UTIL_H */
 
 /*

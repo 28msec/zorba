@@ -24,7 +24,7 @@
 
 
 
-namespace xqp
+namespace zorba
 {
 
 BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
@@ -780,4 +780,4 @@ Item_t BasicItemFactory::createCommentNode(
 }
 
 
-} /* namespace xqp */
+} /* namespace zorba */

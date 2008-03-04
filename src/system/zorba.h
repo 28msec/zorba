@@ -18,7 +18,7 @@
 
 #include "compiler/parser/query_loc.h"
 
-namespace xqp {
+namespace zorba {
 
 class ItemFactory;
 //class Zorba_XQueryBinary;
@@ -95,7 +95,7 @@ public:
 	serializer* getDocSerializer();
 };
 
-}	/* namespace xqp */
+}	/* namespace zorba */
 #endif /*	XQP_ZORBA_H */
 
 /*

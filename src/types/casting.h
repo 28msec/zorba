@@ -28,7 +28,7 @@
 #include <zorba/rchandle.h>
 #include "types/root_typemanager.h"
 
-namespace xqp
+namespace zorba
 {
 	typedef rchandle<class Item> Item_t;
 	
@@ -126,7 +126,7 @@ namespace xqp
 
 	}; /* class GenericCast */
 
-} /* namespace xqp */
+} /* namespace zorba */
 
 #endif	/* XQP_CASTING_H */
 

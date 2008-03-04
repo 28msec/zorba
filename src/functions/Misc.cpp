@@ -3,7 +3,7 @@
 #include "functions/Misc.h"
 #include "runtime/debug/debug_iterators.h"
 
-namespace xqp {
+namespace zorba {
 
 fn_trace_func::fn_trace_func(const signature& sig)
   : function(sig) { }
