@@ -1,0 +1,10 @@
+#ifndef XQP_TESTDRIVER_CONFIG_H
+#define XQP_TESTDRIVER_CONFIG_H
+
+namespace xqp {
+
+static std::string PARSER_TEST_SRC_DIR = "@CMAKE_CURRENT_SOURCE_DIR@";
+static std::string PARSER_TEST_BINARY_DIR = "@CMAKE_CURRENT_BINARY_DIR@";
+
+}
+#endif
