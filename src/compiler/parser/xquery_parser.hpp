@@ -48,7 +48,7 @@ namespace yy
 }
 
 /* First part of user declarations.  */
-#line 30 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 30 "/home/dagraf/Work/28msec/zorba3/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include <zorba/common/common.h>
@@ -80,11 +80,12 @@ namespace xqp {
 	class exprnode;
 }
 
+#define YYDEBUG 1
 
 
 
 /* Line 35 of lalr1.cc.  */
-#line 88 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+#line 89 "/home/dagraf/Work/28msec/zorba3/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -135,7 +136,7 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 111 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 112 "/home/dagraf/Work/28msec/zorba3/xquery/src/compiler/parser/xquery_parser.y"
 {
   xqp::parsenode * node;
   xqp::exprnode * expr;
@@ -145,7 +146,7 @@ namespace yy
 	xqp_decimal* decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 149 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.hpp"
+#line 150 "/home/dagraf/Work/28msec/zorba3/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
@@ -355,80 +356,87 @@ namespace yy
      XQUERY_VERSION = 452,
      AFTER = 453,
      BEFORE = 454,
-     COMMA_DOLLAR = 455,
-     DECLARE_REVALIDATION_MODE = 456,
-     DO_DELETE = 457,
-     DO_INSERT = 458,
-     DO_RENAME = 459,
-     DO_REPLACE = 460,
-     FIRST_INTO = 461,
-     INTO = 462,
-     LAST_INTO = 463,
-     MODIFY = 464,
-     TRANSFORM_COPY_DOLLAR = 465,
-     VALUE_OF = 466,
-     WITH = 467,
-     ALL = 468,
-     ALL_WORDS = 469,
-     ANY = 470,
-     ANY_WORD = 471,
-     AT_END = 472,
-     AT_LEAST = 473,
-     AT_MOST = 474,
-     AT_START = 475,
-     CASE_INSENSITIVE = 476,
-     CASE_SENSITIVE = 477,
-     DECLARE_FTOPTION = 478,
-     DIACRITICS_INSENSITIVE = 479,
-     DIACRITICS_SENSITIVE = 480,
-     DIFFERENT = 481,
-     DISTANCE = 482,
-     ENTIRE_CONTENT = 483,
-     EXACTLY = 484,
-     FROM = 485,
-     FTAND = 486,
-     FTCONTAINS = 487,
-     FTNOT = 488,
-     FTOR = 489,
-     LANGUAGE = 490,
-     LEVELS = 491,
-     LOWERCASE = 492,
-     FTNOT_IN = 493,
-     OCCURS = 494,
-     PARAGRAPH = 495,
-     PHRASE = 496,
-     RELATIONSHIP = 497,
-     SAME = 498,
-     SCORE = 499,
-     SENTENCE = 500,
-     SENTENCES = 501,
-     TIMES = 502,
-     UPPERCASE = 503,
-     WEIGHT = 504,
-     WINDOW = 505,
-     WITHOUT_CONTENT = 506,
-     WITHOUT_DIACRITICS = 507,
-     WITHOUT_STEMMING = 508,
-     WITHOUT_STOP_WORDS = 509,
-     WITHOUT_THESAURUS = 510,
-     WITHOUT_WILDCARDS = 511,
-     WITH_DEFAULT_STOP_WORDS = 512,
-     WITH_DIACRITICS = 513,
-     WITH_STEMMING = 514,
-     WITH_STOP_WORDS = 515,
-     WITH_THESAURUS = 516,
-     WITH_WILDCARDS = 517,
-     WORDS = 518,
-     FTCONTAINS_REDUCE = 519,
-     RANGE_REDUCE = 520,
-     ADDITIVE_REDUCE = 521,
-     MULTIPLICATIVE_REDUCE = 522,
-     UNION_REDUCE = 523,
-     INTERSECT_EXCEPT_REDUCE = 524,
-     QVARINDECLLIST_REDUCE = 525,
-     UNARY_PREC = 526,
-     SEQUENCE_TYPE_REDUCE = 527,
-     STEP_REDUCE = 528
+     DECLARE_REVALIDATION = 455,
+     STRICT = 456,
+     LAX = 457,
+     SKIP = 458,
+     DELETE_NODE = 459,
+     DELETE_NODES = 460,
+     INSERT_NODE = 461,
+     INSERT_NODES = 462,
+     RENAME = 463,
+     REPLACE = 464,
+     REPLACE_VALUE_OF = 465,
+     FIRST_INTO = 466,
+     INTO = 467,
+     LAST_INTO = 468,
+     MODIFY = 469,
+     COPY_DOLLAR = 470,
+     WITH = 471,
+     TRY = 472,
+     CATCH_LPAR = 473,
+     ALL = 474,
+     ALL_WORDS = 475,
+     ANY = 476,
+     ANY_WORD = 477,
+     AT_END = 478,
+     AT_LEAST = 479,
+     AT_MOST = 480,
+     AT_START = 481,
+     CASE_INSENSITIVE = 482,
+     CASE_SENSITIVE = 483,
+     DECLARE_FTOPTION = 484,
+     DIACRITICS_INSENSITIVE = 485,
+     DIACRITICS_SENSITIVE = 486,
+     DIFFERENT = 487,
+     DISTANCE = 488,
+     ENTIRE_CONTENT = 489,
+     EXACTLY = 490,
+     FROM = 491,
+     FTAND = 492,
+     FTCONTAINS = 493,
+     FTNOT = 494,
+     FTOR = 495,
+     LANGUAGE = 496,
+     LEVELS = 497,
+     LOWERCASE = 498,
+     FTNOT_IN = 499,
+     OCCURS = 500,
+     PARAGRAPH = 501,
+     PHRASE = 502,
+     RELATIONSHIP = 503,
+     SAME = 504,
+     SCORE = 505,
+     SENTENCE = 506,
+     SENTENCES = 507,
+     TIMES = 508,
+     UPPERCASE = 509,
+     WEIGHT = 510,
+     WINDOW = 511,
+     WITHOUT_CONTENT = 512,
+     WITHOUT_DIACRITICS = 513,
+     WITHOUT_STEMMING = 514,
+     WITHOUT_STOP_WORDS = 515,
+     WITHOUT_THESAURUS = 516,
+     WITHOUT_WILDCARDS = 517,
+     WITH_DEFAULT_STOP_WORDS = 518,
+     WITH_DIACRITICS = 519,
+     WITH_STEMMING = 520,
+     WITH_STOP_WORDS = 521,
+     WITH_THESAURUS = 522,
+     WITH_WILDCARDS = 523,
+     WORDS = 524,
+     FTCONTAINS_REDUCE = 525,
+     RANGE_REDUCE = 526,
+     ADDITIVE_REDUCE = 527,
+     MULTIPLICATIVE_REDUCE = 528,
+     UNION_REDUCE = 529,
+     INTERSECT_EXCEPT_REDUCE = 530,
+     QVARINDECLLIST_REDUCE = 531,
+     COMMA_DOLLAR = 532,
+     UNARY_PREC = 533,
+     SEQUENCE_TYPE_REDUCE = 534,
+     STEP_REDUCE = 535
    };
 
     };

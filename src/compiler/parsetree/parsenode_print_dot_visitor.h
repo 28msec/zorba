@@ -182,6 +182,11 @@ public:
 	void *begin_visit(const TransformExpr &);
 	void *begin_visit(const VarNameList &);
 
+/* try-catch-related */
+  void *begin_visit(const TryExpr &);
+  void *begin_visit(const CatchListExpr &);
+  void *begin_visit(const CatchExpr &);
+
 /* full-text-related */
 	void *begin_visit(const FTAnd &);
 	void *begin_visit(const FTAnyallOption &);
@@ -371,6 +376,11 @@ public:
 	void end_visit(const RevalidationDecl &, void *visit_state);
 	void end_visit(const TransformExpr &, void *visit_state);
 	void end_visit(const VarNameList &, void *visit_state);
+
+/* try-catch-related */
+  void end_visit(const TryExpr &, void *visit_state);
+  void end_visit(const CatchListExpr &, void *visit_state);
+  void end_visit(const CatchExpr &, void *visit_state);
 
 /* full-text-related */
 	void end_visit(const FTAnd &, void *visit_state);

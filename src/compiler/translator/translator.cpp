@@ -3918,6 +3918,40 @@ void end_visit(const VarNameList& /*v*/, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 }
 
+/* try-catch-related */
+void *begin_visit(const TryExpr& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const TryExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit(const CatchListExpr& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const CatchListExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit(const CatchExpr& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const CatchExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT ();
+}
+
 
 /* full-text-related */
 void *begin_visit(const FTAnd& /*v*/)

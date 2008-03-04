@@ -58,6 +58,7 @@ namespace xqp {
 	class exprnode;
 }
 
+#define YYDEBUG 1
 
 %}
 
@@ -343,19 +344,29 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* -------------- */
 %token AFTER											"'after'"
 %token BEFORE											"'before'"
-%token COMMA_DOLLAR 							"'<, $>'"
-%token DECLARE_REVALIDATION_MODE	"'<declare revalidation mode>'"
-%token DO_DELETE									"'<do delete>'"
-%token DO_INSERT									"'<do insert>'"
-%token DO_RENAME									"'<do rename>'"
-%token DO_REPLACE									"'<do replace>'"
-%token FIRST_INTO									"'<first into>'"
+%token DECLARE_REVALIDATION	      "'<declare revalidation>'"
+%token STRICT											"'strict'"
+%token LAX										  	"'lax'"
+%token SKIP										  	"'skip'"
+%token DELETE_NODE                "'<delete node>'"           
+%token DELETE_NODES               "'<delete nodes>'"          
+%token INSERT_NODE                "'<insert node>'"           
+%token INSERT_NODES               "'<insert nodes>'"          
+%token RENAME                     "'<rename>'"                
+%token REPLACE                    "'<replace node>'"          
+%token REPLACE_VALUE_OF           "'<replace value of node>'" 
+%token FIRST_INTO                 "'<first into>'"               
 %token INTO												"'into'"
 %token LAST_INTO									"'<lastinto>'"
 %token MODIFY 										"'modify'"
-%token TRANSFORM_COPY_DOLLAR 			"'<transform copy $>'"
-%token VALUE_OF										"'<value of>'"
+%token COPY_DOLLAR          			"'<copy $>'"
 %token WITH												"'with'"
+
+/* try-catch-related */
+/* ----------------- */
+%token TRY                        "'<try>'"   
+%token CATCH_LPAR                 "'<catch (>'" 
+
 
 
 /* full-text-related */
@@ -580,6 +591,13 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> RevalidationDecl
 %type <expr> TransformExpr
 %type <expr> VarNameList
+%type <expr> VarNameDecl
+
+/* try-catch-related */
+/* ----------------- */
+%type <expr> TryExpr
+%type <expr> CatchListExpr
+%type <expr> CatchExpr
 
 
 /* full-text-related */
@@ -683,6 +701,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
  * [42a] QVarInDeclList ::= QVarInDecl ( "," "$" QVarInDeclList )*
  *_____________________________________________________________________*/
 %nonassoc QVARINDECLLIST_REDUCE
+// FIXME COMMA_DOLLAR is not defined anymore
 %left COMMA_DOLLAR 
 %nonassoc UNARY_PREC
 
@@ -1859,6 +1878,12 @@ ExprSingle :
 #endif
 			$$ = $1;
 		}
+  | TryExpr
+    {
+#ifdef ZORBA_DEBUG_PARSER
+      cout << "ExprSingle [TryExpr]" << endl;
+#endif
+    }
 	;
 
 
@@ -5321,47 +5346,121 @@ StringLiteral :
 // [241]	RevalidationDecl
 // ----------------------
 RevalidationDecl :
-		DECLARE_REVALIDATION_MODE
+		DECLARE_REVALIDATION STRICT
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "RevalidationDecl [ ]" << endl;
+			 cout << "RevalidationDecl [strict]" << endl;
 #endif
+//			$$ = new OrderingModeDecl(@$,
+//								StaticQueryContext::ordered);
 		}
+    | DECLARE_REVALIDATION LAX
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "RevalidationDecl [lax]" << endl;
+#endif
+    }
+    | DECLARE_REVALIDATION SKIP
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "RevalidationDecl [skip]" << endl;
+#endif
+    }
 	;
-
 
 // [242]	InsertExpr
 // ----------------
 InsertExpr :
-		DO_INSERT  ExprSingle  INTO  ExprSingle
+		INSERT_NODE  ExprSingle  INTO  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InsertExpr [expr]" << endl;
+			 cout << "InsertNodeExpr [expr]" << endl;
 #endif
+       $$ = new InsertExpr(
+                  driver.createQueryLoc(@$),
+                  InsertExpr::NODE_INTO, $2, $4);
 		}
-	|	DO_INSERT  ExprSingle  AS  FIRST_INTO  ExprSingle
+	|	INSERT_NODE  ExprSingle  AS  FIRST_INTO  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InsertExpr [expr.as_first]" << endl;
+			 cout << "InsertNodeExpr [expr.as_first]" << endl;
 #endif
+       $$ = new InsertExpr(
+                  driver.createQueryLoc(@$),
+                  InsertExpr::NODE_AS_FIRST_INTO, $2, $5);
 		}
-	|	DO_INSERT  ExprSingle  AS  LAST_INTO  ExprSingle
+	|	INSERT_NODE  ExprSingle  AS  LAST_INTO  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InsertExpr [expr.as_last]" << endl;
+			 cout << "InsertNodeExpr [expr.as_last]" << endl;
 #endif
+       $$ = new InsertExpr(
+                  driver.createQueryLoc(@$),
+                  InsertExpr::NODE_AS_LAST_INTO, $2, $5);
 		}
-	| DO_INSERT  ExprSingle  AFTER  ExprSingle
+	| INSERT_NODE  ExprSingle  AFTER  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InsertExpr [expr.after]" << endl;
+			 cout << "InsertNodeExpr [expr.after]" << endl;
 #endif
+       $$ = new InsertExpr(
+                  driver.createQueryLoc(@$),
+                  InsertExpr::NODE_AFTER, $2, $4);
 		}
-	| DO_INSERT  ExprSingle  BEFORE  ExprSingle
+	| INSERT_NODE  ExprSingle  BEFORE  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "InsertExpr [expr.before]" << endl;
+			 cout << "InsertNodeExpr [expr.before]" << endl;
 #endif
+       $$ = new InsertExpr(
+                  driver.createQueryLoc(@$),
+                  InsertExpr::NODE_BEFORE, $2, $4);
+		}
+  |
+		INSERT_NODES  ExprSingle  INTO  ExprSingle
+		{
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InsertNodesExpr [expr]" << endl;
+#endif
+       $$ = new InsertExpr(
+                  driver.createQueryLoc(@$),
+                  InsertExpr::NODES_INTO, $2, $4);
+		}
+	|	INSERT_NODES  ExprSingle  AS  FIRST_INTO  ExprSingle
+		{
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InsertNodesExpr [expr.as_first]" << endl;
+#endif
+       $$ = new InsertExpr(
+                  driver.createQueryLoc(@$),
+                  InsertExpr::NODES_AS_FIRST_INTO, $2, $5);
+		}
+	|	INSERT_NODES  ExprSingle  AS  LAST_INTO  ExprSingle
+		{
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InsertNodesExpr [expr.as_last]" << endl;
+#endif
+       $$ = new InsertExpr(
+                  driver.createQueryLoc(@$),
+                  InsertExpr::NODES_AS_LAST_INTO, $2, $5);
+		}
+	| INSERT_NODES  ExprSingle  AFTER  ExprSingle
+		{
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InsertNodesExpr [expr.after]" << endl;
+#endif
+       $$ = new InsertExpr(
+                  driver.createQueryLoc(@$),
+                  InsertExpr::NODES_AFTER, $2, $4);
+		}
+	| INSERT_NODES  ExprSingle  BEFORE  ExprSingle
+		{
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "InsertNodesExpr [expr.before]" << endl;
+#endif
+       $$ = new InsertExpr(
+                  driver.createQueryLoc(@$),
+                  InsertExpr::NODES_BEFORE, $2, $4);
 		}
 	;
 
@@ -5369,11 +5468,24 @@ InsertExpr :
 // [243] DeleteExpr
 // ----------------
 DeleteExpr:
-		DO_DELETE  ExprSingle
+		DELETE_NODE  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "DeleteExpr [expr]" << endl;
+			 cout << "DeleteNodeExpr [expr]" << endl;
 #endif
+       $$ = new DeleteExpr(
+                  driver.createQueryLoc(@$),
+                  DeleteExpr::NODE, $2);
+		}
+  |
+		DELETE_NODES  ExprSingle
+		{
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "DeleteNodesExpr [expr]" << endl;
+#endif
+       $$ = new DeleteExpr(
+                  driver.createQueryLoc(@$),
+                  DeleteExpr::NODES, $2);
 		}
 	;
 
@@ -5381,17 +5493,23 @@ DeleteExpr:
 // [244] ReplaceExpr
 // -----------------
 ReplaceExpr :
-		DO_REPLACE  ExprSingle  WITH  ExprSingle
+		REPLACE  ExprSingle  WITH  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceExpr [expr.expr]" << endl;
 #endif
+       $$ = new ReplaceExpr(
+                  driver.createQueryLoc(@$),
+                  ReplaceExpr::WITH, $2, $4);
 		}
-	|	DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
+	|	REPLACE_VALUE_OF  ExprSingle  WITH  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "ReplaceExpr [value.expr]" << endl;
+			 cout << "ReplaceValueOfExpr [value.expr]" << endl;
 #endif
+       $$ = new ReplaceExpr(
+                  driver.createQueryLoc(@$),
+                  ReplaceExpr::VALUE_OF_WITH, $2, $4);
 		}
 	;
 
@@ -5399,11 +5517,13 @@ ReplaceExpr :
 // [245] RenameExpr
 // ----------------
 RenameExpr :
-		DO_RENAME  ExprSingle  AS  ExprSingle
+		RENAME  ExprSingle  AS  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RenameExpr [expr.expr]" << endl;
 #endif
+       $$ = new RenameExpr(
+                  driver.createQueryLoc(@$), $2, $4);
 		}
 	;
 
@@ -5426,7 +5546,7 @@ RenameExpr :
 // [249] TransformExpr
 // -------------------
 TransformExpr :
-		TRANSFORM_COPY_DOLLAR  VarNameList  MODIFY  ExprSingle  RETURN  ExprSingle
+		COPY_DOLLAR  VarNameList  MODIFY  ExprSingle  RETURN  ExprSingle
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TransformExpr [ ]" << endl;
@@ -5438,13 +5558,13 @@ TransformExpr :
 // [249a] VarNameList
 // ------------------
 VarNameList :
-		VARNAME	 GETS  ExprSingle
+    VarNameDecl
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [single]" << endl;
 #endif
 		}
-	|	VarNameList  COMMA_DOLLAR  VARNAME  GETS  ExprSingle
+	|	VarNameList  COMMA  DOLLAR  VarNameDecl 
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [list]" << endl;
@@ -5452,6 +5572,85 @@ VarNameList :
 		}
 	;
 
+
+// [249b] VarNameElem
+// ------------------
+VarNameDecl :
+    VARNAME GETS ExprSingle
+    {
+#ifdef ZORBA_DEBUG_PARSER
+       cout << "VarNameDecl [" << driver.symtab.get((off_t)$1) << "]" << endl;
+#endif
+    }
+  ; 
+
+/*_______________________________________________________________________
+ *                                                                       *
+ *  Try-Catch productions                                                *
+ *  [http://www.w3.org/TR/xqupdate/]                                     *
+ *                                                                       *
+ *_______________________________________________________________________*/
+
+TryExpr :
+    TRY LBRACE ExprSingle RBRACE CatchListExpr
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "TryExpr []" << endl;
+#endif
+       $$ = new TryExpr(driver.createQueryLoc(@$),
+								       $3, $5);
+    }
+
+CatchListExpr:
+    CatchExpr
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CatchList [single]" << endl;
+#endif
+       CatchListExpr* aCatchListExpr = new CatchListExpr(driver.createQueryLoc(@$));
+       aCatchListExpr->push_back(static_cast<CatchExpr*>($1));
+       $$ = aCatchListExpr;
+    }
+  |
+    CatchListExpr CatchExpr
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CatchList [list]" << endl;
+#endif
+      CatchListExpr* aCatchListExpr = dynamic_cast<CatchListExpr*>($1);
+      if (aCatchListExpr) {
+        aCatchListExpr->push_back(static_cast<CatchExpr*>($2));
+      }
+      $$ = $1;
+    }
+  ;
+
+CatchExpr :
+    CATCH_LPAR NameTest RPAR EnclosedExpr
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CatchExpr [NameTest]" << endl;
+#endif
+       $$ = new CatchExpr(driver.createQueryLoc(@$),
+                          static_cast<NameTest*>($2),
+                          $4);
+    }
+  |
+    CATCH_LPAR NameTest COMMA DOLLAR VARNAME RPAR EnclosedExpr
+    {
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "CatchExpr [NameTest,VarName]" << endl;
+#endif
+       QName* lQName = new QName(
+                         driver.createQueryLoc(@$), 
+                         driver.symtab.get((off_t)$5)
+                       );
+       $$ = new CatchExpr(driver.createQueryLoc(@$),
+                          static_cast<NameTest*>($2),
+                          lQName,
+                          $7);
+    }
+  ;
 
 /*_______________________________________________________________________
  *                                                                       *
@@ -6260,7 +6459,7 @@ FTIgnoreOption :
 		WITHOUT_CONTENT  UnionExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
-			 cout << "FTIgnoreOption [ " << endl;
+			 cout << "FTIgnoreOption [ ]" << endl;
 #endif
 		}
 	;

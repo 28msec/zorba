@@ -24,7 +24,7 @@
 
 %{ /* _*_ C++ _*_ */
 
-#ifdef _WIN32
+#if defined (WIN32)
 #pragma warning(disable: 4786)
 #endif
 
@@ -34,9 +34,7 @@
 #include <zorba/properties.h>
 
 #include <cstdlib>
-#ifndef _WIN32_WCE
 #include <errno.h>
-#endif
 #include <limits.h>
 #include <iostream>
 #include <string>
@@ -258,6 +256,12 @@ ValidationMode        ("strict"|"lax"|"skip")
 %x MODE_XMLSPACE_DECL
 %x MODE_XML_COMMENT
 %x MODE_XQUERY_VERSION
+
+/* Update Modes */
+%x MODE_DECLAREREVALIDATION
+
+/* Try-Catch Modes */
+%x MODE_CATCH
 
 
 /*
@@ -929,15 +933,6 @@ typedef yy::xquery_parser::token token;
   return token::DECLARE_VARIABLE_DOLLAR;
 }
 
-  /* update rule */
-"transform"{SP}"copy"{SP}"$" {
-  BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TRANSFORM_COPY_DOLLAR" << endl;
-#endif
-  return token::TRANSFORM_COPY_DOLLAR;
-}
-
 
   /* transition to ITEMTYPE */
   /* ---------------------- */
@@ -1089,93 +1084,204 @@ typedef yy::xquery_parser::token token;
 
   /*______________________________________________________________________  
    |
-   | Update rules <INITIAL>
+   | Update rules <INITIAL,MODE_OPERATOR>
    |______________________________________________________________________*/
 
-"declare"{S}"revalidation"{ValidationMode} {
+"declare"{SP}"revalidation"{SP} {
+  BEGIN MODE_DECLAREREVALIDATION;
 #ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_REVALIDATION_MODE" << endl;
+  cout << "token::DECLARE_REVALIDATION" << endl;
 #endif
-  return token::DECLARE_REVALIDATION_MODE;
+  return token::DECLARE_REVALIDATION;
 }
-"do"{SP}"insert"/{WordBreak} {
+
+
+<INITIAL,MODE_OPERATOR>{
+
+"insert"{SP}"node"/{WordBreak} {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DO_INSERT" << endl;
+  cout << "token::INSERT_NODE" << endl;
 #endif
-  return token::DO_INSERT;
+  return token::INSERT_NODE;
 }
-"do"{SP}"delete"  {
+"insert"{SP}"nodes"/{WordBreak} {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DO_DELETE" << endl;
+  cout << "token::INSERT_NODES" << endl;
 #endif
-  return token::DO_DELETE;
+  return token::INSERT_NODES;
 }
-"do"{SP}"replace"/{WordBreak} {
+"delete"{SP}"node"/{WordBreak} {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DO_REPLACE" << endl;
+  cout << "token::DELETE_NODE" << endl;
 #endif
-  return token::DO_REPLACE;
+  return token::DELETE_NODE;
 }
-"do"{SP}"rename"/{WordBreak} {
+"delete"{SP}"nodes"/{WordBreak} {
+  BEGIN INITIAL; 
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::DELETE_NODES" << endl;
+#endif
+  return token::DELETE_NODES;
+}
+"replace"{SP}"node"/{WordBreak} {
+  BEGIN INITIAL; 
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::REPLACE" << endl;
+#endif
+  return token::REPLACE;
+}
+"replace"{SP}"value"{SP}"of"{SP}"node"/{WordBreak} {
+  BEGIN INITIAL;
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::REPLACE_VALUE_OF" << endl;
+#endif
+  return token::REPLACE_VALUE_OF;
+}
+"rename"{SP}"node"/{WordBreak} {
+  BEGIN INITIAL; 
   driver.set_rename(true);
 #ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DO_RENAME" << endl;
+  cout << "token::RENAME" << endl;
 #endif
-  return token::DO_RENAME;
+  return token::RENAME;
+}
+
+"copy"{SP}"$" {
+  BEGIN MODE_VARNAME;
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::COPY_DOLLAR" << endl;
+#endif
+  return token::COPY_DOLLAR;
 }
 "into"/{WordBreak} {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::INTO" << endl;
 #endif
   return token::INTO;
 }
 "first"{SP}"into"/{WordBreak} {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::FIRST_INTO" << endl;
 #endif
   return token::FIRST_INTO;
 }
 "last"{SP}"into"/{WordBreak} {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::LAST_INTO" << endl;
 #endif
   return token::LAST_INTO;
 }
 "after"/{WordBreak} {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::AFTER" << endl;
 #endif
   return token::AFTER;
 }
 "before"/{WordBreak} {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::BEFORE" << endl;
 #endif
   return token::BEFORE;
 }
-"value"{SP}"of"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VALUE_OF" << endl;
-#endif
-  return token::VALUE_OF;
-}
-"with"  {
+"with"/{WordBreak}  {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::WITH" << endl;
 #endif
   return token::WITH;
 }
 "as"/{WordBreak} {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::AS" << endl;
 #endif
   return token::AS;
 }
 "modify"/{WordBreak} {
+  BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::MODIFY" << endl;
 #endif
   return token::MODIFY;
+}
+
+}
+
+  /*______________________________________________________________________  
+   |
+   | TRY-CATCH rules <INITIAL>
+   |______________________________________________________________________*/
+
+"try"/{WordBreak} {
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::TRY" << endl;
+#endif
+  return token::TRY;
+}
+
+<MODE_OPERATOR>{
+"catch"{S}"(" {
+  yy_push_state(MODE_CATCH, yyscanner);
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::CATCH_LPAR" << endl;
+#endif
+  return token::CATCH_LPAR;
+}
+}
+
+<MODE_CATCH>{
+
+")" {
+  yy_pop_state(yyscanner);
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::RPAR" << endl;
+#endif
+  return token::RPAR;
+}
+
+{QName}  {
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng);
+  BEGIN INITIAL;
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::QNAME" << endl;
+#endif
+  return token::QNAME;
+}
+
+"*" {
+  BEGIN INITIAL;
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::STAR" << endl;
+#endif
+  return token::STAR;
+}
+
+{NCName}":*" {
+  yylval->sval = driver.symtab.put_ncname(yytext, yyleng-2);
+  BEGIN MODE_OPERATOR;
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::ELEM_WILDCARD" << endl;
+#endif
+  return token::ELEM_WILDCARD;
+}
+
+"*:"{NCName} {
+  yylval->sval = driver.symtab.put_ncname(yytext+2, yyleng-2);
+  BEGIN MODE_OPERATOR;
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::PREFIX_WILDCARD" << endl;
+#endif
+  return token::PREFIX_WILDCARD;
+}
+
 }
 
 
@@ -1563,6 +1669,43 @@ typedef yy::xquery_parser::token token;
 } /* <MODE_DECLAREORDERING> */
 
 
+  /*______________________________________________________________________  
+   |
+   |  The DECLAREREVALIDATION State
+   |
+   |  Special state to recognize declare revalidation specific keywords. 
+   |  transition to INITIAL
+   |______________________________________________________________________*/
+
+<MODE_DECLAREREVALIDATION>{
+
+  /* transition to INITIAL */
+  /* --------------------- */
+"strict"/{WordBreak} {
+  BEGIN INITIAL;
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::STRICT" << endl;
+#endif
+  return token::STRICT;
+}
+
+"lax"/{WordBreak} {
+  BEGIN INITIAL;
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::LAX" << endl;
+#endif
+  return token::LAX;
+}
+
+"skip"/{WordBreak} {
+  BEGIN INITIAL;
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::SKIP" << endl;
+#endif
+  return token::SKIP;
+}
+
+} /* <MODE_DECLAREORDERING> */
 
 
   /*______________________________________________________________________  
@@ -1762,99 +1905,6 @@ typedef yy::xquery_parser::token token;
 
 
 
-  /* Update rules */
-"into"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INTO" << endl;
-#endif
-  return token::INTO;
-}
-"with"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH" << endl;
-#endif
-  return token::WITH;
-}
-"do"{SP}"insert"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DO_INSERT" << endl;
-#endif
-  return token::DO_INSERT;
-}
-"do"{SP}"delete"  {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DO_DELETE" << endl;
-#endif
-  return token::DO_DELETE;
-}
-"do"{SP}"replace"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DO_REPLACE" << endl;
-#endif
-  return token::DO_REPLACE;
-}
-"do"{SP}"rename"/{WordBreak} {
-  BEGIN INITIAL;
-  driver.set_rename(true);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DO_RENAME" << endl;
-#endif
-  return token::DO_RENAME;
-}
-"into"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INTO" << endl;
-#endif
-  return token::INTO;
-}
-"first"{SP}"into"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FIRST_INTO" << endl;
-#endif
-  return token::FIRST_INTO;
-}
-"last"{SP}"into"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LAST_INTO" << endl;
-#endif
-  return token::LAST_INTO;
-}
-"after"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AFTER" << endl;
-#endif
-  return token::AFTER;
-}
-"before"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::BEFORE" << endl;
-#endif
-  return token::BEFORE;
-}
-"value"{SP}"of"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VALUE_OF" << endl;
-#endif
-  return token::VALUE_OF;
-}
-"modify"/{WordBreak} {
-  BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::MODIFY" << endl;
-#endif
-  return token::MODIFY;
-}
 "in"/{WordBreak} {
   BEGIN INITIAL;
 #ifdef ZORBA_DEBUG_SCANNER

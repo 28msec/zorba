@@ -4018,15 +4018,15 @@ void RevalidationDecl::accept(parsenode_visitor& v) const
 // [242]  InsertExpr
 // ----------------
 InsertExpr::InsertExpr(
-  const QueryLoc& _loc,
-  rchandle<exprnode> _source_expr_h,
-  rchandle<exprnode> _target_expr_h)
+  const QueryLoc& aLoc,
+  InsertType theInsertType,
+  rchandle<exprnode> aSourceExpr,
+  rchandle<exprnode> aTargetExpr)
 :
-  exprnode(_loc),
-  source_expr_h(_source_expr_h),
-  target_expr_h(_target_expr_h)
-{
-}
+  exprnode(aLoc),
+  theSourceExpr(aSourceExpr),
+  theTargetExpr(aTargetExpr)
+{}
 
 
 //-InsertExpr::
@@ -4034,6 +4034,8 @@ InsertExpr::InsertExpr(
 void InsertExpr::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
+  ACCEPT(theSourceExpr);
+  ACCEPT(theTargetExpr);
   END_VISITOR ();
 }
 
@@ -4041,13 +4043,13 @@ void InsertExpr::accept(parsenode_visitor& v) const
 // [243] DeleteExpr
 // ----------------
 DeleteExpr::DeleteExpr(
-  const QueryLoc& _loc,
-  rchandle<exprnode> _target_expr_h)
+  const QueryLoc& aLoc,
+  DeleteType aType,
+  rchandle<exprnode> aTargetExpr)
 :
-  exprnode(_loc),
-  target_expr_h(_target_expr_h)
-{
-}
+  exprnode(aLoc),
+  theTargetExpr(aTargetExpr)
+{}
 
 
 //-DeleteExpr::
@@ -4055,7 +4057,7 @@ DeleteExpr::DeleteExpr(
 void DeleteExpr::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  ACCEPT (target_expr_h);
+  ACCEPT (theTargetExpr);
   END_VISITOR ();
 }
 
@@ -4063,13 +4065,15 @@ void DeleteExpr::accept(parsenode_visitor& v) const
 // [244] ReplaceExpr
 // -----------------
 ReplaceExpr::ReplaceExpr(
-  const QueryLoc& _loc,
-  rchandle<exprnode> _source_expr_h,
-  rchandle<exprnode> _target_expr_h)
+  const QueryLoc& aLoc,
+  ReplaceType aReplaceType,
+  rchandle<exprnode> aSourceExpr,
+  rchandle<exprnode> aTargetExpr)
 :
-  exprnode(_loc),
-  source_expr_h(_source_expr_h),
-  target_expr_h(_target_expr_h)
+  exprnode(aLoc),
+  theReplaceType(aReplaceType),
+  theSourceExpr(aSourceExpr),
+  theTargetExpr(aTargetExpr)
 {
 }
 
@@ -4079,8 +4083,8 @@ ReplaceExpr::ReplaceExpr(
 void ReplaceExpr::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  ACCEPT (source_expr_h);
-  ACCEPT (target_expr_h);
+  ACCEPT (theSourceExpr);
+  ACCEPT (theTargetExpr);
   END_VISITOR ();
 }
 
@@ -4088,13 +4092,13 @@ void ReplaceExpr::accept(parsenode_visitor& v) const
 // [245] RenameExpr
 // ----------------
 RenameExpr::RenameExpr(
-  const QueryLoc& _loc,
-  rchandle<exprnode> _source_expr_h,
-  rchandle<exprnode> _target_expr_h)
+  const QueryLoc& aLoc,
+  rchandle<exprnode> aSourceExpr,
+  rchandle<exprnode> aTargetExpr)
 :
-  exprnode(_loc),
-  source_expr_h(_source_expr_h),
-  target_expr_h(_target_expr_h)
+  exprnode(aLoc),
+  theSourceExpr(aSourceExpr),
+  theTargetExpr(aTargetExpr)
 {
 }
 
@@ -4104,8 +4108,8 @@ RenameExpr::RenameExpr(
 void RenameExpr::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  ACCEPT (source_expr_h);
-  ACCEPT (target_expr_h);
+  ACCEPT (theSourceExpr);
+  ACCEPT (theTargetExpr);
   END_VISITOR ();
 }
 
@@ -4196,6 +4200,39 @@ void VarBinding::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   ACCEPT (val_h);
   END_VISITOR ();
+}
+
+// TryExpr
+// ---
+void TryExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theExprSingle);
+  ACCEPT(theCatchListExpr);
+  END_VISITOR();
+}
+
+// CatchListExpr
+// -------------
+void CatchListExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  vector<rchandle<CatchExpr> >::const_reverse_iterator it = theCatchExprs.rbegin();
+  for (; it!=theCatchExprs.rend(); ++it) {
+    ACCEPT_CHK(*it);
+  }
+  END_VISITOR();
+}
+
+// CatchExpr
+// -----
+void CatchExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theNameTest);
+  ACCEPT(theVarname);
+  ACCEPT(theExprSingle);
+  END_VISITOR();
 }
 
 

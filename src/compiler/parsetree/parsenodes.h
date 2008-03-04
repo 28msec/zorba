@@ -271,6 +271,9 @@ class VarRef;
 class VersionDecl;
 class WhereClause;
 class Wildcard;
+class TryExpr;
+class CatchListExpr;
+class CatchExpr;
 
 
 // [1] Module
@@ -4675,31 +4678,53 @@ public:
 class InsertExpr : public exprnode
 /*______________________________________________________________________
 |
-|	::= DO_INSERT  ExprSingle  INTO  ExprSingle
-|			|	DO_INSERT  ExprSingle  AS  FIRST_INTO  ExprSingle
-|			|	DO_INSERT  ExprSingle  AS  LAST_INTO  ExprSingle
-|			| DO_INSERT  ExprSingle  AFTER  ExprSingle
-|			| DO_INSERT  ExprSingle  BEFORE  ExprSingle
+|	::= INSERT_NODE  ExprSingle  INTO  ExprSingle
+|			|	INSERT_NODE  ExprSingle  AS  FIRST_INTO  ExprSingle
+|			|	INSERT_NODE  ExprSingle  AS  LAST_INTO  ExprSingle
+|			| INSERT_NODE  ExprSingle  AFTER  ExprSingle
+|			| INSERT_NODE  ExprSingle  BEFORE  ExprSingle
+|	    | INSERT_NODES  ExprSingle  INTO  ExprSingle
+|			|	INSERT_NODES  ExprSingle  AS  FIRST_INTO  ExprSingle
+|			|	INSERT_NODES  ExprSingle  AS  LAST_INTO  ExprSingle
+|			| INSERT_NODES  ExprSingle  AFTER  ExprSingle
+|			| INSERT_NODES  ExprSingle  BEFORE  ExprSingle
 |_______________________________________________________________________*/
 {
+public:
+  enum InsertType
+  {
+    NODE_INTO,
+    NODE_AS_FIRST_INTO,
+    NODE_AS_LAST_INTO,
+    NODE_AFTER,
+    NODE_BEFORE,
+    NODES_INTO,
+    NODES_AS_FIRST_INTO,
+    NODES_AS_LAST_INTO,
+    NODES_AFTER,
+    NODES_BEFORE
+  };
+
 protected:
-	rchandle<exprnode> source_expr_h;
-	rchandle<exprnode> target_expr_h;
+  InsertType         theInsertType;
+	rchandle<exprnode> theSourceExpr;
+	rchandle<exprnode> theTargetExpr;
 
 public:
 	InsertExpr(
 		const QueryLoc&,
+    InsertType,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
 
 public:
-	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
-	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
+	rchandle<exprnode> getSourceExpr() const { return theSourceExpr; }
+	rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
+  InsertType         getInsertType() const { return theInsertType; }
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -4712,21 +4737,29 @@ class DeleteExpr : public exprnode
 |	::= DO_DELETE  ExprSingle
 |_______________________________________________________________________*/
 {
+public:
+  enum DeleteType
+  {
+    NODE,
+    NODES
+  };
+
 protected:
-	rchandle<exprnode> target_expr_h;
+  DeleteType theDeleteType;
+	rchandle<exprnode> theTargetExpr;
 
 public:
 	DeleteExpr(
 		const QueryLoc&,
+    DeleteType,
 		rchandle<exprnode>);
 
-
 public:
-	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
+	rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
+  DeleteType         getDeleteType() const { return theDeleteType; }
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -4740,24 +4773,32 @@ class ReplaceExpr : public exprnode
 |			| DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
 |_______________________________________________________________________*/
 {
+public:
+  enum ReplaceType
+  {
+    WITH,
+    VALUE_OF_WITH
+  };
+
 protected:
-	rchandle<exprnode> source_expr_h;
-	rchandle<exprnode> target_expr_h;
+  ReplaceType theReplaceType;
+	rchandle<exprnode> theSourceExpr;
+	rchandle<exprnode> theTargetExpr;
 
 public:
 	ReplaceExpr(
 		const QueryLoc&,
-		rchandle<exprnode> source_expr_h,
-		rchandle<exprnode> target_expr_h);
+    ReplaceType aReplaceType,
+		rchandle<exprnode> theSourceExpr,
+		rchandle<exprnode> theTargetExpr);
 
 
 public:
-	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
-	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
+	rchandle<exprnode> getSourceExpr() const { return theSourceExpr; }
+	rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -4771,23 +4812,22 @@ class RenameExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<exprnode> source_expr_h;
-	rchandle<exprnode> target_expr_h;
+	rchandle<exprnode> theSourceExpr;
+	rchandle<exprnode> theTargetExpr;
 
 public:
 	RenameExpr(
 		const QueryLoc&,
-		rchandle<exprnode> source_expr_h,
-		rchandle<exprnode> target_expr_h);
+		rchandle<exprnode> aSourceExpr,
+		rchandle<exprnode> aTargetExpr);
 
 
 public:
-	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
-	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
+	rchandle<exprnode> getSourceExpr() const { return theSourceExpr; }
+	rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
 
 public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -4898,6 +4938,107 @@ public:
 
 
 
+/*_______________________________________________________________________
+ *                                                                       *
+ *  Try-Catch productions                                                *
+ *  []                                                                   *
+ *                                                                       *
+ *_______________________________________________________________________*/
+class TryExpr : public exprnode
+/*______________________________________________________________________
+|                                                                       *  
+| ::= TRY LBRACE ExprSingle RBRACE CatchListExpr                        *  
+|_______________________________________________________________________*/
+{
+protected:
+  rchandle<exprnode> theExprSingle;
+  rchandle<exprnode> theCatchListExpr;
+
+public:
+  TryExpr(
+    const QueryLoc& aQueryLoc, 
+    rchandle<exprnode> aExprSingle, 
+    rchandle<exprnode> aCatchListExpr)
+  : exprnode(aQueryLoc), 
+    theExprSingle(aExprSingle),
+    theCatchListExpr(aCatchListExpr)
+  {}
+
+public:
+  rchandle<exprnode> getExprSingle() const { return theExprSingle; }
+  rchandle<CatchListExpr> getCatchListExpr() const { return theCatchListExpr; }
+
+public:
+  void accept(parsenode_visitor&) const;
+};
+
+class CatchListExpr : public exprnode
+/*______________________________________________________________________
+|                                                                       *  
+| ::=  CatchExpr*                                                       *  
+|_______________________________________________________________________*/
+{
+protected:
+  std::vector<rchandle<CatchExpr> > theCatchExprs;
+
+public:
+  CatchListExpr(const QueryLoc& aQueryLoc)
+  : exprnode(aQueryLoc)
+  {}
+
+public:
+	void push_back(rchandle<CatchExpr> aCatchExpr)
+		{ theCatchExprs.push_back(aCatchExpr); }
+
+	rchandle<CatchExpr> operator[](int i) const
+		{ return theCatchExprs[i]; }
+
+public:
+  void accept(parsenode_visitor&) const;
+};
+
+class CatchExpr : public exprnode
+/*_______________________________________________________________________________
+|                                                                                *  
+| ::= CATCH_LPAR NameTest (COMMA DOLLAR VARNAME)? RPAR LBRACE ExprSingle RBRACE  *
+|________________________________________________________________________________*/
+{
+protected:
+  rchandle<NameTest> theNameTest;
+  rchandle<QName> theVarname;
+  rchandle<parsenode> theExprSingle;
+
+public:
+  CatchExpr(
+    const QueryLoc& aQueryLoc,
+    rchandle<NameTest> aNameTest, 
+    rchandle<parsenode> aExprSingle)
+  : exprnode(aQueryLoc),
+    theNameTest(aNameTest), 
+    theVarname(0), 
+    theExprSingle(aExprSingle) 
+  {}
+
+  CatchExpr(
+    const QueryLoc& aQueryLoc,
+    rchandle<NameTest> aNameTest, 
+    rchandle<QName> aVarname, 
+    rchandle<parsenode> aExprSingle)
+  :
+    exprnode(aQueryLoc),
+    theNameTest(aNameTest), 
+    theVarname(aVarname), 
+    theExprSingle(aExprSingle) 
+  {}
+
+public:
+  rchandle<NameTest> getNameTest() const { return theNameTest; }
+  rchandle<QName>  getVarname() const { return theVarname; }
+  rchandle<parsenode> getExprSingle() const { return theExprSingle; }
+
+public:
+  void accept(parsenode_visitor&) const;
+};
 
 
 

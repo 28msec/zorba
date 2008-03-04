@@ -1750,8 +1750,35 @@ void *ParseNodePrintDOTVisitor::begin_visit(const VarNameList &n)
     return no_state;
 }
 
+void *ParseNodePrintDOTVisitor::begin_visit(const TryExpr &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"TryExpr\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
 
+    NL;
+    return no_state;
+}
 
+void *ParseNodePrintDOTVisitor::begin_visit(const CatchListExpr &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"CatchListExpr\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+void *ParseNodePrintDOTVisitor::begin_visit(const CatchExpr &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"CatchExpr\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
 
 void *ParseNodePrintDOTVisitor::begin_visit(const FTAnd &n)
 {
@@ -3126,6 +3153,20 @@ void ParseNodePrintDOTVisitor::end_visit(const VarNameList& /*n*/, void* /*visit
 {
 }
 
+
+void ParseNodePrintDOTVisitor::end_visit(const TryExpr& /*n*/, void* /*visit_state*/)
+{
+}
+
+
+void ParseNodePrintDOTVisitor::end_visit(const CatchListExpr& /*n*/, void* /*visit_state*/)
+{
+}
+
+
+void ParseNodePrintDOTVisitor::end_visit(const CatchExpr& /*n*/, void* /*visit_state*/)
+{
+}
 
 
 void ParseNodePrintDOTVisitor::end_visit(const FTAnd& /*n*/, void* /*visit_state*/)

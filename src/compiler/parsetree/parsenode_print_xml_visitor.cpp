@@ -2113,6 +2113,45 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarNameList &n)
 }
 
 
+void *ParseNodePrintXMLVisitor::begin_visit(const TryExpr &n)
+{
+    INDENT;
+
+    os << "<TryExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC;
+    NL;
+    return no_state;
+}
+
+void *ParseNodePrintXMLVisitor::begin_visit(const CatchListExpr &n)
+{
+    INDENT;
+
+    os << "<CatchListExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC;
+    NL;
+    return no_state;
+}
+
+void *ParseNodePrintXMLVisitor::begin_visit(const CatchExpr &n)
+{
+    INDENT;
+
+    os << "<CatchExpr pos='" << n.get_location() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC;
+    NL;
+    return no_state;
+}
+
 void *ParseNodePrintXMLVisitor::begin_visit(const FTAnd &n)
 {
     INDENT;
@@ -3973,6 +4012,34 @@ void ParseNodePrintXMLVisitor::end_visit(const VarNameList& /*n*/, void* /*visit
 
     INDENT;
     os << "</VarNameList>";
+    NL;
+}
+
+
+void ParseNodePrintXMLVisitor::end_visit(const TryExpr& /*n*/, void* /*visit_state*/)
+{
+    INDENT_DEC;
+
+    INDENT;
+    os << "</TryExpr>";
+    NL;
+}
+
+void ParseNodePrintXMLVisitor::end_visit(const CatchListExpr& /*n*/, void* /*visit_state*/)
+{
+    INDENT_DEC;
+
+    INDENT;
+    os << "</CatchListExpr>";
+    NL;
+}
+
+void ParseNodePrintXMLVisitor::end_visit(const CatchExpr& /*n*/, void* /*visit_state*/)
+{
+    INDENT_DEC;
+
+    INDENT;
+    os << "</CatchExpr>";
     NL;
 }
 
