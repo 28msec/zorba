@@ -41,14 +41,14 @@
 #include <iostream>
 #include "stack.hh"
 
-namespace xqp
+namespace zorba
 {
   class position;
   class location;
 }
 
 /* First part of user declarations.  */
-#line 22 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_parser.y"
+#line 22 "/home/dagraf/Work/28msec/zorba3/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include <zorba/common/common.h>
@@ -64,9 +64,9 @@ namespace xqp
 
 
 using namespace std;
-using namespace xqp;
+using namespace zorba;
 
-namespace xqp {
+namespace zorba {
 	class parsenode;
 	class exprnode;
   class xquery_driver;
@@ -77,7 +77,7 @@ namespace xqp {
 
 
 /* Line 35 of lalr1.cc.  */
-#line 81 "/home/dagraf/Work/28msec/zorba5/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 81 "/home/dagraf/Work/28msec/zorba3/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -118,7 +118,7 @@ do {							\
 } while (false)
 #endif
 
-namespace xqp
+namespace zorba
 {
 
   /// A Bison parser.
@@ -128,17 +128,17 @@ namespace xqp
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 93 "/home/dagraf/Work/28msec/zorba5/xquery/src/compiler/parser/xquery_parser.y"
+#line 93 "/home/dagraf/Work/28msec/zorba3/xquery/src/compiler/parser/xquery_parser.y"
 {
-  xqp::parsenode * node;
-  xqp::exprnode * expr;
+  zorba::parsenode * node;
+  zorba::exprnode * expr;
   off_t sval;
 	xqp_integer* ival;
 	xqp_double* dval;
 	xqp_decimal* decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 142 "/home/dagraf/Work/28msec/zorba5/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 142 "/home/dagraf/Work/28msec/zorba3/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

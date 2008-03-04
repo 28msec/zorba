@@ -34,7 +34,7 @@
 
 /**
  ** \file location.hh
- ** Define the xqp::location class.
+ ** Define the zorba::location class.
  */
 
 #ifndef BISON_LOCATION_HH

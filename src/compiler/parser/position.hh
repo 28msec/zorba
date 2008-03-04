@@ -34,7 +34,7 @@
 
 /**
  ** \file position.hh
- ** Define the xqp::position class.
+ ** Define the zorba::position class.
  */
 
 #ifndef BISON_POSITION_HH
