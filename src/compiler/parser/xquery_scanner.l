@@ -1204,13 +1204,6 @@ typedef zorba::xquery_parser::token token;
 #endif
   return token::WITH;
 }
-"as"/{WordBreak} {
-  BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AS" << endl;
-#endif
-  return token::AS;
-}
 "modify"/{WordBreak} {
   BEGIN INITIAL; 
 #ifdef ZORBA_DEBUG_SCANNER
@@ -1219,6 +1212,14 @@ typedef zorba::xquery_parser::token token;
   return token::MODIFY;
 }
 
+}
+
+"as"/{WordBreak} {
+  BEGIN INITIAL; 
+#ifdef ZORBA_DEBUG_SCANNER
+  cout << "token::AS" << endl;
+#endif
+  return token::AS;
 }
 
   /*______________________________________________________________________  
