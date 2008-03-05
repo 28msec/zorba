@@ -20,7 +20,7 @@ namespace zorba
 
 
 /* start class SingletonIterator */
-Item_t SingletonIterator::nextImpl ( PlanState& planState ) const
+store::Item_t SingletonIterator::nextImpl ( PlanState& planState ) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -39,9 +39,9 @@ IfThenElseIterator::IfThenElseIterator ( const QueryLoc& loc,
 {
 }
 
-Item_t IfThenElseIterator::nextImpl ( PlanState& planState ) const
+store::Item_t IfThenElseIterator::nextImpl ( PlanState& planState ) const
 {
-  Item_t condResult;
+  store::Item_t condResult;
 
   IfThenElseIteratorState* state;
   DEFAULT_STACK_INIT ( IfThenElseIteratorState, state, planState );

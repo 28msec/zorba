@@ -8,8 +8,7 @@
 
 #include "store/naive/ordpath.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 class XmlTree;
 class XmlNode;
@@ -110,7 +109,8 @@ public:
   static void warning(void * ctx, const char * msg, ... );
 };
 
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba
 
 #endif /* ZORBA_SIMPLE_LOADER_H */
 

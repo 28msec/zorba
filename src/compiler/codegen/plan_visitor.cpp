@@ -683,17 +683,17 @@ bool begin_visit(match_expr& v)
   ZORBA_ASSERT(axisItep != NULL);
 
   PlanIter_t matchIte;
-  Item_t qname;
-  Item_t tname;
+  store::Item_t qname;
+  store::Item_t tname;
 
-  ItemFactory& iFactory = *(GENV.getStore().getItemFactory());
+  store::ItemFactory& iFactory = *(GENV.getStore().getItemFactory());
 
   if (v.getTestKind() == match_name_test)
   {
     // Note: the attribute axis iterator does not do any filtering based on
     // the node kind, so it is ok to set the principal node kind to elementNode
     // in all cases.
-    axisItep->setNodeKind(StoreConsts::elementNode);
+    axisItep->setNodeKind(store::StoreConsts::elementNode);
 
     match_wild_t wildKind = v.getWildKind();
 

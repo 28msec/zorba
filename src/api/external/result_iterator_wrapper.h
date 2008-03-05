@@ -32,14 +32,14 @@ public:
 
 	virtual void		openIterator();
 
-	virtual Item_t	nextItem();
+	virtual store::Item_t	nextItem();
 
 	virtual void		closeIterator();
 
 
   ///from PlanWrapper
   virtual void open();
-  virtual Item_t next();
+  virtual store::Item_t next();
   virtual void close();
 
 };
@@ -52,7 +52,7 @@ public:
 	ResultIteratorInternalWrapper(ResultIterator_t result);
 	virtual ~ResultIteratorInternalWrapper();
   virtual void open();
-  virtual Item_t next();
+  virtual store::Item_t next();
   virtual void reset();
   virtual void close();
 };

@@ -5,6 +5,45 @@
 #include <zorba/common/api_shared_types.h>
 
 namespace zorba {
+  
+  namespace store {
+    class NodeItem;
+    typedef rchandle<NodeItem> NodeItem_t;
+    class TempSeq;
+    typedef rchandle<TempSeq> TempSeq_t;
+    class PUL;
+    typedef rchandle<PUL> PUL_t;
+    class ItemFactory;
+    class Collection;
+    typedef rchandle<Collection> Collection_t;
+    class StringPool;
+    class QNamePool;
+    class SimpleCollection;
+    typedef rchandle<SimpleCollection> SimpleCollection_t;
+    class AnyUriItem;
+    typedef rchandle<AnyUriItem> AnyUriItem_t;
+    class XmlTree;
+    typedef rchandle<XmlTree> XmlTree_t;
+    class XmlNode;
+    typedef rchandle<class XmlNode> XmlNode_t;
+    class Store;
+    class Timetravel;
+    class Requester;
+    class XmlLoader;
+    class QueryContextContainer;
+    class QueryContext;
+    class BasicItemFactory;
+    class XmlDataManager_Impl;
+    class ElementNode;
+    typedef rchandle<ElementNode> ElementNode_t;
+    class AttributeNode;
+    class NsBindingsContext;
+    typedef rchandle<NsBindingsContext> NsBindingsContext_t;
+    class QNameItemImpl;
+    class ConstrNodeVector;
+    class NsBindingsContext;
+    typedef rchandle<NsBindingsContext> NsBindingsContext_t;
+  }
 
 class QueryLoc;
 class XQType;
@@ -12,16 +51,6 @@ class namespace_context;
 class function;
 class user_function;
 class PlanIterator;
-class SimpleCollection;
-class XmlTree;
-class AnyUriItem;
-class NodeItem;
-class TempSeq;
-class PUL;
-class ItemFactory;
-class Collection;
-class StringPool;
-class QNamePool;
 class PlanState;
 class XQueryCompiler;
 class XQueryCompilerSubsystem;
@@ -119,13 +148,6 @@ typedef rchandle<expr> expr_t;
 typedef rchandle<XQType> xqtref_t;
 typedef rchandle<namespace_context> NamespaceContext_t;
 typedef rchandle<PlanIterator> PlanIter_t;
-typedef rchandle<SimpleCollection> SimpleCollection_t;
-typedef rchandle<XmlTree> XmlTree_t;
-typedef rchandle<AnyUriItem> AnyUriItem_t;
-typedef rchandle<NodeItem> NodeItem_t;
-typedef rchandle<TempSeq> TempSeq_t;
-typedef rchandle<PUL> PUL_t;
-typedef rchandle<Collection> Collection_t;
 
 typedef rchandle<NodeNameTest> NodeNameTest_t;
 

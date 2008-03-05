@@ -207,7 +207,7 @@ int _tmain(int argc, _TCHAR* argv[])
     // newline should not be sent when serializing!
   } else {
 		ResultIterator_t	result;
-    Item_t it;
+    store::Item_t it;
 		result = query->getIterator();
     while (NULL != (it = result->nextItem ()).getp ())
       *resultFile << it->show() << endl;

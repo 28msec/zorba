@@ -11,7 +11,7 @@ namespace zorba {
 
 class FnTraceIteratorState : public PlanIteratorState {
   public:
-    Item_t theTagItem;
+    store::Item_t theTagItem;
     xqpString theTag;
 
     void init(PlanState&);

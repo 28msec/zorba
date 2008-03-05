@@ -1,8 +1,7 @@
 
 #include <zorba/store_consts.h>
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 static const char* theNodeKindStrings[7] =
 {
@@ -21,5 +20,5 @@ std::string StoreConsts::toString(NodeKind k)
   return theNodeKindStrings[k];
 }
 
-
-}
+} // namespace store
+} // namespace zorba

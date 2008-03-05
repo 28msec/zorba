@@ -14,8 +14,7 @@
 
 #include "common/shared_types.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 class Timetravel; // TODO move to shared_types.h when implemented
 class Requester; // TODO move to shared_types.h when implemented
@@ -230,6 +229,7 @@ class Timetravel {
   // TODO Timetravel interface
 }; /* Timetravel */
 
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba
 
 #endif /* ZORBA_STORE_H */

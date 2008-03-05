@@ -50,7 +50,7 @@ namespace zorba {
 
   class NamedTypeIdentifier : public TypeIdentifier {
     public:
-      NamedTypeIdentifier(quantifier_t quantifier, Item_t name)
+      NamedTypeIdentifier(quantifier_t quantifier, store::Item_t name)
         : TypeIdentifier(quantifier), m_name(name) { }
 
       virtual kind_t 
@@ -59,14 +59,14 @@ namespace zorba {
         return NAMED_TYPE;
       }
 
-      const Item_t 
+      const store::Item_t 
       get_name() const
       {
         return m_name;
       }
 
     protected:
-      Item_t m_name;
+      store::Item_t m_name;
   };
 
   class ContentTypeHolder {

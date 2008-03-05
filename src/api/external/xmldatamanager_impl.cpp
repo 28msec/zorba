@@ -12,8 +12,7 @@
 #include "system/globalenv.h"
 #include "store/api/store.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 
 XmlDataManager_Impl::XmlDataManager_Impl()
@@ -31,7 +30,7 @@ XmlDataManager_Impl::~XmlDataManager_Impl()
 	}CATCH_ALL_NO_RETURN(;);
 }
 
-Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, std::istream& stream)
+store::Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, std::istream& stream)
 {
 	try{
 
@@ -40,7 +39,7 @@ Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, std::istream& st
 	}CATCH_ALL_RETURN_NULL;
 }
 
-Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& local_file_uri)
+store::Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& local_file_uri)
 {
 	try{
 
@@ -56,7 +55,7 @@ Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& local_file_uri)
 	}CATCH_ALL_RETURN_NULL;
 }
 
-Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, Item_t item)  // error if uri exists or item is not a document
+store::Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, store::Item_t item)  // error if uri exists or item is not a document
 {
 	try{
 
@@ -66,7 +65,7 @@ Item_t XmlDataManager_Impl::loadDocument(const xqp_anyURI& uri, Item_t item)  //
 }
 
 
-Item_t XmlDataManager_Impl::getDocument(const xqp_anyURI& uri)
+store::Item_t XmlDataManager_Impl::getDocument(const xqp_anyURI& uri)
 {
 	try{
 
@@ -112,7 +111,7 @@ bool XmlDataManager_Impl::deleteCollection(const xqp_anyURI& uri)
 bool XmlDataManager_Impl::addToCollection(const xqp_anyURI& uri, Iterator_t iterator)
 {
 	try{
-		Collection_t		colec;
+		store::Collection_t		colec;
 		colec = internal_store->getCollection(uri.getStore());
 		if(colec == NULL)
 		{
@@ -129,7 +128,7 @@ bool XmlDataManager_Impl::addToCollection(const xqp_anyURI& uri, Iterator_t iter
 bool XmlDataManager_Impl::addToCollection(const xqp_anyURI& uri, std::istream& stream)
 {
 	try{
-		Collection_t		colec;
+		store::Collection_t		colec;
 		colec = internal_store->getCollection(uri.getStore());
 		if(colec == NULL)
 		{
@@ -143,5 +142,5 @@ bool XmlDataManager_Impl::addToCollection(const xqp_anyURI& uri, std::istream& s
 	return true;
 }
 
-
-}//end namespace zorba
+} // namespace store
+} // namespace zorba

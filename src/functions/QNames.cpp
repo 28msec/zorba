@@ -276,7 +276,7 @@ xqtref_t
     fn_in_scope_prefixes::type_check(
     signature& /*sig*/) const
 {
-  return GENV_TYPESYSTEM.create_node_type(new NodeTest(StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE);
+  return GENV_TYPESYSTEM.create_node_type(new NodeTest(store::StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE);
 }
 
 bool

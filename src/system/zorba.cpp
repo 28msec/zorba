@@ -18,8 +18,8 @@
 using namespace std;
 namespace zorba {
 
-Store*				Zorba::theStore = NULL;
-ItemFactory	*	Zorba::theItemFactory = NULL;
+store::Store*				Zorba::theStore = NULL;
+store::ItemFactory	*	Zorba::theItemFactory = NULL;
 QueryLoc	Zorba::null_loc;
 
 

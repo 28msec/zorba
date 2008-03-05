@@ -40,8 +40,8 @@ namespace zorba
 class KindTestIterator : public UnaryBaseIterator<KindTestIterator, PlanIteratorState>
 {
 private:
-  Item_t       theQName;
-  Item_t       theTypeName;
+  store::Item_t       theQName;
+  store::Item_t       theTypeName;
   match_test_t theTestKind;
   match_test_t theDocTestKind;
   bool         theNilledAllowed;
@@ -50,8 +50,8 @@ public:
   KindTestIterator(
         const QueryLoc& loc,
         PlanIter_t input,
-        Item_t qname,
-        Item_t tname,
+        store::Item_t qname,
+        store::Item_t tname,
         match_test_t kind,
         match_test_t docTestKind,
         bool nilled = false)
@@ -67,14 +67,14 @@ public:
 
   ~KindTestIterator() {}
   
-  const Item_t& getQName() const { return theQName; }
-  const Item_t& getTypeName() const { return theTypeName; }
+  const store::Item_t& getQName() const { return theQName; }
+  const store::Item_t& getTypeName() const { return theTypeName; }
   const match_test_t& getTestKind() const { return theTestKind; }
   const match_test_t& getDocTestKind() const { return theDocTestKind; }
   bool nilledAllowed() const { return theNilledAllowed; }
 
 public:
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -86,14 +86,14 @@ public:
 class NameTestIterator : public UnaryBaseIterator<NameTestIterator, PlanIteratorState>
 {
 private:
-  Item_t       theQName;
+  store::Item_t       theQName;
   match_wild_t theWildKind;
 
 public:
   NameTestIterator(
         const QueryLoc& loc,
         PlanIter_t input,
-        Item_t qname,
+        store::Item_t qname,
         match_wild_t kind)
     :
     UnaryBaseIterator<NameTestIterator, PlanIteratorState>(loc, input),
@@ -104,10 +104,10 @@ public:
 
   ~NameTestIterator() {}
   
-  const Item_t& getQName() const { return theQName; }
+  const store::Item_t& getQName() const { return theQName; }
 
 public:
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -119,14 +119,14 @@ public:
 class AxisIteratorHelper
 {
 protected:
-  StoreConsts::NodeKind theNodeKind;
+  store::StoreConsts::NodeKind theNodeKind;
 
 public:
-  AxisIteratorHelper() : theNodeKind(StoreConsts::anyNode) { }
+  AxisIteratorHelper() : theNodeKind(store::StoreConsts::anyNode) { }
 
   virtual ~AxisIteratorHelper() {}
 
-  void setNodeKind(StoreConsts::NodeKind k) { theNodeKind = k; }
+  void setNodeKind(store::StoreConsts::NodeKind k) { theNodeKind = k; }
 };
 
 
@@ -136,7 +136,7 @@ public:
 class AxisState : public PlanIteratorState
 {
 public:
-  Item_t     theContextNode;   
+  store::Item_t     theContextNode;   
 
   void init(PlanState& planState) { PlanIteratorState::init( planState ); }
   void reset(PlanState& planState) { PlanIteratorState::reset( planState ); }
@@ -178,7 +178,7 @@ public:
 
   ~SelfAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   // Manually instantiated here, as MSVC does not do it
   // void closeImpl(PlanState& planState); 
@@ -214,7 +214,7 @@ public:
 
   ~AttributeAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   uint32_t getStateSize() const { return sizeof(AttributeAxisState); }
 
@@ -241,7 +241,7 @@ public:
 
   ~ParentAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
  
   // Manually instantiated here, as MSVC does not do it
   // void closeImpl(PlanState& planState); 
@@ -256,7 +256,7 @@ public:
 class AncestorAxisState : public AxisState
 {
 public:
-  Item_t  theCurrentAnc;
+  store::Item_t  theCurrentAnc;
 };
 
 class AncestorAxisIterator : public AxisIterator<AncestorAxisIterator, AncestorAxisState>
@@ -271,7 +271,7 @@ public:
   ~AncestorAxisIterator() {}
 
   //void openImpl(PlanState& planState, uint32_t& offset);
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   //void closeImpl(PlanState& planState);
 
   virtual void accept(PlanIterVisitor&) const;
@@ -284,7 +284,7 @@ public:
 class AncestorSelfAxisState : public AxisState
 {
 public:
-  Item_t  theCurrentAnc;
+  store::Item_t  theCurrentAnc;
 };
 
 class AncestorSelfAxisIterator : public AxisIterator<AncestorSelfAxisIterator, AncestorSelfAxisState>
@@ -300,7 +300,7 @@ public:
 
   ~AncestorSelfAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -329,7 +329,7 @@ public:
 
   ~RSiblingAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -361,7 +361,7 @@ public:
 
   ~LSiblingAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -395,7 +395,7 @@ public:
 
   ~ChildAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -407,7 +407,7 @@ public:
 class DescendantAxisState : public AxisState
 {
 public:
-  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  std::stack<std::pair<store::Item_t, Iterator_t> > theCurrentPath;
   DescendantAxisState();
   ~DescendantAxisState();
   void init(PlanState&);
@@ -427,7 +427,7 @@ public:
 
   ~DescendantAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -439,7 +439,7 @@ public:
 class DescendantSelfAxisState : public AxisState
 {
 public:
-  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  std::stack<std::pair<store::Item_t, Iterator_t> > theCurrentPath;
   DescendantSelfAxisState();
   ~DescendantSelfAxisState();
   void init(PlanState&);
@@ -458,7 +458,7 @@ public:
 
   ~DescendantSelfAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -470,8 +470,8 @@ public:
 class PrecedingAxisState : public AxisState
 {
 public:
-  std::stack<Item_t>                         theAncestorPath;
-  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  std::stack<store::Item_t>                         theAncestorPath;
+  std::stack<std::pair<store::Item_t, Iterator_t> > theCurrentPath;
   PrecedingAxisState();
   ~PrecedingAxisState();
   void init(PlanState&);
@@ -489,7 +489,7 @@ public:
 
   ~PrecedingAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -501,8 +501,8 @@ public:
 class FollowingAxisState : public AxisState
 {
 public:
-  std::stack<Item_t>                         theAncestorPath;
-  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  std::stack<store::Item_t>                         theAncestorPath;
+  std::stack<std::pair<store::Item_t, Iterator_t> > theCurrentPath;
   FollowingAxisState();
   ~FollowingAxisState();
   void init(PlanState&);
@@ -520,7 +520,7 @@ public:
 
   ~FollowingAxisIterator() {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };

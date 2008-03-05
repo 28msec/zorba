@@ -29,7 +29,7 @@ namespace zorba {
       virtual ~PlanIteratorWrapper();
 
       void open();
-      Item_t next();
+      store::Item_t next();
       void reset();
       void close();
   };

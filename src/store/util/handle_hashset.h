@@ -8,8 +8,7 @@
 #include "store/util/mutex.h"
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 /*******************************************************************************
 
@@ -394,6 +393,7 @@ template <class T, class E>
 const double HandleSet<T, E>::DEFAULT_LOAD_FACTOR = 0.6;
 
 
-}
+} // namespace store
+} // namespace zorba
 
 #endif

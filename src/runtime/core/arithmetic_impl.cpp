@@ -51,11 +51,11 @@ GenericArithIterator<Operations>::GenericArithIterator
 { }
 
 template < class Operation >
-Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState ) const
+store::Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState ) const
 {
-  Item_t n0;
-  Item_t n1;
-  Item_t res;
+  store::Item_t n0;
+  store::Item_t n1;
+  store::Item_t res;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -78,7 +78,7 @@ Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState ) const
 }
 
 template < class Operation >
-Item_t GenericArithIterator<Operation>::compute(const QueryLoc& aLoc, Item_t n0, Item_t n1)
+store::Item_t GenericArithIterator<Operation>::compute(const QueryLoc& aLoc, store::Item_t n0, store::Item_t n1)
 {
   n0 = n0->getAtomizationValue();
   n1 = n1->getAtomizationValue();
@@ -147,32 +147,32 @@ void GenericArithIterator<Operation>::accept(PlanIterVisitor& v) const {
 //moved from DurationsDatesTimes
  /* begin class AddOperations */
 template<>
-Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
+store::Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
+( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
 
 template<>
-Item_t AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
+store::Item_t AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
+( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_dateTime d = *i0->getDateTimeValue() + *i1->getDurationValue()->toDuration();
   return Zorba::getItemFactory()->createDateTime (d);
 }
 
 template<>
-Item_t AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
+store::Item_t AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
+( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_date d = *i0->getDateValue() + *i1->getDurationValue()->toDuration();
   return Zorba::getItemFactory()->createDate (d);
 }
 
 template<>
-Item_t AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
+store::Item_t AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
+( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_time t = *i0->getTimeValue() + *i1->getDurationValue()->toDuration();
   return Zorba::getItemFactory()->createTime (t);
@@ -181,40 +181,40 @@ Item_t AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 
 /* start class SubtractOperations */
 template<>
-Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const QueryLoc* loc, const Item* i0, const Item* i1 )
+store::Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
+( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
   xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
   return Zorba::getItemFactory()->createDuration (d);
 }
 
 template<>
-Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
+store::Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
+( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_dateTime d = *i0->getDateTimeValue() + *i1->getDurationValue()->toNegDuration();
   return Zorba::getItemFactory()->createDateTime (d);
 }
 
 template<>
-Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
+store::Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
+( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_date d = *i0->getDateValue() + *i1->getDurationValue()->toNegDuration();
   return Zorba::getItemFactory()->createDate (d);
 }
 
 template<>
-Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
+store::Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
+( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_time t = *i0->getTimeValue() + *i1->getDurationValue()->toNegDuration();
   return Zorba::getItemFactory()->createTime (t);
 }
 
 template<>
-Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
+store::Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME>
+( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   int timezone_secs = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
   xqp_duration d = *i0->getDateTimeValue()->normalizeTimeZone(timezone_secs) - 
@@ -223,8 +223,8 @@ Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_D
 }
 
 template<>
-Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
+store::Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
+( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   long timezone_sec = /*18000;*/ ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
   xqp_duration d = *i0->getDateValue()->normalize(timezone_sec) - *i1->getDateValue()->normalize(timezone_sec);
@@ -232,8 +232,8 @@ Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
 }
 
 template<>
-Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
-( const QueryLoc* loc,  const Item* i0, const Item* i1 )
+store::Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
+( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   long timezone_sec = /*-18000;*/ ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
   xqp_duration d = *i0->getTimeValue()->normalize(timezone_sec) - * i1->getTimeValue()->normalize(timezone_sec);
@@ -243,8 +243,8 @@ Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
 
 /* start class MultiplyOperations */
 template<>
-Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
-( const QueryLoc* loc, const Item* i0, const Item* i1 )
+store::Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
+( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
   xqp_duration d;
 
@@ -271,8 +271,8 @@ Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_D
 
 /* start class DivideOperations */
 template<>
-Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
-( const QueryLoc* loc, const Item* i0, const Item* i1 )
+store::Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
+( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
   xqp_duration d;
 
@@ -297,8 +297,8 @@ Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOU
 }
 
 template<>
-Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const QueryLoc* loc, const Item* i0, const Item* i1 )
+store::Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
+( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
   xqp_decimal d = *i0->getDurationValue() / *i1->getDurationValue();
   return Zorba::getItemFactory()->createDecimal(d);

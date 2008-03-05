@@ -13,8 +13,7 @@
 
 #include "store/api/temp_seq.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 /**
  * Very simple implementation of Temp Sequence. It saves the resulting items
@@ -101,6 +100,7 @@ public:
 
 }; /* class SimpleTempSeq */
 
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba
 
 #endif /* ZORBA_SIIMPLE_TEMP_SEQ_H */

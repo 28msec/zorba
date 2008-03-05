@@ -31,7 +31,7 @@
 #include "compiler/parser/query_loc.h"
 
 // Info: Forcing inlining a function in g++:
-// Item_t next() __attribute__((always_inline)) {...}
+// store::Item_t next() __attribute__((always_inline)) {...}
 
 /*******************************************************************************
 
@@ -111,7 +111,7 @@ public:
 #if ZORBA_BATCHING_TYPE == 1
 public:
   uint32_t theCurrItem;
-  Item_t   theBatch[ZORBA_BATCHING_BATCHSIZE];
+  store::Item_t   theBatch[ZORBA_BATCHING_BATCHSIZE];
 #endif
 #ifndef NDEBUG
   bool     theIsOpened;
@@ -273,7 +273,7 @@ public:
 #if ZORBA_BATCHING_TYPE == 1
   virtual void produceNext(PlanState& planState) const = 0;
 #else
-  virtual Item_t produceNext(PlanState& planState) const = 0;
+  virtual store::Item_t produceNext(PlanState& planState) const = 0;
 #endif
 
 
@@ -308,7 +308,7 @@ public:
 
 #if ZORBA_BATCHING_TYPE == 1  
   static
-  Item_t consumeNext(const PlanIterator* subIter, PlanState& planState)
+  store::Item_t consumeNext(const PlanIterator* subIter, PlanState& planState)
   {
     // use the producer's (subIter) planstate to access it's batch
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, subIter->getStateOffset());
@@ -321,7 +321,7 @@ public:
   }
 #else
   static
-  Item_t consumeNext(const PlanIterator* subIter, PlanState& planState)
+  store::Item_t consumeNext(const PlanIterator* subIter, PlanState& planState)
   {
     return subIter->produceNext(planState);
   }
@@ -362,7 +362,7 @@ protected:
     // note the pre-increment in the second operand above
   }
 #else
-  Item_t produceNext(PlanState& planState) const
+  store::Item_t produceNext(PlanState& planState) const
   {
 #ifndef NDEBUG
     PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
@@ -404,7 +404,7 @@ protected:
 
 
 public:
-  inline Item_t nextImpl(PlanState& planState) const;
+  inline store::Item_t nextImpl(PlanState& planState) const;
 
   inline void openImpl(PlanState& planState, uint32_t& offset) const;
   inline void resetImpl(PlanState& planState) const;

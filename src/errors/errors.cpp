@@ -95,7 +95,7 @@ void ZorbaFnError::dumpAlert(std::ostream &os)
     << "<decoded: " << theDescription << " > ]";
   os << " : " <<  theUserDescription << endl;
 
-	std::vector<class Item*>::const_iterator item_it;
+	std::vector<class store::Item*>::const_iterator item_it;
 
   for ( item_it = theItems.begin( ) ; item_it != theItems.end( ) ; item_it++ )
   {
@@ -110,7 +110,7 @@ void ZorbaFnTrace::dumpAlert(std::ostream &os)
 {
   os << "User Trace: " << theDescription << endl;
 
-  std::vector<class Item*>::const_iterator item_it;
+  std::vector<class store::Item*>::const_iterator item_it;
 
   for ( item_it = items_trace.begin( ) ; item_it != items_trace.end( ) ; item_it++ )
   {

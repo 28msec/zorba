@@ -11,8 +11,7 @@
 
 #include "common/shared_types.h"
 
-namespace zorba 
-{
+namespace zorba { namespace store {
 
 class Collection : public SimpleRCObject
 {
@@ -69,5 +68,6 @@ public:
   virtual void removeFromCollection(const Item* node) = 0;
 };
 
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba
 #endif

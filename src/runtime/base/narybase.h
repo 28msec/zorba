@@ -127,7 +127,7 @@ public:\
   { } \
   virtual ~iterName() { } \
   \
-  Item_t nextImpl(PlanState& aPlanState) const; \
+  store::Item_t nextImpl(PlanState& aPlanState) const; \
   \
   virtual void accept(PlanIterVisitor& v) const \
   {  \

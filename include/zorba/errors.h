@@ -704,9 +704,9 @@ namespace zorba
   class ZorbaFnError: public ZorbaAlert
   {
     public:
-      Item_t              theErrorQName;
+      store::Item_t              theErrorQName;
       std::string         theUserDescription;
-      std::vector<Item*>  theItems;
+      std::vector<store::Item*>  theItems;
 
       virtual ~ZorbaFnError();
       
@@ -721,7 +721,7 @@ namespace zorba
   class ZorbaFnTrace: public ZorbaAlert
   {
     public:
-      std::vector<Item*> items_trace;
+      std::vector<store::Item*> items_trace;
 
       virtual ~ZorbaFnTrace();
       

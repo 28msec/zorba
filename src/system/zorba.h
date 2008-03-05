@@ -20,10 +20,12 @@
 
 namespace zorba {
 
-class ItemFactory;
 //class Zorba_XQueryBinary;
 class PlanIterator;
-class Store;
+namespace store {
+  class ItemFactory;
+  class Store;
+}
 class static_context;
 class AlertsManagerImpl;
 //class Zorba_XQueryExecution;
@@ -41,9 +43,9 @@ class Zorba
 	friend class ZorbaEngineImpl;
 
 public:
-	static Store				* theStore;
-	static ItemFactory	* theItemFactory;
-	static QueryLoc	    null_loc;
+	static store::Store				* theStore;
+	static store::ItemFactory	* theItemFactory;
+	static QueryLoc       	    null_loc;
 	
 public:///things specific for each thread
 	Zorba_XQueryInfo              * current_xquery;//current xquery executed for this thread
@@ -68,8 +70,8 @@ protected:
 	~Zorba();
 
 public:
-  static inline ItemFactory* getItemFactory() { return theItemFactory; }
-  static inline Store* getStore() { return theStore; }
+  static inline store::ItemFactory* getItemFactory() { return theItemFactory; }
+  static inline store::Store* getStore() { return theStore; }
 
 	AlertsManagerImpl_t getErrorManager();
 

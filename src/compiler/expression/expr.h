@@ -162,15 +162,15 @@ public:
   };
 
   var_kind kind;
-  Item_t varname_h;
+  store::Item_t varname_h;
   xqtref_t type;
 
 public:
-  var_expr(const QueryLoc& loc, Item_t name);
-  var_expr(const QueryLoc& loc, var_kind k, Item_t name);
+  var_expr(const QueryLoc& loc, store::Item_t name);
+  var_expr(const QueryLoc& loc, var_kind k, store::Item_t name);
 
 public:
-  Item_t get_varname() const;
+  store::Item_t get_varname() const;
 
   var_kind get_kind() const { return kind; }
   void set_kind(var_kind k) { kind = k; }
@@ -569,15 +569,15 @@ class signature;
 
 class function_def_expr : public expr {
 protected:
-  Item_t name;
+  store::Item_t name;
   std::vector<rchandle<var_expr> > params;
   expr_t body;
   std::auto_ptr<signature> sig;
 
 public:
-  function_def_expr (const QueryLoc& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type);
+  function_def_expr (const QueryLoc& loc, store::Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type);
 
-  Item_t get_name () const { return name; }
+  store::Item_t get_name () const { return name; }
   expr_t get_body () { return body; }
   void set_body (expr_t body_) { body = body_; }
   std::vector<rchandle<var_expr> >::iterator param_begin () { return params.begin (); }
@@ -636,7 +636,7 @@ public:
 public:
   const function* get_func() const { return func; }
   const signature &get_signature () const;
-  Item_t get_fname () const;
+  store::Item_t get_fname () const;
 
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
@@ -842,10 +842,10 @@ public:
 
 struct pragma : public SimpleRCObject
 {
-  Item_t name_h;
+  store::Item_t name_h;
   std::string content;
 
-  pragma(Item_t _name_h, std::string const& _content)
+  pragma(store::Item_t _name_h, std::string const& _content)
   : name_h(_name_h), content(_content) {}
 };
 
@@ -1017,8 +1017,8 @@ protected:
   match_wild_t  theWildKind;
   xqp_string    theWildName;
 
-  Item_t        theQName;
-  Item_t        theTypeName;
+  store::Item_t        theQName;
+  store::Item_t        theTypeName;
   bool          theNilledAllowed;
 
 public:
@@ -1034,18 +1034,18 @@ public:
   void setWildKind(enum match_wild_t v)    { theWildKind = v; }
   void setWildName(const xqp_string& v)    { theWildName = v; } 
 
-  Item_t getQName() const                  { return theQName; }
-  Item_t getTypeName() const               { return theTypeName; }
+  store::Item_t getQName() const                  { return theQName; }
+  store::Item_t getTypeName() const               { return theTypeName; }
   bool getNilledAllowed() const            { return theNilledAllowed; }
-  void setQName(Item_t v)                  { theQName = v; }
-  void setTypeName(Item_t v)               { theTypeName = v; }
+  void setQName(store::Item_t v)                  { theQName = v; }
+  void setTypeName(store::Item_t v)               { theTypeName = v; }
   void setNilledAllowed(bool v)            { theNilledAllowed = v; }
 
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
-  StoreConsts::NodeKind getNodeKind() const;
+  store::StoreConsts::NodeKind getNodeKind() const;
 };
 
 
@@ -1072,7 +1072,7 @@ class const_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-  Item_t val;
+  store::Item_t val;
 
 public:
   const_expr(const QueryLoc&, xqpString sval);
@@ -1080,11 +1080,11 @@ public:
   const_expr(const QueryLoc&, xqp_decimal);
   const_expr(const QueryLoc&, xqp_double);
   const_expr(const QueryLoc&, xqp_boolean);
-  const_expr(const QueryLoc&, Item_t);  
+  const_expr(const QueryLoc&, store::Item_t);  
   const_expr(const QueryLoc&, const char* aNamespace, const char* aPrefix, const char* aLocal);
 
 public:
-  Item_t get_val () const { return val; }
+  store::Item_t get_val () const { return val; }
 
 public:
   void next_iter (expr_iterator_data&);
@@ -1237,7 +1237,7 @@ public:
   expr_t getValueExpr() const { return theValueExpr; }
   void setValueExpr(expr_t aValueExpr) { theValueExpr = aValueExpr; }
 
-  Item* getQName() const;
+  store::Item* getQName() const;
 
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);

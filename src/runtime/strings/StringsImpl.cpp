@@ -39,10 +39,10 @@ namespace zorba {
  *an error is raised [err:FOCH0001] ("Code point not valid.").
  *_______________________________________________________________________*/
 /* begin class CodepointsToStringIterator */
-Item_t
+store::Item_t
 CodepointsToStringIterator::nextImpl(PlanState& planState) const {
-  Item_t item;
-  Item_t resItem;
+  store::Item_t item;
+  store::Item_t resItem;
   xqp_string resStr;
 
   PlanIteratorState* state;
@@ -89,11 +89,11 @@ CodepointsToStringIterator::nextImpl(PlanState& planState) const {
  *the empty sequence is returned.
  *_______________________________________________________________________*/
 /* begin class StringToCodepointsIterator */
-Item_t
+store::Item_t
 StringToCodepointsIterator::nextImpl(PlanState& planState) const {
   // TODO Optimization for large strings: large strings mean that a large integer vector should be store in the state that is not good.
-  Item_t item;
-  Item_t resItem;
+  store::Item_t item;
+  store::Item_t resItem;
   xqp_string inputStr = "";
 
   StringToCodepointsState* state;
@@ -183,12 +183,12 @@ StringToCodepointsState::getVectSize()
  * If either argument is the empty sequence, the result is the empty sequence.
  *_______________________________________________________________________*/
 /* begin class CompareStrIterator */
-Item_t
+store::Item_t
 CompareStrIterator::nextImpl(PlanState& planState) const {
-  Item_t n0;
-  Item_t n1;
-  Item_t n2;
-  Item_t res;
+  store::Item_t n0;
+  store::Item_t n1;
+  store::Item_t n2;
+  store::Item_t res;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -240,11 +240,11 @@ CompareStrIterator::nextImpl(PlanState& planState) const {
  * without having to specify the Unicode code point collation.
  *_______________________________________________________________________*/
 /* begin class CodepointEqualIterator */
-Item_t
+store::Item_t
 CodepointEqualIterator::nextImpl(PlanState& planState) const {
-    Item_t item0;
-    Item_t item1;
-    Item_t res;
+    store::Item_t item0;
+    store::Item_t item1;
+    store::Item_t res;
 
     PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -289,9 +289,9 @@ CodepointEqualIterator::nextImpl(PlanState& planState) const {
  * can be applied to the xs:string returned by fn:concat.
  *_______________________________________________________________________*/
 /* begin class ConcatStrIterator */
-Item_t
+store::Item_t
 ConcatStrIterator::nextImpl(PlanState& planState) const {
-  Item_t lItem;
+  store::Item_t lItem;
   std::stringstream lResStream;
   xqpStringStore_t tmp;
 
@@ -345,10 +345,10 @@ ConcatStrIterator::nextImpl(PlanState& planState) const {
  * the zero-length string is returned.
  *_______________________________________________________________________*/
 /* begin class StringJoinIterator */
-Item_t
+store::Item_t
 StringJoinIterator::nextImpl(PlanState& planState) const {
-  Item_t item;
-  Item_t resItem;
+  store::Item_t item;
+  store::Item_t resItem;
   xqp_string resStr;
   xqp_string separator;
   bool lFirst;
@@ -430,11 +430,11 @@ StringJoinIterator::nextImpl(PlanState& planState) const {
  *The first character of a string is located at position 1, not position 0.
  *_______________________________________________________________________*/
 /* begin class SubstringIterator */
-Item_t
+store::Item_t
 SubstringIterator::nextImpl(PlanState& planState) const {
-  Item_t item0;
-  Item_t item1;
-  Item_t item2;
+  store::Item_t item0;
+  store::Item_t item1;
+  store::Item_t item2;
   xqp_string resStr;
   int32_t tmpStart;
   int32_t tmpLen;
@@ -533,9 +533,9 @@ SubstringIterator::nextImpl(PlanState& planState) const {
   *the context item is undefined an error is raised:[err:XPDY0002].
   *_______________________________________________________________________*/
 /* begin class StringLengthIterator */
-Item_t
+store::Item_t
 StringLengthIterator::nextImpl(PlanState& planState) const {
-  Item_t item;
+  store::Item_t item;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -571,10 +571,10 @@ StringLengthIterator::nextImpl(PlanState& planState) const {
   *of one or more than one whitespace character with a single space, #x20.
   *_______________________________________________________________________*/
 /* begin class NormalizeSpaceIterator */
-Item_t
+store::Item_t
 NormalizeSpaceIterator::nextImpl(PlanState& planState) const
 {
-  Item_t item;
+  store::Item_t item;
   xqpStringStore_t empty;
 
   PlanIteratorState* state;
@@ -621,11 +621,11 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState) const
   *support normalization forms "NFD", "NFKC", "NFKD", "FULLY-NORMALIZED".
   *_______________________________________________________________________*/
 /* begin class NormalizeUnicodeIterator */
-Item_t
+store::Item_t
 NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
 {
-  Item_t item0;
-  Item_t item1;
+  store::Item_t item0;
+  store::Item_t item1;
   xqp_string tempStr = "NFC";
   xqp_string res = "";
   
@@ -678,10 +678,10 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
   *If the value of $arg is the empty sequence, the zero-length string is returned.
   *_______________________________________________________________________*/
 /* begin class UpperCaseIterator */
-Item_t
+store::Item_t
 UpperCaseIterator::nextImpl(PlanState& planState) const
 {
-  Item_t item;
+  store::Item_t item;
   xqpStringStore_t empty;
 
   PlanIteratorState* state;
@@ -721,9 +721,9 @@ UpperCaseIterator::nextImpl(PlanState& planState) const
   *If the value of $arg is the empty sequence, the zero-length string is returned.
   *_______________________________________________________________________*/
 /* begin class LowerCaseIterator */
-Item_t
+store::Item_t
 LowerCaseIterator::nextImpl(PlanState& planState) const {
-  Item_t item;
+  store::Item_t item;
   xqpStringStore_t empty;
 
   PlanIteratorState* state;
@@ -773,10 +773,10 @@ LowerCaseIterator::nextImpl(PlanState& planState) const {
   *the excess characters are ignored.
   *_______________________________________________________________________*/
 /* begin class TranslateIterator */
-Item_t
+store::Item_t
 TranslateIterator::nextImpl(PlanState& planState) const {
-  Item_t itemArg, item0, item1;
-  Item_t res;
+  store::Item_t itemArg, item0, item1;
+  store::Item_t res;
   xqpStringStore_t empty(new xqpStringStore(""));
   res = Zorba::getItemFactory()->createString(empty);
 
@@ -813,9 +813,9 @@ TranslateIterator::nextImpl(PlanState& planState) const {
  *
  *_______________________________________________________________________*/
 /* begin class EncodeForUriIterator */
-Item_t
+store::Item_t
 EncodeForUriIterator::nextImpl(PlanState& planState) const {
-  Item_t item;
+  store::Item_t item;
   xqpStringStore_t empty;
 
   PlanIteratorState* state;
@@ -844,9 +844,9 @@ EncodeForUriIterator::nextImpl(PlanState& planState) const {
  *
  *_______________________________________________________________________*/
 /* begin class IriToUriIterator */
-Item_t
+store::Item_t
 IriToUriIterator::nextImpl(PlanState& planState) const {
-  Item_t item;
+  store::Item_t item;
   xqpStringStore_t empty;
 
   PlanIteratorState* state;
@@ -875,9 +875,9 @@ IriToUriIterator::nextImpl(PlanState& planState) const {
  *
  *_______________________________________________________________________*/
 /* begin class EscapeHtmlUriIterator */
-Item_t
+store::Item_t
 EscapeHtmlUriIterator::nextImpl(PlanState& planState) const {
-  Item_t item;
+  store::Item_t item;
   xqpStringStore_t empty;
 
   PlanIteratorState* state;
@@ -924,11 +924,11 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) const {
   *an error ·may· be raised [err:FOCH0004].
   *_______________________________________________________________________*/
 /* begin class ContainsIterator */
-Item_t
+store::Item_t
 ContainsIterator::nextImpl(PlanState& planState) const {
-  Item_t item0;
-  Item_t item1;
-  Item_t itemColl;
+  store::Item_t item0;
+  store::Item_t item1;
+  store::Item_t itemColl;
   bool resBool = false;
   xqp_string arg1="";
   xqp_string arg2="";
@@ -1007,11 +1007,11 @@ ContainsIterator::nextImpl(PlanState& planState) const {
   *an error ·may· be raised [err:FOCH0004].
   *_______________________________________________________________________*/
 /*begin class StartsWithIterator*/
-Item_t
+store::Item_t
 StartsWithIterator::nextImpl(PlanState& planState) const {
-  Item_t item0;
-  Item_t item1;
-  Item_t itemColl;
+  store::Item_t item0;
+  store::Item_t item1;
+  store::Item_t itemColl;
   bool resBool = false;
   xqp_string arg1="";
   xqp_string arg2="";
@@ -1091,11 +1091,11 @@ StartsWithIterator::nextImpl(PlanState& planState) const {
   *units an error ·may· be raised [err:FOCH0004].
   *_______________________________________________________________________*/
 /*begin class EndsWithIterator*/
-Item_t
+store::Item_t
 EndsWithIterator::nextImpl(PlanState& planState) const {
-  Item_t item0;
-  Item_t item1;
-  Item_t itemColl;
+  store::Item_t item0;
+  store::Item_t item1;
+  store::Item_t itemColl;
   bool resBool = false;
   xqp_string arg1="";
   xqp_string arg2="";
@@ -1176,11 +1176,11 @@ EndsWithIterator::nextImpl(PlanState& planState) const {
   *an error ·may· be raised [err:FOCH0004].
   *_______________________________________________________________________*/
 /*begin class SubstringBeforeIterator*/
-Item_t
+store::Item_t
 SubstringBeforeIterator::nextImpl(PlanState& planState) const {
-  Item_t item0;
-  Item_t item1;
-  Item_t itemColl;
+  store::Item_t item0;
+  store::Item_t item1;
+  store::Item_t itemColl;
   xqp_string resStr="";
   int32_t index = -1;
   xqp_string arg1="";
@@ -1262,11 +1262,11 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
   *an error ·may· be raised [err:FOCH0004].
   *_______________________________________________________________________*/
 /*begin class SubstringAfterIterator*/
-Item_t
+store::Item_t
 SubstringAfterIterator::nextImpl(PlanState& planState) const {
-  Item_t item0;
-  Item_t item1;
-  Item_t itemColl;
+  store::Item_t item0;
+  store::Item_t item1;
+  store::Item_t itemColl;
   xqp_string resStr;
   int32_t startPos = -1;
   xqp_string arg1="";

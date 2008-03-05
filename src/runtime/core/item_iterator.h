@@ -12,11 +12,6 @@
 
 namespace zorba {
 
-class Item;
-class node;
-class zorba;
-
-
 class SingletonIterator;
 typedef rchandle<SingletonIterator> singleton_t;
 
@@ -35,7 +30,7 @@ public:
   virtual ~EmptyIterator() {}
   
 public:
-  Item_t nextImpl(PlanState& planState) const { return NULL; }
+  store::Item_t nextImpl(PlanState& planState) const { return NULL; }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -48,19 +43,19 @@ public:
 class SingletonIterator : public NoaryBaseIterator<SingletonIterator, PlanIteratorState>
 {
 protected:
-  Item_t theValue;
+  store::Item_t theValue;
 
 public:
-  SingletonIterator(const QueryLoc& loc, Item_t value)
+  SingletonIterator(const QueryLoc& loc, store::Item_t value)
     : NoaryBaseIterator<SingletonIterator, PlanIteratorState>(loc),
     theValue(value) {}
 
   virtual ~SingletonIterator() {}
   
 public:
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
-  const Item_t& getValue() const { return theValue; }
+  const store::Item_t& getValue() const { return theValue; }
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -104,7 +99,7 @@ public:
         bool aIsBooleanIter = false);
     
   void openImpl(PlanState& planState, uint32_t& offset);
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState) const;
   

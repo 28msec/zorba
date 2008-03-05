@@ -2,8 +2,7 @@
 #include "util/Assert.h"
 #include "store/util/string_hashset.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 const ulong StringPool::DEFAULT_POOL_SIZE = 1024;
 const float StringPool::DEFAULT_LOAD_FACTOR = 0.6f;
@@ -151,4 +150,5 @@ void StringPool::garbageCollect()
   }
 }
 
-}
+} // namespace store
+} // namespace zorba

@@ -28,7 +28,7 @@ public:
  
   ~InstanceOfIterator();
   
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -50,7 +50,7 @@ public:
                const xqtref_t& aCastType);
   ~CastIterator();
   
-  Item_t nextImpl(PlanState& aPlanState) const;
+  store::Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -72,7 +72,7 @@ public:
                    const xqtref_t& aCastType);
   virtual ~CastableIterator();
 
-  Item_t nextImpl(PlanState& aPlanState) const;
+  store::Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -89,7 +89,7 @@ private:
 public:
   PromoteIterator(const QueryLoc&, PlanIter_t&, const xqtref_t& aPromoteType);
   virtual ~PromoteIterator();
-  Item_t nextImpl(PlanState& aPlanState) const;
+  store::Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -107,7 +107,7 @@ private:
 public:
   TreatIterator(const QueryLoc&, PlanIter_t&, const xqtref_t& aTreatType, enum ZorbaError::ErrorCodes);
   virtual ~TreatIterator();
-  Item_t nextImpl(PlanState& aPlanState) const;
+  store::Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 

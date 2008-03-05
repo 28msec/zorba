@@ -160,7 +160,7 @@ protected:
 
   var_expr_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind)
   {
-    Item_t qname = sctx_p->lookup_qname ("", varname);
+    store::Item_t qname = sctx_p->lookup_qname ("", varname);
     var_expr_t e = new var_expr (loc, kind, qname);
     sctx_p->bind_var (qname, e.getp ());
     return e;
@@ -1689,7 +1689,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
   rchandle<flwor_expr> flwor = dynamic_cast<flwor_expr *>(&*nodestack.top());
   Assert(flwor != NULL);
-  Item_t qname = sctx_p->lookup_qname ("", v.get_name());
+  store::Item_t qname = sctx_p->lookup_qname ("", v.get_name());
   var_expr_t param_var = new var_expr (v.get_location(), var_expr::param_var, qname);
   var_expr_t subst_var = new var_expr(v.get_location(), var_expr::let_var, qname);
   flwor->add(wrap_in_letclause(&*param_var, subst_var));
@@ -1945,7 +1945,7 @@ void *begin_visit(const VFO_DeclList& v)
         n->get_return_type ()->accept (*this);
         return_type = pop_tstack ();
       }
-      Item_t qname = sctx_p->lookup_fn_qname (n->get_name ()->get_prefix (), n->get_name ()->get_localname ());
+      store::Item_t qname = sctx_p->lookup_fn_qname (n->get_name ()->get_prefix (), n->get_name ()->get_localname ());
       signature sig(qname, arg_types, return_type);
       switch(n->get_type()) {
         case ParseConstants::fn_extern:
@@ -2032,7 +2032,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
         && GENV_TYPESYSTEM.is_equal (*sctx_p->get_typemanager()->create_type (ce->get_val ()->getType (), TypeConstants::QUANT_ONE),
                                      *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
-        Item_t castLiteral = GenericCast::instance()->castToQName (ce->get_val ()->getStringValue(), isCast, true);
+        store::Item_t castLiteral = GenericCast::instance()->castToQName (ce->get_val ()->getStringValue(), isCast, true);
         if (isCast)
           return new const_expr (loc, castLiteral);
         else
@@ -2238,7 +2238,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   string prefix = qn_h->get_prefix();
   string fname = qn_h->get_localname();
 
-  Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
+  store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname);
 
   if (fn_qname->getNamespace() == XQUERY_FN_NS) {
     xqp_string fn_local = fn_qname->getLocalName ();
@@ -2609,7 +2609,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
   if (v.getQName() != NULL)
   {
     string qname = v.getQName()->get_qname();
-    Item_t qn_h = sctx_p->lookup_elem_qname (qname);
+    store::Item_t qn_h = sctx_p->lookup_elem_qname (qname);
     matchExpr->setQName(qn_h);
   }
   else
@@ -2722,7 +2722,7 @@ void end_visit(const DocumentTest& v, void* /*visit_state*/)
     }
     else
     {
-      rchandle<NodeTest> nodeTest = new NodeTest(StoreConsts::documentNode);
+      rchandle<NodeTest> nodeTest = new NodeTest(store::StoreConsts::documentNode);
 
       xqtref_t seqmatch = sctx_p->get_typemanager()->
         create_node_type(nodeTest, NULL, TypeConstants::QUANT_ONE);
@@ -2810,23 +2810,23 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
     rchandle<NodeTest> nodeTest;
     if (elemName != NULL)
     {
-      Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname());
+      store::Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname());
 
       NodeNameTest* nodeNameTest =
         new NodeNameTest(qnameItem->getNamespace().getStore(),
                          qnameItem->getLocalName().getStore());
 
-      nodeTest = new NodeTest(StoreConsts::elementNode, nodeNameTest);
+      nodeTest = new NodeTest(store::StoreConsts::elementNode, nodeNameTest);
     }
     else
     {
-      nodeTest = new NodeTest(StoreConsts::elementNode);
+      nodeTest = new NodeTest(store::StoreConsts::elementNode);
     }
 
     xqtref_t contentType;
     if (typeName != NULL)
     {
-      Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
+      store::Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
       contentType = sctx_p->get_typemanager()->create_type(qnameItem, TypeConstants::QUANT_ONE);
     }
@@ -2873,23 +2873,23 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
     rchandle<NodeTest> nodeTest;
     if (attrName != NULL)
     {
-      Item_t qnameItem = sctx_p->lookup_qname("", attrName->get_qname());
+      store::Item_t qnameItem = sctx_p->lookup_qname("", attrName->get_qname());
 
       rchandle<NodeNameTest> nodeNameTest =
         new NodeNameTest(qnameItem->getNamespace().getStore(),
                          qnameItem->getLocalName().getStore());
 
-      nodeTest = new NodeTest(StoreConsts::attributeNode, nodeNameTest);
+      nodeTest = new NodeTest(store::StoreConsts::attributeNode, nodeNameTest);
     }
     else
     {
-      nodeTest = new NodeTest(StoreConsts::attributeNode);
+      nodeTest = new NodeTest(store::StoreConsts::attributeNode);
     }
 
     xqtref_t contentType;
     if (typeName != NULL)
     {
-      Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
+      store::Item_t qnameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname());
 
       contentType = sctx_p->get_typemanager()->create_type(qnameItem, TypeConstants::QUANT_ONE);
     }

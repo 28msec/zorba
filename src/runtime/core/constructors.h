@@ -41,7 +41,7 @@ public:
     : UnaryBaseIterator<DocumentIterator, DocumentIteratorState>(loc, aChild) {}
 
   void openImpl(PlanState& planState, uint32_t& offset);
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
 };
@@ -63,7 +63,7 @@ public:
     : UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(loc, aContent)
   {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
 };
@@ -125,7 +125,7 @@ public:
       bool                isRoot);
   
   void openImpl(PlanState& planState, uint32_t& offset);
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
@@ -178,7 +178,7 @@ public:
         PlanIter_t& aValueIter,
         bool isRoot);
     
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -203,7 +203,7 @@ public:
         PlanIter_t& aComment,
         bool isRoot);
   
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -226,7 +226,7 @@ public:
         PlanIter_t& aContent,
         bool isRoot);
   
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -248,7 +248,7 @@ protected:
 public:
   TextIterator( const QueryLoc& loc, PlanIter_t& aChild, bool isRoot);
   
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -261,7 +261,7 @@ class EnclosedIteratorState : public PlanIteratorState
 {
 public:
   xqpStringStore* theString;
-  Item_t     theContextItem;
+  store::Item_t     theContextItem;
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -279,7 +279,7 @@ public:
         const QueryLoc& loc,
         PlanIter_t& childIter);
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 
@@ -297,7 +297,7 @@ class DocFilterIteratorState : public PlanIteratorState
 {
 public:
   Iterator_t theChildren;
-  Item_t     theCurItem;
+  store::Item_t     theCurItem;
     
   DocFilterIteratorState();
   ~DocFilterIteratorState();
@@ -312,7 +312,7 @@ public:
   DocFilterIterator( const QueryLoc& loc, PlanIter_t& aChild)
     : UnaryBaseIterator<DocFilterIterator, DocFilterIteratorState>(loc, aChild) {}
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
 };

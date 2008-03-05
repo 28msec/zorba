@@ -10,8 +10,7 @@
 #ifndef ZORBA_PENDING_UPDATE_LIST_H
 #define ZORBA_PENDING_UPDATE_LIST_H
 
-namespace zorba
-{
+namespace zorba { namespace store {
 	/**
 		* Pending Update List
 		* TODO move into seperate h-file (no API!!)
@@ -21,6 +20,7 @@ namespace zorba
 		// TODO PUL interface
 	}; /* class PUL */
 	
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba
 
 #endif /* ZORBA_STORE_H */

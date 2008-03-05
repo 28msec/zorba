@@ -25,26 +25,26 @@ namespace zorba
 {
   /* begin class AddOperations */
   template<>
-  Item_t AddOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( const QueryLoc*,  const Item* i0, const Item* i1 )
+  store::Item_t AddOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
+  ( const QueryLoc*,  const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() + i1->getDoubleValue() );
   }
   template<>
-  Item_t AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( const QueryLoc*,  const Item* i0, const Item* i1 )
+  store::Item_t AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
+  ( const QueryLoc*,  const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() + i1->getFloatValue() );
   }
   template<>
-  Item_t AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( const QueryLoc*,  const Item* i0, const Item* i1 )
+  store::Item_t AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
+  ( const QueryLoc*,  const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() + i1->getDecimalValue() );
   }
   template<>
-  Item_t AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() + i1->getIntegerValue() );
   }
@@ -52,29 +52,29 @@ namespace zorba
 
   /* start class SubtractOperations */
   template<>
-  Item_t SubtractOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t SubtractOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() - i1->getDoubleValue() );
   }
 
   template<>
-  Item_t SubtractOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t SubtractOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() - i1->getFloatValue() );
   }
 
   template<>
-  Item_t SubtractOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t SubtractOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() - i1->getDecimalValue() );
   }
 
   template<>
-  Item_t SubtractOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t SubtractOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() - i1->getIntegerValue() );
   }
@@ -82,29 +82,29 @@ namespace zorba
 
   /* start class MultiplyOperations */
   template<>
-  Item_t MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() * i1->getDoubleValue() );
   }
 
   template<>
-  Item_t MultiplyOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t MultiplyOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() * i1->getFloatValue() );
   }
 
   template<>
-  Item_t MultiplyOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t MultiplyOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() * i1->getDecimalValue() );
   }
 
   template<>
-  Item_t MultiplyOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t MultiplyOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createInteger ( i0->getIntegerValue() * i1->getIntegerValue() );
   }
@@ -112,22 +112,22 @@ namespace zorba
 
   /* start class DivideOperations */
   template<>
-  Item_t DivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t DivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() / i1->getDoubleValue() );
   }
 
   template<>
-  Item_t DivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t DivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() / i1->getFloatValue() );
   }
 
   template<>
-  Item_t DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( const QueryLoc* loc, const Item* i0, const Item* i1 )
+  store::Item_t DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
+  ( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
   {
     xqp_decimal ld0 = i0->getDecimalValue();
     xqp_decimal ld1 = i1->getDecimalValue();
@@ -140,8 +140,8 @@ namespace zorba
   }
 
   template<>
-  Item_t DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( const QueryLoc* loc, const Item* i0, const Item* i1 )
+  store::Item_t DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
+  ( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
   {
     xqp_decimal ll0 = Decimal::parseInteger(i0->getIntegerValue());
     xqp_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
@@ -156,8 +156,8 @@ namespace zorba
 
   /* start class IntegerDivideOperations */
   template<>
-  Item_t IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( const QueryLoc* loc, const Item* i0, const Item* i1 )
+  store::Item_t IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
+  ( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
   {
     if (i0->isNaN() || i1->isNaN()) {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
@@ -187,8 +187,8 @@ namespace zorba
   }
 
   template<>
-  Item_t IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( const QueryLoc* loc, const Item* i0, const Item* i1 )
+  store::Item_t IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
+  ( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
   {
     if (i0->isNaN() || i1->isNaN() ) {
       ZORBA_ERROR_ALERT(ZorbaError::FOAR0002,
@@ -217,8 +217,8 @@ namespace zorba
   }
 
   template<>
-  Item_t IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( const QueryLoc* loc, const Item* i0, const Item* i1 )
+  store::Item_t IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
+  ( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
   {
     xqp_decimal ld0 = i0->getDecimalValue();
     xqp_decimal ld1 = i1->getDecimalValue();
@@ -233,8 +233,8 @@ namespace zorba
   }
 
   template<>
-  Item_t IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( const QueryLoc* loc, const Item* i0, const Item* i1 )
+  store::Item_t IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
+  ( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
   {
     xqp_integer ll0 = i0->getIntegerValue();
     xqp_integer ll1 = i1->getIntegerValue();
@@ -251,22 +251,22 @@ namespace zorba
 
   /* start class ModOperations */
   template<>
-  Item_t ModOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t ModOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createDouble ( i0->getDoubleValue() % i1->getDoubleValue() );
   }
 
   template<>
-  Item_t ModOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( const QueryLoc*, const Item* i0, const Item* i1 )
+  store::Item_t ModOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
+  ( const QueryLoc*, const store::Item* i0, const store::Item* i1 )
   {
     return Zorba::getItemFactory()->createFloat ( i0->getFloatValue() % i1->getFloatValue() );
   }
 
   template<>
-  Item_t ModOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( const QueryLoc* loc, const Item* i0, const Item* i1 )
+  store::Item_t ModOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
+  ( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
   {
     xqp_decimal ld0 = i0->getDecimalValue();
     xqp_decimal ld1 = i1->getDecimalValue();
@@ -279,8 +279,8 @@ namespace zorba
   }
 
   template<>
-  Item_t ModOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( const QueryLoc* loc, const Item* i0, const Item* i1 )
+  store::Item_t ModOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
+  ( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
   {
     xqp_integer ll0 = i0->getIntegerValue();
     xqp_integer ll1 = i1->getIntegerValue();
@@ -302,11 +302,11 @@ namespace zorba
   { }
 
   template < class Operation >
-  Item_t NumArithIterator<Operation>::nextImpl ( PlanState& planState ) const
+  store::Item_t NumArithIterator<Operation>::nextImpl ( PlanState& planState ) const
   {
-    Item_t n0;
-    Item_t n1;
-    Item_t res;
+    store::Item_t n0;
+    store::Item_t n1;
+    store::Item_t res;
 
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -329,7 +329,7 @@ namespace zorba
   }
 
   template < class Operation >
-  Item_t NumArithIterator<Operation>::compute(const QueryLoc& aLoc, Item_t n0, Item_t n1)
+  store::Item_t NumArithIterator<Operation>::compute(const QueryLoc& aLoc, store::Item_t n0, store::Item_t n1)
   {
     n0 = n0->getAtomizationValue();
     n1 = n1->getAtomizationValue();
@@ -341,14 +341,14 @@ namespace zorba
   }
   
   template < class Operation >
-  Item_t NumArithIterator<Operation>::computeAtomic
-    (const QueryLoc& aLoc, Item_t item0, xqtref_t type0, Item_t item1, xqtref_t type1)
+  store::Item_t NumArithIterator<Operation>::computeAtomic
+    (const QueryLoc& aLoc, store::Item_t item0, xqtref_t type0, store::Item_t item1, xqtref_t type1)
   {
-    Item_t res;
+    store::Item_t res;
     
     xqtref_t resultType = GENV_TYPESYSTEM.arithmetic_type ( *type0, *type1 );
-    Item_t n0 = GenericCast::instance()->cast ( item0, resultType );
-    Item_t n1 = GenericCast::instance()->cast ( item1, resultType );
+    store::Item_t n0 = GenericCast::instance()->cast ( item0, resultType );
+    store::Item_t n1 = GenericCast::instance()->cast ( item1, resultType );
 
     switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *resultType ) )
     {
@@ -564,10 +564,10 @@ namespace zorba
   OpNumericUnaryIterator::~OpNumericUnaryIterator()
   { }
 
-  Item_t OpNumericUnaryIterator::nextImpl ( PlanState& planState ) const
+  store::Item_t OpNumericUnaryIterator::nextImpl ( PlanState& planState ) const
   {
-    Item_t item;
-    Item_t res;
+    store::Item_t item;
+    store::Item_t res;
     xqtref_t type;
 
     PlanIteratorState* state;
@@ -632,10 +632,10 @@ namespace zorba
 
 // 6.4.1 fn:abs
 
-  Item_t FnAbsIterator::nextImpl ( PlanState& planState ) const
+  store::Item_t FnAbsIterator::nextImpl ( PlanState& planState ) const
   {
-    Item_t item;
-    Item_t res;
+    store::Item_t item;
+    store::Item_t res;
     xqtref_t type;
 
     
@@ -703,10 +703,10 @@ namespace zorba
 
 // 6.4.2 fn:ceiling
 
-  Item_t FnCeilingIterator::nextImpl(PlanState& planState) const
+  store::Item_t FnCeilingIterator::nextImpl(PlanState& planState) const
   {
-    Item_t item;
-    Item_t res;
+    store::Item_t item;
+    store::Item_t res;
     xqtref_t type;
     
     PlanIteratorState* state;
@@ -760,10 +760,10 @@ namespace zorba
   
 // 6.4.3 fn:floor
 
-  Item_t FnFloorIterator::nextImpl(PlanState& planState) const
+  store::Item_t FnFloorIterator::nextImpl(PlanState& planState) const
   {
-    Item_t item;
-    Item_t res;
+    store::Item_t item;
+    store::Item_t res;
     xqtref_t type;
     
     PlanIteratorState* state;
@@ -817,10 +817,10 @@ namespace zorba
   
 // 6.4.4 fn:round
 
-  Item_t FnRoundIterator::nextImpl(PlanState& planState) const
+  store::Item_t FnRoundIterator::nextImpl(PlanState& planState) const
   {
-    Item_t item;
-    Item_t res;
+    store::Item_t item;
+    store::Item_t res;
     xqtref_t type;
     
     PlanIteratorState* state;
@@ -885,11 +885,11 @@ namespace zorba
   FnRoundHalfToEvenIterator::~ FnRoundHalfToEvenIterator()
   {}
 
-  Item_t FnRoundHalfToEvenIterator::nextImpl(PlanState& planState) const
+  store::Item_t FnRoundHalfToEvenIterator::nextImpl(PlanState& planState) const
   {
-    Item_t item;
-    Item_t itemPrec;
-    Item_t res;
+    store::Item_t item;
+    store::Item_t itemPrec;
+    store::Item_t res;
     xqtref_t type;
     Integer precision = Integer::parseInt((int32_t)0);
     
@@ -954,7 +954,7 @@ namespace zorba
 
   ZorNumGen::~ZorNumGen() {}
 
-  Item_t
+  store::Item_t
   ZorNumGen::nextImpl ( PlanState& planState ) const
   {
     ZorNumGenState* state;

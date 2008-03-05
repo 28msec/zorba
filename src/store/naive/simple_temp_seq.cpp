@@ -9,8 +9,7 @@
 
 #include "store/naive/simple_temp_seq.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 /*******************************************************************************
 
@@ -269,4 +268,5 @@ void SimpleTempSeq::SimpleTempSeqIter::close()
 {
 }
 
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba

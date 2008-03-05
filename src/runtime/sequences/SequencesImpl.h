@@ -47,7 +47,7 @@ NARY_ITER_STATE(FnConcatIterator, FnConcatIteratorState);
 class FnIndexOfIteratorState : public PlanIteratorState {
 public:  
   uint32_t theCurrentPos; // the current position in the sequence
-  Item_t   theSearchItem; // the item to search for
+  store::Item_t   theSearchItem; // the item to search for
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -76,12 +76,12 @@ NARY_ITER(FnExistsIterator);
 
 struct ItemCmp 
 {
-    bool operator() ( const Item_t& i1, const Item_t& i2) const;
+    bool operator() ( const store::Item_t& i1, const store::Item_t& i2) const;
 };
 
 class FnDistinctValuesIteratorState : public PlanIteratorState {
 public:  
-  typedef std::map<Item_t, uint8_t, ItemCmp> AlreadySeenMap_t;
+  typedef std::map<store::Item_t, uint8_t, ItemCmp> AlreadySeenMap_t;
   typedef AlreadySeenMap_t::const_iterator   AlreadySeenConstIter_t;
 
   AlreadySeenMap_t theAlreadySeenMap;  
@@ -100,7 +100,7 @@ public:
  
   ~FnDistinctValuesIterator();
 
-  Item_t 
+  store::Item_t 
   nextImpl(PlanState& planState) const;
  
   virtual void 
@@ -117,7 +117,7 @@ class FnInsertBeforeIteratorState : public PlanIteratorState {
 public:  
   xqp_integer theCurrentPos; // the current position in the sequence
   xqp_integer thePosition;
-  Item_t      theTargetItem;
+  store::Item_t      theTargetItem;
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -143,7 +143,7 @@ NARY_ITER_STATE(FnRemoveIterator, FnRemoveIteratorState);
 //15.1.9 fn:reverse
 class FnReverseIteratorState : public PlanIteratorState {
   public:
-    std::stack<Item_t> theStack;
+    std::stack<store::Item_t> theStack;
 
     void init(PlanState&);
     void reset(PlanState&);
@@ -224,7 +224,7 @@ private:
 
 public:
     FnMinMaxIterator(const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType);
-    Item_t nextImpl(PlanState& aPlanState) const;
+    store::Item_t nextImpl(PlanState& aPlanState) const;
     virtual void accept(PlanIterVisitor& v) const;
     Type getType() const { return theType; }
 };
@@ -265,7 +265,7 @@ public:
   FnDocIterator(const QueryLoc& loc, PlanIter_t& arg);
   virtual ~FnDocIterator();
 
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };

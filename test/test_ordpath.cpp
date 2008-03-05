@@ -88,7 +88,7 @@ int main(int argc, char * argv[])
   {
     parseDeweyString(deweyStr, dewey1);
 
-    zorba::OrdPath path;
+    zorba::store::OrdPath path;
     path.compress(dewey1);
 
     std::cout << "ordpath = " << path.show() << std::endl;
@@ -99,9 +99,9 @@ int main(int argc, char * argv[])
     parseDeweyString(deweyStrVector[0], dewey1);
     parseDeweyString(deweyStrVector[1], dewey2);
 
-    zorba::OrdPath path1;
-    zorba::OrdPath path2;
-    zorba::OrdPath path;
+    zorba::store::OrdPath path1;
+    zorba::store::OrdPath path2;
+    zorba::store::OrdPath path;
 
     try
     {
@@ -114,7 +114,7 @@ int main(int argc, char * argv[])
         std::cout << "ordpath2 = " << path2.show() << std::endl;
       }
 
-      zorba::OrdPath::insertInto(path1, path2, path);
+      zorba::store::OrdPath::insertInto(path1, path2, path);
 
       std::cout << "ordpath = " << path.show() << std::endl;
     }

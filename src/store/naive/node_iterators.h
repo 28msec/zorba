@@ -2,18 +2,11 @@
 #define ZORBA_DEFAULT_STORE_NODE_ITERATORS
 
 #include <zorba/iterator.h>
-
+#include "common/shared_types.h"
 #include "store/naive/ordpath.h"
 #include "store/util/item_hashset.h"
 
-namespace zorba
-{
-
-template <class Object> class rchandle;
-
-typedef rchandle<class Item> Item_t;
-typedef rchandle<class XmlNode> XmlNode_t;
-typedef rchandle<class ElementNode> ElementNode_t;
+namespace zorba { namespace store {
 
 
 /*******************************************************************************
@@ -213,6 +206,7 @@ public:
 };
 
 
-}
+} // namespace store
+} // namespace zorba
 
 #endif

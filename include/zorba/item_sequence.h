@@ -3,8 +3,7 @@
 
 #include <zorba/common/api_shared_types.h>
 
-namespace zorba {
-
+namespace zorba { namespace store {
   class ItemSequence : public SimpleRCObject 
   {
     public:
@@ -13,5 +12,6 @@ namespace zorba {
 
   }; /* class ItemSequence */
 
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba
 #endif

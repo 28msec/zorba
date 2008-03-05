@@ -36,7 +36,7 @@ class FLWORIterator : public Batcher<FLWORIterator>
 public:
   class OrderKeyCmp;
   
-  typedef std::multimap<std::vector<Item_t>, Iterator_t, OrderKeyCmp> order_map_t;
+  typedef std::multimap<std::vector<store::Item_t>, Iterator_t, OrderKeyCmp> order_map_t;
       
   /**
      Wrappes a FOR or LET clause. 
@@ -143,7 +143,7 @@ public:
      * it returns true if its first argument is less than its second argument, and false otherwise.
      * This is also defined as multimap::key_compare.
      */
-    bool operator() ( const std::vector<Item_t>& s1, const std::vector<Item_t>& s2 ) const;
+    bool operator() ( const std::vector<store::Item_t>& s1, const std::vector<store::Item_t>& s2 ) const;
           
     /**
      * Does the actual comparision
@@ -152,8 +152,8 @@ public:
      *            1, if item0 &gt; item1
      */
     inline int8_t compare(
-        const Item_t& s1,
-        const Item_t& s2,
+        const store::Item_t& s1,
+        const store::Item_t& s2,
         bool asc,
         bool emptyLeast) const;
           
@@ -194,7 +194,7 @@ public:
   ~FLWORIterator();
 
   void openImpl ( PlanState& planState, uint32_t& offset );
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 

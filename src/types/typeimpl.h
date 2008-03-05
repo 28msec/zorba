@@ -7,8 +7,6 @@
 
 namespace zorba {
 
-typedef rchandle<Item> Item_t;
-
 /*
  * Implementation specific classes after this point.
  */
@@ -145,7 +143,7 @@ class NoneXQType : public XQType {
 class UserDefinedXQType : public XQType
 {
 private:
-    Item_t& _qname;
+    store::Item_t& _qname;
     xqtref_t _baseType;
     bool _isAtomic;
     
@@ -155,11 +153,11 @@ public:
       return USER_DEFINED_KIND;
     }
 
-    UserDefinedXQType(Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier);
+    UserDefinedXQType(store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier);
     
     bool isSubTypeOf(const XQType& superType) const;
 
-    Item_t& getQName() const      { return _qname; }
+    store::Item_t& getQName() const      { return _qname; }
     bool isAtomic() const        { return _isAtomic; }
     xqtref_t getBaseType() const { return _baseType; }
 };

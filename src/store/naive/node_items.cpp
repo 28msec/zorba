@@ -49,8 +49,7 @@ int traceLevel = 0;
 #endif
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 
 ConstrNodeVector dummyVector;
@@ -1481,5 +1480,6 @@ xqp_string CommentNode::show() const
   return "<!--" + *theContent + "-->";
 }
 
+} // namespace store
+} // namespace zorba
 
-} /* namespace zorba */

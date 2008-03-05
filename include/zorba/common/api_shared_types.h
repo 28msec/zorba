@@ -7,8 +7,17 @@ namespace zorba {
 
   // TODO put xqpString here
 
-  class Item;
+  namespace store {
+    class Item;
+    typedef rchandle<store::Item> Item_t;
+    class ItemSequence;
+    typedef rchandle<ItemSequence>              ItemSequence_t;
+    class XmlDataManager;
+    typedef rchandle<XmlDataManager> XmlDataManager_t;
+  }
+
   class Iterator;
+  typedef rchandle<Iterator> Iterator_t;
 
   /* numerics */
   template <class Object> class FloatImpl;
@@ -16,7 +25,6 @@ namespace zorba {
 
   /* stuff needed for the external functions */
   class StatelessExternalFunction;
-  class ItemSequence;
 
   /* datetime stuff */
   class DateTime;
@@ -32,8 +40,8 @@ namespace zorba {
   class GMonthDay;
   class GDay;
   class GMonth;
-class ResultIterator;
-typedef rchandle<ResultIterator>		        ResultIterator_t;
+  class ResultIterator;
+  typedef rchandle<ResultIterator>		        ResultIterator_t;
 
   /* context stuff */
   class DynamicQueryContext;
@@ -44,20 +52,12 @@ typedef rchandle<ResultIterator>		        ResultIterator_t;
   class ZorbaAlertsManager;
   class ZorbaError;
 
-  /* store stuff */
-  class XmlDataManager;
-  typedef rchandle<XmlDataManager> XmlDataManager_t;
-
-  typedef rchandle<Item> Item_t;
-  typedef rchandle<Iterator> Iterator_t;
-
   /* numerics */
   typedef FloatImpl<double> Double;
   typedef FloatImpl<float>  Float;
 
   /* stuff needed for the external functions */
   typedef rchandle<StatelessExternalFunction> StatelessExternalFunction_t;
-  typedef rchandle<ItemSequence>              ItemSequence_t;
 
   /* datetime stuff */
   typedef rchandle<DateTime> DateTime_t;

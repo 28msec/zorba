@@ -43,12 +43,12 @@ namespace zorba {
  *_______________________________________________________________________*/
 
  /* begin class ResolveQNameIterator */
-Item_t
+store::Item_t
 ResolveQNameIterator::nextImpl(PlanState& planState) const
 {
-    Item_t res;
-    Item_t itemQName;
-    Item_t itemElem;
+    store::Item_t res;
+    store::Item_t itemQName;
+    store::Item_t itemElem;
     xqp_string resNs = "";
     xqp_string resPre = "";
     xqp_string resQName = "";
@@ -124,12 +124,12 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class QNameIterator */
-Item_t
+store::Item_t
 QNameIterator::nextImpl(PlanState& planState) const
 {
-    Item_t itemURI;
-    Item_t itemQName;
-    Item_t res;
+    store::Item_t itemURI;
+    store::Item_t itemQName;
+    store::Item_t res;
     xqp_string resNs = "";
     xqp_string resQName = "";
     int32_t index = -1;
@@ -194,12 +194,12 @@ QNameIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class QNameEqualIterator */
-Item_t
+store::Item_t
 QNameEqualIterator::nextImpl(PlanState& planState) const
 {
-  Item_t arg1;
-  Item_t arg2;
-  Item_t res;
+  store::Item_t arg1;
+  store::Item_t arg2;
+  store::Item_t res;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -244,10 +244,10 @@ QNameEqualIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class PrefixFromQNameIterator */
-Item_t
+store::Item_t
 PrefixFromQNameIterator::nextImpl(PlanState& planState) const
 {
-    Item_t item;
+    store::Item_t item;
     xqp_string tmp="";
 
     PlanIteratorState* state;
@@ -276,10 +276,10 @@ PrefixFromQNameIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class LocalNameFromQNameIterator */
-Item_t
+store::Item_t
 LocalNameFromQNameIterator::nextImpl(PlanState& planState) const 
 {
-  Item_t item;
+  store::Item_t item;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -306,10 +306,10 @@ LocalNameFromQNameIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class NamespaceUriFromQNameIterator */
-Item_t
+store::Item_t
 NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const 
 {
-    Item_t item;
+    store::Item_t item;
 
     PlanIteratorState* state;
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -342,11 +342,11 @@ NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
  /* begin class NamespaceUriForPrefixlIterator */
-Item_t
+store::Item_t
 NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
 {
-  Item_t itemPrefix;
-  Item_t itemElem;
+  store::Item_t itemPrefix;
+  store::Item_t itemElem;
   xqp_string resNs = "";
   std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
   std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
@@ -400,10 +400,10 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
  *For the default namespace, which has no prefix, it returns the zero-length string.
  *_______________________________________________________________________*/
 
-Item_t
+store::Item_t
 InScopePrefixesIterator::nextImpl(PlanState& planState) const
 {
-  Item_t itemElem;
+  store::Item_t itemElem;
 
   InScopePrefixesState* state;
   DEFAULT_STACK_INIT(InScopePrefixesState, state, planState);

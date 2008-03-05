@@ -5,15 +5,10 @@
 
 #include <zorba/common/common.h>
 #include <zorba/rchandle.h>
+#include "common/shared_types.h"
 
-namespace zorba
-{
-class xqpString;
-class xqpStringStore;
+namespace zorba { namespace store {
 
-typedef rchandle<class xqpStringStore> xqpStringStore_t;
-
-typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
@@ -50,6 +45,7 @@ public:
 };
 
 
-}
+} // namespace store
+} // namespace zorba
 
 #endif

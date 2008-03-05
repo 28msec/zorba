@@ -15,7 +15,7 @@ public:
 
   virtual void openIterator() = 0;
 
-  virtual Item_t nextItem() = 0;
+  virtual store::Item_t nextItem() = 0;
 
   virtual void closeIterator() = 0;
 

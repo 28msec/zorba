@@ -19,8 +19,8 @@
 #include "common/shared_types.h"
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
+
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
 class ItemFactory
@@ -518,6 +518,7 @@ public:
         bool            isRoot) = 0;
 };
 
-}/* namespace zorba */
+} // namespace store
+} // namespace zorba
 
 #endif

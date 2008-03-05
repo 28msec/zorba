@@ -33,9 +33,9 @@ CtxVariableIterator::~CtxVariableIterator()
 }
 
 
-Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
+store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
 {
-  Item_t item;
+  store::Item_t item;
   Iterator_t iter;
 
   PlanIteratorState* aState;

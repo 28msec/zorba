@@ -38,8 +38,8 @@ void GlobalEnvironment::init()
     assert(lICUInitStatus == U_ZERO_ERROR);
   }
   
-  m_globalEnv->m_store.reset(new SimpleStore());
-  static_cast<SimpleStore *>(m_globalEnv->m_store.get())->init();
+  m_globalEnv->m_store.reset(new store::SimpleStore());
+  static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
   m_globalEnv->m_rootStaticContext.reset(new root_static_context());
   BuiltinFunctionLibrary::populateContext(m_globalEnv->m_rootStaticContext.get());
 
@@ -103,7 +103,7 @@ RootTypeManager& GlobalEnvironment::getRootTypeManager()
   return *(static_cast<RootTypeManager *>(m_rootStaticContext->get_typemanager()));
 }
 
-Store& GlobalEnvironment::getStore()
+store::Store& GlobalEnvironment::getStore()
 {
   return *m_store;
 }

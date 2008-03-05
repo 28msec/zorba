@@ -52,7 +52,6 @@ namespace zorba {
 
 class namespace_node;
 class user_function;
-class Item;
 class TypeManager;
 /*______________________________________________________________________
 |  
@@ -64,7 +63,7 @@ class TypeManager;
 class static_context : public context
 {
 protected:
-  xqp_string qname_internal_key (const Item *qname) const;
+  xqp_string qname_internal_key (const store::Item *qname) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
   static xqp_string fn_internal_key (int arity);
@@ -89,15 +88,15 @@ public:
   xqp_string lookup_ns (xqp_string prefix) const;
   void bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCodes err = ZorbaError::XQST0033);
 
-  Item_t lookup_qname (xqp_string default_ns, xqp_string name) const;
-  Item_t lookup_qname (xqp_string default_ns, xqp_string pfx, xqp_string local) const;
-  Item_t lookup_elem_qname (xqp_string name) const {
+  store::Item_t lookup_qname (xqp_string default_ns, xqp_string name) const;
+  store::Item_t lookup_qname (xqp_string default_ns, xqp_string pfx, xqp_string local) const;
+  store::Item_t lookup_elem_qname (xqp_string name) const {
     return lookup_qname (default_elem_type_ns (), name);
   }
-  Item_t lookup_elem_qname (xqp_string pfx, xqp_string local) const {
+  store::Item_t lookup_elem_qname (xqp_string pfx, xqp_string local) const {
     return lookup_qname (default_elem_type_ns (), pfx, local);
   }
-  Item_t lookup_fn_qname (xqp_string pfx, xqp_string local) const {
+  store::Item_t lookup_fn_qname (xqp_string pfx, xqp_string local) const {
     return lookup_qname (default_function_namespace (), pfx, local);
   }
 
@@ -112,7 +111,7 @@ public:
     ZORBA_ASSERT (e != NULL);
     return e;
   }
-  void bind_var (const Item *qname, expr *expr) {
+  void bind_var (const store::Item *qname, expr *expr) {
     bind_expr ("var:" + qname_internal_key (qname), expr);
   }
 
@@ -143,12 +142,12 @@ public:
   void bind_fn (xqp_string fname, function *f, int arity) {
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), fname), f);
   }
-  void bind_fn (const Item *qname, function *f, int arity) {
+  void bind_fn (const store::Item *qname, function *f, int arity) {
     bind_func (fn_internal_key (arity) + qname_internal_key (qname), f);
   }
 
 	void add_variable_type( const xqp_string var_name, xqtref_t var_type);
-	xqtref_t  get_variable_type( Item *var_name );
+	xqtref_t  get_variable_type( store::Item *var_name );
 
 	void bind_type( xqp_string key, xqtref_t t);
 	xqtref_t  lookup_type (xqp_string key);
@@ -194,8 +193,8 @@ public:
 	void set_default_collection_type(xqtref_t t);
 	xqtref_t		default_collection_type();
 
-	void set_function_type(const Item *qname, xqtref_t t);
-  xqtref_t get_function_type(const Item_t);
+	void set_function_type(const store::Item *qname, xqtref_t t);
+  xqtref_t get_function_type(const store::Item_t);
 	
 	void set_document_type(xqp_string docURI, xqtref_t t);
   xqtref_t get_document_type(const xqp_string);

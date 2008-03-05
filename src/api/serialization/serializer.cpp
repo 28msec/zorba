@@ -327,13 +327,13 @@ bool serializer::emitter::haveBinding(std::pair<xqpString,xqpString>& nsBinding)
   return false;
 }
 
-int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_escaping = true)
+int serializer::emitter::emit_node_children(store::Item* item, int depth, bool perform_escaping = true)
 {
   Iterator_t it;
-  Item_t child;	
+  store::Item_t child;	
   int closed_parent_tag = 0;
   
-  if (item->getNodeKind() == StoreConsts::elementNode)
+  if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
     // emit attributes 
     it = item->getAttributes();
@@ -345,7 +345,7 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
       child = it->next();
     }
   }
-  else if (item->getNodeKind() == StoreConsts::documentNode)
+  else if (item->getNodeKind() == store::StoreConsts::documentNode)
   {
     closed_parent_tag = 1;
   }
@@ -356,7 +356,7 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
 	child = it->next();
 	while (child!= NULL)
 	{
-    if (child->getNodeKind() != StoreConsts::attributeNode)
+    if (child->getNodeKind() != store::StoreConsts::attributeNode)
     {
       if (closed_parent_tag == 0)
 		  {
@@ -371,7 +371,7 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
   return closed_parent_tag;
 }
 
-bool serializer::emitter::emit_bindings(Item* item)
+bool serializer::emitter::emit_bindings(store::Item* item)
 {
   // emit namespace bindings
   NsBindings nsBindings;
@@ -395,13 +395,13 @@ bool serializer::emitter::emit_bindings(Item* item)
     return false;
 }
 
-void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent /* = NULL */)
+void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* element_parent /* = NULL */)
 {
-	if( item->getNodeKind() == StoreConsts::documentNode )
+	if( item->getNodeKind() == store::StoreConsts::documentNode )
 	{		
 		emit_node_children(item, depth+1);    
 	}
-	else if (item->getNodeKind() == StoreConsts::elementNode)
+	else if (item->getNodeKind() == store::StoreConsts::elementNode)
 	{
     if (ser.indent)
 			emit_indentation(depth);
@@ -423,21 +423,21 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
 			tr << ser.END_OF_LINE;
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
-	else if (item->getNodeKind() == StoreConsts::attributeNode )
+	else if (item->getNodeKind() == store::StoreConsts::attributeNode )
 	{
 		tr << " " << item->getNodeName()->getStringValue() << "=\"";
 		emit_expanded_string(item->getStringValue(), true);
 		tr << "\"";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
-	else if (item->getNodeKind() == StoreConsts::textNode)
+	else if (item->getNodeKind() == store::StoreConsts::textNode)
 	{		
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";    
 		emit_expanded_string(item->getStringValue());
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
-	else if (item->getNodeKind() == StoreConsts::commentNode)
+	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
     if (ser.indent)
       emit_indentation(depth);
@@ -446,7 +446,7 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
       tr << ser.END_OF_LINE;		
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
-	else if (item->getNodeKind() == StoreConsts::piNode )
+	else if (item->getNodeKind() == store::StoreConsts::piNode )
 	{
     tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
@@ -457,7 +457,7 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
 	}
 }
 
-void serializer::emitter::emit_item(Item* item)
+void serializer::emitter::emit_item(store::Item* item)
 {
   if (item->isAtomic())
   {
@@ -468,7 +468,7 @@ void serializer::emitter::emit_item(Item* item)
   }
   else
   {
-    if (item->getNodeKind() == StoreConsts::attributeNode)
+    if (item->getNodeKind() == store::StoreConsts::attributeNode)
       //||
       //  item->getNodeKind() == namespaceNode)
     {
@@ -540,9 +540,9 @@ void serializer::html_emitter::emit_declaration_end()
 
 // returns true if there is a META element, as a child of a HEAD element,
 // with an attribute "http-equiv" with value "content-type"
-int is_content_type_meta(Item_t item, Item_t element_parent)
+int is_content_type_meta(store::Item_t item, store::Item_t element_parent)
 {
-  Item_t child;
+  store::Item_t child;
   
   if (element_parent == NULL)
     return 0;
@@ -554,7 +554,7 @@ int is_content_type_meta(Item_t item, Item_t element_parent)
     // iterate through attributes
     Iterator_t it = item->getAttributes();
     it->open();
-    Item_t child = it->next();
+    store::Item_t child = it->next();
     while (child!= NULL)
     { 
       if (child->getNodeName()->getStringValue().lowercase() == "http-equiv"
@@ -569,7 +569,7 @@ int is_content_type_meta(Item_t item, Item_t element_parent)
   return 0;
 }
 
-int is_html_empty_element(Item_t item)
+int is_html_empty_element(store::Item_t item)
 {
   if (item->getNodeName()->getStringValue().lowercase() == "area"
       ||
@@ -601,9 +601,9 @@ int is_html_empty_element(Item_t item)
     return 0;
 }
 
-void serializer::html_emitter::emit_node(Item* item, int depth, Item* element_parent)
+void serializer::html_emitter::emit_node(store::Item* item, int depth, store::Item* element_parent)
 {
-  if (item->getNodeKind() == StoreConsts::elementNode)
+  if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
     unsigned closed_parent_tag = 0;
     
@@ -675,7 +675,7 @@ void serializer::html_emitter::emit_node(Item* item, int depth, Item* element_pa
       tr << serializer::END_OF_LINE;
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
-  else if (item->getNodeKind() == StoreConsts::textNode)
+  else if (item->getNodeKind() == store::StoreConsts::textNode)
   {
     /*
       The HTML output method MUST NOT perform escaping for the content of the script and style elements.
@@ -889,7 +889,7 @@ void serializer::serialize(ResultIterator *result, ostream& os)
   
   e->emit_declaration();
 
-  Item_t item = result->nextItem();
+  store::Item_t item = result->nextItem();
   while (item != NULL )
   {
     e->emit_item(&*item);
@@ -899,7 +899,7 @@ void serializer::serialize(ResultIterator *result, ostream& os)
   e->emit_declaration_end();
 }
 
-void serializer::serialize(Item* item, ostream& os)
+void serializer::serialize(store::Item* item, ostream& os)
 {
   validate_parameters();
   setup(os);

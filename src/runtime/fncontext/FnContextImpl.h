@@ -28,7 +28,7 @@ public:
   virtual ~CtxVariableIterator();
 
   // inherit openImpl from NoaryBaseIterator
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 

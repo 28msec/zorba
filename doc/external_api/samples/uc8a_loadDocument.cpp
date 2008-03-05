@@ -28,7 +28,7 @@ int uc8a_loadDocument(int argc, char* argv[])
 
 		XQuery_t				xquery;
 		DynamicQueryContext_t		dctx;
-	  XmlDataManager_t		zorba_store = zorba_engine->getXmlDataManager();
+	  store::XmlDataManager_t		zorba_store = zorba_engine->getXmlDataManager();
 
 	  //load a document into xml data manager
 	  //and then load it into a variable

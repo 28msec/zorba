@@ -61,7 +61,7 @@ int main(int argc, const char * argv[])
   //
   // Store initialization
   //
-  zorba::SimpleStore* store = static_cast<zorba::SimpleStore*>(&zorba::GENV.getStore());
+  zorba::store::SimpleStore* store = static_cast<zorba::store::SimpleStore*>(&zorba::GENV.getStore());
 
   //
   // Zorba initialization
@@ -75,8 +75,8 @@ int main(int argc, const char * argv[])
   //
   // Create collections
   //
-  zorba::Collection_t coll1;
-  zorba::Collection_t coll2;
+  zorba::store::Collection_t coll1;
+  zorba::store::Collection_t coll2;
 
   try
   {
@@ -107,7 +107,7 @@ int main(int argc, const char * argv[])
   }
 
   std::iostream xmlStream(xmlFile.rdbuf());
-  Item_t doc;
+  store::Item_t doc;
 
 #ifndef WIN32
 	Timer timer;

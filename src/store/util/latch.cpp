@@ -4,8 +4,7 @@
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 Latch::Latch()
 {
@@ -92,6 +91,7 @@ void Latch::unlock()
 #endif
 }
 
-}
+} // namespace store
+} // namespace zorba
 
 #endif

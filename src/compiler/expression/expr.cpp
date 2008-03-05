@@ -228,11 +228,11 @@ string var_expr::decode_var_kind(
   }
 }
 
-var_expr::var_expr(const QueryLoc& loc, Item_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}
+var_expr::var_expr(const QueryLoc& loc, store::Item_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}
 
-var_expr::var_expr(const QueryLoc& loc, var_kind k, Item_t name) : expr (loc), kind (k), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
+var_expr::var_expr(const QueryLoc& loc, var_kind k, store::Item_t name) : expr (loc), kind (k), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
 
-Item_t var_expr::get_varname() const { return varname_h; }
+store::Item_t var_expr::get_varname() const { return varname_h; }
 xqtref_t var_expr::get_type() const { return type; }
 void var_expr::set_type(xqtref_t t) { type = t; }
 
@@ -463,7 +463,7 @@ const signature &fo_expr::get_signature () const {
   return func->get_signature ();
 }
 
-Item_t fo_expr::get_fname () const
+store::Item_t fo_expr::get_fname () const
 { return func->get_fname (); }
 
 
@@ -711,34 +711,34 @@ void match_expr::next_iter (expr_iterator_data& v) {
 }
 
 
-StoreConsts::NodeKind match_expr::getNodeKind() const
+store::StoreConsts::NodeKind match_expr::getNodeKind() const
 {
   switch (theTestKind)
   {
   case match_name_test:
-    return StoreConsts::elementNode;
+    return store::StoreConsts::elementNode;
   case match_doc_test:
-    return StoreConsts::elementNode;
+    return store::StoreConsts::elementNode;
   case match_elem_test:
-    return StoreConsts::elementNode;
+    return store::StoreConsts::elementNode;
   case match_attr_test:
-    return StoreConsts::attributeNode;
+    return store::StoreConsts::attributeNode;
   case match_xs_elem_test:
-    return StoreConsts::elementNode;
+    return store::StoreConsts::elementNode;
   case match_xs_attr_test:
-    return StoreConsts::attributeNode;
+    return store::StoreConsts::attributeNode;
   case match_pi_test:
-    return StoreConsts::piNode;
+    return store::StoreConsts::piNode;
   case match_text_test:
-    return StoreConsts::textNode;
+    return store::StoreConsts::textNode;
   case match_comment_test:
-    return StoreConsts::commentNode;
+    return store::StoreConsts::commentNode;
   case match_anykind_test:
-    return StoreConsts::anyNode;
+    return store::StoreConsts::anyNode;
   default:
     ZORBA_ASSERT (false && "Unknown node test kind");
   }
-  return StoreConsts::anyNode;
+  return store::StoreConsts::anyNode;
 }
 
 
@@ -792,7 +792,7 @@ const_expr::const_expr(
 
 const_expr::const_expr(
   const QueryLoc& loc,
-  Item_t v)
+  store::Item_t v)
 :
   expr(loc),
   val(v)
@@ -806,7 +806,7 @@ const_expr::const_expr(
   const char* aLocal)
 :
   expr(aLoc),
-  val ((Item*)&*ITEM_FACTORY->createQName(aNamespace, aPrefix, aLocal))
+  val ((store::Item*)&*ITEM_FACTORY->createQName(aNamespace, aPrefix, aLocal))
 {
 }
 
@@ -918,7 +918,7 @@ attr_expr::attr_expr(
 }
 
 
-Item* attr_expr::getQName() const
+store::Item* attr_expr::getQName() const
 {
   const_expr* qnExpr =  dynamic_cast<const_expr*>(theQNameExpr.getp());
   if (qnExpr != 0)
@@ -983,7 +983,7 @@ void pi_expr::next_iter (expr_iterator_data& v) {
 void function_def_expr::next_iter (expr_iterator_data& v) {
 }
 
-function_def_expr::function_def_expr (const QueryLoc& loc, Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type)
+function_def_expr::function_def_expr (const QueryLoc& loc, store::Item_t name_, std::vector<rchandle<var_expr> > &params_, xqtref_t return_type)
   : expr (loc), name (name_)
 {
   assert (return_type != NULL);

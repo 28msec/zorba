@@ -8,8 +8,7 @@
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6f;
 
@@ -442,5 +441,6 @@ void QNamePool::resizeHashTab()
     entry->theQNameSlot = qn;
   }
 }
+} // namespace store
+} // namespace zorba
 
-}

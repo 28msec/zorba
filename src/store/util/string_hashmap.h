@@ -6,8 +6,7 @@
 
 #include "store/util/mutex.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 /*******************************************************************************
 
   StringHashMap implements a set of strings, each of which is associated with
@@ -388,5 +387,6 @@ void StringHashMap<V>::expand()
 }
 
 
-}
+} // namespace store
+} // namespace zorba
 #endif

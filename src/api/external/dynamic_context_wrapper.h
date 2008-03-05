@@ -20,7 +20,7 @@ class DynamicContextWrapper : public DynamicQueryContext
 	typedef struct
 	{
 		xqp_string		varname;
-		Item_t				atomic_item;
+		store::Item_t				atomic_item;
 	}dctx_extern_var_t;
 
 	std::vector<dctx_extern_var_t>		vars;
@@ -30,7 +30,7 @@ class DynamicContextWrapper : public DynamicQueryContext
 	long						current_timezone_seconds;
 	bool						is_datetime_initialized;
 
-	Item_t					context_item;
+	store::Item_t					context_item;
 public:
 	DynamicContextWrapper();
 
@@ -93,7 +93,7 @@ public:
   virtual bool setVariableAsGMonth( xqp_string varname, xqp_gMonth gmonth_value);
   virtual bool setVariableAsGMonth( xqp_string varname, short month);
 
-  virtual bool setVariableAsItem( xqp_string varname, Item_t item);
+  virtual bool setVariableAsItem( xqp_string varname, store::Item_t item);
 
 	virtual bool setVariableAsDocument( xqp_string varname, xqp_anyURI documentURI);
 	virtual bool setVariableAsDocumentFromFile(
@@ -163,7 +163,7 @@ public:
   virtual bool setContextItemAsGMonth( xqp_gMonth gmonth_value);
   virtual bool setContextItemAsGMonth( short month);
 
-  virtual bool setContextItemAsItem( Item_t item);
+  virtual bool setContextItemAsItem( store::Item_t item);
 
 	virtual bool setContextItemAsDocument( xqp_anyURI documentURI);
 	virtual bool setContextItemAsDocumentFromFile(

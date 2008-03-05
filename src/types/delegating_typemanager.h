@@ -125,7 +125,7 @@ class DelegatingTypeManager : public TypeManager {
     { return m_parent->get_type_identifier(type); }
 
     /* Factory Methods */
-    xqtref_t create_type(Item_t qname, TypeConstants::quantifier_t quantifier) const
+    xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const
     { return m_parent->create_type(qname, quantifier); }
 
     xqtref_t create_type(const TypeIdentifier& ident) const
@@ -137,7 +137,7 @@ class DelegatingTypeManager : public TypeManager {
     xqtref_t create_atomic_type(TypeConstants::atomic_type_code_t type_code, TypeConstants::quantifier_t quantifier) const
     { return m_parent->create_atomic_type(type_code, quantifier); }
 
-    xqtref_t create_atomic_type(Item_t qname, TypeConstants::quantifier_t quantifier) const
+    xqtref_t create_atomic_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const
     { return m_parent->create_atomic_type(qname, quantifier); }
 
     xqtref_t create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeConstants::quantifier_t quantifier) const

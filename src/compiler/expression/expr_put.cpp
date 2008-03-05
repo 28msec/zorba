@@ -19,7 +19,7 @@
 using namespace std;
 namespace zorba {
   
-  static inline ostream &put_qname (Item_t qname, ostream &os) {
+  static inline ostream &put_qname (store::Item_t qname, ostream &os) {
     xqp_string pfx = qname->getPrefix ();
     if (! pfx.empty ())
       os << pfx << "[=" << qname->getNamespace () << "]:";
@@ -214,7 +214,7 @@ ostream& if_expr::put( ostream& os) const
 
 ostream& fo_expr::put( ostream& os) const
 {
-  Item_t qname = func->get_fname ();
+  store::Item_t qname = func->get_fname ();
   os << INDENT << qname->getStringValue() << "/" << size () << " (" << this << ") [\n";
   
   for (vector<rchandle<expr> >::const_iterator it = begin();

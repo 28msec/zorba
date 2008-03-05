@@ -9,7 +9,6 @@ namespace zorba {
 
 class RootTypeManager;
 class static_context;
-class Store;
 
 class GlobalEnvironment {
   public:
@@ -20,11 +19,11 @@ class GlobalEnvironment {
     RootTypeManager& getRootTypeManager();
     static_context& getRootStaticContext();
     XQueryCompilerSubsystem& getCompilerSubsystem();
-    Store& getStore();
+    store::Store& getStore();
   private:
     GlobalEnvironment();
 
-    std::auto_ptr<Store> m_store;
+    std::auto_ptr<store::Store> m_store;
     std::auto_ptr<static_context> m_rootStaticContext;
     M_APM                     m_mapm; // this is a pointer type
     std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;

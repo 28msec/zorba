@@ -15,8 +15,7 @@
 #include <zorba/item.h>
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 /*******************************************************************************
 
@@ -699,5 +698,6 @@ public:
     virtual bool isNaN() const { return false; }
   };
 
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba
 #endif /* ZORBA_ATOMIC_ITEMS_H */

@@ -63,12 +63,12 @@ public:
         const std::string param2 = "");
 
   static void fn_user_error(
-        Item* err_qname,///optional
+        store::Item* err_qname,///optional
         const std::string description,//optional
-        const std::vector<class Item*> *items);//optional
+        const std::vector<class store::Item*> *items);//optional
 
   static void fn_user_trace(
-        const std::vector<class Item*> *items,
+        const std::vector<class store::Item*> *items,
         const std::string label);
 };
 

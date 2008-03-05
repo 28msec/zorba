@@ -25,12 +25,11 @@
 #ifndef ZORBA_CASTING_H
 #define ZORBA_CASTING_H
 
-#include <zorba/rchandle.h>
+#include "common/shared_types.h"
 #include "types/root_typemanager.h"
 
 namespace zorba
 {
-	typedef rchandle<class Item> Item_t;
 	
 	/**
 	 * Class which implements casting of items.
@@ -52,15 +51,15 @@ namespace zorba
        * @param aTargateType
        * @return Created Item or 0 if the parsing was not possible
        */
-      Item_t stringSimpleCast(const Item_t aSourceItem,
+      store::Item_t stringSimpleCast(const store::Item_t aSourceItem,
                               const xqtref_t& aSourceType,
                               const xqtref_t& aTargetType) const;
 
-      Item_t castToNCName(const xqpString& str) const;
+      store::Item_t castToNCName(const xqpString& str) const;
       
       // XQuery 1.0 and XPath 2.0 Functions and Operators
       // 17.1.6 Casting to xs:boolean
-      Item_t castToBoolean(const Item_t aSourceItem,
+      store::Item_t castToBoolean(const store::Item_t aSourceItem,
                            const xqtref_t& aSourceType) const;
 
     public:
@@ -71,7 +70,7 @@ namespace zorba
        * @param aTargetType
 			 * @return resutling item
 			 */
-      Item_t cast ( Item_t aItem, const xqtref_t& aTargetType ) const;
+      store::Item_t cast ( store::Item_t aItem, const xqtref_t& aTargetType ) const;
 
 			/**
 			 * Executes the string casting of the passed string to an item of the passed target type.
@@ -79,7 +78,7 @@ namespace zorba
        * @param aTargetType
 			 * @return resutling item
 			 */
-      Item_t cast ( const xqpString& aStr, const xqtref_t& aTargetType ) const;
+      store::Item_t cast ( const xqpString& aStr, const xqtref_t& aTargetType ) const;
 
       /**
        * Checks if the passed item would be castable to the passed target type.
@@ -87,7 +86,7 @@ namespace zorba
        * @param aTargetType
        * @return true if castable, else false
        */
-      bool isCastable( Item_t aItem, const xqtref_t& aTargetType ) const; 
+      bool isCastable( store::Item_t aItem, const xqtref_t& aTargetType ) const; 
 
       /**
        * Checks if the passed string is castable to the passed target type.
@@ -105,7 +104,7 @@ namespace zorba
        *         if the item type is a subtype of the target type, then
        *         the passed item is returned
        */
-      Item_t promote(Item_t aItem, const xqtref_t& aTargetType) const;
+      store::Item_t promote(store::Item_t aItem, const xqtref_t& aTargetType) const;
 
       /**
        * Casts the passed string to xs:QName if possible.
@@ -113,7 +112,7 @@ namespace zorba
        * @param isCast true if a cast is requested, false if this is a castable inquiry
        * @return an item if the promotion is possible, otherwise raises an error
        */
-    Item_t castToQName (const xqpString &aStr, bool isCast, bool isExplicit) const;
+    store::Item_t castToQName (const xqpString &aStr, bool isCast, bool isExplicit) const;
 
   protected:
       bool castableToNCName(const xqpString& str) const;

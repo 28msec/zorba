@@ -33,10 +33,10 @@ void FnDataIteratorState::reset(PlanState& planState)
   theTypedValue = NULL;
 }
 
-Item_t
+store::Item_t
 FnDataIterator::nextImpl(PlanState& planState) const
 {
-  Item_t item;
+  store::Item_t item;
   PlanIter_t iter;
   
   FnDataIteratorState* lState;
@@ -64,10 +64,10 @@ FnDataIterator::nextImpl(PlanState& planState) const
 
 // 14.9 fn:root
 //---------------------
-Item_t FnRootIterator::nextImpl(PlanState& planState) const
+store::Item_t FnRootIterator::nextImpl(PlanState& planState) const
 {
-  Item_t contextNode;
-  Item_t parentNode;
+  store::Item_t contextNode;
+  store::Item_t parentNode;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
@@ -98,9 +98,9 @@ Item_t FnRootIterator::nextImpl(PlanState& planState) const
 
 // 14.9 fn:node-name
 //---------------------
-Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
+store::Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
 {
-  Item_t inNode;
+  store::Item_t inNode;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -124,9 +124,9 @@ Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
 
 // 2.3 fn:string
 //---------------------
-Item_t FnStringIterator::nextImpl(PlanState& planState) const
+store::Item_t FnStringIterator::nextImpl(PlanState& planState) const
 {
-  Item_t inVal;
+  store::Item_t inVal;
   xqpStringStore_t empty;
 
   FnStringIteratorState *state;

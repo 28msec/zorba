@@ -22,7 +22,7 @@ namespace zorba {
   {
   }
 
-  Item_t
+  store::Item_t
   PlanIteratorWrapper::next()
   {
     return PlanIterator::consumeNext(theIterator, *theStateBlock);

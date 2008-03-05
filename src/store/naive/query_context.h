@@ -8,8 +8,7 @@
 
 #include "store/util/mutex.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 class XmlNode;
 
@@ -95,6 +94,7 @@ public:
 };
 
 
-}
+} // namespace store
+} // namespace zorba
 
 #endif

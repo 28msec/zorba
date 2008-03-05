@@ -28,8 +28,7 @@
 |_______________________________________________________________________*/
 
 
-namespace zorba {
-
+namespace zorba { namespace store {
 
 
 /*______________________________________________________________________
@@ -327,6 +326,7 @@ public:
 };
 
 
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba
 #endif /* ZORBA_UPDATE_VALUES_H */
 

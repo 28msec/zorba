@@ -45,9 +45,9 @@ namespace zorba
        * @param negate optinal parameter which negates the effective boolean value (default == false)
        * @return effective boolean value
        */
-      static Item_t effectiveBooleanValue ( const QueryLoc& loc, PlanState& planState, const PlanIterator* , bool negate = false);
+      static store::Item_t effectiveBooleanValue ( const QueryLoc& loc, PlanState& planState, const PlanIterator* , bool negate = false);
 
-      Item_t nextImpl(PlanState& planState) const;
+      store::Item_t nextImpl(PlanState& planState) const;
 
       virtual void accept(PlanIterVisitor&) const;
   };
@@ -66,7 +66,7 @@ namespace zorba
       LogicIterator ( const QueryLoc& loc, PlanIter_t aChild0, PlanIter_t aChild1, LogicType aLogicType);
       virtual ~LogicIterator();
       
-      Item_t nextImpl(PlanState& planState) const;
+      store::Item_t nextImpl(PlanState& planState) const;
       
       virtual void accept(PlanIterVisitor&) const;
   }; /* class LogicIterator */
@@ -80,16 +80,16 @@ namespace zorba
       CompareIterator ( const QueryLoc& loc, PlanIter_t theChild0, PlanIter_t theChild1, CompareConsts::CompareType aCompType );
       virtual ~CompareIterator();
 
-      Item_t nextImpl(PlanState& planState) const;
+      store::Item_t nextImpl(PlanState& planState) const;
       
       bool isValueComparison() const;
       bool isGeneralComparison() const;
       bool isNodeComparison() const;
       
     private:
-      static std::pair<Item_t, Item_t> valueCasting(Item_t aItem0, Item_t aItem1);
-      static std::pair<Item_t, Item_t> generalCasting(Item_t aItem0, Item_t aItem1);
-      static std::pair<Item_t, Item_t> typePromotion(Item_t aItem0, Item_t aItem1);
+      static std::pair<store::Item_t, store::Item_t> valueCasting(store::Item_t aItem0, store::Item_t aItem1);
+      static std::pair<store::Item_t, store::Item_t> generalCasting(store::Item_t aItem0, store::Item_t aItem1);
+      static std::pair<store::Item_t, store::Item_t> typePromotion(store::Item_t aItem0, store::Item_t aItem1);
       static bool boolResult(int8_t aCompValue, CompareConsts::CompareType aCompType);
       
     public:
@@ -105,7 +105,7 @@ namespace zorba
        *          2, if item0 not equal, not bigger, not smaller item1 (special case when an Item has the value NaN)
        *         -2, if it is not possible to compare the values the two passed items
        */
-      static int8_t compare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
+      static int8_t compare(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * Value Comparison on the passed items
@@ -115,7 +115,7 @@ namespace zorba
        * @return -1 (smaller), 0 (equal), 1 (bigger), 
        *          2 (not equal, not bigger, not smaller), -2 (value comparison not possible)
        */
-      static int8_t valueCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
+      static int8_t valueCompare(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * General Comparison on the passed items
@@ -125,7 +125,7 @@ namespace zorba
        * @return -1 (smaller), 0 (equal), 1 (bigger), 
        *          2 (not equal, not bigger, not smaller), -2 (general comparison not possible)
        */
-      static int8_t generalCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
+      static int8_t generalCompare(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * Checks if the two passed items contains the same value (without castings and promotions which are used in general 
@@ -137,7 +137,7 @@ namespace zorba
        *          1, if item0 != item1
        *         -2, if it is not possible to compare the values of the passed items
        */
-      static int8_t equal(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
+      static int8_t equal(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * Value Equal on the passed items
@@ -146,7 +146,7 @@ namespace zorba
        * @param aCollation optional collation parameter (passed as pointer to make it possible to be set to 0)
        * @return 0 (equal), 1 (not equal), -2 (value equal not possible)
        */
-      static int8_t valueEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
+      static int8_t valueEqual(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * General Equal on the passed items
@@ -155,7 +155,7 @@ namespace zorba
        * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
        * @return 0 (equal), 1 (not equal), -2 (general equal not possible)
        */
-      static int8_t generalEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
+      static int8_t generalEqual(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * Value comparison of the passed two items with the operator 
@@ -167,7 +167,7 @@ namespace zorba
        * @param aCollation optional collation parameter
        * @return 
        */
-      static bool valueComparison(const Item_t& aItem0, const Item_t& aItem1, 
+      static bool valueComparison(const store::Item_t& aItem0, const store::Item_t& aItem1, 
                                   CompareConsts::CompareType aCompType, xqpString* aCollation = 0);
       
       /**
@@ -180,7 +180,7 @@ namespace zorba
        * @param aCollation optional collation parameter
        * @return 
        */
-      static bool generalComparison(const Item_t& aItem0, const Item_t& aItem_1,
+      static bool generalComparison(const store::Item_t& aItem0, const store::Item_t& aItem_1,
                                     CompareConsts::CompareType aCompType, xqpString* aCollation = 0);
 
       virtual void accept(PlanIterVisitor&) const;

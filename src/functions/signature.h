@@ -38,39 +38,39 @@ namespace zorba {
 class signature : public signature_base
 {
 public:
-  Item_t qname_p;
+  store::Item_t qname_p;
   checked_vector<xqtref_t> argv;
 
 public:
-  signature (Item_t name, xqtref_t arg1,
+  signature (store::Item_t name, xqtref_t arg1,
              bool variadic, xqtref_t return_type);
-  signature(Item_t name,
+  signature(store::Item_t name,
             xqtref_t return_type);
-  signature(Item_t name,
+  signature(store::Item_t name,
             xqtref_t arg1,
             xqtref_t return_type);
-  signature(Item_t name,
+  signature(store::Item_t name,
             xqtref_t arg1,
             xqtref_t arg2,
             xqtref_t return_type);
-  signature(Item_t name,
+  signature(store::Item_t name,
             xqtref_t arg1,
             xqtref_t arg2,
             xqtref_t arg3,
             xqtref_t return_type);
-  signature(Item_t name,
+  signature(store::Item_t name,
             xqtref_t arg1,
             xqtref_t arg2,
             xqtref_t arg3,
             xqtref_t arg4,
             xqtref_t return_type);
-  signature(Item_t name,
+  signature(store::Item_t name,
             const std::vector<xqtref_t>& argv,
             xqtref_t return_type);
   ~signature();
 
 public:
-  const Item_t& get_name() const            { return qname_p; }
+  const store::Item_t& get_name() const            { return qname_p; }
   uint32_t arg_count() const {
     return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
   }

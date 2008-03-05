@@ -74,8 +74,8 @@ GenericCast* GenericCast::instance()
 /// @param isExplicit true when called from the translator
 /// @param isCast true when this is a cast, false when this is a castable
 /// TODO: return 0 instead of throwing an error code, let the caller decide on the error
-Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExplicit) const {
-  ItemFactory* factory = Zorba::getItemFactory();
+store::Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExplicit) const {
+  store::ItemFactory* factory = Zorba::getItemFactory();
   xqpString lNamespace = "";
   xqpString lPrefix = "";
   int32_t lIndex = qname.indexOf(":");
@@ -102,14 +102,14 @@ Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExp
   return 0;
 }
   
-Item_t GenericCast::stringSimpleCast(
-    const Item_t aSourceItem,
+store::Item_t GenericCast::stringSimpleCast(
+    const store::Item_t aSourceItem,
     const xqtref_t& aSourceType,
     const xqtref_t& aTargetType) const
 {
-  Item_t lItem = 0;
+  store::Item_t lItem = 0;
   RootTypeManager& ts = GENV_TYPESYSTEM;
-  ItemFactory* factory = Zorba::getItemFactory();
+  store::ItemFactory* factory = Zorba::getItemFactory();
 
   xqpString lString = aSourceItem->getStringValue();
   switch(ts.get_atomic_type_code(*aTargetType)) {
@@ -520,8 +520,8 @@ bool GenericCast::isExtender(uint32_t cp) const
 
 
 
-Item_t GenericCast::castToBoolean(
-    const Item_t aSourceItem,
+store::Item_t GenericCast::castToBoolean(
+    const store::Item_t aSourceItem,
     const xqtref_t& aSourceType) const
 {
   bool lRetValue = true;
@@ -536,7 +536,7 @@ Item_t GenericCast::castToBoolean(
     if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(FLOAT)))
     {
       return aSourceItem->getEBV();
-      //Item_t lFloatItem = Zorba::getItemFactory()->createFloat(0);
+      //store::Item_t lFloatItem = Zorba::getItemFactory()->createFloat(0);
       //if (lFloatItem->equals(aSourceItem))
       //  lRetValue = false;
       // TODO check NaN
@@ -544,7 +544,7 @@ Item_t GenericCast::castToBoolean(
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DOUBLE)))
     {
       return aSourceItem->getEBV();
-      //Item_t lDoubleItem = Zorba::getItemFactory()->createDouble(0);
+      //store::Item_t lDoubleItem = Zorba::getItemFactory()->createDouble(0);
       //if (lDoubleItem->equals(aSourceItem))
       //  lRetValue = false;
 
@@ -552,7 +552,7 @@ Item_t GenericCast::castToBoolean(
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DECIMAL)))
     {
       return aSourceItem->getEBV();
-      //Item_t lDecimalItem = Zorba::getItemFactory()->createDecimal(0);
+      //store::Item_t lDecimalItem = Zorba::getItemFactory()->createDecimal(0);
       //if (lDecimalItem->equals(aSourceItem))
       //  lRetValue = false;
 
@@ -561,7 +561,7 @@ Item_t GenericCast::castToBoolean(
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(INTEGER)))
     {
       return aSourceItem->getEBV();
-      //Item_t lIntegerItem = Zorba::getItemFactory()->createInteger(0);
+      //store::Item_t lIntegerItem = Zorba::getItemFactory()->createInteger(0);
       //if (lIntegerItem->equals(aSourceItem))
       //  lRetValue = false;
 
@@ -585,9 +585,9 @@ Item_t GenericCast::castToBoolean(
 #undef ATOMIC_TYPE
 
 
-Item_t GenericCast::cast(Item_t aItem, const xqtref_t& aTargetType) const
+store::Item_t GenericCast::cast(store::Item_t aItem, const xqtref_t& aTargetType) const
 {
-  Item_t lResult;
+  store::Item_t lResult;
   RootTypeManager& ts = GENV_TYPESYSTEM;
 
   xqtref_t lItemType = ts.create_type(aItem->getType(),
@@ -609,21 +609,21 @@ Item_t GenericCast::cast(Item_t aItem, const xqtref_t& aTargetType) const
 }
 
 
-Item_t GenericCast::cast(
+store::Item_t GenericCast::cast(
     const xqpString& aStr,
     const xqtref_t& aTargetType) const
 {
-  Item_t lItem = Zorba::getItemFactory()->createString(aStr.getStore());
-  Item_t lResult = cast(lItem, aTargetType);
+  store::Item_t lItem = Zorba::getItemFactory()->createString(aStr.getStore());
+  store::Item_t lResult = cast(lItem, aTargetType);
   return lResult;
 }
 
 
 bool GenericCast::isCastable(
-    Item_t aItem,
+    store::Item_t aItem,
     const xqtref_t& aTargetType) const
 {
-  Item_t lItem;
+  store::Item_t lItem;
   RootTypeManager& ts = GENV_TYPESYSTEM;
 
   xqtref_t lItemType = ts.create_type(aItem->getType(), TypeConstants::QUANT_ONE);
@@ -649,18 +649,18 @@ bool GenericCast::isCastable(
     const xqpString& aStr,
     const xqtref_t& aTargetType) const
 {
-  Item_t lItem = Zorba::getItemFactory()->createString(aStr.getStore());
+  store::Item_t lItem = Zorba::getItemFactory()->createString(aStr.getStore());
   return isCastable(lItem, aTargetType);
 }
 
-Item_t GenericCast::promote(Item_t aItem, const xqtref_t& aTargetType) const {
+store::Item_t GenericCast::promote(store::Item_t aItem, const xqtref_t& aTargetType) const {
   xqtref_t lItemType = GENV_TYPESYSTEM.create_type(aItem->getType(), TypeConstants::QUANT_ONE);
 
   if (GENV_TYPESYSTEM.is_subtype(*lItemType, *aTargetType)) {
     return aItem;
   }
 
-  Item_t lResult = 0;
+  store::Item_t lResult = 0;
   if (GENV_TYPESYSTEM.is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) && ! GENV_TYPESYSTEM.is_equal(*GENV_TYPESYSTEM.prime_type (*aTargetType), *GENV_TYPESYSTEM.QNAME_TYPE_ONE)) {
     lResult = GenericCast::instance()->cast(aItem, aTargetType);
   } else if (GENV_TYPESYSTEM.is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {

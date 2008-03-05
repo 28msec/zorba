@@ -50,9 +50,9 @@ FnConcatIteratorState::reset(PlanState& planState) {
   theCurIter = 0;
 }
 
-Item_t
+store::Item_t
 FnConcatIterator::nextImpl(PlanState& planState) const {
-  Item_t item;
+  store::Item_t item;
   
   FnConcatIteratorState* state;
   DEFAULT_STACK_INIT(FnConcatIteratorState, state, planState);
@@ -70,9 +70,9 @@ FnConcatIterator::nextImpl(PlanState& planState) const {
 
 //15.1.3 fn:index-of
 // FIXME this iterator has three arguments (i.e. the collaction as #3)
-Item_t 
+store::Item_t 
 FnIndexOfIterator::nextImpl(PlanState& planState) const {
-  Item_t lSequenceItem;
+  store::Item_t lSequenceItem;
   int8_t lCmpRes;
 
   FnIndexOfIteratorState* state;
@@ -126,9 +126,9 @@ FnIndexOfIteratorState::reset(PlanState& planState) {
  * If the value of $arg is the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-Item_t 
+store::Item_t 
 FnEmptyIterator::nextImpl(PlanState& planState) const {
-  Item_t lSequenceItem;
+  store::Item_t lSequenceItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -150,9 +150,9 @@ FnEmptyIterator::nextImpl(PlanState& planState) const {
  * If the value of $arg is not the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-Item_t 
+store::Item_t 
 FnExistsIterator::nextImpl(PlanState& planState) const {
-  Item_t lSequenceItem;
+  store::Item_t lSequenceItem;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -177,7 +177,7 @@ FnExistsIterator::nextImpl(PlanState& planState) const {
  * The order in which the sequence of values is returned is ·implementation dependent·.
  * Here, we return the first item that is not a duplicate and throw away the remaining ones
  */
-bool ItemCmp::operator() ( const Item_t& i1, const Item_t& i2) const
+bool ItemCmp::operator() ( const store::Item_t& i1, const store::Item_t& i2) const
 {
   return CompareIterator::compare(i1, i2)<0?true:false;
 }
@@ -189,9 +189,9 @@ FnDistinctValuesIterator::FnDistinctValuesIterator(const QueryLoc& loc,
 
 FnDistinctValuesIterator::~FnDistinctValuesIterator(){}
 
-Item_t 
+store::Item_t 
 FnDistinctValuesIterator::nextImpl(PlanState& planState) const {
-  Item_t lItem;
+  store::Item_t lItem;
   FnDistinctValuesIteratorState::AlreadySeenConstIter_t lConstIter;
   
   FnDistinctValuesIteratorState* state;
@@ -232,10 +232,10 @@ FnDistinctValuesIteratorState::reset(PlanState& planState) {
 
 
 //15.1.7 fn:insert-before
-Item_t 
+store::Item_t 
 FnInsertBeforeIterator::nextImpl(PlanState& planState) const {
- Item_t lInsertItem;
- Item_t lPositionItem;
+ store::Item_t lInsertItem;
+ store::Item_t lPositionItem;
  
  FnInsertBeforeIteratorState* state;
  DEFAULT_STACK_INIT(FnInsertBeforeIteratorState, state, planState);
@@ -294,10 +294,10 @@ FnInsertBeforeIteratorState::reset(PlanState& planState) {
 
 //15.1.8 fn:remove
 // FIXME this iterator has three arguments (i.e. the collaction as #3)
-Item_t 
+store::Item_t 
 FnRemoveIterator::nextImpl(PlanState& planState) const {
-  Item_t lSequenceItem;
-  Item_t lPositionItem;
+  store::Item_t lSequenceItem;
+  store::Item_t lPositionItem;
 
   FnRemoveIteratorState* state;
   DEFAULT_STACK_INIT(FnRemoveIteratorState, state, planState);
@@ -344,9 +344,9 @@ FnRemoveIteratorState::reset(PlanState& planState) {
 
 
 //15.1.9 fn:reverse
-Item_t FnReverseIterator::nextImpl(PlanState& planState) const
+store::Item_t FnReverseIterator::nextImpl(PlanState& planState) const
 {
-  Item_t iVal;
+  store::Item_t iVal;
 
   FnReverseIteratorState *state;
   DEFAULT_STACK_INIT(FnReverseIteratorState, state, planState);
@@ -377,11 +377,11 @@ void FnReverseIteratorState::reset(PlanState& planState)
 }
 
 //15.1.10 fn:subsequence
-Item_t 
+store::Item_t 
 FnSubsequenceIterator::nextImpl(PlanState& planState) const {
-  Item_t lSequence;
-  Item_t lStartingLoc;
-  Item_t lLength;
+  store::Item_t lSequence;
+  store::Item_t lStartingLoc;
+  store::Item_t lLength;
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
@@ -458,10 +458,10 @@ FnSubsequenceIteratorState::reset(PlanState& planState)
 |_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
-Item_t 
+store::Item_t 
 FnZeroOrOneIterator::nextImpl(PlanState& planState) const {
-  Item_t lFirstSequenceItem;
-  Item_t lNextSequenceItem;
+  store::Item_t lFirstSequenceItem;
+  store::Item_t lNextSequenceItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -484,9 +484,9 @@ FnZeroOrOneIterator::nextImpl(PlanState& planState) const {
 
 
 //15.2.2 fn:one-or-more
-Item_t 
+store::Item_t 
 FnOneOrMoreIterator::nextImpl(PlanState& planState) const {
-  Item_t lSequenceItem;
+  store::Item_t lSequenceItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -506,10 +506,10 @@ FnOneOrMoreIterator::nextImpl(PlanState& planState) const {
 }
 
 //15.2.3 fn:exactly-one
-Item_t 
+store::Item_t 
 FnExactlyOneIterator::nextImpl(PlanState& planState) const {
-  Item_t lFirstItem;
-  Item_t lNextItem;
+  store::Item_t lFirstItem;
+  store::Item_t lNextItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -548,9 +548,9 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) const {
 |_______________________________________________________________________*/
 
 //15.4.1 fn:count
-Item_t 
+store::Item_t 
 FnCountIterator::nextImpl(PlanState& planState) const {
-  Item_t lSequenceItem;
+  store::Item_t lSequenceItem;
   xqp_integer lCount = Integer::parseInt(0);
 
   PlanIteratorState* state;
@@ -567,10 +567,10 @@ FnCountIterator::nextImpl(PlanState& planState) const {
 }
 
 //15.4.2 fn:avg
-Item_t 
+store::Item_t 
 FnAvgIterator::nextImpl(PlanState& planState) const {
-  Item_t lSumItem;
-  Item_t lRunningItem;
+  store::Item_t lSumItem;
+  store::Item_t lRunningItem;
   xqp_integer lCount = Integer::parseInt(1);
 
   PlanIteratorState* state;
@@ -608,10 +608,10 @@ FnMinMaxIterator::FnMinMaxIterator
        : CompareConsts::VALUE_GREATER)) 
 { }
 
-Item_t 
+store::Item_t 
 FnMinMaxIterator::nextImpl(PlanState& planState) const {
-  Item_t lMaxItem;
-  Item_t lRunningItem;
+  store::Item_t lMaxItem;
+  store::Item_t lRunningItem;
   xqtref_t lMaxType;
 
   PlanIteratorState* state;
@@ -647,7 +647,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
       }
       if (lMaxItem != 0) {
         // Type Promotion
-        Item_t lItemCur = GenericCast::instance()->promote(lRunningItem, lMaxType);
+        store::Item_t lItemCur = GenericCast::instance()->promote(lRunningItem, lMaxType);
         if (lItemCur == 0) {
           lItemCur = GenericCast::instance()->promote(lMaxItem, lRunningType); 
           if (lItemCur != 0) {
@@ -678,10 +678,10 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
 
 
 //15.4.5 fn:sum
-Item_t 
+store::Item_t 
 FnSumIterator::nextImpl(PlanState& planState) const {
-  Item_t lSumItem;
-  Item_t lRunningItem;
+  store::Item_t lSumItem;
+  store::Item_t lRunningItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -725,9 +725,9 @@ FnSumIterator::nextImpl(PlanState& planState) const {
 |_______________________________________________________________________*/
 
 //15.5.1 op:to
-Item_t 
+store::Item_t 
 OpToIterator::nextImpl(PlanState& planState) const {
-  Item_t lItem;
+  store::Item_t lItem;
   
   OpToIteratorState* state;
   DEFAULT_STACK_INIT(OpToIteratorState, state, planState);
@@ -813,12 +813,12 @@ FnDocIterator::~FnDocIterator()
 }
 
 
-Item_t FnDocIterator::nextImpl(PlanState& planState) const
+store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
 {
-  Store& store = GENV.getStore();
+  store::Store& store = GENV.getStore();
 
-  Item_t doc;
-  Item_t uriItem;
+  store::Item_t doc;
+  store::Item_t uriItem;
   xqpStringStore* uriString;
 
   PlanIteratorState* state;

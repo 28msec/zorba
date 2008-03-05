@@ -36,7 +36,7 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
     virtual ~UDFunctionCallIterator() { }
 
     void openImpl(PlanState& planState, uint32_t& offset);
-    Item_t nextImpl(PlanState& planState) const;
+    store::Item_t nextImpl(PlanState& planState) const;
     void resetImpl(PlanState& planState) const;
     void closeImpl(PlanState& planState);
 
@@ -51,8 +51,8 @@ class StatelessExtFunctionCallIteratorState : public PlanIteratorState {
     StatelessExtFunctionCallIteratorState();
     ~StatelessExtFunctionCallIteratorState();
 
-    std::vector<ItemSequence_t> m_extArgs;
-    ItemSequence_t m_result;
+    std::vector<store::ItemSequence_t> m_extArgs;
+    store::ItemSequence_t m_result;
 
     void reset(PlanState&);
 };
@@ -68,7 +68,7 @@ class StatelessExtFunctionCallIterator
 
     void openImpl(PlanState& planState, uint32_t& offset);
 
-    Item_t nextImpl(PlanState& planState) const;
+    store::Item_t nextImpl(PlanState& planState) const;
 
     virtual void accept(PlanIterVisitor& v) const;
 

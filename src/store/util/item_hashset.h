@@ -4,8 +4,7 @@
 #include "store/util/handle_hashset.h"
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 class ItemHashSet : public HandleSet<Item, ItemHashSet>
 {
@@ -25,6 +24,7 @@ public:
  ItemHashSet(ulong size = 1024) : HandleSet<Item, ItemHashSet>(size) {}
 };
 
-}
+} // namespace store
+} // namespace zorba
 
 #endif

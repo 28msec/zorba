@@ -3,10 +3,10 @@
 
 using namespace zorba;
 
-const rchandle<NodeTest> NodeTest::ANY_NODE_TEST(new NodeTest(StoreConsts::anyNode));
-const rchandle<NodeTest> NodeTest::PI_TEST(new NodeTest(StoreConsts::piNode));
-const rchandle<NodeTest> NodeTest::TEXT_TEST(new NodeTest(StoreConsts::textNode));
-const rchandle<NodeTest> NodeTest::COMMENT_TEST(new NodeTest(StoreConsts::commentNode));
+const rchandle<NodeTest> NodeTest::ANY_NODE_TEST(new NodeTest(store::StoreConsts::anyNode));
+const rchandle<NodeTest> NodeTest::PI_TEST(new NodeTest(store::StoreConsts::piNode));
+const rchandle<NodeTest> NodeTest::TEXT_TEST(new NodeTest(store::StoreConsts::textNode));
+const rchandle<NodeTest> NodeTest::COMMENT_TEST(new NodeTest(store::StoreConsts::commentNode));
 
 NodeNameTest::NodeNameTest(
     rchandle<xqpStringStore> uri,
@@ -26,7 +26,7 @@ NodeNameTest::NodeNameTest(
 }
 
 
-NodeNameTest::NodeNameTest(rchandle<Item> qname)
+NodeNameTest::NodeNameTest(rchandle<store::Item> qname)
   :
   m_kind(CONSTANT),
   m_uri(qname->getNamespace().theStrStore),
@@ -60,13 +60,13 @@ bool NodeNameTest::operator ==(const NodeNameTest& other) const
 }
 
 
-NodeTest::NodeTest(StoreConsts::NodeKind kind) : m_kind(kind)
+NodeTest::NodeTest(store::StoreConsts::NodeKind kind) : m_kind(kind)
 {
 }
 
 
 NodeTest::NodeTest(
-    StoreConsts::NodeKind kind,
+    store::StoreConsts::NodeKind kind,
     rchandle<NodeNameTest> name_test)
   :
   m_kind(kind),
@@ -75,7 +75,7 @@ NodeTest::NodeTest(
 }
 
 
-StoreConsts::NodeKind NodeTest::get_kind() const
+store::StoreConsts::NodeKind NodeTest::get_kind() const
 {
   return m_kind;
 }
@@ -89,7 +89,7 @@ rchandle<NodeNameTest> NodeTest::get_nametest() const
 
 bool NodeTest::is_sub_nodetest_of(const NodeTest& other) const
 {
-  return other.m_kind == StoreConsts::anyNode
+  return other.m_kind == store::StoreConsts::anyNode
     || (other.m_kind == m_kind
       && (other.m_name_test.getp() == 0
         || (m_name_test.getp() != 0 && m_name_test->is_subname_of(*other.m_name_test))));

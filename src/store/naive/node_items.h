@@ -5,32 +5,15 @@
 
 #include <zorba/common/common.h>
 #include <zorba/item.h>
-
+#include "common/shared_types.h"
 #include "util/Assert.h"
 #include "store/naive/ordpath.h"
 
 typedef unsigned long ulong;
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
-class XmlNode;
-class ElementNode;
-class AttributeNode;
-class NsBindingsContext;
-class QNameItemImpl;
-class ConstrNodeVector;
-
-template <class Object> class rchandle;
-
-typedef rchandle<class Item> Item_t;
-typedef rchandle<class XmlNode> XmlNode_t;
-typedef rchandle<class ElementNode> ElementNode_t;
-
-typedef rchandle<class TempSeq> TempSeq_t;
-
-typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
 extern ConstrNodeVector dummyVector;
 
@@ -661,6 +644,7 @@ public:
 };
 
 
-}
+} // namespace store
+} // namespace zorba
 
 #endif

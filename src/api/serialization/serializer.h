@@ -61,7 +61,7 @@ public:
    * @param result The item to be serialized.
    * @param os The stream to serialize to.
    */
-  void serialize(Item* item, std::ostream& os);
+  void serialize(store::Item* item, std::ostream& os);
 
   /**
    * Set the serializer's parameters. The list of handled parameters
@@ -183,7 +183,7 @@ protected:
      *  The root function that performs the serialization
      *  of a normalized sequence.
      */
-    virtual void emit_node(Item* item, int depth, Item* element_parent = NULL);
+    virtual void emit_node(store::Item* item, int depth, store::Item* element_parent = NULL);
     
     /**
      *  Serializes the given string, performing character expansion
@@ -197,7 +197,7 @@ protected:
      * 
      *  @return  returns 1 if the functions has closed parent's tag with ">"
      */ 
-    virtual int emit_node_children(Item* item, int depth, bool perform_escaping);
+    virtual int emit_node_children(store::Item* item, int depth, bool perform_escaping);
 
     /**
      *  Serializes the namespace bindings, if any.
@@ -205,14 +205,14 @@ protected:
      *  @return  returns true if the function has added a set of bindings to the list,
      *           which should be removed when the elememnt is out of the scope.
      */ 
-    virtual bool emit_bindings(Item* item);
+    virtual bool emit_bindings(store::Item* item);
         
     /**
      * Serializes the given item, depending on its type, and its children.
      *
      * @param item the item to serialize
      */
-    virtual void emit_item(Item* item);
+    virtual void emit_item(store::Item* item);
 
     /**
      * Outputs indentation whitespace, depending of depth. 
@@ -250,7 +250,7 @@ protected:
     html_emitter(serializer& the_serializer, transcoder& the_transcoder);
     virtual void emit_declaration();
     virtual void emit_declaration_end();   
-    virtual void emit_node(Item* item, int depth, Item* element_parent = NULL);
+    virtual void emit_node(store::Item* item, int depth, store::Item* element_parent = NULL);
   };  
 };
 

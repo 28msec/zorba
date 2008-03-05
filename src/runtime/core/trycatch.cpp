@@ -36,11 +36,11 @@ TryCatchIterator::TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std:
 
 TryCatchIterator::~TryCatchIterator() {}
 
-Item_t
+store::Item_t
 TryCatchIterator::nextImpl(PlanState& planState) const 
 {
 
-  Item_t item; // each item that will be returned 
+  store::Item_t item; // each item that will be returned 
  // ZorbaException& lException; // the exception thrown
   
   TryCatchIteratorState* state;
@@ -50,7 +50,7 @@ TryCatchIterator::nextImpl(PlanState& planState) const
     Iterator_t lIterator = new PlanIteratorWrapper ( theChild, planState );
     lIterator->open();
     // eagerly materialize the whole stuff
-    Store& lStore = GENV_STORE;
+    store::Store& lStore = GENV_STORE;
     state->theTargetSequence = lStore.createTempSeq( lIterator, false );
     lIterator->close();
   } catch (ZorbaException& e) {

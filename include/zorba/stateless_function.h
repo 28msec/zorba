@@ -12,7 +12,7 @@ namespace zorba {
   class StatelessExternalFunction : public ExternalFunctionData 
   {
     public:
-      typedef std::vector<ItemSequence_t> Arguments_t;
+      typedef std::vector<store::ItemSequence_t> Arguments_t;
 
     public:
       virtual ~StatelessExternalFunction() {}
@@ -23,7 +23,7 @@ namespace zorba {
       virtual xqp_string
       getLocalName() const = 0;
 
-      virtual ItemSequence_t
+      virtual store::ItemSequence_t
       evaluate(const Arguments_t&) const = 0;
   };
 } /* namespace zorba */

@@ -93,7 +93,7 @@ bool DynamicContextWrapper::setVariableAsBigInteger( xqp_string varname, xqp_int
 	checkVarName(varname);
 
 	dctx_extern_var_t		var;
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 
 	var.varname = varname;
 	switch(type)
@@ -137,7 +137,7 @@ bool DynamicContextWrapper::setVariableAsBigUInteger( xqp_string varname, xqp_ui
 	checkVarName(varname);
 
 	dctx_extern_var_t		var;
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 
 	var.varname = varname;
 	switch(type)
@@ -178,7 +178,7 @@ bool DynamicContextWrapper::setVariableAsDecimal( xqp_string varname, Decimal de
 	checkVarName(varname);
 
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createDecimal(decimal_value);
@@ -201,7 +201,7 @@ bool DynamicContextWrapper::setVariableAsLong( xqp_string varname, xqp_long long
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createLong(long_value);
@@ -224,7 +224,7 @@ bool DynamicContextWrapper::setVariableAsULong( xqp_string varname, xqp_ulong ul
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createUnsignedLong(ulong_value);
@@ -246,7 +246,7 @@ bool DynamicContextWrapper::setVariableAsInt( xqp_string varname, xqp_int int_va
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createInt(int_value);
@@ -268,7 +268,7 @@ bool DynamicContextWrapper::setVariableAsUInt( xqp_string varname, xqp_uint uint
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createUnsignedInt(uint_value);
@@ -290,7 +290,7 @@ bool DynamicContextWrapper::setVariableAsShort( xqp_string varname, xqp_short sh
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createShort(short_value);
@@ -312,7 +312,7 @@ bool DynamicContextWrapper::setVariableAsUShort( xqp_string varname, xqp_ushort 
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createUnsignedShort(ushort_value);
@@ -334,7 +334,7 @@ bool DynamicContextWrapper::setVariableAsByte( xqp_string varname, xqp_byte byte
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createByte(byte_value);
@@ -356,7 +356,7 @@ bool DynamicContextWrapper::setVariableAsUByte( xqp_string varname, xqp_ubyte ub
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createUnsignedByte(ubyte_value);
@@ -379,7 +379,7 @@ bool DynamicContextWrapper::setVariableAsString( xqp_string varname, xqp_string 
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createString(str_value.getStore());
@@ -401,7 +401,7 @@ bool DynamicContextWrapper::setVariableAsNormalizedString( xqp_string varname, x
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createNormalizedString(str_value);
@@ -423,7 +423,7 @@ bool DynamicContextWrapper::setVariableAsToken( xqp_string varname, xqp_string s
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createToken(str_value);
@@ -445,7 +445,7 @@ bool DynamicContextWrapper::setVariableAsLanguage( xqp_string varname, xqp_strin
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createLanguage(str_value);
@@ -467,7 +467,7 @@ bool DynamicContextWrapper::setVariableAsNMToken( xqp_string varname, xqp_string
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createNMTOKEN(str_value);
@@ -489,7 +489,7 @@ bool DynamicContextWrapper::setVariableAsName( xqp_string varname, xqp_string st
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createName(str_value);
@@ -511,7 +511,7 @@ bool DynamicContextWrapper::setVariableAsNCName( xqp_string varname, xqp_string 
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createNCName(str_value.getStore());
@@ -533,7 +533,7 @@ bool DynamicContextWrapper::setVariableAsID( xqp_string varname, xqp_string str_
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createID(str_value);
@@ -555,7 +555,7 @@ bool DynamicContextWrapper::setVariableAsIDREF( xqp_string varname, xqp_string s
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createIDREF(str_value);
@@ -577,7 +577,7 @@ bool DynamicContextWrapper::setVariableAsEntity( xqp_string varname, xqp_string 
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createENTITY(str_value);
@@ -599,7 +599,7 @@ bool DynamicContextWrapper::setVariableAsNotation( xqp_string varname, xqp_strin
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createNOTATION(str_value);
@@ -624,7 +624,7 @@ bool DynamicContextWrapper::setVariableAsAnyURI( xqp_string varname, xqp_string 
 //  if(!GenericCast::instance()->isCastable(str_value, GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
 //		return false;
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createAnyURI(str_value.getStore());
@@ -650,7 +650,7 @@ bool DynamicContextWrapper::setVariableAsQName(
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createQName(namespace_value.getStore(),
@@ -674,7 +674,7 @@ bool DynamicContextWrapper::setVariableAsUntypedAtomic( xqp_string varname, xqp_
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createUntypedAtomic(str_value.getStore());
@@ -702,7 +702,7 @@ bool DynamicContextWrapper::setVariableAsDouble( xqp_string varname, xqp_double 
 //		ZORBA_ERROR_ALERT(ZorbaError::FOCA0005);
 //	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createDouble(double_value);
@@ -729,7 +729,7 @@ bool DynamicContextWrapper::setVariableAsFloat( xqp_string varname, xqp_float fl
 //		ZORBA_ERROR_ALERT(ZorbaError::FOCA0005);
 //	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createFloat(float_value);
@@ -752,7 +752,7 @@ bool DynamicContextWrapper::setVariableAsBool( xqp_string varname, xqp_boolean b
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createBoolean(bool_value);
@@ -791,7 +791,7 @@ bool DynamicContextWrapper::setVariableAsDateTime( xqp_string varname, struct ::
 		ZORBA_ERROR_ALERT(ZorbaError::FODT0003);
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createDateTime(
@@ -816,7 +816,7 @@ bool DynamicContextWrapper::setVariableAsDateTime( xqp_string varname, xqp_dateT
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createDateTime(datetime_value);
@@ -853,7 +853,7 @@ bool DynamicContextWrapper::setVariableAsDateTime( xqp_string varname, short yea
 		ZORBA_ERROR_ALERT(ZorbaError::FODT0003);
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createDateTime(
@@ -876,7 +876,7 @@ bool DynamicContextWrapper::setVariableAsDuration( xqp_string varname, xqp_durat
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createDuration(duration_value);
@@ -898,7 +898,7 @@ bool DynamicContextWrapper::setVariableAsDuration( xqp_string varname, short yea
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createDuration(years, months, days, hours, minutes, seconds);
@@ -920,7 +920,7 @@ bool DynamicContextWrapper::setVariableAsDate( xqp_string varname, xqp_date date
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createDate(date_value);
@@ -950,7 +950,7 @@ bool DynamicContextWrapper::setVariableAsDate( xqp_string varname, short year , 
 		return false;
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createDate(year, month, day);
@@ -972,7 +972,7 @@ bool DynamicContextWrapper::setVariableAsTime( xqp_string varname, xqp_time time
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createTime(time_value);
@@ -1002,7 +1002,7 @@ bool DynamicContextWrapper::setVariableAsTime( xqp_string varname, short hour, s
 		return false;
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createTime(hour, minute, second, timeZone);
@@ -1024,7 +1024,7 @@ bool DynamicContextWrapper::setVariableAsGYearMonth( xqp_string varname, xqp_gYe
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createGYearMonth(gyearmonth_value);
@@ -1053,7 +1053,7 @@ bool DynamicContextWrapper::setVariableAsGYearMonth( xqp_string varname, short y
 		return false;
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createGYearMonth(year, month);
@@ -1075,7 +1075,7 @@ bool DynamicContextWrapper::setVariableAsGYear( xqp_string varname, xqp_gYear gy
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createGYear(gyear_value);
@@ -1103,7 +1103,7 @@ bool DynamicContextWrapper::setVariableAsGYear( xqp_string varname, short year)
 		return false;
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createGYear(year);
@@ -1125,7 +1125,7 @@ bool DynamicContextWrapper::setVariableAsGMonthDay( xqp_string varname, xqp_gMon
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createGMonthDay(gmonthday_value);
@@ -1154,7 +1154,7 @@ bool DynamicContextWrapper::setVariableAsGMonthDay( xqp_string varname, short mo
 		return false;
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createGMonthDay(month, day);
@@ -1176,7 +1176,7 @@ bool DynamicContextWrapper::setVariableAsGDay( xqp_string varname, xqp_gDay gday
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createGDay(gday_value);
@@ -1204,7 +1204,7 @@ bool DynamicContextWrapper::setVariableAsGDay( xqp_string varname, short day)
 		return false;
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createGDay(day);
@@ -1226,7 +1226,7 @@ bool DynamicContextWrapper::setVariableAsGMonth( xqp_string varname, xqp_gMonth 
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createGMonth(gmonth_value);
@@ -1254,7 +1254,7 @@ bool DynamicContextWrapper::setVariableAsGMonth( xqp_string varname, short month
 		return false;
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createGMonth(month);
@@ -1271,7 +1271,7 @@ bool DynamicContextWrapper::setVariableAsGMonth( xqp_string varname, short month
 
 }
 
-bool DynamicContextWrapper::setVariableAsItem( xqp_string varname, Item_t item)
+bool DynamicContextWrapper::setVariableAsItem( xqp_string varname, store::Item_t item)
 {
 	try{
 
@@ -1301,7 +1301,7 @@ bool DynamicContextWrapper::setVariableAsDocument( xqp_string varname, xqp_anyUR
 
 	dctx_extern_var_t		var;
 	var.varname = varname;
-	Store		&store = GENV.getStore();
+	store::Store		&store = GENV.getStore();
 	var.atomic_item = store.getDocument(documentURI.getStore());
 	if(var.atomic_item == NULL)
 	{
@@ -1333,7 +1333,7 @@ bool DynamicContextWrapper::setVariableAsDocumentFromFile(
 			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, DONT_CONTINUE_EXECUTION, file_path);
 			return false;
 		}
-		Store		&store = GENV.getStore();
+		store::Store		&store = GENV.getStore();
 
 		if(storeUri == "")
 			storeUri = file_path;
@@ -1362,7 +1362,7 @@ bool DynamicContextWrapper::setVariableAsHexBinary( xqp_string varname, xqp_hexB
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createHexBinary(hex_value);
@@ -1384,7 +1384,7 @@ bool DynamicContextWrapper::setVariableAsBase64Binary( xqp_string varname, xqp_b
 
 	checkVarName(varname);
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	dctx_extern_var_t		var;
 	var.varname = varname;
 	var.atomic_item = item_factory->createBase64Binary(base64_value);

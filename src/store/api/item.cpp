@@ -21,8 +21,7 @@
 
 #include "types/root_typemanager.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 
 /**
@@ -504,4 +503,5 @@ void Item::serializeXML( std::ostream& os )
   ser->serialize(this, os);
 }
 
-}
+} // namespace store
+} // namespace zorba

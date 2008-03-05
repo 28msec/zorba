@@ -18,7 +18,7 @@ namespace zorba
       virtual void
       open() = 0;
 
-      virtual Item_t
+      virtual store::Item_t
       next() = 0;
 
       virtual void

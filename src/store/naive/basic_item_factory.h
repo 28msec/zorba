@@ -18,8 +18,7 @@
 
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 typedef StringPool UriPool;
 
 
@@ -232,6 +231,7 @@ public:
         bool            isRoot);
 };
 
-}/* namespace zorba */
+} // namespace store
+} // namespace zorba
 
 #endif

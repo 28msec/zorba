@@ -36,14 +36,14 @@ DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
   theChild->open(planState, offset);
 }
 
-Item_t DocumentIterator::nextImpl(PlanState& planState) const
+store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
 {
   // Note: baseUri and docUri have to be rchandles because if createDocumentNode
   // throws and exception, we don't know if the exception was thrown before or
   // after the ownership of the uris was transfered to the doc node.
   xqpStringStore_t baseUri = 0;
   xqpStringStore_t docUri = 0;
-  Item_t node;
+  store::Item_t node;
 
   DocumentIteratorState* state;
   DEFAULT_STACK_INIT(DocumentIteratorState, state, planState);
@@ -99,9 +99,9 @@ DocumentIteratorState::~DocumentIteratorState()
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t DocumentContentIterator::nextImpl(PlanState& planState) const
+store::Item_t DocumentContentIterator::nextImpl(PlanState& planState) const
 {
-  Item_t lItem;
+  store::Item_t lItem;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -112,7 +112,7 @@ Item_t DocumentContentIterator::nextImpl(PlanState& planState) const
     if (lItem == 0)
       break;
 
-    if (lItem->isNode() && lItem->getNodeKind() == StoreConsts::attributeNode)
+    if (lItem->isNode() && lItem->getNodeKind() == store::StoreConsts::attributeNode)
     {
         ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION,
                           "A Document Node must not contain attribute nodes!");
@@ -172,13 +172,13 @@ ElementIterator::ElementIterator (
 }
 
 
-Item_t ElementIterator::nextImpl(PlanState& planState) const
+store::Item_t ElementIterator::nextImpl(PlanState& planState) const
 {
   std::auto_ptr<Iterator> cwrapper;
   std::auto_ptr<Iterator> awrapper;
 
-  Item_t qnameItem;
-  Item_t node;
+  store::Item_t qnameItem;
+  store::Item_t node;
 
   ElementIteratorState* state;
   DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
@@ -296,11 +296,11 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ElementContentIterator::nextImpl(PlanState& planState) const
+store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
 {
-  ItemFactory* factory = Zorba::getItemFactory();
-  Item_t item;
-  Item_t textNode;
+  store::ItemFactory* factory = Zorba::getItemFactory();
+  store::Item_t item;
+  store::Item_t textNode;
 
   ElementContentState* state;
   DEFAULT_STACK_INIT(ElementContentState, state, planState);
@@ -313,7 +313,7 @@ Item_t ElementContentIterator::nextImpl(PlanState& planState) const
 
     // Check to find out if the content contains an attribute child which is
     // located after a non attribute child.
-    if (item->isNode() && item->getNodeKind() == StoreConsts::attributeNode) 
+    if (item->isNode() && item->getNodeKind() == store::StoreConsts::attributeNode) 
     {
       if (state->theNoAttrAllowed)
         ZORBA_ERROR_ALERT(ZorbaError::XQTY0024, &loc, DONT_CONTINUE_EXECUTION);
@@ -369,9 +369,9 @@ AttributeIterator::AttributeIterator(
 }
 
 
-Item_t AttributeIterator::nextImpl(PlanState& planState) const
+store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
 {
-  Item_t node;
+  store::Item_t node;
   Iterator_t nameWrapper;
   Iterator_t valueWrapper;
 
@@ -407,9 +407,9 @@ TextIterator::TextIterator(
 }
 
 
-Item_t TextIterator::nextImpl(PlanState& planState) const
+store::Item_t TextIterator::nextImpl(PlanState& planState) const
 {
-  Item_t node;
+  store::Item_t node;
   Iterator_t valueWrapper;
 
   PlanIteratorState* state;
@@ -442,9 +442,9 @@ PiIterator::PiIterator (
 }
 
 
-Item_t PiIterator::nextImpl(PlanState& planState) const
+store::Item_t PiIterator::nextImpl(PlanState& planState) const
 {
-  Item_t lItem;
+  store::Item_t lItem;
   xqp_string target, content;
   bool lFirst;
   
@@ -503,9 +503,9 @@ CommentIterator::CommentIterator(
 }
 
 
-Item_t CommentIterator::nextImpl(PlanState& planState) const
+store::Item_t CommentIterator::nextImpl(PlanState& planState) const
 {
-  Item_t lItem;
+  store::Item_t lItem;
   xqp_string content = "";
   bool lFirst;
 
@@ -582,10 +582,10 @@ EnclosedIterator::EnclosedIterator (
 }
 
 
-Item_t EnclosedIterator::nextImpl(PlanState& planState) const
+store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 {
-  Item_t lItem;
-  ItemFactory* factory = Zorba::getItemFactory();
+  store::Item_t lItem;
+  store::ItemFactory* factory = Zorba::getItemFactory();
   xqpString str;
 
   EnclosedIteratorState* state;
@@ -698,9 +698,9 @@ void DocFilterIteratorState::reset(PlanState& planState )
   theCurItem = 0;
 }
 
-Item_t DocFilterIterator::nextImpl(PlanState& planState) const
+store::Item_t DocFilterIterator::nextImpl(PlanState& planState) const
 {
-  Item_t lItem;
+  store::Item_t lItem;
   
   DocFilterIteratorState* state;
   DEFAULT_STACK_INIT(DocFilterIteratorState, state, planState);
@@ -726,7 +726,7 @@ Item_t DocFilterIterator::nextImpl(PlanState& planState) const
       lItem = consumeNext(theChild.getp(), planState);
       if (lItem == 0)
         break;
-      if (lItem->isNode() && lItem->getNodeKind() == StoreConsts::documentNode)
+      if (lItem->isNode() && lItem->getNodeKind() == store::StoreConsts::documentNode)
       {
         state->theChildren = lItem->getChildren();
         state->theChildren->open();

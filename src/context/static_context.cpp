@@ -158,7 +158,7 @@ xqp_string qname_internal_key2 (xqp_string ns, xqp_string local)
 }
 
 
-Item_t static_context::lookup_qname(
+store::Item_t static_context::lookup_qname(
     xqp_string default_ns,
     xqp_string prefix,
     xqp_string local) const
@@ -171,13 +171,13 @@ Item_t static_context::lookup_qname(
 }
 
 
-Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) const
+store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) const
 {
   pair<xqp_string, xqp_string> rqname = parse_qname (qname);
   return lookup_qname (default_ns, rqname.first, rqname.second);
 }
 
-  xqp_string static_context::qname_internal_key (const Item *qname) const
+  xqp_string static_context::qname_internal_key (const store::Item *qname) const
   {
     return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
   }
@@ -256,7 +256,7 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
 	}
 
 	xqtref_t	static_context::get_variable_type(
-		Item *var_name)
+		store::Item *var_name)
 	{
 		return lookup_type( "type:var:" + qname_internal_key("", var_name->getPrefix(), var_name->getLocalName()));
 	}
@@ -281,13 +281,13 @@ Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qname) co
 		return lookup_type("type:defcollection:");
 	}
 
-void static_context::set_function_type(const Item *qname, xqtref_t t)
+void static_context::set_function_type(const store::Item *qname, xqtref_t t)
 {
 	bind_type("type:fun:"+qname_internal_key( default_function_namespace(), qname->getPrefix(), qname->getLocalName()), t);
 }
 
 xqtref_t static_context::get_function_type(
-	const Item_t qname) 
+	const store::Item_t qname) 
 {
 	// TODO
 	//return GENV_TYPESYSTEM.ITEM_TYPE_STAR;

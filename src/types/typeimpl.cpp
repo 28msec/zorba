@@ -109,7 +109,7 @@ NodeXQType::NodeXQType(
 {
 }
     
-UserDefinedXQType::UserDefinedXQType(Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
+UserDefinedXQType::UserDefinedXQType(store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
     XQType(quantifier), _qname(qname), _baseType(baseType)
 {
     switch (baseType.getp()->type_kind())

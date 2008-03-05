@@ -20,7 +20,7 @@ class Item;
 class ForVarState : public PlanIteratorState 
 {
 public:
-  Item_t theValue;
+  store::Item_t theValue;
 
   void init(PlanState& planState) { PlanIteratorState::init(planState); }
   void reset(PlanState& planState) { PlanIteratorState::reset(planState); }
@@ -37,14 +37,14 @@ public:
 
   ~ForVarIterator() { }
   
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
   
 public:
   xqpString getVarName() const { return theVarName; }
 
-  void bind(Item_t value, PlanState& planState);
+  void bind(store::Item_t value, PlanState& planState);
 };
 
 
@@ -77,7 +77,7 @@ public:
 
   ~LetVarIterator() {}
   
-  Item_t nextImpl(PlanState& planState) const;
+  store::Item_t nextImpl(PlanState& planState) const;
 
   void accept(PlanIterVisitor&) const;
 

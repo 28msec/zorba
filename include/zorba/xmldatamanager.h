@@ -6,8 +6,7 @@
 #include <zorba/common/api_shared_types.h>
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
   class XmlDataManager : public SimpleRCObject
   {
@@ -20,18 +19,18 @@ namespace zorba
        * @return rchandle to the newly created document or NULL if a document
        *         with the given uri exists already.
        */
-      virtual Item_t loadDocument(const xqp_anyURI& uri, std::istream& stream) = 0;
+      virtual store::Item_t loadDocument(const xqp_anyURI& uri, std::istream& stream) = 0;
 
-      virtual Item_t loadDocument(const xqp_anyURI& local_file_uri) = 0;
+      virtual store::Item_t loadDocument(const xqp_anyURI& local_file_uri) = 0;
 
-      virtual Item_t loadDocument(const xqp_anyURI& uri, Item_t item) = 0;  // error if uri exists or item is not a document
+      virtual store::Item_t loadDocument(const xqp_anyURI& uri, store::Item_t item) = 0;  // error if uri exists or item is not a document
 
       /**
        * Get an rchandle to the root node of the document with the given uri.
        *
        * @param uri The uri of the document to access.
        */
-      virtual Item_t getDocument(const xqp_anyURI& uri) = 0;
+      virtual store::Item_t getDocument(const xqp_anyURI& uri) = 0;
 
       /**
        * Delete the document with the given uri.
@@ -64,5 +63,6 @@ namespace zorba
       virtual bool addToCollection(const xqp_anyURI& uri, std::istream& stream) = 0;
 
   };
+} /* namespace store */
 } /* namespace zorba */
 #endif

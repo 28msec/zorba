@@ -15,7 +15,7 @@ using namespace std;
 
 namespace zorba {
 
-  signature::signature (Item_t name, xqtref_t arg1,
+  signature::signature (store::Item_t name, xqtref_t arg1,
                         bool variadic, xqtref_t return_type)
     : signature_base (variadic),
       qname_p(name)
@@ -25,7 +25,7 @@ namespace zorba {
   }
 
 signature::signature(
-  Item_t name,
+  store::Item_t name,
   xqtref_t return_type)
 :
   qname_p(name)
@@ -34,7 +34,7 @@ signature::signature(
 }
 
 signature::signature(
-  Item_t name,
+  store::Item_t name,
   xqtref_t arg1,
   xqtref_t return_type)
 :
@@ -45,7 +45,7 @@ signature::signature(
 }
 
 signature::signature(
-  Item_t name,
+  store::Item_t name,
   xqtref_t arg1,
   xqtref_t arg2,
   xqtref_t return_type)
@@ -58,7 +58,7 @@ signature::signature(
 }
 
 signature::signature(
-  Item_t name,
+  store::Item_t name,
   xqtref_t arg1,
   xqtref_t arg2,
   xqtref_t arg3,
@@ -73,7 +73,7 @@ signature::signature(
 }
 
 signature::signature(
-  Item_t name,
+  store::Item_t name,
   xqtref_t arg1,
   xqtref_t arg2,
   xqtref_t arg3,
@@ -89,7 +89,7 @@ signature::signature(
   argv.push_back(arg4);
 }
 
-signature::signature(Item_t name,
+signature::signature(store::Item_t name,
                      const vector<xqtref_t>& _argv,
                      xqtref_t return_type)
   : qname_p(name)

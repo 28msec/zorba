@@ -18,7 +18,7 @@ namespace zorba
       void reset(PlanState&);
 
       // used for evaluating the target expression eagerly
-      TempSeq_t  theTargetSequence;
+      store::TempSeq_t  theTargetSequence;
       Iterator_t theIterator; 
   };
 
@@ -33,7 +33,7 @@ namespace zorba
     TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses);
     virtual ~TryCatchIterator();
   
-    Item_t nextImpl(PlanState& aPlanState) const;
+    store::Item_t nextImpl(PlanState& aPlanState) const;
 
     virtual void accept(PlanIterVisitor& v) const;
 

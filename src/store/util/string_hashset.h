@@ -7,8 +7,7 @@
 #include "store/util/handle_hashset.h"
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 class StringPool : public HandleSet<xqpStringStore, StringPool>
 {
@@ -39,6 +38,7 @@ protected:
 };
 
 
-}
+} // namespace store
+} // namespace zorba
 
 #endif

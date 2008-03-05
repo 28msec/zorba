@@ -15,13 +15,13 @@ class MySimpleExternalFunction : public StatelessExternalFunction
     virtual xqp_string
     getLocalName() const { return "bar"; }
 
-    virtual ItemSequence_t 
+    virtual store::ItemSequence_t 
     evaluate(const StatelessExternalFunction::Arguments_t& args) const 
     {
         iv_t vec;
         for(int i = 0; i < 2; ++i) {
-            ItemSequence_t iseq = args[i];
-            Item_t lItem;
+            store::ItemSequence_t iseq = args[i];
+            store::Item_t lItem;
             while((lItem = iseq->next()) != NULL) {
                 vec.push_back(lItem);
             }
@@ -30,22 +30,22 @@ class MySimpleExternalFunction : public StatelessExternalFunction
     }
 
   private:
-    typedef std::vector<Item_t> iv_t;
+    typedef std::vector<store::Item_t> iv_t;
     typedef iv_t::iterator ii_t;
 
-    class IteratorBackedItemSequence : public ItemSequence {
+    class IteratorBackedItemSequence : public store::ItemSequence {
         public:
             IteratorBackedItemSequence(iv_t& vec)
                 : m_vec(vec),
                 m_i(m_vec.begin()),
                 m_end(m_vec.end()) { }
 
-            Item_t next()
+            store::Item_t next()
             {
                 if (m_i == m_end) {
                     return NULL;
                 }
-                Item_t val = *m_i;
+                store::Item_t val = *m_i;
                 ++m_i;
                 return val;
             }
@@ -66,22 +66,22 @@ class MyLazySimpleExternalFunction : public StatelessExternalFunction
     virtual xqp_string
     getLocalName() const { return "bar2"; }
 
-    virtual ItemSequence_t 
+    virtual store::ItemSequence_t 
     evaluate(const StatelessExternalFunction::Arguments_t& args) const 
     {
         return new LazyConcatItemSequence(args);
     }
 
   private:
-    class LazyConcatItemSequence : public ItemSequence {
+    class LazyConcatItemSequence : public store::ItemSequence {
         public:
             LazyConcatItemSequence(const StatelessExternalFunction::Arguments_t& args)
                 : m_args(args),
                 m_i(0) { }
 
-            Item_t next()
+            store::Item_t next()
             {
-                Item_t i = NULL;
+                store::Item_t i = NULL;
                 while(m_i < m_args.size() && (i = m_args[m_i]->next()) == NULL) {
                     ++m_i;
                 }

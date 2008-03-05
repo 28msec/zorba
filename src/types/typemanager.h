@@ -3,19 +3,14 @@
 
 #include <ostream>
 #include <zorba/rchandle.h>
+#include "common/shared_types.h"
 #include "types/typeconstants.h"
 
 namespace zorba {
 
-class XQType;
 class NodeTest;
-class NodeNameTest;
 class TypeIdentifier;
-class Item;
-
-typedef rchandle<XQType> xqtref_t;
 typedef rchandle<TypeIdentifier> type_ident_ref_t;
-typedef rchandle<Item> Item_t;
 
 /*
  * Interface used by other parts of zorba to ask questions about types.
@@ -120,7 +115,7 @@ class TypeManager {
     virtual type_ident_ref_t get_type_identifier(const XQType& type) const = 0;
 
     /* Factory Methods */
-    virtual xqtref_t create_type(Item_t qname, TypeConstants::quantifier_t quantifier) const = 0;
+    virtual xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const = 0;
 
     virtual xqtref_t create_type(const TypeIdentifier& ident) const = 0;
 
@@ -128,7 +123,7 @@ class TypeManager {
 
     virtual xqtref_t create_atomic_type(TypeConstants::atomic_type_code_t type_code, TypeConstants::quantifier_t quantifier) const = 0;
 
-    virtual xqtref_t create_atomic_type(Item_t qname, TypeConstants::quantifier_t quantifier) const = 0;
+    virtual xqtref_t create_atomic_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const = 0;
 
     virtual xqtref_t create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeConstants::quantifier_t quantifier) const = 0;
 

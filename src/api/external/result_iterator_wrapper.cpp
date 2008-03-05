@@ -60,7 +60,7 @@ void		ResultIteratorWrapper::openIterator()
   PlanWrapper::open();
 }
 
-Item_t	ResultIteratorWrapper::nextItem()
+store::Item_t	ResultIteratorWrapper::nextItem()
 {
 	try{
 		if(!theStateBlock)
@@ -83,8 +83,8 @@ Item_t	ResultIteratorWrapper::nextItem()
   theStateBlock->theZorba->current_xqueryresult = this;
   try
   {
-    //Item_t it = PlanIterator::consumeNext( xquery->top_iterator, *theStateBlock );
-    Item_t  it = PlanWrapper::next();
+    //store::Item_t it = PlanIterator::consumeNext( xquery->top_iterator, *theStateBlock );
+    store::Item_t  it = PlanWrapper::next();
 
     theStateBlock->theZorba->current_xquery = prev_current_xquery;
 		theStateBlock->theZorba->current_xqueryresult = prev_result;
@@ -149,7 +149,7 @@ void ResultIteratorWrapper::open()
   openIterator();
 }
 
-Item_t ResultIteratorWrapper::next()
+store::Item_t ResultIteratorWrapper::next()
 {
   return nextItem();
 }
@@ -179,7 +179,7 @@ void ResultIteratorInternalWrapper::open()
 }
 
 
-Item_t ResultIteratorInternalWrapper::next()
+store::Item_t ResultIteratorInternalWrapper::next()
 {
 	return result->next();
 }

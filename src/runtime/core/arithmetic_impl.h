@@ -26,16 +26,16 @@ class AddOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static Item_t compute (const QueryLoc*, const Item*, const Item*);
+  static store::Item_t compute (const QueryLoc*, const store::Item*, const store::Item*);
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t computeSingleType (const QueryLoc* loc, const Item* i0, const Item* i1) 
+  static store::Item_t computeSingleType (const QueryLoc* loc, const store::Item* i0, const store::Item* i1) 
   {
     return AddOperation::compute<ATC,ATC>(loc, i0, i1);
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t AddOperation::compute(const QueryLoc* loc, const Item*, const Item*) {
+inline store::Item_t AddOperation::compute(const QueryLoc* loc, const store::Item*, const store::Item*) {
   ArithOperationsCommons::createError("add", loc, ATC0, ATC1);
   return 0;
 }
@@ -46,16 +46,16 @@ class SubtractOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static Item_t compute (const QueryLoc*, const Item*, const Item*);
+  static store::Item_t compute (const QueryLoc*, const store::Item*, const store::Item*);
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t computeSingleType (const QueryLoc* loc, const Item* i0, const Item* i1) 
+  static store::Item_t computeSingleType (const QueryLoc* loc, const store::Item* i0, const store::Item* i1) 
   {
     return SubtractOperation::compute<ATC,ATC>(loc, i0, i1);
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t SubtractOperation::compute(const QueryLoc* loc, const Item*, const Item*) {
+inline store::Item_t SubtractOperation::compute(const QueryLoc* loc, const store::Item*, const store::Item*) {
   ArithOperationsCommons::createError("sub", loc, ATC0, ATC1);
   return 0;
 }
@@ -66,16 +66,16 @@ class MultiplyOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static Item_t compute (const QueryLoc*, const Item*, const Item*);
+  static store::Item_t compute (const QueryLoc*, const store::Item*, const store::Item*);
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t computeSingleType (const QueryLoc* loc, const Item* i0, const Item* i1) 
+  static store::Item_t computeSingleType (const QueryLoc* loc, const store::Item* i0, const store::Item* i1) 
   {
     return MultiplyOperation::compute<ATC,ATC>(loc, i0, i1);
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t MultiplyOperation::compute(const QueryLoc* loc, const Item*, const Item*) {
+inline store::Item_t MultiplyOperation::compute(const QueryLoc* loc, const store::Item*, const store::Item*) {
   ArithOperationsCommons::createError("mul", loc, ATC0, ATC1);
   return 0;
 }
@@ -86,16 +86,16 @@ class DivideOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static Item_t compute (const QueryLoc*, const Item*, const Item*);
+  static store::Item_t compute (const QueryLoc*, const store::Item*, const store::Item*);
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t computeSingleType (const QueryLoc* loc, const Item* i0, const Item* i1) 
+  static store::Item_t computeSingleType (const QueryLoc* loc, const store::Item* i0, const store::Item* i1) 
   {
     return DivideOperation::compute<ATC,ATC>(loc, i0, i1);
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t DivideOperation::compute(const QueryLoc* loc, const Item*, const Item*) {
+inline store::Item_t DivideOperation::compute(const QueryLoc* loc, const store::Item*, const store::Item*) {
   ArithOperationsCommons::createError("div", loc, ATC0, ATC1);
   return 0;
 }
@@ -106,16 +106,16 @@ class IntegerDivideOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static Item_t compute (const QueryLoc*, const Item*, const Item*);
+  static store::Item_t compute (const QueryLoc*, const store::Item*, const store::Item*);
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t computeSingleType (const QueryLoc* loc, const Item* i0, const Item* i1) 
+  static store::Item_t computeSingleType (const QueryLoc* loc, const store::Item* i0, const store::Item* i1) 
   {
     return IntegerDivideOperation::compute<ATC,ATC>(loc, i0, i1);
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t IntegerDivideOperation::compute(const QueryLoc* loc, const Item*, const Item*) {
+inline store::Item_t IntegerDivideOperation::compute(const QueryLoc* loc, const store::Item*, const store::Item*) {
   ArithOperationsCommons::createError("int-div", loc, ATC0, ATC1);
   return 0;
 }
@@ -126,16 +126,16 @@ class ModOperation
 {
 public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static Item_t compute (const QueryLoc*, const Item*, const Item*);
+  static store::Item_t compute (const QueryLoc*, const store::Item*, const store::Item*);
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static Item_t computeSingleType (const QueryLoc* loc, const Item* i0, const Item* i1) 
+  static store::Item_t computeSingleType (const QueryLoc* loc, const store::Item* i0, const store::Item* i1) 
   {
     return ModOperation::compute<ATC,ATC>(loc, i0, i1);
   }
 };
 template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-inline Item_t ModOperation::compute(const QueryLoc* loc, const Item*, const Item*) {
+inline store::Item_t ModOperation::compute(const QueryLoc* loc, const store::Item*, const store::Item*) {
   ArithOperationsCommons::createError("mod", loc, ATC0, ATC1);
   return 0;
 }
@@ -149,12 +149,12 @@ class GenericArithIterator
     GenericArithIterator ( const QueryLoc&, PlanIter_t&, PlanIter_t& );
     virtual ~GenericArithIterator(){}
 
-    Item_t nextImpl(PlanState&) const;
+    store::Item_t nextImpl(PlanState&) const;
     
     virtual void accept(PlanIterVisitor&) const;
 
-    static Item_t
-    compute(const QueryLoc& loc, Item_t n0, Item_t n1);
+    static store::Item_t
+    compute(const QueryLoc& loc, store::Item_t n0, store::Item_t n1);
 
 }; /* class NumArithIterator */
 }

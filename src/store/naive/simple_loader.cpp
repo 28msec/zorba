@@ -16,8 +16,7 @@
 #include "store/naive/nsbindings.h"
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 #ifndef NDEBUG
 
@@ -735,4 +734,5 @@ void  XmlLoader::warning(void * ctx, const char * msg, ... )
   loader.theWarnings += buf;
 }
 
-}
+} // namespace store
+} // namespace zorba

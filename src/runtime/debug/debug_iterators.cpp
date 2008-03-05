@@ -21,10 +21,10 @@ FnTraceIteratorState::reset(PlanState& planState)
   theTagItem = NULL;
 }
 
-Item_t 
+store::Item_t 
 FnTraceIterator::nextImpl(PlanState& planState) const
 {
-  Item_t lSequenceItem;
+  store::Item_t lSequenceItem;
 
   FnTraceIteratorState *state;
   DEFAULT_STACK_INIT(FnTraceIteratorState, state, planState);

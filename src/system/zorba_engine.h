@@ -5,12 +5,11 @@
 #include <zorba/common/common.h>
 #include <zorba/zorba_engine_api.h>
 #include <zorba/zorba_engine_singlethread_api.h>
+#include "common/shared_types.h"
 
 namespace zorba
 {
-
 class Zorba;
-class XmlDataManager_Impl;
 
 /*daniel: getInstance cannot be called by system after user calls shutdown()
 this generates memory leaks
@@ -57,10 +56,10 @@ private:
 #endif
 
 	//the store wrapper
-	XmlDataManager_Impl		*xml_data_manager;
-	bool									for_single_thread_api;
-	Zorba									*theSingleThreadZorba;
-  bool                  in_destructor;
+  store::XmlDataManager_Impl		*xml_data_manager;
+	bool	         								for_single_thread_api;
+	Zorba	         								*theSingleThreadZorba;
+bool                            in_destructor;
 public:
   bool                  is_shutdown;
 
@@ -118,7 +117,7 @@ public:
 	StaticQueryContext_t createStaticContext();
 	DynamicQueryContext_t createDynamicContext();
 
-	virtual	XmlDataManager_t		getXmlDataManager();
+	virtual	store::XmlDataManager_t		getXmlDataManager();
 
   virtual XQueryTreePlans_t createDebugPlanPrintObject();
 

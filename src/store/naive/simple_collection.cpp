@@ -13,8 +13,7 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 /*******************************************************************************
 
@@ -169,5 +168,6 @@ void SimpleCollection::CollectionIter::reset()
 void SimpleCollection::CollectionIter::close() 
 {
 }
+} // namespace store
+} // namespace zorba
 
-} /* namespace zorba */

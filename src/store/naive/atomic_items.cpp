@@ -36,8 +36,7 @@
 #define CREATE_BOOLITEM(aValue) \
   GET_STORE().getItemFactory()->createBoolean(aValue)
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 
 /*******************************************************************************
@@ -1274,5 +1273,6 @@ xqp_string GDayItemNaive::show() const
 }
 
 
+} // namespace store
+} // namespace zorba
 
-}/* namespace zorba */

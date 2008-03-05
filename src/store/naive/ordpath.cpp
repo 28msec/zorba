@@ -5,8 +5,7 @@
 #include "store/naive/store_defs.h"
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -3586,5 +3585,6 @@ std::string OrdPathStack::show() const
   return str.str().c_str();
 }
 
+} // namespace store
+} // namespace zorba
 
-}

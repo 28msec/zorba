@@ -66,7 +66,7 @@ class FnStringIterator : public NaryBaseIterator<FnStringIterator, FnStringItera
 
     virtual ~FnStringIterator() { }
 
-    Item_t nextImpl(PlanState& planState) const;
+    store::Item_t nextImpl(PlanState& planState) const;
 
     virtual void accept(PlanIterVisitor& v) const;
 

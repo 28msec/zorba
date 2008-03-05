@@ -110,7 +110,7 @@ class RootTypeManager : public TypeManager {
     type_ident_ref_t get_type_identifier(const XQType& type) const;
 
     /* Factory Methods */
-    xqtref_t create_type(Item_t qname, TypeConstants::quantifier_t quantifier) const;
+    xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const;
 
     xqtref_t create_type(const TypeIdentifier& ident) const;
 
@@ -118,7 +118,7 @@ class RootTypeManager : public TypeManager {
 
     xqtref_t create_atomic_type(TypeConstants::atomic_type_code_t type_code, TypeConstants::quantifier_t quantifier) const;
 
-    xqtref_t create_atomic_type(Item_t qname, TypeConstants::quantifier_t quantifier) const;
+    xqtref_t create_atomic_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const;
 
     xqtref_t create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeConstants::quantifier_t quantifier) const;
 
@@ -136,14 +136,14 @@ class RootTypeManager : public TypeManager {
     
     xqtref_t create_user_defined_type(const UserDefinedXQType& type, TypeConstants::quantifier_t quantifier) const;
     
-    Item_t XS_ANY_TYPE_QNAME;
+    store::Item_t XS_ANY_TYPE_QNAME;
 
-    Item_t XS_ANY_SIMPLE_TYPE_QNAME;
+    store::Item_t XS_ANY_SIMPLE_TYPE_QNAME;
 
-    Item_t XS_UNTYPED_QNAME;
+    store::Item_t XS_UNTYPED_QNAME;
 
 #define ATOMIC_DECL(basename) \
-    Item_t XS_##basename##_QNAME; \
+    store::Item_t XS_##basename##_QNAME; \
     xqtref_t basename##_TYPE_ONE;\
     xqtref_t basename##_TYPE_QUESTION; \
     xqtref_t basename##_TYPE_STAR; \
@@ -223,8 +223,8 @@ class RootTypeManager : public TypeManager {
   private:
 
     xqtref_t *m_atomic_typecode_map[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE][TypeConstants::QUANTIFIER_LIST_SIZE];
-    Item_t *m_atomic_typecode_qname_map[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
-    typedef std::map<Item_t, TypeConstants::atomic_type_code_t> qnametype_map_t;
+    store::Item_t *m_atomic_typecode_qname_map[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+    typedef std::map<store::Item_t, TypeConstants::atomic_type_code_t> qnametype_map_t;
     qnametype_map_t m_atomic_qnametype_map;
 
     static const bool ATOMIC_SUBTYPE_MATRIX[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE][TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];

@@ -32,12 +32,12 @@ namespace zorba
     
   FnBooleanIterator::~FnBooleanIterator() {}
 
-  Item_t
+  store::Item_t
   FnBooleanIterator::effectiveBooleanValue ( const QueryLoc& loc, PlanState& planState, const PlanIterator* iter, bool negate )
   {
-    Item_t item;
+    store::Item_t item;
     xqtref_t type;
-    Item_t result;
+    store::Item_t result;
 
     item = consumeNext(iter, planState);
 
@@ -53,7 +53,7 @@ namespace zorba
     }
     else
     {
-      rchandle<Item> lType = item->getType();
+      store::Item_t lType = item->getType();
       std::string str = lType->getLocalName();
       str = lType->getPrefix();
       str = lType->getNamespace();
@@ -85,7 +85,7 @@ namespace zorba
     return result;
   }
 
-  Item_t
+  store::Item_t
   FnBooleanIterator::nextImpl(PlanState& planState) const
   { 
     PlanIteratorState* aState;
@@ -105,7 +105,7 @@ namespace zorba
   
   LogicIterator::~LogicIterator(){}
       
-  Item_t 
+  store::Item_t 
   LogicIterator::nextImpl(PlanState& planState) const
   {
     bool bRes = false;
@@ -139,15 +139,15 @@ namespace zorba
   CompareIterator::~CompareIterator()
   { }
   
-  Item_t
+  store::Item_t
   CompareIterator::nextImpl ( PlanState& planState ) const
   {
-    Item_t lItem0;
-    Item_t lItem1;
+    store::Item_t lItem0;
+    store::Item_t lItem1;
     Iterator_t lIter0;
     Iterator_t lIter1;
-    TempSeq_t temp0;
-    TempSeq_t temp1;
+    store::TempSeq_t temp0;
+    store::TempSeq_t temp1;
     int32_t i0;
     int32_t i1;
     bool found;
@@ -262,7 +262,7 @@ namespace zorba
     return retVal;
   }
   
-  std::pair<Item_t, Item_t> CompareIterator::valueCasting(Item_t aItem0, Item_t aItem1) {
+  std::pair<store::Item_t, store::Item_t> CompareIterator::valueCasting(store::Item_t aItem0, store::Item_t aItem1) {
     xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     // all untyped Atomics to String
@@ -275,10 +275,10 @@ namespace zorba
       aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
     
-    return std::pair<Item_t,Item_t>(aItem0, aItem1);
+    return std::pair<store::Item_t,store::Item_t>(aItem0, aItem1);
   }
   
-  std::pair<Item_t, Item_t> CompareIterator::generalCasting(Item_t aItem0, Item_t aItem1) {
+  std::pair<store::Item_t, store::Item_t> CompareIterator::generalCasting(store::Item_t aItem0, store::Item_t aItem1) {
     xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
@@ -314,7 +314,7 @@ namespace zorba
         aItem1 = GenericCast::instance()->cast(aItem1, type0);
       }
     }
-    return std::pair<Item_t,Item_t>(aItem0, aItem1);
+    return std::pair<store::Item_t,store::Item_t>(aItem0, aItem1);
   }
   
 bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType aCompType )
@@ -354,11 +354,11 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
   return false;
 }
   
-  std::pair<Item_t, Item_t> CompareIterator::typePromotion(Item_t aItem0, Item_t aItem1) {
+  std::pair<store::Item_t, store::Item_t> CompareIterator::typePromotion(store::Item_t aItem0, store::Item_t aItem1) {
     xqtref_t aType0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t aType1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     
-    Item_t lResult = GenericCast::instance()->promote(aItem0, aType1); 
+    store::Item_t lResult = GenericCast::instance()->promote(aItem0, aType1); 
     if (lResult != 0) {
       aItem0 = lResult;
     }
@@ -367,11 +367,11 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
       aItem1 = lResult;
     }
     
-    return std::pair<Item_t,Item_t>(aItem0, aItem1);
+    return std::pair<store::Item_t,store::Item_t>(aItem0, aItem1);
   }
   
   bool
-  CompareIterator::generalComparison(const Item_t& aItem0, const Item_t& aItem1, 
+  CompareIterator::generalComparison(const store::Item_t& aItem0, const store::Item_t& aItem1, 
                                      CompareConsts::CompareType aCompType, xqpString* aCollation)
   {
     int8_t compValue = -2;
@@ -405,7 +405,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
     return boolResult(compValue, aCompType);
   } /* end CompareIterator::generalComparison (...) */
   
-  bool CompareIterator::valueComparison(const Item_t& aItem0, const Item_t& aItem1, 
+  bool CompareIterator::valueComparison(const store::Item_t& aItem0, const store::Item_t& aItem1, 
                                         CompareConsts::CompareType aCompType, xqpString* aCollation)
   {
     int8_t compValue = -2;
@@ -440,7 +440,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
   }
   
   int8_t
-  CompareIterator::equal(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation)
+  CompareIterator::equal(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation)
   {
     int result;
     // tries first normal compare
@@ -480,22 +480,22 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
       return 0;
   }
   
-  int8_t CompareIterator::valueEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation) {
-    std::pair<Item_t, Item_t> lPair;
+  int8_t CompareIterator::valueEqual(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation) {
+    std::pair<store::Item_t, store::Item_t> lPair;
     lPair = valueCasting(aItem0, aItem1);
     lPair = typePromotion(lPair.first, lPair.second);
     return equal(lPair.first, lPair.second, aCollation);
   }
   
-  int8_t CompareIterator::generalEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation) {
-    std::pair<Item_t, Item_t> lPair;
+  int8_t CompareIterator::generalEqual(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation) {
+    std::pair<store::Item_t, store::Item_t> lPair;
     lPair = generalCasting(aItem0, aItem1);
     lPair = typePromotion(lPair.first, lPair.second);
     return equal(lPair.first, lPair.second, aCollation);
   }
   
   int8_t 
-  CompareIterator::compare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation)
+  CompareIterator::compare(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation)
   {
     xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
@@ -620,26 +620,26 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
     return ret;
   }
   
-  int8_t CompareIterator::valueCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation) {
-    std::pair<Item_t, Item_t> lPair;
+  int8_t CompareIterator::valueCompare(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation) {
+    std::pair<store::Item_t, store::Item_t> lPair;
     lPair = valueCasting(aItem0, aItem1);
     lPair = typePromotion(lPair.first, lPair.second);
     return compare(lPair.first, lPair.second, aCollation);
   }
   
-  int8_t CompareIterator::generalCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation) {
-    std::pair<Item_t, Item_t> lPair;
+  int8_t CompareIterator::generalCompare(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation) {
+    std::pair<store::Item_t, store::Item_t> lPair;
     lPair = generalCasting(aItem0, aItem1);
     lPair = typePromotion(lPair.first, lPair.second);
     return compare(lPair.first, lPair.second, aCollation);
   }
   /* end class ComparisonIterator */
 
-  Item_t
+  store::Item_t
   OpIsSameNodeIterator::nextImpl(PlanState& aPlanState) const
   { 
     bool lBool;
-    Item_t lItem0, lItem1;
+    store::Item_t lItem0, lItem1;
 
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
@@ -662,11 +662,11 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
     STACK_END();
   }
 
-  Item_t
+  store::Item_t
   OpNodeBeforeIterator::nextImpl(PlanState& aPlanState) const
   { 
     bool lBool;
-    Item_t lItem0, lItem1;
+    store::Item_t lItem0, lItem1;
 
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
@@ -689,11 +689,11 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
     STACK_END();
   }
 
-  Item_t
+  store::Item_t
   OpNodeAfterIterator::nextImpl(PlanState& aPlanState) const
   { 
     bool lBool;
-    Item_t lItem0, lItem1;
+    store::Item_t lItem0, lItem1;
 
     PlanIteratorState* aState;
     DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);

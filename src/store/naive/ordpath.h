@@ -6,8 +6,7 @@
 
 #include <zorba/common/common.h>
 
-namespace zorba
-{
+namespace zorba { namespace store {
 class OrdPathStack;
 
 
@@ -163,6 +162,7 @@ private:
 };
 
 
-}
+} // namespace store
+} // namespace zorba
 
 #endif

@@ -39,7 +39,7 @@ namespace zorba
       NumArithIterator ( const QueryLoc&, PlanIter_t&, PlanIter_t& );
       virtual ~NumArithIterator(){}
 
-      Item_t nextImpl(PlanState&) const;
+      store::Item_t nextImpl(PlanState&) const;
       
       virtual void accept(PlanIterVisitor&) const;
 
@@ -50,8 +50,8 @@ namespace zorba
        * @param item0
        * @param item1
        */
-      static Item_t
-      compute(const QueryLoc& loc, Item_t item0, Item_t item1);
+      static store::Item_t
+      compute(const QueryLoc& loc, store::Item_t item0, store::Item_t item1);
       
       /**
        * Computes Operation on passed items.
@@ -62,9 +62,9 @@ namespace zorba
        * @param item1 Atomized Item
        * @param type1 Type of item1
        */
-      static Item_t
+      static store::Item_t
       computeAtomic
-        (const QueryLoc&, Item_t item0, xqtref_t type0, Item_t item1, xqtref_t type1);
+        (const QueryLoc&, store::Item_t item0, xqtref_t type0, store::Item_t item1, xqtref_t type1);
 
   }; /* class NumArithIterator */
 
@@ -114,7 +114,7 @@ namespace zorba
       virtual ~OpNumericUnaryIterator();
 
     public: // iterator interface
-      Item_t nextImpl(PlanState& planState) const;
+      store::Item_t nextImpl(PlanState& planState) const;
       
       virtual void accept(PlanIterVisitor&) const;
   };
@@ -158,7 +158,7 @@ namespace zorba
       FnRoundHalfToEvenIterator(const QueryLoc&, PlanIter_t&, PlanIter_t&);
       virtual ~FnRoundHalfToEvenIterator();
 
-      Item_t nextImpl(PlanState&) const;
+      store::Item_t nextImpl(PlanState&) const;
       virtual void accept(PlanIterVisitor&) const;
   };
 
@@ -183,7 +183,7 @@ namespace zorba
     ZorNumGen ( const QueryLoc& loc);
     ~ZorNumGen();
 
-    Item_t nextImpl(PlanState& planState) const;
+    store::Item_t nextImpl(PlanState& planState) const;
 
     virtual void accept(PlanIterVisitor&) const;
   };

@@ -34,12 +34,6 @@
 
 namespace zorba {
 
-//class itemstore;
-class static_context;
-class Iterator;
-class Item;
-typedef rchandle<Item>    Item_t;
-
 class dynamic_context// : public context
 {
 protected:
@@ -57,19 +51,19 @@ protected:
 
 	hashmap<dctx_value_t>   keymap;
 	//struct ::tm	            execution_date_time;
-  Item_t                  execution_date_time_item;
+  store::Item_t                  execution_date_time_item;
 	long										execution_timezone_seconds;
 	int			                implicit_timezone;
 	xqp_string		          default_collection_uri;//default URI for fn:collection()
 
 protected:
-  xqp_string qname_internal_key (Item_t qname) const;
+  xqp_string qname_internal_key (store::Item_t qname) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
 
   Iterator* lookup_var_iter (xqp_string key) const;
 
-	Item_t		ctxt_item;
+  store::Item_t		ctxt_item;
 	unsigned long		ctxt_position;
 	//+context size is determined by fn:last() at runtime
 
@@ -82,12 +76,12 @@ public:
   xqp_string expand_varname(static_context	*sctx, xqp_string qname) const;
 
 public:
-	Item_t context_item() const;
+  store::Item_t context_item() const;
 	unsigned long	context_position();
 
 	xqtref_t context_item_type() const;
 
-	void set_context_item(Item_t, unsigned long position);
+	void set_context_item(store::Item_t, unsigned long position);
 	void set_context_item_type(xqtref_t );
 
   #if 0
@@ -105,7 +99,7 @@ public:
 //	const function* get_function(qnamekey_t key) { return lib->get(key); }
 
 	void		set_execution_date_time(struct ::tm t, long tz_seconds);
-	Item_t	get_execution_date_time();
+  store::Item_t	get_execution_date_time();
 	void		set_implicit_timezone(long tzone_seconds);
 	long		get_implicit_timezone();
 

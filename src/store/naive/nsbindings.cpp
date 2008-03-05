@@ -3,8 +3,7 @@
 #include "util/Assert.h"
 #include "store/naive/nsbindings.h"
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 NsBindingsContext::NsBindingsContext(unsigned long numBindings)
 {
@@ -79,5 +78,6 @@ void NsBindingsContext::addBinding(
 }
 
 
-}
+} // namespace store
+} // namespace zorba
 

@@ -16,7 +16,7 @@
 #include "common/shared_types.h"
 
 
-namespace zorba {
+namespace zorba { namespace store {
 
 class var_iterator;
 
@@ -145,6 +145,7 @@ public:
   virtual bool empty() = 0;
 };
 
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba
 
 #endif /* ZORBA_TEMP_SEQ_H */

@@ -7,8 +7,7 @@
 #include "util/rwlock.h"
 #endif
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
@@ -97,7 +96,8 @@ public:
 };
 
 #endif // ZORBA_FOR_ONE_THREAD_ONLY
-}
+} // namespace store
+} // namespace zorba
 
 
 #endif

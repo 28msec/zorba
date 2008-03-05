@@ -17,7 +17,7 @@ bool DynamicContextWrapper::setContextItemAsBigInteger( xqp_integer int_value, V
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 
 	
 	switch(type)
@@ -57,7 +57,7 @@ bool DynamicContextWrapper::setContextItemAsBigUInteger( xqp_uinteger uint_value
 {
 	try{
 	
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 
 	
 	switch(type)
@@ -92,7 +92,7 @@ bool DynamicContextWrapper::setContextItemAsBigUInteger( xqp_uinteger uint_value
 bool DynamicContextWrapper::setContextItemAsDecimal( Decimal decimal_value)
 {
 	try{
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createDecimal(decimal_value);
 
@@ -111,7 +111,7 @@ bool DynamicContextWrapper::setContextItemAsLong( xqp_long long_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createLong(long_value);
 
@@ -129,7 +129,7 @@ bool DynamicContextWrapper::setContextItemAsLong( xqp_long long_value)
 bool DynamicContextWrapper::setContextItemAsULong( xqp_ulong ulong_value)
 {
 	try{
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createUnsignedLong(ulong_value);
 
@@ -147,7 +147,7 @@ bool DynamicContextWrapper::setContextItemAsInt( xqp_int int_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createInt(int_value);
 
@@ -165,7 +165,7 @@ bool DynamicContextWrapper::setContextItemAsUInt( xqp_uint uint_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createUnsignedInt(uint_value);
 
@@ -183,7 +183,7 @@ bool DynamicContextWrapper::setContextItemAsShort( xqp_short short_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createShort(short_value);
 
@@ -201,7 +201,7 @@ bool DynamicContextWrapper::setContextItemAsUShort( xqp_ushort ushort_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createUnsignedShort(ushort_value);
 
@@ -219,7 +219,7 @@ bool DynamicContextWrapper::setContextItemAsByte( xqp_byte byte_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createByte(byte_value);
 
@@ -237,7 +237,7 @@ bool DynamicContextWrapper::setContextItemAsUByte( xqp_ubyte ubyte_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createUnsignedByte(ubyte_value);
 
@@ -256,7 +256,7 @@ bool DynamicContextWrapper::setContextItemAsString( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createString(str_value.getStore());
 
@@ -274,7 +274,7 @@ bool DynamicContextWrapper::setContextItemAsNormalizedString( xqp_string str_val
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createNormalizedString(str_value);
 
@@ -292,7 +292,7 @@ bool DynamicContextWrapper::setContextItemAsToken( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createToken(str_value);
 
@@ -310,7 +310,7 @@ bool DynamicContextWrapper::setContextItemAsLanguage( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createLanguage(str_value);
 
@@ -328,7 +328,7 @@ bool DynamicContextWrapper::setContextItemAsNMToken( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createNMTOKEN(str_value);
 
@@ -346,7 +346,7 @@ bool DynamicContextWrapper::setContextItemAsName( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createName(str_value);
 
@@ -364,7 +364,7 @@ bool DynamicContextWrapper::setContextItemAsNCName( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createNCName(str_value.getStore());
 
@@ -382,7 +382,7 @@ bool DynamicContextWrapper::setContextItemAsID( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createID(str_value);
 
@@ -400,7 +400,7 @@ bool DynamicContextWrapper::setContextItemAsIDREF( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createIDREF(str_value);
 
@@ -418,7 +418,7 @@ bool DynamicContextWrapper::setContextItemAsEntity( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createENTITY(str_value);
 
@@ -436,7 +436,7 @@ bool DynamicContextWrapper::setContextItemAsNotation( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createNOTATION(str_value);
 
@@ -453,7 +453,7 @@ bool DynamicContextWrapper::setContextItemAsNotation( xqp_string str_value)
 bool DynamicContextWrapper::setContextItemAsAnyURI( xqp_string str_value)
 {
 	try{
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createAnyURI(str_value.getStore());
 
@@ -471,7 +471,7 @@ bool DynamicContextWrapper::setContextItemAsQName( xqp_string namespace_value, x
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createQName(namespace_value.getStore(),
                                            prefix_value.getStore(),
@@ -491,7 +491,7 @@ bool DynamicContextWrapper::setContextItemAsUntypedAtomic( xqp_string str_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createUntypedAtomic(str_value.getStore());
 
@@ -510,7 +510,7 @@ bool DynamicContextWrapper::setContextItemAsDouble( xqp_double double_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createDouble(double_value);
 
@@ -528,7 +528,7 @@ bool DynamicContextWrapper::setContextItemAsFloat( xqp_float float_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createFloat(float_value);
 
@@ -547,7 +547,7 @@ bool DynamicContextWrapper::setContextItemAsBool( xqp_boolean bool_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createBoolean(bool_value);
 
@@ -582,7 +582,7 @@ bool DynamicContextWrapper::setContextItemAsDateTime( struct ::tm datetime_value
 	}
 	
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	
 	context_item = item_factory->createDateTime(
@@ -604,7 +604,7 @@ bool DynamicContextWrapper::setContextItemAsDateTime( xqp_dateTime datetime_valu
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createDateTime(datetime_value);
 
@@ -636,7 +636,7 @@ bool DynamicContextWrapper::setContextItemAsDateTime( short year , short month, 
 		ZORBA_ERROR_ALERT(ZorbaError::FODT0003);
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createDateTime(
 					year, month, day,	hour, minute, second,	timeZone);
@@ -655,7 +655,7 @@ bool DynamicContextWrapper::setContextItemAsDuration( xqp_duration duration_valu
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createDuration(duration_value);
 	
@@ -673,7 +673,7 @@ bool DynamicContextWrapper::setContextItemAsDuration( short years, short months,
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createDuration(years, months, days, hours, minutes, seconds);
 
@@ -691,7 +691,7 @@ bool DynamicContextWrapper::setContextItemAsDate( xqp_date date_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createDate(date_value);
 
@@ -716,7 +716,7 @@ bool DynamicContextWrapper::setContextItemAsDate( short year , short month, shor
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	if(context_item == NULL)
 	{
@@ -734,7 +734,7 @@ bool DynamicContextWrapper::setContextItemAsTime( xqp_time time_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createTime(time_value);
 
@@ -759,7 +759,7 @@ bool DynamicContextWrapper::setContextItemAsTime( short hour, short minute, shor
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createTime(hour, minute, second, timeZone);
 
@@ -777,7 +777,7 @@ bool DynamicContextWrapper::setContextItemAsGYearMonth( xqp_gYearMonth gyearmont
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createGYearMonth(gyearmonth_value);
 
@@ -801,7 +801,7 @@ bool DynamicContextWrapper::setContextItemAsGYearMonth( short year , short month
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createGYearMonth(year, month);
 
@@ -819,7 +819,7 @@ bool DynamicContextWrapper::setContextItemAsGYear( xqp_gYear gyear_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createGYear(gyear_value);
 
@@ -842,7 +842,7 @@ bool DynamicContextWrapper::setContextItemAsGYear( short year)
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createGYear(year);
 
@@ -860,7 +860,7 @@ bool DynamicContextWrapper::setContextItemAsGMonthDay( xqp_gMonthDay gmonthday_v
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createGMonthDay(gmonthday_value);
 
@@ -884,7 +884,7 @@ bool DynamicContextWrapper::setContextItemAsGMonthDay( short month , short day)
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createGMonthDay(month, day);
 
@@ -902,7 +902,7 @@ bool DynamicContextWrapper::setContextItemAsGDay( xqp_gDay gday_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createGDay(gday_value);
 
@@ -925,7 +925,7 @@ bool DynamicContextWrapper::setContextItemAsGDay( short day)
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createGDay(day);
 
@@ -943,7 +943,7 @@ bool DynamicContextWrapper::setContextItemAsGMonth( xqp_gMonth gmonth_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createGMonth(gmonth_value);
 
@@ -966,7 +966,7 @@ bool DynamicContextWrapper::setContextItemAsGMonth( short month)
 		ZORBA_ERROR_ALERT(ZorbaError::API0013_INAPPROPRIATE_VARIABLE_VALUE);
 	}
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	if(context_item == NULL)
 	{
@@ -982,7 +982,7 @@ bool DynamicContextWrapper::setContextItemAsGMonth( short month)
 
 }
 
-bool DynamicContextWrapper::setContextItemAsItem( Item_t item)
+bool DynamicContextWrapper::setContextItemAsItem( store::Item_t item)
 {
 	try{
 	
@@ -998,7 +998,7 @@ bool DynamicContextWrapper::setContextItemAsDocument( xqp_anyURI documentURI)
 {
 	try{
 	
-	Store		&store = GENV.getStore();
+	store::Store		&store = GENV.getStore();
 	context_item = store.getDocument(documentURI.getStore());
 	if(context_item == NULL)
 	{
@@ -1023,7 +1023,7 @@ bool DynamicContextWrapper::setContextItemAsDocumentFromFile(
 			ZORBA_ERROR_ALERT(ZorbaError::API0017_CANNOT_LOAD_DOCUMENT, NULL, DONT_CONTINUE_EXECUTION, file_path);
 			return false;
 		}
-		Store		&store = GENV.getStore();
+		store::Store		&store = GENV.getStore();
 
 		if(storeUri == "")
 			storeUri = file_path;
@@ -1047,7 +1047,7 @@ bool DynamicContextWrapper::setContextItemAsHexBinary( xqp_hexBinary hex_value)
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createHexBinary(hex_value);
 
@@ -1065,7 +1065,7 @@ bool DynamicContextWrapper::setContextItemAsBase64Binary( xqp_base64Binary base6
 {
 	try{
 
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	
 	context_item = item_factory->createBase64Binary(base64_value);
 

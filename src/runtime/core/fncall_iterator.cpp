@@ -84,9 +84,9 @@ void UDFunctionCallIterator::resetImpl(PlanState& planState) const
   state->resetChildIters();
 }
 
-Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
+store::Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
 {
-  Item_t lSequenceItem;
+  store::Item_t lSequenceItem;
   UDFunctionCallIteratorState *state;
 
   DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
@@ -114,13 +114,13 @@ Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
 
 
 // external functions
-class ExtFuncArgItemSequence : public ItemSequence {
+class ExtFuncArgItemSequence : public store::ItemSequence {
   public:
     ExtFuncArgItemSequence(PlanIter_t child, PlanState& stateBlock)
       : m_child(child),
       m_stateBlock(stateBlock) { }
 
-    Item_t next() { return m_child->consumeNext(m_child.getp(), m_stateBlock); }
+    store::Item_t next() { return m_child->consumeNext(m_child.getp(), m_stateBlock); }
 
   private:
     PlanIter_t m_child;
@@ -154,10 +154,10 @@ void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& 
   }
 }
 
-Item_t StatelessExtFunctionCallIterator::nextImpl(PlanState& planState) const
+store::Item_t StatelessExtFunctionCallIterator::nextImpl(PlanState& planState) const
 {
   StatelessExtFunctionCallIteratorState *state;
-  Item_t lSequenceItem;
+  store::Item_t lSequenceItem;
   DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
 
   state->m_result = m_function->evaluate(state->m_extArgs);

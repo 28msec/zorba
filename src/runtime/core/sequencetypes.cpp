@@ -29,10 +29,10 @@ InstanceOfIterator::~InstanceOfIterator()
 }
 
 
-Item_t
+store::Item_t
 InstanceOfIterator::nextImpl(PlanState& planState) const
 {
-  Item_t lTreatItem;
+  store::Item_t lTreatItem;
   xqtref_t lTreatType;
   TypeConstants::quantifier_t lQuantifier;
   bool lResult;
@@ -121,9 +121,9 @@ CastIterator::CastIterator(
 CastIterator::~CastIterator(){}
 
 
-Item_t CastIterator::nextImpl(PlanState& aPlanState) const
+store::Item_t CastIterator::nextImpl(PlanState& aPlanState) const
 {
-  Item_t lItem;
+  store::Item_t lItem;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -183,10 +183,10 @@ CastableIterator::CastableIterator(
 
 CastableIterator::~CastableIterator(){}
 
-Item_t CastableIterator::nextImpl(PlanState& aPlanState) const 
+store::Item_t CastableIterator::nextImpl(PlanState& aPlanState) const 
 {
   bool lBool;
-  Item_t lItem;
+  store::Item_t lItem;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
@@ -227,10 +227,10 @@ PromoteIterator::PromoteIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const
 
 PromoteIterator::~PromoteIterator(){}
 
-Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const 
+store::Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const 
 {
-  Item_t lItem;
-  Item_t lResult;
+  store::Item_t lItem;
+  store::Item_t lResult;
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 
@@ -276,9 +276,9 @@ Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
 
 TreatIterator::~TreatIterator(){}
 
-Item_t TreatIterator::nextImpl(PlanState& aPlanState) const
+store::Item_t TreatIterator::nextImpl(PlanState& aPlanState) const
 {
-  Item_t lItem;
+  store::Item_t lItem;
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 

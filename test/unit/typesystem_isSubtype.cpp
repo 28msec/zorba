@@ -11,10 +11,10 @@ using namespace zorba;
 
 int typesystem_isSubtype(int argc, char* argv[]) {
   {
-    Store& store = GENV.getStore();
-    Item_t lInteger = store.getItemFactory()->createInteger(Integer::parseInt((int32_t)1));
-    Item_t lInt = store.getItemFactory()->createInt(1);
-    Item_t lDecimal = store.getItemFactory()->createDecimal(Decimal::parseInt((int32_t)1));
+    store::Store& store = GENV.getStore();
+    store::Item_t lInteger = store.getItemFactory()->createInteger(Integer::parseInt((int32_t)1));
+    store::Item_t lInt = store.getItemFactory()->createInt(1);
+    store::Item_t lDecimal = store.getItemFactory()->createDecimal(Decimal::parseInt((int32_t)1));
 
     xqtref_t lIntegerType = GENV_TYPESYSTEM.create_type(lInteger->getType(), TypeConstants::QUANT_ONE);
     xqtref_t lIntType = GENV_TYPESYSTEM.create_type(lInt->getType(), TypeConstants::QUANT_ONE);

@@ -28,10 +28,10 @@ namespace zorba
  *_______________________________________________________________________*/
 
 /*begin class FnCurrentDateTimeIterator */
-Item_t
+store::Item_t
 FnCurrentDateTimeIterator::nextImpl(PlanState& planState) const
 {
-  Item_t itemRes;
+  store::Item_t itemRes;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -53,10 +53,10 @@ FnCurrentDateTimeIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
 /*begin class FnCurrentDateIterator */
-Item_t
+store::Item_t
 FnCurrentDateIterator::nextImpl(PlanState& planState) const
 {
-  Item_t itemRes;
+  store::Item_t itemRes;
   xqp_date d;
 
   PlanIteratorState* state;
@@ -82,10 +82,10 @@ FnCurrentDateIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
 /*begin class FnCurrentTimeIterator */
-Item_t
+store::Item_t
 FnCurrentTimeIterator::nextImpl(PlanState& planState) const
 {
-  Item_t itemRes;
+  store::Item_t itemRes;
   xqp_time t;
 
   PlanIteratorState* state;
@@ -111,7 +111,7 @@ FnCurrentTimeIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
 /*begin class FnImplicitTimezoneIterator */
-Item_t
+store::Item_t
 FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
 {
   long tz;
@@ -139,7 +139,7 @@ FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
  *_______________________________________________________________________*/
 
 /*begin class FnDefaultCollationIterator */
-Item_t
+store::Item_t
 FnDefaultCollationIterator::nextImpl(PlanState& planState) const
 {
   xqp_string strColUri;

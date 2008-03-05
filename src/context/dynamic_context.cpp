@@ -145,13 +145,13 @@ xqp_string dynamic_context::qname_internal_key (xqp_string default_ns, xqp_strin
 }
 */
 
-void dynamic_context::set_context_item(Item_t context_item, unsigned long position)
+void dynamic_context::set_context_item(store::Item_t context_item, unsigned long position)
 {
 	this->ctxt_item = context_item;
 	this->ctxt_position = position;
 }
 
-Item_t dynamic_context::context_item() const 
+store::Item_t dynamic_context::context_item() const 
 {
 	return ctxt_item;
 }
@@ -176,7 +176,7 @@ void dynamic_context::set_context_item_type(
 void	dynamic_context::set_execution_date_time(struct ::tm datetime_value, long tz_seconds)
 {
 //	this->execution_date_time = t;
-	ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = Zorba::getItemFactory();
 	this->execution_timezone_seconds = tz_seconds + datetime_value.tm_isdst ? 1 : 0;
 	execution_date_time_item = 
     item_factory->createDateTime(
@@ -185,7 +185,7 @@ void	dynamic_context::set_execution_date_time(struct ::tm datetime_value, long t
 					(short)execution_timezone_seconds/60/60);
 }
 
-Item_t	dynamic_context::get_execution_date_time()
+store::Item_t	dynamic_context::get_execution_date_time()
 {
 	return execution_date_time_item;
 }

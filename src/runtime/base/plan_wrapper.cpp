@@ -37,7 +37,7 @@ namespace zorba {
     theClosed = false;
   }
 
-  Item_t
+  store::Item_t
   PlanWrapper::next()
   {
     assert(!theClosed);

@@ -8,7 +8,9 @@
 
 namespace zorba {
 
+namespace store {
 class Item;
+}
 
 class NodeNameTest : virtual public SimpleRCObject
 {
@@ -21,7 +23,7 @@ class NodeNameTest : virtual public SimpleRCObject
   } kind_t;
 
   NodeNameTest(rchandle<xqpStringStore> uri, rchandle<xqpStringStore> local);
-  NodeNameTest(rchandle<Item> qname);
+  NodeNameTest(rchandle<store::Item> qname);
     
   rchandle<xqpStringStore> get_uri() const;
   rchandle<xqpStringStore> get_local() const;
@@ -45,19 +47,19 @@ class NodeTest : virtual public SimpleRCObject
   static const rchandle<NodeTest> COMMENT_TEST;
   static const rchandle<NodeTest> ITEM_TEST;
 
-  NodeTest(StoreConsts::NodeKind kind);
+  NodeTest(store::StoreConsts::NodeKind kind);
 
-  NodeTest(StoreConsts::NodeKind kind, rchandle<NodeNameTest> name_test);
+  NodeTest(store::StoreConsts::NodeKind kind, rchandle<NodeNameTest> name_test);
 
-  StoreConsts::NodeKind get_kind() const;
+  store::StoreConsts::NodeKind get_kind() const;
   rchandle<NodeNameTest> get_nametest() const;
-  Item_t get_type_name() const;
+  store::Item_t get_type_name() const;
 
   bool is_sub_nodetest_of(const NodeTest& other) const;
   bool operator ==(const NodeTest& other) const;
 
  private:
-  StoreConsts::NodeKind    m_kind;
+  store::StoreConsts::NodeKind    m_kind;
   rchandle<NodeNameTest>   m_name_test;
 };
 

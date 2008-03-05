@@ -24,8 +24,7 @@
 
 
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
@@ -779,5 +778,6 @@ Item_t BasicItemFactory::createCommentNode(
   return n;
 }
 
+} // namespace store
+} // namespace zorba
 
-} /* namespace zorba */

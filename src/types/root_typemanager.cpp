@@ -513,7 +513,7 @@ xqtref_t RootTypeManager::create_type(const TypeIdentifier& ident) const
       {
         const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
         rchandle<NodeNameTest> ennt(new NodeNameTest(eai.get_uri(), eai.get_local()));
-        rchandle<NodeTest> ent(new NodeTest(StoreConsts::elementNode, ennt));
+        rchandle<NodeTest> ent(new NodeTest(store::StoreConsts::elementNode, ennt));
         TypeIdentifier *ci = eai.get_content_type().getp();
         xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
         return create_node_type(ent, content_type, q);
@@ -523,7 +523,7 @@ xqtref_t RootTypeManager::create_type(const TypeIdentifier& ident) const
       {
         const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
         rchandle<NodeNameTest> annt(new NodeNameTest(eai.get_uri(), eai.get_local()));
-        rchandle<NodeTest> ant(new NodeTest(StoreConsts::attributeNode, annt));
+        rchandle<NodeTest> ant(new NodeTest(store::StoreConsts::attributeNode, annt));
         TypeIdentifier *ci = eai.get_content_type().getp();
         xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
         return create_node_type(ant, content_type, q);
@@ -534,7 +534,7 @@ xqtref_t RootTypeManager::create_type(const TypeIdentifier& ident) const
         const DocumentTypeIdentifier& di = static_cast<const DocumentTypeIdentifier&>(ident);
         TypeIdentifier *ci = di.get_content_type().getp();
         xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
-        rchandle<NodeTest> nt(new NodeTest(StoreConsts::documentNode));
+        rchandle<NodeTest> nt(new NodeTest(store::StoreConsts::documentNode));
         return create_node_type(nt, content_type, q);
       }
 
@@ -653,25 +653,25 @@ type_ident_ref_t RootTypeManager::get_type_identifier(const XQType& type) const
         const NodeTest *test = nt.get_nodetest().getp();
         const NodeNameTest *nametest = test->get_nametest().getp();
         switch(test->get_kind()) {
-          case StoreConsts::anyNode:
+          case store::StoreConsts::anyNode:
             return type_ident_ref_t(new AnyNodeTypeIdentifier(q));
 
-          case StoreConsts::textNode:
+          case store::StoreConsts::textNode:
             return type_ident_ref_t(new TextTypeIdentifier(q));
 
-          case StoreConsts::piNode:
+          case store::StoreConsts::piNode:
             return type_ident_ref_t(new PITypeIdentifier(q));
 
-          case StoreConsts::commentNode:
+          case store::StoreConsts::commentNode:
             return type_ident_ref_t(new CommentTypeIdentifier(q));
 
-          case StoreConsts::documentNode:
+          case store::StoreConsts::documentNode:
             return type_ident_ref_t(new DocumentTypeIdentifier(q, content_type));
 
-          case StoreConsts::elementNode:
+          case store::StoreConsts::elementNode:
             return type_ident_ref_t(new ElementTypeIdentifier(q, nametest->get_uri(), nametest->get_local(), content_type));
 
-          case StoreConsts::attributeNode:
+          case store::StoreConsts::attributeNode:
             return type_ident_ref_t(new AttributeTypeIdentifier(q, nametest->get_uri(), nametest->get_local(), content_type));
           default:
             // cannot happen
@@ -702,7 +702,7 @@ type_ident_ref_t RootTypeManager::get_type_identifier(const XQType& type) const
 }
 
 xqtref_t RootTypeManager::create_type(
-    Item_t qname,
+    store::Item_t qname,
     TypeConstants::quantifier_t quantifier) const
 {
   if (m_atomic_qnametype_map.find(qname) != m_atomic_qnametype_map.end()) {
@@ -730,7 +730,7 @@ xqtref_t RootTypeManager::create_atomic_type(
 
 
 xqtref_t RootTypeManager::create_atomic_type(
-    Item_t qname,
+    store::Item_t qname,
     TypeConstants::quantifier_t quantifier) const
 {
   qnametype_map_t::const_iterator i = m_atomic_qnametype_map.find(qname);

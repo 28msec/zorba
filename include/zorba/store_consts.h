@@ -3,8 +3,7 @@
 
 #include <string>
 
-namespace zorba
-{
+namespace zorba { namespace store {
 
 class StoreConsts
 {
@@ -25,5 +24,6 @@ class StoreConsts
   static std::string toString(NodeKind k);
 };
 
-}
+} // namespace store
+} // namespace zorba
 #endif

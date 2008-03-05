@@ -233,7 +233,7 @@ void Zorba_XQueryBinary::setAlertsParam(void *alert_callback_param)
   next() should be called in the same thread where the xquery was called execute()
 */
 /*
-Item_t Zorba_XQueryBinary::next()
+store::Item_t Zorba_XQueryBinary::next()
 {
 	try{
 		if(!theStateBlock)
@@ -253,7 +253,7 @@ Item_t Zorba_XQueryBinary::next()
   theStateBlock->theZorba->current_xquery = info;;
   try
   {
-    Item_t it = top_iterator->produceNext( *theStateBlock );
+    store::Item_t it = top_iterator->produceNext( *theStateBlock );
 
     theStateBlock->theZorba->current_xquery = prev_current_xquery;
 
@@ -426,7 +426,7 @@ bool Zorba_XQueryBinary::serializeTEXT( std::ostream& os )
   result->theStateBlock->theZorba->current_xquery = info;;
 
 	try{
-  Item_t    it;
+  store::Item_t    it;
 
   while(1)
   {
@@ -656,10 +656,10 @@ bool Zorba_XQueryBinary::setVariableAsDocumentFromStream(
 
     xqp_string expanded_name = result->internal_dyn_context->expand_varname(info->internal_sctx, varname);
 
-		Store		&store = GENV.getStore();
-		ItemFactory* factory = Zorba::getItemFactory();
+		store::Store		&store = GENV.getStore();
+		store::ItemFactory* factory = Zorba::getItemFactory();
 
-    Item_t uriItem = factory->createAnyURI(docUri.getStore());
+    store::Item_t uriItem = factory->createAnyURI(docUri.getStore());
 		if(uriItem == NULL)
 		{//not a valid uri
 			result->theStateBlock->theZorba->current_xquery = NULL;
@@ -667,7 +667,7 @@ bool Zorba_XQueryBinary::setVariableAsDocumentFromStream(
 			return false;
 		}
 		//?store.deleteDocument(docUri);
-		Item_t	docItem = store.loadDocument(docUri.getStore(), is);
+		store::Item_t	docItem = store.loadDocument(docUri.getStore(), is);
 		if(docItem == NULL)
 		{//cannot upload document into store
 			//or maybe is not valid xml
@@ -710,10 +710,10 @@ bool Zorba_XQueryBinary::setContextItemAsDocumentFromStream(
 
 	try
   {
-		Store		&store = GENV.getStore();
+		store::Store		&store = GENV.getStore();
 
 		//?store.deleteDocument(docUri);
-		Item_t	docItem = store.loadDocument(docUri.getStore(), is);
+		store::Item_t	docItem = store.loadDocument(docUri.getStore(), is);
 		if(docItem == NULL)
 		{//cannot upload document into store
 			//or maybe is not valid xml

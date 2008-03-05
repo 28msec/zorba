@@ -24,7 +24,7 @@ namespace zorba
 {
 
   // Utility function -- is this item null or a NaN?
-static bool empty_item (Item_t s)
+static bool empty_item (store::Item_t s)
 {
   return (s == 0) ||
          (GENV_TYPESYSTEM.is_numeric(*GENV_TYPESYSTEM.create_type(s->getType(), TypeConstants::QUANT_ONE)) &&
@@ -178,8 +178,8 @@ void FLWORIterator::OrderByClause::accept ( PlanIterVisitor& v ) const
 
 
 int8_t FLWORIterator::OrderKeyCmp::compare(
-    const Item_t& s1,
-    const Item_t& s2,
+    const store::Item_t& s1,
+    const store::Item_t& s2,
     bool desc,
     bool emptyLeast ) const
 {
@@ -217,14 +217,14 @@ int8_t FLWORIterator::OrderKeyCmp::descAsc ( int8_t result, bool desc ) const
 
 
 bool FLWORIterator::OrderKeyCmp::operator() (
-    const std::vector<Item_t>& s1,
-    const std::vector<Item_t>& s2 ) const
+    const std::vector<store::Item_t>& s1,
+    const std::vector<store::Item_t>& s2 ) const
 {
   ZORBA_ASSERT ( s1.size() == s2.size() );
   ZORBA_ASSERT ( s1.size() == mOrderSpecs->size() );
 
-  std::vector<Item_t>::const_iterator s1iter = s1.begin();
-  std::vector<Item_t>::const_iterator s2iter = s2.begin();
+  std::vector<store::Item_t>::const_iterator s1iter = s1.begin();
+  std::vector<store::Item_t>::const_iterator s2iter = s2.begin();
   std::vector<OrderSpec>::const_iterator orderSpecIter = mOrderSpecs->begin();
 
   while ( s1iter != s1.end() )
@@ -294,11 +294,11 @@ FLWORIterator::~FLWORIterator()
 
 
 
-Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
+store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
 {
   //Needed variables
   int curVar = 0;
-  Item_t curItem;
+  store::Item_t curItem;
 
   FlworState* flworState;
   DEFAULT_STACK_INIT(FlworState, flworState, planState);
@@ -388,11 +388,11 @@ void FLWORIterator::matResultAndOrder(
   std::vector<OrderSpec>& lOrderSpecs = orderByClause->orderSpecs;
   //FIXME hould be a const iterator after the change of Plan_Iter
   std::vector<OrderSpec>::iterator lSpecIter = lOrderSpecs.begin();
-  std::vector<Item_t> orderKey;
+  std::vector<store::Item_t> orderKey;
 
   while ( lSpecIter != lOrderSpecs.end() )
   {
-    Item_t lItem = consumeNext ( lSpecIter->orderByIter.getp(), planState );
+    store::Item_t lItem = consumeNext ( lSpecIter->orderByIter.getp(), planState );
     orderKey.push_back ( lItem );
     //Test for singleton
     if ( lItem != 0 )
@@ -409,10 +409,10 @@ void FLWORIterator::matResultAndOrder(
   }
 
   Iterator_t iterWrapper = new PlanIteratorWrapper(returnClause, planState);
-  TempSeq_t result = Zorba::getStore()->createTempSeq(iterWrapper, false);
+  store::TempSeq_t result = Zorba::getStore()->createTempSeq(iterWrapper, false);
   Iterator_t iter = result->getIterator();
   iter->open();
-  flworState->orderMap->insert(std::pair<std::vector<Item_t>, Iterator_t>(orderKey, iter));
+  flworState->orderMap->insert(std::pair<std::vector<store::Item_t>, Iterator_t>(orderKey, iter));
   returnClause->reset(planState);
 
 }
@@ -425,7 +425,7 @@ bool FLWORIterator::evalWhereClause ( PlanState& planState ) const
 
   if ( whereClauseReturnsBooleanPlus )
   {
-    Item_t boolValue = consumeNext ( whereClause.getp(), planState );
+    store::Item_t boolValue = consumeNext ( whereClause.getp(), planState );
     if ( boolValue == NULL )
       return false;
 
@@ -434,7 +434,7 @@ bool FLWORIterator::evalWhereClause ( PlanState& planState ) const
     return value;
   }
 
-  Item_t item = FnBooleanIterator::effectiveBooleanValue(loc,
+  store::Item_t item = FnBooleanIterator::effectiveBooleanValue(loc,
                                                          planState,
                                                          whereClause);
   whereClause->reset(planState);
@@ -466,7 +466,7 @@ bool FLWORIterator::bindVariable (
   // it to all the variable references
   case ForLetClause::FOR :
   {
-    Item_t lItem = consumeNext ( lForLetClause.input.getp(), planState );
+    store::Item_t lItem = consumeNext ( lForLetClause.input.getp(), planState );
     if ( lItem == NULL )
     {
       return false;
@@ -486,7 +486,7 @@ bool FLWORIterator::bindVariable (
 
     if ( !lForLetClause.posVars.empty() )
     {
-      Item_t posItem = Zorba::getItemFactory()->
+      store::Item_t posItem = Zorba::getItemFactory()->
                        createInteger(Integer::parseInt(flworState->varBindingState[varNb]));
 
       std::vector<var_iter_t>::const_iterator posIter;
@@ -513,7 +513,7 @@ bool FLWORIterator::bindVariable (
     //Depending on the query, we might need to materialize the LET-Binding
     if ( lForLetClause.needsMaterialization )
     {
-      TempSeq_t tmpSeq = Zorba::getStore()->createTempSeq(iterWrapper, true);
+      store::TempSeq_t tmpSeq = Zorba::getStore()->createTempSeq(iterWrapper, true);
       std::vector<ref_iter_t>::const_iterator letIter;
       for (letIter = lForLetClause.letVars.begin();
            letIter != lForLetClause.letVars.end();

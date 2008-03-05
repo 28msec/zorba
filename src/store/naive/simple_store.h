@@ -10,32 +10,13 @@
 #include "store/util/mutex.h"
 
 
-namespace zorba
-{
+namespace zorba { 
 
-class QNamePool;
-class StringPool;
-class XmlLoader;
-class Timetravel;
-class Requester;
-class XmlNode;
-class QueryContextContainer;
-class QueryContext;
-class ItemFactory;
-class BasicItemFactory;
+class GlobalEnvironment;
+
+namespace store {
 
 template <class V> class StringHashMap;
-
-template <class Object> class rchandle;
-
-typedef rchandle<class Iterator> Iterator_t;
-typedef rchandle<class Item> Item_t;
-typedef rchandle<class XmlNode> XmlNode_t;
-typedef rchandle<class AnyUriItem> AnyUriItem_t;
-typedef rchandle<class Collection> Collection_t;
-typedef rchandle<class TempSeq> TempSeq_t;
-typedef rchandle<class PUL> PUL_t;
-
 typedef StringHashMap<Collection_t> CollectionSet;
 typedef StringHashMap<XmlNode_t> DocumentSet;
 
@@ -45,7 +26,7 @@ typedef StringHashMap<XmlNode_t> DocumentSet;
 ********************************************************************************/
 class SimpleStore : public Store
 {
-  friend class GlobalEnvironment;
+  friend class zorba::GlobalEnvironment;
  
   typedef StringPool  NamespacePool;
 
@@ -59,10 +40,10 @@ protected:
 public:
   xqpStringStore_t         theEmptyNs;
   xqpStringStore_t         theXmlSchemaNs;
-  Item_t                   theUntypedType;
-  Item_t                   theAnyType;
-  Item_t                   theUntypedAtomicType;
-  Item_t                   theQNameType;
+  store::Item_t                   theUntypedType;
+  store::Item_t                   theAnyType;
+  store::Item_t                   theUntypedAtomicType;
+  store::Item_t                   theQNameType;
 
 protected:
   bool                     theIsInitialized;
@@ -92,7 +73,7 @@ private:
   void shutdown();
 
 public:
-  ItemFactory* getItemFactory() const     { return theItemFactory; }
+  store::ItemFactory* getItemFactory() const     { return theItemFactory; }
 
   NamespacePool& getNamespacePool() const { return *theNamespacePool; }
   QNamePool& getQNamePool() const         { return *theQNamePool; }
@@ -106,11 +87,11 @@ public:
 
   void setGarbageCollectionStrategy(xqpStringStore* strategy);
 
-  Item_t createUri();
+  store::Item_t createUri();
 
-  Item_t loadDocument(xqpStringStore* uri, std::istream& stream);
-  Item_t loadDocument(xqpStringStore* uri, Item_t	 doc_item);
-  Item_t getDocument(xqpStringStore* uri);
+  store::Item_t loadDocument(xqpStringStore* uri, std::istream& stream);
+  store::Item_t loadDocument(xqpStringStore* uri, store::Item_t	 doc_item);
+  store::Item_t getDocument(xqpStringStore* uri);
   void deleteDocument(xqpStringStore* uri);
 
   Collection_t createCollection(xqpStringStore* uri);
@@ -131,17 +112,17 @@ public:
   TempSeq_t createTempSeq();
   TempSeq_t createTempSeq(Iterator* iterator, bool lazy = true);
 
-  Item_t getReference(Item_t);
+  store::Item_t getReference(store::Item_t);
 
-  Item_t getFixedReference(
-        Item_t,
+  store::Item_t getFixedReference(
+        store::Item_t,
         Requester requester,
         Timetravel timetravel);
 
-  Item_t getNodeByReference(Item_t);
+  store::Item_t getNodeByReference(store::Item_t);
 
-  Item_t getNodeByReference(
-        Item_t,
+  store::Item_t getNodeByReference(
+        store::Item_t,
         Requester requester,
         Timetravel timetravel);
 
@@ -151,6 +132,7 @@ public:
 
 
 
-} /* namespace zorba */
+} // namespace store
+} // namespace zorba
 
 #endif /* ZORBA_SIMPLE_STORE_H */

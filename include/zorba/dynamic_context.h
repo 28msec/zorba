@@ -185,7 +185,7 @@ namespace zorba {
       setVariableAsGMonth( xqp_string varname, short month) = 0;
 
       virtual bool
-      setVariableAsItem( xqp_string varname, Item_t item) = 0;
+      setVariableAsItem( xqp_string varname, store::Item_t item) = 0;
 
       virtual bool
       setVariableAsDocument( xqp_string varname, xqp_anyURI documentURI) = 0;
@@ -354,7 +354,7 @@ namespace zorba {
       setContextItemAsGMonth( short month) = 0;
 
       virtual bool
-      setContextItemAsItem( Item_t item) = 0;
+      setContextItemAsItem( store::Item_t item) = 0;
 
       virtual bool
       setContextItemAsDocument( xqp_anyURI documentURI) = 0;

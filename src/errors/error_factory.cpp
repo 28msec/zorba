@@ -221,9 +221,9 @@ int ZorbaAlertFactory::ask_user(
 ********************************************************************************/
 
 void ZorbaAlertFactory::fn_user_error(
-    Item* err_qname,///optional
+    store::Item* err_qname,///optional
     const std::string description,//optional
-    const std::vector<class Item*>* items)//optional
+    const std::vector<class store::Item*>* items)//optional
 {
 	Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
 
@@ -266,7 +266,7 @@ void ZorbaAlertFactory::fn_user_error(
 
 ********************************************************************************/
 void ZorbaAlertFactory::fn_user_trace(
-    const std::vector<class Item*>* items,
+    const std::vector<class store::Item*>* items,
     const std::string label)
 {
 	Zorba* z = ZORBA_FOR_CURRENT_THREAD();
@@ -277,7 +277,7 @@ void ZorbaAlertFactory::fn_user_trace(
 	ZorbaFnTrace* usertrace = new ZorbaFnTrace;
 	usertrace->theKind = ZorbaAlert::USER_TRACE_ALERT;
 	if(items)
-		(std::vector<Item*>)usertrace->items_trace = *items;
+		(std::vector<store::Item*>)usertrace->items_trace = *items;
 	usertrace->theDescription = label;
 	time(&usertrace->theTime);
 

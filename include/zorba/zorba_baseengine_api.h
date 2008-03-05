@@ -74,7 +74,7 @@ namespace zorba{
       virtual DynamicQueryContext_t
       createDynamicContext() = 0;
 
-      virtual XmlDataManager_t
+      virtual store::XmlDataManager_t
       getXmlDataManager() = 0;
 
       virtual XQueryTreePlans_t

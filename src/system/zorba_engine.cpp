@@ -74,7 +74,7 @@ ZorbaEngineImpl::ZorbaEngineImpl(bool single_thread)
   in_destructor = false;
 	for_single_thread_api = single_thread;
 	theSingleThreadZorba = NULL;
-	xml_data_manager = new XmlDataManager_Impl;
+	xml_data_manager = new store::XmlDataManager_Impl;
 	xml_data_manager->addReference(xml_data_manager->getRefCounter(),
                                  xml_data_manager->getSync());
 }
@@ -447,7 +447,7 @@ DynamicQueryContext_t ZorbaEngineImpl::createDynamicContext()
 	return new DynamicContextWrapper;
 }
 
-XmlDataManager_t		ZorbaEngineImpl::getXmlDataManager()
+store::XmlDataManager_t		ZorbaEngineImpl::getXmlDataManager()
 {
 	return xml_data_manager;
 }
