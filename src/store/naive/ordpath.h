@@ -39,7 +39,15 @@ protected:
   unsigned char  * theBuffer;
 
 public:
-  static void insert(
+  static void insertBefore(
+        const OrdPath& p1,
+        OrdPath&       result);
+
+  static void insertAfter(
+        const OrdPath& p1,
+        OrdPath&       result);
+
+  static void insertInto(
         const OrdPath& p1,
         const OrdPath& p2,
         OrdPath&       result);
@@ -66,6 +74,8 @@ public:
   //bool operator==(const OrdPath& other) const;
   int operator<(const OrdPath& other) const;
   int operator>(const OrdPath& other) const;
+
+  void compress(const std::vector<long>& dewey);
 
   void appendComp(long value);
 

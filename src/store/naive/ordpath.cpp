@@ -340,11 +340,64 @@ int OrdPath::operator>(const OrdPath& other) const
 /*******************************************************************************
 
 ********************************************************************************/
-void OrdPath::insert(
+void OrdPath::compress(const std::vector<long>& dewey)
+{
+  if (theBuffer != 0)
+  {
+    delete [] theBuffer;
+    theBuffer = 0;
+  }
+
+  theBuffer = new unsigned char[MAX_BYTE_LEN];
+  memset(theBuffer, 0, MAX_BYTE_LEN);
+
+  ulong bitSize = 8;
+
+  ulong numComps = dewey.size();
+  for (ulong i = 0; i < numComps; i++)
+    pushComp(dewey[i], bitSize);
+
+  ulong byteSize = (bitSize + 7) / 8;
+
+  unsigned char* newBuffer = new unsigned char[byteSize];
+  memset(newBuffer, 0, byteSize);
+  memcpy(newBuffer, theBuffer, byteSize);
+  delete [] theBuffer;
+  theBuffer = newBuffer;
+  theBuffer[0] = byteSize;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPath::insertBefore(
+    const OrdPath& p1,
+    OrdPath&       result)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPath::insertAfter(
+    const OrdPath& p1,
+    OrdPath&       result)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPath::insertInto(
     const OrdPath& p1,
     const OrdPath& p2,
     OrdPath&       result)
 {
+  assert(p1 < p2);
+
   ulong numComps1 = 0;
   ulong bitSize1 = 0;
   long dewey1[MAX_NUM_COMPS];
@@ -392,6 +445,8 @@ void OrdPath::insert(
   ulong bitSize;
   uint32_t dummy;
 
+  bool copy1 = true;
+
   // If there is an odd number between comp1 and comp2, use it
   if (diff > 2 || (!odd1 && diff == 2))
   {
@@ -402,14 +457,11 @@ void OrdPath::insert(
       newcomp1++;
 
     bitsNeeded(newcomp1, newBits, dummy);
- }
+  }
   // Else if comp1 and comp2 are 2 consecutive odd numbers...
   else if (odd1 && odd2)
   {
-    if (compPos == numComps1-1)
-      commonBitSize = bitSize1;
-    else
-      commonBitSize = offsets1[compPos+1];
+    commonBitSize = offsets1[compPos];
 
     newcomp1 = comp1 + 1;
     newcomp2 = 1;
@@ -417,13 +469,34 @@ void OrdPath::insert(
     bitsNeeded(newcomp1, newBits, dummy);
     newBits += 2;
   }
+  // Else if comp1 is odd and comp2 == comp1 + 1, keep comp2 and add
+  // dewey2[compPos+1] - (1 or 2)
   else if (odd1)
   {
-    ;
+    commonBitSize = offsets2[compPos+1];
+
+    newcomp1 = dewey2[compPos+1];
+    if (newcomp1 % 2 == 0)
+      newcomp1 -= 1;
+    else
+      newcomp1 -= 2;
+
+    bitsNeeded(newcomp1, newBits, dummy);
+    copy1 = false;
   }
+  // Else if comp2 is odd and comp1 == comp2 - 1, keep comp1 and add
+  // dewey1[compPos+1] + (1 or 2)
   else if (odd2)
   {
-    ;
+    commonBitSize = offsets1[compPos+1];
+
+    newcomp1 = dewey1[compPos+1];
+    if (newcomp1 % 2 == 0)
+      newcomp1 += 1;
+    else
+      newcomp1 += 2;
+
+    bitsNeeded(newcomp1, newBits, dummy);
   }
   else
   {
@@ -435,7 +508,7 @@ void OrdPath::insert(
   ulong byteSize = (bitSize + 7) / 8;
   result.theBuffer = new unsigned char[byteSize];
   memset(result.theBuffer, 0, byteSize);
-  memcpy(result.theBuffer, p1.theBuffer, commonByteSize);
+  memcpy(result.theBuffer, (copy1 ? p1.theBuffer : p2.theBuffer), commonByteSize);
   result.theBuffer[0] = (unsigned char)byteSize;
   if (commonBitSize % 8 != 0)
     result.theBuffer[commonByteSize-1] &= (0xff << (8 - commonBitSize % 8));
@@ -451,6 +524,8 @@ void OrdPath::insert(
 ********************************************************************************/
 void OrdPath::pushComp(long value, ulong& bitSize)
 {
+  assert(bitSize >= 8);
+
   uint32_t eval;
   ulong bitsNeeded;
 
