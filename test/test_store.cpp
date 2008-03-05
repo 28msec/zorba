@@ -18,8 +18,8 @@
 using namespace zorba;
 
 #ifdef _DEBUG
-extern const char*		xqp::g_error_in_file;
-extern int						xqp::g_error_at_line;
+extern const char*		zorba::g_error_in_file;
+extern int				zorba::g_error_at_line;
 #endif
 
 
