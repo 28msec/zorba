@@ -1,4 +1,5 @@
 #include <string>
+#include "compiler/parsetree/parsenodes.h"
 #include "parsertestdriverconfig.h" // SRC and BIN dir definitions
 #include "compiler/parser/xquery_driver.h"
 
@@ -30,9 +31,12 @@ main(int argc, char** argv)
   // TODO correct Exception handling with try-catch
   lDriver.parse_file(lQueryFileString.c_str());
 
-  if ( lDriver.get_expr() == 0 ) {
+  parsenode* lNode = lDriver.get_expr();
+  if ( lNode == 0 ) {
     std::cerr << "Query parsed but no parsenode root generated!" << std::endl;
     return 2;
+  } else {
+    delete lNode;
   }
 
   return 0;
