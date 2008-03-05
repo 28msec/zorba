@@ -24,3 +24,10 @@ SET(TEST_STORE_SRCS
 
 ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
 TARGET_LINK_LIBRARIES(test_store zorba)
+
+
+SET(TEST_ORDPATH_SRCS
+    test_ordpath.cpp)
+
+ADD_EXECUTABLE(test_ordpath ${TEST_ORDPATH_SRCS})
+TARGET_LINK_LIBRARIES(test_ordpath zorba)
