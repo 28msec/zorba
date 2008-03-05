@@ -29,12 +29,16 @@ main(int argc, char** argv)
   }
 
   // TODO correct Exception handling with try-catch
-  lDriver.parse_file(lQueryFileString.c_str());
+  try {
+    lDriver.parse_file(lQueryFileString.c_str());
+  } catch (...) {
+    return 2;
+  }
 
   parsenode* lNode = lDriver.get_expr();
   if ( lNode == 0 ) {
     std::cerr << "Query parsed but no parsenode root generated!" << std::endl;
-    return 2;
+    return 3;
   } else {
     delete lNode;
   }
