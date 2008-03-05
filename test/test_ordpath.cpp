@@ -52,13 +52,6 @@ void parseDeweyString(const std::string& deweyStr, std::vector<long>& dewey)
 }
 
 
-void compressDewey(std::vector<long>& dewey, zorba::OrdPath& path)
-{
-  for (ulong i = 0; i < dewey.size(); i++)
-    path.appendComp(dewey[i]);
-}
-
-
 int main(int argc, char * argv[])
 {
   std::vector<std::string> deweyStrVector;
@@ -96,7 +89,7 @@ int main(int argc, char * argv[])
     parseDeweyString(deweyStr, dewey1);
 
     zorba::OrdPath path;
-    compressDewey(dewey1, path);
+    path.compress(dewey1);
 
     std::cout << "ordpath = " << path.show() << std::endl;
   }
@@ -112,8 +105,8 @@ int main(int argc, char * argv[])
 
     try
     {
-      compressDewey(dewey1, path1);
-      compressDewey(dewey2, path2);
+      path1.compress(dewey1);
+      path2.compress(dewey2);
 
       if (verbose)
       {
@@ -121,7 +114,7 @@ int main(int argc, char * argv[])
         std::cout << "ordpath2 = " << path2.show() << std::endl;
       }
 
-      zorba::OrdPath::insert(path1, path2, path);
+      zorba::OrdPath::insertInto(path1, path2, path);
 
       std::cout << "ordpath = " << path.show() << std::endl;
     }
