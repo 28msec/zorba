@@ -6,8 +6,8 @@
  *  Author: David Graf (david.graf@28msec.com), Donald Kossmann, Tim Kraska
  *
  */
-#ifndef XQP_BASIC_ITEM_FACTORY_H
-#define XQP_BASIC_ITEM_FACTORY_H
+#ifndef ZORBA_BASIC_ITEM_FACTORY_H
+#define ZORBA_BASIC_ITEM_FACTORY_H
 
 #include <zorbatypes/xqpstring.h>
 #include <zorbatypes/representations.h>

@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef XQP_COLLATION_H
-#define XQP_COLLATION_H
+#ifndef ZORBA_COLLATION_H
+#define ZORBA_COLLATION_H
 
 #include <string>
 
@@ -29,4 +29,4 @@ public:
 };
 
 }	/* namespace zorba*/
-#endif	/* XQP_COLLATION_H */
+#endif	/* ZORBA_COLLATION_H */

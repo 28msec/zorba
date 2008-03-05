@@ -7,8 +7,8 @@
  *
  */
  
-#ifndef XQP_FUNCTION_H
-#define XQP_FUNCTION_H
+#ifndef ZORBA_FUNCTION_H
+#define ZORBA_FUNCTION_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -107,5 +107,5 @@ class external_function : public function {
 
 
 } /* namespace zorba */
-#endif  /* XQP_FUNCTION_H */
+#endif  /* ZORBA_FUNCTION_H */
 /* vim:set ts=2 sw=2: */

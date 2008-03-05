@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef XQP_PATH_ITERATORS_H
-#define XQP_PATH_ITERATORS_H
+#ifndef ZORBA_PATH_ITERATORS_H
+#define ZORBA_PATH_ITERATORS_H
 
 #include <stack>
 #include <zorba/store_consts.h>
@@ -528,4 +528,4 @@ public:
 
 } /* namespace zorba */
 
-#endif  /* XQP_PATH_ITERATORS_H */
+#endif  /* ZORBA_PATH_ITERATORS_H */

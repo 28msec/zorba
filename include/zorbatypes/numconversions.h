@@ -1,5 +1,5 @@
-#ifndef XQP_NUM_CONVERSIONS_H
-#define XQP_NUM_CONVERSIONS_H
+#ifndef ZORBA_NUM_CONVERSIONS_H
+#define ZORBA_NUM_CONVERSIONS_H
 
 #include <zorbatypes/representations.h>
 

@@ -1,6 +1,6 @@
 
-#ifndef XQP_STORE_NODEID
-#define XQP_STORE_NODEID
+#ifndef ZORBA_STORE_NODEID
+#define ZORBA_STORE_NODEID
 
 #include <vector>
 

@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef XQP_CASTING_H
-#define XQP_CASTING_H
+#ifndef ZORBA_CASTING_H
+#define ZORBA_CASTING_H
 
 #include <zorba/rchandle.h>
 #include "types/root_typemanager.h"
@@ -128,7 +128,7 @@ namespace zorba
 
 } /* namespace zorba */
 
-#endif	/* XQP_CASTING_H */
+#endif	/* ZORBA_CASTING_H */
 
 /*
  * Local variables:

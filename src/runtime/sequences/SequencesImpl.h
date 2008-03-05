@@ -5,8 +5,8 @@
  *         Matthias Brantner (matthias.brantner@28msec.com)
  */
 
-#ifndef XQP_SEQUENCES_IMPL_H
-#define XQP_SEQUENCES_IMPL_H
+#ifndef ZORBA_SEQUENCES_IMPL_H
+#define ZORBA_SEQUENCES_IMPL_H
 
 #include <vector>
 #include <stack>
@@ -283,5 +283,5 @@ public:
 
 
 } /* namespace zorba */
-#endif /* XQP_SEQUENCES_H */
+#endif /* ZORBA_SEQUENCES_H */
 /* vim:set ts=2 sw=2: */

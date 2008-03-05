@@ -1,5 +1,5 @@
-#ifndef XQP_EXTERNAL_FUNCTION_ADAPTERS_H
-#define XQP_EXTERNAL_FUNCTION_ADAPTERS_H
+#ifndef ZORBA_EXTERNAL_FUNCTION_ADAPTERS_H
+#define ZORBA_EXTERNAL_FUNCTION_ADAPTERS_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -23,5 +23,5 @@ class stateless_external_function_adapter : public external_function {
 };
 
 } /* namespace zorba */
-#endif  /* XQP_EXTERNAL_FUNCTION_ADAPTERS_H */
+#endif  /* ZORBA_EXTERNAL_FUNCTION_ADAPTERS_H */
 /* vim:set ts=2 sw=2: */

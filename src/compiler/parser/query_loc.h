@@ -1,5 +1,5 @@
-#ifndef XQP_QUERY_LOC_H
-#define XQP_QUERY_LOC_H
+#ifndef ZORBA_QUERY_LOC_H
+#define ZORBA_QUERY_LOC_H
 
 #include <string>
 #include <zorbatypes/xqpstring.h>

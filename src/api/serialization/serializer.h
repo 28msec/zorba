@@ -23,8 +23,8 @@
  */
 
 
-#ifndef XQP_SERIALIZER_H
-#define XQP_SERIALIZER_H
+#ifndef ZORBA_SERIALIZER_H
+#define ZORBA_SERIALIZER_H
 
 #include <ostream>
 #include <zorbatypes/representations.h>
@@ -256,4 +256,4 @@ protected:
 
 } // namespace zorba
 
-#endif // #ifdef XQP_SERIALIZER_H
+#endif // #ifdef ZORBA_SERIALIZER_H

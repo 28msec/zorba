@@ -3,8 +3,8 @@
  *  Authors: Tim Kraska
  */
 
-#ifndef XQP_FN_CONTEXT_H
-#define XQP_FN_CONTEXT_H
+#ifndef ZORBA_FN_CONTEXT_H
+#define ZORBA_FN_CONTEXT_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -46,4 +46,4 @@ public:
 }
 
 
-#endif  /* XQP_FN_CONTEXT_H */
+#endif  /* ZORBA_FN_CONTEXT_H */

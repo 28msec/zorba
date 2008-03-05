@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef XQP_EXPR_H
-#define XQP_EXPR_H
+#ifndef ZORBA_EXPR_H
+#define ZORBA_EXPR_H
 
 #include <string>
 #include <map>
@@ -1330,7 +1330,7 @@ public:
 
 
 } /* namespace zorba */
-#endif  /*  XQP_EXPR_H */
+#endif  /*  ZORBA_EXPR_H */
 
 /*
  * Local variables:

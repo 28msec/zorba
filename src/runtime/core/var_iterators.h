@@ -1,5 +1,5 @@
-#ifndef XQP_RUNTIME_VAR_ITERATORS
-#define XQP_RUNTIME_VAR_ITERATORS
+#ifndef ZORBA_RUNTIME_VAR_ITERATORS
+#define ZORBA_RUNTIME_VAR_ITERATORS
 
 #include <zorbatypes/xqpstring.h>
 

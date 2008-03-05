@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef XQP_EXPR_CONSTS_H
-#define XQP_EXPR_CONSTS_H
+#ifndef ZORBA_EXPR_CONSTS_H
+#define ZORBA_EXPR_CONSTS_H
 
 namespace zorba {
 
@@ -73,4 +73,4 @@ enum match_wild_t
 }; // namespace zorba
 
 
-#endif /* XQP_EXPR_CONSTS_H */
+#endif /* ZORBA_EXPR_CONSTS_H */

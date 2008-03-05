@@ -1,6 +1,6 @@
 
-#ifndef XQP_DEFAULT_STORE_LOADER
-#define XQP_DEFAULT_STORE_LOADER
+#ifndef ZORBA_DEFAULT_STORE_LOADER
+#define ZORBA_DEFAULT_STORE_LOADER
 
 #include <stack>
 #include <libxml/parser.h>
@@ -112,6 +112,6 @@ public:
 
 } /* namespace zorba */
 
-#endif /* XQP_SIMPLE_LOADER_H */
+#endif /* ZORBA_SIMPLE_LOADER_H */
 
 

@@ -21,8 +21,8 @@
  * @file runtime/core/batching.h
  *
  */
-#ifndef XQP_PLAN_ITERATOR_H
-#define XQP_PLAN_ITERATOR_H
+#ifndef ZORBA_PLAN_ITERATOR_H
+#define ZORBA_PLAN_ITERATOR_H
 
 #include <cassert>
 #include <zorba/item.h>
@@ -413,5 +413,5 @@ public:
 
 } /* namespace zorba */
 
-#endif  /* XQP_ITERATOR_H */
+#endif  /* ZORBA_ITERATOR_H */
 

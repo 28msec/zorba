@@ -1,5 +1,5 @@
-#ifndef XQP_MUTEX
-#define XQP_MUTEX
+#ifndef ZORBA_MUTEX
+#define ZORBA_MUTEX
 
 #include "zorba/common/common.h"
 

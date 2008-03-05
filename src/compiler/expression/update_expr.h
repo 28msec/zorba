@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_UPDATE_EXPR_H
-#define XQP_UPDATE_EXPR_H
+#ifndef ZORBA_UPDATE_EXPR_H
+#define ZORBA_UPDATE_EXPR_H
 
 #include "compiler/expression/expr.h"
 
@@ -186,5 +186,5 @@ public:
 
 
 } /* namespace zorba */
-#endif /* XQP_UPDATE_EXPR_H */
+#endif /* ZORBA_UPDATE_EXPR_H */
 

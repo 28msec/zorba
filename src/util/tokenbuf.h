@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef XQP_TOKENBUF_H
-#define XQP_TOKENBUF_H
+#ifndef ZORBA_TOKENBUF_H
+#define ZORBA_TOKENBUF_H
 
 #include <string>
 #include <zorba/common/common.h>
@@ -96,4 +96,4 @@ public:
 
 
 }	/* namespace zorba */
-#endif	/* XQP_TOKENBUF_H */
+#endif	/* ZORBA_TOKENBUF_H */

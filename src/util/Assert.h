@@ -9,8 +9,8 @@
 // ZORBA_ASSERT (and the deprecated Assert) survive in release mode
 // and raise errors via the Zorba error API
 
-#ifndef XQP_ASSERT_H
-#define XQP_ASSERT_H
+#ifndef ZORBA_ASSERT_H
+#define ZORBA_ASSERT_H
 
 #include <string>
 #include "errors/error_factory.h"
@@ -60,5 +60,5 @@ class StackTracePrinter {
 #define Assert( cond ) ZORBA_ASSERT (cond)
 
 }	/* namespace zorba */
-#endif	/* XQP_ASSERT_H */
+#endif	/* ZORBA_ASSERT_H */
 

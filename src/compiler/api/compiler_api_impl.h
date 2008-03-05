@@ -1,5 +1,5 @@
-#ifndef XQP_COMPILER_API_IMPL_H
-#define XQP_COMPILER_API_IMPL_H
+#ifndef ZORBA_COMPILER_API_IMPL_H
+#define ZORBA_COMPILER_API_IMPL_H
 
 #include "compiler/api/compiler_api.h"
 
@@ -19,5 +19,5 @@ class XQueryCompilerSubsystemImpl : public XQueryCompilerSubsystem {
 };
 
 } /* namespace zorba */
-#endif /* XQP_COMPILER_API_IMPL_H */
+#endif /* ZORBA_COMPILER_API_IMPL_H */
 /* vim:set ts=2 sw=2: */

@@ -211,4 +211,4 @@ namespace zorba {
   std::ostream& operator<<(std::ostream& os, const Integer&);
 
 } /* namespace zorba */
-#endif // XQP_INTEGER_H
+#endif // ZORBA_INTEGER_H

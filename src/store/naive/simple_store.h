@@ -153,4 +153,4 @@ public:
 
 } /* namespace zorba */
 
-#endif /* XQP_SIMPLE_STORE_H */
+#endif /* ZORBA_SIMPLE_STORE_H */

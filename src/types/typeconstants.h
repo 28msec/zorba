@@ -1,5 +1,5 @@
-#ifndef XQP_TYPECONSTANTS_H
-#define XQP_TYPECONSTANTS_H
+#ifndef ZORBA_TYPECONSTANTS_H
+#define ZORBA_TYPECONSTANTS_H
 
 namespace zorba {
 
@@ -62,5 +62,5 @@ class TypeConstants {
 
 }
 
-#endif /* XQP_TYPECONSTANTS_H */
+#endif /* ZORBA_TYPECONSTANTS_H */
 /* vim:set ts=2 sw=2: */

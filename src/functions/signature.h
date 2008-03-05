@@ -7,8 +7,8 @@
  *
  */
  
-#ifndef XQP_SIGNATURE_H
-#define XQP_SIGNATURE_H
+#ifndef ZORBA_SIGNATURE_H
+#define ZORBA_SIGNATURE_H
 
 #include "common/shared_types.h"
 #include "util/checked_vector.h"
@@ -83,5 +83,5 @@ public:
 };
 
 } /* namespace zorba */
-#endif  /* XQP_SIGNATURE_H */
+#endif  /* ZORBA_SIGNATURE_H */
 

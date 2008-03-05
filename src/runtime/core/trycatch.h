@@ -1,5 +1,5 @@
-#ifndef XQP_TRYCATCH_H
-#define XQP_TRYCATCH_H
+#ifndef ZORBA_TRYCATCH_H
+#define ZORBA_TRYCATCH_H
 
 #include <vector>
 
@@ -45,5 +45,5 @@ namespace zorba
 
 } /* namespace zorba */
 
-#endif /* XQP_TRYCATCH_H */
+#endif /* ZORBA_TRYCATCH_H */
 /* vim:set ts=2 sw=2: */

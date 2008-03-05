@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_MMFILE_H
-#define XQP_MMFILE_H
+#ifndef ZORBA_MMFILE_H
+#define ZORBA_MMFILE_H
 
 #include <zorba/common/common.h>
 
@@ -60,4 +60,4 @@ public:			// manipulators
 };
 
 }  /* namespace zorba */
-#endif  /* XQP_MMFILE_H */
+#endif  /* ZORBA_MMFILE_H */

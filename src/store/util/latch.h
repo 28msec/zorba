@@ -1,5 +1,5 @@
-#ifndef XQP_LATCH
-#define XQP_LATCH
+#ifndef ZORBA_LATCH
+#define ZORBA_LATCH
 
 #include <zorba/common/common.h>
 

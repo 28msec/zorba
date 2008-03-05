@@ -1,5 +1,5 @@
-#ifndef XQP_VISITORPRINTER_H
-#define XQP_VISITORPRINTER_H
+#ifndef ZORBA_VISITORPRINTER_H
+#define ZORBA_VISITORPRINTER_H
 
 #include <string>
 #include <ostream>

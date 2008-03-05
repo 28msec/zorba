@@ -1,5 +1,5 @@
-#ifndef XQP_DEBUG_ITERATORS_H
-#define XQP_DEBUG_ITERATORS_H
+#ifndef ZORBA_DEBUG_ITERATORS_H
+#define ZORBA_DEBUG_ITERATORS_H
 
 #include <zorbatypes/xqpstring.h>
 
@@ -22,5 +22,5 @@ NARY_ITER_STATE(FnTraceIterator, FnTraceIteratorState);
 
 } /* namespace zorba */
 
-#endif /* XQP_DEBUG_ITERATORS_H */
+#endif /* ZORBA_DEBUG_ITERATORS_H */
 /* vim:set ts=2 sw=2: */

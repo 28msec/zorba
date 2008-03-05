@@ -1,5 +1,5 @@
-#ifndef XQP_COMPARE_TYPES_H
-#define XQP_COMPARE_TYPES_H
+#ifndef ZORBA_COMPARE_TYPES_H
+#define ZORBA_COMPARE_TYPES_H
 
 namespace zorba {
 class CompareConsts {

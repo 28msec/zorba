@@ -1,5 +1,5 @@
-#ifndef XQP_SHARED_TYPES_H
-#define XQP_SHARED_TYPES_H
+#ifndef ZORBA_SHARED_TYPES_H
+#define ZORBA_SHARED_TYPES_H
 
 #include <zorba/config/platform.h>
 #include <zorba/common/api_shared_types.h>
@@ -131,5 +131,5 @@ typedef rchandle<NodeNameTest> NodeNameTest_t;
 
 }
 
-#endif /* XQP_SHARED_TYPES_H */
+#endif /* ZORBA_SHARED_TYPES_H */
 /* vim:set ts=2 sw=2: */

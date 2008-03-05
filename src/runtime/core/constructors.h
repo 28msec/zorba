@@ -1,5 +1,5 @@
-#ifndef XQP_CONSTRUCTORS_H
-#define XQP_CONSTRUCTORS_H
+#ifndef ZORBA_CONSTRUCTORS_H
+#define ZORBA_CONSTRUCTORS_H
 
 #include <vector>
 #include <zorbatypes/xqpstring.h>
@@ -319,7 +319,7 @@ public:
 
 
 } /* namespace zorba */
-#endif  /* XQP_CONSTRUCTORS_H */
+#endif  /* ZORBA_CONSTRUCTORS_H */
 
 /*
  * Local variables:

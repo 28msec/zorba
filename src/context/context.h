@@ -23,8 +23,8 @@
  */
 
 
-#ifndef XQP_CONTEXT_H
-#define XQP_CONTEXT_H
+#ifndef ZORBA_CONTEXT_H
+#define ZORBA_CONTEXT_H
 
 #include <zorbatypes/xqpstring.h>
 #include <zorbatypes/representations.h>
@@ -119,7 +119,7 @@ public:
 
 }	/* namespace zorba */
 
-#endif /*	XQP_CONTEXT_H */
+#endif /*	ZORBA_CONTEXT_H */
 
 /*
  * Local variables:

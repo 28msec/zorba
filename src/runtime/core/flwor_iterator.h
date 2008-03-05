@@ -5,8 +5,8 @@
  */
 
 
-#ifndef XQP_RUNTIME_FLWOR_ITERATOR
-#define XQP_RUNTIME_FLWOR_ITERATOR
+#ifndef ZORBA_RUNTIME_FLWOR_ITERATOR
+#define ZORBA_RUNTIME_FLWOR_ITERATOR
 
 #include "common/shared_types.h"
 #include "util/checked_vector.h"
@@ -274,4 +274,4 @@ class FlworState : public PlanIteratorState
 
 
 } /* namespace zorba */
-#endif  /* XQP_ITEM_ITERATOR_H */
+#endif  /* ZORBA_ITEM_ITERATOR_H */

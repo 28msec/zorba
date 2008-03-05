@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_TRACER_H
-#define XQP_TRACER_H
+#ifndef ZORBA_TRACER_H
+#define ZORBA_TRACER_H
 
 namespace zorba {
 
@@ -27,5 +27,5 @@ namespace zorba {
 #endif
 
 } /* namespace zorba */
-#endif /* XQP_TRACER_H */
+#endif /* ZORBA_TRACER_H */
 

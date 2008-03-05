@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_FXARRAY_H
-#define XQP_FXARRAY_H
+#ifndef ZORBA_FXARRAY_H
+#define ZORBA_FXARRAY_H
 #include <zorba/common/common.h>
 
 #ifndef WIN32
@@ -270,5 +270,5 @@ THROW_XQP_EXCEPTION
 
 
 }  /* namespace zorba */
-#endif  /* XQP_FXARRAY_H */
+#endif  /* ZORBA_FXARRAY_H */
 

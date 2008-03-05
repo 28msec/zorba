@@ -1,5 +1,5 @@
-#ifndef XQP_TYPEIMPL_H
-#define XQP_TYPEIMPL_H
+#ifndef ZORBA_TYPEIMPL_H
+#define ZORBA_TYPEIMPL_H
 
 #include "common/shared_types.h"
 #include "types/node_test.h"
@@ -166,5 +166,5 @@ public:
 
 }
 
-#endif /* XQP_TYPEIMPL_H */
+#endif /* ZORBA_TYPEIMPL_H */
 /* vim:set ts=2 sw=2: */

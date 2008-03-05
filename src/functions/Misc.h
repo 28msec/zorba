@@ -1,5 +1,5 @@
-#ifndef XQP_MISC_H
-#define XQP_MISC_H
+#ifndef ZORBA_MISC_H
+#define ZORBA_MISC_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -19,5 +19,5 @@ class fn_trace_func : public function {
 
 }
 
-#endif /* XQP_MISC_H */
+#endif /* ZORBA_MISC_H */
 /* vim:set ts=2 sw=2: */

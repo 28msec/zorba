@@ -1,5 +1,5 @@
-#ifndef XQP_UTF8_H
-#define XQP_UTF8_H
+#ifndef ZORBA_UTF8_H
+#define ZORBA_UTF8_H
 
 #include <zorba/common/common.h>
 
@@ -332,4 +332,4 @@ namespace zorba {
 
 }/* namespace zorba */
 
-#endif /* XQP_UTF8_H */
+#endif /* ZORBA_UTF8_H */

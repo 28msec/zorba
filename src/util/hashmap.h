@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_HASHMAP_H
-#define XQP_HASHMAP_H
+#ifndef ZORBA_HASHMAP_H
+#define ZORBA_HASHMAP_H
 
 #include "zorba/common/common.h"
 
@@ -929,4 +929,4 @@ inline uint32_t hash64map<V>::h(
 
 
 } /* namespace zorba  */
-#endif  /* XQP_HASHMAP_H */
+#endif  /* ZORBA_HASHMAP_H */

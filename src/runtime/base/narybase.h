@@ -4,8 +4,8 @@
  * Author: David Graf (david.graf@28msec.com)
  */
 
-#ifndef XQP_NARY_ITERATOR
-#define XQP_NARY_ITERATOR
+#ifndef ZORBA_NARY_ITERATOR
+#define ZORBA_NARY_ITERATOR
 
 #include <vector>
 #include "common/shared_types.h"
@@ -145,4 +145,4 @@ public:\
 
 } /* namespace zorba */
 
-#endif /* XQP_NARYBASE_H */
+#endif /* ZORBA_NARYBASE_H */

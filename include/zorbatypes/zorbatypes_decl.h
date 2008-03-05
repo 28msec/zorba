@@ -1,5 +1,5 @@
-#ifndef XQP_ZORBATYPES_DECL_H
-#define XQP_ZORBATYPES_DECL_H
+#ifndef ZORBA_ZORBATYPES_DECL_H
+#define ZORBA_ZORBATYPES_DECL_H
 
 #include <zorba/rchandle.h>
 

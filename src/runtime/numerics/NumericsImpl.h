@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef XQP_NUMERICS_IMPL_H
-#define XQP_NUMERICS_IMPL_H
+#ifndef ZORBA_NUMERICS_IMPL_H
+#define ZORBA_NUMERICS_IMPL_H
 
 #include "common/shared_types.h"
 #include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
@@ -189,4 +189,4 @@ namespace zorba
   };
 
 } /* namespace zorba */
-#endif  /* XQP_NUMERICS_H */
+#endif  /* ZORBA_NUMERICS_H */

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_FXHASHMAP_H
-#define XQP_FXHASHMAP_H
+#ifndef ZORBA_FXHASHMAP_H
+#define ZORBA_FXHASHMAP_H
 
 
 #include <sstream>
@@ -1034,5 +1034,5 @@ inline bool fxhash64map<V>::put(uint64_t key, V val)
 
 
 }  /* namespace zorba  */
-#endif  /* XQP_FXHASHMAP_H */
+#endif  /* ZORBA_FXHASHMAP_H */
 

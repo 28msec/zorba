@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef XQP_STRINGS_IMPL_H
-#define XQP_STRINGS_IMPL_H
+#ifndef ZORBA_STRINGS_IMPL_H
+#define ZORBA_STRINGS_IMPL_H
 
 #include <zorba/common/common.h>
 
@@ -443,4 +443,4 @@ public:
 };
 /*end class SubstringAfterIterator*/
 }/*namespace zorba*/
-#endif /* XQP_STRINGS_IMPL_H */
+#endif /* ZORBA_STRINGS_IMPL_H */

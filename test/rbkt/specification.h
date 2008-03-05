@@ -1,5 +1,5 @@
-#ifndef XQP_SPECIFICATON
-#define XQP_SPECIFICATON
+#ifndef ZORBA_SPECIFICATON
+#define ZORBA_SPECIFICATON
 
 #include <vector>
 #include <string>

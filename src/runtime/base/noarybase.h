@@ -4,8 +4,8 @@
  * Author: David Graf (david.graf@28msec.com)
  */
 
-#ifndef XQP_NOARYBASE_H
-#define XQP_NOARYBASE_H
+#ifndef ZORBA_NOARYBASE_H
+#define ZORBA_NOARYBASE_H
 
 #include "common/shared_types.h"
 #include "runtime/base/plan_iterator.h"
@@ -73,5 +73,5 @@ NoaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 
 }; /* namespace zorba*/
 
-#endif /* XQP_NOARYBASE_H */
+#endif /* ZORBA_NOARYBASE_H */
 

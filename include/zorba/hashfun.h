@@ -220,4 +220,4 @@ namespace zorba {
   };
 
 } /* namespace zorba */
-#endif /* XQP_HASHFUN_H */
+#endif /* ZORBA_HASHFUN_H */

@@ -1,5 +1,5 @@
-#ifndef XQP_ROOT_TYPEMANAGER_H
-#define XQP_ROOT_TYPEMANAGER_H
+#ifndef ZORBA_ROOT_TYPEMANAGER_H
+#define ZORBA_ROOT_TYPEMANAGER_H
 
 #include <map>
 #include <assert.h>
@@ -237,7 +237,7 @@ class RootTypeManager : public TypeManager {
 
 }
 
-#endif /* XQP_TYPESYSTEM_H */
+#endif /* ZORBA_TYPESYSTEM_H */
 /* vim:set ts=2 sw=2: */
 /*
  * Local variables:

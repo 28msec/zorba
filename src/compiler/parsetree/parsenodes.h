@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef XQP_PARSENODES_H
-#define XQP_PARSENODES_H
+#ifndef ZORBA_PARSENODES_H
+#define ZORBA_PARSENODES_H
 
 #include <iostream>
 #include <sstream>
@@ -6151,4 +6151,4 @@ public:
 
 
 }	/* namespace zorba */
-#endif	/*  XQP_PARSENODES_H */
+#endif	/*  ZORBA_PARSENODES_H */

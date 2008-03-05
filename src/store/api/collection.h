@@ -6,8 +6,8 @@
  *  Authors: David Graf, Donald Kossmann, Tim Kraska, Markos Zaharioudakis
  */
 
-#ifndef STORE_COLLECTION
-#define STORE_COLLECTION
+#ifndef ZORBA_STORE_COLLECTION
+#define ZORBA_STORE_COLLECTION
 
 #include "common/shared_types.h"
 

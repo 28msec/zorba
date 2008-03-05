@@ -3,8 +3,8 @@
  *  Authors: Tim Kraska, David Graf
  */
 
-#ifndef XQP_BOOLEAN_H
-#define XQP_BOOLEAN_H
+#ifndef ZORBA_BOOLEAN_H
+#define ZORBA_BOOLEAN_H
 
 #include <vector>
 #include "common/shared_types.h"

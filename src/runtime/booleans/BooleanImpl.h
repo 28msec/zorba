@@ -3,8 +3,8 @@
  *  Authors: Tim Kraska, David Graf
  */
 
-#ifndef XQP_BOOLEAN_IMPL_H
-#define XQP_BOOLEAN_IMPL_H
+#ifndef ZORBA_BOOLEAN_IMPL_H
+#define ZORBA_BOOLEAN_IMPL_H
 
 #include <zorbatypes/xqpstring.h>
 

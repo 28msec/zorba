@@ -329,5 +329,5 @@ namespace zorba {
   
 } /* namespace zorba */
 
-#endif // XQP_DOUBLE_H
+#endif // ZORBA_DOUBLE_H
 

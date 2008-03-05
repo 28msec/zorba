@@ -1,6 +1,6 @@
 
-#ifndef XQP_DEFAULT_STORE_NODES
-#define XQP_DEFAULT_STORE_NODES
+#ifndef ZORBA_DEFAULT_STORE_NODES
+#define ZORBA_DEFAULT_STORE_NODES
 
 
 #include <zorba/common/common.h>

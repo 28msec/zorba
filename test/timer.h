@@ -4,8 +4,8 @@
  */
 
 
-#ifndef XQP_TIMER_H
-#define XQP_TIMER_H
+#ifndef ZORBA_TIMER_H
+#define ZORBA_TIMER_H
 
 #include <ctime>
 #ifndef WIN32

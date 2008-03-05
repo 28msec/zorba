@@ -4,8 +4,8 @@
  * Author: David Graf (david.graf@28msec.com)
  */
 
-#ifndef XQP_UNARY_ITERATOR
-#define XQP_UNARY_ITERATOR
+#ifndef ZORBA_UNARY_ITERATOR
+#define ZORBA_UNARY_ITERATOR
 
 #include "common/shared_types.h"
 #include "runtime/base/plan_iterator.h"
@@ -94,5 +94,5 @@ UnaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
 
 }; /* namespace zorba*/
 
-#endif /* XQP_UNARYBASE_H */
+#endif /* ZORBA_UNARYBASE_H */
 

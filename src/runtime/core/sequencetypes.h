@@ -1,5 +1,5 @@
-#ifndef XQP_SEQUENCETYPES_H
-#define XQP_SEQUENCETYPES_H
+#ifndef ZORBA_SEQUENCETYPES_H
+#define ZORBA_SEQUENCETYPES_H
 
 #include <zorba/errors.h>
 #include "common/shared_types.h"
@@ -112,7 +112,7 @@ public:
 };
 
 } /* namespace zorba */
-#endif  /* XQP_SEQUENCETYPES_H */
+#endif  /* ZORBA_SEQUENCETYPES_H */
   
 /*
  * Local variables:

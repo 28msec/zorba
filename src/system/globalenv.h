@@ -1,5 +1,5 @@
-#ifndef XQP_GLOBALENV_H
-#define XQP_GLOBALENV_H
+#ifndef ZORBA_GLOBALENV_H
+#define ZORBA_GLOBALENV_H
 
 #include <memory>
 #include <zorbatypes/m_apm.h>
@@ -42,5 +42,5 @@ class GlobalEnvironment {
 
 }
 
-#endif /* XQP_GLOBALENV_H */
+#endif /* ZORBA_GLOBALENV_H */
 /* vim:set ts=2 sw=2: */

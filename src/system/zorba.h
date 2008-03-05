@@ -1,7 +1,7 @@
 ///Created: Daniel Turcanu @ IPDevel 
 
-#ifndef XQP_ZORBA_H
-#define XQP_ZORBA_H
+#ifndef ZORBA_ZORBA_H
+#define ZORBA_ZORBA_H
 
 #include <stack>
 #include <map>
@@ -96,7 +96,7 @@ public:
 };
 
 }	/* namespace zorba */
-#endif /*	XQP_ZORBA_H */
+#endif /*	ZORBA_ZORBA_H */
 
 /*
  * Local variables:

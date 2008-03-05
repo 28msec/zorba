@@ -1,5 +1,5 @@
-#ifndef ZORBA_XQP_EXCEPTION_H
-#define ZORBA_XQP_EXCEPTION_H
+#ifndef ZORBA_ZORBA_EXCEPTION_H
+#define ZORBA_ZORBA_EXCEPTION_H
 
 // TODO why is this include needed
 // previously we derived from exception, why
@@ -28,5 +28,5 @@ namespace zorba
   std::ostream& operator<<(std::ostream& os, ZorbaException &x);
 
 } /* namespace zorba */
-#endif /* XQP_XQP_EXCEPTION_H */
+#endif /* ZORBA_ZORBA_EXCEPTION_H */
 

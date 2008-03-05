@@ -1,5 +1,5 @@
-#ifndef XQP_RULESET_H
-#define XQP_RULESET_H
+#ifndef ZORBA_RULESET_H
+#define ZORBA_RULESET_H
 
 #include "compiler/expression/expr.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
@@ -29,5 +29,5 @@ RULE(EliminateDocOrderSortRule);
 
 }
 
-#endif /* XQP_REWRITE_RULE_H */
+#endif /* ZORBA_REWRITE_RULE_H */
 /* vim:set ts=2 sw=2: */

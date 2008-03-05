@@ -1,5 +1,5 @@
-#ifndef XQP_TYPEMANAGER_H
-#define XQP_TYPEMANAGER_H
+#ifndef ZORBA_TYPEMANAGER_H
+#define ZORBA_TYPEMANAGER_H
 
 #include <ostream>
 #include <zorba/rchandle.h>
@@ -147,5 +147,5 @@ class TypeManager {
 
 }
 
-#endif /* XQP_TYPEMANAGER_H */
+#endif /* ZORBA_TYPEMANAGER_H */
 /* vim:set ts=2 sw=2: */

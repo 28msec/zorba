@@ -227,6 +227,6 @@ namespace zorba {
   };
 
 } /* namespace zorba */
-#endif /* XQP_TYPEIDENT_H */
+#endif /* ZORBA_TYPEIDENT_H */
 
 /* vim:set ts=2 sw=2: */

@@ -1,6 +1,6 @@
 
-#ifndef XQP_DEFAULT_STORE_DEFS
-#define XQP_DEFAULT_STORE_DEFS
+#ifndef ZORBA_DEFAULT_STORE_DEFS
+#define ZORBA_DEFAULT_STORE_DEFS
  
 #define GET_STORE() \
         (*(static_cast<SimpleStore*>(&GENV.getStore())))

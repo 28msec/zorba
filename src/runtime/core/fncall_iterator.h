@@ -1,5 +1,5 @@
-#ifndef XQP_FNCALL_ITERATOR_H
-#define XQP_FNCALL_ITERATOR_H
+#ifndef ZORBA_FNCALL_ITERATOR_H
+#define ZORBA_FNCALL_ITERATOR_H
 
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
@@ -78,5 +78,5 @@ class StatelessExtFunctionCallIterator
 
 }
 
-#endif /* XQP_FNCALL_ITERATOR_H */
+#endif /* ZORBA_FNCALL_ITERATOR_H */
 /* vim:set ts=2 sw=2: */

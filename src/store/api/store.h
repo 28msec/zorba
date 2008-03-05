@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_STORE_H
-#define XQP_STORE_H
+#ifndef ZORBA_STORE_H
+#define ZORBA_STORE_H
 
 #include <zorbatypes/representations.h>
 
@@ -232,4 +232,4 @@ class Timetravel {
 
 } /* namespace zorba */
 
-#endif /* XQP_STORE_H */
+#endif /* ZORBA_STORE_H */

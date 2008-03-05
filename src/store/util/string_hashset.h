@@ -1,5 +1,5 @@
-#ifndef XQP_DEFAULT_STORE_STRING_HASHSET
-#define XQP_DEFAULT_STORE_STRING_HASHSET
+#ifndef ZORBA_DEFAULT_STORE_STRING_HASHSET
+#define ZORBA_DEFAULT_STORE_STRING_HASHSET
 
 #include <zorba/common/common.h>
 #include <zorbatypes/xqpstring.h>

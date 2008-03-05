@@ -8,8 +8,8 @@
  */
  
 
-#ifndef XQP_FTVALUES_H
-#define XQP_FTVALUES_H
+#ifndef ZORBA_FTVALUES_H
+#define ZORBA_FTVALUES_H
 
 #include "item.h"
 #include "ft_options.h"
@@ -161,5 +161,5 @@ public:
 
 
 } /* namespace zorba */
-#endif /* XQP_FTVALUES_H */
+#endif /* ZORBA_FTVALUES_H */
 

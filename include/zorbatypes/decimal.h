@@ -105,5 +105,5 @@ std::ostream& operator<<(std::ostream& os, const Decimal&);
 
 } // namespace zorba
 
-#endif // XQP_DECIMAL_H
+#endif // ZORBA_DECIMAL_H
 

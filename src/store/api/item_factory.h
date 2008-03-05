@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_ITEM_FACTORY_H
-#define XQP_ITEM_FACTORY_H
+#ifndef ZORBA_ITEM_FACTORY_H
+#define ZORBA_ITEM_FACTORY_H
 
 #include <vector>
 

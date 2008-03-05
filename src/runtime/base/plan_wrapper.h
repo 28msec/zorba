@@ -1,5 +1,5 @@
-#ifndef XQP_PLAN_WRAPPER_H
-#define XQP_PLAN_WRAPPER_H
+#ifndef ZORBA_PLAN_WRAPPER_H
+#define ZORBA_PLAN_WRAPPER_H
 
 #include <zorba/iterator.h>
 

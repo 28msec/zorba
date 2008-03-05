@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef XQP_SORTER_H
-#define XQP_SORTER_H
+#ifndef ZORBA_SORTER_H
+#define ZORBA_SORTER_H
 
 #include <utility>
 #include <iostream>
@@ -108,5 +108,5 @@ void qsort(
 }
 
 }	/* namespace zorba */
-#endif	/* XQP_SORTER_H */
+#endif	/* ZORBA_SORTER_H */
 

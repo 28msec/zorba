@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef XQP_QNAMES_IMPL_H
-#define XQP_QNAMES_IMPL_H
+#ifndef ZORBA_QNAMES_IMPL_H
+#define ZORBA_QNAMES_IMPL_H
 
 #include <vector>
 #include <zorbatypes/xqpstring.h>
@@ -192,4 +192,4 @@ public:
 };
 /* end class InScopePrefixesIterator */
 }/*namespace zorba*/
-#endif /* XQP_QNAMES_IMPL_H */
+#endif /* ZORBA_QNAMES_IMPL_H */

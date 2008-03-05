@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef XQP_CONTEXT_FUNCTIONS_H
-#define XQP_CONTEXT_FUNCTIONS_H
+#ifndef ZORBA_CONTEXT_FUNCTIONS_H
+#define ZORBA_CONTEXT_FUNCTIONS_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -82,4 +82,4 @@ class fn_default_collation : public function
 };
 
 } /* namespace zorba */
-#endif  /* XQP_CONTEXT_FUNCTIONS_H */
+#endif  /* ZORBA_CONTEXT_FUNCTIONS_H */

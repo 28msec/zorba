@@ -1,5 +1,5 @@
-#ifndef XQP_NODEID_ITERATORS_H
-#define XQP_NODEID_ITERATORS_H
+#ifndef ZORBA_NODEID_ITERATORS_H
+#define ZORBA_NODEID_ITERATORS_H
 
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"

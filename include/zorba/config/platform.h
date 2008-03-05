@@ -1,5 +1,5 @@
-#ifndef XQP_PLATFORM_H
-#define XQP_PLATFORM_H
+#ifndef ZORBA_PLATFORM_H
+#define ZORBA_PLATFORM_H
 
 #include <zorba/config/config.h>
 

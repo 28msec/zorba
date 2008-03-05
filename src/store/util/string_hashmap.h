@@ -1,5 +1,5 @@
-#ifndef XQP_STRING_HASHMAP_H
-#define XQP_STRING_HASHMAP_H
+#ifndef ZORBA_STRING_HASHMAP_H
+#define ZORBA_STRING_HASHMAP_H
 
 #include <zorba/common/api_shared_types.h>
 #include <zorbatypes/xqpstring.h>

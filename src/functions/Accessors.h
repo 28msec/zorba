@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_ACCESSORS_H
-#define XQP_ACCESSORS_H
+#ifndef ZORBA_ACCESSORS_H
+#define ZORBA_ACCESSORS_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -66,4 +66,4 @@ namespace zorba {
 	};
 } /* namespace zorba */
 
-#endif /* XQP_ACCESSORS_H */
+#endif /* ZORBA_ACCESSORS_H */

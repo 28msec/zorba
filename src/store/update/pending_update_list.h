@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_PENDING_UPDATE_LIST_H
-#define XQP_PENDING_UPDATE_LIST_H
+#ifndef ZORBA_PENDING_UPDATE_LIST_H
+#define ZORBA_PENDING_UPDATE_LIST_H
 
 namespace zorba
 {
@@ -23,4 +23,4 @@ namespace zorba
 	
 } /* namespace zorba */
 
-#endif /* XQP_STORE_H */
+#endif /* ZORBA_STORE_H */

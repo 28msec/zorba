@@ -1,5 +1,5 @@
-#ifndef XQP_REWRITE_RULE_H
-#define XQP_REWRITE_RULE_H
+#ifndef ZORBA_REWRITE_RULE_H
+#define ZORBA_REWRITE_RULE_H
 
 #include "common/shared_types.h"
 
@@ -17,5 +17,5 @@ class RewriteRule {
 
 }
 
-#endif /* XQP_REWRITE_RULE_H */
+#endif /* ZORBA_REWRITE_RULE_H */
 /* vim:set ts=2 sw=2: */

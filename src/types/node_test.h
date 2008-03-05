@@ -1,5 +1,5 @@
-#ifndef XQP_NODE_TEST_H
-#define XQP_NODE_TEST_H
+#ifndef ZORBA_NODE_TEST_H
+#define ZORBA_NODE_TEST_H
 
 #include <zorbatypes/xqpstring.h>
 
@@ -63,5 +63,5 @@ class NodeTest : virtual public SimpleRCObject
 
 }
 
-#endif /* XQP_TEST_TYPES_H */
+#endif /* ZORBA_TEST_TYPES_H */
 /* vim:set ts=2 sw=2: */

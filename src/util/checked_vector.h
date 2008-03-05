@@ -1,5 +1,5 @@
-#ifndef XQP_CHECKED_VECTOR_H
-#define XQP_CHECKED_VECTOR_H
+#ifndef ZORBA_CHECKED_VECTOR_H
+#define ZORBA_CHECKED_VECTOR_H
 
 #include <vector>
 

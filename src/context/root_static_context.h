@@ -1,5 +1,5 @@
-#ifndef XQP_ROOT_STATIC_CONTEXT_H
-#define XQP_ROOT_STATIC_CONTEXT_H
+#ifndef ZORBA_ROOT_STATIC_CONTEXT_H
+#define ZORBA_ROOT_STATIC_CONTEXT_H
 
 #include "context/static_context.h"
 
@@ -15,4 +15,4 @@ class root_static_context : public static_context {
 
 }
 
-#endif /* XQP_ROOT_STATIC_CONTEXT_H */
+#endif /* ZORBA_ROOT_STATIC_CONTEXT_H */

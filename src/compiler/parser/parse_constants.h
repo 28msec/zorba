@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_PARSE_CONSTANTS_H
-#define XQP_PARSE_CONSTANTS_H
+#ifndef ZORBA_PARSE_CONSTANTS_H
+#define ZORBA_PARSE_CONSTANTS_H
 
 #include <assert.h>
 
@@ -219,5 +219,5 @@ class ParseConstants
 }; /* class ParseConstants */
 
 } /* namespace zorba */
-#endif /* XQP_PARSE_CONSTANTS_H */
+#endif /* ZORBA_PARSE_CONSTANTS_H */
 

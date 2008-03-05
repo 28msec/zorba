@@ -5,8 +5,8 @@
  *	Copyright 2006-2007 FLWOR Foundation.
  */
 
-#ifndef XQP_SYMBOL_TABLE_H
-#define XQP_SYMBOL_TABLE_H
+#ifndef ZORBA_SYMBOL_TABLE_H
+#define ZORBA_SYMBOL_TABLE_H
 
 #include <zorbatypes/representations.h>
 
@@ -43,5 +43,5 @@ public:			// table interface
 };
 
 }	/* namespace zorba */
-#endif	/* XQP_SYMBOL_TABLE */
+#endif	/* ZORBA_SYMBOL_TABLE */
 

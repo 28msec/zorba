@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_FILE_H
-#define XQP_FILE_H
+#ifndef ZORBA_FILE_H
+#define ZORBA_FILE_H
 #include <stdio.h>
 
 #if ! defined (WIN32) 
@@ -214,4 +214,4 @@ public:	// volume methods
 
 
 } /* namespace zorba */
-#endif /* XQP_FILE_H */
+#endif /* ZORBA_FILE_H */

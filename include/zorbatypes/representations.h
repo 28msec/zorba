@@ -63,4 +63,4 @@ namespace zorba
   typedef void*               xqp_hexBinary;
 
 } /* namespace zorba */
-#endif /* XQP_REPRESENTATIONS_H */
+#endif /* ZORBA_REPRESENTATIONS_H */

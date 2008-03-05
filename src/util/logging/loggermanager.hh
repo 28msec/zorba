@@ -1,5 +1,5 @@
-#ifndef XQP_LOGGERMANAGER_H
-#define XQP_LOGGERMANAGER_H
+#ifndef ZORBA_LOGGERMANAGER_H
+#define ZORBA_LOGGERMANAGER_H
 
 #include <map>
 #include <limits>

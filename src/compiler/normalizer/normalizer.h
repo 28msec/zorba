@@ -1,5 +1,5 @@
-#ifndef XQP_NORMALIZER_H
-#define XQP_NORMALIZER_H
+#ifndef ZORBA_NORMALIZER_H
+#define ZORBA_NORMALIZER_H
 
 #include "common/shared_types.h"
 #include "compiler/expression/expr_visitor.h"
@@ -79,7 +79,7 @@ class normalizer : public expr_visitor {
 void normalize_expr_tree (const char *, static_context *sctx, expr_t root);
 
 } /* namespace zorba */
-#endif /* XQP_NORMALIZER_H */
+#endif /* ZORBA_NORMALIZER_H */
 
 /*
  * Local variables:

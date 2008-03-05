@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_PLAN_VISITOR_H
-#define XQP_PLAN_VISITOR_H
+#ifndef ZORBA_PLAN_VISITOR_H
+#define ZORBA_PLAN_VISITOR_H
 
 #include <vector>
 #include "compiler/expression/expr.h"
@@ -29,4 +29,4 @@ namespace zorba {
   PlanIter_t codegen (const char *descr, expr *root, hash64map<std::vector<ref_iter_t> *> *param_var_map = NULL);
 
 } /* namespace zorba */
-#endif /* XQP_PLAN_VISITOR_H */
+#endif /* ZORBA_PLAN_VISITOR_H */

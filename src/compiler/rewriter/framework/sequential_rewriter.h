@@ -1,5 +1,5 @@
-#ifndef XQP_SEQUENTIAL_REWRITER_H
-#define XQP_SEQUENTIAL_REWRITER_H
+#ifndef ZORBA_SEQUENTIAL_REWRITER_H
+#define ZORBA_SEQUENTIAL_REWRITER_H
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
@@ -23,5 +23,5 @@ class SequentialRewriter : public Rewriter {
 
 }
 
-#endif /* XQP_SEQUENTIAL_REWRITER_H */
+#endif /* ZORBA_SEQUENTIAL_REWRITER_H */
 /* vim:set ts=2 sw=2: */

@@ -4,8 +4,8 @@
  * Author: David Graf (david.graf@28msec.com)
  */
 
-#ifndef XQP_BINARYBASE_H
-#define XQP_BINARYBASE_H
+#ifndef ZORBA_BINARYBASE_H
+#define ZORBA_BINARYBASE_H
 
 #include "common/shared_types.h"
 #include "runtime/base/plan_iterator.h"
@@ -101,5 +101,5 @@ namespace zorba
   /* end class BinaryBaseIterator */
 } /* namespace zorba */
 
-#endif /* XQP_BINARYBASE_H */
+#endif /* ZORBA_BINARYBASE_H */
 /* vim:set ts=2 sw=2: */

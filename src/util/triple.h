@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_TRIPLE_H
-#define XQP_TRIPLE_H
+#ifndef ZORBA_TRIPLE_H
+#define ZORBA_TRIPLE_H
 
 namespace zorba {
 
@@ -92,5 +92,5 @@ make_triple(_T1 _x, _T2 _y, _T3 _z)
 }
 
 } /* namespace zorba */
-#endif /* XQP_TRIPLE_H */
+#endif /* ZORBA_TRIPLE_H */
 

@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef XQP_SEQUENCES_H
-#define XQP_SEQUENCES_H
+#ifndef ZORBA_SEQUENCES_H
+#define ZORBA_SEQUENCES_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -538,4 +538,4 @@ public:
 };
 
 } /* namespace zorba */
-#endif /* XQP_SEQUENCES_H */
+#endif /* ZORBA_SEQUENCES_H */

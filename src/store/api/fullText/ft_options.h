@@ -9,8 +9,8 @@
  */
  
 
-#ifndef XQP_FTOPTIONS_H
-#define XQP_FTOPTIONS_H
+#ifndef ZORBA_FTOPTIONS_H
+#define ZORBA_FTOPTIONS_H
 
 #include <iostream>
 #include <string>
@@ -143,5 +143,5 @@ public:
 
 
 } /* namespace zorba */
-#endif /* XQP_FTOPTIONS_H */
+#endif /* ZORBA_FTOPTIONS_H */
 

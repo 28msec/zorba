@@ -1,5 +1,5 @@
-#ifndef XQP_LOGGER_H
-#define XQP_LOGGER_H
+#ifndef ZORBA_LOGGER_H
+#define ZORBA_LOGGER_H
 
 #include <string>
 

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_PARSENODE_VISITOR_H
-#define XQP_PARSENODE_VISITOR_H
+#ifndef ZORBA_PARSENODE_VISITOR_H
+#define ZORBA_PARSENODE_VISITOR_H
 
 #include "common/shared_types.h"
 
@@ -445,4 +445,4 @@ public:
 };
 
 } /* namespace zorba */
-#endif /* XQP_PARSENODE_VISITOR_H */
+#endif /* ZORBA_PARSENODE_VISITOR_H */

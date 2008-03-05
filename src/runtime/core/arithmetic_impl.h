@@ -1,5 +1,5 @@
-#ifndef XQP_ARITHMETIC_IMPL_H
-#define XQP_ARITHMETIC_IMPL_H
+#ifndef ZORBA_ARITHMETIC_IMPL_H
+#define ZORBA_ARITHMETIC_IMPL_H
 
 #include "common/shared_types.h"
 #include "types/typeconstants.h"

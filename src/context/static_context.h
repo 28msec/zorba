@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef XQP_STATIC_CONTEXT_H
-#define XQP_STATIC_CONTEXT_H
+#ifndef ZORBA_CONTEXT_STATIC_CONTEXT_H
+#define ZORBA_CONTEXT_STATIC_CONTEXT_H
 
 // TODO maybe we should remove most of these includes and move implementations into the cpp file
 #include "common.h"
@@ -228,7 +228,7 @@ std::pair<xqp_string, xqp_string> parse_qname (xqp_string qname);
 
 
 }	/* namespace zorba */
-#endif /*	XQP_STATIC_CONTEXT_H */
+#endif /*	ZORBA_CONTEXT_STATIC_CONTEXT_H */
 
 /*
  * Local variables:

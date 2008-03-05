@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef XQP_QNAMES_H
-#define XQP_QNAMES_H
+#ifndef ZORBA_QNAMES_H
+#define ZORBA_QNAMES_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -143,4 +143,4 @@ namespace zorba
       bool validate_args(std::vector<PlanIter_t>&) const;
   };  
 } /* namespace zorba */
-#endif /* XQP_QNAMES_H */
+#endif /* ZORBA_QNAMES_H */

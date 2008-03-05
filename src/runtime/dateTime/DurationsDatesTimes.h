@@ -3,8 +3,8 @@
  *  Authors: Nicolae Brinza, Sorin Nasoi
  */
 
-#ifndef XQP_DURATIONSDATESTIMES_H
-#define XQP_DURATIONSDATESTIMES_H
+#ifndef ZORBA_DURATIONSDATESTIMES_H
+#define ZORBA_DURATIONSDATESTIMES_H
 
 #include "common/shared_types.h"
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring

@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef XQP_STRINGS_H
-#define XQP_STRINGS_H
+#ifndef ZORBA_STRINGS_H
+#define ZORBA_STRINGS_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -440,4 +440,4 @@ class fn_substring_after_3: public function
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 } /* namespace zorba */
-#endif /* XQP_STRINGS_H */
+#endif /* ZORBA_STRINGS_H */

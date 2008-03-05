@@ -1,5 +1,5 @@
-#ifndef XQP_DEFAULT_OPTIMIZER_H
-#define XQP_DEFAULT_OPTIMIZER_H
+#ifndef ZORBA_DEFAULT_OPTIMIZER_H
+#define ZORBA_DEFAULT_OPTIMIZER_H
 
 #include "common/shared_types.h"
 #include "compiler/rewriter/framework/sequential_rewriter.h"
@@ -14,5 +14,5 @@ class DefaultOptimizer : public SequentialRewriter {
 
 }
 
-#endif /* XQP_DEFAULT_OPTIMIZER_H */
+#endif /* ZORBA_DEFAULT_OPTIMIZER_H */
 /* vim:set ts=2 sw=2: */

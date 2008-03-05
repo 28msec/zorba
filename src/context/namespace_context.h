@@ -1,5 +1,5 @@
-#ifndef XQP_NAMESPACE_CONTEXT_H
-#define XQP_NAMESPACE_CONTEXT_H
+#ifndef ZORBA_NAMESPACE_CONTEXT_H
+#define ZORBA_NAMESPACE_CONTEXT_H
 
 #include <string>
 #include <vector>
@@ -38,5 +38,5 @@ class namespace_context : public SimpleRCObject {
 
 }
 
-#endif /* XQP_NAMESPACE_CONTEXT_H */
+#endif /* ZORBA_NAMESPACE_CONTEXT_H */
 /* vim:set ts=2 sw=2: */

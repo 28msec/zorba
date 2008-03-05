@@ -1,5 +1,5 @@
-#ifndef XQP_RULE_DRIVER_H
-#define XQP_RULE_DRIVER_H
+#ifndef ZORBA_RULE_DRIVER_H
+#define ZORBA_RULE_DRIVER_H
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
@@ -29,5 +29,5 @@ class RuleMajorDriver : public Rewriter {
 
 }
 
-#endif /* XQP_RULE_DRIVER_H */
+#endif /* ZORBA_RULE_DRIVER_H */
 /* vim:set ts=2 sw=2: */

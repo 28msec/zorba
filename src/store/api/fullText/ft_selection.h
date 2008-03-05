@@ -9,8 +9,8 @@
  */
  
 
-#ifndef XQP_FT_SELECTION_H
-#define XQP_FT_SELECTION_H
+#ifndef ZORBA_FT_SELECTION_H
+#define ZORBA_FT_SELECTION_H
 
 #include "item.h"
 
@@ -147,5 +147,5 @@ public:
 
 
 } /* namespace zorba */
-#endif /* XQP_FT_SELECITON_H */
+#endif /* ZORBA_FT_SELECITON_H */
 

@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_FXVECTOR_H
-#define XQP_FXVECTOR_H
+#ifndef ZORBA_FXVECTOR_H
+#define ZORBA_FXVECTOR_H
 
 #include <zorba/rchandle.h>
 #include <zorba/common/common.h>
@@ -615,4 +615,4 @@ void fxvector<T>::unmap()
 
 
 } // namespace zorba
-#endif /* XQP_FXVECTOR_H */
+#endif /* ZORBA_FXVECTOR_H */

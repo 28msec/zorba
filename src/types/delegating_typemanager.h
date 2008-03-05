@@ -1,5 +1,5 @@
-#ifndef XQP_DELEGATING_TYPEMANAGER_H
-#define XQP_DELEGATING_TYPEMANAGER_H
+#ifndef ZORBA_DELEGATING_TYPEMANAGER_H
+#define ZORBA_DELEGATING_TYPEMANAGER_H
 
 #include "types/typemanager.h"
 
@@ -167,5 +167,5 @@ class DelegatingTypeManager : public TypeManager {
 
 }
 
-#endif /* XQP_DELEGATING_TYPEMANAGER_H */
+#endif /* ZORBA_DELEGATING_TYPEMANAGER_H */
 /* vim:set ts=2 sw=2: */

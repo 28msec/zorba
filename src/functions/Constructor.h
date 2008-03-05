@@ -3,8 +3,8 @@
  *  Authors: David Graf
  */
 
-#ifndef XQP_CONSTRUCTOR_H
-#define XQP_CONSTRUCTOR_H
+#ifndef ZORBA_CONSTRUCTOR_H
+#define ZORBA_CONSTRUCTOR_H
 
 #include "common/shared_types.h"
 #include "functions/function.h"

@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef XQP_SIMPLE_TEMP_SEQ_H
-#define XQP_SIMPLE_TEMP_SEQ_H
+#ifndef ZORBA_SIMPLE_TEMP_SEQ_H
+#define ZORBA_SIMPLE_TEMP_SEQ_H
 
 #include <vector>
 
@@ -103,4 +103,4 @@ public:
 
 } /* namespace zorba */
 
-#endif /* XQP_SIIMPLE_TEMP_SEQ_H */
+#endif /* ZORBA_SIIMPLE_TEMP_SEQ_H */

@@ -1,5 +1,5 @@
-#ifndef XQP_PRINTERVISITOR_H
-#define XQP_PRINTERVISITOR_H
+#ifndef ZORBA_PRINTERVISITOR_H
+#define ZORBA_PRINTERVISITOR_H
 
 #include "runtime/visitors/planitervisitor.h"
 

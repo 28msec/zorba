@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_UPDATE_VALUES_H
-#define XQP_UPDATE_VALUES_H
+#ifndef ZORBA_UPDATE_VALUES_H
+#define ZORBA_UPDATE_VALUES_H
 
 #include <vector>
 
@@ -328,5 +328,5 @@ public:
 
 
 } /* namespace zorba */
-#endif /* XQP_UPDATE_VALUES_H */
+#endif /* ZORBA_UPDATE_VALUES_H */
 

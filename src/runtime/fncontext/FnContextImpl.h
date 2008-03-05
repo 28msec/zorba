@@ -1,5 +1,5 @@
-#ifndef XQP_FN_CONTEXT_IMPL_H
-#define XQP_FN_CONTEXT_IMPL_H
+#ifndef ZORBA_FN_CONTEXT_IMPL_H
+#define ZORBA_FN_CONTEXT_IMPL_H
 
 #include "common/shared_types.h"
 #include "runtime/base/noarybase.h"
@@ -39,4 +39,4 @@ public:
   
 }
 
-#endif //XQP_FN_CONTEXT_IMPL_H
+#endif //ZORBA_FN_CONTEXT_IMPL_H

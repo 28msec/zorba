@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_NORMALIZE_VISITOR_H
-#define XQP_NORMALIZE_VISITOR_H
+#ifndef ZORBA_NORMALIZE_VISITOR_H
+#define ZORBA_NORMALIZE_VISITOR_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -26,4 +26,4 @@ namespace zorba {
   expr_t translate (bool, static_context *, const parsenode &, std::vector<rchandle<static_context> > &);
   
 } /* namespace zorba */
-#endif /* XQP_NORMALIZE_VISITOR_H */
+#endif /* ZORBA_NORMALIZE_VISITOR_H */

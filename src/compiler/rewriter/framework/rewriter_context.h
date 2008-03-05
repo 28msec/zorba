@@ -1,5 +1,5 @@
-#ifndef XQP_REWRITER_CONTEXT_H
-#define XQP_REWRITER_CONTEXT_H
+#ifndef ZORBA_REWRITER_CONTEXT_H
+#define ZORBA_REWRITER_CONTEXT_H
 
 #include "common/shared_types.h"
 
@@ -22,5 +22,5 @@ class RewriterContext {
 
 }
 
-#endif /* XQP_REWRITER_CONTEXT_H */
+#endif /* ZORBA_REWRITER_CONTEXT_H */
 /* vim:set ts=2 sw=2: */

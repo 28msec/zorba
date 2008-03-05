@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_RCHANDLE_H
-#define XQP_RCHANDLE_H
+#ifndef ZORBA_RCHANDLE_H
+#define ZORBA_RCHANDLE_H
 
 #include <sstream>
 #include <iostream>

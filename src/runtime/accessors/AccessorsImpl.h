@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_ACCESSORS_IMPL_H
-#define XQP_ACCESSORS_IMPL_H
+#ifndef ZORBA_ACCESSORS_IMPL_H
+#define ZORBA_ACCESSORS_IMPL_H
 
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
@@ -75,5 +75,5 @@ class FnStringIterator : public NaryBaseIterator<FnStringIterator, FnStringItera
 };
 
 } /* namespace zorba */
-#endif /* XQP_ACCESSORS_IMPL_H */
+#endif /* ZORBA_ACCESSORS_IMPL_H */
 /* vim:set ts=2 sw=2: */

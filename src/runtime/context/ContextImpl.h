@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef XQP_CONTEXT_IMPL_H
-#define XQP_CONTEXT_IMPL_H
+#ifndef ZORBA_CONTEXT_IMPL_H
+#define ZORBA_CONTEXT_IMPL_H
 
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
@@ -49,4 +49,4 @@ namespace zorba
   NARY_ITER(FnDefaultCollationIterator);
 
 } /* namespace zorba */
-#endif /*XQP_CONTEXT_IMPL_H*/
+#endif /*ZORBA_CONTEXT_IMPL_H*/

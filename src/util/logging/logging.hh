@@ -31,8 +31,8 @@ If a parent element is configured after one of its childs, the childs configurat
 ***********************************************************************/
 
 
-#ifndef XQP_LOGGING_H
-#define XQP_LOGGING_H
+#ifndef ZORBA_LOGGING_H
+#define ZORBA_LOGGING_H
 
 #include "loggermanager.hh"
 #include "logger.hh"

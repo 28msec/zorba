@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_LIBRARY_H
-#define XQP_LIBRARY_H
+#ifndef ZORBA_LIBRARY_H
+#define ZORBA_LIBRARY_H
 
 
 #include "common/shared_types.h"
@@ -25,5 +25,5 @@ class BuiltinFunctionLibrary {
 
 
 } /* namespace zorba */
-#endif /* XQP_LIBRARY_H */
+#endif /* ZORBA_LIBRARY_H */
 

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_RWLOCK_H
-#define XQP_RWLOCK_H
+#ifndef ZORBA_RWLOCK_H
+#define ZORBA_RWLOCK_H
 
 #include <zorba/common/common.h>
 
@@ -135,4 +135,4 @@ private:
 		
 
 }	/* namespace zorba */
-#endif	/* XQP_RWLOCK_H */
+#endif	/* ZORBA_RWLOCK_H */

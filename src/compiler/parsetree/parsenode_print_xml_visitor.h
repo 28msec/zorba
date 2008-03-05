@@ -1,5 +1,5 @@
-#ifndef XQP_PARSENODE_PRINT_XML_VISITOR_H
-#define XQP_PARSENODE_PRINT_XML_VISITOR_H
+#ifndef ZORBA_PARSENODE_PRINT_XML_VISITOR_H
+#define ZORBA_PARSENODE_PRINT_XML_VISITOR_H
 
 #include "compiler/parsetree/parsenode_visitor.h"
 

@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef XQP_ITEM_ITERATOR_H
-#define XQP_ITEM_ITERATOR_H
+#ifndef ZORBA_ITEM_ITERATOR_H
+#define ZORBA_ITEM_ITERATOR_H
 
 #include "common/shared_types.h"
 #include "runtime/base/noarybase.h"
@@ -116,5 +116,5 @@ public:
 
 
 } /* namespace zorba */
-#endif  /* XQP_ITEM_ITERATOR_H */
+#endif  /* ZORBA_ITEM_ITERATOR_H */
 

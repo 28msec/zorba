@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef XQP_NUMERICS_H
-#define XQP_NUMERICS_H
+#ifndef ZORBA_NUMERICS_H
+#define ZORBA_NUMERICS_H
 
 #include <vector>
 #include "common/shared_types.h"
@@ -250,4 +250,4 @@ public:
 };
 
 }	/* namespace zorba */
-#endif	/* XQP_NUMERICS_H */
+#endif	/* ZORBA_NUMERICS_H */

@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef XQP_DYNAMIC_CONTEXT_H
-#define XQP_DYNAMIC_CONTEXT_H
+#ifndef ZORBA_DYNAMIC_CONTEXT_H
+#define ZORBA_DYNAMIC_CONTEXT_H
 
 #include <zorbatypes/representations.h>
 
@@ -119,7 +119,7 @@ public:
 
 
 }	/* namespace zorba */
-#endif /*	XQP_DYNAMIC_CONTEXT_H */
+#endif /*	ZORBA_DYNAMIC_CONTEXT_H */
 
 /*
  * Local variables:

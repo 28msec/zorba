@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef XQP_URI_H
-#define XQP_URI_H
+#ifndef ZORBA_URI_H
+#define ZORBA_URI_H
 
 /*______________________________________________________________________
 |
@@ -126,4 +126,4 @@ public:	// manipulators
 };
 
 }	/* namespace zorba */
-#endif	/* XQP_URI_H */
+#endif	/* ZORBA_URI_H */

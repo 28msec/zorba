@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef XQP_COMMON_H
-#define XQP_COMMON_H
+#ifndef ZORBA_CONTEXT_COMMON_H
+#define ZORBA_CONTEXT_COMMON_H
 
 #include <utility>
 #include <string>
@@ -113,7 +113,7 @@ typedef struct elempair
 
 
 } /* namespace zorba */
-#endif /* XQP_COMMON_H */
+#endif /* ZORBA_CONTEXT_COMMON_H */
 
 /*
  * Local variables:

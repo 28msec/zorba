@@ -1,5 +1,5 @@
-#ifndef XQP_STORE_UTIL_ITEM_HASHSET
-#define XQP_STORE_UTIL_ITEM_HASHSET
+#ifndef ZORBA_STORE_UTIL_ITEM_HASHSET
+#define ZORBA_STORE_UTIL_ITEM_HASHSET
 
 #include "store/util/handle_hashset.h"
 

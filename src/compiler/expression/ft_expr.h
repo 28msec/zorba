@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef XQP_FTEXPR_H
-#define XQP_FTEXPR_H
+#ifndef ZORBA_FTEXPR_H
+#define ZORBA_FTEXPR_H
 
 #include "compiler/parser/parse_constants.h"
 
@@ -268,6 +268,6 @@ public:
 
 
 } /* namespace zorba */
-#endif /* XQP_FTEXPR_H */
+#endif /* ZORBA_FTEXPR_H */
 
 

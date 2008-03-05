@@ -1,5 +1,5 @@
-#ifndef XQP_XQUERY_DRIVER_H
-#define XQP_XQUERY_DRIVER_H
+#ifndef ZORBA_XQUERY_DRIVER_H
+#define ZORBA_XQUERY_DRIVER_H
 
 #include <ostream>
 #include <zorbatypes/xqpstring.h>
@@ -58,5 +58,5 @@ public:
 };
 
 }	/* namespace zorba */
-#endif /* XQP_XQUERY_DRIVER_H */
+#endif /* ZORBA_XQUERY_DRIVER_H */
 
