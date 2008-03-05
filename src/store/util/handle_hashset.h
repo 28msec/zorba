@@ -51,7 +51,7 @@ protected:
   };
 
 public:
-  static const float DEFAULT_LOAD_FACTOR;
+  static const double DEFAULT_LOAD_FACTOR;
 
 protected:
   ulong                   theNumEntries;
@@ -59,7 +59,7 @@ protected:
   std::vector<HashEntry>  theHashTab;
   ulong                   theHashTabSize;
   ulong                   theInitialSize;
-  float                   theLoadFactor;
+  double                  theLoadFactor;
 
   Mutex                   theMutex;
 
@@ -391,7 +391,7 @@ virtual void garbageCollect()
 
 
 template <class T, class E>
-const float HandleSet<T, E>::DEFAULT_LOAD_FACTOR = 0.6;
+const double HandleSet<T, E>::DEFAULT_LOAD_FACTOR = 0.6;
 
 
 }
