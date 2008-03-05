@@ -39,6 +39,12 @@ protected:
   unsigned char  * theBuffer;
 
 public:
+  static void insert(
+        const OrdPath& p1,
+        const OrdPath& p2,
+        OrdPath&       result);
+
+public:
   OrdPath() : theBuffer(NULL) { }
 
   void init();
@@ -63,12 +69,22 @@ public:
 
   void appendComp(long value);
 
-  void decompress(long* deweyid, ulong& deweylen) const;
-
   std::string show() const;
 
 protected:
+  static void bitsNeeded(long value,  ulong& bitsNeeded, uint32_t& eval);
+
+  void pushComp(long value, ulong& bitSize);
+
+  void decompress(
+        ulong   startOffset,
+        long*   deweyid,
+        ulong*  compOffsets,
+        ulong&  numComps,
+        ulong&  bitSize) const;
+
   void extractValue(
+        ulong& bitSize,
         ulong& byteIndex,
         ulong& bitIndex,
         ulong  numBits,
@@ -77,7 +93,9 @@ protected:
 
   void decodeByte(
         long*          deweyid,
+        ulong*         compOffsets,
         ulong&         numComps,
+        ulong&         bitSize,
         ulong&         byteIndex,
         ulong&         bitIndex,
         unsigned char  byte) const;
