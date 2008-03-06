@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 6.00.0366 */
-/* at Thu Mar 06 15:09:49 2008
+/* at Thu Mar 06 18:18:05 2008
  */
 /* Compiler settings for .\ZorbaCOMApi.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
@@ -703,6 +703,9 @@ EXTERN_C const IID IID_IXQuery;
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE serializeXMLtoBuffer( 
             /* [retval][out] */ BSTR *result) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE getResultsAsDOM( 
+            /* [retval][out] */ IXMLDOMDocument **dom_result) = 0;
+        
     };
     
 #else 	/* C style interface */
@@ -763,6 +766,10 @@ EXTERN_C const IID IID_IXQuery;
             IXQuery * This,
             /* [retval][out] */ BSTR *result);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *getResultsAsDOM )( 
+            IXQuery * This,
+            /* [retval][out] */ IXMLDOMDocument **dom_result);
+        
         END_INTERFACE
     } IXQueryVtbl;
 
@@ -808,6 +815,9 @@ EXTERN_C const IID IID_IXQuery;
 #define IXQuery_serializeXMLtoBuffer(This,result)	\
     (This)->lpVtbl -> serializeXMLtoBuffer(This,result)
 
+#define IXQuery_getResultsAsDOM(This,dom_result)	\
+    (This)->lpVtbl -> getResultsAsDOM(This,dom_result)
+
 #endif /* COBJMACROS */
 
 
@@ -845,6 +855,18 @@ void __RPC_STUB IXQuery_initExecution_Stub(
 
 
 void __RPC_STUB IXQuery_serializeXMLtoBuffer_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IXQuery_getResultsAsDOM_Proxy( 
+    IXQuery * This,
+    /* [retval][out] */ IXMLDOMDocument **dom_result);
+
+
+void __RPC_STUB IXQuery_getResultsAsDOM_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,

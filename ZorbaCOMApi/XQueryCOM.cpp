@@ -59,3 +59,44 @@ HRESULT STDMETHODCALLTYPE CXQueryCOM::serializeXMLtoBuffer(
 
   return S_OK;
 }
+
+HRESULT STDMETHODCALLTYPE CXQueryCOM::getResultsAsDOM(/*[out, retval]*/ IXMLDOMDocument **dom_result)
+{
+  if(!dom_result)
+    return E_INVALIDARG;
+
+  //use MSXML to create the DOM view over the results
+  HRESULT   hr;
+  hr = CoCreateInstance(CLSID_DOMDocument, NULL, CLSCTX_ALL,//CLSCTX_INPROC_SERVER, 
+       IID_IXMLDOMDocument, (void**)dom_result);
+
+  if(hr != S_OK)
+    return hr;
+
+
+  //serialize all the result in a memory ostream
+  std::ostringstream   oss;
+
+  if(!wrapped_interface->serializeXML(oss))
+  {
+    (*dom_result)->Release();
+    return E_FAIL;
+  }
+
+  std::string   stross;
+
+  stross = oss.str();
+  CComBSTR    bstr_xml(stross.c_str());
+
+
+  //do the DOM parse
+  VARIANT_BOOL    is_successfull;
+  hr = (*dom_result)->loadXML(bstr_xml, &is_successfull);
+  if(!is_successfull)
+  {
+    (*dom_result)->Release();
+    return hr;
+  }
+
+  return S_OK;
+}

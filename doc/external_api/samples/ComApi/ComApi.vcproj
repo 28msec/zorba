@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="zorbacomapi.lib"
+				AdditionalDependencies="zorbacomapi.lib comsuppw.lib "
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\ZorbaComApi\debug"
 				GenerateDebugInformation="true"
@@ -209,6 +209,10 @@
 			</File>
 			<File
 				RelativePath=".\ucCom2_inputXml.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ucCom3_resultDOM.cpp"
 				>
 			</File>
 		</Filter>

@@ -32,6 +32,6 @@
 #include <atlbase.h>
 #include <atlstr.h>
 #include <atlconv.h>
-
+#include <comutil.h>//for _variant_t
 
 // TODO: reference additional headers your program requires here

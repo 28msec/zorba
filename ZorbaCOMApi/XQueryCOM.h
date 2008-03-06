@@ -59,6 +59,7 @@ public:
         /* [in] */ IDynamicQueryContext *dctx);
     virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE serializeXMLtoBuffer( 
         /* [retval][out] */ BSTR *result);
+    virtual HRESULT STDMETHODCALLTYPE getResultsAsDOM(/*[out, retval]*/ IXMLDOMDocument **dom_result);
 
 };
 

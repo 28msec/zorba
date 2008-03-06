@@ -13,6 +13,7 @@ EXTERN_C const CLSID  CLSID_ZorbaSingleThread = {0x6C2420BD,0x4924,0x4B62,{0xB6,
 
 int ucCom1_serializeXml();
 int ucCom2_inputXml();
+int ucCom3_resultDOM();
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -21,7 +22,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   if(argc < 2)
   {
-    cout << "parameters should be the index of test 1,2,3... etc in any order" << endl;
+    cout << "parameters should be the index of test 1 2 3... etc in any order" << endl;
     return -1;
   }
 
@@ -31,6 +32,8 @@ int _tmain(int argc, _TCHAR* argv[])
       ucCom1_serializeXml();
     if(!_tcscmp(argv[i], _T("2")))
       ucCom2_inputXml();
+    if(!_tcscmp(argv[i], _T("3")))
+      ucCom3_resultDOM();
   }
 
   CoUninitialize();

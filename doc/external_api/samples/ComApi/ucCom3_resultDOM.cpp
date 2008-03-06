@@ -8,7 +8,7 @@
 using namespace std;
 
 
-int ucCom2_inputXml()
+int ucCom3_resultDOM()
 {
 
   CComPtr<IZorbaSingleThread>   zorba_engine;//use smart pointers
@@ -31,8 +31,6 @@ int ucCom2_inputXml()
   }
   xquery = xquery_interf;
 
-  //rss from http://rss.news.yahoo.com/rss/tech
-  //rss from http://rss.news.yahoo.com/rss/science
 
   CComPtr<IDynamicQueryContext>   dctx;//use smart pointers
   IDynamicQueryContext  *dctx_interf = NULL;
@@ -63,60 +61,24 @@ int ucCom2_inputXml()
     cout << "cannot init execution mode on xquery" << endl;
     return -1;
   }
-
-  BSTR    resultXML;
-
-  if(xquery->serializeXMLtoBuffer(&resultXML) != S_OK)
-  {
-    cout << "cannot execute and serialize the xquery" << endl;
-    return -1;
-  }
-
-  cout << endl << "-------result of executing xquery1------" << endl << endl;
-  {
-    CT2CA  ansi_result(resultXML);
-    cout << (LPCSTR)ansi_result << endl;
-  }
   
-  ::SysFreeString(resultXML);
+  IXMLDOMDocument *dom_result;
+  CComPtr<IXMLDOMDocument>    dom_ptr;
 
-
-
-/*
-  ///try with yahoo science rss xml, search for (Reuters)
-
-  if(dctx->setVariableAsDocumentFromFile(CComBSTR("var1"), CComBSTR("Yahoo! News Science News.xml"), NULL) != S_OK)
+  if(xquery->getResultsAsDOM(&dom_result) != S_OK)
   {
-    cout << "cannot load  Yahoo! News Science News.xml" << endl;
+    cout << "cannot get the xquery result as MSXML DOM" << endl;
     return -1;
   }
-*/
-  if(dctx->setVariableAsString(CComBSTR("var2"), CComBSTR("short")) != S_OK)
+  dom_ptr = dom_result;//to handle the ref count automatically
+
+  //now serialize the DOM result into a file
+  _variant_t dom_filename = _T("dom_output.xml");
+  if(!SUCCEEDED(dom_ptr->save(dom_filename)))
   {
-    cout << "cannot set var2 as string" << endl;
+    cout << "cannot get the xquery result as MSXML DOM" << endl;
     return -1;
-  }
-
-
-  if(xquery->initExecution(dctx) != S_OK)
-  {
-    cout << "cannot init execution mode on xquery" << endl;
-    return -1;
-  }
-
-  if(xquery->serializeXMLtoBuffer(&resultXML) != S_OK)
-  {
-    cout << "cannot execute and serialize the xquery" << endl;
-    return -1;
-  }
-
-  cout << endl << "-------result of executing xquery2------" << endl << endl;
-  {
-    CT2CA  ansi_result(resultXML);
-    cout << (LPCSTR)ansi_result << endl;
-  }
-  
-  ::SysFreeString(resultXML);
+  } 
 
 	return 0;
 }

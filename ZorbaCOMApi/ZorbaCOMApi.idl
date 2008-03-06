@@ -7,11 +7,13 @@
 import "oaidl.idl";
 import "ocidl.idl";
 import "wtypes.idl"; ///for BSTR
+//import "msxml.idl";//for MSXML DOM
 
 interface IXQuery;
 interface IStaticQueryContext;
 interface IDynamicQueryContext;
 interface IXQueryTreePlans;
+//interface IXMLDOMDocument;
 
 [
 	uuid(B633B682-F020-4486-A8BE-ED827450485B),
@@ -73,8 +75,11 @@ interface IXQuery : IDispatch{
   [id(2), helpstring("init execution")] 
   HRESULT initExecution([in]IDynamicQueryContext *dctx);
 
-  [id(3), helpstring("init execution")] 
+  [id(3), helpstring("serializeXMLtoBuffer")] 
   HRESULT serializeXMLtoBuffer([out, retval]BSTR *result);
+
+  [id(4), helpstring("getResultsAsDOM")] 
+  HRESULT getResultsAsDOM([out, retval]IXMLDOMDocument **dom_result);
 };
 
 
