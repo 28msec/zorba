@@ -39,11 +39,11 @@ protected:
 
 public:
   static void insertBefore(
-        const OrdPath& p1,
+        const OrdPath& p,
         OrdPath&       result);
 
   static void insertAfter(
-        const OrdPath& p1,
+        const OrdPath& p,
         OrdPath&       result);
 
   static void insertInto(
@@ -81,7 +81,15 @@ public:
   std::string show() const;
 
 protected:
-  static void bitsNeeded(long value,  ulong& bitsNeeded, uint32_t& eval);
+  static void bitsNeeded(
+        long      value, 
+        ulong&    bitsNeeded,
+        uint32_t& eval);
+
+  static void insertBeforeOrAfter(
+        bool           before,
+        const OrdPath& p1,
+        OrdPath&       result);
 
   void pushComp(long value, ulong& bitSize);
 
