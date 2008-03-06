@@ -99,7 +99,7 @@ namespace zorba {
       ///here some api for external functions
 
       virtual void   
-      addCollation( xqp_string URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength = ::Collator::PRIMARY) = 0;
+      addCollation( xqp_string URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY) = 0;
 
       virtual void   
       addCollation( xqp_string URI, ::Collator *user_coll ) = 0;

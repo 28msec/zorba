@@ -102,7 +102,7 @@ public:
 
 	void setDefaultCollation(
         std::string coll_string,
-        ::Collator::ECollationStrength coll_strength = ::Collator::PRIMARY);
+        ::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY);
 
 	void setDefaultCollation(::Collator *default_coll);
 

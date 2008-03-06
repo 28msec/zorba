@@ -9,13 +9,13 @@ namespace zorba
 	const CollationManager::COLLATION_DESCR		CollationManager::default_collations [] =
 	{
 		///URI, locale
-    {"http://www.w3.org/2005/xpath-functions/collation/codepoint","root",::Collator::PRIMARY},
-		{"http://flowrfound.ethz.ch/FLWOR1/collations/English", "en",::Collator::PRIMARY},
-		{"http://flowrfound.ethz.ch/FLWOR1/collations/German", "de",::Collator::PRIMARY},
-		{"http://flowrfound.ethz.ch/FLWOR1/collations/French", "fr",::Collator::PRIMARY},
-		{"http://flowrfound.ethz.ch/FLWOR1/collations/Spanish", "es",::Collator::PRIMARY},
-		{"http://flowrfound.ethz.ch/FLWOR1/collations/Swedish", "sv",::Collator::PRIMARY},
-		{"http://flowrfound.ethz.ch/FLWOR1/collations/Turkish", "tr",::Collator::PRIMARY}
+    {"http://www.w3.org/2005/xpath-functions/collation/codepoint","root",::Collator::TERTIARY},
+    {"http://flowrfound.ethz.ch/FLWOR1/collations/English", "en",::Collator::TERTIARY},
+    {"http://flowrfound.ethz.ch/FLWOR1/collations/German", "de",::Collator::TERTIARY},
+    {"http://flowrfound.ethz.ch/FLWOR1/collations/French", "fr",::Collator::TERTIARY},
+    {"http://flowrfound.ethz.ch/FLWOR1/collations/Spanish", "es",::Collator::TERTIARY},
+    {"http://flowrfound.ethz.ch/FLWOR1/collations/Swedish", "sv",::Collator::TERTIARY},
+    {"http://flowrfound.ethz.ch/FLWOR1/collations/Turkish", "tr",::Collator::TERTIARY}
 	};
 
 

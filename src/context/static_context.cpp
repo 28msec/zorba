@@ -457,10 +457,10 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 		return NULL;///collation non-existant
 	}
 
-	///else create it with root/::Collator::PRIMARY
+	///else create it with root/::Collator::TERTIARY
 
 	coll = ZORBA_FOR_CURRENT_THREAD()->coll_manager->getCollation(
-																													"root", ::Collator::PRIMARY);
+																													"root", ::Collator::TERTIARY);
 	if(!coll)
 	{
 	//	ZORBA_ERROR_ALERT(
@@ -474,7 +474,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 	cinfo = new COLLATION_OBJ;
 	cinfo->coll_uri = "";
 	cinfo->coll_string = "root";
-	cinfo->coll_strength = ::Collator::PRIMARY;
+  cinfo->coll_strength = ::Collator::TERTIARY;
 	cinfo->coll = coll;
 	cinfo->is_user_created = false;
 	bind_collation("", cinfo);

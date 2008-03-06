@@ -35,7 +35,7 @@ Zorba::Zorba()
 	coll_manager = new CollationManager;
 
 	default_coll_string = "root";
-	default_coll_strength = ::Collator::PRIMARY;
+  default_coll_strength = ::Collator::TERTIARY;
 	is_user_set_coll = true;//do not try to free
 	default_coll = NULL;
 }

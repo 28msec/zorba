@@ -50,7 +50,7 @@ namespace zorba{
       // icu is not even included here
       virtual void
       setDefaultCollation(std::string coll_string,
-                          ::Collator::ECollationStrength coll_strength = ::Collator::PRIMARY) = 0;
+                          ::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY) = 0;
 
       virtual void 
       setDefaultCollation(::Collator *default_coll) = 0;
