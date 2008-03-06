@@ -77,8 +77,18 @@ CollationManager::getCollation(std::string  coll_string,
 		return NULL;
 	}
 
-	//by default set level 1 comparison for the collator
+	//by default set level 3 comparison for the collator
 	coll_elem->coll->setStrength(coll_strength);
+
+  coll_elem->coll->setAttribute(UCOL_CASE_FIRST, UCOL_UPPER_FIRST, status);
+
+  if(U_FAILURE(status))
+  {
+    //ZORBA_ERROR_ALERT( ZorbaError::XQST0076, NULL);//only for FLWOR 
+    delete coll_elem;
+    return NULL;
+  }
+  
 	coll_elem->refcount++;
 	
 	coll_map[key] = coll_elem;
