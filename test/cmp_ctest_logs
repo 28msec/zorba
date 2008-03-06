@@ -1,13 +1,19 @@
 #!/bin/sh
 
 if test "$#" != "2"; then
-    echo Args: dir1/LastTestsFailed.log dir2/LastTestsFailed.log
+    echo Args: dir1/LastTestsFailed.log[.gz] dir2/LastTestsFailed.log[.gz]
     exit 1
 fi
 
 TMP1=`mktemp /tmp/XXXXXX`
-cat $2 | cut -f2 -d: | sort >$TMP1
 
-cat $1 | cut -f2 -d: | sort | diff -U0 $TMP1 - | tail -n +3 | egrep -v '^@'
+mycat()
+{
+  if test "`basename $1 .gz`" != "`basename $1`"; then zcat $1; else cat $1; fi
+}
+
+mycat $2 | cut -f2 -d: | sort >$TMP1
+
+mycat $1 | cut -f2 -d: | sort | diff -U0 $TMP1 - | tail -n +3 | egrep -v '^@'
 
 rm -f $TMP1
