@@ -10,6 +10,7 @@
 
 using namespace std;
 using namespace zorba;
+using namespace zorba::store;
 
 /*
 	Using Zorba in full api mode.

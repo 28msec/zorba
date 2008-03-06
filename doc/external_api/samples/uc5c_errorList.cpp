@@ -37,7 +37,7 @@ int uc5c_errorList(int argc, char* argv[])
 
 		exit(1);//unreachable, should exit on error path
 		return 1;
-	}catch(ZorbaException &x)
+	}catch(ZorbaException &)
 	{
 		ZorbaAlertsManager_t err_manager = zorba_engine->getAlertsManagerForCurrentThread();
 
@@ -58,7 +58,7 @@ int uc5c_errorList(int argc, char* argv[])
 
 		exit(1);//unreachable, should exit on error path
 		return 1;
-	}catch(ZorbaException &x)
+	}catch(ZorbaException &)
 	{
 		ZorbaAlertsManager_t err_manager = zorba_engine->getAlertsManagerForCurrentThread();
 

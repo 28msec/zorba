@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'ZorbaCOMApi'
+		'ZorbaCOMApi.DLL'
+		{
+			val AppID = s '%APPID%'
+		}
+	}
+}

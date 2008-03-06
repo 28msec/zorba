@@ -21,9 +21,9 @@ int uc6b_defaultCollation(int argc, char* argv[])
 	XQuery_t				xquery;
 	StaticQueryContext_t		sctx;
 
-	try{
+	try{ 
 		//create and compile a query comparing two strings with normal collation
-    xquery = zorba_engine->createQuery("fn:compare (\"Straße\", \"Strasse\")");
+    xquery = zorba_engine->createQuery("fn:compare (\"StraÃŸe\", \"Strasse\")");
 
     //execute the query and serialize its result
 		xquery->initExecution();
@@ -39,7 +39,7 @@ int uc6b_defaultCollation(int argc, char* argv[])
     sctx->setDefaultCollation("http://flowrfound.ethz.ch/FLWOR1/collations/German");
 
 		//create and compile a query with the static context
-    xquery = zorba_engine->createQuery("fn:compare (\"Straße\", \"Strasse\")", sctx);
+    xquery = zorba_engine->createQuery("fn:compare (\"StraÃŸe\", \"Strasse\")", sctx);
 
     //execute the query and serialize its result
 		xquery->initExecution();

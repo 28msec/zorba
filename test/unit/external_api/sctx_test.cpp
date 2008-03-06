@@ -101,8 +101,8 @@ int test_api_static_context(const char *result_file_name)
 		sctx1 = zorba_factory->createStaticContext();
 	}
 
-	sctx1->setXPath1_0CompatibMode(StaticQueryContext::xpath2_0);
-	StaticQueryContext::xpath1_0compatib_mode_t		xp_compatib_mode;
+	sctx1->setXPath1_0CompatibMode(StaticContextConsts::xpath2_0);
+	StaticContextConsts::xpath1_0compatib_mode_t		xp_compatib_mode;
 	xp_compatib_mode = sctx1->getXPath1_0CompatibMode();
 	result_file << "GetXPath1_0CompatibMode " << xp_compatib_mode << endl;
 
@@ -281,32 +281,32 @@ int test_api_static_context(const char *result_file_name)
 	sctx1->setDefaultCollation((xqp_string)"http://www.flworfound.org/apitest/coll1");
 	result_file << "my default collation " << sctx1->getDefaultCollation() << endl;
 
-	sctx1->setConstructionMode(StaticQueryContext::cons_strip);
+	sctx1->setConstructionMode(StaticContextConsts::cons_strip);
 	result_file << "1my construction mode " << sctx1->getConstructionMode() << endl;
-	sctx1->setConstructionMode(StaticQueryContext::cons_preserve);
+	sctx1->setConstructionMode(StaticContextConsts::cons_preserve);
 	result_file << "2my construction mode " << sctx1->getConstructionMode() << endl;
 
-	sctx1->setOrderingMode(StaticQueryContext::ordered);
+	sctx1->setOrderingMode(StaticContextConsts::ordered);
 	result_file << "1my ordering mode " << sctx1->getOrderingMode() << endl;
-	sctx1->setOrderingMode(StaticQueryContext::unordered);
+	sctx1->setOrderingMode(StaticContextConsts::unordered);
 	result_file << "2my ordering mode " << sctx1->getOrderingMode() << endl;
 
-	sctx1->setDefaultOrderForEmptySequences(StaticQueryContext::empty_greatest);
+	sctx1->setDefaultOrderForEmptySequences(StaticContextConsts::empty_greatest);
 	result_file << "1my DefaultOrderForEmptySequences" << sctx1->getDefaultOrderForEmptySequences() << endl;
-	sctx1->setDefaultOrderForEmptySequences(StaticQueryContext::empty_least);
+	sctx1->setDefaultOrderForEmptySequences(StaticContextConsts::empty_least);
 	result_file << "2my DefaultOrderForEmptySequences" << sctx1->getDefaultOrderForEmptySequences() << endl;
 
-	sctx1->setBoundarySpacePolicy(StaticQueryContext::preserve_space);
+	sctx1->setBoundarySpacePolicy(StaticContextConsts::preserve_space);
 	result_file << "1my BoundarySpacePolicy" << sctx1->getBoundarySpacePolicy() << endl;
-	sctx1->setBoundarySpacePolicy(StaticQueryContext::strip_space);
+	sctx1->setBoundarySpacePolicy(StaticContextConsts::strip_space);
 	result_file << "2my BoundarySpacePolicy" << sctx1->getBoundarySpacePolicy() << endl;
 
-	StaticQueryContext::preserve_mode_t preserve_mode;
-	StaticQueryContext::inherit_mode_t inherit_mode;
-	sctx1->setCopyNamespacesMode(StaticQueryContext::preserve_ns, StaticQueryContext::inherit_ns);
+	StaticContextConsts::preserve_mode_t preserve_mode;
+	StaticContextConsts::inherit_mode_t inherit_mode;
+	sctx1->setCopyNamespacesMode(StaticContextConsts::preserve_ns, StaticContextConsts::inherit_ns);
 	sctx1->getCopyNamespacesMode(&preserve_mode, &inherit_mode);
 	result_file << "1my CopyNamespacesMode" << preserve_mode << "," << inherit_mode << endl;
-	sctx1->setCopyNamespacesMode(StaticQueryContext::no_preserve_ns, StaticQueryContext::no_inherit_ns);
+	sctx1->setCopyNamespacesMode(StaticContextConsts::no_preserve_ns, StaticContextConsts::no_inherit_ns);
 	sctx1->getCopyNamespacesMode(&preserve_mode, &inherit_mode);
 	result_file << "2my CopyNamespacesMode" << preserve_mode << "," << inherit_mode << endl;
 

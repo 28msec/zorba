@@ -1,0 +1,27 @@
+HKCR
+{
+	ZorbaCOMApi.ZorbaSingleThread.1 = s 'ZorbaSingleThread Class'
+	{
+		CLSID = s '{6C2420BD-4924-4B62-B61E-69D563C74A78}'
+	}
+	ZorbaCOMApi.ZorbaSingleThread = s 'ZorbaSingleThread Class'
+	{
+		CLSID = s '{6C2420BD-4924-4B62-B61E-69D563C74A78}'
+		CurVer = s 'ZorbaCOMApi.ZorbaSingleThread.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {6C2420BD-4924-4B62-B61E-69D563C74A78} = s 'ZorbaSingleThread Class'
+		{
+			ProgID = s 'ZorbaCOMApi.ZorbaSingleThread.1'
+			VersionIndependentProgID = s 'ZorbaCOMApi.ZorbaSingleThread'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{46263F5D-F13E-4EB6-B327-6FF394277DB5}'
+		}
+	}
+}

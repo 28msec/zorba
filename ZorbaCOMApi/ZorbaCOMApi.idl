@@ -1,0 +1,450 @@
+// ZorbaCOMApi.idl : IDL source for ZorbaCOMApi
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ZorbaCOMApi.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "wtypes.idl"; ///for BSTR
+
+interface IXQuery;
+interface IStaticQueryContext;
+interface IDynamicQueryContext;
+interface IXQueryTreePlans;
+
+[
+	uuid(B633B682-F020-4486-A8BE-ED827450485B),
+	dual,
+//	nonextensible,
+	helpstring("IZorbaBaseEngine Interface"),
+	pointer_default(unique)
+]
+interface IZorbaBaseEngine : IDispatch{
+  [id(1), helpstring("method createQuery")] HRESULT createQuery([in] BSTR aQueryString, [in] IStaticQueryContext* sctx, [in] BSTR xquery_source_uri, [in] VARIANT_BOOL routing_mode, [in] IXQueryTreePlans* tree_plans, [out,retval] IXQuery** xquery);
+  [id(2), helpstring("method createDynamicQueryContext")] HRESULT createDynamicQueryContext([out,retval] IDynamicQueryContext** dctx);
+};
+
+[
+	object,
+	uuid(200D051F-428D-4E59-9B69-FCB31BB4D517),
+	dual,
+	nonextensible,
+	helpstring("IZorbaSingleThread Interface"),
+	pointer_default(unique)
+]
+interface IZorbaSingleThread : IZorbaBaseEngine{
+};
+[
+	uuid(D0BAB563-EBB6-4AD4-9B49-4C68A120E0BC),
+	dual,
+	nonextensible,
+	helpstring("IStaticQueryContext Interface"),
+	pointer_default(unique)
+]
+interface IStaticQueryContext : IDispatch{
+  [id(1), helpstring("get internal zorba::StaticQueryContext pointer")] 
+  HRESULT getInternalStaticQueryContextPtr([out, retval]VARIANT* internal_ptr);
+};
+
+[
+	uuid(1F90F747-2AB3-43e6-BBFA-D22AA3EE65C0),
+	dual,
+	nonextensible,
+	helpstring("IXQueryTreePlans Interface"),
+	pointer_default(unique)
+]
+interface IXQueryTreePlans : IDispatch{
+  [id(1), helpstring("get internal zorba::XQueryTreePlans pointer")] 
+  HRESULT getInternalXQueryTreePlansPtr([out, retval]VARIANT* internal_ptr);
+};
+
+[
+	uuid(84757724-30DE-4190-8615-45FB3064039D),
+	dual,
+	nonextensible,
+	helpstring("IXQuery Interface"),
+	pointer_default(unique)
+]
+interface IXQuery : IDispatch{
+  [id(1), helpstring("get internal zorba::XQuery pointer")] 
+  HRESULT getInternalXQueryPtr([out, retval]VARIANT* internal_ptr);
+
+  [id(2), helpstring("init execution")] 
+  HRESULT initExecution([in]IDynamicQueryContext *dctx);
+
+  [id(3), helpstring("init execution")] 
+  HRESULT serializeXMLtoBuffer([out, retval]BSTR *result);
+};
+
+
+[
+	uuid(FB6B602E-8823-453A-90A1-005020B51434),
+	dual,
+	nonextensible,
+	helpstring("IDynamicQueryContext Interface"),
+	pointer_default(unique)
+]
+interface IDynamicQueryContext : IDispatch{
+  [id(1), helpstring("get internal zorba::DynamicQueryContext pointer")] 
+  HRESULT getInternalDynamicQueryContextPtr([out, retval]VARIANT* internal_ptr);
+
+  //virtual void
+  //setCurrentDateTime( struct ::tm datetime, long timezone_seconds ) = 0;
+  //
+  //virtual struct
+  //::tm getCurrentDateTime( long *timezone_seconds ) = 0;
+
+  ////set variables into dynamic context
+  //virtual bool
+  //setVariableAsBigInteger( xqp_string varname, xqp_integer integer_value, VAR_BIGINT_TYPE type = XS_INTEGER) = 0;
+
+  //virtual bool
+  //setVariableAsBigUInteger( xqp_string varname, xqp_uinteger uinteger_value, 
+  //                          VAR_BIGUINT_TYPE type = XS_NON_NEGATIVE_INTEGER) = 0;
+
+  //virtual bool
+  //setVariableAsDecimal( xqp_string varname, xqp_decimal decimal_value) = 0;
+
+  //virtual bool
+  //setVariableAsLong( xqp_string varname, xqp_long long_value) = 0;
+
+  //virtual bool
+  //setVariableAsULong( xqp_string varname, xqp_ulong ulong_value) = 0;
+
+  [id(9), helpstring("setVariableAsInt")] 
+  HRESULT setVariableAsInt( [in] BSTR varname, [in] int int_value);
+
+  //virtual bool
+  //setVariableAsUInt( xqp_string varname, xqp_uint uint_value) = 0;
+
+  //virtual bool
+  //setVariableAsShort( xqp_string varname, xqp_short short_value) = 0;
+
+  //virtual bool
+  //setVariableAsUShort( xqp_string varname, xqp_ushort ushort_value) = 0;
+
+  //virtual bool
+  //setVariableAsByte( xqp_string varname, xqp_byte byte_value) = 0;
+
+  //virtual bool
+  //setVariableAsUByte( xqp_string varname, xqp_ubyte ubyte_value) = 0;
+
+  [id(15), helpstring("setVariableAsString")] 
+  HRESULT setVariableAsString( [in] BSTR varname, [in] BSTR str_value);
+
+  //virtual bool
+  //setVariableAsNormalizedString( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsToken( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsLanguage( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsNMToken( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsName( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsNCName( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsID( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsIDREF( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsEntity( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsNotation( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsAnyURI( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsQName( xqp_string varname, xqp_string namespace_value, xqp_string prefix_value, xqp_string local_value) = 0;
+
+  //virtual bool
+  //setVariableAsUntypedAtomic( xqp_string varname, xqp_string str_value) = 0;
+
+  //virtual bool
+  //setVariableAsDouble( xqp_string varname, xqp_double double_value) = 0;
+
+  //virtual bool
+  //setVariableAsFloat( xqp_string varname, xqp_float float_value) = 0;
+
+  //virtual bool
+  //setVariableAsBool( xqp_string varname, xqp_boolean bool_value) = 0;
+
+  //virtual bool
+  //setVariableAsDateTime( xqp_string varname, struct ::tm datetime_value, long timezone_seconds) = 0;
+
+  //virtual bool
+  //setVariableAsDateTime( xqp_string varname, xqp_dateTime datetime_value) = 0;
+
+  //virtual bool
+  //setVariableAsDateTime( xqp_string varname, short year , short month, short day, short hour, short minute, 
+  //                       short second, short timeZone ) = 0;
+
+  //virtual bool
+  //setVariableAsDuration( xqp_string varname, xqp_duration duration_value) = 0;
+
+  //virtual bool
+  //setVariableAsDuration( xqp_string varname, short years, short months, short days, short hours, 
+  //                       short minutes, short seconds) = 0;
+
+  //virtual bool
+  //setVariableAsDate( xqp_string varname, xqp_date date_value) = 0;
+
+  //virtual bool
+  //setVariableAsDate( xqp_string varname, short year , short month, short day) = 0;
+
+  //virtual bool
+  //setVariableAsTime( xqp_string varname, xqp_time time_value) = 0;
+
+  //virtual bool
+  //setVariableAsTime( xqp_string varname, short hour, short minute, short second, short timeZone ) = 0;
+
+  //virtual bool
+  //setVariableAsGYearMonth( xqp_string varname, xqp_gYearMonth gyearmonth_value) = 0;
+
+  //virtual bool
+  //setVariableAsGYearMonth( xqp_string varname, short year , short month) = 0;
+
+  //virtual bool
+  //setVariableAsGYear( xqp_string varname, xqp_gYear gyear_value) = 0;
+
+  //virtual bool
+  //setVariableAsGYear( xqp_string varname, short year) = 0;
+
+  //virtual bool
+  //setVariableAsGMonthDay( xqp_string varname, xqp_gMonthDay gmonthday_value) = 0;
+
+  //virtual bool
+  //setVariableAsGMonthDay( xqp_string varname, short month , short day) = 0;
+
+  //virtual bool
+  //setVariableAsGDay( xqp_string varname, xqp_gDay gday_value) = 0;
+
+  //virtual bool
+  //setVariableAsGDay( xqp_string varname, short day) = 0;
+
+  //virtual bool
+  //setVariableAsGMonth( xqp_string varname, xqp_gMonth gmonth_value) = 0;
+
+  //virtual bool
+  //setVariableAsGMonth( xqp_string varname, short month) = 0;
+
+  //virtual bool
+  //setVariableAsItem( xqp_string varname, store::Item_t item) = 0;
+
+  //virtual bool
+  //setVariableAsDocument( xqp_string varname, xqp_anyURI documentURI) = 0;
+
+  [id(53), helpstring("setVariableAsDocumentFromFile")] 
+  HRESULT setVariableAsDocumentFromFile( [in] BSTR varname, 
+                                         [in] BSTR file_path, 
+                                         [in] BSTR storeUri);
+
+  //virtual bool
+  //setVariableAsHexBinary( xqp_string varname, xqp_hexBinary hex_value) = 0;
+
+  //virtual bool
+  //setVariableAsBase64Binary( xqp_string varname, xqp_base64Binary base64_value) = 0;
+
+  [id(56), helpstring("deleteVariable")] 
+  HRESULT deleteVariable( [in] BSTR varname );
+
+  [id(57), helpstring("deleteAllVariables")] 
+  HRESULT deleteAllVariables( );
+
+  ////set context item into dynamic context
+  //virtual bool
+  //setContextItemAsBigInteger( xqp_integer integer_value, VAR_BIGINT_TYPE type = XS_INTEGER) = 0;
+
+  //virtual bool
+  //setContextItemAsBigUInteger( xqp_uinteger uinteger_value, VAR_BIGUINT_TYPE type = XS_NON_NEGATIVE_INTEGER) = 0;
+
+
+  //virtual bool
+  //setContextItemAsDecimal( xqp_decimal decimal_value) = 0;
+
+
+  //virtual bool
+  //setContextItemAsLong( xqp_long long_value) = 0;
+
+  //virtual bool
+  //setContextItemAsULong( xqp_ulong ulong_value) = 0;
+
+  //virtual bool
+  //setContextItemAsInt( xqp_int int_value) = 0;
+
+  //virtual bool
+  //setContextItemAsUInt( xqp_uint uint_value) = 0;
+
+  //virtual bool
+  //setContextItemAsShort( xqp_short short_value) = 0;
+
+  //virtual bool
+  //setContextItemAsUShort( xqp_ushort ushort_value) = 0;
+
+  //virtual bool
+  //setContextItemAsByte( xqp_byte byte_value) = 0;
+
+  //virtual bool
+  //setContextItemAsUByte( xqp_ubyte ubyte_value) = 0;
+
+
+  //virtual bool
+  //setContextItemAsString( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsNormalizedString( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsToken( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsLanguage( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsNMToken( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsName( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsNCName( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsID( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsIDREF( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsEntity( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsNotation( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsAnyURI( xqp_string str_value) = 0;
+
+  //virtual bool
+  //setContextItemAsQName( xqp_string namespace_value, xqp_string prefix_value, xqp_string local_value) = 0;
+
+  //virtual bool
+  //setContextItemAsUntypedAtomic( xqp_string str_value) = 0;
+
+
+  //virtual bool
+  //setContextItemAsDouble( xqp_double double_value) = 0;
+
+  //virtual bool
+  //setContextItemAsFloat( xqp_float float_value) = 0;
+
+
+  //virtual bool
+  //setContextItemAsBool( xqp_boolean bool_value) = 0;
+
+
+  //virtual bool
+  //setContextItemAsDateTime( struct ::tm datetime_value, long timezone_seconds) = 0;
+
+  //virtual bool
+  //setContextItemAsDateTime( xqp_dateTime datetime_value) = 0;
+
+  //virtual bool
+  //setContextItemAsDateTime( short year , short month, short day, short hour, short minute, short second, short timeZone ) = 0;
+
+  //virtual bool
+  //setContextItemAsDuration( xqp_duration duration_value) = 0;
+
+  //virtual bool
+  //setContextItemAsDuration( short years, short months, short days, short hours, short minutes, short seconds) = 0;
+
+  //virtual bool
+  //setContextItemAsDate( xqp_date date_value) = 0;
+
+  //virtual bool
+  //setContextItemAsDate( short year , short month, short day) = 0;
+
+  //virtual bool
+  //setContextItemAsTime( xqp_time time_value) = 0;
+
+  //virtual bool
+  //setContextItemAsTime( short hour, short minute, short second, short timeZone ) = 0;
+
+  //virtual bool
+  //setContextItemAsGYearMonth( xqp_gYearMonth gyearmonth_value) = 0;
+
+  //virtual bool
+  //setContextItemAsGYearMonth( short year , short month) = 0;
+
+  //virtual bool
+  //setContextItemAsGYear( xqp_gYear gyear_value) = 0;
+
+  //virtual bool
+  //setContextItemAsGYear( short year) = 0;
+
+  //virtual bool
+  //setContextItemAsGMonthDay( xqp_gMonthDay gmonthday_value) = 0;
+
+  //virtual bool
+  //setContextItemAsGMonthDay( short month , short day) = 0;
+
+  //virtual bool
+  //setContextItemAsGDay( xqp_gDay gday_value) = 0;
+
+  //virtual bool
+  //setContextItemAsGDay( short day) = 0;
+
+  //virtual bool
+  //setContextItemAsGMonth( xqp_gMonth gmonth_value) = 0;
+
+  //virtual bool
+  //setContextItemAsGMonth( short month) = 0;
+
+  //virtual bool
+  //setContextItemAsItem( store::Item_t item) = 0;
+
+  //virtual bool
+  //setContextItemAsDocument( xqp_anyURI documentURI) = 0;
+
+  [id(107), helpstring("setContextItemAsDocumentFromFile")] 
+  HRESULT setContextItemAsDocumentFromFile([in] BSTR file_path, 
+                                            [in] BSTR storeUri);
+
+  //virtual bool
+  //setContextItemAsHexBinary( xqp_hexBinary hex_value) = 0;
+
+  //virtual bool
+  //setContextItemAsBase64Binary( xqp_base64Binary base64_value) = 0;
+
+  //virtual void
+  //setDefaultCollection( xqp_string collectionURI ) = 0;
+};
+
+[
+	uuid(46263F5D-F13E-4EB6-B327-6FF394277DB5),
+	version(1.0),
+	helpstring("ZorbaCOMApi 1.0 Type Library")
+]
+library ZorbaCOMApiLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(6C2420BD-4924-4B62-B61E-69D563C74A78),
+		helpstring("ZorbaSingleThread Class")
+	]
+	coclass ZorbaSingleThread
+	{
+		[default] interface IZorbaSingleThread;
+	};
+};

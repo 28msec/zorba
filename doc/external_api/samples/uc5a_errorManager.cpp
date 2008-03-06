@@ -31,7 +31,7 @@ int uc5a_errorManager(int argc, char* argv[])
 
 		exit(1);//unreachable, should exit on error path
 		return 1;
-	}catch(ZorbaException &x)
+	}catch(ZorbaException &)
 	{
 		//multiple errors and warnings might get fired
 		//display all of them

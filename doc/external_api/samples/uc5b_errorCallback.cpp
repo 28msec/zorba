@@ -58,7 +58,7 @@ int uc5b_errorCallback(int argc, char* argv[])
 
 		exit(1);//unreachable, should exit on error path
 		return 1;
-	}catch(ZorbaException &x)
+	}catch(ZorbaException &)
 	{
     //no more need to display error here
 	}
