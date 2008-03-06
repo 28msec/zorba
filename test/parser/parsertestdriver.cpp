@@ -2,6 +2,7 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "parsertestdriverconfig.h" // SRC and BIN dir definitions
 #include "compiler/parser/xquery_driver.h"
+#include "system/globalenv.h"
 
 using namespace zorba;
 
@@ -12,6 +13,7 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
+  GlobalEnvironment::init(); 
   std::string lQueryFileString;
   xquery_driver lDriver;
   // do initial stuff
@@ -32,16 +34,19 @@ main(int argc, char** argv)
   try {
     lDriver.parse_file(lQueryFileString.c_str());
   } catch (...) {
+    GlobalEnvironment::destroy();
     return 2;
   }
 
   parsenode* lNode = lDriver.get_expr();
   if ( lNode == 0 ) {
     std::cerr << "Query parsed but no parsenode root generated!" << std::endl;
+    GlobalEnvironment::destroy();
     return 3;
   } else {
     delete lNode;
   }
 
+  GlobalEnvironment::destroy();
   return 0;
 }
