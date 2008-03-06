@@ -370,20 +370,57 @@ void OrdPath::compress(const std::vector<long>& dewey)
 /*******************************************************************************
 
 ********************************************************************************/
-void OrdPath::insertBefore(
-    const OrdPath& p1,
+void OrdPath::insertAfter(
+    const OrdPath& p,
     OrdPath&       result)
 {
+  insertBeforeOrAfter(false, p, result);
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-void OrdPath::insertAfter(
-    const OrdPath& p1,
+void OrdPath::insertBefore(
+    const OrdPath& p,
     OrdPath&       result)
 {
+  insertBeforeOrAfter(true, p, result);
+}
+
+
+void OrdPath::insertBeforeOrAfter(
+    bool           before,
+    const OrdPath& p,
+    OrdPath&       result)
+{
+  assert(result.theBuffer == 0);
+
+  ulong numComps = 0;
+  ulong bitSize = 0;
+  long dewey[MAX_NUM_COMPS];
+  ulong offsets[MAX_NUM_COMPS];
+
+  // decompress all of p1.
+  p.decompress(8, dewey, offsets, numComps, bitSize);
+
+  long newcomp = dewey[numComps-1] + (before ? - 2 : 2);
+
+  ulong newBits;
+  uint32_t dummy;
+  bitsNeeded(newcomp, newBits, dummy);
+
+  ulong commonBitSize = offsets[numComps-1];
+  ulong commonByteSize = (commonBitSize + 7) / 8;
+
+  bitSize = commonBitSize + newBits;
+  ulong byteSize = (bitSize + 7) / 8;
+
+  result.theBuffer = new unsigned char[byteSize];
+  memset(result.theBuffer, 0, byteSize);
+  memcpy(result.theBuffer, p.theBuffer, commonByteSize);
+  result.theBuffer[0] = (unsigned char)byteSize;
+  if (commonBitSize % 8 != 0)
+    result.theBuffer[commonByteSize-1] &= (0xff << (8 - commonBitSize % 8));
+
+  result.pushComp(newcomp, commonBitSize);
 }
 
 
@@ -396,6 +433,7 @@ void OrdPath::insertInto(
     OrdPath&       result)
 {
   assert(p1 < p2);
+  assert(result.theBuffer == 0);
 
   ulong numComps1 = 0;
   ulong bitSize1 = 0;
@@ -440,7 +478,7 @@ void OrdPath::insertInto(
   long newcomp1;
   long newcomp2 = 0;
   ulong commonBitSize;
-  ulong newBits = 0;
+  ulong newBits;
   ulong bitSize;
   uint32_t dummy;
 
