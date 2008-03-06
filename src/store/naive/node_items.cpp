@@ -4,15 +4,8 @@
  *
  */
 
-#include <algorithm>
-
 #include "system/globalenv.h"
-#include "system/zorba.h"
-#include "system/zorba_engine.h"
-
 #include "errors/error_factory.h"
-
-#include "runtime/core/item_iterator.h"
 
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
@@ -21,8 +14,7 @@
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/nsbindings.h"
-#include "store/api/temp_seq.h"
-#include "runtime/base/plan_wrapper.h"
+#include "store/naive/item_iterator.h"
 
 
 #ifndef NDEBUG
@@ -377,8 +369,7 @@ Iterator_t DocumentNode::getChildren() const
 Iterator_t DocumentNode::getTypedValue() const
 {
   Item_t item = GET_FACTORY().createUntypedAtomic(getStringValue().getStore());
-  PlanIter_t ret(new SingletonIterator(Zorba::null_loc, item));
-  return new PlanWrapper(ret);
+  return new ItemIterator(item);
 }
 
 
@@ -680,8 +671,7 @@ Iterator_t ElementNode::getChildren() const
 Iterator_t ElementNode::getTypedValue() const
 {
   Item_t retItem = getAtomizationValue();
-  PlanIter_t ret(new SingletonIterator(Zorba::null_loc, retItem));
-  return new PlanWrapper(ret);
+  return new ItemIterator(retItem);
 }
 
 
@@ -1231,8 +1221,7 @@ XmlNode* AttributeNode::copy(XmlNode* parent, ulong pos)
 
 Iterator_t AttributeNode::getTypedValue() const
 {
-  PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, theTypedValue);
-  return new PlanWrapper(planIter);
+  return new ItemIterator(theTypedValue);
 }
 
 
@@ -1320,9 +1309,7 @@ Item_t TextNode::getType() const
 Iterator_t TextNode::getTypedValue() const
 {
   const Item_t& item = GET_FACTORY().createUntypedAtomic(theContent.getp());
-
-  PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, item);
-  return new PlanWrapper(planIter);
+  return new ItemIterator(item);
 }
 
 
@@ -1394,8 +1381,7 @@ Item_t PiNode::getType() const
 Iterator_t PiNode::getTypedValue() const
 {
   const Item_t& item = GET_FACTORY().createString(theData.getp());
-  PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, item);
-  return new PlanWrapper(planIter);
+  return new ItemIterator(item);
 }
 
 
@@ -1464,8 +1450,7 @@ Item_t CommentNode::getType() const
 Iterator_t CommentNode::getTypedValue() const
 {
   const Item_t& item = GET_FACTORY().createString(theContent.getp());
-  PlanIter_t planIter = new SingletonIterator(Zorba::null_loc, item);
-  return new PlanWrapper(planIter);
+  return new ItemIterator(item);
 }
 
 

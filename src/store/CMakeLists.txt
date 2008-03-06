@@ -12,6 +12,7 @@ SET(STORE_SRCS
     naive/simple_loader.cpp
     naive/ordpath.cpp
     naive/nsbindings.cpp
+    naive/item_iterator.cpp
     util/string_hashset.cpp
     util/mutex.cpp
     util/latch.cpp)

@@ -64,8 +64,7 @@ public:
   This iterator is used to eliminated duplicate nodes in the multiset of nodes
   produced by another iterator.
 
-  theInput   : This is actually a PlanIterWrapper object that wraps the actual
-               runtime iterator that produces the node multiset.
+  theInput   : input iterator
   theNodeSet : A hash-based set used to do the duplicate elimination. The
                elimination is done based on the values of the pointers that
                point to the input nodes.
@@ -120,8 +119,7 @@ public:
   This iterator is used to sort by document order the nodes produced by another
   iterator.
 
-  theInput  : This is actually a PlanIterWrapper object that wraps the actual
-              runtime iterator that produces the input nodes.
+  theInput  : input iterator
   theNodes  : A vector that stores rchandles to the nodes.
 ********************************************************************************/
 class StoreNodeSortIterator : public Iterator

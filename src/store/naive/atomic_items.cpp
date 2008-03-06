@@ -16,11 +16,6 @@
 #include "errors/error_factory.h"
 
 #include "system/globalenv.h"
-#include "system/zorba_engine.h"
-#include "system/zorba.h"
-
-#include "runtime/core/item_iterator.h"
-#include "runtime/base/plan_wrapper.h"
 
 #include "store/naive/atomic_items.h"
 #include "store/api/store.h"
@@ -29,6 +24,7 @@
 #include "store/naive/simple_store.h"
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/store_defs.h"
+#include "store/naive/item_iterator.h"
 
 #define CREATE_XS_TYPE(aType) \
   GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
@@ -51,9 +47,7 @@ Item_t AtomicItem::getAtomizationValue() const
 
 Iterator_t AtomicItem::getTypedValue() const
 {
-	PlanIter_t planIter = new SingletonIterator(Zorba::null_loc,
-                                              getAtomizationValue());
-  return new PlanWrapper(planIter);
+  return new ItemIterator(getAtomizationValue()); 
 }
 
 
