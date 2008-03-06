@@ -391,11 +391,6 @@ namespace zorba {
       bool
       is_printableASCII(uint32_t cp) const;
 
-      /**Returns true if cp is sapce 32 (decimal).
-       */
-      bool
-      is_space(uint32_t cp) const;
-
       /**
        * Returns true if cp is a whitespace (one of the " \t\r\n")
        */

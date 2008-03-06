@@ -504,7 +504,7 @@ namespace zorba
     if(0x3C == cp || 0x3E == cp || 0x22 == cp ||
        0x7B == cp || 0x7D == cp || 0x7C == cp || 
        0x5C == cp || 0X5E == cp || 0x60 == cp ||
-       is_space(cp)) //space
+       0x20 == cp)
     {
       ret = true;
     }
@@ -534,21 +534,18 @@ namespace zorba
     return ret;
   }
 
-  bool xqpString::is_space(uint32_t cp) const
-  {
-    return  (cp == 0x20) ? true: false;
-  }
-
-  // whitespace = " \t\r\n";
+  // whitespace = " \t\r\n" meaning (#x20) (#x9) (#xD) (#xA)
   bool xqpString::is_whitespace(uint32_t cp) const
   {
-    return (cp == 0x20
+    bool res = (cp == 0x20
         ||
-        cp == (uint32_t)'\t'
+        cp == 0x9
         ||
-        cp == (uint32_t)'\r'
+        cp == 0xD
         ||
-        cp == (uint32_t)'\n') ? true : false;
+        cp == 0xA) ? true : false;
+
+    return res;
   }
 
   std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString) const
@@ -752,10 +749,13 @@ namespace zorba
     while(len > 0)
     {
       cp = UTF8Decode(c);
-      if( !is_space(cp) ||
-            (is_space(cp) && !is_space(cpPrev) && len!=1)
+      if( !is_whitespace(cp) ||
+           (is_whitespace(cp) && !is_whitespace(cpPrev))
         )
       {
+        if(is_whitespace(cp))
+          cp = 0x20;
+        
         memset(seq, 0, sizeof(seq));
         UTF8Encode(cp, seq);
         tmp += seq;
@@ -766,7 +766,7 @@ namespace zorba
     tmp += "\0";
 
     xqpString res(tmp);
-    return res;
+    return res.trimR();
   }
 
   xqpString xqpString::trimL(const char* start, uint16_t len) const
