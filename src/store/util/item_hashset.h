@@ -1,6 +1,8 @@
 #ifndef ZORBA_STORE_UTIL_ITEM_HASHSET
 #define ZORBA_STORE_UTIL_ITEM_HASHSET
 
+#include <zorba/hashfun.h>
+
 #include "store/util/handle_hashset.h"
 
 
@@ -17,11 +19,11 @@ public:
 
   static uint32_t hash(const Item* t)
   {
-    return t->hash();
+    return hashfun::h32((void*)(&t), sizeof(void*), FNV_32_INIT);
   }
 
 public:
- ItemHashSet(ulong size = 1024) : HandleSet<Item, ItemHashSet>(size) {}
+  ItemHashSet(ulong size = 1024) : HandleSet<Item, ItemHashSet>(size) {}
 };
 
 } // namespace store
