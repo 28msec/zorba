@@ -374,6 +374,12 @@ namespace zorba {
       bool
       is_ucscharCP(uint32_t cp) const;
 
+      /**Returns true for the following printable ASCII characters that are
+      *invalid in an IRI: "<", ">", " " " (double quote), space, "{", "}", "|", "\", "^", and "`".
+      */
+      bool
+      is_Invalid_in_IRI(uint32_t cp) const;
+
       /**Returns true is cp reprezents "iprivate" as defined by rfc3987
        */
       bool

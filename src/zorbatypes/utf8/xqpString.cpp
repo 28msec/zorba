@@ -498,6 +498,19 @@ namespace zorba
     return ret;
   }
 
+  bool xqpString::is_Invalid_in_IRI(uint32_t cp) const
+  {
+    bool ret = false;
+    if(0x3C == cp || 0x3E == cp || 0x22 == cp ||
+       0x7B == cp || 0x7D == cp || 0x7C == cp || 
+       0x5C == cp || 0X5E == cp || 0x60 == cp ||
+       is_space(cp)) //space
+    {
+      ret = true;
+    }
+    return ret;
+  }
+
   bool xqpString::is_iprivateCP( uint32_t cp ) const
   {
     bool ret = false;
@@ -624,22 +637,19 @@ namespace zorba
       prev = c;
       cp = UTF8Decode(c);
       memset(seq, 0, sizeof(seq));
-      if(!is_ucscharCP(cp) && !is_iprivateCP(cp))
+      if(!is_ucscharCP(cp) && !is_iprivateCP(cp) && !is_Invalid_in_IRI(cp))
       {
         UTF8Encode(cp, seq);
         tmp += seq;
       }
       else{//codepoint has to be escaped
         length = sequence_length(prev);
-        if(length != 1)
+        for(int j=0; j<length;++j)
         {
-          for(int j=0; j<length;++j)
-          {
-            cp = mask8(*prev);
-            sprintf(seq, "%%%X", cp);
-            tmp += seq;
-            prev++;
-          }
+          cp = mask8(*prev);
+          sprintf(seq, "%%%X", cp);
+          tmp += seq;
+          prev++;
         }
       }
     }
