@@ -2233,6 +2233,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       break;
     arguments.push_back(e_h);
   }
+  int sz = arguments.size ();
   
   rchandle<QName> qn_h = v.get_fname();
   string prefix = qn_h->get_prefix();
@@ -2249,7 +2250,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VAR));
       return;
     } else if (fn_local == "unordered") {
-      if (arguments.size () != 1)
+      if (sz != 1)
         ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:unordered", arguments.size ());
       // put argument back, ignore fn:unordered
       nodestack.push (arguments [0]);
@@ -2259,24 +2260,24 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       // it fails, however, the following test:
       // 'fn:string (()) instance of xs:string'
       fn_qname = sctx_p->lookup_fn_qname("xs", "string");
-      switch (arguments.size ()) {
+      switch (sz) {
       case 0:
         arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
         break;
       case 1:
         break;
       default:
-        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:string", arguments.size ());
+        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:string", sz);
       }
     } else if (fn_local == "number") {
-      switch (arguments.size ()) {
+      switch (sz) {
       case 0:
         arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
         break;
       case 1:
         break;
       default:
-        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:number", arguments.size ());
+        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:number", sz);
       }
       var_expr_t tv = tempvar (loc, var_expr::let_var);
       expr_t nan_expr = new const_expr (loc, xqp_double::nan ());
@@ -2284,9 +2285,14 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       expr_t data_expr = new fo_expr (loc, LOOKUP_FN("fn", "data", 1), arguments [0]);
       nodestack.push (&*wrap_in_let_flwor (new treat_expr (loc, data_expr, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, ZorbaError::XPTY0004), tv, ret));
       return;
+    } else if (sz == 0 && 
+               (fn_local == "string-length" || fn_local == "normalize-space"))
+    {
+      xqtref_t xs_string = sctx_p->get_typemanager()->create_type (sctx_p->lookup_fn_qname ("xs", "string"), TypeConstants::QUANT_QUESTION);
+      arguments.push_back (create_cast_expr (loc, sctx_p->lookup_var_nofail (DOT_VAR), xs_string, true));
     } else if (fn_local == "static-base-uri") {
-      if (arguments.size () != 0)
-        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:static-base-uri", arguments.size ());
+      if (sz != 0)
+        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:static-base-uri", sz);
       xqp_string baseuri = sctx_p->baseuri ();
       if (baseuri.empty ())
         nodestack.push (create_seq (loc));
@@ -2295,20 +2301,20 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       return;
     }
   }
+  sz = arguments.size ();  // recompute size
 
   // try constructor functions
   xqtref_t type =
-    sctx_p->get_typemanager()->create_type (fn_qname,
-                                 TypeConstants::QUANT_QUESTION);
+    sctx_p->get_typemanager()->create_type (fn_qname, TypeConstants::QUANT_QUESTION);
+
   if (type != NULL && fn_qname->getStringValue () != "xs:anyAtomicType")
   {
-    if (arguments.size () != 1)
-      ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, prefix + ":" + fname, arguments.size ());
+    if (sz != 1)
+      ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, prefix + ":" + fname, sz);
     nodestack.push (create_cast_expr (loc, arguments [0], type, true));
   }
   else
   {
-    int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
     rchandle<fo_expr> fo_h = new fo_expr (loc, LOOKUP_FN (prefix, fname, sz));
     
     // TODO this should be a const iterator
