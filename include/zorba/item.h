@@ -25,32 +25,32 @@ namespace zorba { namespace store {
 #ifdef ZORBA_FOR_ONE_THREAD_ONLY
 
     protected:
-      long  * theRefCounterPtr;
+      long  * theTreeRCPtr;
 
-      Item() : theRefCounterPtr(0) { }
+      Item() : theTreeRCPtr(0) { }
 
     public:
 
-      long& 
-      getRefCounter() { return *theRefCounterPtr; }
+      long* 
+      getSharedRefCounter() { return theTreeRCPtr; }
 
       RCSync*
-      getSync()       { return NULL; }
+      getSync()             { return NULL; }
 
 #else
 
 protected:
-      long   * theRefCounterPtr;
-      RCSync * theRCSyncObjectPtr;
+      long   * theTreeRCPtr;
+      RCSync * theRCLockPtr;
 
-      Item() : theRefCounterPtr(0), theRCSyncObjectPtr(0) { }
+      Item() : theTreeRCPtr(0), theRCLockPtr(0) { }
 
 public:
-      long&
-      getRefCounter() { return *theRefCounterPtr; }
+      long*
+      getSharedRefCounter() { return theTreeRCPtr; }
 
       RCSync*
-      getSync()       { return theRCSyncObjectPtr; }
+      getSync()             { return theRCLockPtr; }
 
 #endif
 

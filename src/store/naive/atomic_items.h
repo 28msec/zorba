@@ -24,19 +24,15 @@ class AtomicItem : public Item
 {
 #ifdef ZORBA_FOR_ONE_THREAD_ONLY
 public:
-  AtomicItem() : Item() { theRefCounterPtr = &theRefCount; }
+  AtomicItem() : Item() { }
 
 #else
 
 protected:
-  RCSync  theRCSyncObject;
+  RCSync  theRCLock;
 
 public:
-  AtomicItem() : Item() 
-  {
-    theRefCounterPtr = &theRefCount;
-    theRCSyncObjectPtr = &theRCSyncObject;
-  }
+  AtomicItem() : Item() { theRCLockPtr = &theRCLock; }
 #endif
 
   virtual ~AtomicItem() {}

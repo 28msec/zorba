@@ -25,7 +25,7 @@ class XmlTree
 {
 protected:
   long       theRefCount;
-  RCSync     theRCSyncObject;
+  RCSync     theRCLock;
 
   ulong      theId;
   XmlNode  * theRootNode;
@@ -39,7 +39,7 @@ public:
   long getRefCount() const    { return theRefCount; }
   void addReference()         { ++theRefCount; }
   void removeReference()      { --theRefCount; }
-  RCSync& getRCSyncObject()   { return theRCSyncObject; }
+  RCSync& getRCLock()         { return theRCLock; }
 
   ulong getId() const         { return theId; }
   XmlNode* getRoot() const    { return theRootNode; }
@@ -199,8 +199,8 @@ public:
   // SimpleStore Methods
   //
 
-  XmlTree* getTree() const          { return (XmlTree*)theRefCounterPtr; }
-  void setTree(const XmlTree* t)    { theRefCounterPtr = (long*)t; }
+  XmlTree* getTree() const          { return (XmlTree*)theTreeRCPtr; }
+  void setTree(const XmlTree* t)    { theTreeRCPtr = (long*)t; }
   bool hasId() const                { return getTree() != 0; }
   ulong getTreeId() const           { return getTree()->getId(); }
   const OrdPath& getOrdPath() const { return theOrdPath; }

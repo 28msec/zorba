@@ -295,10 +295,10 @@ QNamePool::HashEntry* QNamePool::hashInsert(
 ********************************************************************************/
 void QNamePool::remove(QNameItemImpl* qn)
 {
+  AutoMutex lock(theMutex);
+
   if (qn->getRefCount(qn->getSync()) > 0)
     return;
-
-  AutoMutex lock(theMutex);
 
   if (qn->isInCache())
   {

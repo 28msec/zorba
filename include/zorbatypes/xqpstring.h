@@ -18,7 +18,7 @@ namespace zorba {
   {
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
   protected:
-    RCSync  theRCSyncObject;
+    RCSync  theRCLock;
 #endif
 
     public:
@@ -28,15 +28,15 @@ namespace zorba {
       xqpStringStore(const char* start, const char* end) : std::string(start, end) {}
       xqpStringStore(const char* start, long len) : std::string(start, len) {}
 
-      long&
-      getRefCounter() { return theRefCount; }  
+      long*
+      getSharedRefCounter() { return NULL; }  
 
 #ifdef ZORBA_FOR_ONE_THREAD_ONLY
       RCSync*
       getSync()     { return NULL; }
 #else
       RCSync*
-      getSync()     { return &theRCSyncObject; }
+      getSync()     { return &theRCLock; }
 #endif
 
       std::string::size_type bytes() const { return size(); }

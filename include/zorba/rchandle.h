@@ -14,7 +14,6 @@
 #include <iostream>
 
 #include <zorba/common/common.h>
-//#include <zorba/hashfun.h>
 
 namespace zorba {
 
@@ -71,6 +70,7 @@ public:
     }
   }
 };
+
 #elif defined HAVE_PTHREAD_MUTEX
 
 class RCSync
@@ -127,6 +127,7 @@ public:
 #endif // HAVE_PTHREAD_SPINLOCK or HAVE_PTHREAD_MUTEX
 
 #elif WIN32
+
 class RCSync
 {
 protected:
@@ -155,7 +156,7 @@ public:
 #else
   #error RCSync implemented for PTHREADs and WIN32
 
-#endif // ZORBA_USE_PTHREAD_LIBRARY
+#endif // ZORBA_USE_PTHREAD_LIBRARY or WIN32
 
 
 #endif // ZORBA_FOR_ONE_THREAD_ONLY
@@ -205,26 +206,42 @@ public:
     return temp;
   }
 
-  void addReference(long& counter, RCSync* sync)
+  void addReference(long* counter, RCSync* sync)
   {
 #ifdef WIN32
     if(sync)
-      InterlockedIncrement(&counter);
+    {
+      if (counter) InterlockedIncrement(counter);
+      InterlockedIncrement(&theRefCount);
+    }
     else
-      ++counter;
+    {
+      if (counter) ++(*counter);
+      ++theRefCount;
+    }
 #else
     RCLOCK(sync);
-    ++counter;
+    if (counter) ++(*counter);
+    ++theRefCount;
     RCUNLOCK(sync);
 #endif
   }
 
-  void removeReference(long& counter, RCSync* sync)
+  void removeReference(long* counter, RCSync* sync)
   {
 #ifdef WIN32
     if(sync)
     {
-      if(!InterlockedDecrement(&counter))
+      if (counter)
+      {
+        InterlockedDecrement(&theRefCount);
+        if (!InterlockedDecrement(counter))
+        {
+          free();
+          return;
+        }
+      }
+      else if (!InterlockedDecrement(&theRefCount))
       {
         free();
         return;
@@ -232,19 +249,38 @@ public:
     }
     else
     {
-      if (--counter == 0)
+      if (counter)
+      {
+        --theRefCount;
+        if (--(*counter) == 0)
+        {
+          free();
+          return;
+        }
+      }
+      else if (--theRefCount == 0)
       {
         free();
-        return;
+        return; 
       }
     }
 #else
     RCLOCK(sync);
-    if (--counter == 0)
+    if (counter)
+    {
+      --theRefCount;
+      if (--(*counter) == 0)
+      {
+        RCUNLOCK(sync);
+        free();
+        return;
+      }
+    }
+    else if (--theRefCount == 0)
     {
       RCUNLOCK(sync);
       free();
-      return;
+      return; 
     }
     RCUNLOCK(sync);
 #endif
@@ -264,8 +300,8 @@ public:
 
   SimpleRCObject(const SimpleRCObject& rhs) : RCObject(rhs) { }
 
-  long& getRefCounter() { return theRefCount; }  
-  RCSync* getSync()     { return NULL; }
+  long* getSharedRefCounter() { return NULL; }  
+  RCSync* getSync()           { return NULL; }
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
 };
@@ -288,7 +324,7 @@ private:
   void init()
   {
     if (p == 0) return;
-    p->addReference(p->getRefCounter(), p->getSync());
+    p->addReference(p->getSharedRefCounter(), p->getSync());
   }
 
 public:
@@ -305,7 +341,7 @@ public:
   ~rchandle()
   {
     if (p)
-      p->removeReference(p->getRefCounter(), p->getSync());
+      p->removeReference(p->getSharedRefCounter(), p->getSync());
     p = 0;
   }
 
@@ -348,7 +384,7 @@ public:
   {
     if (p != rhs.p)
     {
-      if (p) p->removeReference(p->getRefCounter(), p->getSync());
+      if (p) p->removeReference(p->getSharedRefCounter(), p->getSync());
       p = rhs.p;
       init();
     }
@@ -359,17 +395,12 @@ public:
 	{
 		if (p != rhs.getp()) 
     {
-			if (p) p->removeReference(p->getRefCounter(), p->getSync());
+			if (p) p->removeReference(p->getSharedRefCounter(), p->getSync());
 			p = static_cast<T*>(rhs.getp());
 			init();
 		}
 		return *this;
 	}
-
-//unsigned long hash() const
-//{
-//  return hashfun::h32((void*)(&p), sizeof(void*), FNV_32_INIT);
-//}
 
 public:
 	std::string debug() const
