@@ -17,6 +17,7 @@
 
 #include <zorbatypes/Unicode_util.h>
 #include <zorbatypes/utf8.h>
+#include <zorbatypes/numconversions.h>
 
 using namespace std;
 
@@ -329,9 +330,43 @@ namespace zorba
     }
 
     const char * d = theStrStore->c_str();
-    advance(d, index);
+    advance(d, index, d+bytes());
 
     xqpString ret(d);
+
+    return ret;
+  }
+
+  xqpString xqpString::formatAsXML(const char* src) const
+  {
+    uint32_t i;
+    uint32_t len = length();
+    const char* c = c_str();
+    uint32_t cp;
+    char seq[4];
+
+    xqpStringStore_t newStr = new xqpStringStore("");
+
+    for(i=0; i<len; ++i)
+    {
+      cp = UTF8Decode(c);
+      if(cp<128)
+      {
+        memset(seq, 0, sizeof(seq));
+        UTF8Encode(cp, seq);
+        *newStr += seq;
+      }
+      else
+      {
+        *newStr += '&';
+        *newStr += '#';
+        *newStr +=  Integer::parseInt(cp).toString();
+        *newStr += ';';
+      }
+    }
+    *newStr += "\0";
+
+    xqpString ret(*newStr);
     return ret;
   }
 
@@ -658,8 +693,6 @@ namespace zorba
 
   xqpString xqpString::translate(xqpString mapString, xqpString transString) const
   {
-    mapString.trim();
-    
     std::map<uint32_t,uint32_t> myMap;
     std::map<uint32_t,uint32_t>::iterator it;
 
@@ -802,7 +835,7 @@ namespace zorba
     const char* c = c_str();
     char seq[4];
 
-    zorba::advance(end, StrLen);
+    zorba::advance(end, StrLen, end + bytes());
 
     while(StrLen > 0)
     {

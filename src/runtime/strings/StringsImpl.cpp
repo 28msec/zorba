@@ -502,6 +502,7 @@ SubstringIterator::nextImpl(PlanState& planState) const {
               }
             }
           }
+          resStr = resStr.formatAsXML(resStr.c_str());
           STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
         }
       }

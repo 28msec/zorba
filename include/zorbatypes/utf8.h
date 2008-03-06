@@ -176,20 +176,143 @@ namespace zorba {
   *@Return the distance between the iterators, in code points.
   */
   template <typename octet_iterator>
-    typename std::iterator_traits<octet_iterator>::difference_type
-    UTF8Distance (octet_iterator first, octet_iterator last){
+  typename std::iterator_traits<octet_iterator>::difference_type
+  UTF8Distance (octet_iterator first, octet_iterator last)
+  {
     typename std::iterator_traits<octet_iterator>::difference_type dist;
     for (dist = 0; first < last; ++dist)
       next(first);
     return dist;
   }
 
+  template <typename octet_iterator>
+      uint32_t next(octet_iterator& it, octet_iterator end)
+  {
+    uint32_t cp = 0;
+    validate_next(it, end, &cp);
+    return cp;
+  }
+  
   template <typename octet_iterator, typename distance_type>
-    void advance (octet_iterator& it, distance_type n)
-    {
-        for (distance_type i = 0; i < n; ++i)
-            next(it);
+  void advance (octet_iterator& it, distance_type n, octet_iterator end)
+  {
+    for (distance_type i = 0; i < n; ++i)
+      next(it, end);
+  }
+
+  enum utf_error {OK, NOT_ENOUGH_ROOM, INVALID_LEAD, INCOMPLETE_SEQUENCE, OVERLONG_SEQUENCE, INVALID_CODE_POINT};
+  
+  template <typename octet_iterator>
+  utf_error validate_next(octet_iterator& it, octet_iterator end, uint32_t* code_point)
+  {
+    uint32_t cp = mask8(*it);
+        // Check the lead octet
+    typedef typename std::iterator_traits<octet_iterator>::difference_type octet_difference_type;
+    octet_difference_type length = sequence_length(it);
+
+        // "Shortcut" for ASCII characters
+    if (length == 1) {
+      if (end - it > 0) {
+        if (code_point)
+          *code_point = cp;
+        ++it;
+        return OK;
+      }
+      else
+        return NOT_ENOUGH_ROOM;
     }
+
+        // Do we have enough memory?     
+    if (std::distance(it, end) < length)
+      return NOT_ENOUGH_ROOM;
+        
+        // Check trail octets and calculate the code point
+    switch (length) {
+      case 0:
+        return INVALID_LEAD;
+        break;
+      case 2:
+        if (is_trail(*(++it))) {
+          cp = ((cp << 6) & 0x7ff) + ((*it) & 0x3f);
+        }
+        else {
+          --it;
+          return INCOMPLETE_SEQUENCE;
+        }
+        break;
+      case 3:
+        if (is_trail(*(++it))) {
+          cp = ((cp << 12) & 0xffff) + ((mask8(*it) << 6) & 0xfff);
+          if (is_trail(*(++it))) {
+            cp += (*it) & 0x3f;
+          }
+          else {
+            std::advance(it, -2);
+            return INCOMPLETE_SEQUENCE;
+          }
+        }
+        else {
+          --it;
+          return INCOMPLETE_SEQUENCE;
+        }
+        break;
+      case 4:
+        if (is_trail(*(++it))) {
+          cp = ((cp << 18) & 0x1fffff) + ((mask8(*it) << 12) & 0x3ffff);
+          if (is_trail(*(++it))) {
+            cp += (mask8(*it) << 6) & 0xfff;
+            if (is_trail(*(++it))) {
+              cp += (*it) & 0x3f;
+            }
+            else {
+              std::advance(it, -3);
+              return INCOMPLETE_SEQUENCE;
+            }
+          }
+          else {
+            std::advance(it, -2);
+            return INCOMPLETE_SEQUENCE;
+          }
+        }
+        else {
+          --it;
+          return INCOMPLETE_SEQUENCE;
+        }
+        break;
+    }
+        // Is the code point valid?
+    if (!is_code_point_valid(cp)) {
+      for (octet_difference_type i = 0; i < length - 1; ++i)
+        --it;
+      return INVALID_CODE_POINT;
+    }
+            
+    if (code_point)
+      *code_point = cp;
+            
+    if (cp < 0x80) {
+      if (length != 1) {
+        std::advance(it, -(length-1));
+        return OVERLONG_SEQUENCE;
+      }
+    }
+    else if (cp < 0x800) {
+      if (length != 2) {
+        std::advance(it, -(length-1));
+        return OVERLONG_SEQUENCE;
+      }
+    }
+    else if (cp < 0x10000) {
+      if (length != 3) {
+        std::advance(it, -(length-1));
+        return OVERLONG_SEQUENCE;
+      }
+    }
+           
+    ++it;
+    return OK;
+  }
+
 
   /**
    * Encodes a 32 bit code point as a UTF-8 sequence of octets
@@ -200,6 +323,36 @@ namespace zorba {
    */
   template <typename octet_iterator>
       octet_iterator UTF8Encode(uint32_t cp, octet_iterator result){
+    if (!is_code_point_valid(cp))
+    {
+      throw exception_invalid_code_point(cp);
+    }
+    else
+    {
+      if (cp < 0x80)                        // one octet
+        *(result++) = static_cast<uint8_t>(cp);
+      else if (cp < 0x800) {                // two octets
+        *(result++) = static_cast<uint8_t>((cp >> 6)            | 0xc0);
+        *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
+      }
+      else if (cp < 0x10000) {              // three octets
+        *(result++) = static_cast<uint8_t>((cp >> 12)           | 0xe0);
+        *(result++) = static_cast<uint8_t>((cp >> 6) & 0x3f     | 0x80);
+        *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
+      }
+      else if (cp <= CODE_POINT_MAX) {      // four octets
+        *(result++) = static_cast<uint8_t>((cp >> 18)           | 0xf0);
+        *(result++) = static_cast<uint8_t>((cp >> 12)& 0x3f     | 0x80);
+        *(result++) = static_cast<uint8_t>((cp >> 6) & 0x3f     | 0x80);
+        *(result++) = static_cast<uint8_t>((cp & 0x3f)          | 0x80);
+      }
+    }
+
+    return result;
+  }
+
+    template <typename octet_iterator>
+      octet_iterator XMLEncode(uint32_t cp, octet_iterator result){
     if (!is_code_point_valid(cp))
     {
       throw exception_invalid_code_point(cp);

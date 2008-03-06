@@ -252,6 +252,9 @@ namespace zorba {
        */
       xqpString
       substr(distance_type index) const;
+
+      xqpString
+      formatAsXML(const char* src) const;
       
       const char*
       c_str() const;
