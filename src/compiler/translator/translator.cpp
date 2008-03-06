@@ -31,6 +31,7 @@
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "compiler/normalizer/normalizer.h"
+#include "compiler/parser/util.h"
 #include "util/tracer.h"
 #include "system/globalenv.h"
 #include "system/zorba.h"
@@ -929,18 +930,16 @@ void *begin_visit(const CommonContent& /*v*/)
 
 void end_visit(const CommonContent& v, void* /*visit_state*/)
 {
+  QueryLoc loc = v.get_location ();
+
   switch (v.get_type())
   {
-    case ParseConstants::cont_entity:
+    case ParseConstants::cont_entity: assert (false); break;
+    case ParseConstants::cont_charref:
     {
-      expr_t lConstExpr;
-      if (v.get_ref() == "&amp;")
-        lConstExpr = new const_expr(v.get_location(), xqpString("&"));
-      else if (v.get_ref() == "&lt;")
-        lConstExpr = new const_expr(v.get_location(),  xqpString("<"));
-      else if (v.get_ref() == "&gt;")
-        lConstExpr = new const_expr(v.get_location(),  xqpString(">"));
-
+      string content;
+      decode_entity (v.get_ref ().c_str (), &content);
+      expr_t lConstExpr = new const_expr(loc, content);
       nodestack.push(lConstExpr);
       break;
     }
@@ -949,7 +948,7 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
       xqpString content("{");
-      expr_t lConstExpr = new const_expr(v.get_location(), content);
+      expr_t lConstExpr = new const_expr(loc, content);
       nodestack.push ( lConstExpr );
       break;
     }
@@ -958,7 +957,7 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
       // we always create a text node here because if we are in an attribute, we atomice
       // the text node into its string value
       xqpString content("}");
-      expr_t lConstExpr = new const_expr(v.get_location(), content);
+      expr_t lConstExpr = new const_expr(loc, content);
       nodestack.push ( lConstExpr );
       break;
     }

@@ -4,7 +4,8 @@ INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseFlex.cmake)
 SET(PARSER_SRCS
     symbol_table.cpp
     xquery_driver.cpp
-    query_loc.cpp)
+    query_loc.cpp
+    util.cpp)
     
 SET(PARSER_BUILD_SRCS)
 

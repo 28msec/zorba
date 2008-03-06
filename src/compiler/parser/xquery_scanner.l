@@ -4144,14 +4144,14 @@ typedef zorba::xquery_parser::token token;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ENTITY_REF" << endl;
 #endif
-  return token::ENTITY_REF;
+  return token::ELEMENT_CONTENT;
 }
 
 {CharRef}+ {
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEMENT_CONTENT" << endl;
 #endif
-  TRY_STR_LIT (ELEMENT_CONTENT, put_charref, yytext, yyleng);
+  TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
 }
 
 "{{" {
@@ -4465,11 +4465,11 @@ typedef zorba::xquery_parser::token token;
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ENTITY_REF" << endl;
 #endif
-  return token::ENTITY_REF;
+  return token::QUOTE_ATTR_CONTENT;
 }
 
 {CharRef}+ {
-  TRY_STR_LIT (QUOTE_ATTR_CONTENT, put_charref, yytext, yyleng);
+  TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QUOTE_ATTR_CONTENT" << endl;
 #endif
@@ -4544,14 +4544,15 @@ typedef zorba::xquery_parser::token token;
 }
 
 {PredefinedEntityRef} {
+  yylval->sval = getDriver()->symtab.put_entityref(yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ENTITY_REF" << endl;
 #endif
-  return token::ENTITY_REF;
+  return token::APOS_ATTR_CONTENT;
 }
 
 {CharRef}+ {
-  TRY_STR_LIT (APOS_ATTR_CONTENT, put_charref, yytext, yyleng);
+  TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::APOS_ATTR_CONTENT" << endl;
 #endif

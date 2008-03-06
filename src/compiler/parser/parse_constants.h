@@ -130,6 +130,7 @@ class ParseConstants
 
     enum common_content_t {
       cont_entity,
+      cont_charref,
       cont_escape_lbrace,
       cont_escape_rbrace,
       cont_expr

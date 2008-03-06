@@ -6,10 +6,10 @@
  */
 
 #include <zorbatypes/numconversions.h>
-#include <zorbatypes/utf8.h>
 
 #include "compiler/parser/symbol_table.h"
 #include "util/fx/fxcharheap.h"
+#include "compiler/parser/util.h"
 
 #include <stdlib.h>
 #include <string>
@@ -62,32 +62,6 @@ void trim_end(char const* s, uint32_t& len)
         break;
       }
   }
-}
-
-// TODO: reuse (better) code that is probably available elsewhere in Zorba
-static int decode_entity (const char *in, string *out) {
-  const char *start = in;
-  if (in [0] == '#') {
-    ++in;
-    int base = 10;
-    if (*in == 'x') { base = 16; ++in; }
-    for (; *in == '0'; ++in);
-    unsigned long n = strtoul (in, (char **) &in, base);
-    if (*in++ != ';')
-      return -1;
-    if (! is_code_point_valid (n))
-      return -1;
-    UTF8Encode (n, back_inserter (*out));
-    return in - start;
-  }
-#define M( str, len, r ) if (strncmp (in, str, len) == 0) { *out += r; return len; }
-  M ("amp;", 4, "&") else
-  M ("lt;", 3, "<") else
-  M ("gt;", 3, ">") else
-  M ("quot;", 5, "\"") else
-  M ("apos;", 5, "'")
-#undef M
-  else return -1;
 }
 
 static bool decode_string (const char *yytext, uint32_t yyleng, string *result) {
@@ -181,16 +155,15 @@ off_t symbol_table::put_varname(char const* text, uint32_t length)
 
 off_t symbol_table::put_entityref(char const* text, uint32_t length)
 {
-	return heap.put(text, 0, length);
+  string result;
+  if (decode_entity (text + 1, &result) < 0)
+    return -1;
+	return heap.put(result.c_str(), 0, result.size ());
 }
 
 off_t symbol_table::put_charref(char const* text, uint32_t length)
 {
-  string result;
-  if (decode_entity (text + 1, &result) == -1) {
-    return -1;
-  }
-	return heap.put (result.c_str (), 0, result.size ());
+	return heap.put (text + 1, 0, length - 1);
 }
 
 off_t symbol_table::put_stringlit(char const* yytext, uint32_t yyleng)
