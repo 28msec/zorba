@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef ZORBA_SIMPLE_TEMP_SEQ_H
-#define ZORBA_SIMPLE_TEMP_SEQ_H
+#ifndef ZORBA_STORE_SIMPLE_TEMP_SEQ_H
+#define ZORBA_STORE_SIMPLE_TEMP_SEQ_H
 
 #include <vector>
 
@@ -103,4 +103,4 @@ public:
 } // namespace store
 } // namespace zorba
 
-#endif /* ZORBA_SIIMPLE_TEMP_SEQ_H */
+#endif /* ZORBA_STORE_SIIMPLE_TEMP_SEQ_H */

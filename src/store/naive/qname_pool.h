@@ -1,5 +1,5 @@
-#ifndef ZORBA_QNAME_POOL_H
-#define ZORBA_QNAME_POOL_H
+#ifndef ZORBA_STORE_QNAME_POOL_H
+#define ZORBA_STORE_QNAME_POOL_H
 
 #include <vector>
 

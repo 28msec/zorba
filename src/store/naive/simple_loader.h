@@ -1,6 +1,5 @@
-
-#ifndef ZORBA_DEFAULT_STORE_LOADER
-#define ZORBA_DEFAULT_STORE_LOADER
+#ifndef ZORBA_DEFAULT_STORE_LOADER_H
+#define ZORBA_DEFAULT_STORE_LOADER_H
 
 #include <stack>
 #include <libxml/parser.h>

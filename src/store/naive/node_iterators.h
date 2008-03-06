@@ -1,5 +1,5 @@
-#ifndef ZORBA_DEFAULT_STORE_NODE_ITERATORS
-#define ZORBA_DEFAULT_STORE_NODE_ITERATORS
+#ifndef ZORBA_STORE_NODE_ITERATORS_H
+#define ZORBA_STORE_NODE_ITERATORS_H
 
 #include <zorba/iterator.h>
 #include "common/shared_types.h"

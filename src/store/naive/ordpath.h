@@ -1,6 +1,6 @@
 
-#ifndef ZORBA_STORE_NODEID
-#define ZORBA_STORE_NODEID
+#ifndef ZORBA_STORE_ORDPATH_H
+#define ZORBA_STORE_ORDPATH_H
 
 #include <vector>
 

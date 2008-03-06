@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef ZORBA_ATOMIC_ITEMS_H
-#define ZORBA_ATOMIC_ITEMS_H
+#ifndef ZORBA_STORE_ATOMIC_ITEMS_H
+#define ZORBA_STORE_ATOMIC_ITEMS_H
 
 #include <zorbatypes/xqpstring.h>
 
@@ -700,4 +700,4 @@ public:
 
 } // namespace store
 } // namespace zorba
-#endif /* ZORBA_ATOMIC_ITEMS_H */
+#endif /* ZORBA_STORE_ATOMIC_ITEMS_H */

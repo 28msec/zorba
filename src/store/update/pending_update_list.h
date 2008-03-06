@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef ZORBA_PENDING_UPDATE_LIST_H
-#define ZORBA_PENDING_UPDATE_LIST_H
+#ifndef ZORBA_STORE_PENDING_UPDATE_LIST_H
+#define ZORBA_STORE_PENDING_UPDATE_LIST_H
 
 namespace zorba { namespace store {
 	/**
@@ -23,4 +23,4 @@ namespace zorba { namespace store {
 } // namespace store
 } // namespace zorba
 
-#endif /* ZORBA_STORE_H */
+#endif /* ZORBA_STORE_PENDING_UPDATE_LIST_H */

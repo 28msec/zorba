@@ -1,6 +1,6 @@
 
-#ifndef ZORBA_DEFAULT_STORE_NODES
-#define ZORBA_DEFAULT_STORE_NODES
+#ifndef ZORBA_STORE_NODE_ITEMS_H
+#define ZORBA_STORE_NODE_ITEMS_H
 
 
 #include <zorba/common/common.h>

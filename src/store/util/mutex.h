@@ -1,5 +1,5 @@
-#ifndef ZORBA_MUTEX
-#define ZORBA_MUTEX
+#ifndef ZORBA_STORE_MUTEX_H
+#define ZORBA_STORE_MUTEX_H
 
 #include "zorba/common/common.h"
 

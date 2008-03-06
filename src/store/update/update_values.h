@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef ZORBA_UPDATE_VALUES_H
-#define ZORBA_UPDATE_VALUES_H
+#ifndef ZORBA_STORE_UPDATE_VALUES_H
+#define ZORBA_STORE_UPDATE_VALUES_H
 
 #include <vector>
 
@@ -328,5 +328,5 @@ public:
 
 } // namespace store
 } // namespace zorba
-#endif /* ZORBA_UPDATE_VALUES_H */
+#endif /* ZORBA_STOR_STOREE_UPDATE_VALUES_H */
 

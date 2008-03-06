@@ -1,5 +1,5 @@
-#ifndef ZORBA_DEFAULT_STORE_H
-#define ZORBA_DEFAULT_STORE_H
+#ifndef ZORBA_STORE_SIMPLE_STORE_H
+#define ZORBA_STORE_SIMPLE_STORE_H
 
 
 #include "zorba/common/api_shared_types.h"
@@ -135,4 +135,4 @@ public:
 } // namespace store
 } // namespace zorba
 
-#endif /* ZORBA_SIMPLE_STORE_H */
+#endif /* ZORBA_STORE_SIMPLE_STORE_H */

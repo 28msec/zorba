@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_CONSTS_H
-#define ZORBA_STORE_CONSTS_H
+#ifndef ZORBA_STORE_STORE_CONSTS_H
+#define ZORBA_STORE_STORE_CONSTS_H
 
 #include <string>
 

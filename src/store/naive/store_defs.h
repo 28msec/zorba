@@ -1,6 +1,5 @@
-
-#ifndef ZORBA_DEFAULT_STORE_DEFS
-#define ZORBA_DEFAULT_STORE_DEFS
+#ifndef ZORBA_STORE_STORE_DEFS_H
+#define ZORBA_STORE_STORE_DEFS_H
  
 #define GET_STORE() \
         (*(static_cast<SimpleStore*>(&GENV.getStore())))

@@ -1,5 +1,5 @@
-#ifndef ZORBA_DEFAULT_STORE_COLLECTION
-#define ZORBA_DEFAULT_STORE_COLLECTION
+#ifndef ZORBA_STORE_SIMPLE_COLLECTION
+#define ZORBA_STORE_SIMPLE_COLLECTION
 
 #include <set>
 #include <zorba/common/common.h>

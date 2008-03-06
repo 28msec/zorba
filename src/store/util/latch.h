@@ -1,5 +1,5 @@
-#ifndef ZORBA_LATCH
-#define ZORBA_LATCH
+#ifndef ZORBA_STORE_LATCH_H
+#define ZORBA_STORE_LATCH_H
 
 #include <zorba/common/common.h>
 

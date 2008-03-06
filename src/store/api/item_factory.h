@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef ZORBA_ITEM_FACTORY_H
-#define ZORBA_ITEM_FACTORY_H
+#ifndef ZORBA_STORE_ITEM_FACTORY_H
+#define ZORBA_STORE_ITEM_FACTORY_H
 
 #include <vector>
 

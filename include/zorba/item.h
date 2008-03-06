@@ -1,5 +1,5 @@
-#ifndef ZORBA_ITEM_H
-#define ZORBA_ITEM_H
+#ifndef ZORBA_STORE_ITEM_H
+#define ZORBA_STORE_ITEM_H
 
 #include <vector>
 

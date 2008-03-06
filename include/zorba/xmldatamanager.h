@@ -1,5 +1,5 @@
-#ifndef ZORBA_XMLDATAMANAGER_H
-#define ZORBA_XMLDATAMANAGER_H
+#ifndef ZORBA_STORE_XMLDATAMANAGER_H
+#define ZORBA_STORE_XMLDATAMANAGER_H
 
 #include <zorbatypes/representations.h>
 
