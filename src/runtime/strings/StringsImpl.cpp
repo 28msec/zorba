@@ -1300,7 +1300,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
     {
       if( theChildren.size() == 2 )
       {
-        startPos = arg1.lastIndexOf(arg2);
+        startPos = arg1.indexOf(arg2);
       }
       else
       { //theChildren.size() ==3
@@ -1309,7 +1309,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
         {
           itemColl = itemColl->getAtomizationValue();
           Collator* coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
-          startPos = arg1.lastIndexOf( arg2, coll );
+          startPos = arg1.indexOf( arg2, coll );
         }
       }
       if(startPos != -1)
