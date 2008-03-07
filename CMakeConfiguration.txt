@@ -32,6 +32,10 @@ SET(ZORBA_FLOAT_POINT_PRECISION 18 CACHE STRING
    "number of decimal places in floating point serialization")
 MESSAGE( STATUS "ZORBA_FLOAT_POINT_PRECISION: " ${ZORBA_FLOAT_POINT_PRECISION} )
 
+# code coverage information
+SET(ZORBA_WITH_CODE_COVERAGE OFF CACHE BOOL "compile the code with information for a code coverage analysis")
+MESSAGE( STATUS "ZORBA_WITH_CODE_COVERAGE: " ${ZORBA_WITH_CODE_COVERAGE})
+
 
 #specify the threading mechanism used
 #for WIN32 you don't have to specify it
