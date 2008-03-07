@@ -5934,14 +5934,16 @@ public:
 	};
 
 protected:
-	rchandle<UnionExpr> src_expr_h;
-	rchandle<UnionExpr> dst_expr_h;
+  ft_range_mode_t mode;
+	rchandle<exprnode> src_expr_h;
+	rchandle<exprnode> dst_expr_h;
 
 public:
 	FTRange(
 		const QueryLoc&,
-		rchandle<UnionExpr> src_expr_h,
-		rchandle<UnionExpr> dst_expr_h);
+    ft_range_mode_t,
+		rchandle<exprnode> src_expr_h,
+		rchandle<exprnode> dst_expr_h = NULL);
 
 
 public:

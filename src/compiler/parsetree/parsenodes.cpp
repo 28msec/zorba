@@ -4926,10 +4926,12 @@ void FTAnyallOption::accept(parsenode_visitor& v) const
 // -------------
 FTRange::FTRange(
   const QueryLoc& _loc,
-  rchandle<UnionExpr> _src_expr_h,
-  rchandle<UnionExpr> _dst_expr_h)
+  FTRange::ft_range_mode_t _mode,
+  rchandle<exprnode> _src_expr_h,
+  rchandle<exprnode> _dst_expr_h)
 :
   parsenode(_loc),
+  mode (_mode),
   src_expr_h(_src_expr_h),
   dst_expr_h(_dst_expr_h)
 {

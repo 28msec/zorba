@@ -38,7 +38,7 @@
 #include "xquery_parser.hpp"
 
 /* User implementation prologue.  */
-#line 712 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 723 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_scanner.h"
@@ -204,7 +204,782 @@ namespace zorba
 
     switch (yytype)
       {
-  
+        case 53: /* "\"'DECIMAL'\"" */
+#line 624 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (*yyvaluep).decval; };
+#line 211 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 80: /* "\"'DOUBLE'\"" */
+#line 623 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (*yyvaluep).dval; };
+#line 216 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 111: /* "\"'INTEGER'\"" */
+#line 622 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (*yyvaluep).ival; };
+#line 221 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 284: /* "VersionDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 226 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 285: /* "MainModule" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 231 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 286: /* "LibraryModule" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 236 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 287: /* "ModuleDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 241 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 288: /* "Prolog" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 246 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 289: /* "SIND_DeclList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 251 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 290: /* "VFO_DeclList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 256 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 291: /* "SIND_Decl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 261 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 292: /* "VFO_Decl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 266 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 293: /* "Setter" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 271 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 294: /* "Import" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 276 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 295: /* "NamespaceDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 281 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 296: /* "BoundarySpaceDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 286 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 297: /* "DefaultNamespaceDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 291 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 298: /* "OptionDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 296 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 300: /* "OrderingModeDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 301 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 301: /* "EmptyOrderDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 306 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 302: /* "CopyNamespacesDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 311 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 303: /* "DefaultCollationDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 316 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 304: /* "BaseURIDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 321 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 305: /* "SchemaImport" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 326 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 306: /* "URILiteralList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 331 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 307: /* "SchemaPrefix" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 336 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 308: /* "ModuleImport" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 341 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 309: /* "VarDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 346 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 310: /* "ConstructionDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 351 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 311: /* "FunctionDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 356 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 312: /* "ParamList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 361 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 313: /* "Param" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 366 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 314: /* "EnclosedExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 371 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 315: /* "QueryBody" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 376 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 316: /* "Expr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 381 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 317: /* "ExprSingle" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 386 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 318: /* "FLWORExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 391 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 319: /* "ForLetClauseList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 396 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 320: /* "ForLetClause" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 401 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 321: /* "ForClause" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 406 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 322: /* "VarInDeclList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 411 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 323: /* "VarInDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 416 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 324: /* "PositionalVar" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 421 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 326: /* "LetClause" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 426 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 327: /* "VarGetsDeclList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 431 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 328: /* "VarGetsDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 436 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 329: /* "WhereClause" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 441 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 330: /* "OrderByClause" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 446 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 331: /* "OrderSpecList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 451 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 332: /* "OrderSpec" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 456 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 333: /* "OrderModifier" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 461 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 334: /* "OrderDirSpec" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 466 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 335: /* "OrderEmptySpec" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 471 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 336: /* "OrderCollationSpec" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 476 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 337: /* "QuantifiedExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 481 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 338: /* "QVarInDeclList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 486 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 339: /* "QVarInDecl" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 491 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 340: /* "TypeswitchExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 496 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 341: /* "CaseClauseList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 501 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 342: /* "CaseClause" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 506 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 343: /* "IfExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 511 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 344: /* "OrExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 516 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 345: /* "AndExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 521 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 346: /* "ComparisonExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 526 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 348: /* "RangeExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 531 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 349: /* "AdditiveExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 536 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 350: /* "MultiplicativeExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 541 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 351: /* "UnionExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 546 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 352: /* "IntersectExceptExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 551 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 353: /* "InstanceofExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 556 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 354: /* "TreatExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 561 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 355: /* "CastableExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 566 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 356: /* "CastExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 571 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 357: /* "UnaryExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 576 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 358: /* "SignList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 581 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 359: /* "ValueExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 586 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 360: /* "GeneralComp" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 591 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 361: /* "ValueComp" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 596 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 362: /* "NodeComp" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 601 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 363: /* "ValidateExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 606 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 364: /* "ExtensionExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 611 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 365: /* "PragmaList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 616 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 366: /* "Pragma" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 621 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 367: /* "PathExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 626 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 368: /* "RelativePathExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 631 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 369: /* "StepExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 636 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 370: /* "AxisStep" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 641 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 371: /* "ForwardStep" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 646 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 372: /* "ForwardAxis" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 651 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 373: /* "AbbrevForwardStep" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 656 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 374: /* "ReverseStep" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 661 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 375: /* "ReverseAxis" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 666 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 376: /* "NodeTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 671 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 377: /* "NameTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 676 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 378: /* "Wildcard" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 681 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 379: /* "FilterExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 686 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 380: /* "PredicateList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 691 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 381: /* "Predicate" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 696 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 382: /* "PrimaryExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 701 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 383: /* "Literal" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 706 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 384: /* "NumericLiteral" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 711 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 385: /* "VarRef" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 716 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 386: /* "ParenthesizedExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 721 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 387: /* "ContextItemExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 726 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 388: /* "OrderedExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 731 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 389: /* "UnorderedExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 736 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 390: /* "FunctionCall" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 741 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 391: /* "ArgList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 746 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 392: /* "Constructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 751 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 393: /* "DirectConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 756 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 394: /* "DirElemConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 761 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 395: /* "DirElemContentList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 766 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 396: /* "DirAttributeList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 771 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 397: /* "DirAttr" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 776 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 398: /* "DirAttributeValue" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 781 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 399: /* "Opt_QuoteAttrContentList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 786 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 400: /* "QuoteAttrContentList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 791 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 401: /* "Opt_AposAttrContentList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 796 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 402: /* "AposAttrContentList" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 801 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 403: /* "QuoteAttrValueContent" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 806 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 404: /* "AposAttrValueContent" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 811 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 405: /* "DirElemContent" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 816 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 406: /* "CommonContent" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 821 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 407: /* "DirCommentConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 826 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 408: /* "DirPIConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 831 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 409: /* "CDataSection" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 836 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 410: /* "ComputedConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 841 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 411: /* "CompDocConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 846 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 412: /* "CompElemConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 851 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 413: /* "CompAttrConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 856 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 414: /* "CompTextConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 861 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 415: /* "CompCommentConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 866 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 416: /* "CompPIConstructor" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 871 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 417: /* "SingleType" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 876 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 418: /* "TypeDeclaration" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 881 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 419: /* "SequenceType" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 886 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 420: /* "OccurrenceIndicator" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 891 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 421: /* "ItemType" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 896 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 422: /* "AtomicType" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 901 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 423: /* "KindTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 906 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 424: /* "AnyKindTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 911 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 425: /* "DocumentTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 916 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 426: /* "TextTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 921 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 427: /* "CommentTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 926 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 428: /* "PITest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 931 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 429: /* "AttributeTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 936 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 430: /* "SchemaAttributeTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 941 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 431: /* "ElementTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 946 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 432: /* "SchemaElementTest" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 951 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 433: /* "TypeName" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 956 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 434: /* "TypeName_WITH_HOOK" */
+#line 627 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->node); };
+#line 961 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 435: /* "StringLiteral" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 966 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 444: /* "TryExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 971 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 445: /* "CatchListExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 976 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+      case 446: /* "CatchExpr" */
+#line 628 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+	{ delete (yyvaluep->expr); };
+#line 981 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+	break;
+
 	default:
 	  break;
       }
@@ -278,12 +1053,12 @@ namespace zorba
 
 
     /* User initialization code.  */
-    #line 67 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+    #line 70 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
 {
   yylloc.begin.filename = yylloc.end.filename = driver.theFilename.getStore();
 }
   /* Line 547 of yacc.c.  */
-#line 287 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 1062 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
@@ -399,7 +1174,7 @@ namespace zorba
     switch (yyn)
       {
 	  case 2:
-#line 732 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 744 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [main]" << endl;
@@ -410,7 +1185,7 @@ namespace zorba
     break;
 
   case 3:
-#line 740 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 752 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(2) - (2)].node);
 			driver.set_expr((yyval.node));
@@ -421,139 +1196,144 @@ namespace zorba
     break;
 
   case 4:
-#line 748 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 760 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [library]" << endl;
 #endif
+       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 5:
-#line 754 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 767 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Module [version.library]" << endl;
 #endif
+       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
 		;}
     break;
 
   case 6:
-#line 766 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 780 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version]" << endl;
 #endif
+       string encoding;
+       (yyval.node) = new VersionDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(3) - (2)].sval)), encoding);
 		;}
     break;
 
   case 7:
-#line 772 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 788 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version.encoding]" << endl;
 #endif
-		;}
+       (yyval.node) = new VersionDecl (LOC ((yyloc)), SYMTAB ((yysemantic_stack_[(5) - (2)].sval)), SYMTAB ((yysemantic_stack_[(5) - (4)].sval)));
+    ;}
     break;
 
   case 8:
-#line 784 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 801 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [prolog.querybody]" << endl;
 #endif
-			(yyval.node) = new MainModule(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new MainModule(LOC ((yyloc)),
 								static_cast<Prolog*>((yysemantic_stack_[(2) - (1)].node)),
 								static_cast<QueryBody*>((yysemantic_stack_[(2) - (2)].expr)));
 		;}
     break;
 
   case 9:
-#line 794 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 811 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MainModule [querybody]" << endl;
 #endif
-			(yyval.node) = new MainModule(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new MainModule(LOC ((yyloc)),
 								NULL,
 								static_cast<QueryBody*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 10:
-#line 809 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 826 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LibraryModule [ ]" << endl;
 #endif
-			(yyval.node) = new LibraryModule(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new LibraryModule(LOC ((yyloc)),
 								static_cast<ModuleDecl*>((yysemantic_stack_[(2) - (1)].node)),
 								static_cast<Prolog*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 11:
-#line 824 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 841 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleDecl [ ]" << endl;
 #endif
-			(yyval.node) = new ModuleDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ModuleDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval)), 
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (4)].sval)));
 		;}
     break;
 
   case 12:
-#line 839 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 856 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind]" << endl;
 #endif
-			(yyval.node) = new Prolog(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new Prolog(LOC ((yyloc)),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(2) - (1)].node)),
 								NULL);
 		;}
     break;
 
   case 13:
-#line 848 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 865 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [vfo]" << endl;
 #endif
-			(yyval.node) = new Prolog(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new Prolog(LOC ((yyloc)),
 								NULL,
 								static_cast<VFO_DeclList*>((yysemantic_stack_[(2) - (1)].node)));
 		;}
     break;
 
   case 14:
-#line 857 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 874 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Prolog [sind.vfo]" << endl;
 #endif
-			(yyval.node) = new Prolog(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new Prolog(LOC ((yyloc)),
 								static_cast<SIND_DeclList*>((yysemantic_stack_[(4) - (1)].node)),
 								static_cast<VFO_DeclList*>((yysemantic_stack_[(4) - (3)].node)));
 		;}
     break;
 
   case 15:
-#line 872 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 889 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [single]" << endl;
 #endif
-			SIND_DeclList* sindList_p = new SIND_DeclList(driver.createQueryLoc((yyloc)));
+			SIND_DeclList* sindList_p = new SIND_DeclList(LOC ((yyloc)));
 			sindList_p->push_back((yysemantic_stack_[(1) - (1)].node));
 			(yyval.node) = sindList_p;
 		;}
     break;
 
   case 16:
-#line 881 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 898 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_DeclList [list]" << endl;
@@ -567,19 +1347,19 @@ namespace zorba
     break;
 
   case 17:
-#line 898 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 915 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [single]" << endl;
 #endif
-			VFO_DeclList* vfoList_p = new VFO_DeclList(driver.createQueryLoc((yyloc)));
+			VFO_DeclList* vfoList_p = new VFO_DeclList(LOC ((yyloc)));
 			vfoList_p->push_back((yysemantic_stack_[(1) - (1)].node));
 			(yyval.node) = vfoList_p;
 		;}
     break;
 
   case 18:
-#line 907 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 924 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_DeclList [list]" << endl;
@@ -593,7 +1373,7 @@ namespace zorba
     break;
 
   case 19:
-#line 924 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 941 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [setter]" << endl;
@@ -603,7 +1383,7 @@ namespace zorba
     break;
 
   case 20:
-#line 931 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 948 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [import]" << endl;
@@ -613,7 +1393,7 @@ namespace zorba
     break;
 
   case 21:
-#line 938 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 955 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [namespace]" << endl;
@@ -623,7 +1403,7 @@ namespace zorba
     break;
 
   case 22:
-#line 945 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 962 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SIND_Decl [default namespace]" << endl;
@@ -633,7 +1413,7 @@ namespace zorba
     break;
 
   case 23:
-#line 957 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 974 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [var]" << endl;
@@ -643,7 +1423,7 @@ namespace zorba
     break;
 
   case 24:
-#line 964 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 981 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [function]" << endl;
@@ -653,7 +1433,7 @@ namespace zorba
     break;
 
   case 25:
-#line 971 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 988 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [option]" << endl;
@@ -663,7 +1443,7 @@ namespace zorba
     break;
 
   case 26:
-#line 980 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 997 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VFO_Decl [ftoption]" << endl;
@@ -673,7 +1453,7 @@ namespace zorba
     break;
 
   case 27:
-#line 993 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1010 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [boundary space]" << endl;
@@ -683,7 +1463,7 @@ namespace zorba
     break;
 
   case 28:
-#line 1000 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1017 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [default collation]" << endl;
@@ -693,7 +1473,7 @@ namespace zorba
     break;
 
   case 29:
-#line 1007 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1024 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [base uri]" << endl;
@@ -703,7 +1483,7 @@ namespace zorba
     break;
 
   case 30:
-#line 1014 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1031 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [construction]" << endl;
@@ -713,7 +1493,7 @@ namespace zorba
     break;
 
   case 31:
-#line 1021 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1038 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [ordering mode]" << endl;
@@ -723,7 +1503,7 @@ namespace zorba
     break;
 
   case 32:
-#line 1028 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1045 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [empty order]" << endl;
@@ -733,7 +1513,7 @@ namespace zorba
     break;
 
   case 33:
-#line 1035 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1052 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [copy namespaces]" << endl;
@@ -743,7 +1523,7 @@ namespace zorba
     break;
 
   case 34:
-#line 1044 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1061 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Setter [revalidation]" << endl;
@@ -753,7 +1533,7 @@ namespace zorba
     break;
 
   case 35:
-#line 1057 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1074 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [schema]" << endl;
@@ -763,7 +1543,7 @@ namespace zorba
     break;
 
   case 36:
-#line 1064 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1081 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Import [module]" << endl;
@@ -773,207 +1553,207 @@ namespace zorba
     break;
 
   case 37:
-#line 1082 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1099 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NamespaceDecl [ ]" << endl;
 #endif
-			(yyval.node) = new NamespaceDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new NamespaceDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (4)].sval)));
 		;}
     break;
 
   case 38:
-#line 1097 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1114 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [preserve]" << endl;
 #endif
-			(yyval.node) = new BoundarySpaceDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new BoundarySpaceDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_space);
 		;}
     break;
 
   case 39:
-#line 1105 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1122 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BoundarySpaceDecl [strip]" << endl;
 #endif
-			(yyval.node) = new BoundarySpaceDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new BoundarySpaceDecl(LOC ((yyloc)),
 								StaticContextConsts::strip_space);
 		;}
     break;
 
   case 40:
-#line 1119 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1136 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [element]" << endl;
 #endif
-			(yyval.node) = new DefaultNamespaceDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new DefaultNamespaceDecl(LOC ((yyloc)),
 								ParseConstants::ns_element_default,
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 41:
-#line 1128 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1145 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultNamespaceDecl [function]" << endl;
 #endif
-			(yyval.node) = new DefaultNamespaceDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new DefaultNamespaceDecl(LOC ((yyloc)),
 								ParseConstants::ns_function_default,
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 42:
-#line 1143 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1160 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OptionDecl [ ]" << endl;
 #endif
-			(yyval.node) = new OptionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
+			(yyval.node) = new OptionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 43:
-#line 1159 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1176 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOptionDecl [ ]" << endl;
 #endif
-			(yyval.node) = new FTOptionDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new FTOptionDecl(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (2)].node));
 		;}
     break;
 
   case 44:
-#line 1173 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1190 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [ordered]" << endl;
 #endif
-			(yyval.node) = new OrderingModeDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderingModeDecl(LOC ((yyloc)),
 								StaticContextConsts::ordered);
 		;}
     break;
 
   case 45:
-#line 1181 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1198 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderingDecl [unordered]" << endl;
 #endif
-			(yyval.node) = new OrderingModeDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderingModeDecl(LOC ((yyloc)),
 								StaticContextConsts::unordered);
 		;}
     break;
 
   case 46:
-#line 1196 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1213 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty greatest]" << endl;
 #endif
-			(yyval.node) = new EmptyOrderDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new EmptyOrderDecl(LOC ((yyloc)),
 								StaticContextConsts::empty_greatest);
 		;}
     break;
 
   case 47:
-#line 1204 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1221 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EmptyOrderDecl [empty least]" << endl;
 #endif
-			(yyval.node) = new EmptyOrderDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new EmptyOrderDecl(LOC ((yyloc)),
 								StaticContextConsts::empty_least);
 		;}
     break;
 
   case 48:
-#line 1218 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1235 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
 #endif
-			(yyval.node) = new CopyNamespacesDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_ns,
 								StaticContextConsts::inherit_ns);
 		;}
     break;
 
   case 49:
-#line 1227 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1244 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
 #endif
-			(yyval.node) = new CopyNamespacesDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::preserve_ns,
 								StaticContextConsts::no_inherit_ns);
 		;}
     break;
 
   case 50:
-#line 1236 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1253 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
 #endif
-			(yyval.node) = new CopyNamespacesDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::no_preserve_ns,
 								StaticContextConsts::inherit_ns);
 		;}
     break;
 
   case 51:
-#line 1245 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1262 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CopyNamespacesDecl [ ]" << endl;
 #endif
-			(yyval.node) = new CopyNamespacesDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new CopyNamespacesDecl(LOC ((yyloc)),
 								StaticContextConsts::no_preserve_ns,
 								StaticContextConsts::no_inherit_ns);
 		;}
     break;
 
   case 52:
-#line 1267 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1284 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DefaultCollationMode [ ]" << endl;
 #endif
-			(yyval.node) = new DefaultCollationDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new DefaultCollationDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 53:
-#line 1281 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1298 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "BaseURIDecl [ ]" << endl;
 #endif
-			(yyval.node) = new BaseURIDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new BaseURIDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 54:
-#line 1295 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1312 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri]" << endl;
 #endif
-			(yyval.node) = new SchemaImport(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								NULL,
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
 								NULL);
@@ -981,12 +1761,12 @@ namespace zorba
     break;
 
   case 55:
-#line 1305 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1322 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri]" << endl;
 #endif
-			(yyval.node) = new SchemaImport(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(3) - (2)].node)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)),
 								NULL);
@@ -994,12 +1774,12 @@ namespace zorba
     break;
 
   case 56:
-#line 1315 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1332 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [uri.urilist]" << endl;
 #endif
-			(yyval.node) = new SchemaImport(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								NULL,
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								dynamic_cast<URILiteralList*>((yysemantic_stack_[(4) - (4)].node)));
@@ -1007,12 +1787,12 @@ namespace zorba
     break;
 
   case 57:
-#line 1325 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1342 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaImport [prefix.uri.aturi]" << endl;
 #endif
-			(yyval.node) = new SchemaImport(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new SchemaImport(LOC ((yyloc)),
 								dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(5) - (2)].node)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (3)].sval)),
 								dynamic_cast<URILiteralList*>((yysemantic_stack_[(5) - (5)].node)));
@@ -1020,19 +1800,19 @@ namespace zorba
     break;
 
   case 58:
-#line 1341 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1358 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [single]" << endl;
 #endif
-			URILiteralList* uri_list_p = new URILiteralList(driver.createQueryLoc((yyloc)));
+			URILiteralList* uri_list_p = new URILiteralList(LOC ((yyloc)));
 			uri_list_p->push_back(driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 			(yyval.node) = uri_list_p;
 		;}
     break;
 
   case 59:
-#line 1350 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1367 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "URILiteralList [list]" << endl;
@@ -1046,44 +1826,44 @@ namespace zorba
     break;
 
   case 60:
-#line 1368 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1385 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [namespace]" << endl;
 #endif
-			(yyval.node) = new SchemaPrefix(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
+			(yyval.node) = new SchemaPrefix(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 61:
-#line 1375 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1392 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaPrefix [default element]" << endl;
 #endif
-			(yyval.node) = new SchemaPrefix(driver.createQueryLoc((yyloc)), true);
+			(yyval.node) = new SchemaPrefix(LOC ((yyloc)), true);
 		;}
     break;
 
   case 62:
-#line 1388 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1405 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri]" << endl;
 #endif
-			(yyval.node) = new ModuleImport(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
 								NULL);
 		;}
     break;
 
   case 63:
-#line 1397 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1414 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri]" << endl;
 #endif
-			(yyval.node) = new ModuleImport(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (3)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (5)].sval)),
 								NULL);
@@ -1091,24 +1871,24 @@ namespace zorba
     break;
 
   case 64:
-#line 1407 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1424 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [uri.at_uri.list]" << endl;
 #endif
-			(yyval.node) = new ModuleImport(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								dynamic_cast<URILiteralList*>((yysemantic_stack_[(4) - (4)].node)));
 		;}
     break;
 
   case 65:
-#line 1416 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1433 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ModuleImport [namespace.uri.at_uri.list]" << endl;
 #endif
-			(yyval.node) = new ModuleImport(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ModuleImport(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (3)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (5)].sval)),
 								dynamic_cast<URILiteralList*>((yysemantic_stack_[(7) - (7)].node)));
@@ -1116,12 +1896,12 @@ namespace zorba
     break;
 
   case 66:
-#line 1433 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1450 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [expr]" << endl;
 #endif
-			(yyval.node) = new VarDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								NULL,
 								(yysemantic_stack_[(4) - (4)].expr));
@@ -1129,12 +1909,12 @@ namespace zorba
     break;
 
   case 67:
-#line 1443 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1460 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [external]" << endl;
 #endif
-			(yyval.node) = new VarDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)),
 								NULL,
 								NULL);
@@ -1142,12 +1922,12 @@ namespace zorba
     break;
 
   case 68:
-#line 1453 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1470 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.expr]" << endl;
 #endif
-			(yyval.node) = new VarDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (3)].node)),
 								(yysemantic_stack_[(5) - (5)].expr));
@@ -1155,12 +1935,12 @@ namespace zorba
     break;
 
   case 69:
-#line 1463 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1480 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarDecl [type.external]" << endl;
 #endif
-			(yyval.node) = new VarDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (3)].node)),
 								NULL);
@@ -1168,48 +1948,48 @@ namespace zorba
     break;
 
   case 70:
-#line 1479 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1496 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [preserve]" << endl;
 #endif
-			(yyval.node) = new ConstructionDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ConstructionDecl(LOC ((yyloc)),
 								StaticContextConsts::cons_preserve);
 		;}
     break;
 
   case 71:
-#line 1487 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1504 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ConstructionDecl [strip]" << endl;
 #endif
-			(yyval.node) = new ConstructionDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ConstructionDecl(LOC ((yyloc)),
 								StaticContextConsts::cons_strip);
 		;}
     break;
 
   case 72:
-#line 1501 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1518 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [external]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,NULL,NULL,
 								ParseConstants::fn_extern);
 		;}
     break;
 
   case 73:
-#line 1511 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1528 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [expr]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(5) - (5)].expr)),
 								ParseConstants::fn_read);
@@ -1217,13 +1997,13 @@ namespace zorba
     break;
 
   case 74:
-#line 1522 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1539 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.external]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (4)].node)),
 								NULL,NULL,
 								ParseConstants::fn_extern);
@@ -1231,13 +2011,13 @@ namespace zorba
     break;
 
   case 75:
-#line 1533 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1550 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.expr]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (4)].node)),
 								NULL,
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(6) - (6)].expr)),
@@ -1246,13 +2026,13 @@ namespace zorba
     break;
 
   case 76:
-#line 1545 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1562 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.external]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								NULL,
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(6) - (5)].node)),
 								NULL,
@@ -1261,13 +2041,13 @@ namespace zorba
     break;
 
   case 77:
-#line 1557 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1574 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.expr]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								NULL,
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(6) - (5)].node)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(6) - (6)].expr)),
@@ -1276,13 +2056,13 @@ namespace zorba
     break;
 
   case 78:
-#line 1569 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1586 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.external]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(7) - (4)].node)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (6)].node)),
 								NULL,
@@ -1291,13 +2071,13 @@ namespace zorba
     break;
 
   case 79:
-#line 1581 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1598 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.expr]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(7) - (4)].node)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (6)].node)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(7) - (7)].expr)),
@@ -1306,26 +2086,26 @@ namespace zorba
     break;
 
   case 80:
-#line 1593 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1610 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) external]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,NULL,NULL,
 								ParseConstants::fn_extern_update);
 		;}
     break;
 
   case 81:
-#line 1603 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1620 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) expr]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(5) - (5)].expr)),
 								ParseConstants::fn_update);
@@ -1333,13 +2113,13 @@ namespace zorba
     break;
 
   case 82:
-#line 1614 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1631 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.external]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (4)].node)),
 								NULL,NULL,
 								ParseConstants::fn_extern_update);
@@ -1347,13 +2127,13 @@ namespace zorba
     break;
 
   case 83:
-#line 1625 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1642 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.expr]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(6) - (4)].node)),
 								NULL,
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(6) - (6)].expr)),
@@ -1362,13 +2142,13 @@ namespace zorba
     break;
 
   case 84:
-#line 1637 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1654 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.external]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								NULL,
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(6) - (5)].node)),
 								NULL,
@@ -1377,13 +2157,13 @@ namespace zorba
     break;
 
   case 85:
-#line 1649 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1666 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.expr]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
 								NULL,
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(6) - (5)].node)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(6) - (6)].expr)),
@@ -1392,13 +2172,13 @@ namespace zorba
     break;
 
   case 86:
-#line 1661 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1678 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.external]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(7) - (4)].node)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (6)].node)),
 								NULL,
@@ -1407,13 +2187,13 @@ namespace zorba
     break;
 
   case 87:
-#line 1673 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1690 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.expr]" << endl;
 #endif
-			(yyval.node) = new FunctionDecl(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+			(yyval.node) = new FunctionDecl(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
 								dynamic_cast<ParamList*>((yysemantic_stack_[(7) - (4)].node)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (6)].node)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(7) - (7)].expr)),
@@ -1422,12 +2202,12 @@ namespace zorba
     break;
 
   case 88:
-#line 1691 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1708 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [single]" << endl;
 #endif
-			ParamList* plist_p = new ParamList(driver.createQueryLoc((yyloc)));
+			ParamList* plist_p = new ParamList(LOC ((yyloc)));
 			if (plist_p) {
 				plist_p->push_back(dynamic_cast<Param*>((yysemantic_stack_[(1) - (1)].node)));
 			}
@@ -1436,7 +2216,7 @@ namespace zorba
     break;
 
   case 89:
-#line 1702 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1719 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParamList [list]" << endl;
@@ -1450,65 +2230,65 @@ namespace zorba
     break;
 
   case 90:
-#line 1719 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1736 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname]" << endl;
 #endif
-			(yyval.node) = new Param(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new Param(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)),
 								NULL);
 		;}
     break;
 
   case 91:
-#line 1728 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1745 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Param [varname.type]" << endl;
 #endif
-			(yyval.node) = new Param(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new Param(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 92:
-#line 1743 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1760 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "EnclosedExpr [ ]" << endl;
 #endif
-			(yyval.expr) = new EnclosedExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new EnclosedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 93:
-#line 1757 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1774 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QueryBody [expr]" << endl;
 #endif
-			(yyval.expr) = new QueryBody(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new QueryBody(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 94:
-#line 1771 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1788 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [single]" << endl;
 #endif
-			Expr* expr_p = new Expr(driver.createQueryLoc((yyloc)));
+			Expr* expr_p = new Expr(LOC ((yyloc)));
 			expr_p->push_back((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.expr) = expr_p;
 		;}
     break;
 
   case 95:
-#line 1780 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1797 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Expr [expr.single]" << endl;
@@ -1520,7 +2300,7 @@ namespace zorba
     break;
 
   case 96:
-#line 1795 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1812 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [FLWORExpr]" << endl;
@@ -1530,7 +2310,7 @@ namespace zorba
     break;
 
   case 97:
-#line 1802 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1819 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [QuantifiedExpr]" << endl;
@@ -1540,7 +2320,7 @@ namespace zorba
     break;
 
   case 98:
-#line 1809 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1826 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TypeswitchExpr]" << endl;
@@ -1550,7 +2330,7 @@ namespace zorba
     break;
 
   case 99:
-#line 1816 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1833 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [IfExpr]" << endl;
@@ -1560,7 +2340,7 @@ namespace zorba
     break;
 
   case 100:
-#line 1823 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1840 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [OrExpr]" << endl;
@@ -1570,7 +2350,7 @@ namespace zorba
     break;
 
   case 101:
-#line 1832 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1849 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [InsertExpr]" << endl;
@@ -1580,7 +2360,7 @@ namespace zorba
     break;
 
   case 102:
-#line 1839 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1856 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [DeleteExpr]" << endl;
@@ -1590,7 +2370,7 @@ namespace zorba
     break;
 
   case 103:
-#line 1846 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1863 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [RenameExpr]" << endl;
@@ -1600,7 +2380,7 @@ namespace zorba
     break;
 
   case 104:
-#line 1853 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1870 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [ReplaceExpr]" << endl;
@@ -1610,7 +2390,7 @@ namespace zorba
     break;
 
   case 105:
-#line 1860 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1877 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExprSingle [TransformExpr]" << endl;
@@ -1620,21 +2400,22 @@ namespace zorba
     break;
 
   case 106:
-#line 1867 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1884 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
       cout << "ExprSingle [TryExpr]" << endl;
 #endif
+      (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     ;}
     break;
 
   case 107:
-#line 1879 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1897 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [return]" << endl;
 #endif
-			(yyval.expr) = new FLWORExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new FLWORExpr(LOC ((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(3) - (1)].node)),
 								NULL,NULL,
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -1642,12 +2423,12 @@ namespace zorba
     break;
 
   case 108:
-#line 1889 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1907 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.return]" << endl;
 #endif
-			(yyval.expr) = new FLWORExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new FLWORExpr(LOC ((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(4) - (1)].node)),
 								dynamic_cast<WhereClause*>((yysemantic_stack_[(4) - (2)].node)),
 								NULL,
@@ -1656,12 +2437,12 @@ namespace zorba
     break;
 
   case 109:
-#line 1900 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1918 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [orderby.return]" << endl;
 #endif
-			(yyval.expr) = new FLWORExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new FLWORExpr(LOC ((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(4) - (1)].node)),
 								NULL,
 								dynamic_cast<OrderByClause*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1670,12 +2451,12 @@ namespace zorba
     break;
 
   case 110:
-#line 1911 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1929 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FLWORExpr [where.orderby.return]" << endl;
 #endif
-			(yyval.expr) = new FLWORExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new FLWORExpr(LOC ((yyloc)),
 								dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(5) - (1)].node)),
 								dynamic_cast<WhereClause*>((yysemantic_stack_[(5) - (2)].node)),
 								dynamic_cast<OrderByClause*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1684,19 +2465,19 @@ namespace zorba
     break;
 
   case 111:
-#line 1928 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1946 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [single]" << endl;
 #endif
-			ForLetClauseList* flc_list_p = new ForLetClauseList(driver.createQueryLoc((yyloc)));
+			ForLetClauseList* flc_list_p = new ForLetClauseList(LOC ((yyloc)));
 			flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = flc_list_p;
 		;}
     break;
 
   case 112:
-#line 1937 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1955 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClauseList [list]" << endl;
@@ -1708,7 +2489,7 @@ namespace zorba
     break;
 
   case 113:
-#line 1952 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1970 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [for]" << endl;
@@ -1718,7 +2499,7 @@ namespace zorba
     break;
 
   case 114:
-#line 1959 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1977 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForLetClause [let]" << endl;
@@ -1728,30 +2509,30 @@ namespace zorba
     break;
 
   case 115:
-#line 1972 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 1990 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForClause [ ]" << endl;
 #endif
-			(yyval.node) = new ForClause(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ForClause(LOC ((yyloc)),
 								dynamic_cast<VarInDeclList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 116:
-#line 1986 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2004 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [single]" << endl;
 #endif
-			VarInDeclList* vardecl_list_p = new VarInDeclList(driver.createQueryLoc((yyloc)));
+			VarInDeclList* vardecl_list_p = new VarInDeclList(LOC ((yyloc)));
 			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = vardecl_list_p;
 		;}
     break;
 
   case 117:
-#line 1995 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2013 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDeclList [list]" << endl;
@@ -1765,12 +2546,12 @@ namespace zorba
     break;
 
   case 118:
-#line 2012 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2030 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [in]" << endl;
 #endif
-			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
 								NULL,NULL,NULL,
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -1778,12 +2559,12 @@ namespace zorba
     break;
 
   case 119:
-#line 2022 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2040 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.in]" << endl;
 #endif
-			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (2)].node)),
 								NULL,NULL,
@@ -1792,12 +2573,12 @@ namespace zorba
     break;
 
   case 120:
-#line 2033 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2051 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.in]" << endl;
 #endif
-			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								NULL,
 								dynamic_cast<PositionalVar*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1807,12 +2588,12 @@ namespace zorba
     break;
 
   case 121:
-#line 2045 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2063 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.in]" << endl;
 #endif
-			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (2)].node)),
 								dynamic_cast<PositionalVar*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1822,12 +2603,12 @@ namespace zorba
     break;
 
   case 122:
-#line 2058 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2076 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [scorevar.in]" << endl;
 #endif
-			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								NULL,NULL,
 								dynamic_cast<FTScoreVar*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1836,12 +2617,12 @@ namespace zorba
     break;
 
   case 123:
-#line 2069 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2087 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.scorevar.in]" << endl;
 #endif
-			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (2)].node)),
 								NULL,
@@ -1851,12 +2632,12 @@ namespace zorba
     break;
 
   case 124:
-#line 2081 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2099 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [posvar.scorevar.in]" << endl;
 #endif
-			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								NULL,
 								dynamic_cast<PositionalVar*>((yysemantic_stack_[(5) - (2)].node)),
@@ -1866,12 +2647,12 @@ namespace zorba
     break;
 
   case 125:
-#line 2093 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2111 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarInDecl [type.posvar.scorevar.in]" << endl;
 #endif
-			(yyval.node) = new VarInDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(6) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(6) - (2)].node)),
 								dynamic_cast<PositionalVar*>((yysemantic_stack_[(6) - (3)].node)),
@@ -1881,53 +2662,53 @@ namespace zorba
     break;
 
   case 126:
-#line 2111 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2129 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PositionalVar [ ]" << endl;
 #endif
-			(yyval.node) = new PositionalVar(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new PositionalVar(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 127:
-#line 2126 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2144 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTScoreVar [ ]" << endl;
 #endif
-			(yyval.node) = new FTScoreVar(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new FTScoreVar(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 128:
-#line 2140 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2158 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "LetClause [ ]" << endl;
 #endif
-			(yyval.node) = new LetClause(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new LetClause(LOC ((yyloc)),
 								dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(2) - (2)].node)));
 			
 		;}
     break;
 
   case 129:
-#line 2155 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2173 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [single]" << endl;
 #endif
-			VarGetsDeclList* vgdl_p = new VarGetsDeclList(driver.createQueryLoc((yyloc)));
+			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC ((yyloc)));
 			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = vgdl_p;
 		;}
     break;
 
   case 130:
-#line 2164 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2182 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDeclList [list.single]" << endl;
@@ -1941,12 +2722,12 @@ namespace zorba
     break;
 
   case 131:
-#line 2181 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2199 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [gets]" << endl;
 #endif
-			(yyval.node) = new VarGetsDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
 								NULL,
 								NULL,
@@ -1955,12 +2736,12 @@ namespace zorba
     break;
 
   case 132:
-#line 2192 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2210 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.gets]" << endl;
 #endif
-			(yyval.node) = new VarGetsDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (2)].node)),
 								NULL,
@@ -1969,12 +2750,12 @@ namespace zorba
     break;
 
   case 133:
-#line 2204 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2222 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [scorevar.gets]" << endl;
 #endif
-			(yyval.node) = new VarGetsDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								NULL,
 								dynamic_cast<FTScoreVar*>((yysemantic_stack_[(4) - (2)].node)),
@@ -1983,12 +2764,12 @@ namespace zorba
     break;
 
   case 134:
-#line 2215 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2233 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarGetsDecl [type.scorevar.gets]" << endl;
 #endif
-			(yyval.node) = new VarGetsDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new VarGetsDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(5) - (2)].node)),
 								dynamic_cast<FTScoreVar*>((yysemantic_stack_[(5) - (3)].node)),
@@ -1997,53 +2778,53 @@ namespace zorba
     break;
 
   case 135:
-#line 2233 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2251 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "WhereClause [ ]" << endl;
 #endif
-			(yyval.node) = new WhereClause(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new WhereClause(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 136:
-#line 2247 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2265 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [ ]" << endl;
 #endif
-			(yyval.node) = new OrderByClause(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderByClause(LOC ((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 137:
-#line 2255 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2273 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderByClause [stable]" << endl;
 #endif
-			(yyval.node) = new OrderByClause(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderByClause(LOC ((yyloc)),
 								dynamic_cast<OrderSpecList*>((yysemantic_stack_[(2) - (2)].node)),
 								true);
 		;}
     break;
 
   case 138:
-#line 2270 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2288 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [single]" << endl;
 #endif
-			OrderSpecList* osl_p = new OrderSpecList(driver.createQueryLoc((yyloc)));
+			OrderSpecList* osl_p = new OrderSpecList(LOC ((yyloc)));
 			osl_p->push_back(dynamic_cast<OrderSpec*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = osl_p;
 		;}
     break;
 
   case 139:
-#line 2279 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2297 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpecList [list]" << endl;
@@ -2057,36 +2838,36 @@ namespace zorba
     break;
 
   case 140:
-#line 2296 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2314 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single]" << endl;
 #endif
-			(yyval.node) = new OrderSpec(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderSpec(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr),
 								NULL);
 		;}
     break;
 
   case 141:
-#line 2305 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2323 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderSpec [single.modifier]" << endl;
 #endif
-			(yyval.node) = new OrderSpec(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderSpec(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].expr),
 								dynamic_cast<OrderModifier*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 142:
-#line 2320 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2338 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir]" << endl;
 #endif
-			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL,
 								NULL);
@@ -2094,12 +2875,12 @@ namespace zorba
     break;
 
   case 143:
-#line 2330 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2348 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty]" << endl;
 #endif
-			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL);
@@ -2107,12 +2888,12 @@ namespace zorba
     break;
 
   case 144:
-#line 2340 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2358 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [collation]" << endl;
 #endif
-			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
 								NULL,
 								dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -2120,12 +2901,12 @@ namespace zorba
     break;
 
   case 145:
-#line 2350 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2368 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty]" << endl;
 #endif
-			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(2) - (2)].node)),
 								NULL);
@@ -2133,12 +2914,12 @@ namespace zorba
     break;
 
   case 146:
-#line 2360 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2378 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.collation]" << endl;
 #endif
-			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(2) - (1)].node)),
 								NULL,
 								dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(2) - (2)].node)));
@@ -2146,12 +2927,12 @@ namespace zorba
     break;
 
   case 147:
-#line 2370 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2388 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [empty.collation]" << endl;
 #endif
-			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								NULL,
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(2) - (2)].node)));
@@ -2159,12 +2940,12 @@ namespace zorba
     break;
 
   case 148:
-#line 2380 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2398 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderModifier [dir.empty.collation]" << endl;
 #endif
-			(yyval.node) = new OrderModifier(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderModifier(LOC ((yyloc)),
 								dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(3) - (1)].node)),
 								dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(3) - (2)].node)),
 								dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(3) - (3)].node)));
@@ -2172,65 +2953,65 @@ namespace zorba
     break;
 
   case 149:
-#line 2396 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2414 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [ascending]" << endl;
 #endif
-			(yyval.node) = new OrderDirSpec(driver.createQueryLoc((yyloc)), ParseConstants::dir_ascending);
+			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_ascending);
 		;}
     break;
 
   case 150:
-#line 2403 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2421 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderDirSpec [descending]" << endl;
 #endif
-			(yyval.node) = new OrderDirSpec(driver.createQueryLoc((yyloc)), ParseConstants::dir_descending);
+			(yyval.node) = new OrderDirSpec(LOC ((yyloc)), ParseConstants::dir_descending);
 		;}
     break;
 
   case 151:
-#line 2416 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2434 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [greatest]" << endl;
 #endif
-			(yyval.node) = new OrderEmptySpec(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
 								StaticContextConsts::empty_greatest);
 		;}
     break;
 
   case 152:
-#line 2424 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2442 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderEmptySpec [least]" << endl;
 #endif
-			(yyval.node) = new OrderEmptySpec(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderEmptySpec(LOC ((yyloc)),
 								StaticContextConsts::empty_least);
 		;}
     break;
 
   case 153:
-#line 2438 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2456 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderCollationSpec [ ]" << endl;
 #endif
-			(yyval.node) = new OrderCollationSpec(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OrderCollationSpec(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 154:
-#line 2452 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2470 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [some]" << endl;
 #endif
-			(yyval.expr) = new QuantifiedExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new QuantifiedExpr(LOC ((yyloc)),
 								ParseConstants::quant_some,
 								dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (2)].node)),
 								(yysemantic_stack_[(4) - (4)].expr));
@@ -2238,12 +3019,12 @@ namespace zorba
     break;
 
   case 155:
-#line 2462 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2480 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuantifiedExpr [every]" << endl;
 #endif
-			(yyval.expr) = new QuantifiedExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new QuantifiedExpr(LOC ((yyloc)),
 								ParseConstants::quant_every,
 								dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (2)].node)),
 								(yysemantic_stack_[(4) - (4)].expr));
@@ -2251,12 +3032,12 @@ namespace zorba
     break;
 
   case 156:
-#line 2478 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2496 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [single]" << endl;
 #endif
-			QVarInDeclList* qvid_list_p = new QVarInDeclList(driver.createQueryLoc((yyloc)));
+			QVarInDeclList* qvid_list_p = new QVarInDeclList(LOC ((yyloc)));
 			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = qvid_list_p;
 				
@@ -2264,7 +3045,7 @@ namespace zorba
     break;
 
   case 157:
-#line 2488 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2506 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDeclList [list]" << endl;
@@ -2276,24 +3057,24 @@ namespace zorba
     break;
 
   case 158:
-#line 2503 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2521 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [in]" << endl;
 #endif
-			(yyval.node) = new QVarInDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new QVarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)),
 								(yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 159:
-#line 2512 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2530 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QVarInDecl [type.in]" << endl;
 #endif
-			(yyval.node) = new QVarInDecl(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new QVarInDecl(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								dynamic_cast<TypeDeclaration*>((yysemantic_stack_[(4) - (2)].node)),
 								(yysemantic_stack_[(4) - (4)].expr));
@@ -2301,12 +3082,12 @@ namespace zorba
     break;
 
   case 160:
-#line 2528 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2546 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.return]" << endl;
 #endif
-			(yyval.expr) = new TypeswitchExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (2)].expr),
 								dynamic_cast<CaseClauseList*>((yysemantic_stack_[(7) - (4)].node)),
 								(yysemantic_stack_[(7) - (7)].expr));
@@ -2314,12 +3095,12 @@ namespace zorba
     break;
 
   case 161:
-#line 2538 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2556 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeswitchExpr [cases.default.varname.return]" << endl;
 #endif
-			(yyval.expr) = new TypeswitchExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(9) - (2)].expr),
 								dynamic_cast<CaseClauseList*>((yysemantic_stack_[(9) - (4)].node)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(9) - (7)].sval)),
@@ -2328,19 +3109,19 @@ namespace zorba
     break;
 
   case 162:
-#line 2555 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2573 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [single]" << endl;
 #endif
-			CaseClauseList* cc_list_p = new CaseClauseList(driver.createQueryLoc((yyloc)));
+			CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
 			cc_list_p->push_back(dynamic_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = cc_list_p;
 		;}
     break;
 
   case 163:
-#line 2564 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2582 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClauseList [list]" << endl;
@@ -2352,24 +3133,24 @@ namespace zorba
     break;
 
   case 164:
-#line 2579 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2597 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.return]" << endl;
 #endif
-			(yyval.node) = new CaseClause(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new CaseClause(LOC ((yyloc)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (2)].node)),
 								(yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 165:
-#line 2588 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2606 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CaseClause [case.as.return]" << endl;
 #endif
-			(yyval.node) = new CaseClause(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new CaseClause(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(7) - (3)].sval)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(7) - (5)].node)),
 								(yysemantic_stack_[(7) - (7)].expr));
@@ -2377,18 +3158,18 @@ namespace zorba
     break;
 
   case 166:
-#line 2604 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2622 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IfExpr [ ]" << endl;
 #endif
-			(yyval.expr) = new IfExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new IfExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (2)].expr), (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr));
 		;}
     break;
 
   case 167:
-#line 2618 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2636 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [and]" << endl;
@@ -2398,18 +3179,18 @@ namespace zorba
     break;
 
   case 168:
-#line 2625 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2643 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrExpr [or.and]" << endl;
 #endif
-			(yyval.expr) = new OrExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new OrExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 169:
-#line 2639 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2657 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [comp]" << endl;
@@ -2419,18 +3200,18 @@ namespace zorba
     break;
 
   case 170:
-#line 2646 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2664 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AndExpr [and.comp]" << endl;
 #endif
-			(yyval.expr) = new AndExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new AndExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 171:
-#line 2668 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2686 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains]" << endl;
@@ -2440,13 +3221,13 @@ namespace zorba
     break;
 
   case 172:
-#line 2675 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2693 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]" << endl;
 #endif
-			(yyval.expr) = new ComparisonExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
 								dynamic_cast<ValueComp*>((yysemantic_stack_[(3) - (2)].node)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -2454,13 +3235,13 @@ namespace zorba
     break;
 
   case 173:
-#line 2686 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2704 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]" << endl;
 #endif
-			(yyval.expr) = new ComparisonExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
 								dynamic_cast<GeneralComp*>((yysemantic_stack_[(3) - (2)].node)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -2468,13 +3249,13 @@ namespace zorba
     break;
 
   case 174:
-#line 2697 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2715 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			/*  ::=  "is" | "<<" | ">>" */
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]" << endl;
 #endif
-			(yyval.expr) = new ComparisonExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new ComparisonExpr(LOC ((yyloc)),
 								dynamic_cast<NodeComp*>((yysemantic_stack_[(3) - (2)].node)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								(yysemantic_stack_[(3) - (3)].expr));
@@ -2482,7 +3263,7 @@ namespace zorba
     break;
 
   case 175:
-#line 2714 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2732 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range]" << endl;
@@ -2492,12 +3273,12 @@ namespace zorba
     break;
 
   case 176:
-#line 2721 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2739 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect]" << endl;
 #endif
-			(yyval.expr) = new FTContainsExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new FTContainsExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<FTSelection*>((yysemantic_stack_[(3) - (3)].node)),
 								NULL);
@@ -2505,12 +3286,12 @@ namespace zorba
     break;
 
   case 177:
-#line 2731 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2749 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContainsExpr [range.ftselect.ftignore]" << endl;
 #endif
-			(yyval.expr) = new FTContainsExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new FTContainsExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(4) - (1)].expr),
 								dynamic_cast<FTSelection*>((yysemantic_stack_[(4) - (3)].node)),
 								dynamic_cast<FTIgnoreOption*>((yysemantic_stack_[(4) - (4)].node)));
@@ -2518,7 +3299,7 @@ namespace zorba
     break;
 
   case 178:
-#line 2747 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2765 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add]" << endl;
@@ -2528,18 +3309,18 @@ namespace zorba
     break;
 
   case 179:
-#line 2754 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2772 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RangeExpr [add.to.add]" << endl;
 #endif
-			(yyval.expr) = new RangeExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new RangeExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 180:
-#line 2768 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2786 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult]" << endl;
@@ -2549,76 +3330,77 @@ namespace zorba
     break;
 
   case 181:
-#line 2775 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2793 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult+mult]" << endl;
 #endif
-			(yyval.expr) = new AdditiveExpr(driver.createQueryLoc((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 182:
-#line 2782 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2800 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AdditiveExpr [mult-mult]" << endl;
 #endif
-			(yyval.expr) = new AdditiveExpr(driver.createQueryLoc((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new AdditiveExpr(LOC ((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 183:
-#line 2795 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2813 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [union]" << endl;
 #endif
+       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 184:
-#line 2801 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2820 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult*union]" << endl;
 #endif
-			(yyval.expr) = new MultiplicativeExpr(driver.createQueryLoc((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 185:
-#line 2808 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2827 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.div.union]" << endl;
 #endif
-			(yyval.expr) = new MultiplicativeExpr(driver.createQueryLoc((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 186:
-#line 2815 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2834 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.idiv.union]" << endl;
 #endif
-			(yyval.expr) = new MultiplicativeExpr(driver.createQueryLoc((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 187:
-#line 2822 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2841 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "MultiplicativeExpr [mult.mod.union]" << endl;
 #endif
-			(yyval.expr) = new MultiplicativeExpr(driver.createQueryLoc((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new MultiplicativeExpr(LOC ((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 188:
-#line 2835 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2854 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [interexcept]" << endl;
@@ -2628,29 +3410,29 @@ namespace zorba
     break;
 
   case 189:
-#line 2842 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2861 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union.union.interexcept]" << endl;
 #endif
-			(yyval.expr) = new UnionExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 190:
-#line 2850 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2869 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnionExpr [union|interexcept]" << endl;
 #endif
-			(yyval.expr) = new UnionExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new UnionExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 191:
-#line 2864 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2883 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [instanceof]" << endl;
@@ -2660,27 +3442,27 @@ namespace zorba
     break;
 
   case 192:
-#line 2871 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2890 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.inter.instanceof]" << endl;
 #endif
-			(yyval.expr) = new IntersectExceptExpr(driver.createQueryLoc((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 193:
-#line 2878 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2897 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "IntersectExceptExpr [interexcept.except.instanceof]" << endl;
 #endif
-			(yyval.expr) = new IntersectExceptExpr(driver.createQueryLoc((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new IntersectExceptExpr(LOC ((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 194:
-#line 2891 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2910 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat]" << endl;
@@ -2690,19 +3472,19 @@ namespace zorba
     break;
 
   case 195:
-#line 2898 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2917 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InstanceofExpr [treat.seqtype]" << endl;
 #endif
-			(yyval.expr) = new InstanceofExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new InstanceofExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 196:
-#line 2913 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2932 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable]" << endl;
@@ -2712,19 +3494,19 @@ namespace zorba
     break;
 
   case 197:
-#line 2920 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2939 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TreatExpr [castable.seqtype]" << endl;
 #endif
-			(yyval.expr) = new TreatExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new TreatExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 198:
-#line 2935 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2954 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast]" << endl;
@@ -2734,19 +3516,19 @@ namespace zorba
     break;
 
   case 199:
-#line 2942 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2961 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastableExpr [cast.singletype]" << endl;
 #endif
-			(yyval.expr) = new CastableExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CastableExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SingleType*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 200:
-#line 2957 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2976 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary]" << endl;
@@ -2756,19 +3538,19 @@ namespace zorba
     break;
 
   case 201:
-#line 2964 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2983 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CastExpr [unary.singletype]" << endl;
 #endif
-			(yyval.expr) = new CastExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CastExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (1)].expr),
 								dynamic_cast<SingleType*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 202:
-#line 2979 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 2998 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [value]" << endl;
@@ -2778,39 +3560,39 @@ namespace zorba
     break;
 
   case 203:
-#line 2986 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3005 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnaryExpr [signlist.value]" << endl;
 #endif
-			(yyval.expr) = new UnaryExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new UnaryExpr(LOC ((yyloc)),
 								dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)),
 								(yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 204:
-#line 3001 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3020 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [+]" << endl;
 #endif
-			(yyval.node) = new SignList(driver.createQueryLoc((yyloc)), true);
+			(yyval.node) = new SignList(LOC ((yyloc)), true);
 		;}
     break;
 
   case 205:
-#line 3008 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3027 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [-]" << endl;
 #endif
-			(yyval.node) = new SignList(driver.createQueryLoc((yyloc)), false);
+			(yyval.node) = new SignList(LOC ((yyloc)), false);
 		;}
     break;
 
   case 206:
-#line 3015 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3034 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.+]" << endl;
@@ -2820,7 +3602,7 @@ namespace zorba
     break;
 
   case 207:
-#line 3022 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3041 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SignList [signlist.-]" << endl;
@@ -2832,7 +3614,7 @@ namespace zorba
     break;
 
   case 208:
-#line 3037 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3056 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [validate]" << endl;
@@ -2842,7 +3624,7 @@ namespace zorba
     break;
 
   case 209:
-#line 3044 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3063 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [path]" << endl;
@@ -2852,7 +3634,7 @@ namespace zorba
     break;
 
   case 210:
-#line 3051 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3070 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueExpr [extension]" << endl;
@@ -2862,215 +3644,215 @@ namespace zorba
     break;
 
   case 211:
-#line 3065 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3084 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [=]" << endl;
 #endif
-			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), ParseConstants::op_eq);
+			(yyval.node) = new GeneralComp(LOC ((yyloc)), ParseConstants::op_eq);
 		;}
     break;
 
   case 212:
-#line 3072 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3091 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [!=]" << endl;
 #endif
-			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), ParseConstants::op_ne);
+			(yyval.node) = new GeneralComp(LOC ((yyloc)), ParseConstants::op_ne);
 		;}
     break;
 
   case 213:
-#line 3079 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3098 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<]" << endl;
 #endif
-			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), ParseConstants::op_lt);
+			(yyval.node) = new GeneralComp(LOC ((yyloc)), ParseConstants::op_lt);
 		;}
     break;
 
   case 214:
-#line 3086 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3105 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [<=]" << endl;
 #endif
-			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), ParseConstants::op_le);
+			(yyval.node) = new GeneralComp(LOC ((yyloc)), ParseConstants::op_le);
 		;}
     break;
 
   case 215:
-#line 3093 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3112 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>]" << endl;
 #endif
-			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), ParseConstants::op_gt);
+			(yyval.node) = new GeneralComp(LOC ((yyloc)), ParseConstants::op_gt);
 		;}
     break;
 
   case 216:
-#line 3100 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3119 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "GeneralComp [>=]" << endl;
 #endif
-			(yyval.node) = new GeneralComp(driver.createQueryLoc((yyloc)), ParseConstants::op_ge);
+			(yyval.node) = new GeneralComp(LOC ((yyloc)), ParseConstants::op_ge);
 		;}
     break;
 
   case 217:
-#line 3113 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3132 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [eq]" << endl;
 #endif
-			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), ParseConstants::op_val_eq);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_eq);
 		;}
     break;
 
   case 218:
-#line 3120 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3139 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ne]" << endl;
 #endif
-			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), ParseConstants::op_val_ne);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ne);
 		;}
     break;
 
   case 219:
-#line 3127 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3146 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [lt]" << endl;
 #endif
-			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), ParseConstants::op_val_lt);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_lt);
 		;}
     break;
 
   case 220:
-#line 3134 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3153 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [le]" << endl;
 #endif
-			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), ParseConstants::op_val_le);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_le);
 		;}
     break;
 
   case 221:
-#line 3141 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3160 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [gt]" << endl;
 #endif
-			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), ParseConstants::op_val_gt);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_gt);
 		;}
     break;
 
   case 222:
-#line 3148 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3167 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValueComp [ge]" << endl;
 #endif
-			(yyval.node) = new ValueComp(driver.createQueryLoc((yyloc)), ParseConstants::op_val_ge);
+			(yyval.node) = new ValueComp(LOC ((yyloc)), ParseConstants::op_val_ge);
 		;}
     break;
 
   case 223:
-#line 3161 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3180 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [is]" << endl;
 #endif
-			(yyval.node) = new NodeComp(driver.createQueryLoc((yyloc)), ParseConstants::op_is);
+			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_is);
 		;}
     break;
 
   case 224:
-#line 3168 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3187 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [<<]" << endl;
 #endif
-			(yyval.node) = new NodeComp(driver.createQueryLoc((yyloc)), ParseConstants::op_precedes);
+			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_precedes);
 		;}
     break;
 
   case 225:
-#line 3175 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3194 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeComp [>>]" << endl;
 #endif
-			(yyval.node) = new NodeComp(driver.createQueryLoc((yyloc)), ParseConstants::op_follows);
+			(yyval.node) = new NodeComp(LOC ((yyloc)), ParseConstants::op_follows);
 		;}
     break;
 
   case 226:
-#line 3189 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3208 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [expr]" << endl;
 #endif
-			(yyval.expr) = new ValidateExpr(driver.createQueryLoc((yyloc)), "strict", (yysemantic_stack_[(3) - (2)].expr));
+			(yyval.expr) = new ValidateExpr(LOC ((yyloc)), "strict", (yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 227:
-#line 3196 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3215 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ValidateExpr [mode.expr]" << endl;
 #endif
-			(yyval.expr) = new ValidateExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new ValidateExpr(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval)),
 								(yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
   case 228:
-#line 3211 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3230 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist]" << endl;
 #endif
-			(yyval.expr) = new ExtensionExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new ExtensionExpr(LOC ((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(3) - (1)].node)),
 								NULL);
 		;}
     break;
 
   case 229:
-#line 3220 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3239 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ExtensionExpr [pragmalist.expr]" << endl;
 #endif
-			(yyval.expr) = new ExtensionExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new ExtensionExpr(LOC ((yyloc)),
 								dynamic_cast<PragmaList*>((yysemantic_stack_[(4) - (1)].node)),
 								(yysemantic_stack_[(4) - (3)].expr));
 		;}
     break;
 
   case 230:
-#line 3235 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3254 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [single]" << endl;
 #endif
-			PragmaList* pragma_list_p = new PragmaList(driver.createQueryLoc((yyloc)));
+			PragmaList* pragma_list_p = new PragmaList(LOC ((yyloc)));
 			pragma_list_p->push_back(dynamic_cast<Pragma*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = pragma_list_p;
 		;}
     break;
 
   case 231:
-#line 3244 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3263 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PragmaList [list]" << endl;
@@ -3084,101 +3866,101 @@ namespace zorba
     break;
 
   case 232:
-#line 3261 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3280 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Pragma [ ]" << endl;
 #endif
-			(yyval.node) = new Pragma(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
+			(yyval.node) = new Pragma(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 
 		;}
     break;
 
   case 233:
-#line 3269 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3288 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
-			(yyval.node) = new Pragma(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval))),
+			(yyval.node) = new Pragma(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval))),
 								"");      
     ;}
     break;
 
   case 234:
-#line 3312 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3331 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/]" << endl;
 #endif
-			(yyval.expr) = new PathExpr(driver.createQueryLoc((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
+			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
 		;}
     break;
 
   case 235:
-#line 3319 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3338 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [/relative]" << endl;
 #endif
-			(yyval.expr) = new PathExpr(driver.createQueryLoc((yyloc)), ParseConstants::path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
+			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 236:
-#line 3326 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3345 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [//relative]" << endl;
 #endif
-			(yyval.expr) = new PathExpr(driver.createQueryLoc((yyloc)), ParseConstants::path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
+			(yyval.expr) = new PathExpr(LOC ((yyloc)), ParseConstants::path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 237:
-#line 3333 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3352 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PathExpr [relative]" << endl;
 #endif
             RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>((yysemantic_stack_[(1) - (1)].expr));
-            (yyval.expr) = rpe == NULL ? (yysemantic_stack_[(1) - (1)].expr) : new PathExpr(driver.createQueryLoc((yyloc)), ParseConstants::path_relative, (yysemantic_stack_[(1) - (1)].expr));
+            (yyval.expr) = rpe == NULL ? (yysemantic_stack_[(1) - (1)].expr) : new PathExpr(LOC ((yyloc)), ParseConstants::path_relative, (yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 238:
-#line 3347 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3366 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step]" << endl;
 #endif
             AxisStep *as = dynamic_cast<AxisStep *>((yysemantic_stack_[(1) - (1)].expr));
-            (yyval.expr) = as != NULL ? new RelativePathExpr(driver.createQueryLoc((yyloc)), ParseConstants::st_slash, new ContextItemExpr(driver.createQueryLoc((yyloc))), (yysemantic_stack_[(1) - (1)].expr)) : (yysemantic_stack_[(1) - (1)].expr);
+            (yyval.expr) = as != NULL ? new RelativePathExpr(LOC ((yyloc)), ParseConstants::st_slash, new ContextItemExpr(LOC ((yyloc))), (yysemantic_stack_[(1) - (1)].expr)) : (yysemantic_stack_[(1) - (1)].expr);
 		;}
     break;
 
   case 239:
-#line 3355 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3374 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step/relative]" << endl;
 #endif
-			(yyval.expr) = new RelativePathExpr(driver.createQueryLoc((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new RelativePathExpr(LOC ((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 240:
-#line 3362 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3381 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RelativePathExpr [step//relative]" << endl;
 #endif
-			(yyval.expr) = new RelativePathExpr(driver.createQueryLoc((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
+			(yyval.expr) = new RelativePathExpr(LOC ((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
 		;}
     break;
 
   case 241:
-#line 3375 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3394 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [axis]" << endl;
@@ -3188,7 +3970,7 @@ namespace zorba
     break;
 
   case 242:
-#line 3382 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3401 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StepExpr [filter]" << endl;
@@ -3198,242 +3980,242 @@ namespace zorba
     break;
 
   case 243:
-#line 3395 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3414 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward]" << endl;
 #endif
-			(yyval.expr) = new AxisStep(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL);
 		;}
     break;
 
   case 244:
-#line 3404 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3423 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [forward.predlist]" << endl;
 #endif
-			(yyval.expr) = new AxisStep(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ForwardStep*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 245:
-#line 3413 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3432 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse]" << endl;
 #endif
-			(yyval.expr) = new AxisStep(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(1) - (1)].node)),
 								NULL);
 		;}
     break;
 
   case 246:
-#line 3422 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3441 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AxisStep [reverse.predlist]" << endl;
 #endif
-			(yyval.expr) = new AxisStep(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new AxisStep(LOC ((yyloc)),
 								dynamic_cast<ReverseStep*>((yysemantic_stack_[(2) - (1)].node)),
 								dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 247:
-#line 3437 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3456 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [nodetest]" << endl;
 #endif
-			(yyval.node) = new ForwardStep(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ForwardStep(LOC ((yyloc)),
 								dynamic_cast<ForwardAxis*>((yysemantic_stack_[(2) - (1)].node)),
 								(yysemantic_stack_[(2) - (2)].node));
 		;}
     break;
 
   case 248:
-#line 3446 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3465 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardStep [abbrev]" << endl;
 #endif
-			(yyval.node) = new ForwardStep(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ForwardStep(LOC ((yyloc)),
 								dynamic_cast<AbbrevForwardStep*>((yysemantic_stack_[(1) - (1)].node)));
 		;}
     break;
 
   case 249:
-#line 3460 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3479 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [child]" << endl;
 #endif
-			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_child);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_child);
 		;}
     break;
 
   case 250:
-#line 3467 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3486 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant]" << endl;
 #endif
-			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_descendant);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant);
 		;}
     break;
 
   case 251:
-#line 3474 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3493 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [attribute]" << endl;
 #endif
-			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_attribute);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_attribute);
 		;}
     break;
 
   case 252:
-#line 3481 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3500 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [self]" << endl;
 #endif
-			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_self);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_self);
 		;}
     break;
 
   case 253:
-#line 3488 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3507 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [descendant_or_self]" << endl;
 #endif
-			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_descendant_or_self);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_descendant_or_self);
 		;}
     break;
 
   case 254:
-#line 3495 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3514 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following_sibling]" << endl;
 #endif
-			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_following_sibling);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following_sibling);
 		;}
     break;
 
   case 255:
-#line 3502 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3521 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ForwardAxis [following]" << endl;
 #endif
-			(yyval.node) = new ForwardAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_following);
+			(yyval.node) = new ForwardAxis(LOC ((yyloc)), ParseConstants::axis_following);
 		;}
     break;
 
   case 256:
-#line 3515 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3534 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [nodetest]" << endl;
 #endif
-			(yyval.node) = new AbbrevForwardStep(driver.createQueryLoc((yyloc)), (yysemantic_stack_[(1) - (1)].node));
+			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(1) - (1)].node));
 		;}
     break;
 
   case 257:
-#line 3522 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3541 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AbbrevForwardStep [@ nodetest]" << endl;
 #endif
-			(yyval.node) = new AbbrevForwardStep(driver.createQueryLoc((yyloc)), (yysemantic_stack_[(2) - (2)].node), true);
+			(yyval.node) = new AbbrevForwardStep(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].node), true);
 		;}
     break;
 
   case 258:
-#line 3535 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3554 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [nodetest]" << endl;
 #endif
-			(yyval.node) = new ReverseStep(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ReverseStep(LOC ((yyloc)),
 								dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)),
 								(yysemantic_stack_[(2) - (2)].node));
 		;}
     break;
 
   case 259:
-#line 3544 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3563 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseStep [..]" << endl;
 #endif
-			ReverseAxis* rev_p = new ReverseAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_parent);
-			(yyval.node) = new ReverseStep(driver.createQueryLoc((yyloc)),
+			ReverseAxis* rev_p = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
+			(yyval.node) = new ReverseStep(LOC ((yyloc)),
 								rev_p);
 		;}
     break;
 
   case 260:
-#line 3559 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3578 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [parent]" << endl;
 #endif
-			(yyval.node) = new ReverseAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_parent);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_parent);
 		;}
     break;
 
   case 261:
-#line 3566 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3585 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor]" << endl;
 #endif
-			(yyval.node) = new ReverseAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_ancestor);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor);
 		;}
     break;
 
   case 262:
-#line 3573 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3592 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding_sibling]" << endl;
 #endif
-			(yyval.node) = new ReverseAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_preceding_sibling);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding_sibling);
 		;}
     break;
 
   case 263:
-#line 3580 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3599 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [preceding]" << endl;
 #endif
-			(yyval.node) = new ReverseAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_preceding);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_preceding);
 		;}
     break;
 
   case 264:
-#line 3587 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3606 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReverseAxis [ancestor_or_self]" << endl;
 #endif
-			(yyval.node) = new ReverseAxis(driver.createQueryLoc((yyloc)), ParseConstants::axis_ancestor_or_self);
+			(yyval.node) = new ReverseAxis(LOC ((yyloc)), ParseConstants::axis_ancestor_or_self);
 		;}
     break;
 
   case 265:
-#line 3605 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3624 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [kindtest]" << endl;
@@ -3443,7 +4225,7 @@ namespace zorba
     break;
 
   case 266:
-#line 3612 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3631 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NodeTest [nametest]" << endl;
@@ -3453,32 +4235,32 @@ namespace zorba
     break;
 
   case 267:
-#line 3625 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3644 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [qname]" << endl;
 #endif
-			(yyval.node) = new NameTest(driver.createQueryLoc((yyloc)), new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = new NameTest(LOC ((yyloc)), new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 268:
-#line 3632 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3651 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NameTest [wildcard]" << endl;
 #endif
-			(yyval.node) = new NameTest(driver.createQueryLoc((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
+			(yyval.node) = new NameTest(LOC ((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
 		;}
     break;
 
   case 269:
-#line 3645 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3664 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*]" << endl;
 #endif
-			(yyval.node) = new Wildcard(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         "",
                         "",
                         ParseConstants::wild_all);
@@ -3486,12 +4268,12 @@ namespace zorba
     break;
 
   case 270:
-#line 3655 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3674 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [pref:*]" << endl;
 #endif
-			(yyval.node) = new Wildcard(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)),
                         "",
                         ParseConstants::wild_elem);
@@ -3499,12 +4281,12 @@ namespace zorba
     break;
 
   case 271:
-#line 3665 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3684 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Wildcard [*:qname]" << endl;
 #endif
-			(yyval.node) = new Wildcard(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new Wildcard(LOC ((yyloc)),
                         "",
                         driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)),
                         ParseConstants::wild_prefix);
@@ -3512,7 +4294,7 @@ namespace zorba
     break;
 
   case 272:
-#line 3681 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3700 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary]" << endl;
@@ -3522,31 +4304,31 @@ namespace zorba
     break;
 
   case 273:
-#line 3688 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3707 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FilterExpr [primary.predlist]" << endl;
 #endif
-			(yyval.expr) = new FilterExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new FilterExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].expr),
 								dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 274:
-#line 3703 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3722 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [single]" << endl;
 #endif
-			PredicateList* pred_list_p = new PredicateList(driver.createQueryLoc((yyloc)));
+			PredicateList* pred_list_p = new PredicateList(LOC ((yyloc)));
 			pred_list_p->push_back(dynamic_cast<exprnode*>((yysemantic_stack_[(1) - (1)].expr)));
 			(yyval.node) = pred_list_p;
 		;}
     break;
 
   case 275:
-#line 3712 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3731 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PredicateList [list]" << endl;
@@ -3560,7 +4342,7 @@ namespace zorba
     break;
 
   case 276:
-#line 3729 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3748 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Predicate [ ]" << endl;
@@ -3570,7 +4352,7 @@ namespace zorba
     break;
 
   case 277:
-#line 3743 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3762 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [literal]" << endl;
@@ -3580,7 +4362,7 @@ namespace zorba
     break;
 
   case 278:
-#line 3750 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3769 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [varref]" << endl;
@@ -3590,7 +4372,7 @@ namespace zorba
     break;
 
   case 279:
-#line 3757 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3776 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [paren]" << endl;
@@ -3600,7 +4382,7 @@ namespace zorba
     break;
 
   case 280:
-#line 3764 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3783 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [context_item]" << endl;
@@ -3610,7 +4392,7 @@ namespace zorba
     break;
 
   case 281:
-#line 3771 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3790 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [funcall]" << endl;
@@ -3620,7 +4402,7 @@ namespace zorba
     break;
 
   case 282:
-#line 3778 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3797 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [cons]" << endl;
@@ -3630,7 +4412,7 @@ namespace zorba
     break;
 
   case 283:
-#line 3785 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3804 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [ordered]" << endl;
@@ -3640,7 +4422,7 @@ namespace zorba
     break;
 
   case 284:
-#line 3792 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3811 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PrimaryExpr [unordered]" << endl;
@@ -3650,7 +4432,7 @@ namespace zorba
     break;
 
   case 285:
-#line 3805 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3824 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [numeric]" << endl;
@@ -3660,7 +4442,7 @@ namespace zorba
     break;
 
   case 286:
-#line 3812 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3831 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Literal [string]" << endl;
@@ -3670,139 +4452,139 @@ namespace zorba
     break;
 
   case 287:
-#line 3825 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3844 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [decimal]" << endl;
 #endif
-			(yyval.expr) = new NumericLiteral(driver.createQueryLoc((yyloc)), *yylval.decval);
+			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *yylval.decval);
       delete yylval.decval;
 		;}
     break;
 
   case 288:
-#line 3833 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3852 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [int]" << endl;
 #endif
-			(yyval.expr) = new NumericLiteral(driver.createQueryLoc((yyloc)), *yylval.ival);
+			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *yylval.ival);
       delete yylval.ival;
 		;}
     break;
 
   case 289:
-#line 3841 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3860 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "NumericLiteral [double]" << endl;
 #endif
-			(yyval.expr) = new NumericLiteral(driver.createQueryLoc((yyloc)), *yylval.dval);
+			(yyval.expr) = new NumericLiteral(LOC ((yyloc)), *yylval.dval);
       delete yylval.dval;
 		;}
     break;
 
   case 290:
-#line 3855 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3874 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarRef [ ]" << endl;
 #endif
-			(yyval.expr) = new VarRef(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
+			(yyval.expr) = new VarRef(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 291:
-#line 3868 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3887 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [()]" << endl;
 #endif
-			(yyval.expr) = new ParenthesizedExpr(driver.createQueryLoc((yyloc)), NULL);
+			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)), NULL);
 		;}
     break;
 
   case 292:
-#line 3875 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3894 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ParenthesizedExpr [(expr)]" << endl;
 #endif
-			(yyval.expr) = new ParenthesizedExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new ParenthesizedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 293:
-#line 3889 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3908 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ContextItemExpr [.]" << endl;
 #endif
-			(yyval.expr) = new ContextItemExpr(driver.createQueryLoc((yyloc)));
+			(yyval.expr) = new ContextItemExpr(LOC ((yyloc)));
 		;}
     break;
 
   case 294:
-#line 3902 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3921 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OrderedExpr [expr]" << endl;
 #endif
-			(yyval.expr) = new OrderedExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new OrderedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 295:
-#line 3916 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3935 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "UnorderedExpr [expr]" << endl;
 #endif
-			(yyval.expr) = new UnorderedExpr(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new UnorderedExpr(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 296:
-#line 3975 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 3994 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [ ]" << endl;
 #endif
-			(yyval.expr) = new FunctionCall(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
+			(yyval.expr) = new FunctionCall(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								NULL);
 		;}
     break;
 
   case 297:
-#line 3984 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4003 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionCall [arglist]" << endl;
 #endif
-			(yyval.expr) = new FunctionCall(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval))),
+			(yyval.expr) = new FunctionCall(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (1)].sval))),
 								dynamic_cast<ArgList*>((yysemantic_stack_[(4) - (3)].node)));
 		;}
     break;
 
   case 298:
-#line 3999 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4018 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [single]" << endl;
 #endif
-			ArgList* a_list_p = new ArgList(driver.createQueryLoc((yyloc))); 
+			ArgList* a_list_p = new ArgList(LOC ((yyloc))); 
 			a_list_p->push_back((yysemantic_stack_[(1) - (1)].expr));
 			(yyval.node) = a_list_p;
 		;}
     break;
 
   case 299:
-#line 4008 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4027 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ArgList [list]" << endl;
@@ -3814,7 +4596,7 @@ namespace zorba
     break;
 
   case 300:
-#line 4023 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4042 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [direct]" << endl;
@@ -3824,7 +4606,7 @@ namespace zorba
     break;
 
   case 301:
-#line 4030 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4049 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "Constructor [computed]" << endl;
@@ -3834,7 +4616,7 @@ namespace zorba
     break;
 
   case 302:
-#line 4043 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4062 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [element]" << endl;
@@ -3844,7 +4626,7 @@ namespace zorba
     break;
 
   case 303:
-#line 4050 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4069 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [comment]" << endl;
@@ -3854,7 +4636,7 @@ namespace zorba
     break;
 
   case 304:
-#line 4057 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4076 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirectConstructor [pi]" << endl;
@@ -3864,13 +4646,13 @@ namespace zorba
     break;
 
   case 305:
-#line 4070 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4089 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname/> ]" << endl;
 #endif
-			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
+			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								NULL,
 								NULL,
 								NULL);
@@ -3878,13 +4660,13 @@ namespace zorba
     break;
 
   case 306:
-#line 4081 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4100 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist/> ]" << endl;
 #endif
-			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
+			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval))),
 								NULL,
 								dynamic_cast<DirAttributeList*>((yysemantic_stack_[(4) - (3)].node)), 
 								NULL);
@@ -3892,75 +4674,75 @@ namespace zorba
     break;
 
   case 307:
-#line 4092 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4111 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname></qname>]" << endl;
 #endif
-			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (5)].sval))),
+			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (2)].sval))),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(6) - (5)].sval))),
 								NULL,
 								NULL);
 		;}
     break;
 
   case 308:
-#line 4103 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4122 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname>content</qname>]" << endl;
 #endif
-			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (6)].sval))),
+			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (6)].sval))),
 								NULL,
 								dynamic_cast<DirElemContentList*>((yysemantic_stack_[(7) - (4)].node)));
 		;}
     break;
 
   case 309:
-#line 4114 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4133 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist></qname>]" << endl;
 #endif
-			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (6)].sval))),
+			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (2)].sval))),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(7) - (6)].sval))),
 								dynamic_cast<DirAttributeList*>((yysemantic_stack_[(7) - (3)].node)),
 								NULL);
 		;}
     break;
 
   case 310:
-#line 4125 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4144 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemConstructor [<qname attrlist>content</qname>]" << endl;
 #endif
-			(yyval.expr) = new DirElemConstructor(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (2)].sval))),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (7)].sval))),
+			(yyval.expr) = new DirElemConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (2)].sval))),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(8) - (7)].sval))),
 								dynamic_cast<DirAttributeList*>((yysemantic_stack_[(8) - (3)].node)), 
 								dynamic_cast<DirElemContentList*>((yysemantic_stack_[(8) - (5)].node)));
 		;}
     break;
 
   case 311:
-#line 4143 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4162 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [single]" << endl;
 #endif
-			DirElemContentList* elem_content_list_p = new DirElemContentList(driver.createQueryLoc((yyloc)));
+			DirElemContentList* elem_content_list_p = new DirElemContentList(LOC ((yyloc)));
 			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>((yysemantic_stack_[(1) - (1)].expr)));
 			(yyval.node) = elem_content_list_p;
 		;}
     break;
 
   case 312:
-#line 4152 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4171 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContentList [list]" << endl;
@@ -3972,19 +4754,19 @@ namespace zorba
     break;
 
   case 313:
-#line 4167 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4186 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [single]" << endl;
 #endif
-			DirAttributeList* at_list_p = new DirAttributeList(driver.createQueryLoc((yyloc)));
+			DirAttributeList* at_list_p = new DirAttributeList(LOC ((yyloc)));
 			at_list_p->push_back(dynamic_cast<DirAttr*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = at_list_p;
 		;}
     break;
 
   case 314:
-#line 4176 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4195 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeList [list]" << endl;
@@ -3998,96 +4780,96 @@ namespace zorba
     break;
 
   case 315:
-#line 4193 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4212 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttr [ ]" << endl;
 #endif
-			(yyval.node) = new DirAttr(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
+			(yyval.node) = new DirAttr(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								dynamic_cast<DirAttributeValue*>((yysemantic_stack_[(3) - (3)].node)));
 		;}
     break;
 
   case 316:
-#line 4208 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4227 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [quote]" << endl;
 #endif
-			(yyval.node) = new DirAttributeValue(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new DirAttributeValue(LOC ((yyloc)),
 								dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 317:
-#line 4216 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4235 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirAttributeValue [apos]" << endl;
 #endif
-			(yyval.node) = new DirAttributeValue(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new DirAttributeValue(LOC ((yyloc)),
 								dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 318:
-#line 4230 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4249 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList[empty]" << endl;
 #endif
-			(yyval.node) = new QuoteAttrContentList(driver.createQueryLoc((yyloc)));
+			(yyval.node) = new QuoteAttrContentList(LOC ((yyloc)));
 		;}
     break;
 
   case 319:
-#line 4237 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4256 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 320:
-#line 4244 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4263 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [""]" << endl;
 #endif
-			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(driver.createQueryLoc((yyloc)));
-			qo_list_p->push_back(new QuoteAttrValueContent(driver.createQueryLoc((yyloc)),string("\"")));
+			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC ((yyloc)));
+			qo_list_p->push_back(new QuoteAttrValueContent(LOC ((yyloc)),string("\"")));
 			(yyval.node) = qo_list_p;
 		;}
     break;
 
   case 321:
-#line 4253 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4272 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [single]" << endl;
 #endif
-			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(driver.createQueryLoc((yyloc)));
+			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC ((yyloc)));
 			qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = qo_list_p;
 		;}
     break;
 
   case 322:
-#line 4262 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4281 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list ""]" << endl;
 #endif
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (qo_list_p) {
-				qo_list_p->push_back(new QuoteAttrValueContent(driver.createQueryLoc((yyloc)),string("\"")));
+				qo_list_p->push_back(new QuoteAttrValueContent(LOC ((yyloc)),string("\"")));
 			}
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		;}
     break;
 
   case 323:
-#line 4273 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4292 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrContentList [list]" << endl;
@@ -4096,66 +4878,67 @@ namespace zorba
 			if (qo_list_p) {
 				qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(2) - (2)].node)));
 			}
+			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		;}
     break;
 
   case 324:
-#line 4289 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4309 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']" << endl;
 #endif
-			(yyval.node) = new AposAttrContentList(driver.createQueryLoc((yyloc)));
+			(yyval.node) = new AposAttrContentList(LOC ((yyloc)));
 		;}
     break;
 
   case 325:
-#line 4296 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4316 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 326:
-#line 4303 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4323 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList ['']" << endl;
 #endif
-			AposAttrContentList* at_list_p = new AposAttrContentList(driver.createQueryLoc((yyloc)));
-			at_list_p->push_back(new AposAttrValueContent(driver.createQueryLoc((yyloc)),"'"));
+			AposAttrContentList* at_list_p = new AposAttrContentList(LOC ((yyloc)));
+			at_list_p->push_back(new AposAttrValueContent(LOC ((yyloc)),"'"));
 			(yyval.node) = at_list_p;
 		;}
     break;
 
   case 327:
-#line 4312 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4332 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [single]" << endl;
 #endif
-			AposAttrContentList* at_list_p = new AposAttrContentList(driver.createQueryLoc((yyloc)));
+			AposAttrContentList* at_list_p = new AposAttrContentList(LOC ((yyloc)));
 			at_list_p->push_back(dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)));
 			(yyval.node) = at_list_p;
 		;}
     break;
 
   case 328:
-#line 4321 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4341 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.'']" << endl;
 #endif
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
 			if (at_list_p) {
-				at_list_p->push_back(new AposAttrValueContent(driver.createQueryLoc((yyloc)),"'"));
+				at_list_p->push_back(new AposAttrValueContent(LOC ((yyloc)),"'"));
 			}
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
 		;}
     break;
 
   case 329:
-#line 4332 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4352 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrContentList [list.single]" << endl;
@@ -4169,196 +4952,196 @@ namespace zorba
     break;
 
   case 330:
-#line 4349 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4369 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [quote_attr_content]" << endl;
 #endif
-			(yyval.node) = new QuoteAttrValueContent(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 331:
-#line 4357 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4377 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "QuoteAttrValueContent [common_content]" << endl;
 #endif
-			(yyval.node) = new QuoteAttrValueContent(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new QuoteAttrValueContent(LOC ((yyloc)),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 332:
-#line 4371 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4391 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [apos_attr_content]" << endl;
 #endif
-			(yyval.node) = new AposAttrValueContent(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 333:
-#line 4379 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4399 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AposAttrValueContent [common_content]" << endl;
 #endif
-			(yyval.node) = new AposAttrValueContent(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new AposAttrValueContent(LOC ((yyloc)),
 								dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 334:
-#line 4393 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4413 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cons]" << endl;
 #endif
-			(yyval.expr) = new DirElemContent(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].expr));
 		;}
     break;
 
   case 335:
-#line 4401 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4421 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [elem_content]" << endl;
 #endif
-			(yyval.expr) = new DirElemContent(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 336:
-#line 4409 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4429 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [cdata]" << endl;
 #endif
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
-			(yyval.expr) = new DirElemContent(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
 								cdata_h);
 		;}
     break;
 
   case 337:
-#line 4418 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4438 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirElemContent [common_content]" << endl;
 #endif
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
-			(yyval.expr) = new DirElemContent(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new DirElemContent(LOC ((yyloc)),
 								cont_h);
 		;}
     break;
 
   case 338:
-#line 4433 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4453 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [char_ref]\n";
 #endif
-			(yyval.expr) = new CommonContent(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CommonContent(LOC ((yyloc)),
                 ParseConstants::cont_charref,
 								driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 339:
-#line 4442 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4462 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [{{]" << endl;
 #endif
-			(yyval.expr) = new CommonContent(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								ParseConstants::cont_escape_lbrace);
 		;}
     break;
 
   case 340:
-#line 4450 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4470 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [}}]" << endl;
 #endif
-			(yyval.expr) = new CommonContent(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								ParseConstants::cont_escape_rbrace);
 		;}
     break;
 
   case 341:
-#line 4458 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4478 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommonContent [expr]" << endl;
 #endif
-			(yyval.expr) = new CommonContent(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CommonContent(LOC ((yyloc)),
 								dynamic_cast<EnclosedExpr*>((yysemantic_stack_[(1) - (1)].expr)));
 		;}
     break;
 
   case 342:
-#line 4472 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4492 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirCommentConstructor [ ]" << endl;
 #endif
-			(yyval.expr) = new DirCommentConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new DirCommentConstructor(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 343:
-#line 4480 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4500 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
        cout << "DirCommentConstructor [ ]" << endl;
 #endif
-      (yyval.expr) = new DirCommentConstructor(driver.createQueryLoc((yyloc)), "");
+      (yyval.expr) = new DirCommentConstructor(LOC ((yyloc)), "");
     ;}
     break;
 
   case 344:
-#line 4498 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4518 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target]" << endl;
 #endif
-			(yyval.expr) = new DirPIConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new DirPIConstructor(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 345:
-#line 4506 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4526 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DirPIConstructor [target.charlit]" << endl;
 #endif
-			(yyval.expr) = new DirPIConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new DirPIConstructor(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(3) - (3)].sval)));
 		;}
     break;
 
   case 346:
-#line 4526 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4546 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CDataSection [ ]" << endl;
 #endif
-			(yyval.expr) = new CDataSection(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
+			(yyval.expr) = new CDataSection(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
 		;}
     break;
 
   case 347:
-#line 4544 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4564 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [doc]" << endl;
@@ -4368,7 +5151,7 @@ namespace zorba
     break;
 
   case 348:
-#line 4551 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4571 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [elem]" << endl;
@@ -4378,7 +5161,7 @@ namespace zorba
     break;
 
   case 349:
-#line 4558 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4578 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [attr]" << endl;
@@ -4388,7 +5171,7 @@ namespace zorba
     break;
 
   case 350:
-#line 4565 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4585 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [text]" << endl;
@@ -4398,7 +5181,7 @@ namespace zorba
     break;
 
   case 351:
-#line 4572 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4592 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [comment]" << endl;
@@ -4408,7 +5191,7 @@ namespace zorba
     break;
 
   case 352:
-#line 4579 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4599 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ComputedConstructor [pi]" << endl;
@@ -4418,280 +5201,280 @@ namespace zorba
     break;
 
   case 353:
-#line 4592 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4612 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompDocConstructor [ ]" << endl;
 #endif
-			(yyval.expr) = new CompDocConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompDocConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 354:
-#line 4606 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4626 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [ ]" << endl;
 #endif
-			(yyval.expr) = new CompElemConstructor(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
+			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
 								NULL);
 		;}
     break;
 
   case 355:
-#line 4615 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4635 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [content]" << endl;
 #endif
-			(yyval.expr) = new CompElemConstructor(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
+			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 356:
-#line 4624 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4644 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name]" << endl;
 #endif
-			(yyval.expr) = new CompElemConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(5) - (2)].expr), NULL);
 		;}
     break;
 
   case 357:
-#line 4632 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4652 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompElemConstructor [name.content]" << endl;
 #endif
-			(yyval.expr) = new CompElemConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompElemConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (2)].expr), (yysemantic_stack_[(6) - (5)].expr));
 		;}
     break;
 
   case 358:
-#line 4660 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4680 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [ ]" << endl;
 #endif
-			(yyval.expr) = new CompAttrConstructor(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
+			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
 								NULL);
 		;}
     break;
 
   case 359:
-#line 4669 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4689 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [val]" << endl;
 #endif
-			(yyval.expr) = new CompAttrConstructor(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
+			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval))),
 								(yysemantic_stack_[(3) - (2)].expr));
 		;}
     break;
 
   case 360:
-#line 4678 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4698 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name]" << endl;
 #endif
-			(yyval.expr) = new CompAttrConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(5) - (2)].expr), NULL);
 		;}
     break;
 
   case 361:
-#line 4686 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4706 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompAttrConstructor [name.val]" << endl;
 #endif
-			(yyval.expr) = new CompAttrConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompAttrConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (2)].expr), (yysemantic_stack_[(6) - (5)].expr));
 		;}
     break;
 
   case 362:
-#line 4700 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4720 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompTextConstructor [content]" << endl;
 #endif
-			(yyval.expr) = new CompTextConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompTextConstructor(LOC ((yyloc)),
 								dynamic_cast<Expr*>((yysemantic_stack_[(3) - (2)].expr)));
 		;}
     break;
 
   case 363:
-#line 4714 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4734 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompCommentConstructor [content]" << endl;
 #endif
-			(yyval.expr) = new CompCommentConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompCommentConstructor(LOC ((yyloc)),
 								dynamic_cast<Expr*>((yysemantic_stack_[(3) - (2)].expr)));
 		;}
     break;
 
   case 364:
-#line 4728 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4748 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [ ]" << endl;
 #endif
-			(yyval.expr) = new CompPIConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(4) - (2)].sval)),
 								NULL);
 		;}
     break;
 
   case 365:
-#line 4737 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4757 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [content]" << endl;
 #endif
-			(yyval.expr) = new CompPIConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval)),
 								(yysemantic_stack_[(5) - (4)].expr));
 		;}
     break;
 
   case 366:
-#line 4746 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4766 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target]" << endl;
 #endif
-			(yyval.expr) = new CompPIConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(6) - (3)].expr), NULL);
 		;}
     break;
 
   case 367:
-#line 4754 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4774 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CompPIConstructor [target.content]" << endl;
 #endif
-			(yyval.expr) = new CompPIConstructor(driver.createQueryLoc((yyloc)),
+			(yyval.expr) = new CompPIConstructor(LOC ((yyloc)),
 								(yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
 		;}
     break;
 
   case 368:
-#line 4768 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4788 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic]" << endl;
 #endif
-			(yyval.node) = new SingleType(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new SingleType(LOC ((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(1) - (1)].node)),
 								false);
 		;}
     break;
 
   case 369:
-#line 4777 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4797 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SingleType [atomic ?]" << endl;
 #endif
-			(yyval.node) = new SingleType(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new SingleType(LOC ((yyloc)),
 								dynamic_cast<AtomicType*>((yysemantic_stack_[(2) - (1)].node)),
 								true);
 		;}
     break;
 
   case 370:
-#line 4792 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4812 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeDeclaration [as seqtype]" << endl;
 #endif
-			(yyval.node) = new TypeDeclaration(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new TypeDeclaration(LOC ((yyloc)),
 								dynamic_cast<SequenceType*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 371:
-#line 4806 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4826 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type]" << endl;
 #endif
-			(yyval.node) = new SequenceType(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new SequenceType(LOC ((yyloc)),
 								(yysemantic_stack_[(1) - (1)].node),
 								NULL);
 		;}
     break;
 
   case 372:
-#line 4815 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4835 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [type.occurs]" << endl;
 #endif
-			(yyval.node) = new SequenceType(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new SequenceType(LOC ((yyloc)),
 								(yysemantic_stack_[(2) - (1)].node),
 								dynamic_cast<OccurrenceIndicator*>((yysemantic_stack_[(2) - (2)].node)));
 		;}
     break;
 
   case 373:
-#line 4824 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4844 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [void]" << endl;
 #endif
-			(yyval.node) = new SequenceType(driver.createQueryLoc((yyloc)), NULL, NULL);
+			(yyval.node) = new SequenceType(LOC ((yyloc)), NULL, NULL);
 		;}
     break;
 
   case 374:
-#line 4864 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4884 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [?]" << endl;
 #endif
-			(yyval.node) = new OccurrenceIndicator(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_optionally);
 		;}
     break;
 
   case 375:
-#line 4872 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4892 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [*]" << endl;
 #endif
-			(yyval.node) = new OccurrenceIndicator(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_zero_or_more);
 		;}
     break;
 
   case 376:
-#line 4880 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4900 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "OccurrenceIndicator [+]" << endl;
 #endif
-			(yyval.node) = new OccurrenceIndicator(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new OccurrenceIndicator(LOC ((yyloc)),
 								ParseConstants::occurs_one_or_more);
 		;}
     break;
 
   case 377:
-#line 4894 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4914 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [atomic]" << endl;
@@ -4701,7 +5484,7 @@ namespace zorba
     break;
 
   case 378:
-#line 4901 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4921 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [kind]" << endl;
@@ -4711,28 +5494,28 @@ namespace zorba
     break;
 
   case 379:
-#line 4908 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4928 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ItemType [item]" << endl;
 #endif
-			(yyval.node) = new ItemType(driver.createQueryLoc((yyloc)),true);
+			(yyval.node) = new ItemType(LOC ((yyloc)),true);
 		;}
     break;
 
   case 380:
-#line 4921 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4941 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AtomicType [qname]" << endl;
 #endif
-			(yyval.node) = new AtomicType(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = new AtomicType(LOC ((yyloc)),
+								new QName(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 381:
-#line 4935 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4955 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [doc]" << endl;
@@ -4742,7 +5525,7 @@ namespace zorba
     break;
 
   case 382:
-#line 4942 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4962 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [elem]" << endl;
@@ -4752,7 +5535,7 @@ namespace zorba
     break;
 
   case 383:
-#line 4949 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4969 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [attr]" << endl;
@@ -4762,7 +5545,7 @@ namespace zorba
     break;
 
   case 384:
-#line 4956 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4976 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_elem]" << endl;
@@ -4772,7 +5555,7 @@ namespace zorba
     break;
 
   case 385:
-#line 4963 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4983 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [schema_attr]" << endl;
@@ -4782,7 +5565,7 @@ namespace zorba
     break;
 
   case 386:
-#line 4970 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4990 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [pi]" << endl;
@@ -4792,7 +5575,7 @@ namespace zorba
     break;
 
   case 387:
-#line 4977 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 4997 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [comment]" << endl;
@@ -4802,7 +5585,7 @@ namespace zorba
     break;
 
   case 388:
-#line 4984 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5004 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [text]" << endl;
@@ -4812,7 +5595,7 @@ namespace zorba
     break;
 
   case 389:
-#line 4991 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5011 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "KindTest [any]" << endl;
@@ -4822,223 +5605,223 @@ namespace zorba
     break;
 
   case 390:
-#line 5004 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5024 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AnyKindTest [ ]" << endl;
 #endif
-			(yyval.node) = new AnyKindTest(driver.createQueryLoc((yyloc)));
+			(yyval.node) = new AnyKindTest(LOC ((yyloc)));
 		;}
     break;
 
   case 391:
-#line 5017 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5037 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [ ]" << endl;
 #endif
-			(yyval.node) = new DocumentTest(driver.createQueryLoc((yyloc)));
+			(yyval.node) = new DocumentTest(LOC ((yyloc)));
 		;}
     break;
 
   case 392:
-#line 5024 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5044 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [elem]" << endl;
 #endif
-			(yyval.node) = new DocumentTest(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new DocumentTest(LOC ((yyloc)),
 								dynamic_cast<ElementTest*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 393:
-#line 5032 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5052 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DocumentTest [schema_elem]" << endl;
 #endif
-			(yyval.node) = new DocumentTest(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new DocumentTest(LOC ((yyloc)),
 								dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(3) - (2)].node)));
 		;}
     break;
 
   case 394:
-#line 5046 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5066 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TextTest [ ]" << endl;
 #endif
-			(yyval.node) = new TextTest(driver.createQueryLoc((yyloc)));
+			(yyval.node) = new TextTest(LOC ((yyloc)));
 		;}
     break;
 
   case 395:
-#line 5059 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5079 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CommentTest [ ]" << endl;
 #endif
-			(yyval.node) = new CommentTest(driver.createQueryLoc((yyloc)));
+			(yyval.node) = new CommentTest(LOC ((yyloc)));
 		;}
     break;
 
   case 396:
-#line 5072 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5092 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ ]" << endl;
 #endif
-			(yyval.node) = new PITest(driver.createQueryLoc((yyloc)), "");
+			(yyval.node) = new PITest(LOC ((yyloc)), "");
 		;}
     break;
 
   case 397:
-#line 5079 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5099 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [ncname]" << endl;
 #endif
-			(yyval.node) = new PITest(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
+			(yyval.node) = new PITest(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 398:
-#line 5086 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5106 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "PITest [stringlit]" << endl;
 #endif
-			(yyval.node) = new PITest(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
+			(yyval.node) = new PITest(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
 		;}
     break;
 
   case 399:
-#line 5099 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5119 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [ ]" << endl;
 #endif
-			(yyval.node) = new AttributeTest(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
 								NULL);
 		;}
     break;
 
   case 400:
-#line 5108 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5128 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name]" << endl;
 #endif
-			(yyval.node) = new AttributeTest(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
+			(yyval.node) = new AttributeTest(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 								NULL);
 		;}
     break;
 
   case 401:
-#line 5117 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5137 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [name.type]" << endl;
 #endif
-			(yyval.node) = new AttributeTest(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new AttributeTest(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 								dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
 		;}
     break;
 
   case 402:
-#line 5126 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5146 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*]" << endl;
 #endif
-			(yyval.node) = new AttributeTest(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
 								NULL);
 		;}
     break;
 
   case 403:
-#line 5135 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5155 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "AttributeTest [*.type]" << endl;
 #endif
-			(yyval.node) = new AttributeTest(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new AttributeTest(LOC ((yyloc)),
 								NULL,
 								dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
 		;}
     break;
 
   case 404:
-#line 5150 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5170 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaAttributeTest [ ]" << endl;
 #endif
-			(yyval.node) = new SchemaAttributeTest(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
+			(yyval.node) = new SchemaAttributeTest(LOC ((yyloc)),
+								new QName(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
 		;}
     break;
 
   case 405:
-#line 5164 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5184 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [ ]" << endl;
 #endif
-			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
 									NULL);
 		;}
     break;
 
   case 406:
-#line 5173 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5193 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name]" << endl;
 #endif
-			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
-									new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
+			(yyval.node) = new ElementTest(LOC ((yyloc)),
+									new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))),
 									NULL);
 		;}
     break;
 
   case 407:
-#line 5182 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5202 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]" << endl;
 #endif
-			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
-									new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new ElementTest(LOC ((yyloc)),
+									new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
 		;}
     break;
 
   case 408:
-#line 5191 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5211 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [name.type]" << endl;
 #endif
-			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
-									new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
+			(yyval.node) = new ElementTest(LOC ((yyloc)),
+									new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(5) - (2)].sval))),
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)));
 		;}
     break;
 
   case 409:
-#line 5200 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5220 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*]" << endl;
 #endif
-			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
 									NULL,
 									true);
@@ -5046,12 +5829,12 @@ namespace zorba
     break;
 
   case 410:
-#line 5210 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5230 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]" << endl;
 #endif
-			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)),
 									true);
@@ -5059,12 +5842,12 @@ namespace zorba
     break;
 
   case 411:
-#line 5220 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5240 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ElementTest [*.type]" << endl;
 #endif
-			(yyval.node) = new ElementTest(driver.createQueryLoc((yyloc)),
+			(yyval.node) = new ElementTest(LOC ((yyloc)),
 									NULL,
 									dynamic_cast<TypeName*>((yysemantic_stack_[(5) - (4)].node)),
 									true);
@@ -5072,51 +5855,51 @@ namespace zorba
     break;
 
   case 412:
-#line 5236 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5256 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "SchemaElementTest [ ]" << endl;
 #endif
-			(yyval.node) = new SchemaElementTest(driver.createQueryLoc((yyloc)),
-									new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
+			(yyval.node) = new SchemaElementTest(LOC ((yyloc)),
+									new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval))));
 		;}
     break;
 
   case 413:
-#line 5260 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5280 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name]" << endl;
 #endif
-			(yyval.node) = new TypeName(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = new TypeName(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 414:
-#line 5270 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5290 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TypeName [name?]" << endl;
 #endif
-			(yyval.node) = new TypeName(driver.createQueryLoc((yyloc)),
-								new QName(driver.createQueryLoc((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
+			(yyval.node) = new TypeName(LOC ((yyloc)),
+								new QName(LOC ((yyloc)),driver.symtab.get((off_t)(yysemantic_stack_[(2) - (1)].sval))),
 								true);
 		;}
     break;
 
   case 415:
-#line 5293 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5313 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "StringLiteral [ ]" << endl;
 #endif
-			(yyval.expr) = new StringLiteral(driver.createQueryLoc((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
+			(yyval.expr) = new StringLiteral(LOC ((yyloc)), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
 		;}
     break;
 
   case 416:
-#line 5335 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5356 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [strict]" << endl;
@@ -5127,7 +5910,7 @@ namespace zorba
     break;
 
   case 417:
-#line 5343 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5364 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [lax]" << endl;
@@ -5136,7 +5919,7 @@ namespace zorba
     break;
 
   case 418:
-#line 5349 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5370 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RevalidationDecl [skip]" << endl;
@@ -5145,186 +5928,186 @@ namespace zorba
     break;
 
   case 419:
-#line 5360 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5381 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr]" << endl;
 #endif
        (yyval.expr) = new InsertExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   InsertExpr::NODE_INTO, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 420:
-#line 5369 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5390 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.as_first]" << endl;
 #endif
        (yyval.expr) = new InsertExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   InsertExpr::NODE_AS_FIRST_INTO, (yysemantic_stack_[(5) - (2)].expr), (yysemantic_stack_[(5) - (5)].expr));
 		;}
     break;
 
   case 421:
-#line 5378 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5399 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.as_last]" << endl;
 #endif
        (yyval.expr) = new InsertExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   InsertExpr::NODE_AS_LAST_INTO, (yysemantic_stack_[(5) - (2)].expr), (yysemantic_stack_[(5) - (5)].expr));
 		;}
     break;
 
   case 422:
-#line 5387 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5408 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.after]" << endl;
 #endif
        (yyval.expr) = new InsertExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   InsertExpr::NODE_AFTER, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 423:
-#line 5396 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5417 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodeExpr [expr.before]" << endl;
 #endif
        (yyval.expr) = new InsertExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   InsertExpr::NODE_BEFORE, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 424:
-#line 5406 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5427 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr]" << endl;
 #endif
        (yyval.expr) = new InsertExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   InsertExpr::NODES_INTO, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 425:
-#line 5415 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5436 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.as_first]" << endl;
 #endif
        (yyval.expr) = new InsertExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   InsertExpr::NODES_AS_FIRST_INTO, (yysemantic_stack_[(5) - (2)].expr), (yysemantic_stack_[(5) - (5)].expr));
 		;}
     break;
 
   case 426:
-#line 5424 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5445 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.as_last]" << endl;
 #endif
        (yyval.expr) = new InsertExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   InsertExpr::NODES_AS_LAST_INTO, (yysemantic_stack_[(5) - (2)].expr), (yysemantic_stack_[(5) - (5)].expr));
 		;}
     break;
 
   case 427:
-#line 5433 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5454 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.after]" << endl;
 #endif
        (yyval.expr) = new InsertExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   InsertExpr::NODES_AFTER, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 428:
-#line 5442 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5463 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "InsertNodesExpr [expr.before]" << endl;
 #endif
        (yyval.expr) = new InsertExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   InsertExpr::NODES_BEFORE, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 429:
-#line 5457 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5478 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteNodeExpr [expr]" << endl;
 #endif
        (yyval.expr) = new DeleteExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   DeleteExpr::NODE, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 430:
-#line 5467 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5488 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteNodesExpr [expr]" << endl;
 #endif
        (yyval.expr) = new DeleteExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   DeleteExpr::NODES, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 431:
-#line 5482 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5503 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceExpr [expr.expr]" << endl;
 #endif
        (yyval.expr) = new ReplaceExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   ReplaceExpr::WITH, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 432:
-#line 5491 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5512 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "ReplaceValueOfExpr [value.expr]" << endl;
 #endif
        (yyval.expr) = new ReplaceExpr(
-                  driver.createQueryLoc((yyloc)),
+                  LOC ((yyloc)),
                   ReplaceExpr::VALUE_OF_WITH, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 433:
-#line 5506 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5527 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "RenameExpr [expr.expr]" << endl;
 #endif
        (yyval.expr) = new RenameExpr(
-                  driver.createQueryLoc((yyloc)), (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
+                  LOC ((yyloc)), (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 434:
-#line 5535 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5556 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TransformExpr [ ]" << endl;
@@ -5333,7 +6116,7 @@ namespace zorba
     break;
 
   case 435:
-#line 5547 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5568 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [single]" << endl;
@@ -5342,7 +6125,7 @@ namespace zorba
     break;
 
   case 436:
-#line 5553 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5574 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [list]" << endl;
@@ -5351,7 +6134,7 @@ namespace zorba
     break;
 
   case 437:
-#line 5565 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5586 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
        cout << "VarNameDecl [" << driver.symtab.get((off_t)(yysemantic_stack_[(3) - (1)].sval)) << "]" << endl;
@@ -5360,30 +6143,30 @@ namespace zorba
     break;
 
   case 438:
-#line 5581 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5602 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TryExpr []" << endl;
 #endif
-       (yyval.expr) = new TryExpr(driver.createQueryLoc((yyloc)),
+       (yyval.expr) = new TryExpr(LOC ((yyloc)),
 								       (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
     ;}
     break;
 
   case 439:
-#line 5591 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5612 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchList [single]" << endl;
 #endif
-       CatchListExpr* aCatchListExpr = new CatchListExpr(driver.createQueryLoc((yyloc)));
+       CatchListExpr* aCatchListExpr = new CatchListExpr(LOC ((yyloc)));
        aCatchListExpr->push_back(static_cast<CatchExpr*>((yysemantic_stack_[(1) - (1)].expr)));
        (yyval.expr) = aCatchListExpr;
     ;}
     break;
 
   case 440:
-#line 5601 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5622 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchList [list]" << endl;
@@ -5397,28 +6180,28 @@ namespace zorba
     break;
 
   case 441:
-#line 5615 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5636 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest]" << endl;
 #endif
-       (yyval.expr) = new CatchExpr(driver.createQueryLoc((yyloc)),
+       (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(4) - (2)].node)),
                           (yysemantic_stack_[(4) - (4)].expr));
     ;}
     break;
 
   case 442:
-#line 5625 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5646 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest,VarName]" << endl;
 #endif
        QName* lQName = new QName(
-                         driver.createQueryLoc((yyloc)), 
+                         LOC ((yyloc)), 
                          driver.symtab.get((off_t)(yysemantic_stack_[(7) - (5)].sval))
                        );
-       (yyval.expr) = new CatchExpr(driver.createQueryLoc((yyloc)),
+       (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(7) - (2)].node)),
                           lQName,
                           (yysemantic_stack_[(7) - (7)].expr));
@@ -5426,7 +6209,7 @@ namespace zorba
     break;
 
   case 443:
-#line 5652 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5673 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or]" << endl;
@@ -5435,7 +6218,7 @@ namespace zorba
     break;
 
   case 444:
-#line 5658 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5679 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity]" << endl;
@@ -5444,7 +6227,7 @@ namespace zorba
     break;
 
   case 445:
-#line 5664 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5685 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.weight_range]" << endl;
@@ -5453,7 +6236,7 @@ namespace zorba
     break;
 
   case 446:
-#line 5670 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5691 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity.weight_range]" << endl;
@@ -5462,7 +6245,7 @@ namespace zorba
     break;
 
   case 447:
-#line 5682 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5703 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_single]" << endl;
@@ -5471,7 +6254,7 @@ namespace zorba
     break;
 
   case 448:
-#line 5688 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5709 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_single]" << endl;
@@ -5480,7 +6263,7 @@ namespace zorba
     break;
 
   case 449:
-#line 5694 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5715 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_list]" << endl;
@@ -5489,7 +6272,7 @@ namespace zorba
     break;
 
   case 450:
-#line 5700 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5721 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_list]" << endl;
@@ -5498,7 +6281,7 @@ namespace zorba
     break;
 
   case 451:
-#line 5712 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5733 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [and]" << endl;
@@ -5507,7 +6290,7 @@ namespace zorba
     break;
 
   case 452:
-#line 5718 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5739 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [or.and]" << endl;
@@ -5516,7 +6299,7 @@ namespace zorba
     break;
 
   case 453:
-#line 5730 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5751 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [mild_not]" << endl;
@@ -5525,7 +6308,7 @@ namespace zorba
     break;
 
   case 454:
-#line 5736 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5757 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [and.mild_not]" << endl;
@@ -5534,7 +6317,7 @@ namespace zorba
     break;
 
   case 455:
-#line 5748 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5769 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [unary_not]" << endl;
@@ -5543,7 +6326,7 @@ namespace zorba
     break;
 
   case 456:
-#line 5754 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5775 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [mild_not.unary_not]" << endl;
@@ -5552,7 +6335,7 @@ namespace zorba
     break;
 
   case 457:
-#line 5766 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5787 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [words]" << endl;
@@ -5561,7 +6344,7 @@ namespace zorba
     break;
 
   case 458:
-#line 5772 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5793 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [not.words]" << endl;
@@ -5570,7 +6353,7 @@ namespace zorba
     break;
 
   case 459:
-#line 5784 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5805 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words]" << endl;
@@ -5579,7 +6362,7 @@ namespace zorba
     break;
 
   case 460:
-#line 5790 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5811 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words.times]" << endl;
@@ -5588,7 +6371,7 @@ namespace zorba
     break;
 
   case 461:
-#line 5796 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5817 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [selection]" << endl;
@@ -5597,7 +6380,7 @@ namespace zorba
     break;
 
   case 462:
-#line 5808 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5829 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value]" << endl;
@@ -5606,7 +6389,7 @@ namespace zorba
     break;
 
   case 463:
-#line 5814 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5835 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value.any_all_option]" << endl;
@@ -5615,7 +6398,7 @@ namespace zorba
     break;
 
   case 464:
-#line 5826 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5847 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [literal]" << endl;
@@ -5624,7 +6407,7 @@ namespace zorba
     break;
 
   case 465:
-#line 5832 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5853 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [expr]" << endl;
@@ -5633,7 +6416,7 @@ namespace zorba
     break;
 
   case 466:
-#line 5844 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5865 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [order]" << endl;
@@ -5642,7 +6425,7 @@ namespace zorba
     break;
 
   case 467:
-#line 5850 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5871 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [window]" << endl;
@@ -5651,7 +6434,7 @@ namespace zorba
     break;
 
   case 468:
-#line 5856 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5877 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [distance]" << endl;
@@ -5660,7 +6443,7 @@ namespace zorba
     break;
 
   case 469:
-#line 5862 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5883 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [scope]" << endl;
@@ -5669,7 +6452,7 @@ namespace zorba
     break;
 
   case 470:
-#line 5868 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5889 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [content]" << endl;
@@ -5678,7 +6461,7 @@ namespace zorba
     break;
 
   case 471:
-#line 5880 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5901 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOrderedIndicator [ ]" << endl;
@@ -5687,7 +6470,7 @@ namespace zorba
     break;
 
   case 472:
-#line 5892 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5913 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [case]" << endl;
@@ -5697,7 +6480,7 @@ namespace zorba
     break;
 
   case 473:
-#line 5899 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5920 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [diacritics]" << endl;
@@ -5707,7 +6490,7 @@ namespace zorba
     break;
 
   case 474:
-#line 5906 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5927 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stem]" << endl;
@@ -5717,7 +6500,7 @@ namespace zorba
     break;
 
   case 475:
-#line 5913 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5934 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [thesaurus]" << endl;
@@ -5727,7 +6510,7 @@ namespace zorba
     break;
 
   case 476:
-#line 5920 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5941 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stopword]" << endl;
@@ -5737,7 +6520,7 @@ namespace zorba
     break;
 
   case 477:
-#line 5927 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5948 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [language]" << endl;
@@ -5747,7 +6530,7 @@ namespace zorba
     break;
 
   case 478:
-#line 5934 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5955 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [wildcard]" << endl;
@@ -5757,7 +6540,7 @@ namespace zorba
     break;
 
   case 479:
-#line 5947 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5968 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [lower]" << endl;
@@ -5766,7 +6549,7 @@ namespace zorba
     break;
 
   case 480:
-#line 5953 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5974 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [upper]" << endl;
@@ -5775,7 +6558,7 @@ namespace zorba
     break;
 
   case 481:
-#line 5959 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5980 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [sensitive]" << endl;
@@ -5784,7 +6567,7 @@ namespace zorba
     break;
 
   case 482:
-#line 5965 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5986 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [insensitive]" << endl;
@@ -5793,7 +6576,7 @@ namespace zorba
     break;
 
   case 483:
-#line 5977 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 5998 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [with]" << endl;
@@ -5802,7 +6585,7 @@ namespace zorba
     break;
 
   case 484:
-#line 5983 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6004 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [without]" << endl;
@@ -5811,7 +6594,7 @@ namespace zorba
     break;
 
   case 485:
-#line 5989 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6010 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [sensitive]" << endl;
@@ -5820,7 +6603,7 @@ namespace zorba
     break;
 
   case 486:
-#line 5995 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6016 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [insensitive]" << endl;
@@ -5829,7 +6612,7 @@ namespace zorba
     break;
 
   case 487:
-#line 6007 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6028 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [with]" << endl;
@@ -5838,7 +6621,7 @@ namespace zorba
     break;
 
   case 488:
-#line 6013 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6034 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [without]" << endl;
@@ -5847,7 +6630,7 @@ namespace zorba
     break;
 
   case 489:
-#line 6025 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6046 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [id]" << endl;
@@ -5856,7 +6639,7 @@ namespace zorba
     break;
 
   case 490:
-#line 6031 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6052 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [default]" << endl;
@@ -5865,7 +6648,7 @@ namespace zorba
     break;
 
   case 491:
-#line 6037 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6058 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id)]" << endl;
@@ -5874,7 +6657,7 @@ namespace zorba
     break;
 
   case 492:
-#line 6043 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6064 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id,id,..)]" << endl;
@@ -5883,7 +6666,7 @@ namespace zorba
     break;
 
   case 493:
-#line 6049 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6070 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default)]" << endl;
@@ -5892,7 +6675,7 @@ namespace zorba
     break;
 
   case 494:
-#line 6055 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6076 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default,id,id,..)]" << endl;
@@ -5901,7 +6684,7 @@ namespace zorba
     break;
 
   case 495:
-#line 6061 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6082 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [without]" << endl;
@@ -5910,7 +6693,7 @@ namespace zorba
     break;
 
   case 496:
-#line 6073 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6094 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [single]" << endl;
@@ -5919,7 +6702,7 @@ namespace zorba
     break;
 
   case 497:
-#line 6079 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6100 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [list]" << endl;
@@ -5928,7 +6711,7 @@ namespace zorba
     break;
 
   case 498:
-#line 6091 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6112 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name]" << endl;
@@ -5937,7 +6720,7 @@ namespace zorba
     break;
 
   case 499:
-#line 6097 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6118 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel]" << endl;
@@ -5946,7 +6729,7 @@ namespace zorba
     break;
 
   case 500:
-#line 6103 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6124 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.range]" << endl;
@@ -5955,7 +6738,7 @@ namespace zorba
     break;
 
   case 501:
-#line 6109 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6130 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel.range]" << endl;
@@ -5964,7 +6747,7 @@ namespace zorba
     break;
 
   case 502:
-#line 6121 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6142 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list]" << endl;
@@ -5973,7 +6756,7 @@ namespace zorba
     break;
 
   case 503:
-#line 6127 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6148 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list.incl_excl]" << endl;
@@ -5982,7 +6765,7 @@ namespace zorba
     break;
 
   case 504:
-#line 6133 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6154 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default]" << endl;
@@ -5991,7 +6774,7 @@ namespace zorba
     break;
 
   case 505:
-#line 6139 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6160 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default.incl_excl]" << endl;
@@ -6000,7 +6783,7 @@ namespace zorba
     break;
 
   case 506:
-#line 6145 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6166 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [without]" << endl;
@@ -6009,7 +6792,7 @@ namespace zorba
     break;
 
   case 507:
-#line 6157 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6178 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [.]" << endl;
@@ -6018,7 +6801,7 @@ namespace zorba
     break;
 
   case 508:
-#line 6163 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6184 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [*]" << endl;
@@ -6027,7 +6810,7 @@ namespace zorba
     break;
 
   case 509:
-#line 6175 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6196 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [.]" << endl;
@@ -6036,7 +6819,7 @@ namespace zorba
     break;
 
   case 510:
-#line 6181 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6202 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [(*)]" << endl;
@@ -6045,7 +6828,7 @@ namespace zorba
     break;
 
   case 511:
-#line 6193 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6214 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [.]" << endl;
@@ -6054,7 +6837,7 @@ namespace zorba
     break;
 
   case 512:
-#line 6199 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6220 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [*]" << endl;
@@ -6063,7 +6846,7 @@ namespace zorba
     break;
 
   case 513:
-#line 6211 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6232 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [union]" << endl;
@@ -6072,7 +6855,7 @@ namespace zorba
     break;
 
   case 514:
-#line 6217 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6238 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [except]" << endl;
@@ -6081,7 +6864,7 @@ namespace zorba
     break;
 
   case 515:
-#line 6229 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6250 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTLanguageOption [ ]" << endl;
@@ -6090,7 +6873,7 @@ namespace zorba
     break;
 
   case 516:
-#line 6241 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6262 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [with]" << endl;
@@ -6099,7 +6882,7 @@ namespace zorba
     break;
 
   case 517:
-#line 6247 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6268 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [without]" << endl;
@@ -6108,7 +6891,7 @@ namespace zorba
     break;
 
   case 518:
-#line 6259 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6280 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [start]" << endl;
@@ -6117,7 +6900,7 @@ namespace zorba
     break;
 
   case 519:
-#line 6265 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6286 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [end]" << endl;
@@ -6126,7 +6909,7 @@ namespace zorba
     break;
 
   case 520:
-#line 6271 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6292 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [entire]" << endl;
@@ -6135,7 +6918,7 @@ namespace zorba
     break;
 
   case 521:
-#line 6283 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6304 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any]" << endl;
@@ -6144,7 +6927,7 @@ namespace zorba
     break;
 
   case 522:
-#line 6289 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6310 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any_word]" << endl;
@@ -6153,7 +6936,7 @@ namespace zorba
     break;
 
   case 523:
-#line 6295 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6316 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all]" << endl;
@@ -6162,7 +6945,7 @@ namespace zorba
     break;
 
   case 524:
-#line 6301 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6322 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all_words]" << endl;
@@ -6171,7 +6954,7 @@ namespace zorba
     break;
 
   case 525:
-#line 6307 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6328 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [phrase]" << endl;
@@ -6180,43 +6963,47 @@ namespace zorba
     break;
 
   case 526:
-#line 6319 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6340 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [exactly]" << endl;
 #endif
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::exactly, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 527:
-#line 6325 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6347 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_least]" << endl;
 #endif
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_least, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 528:
-#line 6331 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6354 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_most]" << endl;
 #endif
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::at_most, (yysemantic_stack_[(2) - (2)].expr));
 		;}
     break;
 
   case 529:
-#line 6337 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6361 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [range]" << endl;
 #endif
+       (yyval.node) = new FTRange (LOC ((yyloc)), FTRange::from_to, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
 		;}
     break;
 
   case 530:
-#line 6349 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6374 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDistance [ ]" << endl;
@@ -6225,7 +7012,7 @@ namespace zorba
     break;
 
   case 531:
-#line 6361 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6386 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWindow [ ]" << endl;
@@ -6234,7 +7021,7 @@ namespace zorba
     break;
 
   case 532:
-#line 6373 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6398 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [ ]" << endl;
@@ -6243,7 +7030,7 @@ namespace zorba
     break;
 
   case 533:
-#line 6385 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6410 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [same]" << endl;
@@ -6252,7 +7039,7 @@ namespace zorba
     break;
 
   case 534:
-#line 6391 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6416 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [different]" << endl;
@@ -6261,7 +7048,7 @@ namespace zorba
     break;
 
   case 535:
-#line 6403 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6428 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [words]" << endl;
@@ -6270,7 +7057,7 @@ namespace zorba
     break;
 
   case 536:
-#line 6409 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6434 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [sentences]" << endl;
@@ -6279,7 +7066,7 @@ namespace zorba
     break;
 
   case 537:
-#line 6415 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6440 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [paragraph]" << endl;
@@ -6288,7 +7075,7 @@ namespace zorba
     break;
 
   case 538:
-#line 6427 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6452 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [sentence]" << endl;
@@ -6297,7 +7084,7 @@ namespace zorba
     break;
 
   case 539:
-#line 6433 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6458 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [paragraph]" << endl;
@@ -6306,7 +7093,7 @@ namespace zorba
     break;
 
   case 540:
-#line 6445 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6470 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTIgnoreOption [ ]" << endl;
@@ -6316,7 +7103,7 @@ namespace zorba
 
 
     /* Line 675 of lalr1.cc.  */
-#line 6320 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
+#line 7107 "/usr/local/src/zorba/test/zorbatest/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -8219,61 +9006,61 @@ namespace zorba
   const unsigned short int
   xquery_parser::yyrline_[] =
   {
-         0,   731,   731,   739,   747,   753,   765,   771,   783,   793,
-     808,   823,   838,   847,   856,   871,   880,   897,   906,   923,
-     930,   937,   944,   956,   963,   970,   979,   992,   999,  1006,
-    1013,  1020,  1027,  1034,  1043,  1056,  1063,  1081,  1096,  1104,
-    1118,  1127,  1142,  1158,  1172,  1180,  1195,  1203,  1217,  1226,
-    1235,  1244,  1266,  1280,  1294,  1304,  1314,  1324,  1340,  1349,
-    1367,  1374,  1387,  1396,  1406,  1415,  1432,  1442,  1452,  1462,
-    1478,  1486,  1500,  1510,  1521,  1532,  1544,  1556,  1568,  1580,
-    1592,  1602,  1613,  1624,  1636,  1648,  1660,  1672,  1690,  1701,
-    1718,  1727,  1742,  1756,  1770,  1779,  1794,  1801,  1808,  1815,
-    1822,  1831,  1838,  1845,  1852,  1859,  1866,  1878,  1888,  1899,
-    1910,  1927,  1936,  1951,  1958,  1971,  1985,  1994,  2011,  2021,
-    2032,  2044,  2057,  2068,  2080,  2092,  2110,  2125,  2139,  2154,
-    2163,  2180,  2191,  2203,  2214,  2232,  2246,  2254,  2269,  2278,
-    2295,  2304,  2319,  2329,  2339,  2349,  2359,  2369,  2379,  2395,
-    2402,  2415,  2423,  2437,  2451,  2461,  2477,  2487,  2502,  2511,
-    2527,  2537,  2554,  2563,  2578,  2587,  2603,  2617,  2624,  2638,
-    2645,  2667,  2674,  2685,  2696,  2713,  2720,  2730,  2746,  2753,
-    2767,  2774,  2781,  2794,  2800,  2807,  2814,  2821,  2834,  2841,
-    2849,  2863,  2870,  2877,  2890,  2897,  2912,  2919,  2934,  2941,
-    2956,  2963,  2978,  2985,  3000,  3007,  3014,  3021,  3036,  3043,
-    3050,  3064,  3071,  3078,  3085,  3092,  3099,  3112,  3119,  3126,
-    3133,  3140,  3147,  3160,  3167,  3174,  3188,  3195,  3210,  3219,
-    3234,  3243,  3260,  3269,  3311,  3318,  3325,  3332,  3346,  3354,
-    3361,  3374,  3381,  3394,  3403,  3412,  3421,  3436,  3445,  3459,
-    3466,  3473,  3480,  3487,  3494,  3501,  3514,  3521,  3534,  3543,
-    3558,  3565,  3572,  3579,  3586,  3604,  3611,  3624,  3631,  3644,
-    3654,  3664,  3680,  3687,  3702,  3711,  3728,  3742,  3749,  3756,
-    3763,  3770,  3777,  3784,  3791,  3804,  3811,  3824,  3832,  3840,
-    3854,  3867,  3874,  3888,  3901,  3915,  3974,  3983,  3998,  4007,
-    4022,  4029,  4042,  4049,  4056,  4069,  4080,  4091,  4102,  4113,
-    4124,  4142,  4151,  4166,  4175,  4192,  4207,  4215,  4230,  4236,
-    4243,  4252,  4261,  4272,  4289,  4295,  4302,  4311,  4320,  4331,
-    4348,  4356,  4370,  4378,  4392,  4400,  4408,  4417,  4432,  4441,
-    4449,  4457,  4471,  4479,  4497,  4505,  4525,  4543,  4550,  4557,
-    4564,  4571,  4578,  4591,  4605,  4614,  4623,  4631,  4659,  4668,
-    4677,  4685,  4699,  4713,  4727,  4736,  4745,  4753,  4767,  4776,
-    4791,  4805,  4814,  4823,  4863,  4871,  4879,  4893,  4900,  4907,
-    4920,  4934,  4941,  4948,  4955,  4962,  4969,  4976,  4983,  4990,
-    5003,  5016,  5023,  5031,  5045,  5058,  5071,  5078,  5085,  5098,
-    5107,  5116,  5125,  5134,  5149,  5163,  5172,  5181,  5190,  5199,
-    5209,  5219,  5235,  5259,  5269,  5292,  5334,  5342,  5348,  5359,
-    5368,  5377,  5386,  5395,  5405,  5414,  5423,  5432,  5441,  5456,
-    5466,  5481,  5490,  5505,  5534,  5546,  5552,  5564,  5580,  5590,
-    5600,  5614,  5624,  5651,  5657,  5663,  5669,  5681,  5687,  5693,
-    5699,  5711,  5717,  5729,  5735,  5747,  5753,  5765,  5771,  5783,
-    5789,  5795,  5807,  5813,  5825,  5831,  5843,  5849,  5855,  5861,
-    5867,  5879,  5891,  5898,  5905,  5912,  5919,  5926,  5933,  5946,
-    5952,  5958,  5964,  5976,  5982,  5988,  5994,  6006,  6012,  6024,
-    6030,  6036,  6042,  6048,  6054,  6060,  6072,  6078,  6090,  6096,
-    6102,  6108,  6120,  6126,  6132,  6138,  6144,  6156,  6162,  6174,
-    6180,  6192,  6198,  6210,  6216,  6228,  6240,  6246,  6258,  6264,
-    6270,  6282,  6288,  6294,  6300,  6306,  6318,  6324,  6330,  6336,
-    6348,  6360,  6372,  6384,  6390,  6402,  6408,  6414,  6426,  6432,
-    6444
+         0,   743,   743,   751,   759,   766,   779,   787,   800,   810,
+     825,   840,   855,   864,   873,   888,   897,   914,   923,   940,
+     947,   954,   961,   973,   980,   987,   996,  1009,  1016,  1023,
+    1030,  1037,  1044,  1051,  1060,  1073,  1080,  1098,  1113,  1121,
+    1135,  1144,  1159,  1175,  1189,  1197,  1212,  1220,  1234,  1243,
+    1252,  1261,  1283,  1297,  1311,  1321,  1331,  1341,  1357,  1366,
+    1384,  1391,  1404,  1413,  1423,  1432,  1449,  1459,  1469,  1479,
+    1495,  1503,  1517,  1527,  1538,  1549,  1561,  1573,  1585,  1597,
+    1609,  1619,  1630,  1641,  1653,  1665,  1677,  1689,  1707,  1718,
+    1735,  1744,  1759,  1773,  1787,  1796,  1811,  1818,  1825,  1832,
+    1839,  1848,  1855,  1862,  1869,  1876,  1883,  1896,  1906,  1917,
+    1928,  1945,  1954,  1969,  1976,  1989,  2003,  2012,  2029,  2039,
+    2050,  2062,  2075,  2086,  2098,  2110,  2128,  2143,  2157,  2172,
+    2181,  2198,  2209,  2221,  2232,  2250,  2264,  2272,  2287,  2296,
+    2313,  2322,  2337,  2347,  2357,  2367,  2377,  2387,  2397,  2413,
+    2420,  2433,  2441,  2455,  2469,  2479,  2495,  2505,  2520,  2529,
+    2545,  2555,  2572,  2581,  2596,  2605,  2621,  2635,  2642,  2656,
+    2663,  2685,  2692,  2703,  2714,  2731,  2738,  2748,  2764,  2771,
+    2785,  2792,  2799,  2812,  2819,  2826,  2833,  2840,  2853,  2860,
+    2868,  2882,  2889,  2896,  2909,  2916,  2931,  2938,  2953,  2960,
+    2975,  2982,  2997,  3004,  3019,  3026,  3033,  3040,  3055,  3062,
+    3069,  3083,  3090,  3097,  3104,  3111,  3118,  3131,  3138,  3145,
+    3152,  3159,  3166,  3179,  3186,  3193,  3207,  3214,  3229,  3238,
+    3253,  3262,  3279,  3288,  3330,  3337,  3344,  3351,  3365,  3373,
+    3380,  3393,  3400,  3413,  3422,  3431,  3440,  3455,  3464,  3478,
+    3485,  3492,  3499,  3506,  3513,  3520,  3533,  3540,  3553,  3562,
+    3577,  3584,  3591,  3598,  3605,  3623,  3630,  3643,  3650,  3663,
+    3673,  3683,  3699,  3706,  3721,  3730,  3747,  3761,  3768,  3775,
+    3782,  3789,  3796,  3803,  3810,  3823,  3830,  3843,  3851,  3859,
+    3873,  3886,  3893,  3907,  3920,  3934,  3993,  4002,  4017,  4026,
+    4041,  4048,  4061,  4068,  4075,  4088,  4099,  4110,  4121,  4132,
+    4143,  4161,  4170,  4185,  4194,  4211,  4226,  4234,  4249,  4255,
+    4262,  4271,  4280,  4291,  4309,  4315,  4322,  4331,  4340,  4351,
+    4368,  4376,  4390,  4398,  4412,  4420,  4428,  4437,  4452,  4461,
+    4469,  4477,  4491,  4499,  4517,  4525,  4545,  4563,  4570,  4577,
+    4584,  4591,  4598,  4611,  4625,  4634,  4643,  4651,  4679,  4688,
+    4697,  4705,  4719,  4733,  4747,  4756,  4765,  4773,  4787,  4796,
+    4811,  4825,  4834,  4843,  4883,  4891,  4899,  4913,  4920,  4927,
+    4940,  4954,  4961,  4968,  4975,  4982,  4989,  4996,  5003,  5010,
+    5023,  5036,  5043,  5051,  5065,  5078,  5091,  5098,  5105,  5118,
+    5127,  5136,  5145,  5154,  5169,  5183,  5192,  5201,  5210,  5219,
+    5229,  5239,  5255,  5279,  5289,  5312,  5355,  5363,  5369,  5380,
+    5389,  5398,  5407,  5416,  5426,  5435,  5444,  5453,  5462,  5477,
+    5487,  5502,  5511,  5526,  5555,  5567,  5573,  5585,  5601,  5611,
+    5621,  5635,  5645,  5672,  5678,  5684,  5690,  5702,  5708,  5714,
+    5720,  5732,  5738,  5750,  5756,  5768,  5774,  5786,  5792,  5804,
+    5810,  5816,  5828,  5834,  5846,  5852,  5864,  5870,  5876,  5882,
+    5888,  5900,  5912,  5919,  5926,  5933,  5940,  5947,  5954,  5967,
+    5973,  5979,  5985,  5997,  6003,  6009,  6015,  6027,  6033,  6045,
+    6051,  6057,  6063,  6069,  6075,  6081,  6093,  6099,  6111,  6117,
+    6123,  6129,  6141,  6147,  6153,  6159,  6165,  6177,  6183,  6195,
+    6201,  6213,  6219,  6231,  6237,  6249,  6261,  6267,  6279,  6285,
+    6291,  6303,  6309,  6315,  6321,  6327,  6339,  6346,  6353,  6360,
+    6373,  6385,  6397,  6409,  6415,  6427,  6433,  6439,  6451,  6457,
+    6469
   };
 
   // Print the state stack on the debug stream.
@@ -8388,7 +9175,7 @@ namespace zorba
 
 } // namespace zorba
 
-#line 6454 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
+#line 6479 "/usr/local/src/zorba/src/compiler/parser/xquery_parser.y"
 
 
 
