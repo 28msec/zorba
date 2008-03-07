@@ -75,8 +75,8 @@ ZorbaEngineImpl::ZorbaEngineImpl(bool single_thread)
 	for_single_thread_api = single_thread;
 	theSingleThreadZorba = NULL;
 	xml_data_manager = new store::XmlDataManager_Impl;
-	xml_data_manager->addReference(xml_data_manager->getSharedRefCounter(),
-                                 xml_data_manager->getSync());
+	xml_data_manager->addReference(xml_data_manager->getSharedRefCounter()
+                                 SYNC_PARAM2(xml_data_manager->getSync()));
 }
 
 
@@ -86,8 +86,8 @@ ZorbaEngineImpl::~ZorbaEngineImpl()
   in_destructor = true;
   shutdown();
 
-	xml_data_manager->removeReference(xml_data_manager->getSharedRefCounter(),
-                                    xml_data_manager->getSync());
+	xml_data_manager->removeReference(xml_data_manager->getSharedRefCounter()
+                                    SYNC_PARAM2(xml_data_manager->getSync()));
 //  assert(globalZorbaEngine == NULL);
 	delete theSingleThreadZorba;
 
@@ -100,16 +100,16 @@ void ZorbaEngineImpl::initialize()
 	try{
 	if(!for_single_thread_api)
 	{
-#ifdef WIN32
+#if defined ZORBA_FOR_ONE_THREAD_ONLY
+  theThreadData = NULL;//new Zorba();
+
+#elif WIN32
   theThreadData = TlsAlloc();
 
 #elif defined ZORBA_USE_PTHREAD_LIBRARY
   pthread_key_create(&theThreadData, NULL);
 
 #elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
-
-#elif defined ZORBA_FOR_ONE_THREAD_ONLY
-  theThreadData = NULL;//new Zorba();
 
 #else
   #error Unsupported thread system
@@ -148,7 +148,11 @@ void ZorbaEngineImpl::shutdown()
 
     if(!for_single_thread_api)
 		{
-#ifdef WIN32
+#if defined ZORBA_FOR_ONE_THREAD_ONLY
+    delete theThreadData;
+    theThreadData = 0;
+
+#elif WIN32
     TlsFree(theThreadData);
     theThreadData = 0;
 
@@ -156,10 +160,6 @@ void ZorbaEngineImpl::shutdown()
     pthread_key_delete(theThreadData);
 
 #elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
-
-#elif defined ZORBA_FOR_ONE_THREAD_ONLY
-    delete theThreadData;
-    theThreadData = 0;
 
 #else
     #error Unsupported thread system
@@ -190,7 +190,11 @@ void ZorbaEngineImpl::initThread()
 
 		if(!for_single_thread_api)
 		{
-#ifdef WIN32
+#if defined ZORBA_FOR_ONE_THREAD_ONLY
+    //Assert(0);
+		theThreadData = zorba;
+
+#elif WIN32
     TlsSetValue(theThreadData, zorba);
 
 #elif defined ZORBA_USE_PTHREAD_LIBRARY
@@ -198,10 +202,6 @@ void ZorbaEngineImpl::initThread()
 
 #elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
     theThreadData = zorba;
-
-#elif defined ZORBA_FOR_ONE_THREAD_ONLY
-    //Assert(0);
-		theThreadData = zorba;
 
 #else
       #error Unsupported thread system
@@ -228,7 +228,10 @@ void ZorbaEngineImpl::uninitThread()
 	if(zorba)
 		delete zorba;
 
-#ifdef WIN32
+#if defined ZORBA_FOR_ONE_THREAD_ONLY
+	theThreadData = NULL;
+
+#elif WIN32
   TlsSetValue(theThreadData, NULL);
 
 #elif defined ZORBA_USE_PTHREAD_LIBRARY
@@ -237,8 +240,6 @@ void ZorbaEngineImpl::uninitThread()
 #elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
   theThreadData.release();
 
-#elif defined ZORBA_FOR_ONE_THREAD_ONLY
-	theThdreadData = NULL;
 #else
   #error Unsupported thread system
 #endif
@@ -251,7 +252,10 @@ Zorba* ZorbaEngineImpl::getZorbaForCurrentThread()
 	if(for_single_thread_api)
 		return theSingleThreadZorba;
 
-#ifdef WIN32
+#if defined ZORBA_FOR_ONE_THREAD_ONLY
+  return theThreadData;
+
+#elif WIN32
   return (Zorba*)TlsGetValue(theThreadData);
 
 #elif defined ZORBA_USE_PTHREAD_LIBRARY
@@ -259,9 +263,6 @@ Zorba* ZorbaEngineImpl::getZorbaForCurrentThread()
 
 #elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
   return theThreadData.get();
-
-#elif defined ZORBA_FOR_ONE_THREAD_ONLY
-  return theThreadData;
 
 #else
 #error Unsupported thread system

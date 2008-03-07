@@ -5,8 +5,10 @@
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
  *
  */
-
 #include "util/rwlock.h"
+
+#if !defined ZORBA_FOR_ONE_THREAD_ONLY
+
 
 #include <iostream>
 #include <sstream>
@@ -413,3 +415,5 @@ int rwlock::writeunlock()
 
 
 }	/* namespace zorba */
+
+#endif //#if !defined ZORBA_FOR_ONE_THREAD_ONLY

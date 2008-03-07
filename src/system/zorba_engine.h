@@ -37,11 +37,11 @@ class ZorbaEngineImpl : public ZorbaSingleThread, public ZorbaEngine
 {
 private:
 
-#if defined (WIN32)
-  DWORD                      theThreadData;
-
-#elif defined ZORBA_FOR_ONE_THREAD_ONLY
+#if defined ZORBA_FOR_ONE_THREAD_ONLY
   Zorba*                    theThreadData;
+
+#elif defined (WIN32)
+  DWORD                      theThreadData;
 
 #elif defined ZORBA_USE_PTHREAD_LIBRARY
 

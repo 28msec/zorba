@@ -68,7 +68,7 @@ protected:
   ulong                   theHashTabSize;
   float                   theLoadFactor;
 
-  Mutex                   theMutex;
+  SYNC_CODE(Mutex                   theMutex;)
 
 public:
   QNamePool(ulong size);

@@ -294,7 +294,7 @@ void XmlLoader::startDocument(void * ctx)
   loader.theNodeStack.push(docNode);
   loader.theNodeStack.push(NULL);
 
-  docNode->theRCLockPtr = &loader.theTree->getRCLock();
+  SYNC_CODE(docNode->theRCLockPtr = &loader.theTree->getRCLock();)
   docNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.pushChild();
 
@@ -404,7 +404,7 @@ void XmlLoader::startElement(
   elemNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.pushChild();
 
-  elemNode->theRCLockPtr = &loader.theTree->getRCLock();
+  SYNC_CODE(elemNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
   LOADER_TRACE1("Start Element: node = " << elemNode << " name = ["
                 << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
@@ -468,7 +468,7 @@ void XmlLoader::startElement(
 
       loader.theOrdPath.nextChild();
 
-      attrNode->theRCLockPtr = &loader.theTree->getRCLock();
+      SYNC_CODE(attrNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
       LOADER_TRACE1("Attribute: node = " << attrNode
                     << " name [" << (prefix != NULL ? prefix : "") << ":"
@@ -590,7 +590,7 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   textNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 
-  textNode->theRCLockPtr = &loader.theTree->getRCLock();
+  SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
   LOADER_TRACE1("Text Node = " << textNode << " content = " << content->c_str()
                 << std::endl << " ordpath = " << textNode->getOrdPath().show()
@@ -621,7 +621,7 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   textNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 
-  textNode->theRCLockPtr = &loader.theTree->getRCLock();
+  SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
  
   LOADER_TRACE1("Text Node = " << textNode << " content = " << content->c_str()
                 << std::endl << " ordpath = " << textNode->getOrdPath().show()
@@ -653,7 +653,7 @@ void XmlLoader::comment(
   commentNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 
-  commentNode->theRCLockPtr = &loader.theTree->getRCLock();
+  SYNC_CODE(commentNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
   LOADER_TRACE1("Comment Node = " << commentNode
                 << std::endl << " ordpath = " << commentNode->getOrdPath().show()
@@ -687,7 +687,7 @@ void XmlLoader::processingInstruction(
   piNode->setId(loader.theTree, &loader.theOrdPath);
   loader.theOrdPath.nextChild();
 
-  piNode->theRCLockPtr = &loader.theTree->getRCLock();
+  SYNC_CODE(piNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
   LOADER_TRACE1("Pi Node = " << piNode
                 << " target : " << target << " data: " << data << std::endl

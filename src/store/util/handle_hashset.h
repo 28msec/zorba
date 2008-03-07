@@ -60,7 +60,7 @@ protected:
   ulong                   theInitialSize;
   double                  theLoadFactor;
 
-  Mutex                   theMutex;
+  SYNC_CODE(Mutex                   theMutex;)
 
 public:
 
@@ -96,7 +96,7 @@ virtual ~HandleSet()
 ********************************************************************************/
 void clear() 
 {
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   theHashTab.clear();
   theNumEntries = 0;
@@ -109,7 +109,7 @@ void clear()
 ********************************************************************************/
 bool find(const T* item) const
 {
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   HashEntry* entry = &theHashTab[E::hash(item) % theHashTabSize];
 
@@ -136,7 +136,7 @@ bool insert(const T* item)
 {
   bool found;
 
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   HashEntry* entry = hashInsert(item, E::hash(item), found);
 
@@ -156,7 +156,7 @@ bool insert(const T* item,  rchandle<T>& outItem)
 {
   bool found;
 
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   HashEntry* entry = hashInsert(item, E::hash(item), found);
 
@@ -180,7 +180,7 @@ bool insert(const T* item,  rchandle<T>& outItem)
 ********************************************************************************/
 bool remove(const T* item)
 {
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   HashEntry* entry = &theHashTab[item.hash() % theHashTabSize];
 

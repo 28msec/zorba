@@ -49,10 +49,10 @@ protected:
   bool                     theIsInitialized;
 
   ulong                    theUriCounter;
-  Mutex                    theUriCounterMutex;
+  SYNC_CODE(Mutex                    theUriCounterMutex;)
 
   ulong                    theTreeCounter;
-  Mutex                    theTreeCounterMutex;
+  SYNC_CODE(Mutex                    theTreeCounterMutex;)
 
   NamespacePool          * theNamespacePool;
   QNamePool              * theQNamePool;

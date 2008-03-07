@@ -22,7 +22,7 @@ public:
 	{
   private:
     SimpleCollection_t            theCollection;
-    AutoLatch                     theLatch;
+    SYNC_CODE(AutoLatch                     theLatch;)
     std::set<Item_t>::iterator    theIterator;
 
   public:
@@ -40,7 +40,7 @@ public:
 protected:
   Item_t               theUri;
   std::set<Item_t>     theXmlTrees;
-  Latch                theLatch;
+  SYNC_CODE(Latch                theLatch;)
 
 public:
   SimpleCollection(Item* uri);

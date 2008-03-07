@@ -158,8 +158,16 @@ public:
 
 #endif // ZORBA_USE_PTHREAD_LIBRARY or WIN32
 
+//use this macro to activate or deactivate use of sync code
+#define     SYNC_CODE(x)    x
+#define     SYNC_PARAM2(x)    ,x
 
-#endif // ZORBA_FOR_ONE_THREAD_ONLY
+#else // ZORBA_FOR_ONE_THREAD_ONLY
+
+#define     SYNC_CODE(x)    
+#define     SYNC_PARAM2(x)
+
+#endif
 
 
 /*******************************************************************************
@@ -198,7 +206,7 @@ public:
 
   virtual void free() { delete this; }
 
-  long getRefCount(RCSync* sync) const
+  long getRefCount(SYNC_CODE(RCSync* sync)) const
   {
     RCLOCK(sync);
     long temp = theRefCount;
@@ -206,9 +214,10 @@ public:
     return temp;
   }
 
-  void addReference(long* counter, RCSync* sync)
+  void addReference(long* counter 
+                    SYNC_PARAM2(RCSync* sync))
   {
-#ifdef WIN32
+#if defined WIN32 && !defined ZORBA_FOR_ONE_THREAD_ONLY
     if(sync)
     {
       if (counter) InterlockedIncrement(counter);
@@ -227,9 +236,10 @@ public:
 #endif
   }
 
-  void removeReference(long* counter, RCSync* sync)
+  void removeReference(long* counter 
+                      SYNC_PARAM2(RCSync* sync))
   {
-#ifdef WIN32
+#if defined WIN32 && !defined ZORBA_FOR_ONE_THREAD_ONLY
     if(sync)
     {
       if (counter)
@@ -301,7 +311,7 @@ public:
   SimpleRCObject(const SimpleRCObject& rhs) : RCObject(rhs) { }
 
   long* getSharedRefCounter() { return NULL; }  
-  RCSync* getSync()           { return NULL; }
+  SYNC_CODE( RCSync* getSync()           { return NULL; })
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
 };
@@ -324,7 +334,8 @@ private:
   void init()
   {
     if (p == 0) return;
-    p->addReference(p->getSharedRefCounter(), p->getSync());
+    p->addReference(p->getSharedRefCounter()
+                    SYNC_PARAM2(p->getSync()));
   }
 
 public:
@@ -341,7 +352,8 @@ public:
   ~rchandle()
   {
     if (p)
-      p->removeReference(p->getSharedRefCounter(), p->getSync());
+      p->removeReference(p->getSharedRefCounter()
+                          SYNC_PARAM2(p->getSync()));
     p = 0;
   }
 
@@ -384,7 +396,8 @@ public:
   {
     if (p != rhs.p)
     {
-      if (p) p->removeReference(p->getSharedRefCounter(), p->getSync());
+      if (p) p->removeReference(p->getSharedRefCounter()
+                                SYNC_PARAM2(p->getSync()));
       p = rhs.p;
       init();
     }
@@ -395,7 +408,8 @@ public:
 	{
 		if (p != rhs.getp()) 
     {
-			if (p) p->removeReference(p->getSharedRefCounter(), p->getSync());
+			if (p) p->removeReference(p->getSharedRefCounter()
+                                SYNC_PARAM2(p->getSync()));
 			p = static_cast<T*>(rhs.getp());
 			init();
 		}

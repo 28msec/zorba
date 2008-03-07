@@ -127,7 +127,8 @@ void ConstrNodeVector::push_back(XmlNode* node, bool shared)
   theBitmap.push_back(shared);
 
   if (shared)
-    node->addReference(node->getSharedRefCounter(), node->getSync());
+    node->addReference(node->getSharedRefCounter()
+                      SYNC_PARAM2(node->getSync()));
 }
 
 
@@ -198,7 +199,7 @@ XmlNode::XmlNode(
   {
     if (tree != NULL)
     {
-      theRCLockPtr = &(tree->getRCLock());
+      SYNC_CODE(theRCLockPtr = &(tree->getRCLock());)
       setTree(tree);
       getTree()->setRoot(this);
 
@@ -215,7 +216,7 @@ XmlNode::XmlNode(
 
     theParent = parent;
     setTree(parent->getTree());
-    theRCLockPtr = &(getTree()->getRCLock());
+    SYNC_CODE(theRCLockPtr = &(getTree()->getRCLock());)
 
     theOrdPath = parent->theOrdPath;
 

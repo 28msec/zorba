@@ -138,7 +138,7 @@ private:
   checked_vector<entry> v;       // hash entries
   checked_vector<int> tab;            // hash directory, indexes 'v', -1 = EMPTY
   uint32_t depth;             // = lg(sz)
-  rwlock rwl;                 // readers-writers synchronization
+  SYNC_CODE(rwlock rwl;)                 // readers-writers synchronization
 
 public: // ctor,dtor
   hash32map(uint32_t sz, float ld);
@@ -195,7 +195,7 @@ private:
   checked_vector<entry> v;       // hash entries
   checked_vector<int> tab;            // hash directory, indexes 'v', -1 = EMPTY
   uint32_t depth;             // = lg(sz)
-  rwlock rwl;                 // readers-writers synchronization
+  SYNC_CODE(rwlock rwl;)                 // readers-writers synchronization
 
 public: // ctor,dtor
   hash64map(uint32_t sz, float ld);
@@ -576,11 +576,11 @@ inline uint32_t hash32map<V>::size_unsync()
 template<class V>
 inline uint32_t hash32map<V>::size() 
 {
-  if (rwl.readlock()!=0) {
+  SYNC_CODE( if (rwl.readlock()!=0) {
     ZORBA_ERROR_ALERT(ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
-  }
+  })
   uint32_t z = v.size();
-  rwl.readunlock();
+  SYNC_CODE(rwl.readunlock();)
   return z;
 }
 
@@ -632,12 +632,12 @@ template<class V>
 inline bool hash32map<V>::find(
   uint32_t key, uint32_t& index) 
 {
-  if (rwl.readlock()!=0) {
+  SYNC_CODE(if (rwl.readlock()!=0) {
     //throw xqp_exception(__FUNCTION__,"read lock failed");
     ZORBA_ERROR_ALERT(ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
-  }
+  })
   bool b = find_unsync(key, index);
-  rwl.readunlock();
+  SYNC_CODE(rwl.readunlock();)
   return b;
 }
 
@@ -658,12 +658,12 @@ template<class V>
 inline bool hash32map<V>::get(
   uint32_t key, V& result) 
 {
-  if (rwl.readlock()!=0) {
+  SYNC_CODE(if (rwl.readlock()!=0) {
     //throw xqp_exception(__FUNCTION__,"read lock failed");
     ZORBA_ERROR_ALERT(ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
-  }
+  })
   bool b = get_unsync(key, result);
-  rwl.readunlock();
+  SYNC_CODE(rwl.readunlock();)
   return b;
 }
 
@@ -689,12 +689,12 @@ template<class V>
 inline bool hash32map<V>::put(
   uint32_t key, V val)
 {
-  if (rwl.writelock()!=0) {
+  SYNC_CODE(if (rwl.writelock()!=0) {
     //throw xqp_exception(__FUNCTION__,"write lock failed");
     ZORBA_ERROR_ALERT(ZorbaError::XQP0009_SYSTEM_WRITE_LOCK_FAILED);
-  }
+  })
   bool b = put_unsync(key, val);
-  rwl.writeunlock();
+  SYNC_CODE(rwl.writeunlock();)
   return b;
 }
 
@@ -763,12 +763,12 @@ inline uint32_t hash64map<V>::size_unsync()
 template<class V>
 inline uint32_t hash64map<V>::size() 
 {
-  if (rwl.readlock()!=0) {
+  SYNC_CODE(if (rwl.readlock()!=0) {
     //throw xqp_exception(__FUNCTION__,"read lock failed");
     ZORBA_ERROR_ALERT(ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
-  }
+  })
   uint32_t z = v.size();
-  rwl.readunlock();
+  SYNC_CODE(rwl.readunlock();)
   return z;
 }
 
@@ -822,12 +822,12 @@ template<class V>
 inline bool hash64map<V>::find(
   uint64_t key, uint32_t& index) 
 {
-  if (rwl.readlock()!=0) {
+  SYNC_CODE(if (rwl.readlock()!=0) {
     //throw xqp_exception(__FUNCTION__,"read lock failed");
     ZORBA_ERROR_ALERT(ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
-  }
+  })
   bool b = find_unsync(key, index);
-  rwl.readunlock();
+  SYNC_CODE(rwl.readunlock();)
   return b;
 }
 
@@ -866,12 +866,12 @@ template<class V>
 inline bool hash64map<V>::get(
   uint64_t key, V& result) 
 {
-  if (rwl.readlock()!=0) {
+  SYNC_CODE(if (rwl.readlock()!=0) {
     //throw xqp_exception(__FUNCTION__,"read lock failed");
     ZORBA_ERROR_ALERT(ZorbaError::XQP0008_SYSTEM_READ_LOCK_FAILED);
-  }
+  })
   bool b = get_unsync(key, result);
-  rwl.readunlock();
+  SYNC_CODE(rwl.readunlock();)
   return b;
 }
 
@@ -899,12 +899,12 @@ inline bool hash64map<V>::put(
   uint64_t key, V val)
 {
   int rwl_status;
-  if ((rwl_status=rwl.writelock())!=0) {
+  SYNC_CODE(if ((rwl_status=rwl.writelock())!=0) {
     //throw xqp_exception(__FUNCTION__,"write lock failed");
     ZORBA_ERROR_ALERT(ZorbaError::XQP0009_SYSTEM_WRITE_LOCK_FAILED);
-  }
+  })
   bool b = put_unsync(key, val);
-  rwl.writeunlock();
+  SYNC_CODE(rwl.writeunlock();)
   return b;
 }
 

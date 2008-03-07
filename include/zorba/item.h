@@ -34,14 +34,13 @@ namespace zorba { namespace store {
       long* 
       getSharedRefCounter() { return theTreeRCPtr; }
 
-      RCSync*
-      getSync()             { return NULL; }
+      SYNC_CODE(RCSync*       getSync()             { return NULL; })
 
 #else
 
 protected:
       long   * theTreeRCPtr;
-      RCSync * theRCLockPtr;
+      SYNC_CODE(RCSync * theRCLockPtr;)
 
       Item() : theTreeRCPtr(0), theRCLockPtr(0) { }
 
@@ -49,8 +48,7 @@ public:
       long*
       getSharedRefCounter() { return theTreeRCPtr; }
 
-      RCSync*
-      getSync()             { return theRCLockPtr; }
+      SYNC_CODE(RCSync*      getSync()             { return theRCLockPtr; })
 
 #endif
 

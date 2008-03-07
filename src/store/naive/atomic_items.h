@@ -29,7 +29,7 @@ public:
 #else
 
 protected:
-  RCSync  theRCLock;
+  SYNC_CODE(RCSync  theRCLock;)
 
 public:
   AtomicItem() : Item() { theRCLockPtr = &theRCLock; }

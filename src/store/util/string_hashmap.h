@@ -62,7 +62,7 @@ protected:
   ulong                   theHashTabSize;
   float                   theLoadFactor;
 
-  mutable Mutex           theMutex;
+  SYNC_CODE(mutable Mutex           theMutex;)
 
 public:
   StringHashMap(ulong size, float loadFactor);
@@ -109,7 +109,7 @@ void StringHashMap<V>::clear()
 {
   HashEntry* entry;
 
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   ulong n = theHashTab.size();
 
@@ -134,7 +134,7 @@ bool StringHashMap<V>::find(const xqpStringStore* str) const
 {
   const HashEntry* entry;
 
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   entry = &theHashTab[str->hash() % theHashTabSize];
 
@@ -162,7 +162,7 @@ bool StringHashMap<V>::get(const xqpStringStore* str, V& value) const
 {
   const HashEntry* entry;
 
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   entry = &theHashTab[str->hash() % theHashTabSize];
 
@@ -195,7 +195,7 @@ bool StringHashMap<V>::insert(const xqpStringStore* str, V& value)
   HashEntry* entry;
   HashEntry* lastentry = NULL;
 
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given uri
   entry = &theHashTab[str->hash() % theHashTabSize];
@@ -277,7 +277,7 @@ bool StringHashMap<V>::remove(const xqpStringStore* str)
   HashEntry* entry;
   HashEntry* prevEntry;
 
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   entry = &theHashTab[str->hash() % theHashTabSize];
 

@@ -120,6 +120,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..\..\..\ZorbaComApi"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -138,7 +139,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="zorbacomapi.lib comsuppw.lib "
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\..\ZorbaComApi\release"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"

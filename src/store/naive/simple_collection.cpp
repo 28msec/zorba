@@ -62,7 +62,7 @@ Item_t SimpleCollection::addToCollection(std::istream& stream)
 
   if (root != NULL)
   {
-    AutoLatch(theLatch, Latch::WRITE);
+    SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
     theXmlTrees.insert(root);
   }
 
@@ -81,7 +81,7 @@ void SimpleCollection::addToCollection(const Item* node)
     ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
-  AutoLatch(theLatch, Latch::WRITE);
+  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
   theXmlTrees.insert(const_cast<Item*>(node));
 }
 
@@ -111,7 +111,7 @@ void SimpleCollection::removeFromCollection(const Item* node)
     ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
-  AutoLatch(theLatch, Latch::WRITE);
+  SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
   theXmlTrees.erase(const_cast<Item*>(node));
 }
 
@@ -122,8 +122,8 @@ void SimpleCollection::removeFromCollection(const Item* node)
 SimpleCollection::CollectionIter::CollectionIter(
     SimpleCollection* collection)
   :
-  theCollection(collection),
-  theLatch(collection->theLatch, Latch::READ)
+  theCollection(collection)
+  SYNC_PARAM2(theLatch(collection->theLatch, Latch::READ))
 {
 }
 

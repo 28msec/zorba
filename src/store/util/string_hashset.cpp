@@ -18,7 +18,7 @@ StringPool::~StringPool()
   for (ulong i = 0; i < n; i++)
   {
     if (theHashTab[i].theItem != NULL &&
-        theHashTab[i].theItem->getRefCount(theHashTab[i].theItem->getSync()) != 1)
+        theHashTab[i].theItem->getRefCount(SYNC_CODE(theHashTab[i].theItem->getSync())) != 1)
     {
       std::cout << "i = " << i << " String " << theHashTab[i].theItem->c_str()
                 << " is still in the pool" << std::endl;
@@ -45,7 +45,7 @@ bool StringPool::insertc(const char* str, xqpStringStore_t& outStr)
   ulong hval = xqpStringStore::hash(str) % theHashTabSize;
 
   {
-    AutoMutex lock(theMutex);
+    SYNC_CODE(AutoMutex lock(theMutex);)
 
     HashEntry* entry = &theHashTab[hval];
 
@@ -100,7 +100,7 @@ void StringPool::garbageCollect()
     }
 
     // Handle the 1st hash entry of the current hash bucket
-    while(entry->theItem->getRefCount(entry->theItem->getSync()) == 1)
+    while(entry->theItem->getRefCount(SYNC_CODE(entry->theItem->getSync())) == 1)
     {
       if (entry->theNext == NULL)
       {
@@ -125,7 +125,7 @@ void StringPool::garbageCollect()
 
     while (entry != NULL)
     {
-      if (entry->theItem->getRefCount(entry->theItem->getSync()) == 1)
+      if (entry->theItem->getRefCount(SYNC_CODE(entry->theItem->getSync())) == 1)
       {
         prevEntry->theNext = entry->theNext;
         entry->theItem = NULL;

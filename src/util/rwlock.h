@@ -13,6 +13,8 @@
 
 #include <zorba/common/common.h>
 
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+
 /*_____________________________________________________________________
 | 
 |  Read/write locks with read preferrence.
@@ -135,4 +137,7 @@ private:
 		
 
 }	/* namespace zorba */
+
+#endif//end #ifndef ZORBA_FOR_ONE_THREAD_ONLY
+
 #endif	/* ZORBA_RWLOCK_H */

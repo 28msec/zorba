@@ -92,7 +92,7 @@ Item_t QNamePool::insert(
   xqpStringStore_t pooledNs;
   store.getNamespacePool().insertc(ns, pooledNs);
 
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   HashEntry* entry = hashInsert(pooledNs->c_str(), pre, ln,
                                 pooledNs->bytes(), strlen(pre), strlen(ln),
@@ -122,7 +122,7 @@ Item_t QNamePool::insert(
   QNameItemImpl* qn;
   bool found;
 
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
   HashEntry* entry = hashInsert(ns->c_str(), pre->c_str(), ln->c_str(),
                                 ns->bytes(), pre->bytes(), ln->bytes(),
@@ -295,9 +295,9 @@ QNamePool::HashEntry* QNamePool::hashInsert(
 ********************************************************************************/
 void QNamePool::remove(QNameItemImpl* qn)
 {
-  AutoMutex lock(theMutex);
+  SYNC_CODE(AutoMutex lock(theMutex);)
 
-  if (qn->getRefCount(qn->getSync()) > 0)
+  if (qn->getRefCount(SYNC_CODE(qn->getSync())) > 0)
     return;
 
   if (qn->isInCache())

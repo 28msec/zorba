@@ -148,6 +148,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
+				AdditionalIncludeDirectories="..\include,..\release\include,..\..\libicu\include,..\..\boost_1_34_1"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -171,7 +172,9 @@
 				Name="VCLinkerTool"
 				RegisterOutput="true"
 				IgnoreImportLibrary="true"
+				AdditionalDependencies="oleaut32.lib iconv.lib libxml2.lib zlib.lib icudt.lib icuin.lib icuio.lib icule.lib iculx.lib icutu.lib icuuc.lib libcurl_imp.lib xerces-c_2D.lib zorbatypes.lib zorba.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\boost_1_34_1\lib, ..\..\libcurl_7_15_1_win,..\..\libicu\lib,..\..\libxml_win\lib,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\..\xerces-c_2_8_0-x86-windows-vc_8_0\lib,..\release"
 				ModuleDefinitionFile=".\ZorbaCOMApi.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"

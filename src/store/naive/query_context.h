@@ -57,12 +57,12 @@ class QueryContextContainer
 {
 protected:
   std::map<ulong, QueryContext> theContainer;
-  Mutex                         theMutex;
+  SYNC_CODE(Mutex                         theMutex;)
 
 public:
   QueryContext& getContext(ulong queryId)
   {
-    AutoMutex lock(theMutex);
+    SYNC_CODE(AutoMutex lock(theMutex);)
 
     std::map<ulong, QueryContext>::iterator ctxi;
 
@@ -80,7 +80,7 @@ public:
 
   void removeContext(ulong queryId, bool soft)
   {
-    AutoMutex lock(theMutex);
+    SYNC_CODE(AutoMutex lock(theMutex);)
 
     std::map<ulong, QueryContext>::iterator ctxi;
 

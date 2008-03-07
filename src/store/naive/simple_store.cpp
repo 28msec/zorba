@@ -129,7 +129,7 @@ void SimpleStore::shutdown()
 ********************************************************************************/
 ulong SimpleStore::getTreeId()
 {
-  AutoMutex lock(theTreeCounterMutex);
+  SYNC_CODE(AutoMutex lock(theTreeCounterMutex);)
   return theTreeCounter++;
 }
 
@@ -174,10 +174,10 @@ void SimpleStore::setGarbageCollectionStrategy(xqpStringStore* strategy)
 ********************************************************************************/
 Item_t SimpleStore::createUri()
 {
-  theUriCounterMutex.lock();
+  SYNC_CODE(theUriCounterMutex.lock();)
   std::ostringstream uristream;
   uristream << "zorba://internalURI-" << SimpleStore::theUriCounter++;
-  theUriCounterMutex.unlock();
+  SYNC_CODE(theUriCounterMutex.unlock();)
 
   return theItemFactory->createAnyURI(uristream.str().c_str()).getp();
 }

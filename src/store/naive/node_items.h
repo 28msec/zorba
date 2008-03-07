@@ -25,7 +25,7 @@ class XmlTree
 {
 protected:
   long       theRefCount;
-  RCSync     theRCLock;
+  SYNC_CODE(RCSync     theRCLock;)
 
   ulong      theId;
   XmlNode  * theRootNode;
@@ -39,7 +39,7 @@ public:
   long getRefCount() const    { return theRefCount; }
   void addReference()         { ++theRefCount; }
   void removeReference()      { --theRefCount; }
-  RCSync& getRCLock()         { return theRCLock; }
+  SYNC_CODE(RCSync& getRCLock()         { return theRCLock; })
 
   ulong getId() const         { return theId; }
   XmlNode* getRoot() const    { return theRootNode; }
