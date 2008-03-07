@@ -179,8 +179,8 @@ namespace zorba
         // element.
 
         XQDY0026,
-        // the result of the content expression of a computed processing instruction
-        // constructor contains the string "?>".
+        // a constructor or replace expression results in a processing instruction
+        // node whose content includes the string "?>".
 
         XQDY0027,
         // In a validate expression, it is a dynamic error if the root element
@@ -217,14 +217,14 @@ namespace zorba
         // constructor is equal to "XML" (in any combination of upper and lower case).
 
         XQDY0072,
-        // the result of the content expression of a computed comment constructor
-        // contains two adjacent hyphens or ends with a hyphen.
+        // a constructor or replace expression results in a comment node whose
+        // content ends with a hyphen or contains two adjacent hyphens.
 
         XQDY0074,
         // the value of the name expression in a computed element or attribute
-        // constructor cannot be converted to an expanded QName (for example,
-        // because it contains a namespace prefix not found in statically known
-        // namespaces.) 
+        // constructor or rename expression cannot be converted to an expanded
+        // QName (for example, because it contains a namespace prefix not found
+        // in statically known namespaces.) 
 
         XQDY0084,
         // the element validated by a validate statement does not have a top-level
@@ -480,6 +480,167 @@ namespace zorba
         // is no-preserve.
 
         //
+        // XQuery Update Facility
+        //
+
+        XUST0001,
+        // It is a static error if an updating expression is used in any position
+        // other than one of the following:
+        // 1. The topmost expression in the body of a query.
+        // 2. The modify clause of a transform expression.
+        // 3. The return clause of a FLWOR expression.
+        // 4. The return clauses of a typeswitch expression in which every return
+        //    clause contains an updating expression, an empty expression ( ), or
+        //    a call to the fn:error function.
+        // 5. The then and else clauses of a conditional statement in which both
+        //    the then and else clauses contain either an updating expression, an
+        //    empty expression ( ), or a call to the fn:error function.
+        // 6. An operand of a comma expression in which each operand is either an
+        //    updating expression, an empty expression ( ), or a call to the
+        //    fn:error function.
+        // 7. The content of a parenthesized expression.
+        // 8. The body of a function declaration in which the keyword updating
+        //    is specified.
+
+        XUST0002,
+        // It is a static error if an non-updating expression other than an
+        // empty expression ( ) or a call to the fn:error function is used in
+        // one of the following positions:
+        // 1. The modify clause of a transform expression.
+        // 2. The top-level expression in the body of a function declaration in
+        //     which the keyword updating is specified.
+
+        XUST0003,
+        // It is a static error if a Prolog contains more than one revalidation
+        // declaration.
+
+        XUTY0004,
+        // It is a type error if the insertion sequence of an insert expression
+        // contains an attribute node following a node that is not an attribute node.
+
+        XUTY0005,
+        // In an insert expression where into, as first into, or as last into
+        // is specified, it is a type error if the target expression returns a
+        // non-empty result that does not consist of a single element or document
+        // node.
+
+        XUTY0006,
+        // In an insert expression where before or after is specified, it is a
+        // type error if the target expression returns a non-empty result that
+        // does not consist of a single element, text, comment, or processing
+        // instruction node.
+
+        XUTY0007,
+        // It is a type error if the target expression of a delete expression
+        // does not return a sequence of zero or more nodes.
+
+        XUTY0008,
+        // In a replace expression, it is a type error if the target expression
+        // returns a non-empty result that does not consist of a single element,
+        // attribute, text, comment, or processing instruction node.
+
+        XUDY0009,
+        // In a replace expression where value of is not specified, it is a
+        // dynamic error if the node returned by the target expression does not
+        // have a parent.
+
+        XUTY0010,
+        // In a replace expression where value of is not specified and the
+        // target is an element, text, comment, or processing instruction node,
+        // it is a type error if the replacement sequence does not consist of
+        // zero or more element, text, comment, or processing instruction nodes.
+
+        XUTY0011,
+        // In a replace expression where value of is not specified and the target
+        // is an attribute node, it is a type error if the replacement sequence
+        // does not consist of zero or more attribute nodes.
+
+        XUTY0012,
+        // In a rename expression, it is a type error if the target expression
+        // returns a non-empty result that does not consist of a single element,
+        // attribute, or processing instruction node.
+
+        XUTY0013,
+        // In a transform expression, it is a type error if a source expression
+        // in the copy clause does not return a single node.
+
+        XUDY0014,
+        // In a transform expression, it is a dynamic error if the modify clause
+        // modifies any node that was not created by the copy clause.
+
+        XUDY0015,
+        // It is a dynamic error if any node is the target of more than one
+        // rename expression within the same query.
+
+        XUDY0016,
+        // It is a dynamic error if any node is the target of more than one
+        // replace expression (without value of being specified) within the
+        // same query.
+
+        XUDY0017,
+        // It is a dynamic error if any node is the target of more than one
+        // replace value of expression within the same query.
+
+        XUDY0018,
+        // It is a dynamic error if a function that was declared to be external
+        // but not updating returns a non-empty pending update list.
+
+        XUDY0019,
+        // It is a dynamic error if a function that was declared to be both
+        // external and updating returns a non-empty data model instance.
+
+        XUDY0020,
+        // An implementation may (but is not required to) raise a dynamic error
+        // if a node is deleted that had no parent before execution of the query
+        // began.
+
+        XUDY0021,
+        // It is a dynamic error if the XDM instance that would result from
+        // applying all the updates in a query violates any constraint specified
+        // in [XQuery/XPath Data Model (XDM)]. In this case, none of the updates
+        // in the query are made effective.
+
+        XUTY0022,
+        // It is a type error if an insert expression specifies the insertion
+        // of an attribute node into a document node.
+
+        XUDY0023,
+        // It is a dynamic error if an insert, replace, or rename expression
+        // affects an element node by introducing a new namespace binding that
+        // conflicts with one of its existing namespace bindings.
+
+        XUDY0024,
+        // It is a dynamic error if the effect of a set of updating expressions
+        // is to introduce conflicting namespace bindings into an element node.
+
+        XUDY0025,
+        // It is a dynamic error if the target of a rename expression is a
+        // processing instruction node, and the new name expression returns a
+        // QName with a non-empty namespace prefix.
+
+        XUST0026,
+        // It is a static error if a revalidation declaration in a Prolog
+        // specifies a revalidation mode that is not supported by the current
+        // implementation.
+
+        XUDY0027,
+        // It is a dynamic error if the target expression of an insert, replace,
+        // or rename expression evaluates to an empty sequence.
+
+        XUST0028,
+        // It is a static error if a function declaration specifies both updating
+        // and a return type.
+
+        XUDY0029,
+        // In an insert expression where before or after is specified, it is a
+        // dynamic error if node returned by the target expression does not have
+        // a parent.
+        
+        XUDY0030,
+        // It is a dynamic error if an insert expression specifies the insertion
+        // of an attribute node before or after a child of a document node.
+
+        //
         // XQuery 1.0 and XPath 2.0 Functions and Operators
         //
 
@@ -552,6 +713,14 @@ namespace zorba
         FORX0004, //Invalid replacement string.
 
         FOTY0012, //Argument node does not have a typed value.
+
+        FOUP0001,
+        // It is a dynamic error if the first operand of fn:put is not a node of
+        // a supported kind.
+
+        FOUP0002,
+        // It is a dynamic error if the second operand of fn:put is not a valid
+        // lexical representation of the xs:anyURI type.
 
         //
         // Serialization errors
