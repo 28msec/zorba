@@ -19,7 +19,7 @@ int decode_entity (const char *in, string *out) {
     if (*in++ != ';')
       ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
     if (! is_code_point_valid (n))
-      ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
+      ZORBA_ERROR_ALERT (ZorbaError::XQST0090, &loc);
     UTF8Encode (n, back_inserter (*out));
     return in - start;
   }
@@ -30,7 +30,6 @@ int decode_entity (const char *in, string *out) {
   M ("quot;", 5, "\"") else
   M ("apos;", 5, "'")
 #undef M
-  
 
   ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
   return -1;
