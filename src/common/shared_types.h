@@ -40,6 +40,7 @@ namespace zorba {
     class NsBindingsContext;
     typedef rchandle<NsBindingsContext> NsBindingsContext_t;
     class QNameItemImpl;
+    typedef rchandle<QNameItemImpl> QNameItem_t;
     class ConstrNodeVector;
     class NsBindingsContext;
     typedef rchandle<NsBindingsContext> NsBindingsContext_t;
