@@ -9,8 +9,6 @@
 #include "util/Assert.h"
 #include "store/naive/ordpath.h"
 
-typedef unsigned long ulong;
-
 
 namespace zorba { namespace store {
 
@@ -24,8 +22,8 @@ extern ConstrNodeVector dummyVector;
 class XmlTree
 {
 protected:
-  long       theRefCount;
-  SYNC_CODE(RCSync     theRCLock;)
+  long              theRefCount;
+  SYNC_CODE(RCSync  theRCLock;)
 
   ulong      theId;
   XmlNode  * theRootNode;
@@ -36,14 +34,14 @@ public:
   ~XmlTree() { theRootNode = 0; }
 
   void free();
-  long getRefCount() const    { return theRefCount; }
-  void addReference()         { ++theRefCount; }
-  void removeReference()      { --theRefCount; }
-  SYNC_CODE(RCSync& getRCLock()         { return theRCLock; })
+  long getRefCount() const      { return theRefCount; }
+  void addReference()           { ++theRefCount; }
+  void removeReference()        { --theRefCount; }
+  SYNC_CODE(RCSync& getRCLock() { return theRCLock; })
 
-  ulong getId() const         { return theId; }
-  XmlNode* getRoot() const    { return theRootNode; }
-  void setRoot(XmlNode* root) { theRootNode = root; }
+  ulong getId() const           { return theId; }
+  XmlNode* getRoot() const      { return theRootNode; }
+  void setRoot(XmlNode* root)   { theRootNode = root; }
 };
 
 
@@ -156,7 +154,7 @@ public:
     NsInherit         =  16,
     HaveLocalBindings =  32,
     IsId              =  64,
-    IsIdRef           = 128,
+    IsIdRefs          = 128,
     IsNillable        = 256
   };
 
@@ -214,6 +212,11 @@ public:
 
   void deleteTree();
 
+  void setToUntyped();
+  void removeType(std::vector<std::pair<XmlNode*, QNameItem_t> >& undoList);
+  void revalidate();
+
+
   virtual XmlNode* copy(XmlNode* parent, ulong pos) = 0;
 
   virtual void checkUniqueAttr(Item* qn) const { Assert(0); }
@@ -232,6 +235,9 @@ public:
   virtual void setNsContext(NsBindingsContext* ctx) { Assert(0); }
 
   virtual bool haveLocalBindings() const { Assert(0); return false; }
+
+  virtual bool isId() const              { Assert(0); return false; }
+  virtual bool isIdRefs() const          { Assert(0); return false; }
 
   virtual bool isConstructed() const     { Assert(0); return false; }
   virtual bool isCopy() const            { Assert(0); return false; }
@@ -350,6 +356,8 @@ public:
 ********************************************************************************/
 class ElementNode : public XmlNode
 {
+  friend class XmlNode;
+
 public:
   Item_t                theName;
   Item_t                theTypeName;
@@ -391,6 +399,12 @@ public:
   XmlNode* copy(XmlNode* parent, ulong pos);
 
   void checkUniqueAttr(Item* attrName) const;
+
+  bool isId() const             { return (theFlags & XmlNode::IsId) != 0; }
+  void resetIsId()              { theFlags &= ~XmlNode::IsId; }
+
+  bool isIdRefs() const         { return (theFlags & XmlNode::IsIdRefs) != 0; }
+  void resetIsIdRefs()          { theFlags &= ~XmlNode::IsIdRefs; }
 
   bool isConstructed() const    { return (theFlags & XmlNode::IsConstructed) != 0; }
   bool isCopy() const           { return (theFlags & XmlNode::IsCopy) != 0; }
@@ -449,7 +463,7 @@ private:
 ********************************************************************************/
 class ConstrElementNode : public ElementNode
 {
-private:
+protected:
   ConstrNodeVector  theChildren;
   ConstrNodeVector  theAttributes;
 
@@ -499,14 +513,14 @@ private:
 class AttributeNode : public XmlNode
 {
   friend class XmlLoader;
+  friend class XmlNode;
 
- private:
+ protected:
   Item_t   theName;
   Item_t   theTypeName;
   Item_t   theTypedValue;
-  bool     theIsId;
-  bool     theIsIdrefs;
-  
+  uint32_t theFlags;
+
  public:
   AttributeNode(
         XmlTree* tree,
@@ -529,12 +543,15 @@ class AttributeNode : public XmlNode
 
   Item_t getNodeName() const { return theName; }
 
+  bool isId() const          { return (theFlags & XmlNode::IsId) != 0; }
+  void resetIsId()           { theFlags &= ~XmlNode::IsId; }
+
+  bool isIdrefs() const      { return (theFlags & XmlNode::IsIdRefs) != 0; }
+  void resetIsIdRefs()       { theFlags &= ~XmlNode::IsIdRefs; }
+
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
   xqp_string getStringValue() const;
-
-  bool isId() const     { return theIsId; }
-  bool isIdrefs() const { return theIsIdrefs; }
 
   virtual xqp_string show() const;
 };
@@ -582,7 +599,7 @@ public:
 ********************************************************************************/
 class PiNode : public XmlNode
 {
- private:
+ protected:
   xqpStringStore_t theTarget;
   xqpStringStore_t theData;
 

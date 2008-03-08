@@ -1124,10 +1124,14 @@ AttributeNode::AttributeNode(
   :
   XmlNode(tree, parent, pos, StoreConsts::attributeNode),
   theName(attrName),
-  theTypeName(typeName),
-  theIsId(isId),
-  theIsIdrefs(isIdrefs)
+  theTypeName(typeName)
 {
+  if (isId)
+    theFlags |= XmlNode::IsId;
+
+  if (isIdrefs)
+    theFlags |= XmlNode::IsIdRefs;
+
   if (tree == NULL && parent == NULL)
   {
     NODE_TRACE1("Loaded attr node " << this << std::endl);
