@@ -4,19 +4,20 @@
 
 #include "runtime/core/constructors.h"
 #include "util/Assert.h"
-#include "system/zorba.h"
 #include "errors/error_factory.h"
 #include "system/globalenv.h"
+#include "system/zorba.h"
 #include "types/root_typemanager.h"
 #include "context/static_context.h"
 #include "context/namespace_context.h"
-#include "store/api/temp_seq.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/base/plan_iterator_wrapper.h"
+#include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
 
 
 using namespace std;
+
 namespace zorba
 {
 
@@ -27,10 +28,15 @@ namespace zorba
 void
 DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<DocumentIteratorState>::createState(planState, this->stateOffset, offset);
+  StateTraitsImpl<DocumentIteratorState>::createState(planState,
+                                                      this->stateOffset,
+                                                      offset);
+
   StateTraitsImpl<DocumentIteratorState>::initState(planState, this->stateOffset);
   
-  DocumentIteratorState* lState = StateTraitsImpl<DocumentIteratorState>::getState(planState, this->stateOffset);
+  DocumentIteratorState* lState = StateTraitsImpl<DocumentIteratorState>::
+                                  getState(planState, this->stateOffset);
+
   lState->childWrapper = new PlanIteratorWrapper(theChild, planState); 
 
   theChild->open(planState, offset);
@@ -85,11 +91,13 @@ DocumentIteratorState::init(PlanState& planState)
     (sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
 }
 
+
 void
 DocumentIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
 }
+
 
 DocumentIteratorState::~DocumentIteratorState()
 {
@@ -209,7 +217,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
                            theContextBindings->get_bindings(),
                            theLocalBindings->get_bindings(),
                            theIsRoot,
-                           true,
+                           true, // copy
                            state->theTypePreserve,
                            state->theNsPreserve,
                            state->theNsInherit);
@@ -233,9 +241,9 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
     theAttributesIter->open(planState, offset);
 
   if (theNamespacesIter != 0)
-    theNamespacesIter->open(planState, offset);
-  
+    theNamespacesIter->open(planState, offset);  
 }
+
 
 void ElementIterator::resetImpl(PlanState& planState) const
 {
@@ -292,6 +300,7 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
 
   return getStateSize() + size;
 }
+
 
 /*******************************************************************************
 
@@ -558,6 +567,7 @@ void EnclosedIteratorState::init(PlanState& planState)
   theString = NULL;
 }
 
+
 void EnclosedIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
@@ -565,12 +575,14 @@ void EnclosedIteratorState::reset(PlanState& planState)
   theContextItem = NULL;
 }
 
+
 EnclosedIteratorState::~EnclosedIteratorState()
 {
   // TODO fix this (theAttrContent is not available)
   //if (theString != NULL && theAttrContent)
   //    delete state->theString;
 }
+
 
 EnclosedIterator::EnclosedIterator (
     const QueryLoc& loc,

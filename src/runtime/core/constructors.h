@@ -140,9 +140,9 @@ public:
 
   ElementContentIterator
 
-  Used to (a) create text nodes in the content sequence of an
-  element constructor, and (b) to check that all attribute nodes in the content
-  sequence appear before any other item in the sequence.
+  Used to (a) create text nodes in the content sequence of an element constructor,
+  and (b) to check that all attribute nodes in the content sequence appear before
+  any other item in the sequence.
 
   Usually, the child of this iterator will be a ConcatIterator that computes
   the content sequence from its various components.
@@ -260,13 +260,14 @@ public:
 class EnclosedIteratorState : public PlanIteratorState
 {
 public:
-  xqpStringStore* theString;
+  xqpStringStore  * theString;
   store::Item_t     theContextItem;
 
   void init(PlanState&);
   void reset(PlanState&);
   ~EnclosedIteratorState();
 };
+
 
 class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator,
                                                   EnclosedIteratorState>
@@ -296,8 +297,8 @@ public:
 class DocFilterIteratorState : public PlanIteratorState
 {
 public:
-  Iterator_t theChildren;
-  store::Item_t     theCurItem;
+  Iterator_t     theChildren;
+  store::Item_t  theCurItem;
     
   DocFilterIteratorState();
   ~DocFilterIteratorState();
