@@ -88,6 +88,7 @@ ENDIF (NOT FLEX_EXECUTABLE)
 IF (GENERATE_FLEX_FILES)
 	SET(FLEX_PREFIX_OUTPUTS TRUE)
 	FLEX_FILE(compiler/parser/xquery_scanner.l)
+	ADD_DEFINITIONS(-DFLEX_FILES_REGENERATED)
 	LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/xquery_scanner.cpp)
 ELSE (GENERATE_FLEX_FILES)
    IF (FLEX_EXECUTABLE)
@@ -102,4 +103,3 @@ ENDIF (GENERATE_FLEX_FILES)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake ${CMAKE_BINARY_DIR}/copyparser.sh)
 MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake -->${CMAKE_BINARY_DIR}/copyparser.sh")
-

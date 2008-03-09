@@ -163,6 +163,13 @@ FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/svn_rev.txt ZORBA_PATCH_NUMBER)
 STRING(REGEX REPLACE "[^0-9]*([0-9]*)..*" "\\1" ZORBA_PATCH_NUMBER ${ZORBA_PATCH_NUMBER})
 MESSAGE(STATUS "Zorba version number: " ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 
+
+ADD_DEFINITIONS(${DEFINITIONS})
+
+
+##############################################################################################################
+# Subfolders inclusion
+
 # Tell CMake to process the sub-directories
 ADD_SUBDIRECTORY(external)
 ADD_SUBDIRECTORY(include)

@@ -10,12 +10,12 @@ SET (requiredlibs ${requiredlibs} zorbatypes)
 # generate the zorba library
 SET(ZORBA_SRCS)
 
+############################################################ Add files compiled into the library
 ADD_SRC_SUBFOLDER(ZORBA_SRCS api API_SRCS )
 ADD_SRC_SUBFOLDER(ZORBA_SRCS compiler COMPILER_SRCS)
 FOREACH (SRCS ${COMPILER_BUILD_SRCS})
   LIST(APPEND ZORBA_SRCS ${SRCS})
 ENDFOREACH (SRCS)
-
 ADD_SRC_SUBFOLDER(ZORBA_SRCS system SYSTEM_SRCS)
 FOREACH (SRCS ${SYSTEM_BUILD_SRCS})
   LIST(APPEND ZORBA_SRCS ${SRCS})
@@ -29,6 +29,7 @@ ADD_SRC_SUBFOLDER(ZORBA_SRCS types TYPES_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS util UTIL_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS sax2 SAX2_SRCS)
 
+############################################################ Zorba library
 IF (MSVC)
   ADD_LIBRARY(zorba ${ZORBA_SRCS})
 ELSE (MSVC)
@@ -40,6 +41,8 @@ SET_TARGET_PROPERTIES(zorba PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MIN
 SET_TARGET_PROPERTIES(zorba PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 SET(ZORBA_LIBRARY_INSTALL_LIST ${ZORBA_LIBRARY_INSTALL_LIST} zorba)
 
+
+############################################################ Zorba STATIC library
 IF (ZORBA_BUILD_STATIC_LIBRARY)
   ADD_LIBRARY(zorba_static STATIC ${ZORBA_SRCS})
   TARGET_LINK_LIBRARIES(zorba_static ${requiredlibs})

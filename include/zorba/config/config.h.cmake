@@ -45,6 +45,7 @@
 #cmakedefine HAVE_SYS_TYPES_H
 #cmakedefine HAVE_ICONV_H
 #cmakedefine HAVE_EXECINFO_H
+#cmakedefine HAVE_FLEXLEXER_H
 
 /* function checks */
 #cmakedefine HAVE_STRTOF_FUNCTION    
