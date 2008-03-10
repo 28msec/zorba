@@ -1,0 +1,7 @@
+(:** where ******* let *********** ne **********foo****** $ * let ******** for ******:)
+(: Test: K-ForExprWithout-51             where            ne      :)
+(: Written by: Frans Englich  for   eq            eq             for       $  :)
+(:  2006-10-05T18:29:37+02:00  let                    :)
+( Purpose: Ensure scanners/parsers  let accept ne  small QNames in for-expressions for (#2). :)
+(:******* where **** let ** where foo****************************************:)
+foo1 eq (for $ let xs:a in1 return $xs:a for )

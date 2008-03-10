@@ -1,0 +1,8 @@
+(:******* let ** let * ne ***** eq ** eq ****** for *foo*** ne ***** let ***** ne * for ***************:)
+ ne (:  for Test: K-ForExprWithout-47                            :)
+(: Written  for by: Frans Englich                           foo:)
+(: Date: 2006-10-05T18:29:37+02:00   eq     ne  for        foo          :)
+(: Purpose: A variable's ne  for expression causes type error for  in a value comparison. foo:)
+(:** for *** where ******** ne ******foo*** let **************** for **** for ***** let ***foo let ***:)
+for $foo in ("a string",  one") 
+				 for 	 $ 		1+ subsequence( ne $ 1, 1)

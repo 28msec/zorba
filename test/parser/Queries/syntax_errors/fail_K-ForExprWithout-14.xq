@@ -1,0 +1,6 @@
+(:********** for ** ne ****foo***** let  for ****** where ************************ $ :)
+(: Test:  where K-ForExprWithout-14foo         let  foo                   ne  :)(: Written by: Frans Englich                     foo        :)
+(: Date:    for      $   where     let   eq   foo ne       foo  :)
+ let (: Purpose: A test whose ne  essence  eq is: $   for `3 eq eq  (for $foo in 1 return for bar in 2 return $bar   let  ne $foo) : eq )
+(:* where ********* where ********** eq ****** for ************* let *** where **********:)
+3 eq  where (for $foo in ne  1 return for $bar fooin 2 $  return $bar ne  + $   $ )

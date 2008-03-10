@@ -1,0 +1,5 @@
+(:***** $ * ne **************** let ******* ne ******* let ****************:)
+(: Test: K-ForExprPositionalVar-29    ne    ne         where         :)
+ let (: Written by: Frans  eq Englich   foo                 foo        :)
+ eq (: Date: 2006-10-05T18:29:37+02:00    let       $          foo let    for    :)
+(:  let Purpose: Verify that  $ the position is properly computed a singleton value. :) eq :* ne *** $ ********foo******************* for ****foo****** eq ************:)1 eq ( ne for $i at $p in 0 return  $ $p)

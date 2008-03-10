@@ -1,0 +1,7 @@
+(:****foo let *****************************foo**foo* where *****************:)
+(: Test: K-ForExprWithout-16   foo         ne    $   $       ne       foo  :)
+(: let  Written by: Frans Englich                           :)
+(: let  Date: 2006-10-05T18:29:37+02:00   foo                   :)
+(: where  Purpose: ne  A test whose  is: `8 eq (for $foo in 1, $foo in3, $moo in 5 return $moo +  let $foo)`. :)
+(:foo $ ******************* let ***** $ *** where ************** where *** ne * where ******:)
+8 eq  for (for $foo in 1, $ in 3, $moo in 5 return $moo + $foo)

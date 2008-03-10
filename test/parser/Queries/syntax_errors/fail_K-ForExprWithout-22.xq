@@ -1,0 +1,6 @@
+(:** ne **** ne *********foo****foo*** eq ***foo*** eq *************************:)
+(: Test: K-ForExprWithout-22   for         for                   :)
+( eq : Written eq  by: Frans Englich  let      $    where                ne    let      :)
+(: 2006-10-05T18:29:37+02:00  eq                       :)(: Purpose: where  A for foovariable binding to the emptysequence, combined with value  :)
+(: where *** for ** where ** let ****foo***************foo*** $ **** let ************** $ **** eq * where *:)
+ let empty for (for $var in eq  subsequence((current-time(), 1), 4) return 1)

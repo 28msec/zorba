@@ -1,0 +1,6 @@
+(:** ne **** where ******** for ************************************* for **:)
+(:  eq Test: K-ForExprWithout-20   eq          for        let        where     ne   :)(:Written by: Frans Englich         let           eq         : let )
+( eq : Date: 2006-10-05T18:29:37+02:00        where         ne       : eq )
+(: Purpose: A for variable binding to the empty sequence, combined with  where value comparison. :)
+(***** for **** eq ********** for  where ******* where ****** for ***** $ * let ** eq **********:)
+empty(( eq  $var in () return current-time( eq ))
