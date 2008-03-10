@@ -1366,14 +1366,20 @@ void *begin_visit(const VarInDecl& /*v*/)
 void end_visit(const VarInDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+  QueryLoc loc = v.get_location ();
+
   push_scope ();
   const PositionalVar *pv = v.get_posvar ();
+  xqp_string varname = v.get_varname ();
   if (pv != NULL) {
     expr_t val_expr = pop_nodestack ();
-    bind_var_and_push (pv->get_location (), pv->get_varname (), var_expr::pos_var);
+    xqp_string pvarname = pv->get_varname ();
+    if (pvarname == varname)
+      ZORBA_ERROR_ALERT (ZorbaError::XQST0089, &loc);
+    bind_var_and_push (pv->get_location (), pvarname, var_expr::pos_var);
     nodestack.push (val_expr);
   }
-  bind_var_and_push (v.get_location (), v.get_varname (), var_expr::for_var);
+  bind_var_and_push (loc, v.get_varname (), var_expr::for_var);
 }
 
 void *begin_visit(const PositionalVar& /*v*/)
