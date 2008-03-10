@@ -54,9 +54,6 @@ namespace zorba
     else
     {
       store::Item_t lType = item->getType();
-      std::string str = lType->getLocalName();
-      str = lType->getPrefix();
-      str = lType->getNamespace();
       type = GENV_TYPESYSTEM.create_type(lType, TypeConstants::QUANT_ONE);
       if (
           ( consumeNext(iter, planState) == NULL )
