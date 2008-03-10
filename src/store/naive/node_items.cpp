@@ -6,6 +6,7 @@
 
 #include "system/globalenv.h"
 #include "errors/error_factory.h"
+#include "util/Assert.h"
 
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
@@ -44,9 +45,6 @@ int traceLevel = 0;
 namespace zorba { namespace store {
 
 
-ConstrNodeVector dummyVector;
-
-
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  XmlTree                                                                    //
@@ -63,7 +61,7 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
 }
 
 
-void XmlTree::free()
+void XmlTree::free() throw()
 {
   if (theRootNode != 0)
   {
@@ -74,109 +72,17 @@ void XmlTree::free()
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  class ConstrNodeVector                                                     //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-ConstrNodeVector::ConstrNodeVector(ulong size) : NodeVector(size)
+void XmlTree::removeReferences(ulong count) throw()
 {
-  theBitmap.resize(size);
-  for (ulong i = 0; i < size; i++)
-  {
-    theBitmap[i] = false;
-    theNodes[i] = 0;
-  }
+  SYNC_CODE(theRCLock.acquire();)
+
+  theRefCount -= count;
+  if (theRefCount == 0)
+    free();
+
+  SYNC_CODE(theRCLock.release();)
 }
 
-
-void ConstrNodeVector::set(ulong pos, XmlNode* node, bool shared)
-{
-  ZORBA_ASSERT(pos <= size());
-  
-  if (pos == size())
-  {
-    push_back(node, shared);
-    return;
-  }
-
-  if (shared)
-  {
-    if (!theBitmap[pos])
-      theNodes[pos] = NULL;
-
-    *(reinterpret_cast<XmlNode_t*>(&theNodes[pos])) = node;
-    theBitmap[pos] = true;
-  }
-  else
-  {
-    if (theBitmap[pos])
-      *(reinterpret_cast<XmlNode_t*>(&theNodes[pos])) = NULL;
-
-    theNodes[pos] = node;
-    theBitmap[pos] = false;
-  }
-}
-
-
-void ConstrNodeVector::push_back(XmlNode* node, bool shared)
-{
-  theNodes.push_back(node);
-  theBitmap.push_back(shared);
-
-  if (shared)
-    node->addReference(node->getSharedRefCounter()
-                      SYNC_PARAM2(node->getSync()));
-}
-
-
-void ConstrNodeVector::clear()
-{
-  ulong size = this->size();
-  for (ulong i = 0; i < size; i++)
-  {
-    if (theBitmap[i])
-      *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = NULL; 
-  }
-
-  theNodes.clear();
-}
-
-
-void ConstrNodeVector::resize(ulong newSize)
-{
-  if (newSize == 0)
-  {
-    clear();
-    return;
-  }
-
-  ulong oldSize = size();
-
-  theNodes.resize(newSize);
-  theBitmap.resize(newSize);
-  for (ulong i = oldSize; i < newSize; i++)
-  {
-    theBitmap[i] = false;
-    theNodes[i] = NULL;
-  }
-}
-
-
-void ConstrNodeVector::copy(const NodeVector& src)
-{
-  ulong size = src.size();
-
-  resize(size);
-
-  for (ulong i = 0; i < size; i++)
-  {
-    *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = src.theNodes[i];
-    theBitmap[i] = true;
-  }
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -242,24 +148,6 @@ XmlNode::XmlNode(
 }
 
 
-void XmlNode::appendChild(XmlNode* child)
-{
-  assert(child->getTree() == NULL);
-  assert(child->getParentP() == NULL);
-  assert(child->getNodeKind() != StoreConsts::documentNode);
-  assert(child->getNodeKind() != StoreConsts::attributeNode);
-  assert(child->getNodeKind() != StoreConsts::elementNode); // TODO
-
-  child->theParent = this;
-  child->setTree(getTree());
-
-  child->theOrdPath = theOrdPath;
-  child->theOrdPath.appendComp(2 * (numAttributes() + numChildren()) + 1);
-
-  children().push_back(child, false);
-}
-
-
 XmlNode::~XmlNode()
 {
   ZORBA_ASSERT(theRefCount == 0);
@@ -304,26 +192,52 @@ void XmlNode::setId(XmlTree* tree, const OrdPathStack* op)
 }
 
 
-void XmlNode::deleteTree()
+void XmlNode::appendChild(XmlNode* child)
 {
-  if (getNodeKind() == StoreConsts::documentNode ||
-      getNodeKind() == StoreConsts::elementNode)
+  assert(child->getTree() == NULL);
+  assert(child->getParentP() == NULL);
+  assert(child->getNodeKind() != StoreConsts::documentNode);
+  assert(child->getNodeKind() != StoreConsts::attributeNode);
+  assert(child->getNodeKind() != StoreConsts::elementNode); // TODO
+
+  child->theParent = this;
+  child->setTree(getTree());
+
+  child->theOrdPath = theOrdPath;
+  child->theOrdPath.appendComp(2 * (numAttributes() + numChildren()) + 1);
+
+  children().push_back(child, false);
+}
+
+
+void XmlNode::removeChild(XmlNode* child)
+{
+  children().remove(child);
+}
+
+
+void XmlNode::removeAttr(XmlNode* attr)
+{
+  attributes().remove(attr);
+}
+
+
+void XmlNode::deleteTree() throw()
+{
+  ulong numChildren = this->numChildren();
+  ulong numAttrs = this->numAttributes();
+
+  for (ulong i = 0; i < numChildren; i++)
   {
-    ulong numChildren = this->numChildren();
-    ulong numAttrs = this->numAttributes();
-
-    for (ulong i = 0; i < numChildren; i++)
-    {
-      if (getChild(i)->getTree() == getTree())
-        getChild(i)->deleteTree();
-    }
-
-    for (ulong i = 0; i < numAttrs; i++)
-    {
-      if (getAttr(i)->getTree() == getTree())
-        getAttr(i)->deleteTree();
-    } 
+    if (getChild(i)->getTree() == getTree())
+      getChild(i)->deleteTree();
   }
+
+  for (ulong i = 0; i < numAttrs; i++)
+  {
+    if (getAttr(i)->getTree() == getTree())
+      getAttr(i)->deleteTree();
+  } 
 
   delete this;
 }

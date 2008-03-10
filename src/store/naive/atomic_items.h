@@ -29,7 +29,7 @@ public:
 #else
 
 protected:
-  SYNC_CODE(RCSync  theRCLock;)
+  SYNC_CODE(RCLock  theRCLock;)
 
 public:
   AtomicItem() : Item() { theRCLockPtr = &theRCLock; }
@@ -68,13 +68,17 @@ private:
 
   void free();
 
-  bool isInCache() const          { return thePosition != 0; }
-  bool isOverflow() const         { return thePosition == 0; }
+  bool isInCache() const                { return thePosition != 0; }
+  bool isOverflow() const               { return thePosition == 0; }
 
  public:
-  xqp_string getNamespace() const { return theNamespace.getp(); }
-  xqp_string getPrefix() const    { return thePrefix.getp(); }
-  xqp_string getLocalName() const { return theLocal.getp(); }
+  xqp_string getNamespace() const       { return theNamespace.getp(); }
+  xqp_string getPrefix() const          { return thePrefix.getp(); }
+  xqp_string getLocalName() const       { return theLocal.getp(); }
+
+  xqpStringStore* getNamespaceP() const { return theNamespace.getp(); }
+  xqpStringStore* getPrefixP() const    { return thePrefix.getp(); }
+  xqpStringStore* getLocalNameP() const { return theLocal.getp(); }
 
   Item_t getType() const;
   uint32_t hash() const;

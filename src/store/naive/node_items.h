@@ -6,9 +6,10 @@
 #include <zorba/common/common.h>
 #include <zorba/item.h>
 #include "common/shared_types.h"
-#include "util/Assert.h"
+#include "errors/fatal.h"
 #include "store/naive/ordpath.h"
-
+#include "store/naive/node_vector.h"
+#include "store/naive/node_updates.h"
 
 namespace zorba { namespace store {
 
@@ -23,111 +24,32 @@ class XmlTree
 {
 protected:
   long              theRefCount;
-  SYNC_CODE(RCSync  theRCLock;)
+  SYNC_CODE(RCLock  theRCLock;)
 
-  ulong      theId;
-  XmlNode  * theRootNode;
+  ulong             theId;
+  XmlNode         * theRootNode;
 
 public:
   XmlTree(XmlNode* root, ulong id);
 
   ~XmlTree() { theRootNode = 0; }
 
-  void free();
+  void free() throw();
+
   long getRefCount() const      { return theRefCount; }
+  void setRefCount(ulong c)     { theRefCount = c; }
   void addReference()           { ++theRefCount; }
   void removeReference()        { --theRefCount; }
-  SYNC_CODE(RCSync& getRCLock() { return theRCLock; })
+
+  void removeReferences(ulong count) throw();
+
+  SYNC_CODE(RCLock& getRCLock() { return theRCLock; })
 
   ulong getId() const           { return theId; }
   XmlNode* getRoot() const      { return theRootNode; }
   void setRoot(XmlNode* root)   { theRootNode = root; }
 };
 
-
-/*******************************************************************************
-
-********************************************************************************/
-class NodeVector
-{
-  friend class LoadedNodeVector;
-  friend class ConstrNodeVector;
-
-public:
-  enum { LOADED, CONSTRUCTED };
-
-protected:
-  std::vector<XmlNode*> theNodes;
-
-public:
-  NodeVector() { }
-  NodeVector(ulong size) : theNodes(size) { }
-
-  virtual ~NodeVector() { }
-
-  bool empty() const            { return theNodes.empty(); }
-  ulong size() const            { return theNodes.size(); }
-
-  XmlNode* get(ulong pos) const { return theNodes[pos]; } 
-
-  virtual void set(ulong pos, XmlNode* n, bool shared) = 0;
-  virtual void push_back(XmlNode* n, bool shared) = 0;
-
-  virtual void clear() = 0;
-  virtual void resize(ulong size) = 0;
-  virtual void copy(const NodeVector& v) = 0;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class LoadedNodeVector : public NodeVector
-{
-public:
-  LoadedNodeVector() : NodeVector() { }
-  LoadedNodeVector(ulong size) : NodeVector(size) { }
-
-  ~LoadedNodeVector() { }
-
-  void set(ulong pos, XmlNode* n, bool shared) { theNodes[pos] = n; }
-  void push_back(XmlNode* n, bool shared)      { theNodes.push_back(n); }
-
-  void clear()                                 { theNodes.clear(); }
-  void resize(ulong size)                      { theNodes.resize(size); }
-  void copy(const NodeVector& v)               { Assert(0); }
-
-private:
-  LoadedNodeVector(const LoadedNodeVector& v);
-  LoadedNodeVector& operator=(const LoadedNodeVector& v);
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class ConstrNodeVector : public NodeVector
-{
-private:
-  std::vector<bool> theBitmap;
-
-public:
-  ConstrNodeVector() : NodeVector() { }
-  ConstrNodeVector(ulong size);
-
-  ~ConstrNodeVector()  { clear(); }
-
-  void set(ulong pos, XmlNode* n, bool shared);
-  void push_back(XmlNode* n, bool shared);
-
-  void clear();
-  void resize(ulong size);
-  void copy(const NodeVector& v);
-
-private:
-  ConstrNodeVector(const ConstrNodeVector& v);
-  ConstrNodeVector& operator=(const ConstrNodeVector& v);
-};
 
 
 /*******************************************************************************
@@ -186,7 +108,7 @@ public:
   Item_t getParent() const          { return theParent; }
 
   virtual bool equals(Item_t) const;
-  virtual uint32_t hash() const     { Assert(0); return 0; }
+  virtual uint32_t hash() const     { ZORBA_FATAL(""); return 0; }
 
   virtual xqp_string getBaseURI() const;
   virtual xqp_string getDocumentURI() const;
@@ -209,41 +131,47 @@ public:
   void setParent(XmlNode* p)        { theParent = p; }
 
   void appendChild(XmlNode* child);
+  void removeChild(XmlNode* child);
+  void removeAttr(XmlNode* attr);
 
-  void deleteTree();
+  void deleteTree() throw();
 
   void setToUntyped();
-  void removeType(std::vector<std::pair<XmlNode*, QNameItem_t> >& undoList);
+  void removeType(TypeUndoList& undoList);
   void revalidate();
 
+  void disconnect() throw();
+  void switchTree() throw();
+  void rename(QNameItemImpl* newname, Item_t& oldName);
+  void checkRename(QNameItemImpl* newName);
 
   virtual XmlNode* copy(XmlNode* parent, ulong pos) = 0;
 
-  virtual void checkUniqueAttr(Item* qn) const { Assert(0); }
+  virtual void checkUniqueAttr(Item* qn) const { ZORBA_FATAL(""); }
 
-  virtual ulong numAttributes() const          { Assert(0); return 0; }
-  virtual XmlNode* getAttr(ulong i) const      { Assert(0); return NULL; }
-  virtual NodeVector& attributes()             { Assert(0); return dummyVector; }
-  virtual const NodeVector& attributes() const { Assert(0); return dummyVector; }
+  virtual ulong numAttributes() const          { return 0; }
+  virtual XmlNode* getAttr(ulong i) const      { ZORBA_FATAL(""); return NULL; }
+  virtual NodeVector& attributes()             { ZORBA_FATAL(""); return dummyVector; }
+  virtual const NodeVector& attributes() const { ZORBA_FATAL(""); return dummyVector; }
 
-  virtual ulong numChildren() const            { Assert(0); return 0; }
-  virtual XmlNode* getChild(ulong i) const     { Assert(0); return NULL; }
-  virtual NodeVector& children()               { Assert(0); return dummyVector; }
-  virtual const NodeVector& children() const   { Assert(0); return dummyVector; }
+  virtual ulong numChildren() const            { return 0; }
+  virtual XmlNode* getChild(ulong i) const     { ZORBA_FATAL(""); return NULL; }
+  virtual NodeVector& children()               { ZORBA_FATAL(""); return dummyVector; }
+  virtual const NodeVector& children() const   { ZORBA_FATAL(""); return dummyVector; }
 
-  virtual NsBindingsContext* getNsContext() const   { Assert(0); return NULL; }
-  virtual void setNsContext(NsBindingsContext* ctx) { Assert(0); }
+  virtual NsBindingsContext* getNsContext() const   { ZORBA_FATAL(""); return NULL; }
+  virtual void setNsContext(NsBindingsContext* ctx) { ZORBA_FATAL(""); }
 
-  virtual bool haveLocalBindings() const { Assert(0); return false; }
+  virtual bool haveLocalBindings() const { ZORBA_FATAL(""); return false; }
 
-  virtual bool isId() const              { Assert(0); return false; }
-  virtual bool isIdRefs() const          { Assert(0); return false; }
+  virtual bool isId() const              { ZORBA_FATAL(""); return false; }
+  virtual bool isIdRefs() const          { ZORBA_FATAL(""); return false; }
 
-  virtual bool isConstructed() const     { Assert(0); return false; }
-  virtual bool isCopy() const            { Assert(0); return false; }
-  virtual bool typePreserve() const      { Assert(0); return false; }
-  virtual bool nsPreserve() const        { Assert(0); return false; }
-  virtual bool nsInherit() const         { Assert(0); return false; }
+  virtual bool isConstructed() const     { ZORBA_FATAL(""); return false; }
+  virtual bool isCopy() const            { ZORBA_FATAL(""); return false; }
+  virtual bool typePreserve() const      { ZORBA_FATAL(""); return false; }
+  virtual bool nsPreserve() const        { ZORBA_FATAL(""); return false; }
+  virtual bool nsInherit() const         { ZORBA_FATAL(""); return false; }
 };
 
 
@@ -289,7 +217,7 @@ public:
   // SimpleStore Methods
   // 
 
-  XmlNode* copy(XmlNode* parent, ulong pos) { Assert(0); return 0; }
+  XmlNode* copy(XmlNode* parent, ulong pos) { ZORBA_FATAL(""); return 0; }
 
   ulong numAttributes() const { return 0; }
 

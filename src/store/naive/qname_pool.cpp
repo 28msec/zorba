@@ -297,7 +297,7 @@ void QNamePool::remove(QNameItemImpl* qn)
 {
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  if (qn->getRefCount(SYNC_CODE(qn->getSync())) > 0)
+  if (qn->getRefCount() > 0)
     return;
 
   if (qn->isInCache())

@@ -6,6 +6,7 @@ SET(STORE_SRCS
     naive/simple_temp_seq.cpp
     naive/atomic_items.cpp
     naive/node_items.cpp
+    naive/node_vector.cpp
     naive/node_updates.cpp
     naive/node_iterators.cpp
     naive/qname_pool.cpp

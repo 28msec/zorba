@@ -9,6 +9,8 @@
 #include <zorba/rchandle.h>
 
 #include "errors/error_factory.h"
+#include "util/Assert.h"
+
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_collection.h"

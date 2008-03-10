@@ -7,6 +7,7 @@
 #include <zorba/store_consts.h>
 
 #include "system/globalenv.h"
+#include "util/Assert.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_loader.h"
 #include "store/naive/atomic_items.h"

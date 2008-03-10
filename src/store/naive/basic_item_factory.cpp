@@ -11,6 +11,7 @@
 #include <zorba/iterator.h>
 
 #include "system/globalenv.h"
+#include "util/Assert.h"
 #include "store/api/temp_seq.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
