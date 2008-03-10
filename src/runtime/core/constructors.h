@@ -260,7 +260,8 @@ public:
 class EnclosedIteratorState : public PlanIteratorState
 {
 public:
-  xqpStringStore  * theString;
+  xqpStringStore  * theAttrContentString;
+  xqpStringStore  * theElemContentString;
   store::Item_t     theContextItem;
 
   void init(PlanState&);

@@ -564,23 +564,27 @@ store::Item_t CommentIterator::nextImpl(PlanState& planState) const
 void EnclosedIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
-  theString = NULL;
+  theAttrContentString = NULL;
+  theElemContentString = NULL;
 }
 
 
 void EnclosedIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  theString = NULL;
+  if (theAttrContentString) {
+    delete theAttrContentString; 
+    theAttrContentString = NULL;
+  }
+  theElemContentString = NULL;
   theContextItem = NULL;
 }
 
 
 EnclosedIteratorState::~EnclosedIteratorState()
 {
-  // TODO fix this (theAttrContent is not available)
-  //if (theString != NULL && theAttrContent)
-  //    delete state->theString;
+  if (theAttrContentString)
+    delete theAttrContentString;
 }
 
 
@@ -611,10 +615,10 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 
       if (state->theContextItem == NULL)
       {
-        if (state->theString != NULL)
+        if (state->theAttrContentString != NULL)
         {
-          lItem = factory->createString(state->theString);
-          state->theString = NULL;
+          lItem = factory->createString(state->theAttrContentString);
+          state->theAttrContentString = NULL;
           STACK_PUSH(lItem, state);
         }
 
@@ -623,24 +627,24 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 
       else if (state->theContextItem->isNode())
       {
-        if ( state->theString != NULL)
+        if ( state->theAttrContentString != NULL)
         {
-          lItem = factory->createString(state->theString);
-          state->theString = NULL;
+          lItem = factory->createString(state->theAttrContentString);
+          state->theAttrContentString = NULL;
           STACK_PUSH(lItem, state);
         }
 
         STACK_PUSH(state->theContextItem, state);
       }
 
-      else if (state->theString == NULL)
+      else if (state->theAttrContentString == NULL)
       {
-        state->theString = new xqpStringStore(state->theContextItem->getStringValue().c_str());
+        state->theAttrContentString = new xqpStringStore(state->theContextItem->getStringValue().c_str());
       }
       else
       {
-        state->theString->append(" ");
-        state->theString->append(state->theContextItem->getStringValue().c_str());
+        state->theAttrContentString->append(" ");
+        state->theAttrContentString->append(state->theContextItem->getStringValue().c_str());
       }
     }
   }
@@ -655,7 +659,7 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 
       else if (state->theContextItem->isNode())
       {
-        state->theString = NULL;
+        state->theElemContentString = NULL;
 
         STACK_PUSH(state->theContextItem, state);
       }
@@ -664,10 +668,10 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
       {
         str = state->theContextItem->getStringValue();
 
-        if (state->theString != NULL)
+        if (state->theElemContentString != NULL)
           str = " " + str;
         else
-          state->theString = str.getStore();
+          state->theElemContentString = str.getStore();
 
         if (str == "")
           continue;
