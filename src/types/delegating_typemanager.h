@@ -50,6 +50,12 @@ class DelegatingTypeManager : public TypeManager {
     { return m_parent->is_promotable(srctype, targettype); }
 
     /*
+     * Returns true if _item_ is treatable as _type_, false otherwise.
+     */
+    bool is_treatable(const store::Item_t item, const XQType& type) const
+    { return m_parent->is_treatable(item, type); }
+
+    /*
      * Returns true if the given type is an atomic type. The quantifier of such
      * a type MUST be QUANT_ONE.
      */

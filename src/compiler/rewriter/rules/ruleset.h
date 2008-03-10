@@ -21,6 +21,8 @@ RULE(EchoNodeRule);
 // Node id rules
 RULE(MarkNodesWithNodeIdPropertiesRule);
 RULE(EliminateDocOrderSortRule);
+RULE(EliminateTypeEnforcingOperations);
+RULE(EliminateUnusedLetVars);
 
 #undef RULE
 

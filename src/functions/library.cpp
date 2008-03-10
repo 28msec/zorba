@@ -73,7 +73,7 @@ void BuiltinFunctionLibrary::populateContext(static_context *sctx)
 // Accessors
 DECL(fn_data_func,
      (ITEM_FACTORY.createQName (XQUERY_FN_NS, "fn", "data"),
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
 DECL(fn_root_func,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "root"),

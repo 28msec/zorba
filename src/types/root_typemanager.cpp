@@ -2,6 +2,7 @@
 
 #include <zorba/typeident.h>
 
+#include "zorbatypes/xqpstring.h"
 #include "system/globalenv.h"
 #include "store/naive/atomic_items.h"
 #include "node_test.h"
@@ -384,6 +385,46 @@ bool RootTypeManager::is_subtype(const XQType& subtype, const XQType& supertype)
 bool RootTypeManager::is_promotable(const XQType& srctype, const XQType& targettype) const
 {
   return false;
+}
+
+bool RootTypeManager::is_treatable(const store::Item_t item, const XQType& type) const
+{
+  switch(type.type_kind()) {
+    case XQType::NODE_TYPE_KIND:
+      {
+        if (!item->isNode()) {
+          return false;
+        }
+        const NodeXQType& nType = static_cast<const NodeXQType&>(type);
+        rchandle<NodeTest> nodeTest = nType.get_nodetest();
+        switch(nodeTest->get_kind()) {
+          case store::StoreConsts::anyNode:
+            return true;
+
+          case store::StoreConsts::documentNode:
+            return item->getNodeKind() == store::StoreConsts::documentNode;
+
+          case store::StoreConsts::textNode:
+            return item->getNodeKind() == store::StoreConsts::textNode;
+
+          case store::StoreConsts::piNode:
+            return item->getNodeKind() == store::StoreConsts::piNode
+              && (nodeTest->get_nametest() == NULL
+                || nodeTest->get_nametest()->get_local() == NULL
+                || nodeTest->get_nametest()->get_local()->byteEqual(*item->getTarget().getStore()));
+
+          case store::StoreConsts::commentNode:
+            return item->getNodeKind() == store::StoreConsts::commentNode;
+
+          default:
+            break;
+        }
+      }
+
+    default:
+      break;
+  }
+  return is_subtype(*create_type(item->getType(), TypeConstants::QUANT_ONE), type);
 }
 
 bool RootTypeManager::is_atomic(const XQType& type) const

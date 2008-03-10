@@ -31,6 +31,9 @@
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "compiler/normalizer/normalizer.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
+#include "compiler/rewriter/framework/rewriter.h"
+#include "compiler/api/compiler_api.h"
 #include "compiler/parser/util.h"
 #include "util/tracer.h"
 #include "system/globalenv.h"
@@ -1549,6 +1552,10 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         normalize_expr_tree (Properties::instance ()->printNormalizedExpressions ()
                              ? v.get_name ()->get_qname ().c_str () : NULL,
                              sctx_p, body);
+
+        RewriterContext rCtx(sctx_p, body);
+        GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+        body = rCtx.getRoot();
 
         udf->set_body (body);
         udf->set_params(params);

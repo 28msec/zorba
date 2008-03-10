@@ -77,11 +77,13 @@ class expr : public SimpleRCObject
 {
 public:
   typedef rchandle<expr> expr_t;
+  typedef std::map<std::string, std::string> annotations_t;
   typedef std::map<var_expr *, expr_t> substitution_t;
   typedef substitution_t::iterator subst_iter_t;
 
 protected:
   QueryLoc loc;
+  annotations_t m_annotations;
 
 
 protected:
@@ -100,6 +102,12 @@ public:
   virtual void accept_children(expr_visitor &v);
   virtual void next_iter (expr_iterator_data &) = 0;
   virtual std::ostream& put(std::ostream&) const;
+
+  void put_annotation(const std::string& key, const std::string& value);
+  const std::string *get_annotation(const std::string& key) const;
+  void remove_annotation(const std::string& key);
+
+  virtual xqtref_t return_type(static_context *sctx);
 
   expr_t clone();
   virtual expr_t clone(substitution_t& substitution);
@@ -308,6 +316,7 @@ public: // accessors
   uint32_t forlet_count() const { return clause_v.size(); }
   forletref_t const& operator[](int i) const { return clause_v[i]; }
   forletref_t & operator[](int i) { return clause_v[i]; }
+  clause_list_t::iterator remove_forlet_clause(clause_list_t::iterator i) { return clause_v.erase(i); }
   clause_list_t::const_iterator clause_begin() const
   { return clause_v.begin(); }
   clause_list_t::const_iterator clause_end() const
@@ -641,6 +650,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+
+  virtual xqtref_t return_type(static_context *sctx);
 };
 
 
@@ -1090,6 +1101,7 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+  virtual xqtref_t return_type(static_context *sctx);
 };
 
 

@@ -12,6 +12,14 @@ class TestRuleDriver : public RuleMajorDriver {
     }
 };
 
+class NodeidMarkingRuleDriver : public RuleMajorDriver {
+  public:
+    NodeidMarkingRuleDriver()
+    {
+      m_rules.push_back(rule_ptr_t(new MarkNodesWithNodeIdPropertiesRule()));
+    }
+};
+
 class NodeidRuleDriver : public RuleMajorDriver {
   public:
     NodeidRuleDriver()
@@ -20,10 +28,29 @@ class NodeidRuleDriver : public RuleMajorDriver {
     }
 };
 
+class EliminateTypeEnforcingOperationsRuleDriver : public RuleMajorDriver {
+  public:
+    EliminateTypeEnforcingOperationsRuleDriver()
+    {
+      m_rules.push_back(rule_ptr_t(new EliminateTypeEnforcingOperations()));
+    }
+};
+
+class EliminateUnusedLetVarsRuleDriver : public RuleMajorDriver {
+  public:
+    EliminateUnusedLetVarsRuleDriver()
+    {
+      m_rules.push_back(rule_ptr_t(new EliminateUnusedLetVars()));
+    }
+};
+
 DefaultOptimizer::DefaultOptimizer()
 {
   //m_childRewriters.push_back(rewriter_ptr_t(new TestRuleDriver()));
-  //m_childRewriters.push_back(rewriter_ptr_t(new NodeidRuleDriver()));
+  m_childRewriters.push_back(rewriter_ptr_t(new NodeidMarkingRuleDriver()));
+  m_childRewriters.push_back(rewriter_ptr_t(new NodeidRuleDriver()));
+  m_childRewriters.push_back(rewriter_ptr_t(new EliminateTypeEnforcingOperationsRuleDriver()));
+  m_childRewriters.push_back(rewriter_ptr_t(new EliminateUnusedLetVarsRuleDriver()));
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()

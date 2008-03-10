@@ -295,14 +295,14 @@ store::Item_t TreatIterator::nextImpl(PlanState& aPlanState) const
       ZORBA_ERROR_ALERT( theErrorCode, &loc, DONT_CONTINUE_EXECUTION,
       "Seq with 2 or more items cannot treated as a QUANT_QUESTION or QUANT_ONE type.");
     }
-    if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lItem->getType(), TypeConstants::QUANT_ONE), *theTreatType)) {
+    if (!GENV_TYPESYSTEM.is_treatable(lItem, *theTreatType)) {
       ZORBA_ERROR_ALERT( theErrorCode, &loc, DONT_CONTINUE_EXECUTION, "Cannot treat " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + GENV_TYPESYSTEM.toString (*theTreatType) );
     } else {
       STACK_PUSH(lItem, lState);
     }
   } else {
     do {
-      if (!GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.create_type(lItem->getType(), TypeConstants::QUANT_ONE), *theTreatType)) {
+      if (!GENV_TYPESYSTEM.is_treatable(lItem, *theTreatType)) {
         ZORBA_ERROR_ALERT( theErrorCode, &loc, DONT_CONTINUE_EXECUTION, "Cannot treat " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + GENV_TYPESYSTEM.toString (*theTreatType) );
       } else{
         STACK_PUSH(lItem, lState);

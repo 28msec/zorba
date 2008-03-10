@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 #include <zorba/static_context_consts.h>
 
@@ -20,6 +21,7 @@
 #include "functions/function.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenodes.h"
+#include "context/static_context.h"
 #include "util/Assert.h"
 #include "util/tracer.h"
 #include "errors/error_factory.h"
@@ -202,6 +204,33 @@ expr::~expr() { }
   {
     Assert(false);
     return NULL; // Make the compiler happy
+  }
+
+  void expr::put_annotation(const std::string& key, const std::string& value)
+  {
+    m_annotations[key] = value;
+  }
+
+  const std::string *expr::get_annotation(const std::string& key) const
+  {
+    annotations_t::const_iterator i = m_annotations.find(key);
+    if (i == m_annotations.end()) {
+      return NULL;
+    }
+    return &i->second;
+  }
+
+  void expr::remove_annotation(const std::string& key)
+  {
+    annotations_t::iterator i = m_annotations.find(key);
+    if (i != m_annotations.end()) {
+      m_annotations.erase(i);
+    }
+  }
+
+  xqtref_t expr::return_type(static_context *sctx)
+  {
+    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   }
 
 /////////////////////////////////////////////////////////////////////////
@@ -465,6 +494,11 @@ const signature &fo_expr::get_signature () const {
 
 store::Item_t fo_expr::get_fname () const
 { return func->get_fname (); }
+
+xqtref_t fo_expr::return_type(static_context *sctx)
+{
+  return func->get_signature().return_type();
+}
 
 
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
@@ -814,6 +848,12 @@ const_expr::const_expr(
 void const_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   END_EXPR_ITER();
+}
+
+xqtref_t const_expr::return_type(static_context *sctx)
+{
+  xqtref_t type = sctx->get_typemanager()->create_type(val->getType(), TypeConstants::QUANT_ONE);
+  return type;
 }
 
 
