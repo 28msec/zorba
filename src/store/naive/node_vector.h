@@ -18,6 +18,7 @@ class XmlNode;
 ********************************************************************************/
 class NodeVector
 {
+  friend class XmlNode;
   friend class LoadedNodeVector;
   friend class ConstrNodeVector;
 
@@ -42,7 +43,8 @@ public:
   virtual void set(ulong pos, XmlNode* n, bool shared) = 0;
   virtual void push_back(XmlNode* n, bool shared) = 0;
 
-  virtual void remove(XmlNode* n) = 0;
+  virtual void remove(ulong i) = 0;
+  virtual bool remove(XmlNode* n) = 0;
 
   virtual void clear() = 0;
   virtual void resize(ulong size) = 0;
@@ -63,7 +65,8 @@ public:
 
   void set(ulong pos, XmlNode* n, bool ) { theNodes[pos] = n; }
   void push_back(XmlNode* n, bool )      { theNodes.push_back(n); }
-  void remove(XmlNode* n);
+  void remove(ulong i);
+  bool remove(XmlNode* n);
 
   void clear()                           { theNodes.clear(); }
   void resize(ulong size)                { theNodes.resize(size); }
@@ -91,7 +94,8 @@ public:
 
   void set(ulong pos, XmlNode* n, bool shared);
   void push_back(XmlNode* n, bool shared);
-  void remove(XmlNode* n);
+  void remove(ulong i);
+  bool remove(XmlNode* n);
 
   void clear();
   void resize(ulong size);

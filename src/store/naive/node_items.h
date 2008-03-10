@@ -131,8 +131,9 @@ public:
   void setParent(XmlNode* p)        { theParent = p; }
 
   void appendChild(XmlNode* child);
-  void removeChild(XmlNode* child);
-  void removeAttr(XmlNode* attr);
+  void removeChild(ulong pos);
+  bool removeChild(XmlNode* child);
+  bool removeAttr(XmlNode* attr);
 
   void deleteTree() throw();
 
@@ -142,8 +143,11 @@ public:
 
   void disconnect() throw();
   void switchTree() throw();
+  void replaceValue(xqpStringStore* newValue, xqpStringStore_t& oldValue);
+  void replaceElementContent(XmlNode* newText, std::vector<XmlNode*>& children);
   void rename(QNameItemImpl* newname, Item_t& oldName);
-  void checkRename(QNameItemImpl* newName);
+  void renamePi(xqpStringStore* newName,  xqpStringStore_t& oldName);
+  void checkQName(QNameItemImpl* newName);
 
   virtual XmlNode* copy(XmlNode* parent, ulong pos) = 0;
 
@@ -443,7 +447,7 @@ class AttributeNode : public XmlNode
   friend class XmlLoader;
   friend class XmlNode;
 
- protected:
+protected:
   Item_t   theName;
   Item_t   theTypeName;
   Item_t   theTypedValue;
@@ -490,6 +494,7 @@ class AttributeNode : public XmlNode
 ********************************************************************************/
 class TextNode : public XmlNode
 {
+  friend class XmlNode;
   friend class ConstrDocumentNode;
   friend class ConstrElementNode;
 
@@ -527,9 +532,11 @@ public:
 ********************************************************************************/
 class PiNode : public XmlNode
 {
+  friend class XmlNode;
+
  protected:
   xqpStringStore_t theTarget;
-  xqpStringStore_t theData;
+  xqpStringStore_t theContent;
 
 public:
   PiNode(
@@ -537,7 +544,7 @@ public:
         XmlNode*        parent,
         ulong           pos,
         xqpStringStore* target,
-        xqpStringStore* data);
+        xqpStringStore* content);
 
   ~PiNode();
 
@@ -549,7 +556,7 @@ public:
 
   Iterator_t getTypedValue() const;
   Item_t getAtomizationValue() const;
-  xqp_string getStringValue() const    { return theData.getp(); }
+  xqp_string getStringValue() const    { return theContent.getp(); }
 
   xqp_string getTarget() const { return theTarget.getp(); }
 
@@ -562,7 +569,9 @@ public:
 ********************************************************************************/
 class CommentNode : public XmlNode
 {
-private:
+  friend class XmlNode;
+
+protected:
   xqpStringStore_t theContent;
 
 public:

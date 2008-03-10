@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-#include <zorba/hashfun.h>
+#include "util/hashfun.h"
 
 namespace zorba {
 

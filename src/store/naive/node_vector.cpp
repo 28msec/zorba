@@ -38,13 +38,24 @@ ulong NodeVector::find(XmlNode* n)
 /////////////////////////////////////////////////////////////////////////////////
 
 
-void LoadedNodeVector::remove(XmlNode* n)
+void LoadedNodeVector::remove(ulong i)
+{
+  assert(i < theNodes.size());
+
+  theNodes.erase(theNodes.begin() + i);
+}
+
+
+bool LoadedNodeVector::remove(XmlNode* n)
 {
   ulong pos = find(n);
 
-  assert(pos < theNodes.size());
-
-  theNodes.erase(theNodes.begin() + pos);
+  if (pos < theNodes.size())
+  {
+    theNodes.erase(theNodes.begin() + pos);
+    return true;
+  }
+  return false;
 }
 
 
@@ -106,19 +117,33 @@ void ConstrNodeVector::push_back(XmlNode* node, bool shared)
 }
 
 
-void ConstrNodeVector::remove(XmlNode* n)
+void ConstrNodeVector::remove(ulong i)
+{
+  assert(i < theNodes.size());
+
+  if (theBitmap[i])
+    *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = NULL;
+
+  theNodes.erase(theNodes.begin() + i);
+  theBitmap.erase(theBitmap.begin() + i);
+}
+
+
+bool ConstrNodeVector::remove(XmlNode* n)
 {
   ulong pos = find(n);
 
-  assert(pos < theNodes.size());
-
-  if (theBitmap[pos])
+  if (pos < theNodes.size())
   {
-    *(reinterpret_cast<XmlNode_t*>(&theNodes[pos])) = NULL;
-  }
+    if (theBitmap[pos])
+      *(reinterpret_cast<XmlNode_t*>(&theNodes[pos])) = NULL;
 
-  theNodes.erase(theNodes.begin() + pos);
-  theBitmap.erase(theBitmap.begin() + pos);
+    theNodes.erase(theNodes.begin() + pos);
+    theBitmap.erase(theBitmap.begin() + pos);
+
+    return true;
+  }
+  return false;
 }
 
 

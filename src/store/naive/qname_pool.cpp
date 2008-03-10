@@ -1,5 +1,5 @@
 
-#include <zorba/hashfun.h>
+#include "util/hashfun.h"
 
 #include "util/Assert.h"
 #include "system/globalenv.h"

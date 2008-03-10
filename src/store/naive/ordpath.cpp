@@ -1,6 +1,8 @@
 
 #include "errors/error_factory.h"
 #include "util/Assert.h"
+#include "util/hashfun.h"
+
 #include "store/naive/ordpath.h"
 #include "store/naive/store_defs.h"
 
@@ -225,6 +227,18 @@ ulong OrdPath::getByteLength() const
   return theBuffer[0];
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+uint32_t OrdPath::hash() const
+{
+  assert(theBuffer != NULL);
+
+  return hashfun::h32(theBuffer, getByteLength(), FNV_32_INIT);
+}
+
+
 #if 0
 /*******************************************************************************
 
@@ -239,6 +253,7 @@ bool OrdPath::operator==(const OrdPath& other) const
   return !memcmp(theBuffer, other.theBuffer, len);
 }
 #endif
+
 
 /*******************************************************************************
 

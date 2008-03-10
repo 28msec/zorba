@@ -210,15 +210,53 @@ void XmlNode::appendChild(XmlNode* child)
 }
 
 
-void XmlNode::removeChild(XmlNode* child)
+/*******************************************************************************
+  Remove the i-th child of "this" (it is assumed that i < numChildren).
+********************************************************************************/
+void XmlNode::removeChild(ulong i)
 {
-  children().remove(child);
+  XmlNode* child = getChild(i);
+
+  children().remove(i);
+
+  if (child->theParent == this)
+    child->theParent = NULL;
 }
 
 
-void XmlNode::removeAttr(XmlNode* attr)
+/*******************************************************************************
+  If the given node N is a child of "this", remove it as a child of "this".
+  Return true if N was a child of "this"; false otherwise.
+********************************************************************************/
+bool XmlNode::removeChild(XmlNode* child)
 {
-  attributes().remove(attr);
+  bool found = children().remove(child);
+
+  if (found)
+  {
+    if (child->theParent == this)
+      child->theParent = NULL;
+  }
+
+  return found;
+}
+
+
+/*******************************************************************************
+  If the given node N is an attribute of "this", remove it as an attribute of
+  "this". Return true if N was an attribute of "this"; false otherwise.
+********************************************************************************/
+bool XmlNode::removeAttr(XmlNode* attr)
+{
+  bool found = attributes().remove(attr);
+
+  if (found)
+  {
+    if (attr->theParent == this)
+      attr->theParent = NULL;
+  }
+
+  return found;
 }
 
 
@@ -1256,11 +1294,11 @@ PiNode::PiNode(
     XmlNode*        parent,
     ulong           pos,
     xqpStringStore* target,
-    xqpStringStore* data)
+    xqpStringStore* content)
   :
   XmlNode(tree, parent, pos, StoreConsts::piNode),
   theTarget(target),
-  theData(data)
+  theContent(content)
 {
   if (tree == NULL && parent == NULL)
   {
@@ -1268,6 +1306,7 @@ PiNode::PiNode(
   }
   NODE_TRACE1("}");
 }
+
 
 PiNode::~PiNode()
 {
@@ -1281,7 +1320,7 @@ XmlNode* PiNode::copy(XmlNode* parent, ulong  pos)
 
   PiNode* copy = new PiNode(NULL, parent, pos,
                             theTarget.getp(),
-                            theData.getp());
+                            theContent.getp());
 
   NODE_TRACE1("Copied pi node " << this << " to node " << copy
               << " parent = " << parent << " pos = " << pos);
@@ -1299,20 +1338,20 @@ Item_t PiNode::getType() const
 
 Iterator_t PiNode::getTypedValue() const
 {
-  const Item_t& item = GET_FACTORY().createString(theData.getp());
+  const Item_t& item = GET_FACTORY().createString(theContent.getp());
   return new ItemIterator(item);
 }
 
 
 Item_t PiNode::getAtomizationValue() const
 {
-  return GET_FACTORY().createUntypedAtomic(theData.getp());
+  return GET_FACTORY().createUntypedAtomic(theContent.getp());
 }
 
 
 xqp_string PiNode::show() const
 {
-  return "<?" + *theTarget + " " + *theData + "?>";
+  return "<?" + *theTarget + " " + *theContent + "?>";
 }
 
 

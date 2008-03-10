@@ -9,10 +9,10 @@
 #include <zorbatypes/numconversions.h>
 #include <zorbatypes/date.h>
 
-#include <zorba/hashfun.h>
 #include <zorba/item.h>
 
 #include "util/Assert.h"
+#include "util/hashfun.h"
 #include "errors/error_factory.h"
 
 #include "system/globalenv.h"

@@ -1,7 +1,7 @@
 #ifndef ZORBA_STORE_UTIL_ITEM_HASHSET
 #define ZORBA_STORE_UTIL_ITEM_HASHSET
 
-#include <zorba/hashfun.h>
+#include "util/hashfun.h"
 
 #include "store/util/handle_hashset.h"
 

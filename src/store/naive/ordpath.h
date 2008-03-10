@@ -70,6 +70,8 @@ public:
 
   ulong getByteLength() const;
 
+  uint32_t hash() const;
+
   //bool operator==(const OrdPath& other) const;
   int operator<(const OrdPath& other) const;
   int operator>(const OrdPath& other) const;

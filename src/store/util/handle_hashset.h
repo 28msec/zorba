@@ -60,7 +60,7 @@ protected:
   ulong                   theInitialSize;
   double                  theLoadFactor;
 
-  SYNC_CODE(Mutex                   theMutex;)
+  SYNC_CODE(Mutex         theMutex;)
 
 public:
 

@@ -22,9 +22,9 @@
 #include <string>
 #include <iostream>
 
-#include <zorba/hashfun.h>
 #include <zorba/rchandle.h>
 
+#include "util/hashfun.h"
 #include "util/checked_vector.h"
 #include "util/rwlock.h"
 #include "errors/error_factory.h"
