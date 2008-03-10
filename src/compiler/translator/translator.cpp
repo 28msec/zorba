@@ -159,17 +159,18 @@ protected:
     return (nodestack.empty ()) ? expr_t (NULL) : peek_stack (nodestack);
   }
 
-  var_expr_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind)
+  var_expr_t bind_var (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
   {
     store::Item_t qname = sctx_p->lookup_qname ("", varname);
     var_expr_t e = new var_expr (loc, kind, qname);
+    e->set_type (type);
     sctx_p->bind_var (qname, e.getp ());
     return e;
   }
 
-  var_expr_t bind_var_and_push (const QueryLoc& loc, string varname, var_expr::var_kind kind)
+  var_expr_t bind_var_and_push (const QueryLoc& loc, string varname, var_expr::var_kind kind, xqtref_t type = NULL)
   {
-    var_expr_t e = bind_var (loc, varname, kind);
+    var_expr_t e = bind_var (loc, varname, kind, type);
     nodestack.push (&*e);
     return e;
   }
@@ -1342,7 +1343,7 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   push_scope ();
-  bind_var_and_push (v.get_location (), v.get_varname (), var_expr::let_var);
+  bind_var_and_push (v.get_location (), v.get_varname (), var_expr::let_var, v.get_typedecl () == NULL ? NULL : pop_tstack ());
 }
 
 
@@ -1379,7 +1380,7 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
     bind_var_and_push (pv->get_location (), pvarname, var_expr::pos_var);
     nodestack.push (val_expr);
   }
-  bind_var_and_push (loc, v.get_varname (), var_expr::for_var);
+  bind_var_and_push (loc, v.get_varname (), var_expr::for_var, v.get_typedecl () == NULL ? NULL : pop_tstack ());
 }
 
 void *begin_visit(const PositionalVar& /*v*/)

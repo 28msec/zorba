@@ -163,6 +163,7 @@ bool begin_visit(var_expr& /*v*/)
 void end_visit(var_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+  const QueryLoc &loc = v.get_loc ();
 
   switch (v.kind) 
   {
@@ -172,11 +173,11 @@ void end_visit(var_expr& v)
     bool bound = fvar_iter_map.get ((uint64_t) &v, map);
     
     if (v.get_varname ()->getStringValue () == DOT_VAR && ! bound)
-      itstack.push (new CtxVariableIterator (v.get_loc(), "."));
+      itstack.push (new CtxVariableIterator (loc, "."));
     else {
       ZORBA_ASSERT (bound);
       ForVarIterator *v_p = new ForVarIterator(v.get_varname()->getLocalName(),
-                                               v.get_loc(),
+                                               loc,
                                                (void *) &v);
       map->push_back (v_p);
       itstack.push(v_p);
@@ -190,12 +191,12 @@ void end_visit(var_expr& v)
 
     if (v.get_varname ()->getStringValue () == DOT_POS_VAR && ! bound) {
       itstack.push (new SingletonIterator (
-        v.get_loc(), ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
+        loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
       ));
     } else {
       ZORBA_ASSERT (bound);
       ForVarIterator *v_p = new ForVarIterator(v.get_varname ()->getLocalName(),
-                                               v.get_loc(),
+                                               loc,
                                                (void *) &v);
       map->push_back (v_p);
       itstack.push(v_p);
@@ -209,12 +210,12 @@ void end_visit(var_expr& v)
       
     if (v.get_varname ()->getStringValue () == LAST_IDX_VAR && ! bound) {
       itstack.push (new SingletonIterator (
-        v.get_loc(), ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
+        loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
       ));
     } else {
       ZORBA_ASSERT (bound);
       LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
-                                               v.get_loc(),
+                                               loc,
                                                (void *) &v);
       map->push_back (v_p);
       itstack.push(v_p);
@@ -226,7 +227,7 @@ void end_visit(var_expr& v)
     vector<ref_iter_t> *map = NULL;    
     ZORBA_ASSERT (param_var_iter_map->get ((uint64_t) &v, map));
     LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
-                                             v.get_loc(),
+                                             loc,
                                              (void *) &v);
     
     map->push_back (v_p);
@@ -239,6 +240,12 @@ void end_visit(var_expr& v)
   default:
     assert (false);
     break;
+  }
+
+  xqtref_t type = v.get_type ();
+  if (type != NULL) {
+    PlanIter_t it = pop_itstack ();
+    itstack.push (new TreatIterator (loc, it, type, ZorbaError::XPTY0004));
   }
 }
 
