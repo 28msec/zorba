@@ -28,13 +28,13 @@ namespace zorba {
 
 #if defined HAVE_PTHREAD_SPINLOCK
 
-class RCSync
+class RCLock
 {
 protected:
   pthread_spinlock_t  theLock;
 
 public:
-  RCSync()
+  RCLock()
   {
     if (0 != pthread_spin_init(&theLock, PTHREAD_PROCESS_PRIVATE))
     {
@@ -43,7 +43,7 @@ public:
     }
   } 
 
-  ~RCSync()
+  ~RCLock()
   {
     if (0 != pthread_spin_destroy(&theLock))
     {
@@ -52,7 +52,7 @@ public:
     }
   } 
 
-  void lock()
+  void acquire()
   {
     if (0 != pthread_spin_lock(&theLock))
     {
@@ -61,7 +61,7 @@ public:
     }
   }
 
-  void unlock()
+  void release()
   {
     if (0 != pthread_spin_unlock(&theLock))
     {
@@ -73,13 +73,13 @@ public:
 
 #elif defined HAVE_PTHREAD_MUTEX
 
-class RCSync
+class RCLock
 {
 protected:
   pthread_mutex_t  theLock;
 
 public:
-  RCSync()
+  RCLock()
   {
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
@@ -92,7 +92,7 @@ public:
     pthread_mutexattr_destroy(&attr);
   } 
 
-  ~RCSync()
+  ~RCLock()
   {
     if (0 != pthread_mutex_destroy(&theLock))
     {
@@ -101,7 +101,7 @@ public:
     }
   } 
 
-  void lock()
+  void acquire()
   {
     if (0 != pthread_mutex_lock(&theLock))
     {
@@ -110,7 +110,7 @@ public:
     }
   }
 
-  void unlock()
+  void release()
   {
     if (0 != pthread_mutex_unlock(&theLock))
     {
@@ -128,44 +128,44 @@ public:
 
 #elif WIN32
 
-class RCSync
+class RCLock
 {
 protected:
   HANDLE    mutex;
 public:
-  RCSync()
+  RCLock()
   {
     mutex = ::CreateEvent(NULL, FALSE, TRUE, NULL);
   } 
 
-  ~RCSync()
+  ~RCLock()
   {
     ::CloseHandle(mutex);
   } 
 
-  void lock()
+  void acquire()
   {
     ::WaitForSingleObject(mutex, INFINITE);
   }
 
-  void unlock()
+  void release()
   {
     ::SetEvent(mutex);
   }
 };
 #else
-  #error RCSync implemented for PTHREADs and WIN32
+  #error RCLock implemented for PTHREADs and WIN32
 
 #endif // ZORBA_USE_PTHREAD_LIBRARY or WIN32
 
 //use this macro to activate or deactivate use of sync code
-#define     SYNC_CODE(x)    x
-#define     SYNC_PARAM2(x)    ,x
+#define SYNC_CODE(x)    x
+#define SYNC_PARAM2(x)  , x
 
 #else // ZORBA_FOR_ONE_THREAD_ONLY
 
-#define     SYNC_CODE(x)    
-#define     SYNC_PARAM2(x)
+#define SYNC_CODE(x)    
+#define SYNC_PARAM2(x)
 
 #endif
 
@@ -185,40 +185,32 @@ public:
 ********************************************************************************/
 class RCObject
 {
-
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
-#define RCLOCK(sync)    if (sync != 0) sync->lock();
-#define RCUNLOCK(sync)  if (sync != 0) sync->unlock();
-#else
-#define RCLOCK(sync)
-#define RCUNLOCK(sync)
-#endif
-
 protected:
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
   mutable long  theRefCount;
+#else
+  mutable volatile long  theRefCount;
+#endif
 
 public:
   RCObject() : theRefCount(0) { }
 
-  RCObject(const RCObject& /*rhs*/) : theRefCount(0) { }
+  RCObject(const RCObject&) : theRefCount(0) { }
 
   virtual ~RCObject() { }
 
   virtual void free() { delete this; }
 
-  long getRefCount(SYNC_CODE(RCSync* sync)) const
+  long getRefCount() const volatile
   {
-    RCLOCK(sync);
-    long temp = theRefCount;
-    RCUNLOCK(sync);
-    return temp;
+    return theRefCount;
   }
 
   void addReference(long* counter 
-                    SYNC_PARAM2(RCSync* sync))
+                    SYNC_PARAM2(RCLock* lock))
   {
 #if defined WIN32 && !defined ZORBA_FOR_ONE_THREAD_ONLY
-    if(sync)
+    if(lock)
     {
       if (counter) InterlockedIncrement(counter);
       InterlockedIncrement(&theRefCount);
@@ -229,18 +221,18 @@ public:
       ++theRefCount;
     }
 #else
-    RCLOCK(sync);
+    SYNC_CODE(if (lock) lock->acquire());
     if (counter) ++(*counter);
     ++theRefCount;
-    RCUNLOCK(sync);
+    SYNC_CODE(if (lock) lock->release());
 #endif
   }
 
   void removeReference(long* counter 
-                      SYNC_PARAM2(RCSync* sync))
+                       SYNC_PARAM2(RCLock* lock))
   {
 #if defined WIN32 && !defined ZORBA_FOR_ONE_THREAD_ONLY
-    if(sync)
+    if(lock)
     {
       if (counter)
       {
@@ -275,24 +267,24 @@ public:
       }
     }
 #else
-    RCLOCK(sync);
+    SYNC_CODE(if (lock) lock->acquire());
     if (counter)
     {
       --theRefCount;
       if (--(*counter) == 0)
       {
-        RCUNLOCK(sync);
+        SYNC_CODE(if (lock) lock->release());
         free();
         return;
       }
     }
     else if (--theRefCount == 0)
     {
-      RCUNLOCK(sync);
+      SYNC_CODE(if (lock) lock->release());
       free();
       return; 
     }
-    RCUNLOCK(sync);
+    SYNC_CODE(if (lock) lock->release());
 #endif
   }
 
@@ -310,8 +302,8 @@ public:
 
   SimpleRCObject(const SimpleRCObject& rhs) : RCObject(rhs) { }
 
-  long* getSharedRefCounter() { return NULL; }  
-  SYNC_CODE( RCSync* getSync()           { return NULL; })
+  long* getSharedRefCounter()   { return NULL; }  
+  SYNC_CODE(RCLock* getRCLock() { return NULL; })
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
 };
@@ -335,7 +327,7 @@ private:
   {
     if (p == 0) return;
     p->addReference(p->getSharedRefCounter()
-                    SYNC_PARAM2(p->getSync()));
+                    SYNC_PARAM2(p->getRCLock()));
   }
 
 public:
@@ -353,7 +345,7 @@ public:
   {
     if (p)
       p->removeReference(p->getSharedRefCounter()
-                          SYNC_PARAM2(p->getSync()));
+                          SYNC_PARAM2(p->getRCLock()));
     p = 0;
   }
 
@@ -397,7 +389,7 @@ public:
     if (p != rhs.p)
     {
       if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getSync()));
+                                SYNC_PARAM2(p->getRCLock()));
       p = rhs.p;
       init();
     }
@@ -409,7 +401,7 @@ public:
 		if (p != rhs.getp()) 
     {
 			if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getSync()));
+                                SYNC_PARAM2(p->getRCLock()));
 			p = static_cast<T*>(rhs.getp());
 			init();
 		}

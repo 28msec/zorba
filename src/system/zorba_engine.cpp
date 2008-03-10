@@ -76,7 +76,7 @@ ZorbaEngineImpl::ZorbaEngineImpl(bool single_thread)
 	theSingleThreadZorba = NULL;
 	xml_data_manager = new store::XmlDataManager_Impl;
 	xml_data_manager->addReference(xml_data_manager->getSharedRefCounter()
-                                 SYNC_PARAM2(xml_data_manager->getSync()));
+                                 SYNC_PARAM2(xml_data_manager->getRCLock()));
 }
 
 
@@ -87,7 +87,7 @@ ZorbaEngineImpl::~ZorbaEngineImpl()
   shutdown();
 
 	xml_data_manager->removeReference(xml_data_manager->getSharedRefCounter()
-                                    SYNC_PARAM2(xml_data_manager->getSync()));
+                                    SYNC_PARAM2(xml_data_manager->getRCLock()));
 //  assert(globalZorbaEngine == NULL);
 	delete theSingleThreadZorba;
 

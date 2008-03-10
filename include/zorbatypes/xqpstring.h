@@ -18,7 +18,7 @@ namespace zorba {
   {
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
   protected:
-    SYNC_CODE(RCSync  theRCLock;)
+    SYNC_CODE(RCLock  theRCLock;)
 #endif
 
     public:
@@ -31,8 +31,7 @@ namespace zorba {
       long*
       getSharedRefCounter() { return NULL; }  
 
-      SYNC_CODE(RCSync*
-      getSync()     { return &theRCLock; })
+      SYNC_CODE(RCLock* getRCLock() { return &theRCLock; })
 
       std::string::size_type bytes() const { return size(); }
 

@@ -91,7 +91,7 @@ static_context::static_context()
 			{
 				val = &(*it).val;
 				val->typeValue->removeReference(val->typeValue->getSharedRefCounter()
-                                        SYNC_PARAM2(val->typeValue->getSync()));
+                                        SYNC_PARAM2(val->typeValue->getRCLock()));
 			}
 			else if(!strncmp(keybuff, "collation:", 10))
 			{
@@ -246,7 +246,7 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
     v.typeValue = &*t;
     keymap.put (key, v);
 		t->addReference(t->getSharedRefCounter()
-                    SYNC_PARAM2(t->getSync()));///will be decremented in static context destructor
+                    SYNC_PARAM2(t->getRCLock()));///will be decremented in static context destructor
 	}
 
 	void static_context::add_variable_type(
