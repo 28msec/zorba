@@ -19,6 +19,18 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         ++i;
       }
     }
+    if (flwor->forlet_count() == 0) {
+      expr_t where = flwor->get_where();
+      expr_t result = flwor->get_retval();
+      if (where != NULL) {
+        rchandle<if_expr> ite(new if_expr(where->get_loc()));
+        ite->set_cond_expr(where);
+        ite->set_then_expr(result);
+        ite->set_else_expr(new fo_expr(where->get_loc(), LOOKUP_FN("fn", "concatenate", 0)));
+        result = &*ite;
+      }
+      return result;
+    }
   }
   return NULL;
 }

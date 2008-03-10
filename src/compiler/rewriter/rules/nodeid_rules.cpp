@@ -1,8 +1,6 @@
 #include "compiler/rewriter/rules/ruleset.h"
 #include "context/static_context.h"
-
-#define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (rCtx.getStaticContext()->lookup_fn (pfx, local, arity))
-#define LOOKUP_OP1( local ) static_cast<function *> (rCtx.getStaticContext()->lookup_builtin_fn (":" local, 1))
+#include "compiler/rewriter/tools/expr_tools.h"
 
 namespace zorba {
 
