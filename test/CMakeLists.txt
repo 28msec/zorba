@@ -31,6 +31,3 @@ SET(TEST_ORDPATH_SRCS
 
 ADD_EXECUTABLE(test_ordpath ${TEST_ORDPATH_SRCS})
 TARGET_LINK_LIBRARIES(test_ordpath zorba)
-
-ADD_EXECUTABLE(davidtest davidtest.cpp)
-TARGET_LINK_LIBRARIES(davidtest zorba)
