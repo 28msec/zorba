@@ -10,6 +10,7 @@
 
 #include "errors/error_factory.h"
 #include "util/Assert.h"
+#include "util/hashfun.h"
 
 #include "store/util/handle_hashset_string.h"
 #include "store/util/pointer_hashmap_string.h"
@@ -386,7 +387,10 @@ bool SimpleStore::equalNodes(Item* node1, Item* node2) const
 ********************************************************************************/
 uint32_t SimpleStore::hashNode(Item* node) const
 {
-  return 0;
+  XmlNode* n = reinterpret_cast<XmlNode*>(node);
+  ulong tid = n->getTree()->getId();
+
+  return hashfun::h32((void*)(&tid), sizeof(ulong), n->getOrdPath().hash());
 }
 
 
