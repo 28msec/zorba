@@ -352,7 +352,7 @@ void SimpleStore::deleteCollection(xqpStringStore* uri)
   Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if
   node1 == node2, or 1 if node1 > node2.
 ********************************************************************************/
-int32_t SimpleStore::compare(Item* node1, Item* node2) const
+long SimpleStore::compareNodes(Item* node1, Item* node2) const
 {
   ZORBA_ASSERT(node1->isNode());
   ZORBA_ASSERT(node2->isNode());
@@ -369,6 +369,24 @@ int32_t SimpleStore::compare(Item* node1, Item* node2) const
     return -1;
 
   return 1;
+}
+
+
+/*******************************************************************************
+  Check if two nodes are identical (i.e. have same node id)
+********************************************************************************/
+bool SimpleStore::equalNodes(Item* node1, Item* node2) const
+{
+  return node1 == node2;
+}
+
+
+/*******************************************************************************
+  Return a hash value based on the id of a given node.
+********************************************************************************/
+uint32_t SimpleStore::hashNode(Item* node) const
+{
+  return 0;
 }
 
 

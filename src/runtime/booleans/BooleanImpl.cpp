@@ -649,7 +649,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
            ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
              &loc, DONT_CONTINUE_EXECUTION, "The IsSameNode function must have nodes as parameters.");
         }
-        lBool = (Zorba::getStore()->compare(lItem0, lItem1) == 0); 
+        lBool = (Zorba::getStore()->compareNodes(lItem0, lItem1) == 0); 
         STACK_PUSH ( 
           Zorba::getItemFactory()->createBoolean(lBool),
           aState
@@ -676,7 +676,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
            ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
              &loc, DONT_CONTINUE_EXECUTION, "The IsSameNode function must have nodes as parameters.");
         }
-        lBool = (Zorba::getStore()->compare(lItem0, lItem1) == -1); 
+        lBool = (Zorba::getStore()->compareNodes(lItem0, lItem1) == -1); 
         STACK_PUSH ( 
           Zorba::getItemFactory()->createBoolean(lBool),
           aState
@@ -703,7 +703,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
            ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
              &loc, DONT_CONTINUE_EXECUTION, "The IsSameNode function must have nodes as parameters.");
         }
-        lBool = (Zorba::getStore()->compare(lItem0, lItem1) == 1); 
+        lBool = (Zorba::getStore()->compareNodes(lItem0, lItem1) == 1); 
         STACK_PUSH ( 
           Zorba::getItemFactory()->createBoolean(lBool),
           aState

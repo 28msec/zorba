@@ -113,15 +113,30 @@ public:
 		
   /* --------------------------- Node Id Management ---------------------------*/
 
-  /** Compares two items, based on their id.
-   * @param item1
-   * @param item2
-   * @return 	-1, if item1.id &lt; item2.id
-   *						 0, if item1.id == item2.id
-   *						+1, if item1.id &gt; item2.id
+  /** Compares two nodes, based on their node id.
+   * @param node1
+   * @param node2
+   * @return 	-1, if node1.id &lt; node2.id
+   *						 0, if node1.id == node2.id
+   *						+1, if node1.id &gt; node2.id
    */
-  virtual int32_t compare(Item* item1, Item* item2) const = 0;
+  virtual long compareNodes(Item* node1, Item* node2) const = 0;
 		
+  /** Check if two nodes are identical (i.e. have same node id)
+   * @param node1
+   * @param node2
+   * @return 	true if nodes are identical, false otherwise.
+   */
+  virtual bool equalNodes(Item* node1, Item* node2) const = 0;
+
+  /**
+   * Return a hash value based on the id of a given node
+   * @param node
+   * @return the hash value
+   */
+  virtual uint32_t hashNode(Item* node) const = 0;
+
+
   /** Sorts the items of the passed iterator
    * @param iterator to sort
    * @param ascendent true for ascendent and false for descendant
