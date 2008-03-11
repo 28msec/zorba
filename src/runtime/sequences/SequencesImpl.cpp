@@ -12,6 +12,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
+#include "runtime/core/arithmetic_impl.h"
 
 #include "system/globalenv.h"
 #include "system/zorba.h"
@@ -691,8 +692,7 @@ FnSumIterator::nextImpl(PlanState& planState) const {
   {
     while ( (lRunningItem = consumeNext(theChildren[0].getp(), planState)) != NULL )
     {
-      // TODO add datetime
-      lSumItem = NumArithIterator<AddOperation>::compute(loc, lSumItem, lRunningItem); 
+      lSumItem =  GenericArithIterator<AddOperation>::compute(loc, lSumItem, lRunningItem);
       // TODO break if one item is NaN
     }
 
