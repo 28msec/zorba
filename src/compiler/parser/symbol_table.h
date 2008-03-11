@@ -24,7 +24,7 @@ public:			// ctor,dtor
 	~symbol_table();
 
 public:			// table interface
-	off_t put(char const* text, uint32_t length);
+	off_t put(char const* text, uint32_t length, bool eolNorm = false);
 	off_t put_ncname(char const* text, uint32_t length);
 	off_t put_qname(char const* text, uint32_t length, bool do_trim_start = false, bool do_trim_end = false);
 	off_t put_uri(char const* text, uint32_t length);

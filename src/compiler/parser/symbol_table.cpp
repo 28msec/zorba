@@ -96,8 +96,28 @@ uint32_t symbol_table::size() const
 	return (uint32_t)heap.size();
 }
 
-off_t symbol_table::put(char const* text, uint32_t length)
+static void normalize_eol (const char *text, uint32_t length, string *out) {
+  uint32_t i;
+  out->reserve (length + 1);
+  char lastCh = '\0';
+  for (i = 0; i < length; i++) {
+    char ch = text [i];
+    if (ch == '\r')
+      *out += '\n';
+    else if (ch != '\n' || lastCh != '\r')
+      *out += ch;
+    lastCh = ch;
+  }
+}
+
+off_t symbol_table::put(char const* text, uint32_t length, bool eolNorm)
 {
+  string normStr;
+  if (eolNorm) {
+    normalize_eol (text, length, &normStr);
+    text = normStr.c_str ();
+    length = normStr.size ();
+  }
 	return heap.put(text, 0, length);
 }
 
@@ -168,6 +188,9 @@ off_t symbol_table::put_charref(char const* text, uint32_t length)
 
 off_t symbol_table::put_stringlit(char const* yytext, uint32_t yyleng)
 {
+  string eolNorm;
+  normalize_eol (yytext, yyleng, &eolNorm);
+  yytext = eolNorm.c_str (); yyleng = eolNorm.size ();
   string result;
   if (! decode_string (yytext, yyleng, &result)) return -1;
 	return heap.put (result.c_str (), 0, result.length ());

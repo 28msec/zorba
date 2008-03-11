@@ -4132,7 +4132,7 @@ typedef zorba::xquery_parser::token token;
   /* maintain ELEMENT_CONTENT */
   /* ------------------------ */
 {ElementContentChar}+ {
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng, true);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::ELEMENT_CONTENT" << endl;
 #endif
@@ -4453,7 +4453,7 @@ typedef zorba::xquery_parser::token token;
 }
 
 {QuotAttrContentChar}+ {
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng, true);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::QUOTE_ATTR_CONTENT" << endl;
 #endif
@@ -4536,7 +4536,7 @@ typedef zorba::xquery_parser::token token;
 }
 
 {AposAttrContentChar}+ {
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng);
+  yylval->sval = getDriver()->symtab.put(yytext, yyleng, true);
 #ifdef ZORBA_DEBUG_SCANNER
   cout << "token::APOS_ATTR_CONTENT" << endl;
 #endif
