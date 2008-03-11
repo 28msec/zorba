@@ -86,7 +86,9 @@ store::Item_t GenericArithIterator<Operation>::compute(const QueryLoc& aLoc, sto
   xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
   xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeConstants::QUANT_ONE );
 
-  if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
+  if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ) &&
+     (GENV_TYPESYSTEM.is_equal( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE) ||
+      GENV_TYPESYSTEM.is_equal( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE)))
   {
     if(GENV_TYPESYSTEM.is_numeric(*type1))
     {
@@ -117,16 +119,17 @@ store::Item_t GenericArithIterator<Operation>::compute(const QueryLoc& aLoc, sto
     else
       return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
   }
-  else if ( GENV_TYPESYSTEM.is_numeric(*type0) 
-    || GENV_TYPESYSTEM.is_numeric(*type1)
-    || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
-    || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (!( !GENV_TYPESYSTEM.is_numeric(*type0)
+    || !GENV_TYPESYSTEM.is_numeric(*type1)
+    || !GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
+    || !GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)))
   {
     return NumArithIterator<Operation>::computeAtomic(aLoc, n0, type0, n1, type1);
   }
   else
   {
-    ZORBA_ASSERT(false);
+    ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
+                      NULL, DONT_CONTINUE_EXECUTION, "Arithmetic operation not defined between the given types(" + type0->toString() + " and " + type1->toString() + ").");
   }
   return 0;
 }
