@@ -43,10 +43,7 @@ main(int argc, char** argv)
     std::cerr << "Query parsed but no parsenode root generated!" << std::endl;
     GlobalEnvironment::destroy();
     return 3;
-  } else {
-    delete lNode;
-  }
-
+  } 
   GlobalEnvironment::destroy();
   return 0;
 }
