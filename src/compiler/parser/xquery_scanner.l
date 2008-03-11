@@ -5,20 +5,20 @@
  */
 
 /*______________________________________________________________________
- |                                                                       
- |  An implementation of the w3c proposal:                              
- |                                                                       
- |  "Building a Tokenizer for XPath or XQuery,                          
- |   W3C Working Draft 4 April 2005"                                    
- |                                                                       
- |  [http://www.w3.org/TR/xquery-xpath-parsing/]                        
- |                                                                       
- |  Extensions including update, search, and XQueryP:                   
- |                                                                       
- |  [http://www.w3.org/TR/xqupdate/]                                    
- |  [http://www.w3.org/TR/xquery-full-text/]                            
- |  [http://www.ximep-2006.org/papers/Paper-Chamberlin-Carey.pdf]       
- |                                                                      
+ |
+ |  An implementation of the w3c proposal:
+ |
+ |  "Building a Tokenizer for XPath or XQuery,
+ |   W3C Working Draft 4 April 2005"
+ |
+ |  [http://www.w3.org/TR/xquery-xpath-parsing/]
+ |
+ |  Extensions including update, search, and XQueryP:
+ |
+ |  [http://www.w3.org/TR/xqupdate/]
+ |  [http://www.w3.org/TR/xquery-full-text/]
+ |  [http://www.ximep-2006.org/papers/Paper-Chamberlin-Carey.pdf]
+ |
  |_______________________________________________________________________*/
 
 
@@ -46,19 +46,26 @@
 typedef zorba::xquery_parser::token token;
 typedef zorba::xquery_parser::token_type token_type;
 
-#define TRY_STR_LIT( ttype, put, yytext, yyleng )                       \
+#define PUSH_BEGIN( pushed, new ) BEGIN new; yy_push_state (pushed);
+
+#define TRY_SVAL_TOKEN( ttype, put )                                    \
   do {                                                                  \
-    off_t res = getDriver()->symtab.put (yytext, yyleng);               \
+    off_t res = getDriver()->symtab.put;                                \
     if (res < 0) return token::UNRECOGNIZED;                            \
     else {                                                              \
       yylval->sval = res;                                               \
       return token::ttype;                                              \
     }                                                                   \
- } while (0)
+  } while (0)
 
-#define TRY_STRINGLIT( ttype, yytext, yyleng ) TRY_STR_LIT (ttype, put_stringlit, yytext, yyleng)
+#define TRY_STR_LIT( ttype, put, yytext, yyleng ) \
+  TRY_SVAL_TOKEN (ttype, put (yytext, yyleng))
 
-#define TRY_URILIT( ttype, yytext, yyleng ) TRY_STR_LIT (ttype, put_uri, yytext, yyleng)
+#define TRY_STRINGLIT( ttype, yytext, yyleng ) \
+  TRY_STR_LIT (ttype, put_stringlit, yytext, yyleng)
+
+#define TRY_URILIT( ttype, yytext, yyleng ) \
+  TRY_STR_LIT (ttype, put_uri, yytext, yyleng)
 
 /*
   Work around an incompatibility in flex (at least versions
@@ -68,7 +75,7 @@ typedef zorba::xquery_parser::token_type token_type;
 */
 #undef yywrap
 #define yywrap() 1
-     
+
 /*
   By default yylex returns int, we use token_type.
   Unfortunately yyterminate by default returns 0, which is
@@ -207,10 +214,10 @@ AposAttrContentChar   [\x09\x0A\x0D\x20-\x25\x28-\x3B\x3D-\x7A\x7C\x7E-\xFD]
   NonXChar  [\x09\x0A\x0D\x20A-WY-Za-wy-z\x7B-\xFD]
   NonMChar  [\x09\x0A\x0D\x20A-LN-Za-ln-z\x7B-\xFD]
   NonLChar  [\x09\x0A\x0D\x20A-KM-Za-km-z\x7B-\xFD]
-  
-  PITarget  (({NonXChar}{Char}*)|((X|x){NonMChar}{Char}*)|((X|x)(M|m){NonLChar}*)|({Char}{Char}{Char}{Char}+)) 
+
+  PITarget  (({NonXChar}{Char}*)|((X|x){NonMChar}{Char}*)|((X|x)(M|m){NonLChar}*)|({Char}{Char}{Char}{Char}+))
   */
-  
+
 PITargetStart         [_:A-\xFF]
 PITargetName          [.\-_:0-9A-\xFF]
 PITarget              {PITargetStart}{PITargetName}*
@@ -227,7 +234,7 @@ ValidationMode        ("strict"|"lax"|"skip")
 
 
   /*______________________________________________________________________
-   | 
+   |
    |  Exclusive start states
    |______________________________________________________________________*/
 
@@ -250,8 +257,8 @@ ValidationMode        ("strict"|"lax"|"skip")
 %x MODE_PRAGMACONTENTS
 %x MODE_PROCESSING_INSTRUCTION_CTOR
 %x MODE_PROCESSING_INSTRUCTION
-%x MODE_PROCESSING_INSTRUCTION_CONTENT 
-%x MODE_QUOTE_ATTRIBUTE_CONTENT 
+%x MODE_PROCESSING_INSTRUCTION_CONTENT
+%x MODE_QUOTE_ATTRIBUTE_CONTENT
 %x MODE_SINGLETYPE
 %x MODE_START_TAG
 %x MODE_URITOOPERATOR
@@ -268,16 +275,16 @@ ValidationMode        ("strict"|"lax"|"skip")
 
 
 /*
-  The macro YY_USER_ACTION can be defined to provide an action which is 
+  The macro YY_USER_ACTION can be defined to provide an action which is
   always executed prior to the matched rule's action.
 
-  The following paragraph suffices to track locations accurately. Each 
-  time yylex is invoked, the begin position is moved onto the end 
-  position. Then when a pattern is matched, the end position is advanced 
-  of its width. In case it matched ends of lines, the end cursor is 
-  adjusted, and each time blanks are matched, the begin cursor is moved 
-  onto the end cursor to effectively ignore the blanks preceding tokens. 
-  Comments would be treated equally. 
+  The following paragraph suffices to track locations accurately. Each
+  time yylex is invoked, the begin position is moved onto the end
+  position. Then when a pattern is matched, the end position is advanced
+  of its width. In case it matched ends of lines, the end cursor is
+  adjusted, and each time blanks are matched, the begin cursor is moved
+  onto the end cursor to effectively ignore the blanks preceding tokens.
+  Comments would be treated equally.
 */
 
 %%
@@ -306,16 +313,13 @@ typedef zorba::xquery_parser::token token;
   /* maintain INITIAL */
   /* ---------------- */
 "validate"{S}"{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::VALIDATE_LBRACE;
 }
 
 "validate"{SP}{ValidationMode} {
-  yylval->sval = getDriver()->symtab.put(yytext+9, yyleng-9);
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
-  return token::VALIDATE_MODE;
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  TRY_SVAL_TOKEN (VALIDATE_MODE, put(yytext+9, yyleng-9));
 }
 
 "typeswitch"{S}"(" {
@@ -323,40 +327,32 @@ typedef zorba::xquery_parser::token token;
 }
 
 "element"{S}"{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::ELEMENT_LBRACE;
 }
 
 "attribute"{S}"{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::ATTRIBUTE_LBRACE;
 }
 
 "attribute"{SP}{QName}{S}"{" {
-  yylval->sval = getDriver()->symtab.put_qname(yytext+10, yyleng-11, true, true);
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
-  return token::ATTRIBUTE_QNAME_LBRACE;
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  TRY_SVAL_TOKEN (ATTRIBUTE_QNAME_LBRACE, put_qname(yytext+10, yyleng-11, true, true));
 }
 
 "element"{SP}{QName}{S}"{" {
-  yylval->sval = getDriver()->symtab.put_qname(yytext+8, yyleng-9, true, true);
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
-  return token::ELEMENT_QNAME_LBRACE;
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
+  TRY_SVAL_TOKEN (ELEMENT_QNAME_LBRACE, put_qname(yytext+8, yyleng-9, true, true));
 }
 
 "document"{S}"{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::DOCUMENT_LBRACE;
 }
 
 "text"{S}"{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::TEXT_LBRACE;
 }
 
@@ -369,8 +365,7 @@ typedef zorba::xquery_parser::token token;
 
 
 "comment"{S}"{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::COMMENT_LBRACE;
 }
 
@@ -383,20 +378,17 @@ typedef zorba::xquery_parser::token token;
 }
 
 "{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
 }
 
 "ordered"{S}"{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::ORDERED_LBRACE;
 }
 
 "unordered"{S}"{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::UNORDERED_LBRACE;
 }
 
@@ -417,50 +409,42 @@ typedef zorba::xquery_parser::token token;
   /* transition to KINDTEST */
   /* ---------------------- */
 "element"{S}"(" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::ELEMENT_LPAR;
 }
 
 "attribute"{S}"(" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::ATTRIBUTE_LPAR;
 }
 
 "schema-element"{S}"(" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::SCHEMA_ELEMENT_LPAR;
 }
 
 "schema-attribute"{S}"(" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::SCHEMA_ATTRIBUTE_LPAR;
 }
 
 "comment"{S}"(" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::COMMENT_LPAR;
 }
 
 "text"{S}"(" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::TEXT_LPAR;
 }
 
 "node"{S}"(" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::NODE_LPAR;
 }
 
 "document-node"{S}"(" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OPERATOR);
   return token::DOCUMENT_NODE_LPAR;
 }
 
@@ -468,8 +452,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to KINDTESTFORPI */
   /* --------------------------- */
 "processing-instruction"{S}"(" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_KINDTESTFORPI);
+  PUSH_BEGIN (MODE_KINDTESTFORPI, MODE_OPERATOR);
   return token::PI_LPAR;
 }
 
@@ -566,15 +549,13 @@ typedef zorba::xquery_parser::token token;
 }
 
 {NCName}":*" {
-  yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng-2);
   BEGIN MODE_OPERATOR;
-  return token::ELEM_WILDCARD;
+  TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
 }
 
 {QName} {
-  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
-  return token::QNAME;
+  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
 }
 
 ")" {
@@ -583,9 +564,8 @@ typedef zorba::xquery_parser::token token;
 }
 
 "*:"{NCName} {
-  yylval->sval = getDriver()->symtab.put_ncname(yytext+2, yyleng-2);
   BEGIN MODE_OPERATOR;
-  return token::PREFIX_WILDCARD;
+  TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
 }
 
 "*" {
@@ -708,23 +688,21 @@ typedef zorba::xquery_parser::token token;
 ")"{S}"as"/{WordBreak} {
   BEGIN MODE_ITEMTYPE;
   return token::RPAR_AS;
-} 
+}
 
 
   /* transition to XML_COMMENT */
   /* ------------------------- */
 "<!--" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_XML_COMMENT);
+  PUSH_BEGIN (MODE_XML_COMMENT, MODE_OPERATOR);
   return token::XML_COMMENT_BEGIN;
 }
 
 
   /* transition to PROCESSING_INSTRUCTION */
   /* ------------------------------------ */
-"<?" {  
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_PROCESSING_INSTRUCTION);
+"<?" {
+  PUSH_BEGIN (MODE_PROCESSING_INSTRUCTION, MODE_OPERATOR);
   return token::PI_BEGIN;
 }
 
@@ -732,8 +710,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to CDATA_SECTION */
   /* --------------------------- */
 "<![CDATA[" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_CDATA_SECTION);
+  PUSH_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR);
   return token::CDATA_BEGIN;
 }
 
@@ -743,9 +720,8 @@ typedef zorba::xquery_parser::token token;
 }
   /* transition to START_TAG */
   /* ----------------------- */
-"<" {   
-  BEGIN MODE_OPERATOR;
-  yy_push_state(MODE_START_TAG);
+"<" {
+  PUSH_BEGIN (MODE_START_TAG, MODE_OPERATOR);
   return token::START_TAG;
 }
 
@@ -783,7 +759,7 @@ typedef zorba::xquery_parser::token token;
 
   /* transition to PRAGMA */
   /* -------------------- */
-"(#" {  
+"(#" {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
 }
@@ -809,13 +785,13 @@ typedef zorba::xquery_parser::token token;
 
   /* pop previous state */
   /* ------------------ */
-"}" {   
+"}" {
   yy_pop_state();
   return token::RBRACE;
 }
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | Update rules <INITIAL,MODE_OPERATOR>
    |______________________________________________________________________*/
@@ -829,23 +805,23 @@ typedef zorba::xquery_parser::token token;
 <INITIAL,MODE_OPERATOR>{
 
 "insert"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::INSERT_NODE;
 }
 "insert"{SP}"nodes"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::INSERT_NODES;
 }
 "delete"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::DELETE_NODE;
 }
 "delete"{SP}"nodes"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::DELETE_NODES;
 }
 "replace"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::REPLACE;
 }
 "replace"{SP}"value"{SP}"of"{SP}"node"/{WordBreak} {
@@ -853,7 +829,7 @@ typedef zorba::xquery_parser::token token;
   return token::REPLACE_VALUE_OF;
 }
 "rename"{SP}"node"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   getDriver()->set_rename(true);
   return token::RENAME;
 }
@@ -863,42 +839,42 @@ typedef zorba::xquery_parser::token token;
   return token::COPY_DOLLAR;
 }
 "into"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::INTO;
 }
 "first"{SP}"into"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::FIRST_INTO;
 }
 "last"{SP}"into"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::LAST_INTO;
 }
 "after"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::AFTER;
 }
 "before"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::BEFORE;
 }
 "with"/{WordBreak}  {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::WITH;
 }
 "modify"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::MODIFY;
 }
 
 }
 
 "as"/{WordBreak} {
-  BEGIN INITIAL; 
+  BEGIN INITIAL;
   return token::AS;
 }
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | TRY-CATCH rules <INITIAL>
    |______________________________________________________________________*/
@@ -922,9 +898,8 @@ typedef zorba::xquery_parser::token token;
 }
 
 {QName}  {
-  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN INITIAL;
-  return token::QNAME;
+  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
 }
 
 "*" {
@@ -933,21 +908,19 @@ typedef zorba::xquery_parser::token token;
 }
 
 {NCName}":*" {
-  yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng-2);
   BEGIN MODE_OPERATOR;
-  return token::ELEM_WILDCARD;
+  TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
 }
 
 "*:"{NCName} {
-  yylval->sval = getDriver()->symtab.put_ncname(yytext+2, yyleng-2);
   BEGIN MODE_OPERATOR;
-  return token::PREFIX_WILDCARD;
+  TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
 }
 
 }
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | FT rules <INITIAL>
    |______________________________________________________________________*/
@@ -1114,8 +1087,8 @@ typedef zorba::xquery_parser::token token;
 
   /* END MODE INITIAL */
 
-  
-  /*______________________________________________________________________  
+
+  /*______________________________________________________________________
    |
    |  The PROCESSING_INSTRUCTION_CTOR State
    |
@@ -1125,14 +1098,12 @@ typedef zorba::xquery_parser::token token;
 <MODE_PROCESSING_INSTRUCTION_CTOR>{
 
 "{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
 }
 
 {NCName}  {
-  yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng);
-  return token::NCNAME;
+  TRY_SVAL_TOKEN (NCNAME, put_ncname(yytext, yyleng));
 }
 
 {S} {
@@ -1141,11 +1112,11 @@ typedef zorba::xquery_parser::token token;
 
 }
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    |  The DECLAREORDERING State
    |
-   |  Special state to recognize declare ordering specific keywords. 
+   |  Special state to recognize declare ordering specific keywords.
    |  transition to INITIAL
    |______________________________________________________________________*/
 
@@ -1166,11 +1137,11 @@ typedef zorba::xquery_parser::token token;
 } /* <MODE_DECLAREORDERING> */
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    |  The DECLAREREVALIDATION State
    |
-   |  Special state to recognize declare revalidation specific keywords. 
+   |  Special state to recognize declare revalidation specific keywords.
    |  transition to INITIAL
    |______________________________________________________________________*/
 
@@ -1196,10 +1167,10 @@ typedef zorba::xquery_parser::token token;
 } /* <MODE_DECLAREORDERING> */
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
-   |  OPERATOR State 
-   | 
+   |  OPERATOR State
+   |
    |  This state is for patterns that are defined for operators.
    |______________________________________________________________________*/
 
@@ -1541,14 +1512,14 @@ typedef zorba::xquery_parser::token token;
 }
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | FT rules <OPERATOR>
    |______________________________________________________________________*/
 
   /* transition to INITIAL state */
   /* --------------------------- */
-  
+
 "ftcontains"/{WordBreak} {
   BEGIN INITIAL;
   getDriver()->set_ftcontains(true);
@@ -1736,11 +1707,11 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | XQUERY_VERSION State
    |
-   | This state is for recognition of XQuery version specific keywords. 
+   | This state is for recognition of XQuery version specific keywords.
    |______________________________________________________________________*/
 
 <MODE_XQUERY_VERSION>{
@@ -1771,7 +1742,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | NAMESPACEDECL State
    |
@@ -1811,8 +1782,7 @@ typedef zorba::xquery_parser::token token;
 }
 
 {NCName} {
-  yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng);
-  return token::NCNAME;
+  TRY_SVAL_TOKEN (NCNAME, put_ncname(yytext, yyleng));
 }
 
 {CatchAll} {
@@ -1828,7 +1798,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | URITOOPERATOR State
    |
@@ -1844,7 +1814,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | NAMESPACEKEYWORD State
    |
@@ -1917,7 +1887,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
     |
     | XMLSPACE_DECL State
     |
@@ -1959,9 +1929,9 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
-   | SINGLETYPE State 
+   | SINGLETYPE State
    |
    | This state distinguishes tokens that can occur only inside the
    | SingleType production.
@@ -1972,9 +1942,8 @@ typedef zorba::xquery_parser::token token;
   /* transition to OPERATOR */
   /* ---------------------- */
 {QName} {
-  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
-  return token::QNAME;
+  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
 }
 
   /* transition to EXPR_COMMENT */
@@ -1996,7 +1965,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | ITEMTYPE State
    |
@@ -2027,62 +1996,53 @@ typedef zorba::xquery_parser::token token;
   /* transition to KINDTEST */
   /* ---------------------- */
 "element"{S}"(" {
-  BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::ELEMENT_LPAR;
 }
 
 "attribute"{S}"(" {
-  BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::ATTRIBUTE_LPAR;
 }
 
 "schema-element"{S}"(" {
-  BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::SCHEMA_ELEMENT_LPAR;
 }
 
 "schema-attribute"{S}"(" {
-  BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::SCHEMA_ATTRIBUTE_LPAR;
 }
 
 "comment"{S}"(" {
-  BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::COMMENT_LPAR;
 }
 
 "text"{S}"(" {
-  BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::TEXT_LPAR;
 }
 
 "node"{S}"(" {
-  BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::NODE_LPAR;
 }
 
 "document-node"{S}"(" {
-  BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_OCCURRENCE_INDICATOR);
   return token::DOCUMENT_NODE_LPAR;
 }
 
   /* transition to KINDTESTFORPI */
   /* --------------------------- */
 "processing-instruction"{S}"(" {
-  BEGIN MODE_OCCURRENCE_INDICATOR; 
-  yy_push_state(MODE_KINDTESTFORPI);
+  PUSH_BEGIN (MODE_KINDTESTFORPI, MODE_OCCURRENCE_INDICATOR);
   return token::PI_LPAR;
 }
 
-"item"{S}"("{SOrComment}")" { 
+"item"{S}"("{SOrComment}")" {
   BEGIN MODE_OCCURRENCE_INDICATOR;
   return token::ITEM_TEST;
 }
@@ -2348,7 +2308,7 @@ typedef zorba::xquery_parser::token token;
 
 {QName} {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
-  BEGIN MODE_OCCURRENCE_INDICATOR; 
+  BEGIN MODE_OCCURRENCE_INDICATOR;
   return token::QNAME;
 }
 
@@ -2365,7 +2325,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | KINDTEST State
    |
@@ -2377,8 +2337,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
 }
 
@@ -2390,9 +2349,8 @@ typedef zorba::xquery_parser::token token;
 }
 
 {QName} {
-  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_CLOSE_KINDTEST;
-  return token::QNAME;
+  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
 }
 
   /* transition to EXPR_COMMENT */
@@ -2411,14 +2369,12 @@ typedef zorba::xquery_parser::token token;
   /* maintain KINDTEST */
   /* ----------------- */
 "element"{S}"(" {
-  BEGIN MODE_KINDTEST;
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_KINDTEST);
   return token::ELEMENT_LPAR;
 }
 
 "schema-element"{S}"(" {
-  BEGIN MODE_KINDTEST;
-  yy_push_state(MODE_KINDTEST);
+  PUSH_BEGIN (MODE_KINDTEST, MODE_KINDTEST);
   return token::SCHEMA_ELEMENT_LPAR;
 }
 
@@ -2436,7 +2392,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | KINDTESTFORPI
    |
@@ -2463,8 +2419,7 @@ typedef zorba::xquery_parser::token token;
   /* maintain KINDTESTFORPI */
   /* ---------------------- */
 {NCName} {
-  yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng);
-  return token::NCNAME;
+  TRY_SVAL_TOKEN (NCNAME, put_ncname(yytext, yyleng));
 }
 
 {StringLiteral} {
@@ -2484,12 +2439,12 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | CLOSE_KINDTEST State
    |
    | This state is expecting to close a KINDTEST sequence.
-   |______________________________________________________________________*/ 
+   |______________________________________________________________________*/
 
 <MODE_CLOSE_KINDTEST>{
 
@@ -2510,8 +2465,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  BEGIN MODE_OPERATOR;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_OPERATOR);
   return token::LBRACE;
 }
 
@@ -2540,7 +2494,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | OCCURRENCE_INDICATOR State
    |
@@ -2596,7 +2550,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | OPTION State
    |
@@ -2610,9 +2564,8 @@ typedef zorba::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 {QName}  {
-  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN INITIAL;
-  return token::QNAME;
+  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
 }
 
 {CatchAll} {
@@ -2628,7 +2581,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | PRAGMA State
    |
@@ -2642,15 +2595,13 @@ typedef zorba::xquery_parser::token token;
   /* transition to PRAGMACONTENTS */
   /* ---------------------------- */
 {QName}{SPNoComment} {
-  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng,true,true);
   BEGIN MODE_PRAGMACONTENTS;
-  return token::QNAME;
+  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng,true,true));
 }
 
 {QName}"#)" {
   BEGIN MODE_OPERATOR;
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng-2);
-  return token::QNAME_AND_END_PRAGMA;
+  TRY_SVAL_TOKEN (QNAME_AND_END_PRAGMA, put(yytext, yyleng-2));
 }
 
 {S} {
@@ -2666,7 +2617,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | PRAGMACONTENTS State
    |
@@ -2680,8 +2631,7 @@ typedef zorba::xquery_parser::token token;
   /* ---------------------- */
 {PragmaChars}")" {
   BEGIN MODE_OPERATOR;
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng-2);
-  return token::PRAGMA_LITERAL_AND_END;
+  TRY_SVAL_TOKEN (PRAGMA_LITERAL_AND_END, put(yytext, yyleng-2));
 }
 
 {CatchAll} {
@@ -2693,7 +2643,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | VARNAME State
    |
@@ -2707,9 +2657,8 @@ typedef zorba::xquery_parser::token token;
   /* transition to OPERATOR */
   /* ---------------------- */
 {VarName} {
-  yylval->sval = getDriver()->symtab.put_varname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
-  return token::VARNAME;
+  TRY_SVAL_TOKEN (VARNAME, put_varname(yytext, yyleng));
 }
 
   /* transition to EXPR_COMMENT */
@@ -2731,7 +2680,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | START_TAG State
    |
@@ -2786,8 +2735,7 @@ typedef zorba::xquery_parser::token token;
 }
 
 {QName} {
-  yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
-  return token::QNAME;
+  TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng));
 }
 
 {CatchAll} {
@@ -2799,7 +2747,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | ELEMENT_CONTENT State
    |
@@ -2860,13 +2808,11 @@ typedef zorba::xquery_parser::token token;
   /* maintain ELEMENT_CONTENT */
   /* ------------------------ */
 {ElementContentChar}+ {
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng, true);
-  return token::ELEMENT_CONTENT;
+  TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, true));
 }
 
 {PredefinedEntityRef} {
-  yylval->sval = getDriver()->symtab.put_entityref(yytext, yyleng);
-  return token::ELEMENT_CONTENT;
+  TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng));
 }
 
 {CharRef}+ {
@@ -2892,7 +2838,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | END_TAG State
    |
@@ -2912,8 +2858,7 @@ typedef zorba::xquery_parser::token token;
   /* maintain END_TAG */
   /* ---------------- */
  {QName}{S} {
-   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng, false, true);
-  return token::QNAME;
+   TRY_SVAL_TOKEN (QNAME, put_qname(yytext, yyleng, false, true));
 }
 
   /* catch all else */
@@ -2927,7 +2872,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | XML_COMMENT State
    | The "<--" token marks the beginning of an XML Comment, and the "-->"
@@ -2947,8 +2892,7 @@ typedef zorba::xquery_parser::token token;
   /* maintain XML_COMMENT */
   /* -------------------- */
 {XMLCommentChar}* {
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng);
-  return token::XML_COMMENT_LITERAL;
+  TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng));
 }
 
  {CatchAll} {
@@ -2959,7 +2903,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | EXPR_COMMENT State
    |
@@ -2995,7 +2939,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | PROCESSING_INSTRUCTION State
    |
@@ -3008,7 +2952,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to PROCESSING_INSTRUCTION_CONTENT */
   /* -------------------------------------------- */
 {SP} {
-  BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; 
+  BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT;
   /* continue lexing */
 }
 
@@ -3022,9 +2966,8 @@ typedef zorba::xquery_parser::token token;
   /* maintain PROCESSING_INSTRUCTION */
   /* ------------------------------- */
 {PITarget} {
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng);
   BEGIN MODE_PROCESSING_INSTRUCTION;
-  return token::PI_TARGET_LITERAL;
+  TRY_SVAL_TOKEN (PI_TARGET_LITERAL, put(yytext, yyleng));
 }
 
 } /* <MODE_PROCESSING_INSTRUCTION> */
@@ -3032,7 +2975,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | PROCESSING_INSTRUCTION_CONTENT State
    |
@@ -3046,8 +2989,7 @@ typedef zorba::xquery_parser::token token;
   /* -------------------------- */
 {PIChars}"?>" {
   yy_pop_state();
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng-2);
-  return token::CHAR_LITERAL_AND_PI_END;
+  TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2));
 }
 
 } /* <MODE_PROCESSING_INSTRUCTION_CONTENT> */
@@ -3055,7 +2997,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | CDATA_SECTION State
    |
@@ -3064,13 +3006,12 @@ typedef zorba::xquery_parser::token token;
    |______________________________________________________________________*/
 
 <MODE_CDATA_SECTION>{
-  
+
   /* pop previous state on exit */
   /* -------------------------- */
 "]]>" {
   yy_pop_state();
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng-3);
-  return token::CHAR_LITERAL_AND_CDATA_END;
+  TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3));
 }
 
   /* maintain CDATA_SECTION */
@@ -3084,7 +3025,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | QUOTE_ATTRIBUTE_CONTENT State
    |
@@ -3121,13 +3062,11 @@ typedef zorba::xquery_parser::token token;
 }
 
 {QuotAttrContentChar}+ {
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng, true);
-  return token::QUOTE_ATTR_CONTENT;
+  TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, true));
 }
 
 {PredefinedEntityRef} {
-  yylval->sval = getDriver()->symtab.put_entityref(yytext, yyleng);
-  return token::QUOTE_ATTR_CONTENT;
+  TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng));
 }
 
 {CharRef}+ {
@@ -3147,7 +3086,7 @@ typedef zorba::xquery_parser::token token;
 
 
 
-  /*______________________________________________________________________  
+  /*______________________________________________________________________
    |
    | APOS_ATTRIBUTE_CONTENT State
    |
@@ -3168,8 +3107,7 @@ typedef zorba::xquery_parser::token token;
   /* transition to INITIAL */
   /* --------------------- */
 "{" {
-  BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
-  yy_push_state(INITIAL);
+  PUSH_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT);
   return token::LBRACE;
 }
 
@@ -3180,13 +3118,11 @@ typedef zorba::xquery_parser::token token;
 }
 
 {AposAttrContentChar}+ {
-  yylval->sval = getDriver()->symtab.put(yytext, yyleng, true);
-  return token::APOS_ATTR_CONTENT;
+  TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, true));
 }
 
 {PredefinedEntityRef} {
-  yylval->sval = getDriver()->symtab.put_entityref(yytext, yyleng);
-  return token::APOS_ATTR_CONTENT;
+  TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng));
 }
 
 {CharRef}+ {
@@ -3210,8 +3146,8 @@ typedef zorba::xquery_parser::token token;
 
 
 /*
-  Finally, because the scanner related driver's member function depend 
-  on the scanner's data, it is simpler to implement them in this file. 
+  Finally, because the scanner related driver's member function depend
+  on the scanner's data, it is simpler to implement them in this file.
 */
 
 std::string start_state(int state)
@@ -3253,9 +3189,9 @@ std::string start_state(int state)
 namespace zorba {
 
 xquery_scanner::xquery_scanner(
-  xquery_driver* aDriver, 
-  std::istream* i, 
-  std::ostream* o) 
+  xquery_driver* aDriver,
+  std::istream* i,
+  std::ostream* o)
 : ZorbaFlexLexer(i, o), theDriver(aDriver)
 {}
 
