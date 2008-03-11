@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_STRING_HASHMAP_H
-#define ZORBA_STORE_STRING_HASHMAP_H
+#ifndef ZORBA_STORE_POINTER_HASHMAP_H
+#define ZORBA_STORE_POINTER_HASHMAP_H
 
 #include <zorba/common/api_shared_types.h>
 #include <zorbatypes/xqpstring.h>
@@ -7,6 +7,7 @@
 #include "store/util/mutex.h"
 
 namespace zorba { namespace store {
+
 /*******************************************************************************
 
   StringHashMap implements a set of strings, each of which is associated with
@@ -33,27 +34,22 @@ namespace zorba { namespace store {
                    the hash table is doubled in size.
 
 ********************************************************************************/
-template <class V>
-class StringHashMap
+template <class T, class E,  class V>
+class PointerHashMap
 {
-  typedef rchandle<class xqpStringStore> xqpStringStore_t;
-
 protected:
 
   class HashEntry
   {
   public:
-    xqpStringStore_t theString;
-    V                theValue;
-    HashEntry      * theNext;
+    const T    * theItem;
+    V            theValue;
+    HashEntry  * theNext;
 
-    HashEntry() : theString(NULL), theNext(NULL) { }
+    HashEntry() : theItem(NULL), theNext(NULL) { }
 
     ~HashEntry() { }
   };
-
-public:
-  static const ulong DEFAULT_MAP_SIZE = 128;
 
 protected:
   ulong                   theNumEntries;
@@ -62,18 +58,18 @@ protected:
   ulong                   theHashTabSize;
   float                   theLoadFactor;
 
-  SYNC_CODE(mutable Mutex           theMutex;)
+  SYNC_CODE(mutable Mutex theMutex;)
 
 public:
-  StringHashMap(ulong size, float loadFactor);
+  PointerHashMap(ulong size, float loadFactor);
 
-  ~StringHashMap() { }
+  ~PointerHashMap() { }
 
-  bool insert(const xqpStringStore* str, V& value);
-  bool remove(const xqpStringStore* str);
+  bool insert(const T* item, V*& value);
+  bool remove(const T* item);
 
-  bool find(const xqpStringStore* str) const;
-  bool get(const xqpStringStore* str, V& value) const;
+  bool find(const T* item) const;
+  bool get(const T* item, V*& value);
 
   void clear();
 
@@ -86,8 +82,8 @@ protected:
   Constructor: Allocates the hash table. Its initial size is the given size,
   plus an initial 32 free entries. These free entries are placed in a free list.
 ********************************************************************************/
-template <class V>
-StringHashMap<V>::StringHashMap(ulong size, float loadFactor) 
+template <class T, class E,  class V>
+PointerHashMap<T, E, V>::PointerHashMap(ulong size, float loadFactor) 
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -104,8 +100,8 @@ StringHashMap<V>::StringHashMap(ulong size, float loadFactor)
 /*******************************************************************************
 
 ********************************************************************************/
-template <class V>
-void StringHashMap<V>::clear()
+template <class T, class E, class V>
+void PointerHashMap<T, E, V>::clear()
 {
   HashEntry* entry;
 
@@ -117,9 +113,9 @@ void StringHashMap<V>::clear()
   {
     entry = &theHashTab[i];
 
-    if (entry->theString != NULL)
+    if (entry->theItem != NULL)
     {
-      entry->theString = NULL;
+      entry->theItem = NULL;
       entry->theValue.~V();
     }
   }
@@ -127,23 +123,23 @@ void StringHashMap<V>::clear()
 
 
 /*******************************************************************************
-  Return true if the given string is already in the set; otherwise return false.
+  Return true if the given item is already in the set; otherwise return false.
 ********************************************************************************/
-template <class V>
-bool StringHashMap<V>::find(const xqpStringStore* str) const
+template <class T, class E, class V>
+bool PointerHashMap<T, E, V>::find(const T* item) const
 {
   const HashEntry* entry;
 
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  entry = &theHashTab[str->hash() % theHashTabSize];
+  entry = &theHashTab[E::hash(item) % theHashTabSize];
 
-  if (entry->theString == NULL)
+  if (entry->theItem == NULL)
     return false;
 
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(*str))
+    if (E::equal(entry->theItem, item))
       return true;
 
     entry = entry->theNext;
@@ -154,26 +150,26 @@ bool StringHashMap<V>::find(const xqpStringStore* str) const
 
 
 /*******************************************************************************
-  If the given string is already in the set, return true and a copy of the value
+  If the given item is already in the set, return true and a pointer to the value
   associated with the string; otherwise return false.
 ********************************************************************************/
-template <class V>
-bool StringHashMap<V>::get(const xqpStringStore* str, V& value) const
+template <class T, class E, class V>
+bool PointerHashMap<T, E, V>::get(const T* item, V*& value)
 {
-  const HashEntry* entry;
+  HashEntry* entry;
 
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  entry = &theHashTab[str->hash() % theHashTabSize];
+  entry = &theHashTab[E::hash(item) % theHashTabSize];
 
-  if (entry->theString == NULL)
+  if (entry->theItem == NULL)
     return false;
 
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(*str))
+    if (E::equal(entry->theItem, item))
     {
-      value = entry->theValue;
+      value = &entry->theValue;
       return true;
     }
 
@@ -185,36 +181,36 @@ bool StringHashMap<V>::get(const xqpStringStore* str, V& value) const
 
 
 /*******************************************************************************
-  Check if the given string is already in the set. If so, return false, as well
-  as a copy of the value associated with the string. If not make a copy of the
-  string and the value and place the new pair in the map. Then, return true.
+  Check if the given item is already in the set. If so, return false, as well
+  as a pointer to the value associated with the item. If not make a copy of the
+  the value and place the new (item, value) pair in the map. Then, return true.
 ********************************************************************************/
-template <class V>
-bool StringHashMap<V>::insert(const xqpStringStore* str, V& value)
+template <class T, class E, class V>
+bool PointerHashMap<T, E, V>::insert(const T* item, V*& value)
 {
   HashEntry* entry;
   HashEntry* lastentry = NULL;
 
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  // Get ptr to the 1st entry of the hash bucket corresponding to the given uri
-  entry = &theHashTab[str->hash() % theHashTabSize];
+  // Get ptr to the 1st entry of the hash bucket corresponding to the given item
+  entry = &theHashTab[E::hash(item) % theHashTabSize];
 
-  // If the hash bucket is empty, its 1st entry is used to store the new uri.
-  if (entry->theString == NULL)
+  // If the hash bucket is empty, its 1st entry is used to store the new item.
+  if (entry->theItem == NULL)
   {
     theNumEntries++;
-    entry->theString = const_cast<xqpStringStore*>(str);
-    entry->theValue = value;
+    entry->theItem = item;
+    entry->theValue = *value;
     return true;
   }
 
-  // Search the hash bucket looking for the given uri.
+  // Search the hash bucket looking for the given item.
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(*str))
+    if (E::equal(entry->theItem, item))
     {
-      value = entry->theValue;
+      value = &entry->theValue;
       return false;
     }
 
@@ -222,7 +218,7 @@ bool StringHashMap<V>::insert(const xqpStringStore* str, V& value)
     entry =  entry->theNext;
   }
 
-  // The uri was not found.
+  // The item was not found.
   theNumEntries++;
 
   // Double the size of hash table if it is more than 60% full. 
@@ -230,12 +226,12 @@ bool StringHashMap<V>::insert(const xqpStringStore* str, V& value)
   {
     expand();
 
-    entry = &theHashTab[str->hash() % theHashTabSize];
+    entry = &theHashTab[E::hash(item) % theHashTabSize];
 
-    if (entry->theString == NULL)
+    if (entry->theItem == NULL)
     {
-      entry->theString = const_cast<xqpStringStore*>(str);
-      entry->theValue = value;
+      entry->theItem = item;
+      entry->theValue = *value;
       return true;
     }
 
@@ -262,8 +258,8 @@ bool StringHashMap<V>::insert(const xqpStringStore* str, V& value)
     entry->theNext = NULL;
   }
 
-  entry->theString = const_cast<xqpStringStore*>(str);
-  entry->theValue = value;
+  entry->theItem = item;
+  entry->theValue = *value;
   return true;
 }
 
@@ -271,24 +267,24 @@ bool StringHashMap<V>::insert(const xqpStringStore* str, V& value)
 /*******************************************************************************
 
 ********************************************************************************/
-template <class V>
-bool StringHashMap<V>::remove(const xqpStringStore* str)
+template <class T, class E, class V>
+bool PointerHashMap<T, E, V>::remove(const T* item)
 {
   HashEntry* entry;
   HashEntry* prevEntry;
 
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  entry = &theHashTab[str->hash() % theHashTabSize];
+  entry = &theHashTab[E::hash(item) % theHashTabSize];
 
-  if (entry->theString == NULL)
+  if (entry->theItem == NULL)
     return false;
 
-  if (entry->theString->byteEqual(*str))
+  if (E::equal(entry->theItem, item))
   {
     if (entry->theNext == NULL)
     {
-      entry->theString = NULL;
+      entry->theItem = NULL;
       entry->theValue.~V();
       theNumEntries--;
     }
@@ -296,7 +292,7 @@ bool StringHashMap<V>::remove(const xqpStringStore* str)
     {
       HashEntry* nextEntry = entry->theNext;
       *entry = *nextEntry;
-      nextEntry->theString = NULL;
+      nextEntry->theItem = NULL;
       nextEntry->theValue.~V();
       nextEntry->theNext =  theHashTab[theHashTabSize].theNext;
       theHashTab[theHashTabSize].theNext = nextEntry;
@@ -311,10 +307,10 @@ bool StringHashMap<V>::remove(const xqpStringStore* str)
 
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(*str))
+    if (E::equal(entry->theItem, item))
     {
       prevEntry->theNext = entry->theNext;
-      entry->theString = NULL;
+      entry->theItem = NULL;
       entry->theValue.~V();
       entry->theNext = theHashTab[theHashTabSize].theNext;
       theHashTab[theHashTabSize].theNext = entry;
@@ -333,8 +329,8 @@ bool StringHashMap<V>::remove(const xqpStringStore* str)
 /*******************************************************************************
 
 ********************************************************************************/
-template <class V>
-void StringHashMap<V>::expand()
+template <class T, class E, class V>
+void PointerHashMap<T, E, V>::expand()
 {
   HashEntry* entry;
   HashEntry* lastentry;
@@ -356,9 +352,9 @@ void StringHashMap<V>::expand()
   // Now rehash every entry
   for (ulong i = 0; i < oldsize; i++)
   {
-    entry = &theHashTab[oldTab[i].theString->hash() % theHashTabSize];
+    entry = &theHashTab[E::hash(oldTab[i].theItem) % theHashTabSize];
 
-    if (entry->theString != NULL)
+    if (entry->theItem != NULL)
     {
       // Go to the last entry of the current bucket
       HashEntry* lastentry = entry;

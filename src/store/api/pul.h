@@ -11,22 +11,10 @@ class XmlNode;
 /*******************************************************************************
 
 ********************************************************************************/
-class PendingUpdateList
-{
-protected:
-
-public:
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class UpdatePrimitive
+class PUL
 {
 public:
-
-  enum 
+  typedef enum 
   {
     INSER_BEFORE,
     INSERT_AFTER,
@@ -39,15 +27,18 @@ public:
     REPLACE_VALUE,
     REPLACE_CONTENT,
     RENAME
-  } UpdateKind;
-
-protected:
-  XmlNode    * theNode;
+  }
+  UpdateKind;
 
 public:
-  virtual ~UpdatePrimitive() { }
+  virtual ~PUL() { }
 
-  UpdateKind getKind() = 0;
+  virtual void addRename(Item* node, Item* name) = 0;
+  virtual void addDelete(Item* node) = 0;
+
+  virtual void applyUpdates() = 0;
+
+  virtual void merge(const PUL& other) = 0;
 };
 
 

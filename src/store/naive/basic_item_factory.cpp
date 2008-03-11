@@ -12,6 +12,7 @@
 
 #include "system/globalenv.h"
 #include "util/Assert.h"
+
 #include "store/api/temp_seq.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
@@ -21,7 +22,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/qname_pool.h"
-#include "store/util/string_hashset.h"
+#include "store/util/handle_hashset_string.h"
 
 
 

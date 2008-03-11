@@ -1,10 +1,10 @@
-#ifndef ZORBA_STORE_NODE_ITERATORS_H
-#define ZORBA_STORE_NODE_ITERATORS_H
+#ifndef ZORBA_SIMPLE_STORE_NODE_ITERATORS
+#define ZORBA_SIMPLE_STORE_NODE_ITERATORS
 
 #include <zorba/iterator.h>
 #include "common/shared_types.h"
 #include "store/naive/ordpath.h"
-#include "store/util/item_hashset.h"
+#include "store/util/handle_hashset_item.h"
 
 namespace zorba { namespace store {
 

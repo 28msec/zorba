@@ -8,6 +8,9 @@
 
 #include "system/globalenv.h"
 #include "util/Assert.h"
+
+#include "store/util/handle_hashset_string.h"
+
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_loader.h"
 #include "store/naive/atomic_items.h"

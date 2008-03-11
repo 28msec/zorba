@@ -16,6 +16,70 @@ namespace zorba { namespace store {
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void XmlNode::disconnect() throw()
+{
+  if (theParent == NULL)
+    return;
+
+  theParent->removeChild(this);
+}
+
+
+/*******************************************************************************
+  This method is invoked at the end of applyUpdates, after we know that no
+  errors may be raised.
+********************************************************************************/
+void XmlNode::switchTree() throw()
+{
+  XmlTree* oldTree = getTree();
+  XmlTree* newTree = new XmlTree(this, GET_STORE().getTreeId());
+
+  SYNC_CODE(oldTree->getRCLock().acquire());
+
+  try
+  {
+    ulong refcount = 0;
+    std::stack<XmlNode*> nodes;
+    nodes.push(this);
+
+    while (!nodes.empty())
+    {
+      XmlNode* n = nodes.top();
+      nodes.pop();
+
+      refcount += n->theRefCount;
+      setTree(newTree);
+
+      ulong numAttrs = numAttributes();
+      for (ulong i = 0; i < numAttrs; i++)
+      {
+        XmlNode* attr = getAttr(i);
+        refcount += attr->theRefCount;
+        attr->setTree(newTree);
+      }
+
+      ulong numChildren = n->numChildren();
+      for (ulong i = 0; i < numChildren; i++)
+      {
+        nodes.push(n->getChild(i));
+      }
+    }
+
+    newTree->setRefCount(refcount);
+    oldTree->removeReferences(refcount);
+  }
+  catch (...)
+  {
+    ZORBA_FATAL("");
+  }
+
+  SYNC_CODE(oldTree->getRCLock().release());
+}
+
+
+/*******************************************************************************
   Disconnect all the current children of "this" and make the given text node
   the only child og "this". Return a vector of pointers to the disconnected
   children.
@@ -167,71 +231,6 @@ void XmlNode::renamePi(xqpStringStore* newName,  xqpStringStore_t& oldName)
   oldName = n->theTarget;
   n->theTarget = newName;
 }
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlNode::disconnect() throw()
-{
-  if (theParent == NULL)
-    return;
-
-  theParent->removeChild(this);
-}
-
-
-/*******************************************************************************
-  This method is invoked at the end of applyUpdates, after we know that no
-  errors may be raised.
-********************************************************************************/
-void XmlNode::switchTree() throw()
-{
-  XmlTree* oldTree = getTree();
-  XmlTree* newTree = new XmlTree(this, GET_STORE().getTreeId());
-
-  SYNC_CODE(oldTree->getRCLock().acquire());
-
-  try
-  {
-    ulong refcount = 0;
-    std::stack<XmlNode*> nodes;
-    nodes.push(this);
-
-    while (!nodes.empty())
-    {
-      XmlNode* n = nodes.top();
-      nodes.pop();
-
-      refcount += n->theRefCount;
-      setTree(newTree);
-
-      ulong numAttrs = numAttributes();
-      for (ulong i = 0; i < numAttrs; i++)
-      {
-        XmlNode* attr = getAttr(i);
-        refcount += attr->theRefCount;
-        attr->setTree(newTree);
-      }
-
-      ulong numChildren = n->numChildren();
-      for (ulong i = 0; i < numChildren; i++)
-      {
-        nodes.push(n->getChild(i));
-      }
-    }
-
-    newTree->setRefCount(refcount);
-    oldTree->removeReferences(refcount);
-  }
-  catch (...)
-  {
-    ZORBA_FATAL("");
-  }
-
-  SYNC_CODE(oldTree->getRCLock().release());
-}
-
 
 
 /*******************************************************************************

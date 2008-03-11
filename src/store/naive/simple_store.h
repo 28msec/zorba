@@ -5,8 +5,7 @@
 #include "zorba/common/api_shared_types.h"
 
 #include "store/api/store.h"
-#include "store/util/string_hashset.h"
-#include "store/util/string_hashmap.h"
+#include "store/util/pointer_hashmap_string.h"
 #include "store/util/mutex.h"
 
 
@@ -16,7 +15,6 @@ class GlobalEnvironment;
 
 namespace store {
 
-template <class V> class StringHashMap;
 typedef StringHashMap<Collection_t> CollectionSet;
 typedef StringHashMap<XmlNode_t> DocumentSet;
 
@@ -28,8 +26,6 @@ class SimpleStore : public Store
 {
   friend class zorba::GlobalEnvironment;
  
-  typedef StringPool  NamespacePool;
-
 public:
   static const char* XS_URI;
 
@@ -49,12 +45,12 @@ protected:
   bool                     theIsInitialized;
 
   ulong                    theUriCounter;
-  SYNC_CODE(Mutex                    theUriCounterMutex;)
+  SYNC_CODE(Mutex          theUriCounterMutex;)
 
   ulong                    theTreeCounter;
-  SYNC_CODE(Mutex                    theTreeCounterMutex;)
+  SYNC_CODE(Mutex          theTreeCounterMutex;)
 
-  NamespacePool          * theNamespacePool;
+  StringPool             * theNamespacePool;
   QNamePool              * theQNamePool;
 
   ItemFactory            * theItemFactory;
@@ -75,7 +71,7 @@ private:
 public:
   store::ItemFactory* getItemFactory() const     { return theItemFactory; }
 
-  NamespacePool& getNamespacePool() const { return *theNamespacePool; }
+  StringPool& getNamespacePool() const    { return *theNamespacePool; }
   QNamePool& getQNamePool() const         { return *theQNamePool; }
 
   XmlLoader* getXmlLoader();

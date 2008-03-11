@@ -11,6 +11,9 @@
 #include "errors/error_factory.h"
 #include "util/Assert.h"
 
+#include "store/util/handle_hashset_string.h"
+#include "store/util/pointer_hashmap_string.h"
+
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_collection.h"
@@ -193,18 +196,22 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, std::istream& stream)
   if (uri == NULL)
     return NULL;
 
-  XmlNode_t root;
-  bool found = theDocuments.get(uri, root);
+  XmlNode_t* rootp;
+  bool found = theDocuments.get(uri, rootp);
 
   if (found)
-    return root;
+    return rootp->getp();
 
   std::auto_ptr<XmlLoader> loader(getXmlLoader());
 
-  root = loader->loadXml(uri, stream);
+  XmlNode_t root = loader->loadXml(uri, stream);
 
   if (root != NULL)
-    theDocuments.insert(uri, root);
+  {
+
+    rootp = &root;
+    theDocuments.insert(uri, rootp);
+  }
 
   return root;
 }
@@ -225,19 +232,19 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, Item_t docItem)
 		return NULL;
   }
 
-  XmlNode_t root;
-  bool inserted = theDocuments.insert(uri, root);
+  XmlNode_t* rootp = reinterpret_cast<XmlNode_t*>(&docItem);
+  bool inserted = theDocuments.insert(uri, rootp);
 
-  if (!inserted && docItem.getp() != root.getp())
+  if (!inserted && docItem.getp() != rootp->getp())
   {
     ZORBA_ERROR_ALERT_OSS(ZorbaError::API0020_DOCUMENT_ALREADY_EXISTS,
                           NULL, CONTINUE_EXECUTION, uri, "");
     return NULL; 
   }
 
-  ZORBA_ASSERT(docItem.getp() == root.getp());
+  ZORBA_ASSERT(docItem.getp() == rootp->getp());
 
-	return root;
+	return *rootp;
 }
 
 
@@ -250,10 +257,10 @@ Item_t SimpleStore::getDocument(xqpStringStore* uri)
   if (uri == NULL)
     return NULL;
 
-  XmlNode_t root;
-  bool found = theDocuments.get(uri, root);
+  XmlNode_t* rootp;
+  bool found = theDocuments.get(uri, rootp);
   if (found)
-    return root;
+    return rootp->getp();
 
   return NULL;
 }
@@ -286,7 +293,9 @@ Collection_t SimpleStore::createCollection(xqpStringStore* uri)
 
   Collection_t collection(new SimpleCollection(uriItem));
 
-  bool inserted = theCollections.insert(uri, collection);
+  Collection_t* collp = &collection;
+
+  bool inserted = theCollections.insert(uri, collp);
 
   if (!inserted)
   {
@@ -320,9 +329,9 @@ Collection_t SimpleStore::getCollection(xqpStringStore* uri)
   if (uri == NULL)
     return NULL;
 
-  Collection_t collection;
-  theCollections.get(uri, collection);
-  return collection;
+  Collection_t* collectionp;
+  theCollections.get(uri, collectionp);
+  return collectionp->getp();
 }
 
 

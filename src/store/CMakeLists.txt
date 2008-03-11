@@ -12,10 +12,11 @@ SET(STORE_SRCS
     naive/qname_pool.cpp
     naive/simple_store.cpp
     naive/simple_loader.cpp
+    naive/simple_pul.cpp
     naive/ordpath.cpp
     naive/nsbindings.cpp
     naive/item_iterator.cpp
-    util/string_hashset.cpp
+    util/handle_hashset_string.cpp
     util/mutex.cpp
     util/latch.cpp)
 

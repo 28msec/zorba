@@ -3,6 +3,9 @@
 
 #include "util/Assert.h"
 #include "system/globalenv.h"
+
+#include "store/util/handle_hashset_string.h"
+
 #include "store/naive/qname_pool.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_store.h"

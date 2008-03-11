@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_UTIL_ITEM_HASHSET
-#define ZORBA_STORE_UTIL_ITEM_HASHSET
+#ifndef ZORBA_STORE_UTIL_HANDLE_HASHSET_ITEM
+#define ZORBA_STORE_UTIL_HANDLE_HASHSET_ITEM
 
 #include "util/hashfun.h"
 
@@ -8,6 +8,11 @@
 
 namespace zorba { namespace store {
 
+
+/*******************************************************************************
+  A hash-based set container of item rchandles, where equality is based on
+  object identity (i.e. pointer equality) rather than object value.
+********************************************************************************/
 class ItemHashSet : public HandleSet<Item, ItemHashSet>
 {
 public:

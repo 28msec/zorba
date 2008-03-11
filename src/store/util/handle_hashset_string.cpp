@@ -1,6 +1,6 @@
 
 #include "util/Assert.h"
-#include "store/util/string_hashset.h"
+#include "store/util/handle_hashset_string.h"
 
 namespace zorba { namespace store {
 
