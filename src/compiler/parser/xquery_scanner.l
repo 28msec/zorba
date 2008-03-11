@@ -308,9 +308,6 @@ typedef zorba::xquery_parser::token token;
 "validate"{S}"{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VALIDATE_LBRACE" << endl;
-#endif
   return token::VALIDATE_LBRACE;
 }
 
@@ -318,34 +315,22 @@ typedef zorba::xquery_parser::token token;
   yylval->sval = getDriver()->symtab.put(yytext+9, yyleng-9);
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VALIDATE_MODE" << endl;
-#endif
   return token::VALIDATE_MODE;
 }
 
 "typeswitch"{S}"(" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TYPESWITCH_LPAR" << endl;
-#endif
   return token::TYPESWITCH_LPAR;
 }
 
 "element"{S}"{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELEMENT_LBRACE" << endl;
-#endif
   return token::ELEMENT_LBRACE;
 }
 
 "attribute"{S}"{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ATTRIBUTE_LBRACE" << endl;
-#endif
   return token::ATTRIBUTE_LBRACE;
 }
 
@@ -353,9 +338,6 @@ typedef zorba::xquery_parser::token token;
   yylval->sval = getDriver()->symtab.put_qname(yytext+10, yyleng-11, true, true);
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ATTRIBUTE_QNAME_LBRACE" << endl;
-#endif
   return token::ATTRIBUTE_QNAME_LBRACE;
 }
 
@@ -363,27 +345,18 @@ typedef zorba::xquery_parser::token token;
   yylval->sval = getDriver()->symtab.put_qname(yytext+8, yyleng-9, true, true);
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELEMENT_QNAME_LBRACE" << endl;
-#endif
   return token::ELEMENT_QNAME_LBRACE;
 }
 
 "document"{S}"{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOCUMENT_LBRACE" << endl;
-#endif
   return token::DOCUMENT_LBRACE;
 }
 
 "text"{S}"{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TEXT_LBRACE" << endl;
-#endif
   return token::TEXT_LBRACE;
 }
 
@@ -391,9 +364,6 @@ typedef zorba::xquery_parser::token token;
     /* ---------------------------------------------- */
 "processing-instruction"  {
   BEGIN MODE_PROCESSING_INSTRUCTION_CTOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PROCESSING_INSTRUCTION" << endl;
-#endif
   return token::PROCESSING_INSTRUCTION;
 }
 
@@ -401,75 +371,45 @@ typedef zorba::xquery_parser::token token;
 "comment"{S}"{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COMMENT_LBRACE" << endl;
-#endif
   return token::COMMENT_LBRACE;
 }
 
 "declare"{SP}"function"{SP} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_FUNCTION" << endl;
-#endif
   return token::DECLARE_FUNCTION;
 }
 
 "declare"{SP}"updating"{SP}"function"{SP} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_UPDATING_FUNCTION" << endl;
-#endif
   return token::DECLARE_UPDATING_FUNCTION;
 }
 
 "{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LBRACE" << endl;
-#endif
   return token::LBRACE;
 }
 
 "ordered"{S}"{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ORDERED_LBRACE" << endl;
-#endif
   return token::ORDERED_LBRACE;
 }
 
 "unordered"{S}"{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNORDERED_LBRACE" << endl;
-#endif
   return token::UNORDERED_LBRACE;
 }
 
 ";" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SEMI" << endl;
-#endif
   return token::SEMI;
 }
 "," {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COMMA" << endl;
-#endif
   return token::COMMA;
 }
 "(" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LPAR" << endl;
-#endif
   return token::LPAR;
 }
 "if"{SOrComment}"(" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::IF_LPAR" << endl;
-#endif
   return token::IF_LPAR;
 }
 
@@ -479,72 +419,48 @@ typedef zorba::xquery_parser::token token;
 "element"{S}"(" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELEMENT_LPAR" << endl;
-#endif
   return token::ELEMENT_LPAR;
 }
 
 "attribute"{S}"(" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ATTRIBUTE_LPAR" << endl;
-#endif
   return token::ATTRIBUTE_LPAR;
 }
 
 "schema-element"{S}"(" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SCHEMA_ELEMENT_LPAR" << endl;
-#endif
   return token::SCHEMA_ELEMENT_LPAR;
 }
 
 "schema-attribute"{S}"(" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SCHEMA_ATTRIBUTE_LPAR" << endl;
-#endif
   return token::SCHEMA_ATTRIBUTE_LPAR;
 }
 
 "comment"{S}"(" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COMMENT_LPAR" << endl;
-#endif
   return token::COMMENT_LPAR;
 }
 
 "text"{S}"(" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TEXT_LPAR" << endl;
-#endif
   return token::TEXT_LPAR;
 }
 
 "node"{S}"(" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::NODE_LPAR" << endl;
-#endif
   return token::NODE_LPAR;
 }
 
 "document-node"{S}"(" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOCUMENT_NODE_LPAR" << endl;
-#endif
   return token::DOCUMENT_NODE_LPAR;
 }
 
@@ -554,127 +470,67 @@ typedef zorba::xquery_parser::token token;
 "processing-instruction"{S}"(" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_KINDTESTFORPI);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PI_LPAR" << endl;
-#endif
   return token::PI_LPAR;
 }
 
   /* order dependence: this must follow the rules: xxx{S}"(" */
   /* {QName}{S}"(" {
    yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng-1, false, true);
- #ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME_LPAR" << endl;
-#endif
-  return token::QNAME_LPAR;
+   return token::QNAME_LPAR;
   }*/
 
 "-" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::MINUS" << endl;
-#endif
   return token::MINUS;
 }
 "+" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PLUS" << endl;
-#endif
   return token::PLUS;
 }
 "/" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SLASH" << endl;
-#endif
   return token::SLASH;
 }
 "/ " {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LEADING_LONE_SLASH" << endl;
-#endif
   return token::LEADING_LONE_SLASH;
 }
 "//" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SLASH_SLASH" << endl;
-#endif
   return token::SLASH_SLASH;
 }
 "ancestor-or-self::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ANCESTOR_OR_SELF_AXIS" << endl;
-#endif
   return token::ANCESTOR_OR_SELF_AXIS;
 }
 "ancestor::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ANCESTOR_AXIS" << endl;
-#endif
   return token::ANCESTOR_AXIS;
 }
 "attribute::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ATTRIBUTE_AXIS" << endl;
-#endif
   return token::ATTRIBUTE_AXIS;
 }
 "child::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CHILD_AXIS" << endl;
-#endif
   return token::CHILD_AXIS;
 }
 "descendant-or-self::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DESCENDANT_OR_SELF_AXIS" << endl;
-#endif
   return token::DESCENDANT_OR_SELF_AXIS;
 }
 "descendant::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DESCENDANT_AXIS" << endl;
-#endif
   return token::DESCENDANT_AXIS;
 }
 "following-sibling::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FOLLOWING_SIBLING_AXIS" << endl;
-#endif
   return token::FOLLOWING_SIBLING_AXIS;
 }
 "following::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FOLLOWING_AXIS" << endl;
-#endif
   return token::FOLLOWING_AXIS;
 }
 "parent::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PARENT_AXIS" << endl;
-#endif
   return token::PARENT_AXIS;
 }
 "preceding-sibling::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRECEDING_SIBLING_AXIS" << endl;
-#endif
   return token::PRECEDING_SIBLING_AXIS;
 }
 "preceding::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRECEDING_AXIS" << endl;
-#endif
   return token::PRECEDING_AXIS;
 }
 "self::" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SELF_AXIS" << endl;
-#endif
   return token::SELF_AXIS;
 }
 "@" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT_SIGN" << endl;
-#endif
   return token::AT_SIGN;
 }
 
@@ -683,130 +539,82 @@ typedef zorba::xquery_parser::token token;
   /* ---------------------- */
 
 {IntegerLiteral}/[a-zA-Z_]  {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 {IntegerLiteral}  {
   yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INTEGER_LITERAL" << endl;
-#endif
   return token::INTEGER_LITERAL;
 }
 
 {DecimalLiteral}/[a-zA-Z_]  {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 {DecimalLiteral}  {
   yylval->decval = getDriver()->symtab.decimalval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECIMAL_LITERAL" << endl;
-#endif
   return token::DECIMAL_LITERAL;
 }
 
 {DoubleLiteral}/[a-zA-Z_] {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 {DoubleLiteral}   {
   yylval->dval = getDriver()->symtab.doubleval(yytext, yyleng);
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOUBLE_LITERAL" << endl;
-#endif
   return token::DOUBLE_LITERAL;
 }
 
 {NCName}":*" {
   yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng-2);
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELEM_WILDCARD" << endl;
-#endif
   return token::ELEM_WILDCARD;
 }
 
 {QName} {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME" << endl;
-#endif
   return token::QNAME;
 }
 
 ")" {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RPAR" << endl;
-#endif
   return token::RPAR;
 }
 
 "*:"{NCName} {
   yylval->sval = getDriver()->symtab.put_ncname(yytext+2, yyleng-2);
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PREFIX_WILDCARD" << endl;
-#endif
   return token::PREFIX_WILDCARD;
 }
 
 "*" {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::STAR" << endl;
-#endif
   return token::STAR;
 }
 
 {StringLiteral} {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "scanner::TRY_STRINGLIT" << std::endl;
-#endif
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
 "declare"{SP}"construction"{SP} {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_CONSTRUCTION" << endl;
-#endif
   return token::DECLARE_CONSTRUCTION;
 }
 
 "declare"{SP}"default"{SP}"order"{SP} {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_DEFAULT_ORDER" << endl;
-#endif
   return token::DECLARE_DEFAULT_ORDER;
 }
 
 ".." {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOT_DOT" << endl;
-#endif
   return token::DOT_DOT;
 }
 
 "." {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOT" << endl;
-#endif
   return token::DOT;
 }
 
@@ -815,33 +623,21 @@ typedef zorba::xquery_parser::token token;
   /* --------------------------- */
 "declare"{SP}"default"{SP}"collation"{SP} {
   BEGIN MODE_NAMESPACEDECL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_DEFAULT_COLLATION" << endl;
-#endif
   return token::DECLARE_DEFAULT_COLLATION;
 }
 
 "declare"{SP}"namespace"{SP} {
   BEGIN MODE_NAMESPACEDECL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_NAMESPACE" << endl;
-#endif
   return token::DECLARE_NAMESPACE;
 }
 
 "module"{SP}"namespace"/{WordBreak} {
   BEGIN MODE_NAMESPACEDECL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::MODULE_NAMESPACE" << endl;
-#endif
   return token::MODULE_NAMESPACE;
 }
 
 "declare"{SP}"base-uri"/{WordBreak} {
   BEGIN MODE_NAMESPACEDECL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_BASE_URI" << endl;
-#endif
   return token::DECLARE_BASE_URI;
 }
 
@@ -850,41 +646,26 @@ typedef zorba::xquery_parser::token token;
   /* ------------------------------ */
 "declare"{SP}"default"{SP}"element"{SP} {
   BEGIN MODE_NAMESPACEKEYWORD;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_DEFAULT_ELEMENT" << endl;
-#endif
   return token::DECLARE_DEFAULT_ELEMENT;
 }
 
 "declare"{SP}"default"{SP}"function"{SP} {
   BEGIN MODE_NAMESPACEKEYWORD;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_DEFAULT_FUNCTION" << endl;
-#endif
   return token::DECLARE_DEFAULT_FUNCTION;
 }
 
 "import"{SP}"schema"/{WordBreak} {
   BEGIN MODE_NAMESPACEKEYWORD;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::IMPORT_SCHEMA" << endl;
-#endif
   return token::IMPORT_SCHEMA;
 }
 
 "import"{SP}"module"/{WordBreak} {
   BEGIN MODE_NAMESPACEKEYWORD;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::IMPORT_MODULE" << endl;
-#endif
   return token::IMPORT_MODULE;
 }
 
 "declare"{SP}"copy-namespaces"{SP} {
   BEGIN MODE_NAMESPACEKEYWORD;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_COPY_NAMESPACES" << endl;
-#endif
   return token::DECLARE_COPY_NAMESPACES;
 }
 
@@ -893,49 +674,31 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOLLAR" << endl;
-#endif
   return token::DOLLAR;
 }
 
 "for"{SP}"$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FOR_DOLLAR" << endl;
-#endif
   return token::FOR_DOLLAR;
 }
 
 "let"{SP}"$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LET_DOLLAR" << endl;
-#endif
   return token::LET_DOLLAR;
 }
 
 "some"{SP}"$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SOME_DOLLAR" << endl;
-#endif
   return token::SOME_DOLLAR;
 }
 
 "every"{SP}"$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EVERY_DOLLAR" << endl;
-#endif
   return token::EVERY_DOLLAR;
 }
 
 "declare"{SP}"variable"{SP}"$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_VARIABLE_DOLLAR" << endl;
-#endif
   return token::DECLARE_VARIABLE_DOLLAR;
 }
 
@@ -944,9 +707,6 @@ typedef zorba::xquery_parser::token token;
   /* ---------------------- */
 ")"{S}"as"/{WordBreak} {
   BEGIN MODE_ITEMTYPE;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RPAR_AS" << endl;
-#endif
   return token::RPAR_AS;
 } 
 
@@ -956,9 +716,6 @@ typedef zorba::xquery_parser::token token;
 "<!--" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_XML_COMMENT);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::XML_COMMENT_BEGIN" << endl;
-#endif
   return token::XML_COMMENT_BEGIN;
 }
 
@@ -968,9 +725,6 @@ typedef zorba::xquery_parser::token token;
 "<?" {  
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_PROCESSING_INSTRUCTION);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PI_BEGIN" << endl;
-#endif
   return token::PI_BEGIN;
 }
 
@@ -980,17 +734,11 @@ typedef zorba::xquery_parser::token token;
 "<![CDATA[" {
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_CDATA_SECTION);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CDATA_BEGIN" << endl;
-#endif
   return token::CDATA_BEGIN;
 }
 
 
 "<"{SP} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
   /* transition to START_TAG */
@@ -998,9 +746,6 @@ typedef zorba::xquery_parser::token token;
 "<" {   
   BEGIN MODE_OPERATOR;
   yy_push_state(MODE_START_TAG);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::START_TAG" << endl;
-#endif
   return token::START_TAG;
 }
 
@@ -1009,9 +754,6 @@ typedef zorba::xquery_parser::token token;
   /* --------------------------- */
 "declare"{SP}"boundary-space"{SP} {
   BEGIN MODE_XMLSPACE_DECL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_BOUNDARY_SPACE" << endl;
-#endif
   return token::DECLARE_BOUNDARY_SPACE;
 }
 
@@ -1027,9 +769,6 @@ typedef zorba::xquery_parser::token token;
   /* ----------------------------- */
 "declare"{SP}"ordering"{SP} {
   BEGIN MODE_DECLAREORDERING;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_ORDERING" << endl;
-#endif
   return token::DECLARE_ORDERING;
 }
 
@@ -1038,9 +777,6 @@ typedef zorba::xquery_parser::token token;
   /* ---------------------------- */
 "xquery"{SP}"version"/{WordBreak} {
   BEGIN MODE_XQUERY_VERSION;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::XQUERY_VERSION" << endl;
-#endif
   return token::XQUERY_VERSION;
 }
 
@@ -1049,9 +785,6 @@ typedef zorba::xquery_parser::token token;
   /* -------------------- */
 "(#" {  
   BEGIN MODE_PRAGMA;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRAGMA_BEGIN" << endl;
-#endif
   return token::PRAGMA_BEGIN;
 }
 
@@ -1060,9 +793,6 @@ typedef zorba::xquery_parser::token token;
   /* -------------------- */
 "declare"{SP}"option"{SP} {
   BEGIN MODE_OPTION;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_OPTION" << endl;
-#endif
   return token::DECLARE_OPTION;
 }
 
@@ -1081,9 +811,6 @@ typedef zorba::xquery_parser::token token;
   /* ------------------ */
 "}" {   
   yy_pop_state();
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RBRACE" << endl;
-#endif
   return token::RBRACE;
 }
 
@@ -1095,9 +822,6 @@ typedef zorba::xquery_parser::token token;
 
 "declare"{SP}"revalidation"{SP} {
   BEGIN MODE_DECLAREREVALIDATION;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_REVALIDATION" << endl;
-#endif
   return token::DECLARE_REVALIDATION;
 }
 
@@ -1106,109 +830,64 @@ typedef zorba::xquery_parser::token token;
 
 "insert"{SP}"node"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INSERT_NODE" << endl;
-#endif
   return token::INSERT_NODE;
 }
 "insert"{SP}"nodes"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INSERT_NODES" << endl;
-#endif
   return token::INSERT_NODES;
 }
 "delete"{SP}"node"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DELETE_NODE" << endl;
-#endif
   return token::DELETE_NODE;
 }
 "delete"{SP}"nodes"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DELETE_NODES" << endl;
-#endif
   return token::DELETE_NODES;
 }
 "replace"{SP}"node"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::REPLACE" << endl;
-#endif
   return token::REPLACE;
 }
 "replace"{SP}"value"{SP}"of"{SP}"node"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::REPLACE_VALUE_OF" << endl;
-#endif
   return token::REPLACE_VALUE_OF;
 }
 "rename"{SP}"node"/{WordBreak} {
   BEGIN INITIAL; 
   getDriver()->set_rename(true);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RENAME" << endl;
-#endif
   return token::RENAME;
 }
 
 "copy"{SP}"$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COPY_DOLLAR" << endl;
-#endif
   return token::COPY_DOLLAR;
 }
 "into"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INTO" << endl;
-#endif
   return token::INTO;
 }
 "first"{SP}"into"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FIRST_INTO" << endl;
-#endif
   return token::FIRST_INTO;
 }
 "last"{SP}"into"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LAST_INTO" << endl;
-#endif
   return token::LAST_INTO;
 }
 "after"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AFTER" << endl;
-#endif
   return token::AFTER;
 }
 "before"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::BEFORE" << endl;
-#endif
   return token::BEFORE;
 }
 "with"/{WordBreak}  {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH" << endl;
-#endif
   return token::WITH;
 }
 "modify"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::MODIFY" << endl;
-#endif
   return token::MODIFY;
 }
 
@@ -1216,9 +895,6 @@ typedef zorba::xquery_parser::token token;
 
 "as"/{WordBreak} {
   BEGIN INITIAL; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AS" << endl;
-#endif
   return token::AS;
 }
 
@@ -1228,18 +904,12 @@ typedef zorba::xquery_parser::token token;
    |______________________________________________________________________*/
 
 "try"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TRY" << endl;
-#endif
   return token::TRY;
 }
 
 <MODE_OPERATOR>{
 "catch"{S}"(" {
   yy_push_state(MODE_CATCH);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CATCH_LPAR" << endl;
-#endif
   return token::CATCH_LPAR;
 }
 }
@@ -1248,44 +918,29 @@ typedef zorba::xquery_parser::token token;
 
 ")" {
   yy_pop_state();
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RPAR" << endl;
-#endif
   return token::RPAR;
 }
 
 {QName}  {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME" << endl;
-#endif
   return token::QNAME;
 }
 
 "*" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::STAR" << endl;
-#endif
   return token::STAR;
 }
 
 {NCName}":*" {
   yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng-2);
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELEM_WILDCARD" << endl;
-#endif
   return token::ELEM_WILDCARD;
 }
 
 "*:"{NCName} {
   yylval->sval = getDriver()->symtab.put_ncname(yytext+2, yyleng-2);
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PREFIX_WILDCARD" << endl;
-#endif
   return token::PREFIX_WILDCARD;
 }
 
@@ -1298,303 +953,153 @@ typedef zorba::xquery_parser::token token;
    |______________________________________________________________________*/
 
 "&&" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FTAND" << endl;
-#endif
   return token::FTAND;
 }
 "!" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FTNOT" << endl;
-#endif
   return token::FTNOT;
 }
 "||" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FTOR" << endl;
-#endif
   return token::FTOR;
 }
 "not"<SP>"in"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FTNOT_IN" << endl;
-#endif
   return token::FTNOT_IN;
 }
 "all"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ALL" << endl;
-#endif
   return token::ALL;
 }
 "all"{SP}"words"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ALL_WORDS" << endl;
-#endif
   return token::ALL_WORDS;
 }
 "any"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ANY" << endl;
-#endif
   return token::ANY;
 }
 "any"{SP}"word"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ANY_WORD" << endl;
-#endif
   return token::ANY_WORD;
 }
 "at"{SP}"end"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT_END" << endl;
-#endif
   return token::AT_END;
 }
 "at"{SP}"least"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT_LEAST" << endl;
-#endif
   return token::AT_LEAST;
 }
 "at"{SP}"most"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT_MOST" << endl;
-#endif
   return token::AT_MOST;
 }
 "at"{SP}"start"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT_START" << endl;
-#endif
   return token::AT_START;
 }
 "case"{SP}"insensitive"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CASE_INSENSITIVE" << endl;
-#endif
   return token::CASE_INSENSITIVE;
 }
 "case"{SP}"sensitive"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CASE_SENSITIVE" << endl;
-#endif
   return token::CASE_SENSITIVE;
 }
 "declare"{SP}"ftoption"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_FTOPTION" << endl;
-#endif
   return token::DECLARE_FTOPTION;
 }
 "diacritics"{SP}"insensitive"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DIACRITICS_INSENSITIVE" << endl;
-#endif
   return token::DIACRITICS_INSENSITIVE;
 }
 "diacritic"{SP}"sensitive"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DIACRITICS_SENSITIVE" << endl;
-#endif
   return token::DIACRITICS_SENSITIVE;
 }
 "different"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DIFFERENT" << endl;
-#endif
   return token::DIFFERENT;
 }
 "distance"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DISTANCE" << endl;
-#endif
   return token::DISTANCE;
 }
 "entire"{SP}"content"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ENTIRE_CONTENT" << endl;
-#endif
   return token::ENTIRE_CONTENT;
 }
 "exactly"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EXACTLY" << endl;
-#endif
   return token::EXACTLY;
 }
 "from"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FROM" << endl;
-#endif
   return token::FROM;
 }
 "language"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LANGUAGE" << endl;
-#endif
   return token::LANGUAGE;
 }
 "levels"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LEVELS" << endl;
-#endif
   return token::LEVELS;
 }
 "lowercase"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LOWERCASE" << endl;
-#endif
   return token::LOWERCASE;
 }
 "occurs"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::OCCURS" << endl;
-#endif
   return token::OCCURS;
 }
 "paragraph"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PARAGRAPH" << endl;
-#endif
   return token::PARAGRAPH;
 }
 "phrase"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PHRASE" << endl;
-#endif
   return token::PHRASE;
 }
 "relationship"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RELATIONSHIP" << endl;
-#endif
   return token::RELATIONSHIP;
 }
 "same"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SAME" << endl;
-#endif
   return token::SAME;
 }
 "score"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SCORE" << endl;
-#endif
   return token::SCORE;
 }
 "sentence"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SENTENCE" << endl;
-#endif
   return token::SENTENCE;
 }
 "sentences"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SENTENCES" << endl;
-#endif
   return token::SENTENCES;
 }
 "times"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TIMES" << endl;
-#endif
   return token::TIMES;
 }
 "uppercase"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UPPERCASE" << endl;
-#endif
   return token::UPPERCASE;
 }
 "weight"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WEIGHT" << endl;
-#endif
   return token::WEIGHT;
 }
 "window"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WINDOW" << endl;
-#endif
   return token::WINDOW;
 }
 "without"{SP}"content"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_CONTENT" << endl;
-#endif
   return token::WITHOUT_CONTENT;
 }
 "without"{SP}"diacritics"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_DIACRITICS" << endl;
-#endif
   return token::WITHOUT_DIACRITICS;
 }
 "without"{SP}"stemming"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_STEMMING" << endl;
-#endif
   return token::WITHOUT_STEMMING;
 }
 "without"{SP}"stop"{SP}"words"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_STOP_WORDS" << endl;
-#endif
   return token::WITHOUT_STOP_WORDS;
 }
 "without"{SP}"thesaurus"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_THESAURUS" << endl;
-#endif
   return token::WITHOUT_THESAURUS;
 }
 "without"{SP}"wildcards"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_WILDCARDS" << endl;
-#endif
   return token::WITHOUT_WILDCARDS;
 }
 "with"{SP}"default"{SP}"stop"{SP}"words"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_DEFAULT_STOP_WORDS" << endl;
-#endif
   return token::WITH_DEFAULT_STOP_WORDS;
 }
 "with"{SP}"diacritics"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_DIACRITICS" << endl;
-#endif
   return token::WITH_DIACRITICS;
 }
 "with"{SP}"stemming"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_STEMMING" << endl;
-#endif
   return token::WITH_STEMMING;
 }
 "with"{SP}"stop"{SP}"words"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_STOP_WORDS" << endl;
-#endif
   return token::WITH_STOP_WORDS;
 }
 "with"{SP}"thesaurus"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_THESAURUS" << endl;
-#endif
   return token::WITH_THESAURUS;
 }
 "with"{SP}"wildcards"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_WILDCARDS" << endl;
-#endif
   return token::WITH_WILDCARDS;
 }
 "words"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WORDS" << endl;
-#endif
   return token::WORDS;
 }
 
@@ -1604,9 +1109,6 @@ typedef zorba::xquery_parser::token token;
 
   /* catch all */
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -1625,17 +1127,11 @@ typedef zorba::xquery_parser::token token;
 "{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LBRACE" << endl;
-#endif
   return token::LBRACE;
 }
 
 {NCName}  {
   yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::NCNAME" << endl;
-#endif
   return token::NCNAME;
 }
 
@@ -1659,17 +1155,11 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "ordered"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ORDERED" << endl;
-#endif
   return token::ORDERED;
 }
 
 "unordered"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNORDERED" << endl;
-#endif
   return token::UNORDERED;
 }
 
@@ -1690,25 +1180,16 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "strict"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::REVAL_STRICT" << endl;
-#endif
   return token::REVAL_STRICT;
 }
 
 "lax"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::REVAL_LAX" << endl;
-#endif
   return token::REVAL_LAX;
 }
 
 "skip"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::REVAL_SKIP" << endl;
-#endif
   return token::REVAL_SKIP;
 }
 
@@ -1728,61 +1209,37 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "{" {
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LBRACE" << endl;
-#endif
   return token::LBRACE;
 }
 "(" {
   BEGIN INITIAL;
   /* yy_push_state(INITIAL); */
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LPAR" << endl;
-#endif
   return token::LPAR;
 }
 ";" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SEMI" << endl;
-#endif
   return token::SEMI;
 }
 "then"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::THEN" << endl;
-#endif
   return token::THEN;
 }
 "else"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELSE" << endl;
-#endif
   return token::ELSE;
 }
 "external"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EXTERNAL" << endl;
-#endif
   return token::EXTERNAL;
 }
 "and"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AND" << endl;
-#endif
   return token::AND;
 }
 "at"/{WordBreak} {
   if (!getDriver()->ftcontains()) {
     BEGIN INITIAL;
   }
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT" << endl;
-#endif
   return token::AT;
 }
 
@@ -1790,123 +1247,72 @@ typedef zorba::xquery_parser::token token;
   /* full-text rule */
 "score"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SCORE" << endl;
-#endif
   return token::SCORE;
 }
 
 
 ":=" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::GETS" << endl;
-#endif
   return token::GETS;
 }
 "," {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COMMA" << endl;
-#endif
   return token::COMMA;
 }
 "div"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DIV" << endl;
-#endif
   return token::DIV;
 }
 "=" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EQUALS" << endl;
-#endif
   return token::EQUALS;
 }
 "except"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EXCEPT" << endl;
-#endif
   return token::EXCEPT;
 }
 "eq"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_EQ" << endl;
-#endif
   return token::VAL_EQ;
 }
 "ge"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_GE" << endl;
-#endif
   return token::VAL_GE;
 }
 "gt"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_GT" << endl;
-#endif
   return token::VAL_GT;
 }
 "le"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_LE" << endl;
-#endif
   return token::VAL_LE;
 }
 "lt"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_LT" << endl;
-#endif
   return token::VAL_LT;
 }
 "ne"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_NE" << endl;
-#endif
   return token::VAL_NE;
 }
 ">=" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::GE" << endl;
-#endif
   return token::GE;
 }
 ">>" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FOLLOWS" << endl;
-#endif
   return token::FOLLOWS;
 }
 ">" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::GT" << endl;
-#endif
   return token::GT;
 }
 "idiv"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::IDIV" << endl;
-#endif
   return token::IDIV;
 }
 "intersect"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INTERSECT" << endl;
-#endif
   return token::INTERSECT;
 }
 
@@ -1914,177 +1320,102 @@ typedef zorba::xquery_parser::token token;
 
 "in"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::_IN_" << endl;
-#endif
   return token::_IN_;
 }
 "is"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::IS" << endl;
-#endif
   return token::IS;
 }
 "[" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LBRACK" << endl;
-#endif
   return token::LBRACK;
 }
 "<=" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LE" << endl;
-#endif
   return token::LE;
 }
 "<<" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRECEDES" << endl;
-#endif
   return token::PRECEDES;
 }
 "<" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LT" << endl;
-#endif
   return token::LT;
 }
 "-" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::MINUS" << endl;
-#endif
   return token::MINUS;
 }
 "mod"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::MOD" << endl;
-#endif
   return token::MOD;
 }
 "*" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::STAR" << endl;
-#endif
   return token::STAR;
 }
 "!=" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::NE" << endl;
-#endif
   return token::NE;
 }
 "order"{SP}"by"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ORDER_BY" << endl;
-#endif
   return token::ORDER_BY;
 }
 "stable"{SP}"order"{SP}"by"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::STABLE_ORDER_BY" << endl;
-#endif
   return token::STABLE_ORDER_BY;
 }
 "or"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::OR" << endl;
-#endif
   return token::OR;
 }
 "+" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PLUS" << endl;
-#endif
   return token::PLUS;
 }
 "return"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RETURN" << endl;
-#endif
   return token::RETURN;
 }
 "satisfies"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SATISFIES" << endl;
-#endif
   return token::SATISFIES;
 }
 "/" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SLASH" << endl;
-#endif
   return token::SLASH;
 }
 "/ " {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LEADING_LONE_SLASH" << endl;
-#endif
   return token::LEADING_LONE_SLASH;
 }
 "//" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SLASH_SLASH" << endl;
-#endif
   return token::SLASH_SLASH;
 }
 "to"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TO" << endl;
-#endif
   return token::TO;
 }
 "union"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNION" << endl;
-#endif
   return token::UNION;
 }
 "|" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VBAR" << endl;
-#endif
   return token::VBAR;
 }
 "where"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WHERE" << endl;
-#endif
   return token::WHERE;
 }
 "preserve"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRESERVE" << endl;
-#endif
   return token::PRESERVE;
 }
 "strip"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::STRIP" << endl;
-#endif
   return token::STRIP;
 }
 
@@ -2095,16 +1426,10 @@ typedef zorba::xquery_parser::token token;
   /* ------------------------ */
 "castable"{SP}"as"/{WordBreak} {
   BEGIN MODE_SINGLETYPE;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CASTABLE_AS" << endl;
-#endif
   return token::CASTABLE_AS;
 }
 "cast"{SP}"as"/{WordBreak} {
   BEGIN MODE_SINGLETYPE;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CAST_AS" << endl;
-#endif
   return token::CAST_AS;
 }
 
@@ -2113,23 +1438,14 @@ typedef zorba::xquery_parser::token token;
   /* ---------------------- */
 "instance"{SP}"of"/{WordBreak} {
   BEGIN MODE_ITEMTYPE;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INSTANCE_OF" << endl;
-#endif
   return token::INSTANCE_OF;
 }
 "treat"{SP}"as"/{WordBreak} {
   BEGIN MODE_ITEMTYPE;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TREAT_AS" << endl;
-#endif
   return token::TREAT_AS;
 }
 "case"/{WordBreak} {
   BEGIN MODE_ITEMTYPE;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CASE" << endl;
-#endif
   return token::CASE;
 }
 "as"/{WordBreak} {
@@ -2143,16 +1459,10 @@ typedef zorba::xquery_parser::token token;
   else {
     BEGIN MODE_ITEMTYPE;
   }
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AS" << endl;
-#endif
   return token::AS;
 }
 ")"{S}"as"{SP} {
   BEGIN MODE_ITEMTYPE;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RPAR_AS" << endl;
-#endif
   return token::RPAR_AS;
 }
 
@@ -2161,30 +1471,18 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOLLAR" << endl;
-#endif
   return token::DOLLAR;
 }
 "for"{SP}"$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FOR_DOLLAR" << endl;
-#endif
   return token::FOR_DOLLAR;
 }
 "let"{SP}"$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LET_DOLLAR" << endl;
-#endif
   return token::LET_DOLLAR;
 }
 "let"{SP}"score"{SP}"$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LET_SCORE_DOLLAR" << endl;
-#endif
   return token::LET_SCORE_DOLLAR;
 }
 
@@ -2200,9 +1498,6 @@ typedef zorba::xquery_parser::token token;
   /* --------------------------- */
 "collation"/{WordBreak} {
   BEGIN MODE_URITOOPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COLLATION" << endl;
-#endif
   return token::COLLATION;
 }
 
@@ -2211,9 +1506,6 @@ typedef zorba::xquery_parser::token token;
   /* --------------------------------------- */
 "}" {
   yy_pop_state();
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RBRACE" << endl;
-#endif
   return token::RBRACE;
 }
 
@@ -2221,57 +1513,30 @@ typedef zorba::xquery_parser::token token;
   /* maintain OPERATOR state */
   /* ----------------------- */
 ")" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RPAR" << endl;
-#endif
   return token::RPAR;
 }
 "?" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::HOOK" << endl;
-#endif
   return token::HOOK;
 }
 "empty"{SP}"greatest"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EMPTY_GREATEST" << endl;
-#endif
   return token::EMPTY_GREATEST;
 }
 "empty"{SP}"least"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EMPTY_LEAST" << endl;
-#endif
   return token::EMPTY_LEAST;
 }
 "ascending"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ASCENDING" << endl;
-#endif
   return token::ASCENDING;
 }
 "descending"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DESCENDING" << endl;
-#endif
   return token::DESCENDING;
 }
 "default"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DEFAULT" << endl;
-#endif
   return token::DEFAULT;
 }
 "]" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RBRACK" << endl;
-#endif
   return token::RBRACK;
 }
 {StringLiteral} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "scanner::TRY_STRINGLIT" << std::endl;
-#endif
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
@@ -2287,86 +1552,50 @@ typedef zorba::xquery_parser::token token;
 "ftcontains"/{WordBreak} {
   BEGIN INITIAL;
   getDriver()->set_ftcontains(true);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FTCONTAINS" << endl;
-#endif
   return token::FTCONTAINS;
 }
 "&&" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FTAND" << endl;
-#endif
   return token::FTAND;
 }
 "!" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FTNOT" << endl;
-#endif
   return token::FTNOT;
 }
 "||" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FTOR" << endl;
-#endif
   return token::FTOR;
 }
 "not"<SP>"in"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FTNOT_IN" << endl;
-#endif
   return token::FTNOT_IN;
 }
 "at"{SP}"least"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT_LEAST" << endl;
-#endif
   return token::AT_LEAST;
 }
 "at"{SP}"most"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT_MOST" << endl;
-#endif
   return token::AT_MOST;
 }
 "distance"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DISTANCE" << endl;
-#endif
   return token::DISTANCE;
 }
 "exactly"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EXACTLY" << endl;
-#endif
   return token::EXACTLY;
 }
 "from"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FROM" << endl;
-#endif
   return token::FROM;
 }
 "occurs"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::OCCURS" << endl;
-#endif
   return token::OCCURS;
 }
 "window"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WINDOW" << endl;
-#endif
   return token::WINDOW;
 }
 
@@ -2374,251 +1603,128 @@ typedef zorba::xquery_parser::token token;
   /* maintain OPERATOR state */
   /* ----------------------- */
 "all"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ALL" << endl;
-#endif
   return token::ALL;
 }
 "all"{SP}"words"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ALL_WORDS" << endl;
-#endif
   return token::ALL_WORDS;
 }
 "any"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ANY" << endl;
-#endif
   return token::ANY;
 }
 "any"{SP}"word"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ANY_WORD" << endl;
-#endif
   return token::ANY_WORD;
 }
 "at"{SP}"end"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT_END" << endl;
-#endif
   return token::AT_END;
 }
 "at"{SP}"start"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT_START" << endl;
-#endif
   return token::AT_START;
 }
 "case"{SP}"insensitive"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CASE_INSENSITIVE" << endl;
-#endif
   return token::CASE_INSENSITIVE;
 }
 "case"{SP}"sensitive"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CASE_SENSITIVE" << endl;
-#endif
   return token::CASE_SENSITIVE;
 }
 "declare"{SP}"ftoption"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DECLARE_FTOPTION" << endl;
-#endif
   return token::DECLARE_FTOPTION;
 }
 "diacritics"{SP}"insensitive"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DIACRITICS_INSENSITIVE" << endl;
-#endif
   return token::DIACRITICS_INSENSITIVE;
 }
 "diacritics"{SP}"sensitive"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DIACRITICS_SENSITIVE" << endl;
-#endif
   return token::DIACRITICS_SENSITIVE;
 }
 "different"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DIFFERENT" << endl;
-#endif
   return token::DIFFERENT;
 }
 "entire"{SP}"content"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ENTIRE_CONTENT" << endl;
-#endif
   return token::ENTIRE_CONTENT;
 }
 "language"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LANGUAGE" << endl;
-#endif
   return token::LANGUAGE;
 }
 "levels"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LEVELS" << endl;
-#endif
   return token::LEVELS;
 }
 "lowercase"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LOWERCASE" << endl;
-#endif
   return token::LOWERCASE;
 }
 "paragraph"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PARAGRAPH" << endl;
-#endif
   return token::PARAGRAPH;
 }
 "phrase"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PHRASE" << endl;
-#endif
   return token::PHRASE;
 }
 "relationship"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RELATIONSHIP" << endl;
-#endif
   return token::RELATIONSHIP;
 }
 "same"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SAME" << endl;
-#endif
   return token::SAME;
 }
 "score"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SCORE" << endl;
-#endif
   return token::SCORE;
 }
 "sentence"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SENTENCE" << endl;
-#endif
   return token::SENTENCE;
 }
 "sentences"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SENTENCES" << endl;
-#endif
   return token::SENTENCES;
 }
 "times"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TIMES" << endl;
-#endif
   return token::TIMES;
 }
 "uppercase"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UPPERCASE" << endl;
-#endif
   return token::UPPERCASE;
 }
 "weight"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WEIGHT" << endl;
-#endif
   return token::WEIGHT;
 }
 "without"{SP}"content"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_CONTENT" << endl;
-#endif
   return token::WITHOUT_CONTENT;
 }
 "without"{SP}"diacritics"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_DIACRITICS" << endl;
-#endif
   return token::WITHOUT_DIACRITICS;
 }
 "without"{SP}"stemming"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_STEMMING" << endl;
-#endif
   return token::WITHOUT_STEMMING;
 }
 "without"{SP}"stop"{SP}"words"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_STOP_WORDS" << endl;
-#endif
   return token::WITHOUT_STOP_WORDS;
 }
 "without"{SP}"thesaurus"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_THESAURUS" << endl;
-#endif
   return token::WITHOUT_THESAURUS;
 }
 "without"{SP}"wildcards"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITHOUT_WILDCARDS" << endl;
-#endif
   return token::WITHOUT_WILDCARDS;
 }
 "with"{SP}"default"{SP}"stop"{SP}"words"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_DEFAULT_STOP_WORDS" << endl;
-#endif
   return token::WITH_DEFAULT_STOP_WORDS;
 }
 "with"{SP}"diacritics"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_DIACRITICS" << endl;
-#endif
   return token::WITH_DIACRITICS;
 }
 "with"{SP}"stemming"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_STEMMING" << endl;
-#endif
   return token::WITH_STEMMING;
 }
 "with"{SP}"stop"{SP}"words"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_STOP_WORDS" << endl;
-#endif
   return token::WITH_STOP_WORDS;
 }
 "with"{SP}"thesaurus"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_THESAURUS" << endl;
-#endif
   return token::WITH_THESAURUS;
 }
 "with"{SP}"wildcards"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WITH_WILDCARDS" << endl;
-#endif
   return token::WITH_WILDCARDS;
 }
 "words"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WORDS" << endl;
-#endif
   return token::WORDS;
 }
 "(#" {
   BEGIN MODE_PRAGMA;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRAGMA_BEGIN" << endl;
-#endif
   return token::PRAGMA_BEGIN;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -2643,25 +1749,16 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 ";" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SEMI" << endl;
-#endif
   return token::SEMI;
 }
 
   /* maintain XQUERYVERSION */
   /* ---------------------- */
 {StringLiteral} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "scanner::TRY_STRINGLIT" << std::endl;
-#endif
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
 "encoding"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ENCODING" << endl;
-#endif
   return token::ENCODING;
 }
 
@@ -2692,9 +1789,6 @@ typedef zorba::xquery_parser::token token;
 
 ";" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SEMI" << endl;
-#endif
   return token::SEMI;
 }
 
@@ -2705,38 +1799,23 @@ typedef zorba::xquery_parser::token token;
 }
 
 "," {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COMMA" << endl;
-#endif
   return token::COMMA;
 }
 
 "at"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT" << endl;
-#endif
   return token::AT;
 }
 
 "=" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EQUALS" << endl;
-#endif
   return token::EQUALS;
 }
 
 {NCName} {
   yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::NCNAME" << endl;
-#endif
   return token::NCNAME;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -2785,9 +1864,6 @@ typedef zorba::xquery_parser::token token;
 
 "namespace"/{WordBreak} {
   BEGIN MODE_NAMESPACEDECL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::NAMESPACE" << endl;
-#endif
   return token::NAMESPACE;
 }
 
@@ -2795,17 +1871,11 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "inherit"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INHERIT" << endl;
-#endif
   return token::INHERIT;
 }
 
 "no-inherit"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::NO_INHERIT" << endl;
-#endif
   return token::NO_INHERIT;
 }
 
@@ -2819,37 +1889,22 @@ typedef zorba::xquery_parser::token token;
   /* maintain NAMESPACEKEYWORD */
   /* ------------------------- */
 "default"{SP}"element"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DEFAULT_ELEMENT" << endl;
-#endif
   return token::DEFAULT_ELEMENT;
 }
 
 "preserve"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRESERVE" << endl;
-#endif
   return token::PRESERVE;
 }
 
 "no-preserve"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::NO_PRESERVE" << endl;
-#endif
   return token::NO_PRESERVE;
 }
 
 "," {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COMMA" << endl;
-#endif
   return token::COMMA;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -2877,17 +1932,11 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "preserve"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRESERVE" << endl;
-#endif
   return token::PRESERVE;
 }
 
 "strip"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::STRIP" << endl;
-#endif
   return token::STRIP;
 }
 
@@ -2898,9 +1947,6 @@ typedef zorba::xquery_parser::token token;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -2928,9 +1974,6 @@ typedef zorba::xquery_parser::token token;
 {QName} {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME" << endl;
-#endif
   return token::QNAME;
 }
 
@@ -2941,9 +1984,6 @@ typedef zorba::xquery_parser::token token;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -2970,17 +2010,11 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "$" {
   BEGIN MODE_VARNAME;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOLLAR" << endl;
-#endif
   return token::DOLLAR;
 }
 
 "empty-sequence"{S}"("{SOrComment}")" {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VOID_TEST" << endl;
-#endif
   return token::VOID_TEST;
 }
 
@@ -2995,72 +2029,48 @@ typedef zorba::xquery_parser::token token;
 "element"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELEMENT_LPAR" << endl;
-#endif
   return token::ELEMENT_LPAR;
 }
 
 "attribute"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ATTRIBUTE_LPAR" << endl;
-#endif
   return token::ATTRIBUTE_LPAR;
 }
 
 "schema-element"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SCHEMA_ELEMENT_LPAR" << endl;
-#endif
   return token::SCHEMA_ELEMENT_LPAR;
 }
 
 "schema-attribute"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SCHEMA_ATTRIBUTE_LPAR" << endl;
-#endif
   return token::SCHEMA_ATTRIBUTE_LPAR;
 }
 
 "comment"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COMMENT_LPAR" << endl;
-#endif
   return token::COMMENT_LPAR;
 }
 
 "text"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TEXT_LPAR" << endl;
-#endif
   return token::TEXT_LPAR;
 }
 
 "node"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::NODE_LPAR" << endl;
-#endif
   return token::NODE_LPAR;
 }
 
 "document-node"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOCUMENT_NODE_LPAR" << endl;
-#endif
   return token::DOCUMENT_NODE_LPAR;
 }
 
@@ -3069,17 +2079,11 @@ typedef zorba::xquery_parser::token token;
 "processing-instruction"{S}"(" {
   BEGIN MODE_OCCURRENCE_INDICATOR; 
   yy_push_state(MODE_KINDTESTFORPI);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PI_LPAR" << endl;
-#endif
   return token::PI_LPAR;
 }
 
 "item"{S}"("{SOrComment}")" { 
   BEGIN MODE_OCCURRENCE_INDICATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ITEM_TEST" << endl;
-#endif
   return token::ITEM_TEST;
 }
 
@@ -3087,9 +2091,6 @@ typedef zorba::xquery_parser::token token;
   /* -------------------- */
 "(#" {
   BEGIN MODE_PRAGMA;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRAGMA_BEGIN" << endl;
-#endif
   return token::PRAGMA_BEGIN;
 }
 
@@ -3097,25 +2098,16 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 ";" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SEMI" << endl;
-#endif
   return token::SEMI;
 }
 
 "then"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::THEN" << endl;
-#endif
   return token::THEN;
 }
 
 "else"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELSE" << endl;
-#endif
   return token::ELSE;
 }
 
@@ -3132,305 +2124,191 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "external"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EXTERNAL" << endl;
-#endif
   return token::EXTERNAL;
 }
 
 "and"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AND" << endl;
-#endif
   return token::AND;
 }
 
 "at"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AT" << endl;
-#endif
   return token::AT;
 }
 
 ":=" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::GETS" << endl;
-#endif
   return token::GETS;
 }
 
 "," {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COMMA" << endl;
-#endif
   return token::COMMA;
 }
 
 "div"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DIV" << endl;
-#endif
   return token::DIV;
 }
 
 "=" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EQUALS" << endl;
-#endif
   return token::EQUALS;
 }
 
 "except"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EXCEPT" << endl;
-#endif
   return token::EXCEPT;
 }
 
 "eq"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_EQ" << endl;
-#endif
   return token::VAL_EQ;
 }
 
 "ge"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_GE" << endl;
-#endif
   return token::VAL_GE;
 }
 
 "gt"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_GT" << endl;
-#endif
   return token::VAL_GT;
 }
 
 "le"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_LE" << endl;
-#endif
   return token::VAL_LE;
 }
 
 "lt"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_LT" << endl;
-#endif
   return token::VAL_LT;
 }
 
 "ne"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VAL_NE" << endl;
-#endif
   return token::VAL_NE;
 }
 
 ">=" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::GE" << endl;
-#endif
   return token::GE;
 }
 
 ">>" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::FOLLOWS" << endl;
-#endif
   return token::FOLLOWS;
 }
 
 ">" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::GT" << endl;
-#endif
   return token::GT;
 }
 
 "idiv"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::IDIV" << endl;
-#endif
   return token::IDIV;
 }
 
 "intersect"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INTERSECT" << endl;
-#endif
   return token::INTERSECT;
 }
 
 "in"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::_IN_" << endl;
-#endif
   return token::_IN_;
 }
 
 "is"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::IS" << endl;
-#endif
   return token::IS;
 }
 
 "[" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LBRACK" << endl;
-#endif
   return token::LBRACK;
 }
 
 "(" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LPAR" << endl;
-#endif
   return token::LPAR;
 }
 
 "<=" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LE" << endl;
-#endif
   return token::LE;
 }
 
 "<<" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRECEDES" << endl;
-#endif
   return token::PRECEDES;
 }
 
 "<" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LT" << endl;
-#endif
   return token::LT;
 }
 
 "-" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::MINUS" << endl;
-#endif
   return token::MINUS;
 }
 
 "mod"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::MOD" << endl;
-#endif
   return token::MOD;
 }
 
 "!=" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::NE" << endl;
-#endif
   return token::NE;
 }
 
 "order"{SP}"by"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ORDER_BY" << endl;
-#endif
   return token::ORDER_BY;
 }
 
 "stable"{SP}"order"{SP}"by"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::STABLE_ORDER_BY" << endl;
-#endif
   return token::STABLE_ORDER_BY;
 }
 
 "or"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::OR" << endl;
-#endif
   return token::OR;
 }
 
 "return"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RETURN" << endl;
-#endif
   return token::RETURN;
 }
 
 "satisfies"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SATISFIES" << endl;
-#endif
   return token::SATISFIES;
 }
 
 "to"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TO" << endl;
-#endif
   return token::TO;
 }
 
 "union"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNION" << endl;
-#endif
   return token::UNION;
 }
 
 "|" {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VBAR" << endl;
-#endif
   return token::VBAR;
 }
 
 "where"/{WordBreak} {
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::WHERE" << endl;
-#endif
   return token::WHERE;
 }
 
@@ -3438,70 +2316,43 @@ typedef zorba::xquery_parser::token token;
   /* ------------------------ */
 "castable"{SP}"as"/{WordBreak} {
   BEGIN MODE_SINGLETYPE;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CASTABLE_AS" << endl;
-#endif
   return token::CASTABLE_AS;
 }
 
 "cast"{SP}"as"/{WordBreak} {
   BEGIN MODE_SINGLETYPE;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CAST_AS" << endl;
-#endif
   return token::CAST_AS;
 }
 
   /* maintain ITEMTYPE */
   /* ----------------- */
 "instance"{SP}"of"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::INSTANCE_OF" << endl;
-#endif
   return token::INSTANCE_OF;
 }
 
 "treat"{SP}"as"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TREAT_AS" << endl;
-#endif
   return token::TREAT_AS;
 }
 
 "case"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CASE" << endl;
-#endif
   return token::CASE;
 }
 
 "as"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::AS" << endl;
-#endif
   return token::AS;
 }
 
 ")"{S}"as"/{WordBreak} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RPAR_AS" << endl;
-#endif
   return token::RPAR_AS;
 }
 
 {QName} {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_OCCURRENCE_INDICATOR; 
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME" << endl;
-#endif
   return token::QNAME;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -3528,9 +2379,6 @@ typedef zorba::xquery_parser::token token;
 "{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LBRACE" << endl;
-#endif
   return token::LBRACE;
 }
 
@@ -3538,18 +2386,12 @@ typedef zorba::xquery_parser::token token;
   /* --------------------------- */
 "*" {
   BEGIN MODE_CLOSE_KINDTEST;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::STAR" << endl;
-#endif
   return token::STAR;
 }
 
 {QName} {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN MODE_CLOSE_KINDTEST;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME" << endl;
-#endif
   return token::QNAME;
 }
 
@@ -3563,9 +2405,6 @@ typedef zorba::xquery_parser::token token;
   /* --------------------------------- */
 ")" {
   yy_pop_state();
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RPAR" << endl;
-#endif
   return token::RPAR;
 }
 
@@ -3574,27 +2413,18 @@ typedef zorba::xquery_parser::token token;
 "element"{S}"(" {
   BEGIN MODE_KINDTEST;
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELEMENT_LPAR" << endl;
-#endif
   return token::ELEMENT_LPAR;
 }
 
 "schema-element"{S}"(" {
   BEGIN MODE_KINDTEST;
   yy_push_state(MODE_KINDTEST);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::SCHEMA_ELEMENT_LPAR" << endl;
-#endif
   return token::SCHEMA_ELEMENT_LPAR;
 }
 
   /* catch-all */
   /* --------- */
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -3620,9 +2450,6 @@ typedef zorba::xquery_parser::token token;
   /* --------------------------------- */
 ")" {
   yy_pop_state();
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RPAR" << endl;
-#endif
   return token::RPAR;
 }
 
@@ -3637,23 +2464,14 @@ typedef zorba::xquery_parser::token token;
   /* ---------------------- */
 {NCName} {
   yylval->sval = getDriver()->symtab.put_ncname(yytext, yyleng);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::NCNAME" << endl;
-#endif
   return token::NCNAME;
 }
 
 {StringLiteral} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "scanner::TRY_STRINGLIT" << endl;
-#endif
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -3679,9 +2497,6 @@ typedef zorba::xquery_parser::token token;
   /* ------------------ */
 ")" {
   yy_pop_state();
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::RPAR" << endl;
-#endif
   return token::RPAR;
 }
 
@@ -3689,9 +2504,6 @@ typedef zorba::xquery_parser::token token;
   /* ---------------------- */
 "," {
   BEGIN MODE_KINDTEST;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::COMMA" << endl;
-#endif
   return token::COMMA;
 }
 
@@ -3700,9 +2512,6 @@ typedef zorba::xquery_parser::token token;
 "{" {
   BEGIN MODE_OPERATOR;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LBRACE" << endl;
-#endif
   return token::LBRACE;
 }
 
@@ -3715,16 +2524,10 @@ typedef zorba::xquery_parser::token token;
   /* maintain CLOSE_KINDTEST */
   /* ---------------------- */
 "?" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::HOOK" << endl;
-#endif
   return token::HOOK;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -3758,25 +2561,16 @@ typedef zorba::xquery_parser::token token;
   /* ---------------------- */
 "?" {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::OCCURS_HOOK" << endl;
-#endif
   return token::OCCURS_HOOK;
 }
 
 "*" {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::OCCURS_STAR" << endl;
-#endif
   return token::OCCURS_STAR;
 }
 
 "+" {
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::OCCURS_PLUS" << endl;
-#endif
   return token::OCCURS_PLUS;
 }
 
@@ -3818,16 +2612,10 @@ typedef zorba::xquery_parser::token token;
 {QName}  {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
   BEGIN INITIAL;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME" << endl;
-#endif
   return token::QNAME;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -3856,18 +2644,12 @@ typedef zorba::xquery_parser::token token;
 {QName}{SPNoComment} {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng,true,true);
   BEGIN MODE_PRAGMACONTENTS;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME" << endl;
-#endif
   return token::QNAME;
 }
 
 {QName}"#)" {
   BEGIN MODE_OPERATOR;
   yylval->sval = getDriver()->symtab.put(yytext, yyleng-2);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME_AND_END_PRAGMA" << endl;
-#endif
   return token::QNAME_AND_END_PRAGMA;
 }
 
@@ -3876,9 +2658,6 @@ typedef zorba::xquery_parser::token token;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -3902,16 +2681,10 @@ typedef zorba::xquery_parser::token token;
 {PragmaChars}")" {
   BEGIN MODE_OPERATOR;
   yylval->sval = getDriver()->symtab.put(yytext, yyleng-2);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PRAGMA_LITERAL_AND_END" << endl;
-#endif
   return token::PRAGMA_LITERAL_AND_END;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -3936,9 +2709,6 @@ typedef zorba::xquery_parser::token token;
 {VarName} {
   yylval->sval = getDriver()->symtab.put_varname(yytext, yyleng);
   BEGIN MODE_OPERATOR;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::VARNAME" << endl;
-#endif
   return token::VARNAME;
 }
 
@@ -3949,9 +2719,6 @@ typedef zorba::xquery_parser::token token;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -3981,9 +2748,6 @@ typedef zorba::xquery_parser::token token;
   /* ----------------------------- */
 ">" {
   BEGIN MODE_ELEMENT_CONTENT;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TAG_END" << endl;
-#endif
   return token::TAG_END;
 }
 
@@ -3991,9 +2755,6 @@ typedef zorba::xquery_parser::token token;
   /* ------------------------------------ */
 \" {
   BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QUOTE" << endl;
-#endif
   return token::QUOTE;
 }
 
@@ -4001,9 +2762,6 @@ typedef zorba::xquery_parser::token token;
   /* ------------------------------------ */
 \' {
   BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::APOS" << endl;
-#endif
   return token::APOS;
 }
 
@@ -4011,9 +2769,6 @@ typedef zorba::xquery_parser::token token;
   /* ----------------------- */
 "=" {
   BEGIN MODE_START_TAG;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EQUALS" << endl;
-#endif
   return token::EQUALS;
 }
 
@@ -4021,9 +2776,6 @@ typedef zorba::xquery_parser::token token;
   /* -------------------------- */
 "/>" {
   yy_pop_state();
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::EMPTY_TAG_END" << endl;
-#endif
   return token::EMPTY_TAG_END;
 }
 
@@ -4035,16 +2787,10 @@ typedef zorba::xquery_parser::token token;
 
 {QName} {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME" << endl;
-#endif
   return token::QNAME;
 }
 
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -4073,9 +2819,6 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "</" {
   BEGIN MODE_END_TAG;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::START_TAG_END" << endl;
-#endif
   return token::START_TAG_END;
 }
 
@@ -4083,9 +2826,6 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "{" {
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LBRACE" << endl;
-#endif
   return token::LBRACE;
 }
 
@@ -4093,9 +2833,6 @@ typedef zorba::xquery_parser::token token;
   /* -------------------------- */
 "<!--" {
   yy_push_state(MODE_XML_COMMENT);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::XML_COMMENT_BEGIN" << endl;
-#endif
   return token::XML_COMMENT_BEGIN;
 }
 
@@ -4103,9 +2840,6 @@ typedef zorba::xquery_parser::token token;
   /* ------------------------------------ */
 "<?" {
   yy_push_state(MODE_PROCESSING_INSTRUCTION);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PI_BEGIN" << endl;
-#endif
   return token::PI_BEGIN;
 }
 
@@ -4113,9 +2847,6 @@ typedef zorba::xquery_parser::token token;
   /* --------------------------- */
 "<![CDATA[" {
   yy_push_state(MODE_CDATA_SECTION);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CDATA_BEGIN" << endl;
-#endif
   return token::CDATA_BEGIN;
 }
 
@@ -4123,9 +2854,6 @@ typedef zorba::xquery_parser::token token;
   /* ----------------------- */
 "<" {
   yy_push_state(MODE_START_TAG);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::START_TAG" << endl;
-#endif
   return token::START_TAG;
 }
 
@@ -4133,47 +2861,29 @@ typedef zorba::xquery_parser::token token;
   /* ------------------------ */
 {ElementContentChar}+ {
   yylval->sval = getDriver()->symtab.put(yytext, yyleng, true);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELEMENT_CONTENT" << endl;
-#endif
   return token::ELEMENT_CONTENT;
 }
 
 {PredefinedEntityRef} {
   yylval->sval = getDriver()->symtab.put_entityref(yytext, yyleng);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ENTITY_REF" << endl;
-#endif
   return token::ELEMENT_CONTENT;
 }
 
 {CharRef}+ {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ELEMENT_CONTENT" << endl;
-#endif
   TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
 }
 
 "{{" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOUBLE_LBRACE" << endl;
-#endif
   return token::DOUBLE_LBRACE;
 }
 
 "}}" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOUBLE_RBRACE" << endl;
-#endif
   return token::DOUBLE_RBRACE;
 }
 
   /* catch all else */
   /* -------------- */
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -4196,9 +2906,6 @@ typedef zorba::xquery_parser::token token;
   /* -------------------------- */
 ">" {
   yy_pop_state();
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::TAG_END" << endl;
-#endif
   return token::TAG_END;
 }
 
@@ -4206,18 +2913,12 @@ typedef zorba::xquery_parser::token token;
   /* ---------------- */
  {QName}{S} {
    yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng, false, true);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QNAME" << endl;
-#endif
   return token::QNAME;
 }
 
   /* catch all else */
   /* -------------- */
 {CatchAll} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -4240,9 +2941,6 @@ typedef zorba::xquery_parser::token token;
   /* -------------------------- */
 "-->" {
   yy_pop_state();
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::XML_COMMENT_END" << endl;
-#endif
   return token::XML_COMMENT_END;
 }
 
@@ -4250,17 +2948,11 @@ typedef zorba::xquery_parser::token token;
   /* -------------------- */
 {XMLCommentChar}* {
   yylval->sval = getDriver()->symtab.put(yytext, yyleng);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::XML_COMMENT_LITERAL" << endl;
-#endif
   return token::XML_COMMENT_LITERAL;
 }
 
  {CatchAll} {
- #ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
-  return token::UNRECOGNIZED;
+   return token::UNRECOGNIZED;
  }
 } /* <MODE_XML_COMMENT> */
 
@@ -4295,9 +2987,6 @@ typedef zorba::xquery_parser::token token;
 }
 
 <<EOF>> {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::UNRECOGNIZED" << endl;
-#endif
   return token::UNRECOGNIZED;
 }
 
@@ -4327,9 +3016,6 @@ typedef zorba::xquery_parser::token token;
   /* -------------------------- */
 "?>" {
   yy_pop_state();
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PI_END" << endl;
-#endif
   return token::PI_END;
 }
 
@@ -4338,9 +3024,6 @@ typedef zorba::xquery_parser::token token;
 {PITarget} {
   yylval->sval = getDriver()->symtab.put(yytext, yyleng);
   BEGIN MODE_PROCESSING_INSTRUCTION;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::PI_TARGET_LITERAL" << endl;
-#endif
   return token::PI_TARGET_LITERAL;
 }
 
@@ -4364,9 +3047,6 @@ typedef zorba::xquery_parser::token token;
 {PIChars}"?>" {
   yy_pop_state();
   yylval->sval = getDriver()->symtab.put(yytext, yyleng-2);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CHAR_LITERAL_AND_PI_END" << endl;
-#endif
   return token::CHAR_LITERAL_AND_PI_END;
 }
 
@@ -4390,9 +3070,6 @@ typedef zorba::xquery_parser::token token;
 "]]>" {
   yy_pop_state();
   yylval->sval = getDriver()->symtab.put(yytext, yyleng-3);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::CHAR_LITERAL_AND_CDATA_END" << endl;
-#endif
   return token::CHAR_LITERAL_AND_CDATA_END;
 }
 
@@ -4427,9 +3104,6 @@ typedef zorba::xquery_parser::token token;
   /* ----------------------- */
 \" {
   BEGIN MODE_START_TAG;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QUOTE" << endl;
-#endif
   return token::QUOTE;
 }
 
@@ -4437,55 +3111,34 @@ typedef zorba::xquery_parser::token token;
   /* --------------------- */
 "{" {
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LBRACE" << endl;
-#endif
   return token::LBRACE;
 }
 
   /* maintain QUOTE_ATTRIBUTE_CONTENT */
   /* -------------------------------- */
 {EscapeQuot} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ESCAPE_QUOTE" << endl;
-#endif
   return token::ESCAPE_QUOTE;
 }
 
 {QuotAttrContentChar}+ {
   yylval->sval = getDriver()->symtab.put(yytext, yyleng, true);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QUOTE_ATTR_CONTENT" << endl;
-#endif
   return token::QUOTE_ATTR_CONTENT;
 }
 
 {PredefinedEntityRef} {
   yylval->sval = getDriver()->symtab.put_entityref(yytext, yyleng);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ENTITY_REF" << endl;
-#endif
   return token::QUOTE_ATTR_CONTENT;
 }
 
 {CharRef}+ {
   TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::QUOTE_ATTR_CONTENT" << endl;
-#endif
 }
 
 "{{" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOUBLE_LBRACE" << endl;
-#endif
   return token::DOUBLE_LBRACE;
 }
 
 "}}" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOUBLE_RBRACE" << endl;
-#endif
   return token::DOUBLE_RBRACE;
 }
 
@@ -4509,9 +3162,6 @@ typedef zorba::xquery_parser::token token;
   /* ----------------------- */
 \' {
   BEGIN MODE_START_TAG;
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::APOS" << endl;
-#endif
   return token::APOS;
 }
 
@@ -4520,55 +3170,34 @@ typedef zorba::xquery_parser::token token;
 "{" {
   BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
   yy_push_state(INITIAL);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::LBRACE" << endl;
-#endif
   return token::LBRACE;
 }
 
   /* maintain APOS_ATTRIBUTE_CONTENT */
   /* ------------------------------- */
 {EscapeApos} {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ESCAPE_APOS" << endl;
-#endif
   return token::ESCAPE_APOS;
 }
 
 {AposAttrContentChar}+ {
   yylval->sval = getDriver()->symtab.put(yytext, yyleng, true);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::APOS_ATTR_CONTENT" << endl;
-#endif
   return token::APOS_ATTR_CONTENT;
 }
 
 {PredefinedEntityRef} {
   yylval->sval = getDriver()->symtab.put_entityref(yytext, yyleng);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::ENTITY_REF" << endl;
-#endif
   return token::APOS_ATTR_CONTENT;
 }
 
 {CharRef}+ {
   TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng);
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::APOS_ATTR_CONTENT" << endl;
-#endif
 }
 
 "{{" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOUBLE_LBRACE" << endl;
-#endif
   return token::DOUBLE_LBRACE;
 }
 
 "}}" {
-#ifdef ZORBA_DEBUG_SCANNER
-  cout << "token::DOUBLE_RBRACE" << endl;
-#endif
   return token::DOUBLE_RBRACE;
 }
 
@@ -4631,6 +3260,11 @@ xquery_scanner::xquery_scanner(
 {}
 
 xquery_scanner::~xquery_scanner() {}
+}
+
+void xquery_scanner::set_yy_flex_debug(bool aBool)
+{
+  yy_flex_debug = aBool;
 }
 
 #ifdef yylex

@@ -18,6 +18,7 @@
  */
 
 #include <fstream>
+#include <zorba/properties.h>
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_parser.hpp"
 #include "compiler/parser/xquery_scanner.h"
@@ -38,9 +39,11 @@ bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
     theFilename = aFilename;
 
     xquery_scanner scanner(this, &in);
+    scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
     this->lexer = &scanner;
 
     zorba::xquery_parser parser(*this);
+    parser.set_debug_level(Properties::instance()->traceParsing());
     return (parser.parse() == 0);
 }
 
