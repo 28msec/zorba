@@ -47,6 +47,7 @@ class XQueryCompiler {
 
   private:
     std::vector<rchandle<static_context> >& m_sctx_list;
+    rchandle<expr> do_translation (rchandle<parsenode> n_p, XQueryPlanPrinterConfig *pp_cfg);
     static_context *m_sctx;
 };
 
@@ -64,4 +65,10 @@ class XQueryCompilerSubsystem {
 
 } /* namespace zorba */
 #endif /* ZORBA_COMPILER_API_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
 /* vim:set ts=2 sw=2: */

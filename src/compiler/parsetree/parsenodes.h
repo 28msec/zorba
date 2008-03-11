@@ -350,7 +350,6 @@ public:
 		const QueryLoc&,
 		rchandle<QueryBody>);
 
-
 public:
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
 	rchandle<QueryBody> get_query_body() const { return query_body_h; }

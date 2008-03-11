@@ -5,6 +5,9 @@
 #include <zorbatypes/xqpstring.h>
 #include "compiler/parser/symbol_table.h"
 
+// needed because we have to delete the main module node
+#include "compiler/parsetree/parsenodes.h"
+
 namespace zorba {
 
 class location;
@@ -15,30 +18,25 @@ class xquery_driver
 public:
   xqpString theFilename;
   symbol_table symtab;
-  parsenode* expr_p;
+  rchandle<parsenode> expr_p;
   bool rename_bit;
   bool ftcontains_bit;
 
   xquery_driver(uint32_t initial_heapsize = 1024);
   virtual ~xquery_driver() {}
 
-  bool 
-  parse_stream(std::istream& in, const xqpString& aFilename = "");
+  bool parse_stream(std::istream& in, const xqpString& aFilename = "");
 
-  bool 
-  parse_string(const xqpString& input);
+  bool parse_string(const xqpString& input);
 
-  bool 
-  parse_file(const xqpString& aFilename);
+  bool parse_file(const xqpString& aFilename);
 
-  void 
-  error(const location& l, const std::string& m);
+  void error(const location& l, const std::string& m);
 
-  void 
-  error(const std::string& m);
+  void error(const std::string& m);
 
 	void set_expr(parsenode* e_p) { expr_p = e_p; }
-	parsenode* get_expr() const { return expr_p; }
+	parsenode* get_expr() { return expr_p; }
 
 	/**
 	**	Deal with "as" operator overloading for update
@@ -60,3 +58,8 @@ public:
 }	/* namespace zorba */
 #endif /* ZORBA_XQUERY_DRIVER_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

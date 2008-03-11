@@ -108,48 +108,16 @@ XQueryCompiler::XQueryCompiler(std::vector<rchandle<static_context> >& sctx_list
   m_sctx->set_typemanager(std::auto_ptr<TypeManager>(new DelegatingTypeManager(&GENV_TYPESYSTEM)));
 }
 
-PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text,
-    XQueryPlanPrinterConfig *pp_cfg)
-{
-  xquery_driver driver;
-
-  ///build up the expression tree
-  if(xquery_text.empty()) {
-    driver.parse_file(source_uri);
-  } else {
-    driver.parse_string(xquery_text);
-  }
-
-  rchandle<parsenode> n_p = driver.get_expr();
-
-  if (Properties::instance()->printAST())
-  {
-    std::cout << "Parse tree:\n";
-    ParseNodePrintXMLVisitor lPrintXMLVisitor(std::cout);
-    lPrintXMLVisitor.print(&*n_p);
-  }
-  if (pp_cfg) {
-    pp_cfg->printASTPlan(n_p);
-  }
-
-  MainModule* mm_p;
+static bool chk_main_module (MainModule* mm_p) {
   QueryBody* qb_p;
   Expr* ex_p;
-
-  if ((mm_p = dynamic_cast<MainModule*>(&*n_p))==NULL) 
-  {
-    ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
-        NULL, DONT_CONTINUE_EXECUTION,
-        "Parse error: expecting MainModule");
-    return NULL;
-  }
 
   if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL)
   {
     ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
         NULL, DONT_CONTINUE_EXECUTION,
         "Parse error: expecting MainModule->QueryBody");
-    return NULL;
+    return false;
   }
 
   if ((ex_p = dynamic_cast<Expr*>(&*qb_p->get_expr()))==NULL) 
@@ -157,24 +125,69 @@ PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text
     ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
         NULL, DONT_CONTINUE_EXECUTION, 
         "Parse error: expecting MainModule->QueryBody->Expr");
-    return NULL;
+    return false;
   }
 
+  return true;
+}
+
+static rchandle<parsenode> do_parse (xqp_string source_uri, xqp_string xquery_text) {
+  xquery_driver driver;
+  
+  if(xquery_text.empty())
+    driver.parse_file(source_uri);
+  else
+    driver.parse_string(xquery_text);
+  
+  return driver.get_expr();
+}
+
+rchandle<expr> XQueryCompiler::do_translation (rchandle<parsenode> n_p, XQueryPlanPrinterConfig *pp_cfg) {
+  if (Properties::instance()->printAST()) {
+    std::cout << "Parse tree:\n";
+    ParseNodePrintXMLVisitor lPrintXMLVisitor(std::cout);
+    lPrintXMLVisitor.print(&*n_p);
+  }
+  if (pp_cfg)
+    pp_cfg->printASTPlan(n_p);
+  
+  MainModule* mm_p;  
+  if ((mm_p = dynamic_cast<MainModule*>(&*n_p))==NULL) {
+    ZORBA_ERROR_ALERT(ZorbaError::XPST0003,
+                      NULL, DONT_CONTINUE_EXECUTION,
+                      "Parse error: expecting MainModule");
+    return NULL;
+  }
+  if (! chk_main_module (mm_p))
+    return NULL;
+  
   rchandle<expr> e_h = translate (Properties::instance ()->printTranslatedExpressions (), m_sctx, *mm_p, m_sctx_list);
-  if (e_h == NULL)
-  {
+  if (e_h == NULL) {
     ZORBA_ERROR_ALERT(ZorbaError::API0002_COMPILE_FAILED);
     return NULL;
   }
-  if (pp_cfg) {
+  if (pp_cfg)
     pp_cfg->printExprPlan(e_h);
+
+  return e_h;
+}
+
+PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text,
+    XQueryPlanPrinterConfig *pp_cfg)
+{
+  rchandle<expr> e_h;
+  {
+    rchandle<parsenode> n_p = do_parse (source_uri, xquery_text);
+    if (n_p == NULL)
+      return NULL;
+    if ((e_h = do_translation (n_p, pp_cfg)) == NULL)
+      return NULL;
   }
 
   normalize_expr_tree (Properties::instance ()->printNormalizedExpressions () ? "query" : NULL, m_sctx, e_h);
 
-  if (pp_cfg) {
+  if (pp_cfg)
     pp_cfg->printNormalizedExprPlan(e_h);
-  }
 
   RewriterContext rCtx(m_sctx, e_h);
   GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
@@ -187,9 +200,8 @@ PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text
     return NULL;
   }
 
-  if (pp_cfg) {
+  if (pp_cfg)
     pp_cfg->printRuntimePlan(plan);
-  }
 
   return plan;
 }

@@ -306,6 +306,10 @@ public:
   SYNC_CODE(RCLock* getRCLock() { return NULL; })
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
+
+  void safeRemoveRef () {
+    removeReference(getSharedRefCounter() SYNC_PARAM2(getRCLock()));
+  }
 };
 
 
