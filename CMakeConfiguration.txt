@@ -36,6 +36,10 @@ MESSAGE( STATUS "ZORBA_FLOAT_POINT_PRECISION: " ${ZORBA_FLOAT_POINT_PRECISION} )
 SET(ZORBA_WITH_CODE_COVERAGE OFF CACHE BOOL "compile the code with information for a code coverage analysis")
 MESSAGE( STATUS "ZORBA_WITH_CODE_COVERAGE: " ${ZORBA_WITH_CODE_COVERAGE})
 
+# code profile information
+SET(ZORBA_WITH_CODE_PROFILE OFF CACHE BOOL "compile the code with information for a code profiling analysis")
+MESSAGE( STATUS "ZORBA_WITH_CODE_PROFILE: " ${ZORBA_WITH_CODE_PROFILE})
+
 
 #specify the threading mechanism used
 #for WIN32 you don't have to specify it
