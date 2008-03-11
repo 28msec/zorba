@@ -13,7 +13,7 @@ CHECK_INCLUDE_FILES ("stdlib.h"                     HAVE_STDLIB_H)
 CHECK_INCLUDE_FILES ("limits.h"                     HAVE_LIMITS_H)
 CHECK_INCLUDE_FILES ("sys/types.h"                  HAVE_SYS_TYPES_H)
 CHECK_INCLUDE_FILES ("iconv.h"                      HAVE_ICONV_H)
-CHECK_INCLUDE_FILES("FlexLexer.h"                   HAVE_FLEXLEXER_H)
+CHECK_INCLUDE_FILE_CXX ("FlexLexer.h"               HAVE_FLEXLEXER_H)
 
 CHECK_FUNCTION_EXISTS (strtof                     HAVE_STRTOF_FUNCTION)
 CHECK_FUNCTION_EXISTS (_stricmp                   HAVE_STRICMP_FUNCTION)
