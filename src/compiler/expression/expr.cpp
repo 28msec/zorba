@@ -514,7 +514,10 @@ store::Item_t fo_expr::get_fname () const
 
 xqtref_t fo_expr::return_type(static_context *sctx)
 {
-  return func->get_signature().return_type();
+  vector<xqtref_t> types;
+  for (vector<expr_t>::iterator i = begin (); i != end (); i++)
+    types.push_back ((*i)->return_type (sctx));
+  return func->return_type (types);
 }
 
 

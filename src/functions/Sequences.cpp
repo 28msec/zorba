@@ -76,6 +76,17 @@ xqtref_t op_concatenate::type_check(
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
+xqtref_t op_concatenate::return_type (const std::vector<xqtref_t> &arg_types) const {
+  int sz = arg_types.size ();
+  if (sz == 0)
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+  else {
+    xqtref_t t = arg_types [0];
+    for (int i = 1; i < sz; i++)
+      t = GENV_TYPESYSTEM.union_type (*t, *arg_types [i]);
+    return GENV_TYPESYSTEM.type_x_quant (*t, TypeConstants::QUANT_STAR);
+  }
+}
 
 //15.1.3 fn:index-of
 /*_______________________________________________________________________

@@ -49,6 +49,7 @@ public:
 	PlanIter_t operator()(const QueryLoc& loc,std::vector<PlanIter_t>&) const;
 	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
+  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 };
 
 
@@ -616,3 +617,9 @@ public:
 
 } /* namespace zorba */
 #endif /* ZORBA_SEQUENCES_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

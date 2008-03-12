@@ -60,7 +60,8 @@ public:
 
 	// polymorphic type inference
 	virtual xqtref_t type_check(signature&) const = 0;
-
+  
+  virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 	// runtime arg validation: XXX move this out
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const = 0;
 

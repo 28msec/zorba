@@ -88,6 +88,10 @@ std::vector<ref_iter_t>& user_function::get_param_iters() const
   return m_param_iters;
 }
 
+xqtref_t function::return_type (const std::vector<xqtref_t> &) const {
+  return sig.return_type ();
+}
+
 }
 
 /* vim:set ts=2 sw=2: */

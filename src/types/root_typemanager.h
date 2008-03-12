@@ -107,6 +107,14 @@ class RootTypeManager : public TypeManager {
      */
     xqtref_t arithmetic_type(const XQType& type1, const XQType& type2) const;
 
+   /*
+    * Multiplies type by quantifier.
+    * TODO: create_type should do this (currently overrides quantifier)
+    */
+    xqtref_t type_x_quant (const XQType& type, TypeConstants::quantifier_t quant) {
+      return create_type (type, QUANT_MULT_MATRIX [quant] [quantifier (type)]);
+    }
+
     /*
      * Returns the NodeNameTest for the given type, if one exists.
      */
