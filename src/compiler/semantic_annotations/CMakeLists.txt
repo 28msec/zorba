@@ -1,0 +1,2 @@
+SET(SEMANTIC_ANNOTATIONS_SRCS
+    annotations.cpp)

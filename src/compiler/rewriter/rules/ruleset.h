@@ -16,7 +16,7 @@ namespace zorba {
       expr_t rewritePost(expr *node, RewriterContext& rCtx); \
   }
 
-RULE(EchoNodeRule);
+RULE(EchoNodes);
 
 // Node id rules
 RULE(MarkNodesWithNodeIdProperties);

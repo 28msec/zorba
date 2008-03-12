@@ -206,21 +206,21 @@ expr::~expr() { }
     return NULL; // Make the compiler happy
   }
 
-  void expr::put_annotation(const std::string& key, const std::string& value)
+  void expr::put_annotation(Annotation::key_t key, Annotation::value_ref_t value)
   {
     m_annotations[key] = value;
   }
 
-  const std::string *expr::get_annotation(const std::string& key) const
+  const Annotation::value_ref_t expr::get_annotation(Annotation::key_t key) const
   {
     annotations_t::const_iterator i = m_annotations.find(key);
     if (i == m_annotations.end()) {
-      return NULL;
+      return Annotation::value_ref_t();
     }
-    return &i->second;
+    return i->second;
   }
 
-  void expr::remove_annotation(const std::string& key)
+  void expr::remove_annotation(Annotation::key_t key)
   {
     annotations_t::iterator i = m_annotations.find(key);
     if (i != m_annotations.end()) {

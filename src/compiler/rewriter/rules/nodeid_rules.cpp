@@ -11,8 +11,8 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
     function *empty = LOOKUP_FN("fn", "empty", 1);
     if (fo->get_func() == empty) {
       expr_t arg = (*fo)[0];
-      arg->put_annotation("distinct-nodes-not-required", "true");
-      arg->put_annotation("sorted-nodes-not-required", "true");
+      arg->put_annotation(Annotation::IGNORES_DUPLICATE_NODES, TSVAnnotationValue::TRUE_VALUE);
+      arg->put_annotation(Annotation::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
     }
   }
   return NULL;
@@ -25,9 +25,9 @@ RULE_REWRITE_POST(MarkNodesWithNodeIdProperties)
 
 static bool can_remove_sort_distinct(const fo_expr *fo)
 {
-  const std::string *dnnr = fo->get_annotation("distinct-nodes-not-required");
-  const std::string *snnr = fo->get_annotation("sorted-nodes-not-required");
-  return dnnr != NULL && (*dnnr) == "true" && snnr != NULL && (*snnr) == "true";
+  TSVAnnotationValue *dnnr = static_cast<TSVAnnotationValue *>(fo->get_annotation(Annotation::IGNORES_DUPLICATE_NODES).get());
+  TSVAnnotationValue *snnr = static_cast<TSVAnnotationValue *>(fo->get_annotation(Annotation::IGNORES_SORTED_NODES).get());
+  return dnnr != NULL && dnnr->getValue() == TSVAnnotationValue::TSV_TRUE && snnr != NULL && dnnr->getValue() == TSVAnnotationValue::TSV_TRUE;
 }
 
 RULE_REWRITE_PRE(EliminateDocOrderSort)
