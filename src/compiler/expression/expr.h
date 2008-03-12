@@ -485,12 +485,11 @@ public:
 
 };
 
-class promote_expr : public expr {
+class cast_base_expr : public expr {
 public:
-  expr_kind_t get_expr_kind () { return promote_expr_kind; }
 
-  promote_expr(const QueryLoc& loc);
-  promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
+  cast_base_expr(const QueryLoc& loc);
+  cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
 
 protected:
   expr_t input_expr_h;
@@ -504,11 +503,20 @@ public:
   void set_target_type(xqtref_t target);
   
 public:
+  xqtref_t return_type (static_context *sctx);
+};
+
+class promote_expr : public cast_base_expr {
+public:
+  expr_kind_t get_expr_kind () { return promote_expr_kind; }
+
+  promote_expr(const QueryLoc& loc);
+  promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
+
+public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
-
-  xqtref_t return_type (static_context *sctx);
 };
 
 
@@ -794,33 +802,23 @@ public:
 | ::= CastableExpr ("treat" "as" SequenceType)?
 |_______________________________________________________________________*/
 
-class treat_expr : public expr {
-public:
-  expr_kind_t get_expr_kind () { return treat_expr_kind; }
+class treat_expr : public cast_base_expr {
 protected:
-  expr_t expr_h;
-  xqtref_t type;
   enum ZorbaError::ErrorCodes err;
 
 public:
+  expr_kind_t get_expr_kind () { return treat_expr_kind; }
   treat_expr(
     const QueryLoc&,
     expr_t,
     xqtref_t,
     enum ZorbaError::ErrorCodes);
 
-
-public:
-  expr_t get_expr() const { return expr_h; }
-  xqtref_t get_type() const;
   enum ZorbaError::ErrorCodes get_err () { return err; }
 
-public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
-
-  xqtref_t return_type (static_context *);
 };
 
 
@@ -865,30 +863,19 @@ public:
 | ::= UnaryExpr ("cast" "as" SingleType)?
 |_______________________________________________________________________*/
 
-class cast_expr : public expr {
+class cast_expr : public cast_base_expr {
 public:
   expr_kind_t get_expr_kind () { return cast_expr_kind; }
-protected:
-  expr_t expr_h;
-  xqtref_t type;
-
-public:
   cast_expr(
     const QueryLoc&,
     expr_t,
     xqtref_t);
 
-public:
-  expr_t get_unary_expr() const { return expr_h; }
-  xqtref_t get_type() const;
   bool is_optional() const;
 
-public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
-
-  xqtref_t return_type (static_context *);
 };
 
 

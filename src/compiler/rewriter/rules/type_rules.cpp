@@ -30,19 +30,11 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
       }
     }
   }
-  promote_expr *pe;
-  if ((pe = dynamic_cast<promote_expr *>(node)) != NULL) {
+  cast_base_expr *pe;
+  if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) {
     expr_t arg = pe->get_input();
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
     if (rCtx.getStaticContext()->get_typemanager()->is_subtype(*arg_type, *pe->get_target_type())) {
-      return arg;
-    }
-  }
-  cast_expr *ce;
-  if ((ce = dynamic_cast<cast_expr *>(node)) != NULL) {
-    expr_t arg = ce->get_unary_expr();
-    xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
-    if (rCtx.getStaticContext()->get_typemanager()->is_subtype(*arg_type, *ce->get_type())) {
       return arg;
     }
   }

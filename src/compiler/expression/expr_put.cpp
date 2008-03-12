@@ -255,10 +255,10 @@ ostream& instanceof_expr::put( ostream& os) const
 
 ostream& treat_expr::put( ostream& os) const
 {
-  os << INDENT << "treat_expr "; GENV_TYPESYSTEM.serialize (os, *type);
+  os << INDENT << "treat_expr "; GENV_TYPESYSTEM.serialize (os, *target_type);
   os << " (" << this << ") [\n";
-  Assert(expr_h!=NULL);
-  expr_h->put(os);
+  Assert(input_expr_h!=NULL);
+  input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
 }
@@ -277,10 +277,10 @@ ostream& castable_expr::put( ostream& os) const
 ostream& cast_expr::put( ostream& os) const
 {
   os << INDENT << "cast_expr ";
-  GENV_TYPESYSTEM.serialize (os, *type);
+  GENV_TYPESYSTEM.serialize (os, *target_type);
   os << " (" << this << ") [\n";
-  Assert(expr_h!=NULL);
-  expr_h->put(os);
+  Assert(input_expr_h!=NULL);
+  input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
   return os;
 }

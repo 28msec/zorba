@@ -396,12 +396,23 @@ void trycatch_expr::next_iter(expr_iterator_data& v)
 
 case_clause::case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
 
-promote_expr::promote_expr(const QueryLoc& loc) : expr(loc) { }
 
-promote_expr::promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
+cast_base_expr::cast_base_expr(const QueryLoc& loc) : expr(loc) { }
+
+cast_base_expr::cast_base_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
   : expr(loc),
   input_expr_h(input),
   target_type(type) { }
+
+xqtref_t cast_base_expr::get_target_type() { return target_type; }
+void cast_base_expr::set_target_type(xqtref_t target) { target_type = target; }
+
+
+promote_expr::promote_expr(const QueryLoc& loc) : cast_base_expr(loc) { }
+
+promote_expr::promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type)
+  : cast_base_expr (loc, input, type)
+{}
 
 void promote_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
@@ -409,8 +420,6 @@ void promote_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
-xqtref_t promote_expr::get_target_type() { return target_type; }
-void promote_expr::set_target_type(xqtref_t target) { target_type = target; }
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 
@@ -561,18 +570,14 @@ treat_expr::treat_expr(
   xqtref_t _type,
   enum ZorbaError::ErrorCodes err_)
 :
-  expr(loc),
-  expr_h(_expr_h),
-  type(_type),
+  cast_base_expr (loc, _expr_h, _type),
   err (err_)
 {
 }
 
-xqtref_t treat_expr::get_type() const { return type; }
-
 void treat_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
-  ITER (expr_h);
+  ITER (input_expr_h);
   END_EXPR_ITER ();
 }
 
@@ -607,20 +612,15 @@ cast_expr::cast_expr(
   const QueryLoc& loc,
   rchandle<expr> _expr_h,
   xqtref_t _type)
-:
-  expr(loc),
-  expr_h(_expr_h),
-  type(_type)
+  : cast_base_expr (loc, _expr_h, _type)
 {
 }
 
-bool cast_expr::is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeConstants::QUANT_QUESTION; }
-
-xqtref_t cast_expr::get_type() const { return type; }
+bool cast_expr::is_optional() const { return GENV_TYPESYSTEM.quantifier(*target_type) == TypeConstants::QUANT_QUESTION; }
 
 void cast_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
-  ITER (expr_h);
+  ITER (input_expr_h);
   END_EXPR_ITER ();
 }
 
@@ -1051,9 +1051,7 @@ xqtref_t instanceof_expr::return_type (static_context *sctx) {
   return sctx->get_typemanager ()->create_atomic_type (TypeConstants::XS_BOOLEAN, TypeConstants::QUANT_ONE);
 }
 
-xqtref_t cast_expr::return_type (static_context *sctx) { return type; }
-xqtref_t treat_expr::return_type (static_context *sctx) { return type; }
-xqtref_t promote_expr::return_type (static_context *sctx) { return target_type; }
+xqtref_t cast_base_expr::return_type (static_context *sctx) { return target_type; }
 
 xqtref_t order_expr::return_type(static_context *sctx) { return expr_h->return_type (sctx); }
 
