@@ -8,8 +8,15 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
 {
   fo_expr *fo = dynamic_cast<fo_expr *>(node);
   if (fo != NULL) {
-    function *empty = LOOKUP_FN("fn", "empty", 1);
-    if (fo->get_func() == empty) {
+    const function *f = fo->get_func ();
+    if (f == LOOKUP_FN("fn", "empty", 1)
+        || f == LOOKUP_FN("fn", "exists", 1)
+        || f == LOOKUP_FN("fn", "one-or-more", 1)
+        || f == LOOKUP_FN ("fn", "max", 1)
+        || f == LOOKUP_FN ("fn", "max", 2)
+        || f == LOOKUP_FN ("fn", "min", 1)
+        || f == LOOKUP_FN ("fn", "min", 2))
+    {
       expr_t arg = (*fo)[0];
       arg->put_annotation(Annotation::IGNORES_DUPLICATE_NODES, TSVAnnotationValue::TRUE_VALUE);
       arg->put_annotation(Annotation::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
