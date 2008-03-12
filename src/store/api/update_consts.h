@@ -19,7 +19,7 @@ public:
     INSERT_INTO,
     INSERT_INTO_FIRST,
     INSERT_INTO_LAST,
-    INSET_ATTRIBUTE,
+    INSERT_ATTRIBUTE,
     DELETE,
     REPLACE_NODE,
     REPLACE_VALUE,
@@ -27,6 +27,8 @@ public:
     RENAME
   }
   UpdateKind;
+
+  static std::string toString(UpdateKind k);
 };
 
 

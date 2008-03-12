@@ -4,7 +4,7 @@
 
 #include "common/shared_types.h"
 
-#include "store/api/pul_consts.h"
+#include "store/api/update_consts.h"
 
 namespace zorba { namespace store {
 
