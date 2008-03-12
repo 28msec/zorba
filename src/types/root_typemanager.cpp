@@ -71,6 +71,13 @@ const bool RootTypeManager::QUANT_SUBTYPE_MATRIX[4][4] = {
   {F, F, T, T}, /* QUANT_PLUS */
 };
 
+const TypeConstants::quantifier_t RootTypeManager::QUANT_MULT_MATRIX [4] [4] = {
+  { TypeConstants::QUANT_ONE,      TypeConstants::QUANT_QUESTION, TypeConstants::QUANT_STAR, TypeConstants::QUANT_PLUS }, /* TypeConstants::QUANT_ONE */
+  { TypeConstants::QUANT_QUESTION, TypeConstants::QUANT_QUESTION, TypeConstants::QUANT_STAR, TypeConstants::QUANT_STAR }, /* TypeConstants::QUANT_QUESTION */
+  { TypeConstants::QUANT_STAR,     TypeConstants::QUANT_STAR,     TypeConstants::QUANT_STAR, TypeConstants::QUANT_STAR }, /* TypeConstants::QUANT_STAR */
+  { TypeConstants::QUANT_PLUS,     TypeConstants::QUANT_STAR,     TypeConstants::QUANT_STAR, TypeConstants::QUANT_PLUS }, /* TypeConstants::QUANT_PLUS */
+};
+
 #undef T
 #undef F
 
@@ -452,7 +459,12 @@ TypeConstants::atomic_type_code_t RootTypeManager::get_atomic_type_code(const XQ
 
 xqtref_t RootTypeManager::union_type(const XQType& type1, const XQType& type2) const
 {
-  return xqtref_t(0);
+  if (is_subtype (type1, type2))
+    return create_type (type2, TypeConstants::QUANT_ONE);
+  else if (is_subtype (type2, type1))
+    return create_type (type1, TypeConstants::QUANT_ONE);
+  else
+    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 xqtref_t RootTypeManager::intersect_type(const XQType& type1, const XQType& type2) const
@@ -607,6 +619,7 @@ xqtref_t RootTypeManager::create_type(
     TypeConstants::quantifier_t quantifier) const
 {
   // TODO: full implem. danm: at least provide atomic types for now
+  quantifier = QUANT_MULT_MATRIX [quantifier] [type.get_quantifier ()];
   switch(type.type_kind()) {
     case XQType::ATOMIC_TYPE_KIND:
       return create_atomic_type(static_cast <const AtomicXQType *> (& type)->get_type_code(), quantifier);
