@@ -241,12 +241,6 @@ void end_visit(var_expr& v)
     assert (false);
     break;
   }
-
-  xqtref_t type = v.get_type ();
-  if (type != NULL) {
-    PlanIter_t it = pop_itstack ();
-    itstack.push (new TreatIterator (loc, it, type, ZorbaError::XPTY0004));
-  }
 }
 
 bool begin_visit(order_modifier& /*v*/)

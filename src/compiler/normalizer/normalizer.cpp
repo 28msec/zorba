@@ -65,6 +65,15 @@ bool normalizer::begin_visit(flwor_expr& node)
     flwor_expr::orderspec_t& os = node.orderspec_at(i);
     os.first = wrap_in_atomization(m_sctx, os.first);
   }
+  for (uint32_t i = 0; i < node.forlet_count (); i++) {
+    flwor_expr::forletref_t clause = node [i];
+    xqtref_t vartype = clause->get_var ()->get_type ();
+    if (vartype != NULL) {
+      xqtref_t promote_type = GENV_TYPESYSTEM.create_type (*vartype, clause->get_type () == forlet_clause::for_clause ? TypeConstants::QUANT_STAR : TypeConstants::QUANT_ONE);
+      expr_t e = clause->get_expr ();
+      clause->set_expr (new promote_expr (e->get_loc (), e, promote_type));
+    }
+  }
   return true;
 }
 
