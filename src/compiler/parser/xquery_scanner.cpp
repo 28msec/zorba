@@ -13810,11 +13810,12 @@ xquery_scanner::xquery_scanner(
 {}
 
 xquery_scanner::~xquery_scanner() {}
-}
+
 
 void xquery_scanner::set_yy_flex_debug(bool aBool)
 {
   yy_flex_debug = aBool;
+}
 }
 
 #ifdef yylex

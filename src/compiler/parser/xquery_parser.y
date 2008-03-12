@@ -33,9 +33,6 @@
 #include "compiler/parser/parse_constants.h"
 
 
-using namespace std;
-using namespace zorba;
-
 #define SYMTAB( n ) driver.symtab.get ((off_t) n)
 #define LOC( p ) driver.createQueryLoc(p)
 
@@ -781,7 +778,7 @@ VersionDecl :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VersionDecl [version]" << endl;
 #endif
-       string encoding;
+       std::string encoding;
        $$ = new VersionDecl (LOC (@$), SYMTAB ($2), encoding);
 		}
 	|	XQUERY_VERSION  STRING_LITERAL  ENCODING  STRING_LITERAL  SEMI
@@ -4265,7 +4262,7 @@ QuoteAttrContentList :
 			 cout << "QuoteAttrContentList [""]" << endl;
 #endif
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC (@$));
-			qo_list_p->push_back(new QuoteAttrValueContent(LOC (@$),string("\"")));
+			qo_list_p->push_back(new QuoteAttrValueContent(LOC (@$),std::string("\"")));
 			$$ = qo_list_p;
 		}
 	|	QuoteAttrValueContent
@@ -4284,7 +4281,7 @@ QuoteAttrContentList :
 #endif
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>($1);
 			if (qo_list_p) {
-				qo_list_p->push_back(new QuoteAttrValueContent(LOC (@$),string("\"")));
+				qo_list_p->push_back(new QuoteAttrValueContent(LOC (@$),std::string("\"")));
 			}
 			$$ = $1;
 		}

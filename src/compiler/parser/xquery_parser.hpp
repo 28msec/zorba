@@ -63,9 +63,6 @@ namespace zorba
 #include "compiler/parser/parse_constants.h"
 
 
-using namespace std;
-using namespace zorba;
-
 #define SYMTAB( n ) driver.symtab.get ((off_t) n)
 #define LOC( p ) driver.createQueryLoc(p)
 
@@ -80,7 +77,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc.  */
-#line 84 "/home/dagraf/Work/28msec/zorba3/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 81 "/home/dagraf/Work/28msec/zorba3/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -131,7 +128,7 @@ namespace zorba
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 96 "/home/dagraf/Work/28msec/zorba3/xquery/src/compiler/parser/xquery_parser.y"
+#line 93 "/home/dagraf/Work/28msec/zorba3/xquery/src/compiler/parser/xquery_parser.y"
 {
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -141,7 +138,7 @@ namespace zorba
 	xqp_decimal* decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 145 "/home/dagraf/Work/28msec/zorba3/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 142 "/home/dagraf/Work/28msec/zorba3/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
