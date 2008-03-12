@@ -42,6 +42,37 @@
 
 namespace zorba {
 
+enum expr_kind_t {
+  expr_kind,
+  constructor_expr_kind,
+  var_expr_kind,
+  flwor_expr_kind,
+  trycatch_expr_kind,
+  promote_expr_kind,
+  typeswitch_expr_kind,
+  if_expr_kind,
+  function_def_expr_kind,
+  fo_expr_kind,
+  ft_contains_expr_kind,
+  instanceof_expr_kind,
+  treat_expr_kind,
+  castable_expr_kind,
+  cast_expr_kind,
+  validate_expr_kind,
+  extension_expr_kind,
+  relpath_expr_kind,
+  axis_step_expr_kind,
+  match_expr_kind,
+  const_expr_kind,
+  order_expr_kind,
+  elem_expr_kind,
+  doc_expr_kind,
+  attr_expr_kind,
+  text_expr_kind,
+  pi_expr_kind,
+  unknown_expr_kind
+};
+
 class match_expr;
 class expr_visitor;
 class var_expr;
@@ -73,9 +104,9 @@ public:
 | base class for the expression tree node hierarchy
 |_______________________________________________________________________*/
 
-class expr : public SimpleRCObject
-{
+class expr : public SimpleRCObject {
 public:
+  virtual expr_kind_t get_expr_kind () { return expr_kind; }
   typedef rchandle<expr> expr_t;
   typedef std::map<std::string, std::string> annotations_t;
   typedef std::map<var_expr *, expr_t> substitution_t;
@@ -132,10 +163,12 @@ public:
   bool done () const;
 };
 
-  class constructor_expr : public expr {
-  public:
-    constructor_expr(const QueryLoc& loc) : expr (loc) {}
-  };
+class constructor_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return constructor_expr_kind; }
+
+  constructor_expr(const QueryLoc& loc) : expr (loc) {}
+};
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -155,9 +188,11 @@ public:
   var_expr represents a variable reference within any kind of expression.
 
 *******************************************************************************/
-class var_expr : public expr
-{
+
+class var_expr : public expr {
 public:
+  expr_kind_t get_expr_kind () { return var_expr_kind; }
+
   enum var_kind {
     for_var,
     let_var,
@@ -200,13 +235,13 @@ public:
 
 // [41] [http://www.w3.org/TR/xquery/#prod-xquery-OrderModifier]
 
-class order_modifier : public SimpleRCObject
 /*______________________________________________________________________
 | ::= ("ascending" | "descending")?
 |     ("empty" ("greatest" | "least"))?
 |     ("collation" URILiteral)?
 |_______________________________________________________________________*/
-{
+
+class order_modifier : public SimpleRCObject {
 public:
   ParseConstants::dir_spec_t dir;
   StaticContextConsts::order_empty_mode_t empty_mode;
@@ -214,7 +249,7 @@ public:
 
 public:
   order_modifier (ParseConstants::dir_spec_t _dir, StaticContextConsts::order_empty_mode_t _empty_mode, std::string _collation)
-    : dir (_dir), empty_mode (_empty_mode), collation (_collation) {}
+   : dir (_dir), empty_mode (_empty_mode), collation (_collation) {}
 
 };
 
@@ -233,8 +268,7 @@ public:
      | VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  "in"  ExprSingle
 
 ********************************************************************************/
-class forlet_clause : public SimpleRCObject
-{
+class forlet_clause : public SimpleRCObject {
 public:
   enum forlet_t {
     for_clause,
@@ -280,15 +314,17 @@ public:
 };
 
 
-class flwor_expr : public expr
 /*______________________________________________________________________
 | ::= ForLetClauseList  RETURN  ExprSingle
 |     | ForLetClauseList  WhereClause  RETURN  ExprSingle
 |     | ForLetClauseList  OrderByClause  RETURN  ExprSingle
 |     | ForLetClauseList  WhereClause  OrderByClause  RETURN  ExprSingle
 |_______________________________________________________________________*/
-{
-public: // types
+
+class flwor_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return flwor_expr_kind; }
+ // types
   typedef rchandle<forlet_clause> forletref_t;
   typedef rchandle<order_modifier> orderref_t;
   typedef std::pair<expr_t,orderref_t> orderspec_t;
@@ -304,10 +340,10 @@ protected:  // state
 
 public: // ctor,dtor
   flwor_expr(const QueryLoc& loc)
-    : expr(loc), order_stable (false)
+   : expr(loc), order_stable (false)
   {}
   flwor_expr(const QueryLoc& loc, clause_list_t clause_v_, expr_t retval_)
-    : expr (loc), clause_v (clause_v_), order_stable (false), retval_h (retval_)
+   : expr (loc), clause_v (clause_v_), order_stable (false), retval_h (retval_)
   {}
 
 public: // accessors
@@ -378,6 +414,9 @@ class catch_clause : public SimpleRCObject {
 };
 
 class trycatch_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return trycatch_expr_kind; }
+private:
   public:
     typedef rchandle<catch_clause> clauseref_t;
 
@@ -428,8 +467,7 @@ class trycatch_expr : public expr {
 
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
 
-class case_clause : public SimpleRCObject
-{
+class case_clause : public SimpleRCObject {
 public:
   typedef rchandle<expr> expr_t;
   typedef rchandle<var_expr> varref_t;
@@ -446,6 +484,8 @@ public:
 
 class promote_expr : public expr {
 public:
+  expr_kind_t get_expr_kind () { return promote_expr_kind; }
+
   promote_expr(const QueryLoc& loc);
   promote_expr(const QueryLoc& loc, expr_t input, xqtref_t type);
 
@@ -467,14 +507,16 @@ public:
 };
 
 
-class typeswitch_expr : public expr
 /*______________________________________________________________________
 | ::= TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
 |     | TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT 
 |         DOLLAR  VARNAME  RETURN  ExprSingle
 |_______________________________________________________________________*/
-{
+
+class typeswitch_expr : public expr {
 public:
+  expr_kind_t get_expr_kind () { return typeswitch_expr_kind; }
+
   typedef rchandle<var_expr> varref_t;
   typedef rchandle<case_clause> clauseref_t;
 
@@ -536,11 +578,14 @@ public:
 
 
 // [45] [http://www.w3.org/TR/xquery/#prod-xquery-IfExpr]
-class if_expr : public expr
+
 /*______________________________________________________________________
 | ::= <"if" "("> Expr ")" "then" ExprSingle "else" ExprSingle
 |_______________________________________________________________________*/
-{
+
+class if_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return if_expr_kind; }
 protected:
   expr_t cond_expr_h;
   expr_t then_expr_h;
@@ -577,6 +622,8 @@ public:
 class signature;
 
 class function_def_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return function_def_expr_kind; }
 protected:
   store::Item_t name;
   std::vector<rchandle<var_expr> > params;
@@ -610,17 +657,18 @@ public:
 // [48] [http://www.w3.org/TR/xquery/#prod-xquery-ComparisonExpr]
 
 
-class fo_expr : public expr
-{
+class fo_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return fo_expr_kind; }
 protected:
   checked_vector<expr_t> argv;
   const function* func;
 
 public:
   fo_expr (const QueryLoc& loc, const function *f)
-    : expr(loc), func (f) { assert (f != NULL); }
+   : expr(loc), func (f) { assert (f != NULL); }
   fo_expr (const QueryLoc& loc, const function *f, expr_t arg)
-    : expr(loc), func (f)
+   : expr(loc), func (f)
   {
     assert (f != NULL);
     add (arg);
@@ -661,11 +709,13 @@ public:
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
 class ft_select_expr;
 
-class ft_contains_expr : public expr
 /*______________________________________________________________________
 | ::= RangeExpr ("ftcontains" FTSelection FTIgnoreOption?)?
 |_______________________________________________________________________*/
-{
+
+class ft_contains_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return ft_contains_expr_kind; }
 protected:
   expr_t range_h;
   expr_t ft_select_h;
@@ -700,11 +750,13 @@ public:
 // [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
 // [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
 
-class instanceof_expr : public expr
 /*______________________________________________________________________
 | ::= TreatExpr ("instance" "of" SequenceType)?
 |_______________________________________________________________________*/
-{
+
+class instanceof_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return instanceof_expr_kind; }
 protected:
   expr_t expr_h;
   xqtref_t type;
@@ -730,11 +782,14 @@ public:
 
 
 // [55] [http://www.w3.org/TR/xquery/#prod-xquery-TreatExpr]
-class treat_expr : public expr
+
 /*______________________________________________________________________
 | ::= CastableExpr ("treat" "as" SequenceType)?
 |_______________________________________________________________________*/
-{
+
+class treat_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return treat_expr_kind; }
 protected:
   expr_t expr_h;
   xqtref_t type;
@@ -762,11 +817,14 @@ public:
 
 
 // [56] [http://www.w3.org/TR/xquery/#prod-xquery-CastableExpr]
-class castable_expr : public expr
+
 /*______________________________________________________________________
 | ::= CastExpr ("castable" "as" SingleType)?
 |_______________________________________________________________________*/
-{
+
+class castable_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return castable_expr_kind; }
 protected:
   expr_t expr_h;
   xqtref_t type;
@@ -792,11 +850,14 @@ public:
 
 
 // [57] [http://www.w3.org/TR/xquery/#prod-xquery-CastExpr]
-class cast_expr : public expr
+
 /*______________________________________________________________________
 | ::= UnaryExpr ("cast" "as" SingleType)?
 |_______________________________________________________________________*/
-{
+
+class cast_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return cast_expr_kind; }
 protected:
   expr_t expr_h;
   xqtref_t type;
@@ -821,11 +882,14 @@ public:
 
 
 // [63] [http://www.w3.org/TR/xquery/#prod-xquery-ValidateExpr]
-class validate_expr : public expr
+
 /*______________________________________________________________________
 | ::= "validate" ValidationMode? "{" Expr "}"
 |_______________________________________________________________________*/
-{
+
+class validate_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return validate_expr_kind; }
 protected:
   enum ParseConstants::validation_mode_t valmode;
   expr_t expr_h;
@@ -857,15 +921,17 @@ struct pragma : public SimpleRCObject
   std::string content;
 
   pragma(store::Item_t _name_h, std::string const& _content)
-  : name_h(_name_h), content(_content) {}
+ : name_h(_name_h), content(_content) {}
 };
 
 
-class extension_expr : public expr
 /*______________________________________________________________________
 | ::= PragmaList "{" Expr? "}"
 |_______________________________________________________________________*/
-{
+
+class extension_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return extension_expr_kind; }
 protected:
   rchandle<pragma> pragma_h;
   expr_t expr_h;
@@ -926,8 +992,9 @@ public:
                      (match "p2:l2" (children $x)))
 
 ********************************************************************************/
-class relpath_expr : public expr
-{
+class relpath_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return relpath_expr_kind; }
 protected:
   std::vector<expr_t> theSteps;
 
@@ -969,8 +1036,9 @@ public:
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-class axis_step_expr : public expr
-{
+class axis_step_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return axis_step_expr_kind; }
 protected:
   axis_kind_t          theAxis;
   rchandle<match_expr> theNodeTest;
@@ -1019,8 +1087,9 @@ public:
   and theNilledAllowed data members are not used.
 
 ********************************************************************************/
-class match_expr : public expr
-{
+class match_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return match_expr_kind; }
 protected:
   match_test_t  theTestKind;
   match_test_t  theDocTestKind;
@@ -1077,11 +1146,14 @@ public:
 
 
 // [85] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
-class const_expr : public expr
+
 /*______________________________________________________________________
 | ::= NumericLiteral | StringLiteral
 |_______________________________________________________________________*/
-{
+
+class const_expr : public expr {
+public:
+  expr_kind_t get_expr_kind () { return const_expr_kind; }
 protected:
   store::Item_t val;
 
@@ -1109,13 +1181,15 @@ public:
 // [87] [http://www.w3.org/TR/xquery/#prod-xquery-VarRef]
 // [91] [http://www.w3.org/TR/xquery/#prod-xquery-OrderedExpr]
 
-class order_expr : public expr
 /*______________________________________________________________________
 | ::= ORDERED_LBRACE  Expr  RBRACE
 |     | UNORDERED_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
-{
+
+class order_expr : public expr {
 public:
+  expr_kind_t get_expr_kind () { return order_expr_kind; }
+
   enum order_type_t {
     ordered,
     unordered
@@ -1153,8 +1227,10 @@ public:
 
 
 // [96] [http://www.w3.org/TR/xquery/#doc-xquery-DirElemConstructor]
-class elem_expr : public constructor_expr
-{
+
+class elem_expr : public constructor_expr {
+public:
+  expr_kind_t get_expr_kind () { return elem_expr_kind; }
 protected:
   expr_t theQNameExpr;
   expr_t theAttrs;
@@ -1190,11 +1266,14 @@ public:
 
 
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
-class doc_expr : public constructor_expr
+
 /*______________________________________________________________________
 | ::= DOCUMENT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
-{
+
+class doc_expr : public constructor_expr {
+public:
+  expr_kind_t get_expr_kind () { return doc_expr_kind; }
 protected:
   expr_t theContent;
 
@@ -1230,8 +1309,9 @@ public:
                          ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 
 ********************************************************************************/
-class attr_expr : public constructor_expr
-{
+class attr_expr : public constructor_expr {
+public:
+  expr_kind_t get_expr_kind () { return attr_expr_kind; }
 protected:
   expr_t theQNameExpr;
   expr_t theValueExpr;
@@ -1260,12 +1340,15 @@ public:
 
 
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
-class text_expr : public constructor_expr
+
 /*______________________________________________________________________
 | ::= TEXT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
-{
+
+class text_expr : public constructor_expr {
 public:
+  expr_kind_t get_expr_kind () { return text_expr_kind; }
+
   typedef enum { text_constructor, comment_constructor, pi_constructor }
     text_constructor_type;
 
@@ -1299,14 +1382,17 @@ public:
 
 
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompPIConstructor]
-class pi_expr : public text_expr
- /*______________________________________________________________________
+
+/*______________________________________________________________________
  |      ::= PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
  |                      |       PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RB
  |                      |       PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBR
  |                      |       PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBR
  |_______________________________________________________________________*/
-{
+
+class pi_expr : public text_expr {
+public:
+  expr_kind_t get_expr_kind () { return pi_expr_kind; }
 protected:
   expr_t target_expr_h;
   
