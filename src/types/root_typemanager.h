@@ -95,6 +95,11 @@ class RootTypeManager : public TypeManager {
     /*
      * Returns the prime type of the given type.
      */
+    xqtref_t prime_type(store::Item_t qname) const;
+
+    /*
+     * Returns the prime type of the given type.
+     */
     xqtref_t prime_type(const XQType& type) const;
 
     /*
