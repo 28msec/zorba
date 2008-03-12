@@ -299,7 +299,12 @@ bool DayTimeDuration::operator==(const DayTimeDuration& dtd) const
       &&
       days == dtd.days
       &&
-      timeDuration == dtd.timeDuration)
+      timeDuration.hours() == dtd.timeDuration.hours()
+      &&
+      timeDuration.minutes() == dtd.timeDuration.minutes()
+      &&
+      timeDuration.seconds() == dtd.timeDuration.seconds()
+     )
     return true;
   else
     return false;
@@ -476,7 +481,7 @@ DurationBase_t DayTimeDuration::operator/(const Double value) const
 
   //TODO Should normalization be part of the constructor?
   DayTimeDuration* dt = new DayTimeDuration(
-      is_negative,
+      (resSeconds < 0)? !is_negative: is_negative ,
       resSeconds / NO_SEC_IN_DAY, //days
       (resSeconds % NO_SEC_IN_DAY) / NO_SEC_IN_HOUR, //hours
       ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) / NO_SECONDS_IN_MINUTE, //minutes
