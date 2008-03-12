@@ -127,14 +127,14 @@ public:
    * @param node2
    * @return 	true if nodes are identical, false otherwise.
    */
-  virtual bool equalNodes(Item* node1, Item* node2) const = 0;
+  virtual bool equalNodes(const Item* node1, const Item* node2) const = 0;
 
   /**
    * Return a hash value based on the id of a given node
    * @param node
    * @return the hash value
    */
-  virtual uint32_t hashNode(Item* node) const = 0;
+  virtual uint32_t hashNode(const Item* node) const = 0;
 
 
   /** Sorts the items of the passed iterator

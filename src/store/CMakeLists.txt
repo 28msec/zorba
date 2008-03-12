@@ -18,7 +18,8 @@ SET(STORE_SRCS
     naive/item_iterator.cpp
     util/handle_hashset_string.cpp
     util/mutex.cpp
-    util/latch.cpp)
+    util/latch.cpp
+    util/handle_hashset_node.cpp)
 
 
 HEADER_GROUP_SUBFOLDER(STORE_SRCS api)

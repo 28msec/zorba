@@ -247,10 +247,87 @@ public:
 //15.3.1 fn:deep-equal
 
 //15.3.2 op:union
+// union concat with sort-based dup elim
+class fn_ordered_union : public function
+{
+public:
+	fn_ordered_union(const signature&);
+	~fn_ordered_union() {}
+
+public:
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+	xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+// union concat with hash-based dup elim
+class fn_unordered_union : public function
+{
+public:
+	fn_unordered_union(const signature&);
+	~fn_unordered_union() {}
+
+public:
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+	xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
 
 //15.3.3 op:intersect
+// intersect; requires two sorted inputs; does duplicate elimination
+class fn_sorted_intersect : public function
+{
+public:
+	fn_sorted_intersect(const signature&);
+	~fn_sorted_intersect() {}
+
+public:
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+	xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+// intersect; doesn't require sorted inputs but does not return the result in document order
+//         also does duplicate elimination
+class fn_hash_intersect: public function
+{
+public:
+	fn_hash_intersect(const signature&);
+	~fn_hash_intersect() {}
+
+public:
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+	xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
 
 //15.3.4 op:except
+// except; requires two sorted inputs; does duplicate elimination
+class fn_sorted_except: public function
+{
+public:
+	fn_sorted_except(const signature&);
+	~fn_sorted_except() {}
+
+public:
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+	xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+// except; doesn't require sorted inputs but does not return the result in document order
+//         also does duplicate elimination
+class fn_hash_except: public function
+{
+public:
+	fn_hash_except(const signature&);
+	~fn_hash_except() {}
+
+public:
+	PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+	xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
 
 
 /*______________________________________________________________________

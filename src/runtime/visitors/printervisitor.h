@@ -256,6 +256,12 @@ public:
   virtual void beginVisit ( const FnDocIterator& ) ;
   virtual void endVisit ( const FnDocIterator& ) ;
 
+  virtual void beginVisit ( const HashSemiJoinIterator& ) ;
+  virtual void endVisit ( const HashSemiJoinIterator& ) ;
+
+  virtual void beginVisit ( const SortSemiJoinIterator& ) ;
+  virtual void endVisit ( const SortSemiJoinIterator& ) ;
+
   virtual void beginVisit ( const FnTraceIterator& ) ;
   virtual void endVisit ( const FnTraceIterator& ) ;
 

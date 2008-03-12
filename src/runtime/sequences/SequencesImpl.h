@@ -193,11 +193,81 @@ NARY_ITER(FnExactlyOneIterator);
 //15.3.1 fn:deep-equal
 
 //15.3.2 op:union
+// do this using concat, dup-elim and sort
+//  in ordered mode: concat, dupelim-sort
+//  in unordered mode:  concat, dupelim-hashbased
 
 //15.3.3 op:intersect
-
 //15.3.4 op:except
 
+namespace store {
+    class NodeHashSet;
+}
+
+class HashSemiJoinIteratorState : public PlanIteratorState {
+public:
+  store::NodeHashSet* theRightInput;
+
+  HashSemiJoinIteratorState();
+  ~HashSemiJoinIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+class HashSemiJoinIterator: public NaryBaseIterator<HashSemiJoinIterator, 
+                                                HashSemiJoinIteratorState>
+{
+
+public:
+  HashSemiJoinIterator(const QueryLoc& loc,
+                   std::vector<PlanIter_t>& args,
+                   bool antijoin = false);
+ 
+  ~HashSemiJoinIterator();
+
+  store::Item_t 
+  nextImpl(PlanState& planState) const;
+ 
+  virtual void 
+  accept(PlanIterVisitor&) const;
+
+protected:
+  bool theAntijoin;
+
+};
+
+class SortSemiJoinIteratorState : public PlanIteratorState {
+public:
+
+  SortSemiJoinIteratorState();
+  ~SortSemiJoinIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+class SortSemiJoinIterator : public NaryBaseIterator<SortSemiJoinIterator, 
+                                                     SortSemiJoinIteratorState>
+{
+
+public:
+  SortSemiJoinIterator(const QueryLoc& loc, std::vector<PlanIter_t>& args);
+ 
+  ~SortSemiJoinIterator();
+
+  store::Item_t 
+  nextImpl(PlanState& planState) const;
+ 
+  virtual void 
+  accept(PlanIterVisitor&) const;
+
+protected:
+  bool theAntijoin;
+
+};
 
   /*______________________________________________________________________
   |

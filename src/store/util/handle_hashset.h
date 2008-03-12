@@ -107,7 +107,7 @@ void clear()
   Return true if the set already contains an item that is "equal" to the given
   item; otherwise return false.
 ********************************************************************************/
-bool find(const T* item) const
+bool find(const T* item)
 {
   SYNC_CODE(AutoMutex lock(theMutex);)
 

@@ -37,7 +37,7 @@ class GlobalEnvironment {
 
 #define GENV_COMPILERSUBSYS GlobalEnvironment::getInstance().getCompilerSubsystem()
 
-#define GENV_STORE GlobalEnvironment::getInstance().getStore();
+#define GENV_STORE GlobalEnvironment::getInstance().getStore()
 
 }
 

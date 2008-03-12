@@ -376,7 +376,7 @@ long SimpleStore::compareNodes(Item* node1, Item* node2) const
 /*******************************************************************************
   Check if two nodes are identical (i.e. have same node id)
 ********************************************************************************/
-bool SimpleStore::equalNodes(Item* node1, Item* node2) const
+bool SimpleStore::equalNodes(const Item* node1, const Item* node2) const
 {
   return node1 == node2;
 }
@@ -385,9 +385,9 @@ bool SimpleStore::equalNodes(Item* node1, Item* node2) const
 /*******************************************************************************
   Return a hash value based on the id of a given node.
 ********************************************************************************/
-uint32_t SimpleStore::hashNode(Item* node) const
+uint32_t SimpleStore::hashNode(const Item* node) const
 {
-  XmlNode* n = reinterpret_cast<XmlNode*>(node);
+  const XmlNode* n = reinterpret_cast<const XmlNode*>(node);
   ulong tid = n->getTree()->getId();
 
   return hashfun::h32((void*)(&tid), sizeof(ulong), n->getOrdPath().hash());

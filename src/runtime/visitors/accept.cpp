@@ -142,6 +142,8 @@ namespace zorba {
   NARY_ACCEPT(UDFunctionCallIterator);
   NARY_ACCEPT(StatelessExtFunctionCallIterator);
   NARY_ACCEPT(FnMinMaxIterator);
+  NARY_ACCEPT(HashSemiJoinIterator);
+  NARY_ACCEPT(SortSemiJoinIterator);
   NARY_ACCEPT(FnStringIterator);
   
   // special iterators

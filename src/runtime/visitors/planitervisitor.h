@@ -90,6 +90,8 @@ namespace zorba
   class FnMinMaxIterator;
   class FnSumIterator;
   class FnDocIterator;
+  class HashSemiJoinIterator;
+  class SortSemiJoinIterator;
   class FnTraceIterator;
   class ResolveQNameIterator;
   class QNameIterator;
@@ -401,6 +403,12 @@ namespace zorba
 
       virtual void beginVisit ( const FnDocIterator& ) = 0;
       virtual void endVisit ( const FnDocIterator& ) = 0;
+
+      virtual void beginVisit ( const HashSemiJoinIterator& ) = 0;
+      virtual void endVisit ( const HashSemiJoinIterator& ) = 0;
+
+      virtual void beginVisit ( const SortSemiJoinIterator& ) = 0;
+      virtual void endVisit ( const SortSemiJoinIterator& ) = 0;
 
       virtual void beginVisit ( const FnTraceIterator& ) = 0;
       virtual void endVisit ( const FnTraceIterator& ) = 0;

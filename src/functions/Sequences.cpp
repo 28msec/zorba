@@ -393,10 +393,148 @@ xqtref_t fn_exactly_one::type_check(
 //15.3.1 fn:deep-equal
 
 //15.3.2 op:union
+//ordered
+fn_ordered_union::fn_ordered_union(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_ordered_union::operator()(
+	const QueryLoc& loc, 
+	vector<PlanIter_t>& argv) const
+{
+ return new NodeSortIterator(loc, new FnConcatIterator(loc, argv), true, true, false);
+}
+
+bool fn_ordered_union::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+
+xqtref_t fn_ordered_union::type_check(
+	signature& /*sig*/) const
+{
+	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
+}
+
+// unordered
+fn_unordered_union::fn_unordered_union(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_unordered_union::operator()(
+	const QueryLoc& loc, 
+	vector<PlanIter_t>& argv) const
+{
+ return new NodeDistinctIterator(loc, new FnConcatIterator(loc, argv), true);
+}
+
+bool fn_unordered_union::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+
+xqtref_t fn_unordered_union::type_check(
+	signature& /*sig*/) const
+{
+	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
+}
+
 
 //15.3.3 op:intersect
+// intersect; requires two sorted inputs; does duplicate elimination
+fn_sorted_intersect::fn_sorted_intersect(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_sorted_intersect::operator()(
+	const QueryLoc& loc, 
+	vector<PlanIter_t>& argv) const
+{
+ return new SortSemiJoinIterator(loc, argv);
+}
+
+bool fn_sorted_intersect::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+
+xqtref_t fn_sorted_intersect::type_check(
+	signature& /*sig*/) const
+{
+	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
+}
+
+// intersect; doesn't require sorted inputs but does not return the result in document order
+//         also does duplicate elimination
+fn_hash_intersect::fn_hash_intersect(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_hash_intersect::operator()(
+	const QueryLoc& loc, 
+	vector<PlanIter_t>& argv) const
+{
+ return new HashSemiJoinIterator(loc, argv);
+}
+
+bool fn_hash_intersect::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+
+xqtref_t fn_hash_intersect::type_check(
+	signature& /*sig*/) const
+{
+	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
+}
 
 //15.3.4 op:except
+// except; requires two sorted inputs; does duplicate elimination
+fn_sorted_except::fn_sorted_except(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_sorted_except::operator()(
+	const QueryLoc& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  assert(false);
+}
+
+bool fn_sorted_except::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+
+xqtref_t fn_sorted_except::type_check(
+	signature& /*sig*/) const
+{
+	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
+}
+
+// except; doesn't require sorted inputs but does not return the result in document order
+//         also does duplicate elimination
+fn_hash_except::fn_hash_except(const signature& sig)
+: function(sig) { }
+
+PlanIter_t fn_hash_except::operator()(
+	const QueryLoc& loc, 
+	vector<PlanIter_t>& argv) const
+{
+ return new HashSemiJoinIterator(loc, argv, true);
+}
+
+bool fn_hash_except::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2);
+}
+
+xqtref_t fn_hash_except::type_check(
+	signature& /*sig*/) const
+{
+	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
+}
 
 
 /*______________________________________________________________________

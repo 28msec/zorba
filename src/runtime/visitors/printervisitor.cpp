@@ -864,6 +864,36 @@ namespace zorba {
     thePrinter.endEndVisit();
   }
 
+  void 
+  PrinterVisitor::beginVisit ( const HashSemiJoinIterator& a) 
+  {
+    thePrinter.startBeginVisit("HashSemiJoinIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+
+  void 
+  PrinterVisitor::endVisit ( const HashSemiJoinIterator& ) 
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void
+  PrinterVisitor::beginVisit ( const SortSemiJoinIterator& a) 
+  {
+    thePrinter.startBeginVisit("SortSemiJoinIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+
+  void 
+  PrinterVisitor::endVisit ( const SortSemiJoinIterator& ) 
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   void PrinterVisitor::beginVisit ( const FnTraceIterator& a ) {
     thePrinter.startBeginVisit("FnTraceIterator", (intptr_t) &a);
     printCommons(  &a );

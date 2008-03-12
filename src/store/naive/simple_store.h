@@ -96,8 +96,8 @@ public:
   void deleteCollection(xqpStringStore* uri);
 
   long compareNodes(Item* node1, Item* node2) const;
-  bool equalNodes(Item* node1, Item* node2) const;
-  uint32_t hashNode(Item* node) const;
+  bool equalNodes(const Item* node1, const Item* node2) const;
+  uint32_t hashNode(const Item* node) const;
 
   Iterator_t sortNodes(
         Iterator* iterator,

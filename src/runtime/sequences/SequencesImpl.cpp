@@ -25,6 +25,8 @@
 
 #include "util/web/web.h"
 #include "store/api/item_factory.h"
+#include "store/util/handle_hashset_node.h"
+
 #include "runtime/booleans/compare_types.h"
 
 using namespace std;
@@ -537,12 +539,108 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) const {
 //15.3.1 fn:deep-equal
 
 //15.3.2 op:union
+// see header file
 
 //15.3.3 op:intersect
-
 //15.3.4 op:except
+HashSemiJoinIteratorState::HashSemiJoinIteratorState() {
+  theRightInput = new store::NodeHashSet();
+}
 
+HashSemiJoinIteratorState::~HashSemiJoinIteratorState() {
+  delete theRightInput;
+  theRightInput = 0;
+}
 
+void
+HashSemiJoinIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void
+HashSemiJoinIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+
+HashSemiJoinIterator::HashSemiJoinIterator(const QueryLoc& loc,
+                                   std::vector<PlanIter_t>& args,
+                                   bool antijoin)
+ : NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState> ( loc, args ),
+   theAntijoin(antijoin)
+{
+}
+
+HashSemiJoinIterator::~HashSemiJoinIterator() {}
+
+store::Item_t 
+HashSemiJoinIterator::nextImpl(PlanState& planState) const {
+  store::Item_t lItem;  
+
+  HashSemiJoinIteratorState* state;
+  DEFAULT_STACK_INIT(HashSemiJoinIteratorState, state, planState);
+
+  // eat the complete right-hand side and has it
+  while ( (lItem = consumeNext(theChildren[1].getp(), planState)) != NULL ) {
+    state->theRightInput->insert(lItem.getp());
+  }
+  
+
+  while ( ( lItem = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
+    if ( state->theRightInput->find(lItem.getp()) && ! theAntijoin ) {
+      STACK_PUSH(lItem, state);
+    }
+  }
+
+  STACK_END();
+}
+
+// sort-merge semi-join
+SortSemiJoinIteratorState::SortSemiJoinIteratorState() {
+}
+
+SortSemiJoinIteratorState::~SortSemiJoinIteratorState() {
+}
+
+void
+SortSemiJoinIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void
+SortSemiJoinIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+
+SortSemiJoinIterator::SortSemiJoinIterator(const QueryLoc& loc,
+                                   std::vector<PlanIter_t>& args)
+ : NaryBaseIterator<SortSemiJoinIterator, SortSemiJoinIteratorState> ( loc, args )
+{
+}
+
+SortSemiJoinIterator::~SortSemiJoinIterator() {}
+
+store::Item_t 
+SortSemiJoinIterator::nextImpl(PlanState& planState) const {
+  store::Item_t lOuter, lInner, lPrev;  
+
+  SortSemiJoinIteratorState* state;
+  DEFAULT_STACK_INIT(SortSemiJoinIteratorState, state, planState);
+
+  
+  while ((lOuter = consumeNext(theChildren[0].getp(), planState)) != NULL ) {
+
+    // continue on the inner as long as the other is greater
+    while  (((lInner = consumeNext(theChildren[1].getp(), planState)) != NULL ) && 
+             GENV_STORE.compareNodes(lOuter.getp(), lInner.getp()) < 0) { }
+
+    // do we have a match
+    if (GENV_STORE.equalNodes(lOuter.getp(), lInner.getp())) {
+      STACK_PUSH(lOuter, state);
+    }
+  }
+
+  STACK_END();
+}
 /*______________________________________________________________________
 |
 | 15.4 Aggregate Functions
