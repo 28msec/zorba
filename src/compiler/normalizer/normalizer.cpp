@@ -69,9 +69,9 @@ bool normalizer::begin_visit(flwor_expr& node)
     flwor_expr::forletref_t clause = node [i];
     xqtref_t vartype = clause->get_var ()->get_type ();
     if (vartype != NULL) {
-      xqtref_t promote_type = GENV_TYPESYSTEM.create_type (*vartype, clause->get_type () == forlet_clause::for_clause ? TypeConstants::QUANT_STAR : TypeConstants::QUANT_ONE);
+      xqtref_t promote_type = clause->get_type () == forlet_clause::for_clause ? GENV_TYPESYSTEM.create_type (*vartype, TypeConstants::QUANT_STAR) : vartype;
       expr_t e = clause->get_expr ();
-      clause->set_expr (new promote_expr (e->get_loc (), e, promote_type));
+      clause->set_expr (new treat_expr (e->get_loc (), e, promote_type, ZorbaError::XPTY0004));
     }
   }
   return true;
