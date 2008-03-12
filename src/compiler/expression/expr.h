@@ -230,6 +230,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   virtual expr_t clone(substitution_t& substitution);
+  virtual xqtref_t return_type (static_context *);
 };
 
 
@@ -398,6 +399,7 @@ public:
   std::ostream& put(std::ostream&) const;
 
   virtual expr_t clone(substitution_t& substitution);
+  xqtref_t return_type (static_context *sctx);
 };
 
 class catch_clause : public SimpleRCObject {
@@ -504,6 +506,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+
+  xqtref_t return_type (static_context *sctx);
 };
 
 
@@ -617,6 +621,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
+  xqtref_t return_type (static_context *sctx);
 };
 
 class signature;
@@ -777,6 +782,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
+  xqtref_t return_type (static_context *sctx);
 };
 
 
@@ -812,6 +818,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+
+  xqtref_t return_type (static_context *);
 };
 
 
@@ -845,6 +853,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
+  xqtref_t return_type (static_context *);
 };
 
 
@@ -878,6 +887,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
+  xqtref_t return_type (static_context *);
 };
 
 
@@ -1214,6 +1224,7 @@ public:
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
+  virtual xqtref_t return_type(static_context *sctx);
 };
 
 

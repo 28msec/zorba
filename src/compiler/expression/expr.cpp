@@ -368,6 +368,11 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
   return flwor_copy;
 }
 
+  xqtref_t flwor_expr::return_type (static_context *sctx) {
+    // TODO: quant multiplication
+    return sctx->get_typemanager ()->create_type (*retval_h->return_type (sctx), TypeConstants::QUANT_STAR);
+  }
+
 catch_clause::catch_clause()
   : nametest_h(NULL),
   var_h(NULL),
@@ -466,6 +471,9 @@ void if_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
+  xqtref_t if_expr::return_type (static_context *sctx) {
+    return sctx->get_typemanager ()->union_type (*then_expr_h->return_type (sctx), *else_expr_h->return_type (sctx));
+  }
 
 ////////////////////////////////
 //  first-order expressions
@@ -1035,6 +1043,23 @@ function_def_expr::function_def_expr (const QueryLoc& loc, store::Item_t name_, 
   sig = auto_ptr<signature> (new signature (get_name (), args, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
 
+xqtref_t castable_expr::return_type (static_context *sctx) {
+  return sctx->get_typemanager ()->create_atomic_type (TypeConstants::XS_BOOLEAN, TypeConstants::QUANT_ONE);
+}
+
+xqtref_t instanceof_expr::return_type (static_context *sctx) {
+  return sctx->get_typemanager ()->create_atomic_type (TypeConstants::XS_BOOLEAN, TypeConstants::QUANT_ONE);
+}
+
+xqtref_t cast_expr::return_type (static_context *sctx) { return type; }
+xqtref_t treat_expr::return_type (static_context *sctx) { return type; }
+xqtref_t promote_expr::return_type (static_context *sctx) { return target_type; }
+
+xqtref_t order_expr::return_type(static_context *sctx) { return expr_h->return_type (sctx); }
+
+xqtref_t var_expr::return_type(static_context *sctx) {
+  return type == NULL ? GENV_TYPESYSTEM.ITEM_TYPE_STAR : type;
+}
 
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */
