@@ -487,7 +487,7 @@ namespace zorba {
   }
 
   void PrinterVisitor::beginVisit ( const TreatIterator& a ) {
-    thePrinter.startBeginVisit("InstanceOfIterator", (intptr_t) &a);
+    thePrinter.startBeginVisit("TreatIterator", (intptr_t) &a);
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
