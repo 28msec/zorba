@@ -1,0 +1,2 @@
+#!/bin/sh
+perl -ne 'if (m#^Error:.*XPST0017.*context (.* / [0-9]+)$#) { print "$1\n" }'  $1 | sort | uniq -c | sort -rn
