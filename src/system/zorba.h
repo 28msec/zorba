@@ -80,14 +80,15 @@ public:
 //	QueryLoc& GetCurrentLocation();//from top iterator
 	
 	void setDefaultCollation(
-        std::string  coll_string,
-        ::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY);
+        std::string  coll_string
+        //::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY
+        );
 
 	void setDefaultCollation(::Collator *default_coll);
 
 	void getDefaultCollation(
         std::string  *coll_string,
-        ::Collator::ECollationStrength *coll_strength,
+        //::Collator::ECollationStrength *coll_strength,
         ::Collator **default_coll);
 
 	static_context* get_static_context();///of the current xquery

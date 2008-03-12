@@ -1,7 +1,7 @@
 #ifndef ZORBA_STATIC_CONTEXT_H
 #define ZORBA_STATIC_CONTEXT_H
 
-#include <zorba/common/libicu.h>
+//#include <zorba/common/libicu.h>
 #include <zorba/typeident.h>
 #include <zorba/common/api_shared_types.h>
 #include <zorba/static_context_consts.h>
@@ -15,7 +15,7 @@ namespace zorba {
   {
     xqp_string    URI;
     std::string   coll_string;
-    ::Collator::ECollationStrength  coll_strength;
+    //::Collator::ECollationStrength  coll_strength;
     ::Collator    *coll;
 
   }CollationInfo;
@@ -99,7 +99,9 @@ namespace zorba {
       ///here some api for external functions
 
       virtual void   
-      addCollation( xqp_string URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY) = 0;
+      addCollation( xqp_string URI, std::string  coll_string
+                    //::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY
+                    ) = 0;
 
       virtual void   
       addCollation( xqp_string URI, ::Collator *user_coll ) = 0;

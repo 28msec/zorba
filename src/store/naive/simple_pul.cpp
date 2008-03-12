@@ -41,7 +41,7 @@ void PULImpl::addDelete(Item* target)
 
     for (ulong i = 0; i < numUpdates; i++)
     {
-      if ((*updatesp)[i]->getKind() == UpdateConsts::DELETE)
+      if ((*updatesp)[i]->getKind() == UpdateConsts::PUL_DELETE)
         return;
     }
 

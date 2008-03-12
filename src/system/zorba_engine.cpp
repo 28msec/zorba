@@ -385,12 +385,13 @@ ZorbaAlertsManager_t ZorbaEngineImpl::getAlertsManagerForCurrentThread()
 
 
 void ZorbaEngineImpl::setDefaultCollation(
-    std::string  coll_string,
-    ::Collator::ECollationStrength coll_strength)
+    std::string  coll_string
+    //::Collator::ECollationStrength coll_strength
+    )
 {
 	try{
 
-	getZorbaForCurrentThread()->setDefaultCollation(coll_string, coll_strength);
+	getZorbaForCurrentThread()->setDefaultCollation(coll_string);//, coll_strength);
 	}CATCH_ALL_NO_RETURN(;);
 }
 
@@ -405,12 +406,14 @@ void ZorbaEngineImpl::setDefaultCollation(::Collator *default_coll)
 
 void ZorbaEngineImpl::getDefaultCollation(
     std::string  *coll_string,
-    ::Collator::ECollationStrength *coll_strength,
+    //::Collator::ECollationStrength *coll_strength,
     ::Collator **default_coll)
 {
 	try{
 	getZorbaForCurrentThread()->
-    getDefaultCollation(coll_string, coll_strength, default_coll);
+    getDefaultCollation(coll_string, 
+                        //coll_strength, 
+                        default_coll);
 	}CATCH_ALL_NO_RETURN(;);
 }
 

@@ -31,25 +31,28 @@ CollationManager::~CollationManager()
 	}
 }
 
-std::string
-CollationManager::computeKey(std::string  coll_string,
+const char*
+CollationManager::computeKey(const char*  coll_string,
 														::Collator::ECollationStrength coll_strength)
 {
-	std::ostringstream		oss;
-
-	oss << coll_string << ":" << (int)coll_strength;
-	return oss.str();
+//	std::ostringstream		oss;
+//
+//	oss << coll_string << ":" << (int)coll_strength;
+//	return oss.str();
+  sprintf(tempkey, "%s:%d", coll_string, coll_strength);
+  return tempkey;
 }
 
 ::Collator*
-CollationManager::getCollation(std::string  coll_string,
+CollationManager::getCollation(const char*  coll_string,
 															::Collator::ECollationStrength coll_strength)
 {
-	std::string		key;
+	//std::string		key;
+  const char *key;
 	std::map<std::string, COLL_ELEM*>::iterator		it;
 
 	key = computeKey(coll_string, coll_strength);
-	it = coll_map.find(key);
+	it = coll_map.find((std::string)key);
 	if(it != coll_map.end())
 	{
 		it->second->refcount++;
@@ -68,7 +71,7 @@ CollationManager::getCollation(std::string  coll_string,
 	//NOTE For default: By passing "root" as a locale parameter the root locale is used.
 	//Root locale implements the UCA rules
 	//(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-	coll_elem->coll = ::Collator::createInstance(Locale(coll_string.c_str()), status);
+	coll_elem->coll = ::Collator::createInstance(Locale(coll_string), status);
 
 	if(U_FAILURE(status)) 
 	{
@@ -91,19 +94,19 @@ CollationManager::getCollation(std::string  coll_string,
   
 	coll_elem->refcount++;
 	
-	coll_map[key] = coll_elem;
+  coll_map[(std::string)key] = coll_elem;
 	return coll_elem->coll;
 }
 
 void
-CollationManager::removeReference(std::string  coll_string,
+CollationManager::removeReference(const char*  coll_string,
 																::Collator::ECollationStrength coll_strength)
 {
-	std::string		key;
+	const char*		key;
 	std::map<std::string, COLL_ELEM*>::iterator		it;
 
 	key = computeKey(coll_string, coll_strength);
-	it = coll_map.find(key);
+	it = coll_map.find((std::string)key);
 	if(it == coll_map.end())
 	{
 		return;//it does not exist anyway
@@ -119,13 +122,13 @@ CollationManager::removeReference(std::string  coll_string,
 
 
 const CollationManager::COLLATION_DESCR*
-CollationManager::getHardcodedCollator(std::string URI)
+CollationManager::getHardcodedCollator(const char* URI)
 {
 	////blind search
-	if(URI.empty())
+	if(!URI || !URI[0])
 		return NULL;
 	for(unsigned int i=0;i<sizeof(default_collations)/sizeof(COLLATION_DESCR);i++)
-		if(URI == default_collations[i].coll_uri)
+		if(!strcmp(URI, default_collations[i].coll_uri))
 			return &default_collations[i];
 	return NULL;
 }

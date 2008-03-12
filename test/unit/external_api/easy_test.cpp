@@ -49,7 +49,7 @@ int test_easy_api(const char *result_file_name)
 	}
 	else
 	{
-		result_file << "query_sctx->GetCollation(\"http://www.flworfound.org/apitest/coll1\") success " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (unsigned)colinfo->coll << endl;
+		result_file << "query_sctx->GetCollation(\"http://www.flworfound.org/apitest/coll1\") success " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " /*<< colinfo->coll_strength*/ << " " << (unsigned)colinfo->coll << endl;
 	}
 
 	result_file << "zorba_factory->createQuery()" << endl;

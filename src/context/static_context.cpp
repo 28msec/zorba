@@ -100,7 +100,7 @@ static_context::static_context()
 				{
 					if(z)
 					{
-						z->coll_manager->removeReference(val->collationValue->coll_string, val->collationValue->coll_strength);
+						z->coll_manager->removeReference(val->collationValue->coll_string.c_str(), val->collationValue->coll_strength);
 					}
           delete val->collationValue;
 				}
@@ -324,7 +324,7 @@ xqtref_t static_context::get_collection_type(
 
 void static_context::add_collation(xqp_string collation_uri, 
 										std::string  coll_string, 
-										::Collator::ECollationStrength coll_strength,
+										//::Collator::ECollationStrength coll_strength,
 										::Collator *coll,
 										bool is_user_created)
 {
@@ -333,7 +333,7 @@ void static_context::add_collation(xqp_string collation_uri,
 	cobj = new COLLATION_OBJ;
 	cobj->coll_uri = collation_uri;
 	cobj->coll_string = coll_string;
-	cobj->coll_strength = coll_strength;
+//	cobj->coll_strength = coll_strength;
 	cobj->is_user_created = is_user_created;
 	cobj->coll = coll;
 
@@ -349,7 +349,7 @@ xqp_string static_context::default_collation_uri() const
 
 void static_context::set_default_collation_uri(xqp_string def_uri)
 {
-	if(!CollationManager::getHardcodedCollator(def_uri) &&
+	if(!CollationManager::getHardcodedCollator(def_uri.c_str()) &&
 		!lookup_collation(def_uri))
 	{
 		ZORBA_ERROR_ALERT(ZorbaError::XQST0038);
@@ -389,7 +389,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 	{
 		const CollationManager::COLLATION_DESCR	*def_coll;
 
-		def_coll = CollationManager::getHardcodedCollator(collURI);
+		def_coll = CollationManager::getHardcodedCollator(collURI.c_str());
 		if(!def_coll)
 		{
 			if(error_if_not_found)
@@ -420,7 +420,7 @@ void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ
 	}
 	else if(!cinfo->coll)
 	{
-		cinfo->coll = ZORBA_FOR_CURRENT_THREAD()->coll_manager->getCollation(cinfo->coll_string, cinfo->coll_strength);
+		cinfo->coll = ZORBA_FOR_CURRENT_THREAD()->coll_manager->getCollation(cinfo->coll_string.c_str(), cinfo->coll_strength);
 		if(!cinfo->coll)
 		{
 		//	ZORBA_ERROR_ALERT(

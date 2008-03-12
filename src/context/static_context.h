@@ -182,7 +182,7 @@ public:
 	::Collator*	get_collation(xqp_string collation_uri, bool error_if_not_found = true);
 	void add_collation(xqp_string collation_uri, 
 										std::string  coll_string, 
-										::Collator::ECollationStrength coll_strength,
+										//::Collator::ECollationStrength coll_strength,
 										::Collator *coll,
 										bool is_user_created);
 	::Collator *getDefaultCollation();

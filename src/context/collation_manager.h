@@ -30,19 +30,20 @@ private:
 		::Collator		*coll;
 	}COLL_ELEM;
 
+  char  tempkey[200];
 	std::map<std::string, COLL_ELEM*>		coll_map;
 
 private:
-	std::string		computeKey(std::string  coll_string,
+	const char*		computeKey(const char*  coll_string,
 													::Collator::ECollationStrength coll_strength);
 public:
 	~CollationManager();
 
-	::Collator		*getCollation(std::string  coll_string,
+	::Collator		*getCollation(const char*  coll_string,
 														::Collator::ECollationStrength coll_strength);
-	void					removeReference(std::string  coll_string,
+	void					removeReference(const char*  coll_string,
 															::Collator::ECollationStrength coll_strength);
-	static const COLLATION_DESCR* getHardcodedCollator(std::string URI);
+	static const COLLATION_DESCR* getHardcodedCollator(const char* URI);
 };
 
 

@@ -50,7 +50,7 @@ Zorba::~Zorba()
 	delete m_item_serializer;
 	delete m_doc_serializer;
 	if(!is_user_set_coll)
-		coll_manager->removeReference(default_coll_string, default_coll_strength);
+		coll_manager->removeReference(default_coll_string.c_str(), default_coll_strength);
 	delete coll_manager;
 
 }
@@ -59,13 +59,14 @@ Zorba::~Zorba()
 ///some common functions for TLS
 
 void Zorba::setDefaultCollation(
-    std::string coll_string,
-    ::Collator::ECollationStrength coll_strength)
+    std::string coll_string
+    //::Collator::ECollationStrength coll_strength
+    )
 {
 	if(!is_user_set_coll)
-		coll_manager->removeReference(default_coll_string, default_coll_strength);
+		coll_manager->removeReference(default_coll_string.c_str(), default_coll_strength);
 	default_coll_string = coll_string;
-	default_coll_strength = coll_strength;
+//	default_coll_strength = coll_strength;
 	is_user_set_coll = false;
 	this->default_coll = NULL;
 }
@@ -73,7 +74,7 @@ void Zorba::setDefaultCollation(
 void Zorba::setDefaultCollation(::Collator *default_coll)
 {
 	if(!is_user_set_coll)
-		coll_manager->removeReference(default_coll_string, default_coll_strength);
+		coll_manager->removeReference(default_coll_string.c_str(), default_coll_strength);
 	is_user_set_coll = true;
 	this->default_coll = default_coll;
 }
@@ -81,11 +82,11 @@ void Zorba::setDefaultCollation(::Collator *default_coll)
 
 void Zorba::getDefaultCollation(
     std::string  *coll_string,
-    ::Collator::ECollationStrength *coll_strength,
+    //::Collator::ECollationStrength *coll_strength,
     ::Collator **default_coll)
 {
 	*coll_string = default_coll_string;
-	*coll_strength = default_coll_strength;
+	//*coll_strength = default_coll_strength;
 	*default_coll = this->default_coll;
 }
 
@@ -98,7 +99,7 @@ void Zorba::getDefaultCollation(
 		if(!collURI.empty())
 		{
 			const CollationManager::COLLATION_DESCR		*coll_descr;
-			coll_descr = CollationManager::getHardcodedCollator(collURI);
+			coll_descr = CollationManager::getHardcodedCollator(collURI.c_str());
 			if(!coll_descr)
 			{
 				ZORBA_ERROR_ALERT(ZorbaError::FOCH0002);//unsupported collation
@@ -116,7 +117,7 @@ void Zorba::getDefaultCollation(
 		{
 			if(default_coll)
 				return default_coll;
-			default_coll = coll_manager->getCollation(default_coll_string, default_coll_strength);
+			default_coll = coll_manager->getCollation(default_coll_string.c_str(), default_coll_strength);
 			if(!default_coll)
 			{
 				ZORBA_ERROR_ALERT(ZorbaError::FOCH0002);//unsupported collation

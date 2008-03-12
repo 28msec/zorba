@@ -293,7 +293,9 @@ type_ident_ref_t		StaticContextWrapper::getContextItemStaticType( )
 	// virtual void AddExternalFunction( QNameItem_t func_name, extern_func *cpp_func, TypeIdentifier *type_of_result, ...);//and the types of parameters
 	// virtual void	DeleteAllExternalFunctions();
 
-void		StaticContextWrapper::addCollation( xqp_string URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength )
+void		StaticContextWrapper::addCollation( xqp_string URI, std::string  coll_string
+                                           //, ::Collator::ECollationStrength coll_strength 
+                                           )
 {
 	try{
 
@@ -302,7 +304,7 @@ void		StaticContextWrapper::addCollation( xqp_string URI, std::string  coll_stri
 
 	cinfo.URI = URI;
 	cinfo.coll_string = coll_string;
-	cinfo.coll_strength = coll_strength;
+//	cinfo.coll_strength = coll_strength;
 	cinfo.coll = NULL;
 	collation_list.push_back(cinfo);
 
@@ -769,7 +771,7 @@ static_context*		StaticContextWrapper::fillInStaticContext()
 		{
 			sctx->add_collation(cinfo->URI, 
 													cinfo->coll_string, 
-													cinfo->coll_strength, 
+													//cinfo->coll_strength, 
 													cinfo->coll,
 													false);///is user created
 		}

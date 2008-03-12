@@ -97,7 +97,9 @@ public:
 	// virtual void AddExternalFunction( xqp_string func_name, extern_func *cpp_func, TypeIdentifier *type_of_result, ...);//and the types of parameters
 	// virtual void	DeleteAllExternalFunctions();
 
-  virtual void		addCollation( xqp_string URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY);//if URI is empty then it sets the default collation
+  virtual void		addCollation( xqp_string URI, std::string  coll_string
+                              //, ::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY
+                              );//if URI is empty then it sets the default collation
 	virtual void		addCollation( xqp_string URI, ::Collator *user_coll );
 	virtual CollationInfo*		getCollation( xqp_string URI);//if URI is empty then it sets the default collation
 	virtual void		deleteCollation( xqp_string URI);//if URI is empty then it sets the default collation

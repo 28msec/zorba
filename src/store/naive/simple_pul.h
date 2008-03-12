@@ -109,7 +109,7 @@ class DeletePrimitive : public UpdatePrimitive
 public:
   DeletePrimitive(XmlNode* target) : UpdatePrimitive(target) { }
 
-  UpdateConsts::UpdateKind getKind() { return UpdateConsts::DELETE; }
+  UpdateConsts::UpdateKind getKind() { return UpdateConsts::PUL_DELETE; }
 
   void apply();
 };

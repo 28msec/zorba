@@ -101,14 +101,15 @@ public:
 	ZorbaAlertsManager_t getAlertsManagerForCurrentThread();
 
 	void setDefaultCollation(
-        std::string coll_string,
-        ::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY);
+        std::string coll_string
+        //::Collator::ECollationStrength coll_strength = ::Collator::TERTIARY
+        );
 
 	void setDefaultCollation(::Collator *default_coll);
 
 	void getDefaultCollation(
         std::string* coll_string,
-        ::Collator::ECollationStrength* coll_strength,
+        //::Collator::ECollationStrength* coll_strength,
         ::Collator** default_coll);
 
 	void setItemSerializerParameter(xqp_string parameter_name, xqp_string value);

@@ -46,11 +46,13 @@ int test_api_zorba_engine(const char *result_file_name)
 
 	zorba_factory->setDefaultCollation("en");
 	std::string	def_coll_str;
-	::Collator::ECollationStrength def_coll_strength;
+	//::Collator::ECollationStrength def_coll_strength;
 	::Collator *default_coll;
-	zorba_factory->getDefaultCollation(&def_coll_str, &def_coll_strength, &default_coll);
+	zorba_factory->getDefaultCollation(&def_coll_str, 
+                                    //&def_coll_strength, 
+                                    &default_coll);
 	assert(default_coll == NULL);
-	result_file << "zorba engine default collation" << def_coll_str << "," << def_coll_strength << "," << endl;
+	result_file << "zorba engine default collation" << def_coll_str /*<< "," << def_coll_strength << ","*/ << endl;
 
 
   XQuery_t    query;
@@ -79,7 +81,7 @@ int test_api_zorba_engine(const char *result_file_name)
 	}
 	else
 	{
-		result_file << "query_sctx->GetCollation(\"http://www.flworfound.org/apitest/coll1\") success " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " << colinfo->coll_strength << " " << (uint32_t)colinfo->coll << endl;
+		result_file << "query_sctx->GetCollation(\"http://www.flworfound.org/apitest/coll1\") success " << (std::string)colinfo->URI << " " << colinfo->coll_string << " " /*<< colinfo->coll_strength*/ << " " << (uint32_t)colinfo->coll << endl;
 	}
 	
 
