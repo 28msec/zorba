@@ -44,6 +44,7 @@ public:
 	void set_rename(bool b) { rename_bit = b; }
 	bool rename() const { return rename_bit; }
 
+
 	/**
 	**	Deal with operator overloading for ft
 	*/

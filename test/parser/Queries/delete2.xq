@@ -1,0 +1,1 @@
+delete nodes (<a/>,<b/>)

@@ -683,13 +683,6 @@ typedef zorba::xquery_parser::token token;
 }
 
 
-  /* transition to ITEMTYPE */
-  /* ---------------------- */
-")"{S}"as"/{WordBreak} {
-  BEGIN MODE_ITEMTYPE;
-  return token::RPAR_AS;
-}
-
 
   /* transition to XML_COMMENT */
   /* ------------------------- */
@@ -841,14 +834,6 @@ typedef zorba::xquery_parser::token token;
 "into"/{WordBreak} {
   BEGIN INITIAL;
   return token::INTO;
-}
-"first"{SP}"into"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::FIRST_INTO;
-}
-"last"{SP}"into"/{WordBreak} {
-  BEGIN INITIAL;
-  return token::LAST_INTO;
 }
 "after"/{WordBreak} {
   BEGIN INITIAL;
@@ -1432,11 +1417,6 @@ typedef zorba::xquery_parser::token token;
   }
   return token::AS;
 }
-")"{S}"as"{SP} {
-  BEGIN MODE_ITEMTYPE;
-  return token::RPAR_AS;
-}
-
 
   /* transition to VARNAME */
   /* --------------------- */
@@ -1975,6 +1955,16 @@ typedef zorba::xquery_parser::token token;
 
 <MODE_ITEMTYPE>{
 
+"first"{SP}"into"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::FIRST_INTO;
+}
+"last"{SP}"into"/{WordBreak} {
+  BEGIN INITIAL;
+  return token::LAST_INTO;
+}
+
+
   /* transition to VARNAME */
   /* --------------------- */
 "$" {
@@ -2298,13 +2288,14 @@ typedef zorba::xquery_parser::token token;
   return token::CASE;
 }
 
+")" {
+  return token::RPAR;
+}
+
 "as"/{WordBreak} {
   return token::AS;
 }
 
-")"{S}"as"/{WordBreak} {
-  return token::RPAR_AS;
-}
 
 {QName} {
   yylval->sval = getDriver()->symtab.put_qname(yytext, yyleng);

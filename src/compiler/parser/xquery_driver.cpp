@@ -36,7 +36,7 @@ xquery_driver::xquery_driver(uint32_t initial_heapsize)
 
 bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 {
-    theFilename = aFilename;
+  theFilename = aFilename;
 
     xquery_scanner scanner(this, &in);
     scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
@@ -49,14 +49,14 @@ bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 
 bool xquery_driver::parse_file(const xqpString& aFilename)
 {
-    std::ifstream in(aFilename.c_str());
-    return parse_stream(in, aFilename);
+  std::ifstream in(aFilename.c_str());
+  return parse_stream(in, aFilename);
 }
 
 bool xquery_driver::parse_string(const xqpString& input)
 {
-    std::istringstream iss(input);
-    return parse_stream(iss);
+  std::istringstream iss(input);
+  return parse_stream(iss);
 }
 
 void xquery_driver::error(

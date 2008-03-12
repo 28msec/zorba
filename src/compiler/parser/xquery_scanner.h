@@ -15,14 +15,14 @@
 #endif
 
 #ifndef __FLEX_LEXER_H
-#undef yyFlexLexer
-#define yyFlexLexer ZorbaFlexLexer
+# undef yyFlexLexer
+# define yyFlexLexer ZorbaFlexLexer
 
-#if defined(HAVE_FLEXLEXER_H) && defined(FLEX_FILES_REGENERATED)
-#include <FlexLexer.h>
-#else
-#include "compiler/parser/FlexLexer.h"
-#endif
+# if defined(HAVE_FLEXLEXER_H) && defined(FLEX_FILES_REGENERATED)
+#   include <FlexLexer.h>
+# else
+#   include "compiler/parser/FlexLexer.h"
+#  endif
 #endif
 
 #include "compiler/parser/xquery_parser.hpp"
