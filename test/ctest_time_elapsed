@@ -1,0 +1,2 @@
+#!/bin/sh
+grep "time elapsed" | perl -ne 'if (m#"(.*)" time elapsed: ([0-9:]+)#) { print "$2 $1\n"}' | sort -n
