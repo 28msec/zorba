@@ -72,8 +72,8 @@ public:
 class StoreNodeDistinctIterator : public Iterator
 {
 protected:
-  Iterator_t   theInput;
-  ItemHashSet  theNodeSet;
+  Iterator_t         theInput;
+  ItemHandleHashSet  theNodeSet;
 
 public:
   StoreNodeDistinctIterator(Iterator* input) : theInput(input) { }

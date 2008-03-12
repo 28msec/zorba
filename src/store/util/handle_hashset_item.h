@@ -13,7 +13,7 @@ namespace zorba { namespace store {
   A hash-based set container of item rchandles, where equality is based on
   object identity (i.e. pointer equality) rather than object value.
 ********************************************************************************/
-class ItemHashSet : public HandleSet<Item, ItemHashSet>
+class ItemHandleHashSet : public HandleSet<Item, ItemHandleHashSet>
 {
 public:
 
@@ -28,7 +28,7 @@ public:
   }
 
 public:
-  ItemHashSet(ulong size = 1024) : HandleSet<Item, ItemHashSet>(size) {}
+  ItemHandleHashSet(ulong size = 1024) : HandleSet<Item, ItemHandleHashSet>(size) {}
 };
 
 } // namespace store

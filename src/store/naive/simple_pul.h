@@ -1,5 +1,5 @@
-#ifndef ZORBA_SIMPLE_STORE_PUL_H
-#define ZORBA_SIMPLE_STORE_PUL_H
+#ifndef ZORBA_SIMPLE_STORE_PUL
+#define ZORBA_SIMPLE_STORE_PUL
 
 #include <vector>
 
@@ -62,15 +62,19 @@ protected:
 
   NodeToUpdatesMap                theNodeToUpdatesMap;
 
-  ItemHashSet                     theTreeRoots;
+  ItemHandleHashSet               theTreeRoots;
 
 public:
+  void addReplaceContent(Item* target, Item* newChild);
   void addRename(Item* node, Item* newName);
   void addDelete(Item* n);
 
-  void apply();
+  void applyUpdates();
 
-  void merge(const PUL& other);
+  void mergeUpdates(const PUL& other);
+
+protected:
+  void verify();
 };
 
 
@@ -79,15 +83,19 @@ public:
 ********************************************************************************/
 class UpdatePrimitive
 {
+  friend class PULImpl;
+
 protected:
   XmlNode    * theTarget;
 
 public:
-  UpdatePrimitive(XmlNode* n) : theTarget(n) { }
+  UpdatePrimitive(XmlNode* target) : theTarget(target) { }
 
   virtual ~UpdatePrimitive() { }
 
-  virtual PUL::UpdateKind getKind() = 0;
+  virtual UpdateConsts::UpdateKind getKind() = 0;
+
+  virtual void apply() = 0;
 };
 
 
@@ -96,10 +104,39 @@ public:
 ********************************************************************************/
 class DeletePrimitive : public UpdatePrimitive
 {
-public:
-  DeletePrimitive(XmlNode* n) : UpdatePrimitive(n) { }
+  friend class PULImpl;
 
-  PUL::UpdateKind getKind() { return PUL::DELETE; }
+public:
+  DeletePrimitive(XmlNode* target) : UpdatePrimitive(target) { }
+
+  UpdateConsts::UpdateKind getKind() { return UpdateConsts::DELETE; }
+
+  void apply();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class ReplaceContentPrimitive : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  XmlNode                * theNewChild;
+  std::vector<XmlNode*>    theOldChildren;
+
+public:
+  ReplaceContentPrimitive(XmlNode* target, XmlNode* newChild)
+    :
+    UpdatePrimitive(target),
+    theNewChild(newChild)
+  {
+  }
+
+  UpdateConsts::UpdateKind getKind() { return UpdateConsts::REPLACE_CONTENT; }
+
+  void apply();
 };
 
 
@@ -108,19 +145,23 @@ public:
 ********************************************************************************/
 class RenamePrimitive : public UpdatePrimitive
 {
+  friend class PULImpl;
+
 protected:
   QNameItemImpl   * theNewName;
   Item_t            theOldName;
 
 public:
-  RenamePrimitive(XmlNode* n, QNameItemImpl* name)
+  RenamePrimitive(XmlNode* target, QNameItemImpl* name)
     :
-    UpdatePrimitive(n),
+    UpdatePrimitive(target),
     theNewName(name)
   {
   }
 
-  PUL::UpdateKind getKind() { return PUL::RENAME; }
+  UpdateConsts::UpdateKind getKind() { return UpdateConsts::RENAME; }
+
+  void apply();
 };
 
 
