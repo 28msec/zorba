@@ -19,10 +19,11 @@ namespace zorba {
 RULE(EchoNodeRule);
 
 // Node id rules
-RULE(MarkNodesWithNodeIdPropertiesRule);
-RULE(EliminateDocOrderSortRule);
+RULE(MarkNodesWithNodeIdProperties);
+RULE(EliminateDocOrderSort);
 RULE(EliminateTypeEnforcingOperations);
 RULE(EliminateUnusedLetVars);
+RULE(EliminateExtraneousPathSteps);
 
 #undef RULE
 

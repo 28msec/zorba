@@ -27,6 +27,12 @@ class RuleMajorDriver : public Rewriter {
     expr_t rewriteRec(RewriterContext& rCtx, RewriteRule *rule, expr *parent, bool& modified);
 };
 
+template <class R>
+class SingletonRuleMajorDriver : public RuleMajorDriver {
+  public:
+    SingletonRuleMajorDriver() { m_rules.push_back(rule_ptr_t(new R())); }
+};
+
 }
 
 #endif /* ZORBA_RULE_DRIVER_H */

@@ -4,7 +4,7 @@
 
 namespace zorba {
 
-RULE_REWRITE_PRE(MarkNodesWithNodeIdPropertiesRule)
+RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
 {
   fo_expr *fo = dynamic_cast<fo_expr *>(node);
   if (fo != NULL) {
@@ -18,7 +18,7 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdPropertiesRule)
   return NULL;
 }
 
-RULE_REWRITE_POST(MarkNodesWithNodeIdPropertiesRule)
+RULE_REWRITE_POST(MarkNodesWithNodeIdProperties)
 {
   return NULL;
 }
@@ -30,7 +30,7 @@ static bool can_remove_sort_distinct(const fo_expr *fo)
   return dnnr != NULL && (*dnnr) == "true" && snnr != NULL && (*snnr) == "true";
 }
 
-RULE_REWRITE_PRE(EliminateDocOrderSortRule)
+RULE_REWRITE_PRE(EliminateDocOrderSort)
 {
   fo_expr *fo = dynamic_cast<fo_expr *>(node);
   if (fo != NULL) {
@@ -43,7 +43,7 @@ RULE_REWRITE_PRE(EliminateDocOrderSortRule)
   return NULL;
 }
 
-RULE_REWRITE_POST(EliminateDocOrderSortRule)
+RULE_REWRITE_POST(EliminateDocOrderSort)
 {
   return NULL;
 }

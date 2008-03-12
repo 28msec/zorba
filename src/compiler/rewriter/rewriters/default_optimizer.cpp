@@ -4,53 +4,15 @@
 
 namespace zorba {
 
-class TestRuleDriver : public RuleMajorDriver {
-  public:
-    TestRuleDriver()
-    {
-      m_rules.push_back(rule_ptr_t(new EchoNodeRule()));
-    }
-};
-
-class NodeidMarkingRuleDriver : public RuleMajorDriver {
-  public:
-    NodeidMarkingRuleDriver()
-    {
-      m_rules.push_back(rule_ptr_t(new MarkNodesWithNodeIdPropertiesRule()));
-    }
-};
-
-class NodeidRuleDriver : public RuleMajorDriver {
-  public:
-    NodeidRuleDriver()
-    {
-      m_rules.push_back(rule_ptr_t(new EliminateDocOrderSortRule()));
-    }
-};
-
-class EliminateTypeEnforcingOperationsRuleDriver : public RuleMajorDriver {
-  public:
-    EliminateTypeEnforcingOperationsRuleDriver()
-    {
-      m_rules.push_back(rule_ptr_t(new EliminateTypeEnforcingOperations()));
-    }
-};
-
-class EliminateUnusedLetVarsRuleDriver : public RuleMajorDriver {
-  public:
-    EliminateUnusedLetVarsRuleDriver()
-    {
-      m_rules.push_back(rule_ptr_t(new EliminateUnusedLetVars()));
-    }
-};
+#define ADD_SINGLETON_DRIVER(rule) m_childRewriters.push_back(rewriter_ptr_t(new SingletonRuleMajorDriver<rule>()))
 
 DefaultOptimizer::DefaultOptimizer()
 {
-  //m_childRewriters.push_back(rewriter_ptr_t(new TestRuleDriver()));
-  m_childRewriters.push_back(rewriter_ptr_t(new NodeidMarkingRuleDriver()));
-  m_childRewriters.push_back(rewriter_ptr_t(new NodeidRuleDriver()));
-  m_childRewriters.push_back(rewriter_ptr_t(new EliminateTypeEnforcingOperationsRuleDriver()));
-  m_childRewriters.push_back(rewriter_ptr_t(new EliminateUnusedLetVarsRuleDriver()));
+  ADD_SINGLETON_DRIVER(MarkNodesWithNodeIdProperties);
+  ADD_SINGLETON_DRIVER(EliminateDocOrderSort);
+  ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
+  ADD_SINGLETON_DRIVER(EliminateUnusedLetVars);
+  ADD_SINGLETON_DRIVER(EliminateExtraneousPathSteps);
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()
