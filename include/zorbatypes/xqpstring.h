@@ -346,7 +346,7 @@ namespace zorba {
       /**  Return a xqpString (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
        */
       xqpString
-      getXqpString(UnicodeString source);
+      getXqpString(UnicodeString source) const;
 
       /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
        */

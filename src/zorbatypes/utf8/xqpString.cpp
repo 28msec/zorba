@@ -914,18 +914,21 @@ namespace zorba
 
   UnicodeString xqpString::getUnicodeString() const
   {
+//     UnicodeString res(c_str(), -1, US_INV);
+//     return res;
     UnicodeString ret;
     UErrorCode status = U_ZERO_ERROR;
     int32_t len = bytes();
     UChar* buffer = ret.getBuffer(len);
 
     u_strFromUTF8(buffer, ret.getCapacity(), &len, c_str(), len, &status);
-    ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
 
     if(U_FAILURE(status))
     {
       assert(false);
     }
+
+    ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
 
     return ret;
   }
@@ -969,6 +972,8 @@ namespace zorba
   // Private methods
   UnicodeString xqpString::getUnicodeString(xqpString source) const
   {
+//     UnicodeString res(source.c_str(), -1, US_INV);
+//     return res;
     UnicodeString ret;
     UErrorCode status = U_ZERO_ERROR;
     int32_t len = source.bytes();
@@ -976,17 +981,17 @@ namespace zorba
 
     u_strFromUTF8(buffer, ret.getCapacity(), &len, source.c_str(), len, &status);
 
-    ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
-
     if(U_FAILURE(status))
     {
       assert(false);
     }
 
+    ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
+
     return ret;
   }
 
-  xqpString xqpString::getXqpString(UnicodeString source)
+  xqpString xqpString::getXqpString(UnicodeString source) const
   {
     char* target;
     int32_t targetLen = source.getCapacity()*4 + 1;

@@ -536,8 +536,8 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
     } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
       if (aCollation == 0) {
-        Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
-        ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
+//         Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
+        ret = aItem0->getStringValue().compare(aItem1->getStringValue(), NULL/*coll*/);
       } else {
         Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(*aCollation);
         ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
@@ -545,8 +545,8 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
     } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
       if (aCollation == 0) {
-        Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
-        ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
+//         Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
+        ret = aItem0->getStringValue().compare(aItem1->getStringValue(), NULL/*coll*/);
       } else {
         Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(*aCollation);
         ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
