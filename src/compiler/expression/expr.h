@@ -38,7 +38,7 @@
 #include "util/checked_vector.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_consts.h"
-#include "compiler/semantic_annotations/annotations.h"
+#include "compiler/semantic_annotations/annotation_holder.h"
 #include "store/api/fullText/ft_options.h"
 
 namespace zorba {
@@ -105,17 +105,15 @@ public:
 | base class for the expression tree node hierarchy
 |_______________________________________________________________________*/
 
-class expr : public SimpleRCObject {
+class expr : public SimpleRCObject, public AnnotationHolder {
 public:
   virtual expr_kind_t get_expr_kind () { return expr_kind; }
   typedef rchandle<expr> expr_t;
-  typedef std::map<Annotation::key_t, Annotation::value_ref_t> annotations_t;
   typedef std::map<var_expr *, expr_t> substitution_t;
   typedef substitution_t::iterator subst_iter_t;
 
 protected:
   QueryLoc loc;
-  annotations_t m_annotations;
 
 
 protected:
@@ -134,10 +132,6 @@ public:
   virtual void accept_children(expr_visitor &v);
   virtual void next_iter (expr_iterator_data &) = 0;
   virtual std::ostream& put(std::ostream&) const;
-
-  void put_annotation(Annotation::key_t key, Annotation::value_ref_t annot);
-  const Annotation::value_ref_t get_annotation(Annotation::key_t key) const;
-  void remove_annotation(Annotation::key_t key);
 
   virtual xqtref_t return_type(static_context *sctx);
 

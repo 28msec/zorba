@@ -17,9 +17,6 @@ class Annotation {
     } key_t;
 
     typedef boost::shared_ptr<AnnotationValue> value_ref_t;
-
-    virtual key_t getKey() const = 0;
-    virtual ~Annotation() { }
 };
 
 class AnnotationValue {

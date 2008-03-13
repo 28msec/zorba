@@ -206,28 +206,6 @@ expr::~expr() { }
     return NULL; // Make the compiler happy
   }
 
-  void expr::put_annotation(Annotation::key_t key, Annotation::value_ref_t value)
-  {
-    m_annotations[key] = value;
-  }
-
-  const Annotation::value_ref_t expr::get_annotation(Annotation::key_t key) const
-  {
-    annotations_t::const_iterator i = m_annotations.find(key);
-    if (i == m_annotations.end()) {
-      return Annotation::value_ref_t();
-    }
-    return i->second;
-  }
-
-  void expr::remove_annotation(Annotation::key_t key)
-  {
-    annotations_t::iterator i = m_annotations.find(key);
-    if (i != m_annotations.end()) {
-      m_annotations.erase(i);
-    }
-  }
-
   xqtref_t expr::return_type(static_context *sctx)
   {
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
