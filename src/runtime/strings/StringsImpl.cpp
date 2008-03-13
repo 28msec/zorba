@@ -209,9 +209,9 @@ CompareStrIterator::nextImpl(PlanState& planState) const {
         }
       }
       else{
-//         Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
+        Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
         res = Zorba::getItemFactory()->createInteger(
-                Integer::parseInt((int32_t)n0->getStringValue().compare(n1->getStringValue(), NULL/*coll*/)));
+                Integer::parseInt((int32_t)n0->getStringValue().compare(n1->getStringValue(), coll)));
       }
       STACK_PUSH( res, state );
     }
