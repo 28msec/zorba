@@ -95,11 +95,6 @@ class RootTypeManager : public TypeManager {
     /*
      * Returns the prime type of the given type.
      */
-    xqtref_t prime_type(store::Item_t qname) const;
-
-    /*
-     * Returns the prime type of the given type.
-     */
     xqtref_t prime_type(const XQType& type) const;
 
     /*
@@ -128,7 +123,7 @@ class RootTypeManager : public TypeManager {
     type_ident_ref_t get_type_identifier(const XQType& type) const;
 
     /* Factory Methods */
-    xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const;
+    xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
 
     xqtref_t create_type(const TypeIdentifier& ident) const;
 

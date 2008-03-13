@@ -23,8 +23,8 @@ extern ConstrNodeVector dummyVector;
 class XmlTree
 {
 protected:
-  long              theRefCount;
-  SYNC_CODE(RCLock  theRCLock;)
+  mutable long              theRefCount;
+  SYNC_CODE(mutable RCLock  theRCLock;)
 
   ulong             theId;
   XmlNode         * theRootNode;

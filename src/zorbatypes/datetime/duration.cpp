@@ -418,7 +418,7 @@ DurationBase_t DayTimeDuration::operator+(const DurationBase& db) const
       resTimeDuration.seconds(),
       resTimeDuration.fractional_seconds());
 
-  return dt_t;
+  return &*dt_t;
 }
 
 DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
@@ -450,7 +450,7 @@ DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
       resTimeDuration.seconds(),
       resTimeDuration.fractional_seconds());
 
-  return dt_t;
+  return &*dt_t;
 }
 
 DurationBase_t DayTimeDuration::operator*(const Double value) const

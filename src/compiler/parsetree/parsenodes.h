@@ -4965,7 +4965,7 @@ public:
 
 public:
   rchandle<exprnode> getExprSingle() const { return theExprSingle; }
-  rchandle<CatchListExpr> getCatchListExpr() const { return theCatchListExpr; }
+  rchandle<CatchListExpr> getCatchListExpr() const { return theCatchListExpr.cast<CatchListExpr> (); }
 
 public:
   void accept(parsenode_visitor&) const;
@@ -5946,8 +5946,8 @@ public:
 
 
 public:
-	rchandle<UnionExpr> get_src_expr() const { return src_expr_h; }
-	rchandle<UnionExpr> get_dst_expr() const { return dst_expr_h; }
+	rchandle<UnionExpr> get_src_expr() const { return src_expr_h.cast<UnionExpr> (); }
+	rchandle<UnionExpr> get_dst_expr() const { return dst_expr_h.cast<UnionExpr> (); }
 
 public:
 	void accept(parsenode_visitor&) const;

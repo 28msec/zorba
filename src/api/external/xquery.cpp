@@ -337,7 +337,7 @@ ResultIterator_t	Zorba_XQueryBinary::getIterator()
 		{
 			ZORBA_ERROR_ALERT(ZorbaError::API0010_XQUERY_EXECUTION_NOT_STARTED);
 		}
-		ResultIterator_t	temp_result = result;
+		ResultIterator_t temp_result = &*result;
 		result = NULL;
 		return temp_result;
 	}

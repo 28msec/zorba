@@ -146,7 +146,7 @@ class attr_expr; class text_expr; class pi_expr; class function_def_expr;
 
 
 typedef rchandle<expr> expr_t;
-typedef rchandle<XQType> xqtref_t;
+typedef const_rchandle<XQType> xqtref_t;
 typedef rchandle<namespace_context> NamespaceContext_t;
 typedef rchandle<PlanIterator> PlanIter_t;
 

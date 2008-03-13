@@ -90,7 +90,7 @@ static_context::static_context()
 			if(!strncmp(keybuff, "type:", 5))
 			{
 				val = &(*it).val;
-				val->typeValue->removeReference(val->typeValue->getSharedRefCounter()
+				const_cast<XQType *> (val->typeValue)->removeReference(val->typeValue->getSharedRefCounter()
                                         SYNC_PARAM2(val->typeValue->getRCLock()));
 			}
 			else if(!strncmp(keybuff, "collation:", 10))

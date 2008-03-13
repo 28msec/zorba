@@ -18,7 +18,7 @@ namespace zorba {
   {
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
   protected:
-    SYNC_CODE(RCLock  theRCLock;)
+    SYNC_CODE(mutable RCLock  theRCLock;)
 #endif
 
     public:
@@ -29,9 +29,9 @@ namespace zorba {
       xqpStringStore(const char* start, long len) : std::string(start, len) {}
 
       long*
-      getSharedRefCounter() { return NULL; }  
+      getSharedRefCounter() const { return NULL; }  
 
-      SYNC_CODE(RCLock* getRCLock() { return &theRCLock; })
+      SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
       std::string::size_type bytes() const { return size(); }
 

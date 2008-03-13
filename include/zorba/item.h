@@ -25,30 +25,30 @@ namespace zorba { namespace store {
 #ifdef ZORBA_FOR_ONE_THREAD_ONLY
 
     protected:
-      long  * theTreeRCPtr;
+      mutable long  * theTreeRCPtr;
 
       Item() : theTreeRCPtr(0) { }
 
     public:
 
       long* 
-      getSharedRefCounter() { return theTreeRCPtr; }
+      getSharedRefCounter() const { return theTreeRCPtr; }
 
-      SYNC_CODE(RCLock* getRCLock() { return NULL; })
+      SYNC_CODE(RCLock* getRCLock() const { return NULL; })
 
 #else
 
 protected:
-      long             * theTreeRCPtr;
-      SYNC_CODE(RCLock * theRCLockPtr;)
+      mutable long             * theTreeRCPtr;
+      SYNC_CODE(mutable RCLock * theRCLockPtr;)
 
       Item() : theTreeRCPtr(0), theRCLockPtr(0) { }
 
 public:
       long*
-      getSharedRefCounter() { return theTreeRCPtr; }
+      getSharedRefCounter() const { return theTreeRCPtr; }
 
-      SYNC_CODE(RCLock* getRCLock() { return theRCLockPtr; })
+      SYNC_CODE(RCLock* getRCLock() const { return theRCLockPtr; })
 
 #endif
 
@@ -463,3 +463,8 @@ public:
 
 #endif
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -498,10 +498,6 @@ xqtref_t RootTypeManager::prime_type(const XQType& type) const
   return NULL;
 }
 
-xqtref_t RootTypeManager::prime_type(store::Item_t qname) const {
-  return prime_type (*create_type (qname, TypeConstants::QUANT_ONE));
-}
-
 xqtref_t RootTypeManager::arithmetic_type(const XQType& type1, const XQType& type2) const
 {
   if (is_subtype(type1, *UNTYPED_ATOMIC_TYPE_ONE)

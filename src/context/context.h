@@ -63,7 +63,7 @@ protected:
     function *functionValue;
     int intValue;
     bool boolValue;
-		XQType		*typeValue;///do manual ref counting on this
+		const XQType *typeValue; ///do manual ref counting on this
 		COLLATION_OBJ	*collationValue;
   } ctx_value_t;
   typedef xqp_string (* str_param_t) ();

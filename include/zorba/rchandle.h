@@ -76,7 +76,7 @@ public:
 class RCLock
 {
 protected:
-  pthread_mutex_t  theLock;
+  mutable pthread_mutex_t  theLock;
 
 public:
   RCLock()
@@ -186,11 +186,7 @@ public:
 class RCObject
 {
 protected:
-#ifdef ZORBA_FOR_ONE_THREAD_ONLY
   mutable long  theRefCount;
-#else
-  mutable volatile long  theRefCount;
-#endif
 
 public:
   RCObject() : theRefCount(0) { }
@@ -201,13 +197,13 @@ public:
 
   virtual void free() { delete this; }
 
-  long getRefCount() const volatile
+  long getRefCount() const
   {
     return theRefCount;
   }
 
-  void addReference(long* counter 
-                    SYNC_PARAM2(RCLock* lock))
+  void addReference(long* counter
+                    SYNC_PARAM2(RCLock* lock)) const
   {
 #if defined WIN32 && !defined ZORBA_FOR_ONE_THREAD_ONLY
     if(lock)
@@ -228,8 +224,8 @@ public:
 #endif
   }
 
-  void removeReference(long* counter 
-                       SYNC_PARAM2(RCLock* lock))
+  void removeReference (long* counter 
+                        SYNC_PARAM2(RCLock* lock))
   {
 #if defined WIN32 && !defined ZORBA_FOR_ONE_THREAD_ONLY
     if(lock)
@@ -302,8 +298,8 @@ public:
 
   SimpleRCObject(const SimpleRCObject& rhs) : RCObject(rhs) { }
 
-  long* getSharedRefCounter()   { return NULL; }  
-  SYNC_CODE(RCLock* getRCLock() { return NULL; })
+  long* getSharedRefCounter() const  { return NULL; }  
+  SYNC_CODE(RCLock* getRCLock() const { return NULL; })
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
 
@@ -321,17 +317,26 @@ public:
   interface, typically by inheriting from RCObject
 
 ********************************************************************************/
-template<class T>
-class rchandle
-{
-private:
-  T  * p;
+template<class T> class rchandle {
+protected:
+  T  *p;
 
   void init()
   {
     if (p == 0) return;
     p->addReference(p->getSharedRefCounter()
                     SYNC_PARAM2(p->getRCLock()));
+  }
+
+  template <class otherT> rchandle &assign (const rchandle<otherT> &rhs) {
+		if (p != rhs.getp())
+    {
+			if (p) p->removeReference(p->getSharedRefCounter()
+                                SYNC_PARAM2(p->getRCLock()));
+			p = static_cast<T*>(rhs.getp());
+			init();
+		}
+		return *this;
   }
 
 public:
@@ -378,38 +383,19 @@ public:
     return rchandle<otherT> (static_cast<otherT *> (p));
   }
 
-  template <class otherT> operator rchandle<otherT> ()
-  {
+  template <class otherT> operator rchandle<otherT> () {
+    return cast<otherT> ();
+  }
+  template <class otherT> operator const rchandle<otherT> () const {
     return cast<otherT> ();
   }
 
-  template <class otherT> operator const rchandle<otherT> () const
-  {
-    return cast<otherT> ();
+  rchandle& operator=(rchandle const& rhs) {
+    return assign (rhs);
   }
 
-  rchandle& operator=(rchandle const& rhs)
-  {
-    if (p != rhs.p)
-    {
-      if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
-      p = rhs.p;
-      init();
-    }
-    return *this;
-  }
-
-	template <class otherT> rchandle& operator=(rchandle<otherT> const& rhs)
-	{
-		if (p != rhs.getp()) 
-    {
-			if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
-			p = static_cast<T*>(rhs.getp());
-			init();
-		}
-		return *this;
+	template <class otherT> rchandle& operator=(rchandle<otherT> const& rhs) {
+    return assign (rhs);
 	}
 
 public:
@@ -419,9 +405,32 @@ public:
     oss << "rchandle[refcount=" << p->getRefCount() << ']';
     return oss.str();
   }
-}; 
+};
+
+template<class T> class const_rchandle : protected rchandle<T> {
+public:
+  const_rchandle (const T *_p = 0) : rchandle<T> (const_cast<T *> (_p)) {}
+  const_rchandle (const const_rchandle &rhs) : rchandle<T> (rhs) {}
+  const_rchandle (rchandle<T> &rhs) : rchandle<T> (rhs) {}
+  const_rchandle& operator= (const const_rchandle &rhs) {
+    assign (rhs);
+    return *this;
+  }
+
+public:
+  const T *getp () const { return rchandle<T>::getp (); }
+  operator const T * () const { return rchandle<T>::getp (); }
+
+  const T* operator->() const { return getp(); } 
+  const T& operator*() const  { return *getp(); }
+
+	bool operator== (const_rchandle h) const  { return rchandle<T>::operator== (h); }
+	bool operator!= (const_rchandle h) const  { return rchandle<T>::operator!= (h); }
+	bool operator== (const T * pp) const      { return rchandle<T>::operator== (pp); } 
+	bool operator!= (const T * pp) const      { return rchandle<T>::operator!= (pp); } 
+  bool operator< (const_rchandle h) const   { return rchandle<T>::operator<  (h); }
+};
 
 } /* namespace zorba */
 
 #endif
-

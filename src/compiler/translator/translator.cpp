@@ -707,9 +707,8 @@ void *begin_visit(const DirAttributeList& v)
   {
     fo_expr* expr_list = create_seq(v.get_location());
 
-    std::vector<rchandle<attr_expr> >::const_reverse_iterator it;
-    for (it = attributes.rbegin();
-         it != (std::vector<rchandle<attr_expr> >::const_reverse_iterator)attributes.rend();
+    for (std::vector<rchandle<attr_expr> >::reverse_iterator it = attributes.rbegin();
+         it != attributes.rend();
          ++it)
     {
       expr_list->add(*it);
