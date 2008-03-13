@@ -38,7 +38,7 @@ void PULImpl::addInsertAttributes(Item* target, std::vector<XmlNode*>& attrs)
 
     for (ulong i = 0; i < numUpdates; i++)
     {
-      if ((*updatesp)[i]->getKind() == UpdateConsts::DELETE)
+      if ((*updatesp)[i]->getKind() == UpdateConsts::PUL_DELETE)
         return;
     }
 
