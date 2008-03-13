@@ -450,9 +450,16 @@ DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
 
 DurationBase_t DayTimeDuration::operator*(const Double value) const
 {
+  bool b;
+  long resFrac;
+  xqp_double frac = xqp_double::parseLong(timeDuration.fractional_seconds());
+  xqp_double lFrac = frac * value;
+  b = NumConversions::doubleToLong(lFrac.round(), resFrac);
+  assert(b);
+  
   long resSeconds = days * NO_HOURS_IN_DAY * NO_MINUTES_IN_HOUR * NO_SECONDS_IN_MINUTE + timeDuration.total_seconds();
   xqp_double lDouble = xqp_double::parseLong(resSeconds) * value;
-  bool b = NumConversions::doubleToLong(lDouble.round(), resSeconds);
+  b = NumConversions::doubleToLong(lDouble.round(), resSeconds);
   assert(b);
   
   //TODO Should normalization be part of the constructor?
@@ -462,16 +469,24 @@ DurationBase_t DayTimeDuration::operator*(const Double value) const
       (resSeconds % NO_SEC_IN_DAY) / NO_SEC_IN_HOUR, //hours
       ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) / NO_SECONDS_IN_MINUTE, //minutes
       ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) % NO_SECONDS_IN_MINUTE, //seconds
-      timeDuration.fractional_seconds());
+      resFrac);
 
   return dt;
 }
 
 DurationBase_t DayTimeDuration::operator/(const Double value) const
 {
-  long resSeconds = days * NO_SEC_IN_DAY + timeDuration.total_seconds();
-  xqp_double lDouble = xqp_double::parseLong(resSeconds) / value;
-  bool b = NumConversions::doubleToLong(lDouble.round(), resSeconds);
+  bool b;
+  long resFrac;
+  xqp_double frac = xqp_double::parseLong(timeDuration.fractional_seconds());
+  xqp_double lFrac = frac / value;
+  b = NumConversions::doubleToLong(lFrac.round(), resFrac);
+  assert(b);
+  
+  long resSeconds;
+  xqp_double seconds = xqp_double::parseLong(days * NO_SEC_IN_DAY + timeDuration.total_seconds());
+  xqp_double lDouble = seconds / value;
+  b = NumConversions::doubleToLong(lDouble.round(), resSeconds);
   assert(b);
 
   //TODO Should normalization be part of the constructor?
@@ -481,7 +496,7 @@ DurationBase_t DayTimeDuration::operator/(const Double value) const
       (resSeconds % NO_SEC_IN_DAY) / NO_SEC_IN_HOUR, //hours
       ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) / NO_SECONDS_IN_MINUTE, //minutes
       ((resSeconds % NO_SEC_IN_DAY) % NO_SEC_IN_HOUR) % NO_SECONDS_IN_MINUTE, //seconds
-      0);
+      resFrac);
 
   return dt;
 }
