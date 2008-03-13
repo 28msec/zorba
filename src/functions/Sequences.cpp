@@ -509,6 +509,7 @@ PlanIter_t fn_sorted_except::operator()(
 	vector<PlanIter_t>& argv) const
 {
   assert(false);
+  return NULL;
 }
 
 bool fn_sorted_except::validate_args(
