@@ -1546,16 +1546,22 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
         assert (body != NULL);
         if (print_translated) {
-          cout << "Expression tree for " << v.get_name ()->get_qname () << " after translation:\n";
+          cout << "Expression tree for " << v.get_name ()->get_qname () << " after translation:" << endl;
           body->put(cout) << endl;
         }
         normalize_expr_tree (Properties::instance ()->printNormalizedExpressions ()
                              ? v.get_name ()->get_qname ().c_str () : NULL,
                              sctx_p, body);
 
-        RewriterContext rCtx(sctx_p, body);
-        GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-        body = rCtx.getRoot();
+        if (Properties::instance ()->useOptimizer ()) {
+          RewriterContext rCtx(sctx_p, body);
+          GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+          body = rCtx.getRoot();
+          if (Properties::instance ()->printOptimizedExpressions ()) {
+            cout << "Optimized expression tree for " << v.get_name ()->get_qname () << endl;
+            body->put (cout) << endl;
+          }
+        }
 
         udf->set_body (body);
         udf->set_params(params);
