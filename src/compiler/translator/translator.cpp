@@ -3943,11 +3943,11 @@ void end_visit(const TransformExpr& v, void* /*visit_state*/)
   expr_t aReturn = pop_nodestack();
   expr_t aModify = pop_nodestack();
   rchandle<transform_expr> aTransform = new transform_expr(v.get_location(), aModify, aReturn);
-  expr_t anAssign = pop_nodestack();
+  rchandle<var_expr> anAssign = dynamic_cast<var_expr*>(&*pop_nodestack());
   while (anAssign != 0) 
   {
     aTransform->add(anAssign); 
-    expr_t anAssign = pop_nodestack();
+    anAssign = pop_nodestack();
   }
   nodestack.push(aTransform); 
 }
