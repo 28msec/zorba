@@ -248,6 +248,7 @@ TypeConstants::quantifier_t RootTypeManager::quantifier(const XQType &type) cons
 
 bool RootTypeManager::is_equal(const XQType& type1, const XQType& type2) const
 {
+  if (&type1 == &type2) return true;
   if (type1.get_quantifier() != type2.get_quantifier()) {
     return false;
   }
@@ -460,16 +461,20 @@ TypeConstants::atomic_type_code_t RootTypeManager::get_atomic_type_code(const XQ
 xqtref_t RootTypeManager::union_type(const XQType& type1, const XQType& type2) const
 {
   if (is_subtype (type1, type2))
-    return create_type (type2, quantifier (type2));
+    return &type2;
   else if (is_subtype (type2, type1))
-    return create_type (type1, quantifier (type1));
+    return &type1;
   else
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 xqtref_t RootTypeManager::intersect_type(const XQType& type1, const XQType& type2) const
 {
-  return xqtref_t(0);
+  if (is_subtype (type1, type2))
+    return &type1;
+  else if (is_subtype (type2, type1))
+    return &type2;
+  else return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 xqtref_t RootTypeManager::prime_type(const XQType& type) const
