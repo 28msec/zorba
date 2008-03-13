@@ -14,9 +14,9 @@ int typesystem_atomicStringCast (int argc, char* argv[]) {
   ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
   zorba_factory->initThread();
   
+#if 0
   GenericCast* lCaster = GenericCast::instance();
   
-#if 0
   {
     xqpString lStr = "9.9";
     TypeSystem::xqtref_t lType = GENV_TYPESYSTEM.create_atomic_type(TypeSystem::XS_FLOAT, TypeSystem::QUANT_ONE);
