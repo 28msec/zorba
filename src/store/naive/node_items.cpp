@@ -93,10 +93,25 @@ void XmlTree::removeReferences(ulong count) throw()
 
 
 /*******************************************************************************
-  Create a new node N and make it (a) the root of a given xml tree, or (b) a
-  child of a given node, or (c) neither a nor b. 
+  Node constructor used during loading of an xml doc
+********************************************************************************/
+XmlNode::XmlNode() : Item(), theParent(NULL)
+{
+}
 
-  (b) If a parent P is given, then N becomes 
+
+
+/*******************************************************************************
+  Create a new node N and make it (a) the root of a given xml tree, or (b) a
+  child of a given node.
+
+  (b) If a parent P is given, then the position among P's children where N should
+  be inserted is also given. If this position is >= to the current number of 
+  children, then N is appended to the children's vector. Otherwise, it is assumed
+  the the current child at the given position actually belongs to a different tree,
+  and N just replaces that child in P's children vector. In general, N is "fully
+  connected" to P, i.e., N becomes a member of the same tree as P, N's parent is
+  set to P, and N's id is set according to its position among P's children.
 ********************************************************************************/
 XmlNode::XmlNode(
     XmlTree*              tree,
@@ -109,17 +124,16 @@ XmlNode::XmlNode(
 {
   if (parent == NULL)
   {
-    if (tree != NULL)
-    {
-      SYNC_CODE(theRCLockPtr = &(tree->getRCLock());)
-      setTree(tree);
-      getTree()->setRoot(this);
+    assert(tree != NULL);
 
-      theOrdPath.init();
+    SYNC_CODE(theRCLockPtr = &(tree->getRCLock());)
+    setTree(tree);
+    getTree()->setRoot(this);
 
-      NODE_TRACE1("{ \nConstructing root " << StoreConsts::toString(nodeKind) 
-                  << " " << this << " tree = " << tree->getId() << ":" << tree);
-    }
+    theOrdPath.init();
+
+    NODE_TRACE1("{ \nConstructing root " << StoreConsts::toString(nodeKind) 
+                << " " << this << " tree = " << tree->getId() << ":" << tree);
   }
   else
   {
@@ -294,6 +308,24 @@ void XmlNode::deleteTree() throw()
 /////////////////////////////////////////////////////////////////////////////////
 
 
+/*******************************************************************************
+  Node constructor used during loading of an xml doc
+********************************************************************************/
+DocumentNode::DocumentNode(
+    xqpStringStore* baseUri,
+    xqpStringStore* docUri)
+  :
+  XmlNode(),
+  theBaseUri(baseUri),
+  theDocUri(docUri),
+  theFlags(0)
+{
+}
+
+
+/*******************************************************************************
+  Node constructor used during a node construction expression
+********************************************************************************/
 DocumentNode::DocumentNode(
     XmlTree*        tree,
     xqpStringStore* baseUri,
@@ -388,7 +420,7 @@ LoadedDocumentNode::LoadedDocumentNode(
     xqpStringStore* baseUri,
     xqpStringStore* docUri)
   :
-  DocumentNode(NULL, baseUri, docUri)
+  DocumentNode(baseUri, docUri)
 {
   NODE_TRACE1("Loaded doc node " << this << " base uri = " << *baseUri
               << " doc uri = " << *docUri);
@@ -471,6 +503,18 @@ void ConstrDocumentNode::constructSubtree(Iterator* childrenIte, bool copy)
 //  class ElementNode                                                          //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  Node constructor used during loading of an xml doc
+********************************************************************************/
+ElementNode::ElementNode(Item* nodeName)
+  :
+  XmlNode(),
+  theName(nodeName),
+  theFlags(0)
+{
+}
 
 
 /*******************************************************************************
@@ -737,7 +781,7 @@ LoadedElementNode::LoadedElementNode(
     ulong  numBindings,
     ulong  numAttributes)
   :
-  ElementNode(NULL, NULL, 0, nodeName)
+  ElementNode(nodeName)
 {
   theTypeName = typeName;
 
@@ -750,8 +794,8 @@ LoadedElementNode::LoadedElementNode(
   if (numAttributes > 0)
     theAttributes.resize(numAttributes);
 
-  NODE_TRACE1("Loaded elem node " << this << ":" << nodeName->show());
-  NODE_TRACE1("num bindings = " << numBindings << " num attributes = "
+  NODE_TRACE1("Loaded elem node " << this << " name = " << nodeName->show()
+              << " num bindings = " << numBindings << " num attributes = "
               << numAttributes << std::endl);
 }
 
@@ -1071,6 +1115,30 @@ XmlNode* ElementNode::copy(XmlNode* parent, ulong pos)
 /////////////////////////////////////////////////////////////////////////////////
 
 
+/*******************************************************************************
+  Node constructor used during loading of an xml doc
+********************************************************************************/
+AttributeNode::AttributeNode(
+    Item*  attrName,
+    Item*  typeName,
+    bool   isId,
+    bool   isIdrefs)
+  :
+  XmlNode(),
+  theName(attrName),
+  theTypeName(typeName)
+{
+  if (isId)
+    theFlags |= XmlNode::IsId;
+
+  if (isIdrefs)
+    theFlags |= XmlNode::IsIdRefs;
+
+  NODE_TRACE1("Loaded attr node " << this << " name = " << attrName->show()
+              << std::endl);
+}
+
+
 AttributeNode::AttributeNode(
     XmlTree*  tree,
     XmlNode*  parent,
@@ -1216,6 +1284,15 @@ xqp_string AttributeNode::show() const
 /////////////////////////////////////////////////////////////////////////////////
 
 
+/*******************************************************************************
+  Node constructor used during loading of an xml doc
+********************************************************************************/
+TextNode::TextNode(xqpStringStore* value) : XmlNode(), theContent(value)
+{
+  NODE_TRACE1("Loaded text node " << this << " content = " << *value << std::endl);
+}
+
+
 TextNode::TextNode(
     XmlTree*        tree,
     XmlNode*        parent,
@@ -1294,7 +1371,20 @@ xqp_string TextNode::show() const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
- 
+
+/*******************************************************************************
+  Node constructor used during loading of an xml doc
+********************************************************************************/
+PiNode::PiNode(xqpStringStore* target, xqpStringStore* content)
+  :
+  XmlNode(),
+  theTarget(target),
+  theContent(content)
+{
+  NODE_TRACE1("Loaded pi node " << this << " target = " << target << std::endl);
+}
+
+
 PiNode::PiNode(
     XmlTree*        tree,
     XmlNode*        parent,
@@ -1306,10 +1396,6 @@ PiNode::PiNode(
   theTarget(target),
   theContent(content)
 {
-  if (tree == NULL && parent == NULL)
-  {
-    NODE_TRACE1("Loaded pi node " << this);
-  }
   NODE_TRACE1("}");
 }
 
@@ -1366,6 +1452,18 @@ xqp_string PiNode::show() const
 //  class CommentNode                                                          //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  Node constructor used during loading of an xml doc
+********************************************************************************/
+CommentNode::CommentNode(xqpStringStore* content)
+  :
+  XmlNode(),
+  theContent(content)
+{
+  NODE_TRACE1("Loaded comment node " << this << " content = " << content);
+}
 
 
 CommentNode::CommentNode(

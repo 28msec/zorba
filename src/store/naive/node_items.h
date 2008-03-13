@@ -86,7 +86,7 @@ protected:
   XmlNode    * theParent;
 
 public:
-  XmlNode() : Item(), theParent(0) { }
+  XmlNode();
 
   XmlNode(
         XmlTree*              tree,
@@ -193,10 +193,9 @@ protected:
   uint32_t            theFlags;
 
 public:
-  DocumentNode(
-        XmlTree*        tree,
-        xqpStringStore* baseUri,
-        xqpStringStore* docUri);
+  DocumentNode(xqpStringStore* baseUri, xqpStringStore* docUri);
+
+  DocumentNode(XmlTree* tree, xqpStringStore* baseUri, xqpStringStore* docUri);
 
   virtual ~DocumentNode();
 
@@ -248,9 +247,7 @@ private:
   LoadedNodeVector theChildren;
 
 public:
-  LoadedDocumentNode(
-        xqpStringStore* baseUri, 
-        xqpStringStore* documentUri);
+  LoadedDocumentNode(xqpStringStore* baseUri, xqpStringStore* documentUri);
 
   ulong numChildren() const          { return theChildren.size(); }
   NodeVector& children()             { return theChildren; }
@@ -299,6 +296,8 @@ public:
   uint32_t              theFlags;
 
 public:
+  ElementNode(Item* nodeName);
+
   ElementNode(
         XmlTree*  tree,
         XmlNode*  parent,
@@ -455,7 +454,13 @@ protected:
   Item_t   theTypedValue;
   uint32_t theFlags;
 
- public:
+public:
+  AttributeNode(
+        Item*    attrName,
+        Item*    typeName,
+        bool     isId,
+        bool     isIdrefs);
+
   AttributeNode(
         XmlTree* tree,
         XmlNode* parent,
@@ -504,6 +509,8 @@ protected:
   xqpStringStore_t theContent;
 
 public:
+  TextNode(xqpStringStore* content);
+
   TextNode(
         XmlTree*        tree,
         XmlNode*        parent,
@@ -541,6 +548,8 @@ class PiNode : public XmlNode
   xqpStringStore_t theContent;
 
 public:
+  PiNode(xqpStringStore* target, xqpStringStore* content);
+
   PiNode(
         XmlTree*        tree,
         XmlNode*        parent,
@@ -577,6 +586,8 @@ protected:
   xqpStringStore_t theContent;
 
 public:
+  CommentNode(xqpStringStore* content);
+
   CommentNode(
         XmlTree*        tree,
         XmlNode*        parent,

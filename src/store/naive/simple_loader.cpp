@@ -461,9 +461,7 @@ void XmlLoader::startElement(
       xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
       Item* typedVal = new UntypedAtomicItemImpl(value);
 
-      AttributeNode* attrNode = new AttributeNode(NULL, NULL, 0,
-                                                  qname, tname, 
-                                                  false, false);
+      AttributeNode* attrNode = new AttributeNode(qname, tname, false, false);
       attrNode->theParent = elemNode;
       attrNode->setId(loader.theTree, &loader.theOrdPath);
       attrNode->theTypedValue = typedVal;
@@ -584,7 +582,7 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
   xqpStringStore* content = new xqpStringStore(reinterpret_cast<const char*>(ch), len);
 
-  XmlNode* textNode = new TextNode(NULL, NULL, 0, content);
+  XmlNode* textNode = new TextNode(content);
 
   if (loader.theNodeStack.empty())
     loader.setRoot(textNode);
@@ -615,7 +613,7 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
   xqpStringStore* content = new xqpStringStore(reinterpret_cast<const char*>(ch), len);
 
-  XmlNode* textNode = new TextNode(NULL, NULL, 0, content);
+  XmlNode* textNode = new TextNode(content);
 
   if (loader.theNodeStack.empty())
     loader.setRoot(textNode);
@@ -647,7 +645,7 @@ void XmlLoader::comment(
 
   xqpStringStore* contentp = new xqpStringStore(reinterpret_cast<const char*>(content));
 
-  XmlNode* commentNode = new CommentNode(NULL, NULL, 0, contentp);
+  XmlNode* commentNode = new CommentNode(contentp);
 
   if (loader.theNodeStack.empty())
     loader.setRoot(commentNode);
@@ -681,7 +679,7 @@ void XmlLoader::processingInstruction(
   xqpStringStore* datap = new xqpStringStore(reinterpret_cast<const char*>(data));
   xqpStringStore* targetp = new xqpStringStore(reinterpret_cast<const char*>(target));
 
-  XmlNode* piNode = new PiNode(NULL, NULL, 0, targetp, datap);
+  XmlNode* piNode = new PiNode(targetp, datap);
 
   if (loader.theNodeStack.empty())
     loader.setRoot(piNode);
