@@ -28,6 +28,7 @@ namespace zorba {
       bool thePrintAST;
       bool thePrintNormalizedExpressions;
       bool thePrintTranslatedExpressions;
+      bool thePrintOptimizedExpressions;
       bool thePrintIteratorTree;
 #ifndef NDEBUG
       bool theTraceTranslator;
@@ -137,6 +138,9 @@ namespace zorba {
       
       bool
       printTranslatedExpressions() { return thePrintTranslatedExpressions; }
+      
+      bool
+      printOptimizedExpressions() { return thePrintOptimizedExpressions; }
       
       bool
       printIteratorTree() { return thePrintIteratorTree; }

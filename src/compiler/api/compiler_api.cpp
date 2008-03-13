@@ -21,6 +21,8 @@
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/base/plan_iterator.h"
 
+using namespace std;
+
 namespace zorba {
 
 XQueryPlanPrinterConfig::XQueryPlanPrinterConfig()
@@ -193,6 +195,10 @@ PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text
     RewriterContext rCtx(m_sctx, e_h);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     e_h = rCtx.getRoot();
+    if (Properties::instance ()->printOptimizedExpressions ()) {
+      cout << "Optimized expression tree:\n";
+      e_h->put (cout) << endl;
+    }
   }
 
   PlanIter_t plan = codegen ("query", e_h);

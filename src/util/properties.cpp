@@ -30,6 +30,7 @@ namespace zorba
     thePrintTime(false),
     thePrintAST(false),
     thePrintNormalizedExpressions(false),
+    thePrintOptimizedExpressions(false),
     thePrintIteratorTree(false)
 #ifndef NDEBUG
     ,theTraceTranslator(false),
@@ -119,6 +120,7 @@ namespace zorba
       ("print-ast,a", "print the parse tree")
       ("print-translated", "print the normalized expression tree")
       ("print-normalized,n", "print the translated expression tree")
+      ("print-optimized", "print the optimized expression tree")
       ("print-iterator-tree,i", "print the iterator tree")
 #ifndef NDEBUG
       ("trace-translator,l", "trace the translator")
@@ -212,6 +214,7 @@ namespace zorba
     thePrintAST = (lVarMap.count("print-ast") != 0);
     thePrintNormalizedExpressions = (lVarMap.count("print-normalized") != 0);
     thePrintTranslatedExpressions = (lVarMap.count("print-translated") != 0);
+    thePrintOptimizedExpressions = (lVarMap.count("print-optimized") != 0);
     thePrintIteratorTree = (lVarMap.count("print-iterator-tree") != 0);
 #ifndef NDEBUG
     theTraceTranslator = (lVarMap.count("trace-translator") != 0);
