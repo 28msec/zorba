@@ -488,6 +488,7 @@ namespace zorba {
 
   void PrinterVisitor::beginVisit ( const TreatIterator& a ) {
     thePrinter.startBeginVisit("TreatIterator", (intptr_t) &a);
+    thePrinter.addAttribute("type", GENV_TYPESYSTEM.toString(*a.theTreatType));
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
