@@ -202,7 +202,7 @@ expr::~expr() { }
 
   expr_t expr::clone(substitution_t& substitution)
   {
-    Assert(false);
+    ZORBA_ASSERT(false);
     return NULL; // Make the compiler happy
   }
 

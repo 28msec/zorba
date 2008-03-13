@@ -90,7 +90,7 @@ Item_t QNamePool::insert(
 
   if (ns == NULL) ns = "";
   if (pre == NULL) pre = "";
-  Assert(ln != NULL && *ln != '\0');
+  ZORBA_ASSERT(ln != NULL && *ln != '\0');
 
   xqpStringStore_t pooledNs;
   store.getNamespacePool().insertc(ns, pooledNs);

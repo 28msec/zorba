@@ -182,7 +182,7 @@ namespace zorba
 
     xqp_integer lInteger;
     bool lBool = Integer::parseDouble( d0 / d1, lInteger);
-    Assert(lBool);
+    ZORBA_ASSERT(lBool);
     return Zorba::getItemFactory()->createInteger ( lInteger );
   }
 
@@ -212,7 +212,7 @@ namespace zorba
     }
     xqp_integer lInteger;
     bool lBool = Integer::parseFloat( f0 / f1, lInteger);
-    Assert(lBool);
+    ZORBA_ASSERT(lBool);
     return Zorba::getItemFactory()->createInteger ( lInteger );
   }
 

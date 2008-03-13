@@ -57,7 +57,7 @@ class StackTracePrinter {
 
 
 // Deprecated
-#define Assert( cond ) ZORBA_ASSERT (cond)
+//#define Assert( cond ) ZORBA_ASSERT (cond)
 
 }	/* namespace zorba */
 #endif	/* ZORBA_ASSERT_H */

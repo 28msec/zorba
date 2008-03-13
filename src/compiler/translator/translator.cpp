@@ -1529,12 +1529,12 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         vector<var_expr_t> params;
         if (nargs > 0) {
           rchandle<flwor_expr> flwor = dynamic_cast<flwor_expr *>(&*pop_nodestack());
-          Assert(flwor != NULL);
+          ZORBA_ASSERT(flwor != NULL);
 
           for(int i = 0; i < nargs; ++i) {
             rchandle<forlet_clause>& flc = (*flwor)[i];
             var_expr *param_var = dynamic_cast<var_expr *>(&*flc->get_expr());
-            Assert(param_var != NULL);
+            ZORBA_ASSERT(param_var != NULL);
             params.push_back(param_var);
           }
           flwor->set_retval(body);
@@ -1707,7 +1707,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   rchandle<flwor_expr> flwor = dynamic_cast<flwor_expr *>(&*nodestack.top());
-  Assert(flwor != NULL);
+  ZORBA_ASSERT(flwor != NULL);
   store::Item_t qname = sctx_p->lookup_qname ("", v.get_name());
   var_expr_t param_var = new var_expr (v.get_location(), var_expr::param_var, qname);
   var_expr_t subst_var = new var_expr(v.get_location(), var_expr::let_var, qname);
@@ -1980,7 +1980,7 @@ void *begin_visit(const VFO_DeclList& v)
           sctx_p->bind_fn (qname, new user_function (n->get_location(), sig, NULL), nargs);
           break;
         default:
-          Assert(false);
+          ZORBA_ASSERT(false);
       }
     }
   }

@@ -687,7 +687,7 @@ inline void fxhash32map<V>::resize()
   dsz  = dir->size();
 
   //d Assert<invariant>(dsz==dsz0*2, "fxhash32map::resize[01]");
-  Assert(dsz==dsz0*2);
+  ZORBA_ASSERT(dsz==dsz0*2);
 
   // rehash: place old entry offset in new hash location
   for (unsigned k = 0; k<dsz0; ++k) {
@@ -949,7 +949,7 @@ inline void fxhash64map<V>::resize()
   dsz  = dir->size();
 
   //d Assert<invariant>(dsz==dsz0*2, "fxhash64map::resize[01]");
-  Assert(dsz==dsz0*2);
+  ZORBA_ASSERT(dsz==dsz0*2);
 
   // rehash: place old entry offset in new hash location
   for (unsigned k = 0; k<dsz0; ++k) {

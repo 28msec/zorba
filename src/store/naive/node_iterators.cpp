@@ -18,7 +18,7 @@ ChildrenIterator::ChildrenIterator(XmlNode* parent)
   theParentNode(parent),
   theCurrentPos(0)
 {
-  Assert(theParentNode->getNodeKind() == StoreConsts::documentNode ||
+  ZORBA_ASSERT(theParentNode->getNodeKind() == StoreConsts::documentNode ||
          theParentNode->getNodeKind() == StoreConsts::elementNode);
 
   theNumChildren = parent->numChildren();
@@ -142,7 +142,7 @@ Item_t StoreNodeDistinctIterator::next()
     if (contextNode == NULL)
       return NULL;
 
-    Assert(contextNode->isNode());
+    ZORBA_ASSERT(contextNode->isNode());
 
     if (!theNodeSet.insert(contextNode))
       return contextNode;
@@ -175,7 +175,7 @@ Item_t StoreNodeDistinctOrAtomicIterator::next()
   {
     Item_t lContextNode = theInput->next();
     if (lContextNode != 0)
-      Assert(lContextNode->isAtomic());
+      ZORBA_ASSERT(lContextNode->isAtomic());
     return lContextNode;
   }
 
@@ -226,7 +226,7 @@ Item_t StoreNodeSortIterator::next()
       if (contextNode == NULL)
         break;
 
-      Assert(contextNode->isNode());
+      ZORBA_ASSERT(contextNode->isNode());
 
       theNodes.push_back(BASE_NODE(contextNode));
     }
@@ -294,7 +294,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
   {
     Item_t lContextNode = theInput->next();
     if (lContextNode != 0)
-      Assert(lContextNode->isAtomic());
+      ZORBA_ASSERT(lContextNode->isAtomic());
     return lContextNode;
   }
 
@@ -322,7 +322,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
         }
       }
 
-      Assert(contextNode->isNode());
+      ZORBA_ASSERT(contextNode->isNode());
 
       theNodes.push_back(BASE_NODE(contextNode));
     }

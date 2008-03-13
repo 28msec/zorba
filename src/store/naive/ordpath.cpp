@@ -883,7 +883,7 @@ void OrdPath::decompress(
   if (byteIndex == len)
   {
     unsigned char lastByte = theBuffer[byteIndex];
-    Assert(lastByte != 0);
+    ZORBA_ASSERT(lastByte != 0);
     lastByte <<= bitIndex;
     if (lastByte != 0)
       decodeByte(deweyid, compOffsets, numComps, bitSize,
@@ -3440,7 +3440,7 @@ void OrdPathStack::popChild()
 ********************************************************************************/
 void OrdPathStack::nextChild()
 {
-  Assert(theNumComps > 0);
+  ZORBA_ASSERT(theNumComps > 0);
 
   // Increment the last uncompressed component by 2.
   theDeweyId[theNumComps - 1] += 2;

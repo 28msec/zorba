@@ -493,7 +493,7 @@ xqtref_t RootTypeManager::prime_type(const XQType& type) const
     const NodeXQType& ntype = static_cast<const NodeXQType&>(type);
     return create_node_type(ntype.get_nodetest(), ntype.get_content_type(), TypeConstants::QUANT_ONE);
   }
-  Assert(false);
+  ZORBA_ASSERT(false);
 
   return NULL;
 }

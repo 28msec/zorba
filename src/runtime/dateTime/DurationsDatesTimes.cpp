@@ -217,7 +217,7 @@ FnSecondsFromDurationIterator::nextImpl(PlanState& planState) const
   {
     itemArg = itemArg->getAtomizationValue();
     lBool = Decimal::parseNativeDouble(itemArg->getDurationValue()->getSeconds(), lDecimal);
-    Assert(lBool);
+    ZORBA_ASSERT(lBool);
     STACK_PUSH( Zorba::getItemFactory()->createDecimal(lDecimal), state );
   }
   STACK_END();
@@ -397,7 +397,7 @@ FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState) const
   {
     itemArg = itemArg->getAtomizationValue();
     lBool = Decimal::parseNativeDouble(itemArg->getDateTimeValue()->getSeconds(), lDecimal);
-    Assert(lBool);
+    ZORBA_ASSERT(lBool);
     STACK_PUSH( Zorba::getItemFactory()->createDecimal(lDecimal), state );
   }
   STACK_END();
@@ -641,7 +641,7 @@ FnSecondsFromTimeIterator::nextImpl(PlanState& planState) const
   {
     itemArg = itemArg->getAtomizationValue();
     lBool = Decimal::parseNativeDouble(itemArg->getTimeValue()->getSeconds(), lDecimal);
-    Assert(lBool);
+    ZORBA_ASSERT(lBool);
     STACK_PUSH( Zorba::getItemFactory()->createDecimal(lDecimal), state );
   }
   STACK_END();

@@ -2648,7 +2648,7 @@ void PredicateList::accept(parsenode_visitor& v) const
   vector<rchandle<exprnode> >::const_reverse_iterator it = pred_hv.rbegin();
   for (; it!=pred_hv.rend(); ++it) {
     const exprnode* e_p = &**it;
-    Assert(e_p!=NULL);
+    ZORBA_ASSERT(e_p!=NULL);
     v.pre_predicate_visit(*this, visitor_state);
     e_p->accept(v);
     v.post_predicate_visit(*this, visitor_state);

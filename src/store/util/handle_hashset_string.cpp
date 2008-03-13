@@ -95,7 +95,7 @@ void StringPool::garbageCollect()
     // If the current hash bucket is empty, move to the next one
     if (entry->theItem == NULL)
     {
-      Assert(entry->theNext == NULL);
+      ZORBA_ASSERT(entry->theNext == NULL);
       continue;
     }
 

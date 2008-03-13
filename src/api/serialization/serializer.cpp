@@ -67,7 +67,7 @@ serializer::utf8_to_utf16_transcoder::utf8_to_utf16_transcoder(ostream& output_s
 {
   UErrorCode status = U_ZERO_ERROR;
   conv = ucnv_open("utf-8", &status);
-  Assert(U_SUCCESS(status));
+  ZORBA_ASSERT(U_SUCCESS(status));
   chars_in_buffer = 0;
   chars_expected = 1;
 }

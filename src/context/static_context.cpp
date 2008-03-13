@@ -236,7 +236,7 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
 	xqtref_t static_context::lookup_type( xqp_string key)
 	{
     ctx_value_t val;
-    Assert (context_value (key, val));
+    ZORBA_ASSERT (context_value (key, val));
     return val.typeValue;
 	}
 

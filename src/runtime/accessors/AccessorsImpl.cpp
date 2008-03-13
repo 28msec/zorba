@@ -53,7 +53,7 @@ FnDataIterator::nextImpl(PlanState& planState) const
       item = lState->theTypedValue->next();
       if (item == NULL)
         break;
-      Assert(!item->isNode());
+      ZORBA_ASSERT(!item->isNode());
       STACK_PUSH( item, lState );
     }
   }

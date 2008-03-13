@@ -578,7 +578,7 @@ bool begin_visit(axis_step_expr& v)
 
   PlanIter_t input = pop_itstack();
 
-  Assert(input != NULL);
+  ZORBA_ASSERT(input != NULL);
 
   PlanIter_t axisIte;
 

@@ -191,7 +191,7 @@ void ZorbaEngineImpl::initThread()
 		if(!for_single_thread_api)
 		{
 #if defined ZORBA_FOR_ONE_THREAD_ONLY
-    //Assert(0);
+    //ZORBA_ASSERT(0);
 		theThreadData = zorba;
 
 #elif WIN32
