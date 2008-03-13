@@ -4019,11 +4019,12 @@ void RevalidationDecl::accept(parsenode_visitor& v) const
 // ----------------
 InsertExpr::InsertExpr(
   const QueryLoc& aLoc,
-  InsertType theInsertType,
+  store::UpdateConsts::InsertType aInsertType,
   rchandle<exprnode> aSourceExpr,
   rchandle<exprnode> aTargetExpr)
 :
   exprnode(aLoc),
+  theInsertType(aInsertType),
   theSourceExpr(aSourceExpr),
   theTargetExpr(aTargetExpr)
 {}
@@ -4044,7 +4045,6 @@ void InsertExpr::accept(parsenode_visitor& v) const
 // ----------------
 DeleteExpr::DeleteExpr(
   const QueryLoc& aLoc,
-  DeleteType aType,
   rchandle<exprnode> aTargetExpr)
 :
   exprnode(aLoc),
@@ -4066,14 +4066,14 @@ void DeleteExpr::accept(parsenode_visitor& v) const
 // -----------------
 ReplaceExpr::ReplaceExpr(
   const QueryLoc& aLoc,
-  ReplaceType aReplaceType,
-  rchandle<exprnode> aSourceExpr,
-  rchandle<exprnode> aTargetExpr)
+  store::UpdateConsts::ReplaceType aReplaceType,
+  rchandle<exprnode> aTargetExpr,
+  rchandle<exprnode> aReplaceExpr)
 :
   exprnode(aLoc),
   theReplaceType(aReplaceType),
-  theSourceExpr(aSourceExpr),
-  theTargetExpr(aTargetExpr)
+  theTargetExpr(aTargetExpr),
+  theReplaceExpr(aReplaceExpr)
 {
 }
 
@@ -4083,8 +4083,8 @@ ReplaceExpr::ReplaceExpr(
 void ReplaceExpr::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  ACCEPT (theSourceExpr);
   ACCEPT (theTargetExpr);
+  ACCEPT (theReplaceExpr);
   END_VISITOR ();
 }
 
@@ -4093,12 +4093,12 @@ void ReplaceExpr::accept(parsenode_visitor& v) const
 // ----------------
 RenameExpr::RenameExpr(
   const QueryLoc& aLoc,
-  rchandle<exprnode> aSourceExpr,
-  rchandle<exprnode> aTargetExpr)
+  rchandle<exprnode> aTargetExpr,
+  rchandle<exprnode> aNameExpr)
 :
   exprnode(aLoc),
-  theSourceExpr(aSourceExpr),
-  theTargetExpr(aTargetExpr)
+  theTargetExpr(aTargetExpr),
+  theNameExpr(aNameExpr)
 {
 }
 
@@ -4108,8 +4108,8 @@ RenameExpr::RenameExpr(
 void RenameExpr::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  ACCEPT (theSourceExpr);
   ACCEPT (theTargetExpr);
+  ACCEPT (theNameExpr);
   END_VISITOR ();
 }
 
@@ -4160,7 +4160,7 @@ void TransformExpr::accept(parsenode_visitor& v) const
 VarNameList::VarNameList(
   const QueryLoc& _loc)
 :
-  parsenode(_loc)
+  exprnode(_loc)
 {
 }
 
@@ -4186,7 +4186,7 @@ VarBinding::VarBinding(
   std::string _varname,
   rchandle<exprnode> _val_h)
 :
-  parsenode(_loc),
+  exprnode(_loc),
   varname(_varname),
   val_h(_val_h)
 {

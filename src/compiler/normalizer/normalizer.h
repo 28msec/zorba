@@ -40,6 +40,11 @@ class normalizer : public expr_visitor {
     bool begin_visit(text_expr&);
     bool begin_visit(pi_expr&);
     bool begin_visit(function_def_expr&);
+    bool begin_visit(insert_expr&);
+    bool begin_visit(delete_expr&);
+    bool begin_visit(replace_expr&);
+    bool begin_visit(rename_expr&);
+    bool begin_visit(transform_expr&);
 
     void end_visit(expr&);
     void end_visit(var_expr&);
@@ -70,6 +75,11 @@ class normalizer : public expr_visitor {
     void end_visit(text_expr&);
     void end_visit(pi_expr&);
     void end_visit(function_def_expr&);
+    void end_visit(insert_expr&);
+    void end_visit(delete_expr&);
+    void end_visit(replace_expr&);
+    void end_visit(rename_expr&);
+    void end_visit(transform_expr&);
 
   private:
     static_context *m_sctx;

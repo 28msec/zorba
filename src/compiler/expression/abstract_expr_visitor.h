@@ -53,6 +53,11 @@ public:
   virtual bool begin_visit(text_expr&) { return true; }
   virtual bool begin_visit(pi_expr&) { return true; }
   virtual bool begin_visit(function_def_expr&) { return true; }
+  virtual bool begin_visit(insert_expr&) { return true; }
+  virtual bool begin_visit(delete_expr&) { return true; }
+  virtual bool begin_visit(rename_expr&) { return true; }
+  virtual bool begin_visit(replace_expr&) { return true; }
+  virtual bool begin_visit(transform_expr&) { return true; }
 
  /*..........................................
   :  end visit                              :
@@ -86,6 +91,11 @@ public:
   virtual void end_visit(text_expr&) { }
   virtual void end_visit(pi_expr&) { }
   virtual void end_visit(function_def_expr&) { }
+  virtual void end_visit(insert_expr&) { }
+  virtual void end_visit(delete_expr&) { }
+  virtual void end_visit(rename_expr&) { }
+  virtual void end_visit(replace_expr&) { }
+  virtual void end_visit(transform_expr&) { }
 
 };
 

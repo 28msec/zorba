@@ -110,6 +110,14 @@ public:
   axis_step_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
+class transform_expr_iterator_data : public expr_iterator_data {
+public:
+  std::vector<rchandle<var_expr> >::iterator theAssigns_iter;
+
+public:
+  transform_expr_iterator_data (expr *e_) : expr_iterator_data(e_) {}
+};
+
   
 #define DEF_ACCEPT( type )                         \
   void type::accept (expr_visitor &v) {            \
@@ -144,6 +152,11 @@ DEF_ACCEPT (doc_expr)
 DEF_ACCEPT (attr_expr)
 DEF_ACCEPT (text_expr)
 DEF_ACCEPT (pi_expr)
+DEF_ACCEPT (insert_expr)
+DEF_ACCEPT (delete_expr)
+DEF_ACCEPT (rename_expr)
+DEF_ACCEPT (replace_expr)
+DEF_ACCEPT (transform_expr)
 
 #undef DEF_ACCEPT
 
@@ -1039,6 +1052,131 @@ xqtref_t order_expr::return_type(static_context *sctx) { return expr_h->return_t
 xqtref_t var_expr::return_type(static_context *sctx) {
   return type == NULL ? GENV_TYPESYSTEM.ITEM_TYPE_STAR : type;
 }
+
+// [242] [http://www.w3.org/TR/xqupdate/#prod-xquery-InsertExpr]
+
+insert_expr::insert_expr(
+	const QueryLoc& loc,
+  store::UpdateConsts::InsertType aType,
+	expr_t aSourceExpr,
+	expr_t aTargetExpr)
+:
+	expr(loc),
+  theType(aType),
+	theSourceExpr(aSourceExpr),
+	theTargetExpr(aTargetExpr)
+{}
+
+insert_expr::~insert_expr()
+{}
+
+void 
+insert_expr::next_iter(expr_iterator_data& v)
+{
+  BEGIN_EXPR_ITER();
+  ITER(theSourceExpr);
+  ITER(theTargetExpr);
+  END_EXPR_ITER(); 
+}
+
+
+
+// [243] [http://www.w3.org/TR/xqupdate/#prod-xquery-DeleteExpr]
+
+delete_expr::delete_expr(
+	const QueryLoc& loc,
+	expr_t aTargetExpr)
+:
+	expr(loc),
+	theTargetExpr(aTargetExpr)
+{}
+
+delete_expr::~delete_expr()
+{}
+
+void delete_expr::next_iter(expr_iterator_data& v)
+{
+  BEGIN_EXPR_ITER();
+  ITER(theTargetExpr);
+  END_EXPR_ITER(); 
+}
+
+
+
+// [244] [http://www.w3.org/TR/xqupdate/#prod-xquery-ReplaceExpr]
+
+replace_expr::replace_expr(
+	const QueryLoc& loc,
+  store::UpdateConsts::ReplaceType aType,
+	expr_t aTargetExpr,
+	expr_t aReplaceExpr)
+:
+	expr(loc),
+  theType(aType),
+	theTargetExpr(aTargetExpr),
+	theReplaceExpr(aReplaceExpr)
+{}
+
+replace_expr::~replace_expr()
+{}
+
+void replace_expr::next_iter(expr_iterator_data& v)
+{
+  BEGIN_EXPR_ITER();
+  ITER(theTargetExpr);
+  ITER(theReplaceExpr);
+  END_EXPR_ITER();
+}
+
+
+
+// [245] [http://www.w3.org/TR/xqupdate/#prod-xquery-RenameExpr]
+
+rename_expr::rename_expr(
+	const QueryLoc& loc,
+	expr_t aTargetExpr,
+	expr_t aNameExpr)
+:
+	expr(loc),
+	theTargetExpr(aTargetExpr),
+	theNameExpr(aNameExpr)
+{}
+
+rename_expr::~rename_expr()
+{}
+
+void rename_expr::next_iter(expr_iterator_data& v)
+{
+  BEGIN_EXPR_ITER();
+  ITER(theTargetExpr);
+  ITER(theNameExpr);
+  END_EXPR_ITER();
+}
+
+
+
+// [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
+
+transform_expr::transform_expr(
+	const QueryLoc& loc,
+	expr_t aModifyExpr,
+	expr_t aReturnExpr)
+:
+	expr(loc),
+	theModifyExpr(aModifyExpr),
+	theReturnExpr(aReturnExpr)
+{}
+
+expr_iterator_data *transform_expr::make_iter () { return new transform_expr_iterator_data(this); }
+
+void transform_expr::next_iter(expr_iterator_data& v)
+{
+  BEGIN_EXPR_ITER2(transform_expr_iterator_data);
+  for (vv.theAssigns_iter = begin (); vv.theAssigns_iter != end (); ++(vv.theAssigns_iter)) {
+    ITER (*vv.theAssigns_iter);
+  }
+  END_EXPR_ITER();
+} 
 
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */

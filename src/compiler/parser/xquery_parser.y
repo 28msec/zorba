@@ -31,6 +31,7 @@
 
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
+#include "store/api/update_consts.h"
 
 
 #define SYMTAB( n ) driver.symtab.get ((off_t) n)
@@ -5381,7 +5382,7 @@ InsertExpr :
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  InsertExpr::NODE_INTO, $2, $4);
+                  store::UpdateConsts::INTO, $2, $4);
 		}
 	|	INSERT_NODE  ExprSingle  AS  FIRST_INTO  ExprSingle
 		{
@@ -5390,7 +5391,7 @@ InsertExpr :
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  InsertExpr::NODE_AS_FIRST_INTO, $2, $5);
+                  store::UpdateConsts::AS_FIRST_INTO, $2, $5);
 		}
 	|	INSERT_NODE  ExprSingle  AS  LAST_INTO  ExprSingle
 		{
@@ -5399,7 +5400,7 @@ InsertExpr :
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  InsertExpr::NODE_AS_LAST_INTO, $2, $5);
+                  store::UpdateConsts::AS_LAST_INTO, $2, $5);
 		}
 	| INSERT_NODE  ExprSingle  AFTER  ExprSingle
 		{
@@ -5408,7 +5409,7 @@ InsertExpr :
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  InsertExpr::NODE_AFTER, $2, $4);
+                  store::UpdateConsts::AFTER, $2, $4);
 		}
 	| INSERT_NODE  ExprSingle  BEFORE  ExprSingle
 		{
@@ -5417,7 +5418,7 @@ InsertExpr :
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  InsertExpr::NODE_BEFORE, $2, $4);
+                  store::UpdateConsts::BEFORE, $2, $4);
 		}
   |
 		INSERT_NODES  ExprSingle  INTO  ExprSingle
@@ -5427,7 +5428,7 @@ InsertExpr :
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  InsertExpr::NODES_INTO, $2, $4);
+                  store::UpdateConsts::INTO, $2, $4);
 		}
 	|	INSERT_NODES  ExprSingle  AS  FIRST_INTO  ExprSingle
 		{
@@ -5436,7 +5437,7 @@ InsertExpr :
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  InsertExpr::NODES_AS_FIRST_INTO, $2, $5);
+                  store::UpdateConsts::AS_FIRST_INTO, $2, $5);
 		}
 	|	INSERT_NODES  ExprSingle  AS  LAST_INTO  ExprSingle
 		{
@@ -5445,7 +5446,7 @@ InsertExpr :
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  InsertExpr::NODES_AS_LAST_INTO, $2, $5);
+                  store::UpdateConsts::AS_LAST_INTO, $2, $5);
 		}
 	| INSERT_NODES  ExprSingle  AFTER  ExprSingle
 		{
@@ -5454,7 +5455,7 @@ InsertExpr :
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  InsertExpr::NODES_AFTER, $2, $4);
+                  store::UpdateConsts::AFTER, $2, $4);
 		}
 	| INSERT_NODES  ExprSingle  BEFORE  ExprSingle
 		{
@@ -5463,7 +5464,7 @@ InsertExpr :
 #endif
        $$ = new InsertExpr(
                   LOC (@$),
-                  InsertExpr::NODES_BEFORE, $2, $4);
+                  store::UpdateConsts::BEFORE, $2, $4);
 		}
 	;
 
@@ -5476,9 +5477,7 @@ DeleteExpr:
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteNodeExpr [expr]" << endl;
 #endif
-       $$ = new DeleteExpr(
-                  LOC (@$),
-                  DeleteExpr::NODE, $2);
+       $$ = new DeleteExpr( LOC (@$), $2);
 		}
   |
 		DELETE_NODES  ExprSingle
@@ -5486,9 +5485,7 @@ DeleteExpr:
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "DeleteNodesExpr [expr]" << endl;
 #endif
-       $$ = new DeleteExpr(
-                  LOC (@$),
-                  DeleteExpr::NODES, $2);
+       $$ = new DeleteExpr( LOC (@$), $2);
 		}
 	;
 
@@ -5503,7 +5500,7 @@ ReplaceExpr :
 #endif
        $$ = new ReplaceExpr(
                   LOC (@$),
-                  ReplaceExpr::WITH, $2, $4);
+                  store::UpdateConsts::NODE, $2, $4);
 		}
 	|	REPLACE_VALUE_OF  ExprSingle  WITH  ExprSingle
 		{
@@ -5512,7 +5509,7 @@ ReplaceExpr :
 #endif
        $$ = new ReplaceExpr(
                   LOC (@$),
-                  ReplaceExpr::VALUE_OF_WITH, $2, $4);
+                  store::UpdateConsts::VALUE_OF_NODE, $2, $4);
 		}
 	;
 
@@ -5554,6 +5551,8 @@ TransformExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "TransformExpr [ ]" << endl;
 #endif
+      VarNameList* lList = dynamic_cast<VarNameList*>($2);
+      $$ = new TransformExpr(LOC(@$), lList, $4, $6);
 		}
 	;
 
@@ -5566,12 +5565,17 @@ VarNameList :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [single]" << endl;
 #endif
+       $$ = new VarNameList(LOC(@$));
 		}
 	|	VarNameList  COMMA  DOLLAR  VarNameDecl 
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "VarNameList [list]" << endl;
 #endif
+       VarNameList* lList = dynamic_cast<VarNameList*>($1);
+       VarBinding* lBinding = dynamic_cast<VarBinding*>($4);
+       lList->push_back(lBinding);
+       $$ = lList;
 		}
 	;
 
@@ -5584,6 +5588,7 @@ VarNameDecl :
 #ifdef ZORBA_DEBUG_PARSER
        cout << "VarNameDecl [" << driver.symtab.get((off_t)$1) << "]" << endl;
 #endif
+       $$ = new VarBinding(LOC(@$), driver.symtab.get((off_t)$1), $3);  
     }
   ; 
 

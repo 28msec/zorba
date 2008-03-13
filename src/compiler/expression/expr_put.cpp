@@ -548,4 +548,69 @@ ostream& pi_expr::put( ostream& os) const
     os << DENT << "]\n"; UNDENT;
     return os;
   }
+
+ostream& insert_expr::put( ostream& os) const
+{
+  os << INDENT << "insert_expr (" << this << ") [\n";
+  ZORBA_ASSERT(theSourceExpr!=NULL);
+  theSourceExpr->put(os);
+  os << DENT << ",\n";
+  ZORBA_ASSERT(theTargetExpr!=NULL);
+  theTargetExpr->put(os);
+  os << DENT << "]\n"; UNDENT;
+  return os;
+}
+
+ostream& delete_expr::put( ostream& os) const
+{
+  os << INDENT << "delete_expr (" << this << ") [\n";
+  ZORBA_ASSERT(theTargetExpr!=NULL);
+  theTargetExpr->put(os);
+  os << DENT << "]\n"; UNDENT;
+  return os;
+}
+
+ostream& replace_expr::put( ostream& os) const
+{
+  os << INDENT << "replace_expr (" << this << ") [\n";
+  ZORBA_ASSERT(theTargetExpr!=NULL);
+  theTargetExpr->put(os);
+  os << DENT << ",\n";
+  ZORBA_ASSERT(theReplaceExpr!=NULL);
+  theReplaceExpr->put(os);
+  os << DENT << "]\n"; UNDENT;
+  return os;
+}
+
+ostream& rename_expr::put( ostream& os) const
+{
+  os << INDENT << "rename_expr (" << this << ") [\n";
+  ZORBA_ASSERT(theTargetExpr!=NULL);
+  theTargetExpr->put(os);
+  os << DENT << ",\n";
+  ZORBA_ASSERT(theNameExpr!=NULL);
+  theNameExpr->put(os);
+  os << DENT << "]\n"; UNDENT;
+  return os;
+}
+
+ostream& transform_expr::put( ostream& os) const
+{
+  os << INDENT << "transform_expr (" << this << ") [\n";
+  for (vector<rchandle<var_expr> >::const_iterator it = theAssigns.begin();
+       it != theAssigns.end(); ++it)
+  {
+    rchandle<expr> e = *it;
+    ZORBA_ASSERT(e != NULL);
+    e->put(os);
+  }
+  ZORBA_ASSERT(theModifyExpr!=NULL);
+  theModifyExpr->put(os);
+  os << DENT << ",\n";
+  ZORBA_ASSERT(theReturnExpr!=NULL);
+  theReturnExpr->put(os);
+  os << DENT << "]\n"; UNDENT;
+  return os;
+}
+
 }

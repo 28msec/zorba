@@ -61,6 +61,11 @@ public:
   virtual bool begin_visit(text_expr&) = 0;
   virtual bool begin_visit(pi_expr&) = 0;
   virtual bool begin_visit(function_def_expr&) = 0;
+  virtual bool begin_visit(insert_expr&) = 0;
+  virtual bool begin_visit(delete_expr&) = 0;
+  virtual bool begin_visit(rename_expr&) = 0;
+  virtual bool begin_visit(replace_expr&) = 0;
+  virtual bool begin_visit(transform_expr&) = 0;
 
  /*..........................................
   :  end visit                              :
@@ -94,7 +99,11 @@ public:
   virtual void end_visit(text_expr&) = 0;
   virtual void end_visit(pi_expr&) = 0;
   virtual void end_visit(function_def_expr&) = 0;
-
+  virtual void end_visit(insert_expr&) = 0;
+  virtual void end_visit(delete_expr&) = 0;
+  virtual void end_visit(rename_expr&) = 0;
+  virtual void end_visit(replace_expr&) = 0;
+  virtual void end_visit(transform_expr&) = 0;
 };
 
 } /* namespace zorba */

@@ -40,6 +40,7 @@
 #include "compiler/expression/expr_consts.h"
 #include "compiler/semantic_annotations/annotation_holder.h"
 #include "store/api/fullText/ft_options.h"
+#include "store/api/update_consts.h"
 
 namespace zorba {
 
@@ -1419,6 +1420,195 @@ public:
   void traverse(void* (*op) (void*), int flags);
 */
 
+/////////////////////////////////////////////////////////////////////////
+//                                                                     //
+//	Update expressions                                                 //
+//  [http://www.w3.org/TR/xqupdate/]                                   //
+//                                                                     //
+/////////////////////////////////////////////////////////////////////////
+
+// [242] [http://www.w3.org/TR/xqupdate/#prod-xquery-InsertExpr]
+class insert_expr : public expr
+/*______________________________________________________________________
+|	::= DO_INSERT  ExprSingle  INTO  ExprSingle
+|			|	DO_INSERT  ExprSingle  AS  FIRST_INTO  ExprSingle
+|			|	DO_INSERT  ExprSingle  AS  LAST_INTO  ExprSingle
+|			| DO_INSERT  ExprSingle  AFTER  ExprSingle
+|			| DO_INSERT  ExprSingle  BEFORE  ExprSingle
+|_______________________________________________________________________*/
+{
+protected:
+  store::UpdateConsts::InsertType theType;
+	expr_t theSourceExpr;
+	expr_t theTargetExpr;
+
+public:
+	insert_expr(
+		const QueryLoc&,
+    store::UpdateConsts::InsertType,
+		expr_t,
+		expr_t);
+	virtual ~insert_expr();
+
+public:
+  store::UpdateConsts::InsertType getType() const { return theType; }
+	expr_t getSouceExpr() const { return theSourceExpr; }
+	expr_t getTargetExpr() const { return theTargetExpr; }
+  
+
+public:
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+	std::ostream& put(std::ostream&) const;
+
+};
+
+
+
+// [243] [http://www.w3.org/TR/xqupdate/#prod-xquery-DeleteExpr]
+class delete_expr : public expr
+/*______________________________________________________________________
+|	::= DO_DELETE  expr
+|_______________________________________________________________________*/
+{
+protected:
+	expr_t theTargetExpr;
+
+public:
+	delete_expr(
+		const QueryLoc&,
+		expr_t);
+	virtual ~delete_expr();
+
+public:
+	expr_t getTargetExpr() const { return theTargetExpr; }
+
+public:
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+	std::ostream& put(std::ostream&) const;
+};
+
+
+
+// [244] [http://www.w3.org/TR/xqupdate/#prod-xquery-ReplaceExpr]
+class replace_expr : public expr
+/*______________________________________________________________________
+|	::= DO_REPLACE  expr  WITH  expr
+|			| DO_REPLACE  VALUE_OF  expr  WITH  expr
+|_______________________________________________________________________*/
+{
+protected:
+  store::UpdateConsts::ReplaceType theType;
+	expr_t theTargetExpr;
+	expr_t theReplaceExpr;
+
+public:
+	replace_expr(
+		const QueryLoc&,
+    store::UpdateConsts::ReplaceType aType,
+		expr_t,
+		expr_t);
+	virtual ~replace_expr();
+
+public:
+  store::UpdateConsts::ReplaceType getType() const { return theType; }
+	expr_t getTargetExpr() const { return theTargetExpr; }
+	expr_t getReplaceExpr() const { return theReplaceExpr; }
+
+public:
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+	std::ostream& put(std::ostream&) const;
+
+};
+
+
+
+// [245] [http://www.w3.org/TR/xqupdate/#prod-xquery-RenameExpr]
+class rename_expr : public expr
+/*______________________________________________________________________
+|	::= DO_RENAME  expr  AS  expr
+|_______________________________________________________________________*/
+{
+protected:
+	expr_t theTargetExpr;
+	expr_t theNameExpr;
+
+public:
+	rename_expr(
+		const QueryLoc&,
+		expr_t,
+		expr_t);
+	virtual ~rename_expr();
+
+public:
+	expr_t getTargetExpr() const { return theTargetExpr; }
+	expr_t getNameExpr() const { return theTargetExpr; }
+
+public:
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+	std::ostream& put(std::ostream&) const;
+
+};
+
+
+
+// [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
+class transform_expr : public expr
+/*______________________________________________________________________
+|	::= TRANSFORM_COPY_DOLLAR  VarNameList
+|				MODIFY  expr  RETURN  expr
+|_______________________________________________________________________*/
+{
+public:
+	typedef rchandle<var_expr> varref_t;
+
+protected:
+	std::vector<varref_t> theAssigns;
+	expr_t theModifyExpr;
+	expr_t theReturnExpr;
+
+public:
+	transform_expr(
+		const QueryLoc&,
+		expr_t aModifyExpr,
+		expr_t aReturnExpr);
+	~transform_expr() {}
+
+public:
+	expr_t getModifyExpr() const { return theModifyExpr; }
+	expr_t getReturnExpr() const { return theReturnExpr; }
+
+public:
+	void add(varref_t anAssign)
+  { theAssigns.push_back(anAssign); }
+
+	varref_t & operator[](int i)
+  { return theAssigns[i]; }
+	varref_t const& operator[](int i) const
+  { return theAssigns[i]; }
+
+	std::vector<varref_t>::const_iterator begin() const
+  { return theAssigns.begin(); }
+	std::vector<varref_t>::iterator begin()
+  { return theAssigns.begin(); }
+	std::vector<varref_t>::const_iterator end() const
+  { return theAssigns.end(); }
+	std::vector<varref_t>::iterator end()
+  { return theAssigns.end(); }
+	uint32_t size() const
+  { return theAssigns.size(); }
+
+  expr_iterator_data *make_iter ();
+
+public:
+  void next_iter (expr_iterator_data&);
+  void accept (expr_visitor&);
+	std::ostream& put(std::ostream&) const;
+
+};
 
 } /* namespace zorba */
 #endif  /*  ZORBA_EXPR_H */

@@ -486,7 +486,11 @@ public:
   
   PRINTER_VISITOR(FnAdjustToTimeZoneIterator_1);
   PRINTER_VISITOR(FnAdjustToTimeZoneIterator_2);
-
+  PRINTER_VISITOR(InsertIterator);
+  PRINTER_VISITOR(DeleteIterator);
+  PRINTER_VISITOR(ReplaceIterator);
+  PRINTER_VISITOR(RenameIterator);
+  PRINTER_VISITOR(TransformIterator);
 };
 
 } /* namespace zorba */

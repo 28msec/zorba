@@ -28,6 +28,22 @@ public:
   }
   UpdateKind;
 
+  typedef enum
+  {
+    INTO,
+    AS_FIRST_INTO,
+    AS_LAST_INTO,
+    AFTER,
+    BEFORE
+  } InsertType;
+
+  typedef enum
+  {
+    VALUE_OF_NODE,
+    NODE
+  } ReplaceType;
+    
+
   static std::string toString(UpdateKind k);
 };
 

@@ -3861,49 +3861,60 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 void *begin_visit(const DeleteExpr& /*v*/)
 {
   TRACE_VISIT ();
-  ZORBA_NOT_IMPLEMENTED ("delete");
   return no_state;
 }
 
-void end_visit(const DeleteExpr& /*v*/, void* /*visit_state*/)
+void end_visit(const DeleteExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+  expr_t aTarget = pop_nodestack();
+  expr_t aDelete = new delete_expr(v.get_location(), aTarget);
+  nodestack.push(aDelete);
 }
 
 void *begin_visit(const InsertExpr& /*v*/)
 {
   TRACE_VISIT ();
-  ZORBA_NOT_IMPLEMENTED ("insert");
   return no_state;
 }
 
-void end_visit(const InsertExpr& /*v*/, void* /*visit_state*/)
+void end_visit(const InsertExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+  expr_t aTarget = pop_nodestack();
+  expr_t aSource = pop_nodestack();
+  expr_t aInsert = new insert_expr(v.get_location(), v.getType(), aSource, aTarget); 
+  nodestack.push(aInsert);
 }
 
 void *begin_visit(const RenameExpr& /*v*/)
 {
   TRACE_VISIT ();
-  ZORBA_NOT_IMPLEMENTED ("rename");
   return no_state;
 }
 
-void end_visit(const RenameExpr& /*v*/, void* /*visit_state*/)
+void end_visit(const RenameExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+  expr_t aName = pop_nodestack();
+  expr_t aTarget = pop_nodestack();
+  expr_t aRename = new rename_expr(v.get_location(), aTarget, aName);
+  nodestack.push(aRename);
 }
 
 void *begin_visit(const ReplaceExpr& /*v*/)
 {
   TRACE_VISIT ();
-  ZORBA_NOT_IMPLEMENTED ("replace");
   return no_state;
 }
 
-void end_visit(const ReplaceExpr& /*v*/, void* /*visit_state*/)
+void end_visit(const ReplaceExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+  expr_t aReplacement = pop_nodestack();
+  expr_t aTarget = pop_nodestack();
+  expr_t aReplace = new replace_expr(v.get_location(), v.getType(), aTarget, aReplacement);
+  nodestack.push(aReplace);
 }
 
 void *begin_visit(const RevalidationDecl& /*v*/)
@@ -3922,13 +3933,23 @@ void end_visit(const RevalidationDecl& /*v*/, void* /*visit_state*/)
 void *begin_visit(const TransformExpr& /*v*/)
 {
   TRACE_VISIT ();
-  ZORBA_NOT_IMPLEMENTED ("transform");
+  nodestack.push(NULL);
   return no_state;
 }
 
-void end_visit(const TransformExpr& /*v*/, void* /*visit_state*/)
+void end_visit(const TransformExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+  expr_t aReturn = pop_nodestack();
+  expr_t aModify = pop_nodestack();
+  rchandle<transform_expr> aTransform = new transform_expr(v.get_location(), aModify, aReturn);
+  expr_t anAssign = pop_nodestack();
+  while (anAssign != 0) 
+  {
+    aTransform->add(anAssign); 
+    expr_t anAssign = pop_nodestack();
+  }
+  nodestack.push(aTransform); 
 }
 
 void *begin_visit(const VarNameList& /*v*/)

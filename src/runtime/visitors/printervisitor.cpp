@@ -23,6 +23,7 @@
 #include "runtime/debug/debug_iterators.h"
 #include "types/root_typemanager.h"
 #include "runtime/visitors/iterprinter.h"
+#include "runtime/update/update.h"
 
 #include "system/globalenv.h"
 
@@ -1711,7 +1712,11 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_1);
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_2);
-  
+  PRINTER_VISITOR_DEFINITION(InsertIterator);
+  PRINTER_VISITOR_DEFINITION(DeleteIterator);
+  PRINTER_VISITOR_DEFINITION(ReplaceIterator);
+  PRINTER_VISITOR_DEFINITION(RenameIterator);
+  PRINTER_VISITOR_DEFINITION(TransformIterator);
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */
 

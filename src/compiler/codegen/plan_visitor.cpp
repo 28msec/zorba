@@ -30,6 +30,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/fncontext/FnContextImpl.h"
+#include "runtime/update/update.h"
 #include "store/api/item_factory.h"
 #include "util/tracer.h"
 #include "functions/function.h"
@@ -283,6 +284,7 @@ bool begin_visit(flwor_expr& v)
 }
 
 
+
 void end_visit(flwor_expr& v)
 {
   CODEGEN_TRACE_OUT("");
@@ -419,6 +421,93 @@ void end_visit(if_expr& v)
   PlanIter_t iterCond = pop_itstack();
   PlanIter_t iterIfThenElse = new IfThenElseIterator(v.get_loc(), iterCond, iterThen, iterElse);
   itstack.push(&*iterIfThenElse);
+}
+
+
+bool begin_visit(insert_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(insert_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lTarget = pop_itstack();
+  PlanIter_t lSource = pop_itstack();
+  PlanIter_t lInsert = new InsertIterator(v.get_loc(), v.getType(), lSource, lTarget); 
+  itstack.push(&*lInsert);
+}
+
+bool begin_visit(delete_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(delete_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lTarget = pop_itstack();
+  vector<PlanIter_t> lVec;
+  lVec.push_back(lTarget);
+  PlanIter_t lDelete = new DeleteIterator(v.get_loc(), lVec);
+  itstack.push(&*lDelete);
+}
+
+bool begin_visit(replace_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(replace_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lReplacement = pop_itstack();
+  PlanIter_t lTarget = pop_itstack();
+  PlanIter_t lReplace = new ReplaceIterator(v.get_loc(), v.getType(), lTarget, lReplacement);
+  itstack.push(&*lReplace);
+}
+
+bool begin_visit(rename_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(rename_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lName = pop_itstack();
+  PlanIter_t lTarget = pop_itstack();
+  vector<PlanIter_t> lVec;
+  lVec.push_back(lTarget);
+  lVec.push_back(lName);
+  PlanIter_t lRename = new RenameIterator(v.get_loc(), lVec);
+  itstack.push(&*lRename);
+}
+
+bool begin_visit(transform_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(transform_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lReturn = pop_itstack();
+  PlanIter_t lModify = pop_itstack();
+  rchandle<TransformIterator> lTransform = new TransformIterator(v.get_loc(), lModify, lReturn);
+  std::vector<var_expr_t>::const_iterator lIter = v.begin();
+  std::vector<var_expr_t>::const_iterator lEnd = v.end();
+  for ( ; lIter!= lEnd ; ++lIter)
+  {
+    PlanIter_t lAssign = pop_itstack();
+    lTransform->addAssign(lAssign);
+  }
+  itstack.push(&*lTransform);
 }
 
 

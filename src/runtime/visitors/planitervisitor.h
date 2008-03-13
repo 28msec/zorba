@@ -163,6 +163,11 @@ namespace zorba
   class FnCurrentTimeIterator;
   class FnImplicitTimezoneIterator;
   class FnDefaultCollationIterator;
+  class InsertIterator;
+  class DeleteIterator;
+  class ReplaceIterator;
+  class RenameIterator;
+  class TransformIterator;
 
 #define PLAN_ITER_VISTOR(class)    \
   virtual void beginVisit ( const class& ) = 0;  \
@@ -625,9 +630,14 @@ namespace zorba
 
       virtual void beginVisit(const FnDefaultCollationIterator&) = 0;
       virtual void endVisit(const FnDefaultCollationIterator&) = 0;
-	  
-	  PLAN_ITER_VISTOR(FnAdjustToTimeZoneIterator_1);
+
+	    PLAN_ITER_VISTOR(FnAdjustToTimeZoneIterator_1);
       PLAN_ITER_VISTOR(FnAdjustToTimeZoneIterator_2);
+      PLAN_ITER_VISTOR(InsertIterator);
+      PLAN_ITER_VISTOR(DeleteIterator);
+      PLAN_ITER_VISTOR(ReplaceIterator);
+      PLAN_ITER_VISTOR(RenameIterator);
+      PLAN_ITER_VISTOR(TransformIterator);
 	  
   }; /* class PlanIterVisitor */
 } /* namespace zorba */

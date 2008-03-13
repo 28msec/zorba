@@ -143,6 +143,8 @@ class validate_expr; class extension_expr; class relpath_expr;
 class axis_step_expr; class match_expr; class primary_expr; class const_expr;
 class order_expr; class funcall_expr; class elem_expr; class doc_expr;
 class attr_expr; class text_expr; class pi_expr; class function_def_expr;
+class insert_expr; class delete_expr; class replace_expr; class rename_expr;
+class transform_expr;
 
 
 typedef rchandle<expr> expr_t;

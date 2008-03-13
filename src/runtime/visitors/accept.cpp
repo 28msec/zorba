@@ -14,7 +14,6 @@
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/core/trycatch.h"
 #include "runtime/booleans/BooleanImpl.h"
-#include "runtime/qnames/QNamesImpl.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/accessors/AccessorsImpl.h"
@@ -22,6 +21,8 @@
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/debug/debug_iterators.h"
+#include "runtime/update/update.h"
+#include "runtime/qnames/QNamesImpl.h"
 
 #define NOARY_ACCEPT(type) \
   void type::accept(PlanIterVisitor& v) const { \
@@ -47,9 +48,10 @@
 #define NARY_ACCEPT(type) \
   void type::accept(PlanIterVisitor& v) const { \
     v.beginVisit(*this); \
-    std::vector<PlanIter_t>::const_iterator iter = theChildren.begin(); \
-    for ( ; iter != theChildren.end(); ++iter ) { \
-      ( *iter )->accept ( v ); \
+    std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); \
+    std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end(); \
+    for ( ; lIter != lEnd; ++lIter ) { \
+      ( *lIter )->accept ( v ); \
     } \
     v.endVisit(*this); \
   }
@@ -126,6 +128,8 @@ namespace zorba {
   BINARY_ACCEPT(ResolveQNameIterator);
   BINARY_ACCEPT(QNameIterator);
   BINARY_ACCEPT(FnAdjustToTimeZoneIterator_2);
+  BINARY_ACCEPT(InsertIterator);
+  BINARY_ACCEPT(ReplaceIterator);
   
   // nary iterators
   NARY_ACCEPT(NormalizeUnicodeIterator);
@@ -178,6 +182,18 @@ namespace zorba {
   void TryCatchIterator::accept(PlanIterVisitor &v) const {
     v.beginVisit(*this);
     theChild->accept ( v );
+    v.endVisit(*this);
+  }
+
+  void TransformIterator::accept(PlanIterVisitor &v) const {
+    v.beginVisit(*this);
+    std::vector<PlanIter_t>::const_iterator lIter = theAssignIters.begin();
+    std::vector<PlanIter_t>::const_iterator lEnd = theAssignIters.end();
+    for ( ; lIter != lEnd; ++lIter ) {
+      ( *lIter )->accept ( v );
+    } 
+    theModifyIter->accept(v);
+    theReturnIter->accept(v);
     v.endVisit(*this);
   }
 } /* namespace zorba */

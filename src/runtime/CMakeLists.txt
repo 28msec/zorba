@@ -25,6 +25,7 @@ SET(RUNTIME_SRCS
     visitors/iterprinter.cpp
     fncontext/FnContextImpl.cpp
     debug/debug_iterators.cpp
+    update/update.cpp
 )
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS accessors)

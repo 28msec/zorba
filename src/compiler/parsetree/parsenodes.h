@@ -23,6 +23,7 @@
 #include <zorba/static_context_consts.h>
 
 #include "compiler/parser/parse_constants.h"
+#include "store/api/update_consts.h"
 #include "context/dynamic_context.h"
 #include "compiler/parser/query_loc.h"
 
@@ -4689,38 +4690,22 @@ class InsertExpr : public exprnode
 |			| INSERT_NODES  ExprSingle  BEFORE  ExprSingle
 |_______________________________________________________________________*/
 {
-public:
-  enum InsertType
-  {
-    NODE_INTO,
-    NODE_AS_FIRST_INTO,
-    NODE_AS_LAST_INTO,
-    NODE_AFTER,
-    NODE_BEFORE,
-    NODES_INTO,
-    NODES_AS_FIRST_INTO,
-    NODES_AS_LAST_INTO,
-    NODES_AFTER,
-    NODES_BEFORE
-  };
-
 protected:
-  InsertType         theInsertType;
+  store::UpdateConsts::InsertType theInsertType;
 	rchandle<exprnode> theSourceExpr;
 	rchandle<exprnode> theTargetExpr;
 
 public:
 	InsertExpr(
 		const QueryLoc&,
-    InsertType,
-		rchandle<exprnode>,
-		rchandle<exprnode>);
-
+    store::UpdateConsts::InsertType,
+		rchandle<exprnode> aSourceExpr,
+		rchandle<exprnode> aTargetExpr);
 
 public:
 	rchandle<exprnode> getSourceExpr() const { return theSourceExpr; }
 	rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
-  InsertType         getInsertType() const { return theInsertType; }
+  store::UpdateConsts::InsertType getType() const { return theInsertType; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4736,26 +4721,16 @@ class DeleteExpr : public exprnode
 |	::= DO_DELETE  ExprSingle
 |_______________________________________________________________________*/
 {
-public:
-  enum DeleteType
-  {
-    NODE,
-    NODES
-  };
-
 protected:
-  DeleteType theDeleteType;
 	rchandle<exprnode> theTargetExpr;
 
 public:
 	DeleteExpr(
 		const QueryLoc&,
-    DeleteType,
 		rchandle<exprnode>);
 
 public:
-	rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
-  DeleteType         getDeleteType() const { return theDeleteType; }
+	rchandle<exprnode>       getTargetExpr() const { return theTargetExpr; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4772,29 +4747,23 @@ class ReplaceExpr : public exprnode
 |			| DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
 |_______________________________________________________________________*/
 {
-public:
-  enum ReplaceType
-  {
-    WITH,
-    VALUE_OF_WITH
-  };
-
 protected:
-  ReplaceType theReplaceType;
-	rchandle<exprnode> theSourceExpr;
+  store::UpdateConsts::ReplaceType theReplaceType;
 	rchandle<exprnode> theTargetExpr;
+	rchandle<exprnode> theReplaceExpr;
 
 public:
 	ReplaceExpr(
 		const QueryLoc&,
-    ReplaceType aReplaceType,
-		rchandle<exprnode> theSourceExpr,
-		rchandle<exprnode> theTargetExpr);
+    store::UpdateConsts::ReplaceType aReplaceType,
+		rchandle<exprnode> aTargetExpr,
+		rchandle<exprnode> aReplaceExpr);
 
 
 public:
-	rchandle<exprnode> getSourceExpr() const { return theSourceExpr; }
-	rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
+  store::UpdateConsts::ReplaceType getType() const { return theReplaceType; }
+	rchandle<exprnode>        getTargetExpr() const  { return theTargetExpr; }
+	rchandle<exprnode>        getReplaceExpr() const  { return theReplaceExpr; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4811,19 +4780,19 @@ class RenameExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<exprnode> theSourceExpr;
 	rchandle<exprnode> theTargetExpr;
+	rchandle<exprnode> theNameExpr;
 
 public:
 	RenameExpr(
 		const QueryLoc&,
-		rchandle<exprnode> aSourceExpr,
-		rchandle<exprnode> aTargetExpr);
+		rchandle<exprnode> aTargetExpr,
+		rchandle<exprnode> aName);
 
 
 public:
-	rchandle<exprnode> getSourceExpr() const { return theSourceExpr; }
 	rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
+	rchandle<exprnode> getNameExpr() const { return theNameExpr; }
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -4881,7 +4850,7 @@ public:
 
 // [249a] VarNameList
 // ------------------
-class VarNameList : public parsenode
+class VarNameList : public exprnode
 /*______________________________________________________________________
 |
 |	::= VarBinding |	VarNameList  COMMA_DOLLAR  VarBinding
@@ -4908,7 +4877,7 @@ public:
 
 // [249b] VarBinding
 // -----------------
-class VarBinding : public parsenode
+class VarBinding : public exprnode
 /*______________________________________________________________________
 |
 |	::= VARNAME	 GETS  ExprSingle

@@ -242,6 +242,31 @@ bool normalizer::begin_visit(pi_expr& /*node*/)
   return true;
 }
 
+bool normalizer::begin_visit(insert_expr&)
+{
+  return true;
+}
+
+bool normalizer::begin_visit(delete_expr&)
+{
+  return true;
+}
+
+bool normalizer::begin_visit(rename_expr&)
+{
+  return true;
+}
+
+bool normalizer::begin_visit(replace_expr&)
+{
+  return true;
+}
+
+bool normalizer::begin_visit(transform_expr&)
+{
+  return true;
+}
+
 void normalizer::end_visit(expr& /*node*/)
 {
 }
@@ -360,6 +385,21 @@ bool normalizer::begin_visit (function_def_expr& /*v*/) {
 
 void normalizer::end_visit (function_def_expr &v) {
 }
+
+void normalizer::end_visit(insert_expr&)
+{}
+
+void normalizer::end_visit(delete_expr&)
+{}
+
+void normalizer::end_visit(replace_expr&)
+{}
+
+void normalizer::end_visit(rename_expr&)
+{}
+
+void normalizer::end_visit(transform_expr&)
+{}
 
 void zorba::normalize_expr_tree (const char *norm_descr, static_context *sctx, expr_t root) {
   normalizer n (sctx);
