@@ -7,8 +7,18 @@
 #include "types/casting.h"
 #include "store/api/item_factory.h"
 
+using namespace std;
+
 namespace zorba
 {
+
+  static xqtref_t seq_target_type (xqtref_t type) {
+    TypeManager &ts = GENV_TYPESYSTEM;
+    if (ts.is_equal (*type, *ts.create_empty_type ()))
+      return type;
+    else
+      return ts.prime_type (*type);
+  }
 
 /*******************************************************************************
 
@@ -112,7 +122,7 @@ CastIterator::CastIterator(
     const xqtref_t& aCastType)
   : UnaryBaseIterator<CastIterator, PlanIteratorState>(loc, aChild)
 {
-  theCastType = GENV_TYPESYSTEM.prime_type(*aCastType);
+  theCastType = seq_target_type (aCastType);
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aCastType);
 }
 
@@ -175,7 +185,7 @@ CastableIterator::CastableIterator(
 :
   UnaryBaseIterator<CastableIterator, PlanIteratorState>(aLoc, aChild)
 {
-  theCastType = GENV_TYPESYSTEM.prime_type(*aCastType);
+  theCastType = seq_target_type (aCastType);
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aCastType);
 }
 
@@ -219,7 +229,7 @@ store::Item_t CastableIterator::nextImpl(PlanState& aPlanState) const
 PromoteIterator::PromoteIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const xqtref_t& aPromoteType)
   : UnaryBaseIterator<PromoteIterator, PlanIteratorState>(aLoc, aChild)
 {
-  thePromoteType = GENV_TYPESYSTEM.prime_type(*aPromoteType);
+  thePromoteType = seq_target_type (aPromoteType);
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aPromoteType);
 }
 
@@ -268,7 +278,7 @@ store::Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
   TreatIterator::TreatIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const xqtref_t& aTreatType, ZorbaError::ErrorCodes aErrorCode)
   : UnaryBaseIterator<TreatIterator, PlanIteratorState>(aLoc, aChild), theErrorCode (aErrorCode)
 {
-  theTreatType = GENV_TYPESYSTEM.prime_type(*aTreatType);
+  theTreatType = seq_target_type (aTreatType);
   theQuantifier = GENV_TYPESYSTEM.quantifier(*aTreatType);
 }
 
