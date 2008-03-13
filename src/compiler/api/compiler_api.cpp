@@ -189,9 +189,11 @@ PlanIter_t XQueryCompiler::compile(xqp_string source_uri, xqp_string xquery_text
   if (pp_cfg)
     pp_cfg->printNormalizedExprPlan(e_h);
 
-  RewriterContext rCtx(m_sctx, e_h);
-  GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-  e_h = rCtx.getRoot();
+  if (Properties::instance ()->useOptimizer ()) {
+    RewriterContext rCtx(m_sctx, e_h);
+    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+    e_h = rCtx.getRoot();
+  }
 
   PlanIter_t plan = codegen ("query", e_h);
   if (plan == NULL) {

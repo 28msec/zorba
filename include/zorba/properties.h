@@ -18,6 +18,7 @@ namespace zorba {
       bool theTraceParsing;
       bool theTraceScanning;
       bool theUseSerializer;
+      bool theUseOptimizer;
       std::string theResultFile;
       bool theUseResultFile;
       bool theAbortWhenFatalError;
@@ -109,6 +110,8 @@ namespace zorba {
 
       bool
       useSerializer() { return theUseSerializer; }
+
+      bool useOptimizer() { return theUseOptimizer; }
       
       const std::string& getResultFile() { return theResultFile; }
       bool

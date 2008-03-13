@@ -23,6 +23,7 @@ namespace zorba
     theTraceParsing(false),
     theTraceScanning(false),
     theUseSerializer(false),
+    theUseOptimizer(true),
     theResultFile(""),
     theUseResultFile(false),
     thePrintQuery(false),
@@ -108,6 +109,7 @@ namespace zorba
       ( "trace-parsing,p", "trace parsing" )
       ( "trace-scanning,s", "trace scanning" )
       ("use-serializer,r", "use serializer")
+      ("opt-level,O", po::value<bool> (&theUseOptimizer), "optimization level (1=enabled (default), 0=off)")
       // program option with a value => the value is directly set to the variable theResultFile
       ("result-file,o", po::value<std::string>(&theResultFile), "result file")
       ("abort", "abort when fatal error happens")
