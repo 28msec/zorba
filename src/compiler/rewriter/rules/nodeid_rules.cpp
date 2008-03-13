@@ -2,8 +2,17 @@
 #include "context/static_context.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/expr.h"
+#include "functions/function.h"
+
+using namespace std;
 
 namespace zorba {
+
+template<typename T> void exprs_to_holders (T exprs_begin, T exprs_end, vector <AnnotationHolder *> &anns)
+{
+  for (T i = exprs_begin; i < exprs_end; i++)
+    anns.push_back (static_cast<AnnotationHolder *> (&* (*i)));
+}
 
 RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
 {
@@ -19,8 +28,13 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
         || f == LOOKUP_FN ("fn", "min", 2))
     {
       expr_t arg = (*fo)[0];
-      arg->put_annotation(Annotation::IGNORES_DUPLICATE_NODES, TSVAnnotationValue::TRUE_VALUE);
+      arg->put_annotation(Annotation::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
       arg->put_annotation(Annotation::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+    } else {
+      vector <AnnotationHolder *> anns;
+      exprs_to_holders (fo->begin (), fo->end (), anns);
+      f->compute_annotation (node, anns, Annotation::IGNORES_DUP_NODES);
+      f->compute_annotation (node, anns, Annotation::IGNORES_SORTED_NODES);
     }
   }
   return NULL;
@@ -105,7 +119,7 @@ RULE_REWRITE_POST(MarkNodesWithNodeIdProperties)
 
 static bool can_remove_sort_distinct(const fo_expr *fo)
 {
-  TSVAnnotationValue *dnnr = static_cast<TSVAnnotationValue *>(fo->get_annotation(Annotation::IGNORES_DUPLICATE_NODES).get());
+  TSVAnnotationValue *dnnr = static_cast<TSVAnnotationValue *>(fo->get_annotation(Annotation::IGNORES_DUP_NODES).get());
   TSVAnnotationValue *snnr = static_cast<TSVAnnotationValue *>(fo->get_annotation(Annotation::IGNORES_SORTED_NODES).get());
   return dnnr != NULL && dnnr->getValue() == TSVAnnotationValue::TSV_TRUE && snnr != NULL && dnnr->getValue() == TSVAnnotationValue::TSV_TRUE;
 }

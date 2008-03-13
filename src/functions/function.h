@@ -14,6 +14,7 @@
 #include "common/shared_types.h"
 #include "functions/signature.h"
 #include "compiler/parser/query_loc.h"
+#include "compiler/semantic_annotations/annotation_holder.h"
 
 namespace zorba {
 
@@ -62,6 +63,9 @@ public:
 	virtual xqtref_t type_check(signature&) const = 0;
   
   virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+
+  virtual void compute_annotation (AnnotationHolder *, std::vector<AnnotationHolder *> &, Annotation::key_t) const {}
+
 	// runtime arg validation: XXX move this out
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const = 0;
 

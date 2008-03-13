@@ -88,6 +88,17 @@ xqtref_t op_concatenate::return_type (const std::vector<xqtref_t> &arg_types) co
   }
 }
 
+void op_concatenate::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
+  switch (k) {
+  case Annotation::IGNORES_SORTED_NODES:
+  case Annotation::IGNORES_DUP_NODES:
+    for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
+      (*i)->put_annotation (k, parent->get_annotation (k));
+    break;
+  default: break;
+  }
+}
+
 //15.1.3 fn:index-of
 /*_______________________________________________________________________
 |

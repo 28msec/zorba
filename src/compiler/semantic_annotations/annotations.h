@@ -11,7 +11,7 @@ class Annotation {
   public:
     typedef enum {
       IGNORES_SORTED_NODES,
-      IGNORES_DUPLICATE_NODES,
+      IGNORES_DUP_NODES,
       PRODUCES_SORTED_NODES,
       PRODUCES_DISTINCT_NODES,
     } key_t;

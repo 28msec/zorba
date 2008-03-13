@@ -50,6 +50,7 @@ public:
 	xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
   xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
 };
 
 
