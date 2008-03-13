@@ -92,6 +92,12 @@ void XmlTree::removeReferences(ulong count) throw()
 /////////////////////////////////////////////////////////////////////////////////
 
 
+/*******************************************************************************
+  Create a new node N and make it (a) the root of a given xml tree, or (b) a
+  child of a given node, or (c) neither a nor b. 
+
+  (b) If a parent P is given, then N becomes 
+********************************************************************************/
 XmlNode::XmlNode(
     XmlTree*              tree,
     XmlNode*              parent,

@@ -18,6 +18,9 @@ class PUL
 public:
   virtual ~PUL() { }
 
+  virtual void addInsertAttributes(Item* target, std::vector<XmlNode*>& attrs) = 0;
+  virtual void addReplaceValue(Item* target, xqpStringStore* newValue) = 0;
+  virtual void addReplaceContent(Item* target, Item* newChild) = 0;
   virtual void addRename(Item* node, Item* name) = 0;
   virtual void addDelete(Item* node) = 0;
 

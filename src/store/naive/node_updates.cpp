@@ -18,6 +18,56 @@ namespace zorba { namespace store {
 /*******************************************************************************
 
 ********************************************************************************/
+void XmlNode::insertBefore(std::vector<XmlNode*>& nodes)
+{
+  ZORBA_ASSERT(theParent);
+
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::insertAttributes(std::vector<XmlNode*>& attrs)
+{
+  ElementNode* n = reinterpret_cast<ElementNode*>(this);
+
+  ulong numAttrs = attrs.size();
+  for (ulong i = 0; i < numAttrs; i++)
+  {
+    AttributeNode* attr = reinterpret_cast<AttributeNode*>(attr);
+
+    ZORBA_ASSERT(attr->isConstructed());
+    ZORBA_ASSERT(attr->theParent == 0 || attr->theParent->isConstructed());
+
+    n->checkQName(reinterpret_cast<QNameItemImpl*>(attr->theName.getp()));
+    n->checkUniqueAttr(attr->theName);
+
+    attr->disconnect();
+
+    attr->theParent = this;
+
+    attr->setTree(this->getTree());
+    if (n->numChildren() > 0)
+    {
+      OrdPath::insertInto(n->getAttr(n->numAttributes())->theOrdPath,
+                          n->getChild(0)->theOrdPath,
+                          attr->theOrdPath);
+    }
+    else
+    {
+      OrdPath::insertAfter(n->getAttr(n->numAttributes())->theOrdPath,
+                           attr->theOrdPath);
+    }
+
+    n->attributes().push_back(attr, false);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void XmlNode::disconnect() throw()
 {
   if (theParent == NULL)
@@ -84,28 +134,6 @@ void XmlNode::switchTree() throw()
   the only child og "this". Return a vector of pointers to the disconnected
   children.
 ********************************************************************************/
-void XmlNode::replaceElementContent(
-    XmlNode*               newText,
-    std::vector<XmlNode*>& children)
-{
-  ElementNode* n = reinterpret_cast<ElementNode*>(this);
-
-  // Make a copy of the children and then disconnect all the children
-  children = n->children().theNodes;
-
-  ulong numChildren = this->numChildren();
-  for (ulong i = 0; i < numChildren; i++)
-    removeChild(i);
-
-  appendChild(newText);
-}
-
-
-/*******************************************************************************
-  Disconnect all the current children of "this" and make the given text node
-  the only child og "this". Return a vector of pointers to the disconnected
-  children.
-********************************************************************************/
 void XmlNode::replaceValue(xqpStringStore* newValue, xqpStringStore_t& oldValue)
 {
   switch (getNodeKind())
@@ -151,6 +179,79 @@ void XmlNode::replaceValue(xqpStringStore* newValue, xqpStringStore_t& oldValue)
 
 
 /*******************************************************************************
+  Disconnect all the current children of "this" and make the given text node
+  the only child og "this". Return a vector of pointers to the disconnected
+  children.
+********************************************************************************/
+void XmlNode::replaceElementContent(
+    XmlNode*               newText,
+    std::vector<XmlNode*>& children)
+{
+  ElementNode* n = reinterpret_cast<ElementNode*>(this);
+
+  // Make a copy of the children and then disconnect all the children
+  children = n->children().theNodes;
+
+  ulong numChildren = this->numChildren();
+  for (ulong i = 0; i < numChildren; i++)
+    removeChild(i);
+
+  appendChild(newText);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::rename(QNameItemImpl* newName, Item_t& oldName)
+{
+  if (getNodeKind() == StoreConsts::elementNode)
+  {
+    ElementNode* n = reinterpret_cast<ElementNode*>(this);
+
+    n->checkQName(newName);
+
+    oldName = n->theName;
+    n->theName = newName;
+
+    n->addLocalBinding(newName->getPrefixP(), newName->getNamespaceP());
+  }
+  else if(getNodeKind() == StoreConsts::attributeNode)
+  {
+    AttributeNode* n = reinterpret_cast<AttributeNode*>(this);
+
+    if (n->theParent)
+    {
+      ElementNode* parent = reinterpret_cast<ElementNode*>(n->theParent);
+
+      parent->checkQName(newName);
+
+      parent->addLocalBinding(newName->getPrefixP(), newName->getNamespaceP());
+    }
+
+    oldName = n->theName;
+    n->theName = newName;
+  }
+  else
+  {
+    ZORBA_ASSERT(0);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::renamePi(xqpStringStore* newName,  xqpStringStore_t& oldName)
+{
+  PiNode* n = reinterpret_cast<PiNode*>(this);
+
+  oldName = n->theTarget;
+  n->theTarget = newName;
+}
+
+
+/*******************************************************************************
   Check if the ns binding implied by the given qname conflicts with the current
   ns bindings of "this" node.
 ********************************************************************************/
@@ -184,52 +285,6 @@ void XmlNode::checkQName(QNameItemImpl* newName)
                             << newName->getNamespaceP() << "]", "");
     }
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlNode::rename(QNameItemImpl* newName, Item_t& oldName)
-{
-  if (getNodeKind() == StoreConsts::elementNode)
-  {
-    ElementNode* n = reinterpret_cast<ElementNode*>(this);
-
-    oldName = n->theName;
-    n->theName = newName;
-
-    n->addLocalBinding(newName->getPrefixP(), newName->getNamespaceP());
-  }
-  else if(getNodeKind() == StoreConsts::attributeNode)
-  {
-    AttributeNode* n = reinterpret_cast<AttributeNode*>(this);
-
-    oldName = n->theName;
-    n->theName = newName;
-
-    if (n->theParent)
-    {
-      ElementNode* parent = reinterpret_cast<ElementNode*>(n->theParent);
-      parent->addLocalBinding(newName->getPrefixP(), newName->getNamespaceP());
-    }
-  }
-  else
-  {
-    ZORBA_ASSERT(0);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlNode::renamePi(xqpStringStore* newName,  xqpStringStore_t& oldName)
-{
-  PiNode* n = reinterpret_cast<PiNode*>(this);
-
-  oldName = n->theTarget;
-  n->theTarget = newName;
 }
 
 

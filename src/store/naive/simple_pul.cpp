@@ -8,6 +8,46 @@
 
 namespace zorba { namespace store {
 
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addInsertAttributes(Item* target, std::vector<XmlNode*>& attrs)
+{
+  ZORBA_ASSERT(target->isNode());
+
+  XmlNode* n = reinterpret_cast<XmlNode*>(target);
+
+  theTreeRoots.insert(n->getTree()->getRoot());
+
+  NodeUpdates* updatesp;
+  bool found = theNodeToUpdatesMap.get(n, updatesp);
+
+  if (!found)
+  {
+    InsertAttributesPrimitive* upd = new InsertAttributesPrimitive(n, attrs);
+    theDoFirstList.push_back(upd);
+
+    NodeUpdates updates(1);
+    updates[0] = upd;
+    updatesp = &updates;
+    theNodeToUpdatesMap.insert(n, updatesp);
+  }
+  else
+  {
+    ulong numUpdates = updatesp->size();
+
+    for (ulong i = 0; i < numUpdates; i++)
+    {
+      if ((*updatesp)[i]->getKind() == UpdateConsts::DELETE)
+        return;
+    }
+
+    InsertAttributesPrimitive* upd = new InsertAttributesPrimitive(n, attrs);
+    theDoFirstList.push_back(upd);
+    updatesp->push_back(upd);
+  }
+}
+
 
 /*******************************************************************************
   Create a delete primitive in "this" pul for the given node, if another delete
@@ -27,7 +67,6 @@ void PULImpl::addDelete(Item* target)
   if (!found)
   {
     DeletePrimitive* upd = new DeletePrimitive(n);
-
     theDeleteList.push_back(upd);
 
     NodeUpdates updates(1);
@@ -46,9 +85,40 @@ void PULImpl::addDelete(Item* target)
     }
 
     DeletePrimitive* upd = new DeletePrimitive(n);
-
     theDeleteList.push_back(upd);
+    updatesp->push_back(upd);
+  }
+}
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addReplaceValue(Item* target, xqpStringStore* newValue)
+{
+  ZORBA_ASSERT(target->isNode());
+
+  XmlNode* n = reinterpret_cast<XmlNode*>(target);
+
+  theTreeRoots.insert(n->getTree()->getRoot());
+
+  NodeUpdates* updatesp;
+  bool found = theNodeToUpdatesMap.get(n, updatesp);
+
+  if (!found)
+  {
+    ReplaceValuePrimitive* upd = new ReplaceValuePrimitive(n, newValue);
+    theDoFirstList.push_back(upd);
+
+    NodeUpdates updates(1);
+    updates[0] = upd;
+    updatesp = &updates;
+    theNodeToUpdatesMap.insert(n, updatesp);
+  }
+  else
+  {
+    ReplaceValuePrimitive* upd = new ReplaceValuePrimitive(n, newValue);
+    theDoFirstList.push_back(upd);
     updatesp->push_back(upd);
   }
 }
@@ -72,7 +142,6 @@ void PULImpl::addReplaceContent(Item* target, Item* newChild)
   if (!found)
   {
     ReplaceContentPrimitive* upd = new ReplaceContentPrimitive(n, child);
-
     theReplaceContentList.push_back(upd);
 
     NodeUpdates updates(1);
@@ -88,14 +157,12 @@ void PULImpl::addReplaceContent(Item* target, Item* newChild)
     {
       if ((*updatesp)[i]->getKind() == UpdateConsts::REPLACE_CONTENT)
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XUDY0015, NULL, DONT_CONTINUE_EXECUTION, "", "");
+        ZORBA_ERROR_ALERT(ZorbaError::XUDY0017, NULL, DONT_CONTINUE_EXECUTION, "", "");
       }
     }
 
     ReplaceContentPrimitive* upd = new ReplaceContentPrimitive(n, child);
-
     theReplaceContentList.push_back(upd);
-
     updatesp->push_back(upd);
   }
 }
@@ -119,7 +186,6 @@ void PULImpl::addRename(Item* target, Item* newName)
   if (!found)
   {
     RenamePrimitive* upd = new RenamePrimitive(n, qn);
-
     theDoFirstList.push_back(upd);
 
     NodeUpdates updates(1);
@@ -140,9 +206,7 @@ void PULImpl::addRename(Item* target, Item* newName)
     }
 
     RenamePrimitive* upd = new RenamePrimitive(n, qn);
-
     theDoFirstList.push_back(upd);
-
     updatesp->push_back(upd);
   }
 }
@@ -201,9 +265,27 @@ void PULImpl::verify()
 /*******************************************************************************
 
 ********************************************************************************/
+void InsertAttributesPrimitive::apply()
+{
+  theTarget->insertAttributes(theAttributes);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void DeletePrimitive::apply()
 {
   theTarget->disconnect();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ReplaceValuePrimitive::apply()
+{
+  theTarget->replaceValue(theNewValue, theOldValue);
 }
 
 

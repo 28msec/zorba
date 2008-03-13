@@ -65,6 +65,8 @@ protected:
   ItemHandleHashSet               theTreeRoots;
 
 public:
+  void addInsertAttributes(Item* target, std::vector<XmlNode*>& attrs);
+  void addReplaceValue(Item* target, xqpStringStore* newValue);
   void addReplaceContent(Item* target, Item* newChild);
   void addRename(Item* node, Item* newName);
   void addDelete(Item* n);
@@ -102,6 +104,33 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+class InsertAttributesPrimitive : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  std::vector<XmlNode*> theAttributes;
+
+public:
+  InsertAttributesPrimitive(
+        XmlNode*              target,
+        std::vector<XmlNode*> attrs)
+    :
+    UpdatePrimitive(target),
+    theAttributes(attrs)
+  {
+  }
+
+  UpdateConsts::UpdateKind getKind() { return UpdateConsts::INSERT_ATTRIBUTES; }
+
+  void apply();
+};
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class DeletePrimitive : public UpdatePrimitive
 {
   friend class PULImpl;
@@ -110,6 +139,31 @@ public:
   DeletePrimitive(XmlNode* target) : UpdatePrimitive(target) { }
 
   UpdateConsts::UpdateKind getKind() { return UpdateConsts::PUL_DELETE; }
+
+  void apply();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class ReplaceValuePrimitive : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  xqpStringStore    * theNewValue;
+  xqpStringStore_t    theOldValue;
+
+public:
+  ReplaceValuePrimitive(XmlNode* target, xqpStringStore* newValue)
+    :
+    UpdatePrimitive(target),
+    theNewValue(newValue)
+  {
+  }
+
+  UpdateConsts::UpdateKind getKind() { return UpdateConsts::REPLACE_VALUE; }
 
   void apply();
 };

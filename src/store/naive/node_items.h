@@ -141,6 +141,8 @@ public:
   void removeType(TypeUndoList& undoList);
   void revalidate();
 
+  void insertBefore(std::vector<XmlNode*>& nodes);
+  void insertAttributes(std::vector<XmlNode*>& attrs);
   void disconnect() throw();
   void switchTree() throw();
   void replaceValue(xqpStringStore* newValue, xqpStringStore_t& oldValue);
