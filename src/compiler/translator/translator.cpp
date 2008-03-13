@@ -711,7 +711,7 @@ void *begin_visit(const DirAttributeList& v)
          it != attributes.rend();
          ++it)
     {
-      expr_list->add(*it);
+      expr_list->add((*it).cast<expr> ());
     }
 
     nodestack.push(expr_list);
