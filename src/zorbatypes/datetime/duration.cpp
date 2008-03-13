@@ -299,12 +299,7 @@ bool DayTimeDuration::operator==(const DayTimeDuration& dtd) const
       &&
       days == dtd.days
       &&
-      timeDuration.hours() == dtd.timeDuration.hours()
-      &&
-      timeDuration.minutes() == dtd.timeDuration.minutes()
-      &&
-      timeDuration.seconds() == dtd.timeDuration.seconds()
-     )
+      timeDuration == dtd.timeDuration)
     return true;
   else
     return false;
