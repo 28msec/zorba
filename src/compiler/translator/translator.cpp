@@ -3949,7 +3949,7 @@ void end_visit(const TransformExpr& v, void* /*visit_state*/)
     aTransform->add(anAssign); 
     anAssign = pop_nodestack();
   }
-  nodestack.push(aTransform); 
+  nodestack.push(&*aTransform); 
 }
 
 void *begin_visit(const VarNameList& /*v*/)
