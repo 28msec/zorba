@@ -181,6 +181,7 @@ public:
 	void *begin_visit(const RevalidationDecl &);
 	void *begin_visit(const TransformExpr &);
 	void *begin_visit(const VarNameList &);
+  void *begin_visit(const VarBinding &);
 
 /* try-catch-related */
   void *begin_visit(const TryExpr &);
@@ -376,6 +377,7 @@ public:
 	void end_visit(const RevalidationDecl &, void *visit_state);
 	void end_visit(const TransformExpr &, void *visit_state);
 	void end_visit(const VarNameList &, void *visit_state);
+  void end_visit(const VarBinding &, void *visit_state);
 
 /* try-catch-related */
   void end_visit(const TryExpr &, void *visit_state);

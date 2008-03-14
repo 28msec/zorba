@@ -1750,6 +1750,16 @@ void *ParseNodePrintDOTVisitor::begin_visit(const VarNameList &n)
     return no_state;
 }
 
+void *ParseNodePrintDOTVisitor::begin_visit(const VarBinding &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"VarNameList\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
 void *ParseNodePrintDOTVisitor::begin_visit(const TryExpr &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
@@ -3150,6 +3160,11 @@ void ParseNodePrintDOTVisitor::end_visit(const TransformExpr& /*n*/, void* /*vis
 
 
 void ParseNodePrintDOTVisitor::end_visit(const VarNameList& /*n*/, void* /*visit_state*/)
+{
+}
+
+
+void ParseNodePrintDOTVisitor::end_visit(const VarBinding& /*n*/, void* /*visit_state*/)
 {
 }
 

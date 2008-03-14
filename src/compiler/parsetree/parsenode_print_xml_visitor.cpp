@@ -2135,6 +2135,20 @@ void *begin_visit(const VarNameList &n)
 }
 
 
+void *begin_visit(const VarBinding &n)
+{
+    INDENT;
+
+    os << "<VarBinding pos='" << n.get_location() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC;
+    NL;
+    return no_state;
+}
+
+
 void *begin_visit(const TryExpr &n)
 {
     INDENT;
@@ -4034,6 +4048,16 @@ void end_visit(const VarNameList& /*n*/, void* /*visit_state*/)
 
     INDENT;
     os << "</VarNameList>";
+    NL;
+}
+
+
+void end_visit(const VarBinding& /*n*/, void* /*visit_state*/)
+{
+    INDENT_DEC;
+
+    INDENT;
+    os << "</VarBinding>";
     NL;
 }
 

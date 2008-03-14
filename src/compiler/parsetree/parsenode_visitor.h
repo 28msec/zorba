@@ -182,6 +182,7 @@ public:
 	virtual void *begin_visit(RevalidationDecl const&) = 0;
 	virtual void *begin_visit(TransformExpr const&) = 0;
 	virtual void *begin_visit(VarNameList const&) = 0;
+  virtual void *begin_visit(VarBinding const&) = 0;
 
 /* try-catch-related */
   virtual void *begin_visit(TryExpr const&) = 0;
@@ -379,6 +380,7 @@ public:
 	virtual void end_visit(RevalidationDecl const&, void *visit_state) = 0;
 	virtual void end_visit(TransformExpr const&, void *visit_state) = 0;
 	virtual void end_visit(VarNameList const&, void *visit_state) = 0;
+  virtual void end_visit(VarBinding const&, void *visit_state) = 0;
 
 /* try-catch-related */
   virtual void end_visit(TryExpr const&, void *visit_state) = 0;

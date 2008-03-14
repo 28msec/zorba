@@ -3958,6 +3958,17 @@ void end_visit(const VarNameList& /*v*/, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 }
 
+void *begin_visit(const VarBinding&)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const VarBinding&, void*)
+{
+  TRACE_VISIT_OUT ();
+}
+
 /* try-catch-related */
 void *begin_visit(const TryExpr& v)
 {
