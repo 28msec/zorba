@@ -1,8 +1,6 @@
 #ifndef ZORBA_PARSENODE_PRINT_XML_VISITOR_H
 #define ZORBA_PARSENODE_PRINT_XML_VISITOR_H
 
-#include "compiler/parsetree/parsenode_visitor.h"
-
 #include <iostream>
 #include <ostream>
 /*______________________________________________________________________
