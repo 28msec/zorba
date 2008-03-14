@@ -1821,7 +1821,13 @@ void end_visit(const SIND_DeclList& /*v*/, void* /*visit_state*/)
 
 void *begin_visit(const SchemaImport& /*v*/)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT (); 
+  //std::string prefix = ((SchemaPrefix*)(v.get_prefix().getp()))->get_prefix();
+  //std::string uri = v.get_uri();
+  //std::string at = (*((URILiteralList*)(v.get_at_list().getp())))[0];
+  //std::cout << "SchemaImport: " << prefix << " : " << uri 
+  //    << " @ " << at << std::endl;
+  //std::cout << " Context: " << sctx_p->get_typemanager() << "\n";
   return no_state;
 }
 

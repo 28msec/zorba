@@ -8,7 +8,8 @@ SET(UTIL_SRCS
     file.cpp
     tokenbuf.cpp
     rwlock.cpp
-    properties.cpp)
+    properties.cpp
+    XmlWhitespace.cpp)
 
 ADD_SRC_SUBFOLDER(UTIL_SRCS web WEB_SRCS)
     
