@@ -70,8 +70,7 @@ void XQueryPlanPrinterConfig::printASTPlan(rchandle<parsenode> parsenodes)
     return;
 
   *os_ast << "Parse tree:\n";
-  ParseNodePrintXMLVisitor lPrintXMLVisitor(*os_ast);
-  lPrintXMLVisitor.print(&*parsenodes);
+  print_parsetree_xml (*os_ast, &*parsenodes);
 }
 
 void XQueryPlanPrinterConfig::printExprPlan(rchandle<expr> expr)
@@ -147,8 +146,7 @@ static rchandle<parsenode> do_parse (xqp_string source_uri, xqp_string xquery_te
 rchandle<expr> XQueryCompiler::do_translation (rchandle<parsenode> n_p, XQueryPlanPrinterConfig *pp_cfg) {
   if (Properties::instance()->printAST()) {
     std::cout << "Parse tree:\n";
-    ParseNodePrintXMLVisitor lPrintXMLVisitor(std::cout);
-    lPrintXMLVisitor.print(&*n_p);
+    print_parsetree_xml (std::cout, &*n_p);
   }
   if (pp_cfg)
     pp_cfg->printASTPlan(n_p);

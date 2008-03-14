@@ -3,16 +3,32 @@
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "types/typemanager.h"
 
+using namespace std;
+
 namespace zorba {
 
-ParseNodePrintXMLVisitor::ParseNodePrintXMLVisitor(std::ostream &aStream)
+#define INDENT  os << std::string(theIndent, ' ')
+#define INDENT_INC  theIndent += 2
+#define INDENT_DEC  theIndent -= 2
+#define NL  os << std::endl
+
+
+class ParseNodePrintXMLVisitor : public parsenode_visitor {
+
+protected:
+    int theIndent;
+    std::ostream& os;
+
+public:
+
+ParseNodePrintXMLVisitor(std::ostream &aStream)
   : theIndent(0),
     os(aStream)
 {
 }
 
 
-void ParseNodePrintXMLVisitor::print(parsenode* p)
+void print(parsenode* p)
 {
     os << "<?xml version='1.0'>" << std::endl;
     os << "<ParseNodeTree>" << std::endl;
@@ -21,7 +37,7 @@ void ParseNodePrintXMLVisitor::print(parsenode* p)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const parsenode &n)
+void *begin_visit(const parsenode &n)
 {
     INDENT;
 
@@ -35,7 +51,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const parsenode &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const AbbrevForwardStep &n)
+void *begin_visit(const AbbrevForwardStep &n)
 {
     INDENT;
 
@@ -49,7 +65,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AbbrevForwardStep &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const AnyKindTest &n)
+void *begin_visit(const AnyKindTest &n)
 {
     INDENT;
 
@@ -63,7 +79,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AnyKindTest &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const AposAttrContentList &n)
+void *begin_visit(const AposAttrContentList &n)
 {
     INDENT;
 
@@ -77,7 +93,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AposAttrContentList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const AposAttrValueContent &n)
+void *begin_visit(const AposAttrValueContent &n)
 {
     INDENT;
 
@@ -91,7 +107,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AposAttrValueContent &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ArgList &n)
+void *begin_visit(const ArgList &n)
 {
     INDENT;
 
@@ -105,7 +121,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ArgList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const AtomicType &n)
+void *begin_visit(const AtomicType &n)
 {
     INDENT;
 
@@ -119,7 +135,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AtomicType &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const AttributeTest &n)
+void *begin_visit(const AttributeTest &n)
 {
     INDENT;
 
@@ -133,7 +149,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AttributeTest &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const BaseURIDecl &n)
+void *begin_visit(const BaseURIDecl &n)
 {
     INDENT;
 
@@ -147,7 +163,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const BaseURIDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const BoundarySpaceDecl &n)
+void *begin_visit(const BoundarySpaceDecl &n)
 {
     INDENT;
 
@@ -161,7 +177,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const BoundarySpaceDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CaseClause &n)
+void *begin_visit(const CaseClause &n)
 {
     INDENT;
 
@@ -175,7 +191,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CaseClause &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CaseClauseList &n)
+void *begin_visit(const CaseClauseList &n)
 {
     INDENT;
 
@@ -189,7 +205,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CaseClauseList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CommentTest &n)
+void *begin_visit(const CommentTest &n)
 {
     INDENT;
 
@@ -203,7 +219,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CommentTest &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ConstructionDecl &n)
+void *begin_visit(const ConstructionDecl &n)
 {
     INDENT;
 
@@ -217,7 +233,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ConstructionDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CopyNamespacesDecl &n)
+void *begin_visit(const CopyNamespacesDecl &n)
 {
     INDENT;
 
@@ -231,7 +247,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CopyNamespacesDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DefaultCollationDecl &n)
+void *begin_visit(const DefaultCollationDecl &n)
 {
     INDENT;
 
@@ -245,7 +261,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DefaultCollationDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DefaultNamespaceDecl &n)
+void *begin_visit(const DefaultNamespaceDecl &n)
 {
     INDENT;
 
@@ -257,17 +273,17 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DefaultNamespaceDecl &n)
     return no_state;
 }
 
-void ParseNodePrintXMLVisitor::end_visit(const NamespaceDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const NamespaceDecl& /*n*/, void* /*visit_state*/)
 {
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DefaultNamespaceDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const DefaultNamespaceDecl& /*n*/, void* /*visit_state*/)
 {
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DirAttr &n)
+void *begin_visit(const DirAttr &n)
 {
     INDENT;
 
@@ -282,7 +298,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirAttr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DirAttributeList &n)
+void *begin_visit(const DirAttributeList &n)
 {
     INDENT;
 
@@ -296,7 +312,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirAttributeList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DirAttributeValue &n)
+void *begin_visit(const DirAttributeValue &n)
 {
     INDENT;
 
@@ -310,7 +326,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirAttributeValue &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DirElemContentList &n)
+void *begin_visit(const DirElemContentList &n)
 {
     INDENT;
 
@@ -324,7 +340,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirElemContentList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DocumentTest &n)
+void *begin_visit(const DocumentTest &n)
 {
     INDENT;
 
@@ -338,7 +354,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DocumentTest &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ElementTest &n)
+void *begin_visit(const ElementTest &n)
 {
     INDENT;
 
@@ -352,7 +368,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ElementTest &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const EmptyOrderDecl &n)
+void *begin_visit(const EmptyOrderDecl &n)
 {
     INDENT;
 
@@ -366,7 +382,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const EmptyOrderDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ForClause &n)
+void *begin_visit(const ForClause &n)
 {
     INDENT;
 
@@ -381,7 +397,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ForClause &n)
 
 
 // bool
-// ParseNodePrintXMLVisitor::begin_visit(const ForLetClause &n)
+// begin_visit(const ForLetClause &n)
 // {
 //     INDENT;
 //
@@ -395,7 +411,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ForClause &n)
 // }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ForLetClauseList &n)
+void *begin_visit(const ForLetClauseList &n)
 {
     INDENT;
 
@@ -409,7 +425,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ForLetClauseList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ForwardAxis &n)
+void *begin_visit(const ForwardAxis &n)
 {
     INDENT;
 
@@ -423,7 +439,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ForwardAxis &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ForwardStep &n)
+void *begin_visit(const ForwardStep &n)
 {
     INDENT;
 
@@ -437,7 +453,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ForwardStep &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FunctionDecl &n)
+void *begin_visit(const FunctionDecl &n)
 {
     INDENT;
 
@@ -451,7 +467,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FunctionDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const GeneralComp &n)
+void *begin_visit(const GeneralComp &n)
 {
     INDENT;
 
@@ -464,12 +480,12 @@ void *ParseNodePrintXMLVisitor::begin_visit(const GeneralComp &n)
     return no_state;
 }
 
-void ParseNodePrintXMLVisitor::end_visit(const GeneralComp& /*n*/, void* /*visit_state*/)
+void end_visit(const GeneralComp& /*n*/, void* /*visit_state*/)
 {
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ItemType &n)
+void *begin_visit(const ItemType &n)
 {
     INDENT;
 
@@ -483,7 +499,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ItemType &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const LetClause &n)
+void *begin_visit(const LetClause &n)
 {
     INDENT;
 
@@ -497,7 +513,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const LetClause &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const LibraryModule &n)
+void *begin_visit(const LibraryModule &n)
 {
     INDENT;
 
@@ -511,7 +527,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const LibraryModule &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const MainModule  &n)
+void *begin_visit(const MainModule  &n)
 {
     INDENT;
 
@@ -526,7 +542,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const MainModule  &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const Module &n)
+void *begin_visit(const Module &n)
 {
     INDENT;
 
@@ -540,7 +556,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Module &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ModuleDecl &n)
+void *begin_visit(const ModuleDecl &n)
 {
     INDENT;
 
@@ -555,7 +571,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ModuleDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ModuleImport &n)
+void *begin_visit(const ModuleImport &n)
 {
     INDENT;
 
@@ -569,7 +585,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ModuleImport &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const NameTest &n)
+void *begin_visit(const NameTest &n)
 {
     INDENT;
 
@@ -588,7 +604,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NameTest &n)
     return no_state;
 }
 
-void ParseNodePrintXMLVisitor::end_visit(const NameTest& /*n*/, void* /*visit_state*/)
+void end_visit(const NameTest& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -598,7 +614,7 @@ void ParseNodePrintXMLVisitor::end_visit(const NameTest& /*n*/, void* /*visit_st
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const NamespaceDecl &n)
+void *begin_visit(const NamespaceDecl &n)
 {
     INDENT;
 
@@ -612,7 +628,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NamespaceDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const NodeComp &n)
+void *begin_visit(const NodeComp &n)
 {
     INDENT;
 
@@ -624,12 +640,12 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NodeComp &n)
     return no_state;
 }
 
-void ParseNodePrintXMLVisitor::end_visit(const NodeComp& /*n*/, void* /*visit_state*/)
+void end_visit(const NodeComp& /*n*/, void* /*visit_state*/)
 {
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OccurrenceIndicator &n)
+void *begin_visit(const OccurrenceIndicator &n)
 {
     INDENT;
 
@@ -643,7 +659,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OccurrenceIndicator &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OptionDecl &n)
+void *begin_visit(const OptionDecl &n)
 {
     INDENT;
 
@@ -657,7 +673,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OptionDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OrderByClause &n)
+void *begin_visit(const OrderByClause &n)
 {
     INDENT;
 
@@ -671,7 +687,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderByClause &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OrderCollationSpec &n)
+void *begin_visit(const OrderCollationSpec &n)
 {
     INDENT;
 
@@ -685,7 +701,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderCollationSpec &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OrderDirSpec &n)
+void *begin_visit(const OrderDirSpec &n)
 {
     INDENT;
 
@@ -699,7 +715,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderDirSpec &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OrderEmptySpec &n)
+void *begin_visit(const OrderEmptySpec &n)
 {
     INDENT;
 
@@ -713,7 +729,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderEmptySpec &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OrderModifier &n)
+void *begin_visit(const OrderModifier &n)
 {
     INDENT;
 
@@ -727,7 +743,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderModifier &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OrderSpec &n)
+void *begin_visit(const OrderSpec &n)
 {
     INDENT;
 
@@ -741,7 +757,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderSpec &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OrderSpecList &n)
+void *begin_visit(const OrderSpecList &n)
 {
     INDENT;
 
@@ -755,7 +771,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderSpecList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OrderingModeDecl &n)
+void *begin_visit(const OrderingModeDecl &n)
 {
     INDENT;
 
@@ -769,7 +785,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderingModeDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const PITest &n)
+void *begin_visit(const PITest &n)
 {
     INDENT;
 
@@ -783,7 +799,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const PITest &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const Param &n)
+void *begin_visit(const Param &n)
 {
     INDENT;
 
@@ -796,12 +812,12 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Param &n)
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const Param& /*n*/, void* /*visit_state*/)
+void end_visit(const Param& /*n*/, void* /*visit_state*/)
 {
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ParamList &n)
+void *begin_visit(const ParamList &n)
 {
     INDENT;
 
@@ -815,7 +831,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ParamList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const PositionalVar &n)
+void *begin_visit(const PositionalVar &n)
 {
     INDENT;
 
@@ -829,7 +845,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const PositionalVar &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const Pragma &n)
+void *begin_visit(const Pragma &n)
 {
     INDENT;
 
@@ -843,7 +859,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Pragma &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const PragmaList &n)
+void *begin_visit(const PragmaList &n)
 {
     INDENT;
 
@@ -857,7 +873,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const PragmaList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const PredicateList &n)
+void *begin_visit(const PredicateList &n)
 {
     INDENT;
 
@@ -871,7 +887,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const PredicateList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const Prolog &n)
+void *begin_visit(const Prolog &n)
 {
     INDENT;
 
@@ -885,7 +901,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Prolog &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const QVarInDecl &n)
+void *begin_visit(const QVarInDecl &n)
 {
     INDENT;
 
@@ -899,7 +915,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QVarInDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const QVarInDeclList &n)
+void *begin_visit(const QVarInDeclList &n)
 {
     INDENT;
 
@@ -913,7 +929,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QVarInDeclList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const QuoteAttrValueContent &n)
+void *begin_visit(const QuoteAttrValueContent &n)
 {
     INDENT;
 
@@ -927,7 +943,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QuoteAttrValueContent &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const QuoteAttrContentList &n)
+void *begin_visit(const QuoteAttrContentList &n)
 {
     INDENT;
 
@@ -941,7 +957,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QuoteAttrContentList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ReverseAxis &n)
+void *begin_visit(const ReverseAxis &n)
 {
     INDENT;
 
@@ -955,7 +971,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ReverseAxis &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ReverseStep &n)
+void *begin_visit(const ReverseStep &n)
 {
     INDENT;
 
@@ -969,7 +985,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ReverseStep &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const SIND_DeclList &n)
+void *begin_visit(const SIND_DeclList &n)
 {
     INDENT;
 
@@ -983,7 +999,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SIND_DeclList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const SchemaAttributeTest &n)
+void *begin_visit(const SchemaAttributeTest &n)
 {
     INDENT;
 
@@ -997,7 +1013,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SchemaAttributeTest &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const SchemaElementTest &n)
+void *begin_visit(const SchemaElementTest &n)
 {
     INDENT;
 
@@ -1011,7 +1027,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SchemaElementTest &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const SchemaImport &n)
+void *begin_visit(const SchemaImport &n)
 {
     INDENT;
 
@@ -1025,7 +1041,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SchemaImport &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const SchemaPrefix &n)
+void *begin_visit(const SchemaPrefix &n)
 {
     INDENT;
 
@@ -1039,7 +1055,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SchemaPrefix &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const SequenceType &n)
+void *begin_visit(const SequenceType &n)
 {
     INDENT;
 
@@ -1053,7 +1069,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SequenceType &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const SignList &n)
+void *begin_visit(const SignList &n)
 {
     INDENT;
 
@@ -1067,7 +1083,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SignList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const SingleType &n)
+void *begin_visit(const SingleType &n)
 {
     INDENT;
 
@@ -1081,7 +1097,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const SingleType &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const TextTest &n)
+void *begin_visit(const TextTest &n)
 {
     INDENT;
 
@@ -1095,7 +1111,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TextTest &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const TypeDeclaration &n)
+void *begin_visit(const TypeDeclaration &n)
 {
     INDENT;
 
@@ -1109,7 +1125,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TypeDeclaration &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const TypeName &n)
+void *begin_visit(const TypeName &n)
 {
     INDENT;
 
@@ -1123,7 +1139,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TypeName &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const URILiteralList &n)
+void *begin_visit(const URILiteralList &n)
 {
     INDENT;
 
@@ -1137,7 +1153,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const URILiteralList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ValueComp &n)
+void *begin_visit(const ValueComp &n)
 {
     INDENT;
 
@@ -1149,12 +1165,12 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ValueComp &n)
     return no_state;
 }
 
-void ParseNodePrintXMLVisitor::end_visit(const ValueComp& /*n*/, void* /*visit_state*/)
+void end_visit(const ValueComp& /*n*/, void* /*visit_state*/)
 {
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const VarDecl &n)
+void *begin_visit(const VarDecl &n)
 {
     INDENT;
 
@@ -1168,7 +1184,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const VarGetsDecl &n)
+void *begin_visit(const VarGetsDecl &n)
 {
     INDENT;
 
@@ -1182,7 +1198,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarGetsDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const VarGetsDeclList &n)
+void *begin_visit(const VarGetsDeclList &n)
 {
     INDENT;
 
@@ -1196,7 +1212,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarGetsDeclList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const VarInDecl &n)
+void *begin_visit(const VarInDecl &n)
 {
     INDENT;
 
@@ -1210,7 +1226,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarInDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const VarInDeclList &n)
+void *begin_visit(const VarInDeclList &n)
 {
     INDENT;
 
@@ -1224,7 +1240,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarInDeclList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const VersionDecl &n)
+void *begin_visit(const VersionDecl &n)
 {
     INDENT;
 
@@ -1240,7 +1256,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VersionDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const VFO_DeclList &n)
+void *begin_visit(const VFO_DeclList &n)
 {
     INDENT;
 
@@ -1254,7 +1270,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VFO_DeclList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const WhereClause &n)
+void *begin_visit(const WhereClause &n)
 {
     INDENT;
 
@@ -1268,7 +1284,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const WhereClause &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const QName &n)
+void *begin_visit(const QName &n)
 {
   INDENT;
 
@@ -1281,12 +1297,12 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QName &n)
   return no_state;
 }
 
-void ParseNodePrintXMLVisitor::end_visit(const QName& /*n*/, void* /*visit_state*/)
+void end_visit(const QName& /*n*/, void* /*visit_state*/)
 {
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const Wildcard &n)
+void *begin_visit(const Wildcard &n)
 {
     INDENT;
 
@@ -1300,7 +1316,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Wildcard &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const exprnode &n)
+void *begin_visit(const exprnode &n)
 {
     INDENT;
 
@@ -1314,7 +1330,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const exprnode &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const AdditiveExpr &n)
+void *begin_visit(const AdditiveExpr &n)
 {
     INDENT;
 
@@ -1328,7 +1344,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AdditiveExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const AndExpr &n)
+void *begin_visit(const AndExpr &n)
 {
     INDENT;
 
@@ -1342,7 +1358,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AndExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const AxisStep &n)
+void *begin_visit(const AxisStep &n)
 {
     INDENT;
 
@@ -1356,7 +1372,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const AxisStep &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CDataSection &n)
+void *begin_visit(const CDataSection &n)
 {
     INDENT;
 
@@ -1370,7 +1386,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CDataSection &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CastExpr &n)
+void *begin_visit(const CastExpr &n)
 {
     INDENT;
 
@@ -1384,7 +1400,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CastExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CastableExpr &n)
+void *begin_visit(const CastableExpr &n)
 {
     INDENT;
 
@@ -1398,7 +1414,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CastableExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CommonContent &n)
+void *begin_visit(const CommonContent &n)
 {
     INDENT;
 
@@ -1448,7 +1464,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CommonContent &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ComparisonExpr &n)
+void *begin_visit(const ComparisonExpr &n)
 {
     INDENT;
 
@@ -1465,7 +1481,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ComparisonExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CompAttrConstructor &n)
+void *begin_visit(const CompAttrConstructor &n)
 {
     INDENT;
 
@@ -1479,7 +1495,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompAttrConstructor &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CompCommentConstructor &n)
+void *begin_visit(const CompCommentConstructor &n)
 {
     INDENT;
 
@@ -1493,7 +1509,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompCommentConstructor &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CompDocConstructor &n)
+void *begin_visit(const CompDocConstructor &n)
 {
     INDENT;
 
@@ -1507,7 +1523,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompDocConstructor &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CompElemConstructor &n)
+void *begin_visit(const CompElemConstructor &n)
 {
     INDENT;
 
@@ -1521,7 +1537,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompElemConstructor &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CompPIConstructor &n)
+void *begin_visit(const CompPIConstructor &n)
 {
     INDENT;
 
@@ -1535,7 +1551,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompPIConstructor &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CompTextConstructor &n)
+void *begin_visit(const CompTextConstructor &n)
 {
     INDENT;
 
@@ -1549,7 +1565,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CompTextConstructor &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ContextItemExpr &n)
+void *begin_visit(const ContextItemExpr &n)
 {
     INDENT;
 
@@ -1563,7 +1579,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ContextItemExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DirCommentConstructor &n)
+void *begin_visit(const DirCommentConstructor &n)
 {
     INDENT;
 
@@ -1577,7 +1593,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirCommentConstructor &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DirElemConstructor &n)
+void *begin_visit(const DirElemConstructor &n)
 {
     INDENT;
 
@@ -1591,7 +1607,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirElemConstructor &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DirElemContent &n)
+void *begin_visit(const DirElemContent &n)
 {
     INDENT;
 
@@ -1605,7 +1621,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirElemContent &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DirPIConstructor &n)
+void *begin_visit(const DirPIConstructor &n)
 {
     INDENT;
 
@@ -1619,7 +1635,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DirPIConstructor &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const EnclosedExpr &n)
+void *begin_visit(const EnclosedExpr &n)
 {
     INDENT;
 
@@ -1633,7 +1649,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const EnclosedExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const Expr &n)
+void *begin_visit(const Expr &n)
 {
     INDENT;
 
@@ -1648,7 +1664,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Expr &n)
 
 
 // bool
-// ParseNodePrintXMLVisitor::begin_visit(const ExprSingle &n)
+// begin_visit(const ExprSingle &n)
 // {
 //     INDENT;
 //
@@ -1662,7 +1678,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const Expr &n)
 // }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ExtensionExpr &n)
+void *begin_visit(const ExtensionExpr &n)
 {
     INDENT;
 
@@ -1676,7 +1692,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ExtensionExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FLWORExpr &n)
+void *begin_visit(const FLWORExpr &n)
 {
     INDENT;
 
@@ -1690,7 +1706,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FLWORExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FilterExpr &n)
+void *begin_visit(const FilterExpr &n)
 {
     INDENT;
 
@@ -1704,7 +1720,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FilterExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FunctionCall &n)
+void *begin_visit(const FunctionCall &n)
 {
     INDENT;
 
@@ -1718,7 +1734,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FunctionCall &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const IfExpr &n)
+void *begin_visit(const IfExpr &n)
 {
     INDENT;
 
@@ -1732,7 +1748,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const IfExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const InstanceofExpr &n)
+void *begin_visit(const InstanceofExpr &n)
 {
     INDENT;
 
@@ -1746,7 +1762,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const InstanceofExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const IntersectExceptExpr &n)
+void *begin_visit(const IntersectExceptExpr &n)
 {
     INDENT;
 
@@ -1760,7 +1776,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const IntersectExceptExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const MultiplicativeExpr &n)
+void *begin_visit(const MultiplicativeExpr &n)
 {
     INDENT;
 
@@ -1774,7 +1790,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const MultiplicativeExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const NumericLiteral &n)
+void *begin_visit(const NumericLiteral &n)
 {
     INDENT;
 
@@ -1787,12 +1803,12 @@ void *ParseNodePrintXMLVisitor::begin_visit(const NumericLiteral &n)
     return no_state;
 }
 
-void ParseNodePrintXMLVisitor::end_visit(const NumericLiteral& /*n*/, void* /*visit_state*/)
+void end_visit(const NumericLiteral& /*n*/, void* /*visit_state*/)
 {
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OrExpr &n)
+void *begin_visit(const OrExpr &n)
 {
     INDENT;
 
@@ -1806,7 +1822,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const OrderedExpr &n)
+void *begin_visit(const OrderedExpr &n)
 {
     INDENT;
 
@@ -1820,7 +1836,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const OrderedExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ParenthesizedExpr &n)
+void *begin_visit(const ParenthesizedExpr &n)
 {
     INDENT;
 
@@ -1834,7 +1850,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ParenthesizedExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const PathExpr &n)
+void *begin_visit(const PathExpr &n)
 {
     INDENT;
 
@@ -1848,7 +1864,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const PathExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const QuantifiedExpr &n)
+void *begin_visit(const QuantifiedExpr &n)
 {
     INDENT;
 
@@ -1862,7 +1878,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QuantifiedExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const QueryBody &n)
+void *begin_visit(const QueryBody &n)
 {
     INDENT;
 
@@ -1876,7 +1892,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const QueryBody &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const RangeExpr &n)
+void *begin_visit(const RangeExpr &n)
 {
     INDENT;
 
@@ -1890,7 +1906,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const RangeExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const RelativePathExpr &n)
+void *begin_visit(const RelativePathExpr &n)
 {
     INDENT;
 
@@ -1904,7 +1920,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const RelativePathExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const StringLiteral &n)
+void *begin_visit(const StringLiteral &n)
 {
     INDENT;
 
@@ -1918,7 +1934,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const StringLiteral &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const TreatExpr &n)
+void *begin_visit(const TreatExpr &n)
 {
     INDENT;
 
@@ -1932,7 +1948,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TreatExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const TypeswitchExpr &n)
+void *begin_visit(const TypeswitchExpr &n)
 {
     INDENT;
 
@@ -1946,7 +1962,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TypeswitchExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const UnaryExpr &n)
+void *begin_visit(const UnaryExpr &n)
 {
     INDENT;
 
@@ -1960,7 +1976,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const UnaryExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const UnionExpr &n)
+void *begin_visit(const UnionExpr &n)
 {
     INDENT;
 
@@ -1974,7 +1990,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const UnionExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const UnorderedExpr &n)
+void *begin_visit(const UnorderedExpr &n)
 {
     INDENT;
 
@@ -1988,7 +2004,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const UnorderedExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ValidateExpr &n)
+void *begin_visit(const ValidateExpr &n)
 {
     INDENT;
 
@@ -2002,7 +2018,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ValidateExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const VarRef &n)
+void *begin_visit(const VarRef &n)
 {
     INDENT;
 
@@ -2015,12 +2031,12 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarRef &n)
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const VarRef& /*n*/, void* /*visit_state*/)
+void end_visit(const VarRef& /*n*/, void* /*visit_state*/)
 {
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const DeleteExpr &n)
+void *begin_visit(const DeleteExpr &n)
 {
     INDENT;
 
@@ -2034,7 +2050,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const DeleteExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const InsertExpr &n)
+void *begin_visit(const InsertExpr &n)
 {
     INDENT;
 
@@ -2048,7 +2064,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const InsertExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const RenameExpr &n)
+void *begin_visit(const RenameExpr &n)
 {
     INDENT;
 
@@ -2062,7 +2078,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const RenameExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const ReplaceExpr &n)
+void *begin_visit(const ReplaceExpr &n)
 {
     INDENT;
 
@@ -2076,7 +2092,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const ReplaceExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const RevalidationDecl &n)
+void *begin_visit(const RevalidationDecl &n)
 {
     INDENT;
 
@@ -2090,7 +2106,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const RevalidationDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const TransformExpr &n)
+void *begin_visit(const TransformExpr &n)
 {
     INDENT;
 
@@ -2104,7 +2120,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TransformExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const VarNameList &n)
+void *begin_visit(const VarNameList &n)
 {
     INDENT;
 
@@ -2118,7 +2134,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const VarNameList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const TryExpr &n)
+void *begin_visit(const TryExpr &n)
 {
     INDENT;
 
@@ -2131,7 +2147,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const TryExpr &n)
     return no_state;
 }
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CatchListExpr &n)
+void *begin_visit(const CatchListExpr &n)
 {
     INDENT;
 
@@ -2144,7 +2160,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CatchListExpr &n)
     return no_state;
 }
 
-void *ParseNodePrintXMLVisitor::begin_visit(const CatchExpr &n)
+void *begin_visit(const CatchExpr &n)
 {
     INDENT;
 
@@ -2157,7 +2173,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CatchExpr &n)
     return no_state;
 }
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTAnd &n)
+void *begin_visit(const FTAnd &n)
 {
     INDENT;
 
@@ -2171,7 +2187,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTAnd &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTAnyallOption &n)
+void *begin_visit(const FTAnyallOption &n)
 {
     INDENT;
 
@@ -2185,7 +2201,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTAnyallOption &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTBigUnit &n)
+void *begin_visit(const FTBigUnit &n)
 {
     INDENT;
 
@@ -2199,7 +2215,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTBigUnit &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTCaseOption &n)
+void *begin_visit(const FTCaseOption &n)
 {
     INDENT;
 
@@ -2213,7 +2229,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTCaseOption &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTContainsExpr &n)
+void *begin_visit(const FTContainsExpr &n)
 {
     INDENT;
 
@@ -2227,7 +2243,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTContainsExpr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTContent &n)
+void *begin_visit(const FTContent &n)
 {
     INDENT;
 
@@ -2241,7 +2257,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTContent &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTDiacriticsOption &n)
+void *begin_visit(const FTDiacriticsOption &n)
 {
     INDENT;
 
@@ -2255,7 +2271,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTDiacriticsOption &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTDistance &n)
+void *begin_visit(const FTDistance &n)
 {
     INDENT;
 
@@ -2269,7 +2285,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTDistance &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTIgnoreOption &n)
+void *begin_visit(const FTIgnoreOption &n)
 {
     INDENT;
 
@@ -2283,7 +2299,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTIgnoreOption &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTInclExclStringLiteral &n)
+void *begin_visit(const FTInclExclStringLiteral &n)
 {
     INDENT;
 
@@ -2297,7 +2313,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTInclExclStringLiteral &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTInclExclStringLiteralList &n)
+void *begin_visit(const FTInclExclStringLiteralList &n)
 {
     INDENT;
 
@@ -2311,7 +2327,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTInclExclStringLiteralList &n
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTLanguageOption &n)
+void *begin_visit(const FTLanguageOption &n)
 {
     INDENT;
 
@@ -2325,7 +2341,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTLanguageOption &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTMatchOption &n)
+void *begin_visit(const FTMatchOption &n)
 {
     INDENT;
 
@@ -2339,7 +2355,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTMatchOption &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTMatchOptionProximityList &n)
+void *begin_visit(const FTMatchOptionProximityList &n)
 {
     INDENT;
 
@@ -2353,7 +2369,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTMatchOptionProximityList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTMildnot &n)
+void *begin_visit(const FTMildnot &n)
 {
     INDENT;
 
@@ -2367,7 +2383,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTMildnot &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTOptionDecl &n)
+void *begin_visit(const FTOptionDecl &n)
 {
     INDENT;
 
@@ -2381,7 +2397,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTOptionDecl &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTOr &n)
+void *begin_visit(const FTOr &n)
 {
     INDENT;
 
@@ -2395,7 +2411,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTOr &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTOrderedIndicator &n)
+void *begin_visit(const FTOrderedIndicator &n)
 {
     INDENT;
 
@@ -2409,7 +2425,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTOrderedIndicator &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTProximity &n)
+void *begin_visit(const FTProximity &n)
 {
     INDENT;
 
@@ -2423,7 +2439,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTProximity &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTRange &n)
+void *begin_visit(const FTRange &n)
 {
     INDENT;
 
@@ -2437,7 +2453,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTRange &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTRefOrList &n)
+void *begin_visit(const FTRefOrList &n)
 {
     INDENT;
 
@@ -2451,7 +2467,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTRefOrList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTScope &n)
+void *begin_visit(const FTScope &n)
 {
     INDENT;
 
@@ -2465,7 +2481,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTScope &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTScoreVar &n)
+void *begin_visit(const FTScoreVar &n)
 {
     INDENT;
 
@@ -2479,7 +2495,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTScoreVar &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTSelection &n)
+void *begin_visit(const FTSelection &n)
 {
     INDENT;
 
@@ -2493,7 +2509,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTSelection &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTStemOption &n)
+void *begin_visit(const FTStemOption &n)
 {
     INDENT;
 
@@ -2507,7 +2523,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTStemOption &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTStopwordOption &n)
+void *begin_visit(const FTStopwordOption &n)
 {
     INDENT;
 
@@ -2521,7 +2537,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTStopwordOption &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTStringLiteralList &n)
+void *begin_visit(const FTStringLiteralList &n)
 {
     INDENT;
 
@@ -2535,7 +2551,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTStringLiteralList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTThesaurusID &n)
+void *begin_visit(const FTThesaurusID &n)
 {
     INDENT;
 
@@ -2549,7 +2565,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTThesaurusID &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTThesaurusList &n)
+void *begin_visit(const FTThesaurusList &n)
 {
     INDENT;
 
@@ -2563,7 +2579,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTThesaurusList &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTThesaurusOption &n)
+void *begin_visit(const FTThesaurusOption &n)
 {
     INDENT;
 
@@ -2577,7 +2593,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTThesaurusOption &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTTimes &n)
+void *begin_visit(const FTTimes &n)
 {
     INDENT;
 
@@ -2591,7 +2607,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTTimes &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTUnaryNot &n)
+void *begin_visit(const FTUnaryNot &n)
 {
     INDENT;
 
@@ -2605,7 +2621,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTUnaryNot &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTUnit &n)
+void *begin_visit(const FTUnit &n)
 {
     INDENT;
 
@@ -2619,7 +2635,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTUnit &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTWildcardOption &n)
+void *begin_visit(const FTWildcardOption &n)
 {
     INDENT;
 
@@ -2633,7 +2649,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTWildcardOption &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTWindow &n)
+void *begin_visit(const FTWindow &n)
 {
     INDENT;
 
@@ -2647,7 +2663,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTWindow &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTWords &n)
+void *begin_visit(const FTWords &n)
 {
     INDENT;
 
@@ -2661,7 +2677,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTWords &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTWordsSelection &n)
+void *begin_visit(const FTWordsSelection &n)
 {
     INDENT;
 
@@ -2675,7 +2691,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTWordsSelection &n)
 }
 
 
-void *ParseNodePrintXMLVisitor::begin_visit(const FTWordsValue &n)
+void *begin_visit(const FTWordsValue &n)
 {
     INDENT;
 
@@ -2689,7 +2705,7 @@ void *ParseNodePrintXMLVisitor::begin_visit(const FTWordsValue &n)
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const parsenode& /*n*/, void* /*visit_state*/)
+void end_visit(const parsenode& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2699,7 +2715,7 @@ void ParseNodePrintXMLVisitor::end_visit(const parsenode& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const AbbrevForwardStep& /*n*/, void* /*visit_state*/)
+void end_visit(const AbbrevForwardStep& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2709,7 +2725,7 @@ void ParseNodePrintXMLVisitor::end_visit(const AbbrevForwardStep& /*n*/, void* /
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const AnyKindTest& /*n*/, void* /*visit_state*/)
+void end_visit(const AnyKindTest& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2719,7 +2735,7 @@ void ParseNodePrintXMLVisitor::end_visit(const AnyKindTest& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const AposAttrContentList& /*n*/, void* /*visit_state*/)
+void end_visit(const AposAttrContentList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2729,7 +2745,7 @@ void ParseNodePrintXMLVisitor::end_visit(const AposAttrContentList& /*n*/, void*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const AposAttrValueContent& /*n*/, void* /*visit_state*/)
+void end_visit(const AposAttrValueContent& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2739,7 +2755,7 @@ void ParseNodePrintXMLVisitor::end_visit(const AposAttrValueContent& /*n*/, void
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ArgList& /*n*/, void* /*visit_state*/)
+void end_visit(const ArgList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2749,7 +2765,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ArgList& /*n*/, void* /*visit_sta
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const AtomicType& /*n*/, void* /*visit_state*/)
+void end_visit(const AtomicType& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2759,7 +2775,7 @@ void ParseNodePrintXMLVisitor::end_visit(const AtomicType& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const AttributeTest& /*n*/, void* /*visit_state*/)
+void end_visit(const AttributeTest& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2769,7 +2785,7 @@ void ParseNodePrintXMLVisitor::end_visit(const AttributeTest& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const BaseURIDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const BaseURIDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2779,7 +2795,7 @@ void ParseNodePrintXMLVisitor::end_visit(const BaseURIDecl& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const BoundarySpaceDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const BoundarySpaceDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2789,7 +2805,7 @@ void ParseNodePrintXMLVisitor::end_visit(const BoundarySpaceDecl& /*n*/, void* /
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CaseClause& /*n*/, void* /*visit_state*/)
+void end_visit(const CaseClause& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2799,7 +2815,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CaseClause& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CaseClauseList& /*n*/, void* /*visit_state*/)
+void end_visit(const CaseClauseList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2809,7 +2825,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CaseClauseList& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CommentTest& /*n*/, void* /*visit_state*/)
+void end_visit(const CommentTest& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2819,7 +2835,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CommentTest& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ConstructionDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const ConstructionDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2829,7 +2845,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ConstructionDecl& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CopyNamespacesDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const CopyNamespacesDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2839,7 +2855,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CopyNamespacesDecl& /*n*/, void* 
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DefaultCollationDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const DefaultCollationDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2849,7 +2865,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DefaultCollationDecl& /*n*/, void
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DirAttr& /*n*/, void* /*visit_state*/)
+void end_visit(const DirAttr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2859,7 +2875,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DirAttr& /*n*/, void* /*visit_sta
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DirAttributeList& /*n*/, void* /*visit_state*/)
+void end_visit(const DirAttributeList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2869,7 +2885,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DirAttributeList& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DirAttributeValue& /*n*/, void* /*visit_state*/)
+void end_visit(const DirAttributeValue& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2879,7 +2895,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DirAttributeValue& /*n*/, void* /
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DirElemContentList& /*n*/, void* /*visit_state*/)
+void end_visit(const DirElemContentList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2889,7 +2905,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DirElemContentList& /*n*/, void* 
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DocumentTest& /*n*/, void* /*visit_state*/)
+void end_visit(const DocumentTest& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2899,7 +2915,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DocumentTest& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ElementTest& /*n*/, void* /*visit_state*/)
+void end_visit(const ElementTest& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2909,7 +2925,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ElementTest& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const EmptyOrderDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const EmptyOrderDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2919,7 +2935,7 @@ void ParseNodePrintXMLVisitor::end_visit(const EmptyOrderDecl& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ForClause& /*n*/, void* /*visit_state*/)
+void end_visit(const ForClause& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2930,7 +2946,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ForClause& /*n*/, void* /*visit_s
 
 
 // void
-// ParseNodePrintXMLVisitor::end_visit(const ForLetClause& /*n*/, void* /*visit_state*/)
+// end_visit(const ForLetClause& /*n*/, void* /*visit_state*/)
 // {
 //     INDENT_DEC;
 //
@@ -2940,7 +2956,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ForClause& /*n*/, void* /*visit_s
 // }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ForLetClauseList& /*n*/, void* /*visit_state*/)
+void end_visit(const ForLetClauseList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2950,7 +2966,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ForLetClauseList& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ForwardAxis& /*n*/, void* /*visit_state*/)
+void end_visit(const ForwardAxis& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2960,7 +2976,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ForwardAxis& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ForwardStep& /*n*/, void* /*visit_state*/)
+void end_visit(const ForwardStep& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2970,7 +2986,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ForwardStep& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FunctionDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const FunctionDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2980,7 +2996,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FunctionDecl& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ItemType& /*n*/, void* /*visit_state*/)
+void end_visit(const ItemType& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -2990,7 +3006,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ItemType& /*n*/, void* /*visit_st
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const LetClause& /*n*/, void* /*visit_state*/)
+void end_visit(const LetClause& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3000,7 +3016,7 @@ void ParseNodePrintXMLVisitor::end_visit(const LetClause& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const LibraryModule& /*n*/, void* /*visit_state*/)
+void end_visit(const LibraryModule& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3010,7 +3026,7 @@ void ParseNodePrintXMLVisitor::end_visit(const LibraryModule& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const MainModule & /*n*/, void* /*visit_state*/)
+void end_visit(const MainModule & /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3020,7 +3036,7 @@ void ParseNodePrintXMLVisitor::end_visit(const MainModule & /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const Module& /*n*/, void* /*visit_state*/)
+void end_visit(const Module& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3030,7 +3046,7 @@ void ParseNodePrintXMLVisitor::end_visit(const Module& /*n*/, void* /*visit_stat
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ModuleDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const ModuleDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3040,7 +3056,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ModuleDecl& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ModuleImport& /*n*/, void* /*visit_state*/)
+void end_visit(const ModuleImport& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3050,7 +3066,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ModuleImport& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OccurrenceIndicator& /*n*/, void* /*visit_state*/)
+void end_visit(const OccurrenceIndicator& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3060,7 +3076,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OccurrenceIndicator& /*n*/, void*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OptionDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const OptionDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3070,7 +3086,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OptionDecl& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OrderByClause& /*n*/, void* /*visit_state*/)
+void end_visit(const OrderByClause& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3080,7 +3096,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OrderByClause& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OrderCollationSpec& /*n*/, void* /*visit_state*/)
+void end_visit(const OrderCollationSpec& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3090,7 +3106,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OrderCollationSpec& /*n*/, void* 
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OrderDirSpec& /*n*/, void* /*visit_state*/)
+void end_visit(const OrderDirSpec& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3100,7 +3116,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OrderDirSpec& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OrderEmptySpec& /*n*/, void* /*visit_state*/)
+void end_visit(const OrderEmptySpec& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3110,7 +3126,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OrderEmptySpec& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OrderModifier& /*n*/, void* /*visit_state*/)
+void end_visit(const OrderModifier& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3120,7 +3136,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OrderModifier& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OrderSpec& /*n*/, void* /*visit_state*/)
+void end_visit(const OrderSpec& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3130,7 +3146,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OrderSpec& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OrderSpecList& /*n*/, void* /*visit_state*/)
+void end_visit(const OrderSpecList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3140,7 +3156,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OrderSpecList& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OrderingModeDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const OrderingModeDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3150,7 +3166,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OrderingModeDecl& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const PITest& /*n*/, void* /*visit_state*/)
+void end_visit(const PITest& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3160,7 +3176,7 @@ void ParseNodePrintXMLVisitor::end_visit(const PITest& /*n*/, void* /*visit_stat
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ParamList& /*n*/, void* /*visit_state*/)
+void end_visit(const ParamList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3170,7 +3186,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ParamList& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const PositionalVar& /*n*/, void* /*visit_state*/)
+void end_visit(const PositionalVar& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3180,7 +3196,7 @@ void ParseNodePrintXMLVisitor::end_visit(const PositionalVar& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const Pragma& /*n*/, void* /*visit_state*/)
+void end_visit(const Pragma& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3190,7 +3206,7 @@ void ParseNodePrintXMLVisitor::end_visit(const Pragma& /*n*/, void* /*visit_stat
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const PragmaList& /*n*/, void* /*visit_state*/)
+void end_visit(const PragmaList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3200,7 +3216,7 @@ void ParseNodePrintXMLVisitor::end_visit(const PragmaList& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const PredicateList& /*n*/, void* /*visit_state*/)
+void end_visit(const PredicateList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3210,7 +3226,7 @@ void ParseNodePrintXMLVisitor::end_visit(const PredicateList& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const Prolog& /*n*/, void* /*visit_state*/)
+void end_visit(const Prolog& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3220,7 +3236,7 @@ void ParseNodePrintXMLVisitor::end_visit(const Prolog& /*n*/, void* /*visit_stat
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const QVarInDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const QVarInDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3230,7 +3246,7 @@ void ParseNodePrintXMLVisitor::end_visit(const QVarInDecl& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const QVarInDeclList& /*n*/, void* /*visit_state*/)
+void end_visit(const QVarInDeclList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3240,7 +3256,7 @@ void ParseNodePrintXMLVisitor::end_visit(const QVarInDeclList& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const QuoteAttrValueContent& /*n*/, void* /*visit_state*/)
+void end_visit(const QuoteAttrValueContent& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3250,7 +3266,7 @@ void ParseNodePrintXMLVisitor::end_visit(const QuoteAttrValueContent& /*n*/, voi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const QuoteAttrContentList& /*n*/, void* /*visit_state*/)
+void end_visit(const QuoteAttrContentList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3260,7 +3276,7 @@ void ParseNodePrintXMLVisitor::end_visit(const QuoteAttrContentList& /*n*/, void
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ReverseAxis& /*n*/, void* /*visit_state*/)
+void end_visit(const ReverseAxis& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3270,7 +3286,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ReverseAxis& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ReverseStep& /*n*/, void* /*visit_state*/)
+void end_visit(const ReverseStep& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3280,7 +3296,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ReverseStep& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const SIND_DeclList& /*n*/, void* /*visit_state*/)
+void end_visit(const SIND_DeclList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3290,7 +3306,7 @@ void ParseNodePrintXMLVisitor::end_visit(const SIND_DeclList& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const SchemaAttributeTest& /*n*/, void* /*visit_state*/)
+void end_visit(const SchemaAttributeTest& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3300,7 +3316,7 @@ void ParseNodePrintXMLVisitor::end_visit(const SchemaAttributeTest& /*n*/, void*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const SchemaElementTest& /*n*/, void* /*visit_state*/)
+void end_visit(const SchemaElementTest& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3310,7 +3326,7 @@ void ParseNodePrintXMLVisitor::end_visit(const SchemaElementTest& /*n*/, void* /
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const SchemaImport& /*n*/, void* /*visit_state*/)
+void end_visit(const SchemaImport& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3320,7 +3336,7 @@ void ParseNodePrintXMLVisitor::end_visit(const SchemaImport& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const SchemaPrefix& /*n*/, void* /*visit_state*/)
+void end_visit(const SchemaPrefix& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3330,7 +3346,7 @@ void ParseNodePrintXMLVisitor::end_visit(const SchemaPrefix& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const SequenceType& /*n*/, void* /*visit_state*/)
+void end_visit(const SequenceType& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3340,7 +3356,7 @@ void ParseNodePrintXMLVisitor::end_visit(const SequenceType& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const SignList& /*n*/, void* /*visit_state*/)
+void end_visit(const SignList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3350,7 +3366,7 @@ void ParseNodePrintXMLVisitor::end_visit(const SignList& /*n*/, void* /*visit_st
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const SingleType& /*n*/, void* /*visit_state*/)
+void end_visit(const SingleType& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3360,7 +3376,7 @@ void ParseNodePrintXMLVisitor::end_visit(const SingleType& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const TextTest& /*n*/, void* /*visit_state*/)
+void end_visit(const TextTest& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3370,7 +3386,7 @@ void ParseNodePrintXMLVisitor::end_visit(const TextTest& /*n*/, void* /*visit_st
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const TypeDeclaration& /*n*/, void* /*visit_state*/)
+void end_visit(const TypeDeclaration& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3380,7 +3396,7 @@ void ParseNodePrintXMLVisitor::end_visit(const TypeDeclaration& /*n*/, void* /*v
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const TypeName& /*n*/, void* /*visit_state*/)
+void end_visit(const TypeName& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3390,7 +3406,7 @@ void ParseNodePrintXMLVisitor::end_visit(const TypeName& /*n*/, void* /*visit_st
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const URILiteralList& /*n*/, void* /*visit_state*/)
+void end_visit(const URILiteralList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3400,7 +3416,7 @@ void ParseNodePrintXMLVisitor::end_visit(const URILiteralList& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const VarDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const VarDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3410,7 +3426,7 @@ void ParseNodePrintXMLVisitor::end_visit(const VarDecl& /*n*/, void* /*visit_sta
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const VarGetsDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const VarGetsDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3420,7 +3436,7 @@ void ParseNodePrintXMLVisitor::end_visit(const VarGetsDecl& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const VarGetsDeclList& /*n*/, void* /*visit_state*/)
+void end_visit(const VarGetsDeclList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3430,7 +3446,7 @@ void ParseNodePrintXMLVisitor::end_visit(const VarGetsDeclList& /*n*/, void* /*v
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const VarInDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const VarInDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3440,7 +3456,7 @@ void ParseNodePrintXMLVisitor::end_visit(const VarInDecl& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const VarInDeclList& /*n*/, void* /*visit_state*/)
+void end_visit(const VarInDeclList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3450,7 +3466,7 @@ void ParseNodePrintXMLVisitor::end_visit(const VarInDeclList& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const VersionDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const VersionDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3460,7 +3476,7 @@ void ParseNodePrintXMLVisitor::end_visit(const VersionDecl& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const VFO_DeclList& /*n*/, void* /*visit_state*/)
+void end_visit(const VFO_DeclList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3470,7 +3486,7 @@ void ParseNodePrintXMLVisitor::end_visit(const VFO_DeclList& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const WhereClause& /*n*/, void* /*visit_state*/)
+void end_visit(const WhereClause& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3480,7 +3496,7 @@ void ParseNodePrintXMLVisitor::end_visit(const WhereClause& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const Wildcard& /*n*/, void* /*visit_state*/)
+void end_visit(const Wildcard& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3490,7 +3506,7 @@ void ParseNodePrintXMLVisitor::end_visit(const Wildcard& /*n*/, void* /*visit_st
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const exprnode& /*n*/, void* /*visit_state*/)
+void end_visit(const exprnode& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3500,7 +3516,7 @@ void ParseNodePrintXMLVisitor::end_visit(const exprnode& /*n*/, void* /*visit_st
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const AdditiveExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const AdditiveExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3510,7 +3526,7 @@ void ParseNodePrintXMLVisitor::end_visit(const AdditiveExpr& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const AndExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const AndExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3520,7 +3536,7 @@ void ParseNodePrintXMLVisitor::end_visit(const AndExpr& /*n*/, void* /*visit_sta
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const AxisStep& /*n*/, void* /*visit_state*/)
+void end_visit(const AxisStep& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3530,7 +3546,7 @@ void ParseNodePrintXMLVisitor::end_visit(const AxisStep& /*n*/, void* /*visit_st
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CDataSection& /*n*/, void* /*visit_state*/)
+void end_visit(const CDataSection& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3540,7 +3556,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CDataSection& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CastExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const CastExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3550,7 +3566,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CastExpr& /*n*/, void* /*visit_st
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CastableExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const CastableExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3560,7 +3576,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CastableExpr& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CommonContent& /*n*/, void* /*visit_state*/)
+void end_visit(const CommonContent& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3570,7 +3586,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CommonContent& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ComparisonExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const ComparisonExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3580,7 +3596,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ComparisonExpr& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CompAttrConstructor& /*n*/, void* /*visit_state*/)
+void end_visit(const CompAttrConstructor& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3590,7 +3606,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CompAttrConstructor& /*n*/, void*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CompCommentConstructor& /*n*/, void* /*visit_state*/)
+void end_visit(const CompCommentConstructor& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3600,7 +3616,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CompCommentConstructor& /*n*/, vo
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CompDocConstructor& /*n*/, void* /*visit_state*/)
+void end_visit(const CompDocConstructor& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3610,7 +3626,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CompDocConstructor& /*n*/, void* 
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CompElemConstructor& /*n*/, void* /*visit_state*/)
+void end_visit(const CompElemConstructor& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3620,7 +3636,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CompElemConstructor& /*n*/, void*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CompPIConstructor& /*n*/, void* /*visit_state*/)
+void end_visit(const CompPIConstructor& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3630,7 +3646,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CompPIConstructor& /*n*/, void* /
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const CompTextConstructor& /*n*/, void* /*visit_state*/)
+void end_visit(const CompTextConstructor& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3640,7 +3656,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CompTextConstructor& /*n*/, void*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ContextItemExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const ContextItemExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3650,7 +3666,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ContextItemExpr& /*n*/, void* /*v
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DirCommentConstructor& /*n*/, void* /*visit_state*/)
+void end_visit(const DirCommentConstructor& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3660,7 +3676,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DirCommentConstructor& /*n*/, voi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DirElemConstructor& /*n*/, void* /*visit_state*/)
+void end_visit(const DirElemConstructor& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3670,7 +3686,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DirElemConstructor& /*n*/, void* 
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DirElemContent& /*n*/, void* /*visit_state*/)
+void end_visit(const DirElemContent& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3680,7 +3696,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DirElemContent& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DirPIConstructor& /*n*/, void* /*visit_state*/)
+void end_visit(const DirPIConstructor& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3690,7 +3706,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DirPIConstructor& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const EnclosedExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const EnclosedExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3700,7 +3716,7 @@ void ParseNodePrintXMLVisitor::end_visit(const EnclosedExpr& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const Expr& /*n*/, void* /*visit_state*/)
+void end_visit(const Expr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3711,7 +3727,7 @@ void ParseNodePrintXMLVisitor::end_visit(const Expr& /*n*/, void* /*visit_state*
 
 
 // void
-// ParseNodePrintXMLVisitor::end_visit(const ExprSingle& /*n*/, void* /*visit_state*/)
+// end_visit(const ExprSingle& /*n*/, void* /*visit_state*/)
 // {
 //     INDENT_DEC;
 //
@@ -3721,7 +3737,7 @@ void ParseNodePrintXMLVisitor::end_visit(const Expr& /*n*/, void* /*visit_state*
 // }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ExtensionExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const ExtensionExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3731,7 +3747,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ExtensionExpr& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FLWORExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const FLWORExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3741,7 +3757,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FLWORExpr& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FilterExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const FilterExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3751,7 +3767,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FilterExpr& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FunctionCall& /*n*/, void* /*visit_state*/)
+void end_visit(const FunctionCall& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3761,7 +3777,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FunctionCall& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const IfExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const IfExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3771,7 +3787,7 @@ void ParseNodePrintXMLVisitor::end_visit(const IfExpr& /*n*/, void* /*visit_stat
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const InstanceofExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const InstanceofExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3781,7 +3797,7 @@ void ParseNodePrintXMLVisitor::end_visit(const InstanceofExpr& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const IntersectExceptExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const IntersectExceptExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3791,7 +3807,7 @@ void ParseNodePrintXMLVisitor::end_visit(const IntersectExceptExpr& /*n*/, void*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const MultiplicativeExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const MultiplicativeExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3801,7 +3817,7 @@ void ParseNodePrintXMLVisitor::end_visit(const MultiplicativeExpr& /*n*/, void* 
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OrExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const OrExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3811,7 +3827,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OrExpr& /*n*/, void* /*visit_stat
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const OrderedExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const OrderedExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3821,7 +3837,7 @@ void ParseNodePrintXMLVisitor::end_visit(const OrderedExpr& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ParenthesizedExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const ParenthesizedExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3831,7 +3847,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ParenthesizedExpr& /*n*/, void* /
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const PathExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const PathExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3841,7 +3857,7 @@ void ParseNodePrintXMLVisitor::end_visit(const PathExpr& /*n*/, void* /*visit_st
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const QuantifiedExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const QuantifiedExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3851,7 +3867,7 @@ void ParseNodePrintXMLVisitor::end_visit(const QuantifiedExpr& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const QueryBody& /*n*/, void* /*visit_state*/)
+void end_visit(const QueryBody& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3861,7 +3877,7 @@ void ParseNodePrintXMLVisitor::end_visit(const QueryBody& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const RangeExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const RangeExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3871,7 +3887,7 @@ void ParseNodePrintXMLVisitor::end_visit(const RangeExpr& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const RelativePathExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const RelativePathExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3881,7 +3897,7 @@ void ParseNodePrintXMLVisitor::end_visit(const RelativePathExpr& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const StringLiteral& /*n*/, void* /*visit_state*/)
+void end_visit(const StringLiteral& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3891,7 +3907,7 @@ void ParseNodePrintXMLVisitor::end_visit(const StringLiteral& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const TreatExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const TreatExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3901,7 +3917,7 @@ void ParseNodePrintXMLVisitor::end_visit(const TreatExpr& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const TypeswitchExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const TypeswitchExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3911,7 +3927,7 @@ void ParseNodePrintXMLVisitor::end_visit(const TypeswitchExpr& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const UnaryExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const UnaryExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3921,7 +3937,7 @@ void ParseNodePrintXMLVisitor::end_visit(const UnaryExpr& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const UnionExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const UnionExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3931,7 +3947,7 @@ void ParseNodePrintXMLVisitor::end_visit(const UnionExpr& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const UnorderedExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const UnorderedExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3941,7 +3957,7 @@ void ParseNodePrintXMLVisitor::end_visit(const UnorderedExpr& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ValidateExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const ValidateExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3951,7 +3967,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ValidateExpr& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const DeleteExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const DeleteExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3961,7 +3977,7 @@ void ParseNodePrintXMLVisitor::end_visit(const DeleteExpr& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const InsertExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const InsertExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3971,7 +3987,7 @@ void ParseNodePrintXMLVisitor::end_visit(const InsertExpr& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const RenameExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const RenameExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3981,7 +3997,7 @@ void ParseNodePrintXMLVisitor::end_visit(const RenameExpr& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const ReplaceExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const ReplaceExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -3991,7 +4007,7 @@ void ParseNodePrintXMLVisitor::end_visit(const ReplaceExpr& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const RevalidationDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const RevalidationDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4001,7 +4017,7 @@ void ParseNodePrintXMLVisitor::end_visit(const RevalidationDecl& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const TransformExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const TransformExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4011,7 +4027,7 @@ void ParseNodePrintXMLVisitor::end_visit(const TransformExpr& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const VarNameList& /*n*/, void* /*visit_state*/)
+void end_visit(const VarNameList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4021,7 +4037,7 @@ void ParseNodePrintXMLVisitor::end_visit(const VarNameList& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const TryExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const TryExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4030,7 +4046,7 @@ void ParseNodePrintXMLVisitor::end_visit(const TryExpr& /*n*/, void* /*visit_sta
     NL;
 }
 
-void ParseNodePrintXMLVisitor::end_visit(const CatchListExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const CatchListExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4039,7 +4055,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CatchListExpr& /*n*/, void* /*vis
     NL;
 }
 
-void ParseNodePrintXMLVisitor::end_visit(const CatchExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const CatchExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4049,7 +4065,7 @@ void ParseNodePrintXMLVisitor::end_visit(const CatchExpr& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTAnd& /*n*/, void* /*visit_state*/)
+void end_visit(const FTAnd& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4059,7 +4075,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTAnd& /*n*/, void* /*visit_state
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTAnyallOption& /*n*/, void* /*visit_state*/)
+void end_visit(const FTAnyallOption& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4069,7 +4085,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTAnyallOption& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTBigUnit& /*n*/, void* /*visit_state*/)
+void end_visit(const FTBigUnit& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4079,7 +4095,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTBigUnit& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTCaseOption& /*n*/, void* /*visit_state*/)
+void end_visit(const FTCaseOption& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4089,7 +4105,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTCaseOption& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTContainsExpr& /*n*/, void* /*visit_state*/)
+void end_visit(const FTContainsExpr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4099,7 +4115,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTContainsExpr& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTContent& /*n*/, void* /*visit_state*/)
+void end_visit(const FTContent& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4109,7 +4125,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTContent& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTDiacriticsOption& /*n*/, void* /*visit_state*/)
+void end_visit(const FTDiacriticsOption& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4119,7 +4135,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTDiacriticsOption& /*n*/, void* 
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTDistance& /*n*/, void* /*visit_state*/)
+void end_visit(const FTDistance& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4129,7 +4145,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTDistance& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTIgnoreOption& /*n*/, void* /*visit_state*/)
+void end_visit(const FTIgnoreOption& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4139,7 +4155,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTIgnoreOption& /*n*/, void* /*vi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTInclExclStringLiteral& /*n*/, void* /*visit_state*/)
+void end_visit(const FTInclExclStringLiteral& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4149,7 +4165,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTInclExclStringLiteral& /*n*/, v
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTInclExclStringLiteralList& /*n*/, void* /*visit_state*/)
+void end_visit(const FTInclExclStringLiteralList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4159,7 +4175,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTInclExclStringLiteralList& /*n*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTLanguageOption& /*n*/, void* /*visit_state*/)
+void end_visit(const FTLanguageOption& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4169,7 +4185,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTLanguageOption& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTMatchOption& /*n*/, void* /*visit_state*/)
+void end_visit(const FTMatchOption& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4179,7 +4195,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTMatchOption& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTMatchOptionProximityList& /*n*/, void* /*visit_state*/)
+void end_visit(const FTMatchOptionProximityList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4189,7 +4205,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTMatchOptionProximityList& /*n*/
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTMildnot& /*n*/, void* /*visit_state*/)
+void end_visit(const FTMildnot& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4199,7 +4215,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTMildnot& /*n*/, void* /*visit_s
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTOptionDecl& /*n*/, void* /*visit_state*/)
+void end_visit(const FTOptionDecl& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4209,7 +4225,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTOptionDecl& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTOr& /*n*/, void* /*visit_state*/)
+void end_visit(const FTOr& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4219,7 +4235,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTOr& /*n*/, void* /*visit_state*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTOrderedIndicator& /*n*/, void* /*visit_state*/)
+void end_visit(const FTOrderedIndicator& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4229,7 +4245,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTOrderedIndicator& /*n*/, void* 
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTProximity& /*n*/, void* /*visit_state*/)
+void end_visit(const FTProximity& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4239,7 +4255,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTProximity& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTRange& /*n*/, void* /*visit_state*/)
+void end_visit(const FTRange& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4249,7 +4265,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTRange& /*n*/, void* /*visit_sta
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTRefOrList& /*n*/, void* /*visit_state*/)
+void end_visit(const FTRefOrList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4259,7 +4275,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTRefOrList& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTScope& /*n*/, void* /*visit_state*/)
+void end_visit(const FTScope& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4269,7 +4285,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTScope& /*n*/, void* /*visit_sta
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTScoreVar& /*n*/, void* /*visit_state*/)
+void end_visit(const FTScoreVar& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4279,7 +4295,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTScoreVar& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTSelection& /*n*/, void* /*visit_state*/)
+void end_visit(const FTSelection& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4289,7 +4305,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTSelection& /*n*/, void* /*visit
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTStemOption& /*n*/, void* /*visit_state*/)
+void end_visit(const FTStemOption& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4299,7 +4315,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTStemOption& /*n*/, void* /*visi
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTStopwordOption& /*n*/, void* /*visit_state*/)
+void end_visit(const FTStopwordOption& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4309,7 +4325,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTStopwordOption& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTStringLiteralList& /*n*/, void* /*visit_state*/)
+void end_visit(const FTStringLiteralList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4319,7 +4335,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTStringLiteralList& /*n*/, void*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTThesaurusID& /*n*/, void* /*visit_state*/)
+void end_visit(const FTThesaurusID& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4329,7 +4345,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTThesaurusID& /*n*/, void* /*vis
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTThesaurusList& /*n*/, void* /*visit_state*/)
+void end_visit(const FTThesaurusList& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4339,7 +4355,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTThesaurusList& /*n*/, void* /*v
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTThesaurusOption& /*n*/, void* /*visit_state*/)
+void end_visit(const FTThesaurusOption& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4349,7 +4365,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTThesaurusOption& /*n*/, void* /
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTTimes& /*n*/, void* /*visit_state*/)
+void end_visit(const FTTimes& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4359,7 +4375,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTTimes& /*n*/, void* /*visit_sta
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTUnaryNot& /*n*/, void* /*visit_state*/)
+void end_visit(const FTUnaryNot& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4369,7 +4385,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTUnaryNot& /*n*/, void* /*visit_
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTUnit& /*n*/, void* /*visit_state*/)
+void end_visit(const FTUnit& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4379,7 +4395,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTUnit& /*n*/, void* /*visit_stat
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTWildcardOption& /*n*/, void* /*visit_state*/)
+void end_visit(const FTWildcardOption& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4389,7 +4405,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTWildcardOption& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTWindow& /*n*/, void* /*visit_state*/)
+void end_visit(const FTWindow& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4399,7 +4415,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTWindow& /*n*/, void* /*visit_st
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTWords& /*n*/, void* /*visit_state*/)
+void end_visit(const FTWords& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4409,7 +4425,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTWords& /*n*/, void* /*visit_sta
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTWordsSelection& /*n*/, void* /*visit_state*/)
+void end_visit(const FTWordsSelection& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4419,7 +4435,7 @@ void ParseNodePrintXMLVisitor::end_visit(const FTWordsSelection& /*n*/, void* /*
 }
 
 
-void ParseNodePrintXMLVisitor::end_visit(const FTWordsValue& /*n*/, void* /*visit_state*/)
+void end_visit(const FTWordsValue& /*n*/, void* /*visit_state*/)
 {
     INDENT_DEC;
 
@@ -4428,6 +4444,11 @@ void ParseNodePrintXMLVisitor::end_visit(const FTWordsValue& /*n*/, void* /*visi
     NL;
 }
 
+};
+
+void print_parsetree_xml (ostream &os, parsenode *p) {
+  ParseNodePrintXMLVisitor v (os);
+  v.print (p);
+}
 
 } // end namespace
-
