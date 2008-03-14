@@ -14,15 +14,28 @@ class Annotation {
       IGNORES_DUP_NODES,
       PRODUCES_SORTED_NODES,
       PRODUCES_DISTINCT_NODES,
+
+      FREE_VARS,
     } key_t;
 
     typedef boost::shared_ptr<AnnotationValue> value_ref_t;
 };
 
 class AnnotationValue {
-  public:
-    virtual ~AnnotationValue() { }
+public:
+  virtual ~AnnotationValue() { }
+  virtual bool equals (const AnnotationValue &other) { 
+    if (typeid (other) != typeid (*this))
+      return false;
+    return this == &other;
+  }
 };
+
+inline bool operator== (Annotation::value_ref_t v1, Annotation::value_ref_t v2) {
+  if (v2 == NULL || v1 == NULL)
+    return v2 == NULL && v1 == NULL;
+  return v2->equals (*v1.get ());
+}
 
 class TSVAnnotationValue : public AnnotationValue {
   public:

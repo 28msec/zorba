@@ -117,11 +117,9 @@ RULE_REWRITE_POST(MarkNodesWithNodeIdProperties)
   return NULL;
 }
 
-static bool can_remove_sort_distinct(const fo_expr *fo)
-{
-  TSVAnnotationValue *dnnr = static_cast<TSVAnnotationValue *>(fo->get_annotation(Annotation::IGNORES_DUP_NODES).get());
-  TSVAnnotationValue *snnr = static_cast<TSVAnnotationValue *>(fo->get_annotation(Annotation::IGNORES_SORTED_NODES).get());
-  return dnnr != NULL && dnnr->getValue() == TSVAnnotationValue::TSV_TRUE && snnr != NULL && dnnr->getValue() == TSVAnnotationValue::TSV_TRUE;
+static bool can_remove_sort_distinct(const fo_expr *fo) {
+  return fo->get_annotation(Annotation::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE
+    && fo->get_annotation(Annotation::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE;
 }
 
 RULE_REWRITE_PRE(EliminateDocOrderSort)
