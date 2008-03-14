@@ -378,10 +378,12 @@ public:
   bool operator<(const rchandle& h) const   { return p < h.p; }
 
 
-  template <class otherT> rchandle<otherT> cast() const
-  {
+  template <class otherT> rchandle<otherT> cast() const {
     return rchandle<otherT> (static_cast<otherT *> (p));
   }
+  template <class otherT> rchandle<otherT> dyn_cast() const {
+    return rchandle<otherT> (dynamic_cast<otherT *> (p));
+  }  
 
   template <class otherT> operator rchandle<otherT> () {
     return cast<otherT> ();

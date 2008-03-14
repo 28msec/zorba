@@ -196,7 +196,7 @@ protected:
   }
 
   rchandle<axis_step_expr> expect_axis_step_top () {
-    rchandle<axis_step_expr> axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
+    rchandle<axis_step_expr> axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
     if (axisExpr == NULL) {
       cout << "Expecting axis step on top of stack; ";
       if (nodestack.top() != NULL)
@@ -679,16 +679,14 @@ void *begin_visit(const DirAttributeList& v)
 
   unsigned long numAttrs = 0;
   std::vector<rchandle<attr_expr> > attributes;
-  while(true)
-  {
+  while(true) {
     expr_t expr = pop_nodestack();
     if (expr == NULL)
       break;
 
-    attr_expr* attrExpr = dynamic_cast<attr_expr*>(expr.getp());
+    attr_expr* attrExpr = expr.dyn_cast<attr_expr> ().getp();
 
-    for (unsigned long i = 0; i < numAttrs; i++)
-    {
+    for (unsigned long i = 0; i < numAttrs; i++) {
       if (attributes[i]->getQName()->equals(attrExpr->getQName()))
          ZORBA_ERROR_ALERT(ZorbaError::XQST0040, &v.get_location(),
                           DONT_CONTINUE_EXECUTION, 
@@ -769,7 +767,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       }
     }
 
-    const_expr* constValueExpr = dynamic_cast<const_expr*>(valueExpr.getp());
+    const_expr* constValueExpr = valueExpr.dyn_cast<const_expr> ().getp();
     if (constValueExpr != NULL)
     {
       xqpString uri = constValueExpr->get_val()->getStringValue();
@@ -1022,7 +1020,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
     contentExpr = lEnclosed;
   }
 
-  QName* constQName = dynamic_cast<QName*>(v.get_qname_expr().getp());
+  QName* constQName = v.get_qname_expr().dyn_cast<QName> ().getp();
   
   if (constQName != NULL)
   {
@@ -1076,7 +1074,7 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
     valueExpr = enclosedExpr;
   } 
 
-  QName* constQName = dynamic_cast<QName*>(v.get_qname_expr().getp());
+  QName* constQName = v.get_qname_expr().dyn_cast<QName> ().getp();
 
   if (constQName != NULL)
   {
@@ -1527,12 +1525,12 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         int nargs = v.get_param_count ();
         vector<var_expr_t> params;
         if (nargs > 0) {
-          rchandle<flwor_expr> flwor = dynamic_cast<flwor_expr *>(&*pop_nodestack());
+          rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr> ();
           ZORBA_ASSERT(flwor != NULL);
 
           for(int i = 0; i < nargs; ++i) {
             rchandle<forlet_clause>& flc = (*flwor)[i];
-            var_expr *param_var = dynamic_cast<var_expr *>(&*flc->get_expr());
+            var_expr *param_var = flc->get_expr().dyn_cast<var_expr> ().getp ();
             ZORBA_ASSERT(param_var != NULL);
             params.push_back(param_var);
           }
@@ -1705,7 +1703,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  rchandle<flwor_expr> flwor = dynamic_cast<flwor_expr *>(&*nodestack.top());
+  rchandle<flwor_expr> flwor = nodestack.top().cast<flwor_expr> ();
   ZORBA_ASSERT(flwor != NULL);
   store::Item_t qname = sctx_p->lookup_qname ("", v.get_name());
   var_expr_t param_var = new var_expr (v.get_location(), var_expr::param_var, qname);
@@ -1939,7 +1937,7 @@ void *begin_visit(const VFO_DeclList& v)
   for (vector<rchandle<parsenode> >::const_iterator it = v.begin();
        it != v.end(); ++it)
   {
-    const FunctionDecl *n = dynamic_cast<const FunctionDecl *> (it->getp ());
+    const FunctionDecl *n = it->dyn_cast<FunctionDecl> ().getp ();
     if (n != NULL) {
       rchandle<ParamList> params = n->get_paramlist ();
       if (params == NULL) params = new ParamList (n->get_location ());
@@ -2045,7 +2043,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
     else
       return new castable_expr (loc, node, type);
   } else {  // a QName cast
-    const const_expr *ce = dynamic_cast<const_expr *> (node.getp());
+    const const_expr *ce = node.dyn_cast<const_expr> ().getp();
     if (ce != NULL
         && GENV_TYPESYSTEM.is_equal (*sctx_p->get_typemanager()->create_type (ce->get_val ()->getType (), TypeConstants::QUANT_ONE),
                                      *GENV_TYPESYSTEM.STRING_TYPE_ONE))
@@ -2703,7 +2701,7 @@ void end_visit(const AnyKindTest& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL)
   {
     rchandle<match_expr> me = new match_expr(v.get_location());
@@ -2736,7 +2734,7 @@ void end_visit(const DocumentTest& v, void* /*visit_state*/)
 
   if (elemTest == NULL)
   {
-    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
+    axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
     if (axisExpr != NULL)
     {
       rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2760,7 +2758,7 @@ void end_visit(const DocumentTest& v, void* /*visit_state*/)
     rchandle<TypeName> typeName = elemTest->getTypeName();
     bool nilled =  elemTest->isNilledAllowed();
 
-    axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
+    axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
     if (axisExpr != NULL)
     {
       rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2803,7 +2801,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
   bool nilled =  v.isNilledAllowed();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL)
   {
     rchandle<match_expr> me = new match_expr(v.get_location());
@@ -2878,7 +2876,7 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
   rchandle<TypeName> typeName = v.get_type_name();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL)
   {
     rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2938,7 +2936,7 @@ void end_visit(const TextTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL)
   {
     rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2967,7 +2965,7 @@ void end_visit(const CommentTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL)
   {
     rchandle<match_expr> match = new match_expr(v.get_location());
@@ -2994,7 +2992,7 @@ void *begin_visit(const PITest& /*v*/)
 void end_visit(const PITest& v, void* /*visit_state*/)
 {
  TRACE_VISIT_OUT ();
-  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(&*peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL)
   {
     string target = v.get_target();
@@ -3183,8 +3181,8 @@ void *begin_visit(const PathExpr& v)
     In case 4, add a "." to path expressions starting with an axis step
   */
   if (v.get_type() == ParseConstants::path_relative) {
-    const RelativePathExpr *vrpe = dynamic_cast<RelativePathExpr *> (v.get_relpath_expr ().getp());
-    if (vrpe != NULL && dynamic_cast<AxisStep *> (vrpe->get_step_expr ().getp ()) != NULL)
+    const RelativePathExpr *vrpe = v.get_relpath_expr ().dyn_cast<RelativePathExpr> ().getp ();
+    if (vrpe != NULL && vrpe->get_step_expr ().dyn_cast<AxisStep> () != NULL)
       rpe->add_back (sctx_p->lookup_var_nofail (DOT_VAR));
   } else {
     rchandle<relpath_expr> ctx_rpe = new relpath_expr(v.get_location());
@@ -3261,7 +3259,7 @@ void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
 
   if (arg1 != NULL)
   {
-    rpe = dynamic_cast<relpath_expr *>(&*arg1);
+    rpe = arg1.dyn_cast<relpath_expr> ();
     ZORBA_ASSERT(rpe != NULL);
 
     rpe->add_back(arg2);
@@ -3277,7 +3275,7 @@ void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
   }
   else
   {
-    flwor_expr* flwor = dynamic_cast<flwor_expr *>(&*arg2);
+    flwor_expr* flwor = arg2.dyn_cast<flwor_expr> ();
     ZORBA_ASSERT(flwor != NULL);
 
     nodestack.push(NULL);
@@ -3289,12 +3287,9 @@ void intermediate_visit(const RelativePathExpr& v, void* /*visit_state*/)
   rchandle<exprnode> rstep = v.get_relpath_expr();
   ZORBA_ASSERT(rstep != NULL);
 
-  if (dynamic_cast<RelativePathExpr*>(&*rstep) || dynamic_cast<AxisStep*>(&*rstep))
-  {
+  if (rstep.dyn_cast<RelativePathExpr> () != NULL || rstep.dyn_cast<AxisStep> () != NULL)
      nodestack.push(&*rpe);
-  }
-  else
-  {
+  else {
     push_scope();
     rchandle<forlet_clause> lcseq = wrap_in_letclause(&*rpe);
 
@@ -3331,29 +3326,23 @@ void end_visit(const RelativePathExpr& v, void* /*visit_state*/)
 
   rchandle<exprnode> rstep = v.get_relpath_expr();
 
-  if (dynamic_cast<RelativePathExpr*>(&*rstep) || dynamic_cast<AxisStep*>(&*rstep))
-  {
-    if (arg1 == NULL)
-    {
+  if (rstep.dyn_cast<RelativePathExpr> () != NULL || rstep.dyn_cast<AxisStep> () != NULL) {
+    if (arg1 == NULL) {
       // In this case, all the steps in the rpe tree have been processed.
       nodestack.push(arg1);
       nodestack.push(arg2);
-    }
-    else
-    {
+    } else {
       // In this case, v is the bottom RelativePathExpr node in the tree (rpe3
       // in the example). At the top of the node stack is the expr corresponding
       // to the right child of v (step4 in the example), followed by the
       // relpath_expr 
-      relpath_expr* rpe = dynamic_cast<relpath_expr *>(&*arg1);
+      relpath_expr* rpe = arg1.dyn_cast<relpath_expr> ();
       ZORBA_ASSERT(rpe != NULL);
       rpe->add_back(arg2);
       nodestack.push(rpe);
     }
-  }
-  else
-  {
-    flwor_expr *f = dynamic_cast<flwor_expr *>(&*arg1);
+  } else {
+    flwor_expr *f = arg1.dyn_cast<flwor_expr> ();
     ZORBA_ASSERT(f != NULL);
     f->set_retval(arg2);
     nodestack.push(f);
@@ -3378,7 +3367,7 @@ void post_step_visit(const AxisStep& v, void* /*visit_state*/)
     expr_t arg2 = pop_nodestack();
     expr_t arg1 = pop_nodestack();
 
-    relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
+    relpath_expr *rpe = arg1.dyn_cast<relpath_expr> ();
     ZORBA_ASSERT(rpe != NULL);
 
     rpe->add_back(arg2);
@@ -3416,7 +3405,7 @@ void post_predicate_visit(const PredicateList& /*v*/, void* /*visit_state*/)
   expr_t pred = pop_nodestack();
   expr_t f = pop_nodestack();
 
-  flwor_expr *flwor = dynamic_cast<flwor_expr *>(&*f);
+  flwor_expr *flwor = f.dyn_cast<flwor_expr> ();
   ZORBA_ASSERT(flwor != NULL);
 
   rchandle<forlet_clause> predlet = wrap_in_letclause(pred);
@@ -3943,7 +3932,7 @@ void end_visit(const TransformExpr& v, void* /*visit_state*/)
   expr_t aReturn = pop_nodestack();
   expr_t aModify = pop_nodestack();
   rchandle<transform_expr> aTransform = new transform_expr(v.get_location(), aModify, aReturn);
-  rchandle<var_expr> anAssign = dynamic_cast<var_expr*>(&*pop_nodestack());
+  rchandle<var_expr> anAssign = pop_nodestack().dyn_cast<var_expr> ();
   while (anAssign != 0) 
   {
     aTransform->add(anAssign); 
