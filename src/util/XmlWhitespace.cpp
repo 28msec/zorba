@@ -24,14 +24,17 @@ xqpString xmlWhitespaceCollapse(xqpString v, XmlWhitespace_t wsr)
     {
     case WS_PRESERVE:
     case WS_UNSPECIFIED:
-        return xmlWhitespacePreserve(v);
-        break;
-
+      return xmlWhitespacePreserve(v);
+      break;
+      
     case WS_COLLAPSE:
-        return xmlWhitespaceCollapse(v);
-
+      return xmlWhitespaceCollapse(v);
+        
     case WS_REPLACE:
-        return xmlWhitespaceReplace(v);
+      return xmlWhitespaceReplace(v);
+        
+    default:
+      assert (false); return v;
     }
 }
 
