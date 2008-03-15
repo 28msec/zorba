@@ -47,10 +47,10 @@ namespace zorba {
   type &vv = dynamic_cast<type &> (v);           \
   BEGIN_EXPR_ITER()
 #define END_EXPR_ITER()   v.i = expr_iter_done; }
-#define ITER( m )                                           \
-  do {                                                      \
+#define ITER( m )                                                \
+  do {                                                           \
     v.state = __LINE__; v.i = reinterpret_cast<expr_t *> (&(m)); \
-    return;                                                 \
+    if (m != NULL) return;                                       \
   case __LINE__:; } while (0)
 #define ITER_FOR_EACH( iter, begin, end, expr )                      \
   for (vv.iter = (begin); vv.iter != (end); ++(vv.iter))  {          \
