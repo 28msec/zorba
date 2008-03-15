@@ -655,6 +655,9 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
       ZORBA_ERROR_ALERT(ZorbaError::FOCH0003,
                         &loc, DONT_CONTINUE_EXECUTION, "Unsupported normalization form.");
     }
+  } else {
+    // must push empty string due to return type of function
+    STACK_PUSH( Zorba::getItemFactory()->createString(res.getStore ()), state);
   }
   
   STACK_END();
