@@ -18,22 +18,33 @@ class RuleMajorDriver : public Rewriter {
 
     void rewrite(RewriterContext& rCtx);
 
-  protected:
     typedef boost::shared_ptr<RewriteRule> rule_ptr_t;
     typedef std::vector<rule_ptr_t> rules_t;
+
+  protected:
     rules_t m_rules;
 
     void rewriteRuleMajor(RewriterContext& rCtx);
     expr_t rewriteRec(RewriterContext& rCtx, RewriteRule *rule, expr *parent, bool& modified);
 };
 
+class SingletonRuleMajorDriverBase : public RuleMajorDriver {
+public:
+  SingletonRuleMajorDriverBase (rule_ptr_t rule) { m_rules.push_back(rule); }
+};
+
 template <class R>
-class SingletonRuleMajorDriver : public RuleMajorDriver {
-  public:
-    SingletonRuleMajorDriver() { m_rules.push_back(rule_ptr_t(new R())); }
+class SingletonRuleMajorDriver : public SingletonRuleMajorDriverBase {
+public:
+  SingletonRuleMajorDriver() : SingletonRuleMajorDriverBase (rule_ptr_t (new R ())) {}
 };
 
 }
 
 #endif /* ZORBA_RULE_DRIVER_H */
 /* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

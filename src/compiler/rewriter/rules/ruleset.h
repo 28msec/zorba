@@ -4,6 +4,8 @@
 #include "compiler/expression/expr.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewrite_rule.h"
+#include "compiler/semantic_annotations/annotation_keys.h"
+#include "compiler/semantic_annotations/tsv_annotation.h"
 
 namespace zorba {
 
@@ -16,14 +18,26 @@ namespace zorba {
       expr_t rewritePost(expr *node, RewriterContext& rCtx); \
   }
 
+
 RULE(EchoNodes);
 
-// Node id rules
 RULE(MarkNodesWithNodeIdProperties);
 RULE(EliminateDocOrderSort);
+
 RULE(EliminateTypeEnforcingOperations);
 RULE(EliminateUnusedLetVars);
 RULE(EliminateExtraneousPathSteps);
+RULE(MarkFreeVars);
+RULE(MarkExpensiveOps);
+
+class FoldConst : public RewriteRule {
+protected:
+  bool fold_expensive_ops;
+public:     
+  FoldConst (bool fold_expensive_ops_) : fold_expensive_ops (fold_expensive_ops_) {}
+  expr_t rewritePre(expr *node, RewriterContext& rCtx);
+  expr_t rewritePost(expr *node, RewriterContext& rCtx);
+};
 
 #undef RULE
 
@@ -34,3 +48,8 @@ RULE(EliminateExtraneousPathSteps);
 
 #endif /* ZORBA_REWRITE_RULE_H */
 /* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -28,13 +28,13 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
         || f == LOOKUP_FN ("fn", "min", 2))
     {
       expr_t arg = (*fo)[0];
-      arg->put_annotation(Annotation::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
-      arg->put_annotation(Annotation::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+      arg->put_annotation(AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
+      arg->put_annotation(AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
     } else {
       vector <AnnotationHolder *> anns;
       exprs_to_holders (fo->begin (), fo->end (), anns);
-      f->compute_annotation (node, anns, Annotation::IGNORES_DUP_NODES);
-      f->compute_annotation (node, anns, Annotation::IGNORES_SORTED_NODES);
+      f->compute_annotation (node, anns, AnnotationKey::IGNORES_DUP_NODES);
+      f->compute_annotation (node, anns, AnnotationKey::IGNORES_SORTED_NODES);
     }
   }
   return NULL;
@@ -50,17 +50,17 @@ static bool propogate_nodeid_props_to_flwor_variables(flwor_expr *flwor)
     forlet_clause::varref_t v = fl->get_var();
     Annotation::value_ref_t snnr = fl->get_type() == forlet_clause::for_clause
       ? TSVAnnotationValue::TRUE_VALUE
-      : e->get_annotation(Annotation::PRODUCES_SORTED_NODES);
+      : e->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES);
     Annotation::value_ref_t dnnr = fl->get_type() == forlet_clause::for_clause
       ? TSVAnnotationValue::TRUE_VALUE
-      : e->get_annotation(Annotation::PRODUCES_DISTINCT_NODES);
+      : e->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES);
 
-    if (snnr != NULL && v->get_annotation(Annotation::PRODUCES_SORTED_NODES) == NULL) {
-      v->put_annotation(Annotation::PRODUCES_SORTED_NODES, snnr);
+    if (snnr != NULL && v->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES) == NULL) {
+      v->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, snnr);
       result = true;
     }
-    if (dnnr != NULL && v->get_annotation(Annotation::PRODUCES_DISTINCT_NODES) == NULL) {
-      v->put_annotation(Annotation::PRODUCES_DISTINCT_NODES, dnnr);
+    if (dnnr != NULL && v->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES) == NULL) {
+      v->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, dnnr);
       result = true;
     }
   }
@@ -71,15 +71,15 @@ static bool propogate_up_nodeid_props(expr *target, expr *src)
 {
   bool result = false;
 
-  Annotation::value_ref_t snnr = src->get_annotation(Annotation::PRODUCES_SORTED_NODES);
-  Annotation::value_ref_t dnnr = src->get_annotation(Annotation::PRODUCES_DISTINCT_NODES);
+  Annotation::value_ref_t snnr = src->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES);
+  Annotation::value_ref_t dnnr = src->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES);
 
-  if (snnr != NULL && target->get_annotation(Annotation::PRODUCES_SORTED_NODES) == NULL) {
-    target->put_annotation(Annotation::PRODUCES_SORTED_NODES, snnr);
+  if (snnr != NULL && target->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES) == NULL) {
+    target->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, snnr);
     result = true;
   }
-  if (dnnr != NULL && target->get_annotation(Annotation::PRODUCES_DISTINCT_NODES) == NULL) {
-    target->put_annotation(Annotation::PRODUCES_DISTINCT_NODES, dnnr);
+  if (dnnr != NULL && target->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES) == NULL) {
+    target->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, dnnr);
     result = true;
   }
 
@@ -118,8 +118,8 @@ RULE_REWRITE_POST(MarkNodesWithNodeIdProperties)
 }
 
 static bool can_remove_sort_distinct(const fo_expr *fo) {
-  return fo->get_annotation(Annotation::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE
-    && fo->get_annotation(Annotation::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE;
+  return fo->get_annotation(AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE
+    && fo->get_annotation(AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE;
 }
 
 RULE_REWRITE_PRE(EliminateDocOrderSort)

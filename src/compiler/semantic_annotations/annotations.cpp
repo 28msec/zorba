@@ -1,4 +1,4 @@
-#include "compiler/semantic_annotations/annotations.h"
+#include "compiler/semantic_annotations/tsv_annotation.h"
 
 namespace zorba {
 

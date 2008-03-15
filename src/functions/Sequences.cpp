@@ -24,6 +24,7 @@
 #include "context/static_context.h"
 #include "util/tracer.h"
 #include "system/globalenv.h"
+#include "compiler/semantic_annotations/annotation_keys.h"
 
 using namespace std;
 namespace zorba {
@@ -90,8 +91,8 @@ xqtref_t op_concatenate::return_type (const std::vector<xqtref_t> &arg_types) co
 
 void op_concatenate::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
   switch (k) {
-  case Annotation::IGNORES_SORTED_NODES:
-  case Annotation::IGNORES_DUP_NODES:
+  case AnnotationKey::IGNORES_SORTED_NODES:
+  case AnnotationKey::IGNORES_DUP_NODES:
     for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
       (*i)->put_annotation (k, parent->get_annotation (k));
     break;
