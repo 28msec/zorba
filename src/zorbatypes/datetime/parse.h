@@ -8,6 +8,7 @@
 #define XQP_PRASE_H
 
 #include <string>
+#include "zorbatypes/numconversions.h"
 
 namespace zorba
 {
@@ -52,6 +53,32 @@ int parse_int(std::string& s, unsigned int& position, T& result, int min_digits 
   return 0;
 }
 
+static inline std::string to_string(int value, int min_digits = 0)
+{
+  std::string zeros = "";
+  std::string temp = NumConversions::longToStr(value);
+  
+  for (int i=temp.size(); i<min_digits; i++)
+    zeros += '0';
+       
+  return zeros + temp;
+}
+
+/**
+ * Returns the number of leap years between 1 AD and the given year.
+ * @param year 
+ * @return 
+ */
+int leap_years_count(int year);
+
+/**
+ * Returns the number of days passed from the start of the year. 1st of January will return 0. 
+ * @param month 
+ * @param day 
+ * @return 
+ */
+int days_since_year_start(int year, int month, int day);
+  
 template <typename T>
 T quotient(T a, T b)
 {
@@ -75,6 +102,8 @@ template <typename T>
 int floor(T a)
 {
   if (a>=0)
+    return (int)a;
+  else if (a - ((int)a) == 0)
     return (int)a;
   else
     return (int)(a-1);

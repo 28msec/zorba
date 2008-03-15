@@ -147,7 +147,18 @@ namespace zorba
 
     public:
       DayTimeDuration();
+      
+      /**
+       *  The function will use the absolute values of all long parameters.
+       */
       DayTimeDuration(bool negative, long the_days, long hours, long minutes, long seconds, long frac_seconds);
+      
+      /**
+       *  The function will use the absolute values of all long parameters. The sign of the duration will 
+       *  be set by the sign of the longest time period not equal to 0. E.g. if the_days is not equal to 0, 
+       *  their sign will be the sign of the duration, then hours will be checked, then minutes, etc.
+       */
+      DayTimeDuration(long the_days, long hours, long minutes, long seconds, long frac_seconds);
       virtual ~DayTimeDuration() { };
 
       static bool 
@@ -213,7 +224,12 @@ namespace zorba
     protected:
       DayTimeDuration& 
       operator=(const DayTimeDuration_t& dt_t);
-
+      
+      // Addition or subtraction
+      DurationBase_t
+      add_or_subtract(const DurationBase& dt, bool subtract = false) const;
+      
+      
       bool is_negative;
       long days;
       boost::posix_time::time_duration timeDuration;

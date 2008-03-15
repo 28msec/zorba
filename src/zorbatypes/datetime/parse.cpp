@@ -75,4 +75,21 @@ int get_last_day(int year, int month)
     return days[month-1];
 }
 
+int leap_years_count(int year)
+{
+  year--;
+  return year/4 - year/100 + year/400;
+}
+
+int days_since_year_start(int year, int month, int day)
+{
+  static const int days[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
+  
+  if (is_leap_year(year) && month >= 3)
+    day++;
+  
+  return days[month-1] + day-1;
+}
+
+
 } // namespace zorba

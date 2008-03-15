@@ -89,7 +89,7 @@ int Time::createTime(int hours, int minutes, double seconds, const TimeZone& tz,
 DateTime_t Time::toDateTime() const
 {
   DateTime_t dt_t;
-  DateTime::createDateTime(false, 1972, 12, 31,
+  DateTime::createDateTime(1972, 12, 31,
     the_time.hours(), the_time.minutes(), the_time.seconds(), the_time.fractional_seconds(), the_time_zone, dt_t);
   return dt_t;
 }
@@ -127,7 +127,7 @@ DateTime_t  Time::normalize(const long tz_seconds)
     boost::posix_time::time_duration tz( 0, 0, abs<int>(tz_seconds), 0 );
     boost::posix_time::ptime the_date_time(boost::gregorian::date(1972,12,31), the_time);
     the_date_time = tz_seconds < 0 ? the_date_time + tz: the_date_time - tz;
-    return new DateTime(false, the_date_time);
+    return new DateTime(the_date_time);
   }
   else
     return toDateTime();

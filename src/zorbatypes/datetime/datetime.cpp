@@ -7,55 +7,78 @@
 #include <string>
 #include <exception>
 #include <cassert>
-#include <zorbatypes/timezone.h>
 #include <zorbatypes/datetime.h>
 #include <zorbatypes/zorba_time.h>
 #include <zorbatypes/date.h>
 #include <zorbatypes/duration.h>
- 
-#include "zorbatypes/datetime/parse.h"
+#include <zorbatypes/timezone.h>
+#include <zorbatypes/zorbatypes_decl.h>
+#include <errors/error_factory.h>
 
-#define RETURN_1_ON_EXCEPTION(sequence)         \
-  try                                           \
-  {                                             \
-    sequence;                                   \
-  }                                             \
-  catch (std::exception)                        \
-  {                                             \
-    return 1;                                   \
-  }
+#include "system/zorba.h"
+#include "system/zorba_engine.h"
+#include "zorbatypes/datetime/parse.h"
+#include "context/dynamic_context.h"
 
 using namespace std;
 
 namespace zorba
 {
+  
+static const char separators[] = {'-', '-', 'T', ':', ':'};
+static const char min_length[] = { 4, 2, 2, 2, 2, 2};
+  
+const int DateTime::FRAC_SECONDS_UPPER_LIMIT = 1000000;
+
+DateTime::DateTime()
+  : 
+  facet(DATETIME_FACET)
+{ 
+  for (int i=0; i<7; i++)
+    data[i] = 0;
+}
+
+DateTime::DateTime(boost::posix_time::ptime t)
+{
+  data[YEAR_DATA] = t.date().year();
+  data[MONTH_DATA] = t.date().month();
+  data[DAY_DATA] = t.date().day();
+  data[HOUR_DATA] = t.time_of_day().hours();
+  data[MINUTE_DATA] = t.time_of_day().minutes();
+  data[SECONDS_DATA] = t.time_of_day().seconds();
+  data[FRACSECONDS_DATA] = t.time_of_day().fractional_seconds();
+}
 
 DateTime::DateTime(const Date_t& d_t, const Time_t& t_t)
 {
-  is_negative = (d_t->getYear() < 0);
+  facet = DATETIME_FACET;
+  data[YEAR_DATA] = d_t->getYear();
+  data[MONTH_DATA] = d_t->getMonth();
+  data[DAY_DATA] = d_t->getDay();
+  data[HOUR_DATA] = t_t->getHours();
+  data[MINUTE_DATA] = t_t->getMinutes();
+  data[SECONDS_DATA] = floor<double>(t_t->getSeconds());
+  data[FRACSECONDS_DATA] = round(frac(t_t->getSeconds()) * FRAC_SECONDS_UPPER_LIMIT);
   
-  the_date_time = boost::posix_time::ptime(
-      boost::gregorian::date(abs<int>(d_t->getYear()), abs<int>(d_t->getMonth()), abs<int>(d_t->getDay())),
-      t_t->get_time_duration());
-
-  the_time_zone = t_t->getTimezone();
+  if (!d_t->getTimezone().is_not_a_date_time() 
+       && 
+       !t_t->getTimezone().is_not_a_date_time()
+       &&
+       !(d_t->getTimezone() == t_t->getTimezone()))
+    ZORBA_ERROR_ALERT(ZorbaError::FORG0008);
+  
+  if (!d_t->getTimezone().is_not_a_date_time())
+    the_time_zone = d_t->getTimezone();
+  else if (!t_t->getTimezone().is_not_a_date_time())
+    the_time_zone = t_t->getTimezone();
 }
 
-int DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)
+// Returns 0 on success
+int DateTime::parse_date(std::string& ss, unsigned int& position, int& year, int& month, int& day)
 {
-  unsigned int time_zone_start;
-  unsigned int position = 0;
-  int frac_start;
-  long temp_frac;
-  std::string ss;
-  TimeZone_t tz_t;
   bool is_negative = false;
-
-  // DateTime is of form: '-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
-
-  ss = *s.translate("T", " ").getStore(); // replace "T" with " ", which is what boost expects
-
-  skip_whitespace(ss, position);
+  unsigned int temp_position;
+  
   if (position == ss.size())
     return 1;
 
@@ -64,121 +87,349 @@ int DateTime::parse_string(const xqpString& s, DateTime_t& dt_t)
     is_negative = true;
     position++;
   }
+
+  // Parse year
+  temp_position = position;
+  if (position == ss.size() || parse_int(ss, position, year, 4))
+    return 1;
+  if (position - temp_position > 4 
+      &&
+      ss[temp_position] == '0')
+    return 1;
+  if (is_negative)
+    year = -year;
+  if (position == ss.size() || ss[position++] != '-')
+    return 1;
+
+  // Parse month
+  if (position == ss.size() || parse_int(ss, position, month, 2, 2))
+    return 1;
+  if (position == ss.size() || ss[position++] != '-')
+    return 1;
+
+  // Parse day
+  if (position == ss.size() || parse_int(ss, position, day, 2, 2))
+    return 1;
   
-  frac_start = s.indexOf(".");
-  if (frac_start != -1)
+  // Validate the date
+  // year may not be 0
+  if (year == 0)
+    return 1;
+  
+  if (month < 1 || month > 12)
+    return 1;
+
+  if (day < 1 || day > get_last_day(year, month))
+    return 1;
+  
+  return 0;
+}
+
+// Returns 0 on success
+int DateTime::parse_time(std::string& ss, unsigned int& position, int& hour, int& minute, int& seconds, int& frac_seconds)
+{
+  if (position == ss.size())
+    return 1;
+  
+  // Parse hour
+  if (position == ss.size() || parse_int(ss, position, hour, 2, 2))
+    return 1;
+  if (position == ss.size() || ss[position++] != ':')
+    return 1;
+
+  // Parse minute
+  if (position == ss.size() || parse_int(ss, position, minute, 2, 2))
+    return 1;
+  if (position == ss.size() || ss[position++] != ':')
+    return 1;
+
+  // Parse seconds
+  if (position == ss.size() || parse_int(ss, position, seconds, 2, 2))
+    return 1;
+  
+  if (position < ss.size() && ss[position] == '.')
   {
-    time_zone_start = frac_start + 1;
-    parse_int(ss, (unsigned int&)time_zone_start, temp_frac);
+    position++;
+    if (parse_int(ss, position, frac_seconds))
+      return 1;
+    
+    if (frac_seconds != 0)
+    {
+      // make sure we keep the correct number of digits
+      while (frac_seconds*10 < FRAC_SECONDS_UPPER_LIMIT)
+        frac_seconds *= 10;
+    
+      while (frac_seconds >= FRAC_SECONDS_UPPER_LIMIT)
+        frac_seconds = round(frac_seconds/10.0); 
+    }
   }
   else
-    time_zone_start = position+19;
+    frac_seconds = 0;
+  
+  // Validate the time
+  if (hour > 24)
+    return 1;
+  
+  if (minute > 59)
+    return 1;
+  if (hour == 24 && minute != 0)
+    return 1;
+  
+  if (seconds > 59)
+    return 1;
+  if (hour == 24 && (seconds != 0 || frac_seconds != 0))
+    return 1;
+  
+  return 0;
+}
 
-  RETURN_1_ON_EXCEPTION(
-    dt_t = new DateTime(is_negative, boost::posix_time::time_from_string(ss.substr(position,time_zone_start-position))); );
-
-  if (ss.size() > time_zone_start)
+int DateTime::parseDateTime(const xqpString& s, DateTime_t& dt_t)
+{
+  TimeZone_t tz_t;
+  unsigned int position = 0;
+  std::string ss = *s.getStore();
+  dt_t = new DateTime();
+  
+  // DateTime is of form: '-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  
+  skip_whitespace(ss, position);
+  dt_t->facet = DATETIME_FACET;
+  
+  if (parse_date(ss, position, dt_t->data[YEAR_DATA], dt_t->data[MONTH_DATA], dt_t->data[DAY_DATA]))
+    return 1;
+  if (position == ss.size() || ss[position++] != 'T')
+    return 1;
+  
+  if (parse_time(ss, position, dt_t->data[HOUR_DATA], dt_t->data[MINUTE_DATA], dt_t->data[SECONDS_DATA], dt_t->data[FRACSECONDS_DATA]))
+    return 1;
+  
+  if (position < ss.size())
   {
-    if (!TimeZone::parse_string(ss.substr(time_zone_start), tz_t))
+    if (!TimeZone::parse_string(ss.substr(position), tz_t))
       return 1;
     dt_t->the_time_zone = *tz_t;
   }
-
+  
+  if (dt_t->data[HOUR_DATA] == 24)
+  {
+    dt_t->data[HOUR_DATA] = 0;
+    dt_t = *dt_t + Duration(DayTimeDuration(false, 1, 0, 0, 0, 0));
+  }
+  
   return 0;
 }
 
-int DateTime::createDateTime(bool is_negative, int years, int months, int days,
+int DateTime::parseDate(const xqpString& s, DateTime_t& dt_t)
+{
+  TimeZone_t tz_t;
+  unsigned int position = 0;
+  std::string ss = *s.getStore();
+  dt_t = new DateTime();
+  
+  skip_whitespace(ss, position);
+  dt_t->facet = DATE_FACET;
+  
+  if (parse_date(ss, position, dt_t->data[YEAR_DATA], dt_t->data[MONTH_DATA], dt_t->data[DAY_DATA]))
+    return 1;
+
+  if (position < ss.size())
+  {
+    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+      return 1;
+    dt_t->the_time_zone = *tz_t;
+  }
+  
+  return 0;
+}
+
+int DateTime::parseTime(const xqpString& s, DateTime_t& dt_t)
+{
+  TimeZone_t tz_t;
+  unsigned int position = 0;
+  std::string ss = *s.getStore();
+  dt_t = new DateTime();
+  
+  skip_whitespace(ss, position);
+  dt_t->facet = TIME_FACET;
+  
+  if (parse_time(ss, position, dt_t->data[HOUR_DATA], dt_t->data[MINUTE_DATA], dt_t->data[SECONDS_DATA], dt_t->data[FRACSECONDS_DATA]))
+    return 1;
+  
+  if (position < ss.size())
+  {
+    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+      return 1;
+    dt_t->the_time_zone = *tz_t;
+  }
+  
+  return 0;
+}
+
+int DateTime::createDateTime(int years, int months, int days,
                             int hours, int minutes, int seconds, int fractional_seconds, TimeZone_t& tz_t, DateTime_t& dt_t)
 {
-  RETURN_1_ON_EXCEPTION(
-    dt_t = new DateTime(is_negative, boost::posix_time::ptime(
-      boost::gregorian::date(abs<int>(years), abs<int>(months), abs<int>(days)),
-      boost::posix_time::time_duration(abs<int>(hours), abs<int>(minutes), abs<int>(seconds), abs<int>(fractional_seconds)))););
-
+  dt_t = new DateTime();
+  dt_t->facet = DATETIME_FACET;
+  dt_t->data[YEAR_DATA] = years;
+  dt_t->data[MONTH_DATA] = abs<int>(months);
+  dt_t->data[DAY_DATA] = abs<int>(days);
+  dt_t->data[HOUR_DATA] = abs<int>(hours);
+  dt_t->data[MINUTE_DATA] = abs<int>(minutes);
+  dt_t->data[SECONDS_DATA] = abs<int>(seconds);
+  dt_t->data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
+      
   if (!tz_t.isNull())
     dt_t->the_time_zone = *tz_t;
-
+  
   return 0;
 }
 
-int DateTime::createDateTime(bool is_negative, int years, int months, int days,
+int DateTime::createDateTime(int years, int months, int days,
                             int hours, int minutes, int seconds, int fractional_seconds, const TimeZone& tz, DateTime_t& dt_t)
 {
-  RETURN_1_ON_EXCEPTION(
-    dt_t = new DateTime(is_negative, boost::posix_time::ptime(
-      boost::gregorian::date(abs<int>(years), abs<int>(months), abs<int>(days)),
-      boost::posix_time::time_duration(abs<int>(hours), abs<int>(minutes), abs<int>(seconds), abs<int>(fractional_seconds)))); );
-  
+  dt_t = new DateTime();
+  dt_t->facet = DATETIME_FACET;
+  dt_t->data[YEAR_DATA] = years;
+  dt_t->data[MONTH_DATA] = abs<int>(months);
+  dt_t->data[DAY_DATA] = abs<int>(days);
+  dt_t->data[HOUR_DATA] = abs<int>(hours);
+  dt_t->data[MINUTE_DATA] = abs<int>(minutes);
+  dt_t->data[SECONDS_DATA] = abs<int>(seconds);
+  dt_t->data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
+      
   dt_t->the_time_zone = tz;
 
   return 0;
 }
 
+DayTimeDuration_t DateTime::toDayTimeDuration() const
+{
+  if (data[YEAR_DATA] >= 0)
+    return new DayTimeDuration(false, 
+      365 * (abs<int>(data[YEAR_DATA]) - 1) + leap_years_count(data[YEAR_DATA])
+      + days_since_year_start(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]),
+      data[HOUR_DATA], data[MINUTE_DATA], data[SECONDS_DATA], data[FRACSECONDS_DATA]);
+  else
+  {
+    DayTimeDuration days(true, 365 * abs<int>(data[YEAR_DATA]) - leap_years_count(data[YEAR_DATA]) + 1
+        - days_since_year_start(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]),
+        0, 0, 0, 0);
+    
+    DayTimeDuration remainder(false, 0, data[HOUR_DATA], data[MINUTE_DATA], data[SECONDS_DATA], data[FRACSECONDS_DATA]);
+    
+    return days + remainder;
+  }
+}
+
 DateTime& DateTime::operator=(const DateTime_t& dt_t)
 {
-  is_negative = dt_t->is_negative;
-  the_date_time = dt_t->the_date_time;
+  facet = dt_t->facet;
+  for (int i=0; i<7; i++)
+    data[i] = dt_t->data[i];
   the_time_zone = dt_t->the_time_zone;
   return *this;
 }
 
 bool DateTime::operator<(const DateTime& dt) const
 {
-  if (is_negative != dt.is_negative)
-    return (is_negative == true);
+  DateTime_t d1_t = normalizeTimeZone();
+  DateTime_t d2_t = dt.normalizeTimeZone();
+  
+  // TODO: timezone
+  // assume both datetimes have the same facet // TODO: check
+  
+  if (d1_t->data[YEAR_DATA] < d2_t->data[YEAR_DATA])
+    return true;
+  
+  if (d1_t->data[YEAR_DATA] < 0 && d2_t->data[YEAR_DATA] < 0)
+  {
+    // both are negative
+    for (int i=1; i<7; i++)
+      if (d1_t->data[i] > d2_t->data[i])
+        return true;
+  }
   else
-    return (the_date_time < dt.the_date_time);
+  {
+    for (int i=1; i<7; i++)
+      if (d1_t->data[i] < d2_t->data[i])
+        return true;
+  }
+    
+  return false;
 }
 
 bool DateTime::operator==(const DateTime& dt) const
 {
-  return (the_date_time == dt.the_date_time);
+  DateTime_t d1_t = normalizeTimeZone();
+  DateTime_t d2_t = dt.normalizeTimeZone();
+  
+  // TODO: timezone
+  for (int i=0; i<7; i++)
+    if (d1_t->data[i] != d2_t->data[i])
+      return false;
+  
+  return true;
+}
+
+int DateTime::compare(const DateTime& dt) const
+{
+  // TODO: handle timezone
+  DateTime_t d1_t = normalizeTimeZone();
+  DateTime_t d2_t = dt.normalizeTimeZone();
+  
+  if (d1_t->data[YEAR_DATA] < d2_t->data[YEAR_DATA])
+    return -1;
+  else if (d1_t->data[YEAR_DATA] > d2_t->data[YEAR_DATA])
+    return 1;
+  
+  if (d1_t->data[YEAR_DATA] < 0 && d2_t->data[YEAR_DATA] < 0)
+  {
+    for (int i=1; i<7; i++)
+      if (d1_t->data[i] > d2_t->data[i])
+        return -1;
+      else if (d1_t->data[i] < d2_t->data[i])
+        return 1;
+  }
+  else
+  {
+    for (int i=1; i<7; i++)
+      if (d1_t->data[i] < d2_t->data[i])
+        return -1;
+      else if (d1_t->data[i] > d2_t->data[i])
+        return 1;
+  }
+  
+  return 0;
+  
+  /*
+  if (operator<(dt))
+    return -1;
+  else if (operator==(dt))
+    return 0;
+  else
+    return 1;
+  */
 }
 
 DayTimeDuration_t DateTime::operator-(const DateTime& dt) const
 {
-  boost::posix_time::time_duration td;
-  boost::posix_time::time_duration td_tz(
-         abs<int>(the_time_zone.getHours()),
-         abs<int>(the_time_zone.getMinutes()),
-         abs<int>(the_time_zone.getSeconds()),
-         abs<int>(the_time_zone.getFractionalSeconds()));
-
-  boost::posix_time::time_duration td_dt(
-      abs<int>(dt.the_time_zone.getHours()),
-      abs<int>(dt.the_time_zone.getMinutes()),
-      abs<int>(dt.the_time_zone.getSeconds()),
-      abs<int>(dt.the_time_zone.getFractionalSeconds()));
-
-  if(the_time_zone.is_negative())
-      td = dt.the_time_zone.is_negative() ? (the_date_time + td_tz) - (dt.the_date_time + td_dt) : (the_date_time + td_tz) - (dt.the_date_time - td_dt);
-  else
-      td = dt.the_time_zone.is_negative() ? (the_date_time - td_tz) - (dt.the_date_time + td_dt) : (the_date_time - td_tz) - (dt.the_date_time - td_dt);
-
-  DayTimeDuration_t d_t = new DayTimeDuration(
-      the_date_time <= dt.the_date_time ? true: false,
-      quotient<int>(td.hours(), 24),
-      modulo<int>(td.hours(), 24),
-      td.minutes(),
-      td.seconds(),
-      td.fractional_seconds());
- 
-  return d_t;
+  return *normalizeTimeZone()->toDayTimeDuration() - *dt.normalizeTimeZone()->toDayTimeDuration();
 }
 
-DateTime_t  DateTime::normalize(const long tz_seconds)
+DateTime_t DateTime::normalize(const long tz_seconds)
 {
   if( the_time_zone.is_not_a_date_time() )
   {
     boost::posix_time::time_duration tz( 0, 0, abs<int>(tz_seconds), 0 );
-    boost::posix_time::time_duration td(the_date_time.time_of_day().hours(), the_date_time.time_of_day().minutes(),
-                                        the_date_time.time_of_day().seconds(), the_date_time.time_of_day().fractional_seconds());
+    boost::posix_time::time_duration td;
+    //boost::posix_time::time_duration td(the_date_time.time_of_day().hours(), the_date_time.time_of_day().minutes(),
+    //                                    the_date_time.time_of_day().seconds(), the_date_time.time_of_day().fractional_seconds());
 
     tz = tz_seconds < 0 ? td + tz: td - tz;
     
     DateTime_t new_dt_t;
 
-    DateTime::createDateTime(is_negative, getYear(), getMonth(), getDay(), tz.hours(), tz.minutes(),
+    DateTime::createDateTime(getYear(), getMonth(), getDay(), tz.hours(), tz.minutes(),
                              tz.seconds(), tz.fractional_seconds(), tz, new_dt_t);
  
     return new_dt_t;
@@ -187,73 +438,85 @@ DateTime_t  DateTime::normalize(const long tz_seconds)
     return this;
 }
 
+xqpString DateTime::toString() const
+{
+  xqpString result;
+  
+  // TODO: output based on the facet
+
+  if (data[YEAR_DATA] < 0)
+    result += "-";
+  
+  for (int i=0; i<6; i++)
+  {
+    result += to_string(abs<int>(data[i]), min_length[i]);  // abs<> only needed for year
+    if (i<5)
+      result += separators[i];
+  }
+  
+  if (data[FRACSECONDS_DATA] != 0)
+  {
+    int temp = data[FRACSECONDS_DATA];
+    while (temp%10 == 0)
+      temp = temp / 10;
+    
+    result += '.';
+    result += to_string(temp);
+  }
+  
+  result += the_time_zone.toString();
+  
+  return result;
+}
+
 Date_t DateTime::getDate() const
 {
   Date_t new_dt_t;
-  Date::createDate(the_date_time.date().year(), the_date_time.date().month(), the_date_time.date().day(), the_time_zone, new_dt_t);
+  if (Date::createDate(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA], the_time_zone, new_dt_t))
+    assert(0);
   return new_dt_t;
 }
 
 Time_t DateTime::getTime() const
 {
   Time_t new_t_t;
-  Time::createTime(the_date_time.time_of_day().hours(), the_date_time.time_of_day().minutes(), getSeconds(), the_time_zone, new_t_t);
+  if (Time::createTime(data[HOUR_DATA], data[MINUTE_DATA], getSeconds(), the_time_zone, new_t_t))
+    assert(0);
   return new_t_t;
-}
-
-xqpString DateTime::toString() const
-{
-  xqpString result;
-
-  if (is_negative)
-    result += "-";
-  
-  result += boost::posix_time::to_iso_extended_string(the_date_time);
-  result += the_time_zone.toString();
-  
-  return result;
-}
-
-int DateTime::compare(const DateTime& dt) const
-{
-  // TODO: handle timezone
-  if (operator<(dt))
-    return -1;
-  else if (operator==(dt))
-    return 0;
-  else
-    return 1;
 }
 
 int DateTime::getYear() const
 {
-  return (is_negative? -1 : 1) * abs<int>(the_date_time.date().year());
+  return data[YEAR_DATA];
 }
 
 int DateTime::getMonth() const
 {
-  return the_date_time.date().month();
+  assert(data[MONTH_DATA] >= 0);
+  return data[MONTH_DATA];
 }
 
 int DateTime::getDay() const
 {
-  return the_date_time.date().day();
+  assert(data[DAY_DATA] >= 0);
+  return data[DAY_DATA];
 }
 
 int DateTime::getHours() const
 {
-  return the_date_time.time_of_day().hours();
+  assert(data[HOUR_DATA] >= 0);
+  return data[HOUR_DATA];
 }
 
 int DateTime::getMinutes() const
 {
-  return the_date_time.time_of_day().minutes();
+  assert(data[MINUTE_DATA] >= 0);
+  return data[MINUTE_DATA];
 }
 
 double DateTime::getSeconds() const
 {
-  double frac_sec = double(the_date_time.time_of_day().fractional_seconds()) / boost::posix_time::time_duration::ticks_per_second();
-  return the_date_time.time_of_day().seconds() + frac_sec;
+  return data[SECONDS_DATA] + (1.0 * data[FRACSECONDS_DATA] / FRAC_SECONDS_UPPER_LIMIT);
 }
 
 TimeZone DateTime::getTimezone() const
@@ -264,8 +527,7 @@ TimeZone DateTime::getTimezone() const
 DateTime_t DateTime::normalizeTimeZone(int tz_seconds) const
 {
   Duration_t d_t;
-  DateTime_t new_dt_t;
-  
+
   if( the_time_zone.is_not_a_date_time() )
   {
     // TODO: validate timezone value (-14 .. +14 H)
@@ -277,9 +539,26 @@ DateTime_t DateTime::normalizeTimeZone(int tz_seconds) const
       assert(0);
   }
 
-  new_dt_t = *this - *d_t;
-    
-  return new_dt_t;
+  return *this - *d_t;
+}
+
+DateTime_t DateTime::normalizeTimeZone() const
+{
+  Duration_t d_t;
+
+  if( the_time_zone.is_not_a_date_time() )
+  {
+    // TODO: validate timezone value (-14 .. +14 H)
+    int timezone_secs = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
+    d_t = new Duration(DayTimeDuration((timezone_secs<0), 0, 0, 0, timezone_secs, 0));
+  }
+  else
+  {
+    if (Duration::from_Timezone(the_time_zone, d_t))
+      assert(0);
+  }
+  
+  return *this - *d_t;
 }
 
 DateTime_t DateTime::adjustToTimeZone(int tz_seconds) const
@@ -308,7 +587,7 @@ DateTime_t DateTime::adjustToTimeZone(int tz_seconds) const
       // If $arg has a timezone component and $timezone is not the empty sequence, then
       // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
     dtduration_t = new DayTimeDuration(the_time_zone.is_negative(), 0, the_time_zone.getHours(),
-                       the_time_zone.getMinutes(), the_time_zone.getSeconds(), 0);
+                                       the_time_zone.getMinutes(), the_time_zone.getSeconds(), 0);
 
     dtduration_t = *context_tz_t - *dtduration_t;
     dt_t = *dt_t + *dtduration_t->toDuration();
@@ -330,7 +609,7 @@ DateTime_t DateTime::adjustToTimeZone(const DurationBase_t& db_t) const
   // A dynamic error is raised [err:FODT0003] if $timezone is less than -PT14H or greater than PT14H or
   // if does not contain an integral number of minutes.
   // TODO: validate timezone value (-14 .. +14 H)
-
+  
   dt_t = new DateTime(*this);
   
   if (db_t.isNull())
@@ -353,7 +632,7 @@ DateTime_t DateTime::adjustToTimeZone(const DurationBase_t& db_t) const
       // If $arg has a timezone component and $timezone is not the empty sequence, then
       // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
       dtduration_t = new DayTimeDuration(the_time_zone.is_negative(), 0, the_time_zone.getHours(),
-                         the_time_zone.getMinutes(), the_time_zone.getSeconds(), 0);
+                                         the_time_zone.getMinutes(), the_time_zone.getSeconds(), 0);
 
       context_tz_t = dynamic_cast<DayTimeDuration*>(db_t.getp());
       if (context_tz_t.isNull())
@@ -384,7 +663,7 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
 
   int_seconds = modulo<int>(floor(dt.getSeconds() + d.getSeconds()), 60);
   temp_frac_seconds = (dt.getSeconds() + d.getSeconds() - floor(dt.getSeconds() + d.getSeconds()));
-  frac_seconds = round(temp_frac_seconds * boost::posix_time::time_duration::ticks_per_second());
+  frac_seconds = round(temp_frac_seconds * DateTime::FRAC_SECONDS_UPPER_LIMIT);
   
   minutes = dt.getMinutes() + d.getMinutes() + quotient<int>(floor(dt.getSeconds() + d.getSeconds()), 60);
   hours = dt.getHours() + d.getHours() + quotient<int>(minutes, 60);
@@ -419,23 +698,9 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
     months = modulo<int>(months + carry -1, 12) + 1;
   }
 
-  int negative = false;
-  if (years != 0)
-    negative = years < 0;
-  else if (months != 0)
-    negative = months < 0;
-  else if (days != 0)
-    negative = days < 0;
-  else if (hours != 0)
-    negative = hours < 0;
-  else if (minutes != 0)
-    negative = minutes < 0;
-  else if (int_seconds != 0)
-    negative = int_seconds < 0;
-  else if (frac_seconds != 0)
-    negative = frac_seconds < 0;
+  // TODO: make sure year is not 0
 
-  if (DateTime::createDateTime(negative, years, months, days, hours, minutes, int_seconds, frac_seconds,
+  if (DateTime::createDateTime(years, months, days, hours, minutes, int_seconds, frac_seconds,
                             dt.getTimezone(), new_dt_t))
     assert(0);
 
@@ -447,4 +712,4 @@ DateTime_t operator-(const DateTime& dt, const Duration& d)
   return dt + *d.toNegDuration();
 }
 
-} // namespace zorba
+} // namespace xqp

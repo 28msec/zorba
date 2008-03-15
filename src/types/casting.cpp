@@ -161,7 +161,7 @@ store::Item_t GenericCast::stringSimpleCast(
   case TypeConstants::XS_DATETIME:
     {
       xqp_dateTime dt;
-      if (0 == DateTime::parse_string(lString, dt))
+      if (0 == DateTime::parseDateTime(lString, dt))
         lItem = factory->createDateTime(dt);
     }
     break;

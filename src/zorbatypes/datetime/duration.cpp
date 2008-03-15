@@ -275,6 +275,32 @@ DayTimeDuration::DayTimeDuration(bool negative, long the_days, long hours, long 
     is_negative = false;
 }
 
+DayTimeDuration::DayTimeDuration(long the_days, long hours, long minutes, long seconds, long frac_seconds)
+{
+  if (the_days != 0)
+    is_negative = the_days < 0;
+  else if (hours != 0)
+    is_negative = hours < 0;
+  else if (minutes != 0)
+    is_negative = minutes < 0;
+  else if (seconds != 0)
+    is_negative = seconds < 0;
+  else if (frac_seconds != 0)
+    is_negative = frac_seconds < 0;
+  else
+    is_negative = false;
+  
+  if (abs<long>(hours) >= 24)
+  {
+    the_days += quotient<long>(abs<long>(hours), 24);
+    hours = modulo<long>(abs<long>(hours), 24);
+  }
+  
+  days = abs<long>(the_days);
+  timeDuration = boost::posix_time::time_duration(abs<long>(hours), abs<long>(minutes), abs<long>(seconds), abs<long>(frac_seconds));
+}
+
+
 DayTimeDuration& DayTimeDuration::operator=(const DayTimeDuration_t& dt_t)
 {
   is_negative = dt_t->is_negative;
@@ -384,68 +410,41 @@ Duration_t DayTimeDuration::toNegDuration() const
   return d_t;
 }
 
-DurationBase_t DayTimeDuration::operator+(const DurationBase& db) const
+DurationBase_t DayTimeDuration::add_or_subtract(const DurationBase& db, bool subtract) const
 {
   const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
-  long resDays;
-  bool resIsNeg;
   
-  resDays = (is_negative?-1:1)*days + (dtd.is_negative?-1:1)*dtd.days;
-  boost::posix_time::time_duration resTimeDuration = timeDuration*(is_negative?-1:1) + dtd.timeDuration*(dtd.is_negative?-1:1);
+  boost::posix_time::time_duration d1((is_negative?-1:1) * (24 * days + timeDuration.hours()),
+    timeDuration.minutes(), timeDuration.seconds(), timeDuration.fractional_seconds());
   
-  //TODO: move sign resolution to constructor
-  if (resDays != 0)
-    resIsNeg = resDays < 0;
-  else if (resTimeDuration.hours() != 0)
-    resIsNeg = resTimeDuration.hours() < 0;
-  else if (resTimeDuration.minutes() != 0)
-    resIsNeg = resTimeDuration.minutes() < 0;
-  else if (resTimeDuration.seconds() != 0)
-    resIsNeg = resTimeDuration.seconds() < 0;
-  else if (resTimeDuration.fractional_seconds() != 0)
-    resIsNeg = resTimeDuration.fractional_seconds() < 0;
+  boost::posix_time::time_duration d2((dtd.is_negative?-1:1) * (24 * dtd.days + dtd.timeDuration.hours()),
+    dtd.timeDuration.minutes(), dtd.timeDuration.seconds(), dtd.timeDuration.fractional_seconds());
 
+  boost::posix_time::time_duration result;
+  
+  if (subtract)
+    result = d1 - d2;
+  else
+    result = d1 + d2;
+  
   DayTimeDuration_t dt_t = new DayTimeDuration(
-      resIsNeg,
-      resDays,
-      resTimeDuration.hours(),
-      resTimeDuration.minutes(),
-      resTimeDuration.seconds(),
-      resTimeDuration.fractional_seconds());
+    0,
+    result.hours(),
+    result.minutes(),
+    result.seconds(),
+    result.fractional_seconds());
 
   return &*dt_t;
 }
 
+DurationBase_t DayTimeDuration::operator+(const DurationBase& db) const
+{
+  return add_or_subtract(db);
+}
+
 DurationBase_t DayTimeDuration::operator-(const DurationBase& db) const
 {
-  const DayTimeDuration& dtd = dynamic_cast<const DayTimeDuration&>(db);
-  long resDays;
-  bool resIsNeg;
-
-  resDays = (is_negative?-1:1)*days - (dtd.is_negative?-1:1)*dtd.days;
-  boost::posix_time::time_duration resTimeDuration = timeDuration*(is_negative?-1:1) - dtd.timeDuration*(dtd.is_negative?-1:1);
-
-  //TODO: move sign resolution to constructor
-  if (resDays != 0)
-    resIsNeg = resDays < 0;
-  else if (resTimeDuration.hours() != 0)
-    resIsNeg = resTimeDuration.hours() < 0;
-  else if (resTimeDuration.minutes() != 0)
-    resIsNeg = resTimeDuration.minutes() < 0;
-  else if (resTimeDuration.seconds() != 0)
-    resIsNeg = resTimeDuration.seconds() < 0;
-  else if (resTimeDuration.fractional_seconds() != 0)
-    resIsNeg = resTimeDuration.fractional_seconds() < 0;
-
-  DayTimeDuration_t dt_t = new DayTimeDuration(
-      resIsNeg,
-      resDays,
-      resTimeDuration.hours(),
-      resTimeDuration.minutes(),
-      resTimeDuration.seconds(),
-      resTimeDuration.fractional_seconds());
-
-  return &*dt_t;
+  return add_or_subtract(db, true);
 }
 
 DurationBase_t DayTimeDuration::operator*(const Double value) const

@@ -122,7 +122,7 @@ DateTime_t  Date::normalize(const long tz_seconds)
     boost::posix_time::time_duration tz( 0, 0, abs<int>(tz_seconds), 0 );
     boost::posix_time::ptime the_date_time(boost::gregorian::date(year,month,day), boost::posix_time::time_duration(0,0,0,0));
     the_date_time = tz_seconds < 0 ? the_date_time + tz: the_date_time - tz;
-    return new DateTime(year<0, the_date_time);
+    return new DateTime(the_date_time);
   }
   else
     return toDateTime();
@@ -162,7 +162,7 @@ DateTime_t Date::toDateTime() const
 {
   DateTime_t dt_t;
 
-  if (DateTime::createDateTime(year<0, year, month, day, 0, 0, 0, 0, the_time_zone, dt_t))
+  if (DateTime::createDateTime(year, month, day, 0, 0, 0, 0, the_time_zone, dt_t))
     assert(0);
 
   return dt_t;
