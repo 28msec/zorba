@@ -3,4 +3,5 @@ SET(REWRITER_RULES_SRCS
     debug_rules.cpp
     type_rules.cpp
     flwor_rules.cpp
+    fold_rules.cpp
     path_rules.cpp)

@@ -9,6 +9,8 @@ enum {
   PRODUCES_DISTINCT_NODES,
   
   FREE_VARS,
+
+  EXPENSIVE_OP
 };
 
 }
