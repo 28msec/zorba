@@ -38,7 +38,6 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) {
     expr_t arg = pe->get_input();
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
-    cout << "is_sub " << ts->toString (*arg_type) << " of " <<  ts->toString (*pe->get_target_type()) << (ts->is_subtype(*arg_type, *pe->get_target_type()) ? " 1" : " 0") << endl;
     if (ts->is_subtype(*arg_type, *pe->get_target_type())) {
       return arg;
     }

@@ -276,12 +276,14 @@ bool RootTypeManager::is_equal(const XQType& type1, const XQType& type2) const
 
 bool RootTypeManager::is_subtype(const XQType& subtype, const XQType& supertype) const
 {
-  if (is_equal(subtype, *NONE_TYPE)) {
+  if (is_equal(subtype, *NONE_TYPE))
     return true;
-  }
-  if (!QUANT_SUBTYPE_MATRIX[subtype.get_quantifier()][supertype.get_quantifier()]) {
+  if (is_equal (subtype, supertype))
+    return true;
+  if (is_equal (subtype, *EMPTY_TYPE) && quantifier (supertype) != TypeConstants::QUANT_ONE)
+    return true;
+  if (!QUANT_SUBTYPE_MATRIX[subtype.get_quantifier()][supertype.get_quantifier()])
     return false;
-  }
   switch(supertype.type_kind()) {
     case XQType::ATOMIC_TYPE_KIND:
       switch(subtype.type_kind()) {
@@ -463,10 +465,6 @@ xqtref_t RootTypeManager::union_type(const XQType& type1, const XQType& type2) c
   if (is_subtype (type1, type2))
     return &type2;
   else if (is_subtype (type2, type1))
-    return &type1;
-  else if (is_equal (type1, *NONE_TYPE))
-    return &type2;
-  else if (is_equal (type2, *NONE_TYPE))
     return &type1;
   else if (is_equal (type1, *EMPTY_TYPE))
     return type_x_quant (type2, TypeConstants::QUANT_QUESTION);
