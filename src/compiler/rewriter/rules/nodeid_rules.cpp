@@ -21,7 +21,6 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
     const function *f = fo->get_func ();
     if (f == LOOKUP_FN("fn", "empty", 1)
         || f == LOOKUP_FN("fn", "exists", 1)
-        || f == LOOKUP_FN("fn", "one-or-more", 1)
         || f == LOOKUP_FN ("fn", "max", 1)
         || f == LOOKUP_FN ("fn", "max", 2)
         || f == LOOKUP_FN ("fn", "min", 1)
