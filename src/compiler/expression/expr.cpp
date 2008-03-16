@@ -539,15 +539,19 @@ void ft_contains_expr::next_iter (expr_iterator_data& v) {
 
 // [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
 
+castable_base_expr::castable_base_expr (const QueryLoc& loc,
+                                        rchandle<expr> _expr_h,
+                                        xqtref_t _type)
+  : expr(loc), expr_h(_expr_h), type (_type)
+{}
+
+xqtref_t castable_base_expr::get_type() const { return type; }
+
 instanceof_expr::instanceof_expr(const QueryLoc& loc,
                                  rchandle<expr> _expr_h,
                                  xqtref_t _type)
-:
-  expr(loc), expr_h(_expr_h), type (_type)
-{
-}
-
-xqtref_t instanceof_expr::get_type() const { return type; }
+  : castable_base_expr (loc, _expr_h, _type)
+{}
 
 void instanceof_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
@@ -583,15 +587,10 @@ castable_expr::castable_expr(
   rchandle<expr> _expr_h,
   xqtref_t _type)
 :
-  expr(loc),
-  expr_h(_expr_h),
-  type(_type)
-{
-}
+  castable_base_expr (loc, _expr_h, _type)
+{}
 
 bool castable_expr::is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeConstants::QUANT_QUESTION; }
-
-xqtref_t castable_expr::get_type() const { return type; }
 
 void castable_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
@@ -1037,11 +1036,7 @@ function_def_expr::function_def_expr (const QueryLoc& loc, store::Item_t name_, 
   sig = auto_ptr<signature> (new signature (get_name (), args, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
 
-xqtref_t castable_expr::return_type (static_context *sctx) {
-  return sctx->get_typemanager ()->create_atomic_type (TypeConstants::XS_BOOLEAN, TypeConstants::QUANT_ONE);
-}
-
-xqtref_t instanceof_expr::return_type (static_context *sctx) {
+xqtref_t castable_base_expr::return_type (static_context *sctx) {
   return sctx->get_typemanager ()->create_atomic_type (TypeConstants::XS_BOOLEAN, TypeConstants::QUANT_ONE);
 }
 

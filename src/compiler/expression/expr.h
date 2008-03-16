@@ -759,16 +759,27 @@ public:
 // [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
 // [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
 
+class castable_base_expr : public expr {
+protected:
+  expr_t expr_h;
+  xqtref_t type;
+
+public:
+  castable_base_expr (const QueryLoc&, expr_t, xqtref_t);
+
+  expr_t get_expr() const { return expr_h; }
+  xqtref_t get_type() const;
+  xqtref_t return_type (static_context *sctx);
+};
+
 /*______________________________________________________________________
 | ::= TreatExpr ("instance" "of" SequenceType)?
 |_______________________________________________________________________*/
 
-class instanceof_expr : public expr {
+class instanceof_expr : public castable_base_expr {
 public:
   expr_kind_t get_expr_kind () { return instanceof_expr_kind; }
 protected:
-  expr_t expr_h;
-  xqtref_t type;
   bool forced;  // error if not instance?
 
 public:
@@ -777,16 +788,12 @@ public:
                    xqtref_t);
 
 public:
-  expr_t get_expr() const { return expr_h; }
-  xqtref_t get_type() const;
   bool isForced () { return forced; }
 
 public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
-
-  xqtref_t return_type (static_context *sctx);
 };
 
 
@@ -824,12 +831,9 @@ public:
 | ::= CastExpr ("castable" "as" SingleType)?
 |_______________________________________________________________________*/
 
-class castable_expr : public expr {
+class castable_expr : public castable_base_expr {
 public:
   expr_kind_t get_expr_kind () { return castable_expr_kind; }
-protected:
-  expr_t expr_h;
-  xqtref_t type;
 
 public:
   castable_expr(
@@ -838,16 +842,13 @@ public:
     xqtref_t);
 
 public:
-  expr_t get_cast_expr() const { return expr_h; }
-  xqtref_t get_type() const;
+  expr_t get_cast_expr() const { return expr_h; }  // TODO: remove
   bool is_optional() const;
 
 public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
-
-  xqtref_t return_type (static_context *);
 };
 
 
