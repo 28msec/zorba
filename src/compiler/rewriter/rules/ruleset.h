@@ -21,6 +21,8 @@ namespace zorba {
 
 RULE(EchoNodes);
 
+RULE(InferVarTypes);
+
 RULE(MarkNodesWithNodeIdProperties);
 RULE(EliminateDocOrderSort);
 

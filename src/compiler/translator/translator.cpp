@@ -3100,7 +3100,9 @@ rchandle<forlet_clause> wrap_in_forclause(
     string fv_name,
     string pv_name)
 {
-  return wrap_in_forclause (expr, bind_var (loc, fv_name, var_expr::for_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE), bind_var (loc, pv_name, var_expr::pos_var, GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_POSITIVE_INTEGER, TypeConstants::QUANT_ONE)));
+  return wrap_in_forclause (expr,
+                            bind_var (loc, fv_name, var_expr::for_var),
+                            bind_var (loc, pv_name, var_expr::pos_var));
 }
 
 rchandle<forlet_clause> wrap_in_letclause(expr_t expr, var_expr_t lv)

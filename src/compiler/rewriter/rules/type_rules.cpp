@@ -1,4 +1,5 @@
 #include "compiler/rewriter/rules/ruleset.h"
+#include "compiler/rewriter/tools/expr_tools.h"
 #include "context/static_context.h"
 #include "types/root_typemanager.h"
 #include "types/typemanager.h"
@@ -10,6 +11,32 @@
 using namespace std;
 
 namespace zorba {
+
+RULE_REWRITE_PRE(InferVarTypes) {
+  return NULL;
+}
+
+RULE_REWRITE_POST(InferVarTypes) {
+  static_context *sctx = rCtx.getStaticContext();
+  TypeManager *ts = sctx->get_typemanager();
+  if (node->get_expr_kind () == flwor_expr_kind) {
+    flwor_expr *flwor = dynamic_cast<flwor_expr *> (node);
+    for (uint32_t i = 0; i < flwor->forlet_count (); i++) {
+      flwor_expr::forletref_t clause = (*flwor) [i];
+      varref_t posvar = clause->get_pos_var ();
+      if (posvar != NULL)
+        posvar->set_type (GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
+      expr_t e = clause->get_expr ();
+      xqtref_t vartype = clause->get_var ()->get_type (),
+        ctype = e->return_type (sctx);
+      if (clause->get_type () == forlet_clause::for_clause)
+        ctype = ts->prime_type (*ctype);
+      if (vartype == NULL || ts->is_subtype (*ctype, *vartype))
+        clause->get_var ()->set_type (ctype);
+    }
+  }
+  return NULL;
+}
 
 RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 {

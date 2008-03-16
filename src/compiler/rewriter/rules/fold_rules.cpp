@@ -15,8 +15,6 @@ using namespace std;
 
 namespace zorba {
 
-  typedef rchandle<var_expr> varref_t;
-
   class FreeVarAnnVal : public AnnotationValue {
   public:
     set<var_expr *> varset;
