@@ -57,7 +57,9 @@ public:
     const signature& get_signature() const { return sig; }
 
 	// codegen: functor specification
-	virtual PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const = 0;
+	virtual PlanIter_t operator ()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const = 0;
+
+  virtual bool requires_dyn_ctx () const { return false; }
 
 	// polymorphic type inference
 	virtual xqtref_t type_check(signature&) const = 0;

@@ -31,6 +31,8 @@ class fn_current_dateTime : public function
     PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
     xqtref_t type_check( signature& ) const;
     bool validate_args( std::vector<PlanIter_t>&) const;
+
+    bool requires_dyn_ctx () const { return true; }
 };
 
 // 16.4 fn:current-date
@@ -43,6 +45,8 @@ class fn_current_date : public function
     PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
     xqtref_t type_check( signature& ) const;
     bool validate_args( std::vector<PlanIter_t>&) const;
+
+    bool requires_dyn_ctx () const { return true; }
 };
 
 // 16.5 fn:current-time
@@ -55,6 +59,8 @@ class fn_current_time : public function
     PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
     xqtref_t type_check( signature& ) const;
     bool validate_args( std::vector<PlanIter_t>&) const;
+
+    bool requires_dyn_ctx () const { return true; }
 };
 
 // 16.6 fn:implicit-timezone
@@ -67,6 +73,8 @@ class fn_implicit_timezone : public function
     PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
     xqtref_t type_check( signature& ) const;
     bool validate_args( std::vector<PlanIter_t>&) const;
+
+    bool requires_dyn_ctx () const { return true; }
 };
 
 // 16.7 fn:default-collation
@@ -79,6 +87,8 @@ class fn_default_collation : public function
     PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
     xqtref_t type_check( signature& ) const;
     bool validate_args( std::vector<PlanIter_t>&) const;
+
+    bool requires_dyn_ctx () const { return true; }
 };
 
 } /* namespace zorba */

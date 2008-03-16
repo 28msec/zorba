@@ -39,8 +39,9 @@ public:
   PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
 
   xqtref_t type_check(signature&) const;
-
   bool validate_args(std::vector<PlanIter_t>&) const;
+
+  bool requires_dyn_ctx () const { return true; }
 };
   
 }
