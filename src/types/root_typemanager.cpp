@@ -464,8 +464,32 @@ xqtref_t RootTypeManager::union_type(const XQType& type1, const XQType& type2) c
     return &type2;
   else if (is_subtype (type2, type1))
     return &type1;
-  else
-    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  else if (is_equal (type1, *NONE_TYPE))
+    return &type2;
+  else if (is_equal (type2, *NONE_TYPE))
+    return &type1;
+  else if (is_equal (type1, *EMPTY_TYPE))
+    return type_x_quant (type2, TypeConstants::QUANT_QUESTION);
+  else if (is_equal (type2, *EMPTY_TYPE))
+    return type_x_quant (type1, TypeConstants::QUANT_QUESTION);
+  else if (is_atomic (type1) && is_atomic (type2))
+    return ANY_ATOMIC_TYPE_ONE;
+  else if (is_simple (type1) && is_simple (type2))
+#if 0
+    // has quantifier of * for some reason
+    return ANY_SIMPLE_TYPE;
+#else
+    return ITEM_TYPE_ONE;
+#endif
+  else {
+    xqtref_t pt1 = prime_type (type1), pt2 = prime_type (type2);
+    if (! is_equal (type1, *pt1) || ! is_equal (type2, *pt2))
+      return type_x_quant (*union_type (*pt1, *pt2),
+                           QUANT_MULT_MATRIX [TypeConstants::QUANT_QUESTION] /* to be on the safe side */
+                                              [QUANT_MULT_MATRIX [quantifier (type1)] [quantifier (type2)]]);
+    else
+      return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  }
 }
 
 xqtref_t RootTypeManager::intersect_type(const XQType& type1, const XQType& type2) const

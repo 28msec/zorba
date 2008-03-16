@@ -106,7 +106,7 @@ class RootTypeManager : public TypeManager {
     * Multiplies type by quantifier.
     * TODO: create_type should do this (currently overrides quantifier)
     */
-    xqtref_t type_x_quant (const XQType& type, TypeConstants::quantifier_t quant) {
+    xqtref_t type_x_quant (const XQType& type, TypeConstants::quantifier_t quant) const {
       return create_type (type, QUANT_MULT_MATRIX [quant] [quantifier (type)]);
     }
 
