@@ -29,6 +29,7 @@ RULE(EliminateUnusedLetVars);
 RULE(EliminateExtraneousPathSteps);
 RULE(MarkFreeVars);
 RULE(MarkExpensiveOps);
+RULE(MarkUnfoldableOps);
 
 class FoldConst : public RewriteRule {
 protected:

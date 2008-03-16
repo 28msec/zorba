@@ -88,6 +88,37 @@ namespace zorba {
     return NULL;
   }
 
+  RULE_REWRITE_PRE(MarkUnfoldableOps) {
+    return NULL;
+  }
+
+  RULE_REWRITE_POST(MarkUnfoldableOps) {
+    Annotation::key_t k = AnnotationKey::UNFOLDABLE_OP;
+    switch (node->get_expr_kind ()) {
+    case fo_expr_kind:
+      if (dynamic_cast<fo_expr *> (node)->get_func ()->requires_dyn_ctx ())
+        node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+      break;
+    case elem_expr_kind:
+    case attr_expr_kind:
+    case text_expr_kind:
+    case pi_expr_kind:
+    case doc_expr_kind:
+      node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+      break;
+    default: break;
+    }
+
+    if (node->get_annotation (k) != TSVAnnotationValue::TRUE_VALUE)
+      for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
+        if ((*i)->get_annotation (k) == TSVAnnotationValue::TRUE_VALUE) {
+          node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+          break;
+        }
+      }
+    return NULL;
+  }
+
   inline bool already_folded (expr_t e, RewriterContext& rCtx) {
     if (e->get_expr_kind () == const_expr_kind)
       return true;
@@ -98,21 +129,16 @@ namespace zorba {
   }
 
   RULE_REWRITE_PRE(FoldConst) {
-    // For now only expression with an atomic return type are folded.
-    // TODO: never fold constructors!
-
     TypeManager *ts = rCtx.getStaticContext()->get_typemanager();
     xqtref_t rtype = node->return_type (rCtx.getStaticContext ());
     TypeConstants::quantifier_t rquant = ts->quantifier (*rtype);
 
     if (! already_folded (node, rCtx) && get_freevars (node).empty ()
+        && node->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VALUE
         && (rquant == TypeConstants::QUANT_ONE || rquant == TypeConstants::QUANT_QUESTION
             || ts->is_equal (*rtype, *GENV_TYPESYSTEM.EMPTY_TYPE))
         && (fold_expensive_ops || 
-            node->get_annotation (AnnotationKey::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VALUE)
-        && (node->get_expr_kind () != fo_expr_kind
-            || ! dynamic_cast<fo_expr *> (node)->get_func ()->requires_dyn_ctx ()))
-        
+            node->get_annotation (AnnotationKey::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VALUE))
     {
       vector<store::Item_t> result;
       execute (node, result);

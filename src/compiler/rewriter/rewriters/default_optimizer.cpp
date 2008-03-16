@@ -17,6 +17,7 @@ DefaultOptimizer::DefaultOptimizer()
   ADD_SINGLETON_DRIVER(EliminateExtraneousPathSteps);
   ADD_SINGLETON_DRIVER(MarkFreeVars);
   ADD_SINGLETON_DRIVER(MarkExpensiveOps);
+  ADD_SINGLETON_DRIVER(MarkUnfoldableOps);
   ADD_SINGLETON_DRIVER_BASE(FoldConst (false));
 }
 
