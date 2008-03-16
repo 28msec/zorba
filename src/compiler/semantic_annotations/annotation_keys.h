@@ -10,7 +10,8 @@ enum {
   
   FREE_VARS,
 
-  EXPENSIVE_OP
+  EXPENSIVE_OP,
+  UNFOLDABLE_OP
 };
 
 }
