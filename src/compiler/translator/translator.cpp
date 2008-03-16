@@ -138,9 +138,9 @@ protected:
     hadEmptyOrdDecl (false),
     hadOrdModeDecl (false)
   {
-    theDotVar = bind_var(null_loc, DOT_VAR, var_expr::for_var);
-    theDotPosVar = bind_var(null_loc, DOT_POS_VAR, var_expr::pos_var);
-    theLastVar = bind_var (null_loc, LAST_IDX_VAR, var_expr::let_var);
+    theDotVar = bind_var(null_loc, DOT_VAR, var_expr::for_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+    theDotPosVar = bind_var(null_loc, DOT_POS_VAR, var_expr::pos_var, GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_POSITIVE_INTEGER, TypeConstants::QUANT_ONE));
+    theLastVar = bind_var (null_loc, LAST_IDX_VAR, var_expr::let_var, GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_POSITIVE_INTEGER, TypeConstants::QUANT_ONE));
   }
 
   expr_t pop_nodestack (int n = 1)
@@ -3100,9 +3100,8 @@ rchandle<forlet_clause> wrap_in_forclause(
     string fv_name,
     string pv_name)
 {
-  return wrap_in_forclause (expr, bind_var (loc, fv_name, var_expr::for_var), bind_var (loc, pv_name, var_expr::pos_var));
+  return wrap_in_forclause (expr, bind_var (loc, fv_name, var_expr::for_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE), bind_var (loc, pv_name, var_expr::pos_var, GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_POSITIVE_INTEGER, TypeConstants::QUANT_ONE)));
 }
-
 
 rchandle<forlet_clause> wrap_in_letclause(expr_t expr, var_expr_t lv)
 {
