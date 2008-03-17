@@ -302,7 +302,7 @@ int DateTime::createDateTime(int years, int months, int days,
   return 0;
 }
 
-DayTimeDuration_t DateTime::toDayTimeDuration() const
+DurationBase_t DateTime::toDayTimeDuration() const
 {
   if (data[YEAR_DATA] >= 0)
     return new DayTimeDuration(false, 
@@ -411,7 +411,7 @@ int DateTime::compare(const DateTime& dt) const
   */
 }
 
-DayTimeDuration_t DateTime::operator-(const DateTime& dt) const
+DurationBase_t DateTime::operator-(const DateTime& dt) const
 {
   return *normalizeTimeZone()->toDayTimeDuration() - *dt.normalizeTimeZone()->toDayTimeDuration();
 }

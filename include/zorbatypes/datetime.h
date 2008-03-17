@@ -64,7 +64,7 @@ namespace zorba
       bool 
       operator==(const DateTime& dt) const;
 
-      DayTimeDuration_t
+      DurationBase_t
       operator-(const DateTime& dt) const;
       
       int 
@@ -110,7 +110,7 @@ namespace zorba
       static const int FRAC_SECONDS_UPPER_LIMIT; // = 1000000, maximum 6 digits
 
   protected:
-      DayTimeDuration_t toDayTimeDuration() const;
+      DurationBase_t toDayTimeDuration() const;
       DateTime();
       DateTime& operator=(const DateTime_t& dt_t);
       static int parse_date(std::string& ss, unsigned int& position, int& year, int& month, int& day);
