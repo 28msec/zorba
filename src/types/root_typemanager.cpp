@@ -470,16 +470,18 @@ xqtref_t RootTypeManager::union_type(const XQType& type1, const XQType& type2) c
     return type_x_quant (type2, TypeConstants::QUANT_QUESTION);
   else if (is_equal (type2, *EMPTY_TYPE))
     return type_x_quant (type1, TypeConstants::QUANT_QUESTION);
-  else if (is_atomic (type1) && is_atomic (type2))
-    return ANY_ATOMIC_TYPE_ONE;
-  else if (is_simple (type1) && is_simple (type2))
-#if 0
-    // has quantifier of * for some reason
-    return ANY_SIMPLE_TYPE;
-#else
+  else if (quantifier (type1) == TypeConstants::QUANT_ONE && quantifier (type2) == TypeConstants::QUANT_ONE) {
+    if (type1.type_kind () == type2.type_kind ())
+      switch (type1.type_kind ()) {
+      case XQType::ATOMIC_TYPE_KIND:
+        return ANY_ATOMIC_TYPE_ONE;
+      case XQType::NODE_TYPE_KIND:
+          return ANY_NODE_TYPE_ONE;
+      default:
+        break;
+      }
     return ITEM_TYPE_ONE;
-#endif
-  else {
+  } else {
     xqtref_t pt1 = prime_type (type1), pt2 = prime_type (type2);
     if (! is_equal (type1, *pt1) || ! is_equal (type2, *pt2))
       return type_x_quant (*union_type (*pt1, *pt2),
