@@ -176,18 +176,20 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
   int skip = 0;
 	
 	for (unsigned int i = 0; i < str.bytes(); i++, chars++ )
-	{       
+	{ 
     // the input string is UTF-8
-    if ((unsigned char)*chars < 0x80)
-      skip = 0;      
-    else if ((*chars >> 5) == 0x6)
-      skip = 2;
-    else if ((*chars >> 4) == 0xe)
-      skip = 3;
-    else if ((*chars >> 3) == 0x1e)
-      skip = 4;
-       
-    if (skip)
+    if (skip == 0)
+    {
+      if ((unsigned char)*chars < 0x80)
+        skip = 0;      
+      else if ((*chars >> 5) == 0x6)
+        skip = 2;
+      else if ((*chars >> 4) == 0xe)
+        skip = 3;
+      else if ((*chars >> 3) == 0x1e)
+        skip = 4;
+    }
+    else
     {
       skip--;
       tr << *chars;
