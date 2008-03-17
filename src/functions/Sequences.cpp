@@ -25,6 +25,7 @@
 #include "util/tracer.h"
 #include "system/globalenv.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
+#include "compiler/semantic_annotations/tsv_annotation.h"
 
 using namespace std;
 namespace zorba {
@@ -393,137 +394,93 @@ xqtref_t fn_exactly_one::type_check(
 
 //15.3.2 op:union
 //ordered
-fn_ordered_union::fn_ordered_union(const signature& sig)
+fn_union::fn_union(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_ordered_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
- return new NodeSortIterator(loc, new FnConcatIterator(loc, argv), true, true, false);
+  bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
+  if (ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VALUE)
+    return new NodeSortIterator(loc, new FnConcatIterator(loc, argv), true, distinct, false);
+  else {
+    PlanIter_t concat = new FnConcatIterator(loc, argv);
+    return
+      distinct ? new NodeDistinctIterator(loc, concat, true) : concat;
+  }
 }
 
-bool fn_ordered_union::validate_args(
-	vector<PlanIter_t>& argv) const
+bool fn_union::validate_args(vector<PlanIter_t>& argv) const
 {
   return (argv.size() == 2);
 }
 
-xqtref_t fn_ordered_union::type_check(
-	signature& /*sig*/) const
+xqtref_t fn_union::type_check(signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
 }
-
-// unordered
-fn_unordered_union::fn_unordered_union(const signature& sig)
-: function(sig) { }
-
-PlanIter_t fn_unordered_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
- return new NodeDistinctIterator(loc, new FnConcatIterator(loc, argv), true);
-}
-
-bool fn_unordered_union::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
-
-xqtref_t fn_unordered_union::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
-}
-
 
 //15.3.3 op:intersect
-// intersect; requires two sorted inputs; does duplicate elimination
-fn_sorted_intersect::fn_sorted_intersect(const signature& sig)
+fn_intersect::fn_intersect(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_sorted_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
- return new SortSemiJoinIterator(loc, argv);
+  bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
+  if (ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VALUE) {
+    std::vector<PlanIter_t> inputs;
+    for (std::vector<PlanIter_t>::iterator i = argv.begin ();
+         i != argv.end (); i++)
+      inputs.push_back (new NodeSortIterator (loc, *i, true, distinct, false));
+    return new SortSemiJoinIterator(loc, inputs);
+  } else
+    return new HashSemiJoinIterator(loc, argv);
 }
 
-bool fn_sorted_intersect::validate_args(
-	vector<PlanIter_t>& argv) const
+bool fn_intersect::validate_args(vector<PlanIter_t>& argv) const
 {
   return (argv.size() == 2);
 }
 
-xqtref_t fn_sorted_intersect::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
-}
-
-// intersect; doesn't require sorted inputs but does not return the result in document order
-//         also does duplicate elimination
-fn_hash_intersect::fn_hash_intersect(const signature& sig)
-: function(sig) { }
-
-PlanIter_t fn_hash_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
- return new HashSemiJoinIterator(loc, argv);
-}
-
-bool fn_hash_intersect::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
-
-xqtref_t fn_hash_intersect::type_check(
-	signature& /*sig*/) const
+xqtref_t fn_intersect::type_check(signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
 }
 
 //15.3.4 op:except
 // except; requires two sorted inputs; does duplicate elimination
-fn_sorted_except::fn_sorted_except(const signature& sig)
+fn_except::fn_except(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_sorted_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  assert(false);
-  return NULL;
+  // bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE;
+  if (ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) == TSVAnnotationValue::TRUE_VALUE) 
+    return new HashSemiJoinIterator(loc, argv, true);
+  else {
+    ZORBA_NOT_IMPLEMENTED ("op:except when sorted output is required");
+    return NULL;
+  }
 }
 
-bool fn_sorted_except::validate_args(
+bool fn_except::validate_args(
 	vector<PlanIter_t>& argv) const
 {
   return (argv.size() == 2);
 }
 
-xqtref_t fn_sorted_except::type_check(
+xqtref_t fn_except::type_check(
 	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
 }
 
+#if 0
 // except; doesn't require sorted inputs but does not return the result in document order
 //         also does duplicate elimination
-fn_hash_except::fn_hash_except(const signature& sig)
-: function(sig) { }
-
-PlanIter_t fn_hash_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
- return new HashSemiJoinIterator(loc, argv, true);
 }
-
-bool fn_hash_except::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
-
-xqtref_t fn_hash_except::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
-}
-
+#endif
 
 /*______________________________________________________________________
 |
