@@ -6,6 +6,8 @@
 #include "functions/function.h"
 #include "runtime/core/var_iterators.h"
 #include "util/hashmap.h"
+#include "compiler/semantic_annotations/tsv_annotation.h"
+#include "compiler/semantic_annotations/annotation_keys.h"
 
 namespace zorba {
 
@@ -90,6 +92,10 @@ std::vector<ref_iter_t>& user_function::get_param_iters() const
 
 xqtref_t function::return_type (const std::vector<xqtref_t> &) const {
   return sig.return_type ();
+}
+
+bool user_function::requires_dyn_ctx () const {
+  return m_expr_body->get_annotation (AnnotationKey::UNFOLDABLE_OP) == TSVAnnotationValue::TRUE_VALUE;
 }
 
 }

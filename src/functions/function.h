@@ -96,6 +96,8 @@ class user_function : public function {
 
     virtual std::vector<ref_iter_t>& get_param_iters() const;
 
+    bool requires_dyn_ctx () const;
+
   private:
     QueryLoc m_loc;
     expr_t m_expr_body;
