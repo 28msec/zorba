@@ -189,7 +189,8 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
       else if ((*chars >> 3) == 0x1e)
         skip = 4;
     }
-    else
+    
+    if (skip > 0)
     {
       skip--;
       tr << *chars;
