@@ -20,7 +20,7 @@ class fn_datetime_ctor : public function
     virtual ~fn_datetime_ctor() {};
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc,std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -40,7 +40,7 @@ class fn_datetime_ctor : public function
       ~fn_years_from_duration() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -55,7 +55,7 @@ class fn_datetime_ctor : public function
       ~fn_months_from_duration() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -70,7 +70,7 @@ class fn_datetime_ctor : public function
       ~fn_days_from_duration() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -85,7 +85,7 @@ class fn_datetime_ctor : public function
       ~fn_hours_from_duration() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -100,7 +100,7 @@ class fn_datetime_ctor : public function
       ~fn_minutes_from_duration() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -115,7 +115,7 @@ class fn_datetime_ctor : public function
       ~fn_seconds_from_duration() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -130,7 +130,7 @@ class fn_datetime_ctor : public function
       ~fn_year_from_datetime() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -145,7 +145,7 @@ class fn_datetime_ctor : public function
       ~fn_month_from_datetime() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -160,7 +160,7 @@ class fn_datetime_ctor : public function
       ~fn_day_from_datetime() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -175,7 +175,7 @@ class fn_datetime_ctor : public function
       ~fn_hours_from_datetime() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -190,7 +190,7 @@ class fn_datetime_ctor : public function
       ~fn_minutes_from_datetime() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -205,7 +205,7 @@ class fn_datetime_ctor : public function
       ~fn_seconds_from_datetime() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -220,7 +220,7 @@ class fn_datetime_ctor : public function
       ~fn_timezone_from_datetime() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -235,7 +235,7 @@ class fn_datetime_ctor : public function
       ~fn_year_from_date() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -250,7 +250,7 @@ class fn_datetime_ctor : public function
       ~fn_month_from_date() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -265,7 +265,7 @@ class fn_datetime_ctor : public function
       ~fn_day_from_date() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -280,7 +280,7 @@ class fn_datetime_ctor : public function
       ~fn_timezone_from_date() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -295,7 +295,7 @@ class fn_datetime_ctor : public function
       ~fn_hours_from_time() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -310,7 +310,7 @@ class fn_datetime_ctor : public function
       ~fn_minutes_from_time() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -325,7 +325,7 @@ class fn_datetime_ctor : public function
       ~fn_seconds_from_time() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -340,7 +340,7 @@ class fn_datetime_ctor : public function
       ~fn_timezone_from_time() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -355,7 +355,7 @@ class fn_datetime_ctor : public function
       ~op_ym_durations_add() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -370,7 +370,7 @@ class fn_datetime_ctor : public function
       ~op_ym_durations_subtract() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -385,7 +385,7 @@ class fn_datetime_ctor : public function
       ~op_ym_durations_multiply() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -400,7 +400,7 @@ class fn_datetime_ctor : public function
       ~op_ym_durations_divide() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -415,7 +415,7 @@ class fn_datetime_ctor : public function
       ~op_divide_ymd_by_ymd() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -430,7 +430,7 @@ class fn_datetime_ctor : public function
       ~op_dt_durations_add() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -445,7 +445,7 @@ class fn_datetime_ctor : public function
       ~op_dt_durations_subtract() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -460,7 +460,7 @@ class fn_datetime_ctor : public function
       ~op_dt_durations_multiply() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -475,7 +475,7 @@ class fn_datetime_ctor : public function
       ~op_dt_durations_divide() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -490,7 +490,7 @@ class fn_datetime_ctor : public function
       ~op_divide_dtd_by_dtd() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -505,7 +505,7 @@ class fn_datetime_ctor : public function
       ~op_sub_dt() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -520,7 +520,7 @@ class fn_datetime_ctor : public function
       ~op_sub_d() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -535,7 +535,7 @@ class fn_datetime_ctor : public function
       ~op_sub_t() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -550,7 +550,7 @@ class fn_datetime_ctor : public function
       ~op_add_ymd_to_dt() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -565,7 +565,7 @@ class fn_datetime_ctor : public function
       ~op_add_dtd_to_dt() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -580,7 +580,7 @@ class fn_datetime_ctor : public function
       ~op_sub_ymd_from_dt() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -595,7 +595,7 @@ class fn_datetime_ctor : public function
       ~op_sub_dtd_from_dt() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -610,7 +610,7 @@ class fn_datetime_ctor : public function
       ~op_add_ymd_to_d() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -625,7 +625,7 @@ class fn_datetime_ctor : public function
       ~op_add_dtd_to_d() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -641,7 +641,7 @@ class fn_datetime_ctor : public function
       ~op_sub_ymd_from_d() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -656,7 +656,7 @@ class fn_datetime_ctor : public function
       ~op_sub_dtd_from_d() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -671,7 +671,7 @@ class fn_datetime_ctor : public function
       ~op_add_dtd_to_t() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -686,7 +686,7 @@ class fn_datetime_ctor : public function
       ~op_sub_dtd_from_t() {}
 
     public:
-      PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
       xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   };
@@ -701,7 +701,7 @@ public:
   ~fn_adjust_dt_to_tz_1() {}
 
 public:
-  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t type_check(signature&) const;
   bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -713,7 +713,7 @@ public:
   ~fn_adjust_dt_to_tz_2() {}
 
 public:
-  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t type_check(signature&) const;
   bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -728,7 +728,7 @@ class fn_adjust_d_to_tz_1 : public function
     ~fn_adjust_d_to_tz_1() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -740,7 +740,7 @@ class fn_adjust_d_to_tz_2 : public function
     ~fn_adjust_d_to_tz_2() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -755,7 +755,7 @@ class fn_adjust_t_to_tz_1 : public function
     ~fn_adjust_t_to_tz_1() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -767,7 +767,7 @@ class fn_adjust_t_to_tz_2 : public function
     ~fn_adjust_t_to_tz_2() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };

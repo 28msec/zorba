@@ -13,9 +13,7 @@ namespace zorba
   {
   }
 
-  PlanIter_t op_enclosed_expr::operator() (
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& argv ) const
+  PlanIter_t op_enclosed_expr::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
     return new EnclosedIterator ( loc, argv[0] );
   }
@@ -41,9 +39,7 @@ namespace zorba
   {
   }
   
-  PlanIter_t op_docfilter_expr::operator() (
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& argv ) const
+  PlanIter_t op_docfilter_expr::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
   {
     return new DocFilterIterator ( loc, argv[0] );
   }

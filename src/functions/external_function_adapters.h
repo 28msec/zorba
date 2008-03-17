@@ -12,7 +12,7 @@ class stateless_external_function_adapter : public external_function {
     stateless_external_function_adapter(const signature& sig, StatelessExternalFunction *function);
     ~stateless_external_function_adapter();
 
-    virtual PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const;
+    virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     virtual xqtref_t type_check(signature& s) const;
 

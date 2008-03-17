@@ -58,9 +58,7 @@ op_concatenate::op_concatenate(
 {
 }
 
-PlanIter_t op_concatenate::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t op_concatenate::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new FnConcatIterator(loc, argv);
 }
@@ -132,9 +130,7 @@ void op_concatenate::compute_annotation (AnnotationHolder *parent, std::vector<A
 fn_index_of::fn_index_of(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_index_of::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_index_of::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnIndexOfIterator(loc, argv);
 }
@@ -157,9 +153,7 @@ xqtref_t fn_index_of::type_check(
 fn_empty::fn_empty(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_empty::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_empty::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnEmptyIterator(loc, argv);
 }
@@ -182,9 +176,7 @@ xqtref_t fn_empty::type_check(
 fn_exists::fn_exists(const signature& sig)
   : function(sig) { }
 
-PlanIter_t fn_exists::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_exists::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnExistsIterator(loc,argv);
 }
@@ -209,9 +201,7 @@ fn_distinct_values_1::fn_distinct_values_1(
 :
 	function(sig) { }
 
-PlanIter_t fn_distinct_values_1::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_distinct_values_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnDistinctValuesIterator(loc, argv);
 }
@@ -234,9 +224,7 @@ xqtref_t fn_distinct_values_1::type_check(
 fn_insert_before::fn_insert_before(const signature& sig)
   : function(sig) { }
 
-PlanIter_t fn_insert_before::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_insert_before::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnInsertBeforeIterator(loc, argv);
 }
@@ -258,9 +246,7 @@ xqtref_t fn_insert_before::type_check(
 fn_remove::fn_remove(const signature& sig)
   : function(sig) { }
 
-PlanIter_t fn_remove::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_remove::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnRemoveIterator(loc, argv);
 }
@@ -283,9 +269,7 @@ xqtref_t fn_remove::type_check(
 fn_reverse::fn_reverse(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_reverse::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_reverse::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new FnReverseIterator(loc, argv);
 }
@@ -308,9 +292,7 @@ xqtref_t fn_reverse::type_check(
 fn_subsequence_2::fn_subsequence_2(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_subsequence_2::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_subsequence_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnSubsequenceIterator(loc, argv);
 }
@@ -341,9 +323,7 @@ xqtref_t fn_subsequence_2::type_check(
 fn_zero_or_one::fn_zero_or_one(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_zero_or_one::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_zero_or_one::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnZeroOrOneIterator(loc, argv);
 }
@@ -364,9 +344,7 @@ xqtref_t fn_zero_or_one::type_check(
 fn_one_or_more::fn_one_or_more(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_one_or_more::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_one_or_more::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnOneOrMoreIterator(loc, argv);
 }
@@ -387,9 +365,7 @@ xqtref_t fn_one_or_more::type_check(
 fn_exactly_one::fn_exactly_one(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_exactly_one::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_exactly_one::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnExactlyOneIterator(loc, argv);
 }
@@ -420,9 +396,7 @@ xqtref_t fn_exactly_one::type_check(
 fn_ordered_union::fn_ordered_union(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_ordered_union::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_ordered_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
  return new NodeSortIterator(loc, new FnConcatIterator(loc, argv), true, true, false);
 }
@@ -443,9 +417,7 @@ xqtref_t fn_ordered_union::type_check(
 fn_unordered_union::fn_unordered_union(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_unordered_union::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_unordered_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
  return new NodeDistinctIterator(loc, new FnConcatIterator(loc, argv), true);
 }
@@ -468,9 +440,7 @@ xqtref_t fn_unordered_union::type_check(
 fn_sorted_intersect::fn_sorted_intersect(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_sorted_intersect::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_sorted_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
  return new SortSemiJoinIterator(loc, argv);
 }
@@ -492,9 +462,7 @@ xqtref_t fn_sorted_intersect::type_check(
 fn_hash_intersect::fn_hash_intersect(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_hash_intersect::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_hash_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
  return new HashSemiJoinIterator(loc, argv);
 }
@@ -516,9 +484,7 @@ xqtref_t fn_hash_intersect::type_check(
 fn_sorted_except::fn_sorted_except(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_sorted_except::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_sorted_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   assert(false);
   return NULL;
@@ -541,9 +507,7 @@ xqtref_t fn_sorted_except::type_check(
 fn_hash_except::fn_hash_except(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_hash_except::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_hash_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
  return new HashSemiJoinIterator(loc, argv, true);
 }
@@ -570,9 +534,7 @@ xqtref_t fn_hash_except::type_check(
 fn_count::fn_count(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_count::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_count::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
  return new FnCountIterator(loc, argv);
 }
@@ -593,9 +555,7 @@ xqtref_t fn_count::type_check(
 fn_avg::fn_avg(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_avg::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_avg::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnAvgIterator(loc, argv);
 }
@@ -616,9 +576,7 @@ xqtref_t fn_avg::type_check(
 fn_max_1::fn_max_1(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_max_1::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_max_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MAX);
 }
@@ -639,9 +597,7 @@ xqtref_t fn_max_1::type_check(
 fn_min_1::fn_min_1(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_min_1::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_min_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MIN);
 }
@@ -662,9 +618,7 @@ xqtref_t fn_min_1::type_check(
 fn_sum_1::fn_sum_1(const signature& sig)
 : function(sig) { }
 
-PlanIter_t fn_sum_1::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_sum_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnSumIterator(loc, argv);
 }
@@ -697,9 +651,7 @@ xqtref_t fn_sum_2::type_check(
 op_to::op_to(const signature& sig)
 : function(sig) { }
 
-PlanIter_t op_to::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t op_to::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new OpToIterator(loc, argv);
 }
@@ -731,9 +683,7 @@ fn_doc_func::fn_doc_func(
 {
 }
 
-PlanIter_t fn_doc_func::operator()(
-	const QueryLoc& loc, 
-	vector<PlanIter_t>& argv) const
+PlanIter_t fn_doc_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnDocIterator(loc, argv[0]);
 }
@@ -765,9 +715,7 @@ op_distinct_nodes::op_distinct_nodes(const signature& sig)
 {
 }
 
-PlanIter_t op_distinct_nodes::operator()
-  (const QueryLoc& loc, 
-	 vector<PlanIter_t>& argv) const
+PlanIter_t op_distinct_nodes::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new NodeDistinctIterator(loc, argv[0]);
 }
@@ -790,9 +738,7 @@ op_distinct_nodes_or_atomics::op_distinct_nodes_or_atomics(const signature& sig)
 {
 }
 
-PlanIter_t op_distinct_nodes_or_atomics::operator()
-  (const QueryLoc& loc, 
-	 vector<PlanIter_t>& argv) const
+PlanIter_t op_distinct_nodes_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new NodeDistinctIterator(loc, argv[0], true);
 }
@@ -814,9 +760,7 @@ op_sort_nodes_ascending::op_sort_nodes_ascending(const signature& sig)
   :	function(sig)
 {}
 
-PlanIter_t op_sort_nodes_ascending::operator()
-  (const QueryLoc& loc, 
-	 vector<PlanIter_t>& argv) const
+PlanIter_t op_sort_nodes_ascending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in document order without dupelim
   return new NodeSortIterator(loc, argv[0], true, false);
@@ -837,9 +781,7 @@ op_sort_nodes_asc_or_atomics::op_sort_nodes_asc_or_atomics(const signature& sig)
   :	function(sig)
 {}
 
-PlanIter_t op_sort_nodes_asc_or_atomics::operator()
-  (const QueryLoc& loc, 
-	 vector<PlanIter_t>& argv) const
+PlanIter_t op_sort_nodes_asc_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new NodeSortIterator(loc, argv[0], true, false, true);
 }
@@ -858,9 +800,7 @@ op_sort_nodes_descending::op_sort_nodes_descending(const signature& sig)
   :	function(sig)
 {}
 
-PlanIter_t op_sort_nodes_descending::operator()
-  (const QueryLoc& loc, 
-	 vector<PlanIter_t>& argv) const
+PlanIter_t op_sort_nodes_descending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in reverse document order without dupelim
   return new NodeSortIterator(loc, argv[0], false, false);
@@ -881,9 +821,7 @@ op_sort_nodes_desc_or_atomics::op_sort_nodes_desc_or_atomics(const signature& si
   :	function(sig)
 {}
 
-PlanIter_t op_sort_nodes_desc_or_atomics::operator()
-  (const QueryLoc& loc, 
-	 vector<PlanIter_t>& argv) const
+PlanIter_t op_sort_nodes_desc_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in reverse document order without dupelim
   return new NodeSortIterator(loc, argv[0], false, false, true);
@@ -903,9 +841,7 @@ op_sort_distinct_nodes_ascending::op_sort_distinct_nodes_ascending(const signatu
   :	function(sig)
 {}
 
-PlanIter_t op_sort_distinct_nodes_ascending::operator()
-  (const QueryLoc& loc, 
-	 vector<PlanIter_t>& argv) const
+PlanIter_t op_sort_distinct_nodes_ascending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in document order and doing dup elim
   return new NodeSortIterator(loc, argv[0], true, true);
@@ -926,9 +862,7 @@ op_sort_distinct_nodes_asc_or_atomics::op_sort_distinct_nodes_asc_or_atomics(con
   :	function(sig)
 {}
 
-PlanIter_t op_sort_distinct_nodes_asc_or_atomics::operator()
-  (const QueryLoc& loc, 
-	 vector<PlanIter_t>& argv) const
+PlanIter_t op_sort_distinct_nodes_asc_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in document order and doing dup elim
   return new NodeSortIterator(loc, argv[0], true, true, true);
@@ -949,9 +883,7 @@ op_sort_distinct_nodes_descending::op_sort_distinct_nodes_descending(const signa
   :	function(sig)
 {}
 
-PlanIter_t op_sort_distinct_nodes_descending::operator()
-  (const QueryLoc& loc, 
-	 vector<PlanIter_t>& argv) const
+PlanIter_t op_sort_distinct_nodes_descending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in document order and doing dup elim
   return new NodeSortIterator(loc, argv[0], false, true);

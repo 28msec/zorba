@@ -57,7 +57,7 @@ public:
     const signature& get_signature() const { return sig; }
 
 	// codegen: functor specification
-	virtual PlanIter_t operator ()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const = 0;
+	virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const = 0;
 
   virtual bool requires_dyn_ctx () const { return false; }
 
@@ -86,7 +86,7 @@ class user_function : public function {
     void set_params(std::vector<var_expr_t>& params);
     const std::vector<var_expr_t>& get_params() const;
 
-    virtual PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const;
+    virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     virtual xqtref_t type_check(signature&) const;
 

@@ -39,7 +39,7 @@ const std::vector<var_expr_t>& user_function::get_params() const
   return m_params;
 }
 
-PlanIter_t user_function::operator()(const QueryLoc& loc, std::vector<PlanIter_t>& argv) const
+PlanIter_t user_function::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new UDFunctionCallIterator(loc, argv, this);
 }
@@ -62,7 +62,7 @@ PlanIter_t user_function::get_plan() const
     for(uint32_t i = 0; i < m_params.size(); ++i) {
       param_map.put((uint64_t)&*m_params[i], &param_iter_vec[i]);
     }
-    m_plan = codegen(get_fname ()->getStringValue ().c_str (), &*m_expr_body, &param_map);
+    m_plan = zorba::codegen(get_fname ()->getStringValue ().c_str (), &*m_expr_body, &param_map);
     for(uint32_t i = 0; i < param_iter_vec.size(); ++i) {
       std::vector<ref_iter_t>& vec = param_iter_vec[i];
       switch(vec.size()) {

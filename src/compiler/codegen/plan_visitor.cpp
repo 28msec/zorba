@@ -540,7 +540,7 @@ void end_visit(fo_expr& v)
 
   if (func->validate_args (argv))
   {
-    PlanIter_t iter = (*func) (loc, argv);
+    PlanIter_t iter = func->codegen (loc, argv, v);
     ZORBA_ASSERT(iter != NULL);
     itstack.push(iter);
 

@@ -34,9 +34,7 @@ fn_current_dateTime::fn_current_dateTime(
 }
 
 PlanIter_t
-fn_current_dateTime::operator()(
-  const QueryLoc& loc, 
-  vector<PlanIter_t>& argv) const
+fn_current_dateTime::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnCurrentDateTimeIterator(loc, argv);
 }
@@ -67,9 +65,7 @@ fn_current_date::fn_current_date(
 }
 
 PlanIter_t
-fn_current_date::operator()(
-  const QueryLoc& loc, 
-  vector<PlanIter_t>& argv) const
+fn_current_date::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnCurrentDateIterator(loc, argv);
 }
@@ -100,9 +96,7 @@ fn_current_time::fn_current_time(
 }
 
 PlanIter_t
-fn_current_time::operator()(
-  const QueryLoc& loc, 
-  vector<PlanIter_t>& argv) const
+fn_current_time::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnCurrentTimeIterator(loc, argv);
 }
@@ -133,9 +127,7 @@ fn_implicit_timezone::fn_implicit_timezone(
 }
 
 PlanIter_t
-fn_implicit_timezone::operator()(
-  const QueryLoc& loc, 
-  vector<PlanIter_t>& argv) const
+fn_implicit_timezone::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnImplicitTimezoneIterator(loc, argv);
 }
@@ -166,9 +158,7 @@ fn_default_collation::fn_default_collation(
 }
 
 PlanIter_t
-fn_default_collation::operator()(
-  const QueryLoc& loc, 
-  vector<PlanIter_t>& argv) const
+fn_default_collation::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnDefaultCollationIterator(loc, argv);
 }

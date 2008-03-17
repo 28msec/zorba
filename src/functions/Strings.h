@@ -32,7 +32,7 @@ public:
   ~fn_codepoints_to_string() {}
 
 public:
-  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t type_check(signature&) const;
   bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -47,7 +47,7 @@ public:
     ~fn_string_to_codepoints() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -66,7 +66,7 @@ class fn_string_compare_2: public function
     ~fn_string_compare_2() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -78,7 +78,7 @@ class fn_string_compare_3: public function
     ~fn_string_compare_3() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -92,7 +92,7 @@ class fn_codepoint_equal: public function
     ~fn_codepoint_equal() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -112,7 +112,7 @@ class fn_concat: public function
     ~fn_concat() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -127,7 +127,7 @@ class fn_string_join: public function
     ~fn_string_join() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -142,7 +142,7 @@ class fn_substring_2: public function
     ~fn_substring_2() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -154,7 +154,7 @@ class fn_substring_3: public function
     ~fn_substring_3() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -168,7 +168,7 @@ class fn_string_length: public function
     ~fn_string_length() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -183,7 +183,7 @@ class fn_normalize_space: public function
     ~fn_normalize_space() {}
   
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -198,7 +198,7 @@ class fn_normalize_unicode_1: public function
     ~fn_normalize_unicode_1() {}
   
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -210,7 +210,7 @@ class fn_normalize_unicode_2: public function
     ~fn_normalize_unicode_2() {}
   
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -224,7 +224,7 @@ public:
   ~fn_upper_case() {}
 
 public:
-  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t type_check(signature&) const;
   bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -239,7 +239,7 @@ public:
   ~fn_lower_case() {}
 
 public:
-  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t type_check(signature&) const;
   bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -254,7 +254,7 @@ public:
   ~fn_translate() {}
 
 public:
-  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t type_check(signature&) const;
   bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -269,7 +269,7 @@ public:
   ~fn_encode_for_uri() {}
 
 public:
-  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t type_check(signature&) const;
   bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -284,7 +284,7 @@ public:
   ~fn_iri_to_uri() {}
 
 public:
-  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t type_check(signature&) const;
   bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -299,7 +299,7 @@ public:
   ~fn_escape_html_uri() {}
 
 public:
-  PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t type_check(signature&) const;
   bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -319,7 +319,7 @@ class fn_contains_2: public function
     ~fn_contains_2() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -331,7 +331,7 @@ class fn_contains_3: public function
     ~fn_contains_3() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -345,7 +345,7 @@ class fn_starts_with_2: public function
     ~fn_starts_with_2() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -357,7 +357,7 @@ class fn_starts_with_3: public function
     ~fn_starts_with_3() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -371,7 +371,7 @@ class fn_ends_with_2: public function
     ~fn_ends_with_2() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -383,7 +383,7 @@ class fn_ends_with_3: public function
     ~fn_ends_with_3() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -397,7 +397,7 @@ class fn_substring_before_2: public function
     ~fn_substring_before_2() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -409,7 +409,7 @@ class fn_substring_before_3: public function
     ~fn_substring_before_3() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -423,7 +423,7 @@ class fn_substring_after_2: public function
     ~fn_substring_after_2() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
@@ -435,7 +435,7 @@ class fn_substring_after_3: public function
     ~fn_substring_after_3() {}
 
   public:
-    PlanIter_t operator()(const QueryLoc& loc, std::vector<PlanIter_t>&) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };

@@ -19,7 +19,7 @@ namespace zorba
 		: function ( sig ) {}
 
 	PlanIter_t
-	GenericOpComparison::operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
+	GenericOpComparison::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
 		return this->createIterator(loc, argv);
 	}
@@ -147,9 +147,7 @@ namespace zorba
 
   /* begin class op_is_same_node */
 	PlanIter_t
-	op_is_same_node::operator() (
-	    const QueryLoc& loc,
-	    std::vector<PlanIter_t>& argv ) const
+	op_is_same_node::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
 		return new OpIsSameNodeIterator ( loc, argv );
 	}
@@ -170,9 +168,7 @@ namespace zorba
 
   /* begin class op_node_before */
 	PlanIter_t
-	op_node_before::operator() (
-	    const QueryLoc& loc,
-	    std::vector<PlanIter_t>& argv ) const
+	op_node_before::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
 		return new OpNodeBeforeIterator ( loc, argv );
 	}
@@ -193,9 +189,7 @@ namespace zorba
 
   /* begin class op_node_after */
 	PlanIter_t
-	op_node_after::operator() (
-	    const QueryLoc& loc,
-	    std::vector<PlanIter_t>& argv ) const
+	op_node_after::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
 		return new OpNodeAfterIterator ( loc, argv );
 	}
@@ -218,9 +212,7 @@ namespace zorba
 	op_and::op_and ( const signature& sig ) : function ( sig ) {}
 
 	PlanIter_t
-	op_and::operator() (
-	    const QueryLoc& loc,
-	    std::vector<PlanIter_t>& argv ) const
+	op_and::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::AND );
 	}
@@ -243,9 +235,7 @@ namespace zorba
 	op_or::op_or ( const signature& sig ) : function ( sig ) {}
 
 	PlanIter_t
-	op_or::operator() (
-	    const QueryLoc& loc,
-	    std::vector<PlanIter_t>& argv ) const
+	op_or::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::OR );
 	}
@@ -268,9 +258,7 @@ namespace zorba
 	fn_true::fn_true ( const signature& sig ) :function ( sig ) {}
 
 	PlanIter_t
-	fn_true::operator() (
-	    const QueryLoc& loc,
-	    std::vector<PlanIter_t>& argv ) const
+	fn_true::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
 		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(true) );
 	}
@@ -293,9 +281,7 @@ namespace zorba
 	fn_false::fn_false ( const signature& sig ) :function ( sig ) {}
 
 	PlanIter_t
-	fn_false::operator() (
-	    const QueryLoc& loc,
-	    std::vector<PlanIter_t>& argv ) const
+	fn_false::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
 		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(false) );
 	}
@@ -318,9 +304,7 @@ namespace zorba
 	fn_not::fn_not ( const signature& sig ) :function ( sig ) {}
 
 	PlanIter_t
-	fn_not::operator() (
-	    const QueryLoc& loc,
-	    std::vector<PlanIter_t>& argv ) const
+	fn_not::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
 		return new FnBooleanIterator(loc, argv[0], true );
 	}
@@ -343,9 +327,7 @@ namespace zorba
 	fn_boolean::fn_boolean ( const signature& sig ) :function ( sig ) {}
 
 	PlanIter_t
-	fn_boolean::operator() (
-	    const QueryLoc& loc,
-	    std::vector<PlanIter_t>& argv ) const
+	fn_boolean::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
 		return new FnBooleanIterator ( loc, argv[0] );
 	}

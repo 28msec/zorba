@@ -27,9 +27,7 @@ fn_resolve_qname::fn_resolve_qname(
 }
 
 PlanIter_t
-    fn_resolve_qname::operator()(
-    const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv) const
+    fn_resolve_qname::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new ResolveQNameIterator(loc, argv[0], argv[1]);
 }
@@ -61,9 +59,7 @@ fn_qname::fn_qname(
 }
 
 PlanIter_t
-    fn_qname::operator()(
-    const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv) const
+    fn_qname::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new QNameIterator(loc, argv[0], argv[1]);
 }
@@ -95,9 +91,7 @@ op_qname_equal::op_qname_equal(
 }
 
 PlanIter_t
-    op_qname_equal::operator()(
-    const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv) const
+    op_qname_equal::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new QNameEqualIterator(loc, argv[0], argv[1]);
 }
@@ -129,9 +123,7 @@ fn_prefix_from_qname::fn_prefix_from_qname(
 }
 
 PlanIter_t
-    fn_prefix_from_qname::operator()(
-    const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv) const
+    fn_prefix_from_qname::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new PrefixFromQNameIterator(loc, argv[0]);
 }
@@ -163,9 +155,7 @@ fn_local_name_from_qname::fn_local_name_from_qname(
 }
 
 PlanIter_t
-    fn_local_name_from_qname::operator()(
-    const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv) const
+    fn_local_name_from_qname::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new LocalNameFromQNameIterator(loc, argv[0]);
 }
@@ -197,9 +187,7 @@ fn_namespace_uri_from_qname::fn_namespace_uri_from_qname(
 }
 
 PlanIter_t
-    fn_namespace_uri_from_qname::operator()(
-    const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv) const
+    fn_namespace_uri_from_qname::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new NamespaceUriFromQNameIterator(loc, argv[0]);
 }
@@ -231,9 +219,7 @@ fn_namespace_uri_for_prefix::fn_namespace_uri_for_prefix(
 }
 
 PlanIter_t
-    fn_namespace_uri_for_prefix::operator()(
-    const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv) const
+    fn_namespace_uri_for_prefix::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new NamespaceUriForPrefixlIterator(loc, argv[0], argv[1]);
 }
@@ -265,9 +251,7 @@ fn_in_scope_prefixes::fn_in_scope_prefixes(
 }
 
 PlanIter_t
-    fn_in_scope_prefixes::operator()(
-    const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv) const
+    fn_in_scope_prefixes::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new InScopePrefixesIterator(loc, argv[0]);
 }

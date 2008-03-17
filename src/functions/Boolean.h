@@ -18,7 +18,7 @@ namespace zorba
 			GenericOpComparison ( const signature&);
 			virtual ~GenericOpComparison() {}
 
-			virtual PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
+			virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 			virtual xqtref_t type_check ( signature& ) const;
 			virtual bool validate_args ( std::vector<PlanIter_t>& ) const;
 			
@@ -142,7 +142,7 @@ namespace zorba
 		op_is_same_node( const signature& aSig) : function(aSig) {}
 		virtual ~op_is_same_node() {}
   public:
-    PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check ( signature&) const;
     bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -153,7 +153,7 @@ namespace zorba
 		op_node_before( const signature& aSig) : function(aSig) {}
 		virtual ~op_node_before() {}
   public:
-    PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check ( signature&) const;
     bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -164,7 +164,7 @@ namespace zorba
 		op_node_after( const signature& aSig) : function(aSig) {}
 		virtual ~op_node_after() {}
   public:
-    PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check ( signature&) const;
     bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -177,7 +177,7 @@ namespace zorba
 			~op_and() {}
 			
 		public:
-			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 			xqtref_t type_check ( signature&) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -189,7 +189,7 @@ namespace zorba
 			~op_or() {}
 			
 		public:
-			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 			xqtref_t type_check ( signature&) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -204,7 +204,7 @@ namespace zorba
 			~fn_true() {}
 			
 		public:
-			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 			xqtref_t type_check ( signature&) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	}; /* class fn_true */
@@ -217,7 +217,7 @@ namespace zorba
 			~fn_false() {}
 			
 		public:
-			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 			xqtref_t type_check ( signature&) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	}; /* class fn_false */
@@ -230,7 +230,7 @@ namespace zorba
 		~fn_not() {}
 		
 	public:
-		PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
+		PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 		xqtref_t type_check ( signature&) const;
 		bool validate_args ( std::vector<PlanIter_t>& ) const;
 	};
@@ -244,7 +244,7 @@ namespace zorba
 			~fn_boolean() {}
 
 		public:
-			PlanIter_t operator() ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
+			PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 			xqtref_t type_check ( signature& ) const;
 			bool validate_args ( std::vector<PlanIter_t>& ) const;
 	}; /* class fn_false */
