@@ -95,7 +95,8 @@ xqtref_t function::return_type (const std::vector<xqtref_t> &) const {
 }
 
 bool user_function::requires_dyn_ctx () const {
-  return m_expr_body->get_annotation (AnnotationKey::UNFOLDABLE_OP) == TSVAnnotationValue::TRUE_VALUE;
+  // All undeclared functions unfoldable. TODO: better analysis
+  return m_expr_body == NULL || m_expr_body->get_annotation (AnnotationKey::UNFOLDABLE_OP) == TSVAnnotationValue::TRUE_VALUE;
 }
 
 }
