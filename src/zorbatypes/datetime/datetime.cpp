@@ -549,7 +549,9 @@ DateTime_t DateTime::normalizeTimeZone() const
   if( the_time_zone.is_not_a_date_time() )
   {
     // TODO: validate timezone value (-14 .. +14 H)
-    int timezone_secs = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
+    // int timezone_secs = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
+	// TODO: temporary solution
+	int timezone_secs = 0;
     d_t = new Duration(DayTimeDuration((timezone_secs<0), 0, 0, 0, timezone_secs, 0));
   }
   else
