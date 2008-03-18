@@ -29,11 +29,20 @@ namespace zorba {
     return (ann == NULL) ? no_free_vars : dynamic_cast<FreeVarAnnVal *> (ann.get ())->varset;
   }
 
+  class PlanWrapperHolder {
+    auto_ptr<PlanWrapper> pw;
+
+  public:
+    PlanWrapperHolder (PlanIter_t plan) : pw (new PlanWrapper (plan))
+    { pw->open (); }
+    ~PlanWrapperHolder() { pw->close (); }
+    PlanWrapper *operator-> () { return pw.get(); }
+  };
+
   static void execute (expr_t node, vector<store::Item_t> &result) {
     PlanIter_t plan = codegen ("const-folded expr", node);
-    rchandle<PlanWrapper> pw  = new PlanWrapper (plan);
     store::Item_t item;
-    for (pw->open (); (item = pw->next ()) != NULL; )
+    for (PlanWrapperHolder pw  (plan); (item = pw->next ()) != NULL; )
       result.push_back (item);
   }
 
