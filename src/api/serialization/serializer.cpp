@@ -141,21 +141,20 @@ serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::oper
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Default emitter
-
-serializer::emitter::emitter(serializer& the_serializer, transcoder& the_transcoder)
+serializer::emitter::emitter(serializer *the_serializer, transcoder& the_transcoder)
   : ser(the_serializer), tr(the_transcoder), previous_item(INVALID_ITEM)
 {  
 }
 
 void serializer::emitter::emit_declaration()
 {
-  if (ser.byte_order_mark == PARAMETER_VALUE_YES )
+  if (ser->byte_order_mark == PARAMETER_VALUE_YES )
   {
-    if (ser.encoding == PARAMETER_VALUE_UTF_8 )
+    if (ser->encoding == PARAMETER_VALUE_UTF_8 )
     {
       tr << (char)0xEF << (char)0xBB << (char)0xBF;
     }
-    else if (ser.encoding == PARAMETER_VALUE_UTF_16)
+    else if (ser->encoding == PARAMETER_VALUE_UTF_16)
     {
       // Little-endian
       tr.verbatim((char)0xFF); // TODO isn't the value truncated?
@@ -207,7 +206,7 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
       /*
         The HTML output method MUST NOT escape "<" characters occurring in attribute values.
       */
-      if (ser.method == PARAMETER_VALUE_HTML && emit_attribute_value)
+      if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
         tr << *chars;
       else
         tr << "&lt;";             
@@ -227,7 +226,7 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
         attribute value immediately followed by a { character (see Section
         B.7.1 of the HTML Recommendation [HTML]).
       */      
-      if (ser.method == PARAMETER_VALUE_HTML && emit_attribute_value)
+      if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
       {
         if (str.bytes()-i >= 1
             &&
@@ -406,7 +405,7 @@ void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* e
 	}
 	else if (item->getNodeKind() == store::StoreConsts::elementNode)
 	{
-    if (ser.indent)
+    if (ser->indent)
 			emit_indentation(depth);
 		tr << "<" << item->getNodeName()->getStringValue();
     previous_item = PREVIOUS_ITEM_WAS_NODE;
@@ -422,8 +421,8 @@ void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* e
 		else
 			tr << " />";
 
-    if (ser.indent)
-			tr << ser.END_OF_LINE;
+    if (ser->indent)
+			tr << ser->END_OF_LINE;
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::attributeNode )
@@ -442,11 +441,11 @@ void serializer::emitter::emit_node(store::Item* item, int depth, store::Item* e
 	}
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
-    if (ser.indent)
+    if (ser->indent)
       emit_indentation(depth);
     tr << "<!--" << item->getStringValue() << "-->";
-    if (ser.indent)
-      tr << ser.END_OF_LINE;		
+    if (ser->indent)
+      tr << ser->END_OF_LINE;		
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::piNode )
@@ -484,7 +483,7 @@ void serializer::emitter::emit_item(store::Item* item)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // XML emitter
-serializer::xml_emitter::xml_emitter(serializer& the_serializer, transcoder& the_transcoder)
+serializer::xml_emitter::xml_emitter(serializer* the_serializer, transcoder& the_transcoder)
   : emitter(the_serializer, the_transcoder)
 {   
 }
@@ -493,20 +492,20 @@ void serializer::xml_emitter::emit_declaration()
 {
   emitter::emit_declaration();
 
-  if (ser.omit_xml_declaration == PARAMETER_VALUE_NO )
+  if (ser->omit_xml_declaration == PARAMETER_VALUE_NO )
   {
-    tr << "<?xml version=\"" << ser.version << "\" encoding=\"";
-    if (ser.encoding == PARAMETER_VALUE_UTF_8)
+    tr << "<?xml version=\"" << ser->version << "\" encoding=\"";
+    if (ser->encoding == PARAMETER_VALUE_UTF_8)
       tr << "UTF-8";
-    else if (ser.encoding == PARAMETER_VALUE_UTF_16)
+    else if (ser->encoding == PARAMETER_VALUE_UTF_16)
       tr << "UTF-16";
     tr << "\"";
       
-    if ( ser.standalone != PARAMETER_VALUE_OMIT )
+    if ( ser->standalone != PARAMETER_VALUE_OMIT )
     {
       tr << "standalone=\"";
 
-      if ( ser.standalone == PARAMETER_VALUE_YES )
+      if ( ser->standalone == PARAMETER_VALUE_YES )
         tr << "yes";
       else
         tr << "no";
@@ -522,7 +521,7 @@ void serializer::xml_emitter::emit_declaration()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // HTML emitter
 
-serializer::html_emitter::html_emitter(serializer& the_serializer, transcoder& the_transcoder)
+serializer::html_emitter::html_emitter(serializer* the_serializer, transcoder& the_transcoder)
   : emitter(the_serializer, the_transcoder)
 {   
 }
@@ -532,7 +531,7 @@ void serializer::html_emitter::emit_declaration()
   emitter::emit_declaration();
      
   tr << "<html>";
-  if (ser.indent)
+  if (ser->indent)
     tr << END_OF_LINE;
 }
 
@@ -615,7 +614,7 @@ void serializer::html_emitter::emit_node(store::Item* item, int depth, store::It
       meta element child of the head element having an http-equiv attribute with the value "Content-Type" 
       MUST be discarded.
     */
-    if (ser.include_content_type == PARAMETER_VALUE_YES 
+    if (ser->include_content_type == PARAMETER_VALUE_YES 
         &&
         element_parent != NULL
         &&
@@ -625,7 +624,7 @@ void serializer::html_emitter::emit_node(store::Item* item, int depth, store::It
       return;      
     }        
     
-    if (ser.indent)
+    if (ser->indent)
       emit_indentation(depth);
     tr << "<" << item->getNodeName()->getStringValue();
     
@@ -634,25 +633,25 @@ void serializer::html_emitter::emit_node(store::Item* item, int depth, store::It
       HTML output method MUST add a meta element as the first child element of the head element 
       specifying the character encoding actually used.
     */
-    if (ser.include_content_type == PARAMETER_VALUE_YES
+    if (ser->include_content_type == PARAMETER_VALUE_YES
         &&
         item->getNodeName()->getStringValue().lowercase() == "head")
     {
       tr << "/>";
-      if (ser.indent)
-        tr << ser.END_OF_LINE;
-      if (ser.indent)
+      if (ser->indent)
+        tr << ser->END_OF_LINE;
+      if (ser->indent)
         emit_indentation(depth+1);
 
-      tr << "<meta http-equiv=\"content-type\" content=\"" << ser.media_type << "; charset=";
-      if (ser.encoding == PARAMETER_VALUE_UTF_8)
+      tr << "<meta http-equiv=\"content-type\" content=\"" << ser->media_type << "; charset=";
+      if (ser->encoding == PARAMETER_VALUE_UTF_8)
         tr << "UTF-8";
-      else if (ser.encoding == PARAMETER_VALUE_UTF_16)
+      else if (ser->encoding == PARAMETER_VALUE_UTF_16)
         tr << "UTF-16";
       tr << "\">";
       
-      if (ser.indent)
-        tr << ser.END_OF_LINE;
+      if (ser->indent)
+        tr << ser->END_OF_LINE;
       closed_parent_tag = 1;
     }
 
@@ -668,13 +667,13 @@ void serializer::html_emitter::emit_node(store::Item* item, int depth, store::It
         meta and param. For example, an element written as <br/> or <br></br> in an XSLT stylesheet 
         MUST be output as <br>.
       */
-      if (is_html_empty_element(item) && ser.version == "4.0")
+      if (is_html_empty_element(item) && ser->version == "4.0")
         tr << ">";      
       else
         tr << "/>";
     }
     
-    if (ser.indent)
+    if (ser->indent)
       tr << serializer::END_OF_LINE;
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
@@ -872,9 +871,9 @@ bool serializer::setup(ostream& os)
   }
     
   if (method == PARAMETER_VALUE_XML)
-    e = new xml_emitter(*this, *tr);
+    e = new xml_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_HTML)
-    e = new html_emitter(*this, *tr);
+    e = new html_emitter(this, *tr);
   else
   {
     ZORBA_ASSERT(0);

@@ -365,7 +365,7 @@ int test_api_dynamic_context(const char *result_file_name)
 
 	//yyyy-mm-ddThh:mm:ss.msss
 	xqp_dateTime		dtt;
-	DateTime::parse_string("2007-12-1T14:58:43", dtt);
+	DateTime::parseDateTime("2007-12-1T14:58:43", dtt);
   assert(!dctx1->setVariableAsDateTime( "a:b:c", 0));
 	assert(dctx1->setVariableAsDateTime( "external_vars:dttx", dtt));
 

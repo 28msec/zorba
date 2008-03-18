@@ -28,7 +28,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-#include "sax2/using_libxml2/xmlreader_libxml2.h"
+//#include "sax2/using_libxml2/xmlreader_libxml2.h"
+#include "sax2/native/xmlreader_native.h"
 
 using namespace std;
 
@@ -338,7 +339,7 @@ ResultIterator_t	Zorba_XQueryBinary::getIterator()
 			ZORBA_ERROR_ALERT(ZorbaError::API0010_XQUERY_EXECUTION_NOT_STARTED);
 		}
 		ResultIterator_t temp_result = &*result;
-		result = NULL;
+		//+result = NULL;
 		return temp_result;
 	}
 	CATCH_ALL_RETURN_NULL;
@@ -569,13 +570,30 @@ void   Zorba_XQueryBinary::getResultAsSAX2(
                                 SAX2_DeclHandler* decl_handler,
                                 SAX2_LexicalHandler* lexical_handler)
 {
-  SAX2_XMLReaderLibXML2   xmlreader(content_handler,
+	if(result == NULL)
+	{
+    SAX2_ParseException   saxx("XQuery execution not started", "", "", 0, 0);
+    if(error_handler)
+      error_handler->fatalError(saxx);
+    throw saxx;
+	}
+
+  result->theStateBlock->theZorba->current_xquery = info;
+
+  try{
+  SAX2_XMLReaderNative   xmlreader(content_handler,
                                     error_handler,
                                     dtd_handler,
                                     decl_handler,
                                     lexical_handler);
 
   xmlreader.parse(this);
+  }catch(...)
+  {
+		result->theStateBlock->theZorba->current_xquery = NULL;
+    throw;
+  }
+	result->theStateBlock->theZorba->current_xquery = NULL;
 }
 
 bool Zorba_XQueryBinary::isError()
@@ -609,7 +627,7 @@ bool Zorba_XQueryBinary::setVariableAsXQueryResult( xqp_string varname,
 		}
 	}CATCH_ALL_RETURN_false;
 
-  result->theStateBlock->theZorba->current_xquery = info;;
+  result->theStateBlock->theZorba->current_xquery = info;
 
 	try{
 		DynamicContextWrapper::checkVarName(varname);

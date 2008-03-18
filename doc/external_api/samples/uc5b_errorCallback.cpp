@@ -50,7 +50,7 @@ int uc5b_errorCallback(int argc, char* argv[])
     err_manager->registerAlertCallback(errCallback, (void*)1);
 
     //create and compile a query with the static context
-		xquery = zorba_engine->createQuery("1/0");
+		xquery = zorba_engine->createQuery("1 idiv 0");
 
 		//try to execute the query and serialize its result
 		xquery->initExecution();

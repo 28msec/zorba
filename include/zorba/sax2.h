@@ -40,37 +40,37 @@ public:
 
     //x2
     virtual void setDocumentLocator(const SAX2_Locator* const locator) {}
-    //x2
+    //x2, nat
     virtual void startDocument() throw (SAX2_Exception) {}
-    //x2
+    //x2, nat
     virtual void endDocument ()  throw (SAX2_Exception) {}
 
-    //x2
+    //x2, nat
     virtual void startElement(
                       const xqp_string    uri,
                       const xqp_string    localname,
                       const xqp_string    qname,
                       const SAX2_Attributes   &attrs,
                       const SAX2_Namespaces   &namespaces) throw (SAX2_Exception) {}
-    //x2
+    //x2, nat
     virtual void endElement(
 		                  const xqp_string uri,
 		                  const xqp_string localname,
                       const xqp_string qname) throw (SAX2_Exception) {}
-    //x2
+    //x2, nat
     virtual void characters(const char* text, unsigned long length) throw (SAX2_Exception) {}
-    //x2
+    //x2, nat
     virtual void processingInstruction(
                       const xqp_string    target,
                       const xqp_string    data) throw (SAX2_Exception) {}
     //x2
     virtual void ignorableWhitespace(const char* whitespace, unsigned long length) throw (SAX2_Exception) {}
 
-    
+    //nat
     virtual void startPrefixMapping(
 	                    const	xqp_string	prefix,
                       const	xqp_string	uri)  throw (SAX2_Exception) {}
-
+    //nat
     virtual void endPrefixMapping(const	xqp_string	prefix)  throw (SAX2_Exception) {}
 
     virtual void skippedEntity( const	xqp_string	name )  throw (SAX2_Exception) {}
@@ -132,8 +132,6 @@ class SAX2_Locator
 protected:
   xqp_string    publicId;
   xqp_string    systemId;
-  unsigned long line;
-  unsigned long column;
 public:
   virtual  ~SAX2_Locator () {}
  
@@ -141,9 +139,9 @@ public:
    
   virtual const xqp_string  getSystemId () const {return systemId;}
    
-  virtual unsigned long  getLineNumber () const {return line;}
+  virtual unsigned long  getLineNumber () const = 0;
    
-  virtual unsigned long  getColumnNumber () const {return column;}
+  virtual unsigned long  getColumnNumber () const = 0;
 
 };
 

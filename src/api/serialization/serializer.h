@@ -92,16 +92,18 @@ protected:
   xqp_string version;                // "1.0"
   short int indent;                  // "yes" or "no", implemented
 	
+public:
+  static int get_utf8_length(char ch);
 protected:
   void reset();
   void validate_parameters();
-  static int get_utf8_length(char ch);
   bool setup(std::ostream& os);
-  
-protected:
+
+public:
   class emitter;
   class transcoder;
   
+protected:
   rchandle<emitter> e;
   rchandle<transcoder> tr;
   static const xqp_string	END_OF_LINE;
@@ -119,7 +121,7 @@ protected:
         
   } PARAMETER_VALUE_TYPE;
 
-  
+public:
   class transcoder : public SimpleRCObject
   {
   public:
@@ -166,7 +168,7 @@ protected:
      * @param the_serializer The parent serializer object.
      * @param output_stream Target output stream.
      */
-    emitter(serializer& the_serializer, transcoder& the_transcoder);
+    emitter(serializer* the_serializer, transcoder& the_transcoder);
 
     /**
      * Outputs the start of the serialized document, which, depending on the serialization
@@ -226,7 +228,7 @@ protected:
   protected:
     bool haveBinding(std::pair<xqpString,xqpString>& nsBinding) const;
     
-    serializer& ser;
+    serializer *ser;
     transcoder& tr;
     std::vector<NsBindings> bindings;
     
@@ -240,14 +242,14 @@ protected:
   class xml_emitter : public emitter
   {
   public:
-    xml_emitter(serializer& the_serializer, transcoder& the_transcoder);
+    xml_emitter(serializer* the_serializer, transcoder& the_transcoder);
     virtual void emit_declaration();    
   };
 
   class html_emitter : public emitter
   {
   public:
-    html_emitter(serializer& the_serializer, transcoder& the_transcoder);
+    html_emitter(serializer* the_serializer, transcoder& the_transcoder);
     virtual void emit_declaration();
     virtual void emit_declaration_end();   
     virtual void emit_node(store::Item* item, int depth, store::Item* element_parent = NULL);

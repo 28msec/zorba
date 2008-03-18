@@ -585,13 +585,19 @@ xqpStringStore* ElementNode::findBinding(xqpStringStore* prefix) const
 
 
 /*******************************************************************************
+Carefull with this function: it generates the namespaces in the reverse order.
+The higher parent gives the latest namespaces, instead of first.
 
 ********************************************************************************/
-void ElementNode::getNamespaceBindings(NsBindings& bindings) const
+void ElementNode::getNamespaceBindings(NsBindings& bindings, enum NsScoping ns_scoping) const
 {
   if (theNsContext != NULL)
   {
-    bindings = theNsContext->getBindings();
+    if(ns_scoping != ONLY_PARENT_NAMESPACES)
+      bindings = theNsContext->getBindings();
+
+    if(ns_scoping == ONLY_LOCAL_NAMESPACES)
+      return;
 
     const NsBindingsContext* parentContext = theNsContext->getParent();
 

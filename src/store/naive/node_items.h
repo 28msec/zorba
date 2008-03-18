@@ -321,7 +321,7 @@ public:
 
   Iterator_t getAttributes() const;
   Iterator_t getChildren() const;
-  void getNamespaceBindings(NsBindings& bindings) const;
+  void getNamespaceBindings(NsBindings& bindings, enum NsScoping ns_scoping = ALL_NAMESPACES_IN_SCOPE) const;
 
   xqp_string show() const;
 

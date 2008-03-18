@@ -6,14 +6,14 @@ CREATE_TEST_SOURCELIST(APISamples
 	uc1c_simpleQueryPlanPrint.cpp
 	uc1d_simpleQueryResultIterator.cpp
 	uc1f_simpleQueryResultSAX.cpp
-#	uc2_simpleQueryWithErrorCheck.cpp
+	uc2_simpleQueryWithErrorCheck.cpp
 	uc3a_externalVar.cpp
 	uc3b_contextItem.cpp
 #	uc3c_contextItem.cpp
 	uc3d_currentTime.cpp
 	uc4_chainXQuery.cpp
-#	uc5a_errorManager.cpp
-#	uc5b_errorCallback.cpp
+	uc5a_errorManager.cpp
+	uc5b_errorCallback.cpp
 	uc5c_errorList.cpp
 #	uc6a_staticContext.cpp
 #	uc6b_defaultCollation.cpp

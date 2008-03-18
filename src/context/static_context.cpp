@@ -333,7 +333,7 @@ void static_context::add_collation(xqp_string collation_uri,
 	cobj = new COLLATION_OBJ;
 	cobj->coll_uri = collation_uri;
 	cobj->coll_string = coll_string;
-//	cobj->coll_strength = coll_strength;
+	cobj->coll_strength = ::Collator::TERTIARY;//coll_strength
 	cobj->is_user_created = is_user_created;
 	cobj->coll = coll;
 

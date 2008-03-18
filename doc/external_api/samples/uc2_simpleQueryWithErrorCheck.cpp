@@ -23,7 +23,7 @@ int uc2_simpleQueryWithErrorCheck(int argc, char* argv[])
 	try{
 
 		//create and compile a query with the static context
-		xquery = zorba_engine->createQuery("1/0");
+		xquery = zorba_engine->createQuery("1 idiv 0");
 
 		//out query in execution mode 
 		xquery->initExecution();

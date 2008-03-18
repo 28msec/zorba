@@ -6,10 +6,20 @@ namespace zorba{
 SAX2_LocatorLibXML2::SAX2_LocatorLibXML2 (xmlParserCtxtPtr ctxt, 
                                           xmlSAXLocatorPtr loc)
 {
+  this->ctxt = ctxt;
+  this->loc = loc;
   publicId = (const char*)loc->getPublicId(ctxt);
   systemId = (const char*)loc->getSystemId(ctxt);
-  line = loc->getLineNumber(ctxt);
-  column = loc->getColumnNumber(ctxt);
 }
 
+unsigned long  SAX2_LocatorLibXML2::getLineNumber () const
+{
+  return loc->getLineNumber(ctxt);
 }
+
+unsigned long  SAX2_LocatorLibXML2::getColumnNumber () const
+{
+  return loc->getColumnNumber(ctxt);
+}
+
+}//end namespace zorba

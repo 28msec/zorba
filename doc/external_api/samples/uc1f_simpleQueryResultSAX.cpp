@@ -126,8 +126,8 @@ int uc1f_simpleQueryResultSAX(int argc, char* argv[])
 
 	//create and compile a query
 	xquery = zorba_engine->createQuery(
-    "<a> text a text a "
-    "<b xmlns:ns1=\"http://flworfound.org/usecase1\" attr1=\"value1\"> text b </b>"
+    "<a xmlns=\"http://flworfound.org/defaultns\"> text a text a "
+    "<b xmlns:ns1=\"http://flworfound.org/usecase1\" attr1=\"value1\" attr2=\"value2\"> text b </b>"
     "</a>");
 	//init execution
 	xquery->initExecution();
