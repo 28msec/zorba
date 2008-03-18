@@ -922,6 +922,10 @@ void elem_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
+xqtref_t elem_expr::return_type (static_context *sctx) {
+  return sctx->get_typemanager ()->create_node_type (new NodeTest (store::StoreConsts::elementNode), theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE);
+}
+
 
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
 
@@ -939,6 +943,10 @@ void doc_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
   ITER(theContent);
   END_EXPR_ITER();
+}
+
+xqtref_t doc_expr::return_type (static_context *sctx) {
+  return sctx->get_typemanager ()->create_node_type (new NodeTest (store::StoreConsts::documentNode), theContent == NULL ? NULL : theContent->return_type (sctx), TypeConstants::QUANT_ONE);
 }
 
 
@@ -976,6 +984,9 @@ void attr_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
+xqtref_t attr_expr::return_type (static_context *sctx) {
+  return sctx->get_typemanager ()->create_node_type (new NodeTest (store::StoreConsts::attributeNode), theValueExpr == NULL ? NULL : theValueExpr->return_type (sctx), TypeConstants::QUANT_ONE);
+}
 
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
 
@@ -997,6 +1008,16 @@ void text_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
+xqtref_t text_expr::return_type (static_context *sctx) {
+  rchandle<NodeTest>  nt;
+  switch (type) {
+  case text_constructor: nt = NodeTest::TEXT_TEST; break;
+  case comment_constructor: nt = NodeTest::COMMENT_TEST; break;
+  case pi_constructor: nt = NodeTest::PI_TEST; break;
+  default: assert (false); break;
+  }
+  return sctx->get_typemanager ()->create_node_type (nt, text == NULL ? NULL : text->return_type (sctx), TypeConstants::QUANT_ONE);
+}
 
 // [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
 
@@ -1020,6 +1041,7 @@ void pi_expr::next_iter (expr_iterator_data& v) {
   ITER (text);
   END_EXPR_ITER ();
 }
+
 
 void function_def_expr::next_iter (expr_iterator_data& v) {
 }
