@@ -165,6 +165,20 @@ namespace zorba {
   }
 
   RULE_REWRITE_PRE(PartialEval) {
+    TypeManager *ts = rCtx.getStaticContext()->get_typemanager();
+
+    castable_base_expr *cbe;
+    if ((cbe = dynamic_cast<castable_base_expr *>(node)) != NULL) {
+      expr_t arg = cbe->get_expr();
+      xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
+      if (ts->is_subtype(*arg_type, *cbe->get_type()))
+        return new const_expr (node->get_loc (), true);
+      else if (node->get_expr_kind () == instanceof_expr_kind)
+        return new const_expr (node->get_loc (), false);
+      else
+        return NULL;
+    }
+
     switch (node->get_expr_kind ()) {
     case if_expr_kind: {
       if_expr *ite = dynamic_cast<if_expr *> (node);

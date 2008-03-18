@@ -69,14 +69,6 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
       return arg;
     else return NULL;
   }
-  castable_base_expr *cbe;
-  if ((cbe = dynamic_cast<castable_base_expr *>(node)) != NULL) {
-    expr_t arg = cbe->get_expr();
-    xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
-    if (ts->is_subtype(*arg_type, *cbe->get_type()))
-      return new const_expr (node->get_loc (), true);
-    else return NULL;
-  }
 
   return NULL;
 }
