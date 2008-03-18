@@ -56,6 +56,7 @@ bool normalizer::begin_visit(order_modifier& /*node*/)
 
 bool normalizer::begin_visit(flwor_expr& node)
 {
+  QueryLoc loc = node.get_loc ();
   expr::expr_t where_h = node.get_where();
   if (where_h.getp()) {
     node.set_where(wrap_in_bev(m_sctx, where_h));
@@ -69,7 +70,10 @@ bool normalizer::begin_visit(flwor_expr& node)
     flwor_expr::forletref_t clause = node [i];
     xqtref_t vartype = clause->get_var ()->get_type ();
     if (vartype != NULL) {
-      xqtref_t promote_type = clause->get_type () == forlet_clause::for_clause ? GENV_TYPESYSTEM.create_type (*vartype, TypeConstants::QUANT_STAR) : vartype;
+      bool is_for = clause->get_type () == forlet_clause::for_clause;
+      if (is_for && GENV_TYPESYSTEM.is_equal (*GENV_TYPESYSTEM.EMPTY_TYPE, *vartype))
+        ZORBA_ERROR_ALERT (ZorbaError::XPTY0004, &loc);
+      xqtref_t promote_type = is_for ? GENV_TYPESYSTEM.create_type (*vartype, TypeConstants::QUANT_STAR) : vartype;
       expr_t e = clause->get_expr ();
       clause->set_expr (new treat_expr (e->get_loc (), e, promote_type, ZorbaError::XPTY0004));
     }
