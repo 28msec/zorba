@@ -91,7 +91,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         rchandle<if_expr> ite(new if_expr(where->get_loc()));
         ite->set_cond_expr(where);
         ite->set_then_expr(result);
-        ite->set_else_expr(new fo_expr(where->get_loc(), LOOKUP_FN("fn", "concatenate", 0)));
+        ite->set_else_expr(new fo_expr(where->get_loc(), LOOKUP_OPN("concatenate")));
         result = &*ite;
       }
       return result;
