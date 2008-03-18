@@ -14,6 +14,7 @@ DefaultOptimizer::DefaultOptimizer()
   ADD_SINGLETON_DRIVER(MarkNodesWithNodeIdProperties);
   ADD_SINGLETON_DRIVER(EliminateDocOrderSort);
   ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
+  ADD_SINGLETON_DRIVER(MarkUnfoldableOps);
   ADD_SINGLETON_DRIVER(EliminateUnusedLetVars);
   ADD_SINGLETON_DRIVER(EliminateExtraneousPathSteps);
   ADD_SINGLETON_DRIVER(MarkFreeVars);
