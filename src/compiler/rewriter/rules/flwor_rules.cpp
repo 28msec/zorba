@@ -61,9 +61,12 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         if (pvref != NULL)
           subst_vars (rCtx, pvref.getp (), new const_expr (node->get_loc (), xqp_integer::parseInt (1)));
         int uses = count_variable_uses(flwor, &*vref);
-        if (uses > 1)
-          ++i;
-        else {
+        if (uses > 1) {
+          if (cexpr->get_expr_kind () == const_expr_kind) {
+              i = flwor->remove_forlet_clause (i);
+              subst_vars (rCtx, vref, cexpr);
+          } else ++i;
+        } else {
           if (uses == 1) {
             if (flwor->forlet_count () == 1 // TODO: if cardinality FLWOR result = 1...
                 || cexpr->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VALUE) 
