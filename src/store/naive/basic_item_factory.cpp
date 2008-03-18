@@ -118,9 +118,9 @@ Item_t BasicItemFactory::createInteger(xqp_integer value)
 }
 
 
-Item_t BasicItemFactory::createLong ( xqp_long value ) 
-{ 
-  return new LongItemNaive ( value ); 
+Item_t BasicItemFactory::createLong ( xqp_long value )
+{
+  return new LongItemNaive ( value );
 }
 
 
@@ -131,19 +131,19 @@ Item_t BasicItemFactory::createInt ( xqp_int value )
 
 
 Item_t BasicItemFactory::createShort ( xqp_short value )
-{ 
-  return new ShortItemNaive ( value ); 
+{
+  return new ShortItemNaive ( value );
 }
 
 
 Item_t BasicItemFactory::createByte ( xqp_byte value )
-{ 
-  return new ByteItemNaive ( value ); 
+{
+  return new ByteItemNaive ( value );
 }
 
 Item_t BasicItemFactory::createDate(xqp_date& value)
 {
-  return new DateItemNaive(value);
+  return new DateTimeItemNaive(value);
 }
 
 Item_t BasicItemFactory::createDate ( short /*year*/, short /*month*/, short /*day*/ )
@@ -182,16 +182,11 @@ Item_t BasicItemFactory::createDateTime(
     short second,
     short timeZone_hours)
 {
-  Date_t d;
-  Time_t t;
-  
+  DateTime_t dt_t;
   TimeZone tz( timeZone_hours );
 
-  if (Date::createDate( year, month, day, tz, d ) == 0)
-    if(Time::createTime( hour, minute, second, tz, t ) == 0)
-      return new DateTimeItemNaive( d, t );
-    else
-      return Item_t(NULL);
+  if (DateTime::createDateTime(year, month, day, hour, minute, second, 0, tz, dt_t) == 0)
+    return new DateTimeItemNaive(dt_t);
   else
     return Item_t(NULL);
 }
@@ -206,12 +201,19 @@ Item_t BasicItemFactory::createDateTime (const Item_t& date, const Item_t& time)
   if (date.isNull() || time.isNull())
     return Item_t(NULL);
   else
-    return new DateTimeItemNaive(date->getDateValue(), time->getTimeValue());
+  {
+    Item_t item;
+    
+    if (2 == DateTimeItemNaive::createFromDateAndTime(date->getDateValue(), time->getTimeValue(), item))
+      ZORBA_ERROR_ALERT(ZorbaError::FORG0008);
+    
+    return item;
+  }
 }
 
-Item_t BasicItemFactory::createDouble ( xqp_double value ) 
-{ 
-  return new DoubleItemNaive( value ); 
+Item_t BasicItemFactory::createDouble ( xqp_double value )
+{
+  return new DoubleItemNaive( value );
 }
 
 Item_t BasicItemFactory::createDuration (xqp_duration& value )
@@ -238,9 +240,9 @@ Item_t BasicItemFactory::createENTITY ( const xqp_string& /*value*/ )
 { return Item_t ( NULL ); }
 
 
-Item_t BasicItemFactory::createFloat ( xqp_float value ) 
-{ 
-  return new FloatItemNaive( value ); 
+Item_t BasicItemFactory::createFloat ( xqp_float value )
+{
+  return new FloatItemNaive( value );
 }
 
 Item_t BasicItemFactory::createGDay (xqp_gDay& value )
@@ -357,20 +359,20 @@ Item_t BasicItemFactory::createName ( const xqp_string& /*value*/ )
 
 
 Item_t BasicItemFactory::createNegativeInteger ( xqp_integer value )
-{ 
+{
   ZORBA_ASSERT(value < xqp_integer::parseInt(0));
-  return new NegativeIntegerItemNaive ( value ); 
+  return new NegativeIntegerItemNaive ( value );
 }
 
 
 Item_t BasicItemFactory::createNonNegativeInteger ( xqp_uinteger value )
-{ 
-  return new NonNegativeIntegerItemNaive ( value ); 
+{
+  return new NonNegativeIntegerItemNaive ( value );
 }
 
 
 Item_t BasicItemFactory::createNonPositiveInteger ( xqp_integer value )
-{ 
+{
   ZORBA_ASSERT(value <= Integer::parseInt(0));
   return new NonPositiveIntegerItemNaive( value );
 }
@@ -382,14 +384,14 @@ Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value )
 }
 
 
-Item_t BasicItemFactory::createPositiveInteger ( xqp_uinteger value ) { 
+Item_t BasicItemFactory::createPositiveInteger ( xqp_uinteger value ) {
   ZORBA_ASSERT(value > Integer::parseInt(0));
-  return new PositiveIntegerItemNaive( value ); 
+  return new PositiveIntegerItemNaive( value );
 }
 
 Item_t BasicItemFactory::createTime(xqp_time& value)
 {
-  return new TimeItemNaive(value);
+  return new DateTimeItemNaive(value);
 }
 
 Item_t BasicItemFactory::createTime(const xqp_string& /*value*/)
@@ -506,7 +508,7 @@ Item_t BasicItemFactory::createElementNode(
     bool              copy,
     bool              typePreserve,
     bool              nsPreserve,
-    bool              nsInherit) 
+    bool              nsInherit)
 {
   std::auto_ptr<XmlTree> xmlTree;
   XmlNode* parent = NULL;
@@ -584,7 +586,7 @@ Item_t BasicItemFactory::createAttributeNode(
     pos = parent->numAttributes();
   }
 
-  // Compute the attribute name. Note: we don't have to check that itemQName 
+  // Compute the attribute name. Note: we don't have to check that itemQName
   // is indeed a valid qname, because the compiler wraps an xs:qname cast
   // around thIteme expression.
   Item_t attrName = nameIter->next();

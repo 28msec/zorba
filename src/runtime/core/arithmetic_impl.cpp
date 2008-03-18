@@ -165,7 +165,7 @@ template<>
 store::Item_t AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
 ( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime d = *i0->getDateTimeValue() + *i1->getDurationValue()->toDuration();
+  xqp_dateTime d = i0->getDateTimeValue()->addDuration(*i1->getDurationValue()->toDuration());
   return Zorba::getItemFactory()->createDateTime (d);
 }
 
@@ -173,7 +173,7 @@ template<>
 store::Item_t AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date d = *i0->getDateValue() + *i1->getDurationValue()->toDuration();
+  xqp_date d = i0->getDateValue()->addDuration(*i1->getDurationValue()->toDuration());
   return Zorba::getItemFactory()->createDate (d);
 }
 
@@ -181,7 +181,7 @@ template<>
 store::Item_t AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time t = *i0->getTimeValue() + *i1->getDurationValue()->toDuration();
+  xqp_time t = i0->getTimeValue()->addDuration(*i1->getDurationValue()->toDuration());
   return Zorba::getItemFactory()->createTime (t);
 }
  /* end class AddOperations */
@@ -199,7 +199,7 @@ template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
 ( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_dateTime d = *i0->getDateTimeValue() + *i1->getDurationValue()->toNegDuration();
+  xqp_dateTime d = i0->getDateTimeValue()->subtractDuration(*i1->getDurationValue()->toDuration());
   return Zorba::getItemFactory()->createDateTime (d);
 }
 
@@ -207,7 +207,7 @@ template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_date d = *i0->getDateValue() + *i1->getDurationValue()->toNegDuration();
+  xqp_date d = i0->getDateValue()->subtractDuration(*i1->getDurationValue()->toDuration());
   return Zorba::getItemFactory()->createDate (d);
 }
 
@@ -215,7 +215,7 @@ template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  xqp_time t = *i0->getTimeValue() + *i1->getDurationValue()->toNegDuration();
+  xqp_time t = i0->getTimeValue()->subtractDuration(*i1->getDurationValue()->toDuration());
   return Zorba::getItemFactory()->createTime (t);
 }
 
@@ -223,9 +223,8 @@ template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME>
 ( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  int timezone_secs = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
-  xqp_duration d = *i0->getDateTimeValue()->normalizeTimeZone(timezone_secs) - 
-                   *i1->getDateTimeValue()->normalizeTimeZone(timezone_secs);
+  // TODO: see if timezone normalization needs to be performed (it might be performed by the subtract function)
+  xqp_duration d = i0->getDateTimeValue()->normalizeTimeZone(0)->subtractDateTime(*i1->getDateTimeValue()->normalizeTimeZone(0), 0);
   return Zorba::getItemFactory()->createDuration (d);
 }
 
@@ -233,8 +232,8 @@ template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
 ( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  long timezone_sec = /*18000;*/ ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
-  xqp_duration d = *i0->getDateValue()->normalize(timezone_sec) - *i1->getDateValue()->normalize(timezone_sec);
+  // TODO: see if timezone normalization needs to be performed (it might be performed by the subtract function)
+  xqp_duration d = i0->getDateValue()->normalizeTimeZone(0)->subtractDateTime(*i1->getDateValue()->normalizeTimeZone(0), 0);
   return Zorba::getItemFactory()->createDuration (d);
 }
 
@@ -242,8 +241,8 @@ template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
 ( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  long timezone_sec = /*-18000;*/ ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
-  xqp_duration d = *i0->getTimeValue()->normalize(timezone_sec) - * i1->getTimeValue()->normalize(timezone_sec);
+  // TODO: see if timezone normalization needs to be performed (it might be performed by the subtract function)
+  xqp_duration d = i0->getTimeValue()->normalizeTimeZone(0)->subtractDateTime(* i1->getTimeValue()->normalizeTimeZone(0), 0);
   return Zorba::getItemFactory()->createDuration (d);
 }
 /* end class SubtractOperations */

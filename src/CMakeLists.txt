@@ -5,7 +5,12 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) # must be removed if pt
 
 # generate the zorbatypes library
 ADD_SUBDIRECTORY(zorbatypes)
-SET (requiredlibs ${requiredlibs} zorbatypes)
+
+IF (ZORBA_BUILD_STATIC_LIBRARY)
+  SET (requiredlibs ${requiredlibs} zorbatypes_static)
+ELSE (ZORBA_BUILD_STATIC_LIBRARY)
+  SET (requiredlibs ${requiredlibs} zorbatypes)
+ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 # generate the zorba library
 SET(ZORBA_SRCS)
@@ -44,6 +49,7 @@ SET(ZORBA_LIBRARY_INSTALL_LIST ${ZORBA_LIBRARY_INSTALL_LIST} zorba)
 
 ############################################################ Zorba STATIC library
 IF (ZORBA_BUILD_STATIC_LIBRARY)
+  MESSAGE("libs: " ${requiredlibs})
   ADD_LIBRARY(zorba_static STATIC ${ZORBA_SRCS})
   TARGET_LINK_LIBRARIES(zorba_static ${requiredlibs})
   SET_TARGET_PROPERTIES(zorba_static PROPERTIES OUTPUT_NAME "zorba_static")  

@@ -28,11 +28,9 @@ namespace zorba {
 
   /* datetime stuff */
   class DateTime;
-  class Date;
   class DayTimeDuration;
   class Decimal;
   class Duration;
-  class Time;
   class TimeZone;
   class YearMonthDuration;
   class GYearMonth;
@@ -61,8 +59,6 @@ namespace zorba {
 
   /* datetime stuff */
   typedef rchandle<DateTime> DateTime_t;
-  typedef rchandle<Date> Date_t;
-  typedef rchandle<Time> Time_t;
   typedef rchandle<TimeZone> TimeZone_t;
   typedef rchandle<DayTimeDuration> DayTimeDuration_t;
   typedef rchandle<YearMonthDuration> YearMonthDuration_t;

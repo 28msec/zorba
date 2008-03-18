@@ -3,9 +3,7 @@
 
 #include <zorbatypes/xqpstring.h>
 #include <zorbatypes/duration.h>
-#include <zorbatypes/date.h>
 #include <zorbatypes/datetime.h>
-#include <zorbatypes/zorba_time.h>
 #include <zorbatypes/gregorian.h>
 #include <zorbatypes/integer.h>
 #include <zorbatypes/decimal.h>
@@ -43,8 +41,8 @@ namespace zorba
   typedef xqpString           xqp_QName;
   typedef xqpString           xqp_NOTATION;
   typedef DateTime_t          xqp_dateTime;
-  typedef Date_t              xqp_date;
-  typedef Time_t              xqp_time;
+  typedef DateTime_t          xqp_date;
+  typedef DateTime_t          xqp_time;
   typedef GYearMonth_t        xqp_gYearMonth;
   typedef GYear_t             xqp_gYear;
   typedef GMonthDay_t         xqp_gMonthDay;

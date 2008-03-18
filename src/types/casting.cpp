@@ -168,14 +168,14 @@ store::Item_t GenericCast::stringSimpleCast(
   case TypeConstants::XS_DATE:
     {
       xqp_date d;
-      if (0 == Date::parse_string(lString, d))
+      if (0 == DateTime::parseDate(lString, d))
         lItem = factory->createDate(d);
     }
     break;
   case TypeConstants::XS_TIME:
     {
       xqp_time t;
-      if (0 == Time::parse_string(lString, t))
+      if (0 == DateTime::parseTime(lString, t))
         lItem = factory->createTime(t);
     }
     break;

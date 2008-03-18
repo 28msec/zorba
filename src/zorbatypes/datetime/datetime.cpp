@@ -8,8 +8,6 @@
 #include <exception>
 #include <cassert>
 #include <zorbatypes/datetime.h>
-#include <zorbatypes/zorba_time.h>
-#include <zorbatypes/date.h>
 #include <zorbatypes/duration.h>
 #include <zorbatypes/timezone.h>
 #include <zorbatypes/zorbatypes_decl.h>
@@ -17,6 +15,13 @@
 #include "zorbatypes/datetime/parse.h"
 
 using namespace std;
+
+static const int FACET_MEMBERS[][7] = {
+  { 1, 1, 1, 1, 1, 1, 1},    // DATETIME_FACET = 0,
+  { 1, 1, 1, 0, 0, 0, 0},    // DATE_FACET = 1,
+  { 0, 0, 0, 1, 1, 1, 1},    // TIME_FACET = 2,
+  { 1, 1, 0, 0, 0, 0, 0}    // GYEARMONTH_FACET = 3
+};
 
 namespace zorba
 {
@@ -30,7 +35,10 @@ DateTime::DateTime()
   : 
   facet(DATETIME_FACET)
 { 
-  for (int i=0; i<7; i++)
+  for (int i=YEAR_DATA; i<=DAY_DATA; i++)
+    data[i] = 1;
+  
+  for (int i=HOUR_DATA; i<=FRACSECONDS_DATA; i++)
     data[i] = 0;
 }
 
@@ -45,30 +53,79 @@ DateTime::DateTime(boost::posix_time::ptime t)
   data[FRACSECONDS_DATA] = t.time_of_day().fractional_seconds();
 }
 
-DateTime::DateTime(const Date_t& d_t, const Time_t& t_t)
+int DateTime::createDateTime(const DateTime_t& date_t, const DateTime_t& time_t, DateTime_t& result_t)
 {
-  facet = DATETIME_FACET;
-  data[YEAR_DATA] = d_t->getYear();
-  data[MONTH_DATA] = d_t->getMonth();
-  data[DAY_DATA] = d_t->getDay();
-  data[HOUR_DATA] = t_t->getHours();
-  data[MINUTE_DATA] = t_t->getMinutes();
-  data[SECONDS_DATA] = floor<double>(t_t->getSeconds());
-  data[FRACSECONDS_DATA] = round(frac(t_t->getSeconds()) * FRAC_SECONDS_UPPER_LIMIT);
-  
-  /*
-  if (!d_t->getTimezone().is_not_a_date_time() 
-       && 
-       !t_t->getTimezone().is_not_a_date_time()
+  if (!date_t->getTimezone().is_not_a_date_time()
        &&
-       !(d_t->getTimezone() == t_t->getTimezone()))
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0008);
-  */
+       !time_t->getTimezone().is_not_a_date_time()
+       &&
+       !(date_t->getTimezone() == time_t->getTimezone()))
+    return 2;
+
+  int res = createDateTime(date_t->getYear(), date_t->getMonth(), date_t->getDay(), time_t->getHours(), time_t->getMinutes(),
+                           floor<double>(time_t->getSeconds()), round(frac(time_t->getSeconds()) * FRAC_SECONDS_UPPER_LIMIT), result_t);
+
+  if (res == 0)
+  {
+    if (!date_t->getTimezone().is_not_a_date_time())
+      result_t->the_time_zone = date_t->getTimezone();
+    else if (!time_t->getTimezone().is_not_a_date_time())
+      result_t->the_time_zone = time_t->getTimezone();
+  }
+
+  return res;
+}
+
+int DateTime::createDateTime(int years, int months, int days,
+                             int hours, int minutes, int seconds, int fractional_seconds, DateTime_t& dt_t)
+{
+  dt_t = new DateTime();
+  dt_t->facet = DATETIME_FACET;
+  dt_t->data[YEAR_DATA] = years;
+  dt_t->data[MONTH_DATA] = abs<int>(months);
+  dt_t->data[DAY_DATA] = abs<int>(days);
+  dt_t->data[HOUR_DATA] = abs<int>(hours);
+  dt_t->data[MINUTE_DATA] = abs<int>(minutes);
+  dt_t->data[SECONDS_DATA] = abs<int>(seconds);
+  dt_t->data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
+  return 0;
+}
+
+int DateTime::createDateTime(int years, int months, int days,
+                             int hours, int minutes, int seconds, int fractional_seconds, TimeZone_t& tz_t, DateTime_t& dt_t)
+{
+  dt_t = new DateTime();
+  dt_t->facet = DATETIME_FACET;
+  dt_t->data[YEAR_DATA] = years;
+  dt_t->data[MONTH_DATA] = abs<int>(months);
+  dt_t->data[DAY_DATA] = abs<int>(days);
+  dt_t->data[HOUR_DATA] = abs<int>(hours);
+  dt_t->data[MINUTE_DATA] = abs<int>(minutes);
+  dt_t->data[SECONDS_DATA] = abs<int>(seconds);
+  dt_t->data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
+      
+  if (!tz_t.isNull())
+    dt_t->the_time_zone = *tz_t;
   
-  if (!d_t->getTimezone().is_not_a_date_time())
-    the_time_zone = d_t->getTimezone();
-  else if (!t_t->getTimezone().is_not_a_date_time())
-    the_time_zone = t_t->getTimezone();
+  return 0;
+}
+
+int DateTime::createDateTime(int years, int months, int days,
+                             int hours, int minutes, int seconds, int fractional_seconds, const TimeZone& tz, DateTime_t& dt_t)
+{
+  dt_t = new DateTime();
+  dt_t->facet = DATETIME_FACET;
+  dt_t->data[YEAR_DATA] = years;
+  dt_t->data[MONTH_DATA] = abs<int>(months);
+  dt_t->data[DAY_DATA] = abs<int>(days);
+  dt_t->data[HOUR_DATA] = abs<int>(hours);
+  dt_t->data[MINUTE_DATA] = abs<int>(minutes);
+  dt_t->data[SECONDS_DATA] = abs<int>(seconds);
+  dt_t->data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
+      
+  dt_t->the_time_zone = tz;
+
+  return 0;
 }
 
 // Returns 0 on success
@@ -211,7 +268,7 @@ int DateTime::parseDateTime(const xqpString& s, DateTime_t& dt_t)
   if (dt_t->data[HOUR_DATA] == 24)
   {
     dt_t->data[HOUR_DATA] = 0;
-    dt_t = *dt_t + Duration(DayTimeDuration(false, 1, 0, 0, 0, 0));
+    dt_t = dt_t->addDuration(Duration(DayTimeDuration(false, 1, 0, 0, 0, 0)));
   }
   
   return 0;
@@ -260,43 +317,37 @@ int DateTime::parseTime(const xqpString& s, DateTime_t& dt_t)
     dt_t->the_time_zone = *tz_t;
   }
   
-  return 0;
-}
-
-int DateTime::createDateTime(int years, int months, int days,
-                            int hours, int minutes, int seconds, int fractional_seconds, TimeZone_t& tz_t, DateTime_t& dt_t)
-{
-  dt_t = new DateTime();
-  dt_t->facet = DATETIME_FACET;
-  dt_t->data[YEAR_DATA] = years;
-  dt_t->data[MONTH_DATA] = abs<int>(months);
-  dt_t->data[DAY_DATA] = abs<int>(days);
-  dt_t->data[HOUR_DATA] = abs<int>(hours);
-  dt_t->data[MINUTE_DATA] = abs<int>(minutes);
-  dt_t->data[SECONDS_DATA] = abs<int>(seconds);
-  dt_t->data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
-      
-  if (!tz_t.isNull())
-    dt_t->the_time_zone = *tz_t;
+  if (dt_t->data[HOUR_DATA] == 24)
+    dt_t->data[HOUR_DATA] = 0;
   
   return 0;
 }
 
-int DateTime::createDateTime(int years, int months, int days,
-                            int hours, int minutes, int seconds, int fractional_seconds, const TimeZone& tz, DateTime_t& dt_t)
+int DateTime::parseGYearMonth(const xqpString& s, DateTime_t& dt_t)
 {
+  TimeZone_t tz_t;
+  unsigned int position = 0;
+  std::string ss = *s.getStore();
   dt_t = new DateTime();
-  dt_t->facet = DATETIME_FACET;
-  dt_t->data[YEAR_DATA] = years;
-  dt_t->data[MONTH_DATA] = abs<int>(months);
-  dt_t->data[DAY_DATA] = abs<int>(days);
-  dt_t->data[HOUR_DATA] = abs<int>(hours);
-  dt_t->data[MINUTE_DATA] = abs<int>(minutes);
-  dt_t->data[SECONDS_DATA] = abs<int>(seconds);
-  dt_t->data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
-      
-  dt_t->the_time_zone = tz;
-
+  
+  // GYearMonth of form: '-'? yyyy '-' mm zzzzzz?
+  
+  skip_whitespace(ss, position);
+  dt_t->facet = TIME_FACET;
+  
+  if (parse_time(ss, position, dt_t->data[HOUR_DATA], dt_t->data[MINUTE_DATA], dt_t->data[SECONDS_DATA], dt_t->data[FRACSECONDS_DATA]))
+    return 1;
+  
+  if (position < ss.size())
+  {
+    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+      return 1;
+    dt_t->the_time_zone = *tz_t;
+  }
+  
+  if (dt_t->data[HOUR_DATA] == 24)
+    dt_t->data[HOUR_DATA] = 0;
+  
   return 0;
 }
 
@@ -309,7 +360,7 @@ DurationBase_t DateTime::toDayTimeDuration() const
       data[HOUR_DATA], data[MINUTE_DATA], data[SECONDS_DATA], data[FRACSECONDS_DATA]);
   else
   {
-    DayTimeDuration days(true, 365 * abs<int>(data[YEAR_DATA]) - leap_years_count(data[YEAR_DATA]) + 1
+    DayTimeDuration days(true, 365 * abs<int>(data[YEAR_DATA]) - leap_years_count(data[YEAR_DATA])
         - days_since_year_start(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]),
         0, 0, 0, 0);
     
@@ -328,73 +379,61 @@ DateTime& DateTime::operator=(const DateTime_t& dt_t)
   return *this;
 }
 
-bool DateTime::operator<(const DateTime& dt) const
-{
-  DateTime_t d1_t = normalizeTimeZone();
-  DateTime_t d2_t = dt.normalizeTimeZone();
-  
-  // TODO: timezone
-  // assume both datetimes have the same facet // TODO: check
-  
-  if (d1_t->data[YEAR_DATA] < d2_t->data[YEAR_DATA])
-    return true;
-  
-  if (d1_t->data[YEAR_DATA] < 0 && d2_t->data[YEAR_DATA] < 0)
-  {
-    // both are negative
-    for (int i=1; i<7; i++)
-      if (d1_t->data[i] > d2_t->data[i])
-        return true;
-  }
-  else
-  {
-    for (int i=1; i<7; i++)
-      if (d1_t->data[i] < d2_t->data[i])
-        return true;
-  }
-    
-  return false;
-}
-
-bool DateTime::operator==(const DateTime& dt) const
-{
-  DateTime_t d1_t = normalizeTimeZone();
-  DateTime_t d2_t = dt.normalizeTimeZone();
-  
-  // TODO: timezone
-  for (int i=0; i<7; i++)
-    if (d1_t->data[i] != d2_t->data[i])
-      return false;
-  
-  return true;
-}
-
 int DateTime::compare(const DateTime& dt) const
 {
   // TODO: handle timezone
-  DateTime_t d1_t = normalizeTimeZone();
-  DateTime_t d2_t = dt.normalizeTimeZone();
+  DateTime_t d1_t, d2_t;
   
-  if (d1_t->data[YEAR_DATA] < d2_t->data[YEAR_DATA])
-    return -1;
-  else if (d1_t->data[YEAR_DATA] > d2_t->data[YEAR_DATA])
-    return 1;
+  d1_t = normalizeTimeZone(0);
+  d2_t = dt.normalizeTimeZone(0);
   
-  if (d1_t->data[YEAR_DATA] < 0 && d2_t->data[YEAR_DATA] < 0)
+  /*
+  d1_t->facet = DATETIME_FACET;
+  d2_t->facet = DATETIME_FACET;
+  
+  cout << "d1: " << d1_t->toString() << endl;
+  cout << "d2: " << d2_t->toString() << endl;
+  
+  d1_t = normalizeTimeZone(0);
+  d2_t = dt.normalizeTimeZone(0);
+  
+  cout << "d1: " << d1_t->toString() << endl;
+  cout << "d2: " << d2_t->toString() << endl;
+  */
+  
+  // compare signed year first
+  // if (FACET_MEMBERS[d1_t->facet][YEAR_DATA] && FACET_MEMBERS[d2_t->facet][YEAR_DATA])
+  {
+    if (d1_t->data[YEAR_DATA] < d2_t->data[YEAR_DATA])
+      return -1;
+    else if (d1_t->data[YEAR_DATA] > d2_t->data[YEAR_DATA])
+      return 1;
+  }
+  
+  // compare the rest of the data
+  if (//FACET_MEMBERS[d1_t->facet][YEAR_DATA] && FACET_MEMBERS[d2_t->facet][YEAR_DATA]
+      //&&
+      d1_t->data[YEAR_DATA] < 0 && d2_t->data[YEAR_DATA] < 0)
   {
     for (int i=1; i<7; i++)
-      if (d1_t->data[i] > d2_t->data[i])
-        return -1;
-      else if (d1_t->data[i] < d2_t->data[i])
-        return 1;
+      // if (FACET_MEMBERS[d1_t->facet][i] && FACET_MEMBERS[d2_t->facet][i])
+      {
+        if (d1_t->data[i] > d2_t->data[i])
+          return -1;
+        else if (d1_t->data[i] < d2_t->data[i])
+          return 1;
+      }
   }
   else
   {
     for (int i=1; i<7; i++)
-      if (d1_t->data[i] < d2_t->data[i])
-        return -1;
-      else if (d1_t->data[i] > d2_t->data[i])
-        return 1;
+      // if (FACET_MEMBERS[d1_t->facet][i] && FACET_MEMBERS[d2_t->facet][i])
+      {
+        if (d1_t->data[i] < d2_t->data[i])
+          return -1;
+        else if (d1_t->data[i] > d2_t->data[i])
+          return 1;
+      }
   }
   
   return 0;
@@ -409,31 +448,26 @@ int DateTime::compare(const DateTime& dt) const
   */
 }
 
-DurationBase_t DateTime::operator-(const DateTime& dt) const
+DurationBase_t DateTime::subtractDateTime(const DateTime& dt, int implicit_timezone_seconds) const
 {
-  return *normalizeTimeZone()->toDayTimeDuration() - *dt.normalizeTimeZone()->toDayTimeDuration();
-}
-
-DateTime_t DateTime::normalize(const long tz_seconds)
-{
-  if( the_time_zone.is_not_a_date_time() )
-  {
-    boost::posix_time::time_duration tz( 0, 0, abs<int>(tz_seconds), 0 );
-    boost::posix_time::time_duration td;
-    //boost::posix_time::time_duration td(the_date_time.time_of_day().hours(), the_date_time.time_of_day().minutes(),
-    //                                    the_date_time.time_of_day().seconds(), the_date_time.time_of_day().fractional_seconds());
-
-    tz = tz_seconds < 0 ? td + tz: td - tz;
-    
-    DateTime_t new_dt_t;
-
-    DateTime::createDateTime(getYear(), getMonth(), getDay(), tz.hours(), tz.minutes(),
-                             tz.seconds(), tz.fractional_seconds(), tz, new_dt_t);
- 
-    return new_dt_t;
-  }
-  else
-    return this;
+  /*
+  DateTime_t d1,d2;
+  d1 = normalizeTimeZone();
+  d2 = dt.normalizeTimeZone();
+  
+  d1->facet = DATETIME_FACET;
+  d2->facet = DATETIME_FACET;
+  
+  
+  cout << "d1: " << d1->toString() << endl;
+  cout << "d2: " << d2->toString() << endl;
+  
+  cout << "d1: " << d1->toDayTimeDuration()->toString() << endl;
+  cout << "d2: " << d2->toDayTimeDuration()->toString() << endl;
+  */
+  
+  return *normalizeTimeZone(implicit_timezone_seconds)->toDayTimeDuration()
+      - *dt.normalizeTimeZone(implicit_timezone_seconds)->toDayTimeDuration();
 }
 
 xqpString DateTime::toString() const
@@ -442,24 +476,50 @@ xqpString DateTime::toString() const
   
   // TODO: output based on the facet
 
-  if (data[YEAR_DATA] < 0)
-    result += "-";
-  
-  for (int i=0; i<6; i++)
+  // output sign
+  if (facet == DATETIME_FACET || facet == DATE_FACET)
   {
-    result += to_string(abs<int>(data[i]), min_length[i]);  // abs<> only needed for year
-    if (i<5)
-      result += separators[i];
+    if (data[YEAR_DATA] < 0)
+      result += "-";
   }
   
-  if (data[FRACSECONDS_DATA] != 0)
+  // output Date
+  if (facet == DATETIME_FACET || facet == DATE_FACET)
   {
-    int temp = data[FRACSECONDS_DATA];
-    while (temp%10 == 0)
-      temp = temp / 10;
     
-    result += '.';
-    result += to_string(temp);
+    for (int i=0; i<3; i++)
+    {
+      result += to_string(abs<int>(data[i]), min_length[i]);  // abs<> only needed for year
+      if (i < 2)
+        result += separators[i];
+    }
+  }
+  
+  // output Time
+  if (facet == DATETIME_FACET || facet == TIME_FACET)
+  {
+    if (facet == DATETIME_FACET)
+      result += 'T';
+    
+    for (int i=3; i<6; i++)
+    {
+      result += to_string(abs<int>(data[i]), min_length[i]);  // abs<> only needed for year
+      if (i < 5)
+        result += separators[i];
+    }
+  }
+  
+  if (facet == DATETIME_FACET || facet == TIME_FACET)
+  {
+    if (data[FRACSECONDS_DATA] != 0)
+    {
+      int temp = data[FRACSECONDS_DATA];
+      while (temp%10 == 0)
+        temp = temp / 10;
+    
+      result += '.';
+      result += to_string(temp);
+    }
   }
   
   result += the_time_zone.toString();
@@ -467,20 +527,18 @@ xqpString DateTime::toString() const
   return result;
 }
 
-Date_t DateTime::getDate() const
+DateTime_t DateTime::getDate() const
 {
-  Date_t new_dt_t;
-  if (Date::createDate(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA], the_time_zone, new_dt_t))
-    assert(0);
-  return new_dt_t;
+  DateTime_t dt_t = new DateTime(*this);
+  dt_t->setFacet(DATE_FACET);
+  return dt_t;
 }
 
-Time_t DateTime::getTime() const
+DateTime_t DateTime::getTime() const
 {
-  Time_t new_t_t;
-  if (Time::createTime(data[HOUR_DATA], data[MINUTE_DATA], getSeconds(), the_time_zone, new_t_t))
-    assert(0);
-  return new_t_t;
+  DateTime_t dt_t = new DateTime(*this);
+  dt_t->setFacet(TIME_FACET);
+  return dt_t;
 }
 
 int DateTime::getYear() const
@@ -522,9 +580,40 @@ TimeZone DateTime::getTimezone() const
   return the_time_zone;
 }
 
+void DateTime::adjustToFacet()
+{
+  switch (facet)
+  {
+  case DATETIME_FACET:
+    // do nothing;
+    break;
+  case DATE_FACET:
+    for (int i=HOUR_DATA; i<=FRACSECONDS_DATA; i++)
+      data[i] = 0;
+    break;
+  case TIME_FACET:
+    for (int i=YEAR_DATA; i<=DAY_DATA; i++)
+      data[i] = 1;
+    break;
+    
+  case GYEARMONTH_FACET:
+    data[DAY_DATA] = 1;
+    for (int i=HOUR_DATA; i<=FRACSECONDS_DATA; i++)
+      data[i] = 0;
+    break;
+  }
+}
+
+void DateTime::setFacet(FACET_TYPE a_facet)
+{
+  facet = a_facet;
+  adjustToFacet();
+}
+
 DateTime_t DateTime::normalizeTimeZone(int tz_seconds) const
 {
   Duration_t d_t;
+  DateTime_t dt_t;
 
   if( the_time_zone.is_not_a_date_time() )
   {
@@ -536,29 +625,11 @@ DateTime_t DateTime::normalizeTimeZone(int tz_seconds) const
     if (Duration::from_Timezone(the_time_zone, d_t))
       assert(0);
   }
-
-  return *this - *d_t;
-}
-
-DateTime_t DateTime::normalizeTimeZone() const
-{
-  Duration_t d_t;
-
-  if( the_time_zone.is_not_a_date_time() )
-  {
-    // TODO: validate timezone value (-14 .. +14 H)
-    // int timezone_secs = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
-	// TODO: temporary solution
-	int timezone_secs = 0;
-    d_t = new Duration(DayTimeDuration((timezone_secs<0), 0, 0, 0, timezone_secs, 0));
-  }
-  else
-  {
-    if (Duration::from_Timezone(the_time_zone, d_t))
-      assert(0);
-  }
   
-  return *this - *d_t;
+  dt_t = subtractDuration(*d_t, false); // do not adjust to facet
+  dt_t->the_time_zone = TimeZone(0);
+  
+  return dt_t;
 }
 
 DateTime_t DateTime::adjustToTimeZone(int tz_seconds) const
@@ -590,7 +661,7 @@ DateTime_t DateTime::adjustToTimeZone(int tz_seconds) const
                                        the_time_zone.getMinutes(), the_time_zone.getSeconds(), 0);
 
     dtduration_t = *context_tz_t - *dtduration_t;
-    dt_t = *dt_t + *dtduration_t->toDuration();
+    dt_t = dt_t->addDuration(*dtduration_t->toDuration());
     if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), context_tz_t->getSeconds(), tz_t))
       assert(0);
     dt_t->the_time_zone = *tz_t;
@@ -601,9 +672,9 @@ DateTime_t DateTime::adjustToTimeZone(int tz_seconds) const
 
 DateTime_t DateTime::adjustToTimeZone(const DurationBase_t& db_t) const
 {
-  DateTime_t dt_t;
   DayTimeDuration_t dtduration_t;
   DayTimeDuration_t context_tz_t;
+  DateTime_t dt_t;
   TimeZone_t tz_t;
 
   // A dynamic error is raised [err:FODT0003] if $timezone is less than -PT14H or greater than PT14H or
@@ -639,7 +710,7 @@ DateTime_t DateTime::adjustToTimeZone(const DurationBase_t& db_t) const
         assert(0);
 
       dtduration_t = *context_tz_t - *dtduration_t;
-      dt_t = *dt_t + *dtduration_t->toDuration();
+      dt_t = dt_t->addDuration(*dtduration_t->toDuration());
       if (TimeZone::createTimeZone(context_tz_t->getHours(), context_tz_t->getMinutes(), context_tz_t->getSeconds(), tz_t))
         assert(0);
       dt_t->the_time_zone = *tz_t;
@@ -649,7 +720,7 @@ DateTime_t DateTime::adjustToTimeZone(const DurationBase_t& db_t) const
   return dt_t;
 }
 
-DateTime_t operator+(const DateTime& dt, const Duration& d)
+DateTime_t DateTime::addDuration(const Duration& d, bool adjust_facet) const
 {
   DateTime_t new_dt_t;
   int years, months, days, hours, minutes, int_seconds, frac_seconds, temp_days, carry;
@@ -658,25 +729,25 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
   // For the algorithm, see XML Schema 2 spec, Appendix E
   // http://www.w3.org/TR/xmlschema-2/#adding-durations-to-dateTimes
   
-  months = modulo<int>(dt.getMonth() + d.getMonths() - 1, 12) + 1;
-  years = dt.getYear() + d.getYears() + quotient<int>(dt.getMonth() + d.getMonths() - 1, 12);
+  months = modulo<int>(data[MONTH_DATA] + d.getMonths() - 1, 12) + 1;
+  years = data[YEAR_DATA] + d.getYears() + quotient<int>(data[MONTH_DATA] + d.getMonths() - 1, 12);
 
-  int_seconds = modulo<int>(floor(dt.getSeconds() + d.getSeconds()), 60);
-  temp_frac_seconds = (dt.getSeconds() + d.getSeconds() - floor(dt.getSeconds() + d.getSeconds()));
+  int_seconds = modulo<int>(floor(getSeconds() + d.getSeconds()), 60);
+  temp_frac_seconds = (getSeconds() + d.getSeconds() - floor(getSeconds() + d.getSeconds()));
   frac_seconds = round(temp_frac_seconds * DateTime::FRAC_SECONDS_UPPER_LIMIT);
   
-  minutes = dt.getMinutes() + d.getMinutes() + quotient<int>(floor(dt.getSeconds() + d.getSeconds()), 60);
-  hours = dt.getHours() + d.getHours() + quotient<int>(minutes, 60);
+  minutes = data[MINUTE_DATA] + d.getMinutes() + quotient<int>(floor(getSeconds() + d.getSeconds()), 60);
+  hours = data[HOUR_DATA] + d.getHours() + quotient<int>(minutes, 60);
   minutes = modulo<int>(minutes, 60);
   carry = quotient<int>(hours, 24);
   hours = modulo<int>(hours, 24);
 
-  if (dt.getDay() > get_last_day(years, months))
+  if (data[DAY_DATA] > get_last_day(years, months))
     temp_days = get_last_day(years, months);
-  else if (dt.getDay() < 1)
+  else if (data[DAY_DATA] < 1)
     temp_days = 1;
   else
-    temp_days = dt.getDay();
+    temp_days = data[DAY_DATA];
 
   days = d.getDays() + temp_days + carry;
   while (1)
@@ -698,18 +769,36 @@ DateTime_t operator+(const DateTime& dt, const Duration& d)
     months = modulo<int>(months + carry -1, 12) + 1;
   }
 
-  // TODO: make sure year is not 0
+  // make sure year is not 0
+  if (years == 0)
+  {
+    if (data[YEAR_DATA] > 0)
+    {
+      assert(d.isNegative());
+      years = -1;
+    }
+    else if (data[YEAR_DATA] < 0)
+    {
+      assert(!d.isNegative());
+      years = 1;
+    }
+    else
+      assert(0);
+  }
 
-  if (DateTime::createDateTime(years, months, days, hours, minutes, int_seconds, frac_seconds,
-                            dt.getTimezone(), new_dt_t))
+  if (DateTime::createDateTime(years, months, days, hours, minutes, int_seconds, frac_seconds, getTimezone(), new_dt_t))
     assert(0);
-
+  
+  new_dt_t->facet = facet;
+  if (adjust_facet)
+    new_dt_t->adjustToFacet();
+  
   return new_dt_t;
 }
 
-DateTime_t operator-(const DateTime& dt, const Duration& d)
+DateTime_t DateTime::subtractDuration(const Duration& d, bool adjust_facet) const
 {
-  return dt + *d.toNegDuration();
+  return addDuration(*(d.toNegDuration()), adjust_facet);
 }
 
 } // namespace xqp

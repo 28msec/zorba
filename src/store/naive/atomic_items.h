@@ -179,6 +179,7 @@ public:
 /*******************************************************************************
  * class DateItem
  *******************************************************************************/
+ /*
 class DateItemNaive : public AtomicItem
 {
 protected:
@@ -193,10 +194,12 @@ public:
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
 };
+*/
 
 /*******************************************************************************
  * class TimeItem
  *******************************************************************************/
+ /*
 class TimeItemNaive : public AtomicItem
 {
 protected:
@@ -211,6 +214,7 @@ public:
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
 };
+*/
 
 /*******************************************************************************
  * class DateTimeItem
@@ -222,13 +226,19 @@ protected:
 
 public:
   DateTimeItemNaive(xqp_dateTime& aValue) : theValue(aValue) { };
-  DateTimeItemNaive(const xqp_date& date, const xqp_time& time);
+  static int createFromDateAndTime(const xqp_date& date, const xqp_time& time, Item_t& item);
+  
   virtual xqp_string getStringValue() const;
   virtual xqp_dateTime getDateTimeValue() const;
+  virtual xqp_date getDateValue() const;
+  virtual xqp_time getTimeValue() const;
   virtual Item_t getType() const;
   virtual bool equals(Item_t) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
+  
+protected:
+  DateTimeItemNaive() { };
 };
 
 /*******************************************************************************

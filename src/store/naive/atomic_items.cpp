@@ -7,8 +7,6 @@
  */
 
 #include <zorbatypes/numconversions.h>
-#include <zorbatypes/date.h>
-
 #include <zorba/item.h>
 
 #include "util/Assert.h"
@@ -861,6 +859,7 @@ xqp_string PositiveIntegerItemNaive::show() const {
 /*******************************************************************************
  * class DateItem
  *******************************************************************************/
+ /*
 xqp_date DateItemNaive::getDateValue() const
 {
   return theValue;
@@ -891,10 +890,12 @@ xqp_string DateItemNaive::show() const
 {
   return theValue->toString();
 }
+*/
 
 /*******************************************************************************
  * class TimeItem
  *******************************************************************************/
+/* 
 xqp_time TimeItemNaive::getTimeValue() const
 {
   return theValue;
@@ -912,7 +913,7 @@ Item_t TimeItemNaive::getType() const
 
 bool TimeItemNaive::equals(Item_t aItem) const
 {
-  return *theValue == *aItem->getTimeValue();
+  return 0 == theValue->compare(*aItem->getTimeValue());
 }
 
 Item_t TimeItemNaive::getEBV() const
@@ -925,16 +926,30 @@ xqp_string TimeItemNaive::show() const
 {
   return theValue->toString();
 }
+*/
 
 /*******************************************************************************
  * class DateTimeItem
  *******************************************************************************/
-DateTimeItemNaive::DateTimeItemNaive(const xqp_date& date, const xqp_time& time)
+int DateTimeItemNaive::createFromDateAndTime(const xqp_date& date, const xqp_time& time, Item_t& item)
 {
-  theValue = new DateTime(date, time);
+  DateTimeItemNaive* dtin = new DateTimeItemNaive();
+  int result = DateTime::createDateTime(date, time, dtin->theValue);
+  item = dtin;
+  return result;
 }
 
 xqp_dateTime DateTimeItemNaive::getDateTimeValue() const
+{
+  return theValue;
+}
+
+xqp_date DateTimeItemNaive::getDateValue() const
+{
+  return theValue;
+}
+
+xqp_time DateTimeItemNaive::getTimeValue() const
 {
   return theValue;
 }
@@ -946,12 +961,25 @@ xqp_string DateTimeItemNaive::getStringValue() const
   
 Item_t DateTimeItemNaive::getType() const
 {
-  return CREATE_XS_TYPE("dateTime");
+  switch (theValue->getFacet())
+  {
+  case DateTime::DATE_FACET:
+    return CREATE_XS_TYPE("date");
+    break;
+      
+  case DateTime::TIME_FACET:
+    return CREATE_XS_TYPE("time");
+    
+  default:
+  case DateTime::DATETIME_FACET:
+    return CREATE_XS_TYPE("dateTime");
+    break;
+  }
 }
 
 bool DateTimeItemNaive::equals(Item_t aItem) const
 {
-  return *theValue == *aItem->getDateTimeValue();
+  return 0 == theValue->compare(*aItem->getDateTimeValue());
 }
 
 Item_t DateTimeItemNaive::getEBV() const
