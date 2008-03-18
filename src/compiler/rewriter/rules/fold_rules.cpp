@@ -179,13 +179,13 @@ namespace zorba {
       if (f == LOOKUP_OPN ("or")) {
         for (vector<expr_t>::iterator i = fo->begin (); i != fo->end (); i++) {
           const_expr *cond = i->dyn_cast<const_expr> ().getp ();
-          if (cond != NULL && cond->get_val ()->getBooleanValue ())
+          if (cond != NULL && cond->get_val ()->getEBV ()->getBooleanValue ())
             return new const_expr (node->get_loc (), (xqp_boolean) true);
         }
       } else if (f == LOOKUP_OPN ("and")) {
         for (vector<expr_t>::iterator i = fo->begin (); i != fo->end (); i++) {
           const_expr *cond = i->dyn_cast<const_expr> ().getp ();
-          if (cond != NULL && ! cond->get_val ()->getBooleanValue ())
+          if (cond != NULL && ! cond->get_val ()->getEBV ()->getBooleanValue ())
             return new const_expr (node->get_loc (), (xqp_boolean) false);
         }
       }
