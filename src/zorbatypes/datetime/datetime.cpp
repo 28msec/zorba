@@ -13,12 +13,8 @@
 #include <zorbatypes/duration.h>
 #include <zorbatypes/timezone.h>
 #include <zorbatypes/zorbatypes_decl.h>
-#include <errors/error_factory.h>
 
-#include "system/zorba.h"
-#include "system/zorba_engine.h"
 #include "zorbatypes/datetime/parse.h"
-#include "context/dynamic_context.h"
 
 using namespace std;
 
@@ -60,12 +56,14 @@ DateTime::DateTime(const Date_t& d_t, const Time_t& t_t)
   data[SECONDS_DATA] = floor<double>(t_t->getSeconds());
   data[FRACSECONDS_DATA] = round(frac(t_t->getSeconds()) * FRAC_SECONDS_UPPER_LIMIT);
   
+  /*
   if (!d_t->getTimezone().is_not_a_date_time() 
        && 
        !t_t->getTimezone().is_not_a_date_time()
        &&
        !(d_t->getTimezone() == t_t->getTimezone()))
     ZORBA_ERROR_ALERT(ZorbaError::FORG0008);
+  */
   
   if (!d_t->getTimezone().is_not_a_date_time())
     the_time_zone = d_t->getTimezone();
