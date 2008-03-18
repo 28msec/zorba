@@ -190,14 +190,20 @@ store::Item_t	dynamic_context::get_execution_date_time()
 	return execution_date_time_item;
 }
 
-void	dynamic_context::set_implicit_timezone(long tzone_seconds)
+void  dynamic_context::set_implicit_timezone(long tzone_seconds)
 {
 	this->implicit_timezone = tzone_seconds;
 }
 
-long	dynamic_context::get_implicit_timezone()
+long  dynamic_context::get_implicit_timezone()
 {
-	return implicit_timezone;
+#if 0
+  // If this is to be taken from the dynamic ctx, it kills optimization
+  // (const folding) as datetime code calls this from all over the place.
+  return implicit_timezone;
+#else
+	return 0;
+#endif
 }
 
 /*
