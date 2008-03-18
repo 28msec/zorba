@@ -4,9 +4,19 @@
 
 namespace zorba {
 
+#define ADD_DRIVER( d ) \
+  m_childRewriters.push_back(rewriter_ptr_t (new d))
 #define ADD_SINGLETON_DRIVER(rule) m_childRewriters.push_back(rewriter_ptr_t(new SingletonRuleMajorDriver<rule>))
 #define ADD_SINGLETON_DRIVER_BASE(rule) \
   m_childRewriters.push_back(rewriter_ptr_t(new SingletonRuleMajorDriverBase (RuleMajorDriver::rule_ptr_t (new rule))))
+
+  class FoldRules : public SequentialRewriter {
+  public:
+    FoldRules() {
+      ADD_SINGLETON_DRIVER_BASE(FoldConst (false));
+      ADD_SINGLETON_DRIVER_BASE(PartialEval);      
+    }
+  };
 
 DefaultOptimizer::DefaultOptimizer()
 {
@@ -20,7 +30,7 @@ DefaultOptimizer::DefaultOptimizer()
   ADD_SINGLETON_DRIVER(MarkFreeVars);
   ADD_SINGLETON_DRIVER(MarkExpensiveOps);
   ADD_SINGLETON_DRIVER(MarkUnfoldableOps);
-  ADD_SINGLETON_DRIVER_BASE(FoldConst (false));
+  ADD_DRIVER(FoldRules);
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()

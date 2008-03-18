@@ -42,6 +42,8 @@ public:
   expr_t rewritePost(expr *node, RewriterContext& rCtx);
 };
 
+RULE(PartialEval);
+
 #undef RULE
 
 #define RULE_REWRITE_PRE(name) expr_t name::rewritePre(expr *node, RewriterContext& rCtx)

@@ -15,17 +15,18 @@ using namespace std;
 
 namespace zorba {
 
+  set<var_expr *> no_free_vars;
+
   class FreeVarAnnVal : public AnnotationValue {
   public:
     set<var_expr *> varset;
     void add (var_expr *v) { varset.insert (varset.begin (), v); }
   };
   
-  inline set<var_expr *> &get_freevars (const expr *e) {
+  inline const set<var_expr *> &get_freevars (const expr *e) {
     assert (e != NULL);
     Annotation::value_ref_t ann = e->get_annotation (AnnotationKey::FREE_VARS);
-    ZORBA_ASSERT (ann != NULL);
-    return dynamic_cast<FreeVarAnnVal *> (ann.get ())->varset;
+    return (ann == NULL) ? no_free_vars : dynamic_cast<FreeVarAnnVal *> (ann.get ())->varset;
   }
 
   static void execute (expr_t node, vector<store::Item_t> &result) {
@@ -49,7 +50,7 @@ namespace zorba {
     } else {
       for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
         expr *e = *i;
-        set<var_expr *> &kfv = get_freevars (e);
+        const set<var_expr *> &kfv = get_freevars (e);
         copy (kfv.begin (), kfv.end (), inserter (freevars->varset, freevars->varset.begin ()));
       }
       if (node->get_expr_kind () == flwor_expr_kind) {
@@ -145,13 +146,49 @@ namespace zorba {
         result.size () == 1
         ? ((expr *) (new const_expr (node->get_loc (), result [0])))
         : ((expr *) (new fo_expr (node->get_loc (), LOOKUP_OPN ("concatenate"))));
-      folded->put_annotation (AnnotationKey::FREE_VARS, Annotation::value_ref_t (new FreeVarAnnVal));
       return folded;
     }
     return NULL;
   }
 
   RULE_REWRITE_POST(FoldConst) {
+    return NULL;
+  }
+
+  RULE_REWRITE_PRE(PartialEval) {
+    switch (node->get_expr_kind ()) {
+    case if_expr_kind: {
+      if_expr *ite = dynamic_cast<if_expr *> (node);
+      const_expr *cond = ite->get_cond_expr ().dyn_cast<const_expr> ().getp ();
+      if (cond != NULL)
+        return cond->get_val ()->getBooleanValue () ? ite->get_then_expr () : ite->get_else_expr ();
+    }
+      break;
+    case fo_expr_kind: {
+      fo_expr *fo = dynamic_cast<fo_expr *> (node);
+      const function *f = fo->get_func ();
+      if (f == LOOKUP_OPN ("or")) {
+        for (vector<expr_t>::iterator i = fo->begin (); i != fo->end (); i++) {
+          const_expr *cond = i->dyn_cast<const_expr> ().getp ();
+          if (cond != NULL && cond->get_val ()->getBooleanValue ())
+            return new const_expr (node->get_loc (), (xqp_boolean) true);
+        }
+      } else if (f == LOOKUP_OPN ("and")) {
+        for (vector<expr_t>::iterator i = fo->begin (); i != fo->end (); i++) {
+          const_expr *cond = i->dyn_cast<const_expr> ().getp ();
+          if (cond != NULL && ! cond->get_val ()->getBooleanValue ())
+            return new const_expr (node->get_loc (), (xqp_boolean) false);
+        }
+      }
+    }
+      break;
+    default: break;
+    }
+
+    return NULL;
+  }
+
+  RULE_REWRITE_POST(PartialEval) {
     return NULL;
   }
 
