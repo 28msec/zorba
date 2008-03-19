@@ -797,11 +797,8 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       }
 
       // unbind the prefix
-      if (prefix != "") 
-      {
-        sctx_p->bind_ns(prefix, "", ZorbaError::XQST0071);
-        ns_ctx->bind_ns(prefix, "");
-      }
+      sctx_p->bind_ns(prefix, "", ZorbaError::XQST0071);
+      ns_ctx->bind_ns(prefix, "");
     }
     else
     {
