@@ -1077,6 +1077,7 @@ xqtref_t order_expr::return_type(static_context *sctx) { return expr_h->return_t
 xqtref_t var_expr::return_type(static_context *sctx) {
   xqtref_t type1 = NULL;
   if (kind == for_var || kind == let_var) {
+    assert (m_forlet_clause != NULL);
     type1 = m_forlet_clause->get_expr()->return_type(sctx);
     if (kind == for_var) {
       type1 = GENV_TYPESYSTEM.prime_type(*type1);
