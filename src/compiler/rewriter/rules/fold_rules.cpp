@@ -192,12 +192,27 @@ namespace zorba {
       fo_expr *fo = dynamic_cast<fo_expr *> (node);
       const function *f = fo->get_func ();
       if (f == LOOKUP_OPN ("or")) {
+        expr_t nontrivial1, nontrivial2;
         for (vector<expr_t>::iterator i = fo->begin (); i != fo->end (); i++) {
           const_expr *cond = i->dyn_cast<const_expr> ().getp ();
-          if (cond != NULL && cond->get_val ()->getEBV ()->getBooleanValue ())
-            return new const_expr (node->get_loc (), (xqp_boolean) true);
+          if (cond != NULL) {
+            if (cond->get_val ()->getEBV ()->getBooleanValue ())
+              return new const_expr (node->get_loc (), (xqp_boolean) true);
+          } else {
+            if (nontrivial1 == NULL)
+              nontrivial1 = *i;
+            else
+              nontrivial2 = *i;
+          }
         }
+        if (nontrivial1 == NULL)
+          return new const_expr (node->get_loc (), (xqp_boolean) false);
+        else if (nontrivial2 == NULL)
+          return nontrivial1;
+        else
+          return NULL;
       } else if (f == LOOKUP_OPN ("and")) {
+        // TODO: eliminate "true() and ..." as for "or" above
         for (vector<expr_t>::iterator i = fo->begin (); i != fo->end (); i++) {
           const_expr *cond = i->dyn_cast<const_expr> ().getp ();
           if (cond != NULL && ! cond->get_val ()->getEBV ()->getBooleanValue ())
