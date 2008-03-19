@@ -248,9 +248,9 @@ string var_expr::decode_var_kind(
   }
 }
 
-var_expr::var_expr(const QueryLoc& loc, store::Item_t name) : expr (loc), varname_h (name), type (NULL) {}
+var_expr::var_expr(const QueryLoc& loc, store::Item_t name) : expr (loc), varname_h (name), type (NULL), m_forlet_clause(NULL) {}
 
-var_expr::var_expr(const QueryLoc& loc, var_kind k, store::Item_t name) : expr (loc), kind (k), varname_h (name), type (NULL) {}  // TODO
+var_expr::var_expr(const QueryLoc& loc, var_kind k, store::Item_t name) : expr (loc), kind (k), varname_h (name), type (NULL), m_forlet_clause(NULL) {}  // TODO
 
 store::Item_t var_expr::get_varname() const { return varname_h; }
 xqtref_t var_expr::get_type() const { return type; }
@@ -286,8 +286,16 @@ forlet_clause::forlet_clause(
   score_var_h(_score_var_h),
   expr_h(_expr_h)
 {
+  if (var_h != NULL) {
+    var_h->set_forlet_clause(this);
+  }
+  if (pos_var_h != NULL) {
+    pos_var_h->set_forlet_clause(this);
+  }
+  if (score_var_h != NULL) {
+    score_var_h->set_forlet_clause(this);
+  }
 }
-
 
 rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
 {
@@ -1067,7 +1075,17 @@ xqtref_t cast_base_expr::return_type (static_context *sctx) { return target_type
 xqtref_t order_expr::return_type(static_context *sctx) { return expr_h->return_type (sctx); }
 
 xqtref_t var_expr::return_type(static_context *sctx) {
-  return type == NULL ? GENV_TYPESYSTEM.ITEM_TYPE_STAR : type;
+  xqtref_t type1 = NULL;
+  if (kind == for_var || kind == let_var) {
+    type1 = m_forlet_clause->get_expr()->return_type(sctx);
+    if (kind == for_var) {
+      type1 = GENV_TYPESYSTEM.prime_type(*type1);
+    }
+  }
+  if (type1 == NULL) {
+    return type == NULL ? GENV_TYPESYSTEM.ITEM_TYPE_STAR : type;
+  }
+  return type == NULL ? type1 : GENV_TYPESYSTEM.intersect_type(*type1, *type);
 }
 
 // [242] [http://www.w3.org/TR/xqupdate/#prod-xquery-InsertExpr]

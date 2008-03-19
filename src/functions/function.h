@@ -71,6 +71,9 @@ public:
 	// runtime arg validation: XXX move this out
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const = 0;
 
+  // Annotation calculator functions
+  virtual bool isSource() const { return false; }
+
 };
 
 class user_function : public function {

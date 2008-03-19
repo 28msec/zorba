@@ -14,9 +14,11 @@ namespace zorba {
   protected:
     var_expr *var;
     expr *subst;
+    std::string m_ruleName;
 
   public:
-    SubstVars (var_expr *var_, expr *subst_) : var (var_), subst (subst_) {}
+    SubstVars (var_expr *var_, expr *subst_) : var (var_), subst (subst_), m_ruleName("SubstVars") {}
+    const std::string& getRuleName() const { return m_ruleName; }
     expr_t rewritePre(expr *node, RewriterContext& rCtx);
     expr_t rewritePost(expr *node, RewriterContext& rCtx);
   };

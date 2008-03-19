@@ -173,16 +173,12 @@ void end_visit(var_expr& v)
     vector<var_iter_t> *map = NULL;
     bool bound = fvar_iter_map.get ((uint64_t) &v, map);
     
-    if (v.get_varname ()->getStringValue () == DOT_VAR && ! bound)
-      itstack.push (new CtxVariableIterator (loc, "."));
-    else {
-      ZORBA_ASSERT (bound);
-      ForVarIterator *v_p = new ForVarIterator(v.get_varname()->getLocalName(),
-                                               loc,
-                                               (void *) &v);
-      map->push_back (v_p);
-      itstack.push(v_p);
-    }
+    ZORBA_ASSERT (bound);
+    ForVarIterator *v_p = new ForVarIterator(v.get_varname()->getLocalName(),
+            loc,
+            (void *) &v);
+    map->push_back (v_p);
+    itstack.push(v_p);
   }
   break;
   case var_expr::pos_var:
@@ -190,18 +186,12 @@ void end_visit(var_expr& v)
     vector<var_iter_t> *map = NULL;
     bool bound = pvar_iter_map.get ((uint64_t) &v, map);
 
-    if (v.get_varname ()->getStringValue () == DOT_POS_VAR && ! bound) {
-      itstack.push (new SingletonIterator (
-        loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
-      ));
-    } else {
-      ZORBA_ASSERT (bound);
-      ForVarIterator *v_p = new ForVarIterator(v.get_varname ()->getLocalName(),
-                                               loc,
-                                               (void *) &v);
-      map->push_back (v_p);
-      itstack.push(v_p);
-    }
+    ZORBA_ASSERT (bound);
+    ForVarIterator *v_p = new ForVarIterator(v.get_varname ()->getLocalName(),
+            loc,
+            (void *) &v);
+    map->push_back (v_p);
+    itstack.push(v_p);
   }
   break;
   case var_expr::let_var:
@@ -209,18 +199,12 @@ void end_visit(var_expr& v)
     vector<ref_iter_t> *map = NULL;
     bool bound = lvar_iter_map.get ((uint64_t) &v, map);
       
-    if (v.get_varname ()->getStringValue () == LAST_IDX_VAR && ! bound) {
-      itstack.push (new SingletonIterator (
-        loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
-      ));
-    } else {
-      ZORBA_ASSERT (bound);
-      LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
-                                               loc,
-                                               (void *) &v);
-      map->push_back (v_p);
-      itstack.push(v_p);
-    }
+    ZORBA_ASSERT (bound);
+    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
+            loc,
+            (void *) &v);
+    map->push_back (v_p);
+    itstack.push(v_p);
   }
   break;
   case var_expr::param_var:
@@ -234,6 +218,23 @@ void end_visit(var_expr& v)
     map->push_back (v_p);
     itstack.push(v_p);
   }
+    break;
+
+  case var_expr::context_var:
+    if (v.get_varname ()->getStringValue () == DOT_VAR) {
+      itstack.push (new CtxVariableIterator (loc, "."));
+    } else if (v.get_varname ()->getStringValue () == DOT_POS_VAR) {
+      itstack.push (new SingletonIterator (
+        loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
+      ));
+    } else if (v.get_varname ()->getStringValue () == LAST_IDX_VAR) {
+      itstack.push (new SingletonIterator (
+        loc, ITEM_FACTORY->createInteger (Integer::parseInt((int32_t)1))
+      ));
+    } else {
+      assert(false);
+    }
+ 
     break;
   case var_expr::unknown_var:
     assert (false);

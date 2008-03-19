@@ -185,6 +185,8 @@ public:
 
 *******************************************************************************/
 
+class forlet_clause;
+
 class var_expr : public expr {
 public:
   expr_kind_t get_expr_kind () { return var_expr_kind; }
@@ -227,6 +229,12 @@ public:
 
   virtual expr_t clone(substitution_t& substitution);
   virtual xqtref_t return_type (static_context *);
+
+  void set_forlet_clause(forlet_clause *flclause) { m_forlet_clause = flclause; }
+  forlet_clause *get_forlet_clause() { return m_forlet_clause; }
+
+protected:
+  forlet_clause *m_forlet_clause;
 };
 
 
@@ -299,9 +307,9 @@ public: // accessors
   expr_t get_expr() const { return expr_h; }
 
   void set_type(enum forlet_t v) { type = v; }
-  void set_var(varref_t v) { var_h = v; }
-  void set_pos_var(varref_t v) { pos_var_h = v; }
-  void set_score_var(varref_t v) { score_var_h = v; }
+  void set_var(varref_t v) { var_h = v; if (var_h != NULL) { var_h->set_forlet_clause(this); } }
+  void set_pos_var(varref_t v) { pos_var_h = v; if (pos_var_h != NULL) { pos_var_h->set_forlet_clause(this); } }
+  void set_score_var(varref_t v) { score_var_h = v; if (score_var_h != NULL) { score_var_h->set_forlet_clause(this); } }
   void set_expr(expr_t v) { expr_h = v; }
 
 public:

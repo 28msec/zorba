@@ -12,10 +12,13 @@ namespace zorba {
 #define RULE(name) \
   class name : public RewriteRule { \
     public: \
-      name() { } \
+      name() : m_ruleName("name") { } \
       ~name() { } \
+      const std::string& getRuleName() const { return m_ruleName; } \
       expr_t rewritePre(expr *node, RewriterContext& rCtx); \
       expr_t rewritePost(expr *node, RewriterContext& rCtx); \
+    private: \
+      std::string m_ruleName; \
   }
 
 
@@ -36,8 +39,10 @@ RULE(MarkUnfoldableOps);
 class FoldConst : public RewriteRule {
 protected:
   bool fold_expensive_ops;
+  std::string m_ruleName;
 public:     
-  FoldConst (bool fold_expensive_ops_) : fold_expensive_ops (fold_expensive_ops_) {}
+  FoldConst (bool fold_expensive_ops_) : fold_expensive_ops (fold_expensive_ops_), m_ruleName("FoldConst") {}
+  const std::string& getRuleName() const { return m_ruleName; }
   expr_t rewritePre(expr *node, RewriterContext& rCtx);
   expr_t rewritePost(expr *node, RewriterContext& rCtx);
 };
