@@ -208,7 +208,7 @@ namespace zorba {
         if (nontrivial1 == NULL)
           return new const_expr (node->get_loc (), (xqp_boolean) false);
         else if (nontrivial2 == NULL)
-          return nontrivial1;
+          return new fo_expr (node->get_loc (), LOOKUP_FN("fn", "boolean", 1), nontrivial1);
         else
           return NULL;
       } else if (f == LOOKUP_OPN ("and")) {
