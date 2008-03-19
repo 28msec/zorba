@@ -373,6 +373,7 @@ int serializer::emitter::emit_node_children(store::Item* item, int depth, bool p
   return closed_parent_tag;
 }
 
+
 bool serializer::emitter::emit_bindings(store::Item* item)
 {
   // emit namespace bindings
@@ -380,13 +381,28 @@ bool serializer::emitter::emit_bindings(store::Item* item)
   item->getNamespaceBindings(nsBindings);
     
   for (unsigned long i = 0; i < nsBindings.size(); i++)
+  {
     if (!haveBinding(nsBindings[i]))
     {
-      tr << " xmlns";
-      if (nsBindings[i].first.size() > 0)
-        tr << ":" <<  nsBindings[i].first;
-      tr << "=\"" << nsBindings[i].second << "\"";
+      if (nsBindings[i].second.empty() && !nsBindings[i].first.empty())
+      {
+        if (ser->undeclare_prefixes == PARAMETER_VALUE_YES)
+        {
+          tr << " xmlns";
+          if (nsBindings[i].first.size() > 0)
+            tr << ":" <<  nsBindings[i].first;
+          tr << "=\"\"";
+        }
+      }
+      else
+      {
+        tr << " xmlns";
+        if (nsBindings[i].first.size() > 0)
+          tr << ":" <<  nsBindings[i].first;
+        tr << "=\"" << nsBindings[i].second << "\"";
+      }
     }
+  }
 
   if (nsBindings.size() > 0)
   {
