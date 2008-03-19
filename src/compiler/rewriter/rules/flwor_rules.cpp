@@ -50,7 +50,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       bool is_let = vref->get_kind() == var_expr::let_var;
       int quant_cnt = 2;  // cardinality of for clause: 0, 1 or more
       forlet_clause::varref_t pvref = ref->get_pos_var ();
-      if (pvref != NULL && count_variable_uses(flwor, &*pvref) == 0)
+      if (pvref != NULL && count_variable_uses(flwor, &*pvref, 1) == 0)
         ref->set_pos_var (NULL);
       if (! is_let) {
         xqtref_t ctype = cexpr->return_type (sctx);
@@ -64,7 +64,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         // otherwise is_let || quant_cnt == 1
         if (pvref != NULL)
           subst_vars (rCtx, pvref.getp (), new const_expr (node->get_loc (), xqp_integer::parseInt (1)));
-        int uses = count_variable_uses(flwor, &*vref);
+        int uses = count_variable_uses(flwor, &*vref, 2);
         if (uses > 1) {
           if (cexpr->get_expr_kind () == const_expr_kind) {
               i = flwor->remove_forlet_clause (i);

@@ -14,7 +14,7 @@ namespace zorba {
 
 typedef rchandle<var_expr> varref_t;
 
-int count_variable_uses(expr *root, var_expr *var);
+int count_variable_uses(expr *root, var_expr *var, int limit);
 
 }
 

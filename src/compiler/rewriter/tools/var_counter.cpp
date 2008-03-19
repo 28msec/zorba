@@ -8,9 +8,10 @@ class var_counter : public abstract_expr_visitor {
   private:
     var_expr *m_var;
     int m_counter;
+    int m_limit;
 
   public:
-    var_counter(var_expr *var) : m_var(var), m_counter(0) { }
+    var_counter(var_expr *var, int limit) : m_var(var), m_counter(0), m_limit (0) { }
 
     int get_counter() { return m_counter; }
 
@@ -18,6 +19,7 @@ class var_counter : public abstract_expr_visitor {
 
     bool begin_visit(var_expr& v)
     {
+      if (m_limit > 0 && m_counter >= m_limit) return false;
       if (&v == m_var) {
         ++m_counter;
       }
@@ -25,9 +27,9 @@ class var_counter : public abstract_expr_visitor {
     }
 };
 
-int count_variable_uses(expr *root, var_expr *var)
+int count_variable_uses(expr *root, var_expr *var, int limit = 0)
 {
-  var_counter c(var);
+  var_counter c(var, limit);
   root->accept(c);
   return c.get_counter();
 }
