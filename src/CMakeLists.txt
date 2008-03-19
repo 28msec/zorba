@@ -49,7 +49,6 @@ SET(ZORBA_LIBRARY_INSTALL_LIST ${ZORBA_LIBRARY_INSTALL_LIST} zorba)
 
 ############################################################ Zorba STATIC library
 IF (ZORBA_BUILD_STATIC_LIBRARY)
-  MESSAGE("libs: " ${requiredlibs})
   ADD_LIBRARY(zorba_static STATIC ${ZORBA_SRCS})
   TARGET_LINK_LIBRARIES(zorba_static ${requiredlibs})
   SET_TARGET_PROPERTIES(zorba_static PROPERTIES OUTPUT_NAME "zorba_static")  
