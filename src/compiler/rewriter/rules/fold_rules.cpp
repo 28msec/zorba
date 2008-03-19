@@ -174,7 +174,8 @@ namespace zorba {
       if (ts->is_subtype(*arg_type, *cbe->get_type()))
         return new const_expr (node->get_loc (), true);
       else if (node->get_expr_kind () == instanceof_expr_kind)
-        return new const_expr (node->get_loc (), false);
+        return ts->intersect_type (*arg_type, *cbe->get_type ()) == GENV_TYPESYSTEM.NONE_TYPE 
+          ? new const_expr (node->get_loc (), false) : NULL;
       else
         return NULL;
     }

@@ -71,15 +71,28 @@ const bool RootTypeManager::QUANT_SUBTYPE_MATRIX[4][4] = {
   {F, F, T, T}, /* QUANT_PLUS */
 };
 
-const TypeConstants::quantifier_t RootTypeManager::QUANT_MULT_MATRIX [4] [4] = {
-  { TypeConstants::QUANT_ONE,      TypeConstants::QUANT_QUESTION, TypeConstants::QUANT_STAR, TypeConstants::QUANT_PLUS }, /* TypeConstants::QUANT_ONE */
-  { TypeConstants::QUANT_QUESTION, TypeConstants::QUANT_QUESTION, TypeConstants::QUANT_STAR, TypeConstants::QUANT_STAR }, /* TypeConstants::QUANT_QUESTION */
-  { TypeConstants::QUANT_STAR,     TypeConstants::QUANT_STAR,     TypeConstants::QUANT_STAR, TypeConstants::QUANT_STAR }, /* TypeConstants::QUANT_STAR */
-  { TypeConstants::QUANT_PLUS,     TypeConstants::QUANT_STAR,     TypeConstants::QUANT_STAR, TypeConstants::QUANT_PLUS }, /* TypeConstants::QUANT_PLUS */
-};
-
 #undef T
 #undef F
+
+#define Q( q ) TypeConstants::QUANT_##q
+
+const TypeConstants::quantifier_t RootTypeManager::QUANT_MULT_MATRIX [4] [4] = {
+  //  ONE          QUESTION     STAR     PLUS
+  { Q(ONE),      Q(QUESTION), Q(STAR), Q(PLUS) }, // ONE
+  { Q(QUESTION), Q(QUESTION), Q(STAR), Q(STAR) }, // QUESTION
+  { Q(STAR),     Q(STAR),     Q(STAR), Q(STAR) }, // STAR
+  { Q(PLUS),     Q(STAR),     Q(STAR), Q(PLUS) }, // PLUS
+};
+
+const TypeConstants::quantifier_t RootTypeManager::QUANT_INTERS_MATRIX [4] [4] = {
+  //  ONE          QUESTION     STAR         PLUS
+  { Q(ONE),      Q(ONE),      Q(ONE),      Q(ONE)  },  // ONE
+  { Q(ONE),      Q(QUESTION), Q(QUESTION), Q(ONE)  },  // QUESTION
+  { Q(ONE),      Q(QUESTION), Q(STAR),     Q(PLUS) },  // STAR
+  { Q(ONE),      Q(ONE),      Q(PLUS),     Q(PLUS) }   // PLUS
+};
+
+#undef Q
 
 RootTypeManager::RootTypeManager()
 {
@@ -494,11 +507,33 @@ xqtref_t RootTypeManager::union_type(const XQType& type1, const XQType& type2) c
 
 xqtref_t RootTypeManager::intersect_type(const XQType& type1, const XQType& type2) const
 {
+  XQType::type_kind_t tk1 = type1.type_kind (), tk2 = type2.type_kind ();
+
+  if (tk1 < tk2)
+    return intersect_type (type2, type2);
+
+  TypeConstants::quantifier_t q1 = quantifier (type1), q2 = quantifier (type2);
   if (is_subtype (type1, type2))
     return &type1;
   else if (is_subtype (type2, type1))
     return &type2;
-  else return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  else if (tk1 == XQType::EMPTY_KIND)
+    return (q2 == TypeConstants::QUANT_QUESTION || q2 == TypeConstants::QUANT_STAR)
+      ? EMPTY_TYPE : NONE_TYPE;
+  else if (tk2 == XQType::EMPTY_KIND)
+    return (q1 == TypeConstants::QUANT_QUESTION || q1 == TypeConstants::QUANT_STAR)
+      ? EMPTY_TYPE : NONE_TYPE;
+  else if (q1 == TypeConstants::QUANT_ONE && q2 == TypeConstants::QUANT_ONE) {
+    switch (tk1) {
+    case XQType::ATOMIC_TYPE_KIND:
+      if (tk2 == XQType::NODE_TYPE_KIND)
+        return NONE_TYPE;
+      break;
+    default: break;
+    }
+    return ITEM_TYPE_ONE;
+  }
+  else return ITEM_TYPE_STAR;
 }
 
 xqtref_t RootTypeManager::prime_type(const XQType& type) const
