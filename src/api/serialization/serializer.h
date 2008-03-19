@@ -89,7 +89,7 @@ protected:
   short int standalone;              // implemented, TODO: add some validity checks
   short int undeclare_prefixes;      // TODO: yes/no, not clear
   void* use_character_maps;          // TODO: list of pairs
-  xqp_string version;                // "1.0"
+  xqp_string version;                // "1.1"
   short int indent;                  // "yes" or "no", implemented
 	
 public:
@@ -227,7 +227,8 @@ public:
   
   protected:
     bool haveBinding(std::pair<xqpString,xqpString>& nsBinding) const;
-    
+    bool havePrefix(const xqpString& pre) const;
+
     serializer *ser;
     transcoder& tr;
     std::vector<NsBindings> bindings;

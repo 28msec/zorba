@@ -329,6 +329,23 @@ bool serializer::emitter::haveBinding(std::pair<xqpString,xqpString>& nsBinding)
   return false;
 }
 
+
+bool serializer::emitter::havePrefix(const xqpString& pre) const
+{
+  for (unsigned long i = 0; i < bindings.size(); i++)
+  {
+    NsBindings nsBindings = bindings[i];
+    
+    for (unsigned long j = 0; j < nsBindings.size(); j++)
+    {
+      if (nsBindings[j].first == pre)
+        return true;
+    }
+  }
+
+  return false;
+}
+
 int serializer::emitter::emit_node_children(store::Item* item, int depth, bool perform_escaping = true)
 {
   Iterator_t it;
@@ -384,14 +401,22 @@ bool serializer::emitter::emit_bindings(store::Item* item)
   {
     if (!haveBinding(nsBindings[i]))
     {
-      if (nsBindings[i].second.empty() && !nsBindings[i].first.empty())
+      if (nsBindings[i].second.empty())
       {
-        if (ser->undeclare_prefixes == PARAMETER_VALUE_YES)
+        bool havePrefix = this->havePrefix(nsBindings[i].first);
+        if (havePrefix)
         {
-          tr << " xmlns";
-          if (nsBindings[i].first.size() > 0)
-            tr << ":" <<  nsBindings[i].first;
-          tr << "=\"\"";
+          if (nsBindings[i].first.empty())
+          {
+            tr << " xmlns=\"\"";
+          }
+          else if (ser->undeclare_prefixes == PARAMETER_VALUE_YES)
+          {
+            tr << " xmlns";
+            if (nsBindings[i].first.size() > 0)
+              tr << ":" <<  nsBindings[i].first;
+            tr << "=\"\"";
+          }
         }
       }
       else
