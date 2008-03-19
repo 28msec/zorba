@@ -49,6 +49,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       forlet_clause::varref_t vref = ref->get_var();
       bool is_let = vref->get_kind() == var_expr::let_var;
       int quant_cnt = 2;  // cardinality of for clause: 0, 1 or more
+      forlet_clause::varref_t pvref = ref->get_pos_var ();
+      if (pvref != NULL && count_variable_uses(flwor, &*pvref) == 0)
+        ref->set_pos_var (NULL);
       if (! is_let) {
         xqtref_t ctype = cexpr->return_type (sctx);
         if (ts->is_equal (*ctype, *ts->create_empty_type ()))
@@ -59,10 +62,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (is_let || quant_cnt < 2) {
         if (quant_cnt == 0) return new fo_expr (node->get_loc (), LOOKUP_OPN ("concatenate"));
         // otherwise is_let || quant_cnt == 1
-        forlet_clause::varref_t pvref = ref->get_pos_var ();
         if (pvref != NULL)
           subst_vars (rCtx, pvref.getp (), new const_expr (node->get_loc (), xqp_integer::parseInt (1)));
         int uses = count_variable_uses(flwor, &*vref);
+        cout << "uses " << uses << " " << vref.getp () << endl;
         if (uses > 1) {
           if (cexpr->get_expr_kind () == const_expr_kind) {
               i = flwor->remove_forlet_clause (i);
