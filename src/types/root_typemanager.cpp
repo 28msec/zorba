@@ -526,14 +526,24 @@ xqtref_t RootTypeManager::intersect_type(const XQType& type1, const XQType& type
   else if (q1 == TypeConstants::QUANT_ONE && q2 == TypeConstants::QUANT_ONE) {
     switch (tk1) {
     case XQType::ATOMIC_TYPE_KIND:
-      if (tk2 == XQType::NODE_TYPE_KIND)
+      if (tk2 == XQType::NODE_TYPE_KIND || tk2 == XQType::ATOMIC_TYPE_KIND)
         return NONE_TYPE;
+      else
+        return ANY_ATOMIC_TYPE_ONE;
       break;
+    case XQType::NODE_TYPE_KIND:
+      return (tk2 == XQType::NODE_TYPE_KIND) ? NONE_TYPE : ANY_NODE_TYPE_ONE;
     default: break;
     }
     return ITEM_TYPE_ONE;
   }
-  else return ITEM_TYPE_STAR;
+  else {
+    xqtref_t pt1 = prime_type (type1), pt2 = prime_type (type2);
+    if (! is_equal (type1, *pt1) || ! is_equal (type2, *pt2)) {
+      xqtref_t pti = intersect_type (*pt1, *pt2);
+      return type_x_quant (*pti, QUANT_INTERS_MATRIX [q1] [q2]);
+    } else return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  }
 }
 
 xqtref_t RootTypeManager::prime_type(const XQType& type) const
@@ -708,10 +718,8 @@ xqtref_t RootTypeManager::create_type(
       return UNTYPED_TYPE;
 
     case XQType::EMPTY_KIND:
-      return EMPTY_TYPE;
-
     case XQType::NONE_KIND:
-      return NONE_TYPE;
+      return EMPTY_TYPE;
 
     case XQType::USER_DEFINED_KIND:
     {
