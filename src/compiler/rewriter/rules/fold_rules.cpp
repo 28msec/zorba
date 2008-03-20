@@ -8,6 +8,7 @@
 #include "system/globalenv.h"
 #include "runtime/base/plan_wrapper.h"
 #include "functions/function.h"
+#include "functions/Misc.h"
 
 #include <set>
 
@@ -103,10 +104,12 @@ namespace zorba {
   RULE_REWRITE_POST(MarkUnfoldableOps) {
     Annotation::key_t k = AnnotationKey::UNFOLDABLE_OP;
     switch (node->get_expr_kind ()) {
-    case fo_expr_kind:
-      if (dynamic_cast<fo_expr *> (node)->get_func ()->requires_dyn_ctx ())
+    case fo_expr_kind: {
+      const function *f = dynamic_cast<fo_expr *> (node)->get_func ();
+      if (f->requires_dyn_ctx () || dynamic_cast<const fn_error_base *> (f) != NULL)
         node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
       break;
+    }
     case elem_expr_kind:
     case attr_expr_kind:
     case text_expr_kind:
