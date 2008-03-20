@@ -77,7 +77,7 @@ void ZorbaAlertFactory::error_alert(
 
 	xqp_exception		x(error);
 
-	err_manager->sendAlertToUser(z, error, !error->theLocation.location_is_set);
+	err_manager->sendAlertToUser(z, error, (continue_execution == DONT_CONTINUE_EXECUTION) || !error->theLocation.location_is_set);
 
 	if(continue_execution == DONT_CONTINUE_EXECUTION)
 	{

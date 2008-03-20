@@ -30,11 +30,13 @@ xqp_exception::xqp_exception(ZorbaError::ErrorCodes ecode)
 {
 	error_descr = new ZorbaError;
 	error_descr->theCode = ecode;
+  callback_called = false;
 }
 
 xqp_exception::xqp_exception(ZorbaError_t err)
 {
 	error_descr = err;
+  callback_called = false;
 }
 
 xqp_exception::~xqp_exception()
@@ -54,23 +56,28 @@ void	xqp_exception::setLocation(const QueryLoc* ploc)
 {
 	if(error_descr == NULL)
 		return;
-	if(error_descr->theLocation.location_is_set)//already set
-		return;
+	if(!error_descr->theLocation.location_is_set)//already set
+  {
+	  if(ploc)
+	  {
+		  if(!ploc->getFilenameBegin().empty())
+			  error_descr->theLocation.filename = ploc->getFilenameBegin();
+		  error_descr->theLocation.line = ploc->getLineBegin();
+		  error_descr->theLocation.column = ploc->getColumnBegin();
+		  error_descr->theLocation.location_is_set = true;
+	  }
+  }
 	
-	if(ploc)
-	{
-		if(!ploc->getFilenameBegin().empty())
-			error_descr->theLocation.filename = ploc->getFilenameBegin();
-		error_descr->theLocation.line = ploc->getLineBegin();
-		error_descr->theLocation.column = ploc->getColumnBegin();
-		error_descr->theLocation.location_is_set = true;
-	}
-	
-	Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
-	if(!z)
-		return;
-	int		retval;
-	z->getErrorManager()->sendAlertByCallback(z, &*error_descr, false, &retval);
+  if(!callback_called)
+  {
+	  Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
+	  if(!z)
+		  return;
+	  int		retval;
+	  z->getErrorManager()->sendAlertByCallback(z, &*error_descr, false, &retval);
+    
+    callback_called = true;
+  }
 }
 
 

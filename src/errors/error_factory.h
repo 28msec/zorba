@@ -180,6 +180,7 @@ extern bool						g_abort_when_fatal_error;
 
 class xqp_exception : public ZorbaException
 {
+  bool    callback_called;
 public:
 	xqp_exception(ZorbaError::ErrorCodes ecode);
 	xqp_exception(ZorbaError_t err); 
