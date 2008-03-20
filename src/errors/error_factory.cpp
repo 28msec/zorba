@@ -229,34 +229,35 @@ void ZorbaAlertFactory::fn_user_error(
 
 	AlertsManagerImpl_t err_manager = z->getErrorManager();
 
-	std::string err_decoded;
+  std::string	err_uri = "http://www.w3.org/2005/xqt-errors";
+  std::string	err_localname = "FOER0000";
 
-	if(err_qname)
-	{
-		std::string	err_uri = err_qname->getNamespace();
-		std::string	err_localname = err_qname->getLocalName();
-
-		if(err_uri == "http://www.w3.org/2005/xqt-errors")
-		{
-      ZorbaError::ErrorCodes err_num = err_name_to_code (err_localname);
-
-			err_decoded = err_manager->getAlertMessages().error_decode(err_num);
-			err_manager->getAlertMessages().applyParams(&err_decoded, NULL, NULL);
-		}
-	}
-
-	ZorbaFnError* usererror = new ZorbaFnError;
-	usererror->theKind = ZorbaAlert::USER_ERROR_ALERT;
-	usererror->theErrorQName = err_qname;
-	if(items)
-		usererror->theItems = *items;
-	usererror->theUserDescription = description;
-	usererror->theDescription = err_decoded;
-	time(&usererror->theTime);
-
-	err_manager->sendAlertToUser(z, usererror);
+  if (err_qname != NULL) {
+    err_uri = err_qname->getNamespace();
+    err_localname = err_qname->getLocalName();
+  }
   
-  ZORBA_ERROR_ALERT(ZorbaError::XQP0021_USER_ERROR);
+  if(err_uri == "http://www.w3.org/2005/xqt-errors") {
+    ZorbaError::ErrorCodes err_num = err_name_to_code (err_localname);
+    ZORBA_ERROR_ALERT (err_num);
+  } else {
+    std::string err_decoded = err_manager->getAlertMessages().error_decode(ZorbaError::FOER0000);
+    err_manager->getAlertMessages().applyParams(&err_decoded, NULL, NULL);
+    ZorbaFnError* usererror = new ZorbaFnError;
+    usererror->theKind = ZorbaAlert::USER_ERROR_ALERT;
+    usererror->theErrorQName = err_qname;
+    if(items)
+      usererror->theItems = *items;
+    usererror->theUserDescription = description;
+    usererror->theDescription = err_decoded;
+    time(&usererror->theTime);
+    
+    err_manager->sendAlertToUser(z, usererror);
+    
+    ZORBA_ERROR_ALERT(ZorbaError::XQP0021_USER_ERROR);
+    
+  }
+
 }
 
 
