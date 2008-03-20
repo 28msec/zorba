@@ -1,11 +1,14 @@
+#include <boost/smart_ptr.hpp>
+#include <zorba/item.h>
 #include <zorba/item_sequence.h>
 #include <zorba/stateless_function.h>
 
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/fncall_iterator.h"
 #include "functions/function.h"
-#include "runtime/base/plan_iterator_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+#include "api/unmarshaller.h"
 
 namespace zorba {
 
@@ -61,7 +64,8 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   state->thePlan = theUDF->get_plan().getp();
   state->thePlanStateSize = state->thePlan->getStateSizeOfSubtree();
   state->theFnBodyStateBlock = new PlanState(state->thePlanStateSize);
-
+  state->theFnBodyStateBlock->theRuntimeCB = planState.theRuntimeCB;
+  state->theFnBodyStateBlock->theCompilerCB = planState.theCompilerCB;
 }
 
 void UDFunctionCallIterator::closeImpl(PlanState& planState)
@@ -114,13 +118,17 @@ store::Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
 
 
 // external functions
-class ExtFuncArgItemSequence : public store::ItemSequence {
+class ExtFuncArgItemSequence : public ItemSequence {
   public:
     ExtFuncArgItemSequence(PlanIter_t child, PlanState& stateBlock)
       : m_child(child),
       m_stateBlock(stateBlock) { }
 
-    store::Item_t next() { return m_child->consumeNext(m_child.getp(), m_stateBlock); }
+    bool next(Item& item) 
+    {
+      item = m_child->consumeNext(m_child.getp(), m_stateBlock);
+      return !item.isNull();
+    }
 
   private:
     PlanIter_t m_child;
@@ -134,19 +142,24 @@ StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState() 
 void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  m_result = NULL;
+  m_result.reset();
 }
 
 StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(const QueryLoc& loc,
     std::vector<PlanIter_t>& args,
     const StatelessExternalFunction *function)
-  : NaryBaseIterator<StatelessExtFunctionCallIterator, StatelessExtFunctionCallIteratorState>(loc, args),
+  : NaryBaseIterator<StatelessExtFunctionCallIterator, 
+                     StatelessExtFunctionCallIteratorState>(loc, args),
     m_function(function) { }
 
 void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  NaryBaseIterator<StatelessExtFunctionCallIterator, StatelessExtFunctionCallIteratorState>::openImpl(planState, offset);
-  StatelessExtFunctionCallIteratorState *state = StateTraitsImpl<StatelessExtFunctionCallIteratorState>::getState(planState, this->stateOffset);
+  NaryBaseIterator<StatelessExtFunctionCallIterator, 
+                   StatelessExtFunctionCallIteratorState>::openImpl(planState, offset);
+
+  StatelessExtFunctionCallIteratorState 
+    *state = StateTraitsImpl<StatelessExtFunctionCallIteratorState>::getState(planState, 
+                                                                              this->stateOffset);
   int n = theChildren.size();
   state->m_extArgs.resize(n);
   for(int i = 0; i < n; ++i) {
@@ -158,15 +171,33 @@ store::Item_t StatelessExtFunctionCallIterator::nextImpl(PlanState& planState) c
 {
   StatelessExtFunctionCallIteratorState *state;
   store::Item_t lSequenceItem;
+  Item lOutsideItem;
   DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
 
   state->m_result = m_function->evaluate(state->m_extArgs);
-  while((lSequenceItem = state->m_result->next()) != NULL) {
+  while (state->m_result->next(lOutsideItem)) {
+    lSequenceItem = Unmarshaller::getInternalItem(lOutsideItem);
     STACK_PUSH(lSequenceItem, state);
   }
 
   STACK_END();
 }
+
+void StatelessExtFunctionCallIterator::closeImpl(PlanState& planState)
+{
+  StatelessExtFunctionCallIteratorState *state = 
+    StateTraitsImpl<StatelessExtFunctionCallIteratorState>::getState(planState, this->stateOffset);
+
+  // we have the ownership for the item sequences
+  int n = theChildren.size();
+  for(int i = 0; i < n; ++i) {
+    delete state->m_extArgs[i];
+  }
+
+  NaryBaseIterator<StatelessExtFunctionCallIterator, 
+                   StatelessExtFunctionCallIteratorState>::closeImpl(planState);
+}
+
 
 }
 

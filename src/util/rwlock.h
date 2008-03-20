@@ -11,7 +11,7 @@
 #ifndef ZORBA_RWLOCK_H
 #define ZORBA_RWLOCK_H
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 

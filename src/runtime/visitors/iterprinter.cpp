@@ -1,4 +1,3 @@
-#include <cassert>
 #include <iostream>
 
 #include "runtime/visitors/iterprinter.h"

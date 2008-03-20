@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 #include "store/util/mutex.h"
 

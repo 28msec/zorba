@@ -6,12 +6,13 @@
  *  Authors: David Graf, Donald Kossmann, Tim Kraska, Markos zaharioudakis
  */
 
-#include <zorbatypes/numconversions.h>
-#include <zorba/item.h>
+#include "zorbatypes/numconversions.h"
+#include "store/api/item.h"
 
 #include "util/Assert.h"
+#include "errors/error_manager.h"
+#include "compiler/parser/query_loc.h"
 #include "util/hashfun.h"
-#include "errors/error_factory.h"
 
 #include "system/globalenv.h"
 
@@ -22,7 +23,7 @@
 #include "store/naive/simple_store.h"
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/store_defs.h"
-#include "store/naive/item_iterator.h"
+#include "store/api/item_iterator.h"
 
 #define CREATE_XS_TYPE(aType) \
   GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
@@ -82,8 +83,7 @@ bool QNameItemImpl::equals(Item_t item) const
 
 Item_t QNameItemImpl::getEBV( ) const
 {
-  ZORBA_ERROR_ALERT(ZorbaError::FORG0006,
-      NULL, DONT_CONTINUE_EXECUTION, "Effective Boolean Value is not defined for QName!");
+  ZORBA_ERROR_DESC( ZorbaError::FORG0006, "Effective Boolean Value is not defined for QName!");
   return NULL;
 }
 

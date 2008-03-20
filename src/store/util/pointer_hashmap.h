@@ -1,8 +1,8 @@
 #ifndef ZORBA_STORE_POINTER_HASHMAP_H
 #define ZORBA_STORE_POINTER_HASHMAP_H
 
-#include <zorba/common/api_shared_types.h>
-#include <zorbatypes/xqpstring.h>
+#include "common/shared_types.h"
+#include "zorbatypes/xqpstring.h"
 
 #include "store/util/mutex.h"
 

@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 namespace zorba { namespace store {
 class OrdPathStack;

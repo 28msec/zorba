@@ -6,6 +6,7 @@
 
 namespace zorba {
 
+class CompilerCB;
 class RewriterContext;
 
 class RewriteRule {

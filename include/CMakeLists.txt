@@ -1,8 +1,3 @@
-ADD_SUBDIRECTORY(zorba)
-ADD_SUBDIRECTORY(zorbatypes)
 INSTALL(DIRECTORY zorba DESTINATION include/zorba
-	PATTERN "*.svn" EXCLUDE
-	PATTERN "*.txt" EXCLUDE)
-INSTALL(DIRECTORY zorbatypes DESTINATION include/zorbatypes
 	PATTERN "*.svn" EXCLUDE
 	PATTERN "*.txt" EXCLUDE)

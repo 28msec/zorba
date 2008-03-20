@@ -1,9 +1,9 @@
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 #include <boost/lexical_cast.hpp>
 #include <sstream>
 #include <limits>
-#include <zorbatypes/numconversions.h>
+#include "zorbatypes/numconversions.h"
 
 namespace zorba {
   bool NumConversions::isNegZero(const xqpString& aStr) {

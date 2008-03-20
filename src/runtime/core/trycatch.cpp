@@ -1,9 +1,8 @@
 #include "runtime/core/trycatch.h"
 
-#include <zorba/xqp_exception.h>
-#include <zorba/errors.h>
+#include "errors/errors.h"
 
-#include "runtime/base/plan_iterator_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/store.h"
 #include "store/api/temp_seq.h"
 #include "system/globalenv.h"
@@ -53,7 +52,7 @@ TryCatchIterator::nextImpl(PlanState& planState) const
     store::Store& lStore = GENV_STORE;
     state->theTargetSequence = lStore.createTempSeq( lIterator, false );
     lIterator->close();
-  } catch (ZorbaException& e) {
+  } catch (error::ZorbaError& e) {
    // lException = e; 
   }
 

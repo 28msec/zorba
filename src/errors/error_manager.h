@@ -1,79 +1,144 @@
-#ifndef ALERTS_ALERTS_MANAGER
-#define ALERTS_ALERTS_MANAGER
+#ifndef XQP_ERROR_MANAGER_H
+#define XQP_ERROR_MANAGER_H
 
-#include <zorba/errors.h>
+#include <vector>
+#include <sstream>
 
-namespace zorba
-{
+#include <zorba/error.h>
+#include "errors/errors.h"
 
-class Zorba;
-class AlertMessages;
+namespace zorba { namespace error {
 
-class AlertListImpl : public AlertList
-{
-public:
-	bool		is_error;
-public:
-	AlertListImpl();
-	virtual ~AlertListImpl();
-	virtual void dumpAlerts(std::ostream &os);
-  virtual void clearAlertList();
+  class ErrorManager
+  {
+    public:
+      ErrorManager();
+      virtual ~ErrorManager();
 
-	virtual bool isError();
-	void setIsError();
-};
+      static ZorbaError
+      createException(::zorba::ZorbaError::ErrorCode aErrorCode, const xqpString& aDescription,
+                      const QueryLoc& aLocation, const std::string& aFileName, int aLineNumber);
 
-/*******************************************************************************
+      static ZorbaError
+      createException(::zorba::ZorbaError::ErrorCode aErrorCode, const std::string& aFileName, int aLineNumber);
 
-********************************************************************************/
-class AlertsManagerImpl : public ZorbaAlertsManager
-{
-public:
-	AlertsManagerImpl();
+      static ZorbaError
+      createException(::zorba::ZorbaError::ErrorCode aErrorCode, const std::string& aDesc, 
+                      const std::string& aFileName, int aLineNumber);
 
-	virtual ~AlertsManagerImpl();
+      static ZorbaError
+      createException(::zorba::ZorbaError::ErrorCode aErrorCode,
+                      const std::string& aParam1, const std::string& aParam2,
+                      const std::string& aFileName, int aLineNumber,
+                      const QueryLoc& aLocation = QueryLoc::null);
 
-	int sendAlertToUser(Zorba* z, ZorbaAlert_t alert, bool dont_send_callback = false);
-	bool sendAlertByCallback(Zorba* z, 
-														ZorbaAlert_t alert, 
-														bool dont_send_callback,
-														int *retval);
+      static ZorbaError
+      createException(::zorba::ZorbaError::ErrorCode aErrorCode,
+                      const std::string& aFileName, int aLineNumber, 
+                      const QueryLoc& aLocation);
 
-	void registerAlertCallback(alert_callback* user_alert_callback, void *param);
+      static ZorbaUserError
+      createUserException(const xqpString& aErrorURI, const xqpString aErrorLocalName,
+                          const xqpString& aDescription, const QueryLoc& aLocation,
+                          std::vector< ::zorba::store::Item_t> aErrorObject,
+                          const std::string& aFileName, int aLineNumber);
 
-	AlertMessages& getAlertMessages();
-  void setAlertMessages(AlertMessages* c, bool is_from_user);
+      void
+      addError(::zorba::ZorbaError::ErrorCode aErrorCode, const xqpString& aDescription,
+               const QueryLoc& aLocation, const std::string& aFileName, int aLineNumber);
 
-	virtual AlertList_t		getAlertList();
-	virtual void dumpAlerts(std::ostream &os);
-	void clearAlertList();
+      void
+      addError(::zorba::ZorbaError::ErrorCode aErrorCode, 
+               const std::string& aParam1, const std::string& aParam2,
+               const std::string& aFileName, int aLineNumber,
+               const QueryLoc& aLocation = QueryLoc::null);
 
-	virtual bool isError();
-	void				setIsError();
+      void
+      addWarning(ZorbaWarning::WarningCode aWarningCode, const xqpString& aDescription,
+                 const QueryLoc& aLocation, const std::string& aFileName, int aLineNumber);
 
-//	virtual void setThrowExceptionsMode(bool throw_exceptions);
-//	virtual bool	getThrowExceptionsMode();
-protected:
-	AlertMessages   * theAlertMessages;
-	bool			        theIsFromUser;
-	
-	rchandle<AlertListImpl>			alert_list;
+    protected:
+      // contains all errors that were raised but the execution went on
+      std::vector<ZorbaError>   theErrors;
 
-	//if ZorbaErrorAlertsImpl::xquery_registered_callback is not specified, call this callback
-	alert_callback	* thread_registered_callback;
-	void						* thread_registered_param;
+      // contains all the warnings
+      std::vector<ZorbaWarning>  theWarnings;
+  };
 
-	//bool						is_error;
-};
+#define ZORBA_USER_ERROR(uri, localname, desc, loc, obj) do { \
+  throw error::ErrorManager::createUserException(uri, localname, desc, loc, obj, __FILE__, __LINE__); \
+} while (0)
 
-typedef rchandle<AlertsManagerImpl>		AlertsManagerImpl_t;
+#define ZORBA_ERROR(code) do { \
+  throw error::ErrorManager::createException(code, __FILE__, __LINE__); \
+} while (0)
 
-}//end namespace zorba
+#define ZORBA_ERROR_DESC(code, desc) do {  \
+  std::ostringstream lOStringStream; \
+  lOStringStream << desc; \
+  throw error::ErrorManager::createException(code, lOStringStream.str(), __FILE__, __LINE__); \
+} while (0) 
 
+#define ZORBA_ERROR_LOC(code, loc) do { \
+  throw error::ErrorManager::createException(code, __FILE__, __LINE__, loc); \
+} while (0) 
+
+// create an exception and throw it
+#define ZORBA_ERROR_LOC_DESC(code, loc, descr) do { \
+  throw error::ErrorManager::createException(code, descr, loc, __FILE__, __LINE__); \
+} while (0) 
+
+// create an error, remeber it, and continue
+#define ZORBA_ERROR_CONTINUE(manager, code, loc, desc) do { \
+  manager->addError(code, desc, loc, __FILE__, __LINE__); \
+} while (0) 
+
+// create an exception, replace params, and throw it
+#define ZORBA_ERROR_OSS(code, param1, param2) do { \
+  std::ostringstream lOStringStream1, lOStringStream2; \
+  lOStringStream1 << param1; \
+  lOStringStream2 << param2; \
+  throw error::ErrorManager::createException(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__); \
+} while (0) 
+
+// create an error, replace params, and continue
+#define ZORBA_ERROR_OSS_CONTINUE(manager, code, param1, param2) do {\
+  std::ostringstream lOStringStream1, lOStringStream2; \
+  lOStringStream1 << param1; \
+  lOStringStream2 << param2; \
+  throw manager->addError(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__); \
+} while (0) 
+
+// create an exception, with location, replace params, and throw it
+#define ZORBA_ERROR_LOC_OSS(code, loc, param1, param2) do { \
+  std::ostringstream lOStringStream1, lOStringStream2; \
+  lOStringStream1 << param1; \
+  lOStringStream2 << param2; \
+  throw error::ErrorManager::createException(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__, loc); \
+} while (0) 
+
+// create an error, with location, replace params, and continue
+#define ZORBA_ERROR_LOC_OSS_CONTINUE(manager, code, loc, param1, param2) do { \
+  std::ostringstream lOStringStream1, lOStringStream2; \
+  lOStringStream1 << param1; \
+  lOStringStream2 << param2; \
+  throw manger->addError(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__, loc); \
+} while (0) 
+
+// create a warning and continue
+#define ZORBA_WARNING(manager, code, desc, loc) do {\
+  manager->addWarning(ZorbaWarning::code, desc, loc, __FILE__, __LINE__); \
+} while (0) 
+
+#define ZORBA_NOT_IMPLEMENTED( what ) do {                                    \
+    ZORBA_ERROR_DESC(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, what); \
+} while (0) 
+
+#define ZORBA_NOT_SUPPORTED( what ) do {                                    \
+    ZORBA_ERROR_DESC(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, what); \
+} while (0) 
+
+
+} /* namespace error */
+} /* namespace zorba */
 #endif
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */

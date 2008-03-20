@@ -3,9 +3,9 @@
  *
  *  Authors: David Graf, Markos Zaharioudakis
  */
-#include <zorba/rchandle.h>
+#include "util/rchandle.h"
 
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_loader.h"
@@ -78,7 +78,7 @@ void SimpleCollection::addToCollection(const Item* node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+    ZORBA_ERROR( ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)
@@ -108,7 +108,7 @@ void SimpleCollection::removeFromCollection(const Item* node)
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR_ALERT(ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+    ZORBA_ERROR( ZorbaError::API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
   }
 
   SYNC_CODE(AutoLatch(theLatch, Latch::WRITE);)

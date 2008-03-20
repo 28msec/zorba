@@ -24,6 +24,7 @@ class LetVarIterator;
 typedef rchandle<LetVarIterator> ref_iter_t;
   
 
+class RuntimeCB; 
 class FlworState;
 
  
@@ -107,6 +108,7 @@ public:
     PlanIter_t orderByIter;
     bool empty_least;
     bool descending;
+    mutable RuntimeCB* runtimeCB; // TODO hack
   public:
     void accept ( PlanIterVisitor& ) const;
     OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending );
@@ -136,7 +138,8 @@ public:
   {
   public:
     OrderKeyCmp() : mOrderSpecs ( 0 ) {}
-    OrderKeyCmp ( std::vector<OrderSpec>* aOrderSpecs ) : mOrderSpecs ( aOrderSpecs ) {}
+    OrderKeyCmp ( std::vector<OrderSpec>* aOrderSpecs ) 
+      : mOrderSpecs ( aOrderSpecs ) {}
 
     /**
      * The key comparison function, a Strict Weak Ordering whose argument type is key_type;
@@ -152,6 +155,7 @@ public:
      *            1, if item0 &gt; item1
      */
     inline int8_t compare(
+        RuntimeCB* aRuntimeCB,
         const store::Item_t& s1,
         const store::Item_t& s2,
         bool asc,

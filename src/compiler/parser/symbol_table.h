@@ -8,7 +8,7 @@
 #ifndef ZORBA_SYMBOL_TABLE_H
 #define ZORBA_SYMBOL_TABLE_H
 
-#include <zorbatypes/representations.h>
+#include "zorbatypes/representations.h"
 
 #include "util/fx/fxcharheap.h"
 

@@ -1,19 +1,17 @@
 #include <sstream>
-#include <zorba/item.h>
 
 #include "runtime/core/arithmetic_impl.h"
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
 #include "types/casting.h"
 #include "util/Assert.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
-#include "errors/error_factory.h"
-#include "system/zorba.h"
+#include "errors/error_manager.h"
 #include "store/api/item_factory.h"
-#include "system/zorba_engine.h"
 #include "context/dynamic_context.h"
+#include "runtime/api/runtimecb.h"
 
 namespace zorba {
 
@@ -34,12 +32,7 @@ void ArithOperationsCommons::createError(
   lStream << " and ";
   lAType1.serialize(lStream);
   lStream << "!";
-  ZORBA_ERROR_ALERT(
-    ZorbaError::XPTY0004,
-    aLoc,
-    DONT_CONTINUE_EXECUTION,
-    lStream.str()
-  );
+  ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, *aLoc, lStream.str());
 }
 
 /* begin class GenericArithIterator */
@@ -65,12 +58,12 @@ store::Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState )
     n1 = consumeNext( this->theChild1.getp(), planState );
     if ( n1 != NULL )
     {
-      res = compute(this->loc, n0, n1);
+      res = compute(planState.theRuntimeCB, this->loc, n0, n1);
     
       if ( consumeNext(this->theChild0.getp(), planState ) != NULL
            || consumeNext(this->theChild1.getp(), planState ) != NULL )
-        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-            NULL, DONT_CONTINUE_EXECUTION, "Arithmetic operation has a sequences greater than one as an operator.");
+        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, this->loc, 
+                    "Arithmetic operation has a sequences greater than one as an operator.");
       STACK_PUSH ( res, state );
     }
   }
@@ -78,7 +71,8 @@ store::Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState )
 }
 
 template < class Operation >
-store::Item_t GenericArithIterator<Operation>::compute(const QueryLoc& aLoc, store::Item_t n0, store::Item_t n1)
+store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, const QueryLoc& aLoc, 
+                                                store::Item_t n0, store::Item_t n1)
 {
   n0 = n0->getAtomizationValue();
   n1 = n1->getAtomizationValue();
@@ -86,54 +80,47 @@ store::Item_t GenericArithIterator<Operation>::compute(const QueryLoc& aLoc, sto
   xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
   xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeConstants::QUANT_ONE );
 
-  if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE )
-     || GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE ))
+  if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
   {
     if(GENV_TYPESYSTEM.is_numeric(*type1))
     {
       n1 = GenericCast::instance()->cast ( n1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE> ( &aLoc, n0, n1 );
+      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE> ( aRuntimeCB,  &aLoc, n0, n1 );
     }
-    else if(GENV_TYPESYSTEM.is_equal(*type0, *type1))
-      return Operation::template computeSingleType<TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
     else
-      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-                        NULL, DONT_CONTINUE_EXECUTION, "Arithmetic operation not defined between the given types(" + type0->toString() + " and " + type1->toString() + ").");
+      return Operation::template computeSingleType<TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
   else if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
   {
     if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
-      return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME> ( &aLoc, n0, n1 );
+      return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME> (  aRuntimeCB, &aLoc, n0, n1 );
     else
-      return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
+      return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
   else if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
   {
     if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
-      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE> ( &aLoc, n0, n1 );
+      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE> (  aRuntimeCB, &aLoc, n0, n1 );
     else
-      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
+      return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
   else if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
   {
     if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
-      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME> ( &aLoc, n0, n1 );
+      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME> (  aRuntimeCB, &aLoc, n0, n1 );
     else
-      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> ( &aLoc, n0, n1 );
+      return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
-  else if (
-           (GENV_TYPESYSTEM.is_numeric(*type0)
-           || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
-           && ( GENV_TYPESYSTEM.is_numeric(*type1)
-           || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
-          )
+  else if ( GENV_TYPESYSTEM.is_numeric(*type0) 
+    || GENV_TYPESYSTEM.is_numeric(*type1)
+    || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
+    || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    return NumArithIterator<Operation>::computeAtomic(aLoc, n0, type0, n1, type1);
+    return NumArithIterator<Operation>::computeAtomic( aRuntimeCB, aLoc, n0, type0, n1, type1);
   }
   else
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-                      NULL, DONT_CONTINUE_EXECUTION, "Arithmetic operation not defined between the given types(" + type0->toString() + " and " + type1->toString() + ").");
+    ZORBA_ASSERT(false);
   }
   return 0;
 }
@@ -155,159 +142,143 @@ void GenericArithIterator<Operation>::accept(PlanIterVisitor& v) const {
  /* begin class AddOperations */
 template<>
 store::Item_t AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_duration d = *i0->getDurationValue() + *i1->getDurationValue();
-  return Zorba::getItemFactory()->createDuration (d);
+  return GENV_ITEMFACTORY->createDuration (d);
 }
 
 template<>
 store::Item_t AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_dateTime d = i0->getDateTimeValue()->addDuration(*i1->getDurationValue()->toDuration());
-  return Zorba::getItemFactory()->createDateTime (d);
+  return GENV_ITEMFACTORY->createDateTime (d);
 }
 
 template<>
 store::Item_t AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_date d = i0->getDateValue()->addDuration(*i1->getDurationValue()->toDuration());
-  return Zorba::getItemFactory()->createDate (d);
+  return GENV_ITEMFACTORY->createDate (d);
 }
 
 template<>
 store::Item_t AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_time t = i0->getTimeValue()->addDuration(*i1->getDurationValue()->toDuration());
-  return Zorba::getItemFactory()->createTime (t);
+  return GENV_ITEMFACTORY->createTime (t);
 }
  /* end class AddOperations */
 
 /* start class SubtractOperations */
 template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
   xqp_duration d = *i0->getDurationValue() - *i1->getDurationValue();
-  return Zorba::getItemFactory()->createDuration (d);
+  return GENV_ITEMFACTORY->createDuration (d);
 }
 
 template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_dateTime d = i0->getDateTimeValue()->subtractDuration(*i1->getDurationValue()->toDuration());
-  return Zorba::getItemFactory()->createDateTime (d);
+  return GENV_ITEMFACTORY->createDateTime (d);
 }
 
 template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_date d = i0->getDateValue()->subtractDuration(*i1->getDurationValue()->toDuration());
-  return Zorba::getItemFactory()->createDate (d);
+  return GENV_ITEMFACTORY->createDate (d);
 }
 
 template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
-( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   xqp_time t = i0->getTimeValue()->subtractDuration(*i1->getDurationValue()->toDuration());
-  return Zorba::getItemFactory()->createTime (t);
+  return GENV_ITEMFACTORY->createTime (t);
 }
 
 template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME>
-( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   // TODO: see if timezone normalization needs to be performed (it might be performed by the subtract function)
   xqp_duration d = i0->getDateTimeValue()->normalizeTimeZone(0)->subtractDateTime(*i1->getDateTimeValue()->normalizeTimeZone(0), 0);
-  return Zorba::getItemFactory()->createDuration (d);
+  return GENV_ITEMFACTORY->createDuration (d);
 }
 
 template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
-( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   // TODO: see if timezone normalization needs to be performed (it might be performed by the subtract function)
   xqp_duration d = i0->getDateValue()->normalizeTimeZone(0)->subtractDateTime(*i1->getDateValue()->normalizeTimeZone(0), 0);
-  return Zorba::getItemFactory()->createDuration (d);
+  return GENV_ITEMFACTORY->createDuration (d);
 }
 
 template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
-( const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
   // TODO: see if timezone normalization needs to be performed (it might be performed by the subtract function)
   xqp_duration d = i0->getTimeValue()->normalizeTimeZone(0)->subtractDateTime(* i1->getTimeValue()->normalizeTimeZone(0), 0);
-  return Zorba::getItemFactory()->createDuration (d);
+  return GENV_ITEMFACTORY->createDuration (d);
 }
 /* end class SubtractOperations */
 
 /* start class MultiplyOperations */
 template<>
 store::Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
-( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
   xqp_duration d;
 
   if( i1->getDoubleValue().isZero() )
-  {
-    xqtref_t type0 = GENV_TYPESYSTEM.create_type(i0->getType(), TypeConstants::QUANT_ONE);
-    if( GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
-      d = new YearMonthDuration();
-    else
-      d = new DayTimeDuration();
-
-    return Zorba::getItemFactory()->createDuration(d);
-  }
+    return GENV_ITEMFACTORY->createDuration(0,0,0,0,0,0);
   else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
+    ZORBA_ERROR_LOC_DESC(  ZorbaError::FODT0002, *loc,  "Overflow/underflow in duration operation.");
   else if (  i1->getDoubleValue().isNaN() )
-    ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
+    ZORBA_ERROR_LOC_DESC(  ZorbaError::FOCA0005, *loc,  "NaN supplied as float/double value");
   else
     d = *i0->getDurationValue() * (i1->getDoubleValue());
   
-  return Zorba::getItemFactory()->createDuration (d);
+  return GENV_ITEMFACTORY->createDuration (d);
 }
 /* end class MultiplyOperations */
 
 /* start class DivideOperations */
 template<>
 store::Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE>
-( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
   xqp_duration d;
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-  {
-    xqtref_t type0 = GENV_TYPESYSTEM.create_type(i0->getType(), TypeConstants::QUANT_ONE);
-    if( GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
-      d = new YearMonthDuration();
-    else
-      d = new DayTimeDuration();
-    
-    return Zorba::getItemFactory()->createDuration(d);
-  }
+    return GENV_ITEMFACTORY->createDuration(0,0,0,0,0,0);
   else if ( i1->getDoubleValue().isZero() )
-    ZORBA_ERROR_ALERT( ZorbaError::FODT0002, NULL, DONT_CONTINUE_EXECUTION, "Overflow/underflow in duration operation.");
+    ZORBA_ERROR_LOC_DESC(  ZorbaError::FODT0002, *loc,  "Overflow/underflow in duration operation.");
   else if ( i1->getDoubleValue().isNaN() )
-    ZORBA_ERROR_ALERT( ZorbaError::FOCA0005, NULL, DONT_CONTINUE_EXECUTION, "NaN supplied as float/double value");
+    ZORBA_ERROR_LOC_DESC(  ZorbaError::FOCA0005, *loc,  "NaN supplied as float/double value");
   else
     d= *i0->getDurationValue() / i1->getDoubleValue();
 
-  return Zorba::getItemFactory()->createDuration (d);
+  return GENV_ITEMFACTORY->createDuration (d);
 }
 
 template<>
 store::Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DURATION>
-( const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
+( RuntimeCB* aRuntimeCB, const QueryLoc* loc, const store::Item* i0, const store::Item* i1 )
 {
   xqp_decimal d = *i0->getDurationValue() / *i1->getDurationValue();
-  return Zorba::getItemFactory()->createDecimal(d);
+  return GENV_ITEMFACTORY->createDecimal(d);
 }
 /* end class DivideOperations */
 

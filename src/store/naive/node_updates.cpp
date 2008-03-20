@@ -2,7 +2,7 @@
 #include <stack>
 
 #include "system/globalenv.h"
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 #include "util/Assert.h"
 
 #include "store/naive/store_defs.h"
@@ -278,8 +278,8 @@ void XmlNode::checkQName(QNameItemImpl* newName)
 
     if (ns != NULL && ns->byteEqual(*newName->getNamespaceP()))
     {
-      ZORBA_ERROR_ALERT_OSS(ZorbaError::XUDY0024, NULL, DONT_CONTINUE_EXECUTION,
-                            "The implied namespace binding of " << newName->show()
+      ZORBA_ERROR_OSS(ZorbaError::XUDY0024,
+                      "The implied namespace binding of " << newName->show()
                             << " conflicts with namespace binding ["
                             << newName->getPrefixP() << ", " 
                             << newName->getNamespaceP() << "]", "");

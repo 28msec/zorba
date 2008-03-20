@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 /*_____________________________________________________________
 |                                                              |

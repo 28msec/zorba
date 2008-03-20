@@ -17,8 +17,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include <zorba/common/common.h>
-#include <zorba/rchandle.h>
+#include "common/common.h"
+#include "util/rchandle.h"
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER
@@ -36,7 +36,7 @@
 #include "util/fx/fxarray.h"
 #include "util/fx/fxvector.h"
 #include "util/hashfun.h"
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 
 namespace zorba {
 
@@ -403,10 +403,7 @@ THROW_XQP_EXCEPTION
   uint32_t n = key.length();
   if (n > MAX_KEYLEN)
   {
-    ZORBA_ERROR_ALERT_OSS(
-          ZorbaError::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
-          NULL, DONT_CONTINUE_EXECUTION,///dont continue execution, stop here
-          n, MAX_KEYLEN);
+    ZORBA_ERROR_OSS(  ZorbaError::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN, n, MAX_KEYLEN);
   }
   if (sz > dsz*ld) resize();
   uint32_t h0;
@@ -437,9 +434,8 @@ THROW_XQP_EXCEPTION
 
     ostr1 << n;
     ostr2 << MAX_KEYLEN;
-    ZORBA_ERROR_ALERT(
-           ZorbaError::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
-           NULL, DONT_CONTINUE_EXECUTION,///dont continue execution, stop here
+    ZORBA_ERROR_OSS(
+           XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
            ostr1.str(), ostr2.str());///param1 and param2 for error message
   }
   if (sz > dsz*ld) resize();
@@ -467,9 +463,8 @@ THROW_XQP_EXCEPTION
 
   if (n > MAX_KEYLEN)
   {
-    ZORBA_ERROR_ALERT(
-           ZorbaError::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
-           NULL, DONT_CONTINUE_EXECUTION,
+    ZORBA_ERROR_OSS(
+           XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
            n, MAX_KEYLEN);
   }
 

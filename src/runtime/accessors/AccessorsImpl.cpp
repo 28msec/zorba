@@ -6,10 +6,11 @@
  *  Author: David Graf
  *
  */
-#include <zorba/item.h>
-#include <zorba/iterator.h>
 
-#include "system/zorba.h"
+#include "store/api/item.h"
+#include "store/api/iterator.h"
+#include "errors/error_manager.h"
+#include "system/globalenv.h"
 #include "runtime/accessors/AccessorsImpl.h"
 #include "util/Assert.h"
 #include "store/api/item_factory.h"
@@ -79,9 +80,7 @@ store::Item_t FnRootIterator::nextImpl(PlanState& planState) const
 
   if (!contextNode->isNode())
   {
-    ZORBA_ERROR_ALERT(
-         ZorbaError::XPTY0004,
-         &loc, DONT_CONTINUE_EXECUTION, "The argument of the fn:root function is not a node");
+    ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "The argument of the fn:root function is not a node");
   }
 
   parentNode = contextNode->getParent();
@@ -112,9 +111,7 @@ store::Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
   }
 
   if (!inNode->isNode()) {
-    ZORBA_ERROR_ALERT(
-         ZorbaError::XPTY0004,
-         &loc, DONT_CONTINUE_EXECUTION, "The argument of the fn:node-name function is not a node");
+    ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "The argument of the fn:node-name function is not a node");
   }
   
   STACK_PUSH(inNode->getNodeName(), state);
@@ -136,7 +133,7 @@ store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
   {
     if (inNode->getNodeKind() == store::StoreConsts::elementNode)
     {
-      STACK_PUSH(Zorba::getItemFactory()->createBoolean(inNode->getNilled()), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createBoolean(inNode->getNilled()), state);
     }
   }
   
@@ -155,12 +152,11 @@ store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
   if (inNode != NULL)
   {
     if (inNode->isNode()) {
-      STACK_PUSH(Zorba::getItemFactory()->createAnyURI(inNode->getBaseURI().getStore()), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getBaseURI().getStore()), state);
     }
     else {
-      ZORBA_ERROR_ALERT(
-          ZorbaError::XPTY0004,
-      &loc, DONT_CONTINUE_EXECUTION, "The argument of the fn:base-uri function is not a node");
+      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
+                            "The argument of the fn:base-uri function is not a node");
     }
   }
   
@@ -179,12 +175,11 @@ store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
   if (inNode != NULL)
   {
     if (inNode->isNode()) {
-      STACK_PUSH(Zorba::getItemFactory()->createAnyURI(inNode->getDocumentURI().getStore()), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getDocumentURI().getStore()), state);
     }
     else {
-      ZORBA_ERROR_ALERT(
-          ZorbaError::XPTY0004,
-      &loc, DONT_CONTINUE_EXECUTION, "The argument of the fn:document-uri function is not a node");
+      ZORBA_ERROR_LOC_DESC(
+          ZorbaError::XPTY0004, loc, "The argument of the fn:document-uri function is not a node");
     }
   }
   
@@ -202,13 +197,13 @@ store::Item_t FnStringIterator::nextImpl(PlanState& planState) const
 
   while((inVal = consumeNext(theChildren[0].getp(), planState)) != NULL) {
     state->hasOutput = true;
-    STACK_PUSH(Zorba::getItemFactory()->createString(inVal->getStringValue().getStore()), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(inVal->getStringValue().getStore()), state);
   }
 
   if (!state->hasOutput && theEmptyStringOnNULL) {
     state->hasOutput = true;
     empty = new xqpStringStore("");
-    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
 
   STACK_END();

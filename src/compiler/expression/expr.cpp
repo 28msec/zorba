@@ -13,7 +13,7 @@
 #include <vector>
 #include <map>
 
-#include <zorba/static_context_consts.h>
+#include "context/static_context_consts.h"
 
 #include "compiler/expression/expr.h"
 #include "system/globalenv.h"
@@ -24,9 +24,8 @@
 #include "context/static_context.h"
 #include "util/Assert.h"
 #include "util/tracer.h"
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 #include "compiler/expression/expr_visitor.h"
-#include "system/zorba.h"
 #include "types/root_typemanager.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
@@ -574,7 +573,7 @@ treat_expr::treat_expr(
   const QueryLoc& loc,
   rchandle<expr> _expr_h,
   xqtref_t _type,
-  enum ZorbaError::ErrorCodes err_)
+  enum ZorbaError::ErrorCode err_)
 :
   cast_base_expr (loc, _expr_h, _type),
   err (err_)

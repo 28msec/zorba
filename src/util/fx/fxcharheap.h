@@ -11,18 +11,11 @@
 #ifndef XQP_FXCHARHEAP_H
 #define XQP_FXCHARHEAP_H
 
-#include <zorba/rchandle.h>
-#include <zorba/common/common.h>
+#include "util/rchandle.h"
+#include "common/common.h"
 
 #include "util/fx/fxarray.h"
 #include <string>
-
-// MS Visual Studio does not fully support throw(), and issues a warning
-#ifndef _MSC_VER
-#define THROW_XQP_EXCEPTION    throw(xqp_exception)
-#else
-#define THROW_XQP_EXCEPTION    
-#endif
 
 
 namespace zorba {
@@ -87,20 +80,17 @@ public:  //heap interface
     off_t id,               // input: heap offset
     char * buf,             // output: output buffer
     uint32_t offset,        // input: buffer starting offset
-    uint32_t maxlen) const  // input: maximum output size, truncate
-  THROW_XQP_EXCEPTION;
+    uint32_t maxlen) const;  // input: maximum output size, truncate
 
   void get0(
     long id,                // input: heap offset
     char * buf,             // output: output buffer
     uint32_t offset,        // input: buffer starting offset
-    uint32_t maxlen) const  // input: maximum output size, truncate
-  THROW_XQP_EXCEPTION;
+    uint32_t maxlen) const;  // input: maximum output size, truncate
 
   // convenience method: return a string 
   std::string gets(
-    off_t id)
-  THROW_XQP_EXCEPTION;
+    off_t id);
 
   /**
    ** Return a pointer to the NULL-delimited string at a given offset
@@ -117,12 +107,11 @@ public:  //heap interface
   off_t put(
     char const* buf,        // input: string
     uint32_t offset,        // input: starting offset
-    uint32_t len)           // input: string length
-  THROW_XQP_EXCEPTION;
+    uint32_t len);           // input: string length
 
   // convenience methods
-  off_t put(char const*) THROW_XQP_EXCEPTION;
-  off_t put(const std::string &) THROW_XQP_EXCEPTION;
+  off_t put(char const*) ;
+  off_t put(const std::string &) ;
 
   /**
    **  Replace a block of characters in place.
@@ -131,8 +120,7 @@ public:  //heap interface
     off_t id,               // input: heap offset
     char const* buf,        // input: string
     uint32_t offset,        // input: starting offset
-    uint32_t len)           // input: string length
-  THROW_XQP_EXCEPTION;
+    uint32_t len);           // input: string length
 
   /**
    **  Return the length of the string at offset 'id'.

@@ -1,12 +1,21 @@
 #ifndef ZORBA_SHARED_TYPES_H
 #define ZORBA_SHARED_TYPES_H
 
-#include <zorba/config/platform.h>
-#include <zorba/common/api_shared_types.h>
+#include "common/config/platform.h"
+
+#include "util/rchandle.h"
 
 namespace zorba {
+  namespace error {
+    class ErrorManager;
+    class ZorbaError;
+  }
   
   namespace store {
+    class Item;
+    typedef rchandle<Item> Item_t;
+    class ItemIterator;
+    typedef rchandle<ItemIterator> ItemIterator_t;
     class NodeItem;
     typedef rchandle<NodeItem> NodeItem_t;
     class TempSeq;
@@ -46,6 +55,12 @@ namespace zorba {
     typedef rchandle<NsBindingsContext> NsBindingsContext_t;
   }
 
+  namespace types {
+    class TypeIdentifier; 
+  };
+
+class CollationCache;
+
 class QueryLoc;
 class XQType;
 class namespace_context;
@@ -62,6 +77,8 @@ class NodeNameTest;
 class context;
 class static_context;
 class dynamic_context;
+class CompilerCB;
+class PlanWrapper;
 
 // Parsenodes
 
@@ -93,6 +110,7 @@ class TypeName; class URILiteralList; class ValueComp; class VarDecl;
 class VarGetsDecl; class VarGetsDeclList; class VarInDecl; class VarInDeclList;
 class VersionDecl; class VFO_DeclList; class WhereClause;
 class Wildcard; class QName;
+class TryExpr; class CatchListExpr; class CatchExpr;
 
 
 class exprnode;
@@ -146,13 +164,60 @@ class attr_expr; class text_expr; class pi_expr; class function_def_expr;
 class insert_expr; class delete_expr; class replace_expr; class rename_expr;
 class transform_expr;
 
+class XQPCollator;
+class ItemVariableIterator;
+typedef rchandle<ItemVariableIterator> ItemVariableIterator_t;
 
+typedef rchandle<parsenode> parsenode_t;
 typedef rchandle<expr> expr_t;
 typedef const_rchandle<XQType> xqtref_t;
 typedef rchandle<namespace_context> NamespaceContext_t;
 typedef rchandle<PlanIterator> PlanIter_t;
 
 typedef rchandle<NodeNameTest> NodeNameTest_t;
+typedef rchandle<static_context> static_context_t;
+typedef rchandle<CompilerCB> CompilerCB_t;
+typedef rchandle<PlanWrapper> PlanWrapper_t;
+
+/* datetime stuff */
+class DateTime;
+class Date;
+class DayTimeDuration;
+class Decimal;
+class Duration;
+class Time;
+class TimeZone;
+class YearMonthDuration;
+class GYearMonth;
+class GYear;
+class GMonthDay;
+class GDay;
+class GMonth;
+class xqpString;
+class xqpStringStore;
+typedef rchandle<DateTime> DateTime_t;
+typedef rchandle<Date> Date_t;
+typedef rchandle<Time> Time_t;
+typedef rchandle<TimeZone> TimeZone_t;
+typedef rchandle<DayTimeDuration> DayTimeDuration_t;
+typedef rchandle<YearMonthDuration> YearMonthDuration_t;
+typedef rchandle<Duration> Duration_t;
+typedef rchandle<GYearMonth> GYearMonth_t;
+typedef rchandle<GYear> GYear_t;
+typedef rchandle<GMonthDay> GMonthDay_t;
+typedef rchandle<GDay> GDay_t;
+typedef rchandle<GMonth> GMonth_t;
+
+class Iterator;
+typedef rchandle<Iterator> Iterator_t;
+
+/* numerics */
+template <class Object> class FloatImpl;
+class Integer;
+
+/* numerics */
+typedef FloatImpl<double> Double;
+typedef FloatImpl<float>  Float;
 
 }
 

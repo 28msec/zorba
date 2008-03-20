@@ -3,9 +3,9 @@
 
 #include "timer.h"
 
-#include <zorba/zorba_api.h>
+#include <zorba/zorba.h>
 
-#include "errors/error_factory.h"
+#include "errors/errors.h"
 #include "system/globalenv.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_store.h"
@@ -16,11 +16,6 @@
 
 
 using namespace zorba;
-
-#ifdef _DEBUG
-extern const char*		zorba::g_error_in_file;
-extern int				zorba::g_error_at_line;
-#endif
 
 
 void readXmlFile(const char* fileName, std::string& xmlString)
@@ -49,7 +44,6 @@ void readXmlFile(const char* fileName, std::string& xmlString)
 
 int main(int argc, const char * argv[])
 {
-	// xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
   if (argc < 2)
   {
@@ -62,15 +56,6 @@ int main(int argc, const char * argv[])
   // Store initialization
   //
   zorba::store::SimpleStore* store = static_cast<zorba::store::SimpleStore*>(&zorba::GENV.getStore());
-
-  //
-  // Zorba initialization
-  // 
-  ZorbaEngine_t zorba_factory = ZorbaEngine::getInstance();
-
-	zorba_factory->initThread();
-
-	ZorbaAlertsManager_t errmanager = zorba_factory->getAlertsManagerForCurrentThread();
 
   //
   // Create collections
@@ -87,13 +72,12 @@ int main(int argc, const char * argv[])
 
     coll2 = store->createCollection(uri);
   }
-  catch (xqp_exception& e)
+  catch (zorba::error::ZorbaError& e)
   {
-    std::cerr << e;
-    abort();
+    std::cout << e.theDescription << std::endl;
+    return 1;
   }
 
-	errmanager->dumpAlerts(std::cerr);
 
   //
   // Load an xml doc from a file to a collection
@@ -118,10 +102,10 @@ int main(int argc, const char * argv[])
   {
     doc = coll1->addToCollection(xmlStream);
   }
-  catch (xqp_exception& e)
+  catch (zorba::error::ZorbaError& e)
   {
-    std::cerr << e;
-    abort();
+    std::cout << e.theDescription << std::endl;
+    return 1;
   }
 
 #ifndef WIN32
@@ -146,14 +130,10 @@ int main(int argc, const char * argv[])
   if (doc != NULL)
     outXmlFile << doc->show() << std::endl;
   else
-    errmanager->dumpAlerts(outXmlFile);
+    return 1;
 
-  errmanager->dumpAlerts(std::cerr);
 
   doc = 0;
-
-  zorba_factory->uninitThread();
-  zorba_factory->shutdown();
 
   return 0;
 }

@@ -12,9 +12,9 @@
 
 #include <vector>
 
-#include <zorbatypes/representations.h>
+#include "zorbatypes/representations.h"
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 #include "common/shared_types.h"
 

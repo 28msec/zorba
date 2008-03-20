@@ -28,9 +28,9 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include <zorbatypes/representations.h>
+#include "zorbatypes/representations.h"
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 #include <zorba/properties.h>
 
 #include <cstdlib>

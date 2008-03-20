@@ -3,12 +3,34 @@
 
 #include <vector>
 
-#include "zorba/common/api_shared_types.h"
+#include "common/shared_types.h"
 
 #include "store/util/mutex.h"
 
 
 namespace zorba { namespace store {
+
+class CompareParam
+{};
+
+class StringCompareParam
+{};
+
+template <class T, class E, class C>
+class Externals
+{
+public:
+  static bool equal(const T* t1, const T* t2, C* aCompareParam)
+  {
+    return E::equal(t1, t2);
+  }
+  static uint32_t hash(const T* t1, C* aCompareParam)
+  {
+    return E::hash(t1);
+  }
+};
+
+
 
 /*******************************************************************************
 
@@ -33,7 +55,7 @@ namespace zorba { namespace store {
                    hash table is doubled in size.
 
 ********************************************************************************/
-template <class T, class E>
+template <class T, class E, class C = CompareParam>
 class HandleSet
 {
 protected:
@@ -59,8 +81,10 @@ protected:
   ulong                   theHashTabSize;
   ulong                   theInitialSize;
   double                  theLoadFactor;
+  C*                      theCompareParam;
 
   SYNC_CODE(Mutex         theMutex;)
+
 
 public:
 
@@ -73,7 +97,23 @@ HandleSet(ulong size)
   theNumEntries(0),
   theHashTabSize(size),
   theInitialSize(size),
-  theLoadFactor(DEFAULT_LOAD_FACTOR)
+  theLoadFactor(DEFAULT_LOAD_FACTOR),
+  theCompareParam(0)
+{
+  theHashTab.resize(theHashTabSize + 32);
+
+  HashEntry* lastentry = &theHashTab[theHashTabSize + 31];
+  for (HashEntry* entry = &theHashTab[theHashTabSize]; entry < lastentry; entry++)
+    entry->theNext = entry + 1;
+}
+
+HandleSet(C* aCompareParam, ulong size) 
+  :
+  theNumEntries(0),
+  theHashTabSize(size),
+  theInitialSize(size),
+  theLoadFactor(DEFAULT_LOAD_FACTOR),
+  theCompareParam(aCompareParam)
 {
   theHashTab.resize(theHashTabSize + 32);
 
@@ -88,6 +128,11 @@ HandleSet(ulong size)
 ********************************************************************************/
 virtual ~HandleSet()
 {
+  if (theCompareParam != 0)
+  {
+    delete theCompareParam;
+    theCompareParam = 0;
+  }
 }
 
 
@@ -111,14 +156,14 @@ bool find(const T* item)
 {
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  HashEntry* entry = &theHashTab[E::hash(item) % theHashTabSize];
+  HashEntry* entry = &theHashTab[Externals<T,E,C>::hash(item, theCompareParam) % theHashTabSize];
 
   if (entry->theItem == NULL)
     return false;
 
   while (entry != NULL)
   {
-    if (E::equal(entry->theItem, item))
+    if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
       return true;
 
     entry = entry->theNext;
@@ -138,7 +183,7 @@ bool insert(const T* item)
 
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  HashEntry* entry = hashInsert(item, E::hash(item), found);
+  HashEntry* entry = hashInsert(item, Externals<T,E,C>::hash(item, theCompareParam), found);
 
   if (!found)
     entry->theItem = const_cast<T*>(item);
@@ -158,7 +203,7 @@ bool insert(const T* item,  rchandle<T>& outItem)
 
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  HashEntry* entry = hashInsert(item, E::hash(item), found);
+  HashEntry* entry = hashInsert(item, Externals<T,E,C>::hash(item, theCompareParam), found);
 
   if (!found)
   {
@@ -182,7 +227,7 @@ bool remove(const T* item)
 {
   SYNC_CODE(AutoMutex lock(theMutex);)
 
-  HashEntry* entry = &theHashTab[item.hash() % theHashTabSize];
+  HashEntry* entry = &theHashTab[Externals<T,E,C>::hash(item) % theHashTabSize];
 
   if (entry->theItem == NULL)
     return false;
@@ -191,7 +236,7 @@ bool remove(const T* item)
 
   while (entry != NULL)
   {
-    if (E::equal(entry->theItem, item))
+    if (Externals<T,E,C>::equal(entry->theItem, item))
     {
       theNumEntries--;
 
@@ -254,7 +299,7 @@ HashEntry* hashInsert(
   // Search the hash bucket looking for the given item.
   while (entry != NULL)
   {
-    if (E::equal(entry->theItem, item))
+    if (Externals<T,E,C>::equal(entry->theItem, item, theCompareParam))
     {
       found = true;
       return entry;
@@ -348,7 +393,7 @@ void resizeHashTab(ulong newSize)
   {
     T* item = oldTab[i].theItem;
 
-    entry = &theHashTab[E::hash(item) % theHashTabSize];
+    entry = &theHashTab[Externals<T,E,C>::hash(item, theCompareParam) % theHashTabSize];
 
     if (entry->theItem != NULL)
     {
@@ -386,11 +431,11 @@ virtual void garbageCollect()
 { 
 }
 
+
 };
 
-
-template <class T, class E>
-const double HandleSet<T, E>::DEFAULT_LOAD_FACTOR = 0.6;
+template <class T, class E, class C>
+const double HandleSet<T, E, C>::DEFAULT_LOAD_FACTOR = 0.6;
 
 
 } // namespace store

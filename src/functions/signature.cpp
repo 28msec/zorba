@@ -8,8 +8,7 @@
  */
  
 #include "signature.h"
-#include "context/common.h"
-#include <zorba/item.h>
+#include "store/api/item.h"
 
 using namespace std;
 

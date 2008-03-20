@@ -25,9 +25,9 @@
 #ifndef ZORBA_DYNAMIC_CONTEXT_H
 #define ZORBA_DYNAMIC_CONTEXT_H
 
-#include <zorbatypes/representations.h>
+#include "zorbatypes/representations.h"
 
-#include <zorba/rchandle.h>
+#include "util/rchandle.h"
 
 #include "util/hashmap.h"
 #include "common/shared_types.h"
@@ -103,8 +103,8 @@ public:
 	void		set_implicit_timezone(long tzone_seconds);
 	long		get_implicit_timezone();
 
-	void				add_variable(xqp_string varname, Iterator* var_iterator);
-	Iterator_t	get_variable(xqp_string varname);
+	void				add_variable(xqp_string varname, Iterator_t var_iterator);
+	Iterator_t	get_variable(const xqp_string& varname);
 
 	xqp_string get_default_collection();
 	void set_default_collection(xqp_string default_collection_uri);

@@ -5,7 +5,8 @@
  */
 
 #include "system/globalenv.h"
-#include "errors/error_factory.h"
+#include "compiler/parser/query_loc.h"
+#include "errors/error_manager.h"
 #include "util/Assert.h"
 
 #include "store/naive/atomic_items.h"
@@ -15,7 +16,8 @@
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/nsbindings.h"
-#include "store/naive/item_iterator.h"
+#include "store/api/temp_seq.h"
+#include "store/api/item_iterator.h"
 
 
 #ifndef NDEBUG
@@ -657,9 +659,8 @@ void ElementNode::checkUniqueAttr(Item* attrName) const
   {
     if (getAttr(i)->getNodeName()->equals(attrName))
     {
-      ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0025, NULL, DONT_CONTINUE_EXECUTION, 
-                            "Attribute name " << attrName->getStringValue() 
-                            << " is not unique", "");
+      ZORBA_ERROR_OSS( ZorbaError::XQDY0025, "Attribute name " << attrName->getStringValue() 
+                       << " is not unique", "");
     }
   }
 }

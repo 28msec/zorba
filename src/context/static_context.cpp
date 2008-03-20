@@ -30,25 +30,25 @@
 
 #include <assert.h>
 
-#include <zorbatypes/Unicode_util.h>
+#include "zorbatypes/Unicode_util.h"
 
 #include <zorba/stateless_function.h>
-#include <zorba/static_context_consts.h>
+#include "context/static_context_consts.h"
+#include "zorbatypes/collation_manager.h"
 
-#include "system/zorba_engine.h"
-#include "context/common.h"
-#include "errors/error_factory.h"
+#include "api/unmarshaller.h"
+
+#include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "context/static_context.h"
 #include "types/typemanager.h"
-#include "system/zorba.h"
-#include "context/collation_manager.h"
 #include "functions/function.h"
 #include "functions/library.h"
 #include "types/casting.h"
 #include "functions/signature.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "context/collation_cache.h"
 
 
 // MS Visual Studio does not fully support throw(), and issues a warning
@@ -63,11 +63,12 @@ namespace zorba {
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-static_context::static_context()
-    : context(NULL) { }
+  static_context::static_context()
+  : context(NULL)
+  { }
   
   static_context::static_context (static_context *_parent)
-    : context (_parent) {}
+  : context (_parent) {}
 
 	static_context::~static_context()
 	{
@@ -79,7 +80,8 @@ static_context::static_context()
 		checked_vector<hashmap<ctx_value_t>::entry>::const_iterator		it;
 		const char		*keybuff;
 		const ctx_value_t *val;
-		Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
+    // TODO
+		//Zorba	*z = ZORBA_FOR_CURRENT_THREAD();
 
 		//keybuff[sizeof(keybuff)-1] = 0;
 		for(it = keymap.begin();it!=keymap.end();it++)
@@ -95,15 +97,15 @@ static_context::static_context()
 			}
 			else if(!strncmp(keybuff, "collation:", 10))
 			{
-				val = &(*it).val;
-				if(!val->collationValue->is_user_created)
-				{
-					if(z)
-					{
-						z->coll_manager->removeReference(val->collationValue->coll_string.c_str(), val->collationValue->coll_strength);
-					}
-          delete val->collationValue;
-				}
+			//val = &(*it).val;
+			//if(!val->collationValue->is_user_created)
+			//{
+			//	if(z)
+			//	{
+			//		z->coll_manager->removeReference(val->collationValue->coll_string, val->collationValue->coll_strength);
+			//	}
+      //  delete val->collationValue;
+			//}
 			}
             else if (!strncmp(keybuff, "fn:", 3))
             {
@@ -205,7 +207,7 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
     else {
       f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) + qname_internal_key (default_function_namespace (), prefix, local));
       if (f == NULL)
-        ZORBA_ERROR_ALERT (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, local, to_string (arity));
+        ZORBA_ERROR_OSS ( ZorbaError::XPST0017, local, to_string (arity));
       return f;
     }
   }
@@ -215,12 +217,12 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
     xqp_string ns;
     if(!context_value ("ns:" + prefix, ns) || ns.empty())
 		{
-			ZORBA_ERROR_ALERT(ZorbaError::XPST0081);
+			ZORBA_ERROR( ZorbaError::XPST0081);
 		}
     return ns;
   }
 
-  void static_context::bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCodes err)
+  void static_context::bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCode err)
   {
     bind_str ("ns:" + prefix, ns, err);
   }
@@ -322,166 +324,57 @@ xqtref_t static_context::get_collection_type(
 	return lookup_type("type:collection:" + collURI);
 }
 
-void static_context::add_collation(xqp_string collation_uri, 
-										std::string  coll_string, 
-										//::Collator::ECollationStrength coll_strength,
-										::Collator *coll,
-										bool is_user_created)
+/**
+ * collation management
+ */
+void 
+static_context::add_collation(const xqp_string& aURI, const xqp_string& aName)
 {
-	COLLATION_OBJ	*cobj;
-
-	cobj = new COLLATION_OBJ;
-	cobj->coll_uri = collation_uri;
-	cobj->coll_string = coll_string;
-	cobj->coll_strength = ::Collator::TERTIARY;//coll_strength
-	cobj->is_user_created = is_user_created;
-	cobj->coll = coll;
-
-	bind_collation(collation_uri, cobj);
+  bind_collation(aName, aURI);
 }
 
-xqp_string static_context::default_collation_uri() const
+CollationCache*
+static_context::get_collation_cache() 
 {
-	xqp_string		def_uri;
-	lookup_once("def_collation_uri:", def_uri);
-	return def_uri;
+  return new CollationCache(this);
 }
 
-void static_context::set_default_collation_uri(xqp_string def_uri)
+void
+static_context::release_collation_cache(CollationCache* aCache)
 {
-	if(!CollationManager::getHardcodedCollator(def_uri.c_str()) &&
-		!lookup_collation(def_uri))
-	{
-		ZORBA_ERROR_ALERT(ZorbaError::XQST0038);
-	}
-	bind_str("def_collation_uri:", def_uri, ZorbaError::XQST0038);
+  delete aCache;
 }
 
-context::COLLATION_OBJ	*static_context::lookup_collation(xqp_string coll_uri)
+XQPCollator*
+static_context::create_collator(const xqp_string& aURI)
 {
-	xqp_string key;
-  ctx_value_t val;
-
-	key = "collation:" + coll_uri;
-  if(context_value (key, val))
-		return val.collationValue;
-	else
-		return NULL;
+  return CollationFactory::createCollator(aURI); 
 }
 
-void		static_context::bind_collation(xqp_string coll_uri, context::COLLATION_OBJ* cinfo)
+xqp_string 
+static_context::default_collation_uri() const
 {
-	xqp_string key;
-  ctx_value_t v;
-
-	key = "collation:" + coll_uri;
-  v.collationValue = cinfo;
-  keymap.put (key, v);
+  xqp_string lURI;
+  if (!lookup_default_collation(lURI))
+  {
+    lURI = "http://www.flworfound.org/collations/IDENTICAL/en/US";
+  }
+  return lURI;
 }
 
-::Collator *static_context::get_collation(xqp_string collURI, bool error_if_not_found)
+bool
+static_context::get_collation_uri(const xqp_string& aName, xqp_string& aURI) const
 {
-	///first search in fxhash
-	COLLATION_OBJ*		cinfo;
-
-	cinfo = lookup_collation( collURI );
-	if(!cinfo)
-	{
-		const CollationManager::COLLATION_DESCR	*def_coll;
-
-		def_coll = CollationManager::getHardcodedCollator(collURI.c_str());
-		if(!def_coll)
-		{
-			if(error_if_not_found)
-			{
-				//static context component missing
-				ZORBA_ERROR_ALERT( ZorbaError::XPST0001, NULL, CONTINUE_EXECUTION, "collation " + collURI);  //continue execution
-			}
-			return NULL;///collation non-existant
-		}
-
-		::Collator *coll = ZORBA_FOR_CURRENT_THREAD()->coll_manager->getCollation(def_coll->coll_string, def_coll->coll_strength);
-		if(!coll)
-		{
-		//	ZORBA_ERROR_ALERT(
-		//			ZorbaError::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-		//			ZorbaError::STATIC_ERROR,
-		//			NULL
-		//		);
-			return NULL;///collation non-existant
-		}
-		cinfo = new COLLATION_OBJ;
-		cinfo->coll_uri = collURI;
-		cinfo->coll_string = def_coll->coll_string;
-		cinfo->coll_strength = def_coll->coll_strength;
-		cinfo->coll = coll;
-		cinfo->is_user_created = false;
-		bind_collation(collURI, cinfo);
-	}
-	else if(!cinfo->coll)
-	{
-		cinfo->coll = ZORBA_FOR_CURRENT_THREAD()->coll_manager->getCollation(cinfo->coll_string.c_str(), cinfo->coll_strength);
-		if(!cinfo->coll)
-		{
-		//	ZORBA_ERROR_ALERT(
-		//			ZorbaError::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-		//			ZorbaError::STATIC_ERROR,
-		//			NULL
-		//		);
-			return NULL;///collation non-existant
-		}
-		cinfo->is_user_created = false;
-	}
-
-	return cinfo->coll;
+  return lookup_collation(aName, aURI);
 }
 
-::Collator *static_context::getDefaultCollation()
+void 
+static_context::set_default_collation_uri(const xqp_string& aURI)
 {
-	xqp_string		def_coll_uri;
-	::Collator		*coll;
-
-	///look if the default collator is already in static context hash
-	///if not, then try to create it
-
-	def_coll_uri = default_collation_uri();
-
-	coll = get_collation( def_coll_uri, false );
-	if(coll)
-	{
-		return coll;
-	}
-	else if(!def_coll_uri.empty())
-	{
-		//error, uri not found
-		//ZORBA_ERROR_ALERT( ZorbaError::XQST0076, NULL);//only for FLWOR
-		return NULL;///collation non-existant
-	}
-
-	///else create it with root/::Collator::TERTIARY
-
-	coll = ZORBA_FOR_CURRENT_THREAD()->coll_manager->getCollation(
-																													"root", ::Collator::TERTIARY);
-	if(!coll)
-	{
-	//	ZORBA_ERROR_ALERT(
-	//			ZorbaError::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
-	//			ZorbaError::STATIC_ERROR,
-	//			NULL
-	//		);
-		return NULL;///collation non-existant
-	}
-	COLLATION_OBJ*		cinfo;
-	cinfo = new COLLATION_OBJ;
-	cinfo->coll_uri = "";
-	cinfo->coll_string = "root";
-  cinfo->coll_strength = ::Collator::TERTIARY;
-	cinfo->coll = coll;
-	cinfo->is_user_created = false;
-	bind_collation("", cinfo);
-
-	return coll;
+  bind_default_collation(aURI);
 }
+
+
 
 /*
   DECL_STR_PARAM (static_context, current_absolute_baseuri)
@@ -594,8 +487,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
       {
         if((tempuri.indexOf("/") != 1) && (tempuri.indexOf("\\") != 1))
         {
-          ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0020_INVALID_URI, NULL, DONT_CONTINUE_EXECUTION,
-                      base_uri << " + " << uri, "");
+          ZORBA_ERROR_OSS( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
           return "";
         }
         xqp_string    tempabs;
@@ -609,8 +501,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
         
         if(last_slash < 0)
         {
-          ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0020_INVALID_URI, NULL, DONT_CONTINUE_EXECUTION,
-                      base_uri << " + " << uri, "");
+          ZORBA_ERROR_OSS( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
           return "";
         }
         abs_uri = abs_uri.substr(0, last_slash+1);
@@ -638,8 +529,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
 
 	if(!GenericCast::instance()->isCastable(abs_uri, GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
   {
-    ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0020_INVALID_URI, NULL, DONT_CONTINUE_EXECUTION,
-                base_uri << " + " << uri, "");
+    ZORBA_ERROR_OSS( ZorbaError::XQP0020_INVALID_URI,  base_uri << " + " << uri, "");
     return "";
   }
 
@@ -664,26 +554,27 @@ xqp_string		static_context::resolve_relative_uri( xqp_string uri )
 	if(abs_base_uri.empty())
 	{
 		//then error ! cannot resolve relative uri
-		ZORBA_ERROR_ALERT(ZorbaError::XPST0001, NULL, DONT_CONTINUE_EXECUTION, "empty base URI");
+		ZORBA_ERROR_DESC( ZorbaError::XPST0001, "empty base URI");
 		return "";
 	}
 
 	return make_absolute_uri(uri, abs_base_uri);
 }
 
-void 
-static_context::bind_stateless_external_function(StatelessExternalFunction_t& aExternalFunction) {
-  m_stateless_ext_functions.put(aExternalFunction->getLocalName() +":" +aExternalFunction->getURI(),
-                                aExternalFunction);
+bool
+static_context::bind_stateless_external_function(StatelessExternalFunction* aExternalFunction) {
+  xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
+  xqpString lURI = Unmarshaller::getInternalString(aExternalFunction->getURI());
+
+  return ! m_stateless_ext_functions.put(lLocalName +":" +lURI, aExternalFunction);
 }
 
 StatelessExternalFunction *
 static_context::lookup_stateless_external_function(xqp_string aPrefix, xqp_string aLocalName)
 {
-  StatelessExternalFunction_t lExtFun;
+  StatelessExternalFunction* lExtFun;
   return  m_stateless_ext_functions.get(
-                 qname_internal_key(default_function_namespace(), aPrefix, aLocalName), lExtFun) 
-                 ? lExtFun.getp() : NULL;
+                 qname_internal_key(default_function_namespace(), aPrefix, aLocalName), lExtFun)?lExtFun:0;
 }
 
 }	/* namespace zorba */

@@ -27,23 +27,19 @@
 #define ZORBA_SERIALIZER_H
 
 #include <ostream>
-#include <zorbatypes/representations.h>
+#include "zorbatypes/representations.h"
 #include "common/shared_types.h"
 
 
 namespace zorba
 {
 
-class ResultIterator;
-
-
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
-
 
 class serializer : public SimpleRCObject
 {
 public:
-	serializer();
+	serializer(error::ErrorManager*);
 	virtual ~serializer();
 
 public:	
@@ -53,7 +49,7 @@ public:
    * @param result The query result to be serialized.
    * @param os The stream to serialize to.
    */
-  void serialize(ResultIterator *result, std::ostream& os);
+  void serialize(PlanWrapper *result, std::ostream& os);
   
   /**
    * Serializes the given item to the output stream.
@@ -74,6 +70,8 @@ public:
 
 
 protected:
+  error::ErrorManager* theErrorManager;
+
   // Serialization parameters
   short int byte_order_mark;         // "yes" or "no", implemented
   short int cdata_section_elements;  // TODO: list of expanded QNames

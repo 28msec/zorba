@@ -2,13 +2,14 @@
 #define ZORBA_NORMALIZER_H
 
 #include "common/shared_types.h"
+#include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_visitor.h"
 
 namespace zorba {
 
 class normalizer : public expr_visitor {
   public:
-    normalizer(static_context *ctx) : m_sctx(ctx) { }
+    normalizer(CompilerCB* aCompilerCB) : m_sctx(aCompilerCB->m_sctx) { }
     ~normalizer() { }
 
     bool begin_visit(expr&);
@@ -86,7 +87,7 @@ class normalizer : public expr_visitor {
 };
 
 
-void normalize_expr_tree (const char *, static_context *sctx, expr_t root);
+void normalize_expr_tree (const char *, CompilerCB*, expr_t root);
 
 } /* namespace zorba */
 #endif /* ZORBA_NORMALIZER_H */

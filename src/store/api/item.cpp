@@ -7,14 +7,13 @@
  *
  */
 
-#include <zorba/item.h>
-#include <zorba/iterator.h>
-
-#include "errors/error_factory.h"
+#include "store/api/item.h"
+#include "store/api/iterator.h"
+#include "errors/error_manager.h"
 #include "util/Assert.h"
 
-#include "system/zorba_engine.h"
-#include "system/zorba.h"
+//#include "system/zorba_engine.h"
+//#include "system/zorba.h"
 #include "system/globalenv.h"
 
 #include "api/serialization/serializer.h"
@@ -390,7 +389,7 @@ NodeKind Item::getNodeKind() const
 /** Accessor for element node, attribute node
  *  @return qname?
  */
-Item_t Item::getNodeName() const
+store::Item_t Item::getNodeName() const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -400,7 +399,7 @@ Item_t Item::getNodeName() const
  * comment node, text node
  * @return node?
  */
-Item_t Item::getParent() const
+store::Item_t Item::getParent() const
 {
   ZORBA_ASSERT(false);
   return NULL;
@@ -497,10 +496,12 @@ xqp_string Item::show() const
 
 void Item::serializeXML( std::ostream& os )
 {
+#if 0
   serializer *ser;
   ser = ZORBA_FOR_CURRENT_THREAD()->getItemSerializer();
   
   ser->serialize(this, os);
+#endif
 }
 
 } // namespace store

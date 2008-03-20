@@ -3,8 +3,8 @@
 #define ZORBA_STORE_NODE_ITEMS_H
 
 
-#include <zorba/common/common.h>
-#include <zorba/item.h>
+#include "common/common.h"
+#include "store/api/item.h"
 #include "common/shared_types.h"
 #include "errors/fatal.h"
 #include "store/naive/ordpath.h"

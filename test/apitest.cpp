@@ -1,78 +1,34 @@
+#include <zorba/zorba.h>
 
-////using the C++ API
-
-#include <zorba/zorba_api.h>
-
-#include "../src/util/logging/loggermanager.hh"
 #include "timer.h"
 #include <zorba/properties.h>
-
 
 #include <fstream>
 #include <iostream>
 #include <iomanip>
 
-namespace zorba{
-#ifndef NDEBUG
-extern const char*		g_error_in_file;
-extern int						g_error_at_line;
-extern bool						g_abort_when_fatal_error;
-#endif
-}
-
 using namespace zorba;
 using namespace std;
 
 
-#ifdef UNICODE
-#error apitest: UNICODE no longer supported
-#endif
-
-int apitest_alert_callback(ZorbaAlert_t alert_mess, 
-                           XQuery *current_xquery,
-													 ResultIterator	*current_result,
-                           void *param)
+void set_var (string name, string val, DynamicContext_t dctx)
 {
-#ifndef NDEBUG
-  if ((alert_mess->theKind != ZorbaAlert::USER_ERROR_ALERT) &&
-      (alert_mess->theKind != ZorbaAlert::USER_TRACE_ALERT) &&
-      g_error_in_file != NULL)
+  if (name [name.size () - 1] == ':') 
   {
-    cerr << g_error_in_file << ": " << g_error_at_line << endl;
+    Item lItem = Zorba::getInstance()->getItemFactory()->createString(val);
+		if(name != ".") {
+			dctx->setVariable(name.substr (0, name.size () - 1), lItem);
+		} else
+			dctx->setContextItem(lItem);
   }
-#endif
-  cerr << endl;
-
-//  DisplayOneAlert(alert_mess);
-	alert_mess->dumpAlert(cerr);
-
-  cerr.flush();
-
-  return -1;
-}
-
-
-void set_var (string name, string val,
-              DynamicQueryContext_t dctx,
-              XQuery_t query)
-{
-  if (name [name.size () - 1] == ':' && dctx != NULL) 
-  {
-		bool result;
-		if(name != ".")
-			result = dctx->setVariableAsString(name.substr (0, name.size () - 1), xqp_string(val));
-		else
-			result = dctx->setContextItemAsString(xqp_string(val));
-    assert (result);
-  }
-  else if (name[name.size () - 1] != ':' && query != NULL)
+  else if (name[name.size () - 1] != ':')
   {
     ifstream is (val.c_str ());
     assert (is);
 		if(name != ".")
-			query->setVariableAsDocumentFromStream(name, val.c_str(), is);
+			dctx->setVariableAsDocument(name, val.c_str(), is);
 		else
-			query->setContextItemAsDocumentFromStream(val.c_str(), is);
+			dctx->setContextItemAsDocument(val.c_str(), is);
   }
 }
 
@@ -91,54 +47,6 @@ void slurp_file (const char *fname, string &result) {
   delete [] str;
 }
 
-class ZorbaEngineWrapper {
-public:
-  ZorbaEngine_t factory;
-  StaticQueryContext_t sctx;
-
-  ZorbaEngineWrapper (alert_callback alert_cb = NULL, void *alert_param = NULL)
-    : factory (ZorbaEngine::getInstance())
-  {
-    factory->initThread();
-    /// register the alerts callback
-    ZorbaAlertsManager_t errmanager = factory->getAlertsManagerForCurrentThread();
-    
-    if (alert_cb != NULL)
-      errmanager->registerAlertCallback(alert_cb, alert_param);
-
-    sctx = factory->createStaticContext();
-    sctx->addCollation("http://www.flworfound.org/apitest/coll1", "en");
-    sctx->addCollation("http://www.flworfound.org/apitest/coll2", "de");
-    sctx->addCollation("http://www.flworfound.org/apitest/coll3", "fr");
-    sctx->setOrderingMode(StaticContextConsts::unordered);
-  }
-  ~ZorbaEngineWrapper () {
-    //DisplayErrorListForCurrentThread();
-		factory->getAlertsManagerForCurrentThread()->dumpAlerts(cerr);
-
-    factory->uninitThread();
-    factory->shutdown();
-  }
-
-  bool initExecution (XQuery_t query, const vector< pair <string, string> > &vars) {
-    DynamicQueryContext_t dctx = factory->createDynamicContext ();
-    for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
-         iter != vars.end (); iter++) {
-      set_var (iter->first, iter->second, dctx, NULL);
-    }
-    
-    bool result = query->initExecution(dctx);
-
-    if( result != false) {
-      for (vector<pair <string, string> >::const_iterator iter = vars.begin ();
-           iter != vars.end (); iter++) {
-        set_var (iter->first, iter->second, NULL, query);
-      }
-    }
-    
-    return result;
-  }
-};
 
 class TimePrinter {
   Timer timer;
@@ -163,12 +71,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // start timer as soon as possible, if enabled
   auto_ptr<TimePrinter> timer (lProp->printTime() ? new TimePrinter : NULL);
-  
-#ifndef NDEBUG
-  g_abort_when_fatal_error = lProp->abortWhenFatalError();
-#endif
-
-  zorba::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
   // output file
   auto_ptr<ostream> outputFile (lProp->useResultFile() ?
@@ -188,38 +90,39 @@ int _tmain(int argc, _TCHAR* argv[])
   if (lProp->printQuery())
     cout << query_text << endl;
 
-  // start the zorba engine
-  ZorbaEngineWrapper zengine (apitest_alert_callback, (void*) 101);
+  Zorba* zengine = Zorba::getInstance();
 
-  // compile query
-  XQuery_t query = zengine.factory->createQuery(query_text.c_str(), zengine.sctx);
-  if (query == NULL)
-    return 0;
+  XQuery_t query;
+  try {
+    query = zengine->createQuery(query_text.c_str());
+  } catch (ZorbaException &e) {
+    std::cerr << e << std::endl;
+    return 1;
+  }
 
-  // create dynamic context and execution
   vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
-  bool result = zengine.initExecution (query, ext_vars);
-
-	query->setAlertsParam(query.getp());  // to be passed to alerts callback when error occurs
+  DynamicContext_t dctx = query->getDynamicContext ();
+  for (vector<pair <string, string> >::const_iterator iter = ext_vars.begin ();
+       iter != ext_vars.end (); iter++) {
+    set_var (iter->first, iter->second, dctx);
+  }
 
   if (lProp->useSerializer()) {
-    query->serialize(*resultFile);
-    // newline should not be sent when serializing!
+    *resultFile << query;
   } else {
-		ResultIterator_t	result;
-    store::Item_t it;
-		result = query->getIterator();
-    while (NULL != (it = result->nextItem ()).getp ())
-      *resultFile << it->show() << endl;
-		result->closeIterator();
+    try {
+      ResultIterator_t result = query->iterator();
+      result->open();
+      Item lItem;
+      while (result->next(lItem))
+        *resultFile << lItem.getStringValue() << endl;
+      result->close();
+    } catch (ZorbaException &e) {
+      std::cerr << e << std::endl;
+      return 2;
+    }
   }
   
-  if (query->isError ())
-  {
-    query = 0;
-    return 0;
-  }
 
-  //  query = 0;
   return 0;
 }

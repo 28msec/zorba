@@ -6,8 +6,7 @@
 #include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/positional_options.hpp>
 
-#include <zorba/errors.h>
-#include <zorba/xqp_exception.h>
+#include  "errors/errors.h"
 #include  "store/naive/ordpath.h"
 
 
@@ -118,9 +117,10 @@ int main(int argc, char * argv[])
 
       std::cout << "ordpath = " << path.show() << std::endl;
     }
-    catch (zorba::ZorbaException& e)
+    catch (zorba::error::ZorbaError& e)
     {
-      std::cout << e << std::endl;
+      std::cout << e.theDescription << std::endl;
+      return 1;
     }
   }
 

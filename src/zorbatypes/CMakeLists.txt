@@ -4,7 +4,8 @@ SET(ZORBATYPES_SRCS
   integer.cpp
   numconversions.cpp
   utf8/xqpString.cpp
-  utf8/Unicode_util.cpp)
+  utf8/Unicode_util.cpp
+  collation_manager.cpp)
   
 ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS mapm     MAPM_SRCS)
 ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS datetime DATETIME_SRCS)

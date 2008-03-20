@@ -3,12 +3,9 @@
  *  Author: Tim Kraska, David Graf
  *
  */
-#include <zorba/item.h>
 
 #include "runtime/core/item_iterator.h"
 #include "util/Assert.h"
-#include "system/zorba.h"
-#include "errors/error_factory.h"
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
 #include "runtime/booleans/BooleanImpl.h"

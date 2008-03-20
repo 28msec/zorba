@@ -9,7 +9,7 @@
   ported to windows
  */
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 #include "util/file.h"
 
@@ -45,7 +45,7 @@
 #include <sstream>
 #include <string>
 
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 
 
 using namespace std;
@@ -68,7 +68,7 @@ static const char *FS_NAMES[] = {
 
 
 file::file(const std::string& _path)
-THROW_XQP_EXCEPTION
+
 :
 	path(_path),
   type(type_non_existent)
@@ -134,7 +134,7 @@ THROW_XQP_EXCEPTION
 
 file::file(
 	std::string const& base,
-	std::string const& name) THROW_XQP_EXCEPTION
+	std::string const& name)
 :
 	path(base+"/"+name),
   type(type_non_existent)
@@ -210,7 +210,7 @@ file::~file()
 
 
 enum file::filetype file::get_filetype( )
-THROW_XQP_EXCEPTION
+
 {
   if (type!=type_non_existent) return type;
 
@@ -270,27 +270,13 @@ THROW_XQP_EXCEPTION
 volatile void file::error(
 	string const& location,
 	string const& msg)
-THROW_XQP_EXCEPTION
 {
-#ifndef _WIN32_WCE
-	std::string err = strerror(errno);
-  errno = 0;
-  //daniel throw xqp_exception(location, msg + " ["+err+']');
-	ZORBA_ERROR_ALERT(ZorbaError::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
-													NULL,DONT_CONTINUE_EXECUTION,
-													msg + " ["+err+']', location);
-#else
-	ostringstream		oss;
-	oss << msg << " [" << GetLastError() << "]";
-	ZORBA_ERROR_ALERT(ZorbaError::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
-													NULL,DONT_CONTINUE_EXECUTION,
-													oss.str() , location);
-#endif
+	ZORBA_ERROR_DESC( ZorbaError::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION, msg);
 }
 
 
 void file::create()
-THROW_XQP_EXCEPTION
+
 {
 #ifndef WIN32
   int fd = ::creat(path.c_str(),0666);
@@ -318,7 +304,7 @@ THROW_XQP_EXCEPTION
 
 
 void file::mkdir()
-THROW_XQP_EXCEPTION
+
 {
 #if ! defined (WIN32) 
 	if (::mkdir(path.c_str(),0777)) {
@@ -350,7 +336,7 @@ THROW_XQP_EXCEPTION
 
 
 void file::remove(bool ignore)
-THROW_XQP_EXCEPTION
+
 {
 #if ! defined (WIN32) 
 	if (::remove(path.c_str()) && !ignore) {
@@ -378,7 +364,7 @@ THROW_XQP_EXCEPTION
 
 
 void file::rmdir(bool ignore)
-THROW_XQP_EXCEPTION
+
 {
 #if ! defined (WIN32) 
 	if (::rmdir(path.c_str()) && !ignore) {
@@ -403,7 +389,7 @@ THROW_XQP_EXCEPTION
 
 #ifndef _WIN32_WCE
 void file::chdir()
-THROW_XQP_EXCEPTION
+
 {
   if (!is_directory()) return;
 #if ! defined (WIN32) 
@@ -420,7 +406,7 @@ THROW_XQP_EXCEPTION
 
 void file::rename(
 	std::string const& newpath)
-THROW_XQP_EXCEPTION
+
 {
 #if ! defined (WIN32) 
   if (::rename(path.c_str(), newpath.c_str())) {
@@ -453,7 +439,7 @@ THROW_XQP_EXCEPTION
 }
 
 void file::touch()
-THROW_XQP_EXCEPTION
+
 {
 #if ! defined (WIN32) 
   int fd = 0;
@@ -461,7 +447,7 @@ THROW_XQP_EXCEPTION
   if (fd<0) error(__FUNCTION__, "failed to open "+path);
   try {
     if (fsync(fd)) error(__FUNCTION__, "failed to fsync "+path);
-  } catch (xqp_exception &e) {
+  } catch (error::ZorbaError &) {
     close(fd);
     throw;
   }
@@ -474,7 +460,7 @@ THROW_XQP_EXCEPTION
   try {
     if (fflush(fd)) 
 			error(__FUNCTION__, "failed to fsync "+path);
-  } catch (xqp_exception &) {
+  } catch (error::ZorbaError &) {
     fclose(fd);
     throw;
   }
@@ -486,7 +472,7 @@ THROW_XQP_EXCEPTION
 #if 0  // not portable, not used
 void file::do_statfs(
 	std::string const& path)
-THROW_XQP_EXCEPTION
+
 {
   struct statfs buf;
   if (statfs(path.c_str(),&buf))
@@ -519,7 +505,7 @@ THROW_XQP_EXCEPTION
 int file::readfile(
 	char* docbuf,
 	uint32_t maxlen)
-THROW_XQP_EXCEPTION
+
 {
 #if ! defined (WIN32) 
   int fd = open(path.c_str(), O_RDONLY);
@@ -581,7 +567,7 @@ file::dir_iterator file::end()
 file::dir_iterator::dir_iterator(
 	string const& path,
 	bool end_iterator)
-THROW_XQP_EXCEPTION
+
 :
 	dirpath(path)
 #if ! defined (WIN32) 

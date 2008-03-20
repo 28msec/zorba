@@ -2,15 +2,17 @@
 #define ZORBA_TYPEMANAGER_H
 
 #include <ostream>
-#include <zorba/rchandle.h>
+#include <boost/shared_ptr.hpp>
+#include <zorba/typeident.h>
+#include "util/rchandle.h"
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
+
 
 namespace zorba {
 
 class NodeTest;
-class TypeIdentifier;
-typedef rchandle<TypeIdentifier> type_ident_ref_t;
+typedef boost::shared_ptr<TypeIdentifier> type_ident_ref_t;
 
 /*
  * Interface used by other parts of zorba to ask questions about types.

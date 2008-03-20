@@ -23,16 +23,14 @@
  */
 #include <vector>
 
-#include <zorbatypes/numconversions.h>
+#include "zorbatypes/numconversions.h"
 
-#include <zorba/item.h>
-
+#include "store/api/item.h"
 #include "casting.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
-#include "system/zorba.h"
-#include "system/zorba_engine.h"
-#include "errors/error_factory.h"
+#include "store/api/store.h"
+#include "errors/error_manager.h"
 
 namespace zorba
 {
@@ -75,18 +73,18 @@ GenericCast* GenericCast::instance()
 /// @param isCast true when this is a cast, false when this is a castable
 /// TODO: return 0 instead of throwing an error code, let the caller decide on the error
 store::Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, bool isExplicit) const {
-  store::ItemFactory* factory = Zorba::getItemFactory();
+  store::ItemFactory* factory = GENV_ITEMFACTORY;
   xqpString lNamespace = "";
   xqpString lPrefix = "";
   int32_t lIndex = qname.indexOf(":");
-  ZorbaError::ErrorCodes code = isExplicit ? (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003) : ZorbaError::XQDY0074;
+  ZorbaError::ErrorCode code = isExplicit ? (isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0003) : ZorbaError::XQDY0074;
 
   if (lIndex < 0) {
     if (castableToNCName(qname))
       return factory->createQName(lNamespace.getStore(), lPrefix.getStore(), qname.getStore());
-    else ZORBA_ERROR_ALERT (code);
+    else ZORBA_ERROR (code);
   } else if (lIndex == 0) {
-    ZORBA_ERROR_ALERT (code);
+    ZORBA_ERROR (code);
   } else {
     // TODO namespace resolution
     // raise XPST0081 (isCast false) or FONS0004 (isCast true) if namespace unknown
@@ -97,7 +95,7 @@ store::Item_t GenericCast::castToQName (const xqpString &qname, bool isCast, boo
     if (castableToNCName(lPrefix) && castableToNCName(lLocal))
       return factory->createQName(lNamespace.getStore(), lPrefix.getStore(), lLocal.getStore());
     else 
-      ZORBA_ERROR_ALERT (code);
+      ZORBA_ERROR(code);
   }
   return 0;
 }
@@ -109,7 +107,7 @@ store::Item_t GenericCast::stringSimpleCast(
 {
   store::Item_t lItem = 0;
   RootTypeManager& ts = GENV_TYPESYSTEM;
-  store::ItemFactory* factory = Zorba::getItemFactory();
+  store::ItemFactory* factory = GENV_ITEMFACTORY;
 
   xqpString lString = aSourceItem->getStringValue();
   switch(ts.get_atomic_type_code(*aTargetType)) {
@@ -374,10 +372,8 @@ store::Item_t GenericCast::stringSimpleCast(
     if (!ts.is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
         !ts.is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      ZORBA_ERROR_ALERT (ZorbaError::XPTY0004, false, DONT_CONTINUE_EXECUTION,
-                         "Cannot cast " + lString
-                         + " to an NCName because its type is "
-                         + aSourceType->toString());
+      ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Cannot cast " + lString 
+                  + " to an NCName because its type is " + aSourceType->toString());
     }
 
     if (castableToNCName(lString))
@@ -386,8 +382,7 @@ store::Item_t GenericCast::stringSimpleCast(
     }
     else
     {
-      ZORBA_ERROR_ALERT_OSS(ZorbaError::XQDY0041, NULL, DONT_CONTINUE_EXECUTION,
-                          "Cannot cast " << lString << " to an NCName", ""); 
+      ZORBA_ERROR_OSS( ZorbaError::XQDY0041, "Cannot cast " << lString << " to an NCName", ""); 
     }
     break;
   }
@@ -536,7 +531,7 @@ store::Item_t GenericCast::castToBoolean(
     if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(FLOAT)))
     {
       return aSourceItem->getEBV();
-      //store::Item_t lFloatItem = Zorba::getItemFactory()->createFloat(0);
+      //store::Item_t lFloatItem = GENV_ITEMFACTORY->createFloat(0);
       //if (lFloatItem->equals(aSourceItem))
       //  lRetValue = false;
       // TODO check NaN
@@ -544,7 +539,7 @@ store::Item_t GenericCast::castToBoolean(
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DOUBLE)))
     {
       return aSourceItem->getEBV();
-      //store::Item_t lDoubleItem = Zorba::getItemFactory()->createDouble(0);
+      //store::Item_t lDoubleItem = GENV_ITEMFACTORY->createDouble(0);
       //if (lDoubleItem->equals(aSourceItem))
       //  lRetValue = false;
 
@@ -552,7 +547,7 @@ store::Item_t GenericCast::castToBoolean(
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DECIMAL)))
     {
       return aSourceItem->getEBV();
-      //store::Item_t lDecimalItem = Zorba::getItemFactory()->createDecimal(0);
+      //store::Item_t lDecimalItem = GENV_ITEMFACTORY->createDecimal(0);
       //if (lDecimalItem->equals(aSourceItem))
       //  lRetValue = false;
 
@@ -561,7 +556,7 @@ store::Item_t GenericCast::castToBoolean(
     } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(INTEGER)))
     {
       return aSourceItem->getEBV();
-      //store::Item_t lIntegerItem = Zorba::getItemFactory()->createInteger(0);
+      //store::Item_t lIntegerItem = GENV_ITEMFACTORY->createInteger(0);
       //if (lIntegerItem->equals(aSourceItem))
       //  lRetValue = false;
 
@@ -575,12 +570,12 @@ store::Item_t GenericCast::castToBoolean(
         lRetValue = false;
       else if (lString != "true" && lString != "1")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL, DONT_CONTINUE_EXECUTION, "String cannot be cast to boolean");
+        ZORBA_ERROR_DESC( ZorbaError::FORG0001,  "String cannot be cast to boolean");
       }
       
     }
 
-    return Zorba::getItemFactory()->createBoolean(lRetValue);
+    return GENV_ITEMFACTORY->createBoolean(lRetValue);
   }
 #undef ATOMIC_TYPE
 
@@ -601,8 +596,8 @@ store::Item_t GenericCast::cast(store::Item_t aItem, const xqtref_t& aTargetType
   lResult = stringSimpleCast(aItem, lItemType, aTargetType);
   if ( lResult == 0 ) 
   {
-    ZORBA_ERROR_ALERT(ZorbaError::FORG0001, NULL, DONT_CONTINUE_EXECUTION,
-                      "Passed item (of type " + GENV_TYPESYSTEM.toString (*lItemType) + ") is not castable to passed target type (" + GENV_TYPESYSTEM.toString (*aTargetType) + ").");
+    ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
+      "Passed item (of type " + GENV_TYPESYSTEM.toString (*lItemType) + ") is not castable to passed target type (" + GENV_TYPESYSTEM.toString (*aTargetType) + ").");
   }
 
   return lResult;
@@ -613,7 +608,7 @@ store::Item_t GenericCast::cast(
     const xqpString& aStr,
     const xqtref_t& aTargetType) const
 {
-  store::Item_t lItem = Zorba::getItemFactory()->createString(aStr.getStore());
+  store::Item_t lItem = GENV_ITEMFACTORY->createString(aStr.getStore());
   store::Item_t lResult = cast(lItem, aTargetType);
   return lResult;
 }
@@ -637,7 +632,7 @@ bool GenericCast::isCastable(
   // Most simple implementation: Check if string cast works
   try {
     lItem = stringSimpleCast(aItem, lItemType, aTargetType);
-  } catch (xqp_exception) {
+  } catch (error::ZorbaError) {
     return false;
   }
 
@@ -649,7 +644,7 @@ bool GenericCast::isCastable(
     const xqpString& aStr,
     const xqtref_t& aTargetType) const
 {
-  store::Item_t lItem = Zorba::getItemFactory()->createString(aStr.getStore());
+  store::Item_t lItem = GENV_ITEMFACTORY->createString(aStr.getStore());
   return isCastable(lItem, aTargetType);
 }
 

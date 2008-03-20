@@ -1,7 +1,7 @@
 #ifndef ZORBA_DEBUG_ITERATORS_H
 #define ZORBA_DEBUG_ITERATORS_H
 
-#include <zorbatypes/xqpstring.h>
+#include "zorbatypes/xqpstring.h"
 
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"

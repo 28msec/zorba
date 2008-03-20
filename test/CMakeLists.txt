@@ -1,5 +1,6 @@
 # temporary include; the tests should probably go in the according src dir
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/src)
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/src)
 
 ADD_SUBDIRECTORY(rbkt)
 ADD_SUBDIRECTORY(unit)
@@ -19,7 +20,7 @@ ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 
 SET(TEST_STORE_SRCS
-    timer.cpp 
+    timer.cpp
     test_store.cpp)
 
 ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})

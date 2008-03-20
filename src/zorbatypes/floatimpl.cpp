@@ -1,10 +1,10 @@
 #include <limits>
 #include <string>
 
-#include <zorba/common/common.h>
-#include <zorbatypes/floatimpl.h>
-#include <zorbatypes/integer.h>
-#include <zorbatypes/decimal.h>
+#include "common/common.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/decimal.h"
 
 namespace zorba {
 

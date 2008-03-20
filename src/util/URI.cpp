@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iostream>
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 #include "util/URI.h"
 

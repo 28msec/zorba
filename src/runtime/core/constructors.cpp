@@ -1,17 +1,16 @@
 #include <memory>
 #include <sys/types.h>
-#include <zorba/item.h>
 
+#include "runtime/api/runtimecb.h"
 #include "runtime/core/constructors.h"
 #include "util/Assert.h"
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 #include "system/globalenv.h"
-#include "system/zorba.h"
 #include "types/root_typemanager.h"
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 #include "runtime/visitors/planitervisitor.h"
-#include "runtime/base/plan_iterator_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
 
@@ -59,7 +58,7 @@ store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
   baseUri = new xqpStringStore("");
   docUri = new xqpStringStore("");
 
-  node = Zorba::getItemFactory()->
+  node = GENV_ITEMFACTORY->
           createDocumentNode((unsigned long)&planState,
                               baseUri,
                               docUri,
@@ -79,7 +78,7 @@ DocumentIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
 
-  static_context* sctx = planState.theZorba->get_static_context();
+  static_context* sctx = planState.theRuntimeCB->theStaticContext;
 
   theTypePreserve =
     (sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
@@ -122,8 +121,7 @@ store::Item_t DocumentContentIterator::nextImpl(PlanState& planState) const
 
     if (lItem->isNode() && lItem->getNodeKind() == store::StoreConsts::attributeNode)
     {
-        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004, &loc, DONT_CONTINUE_EXECUTION,
-                          "A Document Node must not contain attribute nodes!");
+        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "A Document Node must not contain attribute nodes!");
     }
 
     STACK_PUSH(lItem, state);
@@ -140,7 +138,7 @@ void
 ElementIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
-  static_context* sctx = planState.theZorba->get_static_context();
+  static_context* sctx = planState.theRuntimeCB->theStaticContext;
 
   theTypePreserve =
     (sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
@@ -197,8 +195,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   // the compiler wraps an xs:qname cast around the expression
   if (qnameItem->getLocalName().size() == 0)
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, NULL, DONT_CONTINUE_EXECUTION,
-                      "Element name must not have an empty local part.");
+    ZORBA_ERROR_DESC( ZorbaError::XQDY0074, "Element name must not have an empty local part.");
   }
 
   if (theChildrenIter != 0)
@@ -207,7 +204,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   if (theAttributesIter != 0)
     awrapper.reset(new PlanIteratorWrapper(theAttributesIter, planState));
 
-  node = Zorba::getItemFactory()->
+  node = GENV_ITEMFACTORY->
          createElementNode((unsigned long)&planState,
                            qnameItem.getp(),
                            GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
@@ -307,7 +304,7 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
 {
-  store::ItemFactory* factory = Zorba::getItemFactory();
+  store::ItemFactory* factory = GENV_ITEMFACTORY;
   store::Item_t item;
   store::Item_t textNode;
 
@@ -325,7 +322,7 @@ store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
     if (item->isNode() && item->getNodeKind() == store::StoreConsts::attributeNode) 
     {
       if (state->theNoAttrAllowed)
-        ZORBA_ERROR_ALERT(ZorbaError::XQTY0024, &loc, DONT_CONTINUE_EXECUTION);
+        ZORBA_ERROR_LOC(ZorbaError::XQTY0024, loc); 
     }
     else
     {
@@ -390,7 +387,7 @@ store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
   nameWrapper = new PlanIteratorWrapper(theChild0, planState);
   valueWrapper = new PlanIteratorWrapper(theChild1, planState);
   
-  node = Zorba::getItemFactory()->
+  node = GENV_ITEMFACTORY->
          createAttributeNode((unsigned long)&planState,
                              nameWrapper,
                              GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME,
@@ -426,7 +423,7 @@ store::Item_t TextIterator::nextImpl(PlanState& planState) const
 
   valueWrapper = new PlanIteratorWrapper(theChild, planState);
       
-  node = Zorba::getItemFactory()->createTextNode((unsigned long)&planState,
+  node = GENV_ITEMFACTORY->createTextNode((unsigned long)&planState,
                                                  valueWrapper,
                                                  theIsRoot);
 
@@ -463,17 +460,17 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
       
   lItem = consumeNext(theChild0.getp(), planState);
   if (lItem == 0)
-    ZORBA_ERROR_ALERT (ZorbaError::XPTY0004);
+    ZORBA_ERROR( ZorbaError::XPTY0004);
 
   if (consumeNext(theChild0.getp(), planState) != 0)
-    ZORBA_ERROR_ALERT (ZorbaError::XPTY0004);
+    ZORBA_ERROR( ZorbaError::XPTY0004);
 
   // TODO: check if lItem is string, raise XPTY0004 if not
   target = lItem->getStringValue();
   if (target.empty ())
-    ZORBA_ERROR_ALERT (ZorbaError::XQDY0041);
+    ZORBA_ERROR( ZorbaError::XQDY0041);
   else if (target.substr (0).uppercase () == "XML") 
-    ZORBA_ERROR_ALERT (ZorbaError::XQDY0064);
+    ZORBA_ERROR( ZorbaError::XQDY0064);
   
   for (lFirst = true; 0 != (lItem = consumeNext (theChild1.getp(), planState)); lFirst = false)
   {
@@ -482,14 +479,14 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
     xqpString strvalue = lItem->getStringValue();
     if (strvalue.indexOf("?>") >= 0)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQDY0026);
+      ZORBA_ERROR( ZorbaError::XQDY0026);
     }
     content += strvalue;
   }
 
   content = content.trimL(" \n\r\t", 4);
 
-  lItem = Zorba::getItemFactory()->createPiNode((unsigned long)&planState,
+  lItem = GENV_ITEMFACTORY->createPiNode((unsigned long)&planState,
                                                 target.getStore(),
                                                 content.getStore (),
                                                 theIsRoot);
@@ -539,16 +536,16 @@ store::Item_t CommentIterator::nextImpl(PlanState& planState) const
   {
     if (content.indexOf("-") == (long)(content.size()-1))
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQDY0072);
+      ZORBA_ERROR( ZorbaError::XQDY0072);
     }
 
     if (content.indexOf("--") >= 0)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQDY0072);
+      ZORBA_ERROR( ZorbaError::XQDY0072);
     }
   }
 
-  lItem = Zorba::getItemFactory()->createCommentNode((unsigned long)&planState,
+  lItem = GENV_ITEMFACTORY->createCommentNode((unsigned long)&planState,
                                                      content.getStore(),
                                                      theIsRoot);
     
@@ -601,7 +598,7 @@ EnclosedIterator::EnclosedIterator (
 store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t lItem;
-  store::ItemFactory* factory = Zorba::getItemFactory();
+  store::ItemFactory* factory = GENV_ITEMFACTORY;
   xqpString str;
 
   EnclosedIteratorState* state;

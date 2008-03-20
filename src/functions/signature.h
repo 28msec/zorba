@@ -13,6 +13,7 @@
 #include "common/shared_types.h"
 #include "util/checked_vector.h"
 #include "types/root_typemanager.h"
+#include "store/api/item.h"
 
 namespace zorba {
 

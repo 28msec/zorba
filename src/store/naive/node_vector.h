@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 #include "errors/fatal.h"
 
 namespace zorba { namespace store {

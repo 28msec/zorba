@@ -22,12 +22,12 @@
  *
  */
 
-#include <zorba/result_iterator.h>
-#include <zorba/iterator.h>
+#include "runtime/api/plan_wrapper.h"
+#include "store/api/iterator.h"
 
+#include "store/api/item.h"
 #include "api/serialization/serializer.h"
-#include "errors/error_factory.h"
-#include "system/zorba.h"
+#include "errors/error_manager.h"
 #include "util/Assert.h"
 
 using namespace std;
@@ -175,21 +175,18 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
   int skip = 0;
 	
 	for (unsigned int i = 0; i < str.bytes(); i++, chars++ )
-	{ 
+	{       
     // the input string is UTF-8
-    if (skip == 0)
-    {
-      if ((unsigned char)*chars < 0x80)
-        skip = 0;      
-      else if ((*chars >> 5) == 0x6)
-        skip = 2;
-      else if ((*chars >> 4) == 0xe)
-        skip = 3;
-      else if ((*chars >> 3) == 0x1e)
-        skip = 4;
-    }
-    
-    if (skip > 0)
+    if ((unsigned char)*chars < 0x80)
+      skip = 0;      
+    else if ((*chars >> 5) == 0x6)
+      skip = 2;
+    else if ((*chars >> 4) == 0xe)
+      skip = 3;
+    else if ((*chars >> 3) == 0x1e)
+      skip = 4;
+       
+    if (skip)
     {
       skip--;
       tr << *chars;
@@ -515,7 +512,7 @@ void serializer::emitter::emit_item(store::Item* item)
       //||
       //  item->getNodeKind() == namespaceNode)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::SENR0001_Item_is_attribute_or_namespace_node);
+      ZORBA_ERROR(ZorbaError::SENR0001_Item_is_attribute_or_namespace_node);
     }
     else        
       emit_node(item, 0);
@@ -758,7 +755,8 @@ void serializer::reset()
   encoding = PARAMETER_VALUE_UTF_8;
 }
 
-serializer::serializer()
+serializer::serializer(error::ErrorManager* aErrorManager)
+  : theErrorManager(aErrorManager)
 {
   reset();
 }
@@ -794,7 +792,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       indent = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
     }
   }
   else if (parameter_name == "standalone")
@@ -807,7 +805,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       standalone = PARAMETER_VALUE_OMIT;
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
     }
   }
   else if (parameter_name == "omit-xml-declaration")
@@ -818,7 +816,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       omit_xml_declaration = PARAMETER_VALUE_NO;    
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
     }
   }
   else if (parameter_name == "byte-order-mark")
@@ -829,7 +827,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       byte_order_mark = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
     }
   }
   else if (parameter_name == "undeclare-prefixes")
@@ -840,7 +838,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       undeclare_prefixes = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
     }
   }
   else if (parameter_name == "method")
@@ -851,7 +849,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       method = PARAMETER_VALUE_HTML;
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
     }
   }
   else if (parameter_name == "include-content-type")
@@ -862,7 +860,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       include_content_type = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
     }
   }
   else if (parameter_name == "encoding")
@@ -873,7 +871,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
       encoding = PARAMETER_VALUE_UTF_16;
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value);
+      ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
     }
   }
   else if (parameter_name == "media-type")
@@ -882,7 +880,7 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   }
   else
   {
-    ZORBA_ERROR_ALERT(ZorbaError::SEPM0016_Invalid_parameter_value);
+    ZORBA_ERROR( ZorbaError::SEPM0016_Invalid_parameter_value);
   }
 }
 
@@ -924,7 +922,7 @@ bool serializer::setup(ostream& os)
   return true;
 }
 
-void serializer::serialize(ResultIterator *result, ostream& os)
+void serializer::serialize(PlanWrapper *result, ostream& os)
 {
   validate_parameters();
   if (!setup(os))
@@ -932,11 +930,11 @@ void serializer::serialize(ResultIterator *result, ostream& os)
   
   e->emit_declaration();
 
-  store::Item_t item = result->nextItem();
+  store::Item_t item = result->next();
   while (item != NULL )
   {
     e->emit_item(&*item);
-    item = result->nextItem();
+    item = result->next();
   }
   
   e->emit_declaration_end();

@@ -10,17 +10,19 @@
  */
 #include <iostream>
 
-#include <zorbatypes/utf8.h>
-#include <zorbatypes/numconversions.h>
+#include "zorbatypes/utf8.h"
+#include "zorbatypes/numconversions.h"
 
-#include <zorba/common/common.h>
-#include <zorba/item.h>
+#include "common/common.h"
+#include "store/api/item.h"
 
+#include "system/globalenv.h"
 #include "runtime/strings/StringsImpl.h"
-#include "system/zorba.h"
-#include "system/zorba_engine.h"
+#include "runtime/api/runtimecb.h"
 #include "util/Assert.h"
 #include "store/api/item_factory.h"
+#include "context/static_context.h"
+#include "context/collation_cache.h"
 
 
 using namespace std;
@@ -60,15 +62,15 @@ CodepointsToStringIterator::nextImpl(PlanState& planState) const {
             resStr += lCode;
             }
             catch(exception_invalid_code_point){
-              ZORBA_ERROR_ALERT(ZorbaError::FOCH0001, &loc, DONT_CONTINUE_EXECUTION, lUtf8Code);
+              ZORBA_ERROR_LOC_DESC(ZorbaError::FOCH0001, loc, lUtf8Code);
             }
         }
         else
-          ZORBA_ERROR_ALERT(ZorbaError::FOCH0001, &loc, DONT_CONTINUE_EXECUTION, lUtf8Code);
+          ZORBA_ERROR_LOC_DESC(ZorbaError::FOCH0001, loc, lUtf8Code);
       }
     }
     else{
-      resItem = Zorba::getItemFactory()->createString(resStr.getStore());
+      resItem = GENV_ITEMFACTORY->createString(resStr.getStore());
       STACK_PUSH( resItem, state );
       break;
     }
@@ -108,7 +110,7 @@ StringToCodepointsIterator::nextImpl(PlanState& planState) const {
   
       while (state->getIterator() < state->getVectSize())
       {
-        resItem = Zorba::getItemFactory()->createInteger( 
+        resItem = GENV_ITEMFACTORY->createInteger( 
           Integer::parseInt(state->getItem( state->getIterator() )) 
         );
         STACK_PUSH( resItem, state );
@@ -203,14 +205,14 @@ CompareStrIterator::nextImpl(PlanState& planState) const {
         n2 = consumeNext(theChildren[2].getp(), planState );
         if ( n2 != NULL )  {
           n2 = n2->getAtomizationValue();
-          Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(n2->getStringValue());
-          res = Zorba::getItemFactory()->createInteger(
+          XQPCollator *coll = planState.theRuntimeCB->theCollationCache->getCollator(n2->getStringValue());
+          res = GENV_ITEMFACTORY->createInteger(
                   Integer::parseInt((int32_t)n0->getStringValue().compare(n1->getStringValue(), coll)));
         }
       }
       else{
-        Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
-        res = Zorba::getItemFactory()->createInteger(
+        XQPCollator *coll = planState.theRuntimeCB->theCollationCache->getDefaultCollator();
+        res = GENV_ITEMFACTORY->createInteger(
                 Integer::parseInt((int32_t)n0->getStringValue().compare(n1->getStringValue(), coll)));
       }
       STACK_PUSH( res, state );
@@ -255,7 +257,7 @@ CodepointEqualIterator::nextImpl(PlanState& planState) const {
       if ( item1 != NULL )  {
         item0 = item0->getAtomizationValue();
         item1 = item1->getAtomizationValue();
-        res = Zorba::getItemFactory()->createBoolean(
+        res = GENV_ITEMFACTORY->createBoolean(
             item0->getStringValue() == item1->getStringValue());
         STACK_PUSH( res, state );
       }
@@ -314,14 +316,14 @@ ConcatStrIterator::nextImpl(PlanState& planState) const {
 
     if  ( ( lItem = consumeNext(*iter, planState) ) != NULL )
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-        &loc, DONT_CONTINUE_EXECUTION, "A sequence with more than one item is not allowed as argument to fn:concat");
+      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
+        "A sequence with more than one item is not allowed as argument to fn:concat");
         break;
     }
   }
 
   tmp = new xqpStringStore(lResStream.str());
-  STACK_PUSH(Zorba::getItemFactory()->createString(tmp), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(tmp), state);
 
   STACK_END();
 }
@@ -370,7 +372,7 @@ StringJoinIterator::nextImpl(PlanState& planState) const {
         resStr += item->getStringValue();
       }
       else{
-        resItem = Zorba::getItemFactory()->createString(resStr.getStore());
+        resItem = GENV_ITEMFACTORY->createString(resStr.getStore());
         STACK_PUSH( resItem, state );
         break;
       }
@@ -393,7 +395,7 @@ StringJoinIterator::nextImpl(PlanState& planState) const {
         }
         else
         {
-          resItem = Zorba::getItemFactory()->createString(resStr.getStore());
+          resItem = GENV_ITEMFACTORY->createString(resStr.getStore());
           STACK_PUSH( resItem, state );
           break;
         }
@@ -451,7 +453,7 @@ SubstringIterator::nextImpl(PlanState& planState) const {
       item0 = item0->getAtomizationValue();
       if(item0->getStringValue().length() == 0)
       {
-        STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
+        STACK_PUSH( GENV_ITEMFACTORY->createString(resStr.getStore()), state );
       }
       else{
         item1 = consumeNext(theChildren[1].getp(), planState );
@@ -503,13 +505,13 @@ SubstringIterator::nextImpl(PlanState& planState) const {
             }
           }
           resStr = resStr.formatAsXML(resStr.c_str());
-          STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
+          STACK_PUSH( GENV_ITEMFACTORY->createString(resStr.getStore()), state );
         }
       }
     } else {
       // fn:substring returns empty string in this case
       empty = new xqpStringStore("");
-      STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
     }
   }
   STACK_END();
@@ -545,13 +547,13 @@ StringLengthIterator::nextImpl(PlanState& planState) const {
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(Zorba::getItemFactory()->createInteger(
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(
                             Integer::parseSizeT(item->getStringValue().length())),
                             state);
   }
   else
   {
-    STACK_PUSH(Zorba::getItemFactory()->createInteger(
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(
                             Integer::parseInt((int32_t)0)),
                             state);
   }
@@ -585,14 +587,14 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState) const
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(Zorba::getItemFactory()->createString(
+    STACK_PUSH(GENV_ITEMFACTORY->createString(
         item->getStringValue().normalizeSpace().getStore()),
     state);
   }
   else
   {
     empty = new xqpStringStore("");
-    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
   STACK_END();
 }
@@ -648,16 +650,15 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
     if(tempStr == "" || tempStr == "NFC" || tempStr =="NFKC" || tempStr =="NFD" || tempStr == "NFKD")
     {
       res = item0->getStringValue().normalize(tempStr);
-      STACK_PUSH( Zorba::getItemFactory()->createString(res.getStore()), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createString(res.getStore()), state );
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::FOCH0003,
-                        &loc, DONT_CONTINUE_EXECUTION, "Unsupported normalization form.");
+      ZORBA_ERROR_LOC_DESC( ZorbaError::FOCH0003, loc, "Unsupported normalization form.");
     }
   } else {
     // must push empty string due to return type of function
-    STACK_PUSH( Zorba::getItemFactory()->createString(res.getStore ()), state);
+    STACK_PUSH( GENV_ITEMFACTORY->createString(res.getStore ()), state);
   }
   
   STACK_END();
@@ -695,13 +696,13 @@ UpperCaseIterator::nextImpl(PlanState& planState) const
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(Zorba::getItemFactory()->createString(item->getStringValue().uppercase().getStore()),
+    STACK_PUSH(GENV_ITEMFACTORY->createString(item->getStringValue().uppercase().getStore()),
                 state);
   }
   else
   {
     empty = new xqpStringStore("");
-    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
   STACK_END();
 }
@@ -737,14 +738,14 @@ LowerCaseIterator::nextImpl(PlanState& planState) const {
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(Zorba::getItemFactory()->createString(
+    STACK_PUSH(GENV_ITEMFACTORY->createString(
         item->getStringValue().lowercase().getStore()),
     state);
   }
   else
   {
     empty = new xqpStringStore("");
-    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
   STACK_END();
 }
@@ -782,7 +783,7 @@ TranslateIterator::nextImpl(PlanState& planState) const {
   store::Item_t itemArg, item0, item1;
   store::Item_t res;
   xqpStringStore_t empty(new xqpStringStore(""));
-  res = Zorba::getItemFactory()->createString(empty);
+  res = GENV_ITEMFACTORY->createString(empty);
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -799,7 +800,7 @@ TranslateIterator::nextImpl(PlanState& planState) const {
         item0 = item0->getAtomizationValue();
         item1 = item1->getAtomizationValue();
 
-        res = Zorba::getItemFactory()->createString(
+        res = GENV_ITEMFACTORY->createString(
             itemArg->getStringValue().translate(item0->getStringValue(), item1->getStringValue()).getStore());
       }
     }
@@ -829,14 +830,14 @@ EncodeForUriIterator::nextImpl(PlanState& planState) const {
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(Zorba::getItemFactory()->createString(
+    STACK_PUSH(GENV_ITEMFACTORY->createString(
         item->getStringValue().encodeForUri().getStore()),
     state);
   }
   else
   {
     empty = new xqpStringStore("");
-    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
   STACK_END();
 }
@@ -860,14 +861,14 @@ IriToUriIterator::nextImpl(PlanState& planState) const {
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(Zorba::getItemFactory()->createString(
+    STACK_PUSH(GENV_ITEMFACTORY->createString(
         item->getStringValue().iriToUri().getStore()),
     state);
   }
   else
   {
     empty = new xqpStringStore("");
-    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
   STACK_END();
 }
@@ -891,14 +892,14 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) const {
   if ( item != NULL )
   {
     item = item->getAtomizationValue();
-    STACK_PUSH(Zorba::getItemFactory()->createString(
+    STACK_PUSH(GENV_ITEMFACTORY->createString(
         item->getStringValue().escapeHtmlUri().getStore()),
     state);
   }
   else
   {
     empty = new xqpStringStore("");
-    STACK_PUSH(Zorba::getItemFactory()->createString(empty), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
   STACK_END();
 }
@@ -958,11 +959,11 @@ ContainsIterator::nextImpl(PlanState& planState) const {
     
     if( arg2.length() == 0 )
     {
-      STACK_PUSH( Zorba::getItemFactory()->createBoolean(true), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(true), state );
     }
     else if ( arg1.length() == 0 )
     {
-      STACK_PUSH( Zorba::getItemFactory()->createBoolean(false), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(false), state );
     }
     else
     {
@@ -976,11 +977,11 @@ ContainsIterator::nextImpl(PlanState& planState) const {
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
-          Collator* coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
+          XQPCollator* coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue());
           resBool = (arg1.indexOf(arg2, coll) != -1);
         }
       }
-      STACK_PUSH( Zorba::getItemFactory()->createBoolean(resBool), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(resBool), state );
     }
   }
   STACK_END();
@@ -1041,11 +1042,11 @@ StartsWithIterator::nextImpl(PlanState& planState) const {
     
     if( arg2.length() == 0 )
     {
-      STACK_PUSH( Zorba::getItemFactory()->createBoolean(true), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(true), state );
     }
     else if ( arg1.length() == 0 )
     {
-      STACK_PUSH( Zorba::getItemFactory()->createBoolean(false), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(false), state );
     }
     else
     {
@@ -1059,11 +1060,11 @@ StartsWithIterator::nextImpl(PlanState& planState) const {
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
-          Collator* coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
+          XQPCollator *coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue());
           resBool = (arg1.indexOf(arg2, coll) == 0);
         }
       }
-      STACK_PUSH( Zorba::getItemFactory()->createBoolean(resBool), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(resBool), state );
     }
   }
   STACK_END();
@@ -1125,11 +1126,11 @@ EndsWithIterator::nextImpl(PlanState& planState) const {
 
     if( arg2.length() == 0 )
     {
-      STACK_PUSH( Zorba::getItemFactory()->createBoolean(true), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(true), state );
     }
     else if ( arg1.length() == 0 )
     {
-      STACK_PUSH( Zorba::getItemFactory()->createBoolean(false), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(false), state );
     }
     else
     {
@@ -1143,11 +1144,11 @@ EndsWithIterator::nextImpl(PlanState& planState) const {
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
-          Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
+          XQPCollator* coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue());
           resBool = arg1.endsWith(arg2, coll);
         }
       }
-      STACK_PUSH( Zorba::getItemFactory()->createBoolean(resBool), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(resBool), state );
     }
   }
   STACK_END();
@@ -1211,7 +1212,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
     
     if( arg1.length() == 0  || arg2.length() == 0)
     {
-      STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createString(resStr.getStore()), state );
     }
     else
     {
@@ -1225,7 +1226,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
-          Collator* coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
+          XQPCollator* coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue());
           index = arg1.indexOf(arg2, coll);
         }
       }
@@ -1233,7 +1234,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
       {
         resStr = arg1.substr(0,index);
       }
-      STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createString(resStr.getStore()), state );
     }
   }
   STACK_END();
@@ -1297,7 +1298,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
 
     if( arg1.length() == 0  || arg2.length() == 0)
     {
-      STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createString(resStr.getStore()), state );
     }
     else
     {
@@ -1311,7 +1312,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
         if ( itemColl != NULL )
         {
           itemColl = itemColl->getAtomizationValue();
-          Collator* coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(itemColl->getStringValue());
+          XQPCollator* coll = planState.theRuntimeCB->theCollationCache->getCollator(itemColl->getStringValue());
           startPos = arg1.indexOf( arg2, coll );
         }
       }
@@ -1320,7 +1321,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
         startPos += arg2.length();
         resStr = arg1.substr( startPos, arg1.length() - startPos );
       }
-      STACK_PUSH( Zorba::getItemFactory()->createString(resStr.getStore()), state );
+      STACK_PUSH( GENV_ITEMFACTORY->createString(resStr.getStore()), state );
     }
   }
   STACK_END();

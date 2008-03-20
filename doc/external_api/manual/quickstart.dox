@@ -7,12 +7,12 @@
     ...
   \endcode
 
-  \include uc1a_simpleQueryOneStep.cpp
+  \include simple.cpp
 
-  \dontinclude uc1a_simpleQueryOneStep.cpp
+  \dontinclude simple.cpp
  
   It works like this...
-  \skip uc1a_simpleQueryOneStep
+  \skip example_1
   \until } 
 
 

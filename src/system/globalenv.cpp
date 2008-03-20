@@ -1,8 +1,7 @@
 #include <libxml/parser.h>
-#include <cassert>
 #include <unicode/uclean.h>
 
-#include <zorbatypes/m_apm.h>
+#include "zorbatypes/m_apm.h"
 
 #include "globalenv.h"
 #include "types/root_typemanager.h"
@@ -106,6 +105,11 @@ RootTypeManager& GlobalEnvironment::getRootTypeManager()
 store::Store& GlobalEnvironment::getStore()
 {
   return *m_store;
+}
+
+store::ItemFactory* GlobalEnvironment::getItemFactory()
+{
+  return m_store->getItemFactory();
 }
 
 XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()

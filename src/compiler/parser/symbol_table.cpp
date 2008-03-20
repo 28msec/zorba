@@ -5,7 +5,7 @@
  *	Copyright 2006-2007 FLWOR Foundation.
  */
 
-#include <zorbatypes/numconversions.h>
+#include "zorbatypes/numconversions.h"
 
 #include "compiler/parser/symbol_table.h"
 #include "util/fx/fxcharheap.h"

@@ -1,5 +1,6 @@
 
 #include "store/util/mutex.h"
+#include <iostream>
 
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY

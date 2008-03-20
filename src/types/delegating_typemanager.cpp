@@ -1,7 +1,6 @@
 #include "zorba/item.h"
 #include "types/typeconstants.h"
 #include "types/typeimpl.h"
-#include <zorba/typeident.h>
 #include "delegating_typemanager.h"
 #include "zorbatypes/representations.h"
 

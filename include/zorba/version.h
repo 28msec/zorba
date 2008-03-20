@@ -1,9 +1,7 @@
-#ifndef ZORBA_VERSION_H
-#define ZORBA_VERSION_H
+#ifndef ZORBA_VERSION_API_H
+#define ZORBA_VERSION_API_H
 
-#include <zorba/common/common.h>
 #include <string>
-#include <sstream>
 
 namespace zorba {
 
@@ -28,6 +26,9 @@ namespace zorba {
       getVersion();
 
   };
+
+  std::ostream& operator<< (std::ostream& os, const Version& aVersion);
+
 
 } /* end namespace zorba */
 #endif

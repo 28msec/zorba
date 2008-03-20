@@ -1,28 +1,26 @@
-#ifndef ZORBA_RESULT_ITERATOR_H
-#define ZORBA_RESULT_ITERATOR_H
+#ifndef ZORBA_RESULT_ITERATOR_API_H
+#define ZORBA_RESULT_ITERATOR_API_H
 
-#include <zorba/common/api_shared_types.h>
-#include <zorba/item.h>
+#include <zorba/api_shared_types.h>
 
-//Wrap the iterator interface
-namespace zorba{
+namespace zorba {
 
-class ResultIterator : virtual public SimpleRCObject
-{
-public:
+  class ResultIterator 
+  {
+    public:
 
-  virtual ~ResultIterator() {}
+      virtual ~ResultIterator() {}
 
-  virtual void openIterator() = 0;
+      virtual void 
+      open() = 0;
 
-  virtual store::Item_t nextItem() = 0;
+      virtual bool
+      next(Item&) = 0;
 
-  virtual void closeIterator() = 0;
+      virtual void 
+      close() = 0;
 
-};
+  };
 
-typedef rchandle<ResultIterator> ResultIterator_t;
-
-}//end namespace zorba
-
+} /* namespace zorba */
 #endif

@@ -8,7 +8,7 @@
  * @file utf8/Unicode_util.cpp
  */
 
-#include <zorbatypes/Unicode_util.h>
+#include "zorbatypes/Unicode_util.h"
 
 namespace zorba {
 

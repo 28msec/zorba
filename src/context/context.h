@@ -26,12 +26,11 @@
 #ifndef ZORBA_CONTEXT_H
 #define ZORBA_CONTEXT_H
 
-#include <zorbatypes/xqpstring.h>
-#include <zorbatypes/representations.h>
+#include "zorbatypes/xqpstring.h"
+#include "zorbatypes/representations.h"
 
-#include <zorba/rchandle.h>
+#include "util/rchandle.h"
 
-#include "context/common.h"
 #include "util/hashmap.h"
 
 namespace zorba {
@@ -48,23 +47,12 @@ namespace zorba {
 class context : public SimpleRCObject
 {
 protected:
-	typedef struct //: public CollationManager::COLLATION_DESCR
-	{
-		xqp_string		coll_uri;
-		std::string		coll_string;
-		::Collator::ECollationStrength	coll_strength;
-
-		bool					is_user_created;
-		::Collator		*coll;
-	}COLLATION_OBJ;
-
   typedef union { 
     expr *exprValue;
     function *functionValue;
     int intValue;
     bool boolValue;
 		const XQType *typeValue; ///do manual ref counting on this
-		COLLATION_OBJ	*collationValue;
   } ctx_value_t;
   typedef xqp_string (* str_param_t) ();
   
@@ -104,10 +92,10 @@ protected:
     v.functionValue = f;
     keymap.put (key, v);
   }
-  void bind_str (xqp_string key, xqp_string v, enum ZorbaError::ErrorCodes err = ZorbaError::XQP0019_INTERNAL_ERROR) {
+  void bind_str (xqp_string key, xqp_string v, enum ZorbaError::ErrorCode err = ZorbaError::XQP0019_INTERNAL_ERROR) {
     xqp_string old;
     if (err != ZorbaError::MAX_ZORBA_ERROR_CODE && lookup_once (key, old))
-      ZORBA_ERROR_ALERT (err);
+      ZORBA_ERROR(err);
     str_keymap.put (key, v);
   }
 

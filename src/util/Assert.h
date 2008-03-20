@@ -13,11 +13,14 @@
 #define ZORBA_ASSERT_H
 
 #include <string>
-#include "errors/error_factory.h"
+#include "common/config/config.h"
 
 #ifdef HAVE_EXECINFO_H
 #include <execinfo.h>
+#include <stdlib.h>
 #endif
+
+#include "errors/errors.h"
 
 namespace zorba {
 
@@ -49,7 +52,8 @@ class StackTracePrinter {
   do {\
     if (! (cond)) {\
       StackTracePrinter p; \
-      ZorbaAssert (__FILE__ ":" __ZORBA_ASSERT_aux2 (line), __ZORBA_ASSERT_aux4(), #cond); \
+      error::ZorbaError( ::zorba::ZorbaError::XQP0005_SYSTEM_ASSERT_FAILED, "assertion failed", QueryLoc::null, \
+                   __FILE__, __LINE__ ); \
     } \
   } while(0)
   

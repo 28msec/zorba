@@ -17,7 +17,13 @@ namespace zorba
   context and just returns the items that it produces.
 
 ********************************************************************************/
-class CtxVariableIterator : public NoaryBaseIterator<CtxVariableIterator, PlanIteratorState>
+class CtxVariableIteratorState : public  PlanIteratorState {
+public:
+  Iterator_t iter;
+};
+
+
+class CtxVariableIterator : public NoaryBaseIterator<CtxVariableIterator, CtxVariableIteratorState>
 {
 private:
   xqpString theVarName;
@@ -27,10 +33,9 @@ public:
 
   virtual ~CtxVariableIterator();
 
-  // inherit openImpl from NoaryBaseIterator
+
+  void openImpl ( PlanState& planState, uint32_t& offset );
   store::Item_t nextImpl(PlanState& planState) const;
-  void resetImpl(PlanState& planState) const;
-  void closeImpl(PlanState& planState);
 
   virtual void accept(PlanIterVisitor&) const;
 

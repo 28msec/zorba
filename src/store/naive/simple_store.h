@@ -2,7 +2,7 @@
 #define ZORBA_STORE_SIMPLE_STORE_H
 
 
-#include "zorba/common/api_shared_types.h"
+#include "common/shared_types.h"
 
 #include "store/api/store.h"
 #include "store/util/pointer_hashmap_string.h"

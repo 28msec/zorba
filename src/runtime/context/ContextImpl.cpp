@@ -10,12 +10,12 @@
  */
  
 #include "system/globalenv.h"
-#include "system/zorba.h"
 #include "runtime/context/ContextImpl.h"
 #include "store/api/item_factory.h"
-#include "system/zorba_engine.h"
+#include "runtime/api/runtimecb.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+#include "zorbatypes/datetime.h"
 
 namespace zorba
 {
@@ -36,7 +36,7 @@ FnCurrentDateTimeIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemRes = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_execution_date_time();
+  itemRes = planState.theRuntimeCB->theDynamicContext->get_execution_date_time();
   if( NULL != itemRes )
     STACK_PUSH( itemRes, state );
 
@@ -62,11 +62,11 @@ FnCurrentDateIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemRes = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_execution_date_time();
+  itemRes = planState.theRuntimeCB->theDynamicContext->get_execution_date_time();
   if( NULL != itemRes )
   {
     d = itemRes->getDateTimeValue()->getDate();
-    STACK_PUSH( Zorba::getItemFactory()->createDate(d), state );
+    STACK_PUSH( GENV_ITEMFACTORY->createDate(d), state );
   }
 
   STACK_END();
@@ -91,11 +91,11 @@ FnCurrentTimeIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemRes = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_execution_date_time();
+  itemRes = planState.theRuntimeCB->theDynamicContext->get_execution_date_time();
   if( NULL != itemRes )
   {
     t = itemRes->getDateTimeValue()->getTime();
-    STACK_PUSH( Zorba::getItemFactory()->createTime(t), state );
+    STACK_PUSH( GENV_ITEMFACTORY->createTime(t), state );
   }
 
   STACK_END();
@@ -121,10 +121,10 @@ FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  tz = ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone();
+  tz = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
   db = new DayTimeDuration( tz < 0, 0, tz<0?-tz:tz, 0 , 0, 0);
   
-  STACK_PUSH( Zorba::getItemFactory()->createDuration(db), state );
+  STACK_PUSH( GENV_ITEMFACTORY->createDuration(db), state );
 
   STACK_END();
 }
@@ -147,8 +147,8 @@ FnDefaultCollationIterator::nextImpl(PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  strColUri = ZORBA_FOR_CURRENT_THREAD()->get_static_context()->default_collation_uri();
-  STACK_PUSH( Zorba::getItemFactory()->createString(strColUri.getStore()), state );
+  strColUri = planState.theRuntimeCB->theStaticContext->default_collation_uri();
+  STACK_PUSH( GENV_ITEMFACTORY->createString(strColUri.getStore()), state );
 
   STACK_END();
 }

@@ -1,7 +1,7 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITERATORS
 #define ZORBA_SIMPLE_STORE_NODE_ITERATORS
 
-#include <zorba/iterator.h>
+#include "store/api/iterator.h"
 #include "common/shared_types.h"
 #include "store/naive/ordpath.h"
 #include "store/util/handle_hashset_item.h"

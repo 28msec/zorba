@@ -7,7 +7,7 @@ namespace zorba {
 
 class RewriterContext {
   public:
-    RewriterContext(static_context *sctx, expr_t root);
+    RewriterContext(CompilerCB*, expr_t root);
     ~RewriterContext();
 
     static_context *getStaticContext() { return m_sctx; }
@@ -15,7 +15,10 @@ class RewriterContext {
     expr_t getRoot();
     void setRoot(expr_t root);
 
+    CompilerCB* getCompilerCB() { return compilerCB; }
+
   private:
+    CompilerCB     *compilerCB;
     static_context *m_sctx;
     expr_t m_root;
 };

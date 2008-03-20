@@ -1,9 +1,9 @@
 #ifndef ZORBA_NODE_TEST_H
 #define ZORBA_NODE_TEST_H
 
-#include <zorbatypes/xqpstring.h>
+#include "zorbatypes/xqpstring.h"
 
-#include <zorba/rchandle.h>
+#include "util/rchandle.h"
 #include <zorba/store_consts.h>
 
 namespace zorba {

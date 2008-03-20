@@ -2,6 +2,7 @@
 #include "compiler/parser/query_loc.h"
 
 namespace zorba {
+QueryLoc QueryLoc::null;
 
 QueryLoc::QueryLoc()
  : theFilenameBegin (""),

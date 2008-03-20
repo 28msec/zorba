@@ -11,16 +11,19 @@
 #include <string>
 #include <stack>
 #include <sstream>
+#include <list>
 
-#include <zorbatypes/Unicode_util.h>
+#include "zorbatypes/Unicode_util.h"
 
-#include <zorba/config/platform.h>
-#include <zorba/common/common.h>
-#include <zorba/item.h>
+#include "common/common.h"
+#include "store/api/item.h"
 #include <zorba/properties.h>
-#include <zorba/static_context_consts.h>
+#include "context/static_context_consts.h"
 
 #include "compiler/translator/translator.h"
+#include "compiler/api/compilercb.h"
+
+#include "errors/error_manager.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -37,10 +40,8 @@
 #include "compiler/parser/util.h"
 #include "util/tracer.h"
 #include "system/globalenv.h"
-#include "system/zorba.h"
 #include "functions/signature.h"
 #include "functions/external_function_adapters.h"
-#include "system/zorba_engine.h"
 #include "util/stl_extra.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
@@ -57,7 +58,7 @@ namespace zorba {
 #define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
 #define LOOKUP_OPN( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
 
-#define CHK_ONE_DECL( state, err ) do { if (state) ZORBA_ERROR_ALERT (ZorbaError::err, NULL); state = true; } while (0)
+#define CHK_ONE_DECL( state, err ) do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 #ifndef NDEBUG
 # define TRACE_VISIT() if (Properties::instance()->traceTranslator()) cerr << std::string(++depth, ' ') << TRACE << endl;
 # define TRACE_VISIT_OUT() if (Properties::instance()->traceTranslator()) cerr << std::string(depth--, ' ') << TRACE << endl
@@ -87,17 +88,17 @@ namespace zorba {
     return x;
   }
 
-  static QueryLoc null_loc;
 
 class TranslatorImpl : public parsenode_visitor
 {
 public:
-  friend TranslatorImpl *make_translator (bool, static_context *, vector<rchandle<static_context> > &);
+  friend TranslatorImpl *make_translator (bool, CompilerCB*);
 
 protected:
   uint32_t depth;
   bool     print_translated;
 
+  CompilerCB                        *compilerCB;
   static_context                    *sctx_p;
   vector<rchandle<static_context> > &sctx_list;
   std::stack<expr_t>                 nodestack;
@@ -123,11 +124,12 @@ protected:
 
   var_expr_t theDotVar, theDotPosVar, theLastVar;
 
-  TranslatorImpl (bool print_, static_context *sctx_p_, vector<rchandle<static_context> > &sctx_list_)
+  TranslatorImpl (bool print_, CompilerCB* aCompilerCB) 
     : 
     depth (0), print_translated (print_),
-    sctx_p (sctx_p_),
-    sctx_list (sctx_list_),
+    compilerCB(aCompilerCB),
+    sctx_p (aCompilerCB->m_sctx),
+    sctx_list (aCompilerCB->m_sctx_list),
     tempvar_counter (0),
     theRootRelPathExpr(0),
     ns_ctx(new namespace_context(sctx_p)),
@@ -138,9 +140,9 @@ protected:
     hadEmptyOrdDecl (false),
     hadOrdModeDecl (false)
   {
-    theDotVar = bind_var(null_loc, DOT_VAR, var_expr::context_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-    theDotPosVar = bind_var(null_loc, DOT_POS_VAR, var_expr::context_var, GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_POSITIVE_INTEGER, TypeConstants::QUANT_ONE));
-    theLastVar = bind_var (null_loc, LAST_IDX_VAR, var_expr::context_var, GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_POSITIVE_INTEGER, TypeConstants::QUANT_ONE));
+    theDotVar = bind_var(QueryLoc::null, DOT_VAR, var_expr::context_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+    theDotPosVar = bind_var(QueryLoc::null, DOT_POS_VAR, var_expr::context_var, GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_POSITIVE_INTEGER, TypeConstants::QUANT_ONE));
+    theLastVar = bind_var (QueryLoc::null, LAST_IDX_VAR, var_expr::context_var, GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_POSITIVE_INTEGER, TypeConstants::QUANT_ONE));
   }
 
   expr_t pop_nodestack (int n = 1)
@@ -271,7 +273,7 @@ void end_visit(const ArgList& /*v*/, void* /*visit_state*/)
 void *begin_visit(const BaseURIDecl& v)
 {
   TRACE_VISIT ();
-  CHK_ONE_DECL (hadBUriDecl, XQST0032);
+  CHK_ONE_DECL (hadBUriDecl, ZorbaError::XQST0032);
   sctx_p->set_baseuri(v.get_base_uri());
   return NULL;
 }
@@ -285,7 +287,7 @@ void end_visit(const BaseURIDecl& /*v*/, void* /*visit_state*/)
 void *begin_visit(const BoundarySpaceDecl& v)
 {
   TRACE_VISIT ();
-  CHK_ONE_DECL (hadBSpaceDecl, XQST0068);
+  CHK_ONE_DECL (hadBSpaceDecl, ZorbaError::XQST0068);
   sctx_p->set_boundary_space_mode(v.get_boundary_space_mode());
   return NULL;
 }
@@ -323,7 +325,7 @@ void end_visit(const CaseClauseList& /*v*/, void* /*visit_state*/)
 void *begin_visit(const ConstructionDecl& v)
 {
   TRACE_VISIT ();
-  CHK_ONE_DECL (hadConstrDecl, XQST0067);
+  CHK_ONE_DECL (hadConstrDecl, ZorbaError::XQST0067);
   sctx_p->set_construction_mode(v.get_mode());
   return NULL;
 }
@@ -337,7 +339,7 @@ void end_visit(const ConstructionDecl& /*v*/, void* /*visit_state*/)
 void *begin_visit(const CopyNamespacesDecl& /*v*/)
 {
   TRACE_VISIT ();
-  CHK_ONE_DECL (hadCopyNSDecl, XQST0055);
+  CHK_ONE_DECL (hadCopyNSDecl, ZorbaError::XQST0055);
   return no_state;
 }
 
@@ -398,7 +400,7 @@ void end_visit(const DefaultNamespaceDecl& /*v*/, void* /*visit_state*/)
 void *begin_visit(const EmptyOrderDecl& v)
 {
   TRACE_VISIT ();
-  CHK_ONE_DECL (hadEmptyOrdDecl, XQST0069);
+  CHK_ONE_DECL (hadEmptyOrdDecl, ZorbaError::XQST0069);
   sctx_p->set_order_empty_mode(v.get_mode());
   return no_state;
 }
@@ -468,7 +470,7 @@ void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
   QueryLoc loc = v.get_location ();
   xqp_string target_str = v.get_pi_target ();
   if (target_str.substr (0).uppercase () == "XML")
-    ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
+    ZORBA_ERROR_LOC ( ZorbaError::XPST0003, loc);
   expr_t
     target = new const_expr (loc, target_str),
     content = new const_expr (loc, v.get_pi_content ());
@@ -494,7 +496,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
 
   rchandle<QName> end_tag = v.get_end_name  ();
   if (end_tag != NULL && v.get_elem_name ()->get_qname () != end_tag->get_qname ())
-    ZORBA_ERROR_ALERT (ZorbaError::XPST0003);
+    ZORBA_ERROR( ZorbaError::XPST0003);
   if (v.get_dir_content_list() != NULL)
   {
     contentExpr = pop_nodestack();
@@ -688,9 +690,7 @@ void *begin_visit(const DirAttributeList& v)
 
     for (unsigned long i = 0; i < numAttrs; i++) {
       if (attributes[i]->getQName()->equals(attrExpr->getQName()))
-         ZORBA_ERROR_ALERT(ZorbaError::XQST0040, &v.get_location(),
-                          DONT_CONTINUE_EXECUTION, 
-                          "");
+         ZORBA_ERROR_LOC( ZorbaError::XQST0040, v.get_location());
     }
 
     attributes.push_back(attrExpr);
@@ -761,9 +761,8 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       prefix = qname->get_localname();
       if (prefix == "xmlns")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(),
-                          DONT_CONTINUE_EXECUTION, 
-                          "Cannot bind predefined prefix \"xmlns\"");
+        ZORBA_ERROR_LOC_DESC( ZorbaError::XQST0070, v.get_location(),
+                             "Cannot bind predefined prefix \"xmlns\"");
       }
     }
 
@@ -774,14 +773,12 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
       if (prefix == "xml" && uri != "http://www.w3.org/XML/1998/namespace")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(),
-                          DONT_CONTINUE_EXECUTION, 
+        ZORBA_ERROR_LOC_DESC( ZorbaError::XQST0070, v.get_location(),
                           "Predefined prefix \"xml\" is not bound to uri \"http://www.w3.org/XML/1998/namespace\"");
       }
       if (prefix != "xml" && uri == "http://www.w3.org/XML/1998/namespace")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(),
-                          DONT_CONTINUE_EXECUTION, 
+        ZORBA_ERROR_LOC_DESC( ZorbaError::XQST0070, v.get_location(),
                           "Uri \"http://www.w3.org/XML/1998/namespace\" can only be bound to prefix \"xml\"");
       }
       sctx_p->bind_ns(prefix, uri, ZorbaError::XQST0071);
@@ -791,8 +788,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     {
       if (prefix == "xml")
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XQST0070, &v.get_location(),
-                          DONT_CONTINUE_EXECUTION, 
+        ZORBA_ERROR_LOC_DESC( ZorbaError::XQST0070, v.get_location(),
                           "Cannot unbind predefined prefix \"xml\"");
       }
 
@@ -802,8 +798,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQST0022, &v.get_location(),
-                        DONT_CONTINUE_EXECUTION, "", "");
+      ZORBA_ERROR_LOC( ZorbaError::XQST0022, v.get_location());
     }
   }
   else
@@ -1373,7 +1368,7 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
     expr_t val_expr = pop_nodestack ();
     xqp_string pvarname = pv->get_varname ();
     if (pvarname == varname)
-      ZORBA_ERROR_ALERT (ZorbaError::XQST0089, &loc);
+      ZORBA_ERROR_LOC (ZorbaError::XQST0089, loc);
     bind_var_and_push (pv->get_location (), pvarname, var_expr::pos_var);
     nodestack.push (val_expr);
   }
@@ -1545,10 +1540,10 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         }
         normalize_expr_tree (Properties::instance ()->printNormalizedExpressions ()
                              ? v.get_name ()->get_qname ().c_str () : NULL,
-                             sctx_p, body);
+                             compilerCB, body);
 
         if (Properties::instance ()->useOptimizer ()) {
-          RewriterContext rCtx(sctx_p, body);
+          RewriterContext rCtx(compilerCB, body);
           GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
           body = rCtx.getRoot();
           if (Properties::instance ()->printOptimizedExpressions ()) {
@@ -1679,7 +1674,7 @@ void end_visit(const OptionDecl& /*v*/, void* /*visit_state*/)
 void *begin_visit(const OrderingModeDecl& v)
 {
   TRACE_VISIT ();
-  CHK_ONE_DECL (hadOrdModeDecl, XQST0065);
+  CHK_ONE_DECL (hadOrdModeDecl, ZorbaError::XQST0065);
   sctx_p->set_ordering_mode(v.get_mode());
   return NULL;
 }
@@ -2218,7 +2213,7 @@ void end_visit(const ExtensionExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   if (v.get_expr () == NULL)
-    ZORBA_ERROR_ALERT (ZorbaError::XQST0079);
+    ZORBA_ERROR( ZorbaError::XQST0079);
 }
 
 void *begin_visit(const FilterExpr& /*v*/)
@@ -2270,7 +2265,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       return;
     } else if (fn_local == "unordered") {
       if (sz != 1)
-        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:unordered", arguments.size ());
+        ZORBA_ERROR_OSS ( ZorbaError::XPST0017,  "fn:unordered", arguments.size ());
       // put argument back, ignore fn:unordered
       nodestack.push (arguments [0]);
       return;
@@ -2286,7 +2281,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:string", sz);
+        ZORBA_ERROR_OSS ( ZorbaError::XPST0017,  "fn:string", sz );
       }
     } else if (fn_local == "number") {
       switch (sz) {
@@ -2296,7 +2291,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:number", sz);
+        ZORBA_ERROR_OSS ( ZorbaError::XPST0017, "fn:number", sz );
       }
       var_expr_t tv = tempvar (loc, var_expr::let_var);
       expr_t nan_expr = new const_expr (loc, xqp_double::nan ());
@@ -2311,7 +2306,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       arguments.push_back (create_cast_expr (loc, sctx_p->lookup_var_nofail (DOT_VAR), xs_string, true));
     } else if (fn_local == "static-base-uri") {
       if (sz != 0)
-        ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, "fn:static-base-uri", sz);
+        ZORBA_ERROR_OSS ( ZorbaError::XPST0017, "fn:static-base-uri", sz );
       xqp_string baseuri = sctx_p->baseuri ();
       if (baseuri.empty ())
         nodestack.push (create_seq (loc));
@@ -2329,7 +2324,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   if (type != NULL && fn_qname->getStringValue () != "xs:anyAtomicType")
   {
     if (sz != 1)
-      ZORBA_ERROR_ALERT_OSS (ZorbaError::XPST0017, NULL, DONT_CONTINUE_EXECUTION, prefix + ":" + fname, sz);
+      ZORBA_ERROR_OSS ( ZorbaError::XPST0017,  prefix + ":" + fname, sz);
     nodestack.push (create_cast_expr (loc, arguments [0], type, true));
   }
   else
@@ -2588,7 +2583,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
   if (t == NULL)
-    ZORBA_ERROR_ALERT (ZorbaError::XPST0051, NULL);
+    ZORBA_ERROR( ZorbaError::XPST0051);
   else
     tstack.push (t);
 }
@@ -2780,9 +2775,7 @@ void end_visit(const DocumentTest& v, void* /*visit_state*/)
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
-                        &v.get_location(),
-                        DONT_CONTINUE_EXECUTION, "Document kind test");
+      ZORBA_ERROR_LOC_DESC( ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location(), "Document kind test");
     }
   }
 }
@@ -2827,9 +2820,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
   {
     if (nilled)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED,
-                        &v.get_location(),
-                        DONT_CONTINUE_EXECUTION, "schema types");
+      ZORBA_ERROR_LOC_DESC( ZorbaError::XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location(), "schema types");
     }
 
     rchandle<NodeTest> nodeTest;
@@ -3845,7 +3836,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
   if (e == NULL)
-    ZORBA_ERROR_ALERT (ZorbaError::XPST0008, NULL, DONT_CONTINUE_EXECUTION, v.get_varname ());
+    ZORBA_ERROR_DESC ( ZorbaError::XPST0008, v.get_varname ());
   nodestack.push (rchandle<expr> (e));
 }
 
@@ -4491,12 +4482,12 @@ void end_visit(const VarGetsDeclList& /*v*/, void* /*visit_state*/)
 };
 
 
-TranslatorImpl *make_translator (bool print, static_context *sctx_p, vector<rchandle<static_context> > &sctx_list) {
-  return new TranslatorImpl (print, sctx_p, sctx_list);
+TranslatorImpl *make_translator (bool print, CompilerCB* aCompilerCB)  {
+  return new TranslatorImpl (print, aCompilerCB);
 }
 
-rchandle<expr> translate (bool print, static_context *sctx_p, const parsenode &root, vector<rchandle<static_context> > &sctx_list) {
-  auto_ptr<TranslatorImpl> t (make_translator (print, sctx_p, sctx_list));
+rchandle<expr> translate (bool print, const parsenode &root, CompilerCB* aCompilerCB) {
+  auto_ptr<TranslatorImpl> t (make_translator (print, aCompilerCB));
   root.accept (*t);
   rchandle<expr> result = t->result ();
   if (print) {

@@ -11,7 +11,6 @@
 #ifndef ZORBA_NORMALIZE_VISITOR_H
 #define ZORBA_NORMALIZE_VISITOR_H
 
-#include <vector>
 #include "common/shared_types.h"
 
 /*______________________________________________________________________
@@ -23,7 +22,7 @@
 
 namespace zorba {
 
-  expr_t translate (bool, static_context *, const parsenode &, std::vector<rchandle<static_context> > &);
+  expr_t translate (bool, const parsenode &, CompilerCB* aCompilerCB);
   
 } /* namespace zorba */
 #endif /* ZORBA_NORMALIZE_VISITOR_H */

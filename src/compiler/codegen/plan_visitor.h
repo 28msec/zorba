@@ -13,6 +13,7 @@
 #include <vector>
 #include "compiler/expression/expr.h"
 #include "runtime/core/item_iterator.h"
+#include "common/shared_types.h"
 
 
 /*______________________________________________________________________

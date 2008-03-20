@@ -1,8 +1,8 @@
 #ifndef ZORBA_STORE_STRING_HASHSET_H
 #define ZORBA_STORE_STRING_HASHSET_H
 
-#include <zorba/common/common.h>
-#include <zorbatypes/xqpstring.h>
+#include "common/common.h"
+#include "zorbatypes/xqpstring.h"
 
 #include "store/util/handle_hashset.h"
 

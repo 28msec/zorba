@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-#include <zorba/rchandle.h>
-#include <zorba/common/common.h>
+#include "util/rchandle.h"
+#include "common/common.h"
 
 namespace zorba {
 

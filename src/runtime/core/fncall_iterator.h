@@ -1,6 +1,7 @@
 #ifndef ZORBA_FNCALL_ITERATOR_H
 #define ZORBA_FNCALL_ITERATOR_H
 
+#include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 #include <vector>
@@ -51,8 +52,8 @@ class StatelessExtFunctionCallIteratorState : public PlanIteratorState {
     StatelessExtFunctionCallIteratorState();
     ~StatelessExtFunctionCallIteratorState();
 
-    std::vector<store::ItemSequence_t> m_extArgs;
-    store::ItemSequence_t m_result;
+    std::vector<ItemSequence*> m_extArgs;
+    ItemSequence_t m_result;
 
     void reset(PlanState&);
 };
@@ -69,6 +70,7 @@ class StatelessExtFunctionCallIterator
     void openImpl(PlanState& planState, uint32_t& offset);
 
     store::Item_t nextImpl(PlanState& planState) const;
+    void closeImpl(PlanState& planState);
 
     virtual void accept(PlanIterVisitor& v) const;
 

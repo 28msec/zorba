@@ -1,5 +1,6 @@
 
 #include "util/Assert.h"
+#include "errors/error_manager.h"
 
 #include "store/naive/simple_pul.h"
 #include "store/naive/node_items.h"
@@ -157,7 +158,7 @@ void PULImpl::addReplaceContent(Item* target, Item* newChild)
     {
       if ((*updatesp)[i]->getKind() == UpdateConsts::REPLACE_CONTENT)
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XUDY0017, NULL, DONT_CONTINUE_EXECUTION, "", "");
+        ZORBA_ERROR(ZorbaError::XUDY0017);
       }
     }
 
@@ -201,7 +202,7 @@ void PULImpl::addRename(Item* target, Item* newName)
     {
       if ((*updatesp)[i]->getKind() == UpdateConsts::RENAME)
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XUDY0015, NULL, DONT_CONTINUE_EXECUTION, "", "");
+        ZORBA_ERROR(ZorbaError::XUDY0015);
       }
     }
 

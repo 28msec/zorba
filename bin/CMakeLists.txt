@@ -15,8 +15,9 @@ ENDIF(WIN32 AND NOT UNIX)
 ADD_TEST(cmd1 zorba --omit-xml-declaration -i "1+1")
 SET_TESTS_PROPERTIES(cmd1 PROPERTIES PASS_REGULAR_EXPRESSION "2")
 
-ADD_TEST(cmd2 zorba --serialize-html -i "1+1")
-SET_TESTS_PROPERTIES(cmd2 PROPERTIES PASS_REGULAR_EXPRESSION "<html>2</html>")
+# todo add html serialization
+# ADD_TEST(cmd2 zorba --serialize-html -i "1+1")
+# SET_TESTS_PROPERTIES(cmd2 PROPERTIES PASS_REGULAR_EXPRESSION "<html>2</html>")
 
 ADD_TEST(cmd3 zorba -m 0 -i "1+1")
 SET_TESTS_PROPERTIES(cmd3 PROPERTIES PASS_REGULAR_EXPRESSION "")

@@ -24,14 +24,15 @@
 
 #include <string>
 #include <map>
-#include <zorbatypes/xqpstring.h>
+#include "zorbatypes/xqpstring.h"
 
-#include <zorba/common/common.h>
-#include <zorba/static_context.h>
+#include "common/common.h"
 #include <zorba/store_consts.h>
-#include <zorba/errors.h>
-#include <zorba/static_context_consts.h>
+#include "context/static_context_consts.h"
+#include "store/api/item.h" // TODO remove by putting functions and explicit destructors into the cpp file
+#include "zorbatypes/representations.h"
 
+#include "errors/errors.h"
 #include "common/shared_types.h"
 #include "compiler/parser/query_loc.h"
 #include "compiler/parser/parse_constants.h"
@@ -814,7 +815,7 @@ public:
 
 class treat_expr : public cast_base_expr {
 protected:
-  enum ZorbaError::ErrorCodes err;
+  enum ZorbaError::ErrorCode err;
 
 public:
   expr_kind_t get_expr_kind () { return treat_expr_kind; }
@@ -822,9 +823,9 @@ public:
     const QueryLoc&,
     expr_t,
     xqtref_t,
-    enum ZorbaError::ErrorCodes);
+    enum ZorbaError::ErrorCode);
 
-  enum ZorbaError::ErrorCodes get_err () { return err; }
+  enum ZorbaError::ErrorCode get_err () { return err; }
 
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);

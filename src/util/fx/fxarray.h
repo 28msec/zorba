@@ -10,7 +10,7 @@
 
 #ifndef ZORBA_FXARRAY_H
 #define ZORBA_FXARRAY_H
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 #ifndef WIN32
 #include <sys/mman.h>
@@ -24,19 +24,13 @@
 	#include <types.h>
 #endif
 
-// MS Visual Studio does not fully support throw(), and issues a warning
-#ifndef _MSC_VER
-#define THROW_XQP_EXCEPTION		throw(xqp_exception)
-#else
-#define THROW_XQP_EXCEPTION		
-#endif
 
 #include <string>
 #include <sstream>
 #include <iostream>
 
 #include "util/fx/mmfile.h"
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 
 namespace zorba {
 
@@ -90,7 +84,7 @@ public:		// ctor,dtor
    ** Destroy all the elements.
 	 **	In the mmfile case, unmap and close backing file.
    */
-	void destroy() THROW_XQP_EXCEPTION;
+	void destroy();
 
 public: 	// array interface
 	/**
@@ -114,7 +108,7 @@ public: 	// array interface
 	 **
 	 ** @param init - if true then initialize the new entries to 0
 	 */
-  void expand(bool init = false) THROW_XQP_EXCEPTION;
+  void expand(bool init = false);
 
 	/**
 	 ** Fill array with an initial byte value.
@@ -149,7 +143,7 @@ public:		// memory-mapped only, nops in the non-mm case
 	/**
 	 ** Unmap the backing file.
 	 */
-	void unmap() THROW_XQP_EXCEPTION;
+	void unmap();
 
 	/**
 	 ** Return the path of the backing file.
@@ -161,7 +155,7 @@ public:		// memory-mapped only, nops in the non-mm case
 	/**
 	 ** Rename the backing file.
 	 */
-  void rename_backing_file(std::string const& new_path) THROW_XQP_EXCEPTION;
+  void rename_backing_file(std::string const& new_path);
 	/**
 	 ** Return data array pointer.
 	 **
@@ -226,7 +220,6 @@ void fxarray<T>::fill(char initval)
 
 template<typename T>
 void fxarray<T>::expand(bool init)
-THROW_XQP_EXCEPTION
 {
 	if (mmf_p) {
 		mmf_p->expand(init);
@@ -249,21 +242,18 @@ THROW_XQP_EXCEPTION
 
 template<typename T>
 void fxarray<T>::unmap()
-THROW_XQP_EXCEPTION
 {
 	if (mmf_p) mmf_p->unmap();
 }
 
 template<typename T>
 void fxarray<T>::rename_backing_file(const std::string& new_path)
-THROW_XQP_EXCEPTION
 {
 	if (mmf_p) mmf_p->rename_backing_file(new_path);
 }
 
 template<typename T>
 void fxarray<T>::destroy()
-THROW_XQP_EXCEPTION
 {
 	if (mmf_p) mmf_p->destroy();
 }

@@ -7,7 +7,7 @@
  *
  */
 
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "functions/Accessors.h"
 #include "runtime/accessors/AccessorsImpl.h"
@@ -23,10 +23,7 @@ fn_data_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annot
 {
   if ( !validate_args ( argv ) )
 	{
-    ZorbaAlertFactory::error_alert (
-		   ZorbaError::XPST0017,
-       &loc
-		);
+    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
   }
   return new FnDataIterator ( loc, argv );
 }
@@ -61,10 +58,7 @@ PlanIter_t fn_root_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 {
   if (!validate_args(argv))
 	{
-    ZORBA_ERROR_ALERT(
-		   ZorbaError::XPST0017,
-       &loc
-		);
+    ZORBA_ERROR_LOC(  ZorbaError::XPST0017, loc);
   }
 
   return new FnRootIterator(loc, argv);
@@ -94,10 +88,7 @@ PlanIter_t fn_nodename_func::codegen (const QueryLoc& loc, std::vector<PlanIter_
 {
   if (!validate_args(argv))
 	{
-    ZORBA_ERROR_ALERT(
-		   ZorbaError::XPST0017,
-       &loc
-		);
+    ZORBA_ERROR_LOC(  ZorbaError::XPST0017, loc);
   }
 
   return new FnNodeNameIterator(loc, argv);
@@ -127,10 +118,7 @@ PlanIter_t fn_nilled_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 {
   if (!validate_args(argv))
   {
-    ZORBA_ERROR_ALERT(
-       ZorbaError::XPST0017,
-       &loc
-    );
+    ZORBA_ERROR_LOC(ZorbaError::XPST0017, loc);
   }
 
   return new FnNilledIterator(loc, argv);
@@ -159,10 +147,7 @@ PlanIter_t fn_base_uri_func::codegen (const QueryLoc& loc, std::vector<PlanIter_
 {
   if (!validate_args(argv))
   {
-    ZORBA_ERROR_ALERT(
-       ZorbaError::XPST0017,
-       &loc
-    );
+    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
   }
 
   return new FnBaseUriIterator(loc, argv);
@@ -189,10 +174,7 @@ PlanIter_t fn_document_uri_func::codegen (const QueryLoc& loc, std::vector<PlanI
 {
   if (!validate_args(argv))
   {
-    ZORBA_ERROR_ALERT(
-       ZorbaError::XPST0017,
-       &loc
-    );
+    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
   }
 
   return new FnDocumentUriIterator(loc, argv);
@@ -220,10 +202,7 @@ PlanIter_t fn_name_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
 {
   if (!validate_args(argv))
 	{
-    ZORBA_ERROR_ALERT(
-		   ZorbaError::XPST0017,
-       &loc
-		);
+    ZORBA_ERROR_LOC(  ZorbaError::XPST0017, loc);
   }
 
   PlanIter_t nnIter = new FnNodeNameIterator(loc, argv);

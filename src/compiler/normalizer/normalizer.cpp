@@ -72,7 +72,7 @@ bool normalizer::begin_visit(flwor_expr& node)
     if (vartype != NULL) {
       bool is_for = clause->get_type () == forlet_clause::for_clause;
       if (is_for && GENV_TYPESYSTEM.is_equal (*GENV_TYPESYSTEM.EMPTY_TYPE, *vartype))
-        ZORBA_ERROR_ALERT (ZorbaError::XPTY0004, &loc);
+        ZORBA_ERROR_LOC (ZorbaError::XPTY0004, loc);
       xqtref_t promote_type = is_for ? GENV_TYPESYSTEM.create_type (*vartype, TypeConstants::QUANT_STAR) : vartype;
       expr_t e = clause->get_expr ();
       clause->set_expr (new treat_expr (e->get_loc (), e, promote_type, ZorbaError::XPTY0004));
@@ -405,8 +405,8 @@ void normalizer::end_visit(rename_expr&)
 void normalizer::end_visit(transform_expr&)
 {}
 
-void zorba::normalize_expr_tree (const char *norm_descr, static_context *sctx, expr_t root) {
-  normalizer n (sctx);
+void zorba::normalize_expr_tree (const char *norm_descr, CompilerCB* aCompilerCB, expr_t root) {
+  normalizer n (aCompilerCB);
   root->accept(n);
   if (norm_descr != NULL) {
     std::cout << "Expression tree for " << norm_descr << " after normalization:\n";

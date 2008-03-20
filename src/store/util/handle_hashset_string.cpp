@@ -1,4 +1,4 @@
-
+#include <cassert>
 #include "util/Assert.h"
 #include "store/util/handle_hashset_string.h"
 

@@ -3,18 +3,16 @@
 
 #include "xercesIncludes.h"
 
-#include <zorba/common/api_shared_types.h>
-#include <zorba/rchandle.h>
-#include <zorba/item.h>
+#include <zorba/api_shared_types.h>
+
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
-
+#include "store/api/item.h"
+#include "zorbatypes/xqpstring.h"
 
 
 namespace zorba
 {
-
-class Schema;
 
 class Schema
 {

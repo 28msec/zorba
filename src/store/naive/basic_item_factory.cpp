@@ -7,9 +7,10 @@
  *`
  */
 
-#include <zorba/common/common.h>
-#include <zorba/iterator.h>
+#include "common/common.h"
 
+#include "store/api/iterator.h"
+#include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "util/Assert.h"
 
@@ -205,7 +206,7 @@ Item_t BasicItemFactory::createDateTime (const Item_t& date, const Item_t& time)
     Item_t item;
     
     if (2 == DateTimeItemNaive::createFromDateAndTime(date->getDateValue(), time->getTimeValue(), item))
-      ZORBA_ERROR_ALERT(ZorbaError::FORG0008);
+      ZORBA_ERROR(ZorbaError::FORG0008);
     
     return item;
   }
@@ -593,14 +594,13 @@ Item_t BasicItemFactory::createAttributeNode(
 
   if (attrName->getLocalName().size() == 0)
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQDY0074, NULL, DONT_CONTINUE_EXECUTION,
-                      "Attribute name must not have an empty local part.");
+    ZORBA_ERROR_DESC( ZorbaError::XQDY0074, "Attribute name must not have an empty local part.");
   }
 
   if (attrName->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
       (attrName->getNamespace() == "" && attrName->getLocalName() == "xmlns"))
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQDY0044);
+    ZORBA_ERROR( ZorbaError::XQDY0044);
   }
 
   if (parent != NULL)

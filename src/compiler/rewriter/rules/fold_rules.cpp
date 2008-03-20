@@ -6,10 +6,11 @@
 #include "types/root_typemanager.h"
 #include "types/typemanager.h"
 #include "system/globalenv.h"
-#include "runtime/base/plan_wrapper.h"
+#include "runtime/api/plan_wrapper.h"
 #include "functions/function.h"
-#include "functions/Misc.h"
 #include "errors/error_messages.h"
+
+#include "errors/errors.h"
 
 #include <set>
 
@@ -35,22 +36,24 @@ namespace zorba {
     auto_ptr<PlanWrapper> pw;
 
   public:
-    PlanWrapperHolder (PlanIter_t plan) : pw (new PlanWrapper (plan))
+    PlanWrapperHolder (PlanIter_t plan, CompilerCB* compilercb) : pw (new PlanWrapper (plan, compilercb, 0))
     { pw->open (); }
     ~PlanWrapperHolder() { pw->close (); }
     PlanWrapper *operator-> () { return pw.get(); }
   };
 
-  static expr_t execute (expr_t node, vector<store::Item_t> &result) {
+  static expr_t execute (CompilerCB* compilercb, expr_t node, vector<store::Item_t> &result) {
     PlanIter_t plan = codegen ("const-folded expr", node);
     QueryLoc loc = node->get_loc ();
     store::Item_t item;
     try {
-      for (PlanWrapperHolder pw  (plan); (item = pw->next ()) != NULL; )
+      for (PlanWrapperHolder pw  (plan, compilercb); (item = pw->next ()) != NULL; )
         result.push_back (item);
       return NULL;
-    } catch (xqp_exception e) {
-      expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 1), new const_expr (loc, ITEM_FACTORY->createQName ("http://www.w3.org/2005/xqt-errors", "err", err_code_to_name ((ZorbaError::ErrorCodes) e.getCode ()).c_str ())));
+    } catch (error::ZorbaError& e) {
+      ZorbaError::ErrorCode lErrorCode = (ZorbaError::ErrorCode) e.theErrorCode;
+      expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 1), 
+                                     new const_expr (loc, ITEM_FACTORY->createQName ("http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ())));
       err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VALUE);
       return err_expr;
     }
@@ -113,12 +116,10 @@ namespace zorba {
   RULE_REWRITE_POST(MarkUnfoldableOps) {
     Annotation::key_t k = AnnotationKey::UNFOLDABLE_OP;
     switch (node->get_expr_kind ()) {
-    case fo_expr_kind: {
-      const function *f = dynamic_cast<fo_expr *> (node)->get_func ();
-      if (f->requires_dyn_ctx () || dynamic_cast<const fn_error_base *> (f) != NULL)
+    case fo_expr_kind:
+      if (dynamic_cast<fo_expr *> (node)->get_func ()->requires_dyn_ctx ())
         node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
       break;
-    }
     case elem_expr_kind:
     case attr_expr_kind:
     case text_expr_kind:
@@ -161,7 +162,7 @@ namespace zorba {
             node->get_annotation (AnnotationKey::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VALUE))
     {
       vector<store::Item_t> result;
-      expr_t folded = execute (node, result);
+      expr_t folded = execute (rCtx.getCompilerCB(), node, result);
       if (folded == NULL) {
         ZORBA_ASSERT (result.size () <= 1);
         folded =

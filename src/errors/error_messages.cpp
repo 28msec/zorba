@@ -1,16 +1,14 @@
-
 #include <string>
 
-#include <zorbatypes/Unicode_util.h>
-
-#include "errors/error_messages.h"
+#include "zorbatypes/Unicode_util.h"
 #include "util/Assert.h"
 
+#include <zorba/error.h>
+#include "errors/error_messages.h"
 
 using namespace std;
 
-namespace zorba
-{
+namespace zorba { namespace error {
 
 
 /*******************************************************************************
@@ -54,22 +52,27 @@ string::size_type AlertMessages::applyParam(
 
 ********************************************************************************/
 
-static const char *canonical_err_names[ZorbaError::MAX_ZORBA_ERROR_CODE + 1];
-static const char *err_msg[ZorbaError::MAX_ZORBA_ERROR_CODE + 1];
+static const char *canonical_err_names[::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE + 1];
+static const char *err_msg[::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE + 1];
 
 
 static struct err_msg_initializer 
 {
   err_msg_initializer () 
   {
-#define DEF_ERR_CODE( code, name, msg ) canonical_err_names [ ZorbaError::code ] = strdup(#name); err_msg [ZorbaError::code] = strdup(msg);
+#define DEF_ERR_CODE( code, name, msg ) canonical_err_names [ ::zorba::ZorbaError::code ] = strdup(#name); err_msg [::zorba::ZorbaError::code] = strdup(msg);
 
-    for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
+    for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
       canonical_err_names [i] = NULL;
       err_msg [i] = NULL;
     }
 
 
+DEF_ERR_CODE (API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI /s exists already.")
+DEF_ERR_CODE (API0006_COLLECTION_NOT_FOUND, API0006, "A collection with URI `/s' does not exist.")
+DEF_ERR_CODE (API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert to a collectionan item that is not a node.")
+DEF_ERR_CODE (API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri `/s' exists in the store already.")
+DEF_ERR_CODE (API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, "The uri `/s' does not identify an XML node")
 DEF_ERR_CODE (FOAR0001, FOAR0001, "Division by zero.")
 DEF_ERR_CODE (FOAR0002, FOAR0002, "Numeric operation overflow/underflow.")
 DEF_ERR_CODE (FOCA0001, FOCA0001, "Input value too large for decimal.")
@@ -410,7 +413,7 @@ DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression 
 
 #undef DEF_ERR_CODE
 
-  for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
+  for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; ++i) {
     if (canonical_err_names [i] == NULL)
       canonical_err_names [i] = strdup("?");
     if (err_msg [i] == NULL)
@@ -422,72 +425,40 @@ DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression 
 
   ~err_msg_initializer()
   {
-  for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++) {
-    if (canonical_err_names [i] != NULL)
-      free(const_cast<char *>(canonical_err_names [i]));
-    if (err_msg [i] != NULL)
-      free(const_cast<char *>(err_msg [i]));
-  }
-
+    for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; ++i) {
+      if (canonical_err_names [i] != NULL)
+        free(const_cast<char *>(canonical_err_names [i]));
+      if (err_msg [i] != NULL)
+        free(const_cast<char *>(err_msg [i]));
+    }
   }
 } err_msg_initializer_obj;
 
-ZorbaError::ErrorCodes err_name_to_code (string name) {
+::zorba::ZorbaError::ErrorCode 
+ZorbaError::err_name_to_code (string name) {
   // TODO: use a map or hashmap
-  for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++)
+  for (int i = 0; i < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE; i++)
     if (name == canonical_err_names [i])
-      return (enum ZorbaError::ErrorCodes) i;
-  return ZorbaError::XQP0019_INTERNAL_ERROR;
+      return (enum ::zorba::ZorbaError::ErrorCode) i;
+  return ::zorba::ZorbaError::XQP0019_INTERNAL_ERROR;
 }
 
-string err_code_to_name (ZorbaError::ErrorCodes code) {
+string ZorbaError::toString(::zorba::ZorbaError::ErrorCode& code) {
+  ZORBA_ASSERT (code < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE);
   return canonical_err_names [code];
 }
 
-string ZorbaError::toString(ZorbaError::ErrorCodes code) {
-  ZORBA_ASSERT (code < ZorbaError::MAX_ZORBA_ERROR_CODE);
-  return canonical_err_names[code];
-}
 
-string AlertMessagesEnglish::error_decode(ZorbaError::ErrorCodes e) {
-  ZORBA_ASSERT (e < ZorbaError::MAX_ZORBA_ERROR_CODE);
+string AlertMessagesEnglish::error_decode(::zorba::ZorbaError::ErrorCode& e) {
+  ZORBA_ASSERT (e < ::zorba::ZorbaError::MAX_ZORBA_ERROR_CODE);
   return err_msg [e];
 } 
 
 
-string AlertMessagesEnglish::warning_decode(ZorbaWarning::WarningCodes code)
+string AlertMessagesEnglish::warning_decode(ZorbaWarning::WarningCode& code)
 {
   return "?";
 }
 
-
-string AlertMessagesEnglish::notify_event_decode(ZorbaNotify::NotifyCodes code)
-{
-  switch(code)
-  {
-  case ZorbaNotify::NOTIF_EXECUTION_STEP:
-    return "Notify execution step: /s /s";
-  }
-  return "?";
-}
-
-
-string AlertMessagesEnglish::ask_user_decode(ZorbaAskUser::UserQuestionCodes)
-{
-  return "?";
-}
-
-
-string AlertMessagesEnglish::ask_user_options_decode(ZorbaAskUser::UserReplyOptionsCodes)
-{
-  return "";
-}
-
-
-
-AlertMessagesTable::AlertMessagesTable(string file_name)
-{
-}
-
-}///end namespace zorba
-
+} /* namespace error */
+} /* namespace zorba */

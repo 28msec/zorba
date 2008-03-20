@@ -11,7 +11,9 @@
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
-#include "zorba/zorba_api.h"
+#include <zorba/zorba.h>
+#include <zorba/error_handler.h>
+#include <zorba/exception.h>
 
 namespace fs = boost::filesystem;
 
@@ -46,34 +48,63 @@ printPart(std::ostream& os, std::string aInFile,
   return;
 }
 
+class TestErrorHandler : public zorba::ErrorHandler {
+  public:
+    void staticError(const zorba::StaticException& aStaticError)
+    {
+      registerError(aStaticError);
+    }
+
+    void dynamicError(const zorba::DynamicException& aDynamicError)
+    {
+      registerError(aDynamicError);
+    }
+
+    void typeError(const zorba::TypeException& aTypeError)
+    {
+      registerError(aTypeError);
+    }
+
+    void serializationError(const zorba::SerializationException& aSerializationError)
+    {
+      registerError(aSerializationError);
+    }
+
+    void systemError(const zorba::SystemException& aSystemError)
+    {
+      registerError(aSystemError);
+    }
+
+    bool errors()
+    {
+      return !m_errors.empty();
+    }
+
+    const std::vector<std::string>& getErrorList()
+    {
+      return m_errors;
+    }
+
+  private:
+    std::vector<std::string> m_errors;
+
+    void registerError(const zorba::ZorbaException& e)
+    {
+      m_errors.push_back(zorba::ZorbaError::getErrorCode(e.getErrorCode()).c_str());
+    }
+};
 
 // check of an error that was repored was expected 
 // by the given specification object
 bool
-isErrorExpected(zorba::ZorbaAlertsManager* aManager, Specification* aSpec)
+isErrorExpected(TestErrorHandler& errHandler, Specification* aSpec)
 {
-	zorba::AlertList_t		alert_list = aManager->getAlertList();
-  for (zorba::AlertList::const_iterator lIter = alert_list->begin();
-       lIter != alert_list->end(); ++lIter)
-  {
-    zorba::ZorbaAlert_t lAlert = *lIter;
-    switch (lAlert->theKind)
-    {
-      case zorba::ZorbaAlert::ERROR_ALERT:
-        {
-          zorba::ZorbaError* lErrorAlert = dynamic_cast<zorba::ZorbaError*>(&*lAlert);
-          std::string lErrorCode = lErrorAlert->toString(lErrorAlert->theCode);
-          for (std::vector<std::string>::const_iterator lErrorIter = aSpec->errorsBegin();
-               lErrorIter != aSpec->errorsEnd(); ++lErrorIter)
-          {
-            // error is expected
-            if ((*lErrorIter).compare(lErrorCode) == 0)
-              return true;
-          }
-          break;
-        }
-      default:
-        { }
+  const std::vector<std::string>& errors = errHandler.getErrorList();
+  for(std::vector<std::string>::const_iterator i = errors.begin(); i != errors.end(); ++i) {
+    for(std::vector<std::string>::const_iterator j = aSpec->errorsBegin(); j != aSpec->errorsEnd(); ++j) {
+      if (i->compare(*j) == 0) {
+        return true;
+      }
     }
   }
   return false;
@@ -81,31 +112,17 @@ isErrorExpected(zorba::ZorbaAlertsManager* aManager, Specification* aSpec)
 
 // print all errors that were raised
 void
-printErrors(zorba::ZorbaAlertsManager* aManager)
+printErrors(TestErrorHandler& errHandler)
 {
-	zorba::AlertList_t		alert_list = aManager->getAlertList();
-  if (alert_list->size() == 0) return;
-
+  if (!errHandler.errors()) {
+    return;
+  }
   std::cerr << "Errors:" << std::endl;
+  
+  const std::vector<std::string>& errors = errHandler.getErrorList();
 
-  for (zorba::AlertList::const_iterator lIter = alert_list->begin();
-       lIter != alert_list->end(); ++lIter)
-  {
-    zorba::ZorbaAlert_t lAlert = *lIter;
-    switch (lAlert->theKind)
-    {
-    case zorba::ZorbaAlert::ERROR_ALERT:
-    {
-      zorba::ZorbaError* lErrorAlert = dynamic_cast<zorba::ZorbaError*>(&*lAlert);
-      assert(lErrorAlert);
-      std::string lErrorCode = lErrorAlert->toString(lErrorAlert->theCode);
-      std::cerr << lErrorCode << " " << lErrorAlert->theDescription << std::endl;
-      break;
-    }
-    default:
-    { 
-    }
-    }
+  for(std::vector<std::string>::const_iterator i = errors.begin(); i != errors.end(); ++i) {
+    std::cerr << *i << std::endl;
   }
   return;
 }
@@ -114,34 +131,36 @@ printErrors(zorba::ZorbaAlertsManager* aManager)
 // inlineFile specifies whether the given parameter is a file and it's value should
 // be inlined or not
 void
-set_var (bool inlineFile, std::string name, std::string val, 
-         zorba::DynamicQueryContext_t dctx, zorba::XQuery_t exec)
+set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext_t dctx)
 {
   boost::replace_all(val, "$RBKT_SRC_DIR", zorba::RBKT_SRC_DIR);
-  if (!inlineFile && dctx != NULL) {
+
+  zorba::ItemFactory* lFactory = zorba::Zorba::getInstance()->getItemFactory();
+
+  if (!inlineFile) {
+    zorba::Item lItem = lFactory->createString(val);
 		if(name != ".")
-			dctx->setVariableAsString (name, zorba::xqp_string (val));
+			dctx->setVariable (name, lItem);
 		else
-			dctx->setContextItemAsString(zorba::xqp_string(val));
-  } else if (inlineFile && exec != NULL) {
+			dctx->setContextItem (lItem);
+  } else {
     std::ifstream is (val.c_str ());
     assert (is);
 		if(name != ".")
-			exec->setVariableAsDocumentFromStream (name, val.c_str(), is);
+			dctx->setVariableAsDocument (name, val.c_str(), is);
 		else
-			exec->setContextItemAsDocumentFromStream (val.c_str(), is);
+			dctx->setContextItemAsDocument (val.c_str(), is);
   }
 }
 
 void 
-set_vars (Specification* aSpec, zorba::DynamicQueryContext_t dctx, zorba::XQuery_t exec) 
+set_vars (Specification* aSpec, zorba::DynamicContext_t dctx) 
 {
   for (std::vector<Specification::Variable>::const_iterator lIter = aSpec->variablesBegin();
        lIter != aSpec->variablesEnd(); ++lIter)
   {
-    set_var ((*lIter).theInline, (*lIter).theVarName, (*lIter).theVarValue, dctx, exec);
+    set_var ((*lIter).theInline, (*lIter).theVarName, (*lIter).theVarValue, dctx);
   }
-  // TODO: set context item
 }
 
 
@@ -188,22 +207,6 @@ isEqual(fs::path aRefFile, fs::path aResFile, int& aLine, int& aCol, int& aPos)
 
   return true;
 }
-
-class ZorbaEngineWrapper {
-public:
-  zorba::ZorbaEngine_t factory;
-
-  ZorbaEngineWrapper ()
-    : factory (zorba::ZorbaEngine::getInstance())
-  {
-    factory->initThread();
-  }
-  ~ZorbaEngineWrapper () {
-
-    factory->uninitThread();
-    factory->shutdown();
-  }
-};
 
 void 
 slurp_file (const char *fname, std::string &result) {
@@ -288,19 +291,18 @@ main(int argc, char** argv)
   printFile(std::cout, lQueryFile.native_file_string());
   std::cout << std::endl;
 
-  // initialize the zorba engine
-  ZorbaEngineWrapper lEngine; // the engine is up as long as this object lives
+  zorba::Zorba *engine = zorba::Zorba::getInstance();
+
+  TestErrorHandler errHandler;
 
   // create and compile the query
   std::string lQueryString;
   slurp_file(lQueryFile.native_file_string().c_str(), lQueryString);
-  zorba::XQuery_t lQuery = lEngine.factory->createQuery(lQueryString.c_str());
+  zorba::XQuery_t lQuery = engine->createQuery(lQueryString.c_str(), &errHandler);
 
-  zorba::ZorbaAlertsManager_t lAlertsManager = lEngine.factory->getAlertsManagerForCurrentThread();
-
-  if (lQuery == NULL)
+  if (errHandler.errors())
   {
-    if (isErrorExpected(&*lAlertsManager, &lSpec)) 
+    if (isErrorExpected(errHandler, &lSpec)) 
     { 
       // done, we expected an error during compile
       return 0; 
@@ -308,45 +310,29 @@ main(int argc, char** argv)
     else 
     { 
       std::cerr << "Error compiling query" << std::endl;
-      printErrors(&*lAlertsManager); return 4;
+      printErrors(errHandler); return 4;
     }
   }
 
 
   // set the variables in the dynamic context
-	zorba::DynamicQueryContext_t lDynCtxt = lEngine.factory->createDynamicContext();
-  set_vars(&lSpec, lDynCtxt, NULL);
+  zorba::DynamicContext_t lDynCtxt = lQuery->getDynamicContext();
+  set_vars(&lSpec, lDynCtxt);
 
-  // execute the query
-  if(!lQuery->initExecution(lDynCtxt))
-  {
-    if (isErrorExpected(&*lAlertsManager, &lSpec)) { return 0; } // done, we expected this error
-    else 
-    { 
-      if ( ! fs::exists(lRefFile) )
-      {
-        std::cerr << "Error executing query" << std::endl;
-        printErrors(&*lAlertsManager);
-        return 5;
-      }
-    }
-  }
-  set_vars(&lSpec, NULL, lQuery);
-  
   {
     // serialize xml
     std::ofstream lResFileStream(lResultFile.native_file_string().c_str());
     assert (lResFileStream.good());
 
-    lQuery->serializeXML(lResFileStream);
+    lResFileStream << lQuery;
 
-    if (lQuery->isError())
+    if (errHandler.errors())
     {
-      if (isErrorExpected(&*lAlertsManager, &lSpec)) { return 0; } // again done, we expected this error
+      if (isErrorExpected(errHandler, &lSpec)) { return 0; } // again done, we expected this error
       else 
       { 
         std::cerr << "Error executing query" << std::endl;
-        printErrors(&*lAlertsManager); 
+        printErrors(errHandler); 
         return 6;
       }
     }

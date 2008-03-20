@@ -28,6 +28,8 @@
 
 namespace zorba
 {
+  class RuntimeCB;
+
   /**
     * Generic Iterator for Numeric Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
     */
@@ -51,7 +53,7 @@ namespace zorba
        * @param item1
        */
       static store::Item_t
-      compute(const QueryLoc& loc, store::Item_t item0, store::Item_t item1);
+      compute(RuntimeCB* aRuntimeCB, const QueryLoc& loc, store::Item_t item0, store::Item_t item1);
       
       /**
        * Computes Operation on passed items.
@@ -64,7 +66,7 @@ namespace zorba
        */
       static store::Item_t
       computeAtomic
-        (const QueryLoc&, store::Item_t item0, xqtref_t type0, store::Item_t item1, xqtref_t type1);
+        (RuntimeCB* aRuntimeCB, const QueryLoc&, store::Item_t item0, xqtref_t type0, store::Item_t item1, xqtref_t type1);
 
   }; /* class NumArithIterator */
 

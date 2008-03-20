@@ -2,13 +2,16 @@
 #define ZORBA_GLOBALENV_H
 
 #include <memory>
-#include <zorbatypes/m_apm.h>
+#include "zorbatypes/m_apm.h"
 #include "common/shared_types.h"
 
 namespace zorba {
 
 class RootTypeManager;
 class static_context;
+namespace store {
+  class ItemFactory;
+}
 
 class GlobalEnvironment {
   public:
@@ -20,6 +23,8 @@ class GlobalEnvironment {
     static_context& getRootStaticContext();
     XQueryCompilerSubsystem& getCompilerSubsystem();
     store::Store& getStore();
+    store::ItemFactory* getItemFactory();
+
   private:
     GlobalEnvironment();
 
@@ -27,6 +32,7 @@ class GlobalEnvironment {
     std::auto_ptr<static_context> m_rootStaticContext;
     M_APM                     m_mapm; // this is a pointer type
     std::auto_ptr<XQueryCompilerSubsystem> m_compilerSubSys;
+
 
     static GlobalEnvironment *m_globalEnv;
 };
@@ -38,6 +44,8 @@ class GlobalEnvironment {
 #define GENV_COMPILERSUBSYS GlobalEnvironment::getInstance().getCompilerSubsystem()
 
 #define GENV_STORE GlobalEnvironment::getInstance().getStore()
+
+#define GENV_ITEMFACTORY GlobalEnvironment::getInstance().getItemFactory()
 
 }
 

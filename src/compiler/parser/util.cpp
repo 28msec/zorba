@@ -1,7 +1,7 @@
-#include <zorbatypes/utf8.h>
+#include "zorbatypes/utf8.h"
 #include "compiler/parser/util.h"
 #include "compiler/parser/query_loc.h"
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 
 using namespace std;
 namespace zorba {
@@ -17,9 +17,9 @@ int decode_entity (const char *in, string *out) {
     for (; *in == '0'; ++in);
     unsigned long n = strtoul (in, (char **) &in, base);
     if (*in++ != ';')
-      ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
+      ZORBA_ERROR_LOC (ZorbaError::XPST0003, loc);
     if (! is_code_point_valid (n))
-      ZORBA_ERROR_ALERT (ZorbaError::XQST0090, &loc);
+      ZORBA_ERROR_LOC (ZorbaError::XQST0090, loc);
     UTF8Encode (n, back_inserter (*out));
     return in - start;
   }
@@ -31,7 +31,7 @@ int decode_entity (const char *in, string *out) {
   M ("apos;", 5, "'")
 #undef M
 
-  ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &loc);
+  ZORBA_ERROR_LOC (ZorbaError::XPST0003, loc);
   return -1;
 }
 

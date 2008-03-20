@@ -23,7 +23,7 @@ root_static_context::root_static_context()
   set_default_elem_type_ns ("");		
   set_default_function_namespace (lookup_ns ("fn"));
   set_context_item_static_type(typemgr->create_any_type());
-  set_default_collation_uri ("http://www.w3.org/2005/xpath-functions/collation/codepoint");
+  set_default_collation_uri ("http://www.flworfound.org/collations/IDENTICAL/en/US");
   set_construction_mode(StaticContextConsts::cons_strip);
   set_ordering_mode(StaticContextConsts::ordered);
   set_order_empty_mode(StaticContextConsts::empty_greatest);

@@ -2,9 +2,9 @@
 #define ZORBA_STORE_SIMPLE_COLLECTION
 
 #include <set>
-#include <zorba/common/common.h>
-#include <zorba/iterator.h>
+#include "common/common.h"
 
+#include "store/api/iterator.h"
 #include "store/api/collection.h"
 #include "store/util/latch.h"
 

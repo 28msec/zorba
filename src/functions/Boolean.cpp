@@ -8,7 +8,6 @@
 #include "runtime/booleans/compare_types.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/item_iterator.h"
-#include "system/zorba.h"
 #include "store/api/item_factory.h"
 
 namespace zorba
@@ -270,7 +269,7 @@ namespace zorba
 	PlanIter_t
 	fn_true::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
-		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(true) );
+		return new SingletonIterator ( loc, GENV_ITEMFACTORY->createBoolean(true) );
 	}
 
 	xqtref_t
@@ -293,7 +292,7 @@ namespace zorba
 	PlanIter_t
 	fn_false::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
 	{
-		return new SingletonIterator ( loc, Zorba::getItemFactory()->createBoolean(false) );
+		return new SingletonIterator ( loc, GENV_ITEMFACTORY->createBoolean(false) );
 	}
 
 	xqtref_t

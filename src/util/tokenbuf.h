@@ -10,7 +10,7 @@
 #define ZORBA_TOKENBUF_H
 
 #include <string>
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 namespace zorba {
 

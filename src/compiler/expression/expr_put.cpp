@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include <zorba/static_context_consts.h>
+#include "context/static_context_consts.h"
 
 #include "compiler/expression/expr.h"
 #include "system/globalenv.h"
@@ -12,8 +12,7 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "util/Assert.h"
 #include "util/tracer.h"
-#include "errors/error_factory.h"
-#include "system/zorba.h"
+//#include "system/zorba.h"
 
 
 using namespace std;
@@ -455,7 +454,7 @@ ostream& match_expr::put(ostream& os) const
 ostream& const_expr::put( ostream& os) const
 {
   os << INDENT << "const_expr (" << this << ")[ ";
-  os << val->getStringValue();
+  //os << val->getStringValue();
   os << " ]\n"; UNDENT;
   return os;
 }

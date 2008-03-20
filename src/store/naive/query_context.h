@@ -4,7 +4,7 @@
 #include <stack>
 #include <map>
 
-#include <zorba/common/api_shared_types.h>
+#include "common/shared_types.h"
 
 #include "store/util/mutex.h"
 

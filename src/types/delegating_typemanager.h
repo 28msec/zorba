@@ -2,6 +2,7 @@
 #define ZORBA_DELEGATING_TYPEMANAGER_H
 
 #include "types/typemanager.h"
+#include <zorba/typeident.h>
 #include "common/shared_types.h"
 #include "types/schema/schema.h"
 

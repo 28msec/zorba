@@ -1,7 +1,7 @@
 #ifndef ZORBA_SEQUENCETYPES_H
 #define ZORBA_SEQUENCETYPES_H
 
-#include <zorba/errors.h>
+#include "errors/errors.h"
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h"
 #include "types/typeconstants.h"
@@ -102,10 +102,10 @@ class TreatIterator : public UnaryBaseIterator<TreatIterator, PlanIteratorState>
 private:
   xqtref_t theTreatType;
   TypeConstants::quantifier_t theQuantifier;
-  ZorbaError::ErrorCodes theErrorCode;
+  ZorbaError::ErrorCode theErrorCode;
 
 public:
-  TreatIterator(const QueryLoc&, PlanIter_t&, const xqtref_t& aTreatType, enum ZorbaError::ErrorCodes);
+  TreatIterator(const QueryLoc&, PlanIter_t&, const xqtref_t& aTreatType, enum ZorbaError::ErrorCode);
   virtual ~TreatIterator();
   store::Item_t nextImpl(PlanState& aPlanState) const;
   virtual void accept(PlanIterVisitor&) const;

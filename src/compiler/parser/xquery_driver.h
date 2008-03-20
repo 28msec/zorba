@@ -2,7 +2,8 @@
 #define ZORBA_XQUERY_DRIVER_H
 
 #include <ostream>
-#include <zorbatypes/xqpstring.h>
+#include "zorbatypes/xqpstring.h"
+
 #include "compiler/parser/symbol_table.h"
 
 // needed because we have to delete the main module node
@@ -12,6 +13,7 @@ namespace zorba {
 
 class location;
 class parsenode;
+class CompilerCB;
 
 class xquery_driver
 {
@@ -21,8 +23,9 @@ public:
   rchandle<parsenode> expr_p;
   bool rename_bit;
   bool ftcontains_bit;
+  CompilerCB* theCompilerCB;
 
-  xquery_driver(uint32_t initial_heapsize = 1024);
+  xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize = 1024);
   virtual ~xquery_driver() {}
 
   bool parse_stream(std::istream& in, const xqpString& aFilename = "");

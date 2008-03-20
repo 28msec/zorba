@@ -6,8 +6,8 @@
 #include <list>
 #include <utility>
 
-#include <zorba/common/common.h>
-#include <zorbatypes/representations.h>
+#include "common/common.h"
+#include "zorbatypes/representations.h"
 #include "sax2/xmlreader.h"
 
 namespace zorba{

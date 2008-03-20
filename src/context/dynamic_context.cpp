@@ -24,12 +24,11 @@
 
 #include <assert.h>
 #include <time.h>
-#include <zorba/iterator.h>
+#include "store/api/iterator.h"
 
 #include "system/globalenv.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-#include "system/zorba.h"
 #include "types/root_typemanager.h"
 #include "store/api/item_factory.h"
 
@@ -113,7 +112,7 @@ xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qnam
 		if(!sctx)
 		{
 			///actually the whole static context is missing
-			ZORBA_ERROR_ALERT(ZorbaError::XPST0001, NULL, DONT_CONTINUE_EXECUTION, "entire static context");
+			ZORBA_ERROR_DESC( ZorbaError::XPST0001, "entire static context");
 			return (const char*)NULL;
 		}
 		return rqname.second + ":" + sctx->lookup_ns(rqname.first);
@@ -176,7 +175,7 @@ void dynamic_context::set_context_item_type(
 void	dynamic_context::set_execution_date_time(struct ::tm datetime_value, long tz_seconds)
 {
 //	this->execution_date_time = t;
-	store::ItemFactory* item_factory = Zorba::getItemFactory();
+	store::ItemFactory* item_factory = GENV_ITEMFACTORY;
 	this->execution_timezone_seconds = tz_seconds + datetime_value.tm_isdst ? 1 : 0;
 	execution_date_time_item = 
     item_factory->createDateTime(
@@ -210,16 +209,17 @@ long  dynamic_context::get_implicit_timezone()
 var_name is expanded name localname:nsURI
 constructed by static_context::qname_internal_key( .. )
 */
-void	dynamic_context::add_variable(xqp_string var_name, Iterator* var_iterator)
+void	dynamic_context::add_variable(xqp_string var_name, Iterator_t var_iterator)
 {
-  var_iterator->addReference(var_iterator->getSharedRefCounter()
-                             SYNC_PARAM2(var_iterator->getRCLock()));
+  Iterator* lIter = &*var_iterator;
+  lIter->addReference(var_iterator->getSharedRefCounter()
+                      SYNC_PARAM2(var_iterator->getRCLock()));
 
-  dctx_value_t v = { var_iterator };
+  dctx_value_t v = { lIter };
   keymap.put ("var:" + var_name, v);
 }
 
-Iterator_t	dynamic_context::get_variable(xqp_string var_name)
+Iterator_t	dynamic_context::get_variable(const xqp_string& var_name)
 {
 	return lookup_var_iter("var:" + var_name);
 }

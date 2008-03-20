@@ -147,7 +147,6 @@ IF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
 ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
 
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
-INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external) # should also be removed if pthread has been removed and mapm is only included from within src
 
 # for the moment, we include everything
@@ -171,7 +170,7 @@ ADD_DEFINITIONS(${DEFINITIONS})
 # Subfolders inclusion
 
 # Tell CMake to process the sub-directories
-ADD_SUBDIRECTORY(external)
+#ADD_SUBDIRECTORY(external)
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)

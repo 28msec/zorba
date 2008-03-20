@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include <zorba/common/common.h>
-#include <zorba/rchandle.h>
+#include "common/common.h"
+#include "util/rchandle.h"
 #include "common/shared_types.h"
 
 namespace zorba { namespace store {

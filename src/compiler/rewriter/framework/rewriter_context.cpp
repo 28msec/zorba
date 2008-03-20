@@ -1,11 +1,13 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/expr.h"
+#include "compiler/api/compilercb.h"
 
 namespace zorba {
 
-RewriterContext::RewriterContext(static_context *sctx, expr_t root)
-  : m_sctx(sctx),
-  m_root(root) { }
+RewriterContext::RewriterContext(CompilerCB* aCompilerCB, expr_t root)
+  : compilerCB(aCompilerCB),
+    m_sctx(aCompilerCB->m_sctx),
+    m_root(root) { }
 
 RewriterContext::~RewriterContext() { }
 

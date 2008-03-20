@@ -22,16 +22,18 @@
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_parser.hpp"
 #include "compiler/parser/xquery_scanner.h"
-#include "errors/error_factory.h"
+// #include "compiler/api/compilercb.h" // not yet needed, maybe for warnings later
+#include "errors/error_manager.h"
 
 using namespace std;
 namespace zorba {
 
-xquery_driver::xquery_driver(uint32_t initial_heapsize)
+xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
     : symtab(initial_heapsize),
       expr_p (NULL),
       rename_bit(false),
-      ftcontains_bit(false)
+      ftcontains_bit(false),
+      theCompilerCB(aCompilerCB)
 { }
 
 bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
@@ -64,13 +66,13 @@ void xquery_driver::error(
 	string const& m)
 {
   QueryLoc lLoc = createQueryLoc(l);
-  ZORBA_ERROR_ALERT (ZorbaError::XPST0003, &lLoc, DONT_CONTINUE_EXECUTION, m);
+  ZORBA_ERROR_LOC_DESC( ZorbaError::XPST0003, lLoc, m);
 }
      
 void xquery_driver::error(
 	string const& m)
 {
-  ZORBA_ERROR_ALERT (ZorbaError::XPST0003, NULL, DONT_CONTINUE_EXECUTION, m); 
+  ZORBA_ERROR_DESC( ZorbaError::XPST0003, m); 
 }
 
 QueryLoc xquery_driver::createQueryLoc(const zorba::location& aLoc) 

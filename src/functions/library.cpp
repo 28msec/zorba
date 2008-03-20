@@ -9,7 +9,6 @@
 #include <iostream>
 #include <memory>
 
-#include <zorba/item.h>
 
 #include "system/globalenv.h"
 #include "functions/library.h"
@@ -30,9 +29,8 @@
 #include "functions/Misc.h"
 #include "functions/arithmetic.h"
 
-#include "context/common.h"
 #include "context/static_context.h"
-#include "system/zorba.h"
+//#include "system/zorba.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
@@ -101,10 +99,6 @@ DECL(fn_name_func,
 // end Accessors
 
 //begin Error function
-DECL(fn_error_func_0,
-     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
-      GENV_TYPESYSTEM.NONE_TYPE));
-
 DECL(fn_error_func_1,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
@@ -112,13 +106,13 @@ DECL(fn_error_func_1,
 
 DECL(fn_error_func_2,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
-      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.NONE_TYPE));
 
 DECL(fn_error_func_3,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
-      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR ,
       GENV_TYPESYSTEM.NONE_TYPE));

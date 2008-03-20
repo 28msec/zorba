@@ -11,7 +11,7 @@
 #ifndef ZORBA_MMFILE_H
 #define ZORBA_MMFILE_H
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 
 #include <string>

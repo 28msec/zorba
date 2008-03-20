@@ -4,7 +4,7 @@
 #include <iostream>
 #include "zorba/errors.h"
 #include "zorba/compiled_xquery.h"
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 #include "system/zorba.h"
 #include "system/zorba_engine.h"
 
@@ -104,7 +104,7 @@ bool SAX2_XMLReaderLibXML2::parse(XQuery_t xquery)
   try{
     if (ctxt == NULL)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0023_GET_RESULTS_AS_SAX_FAILED);
+      ZORBA_ERROR(ZorbaError:: ZorbaError::XQP0023_GET_RESULTS_AS_SAX_FAILED);
 		  return false;
     }
   }CATCH_ALL_RETURN_false;

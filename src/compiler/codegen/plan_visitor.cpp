@@ -13,7 +13,7 @@
 #include <stack>
 
 #include <zorba/properties.h>
-#include <zorba/static_context_consts.h>
+#include "context/static_context_consts.h"
 
 #include "compiler/codegen/plan_visitor.h"
 #include "system/globalenv.h"
@@ -42,7 +42,7 @@
 #include "runtime/visitors/iterprinter.h"
 
 #include "store/api/store.h"
-#include "store/api/item_factory.h"
+#include "store/api/item.h"
 
 
 #ifndef NDEBUG
@@ -115,7 +115,8 @@ protected:
 
 public:
 	plan_visitor(hash64map<vector<ref_iter_t> *> *param_var_map = NULL)
-        : depth (0), theLastNSCtx(NULL), param_var_iter_map(param_var_map) {}
+        : depth (0), theLastNSCtx(NULL), 
+          param_var_iter_map(param_var_map) {}
 	~plan_visitor()
     {
         for_each(fvar_iter_map.begin(), fvar_iter_map.end(), vector_destroyer<var_iter_t>());
@@ -556,9 +557,7 @@ void end_visit(fo_expr& v)
   }
   else 
   {
-    ZORBA_ERROR_ALERT_OSS(ZorbaError::XPST0017, &loc, DONT_CONTINUE_EXECUTION,
-                          func->get_signature().get_name()->getStringValue(),
-                          argv.size());
+    ZORBA_ERROR_LOC_OSS( ZorbaError::XPST0017, loc, func->get_signature().get_name()->getStringValue(), argv.size());
   }
 }
 
@@ -1111,7 +1110,7 @@ void end_visit(extension_expr& /*v*/)
 };
 
 PlanIter_t codegen (const char *descr, expr *root, hash64map<vector<ref_iter_t> *> *param_var_map) {
-  plan_visitor c(param_var_map);
+  plan_visitor c( param_var_map);
   root->accept (c);
   PlanIter_t result = c.pop_itstack ();
   if (result != NULL && descr != NULL && Properties::instance()->printIteratorTree()) {

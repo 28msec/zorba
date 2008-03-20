@@ -19,19 +19,9 @@
 #include <string>
 
 
-#include <zorba/common/common.h>
-#include <zorba/rchandle.h>
+#include "common/common.h"
+#include "util/rchandle.h"
 
-
-// MS Visual Studio does not fully support throw(), and issues a warning
-#ifndef _MSC_VER
-#define THROW_XQP_EXCEPTION		throw(xqp_exception)
-#else
-#define THROW_XQP_EXCEPTION		
-#endif
-
-
-#include "errors/error_factory.h"
 
 namespace zorba {
 
@@ -91,15 +81,15 @@ private:	// volume attributes
 #endif
 
 public:
-  file(std::string const& pathname) THROW_XQP_EXCEPTION;
-  file(std::string const& rootpath, std::string const& name) THROW_XQP_EXCEPTION;
+  file(std::string const& pathname);
+  file(std::string const& rootpath, std::string const& name);
   ~file();
 
 public:	// common methods
   void set_path(std::string const& _path ) { path = _path; }
   void set_filetype(enum filetype _type ) { type = _type ; }
   std::string const& get_path() const { return path; }
-  enum filetype get_filetype() THROW_XQP_EXCEPTION;
+  enum filetype get_filetype();
 
   bool is_directory() const { return (type==type_directory); }  
   bool is_file() const { return (type==type_file); }  
@@ -108,7 +98,7 @@ public:	// common methods
 
   bool is_invalid() const { return (type==type_invalid); }  
   bool exists() const { return (type!=type_non_existent && type!=type_invalid); }  
-  static volatile void error(std::string const& location, std::string const& msg) THROW_XQP_EXCEPTION;
+  static volatile void error(std::string const& location, std::string const& msg);
   static void sync() { 
 #if defined UNIX
 	::sync(); 
@@ -119,10 +109,10 @@ public:	// common methods
 
 
 public:	// file methods
-  void create() THROW_XQP_EXCEPTION;
-  void remove(bool ignore) THROW_XQP_EXCEPTION;
-  void rename(std::string const& newpath) THROW_XQP_EXCEPTION;
-	void touch() THROW_XQP_EXCEPTION;
+  void create();
+  void remove(bool ignore);
+  void rename(std::string const& newpath);
+	void touch();
 
   int64_t get_size() const				{ return size; }
 #if ! defined (WIN32) 
@@ -139,7 +129,7 @@ public:	// file methods
 
 	int readfile(
 		char* docbuf,
-		uint32_t maxlen) THROW_XQP_EXCEPTION;
+		uint32_t maxlen);
 
 public:	// directory methods
 	class dir_iterator : public SimpleRCObject
@@ -155,7 +145,7 @@ public:	// directory methods
 		WIN32_FIND_DATA		win32_direntry;
 #endif
 	public:
-  	dir_iterator(const std::string& path, bool end_iterator = false) THROW_XQP_EXCEPTION;
+  	dir_iterator(const std::string& path, bool end_iterator = false);
   	~dir_iterator();
 	public:	// iterator interface
 		void operator++();
@@ -180,10 +170,10 @@ public:	// directory methods
 #endif
 	};
 
-	void mkdir() THROW_XQP_EXCEPTION;
-	void rmdir(bool ignore) THROW_XQP_EXCEPTION;
+	void mkdir() ;
+	void rmdir(bool ignore) ;
 #ifndef _WIN32_WCE
-	void chdir() THROW_XQP_EXCEPTION;
+	void chdir();
 #endif
 
   dir_iterator begin();
@@ -208,7 +198,7 @@ public:	// volume methods
 	bool is_empty() const { return (size == (int64_t)0); }
 
 #if 0  // not portable, not used
-  void do_statfs(std::string const& path) THROW_XQP_EXCEPTION;
+  void do_statfs(std::string const& path)
 #endif
 };
 

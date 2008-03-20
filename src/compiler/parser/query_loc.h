@@ -2,7 +2,7 @@
 #define ZORBA_QUERY_LOC_H
 
 #include <string>
-#include <zorbatypes/xqpstring.h>
+#include "zorbatypes/xqpstring.h"
 
 namespace zorba {
 
@@ -14,6 +14,10 @@ namespace zorba {
  * dependencies to the parser.
  */
 class QueryLoc {
+
+public:
+  static QueryLoc null;
+
 private:
   xqpString    theFilenameBegin;
   unsigned int theLineBegin;

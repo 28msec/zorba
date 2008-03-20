@@ -11,13 +11,12 @@
  *
  */
 
-#include <cassert>
+#include "zorbatypes/xqpstring.h"
 
-#include <zorbatypes/xqpstring.h>
-
-#include <zorbatypes/Unicode_util.h>
-#include <zorbatypes/utf8.h>
-#include <zorbatypes/numconversions.h>
+#include "zorbatypes/Unicode_util.h"
+#include "zorbatypes/utf8.h"
+#include "zorbatypes/numconversions.h"
+#include "zorbatypes/collation_manager.h"
 
 using namespace std;
 
@@ -159,7 +158,7 @@ namespace zorba
   }
 
   //xqpString::compare
-  int xqpString::compare(xqpString src, Collator* coll) const
+  int xqpString::compare(xqpString src, XQPCollator* coll) const
   {
     if ( ! coll )
       return theStrStore->compare(src.theStrStore->c_str());
@@ -167,12 +166,12 @@ namespace zorba
     Collator::EComparisonResult result = ::Collator::EQUAL;
 
     //compare the 2 strings
-    result = coll->compare(getUnicodeString(*theStrStore), getUnicodeString(src));
+    result = coll->theCollator->compare(getUnicodeString(*theStrStore), getUnicodeString(src));
 
     return result;
   }
 
-  int xqpString::compare(const char* src, Collator* coll) const
+  int xqpString::compare(const char* src, XQPCollator* coll) const
   {
     //TODO optimize the code here
     xqpString tmp(src);
@@ -224,7 +223,7 @@ namespace zorba
   }
 
   //xqpString::Substring matching/ string search
-  int32_t xqpString::indexOf(xqpString pattern, Collator* coll) const
+  int32_t xqpString::indexOf(xqpString pattern, XQPCollator* coll) const
   {
     if (size() == 0)
       return -1;
@@ -237,7 +236,7 @@ namespace zorba
     UErrorCode status = U_ZERO_ERROR;
 
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), 
-                        (RuleBasedCollator *)coll, NULL, status);
+                        (RuleBasedCollator*)coll->theCollator, NULL, status);
 
     if(U_FAILURE(status))
     {
@@ -260,7 +259,7 @@ namespace zorba
   }
 
 
-  int32_t xqpString::lastIndexOf(xqpString pattern, Collator* coll) const
+  int32_t xqpString::lastIndexOf(xqpString pattern, XQPCollator* coll) const
   {
     if ( ! coll ) {
       size_t lRes = theStrStore->rfind(pattern.theStrStore->c_str());
@@ -270,7 +269,7 @@ namespace zorba
     UErrorCode status = U_ZERO_ERROR;
 
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), 
-                        (RuleBasedCollator *)coll, NULL, status);
+                        (RuleBasedCollator *)coll->theCollator, NULL, status);
 
     if(U_FAILURE(status))
     {
@@ -294,7 +293,7 @@ namespace zorba
     return -1;
   }
 
-  bool xqpString::endsWith(xqpString pattern, Collator* coll) const
+  bool xqpString::endsWith(xqpString pattern, XQPCollator* coll) const
   {
     //TODO check if this condition is enough
     return( lastIndexOf(pattern, coll) + pattern.length() == length() );

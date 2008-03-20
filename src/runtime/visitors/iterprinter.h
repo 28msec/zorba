@@ -5,7 +5,7 @@
 #include <ostream>
 #include <stack>
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 namespace yy {
   class location;

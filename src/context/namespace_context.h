@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include <zorbatypes/representations.h>
+#include "zorbatypes/representations.h"
 
-#include <zorba/rchandle.h>
+#include "util/rchandle.h"
 
 namespace zorba {
 

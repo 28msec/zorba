@@ -1,7 +1,8 @@
 #include <cassert>
-#include <zorba/common/common.h>
-#include <zorba/item.h>
 
+
+#include "store/api/item.h"
+#include "common/common.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"

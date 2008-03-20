@@ -1,5 +1,5 @@
 
-#include <zorbatypes/xqpstring.h>
+#include "zorbatypes/xqpstring.h"
 #include "util/Assert.h"
 #include "store/naive/nsbindings.h"
 

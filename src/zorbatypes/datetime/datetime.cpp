@@ -6,7 +6,6 @@
 
 #include <string>
 #include <exception>
-#include <cassert>
 #include <zorbatypes/datetime.h>
 #include <zorbatypes/duration.h>
 #include <zorbatypes/timezone.h>

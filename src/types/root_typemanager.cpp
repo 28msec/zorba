@@ -1,6 +1,6 @@
 #include <assert.h>
 
-#include <zorba/typeident.h>
+#include <zorba/identtypes.h>
 
 #include "zorbatypes/xqpstring.h"
 #include "system/globalenv.h"
@@ -611,77 +611,74 @@ rchandle<NodeNameTest> RootTypeManager::get_nametest(const XQType& type) const
 xqtref_t RootTypeManager::create_type(const TypeIdentifier& ident) const
 {
   TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
-  switch(ident.get_quantifier()) {
-    case TypeIdentifier::QUANT_ONE:
+  switch(ident.getQuantifier()) {
+    case IdentTypes::QUANT_ONE:
       q = TypeConstants::QUANT_ONE;
       break;
 
-    case TypeIdentifier::QUANT_QUESTION:
+    case IdentTypes::QUANT_QUESTION:
       q = TypeConstants::QUANT_QUESTION;
       break;
 
-    case TypeIdentifier::QUANT_PLUS:
+    case IdentTypes::QUANT_PLUS:
       q = TypeConstants::QUANT_PLUS;
       break;
 
-    case TypeIdentifier::QUANT_STAR:
+    case IdentTypes::QUANT_STAR:
       q = TypeConstants::QUANT_STAR;
       break;
   }
 
-  switch(ident.get_kind()) {
-    case TypeIdentifier::NAMED_TYPE:
-      {
-        const NamedTypeIdentifier& ni = static_cast<const NamedTypeIdentifier&>(ident);
-        return create_type(ni.get_name(), q);
-      }
+  switch(ident.getKind()) {
+    case IdentTypes::NAMED_TYPE:
+      return create_type(GENV_ITEMFACTORY->createQName(ident.getUri().c_str(), NULL, ident.getLocalName().c_str()), q);
 
-    case TypeIdentifier::ELEMENT_TYPE:
+    case IdentTypes::ELEMENT_TYPE:
       {
-        const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
-        rchandle<NodeNameTest> ennt(new NodeNameTest(eai.get_uri(), eai.get_local()));
-        rchandle<NodeTest> ent(new NodeTest(store::StoreConsts::elementNode, ennt));
-        TypeIdentifier *ci = eai.get_content_type().getp();
-        xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
-        return create_node_type(ent, content_type, q);
-      }
-
-    case TypeIdentifier::ATTRIBUTE_TYPE:
-      {
-        const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
-        rchandle<NodeNameTest> annt(new NodeNameTest(eai.get_uri(), eai.get_local()));
-        rchandle<NodeTest> ant(new NodeTest(store::StoreConsts::attributeNode, annt));
-        TypeIdentifier *ci = eai.get_content_type().getp();
-        xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
-        return create_node_type(ant, content_type, q);
-      }
-
-    case TypeIdentifier::DOCUMENT_TYPE:
-      {
-        const DocumentTypeIdentifier& di = static_cast<const DocumentTypeIdentifier&>(ident);
-        TypeIdentifier *ci = di.get_content_type().getp();
-        xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
-        rchandle<NodeTest> nt(new NodeTest(store::StoreConsts::documentNode));
+        rchandle<NodeNameTest> nnt(new NodeNameTest(GENV_ITEMFACTORY->createQName(ident.getUri().c_str(), NULL, ident.getLocalName().c_str())));
+        rchandle<NodeTest> nt(new NodeTest(store::StoreConsts::elementNode, nnt));
+        type_ident_ref_t ci = ident.getContentType();
+        xqtref_t content_type = ci != NULL ? create_type(*ci) : xqtref_t(0);
         return create_node_type(nt, content_type, q);
       }
 
-    case TypeIdentifier::PI_TYPE:
+    case IdentTypes::ATTRIBUTE_TYPE:
+      {
+        rchandle<NodeNameTest> nnt(new NodeNameTest(GENV_ITEMFACTORY->createQName(ident.getUri().c_str(), NULL, ident.getLocalName().c_str())));
+        rchandle<NodeTest> nt(new NodeTest(store::StoreConsts::attributeNode, nnt));
+        type_ident_ref_t ci = ident.getContentType();
+        xqtref_t content_type = ci != NULL ? create_type(*ci) : xqtref_t(0);
+        return create_node_type(nt, content_type, q);
+      }
+
+    case IdentTypes::DOCUMENT_TYPE:
+      {
+        rchandle<NodeTest> nt(new NodeTest(store::StoreConsts::documentNode));
+        type_ident_ref_t ci = ident.getContentType();
+        xqtref_t content_type = ci != NULL ? create_type(*ci) : xqtref_t(0);
+        return create_node_type(nt, content_type, q);
+      }
+
+    case IdentTypes::PI_TYPE:
       return create_node_type(NodeTest::PI_TEST, NONE_TYPE, q);
 
-    case TypeIdentifier::TEXT_TYPE:
+    case IdentTypes::TEXT_TYPE:
       return create_node_type(NodeTest::TEXT_TEST, NONE_TYPE, q);
 
-    case TypeIdentifier::COMMENT_TYPE:
+    case IdentTypes::COMMENT_TYPE:
       return create_node_type(NodeTest::COMMENT_TEST, NONE_TYPE, q);
 
-    case TypeIdentifier::ANY_NODE_TYPE:
+    case IdentTypes::ANY_NODE_TYPE:
       return create_node_type(NodeTest::ANY_NODE_TEST, NONE_TYPE, q);
 
-    case TypeIdentifier::ITEM_TYPE:
+    case IdentTypes::ITEM_TYPE:
       return create_item_type(q);
 
-    case TypeIdentifier::EMPTY_TYPE:
+    case IdentTypes::EMPTY_TYPE:
       return create_empty_type();
+
+    default:
+      break;
   }
 
   return xqtref_t(0);
@@ -742,90 +739,92 @@ xqtref_t RootTypeManager::create_node_type(
 }
 
 
-static inline TypeIdentifier::quantifier_t get_typeident_quant(TypeConstants::quantifier_t quant)
+static inline IdentTypes::quantifier_t get_typeident_quant(TypeConstants::quantifier_t quant)
 {
   switch(quant) {
     case TypeConstants::QUANT_ONE:
-      return TypeIdentifier::QUANT_ONE;
+      return IdentTypes::QUANT_ONE;
 
     case TypeConstants::QUANT_QUESTION:
-      return TypeIdentifier::QUANT_QUESTION;
+      return IdentTypes::QUANT_QUESTION;
 
     case TypeConstants::QUANT_STAR:
-      return TypeIdentifier::QUANT_STAR;
+      return IdentTypes::QUANT_STAR;
 
     case TypeConstants::QUANT_PLUS:
-      return TypeIdentifier::QUANT_PLUS;
+      return IdentTypes::QUANT_PLUS;
 
     default:
       break;
   }
 
-  return TypeIdentifier::QUANT_ONE;
+  return IdentTypes::QUANT_ONE;
 }
 
 type_ident_ref_t RootTypeManager::get_type_identifier(const XQType& type) const
 {
-  TypeIdentifier::quantifier_t q = get_typeident_quant(quantifier(type));
+  IdentTypes::quantifier_t q = get_typeident_quant(quantifier(type));
   switch(type.type_kind()) {
     case XQType::ATOMIC_TYPE_KIND:
       {
         const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
-        return type_ident_ref_t(new NamedTypeIdentifier(q, *m_atomic_typecode_qname_map[at.get_type_code()]));
+        store::Item_t& qname = *m_atomic_typecode_qname_map[at.get_type_code()];
+        return TypeIdentifier::createNamedType(&*qname->getNamespace().theStrStore, &*qname->getLocalName().theStrStore, q);
       }
     case XQType::NODE_TYPE_KIND:
       {
         const NodeXQType& nt = static_cast<const NodeXQType&>(type);
-        const type_ident_ref_t& content_type = get_type_identifier(*nt.get_content_type());
+        type_ident_ref_t content_type = nt.get_content_type() != NULL ? get_type_identifier(*nt.get_content_type()) : type_ident_ref_t();
         const NodeTest *test = nt.get_nodetest().getp();
         const NodeNameTest *nametest = test->get_nametest().getp();
         switch(test->get_kind()) {
           case store::StoreConsts::anyNode:
-            return type_ident_ref_t(new AnyNodeTypeIdentifier(q));
+            return TypeIdentifier::createAnyNodeType(q);
 
           case store::StoreConsts::textNode:
-            return type_ident_ref_t(new TextTypeIdentifier(q));
+            return TypeIdentifier::createTextType(q);
 
           case store::StoreConsts::piNode:
-            return type_ident_ref_t(new PITypeIdentifier(q));
+            return TypeIdentifier::createPIType(q);
 
           case store::StoreConsts::commentNode:
-            return type_ident_ref_t(new CommentTypeIdentifier(q));
+            return TypeIdentifier::createCommentType(q);
 
           case store::StoreConsts::documentNode:
-            return type_ident_ref_t(new DocumentTypeIdentifier(q, content_type));
+            return TypeIdentifier::createDocumentType(content_type, q);
 
           case store::StoreConsts::elementNode:
-            return type_ident_ref_t(new ElementTypeIdentifier(q, nametest->get_uri(), nametest->get_local(), content_type));
+            return TypeIdentifier::createElementType(&*nametest->get_uri(), nametest->get_uri() == NULL, &*nametest->get_local(), nametest->get_local() == NULL, content_type, q);
 
           case store::StoreConsts::attributeNode:
-            return type_ident_ref_t(new AttributeTypeIdentifier(q, nametest->get_uri(), nametest->get_local(), content_type));
+            return TypeIdentifier::createAttributeType(&*nametest->get_uri(), nametest->get_uri() == NULL, &*nametest->get_local(), nametest->get_local() == NULL, content_type, q);
+
           default:
             // cannot happen
-            return type_ident_ref_t(0);
+            return type_ident_ref_t();
         }
       }
     case XQType::ANY_TYPE_KIND:
-      return type_ident_ref_t(new NamedTypeIdentifier(q, XS_ANY_TYPE_QNAME));
+      return TypeIdentifier::createNamedType(&*XS_ANY_TYPE_QNAME->getNamespace().theStrStore, &*XS_ANY_TYPE_QNAME->getLocalName().theStrStore, q);
 
     case XQType::ITEM_KIND:
-      return type_ident_ref_t(new ItemTypeIdentifier(q));
+      return TypeIdentifier::createItemType(q);
 
     case XQType::ANY_SIMPLE_TYPE_KIND:
-      return type_ident_ref_t(new NamedTypeIdentifier(q, XS_ANY_SIMPLE_TYPE_QNAME));
+      return TypeIdentifier::createNamedType(&*XS_ANY_SIMPLE_TYPE_QNAME->getNamespace().theStrStore, &*XS_ANY_SIMPLE_TYPE_QNAME->getLocalName().theStrStore, q);
 
     case XQType::UNTYPED_KIND:
-      return type_ident_ref_t(new NamedTypeIdentifier(q, XS_UNTYPED_QNAME));
+      return TypeIdentifier::createNamedType(&*XS_UNTYPED_QNAME->getNamespace().theStrStore, &*XS_UNTYPED_QNAME->getLocalName().theStrStore, q);
 
     case XQType::EMPTY_KIND:
-      return type_ident_ref_t(new EmptyTypeIdentifier());
+      return TypeIdentifier::createEmptyType();
 
     case XQType::USER_DEFINED_KIND:
         //TODO for Vinayak return type identifier
     default:
       break;
   }
-  return type_ident_ref_t(0);
+  return type_ident_ref_t();
 }
 
 xqtref_t RootTypeManager::create_type(

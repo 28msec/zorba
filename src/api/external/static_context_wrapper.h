@@ -2,6 +2,7 @@
 #define ZORBA_XQUERY_STATIC_CONTEXT_WRAPPER_20_NOV_2007
 
 #include <zorba/static_context.h>
+#include "context/static_context_consts.h"
 
 #include <vector>
 #include "util/hashmap.h"

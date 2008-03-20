@@ -24,10 +24,9 @@
 #ifndef ZORBA_PLAN_ITERATOR_H
 #define ZORBA_PLAN_ITERATOR_H
 
-#include <cassert>
-#include <zorba/item.h>
-
+#include "store/api/item.h"
 #include "common/shared_types.h"
+#include "compiler/api/compilercb.h"
 #include "compiler/parser/query_loc.h"
 
 // Info: Forcing inlining a function in g++:
@@ -68,7 +67,7 @@
 namespace zorba
 {
 
-class Zorba;
+class RuntimeCB;
 class PlanIterVisitor;
 
 /*******************************************************************************
@@ -77,18 +76,34 @@ class PlanIterVisitor;
   theBlock        : Pointer to the memory block that stores the local state of
                     each individual plan iterator.
   theBlockSize    : Size (in bytes) of the block.
-  theZorba        : Pointer to the zorba object of the current thread. The zorba
-                    obj provides quick access to thread specific storage (for
-                    example, the error manager).
+  theRuntimeCB    : A runtime control block which contains all the information
+                    required during query processing. Specifically, it contains
+                    the static and dynamic context. Additionally, at a later time,
+                    it might contain some kind of memory manager or other infrastructure
+                    that is needed.
 ********************************************************************************/
 class PlanState
 {
 public:
-  int8_t     * theBlock;
+  int8_t*      theBlock;
 
   uint32_t     theBlockSize;
+  
+  // TODO this guy should become const because nothing can change anymore during runtime
+  //      we need to make all accessor in the control block and static context (see also shortcut below)
+  //      const before doing that
+  CompilerCB*  theCompilerCB; 
 
-  Zorba      * theZorba;
+  RuntimeCB*   theRuntimeCB;
+
+  static_context*
+  sctx();
+
+  dynamic_context*
+  dctx();
+
+  CollationCache*
+  collationCache();
 
 public:
   PlanState(uint32_t blockSize);

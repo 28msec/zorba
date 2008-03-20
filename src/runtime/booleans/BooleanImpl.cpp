@@ -2,19 +2,19 @@
  *  Copyright 2006-2007 FLWOR Foundation.
  *  Authors: Tim Kraska, David Graf
  */
-#include <zorba/item.h>
 
 #include "system/globalenv.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "types/casting.h"
-#include "system/zorba.h"
-#include "system/zorba_engine.h"
-#include "errors/error_factory.h"
+#include "runtime/api/runtimecb.h"
+#include "errors/error_manager.h"
 #include "runtime/accessors//AccessorsImpl.h"
 #include "store/api/temp_seq.h"
-#include "runtime/base/plan_iterator_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+#include "context/static_context.h"
+#include "context/collation_cache.h"
 
 namespace zorba
 {
@@ -44,12 +44,12 @@ namespace zorba
     if ( item == NULL )
     {
       // empty sequence => false
-      result = Zorba::getItemFactory()->createBoolean ( negate ^ false );
+      result = GENV_ITEMFACTORY->createBoolean ( negate ^ false );
     }
     else if ( item->isNode() )
     {
       // node => true
-      result = Zorba::getItemFactory()->createBoolean ( negate ^ true );
+      result = GENV_ITEMFACTORY->createBoolean ( negate ^ true );
     }
     else
     {
@@ -70,12 +70,12 @@ namespace zorba
         // => effective boolean value is defined in the items
         result = item->getEBV();
         if (negate)
-          result = Zorba::getItemFactory()->createBoolean ( negate ^ result->getBooleanValue() );
+          result = GENV_ITEMFACTORY->createBoolean ( negate ^ result->getBooleanValue() );
       }
       else
       {
-        ZORBA_ERROR_ALERT( ZorbaError::FORG0006,
-            &loc, DONT_CONTINUE_EXECUTION, "Wrong arguments in fn:boolean function.");
+        ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0006, loc,  
+          "Wrong arguments in fn:boolean function.");
       }
     }
 
@@ -121,7 +121,7 @@ namespace zorba
               || FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1)->getBooleanValue();;
       break;
     }
-    STACK_PUSH(Zorba::getItemFactory()->createBoolean(bRes), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(bRes), state);
     STACK_END();
   }
   /* end class LogicIterator */
@@ -157,8 +157,8 @@ namespace zorba
       // TODO Optimizations for >, >=, < and <=
       lIter0 = new PlanIteratorWrapper ( theChild0, planState );
       lIter1 = new PlanIteratorWrapper ( theChild1, planState );
-      temp0 = Zorba::getStore()->createTempSeq ( lIter0 );
-      temp1 = Zorba::getStore()->createTempSeq ( lIter1 );
+      temp0 = GENV_STORE.createTempSeq ( lIter0 );
+      temp1 = GENV_STORE.createTempSeq ( lIter1 );
       i0 = 1;
       found = false;
       while ( !found && temp0->containsItem ( i0 ) )
@@ -168,33 +168,34 @@ namespace zorba
         {
           lItem0 = temp0->getItem(i0);
           lItem1 = temp1->getItem(i1);
-          if ( CompareIterator::generalComparison ( lItem0, lItem1, theCompType ) )
+          if ( CompareIterator::generalComparison ( planState.theRuntimeCB, 
+                                                    lItem0, lItem1, theCompType ) )
             found = true;
           i1++;
         }
         i0++;
       }
   
-      STACK_PUSH ( Zorba::getItemFactory()->createBoolean ( found ), state );
+      STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( found ), state );
     } /* if general comparison */
     else if ( this->isValueComparison() )
     {
       if ( ( ( lItem0 = consumeNext ( theChild0.getp(), planState ) ) != NULL )
               && ( ( lItem1 = consumeNext ( theChild1.getp(), planState ) ) !=NULL ) )
       {
-        STACK_PUSH ( Zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( lItem0, lItem1, theCompType ) ), state );
+        STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( CompareIterator::valueComparison ( planState.theRuntimeCB, lItem0, lItem1, theCompType ) ), state );
         if ( consumeNext ( theChild0.getp(), planState ) != NULL 
              || consumeNext ( theChild1.getp(), planState ) != NULL )
         {
-          ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
-              &loc, DONT_CONTINUE_EXECUTION, "Value comparions must not be made with sequences with length greater 1.");
+          ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc, 
+                             "Value comparions must not be made with sequences with length greater 1.");
         }
       }
     } /* if value comparison */
     else if ( this->isNodeComparison() )
     {
-      ZORBA_ERROR_ALERT( ZorbaError::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
-          &loc, DONT_CONTINUE_EXECUTION, "Node comparison is not yet implemented.");
+      ZORBA_ERROR_LOC_DESC(  ZorbaError::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+                            loc,  "Node comparison is not yet implemented.");
     } /* if node comparison */
   
     STACK_END();
@@ -259,7 +260,8 @@ namespace zorba
     return retVal;
   }
   
-  std::pair<store::Item_t, store::Item_t> CompareIterator::valueCasting(store::Item_t aItem0, store::Item_t aItem1) {
+  std::pair<store::Item_t, store::Item_t> CompareIterator::valueCasting(RuntimeCB* aRuntimeCB,
+                                                          store::Item_t aItem0, store::Item_t aItem1) {
     xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     // all untyped Atomics to String
@@ -275,7 +277,8 @@ namespace zorba
     return std::pair<store::Item_t,store::Item_t>(aItem0, aItem1);
   }
   
-  std::pair<store::Item_t, store::Item_t> CompareIterator::generalCasting(store::Item_t aItem0, store::Item_t aItem1) {
+  std::pair<store::Item_t, store::Item_t> CompareIterator::generalCasting(RuntimeCB* aRuntimeCB,
+                                                            store::Item_t aItem0, store::Item_t aItem1) {
     xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
@@ -314,7 +317,8 @@ namespace zorba
     return std::pair<store::Item_t,store::Item_t>(aItem0, aItem1);
   }
   
-bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType aCompType )
+bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
+                                   int8_t aCompValue, CompareConsts::CompareType aCompType )
 {
   if ( aCompValue > -2 )
     switch ( aCompType )
@@ -347,11 +351,12 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
         break;
     }
 
-    ZORBA_ERROR_ALERT( ZorbaError::XPTY0004, NULL, DONT_CONTINUE_EXECUTION, "Dynamic type of a value does not match a required type.");
+    ZORBA_ERROR_DESC(  ZorbaError::XPTY0004, "Dynamic type of a value does not match a required type.");
   return false;
 }
   
-  std::pair<store::Item_t, store::Item_t> CompareIterator::typePromotion(store::Item_t aItem0, store::Item_t aItem1) {
+  std::pair<store::Item_t, store::Item_t> CompareIterator::typePromotion(RuntimeCB* aRuntimeCB, 
+                                                           store::Item_t aItem0, store::Item_t aItem1) {
     xqtref_t aType0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t aType1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
     
@@ -368,7 +373,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
   }
   
   bool
-  CompareIterator::generalComparison(const store::Item_t& aItem0, const store::Item_t& aItem1, 
+  CompareIterator::generalComparison(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
                                      CompareConsts::CompareType aCompType, xqpString* aCollation)
   {
     int8_t compValue = -2;
@@ -379,9 +384,9 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
       case CompareConsts::VALUE_NOT_EQUAL:
       case CompareConsts::GENERAL_NOT_EQUAL:
         if (aCollation == 0)
-          compValue = CompareIterator::generalEqual(aItem0, aItem1);
+          compValue = CompareIterator::generalEqual(aRuntimeCB, aItem0, aItem1);
         else
-          compValue = CompareIterator::generalEqual(aItem0, aItem1, aCollation);
+          compValue = CompareIterator::generalEqual(aRuntimeCB, aItem0, aItem1, aCollation);
         break;
       case CompareConsts::VALUE_GREATER:
       case CompareConsts::GENERAL_GREATER:
@@ -392,17 +397,18 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
       case CompareConsts::VALUE_LESS_EQUAL:
       case CompareConsts::GENERAL_LESS_EQUAL:
         if (aCollation == 0)
-          compValue = CompareIterator::generalCompare(aItem0, aItem1);
+          compValue = CompareIterator::generalCompare(aRuntimeCB, aItem0, aItem1);
         else
-          compValue = CompareIterator::generalCompare(aItem0, aItem1, aCollation);
+          compValue = CompareIterator::generalCompare(aRuntimeCB, aItem0, aItem1, aCollation);
       default:
         break;
     }
     
-    return boolResult(compValue, aCompType);
+    return boolResult(aRuntimeCB, compValue, aCompType);
   } /* end CompareIterator::generalComparison (...) */
   
-  bool CompareIterator::valueComparison(const store::Item_t& aItem0, const store::Item_t& aItem1, 
+  bool CompareIterator::valueComparison(RuntimeCB* aRuntimeCB, 
+                                        const store::Item_t& aItem0, const store::Item_t& aItem1, 
                                         CompareConsts::CompareType aCompType, xqpString* aCollation)
   {
     int8_t compValue = -2;
@@ -413,9 +419,9 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
       case CompareConsts::VALUE_NOT_EQUAL:
       case CompareConsts::GENERAL_NOT_EQUAL:
         if (aCollation == 0)
-          compValue = CompareIterator::valueEqual(aItem0, aItem1);
+          compValue = CompareIterator::valueEqual(aRuntimeCB, aItem0, aItem1);
         else
-          compValue = CompareIterator::valueEqual(aItem0, aItem1, aCollation);
+          compValue = CompareIterator::valueEqual(aRuntimeCB, aItem0, aItem1, aCollation);
         break;
       case CompareConsts::VALUE_GREATER:
       case CompareConsts::GENERAL_GREATER:
@@ -426,22 +432,23 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
       case CompareConsts::VALUE_LESS_EQUAL:
       case CompareConsts::GENERAL_LESS_EQUAL:
         if (aCollation == 0)
-          compValue = CompareIterator::valueCompare(aItem0, aItem1);
+          compValue = CompareIterator::valueCompare(aRuntimeCB, aItem0, aItem1);
         else
-          compValue = CompareIterator::valueCompare(aItem0, aItem1, aCollation);
+          compValue = CompareIterator::valueCompare(aRuntimeCB, aItem0, aItem1, aCollation);
       default:
         break;
     }
     
-    return boolResult(compValue, aCompType);
+    return boolResult(aRuntimeCB, compValue, aCompType);
   }
   
   int8_t
-  CompareIterator::equal(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation)
+  CompareIterator::equal(RuntimeCB* aRuntimeCB, 
+                         const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation)
   {
     int result;
     // tries first normal compare
-    result = CompareIterator::compare(aItem0, aItem1);
+    result = CompareIterator::compare(aRuntimeCB, aItem0, aItem1);
     if (result == 0)
       return 0;
     else if (result == -1 || result == 1 || result == 2)
@@ -477,22 +484,27 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
       return 0;
   }
   
-  int8_t CompareIterator::valueEqual(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation) {
+  int8_t CompareIterator::valueEqual(RuntimeCB* aRuntimeCB,
+                                     const store::Item_t& aItem0, const store::Item_t& aItem1, 
+                                     xqpString* aCollation) {
     std::pair<store::Item_t, store::Item_t> lPair;
-    lPair = valueCasting(aItem0, aItem1);
-    lPair = typePromotion(lPair.first, lPair.second);
-    return equal(lPair.first, lPair.second, aCollation);
+    lPair = valueCasting(aRuntimeCB, aItem0, aItem1);
+    lPair = typePromotion(aRuntimeCB, lPair.first, lPair.second);
+    return equal(aRuntimeCB, lPair.first, lPair.second, aCollation);
   }
   
-  int8_t CompareIterator::generalEqual(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation) {
+  int8_t CompareIterator::generalEqual(RuntimeCB* aRuntimeCB,
+                                       const store::Item_t& aItem0, const store::Item_t& aItem1, 
+                                       xqpString* aCollation) {
     std::pair<store::Item_t, store::Item_t> lPair;
-    lPair = generalCasting(aItem0, aItem1);
-    lPair = typePromotion(lPair.first, lPair.second);
-    return equal(lPair.first, lPair.second, aCollation);
+    lPair = generalCasting(aRuntimeCB, aItem0, aItem1);
+    lPair = typePromotion(aRuntimeCB, lPair.first, lPair.second);
+    return equal(aRuntimeCB, lPair.first, lPair.second, aCollation);
   }
   
   int8_t 
-  CompareIterator::compare(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation)
+  CompareIterator::compare(RuntimeCB* aRuntimeCB, const store::Item_t& aItem0, const store::Item_t& aItem1, 
+                           xqpString* aCollation)
   {
     xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeConstants::QUANT_ONE);
     xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeConstants::QUANT_ONE);
@@ -536,19 +548,19 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
     } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
       if (aCollation == 0) {
-        Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
+        XQPCollator *coll = aRuntimeCB->theCollationCache->getDefaultCollator();
         ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
       } else {
-        Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(*aCollation);
+        XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(*aCollation);
         ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
       }
     } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
       if (aCollation == 0) {
-        Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator();
+        XQPCollator *coll = aRuntimeCB->theCollationCache->getDefaultCollator();
         ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
       } else {
-        Collator *coll = ZORBA_FOR_CURRENT_THREAD()->getCollator(*aCollation);
+        XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(*aCollation);
         ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
       }
     } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE)
@@ -617,18 +629,22 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
     return ret;
   }
   
-  int8_t CompareIterator::valueCompare(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation) {
+  int8_t CompareIterator::valueCompare(RuntimeCB* aRuntimeCB,
+                                       const store::Item_t& aItem0, const store::Item_t& aItem1, 
+                                       xqpString* aCollation) {
     std::pair<store::Item_t, store::Item_t> lPair;
-    lPair = valueCasting(aItem0, aItem1);
-    lPair = typePromotion(lPair.first, lPair.second);
-    return compare(lPair.first, lPair.second, aCollation);
+    lPair = valueCasting(aRuntimeCB, aItem0, aItem1);
+    lPair = typePromotion(aRuntimeCB, lPair.first, lPair.second);
+    return compare(aRuntimeCB, lPair.first, lPair.second, aCollation);
   }
   
-  int8_t CompareIterator::generalCompare(const store::Item_t& aItem0, const store::Item_t& aItem1, xqpString* aCollation) {
+  int8_t CompareIterator::generalCompare(RuntimeCB* aRuntimeCB,
+                                         const store::Item_t& aItem0, const store::Item_t& aItem1, 
+                                         xqpString* aCollation) {
     std::pair<store::Item_t, store::Item_t> lPair;
-    lPair = generalCasting(aItem0, aItem1);
-    lPair = typePromotion(lPair.first, lPair.second);
-    return compare(lPair.first, lPair.second, aCollation);
+    lPair = generalCasting(aRuntimeCB, aItem0, aItem1);
+    lPair = typePromotion(aRuntimeCB, lPair.first, lPair.second);
+    return compare(aRuntimeCB, lPair.first, lPair.second, aCollation);
   }
   /* end class ComparisonIterator */
 
@@ -646,12 +662,11 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
       lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
-           ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
-             &loc, DONT_CONTINUE_EXECUTION, "The IsSameNode function must have nodes as parameters.");
+           ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
         }
-        lBool = (Zorba::getStore()->compareNodes(lItem0, lItem1) == 0); 
+        lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 0); 
         STACK_PUSH ( 
-          Zorba::getItemFactory()->createBoolean(lBool),
+          GENV_ITEMFACTORY->createBoolean(lBool),
           aState
         );
       }
@@ -673,12 +688,11 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
       lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
-           ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
-             &loc, DONT_CONTINUE_EXECUTION, "The IsSameNode function must have nodes as parameters.");
+           ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
         }
-        lBool = (Zorba::getStore()->compareNodes(lItem0, lItem1) == -1); 
+        lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == -1); 
         STACK_PUSH ( 
-          Zorba::getItemFactory()->createBoolean(lBool),
+          GENV_ITEMFACTORY->createBoolean(lBool),
           aState
         );
       }
@@ -700,12 +714,11 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareConsts::CompareType
       lItem1 = consumeNext(theChildren[1].getp(), aPlanState);
       if (lItem1 != 0) {
         if (!lItem0->isNode() || !lItem0->isNode()) {
-           ZORBA_ERROR_ALERT( ZorbaError::XPTY0004,
-             &loc, DONT_CONTINUE_EXECUTION, "The IsSameNode function must have nodes as parameters.");
+           ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, "The IsSameNode function must have nodes as parameters.");
         }
-        lBool = (Zorba::getStore()->compareNodes(lItem0, lItem1) == 1); 
+        lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 1); 
         STACK_PUSH ( 
-          Zorba::getItemFactory()->createBoolean(lBool),
+          GENV_ITEMFACTORY->createBoolean(lBool),
           aState
         );
       }

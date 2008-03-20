@@ -6,15 +6,15 @@
  *
  */
 
-#include <zorba/rchandle.h>
-#include <zorba/item.h>
+#include "util/rchandle.h"
+#include "store/api/item.h"
 
 // TODO check the include
-#include <zorbatypes/Unicode_util.h>
+#include "zorbatypes/Unicode_util.h"
 
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
-#include <zorba/static_context_consts.h>
+#include "context/static_context_consts.h"
 
 #include <iostream>
 #include <sstream>
@@ -27,7 +27,7 @@
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "util/tracer.h"
 #include "util/Assert.h"
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 #include "types/typemanager.h"
 
 

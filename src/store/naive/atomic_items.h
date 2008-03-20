@@ -10,9 +10,9 @@
 #ifndef ZORBA_STORE_ATOMIC_ITEMS_H
 #define ZORBA_STORE_ATOMIC_ITEMS_H
 
-#include <zorbatypes/xqpstring.h>
+#include "zorbatypes/xqpstring.h"
 
-#include <zorba/item.h>
+#include "store/api/item.h"
 
 
 namespace zorba { namespace store {

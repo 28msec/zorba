@@ -1,7 +1,7 @@
 #ifndef ZORBA_STORE_LATCH_H
 #define ZORBA_STORE_LATCH_H
 
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 #ifdef WIN32
 #include "util/rwlock.h"

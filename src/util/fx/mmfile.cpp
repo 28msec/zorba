@@ -7,7 +7,7 @@
  *	Author: Paul Pedersen
  *
  */
-#include <zorba/common/common.h>
+#include "common/common.h"
 
 #include "util/fx/mmfile.h"
 
@@ -31,7 +31,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 
 using namespace std;
 namespace zorba {
@@ -42,18 +42,14 @@ namespace zorba {
 	{ \
 		ostringstream oerr; \
 		oerr << s << " [" << strerror(errno) << ']'; \
-		ZORBA_ERROR_ALERT(ZorbaError::XQP0013_SYSTEM_MMFILE_IOEXCEPTION,\
-													NULL,DONT_CONTINUE_EXECUTION,\
-													oerr.str(), __FUNCTION__);\
+		ZORBA_ERROR_DESC( ZorbaError::XQP0013_SYSTEM_MMFILE_IOEXCEPTION, oerr.str());\
 	}
 #else
 #define IOEXCEPTION(s) \
 	{ \
 		ostringstream oerr; \
 		oerr << s << " [" << GetLastError() << ']'; \
-		ZORBA_ERROR_ALERT(ZorbaError::XQP0013_SYSTEM_MMFILE_IOEXCEPTION,\
-													NULL,DONT_CONTINUE_EXECUTION,\
-													oerr.str(), __FUNCTION__);\
+		ZORBA_ERROR_DESC( ZorbaError::XQP0013_SYSTEM_MMFILE_IOEXCEPTION, oerr.str());\
 	}
 #endif
 
@@ -236,8 +232,8 @@ void mmfile::destroy()
 #endif
 		DeleteFile(path_str);
 #endif
-	} catch (xqp_exception& e) {
-		IOEXCEPTION("remove on: '"+path+"' application exception: "+e.getError()->theDescription);
+	} catch (error::ZorbaError& e) {
+		IOEXCEPTION("remove on: '"+path+"' application exception: ");
   } catch (exception& e) {
 		IOEXCEPTION("remove on: '"+path+"' system exception: "+e.what());
   } catch (...) {

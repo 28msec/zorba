@@ -1,5 +1,5 @@
-#include <zorba/item.h>
-#include "store/naive/item_iterator.h"
+#include "store/api/item.h"
+#include "store/api/item_iterator.h"
 
 namespace zorba { namespace store {
 

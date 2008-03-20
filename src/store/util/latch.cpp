@@ -1,5 +1,10 @@
 
 #include "store/util/latch.h"
+#include <iostream>
+
+#ifdef HAVE_PTHREAD_H
+#  include <pthread.h>
+#endif
 
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY

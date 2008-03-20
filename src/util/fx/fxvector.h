@@ -10,12 +10,12 @@
 #ifndef ZORBA_FXVECTOR_H
 #define ZORBA_FXVECTOR_H
 
-#include <zorba/rchandle.h>
-#include <zorba/common/common.h>
+#include "util/rchandle.h"
+#include "common/common.h"
 
 #include "util/fx/mmfile.h"
 #include "util/tracer.h"
-#include "errors/error_factory.h"
+#include "errors/error_manager.h"
 
 #ifndef WIN32
 	#include <sys/mman.h>
@@ -258,9 +258,8 @@ protected:
 
 			ostr1 << n;
 			ostr2 << size();
-			ZORBA_ERROR_ALERT(ZorbaError::XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE,
-                        NULL, DONT_CONTINUE_EXECUTION,///dont continue execution, stop here
-                        ostr1.str(), ostr2.str()///param1 and param2 for error message
+			ZORBA_ERROR_OSS( ZorbaError::XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE,
+                       ostr1.str(), ostr2.str()///param1 and param2 for error message
                         );
 		}
 	}

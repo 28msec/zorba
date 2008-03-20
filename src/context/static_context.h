@@ -25,17 +25,15 @@
 #ifndef ZORBA_CONTEXT_STATIC_CONTEXT_H
 #define ZORBA_CONTEXT_STATIC_CONTEXT_H
 
-// TODO maybe we should remove most of these includes and move implementations into the cpp file
-#include "common.h"
-
-#include <zorba/static_context.h>
-#include <zorba/static_context_consts.h>
-
-
+#include "context/static_context_consts.h"
 #include <memory>
+#include "store/api/item.h" // TODO remove by moving all functions into the cpp file
+
 #include "context/context.h"
 #include "context/context_impl.h"
 #include "util/Assert.h"
+
+#include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 
 
@@ -47,6 +45,9 @@
 #define THROW_XQP_EXCEPTION		
 #endif
 
+// TODO make this a static member of the context
+#define XQUERY_FN_NS  "http://www.w3.org/2005/xpath-functions"
+#define XQUERY_OP_NS  "http://www.w3.org/2005/xpath-functions"
 
 namespace zorba {
 
@@ -68,7 +69,7 @@ protected:
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
   static xqp_string fn_internal_key (int arity);
 
-  hashmap<StatelessExternalFunction_t> m_stateless_ext_functions;
+  hashmap<StatelessExternalFunction*> m_stateless_ext_functions;
   std::auto_ptr<TypeManager> typemgr;
 
   static_context();
@@ -86,7 +87,7 @@ public:
   void set_default_elem_type_ns (xqp_string);
 
   xqp_string lookup_ns (xqp_string prefix) const;
-  void bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCodes err = ZorbaError::XQST0033);
+  void bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCode err = ZorbaError::XQST0033);
 
   store::Item_t lookup_qname (xqp_string default_ns, xqp_string name) const;
   store::Item_t lookup_qname (xqp_string default_ns, xqp_string pfx, xqp_string local) const;
@@ -114,12 +115,28 @@ public:
   void bind_var (const store::Item *qname, expr *expr) {
     bind_expr ("var:" + qname_internal_key (qname), expr);
   }
+  void bind_collation(const xqp_string& aCollName, const xqp_string& aCollURI)
+  {
+    bind_str("coll:" + aCollName, aCollURI);
+  }
+  bool lookup_collation(const xqp_string& aCollName, xqp_string& aCollURI) const
+  {
+    return context_value<xqp_string>(aCollName, aCollURI);  
+  }
+  void bind_default_collation(const xqp_string& aCollURI)
+  {
+    bind_str("coll:default:", aCollURI);
+  }
+  bool lookup_default_collation(xqp_string& aCollURI) const
+  {
+    return context_value<xqp_string>("coll:default:", aCollURI);
+  }
 
   /**
    * bind external functions
-   * no duplicates allowed, the api is responsible for that
+   * @return false if the function was already in
    */
-  void bind_stateless_external_function(StatelessExternalFunction_t& aExternalFunction);
+  bool bind_stateless_external_function(StatelessExternalFunction* aExternalFunction);
   
   /**
    * lookup an external function by qname
@@ -152,16 +169,9 @@ public:
 	void bind_type( xqp_string key, xqtref_t t);
 	xqtref_t  lookup_type (xqp_string key);
 
-	COLLATION_OBJ	*lookup_collation(xqp_string coll_uri);
-	void		bind_collation(xqp_string coll_uri, COLLATION_OBJ*);
-
-  #if 0
-  PlanIter_t namespaces() const;
-	PlanIter_t in_scope_schema_types() const;
-	PlanIter_t in_scope_element_decls() const;
-	PlanIter_t in_scope_attribute_decls() const;
-	PlanIter_t collations() const;
-  #endif
+  /**
+   * collation management
+   */
 
 	StaticContextConsts::xpath1_0compatib_mode_t xpath1_0compatib_mode() const;
 	StaticContextConsts::construction_mode_t construction_mode() const;
@@ -176,16 +186,6 @@ public:
 	void set_boundary_space_mode(StaticContextConsts::boundary_space_mode_t v);
 	void set_inherit_mode(StaticContextConsts::inherit_mode_t v);
 	void set_preserve_mode(StaticContextConsts::preserve_mode_t v);
-
-  xqp_string default_collation_uri() const;
-	void set_default_collation_uri(xqp_string);
-	::Collator*	get_collation(xqp_string collation_uri, bool error_if_not_found = true);
-	void add_collation(xqp_string collation_uri, 
-										std::string  coll_string, 
-										//::Collator::ECollationStrength coll_strength,
-										::Collator *coll,
-										bool is_user_created);
-	::Collator *getDefaultCollation();
 
 	void set_context_item_static_type(xqtref_t t);
 	xqtref_t		context_item_static_type();
@@ -204,6 +204,16 @@ public:
 	
 	StaticContextConsts::ordering_mode_t ordering_mode() const;
 	void set_ordering_mode(StaticContextConsts::ordering_mode_t v);
+
+  CollationCache* get_collation_cache();
+  void release_collation_cache(CollationCache*);
+
+  XQPCollator* create_collator(const xqp_string& aURI);
+
+	void add_collation(const xqp_string& uri, const xqp_string& name);
+  xqp_string default_collation_uri() const;
+  void set_default_collation_uri(const xqp_string& uri);
+  bool get_collation_uri(const xqp_string& aName, xqp_string& aURI) const;
 
 protected:
   xqp_string current_absolute_baseuri() const;

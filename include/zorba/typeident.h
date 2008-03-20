@@ -1,232 +1,122 @@
-#ifndef ZORBA_TYPEIDENT_H
-#define ZORBA_TYPEIDENT_H
+#ifndef ZORBA_TYPES_TYPEIDENT_H
+#define ZORBA_TYPES_TYPEIDENT_H
 
-#include <zorba/common/api_shared_types.h>
-#include <zorba/item.h> // TODO this could maybe be removed if we have explizit destructors in cpp files
+#include <boost/shared_ptr.hpp>
+#include <zorba/api_shared_types.h>
+#include <zorba/identtypes.h>
+#include <zorba/string.h>
 
 namespace zorba {
 
-  class TypeIdentifier : virtual public SimpleRCObject {
-    public:
-      typedef enum {
-        NAMED_TYPE,
-        ELEMENT_TYPE,
-        ATTRIBUTE_TYPE,
-        DOCUMENT_TYPE,
-        PI_TYPE,
-        TEXT_TYPE,
-        COMMENT_TYPE,
-        ANY_NODE_TYPE,
-        ITEM_TYPE,
-        EMPTY_TYPE,
-      } kind_t;
+class TypeIdentifier {
+  public:
+    ~TypeIdentifier();
 
-      typedef enum {
-        QUANT_ONE,
-        QUANT_QUESTION,
-        QUANT_PLUS,
-        QUANT_STAR,
-      } quantifier_t;
+    static
+    boost::shared_ptr<TypeIdentifier>
+    createNamedType(
+        const String& uri,
+        const String& localName,
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
 
-      virtual ~TypeIdentifier() { }
+    static
+    boost::shared_ptr<TypeIdentifier>
+    createElementType(
+        const String& uri,
+        bool uriWildcard,
+        const String& localName,
+        bool localNameWildcard,
+        boost::shared_ptr<TypeIdentifier> contentType,
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
 
-      virtual kind_t
-      get_kind() const = 0;
+    static
+    boost::shared_ptr<TypeIdentifier>
+    createAttributeType(
+        const String& uri,
+        bool uriWildcard,
+        const String& localNameName,
+        bool localNameWildcard,
+        boost::shared_ptr<TypeIdentifier> contentType,
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
 
-      quantifier_t
-      get_quantifier() const
-      {
-        return m_quantifier;
-      }
+    static
+    boost::shared_ptr<TypeIdentifier>
+    createDocumentType(
+        boost::shared_ptr<TypeIdentifier> contentType,
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
 
-    protected:
-      TypeIdentifier(quantifier_t quantifier)
-        : m_quantifier(quantifier) { }
+    static
+    boost::shared_ptr<TypeIdentifier>
+    createPIType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
 
-      quantifier_t m_quantifier;
-  };
+    static
+    boost::shared_ptr<TypeIdentifier>
+    createTextType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
 
-  typedef rchandle<TypeIdentifier> type_ident_ref_t;
+    static
+    boost::shared_ptr<TypeIdentifier>
+    createCommentType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
 
-  class NamedTypeIdentifier : public TypeIdentifier {
-    public:
-      NamedTypeIdentifier(quantifier_t quantifier, store::Item_t name)
-        : TypeIdentifier(quantifier), m_name(name) { }
+    static
+    boost::shared_ptr<TypeIdentifier>
+    createAnyNodeType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
 
-      virtual kind_t 
-      get_kind() const
-      {
-        return NAMED_TYPE;
-      }
+    static
+    boost::shared_ptr<TypeIdentifier>
+    createItemType(
+        IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE
+        );
 
-      const store::Item_t 
-      get_name() const
-      {
-        return m_name;
-      }
+    static
+    boost::shared_ptr<TypeIdentifier>
+    createEmptyType();
 
-    protected:
-      store::Item_t m_name;
-  };
+    IdentTypes::kind_t
+    getKind() const;
 
-  class ContentTypeHolder {
-    public:
-      const type_ident_ref_t 
-      get_content_type() const
-      {
-        return m_content_type;
-      }
+    IdentTypes::quantifier_t
+    getQuantifier() const;
 
-      virtual ~ContentTypeHolder() { }
+    const String&
+    getUri() const;
 
-    protected:
-      ContentTypeHolder(type_ident_ref_t content_type)
-        : m_content_type(content_type) { }
+    bool
+    isUriWildcard() const;
 
-      type_ident_ref_t m_content_type;
-  };
+    const String&
+    getLocalName() const;
 
-  class ElementOrAttributeTypeIdentifier : public TypeIdentifier, public ContentTypeHolder {
-    public:
-      virtual ~ElementOrAttributeTypeIdentifier() { }
+    bool
+    isLocalNameWildcard() const;
 
-      const rchandle<xqpStringStore> 
-      get_uri() const
-      {
-        return m_uri;
-      }
+    boost::shared_ptr<TypeIdentifier>
+    getContentType() const;
 
-      const rchandle<xqpStringStore>
-      get_local() const
-      {
-        return m_local;
-      }
-    protected:
-      ElementOrAttributeTypeIdentifier(quantifier_t quantifier, rchandle<xqpStringStore> uri, 
-                                       rchandle<xqpStringStore> local, type_ident_ref_t content_type)
-        : TypeIdentifier(quantifier),
-        ContentTypeHolder(content_type),
-        m_uri(uri),
-        m_local(local) { }
+  private:
+    TypeIdentifier();
 
-      rchandle<xqpStringStore> m_uri;
-      rchandle<xqpStringStore> m_local;
-  };
-
-  class ElementTypeIdentifier : public ElementOrAttributeTypeIdentifier {
-    public:
-      ElementTypeIdentifier(quantifier_t quantifier, rchandle<xqpStringStore> uri, 
-                            rchandle<xqpStringStore> local, type_ident_ref_t content_type)
-        : ElementOrAttributeTypeIdentifier(quantifier, uri, local, content_type) { }
-
-      virtual kind_t 
-      get_kind() const
-      {
-        return ELEMENT_TYPE;
-      }
-  };
-
-  class AttributeTypeIdentifier : public ElementOrAttributeTypeIdentifier {
-    public:
-      AttributeTypeIdentifier(quantifier_t quantifier, rchandle<xqpStringStore> uri, 
-                              rchandle<xqpStringStore> local, type_ident_ref_t content_type)
-        : ElementOrAttributeTypeIdentifier(quantifier, uri, local, content_type) { }
-
-      virtual kind_t 
-      get_kind() const
-      {
-        return ATTRIBUTE_TYPE;
-      }
-  };
-
-  class DocumentTypeIdentifier : public TypeIdentifier, public ContentTypeHolder {
-    public:
-      DocumentTypeIdentifier(quantifier_t quantifier, type_ident_ref_t content_type)
-        : TypeIdentifier(quantifier),
-        ContentTypeHolder(content_type) { }
-
-      virtual ~DocumentTypeIdentifier() { }
-
-      virtual kind_t
-      get_kind() const
-      {
-        return DOCUMENT_TYPE;
-      }
-  };
-
-  class PITypeIdentifier : public TypeIdentifier {
-    public:
-      PITypeIdentifier(quantifier_t quantifier)
-        : TypeIdentifier(quantifier) { }
-
-      virtual kind_t
-      get_kind() const
-      {
-        return PI_TYPE;
-      }
-  };
-
-  class TextTypeIdentifier : public TypeIdentifier {
-    public:
-      TextTypeIdentifier(quantifier_t quantifier)
-        : TypeIdentifier(quantifier) { }
-
-      virtual kind_t
-      get_kind() const
-      {
-        return TEXT_TYPE;
-      }
-  };
-
-  class CommentTypeIdentifier : public TypeIdentifier {
-    public:
-      CommentTypeIdentifier(quantifier_t quantifier)
-        : TypeIdentifier(quantifier) { }
-
-      virtual kind_t
-      get_kind() const
-      {
-        return COMMENT_TYPE;
-      }
-  };
-
-  class AnyNodeTypeIdentifier : public TypeIdentifier {
-    public:
-      AnyNodeTypeIdentifier(quantifier_t quantifier)
-        : TypeIdentifier(quantifier) { }
-
-      virtual kind_t
-      get_kind() const
-      {
-        return ANY_NODE_TYPE;
-      }
-  };
-
-  class ItemTypeIdentifier : public TypeIdentifier {
-    public:
-      ItemTypeIdentifier(quantifier_t quantifier)
-        : TypeIdentifier(quantifier) { }
-
-      virtual kind_t
-      get_kind() const
-      {
-        return ITEM_TYPE;
-      }
-  };
-
-  class EmptyTypeIdentifier : public TypeIdentifier {
-    public:
-      EmptyTypeIdentifier()
-        : TypeIdentifier(QUANT_ONE) { }
-
-      virtual kind_t
-      get_kind() const
-      {
-        return EMPTY_TYPE;
-      }
-  };
+    IdentTypes::kind_t m_kind;
+    IdentTypes::quantifier_t m_quantifier;
+    String m_uri;
+    bool m_uriWildcard;
+    String m_localName;
+    bool m_localNameWildcard;
+    boost::shared_ptr<TypeIdentifier> m_contentType;
+};
 
 } /* namespace zorba */
-#endif /* ZORBA_TYPEIDENT_H */
 
+#endif /* ZORBA_TYPES_TYPEIDENT_H */
 /* vim:set ts=2 sw=2: */

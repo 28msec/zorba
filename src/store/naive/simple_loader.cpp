@@ -6,6 +6,7 @@
 
 #include <zorba/store_consts.h>
 
+#include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "util/Assert.h"
 
@@ -159,22 +160,18 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
 
     if (stream.bad())
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
-                        NULL, DONT_CONTINUE_EXECUTION,
-                        "Input stream in bad state");
+      ZORBA_ERROR_DESC(ZorbaError::XQP0016_LOADER_IO_ERROR, "Input stream in bad state");
     }
 
     return stream.gcount();
   }
   catch (std::iostream::failure e)
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
-                      NULL, DONT_CONTINUE_EXECUTION, e.what());
+    ZORBA_ERROR_DESC(ZorbaError::XQP0016_LOADER_IO_ERROR, e.what());
   }
   catch (...)
   {
-    ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
-                      NULL, DONT_CONTINUE_EXECUTION, "Unknown exception");
+    ZORBA_ERROR_DESC(ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown exception");
   }
 
   return -1;
@@ -199,8 +196,7 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
-                        NULL, CONTINUE_EXECUTION, "Unknown I/O error");
+      ZORBA_ERROR_DESC(ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown I/O error");
       abort();
       return NULL;
     }
@@ -209,9 +205,9 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
 
     if (ctxt == NULL)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                        NULL, CONTINUE_EXECUTION,
-                        "Failed to initialize parser");
+      // TODO get the error manager here and continue execution
+      ZORBA_ERROR_DESC(ZorbaError::XQP0017_LOADER_PARSING_ERROR, 
+                       "Failed to initialize parser");
       abort();
 			return NULL;
     }
@@ -223,8 +219,8 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0016_LOADER_IO_ERROR,
-                        NULL, CONTINUE_EXECUTION, "Unknown I/O error");
+      // TODO get the error manager here and continue execution
+      ZORBA_ERROR_DESC(ZorbaError::XQP0016_LOADER_IO_ERROR, "Unknown I/O error");
       xmlFreeParserCtxt(ctxt);
       abort();
       return NULL;
@@ -247,16 +243,15 @@ XmlNode* XmlLoader::loadXml(xqpStringStore* uri, std::istream& stream)
   {
     if (theDocUri != NULL)
     {
-      ZORBA_ERROR_ALERT_OSS(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                            NULL, CONTINUE_EXECUTION,
+      // TODO get the error manager here and continue execution
+      ZORBA_ERROR_OSS(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
                             "The document with URI " << *theDocUri
                             <<" is not well formed", "");
     }
     else
     {
-      ZORBA_ERROR_ALERT(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                        NULL, CONTINUE_EXECUTION,
-                        "Not well formed XML");
+      // TODO get the error manager here and continue execution
+      ZORBA_ERROR_DESC(ZorbaError::XQP0017_LOADER_PARSING_ERROR, "Not well formed XML");
     }
 
     abort();
@@ -711,8 +706,8 @@ void  XmlLoader::error(void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  ZORBA_ERROR_ALERT(ZorbaError::XQP0017_LOADER_PARSING_ERROR,
-                    NULL, CONTINUE_EXECUTION, buf);
+  // TODO continue execution
+  ZORBA_ERROR_DESC(ZorbaError::XQP0017_LOADER_PARSING_ERROR, buf);
 }
 
 

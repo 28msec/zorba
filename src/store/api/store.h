@@ -10,7 +10,7 @@
 #ifndef ZORBA_STORE_STORE_H
 #define ZORBA_STORE_STORE_H
 
-#include <zorbatypes/representations.h>
+#include "zorbatypes/representations.h"
 
 #include "common/shared_types.h"
 

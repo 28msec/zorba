@@ -2,7 +2,7 @@
 
 #include "store/api/store.h"
 #include "system/globalenv.h"
-#include <zorba/item.h>
+#include "store/api/item.h"
 
 namespace zorba { namespace store {
 

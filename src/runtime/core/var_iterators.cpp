@@ -1,6 +1,5 @@
-#include <zorba/item.h>
-#include <zorba/iterator.h>
-
+#include "store/api/iterator.h"
+#include "store/api/item.h"
 #include "util/Assert.h"
 #include "runtime/base/noarybase.h"
 #include "runtime/core/var_iterators.h"

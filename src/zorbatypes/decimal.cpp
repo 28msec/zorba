@@ -4,10 +4,10 @@
  * Authros: David Graf (davidgraf@28msec.com)
  */
 
-#include <zorba/common/common.h>
-#include <zorbatypes/decimal.h>
-#include <zorbatypes/integer.h>
-#include <zorbatypes/numconversions.h>
+#include "common/common.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
 
 namespace zorba {
 

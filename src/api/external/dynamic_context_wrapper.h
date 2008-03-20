@@ -1,7 +1,7 @@
 #ifndef EXTERNA_API_DYNAMIC_CONTEXT_WRAPPER_04_DEC_2007
 #define EXTERNA_API_DYNAMIC_CONTEXT_WRAPPER_04_DEC_2007
 
-#include <zorbatypes/representations.h>
+#include "zorbatypes/representations.h"
 
 #include <zorba/dynamic_context.h>
 

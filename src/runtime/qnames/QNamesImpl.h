@@ -13,7 +13,7 @@
 #define ZORBA_QNAMES_IMPL_H
 
 #include <vector>
-#include <zorbatypes/xqpstring.h>
+#include "zorbatypes/xqpstring.h"
 
 #include "common/shared_types.h"
 #include "runtime/base/unarybase.h" // remove after iterator refactoring

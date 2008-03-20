@@ -9,8 +9,7 @@
 
 #include <vector>
 
-#include <zorba/iterator.h>
-
+#include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 
 namespace zorba { namespace store {

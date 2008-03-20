@@ -3,18 +3,17 @@
  *  Author: Tim Kraska
  *
  */
-#include <zorba/item.h>
 
 #include "compiler/expression/expr.h"
 #include "runtime/core/flwor_iterator.h"
 #include "types/root_typemanager.h"
 #include "runtime/core/var_iterators.h"
-#include "system/zorba.h"
-#include "errors/error_factory.h"
+#include "runtime/api/runtimecb.h"
+#include "errors/error_manager.h"
 #include "store/api/temp_seq.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planitervisitor.h"
-#include "runtime/base/plan_iterator_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 #include "util/Assert.h"
 #include "system/globalenv.h"
 #include "store/api/store.h"
@@ -178,6 +177,7 @@ void FLWORIterator::OrderByClause::accept ( PlanIterVisitor& v ) const
 
 
 int8_t FLWORIterator::OrderKeyCmp::compare(
+    RuntimeCB* aRuntimeCB,
     const store::Item_t& s1,
     const store::Item_t& s2,
     bool desc,
@@ -198,10 +198,9 @@ int8_t FLWORIterator::OrderKeyCmp::compare(
   {
     // danm: both valueCompare (x, NaN) and valueCompare (NaN, x) return 2.
     // That's why empty_item is needed.
-    int8_t result = CompareIterator::valueCompare ( s1 , s2 );
+    int8_t result = CompareIterator::valueCompare ( aRuntimeCB, s1 , s2 );
     if (result > 1 || result < -1) {
-      ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-                        NULL, DONT_CONTINUE_EXECUTION, "Non-comparable types found while sorting" );
+      ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Non-comparable types found while sorting" );
       
     }
     return descAsc (result , desc );
@@ -229,7 +228,8 @@ bool FLWORIterator::OrderKeyCmp::operator() (
 
   while ( s1iter != s1.end() )
   {
-    int8_t cmp = compare(*s1iter,
+    int8_t cmp = compare(orderSpecIter->runtimeCB,
+                         *s1iter,
                          *s2iter,
                          orderSpecIter->descending,
                          orderSpecIter->empty_least);
@@ -400,8 +400,7 @@ void FLWORIterator::matResultAndOrder(
       lItem = consumeNext ( lSpecIter->orderByIter.getp(), planState );
       if ( lItem != 0 )
       {
-        ZORBA_ERROR_ALERT(ZorbaError::XPTY0004,
-                          NULL, DONT_CONTINUE_EXECUTION, "Expected a singleton" );
+        ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Expected a singleton" );
       }
     }
     lSpecIter->orderByIter->reset(planState);
@@ -409,7 +408,7 @@ void FLWORIterator::matResultAndOrder(
   }
 
   Iterator_t iterWrapper = new PlanIteratorWrapper(returnClause, planState);
-  store::TempSeq_t result = Zorba::getStore()->createTempSeq(iterWrapper, false);
+  store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, false);
   Iterator_t iter = result->getIterator();
   iter->open();
   flworState->orderMap->insert(std::pair<std::vector<store::Item_t>, Iterator_t>(orderKey, iter));
@@ -486,7 +485,7 @@ bool FLWORIterator::bindVariable (
 
     if ( !lForLetClause.posVars.empty() )
     {
-      store::Item_t posItem = Zorba::getItemFactory()->
+      store::Item_t posItem = GENV_ITEMFACTORY->
                        createInteger(Integer::parseInt(flworState->varBindingState[varNb]));
 
       std::vector<var_iter_t>::const_iterator posIter;
@@ -513,7 +512,7 @@ bool FLWORIterator::bindVariable (
     //Depending on the query, we might need to materialize the LET-Binding
     if ( lForLetClause.needsMaterialization )
     {
-      store::TempSeq_t tmpSeq = Zorba::getStore()->createTempSeq(iterWrapper, true);
+      store::TempSeq_t tmpSeq = GENV_STORE.createTempSeq(iterWrapper, true);
       std::vector<ref_iter_t>::const_iterator letIter;
       for (letIter = lForLetClause.letVars.begin();
            letIter != lForLetClause.letVars.end();
@@ -583,6 +582,7 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
          iter++ )
     {
       iter->orderByIter->open ( planState, offset );
+      iter->runtimeCB = planState.theRuntimeCB; // TODO check if this is the right place and the right runtimecb
     }
   }
   
@@ -716,8 +716,7 @@ void FlworState::init(PlanState& planState, size_t nb_variables)
 }
 
 
-void FlworState::init(
-                      PlanState& planState,
+void FlworState::init(PlanState& planState,
                       size_t nb_variables,
                       std::vector<FLWORIterator::OrderSpec>* orderSpecs)
 {

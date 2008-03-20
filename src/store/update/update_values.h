@@ -12,8 +12,8 @@
 
 #include <vector>
 
-#include <zorba/item.h>
-#include <zorba/rchandle.h>
+#include "store/api/item.h"
+#include "util/rchandle.h"
 
 #include "runtime/core/item_iterator.h"
 

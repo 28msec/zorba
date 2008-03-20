@@ -1,8 +1,11 @@
 #ifndef ZORBA_STORE_MUTEX_H
 #define ZORBA_STORE_MUTEX_H
 
-#include "zorba/common/common.h"
+#include "common/common.h"
 
+#ifdef HAVE_PTHREAD_H
+#  include <pthread.h>
+#endif
 
 namespace zorba { namespace store {
 

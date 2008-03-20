@@ -3,6 +3,8 @@
 #include "parsertestdriverconfig.h" // SRC and BIN dir definitions
 #include "compiler/parser/xquery_driver.h"
 #include "system/globalenv.h"
+#include "compiler/api/compilercb.h"
+#include "context/static_context.h"
 
 using namespace zorba;
 
@@ -15,7 +17,8 @@ main(int argc, char** argv)
 {
   GlobalEnvironment::init(); 
   std::string lQueryFileString;
-  xquery_driver lDriver;
+  CompilerCB aCompilerCB;
+  xquery_driver lDriver(&aCompilerCB);
   // do initial stuff
   if ( argc == 2 )
   {

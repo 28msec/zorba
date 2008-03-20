@@ -2,11 +2,7 @@
 CREATE_TEST_SOURCELIST(UnitTests
   UnitTests.cpp
   typesystem_isSubtype.cpp
-  typesystem_atomicStringCast.cpp
 )
-
-ADD_SUBDIRECTORY(external_api)
-ADD_SUBDIRECTORY(external_functions)
 
 # add the executable
 ADD_EXECUTABLE(UnitTests ${UnitTests})
