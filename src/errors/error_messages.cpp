@@ -440,6 +440,10 @@ ZorbaError::ErrorCodes err_name_to_code (string name) {
   return ZorbaError::XQP0019_INTERNAL_ERROR;
 }
 
+string err_code_to_name (ZorbaError::ErrorCodes code) {
+  return canonical_err_names [code];
+}
+
 string ZorbaError::toString(ZorbaError::ErrorCodes code) {
   ZORBA_ASSERT (code < ZorbaError::MAX_ZORBA_ERROR_CODE);
   return canonical_err_names[code];

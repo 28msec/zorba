@@ -11,6 +11,7 @@ namespace zorba
 ********************************************************************************/
 
   ZorbaError::ErrorCodes err_name_to_code (std::string name);
+  std::string err_code_to_name (ZorbaError::ErrorCodes code);
 
 class AlertMessages
 {

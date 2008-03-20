@@ -9,6 +9,7 @@
 #include "runtime/base/plan_wrapper.h"
 #include "functions/function.h"
 #include "functions/Misc.h"
+#include "errors/error_messages.h"
 
 #include <set>
 
@@ -40,11 +41,19 @@ namespace zorba {
     PlanWrapper *operator-> () { return pw.get(); }
   };
 
-  static void execute (expr_t node, vector<store::Item_t> &result) {
+  static expr_t execute (expr_t node, vector<store::Item_t> &result) {
     PlanIter_t plan = codegen ("const-folded expr", node);
+    QueryLoc loc = node->get_loc ();
     store::Item_t item;
-    for (PlanWrapperHolder pw  (plan); (item = pw->next ()) != NULL; )
-      result.push_back (item);
+    try {
+      for (PlanWrapperHolder pw  (plan); (item = pw->next ()) != NULL; )
+        result.push_back (item);
+      return NULL;
+    } catch (xqp_exception e) {
+      expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 1), new const_expr (loc, ITEM_FACTORY->createQName ("http://www.w3.org/2005/xqt-errors", "err", err_code_to_name ((ZorbaError::ErrorCodes) e.getCode ()).c_str ())));
+      err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VALUE);
+      return err_expr;
+    }
   }
 
   RULE_REWRITE_PRE(MarkFreeVars) {
@@ -152,12 +161,14 @@ namespace zorba {
             node->get_annotation (AnnotationKey::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VALUE))
     {
       vector<store::Item_t> result;
-      execute (node, result);
-      ZORBA_ASSERT (result.size () <= 1);
-      expr_t folded =
-        result.size () == 1
-        ? ((expr *) (new const_expr (node->get_loc (), result [0])))
-        : ((expr *) (new fo_expr (node->get_loc (), LOOKUP_OPN ("concatenate"))));
+      expr_t folded = execute (node, result);
+      if (folded == NULL) {
+        ZORBA_ASSERT (result.size () <= 1);
+        folded =
+          result.size () == 1
+          ? ((expr *) (new const_expr (node->get_loc (), result [0])))
+          : ((expr *) (new fo_expr (node->get_loc (), LOOKUP_OPN ("concatenate"))));
+      }
       return folded;
     }
     return NULL;

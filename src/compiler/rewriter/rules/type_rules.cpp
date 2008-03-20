@@ -5,9 +5,6 @@
 #include "types/typemanager.h"
 #include "system/globalenv.h"
 
-#define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (rCtx.getStaticContext()->lookup_fn (pfx, local, arity))
-#define LOOKUP_OP1( local ) static_cast<function *> (rCtx.getStaticContext()->lookup_builtin_fn (":" local, 1))
-
 using namespace std;
 
 namespace zorba {
