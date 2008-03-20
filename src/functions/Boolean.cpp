@@ -37,6 +37,16 @@ namespace zorba
 	}
 	/* end class GenericOpComparison */
 	
+  
+  xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types) const {
+    xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
+    for (int i = 0; i < 2; i++)
+      if (GENV_TYPESYSTEM.is_subtype (*empty, *arg_types [i]))
+        return empty;
+    return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+  }
+
+  
 	/* begin class op_equal */
 	op_equal::op_equal( const signature& sig) : GenericOpComparison(sig) {}
 	PlanIter_t 
@@ -91,8 +101,8 @@ namespace zorba
 	}
 	/* end class op_less_equal */
 
-		/* begin class op_value_equal */
-	op_value_equal::op_value_equal( const signature& sig) : GenericOpComparison(sig) {}
+  /* begin class op_value_equal */
+	op_value_equal::op_value_equal( const signature& sig) : ValueOpComparison(sig) {}
 	PlanIter_t 
 	op_value_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
@@ -101,7 +111,7 @@ namespace zorba
 	/* end class op_value_equal */
 	
 	/* begin class op_value_not_equal */
-	op_value_not_equal::op_value_not_equal( const signature& sig) : GenericOpComparison(sig) {}
+	op_value_not_equal::op_value_not_equal( const signature& sig) : ValueOpComparison(sig) {}
 	PlanIter_t 
 	op_value_not_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
@@ -110,7 +120,7 @@ namespace zorba
 	/* end class op_value_not_equal */
 	
 	/* begin class op_value_greater */
-	op_value_greater::op_value_greater( const signature& sig) : GenericOpComparison(sig) {}
+	op_value_greater::op_value_greater( const signature& sig) : ValueOpComparison(sig) {}
 	PlanIter_t 
 	op_value_greater::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
@@ -119,7 +129,7 @@ namespace zorba
 	/* end class value_op_greater */
 	
 	/* begin class op_value_greater_equal */
-	op_value_greater_equal::op_value_greater_equal( const signature& sig) : GenericOpComparison(sig) {}
+	op_value_greater_equal::op_value_greater_equal( const signature& sig) : ValueOpComparison(sig) {}
 	PlanIter_t 
 	op_value_greater_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
@@ -128,7 +138,7 @@ namespace zorba
 	/* end class op_greater_equal */
 	
 	/* begin class op_value_less */
-	op_value_less::op_value_less( const signature& sig) : GenericOpComparison(sig) {}
+	op_value_less::op_value_less( const signature& sig) : ValueOpComparison(sig) {}
 	PlanIter_t 
 	op_value_less::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{
@@ -137,7 +147,7 @@ namespace zorba
 	/* end class op_value_less */
 	
 	/* begin class op_value_less_equal */
-	op_value_less_equal::op_value_less_equal( const signature& sig) : GenericOpComparison(sig) {}
+	op_value_less_equal::op_value_less_equal( const signature& sig) : ValueOpComparison(sig) {}
 	PlanIter_t 
 	op_value_less_equal::createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const
 	{

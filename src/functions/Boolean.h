@@ -16,7 +16,6 @@ namespace zorba
 	{
 		public:
 			GenericOpComparison ( const signature&);
-			virtual ~GenericOpComparison() {}
 
 			virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 			virtual xqtref_t type_check ( signature& ) const;
@@ -25,13 +24,18 @@ namespace zorba
 		protected:
 			virtual PlanIter_t createIterator( const QueryLoc& loc, std::vector<PlanIter_t>& ) const = 0;
 	};
+
+  class ValueOpComparison : public GenericOpComparison {
+  public:
+    ValueOpComparison (const signature &sig) : GenericOpComparison (sig) {}
+    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  };
 	
 	/*----------------------------------- generic comparison --------------------------------*/
 	class op_equal : public GenericOpComparison
 	{
 	public:
 		op_equal( const signature&);
-		virtual ~op_equal() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
@@ -40,7 +44,6 @@ namespace zorba
 	{
 	public:
 		op_not_equal( const signature&);
-		virtual ~op_not_equal() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
@@ -49,7 +52,6 @@ namespace zorba
 	{
 	public:
 		op_greater( const signature&);
-		virtual ~op_greater() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
@@ -58,7 +60,6 @@ namespace zorba
 	{
 	public:
 		op_greater_equal( const signature&);
-		virtual ~op_greater_equal() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
@@ -67,7 +68,6 @@ namespace zorba
 	{
 	public:
 		op_less( const signature&);
-		virtual ~op_less() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
@@ -76,71 +76,66 @@ namespace zorba
 	{
 	public:
 		op_less_equal( const signature&);
-		virtual ~op_less_equal() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
 	/*----------------------------------- value comparison --------------------------------*/
-	class op_value_equal : public GenericOpComparison
+	class op_value_equal : public ValueOpComparison
 	{
 	public:
 		op_value_equal( const signature&);
-		virtual ~op_value_equal() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
-	class op_value_not_equal : public GenericOpComparison
+	class op_value_not_equal : public ValueOpComparison
 	{
 	public:
 		op_value_not_equal( const signature&);
-		virtual ~op_value_not_equal() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
-	class op_value_greater : public GenericOpComparison
+	class op_value_greater : public ValueOpComparison
 	{
 	public:
 		op_value_greater( const signature&);
-		virtual ~op_value_greater() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
-	class op_value_greater_equal : public GenericOpComparison
+	class op_value_greater_equal : public ValueOpComparison
 	{
 	public:
 		op_value_greater_equal( const signature&);
-		virtual ~op_value_greater_equal() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
-	class op_value_less : public GenericOpComparison
+	class op_value_less : public ValueOpComparison
 	{
 	public:
 		op_value_less( const signature&);
-		virtual ~op_value_less() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
-	class op_value_less_equal : public GenericOpComparison
+	class op_value_less_equal : public ValueOpComparison
 	{
 	public:
 		op_value_less_equal( const signature&);
-		virtual ~op_value_less_equal() {}
 	protected:
 		virtual PlanIter_t createIterator ( const QueryLoc& loc, std::vector<PlanIter_t>& ) const;
 	};
 	
+
+	/*-------------------------- Node Comparison -------------------------------------------*/
+
 	class op_is_same_node : public function
 	{
 	public:
 		op_is_same_node( const signature& aSig) : function(aSig) {}
-		virtual ~op_is_same_node() {}
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check ( signature&) const;
@@ -151,7 +146,6 @@ namespace zorba
 	{
 	public:
 		op_node_before( const signature& aSig) : function(aSig) {}
-		virtual ~op_node_before() {}
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check ( signature&) const;
@@ -162,7 +156,6 @@ namespace zorba
 	{
 	public:
 		op_node_after( const signature& aSig) : function(aSig) {}
-		virtual ~op_node_after() {}
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check ( signature&) const;
@@ -174,7 +167,6 @@ namespace zorba
 	{
 		public:
 			op_and ( const signature& );
-			~op_and() {}
 			
 		public:
 			PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -186,7 +178,6 @@ namespace zorba
 	{
 		public:
 			op_or ( const signature& );
-			~op_or() {}
 			
 		public:
 			PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -201,7 +192,6 @@ namespace zorba
 	{
 		public:
 			fn_true ( const signature& );
-			~fn_true() {}
 			
 		public:
 			PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -214,7 +204,6 @@ namespace zorba
 	{
 		public:
 			fn_false ( const signature& );
-			~fn_false() {}
 			
 		public:
 			PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -227,7 +216,6 @@ namespace zorba
 	{
 	public:
 		fn_not ( const signature& );
-		~fn_not() {}
 		
 	public:
 		PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -241,7 +229,6 @@ namespace zorba
 	{
 		public:
 			fn_boolean ( const signature& );
-			~fn_boolean() {}
 
 		public:
 			PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;

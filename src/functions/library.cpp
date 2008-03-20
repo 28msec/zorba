@@ -277,7 +277,6 @@ DECL(fn_qname,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE));
 
 DECL(op_qname_equal,
-//      (ITEM_FACTORY.createQName(XQUERY_OP_NS,"op","QName-equal"),
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","QName-equal"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
