@@ -82,9 +82,14 @@ xqtref_t op_concatenate::return_type (const std::vector<xqtref_t> &arg_types) co
     return GENV_TYPESYSTEM.EMPTY_TYPE;
   else {
     xqtref_t t = arg_types [0];
-    for (int i = 1; i < sz; i++)
+    TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
+    for (int i = 1; i < sz; i++) {
       t = GENV_TYPESYSTEM.union_type (*t, *arg_types [i]);
-    return GENV_TYPESYSTEM.type_x_quant (*t, TypeConstants::QUANT_STAR);
+      TypeConstants::quantifier_t pq = GENV_TYPESYSTEM.quantifier (*t);
+      if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
+        q = TypeConstants::QUANT_PLUS;
+    }
+    return GENV_TYPESYSTEM.type_x_quant (*t, q);
   }
 }
 
