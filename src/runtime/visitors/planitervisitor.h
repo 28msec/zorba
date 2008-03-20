@@ -9,6 +9,10 @@ namespace zorba
   class FnDataIterator;
   class FnRootIterator;
   class FnNodeNameIterator;
+  class FnNilledIterator;
+  class FnBaseUriIterator;
+  class FnDocumentUriIterator;
+  class FnErrorIterator;
   class FnStringIterator;
   class FnBooleanIterator;
   class LogicIterator;
@@ -190,7 +194,19 @@ namespace zorba
        
       virtual void beginVisit ( const FnNodeNameIterator& ) = 0;
       virtual void endVisit ( const FnNodeNameIterator& ) = 0;
-       
+
+      virtual void beginVisit ( const FnNilledIterator& ) = 0;
+      virtual void endVisit ( const FnNilledIterator& ) = 0;
+
+      virtual void beginVisit ( const FnBaseUriIterator& ) = 0;
+      virtual void endVisit ( const FnBaseUriIterator& ) = 0;
+
+      virtual void beginVisit ( const FnDocumentUriIterator& ) = 0;
+      virtual void endVisit ( const FnDocumentUriIterator& ) = 0;
+
+      virtual void beginVisit ( const FnErrorIterator& ) = 0;
+      virtual void endVisit ( const FnErrorIterator& ) = 0;
+
       virtual void beginVisit ( const FnStringIterator& ) = 0;
       virtual void endVisit ( const FnStringIterator& ) = 0;
        

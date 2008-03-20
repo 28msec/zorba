@@ -26,6 +26,7 @@ SET(RUNTIME_SRCS
     fncontext/FnContextImpl.cpp
     debug/debug_iterators.cpp
     update/update.cpp
+    misc/MiscImpl.cpp
 )
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS accessors)
@@ -39,3 +40,4 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS base)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS sequences)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS visitors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS fncontext)
+HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS misc)

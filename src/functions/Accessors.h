@@ -53,6 +53,42 @@ namespace zorba {
 			bool validate_args(std::vector<PlanIter_t>& ) const;
 	};
 
+  class fn_nilled_func : public function
+  {
+    public:
+      fn_nilled_func(const signature& s);
+      ~fn_nilled_func() {}
+
+    public:
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+      xqtref_t type_check(signature& s) const;
+      bool validate_args(std::vector<PlanIter_t>& ) const;
+  };
+
+  class fn_base_uri_func : public function
+  {
+    public:
+      fn_base_uri_func(const signature& s);
+      ~fn_base_uri_func() {}
+
+    public:
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+      xqtref_t type_check(signature& s) const;
+      bool validate_args(std::vector<PlanIter_t>& ) const;
+  };
+
+  class fn_document_uri_func : public function
+  {
+    public:
+      fn_document_uri_func(const signature& s);
+      ~fn_document_uri_func() {}
+
+    public:
+      PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+      xqtref_t type_check(signature& s) const;
+      bool validate_args(std::vector<PlanIter_t>& ) const;
+  };
+
   class fn_name_func : public function
 	{
 		public:

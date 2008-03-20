@@ -24,6 +24,7 @@
 #include "types/root_typemanager.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
+#include "runtime/misc/MiscImpl.h"
 
 #include "system/globalenv.h"
 
@@ -89,7 +90,50 @@ namespace zorba {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
+  
+  void PrinterVisitor::beginVisit ( const FnNilledIterator& a ) {
+    thePrinter.startBeginVisit("FnNilledIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const FnNilledIterator& ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
 
+  void PrinterVisitor::beginVisit ( const FnBaseUriIterator& a ) {
+    thePrinter.startBeginVisit("FnBaseUriIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  
+  void PrinterVisitor::endVisit ( const FnBaseUriIterator& ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnDocumentUriIterator& a ) {
+    thePrinter.startBeginVisit("FnDocumentUriIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  
+  void PrinterVisitor::endVisit ( const FnDocumentUriIterator& ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnErrorIterator& a ) {
+    thePrinter.startBeginVisit("FnErrorIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  
+  void PrinterVisitor::endVisit ( const FnErrorIterator& ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  
   void PrinterVisitor::beginVisit ( const UDFunctionCallIterator& a ) {
     thePrinter.startBeginVisit("UDFunctionCallIterator", (intptr_t) &a);
     printCommons(  &a );

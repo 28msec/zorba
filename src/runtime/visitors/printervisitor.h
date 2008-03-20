@@ -43,67 +43,79 @@ public:
        
   virtual void beginVisit ( const FnNodeNameIterator& ) ;
   virtual void endVisit ( const FnNodeNameIterator& ) ;
-       
+
+  virtual void beginVisit ( const FnNilledIterator& ) ;
+  virtual void endVisit ( const FnNilledIterator& ) ;
+
+  virtual void beginVisit ( const FnBaseUriIterator& ) ;
+  virtual void endVisit ( const FnBaseUriIterator& ) ;
+
+  virtual void beginVisit ( const FnDocumentUriIterator& ) ;
+  virtual void endVisit ( const FnDocumentUriIterator& ) ;
+
+  virtual void beginVisit ( const FnErrorIterator& ) ;
+  virtual void endVisit ( const FnErrorIterator& ) ;
+
   virtual void beginVisit ( const FnStringIterator& ) ;
   virtual void endVisit ( const FnStringIterator& ) ;
-       
+
   virtual void beginVisit ( const FnBooleanIterator& ) ;
   virtual void endVisit ( const FnBooleanIterator& ) ;
-       
+
   virtual void beginVisit ( const LogicIterator& ) ;
   virtual void endVisit ( const LogicIterator& ) ;
-       
+
   virtual void beginVisit ( const CompareIterator& ) ;
   virtual void endVisit ( const CompareIterator& ) ;
-       
+
   virtual void beginVisit ( const ElementIterator& ) ;
   virtual void endVisit ( const ElementIterator& ) ;
-       
+
   virtual void beginVisit ( const ElementContentIterator& ) ;
   virtual void endVisit ( const ElementContentIterator& ) ;
-       
+
   virtual void beginVisit ( const UDFunctionCallIterator& ) ;
   virtual void endVisit ( const UDFunctionCallIterator& ) ;
-       
+
   virtual void beginVisit ( const StatelessExtFunctionCallIterator& ) ;
   virtual void endVisit ( const StatelessExtFunctionCallIterator& ) ;
-       
+
   virtual void beginVisit ( const AttributeIterator & ) ;
   virtual void endVisit ( const AttributeIterator& ) ;
-      
+
   virtual void beginVisit ( const DocumentIterator& ) ;
   virtual void endVisit ( const DocumentIterator& ) ;
-      
+
   virtual void beginVisit ( const DocumentContentIterator& ) ;
   virtual void endVisit ( const DocumentContentIterator& ) ;
-       
+
   virtual void beginVisit ( const CommentIterator& ) ;
   virtual void endVisit ( const CommentIterator& ) ;
-       
+
   virtual void beginVisit ( const PiIterator& ) ;
   virtual void endVisit ( const PiIterator& ) ;
-       
+
   virtual void beginVisit ( const SingletonIterator& ) ;
   virtual void endVisit ( const SingletonIterator& ) ;
-       
+
   virtual void beginVisit ( const EmptyIterator& ) ;
   virtual void endVisit ( const EmptyIterator& ) ;
-       
+
   virtual void beginVisit ( const ForVarIterator& ) ;
   virtual void endVisit ( const ForVarIterator& ) ;
-       
+
   virtual void beginVisit ( const LetVarIterator& ) ;
   virtual void endVisit ( const LetVarIterator& ) ;
 
   virtual void beginVisit ( const EnclosedIterator& ) ;
   virtual void endVisit ( const EnclosedIterator& ) ;
-      
+
   virtual void beginVisit ( const DocFilterIterator& ) ;
   virtual void endVisit ( const DocFilterIterator& ) ;
-       
+
   virtual void beginVisit ( const IfThenElseIterator& ) ;
   virtual void endVisit ( const IfThenElseIterator& ) ;
-      
+
   virtual void beginVisit ( const NodeDistinctIterator& a );
   virtual void endVisit ( const NodeDistinctIterator& a );
 
@@ -115,16 +127,16 @@ public:
   
   virtual void beginVisit ( const NameTestIterator& ) ;
   virtual void endVisit ( const NameTestIterator& ) ;
-       
+
   virtual void beginVisit ( const SelfAxisIterator& ) ;
   virtual void endVisit ( const SelfAxisIterator& ) ;
-       
+
   virtual void beginVisit ( const AttributeAxisIterator& ) ;
   virtual void endVisit ( const AttributeAxisIterator& ) ;
-       
+
   virtual void beginVisit ( const ParentAxisIterator& ) ;
   virtual void endVisit ( const ParentAxisIterator& ) ;
-       
+
   virtual void beginVisit ( const AncestorAxisIterator& ) ;
   virtual void endVisit ( const AncestorAxisIterator& ) ;
   
@@ -170,7 +182,7 @@ public:
   virtual void endVisit ( const NumArithIterator<DivideOperation>& ) ;
   virtual void endVisit ( const NumArithIterator<IntegerDivideOperation>& ) ;
   virtual void endVisit ( const NumArithIterator<ModOperation>& ) ;
-       
+
   virtual void beginVisit ( const GenericArithIterator<AddOperation>& ) ;
   virtual void beginVisit ( const GenericArithIterator<SubtractOperation>& ) ;
   virtual void beginVisit ( const GenericArithIterator<MultiplyOperation>& ) ;
@@ -183,7 +195,7 @@ public:
   virtual void endVisit ( const GenericArithIterator<DivideOperation>& ) ;
   virtual void endVisit ( const GenericArithIterator<IntegerDivideOperation>& ) ;
   virtual void endVisit ( const GenericArithIterator<ModOperation>& ) ;
-       
+
   virtual void beginVisit ( const OpNumericUnaryIterator& ) ;
   virtual void endVisit ( const OpNumericUnaryIterator& ) ;
   
@@ -441,10 +453,10 @@ public:
   
   virtual void beginVisitFlworForVariable(const PlanIterator&, const xqpStringStore&);
   virtual void endVisitFlworForVariable(const PlanIterator&);
-      
+
   virtual void beginVisitFlworOrderBy(const PlanIterator&);
   virtual void endVisitFlworOrderBy(const PlanIterator&);
-      
+
   virtual void beginVisitFlworReturn(const PlanIterator&);
   virtual void endVisitFlworReturn(const PlanIterator&);
   

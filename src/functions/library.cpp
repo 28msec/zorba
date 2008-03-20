@@ -83,10 +83,42 @@ DECL(fn_nodename_func,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "node-name"),
       GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
 
+DECL(fn_nilled_func,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "nilled"),
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+
+DECL(fn_base_uri_func,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "base-uri"),
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+DECL(fn_document_uri_func,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "document-uri"),
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
 DECL(fn_name_func,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "name"),
       GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
 // end Accessors
+
+//begin Error function
+DECL(fn_error_func_1,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(fn_error_func_2,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(fn_error_func_3,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR ,
+      GENV_TYPESYSTEM.NONE_TYPE));
+//end Errror function
 
 // Generic Arithmetics
 DECL(op_add,

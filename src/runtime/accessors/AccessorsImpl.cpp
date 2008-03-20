@@ -121,7 +121,75 @@ store::Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
   STACK_END();
 }
 
+// 2.2 fn:nilled
+//---------------------
+store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
+{
+  store::Item_t inNode;
 
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  inNode = consumeNext(theChildren[0].getp(), planState);
+
+  if (inNode != NULL)
+  {
+    if (inNode->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      STACK_PUSH(Zorba::getItemFactory()->createBoolean(inNode->getNilled()), state);
+    }
+  }
+  
+  STACK_END();
+}
+
+// 2.5 fn:base-uri
+//---------------------
+store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
+{
+  store::Item_t inNode;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (inNode != NULL)
+  {
+    if (inNode->isNode()) {
+      STACK_PUSH(Zorba::getItemFactory()->createAnyURI(inNode->getBaseURI().getStore()), state);
+    }
+    else {
+      ZORBA_ERROR_ALERT(
+          ZorbaError::XPTY0004,
+      &loc, DONT_CONTINUE_EXECUTION, "The argument of the fn:base-uri function is not a node");
+    }
+  }
+  
+  STACK_END();
+}
+
+// 2.6 fn:document-uri
+//---------------------
+store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
+{
+  store::Item_t inNode;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (inNode != NULL)
+  {
+    if (inNode->isNode()) {
+      STACK_PUSH(Zorba::getItemFactory()->createAnyURI(inNode->getDocumentURI().getStore()), state);
+    }
+    else {
+      ZORBA_ERROR_ALERT(
+          ZorbaError::XPTY0004,
+      &loc, DONT_CONTINUE_EXECUTION, "The argument of the fn:document-uri function is not a node");
+    }
+  }
+  
+  STACK_END();
+}
 // 2.3 fn:string
 //---------------------
 store::Item_t FnStringIterator::nextImpl(PlanState& planState) const

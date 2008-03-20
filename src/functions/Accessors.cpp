@@ -116,6 +116,99 @@ bool fn_nodename_func::validate_args(vector<PlanIter_t>& argv) const
 }
 
 /*******************************************************************************
+  2.2 fn:nilled
+********************************************************************************/
+fn_nilled_func::fn_nilled_func(const signature& sig) : function (sig)
+{
+}
+
+
+PlanIter_t fn_nilled_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  if (!validate_args(argv))
+  {
+    ZORBA_ERROR_ALERT(
+       ZorbaError::XPST0017,
+       &loc
+    );
+  }
+
+  return new FnNilledIterator(loc, argv);
+}
+
+
+xqtref_t fn_nilled_func::type_check(signature& /*sig*/) const
+{
+  return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
+}
+
+
+bool fn_nilled_func::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+/*******************************************************************************
+  2.5 fn:base-uri
+********************************************************************************/
+fn_base_uri_func::fn_base_uri_func(const signature& sig) : function (sig)
+{
+}
+
+PlanIter_t fn_base_uri_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  if (!validate_args(argv))
+  {
+    ZORBA_ERROR_ALERT(
+       ZorbaError::XPST0017,
+       &loc
+    );
+  }
+
+  return new FnBaseUriIterator(loc, argv);
+}
+
+xqtref_t fn_base_uri_func::type_check(signature&) const
+{
+  return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
+}
+
+bool fn_base_uri_func::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+/*******************************************************************************
+  2.6 fn:document-uri
+********************************************************************************/
+fn_document_uri_func::fn_document_uri_func(const signature& sig) : function (sig)
+{
+}
+
+PlanIter_t fn_document_uri_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  if (!validate_args(argv))
+  {
+    ZORBA_ERROR_ALERT(
+       ZorbaError::XPST0017,
+       &loc
+    );
+  }
+
+  return new FnDocumentUriIterator(loc, argv);
+}
+
+xqtref_t fn_document_uri_func::type_check(signature&) const
+{
+  return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
+}
+
+bool fn_document_uri_func::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+/*******************************************************************************
   
 ********************************************************************************/
 fn_name_func::fn_name_func(const signature& sig) : function (sig)

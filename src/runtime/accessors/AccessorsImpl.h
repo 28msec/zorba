@@ -34,6 +34,15 @@ NARY_ITER(FnRootIterator);
 // 2.1 fn:node-name
 NARY_ITER(FnNodeNameIterator);
 
+// 2.2 fn:nilled
+NARY_ITER(FnNilledIterator);
+
+// 2.5 fn:base-uri
+NARY_ITER(FnBaseUriIterator);
+
+// 2.6 fn:document-uri
+NARY_ITER(FnDocumentUriIterator);
+
 // 2.3 fn:string
 class FnStringIteratorState : public PlanIteratorState {
   public:
