@@ -3,7 +3,7 @@
 /*
  *  Copyright 2006-2007 FLWOR Foundation.
  *
- *  Authors: David Graf, Donald Kossmann, Tim Kraska, Markos zaharioudakis
+ *  Authors: David Graf, Donald Kossmann, Tim Kraska, Markos zaharioudakis, Nicolae Brinza
  */
 
 #include "zorbatypes/numconversions.h"
@@ -24,6 +24,7 @@
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/store_defs.h"
 #include "store/api/item_iterator.h"
+#include "context/dynamic_context.h"
 
 #define CREATE_XS_TYPE(aType) \
   GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
@@ -979,7 +980,14 @@ Item_t DateTimeItemNaive::getType() const
 
 bool DateTimeItemNaive::equals(Item_t aItem) const
 {
-  return 0 == theValue->compare(*aItem->getDateTimeValue());
+  // TODO: get somehow the RuntimeCB to extract the implicit timezone
+  try {
+    return 0 == theValue->compare(*aItem->getDateTimeValue(), 0);
+    //                                   ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+  } catch (InvalidTimezoneException) {
+    ZORBA_ERROR(ZorbaError::FODT0003);
+    return false;
+  }
 }
 
 Item_t DateTimeItemNaive::getEBV() const

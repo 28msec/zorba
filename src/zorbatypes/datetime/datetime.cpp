@@ -378,14 +378,14 @@ DateTime& DateTime::operator=(const DateTime_t& dt_t)
   return *this;
 }
 
-int DateTime::compare(const DateTime& dt) const
+int DateTime::compare(const DateTime& dt, int timezone_seconds) const
 {
   // TODO: handle timezone
   DateTime_t d1_t, d2_t;
   
-  d1_t = normalizeTimeZone(0);
-  d2_t = dt.normalizeTimeZone(0);
-  
+  d1_t = normalizeTimeZone(timezone_seconds);
+  d2_t = dt.normalizeTimeZone(timezone_seconds);
+    
   /*
   d1_t->facet = DATETIME_FACET;
   d2_t->facet = DATETIME_FACET;
@@ -611,12 +611,15 @@ void DateTime::setFacet(FACET_TYPE a_facet)
 
 DateTime_t DateTime::normalizeTimeZone(int tz_seconds) const
 {
-  Duration_t d_t;
   DateTime_t dt_t;
-
+  Duration_t d_t;
+  
   if( the_time_zone.is_not_a_date_time() )
   {
-    // TODO: validate timezone value (-14 .. +14 H)
+    // validate timezone value (-14 .. +14 H)
+    if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
+      throw InvalidTimezoneException();
+    
     d_t = new Duration(DayTimeDuration((tz_seconds<0), 0, 0, 0, tz_seconds, 0));
   }
   else
@@ -635,13 +638,16 @@ DateTime_t DateTime::adjustToTimeZone(int tz_seconds) const
 {
   DayTimeDuration_t dtduration_t;
   DayTimeDuration_t context_tz_t;
-  DateTime_t dt_t;
   TimeZone_t tz_t;
+  DateTime_t dt_t;
+  
+  // validate timezone value (-14 .. +14 H)
+  if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
+    throw InvalidTimezoneException();
 
   // If $timezone is not specified, then $timezone is the value of the implicit timezone in the dynamic context.
   context_tz_t = new DayTimeDuration((tz_seconds<0), 0, 0, 0, tz_seconds, 0);
 
-  // TODO: validate timezone value (-14 .. +14 H)
   dt_t = new DateTime(*this);
   
   // If $arg does not have a timezone component and $timezone is not the empty sequence,
@@ -673,12 +679,11 @@ DateTime_t DateTime::adjustToTimeZone(const DurationBase_t& db_t) const
 {
   DayTimeDuration_t dtduration_t;
   DayTimeDuration_t context_tz_t;
-  DateTime_t dt_t;
   TimeZone_t tz_t;
+  DateTime_t dt_t;
 
   // A dynamic error is raised [err:FODT0003] if $timezone is less than -PT14H or greater than PT14H or
   // if does not contain an integral number of minutes.
-  // TODO: validate timezone value (-14 .. +14 H)
   
   dt_t = new DateTime(*this);
   
@@ -689,6 +694,14 @@ DateTime_t DateTime::adjustToTimeZone(const DurationBase_t& db_t) const
   }
   else
   {
+    // validate timezone value (-14 .. +14 H)
+    if (db_t->getYears() != 0 || db_t->getMonths() != 0 || db_t->getDays() != 0 || db_t->getSeconds() != 0
+        ||
+        db_t->getHours()*3600 + db_t->getMinutes()*60 > 14*3600
+        ||
+        db_t->getHours()*3600 + db_t->getMinutes()*60 < -14*3600)
+      throw InvalidTimezoneException();
+        
     // If $arg does not have a timezone component and $timezone is not the empty sequence,
     // then the result is $arg with $timezone as the timezone component.
     if (the_time_zone.is_not_a_date_time())

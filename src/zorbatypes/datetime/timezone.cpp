@@ -36,7 +36,7 @@ bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
   std::string ss = *s.getStore();
   unsigned int position = 0;
   bool is_negative = false;
-
+  
   // A time zone is of form: (('+' | '-') hh ':' mm) | 'Z'
 
   if (ss.size() != 1 && ss.size() != 6)
@@ -68,6 +68,7 @@ bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
     if (!is_digit(ss[position]) || !is_digit(ss[position+1]) || ss[position+2] != ':' ||
          !is_digit(ss[position+3]) || !is_digit(ss[position+4]))
       return false;
+    
     // minutes must be between 00..59
     if (ss.substr (position + 3, 2) >= "60")
       return false;
@@ -79,6 +80,9 @@ bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
 
     boost::posix_time::time_duration t;
     RETURN_FALSE_ON_EXCEPTION( t = boost::posix_time::duration_from_string (temp); );
+    
+    if (t.minutes() < -59 || t.minutes() > 59)
+      return false;
     
     // hours must be between -14 .. 14
     if (t.hours()*60 + t.minutes() > 14*60 || t.hours()*60 + t.minutes() < -14*60)
@@ -124,7 +128,7 @@ xqpString TimeZone::toString() const
 
     if (the_time_zone.hours() == 0 && the_time_zone.minutes() == 0)
       return xqpString("Z");
-    else if (the_time_zone.hours() >= 0)
+    else if (the_time_zone.hours() >= 0 && the_time_zone.minutes() >= 0 && the_time_zone.seconds() >= 0)
       result = "+" + result.substr(0, 5);
     else
       result = result.substr(0, 6);

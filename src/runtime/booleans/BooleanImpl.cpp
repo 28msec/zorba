@@ -13,6 +13,7 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+#include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "context/collation_cache.h"
 
@@ -563,65 +564,88 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         XQPCollator *coll = aRuntimeCB->theCollationCache->getCollator(*aCollation);
         ret = aItem0->getStringValue().compare(aItem1->getStringValue(), coll);
       }
-    } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE)
-               &&
-              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
+    } 
+    
+    // catch InvalidTimezoneException
+    try {
+      if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE)
+                &&
+                GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
+      {
+        ret = aItem0->getDateValue()->compare(*aItem1->getDateValue(),
+                                   aRuntimeCB->theDynamicContext->get_implicit_timezone());
+      }
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE)
+              &&
+              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
+      {
+        ret = aItem0->getTimeValue()->compare(*aItem1->getTimeValue(),
+                                   aRuntimeCB->theDynamicContext->get_implicit_timezone());
+      }
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)
+              &&
+              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
+      {
+        ret = aItem0->getDateTimeValue()->compare(*aItem1->getDateTimeValue(),
+                                       aRuntimeCB->theDynamicContext->get_implicit_timezone());
+                                      
+      }
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE)
+              &&
+              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE))
+      {
+        ret = aItem0->getGYearMonthValue()->compare(*aItem1->getGYearMonthValue());
+        //ret = aItem0->getGYearMonthValue()->compare(*aItem1->getGYearMonthValue(),
+        //                                ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+      }
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE)
+              &&
+              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE))
+      {
+        ret = aItem0->getGYearValue()->compare(*aItem1->getGYearValue());
+        //ret = aItem0->getGYearValue()->compare(*aItem1->getGYearValue(),
+        //                            ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+      }
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE)
+              &&
+              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE))
+      {
+        ret = aItem0->getGMonthDayValue()->compare(*aItem1->getGMonthDayValue());
+        //ret = aItem0->getGMonthDayValue()->compare(*aItem1->getGMonthDayValue(),
+        //                                ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+      }
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE)
+              &&
+              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE))
+      {
+        ret = aItem0->getGMonthValue()->compare(*aItem1->getGMonthValue());
+        //ret = aItem0->getGMonthValue()->compare(*aItem1->getGMonthValue(),
+        //                             ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+      }
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GDAY_TYPE_ONE)
+              &&
+              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GDAY_TYPE_ONE))
+      {
+        ret = aItem0->getGDayValue()->compare(*aItem1->getGDayValue());
+        //ret = aItem0->getGDayValue()->compare(*aItem1->getGDayValue(),
+        //                           ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+      }
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
+              &&
+              GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
+              &&
+              (!GENV_TYPESYSTEM.is_equal(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+              &&
+              (!GENV_TYPESYSTEM.is_equal(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+              &&
+              GENV_TYPESYSTEM.is_equal(*type0, *type1))
+      {
+        ret = aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
+      }
+    } 
+    catch (InvalidTimezoneException)
     {
-      ret = aItem0->getDateValue()->compare(*aItem1->getDateValue());
-    }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE)
-             &&
-             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
-    {
-      ret = aItem0->getTimeValue()->compare(*aItem1->getTimeValue());
-    }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)
-             &&
-             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
-    {
-      ret = aItem0->getDateTimeValue()->compare(*aItem1->getDateTimeValue());
-    }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE)
-             &&
-             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE))
-    {
-      ret = aItem0->getGYearMonthValue()->compare(*aItem1->getGYearMonthValue());
-    }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE)
-             &&
-             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE))
-    {
-      ret = aItem0->getGYearValue()->compare(*aItem1->getGYearValue());
-    }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE)
-             &&
-             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE))
-    {
-      ret = aItem0->getGMonthDayValue()->compare(*aItem1->getGMonthDayValue());
-    }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE)
-             &&
-             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE))
-    {
-      ret = aItem0->getGMonthValue()->compare(*aItem1->getGMonthValue());
-    }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.GDAY_TYPE_ONE)
-             &&
-             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.GDAY_TYPE_ONE))
-    {
-      ret = aItem0->getGDayValue()->compare(*aItem1->getGDayValue());
-    }
-    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
-             &&
-             GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
-             &&
-             (!GENV_TYPESYSTEM.is_equal(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
-             &&
-             (!GENV_TYPESYSTEM.is_equal(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
-             &&
-             GENV_TYPESYSTEM.is_equal(*type0, *type1))
-    {
-      ret = aItem0->getDurationValue()->compare(*aItem1->getDurationValue());
+      ZORBA_ERROR(ZorbaError::FODT0003);
     }
 
     // TODO comparisons for all types

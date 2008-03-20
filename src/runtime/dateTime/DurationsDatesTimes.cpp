@@ -12,7 +12,7 @@
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/api/runtimecb.h"
-
+#include "errors/error_manager.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
@@ -783,8 +783,7 @@ store::Item_t FnAdjustToTimeZoneIterator_1::nextImpl(PlanState& planState) const
   store::Item_t item0;
   store::Item_t item1;
   DateTime_t dt_t;
-  int tz_seconds;
-
+  
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -795,8 +794,12 @@ store::Item_t FnAdjustToTimeZoneIterator_1::nextImpl(PlanState& planState) const
     STACK_PUSH(NULL, state);
   else
   {
-    tz_seconds = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
-    dt_t = item0->getDateTimeValue()->adjustToTimeZone(tz_seconds);
+    try {
+      dt_t = item0->getDateTimeValue()->adjustToTimeZone(
+        planState.theRuntimeCB->theDynamicContext->get_implicit_timezone());
+    } catch (InvalidTimezoneException) {
+      ZORBA_ERROR(ZorbaError::FODT0003);
+    }
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(dt_t), state);
   }
     
@@ -808,7 +811,7 @@ store::Item_t FnAdjustToTimeZoneIterator_2::nextImpl(PlanState& planState) const
   store::Item_t item0;
   store::Item_t item1;
   DateTime_t dt_t;
-
+  
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -819,7 +822,11 @@ store::Item_t FnAdjustToTimeZoneIterator_2::nextImpl(PlanState& planState) const
   else
   {
     item1 = consumeNext(theChild1.getp(), planState);
-    dt_t = item0->getDateTimeValue()->adjustToTimeZone(item1.isNull()? NULL : item1->getDurationValue());
+    try {
+      dt_t = item0->getDateTimeValue()->adjustToTimeZone(item1.isNull()? NULL : item1->getDurationValue());
+    } catch (InvalidTimezoneException) {
+      ZORBA_ERROR(ZorbaError::FODT0003);
+    }
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(dt_t), state);
   }
      

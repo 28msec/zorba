@@ -210,8 +210,14 @@ template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME>
 ( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  // TODO: see if timezone normalization needs to be performed (it might be performed by the subtract function)
-  xqp_duration d = i0->getDateTimeValue()->normalizeTimeZone(0)->subtractDateTime(*i1->getDateTimeValue()->normalizeTimeZone(0), 0);
+  xqp_duration d;
+  try {
+    d = i0->getDateTimeValue()->subtractDateTime(*i1->getDateTimeValue(),
+      aRuntimeCB->theDynamicContext->get_implicit_timezone());
+  }
+  catch (InvalidTimezoneException) {
+    ZORBA_ERROR(ZorbaError::FODT0003);
+  }
   return GENV_ITEMFACTORY->createDuration (d);
 }
 
@@ -219,8 +225,14 @@ template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
 ( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  // TODO: see if timezone normalization needs to be performed (it might be performed by the subtract function)
-  xqp_duration d = i0->getDateValue()->normalizeTimeZone(0)->subtractDateTime(*i1->getDateValue()->normalizeTimeZone(0), 0);
+  xqp_duration d;
+  try {
+    d = i0->getDateValue()->subtractDateTime(*i1->getDateValue(),
+                         aRuntimeCB->theDynamicContext->get_implicit_timezone());
+  }
+  catch (InvalidTimezoneException) {
+    ZORBA_ERROR(ZorbaError::FODT0003);
+  }
   return GENV_ITEMFACTORY->createDuration (d);
 }
 
@@ -228,8 +240,14 @@ template<>
 store::Item_t SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
 ( RuntimeCB* aRuntimeCB, const QueryLoc* loc,  const store::Item* i0, const store::Item* i1 )
 {
-  // TODO: see if timezone normalization needs to be performed (it might be performed by the subtract function)
-  xqp_duration d = i0->getTimeValue()->normalizeTimeZone(0)->subtractDateTime(* i1->getTimeValue()->normalizeTimeZone(0), 0);
+  xqp_duration d;
+  try {
+    d = i0->getTimeValue()->subtractDateTime(*i1->getTimeValue(),
+                         aRuntimeCB->theDynamicContext->get_implicit_timezone());
+  }
+  catch (InvalidTimezoneException) {
+    ZORBA_ERROR(ZorbaError::FODT0003);
+  }
   return GENV_ITEMFACTORY->createDuration (d);
 }
 /* end class SubtractOperations */
