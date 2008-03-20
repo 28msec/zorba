@@ -6,50 +6,52 @@
 #include "functions/function.h"
 
 namespace zorba {
-
+  
 class fn_trace_func : public function {
   public:
     fn_trace_func(const signature&);
-    ~fn_trace_func() {}
-
+    
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
-class fn_error_func_1 : public function
-{
+  class fn_error_base : public function {
+  public:
+    fn_error_base(const signature& s);
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    xqtref_t type_check(signature& s) const;
+  };
+
+class fn_error_func_0 : public fn_error_base {
+  public:
+    fn_error_func_0(const signature& s);
+
+  public:
+    bool validate_args(std::vector<PlanIter_t>& ) const;
+};
+
+class fn_error_func_1 : public fn_error_base {
   public:
     fn_error_func_1(const signature& s);
-    ~fn_error_func_1() {}
 
   public:
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
     bool validate_args(std::vector<PlanIter_t>& ) const;
 };
 
-class fn_error_func_2 : public function
-{
+class fn_error_func_2 : public fn_error_base {
   public:
     fn_error_func_2(const signature& s);
-    ~fn_error_func_2() {}
 
   public:
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
     bool validate_args(std::vector<PlanIter_t>& ) const;
 };
 
-class fn_error_func_3 : public function
-{
+class fn_error_func_3 : public fn_error_base {
   public:
     fn_error_func_3(const signature& s);
-    ~fn_error_func_3() {}
 
   public:
-    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t type_check(signature& s) const;
     bool validate_args(std::vector<PlanIter_t>& ) const;
 };
 
@@ -57,3 +59,8 @@ class fn_error_func_3 : public function
 
 #endif /* ZORBA_MISC_H */
 /* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
