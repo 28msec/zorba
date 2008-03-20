@@ -35,7 +35,7 @@ string::size_type AlertMessages::applyParam(
     const string*     param1,
     string::size_type start)
 {
-  std::string::size_type off;
+  string::size_type off;
   const static string empty;
 
   off = errorMsg->find ("/s", start);
@@ -432,7 +432,15 @@ DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression 
   }
 } err_msg_initializer_obj;
 
-std::string ZorbaError::toString(ZorbaError::ErrorCodes code) {
+ZorbaError::ErrorCodes err_name_to_code (string name) {
+  // TODO: use a map or hashmap
+  for (int i = 0; i < ZorbaError::MAX_ZORBA_ERROR_CODE; i++)
+    if (name == canonical_err_names [i])
+      return (enum ZorbaError::ErrorCodes) i;
+  return ZorbaError::XQP0019_INTERNAL_ERROR;
+}
+
+string ZorbaError::toString(ZorbaError::ErrorCodes code) {
   ZORBA_ASSERT (code < ZorbaError::MAX_ZORBA_ERROR_CODE);
   return canonical_err_names[code];
 }
@@ -443,13 +451,13 @@ string AlertMessagesEnglish::error_decode(ZorbaError::ErrorCodes e) {
 } 
 
 
-std::string AlertMessagesEnglish::warning_decode(ZorbaWarning::WarningCodes code)
+string AlertMessagesEnglish::warning_decode(ZorbaWarning::WarningCodes code)
 {
   return "?";
 }
 
 
-std::string AlertMessagesEnglish::notify_event_decode(ZorbaNotify::NotifyCodes code)
+string AlertMessagesEnglish::notify_event_decode(ZorbaNotify::NotifyCodes code)
 {
   switch(code)
   {
@@ -460,20 +468,20 @@ std::string AlertMessagesEnglish::notify_event_decode(ZorbaNotify::NotifyCodes c
 }
 
 
-std::string AlertMessagesEnglish::ask_user_decode(ZorbaAskUser::UserQuestionCodes)
+string AlertMessagesEnglish::ask_user_decode(ZorbaAskUser::UserQuestionCodes)
 {
   return "?";
 }
 
 
-std::string AlertMessagesEnglish::ask_user_options_decode(ZorbaAskUser::UserReplyOptionsCodes)
+string AlertMessagesEnglish::ask_user_options_decode(ZorbaAskUser::UserReplyOptionsCodes)
 {
   return "";
 }
 
 
 
-AlertMessagesTable::AlertMessagesTable(std::string file_name)
+AlertMessagesTable::AlertMessagesTable(string file_name)
 {
 }
 

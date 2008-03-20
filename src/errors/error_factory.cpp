@@ -236,13 +236,11 @@ void ZorbaAlertFactory::fn_user_error(
 		std::string	err_uri = err_qname->getNamespace();
 		std::string	err_localname = err_qname->getLocalName();
 
-		if(err_uri == "http://www.w3.org/2005/xqt-errors")///a standard error
+		if(err_uri == "http://www.w3.org/2005/xqt-errors")
 		{
-			///try to identify its description
-			int	err_num = atoi(err_localname.substr(4,4).c_str());
+      ZorbaError::ErrorCodes err_num = err_name_to_code (err_localname);
 
-			err_decoded = err_manager->getAlertMessages().
-        error_decode((enum ZorbaError::ErrorCodes)err_num);
+			err_decoded = err_manager->getAlertMessages().error_decode(err_num);
 			err_manager->getAlertMessages().applyParams(&err_decoded, NULL, NULL);
 		}
 	}

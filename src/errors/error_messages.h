@@ -9,6 +9,9 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
+
+  ZorbaError::ErrorCodes err_name_to_code (std::string name);
+
 class AlertMessages
 {
  public:
@@ -67,3 +70,9 @@ public:
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

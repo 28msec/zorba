@@ -19,28 +19,18 @@ namespace zorba {
 store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
 {
   store::Item_t err_qname;
-  store::Item_t description;
-//   std::vector<class store::Item*>* items;
+  xqp_string description;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(theChildren.size() > 2) {
-    //TODO complete the implementation and also enhance fn_user_error
-  }
-  else {
-    err_qname = consumeNext(theChildren[0].getp(), planState);
-    if (theChildren.size() == 2) {
-      if( err_qname != NULL) {
-      description = consumeNext(theChildren[1].getp(), planState);
-      ZorbaAlertFactory::fn_user_error(err_qname, description->getStringValue() , NULL);
-      }
-      else 
-        ZorbaAlertFactory::fn_user_error(NULL, "", NULL);
-    }
-    else //theChildren.size() = 1
-      ZorbaAlertFactory::fn_user_error(err_qname, "", NULL);
-  }
+  // TODO: better handling of 2nd and 3rd args
+  err_qname = consumeNext(theChildren[0].getp(), planState);
+  if( err_qname == NULL)
+    /* err_qname = create_qname ("http://www.w3.org/2005/xqt-errors", "err:FOER0000") */;
+  if (theChildren.size () >= 2)
+    description = consumeNext(theChildren[1].getp(), planState)->getStringValue ();
+  ZorbaAlertFactory::fn_user_error(err_qname, description, NULL);
 
   STACK_END();
 }
