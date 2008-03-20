@@ -11,6 +11,9 @@
 
 #include "runtime/misc/MiscImpl.h"
 #include "errors/error_manager.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "system/globalenv.h"
 
 namespace zorba {
 
@@ -18,22 +21,28 @@ namespace zorba {
 //---------------------
 store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
 {
-  store::Item_t err_qname;
+  static const char *err_ns = "http://www.w3.org/2005/xqt-errors";
+  store::Item_t err_qname = GENV_ITEMFACTORY->createQName (err_ns, "err", "FOER0000");
+  xqp_string ns;
   xqp_string description;
   std::vector<store::Item_t> aErrorObject; // TODO
+
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // TODO: better handling of 2nd and 3rd args
-  err_qname = consumeNext(theChildren[0].getp(), planState);
-  if( err_qname == NULL)
-    /* err_qname = create_qname ("http://www.w3.org/2005/xqt-errors", "err:FOER0000") */;
+  if (theChildren.size () >= 1)
+    err_qname = consumeNext(theChildren[0].getp(), planState);
   if (theChildren.size () >= 2)
     description = consumeNext(theChildren[1].getp(), planState)->getStringValue ();
 
-  ZORBA_USER_ERROR(err_qname->getNamespace(), err_qname->getLocalName(), description, 
-                   loc, aErrorObject);
+  ns = err_qname->getNamespace ();
+  if (ns == err_ns)
+    ZORBA_ERROR (error::ZorbaError::err_name_to_code (err_qname->getLocalName()));
+  else {
+    ZORBA_USER_ERROR(ns, err_qname->getLocalName(), description,
+                     loc, aErrorObject);
+  }
 
   STACK_END();
 }
