@@ -106,8 +106,31 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   return modified ? node : NULL;
 }
 
-RULE_REWRITE_POST(EliminateUnusedLetVars)
-{
+RULE_REWRITE_POST(EliminateUnusedLetVars) {
+  return NULL;
+}
+
+RULE_REWRITE_PRE(RefactorPredFLWOR) {
+  flwor_expr *flwor = dynamic_cast<flwor_expr *>(node);
+  if (flwor == NULL) return NULL;
+
+  static_context *sctx = rCtx.getStaticContext();
+
+  if_expr *ite_result = flwor->get_retval().dyn_cast<if_expr> ();
+  if (ite_result == NULL) return NULL;
+
+  cout << GENV_TYPESYSTEM.toString (*ite_result->get_else_expr ()->return_type (sctx)) << endl;
+  if (GENV_TYPESYSTEM.is_equal (*ite_result->get_else_expr ()->return_type (sctx), *GENV_TYPESYSTEM.EMPTY_TYPE)
+      && flwor->get_where () == NULL) {
+    flwor->set_where (ite_result->get_cond_expr ());
+    flwor->set_retval (ite_result->get_then_expr ());
+    return flwor;
+  }
+
+  return NULL;
+}
+
+RULE_REWRITE_POST(RefactorPredFLWOR) {
   return NULL;
 }
 

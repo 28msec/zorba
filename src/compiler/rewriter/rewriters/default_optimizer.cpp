@@ -10,11 +10,16 @@ namespace zorba {
 #define ADD_SINGLETON_DRIVER_BASE(rule) \
   m_childRewriters.push_back(rewriter_ptr_t(new SingletonRuleMajorDriverBase (RuleMajorDriver::rule_ptr_t (new rule))))
 
-  class FoldRules : public SequentialRewriter {
+#define ADD_RULE( rule ) \
+  m_rules.push_back (rule_ptr_t (new rule))
+
+  class FoldRules : public RuleMajorDriver {
   public:
     FoldRules() {
-      ADD_SINGLETON_DRIVER_BASE(FoldConst (false));
-      ADD_SINGLETON_DRIVER_BASE(PartialEval);      
+      ADD_RULE(FoldConst (false));
+      ADD_RULE(PartialEval);      
+      ADD_RULE(RefactorPredFLWOR);
+      ADD_RULE(EliminateUnusedLetVars);
     }
   };
 
@@ -24,8 +29,6 @@ DefaultOptimizer::DefaultOptimizer()
   ADD_SINGLETON_DRIVER(MarkNodesWithNodeIdProperties);
   ADD_SINGLETON_DRIVER(EliminateDocOrderSort);
   ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
-  ADD_SINGLETON_DRIVER(MarkUnfoldableOps);
-  ADD_SINGLETON_DRIVER(EliminateUnusedLetVars);
   ADD_SINGLETON_DRIVER(EliminateExtraneousPathSteps);
   ADD_SINGLETON_DRIVER(MarkFreeVars);
   ADD_SINGLETON_DRIVER(MarkExpensiveOps);

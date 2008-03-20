@@ -31,6 +31,7 @@ RULE(EliminateDocOrderSort);
 
 RULE(EliminateTypeEnforcingOperations);
 RULE(EliminateUnusedLetVars);
+RULE(RefactorPredFLWOR);
 RULE(EliminateExtraneousPathSteps);
 RULE(MarkFreeVars);
 RULE(MarkExpensiveOps);
