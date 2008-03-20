@@ -76,19 +76,23 @@ void AlertsManagerImpl::setAlertMessages(AlertMessages* c, bool is_from_user)
 int AlertsManagerImpl::sendAlertToUser(Zorba* z, ZorbaAlert_t alert,
 																			 bool dont_send_callback)
 {
-	int		retval = -1;
+ int  retval = -1;
 
-	if((alert->theKind == ZorbaAlert::ERROR_ALERT) ||
+ if((alert->theKind == ZorbaAlert::ERROR_ALERT) ||
     (alert->theKind == ZorbaAlert::USER_ERROR_ALERT))
-		setIsError();
+  setIsError();
 
-	if(!sendAlertByCallback(z, alert, dont_send_callback, &retval))
-	{
-		///if no callback was registered, then put the error in list
-		alert_list->push_back(alert);
-	}
+ if((alert->theKind == ZorbaAlert::ERROR_ALERT) ||
+    (!sendAlertByCallback(z, alert, dont_send_callback, &retval)))
+ {
+  ///if no callback was registered, then put the error in list
+   if((!thread_registered_callback) || (dont_send_callback))
+   {
+    alert_list->push_back(alert);
+    }
+ }
 
-	return retval;
+ return retval;
 }
 
 bool AlertsManagerImpl::sendAlertByCallback(Zorba* z, 
