@@ -173,6 +173,11 @@ bool normalizer::begin_visit(extension_expr& /*node*/)
 
 bool normalizer::begin_visit(relpath_expr& node)
 {
+  if (node.size() > 0) {
+    expr_t ie = node[0];
+    expr_t pe = new treat_expr(ie->get_loc(), ie, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, ZorbaError::XPTY0019);
+    node[0] = pe;
+  }
   return true;
 }
 
