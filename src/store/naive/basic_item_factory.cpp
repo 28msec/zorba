@@ -1,11 +1,3 @@
-/* -*- mode: c++ { return Item_t(NULL); } indent-tabs-mode: nil { return Item_t(NULL); } tab-width: 2 -*-
- *
- *  $Id: item.h,v 1.1 2006/10/09 07:07:59 $
- *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf (david.graf@28msec.com), Donald Kossmann, Tim Kraska
- *`
- */
 
 #include "common/common.h"
 
@@ -15,6 +7,7 @@
 #include "util/Assert.h"
 
 #include "store/api/temp_seq.h"
+#include "store/api/copymode.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/basic_item_factory.h"
@@ -445,50 +438,57 @@ Item_t BasicItemFactory::createDocumentNode(
     xqpStringStore* docUri,
     Iterator*       childrenIter,
     bool            isRoot,
+    bool            assignIds,
     bool            copy,
-    bool            typePreserve,
-    bool            nsPreserve,
-    bool            nsInherit)
+    const CopyMode& copymode)
 {
-  std::auto_ptr<XmlTree> xmlTree;
+  XmlTree* xmlTree = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
+  ConstrDocumentNode* n = NULL;
 
-  if (isRoot)
+  assert(isRoot);
+
+  bool topRoot = ctx.empty();
+
+  try
   {
-    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
+    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
     xmlTree->addReference();
-  }
 
-  ConstrDocumentNode* n = new ConstrDocumentNode(xmlTree.get(),
-                                                 baseUri,
-                                                 docUri,
-                                                 typePreserve,
-                                                 nsPreserve,
-                                                 nsInherit);
-  if (childrenIter != NULL)
+    n = new ConstrDocumentNode(xmlTree, assignIds, baseUri, docUri);
+
+    if (childrenIter != NULL)
+    {
+      ctx.push(n);
+      
+      n->constructSubtree(childrenIter, copy, copymode);
+
+      ctx.pop();
+    }
+  }
+  catch (...)
   {
-    ctx.push(n);
-
-    try
+    if (xmlTree)
     {
-      n->constructSubtree(childrenIter, copy);
-    }
-    catch (...)
-    {
-      if (xmlTree.get() != 0) xmlTree.release()->free();
+      xmlTree->removeReference();
+      xmlTree->free();
       ctx.clear();
-      throw;
+      GET_STORE().deleteQueryContext(qid);
     }
 
-    ctx.pop();
+    throw;
   }
 
-  if (xmlTree.get() != 0)
+  if (xmlTree)
   {
     xmlTree->removeReference();
-    xmlTree.release();
-    GET_STORE().deleteQueryContext(qid);
+    if (topRoot)
+    {
+      ZORBA_FATAL(ctx.empty(), "");
+      GET_STORE().deleteQueryContext(qid);
+    }
   }
+
   return n;
 }
 
@@ -503,58 +503,70 @@ Item_t BasicItemFactory::createElementNode(
     Iterator*         childrenIter,
     Iterator*         attrsIter,
     Iterator*         nsIter,
-    const NsBindings& contextBindings,
     const NsBindings& localBindings,
     bool              isRoot,
+    bool              assignIds,
     bool              copy,
-    bool              typePreserve,
-    bool              nsPreserve,
-    bool              nsInherit)
+    const CopyMode&   copymode)
 {
-  std::auto_ptr<XmlTree> xmlTree;
+  XmlTree* xmlTree = NULL;
   XmlNode* parent = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  unsigned long pos = 0;
+  ConstrElementNode* n = NULL;
 
-  if (isRoot)
-  {
-    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
-    xmlTree->addReference();
-  }
-  else
-  {
-    parent = ctx.top();
-    pos = parent->numChildren();
-  }
+  ZORBA_FATAL(isRoot || !ctx.empty(), "");
 
-  ConstrElementNode* n = new ConstrElementNode(xmlTree.get(), parent, pos,
-                                               name,
-                                               type,
-                                               typePreserve,
-                                               nsPreserve,
-                                               nsInherit);
-
-  ctx.push(n);
+  bool topRoot = ctx.empty();
 
   try
   {
-    n->constructSubtree(attrsIter, childrenIter, localBindings, copy);
+    // We are at the root of a top-level node-constructor expr, or at the root
+    // of a node-constructor expr that is inside an enclosed expr.
+    if (isRoot)
+    {
+      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree->addReference();
+
+      n = new ConstrElementNode(xmlTree, assignIds, name, type);
+    }
+
+    // We are at a node-constructor expr directly nested inside another
+    // node-constructor expr.
+    else
+    {
+      parent = ctx.top();
+
+      n = new ConstrElementNode(parent, name, type);
+    }
+
+    ctx.push(n);
+
+    n->constructSubtree(attrsIter, childrenIter, localBindings, copy, copymode);
+
+    ctx.pop();
   }
   catch (...)
   {
-    if (xmlTree.get() != 0) xmlTree.release()->free();
-    ctx.clear();
+    if (xmlTree)
+    {
+      xmlTree->removeReference();
+      xmlTree->free();
+      ctx.clear();
+      GET_STORE().deleteQueryContext(qid);
+    }
     throw;
   }
 
-  ctx.pop();
-
-  if (xmlTree.get() != 0)
+  if (xmlTree)
   {
     xmlTree->removeReference();
-    xmlTree.release();
-    GET_STORE().deleteQueryContext(qid);
+    if (topRoot)
+    {
+      ZORBA_FATAL(ctx.empty(), "");
+      GET_STORE().deleteQueryContext(qid);
+    }
   }
+
   return n;
 }
 
@@ -563,75 +575,124 @@ Item_t BasicItemFactory::createElementNode(
 
 ********************************************************************************/
 Item_t BasicItemFactory::createAttributeNode(
-    ulong      qid,
-    Iterator*  nameIter,
-    Item*      typeName,
-    Iterator*  valueIter,
-    bool       isRoot)
+    ulong           qid,
+    Iterator*       nameIter,
+    Item*           type,
+    Iterator*       valueIter,
+    bool            isRoot,
+    bool            assignIds)
 {
-  std::auto_ptr<XmlTree> xmlTree;
+  XmlTree* xmlTree = NULL;
   XmlNode* parent = NULL;
+  AttributeNode* n = NULL;
+  Item_t name;
+  xqpStringStore_t lexicalValue;
+  UntypedAtomicItemImpl* typedValue = NULL;
+
+  try
+  {
+    // Compute the attribute name. Note: we don't have to check that itemQName
+    // is indeed a valid qname, because the compiler wraps an xs:qname cast
+    // around thIteme expression.
+    name = nameIter->next();
+
+    if (name->getLocalName().size() == 0)
+    {
+      ZORBA_ERROR_DESC(ZorbaError::XQDY0074,
+                       "Attribute name must not have an empty local part.");
+    }
+  
+    if (name->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
+        (name->getNamespace() == "" && name->getLocalName() == "xmlns"))
+    {
+      ZORBA_ERROR(ZorbaError::XQDY0044);
+    }
+
+    // Compute the attribute value.
+    Item_t valueItem = valueIter->next();
+    if (valueItem != 0)
+    {
+      lexicalValue = valueItem->getStringValue().getStore();
+
+      valueItem = valueIter->next();
+      while (valueItem != NULL)
+      {
+        lexicalValue->append(valueItem->getStringValue().c_str());
+        valueItem = valueIter->next();
+      }
+    }
+    else
+    {
+      lexicalValue = new xqpStringStore("");
+    }
+    
+    typedValue = new UntypedAtomicItemImpl(lexicalValue);
+  }
+  catch (...)
+  {
+    if (typedValue)
+      delete typedValue;
+
+    throw;
+  }
+
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  unsigned long pos = 0;
 
-  if (isRoot)
+  ZORBA_FATAL(isRoot || !ctx.empty(), "");
+
+  bool topRoot = ctx.empty();
+
+  try
   {
-    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
-    xmlTree->addReference();
-  }
-  else
-  {
-    ZORBA_ASSERT(!ctx.empty());
-
-    parent = ctx.top();
-    pos = parent->numAttributes();
-  }
-
-  // Compute the attribute name. Note: we don't have to check that itemQName
-  // is indeed a valid qname, because the compiler wraps an xs:qname cast
-  // around thIteme expression.
-  Item_t attrName = nameIter->next();
-
-  if (attrName->getLocalName().size() == 0)
-  {
-    ZORBA_ERROR_DESC( ZorbaError::XQDY0074, "Attribute name must not have an empty local part.");
-  }
-
-  if (attrName->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
-      (attrName->getNamespace() == "" && attrName->getLocalName() == "xmlns"))
-  {
-    ZORBA_ERROR( ZorbaError::XQDY0044);
-  }
-
-  if (parent != NULL)
-  {
-    parent->checkUniqueAttr(attrName.getp());
-  }
-
-  AttributeNode* n = new AttributeNode(xmlTree.get(), parent, pos,
-                                       attrName, typeName,
-                                       false, false);
-
-  if (valueIter != NULL)
-  {
-    try
+    // We are at the root of a top-level node-constructor expr, or at the root
+    // of a node-constructor expr that is inside an enclosed expr.
+    if (isRoot)
     {
-      n->constructValue(valueIter);
+      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree->addReference();
+
+      n = new AttributeNode(xmlTree, assignIds,
+                            name, type, typedValue, false, false);
+      typedValue = NULL;
     }
-    catch (...)
+
+    // We are at a node-constructor expr directly nested inside another
+    // node-constructor expr.
+    else
     {
-      if (xmlTree.get() != 0) xmlTree.release()->free();
+      parent = ctx.top();
+
+      parent->checkUniqueAttr(name.getp());
+
+      n = new AttributeNode(parent, name, type, typedValue, false, false);
+      typedValue = NULL;
+    }
+  }
+  catch (...)
+  {
+    if (typedValue)
+      delete typedValue;
+
+    if (xmlTree)
+    {
+      xmlTree->removeReference();
+      xmlTree->free();
       ctx.clear();
-      throw;
+      GET_STORE().deleteQueryContext(qid);
     }
+    throw;
   }
 
-  if (xmlTree.get() != 0)
+  if (xmlTree)
   {
     xmlTree->removeReference();
-    xmlTree.release();
-    GET_STORE().deleteQueryContext(qid);
-  }
+    if (topRoot)
+    {
+      ZORBA_FATAL(ctx.empty(), "");
+      GET_STORE().deleteQueryContext(qid);
+    }
+  }  
+
   return n;
 }
 
@@ -641,41 +702,71 @@ Item_t BasicItemFactory::createAttributeNode(
 ********************************************************************************/
 Item_t BasicItemFactory::createTextNode(
     unsigned long   qid,
-    xqpStringStore* value,
-    bool            isRoot)
+    xqpStringStore* content,
+    bool            isRoot,
+    bool            assignIds)
 {
-  std::auto_ptr<XmlTree> xmlTree;
+  XmlTree* xmlTree = NULL;
   XmlNode* parent = NULL;
+  TextNode* n = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  unsigned long pos = 0;
 
-  if (isRoot)
+  ZORBA_FATAL(isRoot || !ctx.empty(), "");
+
+  bool topRoot = ctx.empty();
+
+  try
   {
-    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
-    xmlTree->addReference();
-  }
-  else
-  {
-    parent = ctx.top();
-    pos = parent->numChildren();
-
-    XmlNode* lsib = (pos > 0 ? parent->getChild(pos-1) : NULL);
-
-    if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
+    // We are at the root of a top-level node-constructor expr, or at the root
+    // of a node-constructor expr that is inside an enclosed expr. 
+    if (isRoot)
     {
-      *(lsib->getStringValueP()) = *(lsib->getStringValueP()) + *value;
-      return lsib;
+      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree->addReference();
+
+      n = new TextNode(xmlTree, assignIds, content);
+    }
+
+    // We are at a node-constructor expr directly nested inside another
+    // node-constructor expr.
+    else
+    {
+      parent = ctx.top();
+
+      ulong pos = parent->numChildren();
+      XmlNode* lsib = (pos > 0 ? parent->getChild(pos-1) : NULL);
+
+      if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
+      {
+        *(lsib->getStringValueP()) = *(lsib->getStringValueP()) + *content;
+        return lsib;
+      }
+ 
+      n = new TextNode(parent, content);
+    }
+  }
+  catch (...)
+  {
+    if (xmlTree)
+    {
+      xmlTree->removeReference();
+      xmlTree->free();
+      ctx.clear();
+      GET_STORE().deleteQueryContext(qid);
+    }
+    throw;
+  }
+
+  if (xmlTree)
+  {
+    xmlTree->removeReference();
+    if (topRoot)
+    {
+      ZORBA_FATAL(ctx.empty(), "");
+      GET_STORE().deleteQueryContext(qid);
     }
   }
 
-  XmlNode* n = new TextNode(xmlTree.get(), parent, pos, value);
-
-  if (xmlTree.get() != 0)
-  {
-    xmlTree->removeReference();
-    xmlTree.release();
-    GET_STORE().deleteQueryContext(qid);
-  }
   return n;
 }
 
@@ -683,7 +774,8 @@ Item_t BasicItemFactory::createTextNode(
 Item_t BasicItemFactory::createTextNode(
     unsigned long   qid,
     Iterator*       valueIter,
-    bool            isRoot)
+    bool            isRoot,
+    bool            assignIds)
 {
   // We must compute the value of the node before the node itself because
   // if the value is the empty sequence, no text node should be constructed.
@@ -706,7 +798,7 @@ Item_t BasicItemFactory::createTextNode(
     return NULL;
   }
 
-  return createTextNode(qid, value.getStore(), isRoot);
+  return createTextNode(qid, value.getStore(), isRoot, assignIds);
 }
 
 
@@ -716,33 +808,62 @@ Item_t BasicItemFactory::createTextNode(
 Item_t BasicItemFactory::createPiNode(
     unsigned long   qid,
     xqpStringStore* target,
-    xqpStringStore* data,
-    bool            isRoot)
+    xqpStringStore* content,
+    bool            isRoot,
+    bool            assignIds)
 {
-  std::auto_ptr<XmlTree> xmlTree;
+  XmlTree* xmlTree = NULL;
   XmlNode* parent = NULL;
+  PiNode* n = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  unsigned long pos = 0;
 
-  if (isRoot)
+  ZORBA_FATAL(isRoot || !ctx.empty(), "");
+
+  bool topRoot = ctx.empty();
+
+  try
   {
-    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
-    xmlTree->addReference();
+    // We are at the root of a top-level node-constructor expr, or at the root
+    // of a node-constructor expr that is inside an enclosed expr.
+    if (isRoot)
+    {
+      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree->addReference();
+
+      n = new PiNode(xmlTree, assignIds, target, content);
+    }
+
+    // We are at a node-constructor expr directly nested inside another
+    // node-constructor expr.
+    else
+    {
+      parent = ctx.top();
+
+      n = new PiNode(parent, target, content);
+    }
   }
-  else
+  catch (...)
   {
-    parent = ctx.top();
-    pos = parent->numChildren();
+    if (xmlTree)
+    {
+      xmlTree->removeReference();
+      xmlTree->free();
+      ctx.clear();
+      GET_STORE().deleteQueryContext(qid);
+    }
+    throw;
   }
 
-  XmlNode* n = new PiNode(xmlTree.get(), parent, pos, target, data);
-
-  if (xmlTree.get() != 0)
+  if (xmlTree)
   {
     xmlTree->removeReference();
-    xmlTree.release();
-    GET_STORE().deleteQueryContext(qid);
+    if (topRoot)
+    {
+      ZORBA_FATAL(ctx.empty(), "");
+      GET_STORE().deleteQueryContext(qid);
+    }
   }
+
   return n;
 }
 
@@ -752,33 +873,62 @@ Item_t BasicItemFactory::createPiNode(
 ********************************************************************************/
 Item_t BasicItemFactory::createCommentNode(
     unsigned long   qid,
-    xqpStringStore* comment,
-    bool            isRoot)
+    xqpStringStore* content,
+    bool            isRoot,
+    bool            assignIds)
 {
-  std::auto_ptr<XmlTree> xmlTree;
+  XmlTree* xmlTree = NULL;
   XmlNode* parent = NULL;
+  CommentNode* n = NULL;
   QueryContext& ctx = GET_STORE().getQueryContext(qid);
-  unsigned long pos = 0;
 
-  if (isRoot)
+  ZORBA_FATAL(isRoot || !ctx.empty(), "");
+
+  bool topRoot = ctx.empty();
+
+  try
   {
-    xmlTree.reset(new XmlTree(NULL, GET_STORE().getTreeId()));
-    xmlTree->addReference();
+    // We are at the root of a top-level node-constructor expr, or at the root
+    // of a node-constructor expr that is inside an enclosed expr. 
+    if (isRoot)
+    {
+      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree->addReference();
+
+      n = new CommentNode(xmlTree, assignIds, content);
+    }
+
+    // We are at a node-constructor expr directly nested inside another
+    // node-constructor expr.
+    else
+    {
+      parent = ctx.top();
+
+      n = new CommentNode(parent, content);
+    }
   }
-  else
+  catch (...)
   {
-    parent = ctx.top();
-    pos = parent->numChildren();
+    if (xmlTree)
+    {
+      xmlTree->removeReference();
+      xmlTree->free();
+      ctx.clear();
+      GET_STORE().deleteQueryContext(qid);
+    }
+    throw;
   }
 
-  XmlNode* n = new CommentNode(xmlTree.get(), parent, pos, comment);
-
-  if (xmlTree.get() != 0)
+  if (xmlTree)
   {
     xmlTree->removeReference();
-    xmlTree.release();
-    GET_STORE().deleteQueryContext(qid);
+    if (topRoot)
+    {
+      ZORBA_FATAL(ctx.empty(), "");
+      GET_STORE().deleteQueryContext(qid);
+    }
   }
+
   return n;
 }
 

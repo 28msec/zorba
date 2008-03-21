@@ -339,7 +339,7 @@ void XmlLoader::endDocument(void * ctx)
        it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
        it++, i++)
   {
-    children.set(i, *it, false);
+    children.set(*it, i, false);
     (*it)->setParent(docNode);
   }
 
@@ -461,7 +461,7 @@ void XmlLoader::startElement(
       attrNode->setId(loader.theTree, &loader.theOrdPath);
       attrNode->theTypedValue = typedVal;
 
-      attrNodes.set(i, attrNode, false);
+      attrNodes.set(attrNode, i, false);
 
       loader.theOrdPath.nextChild();
 
@@ -542,7 +542,7 @@ void  XmlLoader::endElement(
   {
     currChild = *it;
 
-    children.set(i, currChild, false);
+    children.set(currChild, i, false);
     currChild->setParent(elemNode);
 
     if (currChild->getNodeKind() == StoreConsts::elementNode)

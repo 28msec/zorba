@@ -5,6 +5,7 @@
 #include "errors/error_manager.h"
 #include "util/Assert.h"
 
+#include "store/api/copymode.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/node_updates.h"
@@ -18,17 +19,34 @@ namespace zorba { namespace store {
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlNode::insertBefore(std::vector<XmlNode*>& nodes)
+void XmlNode::insertBefore(
+    std::vector<XmlNode*>& nodes,
+    bool                   copy,
+    const CopyMode&        copymode)
 {
   ZORBA_ASSERT(theParent);
-
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlNode::insertAttributes(std::vector<XmlNode*>& attrs)
+void XmlNode::insertAfter(
+    std::vector<XmlNode*>& nodes,
+    bool                   copy,
+    const CopyMode&        copymode)
+{
+  ZORBA_ASSERT(theParent);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlNode::insertAttributes(
+    std::vector<XmlNode*>& attrs,
+    bool                   copy,
+    const CopyMode&        copymode)
 {
   ElementNode* n = reinterpret_cast<ElementNode*>(this);
 
@@ -37,43 +55,41 @@ void XmlNode::insertAttributes(std::vector<XmlNode*>& attrs)
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(attr);
 
-    ZORBA_ASSERT(attr->isConstructed());
-    ZORBA_ASSERT(attr->theParent == 0 || attr->theParent->isConstructed());
-
     n->checkQName(reinterpret_cast<QNameItemImpl*>(attr->theName.getp()));
     n->checkUniqueAttr(attr->theName);
 
-    attr->disconnect();
-
-    attr->theParent = this;
-
-    attr->setTree(this->getTree());
-    if (n->numChildren() > 0)
+    if (copy)
     {
-      OrdPath::insertInto(n->getAttr(n->numAttributes())->theOrdPath,
-                          n->getChild(0)->theOrdPath,
-                          attr->theOrdPath);
+      attr->copy(n, n, n->numAttributes(), copymode);
     }
     else
     {
-      OrdPath::insertAfter(n->getAttr(n->numAttributes())->theOrdPath,
-                           attr->theOrdPath);
+      ZORBA_FATAL(attr->isConstructed(), "");
+      ZORBA_FATAL(attr->theParent == 0 || attr->theParent->isConstructed(), "");
+
+      attr->disconnect();
+
+      attr->theParent = n;
+
+      attr->setTree(getTree());
+
+      if (n->numChildren() > 0)
+      {
+        OrdPath::insertInto(n->theOrdPath,
+                            n->getAttr(n->numAttributes())->theOrdPath,
+                            n->getChild(0)->theOrdPath,
+                            attr->theOrdPath);
+      }
+      else
+      {
+        OrdPath::insertAfter(n->theOrdPath,
+                             n->getAttr(n->numAttributes())->theOrdPath,
+                             attr->theOrdPath);
+      }
+
+      n->attributes().push_back(attr, false);
     }
-
-    n->attributes().push_back(attr, false);
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XmlNode::disconnect() throw()
-{
-  if (theParent == NULL)
-    return;
-
-  theParent->removeChild(this);
 }
 
 
@@ -122,7 +138,7 @@ void XmlNode::switchTree() throw()
   }
   catch (...)
   {
-    ZORBA_FATAL("");
+    ZORBA_FATAL(0, "");
   }
 
   SYNC_CODE(oldTree->getRCLock().release());
@@ -172,7 +188,7 @@ void XmlNode::replaceValue(xqpStringStore* newValue, xqpStringStore_t& oldValue)
   }
   default:
   {
-    ZORBA_FATAL("");
+    ZORBA_FATAL(0, "");
   }
   }
 }
@@ -184,19 +200,20 @@ void XmlNode::replaceValue(xqpStringStore* newValue, xqpStringStore_t& oldValue)
   children.
 ********************************************************************************/
 void XmlNode::replaceElementContent(
-    XmlNode*               newText,
+    XmlNode*               newTextChild,
     std::vector<XmlNode*>& children)
 {
   ElementNode* n = reinterpret_cast<ElementNode*>(this);
 
-  // Make a copy of the children and then disconnect all the children
-  children = n->children().theNodes;
+  n->children().clear();
 
-  ulong numChildren = this->numChildren();
-  for (ulong i = 0; i < numChildren; i++)
-    removeChild(i);
+  newTextChild->theParent = this;
+  newTextChild->setTree(getTree());
 
-  appendChild(newText);
+  newTextChild->theOrdPath = theOrdPath;
+  newTextChild->theOrdPath.appendComp(1);
+
+  n->children().push_back(newTextChild, false);
 }
 
 

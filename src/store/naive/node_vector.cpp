@@ -1,6 +1,6 @@
 
 #include "common/shared_types.h"
-#include "util/Assert.h"
+#include "errors/fatal.h"
 
 #include "store/naive/node_vector.h"
 #include "store/naive/node_items.h"
@@ -38,11 +38,19 @@ ulong NodeVector::find(XmlNode* n)
 /////////////////////////////////////////////////////////////////////////////////
 
 
-void LoadedNodeVector::remove(ulong i)
+void LoadedNodeVector::insert(XmlNode* n, ulong pos, bool shared)
 {
-  assert(i < theNodes.size());
+  ZORBA_FATAL(pos <= size(), "pos = " << pos << " size = " << size());
 
-  theNodes.erase(theNodes.begin() + i);
+  theNodes.insert(theNodes.begin() + pos, n);
+}
+
+
+void LoadedNodeVector::remove(ulong pos)
+{
+  ZORBA_FATAL(pos < size(),  "pos = " << pos << " size = " << size());
+
+  theNodes.erase(theNodes.begin() + pos);
 }
 
 
@@ -77,9 +85,24 @@ ConstrNodeVector::ConstrNodeVector(ulong size) : NodeVector(size)
 }
 
 
-void ConstrNodeVector::set(ulong pos, XmlNode* node, bool shared)
+void ConstrNodeVector::insert(XmlNode* n, ulong pos, bool shared)
 {
-  ZORBA_ASSERT(pos <= size());
+  ZORBA_FATAL(pos <= size(),  "pos = " << pos << " size = " << size());
+
+  theNodes.insert(theNodes.begin() + pos, n);
+  theBitmap.insert(theBitmap.begin() + pos, shared);
+
+  if (shared)
+  {
+    n->addReference(n->getSharedRefCounter()
+                    SYNC_PARAM2(n->getRCLock()));
+  }
+}
+
+
+void ConstrNodeVector::set(XmlNode* node, ulong pos, bool shared)
+{
+  ZORBA_FATAL(pos <= size(),  "pos = " << pos << " size = " << size());
   
   if (pos == size())
   {
@@ -117,15 +140,15 @@ void ConstrNodeVector::push_back(XmlNode* node, bool shared)
 }
 
 
-void ConstrNodeVector::remove(ulong i)
+void ConstrNodeVector::remove(ulong pos)
 {
-  assert(i < theNodes.size());
+  ZORBA_FATAL(pos < size(),  "pos = " << pos << " size = " << size());
 
-  if (theBitmap[i])
-    *(reinterpret_cast<XmlNode_t*>(&theNodes[i])) = NULL;
+  if (theBitmap[pos])
+    *(reinterpret_cast<XmlNode_t*>(&theNodes[pos])) = NULL;
 
-  theNodes.erase(theNodes.begin() + i);
-  theBitmap.erase(theBitmap.begin() + i);
+  theNodes.erase(theNodes.begin() + pos);
+  theBitmap.erase(theBitmap.begin() + pos);
 }
 
 
@@ -157,6 +180,7 @@ void ConstrNodeVector::clear()
   }
 
   theNodes.clear();
+  theBitmap.clear();
 }
 
 

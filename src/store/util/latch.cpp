@@ -1,4 +1,5 @@
 
+#include "errors/fatal.h"
 #include "store/util/latch.h"
 #include <iostream>
 
@@ -20,11 +21,8 @@ Latch::Latch()
 #ifndef NDEBUG
   int pshared;
   pthread_rwlockattr_getpshared(&attr, &pshared);
-  if (pshared != PTHREAD_PROCESS_PRIVATE)
-  {
-    std::cout << "rwlock pshared = " << pshared << std::endl;
-    abort();
-  }
+  ZORBA_FATAL(pshared == PTHREAD_PROCESS_PRIVATE,
+              "rwlock pshared = " << pshared);
 #endif
 
   pthread_rwlock_init(&theLatch, &attr);
@@ -51,11 +49,8 @@ Latch::~Latch()
 void Latch::rlock()
 { 
 #ifdef ZORBA_USE_PTHREAD_LIBRARY
-  if(int ret= pthread_rwlock_rdlock(&theLatch)) 
-  {
-    std::cerr << "Failed to acquire latch. Error code = " << ret << std::endl;
-    abort();
-  }
+  int ret= pthread_rwlock_rdlock(&theLatch); 
+  ZORBA_FATAL(!ret, "Failed to acquire latch. Error code = " << ret);
 #elif WIN32
   theLatch.readlock();
   rlocked = true;
@@ -66,11 +61,8 @@ void Latch::rlock()
 void Latch::wlock()
 { 
 #ifdef ZORBA_USE_PTHREAD_LIBRARY
-  if(int ret= pthread_rwlock_wrlock(&theLatch)) 
-  {
-    std::cerr << "Failed to acquire latch. Error code = " << ret << std::endl;
-    abort();
-  }
+  int ret = pthread_rwlock_wrlock(&theLatch); 
+  ZORBA_FATAL(!ret, "Failed to acquire latch. Error code = " << ret);
 #elif WIN32
   theLatch.writelock();
   wlocked = true;
@@ -81,11 +73,8 @@ void Latch::wlock()
 void Latch::unlock()
 { 
 #ifdef ZORBA_USE_PTHREAD_LIBRARY
-  if(int ret= pthread_rwlock_unlock(&theLatch)) 
-  {
-    std::cerr << "Failed to release latch. Error code = " << ret << std::endl;
-    abort();
-  }
+  int ret= pthread_rwlock_unlock(&theLatch);
+  ZORBA_FATAL(!ret, "Failed to release latch. Error code = " << ret);
 #elif WIN32
   if(wlocked)
     theLatch.writeunlock();

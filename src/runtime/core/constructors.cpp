@@ -1,5 +1,4 @@
-#include <memory>
-#include <sys/types.h>
+
 
 #include "runtime/api/runtimecb.h"
 #include "runtime/core/constructors.h"
@@ -13,6 +12,7 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
+#include "store/api/copymode.h"
 
 
 using namespace std;
@@ -25,7 +25,19 @@ namespace zorba
 
 ********************************************************************************/
 void
-DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
+DocumentIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+}
+
+
+DocumentIteratorState::~DocumentIteratorState()
+{
+  delete childWrapper; childWrapper = 0;
+}
+
+
+void DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<DocumentIteratorState>::createState(planState,
                                                       this->stateOffset,
@@ -41,6 +53,7 @@ DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
   theChild->open(planState, offset);
 }
 
+
 store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
 {
   // Note: baseUri and docUri have to be rchandles because if createDocumentNode
@@ -50,8 +63,15 @@ store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
   xqpStringStore_t docUri = 0;
   store::Item_t node;
 
+  store::CopyMode copymode;
+
   DocumentIteratorState* state;
   DEFAULT_STACK_INIT(DocumentIteratorState, state, planState);
+
+  copymode.set(true,
+               state->theTypePreserve,
+               state->theNsPreserve,
+               state->theNsInherit);
 
   // maybe we can make these members of the class in order to save new's when calling 
   // close or reset
@@ -59,19 +79,18 @@ store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
   docUri = new xqpStringStore("");
 
   node = GENV_ITEMFACTORY->
-          createDocumentNode((unsigned long)&planState,
-                              baseUri,
-                              docUri,
-                              state->childWrapper,
-                              true, // is root
-                              true, // copy children
-                              state->theTypePreserve,
-                              state->theNsPreserve,
-                              state->theNsInherit);
-
+         createDocumentNode((ulong)&planState,
+                            baseUri,
+                            docUri,
+                            state->childWrapper,
+                            true, // is root
+                            true, // assign ids
+                            true, // copy children
+                            copymode);
   STACK_PUSH(node, state);
   STACK_END();
 }
+
 
 void
 DocumentIteratorState::init(PlanState& planState)
@@ -90,18 +109,6 @@ DocumentIteratorState::init(PlanState& planState)
     (sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
 }
 
-
-void
-DocumentIteratorState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-}
-
-
-DocumentIteratorState::~DocumentIteratorState()
-{
-  delete childWrapper; childWrapper = 0;
-}
 
 /*******************************************************************************
 
@@ -163,7 +170,6 @@ ElementIterator::ElementIterator (
     PlanIter_t&         qnameIter,
     PlanIter_t&         attrsIter,
     PlanIter_t&         childrenIter,
-    namespace_context*  ctxBindings,
     namespace_context*  localBindings,
     bool                isRoot)
   :
@@ -171,7 +177,6 @@ ElementIterator::ElementIterator (
   theQNameIter(qnameIter),
   theAttributesIter(attrsIter),
   theChildrenIter(childrenIter),
-  theContextBindings(ctxBindings),
   theLocalBindings(localBindings),
   theIsRoot(isRoot)
 {
@@ -186,6 +191,8 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   store::Item_t qnameItem;
   store::Item_t node;
 
+  store::CopyMode copymode;
+  
   ElementIteratorState* state;
   DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
 
@@ -204,20 +211,23 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
   if (theAttributesIter != 0)
     awrapper.reset(new PlanIteratorWrapper(theAttributesIter, planState));
 
+  copymode.set(true,
+               state->theTypePreserve,
+               state->theNsPreserve,
+               state->theNsInherit);
+
   node = GENV_ITEMFACTORY->
-         createElementNode((unsigned long)&planState,
+         createElementNode((ulong)&planState,
                            qnameItem.getp(),
                            GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
                            cwrapper.get(),
                            awrapper.get(),
                            NULL,
-                           theContextBindings->get_bindings(),
                            theLocalBindings->get_bindings(),
                            theIsRoot,
+                           true, // assignIds
                            true, // copy
-                           state->theTypePreserve,
-                           state->theNsPreserve,
-                           state->theNsInherit);
+                           copymode);
   STACK_PUSH(node, state);
   STACK_END();
 }
@@ -302,6 +312,20 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
 /*******************************************************************************
 
 ********************************************************************************/
+void ElementContentState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  theNoAttrAllowed = false;
+}
+
+
+void ElementContentState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theNoAttrAllowed = false;
+}
+
+
 store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
 {
   store::ItemFactory* factory = GENV_ITEMFACTORY;
@@ -335,28 +359,15 @@ store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
     }
     else 
     {
-      textNode = factory->createTextNode((unsigned long)&planState,
+      textNode = factory->createTextNode((ulong)&planState,
                                          item->getStringValue().getStore(),
-                                         false);
+                                         false, // not root
+                                         true); // assignIds
       STACK_PUSH(textNode, state);
     }
   }
 
   STACK_END();
-}
-
-
-void ElementContentState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  theNoAttrAllowed = false;
-}
-
-
-void ElementContentState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  theNoAttrAllowed = false;
 }
 
 
@@ -392,7 +403,8 @@ store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
                              nameWrapper,
                              GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME,
                              valueWrapper,
-                             theIsRoot);
+                             theIsRoot,
+                             true);  // assignIds
 
   STACK_PUSH(node, state);
   STACK_END();
@@ -425,7 +437,8 @@ store::Item_t TextIterator::nextImpl(PlanState& planState) const
       
   node = GENV_ITEMFACTORY->createTextNode((unsigned long)&planState,
                                                  valueWrapper,
-                                                 theIsRoot);
+                                                 theIsRoot,
+                                                 true); // assignIds
 
   STACK_PUSH(node, state);
     
@@ -489,7 +502,8 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
   lItem = GENV_ITEMFACTORY->createPiNode((unsigned long)&planState,
                                                 target.getStore(),
                                                 content.getStore (),
-                                                theIsRoot);
+                                                theIsRoot,
+                                                true);  // assingIds
   STACK_PUSH(lItem, state);
   
   STACK_END();
@@ -503,7 +517,8 @@ CommentIterator::CommentIterator(
     const QueryLoc& loc,
     PlanIter_t& aComment,
     bool isRoot)
-  : UnaryBaseIterator<CommentIterator, PlanIteratorState>(loc, aComment),
+  :
+  UnaryBaseIterator<CommentIterator, PlanIteratorState>(loc, aComment),
   theIsRoot(isRoot)
 {
 }
@@ -547,7 +562,8 @@ store::Item_t CommentIterator::nextImpl(PlanState& planState) const
 
   lItem = GENV_ITEMFACTORY->createCommentNode((unsigned long)&planState,
                                                      content.getStore(),
-                                                     theIsRoot);
+                                                     theIsRoot,
+                                                     true); // assingIds
     
   STACK_PUSH(lItem, state);
     
@@ -569,7 +585,8 @@ void EnclosedIteratorState::init(PlanState& planState)
 void EnclosedIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  if (theAttrContentString) {
+  if (theAttrContentString) 
+  {
     delete theAttrContentString; 
     theAttrContentString = NULL;
   }
@@ -649,21 +666,20 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
   {
     while ( true )
     {
-      state->theContextItem = consumeNext(theChild.getp(), planState);
+      lItem = consumeNext(theChild.getp(), planState);
 
-      if (state->theContextItem == NULL)
+      if (lItem == NULL)
         break;
 
-      else if (state->theContextItem->isNode())
+      else if (lItem->isNode())
       {
         state->theElemContentString = NULL;
 
-        STACK_PUSH(state->theContextItem, state);
+        STACK_PUSH(lItem, state);
       }
-
       else
       {
-        str = state->theContextItem->getStringValue();
+        str = lItem->getStringValue();
 
         if (state->theElemContentString != NULL)
           str = " " + str;
@@ -673,43 +689,54 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
         if (str == "")
           continue;
 
-        state->theContextItem = factory->createTextNode((unsigned long)&planState,
-                                                        str.getStore(),
-                                                        false);
-        STACK_PUSH(state->theContextItem, state);
+        lItem = factory->createTextNode((ulong)&planState,
+                                        str.getStore(),
+                                        false,
+                                        true);  // assingIds
+        STACK_PUSH(lItem, state);
       }
     }
   }
 
   STACK_END();
 }
-  
+
 
 /*******************************************************************************
 
 ********************************************************************************/
-DocFilterIteratorState::DocFilterIteratorState(){}
+DocFilterIteratorState::DocFilterIteratorState()
+{
+}
+
 
 DocFilterIteratorState::~DocFilterIteratorState()
 {
-  if (theChildren != NULL) {
+  if (theChildren != NULL)
+  {
     theChildren->close();
+    theChildren = 0;
   }
 }
+
 
 void DocFilterIteratorState::init(PlanState& planState) 
 {
   PlanIteratorState::init(planState);
   theChildren = 0;
-  theCurItem = 0;
 }
+
 
 void DocFilterIteratorState::reset(PlanState& planState ) 
 {
   PlanIteratorState::reset(planState);
-  theChildren = 0;
-  theCurItem = 0;
+  if (theChildren != NULL)
+  {
+    theChildren->close();
+    theChildren = 0;
+  }
 }
+
 
 store::Item_t DocFilterIterator::nextImpl(PlanState& planState) const
 {
@@ -727,7 +754,6 @@ store::Item_t DocFilterIterator::nextImpl(PlanState& planState) const
       {
         state->theChildren->close();
         state->theChildren = 0;
-        state->theCurItem = 0;
       }
       else
       {
@@ -739,11 +765,11 @@ store::Item_t DocFilterIterator::nextImpl(PlanState& planState) const
       lItem = consumeNext(theChild.getp(), planState);
       if (lItem == 0)
         break;
+
       if (lItem->isNode() && lItem->getNodeKind() == store::StoreConsts::documentNode)
       {
         state->theChildren = lItem->getChildren();
         state->theChildren->open();
-        state->theCurItem = lItem;
       }
       else
       {

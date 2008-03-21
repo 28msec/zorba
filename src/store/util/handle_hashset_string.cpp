@@ -1,5 +1,5 @@
 #include <cassert>
-#include "util/Assert.h"
+#include "errors/fatal.h"
 #include "store/util/handle_hashset_string.h"
 
 namespace zorba { namespace store {
@@ -27,8 +27,7 @@ StringPool::~StringPool()
     }
   }
 
-  if (count > 0)
-    assert(0);
+  ZORBA_FATAL(count == 0, count << " strings remain in the string pool");
 }
 
 
@@ -95,7 +94,7 @@ void StringPool::garbageCollect()
     // If the current hash bucket is empty, move to the next one
     if (entry->theItem == NULL)
     {
-      ZORBA_ASSERT(entry->theNext == NULL);
+      ZORBA_FATAL(entry->theNext == NULL, "");
       continue;
     }
 

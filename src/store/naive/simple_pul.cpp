@@ -12,7 +12,10 @@ namespace zorba { namespace store {
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::addInsertAttributes(Item* target, std::vector<XmlNode*>& attrs)
+void PULImpl::addInsertAttributes(
+    Item* target,
+    std::vector<XmlNode*>& attrs,
+    bool copy)
 {
   ZORBA_ASSERT(target->isNode());
 
@@ -25,7 +28,7 @@ void PULImpl::addInsertAttributes(Item* target, std::vector<XmlNode*>& attrs)
 
   if (!found)
   {
-    InsertAttributesPrimitive* upd = new InsertAttributesPrimitive(n, attrs);
+    InsertAttributesPrimitive* upd = new InsertAttributesPrimitive(n, attrs, copy);
     theDoFirstList.push_back(upd);
 
     NodeUpdates updates(1);
@@ -43,7 +46,7 @@ void PULImpl::addInsertAttributes(Item* target, std::vector<XmlNode*>& attrs)
         return;
     }
 
-    InsertAttributesPrimitive* upd = new InsertAttributesPrimitive(n, attrs);
+    InsertAttributesPrimitive* upd = new InsertAttributesPrimitive(n, attrs, copy);
     theDoFirstList.push_back(upd);
     updatesp->push_back(upd);
   }
@@ -268,7 +271,7 @@ void PULImpl::verify()
 ********************************************************************************/
 void InsertAttributesPrimitive::apply()
 {
-  theTarget->insertAttributes(theAttributes);
+  theTarget->insertAttributes(theAttributes, theDoCopy, theCopyMode);
 }
 
 

@@ -1,11 +1,3 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: item.h,v 1.1 2006/10/09 07:07:59 $
- *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf, Donald Kossmann, Tim Kraska
- *
- */
 
 #ifndef ZORBA_STORE_STORE_H
 #define ZORBA_STORE_STORE_H
@@ -16,9 +8,9 @@
 
 namespace zorba { namespace store {
 
-class Timetravel; // TODO move to shared_types.h when implemented
-class Requester; // TODO move to shared_types.h when implemented
-	
+class Requester;
+class TimeTravel;
+
 
 /**
  * Manages XDM Instances 
@@ -80,7 +72,8 @@ public:
    */
   virtual Item_t getReference(Item_t) = 0;
 		
-  /** Returns a fixed reference of an item, dependent on a requester
+  /**
+   * Returns a fixed reference of an item, dependent on a requester
    * (defines branch) and a timetravel (defines version)
    * 
    * @param Item 
@@ -88,7 +81,7 @@ public:
    * @param timetravel
    * @throws NotSupportedException Throws an exception if the store does not support branching or versioning
    */
-  virtual Item_t getFixedReference(Item_t, Requester requester, Timetravel timetravel) = 0;
+  virtual Item_t getFixedReference(Item_t, Requester requester, TimeTravel timetravel) = 0;
 		
   /**
    * Returns Item which is identified by a reference
@@ -98,7 +91,8 @@ public:
    */
   virtual Item_t getNodeByReference(Item_t) = 0;
 		
-  /** Returns Item wich is identified by a referenced, dependent on a requester
+  /** 
+   * Returns Item wich is identified by a referenced, dependent on a requester
    * (defines branch) and a timetravel (defines version)
    *
    * @param Item_t Has to be an xs:URI item (no correctness check is applied!!!)
@@ -109,20 +103,22 @@ public:
    * @throws IllegalReferenceException Throws an exception if the reference is fixed.
    *
    */
-  virtual Item_t getNodeByReference(Item_t, Requester requester, Timetravel timetravel) = 0;
+  virtual Item_t getNodeByReference(Item_t, Requester requester, TimeTravel timetravel) = 0;
 		
   /* --------------------------- Node Id Management ---------------------------*/
 
-  /** Compares two nodes, based on their node id.
+  /**
+   * Compares two nodes, based on their node id.
    * @param node1
    * @param node2
    * @return 	-1, if node1.id &lt; node2.id
-   *						 0, if node1.id == node2.id
-   *						+1, if node1.id &gt; node2.id
+   *					 0, if node1.id == node2.id
+   *					+1, if node1.id &gt; node2.id
    */
   virtual long compareNodes(Item* node1, Item* node2) const = 0;
 		
-  /** Check if two nodes are identical (i.e. have same node id)
+  /**
+   * Check if two nodes are identical (i.e. have same node id)
    * @param node1
    * @param node2
    * @return 	true if nodes are identical, false otherwise.
@@ -137,11 +133,12 @@ public:
   virtual uint32_t hashNode(const Item* node) const = 0;
 
 
-  /** Sorts the items of the passed iterator
+  /**
+   * Sorts the nodes produced by the passed iterator
    * @param iterator to sort
    * @param ascendent true for ascendent and false for descendant
    * @param duplicate duplicate elemination should be applied
-   * @return iterator which produces the sorted items
+   * @return iterator which produces the sorted nodes
    */
   virtual Iterator_t sortNodes(
         Iterator* iterator,
@@ -149,8 +146,8 @@ public:
         bool duplicateElemination,
         bool aAcceptAtomics = false) = 0;
 		
-  /** Eliminates the duplicates in collection of items which is produced by
-   *  the passed iterator
+  /** 
+   * Eliminate the duplicates in sequence of nodes produced by the given iterator
    * @param iterator
    */
   virtual Iterator_t distinctNodes(Iterator*, bool aAllowAtomics = false) = 0;
@@ -220,30 +217,19 @@ public:
    * @param URI to identify the collection to delete.
    */
   virtual void deleteCollection(xqpStringStore* uri) = 0;
-		
-}; /* class Store */
 	
+};
 
 
+class Requester
+{
+};
+
+class TimeTravel
+{
+};
 
 	
-/* ----------------------------- Versioning ------------------------------ */
-
-/**
- * Requester
- */
-class Requester {
-	 // TODO Requester interface
-	}; /* Requester */
-	
-
-/** Timetravel
- *
- */
-class Timetravel {
-  // TODO Timetravel interface
-}; /* Timetravel */
-
 } // namespace store
 } // namespace zorba
 

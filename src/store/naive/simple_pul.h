@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "store/api/pul.h"
+#include "store/api/copymode.h"
 #include "store/util/handle_hashset_item.h"
 #include "store/util/pointer_hashmap.h"
 
@@ -38,14 +39,14 @@ public:
   }
 
 
-   NodeToUpdatesMap() 
-     :
-     PointerHashMap<XmlNode,
-                    NodeToUpdatesMap,
-                    NodeUpdates>(128, 0.6)
+  NodeToUpdatesMap() 
+    :
+    PointerHashMap<XmlNode,
+                   NodeToUpdatesMap,
+                   NodeUpdates>(128, 0.6)
    {
    }
- };
+};
 
 
 /*******************************************************************************
@@ -65,7 +66,7 @@ protected:
   ItemHandleHashSet               theTreeRoots;
 
 public:
-  void addInsertAttributes(Item* target, std::vector<XmlNode*>& attrs);
+  void addInsertAttributes(Item* target, std::vector<XmlNode*>& attrs, bool copy);
   void addReplaceValue(Item* target, xqpStringStore* newValue);
   void addReplaceContent(Item* target, Item* newChild);
   void addRename(Item* node, Item* newName);
@@ -110,14 +111,18 @@ class InsertAttributesPrimitive : public UpdatePrimitive
 
 protected:
   std::vector<XmlNode*> theAttributes;
+  bool                  theDoCopy;
+  CopyMode              theCopyMode;
 
 public:
   InsertAttributesPrimitive(
         XmlNode*              target,
-        std::vector<XmlNode*> attrs)
+        std::vector<XmlNode*> attrs,
+        bool                  copy)
     :
     UpdatePrimitive(target),
-    theAttributes(attrs)
+    theAttributes(attrs),
+    theDoCopy(copy)
   {
   }
 

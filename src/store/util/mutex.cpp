@@ -1,4 +1,6 @@
 
+#include "errors/fatal.h"
+
 #include "store/util/mutex.h"
 #include <iostream>
 
@@ -17,11 +19,7 @@ Mutex::Mutex()
 #ifndef NDEBUG
   int pshared;
   pthread_mutexattr_getpshared(&attr, &pshared);
-  if (pshared != PTHREAD_PROCESS_PRIVATE)
-  {
-    std::cout << "mutex pshared = " << pshared << std::endl;
-    abort();
-  }
+  ZORBA_FATAL(pshared == PTHREAD_PROCESS_PRIVATE, "mutex pshared = " << pshared);
 #endif
 
   pthread_mutex_init(&theMutex, &attr);
@@ -49,11 +47,8 @@ Mutex::~Mutex()
 void Mutex::lock()
 { 
 #ifdef ZORBA_USE_PTHREAD_LIBRARY
-  if(int ret= pthread_mutex_lock(&theMutex)) 
-  {
-    std::cerr << "Failed to acquire mutex. Error code = " << ret << std::endl;
-    abort();
-  }
+  int ret= pthread_mutex_lock(&theMutex);
+  ZORBA_FATAL(!ret, "Failed to acquire mutex. Error code = " << ret);
 #elif WIN32
   WaitForSingleObject(theMutex, INFINITE);
 #endif
@@ -63,11 +58,8 @@ void Mutex::lock()
 void Mutex::unlock()
 { 
 #ifdef ZORBA_USE_PTHREAD_LIBRARY
-  if(int ret= pthread_mutex_unlock(&theMutex)) 
-  {
-    std::cerr << "Failed to release mutex. Error code = " << ret << std::endl;
-    abort();
-  }
+  int ret= pthread_mutex_unlock(&theMutex);
+  ZORBA_FATAL(!ret, "Failed to release mutex. Error code = " << ret);
 #elif WIN32
   ReleaseMutex(theMutex);
 #endif

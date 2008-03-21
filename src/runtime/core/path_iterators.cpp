@@ -680,7 +680,11 @@ store::Item_t ChildAxisIterator::nextImpl(PlanState& planState) const
 /*******************************************************************************
 
 ********************************************************************************/
-DescendantAxisState::DescendantAxisState(){}
+DescendantAxisState::DescendantAxisState()
+{
+}
+
+
 DescendantAxisState::~DescendantAxisState()
 {
   while (!theCurrentPath.empty())
@@ -689,11 +693,13 @@ DescendantAxisState::~DescendantAxisState()
   }
 }
 
+
 void
 DescendantAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 }
+
 
 void
 DescendantAxisState::reset(PlanState& planState)
@@ -704,6 +710,7 @@ DescendantAxisState::reset(PlanState& planState)
     theCurrentPath.pop();
   }
 }
+
 
 store::Item_t DescendantAxisIterator::nextImpl(PlanState& planState) const
 {
@@ -719,7 +726,10 @@ store::Item_t DescendantAxisIterator::nextImpl(PlanState& planState) const
     {
       state->theContextNode = consumeNext(theChild.getp(), planState);
       if (state->theContextNode == NULL)
+      {
+        state->reset(planState);
         return NULL;
+      }
 
       if (!state->theContextNode->isNode())
       {

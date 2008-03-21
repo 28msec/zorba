@@ -918,7 +918,6 @@ void end_visit(elem_expr& v)
                                         lQNameIter,
                                         lAttrsIter,
                                         lContentIter,
-                                        theLastNSCtx,
                                         v.getNSCtx().getp(),
                                         isRoot);
   itstack.push(iter);

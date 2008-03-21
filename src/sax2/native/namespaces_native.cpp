@@ -4,12 +4,13 @@
 
 namespace zorba{
 
-  SAX2_NamespacesNative::SAX2_NamespacesNative(store::NsBindings *local_nsBindings, store::Item *item)
+SAX2_NamespacesNative::SAX2_NamespacesNative(store::NsBindings *local_nsBindings, store::Item *item)
 {
   this->local_nsBindings = local_nsBindings;
   nb_local = local_nsBindings->size();
 
-  item->getNamespaceBindings(parent_nsBindings, store::Item::ONLY_PARENT_NAMESPACES);
+  item->getNamespaceBindings(parent_nsBindings,
+                             store::StoreConsts::ONLY_PARENT_NAMESPACES);
   nb_parent = parent_nsBindings.size();
 }
 

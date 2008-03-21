@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_POINTER_HASHMAP_H
-#define ZORBA_STORE_POINTER_HASHMAP_H
+#ifndef ZORBA_STORE_UTIL_POINTER_HASHMAP
+#define ZORBA_STORE_UTIL_POINTER_HASHMAP
 
 #include "common/shared_types.h"
 #include "zorbatypes/xqpstring.h"
@@ -10,13 +10,13 @@ namespace zorba { namespace store {
 
 /*******************************************************************************
 
-  StringHashMap implements a set of strings, each of which is associated with
-  a value of type V.
+  PointerHashMap implements a set of raw pointers to class T objects, each of
+  which is associated with a value of type V.
 
-  Note: Set-membership is based on the value of the string, not on string object
-  identity.
+  Set-membership is based on another template class E, which defines the equality
+  between 2 class T objects, and a hash method for T objects.
 
-  theNumEntries  : The total number of (string, value) pairs stored in the set.
+  theNumEntries  : The total number of (obj, value) pairs stored in the set.
 
   theHashTab     : The hash table. The table is implemented as a vector of hash
                    entries and is devided in 2 areas: Each entry between 0 and
@@ -48,7 +48,7 @@ protected:
 
     HashEntry() : theItem(NULL), theNext(NULL) { }
 
-    ~HashEntry() { }
+    ~HashEntry() { theItem = NULL; theNext = NULL; }
   };
 
 protected:
@@ -115,8 +115,9 @@ void PointerHashMap<T, E, V>::clear()
 
     if (entry->theItem != NULL)
     {
-      entry->theItem = NULL;
-      entry->theValue.~V();
+      HashEntry* save = entry->theNext;
+      entry->~HashEntry();
+      entry->theNext = save;
     }
   }
 }
@@ -284,16 +285,14 @@ bool PointerHashMap<T, E, V>::remove(const T* item)
   {
     if (entry->theNext == NULL)
     {
-      entry->theItem = NULL;
-      entry->theValue.~V();
+      entry->~HashEntry();
       theNumEntries--;
     }
     else
     {
       HashEntry* nextEntry = entry->theNext;
       *entry = *nextEntry;
-      nextEntry->theItem = NULL;
-      nextEntry->theValue.~V();
+      nextEntry->~HashEntry();
       nextEntry->theNext =  theHashTab[theHashTabSize].theNext;
       theHashTab[theHashTabSize].theNext = nextEntry;
     }
@@ -310,8 +309,7 @@ bool PointerHashMap<T, E, V>::remove(const T* item)
     if (E::equal(entry->theItem, item))
     {
       prevEntry->theNext = entry->theNext;
-      entry->theItem = NULL;
-      entry->theValue.~V();
+      entry->~HashEntry();
       entry->theNext = theHashTab[theHashTabSize].theNext;
       theHashTab[theHashTabSize].theNext = entry;
       theNumEntries--;

@@ -57,6 +57,7 @@ int main(int argc, char * argv[])
   std::string deweyStr;
   std::vector<long> dewey1;
   std::vector<long> dewey2;
+  std::vector<long> deweyParent;
 
   boost::program_options::options_description options("Options");
   options.add_options()
@@ -98,22 +99,32 @@ int main(int argc, char * argv[])
     parseDeweyString(deweyStrVector[0], dewey1);
     parseDeweyString(deweyStrVector[1], dewey2);
 
+    zorba::store::OrdPath parent;
     zorba::store::OrdPath path1;
     zorba::store::OrdPath path2;
     zorba::store::OrdPath path;
 
     try
     {
+      ulong i = dewey1.size() - 2;
+      while (i > 0 && dewey1[i] % 2 == 0)
+        i--;
+
+      for (ulong j = 0; j <= i; j++)
+        deweyParent.push_back(dewey1[j]);
+
+      parent.compress(deweyParent);
       path1.compress(dewey1);
       path2.compress(dewey2);
 
       if (verbose)
       {
+        std::cout << "ordpath parent = " << parent.show() << std::endl;
         std::cout << "ordpath1 = " << path1.show() << std::endl;
         std::cout << "ordpath2 = " << path2.show() << std::endl;
       }
 
-      zorba::store::OrdPath::insertInto(path1, path2, path);
+      zorba::store::OrdPath::insertInto(parent, path1, path2, path);
 
       std::cout << "ordpath = " << path.show() << std::endl;
     }

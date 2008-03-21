@@ -17,6 +17,7 @@ SET(STORE_SRCS
     naive/ordpath.cpp
     naive/nsbindings.cpp
     naive/item_iterator.cpp
+    naive/query_context.cpp
     util/handle_hashset_string.cpp
     util/mutex.cpp
     util/latch.cpp

@@ -1,11 +1,12 @@
-#ifndef ZORBA_STORE_QUERY_CONTEXT_H
-#define ZORBA_STORE_QUERY_CONTEXT_H
+#ifndef ZORBA_SIMPLE_STORE_QUERY_CONTEXT
+#define ZORBA_SIMPLE_STORE_QUERY_CONTEXT
 
 #include <stack>
 #include <map>
+#include <vector>
 
 #include "common/shared_types.h"
-
+#include "errors/fatal.h"
 #include "store/util/mutex.h"
 
 namespace zorba { namespace store {
@@ -17,11 +18,13 @@ class XmlNode;
 ********************************************************************************/
 class QueryContext
 {
+  friend class QueryContextContainer;
+
 protected:
-  std::stack<XmlNode*> theNodePath;
+  std::stack<XmlNode*>   theNodePath;
 
 public:
-  ~QueryContext() { clear(); }
+  ~QueryContext() { }
 
   bool empty() const { return theNodePath.empty(); }
 
@@ -57,40 +60,12 @@ class QueryContextContainer
 {
 protected:
   std::map<ulong, QueryContext> theContainer;
-  SYNC_CODE(Mutex                         theMutex;)
+  SYNC_CODE(Mutex               theMutex;)
 
 public:
-  QueryContext& getContext(ulong queryId)
-  {
-    SYNC_CODE(AutoMutex lock(theMutex);)
+  QueryContext& getContext(ulong queryId);
 
-    std::map<ulong, QueryContext>::iterator ctxi;
-
-    ctxi = theContainer.find(queryId);
-
-    if (ctxi != theContainer.end())
-      return ctxi->second;
-
-    std::pair<std::map<ulong, QueryContext>::iterator, bool> res =
-      theContainer.insert(std::pair<ulong, QueryContext>(queryId, QueryContext()));
-
-    ctxi = res.first;
-    return ctxi->second;
-  }
-
-  void removeContext(ulong queryId, bool soft)
-  {
-    SYNC_CODE(AutoMutex lock(theMutex);)
-
-    std::map<ulong, QueryContext>::iterator ctxi;
-
-    ctxi = theContainer.find(queryId);
-
-    if (ctxi == theContainer.end() || (soft && !ctxi->second.empty()))
-      return;
-
-    theContainer.erase(queryId);
-  }
+  void removeContext(ulong queryId);
 };
 
 

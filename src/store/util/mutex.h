@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_MUTEX_H
-#define ZORBA_STORE_MUTEX_H
+#ifndef ZORBA_STORE_UTIL_MUTEX
+#define ZORBA_STORE_UTIL_MUTEX
 
 #include "common/common.h"
 
@@ -21,7 +21,7 @@ protected:
 #ifdef ZORBA_USE_PTHREAD_LIBRARY
   pthread_mutex_t  theMutex;
 #elif WIN32
-  HANDLE          theMutex;
+  HANDLE           theMutex;
 #else
   #error Mutex implemented for PTHREADs AND WIN32 only
 #endif

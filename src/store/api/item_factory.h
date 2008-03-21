@@ -1,11 +1,3 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: item_factory.h,v 1.1 2007/08/09 07:07:59 $
- *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf, Donald Kossmann, Tim Kraska
- *
- */
 
 #ifndef ZORBA_STORE_ITEM_FACTORY_H
 #define ZORBA_STORE_ITEM_FACTORY_H
@@ -20,6 +12,8 @@
 
 
 namespace zorba { namespace store {
+
+struct CopyMode;
 
 typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
 
@@ -437,10 +431,9 @@ public:
         xqpStringStore* docURI,
         Iterator*       children,
         bool            isRoot,
+        bool            assignIds,
         bool            copy,
-        bool            typePreserve,
-        bool            nsPreserve,
-        bool            nsInherit) = 0;
+        const CopyMode& copymode) = 0;
 
   /**
    * @param name QName which contains the name of the element
@@ -459,13 +452,11 @@ public:
         Iterator*         childrenIte,
         Iterator*         attributesIte,
         Iterator*         namespacesIte,
-        const NsBindings& contextBindings,
         const NsBindings& localBindings,
         bool              isRoot,
+        bool              assignIds,
         bool              copy,
-        bool              typePreserve,
-        bool              nsPreserve,
-        bool              nsInherit) = 0;
+        const CopyMode&   copymode) = 0;
 
   /**
    * @param name QName which contains the name of the element
@@ -481,7 +472,8 @@ public:
         Iterator*     nameIter,
         Item*         type,
         Iterator*     valueIter,
-        bool          isRoot) = 0;
+        bool          isRoot,
+        bool          assignIds) = 0;
 
   /**
    * @param value text
@@ -490,12 +482,14 @@ public:
   virtual Item_t createTextNode(
         unsigned long   qid,
         Iterator*       valueIter,
-        bool            isRoot) = 0;
+        bool            isRoot,
+        bool            assignIds) = 0;
 
   virtual Item_t createTextNode(
         unsigned long   qid,
         xqpStringStore* value,
-        bool            isRoot) = 0;
+        bool            isRoot,
+        bool            assignIds) = 0;
 
   /**
    * @param target The QName for the processing instruction.
@@ -505,8 +499,9 @@ public:
   virtual Item_t createPiNode(
         unsigned long   qid,
         xqpStringStore* target,
-        xqpStringStore* data,
-        bool            isRoot) = 0;
+        xqpStringStore* content,
+        bool            isRoot,
+        bool            assignIds) = 0;
 
   /**
    * @param comment
@@ -514,8 +509,9 @@ public:
    */
   virtual Item_t createCommentNode(
         unsigned long   qid,
-        xqpStringStore* comment,
-        bool            isRoot) = 0;
+        xqpStringStore* content,
+        bool            isRoot,
+        bool            assignIds) = 0;
 };
 
 } // namespace store

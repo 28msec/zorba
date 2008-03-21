@@ -9,7 +9,7 @@
 #include "util/rchandle.h"
 
 #include "errors/error_manager.h"
-#include "util/Assert.h"
+#include "errors/fatal.h"
 #include "util/hashfun.h"
 
 #include "store/util/handle_hashset_string.h"
@@ -160,7 +160,7 @@ QueryContext& SimpleStore::getQueryContext(ulong queryId)
 
 void SimpleStore::deleteQueryContext(ulong queryId)
 {
-  theQueryContextContainer->removeContext(queryId, true);
+  theQueryContextContainer->removeContext(queryId);
 }
 
 
@@ -241,7 +241,7 @@ Item_t SimpleStore::loadDocument(xqpStringStore* uri, Item_t docItem)
     return NULL; 
   }
 
-  ZORBA_ASSERT(docItem.getp() == rootp->getp());
+  ZORBA_FATAL(docItem.getp() == rootp->getp(), "");
 
 	return *rootp;
 }
@@ -352,8 +352,8 @@ void SimpleStore::deleteCollection(xqpStringStore* uri)
 ********************************************************************************/
 long SimpleStore::compareNodes(Item* node1, Item* node2) const
 {
-  ZORBA_ASSERT(node1->isNode());
-  ZORBA_ASSERT(node2->isNode());
+  ZORBA_FATAL(node1->isNode(), "");
+  ZORBA_FATAL(node2->isNode(), "");
 
   if (node1 == node2)
     return 0;
@@ -447,7 +447,7 @@ Item_t SimpleStore::getReference(Item_t node)
 Item_t SimpleStore::getFixedReference(
     Item_t,
     Requester requester,
-    Timetravel timetravel)
+    TimeTravel timetravel)
 {
   return rchandle<Item> ( NULL );
 }
@@ -480,7 +480,7 @@ Item_t SimpleStore::getNodeByReference(Item_t)
 Item_t SimpleStore::getNodeByReference(
     Item_t,
     Requester requester,
-    Timetravel timetravel)
+    TimeTravel timetravel)
 {
   return rchandle<Item> ( NULL );
 }

@@ -1,6 +1,6 @@
 
-#ifndef ZORBA_STORE_NODE_VECTOR_H
-#define ZORBA_STORE_NODE_VECTOR_H
+#ifndef ZORBA_SIMPLE_STORE_NODE_VECTOR
+#define ZORBA_SIMPLE_STORE_NODE_VECTOR
 
 #include <vector>
 
@@ -40,8 +40,9 @@ public:
   XmlNode* get(ulong pos) const { return theNodes[pos]; } 
   ulong find(XmlNode* n);
 
-  virtual void set(ulong pos, XmlNode* n, bool shared) = 0;
+  virtual void set(XmlNode* n, ulong pos, bool shared) = 0;
   virtual void push_back(XmlNode* n, bool shared) = 0;
+  virtual void insert(XmlNode* n, ulong i, bool shared) = 0;
 
   virtual void remove(ulong i) = 0;
   virtual bool remove(XmlNode* n) = 0;
@@ -63,14 +64,15 @@ public:
 
   ~LoadedNodeVector() { }
 
-  void set(ulong pos, XmlNode* n, bool ) { theNodes[pos] = n; }
+  void set(XmlNode* n, ulong pos, bool ) { theNodes[pos] = n; }
   void push_back(XmlNode* n, bool )      { theNodes.push_back(n); }
+  void insert(XmlNode* n, ulong i, bool shared);
   void remove(ulong i);
   bool remove(XmlNode* n);
 
   void clear()                           { theNodes.clear(); }
   void resize(ulong size)                { theNodes.resize(size); }
-  void copy(const NodeVector& v)         { ZORBA_FATAL(""); }
+  void copy(const NodeVector& v)         { ZORBA_FATAL(0, ""); }
 
 private:
   LoadedNodeVector(const LoadedNodeVector& v);
@@ -92,8 +94,9 @@ public:
 
   ~ConstrNodeVector()  { clear(); }
 
-  void set(ulong pos, XmlNode* n, bool shared);
+  void set(XmlNode* n, ulong pos, bool shared);
   void push_back(XmlNode* n, bool shared);
+  void insert(XmlNode* n, ulong i, bool shared);
   void remove(ulong i);
   bool remove(XmlNode* n);
 

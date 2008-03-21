@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_SIMPLE_STORE_H
-#define ZORBA_STORE_SIMPLE_STORE_H
+#ifndef ZORBA_SIMPLE_STORE
+#define ZORBA_SIMPLE_STORE
 
 
 #include "common/shared_types.h"
@@ -40,6 +40,7 @@ public:
   store::Item_t            theAnyType;
   store::Item_t            theUntypedAtomicType;
   store::Item_t            theQNameType;
+  store::Item_t            theNotationType;
 
 protected:
   bool                     theIsInitialized;
@@ -115,14 +116,14 @@ public:
   store::Item_t getFixedReference(
         store::Item_t,
         Requester requester,
-        Timetravel timetravel);
+        TimeTravel timetravel);
 
   store::Item_t getNodeByReference(store::Item_t);
 
   store::Item_t getNodeByReference(
         store::Item_t,
         Requester requester,
-        Timetravel timetravel);
+        TimeTravel timetravel);
 
   void apply(PUL_t pendingUpdateList);
   void apply(PUL_t pendingUpdateList, Requester requester);

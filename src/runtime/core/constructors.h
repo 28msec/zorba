@@ -22,11 +22,13 @@ namespace zorba {
 class DocumentIteratorState : public PlanIteratorState
 {
 public:
-  ~DocumentIteratorState();
-  bool theTypePreserve;
-  bool theNsPreserve;
-  bool theNsInherit;
+  bool      theTypePreserve;
+  bool      theNsPreserve;
+  bool      theNsInherit;
+
   Iterator* childWrapper;
+
+  ~DocumentIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -83,10 +85,9 @@ public:
                       to have namespace declarations whose URI is not constant.
   theLocalBindings  : The (prefix, nsURI) pairs corresponding to namespace
                       declarations that appear in the opening tag of the
-                      element, and whose URI part is a contant. 
+                      element, and whose URI part is a constant. 
   theIsRoot         : Whether this is the root in a tree of constructor iterators.
                       
-
 ********************************************************************************/
 class ElementIteratorState : public PlanIteratorState
 {
@@ -99,6 +100,7 @@ public:
   void reset(PlanState&);
 };
 
+
 class ElementIterator : public Batcher<ElementIterator>
 {
   typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
@@ -109,18 +111,16 @@ private:
   PlanIter_t          theChildrenIter;
   PlanIter_t          theNamespacesIter;
 
-  NamespaceContext_t  theContextBindings;
   NamespaceContext_t  theLocalBindings;
 
   bool                theIsRoot;
 
 public:
   ElementIterator (
-      const QueryLoc& loc,
+      const QueryLoc&     loc,
       PlanIter_t&         aQNameIter,
       PlanIter_t&         aAttrs,
       PlanIter_t&         aChildren,
-      namespace_context*  ctxBindings,
       namespace_context*  localBindings,
       bool                isRoot);
   

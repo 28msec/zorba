@@ -52,13 +52,6 @@ public:
 
 #endif
 
-      enum NsScoping 
-      {
-        ALL_NAMESPACES_IN_SCOPE,
-        ONLY_LOCAL_NAMESPACES,
-        ONLY_PARENT_NAMESPACES
-      };
-
       virtual ~Item() {}
 
       /* -------------------   General Methods for Items ------------------------- */
@@ -374,7 +367,9 @@ public:
        *  @return  returns prefix namespace pairs
        */
       virtual void
-      getNamespaceBindings(NsBindings& bindings, enum NsScoping ns_scoping = ALL_NAMESPACES_IN_SCOPE) const;
+      getNamespaceBindings(
+        NsBindings& bindings,
+        StoreConsts::NsScoping ns_scoping = StoreConsts::ALL_NAMESPACES) const;
 
       /** Accessor for element node
        *  @return  boolean?

@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_UTIL_HANDLE_HASHSET_NODE
-#define ZORBA_STORE_UTIL_HANDLE_HASHSET_NODE
+#ifndef ZORBA_STORE_UTIL_NODE_HANDLE_HASHSET
+#define ZORBA_STORE_UTIL_NODE_HANDLE_HASHSET
 
 #include "store/util/handle_hashset.h"
 
@@ -20,8 +20,7 @@ public:
   static uint32_t hash(const Item* t);
 
 public:
-  NodeHashSet(ulong size = 1024) 
-    : HandleSet<Item, NodeHashSet>(size) {}
+  NodeHashSet(ulong size = 1024) : HandleSet<Item, NodeHashSet>(size) {}
 };
 
 } // namespace store

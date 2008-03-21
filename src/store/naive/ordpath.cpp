@@ -168,9 +168,9 @@ const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] =
 
 
 /*******************************************************************************
-
+  Set the value of "this" to 1 (i.e. the id of a root node).
 ********************************************************************************/
-void OrdPath::init()
+void OrdPath::setAsRoot()
 {
   if (theBuffer != NULL)
     delete [] theBuffer;
@@ -225,6 +225,27 @@ ulong OrdPath::getByteLength() const
     return 0;
 
   return theBuffer[0];
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+ulong OrdPath::getBitLength() const
+{
+  if (theBuffer == NULL)
+    return 0;
+
+  ulong byteLen = getByteLength();
+  ulong bitLen = byteLen * 8;
+
+  unsigned char lastByte = theBuffer[byteLen - 1];
+  while ((lastByte & 0x1) == 0)
+  {
+    lastByte >>= 1;
+    bitLen--;
+  }
+
+  return bitLen;
 }
 
 
@@ -386,35 +407,38 @@ void OrdPath::compress(const std::vector<long>& dewey)
 
 ********************************************************************************/
 void OrdPath::insertAfter(
-    const OrdPath& p,
+    const OrdPath& parent,
+    const OrdPath& sibling,
     OrdPath&       result)
 {
-  insertBeforeOrAfter(false, p, result);
+  insertBeforeOrAfter(false, parent, sibling, result);
 }
 
 
 void OrdPath::insertBefore(
-    const OrdPath& p,
+    const OrdPath& parent,
+    const OrdPath& sibling,
     OrdPath&       result)
 {
-  insertBeforeOrAfter(true, p, result);
+  insertBeforeOrAfter(true, parent, sibling, result);
 }
 
 
 void OrdPath::insertBeforeOrAfter(
     bool           before,
-    const OrdPath& p,
+    const OrdPath& parent,
+    const OrdPath& sibling,
     OrdPath&       result)
 {
-  assert(result.theBuffer == 0);
+  ulong parentBitLen = parent.getBitLength();
 
   ulong numComps = 0;
-  ulong bitSize = 0;
   long dewey[MAX_NUM_COMPS];
   ulong offsets[MAX_NUM_COMPS];
+  ulong bitSize;
 
-  // decompress all of p1.
-  p.decompress(8, dewey, offsets, numComps, bitSize);
+  // Decompress the last level-component of sibling.
+  sibling.decompress(parentBitLen, dewey, offsets, numComps, bitSize);
 
   long newcomp = dewey[numComps-1] + (before ? - 2 : 2);
 
@@ -430,7 +454,7 @@ void OrdPath::insertBeforeOrAfter(
 
   result.theBuffer = new unsigned char[byteSize];
   memset(result.theBuffer, 0, byteSize);
-  memcpy(result.theBuffer, p.theBuffer, commonByteSize);
+  memcpy(result.theBuffer, sibling.theBuffer, commonByteSize);
   result.theBuffer[0] = (unsigned char)byteSize;
   if (commonBitSize % 8 != 0)
     result.theBuffer[commonByteSize-1] &= (0xff << (8 - commonBitSize % 8));
@@ -443,12 +467,14 @@ void OrdPath::insertBeforeOrAfter(
 
 ********************************************************************************/
 void OrdPath::insertInto(
-    const OrdPath& p1,
-    const OrdPath& p2,
+    const OrdPath& parent,
+    const OrdPath& sib1,
+    const OrdPath& sib2,
     OrdPath&       result)
 {
-  assert(p1 < p2);
-  assert(result.theBuffer == 0);
+  assert(sib1 < sib2);
+
+  ulong parentBitLen = parent.getBitLength();
 
   ulong numComps1 = 0;
   ulong bitSize1 = 0;
@@ -460,21 +486,14 @@ void OrdPath::insertInto(
   long dewey2[MAX_BYTE_LEN];
   ulong offsets2[MAX_BYTE_LEN];
 
-  // decompress all of p1.
-  p1.decompress(8, dewey1, offsets1, numComps1, bitSize1);
+  // decompress the last level-comp of sib1
+  sib1.decompress(parentBitLen, dewey1, offsets1, numComps1, bitSize1);
 
-  // Find the start of the last level-component in p1.
-  ulong compPos = numComps1 - 2;
-  while (compPos > 0 && dewey1[compPos] % 2 == 0)
-    compPos--;
-  compPos++;
-
-  // decompress the last level-component of p2.
-  numComps2 = compPos;
-  bitSize2 = offsets1[compPos];
-  p2.decompress(bitSize2, dewey2, offsets2, numComps2, bitSize2);
+  // decompress the last level-component of sib2.
+  sib2.decompress(parentBitLen, dewey2, offsets2, numComps2, bitSize2);
 
   // Within the last level-component, find the 1st pair of differing comps.
+  ulong compPos = 0;
   while (dewey1[compPos] == dewey2[compPos])
   {
     compPos++;
@@ -560,7 +579,7 @@ void OrdPath::insertInto(
   ulong byteSize = (bitSize + 7) / 8;
   result.theBuffer = new unsigned char[byteSize];
   memset(result.theBuffer, 0, byteSize);
-  memcpy(result.theBuffer, (copy1 ? p1.theBuffer : p2.theBuffer), commonByteSize);
+  memcpy(result.theBuffer, (copy1 ? sib1.theBuffer : sib2.theBuffer), commonByteSize);
   result.theBuffer[0] = (unsigned char)byteSize;
   if (commonBitSize % 8 != 0)
     result.theBuffer[commonByteSize-1] &= (0xff << (8 - commonBitSize % 8));
@@ -572,7 +591,8 @@ void OrdPath::insertInto(
 
 
 /*******************************************************************************
-
+  Append a given component value to "this", assumming that the space needed for
+  the new comp has already been allocated.
 ********************************************************************************/
 void OrdPath::pushComp(long value, ulong& bitSize)
 {
@@ -620,7 +640,8 @@ void OrdPath::pushComp(long value, ulong& bitSize)
 
 
 /*******************************************************************************
-
+  Append a given component value to "this", expanding, if necessary, theBuffer
+  of "this" to accomodate the new comp.
 ********************************************************************************/
 void OrdPath::appendComp(long value)
 {

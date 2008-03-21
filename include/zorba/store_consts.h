@@ -9,7 +9,7 @@ class StoreConsts
 {
  public:
 
-  typedef enum
+  enum NodeKind
   {
     anyNode,
     documentNode,
@@ -18,8 +18,14 @@ class StoreConsts
     textNode,
     piNode,
     commentNode
-  }
-  NodeKind;
+  };
+
+  enum NsScoping 
+  {
+    ALL_NAMESPACES,
+    ONLY_LOCAL_NAMESPACES,
+    ONLY_PARENT_NAMESPACES
+  };
 
   static std::string toString(NodeKind k);
 };

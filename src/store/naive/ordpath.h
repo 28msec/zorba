@@ -39,25 +39,23 @@ protected:
 
 public:
   static void insertBefore(
-        const OrdPath& p,
+        const OrdPath& parent,
+        const OrdPath& sibling,
         OrdPath&       result);
 
   static void insertAfter(
-        const OrdPath& p,
+        const OrdPath& parent,
+        const OrdPath& sibling,
         OrdPath&       result);
 
   static void insertInto(
-        const OrdPath& p1,
-        const OrdPath& p2,
+        const OrdPath& parent,
+        const OrdPath& sib1,
+        const OrdPath& sib2,
         OrdPath&       result);
 
 public:
   OrdPath() : theBuffer(NULL) { }
-
-  void init();
-
-  OrdPath& operator=(const OrdPath& other);
-  OrdPath& operator=(const OrdPathStack& ops);
 
   ~OrdPath() 
   {
@@ -68,7 +66,15 @@ public:
     }
   }
 
+  bool isValid() const { return theBuffer != NULL; }
+
+  void setAsRoot();
+
+  OrdPath& operator=(const OrdPath& other);
+  OrdPath& operator=(const OrdPathStack& ops);
+
   ulong getByteLength() const;
+  ulong getBitLength() const;
 
   uint32_t hash() const;
 
@@ -90,7 +96,8 @@ protected:
 
   static void insertBeforeOrAfter(
         bool           before,
-        const OrdPath& p1,
+        const OrdPath& parent,
+        const OrdPath& sibling,
         OrdPath&       result);
 
   void pushComp(long value, ulong& bitSize);

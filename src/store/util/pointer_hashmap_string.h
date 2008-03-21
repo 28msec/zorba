@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_STRING_HASHMAP_H
-#define ZORBA_STORE_STRING_HASHMAP_H
+#ifndef ZORBA_STORE_UTIL_STRING_POINTER_HASHMAP
+#define ZORBA_STORE_UTIL_STRING_POINTER_HASHMAP
 
 #include "common/common.h"
 #include "zorbatypes/xqpstring.h"

@@ -267,7 +267,8 @@ void SAX2_XMLReaderNative::emit_node(store::Item* item)
 
     if(content_handler)
     {
-      item->getNamespaceBindings(local_nsBindings, store::Item::ONLY_LOCAL_NAMESPACES);//only local namespaces
+      item->getNamespaceBindings(local_nsBindings,
+                                 store::StoreConsts::ONLY_LOCAL_NAMESPACES);//only local namespaces
 
       SAX2_AttributesNative   attrs(item);
       SAX2_NamespacesNative   nss(&local_nsBindings, item);

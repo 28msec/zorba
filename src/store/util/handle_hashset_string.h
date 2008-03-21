@@ -1,5 +1,5 @@
-#ifndef ZORBA_STORE_STRING_HASHSET_H
-#define ZORBA_STORE_STRING_HASHSET_H
+#ifndef ZORBA_STORE_UTIL_STRING_HANDLE_HASHSET
+#define ZORBA_STORE_UTIL_STRING_HANDLE_HASHSET
 
 #include "common/common.h"
 #include "zorbatypes/xqpstring.h"
@@ -9,6 +9,10 @@
 
 namespace zorba { namespace store {
 
+/*******************************************************************************
+  A hash-based set container of string rchandles, where equality is based on
+  string value.
+********************************************************************************/
 class StringPool : public HandleSet<xqpStringStore, StringPool>
 {
 public:

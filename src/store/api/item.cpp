@@ -362,7 +362,9 @@ bool Item::isIdrefs() const
 /** Accessor for element node
  *  @return  returns prefix namespace pairs
  */
-void Item::getNamespaceBindings(NsBindings& bindings, enum NsScoping ns_scoping) const
+void Item::getNamespaceBindings(
+    NsBindings& bindings,
+    StoreConsts::NsScoping ns_scoping) const
 {
   ZORBA_ASSERT(false);
 }

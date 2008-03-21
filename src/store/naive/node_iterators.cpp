@@ -19,7 +19,7 @@ ChildrenIterator::ChildrenIterator(XmlNode* parent)
   theCurrentPos(0)
 {
   ZORBA_ASSERT(theParentNode->getNodeKind() == StoreConsts::documentNode ||
-         theParentNode->getNodeKind() == StoreConsts::elementNode);
+               theParentNode->getNodeKind() == StoreConsts::elementNode);
 
   theNumChildren = parent->numChildren();
 }
@@ -37,22 +37,11 @@ Item_t ChildrenIterator::next()
 
   XmlNode* cnode = theParentNode->getChild(theCurrentPos);
 
-  if (theParentNode->isConstructed())
-  {
-    XmlNode* pnode = theParentNode.getp();
-
-    ZORBA_ASSERT(cnode->getParentP() != NULL);
-
-    if (pnode->isCopy() && cnode->getParentP() != pnode)
-    {
-      cnode = cnode->copy(pnode, theCurrentPos);
-    }
-  }
-
   theCurrentPos++;
 
   return cnode;
 }
+
 
 void ChildrenIterator::reset()
 {
@@ -93,18 +82,6 @@ Item_t AttributesIterator::next()
 
   XmlNode* cnode = theParentNode->getAttr(theCurrentPos);
 
-  if (theParentNode->isConstructed())
-  {
-    XmlNode* pnode = theParentNode.getp();
-
-    ZORBA_ASSERT(cnode->getParentP() != NULL);
-
-    if (pnode->isCopy() && cnode->getParentP() != pnode)
-    {
-      cnode = cnode->copy(pnode, theCurrentPos);
-    }
-  }
-
   theCurrentPos++;
 
   return cnode;
@@ -133,6 +110,7 @@ void AttributesIterator::close()
 void StoreNodeDistinctIterator::open()
 {
 }
+
 
 Item_t StoreNodeDistinctIterator::next()
 {
@@ -209,10 +187,12 @@ Item_t StoreNodeDistinctOrAtomicIterator::next()
 //  class StoreNodeSortIterator                                                //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
 void StoreNodeSortIterator::open()
 {
   theCurrentNode = -1;
 }
+
 
 Item_t StoreNodeSortIterator::next()
 {
@@ -257,6 +237,7 @@ Item_t StoreNodeSortIterator::next()
   }
   else
   {
+    theNodes.clear();
     return NULL;
   }
 }
@@ -281,6 +262,7 @@ void StoreNodeSortIterator::close()
   theCurrentNode = -1;
   theInput = NULL;
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -353,6 +335,7 @@ Item_t StoreNodeSortOrAtomicIterator::next()
   }
   else
   {
+    theNodes.clear();
     return NULL;
   }
  
