@@ -26,19 +26,19 @@ typedef rchandle<class LetVarIterator> ref_iter_t;
 class fo_expr;
 
 class function_typechecker {
-    public:
-        function_typechecker() {}
-        virtual ~function_typechecker() {}
-
-        virtual xqtref_t return_type(const fo_expr *fo) = 0;
-        virtual xqtref_t type_check(const fo_expr *fo) = 0;
+public:
+  function_typechecker() {}
+  virtual ~function_typechecker() {}
+  
+  virtual xqtref_t return_type(const fo_expr *fo) = 0;
+  virtual xqtref_t type_check(const fo_expr *fo) = 0;
 };
 
 class function_codegenerator {
-    public:
-        function_codegenerator() {}
-        virtual ~function_codegenerator() {}
-        virtual PlanIter_t codegen(const fo_expr *fo) = 0;
+public:
+  function_codegenerator() {}
+  virtual ~function_codegenerator() {}
+  virtual PlanIter_t codegen(const fo_expr *fo) = 0;
 };
 
 class function

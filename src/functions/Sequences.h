@@ -33,6 +33,16 @@ class zorba;
 | 15.1 General Functions and Operators on Sequences
 |_______________________________________________________________________*/
 
+
+  class single_seq_function : public function {
+    int src;
+
+  public:
+    single_seq_function (const signature &sig, int src_ = 0) : function (sig), src (src_) {}
+    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+    void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
+  };
+
 //15.1.1 fn:boolean (effective boolean value)
 //-----------------
 
@@ -97,10 +107,10 @@ public:
 
 //15.1.6 fn:distinct-values
 //-------------------------
-class fn_distinct_values_1 : public function
+class fn_distinct_values_1 : public single_seq_function
 {
 public:
-  fn_distinct_values_1(const signature&);
+  fn_distinct_values_1(const signature& sig) : single_seq_function (sig) {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -132,10 +142,10 @@ public:
 
 //15.1.8 fn:remove
 //----------------
-class fn_remove : public function
+class fn_remove : public single_seq_function
 {
 public:
-  fn_remove(const signature&);
+  fn_remove(const signature& sig) : single_seq_function (sig) {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -146,10 +156,10 @@ public:
 
 //15.1.9 fn:reverse
 //-----------------
-class fn_reverse : public function
+class fn_reverse : public single_seq_function
 {
 public:
-  fn_reverse(const signature&);
+  fn_reverse(const signature& sig) : single_seq_function (sig) {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -161,10 +171,10 @@ public:
 //15.1.10 fn:subsequence
 //----------------------
 // subsequence with 2 arguments
-class fn_subsequence_2 : public function
+class fn_subsequence_2 : public single_seq_function
 {
 public:
-  fn_subsequence_2(const signature&);
+  fn_subsequence_2(const signature&sig) : single_seq_function (sig) {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -408,10 +418,10 @@ public:
 |_______________________________________________________________________*/
 
 // internal distinct-nodes function
-class op_distinct_nodes : public function
+class op_distinct_nodes : public single_seq_function
 {
 public:
-  op_distinct_nodes(const signature&);
+  op_distinct_nodes(const signature& sig) : single_seq_function (sig) {}
 
 public:
   xqtref_t type_check(signature&) const;
@@ -425,9 +435,9 @@ public:
  * (but no mixture of atomic and node items). In this case, the result is
  * equal to the input
  */
-class op_distinct_nodes_or_atomics : public function {
+class op_distinct_nodes_or_atomics : public single_seq_function {
 public:
-  op_distinct_nodes_or_atomics(const signature&);
+  op_distinct_nodes_or_atomics(const signature& sig) : single_seq_function (sig) {}
 
 public:
   xqtref_t type_check(signature&) const;
@@ -436,10 +446,10 @@ public:
 };
 
 // internal sort-nodes function sorting in document order
-class op_sort_nodes_ascending : public function
+class op_sort_nodes_ascending : public single_seq_function
 {
 public:
-  op_sort_nodes_ascending(const signature&);
+  op_sort_nodes_ascending(const signature& sig) : single_seq_function (sig) {}
 
 public:
   xqtref_t type_check(signature&) const;
@@ -453,9 +463,9 @@ public:
  * (but no mixture of atomic and node items). In this case, the result is
  * equal to the input
  */
-class op_sort_nodes_asc_or_atomics : public function {
+class op_sort_nodes_asc_or_atomics : public single_seq_function {
 public:
-  op_sort_nodes_asc_or_atomics(const signature&);
+  op_sort_nodes_asc_or_atomics(const signature& sig) : single_seq_function (sig) {}
 
 public:
   xqtref_t type_check(signature&) const;
@@ -464,10 +474,10 @@ public:
 };
 
 // internal sort-nodes function sorting in reverse document order
-class op_sort_nodes_descending : public function
+class op_sort_nodes_descending : public single_seq_function
 {
 public:
-  op_sort_nodes_descending(const signature&);
+  op_sort_nodes_descending(const signature& sig) : single_seq_function (sig) {}
 
 public:
   xqtref_t type_check(signature&) const;
@@ -481,10 +491,10 @@ public:
 * (but no mixture of atomic and node items). In this case, the result is
 * equal to the input
 */
-class op_sort_nodes_desc_or_atomics : public function
+class op_sort_nodes_desc_or_atomics : public single_seq_function
 {
 public:
-  op_sort_nodes_desc_or_atomics(const signature&);
+  op_sort_nodes_desc_or_atomics(const signature& sig) : single_seq_function (sig) {}
 
 public:
   xqtref_t type_check(signature&) const;
@@ -495,10 +505,10 @@ public:
 
 
 // internal function for sort-nodes in document order and doing distinct-nodes in one run
-class op_sort_distinct_nodes_ascending : public function
+class op_sort_distinct_nodes_ascending : public single_seq_function
 {
 public:
-  op_sort_distinct_nodes_ascending(const signature&);
+  op_sort_distinct_nodes_ascending(const signature& sig) : single_seq_function (sig) {}
 
 public:
   xqtref_t type_check(signature&) const;
@@ -512,10 +522,10 @@ public:
 * (but no mixture of atomic and node items). In this case, the result is
 * equal to the input
 */
-class op_sort_distinct_nodes_asc_or_atomics : public function
+class op_sort_distinct_nodes_asc_or_atomics : public single_seq_function
 {
 public:
-  op_sort_distinct_nodes_asc_or_atomics(const signature&);
+  op_sort_distinct_nodes_asc_or_atomics(const signature& sig) : single_seq_function (sig) {}
 
 public:
   xqtref_t type_check(signature&) const;
@@ -525,10 +535,10 @@ public:
 
 
 // internal function for sort-nodes in reverse document order and doing distinct-nodes in one run
-class op_sort_distinct_nodes_descending : public function
+class op_sort_distinct_nodes_descending : public single_seq_function
 {
 public:
-  op_sort_distinct_nodes_descending(const signature&);
+  op_sort_distinct_nodes_descending(const signature& sig) : single_seq_function (sig) {}
 
 public:
   xqtref_t type_check(signature&) const;

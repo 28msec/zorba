@@ -202,11 +202,6 @@ xqtref_t fn_exists::type_check(
 
 //15.1.6 fn:distinct-values
 //-------------------------
-fn_distinct_values_1::fn_distinct_values_1(
-	const signature& sig)
-:
-	function(sig) { }
-
 PlanIter_t fn_distinct_values_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnDistinctValuesIterator(loc, argv);
@@ -223,7 +218,6 @@ xqtref_t fn_distinct_values_1::type_check(
 {
 	return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR;
 }
-
 
 //15.1.7 fn:insert-before
 //-----------------------
@@ -249,9 +243,6 @@ xqtref_t fn_insert_before::type_check(
 
 //15.1.8 fn:remove
 //----------------
-fn_remove::fn_remove(const signature& sig)
-  : function(sig) { }
-
 PlanIter_t fn_remove::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnRemoveIterator(loc, argv);
@@ -272,9 +263,6 @@ xqtref_t fn_remove::type_check(
 
 //15.1.9 fn:reverse
 //-----------------
-fn_reverse::fn_reverse(const signature& sig)
-: function(sig) { }
-
 PlanIter_t fn_reverse::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
 	return new FnReverseIterator(loc, argv);
@@ -292,12 +280,8 @@ xqtref_t fn_reverse::type_check(
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
-
 //15.1.10 fn:subsequence
 //----------------------
-fn_subsequence_2::fn_subsequence_2(const signature& sig)
-: function(sig) { }
-
 PlanIter_t fn_subsequence_2::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new FnSubsequenceIterator(loc, argv);
@@ -672,11 +656,6 @@ xqtref_t fn_doc_func::type_check(
 // internal functions
 
 // distinct-nodes function
-op_distinct_nodes::op_distinct_nodes(const signature& sig)
-  :	function(sig)
-{
-}
-
 PlanIter_t op_distinct_nodes::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new NodeDistinctIterator(loc, argv[0]);
@@ -695,11 +674,6 @@ xqtref_t op_distinct_nodes::type_check(
 }
 
 // distinct-nodes-or-atomics function
-op_distinct_nodes_or_atomics::op_distinct_nodes_or_atomics(const signature& sig)
-  :	function(sig)
-{
-}
-
 PlanIter_t op_distinct_nodes_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new NodeDistinctIterator(loc, argv[0], true);
@@ -718,10 +692,6 @@ xqtref_t op_distinct_nodes_or_atomics::type_check(
 }
 
 // sort-nodes function which is sorting in document order
-op_sort_nodes_ascending::op_sort_nodes_ascending(const signature& sig)
-  :	function(sig)
-{}
-
 PlanIter_t op_sort_nodes_ascending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in document order without dupelim
@@ -739,10 +709,6 @@ xqtref_t op_sort_nodes_ascending::type_check(signature& /*sig*/) const
 }
 
 // sort-nodes-asc-or-atomics
-op_sort_nodes_asc_or_atomics::op_sort_nodes_asc_or_atomics(const signature& sig)
-  :	function(sig)
-{}
-
 PlanIter_t op_sort_nodes_asc_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   return new NodeSortIterator(loc, argv[0], true, false, true);
@@ -758,10 +724,6 @@ xqtref_t op_sort_nodes_asc_or_atomics::type_check(signature& /*sig*/) const
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 // sort-nodes function which is sorting in reverse document order
-op_sort_nodes_descending::op_sort_nodes_descending(const signature& sig)
-  :	function(sig)
-{}
-
 PlanIter_t op_sort_nodes_descending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in reverse document order without dupelim
@@ -779,10 +741,6 @@ xqtref_t op_sort_nodes_descending::type_check(signature& /*sig*/) const
 }
 
 // sort-nodes-desc-or-atomics function
-op_sort_nodes_desc_or_atomics::op_sort_nodes_desc_or_atomics(const signature& sig)
-  :	function(sig)
-{}
-
 PlanIter_t op_sort_nodes_desc_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in reverse document order without dupelim
@@ -799,10 +757,6 @@ xqtref_t op_sort_nodes_desc_or_atomics::type_check(signature& /*sig*/) const
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 // function for sorting nodes in document order and doing distinct-nodes in one run
-op_sort_distinct_nodes_ascending::op_sort_distinct_nodes_ascending(const signature& sig)
-  :	function(sig)
-{}
-
 PlanIter_t op_sort_distinct_nodes_ascending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in document order and doing dup elim
@@ -820,10 +774,6 @@ xqtref_t op_sort_distinct_nodes_ascending::type_check(signature& /*sig*/) const
 }
 
 // op:sort-distinct-nodes-asc-or-atomics
-op_sort_distinct_nodes_asc_or_atomics::op_sort_distinct_nodes_asc_or_atomics(const signature& sig)
-  :	function(sig)
-{}
-
 PlanIter_t op_sort_distinct_nodes_asc_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in document order and doing dup elim
@@ -841,10 +791,6 @@ xqtref_t op_sort_distinct_nodes_asc_or_atomics::type_check(signature& /*sig*/) c
 }
 
 // function for sorting nodes in document order and doing distinct-nodes in one run
-op_sort_distinct_nodes_descending::op_sort_distinct_nodes_descending(const signature& sig)
-  :	function(sig)
-{}
-
 PlanIter_t op_sort_distinct_nodes_descending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
   // sorting in document order and doing dup elim
@@ -861,6 +807,10 @@ xqtref_t op_sort_distinct_nodes_descending::type_check(signature& /*sig*/) const
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
+xqtref_t single_seq_function::return_type (const std::vector<xqtref_t> &arg_types) const { return arg_types [src]; }
+
+void single_seq_function::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
+}
 
 } /* namespace zorba */
 
