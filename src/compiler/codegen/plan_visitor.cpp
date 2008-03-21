@@ -12,7 +12,7 @@
 #include <vector>
 #include <stack>
 
-#include <zorba/properties.h>
+#include "util/properties.h"
 #include "context/static_context_consts.h"
 
 #include "compiler/codegen/plan_visitor.h"

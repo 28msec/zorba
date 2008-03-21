@@ -6,7 +6,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <zorba/properties.h>
+#include "util/properties.h"
 
 
 #define CONFIG_FOLDER "zorba"

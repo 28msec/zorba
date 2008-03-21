@@ -7,6 +7,7 @@
 #include "api/unmarshaller.h"
 #include "context/static_context.h"
 #include "system/globalenv.h"
+#include <zorba/typeident.h>
 
 namespace zorba {
 
@@ -68,6 +69,7 @@ namespace zorba {
   StaticContextImpl::addNamespace( const String& prefix, const String& URI )
   {
     assert(false);
+    return false;
   }
 
   
@@ -75,6 +77,7 @@ namespace zorba {
   StaticContextImpl::getNamespaceURIByPrefix( const String& prefix ) const
   {
     assert(false);
+    return "";
   }
 
 
@@ -96,6 +99,7 @@ namespace zorba {
   StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
   {
     assert(false);
+    return "";
   }
 
 
@@ -110,6 +114,7 @@ namespace zorba {
   StaticContextImpl::getDefaultFunctionNamespace( ) const
   {
     assert(false);
+    return "";
   }
 
 
@@ -124,6 +129,7 @@ namespace zorba {
   StaticContextImpl::getExternalVariableType( const String& var_name )
   {
     assert(false);
+    return TypeIdentifier::createAnyNodeType();
   }
 
 
@@ -145,6 +151,7 @@ namespace zorba {
   StaticContextImpl::getContextItemType( ) const
   {
     assert(false);
+    return TypeIdentifier::createAnyNodeType();
   }
 
 
@@ -173,6 +180,7 @@ namespace zorba {
   StaticContextImpl::getDefaultCollation() const
   {
     assert(false);
+    return "";
   }
 
 
@@ -297,6 +305,7 @@ namespace zorba {
   StaticContextImpl::setBaseURI( const String& baseURI )
   {
     assert(false);
+    return false;
   }
 
 
@@ -304,6 +313,7 @@ namespace zorba {
   StaticContextImpl::getBaseURI( ) const
   {
     assert(false);
+    return "";
   }
 
 

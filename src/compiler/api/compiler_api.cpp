@@ -20,7 +20,7 @@
 #include "compiler/codegen/plan_visitor.h"
 
 #include "runtime/api/plan_wrapper.h"
-#include <zorba/properties.h>
+#include "util/properties.h"
 
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "runtime/visitors/printervisitor.h"

@@ -31,7 +31,7 @@
 #include "zorbatypes/representations.h"
 
 #include "common/common.h"
-#include <zorba/properties.h>
+#include "util/properties.h"
 
 #include <cstdlib>
 #include <errno.h>

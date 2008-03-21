@@ -18,7 +18,7 @@
  */
 
 #include <fstream>
-#include <zorba/properties.h>
+#include "util/properties.h"
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_parser.hpp"
 #include "compiler/parser/xquery_scanner.h"

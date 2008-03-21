@@ -17,7 +17,7 @@
 
 #include "common/common.h"
 #include "store/api/item.h"
-#include <zorba/properties.h>
+#include "util/properties.h"
 #include "context/static_context_consts.h"
 
 #include "compiler/translator/translator.h"
