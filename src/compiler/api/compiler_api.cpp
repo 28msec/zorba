@@ -96,13 +96,18 @@ namespace zorba {
   expr_t
   XQueryCompiler::optimize(expr_t lExpr) 
   {
-    RewriterContext rCtx(theCompilerCB, lExpr);
-    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+    if (Properties::instance ()->useOptimizer ()) {
+      RewriterContext rCtx(theCompilerCB, lExpr);
+      GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+      lExpr = rCtx.getRoot();
+      
+      if (Properties::instance()->printOptimizedExpressions()) {
+        std::cout << "Optimized expression tree for query:\n";
+        lExpr->put(std::cout) << std::endl;
+      }
+    }
 
-    if (Properties::instance()->printOptimizedExpressions())
-      lExpr->put(std::cout);
-
-    return rCtx.getRoot();
+    return lExpr;
   }
 
 
