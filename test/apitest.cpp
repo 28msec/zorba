@@ -108,7 +108,12 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   if (lProp->useSerializer()) {
-    *resultFile << query;
+    try {
+      *resultFile << query;
+    } catch (ZorbaException &e) {
+      std::cerr << e << std::endl;
+      return 2;
+    }
   } else {
     try {
       ResultIterator_t result = query->iterator();
