@@ -454,7 +454,7 @@ ostream& match_expr::put(ostream& os) const
 ostream& const_expr::put( ostream& os) const
 {
   os << INDENT << "const_expr (" << this << ")[ ";
-  //os << val->getStringValue();
+  os << val->getStringValue();
   os << " ]\n"; UNDENT;
   return os;
 }

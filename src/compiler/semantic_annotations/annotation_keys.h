@@ -1,3 +1,6 @@
+#ifndef ZORBA_ANNOTATION_KEYS_H
+#define ZORBA_ANNOTATION_KEYS_H
+
 namespace zorba {
 
 namespace AnnotationKey {
@@ -16,7 +19,10 @@ enum {
 
 }
 
-}  
+}
+
+#endif  // ZORBA_ANNOTATION_KEYS_H
+
 /*
  * Local variables:
  * mode: c++

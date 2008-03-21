@@ -8,29 +8,14 @@
 #include "system/globalenv.h"
 #include "runtime/api/plan_wrapper.h"
 #include "functions/function.h"
+#include "functions/Misc.h"
 #include "errors/error_messages.h"
 
 #include "errors/errors.h"
 
-#include <set>
-
 using namespace std;
 
 namespace zorba {
-
-  set<var_expr *> no_free_vars;
-
-  class FreeVarAnnVal : public AnnotationValue {
-  public:
-    set<var_expr *> varset;
-    void add (var_expr *v) { varset.insert (varset.begin (), v); }
-  };
-  
-  inline const set<var_expr *> &get_freevars (const expr *e) {
-    assert (e != NULL);
-    Annotation::value_ref_t ann = e->get_annotation (AnnotationKey::FREE_VARS);
-    return (ann == NULL) ? no_free_vars : dynamic_cast<FreeVarAnnVal *> (ann.get ())->varset;
-  }
 
   class PlanWrapperHolder {
     auto_ptr<PlanWrapper> pw;
@@ -64,7 +49,7 @@ namespace zorba {
   }
 
   RULE_REWRITE_POST(MarkFreeVars) {
-    FreeVarAnnVal *freevars = new FreeVarAnnVal;
+    VarSetAnnVal *freevars = new VarSetAnnVal;
     Annotation::value_ref_t new_ann = Annotation::value_ref_t (freevars);
     if (node->get_expr_kind () == var_expr_kind) {
       varref_t v = dynamic_cast<var_expr *> (node);
@@ -72,7 +57,7 @@ namespace zorba {
     } else {
       for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
         expr *e = *i;
-        const set<var_expr *> &kfv = get_freevars (e);
+        const set<var_expr *> &kfv = get_varset_annotation (e, AnnotationKey::FREE_VARS);
         copy (kfv.begin (), kfv.end (), inserter (freevars->varset, freevars->varset.begin ()));
       }
       if (node->get_expr_kind () == flwor_expr_kind) {
@@ -80,6 +65,8 @@ namespace zorba {
         for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin (); i != flwor->clause_end (); i++) {
           flwor_expr::forletref_t clause = *i;
           freevars->varset.erase (clause->get_var ());
+          if (clause->get_pos_var () != NULL)
+            freevars->varset.erase (clause->get_pos_var ());
         }
       }
     }
@@ -116,10 +103,12 @@ namespace zorba {
   RULE_REWRITE_POST(MarkUnfoldableOps) {
     Annotation::key_t k = AnnotationKey::UNFOLDABLE_OP;
     switch (node->get_expr_kind ()) {
-    case fo_expr_kind:
-      if (dynamic_cast<fo_expr *> (node)->get_func ()->requires_dyn_ctx ())
+    case fo_expr_kind: {
+      const function *f = dynamic_cast<fo_expr *> (node)->get_func ();
+      if (f->requires_dyn_ctx () || dynamic_cast<const fn_error_base *> (f) != NULL)
         node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
       break;
+    }
     case elem_expr_kind:
     case attr_expr_kind:
     case text_expr_kind:
@@ -154,7 +143,7 @@ namespace zorba {
     xqtref_t rtype = node->return_type (rCtx.getStaticContext ());
     TypeConstants::quantifier_t rquant = ts->quantifier (*rtype);
 
-    if (! already_folded (node, rCtx) && get_freevars (node).empty ()
+    if (! already_folded (node, rCtx) && get_varset_annotation (node, AnnotationKey::FREE_VARS).empty ()
         && node->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VALUE
         && (rquant == TypeConstants::QUANT_ONE || rquant == TypeConstants::QUANT_QUESTION
             || ts->is_equal (*rtype, *GENV_TYPESYSTEM.EMPTY_TYPE))
@@ -199,8 +188,9 @@ namespace zorba {
     case if_expr_kind: {
       if_expr *ite = dynamic_cast<if_expr *> (node);
       const_expr *cond = ite->get_cond_expr ().dyn_cast<const_expr> ().getp ();
-      if (cond != NULL)
+      if (cond != NULL) {
         return cond->get_val ()->getBooleanValue () ? ite->get_then_expr () : ite->get_else_expr ();
+      }
     }
       break;
     case fo_expr_kind: {

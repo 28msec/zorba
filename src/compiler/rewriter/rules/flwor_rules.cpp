@@ -38,14 +38,39 @@ namespace zorba {
     return rCtx.getRoot ();
   }
 
+  void flwor_vars (flwor_expr *flwor, VarSetAnnVal &vars) {
+    for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
+         i != flwor->clause_end(); i++) {
+      flwor_expr::forletref_t ref = *i;
+      vars.add (ref->get_var ());
+      if (ref->get_pos_var () != NULL)
+        vars.add (ref->get_pos_var ());
+    }
+  }
+
 RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
   flwor_expr *flwor = dynamic_cast<flwor_expr *>(node);
   if (flwor == NULL) return NULL;
 
+  expr_t where = flwor->get_where();
+  VarSetAnnVal myvars;
+  flwor_vars (flwor, myvars);
+  
+  if (where != NULL) {
+    const set<var_expr *> &free_vars = get_varset_annotation (where, AnnotationKey::FREE_VARS);
+    set<var_expr *> diff;
+    set_intersection (myvars.varset.begin (), myvars.varset.end (), free_vars.begin (), free_vars.end (), inserter (diff, diff.begin ()));
+    if (diff.empty ()) {
+      flwor->set_where (NULL);
+      return new if_expr (node->get_loc (), where, flwor, new fo_expr (node->get_loc (), LOOKUP_OPN ("concatenate")));
+    }
+  }
+
   bool modified = false;
   static_context *sctx = rCtx.getStaticContext();
   TypeManager *ts = sctx->get_typemanager();
+
   flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
   while(i != flwor->clause_end()) {
     flwor_expr::forletref_t ref = *i;
@@ -92,7 +117,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     }
   }
   if (flwor->forlet_count() == 0) {
-    expr_t where = flwor->get_where();
     expr_t result = flwor->get_retval();
     if (where != NULL) {
       rchandle<if_expr> ite(new if_expr(where->get_loc()));
@@ -119,7 +143,6 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
   if_expr *ite_result = flwor->get_retval().dyn_cast<if_expr> ();
   if (ite_result == NULL) return NULL;
 
-  cout << GENV_TYPESYSTEM.toString (*ite_result->get_else_expr ()->return_type (sctx)) << endl;
   if (GENV_TYPESYSTEM.is_equal (*ite_result->get_else_expr ()->return_type (sctx), *GENV_TYPESYSTEM.EMPTY_TYPE)
       && flwor->get_where () == NULL) {
     flwor->set_where (ite_result->get_cond_expr ());
