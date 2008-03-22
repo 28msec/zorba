@@ -60,20 +60,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // input file (either from a file or given as parameter)
   const char* fname = lProp->getQuery().c_str();
-  auto_ptr<std::istream> qfile(!lProp->inlineQuery()&&*fname!='\0' ?
-                               (std::istream*) new std::ifstream(fname) :
-                               (std::istream*) new std::istringstream(fname));
-  istream* inFile = qfile.get();
-
-  if (!inFile->good() || inFile->eof()) {
-    std::cerr << "no query given or not readable " << fname  << std::endl;
+  auto_ptr<istream> qfile(!lProp->inlineQuery()&&*fname!='\0' ?
+                               (istream*) new ifstream(fname) :
+                               (istream*) new istringstream(fname));
+  if (!qfile->good() || qfile->eof()) {
+    cerr << "no query given or not readable " << fname  << endl;
     return 3;
   }
   
   // print the query if requested
   if (lProp->printQuery()) {
-    cout << inFile << endl;
-    inFile->seekg(0); // go back to the beginning
+    cout << "Query text:\n";
+    copy (istreambuf_iterator<char> (*qfile), istreambuf_iterator<char> (), ostreambuf_iterator<char> (cout));
+    cout << "\n" << endl;
+    qfile->seekg(0); // go back to the beginning
   }
 
   // start processing
@@ -82,9 +82,9 @@ int _tmain(int argc, _TCHAR* argv[])
   // start parsing the query
   XQuery_t query;
   try {
-    query = zengine->createQuery(*inFile);
+    query = zengine->createQuery(*qfile);
   } catch (ZorbaException &e) {
-    std::cerr << e << std::endl;
+    cerr << e << endl;
     return 1;
   }
 
@@ -97,11 +97,12 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // output the result (either using xml serialization or using show)
+  cout << "Running query and printing result..." << endl;
   if (lProp->useSerializer()) {
     try {
       *resultFile << query;
     } catch (ZorbaException &e) {
-      std::cerr << e << std::endl;
+      cerr << e << endl;
       return 2;
     }
   } else {
@@ -112,12 +113,12 @@ int _tmain(int argc, _TCHAR* argv[])
       while (result->next(lItem)) {
         // unmarshall the store item from the api item
         store::Item_t lStoreItem = Unmarshaller::getInternalItem(lItem);
-        *resultFile << lStoreItem->show() << std::endl;
+        *resultFile << lStoreItem->show() << endl;
       }
       result->close();
     } catch (ZorbaException &e) {
       result->close();
-      std::cerr << e << std::endl;
+      cerr << e << endl;
       return 2;
     }
   }
