@@ -237,12 +237,12 @@ string var_expr::decode_var_kind(
   enum var_kind k)
 {
   switch (k) {
-  case for_var: return "FOR_VAR"; break;
-  case let_var: return "LET_VAR"; break;
-  case pos_var: return "POS_VAR"; break;
-  case score_var: return "SCORE_VAR"; break;
-  case quant_var: return "QUANT_VAR"; break;
-  case context_var: return "$DOT"; break;
+  case for_var: return "FOR"; break;
+  case let_var: return "LET"; break;
+  case pos_var: return "POS"; break;
+  case score_var: return "SCORE"; break;
+  case quant_var: return "QUANT"; break;
+  case context_var: return "CTX"; break;
   default: return "???";
   }
 }

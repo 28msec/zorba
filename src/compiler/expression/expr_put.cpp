@@ -40,19 +40,17 @@ ostream& expr::put( ostream& os) const
 
 ostream& var_expr::put(ostream& os) const
 {
-  os << INDENT << "var_expr " << decode_var_kind(get_kind()) << " (" << this << ") [\n";
+  os << INDENT << "var kind=" << decode_var_kind(get_kind()) << " (" << this << ")";
   if (varname_h != NULL)
   {
-    os << DENT << " name=";
+    os << " name=";
     put_qname (get_varname(), os);
   }
-  os << endl;
   if (type != NULL) {
-    os << DENT << " type=";
+    os << " type=";
     GENV_TYPESYSTEM.serialize (os, *type);
-    os << endl;
   }
-  os << DENT << "]\n";
+  os << endl;
   UNDENT;
   return os;
 }
@@ -372,13 +370,12 @@ ostream& axis_step_expr::put(ostream& os) const
   }
   UNDENT;
 
-  int saveIndent = printdepth0;
-  printdepth0 = 0;
-
-  if (theNodeTest != NULL)
+  if (theNodeTest != NULL) {
+    int saveIndent = printdepth0;
+    printdepth0 = -2;
     theNodeTest->put(os);
-
-  printdepth0 = saveIndent;
+    printdepth0 = saveIndent;
+  }
   
   for (vector<rchandle<expr> >::const_iterator it = thePreds.begin();
        it != thePreds.end(); ++it)
@@ -395,7 +392,7 @@ ostream& axis_step_expr::put(ostream& os) const
 
 ostream& match_expr::put(ostream& os) const
 {
-  os << INDENT << "match_expr[";
+  os << INDENT << "match_expr [";
   switch (theTestKind)
   {
   case match_no_test:   os << "no_test("; break;
@@ -448,7 +445,8 @@ ostream& match_expr::put(ostream& os) const
   }
 
   os << ")";
-  return os << "]\n";
+  os << "]\n"; UNDENT;
+  return os;
 }
 
 ostream& const_expr::put( ostream& os) const
