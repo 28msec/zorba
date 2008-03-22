@@ -64,14 +64,12 @@ PlanIter_t op_concatenate::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 	return new FnConcatIterator(loc, argv);
 }
 
-bool op_concatenate::validate_args(
-	vector<PlanIter_t>& argv) const
+bool op_concatenate::validate_args(vector<PlanIter_t>& argv) const
 {
 	return true;
 }
 
-xqtref_t op_concatenate::type_check(
-	signature& /*sig*/) const
+xqtref_t op_concatenate::type_check(signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
@@ -655,161 +653,73 @@ xqtref_t fn_doc_func::type_check(
 
 // internal functions
 
-// distinct-nodes function
-PlanIter_t op_distinct_nodes::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new NodeDistinctIterator(loc, argv[0]);
+#define A_SORT a [0]
+#define A_ATOMICS a [1]
+#define A_DISTINCT a [2]
+#define A_ASCENDING a [3]
+
+bool op_node_sort_distinct::required (const AnnotationHolder &ann) const {
+  const bool *a = action ();
+  return (A_SORT && ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VALUE)
+    || (A_DISTINCT && ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE);
 }
-  
-bool op_distinct_nodes::validate_args(
-	vector<PlanIter_t>& argv) const
-{
+
+PlanIter_t op_node_sort_distinct::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+  const bool *a = action ();
+  bool distinct = A_DISTINCT;
+  if (ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES))
+    distinct = false;
+#if 0  // NodeDistinctIterator seems broken for now
+  if (! A_SORT || ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES))
+    return distinct ? new NodeDistinctIterator (loc, argv [0], A_ATOMICS) : NULL;
+#endif
+  return new NodeSortIterator (loc, argv [0], A_ASCENDING, distinct, A_ATOMICS);
+}
+
+bool op_node_sort_distinct::validate_args(vector<PlanIter_t>& argv) const {
   return (argv.size() == 1);
 }
 
-xqtref_t op_distinct_nodes::type_check(
-	signature& /*sig*/) const
-{
+xqtref_t op_node_sort_distinct::type_check(signature& /*sig*/) const {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
-// distinct-nodes-or-atomics function
-PlanIter_t op_distinct_nodes_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new NodeDistinctIterator(loc, argv[0], true);
-}
-  
-bool op_distinct_nodes_or_atomics::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
-
-xqtref_t op_distinct_nodes_or_atomics::type_check(
-	signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+void op_node_sort_distinct::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
+  const bool *a = action ();
+  switch (k) {
+  case AnnotationKey::IGNORES_SORTED_NODES:
+  case AnnotationKey::IGNORES_DUP_NODES:
+    if (parent->get_annotation (k) == TSVAnnotationValue::TRUE_VALUE || (k == AnnotationKey::IGNORES_SORTED_NODES ? A_SORT : A_DISTINCT))
+      kids [src]->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+    break;
+  default: break;
+  }
 }
 
-// sort-nodes function which is sorting in document order
-PlanIter_t op_sort_nodes_ascending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  // sorting in document order without dupelim
-  return new NodeSortIterator(loc, argv[0], true, false);
-}
-  
-bool op_sort_nodes_ascending::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
-
-xqtref_t op_sort_nodes_ascending::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+const function *op_node_sort_distinct::op_for_action (const static_context *sctx, const bool *a, const AnnotationHolder &ann) {
+#define LOOKUP_OP1( local ) static_cast<const function *> (sctx->lookup_builtin_fn ((xqp_string (":") + local).c_str (), 1))
+  bool distinct = A_DISTINCT;
+  if (ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES))
+    distinct = false;
+  if (! A_SORT || ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES))
+    return distinct ? LOOKUP_OP1 ("distinct-nodes" + (A_ATOMICS ? "-or-atomics" : "")) : NULL;
+  xqp_string part1 = xqp_string ("sort-") + (distinct ? "distinct-" : "") + "nodes-";
+  xqp_string part2 = xqp_string (A_ASCENDING ? "asc" : "desc") + (A_ATOMICS ? "-or-atomics" : "ending");
+  return LOOKUP_OP1 (part1 + part2);
+#undef LOOKUP_OP1
 }
 
-// sort-nodes-asc-or-atomics
-PlanIter_t op_sort_nodes_asc_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new NodeSortIterator(loc, argv[0], true, false, true);
-}
-  
-bool op_sort_nodes_asc_or_atomics::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
-
-xqtref_t op_sort_nodes_asc_or_atomics::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-// sort-nodes function which is sorting in reverse document order
-PlanIter_t op_sort_nodes_descending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  // sorting in reverse document order without dupelim
-  return new NodeSortIterator(loc, argv[0], false, false);
-}
-  
-bool op_sort_nodes_descending::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
-
-xqtref_t op_sort_nodes_descending::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
-// sort-nodes-desc-or-atomics function
-PlanIter_t op_sort_nodes_desc_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  // sorting in reverse document order without dupelim
-  return new NodeSortIterator(loc, argv[0], false, false, true);
-}
-  
-bool op_sort_nodes_desc_or_atomics::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
-
-xqtref_t op_sort_nodes_desc_or_atomics::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-// function for sorting nodes in document order and doing distinct-nodes in one run
-PlanIter_t op_sort_distinct_nodes_ascending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  // sorting in document order and doing dup elim
-  return new NodeSortIterator(loc, argv[0], true, true);
-}
-  
-bool op_sort_distinct_nodes_ascending::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
-
-xqtref_t op_sort_distinct_nodes_ascending::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
-// op:sort-distinct-nodes-asc-or-atomics
-PlanIter_t op_sort_distinct_nodes_asc_or_atomics::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  // sorting in document order and doing dup elim
-  return new NodeSortIterator(loc, argv[0], true, true, true);
-}
-  
-bool op_sort_distinct_nodes_asc_or_atomics::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
-
-xqtref_t op_sort_distinct_nodes_asc_or_atomics::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
-// function for sorting nodes in document order and doing distinct-nodes in one run
-PlanIter_t op_sort_distinct_nodes_descending::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  // sorting in document order and doing dup elim
-  return new NodeSortIterator(loc, argv[0], false, true);
-}
-  
-bool op_sort_distinct_nodes_descending::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
-
-xqtref_t op_sort_distinct_nodes_descending::type_check(signature& /*sig*/) const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 xqtref_t single_seq_function::return_type (const std::vector<xqtref_t> &arg_types) const { return arg_types [src]; }
 
 void single_seq_function::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
+  switch (k) {
+  case AnnotationKey::IGNORES_SORTED_NODES:
+  case AnnotationKey::IGNORES_DUP_NODES:
+    kids [src]->put_annotation (k, parent->get_annotation (k));
+    break;
+  default: break;
+  }
 }
 
 } /* namespace zorba */

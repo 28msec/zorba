@@ -710,6 +710,7 @@ public:
 
 public:
   const function* get_func() const { return func; }
+  void set_func (const function *f) { func = f; }
   const signature &get_signature () const;
   store::Item_t get_fname () const;
 

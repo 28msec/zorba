@@ -486,6 +486,12 @@ DECL(op_sort_distinct_nodes_descending,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+// TODO: separate function
+DECL(op_sort_distinct_nodes_descending,
+  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-desc-or-atomics"),
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
   DECL(fn_union,
   (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":union"),
    GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
