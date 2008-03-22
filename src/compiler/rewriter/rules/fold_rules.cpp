@@ -109,6 +109,8 @@ namespace zorba {
         node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
       break;
     }
+    case match_expr_kind:
+    case axis_step_expr_kind:
     case elem_expr_kind:
     case attr_expr_kind:
     case text_expr_kind:

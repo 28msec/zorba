@@ -1021,6 +1021,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+
+  xqtref_t return_type(static_context *sctx);
 };
 
 
@@ -1072,6 +1074,8 @@ public:
   void next_iter (expr_iterator_data&);
   void accept (expr_visitor&);
   std::ostream& put(std::ostream&) const;
+
+  xqtref_t return_type(static_context *sctx);
 };
 
 
@@ -1130,6 +1134,8 @@ public:
   std::ostream& put(std::ostream&) const;
 
   store::StoreConsts::NodeKind getNodeKind() const;
+
+  xqtref_t return_type(static_context *sctx);
 };
 
 

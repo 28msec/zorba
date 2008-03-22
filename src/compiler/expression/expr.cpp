@@ -695,6 +695,11 @@ void relpath_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
+xqtref_t relpath_expr::return_type(static_context *sctx) {
+  if (theSteps.empty ())
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+  return GENV_TYPESYSTEM.type_x_quant (*theSteps [size () - 1]->return_type (sctx), TypeConstants::QUANT_STAR);
+}
 
 /*******************************************************************************
 
@@ -721,6 +726,10 @@ void axis_step_expr::next_iter (expr_iterator_data& v) {
   ITER (theNodeTest);
 
   END_EXPR_ITER();
+}
+
+xqtref_t axis_step_expr::return_type(static_context *sctx) {
+  return theNodeTest == NULL ? GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE : theNodeTest->return_type (sctx);
 }
 
 
@@ -783,6 +792,9 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
   return store::StoreConsts::anyNode;
 }
 
+xqtref_t match_expr::return_type(static_context *sctx) {
+  return GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
+}
 
 // [84] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
 
