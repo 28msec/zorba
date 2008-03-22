@@ -109,8 +109,6 @@ namespace zorba {
         node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
       break;
     }
-    case match_expr_kind:
-    case axis_step_expr_kind:
     case elem_expr_kind:
     case attr_expr_kind:
     case text_expr_kind:
@@ -140,12 +138,18 @@ namespace zorba {
     return fo->get_func () == LOOKUP_OPN ("concatenate") && fo->size () == 0;
   }
 
+  inline bool standalone_expr (expr_t e) {
+    expr_kind_t k = e->get_expr_kind ();
+    return k != match_expr_kind && k != axis_step_expr_kind;
+  }
+
   RULE_REWRITE_PRE(FoldConst) {
     TypeManager *ts = rCtx.getStaticContext()->get_typemanager();
     xqtref_t rtype = node->return_type (rCtx.getStaticContext ());
     TypeConstants::quantifier_t rquant = ts->quantifier (*rtype);
 
-    if (! already_folded (node, rCtx) && get_varset_annotation (node, AnnotationKey::FREE_VARS).empty ()
+    if (standalone_expr (node) &&
+        ! already_folded (node, rCtx) && get_varset_annotation (node, AnnotationKey::FREE_VARS).empty ()
         && node->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VALUE
         && (rquant == TypeConstants::QUANT_ONE || rquant == TypeConstants::QUANT_QUESTION
             || ts->is_equal (*rtype, *GENV_TYPESYSTEM.EMPTY_TYPE))
