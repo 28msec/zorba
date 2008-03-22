@@ -311,7 +311,7 @@ DECL(fn_in_scope_prefixes,
 DECL(fn_doc_func,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","doc"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+      GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
 
 DECL(op_concatenate,
        (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":concatenate"),

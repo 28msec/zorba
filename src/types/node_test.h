@@ -45,6 +45,7 @@ class NodeTest : virtual public SimpleRCObject
   static const rchandle<NodeTest> PI_TEST;
   static const rchandle<NodeTest> TEXT_TEST;
   static const rchandle<NodeTest> COMMENT_TEST;
+  static const rchandle<NodeTest> DOCUMENT_TEST;
   static const rchandle<NodeTest> ITEM_TEST;
 
   NodeTest(store::StoreConsts::NodeKind kind);

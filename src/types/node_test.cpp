@@ -7,6 +7,7 @@ const rchandle<NodeTest> NodeTest::ANY_NODE_TEST(new NodeTest(store::StoreConsts
 const rchandle<NodeTest> NodeTest::PI_TEST(new NodeTest(store::StoreConsts::piNode));
 const rchandle<NodeTest> NodeTest::TEXT_TEST(new NodeTest(store::StoreConsts::textNode));
 const rchandle<NodeTest> NodeTest::COMMENT_TEST(new NodeTest(store::StoreConsts::commentNode));
+const rchandle<NodeTest> NodeTest::DOCUMENT_TEST(new NodeTest(store::StoreConsts::documentNode));
 
 NodeNameTest::NodeNameTest(
     rchandle<xqpStringStore> uri,

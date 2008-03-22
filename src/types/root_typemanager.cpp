@@ -235,6 +235,7 @@ RootTypeManager::RootTypeManager()
   NODE_TYPE_DEFN(PI)
   NODE_TYPE_DEFN(TEXT)
   NODE_TYPE_DEFN(COMMENT)
+  NODE_TYPE_DEFN(DOCUMENT)
   NODE_TYPE_DEFN(ANY_NODE)
 #undef NODE_TYPE_DEFN
 }
@@ -653,10 +654,9 @@ xqtref_t RootTypeManager::create_type(const TypeIdentifier& ident) const
 
     case IdentTypes::DOCUMENT_TYPE:
       {
-        rchandle<NodeTest> nt(new NodeTest(store::StoreConsts::documentNode));
         type_ident_ref_t ci = ident.getContentType();
         xqtref_t content_type = ci != NULL ? create_type(*ci) : xqtref_t(0);
-        return create_node_type(nt, content_type, q);
+        return create_node_type(NodeTest::DOCUMENT_TEST, content_type, q);
       }
 
     case IdentTypes::PI_TYPE:
