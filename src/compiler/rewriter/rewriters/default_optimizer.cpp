@@ -16,6 +16,9 @@ namespace zorba {
   class FoldRules : public RuleMajorDriver {
   public:
     FoldRules() {
+      ADD_RULE(MarkExpensiveOps);
+      ADD_RULE(MarkUnfoldableOps);
+      ADD_RULE(MarkFreeVars);
       ADD_RULE(FoldConst (false));
       ADD_RULE(PartialEval);      
       ADD_RULE(RefactorPredFLWOR);
@@ -30,9 +33,6 @@ DefaultOptimizer::DefaultOptimizer()
   ADD_SINGLETON_DRIVER(EliminateDocOrderSort);
   ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
   ADD_SINGLETON_DRIVER(EliminateExtraneousPathSteps);
-  ADD_SINGLETON_DRIVER(MarkFreeVars);
-  ADD_SINGLETON_DRIVER(MarkExpensiveOps);
-  ADD_SINGLETON_DRIVER(MarkUnfoldableOps);
   ADD_DRIVER(FoldRules);
 }
 

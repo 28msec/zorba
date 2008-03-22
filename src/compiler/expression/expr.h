@@ -358,13 +358,7 @@ public: // accessors
   uint32_t forlet_count() const { return clause_v.size(); }
   forletref_t const& operator[](int i) const { return clause_v[i]; }
   forletref_t & operator[](int i) { return clause_v[i]; }
-  clause_list_t::iterator remove_forlet_clause(clause_list_t::iterator i) {
-    (*i)->get_var ()->set_forlet_clause (NULL);
-    var_expr *pvar = (*i)->get_pos_var ();
-    if (pvar != NULL)
-      pvar->set_forlet_clause (NULL);
-    return clause_v.erase(i); 
-  }
+  clause_list_t::iterator remove_forlet_clause(clause_list_t::iterator i);
   clause_list_t::const_iterator clause_begin() const
   { return clause_v.begin(); }
   clause_list_t::const_iterator clause_end() const

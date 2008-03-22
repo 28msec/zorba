@@ -33,7 +33,8 @@ namespace zorba {
     return NULL;
   }
 
-  expr_t subst_vars (RewriterContext& rCtx, var_expr *var, expr *subst) {
+  expr_t subst_vars (RewriterContext rCtx0, expr_t root, var_expr *var, expr *subst) {
+    RewriterContext rCtx (rCtx0.getCompilerCB (), root);
     auto_ptr<Rewriter> rw (new SingletonRuleMajorDriverBase (RuleMajorDriver::rule_ptr_t (new SubstVars (var, subst))));
     rw->rewrite (rCtx);
     return rCtx.getRoot ();
@@ -80,7 +81,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     int quant_cnt = 2;  // cardinality of for clause: 0, 1 or more
     forlet_clause::varref_t pvref = ref->get_pos_var ();
     if (pvref != NULL && count_variable_uses(flwor, &*pvref, 1) == 0)
-      MODIFY (ref->set_pos_var (NULL));
+      MODIFY (ref->set_pos_var (pvref = NULL));
     if (! is_let) {
       xqtref_t ctype = cexpr->return_type (sctx);
       if (TypeOps::is_equal (*ctype, *GENV_TYPESYSTEM.EMPTY_TYPE))
@@ -92,20 +93,20 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (quant_cnt == 0) return new fo_expr (node->get_loc (), LOOKUP_OPN ("concatenate"));
       // otherwise is_let || quant_cnt == 1
       if (pvref != NULL)
-        MODIFY (subst_vars (rCtx, pvref.getp (), new const_expr (node->get_loc (), xqp_integer::parseInt (1))));
+        MODIFY (subst_vars (rCtx, node, pvref.getp (), new const_expr (node->get_loc (), xqp_integer::parseInt (1))));
       int uses = count_variable_uses(flwor, &*vref, 2);
       if (uses > 1) {
         if (cexpr->get_expr_kind () == const_expr_kind) {
+          subst_vars (rCtx, node, vref, cexpr);
           MODIFY (i = flwor->remove_forlet_clause (i));
-          subst_vars (rCtx, vref, cexpr);
         } else ++i;
       } else {
         if (uses == 1) {
           if (flwor->forlet_count () == 1 // TODO: if cardinality FLWOR result = 1...
               || cexpr->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VALUE) 
             {
+              subst_vars (rCtx, node, vref, cexpr);
               MODIFY (i = flwor->remove_forlet_clause (i));
-              subst_vars (rCtx, vref, cexpr);
             }
           else ++i;
         } else {
