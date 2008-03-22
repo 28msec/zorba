@@ -99,7 +99,20 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
     break;
   }
 
-  default: break;
+  case flwor_expr_kind: {
+    flwor_expr *flwor = dynamic_cast<flwor_expr *> (node);
+    propagate_down_nodeid_props (node, flwor->get_retval ());
+    break;
+  }
+
+  default:
+    {
+      cast_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
+      if (ce != NULL)
+        propagate_down_nodeid_props (node, ce->get_input ());
+      break;
+    }
+    break;
   }
 
   return NULL;
