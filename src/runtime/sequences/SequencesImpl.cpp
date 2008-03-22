@@ -18,7 +18,7 @@
 #include "system/globalenv.h"
 
 #include "types/casting.h"
-
+#include "types/typeops.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
@@ -726,7 +726,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
     do {
       // casting of untyped atomic
       xqtref_t lRunningType = GENV_TYPESYSTEM.create_type(lRunningItem->getType(),TypeConstants::QUANT_ONE);
-      if (GENV_TYPESYSTEM.is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
+      if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)) {
         lRunningItem = GenericCast::instance()->cast(lRunningItem, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
         lRunningType = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
       }
@@ -739,7 +739,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
          * only xs:float("NaN")'s [xs:float("NaN") is returned]'.
          */
         lMaxItem = lRunningItem;
-        if (GENV_TYPESYSTEM.is_subtype(*lRunningType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
+        if (TypeOps::is_subtype(*lRunningType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
           break;
 
         lMaxType = GENV_TYPESYSTEM.create_type(lMaxItem->getType(), TypeConstants::QUANT_ONE);

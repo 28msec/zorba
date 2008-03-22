@@ -12,6 +12,7 @@
 #include "store/api/item_factory.h"
 #include "context/dynamic_context.h"
 #include "runtime/api/runtimecb.h"
+#include "types/typeops.h"
 
 namespace zorba {
 
@@ -22,15 +23,13 @@ void ArithOperationsCommons::createError(
   TypeConstants::atomic_type_code_t aType1
 )
 {
-  AtomicXQType lAType0(aType0, TypeConstants::QUANT_ONE);
-  AtomicXQType lAType1(aType1, TypeConstants::QUANT_ONE);
   std::stringstream lStream;
   lStream << "The operation '";
   lStream << aOp;
   lStream << "' is not possible with parameters of the type ";
-  lAType0.serialize(lStream);
+  GENV_TYPESYSTEM.create_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize(lStream);
   lStream << " and ";
-  lAType1.serialize(lStream);
+  GENV_TYPESYSTEM.create_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize(lStream);
   lStream << "!";
   ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, *aLoc, lStream.str());
 }
@@ -80,9 +79,9 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
   xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
   xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeConstants::QUANT_ONE );
 
-  if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
+  if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
   {
-    if(GENV_TYPESYSTEM.is_numeric(*type1))
+    if(TypeOps::is_numeric(*type1))
     {
       n1 = GenericCast::instance()->cast ( n1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
       return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE> ( aRuntimeCB,  &aLoc, n0, n1 );
@@ -90,31 +89,31 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
     else
       return Operation::template computeSingleType<TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
-  else if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
+  else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
   {
-    if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
+    if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME> (  aRuntimeCB, &aLoc, n0, n1 );
     else
       return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
-  else if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
+  else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
   {
-    if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
+    if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE> (  aRuntimeCB, &aLoc, n0, n1 );
     else
       return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
-  else if(GENV_TYPESYSTEM.is_subtype ( *type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
+  else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
   {
-    if(GENV_TYPESYSTEM.is_subtype ( *type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
+    if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME> (  aRuntimeCB, &aLoc, n0, n1 );
     else
       return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
-  else if ( GENV_TYPESYSTEM.is_numeric(*type0) 
-    || GENV_TYPESYSTEM.is_numeric(*type1)
-    || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
-    || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  else if ( TypeOps::is_numeric(*type0) 
+    || TypeOps::is_numeric(*type1)
+    || TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
+    || TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
   {
     return NumArithIterator<Operation>::computeAtomic( aRuntimeCB, aLoc, n0, type0, n1, type1);
   }

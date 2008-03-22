@@ -9,6 +9,7 @@
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "store/api/item_factory.h"
+#include "types/typeops.h"
 
 namespace zorba
 {
@@ -40,7 +41,7 @@ namespace zorba
   xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types) const {
     xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
     for (int i = 0; i < 2; i++)
-      if (GENV_TYPESYSTEM.is_subtype (*empty, *arg_types [i]))
+      if (TypeOps::is_subtype (*empty, *arg_types [i]))
         return empty;
     return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
   }

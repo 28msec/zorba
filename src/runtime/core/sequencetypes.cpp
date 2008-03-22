@@ -2,6 +2,7 @@
 #include "system/globalenv.h"
 #include "errors/error_manager.h"
 #include "types/casting.h"
+#include "types/typeops.h"
 #include "store/api/item_factory.h"
 
 using namespace std;
@@ -11,10 +12,10 @@ namespace zorba
 
   static xqtref_t seq_target_type (xqtref_t type) {
     TypeManager &ts = GENV_TYPESYSTEM;
-    if (ts.is_equal (*type, *ts.create_empty_type ()))
+    if (TypeOps::is_equal (*type, *ts.create_empty_type ()))
       return type;
     else
-      return ts.prime_type (*type);
+      return TypeOps::prime_type (*type);
   }
 
 /*******************************************************************************
@@ -50,11 +51,11 @@ InstanceOfIterator::nextImpl(PlanState& planState) const
   
   lTreatItem = consumeNext(theChild.getp(), planState);
 
-  lQuantifier = ts.quantifier(*theSequenceType);
+  lQuantifier = TypeOps::quantifier(*theSequenceType);
 
   if (lTreatItem != 0)
   {
-    if (ts.is_subtype(*ts.create_type (lTreatItem->getType()),
+    if (TypeOps::is_subtype(*ts.create_type (lTreatItem->getType()),
                       *theSequenceType))
     {
       lTreatItem = consumeNext(theChild.getp(), planState);
@@ -70,7 +71,7 @@ InstanceOfIterator::nextImpl(PlanState& planState) const
           lResult = true;
           do
           {
-            if (!ts.is_subtype(*ts.create_type(lTreatItem->getType()),
+            if (!TypeOps::is_subtype(*ts.create_type(lTreatItem->getType()),
                                *theSequenceType))
             {
               lResult = false;
@@ -93,7 +94,7 @@ InstanceOfIterator::nextImpl(PlanState& planState) const
   {
     if ((lQuantifier == TypeConstants::QUANT_ONE ||
          lQuantifier == TypeConstants::QUANT_PLUS) &&
-        !ts.is_equal(*ts.EMPTY_TYPE, *theSequenceType))
+        !TypeOps::is_equal(*ts.EMPTY_TYPE, *theSequenceType))
     {
       lResult = false;
     }
@@ -120,7 +121,7 @@ CastIterator::CastIterator(
   : UnaryBaseIterator<CastIterator, PlanIteratorState>(loc, aChild)
 {
   theCastType = seq_target_type (aCastType);
-  theQuantifier = GENV_TYPESYSTEM.quantifier(*aCastType);
+  theQuantifier = TypeOps::quantifier(*aCastType);
 }
 
 CastIterator::~CastIterator(){}
@@ -183,7 +184,7 @@ CastableIterator::CastableIterator(
   UnaryBaseIterator<CastableIterator, PlanIteratorState>(aLoc, aChild)
 {
   theCastType = seq_target_type (aCastType);
-  theQuantifier = GENV_TYPESYSTEM.quantifier(*aCastType);
+  theQuantifier = TypeOps::quantifier(*aCastType);
 }
 
 CastableIterator::~CastableIterator(){}
@@ -227,7 +228,7 @@ PromoteIterator::PromoteIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const
   : UnaryBaseIterator<PromoteIterator, PlanIteratorState>(aLoc, aChild)
 {
   thePromoteType = seq_target_type (aPromoteType);
-  theQuantifier = GENV_TYPESYSTEM.quantifier(*aPromoteType);
+  theQuantifier = TypeOps::quantifier(*aPromoteType);
 }
 
 PromoteIterator::~PromoteIterator(){}
@@ -254,7 +255,7 @@ store::Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
     }
     lResult = GenericCast::instance()->promote(lItem, thePromoteType);
     if (lResult == 0) {
-      ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
+      ZORBA_ERROR_LOC_DESC(  ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " -> " + TypeOps::toString (*thePromoteType) );
     } else {
       STACK_PUSH(lResult, lState);
     }
@@ -262,7 +263,7 @@ store::Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
     do {
       lResult = GenericCast::instance()->promote(lItem, thePromoteType);
       if (lResult == 0) {
-        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType ())) + " -> " + GENV_TYPESYSTEM.toString (*thePromoteType) );
+        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,  "Type Promotion not possible: " + TypeOps::toString (*GENV_TYPESYSTEM.create_type (lItem->getType ())) + " -> " + TypeOps::toString (*thePromoteType) );
       } else{
         STACK_PUSH(lResult, lState);
       }
@@ -276,7 +277,7 @@ store::Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
   : UnaryBaseIterator<TreatIterator, PlanIteratorState>(aLoc, aChild), theErrorCode (aErrorCode)
 {
   theTreatType = seq_target_type (aTreatType);
-  theQuantifier = GENV_TYPESYSTEM.quantifier(*aTreatType);
+  theQuantifier = TypeOps::quantifier(*aTreatType);
 }
 
 TreatIterator::~TreatIterator(){}
@@ -300,15 +301,15 @@ store::Item_t TreatIterator::nextImpl(PlanState& aPlanState) const
       ZORBA_ERROR_LOC_DESC( theErrorCode, loc, 
       "Seq with 2 or more items cannot treated as a QUANT_QUESTION or QUANT_ONE type.");
     }
-    if (!GENV_TYPESYSTEM.is_treatable(lItem, *theTreatType)) {
-      ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + GENV_TYPESYSTEM.toString (*theTreatType) );
+    if ( !TypeOps::is_treatable(lItem, *theTreatType)) {
+      ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + TypeOps::toString (*theTreatType) );
     } else {
       STACK_PUSH(lItem, lState);
     }
   } else {
     do {
-      if (!GENV_TYPESYSTEM.is_treatable(lItem, *theTreatType)) {
-        ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + GENV_TYPESYSTEM.toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + GENV_TYPESYSTEM.toString (*theTreatType) );
+      if ( !TypeOps::is_treatable(lItem, *theTreatType)) {
+        ZORBA_ERROR_LOC_DESC( theErrorCode, loc,  "Cannot treat " + TypeOps::toString (*GENV_TYPESYSTEM.create_type (lItem->getType (), TypeConstants::QUANT_ONE)) + " as " + TypeOps::toString (*theTreatType) );
       } else{
         STACK_PUSH(lItem, lState);
       }

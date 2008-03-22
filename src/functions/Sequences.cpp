@@ -26,6 +26,7 @@
 #include "system/globalenv.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
+#include "types/typeops.h"
 
 using namespace std;
 namespace zorba {
@@ -82,12 +83,12 @@ xqtref_t op_concatenate::return_type (const std::vector<xqtref_t> &arg_types) co
     xqtref_t t = arg_types [0];
     TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
     for (int i = 1; i < sz; i++) {
-      t = GENV_TYPESYSTEM.union_type (*t, *arg_types [i]);
-      TypeConstants::quantifier_t pq = GENV_TYPESYSTEM.quantifier (*t);
+      t = TypeOps::union_type (*t, *arg_types [i]);
+      TypeConstants::quantifier_t pq = TypeOps::quantifier (*t);
       if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
         q = TypeConstants::QUANT_PLUS;
     }
-    return GENV_TYPESYSTEM.type_x_quant (*t, q);
+    return GENV_TYPESYSTEM.create_type_x_quant (*t, q);
   }
 }
 

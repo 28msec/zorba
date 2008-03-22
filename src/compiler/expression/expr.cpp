@@ -29,6 +29,7 @@
 #include "types/root_typemanager.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "types/typeops.h"
 
 
 using namespace std;
@@ -479,7 +480,7 @@ void if_expr::next_iter (expr_iterator_data& v) {
 }
 
   xqtref_t if_expr::return_type (static_context *sctx) {
-    return sctx->get_typemanager ()->union_type (*then_expr_h->return_type (sctx), *else_expr_h->return_type (sctx));
+    return TypeOps::union_type (*then_expr_h->return_type (sctx), *else_expr_h->return_type (sctx));
   }
 
 ////////////////////////////////
@@ -597,7 +598,7 @@ castable_expr::castable_expr(
   castable_base_expr (loc, _expr_h, _type)
 {}
 
-bool castable_expr::is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeConstants::QUANT_QUESTION; }
+bool castable_expr::is_optional() const { return TypeOps::quantifier(*type) == TypeConstants::QUANT_QUESTION; }
 
 void castable_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
@@ -616,7 +617,7 @@ cast_expr::cast_expr(
 {
 }
 
-bool cast_expr::is_optional() const { return GENV_TYPESYSTEM.quantifier(*target_type) == TypeConstants::QUANT_QUESTION; }
+bool cast_expr::is_optional() const { return TypeOps::quantifier(*target_type) == TypeConstants::QUANT_QUESTION; }
 
 void cast_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
@@ -698,7 +699,7 @@ void relpath_expr::next_iter (expr_iterator_data& v) {
 xqtref_t relpath_expr::return_type(static_context *sctx) {
   if (theSteps.empty ())
     return GENV_TYPESYSTEM.EMPTY_TYPE;
-  return GENV_TYPESYSTEM.type_x_quant (*theSteps [size () - 1]->return_type (sctx), TypeConstants::QUANT_STAR);
+  return sctx->get_typemanager()->create_type_x_quant (*theSteps [size () - 1]->return_type (sctx), TypeConstants::QUANT_STAR);
 }
 
 /*******************************************************************************
@@ -1091,13 +1092,13 @@ xqtref_t var_expr::return_type(static_context *sctx) {
     assert (m_forlet_clause != NULL);
     type1 = m_forlet_clause->get_expr()->return_type(sctx);
     if (kind == for_var) {
-      type1 = GENV_TYPESYSTEM.prime_type(*type1);
+      type1 = TypeOps::prime_type(*type1);
     }
   }
   if (type1 == NULL) {
     return type == NULL ? GENV_TYPESYSTEM.ITEM_TYPE_STAR : type;
   }
-  return type == NULL ? type1 : GENV_TYPESYSTEM.intersect_type(*type1, *type);
+  return type == NULL ? type1 : TypeOps::intersect_type(*type1, *type);
 }
 
 // [242] [http://www.w3.org/TR/xqupdate/#prod-xquery-InsertExpr]

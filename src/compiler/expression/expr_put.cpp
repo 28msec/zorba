@@ -6,12 +6,12 @@
 #include "context/static_context_consts.h"
 
 #include "compiler/expression/expr.h"
-#include "system/globalenv.h"
 #include "functions/function.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "util/Assert.h"
 #include "util/tracer.h"
+#include "types/typeops.h"
 //#include "system/zorba.h"
 
 
@@ -48,7 +48,7 @@ ostream& var_expr::put(ostream& os) const
   }
   if (type != NULL) {
     os << " type=";
-    GENV_TYPESYSTEM.serialize (os, *type);
+    TypeOps::serialize (os, *type);
   }
   os << endl;
   UNDENT;
@@ -138,7 +138,7 @@ ostream& flwor_expr::put( ostream& os) const
 ostream& promote_expr::put(ostream& os) const
 {
   os << INDENT << "promote_expr (" << this << ") [\n";
-  os << DENT; GENV_TYPESYSTEM.serialize(os, *target_type); os << "\n";
+  os << DENT; TypeOps::serialize(os, *target_type); os << "\n";
   ZORBA_ASSERT(input_expr_h!=NULL);
   input_expr_h->put(os);
   os << DENT << "]\n"; UNDENT;
@@ -242,7 +242,7 @@ ostream& ft_contains_expr::put( ostream& os) const
 
 ostream& instanceof_expr::put( ostream& os) const
 {
-  os << INDENT << "instanceof_expr "; GENV_TYPESYSTEM.serialize (os, *type);
+  os << INDENT << "instanceof_expr "; TypeOps::serialize (os, *type);
   os << " (" << this << ") [\n";
   ZORBA_ASSERT(expr_h!=NULL);
   expr_h->put(os);
@@ -252,7 +252,7 @@ ostream& instanceof_expr::put( ostream& os) const
 
 ostream& treat_expr::put( ostream& os) const
 {
-  os << INDENT << "treat_expr "; GENV_TYPESYSTEM.serialize (os, *target_type);
+  os << INDENT << "treat_expr "; TypeOps::serialize (os, *target_type);
   os << " (" << this << ") [\n";
   ZORBA_ASSERT(input_expr_h!=NULL);
   input_expr_h->put(os);
@@ -263,7 +263,7 @@ ostream& treat_expr::put( ostream& os) const
 ostream& castable_expr::put( ostream& os) const
 {
   os << INDENT << "castable_expr ";
-  GENV_TYPESYSTEM.serialize (os, *type);
+  TypeOps::serialize (os, *type);
   os << " (" << this << ") [\n";
   ZORBA_ASSERT(expr_h!=NULL);
   expr_h->put(os);
@@ -274,7 +274,7 @@ ostream& castable_expr::put( ostream& os) const
 ostream& cast_expr::put( ostream& os) const
 {
   os << INDENT << "cast_expr ";
-  GENV_TYPESYSTEM.serialize (os, *target_type);
+  TypeOps::serialize (os, *target_type);
   os << " (" << this << ") [\n";
   ZORBA_ASSERT(input_expr_h!=NULL);
   input_expr_h->put(os);

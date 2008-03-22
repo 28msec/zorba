@@ -31,6 +31,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "errors/error_manager.h"
+#include "types/typeops.h"
 
 namespace zorba
 {
@@ -110,7 +111,7 @@ store::Item_t GenericCast::stringSimpleCast(
   store::ItemFactory* factory = GENV_ITEMFACTORY;
 
   xqpString lString = aSourceItem->getStringValue();
-  switch(ts.get_atomic_type_code(*aTargetType)) {
+  switch(TypeOps::get_atomic_type_code(*aTargetType)) {
   case TypeConstants::XS_ANY_ATOMIC:
   case TypeConstants::XS_STRING:
   case TypeConstants::XS_NORMALIZED_STRING:
@@ -121,7 +122,7 @@ store::Item_t GenericCast::stringSimpleCast(
     break;
   }
   
-  switch(ts.get_atomic_type_code(*aTargetType))
+  switch(TypeOps::get_atomic_type_code(*aTargetType))
   {
   case TypeConstants::XS_ANY_ATOMIC:
     lItem = factory->createUntypedAtomic(lString.getStore());
@@ -369,8 +370,8 @@ store::Item_t GenericCast::stringSimpleCast(
     
   case TypeConstants::XS_NCNAME:
   {
-    if (!ts.is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
-        !ts.is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
+    if (!TypeOps::is_subtype(*aSourceType, *ts.STRING_TYPE_ONE) &&
+        !TypeOps::is_subtype(*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
     {
       ZORBA_ERROR_DESC( ZorbaError::XPTY0004, "Cannot cast " + lString 
                   + " to an NCName because its type is " + aSourceType->toString());
@@ -388,9 +389,9 @@ store::Item_t GenericCast::stringSimpleCast(
   }
   case TypeConstants::XS_QNAME:
   {
-    if (! ts.is_subtype(*aSourceType, *ts.QNAME_TYPE_ONE)
-        && ! ts.is_subtype (*aSourceType, *ts.STRING_TYPE_ONE)
-        && ! ts.is_subtype (*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
+    if (! TypeOps::is_subtype(*aSourceType, *ts.QNAME_TYPE_ONE)
+        && ! TypeOps::is_subtype (*aSourceType, *ts.STRING_TYPE_ONE)
+        && ! TypeOps::is_subtype (*aSourceType, *ts.UNTYPED_ATOMIC_TYPE_ONE))
       return NULL;
     // Explicit XQuery casts and castable expressions are translated
     // into treat and instance of expressions (or resolved in-place
@@ -522,13 +523,13 @@ store::Item_t GenericCast::castToBoolean(
   bool lRetValue = true;
 
 #ifndef NDEBUG
-  if (GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(BOOLEAN)))
+  if (TypeOps::is_equal(*aSourceType, *ATOMIC_TYPE(BOOLEAN)))
   {
     assert(false); // is already handled by Generic::cast
   }
   else
 #endif
-    if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(FLOAT)))
+    if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(FLOAT)))
     {
       return aSourceItem->getEBV();
       //store::Item_t lFloatItem = GENV_ITEMFACTORY->createFloat(0);
@@ -536,7 +537,7 @@ store::Item_t GenericCast::castToBoolean(
       //  lRetValue = false;
       // TODO check NaN
       
-    } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DOUBLE)))
+    } else if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(DOUBLE)))
     {
       return aSourceItem->getEBV();
       //store::Item_t lDoubleItem = GENV_ITEMFACTORY->createDouble(0);
@@ -544,7 +545,7 @@ store::Item_t GenericCast::castToBoolean(
       //  lRetValue = false;
 
       // TODO check NaN
-    } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(DECIMAL)))
+    } else if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(DECIMAL)))
     {
       return aSourceItem->getEBV();
       //store::Item_t lDecimalItem = GENV_ITEMFACTORY->createDecimal(0);
@@ -553,7 +554,7 @@ store::Item_t GenericCast::castToBoolean(
 
       // TODO check NaN
 
-    } else if (GENV_TYPESYSTEM.is_subtype(*aSourceType, *ATOMIC_TYPE(INTEGER)))
+    } else if (TypeOps::is_subtype(*aSourceType, *ATOMIC_TYPE(INTEGER)))
     {
       return aSourceItem->getEBV();
       //store::Item_t lIntegerItem = GENV_ITEMFACTORY->createInteger(0);
@@ -561,8 +562,8 @@ store::Item_t GenericCast::castToBoolean(
       //  lRetValue = false;
 
      // TODO check NAN
-    } else if (GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(STRING))
-               || GENV_TYPESYSTEM.is_equal(*aSourceType, *ATOMIC_TYPE(UNTYPED_ATOMIC)))
+    } else if (TypeOps::is_equal(*aSourceType, *ATOMIC_TYPE(STRING))
+               || TypeOps::is_equal(*aSourceType, *ATOMIC_TYPE(UNTYPED_ATOMIC)))
     {
       xqp_string lString = aSourceItem->getStringValue().trim();
 
@@ -588,7 +589,7 @@ store::Item_t GenericCast::cast(store::Item_t aItem, const xqtref_t& aTargetType
   xqtref_t lItemType = ts.create_type(aItem->getType(),
                                                   TypeConstants::QUANT_ONE);
 
-  if (ts.is_subtype(*lItemType, *aTargetType)) 
+  if (TypeOps::is_subtype(*lItemType, *aTargetType)) 
   {
     return aItem;
   }
@@ -597,7 +598,7 @@ store::Item_t GenericCast::cast(store::Item_t aItem, const xqtref_t& aTargetType
   if ( lResult == 0 ) 
   {
     ZORBA_ERROR_DESC( ZorbaError::FORG0001, 
-      "Passed item (of type " + GENV_TYPESYSTEM.toString (*lItemType) + ") is not castable to passed target type (" + GENV_TYPESYSTEM.toString (*aTargetType) + ").");
+      "Passed item (of type " + TypeOps::toString (*lItemType) + ") is not castable to passed target type (" + TypeOps::toString (*aTargetType) + ").");
   }
 
   return lResult;
@@ -623,7 +624,7 @@ bool GenericCast::isCastable(
 
   xqtref_t lItemType = ts.create_type(aItem->getType(), TypeConstants::QUANT_ONE);
 
-  if (ts.is_subtype(*lItemType, *aTargetType))
+  if (TypeOps::is_subtype(*lItemType, *aTargetType))
   {
     // Item is castable if target type is a supertype
     return true;  
@@ -651,27 +652,27 @@ bool GenericCast::isCastable(
 store::Item_t GenericCast::promote(store::Item_t aItem, const xqtref_t& aTargetType) const {
   xqtref_t lItemType = GENV_TYPESYSTEM.create_type(aItem->getType(), TypeConstants::QUANT_ONE);
 
-  if (GENV_TYPESYSTEM.is_subtype(*lItemType, *aTargetType)) {
+  if (TypeOps::is_subtype(*lItemType, *aTargetType)) {
     return aItem;
   }
 
   store::Item_t lResult = 0;
-  if (GENV_TYPESYSTEM.is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) && ! GENV_TYPESYSTEM.is_equal(*GENV_TYPESYSTEM.prime_type (*aTargetType), *GENV_TYPESYSTEM.QNAME_TYPE_ONE)) {
+  if (TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) && ! TypeOps::is_equal(*TypeOps::prime_type (*aTargetType), *GENV_TYPESYSTEM.QNAME_TYPE_ONE)) {
     lResult = GenericCast::instance()->cast(aItem, aTargetType);
-  } else if (GENV_TYPESYSTEM.is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
+  } else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
     // Numeric Promotion to xs:float
-    if (GENV_TYPESYSTEM.is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) {
+    if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) {
       lResult = GenericCast::instance()->cast(aItem, GENV_TYPESYSTEM.FLOAT_TYPE_ONE); 
     }
-  } else if (GENV_TYPESYSTEM.is_subtype(*aTargetType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)) {
+  } else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)) {
     // Numeric Promotion to xs:double
-    if (GENV_TYPESYSTEM.is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
-     || GENV_TYPESYSTEM.is_subtype(*lItemType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
+    if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
+     || TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
       lResult = GenericCast::instance()->cast(aItem, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
     }
-  } else if (GENV_TYPESYSTEM.is_subtype(*aTargetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
+  } else if (TypeOps::is_subtype(*aTargetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
     // URI Promotion
-    if (GENV_TYPESYSTEM.is_subtype(*lItemType, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
+    if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
       lResult = GenericCast::instance()->cast(aItem, GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
   }

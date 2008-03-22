@@ -2,7 +2,7 @@
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "context/static_context.h"
 #include "types/root_typemanager.h"
-#include "types/typemanager.h"
+#include "types/typeops.h"
 #include "system/globalenv.h"
 
 using namespace std;
@@ -15,7 +15,6 @@ RULE_REWRITE_PRE(InferVarTypes) {
 
 RULE_REWRITE_POST(InferVarTypes) {
   static_context *sctx = rCtx.getStaticContext();
-  TypeManager *ts = sctx->get_typemanager();
   if (node->get_expr_kind () == flwor_expr_kind) {
     flwor_expr *flwor = dynamic_cast<flwor_expr *> (node);
     for (uint32_t i = 0; i < flwor->forlet_count (); i++) {
@@ -27,8 +26,8 @@ RULE_REWRITE_POST(InferVarTypes) {
       xqtref_t vartype = clause->get_var ()->get_type (),
         ctype = e->return_type (sctx);
       if (clause->get_type () == forlet_clause::for_clause)
-        ctype = ts->prime_type (*ctype);
-      if (vartype == NULL || ts->is_subtype (*ctype, *vartype))
+        ctype = TypeOps::prime_type (*ctype);
+      if (vartype == NULL || TypeOps::is_subtype (*ctype, *vartype))
         clause->get_var ()->set_type (ctype);
     }
   }
@@ -37,7 +36,6 @@ RULE_REWRITE_POST(InferVarTypes) {
 
 RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 {
-  TypeManager *ts = rCtx.getStaticContext()->get_typemanager();
   fo_expr *fo;
 
   if ((fo = dynamic_cast<fo_expr *>(node)) != NULL) {
@@ -45,7 +43,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (fo->get_func() == fnboolean) {
       expr_t arg = (*fo)[0];
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
-      if (ts->is_subtype(*arg_type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
+      if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
         return arg;
       else return NULL;
     }
@@ -53,7 +51,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (fo->get_func() == fndata) {
       expr_t arg = (*fo)[0];
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
-      if (ts->is_subtype(*arg_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+      if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
         return arg;
       else return NULL;
     }
@@ -62,7 +60,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) {
     expr_t arg = pe->get_input();
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
-    if (ts->is_subtype(*arg_type, *pe->get_target_type()))
+    if (TypeOps::is_subtype(*arg_type, *pe->get_target_type()))
       return arg;
     else return NULL;
   }

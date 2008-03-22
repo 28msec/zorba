@@ -18,6 +18,7 @@
 #include "util/Assert.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "types/typeconstants.h"
+#include "types/typeops.h"
 #include "store/api/item_factory.h"
 
 namespace zorba
@@ -334,11 +335,11 @@ namespace zorba
   {
     store::Item_t res;
     
-    xqtref_t resultType = GENV_TYPESYSTEM.arithmetic_type ( *type0, *type1 );
+    xqtref_t resultType = TypeOps::arithmetic_type ( *type0, *type1 );
     store::Item_t n0 = GenericCast::instance()->cast ( item0, resultType );
     store::Item_t n1 = GenericCast::instance()->cast ( item1, resultType );
 
-    switch ( GENV_TYPESYSTEM.get_atomic_type_code ( *resultType ) )
+    switch ( TypeOps::get_atomic_type_code ( *resultType ) )
     {
       case TypeConstants::XS_DOUBLE:
         res = Operation::template computeSingleType<TypeConstants::XS_DOUBLE> ( aRuntimeCB, &aLoc, n0, n1 );
@@ -565,26 +566,26 @@ namespace zorba
     {
       item = item->getAtomizationValue();
       type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       // TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createDouble ( 
           (thePlus ? item->getDoubleValue() : -item->getDoubleValue())
         );
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createFloat ( 
           (thePlus ? item->getFloatValue() : -item->getFloatValue())
         );
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createInteger ( 
           (thePlus ? item->getIntegerValue() : -item->getIntegerValue())
         );
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createDecimal ( 
           (thePlus ? item->getDecimalValue() : -item->getDecimalValue())
         );
@@ -634,39 +635,39 @@ namespace zorba
     {
       item = item->getAtomizationValue();
       type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
         if ( item->getDoubleValue().isPos() )
-          if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+          if ( TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
             res = item;
           else
             res = GENV_ITEMFACTORY->createDouble ( item->getDoubleValue() );
         else
           res = GENV_ITEMFACTORY->createDouble ( -item->getDoubleValue() );
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         if ( item->getFloatValue().isPos() )
-          if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+          if ( TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
             res = item;
           else
             res = GENV_ITEMFACTORY->createFloat ( item->getFloatValue() );
         else
           res = GENV_ITEMFACTORY->createFloat ( -item->getFloatValue() );
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
         if ( item->getDecimalValue() >= xqp_decimal::zero() )
-          if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
+          if ( TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
             res = item;
           else
             res = GENV_ITEMFACTORY->createDecimal ( item->getDecimalValue() );
         else
           res = GENV_ITEMFACTORY->createDecimal ( -item->getDecimalValue() );
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
         if ( item->getIntegerValue() >= xqp_decimal::zero() )
-          if ( GENV_TYPESYSTEM.is_equal ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
+          if ( TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
             res = item;
           else
             res = GENV_ITEMFACTORY->createInteger ( item->getIntegerValue() );
@@ -708,26 +709,26 @@ namespace zorba
       type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       //item type is subtype of DOUBLE
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
           res = GENV_ITEMFACTORY->createDouble(item->getDoubleValue().ceil());
         
       //item type is subtype of FLOAT
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createFloat(item->getFloatValue().ceil());
 
       //item type is subtype of DECIMAL
-      else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
         res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().ceil());
 
       //item type is subtype of INTEGER 
-      else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
+      else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
         res = item;
 
       else
@@ -765,26 +766,26 @@ namespace zorba
       type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       //item type is subtype of DOUBLE
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createDouble(item->getDoubleValue().floor());
         
       //item type is subtype of FLOAT
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createFloat(item->getFloatValue().floor());
 
       //item type is subtype of DECIMAL
-      else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
         res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().floor());
 
       //item type is subtype of INTEGER 
-      else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
+      else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
         res = item;
 
       else
@@ -822,26 +823,26 @@ namespace zorba
       type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       //item type is subtype of DOUBLE
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createDouble(item->getDoubleValue().round());
         
       //item type is subtype of FLOAT
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createFloat(item->getFloatValue().round());
 
       //item type is subtype of DECIMAL
-      else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
         res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().round());
 
       //item type is subtype of INTEGER 
-      else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
+      else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
         res = item;
 
       else
@@ -899,26 +900,26 @@ namespace zorba
       type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
 
       //Parameters of type xs:untypedAtomic are always promoted to xs:double
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
         item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
         type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeConstants::QUANT_ONE );
       }
 
       //item type is subtype of DOUBLE
-      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createDouble(item->getDoubleValue().roundHalfToEven(precision));
         
       //item type is subtype of FLOAT
-      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         res = GENV_ITEMFACTORY->createFloat(item->getFloatValue().roundHalfToEven(precision));
 
       //item type is subtype of DECIMAL
-      else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
         res = GENV_ITEMFACTORY->createDecimal(item->getDecimalValue().roundHalfToEven(precision));
 
       //item type is subtype of INTEGER 
-      else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
+      else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
         res = item;
 
       else

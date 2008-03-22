@@ -4,7 +4,7 @@
 #include "compiler/expression/expr.h"
 #include "compiler/codegen/plan_visitor.h"
 #include "types/root_typemanager.h"
-#include "types/typemanager.h"
+#include "types/typeops.h"
 #include "system/globalenv.h"
 #include "runtime/api/plan_wrapper.h"
 #include "functions/function.h"
@@ -144,15 +144,14 @@ namespace zorba {
   }
 
   RULE_REWRITE_PRE(FoldConst) {
-    TypeManager *ts = rCtx.getStaticContext()->get_typemanager();
     xqtref_t rtype = node->return_type (rCtx.getStaticContext ());
-    TypeConstants::quantifier_t rquant = ts->quantifier (*rtype);
+    TypeConstants::quantifier_t rquant = TypeOps::quantifier (*rtype);
 
     if (standalone_expr (node) &&
         ! already_folded (node, rCtx) && get_varset_annotation (node, AnnotationKey::FREE_VARS).empty ()
         && node->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VALUE
         && (rquant == TypeConstants::QUANT_ONE || rquant == TypeConstants::QUANT_QUESTION
-            || ts->is_equal (*rtype, *GENV_TYPESYSTEM.EMPTY_TYPE))
+            || TypeOps::is_equal (*rtype, *GENV_TYPESYSTEM.EMPTY_TYPE))
         && (fold_expensive_ops || 
             node->get_annotation (AnnotationKey::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VALUE))
     {
@@ -175,16 +174,14 @@ namespace zorba {
   }
 
   RULE_REWRITE_PRE(PartialEval) {
-    TypeManager *ts = rCtx.getStaticContext()->get_typemanager();
-
     castable_base_expr *cbe;
     if ((cbe = dynamic_cast<castable_base_expr *>(node)) != NULL) {
       expr_t arg = cbe->get_expr();
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
-      if (ts->is_subtype(*arg_type, *cbe->get_type()))
+      if (TypeOps::is_subtype(*arg_type, *cbe->get_type()))
         return new const_expr (node->get_loc (), true);
       else if (node->get_expr_kind () == instanceof_expr_kind)
-        return ts->intersect_type (*arg_type, *cbe->get_type ()) == GENV_TYPESYSTEM.NONE_TYPE 
+        return TypeOps::intersect_type (*arg_type, *cbe->get_type ()) == GENV_TYPESYSTEM.NONE_TYPE 
           ? new const_expr (node->get_loc (), false) : NULL;
       else
         return NULL;

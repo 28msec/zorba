@@ -7,6 +7,7 @@
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
+#include "types/typeops.h"
 
 using namespace zorba;
 
@@ -21,10 +22,10 @@ int typesystem_isSubtype(int argc, char* argv[]) {
     xqtref_t lIntType = GENV_TYPESYSTEM.create_type(lInt->getType(), TypeConstants::QUANT_ONE);
     xqtref_t lDecimalType = GENV_TYPESYSTEM.create_type(lDecimal->getType(), TypeConstants::QUANT_ONE);
 
-    assert(GENV_TYPESYSTEM.is_atomic(*lIntType));
-    assert(GENV_TYPESYSTEM.is_subtype(*lIntType, *lIntegerType));
-    assert(GENV_TYPESYSTEM.is_subtype(*lIntType, *lDecimalType));
-    assert(GENV_TYPESYSTEM.is_subtype(*lIntegerType, *lDecimalType));
+    assert(TypeOps::is_atomic(*lIntType));
+    assert(TypeOps::is_subtype(*lIntType, *lIntegerType));
+    assert(TypeOps::is_subtype(*lIntType, *lDecimalType));
+    assert(TypeOps::is_subtype(*lIntegerType, *lDecimalType));
   }
 
   GlobalEnvironment::destroy();

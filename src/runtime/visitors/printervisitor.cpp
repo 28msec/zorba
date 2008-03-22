@@ -26,7 +26,7 @@
 #include "runtime/update/update.h"
 #include "runtime/misc/MiscImpl.h"
 
-#include "system/globalenv.h"
+#include "types/typeops.h"
 
 namespace zorba {
 
@@ -533,7 +533,7 @@ namespace zorba {
 
   void PrinterVisitor::beginVisit ( const TreatIterator& a ) {
     thePrinter.startBeginVisit("TreatIterator", (intptr_t) &a);
-    thePrinter.addAttribute("type", GENV_TYPESYSTEM.toString(*a.theTreatType));
+    thePrinter.addAttribute("type", TypeOps::toString(*a.theTreatType));
     printCommons(  &a );
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
@@ -1615,7 +1615,7 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   void PrinterVisitor::beginVisit(const CastIterator& a) {
     thePrinter.startBeginVisit("CastIterator", (intptr_t) &a);
     std::ostringstream lStream;
-    GENV_TYPESYSTEM.serialize(lStream, *a.theCastType);
+    TypeOps::serialize(lStream, *a.theCastType);
     thePrinter.addAttribute("type", lStream.str());
     printCommons(  &a );
     thePrinter.endBeginVisit((intptr_t) &a);
@@ -1629,7 +1629,7 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   void PrinterVisitor::beginVisit(const PromoteIterator& a) {
     thePrinter.startBeginVisit("PromoteIterator", (intptr_t) &a);
     std::ostringstream lStream;
-    GENV_TYPESYSTEM.serialize(lStream, *a.thePromoteType);
+    TypeOps::serialize(lStream, *a.thePromoteType);
     thePrinter.addAttribute("type", lStream.str());
     printCommons(  &a );
     thePrinter.endBeginVisit((intptr_t) &a);
@@ -1643,7 +1643,7 @@ void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& /*a*/)
   void PrinterVisitor::beginVisit(const CastableIterator& a) {
     thePrinter.startBeginVisit("CastableIterator", (intptr_t) &a);
     std::ostringstream lStream;
-    GENV_TYPESYSTEM.serialize(lStream, *a.theCastType);
+    TypeOps::serialize(lStream, *a.theCastType);
     thePrinter.addAttribute("type", lStream.str());
     printCommons(  &a );
     thePrinter.endBeginVisit((intptr_t) &a);

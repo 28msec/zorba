@@ -7,6 +7,7 @@
 #include "compiler/expression/expr.h"
 #include "runtime/core/flwor_iterator.h"
 #include "types/root_typemanager.h"
+#include "types/typeops.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/api/runtimecb.h"
 #include "errors/error_manager.h"
@@ -26,7 +27,7 @@ namespace zorba
 static bool empty_item (store::Item_t s)
 {
   return (s == 0) ||
-         (GENV_TYPESYSTEM.is_numeric(*GENV_TYPESYSTEM.create_type(s->getType(), TypeConstants::QUANT_ONE)) &&
+         (TypeOps::is_numeric(*GENV_TYPESYSTEM.create_type(s->getType(), TypeConstants::QUANT_ONE)) &&
           s->isNaN());
   }
 

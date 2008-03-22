@@ -3,6 +3,7 @@
 #include "compiler/expression/expr.h"
 #include "functions/signature.h"
 #include "types/root_typemanager.h"
+#include "types/typeops.h"
 #include "system/globalenv.h"
 #include <iostream>
 
@@ -71,7 +72,7 @@ bool normalizer::begin_visit(flwor_expr& node)
     xqtref_t vartype = clause->get_var ()->get_type ();
     if (vartype != NULL) {
       bool is_for = clause->get_type () == forlet_clause::for_clause;
-      if (is_for && GENV_TYPESYSTEM.is_equal (*GENV_TYPESYSTEM.EMPTY_TYPE, *vartype))
+      if (is_for && TypeOps::is_equal (*GENV_TYPESYSTEM.EMPTY_TYPE, *vartype))
         ZORBA_ERROR_LOC (ZorbaError::XPTY0004, loc);
       xqtref_t promote_type = is_for ? GENV_TYPESYSTEM.create_type (*vartype, TypeConstants::QUANT_STAR) : vartype;
       expr_t e = clause->get_expr ();
@@ -115,13 +116,13 @@ bool normalizer::begin_visit(fo_expr& node)
   for(int i = 0; i < n; ++i) {
     expr::expr_t arg = node[i];
     const xqtref_t& arg_type = sign[i];
-    xqtref_t arg_prime_type = GENV_TYPESYSTEM.prime_type(*arg_type);
-    if (GENV_TYPESYSTEM.is_subtype(*arg_prime_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)) {
+    xqtref_t arg_prime_type = TypeOps::prime_type(*arg_type);
+    if (TypeOps::is_subtype(*arg_prime_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)) {
       arg = wrap_in_atomization(m_sctx, arg);
       arg = wrap_in_type_conversion(arg, arg_type);
     }
 
-    if (GENV_TYPESYSTEM.quantifier(*arg_type) != TypeConstants::QUANT_STAR) {
+    if (TypeOps::quantifier(*arg_type) != TypeConstants::QUANT_STAR) {
       arg = wrap_in_typematch(arg, arg_type);
     }
 

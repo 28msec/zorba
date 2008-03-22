@@ -19,6 +19,7 @@
 #include "api/serialization/serializer.h"
 
 #include "types/root_typemanager.h"
+#include "types/typeops.h"
 
 namespace zorba { namespace store {
 
@@ -485,7 +486,7 @@ xqpStringStore* Item::getStringValueP() {
 
 bool Item::isNumeric() const {
   xqtref_t type = GENV_TYPESYSTEM.create_type(getType(), TypeConstants::QUANT_ONE);
-  return GENV_TYPESYSTEM.is_numeric(*type);
+  return TypeOps::is_numeric(*type);
 }
 
 

@@ -3,6 +3,7 @@
 #include "context/static_context.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/rewriter/framework/rule_driver.h"
+#include "types/typeops.h"
 
 #include <memory>
 
@@ -69,7 +70,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
   bool modified = false;
   static_context *sctx = rCtx.getStaticContext();
-  TypeManager *ts = sctx->get_typemanager();
 
   flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
   while(i != flwor->clause_end()) {
@@ -83,9 +83,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       MODIFY (ref->set_pos_var (NULL));
     if (! is_let) {
       xqtref_t ctype = cexpr->return_type (sctx);
-      if (ts->is_equal (*ctype, *ts->create_empty_type ()))
+      if (TypeOps::is_equal (*ctype, *GENV_TYPESYSTEM.EMPTY_TYPE))
         quant_cnt = 0;
-      else if (ts->quantifier (*ctype) == TypeConstants::QUANT_ONE)
+      else if (TypeOps::quantifier (*ctype) == TypeConstants::QUANT_ONE)
         quant_cnt = 1;
     }
     if (is_let || quant_cnt < 2) {
@@ -143,7 +143,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
   if_expr *ite_result = flwor->get_retval().dyn_cast<if_expr> ();
   if (ite_result == NULL) return NULL;
 
-  if (GENV_TYPESYSTEM.is_equal (*ite_result->get_else_expr ()->return_type (sctx), *GENV_TYPESYSTEM.EMPTY_TYPE)
+  if (TypeOps::is_equal (*ite_result->get_else_expr ()->return_type (sctx), *GENV_TYPESYSTEM.EMPTY_TYPE)
       && flwor->get_where () == NULL) {
     flwor->set_where (ite_result->get_cond_expr ());
     flwor->set_retval (ite_result->get_then_expr ());

@@ -59,6 +59,7 @@ namespace zorba {
     class TypeIdentifier; 
   };
 
+class TypeManager;
 class CollationCache;
 
 class QueryLoc;

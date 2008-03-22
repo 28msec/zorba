@@ -31,20 +31,22 @@ public:
     TypeConstants::quantifier_t get_quantifier() const { return m_quantifier; }
     virtual ~XQType() { }
 
-  private:
-    TypeConstants::quantifier_t m_quantifier;
+    const TypeManager *get_manager() const { return m_manager; }
 
   protected:
+    const TypeManager *m_manager;
+    TypeConstants::quantifier_t m_quantifier;
     static const char *KIND_STRINGS[NONE_KIND + 1];
 
-    XQType(TypeConstants::quantifier_t quantifier)
-      : m_quantifier(quantifier) { }
+    XQType(const TypeManager *manager, TypeConstants::quantifier_t quantifier)
+      : m_manager(manager),
+      m_quantifier(quantifier) { }
 };
 
 class AtomicXQType : public XQType {
   public:
-    AtomicXQType(TypeConstants::atomic_type_code_t type_code, TypeConstants::quantifier_t quantifier)
-      : XQType(quantifier), m_type_code(type_code) { }
+    AtomicXQType(const TypeManager *manager, TypeConstants::atomic_type_code_t type_code, TypeConstants::quantifier_t quantifier)
+      : XQType(manager, quantifier), m_type_code(type_code) { }
 
     virtual type_kind_t type_kind() const
     {
@@ -68,7 +70,7 @@ class NodeXQType : public XQType {
       return NODE_TYPE_KIND;
     }
 
-    NodeXQType(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeConstants::quantifier_t quantifier);
+    NodeXQType(const TypeManager *manager, rchandle<NodeTest> nodetest, xqtref_t content_type, TypeConstants::quantifier_t quantifier);
 
     rchandle<NodeTest> get_nodetest() const { return m_nodetest; }
 
@@ -86,7 +88,7 @@ class AnyXQType : public XQType {
       return ANY_TYPE_KIND;
     }
 
-    AnyXQType() : XQType(TypeConstants::QUANT_STAR) { }
+    AnyXQType(const TypeManager *manager) : XQType(manager, TypeConstants::QUANT_STAR) { }
 };
 
 class ItemXQType : public XQType {
@@ -96,7 +98,7 @@ class ItemXQType : public XQType {
       return ITEM_KIND;
     }
 
-    ItemXQType(TypeConstants::quantifier_t quantifier) : XQType(quantifier) { }
+    ItemXQType(const TypeManager *manager, TypeConstants::quantifier_t quantifier) : XQType(manager, quantifier) { }
 };
 
 class AnySimpleXQType : public XQType {
@@ -106,7 +108,7 @@ class AnySimpleXQType : public XQType {
       return ANY_SIMPLE_TYPE_KIND;
     }
 
-    AnySimpleXQType() : XQType(TypeConstants::QUANT_STAR) { }
+    AnySimpleXQType(const TypeManager *manager) : XQType(manager, TypeConstants::QUANT_STAR) { }
 };
 
 class UntypedXQType : public XQType {
@@ -116,7 +118,7 @@ class UntypedXQType : public XQType {
       return UNTYPED_KIND;
     }
 
-    UntypedXQType() : XQType(TypeConstants::QUANT_STAR) { }
+    UntypedXQType(const TypeManager *manager) : XQType(manager, TypeConstants::QUANT_STAR) { }
 };
 
 class EmptyXQType : public XQType {
@@ -126,7 +128,7 @@ class EmptyXQType : public XQType {
       return EMPTY_KIND;
     }
 
-    EmptyXQType() : XQType(TypeConstants::QUANT_ONE) { }
+    EmptyXQType(const TypeManager *manager) : XQType(manager, TypeConstants::QUANT_ONE) { }
 };
 
 class NoneXQType : public XQType {
@@ -136,7 +138,7 @@ class NoneXQType : public XQType {
       return NONE_KIND;
     }
 
-    NoneXQType() : XQType(TypeConstants::QUANT_ONE) { }
+    NoneXQType(const TypeManager *manager) : XQType(manager, TypeConstants::QUANT_ONE) { }
 };
 
 
@@ -153,7 +155,7 @@ public:
       return USER_DEFINED_KIND;
     }
 
-    UserDefinedXQType(store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier);
+    UserDefinedXQType(const TypeManager *manager, store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier);
     
     bool isSubTypeOf(const XQType& superType) const;
 

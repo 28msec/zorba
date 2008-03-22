@@ -29,6 +29,7 @@
 #include "context/namespace_context.h"
 #include "types/node_test.h"
 #include "types/casting.h"
+#include "types/typeops.h"
 #include "compiler/expression/expr.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
@@ -2035,7 +2036,7 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
 /// Creates a cast_expr or castable_expr.
 expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool isCast) {
-  if (sctx_p->get_typemanager()->get_atomic_type_code (*type) != TypeConstants::XS_QNAME) {
+  if (TypeOps::get_atomic_type_code (*type) != TypeConstants::XS_QNAME) {
     if (isCast)
       return new cast_expr (loc, node, type);
     else
@@ -2043,7 +2044,7 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
   } else {  // a QName cast
     const const_expr *ce = node.dyn_cast<const_expr> ().getp();
     if (ce != NULL
-        && GENV_TYPESYSTEM.is_equal (*sctx_p->get_typemanager()->create_type (ce->get_val ()->getType (), TypeConstants::QUANT_ONE),
+        && TypeOps::is_equal (*sctx_p->get_typemanager()->create_type (ce->get_val ()->getType (), TypeConstants::QUANT_ONE),
                                      *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
         store::Item_t castLiteral = GenericCast::instance()->castToQName (ce->get_val ()->getStringValue(), isCast, true);

@@ -84,7 +84,7 @@ static inline const char *decode_quantifier (TypeConstants::quantifier_t quant) 
 
 std::ostream& XQType::serialize(std::ostream& os) const
 {
-  return os << "[XQType " << KIND_STRINGS[type_kind()] << decode_quantifier (GENV_TYPESYSTEM.quantifier (*this)) << "]";
+  return os << "[XQType " << KIND_STRINGS[type_kind()] << decode_quantifier (get_quantifier()) << "]";
 }
 
 
@@ -97,20 +97,21 @@ std::string XQType::toString() const
 
 std::ostream& AtomicXQType::serialize(std::ostream& os) const
 {
-  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[get_type_code()] << decode_quantifier (GENV_TYPESYSTEM.quantifier (*this)) << "]";
+  return os << "[AtomicXQType " << ATOMIC_TYPE_CODE_STRINGS[get_type_code()] << decode_quantifier (get_quantifier()) << "]";
 }
 
 NodeXQType::NodeXQType(
+    const TypeManager *manager,
     rchandle<NodeTest> nodetest,
     xqtref_t content_type,
     TypeConstants::quantifier_t quantifier)
   :
-  XQType(quantifier), m_nodetest(nodetest), m_content_type(content_type)
+  XQType(manager, quantifier), m_nodetest(nodetest), m_content_type(content_type)
 {
 }
     
-UserDefinedXQType::UserDefinedXQType(store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
-    XQType(quantifier), _qname(qname), _baseType(baseType)
+UserDefinedXQType::UserDefinedXQType(const TypeManager *manager, store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
+    XQType(manager, quantifier), _qname(qname), _baseType(baseType)
 {
     switch (baseType.getp()->type_kind())
     {
