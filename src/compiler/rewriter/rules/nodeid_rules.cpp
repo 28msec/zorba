@@ -38,7 +38,7 @@ static bool propagate_up_nodeid_props(expr *target, expr *src) {
   return result;
 }
 
-static bool propagate_nodeid_props_to_flwor_variables(flwor_expr *flwor)
+static bool propagate_up_nodeid_props_to_flwor_variables(flwor_expr *flwor)
 {
   bool result = false;
   uint32_t n = flwor->forlet_count();
@@ -63,6 +63,24 @@ static bool propagate_nodeid_props_to_flwor_variables(flwor_expr *flwor)
     }
   }
   return result;
+}
+
+// If the result of a FLWOR ignores node order, than the sources of all
+// FOR variables do too. This does not hold for dup nodes:
+// (let $a := <u><v>1</v></u> let $x := ($a, $a) for $y in $x return <a>{$y}</a>)//u
+static void propagate_down_nodeid_props_to_flwor_variables (flwor_expr *flwor) {
+  Annotation::key_t k = AnnotationKey::IGNORES_SORTED_NODES;
+  expr_t retval = flwor->get_retval ();
+  if (retval->get_annotation (k) != TSVAnnotationValue::TRUE_VALUE)
+    return;
+  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
+        i != flwor->clause_end(); i++) {
+    flwor_expr::forletref_t ref = *i;
+    forlet_clause::varref_t vref = ref->get_var();
+    forlet_clause::varref_t pvref = ref->get_pos_var ();
+    if (vref->get_kind() == var_expr::let_var && pvref == NULL)
+      ref->get_expr ()->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+  }
 }
 
 RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
@@ -102,6 +120,7 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
   case flwor_expr_kind: {
     flwor_expr *flwor = dynamic_cast<flwor_expr *> (node);
     propagate_down_nodeid_props (node, flwor->get_retval ());
+    propagate_down_nodeid_props_to_flwor_variables (flwor);
     break;
   }
 
@@ -123,7 +142,7 @@ RULE_REWRITE_POST(MarkNodesWithNodeIdProperties)
   switch(node->get_expr_kind()) {
   case flwor_expr_kind: {
     flwor_expr *flwor = static_cast<flwor_expr *>(node);
-    if (propagate_nodeid_props_to_flwor_variables(flwor)) {
+    if (propagate_up_nodeid_props_to_flwor_variables(flwor)) {
       return node;
     }
     if (propagate_up_nodeid_props(flwor, &*flwor->get_retval())) {

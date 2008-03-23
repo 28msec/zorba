@@ -72,8 +72,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   bool modified = false;
   static_context *sctx = rCtx.getStaticContext();
 
-  flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
-  while(i != flwor->clause_end()) {
+  
+  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
+        i != flwor->clause_end(); ) {
     flwor_expr::forletref_t ref = *i;
     expr *cexpr = ref->get_expr ();
     forlet_clause::varref_t vref = ref->get_var();

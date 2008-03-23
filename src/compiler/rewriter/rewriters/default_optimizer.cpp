@@ -29,11 +29,11 @@ namespace zorba {
 DefaultOptimizer::DefaultOptimizer()
 {
   ADD_SINGLETON_DRIVER(InferVarTypes);
-  ADD_SINGLETON_DRIVER(MarkNodesWithNodeIdProperties);
-  ADD_SINGLETON_DRIVER(EliminateDocOrderSort);
   ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
   ADD_SINGLETON_DRIVER(EliminateExtraneousPathSteps);
   ADD_DRIVER(FoldRules);
+  ADD_SINGLETON_DRIVER(MarkNodesWithNodeIdProperties);
+  ADD_SINGLETON_DRIVER(EliminateDocOrderSort);
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()
