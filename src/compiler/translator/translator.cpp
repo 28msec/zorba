@@ -3399,6 +3399,7 @@ void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 void post_predicate_visit(const PredicateList& /*v*/, void* /*visit_state*/)
 {
   expr_t pred = pop_nodestack();
+  QueryLoc loc = pred->get_loc ();
   expr_t f = pop_nodestack();
 
   flwor_expr *flwor = f.dyn_cast<flwor_expr> ();
@@ -3409,30 +3410,24 @@ void post_predicate_visit(const PredicateList& /*v*/, void* /*visit_state*/)
 
   flwor->add(predlet);
 
-  rchandle<if_expr> type_ite = new if_expr(pred->get_loc());
+  expr_t dot = sctx_p->lookup_var_nofail (DOT_VAR);
 
-  rchandle<fo_expr> cond = new fo_expr(pred->get_loc(), LOOKUP_OPN("or"));
-  cond->add(new instanceof_expr(pred->get_loc(), predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
-  cond->add(new instanceof_expr(pred->get_loc(), predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
-  type_ite->set_cond_expr(&*cond);
-  
-  rchandle<if_expr> then_ite = new if_expr(pred->get_loc());
-  rchandle<fo_expr> eq = new fo_expr(pred->get_loc(), LOOKUP_OP2("value-equal"));
+  rchandle<fo_expr> cond = new fo_expr(loc, LOOKUP_OPN("or"));
+  cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+  cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  cond = new fo_expr(loc, LOOKUP_OPN("or"), cond);
+  cond->add (new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
+
+  rchandle<fo_expr> eq = new fo_expr(loc, LOOKUP_OP2("value-equal"));
   eq->add(sctx_p->lookup_var_nofail (DOT_POS_VAR));
   eq->add(predvar);
-  then_ite->set_cond_expr(&*eq);
-  then_ite->set_then_expr(sctx_p->lookup_var_nofail (DOT_VAR));
-  then_ite->set_else_expr(create_seq(pred->get_loc()));
+  expr_t then_ite = new if_expr(loc, &*eq, dot, create_seq(loc));
 
-  rchandle<if_expr> else_ite = new if_expr(pred->get_loc());
-  else_ite->set_cond_expr(predvar);
-  else_ite->set_then_expr(sctx_p->lookup_var_nofail (DOT_VAR));
-  else_ite->set_else_expr(create_seq(pred->get_loc()));
+  rchandle<if_expr> else_ite = new if_expr(loc, predvar, dot, create_seq (loc));
 
-  type_ite->set_then_expr(&*then_ite);
-  type_ite->set_else_expr(&*else_ite);
+  expr_t type_ite = new if_expr(loc, &*cond, then_ite, &*else_ite);
   
-  flwor->set_retval(&*type_ite);
+  flwor->set_retval(type_ite);
   nodestack.push(flwor);
   pop_scope();
 }

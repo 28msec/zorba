@@ -162,13 +162,10 @@ bool refactor_index_pred (expr_t cond, forlet_clause::varref_t &pvar, rchandle<c
   for (i = 0; i < 2; i++) {
     if (NULL != (pvar = (*fo) [i].dyn_cast<var_expr> ()) && pvar->get_kind() == var_expr::pos_var
         && NULL != (pos_expr = (*fo) [1 - i].dyn_cast<const_expr> ().getp ())) {
-      store::Item_t val = GenericCast::instance ()->promote (pos_expr->get_val (), GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-      if (val != NULL) {
-        xqp_double dval = val->getDoubleValue ().round ();
-        if (dval > xqp_double::parseInt (0)) {
-          pos_expr = new const_expr (pos_expr->get_loc (), dval);
-          return true;
-        }
+      store::Item_t val = pos_expr->get_val ();
+      if (TypeOps::is_subtype (*GENV_TYPESYSTEM.create_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) {
+        pos_expr = new const_expr (pos_expr->get_loc (), GenericCast::instance ()->promote (val, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+        return true;
       }
     }
   }
