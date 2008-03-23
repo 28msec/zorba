@@ -34,6 +34,7 @@ namespace zorba {
     return NULL;
   }
 
+  // Substitutes @p var with @p subst in @p root
   expr_t subst_vars (RewriterContext rCtx0, expr_t root, var_expr *var, expr *subst) {
     RewriterContext rCtx (rCtx0.getCompilerCB (), root);
     auto_ptr<Rewriter> rw (new SingletonRuleMajorDriverBase (RuleMajorDriver::rule_ptr_t (new SubstVars (var, subst))));
@@ -41,6 +42,7 @@ namespace zorba {
     return rCtx.getRoot ();
   }
 
+  // Returns a set containing all variables (including positional) defined by a FLWOR
   void flwor_vars (flwor_expr *flwor, VarSetAnnVal &vars) {
     for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
          i != flwor->clause_end(); i++) {
@@ -60,10 +62,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   VarSetAnnVal myvars;
   flwor_vars (flwor, myvars);
 
+  // 'for $x in ... return $x'
   if (where == NULL && flwor->forlet_count () == 1 && myvars.varset.size () == 1
       && flwor->orderspec_count () == 0
       && &*(flwor->get_retval ()) == &*((*flwor) [0]->get_var ()))
     return (*flwor) [0]->get_expr ();
+
+  // 'for $x in ... return ... WHERE cond' when cond doesn't depend on FLWOR vars
   if (where != NULL) {
     const set<var_expr *> &free_vars = get_varset_annotation (where, AnnotationKey::FREE_VARS);
     set<var_expr *> diff;
@@ -76,7 +81,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
   bool modified = false;
   static_context *sctx = rCtx.getStaticContext();
-  
+
+  // FLWOR vars used once or zero times. substitutions
   for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
         i != flwor->clause_end(); ) {
     flwor_expr::forletref_t ref = *i;
@@ -122,6 +128,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       ++i;
     }
   }
+
+  // FLWOR with no remaining clauses
   if (flwor->forlet_count() == 0) {
     expr_t result = flwor->get_retval();
     if (where != NULL) {
@@ -140,6 +148,9 @@ RULE_REWRITE_POST(EliminateUnusedLetVars) {
   return NULL;
 }
 
+
+// Checks whether @p cond comes has the form '$pos_var = ($idx)'
+// where $idx would be a proper sequence position.
 bool refactor_index_pred (expr_t cond, forlet_clause::varref_t &pvar, rchandle<const_expr> &pos_expr) {
   fo_expr *fo = cond.dyn_cast<fo_expr> ().getp ();
   if (fo == NULL) return false;
@@ -175,6 +186,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
   rchandle<const_expr> pos;
   forlet_clause::varref_t pvar;
 
+  // 'for $x in ... return if (...) then ... else ()'
   if (ite_result != NULL && where == NULL &&
       TypeOps::is_equal (*ite_result->get_else_expr ()->return_type (sctx), *GENV_TYPESYSTEM.EMPTY_TYPE))
   {
@@ -183,7 +195,10 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
     flwor->set_where (cond);
     flwor->set_retval (then);
     return flwor;
-  } else if (where != NULL && refactor_index_pred (where, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
+  }
+  
+  // 'for $x at $p where $p = ... return ...'
+  if (where != NULL && refactor_index_pred (where, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
     fo_expr *result = new fo_expr (where->get_loc (), LOOKUP_FN ("fn", "subsequence", 3), pvar->get_forlet_clause ()->get_expr ());
     result->add (pos);
     result->add (new const_expr (pos->get_loc (), xqp_double::parseInt (1)));
