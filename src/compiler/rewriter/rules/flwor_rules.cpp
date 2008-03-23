@@ -4,6 +4,7 @@
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/rewriter/framework/rule_driver.h"
 #include "types/typeops.h"
+#include "types/casting.h"
 
 #include <memory>
 
@@ -58,7 +59,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   expr_t where = flwor->get_where();
   VarSetAnnVal myvars;
   flwor_vars (flwor, myvars);
-  
+
+  if (where == NULL && flwor->forlet_count () == 1 && myvars.varset.size () == 1
+      && flwor->orderspec_count () == 0
+      && &*(flwor->get_retval ()) == &*((*flwor) [0]->get_var ()))
+    return (*flwor) [0]->get_expr ();
   if (where != NULL) {
     const set<var_expr *> &free_vars = get_varset_annotation (where, AnnotationKey::FREE_VARS);
     set<var_expr *> diff;
@@ -71,7 +76,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
   bool modified = false;
   static_context *sctx = rCtx.getStaticContext();
-
   
   for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin();
         i != flwor->clause_end(); ) {
@@ -136,19 +140,57 @@ RULE_REWRITE_POST(EliminateUnusedLetVars) {
   return NULL;
 }
 
+bool refactor_index_pred (expr_t cond, forlet_clause::varref_t &pvar, rchandle<const_expr> &pos_expr) {
+  fo_expr *fo = cond.dyn_cast<fo_expr> ().getp ();
+  if (fo == NULL) return false;
+  const function *f = fo->get_func ();
+  if (f != LOOKUP_OP2 ("equal") && f != LOOKUP_OP2 ("value-equal"))
+    return false;
+
+  int i;
+  for (i = 0; i < 2; i++) {
+    if (NULL != (pvar = (*fo) [i].dyn_cast<var_expr> ()) && pvar->get_kind() == var_expr::pos_var
+        && NULL != (pos_expr = (*fo) [1 - i].dyn_cast<const_expr> ().getp ())) {
+      store::Item_t val = GenericCast::instance ()->promote (pos_expr->get_val (), GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      if (val != NULL) {
+        xqp_double dval = val->getDoubleValue ().round ();
+        if (dval > xqp_double::parseInt (0)) {
+          pos_expr = new const_expr (pos_expr->get_loc (), dval);
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 RULE_REWRITE_PRE(RefactorPredFLWOR) {
   flwor_expr *flwor = dynamic_cast<flwor_expr *>(node);
   if (flwor == NULL) return NULL;
 
   static_context *sctx = rCtx.getStaticContext();
-
+  expr_t where = flwor->get_where ();
   if_expr *ite_result = flwor->get_retval().dyn_cast<if_expr> ();
-  if (ite_result == NULL) return NULL;
 
-  if (TypeOps::is_equal (*ite_result->get_else_expr ()->return_type (sctx), *GENV_TYPESYSTEM.EMPTY_TYPE)
-      && flwor->get_where () == NULL) {
-    flwor->set_where (ite_result->get_cond_expr ());
-    flwor->set_retval (ite_result->get_then_expr ());
+  rchandle<const_expr> pos;
+  forlet_clause::varref_t pvar;
+
+  if (ite_result != NULL && where == NULL &&
+      TypeOps::is_equal (*ite_result->get_else_expr ()->return_type (sctx), *GENV_TYPESYSTEM.EMPTY_TYPE))
+  {
+    expr_t cond = ite_result->get_cond_expr (),
+      then = ite_result->get_then_expr ();
+    flwor->set_where (cond);
+    flwor->set_retval (then);
+    return flwor;
+  } else if (where != NULL && refactor_index_pred (where, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
+    fo_expr *result = new fo_expr (where->get_loc (), LOOKUP_FN ("fn", "subsequence", 3), pvar->get_forlet_clause ()->get_expr ());
+    result->add (pos);
+    result->add (new const_expr (pos->get_loc (), xqp_double::parseInt (1)));
+    forlet_clause *clause = pvar->get_forlet_clause ();
+    clause->set_expr (result);
+    clause->set_pos_var (NULL);
+    flwor->set_where (NULL);
     return flwor;
   }
 
