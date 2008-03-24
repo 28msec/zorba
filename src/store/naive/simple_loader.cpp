@@ -19,6 +19,8 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/nsbindings.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/gregorian.h"
 
 
 namespace zorba { namespace store {

@@ -2,15 +2,17 @@
 #define ZORBA_REPRESENTATIONS_H
 
 #include "zorbatypes/xqpstring.h"
-#include "zorbatypes/duration.h"
-#include "zorbatypes/datetime.h"
-#include "zorbatypes/gregorian.h"
+//#include "zorbatypes/duration.h"
+//#include "zorbatypes/datetime.h"
+//#include "zorbatypes/gregorian.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/floatimpl.h"
 
 namespace zorba
 {
+  class DurationBase;
+  typedef rchandle<DurationBase> DurationBase_t;
   /*______________________________________________________________________
   |
   | The mapping of basic schema types to C++ language types.

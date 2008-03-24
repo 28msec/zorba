@@ -16,6 +16,8 @@
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/duration.h"
 
 using namespace std;
 

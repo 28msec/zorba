@@ -42,8 +42,7 @@ MESSAGE( STATUS "ZORBA_WITH_CODE_PROFILE: " ${ZORBA_WITH_CODE_PROFILE})
 
 
 #specify the threading mechanism used
-#for WIN32 you don't have to specify it
-# one valid thread options must be present for any non win32 platform
+# one valid thread options must be present for any platform
 IF (DEFINED UNIX)
   SET(ZORBA_THREAD "pthread" CACHE STRING "thread mechanism")
   MESSAGE(STATUS "ZORBA_THREAD [pthread/boost/singlethread]: " ${ZORBA_THREAD})
@@ -75,6 +74,15 @@ ELSE (DEFINED UNIX)
 	SET(ZORBA_FOR_ONE_THREAD_ONLY	 ON )
 	ENDIF(${ZORBA_THREAD} STREQUAL "singlethread")
 	MESSAGE( STATUS "ZORBA_FOR_ONE_THREAD_ONLY:      " ${ZORBA_FOR_ONE_THREAD_ONLY} )
+
+  SET(ZORBA_WIN_PLATFORM "win32" CACHE STRING "win platform")
+  MESSAGE(STATUS "ZORBA_WIN_PLATFORM [win32/pocketpc/smartphone]: " ${ZORBA_WIN_PLATFORM})
+  
+  IF(${ZORBA_WIN_PLATFORM} STREQUAL "pocketpc" OR ${ZORBA_WIN_PLATFORM} STREQUAL "smartphone")
+  SET(WINCE ON)
+  SET(WIN32 OFF)
+  ENDIF(${ZORBA_WIN_PLATFORM} STREQUAL "pocketpc" OR ${ZORBA_WIN_PLATFORM} STREQUAL "smartphone")
+  
 
 ENDIF (DEFINED UNIX) 
 

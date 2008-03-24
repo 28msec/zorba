@@ -1,6 +1,6 @@
 
 #include "sax2/native/namespaces_native.h"
-#include "zorba/item.h"
+#include "store/api/item.h"
 
 namespace zorba{
 

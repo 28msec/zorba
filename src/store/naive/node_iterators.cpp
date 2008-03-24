@@ -4,6 +4,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/node_iterators.h"
 #include "store/naive/store_defs.h"
+#include <algorithm>
 
 namespace zorba { namespace store {
 

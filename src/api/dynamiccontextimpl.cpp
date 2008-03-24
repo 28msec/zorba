@@ -36,7 +36,7 @@ namespace zorba {
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
     // add it to the internal context
-    theCtx->add_variable(lExpandedName, lIterator);
+    theCtx->add_variable(lExpandedName, &*lIterator);
   }
 
   void

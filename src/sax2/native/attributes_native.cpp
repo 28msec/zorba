@@ -1,7 +1,7 @@
 
 #include "sax2/native/attributes_native.h"
-#include "zorba/item.h"
-#include "zorba/iterator.h"
+#include "store/api/iterator.h"
+#include "store/api/item.h"
 
 namespace zorba{
 

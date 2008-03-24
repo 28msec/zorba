@@ -1,5 +1,7 @@
 #include "store/naive/atomic_items.h"
 #include "node_test.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/gregorian.h"
 
 using namespace zorba;
 

@@ -382,7 +382,7 @@ int test_api_dynamic_context(const char *result_file_name)
 	assert(dctx1->setVariableAsDuration( "external_vars:durx", -10, 1, 2, 4, 1, 0));
 
 	xqp_date		dt;
-	Date::parse_string("2007-11-1", dt);
+	DateTime::parseDate("2007-11-1", dt);
   assert(!dctx1->setVariableAsDate( "a:b:c", 0));
 	assert(dctx1->setVariableAsDate( "external_vars:datex", dt));
 
@@ -391,7 +391,7 @@ int test_api_dynamic_context(const char *result_file_name)
 	assert(!dctx1->setVariableAsDate( "external_vars:datex", 2008 , 22, 100));
 
 	xqp_time		tt;
-	Time::parse_string("10:10:10", tt);
+	DateTime::parseTime("10:10:10", tt);
   assert(!dctx1->setVariableAsTime( "a:b:c", 0));
 	assert(dctx1->setVariableAsTime( "external_vars:timex", tt));
 

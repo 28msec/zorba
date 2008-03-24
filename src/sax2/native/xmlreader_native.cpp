@@ -1,18 +1,18 @@
 #include "zorba/sax2.h"
 #include "sax2/native/xmlreader_native.h"
 #include <iostream>
-#include "zorba/errors.h"
-#include "zorba/compiled_xquery.h"
-#include "errors/error_factory.h"
-#include "system/zorba.h"
-#include "system/zorba_engine.h"
+#include "zorba/error.h"
+#include "zorba/xquery.h"
+#include "errors/errors.h"
+#include "api/zorbaimpl.h"
+//#include "system/zorba_engine.h"
 #include "api/serialization/serializer.h"
 
 #include "sax2/native/locator_native.h"
 #include "sax2/native/attributes_native.h"
 #include "sax2/native/namespaces_native.h"
 #include "zorba/result_iterator.h"
-#include "zorba/iterator.h"
+#include "store/api/iterator.h"
 
 
 namespace zorba{
@@ -99,7 +99,7 @@ SAX2_XMLReaderNative::~SAX2_XMLReaderNative()
 {
 }
 
-bool SAX2_XMLReaderNative::parse(XQuery_t xquery)
+bool SAX2_XMLReaderNative::parse(XQuery_t xquery, ErrorHandler* aErrorHandler)
 {
   //generate sax event by parsing the item tree
   //use the serializer code to normalize text nodes
@@ -133,11 +133,11 @@ bool SAX2_XMLReaderNative::parse(XQuery_t xquery)
   //end test
 */
 
-  ResultIterator_t    result = xquery->getIterator();
+  ResultIterator_t    result = xquery->iterator();
   if(result == NULL)
     return false;
-  store::Item_t    item = result->nextItem();
-  if(item == NULL)
+  Item    item;
+  if(!result->next(item))
     return false;
 
 
@@ -147,21 +147,20 @@ bool SAX2_XMLReaderNative::parse(XQuery_t xquery)
   if(content_handler)
     content_handler->startDocument();
 
-  while(item != NULL)
+  do
   {
-    emit_item(item);
-    item = result->nextItem();
-  }
+    emit_item(item.getInternalItem());
+  }while(result->next(item));
 
   if(content_handler)
     content_handler->endDocument();
 
   }
-  catch(xqp_exception &x)
+  catch(error::ZorbaError& x)
   {
     if(content_handler)
       content_handler->endDocument();
-    SAX2_ParseException   saxx(x.error_descr->theDescription, &locator_native);
+    SAX2_ParseException   saxx(x.theDescription, &locator_native);
     if(error_handler)
       error_handler->fatalError(saxx);
     throw saxx;
@@ -173,7 +172,7 @@ bool SAX2_XMLReaderNative::parse(XQuery_t xquery)
     throw;
   }
 
-  return item == NULL;//return true if all items were processed
+  return true;//return true if all items were processed
 }
 
 void SAX2_XMLReaderNative::emit_node_children(store::Item* item)//, bool perform_escaping = true)

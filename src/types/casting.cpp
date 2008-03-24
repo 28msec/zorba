@@ -32,6 +32,9 @@
 #include "store/api/store.h"
 #include "errors/error_manager.h"
 #include "types/typeops.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/gregorian.h"
 
 namespace zorba
 {

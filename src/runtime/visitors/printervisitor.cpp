@@ -26,6 +26,7 @@
 #include "runtime/update/update.h"
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/nodes/NodesImpl.h"
+#include "store/api/iterator.h"
 
 #include "types/typeops.h"
 

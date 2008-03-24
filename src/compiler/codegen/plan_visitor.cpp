@@ -43,6 +43,7 @@
 
 #include "store/api/store.h"
 #include "store/api/item.h"
+#include "store/api/iterator.h"
 
 
 #ifndef NDEBUG

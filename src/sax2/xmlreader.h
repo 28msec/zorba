@@ -3,6 +3,7 @@
 #define ZORBA_SAX2_XML_READER_27_FEB_2008
 
 #include "zorba/rchandle.h"
+#include "zorba/api_shared_types.h"
 
 namespace zorba{
 class  SAX2_ContentHandler;
@@ -11,8 +12,9 @@ class  SAX2_DTDHandler;
 class  SAX2_DeclHandler;
 class  SAX2_LexicalHandler;
 
-class	XQuery;
-typedef rchandle<XQuery>		XQuery_t;
+class ErrorHandler;
+//class	XQuery;
+//typedef rchandle<XQuery>		XQuery_t;
 
 
 class SAX2_XMLReader : public SimpleRCObject
@@ -40,7 +42,7 @@ public:
   }
   virtual ~SAX2_XMLReader() {}
 
-  virtual bool parse(XQuery_t result) = 0;
+  virtual bool parse(XQuery_t result, ErrorHandler* aErrorHandler) = 0;
 
 };
 

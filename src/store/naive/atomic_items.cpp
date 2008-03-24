@@ -25,6 +25,8 @@
 #include "store/naive/store_defs.h"
 #include "store/api/item_iterator.h"
 #include "context/dynamic_context.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/gregorian.h"
 
 #define CREATE_XS_TYPE(aType) \
   GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);

@@ -17,6 +17,9 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "context/collation_cache.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/gregorian.h"
 
 namespace zorba
 {

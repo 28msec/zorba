@@ -3,9 +3,14 @@
 #define ZORBA_FATAL_H
 
 #include <iostream>
+#include <stdlib.h>
 
 namespace zorba
 {
+
+#ifdef WINCE
+#define   abort()     exit(1)
+#endif
 
 #define ZORBA_FATAL(cond, msg)                                       \
 do                                                                   \

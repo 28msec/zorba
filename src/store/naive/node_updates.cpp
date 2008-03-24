@@ -12,6 +12,9 @@
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/basic_item_factory.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/gregorian.h"
+#include "zorbatypes/duration.h"
 
 namespace zorba { namespace store {
 

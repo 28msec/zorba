@@ -3,7 +3,7 @@
 #define ZORBA_SAX2_ELEMENT_NAMESPACES_NATIVE_17_MAR_2008
 
 #include "zorba/sax2.h"
-#include "zorba/item.h"
+#include "store/api/item.h"
 
 namespace zorba{
 

@@ -13,6 +13,8 @@
 #include "context/dynamic_context.h"
 #include "runtime/api/runtimecb.h"
 #include "types/typeops.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/duration.h"
 
 namespace zorba {
 

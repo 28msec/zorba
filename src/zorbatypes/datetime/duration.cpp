@@ -9,6 +9,7 @@
 #include <zorbatypes/duration.h>
 #include "zorbatypes/datetime/parse.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbatypes/datetime.h"
 
 using namespace std;
 

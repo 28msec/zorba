@@ -23,6 +23,7 @@
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/update/update.h"
 #include "runtime/qnames/QNamesImpl.h"
+#include "store/api/iterator.h"
 
 #define NOARY_ACCEPT(type) \
   void type::accept(PlanIterVisitor& v) const { \

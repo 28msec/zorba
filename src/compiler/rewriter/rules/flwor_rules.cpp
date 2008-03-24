@@ -199,7 +199,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
   // 'for $x at $p where $p = ... return ...'
   if (where != NULL && refactor_index_pred (where, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
     fo_expr *result = new fo_expr (where->get_loc (), LOOKUP_FN ("fn", "subsequence", 3), pvar->get_forlet_clause ()->get_expr ());
-    result->add (pos);
+    result->add (&*pos);
     result->add (new const_expr (pos->get_loc (), xqp_double::parseInt (1)));
     forlet_clause *clause = pvar->get_forlet_clause ();
     clause->set_expr (result);

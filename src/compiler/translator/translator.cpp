@@ -3415,7 +3415,7 @@ void post_predicate_visit(const PredicateList& /*v*/, void* /*visit_state*/)
   rchandle<fo_expr> cond = new fo_expr(loc, LOOKUP_OPN("or"));
   cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
   cond->add(new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
-  cond = new fo_expr(loc, LOOKUP_OPN("or"), cond);
+  cond = new fo_expr(loc, LOOKUP_OPN("or"), &*cond);
   cond->add (new instanceof_expr(loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
 
   rchandle<fo_expr> eq = new fo_expr(loc, LOOKUP_OP2("value-equal"));

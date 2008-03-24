@@ -37,7 +37,7 @@ public:
                         SAX2_LexicalHandler *lexical_handler = NULL);
   virtual ~SAX2_XMLReaderLibXML2();
 
-  virtual bool parse(XQuery_t result);
+  virtual bool parse(XQuery_t result, ErrorHandler* aErrorHandler);
 
 
 public:

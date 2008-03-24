@@ -5,7 +5,7 @@
 #include <list>
 #include <utility>
 
-#include <zorba/common/common.h>
+#include <common/common.h>
 #include <zorbatypes/representations.h>
 #include "sax2/xmlreader.h"
 #include "api/serialization/serializer.h"
@@ -53,7 +53,7 @@ public:
                         SAX2_LexicalHandler *lexical_handler = NULL);
   virtual ~SAX2_XMLReaderNative();
 
-  virtual bool parse(XQuery_t xquery);
+  virtual bool parse(XQuery_t xquery, ErrorHandler* aErrorHandler);
 
 protected:
   sax2_transcoder   oss_transc;

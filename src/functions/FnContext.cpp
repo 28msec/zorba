@@ -7,6 +7,7 @@
 #include "system/globalenv.h"
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/core/item_iterator.h"
+#include "store/api/iterator.h"
 
 namespace zorba
 {

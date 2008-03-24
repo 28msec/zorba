@@ -2,11 +2,11 @@
 #include "zorba/sax2.h"
 #include "sax2/using_libxml2/xmlreader_libxml2.h"
 #include <iostream>
-#include "zorba/errors.h"
-#include "zorba/compiled_xquery.h"
+#include "zorba/error.h"
+#include "zorba/xquery.h"
 #include "errors/error_manager.h"
-#include "system/zorba.h"
-#include "system/zorba_engine.h"
+#include "api/zorbaimpl.h"
+//#include "system/zorba_engine.h"
 
 #include "sax2/using_libxml2/locator_libxml2.h"
 #include "sax2/using_libxml2/attributes_libxml2.h"
@@ -91,12 +91,11 @@ SAX2_XMLReaderLibXML2::~SAX2_XMLReaderLibXML2()
   ctxt = NULL;
 }
 
-bool SAX2_XMLReaderLibXML2::parse(XQuery_t xquery)
+bool SAX2_XMLReaderLibXML2::parse(XQuery_t xquery, ErrorHandler* aErrorHandler)
 {
   std::ostringstream    oss;
   std::string           strxml;
-  if(!xquery->serializeXML(oss))
-    return false;
+  xquery->serialize(oss);
 
   strxml = oss.str();
   ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, strxml.c_str(), strxml.length(), NULL);
@@ -104,10 +103,16 @@ bool SAX2_XMLReaderLibXML2::parse(XQuery_t xquery)
   try{
     if (ctxt == NULL)
     {
-      ZORBA_ERROR(ZorbaError:: ZorbaError::XQP0023_GET_RESULTS_AS_SAX_FAILED);
+      ZORBA_ERROR(ZorbaError::XQP0023_GET_RESULTS_AS_SAX_FAILED);
 		  return false;
     }
-  }CATCH_ALL_RETURN_false;
+  }
+  catch (error::ZorbaError& e) 
+  {
+    ZorbaImpl::notifyError(aErrorHandler, e);
+		return false;
+  }
+
 
   xmlFreeParserCtxt(ctxt);
   ctxt = NULL;
