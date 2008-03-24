@@ -2,7 +2,7 @@
 #ifndef ZORBA_SAX2_XML_READER_27_FEB_2008
 #define ZORBA_SAX2_XML_READER_27_FEB_2008
 
-#include "zorba/rchandle.h"
+#include "util/rchandle.h"
 #include "zorba/api_shared_types.h"
 
 namespace zorba{
