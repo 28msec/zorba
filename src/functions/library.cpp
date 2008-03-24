@@ -100,22 +100,22 @@ DECL(fn_name_func,
 // end Accessors
 
 //begin Error function
-DECL(fn_error_func_0,
+DECL(fn_error,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
       GENV_TYPESYSTEM.NONE_TYPE));
 
-DECL(fn_error_func_1,
+DECL(fn_error,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.NONE_TYPE));
 
-DECL(fn_error_func_2,
+DECL(fn_error,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.NONE_TYPE));
 
-DECL(fn_error_func_3,
+DECL(fn_error,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "error"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,

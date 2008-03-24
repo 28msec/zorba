@@ -106,7 +106,7 @@ namespace zorba {
     switch (node->get_expr_kind ()) {
     case fo_expr_kind: {
       const function *f = dynamic_cast<fo_expr *> (node)->get_func ();
-      if (f->requires_dyn_ctx () || dynamic_cast<const fn_error_base *> (f) != NULL)
+      if (f->requires_dyn_ctx () || dynamic_cast<const fn_error *> (f) != NULL)
         node->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
       break;
     }
