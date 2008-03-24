@@ -2822,7 +2822,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
     {
       store::Item_t qnameItem = sctx_p->lookup_elem_qname(elemName->get_qname());
 
-      NodeNameTest* nodeNameTest =
+      rchandle<NodeNameTest> nodeNameTest =
         new NodeNameTest(qnameItem->getNamespace().getStore(),
                          qnameItem->getLocalName().getStore());
 
