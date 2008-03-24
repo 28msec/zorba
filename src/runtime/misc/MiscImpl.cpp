@@ -12,6 +12,8 @@
 #include "runtime/misc/MiscImpl.h"
 #include "errors/error_manager.h"
 #include "store/api/item_factory.h"
+#include "runtime/api/runtimecb.h"
+#include "context/static_context.h"
 #include "store/api/store.h"
 #include "system/globalenv.h"
 
@@ -44,6 +46,36 @@ store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
                      loc, aErrorObject);
   }
 
+  STACK_END();
+}
+
+// 8.1 fn:resolve-uri
+//---------------------
+store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
+{
+  store::Item_t item;
+  xqp_string strRelative;
+  xqp_string strBase;
+  
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  item = consumeNext(theChildren[0].getp(), planState );
+  if ( item != NULL ){
+    strRelative = item->getStringValue();
+    if( theChildren.size() == 2 ) {
+      item = consumeNext(theChildren[1].getp(), planState );
+      strBase = item->getStringValue();
+    }
+    else {
+      strBase = planState.theRuntimeCB->theStaticContext->baseuri();
+      if( strBase.empty() )
+        ZORBA_ERROR_LOC_DESC( ZorbaError::FONS0005, loc, "Base-uri not defined in the static context.");
+    }
+  }
+
+  //TODO fix the implementation
+  
   STACK_END();
 }
 

@@ -13,6 +13,7 @@ namespace zorba
   class FnBaseUriIterator;
   class FnDocumentUriIterator;
   class FnErrorIterator;
+  class FnResolveUriIterator;
   class FnStringIterator;
   class FnBooleanIterator;
   class LogicIterator;
@@ -172,6 +173,9 @@ namespace zorba
   class ReplaceIterator;
   class RenameIterator;
   class TransformIterator;
+  class FnLocalNameIterator;
+  class FnNamespaceUriIterator;
+  class FnLangIterator;
 
 #define PLAN_ITER_VISTOR(class)    \
   virtual void beginVisit ( const class& ) = 0;  \
@@ -204,11 +208,23 @@ namespace zorba
       virtual void beginVisit ( const FnDocumentUriIterator& ) = 0;
       virtual void endVisit ( const FnDocumentUriIterator& ) = 0;
 
-      virtual void beginVisit ( const FnErrorIterator& ) = 0;
-      virtual void endVisit ( const FnErrorIterator& ) = 0;
+      virtual void beginVisit ( const FnResolveUriIterator& ) = 0;
+      virtual void endVisit ( const FnResolveUriIterator& ) = 0;
 
       virtual void beginVisit ( const FnStringIterator& ) = 0;
       virtual void endVisit ( const FnStringIterator& ) = 0;
+
+      virtual void beginVisit ( const FnLocalNameIterator& ) = 0;
+      virtual void endVisit ( const FnLocalNameIterator& ) = 0;
+
+      virtual void beginVisit ( const FnNamespaceUriIterator& ) = 0;
+      virtual void endVisit ( const FnNamespaceUriIterator& ) = 0;
+
+      virtual void beginVisit ( const FnLangIterator& ) = 0;
+      virtual void endVisit ( const FnLangIterator& ) = 0;
+      
+      virtual void beginVisit ( const FnErrorIterator& ) = 0;
+      virtual void endVisit ( const FnErrorIterator& ) = 0;
        
       virtual void beginVisit ( const FnBooleanIterator& ) = 0;
       virtual void endVisit ( const FnBooleanIterator& ) = 0;

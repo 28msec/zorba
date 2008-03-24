@@ -55,6 +55,15 @@ class fn_error_func_3 : public fn_error_base {
     bool validate_args(std::vector<PlanIter_t>& ) const;
 };
 
+class fn_resolve_uri : public function {
+  public:
+    fn_resolve_uri(const signature&);
+    
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
 }
 
 #endif /* ZORBA_MISC_H */

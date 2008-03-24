@@ -84,5 +84,30 @@ bool fn_error_func_3::validate_args(vector<PlanIter_t>& argv) const
   return (argv.size() == 3);
 }
 
+/*******************************************************************************
+  8.1 fn:resolve-uri
+********************************************************************************/
+
+fn_resolve_uri::fn_resolve_uri(const signature& sig)
+  : function(sig) { }
+
+PlanIter_t fn_resolve_uri::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  if (!validate_args(argv))
+    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
+
+  return new FnResolveUriIterator ( loc, argv );
+}
+
+xqtref_t fn_resolve_uri::type_check(signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool fn_resolve_uri::validate_args(std::vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1 || argv.size() == 2 );
+}
+
 }
 /* vim:set ts=2 sw=2: */

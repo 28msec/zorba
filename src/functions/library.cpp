@@ -28,6 +28,7 @@
 #include "functions/FnContext.h"
 #include "functions/Misc.h"
 #include "functions/arithmetic.h"
+#include "functions/Nodes.h"
 
 #include "context/static_context.h"
 //#include "system/zorba.h"
@@ -121,6 +122,44 @@ DECL(fn_error_func_3,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR ,
       GENV_TYPESYSTEM.NONE_TYPE));
 //end Errror function
+
+//begin functions on nodes
+DECL(fn_local_name,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "local-name"),
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+DECL(fn_namespace_uri,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "namespace-uri"),
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
+
+DECL(fn_lang,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "lang"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+ 
+DECL(fn_lang,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "lang"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+//end functions on nodes
+
+
+//begin functions on AnyURI
+DECL(fn_resolve_uri,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "resolve-uri"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+ DECL(fn_resolve_uri,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "resolve-uri"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+//end functions on Any URI
+
 
 // Generic Arithmetics
 DECL(op_add,

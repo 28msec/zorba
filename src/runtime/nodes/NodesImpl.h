@@ -5,25 +5,26 @@
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
- * @file misc/MiscImpl.h
+ * @file misc/MiscImpl.cpp
  *
  */
 
-#ifndef ZORBA_MISC_IMPL_H
-#define ZORBA_MISC_IMPL_H
- 
+#ifndef ZORBA_NODES_IMPL_H
+#define ZORBA_NODES_IMPL_H
+
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 
 namespace zorba {
 
-// 3 The Error Function
-NARY_ITER(FnErrorIterator);
+// 14.2 fn:local-name
+NARY_ITER(FnLocalNameIterator);
 
-// 8.1 fn:resolve-uri
-NARY_ITER(FnResolveUriIterator);
+// 14.3 fn:namespace-uri
+NARY_ITER(FnNamespaceUriIterator);
+
+// 14.5 fn:lang
+NARY_ITER(FnLangIterator);
 
 } /* namespace zorba */
-
-#endif /* ZORBA_MISC_IMPL_H */
-
+#endif /* ZORBA_NODES_IMPL_H */

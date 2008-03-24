@@ -53,11 +53,23 @@ public:
   virtual void beginVisit ( const FnDocumentUriIterator& ) ;
   virtual void endVisit ( const FnDocumentUriIterator& ) ;
 
-  virtual void beginVisit ( const FnErrorIterator& ) ;
-  virtual void endVisit ( const FnErrorIterator& ) ;
-
+  virtual void beginVisit ( const FnResolveUriIterator& ) ;
+  virtual void endVisit ( const FnResolveUriIterator& ) ;
+  
   virtual void beginVisit ( const FnStringIterator& ) ;
   virtual void endVisit ( const FnStringIterator& ) ;
+
+  virtual void beginVisit ( const FnLocalNameIterator& ) ;
+  virtual void endVisit ( const FnLocalNameIterator& ) ;
+
+  virtual void beginVisit ( const FnNamespaceUriIterator& ) ;
+  virtual void endVisit ( const FnNamespaceUriIterator& ) ;
+
+  virtual void beginVisit ( const FnLangIterator& ) ;
+  virtual void endVisit ( const FnLangIterator& ) ;
+
+  virtual void beginVisit ( const FnErrorIterator& ) ;
+  virtual void endVisit ( const FnErrorIterator& ) ;
 
   virtual void beginVisit ( const FnBooleanIterator& ) ;
   virtual void endVisit ( const FnBooleanIterator& ) ;

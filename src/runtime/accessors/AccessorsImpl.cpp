@@ -130,13 +130,9 @@ store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
   inNode = consumeNext(theChildren[0].getp(), planState);
 
   if (inNode != NULL)
-  {
     if (inNode->getNodeKind() == store::StoreConsts::elementNode)
-    {
       STACK_PUSH(GENV_ITEMFACTORY->createBoolean(inNode->getNilled()), state);
-    }
-  }
-  
+
   STACK_END();
 }
 

@@ -25,6 +25,7 @@
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
 #include "runtime/misc/MiscImpl.h"
+#include "runtime/nodes/NodesImpl.h"
 
 #include "types/typeops.h"
 
@@ -133,6 +134,17 @@ namespace zorba {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
+
+  void PrinterVisitor::beginVisit ( const FnResolveUriIterator& a ) {
+    thePrinter.startBeginVisit("FnResolveUriIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  
+  void PrinterVisitor::endVisit ( const FnResolveUriIterator& ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
   
   void PrinterVisitor::beginVisit ( const UDFunctionCallIterator& a ) {
     thePrinter.startBeginVisit("UDFunctionCallIterator", (intptr_t) &a);
@@ -160,6 +172,36 @@ namespace zorba {
     thePrinter.endBeginVisit( (intptr_t) &a);
   }
   void PrinterVisitor::endVisit ( const FnStringIterator& /*a*/) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnLocalNameIterator& a ) {
+    thePrinter.startBeginVisit("FnLocalNameIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const FnLocalNameIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnNamespaceUriIterator& a ) {
+    thePrinter.startBeginVisit("FnNamespaceUriIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const FnNamespaceUriIterator&) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnLangIterator& a ) {
+    thePrinter.startBeginVisit("FnLangIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const FnLangIterator&) {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }

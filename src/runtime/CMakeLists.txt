@@ -27,6 +27,7 @@ SET(RUNTIME_SRCS
     visitors/printervisitor.cpp
     update/update.cpp
     misc/MiscImpl.cpp
+    nodes/NodesImpl.cpp
 )
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS accessors)
@@ -41,3 +42,4 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS sequences)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS visitors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS fncontext)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS misc)
+HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS nodes)
