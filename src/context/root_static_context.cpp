@@ -16,6 +16,9 @@ root_static_context::root_static_context()
     : static_context()
 {
   typemgr.reset(new RootTypeManager());
+}
+
+void root_static_context::init() {
   set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
   const char **p = default_ns_initializers;
   for (; *p != NULL; p += 2)

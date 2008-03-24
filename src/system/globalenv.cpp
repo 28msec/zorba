@@ -39,7 +39,9 @@ void GlobalEnvironment::init()
   
   m_globalEnv->m_store.reset(new store::SimpleStore());
   static_cast<store::SimpleStore *>(m_globalEnv->m_store.get())->init();
-  m_globalEnv->m_rootStaticContext.reset(new root_static_context());
+  root_static_context *rctx = new root_static_context();
+  m_globalEnv->m_rootStaticContext.reset(rctx);
+  rctx->init();
   BuiltinFunctionLibrary::populateContext(m_globalEnv->m_rootStaticContext.get());
 
   // initialize mapm for bignum handling

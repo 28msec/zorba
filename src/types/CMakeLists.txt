@@ -1,6 +1,7 @@
 SET(TYPES_SRCS
     casting.cpp
     node_test.cpp
+    typemanagerimpl.cpp
     root_typemanager.cpp
     typeimpl.cpp
     delegating_typemanager.cpp

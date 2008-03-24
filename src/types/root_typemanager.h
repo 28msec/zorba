@@ -5,46 +5,14 @@
 #include <assert.h>
 #include "types/typeconstants.h"
 #include "types/typeimpl.h"
-#include "types/typemanager.h"
+#include "types/typemanagerimpl.h"
 
 namespace zorba {
 
-class RootTypeManager : public TypeManager {
+class RootTypeManager : public TypeManagerImpl {
   public:
     ~RootTypeManager();
 
-
-    TypeManager *get_parent_type_manager() const { return NULL; }
-
-    /* Factory Methods */
-    xqtref_t create_type_x_quant(const XQType& type, TypeConstants::quantifier_t quantifier) const;
-
-    xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
-
-    xqtref_t create_type(const TypeIdentifier& ident) const;
-
-    xqtref_t create_type(const XQType& type, TypeConstants::quantifier_t quantifier) const;
-
-    xqtref_t create_atomic_type(TypeConstants::atomic_type_code_t type_code, TypeConstants::quantifier_t quantifier) const;
-
-    xqtref_t create_atomic_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const;
-
-    xqtref_t create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeConstants::quantifier_t quantifier) const;
-
-    xqtref_t create_any_type() const;
-
-    xqtref_t create_item_type(TypeConstants::quantifier_t quantifier) const;
-
-    xqtref_t create_any_simple_type() const;
-
-    xqtref_t create_untyped_type() const;
-
-    xqtref_t create_empty_type() const;
-
-    xqtref_t create_none_type() const;
-    
-    xqtref_t create_user_defined_type(const UserDefinedXQType& type, TypeConstants::quantifier_t quantifier) const;
-    
     store::Item_t XS_ANY_TYPE_QNAME;
 
     store::Item_t XS_ANY_SIMPLE_TYPE_QNAME;
@@ -146,6 +114,7 @@ class RootTypeManager : public TypeManager {
 
     friend class root_static_context;
     friend class TypeOps;
+    friend class TypeManagerImpl;
 };
 
 }
