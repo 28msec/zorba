@@ -42,26 +42,18 @@ class StackTracePrinter {
     }
 };
 
-#ifdef __GNUC__
-#define __ZORBA_ASSERT_aux4( ) __PRETTY_FUNCTION__
-#else
-#define __ZORBA_ASSERT_aux4( ) "?"
-#endif
 #define __ZORBA_ASSERT_aux3( line ) #line
 #define __ZORBA_ASSERT_aux2( line ) __ZORBA_ASSERT_aux3( line )
 #define __ZORBA_ASSERT_aux1( cond, line )                               \
   do {                                                                  \
     if (! (cond)) {                                                     \
       StackTracePrinter p;                                              \
-      ZORBA_ERROR_OSS (::zorba::ZorbaError::XQP0005_SYSTEM_ASSERT_FAILED, __FILE__, __LINE__); \
+      ZORBA_ERROR_OSS (::zorba::ZorbaError::XQP0005_SYSTEM_ASSERT_FAILED, #cond, __FILE__ ":" __ZORBA_ASSERT_aux2 (line)); \
     }                                                                   \
   } while(0)
   
 #define ZORBA_ASSERT( cond ) __ZORBA_ASSERT_aux1 (cond, __LINE__)
 
-
-// Deprecated
-//#define Assert( cond ) ZORBA_ASSERT (cond)
 
 }	/* namespace zorba */
 #endif	/* ZORBA_ASSERT_H */
