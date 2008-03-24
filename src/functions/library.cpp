@@ -304,7 +304,7 @@ DECL(fn_default_collation,
 DECL(fn_resolve_qname,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn",  "resolve-QName"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.create_node_type(new NodeTest(store::StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE),
+      sctx->get_typemanager()->create_node_type(new NodeTest(store::StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
       
 DECL(fn_qname,
@@ -337,12 +337,12 @@ DECL(fn_namespace_uri_from_qname,
 DECL(fn_namespace_uri_for_prefix,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","namespace-uri-for-prefix"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.create_node_type(new NodeTest(store::StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE),
+      sctx->get_typemanager()->create_node_type(new NodeTest(store::StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE),
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 DECL(fn_in_scope_prefixes,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","in-scope-prefixes"),
-      GENV_TYPESYSTEM.create_node_type(new NodeTest(store::StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE),
+      sctx->get_typemanager()->create_node_type(new NodeTest(store::StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE),
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 // end QNames
 

@@ -151,7 +151,7 @@ RULE_REWRITE_POST(EliminateUnusedLetVars) {
 
 // Checks whether @p cond comes has the form '$pos_var = ($idx)'
 // where $idx would be a proper sequence position.
-bool refactor_index_pred (expr_t cond, forlet_clause::varref_t &pvar, rchandle<const_expr> &pos_expr) {
+static bool refactor_index_pred (RewriterContext& rCtx, expr_t cond, forlet_clause::varref_t &pvar, rchandle<const_expr> &pos_expr) {
   fo_expr *fo = cond.dyn_cast<fo_expr> ().getp ();
   if (fo == NULL) return false;
   const function *f = fo->get_func ();
@@ -163,7 +163,7 @@ bool refactor_index_pred (expr_t cond, forlet_clause::varref_t &pvar, rchandle<c
     if (NULL != (pvar = (*fo) [i].dyn_cast<var_expr> ()) && pvar->get_kind() == var_expr::pos_var
         && NULL != (pos_expr = (*fo) [1 - i].dyn_cast<const_expr> ().getp ())) {
       store::Item_t val = pos_expr->get_val ();
-      if (TypeOps::is_subtype (*GENV_TYPESYSTEM.create_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)
+      if (TypeOps::is_subtype (*rCtx.getStaticContext()->get_typemanager()->create_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)
           && val->getIntegerValue () >= xqp_integer::parseInt (1)) 
       {
         pos_expr = new const_expr (pos_expr->get_loc (), GenericCast::instance ()->promote (val, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
@@ -197,7 +197,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
   }
   
   // 'for $x at $p where $p = ... return ...'
-  if (where != NULL && refactor_index_pred (where, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
+  if (where != NULL && refactor_index_pred (rCtx, where, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
     fo_expr *result = new fo_expr (where->get_loc (), LOOKUP_FN ("fn", "subsequence", 3), pvar->get_forlet_clause ()->get_expr ());
     result->add (&*pos);
     result->add (new const_expr (pos->get_loc (), xqp_double::parseInt (1)));

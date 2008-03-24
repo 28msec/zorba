@@ -27,7 +27,8 @@ class TypeManager {
 
     /* Factory Methods */
     virtual xqtref_t create_type_x_quant(const XQType& type, TypeConstants::quantifier_t quantifier) const = 0;
-    virtual xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const = 0;
+
+    virtual xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const = 0;
 
     virtual xqtref_t create_type(const TypeIdentifier& ident) const = 0;
 

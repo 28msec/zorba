@@ -260,6 +260,7 @@ xqtref_t
     fn_in_scope_prefixes::type_check(
     signature& /*sig*/) const
 {
+  // TODO - Fix Typemanager
   return GENV_TYPESYSTEM.create_node_type(new NodeTest(store::StoreConsts::elementNode), NULL, TypeConstants::QUANT_ONE);
 }
 

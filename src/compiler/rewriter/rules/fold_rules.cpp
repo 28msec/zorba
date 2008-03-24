@@ -174,7 +174,7 @@ namespace zorba {
     return NULL;
   }
 
-  expr_t partial_eval_logic (fo_expr *fo, bool shortcircuit_val) {
+  static expr_t partial_eval_logic (fo_expr *fo, bool shortcircuit_val) {
     expr_t nontrivial1, nontrivial2;
     for (vector<expr_t>::iterator i = fo->begin (); i != fo->end (); i++) {
       const_expr *cond = i->dyn_cast<const_expr> ().getp ();
@@ -196,7 +196,7 @@ namespace zorba {
       return NULL;
   }
 
-  expr_t partial_eval_eq (fo_expr &fo) {
+  static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo) {
     int i;
     fo_expr *count_expr;
     const_expr *val_expr;
@@ -211,7 +211,7 @@ namespace zorba {
     if (i == 2) return NULL;
 
     store::Item_t val = val_expr->get_val ();
-    if (TypeOps::is_subtype (*GENV_TYPESYSTEM.create_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) {
+    if (TypeOps::is_subtype (*rCtx.getStaticContext()->get_typemanager()->create_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) {
       xqp_integer ival = val->getIntegerValue (), zero = xqp_integer::parseInt (0);
       if (ival < zero)
         return new const_expr (val_expr->get_loc (), false);
@@ -229,14 +229,14 @@ namespace zorba {
     return NULL;
   }
 
-  expr_t partial_eval_fo (fo_expr *fo) {
+  static expr_t partial_eval_fo (RewriterContext& rCtx, fo_expr *fo) {
     const function *f = fo->get_func ();
     if (f == LOOKUP_OPN ("or"))
       return partial_eval_logic (fo, true);
     else if (f == LOOKUP_OPN ("and"))
       return partial_eval_logic (fo, false);
     else if (f == LOOKUP_OP2 ("value-equal") || f == LOOKUP_OP2 ("equal"))
-      return partial_eval_eq (*fo);
+      return partial_eval_eq (rCtx, *fo);
     return NULL;
   }
 
@@ -266,7 +266,7 @@ namespace zorba {
     }
 
     case fo_expr_kind:
-      return partial_eval_fo (dynamic_cast<fo_expr *> (node));
+      return partial_eval_fo (rCtx, dynamic_cast<fo_expr *> (node));
 
     default: break;
     }

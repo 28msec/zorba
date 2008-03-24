@@ -1,5 +1,6 @@
 #include "types/root_typemanager.h"
 #include "context/root_static_context.h"
+#include "system/globalenv.h"
 
 namespace zorba {
 
@@ -25,7 +26,7 @@ void root_static_context::init() {
     bind_ns (p [0], p [1]);
   set_default_elem_type_ns ("");		
   set_default_function_namespace (lookup_ns ("fn"));
-  set_context_item_static_type(typemgr->create_any_type());
+  set_context_item_static_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
   set_default_collation_uri ("http://www.flworfound.org/collations/IDENTICAL/en/US");
   set_construction_mode(StaticContextConsts::cons_strip);
   set_ordering_mode(StaticContextConsts::ordered);
@@ -33,7 +34,7 @@ void root_static_context::init() {
   set_boundary_space_mode(StaticContextConsts::strip_space);
   set_inherit_mode(StaticContextConsts::no_inherit_ns);
   set_preserve_mode(StaticContextConsts::no_preserve_ns);
-  set_default_collection_type(typemgr->create_any_type());
+  set_default_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
 
   set_current_absolute_baseuri("");
 }

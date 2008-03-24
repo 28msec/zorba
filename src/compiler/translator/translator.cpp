@@ -142,8 +142,8 @@ protected:
     hadOrdModeDecl (false)
   {
     theDotVar = bind_var(QueryLoc::null, DOT_VAR, var_expr::context_var, GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-    theDotPosVar = bind_var(QueryLoc::null, DOT_POS_VAR, var_expr::context_var, GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_POSITIVE_INTEGER, TypeConstants::QUANT_ONE));
-    theLastVar = bind_var (QueryLoc::null, LAST_IDX_VAR, var_expr::context_var, GENV_TYPESYSTEM.create_atomic_type (TypeConstants::XS_POSITIVE_INTEGER, TypeConstants::QUANT_ONE));
+    theDotPosVar = bind_var(QueryLoc::null, DOT_POS_VAR, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
+    theLastVar = bind_var (QueryLoc::null, LAST_IDX_VAR, var_expr::context_var, GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE);
   }
 
   expr_t pop_nodestack (int n = 1)
@@ -996,8 +996,6 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   
-  RootTypeManager& ts = GENV_TYPESYSTEM;
-
   expr_t nameExpr;
   expr_t contentExpr = 0;
 
@@ -1030,8 +1028,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
 
     nameExpr = new cast_expr(v.get_location(),
                              atomExpr.getp(),
-                             ts.create_atomic_type(TypeConstants::XS_QNAME,
-                                                   TypeConstants::QUANT_ONE));
+                             GENV_TYPESYSTEM.QNAME_TYPE_ONE);
   }
 
   nodestack.push (new elem_expr(v.get_location(), nameExpr, contentExpr, ns_ctx));
@@ -1048,8 +1045,6 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   
-  RootTypeManager& ts = GENV_TYPESYSTEM;
-
   expr_t nameExpr;
   expr_t valueExpr;
   expr_t attrExpr;
@@ -1084,8 +1079,7 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
 
     expr_t castExpr = new cast_expr(v.get_location(),
                                     atomExpr.getp(),
-                                    ts.create_atomic_type(TypeConstants::XS_QNAME,
-                                                          TypeConstants::QUANT_ONE));
+                                    GENV_TYPESYSTEM.QNAME_TYPE_ONE);
 
     //fo_expr* enclosedExpr = new fo_expr(v.get_location(), LOOKUP_OP1("enclosed-expr"));
     //enclosedExpr->add(castExpr);
@@ -1160,8 +1154,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
 
     rchandle<cast_expr> castExpr =
       new cast_expr(loc, atomExpr.getp(),
-                    GENV_TYPESYSTEM.create_atomic_type(TypeConstants::XS_NCNAME,
-                                                       TypeConstants::QUANT_ONE));
+                    GENV_TYPESYSTEM.NCNAME_TYPE_ONE);
 
     rchandle<fo_expr> enclosedExpr = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"));
     enclosedExpr->add(castExpr.getp());
@@ -2303,7 +2296,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     } else if (sz == 0 && 
                (fn_local == "string-length" || fn_local == "normalize-space"))
     {
-      xqtref_t xs_string = sctx_p->get_typemanager()->create_type (sctx_p->lookup_fn_qname ("xs", "string"), TypeConstants::QUANT_QUESTION);
+      xqtref_t xs_string = GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
       arguments.push_back (create_cast_expr (loc, sctx_p->lookup_var_nofail (DOT_VAR), xs_string, true));
     } else if (fn_local == "static-base-uri") {
       if (sz != 0)
@@ -2525,7 +2518,7 @@ void *begin_visit(const SequenceType& v)
 {
   TRACE_VISIT ();
   if (v.get_itemtype () == NULL && v.get_occur () == NULL) {
-    tstack.push (GENV_TYPESYSTEM.create_empty_type ());
+    tstack.push (GENV_TYPESYSTEM.EMPTY_TYPE);
     return NULL;
   }
   return no_state;
