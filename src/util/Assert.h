@@ -21,6 +21,7 @@
 #endif
 
 #include "errors/errors.h"
+#include "errors/error_manager.h"
 
 namespace zorba {
 
@@ -48,13 +49,12 @@ class StackTracePrinter {
 #endif
 #define __ZORBA_ASSERT_aux3( line ) #line
 #define __ZORBA_ASSERT_aux2( line ) __ZORBA_ASSERT_aux3( line )
-#define __ZORBA_ASSERT_aux1( cond, line )       \
-  do {\
-    if (! (cond)) {\
-      StackTracePrinter p; \
-      error::ZorbaError( ::zorba::ZorbaError::XQP0005_SYSTEM_ASSERT_FAILED, "assertion failed", QueryLoc::null, \
-                   __FILE__, __LINE__ ); \
-    } \
+#define __ZORBA_ASSERT_aux1( cond, line )                               \
+  do {                                                                  \
+    if (! (cond)) {                                                     \
+      StackTracePrinter p;                                              \
+      ZORBA_ERROR_OSS (::zorba::ZorbaError::XQP0005_SYSTEM_ASSERT_FAILED, __FILE__, __LINE__); \
+    }                                                                   \
   } while(0)
   
 #define ZORBA_ASSERT( cond ) __ZORBA_ASSERT_aux1 (cond, __LINE__)
