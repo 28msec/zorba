@@ -518,7 +518,8 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) const {
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   lFirstItem = consumeNext(theChildren[0].getp(), planState);
-  lNextItem = consumeNext(theChildren[0].getp(), planState);
+  if (lFirstItem != NULL)
+    lNextItem = consumeNext(theChildren[0].getp(), planState);
   if ( lFirstItem == NULL || lNextItem != NULL )
   {
     ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0005,
