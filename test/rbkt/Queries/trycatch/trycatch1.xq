@@ -1,4 +1,5 @@
 let $x := 'a'
+return
 try {
     $x cast as integer 
 } catch (err:XPST0051) { 
