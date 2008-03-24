@@ -823,7 +823,7 @@ FunctionDecl::FunctionDecl(
   rchandle<QName> _name_h,
   rchandle<ParamList> _paramlist_h,
   rchandle<SequenceType> _return_type_h,
-  rchandle<EnclosedExpr> _body_h,
+  rchandle<exprnode> _body_h,
   enum ParseConstants::function_type_t _type)
 :
   parsenode(_loc),
@@ -843,9 +843,7 @@ void FunctionDecl::accept(parsenode_visitor& v) const
   BEGIN_VISITOR ();
   ACCEPT (paramlist_h);
   ACCEPT (return_type_h);
-  // Avoid EnclosedExpr
-  if (body_h != NULL)
-    ACCEPT (body_h->get_expr ());
+  ACCEPT (body_h);
   END_VISITOR ();
 }
 

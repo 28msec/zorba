@@ -1045,7 +1045,7 @@ protected:
   ParseConstants::function_type_t type;
 	rchandle<QName> name_h;
 	rchandle<ParamList> paramlist_h;
-	rchandle<EnclosedExpr> body_h;
+	rchandle<exprnode> body_h;
 	rchandle<SequenceType> return_type_h;
 	bool extern_b;
 
@@ -1055,7 +1055,7 @@ public:
 		rchandle<QName>,
 		rchandle<ParamList>,
 		rchandle<SequenceType>,
-		rchandle<EnclosedExpr>,
+		rchandle<exprnode>,
 		ParseConstants::function_type_t type);
 
 
@@ -1063,7 +1063,7 @@ public:
 	rchandle<QName> get_name() const { return name_h; }
 	rchandle<ParamList> get_paramlist() const { return paramlist_h; }
 	int get_param_count() const;
-	rchandle<EnclosedExpr> get_body() const { return body_h; }
+	rchandle<exprnode> get_body() const { return body_h; }
 	rchandle<SequenceType> get_return_type() const { return return_type_h; }
   ParseConstants::function_type_t get_type() const { return type; }
 

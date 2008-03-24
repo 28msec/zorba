@@ -522,6 +522,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> DirPIConstructor
 %type <expr> DirectConstructor
 %type <expr> EnclosedExpr
+%type <expr> NonNodeEnclosedExpr
 %type <expr> Expr
 %type <expr> ExprSingle
 %type <expr> ExtensionExpr
@@ -623,7 +624,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // Module must not be destroyed since it is returned by the parser
 // TODO: FT stuff, update stuff
 %destructor { $$->safeRemoveRef (); } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl ForClause ForLetClause ForLetClauseList ForwardAxis ForwardStep FunctionDecl GeneralComp Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList VersionDecl VFO_Decl VFO_DeclList WhereClause Wildcard // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
-%destructor { $$->safeRemoveRef (); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr // DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl FTContainsExpr
+%destructor { $$->safeRemoveRef (); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor NonNodeEnclosedExpr EnclosedExpr Expr ExprSingle ExtensionExpr FLWORExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr // DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl FTContainsExpr
 
 /*_____________________________________________________________________
  *
@@ -1522,7 +1523,7 @@ FunctionDecl :
 								NULL,NULL,NULL,
 								ParseConstants::fn_extern);
 		}
-	|	DECLARE_FUNCTION  QNAME LPAR  RPAR  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME LPAR  RPAR  NonNodeEnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [expr]" << endl;
@@ -1530,7 +1531,7 @@ FunctionDecl :
 			$$ = new FunctionDecl(LOC (@$),
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								NULL,NULL,
-								dynamic_cast<EnclosedExpr*>($5),
+								$5,
 								ParseConstants::fn_read);
 		}
 	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR  EXTERNAL
@@ -1544,7 +1545,7 @@ FunctionDecl :
 								NULL,NULL,
 								ParseConstants::fn_extern);
 		}
-	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR  NonNodeEnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.expr]" << endl;
@@ -1553,7 +1554,7 @@ FunctionDecl :
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								NULL,
-								dynamic_cast<EnclosedExpr*>($6),
+								$6,
 								ParseConstants::fn_read);
 		}
 	|	DECLARE_FUNCTION  QNAME LPAR  RPAR AS  SequenceType  EXTERNAL
@@ -1568,7 +1569,7 @@ FunctionDecl :
 								NULL,
 								ParseConstants::fn_extern);
 		}
-	|	DECLARE_FUNCTION  QNAME LPAR  RPAR AS  SequenceType  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME LPAR  RPAR AS  SequenceType  NonNodeEnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [as_type.expr]" << endl;
@@ -1577,7 +1578,7 @@ FunctionDecl :
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<SequenceType*>($6),
-								dynamic_cast<EnclosedExpr*>($7),
+								$7,
 								ParseConstants::fn_read);
 		}
 	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR AS  SequenceType  EXTERNAL
@@ -1592,7 +1593,7 @@ FunctionDecl :
 								NULL,
 								ParseConstants::fn_extern);
 		}
-	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR AS  SequenceType  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME LPAR  ParamList  RPAR AS  SequenceType  NonNodeEnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [paramlist.as_type.expr]" << endl;
@@ -1601,7 +1602,7 @@ FunctionDecl :
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								dynamic_cast<SequenceType*>($7),
-								dynamic_cast<EnclosedExpr*>($8),
+								$8,
 								ParseConstants::fn_read);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR  EXTERNAL
@@ -1614,7 +1615,7 @@ FunctionDecl :
 								NULL,NULL,NULL,
 								ParseConstants::fn_extern_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR  EnclosedExpr
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR  NonNodeEnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) expr]" << endl;
@@ -1622,7 +1623,7 @@ FunctionDecl :
 			$$ = new FunctionDecl(LOC (@$),
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								NULL,NULL,
-								dynamic_cast<EnclosedExpr*>($5),
+								$5,
 								ParseConstants::fn_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR  EXTERNAL
@@ -1636,7 +1637,7 @@ FunctionDecl :
 								NULL,NULL,
 								ParseConstants::fn_extern_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR  EnclosedExpr
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR  NonNodeEnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.expr]" << endl;
@@ -1645,7 +1646,7 @@ FunctionDecl :
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								NULL,
-								dynamic_cast<EnclosedExpr*>($6),
+								$6,
 								ParseConstants::fn_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR AS  SequenceType  EXTERNAL
@@ -1660,7 +1661,7 @@ FunctionDecl :
 								NULL,
 								ParseConstants::fn_extern_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR AS  SequenceType  EnclosedExpr
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  RPAR AS  SequenceType  NonNodeEnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) as_type.expr]" << endl;
@@ -1669,7 +1670,7 @@ FunctionDecl :
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<SequenceType*>($6),
-								dynamic_cast<EnclosedExpr*>($7),
+								$7,
 								ParseConstants::fn_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR AS  SequenceType  EXTERNAL
@@ -1684,7 +1685,7 @@ FunctionDecl :
 								NULL,
 								ParseConstants::fn_extern_update);
 		}
-	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR AS  SequenceType  EnclosedExpr
+	|	DECLARE_UPDATING_FUNCTION  QNAME LPAR  ParamList  RPAR AS  SequenceType  NonNodeEnclosedExpr
 		{
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FunctionDecl [(update) paramlist.as_type.expr]" << endl;
@@ -1693,7 +1694,7 @@ FunctionDecl :
 								new QName(LOC (@$),driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($4),
 								dynamic_cast<SequenceType*>($7),
-								dynamic_cast<EnclosedExpr*>($8),
+								$8,
 								ParseConstants::fn_update);
 		}
 	;
@@ -1763,6 +1764,17 @@ EnclosedExpr :
 								$2);
 		}
 	;
+
+NonNodeEnclosedExpr :
+		LBRACE  Expr  RBRACE
+		{
+#ifdef ZORBA_DEBUG_PARSER
+			 cout << "NonNodeEnclosedExpr [ ]" << endl;
+#endif
+			$$ = $2;
+		}
+	;
+
 
 
 // [30] QueryBody
@@ -5634,7 +5646,7 @@ CatchListExpr:
   ;
 
 CatchExpr :
-    CATCH_LPAR NameTest RPAR EnclosedExpr
+    CATCH_LPAR NameTest RPAR NonNodeEnclosedExpr
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest]" << endl;
@@ -5644,7 +5656,7 @@ CatchExpr :
                           $4);
     }
   |
-    CATCH_LPAR NameTest COMMA DOLLAR VARNAME RPAR EnclosedExpr
+    CATCH_LPAR NameTest COMMA DOLLAR VARNAME RPAR NonNodeEnclosedExpr
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest,VarName]" << endl;
