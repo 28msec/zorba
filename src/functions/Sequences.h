@@ -226,17 +226,25 @@ public:
 };
 
 //15.2.3 fn:exactly-one
-class fn_exactly_one : public function
+class fn_exactly_one_noraise : public function
 {
 public:
-  fn_exactly_one(const signature&);
+  fn_exactly_one_noraise(const signature&);
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
   xqtref_t type_check(signature&) const;
   bool validate_args(std::vector<PlanIter_t>&) const;
+
+protected:
+  bool raise_err;
 };
 
+class fn_exactly_one : public fn_exactly_one_noraise {
+public:
+  fn_exactly_one (const signature& sig) : fn_exactly_one_noraise (sig)
+  { raise_err = true; }
+};
 
 /*______________________________________________________________________
 |

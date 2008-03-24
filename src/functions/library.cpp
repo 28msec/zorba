@@ -437,6 +437,11 @@ DECL(fn_exactly_one,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
     GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
+DECL(fn_exactly_one_noraise,
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":exactly-one-noraise"),
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+    GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
 DECL(fn_count,
     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","count"),
     GENV_TYPESYSTEM.ITEM_TYPE_STAR, 

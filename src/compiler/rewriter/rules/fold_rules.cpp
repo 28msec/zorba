@@ -217,14 +217,13 @@ namespace zorba {
         return new const_expr (val_expr->get_loc (), false);
       else if (ival == zero)
         return new fo_expr (fo.get_loc (), LOOKUP_FN ("fn", "empty", 1), (*count_expr) [0]);
-#if 0  // will cause infinite loop in optimizer; we need an internal op:count-equals
+      else if (ival == xqp_integer::parseInt (1))
+        return new fo_expr (fo.get_loc (), LOOKUP_OP1 ("exactly-one-noraise"), (*count_expr) [0]);
       else {
         expr_t dpos = new const_expr (val_expr->get_loc (), GenericCast::instance ()->promote (val, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
-        expr_t subseq = new fo_expr (count_expr->get_loc (), LOOKUP_FN ("fn", "subsequence", 3), (*count_expr) [0], dpos, new const_expr (val_expr->get_loc (), xqp_double::parseInt (2)));
-        expr_t count_expr2 = new fo_expr (count_expr->get_loc (), fn_count, subseq);
-        return new fo_expr (fo.get_loc (), LOOKUP_OP2 ("equal"), count_expr2, new const_expr (val_expr->get_loc (), xqp_integer::parseInt (1)));
+        expr_t subseq_expr = new fo_expr (count_expr->get_loc (), LOOKUP_FN ("fn", "subsequence", 3), (*count_expr) [0], dpos, new const_expr (val_expr->get_loc (), xqp_double::parseInt (2)));
+        return new fo_expr (fo.get_loc (), LOOKUP_OP1 ("exactly-one-noraise"), subseq_expr);
       }
-#endif
     }
 
     return NULL;

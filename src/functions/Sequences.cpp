@@ -351,21 +351,21 @@ xqtref_t fn_one_or_more::type_check(
 }
 
 //15.2.3 fn:exactly-one
-fn_exactly_one::fn_exactly_one(const signature& sig)
-: function(sig) { }
+fn_exactly_one_noraise::fn_exactly_one_noraise(const signature& sig)
+  : function(sig), raise_err (false) { }
 
-PlanIter_t fn_exactly_one::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_exactly_one_noraise::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new FnExactlyOneIterator(loc, argv);
+  return new FnExactlyOneIterator(loc, argv, raise_err);
 }
 
-bool fn_exactly_one::validate_args(
+bool fn_exactly_one_noraise::validate_args(
 	vector<PlanIter_t>& argv) const
 {
   return (argv.size() == 1);
 }
 
-xqtref_t fn_exactly_one::type_check(
+xqtref_t fn_exactly_one_noraise::type_check(
 	signature& /*sig*/) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;

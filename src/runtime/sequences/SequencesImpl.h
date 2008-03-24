@@ -183,7 +183,34 @@ NARY_ITER(FnZeroOrOneIterator);
 NARY_ITER(FnOneOrMoreIterator);
 
 //15.2.3 fn:exactly-one
-NARY_ITER(FnExactlyOneIterator);
+class FnExactlyOneIterator
+  : public NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState>
+{
+
+public:
+  FnExactlyOneIterator(const QueryLoc& loc,
+                       std::vector<PlanIter_t>& args,
+                       bool raise_err_ = true)
+    : NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState> (loc, args), raise_err (raise_err_)
+  {}
+ 
+  store::Item_t nextImpl(PlanState& planState) const;
+ 
+  virtual void accept(PlanIterVisitor& v) const
+  {
+    v.beginVisit(*this);
+    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
+    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
+    for ( ; iter != lEnd; ++iter ) {
+      ( *iter )->accept ( v );
+    }
+    v.endVisit(*this);
+  }
+
+protected:
+  bool raise_err;
+
+};
 
   /*______________________________________________________________________
   |

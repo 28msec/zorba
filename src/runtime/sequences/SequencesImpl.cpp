@@ -415,7 +415,7 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) const {
   {
     state->theLength = xqp_double::parseInt(-1);
   }
-  
+
   while ( ((lSequence = consumeNext(theChildren[0].getp(), planState)) != NULL) 
           && (( state->theLength == xqp_double::parseInt(-1) ) || ( state->theCurrentLength <= state->theLength  )))
   {
@@ -520,13 +520,17 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) const {
   lFirstItem = consumeNext(theChildren[0].getp(), planState);
   if (lFirstItem != NULL)
     lNextItem = consumeNext(theChildren[0].getp(), planState);
-  if ( lFirstItem == NULL || lNextItem != NULL )
-  {
-    ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0005,
-        loc,  "fn:exactly-one called with a sequence containing zero or more than one item.");
-  }
 
-  STACK_PUSH(lFirstItem, state);
+  if (lFirstItem != NULL && lNextItem == NULL)
+    STACK_PUSH (raise_err ? lFirstItem : GENV_ITEMFACTORY->createBoolean (true),
+                state);
+  else {
+    if (raise_err)
+      ZORBA_ERROR_LOC_DESC( ZorbaError::FORG0005,
+                            loc, "fn:exactly-one called with a sequence containing zero or more than one item.");
+    else
+      STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( false ), state);
+  }
 
   STACK_END();
 }
