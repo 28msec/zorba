@@ -38,6 +38,41 @@ TryCatchIterator::TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std:
 
 TryCatchIterator::~TryCatchIterator() {}
 
+void
+TryCatchIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  StateTraitsImpl<TryCatchIteratorState>::createState(planState,
+                                                      this->stateOffset,
+                                                      offset);
+
+  StateTraitsImpl<TryCatchIteratorState>::initState(planState, this->stateOffset);
+  
+  theChild->open(planState, offset);
+
+  std::vector<TryCatchIterator::CatchClause>::const_iterator lIter = theCatchClauses.begin();
+  std::vector<TryCatchIterator::CatchClause>::const_iterator lEnd = theCatchClauses.end();
+
+  for ( ; lIter != lEnd; ++lIter ) {
+    ( *lIter ).catch_expr->open(planState, offset);
+  } 
+
+}
+
+uint32_t
+TryCatchIterator::getStateSizeOfSubtree() const
+{
+	uint32_t size = theChild->getStateSizeOfSubtree() + getStateSize();
+
+  std::vector<TryCatchIterator::CatchClause>::const_iterator lIter = theCatchClauses.begin(); 
+  std::vector<TryCatchIterator::CatchClause>::const_iterator lEnd = theCatchClauses.end();
+  for (; lIter!= lEnd; ++lIter )
+  {
+		size += ( *lIter ).catch_expr->getStateSizeOfSubtree();
+	}
+
+  return size; 
+}
+
 store::Item_t
 TryCatchIterator::nextImpl(PlanState& planState) const 
 {
@@ -54,8 +89,7 @@ TryCatchIterator::nextImpl(PlanState& planState) const
     Iterator_t lIterator = new PlanIteratorWrapper ( theChild, planState );
     lIterator->open();
     // eagerly materialize the whole stuff
-    store::Store& lStore = GENV_STORE;
-    state->theTargetSequence = lStore.createTempSeq( lIterator, false );
+    state->theTargetSequence = GENV_STORE.createTempSeq( lIterator, false );
     lIterator->close();
   } catch (error::ZorbaError& e) {
     lErrorOccured = true;
@@ -64,6 +98,9 @@ TryCatchIterator::nextImpl(PlanState& planState) const
   }
 
   if (lErrorOccured) {
+    while ( (item = consumeNext(theCatchClauses[0].catch_expr.getp(), planState)) != NULL ) {
+      STACK_PUSH( item, state );
+    }
   } else {
 
     // now that no error occured, let's return the result
@@ -81,6 +118,37 @@ TryCatchIterator::nextImpl(PlanState& planState) const
   }
   
   STACK_END();
+}
+
+void 
+TryCatchIterator::resetImpl(PlanState& planState) const
+{
+  StateTraitsImpl<TryCatchIteratorState>::reset(planState, this->stateOffset);
+
+  theChild->reset(planState);
+  
+  std::vector<TryCatchIterator::CatchClause>::const_iterator lIter = theCatchClauses.begin();
+  std::vector<TryCatchIterator::CatchClause>::const_iterator lEnd = theCatchClauses.end();
+
+  for ( ; lIter != lEnd; ++lIter ) {
+    ( *lIter ).catch_expr->reset(planState);
+  } 
+
+}
+
+void 
+TryCatchIterator::closeImpl(PlanState& planState)
+{
+  theChild->close(planState);
+  
+  std::vector<TryCatchIterator::CatchClause>::iterator lIter = theCatchClauses.begin();
+  std::vector<TryCatchIterator::CatchClause>::iterator lEnd = theCatchClauses.end();
+
+  for ( ; lIter != lEnd; ++lIter ) {
+    ( *lIter ).catch_expr->close(planState);
+  } 
+
+  StateTraitsImpl<TryCatchIteratorState>::destroyState(planState, this->stateOffset);
 }
 
 void TryCatchIterator::accept(PlanIterVisitor &v) const {

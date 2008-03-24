@@ -33,9 +33,13 @@ namespace zorba
     TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses);
     virtual ~TryCatchIterator();
   
+    void openImpl(PlanState& planState, uint32_t& offset);
     store::Item_t nextImpl(PlanState& aPlanState) const;
+    void resetImpl(PlanState& planState) const;
+    void closeImpl(PlanState& planState);
 
     virtual void accept(PlanIterVisitor& v) const;
+    virtual uint32_t getStateSizeOfSubtree() const;
 
   protected:
     std::vector<CatchClause> theCatchClauses;
