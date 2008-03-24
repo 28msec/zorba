@@ -26,7 +26,8 @@ TryCatchIteratorState::init(PlanState& planState) {
 void
 TryCatchIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theTargetSequence->purge(); // release the target sequence
+  if ( theTargetSequence )
+    theTargetSequence->purge(); // release the target sequence
   theIterator = NULL;
 }
 
