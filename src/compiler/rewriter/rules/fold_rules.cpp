@@ -5,6 +5,7 @@
 #include "compiler/codegen/plan_visitor.h"
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
+#include "types/casting.h"
 #include "system/globalenv.h"
 #include "runtime/api/plan_wrapper.h"
 #include "functions/function.h"
@@ -195,12 +196,48 @@ namespace zorba {
       return NULL;
   }
 
+  expr_t partial_eval_eq (fo_expr &fo) {
+    int i;
+    fo_expr *count_expr;
+    const_expr *val_expr;
+    const function *fn_count = LOOKUP_FN ("fn", "count", 1);
+
+    for (i = 0; i < 2; i++) {
+      if (NULL != (val_expr = fo [i].dyn_cast<const_expr> ().getp ())
+          && NULL != (count_expr = fo [1-i].dyn_cast<fo_expr> ().getp())
+          && count_expr->get_func () == fn_count)
+        break;
+    }
+    if (i == 2) return NULL;
+
+    store::Item_t val = val_expr->get_val ();
+    if (TypeOps::is_subtype (*GENV_TYPESYSTEM.create_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) {
+      xqp_integer ival = val->getIntegerValue (), zero = xqp_integer::parseInt (0);
+      if (ival < zero)
+        return new const_expr (val_expr->get_loc (), false);
+      else if (ival == zero)
+        return new fo_expr (fo.get_loc (), LOOKUP_FN ("fn", "empty", 1), (*count_expr) [0]);
+#if 0  // will cause infinite loop in optimizer; we need an internal op:count-equals
+      else {
+        expr_t dpos = new const_expr (val_expr->get_loc (), GenericCast::instance ()->promote (val, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+        expr_t subseq = new fo_expr (count_expr->get_loc (), LOOKUP_FN ("fn", "subsequence", 3), (*count_expr) [0], dpos, new const_expr (val_expr->get_loc (), xqp_double::parseInt (2)));
+        expr_t count_expr2 = new fo_expr (count_expr->get_loc (), fn_count, subseq);
+        return new fo_expr (fo.get_loc (), LOOKUP_OP2 ("equal"), count_expr2, new const_expr (val_expr->get_loc (), xqp_integer::parseInt (1)));
+      }
+#endif
+    }
+
+    return NULL;
+  }
+
   expr_t partial_eval_fo (fo_expr *fo) {
     const function *f = fo->get_func ();
     if (f == LOOKUP_OPN ("or"))
       return partial_eval_logic (fo, true);
     else if (f == LOOKUP_OPN ("and"))
       return partial_eval_logic (fo, false);
+    else if (f == LOOKUP_OP2 ("value-equal") || f == LOOKUP_OP2 ("equal"))
+      return partial_eval_eq (*fo);
     return NULL;
   }
 

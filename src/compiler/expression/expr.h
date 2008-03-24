@@ -691,6 +691,18 @@ public:
     assert (f != NULL);
     add (arg);
   }
+  fo_expr (const QueryLoc& loc, const function *f, expr_t arg1, expr_t arg2)
+   : expr(loc), func (f)
+  {
+    assert (f != NULL);
+    add (arg1); add (arg2);
+  }
+  fo_expr (const QueryLoc& loc, const function *f, expr_t arg1, expr_t arg2, expr_t arg3)
+   : expr(loc), func (f)
+  {
+    assert (f != NULL);
+    add (arg1); add (arg2); add (arg3);
+  }
 
 
 public:
