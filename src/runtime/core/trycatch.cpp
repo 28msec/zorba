@@ -1,6 +1,7 @@
 #include "runtime/core/trycatch.h"
 
 #include "errors/errors.h"
+#include "util/Assert.h"
 
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "store/api/store.h"
@@ -40,7 +41,9 @@ TryCatchIterator::nextImpl(PlanState& planState) const
 {
 
   store::Item_t item; // each item that will be returned 
- // ZorbaException& lException; // the exception thrown
+  
+  // remember whether an error occured during the evaluatuion of the try body
+  bool lErrorOccured = false; 
   
   TryCatchIteratorState* state;
   DEFAULT_STACK_INIT(TryCatchIteratorState, state, planState);
@@ -53,20 +56,24 @@ TryCatchIterator::nextImpl(PlanState& planState) const
     state->theTargetSequence = lStore.createTempSeq( lIterator, false );
     lIterator->close();
   } catch (error::ZorbaError& e) {
-   // lException = e; 
+    lErrorOccured = true;
+
+    ZORBA_ASSERT( e.isDynamicError() || e.isUserError() || e.isTypeError() );
   }
 
-  if (1) {
+  if (lErrorOccured) {
   } else {
 
     // now that no error occured, let's return the result
     state->theIterator = state->theTargetSequence->getIterator(); 
     state->theIterator->open();
     
-    do {
+    while (true) {
       item = state->theIterator->next();
+      if ( item == NULL )
+        break;
       STACK_PUSH( item, state );
-    } while ( item != NULL );
+    } 
 
     state->theIterator->close();
   }
