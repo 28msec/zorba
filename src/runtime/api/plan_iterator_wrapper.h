@@ -30,7 +30,7 @@ namespace zorba {
       void open();
       store::Item_t next();
       void reset();
-      void close();
+      void close() throw();
   };
 
 } /* namespace zorba */

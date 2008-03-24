@@ -36,7 +36,7 @@ namespace zorba {
 
 
   void
-  PlanIteratorWrapper::close()
+  PlanIteratorWrapper::close() throw()
   {
   }
 

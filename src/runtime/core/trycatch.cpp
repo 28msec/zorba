@@ -81,21 +81,21 @@ TryCatchIterator::nextImpl(PlanState& planState) const
   
   // remember whether an error occured during the evaluatuion of the try body
   bool lErrorOccured = false; 
+  Iterator_t lIterator;
   
   TryCatchIteratorState* state;
   DEFAULT_STACK_INIT(TryCatchIteratorState, state, planState);
   
-  try {
-    Iterator_t lIterator = new PlanIteratorWrapper ( theChild, planState );
+  try { 
+    lIterator = new PlanIteratorWrapper ( theChild, planState );
     lIterator->open();
-    // eagerly materialize the whole stuff
     state->theTargetSequence = GENV_STORE.createTempSeq( lIterator, false );
-    lIterator->close();
   } catch (error::ZorbaError& e) {
     lErrorOccured = true;
 
     ZORBA_ASSERT( e.isDynamicError() || e.isUserError() || e.isTypeError() );
   }
+  lIterator->close(); 
 
   if (lErrorOccured) {
     while ( (item = consumeNext(theCatchClauses[0].catch_expr.getp(), planState)) != NULL ) {
