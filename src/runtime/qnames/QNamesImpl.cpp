@@ -70,7 +70,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
       if(-1 != index)
       {
         resPre = itemQName->getStringValue().trim().substr( 0, index );
-        resQName = itemQName->getStringValue().trim().substr( index+1, resQName.length() - index );
+        resQName = itemQName->getStringValue().trim().substr( index+1, itemQName->getStringValue().length() - index );
 
         itemElem = consumeNext(theChild1.getp(), planState );
         if( itemElem != NULL )
