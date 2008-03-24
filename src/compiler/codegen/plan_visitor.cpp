@@ -29,6 +29,7 @@
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
+#include "runtime/core/trycatch.h"
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/update/update.h"
 #include "store/api/item_factory.h"
@@ -387,13 +388,23 @@ void end_visit(promote_expr& v)
 bool begin_visit(trycatch_expr& /*v*/)
 {
   CODEGEN_TRACE_IN("");
-  ZORBA_NOT_IMPLEMENTED ("trycatch codegen");
   return true;
 }
 
-void end_visit(trycatch_expr& /*v*/)
+void end_visit(trycatch_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+  std::vector<TryCatchIterator::CatchClause> rev_ccs;
+  for(int i = v.clause_count() - 1; i >= 0; --i) {
+    catch_clause *cc = &*v[i];
+    TryCatchIterator::CatchClause rcc;
+    rcc.node_name = cc->nametest_h;
+    rcc.catch_expr = pop_itstack();
+    rev_ccs.push_back(rcc);
+  }
+  std::vector<TryCatchIterator::CatchClause> ccs(rev_ccs.rbegin(), rev_ccs.rend());
+  PlanIter_t lChild = pop_itstack();
+  itstack.push(new TryCatchIterator(v.get_loc(), lChild, ccs));
 }
 
 bool begin_visit(typeswitch_expr& /*v*/)
