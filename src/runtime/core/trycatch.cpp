@@ -4,6 +4,7 @@
 #include "util/Assert.h"
 
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/visitors/planitervisitor.h"
 #include "store/api/store.h"
 #include "store/api/temp_seq.h"
 #include "system/globalenv.h"
@@ -79,6 +80,17 @@ TryCatchIterator::nextImpl(PlanState& planState) const
   }
   
   STACK_END();
+}
+
+void TryCatchIterator::accept(PlanIterVisitor &v) const {
+  v.beginVisit(*this);
+  theChild->accept ( v );
+  std::vector<TryCatchIterator::CatchClause>::const_iterator lIter = theCatchClauses.begin();
+  std::vector<TryCatchIterator::CatchClause>::const_iterator lEnd = theCatchClauses.end();
+  for ( ; lIter != lEnd; ++lIter ) {
+    ( *lIter ).catch_expr->accept ( v );
+  } 
+  v.endVisit(*this);
 }
 
 } /* namespace zorba */
