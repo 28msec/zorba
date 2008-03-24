@@ -10,6 +10,7 @@ static const char *default_ns_initializers [] = {
   "xs", "http://www.w3.org/2001/XMLSchema",
   "xsi", "http://www.w3.org/2001/XMLSchema-instance",
   "local", "http://www.w3.org/2005/xquery-local-functions",
+  "err", "http://www.w3.org/2005/xqt-errors",
   NULL, NULL
 };
 
