@@ -40,25 +40,25 @@ FnDataIterator::nextImpl(PlanState& planState) const
   store::Item_t item;
   PlanIter_t iter;
   
-  FnDataIteratorState* lState;
-  DEFAULT_STACK_INIT(FnDataIteratorState, lState, planState);
+  FnDataIteratorState* state;
+  DEFAULT_STACK_INIT(FnDataIteratorState, state, planState);
   
   while (true) {
     item = consumeNext( theChildren[0].getp(), planState );
     if (item == NULL)
       break;
-    lState->theTypedValue = item->getTypedValue();
-    lState->theTypedValue->open();
+    state->theTypedValue = item->getTypedValue();
+    state->theTypedValue->open();
       
     while (true) {
-      item = lState->theTypedValue->next();
+      item = state->theTypedValue->next();
       if (item == NULL)
         break;
       ZORBA_ASSERT(!item->isNode());
-      STACK_PUSH( item, lState );
+      STACK_PUSH( item, state );
     }
   }
-  lState->theTypedValue = 0; // TODO remove???
+  state->theTypedValue = 0; // TODO remove???
   STACK_END();
 }
   
@@ -70,8 +70,8 @@ store::Item_t FnRootIterator::nextImpl(PlanState& planState) const
   store::Item_t contextNode;
   store::Item_t parentNode;
 
-  PlanIteratorState* lState;
-  DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   contextNode = consumeNext(theChildren[0].getp(), planState);
 
@@ -91,7 +91,7 @@ store::Item_t FnRootIterator::nextImpl(PlanState& planState) const
     parentNode = parentNode->getParent();
   }
 
-  STACK_PUSH(contextNode, lState);
+  STACK_PUSH(contextNode, state);
   STACK_END();
 }
 
