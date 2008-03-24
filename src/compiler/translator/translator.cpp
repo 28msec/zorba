@@ -2613,42 +2613,74 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  // Find axis step on top of stack
-  rchandle<axis_step_expr> axisExpr = expect_axis_step_top ();
+  expr *top = &*nodestack.top();
 
-  // Construct name-test match expr
-  rchandle<match_expr> matchExpr = new match_expr(v.get_location());;
-  matchExpr->setTestKind(match_name_test);
+  axis_step_expr *axisExpr = NULL;
+  trycatch_expr *tce = NULL;
 
-  if (v.getQName() != NULL)
-  {
-    string qname = v.getQName()->get_qname();
-    store::Item_t qn_h = sctx_p->lookup_elem_qname (qname);
-    matchExpr->setQName(qn_h);
-  }
-  else
-  {
-    rchandle<Wildcard> wildcard = v.getWildcard();
-    ZORBA_ASSERT(wildcard != NULL);
+  if ((axisExpr = dynamic_cast<axis_step_expr *>(top)) != NULL) {
+    // Construct name-test match expr
+    rchandle<match_expr> matchExpr = new match_expr(v.get_location());;
+    matchExpr->setTestKind(match_name_test);
 
-    switch (wildcard->getKind())
+    if (v.getQName() != NULL)
     {
-    case ParseConstants::wild_all:
-      matchExpr->setWildKind(match_all_wild);
-      break;
-    case ParseConstants::wild_elem:
-      matchExpr->setWildKind(match_name_wild);
-      matchExpr->setWildName(wildcard->getPrefix());
-      break;
-    case ParseConstants::wild_prefix:
-      matchExpr->setWildKind(match_prefix_wild);
-      matchExpr->setWildName(wildcard->getLocalName());
-      break;
+      string qname = v.getQName()->get_qname();
+      store::Item_t qn_h = sctx_p->lookup_elem_qname (qname);
+      matchExpr->setQName(qn_h);
     }
-  }
+    else
+    {
+      rchandle<Wildcard> wildcard = v.getWildcard();
+      ZORBA_ASSERT(wildcard != NULL);
 
-  // add the match expression
-  axisExpr->setTest(matchExpr);
+      switch (wildcard->getKind())
+      {
+        case ParseConstants::wild_all:
+          matchExpr->setWildKind(match_all_wild);
+          break;
+        case ParseConstants::wild_elem:
+          matchExpr->setWildKind(match_name_wild);
+          matchExpr->setWildName(wildcard->getPrefix());
+          break;
+        case ParseConstants::wild_prefix:
+          matchExpr->setWildKind(match_prefix_wild);
+          matchExpr->setWildName(wildcard->getLocalName());
+          break;
+      }
+    }
+
+    // add the match expression
+    axisExpr->setTest(matchExpr);
+  } else if ((tce = dynamic_cast<trycatch_expr *>(top)) != NULL) {
+    catch_clause *cc = &*(*tce)[tce->clause_count() - 1];
+    if (v.getQName() != NULL)
+    {
+      string qname = v.getQName()->get_qname();
+      store::Item_t qn_h = sctx_p->lookup_elem_qname (qname);
+      cc->nametest_h = new NodeNameTest(qn_h);
+    }
+    else
+    {
+      rchandle<Wildcard> wildcard = v.getWildcard();
+      ZORBA_ASSERT(wildcard != NULL);
+
+      switch (wildcard->getKind())
+      {
+        case ParseConstants::wild_all:
+          cc->nametest_h = new NodeNameTest(NULL, NULL);
+          break;
+        case ParseConstants::wild_elem:
+          cc->nametest_h = new NodeNameTest(NULL, wildcard->getPrefix().theStrStore);
+          break;
+        case ParseConstants::wild_prefix:
+          cc->nametest_h = new NodeNameTest(wildcard->getLocalName().theStrStore, NULL);
+          break;
+      }
+    }
+  } else {
+    ZORBA_ASSERT(false);
+  }
 }
 
 
@@ -3951,6 +3983,7 @@ void end_visit(const VarBinding&, void*)
 void *begin_visit(const TryExpr& v)
 {
   TRACE_VISIT ();
+  nodestack.push(new trycatch_expr(v.get_location()));
   return no_state;
 }
 
@@ -3962,6 +3995,9 @@ void end_visit(const TryExpr& v, void* visit_state)
 void *begin_visit(const CatchListExpr& v)
 {
   TRACE_VISIT ();
+  expr_t te = pop_nodestack();
+  trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
+  tce->set_try_expr(te);
   return no_state;
 }
 
@@ -3973,12 +4009,18 @@ void end_visit(const CatchListExpr& v, void* visit_state)
 void *begin_visit(const CatchExpr& v)
 {
   TRACE_VISIT ();
+  trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
+  tce->add_clause(new catch_clause());
   return no_state;
 }
 
 void end_visit(const CatchExpr& v, void* visit_state)
 {
   TRACE_VISIT_OUT ();
+  expr_t ce = pop_nodestack();
+  trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
+  catch_clause *cc = &*(*tce)[tce->clause_count() - 1];
+  cc->catch_expr_h = ce;
 }
 
 

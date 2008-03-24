@@ -389,6 +389,9 @@ expr_iterator_data *trycatch_expr::make_iter()
   return new trycatch_expr_iterator_data(this);
 }
 
+trycatch_expr::trycatch_expr(const QueryLoc& loc)
+  : expr(loc) { }
+
 void trycatch_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER2(trycatch_expr_iterator_data);
