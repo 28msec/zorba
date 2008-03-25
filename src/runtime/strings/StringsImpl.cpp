@@ -1327,5 +1327,96 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
   STACK_END (state);
 }
 /*end class SubstringAfterIterator*/
+
+/**
+ *______________________________________________________________________
+ *
+ *  7.6.2 fn:matches
+ *
+ *fn:matches($input   as xs:string?,
+ *           $pattern as xs:string) as xs:boolean
+ *
+ *fn:matches($input   as xs:string?,
+ *           $pattern as xs:string,
+ *           $flags   as xs:string) as xs:boolean
+ *_______________________________________________________________________*/
+ /*begin class FnMatchesIterator*/
+store::Item_t
+FnMatchesIterator::nextImpl(PlanState& planState) const
+{
+  xqp_string input = "";
+  xqp_string pattern;
+  xqp_string flags = "";
+  store::Item_t item;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  item = consumeNext(theChildren[0].getp(), planState);
+  if( item != NULL )
+    input = item->getStringValue();
+
+  item = consumeNext(theChildren[1].getp(), planState);
+  if( item != NULL )
+    pattern = item->getStringValue();
+
+  if(theChildren.size() == 3)
+  {
+    item = consumeNext(theChildren[2].getp(), planState);
+    if(item != NULL)
+      flags = item->getStringValue();
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(input.matches(pattern, flags)), state); 
+  
+  STACK_END (state);
+}
+/*end class FnMatchesIterator*/
+
+/**
+ *______________________________________________________________________
+ *
+ *  7.6.3 fn:replace
+ *
+ *fn:replace($input       as xs:string?,
+ *           $pattern     as xs:string,
+ *           $replacement as xs:string) as xs:string
+ *
+ *fn:replace($input       as xs:string?,
+ *           $pattern     as xs:string,
+ *           $replacement as xs:string,
+ *           $flags       as xs:string) as xs:string
+ *_______________________________________________________________________*/
+ /*begin class FnReplaceIterator*/
+store::Item_t
+FnReplaceIterator::nextImpl(PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  STACK_END (state);
+}
+/*end class FnReplaceIterator*/
+
+/**
+ *______________________________________________________________________
+ *
+ *  7.6.4 fn:tokenize
+ *
+ *fn:tokenize($input    as xs:string?,
+ *            $pattern  as xs:string) as xs:string*
+ *
+ *fn:tokenize($input    as xs:string?,
+ *            $pattern  as xs:string,
+ *            $flags    as xs:string) as xs:string*
+ *_______________________________________________________________________*/
+ /*begin class FnTokenizeIterator*/
+store::Item_t
+FnTokenizeIterator::nextImpl(PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  STACK_END (state);
+}
+/*end class FnTokenizeIterator*/
 } /* namespace zorba */
 

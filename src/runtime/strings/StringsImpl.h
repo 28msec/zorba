@@ -442,5 +442,14 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 /*end class SubstringAfterIterator*/
+
+// 7.6.2 fn:matches
+NARY_ITER(FnMatchesIterator);
+
+// 7.6.3 fn:replace
+NARY_ITER(FnReplaceIterator);
+
+// 7.6.4 fn:tokenize
+NARY_ITER(FnTokenizeIterator);
 }/*namespace zorba*/
 #endif /* ZORBA_STRINGS_IMPL_H */

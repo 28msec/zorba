@@ -909,4 +909,86 @@ fn_substring_after_3::validate_args(
   return (argv.size() == 3);
 }
 /*end class fn_substring_after*/
+
+
+/*
+ * 7.6.2 fn:matches
+ * --------------------*/
+/*begin class fn_matches*/
+fn_matches::fn_matches( const signature& sig ) : function(sig)
+{
+}
+
+PlanIter_t
+fn_matches::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnMatchesIterator(loc, argv);
+}
+
+xqtref_t
+fn_matches::type_check( signature& ) const
+{
+  return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+}
+
+bool
+fn_matches::validate_args( vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2 || argv.size() == 3);
+}
+/*end class fn_matches*/
+
+/*
+ * 7.6.3 fn:replace
+ * --------------------*/
+/*begin class fn_replace*/
+fn_replace::fn_replace( const signature& sig ) : function(sig)
+{
+}
+
+PlanIter_t
+fn_replace::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnReplaceIterator(loc, argv);
+}
+
+xqtref_t
+fn_replace::type_check( signature& ) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+}
+
+bool
+fn_replace::validate_args( vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 3 || argv.size() == 4);
+}
+/*end class fn_replace*/
+
+/*
+ * 7.6.4 fn:tokenize
+ * --------------------*/
+/*begin class fn_tokenize*/
+fn_tokenize::fn_tokenize( const signature& sig ) : function(sig)
+{
+}
+
+PlanIter_t
+fn_tokenize::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnTokenizeIterator(loc, argv);
+}
+
+xqtref_t
+fn_tokenize::type_check( signature& ) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_STAR;
+}
+
+bool
+fn_tokenize::validate_args( vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 2 || argv.size() == 3);
+}
+/*end class fn_tokenize*/
 }/*namespace zorba*/

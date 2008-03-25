@@ -911,6 +911,24 @@ namespace zorba
     return tmp.trimR(&seq,1);
   }
 
+  bool
+  xqpString::matches(xqpString pattern, xqpString flags)
+  {
+    return true;
+  }
+
+  xqpString
+  xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
+  {
+    return *this;
+  }
+
+  xqpString
+  xqpString::tokenize(xqpString pattern, xqpString flags)
+  {
+    return *this;
+  }
+
   UnicodeString xqpString::getUnicodeString() const
   {
 //     UnicodeString res(c_str(), -1, US_INV);

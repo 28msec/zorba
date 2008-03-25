@@ -375,6 +375,15 @@ public:
   
   virtual void beginVisit ( const SubstringAfterIterator& ) ;
   virtual void endVisit ( const SubstringAfterIterator& ) ;
+
+  virtual void beginVisit ( const FnMatchesIterator& );
+  virtual void endVisit ( const FnMatchesIterator& );
+
+  virtual void beginVisit ( const FnReplaceIterator& );
+  virtual void endVisit ( const FnReplaceIterator& );
+
+  virtual void beginVisit ( const FnTokenizeIterator& );
+  virtual void endVisit ( const FnTokenizeIterator& );
   
   virtual void beginVisit ( const ZorNumGen& ) ;
   virtual void endVisit ( const ZorNumGen& ) ;

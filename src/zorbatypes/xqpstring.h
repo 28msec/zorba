@@ -321,6 +321,15 @@ namespace zorba {
       xqpString
       trim(const char* start, uint16_t len) const;
 
+      bool
+      matches(xqpString pattern, xqpString flags);
+
+      xqpString
+      replace(xqpString pattern, xqpString replacement, xqpString flags);
+
+      xqpString
+      tokenize(xqpString pattern, xqpString flags);
+
       // Removes the leading and trailing whitespace (one of the " \t\r\n")
       // TODO: xqpString trim_whitespace() const;
 

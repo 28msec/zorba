@@ -127,6 +127,9 @@ namespace zorba
   class EndsWithIterator;
   class SubstringBeforeIterator;
   class SubstringAfterIterator;
+  class FnMatchesIterator;
+  class FnReplaceIterator;
+  class FnTokenizeIterator;
   class ZorNumGen;
   class TextIterator;
   class DocumentIterator;
@@ -536,7 +539,16 @@ namespace zorba
        
       virtual void beginVisit ( const SubstringAfterIterator& ) = 0;
       virtual void endVisit ( const SubstringAfterIterator& ) = 0;
-      
+
+      virtual void beginVisit ( const FnMatchesIterator& ) = 0;
+      virtual void endVisit ( const FnMatchesIterator& ) = 0;
+
+      virtual void beginVisit ( const FnReplaceIterator& ) = 0;
+      virtual void endVisit ( const FnReplaceIterator& ) = 0;
+
+      virtual void beginVisit ( const FnTokenizeIterator& ) = 0;
+      virtual void endVisit ( const FnTokenizeIterator& ) = 0;
+
       virtual void beginVisit ( const ZorNumGen& ) = 0;
       virtual void endVisit ( const ZorNumGen& ) = 0;
       

@@ -439,5 +439,55 @@ class fn_substring_after_3: public function
     xqtref_t type_check(signature&) const;
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
+
+/*______________________________________________________________________
+ *
+ * 7.6 String Functions that Use Pattern Matching
+ *_______________________________________________________________________*/
+/*
+ * 7.6.2 fn:matches
+ *-----------------------*/
+class fn_matches: public function
+{
+  public:
+    fn_matches(const signature&);
+    ~fn_matches() {}
+
+  public:
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.6.3 fn:replace
+ *-----------------------*/
+class fn_replace: public function
+{
+  public:
+    fn_replace(const signature&);
+    ~fn_replace() {}
+
+  public:
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.6.4 fn:tokenize
+ *-----------------------*/
+class fn_tokenize: public function
+{
+  public:
+    fn_tokenize(const signature&);
+    ~fn_tokenize() {}
+
+  public:
+    PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+    xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
+ 
 } /* namespace zorba */
 #endif /* ZORBA_STRINGS_H */

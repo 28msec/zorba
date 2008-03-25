@@ -1290,6 +1290,36 @@ namespace zorba {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
   }
+  
+  void PrinterVisitor::beginVisit ( const FnMatchesIterator& a ) {
+    thePrinter.startBeginVisit("FnMatchesIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const FnMatchesIterator& ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  
+  void PrinterVisitor::beginVisit ( const FnReplaceIterator& a ) {
+    thePrinter.startBeginVisit("FnReplaceIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const FnReplaceIterator& ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+  
+  void PrinterVisitor::beginVisit ( const FnTokenizeIterator& a ) {
+    thePrinter.startBeginVisit("FnTokenizeIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const FnTokenizeIterator& ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
 
   void PrinterVisitor::beginVisit ( const ZorNumGen& a ) {
     thePrinter.startBeginVisit("ZorNumGen", (intptr_t) &a);
