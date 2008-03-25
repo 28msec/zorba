@@ -38,6 +38,7 @@ class StackTracePrinter {
         std::cerr << syms[i] << std::endl;
       }
       free(syms);
+#undef TRACE_SIZE
 #endif
     }
 };
