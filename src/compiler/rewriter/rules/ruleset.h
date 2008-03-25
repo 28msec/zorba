@@ -12,7 +12,7 @@ namespace zorba {
 #define RULE(name) \
   class name : public RewriteRule { \
     public: \
-      name() : m_ruleName("name") { } \
+      name() : m_ruleName(#name) { } \
       ~name() { } \
       const std::string& getRuleName() const { return m_ruleName; } \
       expr_t rewritePre(expr *node, RewriterContext& rCtx); \
