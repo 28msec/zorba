@@ -84,6 +84,24 @@ TryCatchIterator::getStateSizeOfSubtree() const
   return size; 
 }
 
+// check if/which catch matches and bind the state's catch iterator to the matching catch clause
+bool
+TryCatchIterator::matchedCatch(error::ZorbaError& e, TryCatchIteratorState* state) const
+{
+  std::vector<CatchClause>::const_iterator lIter = theCatchClauses.begin(); 
+  std::vector<CatchClause>::const_iterator lEnd = theCatchClauses.end();
+  for (; lIter!= lEnd; ++lIter )
+  {
+    const CatchClause& cc = *lIter;
+    const NodeNameTest& nt = *cc.node_name;
+    if (nt.matches(&*e.theQName)) {
+      state->theCatchIterator = cc.catch_expr;
+      return true;
+    }
+  }
+  return false;
+}
+
 store::Item_t
 TryCatchIterator::nextImpl(PlanState& planState) const 
 {
@@ -102,21 +120,7 @@ TryCatchIterator::nextImpl(PlanState& planState) const
     state->theTempIterator = state->theTargetSequence->getIterator();
     state->theTempIterator->open();
   } catch (error::ZorbaError& e) {
-    bool catchMatched = false;
-    std::vector<CatchClause>::const_iterator lIter = theCatchClauses.begin(); 
-    std::vector<CatchClause>::const_iterator lEnd = theCatchClauses.end();
-    for (; lIter!= lEnd; ++lIter )
-    {
-      const CatchClause& cc = *lIter;
-      const NodeNameTest& nt = *cc.node_name;
-      if (nt.matches(&*e.theQName)) {
-        state->theCatchIterator = cc.catch_expr;
-        catchMatched = true;
-        break;
-      }
-    }
-
-    if (!catchMatched) {
+    if (!matchedCatch(e, state)) {
       lIterator->close();
       throw e;
     }
