@@ -19,7 +19,8 @@ namespace zorba
 
       // used for evaluating the target expression eagerly
       store::TempSeq_t  theTargetSequence;
-      Iterator_t theIterator; 
+      Iterator_t theTempIterator;
+      PlanIter_t theCatchIterator;
   };
 
   class TryCatchIterator : public UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> {

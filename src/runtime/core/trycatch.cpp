@@ -13,10 +13,17 @@
 namespace zorba {
   
 TryCatchIteratorState::TryCatchIteratorState()
-  : theIterator(NULL)
+  : theTempIterator(NULL),
+  theCatchIterator(NULL)
 {}
 
-TryCatchIteratorState::~TryCatchIteratorState() {}
+TryCatchIteratorState::~TryCatchIteratorState()
+{
+  if (theTempIterator != NULL) {
+    theTempIterator->close();
+    theTempIterator = NULL;
+  }
+}
 
 void
 TryCatchIteratorState::init(PlanState& planState) {
@@ -28,7 +35,11 @@ TryCatchIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   if ( theTargetSequence )
     theTargetSequence->purge(); // release the target sequence
-  theIterator = NULL;
+  if (theTempIterator != NULL) {
+    theTempIterator->close();
+    theTempIterator = NULL;
+  }
+  theCatchIterator = NULL;
 }
 
 TryCatchIterator::TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses)
@@ -63,8 +74,8 @@ TryCatchIterator::getStateSizeOfSubtree() const
 {
 	uint32_t size = theChild->getStateSizeOfSubtree() + getStateSize();
 
-  std::vector<TryCatchIterator::CatchClause>::const_iterator lIter = theCatchClauses.begin(); 
-  std::vector<TryCatchIterator::CatchClause>::const_iterator lEnd = theCatchClauses.end();
+  std::vector<CatchClause>::const_iterator lIter = theCatchClauses.begin(); 
+  std::vector<CatchClause>::const_iterator lEnd = theCatchClauses.end();
   for (; lIter!= lEnd; ++lIter )
   {
 		size += ( *lIter ).catch_expr->getStateSizeOfSubtree();
@@ -79,8 +90,6 @@ TryCatchIterator::nextImpl(PlanState& planState) const
 
   store::Item_t item; // each item that will be returned 
   
-  // remember whether an error occured during the evaluatuion of the try body
-  bool lErrorOccured = false; 
   Iterator_t lIterator;
   
   TryCatchIteratorState* state;
@@ -90,33 +99,47 @@ TryCatchIterator::nextImpl(PlanState& planState) const
     lIterator = new PlanIteratorWrapper ( theChild, planState );
     lIterator->open();
     state->theTargetSequence = GENV_STORE.createTempSeq( lIterator, false );
+    state->theTempIterator = state->theTargetSequence->getIterator();
+    state->theTempIterator->open();
   } catch (error::ZorbaError& e) {
-    lErrorOccured = true;
-
-    ZORBA_ASSERT( e.isDynamicError() || e.isUserError() || e.isTypeError() );
-  }
-  lIterator->close(); 
-
-  if (lErrorOccured) {
-    while ( (item = consumeNext(theCatchClauses[0].catch_expr.getp(), planState)) != NULL ) {
-      STACK_PUSH( item, state );
+    bool catchMatched = false;
+    std::vector<CatchClause>::const_iterator lIter = theCatchClauses.begin(); 
+    std::vector<CatchClause>::const_iterator lEnd = theCatchClauses.end();
+    for (; lIter!= lEnd; ++lIter )
+    {
+      const CatchClause& cc = *lIter;
+      const NodeNameTest& nt = *cc.node_name;
+      if (nt.matches(&*e.theQName)) {
+        state->theCatchIterator = cc.catch_expr;
+        catchMatched = true;
+        break;
+      }
     }
-  } else {
 
-    // now that no error occured, let's return the result
-    state->theIterator = state->theTargetSequence->getIterator(); 
-    state->theIterator->open();
-    
+    if (!catchMatched) {
+      lIterator->close();
+      throw e;
+    }
+  }
+  lIterator->close();
+
+  if (state->theTempIterator != NULL) {
+    ZORBA_ASSERT(state->theCatchIterator == NULL);
     while (true) {
-      item = state->theIterator->next();
+      item = state->theTempIterator->next();
       if ( item == NULL )
         break;
       STACK_PUSH( item, state );
     } 
-
-    state->theIterator->close();
+  } else if (state->theCatchIterator != NULL) {
+    ZORBA_ASSERT(state->theTempIterator == NULL);
+    while((item = consumeNext(state->theCatchIterator.getp(), planState)) != NULL) {
+      STACK_PUSH(item, state);
+    }
+  } else {
+    ZORBA_ASSERT(false);
   }
-  
+ 
   STACK_END (state);
 }
 

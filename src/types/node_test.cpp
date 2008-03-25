@@ -62,6 +62,12 @@ bool NodeNameTest::operator ==(const NodeNameTest& other) const
   return *other.m_uri == *m_uri && *other.m_local == *m_local;
 }
 
+bool NodeNameTest::matches(store::Item *qname) const
+{
+  return (*m_uri == "*" || *m_uri == *qname->getNamespace().theStrStore)
+    && (*m_local == "*" || *m_local == *qname->getLocalName().theStrStore);
+}
+
 
 NodeTest::NodeTest(store::StoreConsts::NodeKind kind) : m_kind(kind)
 {

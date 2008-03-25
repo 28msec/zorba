@@ -5,12 +5,9 @@
 
 #include "util/rchandle.h"
 #include <zorba/store_consts.h>
+#include "store/api/item.h"
 
 namespace zorba {
-
-namespace store {
-class Item;
-}
 
 class NodeNameTest : virtual public SimpleRCObject
 {
@@ -30,6 +27,7 @@ class NodeNameTest : virtual public SimpleRCObject
   
   bool operator==(const NodeNameTest& other) const;
   bool is_subname_of(const NodeNameTest& other) const;
+  bool matches(store::Item *qname) const;
 
  private:
   kind_t                   m_kind;

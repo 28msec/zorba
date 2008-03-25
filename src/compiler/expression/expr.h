@@ -444,6 +444,9 @@ private:
     void add_clause(clauseref_t cc_h)
     { catch_clause_hv.push_back(cc_h); }
 
+    void add_clause_in_front(clauseref_t cc_h)
+    { catch_clause_hv.insert(catch_clause_hv.begin(), cc_h); }
+
     std::vector<clauseref_t>::const_iterator begin() const
     { return catch_clause_hv.begin(); }
     std::vector<clauseref_t>::const_iterator end() const

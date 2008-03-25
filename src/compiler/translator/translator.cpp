@@ -2653,7 +2653,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
     // add the match expression
     axisExpr->setTest(matchExpr);
   } else if ((tce = dynamic_cast<trycatch_expr *>(top)) != NULL) {
-    catch_clause *cc = &*(*tce)[tce->clause_count() - 1];
+    catch_clause *cc = &*(*tce)[0];
     if (v.getQName() != NULL)
     {
       string qname = v.getQName()->get_qname();
@@ -2668,13 +2668,13 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
       switch (wildcard->getKind())
       {
         case ParseConstants::wild_all:
-          cc->nametest_h = new NodeNameTest(NULL, NULL);
+          cc->nametest_h = new NodeNameTest(xqpString("*").theStrStore, xqpString("*").theStrStore);
           break;
         case ParseConstants::wild_elem:
-          cc->nametest_h = new NodeNameTest(NULL, wildcard->getPrefix().theStrStore);
+          cc->nametest_h = new NodeNameTest(xqpString("*").theStrStore, wildcard->getPrefix().theStrStore);
           break;
         case ParseConstants::wild_prefix:
-          cc->nametest_h = new NodeNameTest(wildcard->getLocalName().theStrStore, NULL);
+          cc->nametest_h = new NodeNameTest(wildcard->getLocalName().theStrStore, xqpString("*").theStrStore);
           break;
       }
     }
@@ -4010,7 +4010,7 @@ void *begin_visit(const CatchExpr& v)
 {
   TRACE_VISIT ();
   trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
-  tce->add_clause(new catch_clause());
+  tce->add_clause_in_front(new catch_clause());
   return no_state;
 }
 
@@ -4019,7 +4019,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
   TRACE_VISIT_OUT ();
   expr_t ce = pop_nodestack();
   trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
-  catch_clause *cc = &*(*tce)[tce->clause_count() - 1];
+  catch_clause *cc = &*(*tce)[0];
   cc->catch_expr_h = ce;
 }
 

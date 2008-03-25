@@ -17,6 +17,8 @@ namespace zorba { namespace error {
                  const QueryLoc& aLocation, const std::string& aFileName,
                  int aLineNumber);
 
+      ZorbaError(const ZorbaError& other);
+
       virtual ~ZorbaError();
 
       virtual bool 
@@ -68,7 +70,6 @@ namespace zorba { namespace error {
       virtual bool
       isUserError() const          { return false; }
 
-
       static std::string
       toString(::zorba::ZorbaError::ErrorCode& code);
 
@@ -79,9 +80,10 @@ namespace zorba { namespace error {
       err_name_to_code (std::string name);
 
     public:
-      ::zorba::ZorbaError::ErrorCode   theErrorCode;     
-      xqpString   theDescription;   
-      QueryLoc    theQueryLocation; 
+      store::Item_t theQName;
+      ::zorba::ZorbaError::ErrorCode   theErrorCode;
+      xqpString   theDescription;
+      QueryLoc    theQueryLocation;
       std::string theFileName; // source file
       int         theLineNumber; // line number in the source file
   }; /* class ZorbaError */

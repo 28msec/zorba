@@ -15,6 +15,7 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
+  int status = 0;
   GlobalEnvironment::init(); 
   std::string lQueryFileString;
   CompilerCB aCompilerCB;
@@ -30,23 +31,25 @@ main(int argc, char** argv)
   else
   {
     std::cerr << std::endl << "usage:   parsertestdriver [testfile]" << std::endl;
-    return 1;
+    status = 1;
   }
 
-  // TODO correct Exception handling with try-catch
-  try {
-    lDriver.parse_file(lQueryFileString.c_str());
-  } catch (...) {
-    GlobalEnvironment::destroy();
-    return 2;
+  if (!status) {
+    // TODO correct Exception handling with try-catch
+    try {
+      lDriver.parse_file(lQueryFileString.c_str());
+    } catch (...) {
+      status = 2;
+    }
   }
 
-  parsenode* lNode = lDriver.get_expr();
-  if ( lNode == 0 ) {
-    std::cerr << "Query parsed but no parsenode root generated!" << std::endl;
-    GlobalEnvironment::destroy();
-    return 3;
-  } 
+  if (!status) {
+    parsenode* lNode = lDriver.get_expr();
+    if ( lNode == 0 ) {
+      std::cerr << "Query parsed but no parsenode root generated!" << std::endl;
+      status = 3;
+    } 
+  }
   GlobalEnvironment::destroy();
-  return 0;
+  return status;
 }
