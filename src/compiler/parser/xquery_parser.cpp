@@ -6216,19 +6216,15 @@ namespace zorba
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest,VarName]" << endl;
 #endif
-       QName* lQName = new QName(
-                         LOC ((yyloc)), 
-                         driver.symtab.get((off_t)(yysemantic_stack_[(7) - (5)].sval))
-                       );
        (yyval.expr) = new CatchExpr(LOC ((yyloc)),
                           static_cast<NameTest*>((yysemantic_stack_[(7) - (2)].node)),
-                          lQName,
+                          driver.symtab.get((off_t)(yysemantic_stack_[(7) - (5)].sval)),
                           (yysemantic_stack_[(7) - (7)].expr));
     ;}
     break;
 
   case 444:
-#line 5687 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5683 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or]" << endl;
@@ -6237,7 +6233,7 @@ namespace zorba
     break;
 
   case 445:
-#line 5693 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5689 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity]" << endl;
@@ -6246,7 +6242,7 @@ namespace zorba
     break;
 
   case 446:
-#line 5699 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5695 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.weight_range]" << endl;
@@ -6255,7 +6251,7 @@ namespace zorba
     break;
 
   case 447:
-#line 5705 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5701 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTSelection [or.match_proximity.weight_range]" << endl;
@@ -6264,7 +6260,7 @@ namespace zorba
     break;
 
   case 448:
-#line 5717 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5713 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_single]" << endl;
@@ -6273,7 +6269,7 @@ namespace zorba
     break;
 
   case 449:
-#line 5723 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5719 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_single]" << endl;
@@ -6282,7 +6278,7 @@ namespace zorba
     break;
 
   case 450:
-#line 5729 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5725 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [option_list]" << endl;
@@ -6291,7 +6287,7 @@ namespace zorba
     break;
 
   case 451:
-#line 5735 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5731 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOptionProximityList [proximity_list]" << endl;
@@ -6300,7 +6296,7 @@ namespace zorba
     break;
 
   case 452:
-#line 5747 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5743 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [and]" << endl;
@@ -6309,7 +6305,7 @@ namespace zorba
     break;
 
   case 453:
-#line 5753 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5749 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOr [or.and]" << endl;
@@ -6318,7 +6314,7 @@ namespace zorba
     break;
 
   case 454:
-#line 5765 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5761 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [mild_not]" << endl;
@@ -6327,7 +6323,7 @@ namespace zorba
     break;
 
   case 455:
-#line 5771 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5767 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnd [and.mild_not]" << endl;
@@ -6336,7 +6332,7 @@ namespace zorba
     break;
 
   case 456:
-#line 5783 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5779 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [unary_not]" << endl;
@@ -6345,7 +6341,7 @@ namespace zorba
     break;
 
   case 457:
-#line 5789 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5785 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMildNot [mild_not.unary_not]" << endl;
@@ -6354,7 +6350,7 @@ namespace zorba
     break;
 
   case 458:
-#line 5801 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5797 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [words]" << endl;
@@ -6363,7 +6359,7 @@ namespace zorba
     break;
 
   case 459:
-#line 5807 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5803 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnaryNot [not.words]" << endl;
@@ -6372,7 +6368,7 @@ namespace zorba
     break;
 
   case 460:
-#line 5819 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5815 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words]" << endl;
@@ -6381,7 +6377,7 @@ namespace zorba
     break;
 
   case 461:
-#line 5825 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5821 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [words.times]" << endl;
@@ -6390,7 +6386,7 @@ namespace zorba
     break;
 
   case 462:
-#line 5831 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5827 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsSelection [selection]" << endl;
@@ -6399,7 +6395,7 @@ namespace zorba
     break;
 
   case 463:
-#line 5843 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5839 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value]" << endl;
@@ -6408,7 +6404,7 @@ namespace zorba
     break;
 
   case 464:
-#line 5849 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5845 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWords [value.any_all_option]" << endl;
@@ -6417,7 +6413,7 @@ namespace zorba
     break;
 
   case 465:
-#line 5861 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5857 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [literal]" << endl;
@@ -6426,7 +6422,7 @@ namespace zorba
     break;
 
   case 466:
-#line 5867 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5863 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWordsValue [expr]" << endl;
@@ -6435,7 +6431,7 @@ namespace zorba
     break;
 
   case 467:
-#line 5879 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5875 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [order]" << endl;
@@ -6444,7 +6440,7 @@ namespace zorba
     break;
 
   case 468:
-#line 5885 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5881 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [window]" << endl;
@@ -6453,7 +6449,7 @@ namespace zorba
     break;
 
   case 469:
-#line 5891 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5887 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [distance]" << endl;
@@ -6462,7 +6458,7 @@ namespace zorba
     break;
 
   case 470:
-#line 5897 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5893 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [scope]" << endl;
@@ -6471,7 +6467,7 @@ namespace zorba
     break;
 
   case 471:
-#line 5903 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5899 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTProximity [content]" << endl;
@@ -6480,7 +6476,7 @@ namespace zorba
     break;
 
   case 472:
-#line 5915 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5911 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTOrderedIndicator [ ]" << endl;
@@ -6489,7 +6485,7 @@ namespace zorba
     break;
 
   case 473:
-#line 5927 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5923 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [case]" << endl;
@@ -6499,7 +6495,7 @@ namespace zorba
     break;
 
   case 474:
-#line 5934 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5930 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [diacritics]" << endl;
@@ -6509,7 +6505,7 @@ namespace zorba
     break;
 
   case 475:
-#line 5941 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5937 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stem]" << endl;
@@ -6519,7 +6515,7 @@ namespace zorba
     break;
 
   case 476:
-#line 5948 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5944 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [thesaurus]" << endl;
@@ -6529,7 +6525,7 @@ namespace zorba
     break;
 
   case 477:
-#line 5955 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5951 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [stopword]" << endl;
@@ -6539,7 +6535,7 @@ namespace zorba
     break;
 
   case 478:
-#line 5962 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5958 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [language]" << endl;
@@ -6549,7 +6545,7 @@ namespace zorba
     break;
 
   case 479:
-#line 5969 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5965 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTMatchOption [wildcard]" << endl;
@@ -6559,7 +6555,7 @@ namespace zorba
     break;
 
   case 480:
-#line 5982 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5978 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [lower]" << endl;
@@ -6568,7 +6564,7 @@ namespace zorba
     break;
 
   case 481:
-#line 5988 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5984 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [upper]" << endl;
@@ -6577,7 +6573,7 @@ namespace zorba
     break;
 
   case 482:
-#line 5994 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5990 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [sensitive]" << endl;
@@ -6586,7 +6582,7 @@ namespace zorba
     break;
 
   case 483:
-#line 6000 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 5996 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTCaseOption [insensitive]" << endl;
@@ -6595,7 +6591,7 @@ namespace zorba
     break;
 
   case 484:
-#line 6012 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6008 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [with]" << endl;
@@ -6604,7 +6600,7 @@ namespace zorba
     break;
 
   case 485:
-#line 6018 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6014 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [without]" << endl;
@@ -6613,7 +6609,7 @@ namespace zorba
     break;
 
   case 486:
-#line 6024 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6020 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [sensitive]" << endl;
@@ -6622,7 +6618,7 @@ namespace zorba
     break;
 
   case 487:
-#line 6030 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6026 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDiacriticsOption [insensitive]" << endl;
@@ -6631,7 +6627,7 @@ namespace zorba
     break;
 
   case 488:
-#line 6042 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6038 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [with]" << endl;
@@ -6640,7 +6636,7 @@ namespace zorba
     break;
 
   case 489:
-#line 6048 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6044 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStemOption [without]" << endl;
@@ -6649,7 +6645,7 @@ namespace zorba
     break;
 
   case 490:
-#line 6060 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6056 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [id]" << endl;
@@ -6658,7 +6654,7 @@ namespace zorba
     break;
 
   case 491:
-#line 6066 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6062 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [default]" << endl;
@@ -6667,7 +6663,7 @@ namespace zorba
     break;
 
   case 492:
-#line 6072 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6068 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id)]" << endl;
@@ -6676,7 +6672,7 @@ namespace zorba
     break;
 
   case 493:
-#line 6078 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6074 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(id,id,..)]" << endl;
@@ -6685,7 +6681,7 @@ namespace zorba
     break;
 
   case 494:
-#line 6084 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6080 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default)]" << endl;
@@ -6694,7 +6690,7 @@ namespace zorba
     break;
 
   case 495:
-#line 6090 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6086 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [(default,id,id,..)]" << endl;
@@ -6703,7 +6699,7 @@ namespace zorba
     break;
 
   case 496:
-#line 6096 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6092 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusOption [without]" << endl;
@@ -6712,7 +6708,7 @@ namespace zorba
     break;
 
   case 497:
-#line 6108 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6104 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [single]" << endl;
@@ -6721,7 +6717,7 @@ namespace zorba
     break;
 
   case 498:
-#line 6114 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6110 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusList [list]" << endl;
@@ -6730,7 +6726,7 @@ namespace zorba
     break;
 
   case 499:
-#line 6126 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6122 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name]" << endl;
@@ -6739,7 +6735,7 @@ namespace zorba
     break;
 
   case 500:
-#line 6132 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6128 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel]" << endl;
@@ -6748,7 +6744,7 @@ namespace zorba
     break;
 
   case 501:
-#line 6138 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6134 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.range]" << endl;
@@ -6757,7 +6753,7 @@ namespace zorba
     break;
 
   case 502:
-#line 6144 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6140 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTThesaurusID [name.rel.range]" << endl;
@@ -6766,7 +6762,7 @@ namespace zorba
     break;
 
   case 503:
-#line 6156 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6152 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list]" << endl;
@@ -6775,7 +6771,7 @@ namespace zorba
     break;
 
   case 504:
-#line 6162 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6158 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [list.incl_excl]" << endl;
@@ -6784,7 +6780,7 @@ namespace zorba
     break;
 
   case 505:
-#line 6168 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6164 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default]" << endl;
@@ -6793,7 +6789,7 @@ namespace zorba
     break;
 
   case 506:
-#line 6174 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6170 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [default.incl_excl]" << endl;
@@ -6802,7 +6798,7 @@ namespace zorba
     break;
 
   case 507:
-#line 6180 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6176 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStopwordOption [without]" << endl;
@@ -6811,7 +6807,7 @@ namespace zorba
     break;
 
   case 508:
-#line 6192 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6188 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [.]" << endl;
@@ -6820,7 +6816,7 @@ namespace zorba
     break;
 
   case 509:
-#line 6198 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6194 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteralList [*]" << endl;
@@ -6829,7 +6825,7 @@ namespace zorba
     break;
 
   case 510:
-#line 6210 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6206 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [.]" << endl;
@@ -6838,7 +6834,7 @@ namespace zorba
     break;
 
   case 511:
-#line 6216 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6212 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRefOrList [(*)]" << endl;
@@ -6847,7 +6843,7 @@ namespace zorba
     break;
 
   case 512:
-#line 6228 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6224 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [.]" << endl;
@@ -6856,7 +6852,7 @@ namespace zorba
     break;
 
   case 513:
-#line 6234 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6230 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTStringLiteralList [*]" << endl;
@@ -6865,7 +6861,7 @@ namespace zorba
     break;
 
   case 514:
-#line 6246 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6242 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [union]" << endl;
@@ -6874,7 +6870,7 @@ namespace zorba
     break;
 
   case 515:
-#line 6252 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6248 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTInclExclStringLiteral [except]" << endl;
@@ -6883,7 +6879,7 @@ namespace zorba
     break;
 
   case 516:
-#line 6264 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6260 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTLanguageOption [ ]" << endl;
@@ -6892,7 +6888,7 @@ namespace zorba
     break;
 
   case 517:
-#line 6276 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6272 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [with]" << endl;
@@ -6901,7 +6897,7 @@ namespace zorba
     break;
 
   case 518:
-#line 6282 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6278 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWildcardOption [without]" << endl;
@@ -6910,7 +6906,7 @@ namespace zorba
     break;
 
   case 519:
-#line 6294 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6290 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [start]" << endl;
@@ -6919,7 +6915,7 @@ namespace zorba
     break;
 
   case 520:
-#line 6300 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6296 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [end]" << endl;
@@ -6928,7 +6924,7 @@ namespace zorba
     break;
 
   case 521:
-#line 6306 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6302 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTContent [entire]" << endl;
@@ -6937,7 +6933,7 @@ namespace zorba
     break;
 
   case 522:
-#line 6318 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6314 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any]" << endl;
@@ -6946,7 +6942,7 @@ namespace zorba
     break;
 
   case 523:
-#line 6324 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6320 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [any_word]" << endl;
@@ -6955,7 +6951,7 @@ namespace zorba
     break;
 
   case 524:
-#line 6330 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6326 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all]" << endl;
@@ -6964,7 +6960,7 @@ namespace zorba
     break;
 
   case 525:
-#line 6336 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6332 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [all_words]" << endl;
@@ -6973,7 +6969,7 @@ namespace zorba
     break;
 
   case 526:
-#line 6342 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6338 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTAnyallOption [phrase]" << endl;
@@ -6982,7 +6978,7 @@ namespace zorba
     break;
 
   case 527:
-#line 6354 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6350 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [exactly]" << endl;
@@ -6992,7 +6988,7 @@ namespace zorba
     break;
 
   case 528:
-#line 6361 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6357 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_least]" << endl;
@@ -7002,7 +6998,7 @@ namespace zorba
     break;
 
   case 529:
-#line 6368 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6364 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [at_most]" << endl;
@@ -7012,7 +7008,7 @@ namespace zorba
     break;
 
   case 530:
-#line 6375 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6371 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTRange [range]" << endl;
@@ -7022,7 +7018,7 @@ namespace zorba
     break;
 
   case 531:
-#line 6388 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6384 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTDistance [ ]" << endl;
@@ -7031,7 +7027,7 @@ namespace zorba
     break;
 
   case 532:
-#line 6400 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6396 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTWindow [ ]" << endl;
@@ -7040,7 +7036,7 @@ namespace zorba
     break;
 
   case 533:
-#line 6412 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6408 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [ ]" << endl;
@@ -7049,7 +7045,7 @@ namespace zorba
     break;
 
   case 534:
-#line 6424 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6420 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [same]" << endl;
@@ -7058,7 +7054,7 @@ namespace zorba
     break;
 
   case 535:
-#line 6430 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6426 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTTimes [different]" << endl;
@@ -7067,7 +7063,7 @@ namespace zorba
     break;
 
   case 536:
-#line 6442 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6438 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [words]" << endl;
@@ -7076,7 +7072,7 @@ namespace zorba
     break;
 
   case 537:
-#line 6448 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6444 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [sentences]" << endl;
@@ -7085,7 +7081,7 @@ namespace zorba
     break;
 
   case 538:
-#line 6454 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6450 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTUnit [paragraph]" << endl;
@@ -7094,7 +7090,7 @@ namespace zorba
     break;
 
   case 539:
-#line 6466 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6462 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [sentence]" << endl;
@@ -7103,7 +7099,7 @@ namespace zorba
     break;
 
   case 540:
-#line 6472 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6468 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTBigUnit [paragraph]" << endl;
@@ -7112,7 +7108,7 @@ namespace zorba
     break;
 
   case 541:
-#line 6484 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6480 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
     {
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "FTIgnoreOption [ ]" << endl;
@@ -7122,7 +7118,7 @@ namespace zorba
 
 
     /* Line 675 of lalr1.cc.  */
-#line 7126 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/build/src/compiler/parser/xquery_parser.cpp"
+#line 7122 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/build/src/compiler/parser/xquery_parser.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -9090,17 +9086,17 @@ namespace zorba
     5229,  5239,  5249,  5265,  5289,  5299,  5322,  5365,  5373,  5379,
     5390,  5399,  5408,  5417,  5426,  5436,  5445,  5454,  5463,  5472,
     5487,  5495,  5508,  5517,  5532,  5561,  5575,  5582,  5598,  5615,
-    5625,  5635,  5649,  5659,  5686,  5692,  5698,  5704,  5716,  5722,
-    5728,  5734,  5746,  5752,  5764,  5770,  5782,  5788,  5800,  5806,
-    5818,  5824,  5830,  5842,  5848,  5860,  5866,  5878,  5884,  5890,
-    5896,  5902,  5914,  5926,  5933,  5940,  5947,  5954,  5961,  5968,
-    5981,  5987,  5993,  5999,  6011,  6017,  6023,  6029,  6041,  6047,
-    6059,  6065,  6071,  6077,  6083,  6089,  6095,  6107,  6113,  6125,
-    6131,  6137,  6143,  6155,  6161,  6167,  6173,  6179,  6191,  6197,
-    6209,  6215,  6227,  6233,  6245,  6251,  6263,  6275,  6281,  6293,
-    6299,  6305,  6317,  6323,  6329,  6335,  6341,  6353,  6360,  6367,
-    6374,  6387,  6399,  6411,  6423,  6429,  6441,  6447,  6453,  6465,
-    6471,  6483
+    5625,  5635,  5649,  5659,  5682,  5688,  5694,  5700,  5712,  5718,
+    5724,  5730,  5742,  5748,  5760,  5766,  5778,  5784,  5796,  5802,
+    5814,  5820,  5826,  5838,  5844,  5856,  5862,  5874,  5880,  5886,
+    5892,  5898,  5910,  5922,  5929,  5936,  5943,  5950,  5957,  5964,
+    5977,  5983,  5989,  5995,  6007,  6013,  6019,  6025,  6037,  6043,
+    6055,  6061,  6067,  6073,  6079,  6085,  6091,  6103,  6109,  6121,
+    6127,  6133,  6139,  6151,  6157,  6163,  6169,  6175,  6187,  6193,
+    6205,  6211,  6223,  6229,  6241,  6247,  6259,  6271,  6277,  6289,
+    6295,  6301,  6313,  6319,  6325,  6331,  6337,  6349,  6356,  6363,
+    6370,  6383,  6395,  6407,  6419,  6425,  6437,  6443,  6449,  6461,
+    6467,  6479
   };
 
   // Print the state stack on the debug stream.
@@ -9215,7 +9211,7 @@ namespace zorba
 
 } // namespace zorba
 
-#line 6493 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
+#line 6489 "/home/vinayakb/work/repositories/external/fifthelement.inf.ethz.ch/zorba2/xquery/src/compiler/parser/xquery_parser.y"
 
 
 

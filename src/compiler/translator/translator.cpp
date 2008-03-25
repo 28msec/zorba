@@ -4010,7 +4010,30 @@ void *begin_visit(const CatchExpr& v)
 {
   TRACE_VISIT ();
   trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
-  tce->add_clause_in_front(new catch_clause());
+  trycatch_expr::clauseref_t cc = new catch_clause();
+  tce->add_clause_in_front(cc);
+  if (v.getVarname() != "") {
+    push_scope();
+    cc->errorcode_var_h = tempvar(v.get_location(), var_expr::catch_var);
+    cc->errordesc_var_h = tempvar(v.get_location(), var_expr::catch_var);
+    cc->errorobj_var_h = tempvar(v.get_location(), var_expr::catch_var);
+    var_expr_t lv = bind_var(v.get_location(), v.getVarname(), var_expr::let_var, GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
+
+    expr_t eName = new const_expr(v.get_location(), GENV_ITEMFACTORY->createQName(XQUERY_FN_NS, "fn", "error"));
+    expr_t eContents = new fo_expr(v.get_location(), LOOKUP_OPN("concatenate"),
+      cc->errorcode_var_h,
+      cc->errordesc_var_h,
+      cc->errorobj_var_h);
+
+    push_elem_scope();
+    expr_t eVal = new elem_expr(v.get_location(), eName, NULL, eContents, ns_ctx);
+    pop_elem_scope();
+
+    rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
+    rchandle<forlet_clause> flc = new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, eVal);
+    flwor->add(flc);
+    cc->catch_expr_h = &*flwor;
+  }
   return no_state;
 }
 
@@ -4020,7 +4043,13 @@ void end_visit(const CatchExpr& v, void* visit_state)
   expr_t ce = pop_nodestack();
   trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
   catch_clause *cc = &*(*tce)[0];
-  cc->catch_expr_h = ce;
+  if (v.getVarname() != "") {
+    flwor_expr *flwor = dynamic_cast<flwor_expr *>(&*cc->catch_expr_h);
+    flwor->set_retval(ce);
+    pop_scope();
+  } else {
+    cc->catch_expr_h = ce;
+  }
 }
 
 

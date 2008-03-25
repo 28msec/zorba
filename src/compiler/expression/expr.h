@@ -200,6 +200,7 @@ public:
     quant_var,
     context_var,
     param_var,
+    catch_var,
     unknown_var  // TODO: get rid
   };
 
@@ -414,6 +415,9 @@ class catch_clause : public SimpleRCObject {
   public:
     rchandle<NodeNameTest> nametest_h;
     varref_t var_h;
+    varref_t errorcode_var_h;
+    varref_t errordesc_var_h;
+    varref_t errorobj_var_h;
     expr_t catch_expr_h;
 
   public:

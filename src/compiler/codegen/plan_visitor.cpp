@@ -114,6 +114,7 @@ protected:
   hash64map<vector<var_iter_t> *>      pvar_iter_map;
   hash64map<vector<ref_iter_t> *>      lvar_iter_map;
   hash64map<vector<ref_iter_t> *>    * param_var_iter_map;
+  hash64map<vector<ref_iter_t> *>      catchvar_iter_map;
 
 public:
 	plan_visitor(hash64map<vector<ref_iter_t> *> *param_var_map = NULL)
@@ -124,6 +125,7 @@ public:
         for_each(fvar_iter_map.begin(), fvar_iter_map.end(), vector_destroyer<var_iter_t>());
         for_each(pvar_iter_map.begin(), pvar_iter_map.end(), vector_destroyer<var_iter_t>());
         for_each(lvar_iter_map.begin(), lvar_iter_map.end(), vector_destroyer<ref_iter_t>());
+        for_each(catchvar_iter_map.begin(), catchvar_iter_map.end(), vector_destroyer<ref_iter_t>());
     }
 
 public:
@@ -239,6 +241,19 @@ void end_visit(var_expr& v)
     }
  
     break;
+  case var_expr::catch_var:
+  {
+    vector<ref_iter_t> *map = NULL;
+    bool bound = catchvar_iter_map.get ((uint64_t) &v, map);
+      
+    ZORBA_ASSERT (bound);
+    LetVarIterator *v_p = new LetVarIterator(v.get_varname()->getLocalName(),
+            loc,
+            (void *) &v);
+    map->push_back (v_p);
+    itstack.push(v_p);
+  }
+  break;
   case var_expr::unknown_var:
     assert (false);
     break;
@@ -385,21 +400,49 @@ void end_visit(promote_expr& v)
   itstack.push(new PromoteIterator(v.get_loc(), lChild, v.get_target_type()));
 }
 
-bool begin_visit(trycatch_expr& /*v*/)
+bool begin_visit(trycatch_expr& v)
 {
   CODEGEN_TRACE_IN("");
+  for(int i = v.clause_count() - 1; i >= 0; --i) {
+    catch_clause *cc = &*v[i];
+    if (cc->errorcode_var_h != NULL) {
+      catchvar_iter_map.put((uint64_t)&*cc->errorcode_var_h, new vector<ref_iter_t>());
+    }
+    if (cc->errordesc_var_h != NULL) {
+      catchvar_iter_map.put((uint64_t)&*cc->errordesc_var_h, new vector<ref_iter_t>());
+    }
+    if (cc->errorobj_var_h != NULL) {
+      catchvar_iter_map.put((uint64_t)&*cc->errorobj_var_h, new vector<ref_iter_t>());
+    }
+  }
   return true;
 }
 
 void end_visit(trycatch_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+  std::vector<ref_iter_t> *vec = NULL;
   std::vector<TryCatchIterator::CatchClause> rev_ccs;
   for(int i = v.clause_count() - 1; i >= 0; --i) {
     catch_clause *cc = &*v[i];
     TryCatchIterator::CatchClause rcc;
     rcc.node_name = cc->nametest_h;
     rcc.catch_expr = pop_itstack();
+    if (cc->errorcode_var_h != NULL) {
+      bool bound = catchvar_iter_map.get((uint64_t)&*cc->errorcode_var_h, vec);
+      ZORBA_ASSERT(bound);
+      rcc.errorcode_var = *vec;
+    }
+    if (cc->errordesc_var_h != NULL) {
+      bool bound = catchvar_iter_map.get((uint64_t)&*cc->errordesc_var_h, vec);
+      ZORBA_ASSERT(bound);
+      rcc.errordesc_var = *vec;
+    }
+    if (cc->errorobj_var_h != NULL) {
+      bool bound = catchvar_iter_map.get((uint64_t)&*cc->errorobj_var_h, vec);
+      ZORBA_ASSERT(bound);
+      rcc.errorobj_var = *vec;
+    }
     rev_ccs.push_back(rcc);
   }
   std::vector<TryCatchIterator::CatchClause> ccs(rev_ccs.rbegin(), rev_ccs.rend());

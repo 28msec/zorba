@@ -5661,13 +5661,9 @@ CatchExpr :
 #ifdef ZORBA_DEBUG_PARSER
 			 cout << "CatchExpr [NameTest,VarName]" << endl;
 #endif
-       QName* lQName = new QName(
-                         LOC (@$), 
-                         driver.symtab.get((off_t)$5)
-                       );
        $$ = new CatchExpr(LOC (@$),
                           static_cast<NameTest*>($2),
-                          lQName,
+                          driver.symtab.get((off_t)$5),
                           $7);
     }
   ;

@@ -4974,7 +4974,7 @@ class CatchExpr : public exprnode
 {
 protected:
   rchandle<NameTest> theNameTest;
-  rchandle<QName> theVarname;
+  std::string theVarname;
   rchandle<parsenode> theExprSingle;
 
 public:
@@ -4984,14 +4984,14 @@ public:
     rchandle<parsenode> aExprSingle)
   : exprnode(aQueryLoc),
     theNameTest(aNameTest), 
-    theVarname(0), 
+    theVarname(""), 
     theExprSingle(aExprSingle) 
   {}
 
   CatchExpr(
     const QueryLoc& aQueryLoc,
     rchandle<NameTest> aNameTest, 
-    rchandle<QName> aVarname, 
+    const std::string& aVarname, 
     rchandle<parsenode> aExprSingle)
   :
     exprnode(aQueryLoc),
@@ -5002,7 +5002,7 @@ public:
 
 public:
   rchandle<NameTest> getNameTest() const { return theNameTest; }
-  rchandle<QName>  getVarname() const { return theVarname; }
+  const std::string& getVarname() const { return theVarname; }
   rchandle<parsenode> getExprSingle() const { return theExprSingle; }
 
 public:
