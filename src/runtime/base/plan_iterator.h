@@ -64,7 +64,11 @@
 #define STACK_END( stateObject )                               \
   do {                                                         \
     stateObject->setDuffsLine(__LINE__);                       \
+    return NULL;                                               \
   case __LINE__:                                               \
+    stateObject->setDuffsLine(__LINE__ + 1);                   \
+  case __LINE__ + 1:                                           \
+    assert (false && "nextImpl() called past iterator end");   \
     return NULL;                                               \
   default:                                                     \
     return NULL;                                               \
