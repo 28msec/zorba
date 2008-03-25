@@ -133,7 +133,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   if (flwor->forlet_count() == 0) {
     expr_t result = flwor->get_retval();
     if (where != NULL)
-      result = &* fix_if_annotations (new if_expr(LOC (where), where, result, new fo_expr(LOC (where), LOOKUP_OPN("concatenate"))));
+      result = fix_if_annotations (new if_expr(LOC (where), where, result, new fo_expr(LOC (where), LOOKUP_OPN("concatenate"))));
     return result;
   }
   return modified ? node : NULL;

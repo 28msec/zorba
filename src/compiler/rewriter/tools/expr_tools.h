@@ -69,7 +69,7 @@ inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL) {
   return new_expr;
 }
 
-inline expr_t fix_if_annotations (if_expr *ite) {
+inline expr_t fix_if_annotations (rchandle<if_expr> ite) {
   fix_annotations (ite, ite->get_cond_expr ());
   fix_annotations (ite, ite->get_then_expr ());
   fix_annotations (ite, ite->get_else_expr ());
