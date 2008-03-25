@@ -5,6 +5,7 @@
 
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planitervisitor.h"
+#include "runtime/core/var_iterators.h"
 #include "store/api/store.h"
 #include "store/api/temp_seq.h"
 #include "system/globalenv.h"
@@ -41,6 +42,8 @@ TryCatchIteratorState::reset(PlanState& planState) {
   }
   theCatchIterator = NULL;
 }
+
+TryCatchIterator::CatchClause::~CatchClause() {}
 
 TryCatchIterator::TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses)
   : UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> (loc, aBlock),

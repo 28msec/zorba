@@ -15,16 +15,6 @@
 namespace zorba
 {
 
-class var_expr;
-
-class ForVarIterator;
-typedef rchandle<ForVarIterator> var_iter_t;
-
-class LetVarIterator;
-typedef rchandle<LetVarIterator> ref_iter_t;
-  
-
-class RuntimeCB; 
 class FlworState;
 
  

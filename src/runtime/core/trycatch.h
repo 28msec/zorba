@@ -25,9 +25,14 @@ namespace zorba
 
   class TryCatchIterator : public UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> {
   public:
-    struct CatchClause {
+    class CatchClause {
+    public:
+      ~CatchClause();
       NodeNameTest_t node_name;
       PlanIter_t     catch_expr;
+      std::vector<ref_iter_t> errorcode_var;
+      std::vector<ref_iter_t> errordesc_var;
+      std::vector<ref_iter_t> errorobj_var;
     };
 
     TryCatchIterator(const QueryLoc& loc, PlanIter_t& aBlock, std::vector<CatchClause>& aCatchClauses);

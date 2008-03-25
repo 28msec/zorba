@@ -220,6 +220,14 @@ class Integer;
 typedef FloatImpl<double> Double;
 typedef FloatImpl<float>  Float;
 
+/* runtime */
+class RuntimeCB;
+class ForVarIterator;
+typedef rchandle<ForVarIterator> var_iter_t;
+
+class LetVarIterator;
+typedef rchandle<LetVarIterator> ref_iter_t;
+
 }
 
 #endif /* ZORBA_SHARED_TYPES_H */
