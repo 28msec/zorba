@@ -58,7 +58,7 @@ namespace zorba {
     } else {
       for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
         expr *e = *i;
-        const set<var_expr *> &kfv = get_varset_annotation (e, AnnotationKey::FREE_VARS);
+        const var_ptr_set &kfv = get_varset_annotation (e, AnnotationKey::FREE_VARS);
         copy (kfv.begin (), kfv.end (), inserter (freevars->varset, freevars->varset.begin ()));
       }
       if (node->get_expr_kind () == flwor_expr_kind) {

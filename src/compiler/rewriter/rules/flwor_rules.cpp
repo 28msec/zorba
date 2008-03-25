@@ -70,8 +70,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
   // 'for $x in ... return ... WHERE cond' when cond doesn't depend on FLWOR vars
   if (where != NULL) {
-    const set<var_expr *> &free_vars = get_varset_annotation (where, AnnotationKey::FREE_VARS);
-    set<var_expr *> diff;
+    const var_ptr_set &free_vars = get_varset_annotation (where, AnnotationKey::FREE_VARS);
+    var_ptr_set diff;
     set_intersection (myvars.varset.begin (), myvars.varset.end (), free_vars.begin (), free_vars.end (), inserter (diff, diff.begin ()));
     if (diff.empty ()) {
       flwor->set_where (NULL);
@@ -133,7 +133,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   if (flwor->forlet_count() == 0) {
     expr_t result = flwor->get_retval();
     if (where != NULL)
-      result = &* fix_if_annotations (new if_expr(where->get_loc(), where, result, new fo_expr(where->get_loc(), LOOKUP_OPN("concatenate"))));
+      result = &* fix_if_annotations (new if_expr(LOC (where), where, result, new fo_expr(LOC (where), LOOKUP_OPN("concatenate"))));
     return result;
   }
   return modified ? node : NULL;
