@@ -47,7 +47,8 @@ namespace zorba
     virtual uint32_t getStateSizeOfSubtree() const;
 
   protected:
-    bool matchedCatch(error::ZorbaError& e, TryCatchIteratorState* state) const;
+    bool matchedCatch(error::ZorbaError& e, TryCatchIteratorState* state, PlanState&) const;
+    void bindErrorVars(error::ZorbaError& e, const CatchClause* state, PlanState&) const;
     std::vector<CatchClause> theCatchClauses;
   };
 
