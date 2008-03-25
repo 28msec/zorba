@@ -53,7 +53,31 @@ int parse_int(std::string& s, unsigned int& position, T& result, int min_digits 
   return 0;
 }
 
-static inline std::string to_string(int value, int min_digits = 0)
+/**
+ * Parses the fractional part of double number, not including the decimal dot.
+ * @param s 
+ * @param position 
+ * @param result 
+ * @return 
+ */
+inline double parse_frac(std::string& s, unsigned int& position, double& result)
+{
+  if (s[position] < '0' || s[position] > '9')
+    return 1;
+
+  double temp = 0.1;
+  result = 0;
+  while (s[position] >= '0' && s[position] <= '9' && position < s.size())
+  {
+    result += temp * (s[position] - '0');
+    temp /= 10;
+    position++;
+  }
+  
+  return 0;
+}
+
+inline std::string to_string(int value, int min_digits = 0)
 {
   std::string zeros = "";
   std::string temp = NumConversions::longToStr(value);

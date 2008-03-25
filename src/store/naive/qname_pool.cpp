@@ -11,7 +11,7 @@
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/gregorian.h"
+
 
 namespace zorba { namespace store {
 

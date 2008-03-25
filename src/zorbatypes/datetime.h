@@ -1,7 +1,6 @@
 #ifndef ZORBA_DATETIME_H
 #define ZORBA_DATETIME_H
 
-#include <boost/date_time/posix_time/posix_time.hpp>
 #include "zorbatypes/timezone.h"
 #include "zorbatypes/duration.h"
 #include "util/rchandle.h"
@@ -21,8 +20,6 @@ namespace zorba
   {
     public:
       virtual ~DateTime() { };
-
-      DateTime(boost::posix_time::ptime t); // TODO: remove/rewrite this function
       
       /**
        *  Returns 0 on success
@@ -102,6 +99,9 @@ namespace zorba
                          int hours, int minutes, int seconds, int fractional_seconds,
                          const TimeZone& tz, DateTime_t& dt_t);
 
+      /**
+       *  Throws InvalidTimezoneException if the given timezone is not valid.
+       */
       DurationBase_t
       subtractDateTime(const DateTime& dt, int implicit_timezone_seconds) const;
       

@@ -26,7 +26,6 @@
 #include "store/api/item_iterator.h"
 #include "context/dynamic_context.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/gregorian.h"
 
 #define CREATE_XS_TYPE(aType) \
   GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
@@ -860,78 +859,6 @@ xqp_string PositiveIntegerItemNaive::show() const {
 }
 
 /*******************************************************************************
- * class DateItem
- *******************************************************************************/
- /*
-xqp_date DateItemNaive::getDateValue() const
-{
-  return theValue;
-}
-
-xqp_string DateItemNaive::getStringValue() const
-{
-  return theValue->toString();
-}
-  
-Item_t DateItemNaive::getType() const
-{
-  return CREATE_XS_TYPE("date");
-}
-
-bool DateItemNaive::equals(Item_t aItem) const
-{
-  return *theValue == *aItem->getDateValue();
-}
-
-Item_t DateItemNaive::getEBV() const
-{
-  // TODO:
-  return NULL;
-}
-
-xqp_string DateItemNaive::show() const
-{
-  return theValue->toString();
-}
-*/
-
-/*******************************************************************************
- * class TimeItem
- *******************************************************************************/
-/* 
-xqp_time TimeItemNaive::getTimeValue() const
-{
-  return theValue;
-}
-
-xqp_string TimeItemNaive::getStringValue() const
-{
-  return theValue->toString();
-}
-  
-Item_t TimeItemNaive::getType() const
-{
-  return CREATE_XS_TYPE("time");
-}
-
-bool TimeItemNaive::equals(Item_t aItem) const
-{
-  return 0 == theValue->compare(*aItem->getTimeValue());
-}
-
-Item_t TimeItemNaive::getEBV() const
-{
-  // TODO:
-  return NULL;
-}
-
-xqp_string TimeItemNaive::show() const
-{
-  return theValue->toString();
-}
-*/
-
-/*******************************************************************************
  * class DateTimeItem
  *******************************************************************************/
 int DateTimeItemNaive::createFromDateAndTime(const xqp_date& date, const xqp_time& time, Item_t& item)
@@ -940,21 +867,6 @@ int DateTimeItemNaive::createFromDateAndTime(const xqp_date& date, const xqp_tim
   int result = DateTime::createDateTime(date, time, dtin->theValue);
   item = dtin;
   return result;
-}
-
-xqp_dateTime DateTimeItemNaive::getDateTimeValue() const
-{
-  return theValue;
-}
-
-xqp_date DateTimeItemNaive::getDateValue() const
-{
-  return theValue;
-}
-
-xqp_time DateTimeItemNaive::getTimeValue() const
-{
-  return theValue;
 }
 
 xqp_string DateTimeItemNaive::getStringValue() const
@@ -972,7 +884,28 @@ Item_t DateTimeItemNaive::getType() const
       
   case DateTime::TIME_FACET:
     return CREATE_XS_TYPE("time");
+    break;
     
+  case DateTime::GYEARMONTH_FACET:
+    return CREATE_XS_TYPE("gYearMonth");
+    break;
+    
+  case DateTime::GYEAR_FACET:
+    return CREATE_XS_TYPE("gYear");
+    break;
+    
+  case DateTime::GMONTH_FACET:
+    return CREATE_XS_TYPE("gMonth");
+    break;
+
+  case DateTime::GMONTHDAY_FACET:
+    return CREATE_XS_TYPE("gMonthDay");
+    break;
+    
+  case DateTime::GDAY_FACET:
+    return CREATE_XS_TYPE("gDay");
+    break;
+
   default:
   case DateTime::DATETIME_FACET:
     return CREATE_XS_TYPE("dateTime");
@@ -1113,197 +1046,6 @@ xqp_string YearMonthDurationItemNaive::show() const
 {
   return theValue->toString();
 }
-
-/*******************************************************************************
- * class GYearMonthItemNaive
- *******************************************************************************/
-xqp_gYearMonth GYearMonthItemNaive::getGYearMonthValue() const
-{
-  return theValue;
-}
-
-xqp_string GYearMonthItemNaive::getStringValue() const
-{
-  return theValue->toString();
-}
-  
-Item_t GYearMonthItemNaive::getType() const
-{
-  return CREATE_XS_TYPE("gYearMonth");
-}
-
-bool GYearMonthItemNaive::equals(Item_t aItem) const
-{
-  return *theValue == *aItem->getGYearMonthValue();
-}
-
-Item_t GYearMonthItemNaive::getEBV() const
-{
-  // TODO:
-  return NULL;
-}
-
-xqp_string GYearMonthItemNaive::show() const
-{
-  return theValue->toString();
-}
-
-/*******************************************************************************
- * class GYearItemNaive
- *******************************************************************************/
-// GYearItemNaive::GYearItemNaive(const xqp_string& aValue)
-// {
-//   GYear::parse_string(aValue, theValue);
-// }
-
-xqp_gYear GYearItemNaive::getGYearValue() const
-{
-  return theValue;
-}
-
-xqp_string GYearItemNaive::getStringValue() const
-{
-  return theValue->toString();
-}
-  
-Item_t GYearItemNaive::getType() const
-{
-  return CREATE_XS_TYPE("gYear");
-}
-
-bool GYearItemNaive::equals(Item_t aItem) const
-{
-  return *theValue == *aItem->getGYearValue();
-}
-
-Item_t GYearItemNaive::getEBV() const
-{
-  // TODO:
-  return NULL;
-}
-
-xqp_string GYearItemNaive::show() const
-{
-  return theValue->toString();
-}
-
-/*******************************************************************************
- * class GMonthDayItemNaive
- *******************************************************************************/
-// GMonthDayItemNaive::GMonthDayItemNaive(const xqp_string& aValue)
-// {
-//   GMonthDay::parse_string(aValue, theValue);
-// }
-
-xqp_gMonthDay GMonthDayItemNaive::getGMonthDayValue() const
-{
-  return theValue;
-}
-
-xqp_string GMonthDayItemNaive::getStringValue() const
-{
-  return theValue->toString();
-}
-  
-Item_t GMonthDayItemNaive::getType() const
-{
-  return CREATE_XS_TYPE("gMonthDay");
-}
-
-bool GMonthDayItemNaive::equals(Item_t aItem) const
-{
-  return *theValue == *aItem->getGMonthDayValue();
-}
-
-Item_t GMonthDayItemNaive::getEBV() const
-{
-  // TODO:
-  return NULL;
-}
-
-xqp_string GMonthDayItemNaive::show() const
-{
-  return theValue->toString();
-}
-
-/*******************************************************************************
- * class GMonthItemNaive
- *******************************************************************************/
-// GMonthItemNaive::GMonthItemNaive(const xqp_string& aValue)
-// {
-//   GMonth::parse_string(aValue, theValue);
-// }
-
-xqp_gMonth GMonthItemNaive::getGMonthValue() const
-{
-  return theValue;
-}
-
-xqp_string GMonthItemNaive::getStringValue() const
-{
-  return theValue->toString();
-}
-  
-Item_t GMonthItemNaive::getType() const
-{
-  return CREATE_XS_TYPE("gMonth");
-}
-
-bool GMonthItemNaive::equals(Item_t aItem) const
-{
-  return *theValue == *aItem->getGMonthValue();
-}
-
-Item_t GMonthItemNaive::getEBV() const
-{
-  // TODO:
-  return NULL;
-}
-
-xqp_string GMonthItemNaive::show() const
-{
-  return theValue->toString();
-}
-
-/*******************************************************************************
- * class GDayItemNaive
- *******************************************************************************/
-// GDayItemNaive::GDayItemNaive(const xqp_string& aValue)
-// {
-//   GDay::parse_string(aValue, theValue);
-// }
-
-xqp_gDay GDayItemNaive::getGDayValue() const
-{
-  return theValue;
-}
-
-xqp_string GDayItemNaive::getStringValue() const
-{
-  return theValue->toString();
-}
-  
-Item_t GDayItemNaive::getType() const
-{
-  return CREATE_XS_TYPE("gDay");
-}
-
-bool GDayItemNaive::equals(Item_t aItem) const
-{
-  return *theValue == *aItem->getGDayValue();
-}
-
-Item_t GDayItemNaive::getEBV() const
-{
-  // TODO:
-  return NULL;
-}
-
-xqp_string GDayItemNaive::show() const
-{
-  return theValue->toString();
-}
-
 
 } // namespace store
 } // namespace zorba

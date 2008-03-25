@@ -15,7 +15,6 @@
 #include "store/api/temp_seq.h"
 #include "store/api/item_iterator.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/gregorian.h"
 
 
 #ifndef NDEBUG

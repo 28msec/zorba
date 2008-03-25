@@ -175,47 +175,6 @@ public:
   virtual xqp_string show() const;
 };
 
-
-/*******************************************************************************
- * class DateItem
- *******************************************************************************/
- /*
-class DateItemNaive : public AtomicItem
-{
-protected:
-  xqp_date theValue;
-
-public:
-  DateItemNaive(xqp_date& date) : theValue(date) { };
-  virtual xqp_string getStringValue() const; 
-  virtual xqp_date getDateValue() const;  
-  virtual Item_t getType() const;
-  virtual bool equals(Item_t) const;
-  virtual Item_t getEBV( ) const;
-  virtual xqp_string show() const;
-};
-*/
-
-/*******************************************************************************
- * class TimeItem
- *******************************************************************************/
- /*
-class TimeItemNaive : public AtomicItem
-{
-protected:
-  xqp_time theValue;
-
-public:
-  TimeItemNaive(xqp_time& aValue) : theValue(aValue) { };
-  virtual xqp_string getStringValue() const;
-  virtual xqp_time getTimeValue() const;
-  virtual Item_t getType() const;
-  virtual bool equals(Item_t) const;
-  virtual Item_t getEBV( ) const;
-  virtual xqp_string show() const;
-};
-*/
-
 /*******************************************************************************
  * class DateTimeItem
  *******************************************************************************/
@@ -229,9 +188,16 @@ public:
   static int createFromDateAndTime(const xqp_date& date, const xqp_time& time, Item_t& item);
   
   virtual xqp_string getStringValue() const;
-  virtual xqp_dateTime getDateTimeValue() const;
-  virtual xqp_date getDateValue() const;
-  virtual xqp_time getTimeValue() const;
+  
+  virtual xqp_dateTime getDateTimeValue() const { return theValue; }
+  virtual xqp_date getDateValue() const { return theValue; }
+  virtual xqp_time getTimeValue() const { return theValue; }
+  virtual xqp_gYearMonth getGYearMonthValue() const { return theValue; }
+  virtual xqp_gYear getGYearValue() const { return theValue; }
+  virtual xqp_gMonth getGMonthValue() const { return theValue; }
+  virtual xqp_gMonthDay getGMonthDayValue() const { return theValue; }
+  virtual xqp_gDay getGDayValue() const { return theValue; }
+  
   virtual Item_t getType() const;
   virtual bool equals(Item_t) const;
   virtual Item_t getEBV( ) const;
@@ -294,97 +260,6 @@ public:
   virtual Item_t getEBV( ) const;
   virtual xqp_string show() const;
 };
-
-/*******************************************************************************
- * class GYearMonthItem
- *******************************************************************************/
-class GYearMonthItemNaive : public AtomicItem
-{
-protected:
-  xqp_gYearMonth theValue;
-
-public:
-  GYearMonthItemNaive(xqp_gYearMonth& aValue) : theValue(aValue) { };
-  virtual xqp_string getStringValue() const;
-  virtual xqp_gYearMonth getGYearMonthValue() const;
-  virtual Item_t getType() const;
-  virtual bool equals(Item_t) const;
-  virtual Item_t getEBV( ) const;
-  virtual xqp_string show() const;
-};
-
-/*******************************************************************************
- * class GYearItem
- *******************************************************************************/
-class GYearItemNaive : public AtomicItem
-{
-  protected:
-    xqp_gYear theValue;
-
-  public:
-    GYearItemNaive(xqp_gYear& aValue) : theValue(aValue) { };
-    virtual xqp_string getStringValue() const;
-    virtual xqp_gYear getGYearValue() const;
-    virtual Item_t getType() const;
-    virtual bool equals(Item_t) const;
-    virtual Item_t getEBV( ) const;
-    virtual xqp_string show() const;
-};
-
-/*******************************************************************************
- * class GMonthDayItem
- *******************************************************************************/
-class GMonthDayItemNaive : public AtomicItem
-{
-protected:
-  xqp_gMonthDay theValue;
-
-public:
-  GMonthDayItemNaive(xqp_gMonthDay& aValue) : theValue(aValue) { };
-  virtual xqp_string getStringValue() const;
-  virtual xqp_gMonthDay getGMonthDayValue() const;
-  virtual Item_t getType() const;
-  virtual bool equals(Item_t) const;
-  virtual Item_t getEBV( ) const;
-  virtual xqp_string show() const;
-};
-
-/*******************************************************************************
- * class GMonthItem
- *******************************************************************************/
-class GMonthItemNaive : public AtomicItem
-{
-protected:
-  xqp_gMonth theValue;
-
-public:
-  GMonthItemNaive(xqp_gMonth& aValue) : theValue(aValue) { };
-  virtual xqp_string getStringValue() const;
-  virtual xqp_gMonth getGMonthValue() const;
-  virtual Item_t getType() const;
-  virtual bool equals(Item_t) const;
-  virtual Item_t getEBV( ) const;
-  virtual xqp_string show() const;
-};
-
-/*******************************************************************************
- * class GDayItem
- *******************************************************************************/
-class GDayItemNaive : public AtomicItem
-{
-protected:
-  xqp_gDay theValue;
-
-public:
-  GDayItemNaive(xqp_gDay& aValue) : theValue(aValue) { };
-  virtual xqp_string getStringValue() const;
-  virtual xqp_gDay getGDayValue() const;
-  virtual Item_t getType() const;
-  virtual bool equals(Item_t) const;
-  virtual Item_t getEBV( ) const;
-  virtual xqp_string show() const;
-};
-
 
 /*******************************************************************************
  * 

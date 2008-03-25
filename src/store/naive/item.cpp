@@ -12,7 +12,6 @@
 #include "errors/error_manager.h"
 #include "util/Assert.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/gregorian.h"
 
 //#include "system/zorba_engine.h"
 //#include "system/zorba.h"

@@ -6,6 +6,7 @@
 
 #include <string>
 #include <exception>
+#include <cassert>
 #include <zorbatypes/datetime.h>
 #include <zorbatypes/duration.h>
 #include <zorbatypes/timezone.h>
@@ -15,18 +16,23 @@
 
 using namespace std;
 
-static const int FACET_MEMBERS[][7] = {
-  { 1, 1, 1, 1, 1, 1, 1},    // DATETIME_FACET = 0,
-  { 1, 1, 1, 0, 0, 0, 0},    // DATE_FACET = 1,
-  { 0, 0, 0, 1, 1, 1, 1},    // TIME_FACET = 2,
-  { 1, 1, 0, 0, 0, 0, 0}    // GYEARMONTH_FACET = 3
-};
-
 namespace zorba
 {
+
+static const int FACET_MEMBERS[][8] = {
+  { 1, 1, 1, 1, 1, 1, 1, 0},    // DATETIME_FACET = 0,
+  { 1, 1, 1, 0, 0, 0, 0, 0},    // DATE_FACET = 1,
+  { 0, 0, 0, 1, 1, 1, 1, 0},    // TIME_FACET = 2,
+  { 1, 1, 0, 0, 0, 0, 0, 0},    // GYEARMONTH_FACET = 3
+  { 1, 0, 0, 0, 0, 0, 0, 0},    // GYEAR_FACET = 4
+  { 0, 1, 0, 0, 0, 0, 0, 0},    // GMONTH_FACET = 5
+  { 0, 1, 1, 0, 0, 0, 0, 0},    // GMONTHDAY_FACET = 6
+  { 0, 0, 1, 0, 0, 0, 0, 0}     // GDAY_FACET = 7
+};
+
+static const char separators[] = { '-', '-', 'T', ':', ':', '.'};
+static const char min_length[] = { 4, 2, 2, 2, 2, 2, 0};
   
-static const char separators[] = {'-', '-', 'T', ':', ':'};
-static const char min_length[] = { 4, 2, 2, 2, 2, 2};
   
 const int DateTime::FRAC_SECONDS_UPPER_LIMIT = 1000000;
 
@@ -39,17 +45,6 @@ DateTime::DateTime()
   
   for (int i=HOUR_DATA; i<=FRACSECONDS_DATA; i++)
     data[i] = 0;
-}
-
-DateTime::DateTime(boost::posix_time::ptime t)
-{
-  data[YEAR_DATA] = t.date().year();
-  data[MONTH_DATA] = t.date().month();
-  data[DAY_DATA] = t.date().day();
-  data[HOUR_DATA] = t.time_of_day().hours();
-  data[MINUTE_DATA] = t.time_of_day().minutes();
-  data[SECONDS_DATA] = t.time_of_day().seconds();
-  data[FRACSECONDS_DATA] = t.time_of_day().fractional_seconds();
 }
 
 int DateTime::createDateTime(const DateTime_t& date_t, const DateTime_t& time_t, DateTime_t& result_t)
@@ -182,6 +177,7 @@ int DateTime::parse_date(std::string& ss, unsigned int& position, int& year, int
 // Returns 0 on success
 int DateTime::parse_time(std::string& ss, unsigned int& position, int& hour, int& minute, int& seconds, int& frac_seconds)
 {
+  double temp_frac_seconds;
   if (position == ss.size())
     return 1;
   
@@ -204,18 +200,9 @@ int DateTime::parse_time(std::string& ss, unsigned int& position, int& hour, int
   if (position < ss.size() && ss[position] == '.')
   {
     position++;
-    if (parse_int(ss, position, frac_seconds))
+    if (parse_frac(ss, position, temp_frac_seconds))
       return 1;
-    
-    if (frac_seconds != 0)
-    {
-      // make sure we keep the correct number of digits
-      while (frac_seconds*10 < FRAC_SECONDS_UPPER_LIMIT)
-        frac_seconds *= 10;
-    
-      while (frac_seconds >= FRAC_SECONDS_UPPER_LIMIT)
-        frac_seconds = round(frac_seconds/10.0); 
-    }
+    frac_seconds = round(temp_frac_seconds * FRAC_SECONDS_UPPER_LIMIT);
   }
   else
     frac_seconds = 0;
@@ -325,28 +312,165 @@ int DateTime::parseTime(const xqpString& s, DateTime_t& dt_t)
 int DateTime::parseGYearMonth(const xqpString& s, DateTime_t& dt_t)
 {
   TimeZone_t tz_t;
-  unsigned int position = 0;
+  unsigned int position = 0, temp_position = 0;
   std::string ss = *s.getStore();
+  std::string temp;
   dt_t = new DateTime();
   
   // GYearMonth of form: '-'? yyyy '-' mm zzzzzz?
   
   skip_whitespace(ss, position);
-  dt_t->facet = TIME_FACET;
+  dt_t->facet = GYEARMONTH_FACET;
   
-  if (parse_time(ss, position, dt_t->data[HOUR_DATA], dt_t->data[MINUTE_DATA], dt_t->data[SECONDS_DATA], dt_t->data[FRACSECONDS_DATA]))
+  if (ss[position] == '-')
+    temp = ss.substr(position++, 8);
+  else
+    temp = ss.substr(position, 7);
+  
+  temp += "-01";
+  if (parse_date(temp, temp_position, dt_t->data[YEAR_DATA], dt_t->data[MONTH_DATA], dt_t->data[DAY_DATA]))
     return 1;
   
+  position += 7;
   if (position < ss.size())
   {
     if (!TimeZone::parse_string(ss.substr(position), tz_t))
       return 1;
     dt_t->the_time_zone = *tz_t;
   }
+ 
+  return 0;
+}
+
+int DateTime::parseGYear(const xqpString& s, DateTime_t& dt_t)
+{
+  TimeZone_t tz_t;
+  unsigned int position = 0, temp_position = 0;
+  std::string ss = *s.getStore();
+  std::string temp;
+  dt_t = new DateTime();
   
-  if (dt_t->data[HOUR_DATA] == 24)
-    dt_t->data[HOUR_DATA] = 0;
+  // GYear of form: '-'? yyyy zzzzzz?
   
+  skip_whitespace(ss, position);
+  dt_t->facet = GYEAR_FACET;
+  
+  if (ss[position] == '-')
+    temp = ss.substr(position++, 5);
+  else
+    temp = ss.substr(position, 4);
+  
+  temp += "-01-01";
+  if (parse_date(temp, temp_position, dt_t->data[YEAR_DATA], dt_t->data[MONTH_DATA], dt_t->data[DAY_DATA]))
+    return 1;
+  
+  position += 4;
+  if (position < ss.size())
+  {
+    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+      return 1;
+    dt_t->the_time_zone = *tz_t;
+  }
+ 
+  return 0;
+}
+
+int DateTime::parseGMonth(const xqpString& s, DateTime_t& dt_t)
+{
+  TimeZone_t tz_t;
+  unsigned int position = 0, temp_position = 0;
+  std::string ss = *s.getStore();
+  std::string temp;
+  dt_t = new DateTime();
+  
+  // GMonth of form: --MM zzzzzz?
+  // preceding - is not allowed.
+  
+  skip_whitespace(ss, position);
+  dt_t->facet = GMONTH_FACET;
+  
+  if (ss[position++] != '-')
+    return 1;
+  
+  temp = "0001" + ss.substr(position, 3) + "-01";
+  if (parse_date(temp, temp_position, dt_t->data[YEAR_DATA], dt_t->data[MONTH_DATA], dt_t->data[DAY_DATA]))
+    return 1;
+  
+  position += 3;
+  if (position < ss.size())
+  {
+    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+      return 1;
+    dt_t->the_time_zone = *tz_t;
+  }
+ 
+  return 0;
+}
+
+int DateTime::parseGMonthDay(const xqpString& s, DateTime_t& dt_t)
+{
+  TimeZone_t tz_t;
+  unsigned int position = 0, temp_position = 0;
+  std::string ss = *s.getStore();
+  std::string temp;
+  dt_t = new DateTime();
+  
+  // GMonthDay of form: --MM-DD zzzzzz?
+  // preceding - is not allowed.
+
+  skip_whitespace(ss, position);
+  dt_t->facet = GMONTHDAY_FACET;
+  
+  if (ss[position++] != '-')
+    return 1;
+  
+  temp = "0004" + ss.substr(position, 6); // Year 4 to make it a leap year, to allow the MonthDay of 29 February
+  if (parse_date(temp, temp_position, dt_t->data[YEAR_DATA], dt_t->data[MONTH_DATA], dt_t->data[DAY_DATA]))
+    return 1;
+  dt_t->data[YEAR_DATA] = 1;
+  
+  position += 6;
+  if (position < ss.size())
+  {
+    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+      return 1;
+    dt_t->the_time_zone = *tz_t;
+  }
+ 
+  return 0;
+}
+
+int DateTime::parseGDay(const xqpString& s, DateTime_t& dt_t)
+{
+  TimeZone_t tz_t;
+  unsigned int position = 0, temp_position = 0;
+  std::string ss = *s.getStore();
+  std::string temp;
+  dt_t = new DateTime();
+  
+  // GDay of form: ---DD zzzzzz?
+  // preceding - is not allowed.
+  
+  skip_whitespace(ss, position);
+  dt_t->facet = GDAY_FACET;
+  
+  if (ss[position++] != '-')
+    return 1;
+  if (ss[position++] != '-')
+    return 1;
+  
+  temp = "0001-01" + ss.substr(position, 3);
+  if (parse_date(temp, temp_position, dt_t->data[YEAR_DATA], dt_t->data[MONTH_DATA], dt_t->data[DAY_DATA]))
+    return 1;
+  
+  position += 3;
+  if (position < ss.size())
+  {
+    if (!TimeZone::parse_string(ss.substr(position), tz_t))
+      return 1;
+    dt_t->the_time_zone = *tz_t;
+  }
+ 
   return 0;
 }
 
@@ -436,15 +560,6 @@ int DateTime::compare(const DateTime& dt, int timezone_seconds) const
   }
   
   return 0;
-  
-  /*
-  if (operator<(dt))
-    return -1;
-  else if (operator==(dt))
-    return 0;
-  else
-    return 1;
-  */
 }
 
 DurationBase_t DateTime::subtractDateTime(const DateTime& dt, int implicit_timezone_seconds) const
@@ -473,52 +588,46 @@ xqpString DateTime::toString() const
 {
   xqpString result;
   
-  // TODO: output based on the facet
-
   // output sign
-  if (facet == DATETIME_FACET || facet == DATE_FACET)
-  {
+  if (FACET_MEMBERS[facet][0])
     if (data[YEAR_DATA] < 0)
       result += "-";
-  }
   
-  // output Date
-  if (facet == DATETIME_FACET || facet == DATE_FACET)
+  // output preceding '-' for Gregorian dates, when needed
+  if (facet == GMONTH_FACET || facet == GMONTHDAY_FACET)
+    result += "--";
+  if (facet == GDAY_FACET)
+    result += "---";
+  
+  for (int i=0; i<=5; i++)
   {
-    
-    for (int i=0; i<3; i++)
+    if (FACET_MEMBERS[facet][i])
     {
-      result += to_string(abs<int>(data[i]), min_length[i]);  // abs<> only needed for year
-      if (i < 2)
+      result += to_string(abs<int>(data[i]), min_length[i]);
+      if (FACET_MEMBERS[facet][i+1] && i<=4)
         result += separators[i];
     }
   }
   
-  // output Time
-  if (facet == DATETIME_FACET || facet == TIME_FACET)
+  if (FACET_MEMBERS[facet][FRACSECONDS_DATA] && (data[FRACSECONDS_DATA] != 0))
   {
-    if (facet == DATETIME_FACET)
-      result += 'T';
+    int temp;
+    result += '.';
     
-    for (int i=3; i<6; i++)
+    // print leading 0s, if any
+    temp = FRAC_SECONDS_UPPER_LIMIT / 10;
+    while (temp > data[FRACSECONDS_DATA] && temp > 0)
     {
-      result += to_string(abs<int>(data[i]), min_length[i]);  // abs<> only needed for year
-      if (i < 5)
-        result += separators[i];
+      result += '0';
+      temp /= 10;
     }
-  }
-  
-  if (facet == DATETIME_FACET || facet == TIME_FACET)
-  {
-    if (data[FRACSECONDS_DATA] != 0)
-    {
-      int temp = data[FRACSECONDS_DATA];
-      while (temp%10 == 0)
-        temp = temp / 10;
     
-      result += '.';
-      result += to_string(temp);
-    }
+    // strip trailing 0s, if any
+    temp = data[FRACSECONDS_DATA];
+    while (temp%10 == 0 && temp > 0)
+      temp = temp / 10;
+    
+    result += to_string(temp);
   }
   
   result += the_time_zone.toString();
@@ -594,9 +703,31 @@ void DateTime::adjustToFacet()
     for (int i=YEAR_DATA; i<=DAY_DATA; i++)
       data[i] = 1;
     break;
-    
   case GYEARMONTH_FACET:
     data[DAY_DATA] = 1;
+    for (int i=HOUR_DATA; i<=FRACSECONDS_DATA; i++)
+      data[i] = 0;
+    break;
+  case GYEAR_FACET:
+    data[MONTH_DATA] = 1;
+    data[DAY_DATA] = 1;
+    for (int i=HOUR_DATA; i<=FRACSECONDS_DATA; i++)
+      data[i] = 0;
+    break;
+  case GMONTH_FACET:
+    data[YEAR_DATA] = 1;
+    data[DAY_DATA] = 1;
+    for (int i=HOUR_DATA; i<=FRACSECONDS_DATA; i++)
+      data[i] = 0;
+    break;
+  case GMONTHDAY_FACET:
+    data[YEAR_DATA] = 1;
+    for (int i=HOUR_DATA; i<=FRACSECONDS_DATA; i++)
+      data[i] = 0;
+    break;
+  case GDAY_FACET:
+    data[YEAR_DATA] = 1;
+    data[MONTH_DATA] = 1;
     for (int i=HOUR_DATA; i<=FRACSECONDS_DATA; i++)
       data[i] = 0;
     break;

@@ -34,7 +34,7 @@
 #include "types/typeops.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
-#include "zorbatypes/gregorian.h"
+
 
 namespace zorba
 {
@@ -214,35 +214,35 @@ store::Item_t GenericCast::stringSimpleCast(
   case TypeConstants::XS_GYEAR_MONTH:
     {
       xqp_gYearMonth ym;
-      if (GYearMonth::parse_string(lString, ym))
+      if (0 == DateTime::parseGYearMonth(lString, ym))
         lItem = factory->createGYearMonth(ym);
     }
     break;
   case TypeConstants::XS_GYEAR:
     {
       xqp_gYear y;
-      if (GYear::parse_string(lString, y))
+      if (0 == DateTime::parseGYear(lString, y))
         lItem = factory->createGYear(y);
     }
     break;
   case TypeConstants::XS_GMONTH_DAY:
     {
       xqp_gMonthDay md;
-      if (GMonthDay::parse_string(lString, md))
+      if (0 == DateTime::parseGMonthDay(lString, md))
         lItem = factory->createGMonthDay(md);
     }
     break;
   case TypeConstants::XS_GDAY:
     {
       xqp_gDay d;
-      if (GDay::parse_string(lString, d))
+      if (0 == DateTime::parseGDay(lString, d))
         lItem = factory->createGDay(d);
     }
     break;
   case TypeConstants::XS_GMONTH:
     {
       xqp_gMonth m;
-      if (GMonth::parse_string(lString, m))
+      if (0 == DateTime::parseGMonth(lString, m))
         lItem = factory->createGMonth(m);
     }
     break;

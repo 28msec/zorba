@@ -19,7 +19,7 @@
 #include "context/collation_cache.h"
 #include "zorbatypes/duration.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/gregorian.h"
+
 
 namespace zorba
 {
@@ -598,41 +598,36 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE))
       {
-        ret = aItem0->getGYearMonthValue()->compare(*aItem1->getGYearMonthValue());
-        //ret = aItem0->getGYearMonthValue()->compare(*aItem1->getGYearMonthValue(),
-        //                                ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+        ret = aItem0->getGYearMonthValue()->compare(*aItem1->getGYearMonthValue(),
+                                       aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE)
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GYEAR_TYPE_ONE))
       {
-        ret = aItem0->getGYearValue()->compare(*aItem1->getGYearValue());
-        //ret = aItem0->getGYearValue()->compare(*aItem1->getGYearValue(),
-        //                            ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+        ret = aItem0->getGYearValue()->compare(*aItem1->getGYearValue(),
+                                       aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE)
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE))
       {
-        ret = aItem0->getGMonthDayValue()->compare(*aItem1->getGMonthDayValue());
-        //ret = aItem0->getGMonthDayValue()->compare(*aItem1->getGMonthDayValue(),
-        //                                ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+        ret = aItem0->getGMonthDayValue()->compare(*aItem1->getGMonthDayValue(),
+                                       aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE)
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GMONTH_TYPE_ONE))
       {
-        ret = aItem0->getGMonthValue()->compare(*aItem1->getGMonthValue());
-        //ret = aItem0->getGMonthValue()->compare(*aItem1->getGMonthValue(),
-        //                             ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+        ret = aItem0->getGMonthValue()->compare(*aItem1->getGMonthValue(),
+                                       aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.GDAY_TYPE_ONE)
               &&
               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.GDAY_TYPE_ONE))
       {
-        ret = aItem0->getGDayValue()->compare(*aItem1->getGDayValue());
-        //ret = aItem0->getGDayValue()->compare(*aItem1->getGDayValue(),
-        //                           ZORBA_FOR_CURRENT_THREAD()->get_base_dynamic_context()->get_implicit_timezone());
+        ret = aItem0->getGDayValue()->compare(*aItem1->getGDayValue(),
+                                       aRuntimeCB->theDynamicContext->get_implicit_timezone());
       }
       else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE)
               &&

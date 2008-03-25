@@ -45,11 +45,11 @@ namespace zorba
   typedef DateTime_t          xqp_dateTime;
   typedef DateTime_t          xqp_date;
   typedef DateTime_t          xqp_time;
-  typedef GYearMonth_t        xqp_gYearMonth;
-  typedef GYear_t             xqp_gYear;
-  typedef GMonthDay_t         xqp_gMonthDay;
-  typedef GDay_t              xqp_gDay;
-  typedef GMonth_t            xqp_gMonth;
+  typedef DateTime_t          xqp_gYearMonth;
+  typedef DateTime_t          xqp_gYear;
+  typedef DateTime_t          xqp_gMonthDay;
+  typedef DateTime_t          xqp_gDay;
+  typedef DateTime_t          xqp_gMonth;
   typedef DurationBase_t      xqp_duration;
   typedef DayTimeDuration_t   xqp_dayTimeDuration;
   typedef YearMonthDuration_t xqp_yearMonthDuration;

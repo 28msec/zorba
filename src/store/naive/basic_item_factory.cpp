@@ -18,8 +18,6 @@
 #include "store/naive/qname_pool.h"
 #include "store/util/handle_hashset_string.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/gregorian.h"
-
 
 
 namespace zorba { namespace store {
@@ -243,7 +241,7 @@ Item_t BasicItemFactory::createFloat ( xqp_float value )
 
 Item_t BasicItemFactory::createGDay (xqp_gDay& value )
 {
-  return new GDayItemNaive(value);
+  return new DateTimeItemNaive(value);
 }
 
 Item_t BasicItemFactory::createGDay ( const xqp_string& /*value*/ )
@@ -257,7 +255,7 @@ Item_t BasicItemFactory::createGDay ( short /*day*/ )
 
 Item_t BasicItemFactory::createGMonth(xqp_gMonth& value )
 {
-  return new GMonthItemNaive(value);
+  return new DateTimeItemNaive(value);
 }
 
 Item_t BasicItemFactory::createGMonth ( const xqp_string& /*value*/ )
@@ -270,7 +268,7 @@ Item_t BasicItemFactory::createGMonth ( short /*month*/ )
 
 Item_t BasicItemFactory::createGMonthDay (xqp_gMonthDay& value)
 {
-  return new GMonthDayItemNaive(value);
+  return new DateTimeItemNaive(value);
 }
 
 Item_t BasicItemFactory::createGMonthDay ( const xqp_string& /*value*/ )
@@ -284,7 +282,7 @@ Item_t BasicItemFactory::createGMonthDay ( short /*month*/, short /*day*/ )
 
 Item_t BasicItemFactory::createGYear (xqp_gYear& value )
 {
-  return new GYearItemNaive(value);
+  return new DateTimeItemNaive(value);
 }
 
 Item_t BasicItemFactory::createGYear ( const xqp_string& /*value*/ )
@@ -298,7 +296,7 @@ Item_t BasicItemFactory::createGYear ( short /*year*/ )
 
 Item_t BasicItemFactory::createGYearMonth (xqp_gYearMonth& value )
 {
-  return new GYearMonthItemNaive(value);
+  return new DateTimeItemNaive(value);
 }
 
 Item_t BasicItemFactory::createGYearMonth ( const xqp_string& /*value*/ )

@@ -7,7 +7,6 @@
 #include "store/naive/atomic_items.h"
 #include "zorbatypes/duration.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/gregorian.h"
 
 
 namespace zorba { namespace store {
