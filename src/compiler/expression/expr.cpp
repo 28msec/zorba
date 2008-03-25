@@ -244,6 +244,7 @@ string var_expr::decode_var_kind(
   case score_var: return "SCORE"; break;
   case quant_var: return "QUANT"; break;
   case context_var: return "CTX"; break;
+  case catch_var: return "CATCH"; break;
   default: return "???";
   }
 }

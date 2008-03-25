@@ -4006,6 +4006,20 @@ void end_visit(const CatchListExpr& v, void* visit_state)
   TRACE_VISIT_OUT ();
 }
 
+expr_t cc_component(const QueryLoc& loc, var_expr_t var, const char *local)
+{
+  expr_t exists = new fo_expr(loc, LOOKUP_FN("fn", "exists", 1), var);
+  expr_t emptyseq = new fo_expr(loc, LOOKUP_OPN("concatenate"));
+  expr_t eName = new const_expr(loc, GENV_ITEMFACTORY->createQName(XQUERY_FN_NS, "fn", local));
+  expr_t eContents = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"), var);
+  push_elem_scope();
+  expr_t eVal = new elem_expr(loc, eName, NULL, eContents, ns_ctx);
+  pop_elem_scope();
+  expr_t ite = new if_expr(loc, exists, eVal, emptyseq);
+
+  return ite;
+}
+
 void *begin_visit(const CatchExpr& v)
 {
   TRACE_VISIT ();
@@ -4020,10 +4034,11 @@ void *begin_visit(const CatchExpr& v)
     var_expr_t lv = bind_var(v.get_location(), v.getVarname(), var_expr::let_var, GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
 
     expr_t eName = new const_expr(v.get_location(), GENV_ITEMFACTORY->createQName(XQUERY_FN_NS, "fn", "error"));
-    expr_t eContents = new fo_expr(v.get_location(), LOOKUP_OPN("concatenate"),
-      cc->errorcode_var_h,
-      cc->errordesc_var_h,
-      cc->errorobj_var_h);
+
+    expr_t comp1 = cc_component(v.get_location(), cc->errorcode_var_h, "errorcode");
+    expr_t comp2 = cc_component(v.get_location(), cc->errordesc_var_h, "description");
+    expr_t comp3 = cc_component(v.get_location(), cc->errorobj_var_h, "error-obj");
+    expr_t eContents = new fo_expr(v.get_location(), LOOKUP_OPN("concatenate"), comp1, comp2, comp3);
 
     push_elem_scope();
     expr_t eVal = new elem_expr(v.get_location(), eName, NULL, eContents, ns_ctx);
