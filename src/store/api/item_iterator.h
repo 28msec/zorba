@@ -16,6 +16,7 @@ private:
 public:
   ItemIterator(std::vector<Item_t> aItems);
   ItemIterator(Item_t aItem);
+  ItemIterator(); // construct the empty sequence
   virtual ~ItemIterator(){}
 
   virtual void open();

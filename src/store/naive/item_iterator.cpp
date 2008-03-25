@@ -12,6 +12,8 @@ ItemIterator::ItemIterator(Item_t aItem)
   theItems.push_back(aItem);
 }
 
+ItemIterator::ItemIterator() {}
+
 void
 ItemIterator::open() 
 {
