@@ -40,7 +40,7 @@ store::Item_t FnDateTimeConstructorIterator::nextImpl(PlanState& planState) cons
   else
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(item0, item1), state);
      
-  STACK_END();
+  STACK_END (state);
 }
 
 /**
@@ -71,7 +71,7 @@ FnYearsFromDurationIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnYearsFromDurationIterator */
 
@@ -101,7 +101,7 @@ FnMonthsFromDurationIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnMonthsFromDurationIterator */
 
@@ -131,7 +131,7 @@ FnDaysFromDurationIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnDaysFromDurationIterator */
 
@@ -161,7 +161,7 @@ FnHoursFromDurationIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnHoursFromDurationIterator */
 
@@ -191,7 +191,7 @@ FnMinutesFromDurationIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnMinutesFromDurationIterator */
 
@@ -222,7 +222,7 @@ FnSecondsFromDurationIterator::nextImpl(PlanState& planState) const
     ZORBA_ASSERT(lBool);
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(lDecimal), state );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnSecondsFromDurationIterator */
 
@@ -251,7 +251,7 @@ FnYearFromDatetimeIterator::nextImpl(PlanState& planState) const
         GENV_ITEMFACTORY->createInteger(
           Integer::parseInt(itemArg->getDateTimeValue()->getYear())), state );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnYearFromDatetimeIterator */
 
@@ -281,7 +281,7 @@ FnMonthFromDatetimeIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnMonthFromDatetimeIterator */
 
@@ -311,7 +311,7 @@ FnDayFromDatetimeIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnDayFromDatetimeIterator */
 
@@ -341,7 +341,7 @@ FnHoursFromDatetimeIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnHoursFromDatetimeIterator */
 
@@ -371,7 +371,7 @@ FnMinutesFromDatetimeIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnMinutesFromDatetimeIterator */
 
@@ -402,7 +402,7 @@ FnSecondsFromDatetimeIterator::nextImpl(PlanState& planState) const
     ZORBA_ASSERT(lBool);
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(lDecimal), state );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnSecondsFromDatetimeIterator */
 
@@ -433,7 +433,7 @@ FnTimezoneFromDatetimeIterator::nextImpl(PlanState& planState) const
     if(res)
       STACK_PUSH( GENV_ITEMFACTORY->createDuration(tmpDuration), state );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnTimezoneFromDatetimeIterator */
 
@@ -463,7 +463,7 @@ FnYearFromDateIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnYearFromDateIterator */
 
@@ -493,7 +493,7 @@ FnMonthFromDateIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnMonthFromDateIterator */
 
@@ -523,7 +523,7 @@ FnDayFromDateIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnDayFromDateIterator */
 
@@ -554,7 +554,7 @@ FnTimezoneFromDateIterator::nextImpl(PlanState& planState) const
     if(res)
       STACK_PUSH( GENV_ITEMFACTORY->createDuration(tmpDuration), state );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnTimezoneFromDateIterator */
 
@@ -584,7 +584,7 @@ FnHoursFromTimeIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnHoursFromTimeIterator */
 
@@ -614,7 +614,7 @@ FnMinutesFromTimeIterator::nextImpl(PlanState& planState) const
       state 
     );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnMinutesFromTimeIterator */
 
@@ -646,7 +646,7 @@ FnSecondsFromTimeIterator::nextImpl(PlanState& planState) const
     ZORBA_ASSERT(lBool);
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(lDecimal), state );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnSecondsFromTimeIterator */
 
@@ -679,7 +679,7 @@ FnTimezoneFromTimeIterator::nextImpl(PlanState& planState) const
     if(res)
       STACK_PUSH( GENV_ITEMFACTORY->createDuration(tmpDuration), state );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnTimezoneFromTimeIterator */
 
@@ -805,7 +805,7 @@ store::Item_t FnAdjustToTimeZoneIterator_1::nextImpl(PlanState& planState) const
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(dt_t), state);
   }
     
-  STACK_END();
+  STACK_END (state);
 }
 
 store::Item_t FnAdjustToTimeZoneIterator_2::nextImpl(PlanState& planState) const
@@ -832,7 +832,7 @@ store::Item_t FnAdjustToTimeZoneIterator_2::nextImpl(PlanState& planState) const
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(dt_t), state);
   }
      
-  STACK_END();
+  STACK_END (state);
 }
 
 

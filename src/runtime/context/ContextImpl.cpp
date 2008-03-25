@@ -40,7 +40,7 @@ FnCurrentDateTimeIterator::nextImpl(PlanState& planState) const
   if( NULL != itemRes )
     STACK_PUSH( itemRes, state );
 
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnCurrentDateTimeIterator */
 
@@ -69,7 +69,7 @@ FnCurrentDateIterator::nextImpl(PlanState& planState) const
     STACK_PUSH( GENV_ITEMFACTORY->createDate(d), state );
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnCurrentDateIterator */
 
@@ -98,7 +98,7 @@ FnCurrentTimeIterator::nextImpl(PlanState& planState) const
     STACK_PUSH( GENV_ITEMFACTORY->createTime(t), state );
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnCurrentTimeIterator */
 
@@ -126,7 +126,7 @@ FnImplicitTimezoneIterator::nextImpl(PlanState& planState) const
   
   STACK_PUSH( GENV_ITEMFACTORY->createDuration(db), state );
 
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnImplicitTimezoneIterator */
 
@@ -150,7 +150,7 @@ FnDefaultCollationIterator::nextImpl(PlanState& planState) const
   strColUri = planState.theRuntimeCB->theStaticContext->default_collation_uri();
   STACK_PUSH( GENV_ITEMFACTORY->createString(strColUri.getStore()), state );
 
-  STACK_END();
+  STACK_END (state);
 }
 /*end class FnDefaultCollationIterator */
 }/* namespace zorba */

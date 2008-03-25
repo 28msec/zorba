@@ -68,7 +68,7 @@ store::Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState )
       STACK_PUSH ( res, state );
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 
 template < class Operation >

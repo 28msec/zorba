@@ -44,7 +44,7 @@ store::Item_t ForVarIterator::nextImpl(PlanState& planState) const
   ForVarState* state;
   DEFAULT_STACK_INIT(ForVarState, state, planState);
   STACK_PUSH(state->theValue, state);
-  STACK_END();
+  STACK_END (state);
 }
 
 

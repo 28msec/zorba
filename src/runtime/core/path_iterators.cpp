@@ -354,7 +354,7 @@ store::Item_t AttributeAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -390,7 +390,7 @@ store::Item_t ParentAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -427,7 +427,7 @@ store::Item_t AncestorAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 /*******************************************************************************
@@ -463,7 +463,7 @@ store::Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -534,7 +534,7 @@ store::Item_t RSiblingAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -606,7 +606,7 @@ store::Item_t LSiblingAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 /*******************************************************************************
@@ -673,7 +673,7 @@ store::Item_t ChildAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -784,7 +784,7 @@ store::Item_t DescendantAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -880,7 +880,7 @@ store::Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 /*******************************************************************************
@@ -999,7 +999,7 @@ store::Item_t PrecedingAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -1122,7 +1122,7 @@ store::Item_t FollowingAxisIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 

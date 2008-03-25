@@ -117,7 +117,7 @@ TryCatchIterator::nextImpl(PlanState& planState) const
     state->theIterator->close();
   }
   
-  STACK_END();
+  STACK_END (state);
 }
 
 void 

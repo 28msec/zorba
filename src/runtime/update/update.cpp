@@ -17,7 +17,7 @@ InsertIterator::nextImpl (PlanState& aPlanState) const
 {
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
-  STACK_END();
+  STACK_END (aState);
 }
 
 store::Item_t
@@ -25,7 +25,7 @@ DeleteIterator::nextImpl(PlanState& aPlanState) const
 { 
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
-  STACK_END();
+  STACK_END (aState);
 }
 
 ReplaceIterator::ReplaceIterator (
@@ -43,7 +43,7 @@ ReplaceIterator::nextImpl (PlanState& aPlanState) const
 {
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
-  STACK_END();
+  STACK_END (aState);
 }
 
 store::Item_t
@@ -51,7 +51,7 @@ RenameIterator::nextImpl(PlanState& aPlanState) const
 {
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
-  STACK_END();
+  STACK_END (aState);
 }
 
 TransformIterator::TransformIterator(
@@ -75,7 +75,7 @@ TransformIterator::nextImpl(PlanState& aPlanState) const
 {
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
-  STACK_END();
+  STACK_END (aState);
 }
 
 void 

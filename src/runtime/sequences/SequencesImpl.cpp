@@ -69,7 +69,7 @@ FnConcatIterator::nextImpl(PlanState& planState) const {
     }
   }
   
-  STACK_END();
+  STACK_END (state);
 }
 
 //15.1.3 fn:index-of
@@ -107,7 +107,7 @@ FnIndexOfIterator::nextImpl(PlanState& planState) const {
       );
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 void
@@ -147,7 +147,7 @@ FnEmptyIterator::nextImpl(PlanState& planState) const {
     STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( false ), state);   
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 //15.1.5 fn:exists
@@ -171,7 +171,7 @@ FnExistsIterator::nextImpl(PlanState& planState) const {
     STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( false ), state);   
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -221,7 +221,7 @@ FnDistinctValuesIterator::nextImpl(PlanState& planState) const {
     }
   }
     
-  STACK_END();
+  STACK_END (state);
 }
 
 void
@@ -278,7 +278,7 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) const {
     }    
   }
  
-  STACK_END();
+  STACK_END (state);
 }
 
 void
@@ -328,7 +328,7 @@ FnRemoveIterator::nextImpl(PlanState& planState) const {
     STACK_PUSH (lSequenceItem, state);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 void
@@ -365,7 +365,7 @@ store::Item_t FnReverseIterator::nextImpl(PlanState& planState) const
     STACK_PUSH(iVal, state);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 void FnReverseIteratorState::init(PlanState& planState)
@@ -428,7 +428,7 @@ FnSubsequenceIterator::nextImpl(PlanState& planState) const {
     ++state->theCurrentPos; 
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 void
@@ -481,7 +481,7 @@ FnZeroOrOneIterator::nextImpl(PlanState& planState) const {
     }
     STACK_PUSH(lFirstSequenceItem, state);
   }
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -505,7 +505,7 @@ FnOneOrMoreIterator::nextImpl(PlanState& planState) const {
     STACK_PUSH(lSequenceItem, state);
   } while ( (lSequenceItem = consumeNext(theChildren[0].getp(), planState)) != NULL );
 
-  STACK_END();
+  STACK_END (state);
 }
 
 //15.2.3 fn:exactly-one
@@ -532,7 +532,7 @@ FnExactlyOneIterator::nextImpl(PlanState& planState) const {
       STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( false ), state);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -596,7 +596,7 @@ HashSemiJoinIterator::nextImpl(PlanState& planState) const {
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 // sort-merge semi-join
@@ -644,7 +644,7 @@ SortSemiJoinIterator::nextImpl(PlanState& planState) const {
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 /*______________________________________________________________________
 |
@@ -667,7 +667,7 @@ FnCountIterator::nextImpl(PlanState& planState) const {
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(lCount), state);
 
-  STACK_END();
+  STACK_END (state);
 }
 
 //15.4.2 fn:avg
@@ -698,7 +698,7 @@ FnAvgIterator::nextImpl(PlanState& planState) const {
                GENV_ITEMFACTORY->createInteger(lCount)), state);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 //15.4.3 fn:max & 15.4.4 fn:min
@@ -777,7 +777,7 @@ FnMinMaxIterator::nextImpl(PlanState& planState) const {
     STACK_PUSH(lMaxItem, state);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -819,7 +819,7 @@ FnSumIterator::nextImpl(PlanState& planState) const {
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -860,7 +860,7 @@ OpToIterator::nextImpl(PlanState& planState) const {
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 void
@@ -977,7 +977,7 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
   }
 
   STACK_PUSH(doc, state);
-  STACK_END();
+  STACK_END (state);
 }
 
 

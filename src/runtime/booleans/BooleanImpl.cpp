@@ -96,7 +96,7 @@ namespace zorba
       FnBooleanIterator::effectiveBooleanValue ( this->loc, planState, theChild, theNegate ),
       aState
     );
-    STACK_END();
+    STACK_END (aState);
   }
   /* end class FnBooleanIterator */
   
@@ -127,7 +127,7 @@ namespace zorba
       break;
     }
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(bRes), state);
-    STACK_END();
+    STACK_END (state);
   }
   /* end class LogicIterator */
 
@@ -203,7 +203,7 @@ namespace zorba
                             loc,  "Node comparison is not yet implemented.");
     } /* if node comparison */
   
-    STACK_END();
+    STACK_END (state);
   }
   
   bool 
@@ -699,7 +699,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         );
       }
     }
-    STACK_END();
+    STACK_END (aState);
   }
 
   store::Item_t
@@ -725,7 +725,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         );
       }
     }
-    STACK_END();
+    STACK_END (aState);
   }
 
   store::Item_t
@@ -751,7 +751,7 @@ bool CompareIterator::boolResult ( RuntimeCB* aRuntimeCB,
         );
       }
     }
-    STACK_END();
+    STACK_END (aState);
   }
 
 }

@@ -51,7 +51,7 @@
   stateObject = StateTraitsImpl<stateType>::getState(planState, this->stateOffset); \
   switch (stateObject->getDuffsLine())                          \
   {                                                             \
-    case PlanIteratorState::DUFFS_ALLOCATE_RESOURCES:
+  case PlanIteratorState::DUFFS_ALLOCATE_RESOURCES:
 
 #define STACK_PUSH(x, stateObject)                             \
    do                                                          \
@@ -61,7 +61,15 @@
      case __LINE__: ;                                          \
    } while (0)
 
-#define STACK_END()  } return NULL
+#define STACK_END( stateObject )                               \
+  do {                                                         \
+    stateObject->setDuffsLine(__LINE__);                       \
+  case __LINE__:                                               \
+    return NULL;                                               \
+  default:                                                     \
+    return NULL;                                               \
+  } while (0);                                                 \
+  }
 
 
 namespace zorba

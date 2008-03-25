@@ -88,7 +88,7 @@ store::Item_t DocumentIterator::nextImpl(PlanState& planState) const
                             true, // copy children
                             copymode);
   STACK_PUSH(node, state);
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -134,7 +134,7 @@ store::Item_t DocumentContentIterator::nextImpl(PlanState& planState) const
     STACK_PUSH(lItem, state);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -229,7 +229,7 @@ store::Item_t ElementIterator::nextImpl(PlanState& planState) const
                            true, // copy
                            copymode);
   STACK_PUSH(node, state);
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -367,7 +367,7 @@ store::Item_t ElementContentIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -407,7 +407,7 @@ store::Item_t AttributeIterator::nextImpl(PlanState& planState) const
                              true);  // assignIds
 
   STACK_PUSH(node, state);
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -442,7 +442,7 @@ store::Item_t TextIterator::nextImpl(PlanState& planState) const
 
   STACK_PUSH(node, state);
     
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -506,7 +506,7 @@ store::Item_t PiIterator::nextImpl(PlanState& planState) const
                                                 true);  // assingIds
   STACK_PUSH(lItem, state);
   
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -567,7 +567,7 @@ store::Item_t CommentIterator::nextImpl(PlanState& planState) const
     
   STACK_PUSH(lItem, state);
     
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -698,7 +698,7 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -777,7 +777,7 @@ store::Item_t DocFilterIterator::nextImpl(PlanState& planState) const
       }
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 
 }

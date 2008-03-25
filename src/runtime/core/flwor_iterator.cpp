@@ -376,7 +376,7 @@ store::Item_t FLWORIterator::nextImpl ( PlanState& planState ) const
 
  stop:
   STACK_PUSH ( NULL, flworState );
-  STACK_END();
+  STACK_END (flworState);
 }
 
 

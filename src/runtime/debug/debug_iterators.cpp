@@ -40,7 +40,7 @@ FnTraceIterator::nextImpl(PlanState& planState) const
     STACK_PUSH(lSequenceItem, state);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 } /* namespace zorba */

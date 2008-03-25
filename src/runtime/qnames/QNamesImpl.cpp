@@ -100,7 +100,7 @@ ResolveQNameIterator::nextImpl(PlanState& planState) const
                                                  resQName.getStore());
       STACK_PUSH( res, state );
     }
-    STACK_END();
+    STACK_END (state);
 }
 /* end class ResolveQNameIterator */
 
@@ -174,7 +174,7 @@ QNameIterator::nextImpl(PlanState& planState) const
     }
 
     STACK_PUSH( res, state );
-    STACK_END();
+    STACK_END (state);
 }
 /* end class QNameIterator */
 /**
@@ -227,7 +227,7 @@ QNameEqualIterator::nextImpl(PlanState& planState) const
       STACK_PUSH( res, state );
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class QNameEqualIterator */
 
@@ -260,7 +260,7 @@ PrefixFromQNameIterator::nextImpl(PlanState& planState) const
       if(!tmp.empty())
         STACK_PUSH( GENV_ITEMFACTORY->createNCName(tmp.getStore()), state );
     }
-    STACK_END();
+    STACK_END (state);
 }
 /* end class PrefixFromQNameIterator */
 
@@ -289,7 +289,7 @@ LocalNameFromQNameIterator::nextImpl(PlanState& planState) const
     item = item->getAtomizationValue();
     STACK_PUSH(GENV_ITEMFACTORY->createNCName(item->getLocalName().getStore()), state);
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class LocalNameFromQNameIterator */
 
@@ -320,7 +320,7 @@ NamespaceUriFromQNameIterator::nextImpl(PlanState& planState) const
       item = item->getAtomizationValue();
       STACK_PUSH( GENV_ITEMFACTORY->createString(item->getNamespace().getStore()), state );
     }
-    STACK_END();
+    STACK_END (state);
 }
 /* end class NamespaceUriFromQNameIterator */
 
@@ -384,7 +384,7 @@ NamespaceUriForPrefixlIterator::nextImpl(PlanState& planState) const
     if( !resNs.empty() )
       STACK_PUSH( GENV_ITEMFACTORY->createString(resNs.getStore()), state );
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class NamespaceUriForPrefixlIterator */
 
@@ -422,7 +422,7 @@ InScopePrefixesIterator::nextImpl(PlanState& planState) const
 
   //STACK_PUSH(GENV_ITEMFACTORY->createNCName("xml"), state);
 
-  STACK_END();
+  STACK_END (state);
 }
 
 

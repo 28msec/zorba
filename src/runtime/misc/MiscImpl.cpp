@@ -46,7 +46,7 @@ store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
                      loc, aErrorObject);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 // 8.1 fn:resolve-uri
@@ -76,7 +76,7 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
 
   //TODO fix the implementation
   
-  STACK_END();
+  STACK_END (state);
 }
 
 } /* namespace zorba */

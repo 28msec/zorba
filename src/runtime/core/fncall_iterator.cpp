@@ -113,7 +113,7 @@ store::Item_t UDFunctionCallIterator::nextImpl(PlanState& planState) const
     STACK_PUSH(lSequenceItem, state);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -180,7 +180,7 @@ store::Item_t StatelessExtFunctionCallIterator::nextImpl(PlanState& planState) c
     STACK_PUSH(lSequenceItem, state);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 void StatelessExtFunctionCallIterator::closeImpl(PlanState& planState)

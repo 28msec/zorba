@@ -75,7 +75,7 @@ CodepointsToStringIterator::nextImpl(PlanState& planState) const {
       break;
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class CodepointsToStringIterator */
 
@@ -118,7 +118,7 @@ StringToCodepointsIterator::nextImpl(PlanState& planState) const {
       }
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 
 void
@@ -219,7 +219,7 @@ CompareStrIterator::nextImpl(PlanState& planState) const {
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 /* end class CompareStrIterator */
 
@@ -262,7 +262,7 @@ CodepointEqualIterator::nextImpl(PlanState& planState) const {
         STACK_PUSH( res, state );
       }
     }
-    STACK_END();
+    STACK_END (state);
 }
 /* end class CodepointEqualIterator */
 
@@ -325,7 +325,7 @@ ConcatStrIterator::nextImpl(PlanState& planState) const {
   tmp = new xqpStringStore(lResStream.str());
   STACK_PUSH(GENV_ITEMFACTORY->createString(tmp), state);
 
-  STACK_END();
+  STACK_END (state);
 }
 /* end class ConcatStrIterator */
 
@@ -401,7 +401,7 @@ StringJoinIterator::nextImpl(PlanState& planState) const {
         }
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class StringJoinIterator */
 
@@ -514,7 +514,7 @@ SubstringIterator::nextImpl(PlanState& planState) const {
       STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class SubstringIterator */
 
@@ -557,7 +557,7 @@ StringLengthIterator::nextImpl(PlanState& planState) const {
                             Integer::parseInt((int32_t)0)),
                             state);
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class StringLengthIterator */
 
@@ -596,7 +596,7 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState) const
     empty = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class NormalizeSpaceIterator */
 
@@ -661,7 +661,7 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
     STACK_PUSH( GENV_ITEMFACTORY->createString(res.getStore ()), state);
   }
   
-  STACK_END();
+  STACK_END (state);
 }
 /* end class NormalizeUnicodeIterator */
 
@@ -704,7 +704,7 @@ UpperCaseIterator::nextImpl(PlanState& planState) const
     empty = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class UpperCaseIterator */
 
@@ -747,7 +747,7 @@ LowerCaseIterator::nextImpl(PlanState& planState) const {
     empty = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class LowerCaseIterator */
 
@@ -807,7 +807,7 @@ TranslateIterator::nextImpl(PlanState& planState) const {
   }
   
   STACK_PUSH( res, state );
-  STACK_END();
+  STACK_END (state);
 }
 /* end class TranslateIterator */
 
@@ -839,7 +839,7 @@ EncodeForUriIterator::nextImpl(PlanState& planState) const {
     empty = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class EncodeForUriIterator */
   /**
@@ -870,7 +870,7 @@ IriToUriIterator::nextImpl(PlanState& planState) const {
     empty = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class IriToUriIterator */
   /**
@@ -901,7 +901,7 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) const {
     empty = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
-  STACK_END();
+  STACK_END (state);
 }
 /* end class EscapeHtmlUriIterator */
 
@@ -984,7 +984,7 @@ ContainsIterator::nextImpl(PlanState& planState) const {
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(resBool), state );
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class ContainsIterator*/
 
@@ -1067,7 +1067,7 @@ StartsWithIterator::nextImpl(PlanState& planState) const {
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(resBool), state );
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class StartsWithIterator*/
 
@@ -1151,7 +1151,7 @@ EndsWithIterator::nextImpl(PlanState& planState) const {
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(resBool), state );
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class EndsWithIterator*/
 
@@ -1237,7 +1237,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) const {
       STACK_PUSH( GENV_ITEMFACTORY->createString(resStr.getStore()), state );
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class SubstringBeforeIterator*/
 
@@ -1324,7 +1324,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
       STACK_PUSH( GENV_ITEMFACTORY->createString(resStr.getStore()), state );
     }
   }
-  STACK_END();
+  STACK_END (state);
 }
 /*end class SubstringAfterIterator*/
 } /* namespace zorba */

@@ -313,7 +313,7 @@ namespace zorba
         STACK_PUSH ( res, state );
       }
     }
-    STACK_END();
+    STACK_END (state);
   }
 
   template < class Operation >
@@ -600,7 +600,7 @@ namespace zorba
               loc, "Arithmetic operation has a sequences greater than one as an operator.");
       STACK_PUSH ( res, state );
     }
-    STACK_END();
+    STACK_END (state);
   }
 
 
@@ -686,7 +686,7 @@ namespace zorba
       }
       STACK_PUSH ( res, state );
     }
-    STACK_END();
+    STACK_END (state);
   }
 
 
@@ -744,7 +744,7 @@ namespace zorba
       }
       STACK_PUSH ( res, state );
     }
-    STACK_END();
+    STACK_END (state);
   }
   
 // 6.4.3 fn:floor
@@ -801,7 +801,7 @@ namespace zorba
       }
       STACK_PUSH ( res, state );
     }
-    STACK_END();
+    STACK_END (state);
   }
   
 // 6.4.4 fn:round
@@ -858,7 +858,7 @@ namespace zorba
       }
       STACK_PUSH ( res, state );
     }
-    STACK_END();
+    STACK_END (state);
   }
   
 // 6.4.5 fn:round-half-to-even
@@ -935,7 +935,7 @@ namespace zorba
       }
       STACK_PUSH ( res, state );
     }
-    STACK_END();
+    STACK_END (state);
   }
   
   ZorNumGen::ZorNumGen ( const QueryLoc& loc ) 
@@ -956,7 +956,7 @@ namespace zorba
           state );
       state->setCurNumber ( state->getCurNumber() + 1 );
     }
-    STACK_END();
+    STACK_END (state);
   }
 
 

@@ -59,7 +59,7 @@ FnDataIterator::nextImpl(PlanState& planState) const
     }
   }
   state->theTypedValue = 0; // TODO remove???
-  STACK_END();
+  STACK_END (state);
 }
   
 
@@ -92,7 +92,7 @@ store::Item_t FnRootIterator::nextImpl(PlanState& planState) const
   }
 
   STACK_PUSH(contextNode, state);
-  STACK_END();
+  STACK_END (state);
 }
 
 // 14.9 fn:node-name
@@ -115,7 +115,7 @@ store::Item_t FnNodeNameIterator::nextImpl(PlanState& planState) const
   }
   
   STACK_PUSH(inNode->getNodeName(), state);
-  STACK_END();
+  STACK_END (state);
 }
 
 // 2.2 fn:nilled
@@ -133,7 +133,7 @@ store::Item_t FnNilledIterator::nextImpl(PlanState& planState) const
     if (inNode->getNodeKind() == store::StoreConsts::elementNode)
       STACK_PUSH(GENV_ITEMFACTORY->createBoolean(inNode->getNilled()), state);
 
-  STACK_END();
+  STACK_END (state);
 }
 
 // 2.5 fn:base-uri
@@ -156,7 +156,7 @@ store::Item_t FnBaseUriIterator::nextImpl(PlanState& planState) const
     }
   }
   
-  STACK_END();
+  STACK_END (state);
 }
 
 // 2.6 fn:document-uri
@@ -179,7 +179,7 @@ store::Item_t FnDocumentUriIterator::nextImpl(PlanState& planState) const
     }
   }
   
-  STACK_END();
+  STACK_END (state);
 }
 // 2.3 fn:string
 //---------------------
@@ -202,7 +202,7 @@ store::Item_t FnStringIterator::nextImpl(PlanState& planState) const
     STACK_PUSH(GENV_ITEMFACTORY->createString(empty), state);
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 } /* namespace zorba */

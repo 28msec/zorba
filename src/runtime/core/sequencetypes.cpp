@@ -105,7 +105,7 @@ InstanceOfIterator::nextImpl(PlanState& planState) const
   }
     
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(lResult), state);
-  STACK_END();
+  STACK_END (state);
 }
 
   
@@ -168,7 +168,7 @@ store::Item_t CastIterator::nextImpl(PlanState& aPlanState) const
     }
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -221,7 +221,7 @@ store::Item_t CastableIterator::nextImpl(PlanState& aPlanState) const
     }
   }
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(lBool), lState);
-  STACK_END();
+  STACK_END (lState);
 }
 
 PromoteIterator::PromoteIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const xqtref_t& aPromoteType)
@@ -270,7 +270,7 @@ store::Item_t PromoteIterator::nextImpl(PlanState& aPlanState) const
       lItem = consumeNext(theChild.getp(), aPlanState);
     } while (lItem != 0);
   }
-  STACK_END();
+  STACK_END (lState);
 }
 
   TreatIterator::TreatIterator(const QueryLoc& aLoc, PlanIter_t& aChild, const xqtref_t& aTreatType, ZorbaError::ErrorCode aErrorCode)
@@ -316,7 +316,7 @@ store::Item_t TreatIterator::nextImpl(PlanState& aPlanState) const
       lItem = consumeNext(theChild.getp(), aPlanState);
     } while (lItem != 0);
   }
-  STACK_END();
+  STACK_END (lState);
 }
 
 /*******************************************************************************

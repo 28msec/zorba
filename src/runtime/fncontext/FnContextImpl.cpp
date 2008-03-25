@@ -79,7 +79,7 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
   {
     STACK_PUSH (NULL , aState);
   }
-  STACK_END();
+  STACK_END (aState);
 
 }
 

@@ -22,7 +22,7 @@ store::Item_t SingletonIterator::nextImpl ( PlanState& planState ) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
   STACK_PUSH ( theValue, state );
-  STACK_END();
+  STACK_END (state);
 }
 
 
@@ -62,7 +62,7 @@ store::Item_t IfThenElseIterator::nextImpl ( PlanState& planState ) const
     );
   }
 
-  STACK_END();
+  STACK_END (state);
 }
 
 void IfThenElseIterator::openImpl ( PlanState& planState, uint32_t& offset ) {

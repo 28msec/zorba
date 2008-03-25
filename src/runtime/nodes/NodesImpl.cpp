@@ -35,7 +35,7 @@ store::Item_t FnLocalNameIterator::nextImpl(PlanState& planState) const
   else
     STACK_PUSH(GENV_ITEMFACTORY->createString(strRes.getStore()), state);
   
-  STACK_END();
+  STACK_END (state);
 }
 
 // 14.3 fn:namespace-uri
@@ -52,7 +52,7 @@ store::Item_t FnNamespaceUriIterator::nextImpl(PlanState& planState) const
   if (inNode != NULL)
     STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(inNode->getNamespace().getStore()), state);
 
-  STACK_END();
+  STACK_END (state);
 }
 
 // 14.5 fn:lang
@@ -62,7 +62,7 @@ store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
   //TODO fix the implementation
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  STACK_END();
+  STACK_END (state);
 }
 
 } /* namespace zorba */
