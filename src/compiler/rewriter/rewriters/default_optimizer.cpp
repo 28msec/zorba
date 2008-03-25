@@ -18,6 +18,7 @@ namespace zorba {
     FoldRules() {
       ADD_RULE(MarkExpensiveOps);
       ADD_RULE(MarkUnfoldableOps);
+      // Most rules try to update the freevars annotations, but for now let's stay on the safe side
       ADD_RULE(MarkFreeVars);
       ADD_RULE(FoldConst (false));
       ADD_RULE(PartialEval);      

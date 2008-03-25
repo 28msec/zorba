@@ -14,7 +14,9 @@ enum {
   FREE_VARS,
 
   EXPENSIVE_OP,
-  UNFOLDABLE_OP
+  UNFOLDABLE_OP,
+  
+  MAX_ANNOTATION
 };
 
 }

@@ -75,7 +75,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     set_intersection (myvars.varset.begin (), myvars.varset.end (), free_vars.begin (), free_vars.end (), inserter (diff, diff.begin ()));
     if (diff.empty ()) {
       flwor->set_where (NULL);
-      return new if_expr (node->get_loc (), where, flwor, new fo_expr (node->get_loc (), LOOKUP_OPN ("concatenate")));
+      return fix_if_annotations (new if_expr (LOC (node), where, flwor, new fo_expr (LOC (node), LOOKUP_OPN ("concatenate"))));
     }
   }
 
@@ -101,10 +101,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         quant_cnt = 1;
     }
     if (is_let || quant_cnt < 2) {
-      if (quant_cnt == 0) return new fo_expr (node->get_loc (), LOOKUP_OPN ("concatenate"));
+      if (quant_cnt == 0) return new fo_expr (LOC (node), LOOKUP_OPN ("concatenate"));
       // otherwise is_let || quant_cnt == 1
       if (pvref != NULL)
-        MODIFY (subst_vars (rCtx, node, pvref.getp (), new const_expr (node->get_loc (), xqp_integer::parseInt (1))));
+        MODIFY (subst_vars (rCtx, node, pvref.getp (), new const_expr (LOC (node), xqp_integer::parseInt (1))));
       int uses = count_variable_uses(flwor, &*vref, 2);
       if (uses > 1) {
         if (cexpr->get_expr_kind () == const_expr_kind) {
@@ -132,13 +132,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // FLWOR with no remaining clauses
   if (flwor->forlet_count() == 0) {
     expr_t result = flwor->get_retval();
-    if (where != NULL) {
-      rchandle<if_expr> ite(new if_expr(where->get_loc()));
-      ite->set_cond_expr(where);
-      ite->set_then_expr(result);
-      ite->set_else_expr(new fo_expr(where->get_loc(), LOOKUP_OPN("concatenate")));
-      result = &*ite;
-    }
+    if (where != NULL)
+      result = &* fix_if_annotations (new if_expr(where->get_loc(), where, result, new fo_expr(where->get_loc(), LOOKUP_OPN("concatenate"))));
     return result;
   }
   return modified ? node : NULL;
@@ -166,7 +161,7 @@ static bool refactor_index_pred (RewriterContext& rCtx, expr_t cond, forlet_clau
       if (TypeOps::is_subtype (*rCtx.getStaticContext()->get_typemanager()->create_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)
           && val->getIntegerValue () >= xqp_integer::parseInt (1)) 
       {
-        pos_expr = new const_expr (pos_expr->get_loc (), GenericCast::instance ()->promote (val, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+        pos_expr = new const_expr (LOC (pos_expr), GenericCast::instance ()->promote (val, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
         return true;
       }
     }
@@ -198,9 +193,9 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
   
   // 'for $x at $p where $p = ... return ...'
   if (where != NULL && refactor_index_pred (rCtx, where, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
-    fo_expr *result = new fo_expr (where->get_loc (), LOOKUP_FN ("fn", "subsequence", 3), pvar->get_forlet_clause ()->get_expr ());
-    result->add (&*pos);
-    result->add (new const_expr (pos->get_loc (), xqp_double::parseInt (1)));
+    rchandle<fo_expr> result = new fo_expr (LOC (where), LOOKUP_FN ("fn", "subsequence", 3),
+                                            pvar->get_forlet_clause ()->get_expr (), &*pos, new const_expr (LOC (pos), xqp_double::parseInt (1)));
+    fix_annotations (result);
     forlet_clause *clause = pvar->get_forlet_clause ();
     clause->set_expr (result);
     clause->set_pos_var (NULL);

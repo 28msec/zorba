@@ -30,7 +30,7 @@ namespace zorba {
 
   static expr_t execute (CompilerCB* compilercb, expr_t node, vector<store::Item_t> &result) {
     PlanIter_t plan = codegen ("const-folded expr", node);
-    QueryLoc loc = node->get_loc ();
+    QueryLoc loc = LOC (node);
     store::Item_t item;
     try {
       for (PlanWrapperHolder pw  (plan, compilercb); (item = pw->next ()) != NULL; )
@@ -162,8 +162,8 @@ namespace zorba {
         ZORBA_ASSERT (result.size () <= 1);
         folded =
           result.size () == 1
-          ? ((expr *) (new const_expr (node->get_loc (), result [0])))
-          : ((expr *) (new fo_expr (node->get_loc (), LOOKUP_OPN ("concatenate"))));
+          ? ((expr *) (new const_expr (LOC (node), result [0])))
+          : ((expr *) (new fo_expr (LOC (node), LOOKUP_OPN ("concatenate"))));
       }
       return folded;
     }
@@ -180,7 +180,7 @@ namespace zorba {
       const_expr *cond = i->dyn_cast<const_expr> ().getp ();
       if (cond != NULL) {
         if (cond->get_val ()->getEBV ()->getBooleanValue () == shortcircuit_val)
-          return new const_expr (fo->get_loc (), (xqp_boolean) shortcircuit_val);
+          return new const_expr (LOC (fo), (xqp_boolean) shortcircuit_val);
       } else {
         if (nontrivial1 == NULL)
           nontrivial1 = *i;
@@ -189,9 +189,9 @@ namespace zorba {
       }
     }
     if (nontrivial1 == NULL)
-      return new const_expr (fo->get_loc (), (xqp_boolean) ! shortcircuit_val);
+      return new const_expr (LOC (fo), (xqp_boolean) ! shortcircuit_val);
     else if (nontrivial2 == NULL)
-      return new fo_expr (fo->get_loc (), LOOKUP_FN("fn", "boolean", 1), nontrivial1);
+      return fix_annotations (new fo_expr (LOC (fo), LOOKUP_FN("fn", "boolean", 1), nontrivial1));
     else
       return NULL;
   }
@@ -214,15 +214,15 @@ namespace zorba {
     if (TypeOps::is_subtype (*rCtx.getStaticContext()->get_typemanager()->create_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) {
       xqp_integer ival = val->getIntegerValue (), zero = xqp_integer::parseInt (0);
       if (ival < zero)
-        return new const_expr (val_expr->get_loc (), false);
+        return new const_expr (LOC (val_expr), false);
       else if (ival == zero)
-        return new fo_expr (fo.get_loc (), LOOKUP_FN ("fn", "empty", 1), (*count_expr) [0]);
+        return fix_annotations (new fo_expr (fo.get_loc (), LOOKUP_FN ("fn", "empty", 1), (*count_expr) [0]));
       else if (ival == xqp_integer::parseInt (1))
-        return new fo_expr (fo.get_loc (), LOOKUP_OP1 ("exactly-one-noraise"), (*count_expr) [0]);
+        return fix_annotations (new fo_expr (fo.get_loc (), LOOKUP_OP1 ("exactly-one-noraise"), (*count_expr) [0]));
       else {
-        expr_t dpos = new const_expr (val_expr->get_loc (), GenericCast::instance ()->promote (val, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
-        expr_t subseq_expr = new fo_expr (count_expr->get_loc (), LOOKUP_FN ("fn", "subsequence", 3), (*count_expr) [0], dpos, new const_expr (val_expr->get_loc (), xqp_double::parseInt (2)));
-        return new fo_expr (fo.get_loc (), LOOKUP_OP1 ("exactly-one-noraise"), subseq_expr);
+        expr_t dpos = new const_expr (LOC (val_expr), GenericCast::instance ()->promote (val, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+        expr_t subseq_expr = fix_annotations (new fo_expr (LOC (count_expr), LOOKUP_FN ("fn", "subsequence", 3), (*count_expr) [0], dpos, new const_expr (LOC (val_expr), xqp_double::parseInt (2))));
+        return fix_annotations (new fo_expr (fo.get_loc (), LOOKUP_OP1 ("exactly-one-noraise"), subseq_expr));
       }
     }
 
@@ -246,10 +246,10 @@ namespace zorba {
       expr_t arg = cbe->get_expr();
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
       if (TypeOps::is_subtype(*arg_type, *cbe->get_type()))
-        return new const_expr (node->get_loc (), true);
+        return new const_expr (LOC (node), true);
       else if (node->get_expr_kind () == instanceof_expr_kind)
         return TypeOps::intersect_type (*arg_type, *cbe->get_type ()) == GENV_TYPESYSTEM.NONE_TYPE 
-          ? new const_expr (node->get_loc (), false) : NULL;
+          ? new const_expr (LOC (node), false) : NULL;
       else
         return NULL;
     }

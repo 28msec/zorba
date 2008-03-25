@@ -2,8 +2,8 @@
 #define ZORBA_EXPR_TOOLS_H
 
 #include "common/shared_types.h"
-#include "compiler/semantic_annotations/annotations.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
+#include "compiler/expression/expr.h"
 #include "functions/signature.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
@@ -19,6 +19,7 @@
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
+#define LOC( expr ) (expr)->get_loc ()
 namespace zorba {
 
 typedef rchandle<var_expr> varref_t;
@@ -29,10 +30,34 @@ public:
   void add (var_expr *v) { varset.insert (varset.begin (), v); }
 };
   
-  const std::set<var_expr *> &get_varset_annotation (const expr *e, Annotation::key_t k);
-
+const std::set<var_expr *> &get_varset_annotation (const expr *e, Annotation::key_t k);
 
 int count_variable_uses(expr *root, var_expr *var, int limit);
+
+// copy annotations when wrapping an expression in a new one
+inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL) {
+  if (old_expr == NULL) {
+    switch (new_expr->get_expr_kind ()) {
+    case fo_expr_kind:
+      old_expr = (*new_expr.dyn_cast<fo_expr> ().getp ()) [0];
+      break;
+    default:
+      assert (false); return NULL;
+    }
+  }
+  
+  for (Annotation::key_t k = 0; k < AnnotationKey::MAX_ANNOTATION; k++)
+    new_expr->put_annotation (k, old_expr->get_annotation (k));
+  
+  return new_expr;
+}
+
+inline expr_t fix_if_annotations (if_expr *ite) {
+  fix_annotations (ite, ite->get_cond_expr ());
+  fix_annotations (ite, ite->get_then_expr ());
+  fix_annotations (ite, ite->get_else_expr ());
+  return ite;
+}
 
 }
 
