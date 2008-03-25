@@ -21,6 +21,8 @@ namespace zorba
       store::TempSeq_t  theTargetSequence;
       Iterator_t theTempIterator;
       PlanIter_t theCatchIterator;
+
+      std::vector<Iterator_t> theErrorIters;
   };
 
   class TryCatchIterator : public UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> {

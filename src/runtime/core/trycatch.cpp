@@ -26,6 +26,13 @@ TryCatchIteratorState::~TryCatchIteratorState()
     theTempIterator->close();
     theTempIterator = NULL;
   }
+
+  std::vector<Iterator_t>::iterator lIters = theErrorIters.begin();
+  std::vector<Iterator_t>::iterator lItersEnd = theErrorIters.end();
+  for (; lIters != lItersEnd; ++lIters) {
+    (*lIters)->close();
+  }
+
 }
 
 void
@@ -43,6 +50,13 @@ TryCatchIteratorState::reset(PlanState& planState) {
     theTempIterator = NULL;
   }
   theCatchIterator = NULL;
+
+  std::vector<Iterator_t>::iterator lIters = theErrorIters.begin();
+  std::vector<Iterator_t>::iterator lItersEnd = theErrorIters.end();
+  for (; lIters != lItersEnd; ++lIters) {
+    (*lIters)->close();
+  }
+
 }
 
 TryCatchIterator::CatchClause::~CatchClause() {}
@@ -111,49 +125,45 @@ TryCatchIterator::matchedCatch(error::ZorbaError& e, TryCatchIteratorState* stat
 void
 TryCatchIterator::bindErrorVars(error::ZorbaError& e, const CatchClause* clause, PlanState& planState) const
 {
+  TryCatchIteratorState* state = StateTraitsImpl<TryCatchIteratorState>::getState(planState, this->stateOffset);
 
   // bind the error code (always)
   store::Item_t lErrorCodeItem = 
     GENV_ITEMFACTORY->createString(xqpString(error::ZorbaError::toString(e.theErrorCode)).theStrStore);
-  Iterator_t lErrorCodeIter = new store::ItemIterator(lErrorCodeItem);
 
   std::vector<ref_iter_t>::const_iterator lErrorCodeVarIter = clause->errorcode_var.begin();
   std::vector<ref_iter_t>::const_iterator lErrorCodeVarIterEnd = clause->errorcode_var.end();
   for ( ; lErrorCodeVarIter != lErrorCodeVarIterEnd; lErrorCodeVarIter++ ) {
+    Iterator_t lErrorCodeIter = new store::ItemIterator(lErrorCodeItem);
+    lErrorCodeIter->open();
+    state->theErrorIters.push_back(lErrorCodeIter);
     (*lErrorCodeVarIter)->bind(lErrorCodeIter, planState);
-  }
- 
-  // bind the description (if not empty)
-  Iterator_t lErrorDescIter;
-  if (!e.theDescription.empty()) { 
-    lErrorDescIter = new store::ItemIterator(GENV_ITEMFACTORY->createString(xqpString(e.theDescription).theStrStore));
-  } else {
-    std::vector<store::Item_t> lEmptySeq;
-    lErrorDescIter = new store::ItemIterator(lEmptySeq);
   }
   
   std::vector<ref_iter_t>::const_iterator lErrorDescVarIter = clause->errordesc_var.begin();
   std::vector<ref_iter_t>::const_iterator lErrorDescVarIterEnd = clause->errordesc_var.end();
   for ( ; lErrorDescVarIter != lErrorDescVarIterEnd; lErrorDescVarIter++ ) {
+    // bind the description or the empty sequence
+    Iterator_t lErrorDescIter;
+    if (!e.theDescription.empty()) { 
+      lErrorDescIter = new store::ItemIterator(GENV_ITEMFACTORY->createString(xqpString(e.theDescription).theStrStore));
+    } else {
+      lErrorDescIter = new store::ItemIterator();
+    }
+    lErrorDescIter->open();
+    state->theErrorIters.push_back(lErrorDescIter);
     (*lErrorDescVarIter)->bind(lErrorDescIter, planState);
   }
 
-#if 0
-  // bind the error-object 
-  if (! e.theErrorObject.empty() ) {
-    Iterator_t 
-    Item_t lErrorDescItem = lItemFactory->createString(e.theDescription);
-    std::vector<ref_iter_t>::const_iterator lErrorDescVarIter = state->theCatchIterator.errordesc_var.begin();
-    std::vector<ref_iter_t>::const_iterator lErrorDescVarIterEnd = state->theCatchIterator.errordesc_var.end();
-    for ( ; lErrorDescVarIter != lErrorDescVarIterEnd; lErrorDescVarIter++ ) {
-      (*lErrorDescVarIter).variable->bind(lErrorDescItem, planState);
-    }
+  // TODO bind the error objects
+  std::vector<ref_iter_t>::const_iterator lErrorObjVarIter = clause->errorobj_var.begin();
+  std::vector<ref_iter_t>::const_iterator lErrorObjVarIterEnd = clause->errorobj_var.end();
+  for ( ; lErrorObjVarIter != lErrorObjVarIterEnd; lErrorObjVarIter++ ) {
+    Iterator_t lErrorObjIter = new store::ItemIterator();
+    lErrorObjIter->open();
+    state->theErrorIters.push_back(lErrorObjIter);
+    (*lErrorObjVarIter)->bind(lErrorObjIter, planState);
   }
-#endif
-                                    
-                                    
-
-
 
 }
 
