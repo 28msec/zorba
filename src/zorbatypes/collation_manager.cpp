@@ -22,6 +22,15 @@ namespace zorba {
   XQPCollator*
   CollationFactory::createCollator(const std::string& aCollationURI)
   {
+    if (aCollationURI == "http://www.w3.org/2005/xpath-functions/collation/codepoint")
+    {
+      Collator* lCollator;
+      UErrorCode lError = U_ZERO_ERROR;
+      lCollator = Collator::createInstance(Locale("en","US"), lError);
+      lCollator->setStrength(Collator::IDENTICAL);
+      return new XQPCollator(lCollator);
+    }
+
     size_t lStartURI = aCollationURI.find("http://www.flworfound.org/collations/"); 
     if ( lStartURI == std::string::npos )
       return 0;

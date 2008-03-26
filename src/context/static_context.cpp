@@ -330,7 +330,19 @@ xqtref_t static_context::get_collection_type(
 void 
 static_context::add_collation(const xqp_string& aURI, const xqp_string& aName)
 {
-  bind_collation(aName, aURI);
+  // TODO resolve_relative_uri does not work yet
+  // xqp_string lURI = resolve_relative_uri(aURI); 
+  xqp_string lURI = aURI;
+  XQPCollator* lCollator = CollationFactory::createCollator(lURI);
+  if (lCollator == 0)
+  {
+		ZORBA_ERROR_DESC( ZorbaError::XQST0038, "invalid collation uri");
+  }
+  else
+  {
+    delete lCollator;
+    bind_collation(aName, lURI);
+  }
 }
 
 CollationCache*
@@ -371,7 +383,19 @@ static_context::get_collation_uri(const xqp_string& aName, xqp_string& aURI) con
 void 
 static_context::set_default_collation_uri(const xqp_string& aURI)
 {
-  bind_default_collation(aURI);
+  // TODO resolve_relative_uri does not work yet
+  // xqp_string lURI = resolve_relative_uri(aURI); 
+  xqp_string lURI = aURI;
+  XQPCollator* lCollator = CollationFactory::createCollator(lURI);
+  if (lCollator == 0)
+  {
+		ZORBA_ERROR_DESC( ZorbaError::XQST0038, "invalid collation uri");
+  }
+  else
+  {
+    delete lCollator;
+    bind_default_collation(lURI);
+  }
 }
 
 

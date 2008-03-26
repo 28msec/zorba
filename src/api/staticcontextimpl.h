@@ -64,10 +64,7 @@ namespace zorba {
       getContextItemType( ) const;
 
       virtual void   
-      addCollation( const String& URI );
-
-      virtual void   
-      deleteCollation( const String& URI);
+      addCollation( const String& URI, const String& name );
 
       virtual void   
       setDefaultCollation( const String& URI );

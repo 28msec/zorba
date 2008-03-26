@@ -156,31 +156,26 @@ namespace zorba {
 
 
   void   
-  StaticContextImpl::addCollation( const String& URI )
+  StaticContextImpl::addCollation( const String& URI, const String& name )
   {
-    assert(false);
-  }
-
-
-  void   
-  StaticContextImpl::deleteCollation( const String& URI)
-  {
-    assert(false);
+    xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
+    xqpString lName = xqpString(Unmarshaller::getInternalString(name));
+    theCtx->add_collation(lURI, lName);
   }
 
 
   void   
   StaticContextImpl::setDefaultCollation( const String& URI )
   {
-    assert(false);
+    xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
+    theCtx->set_default_collation_uri(lURI); 
   }
 
 
   String 
   StaticContextImpl::getDefaultCollation() const
   {
-    assert(false);
-    return "";
+    return &*theCtx->default_collation_uri().theStrStore;
   }
 
 

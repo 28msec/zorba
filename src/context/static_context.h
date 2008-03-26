@@ -121,7 +121,7 @@ public:
   }
   bool lookup_collation(const xqp_string& aCollName, xqp_string& aCollURI) const
   {
-    return context_value<xqp_string>(aCollName, aCollURI);  
+    return context_value<xqp_string>("coll:" + aCollName, aCollURI);  
   }
   void bind_default_collation(const xqp_string& aCollURI)
   {

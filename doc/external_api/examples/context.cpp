@@ -117,13 +117,13 @@ context_example_5(Zorba* aZorba)
   }
   return true;
 }
-#if 0
+
 bool
-context_example_2(Zorba* aZorba)
+context_example_6(Zorba* aZorba)
 {
   StaticContext_t lStaticContext = aZorba->createStaticContext();
 
-  lStaticContext->addCollation("http://flworfound.org/collations/PRIMARY/de/DE", "german");
+  lStaticContext->addCollation("http://www.flworfound.org/collations/PRIMARY/de/DE", "german");
 
 	XQuery_t lQuery = aZorba->createQuery("fn:compare('Strasse', 'Straße', 'german')", lStaticContext); 
 
@@ -133,12 +133,11 @@ context_example_2(Zorba* aZorba)
 
   } catch (DynamicException &e) {
     std::cerr << e << std::endl;
-    return true;
+    return false;
   }
 
-	return false;
+	return true;
 }
-#endif
 
 
 #if 0
@@ -190,6 +189,10 @@ context(int argc, char* argv[])
   
   std::cout << "executing example 5" << std::endl;
 	assert(context_example_5(lZorba)); 
+  std::cout << std::endl;
+  
+  std::cout << "executing example 6" << std::endl;
+	assert(context_example_6(lZorba)); 
   std::cout << std::endl;
   
   return 0;
