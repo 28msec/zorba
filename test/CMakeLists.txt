@@ -7,7 +7,6 @@ ADD_SUBDIRECTORY(unit)
 ADD_SUBDIRECTORY(parser)
 
 SET(API_TEST_SRCS
-    timer.cpp
     apitest.cpp)
 
 ADD_EXECUTABLE(apitest ${API_TEST_SRCS})

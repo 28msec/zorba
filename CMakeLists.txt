@@ -42,7 +42,8 @@ IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 	MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
 ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
     SET(requiredlibs ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
-    SET(requiredlibs_types ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
+    SET(requiredlibs_types ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
+    INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
 ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 
 #####################################################  LibXml2
@@ -120,18 +121,10 @@ ELSE(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
     MESSAGE(FATAL_ERROR "The boost library is required in order to build Zorba.")
 ENDIF(Boost_FOUND AND EXISTS ${Boost_INCLUDE_DIRS}/boost/lexical_cast.hpp)
 
-####################################################### Debugging
-INCLUDE(${CMAKE_ROOT}/Modules/CheckIncludeFile.cmake)
-INCLUDE(${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake)
-CHECK_INCLUDE_FILE(execinfo.h HAVE_EXECINFO_H)
-
-
 ##############################################################################################################
-
-# for windows it is located in external/win32_pthread
-# but this should be removed
-SET(requiredlibs ${requiredlibs} pthread)
-
+IF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
+  SET(requiredlibs ${requiredlibs} pthread)
+ENDIF (HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
 ##############################################################################################################
 # Custom user-defined settings
 
@@ -147,11 +140,7 @@ IF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
 ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
 
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
-INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external) # should also be removed if pthread has been removed and mapm is only included from within src
 
-# for the moment, we include everything
-# however, we should move the headers (at least the library headers) into a separate directory
-INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
 
 INCLUDE(CMakeConfiguration.txt)
 
