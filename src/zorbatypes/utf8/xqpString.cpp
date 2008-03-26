@@ -945,7 +945,7 @@ namespace zorba
   xqpString
   xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags) {
     UErrorCode status = U_ZERO_ERROR;
-    RegexMatcher matcher (pattern.getUnicodeString (), parse_regex_flags (flags.c_str ()), status);
+    RegexMatcher matcher (pattern.getUnicodeString (), getUnicodeString (), parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
       return "";
       // FORX0002
