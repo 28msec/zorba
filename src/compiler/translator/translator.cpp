@@ -2288,10 +2288,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       nodestack.push (&*wrap_in_let_flwor (new treat_expr (loc, data_expr, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, ZorbaError::XPTY0004), tv, ret));
       return;
     } else if (sz == 0 && 
-               (fn_local == "string-length" || fn_local == "normalize-space"))
+               (fn_local == "string-length" || fn_local == "normalize-space"
+                || fn_local == "base-uri" || fn_local == "namespace-uri"
+                || fn_local == "local-name"))
     {
-      xqtref_t xs_string = GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
-      arguments.push_back (create_cast_expr (loc, sctx_p->lookup_var_nofail (DOT_VAR), xs_string, true));
+      arguments.push_back (sctx_p->lookup_var_nofail (DOT_VAR));
     } else if (fn_local == "static-base-uri") {
       if (sz != 0)
         ZORBA_ERROR_PARAM ( ZorbaError::XPST0017, "fn:static-base-uri", sz );
@@ -2301,6 +2302,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       else
         nodestack.push (new cast_expr (loc, new const_expr (loc, baseuri), GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
       return;
+    } else if (sz == 1 && fn_local == "lang") {
+      arguments.insert (arguments.begin (), sctx_p->lookup_var_nofail (DOT_VAR));
+    } else if (sz == 1 && fn_local == "resolve-uri") {
+      // TODO: check if static base uri is defined, throw FONS0005 if not
+      arguments.insert (arguments.begin (), new const_expr (loc, sctx_p->baseuri()));
     }
   }
   sz = arguments.size ();  // recompute size
