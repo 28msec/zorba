@@ -1437,7 +1437,7 @@ void
 FnTokenizeIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
-  theString = xqp_string("");
+  theString;
 }
 
 void
@@ -1450,10 +1450,42 @@ FnTokenizeIteratorState::reset(PlanState& planState)
 store::Item_t
 FnTokenizeIterator::nextImpl(PlanState& planState) const
 {
+  xqp_string remaining;
+  xqp_string pattern;
+  xqp_string flags;
+  xqp_string token;
+  store::Item_t item;
+  
   FnTokenizeIteratorState* state;
   DEFAULT_STACK_INIT(FnTokenizeIteratorState, state, planState);
 
-  STACK_END (state);
+  item = consumeNext(theChildren[0].getp(), planState);
+  if( item != NULL )
+    state->theString = item->getStringValue();
+
+  item = consumeNext(theChildren[1].getp(), planState);
+  assert (item != NULL);
+  pattern = item->getStringValue();
+
+  if(theChildren.size() == 3) {
+    item = consumeNext(theChildren[2].getp(), planState);
+    assert (item != NULL);
+    flags = item->getStringValue();
+  }
+
+  if(xqp_string().matches(pattern,flags))
+    ZORBA_ERROR_LOC_DESC(ZorbaError::FORX0003, loc,
+                         "Regular expression matches zero-length string.");
+
+  do
+  {  
+    token = state->theString.tokenize(pattern, flags, &remaining);
+    state->theString = remaining;
+    STACK_PUSH(GENV_ITEMFACTORY->createString(token.getStore()), state);
+  }
+  while (state->theString != "");
+
+  STACK_END(state);
 }
 /*end class FnTokenizeIterator*/
 } /* namespace zorba */
