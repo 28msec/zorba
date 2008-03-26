@@ -122,14 +122,14 @@ namespace zorba { namespace error {
 
 
 // create an exception, replace params, and throw it
-#define ZORBA_ERROR_OSS(code, param1, param2) do { \
+#define ZORBA_ERROR_PARAM(code, param1, param2) do { \
   std::ostringstream lOStringStream1, lOStringStream2; \
   lOStringStream1 << param1; \
   lOStringStream2 << param2; \
   throw error::ErrorManager::createException(code, lOStringStream1.str(), lOStringStream2.str(), __FILE__, __LINE__); \
 } while (0) 
 
-#define ZORBA_ERROR_LOC_OSS(code, loc, param1, param2) do { \
+#define ZORBA_ERROR_LOC_PARAM(code, loc, param1, param2) do { \
   std::ostringstream lOStringStream1, lOStringStream2; \
   lOStringStream1 << param1; \
   lOStringStream2 << param2; \
@@ -138,13 +138,13 @@ namespace zorba { namespace error {
 
 
 // create an error, remeber it, and continue
-#define ZORBA_ERROR_CONTINUE(manager, code, loc, desc) do { \
+#define ZORBA_ERROR_DESC_CONTINUE(manager, code, loc, desc) do { \
     manager->addError(code, desc, __FILE__, __LINE__, loc);     \
 } while (0) 
 
 
 // create an error, replace params, and continue
-#define ZORBA_ERROR_OSS_CONTINUE(manager, code, param1, param2) do {\
+#define ZORBA_ERROR_PARAM_CONTINUE(manager, code, param1, param2) do {\
   std::ostringstream lOStringStream1, lOStringStream2; \
   lOStringStream1 << param1; \
   lOStringStream2 << param2; \
@@ -153,7 +153,7 @@ namespace zorba { namespace error {
 
 
 // create an error, with location, replace params, and continue
-#define ZORBA_ERROR_LOC_OSS_CONTINUE(manager, code, loc, param1, param2) do { \
+#define ZORBA_ERROR_LOC_PARAM_CONTINUE(manager, code, loc, param1, param2) do { \
   std::ostringstream lOStringStream1, lOStringStream2; \
   lOStringStream1 << param1; \
   lOStringStream2 << param2; \

@@ -54,14 +54,14 @@ store::Item_t CtxVariableIterator::nextImpl(PlanState& planState) const
     item = planState.theRuntimeCB->theDynamicContext->context_item();
 		if(item == NULL)
 		{
-			ZORBA_ERROR_LOC_OSS ( ZorbaError::XPDY0002, loc, "context item", "");
+			ZORBA_ERROR_LOC_PARAM ( ZorbaError::XPDY0002, loc, "context item", "");
 		}
 		STACK_PUSH( item, aState);
 	}
 	else
 	{
 		if (aState->iter == NULL)
-			ZORBA_ERROR_LOC_OSS ( ZorbaError::XPDY0002, loc, theVarName, "");
+			ZORBA_ERROR_LOC_PARAM ( ZorbaError::XPDY0002, loc, theVarName, "");
 
     aState->iter->open();
 

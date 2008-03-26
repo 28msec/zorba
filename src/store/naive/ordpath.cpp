@@ -612,7 +612,7 @@ void OrdPath::pushComp(long value, ulong& bitSize)
   ulong bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_OSS(ZorbaError::XQP0018_NODEID_ERROR,
+    ZORBA_ERROR_PARAM(ZorbaError::XQP0018_NODEID_ERROR,
                     "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN << " bytes", "");
   }
 
@@ -670,7 +670,7 @@ void OrdPath::appendComp(long value)
   ulong bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_OSS(ZorbaError::XQP0018_NODEID_ERROR,
+    ZORBA_ERROR_PARAM(ZorbaError::XQP0018_NODEID_ERROR,
                     "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
                      << " bytes", "");
   }
@@ -3391,7 +3391,7 @@ void OrdPathStack::pushChild()
   if (theByteIndex == OrdPath::MAX_BYTE_LEN ||
       (theByteIndex == OrdPath::MAX_BYTE_LEN - 1 && theBitsAvailable < 2))
   {
-    ZORBA_ERROR_OSS( ZorbaError::XQP0018_NODEID_ERROR,
+    ZORBA_ERROR_PARAM( ZorbaError::XQP0018_NODEID_ERROR,
                      "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN << " bytes", "");
   }
 
@@ -3593,7 +3593,7 @@ void OrdPathStack::compressComp(ulong comp, long value)
 
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_OSS( ZorbaError::XQP0018_NODEID_ERROR,
+    ZORBA_ERROR_PARAM( ZorbaError::XQP0018_NODEID_ERROR,
                      "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN << " bytes", "");
     return;
   }

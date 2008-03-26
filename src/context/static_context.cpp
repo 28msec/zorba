@@ -207,7 +207,7 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
     else {
       f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) + qname_internal_key (default_function_namespace (), prefix, local));
       if (f == NULL)
-        ZORBA_ERROR_OSS ( ZorbaError::XPST0017, local, to_string (arity));
+        ZORBA_ERROR_PARAM ( ZorbaError::XPST0017, local, to_string (arity));
       return f;
     }
   }
@@ -511,7 +511,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
       {
         if((tempuri.indexOf("/") != 1) && (tempuri.indexOf("\\") != 1))
         {
-          ZORBA_ERROR_OSS( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
+          ZORBA_ERROR_PARAM( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
           return "";
         }
         xqp_string    tempabs;
@@ -525,7 +525,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
         
         if(last_slash < 0)
         {
-          ZORBA_ERROR_OSS( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
+          ZORBA_ERROR_PARAM( ZorbaError::XQP0020_INVALID_URI, base_uri << " + " << uri, "");
           return "";
         }
         abs_uri = abs_uri.substr(0, last_slash+1);
@@ -553,7 +553,7 @@ xqp_string static_context::make_absolute_uri(xqp_string uri, xqp_string base_uri
 
 	if(!GenericCast::instance()->isCastable(abs_uri, GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
   {
-    ZORBA_ERROR_OSS( ZorbaError::XQP0020_INVALID_URI,  base_uri << " + " << uri, "");
+    ZORBA_ERROR_PARAM( ZorbaError::XQP0020_INVALID_URI,  base_uri << " + " << uri, "");
     return "";
   }
 

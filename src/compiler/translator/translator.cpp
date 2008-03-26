@@ -2269,7 +2269,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        ZORBA_ERROR_OSS ( ZorbaError::XPST0017,  "fn:string", sz );
+        ZORBA_ERROR_PARAM ( ZorbaError::XPST0017,  "fn:string", sz );
       }
     } else if (fn_local == "number") {
       switch (sz) {
@@ -2279,7 +2279,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        ZORBA_ERROR_OSS ( ZorbaError::XPST0017, "fn:number", sz );
+        ZORBA_ERROR_PARAM ( ZorbaError::XPST0017, "fn:number", sz );
       }
       var_expr_t tv = tempvar (loc, var_expr::let_var);
       expr_t nan_expr = new const_expr (loc, xqp_double::nan ());
@@ -2294,7 +2294,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       arguments.push_back (create_cast_expr (loc, sctx_p->lookup_var_nofail (DOT_VAR), xs_string, true));
     } else if (fn_local == "static-base-uri") {
       if (sz != 0)
-        ZORBA_ERROR_OSS ( ZorbaError::XPST0017, "fn:static-base-uri", sz );
+        ZORBA_ERROR_PARAM ( ZorbaError::XPST0017, "fn:static-base-uri", sz );
       xqp_string baseuri = sctx_p->baseuri ();
       if (baseuri.empty ())
         nodestack.push (create_seq (loc));
@@ -2312,7 +2312,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   if (type != NULL && fn_qname->getStringValue () != "xs:anyAtomicType")
   {
     if (sz != 1)
-      ZORBA_ERROR_OSS ( ZorbaError::XPST0017,  prefix + ":" + fname, sz);
+      ZORBA_ERROR_PARAM ( ZorbaError::XPST0017,  prefix + ":" + fname, sz);
     nodestack.push (create_cast_expr (loc, arguments [0], type, true));
   }
   else

@@ -947,7 +947,7 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
       int result = http_get(uriCopy.c_str(), xmlString);
       if (result != 0)
       {
-        ZORBA_ERROR_LOC_OSS( ZorbaError::FODC0002, loc,  uriString->c_str(), "HTTP get failure.");
+        ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc,  uriString->c_str(), "HTTP get failure.");
       }
 
       istringstream iss(xmlString.c_str());
@@ -955,7 +955,7 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
       doc = store.loadDocument(uriString, iss);
       if (doc == NULL)
       {
-        ZORBA_ERROR_LOC_OSS( ZorbaError::FODC0002, loc,  uriString->c_str(), "Failed to parse document.");
+        ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc,  uriString->c_str(), "Failed to parse document.");
       }
     }
     else 
@@ -965,13 +965,13 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
       ifs.open(uriString->c_str(), ios::in);
       if (ifs.is_open() == false)
       {
-        ZORBA_ERROR_LOC_OSS( ZorbaError::FODC0002, loc,  uriString->c_str(), "File does not exist.");
+        ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc,  uriString->c_str(), "File does not exist.");
       }
       
       doc = store.loadDocument(uriString, ifs);
       if (doc == NULL)
       {
-        ZORBA_ERROR_LOC_OSS( ZorbaError::FODC0002, loc, uriString->c_str(), "Failed to parse document.");
+        ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc, uriString->c_str(), "Failed to parse document.");
       }
     }
   }
