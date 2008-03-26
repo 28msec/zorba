@@ -308,17 +308,13 @@ ConcatStrIterator::nextImpl(PlanState& planState) const {
     if ( ( lItem = consumeNext(*iter, planState) ) != NULL )
     {
       lResStream << lItem->getStringValue();
-    }
-    else
-    {
-      lResStream << "";
-    }
 
-    if  ( ( lItem = consumeNext(*iter, planState) ) != NULL )
-    {
-      ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc, 
-        "A sequence with more than one item is not allowed as argument to fn:concat");
-        break;
+      if  ( ( lItem = consumeNext(*iter, planState) ) != NULL )
+      {
+        ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, loc,
+          "A sequence with more than one item is not allowed as argument to fn:concat");
+          break;
+      }
     }
   }
 
