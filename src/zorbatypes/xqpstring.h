@@ -328,7 +328,7 @@ namespace zorba {
       replace(xqpString pattern, xqpString replacement, xqpString flags);
 
       xqpString
-      tokenize(xqpString pattern, xqpString flags);
+      tokenize(xqpString pattern, xqpString flags, xqpString *remaining);
 
       // Removes the leading and trailing whitespace (one of the " \t\r\n")
       // TODO: xqpString trim_whitespace() const;
@@ -354,8 +354,7 @@ namespace zorba {
 
       /**  Return a xqpString (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
        */
-      xqpString
-      getXqpString(UnicodeString source) const;
+      static xqpString getXqpString(UnicodeString source);
 
       /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
        */

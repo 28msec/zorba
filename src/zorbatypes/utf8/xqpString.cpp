@@ -913,11 +913,8 @@ namespace zorba
     return tmp.trimR(&seq,1);
   }
 
-  bool
-  xqpString::matches(xqpString pattern, xqpString flagStr)
-  {
+  uint32_t parse_regex_flags (const char *flag_cstr) {
     uint32_t flags = 0;
-    const char *flag_cstr = flagStr.c_str ();
     for (const char *p = flag_cstr; *p != '\0'; p++) {
       switch (*p) {
       case 'i': flags |= UREGEX_CASE_INSENSITIVE; break;
@@ -927,9 +924,14 @@ namespace zorba
       default: break;  // FORX0001
       }
     }
+    return flags;
+  }
 
+  bool
+  xqpString::matches(xqpString pattern, xqpString flags)
+  {
     UErrorCode status = U_ZERO_ERROR;
-    RegexMatcher *matcher = new RegexMatcher(pattern.getUnicodeString (), flags, status);
+    RegexMatcher *matcher = new RegexMatcher(pattern.getUnicodeString (), parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
       return false;
       // FORX0002
@@ -947,15 +949,18 @@ namespace zorba
   }
 
   xqpString
-  xqpString::tokenize(xqpString pattern, xqpString flags)
+  xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining)
   {
-    return *this;
+    UErrorCode status = U_ZERO_ERROR;
+    RegexMatcher m (pattern.getUnicodeString (), parse_regex_flags (flags.c_str ()), status); 
+    UnicodeString words[2];
+    int numWords = m.split(getUnicodeString (), words, 2, status);
+    *remaining = (numWords == 2) ? getXqpString (words [1]) : xqpString ();
+    return getXqpString (words [0]);
   }
 
   UnicodeString xqpString::getUnicodeString() const
   {
-//     UnicodeString res(c_str(), -1, US_INV);
-//     return res;
     UnicodeString ret;
     UErrorCode status = U_ZERO_ERROR;
     int32_t len = bytes();
@@ -1031,7 +1036,7 @@ namespace zorba
     return ret;
   }
 
-  xqpString xqpString::getXqpString(UnicodeString source) const
+  xqpString xqpString::getXqpString(UnicodeString source)
   {
     char* target;
     int32_t targetLen = source.getCapacity()*4 + 1;
