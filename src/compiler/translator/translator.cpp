@@ -4002,10 +4002,10 @@ void end_visit(const CatchListExpr& v, void* visit_state)
 
 expr_t cc_component(const QueryLoc& loc, var_expr_t var, const char *local)
 {
-  expr_t exists = new fo_expr(loc, LOOKUP_FN("fn", "exists", 1), var);
+  expr_t exists = new fo_expr(loc, LOOKUP_FN("fn", "exists", 1), &*var);
   expr_t emptyseq = new fo_expr(loc, LOOKUP_OPN("concatenate"));
   expr_t eName = new const_expr(loc, GENV_ITEMFACTORY->createQName(XQUERY_FN_NS, "fn", local));
-  expr_t eContents = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"), var);
+  expr_t eContents = new fo_expr(loc, LOOKUP_OP1("enclosed-expr"), &*var);
   push_elem_scope();
   expr_t eVal = new elem_expr(loc, eName, NULL, eContents, ns_ctx);
   pop_elem_scope();

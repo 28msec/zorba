@@ -195,9 +195,9 @@ RULE_REWRITE_PRE(RefactorPredFLWOR) {
   if (where != NULL && refactor_index_pred (rCtx, where, pvar, pos) && count_variable_uses (flwor, &*pvar, 2) <= 1) {
     rchandle<fo_expr> result = new fo_expr (LOC (where), LOOKUP_FN ("fn", "subsequence", 3),
                                             pvar->get_forlet_clause ()->get_expr (), &*pos, new const_expr (LOC (pos), xqp_double::parseInt (1)));
-    fix_annotations (result);
+    fix_annotations (&*result);
     forlet_clause *clause = pvar->get_forlet_clause ();
-    clause->set_expr (result);
+    clause->set_expr (&*result);
     clause->set_pos_var (NULL);
     flwor->set_where (NULL);
     return flwor;

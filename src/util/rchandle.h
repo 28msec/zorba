@@ -126,7 +126,7 @@ public:
 
 #endif // HAVE_PTHREAD_SPINLOCK or HAVE_PTHREAD_MUTEX
 
-#elif WIN32
+#elif defined WIN32 || defined WINCE
 
 class RCLock
 {
