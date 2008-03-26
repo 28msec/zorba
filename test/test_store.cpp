@@ -14,7 +14,6 @@
 #include "store/naive/simple_loader.h"
 #include "store/naive/basic_item_factory.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/gregorian.h"
 #include "zorbatypes/duration.h"
 
 
