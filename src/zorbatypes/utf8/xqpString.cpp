@@ -1058,11 +1058,15 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
   xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining)
   {
     UErrorCode status = U_ZERO_ERROR;
-    RegexMatcher m (pattern.getUnicodeString (), parse_regex_flags (flags.c_str ()), status); 
-    UnicodeString words[2];
-    int numWords = m.split(getUnicodeString (), words, 2, status);
-    *remaining = (numWords == 2) ? getXqpString (words [1]) : xqpString ();
-    return getXqpString (words [0]);
+    RegexMatcher m (pattern.getUnicodeString (), getUnicodeString (), parse_regex_flags (flags.c_str ()), status);
+    if (m.find ()) {
+      int32_t start = m.start (status), end = m.end (status);
+      *remaining = substr (end, length () - end);
+      return substr (0, start);
+    } else {
+      *remaining = xqpString ();
+      return substr (0, length ());
+    }
   }
 
 

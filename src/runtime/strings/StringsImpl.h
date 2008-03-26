@@ -453,6 +453,7 @@ NARY_ITER(FnReplaceIterator);
 class FnTokenizeIteratorState : public PlanIteratorState {
   public:
     xqp_string theString; // the remaining string
+    xqp_string thePattern, theFlags;
 
     void init(PlanState&);
     void reset(PlanState&);
