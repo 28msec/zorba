@@ -22,14 +22,12 @@ public:
 
 protected:
 
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
+#ifdef HAVE_PTHREAD_H
   pthread_rwlock_t  theLatch;
 #elif WIN32
   rwlock  theLatch;
   bool    rlocked;
   bool    wlocked;
-#else
-  #error Latch implemented for PTHREADs and WIN32 only
 #endif
 
 public:

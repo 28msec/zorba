@@ -18,12 +18,10 @@ class Mutex
 {
 protected:
 
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
+#ifdef HAVE_PTHREAD_H
   pthread_mutex_t  theMutex;
 #elif WIN32
   HANDLE           theMutex;
-#else
-  #error Mutex implemented for PTHREADs AND WIN32 only
 #endif
 
 public:

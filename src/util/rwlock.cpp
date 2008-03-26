@@ -44,7 +44,7 @@ rwlock::rwlock()
     return;
   }
 
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
 	if (pthread_mutex_init(&mutex, NULL)!=0) return;
 	if (pthread_cond_init(&read, NULL)!=0) {
 		pthread_mutex_destroy(&mutex);
@@ -55,8 +55,6 @@ rwlock::rwlock()
 		pthread_cond_destroy(&read);
 		return;
 	}
-#else
-  #error Unsupported thread system
 #endif
 	valid = RWLOCK_VALID;
 }
@@ -75,7 +73,7 @@ int rwlock::lock_mutex()
   if(WaitForSingleObject(mutex, INFINITE) != WAIT_OBJECT_0)
     return 1;
   return 0;
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
   return pthread_mutex_lock(&mutex);
 #else
   #error Unsupported thread system
@@ -89,7 +87,7 @@ int rwlock::unlock_mutex()
 {
 #ifdef WIN32
   return !SetEvent(mutex);
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
   return pthread_mutex_unlock(&mutex);
 #else
   #error Unsupported thread system
@@ -101,7 +99,7 @@ int rwlock::signal_cond_read()
 {
 #ifdef WIN32
 	return !SetEvent(cond_read);
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
   return pthread_cond_signal(&read);
 #else
   #error Unsupported thread system
@@ -112,7 +110,7 @@ int rwlock::broadcast_cond_read ()
 {
 #ifdef WIN32
 	return !PulseEvent(cond_read);
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
   return pthread_cond_broadcast(&read);
 #else
   #error Unsupported thread system
@@ -127,7 +125,7 @@ int rwlock::wait_cond_read ()
 	retwait = WaitForSingleObject(cond_read, INFINITE);
   lock_mutex();
   return retwait != WAIT_OBJECT_0;
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
   return pthread_cond_wait(&read, &mutex);
 #else
   #error Unsupported thread system
@@ -140,7 +138,7 @@ int rwlock::signal_cond_write()
 {
 #ifdef WIN32
 	return !SetEvent(cond_write);
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
   return pthread_cond_signal(&write);
 #else
   #error Unsupported thread system
@@ -151,7 +149,7 @@ int rwlock::broadcast_cond_write ()
 {
 #ifdef WIN32
 	return !PulseEvent(cond_write);
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
   return pthread_cond_broadcast(&write);
 #else
   #error Unsupported thread system
@@ -166,7 +164,7 @@ int rwlock::wait_cond_write ()
 	retwait = WaitForSingleObject(cond_write, INFINITE);
   lock_mutex();
   return retwait != WAIT_OBJECT_0;
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
   return pthread_cond_wait(&write, &mutex);
 #else
   #error Unsupported thread system
@@ -207,15 +205,13 @@ int rwlock::destroy()
   CloseHandle(cond_read);
   CloseHandle(cond_write);
   return 0;
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
   int status1, status2;
 	status = pthread_mutex_destroy(&mutex);
 	status1 = pthread_cond_destroy(&read);
 	status2 = pthread_cond_destroy(&write);
 	return (status!=0 ? status
 										: (status1 != 0 ? status1 : status2));
-#else
-  #error Unsupported thread system
 #endif
 	
 }
@@ -254,7 +250,7 @@ void rwlock::write_cleanup(void* arg)
 #define cleanup_push_read()
 #define cleanup_pop()
 #define cleanup_push_write()
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
 #define cleanup_push_read()	  pthread_cleanup_push(read_cleanup, (void*)this)
 #define cleanup_pop()         pthread_cleanup_pop(0)
 #define cleanup_push_write()  pthread_cleanup_push(write_cleanup, (void*)this)

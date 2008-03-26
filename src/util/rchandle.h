@@ -24,7 +24,7 @@ namespace zorba {
 
 ********************************************************************************/
 
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
+#ifdef HAVE_PTHREAD_H
 
 #if defined HAVE_PTHREAD_SPINLOCK
 
@@ -153,10 +153,7 @@ public:
     ::SetEvent(mutex);
   }
 };
-#else
-  #error RCLock implemented for PTHREADs and WIN32
-
-#endif // ZORBA_USE_PTHREAD_LIBRARY or WIN32
+#endif // HAVE_PTHREAD_H or WIN32
 
 //use this macro to activate or deactivate use of sync code
 #define SYNC_CODE(x)    x

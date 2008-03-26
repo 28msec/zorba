@@ -14,7 +14,7 @@ namespace zorba { namespace store {
 
 Latch::Latch()
 {
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
+#ifdef HAVE_PTHREAD_H
   pthread_rwlockattr_t attr;
   pthread_rwlockattr_init(&attr);
 
@@ -39,7 +39,7 @@ Latch::Latch()
 
 Latch::~Latch()
 {
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
+#ifdef HAVE_PTHREAD_H
   pthread_rwlock_destroy(&theLatch);
 #elif WIN32
 #endif
@@ -48,7 +48,7 @@ Latch::~Latch()
 
 void Latch::rlock()
 { 
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
+#ifdef HAVE_PTHREAD_H
   int ret= pthread_rwlock_rdlock(&theLatch); 
   ZORBA_FATAL(!ret, "Failed to acquire latch. Error code = " << ret);
 #elif WIN32
@@ -60,7 +60,7 @@ void Latch::rlock()
 
 void Latch::wlock()
 { 
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
+#ifdef HAVE_PTHREAD_H
   int ret = pthread_rwlock_wrlock(&theLatch); 
   ZORBA_FATAL(!ret, "Failed to acquire latch. Error code = " << ret);
 #elif WIN32
@@ -72,7 +72,7 @@ void Latch::wlock()
 
 void Latch::unlock()
 { 
-#ifdef ZORBA_USE_PTHREAD_LIBRARY
+#ifdef HAVE_PTHREAD_H
   int ret= pthread_rwlock_unlock(&theLatch);
   ZORBA_FATAL(!ret, "Failed to release latch. Error code = " << ret);
 #elif WIN32

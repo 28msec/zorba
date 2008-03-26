@@ -30,15 +30,13 @@ namespace zorba {
 ** Read/write lock static initializer
 */
 #if defined (WIN32)
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
 #define RWL_INITIALIZER \
 	{	PTHREAD_MUTEX_INITIALIZER,	\
 		PTHREAD_COND_INITIALIZER, 	\
 		PTHREAD_COND_INITIALIZER,		\
 		RWLOCK_VALID,								\
 		0, 0, 0, 0 }
-#else
-  #error Unsupported thread system
 #endif
 
 #define RWLOCK_VALID		0xfab
@@ -52,12 +50,10 @@ protected:
   HANDLE    mutex;
   HANDLE    cond_read;
   HANDLE    cond_write;
-#elif defined ZORBA_USE_PTHREAD_LIBRARY
+#elif defined (HAVE_PTHREAD_H)
 	pthread_mutex_t		mutex;
 	pthread_cond_t		read;				// wait for read
 	pthread_cond_t		write;			// wait for write
-#else
-  #error Unsupported thread system
 #endif
 	int								valid;			// set when valid
 	int								r_active;		// count readers active

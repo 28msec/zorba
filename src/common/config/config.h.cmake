@@ -54,8 +54,6 @@
 #cmakedefine HAVE_STRCPY_S_FUNCTION  
 
 /* Threading mechanism*/
-#cmakedefine ZORBA_USE_PTHREAD_LIBRARY     
-#cmakedefine ZORBA_USE_BOOST_THREAD_LIBRARY
 #cmakedefine ZORBA_FOR_ONE_THREAD_ONLY     
 #cmakedefine HAVE_PTHREAD_SPINLOCK
 #cmakedefine HAVE_PTHREAD_MUTEX
