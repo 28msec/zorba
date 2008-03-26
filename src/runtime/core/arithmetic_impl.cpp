@@ -32,7 +32,7 @@ void ArithOperationsCommons::createError(
   GENV_TYPESYSTEM.create_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize(lStream);
   lStream << " and ";
   GENV_TYPESYSTEM.create_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize(lStream);
-  lStream << "!";
+  lStream << ".";
   ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, *aLoc, lStream.str());
 }
 
@@ -64,7 +64,7 @@ store::Item_t GenericArithIterator<Operation>::nextImpl ( PlanState& planState )
       if ( consumeNext(this->theChild0.getp(), planState ) != NULL
            || consumeNext(this->theChild1.getp(), planState ) != NULL )
         ZORBA_ERROR_LOC_DESC( ZorbaError::XPTY0004, this->loc, 
-                    "Arithmetic operation has a sequences greater than one as an operator.");
+                    "An input to the Arithmetic operation has a sequences that is greater than one.");
       STACK_PUSH ( res, state );
     }
   }
@@ -81,15 +81,20 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
   xqtref_t type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeConstants::QUANT_ONE );
   xqtref_t type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeConstants::QUANT_ONE );
 
-  if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
+  if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE )
+     || TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE ))
   {
     if(TypeOps::is_numeric(*type1))
     {
       n1 = GenericCast::instance()->cast ( n1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE> ( aRuntimeCB,  &aLoc, n0, n1 );
+      return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DOUBLE> ( aRuntimeCB, &aLoc, n0, n1 );
     }
+    else if(TypeOps::is_equal(*type0, *type1))
+      return Operation::template computeSingleType<TypeConstants::XS_DURATION> ( aRuntimeCB, &aLoc, n0, n1 );
     else
-      return Operation::template computeSingleType<TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
+      ZORBA_ERROR_DESC(ZorbaError::XPTY0004,
+                       "Arithmetic operation not defined between the given types(" 
+                       + type0->toString() + " and " + type1->toString() + ").");
   }
   else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
   {
@@ -112,16 +117,19 @@ store::Item_t GenericArithIterator<Operation>::compute(RuntimeCB* aRuntimeCB, co
     else
       return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> (  aRuntimeCB, &aLoc, n0, n1 );
   }
-  else if ( TypeOps::is_numeric(*type0) 
-    || TypeOps::is_numeric(*type1)
-    || TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
-    || TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (TypeOps::is_numeric(*type0)
+           || TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
+           && ( TypeOps::is_numeric(*type1)
+           || TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)))
   {
     return NumArithIterator<Operation>::computeAtomic( aRuntimeCB, aLoc, n0, type0, n1, type1);
   }
   else
   {
-    ZORBA_ASSERT(false);
+    ZORBA_ERROR_DESC(ZorbaError::XPTY0004,
+               "Arithmetic operation not defined between the given types(" 
+               + type0->toString() + " and " + type1->toString() + ").");
+
   }
   return 0;
 }
@@ -228,7 +236,7 @@ store::Item_t SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::X
 {
   xqp_duration d;
   try {
-    d = i0->getDateValue()->subtractDateTime(*i1->getDateValue(),
+    d = i0->getTimeValue()->subtractDateTime(*i1->getTimeValue(),
                          aRuntimeCB->theDynamicContext->get_implicit_timezone());
   }
   catch (InvalidTimezoneException) {
@@ -261,11 +269,19 @@ store::Item_t MultiplyOperation::compute<TypeConstants::XS_DURATION,TypeConstant
   xqp_duration d;
 
   if( i1->getDoubleValue().isZero() )
-    return GENV_ITEMFACTORY->createDuration(0,0,0,0,0,0);
+  {
+    xqtref_t type0 = GENV_TYPESYSTEM.create_type(i0->getType(), TypeConstants::QUANT_ONE);
+    if( TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
+      d = new YearMonthDuration();
+    else
+      d = new DayTimeDuration();
+
+    return GENV_ITEMFACTORY->createDuration(d);
+  }
   else if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    ZORBA_ERROR_LOC_DESC(  ZorbaError::FODT0002, *loc,  "Overflow/underflow in duration operation.");
+    ZORBA_ERROR_DESC( ZorbaError::FODT0002,  "Overflow/underflow in duration operation.");
   else if (  i1->getDoubleValue().isNaN() )
-    ZORBA_ERROR_LOC_DESC(  ZorbaError::FOCA0005, *loc,  "NaN supplied as float/double value");
+    ZORBA_ERROR_DESC( ZorbaError::FOCA0005,  "NaN supplied as float/double value");
   else
     d = *i0->getDurationValue() * (i1->getDoubleValue());
   
@@ -281,11 +297,19 @@ store::Item_t DivideOperation::compute<TypeConstants::XS_DURATION,TypeConstants:
   xqp_duration d;
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    return GENV_ITEMFACTORY->createDuration(0,0,0,0,0,0);
+  {
+    xqtref_t type0 = GENV_TYPESYSTEM.create_type(i0->getType(), TypeConstants::QUANT_ONE);
+    if( TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE))
+      d = new YearMonthDuration();
+    else
+      d = new DayTimeDuration();
+    
+    return GENV_ITEMFACTORY->createDuration(d);
+  }
   else if ( i1->getDoubleValue().isZero() )
-    ZORBA_ERROR_LOC_DESC(  ZorbaError::FODT0002, *loc,  "Overflow/underflow in duration operation.");
+    ZORBA_ERROR_DESC( ZorbaError::FODT0002,  "Overflow/underflow in duration operation.");
   else if ( i1->getDoubleValue().isNaN() )
-    ZORBA_ERROR_LOC_DESC(  ZorbaError::FOCA0005, *loc,  "NaN supplied as float/double value");
+    ZORBA_ERROR_DESC( ZorbaError::FOCA0005,  "NaN supplied as float/double value");
   else
     d= *i0->getDurationValue() / i1->getDoubleValue();
 
