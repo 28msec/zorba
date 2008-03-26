@@ -54,22 +54,22 @@ public:
 	// XQuery signature (name+arity)
 	const store::Item_t& get_fname() const { return sig.get_name(); }
 	void set_signature(signature& _sig) { sig = _sig; }
-    const signature& get_signature() const { return sig; }
+  const signature& get_signature() const { return sig; }
 
 	// codegen: functor specification
 	virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const = 0;
 
   virtual bool requires_dyn_ctx () const { return false; }
 
-	// polymorphic type inference
-	virtual xqtref_t type_check(signature&) const = 0;
-  
   virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
 
   virtual void compute_annotation (AnnotationHolder *, std::vector<AnnotationHolder *> &, Annotation::key_t) const {}
 
 	// runtime arg validation: XXX move this out
-	virtual bool validate_args(std::vector<PlanIter_t>& argv) const = 0;
+	virtual bool validate_args(std::vector<PlanIter_t>& argv) const {
+    uint32_t n = sig.arg_count ();
+    return n == VARIADIC_SIG_SIZE || argv.size() == sig.arg_count();
+  }
 
   // Annotation calculator functions
   virtual bool isSource() const { return false; }
@@ -92,8 +92,6 @@ class user_function : public function {
     virtual PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 
     virtual xqtref_t type_check(signature&) const;
-
-    virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
 
     virtual PlanIter_t get_plan() const;
 

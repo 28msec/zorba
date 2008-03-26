@@ -170,15 +170,16 @@ RULE_REWRITE_PRE(EliminateDocOrderSort)
 {
   fo_expr *fo = dynamic_cast<fo_expr *>(node);
   if (fo != NULL) {
-    const op_node_sort_distinct *f = dynamic_cast<const op_node_sort_distinct *> (fo->get_func ());
-    if (f != NULL) {
-      const function *fmin = op_node_sort_distinct::op_for_action (rCtx.getStaticContext (), f->action (), *node);
+    const function *f = fo->get_func ();
+    if (f == LOOKUP_FN ("fn", "unordered", 1))
+      return (*fo)[0];
+    const op_node_sort_distinct *nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
+    if (nsdf != NULL) {
+      const function *fmin = op_node_sort_distinct::op_for_action (rCtx.getStaticContext (), nsdf->action (), *node);
       if (fmin != NULL)
         fo->set_func (fmin);
-      else {
-        expr_t arg = (*fo)[0];
-        return arg;
-      }
+      else
+        return (*fo)[0];
     }
   }
   return NULL;

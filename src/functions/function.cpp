@@ -50,11 +50,6 @@ xqtref_t user_function::type_check(signature& /*sig*/) const
   return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
-bool user_function::validate_args(std::vector<PlanIter_t>& argv) const
-{
-  return argv.size() == sig.arg_count();
-}
-
 PlanIter_t user_function::get_plan() const
 {
   if (m_plan == NULL) {

@@ -2257,12 +2257,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     } else if (fn_local == "last") {
       nodestack.push(sctx_p->lookup_var_nofail(LAST_IDX_VAR));
       return;
-    } else if (fn_local == "unordered") {
-      if (sz != 1)
-        ZORBA_ERROR_OSS ( ZorbaError::XPST0017,  "fn:unordered", arguments.size ());
-      // put argument back, ignore fn:unordered
-      nodestack.push (arguments [0]);
-      return;
     } else if (fn_local == "string") {
       // TODO: casting to xs:string? is almost correct;
       // it fails, however, the following test:

@@ -65,10 +65,6 @@ PlanIter_t op_concatenate::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
 	return new FnConcatIterator(loc, argv);
 }
 
-bool op_concatenate::validate_args(vector<PlanIter_t>& argv) const
-{
-	return true;
-}
 
 xqtref_t op_concatenate::type_check(signature& /*sig*/) const
 {
@@ -140,11 +136,6 @@ PlanIter_t fn_index_of::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
   return new FnIndexOfIterator(loc, argv);
 }
 
-bool fn_index_of::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2 || argv.size()==3);
-}
 
 xqtref_t fn_index_of::type_check(
 	signature& /*sig*/) const
@@ -163,11 +154,6 @@ PlanIter_t fn_empty::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new FnEmptyIterator(loc, argv);
 }
 
-bool fn_empty::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return ( argv.size() ==1 );
-}
 
 xqtref_t fn_empty::type_check(
 	signature& /*sig*/) const
@@ -186,11 +172,6 @@ PlanIter_t fn_exists::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   return new FnExistsIterator(loc,argv);
 }
 
-bool fn_exists::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 xqtref_t fn_exists::type_check(
 	signature& /*sig*/) const
@@ -206,11 +187,6 @@ PlanIter_t fn_distinct_values_1::codegen (const QueryLoc& loc, std::vector<PlanI
   return new FnDistinctValuesIterator(loc, argv);
 }
 
-bool fn_distinct_values_1::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1 || argv.size() == 2);
-}
 
 xqtref_t fn_distinct_values_1::type_check(
 	signature& /*sig*/) const
@@ -228,11 +204,6 @@ PlanIter_t fn_insert_before::codegen (const QueryLoc& loc, std::vector<PlanIter_
   return new FnInsertBeforeIterator(loc, argv);
 }
 
-bool fn_insert_before::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 3); 
-}
 
 xqtref_t fn_insert_before::type_check(
 	signature& /*sig*/) const
@@ -247,11 +218,6 @@ PlanIter_t fn_remove::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   return new FnRemoveIterator(loc, argv);
 }
 
-bool fn_remove::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2); 
-}
 
 xqtref_t fn_remove::type_check(
 	signature& /*sig*/) const
@@ -267,11 +233,6 @@ PlanIter_t fn_reverse::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& ar
 	return new FnReverseIterator(loc, argv);
 }
 
-bool fn_reverse::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return argv.size() == 1;
-}
 
 xqtref_t fn_reverse::type_check(
 	signature& /*sig*/) const
@@ -286,11 +247,6 @@ PlanIter_t fn_subsequence_2::codegen (const QueryLoc& loc, std::vector<PlanIter_
   return new FnSubsequenceIterator(loc, argv);
 }
 
-bool fn_subsequence_2::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2 || argv.size() == 3 );
-}
 
 xqtref_t fn_subsequence_2::type_check(
 	signature& /*sig*/) const
@@ -317,11 +273,6 @@ PlanIter_t fn_zero_or_one::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
   return new FnZeroOrOneIterator(loc, argv);
 }
 
-bool fn_zero_or_one::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 xqtref_t fn_zero_or_one::type_check(
 	signature& /*sig*/) const
@@ -338,11 +289,6 @@ PlanIter_t fn_one_or_more::codegen (const QueryLoc& loc, std::vector<PlanIter_t>
   return new FnOneOrMoreIterator(loc, argv);
 }
 
-bool fn_one_or_more::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 xqtref_t fn_one_or_more::type_check(
 	signature& /*sig*/) const
@@ -359,11 +305,6 @@ PlanIter_t fn_exactly_one_noraise::codegen (const QueryLoc& loc, std::vector<Pla
   return new FnExactlyOneIterator(loc, argv, raise_err);
 }
 
-bool fn_exactly_one_noraise::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 xqtref_t fn_exactly_one_noraise::type_check(
 	signature& /*sig*/) const
@@ -397,10 +338,6 @@ PlanIter_t fn_union::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   }
 }
 
-bool fn_union::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 
 xqtref_t fn_union::type_check(signature& /*sig*/) const
 {
@@ -424,10 +361,6 @@ PlanIter_t fn_intersect::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& 
     return new HashSemiJoinIterator(loc, argv);
 }
 
-bool fn_intersect::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 
 xqtref_t fn_intersect::type_check(signature& /*sig*/) const
 {
@@ -450,11 +383,6 @@ PlanIter_t fn_except::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& arg
   }
 }
 
-bool fn_except::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 
 xqtref_t fn_except::type_check(
 	signature& /*sig*/) const
@@ -484,11 +412,6 @@ PlanIter_t fn_count::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
  return new FnCountIterator(loc, argv);
 }
 
-bool fn_count::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 xqtref_t fn_count::type_check(
 	signature& /*sig*/) const
@@ -505,11 +428,6 @@ PlanIter_t fn_avg::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, 
   return new FnAvgIterator(loc, argv);
 }
 
-bool fn_avg::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 xqtref_t fn_avg::type_check(
 	signature& /*sig*/) const
@@ -526,11 +444,6 @@ PlanIter_t fn_max_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MAX);
 }
 
-bool fn_max_1::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1 || argv.size() == 2);
-}
 
 xqtref_t fn_max_1::type_check(
 	signature& /*sig*/) const
@@ -547,11 +460,6 @@ PlanIter_t fn_min_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new FnMinMaxIterator(loc, argv, FnMinMaxIterator::MIN);
 }
 
-bool fn_min_1::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1 || argv.size() == 2);
-}
 
 xqtref_t fn_min_1::type_check(
 	signature& /*sig*/) const
@@ -568,11 +476,6 @@ PlanIter_t fn_sum_1::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv
   return new FnSumIterator(loc, argv);
 }
 
-bool fn_sum_1::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1 || argv.size() == 2);
-}
 
 xqtref_t fn_sum_1::type_check(
 	signature& /*sig*/) const
@@ -601,11 +504,6 @@ PlanIter_t op_to::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, A
   return new OpToIterator(loc, argv);
 }
 
-bool op_to::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 
 xqtref_t op_to::type_check(
 	signature& /*sig*/) const
@@ -632,13 +530,6 @@ PlanIter_t fn_doc_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& a
 {
   return new FnDocIterator(loc, argv[0]);
 }
-  
-bool fn_doc_func::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	if (argv.size()!=1) return false;
-	return true;
-}
 
 xqtref_t fn_doc_func::type_check(
 	signature& /*sig*/) const
@@ -659,12 +550,6 @@ xqtref_t fn_doc_func::type_check(
 #define A_DISTINCT a [2]
 #define A_ASCENDING a [3]
 
-bool op_node_sort_distinct::required (const AnnotationHolder &ann) const {
-  const bool *a = action ();
-  return (A_SORT && ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VALUE)
-    || (A_DISTINCT && ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VALUE);
-}
-
 PlanIter_t op_node_sort_distinct::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
   const bool *a = action ();
   bool distinct = A_DISTINCT;
@@ -675,10 +560,6 @@ PlanIter_t op_node_sort_distinct::codegen (const QueryLoc& loc, std::vector<Plan
     return distinct ? new NodeDistinctIterator (loc, argv [0], A_ATOMICS) : NULL;
 #endif
   return new NodeSortIterator (loc, argv [0], A_ASCENDING, distinct, A_ATOMICS);
-}
-
-bool op_node_sort_distinct::validate_args(vector<PlanIter_t>& argv) const {
-  return (argv.size() == 1);
 }
 
 xqtref_t op_node_sort_distinct::type_check(signature& /*sig*/) const {
@@ -710,6 +591,22 @@ const function *op_node_sort_distinct::op_for_action (const static_context *sctx
 #undef LOOKUP_OP1
 }
 
+PlanIter_t fn_unordered::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &) const
+{
+  return argv [0];
+}
+
+void fn_unordered::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
+  switch (k) {
+  case AnnotationKey::IGNORES_SORTED_NODES:
+    kids [src]->put_annotation (k, TSVAnnotationValue::TRUE_VALUE);
+    break;
+  case AnnotationKey::IGNORES_DUP_NODES:
+    kids [src]->put_annotation (k, parent->get_annotation (k));
+    break;
+  default: break;
+  }
+}
 
 xqtref_t single_seq_function::return_type (const std::vector<xqtref_t> &arg_types) const { return arg_types [src]; }
 
