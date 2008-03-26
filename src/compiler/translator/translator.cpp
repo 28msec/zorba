@@ -131,7 +131,7 @@ protected:
     compilerCB(aCompilerCB),
     sctx_p (aCompilerCB->m_sctx),
     sctx_list (aCompilerCB->m_sctx_list),
-    tempvar_counter (0),
+    tempvar_counter (1),
     theRootRelPathExpr(0),
     ns_ctx(new namespace_context(sctx_p)),
     hadBSpaceDecl (false),
@@ -3077,18 +3077,13 @@ void end_visit(const SchemaElementTest& /*v*/, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 }
 
-#define TEMP_VAR_URI "http://www.flworfound.org/zorba/temp-var"
-#define TEMP_VAR_PREFIX "ztv"
-
 var_expr_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 {
-  xqpString uri(TEMP_VAR_URI);
-  xqpString pre(TEMP_VAR_PREFIX);
-  xqpString lname("v" + to_string(tempvar_counter++));
+  xqpString empty;
+  xqpString lname("$$temp" + to_string(tempvar_counter++));
 
-  return new var_expr(loc, kind, ITEM_FACTORY->createQName(uri.getStore(),
-                                                           pre.getStore(),
-                                                           lname.getStore()));
+  return new var_expr(loc, kind,
+                      ITEM_FACTORY->createQName(empty.getStore (), empty.getStore (), lname.getStore ()));
 }
 
 
