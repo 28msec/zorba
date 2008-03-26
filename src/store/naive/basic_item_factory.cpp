@@ -617,7 +617,7 @@ Item_t BasicItemFactory::createAttributeNode(
       valueItem = valueIter->next();
       while (valueItem != NULL)
       {
-        lexicalValue->append(valueItem->getStringValue().c_str());
+        lexicalValue->str().append(valueItem->getStringValue().c_str());
         valueItem = valueIter->next();
       }
     }
@@ -738,7 +738,7 @@ Item_t BasicItemFactory::createTextNode(
 
       if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
       {
-        *(lsib->getStringValueP()) = *(lsib->getStringValueP()) + *content;
+        lsib->getStringValueP()->str() += content->str();
         return lsib;
       }
  

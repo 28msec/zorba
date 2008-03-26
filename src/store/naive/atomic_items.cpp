@@ -69,9 +69,9 @@ Item_t QNameItemImpl::getType() const
 
 uint32_t QNameItemImpl::hash() const
 {
-  return hashfun::h32(*thePrefix,
-                      hashfun::h32(*theLocal,
-                                   hashfun::h32(*theNamespace)));
+  return hashfun::h32(thePrefix->str(),
+                      hashfun::h32(theLocal->str(),
+                                   hashfun::h32(theNamespace->str())));
 }
 
 
@@ -92,13 +92,16 @@ Item_t QNameItemImpl::getEBV( ) const
 
 xqp_string QNameItemImpl::getStringValue( ) const
 {
-  return *thePrefix != "" ? *thePrefix + ":" + *theLocal : *theLocal;
+  return (thePrefix->str() != "" ?
+          thePrefix->str() + ":" + theLocal->str() :
+          theLocal->str());
 }
 
 
 xqp_string QNameItemImpl::show() const
 {
-  return "xs:QName(" + *theNamespace + "," + *thePrefix + "," + *theLocal + ")";
+  return "xs:QName(" + theNamespace->str() + "," + thePrefix->str() + "," +
+                       theLocal->str() + ")";
 }
 
 
@@ -122,13 +125,13 @@ bool NCNameItemImpl::equals(Item_t item) const
 
 Item_t NCNameItemImpl::getEBV() const
 {
-  bool b = ! ( *theValue == "" );
+  bool b = ! ( theValue->str() == "" );
   return CREATE_BOOLITEM(b);
 }
 
 xqp_string NCNameItemImpl::show() const
 {
-  return "xs:NCName(" + *theValue + ")";
+  return "xs:NCName(" + theValue->str() + ")";
 }
 
 
@@ -154,14 +157,14 @@ bool AnyUriItemImpl::equals(Item_t item) const
 
 Item_t AnyUriItemImpl::getEBV() const
 {
-  bool b = ! (*theValue == "");
+  bool b = ! (theValue->str() == "");
   return CREATE_BOOLITEM(b);
 }
 
 
 xqp_string AnyUriItemImpl::show() const
 {
-  return "xs:anyURI(" + *theValue + ")";
+  return "xs:anyURI(" + theValue->str() + ")";
 }
 
 
@@ -185,13 +188,13 @@ bool UntypedAtomicItemImpl::equals(Item_t item) const
 
 Item_t UntypedAtomicItemImpl::getEBV() const
 {
-  bool b = ! ( *theValue == "" );
+  bool b = ! ( theValue->str() == "" );
   return CREATE_BOOLITEM(b);
 }
 
 xqp_string UntypedAtomicItemImpl::show() const
 {
-  return "xs:untypedAtomic(" + *theValue + ")";
+  return "xs:untypedAtomic(" + theValue->str() + ")";
 }
 
 
@@ -215,13 +218,13 @@ bool StringItemNaive::equals(Item_t item) const
   
 Item_t StringItemNaive::getEBV() const
 {
-  bool b = ! ( *theValue == "" );
+  bool b = ! ( theValue->str() == "" );
   return CREATE_BOOLITEM(b);
 }
 
 xqp_string StringItemNaive::show() const
 {
-  return "xs:string(" + *theValue + ")";
+  return "xs:string(" + theValue->str() + ")";
 }
 
 

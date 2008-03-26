@@ -657,8 +657,8 @@ store::Item_t EnclosedIterator::nextImpl(PlanState& planState) const
       }
       else
       {
-        state->theAttrContentString->append(" ");
-        state->theAttrContentString->append(state->theContextItem->getStringValue().c_str());
+        state->theAttrContentString->str().append(" ");
+        state->theAttrContentString->str().append(state->theContextItem->getStringValue().c_str());
       }
     }
   }

@@ -24,49 +24,445 @@ using namespace std;
 
 namespace zorba
 {
-  uint32_t xqpStringStore::hash() const
+
+
+/*******************************************************************************
+  whitespace = " \t\r\n" meaning (#x20) (#x9) (#xD) (#xA)
+********************************************************************************/
+bool xqpStringStore::is_whitespace(uint32_t cp)
+{
+  bool res = (cp == 0x20 || cp == 0x9 || cp == 0xD || cp == 0xA) ? true : false;
+
+  return res;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+uint32_t xqpStringStore::hash(const char* str)
+{
+  uint32_t hash = 5381;
+  int c;
+  while ((c = *str++))
   {
-    uint32_t hash = 5381;
-    int c;
-    const char *str = c_str();
-    while ((c = *str++))
+    hash = ((hash << 5) + hash) + c; // hash*33 + c
+  }
+  return hash;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+uint32_t xqpStringStore::hash() const
+{
+  uint32_t hash = 5381;
+  int c;
+  const char *str = c_str();
+  while ((c = *str++))
+  {
+    hash = ((hash << 5) + hash) + c; // hash*33 + c
+  }
+  return hash;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void xqpStringStore::clear()
+{
+  theString.erase();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::string::size_type xqpStringStore::numChars() const
+{
+  const char* c = c_str();
+  return UTF8Distance(c, c + bytes());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool xqpStringStore::byteEqual(const xqpStringStore& src) const
+{
+  if (this == &src)
+    return true;
+
+  uint32_t len = bytes();
+
+  if(len == src.bytes() && memcmp(c_str(), src.c_str(), len) == 0)
+    return true;
+
+  return false;
+}
+
+
+bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const
+{
+  if(bytes() == srclen && memcmp(c_str(), src, srclen) == 0)
+    return true;
+  
+  return false;
+}
+
+
+int xqpStringStore::compare(const xqpStringStore* src, XQPCollator* coll) const
+{
+  if ( ! coll )
+    return theString.compare(src->theString);
+
+  Collator::EComparisonResult result = ::Collator::EQUAL;
+
+  result = coll->theCollator->compare(this->getUnicodeString(),
+                                      src->getUnicodeString());
+
+  return result;
+}
+
+
+/*******************************************************************************
+  Locate in "this" the first occurrence of the "pattern" substring, using the
+  given collation. Return the offset into this of the start of "pattern", or
+  -1 if not found.
+********************************************************************************/
+int32_t xqpStringStore::indexOf(const xqpStringStore* pattern, XQPCollator* coll) const
+{
+  if (empty())
+    return -1;
+
+  if ( ! coll ) 
+  {
+    size_t lRes = theString.find(pattern->c_str());
+    return (lRes == std::string::npos) ? -1 : lRes;
+  }
+
+  UErrorCode status = U_ZERO_ERROR;
+
+  StringSearch search(pattern->getUnicodeString(),
+                      getUnicodeString(), 
+                      (RuleBasedCollator*)coll->theCollator, NULL, status);
+
+  if(U_FAILURE(status))
+  {
+    assert(false);
+    return -1;
+  }
+
+  for(int16_t pos = search.first(status);
+      U_SUCCESS(status) && pos != USEARCH_DONE;
+      pos = search.next(status))
+  {
+    return pos;
+  }
+
+  if (U_FAILURE(status))
+  {
+    assert(false);
+    return -1;
+  }
+  return -1;
+}
+
+
+/*******************************************************************************
+  Returns a new xqpString by stripping leading and trailing whitespace and
+  replacing sequences of one or more than one whitespace character with a
+  single space, #x20.
+********************************************************************************/
+xqpStringStore* xqpStringStore::normalizeSpace() const
+{
+  //create the new xqpStringStore
+  xqpStringStore_t tmp = new xqpStringStore("");
+  uint32_t len = numChars();
+  const char* c = c_str();
+  uint32_t cp, cpPrev;
+  char seq[4];
+
+  cpPrev = 0x20;
+  while(len > 0)
+  {
+    cp = UTF8Decode(c);
+    if( !is_whitespace(cp) ||
+        (is_whitespace(cp) && !is_whitespace(cpPrev))
+        )
     {
-      hash = ((hash << 5) + hash) + c; // hash*33 + c
+      if(is_whitespace(cp))
+        cp = 0x20;
+        
+      memset(seq, 0, sizeof(seq));
+      UTF8Encode(cp, seq);
+      tmp->theString += seq;
     }
-    return hash;
+    cpPrev = cp;
+    --len;
   }
+  tmp->theString += "\0";
 
-  uint32_t xqpStringStore::hash(const char* str)
+  return tmp->trimR();
+}
+
+
+/*******************************************************************************
+  Create a new xqpStringStore obj that is a suffix of "this". The suffix is
+  defined by removing from "this" all of its leading chars that belong to a
+  given set S of chars. S is defined as the 1st "len" chars in the "start"
+  string. 
+********************************************************************************/
+xqpStringStore* xqpStringStore::trimL(const char* start, uint16_t len) const
+{
+  if(empty() || 0 == len)
+    return new xqpStringStore(*this);
+
+  std::string tmp = "";
+
+  uint32_t StrLen = numChars();
+  const char* c = c_str();
+
+  uint32_t* trimCP;//[len];
+  trimCP = new uint32_t[len];
+  for(uint16_t i = 0; i < len; i++)
+    trimCP[i] = UTF8Decode(start);
+
+  bool found = false; 
+  bool firstCp = true;
+  
+  while(StrLen > 0 && !found)
   {
-    uint32_t hash = 5381;
-    int c;
-    while ((c = *str++))
+    uint32_t cp = UTF8Decode(c);
+
+    for(uint16_t i = 0; i < len; i++)
     {
-      hash = ((hash << 5) + hash) + c; // hash*33 + c
+      if(trimCP[i] == cp)
+      {
+        firstCp = false;
+        break;
+      }
     }
-    return hash;
+
+    if(firstCp)
+    {
+      char seq[4];
+      memset(seq, 0, sizeof(seq));
+      UTF8Encode(cp, seq);
+      tmp += seq;
+      tmp += c;
+      found = true;
+    }
+
+    --StrLen;
+    firstCp = true;
   }
 
-  bool xqpStringStore::byteEqual(const xqpStringStore& src) const
+  delete[] trimCP;
+  return new xqpStringStore(tmp);
+}
+  
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore* xqpStringStore::trimL() const
+{
+  char seq = ' ';
+  return trimL( &seq, 1 );
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore* xqpStringStore::trimR(const char* start, uint16_t len) const
+{
+  if(empty() || 0 == len )
+    return new xqpStringStore(*this);
+    
+  uint32_t StrLen = numChars();
+
+  uint32_t* trimCP;//[len];
+  trimCP = new uint32_t[len];
+  for(uint16_t i = 0; i < len; i++)
+    trimCP[i] = UTF8Decode(start);
+
+  //create the new xqpStringStore
+  std::string tmp = "";
+  uint32_t pos = 0;
+  uint32_t cp = 0;
+  const char* end = c_str();
+  const char* c = c_str();
+  char seq[4];
+
+  zorba::advance(end, StrLen, end + bytes());
+
+  bool firstCp = true;
+
+  while(StrLen > 0)
   {
-    if (this == &src)
-      return true;
+    cp = UTF8DecodePrev(end);
 
-    uint32_t len = bytes();
-
-    if(len == src.bytes() && memcmp(c_str(), src.c_str(), len) == 0)
-       return true;
-
-    return false;
+    for(uint16_t i=0; i<len; i++)
+    {
+      if(trimCP[i] == cp)
+      {
+        firstCp = false;
+        break;
+      }
+    }
+      
+    if( firstCp )
+    {
+      pos = zorba::UTF8Distance(c, end);
+      break;
+    }
+    --StrLen;
+    firstCp = true;
   }
+    
+  ++pos;
 
-  bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const
+  while(pos > 0)
   {
-    if(bytes() == srclen && memcmp(c_str(), src, srclen) == 0)
-      return true;
-
-    return false;
+    cp = UTF8Decode(c);
+      
+    memset(seq, 0, sizeof(seq));
+    UTF8Encode(cp, seq);
+    tmp += seq;
+    
+    --pos;
   }
+
+  delete[] trimCP;
+  return new xqpStringStore(tmp);
+}
+  
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore* xqpStringStore::trimR() const
+{
+  char seq = ' ';
+  return trimR( &seq, 1 );
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore* xqpStringStore::trim(const char* start, uint16_t len) const
+{
+  if(empty() || 0 == len)
+    return new xqpStringStore(*this);
+
+  xqpStringStore* tmp = trimL(start, len);
+  return tmp->trimR(start, len);
+}
+
+
+/*******************************************************************************
+  Removes the leading and trailing whitespaces (#x20).
+********************************************************************************/
+xqpStringStore* xqpStringStore::trim() const
+{
+  if(empty())
+    return new xqpStringStore(*this);
+  
+  char seq = ' ';
+  xqpStringStore* tmp = trimL(&seq, 1);
+  return tmp->trimR(&seq,1);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore* xqpStringStore::formatAsXML(const char* src) const
+{
+  uint32_t i;
+  uint32_t len = numChars();
+  const char* c = c_str();
+  uint32_t cp;
+  char seq[4];
+
+  xqpStringStore* newStr = new xqpStringStore("");
+
+  for(i = 0; i < len; ++i)
+  {
+    cp = UTF8Decode(c);
+    if(cp < 128)
+    {
+      memset(seq, 0, sizeof(seq));
+      UTF8Encode(cp, seq);
+      newStr->theString += seq;
+    }
+    else
+    {
+      newStr->theString += '&';
+      newStr->theString += '#';
+      newStr->theString +=  Integer::parseInt(cp).toString();
+      newStr->theString += ';';
+    }
+  }
+  newStr->theString += "\0";
+
+  return newStr;
+}
+
+
+/*******************************************************************************
+  Return an UnicodeString (UTF-16 encoded) version of the string.
+********************************************************************************/
+UnicodeString xqpStringStore::getUnicodeString() const
+{
+  UnicodeString ret;
+  UErrorCode status = U_ZERO_ERROR;
+  int32_t len = bytes();
+  UChar* buffer = ret.getBuffer(len);
+
+  u_strFromUTF8(buffer, ret.getCapacity(), &len, c_str(), len, &status);
+
+  if(U_FAILURE(status))
+  {
+    assert(false);
+  }
+
+  ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
+
+  return ret;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::vector<uint32_t> xqpStringStore::getCodepoints() const
+{
+  std::vector<uint32_t> tt;
+  uint16_t vLength;
+  
+  vLength = numChars() + 1;
+  const char* c = c_str();
+  while( --vLength > 0 )
+  {
+    tt.push_back(UTF8Decode(c));
+  }
+  return tt;
+}
+
+
+std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
+{
+  //TODO is there a need to perform charset conversion to/from the current locale ?!?!
+  os << src.theString;
+  return os;
+}
+
 
   xqpString::xqpString()
   {
@@ -83,6 +479,7 @@ namespace zorba
     theStrStore = new xqpStringStore(src);
   }
 
+
   xqpString& xqpString::operator=(const std::string& src)
   {
     theStrStore = new xqpStringStore(src);
@@ -97,7 +494,7 @@ namespace zorba
 
   xqpString& xqpString::operator=(uint32_t cp)
   {
-    theStrStore->reserve(4);
+    theStrStore->theString.reserve(4);
     char seq[4] = {0,0,0,0};
     UTF8Encode(cp, seq);
     theStrStore = new xqpStringStore(seq);
@@ -114,7 +511,7 @@ namespace zorba
   xqpString& xqpString::operator+=(xqpString src)
   {
     xqpStringStore_t temp = new xqpStringStore(*theStrStore);
-    *temp += src;
+    temp->theString += src;
     theStrStore = temp;
     return *this;
   }
@@ -122,23 +519,23 @@ namespace zorba
   xqpString& xqpString::operator+=(const char* src)
   {
     xqpStringStore_t temp = new xqpStringStore(*theStrStore);
-    *temp += src;
+    temp->theString += src;
     theStrStore = temp;
     return *this;
   }
 
   xqpString& xqpString::operator+=(uint32_t cp)
   {
-    theStrStore->reserve(4);
+    theStrStore->theString.reserve(4);
     char seq[4] = {0,0,0,0};
     UTF8Encode(cp, seq);
-    theStrStore = new xqpStringStore(*theStrStore+seq);
+    theStrStore = new xqpStringStore(theStrStore->theString + seq);
     return *this;
   }
 
   xqpString& xqpString::operator+=(char c)
   {
-    theStrStore = new xqpStringStore(*theStrStore+c);
+    theStrStore = new xqpStringStore(theStrStore->theString + c);
     return *this;
   }
 
@@ -159,20 +556,6 @@ namespace zorba
     return os;
   }
 
-  //xqpString::compare
-  int xqpString::compare(xqpString src, XQPCollator* coll) const
-  {
-    if ( ! coll )
-      return theStrStore->compare(src.theStrStore->c_str());
-
-    Collator::EComparisonResult result = ::Collator::EQUAL;
-
-    //compare the 2 strings
-    result = coll->theCollator->compare(getUnicodeString(*theStrStore), getUnicodeString(src));
-
-    return result;
-  }
-
   int xqpString::compare(const char* src, XQPCollator* coll) const
   {
     //TODO optimize the code here
@@ -180,97 +563,30 @@ namespace zorba
     return compare(tmp, coll);
   }
 
-  //xqpString::Length
-  xqpString::size_type xqpString::size() const
-  {
-    const char* c = theStrStore->c_str();
-    return UTF8Distance(c, c + theStrStore->size());
-  }
-
-  xqpString::size_type xqpString::length() const
-  {
-    const char* c = theStrStore->c_str();
-    return UTF8Distance(c, c + theStrStore->size());
-  }
-
-  bool xqpString::empty() const
-  {
-    return theStrStore->empty();
-  }
 
   void xqpString::reserve(xqpString::size_type size)
   {
-    theStrStore->reserve(size);
+    theStrStore->theString.reserve(size);
   }
 
   //xqpString::Clear
   void xqpString::clear()
   {
-    theStrStore->erase();
-  }
-
-  //xpqString::Codepoint
-  std::vector<uint32_t> xqpString::getCodepoints() const
-  {
-    std::vector<uint32_t> tt;
-    uint16_t vLength;
-
-    vLength = length() + 1;
-    const char* c = theStrStore->c_str();
-    while( --vLength > 0 )
-    {
-      tt.push_back(UTF8Decode(c));
-    }
-    return tt;
-  }
-
-  //xqpString::Substring matching/ string search
-  int32_t xqpString::indexOf(xqpString pattern, XQPCollator* coll) const
-  {
-    if (size() == 0)
-      return -1;
-
-    if ( ! coll ) {
-      size_t lRes = theStrStore->find(pattern.theStrStore->c_str());
-      return (lRes == std::string::npos)?-1:lRes;
-    }
-
-    UErrorCode status = U_ZERO_ERROR;
-
-    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), 
-                        (RuleBasedCollator*)coll->theCollator, NULL, status);
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-      return -1;
-    }
-
-    for(  int16_t pos = search.first(status);
-          U_SUCCESS(status) && pos != USEARCH_DONE;
-          pos = search.next(status))
-    {
-      return pos;
-    }
-    if (U_FAILURE(status))
-    {
-      assert(false);
-      return -1;
-    }
-    return -1;
+    theStrStore->theString.erase();
   }
 
 
   int32_t xqpString::lastIndexOf(xqpString pattern, XQPCollator* coll) const
   {
     if ( ! coll ) {
-      size_t lRes = theStrStore->rfind(pattern.theStrStore->c_str());
+      size_t lRes = theStrStore->theString.rfind(pattern.theStrStore->c_str());
       return (lRes == std::string::npos)?-1:lRes;
     }
 
     UErrorCode status = U_ZERO_ERROR;
 
-    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), 
+    StringSearch search(pattern.theStrStore->getUnicodeString(),
+                        theStrStore->getUnicodeString(), 
                         (RuleBasedCollator *)coll->theCollator, NULL, status);
 
     if(U_FAILURE(status))
@@ -307,7 +623,7 @@ namespace zorba
     char* target;
     int32_t size =  length*4 + 1;
     target = new char[size]; //will hold UTF-8 encoded characters
-    UnicodeString str = getUnicodeString( *theStrStore );
+    UnicodeString str = theStrStore->getUnicodeString();
 
     int32_t targetsize = str.extract(index, length, target, size, "UTF-8");
     target[targetsize] = 0; /* NULL termination */
@@ -326,7 +642,7 @@ namespace zorba
     }
     else if(index < 0)
     {
-      xqpString ret(*theStrStore);
+      xqpString ret(theStrStore->theString);
       return ret;
     }
 
@@ -335,39 +651,6 @@ namespace zorba
 
     xqpString ret(d);
 
-    return ret;
-  }
-
-  xqpString xqpString::formatAsXML(const char* src) const
-  {
-    uint32_t i;
-    uint32_t len = length();
-    const char* c = c_str();
-    uint32_t cp;
-    char seq[4];
-
-    xqpStringStore_t newStr = new xqpStringStore("");
-
-    for(i=0; i<len; ++i)
-    {
-      cp = UTF8Decode(c);
-      if(cp<128)
-      {
-        memset(seq, 0, sizeof(seq));
-        UTF8Encode(cp, seq);
-        *newStr += seq;
-      }
-      else
-      {
-        *newStr += '&';
-        *newStr += '#';
-        *newStr +=  Integer::parseInt(cp).toString();
-        *newStr += ';';
-      }
-    }
-    *newStr += "\0";
-
-    xqpString ret(*newStr);
     return ret;
   }
 
@@ -392,11 +675,11 @@ namespace zorba
       cp = toUpper(UTF8Decode(c));
       memset(seq, 0, sizeof(seq));
       UTF8Encode(cp, seq);
-      *newStr += seq;
+      newStr->theString += seq;
     }
-    *newStr += "\0";
+    newStr->theString += "\0";
 
-    theStrStore = new xqpStringStore(*newStr);
+    theStrStore = new xqpStringStore(newStr->theString);
     return *this;
   }
 
@@ -415,11 +698,11 @@ namespace zorba
       cp = toLower(UTF8Decode(c));
       memset(seq, 0, sizeof(seq));
       UTF8Encode(cp, seq);
-      *newStr += seq;
+      newStr->theString += seq;
     }
-    *newStr += "\0";
+    newStr->theString += "\0";
 
-    theStrStore = new xqpStringStore(*newStr);
+    theStrStore = new xqpStringStore(newStr->theString);
     return *this;
   }
 
@@ -434,19 +717,19 @@ namespace zorba
       return *this;
     else if(normMode == "NFC")
     {
-      Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFC , 0, result, status);
+      Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFC , 0, result, status);
     }
     else if(normMode == "NFKC")
     {
-      Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFKC , 0, result, status);
+      Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFKC , 0, result, status);
     }
     else if(normMode == "NFD")
     {
-      Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFD , 0, result, status);
+      Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFD , 0, result, status);
     }
     else if(normMode == "NFKD")
     {
-      Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFKD , 0, result, status);
+      Normalizer::normalize(theStrStore->getUnicodeString(), UNORM_NFKD , 0, result, status);
     }
 
     if(U_FAILURE(status))
@@ -535,24 +818,11 @@ namespace zorba
     return ret;
   }
 
-  // whitespace = " \t\r\n" meaning (#x20) (#x9) (#xD) (#xA)
-  bool xqpString::is_whitespace(uint32_t cp) const
-  {
-    bool res = (cp == 0x20
-        ||
-        cp == 0x9
-        ||
-        cp == 0xD
-        ||
-        cp == 0xA) ? true : false;
-
-    return res;
-  }
 
   std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString) const
   {
-    uint16_t mapLen = mapString.theStrStore->length()+1;
-    uint16_t transLen = transString.theStrStore->length()+1;
+    uint16_t mapLen = mapString.theStrStore->bytes()+1;
+    uint16_t transLen = transString.theStrStore->bytes()+1;
     const char* mapPtr = mapString.theStrStore->c_str();
     const char* transPtr = transString.theStrStore->c_str();
     uint32_t tmp0, tmp1;
@@ -737,181 +1007,6 @@ namespace zorba
     return res;
   }
 
-  xqpString xqpString::normalizeSpace() const
-  {
-    //create the new xqpStringStore
-    std::string tmp = "";
-    uint32_t len = length();
-    const char* c = c_str();
-    uint32_t cp, cpPrev;
-    char seq[4];
-
-    cpPrev = 0x20;
-    while(len > 0)
-    {
-      cp = UTF8Decode(c);
-      if( !is_whitespace(cp) ||
-           (is_whitespace(cp) && !is_whitespace(cpPrev))
-        )
-      {
-        if(is_whitespace(cp))
-          cp = 0x20;
-        
-        memset(seq, 0, sizeof(seq));
-        UTF8Encode(cp, seq);
-        tmp += seq;
-      }
-      cpPrev = cp;
-      --len;
-    }
-    tmp += "\0";
-
-    xqpString res(tmp);
-    return res.trimR();
-  }
-
-  xqpString xqpString::trimL(const char* start, uint16_t len) const
-  {
-    if(0 == length() || 0 == len)
-      return *this;
-
-    //create the new xqpStringStore
-    std::string tmp = "";
-    uint32_t StrLen = length();
-    const char* c = c_str();
-    uint32_t cp;
-    char seq[4];
-    bool found = false;
-    
-    bool firstCp = true;
-    uint32_t *trimCP;//[len];
-		trimCP = new uint32_t[len];
-    for(uint16_t i=0; i<len; i++)
-      trimCP[i]=UTF8Decode(start);
-  
-    while(StrLen > 0 && !found)
-    {
-      cp = UTF8Decode(c);
-
-      for(uint16_t i=0; i<len; i++)
-      {
-        if(trimCP[i] == cp)
-        {
-          firstCp = false;
-          break;
-        }
-      }
-
-      if(firstCp)
-      {
-        memset(seq, 0, sizeof(seq));
-        UTF8Encode(cp, seq);
-        tmp += seq;
-        tmp +=c;
-        found = true;
-      }
-      --StrLen;
-      firstCp = true;
-    }
-
-		delete[] trimCP;
-    xqpString res(tmp);
-    return res;
-  }
-  
-  xqpString xqpString::trimL() const
-  {
-    char seq = ' ';
-    return trimL( &seq, 1 );
-  }
-
-  xqpString xqpString::trimR(const char* start, uint16_t len) const
-  {
-    if(0 == length() || 0 == len )
-      return *this;
-    
-    uint32_t StrLen = length();
-
-    bool firstCp = true;
-    uint32_t *trimCP;//[len];
-		trimCP = new uint32_t[len];
-    for(uint16_t i=0; i<len; i++)
-      trimCP[i]=UTF8Decode(start);
-
-    //create the new xqpStringStore
-    std::string tmp = "";
-    uint32_t pos = 0;
-    uint32_t cp = 0;
-    const char* end = c_str();
-    const char* c = c_str();
-    char seq[4];
-
-    zorba::advance(end, StrLen, end + bytes());
-
-    while(StrLen > 0)
-    {
-      cp = UTF8DecodePrev(end);
-
-      for(uint16_t i=0; i<len; i++)
-      {
-        if(trimCP[i] == cp)
-        {
-          firstCp = false;
-          break;
-        }
-      }
-      
-      if( firstCp )
-      {
-        pos = zorba::UTF8Distance(c, end);
-        break;
-      }
-      --StrLen;
-      firstCp = true;
-    }
-    
-    ++pos;
-
-    while(pos > 0)
-    {
-      cp = UTF8Decode(c);
-      
-      memset(seq, 0, sizeof(seq));
-      UTF8Encode(cp, seq);
-      tmp += seq;
-
-      --pos;
-    }
-
-		delete[] trimCP;
-    xqpString res(tmp);
-    return res;
-  }
-  
-  xqpString xqpString::trimR() const
-  {
-    char seq = ' ';
-    return trimR( &seq, 1 );
-  }
-
-  xqpString xqpString::trim(const char* start, uint16_t len) const
-  {
-    if(0 == length() || 0 == len)
-      return *this;
-
-    xqpString tmp = trimL(start, len);
-    return tmp.trimR(start, len);
-  }
-  
-  xqpString xqpString::trim() const
-  {
-    if(0 == length())
-      return *this;
-
-    char seq = ' ';
-    xqpString tmp = trimL(&seq, 1);
-    return tmp.trimR(&seq,1);
-  }
 
   uint32_t parse_regex_flags (const char *flag_cstr) {
     uint32_t flags = 0;
@@ -942,6 +1037,7 @@ namespace zorba
     return matcher.find ();
   }
 
+
   xqpString
   xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags) {
     UErrorCode status = U_ZERO_ERROR;
@@ -969,24 +1065,6 @@ namespace zorba
     return getXqpString (words [0]);
   }
 
-  UnicodeString xqpString::getUnicodeString() const
-  {
-    UnicodeString ret;
-    UErrorCode status = U_ZERO_ERROR;
-    int32_t len = bytes();
-    UChar* buffer = ret.getBuffer(len);
-
-    u_strFromUTF8(buffer, ret.getCapacity(), &len, c_str(), len, &status);
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-    }
-
-    ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
-
-    return ret;
-  }
 
   xqpString xqpString::fromUTF16(const UChar* src, int32_t len)
   {
@@ -1025,27 +1103,6 @@ namespace zorba
   }
 
   // Private methods
-  UnicodeString xqpString::getUnicodeString(xqpString source) const
-  {
-//     UnicodeString res(source.c_str(), -1, US_INV);
-//     return res;
-    UnicodeString ret;
-    UErrorCode status = U_ZERO_ERROR;
-    int32_t len = source.bytes();
-    UChar* buffer = ret.getBuffer(len);
-
-    u_strFromUTF8(buffer, ret.getCapacity(), &len, source.c_str(), len, &status);
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-    }
-
-    ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
-
-    return ret;
-  }
-
   xqpString xqpString::getXqpString(UnicodeString source)
   {
     char* target;
@@ -1089,7 +1146,7 @@ namespace zorba
     destWCS = new wchar_t[destCapacity];
     int32_t destLen;
 
-    UnicodeString unicodeStr = getUnicodeString(source);
+    UnicodeString unicodeStr = source.theStrStore->getUnicodeString();
     int32_t srcLen = unicodeStr.length();
     UChar* srcBuf = unicodeStr.getBuffer(srcLen);
     UErrorCode status = U_ZERO_ERROR;

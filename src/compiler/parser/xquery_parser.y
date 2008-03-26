@@ -66,7 +66,7 @@ namespace zorba {
 %locations
 %initial-action
 {
-  @$.begin.filename = @$.end.filename = driver.theFilename.getStore();
+  @$.begin.filename = @$.end.filename = &(driver.theFilename.getStore()->str());
 };
 
 

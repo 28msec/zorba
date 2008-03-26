@@ -52,20 +52,22 @@ rchandle<xqpStringStore> NodeNameTest::get_local() const
 
 bool NodeNameTest::is_subname_of(const NodeNameTest& other) const
 {
-  return (((*other.m_uri) == "*" || (*other.m_uri) == (*m_uri))
-    && ((*other.m_local) == "*" || (*other.m_local) == (*m_local)));
+  return ((other.m_uri->str() == "*" || other.m_uri->byteEqual(*m_uri))
+          &&
+          (other.m_local->str() == "*" || other.m_local->byteEqual(*m_local)));
 }
 
 
 bool NodeNameTest::operator ==(const NodeNameTest& other) const
 {
-  return *other.m_uri == *m_uri && *other.m_local == *m_local;
+  return other.m_uri->byteEqual(*m_uri) && other.m_local->byteEqual(*m_local);
 }
 
 bool NodeNameTest::matches(store::Item *qname) const
 {
-  return (*m_uri == "*" || *m_uri == *qname->getNamespace().theStrStore)
-    && (*m_local == "*" || *m_local == *qname->getLocalName().theStrStore);
+  return ((m_uri->str() == "*" || m_uri->byteEqual(*qname->getNamespace().theStrStore))
+          &&
+          (m_local->str() == "*" || m_local->byteEqual(*qname->getLocalName().theStrStore)));
 }
 
 

@@ -506,8 +506,8 @@ void  XmlLoader::endElement(
         prevChild != NULL &&
         prevChild->getNodeKind() == StoreConsts::textNode)
     {
-      *(prevChild->getStringValueP()) = *(currChild->getStringValueP()) +
-                                        *(prevChild->getStringValueP());
+      prevChild->getStringValueP()->str() = currChild->getStringValueP()->str() +
+                                            prevChild->getStringValueP()->str();
       delete currChild;
     }
     else
@@ -727,9 +727,9 @@ void  XmlLoader::warning(void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  if (loader.theWarnings.size() > 0)
-    loader.theWarnings += "+ ";
-  loader.theWarnings += buf;
+  if (loader.theWarnings.bytes() > 0)
+    loader.theWarnings.str() += "+ ";
+  loader.theWarnings.str() += buf;
 }
 
 } // namespace store

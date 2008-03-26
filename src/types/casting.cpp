@@ -422,7 +422,7 @@ NameChar			  ::=    Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar | Ext
 bool GenericCast::castableToNCName(const xqpString& str) const
 {
 	uint32_t	cp;
-	std::vector<uint32_t> cps = str.getCodepoints();
+	std::vector<uint32_t> cps = str.getStore()->getCodepoints();
 	std::vector<uint32_t>::size_type	i, cps_size = cps.size();
 
 	if(cps_size == 0)

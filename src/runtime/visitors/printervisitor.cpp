@@ -1629,7 +1629,7 @@ void PrinterVisitor::beginVisitFlworLetVariable(
 {
   thePrinter.startBeginVisit("LetVariable", (intptr_t) &a);
 #ifndef NDEBUG
-  thePrinter.addAttribute("name", varName);
+  thePrinter.addAttribute("name", varName.str());
 #endif
   thePrinter.addAttribute("materialize", materialize ? "true" : "false");
   thePrinter.endBeginVisit( (intptr_t) &a);
@@ -1649,7 +1649,7 @@ void PrinterVisitor::beginVisitFlworForVariable(
 {
   thePrinter.startBeginVisit("ForVariable", (intptr_t) &a);
 #ifndef NDEBUG
-  thePrinter.addAttribute("name", varName);
+  thePrinter.addAttribute("name", varName.str());
 #endif
   thePrinter.endBeginVisit( (intptr_t) &a);
   a.accept(*this);

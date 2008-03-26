@@ -33,7 +33,7 @@ TimeZone::TimeZone(short hours)
 
 bool TimeZone::parse_string(const xqpString& s, TimeZone_t& tz_t)
 {
-  std::string ss = *s.getStore();
+  std::string ss = s.getStore()->str();
   unsigned int position = 0;
   bool is_negative = false;
   

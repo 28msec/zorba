@@ -9,14 +9,16 @@ namespace zorba {
 
   class XQPCollator 
   {
-      friend class CollationFactory;
+    friend class CollationFactory;
+    friend class xqpString;
+    friend class xqpStringStore;
+
     private:
       XQPCollator(Collator*);
 
     public:
       virtual ~XQPCollator();
 
-      friend class xqpString;
     protected:
       Collator* theCollator;
   };

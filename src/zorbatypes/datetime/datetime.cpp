@@ -228,7 +228,7 @@ int DateTime::parseDateTime(const xqpString& s, DateTime_t& dt_t)
 {
   TimeZone_t tz_t;
   unsigned int position = 0;
-  std::string ss = *s.getStore();
+  std::string ss = s.getStore()->str();
   dt_t = new DateTime();
   
   // DateTime is of form: '-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
@@ -264,7 +264,7 @@ int DateTime::parseDate(const xqpString& s, DateTime_t& dt_t)
 {
   TimeZone_t tz_t;
   unsigned int position = 0;
-  std::string ss = *s.getStore();
+  std::string ss = s.getStore()->str();
   dt_t = new DateTime();
   
   skip_whitespace(ss, position);
@@ -287,7 +287,7 @@ int DateTime::parseTime(const xqpString& s, DateTime_t& dt_t)
 {
   TimeZone_t tz_t;
   unsigned int position = 0;
-  std::string ss = *s.getStore();
+  std::string ss = s.getStore()->str();
   dt_t = new DateTime();
   
   skip_whitespace(ss, position);
@@ -313,7 +313,7 @@ int DateTime::parseGYearMonth(const xqpString& s, DateTime_t& dt_t)
 {
   TimeZone_t tz_t;
   unsigned int position = 0, temp_position = 0;
-  std::string ss = *s.getStore();
+  std::string ss = s.getStore()->str();
   std::string temp;
   dt_t = new DateTime();
   
@@ -346,7 +346,7 @@ int DateTime::parseGYear(const xqpString& s, DateTime_t& dt_t)
 {
   TimeZone_t tz_t;
   unsigned int position = 0, temp_position = 0;
-  std::string ss = *s.getStore();
+  std::string ss = s.getStore()->str();
   std::string temp;
   dt_t = new DateTime();
   
@@ -379,7 +379,7 @@ int DateTime::parseGMonth(const xqpString& s, DateTime_t& dt_t)
 {
   TimeZone_t tz_t;
   unsigned int position = 0, temp_position = 0;
-  std::string ss = *s.getStore();
+  std::string ss = s.getStore()->str();
   std::string temp;
   dt_t = new DateTime();
   
@@ -411,7 +411,7 @@ int DateTime::parseGMonthDay(const xqpString& s, DateTime_t& dt_t)
 {
   TimeZone_t tz_t;
   unsigned int position = 0, temp_position = 0;
-  std::string ss = *s.getStore();
+  std::string ss = s.getStore()->str();
   std::string temp;
   dt_t = new DateTime();
   
@@ -444,7 +444,7 @@ int DateTime::parseGDay(const xqpString& s, DateTime_t& dt_t)
 {
   TimeZone_t tz_t;
   unsigned int position = 0, temp_position = 0;
-  std::string ss = *s.getStore();
+  std::string ss = s.getStore()->str();
   std::string temp;
   dt_t = new DateTime();
   

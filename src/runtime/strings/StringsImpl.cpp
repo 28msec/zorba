@@ -106,7 +106,7 @@ StringToCodepointsIterator::nextImpl(PlanState& planState) const {
     inputStr = item->getStringValue();
     if(!inputStr.empty())
     {
-      state->setVector(inputStr.getCodepoints());
+      state->setVector(inputStr.getStore()->getCodepoints());
   
       while (state->getIterator() < state->getVectSize())
       {

@@ -673,7 +673,7 @@ void ConstrDocumentNode::constructSubtree(
       if (cnode->getNodeKind() == StoreConsts::textNode)
       {
         TextNode* textNode = reinterpret_cast<TextNode*>(cnode);
-        if (*textNode->theContent == "")
+        if (textNode->theContent->str() == "")
         {
           item = childrenIte->next();
           continue;
@@ -684,8 +684,7 @@ void ConstrDocumentNode::constructSubtree(
 
         if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
         {
-          *(lsib->getStringValueP()) = *(lsib->getStringValueP()) +
-            *(textNode->getStringValueP());
+          lsib->getStringValueP()->str() += textNode->getStringValueP()->str();
 
           item = childrenIte->next();
           continue;
@@ -1051,7 +1050,7 @@ XmlNode* ElementNode::copy(
 
       // ns may be null only if the prefix was empty and there was no default
       // namespace declaration in scope.
-      ZORBA_ASSERT(*prefix == "" || ns != NULL);
+      ZORBA_ASSERT(prefix->str() == "" || ns != NULL);
 
       if (ns != NULL)
       {
@@ -1075,7 +1074,7 @@ XmlNode* ElementNode::copy(
         prefix = getAttr(i)->getNodeName()->getPrefix().getStore();
         ns = getNsContext()->findBinding(prefix);
 
-        ZORBA_ASSERT(*prefix == "" || ns != NULL);
+        ZORBA_ASSERT(prefix->str() == "" || ns != NULL);
 
         if (ns != NULL)
         {
@@ -1339,11 +1338,11 @@ void ConstrElementNode::constructSubtree(
   xqpStringStore* prefix = theName->getPrefix().getStore();
   xqpStringStore* ns = theName->getNamespace().getStore();
 
-  if (*prefix != "xml")
+  if (prefix->str() != "xml")
   {
     xqpStringStore* ns2 = findBinding(prefix);
 
-    if (ns2 == NULL && *ns != "")
+    if (ns2 == NULL && !ns->empty())
       addLocalBinding(prefix, ns);
   }
 
@@ -1414,11 +1413,11 @@ void ConstrElementNode::addAttribute(
   xqpStringStore* prefix = cnode->getNodeName()->getPrefix().getStore();
   xqpStringStore* ns = cnode->getNodeName()->getNamespace().getStore();
 
-  if (*prefix != "xml")
+  if (prefix->str() != "xml")
   {
     xqpStringStore* ns2 = findBinding(prefix);
 
-    if (ns2 == NULL && *prefix != "")
+    if (ns2 == NULL && prefix->str() != "")
       addLocalBinding(prefix, ns);
   }
 }
@@ -1435,7 +1434,7 @@ void ConstrElementNode::addChild(
     if (cnode->getNodeKind() == StoreConsts::textNode)
     {
       TextNode* textNode = reinterpret_cast<TextNode*>(cnode);
-      if (*textNode->theContent == "")
+      if (textNode->theContent->empty())
         return;
 
       ulong numChildren = this->numChildren();
@@ -1443,8 +1442,7 @@ void ConstrElementNode::addChild(
 
       if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
       {
-        *(lsib->getStringValueP()) = *(lsib->getStringValueP()) +
-                                     *(textNode->getStringValueP());
+        lsib->getStringValueP()->str() += textNode->getStringValueP()->str();
         return;
       }
     }
@@ -1823,7 +1821,7 @@ XmlNode* TextNode::copy(
 
       if (lsib != NULL && lsib->getNodeKind() == StoreConsts::textNode)
       {
-        *(lsib->getStringValueP()) = *(lsib->getStringValueP()) + *theContent;
+        lsib->getStringValueP()->str() += theContent->str();
         return lsib;
       }
 
@@ -2053,7 +2051,7 @@ Item_t PiNode::getAtomizationValue() const
 ********************************************************************************/
 xqp_string PiNode::show() const
 {
-  return "<?" + *theTarget + " " + *theContent + "?>";
+  return "<?" + theTarget->str() + " " + theContent->str() + "?>";
 }
 
 
@@ -2215,7 +2213,7 @@ Item_t CommentNode::getAtomizationValue() const
 ********************************************************************************/
 xqp_string CommentNode::show() const
 {
-  return "<!--" + *theContent + "-->";
+  return "<!--" + theContent->str() + "-->";
 }
 
 } // namespace store
