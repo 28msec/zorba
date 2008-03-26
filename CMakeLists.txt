@@ -78,7 +78,7 @@ ENDIF (Iconv_FOUND)
 #####################################################  Xerces-C
 INCLUDE(cmake_modules/FindXercesC.cmake)
 IF (XERCESC_FOUND)
-	INCLUDE_DIRECTORIES(${XERCESC_INCLUDE_DIR})
+	INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
 	SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
 ENDIF (XERCESC_FOUND)
 
