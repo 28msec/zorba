@@ -1,0 +1,67 @@
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="simple.xsd"
+  xmlns="simple.xsd"
+  elementFormDefault="qualified">
+
+  <xs:element name="product" type="ProductType"/>
+  <xs:element name="item" type="ItemType"/>
+  <xs:element name="items" type="ItemsType"/>
+
+  <xs:complexType name="ProductType">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="number" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ItemType">
+    <xs:sequence>
+      <xs:element ref="product"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ItemsType">
+    <xs:sequence>
+      <xs:element ref="product" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ShirtType">
+    <xs:complexContent>
+      <xs:extension base="ProductType">
+        <xs:sequence>
+          <xs:element name="size" type="ShirtSizeType"/>
+          <xs:element name="color" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HatType">
+    <xs:complexContent>
+      <xs:extension base="ProductType">
+        <xs:sequence>
+          <xs:element name="size" type="HatSizeType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="ShirtSizeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="S"/>
+      <xs:enumeration value="M"/>
+      <xs:enumeration value="L"/>
+      <xs:enumeration value="XL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HatSizeType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="7"/>
+      <xs:maxInclusive value="12"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>
