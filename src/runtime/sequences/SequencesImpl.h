@@ -12,7 +12,7 @@
 #include <stack>
 
 #include "common/shared_types.h"
-#include "runtime/base/unarybase.h" // TODO remove after refactoring
+#include "runtime/base/unarybase.h"  // TODO remove after refactoring
 #include "runtime/base/binarybase.h" // TODO remove after refactoring
 #include "runtime/base/narybase.h"
 #include "runtime/booleans/compare_types.h"
@@ -369,6 +369,8 @@ public:
 
 
 //15.5.5 fn:doc-available
+NARY_ITER(FnDocAvailableIterator);
+
 
 //15.5.6 fn:collection
 

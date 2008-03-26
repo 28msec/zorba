@@ -986,6 +986,32 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
   STACK_END (state);
 }
 
+/*______________________________________________________________________
+| 15.5.5 fn:doc-available
+|
+|   fn:doc-available($uri as xs:string?) as xs:boolean
+|_______________________________________________________________________*/
+store::Item_t FnDocAvailableIterator::nextImpl(PlanState& planState) const
+{
+  store::Item_t doc;
+  store::Item_t uriItem;
+  xqpStringStore* uriString;
+  const char *err = NULL;
 
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  uriItem = consumeNext(theChildren[0].getp(), planState);
+  if (uriItem == NULL)
+    return NULL;
+
+  uriString = uriItem->getStringValue().getStore();
+
+  doc = get_doc (uriString, &err);
+  //TODO check if $uri is not a valid xs:anyURI and raise [err:FODC0005]
+    
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(doc != NULL), state);
+  STACK_END (state);
+}
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */

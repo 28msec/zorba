@@ -395,6 +395,17 @@ public:
 
 
 //15.5.5 fn:doc-available
+class fn_doc_available_func : public function
+{
+public:
+  fn_doc_available_func(const signature&);
+
+public:
+  xqtref_t type_check(signature&) const;
+  PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
 
 //15.5.6 fn:collection
 

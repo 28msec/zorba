@@ -963,6 +963,16 @@ namespace zorba {
     thePrinter.endEndVisit();
   }
 
+  void PrinterVisitor::beginVisit ( const FnDocAvailableIterator& a ) {
+    thePrinter.startBeginVisit("FnDocAvailableIterator", (intptr_t) &a);
+    printCommons(  &a );
+    thePrinter.endBeginVisit( (intptr_t) &a);
+  }
+  void PrinterVisitor::endVisit ( const FnDocAvailableIterator& ) {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   void 
   PrinterVisitor::beginVisit ( const HashSemiJoinIterator& a) 
   {

@@ -283,6 +283,9 @@ public:
   virtual void beginVisit ( const FnDocIterator& ) ;
   virtual void endVisit ( const FnDocIterator& ) ;
 
+  virtual void beginVisit ( const FnDocAvailableIterator& ) ;
+  virtual void endVisit ( const FnDocAvailableIterator& ) ;
+
   virtual void beginVisit ( const HashSemiJoinIterator& ) ;
   virtual void endVisit ( const HashSemiJoinIterator& ) ;
 

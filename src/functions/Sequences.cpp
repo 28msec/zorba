@@ -539,6 +539,29 @@ xqtref_t fn_doc_func::type_check(
 
 
 //15.5.5 fn:doc-available
+/*begin class fn_doc_available_func*/
+fn_doc_available_func::fn_doc_available_func( const signature& sig ) : function(sig)
+{
+}
+
+PlanIter_t
+fn_doc_available_func::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new FnDocAvailableIterator(loc, argv);
+}
+
+xqtref_t
+fn_doc_available_func::type_check( signature& ) const
+{
+  return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+}
+
+bool
+fn_doc_available_func::validate_args( vector<PlanIter_t>& argv ) const
+{
+  return (argv.size() == 1);
+}
+/*end class fn_doc_available_func*/
 
 //15.5.6 fn:collection
 

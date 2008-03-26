@@ -357,6 +357,11 @@ DECL(fn_doc_func,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
 
+DECL(fn_doc_available_func,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","doc-available"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
 DECL(op_concatenate,
        (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":concatenate"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
