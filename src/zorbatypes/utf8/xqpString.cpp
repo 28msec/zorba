@@ -18,6 +18,8 @@
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/collation_manager.h"
 
+#include <unicode/regex.h>
+
 using namespace std;
 
 namespace zorba
@@ -912,9 +914,30 @@ namespace zorba
   }
 
   bool
-  xqpString::matches(xqpString pattern, xqpString flags)
+  xqpString::matches(xqpString pattern, xqpString flagStr)
   {
-    return true;
+    uint32_t flags = 0;
+    const char *flag_cstr = flagStr.c_str ();
+    for (const char *p = flag_cstr; *p != '\0'; p++) {
+      switch (*p) {
+      case 'i': flags |= UREGEX_CASE_INSENSITIVE; break;
+      case 's': flags |= UREGEX_DOTALL; break;
+      case 'm': flags |= UREGEX_MULTILINE; break;
+      case 'x': flags |= UREGEX_COMMENTS; break;
+      default: break;  // FORX0001
+      }
+    }
+
+    UErrorCode status = U_ZERO_ERROR;
+    RegexMatcher *matcher = new RegexMatcher(pattern.getUnicodeString (), flags, status);
+    if (U_FAILURE(status)) {
+      return false;
+      // FORX0002
+    }
+
+    UnicodeString ustr = getUnicodeString ();
+    matcher->reset (ustr);
+    return matcher->find ();
   }
 
   xqpString
