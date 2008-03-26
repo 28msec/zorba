@@ -25,8 +25,11 @@ namespace zorba {
       virtual ResultIterator_t
       iterator();
 
-      DynamicContext_t
+      virtual DynamicContext_t
       getDynamicContext();
+
+      virtual StaticContext_t
+      getStaticContext();
 
 		// only allow ZorbaImpl to create us
 		friend class ZorbaImpl;

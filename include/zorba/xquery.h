@@ -21,7 +21,8 @@ namespace zorba {
       registerErrorHandler(ErrorHandler*) = 0;
 
       // xml serialization
-      // prepares the query with the default dynamic context if non is set using prepare
+      // prepares the query with the default dynamic that belongs to this query
+      // it can be retrieved using getDynamicContext. 
       virtual void
       serialize(std::ostream&) = 0;
 
@@ -30,8 +31,17 @@ namespace zorba {
       virtual ResultIterator_t
       iterator() = 0;
 
+      // get the static context of this query
+      // you can modify it and afterwards execute the query with the changes that were applied
       virtual DynamicContext_t
       getDynamicContext() = 0;
+
+      // get the static context that belongs to this query
+      // the static context has all the components and values that have been
+      // set before (by supplying a static context) compiling the query and
+      // those that have been changed while compiling the query (e.g. in the query prolog)
+      virtual StaticContext_t
+      getStaticContext() = 0;
 
   };
 

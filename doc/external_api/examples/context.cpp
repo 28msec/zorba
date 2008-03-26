@@ -139,6 +139,22 @@ context_example_6(Zorba* aZorba)
 	return true;
 }
 
+bool
+context_example_7(Zorba* aZorba)
+{
+	XQuery_t lQuery1 = aZorba->createQuery("declare ordering ordered; 1"); 
+
+  StaticContext_t lStaticContext1 = lQuery1->getStaticContext();
+  
+  if (lStaticContext1->getOrderingMode() != StaticContext::ordered)
+    return false;
+
+	XQuery_t lQuery2 = aZorba->createQuery("declare ordering unordered; 1"); 
+
+  StaticContext_t lStaticContext2 = lQuery2->getStaticContext();
+  
+  return (lStaticContext2->getOrderingMode() == StaticContext::unordered);
+}
 
 #if 0
 bool
@@ -195,5 +211,8 @@ context(int argc, char* argv[])
 	assert(context_example_6(lZorba)); 
   std::cout << std::endl;
   
+  std::cout << "executing example 7" << std::endl;
+	assert(context_example_7(lZorba)); 
+  std::cout << std::endl;
   return 0;
 }

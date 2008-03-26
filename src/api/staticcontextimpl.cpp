@@ -26,6 +26,7 @@ namespace zorba {
 
   StaticContextImpl::StaticContextImpl(static_context* aCtx, ErrorHandler* aErrorHandler)
     : theCtx(aCtx),
+      theUserStaticContext(true),
       theErrorHandler(aErrorHandler),
       theUserErrorHandler(true)
   {

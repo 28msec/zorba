@@ -142,6 +142,15 @@ namespace zorba {
      return DynamicContext_t(new DynamicContextImpl(theDynamicContext, theStaticContext, theErrorHandler));
    }
 
+   StaticContext_t
+   XQueryImpl::getStaticContext()
+   {
+     // make sure the query is compiled, we should gunarantee this, since only we can call compile internally
+     assert(theStaticContext); 
+      
+     return StaticContext_t(new StaticContextImpl(theStaticContext, theErrorHandler));
+   }
+
   /** 
    * various ways to execute a query
    */
