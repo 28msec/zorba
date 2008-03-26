@@ -916,25 +916,9 @@ FnDocIterator::~FnDocIterator()
 {
 }
 
-
-store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
-{
+static store::Item_t get_doc (xqpStringStore *uriString, const char **err) {
   store::Store& store = GENV.getStore();
-
-  store::Item_t doc;
-  store::Item_t uriItem;
-  xqpStringStore* uriString;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  uriItem = consumeNext(theChild.getp(), planState);
-  if (uriItem == NULL)
-    return NULL;
-
-  uriString = uriItem->getStringValue().getStore();
-
-  doc = store.getDocument(uriString);
+  store::Item_t doc = store.getDocument(uriString);
     
   if (doc == NULL)
   {
@@ -947,7 +931,7 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
       int result = http_get(uriCopy.c_str(), xmlString);
       if (result != 0)
       {
-        ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc,  uriString->c_str(), "HTTP get failure.");
+        *err = "HTTP get failure."; return NULL;
       }
 
       istringstream iss(xmlString.c_str());
@@ -955,7 +939,7 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
       doc = store.loadDocument(uriString, iss);
       if (doc == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc,  uriString->c_str(), "Failed to parse document.");
+        *err = "Failed to parse document."; return NULL;
       }
     }
     else 
@@ -965,17 +949,39 @@ store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
       ifs.open(uriString->c_str(), ios::in);
       if (ifs.is_open() == false)
       {
-        ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc,  uriString->c_str(), "File does not exist.");
+        *err = "File does not exist."; return NULL;
       }
       
       doc = store.loadDocument(uriString, ifs);
       if (doc == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc, uriString->c_str(), "Failed to parse document.");
+        *err = "Failed to parse document."; return NULL;
       }
     }
   }
 
+  return doc;
+}
+
+store::Item_t FnDocIterator::nextImpl(PlanState& planState) const
+{
+  store::Item_t doc;
+  store::Item_t uriItem;
+  xqpStringStore* uriString;
+  const char *err = NULL;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  uriItem = consumeNext(theChild.getp(), planState);
+  if (uriItem == NULL)
+    return NULL;
+
+  uriString = uriItem->getStringValue().getStore();
+
+  doc = get_doc (uriString, &err);
+  if (doc == NULL)
+    ZORBA_ERROR_LOC_PARAM( ZorbaError::FODC0002, loc, uriString->c_str(), (err == NULL ? "" :  err));
   STACK_PUSH(doc, state);
   STACK_END (state);
 }
