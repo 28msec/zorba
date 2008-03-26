@@ -1344,9 +1344,9 @@ SubstringAfterIterator::nextImpl(PlanState& planState) const {
 store::Item_t
 FnMatchesIterator::nextImpl(PlanState& planState) const
 {
-  xqp_string input = "";
+  xqp_string input;
   xqp_string pattern;
-  xqp_string flags = "";
+  xqp_string flags;
   store::Item_t item;
   
   PlanIteratorState* state;
@@ -1357,14 +1357,13 @@ FnMatchesIterator::nextImpl(PlanState& planState) const
     input = item->getStringValue();
 
   item = consumeNext(theChildren[1].getp(), planState);
-  if( item != NULL )
-    pattern = item->getStringValue();
+  assert (item != NULL);
+  pattern = item->getStringValue();
 
-  if(theChildren.size() == 3)
-  {
+  if(theChildren.size() == 3) {
     item = consumeNext(theChildren[2].getp(), planState);
-    if(item != NULL)
-      flags = item->getStringValue();
+    assert (item != NULL);
+    flags = item->getStringValue();
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(input.matches(pattern, flags)), state); 
@@ -1391,8 +1390,32 @@ FnMatchesIterator::nextImpl(PlanState& planState) const
 store::Item_t
 FnReplaceIterator::nextImpl(PlanState& planState) const
 {
+  xqp_string input, pattern, replacement, flags;
+  store::Item_t item;
+  
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  item = consumeNext(theChildren[0].getp(), planState);
+  if( item != NULL )
+    input = item->getStringValue();
+
+  item = consumeNext(theChildren[1].getp(), planState);
+  assert (item != NULL);
+  pattern = item->getStringValue();
+
+  item = consumeNext(theChildren[2].getp(), planState);
+  assert (item != NULL);
+  replacement = item->getStringValue();
+
+  if(theChildren.size() == 4) {
+    item = consumeNext(theChildren[3].getp(), planState);
+    assert (item != NULL);
+    flags = item->getStringValue();
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createString(input.replace(pattern, replacement, flags).getStore ()), state);
+  
   STACK_END (state);
 }
 /*end class FnReplaceIterator*/

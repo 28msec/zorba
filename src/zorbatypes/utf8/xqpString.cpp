@@ -931,21 +931,31 @@ namespace zorba
   xqpString::matches(xqpString pattern, xqpString flags)
   {
     UErrorCode status = U_ZERO_ERROR;
-    RegexMatcher *matcher = new RegexMatcher(pattern.getUnicodeString (), parse_regex_flags (flags.c_str ()), status);
+    RegexMatcher matcher (pattern.getUnicodeString (), parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
       return false;
       // FORX0002
     }
 
     UnicodeString ustr = getUnicodeString ();
-    matcher->reset (ustr);
-    return matcher->find ();
+    matcher.reset (ustr);
+    return matcher.find ();
   }
 
   xqpString
-  xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
-  {
-    return *this;
+  xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags) {
+    UErrorCode status = U_ZERO_ERROR;
+    RegexMatcher matcher (pattern.getUnicodeString (), parse_regex_flags (flags.c_str ()), status);
+    if (U_FAILURE(status)) {
+      return "";
+      // FORX0002
+    }
+    UnicodeString result = matcher.replaceAll (replacement.getUnicodeString (), status);
+    if (U_FAILURE(status)) {
+      return "";
+      // TODO: error
+    }
+    return getXqpString (result);
   }
 
   xqpString
