@@ -1410,11 +1410,26 @@ FnReplaceIterator::nextImpl(PlanState& planState) const
  *            $flags    as xs:string) as xs:string*
  *_______________________________________________________________________*/
  /*begin class FnTokenizeIterator*/
+void
+FnTokenizeIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  theString = xqp_string("");
+}
+
+void
+FnTokenizeIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theString = xqp_string("");
+}
+
 store::Item_t
 FnTokenizeIterator::nextImpl(PlanState& planState) const
 {
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  FnTokenizeIteratorState* state;
+  DEFAULT_STACK_INIT(FnTokenizeIteratorState, state, planState);
+
   STACK_END (state);
 }
 /*end class FnTokenizeIterator*/

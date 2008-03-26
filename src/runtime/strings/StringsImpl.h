@@ -450,6 +450,15 @@ NARY_ITER(FnMatchesIterator);
 NARY_ITER(FnReplaceIterator);
 
 // 7.6.4 fn:tokenize
-NARY_ITER(FnTokenizeIterator);
+class FnTokenizeIteratorState : public PlanIteratorState {
+  public:
+    xqp_string theString; // the remaining string
+
+    void init(PlanState&);
+    void reset(PlanState&);
+};
+
+NARY_ITER_STATE(FnTokenizeIterator, FnTokenizeIteratorState);
+
 }/*namespace zorba*/
 #endif /* ZORBA_STRINGS_IMPL_H */
