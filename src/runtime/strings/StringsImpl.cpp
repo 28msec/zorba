@@ -1410,6 +1410,10 @@ FnReplaceIterator::nextImpl(PlanState& planState) const
     flags = item->getStringValue();
   }
 
+  if(xqp_string().matches(pattern, flags))
+    ZORBA_ERROR_LOC_DESC(ZorbaError::FORX0003, loc,
+                         "Regular expression matches zero-length string.");
+
   STACK_PUSH(GENV_ITEMFACTORY->createString(input.replace(pattern, replacement, flags).getStore ()), state);
   
   STACK_END (state);
