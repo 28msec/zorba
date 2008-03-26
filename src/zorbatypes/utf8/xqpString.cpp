@@ -1026,14 +1026,15 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
   xqpString::matches(xqpString pattern, xqpString flags)
   {
     UErrorCode status = U_ZERO_ERROR;
-    RegexMatcher matcher (pattern.getUnicodeString (), parse_regex_flags (flags.c_str ()), status);
+    UnicodeString uspattern = pattern.getUnicodeString (),
+      us = getUnicodeString ();
+    RegexMatcher matcher (uspattern, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
       return false;
       // FORX0002
     }
 
-    UnicodeString ustr = getUnicodeString ();
-    matcher.reset (ustr);
+    matcher.reset (us);
     return matcher.find ();
   }
 
@@ -1041,7 +1042,9 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
   xqpString
   xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags) {
     UErrorCode status = U_ZERO_ERROR;
-    RegexMatcher matcher (pattern.getUnicodeString (), getUnicodeString (), parse_regex_flags (flags.c_str ()), status);
+    UnicodeString uspattern = pattern.getUnicodeString (),
+      us = getUnicodeString ();
+    RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
       return "";
       // FORX0002
@@ -1058,7 +1061,13 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
   xqpString::tokenize(xqpString pattern, xqpString flags, xqpString *remaining)
   {
     UErrorCode status = U_ZERO_ERROR;
-    RegexMatcher m (pattern.getUnicodeString (), getUnicodeString (), parse_regex_flags (flags.c_str ()), status);
+    UnicodeString uspattern = pattern.getUnicodeString (),
+      us = getUnicodeString ();
+    RegexMatcher m (uspattern, us, parse_regex_flags (flags.c_str ()), status);
+    if (U_FAILURE(status)) {
+      return "";
+      // FORX0002
+    }
     if (m.find ()) {
       int32_t start = m.start (status), end = m.end (status);
       *remaining = substr (end, length () - end);
