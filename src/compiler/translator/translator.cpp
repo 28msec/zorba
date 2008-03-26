@@ -1805,9 +1805,13 @@ void end_visit(const SIND_DeclList& /*v*/, void* /*visit_state*/)
 }
 
 
-void *begin_visit(const SchemaImport& /*v*/)
+void *begin_visit(const SchemaImport& v)
 {
-  TRACE_VISIT (); 
+  TRACE_VISIT ();
+  SchemaPrefix *sp = &*v.get_prefix();
+  if (sp != NULL) {
+    sctx_p->bind_ns (sp->get_prefix (), v.get_uri ());
+  }
   //std::string prefix = ((SchemaPrefix*)(v.get_prefix().getp()))->get_prefix();
   //std::string uri = v.get_uri();
   //std::string at = (*((URILiteralList*)(v.get_at_list().getp())))[0];
