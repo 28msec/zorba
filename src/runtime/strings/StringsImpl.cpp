@@ -96,7 +96,7 @@ StringToCodepointsIterator::nextImpl(PlanState& planState) const {
   // TODO Optimization for large strings: large strings mean that a large integer vector should be store in the state that is not good.
   store::Item_t item;
   store::Item_t resItem;
-  xqp_string inputStr = "";
+  xqp_string inputStr;
 
   StringToCodepointsState* state;
   DEFAULT_STACK_INIT(StringToCodepointsState, state, planState);
@@ -630,7 +630,7 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState) const
   store::Item_t item0;
   store::Item_t item1;
   xqp_string tempStr = "NFC";
-  xqp_string res = "";
+  xqp_string res;
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1437,7 +1437,6 @@ void
 FnTokenizeIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
-  theString;
 }
 
 void
@@ -1480,10 +1479,11 @@ FnTokenizeIterator::nextImpl(PlanState& planState) const
   do
   {  
     token = state->theString.tokenize(pattern, flags, &remaining);
+    assert (remaining.length () < state->theString.length ());
     state->theString = remaining;
     STACK_PUSH(GENV_ITEMFACTORY->createString(token.getStore()), state);
   }
-  while (state->theString != "");
+  while (! state->theString.empty ());
 
   STACK_END(state);
 }
