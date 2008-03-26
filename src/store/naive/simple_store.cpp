@@ -328,8 +328,10 @@ Collection_t SimpleStore::getCollection(xqpStringStore* uri)
     return NULL;
 
   Collection_t* collectionp;
-  theCollections.get(uri, collectionp);
-  return collectionp->getp();
+  if (theCollections.get(uri, collectionp) )
+    return collectionp->getp();
+  else
+    return NULL;
 }
 
 

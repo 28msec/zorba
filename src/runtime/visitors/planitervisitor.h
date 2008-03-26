@@ -179,6 +179,7 @@ namespace zorba
   class FnLocalNameIterator;
   class FnNamespaceUriIterator;
   class FnLangIterator;
+  class FnCollectionIterator;
 
 #define PLAN_ITER_VISTOR(class)    \
   virtual void beginVisit ( const class& ) = 0;  \
@@ -225,7 +226,10 @@ namespace zorba
 
       virtual void beginVisit ( const FnLangIterator& ) = 0;
       virtual void endVisit ( const FnLangIterator& ) = 0;
-      
+
+      virtual void beginVisit ( const FnCollectionIterator& ) = 0;
+      virtual void endVisit ( const FnCollectionIterator& ) = 0;
+
       virtual void beginVisit ( const FnErrorIterator& ) = 0;
       virtual void endVisit ( const FnErrorIterator& ) = 0;
        

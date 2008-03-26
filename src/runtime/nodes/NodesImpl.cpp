@@ -8,10 +8,22 @@
  * @file misc/MiscImpl.cpp
  *
  */
- 
-#include "system/globalenv.h"
+
+#include <vector>
+
+  #include "system/globalenv.h"
 #include "runtime/nodes/NodesImpl.h"
 #include "store/api/item_factory.h"
+
+#include "runtime/context/ContextImpl.h"
+#include "runtime/api/runtimecb.h"
+#include "context/dynamic_context.h"
+
+#include "store/api/store.h"
+#include "store/api/collection.h"
+#include "store/api/iterator.h"
+
+using namespace std;
 
 namespace zorba {
 
@@ -62,6 +74,57 @@ store::Item_t FnLangIterator::nextImpl(PlanState& planState) const
   //TODO fix the implementation
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  STACK_END (state);
+}
+
+// 15.5.6 fn:collection
+//---------------------
+void
+FnCollectionIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  theIterator = NULL;
+}
+
+void
+FnCollectionIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theIterator = NULL;
+}
+
+store::Item_t FnCollectionIterator::nextImpl(PlanState& planState) const
+{
+  store::Item_t       itemArg;
+  store::Item_t       itemColl;
+  xqp_string          uri;
+  store::Collection_t theColl;
+  
+  FnCollectionIteratorState *state;
+  DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
+
+  itemArg = consumeNext(theChildren[0].getp(), planState);
+  if (itemArg != NULL)
+    uri = itemArg->getStringValue();
+  else
+  {
+    uri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(uri.empty())
+      ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0002, loc,
+                           "Default collection is undefined in the dynamic context.");
+  }
+
+  theColl = GENV_STORE.getCollection(uri.getStore());
+
+  if(theColl == NULL)
+    ZORBA_ERROR_LOC_DESC(ZorbaError::FODC0004, loc,
+                         "Invalid argument to fn:collection.");
+
+  state->theIterator = theColl->getIterator(false);
+  
+  while((itemColl = state->theIterator->next()) != NULL )
+    STACK_PUSH (itemColl, state);
+
   STACK_END (state);
 }
 

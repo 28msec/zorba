@@ -26,5 +26,17 @@ NARY_ITER(FnNamespaceUriIterator);
 // 14.5 fn:lang
 NARY_ITER(FnLangIterator);
 
+// 15.5.6 fn:collection
+class FnCollectionIteratorState : public PlanIteratorState {
+public:
+  Iterator_t theIterator;
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+NARY_ITER_STATE(FnCollectionIterator, FnCollectionIteratorState);
+
+// NARY_ITER(FnCollectionIterator);
 } /* namespace zorba */
 #endif /* ZORBA_NODES_IMPL_H */

@@ -3,6 +3,8 @@
 #include "system/globalenv.h"
 #include "runtime/nodes/NodesImpl.h"
 
+#include "store/api/iterator.h"
+
 using namespace std;
 
 namespace zorba {
@@ -79,4 +81,26 @@ bool fn_lang::validate_args(vector<PlanIter_t>& argv) const
   return (argv.size() == 1 || argv.size() == 2);
 }
 
+/*******************************************************************************
+  15.5.6 fn:collection
+********************************************************************************/
+fn_collection::fn_collection (const signature &sig) : function (sig) {}
+
+xqtref_t fn_collection::type_check(signature&) const
+{
+  return GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR;
+}
+
+PlanIter_t fn_collection::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  if (!validate_args(argv))
+    ZORBA_ERROR_LOC( ZorbaError::XPST0017, loc);
+
+  return new FnCollectionIterator(loc, argv);
+}
+
+bool fn_collection::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
 }/* namespace zorba */

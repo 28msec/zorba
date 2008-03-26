@@ -68,6 +68,9 @@ public:
   virtual void beginVisit ( const FnLangIterator& ) ;
   virtual void endVisit ( const FnLangIterator& ) ;
 
+  virtual void beginVisit ( const FnCollectionIterator& ) ;
+  virtual void endVisit ( const FnCollectionIterator& ) ;
+
   virtual void beginVisit ( const FnErrorIterator& ) ;
   virtual void endVisit ( const FnErrorIterator& ) ;
 
