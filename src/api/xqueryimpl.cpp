@@ -27,6 +27,8 @@
 #include "errors/error_manager.h"
 #include "runtime/api/plan_wrapper.h"
 
+#include "util/properties.h"
+
 
 namespace zorba {
 
@@ -48,6 +50,9 @@ namespace zorba {
     theErrorHandler = new DefaultErrorHandler();
     theErrorManager = new error::ErrorManager();
     theCompilerCB->m_error_manager = theErrorManager;
+    if (!Properties::instance ()->useOptimizer ()) {
+      theCompilerCB->m_config.opt_level = CompilerCB::config_t::O0;
+    }
   }
 
   XQueryImpl::~XQueryImpl()
@@ -121,7 +126,7 @@ namespace zorba {
     }
 
     theCompilerCB->m_sctx = theStaticContext;
-    
+
     XQueryCompiler lCompiler(theCompilerCB);
 
     try {

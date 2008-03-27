@@ -15,7 +15,7 @@ namespace zorba {
       virtual ~XQueryCompiler();
 
       PlanIter_t
-      compile(std::istream& aXQuery); 
+      compile(std::istream& aXQuery);
 
     protected:
       parsenode_t

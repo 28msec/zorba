@@ -96,7 +96,7 @@ namespace zorba {
   expr_t
   XQueryCompiler::optimize(expr_t lExpr) 
   {
-    if (Properties::instance ()->useOptimizer ()) {
+    if (theCompilerCB->m_config.opt_level > CompilerCB::config_t::O0) {
       RewriterContext rCtx(theCompilerCB, lExpr);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       lExpr = rCtx.getRoot();
