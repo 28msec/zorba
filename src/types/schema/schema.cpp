@@ -216,8 +216,6 @@ xqtref_t Schema::createIfExists(const TypeManager *manager, store::Item_t qname,
 
 store::Item_t parseAtomicValue(xqtref_t type, xqpString textValue)
 {
-	std::cout << "--parseAtomicValue: " << type << "  " << textValue << "\n";
-
 	//switch(type->type_kind())
 	//{
 	//case XQType::ATOMIC_TYPE_KIND:
