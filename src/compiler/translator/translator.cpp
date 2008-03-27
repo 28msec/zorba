@@ -2047,8 +2047,10 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
         store::Item_t castLiteral = GenericCast::instance()->castToQName (ce->get_val ()->getStringValue(), isCast, true);
         if (castLiteral != NULL) {
           xqp_string pre = castLiteral->getPrefix ();
-          xqp_string ns = sctx_p->lookup_ns (pre, isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0081);
-          castLiteral = ITEM_FACTORY->createQName(ns.getStore (), pre.getStore (), castLiteral->getLocalName ().getStore ());
+          if (! pre.empty ()) {
+            xqp_string ns = sctx_p->lookup_ns (pre, isCast ? ZorbaError::FONS0004 : ZorbaError::XPST0081);
+            castLiteral = ITEM_FACTORY->createQName(ns.getStore (), pre.getStore (), castLiteral->getLocalName ().getStore ());
+          }
         }
         if (isCast)
           return new const_expr (loc, castLiteral);
