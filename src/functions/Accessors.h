@@ -20,7 +20,6 @@ namespace zorba {
   {
   public:
     fn_data_func ( const signature& );
-    ~fn_data_func() {}
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -32,7 +31,6 @@ namespace zorba {
   {
   public:
     fn_root_func(const signature& s);
-    ~fn_root_func() {}
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -43,7 +41,6 @@ namespace zorba {
   {
   public:
     fn_nodename_func(const signature& s);
-    ~fn_nodename_func() {}
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -54,7 +51,6 @@ namespace zorba {
   {
   public:
     fn_nilled_func(const signature& s);
-    ~fn_nilled_func() {}
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -65,7 +61,6 @@ namespace zorba {
   {
   public:
     fn_base_uri_func(const signature& s);
-    ~fn_base_uri_func() {}
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -76,7 +71,6 @@ namespace zorba {
   {
   public:
     fn_document_uri_func(const signature& s);
-    ~fn_document_uri_func() {}
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -87,7 +81,6 @@ namespace zorba {
   {
   public:
     fn_name_func(const signature& s);
-    ~fn_name_func() {}
     
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;

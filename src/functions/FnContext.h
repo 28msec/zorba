@@ -10,20 +10,6 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-/**
-16.1 fn:position
-16.2 fn:last
-16.3 fn:current-dateTime
-16.3.1 Examples
-16.4 fn:current-date
-16.4.1 Examples
-16.5 fn:current-time
-16.5.1 Examples
-16.6 fn:implicit-timezone
-16.7 fn:default-collation
-16.8 fn:static-base-uri
-*/
-
 
 namespace zorba {
 
@@ -33,7 +19,6 @@ class ctx_variable : public function
 {
 public:
   ctx_variable(const signature&);
-  ~ctx_variable() {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;

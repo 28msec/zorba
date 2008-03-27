@@ -29,7 +29,6 @@ class fn_codepoints_to_string: public function
 {
 public:
   fn_codepoints_to_string(const signature&);
-  ~fn_codepoints_to_string() {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -43,7 +42,6 @@ public:
 {
   public:
     fn_string_to_codepoints(const signature&);
-    ~fn_string_to_codepoints() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -61,7 +59,6 @@ class fn_string_compare_2: public function
 {
   public:
     fn_string_compare_2(const signature&);
-    ~fn_string_compare_2() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -72,7 +69,6 @@ class fn_string_compare_3: public function
 {
   public:
     fn_string_compare_3(const signature&);
-    ~fn_string_compare_3() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -85,7 +81,6 @@ class fn_codepoint_equal: public function
 {
   public:
     fn_codepoint_equal(const signature&);
-    ~fn_codepoint_equal() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -104,7 +99,6 @@ class fn_concat: public function
 {
   public:
     fn_concat(const signature&);
-    ~fn_concat() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -118,7 +112,6 @@ class fn_string_join: public function
 {
   public:
     fn_string_join(const signature&);
-    ~fn_string_join() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -132,7 +125,6 @@ class fn_substring_2: public function
 {
   public:
     fn_substring_2(const signature&);
-    ~fn_substring_2() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -143,7 +135,6 @@ class fn_substring_3: public function
 {
   public:
     fn_substring_3(const signature&);
-    ~fn_substring_3() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -156,7 +147,6 @@ class fn_string_length: public function
 {
   public:
     fn_string_length(const signature&);
-    ~fn_string_length() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -170,7 +160,6 @@ class fn_normalize_space: public function
 {
   public:
     fn_normalize_space(const signature&);
-    ~fn_normalize_space() {}
   
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -184,7 +173,6 @@ class fn_normalize_unicode_1: public function
 {
   public:
     fn_normalize_unicode_1(const signature&);
-    ~fn_normalize_unicode_1() {}
   
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -195,7 +183,6 @@ class fn_normalize_unicode_2: public function
 {
   public:
     fn_normalize_unicode_2(const signature&);
-    ~fn_normalize_unicode_2() {}
   
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -208,7 +195,6 @@ class fn_upper_case: public function
 {
 public:
   fn_upper_case(const signature&);
-  ~fn_upper_case() {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -222,7 +208,6 @@ class fn_lower_case: public function
 {
 public:
   fn_lower_case(const signature&);
-  ~fn_lower_case() {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -236,7 +221,6 @@ class fn_translate: public function
 {
 public:
   fn_translate(const signature&);
-  ~fn_translate() {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -250,7 +234,6 @@ class fn_encode_for_uri: public function
 {
 public:
   fn_encode_for_uri(const signature&);
-  ~fn_encode_for_uri() {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -264,7 +247,6 @@ class fn_iri_to_uri : public function
 {
 public:
   fn_iri_to_uri(const signature&);
-  ~fn_iri_to_uri() {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -278,7 +260,6 @@ class fn_escape_html_uri: public function
 {
 public:
   fn_escape_html_uri(const signature&);
-  ~fn_escape_html_uri() {}
 
 public:
   PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -297,7 +278,6 @@ class fn_contains_2: public function
 {
   public:
     fn_contains_2(const signature&);
-    ~fn_contains_2() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -308,7 +288,6 @@ class fn_contains_3: public function
 {
   public:
     fn_contains_3(const signature&);
-    ~fn_contains_3() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -321,7 +300,6 @@ class fn_starts_with_2: public function
 {
   public:
     fn_starts_with_2(const signature&);
-    ~fn_starts_with_2() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -332,7 +310,6 @@ class fn_starts_with_3: public function
 {
   public:
     fn_starts_with_3(const signature&);
-    ~fn_starts_with_3() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -345,7 +322,6 @@ class fn_ends_with_2: public function
 {
   public:
     fn_ends_with_2(const signature&);
-    ~fn_ends_with_2() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -356,7 +332,6 @@ class fn_ends_with_3: public function
 {
   public:
     fn_ends_with_3(const signature&);
-    ~fn_ends_with_3() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -369,7 +344,6 @@ class fn_substring_before_2: public function
 {
   public:
     fn_substring_before_2(const signature&);
-    ~fn_substring_before_2() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -380,7 +354,6 @@ class fn_substring_before_3: public function
 {
   public:
     fn_substring_before_3(const signature&);
-    ~fn_substring_before_3() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -393,7 +366,6 @@ class fn_substring_after_2: public function
 {
   public:
     fn_substring_after_2(const signature&);
-    ~fn_substring_after_2() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -404,7 +376,6 @@ class fn_substring_after_3: public function
 {
   public:
     fn_substring_after_3(const signature&);
-    ~fn_substring_after_3() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -422,7 +393,6 @@ class fn_matches: public function
 {
   public:
     fn_matches(const signature&);
-    ~fn_matches() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -436,7 +406,6 @@ class fn_replace: public function
 {
   public:
     fn_replace(const signature&);
-    ~fn_replace() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -450,7 +419,6 @@ class fn_tokenize: public function
 {
   public:
     fn_tokenize(const signature&);
-    ~fn_tokenize() {}
 
   public:
     PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;

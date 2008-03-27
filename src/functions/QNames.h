@@ -30,7 +30,6 @@ namespace zorba
   {
     public:
       fn_resolve_qname(const signature&);
-      ~fn_resolve_qname() {}
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -45,7 +44,6 @@ namespace zorba
   {
     public:
       fn_qname(const signature&);
-      ~fn_qname() {}
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -60,7 +58,6 @@ namespace zorba
   {
     public:
       op_qname_equal(const signature&);
-      ~op_qname_equal() {}
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -75,7 +72,6 @@ namespace zorba
   {
     public:
       fn_prefix_from_qname(const signature&);
-      ~fn_prefix_from_qname() {}
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -90,7 +86,6 @@ namespace zorba
   {
     public:
       fn_local_name_from_qname(const signature&);
-      ~fn_local_name_from_qname() {}
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -105,7 +100,6 @@ namespace zorba
   {
     public:
       fn_namespace_uri_from_qname(const signature&);
-      ~fn_namespace_uri_from_qname() {}
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -120,7 +114,6 @@ namespace zorba
   {
     public:
       fn_namespace_uri_for_prefix(const signature&);
-      ~fn_namespace_uri_for_prefix() {}
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -135,7 +128,6 @@ namespace zorba
   {
     public:
       fn_in_scope_prefixes(const signature&);
-      ~fn_in_scope_prefixes() {}
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;

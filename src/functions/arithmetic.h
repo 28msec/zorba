@@ -13,8 +13,7 @@ class op_add : public function
 {
 public:
 	op_add(const signature&);
-	~op_add() {}
-
+	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
@@ -27,8 +26,7 @@ class op_subtract : public function
 {
 public:
 	op_subtract(const signature&);
-	~op_subtract() {}
-
+	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
@@ -42,8 +40,7 @@ class op_multiply : public function
 {
 public:
 	op_multiply(const signature&);
-	~op_multiply() {}
-
+	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
@@ -57,8 +54,7 @@ class op_divide : public function
 {
 public:
 	op_divide(const signature&);
-	~op_divide() {}
-
+	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
@@ -71,8 +67,7 @@ class op_integer_divide : public function
 {
 public:
 	op_integer_divide(const signature&);
-	~op_integer_divide() {}
-
+	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;
@@ -85,8 +80,7 @@ class op_mod : public function
 {
 public:
 	op_mod(const signature&);
-	~op_mod() {}
-
+	
 public:
 	PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 	xqtref_t type_check(signature&) const;

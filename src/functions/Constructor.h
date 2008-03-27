@@ -13,7 +13,6 @@ namespace zorba {
   class op_enclosed_expr : public function {
     public:
       op_enclosed_expr(const signature&);
-      ~op_enclosed_expr() {}
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
@@ -24,7 +23,6 @@ namespace zorba {
   class op_docfilter_expr : public function {
     public:
       op_docfilter_expr(const signature&);
-      ~op_docfilter_expr() {}
 
     public:
       PlanIter_t codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
