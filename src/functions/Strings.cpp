@@ -41,12 +41,6 @@ fn_codepoints_to_string::type_check(
   return GENV_TYPESYSTEM.INTEGER_TYPE_STAR;
 }
 
-bool
-fn_codepoints_to_string::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return true;
-}
 /*end class fn_codepoints_to_string*/
 
 /*
@@ -73,12 +67,6 @@ fn_string_to_codepoints::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_string_to_codepoints::validate_args(
-    vector<PlanIter_t>& argv) const
-{
-  return argv.size () >= 1;
-}
 
 /*end class fn_string_to_codepoints*/
 
@@ -106,12 +94,6 @@ fn_string_compare_2::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_string_compare_2::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 
 fn_string_compare_3::fn_string_compare_3(
     const signature& sig)
@@ -133,12 +115,6 @@ fn_string_compare_3::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_string_compare_3::validate_args(
-    vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 3);
-}
 /*end class fn_string_compare*/
 
 /*
@@ -165,12 +141,6 @@ fn_codepoint_equal::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_codepoint_equal::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 /*end class fn_codepoint_equal*/
 
 /*
@@ -190,12 +160,6 @@ fn_concat::codegen (const QueryLoc& loc, std::vector<PlanIter_t>& argv, Annotati
     return new ConcatStrIterator(loc,argv);
 }
 
-bool
-fn_concat::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return true;
-}
 
 xqtref_t
 fn_concat::type_check(
@@ -229,12 +193,6 @@ fn_string_join::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_STAR;
 }
 
-bool
-fn_string_join::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (/*argv.size() == 1 || */argv.size() == 2);
-}
 /*end class fn_string_join*/
 
 /*
@@ -261,12 +219,6 @@ fn_substring_2::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_substring_2::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==2);
-}
 
 fn_substring_3::fn_substring_3(
   const signature& sig)
@@ -288,12 +240,6 @@ fn_substring_3::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_substring_3::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==3);
-}
 /*end class fn_substring*/
 
 /*
@@ -320,12 +266,6 @@ fn_string_length::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_string_length::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 /*end class fn_string_length*/
 
 /*
@@ -352,12 +292,6 @@ fn_normalize_space::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_normalize_space::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 /*end class fn_normalize_space*/
 
 /*
@@ -384,12 +318,6 @@ fn_normalize_unicode_1::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_normalize_unicode_1::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==1);
-}
 
 fn_normalize_unicode_2::fn_normalize_unicode_2(
   const signature& sig)
@@ -411,12 +339,6 @@ fn_normalize_unicode_2::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_normalize_unicode_2::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==2);
-}
 /*end class fn_normalize_unicode*/
 
 
@@ -444,12 +366,6 @@ fn_upper_case::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_upper_case::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-    return (argv.size()==1);
-}
 /*end class fn_upper_case*/
 
 
@@ -477,12 +393,6 @@ fn_lower_case::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_lower_case::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-    return (argv.size()==1);
-}
 /*end class fn_lower_case*/
 
 
@@ -510,12 +420,6 @@ fn_translate::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_translate::validate_args(
-vector<PlanIter_t>& argv) const
-{
-  return (argv.size()==3);
-}
 /*end class fn_translate*/
 
 /*
@@ -542,12 +446,6 @@ fn_encode_for_uri::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_encode_for_uri::validate_args(
-    vector<PlanIter_t>& argv) const
-{
-  return true;
-}
 /*end class fn_encode_for_uri*/
 
 /*
@@ -574,12 +472,6 @@ signature& /*sig*/) const
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_iri_to_uri::validate_args(
-    vector<PlanIter_t>& argv) const
-{
-  return true;
-}
 /*end class fn_iri_to_uri*/
 
 /*
@@ -606,12 +498,6 @@ fn_escape_html_uri::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_escape_html_uri::validate_args(
-    vector<PlanIter_t>& argv) const
-{
-  return true;
-}
 /*end class fn_escape_html_uri*/
 
 
@@ -639,12 +525,6 @@ fn_contains_2::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_contains_2::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-    return (argv.size() == 2);
-}
 
 fn_contains_3::fn_contains_3(
   const signature& sig)
@@ -666,12 +546,6 @@ fn_contains_3::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_contains_3::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-    return (argv.size() == 3);
-}
 /*end class fn_contains*/
 
 /*
@@ -698,12 +572,6 @@ fn_starts_with_2::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_starts_with_2::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-    return (argv.size() == 2);
-}
 
 fn_starts_with_3::fn_starts_with_3(
   const signature& sig)
@@ -725,12 +593,6 @@ fn_starts_with_3::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_starts_with_3::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-    return (argv.size() == 3);
-}
 /*end class fn_starts_with*/
 
 /*
@@ -757,12 +619,6 @@ fn_ends_with_2::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_ends_with_2::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-    return (argv.size() == 2);
-}
 
 fn_ends_with_3::fn_ends_with_3(
   const signature& sig)
@@ -784,12 +640,6 @@ fn_ends_with_3::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_ends_with_3::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-    return (argv.size() == 3);
-}
 /*end class fn_ends_with*/
 
 /*
@@ -816,12 +666,6 @@ fn_substring_before_2::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_substring_before_2::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 
 fn_substring_before_3::fn_substring_before_3(
   const signature& sig)
@@ -843,12 +687,6 @@ fn_substring_before_3::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_substring_before_3::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 3);
-}
 /*end class fn_substring_before*/
 
 /*
@@ -875,12 +713,6 @@ fn_substring_after_2::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_substring_after_2::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2);
-}
 
 fn_substring_after_3::fn_substring_after_3(
   const signature& sig)
@@ -902,12 +734,6 @@ fn_substring_after_3::type_check(
   return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
-bool
-fn_substring_after_3::validate_args(
-  vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 3);
-}
 /*end class fn_substring_after*/
 
 
@@ -931,11 +757,6 @@ fn_matches::type_check( signature& ) const
   return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 }
 
-bool
-fn_matches::validate_args( vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2 || argv.size() == 3);
-}
 /*end class fn_matches*/
 
 /*
@@ -958,11 +779,6 @@ fn_replace::type_check( signature& ) const
   return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
-bool
-fn_replace::validate_args( vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 3 || argv.size() == 4);
-}
 /*end class fn_replace*/
 
 /*
@@ -985,10 +801,5 @@ fn_tokenize::type_check( signature& ) const
   return GENV_TYPESYSTEM.STRING_TYPE_STAR;
 }
 
-bool
-fn_tokenize::validate_args( vector<PlanIter_t>& argv ) const
-{
-  return (argv.size() == 2 || argv.size() == 3);
-}
 /*end class fn_tokenize*/
 }/*namespace zorba*/

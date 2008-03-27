@@ -55,11 +55,6 @@ xqtref_t op_numeric_add::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_numeric_add::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 
 //op_numeric_add_int::op_numeric_add_int(
@@ -78,12 +73,6 @@ bool op_numeric_add::validate_args(
 //	signature& sig) const
 //{
 //	return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
-//}
-//
-//bool op_numeric_add_int::validate_args(
-//	vector<PlanIter_t>& argv) const
-//{
-//	return (argv.size()==2);
 //}
 
 
@@ -122,11 +111,6 @@ xqtref_t op_numeric_subtract::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_numeric_subtract::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 
 
@@ -163,11 +147,6 @@ xqtref_t op_numeric_multiply::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_numeric_multiply::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 
 
@@ -214,11 +193,6 @@ xqtref_t op_numeric_divide::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_numeric_divide::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 
 
@@ -267,11 +241,6 @@ xqtref_t op_numeric_integer_divide::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_numeric_integer_divide::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 
 
@@ -328,11 +297,6 @@ xqtref_t op_numeric_mod::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_numeric_mod::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==2);
-}
 
 
 
@@ -364,11 +328,6 @@ xqtref_t op_numeric_unary_plus::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_numeric_unary_plus::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==1);
-}
 
 
 
@@ -405,11 +364,6 @@ xqtref_t op_numeric_unary_minus::type_check(
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool op_numeric_unary_minus::validate_args(
-	vector<PlanIter_t>& argv) const
-{
-	return (argv.size()==1);
-}
 
   
 /*______________________________________________________________________
@@ -444,10 +398,6 @@ xqtref_t fn_abs::type_check(signature& /*sig*/) const
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool fn_abs::validate_args(vector<PlanIter_t>& argv) const
-{
-	return (argv.size() == 1);
-}
 
 // 6.4.2 fn:ceiling
 fn_ceiling::fn_ceiling(const signature& sig)
@@ -465,10 +415,6 @@ xqtref_t fn_ceiling::type_check(signature& /*sig*/) const
   return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool fn_ceiling::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 // 6.4.3 fn:floor
 fn_floor::fn_floor(const signature& sig)
@@ -486,11 +432,6 @@ xqtref_t fn_floor::type_check(signature& /*sig*/) const
   return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool fn_floor::validate_args(vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-} 
-
 // 6.4.4 fn:round
 fn_round::fn_round(const signature& sig)
 :
@@ -507,10 +448,6 @@ xqtref_t fn_round::type_check(signature& /*sig*/) const
   return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool fn_round::validate_args( vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 1);
-}
 
 // 6.4.5 fn:round-half-to-even
 fn_round_half_to_even::fn_round_half_to_even(const signature& sig)
@@ -529,10 +466,6 @@ xqtref_t fn_round_half_to_even::type_check(signature& /*sig*/) const
   return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool fn_round_half_to_even::validate_args( vector<PlanIter_t>& argv) const
-{
-  return (argv.size() == 2 );
-}
 
 zor_numgen::zor_numgen(const signature& sig)
 :
@@ -550,10 +483,6 @@ xqtref_t zor_numgen::type_check(signature& /*sig*/) const
 	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
-bool zor_numgen::validate_args(vector<PlanIter_t>& argv) const
-{
-	return (argv.size() == 0);
-}
   
 } /* namespace zorba */
 
