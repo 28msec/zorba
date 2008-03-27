@@ -26,12 +26,11 @@ namespace zorba {
     return os;
   }
 
-int printdepth0 = -2;
+static int printdepth0 = -2;
 
 #define DENT      string(printdepth0, ' ')
-#define INDENT    (printdepth0 += 2, string(printdepth0, ' '))
-#define OUTDENT   (printdepth0 -= 2, string(printdepth0, ' '))
 #define UNDENT    printdepth0 -= 2;
+#define INDENT    (printdepth0 += 2, DENT)
 
 ostream& expr::put( ostream& os) const
 {
@@ -149,7 +148,6 @@ ostream& trycatch_expr::put( ostream& os) const
 {
   os << INDENT << "trycatch_expr (" << this << ") [\n";
 
-  //d Assert<null_pointer>(switch_expr_h!=NULL);
   ZORBA_ASSERT(try_expr_h!=NULL);
   try_expr_h->put(os);
 
@@ -157,15 +155,13 @@ ostream& trycatch_expr::put( ostream& os) const
        it!=catch_clause_hv.end(); ++it)
   {
     clauseref_t cc_h = *it;
-    os << INDENT << "catch: ";
+    os << DENT << "CATCH ";
     if (cc_h->var_h!=NULL) cc_h->var_h->put(os);
-        os << " return ";
-    //d Assert<null_pointer>(cc_h->case_expr_h!=NULL);
-    ZORBA_ASSERT(cc_h->catch_expr_h!=NULL);
-    cc_h->catch_expr_h->put(os) << endl;
-    UNDENT;
+    os << "\n";
+    ZORBA_ASSERT(cc_h->catch_expr_h != NULL);
+    cc_h->catch_expr_h->put(os);
   }
-  os << DENT << "]\n"; UNDENT;
+  os << DENT << "]\n";
   return os;
 }
 
