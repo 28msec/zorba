@@ -51,44 +51,70 @@ namespace zorba {
   XQuery_t
   ZorbaImpl::createQuery(const String& aQuery, ErrorHandler* aErrorHandler)
   {
-    xqpString lQuery = Unmarshaller::getInternalString(aQuery); 
-    XQuery_t lXQuery(new XQueryImpl());
-    if (aErrorHandler != 0)
-      lXQuery->registerErrorHandler(aErrorHandler);
-    (static_cast<XQueryImpl*>(lXQuery.get()))->compile(lQuery);
-    return lXQuery;
+    return createQuery(aQuery, XQuery::CompilerHints(), aErrorHandler);
   }
 
   XQuery_t
-  ZorbaImpl::createQuery(const String& aQuery, const StaticContext_t& aStaticContext,
+  ZorbaImpl::createQuery(const String& aQuery, const StaticContext_t& aStaticContext, 
                          ErrorHandler* aErrorHandler)
   {
-    xqpString lQuery = Unmarshaller::getInternalString(aQuery); 
-    XQuery_t lXQuery(new XQueryImpl());
-    if (aErrorHandler != 0)
-      lXQuery->registerErrorHandler(aErrorHandler);
-    (static_cast<XQueryImpl*>(lXQuery.get()))->compile(lQuery, aStaticContext);
-    return lXQuery;
+    return createQuery(aQuery, aStaticContext, XQuery::CompilerHints(), aErrorHandler);
   }
 
   XQuery_t
   ZorbaImpl::createQuery(std::istream& aQuery, ErrorHandler* aErrorHandler)
   {
-    XQuery_t lXQuery(new XQueryImpl());
-    if (aErrorHandler != 0)
-      lXQuery->registerErrorHandler(aErrorHandler);
-    (static_cast<XQueryImpl*>(lXQuery.get()))->compile(aQuery);
-    return lXQuery;
+    return createQuery(aQuery, XQuery::CompilerHints(), aErrorHandler);
   }
 
   XQuery_t
   ZorbaImpl::createQuery(std::istream& aQuery, const StaticContext_t& aStaticContext,
                          ErrorHandler* aErrorHandler)
   {
+    return createQuery(aQuery, aStaticContext, XQuery::CompilerHints(), aErrorHandler);
+  }
+
+  XQuery_t
+  ZorbaImpl::createQuery(const String& aQuery, const XQuery::CompilerHints_t& aHints, ErrorHandler* aErrorHandler)
+  {
+    xqpString lQuery = Unmarshaller::getInternalString(aQuery); 
     XQuery_t lXQuery(new XQueryImpl());
     if (aErrorHandler != 0)
       lXQuery->registerErrorHandler(aErrorHandler);
-    (static_cast<XQueryImpl*>(lXQuery.get()))->compile(aQuery, aStaticContext);
+    (static_cast<XQueryImpl*>(lXQuery.get()))->compile(lQuery, aHints);
+    return lXQuery;
+  }
+
+  XQuery_t
+  ZorbaImpl::createQuery(const String& aQuery, const StaticContext_t& aStaticContext, const XQuery::CompilerHints_t& aHints, 
+                         ErrorHandler* aErrorHandler)
+  {
+    xqpString lQuery = Unmarshaller::getInternalString(aQuery); 
+    XQuery_t lXQuery(new XQueryImpl());
+    if (aErrorHandler != 0)
+      lXQuery->registerErrorHandler(aErrorHandler);
+    (static_cast<XQueryImpl*>(lXQuery.get()))->compile(lQuery, aStaticContext, aHints);
+    return lXQuery;
+  }
+
+  XQuery_t
+  ZorbaImpl::createQuery(std::istream& aQuery, const XQuery::CompilerHints_t& aHints, ErrorHandler* aErrorHandler)
+  {
+    XQuery_t lXQuery(new XQueryImpl());
+    if (aErrorHandler != 0)
+      lXQuery->registerErrorHandler(aErrorHandler);
+    (static_cast<XQueryImpl*>(lXQuery.get()))->compile(aQuery, aHints);
+    return lXQuery;
+  }
+
+  XQuery_t
+  ZorbaImpl::createQuery(std::istream& aQuery, const StaticContext_t& aStaticContext, const XQuery::CompilerHints_t& aHints,
+                         ErrorHandler* aErrorHandler)
+  {
+    XQuery_t lXQuery(new XQueryImpl());
+    if (aErrorHandler != 0)
+      lXQuery->registerErrorHandler(aErrorHandler);
+    (static_cast<XQueryImpl*>(lXQuery.get()))->compile(aQuery, aStaticContext, aHints);
     return lXQuery;
   }
 

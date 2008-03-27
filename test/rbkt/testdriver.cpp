@@ -3,6 +3,8 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -46,6 +48,23 @@ printPart(std::ostream& os, std::string aInFile,
     delete[] buffer;
   }
   return;
+}
+
+zorba::XQuery::CompilerHints
+getCompilerHints()
+{
+  zorba::XQuery::CompilerHints lHints;
+
+  // ZORBA_OPTLEVEL=O0 | O1
+  char* lOptLevel = getenv("ZORBA_OPTLEVEL");
+  if ( lOptLevel != NULL && strcmp(lOptLevel, "O0") == 0 ) {
+    lHints.opt_level = zorba::XQuery::CompilerHints::O0;
+    std::cout << "testdriver is using optimization level O0" << std::endl;
+  } else {
+    lHints.opt_level = zorba::XQuery::CompilerHints::O1;
+    std::cout << "testdriver is using optimization level O1" << std::endl;
+  }
+  return lHints; 
 }
 
 class TestErrorHandler : public zorba::ErrorHandler {
@@ -298,7 +317,7 @@ main(int argc, char** argv)
   // create and compile the query
   std::string lQueryString;
   slurp_file(lQueryFile.native_file_string().c_str(), lQueryString);
-  zorba::XQuery_t lQuery = engine->createQuery(lQueryString.c_str(), &errHandler);
+  zorba::XQuery_t lQuery = engine->createQuery(lQueryString.c_str(), getCompilerHints(), &errHandler);
 
   if (errHandler.errors())
   {

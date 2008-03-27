@@ -26,14 +26,26 @@ namespace zorba {
       createQuery(const String& aQuery, ErrorHandler* aErrorHandler = 0);
 
       XQuery_t
-      createQuery(const String& aQuery, const StaticContext_t& aContext, 
-                  ErrorHandler* aErrorHandler = 0);
+      createQuery(const String& aQuery, const StaticContext_t& aContext, ErrorHandler* aErrorHandler = 0); 
 
       XQuery_t
       createQuery(std::istream& aQuery, ErrorHandler* aErrorHandler = 0);
 
       XQuery_t
-      createQuery(std::istream& aQuery, const StaticContext_t& aContext,
+      createQuery(std::istream& aQuery, const StaticContext_t& aContext, ErrorHandler* aErrorHandler = 0);
+
+      XQuery_t
+      createQuery(const String& aQuery, const XQuery::CompilerHints_t& aHints, ErrorHandler* aErrorHandler = 0);
+
+      XQuery_t
+      createQuery(const String& aQuery, const StaticContext_t& aContext, const XQuery::CompilerHints_t& aHints, 
+                  ErrorHandler* aErrorHandler = 0);
+
+      XQuery_t
+      createQuery(std::istream& aQuery, const XQuery::CompilerHints_t& aHints, ErrorHandler* aErrorHandler = 0);
+
+      XQuery_t
+      createQuery(std::istream& aQuery, const StaticContext_t& aContext, const XQuery::CompilerHints_t& aHints, 
                   ErrorHandler* aErrorHandler = 0);
 
       StaticContext_t

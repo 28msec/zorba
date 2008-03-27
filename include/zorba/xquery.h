@@ -12,6 +12,20 @@ namespace zorba {
   class XQuery 
   {
     public:
+      typedef struct CompilerHints {
+
+        // optimization level
+        typedef enum {
+          O0, // no optimization
+          O1  // basic optimization
+        } opt_level_t;
+
+        opt_level_t opt_level;
+
+        CompilerHints() { opt_level = O1; }
+      } CompilerHints_t;
+
+    public:
       virtual ~XQuery() {}
 
       // register an error handler

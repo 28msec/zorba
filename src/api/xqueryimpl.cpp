@@ -50,9 +50,6 @@ namespace zorba {
     theErrorHandler = new DefaultErrorHandler();
     theErrorManager = new error::ErrorManager();
     theCompilerCB->m_error_manager = theErrorManager;
-    if (!Properties::instance ()->useOptimizer ()) {
-      theCompilerCB->m_config.opt_level = CompilerCB::config_t::O0;
-    }
   }
 
   XQueryImpl::~XQueryImpl()
@@ -88,37 +85,37 @@ namespace zorba {
    * various ways to compile a query
    */
   void
-  XQueryImpl::compile(const xqpString& aQuery)
+  XQueryImpl::compile(const xqpString& aQuery, const CompilerHints_t& aHints)
   {
     std::istringstream lQueryStream(aQuery);
-    doCompile(lQueryStream);
+    doCompile(lQueryStream, aHints);
   }
 
   void
-  XQueryImpl::compile(std::istream& aQuery)
+  XQueryImpl::compile(std::istream& aQuery, const CompilerHints_t& aHints)
   {
-    doCompile(aQuery);
+    doCompile(aQuery, aHints);
   }
 
   void
-  XQueryImpl::compile(const xqpString& aQuery, const StaticContext_t& aStaticContext)
+  XQueryImpl::compile(const xqpString& aQuery, const StaticContext_t& aStaticContext, const CompilerHints_t& aHints)
   {
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
     theUserStaticContext = true; // rememeber that we do not have the ownership
 
     std::istringstream lQueryStream(aQuery);
-    doCompile(lQueryStream);
+    doCompile(lQueryStream, aHints);
   }
 
   void
-  XQueryImpl::compile(std::istream& aQuery, const StaticContext_t& aStaticContext)
+  XQueryImpl::compile(std::istream& aQuery, const StaticContext_t& aStaticContext, const CompilerHints_t& aHints)
   {
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
     theUserStaticContext = true; // rememeber that we do not have the ownership
   }
 
   void
-  XQueryImpl::doCompile(std::istream& aQuery)
+  XQueryImpl::doCompile(std::istream& aQuery, const CompilerHints_t& aHints)
   {
     if ( ! theStaticContext ) {
       // no context given => use the default one (i.e. a child of the root static context)
@@ -126,6 +123,9 @@ namespace zorba {
     }
 
     theCompilerCB->m_sctx = theStaticContext;
+  
+    // set the compiler config
+    theCompilerCB->m_config = getCompilerConfig(aHints);
 
     XQueryCompiler lCompiler(theCompilerCB);
 
@@ -191,6 +191,16 @@ namespace zorba {
     return ResultIterator_t(new ResultIteratorImpl(lPlan, theErrorManager, theErrorHandler));
   }
 
+  CompilerCB::config_t
+  XQueryImpl::getCompilerConfig(const XQuery::CompilerHints_t& aHints)
+  {
+    CompilerCB::config_t lConfig;
+
+    // set the optimization level
+    lConfig.opt_level = aHints.opt_level==XQuery::CompilerHints::O0 ? CompilerCB::config_t::O0 : CompilerCB::config_t::O1;
+
+    return lConfig;
+  }
 
 
   std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery)

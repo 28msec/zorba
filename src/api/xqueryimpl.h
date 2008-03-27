@@ -6,6 +6,7 @@
 
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h" 
+#include "compiler/api/compilercb.h"
 
 
 namespace zorba {
@@ -37,19 +38,22 @@ namespace zorba {
       XQueryImpl();
 
       void 
-      compile(const xqpString&);
+      compile(const xqpString&, const XQuery::CompilerHints_t& aHints);
       
       void 
-      compile(std::istream&);
+      compile(std::istream&, const XQuery::CompilerHints_t& aHints);
       
       void 
-      compile(const xqpString&, const StaticContext_t&);
+      compile(const xqpString&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
       
       void 
-      compile(std::istream&, const StaticContext_t&);
+      compile(std::istream&, const StaticContext_t&, const XQuery::CompilerHints_t& aHints);
 
       void
-      doCompile(std::istream&);
+      doCompile(std::istream&, const XQuery::CompilerHints_t& aHints);
+
+      CompilerCB::config_t
+      getCompilerConfig(const XQuery::CompilerHints_t&);
 
       PlanWrapper_t
       generateWrapper();

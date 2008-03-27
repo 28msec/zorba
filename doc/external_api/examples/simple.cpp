@@ -88,7 +88,21 @@ example_5(Zorba* aZorba)
 }
 
 bool
-example_6()
+example_6(Zorba* aZorba)
+{
+  // set compiler hint => don't optimize
+  XQuery::CompilerHints lHints;
+  lHints.opt_level = XQuery::CompilerHints::O0;
+
+  XQuery_t lQuery = aZorba->createQuery("1+1", lHints);
+
+  std::cout << lQuery << std::endl;
+
+  return true;
+}
+
+bool
+example_7()
 {
 
   std::cout << Zorba::version() << std::endl;
@@ -122,9 +136,12 @@ simple(int argc, char* argv[])
   std::cout << std::endl;
 
   std::cout << "executing example 6" << std::endl;
-	assert(example_6()); 
+	assert(example_6(lZorba)); 
   std::cout << std::endl;
   
+  std::cout << "executing example 7" << std::endl;
+	assert(example_7()); 
+  std::cout << std::endl;
   lZorba->shutdown();
   return 0;
 }
