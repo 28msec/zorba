@@ -3,4 +3,5 @@ SET(SCHEMA_SRCS
     StrX.cpp
     LoadSchemaErrorHandler.cpp
     PrintSchema.cpp
+    XercesParseUtils.cpp
     )

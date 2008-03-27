@@ -46,8 +46,8 @@
 #include "util/stl_extra.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-
-
+#include "types/delegating_typemanager.h"
+#include "types/schema/schema.h"
 
 using namespace std;
 
@@ -78,12 +78,12 @@ namespace zorba {
   typedef rchandle<var_expr> var_expr_t;
   typedef std::pair<var_expr_t, expr_t> global_binding;
 
-  template<class T> T &peek_stack (stack<T> &stk) {
+  template<class T> T &peek_stack (std::stack<T> &stk) {
     ZORBA_ASSERT (! stk.empty ());
     return stk.top ();
   }
   
-  template <typename T> T pop_stack (stack<T> &stk) {
+  template <typename T> T pop_stack (std::stack<T> &stk) {
     T x = peek_stack (stk);
     stk.pop ();
     return x;
@@ -1802,6 +1802,7 @@ void *begin_visit(const SIND_DeclList& /*v*/)
 void end_visit(const SIND_DeclList& /*v*/, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
+
 }
 
 
@@ -1812,12 +1813,19 @@ void *begin_visit(const SchemaImport& v)
   if (sp != NULL) {
     sctx_p->bind_ns (sp->get_prefix (), v.get_uri ());
   }
-  //std::string prefix = ((SchemaPrefix*)(v.get_prefix().getp()))->get_prefix();
-  //std::string uri = v.get_uri();
-  //std::string at = (*((URILiteralList*)(v.get_at_list().getp())))[0];
+  std::string prefix = ((SchemaPrefix*)(v.get_prefix().getp()))->get_prefix();
+  std::string uri = v.get_uri();
+  std::string at = (*((URILiteralList*)(v.get_at_list().getp())))[0];
   //std::cout << "SchemaImport: " << prefix << " : " << uri 
   //    << " @ " << at << std::endl;
   //std::cout << " Context: " << sctx_p->get_typemanager() << "\n";
+  
+  //((DelegatingTypeManager*)sctx_p->get_typemanager())->initializeSchema();
+  //Schema* schema_p = ((DelegatingTypeManager*)sctx_p->get_typemanager())->getSchema();
+  
+  //schema_p->registerXSD(at.c_str());	
+  //schema_p->printXSDInfo();
+
   return no_state;
 }
 

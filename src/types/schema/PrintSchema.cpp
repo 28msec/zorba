@@ -1,15 +1,12 @@
 #include "PrintSchema.h"
 #include "StrX.h"
+#include "schema.h"
 #include <iostream>
 
 using namespace std;
 
 namespace zorba
 {
-
-const char* XSD_NAMESPACE1 = "http://www.w3.org/2001/XMLSchema";
-//const XMLCh* XSD_NAMESPACE = XMLString::transcode("http://www.w3.org/2001/XMLSchema");
-
 
 void PrintSchema::printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool)
 {
@@ -30,7 +27,7 @@ void PrintSchema::printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool)
                 XERCES_STD_QUALIFIER cout << StrX(nameSpace);
 //              const XMLCh* ns1 = XMLString::transcode(XSD_NAMESPACE); 
                 const char* ns2 = XMLString::transcode(nameSpace);
-                if ( XMLString::equals(XSD_NAMESPACE1, ns2 /*ns1, nameSpace*/) )
+				if ( XMLString::equals(Schema::XSD_NAMESPACE, ns2 /*ns1, nameSpace*/) )
                 {
                     XERCES_STD_QUALIFIER cout << XERCES_STD_QUALIFIER endl;
                     break;

@@ -16,9 +16,15 @@ class DelegatingTypeManager : public TypeManagerImpl {
     DelegatingTypeManager(TypeManager *parent)
       : TypeManagerImpl(parent->level() + 1, parent) { }
 
-    void initSchema();
+    virtual xqtref_t create_atomic_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const;
+
+	virtual xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
+
+	
+	void initializeSchema();
+    void terminateSchema();
     
-    Schema* getSchema(Schema* schema) const
+    Schema* getSchema() const
     { return _schema; }
     
   private:

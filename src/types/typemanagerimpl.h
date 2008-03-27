@@ -21,7 +21,7 @@ class TypeManagerImpl : public TypeManager {
     /* Factory Methods */
     xqtref_t create_type_x_quant(const XQType& type, TypeConstants::quantifier_t quantifier) const;
 
-    xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
+    virtual xqtref_t create_type(store::Item_t qname, TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const;
 
     xqtref_t create_type(const TypeIdentifier& ident) const;
 
@@ -29,7 +29,7 @@ class TypeManagerImpl : public TypeManager {
 
     xqtref_t create_atomic_type(TypeConstants::atomic_type_code_t type_code, TypeConstants::quantifier_t quantifier) const;
 
-    xqtref_t create_atomic_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const;
+    virtual xqtref_t create_atomic_type(store::Item_t qname, TypeConstants::quantifier_t quantifier) const;
 
     xqtref_t create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeConstants::quantifier_t quantifier) const;
 

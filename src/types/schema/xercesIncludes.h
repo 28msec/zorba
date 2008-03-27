@@ -1,7 +1,7 @@
 #ifndef XERCESINCLUDES_H_
 #define XERCESINCLUDES_H_
 
-#undef Assert
+//#undef Assert
 
 #include <xercesc/framework/psvi/XSModel.hpp>
 #include <xercesc/framework/psvi/XSElementDeclaration.hpp>
@@ -22,10 +22,10 @@
 #include <xercesc/util/XMLUni.hpp>
 
 
-#ifdef CYGWIN
-#undef WIN32
-#endif
-
-#define Assert( cond ) ZORBA_ASSERT (cond)
+//#ifdef CYGWIN
+//#undef WIN32
+//#endif
+//
+//#define Assert( cond ) ZORBA_ASSERT (cond)
 
 #endif /*XERCESINCLUDES_H_*/

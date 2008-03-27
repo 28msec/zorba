@@ -113,6 +113,8 @@ NodeXQType::NodeXQType(
 UserDefinedXQType::UserDefinedXQType(const TypeManager *manager, store::Item_t& qname, xqtref_t baseType, TypeConstants::quantifier_t quantifier) :
     XQType(manager, quantifier), _qname(qname), _baseType(baseType)
 {
+    assert(baseType!=NULL);
+
     switch (baseType.getp()->type_kind())
     {
     case USER_DEFINED_KIND:
