@@ -95,10 +95,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       MODIFY (ref->set_pos_var (pvref = NULL));
     if (! is_let) {
       xqtref_t ctype = cexpr->return_type (sctx);
-      if (TypeOps::is_equal (*ctype, *GENV_TYPESYSTEM.EMPTY_TYPE))
-        quant_cnt = 0;
-      else if (TypeOps::quantifier (*ctype) == TypeConstants::QUANT_ONE)
-        quant_cnt = 1;
+      quant_cnt = TypeOps::QUANT_MAX_CNT [TypeOps::quantifier (*ctype)];
     }
     if (is_let || quant_cnt < 2) {
       if (quant_cnt == 0) return new fo_expr (LOC (node), LOOKUP_OPN ("concatenate"));

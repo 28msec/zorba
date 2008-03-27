@@ -2,6 +2,7 @@
 #include "context/static_context.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/expr.h"
+#include "types/typeops.h"
 #include "functions/Sequences.h"
 
 using namespace std;
@@ -83,6 +84,16 @@ static void propagate_down_nodeid_props_to_flwor_variables (flwor_expr *flwor) {
   }
 }
 
+static bool mark_casts (expr_t input, xqtref_t target) {
+  if (TypeOps::QUANT_MAX_CNT [TypeOps::quantifier (*target)] == 1) {
+    input->put_annotation (AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
+    input->put_annotation (AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
+    return true;
+  }
+
+  return false;
+}
+
 RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
 {
   switch (node->get_expr_kind ()) {
@@ -127,11 +138,22 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
   default:
     {
       cast_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
-      if (ce != NULL)
-        propagate_down_nodeid_props (node, ce->get_input ());
-      break;
+      if (ce != NULL) {
+        expr_t input = ce->get_input ();
+        if (! mark_casts (input, ce->get_target_type ()))
+            propagate_down_nodeid_props (node, input);
+        break;
+      }
     }
-    break;
+
+    {
+      cast_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
+      if (ce != NULL) {
+        mark_casts (ce->get_input (), ce->get_target_type ());
+        break;
+      }
+    }
+
   }
 
   return NULL;

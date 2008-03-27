@@ -110,6 +110,9 @@ class TypeOps {
      *    is_subtype(_t_, create_type(*get_type_identifier(_t_))) == true
      */
     static type_ident_ref_t get_type_identifier(const XQType& type);
+
+    static const int QUANT_MAX_CNT [TypeConstants::QUANTIFIER_LIST_SIZE];
+    static const int QUANT_MIN_CNT [TypeConstants::QUANTIFIER_LIST_SIZE];
 };
 
 }

@@ -97,7 +97,7 @@ const TypeConstants::quantifier_t RootTypeManager::QUANT_INTERS_MATRIX [4] [4] =
 };
 
 #undef Q
-
+  
 RootTypeManager::RootTypeManager()
   : TypeManagerImpl(0, NULL)
 {

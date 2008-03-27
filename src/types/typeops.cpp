@@ -474,4 +474,7 @@ type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
   return type_ident_ref_t();
 }
 
+const int TypeOps::QUANT_MIN_CNT [4] = { 1, 0, 0, 1 };
+const int TypeOps::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
+
 }
