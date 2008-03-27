@@ -86,7 +86,7 @@ public:
   xqp_string default_elem_type_ns () const;
   void set_default_elem_type_ns (xqp_string);
 
-  xqp_string lookup_ns (xqp_string prefix) const;
+  xqp_string lookup_ns (xqp_string prefix, enum ZorbaError::ErrorCode err = ZorbaError::XPST0081) const;
   void bind_ns (xqp_string prefix, xqp_string ns, enum ZorbaError::ErrorCode err = ZorbaError::XQST0033);
 
   store::Item_t lookup_qname (xqp_string default_ns, xqp_string name) const;

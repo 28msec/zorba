@@ -212,12 +212,12 @@ store::Item_t static_context::lookup_qname (xqp_string default_ns, xqp_string qn
     }
   }
 
-  xqp_string static_context::lookup_ns (xqp_string prefix) const
+  xqp_string static_context::lookup_ns (xqp_string prefix, enum ZorbaError::ErrorCode err) const
   {
     xqp_string ns;
     if(!context_value ("ns:" + prefix, ns) || ns.empty())
 		{
-			ZORBA_ERROR( ZorbaError::XPST0081);
+			ZORBA_ERROR(err);
 		}
     return ns;
   }
