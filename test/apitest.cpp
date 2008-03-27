@@ -48,6 +48,8 @@ int _tmain(int argc, _TCHAR* argv[])
   if (! Properties::load(argc,argv))
     return 4;  
   Properties* lProp = Properties::instance();
+  zorba::XQuery::CompilerHints chints;
+  chints.opt_level = lProp->useOptimizer () ? XQuery::CompilerHints::O1 : XQuery::CompilerHints::O0;
 
   // output file (either a file or the standard out if no file is specified)
   auto_ptr<ostream> outputFile (lProp->useResultFile() ?
@@ -82,7 +84,7 @@ int _tmain(int argc, _TCHAR* argv[])
   // start parsing the query
   XQuery_t query;
   try {
-    query = zengine->createQuery(*qfile);
+    query = zengine->createQuery(*qfile, chints);
   } catch (ZorbaException &e) {
     cerr << e << endl;
     return 1;

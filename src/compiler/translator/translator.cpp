@@ -1536,7 +1536,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
                              ? v.get_name ()->get_qname ().c_str () : NULL,
                              compilerCB, body);
 
-        if (Properties::instance ()->useOptimizer ()) {
+        if (compilerCB->m_config.opt_level == CompilerCB::config_t::O1) {
           RewriterContext rCtx(compilerCB, body);
           GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
           body = rCtx.getRoot();
