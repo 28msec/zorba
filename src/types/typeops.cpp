@@ -474,6 +474,18 @@ type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
   return type_ident_ref_t();
 }
 
+int TypeOps::type_max_cnt (const XQType& type) {
+  return is_equal (type, *GENV_TYPESYSTEM.EMPTY_TYPE)
+    ? 0
+    : QUANT_MAX_CNT [quantifier (type)];
+}
+
+int TypeOps::type_min_cnt (const XQType& type) {
+  return is_equal (type, *GENV_TYPESYSTEM.EMPTY_TYPE)
+    ? 0
+    : QUANT_MIN_CNT [quantifier (type)];
+}
+
 const int TypeOps::QUANT_MIN_CNT [4] = { 1, 0, 0, 1 };
 const int TypeOps::QUANT_MAX_CNT [4] = { 1, 1, 2, 2 };
 

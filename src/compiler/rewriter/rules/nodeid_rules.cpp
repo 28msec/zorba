@@ -85,7 +85,7 @@ static void propagate_down_nodeid_props_to_flwor_variables (flwor_expr *flwor) {
 }
 
 static bool mark_casts (expr_t input, xqtref_t target) {
-  if (TypeOps::QUANT_MAX_CNT [TypeOps::quantifier (*target)] <= 1) {
+  if (TypeOps::type_max_cnt (*target) <= 1) {
     input->put_annotation (AnnotationKey::IGNORES_SORTED_NODES, TSVAnnotationValue::TRUE_VALUE);
     input->put_annotation (AnnotationKey::IGNORES_DUP_NODES, TSVAnnotationValue::TRUE_VALUE);
     return true;
@@ -147,9 +147,9 @@ RULE_REWRITE_PRE(MarkNodesWithNodeIdProperties)
     }
 
     {
-      cast_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
+      castable_base_expr *ce = dynamic_cast<castable_base_expr *> (node);
       if (ce != NULL) {
-        mark_casts (ce->get_input (), ce->get_target_type ());
+        mark_casts (ce->get_expr (), ce->get_type ());
         break;
       }
     }

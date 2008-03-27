@@ -111,6 +111,16 @@ class TypeOps {
      */
     static type_ident_ref_t get_type_identifier(const XQType& type);
 
+    /*
+     * Returns 0, 1 or 2 (2 meaning "many")
+     */
+    static int type_max_cnt (const XQType& type);
+
+    /*
+     * Returns 0 or 1
+     */
+    static int type_min_cnt (const XQType& type);
+
     static const int QUANT_MAX_CNT [TypeConstants::QUANTIFIER_LIST_SIZE];
     static const int QUANT_MIN_CNT [TypeConstants::QUANTIFIER_LIST_SIZE];
 };
@@ -119,3 +129,8 @@ class TypeOps {
 
 #endif /* ZORBA_TYPEOPS_H */
 /* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

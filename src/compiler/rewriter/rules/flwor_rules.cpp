@@ -60,7 +60,7 @@ bool used_upto_first_repeated_clause (var_expr *v, flwor_expr *flwor, static_con
     if (count_variable_uses(ref->get_expr (), v, 1) == 1)
       return true;
     if (ref->get_type () == forlet_clause::for_clause
-        && TypeOps::QUANT_MAX_CNT [TypeOps::quantifier (*ref->get_expr ()->return_type (sctx))] >= 2)
+        && TypeOps::type_max_cnt (*ref->get_expr ()->return_type (sctx)) >= 2)
       return false;
   }
   return false;
@@ -109,7 +109,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       MODIFY (ref->set_pos_var (pvref = NULL));
     if (! is_let) {
       xqtref_t ctype = cexpr->return_type (sctx);
-      quant_cnt = TypeOps::QUANT_MAX_CNT [TypeOps::quantifier (*ctype)];
+      quant_cnt = TypeOps::type_max_cnt (*ctype);
     }
     if (is_let || quant_cnt < 2) {
       if (quant_cnt == 0) return new fo_expr (LOC (node), LOOKUP_OPN ("concatenate"));
