@@ -40,7 +40,7 @@ store::Item_t FnErrorIterator::nextImpl(PlanState& planState) const
 
   ns = err_qname->getNamespace ();
   if (ns == err_ns)
-    ZORBA_ERROR (error::ZorbaError::err_name_to_code (err_qname->getLocalName()));
+    ZORBA_ERROR_DESC (error::ZorbaError::err_name_to_code (err_qname->getLocalName()), description);
   else {
     ZORBA_USER_ERROR(ns, err_qname->getLocalName(), description,
                      loc, aErrorObject);

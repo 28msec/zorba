@@ -86,7 +86,7 @@ int _tmain(int argc, _TCHAR* argv[])
   try {
     query = zengine->createQuery(*qfile, chints);
   } catch (ZorbaException &e) {
-    cerr << e << endl;
+    cerr << "Compilation error: " << e << endl;
     return 1;
   }
 
@@ -104,7 +104,7 @@ int _tmain(int argc, _TCHAR* argv[])
     try {
       *resultFile << query;
     } catch (ZorbaException &e) {
-      cerr << e << endl;
+      cerr << "Execution error: " << e << endl;
       return 2;
     }
   } else {
@@ -120,7 +120,7 @@ int _tmain(int argc, _TCHAR* argv[])
       result->close();
     } catch (ZorbaException &e) {
       result->close();
-      cerr << e << endl;
+      cerr << "Execution error: " << e << endl;
       return 2;
     }
   }

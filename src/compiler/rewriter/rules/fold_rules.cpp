@@ -38,8 +38,10 @@ namespace zorba {
       return NULL;
     } catch (error::ZorbaError& e) {
       ZorbaError::ErrorCode lErrorCode = (ZorbaError::ErrorCode) e.theErrorCode;
+      QueryLoc loc = e.theQueryLocation;
       expr_t err_expr = new fo_expr (loc, LOOKUP_FN ("fn", "error", 1), 
-                                     new const_expr (loc, ITEM_FACTORY->createQName ("http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ())));
+                                     new const_expr (loc, ITEM_FACTORY->createQName ("http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ())),
+                                     new const_expr (loc, e.theDescription));
       err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VALUE);
       return err_expr;
     }
