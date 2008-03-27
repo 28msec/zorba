@@ -53,6 +53,20 @@ namespace zorba {
     }
   }
 
+// is this variable used in the next FOR clause that executes more than once?
+bool used_upto_first_repeated_clause (var_expr *v, flwor_expr *flwor, static_context *sctx) {
+  for (flwor_expr::clause_list_t::iterator i = flwor->clause_begin (); i != flwor->clause_end (); i++) {
+    flwor_expr::forletref_t ref = *i;
+    if (count_variable_uses(ref->get_expr (), v, 1) == 1)
+      return true;
+    if (ref->get_type () == forlet_clause::for_clause
+        && TypeOps::QUANT_MAX_CNT [TypeOps::quantifier (*ref->get_expr ()->return_type (sctx))] >= 2)
+      return false;
+  }
+  return false;
+}
+
+
 RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
   flwor_expr *flwor = dynamic_cast<flwor_expr *>(node);
@@ -111,7 +125,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       } else {
         if (uses == 1) {
           if (flwor->forlet_count () == 1 // TODO: if cardinality FLWOR result = 1...
-              || cexpr->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VALUE) 
+              || cexpr->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VALUE
+              || used_upto_first_repeated_clause (&*vref, flwor, sctx))
             {
               subst_vars (rCtx, node, vref, cexpr);
               MODIFY (i = flwor->remove_forlet_clause (i));
