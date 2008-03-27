@@ -167,24 +167,37 @@ void serializer::emitter::emit_declaration_end()
 {
 }
 
+xqpString toHexString(unsigned char ch)
+{
+  static const char hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+  xqpString result;
+  if ((ch>>8) > 0)
+    result += hex[ch >> 8];
+  result += hex[ch & 0xF];
+  return result;
+}
+
 // emit_attribute_value is set to true if the string expansion is performed on a value of an attribute
 void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribute_value = false)
 {
-	const char* chars = str.c_str();
+	const unsigned char* chars = (const unsigned char*)str.c_str();
 	int is_quote;
   int skip = 0;
 	
 	for (unsigned int i = 0; i < str.bytes(); i++, chars++ )
 	{       
     // the input string is UTF-8
-    if ((unsigned char)*chars < 0x80)
-      skip = 0;      
-    else if ((*chars >> 5) == 0x6)
-      skip = 2;
-    else if ((*chars >> 4) == 0xe)
-      skip = 3;
-    else if ((*chars >> 3) == 0x1e)
-      skip = 4;
+    if (skip == 0)
+    {
+      if (*chars < 0x80)
+        skip = 0;      
+      else if ((*chars >> 5) == 0x6)
+        skip = 2;
+      else if ((*chars >> 4) == 0xe)
+        skip = 3;
+      else if ((*chars >> 3) == 0x1e)
+        skip = 4;
+    }
        
     if (skip)
     {
@@ -193,12 +206,22 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
       continue;
     }
     
-		switch (*chars)
+    /*
+      In addition, the non-whitespace control characters #x1 through #x1F and #x7F through #x9F in
+      text nodes and attribute nodes MUST be output as character references.
+    */
+    if (((*chars >= 0x1 && *chars <= 0x1F)
+          ||
+          (*chars >= 0x7F && *chars <= 0x9F))
+       &&
+       *chars != 0xA
+       &&
+       *chars != 0x9)
+    {
+      tr << "&#x" << toHexString(*chars) << ";";
+    }
+    else switch (*chars)
 		{
-    case '\r':
-      tr << "&#xD;";
-      break;
-
 		case '<':
       /*
         The HTML output method MUST NOT escape "<" characters occurring in attribute values.
@@ -213,8 +236,11 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
 			tr << "&gt;";
 			break;
 			
-		case '"':
-			tr << "&quot;";
+    case '"':
+      if (emit_attribute_value)
+        tr << "&quot;";
+      else
+        tr << *chars;
 			break;
 			
 		case '&':

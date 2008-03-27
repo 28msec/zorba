@@ -791,8 +791,8 @@ DateTime_t DateTime::adjustToTimeZone(int tz_seconds) const
   }
   else
   {
-      // If $arg has a timezone component and $timezone is not the empty sequence, then
-      // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
+    // If $arg has a timezone component and $timezone is not the empty sequence, then
+    // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
     dtduration_t = new DayTimeDuration(the_time_zone.is_negative(), 0, the_time_zone.getHours(),
                                        the_time_zone.getMinutes(), the_time_zone.getSeconds(), 0);
 
@@ -911,23 +911,11 @@ DateTime_t DateTime::addDuration(const Duration& d, bool adjust_facet) const
     years = years + quotient<int>(months + carry-1, 12);
     months = modulo<int>(months + carry -1, 12) + 1;
   }
-
-  // make sure year is not 0
-  if (years == 0)
-  {
-    if (data[YEAR_DATA] > 0)
-    {
-      assert(d.isNegative());
-      years = -1;
-    }
-    else if (data[YEAR_DATA] < 0)
-    {
-      assert(!d.isNegative());
-      years = 1;
-    }
-    else
-      assert(0);
-  }
+  
+  if (data[YEAR_DATA] > 0 && d.isNegative() && years <= 0)
+    years--;
+  if (data[YEAR_DATA] < 0 && (!d.isNegative()) && years >= 0)
+    years++;
 
   if (DateTime::createDateTime(years, months, days, hours, minutes, int_seconds, frac_seconds, getTimezone(), new_dt_t))
     assert(0);
