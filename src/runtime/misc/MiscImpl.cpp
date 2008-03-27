@@ -56,22 +56,27 @@ store::Item_t FnResolveUriIterator::nextImpl(PlanState& planState) const
   store::Item_t item;
   xqp_string strRelative;
   xqp_string strBase;
+  xqp_string strResult;
   
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
+  //TODO:check if both relative and base uri's are valid. If not raise err:FORG0002.
   item = consumeNext(theChildren[0].getp(), planState );
   if ( item != NULL ){
     strRelative = item->getStringValue();
     if( theChildren.size() == 2 ) {
       item = consumeNext(theChildren[1].getp(), planState );
       strBase = item->getStringValue();
+      strResult = planState.theRuntimeCB->theStaticContext->resolve_relative_uri(strRelative, strBase);
     }
     else {
-      strBase = planState.theRuntimeCB->theStaticContext->baseuri();
-      if( strBase.empty() )
+      if( planState.theRuntimeCB->theStaticContext->baseuri().empty() )
         ZORBA_ERROR_LOC_DESC( ZorbaError::FONS0005, loc, "Base-uri not defined in the static context.");
+      else
+        strResult = planState.theRuntimeCB->theStaticContext->resolve_relative_uri(strRelative);
     }
+    STACK_PUSH(GENV_ITEMFACTORY->createString(strResult.getStore()), state);
   }
 
   //TODO fix the implementation

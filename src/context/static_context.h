@@ -228,7 +228,7 @@ public:
 	void set_encapsulating_entity_baseuri(xqp_string);
 	void set_entity_file_uri(xqp_string);
 
-	xqp_string resolve_relative_uri( xqp_string uri );
+  xqp_string resolve_relative_uri( xqp_string uri, xqp_string abs_base_uri = xqp_string() );
 
 };
 
