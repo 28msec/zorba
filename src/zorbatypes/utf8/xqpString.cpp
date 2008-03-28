@@ -907,6 +907,13 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
     return is;
   }
 
+  std::ostream& operator<<(std::ostream& os, xqpStringStore_t str)
+  {
+    //TODO is there a need to perform charset conversion to/from the current locale ?!?!
+    os << *str;
+    return os;
+  }
+
   std::ostream& operator<<(std::ostream& os, xqpString utf8_src)
   {
     //TODO is there a need to perform charset conversion to/from the current locale ?!?!

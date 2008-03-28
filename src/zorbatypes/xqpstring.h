@@ -548,6 +548,9 @@ public:
   operator<<(std::ostream& os, const zorba::xqpStringStore& src);
 
   std::ostream& 
+  operator<<(std::ostream& os, const zorba::xqpStringStore_t src);
+
+  std::ostream& 
   operator<<(std::ostream& os, zorba::xqpString utf8_src);
 
   //xqpString::concatenation operator+()
